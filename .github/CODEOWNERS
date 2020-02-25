@@ -1,0 +1,93 @@
+# Dewco core
+/src/core/*                                        @trik
+/src/core/auth/*                                   @trik
+/src/core/common/*                                 @trik
+/src/core/dashboard/*                              @trik
+/src/core/devices/*                                @trik
+/src/core/embedded-icon/*                          @trik
+/src/core/data/*                                   @trik
+/src/core/indicators/*                             @sara
+/src/core/landing/*                                @trik
+/src/core/location-input/*                         @trik
+/src/core/location-selector/*                      @trik
+/src/core/locations/*                              @trik
+/src/core/net/*                                    @trik
+/src/core/notification/*                           @trik
+/src/core/partners/*                               @trik
+/src/core/prevent-parent-scroll/*                  @trik
+/src/core/reports/*                                @trik
+/src/core/time-selector/*                          @trik
+/src/core/translations/*                           @trik
+/src/core/users/*                                  @trik
+
+# Dewco material
+/src/material/*                                    @trik
+/src/material/location-input/*                     @trik
+/src/material/location-selector/*                  @trik
+/src/material/time-selector/*                      @trik
+/src/material/custom-dashboard/*                   @peppedeka
+/src/material/default-dashboard/*                  @peppedeka
+
+# Dewco ionic
+/src/ionic/*                                       @trik
+/src/ionic/data/*                                  @trik
+/src/ionic/location-selector/*                     @trik
+/src/ionic/time-selector/*                         @trik
+/src/ionic/custom-dashboard/*                      @peppedeka
+/src/ionic/default-dashboard/*                     @peppedeka
+
+# Docs examples & guides
+/guides/**                                         @trik
+/src/material-examples/**                          @trik
+/src/ionic-examples/**                             @trik
+
+# Dev app material
+/src/dev-app-mat/*                                 @trik
+/src/dev-app-mat/dashboard/*                       @peppedeka
+/src/dev-app-mat/dev-app/**                        @trik
+/src/dev-app-mat/example/**                        @trik
+/src/dev-app-mat/examples-page/**                  @trik
+/src/dev-app-mat/location-input/**                 @trik
+/src/dev-app-mat/location-selector/**              @trik
+/src/dev-app-mat/time-selector/**                  @trik
+
+# Dev app ionic
+/src/dev-app-ion/*                                 @trik
+/src/dev-app-ion/dev-app/**                        @trik
+/src/dev-app-ion/example/**                        @trik
+/src/dev-app-ion/examples-page/**                  @trik
+/src/dev-app-ion/location-selector/**              @trik
+/src/dev-app-ion/time-selector/**                  @trik
+
+# E2E app material
+/src/e2e-app-mat/*                                 @trik
+/src/e2e-app-mat/e2e-app/**                        @trik
+/src/e2e-app-mat/example-viewer/**                 @trik
+/src/e2e-app-mat/location-selector/**              @trik
+/src/e2e-app-mat/time-selector/**                  @trik
+
+# E2E app ionic
+/src/e2e-app-ion/*                                 @trik
+/src/e2e-app-ion/e2e-app/**                        @trik
+/src/e2e-app-ion/example-viewer/**                 @trik
+/src/e2e-app-ion/location-selector/**              @trik
+/src/e2e-app-ion/time-selector/**                  @trik
+
+# Universal app material
+/src/universal-app-mat/**                          @trik
+
+# Universal app ionic
+/src/universal-app-ion/**                          @trik
+
+# Tooling
+/.circleci/**                                      @trik
+/scripts/**                                        @trik
+/test/**                                           @trik
+/tools/**                                          @trik
+
+# Misc
+/*                                                 @trik
+/.github/**                                        @trik
+/.jenkins/**                                       @trik
+/.vscode/**                                        @trik
+/src/*                                             @trik

@@ -1,0 +1,35 @@
+package(default_visibility = ["//visibility:public"])
+
+load(
+    "//src/ionic:config.bzl",
+    "IONIC_ENTRYPOINTS",
+    "IONIC_SCSS_LIBS",
+    "IONIC_TARGETS",
+    "IONIC_TESTING_TARGETS",
+)
+load("//tools:defaults.bzl", "ng_package", "ts_library")
+
+ts_library(
+    name = "ionic",
+    srcs = ["index.ts"],
+    module_name = "@dewco/ionic",
+)
+
+filegroup(
+    name = "overviews",
+    srcs = ["//src/ionic/%s:overview" % name for name in IONIC_ENTRYPOINTS],
+)
+
+# Creates the @angular/ionic package published to npm.
+ng_package(
+    name = "npm_package",
+    srcs = [
+        "package.json",
+    ],
+    data = [
+    ] + IONIC_SCSS_LIBS,
+    entry_point = ":index.ts",
+    entry_point_name = "ionic",
+    tags = ["release-package"],
+    deps = IONIC_TARGETS + IONIC_TESTING_TARGETS,
+)

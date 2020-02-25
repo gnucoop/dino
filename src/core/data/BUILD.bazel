@@ -1,0 +1,29 @@
+package(default_visibility = ["//visibility:public"])
+
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+)
+
+ng_module(
+    name = "data",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [],
+    module_name = "@dewco/core/data",
+    deps = [
+    ],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["data.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)

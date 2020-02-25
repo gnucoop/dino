@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "ionic-staging": "dewco-ionic-dev",
+    "material-staging": "dewco-material-dev"
+  }
+}

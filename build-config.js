@@ -1,0 +1,59 @@
+/**
+ * Build configuration for the packaging tool. This file will be automatically detected and used
+ * to build the different packages inside of Dewco.
+ */
+const {join} = require('path');
+
+const packageJson = require('./package.json');
+
+/** Current version of the project*/
+const buildVersion = packageJson.version;
+
+/**
+ * Required Angular version for all Dewco packages. This version will be used
+ * as the peer dependency version for Angular in all release packages.
+ */
+const angularVersion = packageJson.requiredAngularVersion;
+
+const ajfVersion = packageJson.requiredAjfVersion;
+const angularMaterialVersion = packageJson.requiredAngularMaterialVersion;
+const angularFlexLayoutVersion = packageJson.requiredAngularFlexLayoutVersion;
+const ngxtVersion = packageJson.requiredNgxtVersion;
+const ionicVersion = packageJson.requiredIonicVersion;
+
+/** License that will be placed inside of all created bundles. */
+const buildLicense = `/**
+ * @license
+ * Copyright (C) 2020 Gnucoop soc. coop.
+ *
+ * This file is part of the Dewco (dewco).
+ *
+ * Dewco (dewco) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Dewco (dewco) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Dewco (dewco).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */`;
+
+module.exports = {
+  projectVersion: buildVersion,
+  ajfVersion: ajfVersion,
+  angularVersion: angularVersion,
+  angularFlexLayoutVersion: angularFlexLayoutVersion,
+  angularMaterialVersion: angularMaterialVersion,
+  ngxtVersion: ngxtVersion,
+  ionicVersion: ionicVersion,
+  projectDir: __dirname,
+  packagesDir: join(__dirname, 'src'),
+  outputDir: join(__dirname, 'dist'),
+  licenseBanner: buildLicense
+};

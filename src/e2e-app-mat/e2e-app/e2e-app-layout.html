@@ -1,0 +1,10 @@
+<header>
+  <button (click)="showLinks = !showLinks">Toggle Navigation Links</button>
+
+  <mat-nav-list *ngIf="showLinks">
+  </mat-nav-list>
+</header>
+
+<main>
+  <ng-content></ng-content>
+</main>

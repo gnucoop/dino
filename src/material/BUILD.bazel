@@ -1,0 +1,35 @@
+package(default_visibility = ["//visibility:public"])
+
+load(
+    "//src/material:config.bzl",
+    "MATERIAL_ENTRYPOINTS",
+    "MATERIAL_SCSS_LIBS",
+    "MATERIAL_TARGETS",
+    "MATERIAL_TESTING_TARGETS",
+)
+load("//tools:defaults.bzl", "ng_package", "ts_library")
+
+ts_library(
+    name = "material",
+    srcs = ["index.ts"],
+    module_name = "@dewco/material",
+)
+
+filegroup(
+    name = "overviews",
+    srcs = ["//src/material/%s:overview" % name for name in MATERIAL_ENTRYPOINTS],
+)
+
+# Creates the @angular/material package published to npm.
+ng_package(
+    name = "npm_package",
+    srcs = [
+        "package.json",
+    ],
+    data = [
+    ] + MATERIAL_SCSS_LIBS,
+    entry_point = ":index.ts",
+    entry_point_name = "material",
+    tags = ["release-package"],
+    deps = MATERIAL_TARGETS + MATERIAL_TESTING_TARGETS,
+)
