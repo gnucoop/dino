@@ -22,7 +22,7 @@
     "dev-app-mat": "ibazel run //src/dev-app-mat:devserver",
     "test": "bazel test //src/... --test_tag_filters=-e2e,-browser:firefox-local --build_tag_filters=-browser:firefox-local --build_tests_only",
     "test-firefox": "bazel test //src/... --test_tag_filters=-e2e,-browser:chromium-local --build_tag_filters=-browser:chromium-local --build_tests_only",
-    "lint": "yarn -s tslint && yarn -s bazel:format-lint && yarn -s ownerslint",
+    "lint": "yarn -s tslint && yarn -s bazel:format-lint",
     "e2e": "bazel test //src/... --test_tag_filters=e2e",
     "deploy-dev-app-ion": "node ./scripts/deploy-dev-app.js ion",
     "deploy-dev-app-mat": "node ./scripts/deploy-dev-app.js mat",
