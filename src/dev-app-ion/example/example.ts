@@ -23,10 +23,10 @@
 import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {Component, ElementRef, Injector, Input, OnInit} from '@angular/core';
 import {createCustomElement} from '@angular/elements';
-import {EXAMPLE_COMPONENTS} from '@dewco/ionic-examples';
+import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
 
 @Component({
-  selector: 'ionic-example',
+  selector: 'dewco-example',
   template: `
     <div class="label" *ngIf="showLabel">
       <span class="title"> {{title}} </span>

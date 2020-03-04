@@ -22,11 +22,11 @@
 
 import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {Component, Input} from '@angular/core';
-import {EXAMPLE_COMPONENTS} from '@dewco/material-examples';
+import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
 
 /** Displays a set of dewco examples in a mat-accordion. */
 @Component({
-  selector: 'material-example-list',
+  selector: 'dewco-example-list',
   template: `
     <mat-accordion multi>
       <mat-expansion-panel *ngFor="let id of ids" [expanded]="expandAll">
@@ -38,7 +38,7 @@ import {EXAMPLE_COMPONENTS} from '@dewco/material-examples';
         </mat-expansion-panel-header>
 
         <ng-template matExpansionPanelContent>
-          <material-example [id]="id"></material-example>
+          <dewco-example [id]="id"></dewco-example>
         </ng-template>
       </mat-expansion-panel>
     </mat-accordion>

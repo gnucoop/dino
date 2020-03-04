@@ -13,13 +13,13 @@
 var CORE_PACKAGES = $CORE_ENTRYPOINTS_TMPL;
 var IONIC_PACKAGES = $IONIC_ENTRYPOINTS_TMPL;
 var MATERIAL_PACKAGES = $MATERIAL_ENTRYPOINTS_TMPL;
-var CALENDARS_PACKAGES = $CALENDARS_ENTRYPOINTS_TMPL;
 
 /** Map of Angular framework packages and their bundle names. */
 var frameworkPackages = $ANGULAR_PACKAGE_BUNDLES;
 
 /** Map of third party packages and their bundle names. */
-var thirdPartyPackes = $THIRD_PARTY_PACKAGE_BUNDLES;
+var thirdPartyPackages = $THIRD_PARTY_PACKAGE_BUNDLES;
+var thirdPartyNoNgccPackages = $THIRD_PARTY_NO_NGCC_PACKAGE_BUNDLES;
 
 /** Whether Ivy is enabled. */
 var isRunningWithIvy = '$ANGULAR_IVY_ENABLED_TMPL'.toString() === 'True';
@@ -35,14 +35,9 @@ var pathMapping = {
   'tslib': 'node:tslib/tslib.js',
   'moment': 'node:moment/min/moment-with-locales.min.js',
 
+  'rxdb/plugins/core': 'tpl:rxdb-bundle.js',
   'rxjs': 'node:rxjs/bundles/rxjs.umd.min.js',
   'rxjs/operators': 'tools/system-rxjs-operators.js',
-
-  'debug': 'node:debug/debug.umd.js',
-
-  '@angular/cdk': 'node:@angular/cdk',
-  '@ionic/core': 'node:@ionic/core/core.umd.js',
-  '@ionic/core/loader': 'node:@ionic/core/core-loader.umd.js',
 };
 
 /** Package configurations that will be used in SystemJS. */
@@ -61,13 +56,13 @@ var packagesConfig = {
 CORE_PACKAGES.push('testing/private', 'testing/testbed/fake-events');
 IONIC_PACKAGES.push('testing');
 MATERIAL_PACKAGES.push('testing');
-CALENDARS_PACKAGES.push('testing');
 
 // Configure framework packages.
 setupFrameworkPackages();
 
 // Configure third party packages.
 setupThirdPartyPackages();
+setupThirdPartyNoNgccPackages();
 
 // Configure Angular components packages/entry-points.
 setupLocalReleasePackages();
@@ -77,9 +72,7 @@ System.config({
   baseURL: '$BASE_URL',
   map: pathMapping,
   packages: packagesConfig,
-  paths: {
-    'node:*': nodeModulesPath + '*',
-  }
+  paths: {'node:*': nodeModulesPath + '*', 'tpl:*': nodeModulesPath + '*'}
 });
 
 /**
@@ -131,11 +124,11 @@ function setupFrameworkPackages() {
  * them in SystemJS. Framework packages should always resolve to the UMD bundles.
  */
 function setupThirdPartyPackages() {
-  Object.keys(thirdPartyPackes).forEach(function(moduleName) {
+  Object.keys(thirdPartyPackages).forEach(function(moduleName) {
     // Ensures that imports to the framework package are resolved
     // to the configured node modules directory.
     pathMapping[moduleName] = 'node:' + moduleName;
-    var bundleName = thirdPartyPackes[moduleName];
+    var bundleName = thirdPartyPackages[moduleName];
     var bundlePath = 'bundles/' + bundleName;
     if (isRunningWithIvy) {
       bundlePath = '__ivy_ngcc__/' + bundlePath;
@@ -144,13 +137,21 @@ function setupThirdPartyPackages() {
   });
 }
 
+function setupThirdPartyNoNgccPackages() {
+  Object.keys(thirdPartyNoNgccPackages).forEach(function(moduleName) {
+    // Ensures that imports to the framework package are resolved
+    // to the configured node modules directory.
+    pathMapping[moduleName] = 'tpl:' +
+      thirdPartyNoNgccPackages[moduleName].replace(/^\/+/, '').replace(':', '/');
+  });
+}
+
 /** Configures the local release packages in SystemJS */
 function setupLocalReleasePackages() {
   // Configure all primary entry-points.
   configureEntryPoint('core');
-  configureEntryPoint('ionic-examples');
+  configureEntryPoint('dewco-examples');
   configureEntryPoint('ionic');
-  configureEntryPoint('material-examples');
   configureEntryPoint('material');
 
   // Configure all secondary entry-points.
@@ -168,16 +169,13 @@ function setupLocalReleasePackages() {
 /** Configures the specified package, its entry-point and its examples. */
 function configureEntryPoint(pkgName, entryPoint) {
   var name = entryPoint ? pkgName + '/' + entryPoint : pkgName;
-  var ionicExamplesName = 'ionic-examples/' + name;
-  var materialExamplesName = 'material-examples/' + name;
+  var examplesName = 'dewco-examples/' + name;
 
   pathMapping['@dewco/' + name] = packagesPath + '/' + name;
-  pathMapping['@dewco/' + ionicExamplesName] = packagesPath + '/' + ionicExamplesName;
-  pathMapping['@dewco/' + materialExamplesName] = packagesPath + '/' + materialExamplesName;
+  pathMapping['@dewco/' + examplesName] = packagesPath + '/' + examplesName;
 
   // Ensure that imports which resolve to the entry-point directory are
   // redirected to the "index.js" file of the directory.
   packagesConfig[packagesPath + '/' + name] =
-      packagesConfig[packagesPath + '/' + ionicExamplesName] =
-        packagesConfig[packagesPath + '/' + materialExamplesName] = {main: 'index.js'};
+      packagesConfig[packagesPath + '/' + examplesName] = {main: 'index.js'};
 }

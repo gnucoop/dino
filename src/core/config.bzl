@@ -1,5 +1,6 @@
 # List of all entry-points of the Ajf core package.
 CORE_ENTRYPOINTS = [
+    "auth",
     "data",
 ]
 

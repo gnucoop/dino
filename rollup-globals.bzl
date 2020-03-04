@@ -23,18 +23,6 @@ ROLLUP_GLOBALS = {
     "@angular/router": "ng.router",
 
     # Angular Components packages
-    "@angular/material/autocomplete": "ng.material.autocomplete",
-    "@angular/material/button": "ng.material.button",
-    "@angular/material/checkbox": "ng.material.checkbox",
-    "@angular/material/form-field": "ng.material.formField",
-    "@angular/material/grid-list": "ng.material.gridList",
-    "@angular/material/icon": "ng.material.icon",
-    "@angular/material/input": "ng.material.input",
-    "@angular/material/list": "ng.material.list",
-    "@angular/material/menu": "ng.material.menu",
-    "@angular/material/progress-spinner": "ng.material.progressSpinner",
-    "@angular/material/radio": "ng.material.radio",
-    "@angular/material/select": "ng.material.select",
 
     # Primary entry-points in the project.
     "@dewco/core": "dewco.core",
@@ -43,9 +31,13 @@ ROLLUP_GLOBALS = {
 
     # Third-party libraries.
     "@ionic/angular": "ionic.angular",
+    "pouchdb-adapter-idb": "PouchDB.adapter.idb",
+    "pouchdb-adapter-memory": "PouchDB.adapter.memory",
+    "rxdb": "rxdb",
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
     "tslib": "tslib",
+    "uuid": "uuid",
 }
 
 # Converts a string from dash-case to lower camel case.
@@ -73,5 +65,4 @@ create_globals("material", MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS)
 # Rollup globals the examples package. Since individual examples are
 # grouped by package and component, the primary entry-point imports
 # from entry-points which should be treated as external imports.
-# create_globals("ionic-examples", IONIC_ENTRYPOINTS)
-# create_globals("material-examples", MATERIAL_ENTRYPOINTS)
+create_globals("dewco-examples", IONIC_ENTRYPOINTS + MATERIAL_ENTRYPOINTS)

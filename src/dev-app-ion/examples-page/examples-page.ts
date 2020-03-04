@@ -21,11 +21,11 @@
  */
 
 import {Component} from '@angular/core';
-import {EXAMPLE_COMPONENTS} from '@dewco/ionic-examples';
+import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
 
-/** Renders all ionic examples listed in the generated EXAMPLE_COMPONENTS. */
+/** Renders all Dewco examples listed in the generated EXAMPLE_COMPONENTS. */
 @Component({
-  template: `<ionic-example-list [ids]="examples"></ionic-example-list>`
+  template: `<dewco-example-list [ids]="examples"></dewco-example-list>`
 })
 export class ExamplesPage {
   examples = Object.keys(EXAMPLE_COMPONENTS);

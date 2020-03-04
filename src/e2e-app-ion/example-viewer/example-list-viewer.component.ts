@@ -22,7 +22,7 @@
 
 import {Component, Input} from '@angular/core';
 
-/** Loads an example component from `@angular/material-examples`. */
+/** Loads an example component from `@dewco/dewco-examples`. */
 @Component({
   selector: 'example-list-viewer',
   template: `

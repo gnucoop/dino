@@ -20,4 +20,7 @@
  *
  */
 
-export const v = 'miao';
+export * from './data-module';
+export * from './data-service';
+export * from './data-service-config';
+export * from './model';

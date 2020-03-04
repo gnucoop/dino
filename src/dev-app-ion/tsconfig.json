@@ -8,9 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "@dewco/core/*": ["../core/*"],
+      "@dewco/dewco-examples": ["../../dist/packages/dewco-examples"],
       "@dewco/ionic/*": ["../ionic/*"],
-      "@dewco/ionic": ["../ionic/public-api.ts"],
-      "@dewco/ionic-examples": ["../../dist/packages/ionic-examples"]
+      "@dewco/ionic": ["../ionic/public-api.ts"]
     }
   },
   "include": ["./**/*.ts"]

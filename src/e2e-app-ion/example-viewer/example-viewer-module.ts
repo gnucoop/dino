@@ -22,7 +22,7 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {ExampleModule as ExampleDataModule} from '@dewco/ionic-examples';
+import {ExampleModule as ExampleDataModule} from '@dewco/dewco-examples';
 import {ExampleListViewer} from './example-list-viewer.component';
 import {ExampleViewer} from './example-viewer';
 

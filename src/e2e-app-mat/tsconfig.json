@@ -6,8 +6,8 @@
     "baseUrl": ".",
     "paths": {
       "@dewco/core/*": ["../core/*"],
-      "@dewco/material/*": ["../material/*"],
-      "@dewco/material-examples": ["../material-examples/"]
+      "@dewco/dewco-examples": ["../dewco-examples/"],
+      "@dewco/material/*": ["../material/*"]
     }
   },
   "include": ["./**/*.ts"]

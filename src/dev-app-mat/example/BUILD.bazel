@@ -6,7 +6,7 @@ ng_module(
     name = "example",
     srcs = glob(["**/*.ts"]),
     deps = [
-        "//src/material-examples",
+        "//src/dewco-examples",
         "@npm//@angular/cdk",
         "@npm//@angular/elements",
         "@npm//@angular/material",

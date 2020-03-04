@@ -23,7 +23,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {ExampleModule as ExampleDataModule} from '@dewco/material-examples';
+import {ExampleModule as ExampleDataModule} from '@dewco/dewco-examples';
 import {Example} from './example';
 
 

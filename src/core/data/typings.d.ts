@@ -1,2 +1,3 @@
-declare module 'pouchdb-debug';
-declare module 'worker-pouch/client';
+declare module 'memdown';
+declare module 'pouchdb-adapter-idb';
+declare module 'pouchdb-adapter-memory';

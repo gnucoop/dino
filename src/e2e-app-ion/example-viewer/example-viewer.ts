@@ -22,9 +22,9 @@
 
 import {Component, ElementRef, Injector, Input, OnInit} from '@angular/core';
 import {createCustomElement} from '@angular/elements';
-import {EXAMPLE_COMPONENTS} from '@dewco/ionic-examples';
+import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
 
-/** Loads an example component from `@angular/material-examples` */
+/** Loads an example component from `@dewco/dewco-examples` */
 @Component({
   selector: 'example-viewer',
   template: `

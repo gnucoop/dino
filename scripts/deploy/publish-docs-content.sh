@@ -8,11 +8,11 @@ set -e
 
 cd "$(dirname $0)/../../"
 
-if [ -z ${DEWCO_BUILDS_TOKEN} ]; then
-  echo "Error: No access token for GitHub could be found." \
-       "Please set the environment variable 'DEWCO_BUILDS_TOKEN'."
-  exit 1
-fi
+# if [ -z ${DEWCO_BUILDS_TOKEN} ]; then
+#   echo "Error: No access token for GitHub could be found." \
+#        "Please set the environment variable 'DEWCO_BUILDS_TOKEN'."
+#   exit 1
+# fi
 
 # Path to the project directory.
 projectPath="$(pwd)"
@@ -23,11 +23,11 @@ docsDistPath="${projectPath}/dist/docs"
 # Path to the cloned docs-content repository.
 docsContentPath="${projectPath}/tmp/dewco-docs-content"
 
-# Path to the release output of the Bazel "@dewco/material-examples" NPM package.
-examplesPackagePath="$(bazel info bazel-bin)/src/material-examples/npm_package"
+# Path to the release output of the Bazel "@dewco/dewco-examples" NPM package.
+examplesPackagePath="$(yarn -s bazel info bazel-bin)/src/dewco-examples/npm_package"
 
 # Git clone URL for the dewco-docs-content repository.
-docsContentRepoUrl="https://bitbucket.org/gnucoop/dewco-docs-content"
+docsContentRepoUrl="git@bitbucket.org:gnucoop/dewco-docs-content.git"
 
 # Current version of Dewco from the package.json file
 buildVersion=$(node -pe "require('./package.json').version")
@@ -104,9 +104,9 @@ sed -i "s/${escapedVersion}/${buildVersionName}/g" $(find . -type f -not -path '
 # Setup the Git configuration
 git config user.name "$commitAuthorName"
 git config user.email "$commitAuthorEmail"
-git config credential.helper "store --file=.git/credentials"
+# git config credential.helper "store --file=.git/credentials"
 
-echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
+# echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
 
 echo "Credentials for docs-content repository are now set up. Publishing.."
 

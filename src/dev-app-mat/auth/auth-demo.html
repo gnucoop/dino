@@ -1,0 +1,20 @@
+<div class="auth-demo" [formGroup]="loginForm">
+  <div class="mat-body">
+    Try with user@dewco.io / dewco
+  </div>
+  <br>
+  <mat-form-field>
+    <input matInput formControlName="email" placeholder="Email" type="email">
+  </mat-form-field>
+  <br>
+  <mat-form-field>
+    <input matInput formControlName="password" placeholder="Password" type="password">
+  </mat-form-field>
+  <br>
+  <button mat-raised-button (click)="login()" [disabled]="loginForm.valid === false">Login</button>
+  <br>
+  <br>
+  <div class="mat-body">
+    Result: {{ loginResult }}
+  </div>
+</div>

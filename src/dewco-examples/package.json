@@ -1,11 +1,11 @@
 {
-  "name": "@dewco/ionic-examples",
+  "name": "@dewco/dewco-examples",
   "version": "0.0.0-PLACEHOLDER",
-  "description": "Dewco Ionic Examples",
-  "main": "./bundles/ionic-examples.umd.js",
-  "module": "./esm5/ionic-examples.es5.js",
-  "es2015": "./esm2015/ionic-examples.js",
-  "typings": "./ionic-examples.d.ts",
+  "description": "Dewco Examples",
+  "main": "./bundles/dewco-examples.umd.js",
+  "module": "./esm5/dewco-examples.es5.js",
+  "es2015": "./esm2015/dewco-examples.js",
+  "typings": "./dewco-examples.d.ts",
   "private": true,
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   },
   "keywords": [
     "angular",
-    "ionic",
+    "dewco",
     "components"
   ],
   "license": "AGPL-3.0-or-later",

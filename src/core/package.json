@@ -24,9 +24,12 @@
   "peerDependencies": {
     "@angular/core": "0.0.0-NG",
     "@angular/common": "0.0.0-NG",
-    "@angular/forms": "0.0.0-NG",
     "@angular/router": "0.0.0-NG",
-    "tslib": "0.0.0-TSLIB"
+    "pouchdb-adapter-idb": "0.0.0-POUCHDB",
+    "pouchdb-adapter-memory": "0.0.0-POUCHDB",
+    "rxdb": "0.0.0-RXDB",
+    "tslib": "0.0.0-TSLIB",
+    "uuid": "0.0.0-UUID"
   },
   "sideEffects": false
 }

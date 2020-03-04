@@ -1,0 +1,88 @@
+load(":third-party-bundle.bzl", "third_party_bundle")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "pouchdb-rollup.config-tmpl.js",
+    "pouchdb-stream-rollup.config-tmpl.js",
+    "rollup.config-tmpl.js",
+])
+
+third_party_bundle(
+    name = "ionic-core",
+    entry_point = "@npm//:node_modules/@ionic/core/dist/index.js",
+    globals = {
+        "tslib": "tslib",
+    },
+    module_name = "@ionic/core",
+    deps = [
+        "@npm//@ionic/core",
+    ],
+)
+
+third_party_bundle(
+    name = "ionic-core-loader",
+    entry_point = "@npm//:node_modules/@ionic/core/loader/index.cjs.js",
+    globals = {
+        "tslib": "tslib",
+    },
+    module_name = "@ionic/core/loader",
+    deps = [
+        "@npm//@ionic/core",
+    ],
+)
+
+third_party_bundle(
+    name = "pouchdb-adapter-idb",
+    entry_point = "@npm//:node_modules/pouchdb-adapter-idb/lib/index.es.js",
+    globals = {
+        "PouchDB": "PouchDB",
+    },
+    module_name = "pouchdb-adapter-idb",
+    template = "//tools/third-party-libs:pouchdb-rollup.config-tmpl.js",
+    deps = [
+        "@npm//@rollup/plugin-json",
+        "@npm//pouchdb-adapter-idb",
+        "@npm//rollup-plugin-node-globals",
+        "@npm//rollup-plugin-node-polyfills",
+    ],
+)
+
+third_party_bundle(
+    name = "pouchdb-adapter-memory",
+    entry_point = "@npm//:node_modules/pouchdb-adapter-memory/lib/index.es.js",
+    globals = {
+        "PouchDB": "PouchDB",
+    },
+    module_name = "pouchdb-adapter-memory",
+    template = "//tools/third-party-libs:pouchdb-stream-rollup.config-tmpl.js",
+    deps = [
+        "@npm//@rollup/plugin-json",
+        "@npm//@rollup/plugin-replace",
+        "@npm//pouchdb-adapter-memory",
+        "@npm//rollup-plugin-node-globals",
+        "@npm//rollup-plugin-node-polyfills",
+    ],
+)
+
+third_party_bundle(
+    name = "rxdb",
+    entry_point = "@npm//:node_modules/rxdb/dist/lib/index.js",
+    module_name = "rxdb",
+    template = "//tools/third-party-libs:pouchdb-rollup.config-tmpl.js",
+    deps = [
+        "@npm//@rollup/plugin-json",
+        "@npm//rollup-plugin-node-globals",
+        "@npm//rollup-plugin-node-polyfills",
+        "@npm//rxdb",
+    ],
+)
+
+third_party_bundle(
+    name = "uuid",
+    entry_point = "@npm//:node_modules/uuid/dist/esm-browser/index.js",
+    module_name = "uuid",
+    deps = [
+        "@npm//uuid",
+    ],
+)

@@ -1,0 +1,21 @@
+load("//tools:defaults.bzl", "ng_module", "sass_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "data",
+    srcs = glob(["**/*.ts"]),
+    assets = [
+        "data-demo.html",
+        ":data_demo_scss",
+    ],
+    deps = [
+        "//src/core/data",
+        "@npm//@angular/router",
+    ],
+)
+
+sass_binary(
+    name = "data_demo_scss",
+    src = "data-demo.scss",
+)

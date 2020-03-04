@@ -9,11 +9,11 @@ set -e
 # Go to the project root directory
 cd $(dirname ${0})/../..
 
-if [ -z ${DEWCO_BUILDS_TOKEN} ]; then
-  echo "Error: No access token for GitHub could be found." \
-       "Please set the environment variable 'DEWCO_BUILDS_TOKEN'."
-  exit 1
-fi
+# if [ -z ${DEWCO_BUILDS_TOKEN} ]; then
+#   echo "Error: No access token for GitHub could be found." \
+#        "Please set the environment variable 'DEWCO_BUILDS_TOKEN'."
+#   exit 1
+# fi
 
 # Dewco packages that need to published.
 PACKAGES=(core ionic material)
@@ -47,7 +47,7 @@ publishPackage() {
   buildTagName="${branchName}-${commitSha}"
   buildCommitMessage="${branchName} - ${commitMessage}"
 
-  repoUrl="https://github.com/gnucoop/${packageRepo}.git"
+  repoUrl="git@bitbucket.org:gnucoop/${packageRepo}.git"
   repoDir="tmp/${packageRepo}"
 
   echo "Starting publish process of ${packageName} for ${buildVersionName} into ${branchName}.."
@@ -96,16 +96,16 @@ publishPackage() {
   # the SHA of the current build job. Normally this "sed" call would just replace the version
   # placeholder, but the version placeholders have been replaced by "npm_package" already.
   escapedVersion=$(echo ${buildVersion} | sed 's/[.[\*^$]/\\&/g')
-  sed -i "s/${escapedVersion}/${buildVersionName}/g" $(find . -type f -not -path '*\/.*')
+  gsed -i "s/${escapedVersion}/${buildVersionName}/g" $(find . -type f -not -path '*\/.*')
 
   echo "Updated the build version in every file to include the SHA of the latest commit."
 
   # Prepare Git for pushing the artifacts to the repository.
-  git config user.name "${commitAuthorName}"
-  git config user.email "${commitAuthorEmail}"
-  git config credential.helper "store --file=.git/credentials"
+  # git config user.name "${commitAuthorName}"
+  # git config user.email "${commitAuthorEmail}"
+  # git config credential.helper "store --file=.git/credentials"
 
-  echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
+  # echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
 
   echo "Git configuration has been updated to match the last commit author. Publishing now.."
 

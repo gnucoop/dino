@@ -36,10 +36,8 @@ export class DevAppLayout {
   dark = false;
   navItems = [
     {name: 'Examples', route: '/examples'},
-    {name: 'Location input', route: '/location-input'},
-    {name: 'Location selector', route: '/location-selector'},
-    {name: 'Time selector', route: '/time-selector'},
-    {name: 'Dashboard', route: '/dashboard'},
+    {name: 'Auth', route: '/auth'},
+    {name: 'Data', route: '/data'},
   ];
 
   constructor(

@@ -4,13 +4,19 @@
 ANGULAR_PACKAGE_VERSION = "^9.0.0-0 || ^10.0.0-0"
 ANGULAR_MATERIAL_PACKAGE_VERSION = "^9.0.0-0 || ^10.0.0-0"
 IONIC_PACKAGE_VERSION = "^5.0.0"
+POUCHDB_PACKAGE_VERSION = "^7.0.0"
+RXDB_PACKAGE_VERSION = "^8.0.0"
 TSLIB_PACKAGE_VERSION = "^1.9.0"
+UUID_PACKAGE_VERSION = "^7.0.0"
 
 VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-ANGM": ANGULAR_MATERIAL_PACKAGE_VERSION,
     "0.0.0-ION": IONIC_PACKAGE_VERSION,
     "0.0.0-NG": ANGULAR_PACKAGE_VERSION,
+    "0.0.0-POUCHDB": POUCHDB_PACKAGE_VERSION,
+    "0.0.0-RXDB": RXDB_PACKAGE_VERSION,
     "0.0.0-TSLIB": TSLIB_PACKAGE_VERSION,
+    "0.0.0-UUID": UUID_PACKAGE_VERSION,
 }
 
 # List of default Angular library UMD bundles which are not processed by ngcc.
@@ -21,13 +27,13 @@ ANGULAR_NO_NGCC_BUNDLES = [
 # List of Angular library UMD bundles which will be processed by ngcc.
 ANGULAR_NGCC_BUNDLES = [
     ("@angular/animations", ["animations-browser.umd.js", "animations.umd.js"]),
-    ("@angular/cdk", ["cdk-accordion.umd.js", "cdk-a11y.umd.js", "cdk-bidi.umd.js", "cdk-collections.umd.js", "cdk-drag-drop.umd.js", "cdk-keycodes.umd.js", "cdk-layout.umd.js", "cdk-observers.umd.js", "cdk-overlay.umd.js", "cdk-platform.umd.js", "cdk-portal.umd.js", "cdk-scrolling.umd.js", "cdk-table.umd.js", "cdk-text-field.umd.js"]),
+    ("@angular/cdk", ["cdk-a11y.umd.js", "cdk-bidi.umd.js", "cdk-collections.umd.js", "cdk-keycodes.umd.js", "cdk-observers.umd.js", "cdk-overlay.umd.js", "cdk-platform.umd.js", "cdk-portal.umd.js", "cdk-scrolling.umd.js", "cdk-text-field.umd.js"]),
     ("@angular/common", ["common-http-testing.umd.js", "common-http.umd.js", "common-testing.umd.js", "common.umd.js"]),
     ("@angular/compiler", ["compiler-testing.umd.js"]),
     ("@angular/core", ["core-testing.umd.js", "core.umd.js"]),
     ("@angular/elements", ["elements.umd.js"]),
     ("@angular/forms", ["forms.umd.js"]),
-    ("@angular/material", ["material-autocomplete.umd.js", "material-button.umd.js", "material-button-toggle.umd.js", "material-card.umd.js", "material-checkbox.umd.js", "material-chips.umd.js", "material-core.umd.js", "material-dialog.umd.js", "material-divider.umd.js", "material-expansion.umd.js", "material-form-field.umd.js", "material-grid-list.umd.js", "material-icon.umd.js", "material-input.umd.js", "material-list.umd.js", "material-menu.umd.js", "material-radio.umd.js", "material-select.umd.js", "material-sidenav.umd.js", "material-slide-toggle.umd.js", "material-slider.umd.js", "material-table.umd.js", "material-tabs.umd.js", "material-toolbar.umd.js", "material-tooltip.umd.js"]),
+    ("@angular/material", ["material-core.umd.js", "material-button.umd.js", "material-divider.umd.js", "material-form-field.umd.js", "material-icon.umd.js", "material-input.umd.js", "material-list.umd.js", "material-sidenav.umd.js", "material-toolbar.umd.js"]),
     ("@angular/platform-browser-dynamic", ["platform-browser-dynamic-testing.umd.js", "platform-browser-dynamic.umd.js"]),
     ("@angular/platform-browser", ["platform-browser.umd.js", "platform-browser-testing.umd.js", "platform-browser-animations.umd.js"]),
     ("@angular/router", ["router.umd.js"]),
@@ -38,6 +44,12 @@ THIRD_PARTY_NGCC_BUNDLES = [
 ]
 
 THIRD_PARTY_NO_NGCC_BUNDLES = [
+    ("@ionic/core", "//tools/third-party-libs:ionic-core-bundle.js"),
+    ("@ionic/core/loader", "//tools/third-party-libs:ionic-core-loader-bundle.js"),
+    ("pouchdb-adapter-idb", "//tools/third-party-libs:pouchdb-adapter-idb-bundle.js"),
+    ("pouchdb-adapter-memory", "//tools/third-party-libs:pouchdb-adapter-memory-bundle.js"),
+    ("rxdb", "//tools/third-party-libs:rxdb-bundle.js"),
+    ("uuid", "//tools/third-party-libs:uuid-bundle.js"),
 ]
 
 """
@@ -57,6 +69,12 @@ def getFrameworkPackageBundles():
 def getThirdPartyPackageBundles():
     res = {}
     for pkgName, bundleName in THIRD_PARTY_NGCC_BUNDLES:
+        res[pkgName] = bundleName
+    return res
+
+def getThirdPartyNoNgccPackageBundles():
+    res = {}
+    for pkgName, bundleName in THIRD_PARTY_NO_NGCC_BUNDLES:
         res[pkgName] = bundleName
     return res
 
@@ -80,15 +98,16 @@ def getThirdPartyUmdFilePaths(packages, ngcc_artifacts):
     ]
 
 def getThirdPartyNoNgccUmdFilePaths(packages):
-    tmpl = "@npm//:node_modules/%s"
+    tmpl = "%s"
     return [
         tmpl % bundleName
-        for bundleName in packages
+        for _, bundleName in packages
     ]
 
 ANGULAR_PACKAGE_BUNDLES = getFrameworkPackageBundles()
 
 THIRD_PARTY_PACKAGE_BUNDLES = getThirdPartyPackageBundles()
+THIRD_PARTY_NO_NGCC_PACKAGE_BUNDLES = getThirdPartyNoNgccPackageBundles()
 
 ANGULAR_LIBRARY_VIEW_ENGINE_UMDS = getUmdFilePaths(ANGULAR_NO_NGCC_BUNDLES, False) + \
                                    getUmdFilePaths(ANGULAR_NGCC_BUNDLES, False) + \

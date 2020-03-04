@@ -21,10 +21,9 @@
     "paths": {
       "@dewco/core": ["./src/core"],
       "@dewco/core/*": ["./src/core/*"],
+      "@dewco/dewco-examples": ["./src/packages/dewco-examples"],
       "@dewco/ionic/*": ["./src/ionic/*"],
-      "@dewco/ionic-examples": ["./src/packages/ionic-examples"],
-      "@dewco/material/*": ["./src/material/*"],
-      "@dewco/material-examples": ["./src/packages/material-examples"]
+      "@dewco/material/*": ["./src/material/*"]
     }
   },
   "include": [

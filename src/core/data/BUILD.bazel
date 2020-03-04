@@ -1,10 +1,12 @@
-package(default_visibility = ["//visibility:public"])
-
 load(
     "//tools:defaults.bzl",
     "markdown_to_html",
     "ng_module",
+    "ng_test_library",
+    "ng_web_test_suite",
 )
+
+package(default_visibility = ["//visibility:public"])
 
 ng_module(
     name = "data",
@@ -15,7 +17,27 @@ ng_module(
     assets = [],
     module_name = "@dewco/core/data",
     deps = [
+        "@npm//@types/uuid",
+        "@npm//rxdb",
+        "@npm//rxjs",
     ],
+)
+
+ng_test_library(
+    name = "unit_test_sources",
+    srcs = glob(
+        ["**/*.spec.ts"],
+        exclude = ["**/*.e2e.spec.ts"],
+    ),
+    deps = [
+        ":data",
+        "@npm//rxdb",
+    ],
+)
+
+ng_web_test_suite(
+    name = "unit_tests",
+    deps = [":unit_test_sources"],
 )
 
 markdown_to_html(

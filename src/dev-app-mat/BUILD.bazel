@@ -1,22 +1,30 @@
-package(default_visibility = ["//visibility:public"])
-
 load("@build_bazel_rules_nodejs//:index.bzl", "pkg_web")
 load("@build_bazel_rules_nodejs//internal/common:devmode_js_sources.bzl", "devmode_js_sources")
 load("//tools:create-system-config.bzl", "create_system_config")
 load("//tools:defaults.bzl", "ng_module")
 load("//tools/dev-server:index.bzl", "dev_server")
 
+package(default_visibility = ["//visibility:public"])
+
 ng_module(
     name = "dev-app-mat",
     srcs = [
+        "demo-http-interceptor.ts",
         "dev-app.ts",
         "main.ts",
         "main-module.ts",
     ],
     deps = [
+        "//src/core/data",
+        "//src/dev-app-mat/auth",
+        "//src/dev-app-mat/data",
         "//src/dev-app-mat/dev-app",
         "@npm//@angular/cdk",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@angular/platform-browser",
         "@npm//@angular/router",
+        "@npm//@ionic/angular",
     ],
 )
 
@@ -35,7 +43,13 @@ filegroup(
         "index.html",
         ":system-config",
         "//tools:system-rxjs-operators.js",
+        "//tools/third-party-libs:pouchdb-adapter-idb-bundle.js",
+        "//tools/third-party-libs:pouchdb-adapter-memory-bundle.js",
+        "//tools/third-party-libs:rxdb-bundle.js",
+        "//tools/third-party-libs:uuid-bundle.js",
+        "@npm//:node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
         "@npm//:node_modules/@webcomponents/custom-elements/custom-elements.min.js",
+        "@npm//:node_modules/core-js/client/core.js",
         "@npm//:node_modules/rxjs/bundles/rxjs.umd.min.js",
         "@npm//:node_modules/systemjs/dist/system.js",
         "@npm//:node_modules/tslib/tslib.js",
@@ -59,7 +73,7 @@ dev_server(
 )
 
 # Collects all ES5 JavaScript files which are required to serve the dev-app. By default,
-# ts_library and ng_module targets only expose the type definitmat files as outputs.
+# ts_library and ng_module targets only expose the type definition files as outputs.
 devmode_js_sources(
     name = "dev_app_mat_js_sources",
     tags = ["manual"],

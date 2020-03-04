@@ -26,22 +26,8 @@ import {DevAppHome} from './dev-app-home';
 
 export const DEV_APP_ROUTES: Routes = [
   {path: '', component: DevAppHome},
-  {
-    path: 'location-input',
-    loadChildren: 'location-input/location-input-demo-module#LocationInputDemoModule'
-  },
-  {
-    path: 'location-selector',
-    loadChildren: 'location-selector/location-selector-demo-module#LocationSelectorDemoModule'
-  },
-  {
-    path: 'time-selector',
-    loadChildren: 'time-selector/time-selector-demo-module#TimeSelectorDemoModule'
-  },
-  {
-    path: 'dashboard',
-    loadChildren: 'dashboard/dashboard-demo-module#DashboardDemoModule'
-  },
+  {path: 'auth', loadChildren: 'auth/auth-demo-module#AuthDemoModule'},
+  {path: 'data', loadChildren: 'data/data-demo-module#DataDemoModule'},
   {path: 'examples', loadChildren: 'examples-page/examples-page-module#ExamplesPageModule'},
   {path: '**', component: DevApp404},
 ];

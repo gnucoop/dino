@@ -22,12 +22,15 @@
 
 import {Directionality} from '@angular/cdk/bidi';
 import {FullscreenOverlayContainer, OverlayContainer} from '@angular/cdk/overlay';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {AuthModule} from '@dewco/core/auth';
+import {DataModule} from '@dewco/core/data';
 
+import {DemoHttpInterceptor} from './demo-http-interceptor';
 import {DevAppComponent} from './dev-app';
 import {DevAppDirectionality} from './dev-app/dev-app-directionality';
 import {DevAppModule} from './dev-app/dev-app-module';
@@ -35,8 +38,19 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
 
 @NgModule({
   imports: [
+    AuthModule.forRoot({
+      host: 'http://auth-backend',
+      applicationId: 'applicationId',
+      apiKey: 'apiKey',
+    }),
     BrowserAnimationsModule,
     BrowserModule,
+    DataModule.forRoot({
+      databaseCreateOptions: {
+        name: 'dewco_dev_app_mat_db',
+        adapter: 'idb',
+      },
+    }),
     DevAppModule,
     HttpClientModule,
     RouterModule.forRoot(DEV_APP_ROUTES),
@@ -47,6 +61,7 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
   providers: [
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
     {provide: Directionality, useClass: DevAppDirectionality},
+    {provide: HTTP_INTERCEPTORS, useClass: DemoHttpInterceptor, multi: true},
   ],
   bootstrap: [DevAppComponent],
 })

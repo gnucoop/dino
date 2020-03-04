@@ -12,5 +12,5 @@ const EXAMPLES = [
   declarations: EXAMPLES,
   exports: EXAMPLES,
 })
-export class CalendarExamplesModule {
+export class DummyExamplesModule {
 }

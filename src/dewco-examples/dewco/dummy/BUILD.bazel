@@ -9,7 +9,7 @@ ng_module(
         "**/*.html",
         "**/*.css",
     ]),
-    module_name = "@dewco/material-examples/ionic/dummy",
+    module_name = "@dewco/dewco-examples/dewco/dummy",
     deps = [
     ],
 )

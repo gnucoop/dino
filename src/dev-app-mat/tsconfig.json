@@ -8,9 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "@dewco/core/*": ["../core/*"],
+      "@dewco/dewco-examples": ["../../dist/packages/dewco-examples"],
       "@dewco/material/*": ["../material/*"],
-      "@dewco/material": ["../material/public-api.ts"],
-      "@dewco/material-examples": ["../../dist/packages/material-examples"]
+      "@dewco/material": ["../material/public-api.ts"]
     }
   },
   "include": ["./**/*.ts"]
