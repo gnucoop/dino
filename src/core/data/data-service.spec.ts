@@ -52,20 +52,16 @@ describe('Data service', () => {
     dataService = TestBed.get(DataService);
   });
 
-  it('should create and destroy a collection from a valid schema', async () => {
+  it('should create and destroy a collection from a valid schema', () => {
     const collection = {name: 'dummy', schema: dummySchema};
-    const created = await dataService.createCollection(collection).toPromise();
-    expect(created).toBe(true);
-    const deleted = await dataService.destroyCollection(collection.name).toPromise();
-    expect(deleted).toBe(true);
+    const created = dataService.createCollection(collection).toPromise();
+    expectAsync(created).toBeResolvedTo(true);
+    const deleted = dataService.destroyCollection(collection.name).toPromise();
+    expectAsync(deleted).toBeResolvedTo(true);
   });
 
-  it('should throw an exception when trying to destroy an unexisting collection', async () => {
-    try {
-      await dataService.destroyCollection('collection').toPromise();
-    } catch (err) {
-      expect(err).toBeDefined();
-    }
+  it('should throw an exception when trying to destroy an unexisting collection', () => {
+    expectAsync(dataService.destroyCollection('collection').toPromise()).toBeRejectedWithError();
   });
 });
 
@@ -126,11 +122,7 @@ describe('Data service - CRUD methods', () => {
 });
 
 describe('Invalid data service config', () => {
-  it('should fail creating the service instance when an invalid adapter is defined', async () => {
-    try {
-      await new DataService(invalidDataServiceConfig).get('dummy', 1).toPromise();
-    } catch (err) {
-      expect(err).toBeDefined();
-    }
+  it('should fail creating the service instance when an invalid adapter is defined', () => {
+    expect(() => new DataService(invalidDataServiceConfig)).toThrowError();
   });
 });
