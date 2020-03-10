@@ -36,7 +36,6 @@ ROLLUP_GLOBALS = {
     "rxdb": "rxdb",
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
-    "tslib": "tslib",
     "uuid": "uuid",
 }
 
