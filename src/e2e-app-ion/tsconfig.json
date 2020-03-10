@@ -7,7 +7,7 @@
     "paths": {
       "@dewco/core/*": ["../core/*"],
       "@dewco/ionic/*": ["../ionic/*"],
-      "@dewco/dewco-examples": ["../dewco-examples/"]
+      "@dewco/dewco-examples/*": ["../dewco-examples/*"]
     }
   },
   "include": ["./**/*.ts"]

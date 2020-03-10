@@ -6,7 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@dewco/core/*": ["../core/*"],
-      "@dewco/dewco-examples": ["../dewco-examples/"],
+      "@dewco/dewco-examples/*": ["../dewco-examples/*"],
       "@dewco/material/*": ["../material/*"]
     }
   },

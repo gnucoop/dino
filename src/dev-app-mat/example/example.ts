@@ -22,7 +22,8 @@
 
 import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {Component, Injector, Input, OnInit, ViewContainerRef} from '@angular/core';
-import {EXAMPLE_COMPONENTS, loadExampleFactory} from '@dewco/dewco-examples';
+import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
+import {loadExampleFactory} from '@dewco/dewco-examples/private';
 
 @Component({
   selector: 'dewco-example',

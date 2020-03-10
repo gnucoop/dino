@@ -21,7 +21,7 @@
  */
 
 import {Component, Injector, Input, OnInit, ViewContainerRef} from '@angular/core';
-import {loadExampleFactory} from '@dewco/dewco-examples';
+import {loadExampleFactory} from '@dewco/dewco-examples/private';
 
 /** Loads an example component from `@dewco/dewco-examples` */
 @Component({

@@ -164,6 +164,9 @@ function setupLocalReleasePackages() {
   MATERIAL_PACKAGES.forEach(function(pkgName) {
     configureEntryPoint('material', pkgName);
   });
+
+  // Private secondary entry-points.
+  configureEntryPoint('dewco-examples', 'private');
 }
 
 /** Configures the specified package, its entry-point and its examples. */
