@@ -1,5 +1,8 @@
 require.config({
   paths: {
+    // Support for lazy-loading of component examples.
+    '@dewco/dewco-examples': 'dewco/src/dewco-examples',
+
     '@ionic/angular': '@ionic/angular/angular.umd',
     '@ionic/core': '@ionic/core/core.umd',
     '@ionic/core/loader': '@ionic/core/core-loader.umd',

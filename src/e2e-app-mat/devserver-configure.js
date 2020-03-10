@@ -1,5 +1,8 @@
 require.config({
   paths: {
+    // Support for lazy-loading of component examples.
+    '@dewco/dewco-examples': 'dewco/src/dewco-examples',
+
     'css-element-queries': 'css-element-queries/css-element-queries.umd',
     'date-fns': 'date-fns/date-fns.umd',
     'debug': 'debug/debug.umd',
