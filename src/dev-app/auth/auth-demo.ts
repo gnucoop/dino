@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (C) 2020 Gnucoop soc. coop.
+ * Copyright (C) Gnucoop soc. coop.
  *
  * This file is part of the Dewco (dewco).
  *
