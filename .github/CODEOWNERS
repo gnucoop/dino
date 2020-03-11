@@ -25,11 +25,8 @@
 /src/e2e-app/e2e-app/**                            @trik
 /src/e2e-app/example-viewer/**                     @trik
 
-# Universal app material
-/src/universal-app-mat/**                          @trik
-
-# Universal app ionic
-/src/universal-app-ion/**                          @trik
+# Universal app
+/src/universal-app/**                              @trik
 
 # Tooling
 /.circleci/**                                      @trik
