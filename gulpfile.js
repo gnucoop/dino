@@ -10,7 +10,7 @@ const projectDir = __dirname;
 const tsconfigPath = path.join(projectDir, 'tools/gulp/tsconfig.json');
 
 if (projectDir.includes(' ')) {
-  console.error('Error: Cannot run the Ajf build tasks if the project is ' +
+  console.error('Error: Cannot run the Dewco build tasks if the project is ' +
     'located in a directory with spaces in between. Please rename your project directory.');
   process.exit(1);
 }

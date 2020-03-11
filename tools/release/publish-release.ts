@@ -64,7 +64,7 @@ class PublishReleaseTask extends BaseReleaseTask {
   async run() {
     console.log();
     console.log(chalk.green('----------------------------------------'));
-    console.log(chalk.green(chalk.bold('           Ajf release script           ')));
+    console.log(chalk.green(chalk.bold('          Dewco release script          ')));
     console.log(chalk.green('----------------------------------------'));
     console.log();
 

@@ -74,7 +74,7 @@ class StageReleaseTask extends BaseReleaseTask {
   async run() {
     console.log();
     console.log(chalk.cyan('-----------------------------------------'));
-    console.log(chalk.cyan('        Ajf stage release script'));
+    console.log(chalk.cyan('       Dewco stage release script'));
     console.log(chalk.cyan('-----------------------------------------'));
     console.log();
 

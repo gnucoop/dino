@@ -7,7 +7,7 @@ export interface BuildConfig {
   angularVersion: string;
   /** Required Angular Flex Layout version for the project. */
   angularFlexLayoutVersion: string;
-  /** Required Angular Material version for the project. */
+  /** Required Dewco version for the project. */
   angularMaterialVersion: string;
   /** Required Ngx Translate version for the project. */
   ngxtVersion: string;
