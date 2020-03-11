@@ -11,7 +11,7 @@ exports_files([
 ])
 
 ng_module(
-    name = "e2e-app-ion",
+    name = "e2e-app",
     testonly = True,
     srcs = glob(
         ["**/*.ts"],
@@ -40,7 +40,7 @@ ts_devserver(
         "npm/node_modules",
     ],
     # Name of the AMD module that should be required on page load.
-    entry_module = "dewco/src/e2e-app-ion/main",
+    entry_module = "dewco/src/e2e-app/main",
     port = 4200,
     # Scripts which will be included in the serving_path bundle after
     # RequireJS has been loaded.
@@ -59,5 +59,5 @@ ts_devserver(
         ":index.html",
     ],
     tags = ["manual"],
-    deps = [":e2e-app-ion"],
+    deps = [":e2e-app"],
 )
