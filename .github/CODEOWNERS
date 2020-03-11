@@ -12,18 +12,13 @@
 /guides/**                                         @trik
 /src/dewco-examples/**                             @trik
 
-# Dev app material
-/src/dev-app-mat/*                                 @trik
-/src/dev-app-mat/data/**                           @trik
-/src/dev-app-mat/dev-app/**                        @trik
-/src/dev-app-mat/example/**                        @trik
-/src/dev-app-mat/examples-page/**                  @trik
-
-# Dev app ionic
-/src/dev-app-ion/*                                 @trik
-/src/dev-app-ion/dev-app/**                        @trik
-/src/dev-app-ion/example/**                        @trik
-/src/dev-app-ion/examples-page/**                  @trik
+# Dev app
+/src/dev-app/*                                     @trik
+/src/dev-app/auth/**                               @trik
+/src/dev-app/data/**                               @trik
+/src/dev-app/dev-app/**                            @trik
+/src/dev-app/example/**                            @trik
+/src/dev-app/examples-page/**                      @trik
 
 # E2E app material
 /src/e2e-app-mat/*                                 @trik

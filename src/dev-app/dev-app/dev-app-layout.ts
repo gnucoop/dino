@@ -21,7 +21,6 @@
  */
 
 import {Directionality} from '@angular/cdk/bidi';
-import {OverlayContainer} from '@angular/cdk/overlay';
 import {ChangeDetectorRef, Component, ElementRef, Inject, ViewEncapsulation} from '@angular/core';
 import {DevAppDirectionality} from './dev-app-directionality';
 
@@ -34,12 +33,18 @@ import {DevAppDirectionality} from './dev-app-directionality';
 })
 export class DevAppLayout {
   dark = false;
-  navItems = [
-    {name: 'Examples', route: '/examples'},
-  ];
+  navGroups = [{
+    name: 'Common',
+    children:
+        [
+          {name: 'Examples', route: '/examples'},
+          {name: 'Auth', route: '/auth'},
+          {name: 'Data', route: '/data'},
+        ],
+  }];
 
   constructor(
-      private _element: ElementRef<HTMLElement>, private _overlayContainer: OverlayContainer,
+      private _element: ElementRef<HTMLElement>,
       @Inject(Directionality) public dir: DevAppDirectionality, cdr: ChangeDetectorRef) {
     dir.change.subscribe(() => cdr.markForCheck());
   }
@@ -55,20 +60,6 @@ export class DevAppLayout {
       elem.mozRequestFullScreen();
     } else if (elem.msRequestFullScreen) {
       elem.msRequestFullScreen();
-    }
-  }
-
-  toggleTheme() {
-    const darkThemeClass = 'demo-unicorn-dark-theme';
-
-    this.dark = !this.dark;
-
-    if (this.dark) {
-      this._element.nativeElement.classList.add(darkThemeClass);
-      this._overlayContainer.getContainerElement().classList.add(darkThemeClass);
-    } else {
-      this._element.nativeElement.classList.remove(darkThemeClass);
-      this._overlayContainer.getContainerElement().classList.remove(darkThemeClass);
     }
   }
 }

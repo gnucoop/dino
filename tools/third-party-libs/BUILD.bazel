@@ -36,7 +36,7 @@ third_party_bundle(
     name = "pouchdb-adapter-idb",
     entry_point = "@npm//:node_modules/pouchdb-adapter-idb/lib/index.es.js",
     globals = {
-        "PouchDB": "PouchDB",
+        "pouchdb": "PouchDB",
     },
     module_name = "pouchdb-adapter-idb",
     template = "//tools/third-party-libs:pouchdb-rollup.config-tmpl.js",
@@ -52,7 +52,7 @@ third_party_bundle(
     name = "pouchdb-adapter-memory",
     entry_point = "@npm//:node_modules/pouchdb-adapter-memory/lib/index.es.js",
     globals = {
-        "PouchDB": "PouchDB",
+        "pouchdb": "PouchDB",
     },
     module_name = "pouchdb-adapter-memory",
     template = "//tools/third-party-libs:pouchdb-stream-rollup.config-tmpl.js",
@@ -70,6 +70,7 @@ third_party_bundle(
     entry_point = "@npm//:node_modules/rxdb/dist/lib/index.js",
     module_name = "rxdb",
     template = "//tools/third-party-libs:pouchdb-rollup.config-tmpl.js",
+    exports = "default",
     deps = [
         "@npm//@rollup/plugin-json",
         "@npm//rollup-plugin-node-globals",

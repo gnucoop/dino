@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   <link href="@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet">
+  <link href="@ionic/angular/css/ionic.bundle.css" rel="stylesheet">
 
   <script>
     if (window.customElements) {
@@ -33,7 +34,7 @@
         // static runfile resolution done in the "pkg_web" rule. In the built web package, the output
         // tree artifact serves as workspace root and root of the current dev-app Bazel package.
         'dewco': '',
-        'dewco/src/dev-app-mat': '',
+        'dewco/src/dev-app': '',
       }
     });
     System.import('main').catch(console.error.bind(console));

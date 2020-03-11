@@ -29,6 +29,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dewco/core/auth';
 import {DataModule} from '@dewco/core/data';
+import {IonicModule} from '@ionic/angular';
 
 import {DemoHttpInterceptor} from './demo-http-interceptor';
 import {DevAppComponent} from './dev-app';
@@ -47,12 +48,13 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
     BrowserModule,
     DataModule.forRoot({
       databaseCreateOptions: {
-        name: 'dewco_dev_app_mat_db',
+        name: 'dewco_dev_app_db',
         adapter: 'idb',
       },
     }),
     DevAppModule,
     HttpClientModule,
+    IonicModule.forRoot(),
     RouterModule.forRoot(DEV_APP_ROUTES),
   ],
   declarations: [

@@ -6,7 +6,7 @@ ng_module(
     name = "examples-page",
     srcs = glob(["**/*.ts"]),
     deps = [
-        "//src/dev-app-mat/example",
+        "//src/dev-app/example",
         "//src/dewco-examples",
         "@npm//@angular/router",
     ],
