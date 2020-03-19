@@ -20,11 +20,9 @@
  *
  */
 
-export * from './data-get-request';
-export * from './data-insert-request';
-export * from './data-module';
-export * from './data-service';
-export * from './data-service-config';
-export * from './data-upsert-request';
-export * from './insert-model';
-export * from './model';
+import {Model} from './model';
+
+/**
+ * The base model interface for item creation.
+ */
+export type InsertModel<T extends Model> = Omit<T, 'id'|'created_at'|'updated_at'>;

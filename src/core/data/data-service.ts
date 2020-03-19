@@ -28,7 +28,10 @@ import {from, Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, concatMap, mapTo, shareReplay} from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
+import {DataGetRequest} from './data-get-request';
+import {DataInsertRequest} from './data-insert-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
+import {DataUpsertRequest} from './data-upsert-request';
 import {Model} from './model';
 
 /**
@@ -54,11 +57,10 @@ export class DataService {
 
   /**
    * Get an object from the database.
-   * @param collectionName The object collection
-   * @param id The object id
+   * @param params The get request parameters.
    */
-  get<T extends Model = Model>(collectionName: string, id: number|string):
-      Observable<RxDb.RxDocument<T>|null> {
+  get<T extends Model = Model>(params: DataGetRequest): Observable<RxDb.RxDocument<T>|null> {
+    const {collectionName, id} = params;
     return this._db.pipe(
         concatMap(db => {
           const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
@@ -72,12 +74,11 @@ export class DataService {
 
   /**
    * Insert a new object into the database.
-   * @param collectionName The object collection
-   * @param object The object to insert
+   * @param params The insert request parameters.
    */
-  insert<T extends Model = Model>(
-      collectionName: string,
-      object: Omit<T, 'id'|'created_at'|'updated_at'>): Observable<RxDb.RxDocument<T>|null> {
+  insert<T extends Model = Model>(params: DataInsertRequest<T>):
+      Observable<RxDb.RxDocument<T>|null> {
+    const {collectionName, object} = params;
     return this._db.pipe(
         concatMap(db => {
           const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
@@ -103,10 +104,9 @@ export class DataService {
    * @param collectionName The object collection
    * @param object The object to upsert
    */
-  upsert<T extends Model = Model>(
-      collectionName: string,
-      object: Omit<T, 'id'|'created_at'|'updated_at'>&
-      Partial<Pick<T, 'id'|'created_at'|'updated_at'>>): Observable<RxDb.RxDocument<T>|null> {
+  upsert<T extends Model = Model>(params: DataUpsertRequest<T>):
+      Observable<RxDb.RxDocument<T>|null> {
+    const {collectionName, object} = params;
     return this._db.pipe(
         concatMap(db => {
           const collection = db.collections[collectionName] as RxDb.RxCollection<T>;

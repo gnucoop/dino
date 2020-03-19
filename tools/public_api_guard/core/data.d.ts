@@ -1,5 +1,15 @@
 export declare const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig>;
 
+export interface DataGetRequest {
+    collectionName: string;
+    id: string;
+}
+
+export interface DataInsertRequest<T extends Model> {
+    collectionName: string;
+    object: InsertModel<T>;
+}
+
 export declare class DataModule {
     static ɵinj: i0.ɵɵInjectorDef<DataModule>;
     static ɵmod: i0.ɵɵNgModuleDefWithMeta<DataModule, never, never, never>;
@@ -10,10 +20,10 @@ export declare class DataService {
     constructor(config: DataServiceConfig);
     createCollection(collection: RxDb.RxCollectionCreator): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
-    get<T extends Model = Model>(collectionName: string, id: number | string): Observable<RxDb.RxDocument<T> | null>;
-    insert<T extends Model = Model>(collectionName: string, object: Omit<T, 'id' | 'created_at' | 'updated_at'>): Observable<RxDb.RxDocument<T> | null>;
+    get<T extends Model = Model>(params: DataGetRequest): Observable<RxDb.RxDocument<T> | null>;
+    insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
     plugin(plugin: any): void;
-    upsert<T extends Model = Model>(collectionName: string, object: Omit<T, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<T, 'id' | 'created_at' | 'updated_at'>>): Observable<RxDb.RxDocument<T> | null>;
+    upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
     static ɵfac: i0.ɵɵFactoryDef<DataService>;
     static ɵprov: i0.ɵɵInjectableDef<DataService>;
 }
@@ -21,6 +31,13 @@ export declare class DataService {
 export interface DataServiceConfig {
     databaseCreateOptions: RxDatabaseCreator;
 }
+
+export interface DataUpsertRequest<T extends Model> {
+    collectionName: string;
+    object: UpsertModel<T>;
+}
+
+export declare type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at'>;
 
 export interface Model {
     created_at: string;

@@ -66,7 +66,8 @@ describe('Data service', () => {
 });
 
 describe('Data service - CRUD methods', () => {
-  const collection = {name: 'dummy', schema: dummySchema};
+  const collectionName = 'dummy';
+  const collection = {name: collectionName, schema: dummySchema};
   let dataService: DataService;
 
   beforeEach(async () => {
@@ -86,15 +87,18 @@ describe('Data service - CRUD methods', () => {
 
   it('should insert a new object in the database', async () => {
     const object = {name: 'dummy'};
-    const inserted = await dataService.insert<DummyModel>('dummy', object).toPromise();
+    const insParams = {collectionName, object};
+    const inserted = await dataService.insert<DummyModel>(insParams).toPromise();
     expect(inserted).not.toBeNull();
     expect(inserted!.name).toBe('dummy');
   });
 
   it('should get an existing object from the database', async () => {
     const object = {name: 'dummy'};
-    const inserted = await dataService.insert<DummyModel>('dummy', object).toPromise();
-    const getObject = await dataService.get<DummyModel>('dummy', inserted!.id).toPromise();
+    const insParams = {collectionName, object};
+    const inserted = await dataService.insert<DummyModel>(insParams).toPromise();
+    const getParams = {collectionName, id: inserted!.id};
+    const getObject = await dataService.get<DummyModel>(getParams).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(inserted!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object));
@@ -102,8 +106,10 @@ describe('Data service - CRUD methods', () => {
 
   it('should create a new object when upserting an unexisting object', async () => {
     const object = {name: 'foo'};
-    const inserted = await dataService.upsert<DummyModel>('dummy', object).toPromise();
-    const getObject = await dataService.get<DummyModel>('dummy', inserted!.id).toPromise();
+    const insParams = {collectionName, object};
+    const inserted = await dataService.upsert<DummyModel>(insParams).toPromise();
+    const getParams = {collectionName, id: inserted!.id};
+    const getObject = await dataService.get<DummyModel>(getParams).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(inserted!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object));
@@ -111,10 +117,13 @@ describe('Data service - CRUD methods', () => {
 
   it('should overwrite the old object when upserting an existing object', async () => {
     const object1 = {name: 'dummy'};
-    const inserted = await dataService.insert<DummyModel>('dummy', object1).toPromise();
+    let insParams = {collectionName, object: object1};
+    const inserted = await dataService.insert<DummyModel>(insParams).toPromise();
     const object2 = {id: inserted!.id, name: 'foo'};
-    const updated = await dataService.upsert<DummyModel>('dummy', object2).toPromise();
-    const getObject = await dataService.get<DummyModel>('dummy', inserted!.id).toPromise();
+    insParams.object = object2;
+    const updated = await dataService.upsert<DummyModel>(insParams).toPromise();
+    const getParams = {collectionName, id: inserted!.id};
+    const getObject = await dataService.get<DummyModel>(getParams).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(updated!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object2));

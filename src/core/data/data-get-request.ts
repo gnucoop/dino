@@ -20,11 +20,16 @@
  *
  */
 
-export * from './data-get-request';
-export * from './data-insert-request';
-export * from './data-module';
-export * from './data-service';
-export * from './data-service-config';
-export * from './data-upsert-request';
-export * from './insert-model';
-export * from './model';
+/**
+ * Data get item request parameters.
+ */
+export interface DataGetRequest {
+  /**
+   * Name of the item collection.
+   */
+  collectionName: string;
+  /**
+   * UUID v4 identifier
+   */
+  id: string;
+}

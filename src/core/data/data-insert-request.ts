@@ -20,11 +20,19 @@
  *
  */
 
-export * from './data-get-request';
-export * from './data-insert-request';
-export * from './data-module';
-export * from './data-service';
-export * from './data-service-config';
-export * from './data-upsert-request';
-export * from './insert-model';
-export * from './model';
+import {InsertModel} from './insert-model';
+import {Model} from './model';
+
+/**
+ * Data insert item request parameters.
+ */
+export interface DataInsertRequest<T extends Model> {
+  /**
+   * Name of the item collection.
+   */
+  collectionName: string;
+  /**
+   * The object to insert.
+   */
+  object: InsertModel<T>;
+}

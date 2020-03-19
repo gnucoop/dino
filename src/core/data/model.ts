@@ -21,21 +21,21 @@
  */
 
 /**
- * The base model interface
+ * The base model interface.
  */
 export interface Model {
   /**
-   * UUID v4 identifier
+   * UUID v4 identifier.
    */
   id: string;
 
   /**
-   * Creation timestamp
+   * Creation timestamp.
    */
   created_at: string;
 
   /**
-   * Update timestamp
+   * Update timestamp.
    */
   updated_at: string|null;
 }
