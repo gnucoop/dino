@@ -128,6 +128,18 @@ describe('Data service - CRUD methods', () => {
     expect(getObject!._data).toEqual(updated!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object2));
   });
+
+  it('should bulk insert new objects in the database', async () => {
+    const objects = [{name: 'foo'}, {name: 'bar'}];
+    const insParams = {collectionName, objects};
+    const result = await dataService.bulkInsert<DummyModel>(insParams).toPromise();
+    expect(result).not.toBeNull();
+    expect(result.success).not.toBeNull();
+    expect(result.success.length).toEqual(objects.length);
+    for (const idx in objects) {
+      expect(objects[idx].name).toEqual(result.success[idx].name);
+    }
+  });
 });
 
 describe('Invalid data service config', () => {

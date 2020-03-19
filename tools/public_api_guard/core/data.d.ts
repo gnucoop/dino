@@ -1,5 +1,10 @@
 export declare const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig>;
 
+export interface DataBulkInsertRequest<T extends Model> {
+    collectionName: string;
+    objects: InsertModel<T>[];
+}
+
 export interface DataGetRequest {
     collectionName: string;
     id: string;
@@ -18,6 +23,10 @@ export declare class DataModule {
 
 export declare class DataService {
     constructor(config: DataServiceConfig);
+    bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<{
+        success: RxDb.RxDocument<T>[];
+        error: any[];
+    }>;
     createCollection(collection: RxDb.RxCollectionCreator): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
     get<T extends Model = Model>(params: DataGetRequest): Observable<RxDb.RxDocument<T> | null>;

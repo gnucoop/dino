@@ -25,13 +25,15 @@ import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import * as RxDb from 'rxdb';
 import {from, Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, concatMap, mapTo, shareReplay} from 'rxjs/operators';
+import {catchError, concatMap, map, mapTo, shareReplay} from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
+import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 import {DataUpsertRequest} from './data-upsert-request';
+import {InsertModel} from './insert-model';
 import {Model} from './model';
 
 /**
@@ -85,15 +87,32 @@ export class DataService {
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
-          const insertObject = {
-            id: uuidv4(),
-            ...object,
-            created_at: new Date().toISOString(),
-            updated_at: null,
-          } as T;
+          const insertObject = this._prepareInsertObject(object);
           return from(collection.insert(insertObject))
               .pipe(
                   catchError(() => obsOf(null)),
+              );
+        }),
+    );
+  }
+
+  /**
+   * Insert multiple objects into the database.
+   * @param params The bulk insert request parameters.
+   */
+  bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>):
+      Observable<{success: RxDb.RxDocument<T>[], error: any[]}> {
+    const {collectionName, objects} = params;
+    return this._db.pipe(
+        concatMap(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          if (collection == null) {
+            throwError(new Error('Invalid collection'));
+          }
+          const docsData = objects.map(object => this._prepareInsertObject(object));
+          return from(collection.bulkInsert(docsData))
+              .pipe(
+                  catchError(() => obsOf({success: [], error: []})),
               );
         }),
     );
@@ -157,5 +176,18 @@ export class DataService {
           return from(collection.destroy());
         }),
     );
+  }
+
+  /**
+   * Prepare an object to be inserted into the database from a partial object.
+   * @param object The partial object.
+   */
+  private _prepareInsertObject<T extends Model>(object: InsertModel<T>): T {
+    return {
+      id: uuidv4(),
+      ...object,
+      created_at: new Date().toISOString(),
+      updated_at: null,
+    } as T;
   }
 }
