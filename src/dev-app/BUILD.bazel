@@ -68,7 +68,7 @@ dev_server(
         "npm/node_modules",
         # Needed for compatibility with "pkg_web" which always uses the tree
         # artifact output as workspace root.
-        "dewco",
+        "gc_dewco",
     ],
     tags = ["manual"],
     deps = [
