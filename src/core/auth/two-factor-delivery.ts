@@ -26,4 +26,4 @@
  * - None
  * - TextMessage
  */
-export type TwoFactorDelivery = 'None' | 'TextMessage';
+export type TwoFactorDelivery = 'None'|'TextMessage';

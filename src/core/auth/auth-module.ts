@@ -22,8 +22,8 @@
 
 import {ModuleWithProviders, NgModule} from '@angular/core';
 
-import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {AuthService} from './auth-service';
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 
 @NgModule({})
 export class AuthModule {

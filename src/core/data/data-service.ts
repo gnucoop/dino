@@ -59,13 +59,15 @@ export class DataService {
    */
   get<T extends Model = Model>(collectionName: string, id: number|string):
       Observable<RxDb.RxDocument<T>|null> {
-    return this._db.pipe(concatMap(db => {
-      const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
-      if (collection == null) {
-        return throwError(new Error('Invalid collection'));
-      }
-      return from(collection.findOne().where('id').eq(id).exec());
-    }));
+    return this._db.pipe(
+        concatMap(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          if (collection == null) {
+            return throwError(new Error('Invalid collection'));
+          }
+          return from(collection.findOne().where('id').eq(id).exec());
+        }),
+    );
   }
 
   /**
@@ -76,22 +78,24 @@ export class DataService {
   insert<T extends Model = Model>(
       collectionName: string,
       object: Omit<T, 'id'|'created_at'|'updated_at'>): Observable<RxDb.RxDocument<T>|null> {
-    return this._db.pipe(concatMap(db => {
-      const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
-      if (collection == null) {
-        throwError(new Error('Invalid collection'));
-      }
-      const insertObject = {
-        id: uuidv4(),
-        ...object,
-        created_at: new Date().toISOString(),
-        updated_at: null,
-      } as T;
-      return from(collection.insert(insertObject))
-          .pipe(
-              catchError(() => obsOf(null)),
-          );
-    }));
+    return this._db.pipe(
+        concatMap(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          if (collection == null) {
+            throwError(new Error('Invalid collection'));
+          }
+          const insertObject = {
+            id: uuidv4(),
+            ...object,
+            created_at: new Date().toISOString(),
+            updated_at: null,
+          } as T;
+          return from(collection.insert(insertObject))
+              .pipe(
+                  catchError(() => obsOf(null)),
+              );
+        }),
+    );
   }
 
   /**
@@ -103,22 +107,24 @@ export class DataService {
       collectionName: string,
       object: Omit<T, 'id'|'created_at'|'updated_at'>&
       Partial<Pick<T, 'id'|'created_at'|'updated_at'>>): Observable<RxDb.RxDocument<T>|null> {
-    return this._db.pipe(concatMap(db => {
-      const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
-      if (collection == null) {
-        throwError(new Error('Invalid collection'));
-      }
-      const insertObject = {
-        id: object.id || uuidv4(),
-        ...object,
-        created_at: object.created_at || new Date().toISOString(),
-        updated_at: object.updated_at || null,
-      } as T;
-      return from(collection.upsert(insertObject))
-          .pipe(
-              catchError(() => obsOf(null)),
-          );
-    }));
+    return this._db.pipe(
+        concatMap(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          if (collection == null) {
+            throwError(new Error('Invalid collection'));
+          }
+          const insertObject = {
+            id: object.id || uuidv4(),
+            ...object,
+            created_at: object.created_at || new Date().toISOString(),
+            updated_at: object.updated_at || null,
+          } as T;
+          return from(collection.upsert(insertObject))
+              .pipe(
+                  catchError(() => obsOf(null)),
+              );
+        }),
+    );
   }
 
   /**
@@ -143,13 +149,13 @@ export class DataService {
    */
   destroyCollection(collectionName: string): Observable<boolean> {
     return this._db.pipe(
-      concatMap(db => {
-        const collection = db.collections[collectionName] as RxDb.RxCollection;
-        if (collection == null) {
-          throwError(new Error('Invalid collection'));
-        }
-        return from(collection.destroy());
-      })
+        concatMap(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection;
+          if (collection == null) {
+            throwError(new Error('Invalid collection'));
+          }
+          return from(collection.destroy());
+        }),
     );
   }
 }

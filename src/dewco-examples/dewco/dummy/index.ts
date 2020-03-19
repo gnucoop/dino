@@ -1,14 +1,11 @@
 import {NgModule} from '@angular/core';
 
-export {
-};
+export {};
 
-const EXAMPLES = [
-] as any[]; // TODO: remove cast after first example has been added
+const EXAMPLES = [] as any[];  // TODO: remove cast after first example has been added
 
 @NgModule({
-  imports: [
-  ],
+  imports: [],
   declarations: EXAMPLES,
   exports: EXAMPLES,
 })

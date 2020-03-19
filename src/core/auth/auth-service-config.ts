@@ -54,7 +54,7 @@ export interface AuthServiceConfig {
    * Function used to retrieve the current JWT token.
    * The token will be retrieved from the local storage if not specified.
    */
-  retrieveAuthToken?: () => string|null;
+  retrieveAuthToken?: () => string | null;
 
   /**
    * Name of the locale storage entry where the JWT token will be stored.
@@ -72,7 +72,7 @@ export interface AuthServiceConfig {
    * Function used to retrieve the current JWT refresh token.
    * The token will be retrieved from the local storage if not specified.
    */
-  retrieveRefreshToken?: () => string|null;
+  retrieveRefreshToken?: () => string | null;
 
   /**
    * Name of the locale storage entry where the JWT refresh token will be stored.
@@ -90,7 +90,7 @@ export interface AuthServiceConfig {
    * Function used to retrieve the logged in user info.
    * The token will be retrieved from the local storage if not specified.
    */
-  retrieveUserInfo?: () => User|null;
+  retrieveUserInfo?: () => User | null;
 
   /**
    * Name of the locale storage entry where the logged in user info will be stored.

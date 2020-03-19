@@ -36,16 +36,16 @@ export class AuthDemo {
     password: new FormControl(null, Validators.required),
   });
 
-  constructor(private _authService: AuthService) {
-  }
+  constructor(private _authService: AuthService) {}
 
   login(): void {
     if (!this.loginForm.valid) {
       return;
     }
 
-    this._authService.login(this.loginForm.value as Credentials).subscribe(
-      (loggedIn) => this.loginResult = loggedIn ? 'success' : 'failure',
-    );
+    this._authService.login(this.loginForm.value as Credentials)
+        .subscribe(
+            (loggedIn) => this.loginResult = loggedIn ? 'success' : 'failure',
+        );
   }
 }
