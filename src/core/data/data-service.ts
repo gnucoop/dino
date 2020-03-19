@@ -25,7 +25,7 @@ import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import * as RxDb from 'rxdb';
 import {from, Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, concatMap, map, mapTo, shareReplay} from 'rxjs/operators';
+import {catchError, concatMap, mapTo, shareReplay} from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
