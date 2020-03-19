@@ -53,11 +53,11 @@ pipeline {
         sh 'yarn -s bazel test src/... --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only'
       }
     }
-    stage('Integration tests') {
-      steps {
-        sh 'yarn -s bazel test src/... --build_tag_filters=e2e --test_tag_filters=e2e'
-      }
-    }
+    // stage('Integration tests') {
+    //   steps {
+    //     sh 'yarn -s bazel test src/... --build_tag_filters=e2e --test_tag_filters=e2e'
+    //   }
+    // }
     stage('Release output') {
       steps {
         sh 'yarn build'
