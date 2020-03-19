@@ -43,7 +43,7 @@ export class DataDemo {
           }
         })
         .pipe(
-            switchMap(() => dataService.get<any>('dummy', 'xxx')),
+            switchMap(() => dataService.get<any>({collectionName: 'dummy', id: 'xxx'})),
             )
         .subscribe(console.log, console.log, console.log);
   }
