@@ -101,8 +101,8 @@ publishPackage() {
   echo "Updated the build version in every file to include the SHA of the latest commit."
 
   # Prepare Git for pushing the artifacts to the repository.
-  # git config user.name "${commitAuthorName}"
-  # git config user.email "${commitAuthorEmail}"
+  git config user.name "${commitAuthorName}"
+  git config user.email "${commitAuthorEmail}"
   # git config credential.helper "store --file=.git/credentials"
 
   # echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
