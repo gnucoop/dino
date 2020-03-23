@@ -25,10 +25,11 @@ import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import * as RxDb from 'rxdb';
 import {from, Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, concatMap, mapTo, shareReplay} from 'rxjs/operators';
+import {catchError, concatMap, map, mapTo, shareReplay} from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
+import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
@@ -120,8 +121,7 @@ export class DataService {
 
   /**
    * Insert a new object if it does not exist within the collection, otherwise it will overwrite it.
-   * @param collectionName The object collection
-   * @param object The object to upsert
+   * @param params The upinsert request parameters.
    */
   upsert<T extends Model = Model>(params: DataUpsertRequest<T>):
       Observable<RxDb.RxDocument<T>|null> {
@@ -142,6 +142,42 @@ export class DataService {
               .pipe(
                   catchError(() => obsOf(null)),
               );
+        }),
+    );
+  }
+
+  /**
+   * Create a RxQuery query object for multiple documents selection.
+   * @param params The find request parameters.
+   */
+  find<T extends Model = Model>(params: DataFindRequest):
+      Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
+    const {collectionName, query} = params;
+    return this._db.pipe(
+        map(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          if (collection == null) {
+            throwError(new Error('Invalid collection'));
+          }
+          return collection.find(query);
+        }),
+    );
+  }
+
+  /**
+   * Create a RxQuery query object for single document selection.
+   * @param params The find request parameters.
+   */
+  findOne<T extends Model = Model>(params: DataFindRequest):
+      Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>|null>> {
+    const {collectionName, query} = params;
+    return this._db.pipe(
+        map(db => {
+          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          if (collection == null) {
+            throwError(new Error('Invalid collection'));
+          }
+          return collection.findOne(query);
         }),
     );
   }

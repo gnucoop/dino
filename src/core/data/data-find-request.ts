@@ -20,13 +20,16 @@
  *
  */
 
-export * from './data-bulk-insert-request';
-export * from './data-find-request';
-export * from './data-get-request';
-export * from './data-insert-request';
-export * from './data-module';
-export * from './data-service';
-export * from './data-service-config';
-export * from './data-upsert-request';
-export * from './insert-model';
-export * from './model';
+/**
+ * Data query request parameters.
+ */
+export interface DataFindRequest {
+  /**
+   * Name of the item collection.
+   */
+  collectionName: string;
+  /**
+   * Mango query
+   */
+  query?: any;
+}

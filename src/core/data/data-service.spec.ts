@@ -140,6 +140,18 @@ describe('Data service - CRUD methods', () => {
       expect(objects[idx].name).toEqual(result.success[idx].name);
     }
   });
+
+  it('should create a single doc query', async () => {
+    const findParams = {collectionName};
+    const result = await dataService.findOne<DummyModel>(findParams).toPromise();
+    expect(result).not.toBeNull();
+  });
+
+  it('should create a multiple docs query', async () => {
+    const findParams = {collectionName};
+    const result = await dataService.find<DummyModel>(findParams).toPromise();
+    expect(result).not.toBeNull();
+  });
 });
 
 describe('Invalid data service config', () => {

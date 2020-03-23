@@ -5,6 +5,11 @@ export interface DataBulkInsertRequest<T extends Model> {
     objects: InsertModel<T>[];
 }
 
+export interface DataFindRequest {
+    collectionName: string;
+    query?: any;
+}
+
 export interface DataGetRequest {
     collectionName: string;
     id: string;
@@ -29,6 +34,8 @@ export declare class DataService {
     }>;
     createCollection(collection: RxDb.RxCollectionCreator): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
+    find<T extends Model = Model>(params: DataFindRequest): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>>;
+    findOne<T extends Model = Model>(params: DataFindRequest): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T> | null>>;
     get<T extends Model = Model>(params: DataGetRequest): Observable<RxDb.RxDocument<T> | null>;
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
     plugin(plugin: any): void;
