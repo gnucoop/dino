@@ -40,7 +40,7 @@ export declare class DataService {
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
     plugin(plugin: any): void;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
-    static ɵfac: i0.ɵɵFactoryDef<DataService>;
+    static ɵfac: i0.ɵɵFactoryDef<DataService, never>;
     static ɵprov: i0.ɵɵInjectableDef<DataService>;
 }
 
