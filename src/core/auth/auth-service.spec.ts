@@ -6,6 +6,7 @@ import {
   AuthServiceConfig,
   LoginResponse,
 } from '@dewco/core/auth';
+import {take} from 'rxjs/operators';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -13,9 +14,11 @@ const authServiceConfig: AuthServiceConfig = {
   apiKey: 'apiKey',
 };
 
+const jwtPayload = JSON.stringify({exp: Math.floor(new Date().getTime() / 1000) + 30});
+
 const loginResponse: LoginResponse = {
   refreshToken: 'refreshToken',
-  token: 'token',
+  token: `header.${btoa(jwtPayload)}.signature`,
   user: {
     id: 'id',
     email: 'test@dewco.io',
@@ -64,13 +67,16 @@ describe('AuthService', () => {
     localStorage.removeItem('dewco_user_info');
   });
 
-  it('should login successfully with correct credentials', () => {
+  it('should login successfully with correct credentials', async () => {
+    const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
+    await expectAsync(authStatus()).toBeResolvedTo(false);
     authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
+    await expectAsync(authStatus()).toBeResolvedTo(true);
   });
 
   it('should fail logging in with bad credentials', () => {
@@ -189,12 +195,13 @@ describe('logged in', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    authService = TestBed.get(AuthService);
-    httpMock = TestBed.get(HttpTestingController);
 
     localStorage.setItem('dewco_auth_token', loginResponse.token);
     localStorage.setItem('dewco_refresh_token', loginResponse.refreshToken);
     localStorage.setItem('dewco_user_info', JSON.stringify(loginResponse.user));
+
+    authService = TestBed.get(AuthService);
+    httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
@@ -203,9 +210,12 @@ describe('logged in', () => {
     localStorage.removeItem('dewco_user_info');
   });
 
-  it('should logout successfully', () => {
-    authService.logout().subscribe(res => {
+  it('should logout successfully', async () => {
+    const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
+    await expectAsync(authStatus()).toBeResolvedTo(true);
+    return authService.logout().subscribe(async res => {
       expect(res).toBeDefined();
+      await expectAsync(authStatus()).toBeResolvedTo(false);
     });
   });
 
@@ -370,12 +380,13 @@ describe('custom local storage keys - logged in', () => {
         },
       ],
     });
-    authService = TestBed.get(AuthService);
-    httpMock = TestBed.get(HttpTestingController);
 
     localStorage.setItem('auth_token_ls_key', loginResponse.token);
     localStorage.setItem('refresh_token_ls_key', loginResponse.refreshToken);
     localStorage.setItem('user_info_ls_key', JSON.stringify(loginResponse.user));
+
+    authService = TestBed.get(AuthService);
+    httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
@@ -498,7 +509,7 @@ describe('custom storage functions', () => {
 
     expect(storeAuthTokenSpy).toHaveBeenCalledTimes(1);
     authService.getAuthToken();
-    expect(retrieveAuthTokenSpy).toHaveBeenCalledTimes(1);
+    expect(retrieveAuthTokenSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should save the jwt refresh token using the user defined function upon login', () => {

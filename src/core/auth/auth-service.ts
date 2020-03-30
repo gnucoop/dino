@@ -22,7 +22,7 @@
 
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
-import {Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
@@ -44,12 +44,20 @@ function removeSlashes(uri: string): string {
  */
 @Injectable({providedIn: 'root'})
 export class AuthService {
+  private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  /**
+   * True if a valid JWT access token is available.
+   */
+  readonly authenticated: Observable<boolean> = this._authenticated.asObservable();
+
   private _baseUrl: string;
 
   constructor(
       private _httpClient: HttpClient,
       @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig) {
     this._baseUrl = removeSlashes(_config.host);
+
+    this._initAuthentication();
   }
 
   /**
@@ -68,12 +76,16 @@ export class AuthService {
     return this._httpClient.post<LoginResponse>(url, req, {headers})
         .pipe(
             map(res => {
+              this._authenticated.next(true);
               this._storeAuthToken(res.token);
               this._storeRefreshToken(res.refreshToken);
               this._storeUserInfo(res.user);
               return true;
             }),
-            catchError(() => obsOf(false)),
+            catchError(() => {
+              this._authenticated.next(false);
+              return obsOf(false);
+            }),
         );
   }
 
@@ -91,6 +103,7 @@ export class AuthService {
     return this._httpClient.post(url, {}, {withCredentials: true})
         .pipe(
             map(() => {
+              this._authenticated.next(false);
               this._storeAuthToken(null);
               this._storeRefreshToken(null);
               this._storeUserInfo(null);
@@ -243,5 +256,24 @@ export class AuthService {
    */
   private _stringifyBooleanParam(bool: boolean): string {
     return bool ? 'true' : 'false';
+  }
+
+  /**
+   * Check if a valid JWT token is stored and set the authentication status.
+   */
+  private _initAuthentication(): void {
+    const authToken = this.getAuthToken();
+    if (authToken == null) {
+      return;
+    }
+    try {
+      const jwtParts = authToken.split('.');
+      const decoded = atob(jwtParts[1]);
+      const payload = JSON.parse(decoded) as {exp: number};
+      if (payload.exp != null && payload.exp > (new Date().getTime() / 1000)) {
+        this._authenticated.next(true);
+      }
+    } catch (e) {
+    }
   }
 }
