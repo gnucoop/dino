@@ -13,7 +13,7 @@ export declare class AuthService {
     getUserInfo(): User | null;
     login(credentials: Credentials): Observable<boolean>;
     logout(allDevices?: boolean): Observable<boolean>;
-    static ɵfac: i0.ɵɵFactoryDef<AuthService>;
+    static ɵfac: i0.ɵɵFactoryDef<AuthService, never>;
     static ɵprov: i0.ɵɵInjectableDef<AuthService>;
 }
 
