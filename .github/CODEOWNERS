@@ -40,3 +40,4 @@
 /.jenkins/**                                       @trik
 /.vscode/**                                        @trik
 /src/*                                             @trik
+/goldens/ts-circular-deps.json                     @trik
