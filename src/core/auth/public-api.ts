@@ -24,6 +24,7 @@ export * from './auth-module';
 export * from './auth-service-config';
 export * from './auth-service';
 export * from './credentials';
+export * from './jwt-interceptor';
 export * from './login-response';
 export * from './two-factor-delivery';
 export * from './user';

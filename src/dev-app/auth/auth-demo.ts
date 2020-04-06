@@ -27,13 +27,13 @@ import {AuthService, Credentials} from '@dewco/core/auth';
 @Component({
   selector: 'auth-demo.html',
   templateUrl: 'auth-demo.html',
-  styleUrls: ['auth-demo.css'],
+  styleUrls: ['auth-demo.css']
 })
 export class AuthDemo {
   loginResult = '';
   readonly loginForm: FormGroup = new FormGroup({
     email: new FormControl(null, Validators.required),
-    password: new FormControl(null, Validators.required),
+    password: new FormControl(null, Validators.required)
   });
 
   constructor(private _authService: AuthService) {}
@@ -43,9 +43,17 @@ export class AuthDemo {
       return;
     }
 
-    this._authService.login(this.loginForm.value as Credentials)
-        .subscribe(
-            (loggedIn) => this.loginResult = loggedIn ? 'success' : 'failure',
-        );
+    this._authService
+      .login(this.loginForm.value as Credentials)
+      .subscribe(
+        loggedIn => (this.loginResult = loggedIn ? 'success' : 'failure')
+      );
+  }
+
+  authorized_access(): void {
+    if (!this._authService.isLoggedIn()) {
+      alert('Not logged in!');
+      return;
+    }
   }
 }

@@ -101,6 +101,14 @@ export class AuthService {
   }
 
   /**
+   * Checks if the user currently has a Jwt auth token
+   * @returns True if there is a JWT Auth token stored locally
+   */
+  isLoggedIn(): boolean {
+    return !!this.getAuthToken();
+  }
+
+  /**
    * @returns The last stored JWT auth token.
    */
   getAuthToken(): string|null {
@@ -129,6 +137,26 @@ export class AuthService {
     }
     const userInfo = localStorage.getItem(this._getUserInfoLocaleStorageKey());
     return userInfo == null ? null : JSON.parse(userInfo);
+  }
+
+  /**
+   * Refreshes the JWT token
+   * @returns the refreshed Auth jwt token
+   */
+  refreshToken(): Observable<boolean> {
+    const req = {
+      refreshToken: this.getRefreshToken()
+    };
+    const url = this._generateUrl('api/jwt/refresh');
+    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
+    return this._httpClient.post<{token: string}>(url, req, {headers})
+      .pipe(
+          map(res => {
+              this._storeAuthToken(res.token);
+              return true;
+          }),
+          catchError(() => obsOf(false))
+      );
   }
 
   /**

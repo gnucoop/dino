@@ -30,6 +30,10 @@ const loginResponse: LoginResponse = {
   },
 };
 
+const refreshResponse: {token: string} = {
+  token: 'newToken'
+};
+
 describe('AuthService', () => {
   let authService: AuthService;
   let httpMock: HttpTestingController;
@@ -112,6 +116,58 @@ describe('AuthService', () => {
        expect(JSON.parse(localStorage.getItem('dewco_user_info')!)).toEqual(loginResponse.user);
        expect(authService.getUserInfo()).toEqual(loginResponse.user);
      });
+});
+
+describe('refresh token', () => {
+  let authService: AuthService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        AuthService,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    });
+    authService = TestBed.get(AuthService);
+    httpMock = TestBed.get(HttpTestingController);
+
+    localStorage.setItem('dewco_auth_token', loginResponse.token);
+    localStorage.setItem('dewco_refresh_token', loginResponse.refreshToken);
+  });
+
+  afterEach(() => {
+    localStorage.removeItem('dewco_auth_token');
+    localStorage.removeItem('dewco_refresh_token');
+  });
+
+  it('should refresh and save the jwt token in local storage using the default key upon login',
+    () => {
+    authService.refreshToken().subscribe(res => {
+      expect(res).toBeDefined();
+    });
+    const req = httpMock.expectOne('http://test-auth-backend/api/jwt/refresh');
+    expect(req.request.method).toBe('POST');
+    req.flush(refreshResponse);
+
+    expect(localStorage.getItem('dewco_auth_token')).toEqual(refreshResponse.token);
+    expect(authService.getAuthToken()).toEqual(refreshResponse.token);
+  });
+
+  it('should fail refreshing the jwt token if no/wrong refresh token is provided', () => {
+    authService.refreshToken().subscribe(() => {}, err => {
+      expect(err).toBeDefined();
+    });
+    const req = httpMock.expectOne('http://test-auth-backend/api/jwt/refresh');
+    expect(req.request.method).toBe('POST');
+    req.error(new ErrorEvent(''));
+
+    expect(localStorage.getItem('dewco_auth_token')).toEqual(loginResponse.token);
+    expect(authService.getAuthToken()).toEqual(loginResponse.token);
+  });
 });
 
 describe('logged in', () => {

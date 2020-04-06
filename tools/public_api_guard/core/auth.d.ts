@@ -11,8 +11,10 @@ export declare class AuthService {
     getAuthToken(): string | null;
     getRefreshToken(): string | null;
     getUserInfo(): User | null;
+    isLoggedIn(): boolean;
     login(credentials: Credentials): Observable<boolean>;
     logout(allDevices?: boolean): Observable<boolean>;
+    refreshToken(): Observable<boolean>;
     static ɵfac: i0.ɵɵFactoryDef<AuthService, never>;
     static ɵprov: i0.ɵɵInjectableDef<AuthService>;
 }
@@ -35,6 +37,13 @@ export interface AuthServiceConfig {
 export interface Credentials {
     email: string;
     password: string;
+}
+
+export declare class JWTInterceptor implements HttpInterceptor {
+    constructor(_authService: AuthService);
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
+    static ɵfac: i0.ɵɵFactoryDef<JWTInterceptor>;
+    static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
 }
 
 export interface LoginResponse {
