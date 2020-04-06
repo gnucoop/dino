@@ -20,8 +20,8 @@
  *
  */
 
-import {Observable} from 'rxjs';
 import * as RxDb from 'rxdb';
+import {Observable} from 'rxjs';
 
 import {DataService} from './data-service';
 import {InsertModel} from './insert-model';
@@ -51,6 +51,20 @@ export abstract class DataModelManager<T extends Model = Model> {
     }
 
     /**
+     * Call a _dataservice.bulkInsert
+     * @param data
+     * @return an observable of an array of the created RxDocuments
+     */
+    bulkCreate(data: InsertModel<T>[]):
+        Observable<{ success: RxDb.RxDocument<T>[], error: any[] }> {
+        const params = {
+            collectionName: this._modelName,
+            objects: data
+        };
+        return this._dataService.bulkInsert<T>(params);
+    }
+
+    /**
      * Call a _dataservice.get
      * @param id
      * @return an observable of the retrieved RxDocument
@@ -61,5 +75,18 @@ export abstract class DataModelManager<T extends Model = Model> {
             id: id
         };
         return this._dataService.get<T>(params);
+    }
+
+    /**
+     * Call a _dataservice.find with an optional mango query
+     * @param query?
+     * @return  RxQuery query object for multiple documents selection.
+     */
+    list(query?: any): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
+        const params = {
+            collectionName: this._modelName,
+            query: query ?? null
+        };
+        return this._dataService.find<T>(params);
     }
 }

@@ -1,4 +1,4 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import {
     DataModelManager,
     DATA_SERVICE_CONFIG,
@@ -7,7 +7,7 @@ import {
     Model
 } from '@dewco/core/data';
 
-import {RxJsonSchema} from 'rxdb';
+import { RxJsonSchema } from 'rxdb';
 
 interface DummyModel extends Model {
     name: string;
@@ -68,17 +68,60 @@ describe('Data Model Manager - CRUD methods', () => {
 
     it('should create a new object in the database', async () => {
         const object = { name: 'exampleDummy' };
-        const insertedDummy = await dummyManager?.create(object).toPromise();
+        const insertedDummy = await dummyManager!.create(object).toPromise();
         expect(insertedDummy).not.toBeNull();
         expect(insertedDummy!.name).toBe('exampleDummy');
     });
 
     it('should get an existing object from the database', async () => {
         const object = { name: 'exampleDummy' };
-        const insertedDummy = await dummyManager?.create(object).toPromise();
-        const getObject = await dummyManager?.get(insertedDummy!.id).toPromise();
+        const insertedDummy = await dummyManager!.create(object).toPromise();
+        const getObject = await dummyManager!.get(insertedDummy!.id).toPromise();
         expect(getObject).not.toBeNull();
         expect(getObject!.name).toEqual(insertedDummy!.name);
         expect(getObject!).toEqual(jasmine.objectContaining(object));
+    });
+
+    it('should create a bulk of objects in the database', async () => {
+        const objects = [
+            { name: 'firstDummy' },
+            { name: 'secondDummy' }
+        ];
+        const insertedDummies = await dummyManager!.bulkCreate(objects).toPromise();
+        expect(insertedDummies).not.toBeNull();
+        expect(insertedDummies.success).not.toBeNull();
+        expect(insertedDummies.success.length).toEqual(objects.length);
+        for (const idx in objects) {
+            expect(objects[idx].name).toEqual(insertedDummies.success[idx].name);
+        }
+    });
+
+    it('should retrieve all objects in the collection', async () => {
+        const objects = [
+            { name: 'firstDummy' },
+            { name: 'secondDummy' },
+        ];
+        await dummyManager!.bulkCreate(objects).toPromise();
+        const getObjects = await dummyManager!.list().toPromise();
+        await getObjects.exec();
+        expect(getObjects).not.toBeNull();
+        expect(getObjects._resultsData.length).toEqual(objects.length);
+        for (const idx in objects) {
+            expect(objects[idx].name).toEqual(getObjects._resultsData[idx].name);
+        }
+    });
+
+    it('should retrieve all objects in the collection matching the query', async () => {
+        const objects = [
+            { name: 'firstDummy'},
+            { name: 'secondDummy' },
+        ];
+        await dummyManager!.bulkCreate(objects).toPromise();
+        const getObjects = await dummyManager!.list({
+            name: { $eq: 'secondDummy' }
+        }).toPromise();
+        await getObjects.exec();
+        expect(getObjects).not.toBeNull();
+        expect(getObjects._resultsData.length).toEqual(1);
     });
 });
