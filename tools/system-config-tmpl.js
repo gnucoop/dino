@@ -50,7 +50,6 @@ var pathMapping = {
   'tslib': 'node:tslib/tslib.js',
   'moment': 'node:moment/min/moment-with-locales.min.js',
 
-  'rxdb/plugins/core': 'tpl:rxdb-bundle.js',
   'rxjs': 'node:rxjs/bundles/rxjs.umd.min.js',
   'rxjs/operators': 'tools/system-rxjs-operators.js',
 };
