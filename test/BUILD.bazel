@@ -1,8 +1,8 @@
-package(default_visibility = ["//visibility:public"])
-
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("//tools:create-system-config.bzl", "create_system_config")
 load("//tools:defaults.bzl", "ts_library")
+
+package(default_visibility = ["//visibility:public"])
 
 exports_files(["bazel-karma-local-config.js"])
 
