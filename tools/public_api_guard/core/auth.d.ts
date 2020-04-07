@@ -42,7 +42,7 @@ export interface Credentials {
 export declare class JWTInterceptor implements HttpInterceptor {
     constructor(_authService: AuthService);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
-    static ɵfac: i0.ɵɵFactoryDef<JWTInterceptor>;
+    static ɵfac: i0.ɵɵFactoryDef<JWTInterceptor, never>;
     static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
 }
 
