@@ -145,17 +145,17 @@ describe('refresh token', () => {
   });
 
   it('should refresh and save the jwt token in local storage using the default key upon login',
-    () => {
-    authService.refreshToken().subscribe(res => {
-      expect(res).toBeDefined();
-    });
-    const req = httpMock.expectOne('http://test-auth-backend/api/jwt/refresh');
-    expect(req.request.method).toBe('POST');
-    req.flush(refreshResponse);
+     () => {
+       authService.refreshToken().subscribe(res => {
+         expect(res).toBeDefined();
+       });
+       const req = httpMock.expectOne('http://test-auth-backend/api/jwt/refresh');
+       expect(req.request.method).toBe('POST');
+       req.flush(refreshResponse);
 
-    expect(localStorage.getItem('dewco_auth_token')).toEqual(refreshResponse.token);
-    expect(authService.getAuthToken()).toEqual(refreshResponse.token);
-  });
+       expect(localStorage.getItem('dewco_auth_token')).toEqual(refreshResponse.token);
+       expect(authService.getAuthToken()).toEqual(refreshResponse.token);
+     });
 
   it('should fail refreshing the jwt token if no/wrong refresh token is provided', () => {
     authService.refreshToken().subscribe(() => {}, err => {

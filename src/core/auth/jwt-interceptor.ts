@@ -28,32 +28,28 @@ import {
   HttpRequest
 } from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {catchError, switchMap} from 'rxjs/operators';
 import {Observable, throwError} from 'rxjs';
+import {catchError, switchMap} from 'rxjs/operators';
+
 import {AuthService} from './auth-service';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
-  constructor(private _authService: AuthService) { }
+  constructor(private _authService: AuthService) {}
 
-  intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(
-      catchError(error => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          return this._handle401(request, next);
-        } else {
-          return throwError(error);
-        }
-      })
-    );
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return next.handle(request).pipe(catchError(error => {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        return this._handle401(request, next);
+      } else {
+        return throwError(error);
+      }
+    }));
   }
 
   private _handle401(request: HttpRequest<any>, next: HttpHandler) {
-    return this._authService
-      .refreshToken()
-      .pipe(switchMap(() => next.handle(request)));
+    return this._authService.refreshToken().pipe(
+        switchMap(() => next.handle(request)),
+    );
   }
 }

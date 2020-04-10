@@ -144,19 +144,16 @@ export class AuthService {
    * @returns the refreshed Auth jwt token
    */
   refreshToken(): Observable<boolean> {
-    const req = {
-      refreshToken: this.getRefreshToken()
-    };
+    const req = {refreshToken: this.getRefreshToken()};
     const url = this._generateUrl('api/jwt/refresh');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
     return this._httpClient.post<{token: string}>(url, req, {headers})
-      .pipe(
-          map(res => {
+        .pipe(
+            map(res => {
               this._storeAuthToken(res.token);
               return true;
-          }),
-          catchError(() => obsOf(false))
-      );
+            }),
+            catchError(() => obsOf(false)));
   }
 
   /**

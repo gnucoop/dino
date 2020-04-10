@@ -29,67 +29,46 @@ import {
   HttpResponse
 } from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, of as obsOf, throwError} from 'rxjs';
 import {AuthService} from '@dewco/core/auth';
+import {Observable, of as obsOf, throwError} from 'rxjs';
 
 @Injectable()
 export class DemoHttpInterceptor implements HttpInterceptor {
-  constructor(private _authService: AuthService) { }
+  constructor(private _authService: AuthService) {}
 
   private _loginToken = 'login_Token';
   private _loginRefreshToken = 'login_RefreshToken';
   private _newToken = 'new_Token';
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.url === 'http://auth-backend/api/login') {
-      const body = (req.body || { loginId: '', password: '' }) as {
+      const body = (req.body || {loginId: '', password: ''}) as {
         loginId: string;
         password: string;
       };
       if (body.loginId === 'user@dewco.io' && body.password === 'dewco') {
-        return obsOf(
-          new HttpResponse({
-            status: 200,
-            body: {
-              token: this._loginToken,
-              refreshToken: this._loginRefreshToken,
-              user: {
-                email: body.loginId
-              }
-            }
-          })
-        );
+        return obsOf(new HttpResponse({
+          status: 200,
+          body: {
+            token: this._loginToken,
+            refreshToken: this._loginRefreshToken,
+            user: {email: body.loginId}
+          }
+        }));
       }
-      return throwError(new HttpErrorResponse({ status: 400 }));
+      return throwError(new HttpErrorResponse({status: 400}));
     }
     if (req.url === 'http://auth-backend/api/jwt/refresh') {
       if (this._authService.getRefreshToken() === this._loginRefreshToken) {
-        return obsOf(
-          new HttpResponse({
-            status: 200,
-            body: {
-              token: this._newToken
-            }
-          })
-        );
+        return obsOf(new HttpResponse({status: 200, body: {token: this._newToken}}));
       }
-      return throwError(new HttpErrorResponse({ status: 400 }));
+      return throwError(new HttpErrorResponse({status: 400}));
     }
     if (req.url === 'http://auth-backend/access_data') {
       if (this._authService.getAuthToken() === this._newToken) {
-        return obsOf(
-          new HttpResponse({
-            status: 200,
-            body: {
-              data: 'Here is the data!'
-            }
-          })
-        );
+        return obsOf(new HttpResponse({status: 200, body: {data: 'Here is the data!'}}));
       }
-      return throwError(new HttpErrorResponse({ status: 401 }));
+      return throwError(new HttpErrorResponse({status: 401}));
     }
     return next.handle(req);
   }

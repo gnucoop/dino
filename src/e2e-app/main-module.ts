@@ -10,11 +10,7 @@ import {E2E_APP_ROUTES} from './e2e-app/routes';
 
 @NgModule({
   imports: [
-    BrowserModule,
-    HttpClientModule,
-    E2eAppModule,
-    IonicModule.forRoot(),
-    NoopAnimationsModule,
+    BrowserModule, HttpClientModule, E2eAppModule, IonicModule.forRoot(), NoopAnimationsModule,
     RouterModule.forRoot(E2E_APP_ROUTES),
 
     // E2E demos
