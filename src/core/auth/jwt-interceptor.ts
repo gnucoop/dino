@@ -25,7 +25,7 @@ import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
-  HttpRequest
+  HttpRequest,
 } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
@@ -38,13 +38,15 @@ export class JWTInterceptor implements HttpInterceptor {
   constructor(private _authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError(error => {
-      if (error instanceof HttpErrorResponse && error.status === 401) {
-        return this._handle401(request, next);
-      } else {
-        return throwError(error);
-      }
-    }));
+    return next.handle(request).pipe(
+        catchError(error => {
+          if (error instanceof HttpErrorResponse && error.status === 401) {
+            return this._handle401(request, next);
+          } else {
+            return throwError(error);
+          }
+        }),
+    );
   }
 
   private _handle401(request: HttpRequest<any>, next: HttpHandler) {

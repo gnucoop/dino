@@ -32,6 +32,7 @@ import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
+import {DataListOptions, DataQueryOptions} from './data-options-interface';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 import {DataUpsertRequest} from './data-upsert-request';
 import {InsertModel} from './insert-model';
@@ -159,7 +160,11 @@ export class DataService {
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
-          return collection.find(query);
+          if (query == null) {
+            return collection.find();
+          } else {
+            return this._dataOptionsToQuery(collection, query);
+          }
         }),
     );
   }
@@ -225,5 +230,42 @@ export class DataService {
       created_at: new Date().toISOString(),
       updated_at: null,
     } as T;
+  }
+
+  /**
+   * Creates an RxQuery object on the given collection with given options
+   * @param collection the collection on which the query is to be performed
+   * @param options the list of options to be added to the query
+   * @return a RxQuery object
+   */
+  private _dataOptionsToQuery<T extends Model>(
+      collection: RxDb.RxCollection<T>,
+      options: DataListOptions|DataQueryOptions): RxDb.RxQuery<T, RxDb.RxDocument<T, {}>[]> {
+    let selector = null;
+    if ('selector' in options) {
+      selector = options.selector;
+    }
+    let findQuery = collection.find(selector);
+    if (options.limit) {
+      findQuery = findQuery.limit(options.limit);
+    }
+    if (options.skip) {
+      findQuery = findQuery.skip(options.skip);
+    }
+    if (options.sort) {
+      let sortOptions = {};
+      for (let opt of options.sort) {
+        if (typeof opt === 'string') {
+          sortOptions = {
+            ...sortOptions,
+            ...{opt: 'asc'},
+          };
+        } else {
+          sortOptions = {...sortOptions, ...opt};
+        }
+      }
+      findQuery = findQuery.sort(sortOptions);
+    }
+    return findQuery;
   }
 }

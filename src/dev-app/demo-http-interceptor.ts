@@ -52,21 +52,27 @@ export class DemoHttpInterceptor implements HttpInterceptor {
           body: {
             token: this._loginToken,
             refreshToken: this._loginRefreshToken,
-            user: {email: body.loginId}
-          }
+            user: {email: body.loginId},
+          },
         }));
       }
       return throwError(new HttpErrorResponse({status: 400}));
     }
     if (req.url === 'http://auth-backend/api/jwt/refresh') {
       if (this._authService.getRefreshToken() === this._loginRefreshToken) {
-        return obsOf(new HttpResponse({status: 200, body: {token: this._newToken}}));
+        return obsOf(new HttpResponse({
+          status: 200,
+          body: {token: this._newToken},
+        }));
       }
       return throwError(new HttpErrorResponse({status: 400}));
     }
     if (req.url === 'http://auth-backend/access_data') {
       if (this._authService.getAuthToken() === this._newToken) {
-        return obsOf(new HttpResponse({status: 200, body: {data: 'Here is the data!'}}));
+        return obsOf(new HttpResponse({
+          status: 200,
+          body: {data: 'Here is the data!'},
+        }));
       }
       return throwError(new HttpErrorResponse({status: 401}));
     }

@@ -24,6 +24,7 @@ export * from './data-bulk-insert-request';
 export * from './data-find-request';
 export * from './data-get-request';
 export * from './data-insert-request';
+export * from './data-options-interface';
 export * from './data-model-manager';
 export * from './data-module';
 export * from './data-service';

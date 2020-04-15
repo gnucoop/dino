@@ -21,7 +21,11 @@
  */
 
 import {Component} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import {AuthService, Credentials} from '@dewco/core/auth';
 
 @Component({

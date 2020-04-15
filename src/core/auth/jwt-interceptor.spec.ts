@@ -1,4 +1,8 @@
-import {HTTP_INTERCEPTORS, HttpClient, HttpInterceptor} from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  HttpInterceptor,
+} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
 import {
@@ -29,14 +33,12 @@ describe(`JWTInterceptor`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         JWTInterceptor,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true},
-      ],
+      ]
     });
 
     authService = TestBed.get(AuthService);
