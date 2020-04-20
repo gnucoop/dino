@@ -100,4 +100,4 @@ export interface AuthServiceConfig {
 }
 
 export const AUTH_SERVICE_CONFIG =
-    new InjectionToken<AuthServiceConfig>('DEWCO_AUTH_SERVICE_CONFIG');
+    new InjectionToken<AuthServiceConfig>('dewco-auth-service-config');
