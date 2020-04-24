@@ -28,5 +28,6 @@ yarn build
 yarn check-release-output
 mkdir -p node_modules/@dewco
 cp -R dist/releases/* node_modules/@dewco/
-yarn ngcc
+rm -f node_modules/__ngcc_entry_points__.json
+yarn ngcc --error-on-failed-entry-point --no-tsconfig
 rm -Rf node_modules/@dewco
