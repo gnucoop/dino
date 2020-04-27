@@ -7,6 +7,7 @@ export declare class AuthModule {
 }
 
 export declare class AuthService {
+    readonly authenticated: Observable<boolean>;
     constructor(_httpClient: HttpClient, _config: AuthServiceConfig);
     getAuthToken(): string | null;
     getRefreshToken(): string | null;
