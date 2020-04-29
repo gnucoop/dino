@@ -17,6 +17,7 @@ ng_module(
     assets = [],
     module_name = "@dewco/core/data",
     deps = [
+        "//src/core/auth",
         "@npm//@types/uuid",
         "@npm//rxdb",
         "@npm//rxjs",
@@ -31,7 +32,10 @@ ng_test_library(
     ),
     deps = [
         ":data",
+        "//src/core/auth",
+        "@npm//@angular/common",
         "@npm//rxdb",
+        "@npm//rxjs",
     ],
 )
 

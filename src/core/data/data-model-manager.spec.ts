@@ -1,5 +1,10 @@
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
 import {
+  CanCreateData,
+  CanDeleteData,
+  CanModifyData,
   DATA_SERVICE_CONFIG,
   DataListOptions,
   DataModelManager,
@@ -7,21 +12,79 @@ import {
   DataService,
   DataServiceConfig,
   Model,
+  Permission,
+  PermissionContextService
 } from '@dewco/core/data';
 import {RxJsonSchema} from 'rxdb';
+import {of as obsOf} from 'rxjs';
 
 interface DummyModel extends Model {
   name: string;
   age?: number;
+  author?: string;
 }
 
+const dummyUser: User = {
+  id: 'userid',
+  email: 'user@dewco.gnu',
+  firstName: 'dummy',
+  lastName: 'dewco',
+  active: true,
+  verified: true,
+  tenantId: '1',
+  insertInstant: 1,
+  lastLoginInstant: 1,
+  passwordChangeRequired: false,
+  passwordLastUpdateInstant: 1,
+  twoFactorEnabled: false,
+  twoFactorDelivery: 'None',
+  usernameStatus: 'ACTIVE',
+  registrations: []
+};
+
 class DummyManager extends DataModelManager<DummyModel> {
-  constructor(dataservice: DataService) {
-    super('dummymodel', dataservice);
+  constructor(
+      dataService: DataService,
+      contextService: PermissionContextService,
+      permissions: Permission[],
+  ) {
+    super('dummymodel', dataService, contextService, permissions);
   }
 }
 
+class AgeAuthPermission implements Permission<DummyModel> {
+  canCreate(data: CanCreateData<{}, DummyModel>): boolean {
+    if (data.object.age && data.object.age < 18) {
+      return false;
+    }
+    return true;
+  }
+
+  canDelete(data: CanDeleteData<{}, DummyModel>): boolean {
+    if (data.context && data.object.author && data.context.user &&
+        data.context.user.email === data.object.author) {
+      return true;
+    }
+    return false;
+  }
+
+  canModify(data: CanModifyData<{}, DummyModel>): boolean {
+    if (data.object.author !== data.data.author) {
+      return false;
+    }
+    return true;
+  }
+}
+
+const ageAuthPermission = new AgeAuthPermission();
 let testDbIdx = 0;
+
+const authServiceMock = {
+  authenticated: obsOf(true),
+  getUserInfo: () => {
+    return dummyUser;
+  },
+} as unknown as AuthService;
 
 function dataServiceConfig(): DataServiceConfig {
   return {
@@ -41,26 +104,40 @@ const dummySchema: RxJsonSchema = {
     id: {type: 'string', primary: true},
     name: {type: 'string', index: true},
     age: {type: 'number'},
+    author: {type: 'string'},
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
   },
+};
+
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
 };
 
 describe('Data Model Manager - CRUD methods', () => {
   const collectionName = 'dummymodel';
   const collection = {name: collectionName, schema: dummySchema};
   let dataService: DataService;
+  let contextService: PermissionContextService;
   let dummyManager: DummyManager|null;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+      ],
       providers: [
+        PermissionContextService,
         DataService,
+        {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
       ],
     });
+    contextService = TestBed.get(PermissionContextService);
     dataService = TestBed.get(DataService);
-    dummyManager = new DummyManager(dataService);
+    dummyManager = new DummyManager(dataService, contextService, [ageAuthPermission]);
     await dataService.createCollection(collection).toPromise();
   });
 
@@ -71,9 +148,11 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should create a new object in the database', async () => {
     const object = {name: 'exampleDummy'};
+    const createSpy = spyOn(ageAuthPermission, 'canCreate').and.callThrough();
     const insertedDummy = await dummyManager!.create(object).toPromise();
     expect(insertedDummy).not.toBeNull();
     expect(insertedDummy!.name).toBe('exampleDummy');
+    expect(createSpy).toHaveBeenCalled();
   });
 
   it('should get an existing object from the database', async () => {
@@ -130,7 +209,7 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should retrieve all objects in the collection matching the query options', async () => {
     const objects = [
-      {name: 'A', age: 15},
+      {name: 'A', age: 18},
       {name: 'B', age: 20},
       {name: 'C', age: 60},
       {name: 'D'},
@@ -155,17 +234,20 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should remove an existing object from the database', async () => {
-    const object = {name: 'testDummy'};
+    const object = {name: 'testDummy', author: 'user@dewco.gnu'};
+    const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
     const insertedDummy = await dummyManager!.create(object).toPromise();
     const deletedObject = await dummyManager!.delete(insertedDummy!.id).toPromise();
     const getObject = await dummyManager!.get(deletedObject!.id).toPromise();
         expect(deletedObject?.deleted).toBeTrue();
         expect(deletedObject!.name).toEqual(insertedDummy!.name);
         expect(getObject).toBeNull();
+        expect(deleteSpy).toHaveBeenCalled();
   });
 
   it('should update an existing object from the database', async () => {
     const object = {name: 'newDummy'};
+    const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
     const insertedDummy = await dummyManager!.create(object).toPromise();
     const updObject = {
       id: insertedDummy!.id,
@@ -178,10 +260,12 @@ describe('Data Model Manager - CRUD methods', () => {
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('upDummy');
     expect(getObject!).not.toEqual(jasmine.objectContaining(object));
+    expect(modifySpy).toHaveBeenCalled();
   });
 
   it('should patch an existing object from the database', async () => {
     const object = {name: 'newDummy'};
+    const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
     const insertedDummy = await dummyManager!.create(object).toPromise();
     const objectToPatch = {
       id: insertedDummy!.id,
@@ -192,5 +276,6 @@ describe('Data Model Manager - CRUD methods', () => {
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('patchedDummy');
     expect(getObject!).not.toEqual(jasmine.objectContaining(object));
+    expect(modifySpy).toHaveBeenCalled();
   });
 });

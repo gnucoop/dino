@@ -20,18 +20,21 @@
  *
  */
 
-import {ModuleWithProviders, NgModule} from '@angular/core';
+import {
+  CanCreateData,
+  CanDeleteData,
+  CanModifyData,
+} from './data-permission-interface';
+import {Model} from './model';
 
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 
-@NgModule({})
-export class DataModule {
-  static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule> {
-    return {
-      ngModule: DataModule,
-      providers: [
-        {provide: DATA_SERVICE_CONFIG, useValue: config},
-      ],
-    };
-  }
+/**
+ * Interface to check and manage User permissions.
+ * Exposes methods for checking User permissions to create, delete, or modify a document
+ * in a given Context.
+ */
+export interface Permission<T extends Model = Model> {
+  canCreate?(data: CanCreateData<T>): boolean;
+  canModify?(data: CanModifyData<T>): boolean;
+  canDelete?(data: CanDeleteData<T>): boolean;
 }

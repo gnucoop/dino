@@ -1,3 +1,21 @@
+export interface CanCreateData<T extends {} = {}, M extends Model = Model> {
+    context?: PermissionContext<T>;
+    object: InsertModel<M>;
+}
+
+export interface CanDeleteData<T extends {} = {}, M extends Model = Model> {
+    context?: PermissionContext<T>;
+    object: M;
+}
+
+export interface CanModifyData<T extends {} = {}, M extends Model = Model> {
+    context?: PermissionContext<T>;
+    data: Partial<M> & {
+        id: string;
+    };
+    object: M;
+}
+
 export declare const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig>;
 
 export interface DataBulkInsertRequest<T extends Model> {
@@ -49,7 +67,8 @@ export interface DataListOptions {
 }
 
 export declare abstract class DataModelManager<T extends Model = Model> {
-    constructor(_modelName: string, _dataService: DataService);
+    constructor(_modelName: string, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
+    addToContext(data: PermissionContextDataUpdate): void;
     bulkCreate(data: InsertModel<T>[]): Observable<{
         success: RxDb.RxDocument<T>[];
         error: any[];
@@ -139,4 +158,27 @@ export interface Model {
     created_at: string;
     id: string;
     updated_at: string | null;
+}
+
+export interface Permission<T extends Model = Model> {
+    canCreate?(data: CanCreateData<T>): boolean;
+    canDelete?(data: CanDeleteData<T>): boolean;
+    canModify?(data: CanModifyData<T>): boolean;
+}
+
+export interface PermissionContext<T extends {} = {}> {
+    contextData?: any;
+    user: User | null;
+}
+
+export interface PermissionContextDataUpdate {
+    [prop: string]: any;
+}
+
+export declare class PermissionContextService {
+    readonly permissionContext: Observable<PermissionContext>;
+    constructor(authService: AuthService);
+    addToContext(param: PermissionContextDataUpdate): void;
+    static ɵfac: i0.ɵɵFactoryDef<PermissionContextService, never>;
+    static ɵprov: i0.ɵɵInjectableDef<PermissionContextService>;
 }

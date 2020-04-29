@@ -21,10 +21,19 @@
  */
 
 import * as RxDb from 'rxdb';
-import {Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {from, Observable, throwError} from 'rxjs';
+import {
+  catchError,
+  map,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 
+import {PermissionContextService} from './data-context-service';
 import {DataListOptions, DataQueryOptions} from './data-options-interface';
+import {Permission} from './data-permission';
+import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {DataService} from './data-service';
 import {InsertModel} from './insert-model';
 import {Model} from './model';
@@ -37,10 +46,23 @@ import {Model} from './model';
  * provided in the DataModelManager constructor.
  */
 export abstract class DataModelManager<T extends Model = Model> {
+  private _context: Observable<PermissionContext<T>>;
+
   constructor(
       private _modelName: string,
       private _dataService: DataService,
-  ) {}
+      private _contextService: PermissionContextService,
+      private _permissions: Permission[] = [],
+  ) {
+    this._context = _contextService.permissionContext;
+  }
+
+  /**
+   * Updates the Context by adding new data
+   */
+  addToContext(data: PermissionContextDataUpdate): void {
+    this._contextService.addToContext(data);
+  }
 
   /**
    * Creates a RxDocument object with a unique uuidv4 Id in the model collection
@@ -52,7 +74,15 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       object: obj,
     };
-    return this._dataService.insert<T>(params);
+    return this._context.pipe(
+        switchMap(context => {
+          if (!this._canCreate(obj, context)) {
+            return throwError(new Error('Creation not allowed'));
+          }
+          return this._dataService.insert<T>(params);
+        }),
+        take(1),
+    );
   }
 
   /**
@@ -65,7 +95,17 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       objects: data,
     };
-    return this._dataService.bulkInsert<T>(params);
+    return this._context.pipe(
+        switchMap(context => {
+          for (let obj of data) {
+            if (!this._canCreate(obj, context)) {
+              return throwError(new Error('Creation not allowed'));
+            }
+          }
+          return this._dataService.bulkInsert<T>(params);
+        }),
+        take(1),
+    );
   }
 
   /**
@@ -88,10 +128,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @return  RxQuery object for multiple documents selection.
    */
   list(options?: DataListOptions): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
-    const params = {
-        collectionName: this._modelName,
-        query: options ?? null,
-    };
+    const params = {collectionName: this._modelName, query: options ?? null, };
     return this._dataService.find<T>(params);
   }
 
@@ -118,12 +155,25 @@ export abstract class DataModelManager<T extends Model = Model> {
   delete(data: string|T): Observable<RxDb.RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
-      query: {id: (typeof data === 'string' ? data : data.id)},
+      id: (typeof data === 'string' ? data : data.id),
     };
 
-    return this._dataService.findOne<T>(params).pipe(
-        switchMap((query) => {
-          return (query.remove());
+    return this._dataService.get<T>(params).pipe(
+        withLatestFrom(this._context),
+        switchMap(([doc, context]) => {
+          if (doc == null) {
+            return throwError(new Error('Invalid document'));
+          } else {
+            if (!this._canDelete(doc, context)) {
+              return throwError(new Error('Deletion not allowed'));
+            } else {
+              return from(doc.remove())
+                  .pipe(
+                      map(_ => doc),
+                      catchError(err => throwError(err)),
+                  );
+            }
+          }
         }),
     );
   }
@@ -137,11 +187,25 @@ export abstract class DataModelManager<T extends Model = Model> {
   update(obj: T): Observable<RxDb.RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
-      query: {id: obj.id},
+      id: obj.id,
     };
-    return this._dataService.findOne<T>(params).pipe(
-        switchMap((query) => {
-          return (query.update(this._prepareUpdateQuery(obj)));
+
+    return this._dataService.get<T>(params).pipe(
+        withLatestFrom(this._context),
+        switchMap(([doc, context]) => {
+          if (doc == null) {
+            return throwError(new Error('Invalid document'));
+          } else {
+            if (!this._canModify(obj, doc, context)) {
+              return throwError(new Error('Modification not allowed'));
+            } else {
+              return from(doc.update(this._prepareUpdateQuery(obj)))
+                  .pipe(
+                      map(_ => doc),
+                      catchError(err => throwError(err)),
+                  );
+            }
+          }
         }),
     );
   }
@@ -155,11 +219,25 @@ export abstract class DataModelManager<T extends Model = Model> {
   patch(data: Partial<T>&{id: string}): Observable<RxDb.RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
-      query: {id: data.id},
+      id: data.id,
     };
-    return this._dataService.findOne<T>(params).pipe(
-        switchMap((query) => {
-          return (query.update(this._prepareUpdateQuery(data)));
+
+    return this._dataService.get<T>(params).pipe(
+        withLatestFrom(this._context),
+        switchMap(([doc, context]) => {
+          if (doc == null) {
+            return throwError(new Error('Invalid document'));
+          } else {
+            if (!this._canModify(data, doc, context)) {
+              return throwError(new Error('Modification not allowed'));
+            } else {
+              return from(doc.update(this._prepareUpdateQuery(data)))
+                  .pipe(
+                      map(_ => doc),
+                      catchError(err => throwError(err)),
+                  );
+            }
+          }
         }),
     );
   }
@@ -173,5 +251,74 @@ export abstract class DataModelManager<T extends Model = Model> {
     data.updated_at = new Date().toISOString();
     delete data.created_at;
     return {$set: {...data}};
+  }
+
+  /**
+   * Checks all Permissions for creating a RxDocument in a given Context
+   * @param data
+   * @return boolean
+   */
+  private _canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean {
+    const createData = {
+      object: object,
+      context: context,
+    };
+    for (let permission of this._permissions) {
+      if (permission.canCreate === undefined) {
+        continue;
+      } else {
+        if (!permission.canCreate(createData)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks all Permissions for modifying a RxDocument in a given Context
+   * @param data
+   * @return boolean
+   */
+  private _canModify(
+      data: Partial<T>&{id: string}, object: RxDb.RxDocument<T>,
+      context?: PermissionContext<T>): boolean {
+    const modifyData = {
+      data: data,
+      object: object,
+      context: context,
+    };
+    for (let permission of this._permissions) {
+      if (permission.canModify === undefined) {
+        continue;
+      } else {
+        if (!permission.canModify(modifyData)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks all Permissions for deleting a RxDocument in a given Context
+   * @param data
+   * @return boolean
+   */
+  private _canDelete(object: RxDb.RxDocument<T>, context?: PermissionContext<T>): boolean {
+    const deleteData = {
+      object: object,
+      context: context,
+    };
+    for (let permission of this._permissions) {
+      if (permission.canDelete === undefined) {
+        continue;
+      } else {
+        if (!permission.canDelete(deleteData)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
