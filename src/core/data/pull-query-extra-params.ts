@@ -20,30 +20,17 @@
  *
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatListModule} from '@angular/material/list';
-import {RouterModule} from '@angular/router';
+/**
+ * Extra parameters used to build the GraphQL pull sync query.
+ */
+export interface PullQueryExtraParams {
+  /**
+   * Where condition to be added to the pull query.
+   */
+  where?: any;
 
-import {DataDemo} from './data-demo';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatListModule,
-    ReactiveFormsModule,
-    RouterModule.forChild([{path: '', component: DataDemo}]),
-  ],
-  declarations: [
-    DataDemo,
-  ],
-})
-export class DataDemoModule {
+  /**
+   * Array of collection fields to be retrieved by the pull query.
+   */
+  fields?: string[];
 }

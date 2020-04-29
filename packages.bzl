@@ -2,10 +2,11 @@
 # all in-sync. This map is passed to each ng_package rule to stamp out the appropriate
 # version for the placeholders.
 ANGULAR_PACKAGE_VERSION = "^9.0.0 || ^10.0.0"
-ANGULAR_MATERIAL_PACKAGE_VERSION = "^9.0.0-0 || ^10.0.0-0"
+ANGULAR_MATERIAL_PACKAGE_VERSION = "^9.0.0 || ^10.0.0"
 IONIC_PACKAGE_VERSION = "^5.0.0"
 POUCHDB_PACKAGE_VERSION = "^7.0.0"
 RXDB_PACKAGE_VERSION = "^8.0.0"
+STWS_PACKAGE_VERSION = "^0.9.16"
 TSLIB_PACKAGE_VERSION = "^1.9.0"
 UUID_PACKAGE_VERSION = "^7.0.0"
 
@@ -49,9 +50,12 @@ THIRD_PARTY_NO_NGCC_BUNDLES = [
 THIRD_PARTY_GEN_BUNDLES = [
     ("@ionic/core", "ionic-core-bundle.js"),
     ("@ionic/core/loader", "ionic-core-loader-bundle.js"),
+    ("mock-socket", "mock-socket-bundle.js"),
     ("pouchdb-adapter-idb", "pouchdb-adapter-idb-bundle.js"),
     ("pouchdb-adapter-memory", "pouchdb-adapter-memory-bundle.js"),
     ("rxdb", "rxdb-bundle.js"),
+    ("rxdb/plugins/replication-graphql", "rxdb-plugins-replication-graphql-bundle.js"),
+    ("subscriptions-transport-ws", "subscriptions-transport-ws-bundle.js"),
     ("uuid", "uuid-bundle.js"),
 ]
 

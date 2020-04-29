@@ -22,6 +22,7 @@
 
 export * from './data-context-service';
 export * from './data-bulk-insert-request';
+export * from './data-create-collection-request';
 export * from './data-find-request';
 export * from './data-get-request';
 export * from './data-insert-request';
@@ -35,3 +36,5 @@ export * from './data-service-config';
 export * from './data-upsert-request';
 export * from './insert-model';
 export * from './model';
+export * from './pull-query-extra-params';
+export * from './push-query-extra-params';

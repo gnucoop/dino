@@ -21,6 +21,7 @@ ng_module(
         "@npm//@types/uuid",
         "@npm//rxdb",
         "@npm//rxjs",
+        "@npm//subscriptions-transport-ws",
     ],
 )
 
@@ -34,6 +35,7 @@ ng_test_library(
         ":data",
         "//src/core/auth",
         "@npm//@angular/common",
+        "@npm//mock-socket",
         "@npm//rxdb",
         "@npm//rxjs",
     ],

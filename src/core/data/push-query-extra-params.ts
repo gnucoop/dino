@@ -20,30 +20,14 @@
  *
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatListModule} from '@angular/material/list';
-import {RouterModule} from '@angular/router';
+import {Model} from './model';
 
-import {DataDemo} from './data-demo';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatListModule,
-    ReactiveFormsModule,
-    RouterModule.forChild([{path: '', component: DataDemo}]),
-  ],
-  declarations: [
-    DataDemo,
-  ],
-})
-export class DataDemoModule {
+/**
+ * Extra parameters used to build the GraphQL push sync query.
+ */
+export interface PushQueryExtraParams {
+  /**
+   * Function used to modify the object before pushing it to the remote database.
+   */
+  docModifier?: <T extends Model = Model>(doc: T) => T;
 }

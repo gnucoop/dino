@@ -34,8 +34,10 @@ ROLLUP_GLOBALS = {
     "pouchdb-adapter-idb": "PouchDB.adapter.idb",
     "pouchdb-adapter-memory": "PouchDB.adapter.memory",
     "rxdb": "rxdb",
+    "rxdb/plugins/replication-graphql": "rxdb.plugins.replicationGraphql",
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
+    "subscriptions-transport-ws": "stws",
     "uuid": "uuid",
 }
 

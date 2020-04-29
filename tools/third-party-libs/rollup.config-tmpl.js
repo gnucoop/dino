@@ -9,8 +9,7 @@ const GLOBALS = $GLOBALS;
 const NAMED_EXPORTS = $NAMED_EXPORTS;
 
 let plugins = [
-  nodeResolve(
-      {preferBuiltins: false, mainFields: MAIN_FIELDS, jail: process.cwd()}),
+  nodeResolve({preferBuiltins: false, mainFields: MAIN_FIELDS, jail: process.cwd()}),
   commonjs({ignoreGlobal: true}),
   sourcemaps(),
 ];

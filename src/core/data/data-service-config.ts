@@ -21,11 +21,46 @@
  */
 
 import {InjectionToken} from '@angular/core';
-import {RxDatabaseCreator} from 'rxdb';
+import {RxDatabaseCreator, SyncOptionsGraphQL} from 'rxdb';
 
-export interface DataServiceConfig {
-  databaseCreateOptions: RxDatabaseCreator;
+/**
+ * Data service GraphQL sync options.
+ */
+export interface DataServiceSyncOptions extends
+    Omit<SyncOptionsGraphQL, 'headers'|'pull'|'push'|'deletedFlag'> {
+  /**
+   * The number of documents synced in each request.
+   */
+  batchSize?: number;
+
+  /**
+   * GraphQL WebSocket endpoint used for live sync.
+   */
+  wsUrl?: string;
+
+  /**
+   * WebSocket implementation class. Used mainly for testing.
+   */
+  webSocketImpl?: any;
 }
 
+/**
+ * Data service configuration.
+ */
+export interface DataServiceConfig {
+  /**
+   * Options used to create the RxDB database.
+   */
+  databaseCreateOptions: RxDatabaseCreator;
+
+  /**
+   * Options used to set up the GraphQL sync.
+   */
+  syncOptions: DataServiceSyncOptions;
+}
+
+/**
+ * DataServiceConfig injection token
+ */
 export const DATA_SERVICE_CONFIG =
-    new InjectionToken<DataServiceConfig>('DEWCO_DATA_SERVICE_CONFIG');
+    new InjectionToken<DataServiceConfig>('dewco-data-service-config');

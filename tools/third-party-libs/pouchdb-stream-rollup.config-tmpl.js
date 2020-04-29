@@ -13,11 +13,12 @@ const GLOBALS = $GLOBALS;
 const NAMED_EXPORTS = $NAMED_EXPORTS;
 
 let plugins = [
-  nodeResolve(
-      {preferBuiltins: false, mainFields: MAIN_FIELDS, jail: process.cwd()}),
+  json(),
+  nodeResolve({preferBuiltins: false, mainFields: MAIN_FIELDS, jail: process.cwd()}),
   replace({
     delimiters: ['', ''],
     values: {
+      '\'isomorphic-fetch\'': '\'isomorphic-fetch/fetch-npm-browserify\'',
       '\'readable-stream\'': '\'rollup-plugin-node-polyfills/polyfills/stream\'',
       '"readable-stream"': '"rollup-plugin-node-polyfills/polyfills/stream"',
       'require(\'immediate\')': 'require(\'immediate/dist/immediate\')'
@@ -26,7 +27,6 @@ let plugins = [
   commonjs({ignoreGlobal: true}),
   nodeGlobals(),
   nodePolyfills(),
-  json(),
   sourcemaps(),
 ];
 

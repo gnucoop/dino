@@ -32,7 +32,6 @@ if (typeof define === 'function' && define.amd) {
   // directly into the browser without transpiling.
   define(['exports', 'rxjs'], function(exports, rxjs) {
     // Re-export all operators in this AMD module.
-    console.log(rxjs.operators);
     Object.assign(exports, rxjs.operators);
   });
 }

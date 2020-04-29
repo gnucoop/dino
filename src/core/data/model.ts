@@ -37,5 +37,5 @@ export interface Model {
   /**
    * Update timestamp.
    */
-  updated_at: string|null;
+  updated_at: string;
 }

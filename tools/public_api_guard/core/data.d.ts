@@ -16,11 +16,22 @@ export interface CanModifyData<T extends {} = {}, M extends Model = Model> {
     object: M;
 }
 
+export interface CollectionChangedEvent {
+    collection: string;
+    timestamp: number;
+}
+
 export declare const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig>;
 
 export interface DataBulkInsertRequest<T extends Model> {
     collectionName: string;
     objects: InsertModel<T>[];
+}
+
+export interface DataCreateCollectionRequest {
+    collection: RxCollectionCreator;
+    pullQueryExtraParams?: PullQueryExtraParams;
+    pushQueryExtraParams?: PushQueryExtraParams;
 }
 
 export interface DataFindRequest {
@@ -126,12 +137,13 @@ export declare type DataQuerySelector = {
 };
 
 export declare class DataService {
-    constructor(config: DataServiceConfig);
+    readonly collectionChanged: Observable<CollectionChangedEvent>;
+    constructor(_authService: AuthService, config: DataServiceConfig);
     bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<{
         success: RxDb.RxDocument<T>[];
         error: any[];
     }>;
-    createCollection(collection: RxDb.RxCollectionCreator): Observable<boolean>;
+    createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
     find<T extends Model = Model>(params: DataFindRequest): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>>;
     findOne<T extends Model = Model>(params: DataFindRequest): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T> | null>>;
@@ -145,6 +157,13 @@ export declare class DataService {
 
 export interface DataServiceConfig {
     databaseCreateOptions: RxDatabaseCreator;
+    syncOptions: DataServiceSyncOptions;
+}
+
+export interface DataServiceSyncOptions extends Omit<SyncOptionsGraphQL, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
+    batchSize?: number;
+    webSocketImpl?: any;
+    wsUrl?: string;
 }
 
 export interface DataUpsertRequest<T extends Model> {
@@ -157,7 +176,7 @@ export declare type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' |
 export interface Model {
     created_at: string;
     id: string;
-    updated_at: string | null;
+    updated_at: string;
 }
 
 export interface Permission<T extends Model = Model> {
@@ -181,4 +200,13 @@ export declare class PermissionContextService {
     addToContext(param: PermissionContextDataUpdate): void;
     static ɵfac: i0.ɵɵFactoryDef<PermissionContextService, never>;
     static ɵprov: i0.ɵɵInjectableDef<PermissionContextService>;
+}
+
+export interface PullQueryExtraParams {
+    fields?: string[];
+    where?: any;
+}
+
+export interface PushQueryExtraParams {
+    docModifier?: <T extends Model = Model>(doc: T) => T;
 }

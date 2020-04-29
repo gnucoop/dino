@@ -1,0 +1,18 @@
+<div class="demo-data">
+  <h4 class="demo-section-header">Insert new todo</h4>
+  <section>
+    <div class="mat-caption">Data is kept on browser reload</div>
+    <form [formGroup]="todoForm">
+      <mat-form-field>
+        <mat-label>Message</mat-label>
+        <input matInput formControlName="message">
+      </mat-form-field>
+      <button mat-raised-button [disabled]="!todoForm.valid" (click)="insertTodo()">Insert</button>
+    </form>
+  </section>
+
+  <h4 class="demo-section-header">Todo list</h4>
+  <mat-list>
+    <mat-list-item *ngFor="let todo of todos|async">{{ todo.message }}</mat-list-item>
+  </mat-list>
+</div>

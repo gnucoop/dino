@@ -51,6 +51,11 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
         name: 'dewco_dev_app_db',
         adapter: 'idb',
       },
+      syncOptions: {
+        url: 'http://dewcoServer/v1/graphql',
+        live: false,
+        liveInterval: 60000,
+      },
     }),
     DevAppModule,
     HttpClientModule,

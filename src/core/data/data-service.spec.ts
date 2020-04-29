@@ -1,8 +1,11 @@
 import {TestBed} from '@angular/core/testing';
-import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig} from '@dewco/core/data';
-import {RxJsonSchema} from 'rxdb';
+import {AuthService} from '@dewco/core/auth';
+import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from '@dewco/core/data';
+import {Server, WebSocket} from 'mock-socket';
+import {RxCollection, RxJsonSchema} from 'rxdb';
+import {Observable, of as obsOf} from 'rxjs';
 
-import {Model} from './model';
+import {subscriptionQueryBuilder} from './sync-utils';
 
 interface DummyModel extends Model {
   name: string;
@@ -10,11 +13,24 @@ interface DummyModel extends Model {
 
 let testDbIdx = 0;
 
+const authServiceMock = {
+  authenticated: obsOf(true),
+} as unknown as AuthService;
+
+const serverUrl = 'http://dewcoServer/v1/graphql';
+const wsServerUrl = 'ws://dewcoServer';
+const wsUrl = `${wsServerUrl}/v1/graphql`;
+
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_data_test_db_${testDbIdx++}`,
       adapter: 'memory',
+    },
+    syncOptions: {
+      url: serverUrl,
+      wsUrl,
+      webSocketImpl: WebSocket,
     },
   };
 }
@@ -23,6 +39,9 @@ const invalidDataServiceConfig: DataServiceConfig = {
   databaseCreateOptions: {
     name: 'dewco_data_test_db',
     adapter: 'dummy',
+  },
+  syncOptions: {
+    url: 'http://dewcoServer/v1/graphql',
   },
 };
 
@@ -39,22 +58,43 @@ const dummySchema: RxJsonSchema = {
   },
 };
 
+function getWsMessage(server: Server, pattern: RegExp): Observable<string> {
+  return new Observable<string>(subscriber => {
+    server.on('connection', webSocket => {
+      webSocket.on('message', msg => {
+        const message = msg as string;
+        if (pattern.test(message)) {
+          subscriber.next(message as string);
+          subscriber.complete();
+        }
+      });
+    });
+  });
+}
+
 describe('Data service', () => {
   let dataService: DataService;
+  let wsServer: Server;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         DataService,
+        {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
       ],
     });
     dataService = TestBed.get(DataService);
+    wsServer = new Server(wsUrl);
+  });
+
+  afterEach(() => {
+    wsServer.close();
   });
 
   it('should create and destroy a collection from a valid schema', () => {
     const collection = {name: 'dummy', schema: dummySchema};
-    const created = dataService.createCollection(collection).toPromise();
+    const created = dataService.createCollection({collection}).toPromise();
     expectAsync(created).toBeResolvedTo(true);
     const deleted = dataService.destroyCollection(collection.name).toPromise();
     expectAsync(deleted).toBeResolvedTo(true);
@@ -62,6 +102,15 @@ describe('Data service', () => {
 
   it('should throw an exception when trying to destroy an unexisting collection', () => {
     expectAsync(dataService.destroyCollection('collection').toPromise()).toBeRejectedWithError();
+  });
+
+  it('should subscribe to the WebSocket server for collection changes', async () => {
+    const collection = {name: 'dummy', schema: dummySchema};
+    await dataService.createCollection({collection}).toPromise();
+    const message = await getWsMessage(wsServer, /dummy/).toPromise();
+    expect(message).toBeDefined();
+    const query = JSON.parse(message).payload.query;
+    expect(query).toBe(subscriptionQueryBuilder(collection as unknown as RxCollection));
   });
 });
 
@@ -74,11 +123,12 @@ describe('Data service - CRUD methods', () => {
     TestBed.configureTestingModule({
       providers: [
         DataService,
+        {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
       ],
     });
     dataService = TestBed.get(DataService);
-    await dataService.createCollection(collection).toPromise();
+    await dataService.createCollection({collection}).toPromise();
   });
 
   afterEach(async () => {
@@ -156,6 +206,6 @@ describe('Data service - CRUD methods', () => {
 
 describe('Invalid data service config', () => {
   it('should fail creating the service instance when an invalid adapter is defined', () => {
-    expect(() => new DataService(invalidDataServiceConfig)).toThrowError();
+    expect(() => new DataService(authServiceMock, invalidDataServiceConfig)).toThrowError();
   });
 });

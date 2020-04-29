@@ -92,6 +92,9 @@ function dataServiceConfig(): DataServiceConfig {
       name: `dewco_datamanager_test_db_${testDbIdx++}`,
       adapter: 'memory',
     },
+    syncOptions: {
+      url: 'host',
+    },
   };
 }
 
@@ -132,7 +135,7 @@ describe('Data Model Manager - CRUD methods', () => {
     contextService = TestBed.get(PermissionContextService);
     dataService = TestBed.get(DataService);
     dummyManager = new DummyManager(dataService, contextService, [ageAuthPermission]);
-    await dataService.createCollection(collection).toPromise();
+    await dataService.createCollection({collection}).toPromise();
   });
 
   afterEach(async () => {
@@ -247,7 +250,7 @@ describe('Data Model Manager - CRUD methods', () => {
       id: insertedDummy!.id,
       name: 'upDummy',
       created_at: '',
-      updated_at: null,
+      updated_at: '',
     };
     await dummyManager!.update(updObject).toPromise();
     const getObject = await dummyManager!.get(updObject.id).toPromise();

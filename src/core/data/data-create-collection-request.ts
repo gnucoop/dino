@@ -20,30 +20,27 @@
  *
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatListModule} from '@angular/material/list';
-import {RouterModule} from '@angular/router';
+import {RxCollectionCreator} from 'rxdb';
 
-import {DataDemo} from './data-demo';
+import {PullQueryExtraParams} from './pull-query-extra-params';
+import {PushQueryExtraParams} from './push-query-extra-params';
 
-@NgModule({
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatListModule,
-    ReactiveFormsModule,
-    RouterModule.forChild([{path: '', component: DataDemo}]),
-  ],
-  declarations: [
-    DataDemo,
-  ],
-})
-export class DataDemoModule {
+/**
+ * Data create collection request parameters.
+ */
+export interface DataCreateCollectionRequest {
+  /**
+   * The collection to create.
+   */
+  collection: RxCollectionCreator;
+
+  /**
+   * Extra parameters to add to the sync pull query.
+   */
+  pullQueryExtraParams?: PullQueryExtraParams;
+
+  /**
+   * Extra parameters to add to the sync push query.
+   */
+  pushQueryExtraParams?: PushQueryExtraParams;
 }

@@ -14,8 +14,7 @@
     "type": "git",
     "url": "https://bitbucket.or/gnucoop/dewcocore.git"
   },
-  "keywords": [
-  ],
+  "keywords": [],
   "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://bitbucket.or/gnucoop/dewcocore/issues"
@@ -28,6 +27,7 @@
     "pouchdb-adapter-idb": "0.0.0-POUCHDB",
     "pouchdb-adapter-memory": "0.0.0-POUCHDB",
     "rxdb": "0.0.0-RXDB",
+    "subscriptions-transport-ws": "0.0.0-STWS",
     "tslib": "0.0.0-TSLIB",
     "uuid": "0.0.0-UUID"
   },

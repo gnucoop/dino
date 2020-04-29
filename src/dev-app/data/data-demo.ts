@@ -20,9 +20,15 @@
  *
  */
 
-import {Component} from '@angular/core';
-import {DataService} from '@dewco/core/data';
-import {switchMap} from 'rxjs/operators';
+import {Component, EventEmitter} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {DataService, Model} from '@dewco/core/data';
+import {from, Observable} from 'rxjs';
+import {map, shareReplay, startWith, switchMap} from 'rxjs/operators';
+
+interface Todo extends Model {
+  message: string;
+}
 
 @Component({
   selector: 'data-demo.html',
@@ -30,21 +36,46 @@ import {switchMap} from 'rxjs/operators';
   styleUrls: ['data-demo.css'],
 })
 export class DataDemo {
-  constructor(dataService: DataService) {
-    dataService
-        .createCollection({
-          name: 'dummy',
-          schema: {
-            title: 'dummy schema',
-            version: 0,
-            description: 'describe a dummy model',
-            type: 'object',
-            properties: {id: {type: 'string', primary: true}, name: {type: 'string'}}
-          }
-        })
-        .pipe(
-            switchMap(() => dataService.get<any>({collectionName: 'dummy', id: 'xxx'})),
-            )
-        .subscribe(console.log, console.log, console.log);
+  todos: Observable<Todo[]>;
+  todoForm: FormGroup = new FormGroup({
+    message: new FormControl(null, [Validators.required]),
+  });
+
+  private _refreshEvent: EventEmitter<void> = new EventEmitter<void>();
+
+  constructor(private _dataService: DataService) {
+    const req = {
+      collection: {
+        name: 'todo',
+        schema: {
+          title: 'Todo',
+          version: 0,
+          description: 'Todo',
+          type: 'object',
+          properties: {
+            id: {type: 'string', primary: true},
+            message: {type: 'string'},
+            created_at: {type: 'string'},
+            updated_at: {type: ['string', 'null']},
+          },
+        },
+      },
+    };
+
+    const collection = _dataService.createCollection(req).pipe(
+        shareReplay(1),
+    );
+
+    this.todos = collection.pipe(
+        switchMap(() => this._refreshEvent.pipe(startWith(null))),
+        switchMap(() => _dataService.find({collectionName: 'todo'})),
+        switchMap(query => from(query.exec())),
+        map(result => result.map(doc => doc._data)),
+    );
+  }
+
+  insertTodo(): void {
+    this._dataService.insert({collectionName: 'todo', object: this.todoForm.value})
+        .subscribe(() => this._refreshEvent.emit());
   }
 }
