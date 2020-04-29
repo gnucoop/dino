@@ -1,6 +1,6 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
+import {AuthService, User} from '@dewco/core/auth';
 import {
   CanCreateData,
   CanDeleteData,
@@ -108,12 +108,6 @@ const dummySchema: RxJsonSchema = {
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
   },
-};
-
-const authServiceConfig: AuthServiceConfig = {
-  host: 'http://test-auth-backend',
-  applicationId: 'applicationId',
-  apiKey: 'apiKey',
 };
 
 describe('Data Model Manager - CRUD methods', () => {

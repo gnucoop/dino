@@ -20,7 +20,8 @@
  *
  */
 
-import {User} from '../auth/user';
+import {User} from '@dewco/core/auth';
+
 import {InsertModel} from './insert-model';
 import {Model} from './model';
 
