@@ -284,7 +284,7 @@ export class DataService {
   /**
    * Create a collection in the local database from a JSON schema
    * and sets up the GraphQL sync.
-   * Throws and error if the collection does not exist.
+   * Throws and error if the collection exist.
    * @param params The create collection request parameters.
    */
   createCollection(params: DataCreateCollectionRequest): Observable<boolean> {

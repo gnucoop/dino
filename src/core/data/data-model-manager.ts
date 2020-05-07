@@ -21,16 +21,18 @@
  */
 
 import * as RxDb from 'rxdb';
-import {from, Observable, throwError} from 'rxjs';
+import {from, Observable, throwError, zip} from 'rxjs';
 import {
   catchError,
+  filter,
   map,
+  shareReplay,
   switchMap,
   take,
-  withLatestFrom,
 } from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
+import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {DataListOptions, DataQueryOptions} from './data-options-interface';
 import {Permission} from './data-permission';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
@@ -47,14 +49,22 @@ import {Model} from './model';
  */
 export abstract class DataModelManager<T extends Model = Model> {
   private _context: Observable<PermissionContext<T>>;
+  private _collectionInit: Observable<boolean>;
+  private _modelName: string;
 
   constructor(
-      private _modelName: string,
+      createParams: DataCreateCollectionRequest,
       private _dataService: DataService,
       private _contextService: PermissionContextService,
       private _permissions: Permission[] = [],
   ) {
     this._context = _contextService.permissionContext;
+    this._modelName = createParams.collection.name;
+    this._collectionInit = _dataService.createCollection(createParams)
+                               .pipe(
+                                   filter(created => created),
+                                   shareReplay(1),
+                               );
   }
 
   /**
@@ -74,7 +84,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       object: obj,
     };
-    return this._context.pipe(
+    return this._getPermissionContext().pipe(
         switchMap(context => {
           if (!this._canCreate(obj, context)) {
             return throwError(new Error('Creation not allowed'));
@@ -95,7 +105,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       objects: data,
     };
-    return this._context.pipe(
+    return this._getPermissionContext().pipe(
         switchMap(context => {
           for (let obj of data) {
             if (!this._canCreate(obj, context)) {
@@ -118,7 +128,12 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       id: id,
     };
-    return this._dataService.get<T>(params);
+    return this._collectionInit.pipe(
+        switchMap(
+            () => this._dataService.get<T>(params).pipe(
+                take(1),
+                )),
+    );
   }
 
   /**
@@ -128,8 +143,13 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @return  RxQuery object for multiple documents selection.
    */
   list(options?: DataListOptions): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
-    const params = {collectionName: this._modelName, query: options ?? null, };
-    return this._dataService.find<T>(params);
+    const params = {collectionName: this._modelName, query: options};
+    return this._collectionInit.pipe(
+        switchMap(
+            () => this._dataService.find<T>(params).pipe(
+                take(1),
+                )),
+    );
   }
 
   /**
@@ -144,7 +164,12 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       query: options,
     };
-    return this._dataService.find<T>(params);
+    return this._collectionInit.pipe(
+        switchMap(
+            () => this._dataService.find<T>(params).pipe(
+                take(1),
+                )),
+    );
   }
 
   /**
@@ -158,9 +183,12 @@ export abstract class DataModelManager<T extends Model = Model> {
       id: (typeof data === 'string' ? data : data.id),
     };
 
-    return this._dataService.get<T>(params).pipe(
-        withLatestFrom(this._context),
-        switchMap(([doc, context]) => {
+    return this._getPermissionContext().pipe(
+        switchMap(
+            context => this._dataService.get<T>(params).pipe(map(
+                doc => ({doc, context}),
+                ))),
+        switchMap(({doc, context}) => {
           if (doc == null) {
             return throwError(new Error('Invalid document'));
           } else {
@@ -190,9 +218,12 @@ export abstract class DataModelManager<T extends Model = Model> {
       id: obj.id,
     };
 
-    return this._dataService.get<T>(params).pipe(
-        withLatestFrom(this._context),
-        switchMap(([doc, context]) => {
+    return this._getPermissionContext().pipe(
+        switchMap(
+            context => this._dataService.get<T>(params).pipe(map(
+                doc => ({doc, context}),
+                ))),
+        switchMap(({doc, context}) => {
           if (doc == null) {
             return throwError(new Error('Invalid document'));
           } else {
@@ -222,9 +253,12 @@ export abstract class DataModelManager<T extends Model = Model> {
       id: data.id,
     };
 
-    return this._dataService.get<T>(params).pipe(
-        withLatestFrom(this._context),
-        switchMap(([doc, context]) => {
+    return this._getPermissionContext().pipe(
+        switchMap(
+            context => this._dataService.get<T>(params).pipe(map(
+                doc => ({doc, context}),
+                ))),
+        switchMap(({doc, context}) => {
           if (doc == null) {
             return throwError(new Error('Invalid document'));
           } else {
@@ -320,5 +354,15 @@ export abstract class DataModelManager<T extends Model = Model> {
       }
     }
     return true;
+  }
+
+  /**
+   * Returns permission context after collection initialization.
+   */
+  private _getPermissionContext(): Observable<PermissionContext> {
+    return zip(this._collectionInit, this._context)
+        .pipe(
+            map(([_, context]) => context),
+        );
   }
 }

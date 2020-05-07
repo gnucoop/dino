@@ -78,7 +78,7 @@ export interface DataListOptions {
 }
 
 export declare abstract class DataModelManager<T extends Model = Model> {
-    constructor(_modelName: string, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
+    constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
     addToContext(data: PermissionContextDataUpdate): void;
     bulkCreate(data: InsertModel<T>[]): Observable<{
         success: RxDb.RxDocument<T>[];

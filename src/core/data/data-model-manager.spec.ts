@@ -6,6 +6,7 @@ import {
   CanDeleteData,
   CanModifyData,
   DATA_SERVICE_CONFIG,
+  DataCreateCollectionRequest,
   DataListOptions,
   DataModelManager,
   DataQueryOptions,
@@ -44,11 +45,12 @@ const dummyUser: User = {
 
 class DummyManager extends DataModelManager<DummyModel> {
   constructor(
+      createParams: DataCreateCollectionRequest,
       dataService: DataService,
       contextService: PermissionContextService,
       permissions: Permission[],
   ) {
-    super('dummymodel', dataService, contextService, permissions);
+    super(createParams, dataService, contextService, permissions);
   }
 }
 
@@ -134,8 +136,7 @@ describe('Data Model Manager - CRUD methods', () => {
     });
     contextService = TestBed.get(PermissionContextService);
     dataService = TestBed.get(DataService);
-    dummyManager = new DummyManager(dataService, contextService, [ageAuthPermission]);
-    await dataService.createCollection({collection}).toPromise();
+    dummyManager = new DummyManager({collection}, dataService, contextService, [ageAuthPermission]);
   });
 
   afterEach(async () => {
