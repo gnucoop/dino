@@ -9,6 +9,7 @@
     "paths": {
       "@dewco/core/*": ["../core/*"],
       "@dewco/dewco-examples": ["../../dist/packages/dewco-examples"],
+      "@dewco/dewco-examples/*": ["../../dist/packages/dewco-examples/*"],
       "@dewco/material/*": ["../material/*"],
       "@dewco/material": ["../material/public-api.ts"]
     }
