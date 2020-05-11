@@ -2,10 +2,6 @@
   "name": "@dewco/dewco-examples",
   "version": "0.0.0-PLACEHOLDER",
   "description": "Dewco Examples",
-  "main": "./bundles/dewco-examples.umd.js",
-  "module": "./esm5/dewco-examples.es5.js",
-  "es2015": "./esm2015/dewco-examples.js",
-  "typings": "./dewco-examples.d.ts",
   "private": true,
   "repository": {
     "type": "git",
