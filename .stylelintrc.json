@@ -6,7 +6,8 @@
     "./tools/stylelint/selector-no-deep.ts",
     "./tools/stylelint/no-nested-mixin.ts",
     "./tools/stylelint/no-concrete-rules.ts",
-    "./tools/stylelint/no-top-level-ampersand-in-mixin.ts"
+    "./tools/stylelint/no-top-level-ampersand-in-mixin.ts",
+    "./tools/stylelint/theme-mixin-api.ts"
   ],
   "rules": {
     "dewco/no-prefixes": [
@@ -20,6 +21,7 @@
         "filePattern": "**/!(*-example.css)"
       }
     ],
+    "dewco/theme-mixin-api": true,
     "dewco/selector-no-deep": true,
     "dewco/no-nested-mixin": true,
     "dewco/no-ampersand-beyond-selector-start": [
