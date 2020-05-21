@@ -20,8 +20,10 @@
     "pouchdb-adapter-memory": "0.0.0-POUCHDB",
     "rxdb": "0.0.0-RXDB",
     "subscriptions-transport-ws": "0.0.0-STWS",
-    "tslib": "0.0.0-TSLIB",
     "uuid": "0.0.0-UUID"
+  },
+  "dependencies": {
+    "tslib": "0.0.0-TSLIB"
   },
   "sideEffects": false
 }
