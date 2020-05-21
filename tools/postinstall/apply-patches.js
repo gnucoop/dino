@@ -62,14 +62,6 @@ searchAndReplace(
   if ((filePath.includes('node_modules/') || !hasFlatModuleBundle) && $1`,
     'node_modules/@angular/compiler-cli/src/transformers/compiler_host.js');
 applyPatch(path.join(__dirname, './flat_module_factory_resolution.patch'));
-searchAndReplace(
-    /(TsCompilerAotCompilerTypeCheckHostAdapter\.prototype\.fromSummaryFileName = function \(fileName, referringLibFileName\) {)/,
-    `$1
-            var ext = /@angular\\/cdk|@angular\\/material|@ionic\\/angular/;
-            if (ext.test(referringLibFileName)) {
-                fileName = fileName.replace('.ngfactory', '');
-            }`,
-    'node_modules/@angular/compiler-cli/src/transformers/compiler_host.js');
 // The three replacements below ensure that metadata files can be read by NGC and
 // that metadata files are collected as Bazel action inputs.
 searchAndReplace(
@@ -97,14 +89,11 @@ try {
   // Can be removed once @angular/bazel is updated here to include this patch.
   // try/catch needed for this the material CI tests to work in angular/repo
   applyPatch(path.join(__dirname, './@angular_bazel_ng_module.patch'));
-} catch (_) {
-}
+} catch (_) {}
 
 // Workaround for https://github.com/angular/angular/issues/33452:
-searchAndReplace(
-    /angular_compiler_options = {/, `$&
-        "strictTemplates": True,`,
-    'node_modules/@angular/bazel/src/ng_module.bzl');
+searchAndReplace(/angular_compiler_options = {/, `$&
+        "strictTemplates": True,`, 'node_modules/@angular/bazel/src/ng_module.bzl');
 
 // More info in https://github.com/angular/angular/pull/33786
 shelljs.rm('-rf', [
