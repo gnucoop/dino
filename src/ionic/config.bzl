@@ -1,5 +1,6 @@
 # List of all entry-points of the Dewco core package.
 entryPoints = [
+    "login",
 ]
 
 # List of all non-testing entry-points of the Dewco ionic package.

@@ -1,0 +1,106 @@
+import {
+  browser,
+  by,
+  element,
+} from 'protractor';
+
+describe('dewco-ionic-login', () => {
+  beforeEach(async () => await browser.get('/ion-login'));
+
+  it('should not display an error message on init', async () => {
+    const errorMsg = element(by.id('dewco-login-error'));
+    await errorMsg.isPresent().then(res => {
+      expect(res).toBe(false);
+    });
+  });
+
+  it('should disable the login button if the form value is invalid', async () => {
+    const form = element(by.tagName('form'));
+    const loginButton = form.element(by.name('submitButton'));
+    const emailInput = form.element(by.id('dewco-login-email')).element(by.tagName('input'));
+    const pswInput = form.element(by.id('dewco-login-password')).element(by.tagName('input'));
+
+    await emailInput.clear();
+    await pswInput.clear();
+
+    await loginButton.getAttribute('aria-disabled').then(res => {
+      expect(res).toEqual('true');
+    });
+  });
+
+  it('should enable the login button if the form value is valid', async () => {
+    const form = element(by.tagName('form'));
+    const loginButton = form.element(by.name('submitButton'));
+    const emailInput = form.element(by.id('dewco-login-email')).element(by.tagName('input'));
+    const pswInput = form.element(by.id('dewco-login-password')).element(by.tagName('input'));
+
+    await emailInput.sendKeys('email@email.io');
+    await pswInput.sendKeys('password');
+
+    await loginButton.getAttribute('aria-disabled').then(res => {
+      expect(res).toBeNull();
+    });
+  });
+
+  it('should show the error message if login was unsuccessful', async () => {
+    const form = element(by.tagName('form'));
+    const loginButton = form.element(by.name('submitButton'));
+    const emailInput = form.element(by.id('dewco-login-email')).element(by.tagName('input'));
+    const pswInput = form.element(by.id('dewco-login-password')).element(by.tagName('input'));
+    const errorMsg = element(by.id('dewco-login-error'));
+
+    await emailInput.sendKeys('wrong@email.io');
+    await pswInput.sendKeys('wrongpass');
+    await loginButton.click();
+
+    await errorMsg.isPresent().then(res => {
+      expect(res).toBe(true);
+    });
+  });
+
+  it('should not show the error message if login was successful', async () => {
+    const form = element(by.tagName('form'));
+    const loginButton = form.element(by.name('submitButton'));
+    const emailInput = form.element(by.id('dewco-login-email')).element(by.tagName('input'));
+    const pswInput = form.element(by.id('dewco-login-password')).element(by.tagName('input'));
+    const errorMsg = element(by.id('dewco-login-error'));
+
+    await emailInput.sendKeys('user@dewco.io');
+    await pswInput.sendKeys('dewco');
+    await loginButton.click();
+
+    await errorMsg.isPresent().then(res => {
+      expect(res).toBe(false);
+    });
+  });
+
+  it('should redirect to home url after a successful login', async () => {
+    const form = element(by.tagName('form'));
+    const loginButton = form.element(by.name('submitButton'));
+    const emailInput = form.element(by.id('dewco-login-email')).element(by.tagName('input'));
+    const pswInput = form.element(by.id('dewco-login-password')).element(by.tagName('input'));
+
+    await emailInput.sendKeys('user@dewco.io');
+    await pswInput.sendKeys('dewco');
+    await loginButton.click();
+
+    await browser.getCurrentUrl().then(res => {
+      expect(res).toEqual(browser.baseUrl + '/');
+    });
+  });
+
+  it('should not redirect to home url after a failed login', async () => {
+    const form = element(by.tagName('form'));
+    const loginButton = form.element(by.name('submitButton'));
+    const emailInput = form.element(by.id('dewco-login-email')).element(by.tagName('input'));
+    const pswInput = form.element(by.id('dewco-login-password')).element(by.tagName('input'));
+
+    await emailInput.sendKeys('wrong@mail.io');
+    await pswInput.sendKeys('wrongpsw');
+    await loginButton.click();
+
+    await browser.getCurrentUrl().then(res => {
+      expect(res).toEqual(browser.baseUrl + '/ion-login');
+    });
+  });
+});
