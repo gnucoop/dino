@@ -18,7 +18,7 @@ nodejs_binary(
     name = "highlight-files",
     data = [
         ":sources",
-        "@npm//@types/fs-extra",
+        "@npm//fs-extra",
         "@npm//highlight.js",
     ],
     entry_point = ":highlight-files.ts",
