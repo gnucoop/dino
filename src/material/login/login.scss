@@ -1,0 +1,75 @@
+
+
+dewco-login {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: stretch;
+
+  > div {
+    flex: 1 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      flex: 1 0 auto;
+      align-self: center;
+
+      &.logo-container {
+        display: flex;
+        align-items: center;
+
+        .logo {
+          flex: 1 0 auto;
+
+          mat-icon {
+            vertical-align: middle;
+          }
+        }
+      }
+
+      &.login-form-container {
+        form {
+          input {
+            display: block;
+            background-color: transparent;
+            margin: 0 auto;
+            border: none;
+            text-align: center;
+
+            &:focus {
+              outline: 0;
+            }
+          }
+
+          .error-message {
+            display: none;
+          }
+
+          &.error {
+            .error-message {
+              display: block;
+            }
+          }
+
+          mat-progress-bar {
+            margin-top: 1em;
+            opacity: 0;
+
+            &.show {
+              opacity: 1;
+            }
+          }
+
+          .password-recover {
+            padding: 1em 0;
+          }
+        }
+      }
+    }
+  }
+}

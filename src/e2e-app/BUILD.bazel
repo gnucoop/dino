@@ -26,6 +26,8 @@ ng_module(
     ),
     deps = [
         "//src/dewco-examples/private",
+        "//src/ionic/login",
+        "//src/material/login",
         "@npm//@angular/elements",
         "@npm//@angular/material",
         "@npm//@angular/router",
