@@ -47,6 +47,18 @@ export declare class JWTInterceptor implements HttpInterceptor {
     static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
 }
 
+export declare abstract class LoginComponent {
+    loggingIn: boolean;
+    get loginError(): boolean;
+    readonly loginForm: FormGroup;
+    set postLogin(fn: Function);
+    readonly submitDisabled: Observable<boolean>;
+    constructor(_authService: AuthService, _router: Router, fb: FormBuilder, _cdr: ChangeDetectorRef);
+    login(): void;
+    static ɵdir: i0.ɵɵDirectiveDefWithMeta<LoginComponent, never, never, { "postLogin": "postLogin"; }, {}, never>;
+    static ɵfac: i0.ɵɵFactoryDef<LoginComponent, never>;
+}
+
 export interface LoginResponse {
     refreshToken: string;
     token: string;
