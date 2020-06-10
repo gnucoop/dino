@@ -73,8 +73,9 @@ pipeline {
         sh 'yarn check-release-output'
         sh 'mkdir -p node_modules/@dewco'
         sh 'cp -R dist/releases/* node_modules/@dewco/'
-        sh 'rm -f node_modules/__ngcc_entry_points__.json'
+        sh 'mv node_modules/__ngcc_entry_points__.json node_modules/__ngcc_entry_points__.json.back'
         sh 'yarn ngcc --error-on-failed-entry-point --no-tsconfig'
+        sh 'mv node_modules/__ngcc_entry_points__.json.back node_modules/__ngcc_entry_points__.json'
         sh 'rm -Rf node_modules/@dewco'
       }
     }
