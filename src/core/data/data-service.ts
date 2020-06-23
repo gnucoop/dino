@@ -322,8 +322,8 @@ export class DataService {
   private _prepareInsertObject<T extends Model>(object: InsertModel<T>): T {
     const timestamp = new Date().toISOString();
     return {
-      id: uuidv4(),
       ...object,
+      id: uuidv4(),
       created_at: timestamp,
       updated_at: timestamp,
     } as T;

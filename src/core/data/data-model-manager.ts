@@ -21,7 +21,7 @@
  */
 
 import {MangoQuery, RxDocument, RxQuery} from 'rxdb';
-import {from, Observable, throwError, zip} from 'rxjs';
+import {from, Observable, of, throwError, zip} from 'rxjs';
 import {
   catchError,
   filter,
@@ -207,6 +207,50 @@ export abstract class DataModelManager<T extends Model = Model> {
             }
           }
         }),
+    );
+  }
+
+  /**
+   * Deletes multiple RxDocument objects in the model collection
+   * @param data
+   * @return an observable of the array of the deleted RxDocuments
+   */
+  bulkDelete(data: T[]): Observable<RxDb.RxDocument<T>[] | null> {
+    if (data == null || data.length == 0) {
+      return of(null);
+    }
+    const ids = data.map(d => d.id);
+    const selectorParams = {id: {$in: ids}};
+    const params = {
+      collectionName: this._modelName,
+      query: {
+        selector: selectorParams,
+      },
+    };
+    return this._getPermissionContext().pipe(
+        switchMap(
+            context => this._dataService.find<T>(params).pipe(
+                map(query => ({query, context})),
+                )),
+        switchMap(({query, context}) => {
+          const res = from(query.exec())
+                          .pipe(
+                              map(docs => ({docs, context, query})),
+                          );
+          return res;
+        }),
+        switchMap(res => {
+          for (let obj of res.docs) {
+            if (!this._canDelete(obj, res.context)) {
+              return throwError(new Error('Deletion not allowed'));
+            }
+          }
+          return from(res.query.remove())
+              .pipe(
+                  catchError(err => throwError(err)),
+              );
+        }),
+
     );
   }
 

@@ -246,6 +246,24 @@ describe('Data Model Manager - CRUD methods', () => {
     expect(deleteSpy).toHaveBeenCalled();
   });
 
+  it('should remove a bulk of existing objects from the database', async () => {
+    const objects = [
+      {name: 'firstDummy', author: 'user@dewco.gnu'},
+      {name: 'secondDummy', author: 'user@dewco.gnu'},
+    ];
+    const insertedDummies = await dummyManager!.bulkCreate(objects).toPromise();
+    const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
+    const deletedObjects = await dummyManager!.bulkDelete(insertedDummies.success).toPromise();
+    const getFirstObject = await dummyManager!.get(deletedObjects![0].id).toPromise();
+    const getSecondObject = await dummyManager!.get(deletedObjects![1].id).toPromise();
+    deletedObjects!.forEach(deletedObject => {
+      expect(deletedObject?.deleted).toBeTrue();
+    });
+    expect(getFirstObject).toBeNull();
+    expect(getSecondObject).toBeNull();
+    expect(deleteSpy).toHaveBeenCalled();
+  });
+
   it('should update an existing object from the database', async () => {
     const object = {name: 'newDummy'};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
