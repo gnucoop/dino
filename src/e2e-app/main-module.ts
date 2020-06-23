@@ -12,6 +12,7 @@ import {RouterModule} from '@angular/router';
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
 import {E2E_APP_ROUTES} from './e2e-app/routes';
+import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {ExampleFormCollectModule} from './example-form-collect/example-form-collect.module';
 import {ExampleFormSelectModule} from './example-form-select/example-form-select.module';
@@ -28,9 +29,10 @@ import {ExampleFormSelectModule} from './example-form-select/example-form-select
     MatNativeDateModule,
 
     // E2E demos
-    MaterialLoginE2eModule,
     ExampleFormCollectModule,
     ExampleFormSelectModule,
+    MaterialListE2eModule,
+    MaterialLoginE2eModule,
   ],
   declarations: [
     E2eApp,
