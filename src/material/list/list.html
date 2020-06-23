@@ -1,0 +1,63 @@
+<h2>{{ title }}</h2>
+
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+        </td>
+    </ng-container>
+
+    <ng-container *ngFor="let header of headers" [matColumnDef]="header.column">
+
+        <ng-container *ngIf="header.sortable; else notSortable">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                <ng-container *ngTemplateOutlet="cellTemplatesMap[header.label] ?
+          cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
+          context: {$implicit: header.label}">
+                </ng-container>
+            </th>
+        </ng-container>
+
+        <ng-template #notSortable>
+            <th mat-header-cell *matHeaderCellDef>
+                <ng-container *ngTemplateOutlet="cellTemplatesMap[header.label] ?
+          cellTemplatesMap[header.label] : defaultHeaderCellTemplate;">
+                </ng-container>
+            </th>
+        </ng-template>
+
+        <ng-template #defaultHeaderCellTemplate>
+            {{ header.label }}
+        </ng-template>
+
+        <td [routerLink]="baseEditUrl + element.id" mat-cell *matCellDef="let element">
+            <ng-container *ngTemplateOutlet="cellTemplatesMap[header.column] ?
+      cellTemplatesMap[header.column] : defaultCellTemplate;">
+            </ng-container>
+            <ng-template #defaultCellTemplate>
+                {{ element[header.column] }}
+            </ng-template>
+        </td>
+
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+    </tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>

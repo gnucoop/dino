@@ -1,5 +1,6 @@
 # List of all entry-points of the Dewco core package.
 entryPoints = [
+    "list",
     "login",
 ]
 
