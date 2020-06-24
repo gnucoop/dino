@@ -109,6 +109,7 @@
     "@types/send": "^0.14.5",
     "@types/stylelint": "^9.10.1",
     "@types/uuid": "^3.4.8",
+    "@types/yaml": "^1.9.7",
     "autoprefixer": "^6.7.7",
     "axe-webdriverjs": "^1.1.5",
     "browser-sync": "^2.26.7",
@@ -174,7 +175,7 @@
     "typescript-3.7": "npm:typescript@~3.7.0",
     "typescript-3.8": "npm:typescript@~3.8.0",
     "vrsource-tslint-rules": "5.1.1",
-    "yaml": "^1.7.2",
+    "yaml": "^1.10.0",
     "yargs": "15.3.0"
   },
   "resolutions": {
