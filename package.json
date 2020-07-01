@@ -59,8 +59,9 @@
     "pouchdb-adapter-memory": "^7.2.1",
     "rxdb": "^8.7.5",
     "rxjs": "^6.5.3",
+    "rxjs-tslint-rules": "^4.33.1",
     "subscriptions-transport-ws": "^0.9.16",
-    "systemjs": "0.19.47",
+    "systemjs": "0.19.43",
     "tslib": "^2.0.0",
     "uuid": "^7.0.1",
     "zone.js": "~0.10.2"
