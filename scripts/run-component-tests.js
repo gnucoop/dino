@@ -58,7 +58,7 @@ if (local && (components.length > 1 || all)) {
   process.exit(1);
 }
 
-const browserName = firefox ? 'firefox-local' : 'chromium-local';
+const browserName = firefox ? 'firefox-local' : 'chromium';
 const bazelBinary = `yarn -s ${watch ? 'ibazel' : 'bazel'}`;
 const configFlag = viewEngine ? '--config=view-engine' : '';
 
@@ -85,8 +85,8 @@ if (!components.length) {
       'in order to run tests for all components.'));
   console.info(chalk.yellow('Below are a few examples of how the script can be run:'));
   console.info(chalk.yellow(` - yarn test all`));
-  console.info(chalk.yellow(` - yarn test src/core/reports`));
-  console.info(chalk.yellow(` - yarn test data auth`));
+  console.info(chalk.yellow(` - yarn test cdk/overlay material/stepper`));
+  console.info(chalk.yellow(` - yarn test button toolbar`));
   process.exit(1);
 }
 
