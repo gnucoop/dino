@@ -39,14 +39,14 @@ export class JWTInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-        catchError(error => {
-          if (error instanceof HttpErrorResponse && error.status === 401) {
-            return this._handle401(request, next);
-          } else {
-            return throwError(error);
-          }
-        }),
-    );
+               catchError(error => {
+                 if (error instanceof HttpErrorResponse && error.status === 401) {
+                   return this._handle401(request, next);
+                 } else {
+                   return throwError(error);
+                 }
+               }),
+               ) as Observable<HttpEvent<any>>;
   }
 
   private _handle401(request: HttpRequest<any>, next: HttpHandler) {

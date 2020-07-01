@@ -74,19 +74,19 @@ export class AuthService {
     const url = this._generateUrl('api/login');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
     return this._httpClient.post<LoginResponse>(url, req, {headers})
-        .pipe(
-            map(res => {
-              this._authenticated.next(true);
-              this._storeAuthToken(res.token);
-              this._storeRefreshToken(res.refreshToken);
-              this._storeUserInfo(res.user);
-              return true;
-            }),
-            catchError(() => {
-              this._authenticated.next(false);
-              return obsOf(false);
-            }),
-        );
+               .pipe(
+                   map(res => {
+                     this._authenticated.next(true);
+                     this._storeAuthToken(res.token);
+                     this._storeRefreshToken(res.refreshToken);
+                     this._storeUserInfo(res.user);
+                     return true;
+                   }),
+                   catchError(() => {
+                     this._authenticated.next(false);
+                     return obsOf(false);
+                   }),
+                   ) as Observable<boolean>;
   }
 
   /**
@@ -101,16 +101,16 @@ export class AuthService {
     const params = new HttpParams({fromObject: {global, refreshToken}});
     const url = `${this._generateUrl('api/logout')}?${params.toString()}`;
     return this._httpClient.post(url, {}, {withCredentials: true})
-        .pipe(
-            map(() => {
-              this._authenticated.next(false);
-              this._storeAuthToken(null);
-              this._storeRefreshToken(null);
-              this._storeUserInfo(null);
-              return true;
-            }),
-            catchError(() => obsOf(false)),
-        );
+               .pipe(
+                   map(() => {
+                     this._authenticated.next(false);
+                     this._storeAuthToken(null);
+                     this._storeRefreshToken(null);
+                     this._storeUserInfo(null);
+                     return true;
+                   }),
+                   catchError(() => obsOf(false)),
+                   ) as Observable<boolean>;
   }
 
   /**
@@ -161,12 +161,13 @@ export class AuthService {
     const url = this._generateUrl('api/jwt/refresh');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
     return this._httpClient.post<{token: string}>(url, req, {headers})
-        .pipe(
-            map(res => {
-              this._storeAuthToken(res.token);
-              return true;
-            }),
-            catchError(() => obsOf(false)));
+               .pipe(
+                   map(res => {
+                     this._storeAuthToken(res.token);
+                     return true;
+                   }),
+                   catchError(() => obsOf(false)),
+                   ) as Observable<boolean>;
   }
 
   /**
