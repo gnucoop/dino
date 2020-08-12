@@ -23,8 +23,9 @@ docsDistPath="${projectPath}/dist/docs"
 # Path to the cloned docs-content repository.
 docsContentPath="${projectPath}/tmp/dewco-docs-content"
 
-# Path to the release output of the Bazel "@dewco/dewco-examples" NPM package.
-examplesPackagePath="$(yarn -s bazel info bazel-bin)/src/dewco-examples/npm_package"
+# Path to the build output of the Bazel "@dewco/dewco-examples" NPM package.
+# Note: When changing this, also change the path in `scripts/build-docs-content.js`.
+examplesPackagePath="${projectPath}/dist/docs-content-pkg/"
 
 # Git clone URL for the dewco-docs-content repository.
 docsContentRepoUrl="git@bitbucket.org:gnucoop/dewco-docs-content.git"

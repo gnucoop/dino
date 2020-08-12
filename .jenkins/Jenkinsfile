@@ -96,6 +96,7 @@ pipeline {
       }
       steps {
         sh 'bazel build src/dewco-examples:npm_package --config=release'
+        sh 'yarn build-docs-content'
         sh './scripts/circleci/publish-snapshots.sh'
         sh 'node ./scripts/deploy-dev-app.js'
       }
