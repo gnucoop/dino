@@ -22,3 +22,4 @@
 
 export * from './list';
 export * from './list.module';
+export * from './user-interactions';

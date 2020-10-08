@@ -23,10 +23,13 @@
 import {SelectionModel} from '@angular/cdk/collections';
 import {
   AfterContentInit,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   ContentChildren,
+  Input,
   OnDestroy,
   OnInit,
   QueryList,
@@ -36,20 +39,23 @@ import {
 } from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
 import {DataModelManager, Model} from '@dewco/core/data';
-import {ListComponent} from '@dewco/core/list';
-import * as RxDb from 'rxdb';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {
+  FilterGroup,
+  FiltersService,
+  List,
+  SearchFiltersComponent,
+} from '@dewco/core/list';
+import {ListDataSource} from '@dewco/material/list-datasource';
+import {Subscription} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 
 import {ListCellDirective} from './list-cell';
 import {AdminUserInteractionsService} from './user-interactions';
 
 /**
  * The base Material List component.
- * Provides a template, selection and bulk/individual action functionalities for all list/tables of
- * Models in Material.
+ * Provides a template, selection and bulk/individual action functionalities for all list/tables
  */
 @Component({
   selector: 'dewco-mat-list',
@@ -60,28 +66,71 @@ import {AdminUserInteractionsService} from './user-interactions';
 })
 export class SelectionList<T extends Model = Model,
                                      DM extends DataModelManager<T> = DataModelManager<T>> extends
-    ListComponent<T, DM> implements AfterContentInit, OnInit, OnDestroy {
-  private _serviceData: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
-  private _dataSub: Subscription = Subscription.EMPTY;
-  private _dataSource: MatTableDataSource<T>;
-  get dataSource(): MatTableDataSource<T> {
-    return this._dataSource;
-  }
-
+    List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
+  /**
+   * the List selection model
+   */
   readonly selection = new SelectionModel<T>(true, []);
-  selectionSub: Subscription;
 
+  /**
+   * Non default table cell templates
+   */
   private _cellTemplatesMap: {[column: string]: TemplateRef<any>} = {};
   get cellTemplatesMap(): {[column: string]: TemplateRef<any>} {
     return this._cellTemplatesMap;
   }
 
+  /**
+   * the List dataSource. Extends and augments MatTableDataSource
+   */
+  private _dataSource: ListDataSource<T, DM>;
+  get dataSource(): ListDataSource<T, DM> {
+    return this._dataSource;
+  }
+  @Input()
+  set dataSource(dataSource: ListDataSource<T, DM>) {
+    if (dataSource !== this.dataSource) {
+      this._dataSource = dataSource;
+    }
+  }
+
+  /**
+   * A set of custom filters that overwrites the default generated filters
+   */
+  @Input()
+  set customFilters(filters: FilterGroup[]) {
+    if (filters) {
+      this._fts.setCustomFilters = filters;
+    }
+  }
+
+  private _actionsSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * List Paginator
+   */
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
+  /**
+   * List Sort
+   */
   @ViewChild(MatSort, {static: true}) sorting: MatSort;
 
+  /**
+   * The filtersComponent associated with the list
+   */
+  @ContentChild(SearchFiltersComponent, {static: true}) filtersComponent: SearchFiltersComponent;
+
+  /**
+   * Querylist of cell non default templates
+   */
   @ContentChildren(ListCellDirective) cellTemplates: QueryList<ListCellDirective>;
 
-  constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService) {
+  constructor(
+      cdr: ChangeDetectorRef,
+      aui: AdminUserInteractionsService,
+      private _fts: FiltersService,
+  ) {
     super(cdr, aui);
   }
 
@@ -92,18 +141,17 @@ export class SelectionList<T extends Model = Model,
     }, {} as {[column: string]: TemplateRef<any>});
   }
 
+  ngAfterViewInit() {}
+
   ngOnInit() {
-    this._dataSource = new MatTableDataSource<T>();
-    this._fillDataSource();
-    this._dataSub = this._serviceData.subscribe(items => {
-      this._dataSource.data = items;
-    });
-    this.refreshList();
+    if (this._dataSource) {
+      this._fillDataSource();
+    }
   }
 
   /**
    * Gets the currently selected items
-   * @return T[]
+   * @returns T[]
    */
   getSelection(): T[] {
     return this.selection ? this.selection.selected : [];
@@ -111,15 +159,35 @@ export class SelectionList<T extends Model = Model,
 
   /**
    * Gets all the items in the dataSource
-   * @return T[]
+   * @returns T[]
    */
   getItems(): T[] {
     return this.dataSource ? this.dataSource.data : [];
   }
 
   /**
+   * Gets all items in the dataSource currently displayed on the list page
+   * @returns T[]
+   */
+  getDisplayedItems(): T[] {
+    return this.dataSource ? this.dataSource.getDisplayedItems() : [];
+  }
+
+  /**
+   * Queries the DataSource for the selected items deletion
+   */
+  deleteItems(row: T|T[]) {
+    if (this.dataSource == null) {
+      return;
+    }
+    if (!Array.isArray(row)) {
+      row = [row];
+    }
+    this._actionEvent.emit({action: 'delete', items: row});
+  }
+
+  /**
    * Removes all items from the current selection
-   * @return void
    */
   clearSelection(): void {
     if (this.selection == null) {
@@ -130,74 +198,42 @@ export class SelectionList<T extends Model = Model,
 
   /**
    * Selects all the items
-   * @return voi
    */
   selectAll(): void {
     if (this.dataSource == null) {
       return;
     }
-    this.dataSource.data.forEach(row => this.selection.select(row));
-  }
-
-  /**
-   * Refreshes the items list and updates the dataSource data
-   * @return void
-   */
-  refreshList(): void {
-    this._service.list()
-        .pipe(
-            switchMap(listQuery => {
-              return listQuery.exec();
-            }),
-            )
-        .subscribe((items) => {
-          this._serviceData.next(this._rxDocsToJson(items));
-        });
-    this._cdr.detectChanges();
-  }
-
-  /**
-   * Applies simple filtering from a text input to the dataSource items list
-   * @param event Event
-   * @return void
-   */
-  applyFilter(event: Event) {
-    if (this.dataSource == null) {
-      return;
-    }
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.getDisplayedItems().forEach(row => this.selection.select(row));
   }
 
   /**
    * Checks if all the items in the list are currently selected
-   * @return boolean
+   * @returns boolean
    */
   isAllSelected(): boolean {
     if (this.dataSource == null) {
       return false;
     }
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numSelected = this.getSelection().length;
+    const numRows = this.getDisplayedItems().length;
     return numSelected === numRows;
   }
 
   /**
    * If not all items are currently selected, it selects all of them.
    * If all items are currently selected, it removes all of them from the selection.
-   * @return void
    */
-  masterToggle() {
+  masterToggle(): void {
     if (this.dataSource == null) {
       return;
     }
-    this.isAllSelected() ? this.selection.clear() : this.selectAll();
+    this.isAllSelected() ? this.clearSelection() : this.selectAll();
   }
 
   /**
    * Checks the current selection state of the row and changes its aria-label accordingly
    * @param row T
-   * @return string
+   * @returns string
    */
   checkboxLabel(row?: T): string {
     if (!row) {
@@ -207,32 +243,66 @@ export class SelectionList<T extends Model = Model,
   }
 
   /**
-   * Adds pagination and sorting to the dataSource
-   * @return void
+   * Adds pagination, sorting and a SearchFiltersComponent to the dataSource, if they are present
    */
   private _fillDataSource(): void {
     if (this.dataSource == null) {
       return;
     }
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sorting;
+    if (this.paginator) {
+      this.dataSource.setPaginator = this.paginator;
+    }
+    if (this.sorting) {
+      this.dataSource.setSort = this.sorting;
+    }
+    if (this.filtersComponent) {
+      this.dataSource.setFiltersComponent = this.filtersComponent;
+
+      // @WARNING: comment to allow filtering text data from hidden columns
+
+      this.dataSource.filterPredicate = (data: T, filter: string) => {
+        return this.headers.map(key => key.column)
+            .some(key => (key in data ? ('' + data[key]).toLowerCase().includes(filter) : false));
+      };
+
+      //
+    }
+
+    this._initList();
   }
 
   /**
-   * Converts an array of RxDocuments into an array of T objects
-   * @param docs RxDocument[]
-   * @retun T[]
+   * Initializes the list Actions subscription (delete, download, print, edit)
    */
-  private _rxDocsToJson(docs: RxDb.RxDocument<T>[]): T[] {
-    let docsJson: T[] = [];
-    docs.forEach(doc => {
-      docsJson.push(doc.toJSON());
-    });
-    return docsJson;
+  private _initList(): void {
+    this._actionsSub = this._actionEvent
+                           .pipe(
+                               switchMap(
+                                   ({action, items}) => this._aui.askConfirm(action).pipe(
+                                       map(confirmation => ({confirmation, action, items})),
+                                       ),
+                                   ),
+                               map(({confirmation, action, items}) => {
+                                 if (confirmation) {
+                                   this.processAction(action, items);
+                                 }
+                               }),
+                               )
+                           .subscribe();
   }
 
+  /**
+   * Queries the DataSource for the deletion of Items
+   * @param {T[]} items
+   * @returns {T[]}
+   */
+  deleteAction(items: T[]): T[] {
+    this.selection.deselect(...items);
+    return this._dataSource.deleteAction(items);
+  }
+
+
   ngOnDestroy() {
-    this.selectionSub.unsubscribe();
-    this._dataSub.unsubscribe();
+    this._actionsSub.unsubscribe();
   }
 }

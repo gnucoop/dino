@@ -28,11 +28,11 @@ import {Observable, of as obsOf} from 'rxjs';
 
 @Injectable()
 export class AdminUserInteractionsService extends CoreAdminUserInteractionsService {
-  constructor(private _dialog: MatDialog) {
+  constructor(private _dialog?: MatDialog) {
     super();
   }
 
-  askDeleteConfirm(): Observable<boolean> {
-    return obsOf(true);
+  askConfirm(action: string): Observable<boolean> {
+    return obsOf(true);  // @todo
   }
 }

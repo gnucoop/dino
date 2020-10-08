@@ -22,6 +22,7 @@ ng_module(
     deps = [
         "//src/core/data",
         "//src/core/list",
+        "//src/material/list-datasource",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
@@ -43,12 +44,28 @@ ng_test_library(
     ),
     deps = [
         ":list",
+        "//src/core/auth",
+        "//src/core/data",
+        "//src/core/list",
+        "//src/material/list-datasource",
+        "@npm//@angular/common",
+        "@npm//@angular/platform-browser",
+        "@npm//@angular/router",
+        "@npm//rxdb",
+        "@npm//rxjs",
     ],
 )
 
 ng_e2e_test_library(
     name = "e2e_test_sources",
     srcs = glob(["**/*.e2e.spec.ts"]),
+    deps = [
+        "//src/core/data",
+        "//src/material/list",
+        "//src/material/list-datasource",
+        "@npm//@angular/core",
+        "@npm//@angular/compiler",
+    ],
 )
 
 ng_web_test_suite(
