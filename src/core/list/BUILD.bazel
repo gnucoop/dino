@@ -18,6 +18,7 @@ ng_module(
     module_name = "@dewco/core/list",
     deps = [
        "//src/core/data",
+       "@npm//@ajf/core",
        "@npm//@angular/common",
        "@npm//@angular/core",
        "@npm//rxjs",
@@ -34,7 +35,10 @@ ng_test_library(
         ":list",
         "//src/core/auth",
         "//src/core/data",
+        "@npm//@ajf/core",
         "@npm//@angular/common",
+        "@npm//@angular/forms",
+        "@npm//@angular/router",
         "@npm//mock-socket",
         "@npm//rxdb",
         "@npm//rxjs",

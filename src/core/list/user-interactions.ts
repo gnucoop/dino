@@ -28,5 +28,5 @@ import {Observable} from 'rxjs';
  * Provides the core for a dialog/confirmation popup for confirming actions on list items
  */
 export abstract class AdminUserInteractionsService {
-  abstract askDeleteConfirm(): Observable<boolean>;
+  abstract askConfirm(action: string): Observable<boolean>;
 }

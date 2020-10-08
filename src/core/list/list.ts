@@ -25,32 +25,25 @@ import {
   Directive,
   EventEmitter,
   Input,
-  OnDestroy,
 } from '@angular/core';
-import {DataModelManager, Model} from '@dewco/core/data';
-import {Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, switchMap, take} from 'rxjs/operators';
+import {Model} from '@dewco/core/data';
 
 import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
 
 /**
- * The base ListComponent extended by Material and Ionic List components.
+ * The base ListComponent extended by Material List components.
  * Provides the core for a list/table with selection and bulk/individual actions capabilities.
  */
 @Directive()
-export abstract class ListComponent<T extends Model = Model,
-                                              DM extends DataModelManager<T> = DataModelManager<T>>
-    implements OnDestroy {
+export abstract class List<T extends Model = Model> {
   private _title: string;
-  private _displayedColumns: string[] = [];
-  private _headers: ListHeader[] = [];
+  private _displayedColumns: string[];
+  private _headers: ListHeader<T>[] = [];
   private _baseEditUrl = '';
 
-  private _deletionEvt: EventEmitter<T[]> = new EventEmitter<T[]>();
-  private _deletionSub: Subscription = Subscription.EMPTY;
-  protected _actionProcessed: EventEmitter<string> = new EventEmitter<string>();
-  readonly actionProcessed: Observable<string> = this._actionProcessed.asObservable();
+  protected _actionEvent: EventEmitter<{action: string, items: T[]}> =
+      new EventEmitter<{action: string, items: T[]}>();
 
   /**
    * List/Table title
@@ -72,22 +65,18 @@ export abstract class ListComponent<T extends Model = Model,
     return this._displayedColumns;
   }
 
-  @Input()
-  set displayedColumns(displayedColumns: string[]) {
-    this._displayedColumns = ['select', ...displayedColumns];
-    this._cdr.markForCheck();
-  }
-
   /**
    * The list/table headers
    */
-  get headers(): ListHeader[] {
+  get headers(): ListHeader<T>[] {
     return this._headers;
   }
 
   @Input()
-  set headers(headers: ListHeader[]) {
+  set headers(headers: ListHeader<T>[]) {
     this._headers = headers;
+    this._displayedColumns =
+        ['select', ...headers.map(header => header.column.toString()), 'actions'];
     this._cdr.markForCheck();
   }
 
@@ -104,139 +93,37 @@ export abstract class ListComponent<T extends Model = Model,
     this._cdr.markForCheck();
   }
 
-  /**
-   * The DataManager providing data for the list/table
-   */
-  protected _service: DM;
-  get service(): DM {
-    return this._service;
-  }
-
-  @Input()
-  set service(service: DM) {
-    this._service = service;
-    this._initService();
-  }
-
-
-  constructor(protected _cdr: ChangeDetectorRef, private _aui: AdminUserInteractionsService) {}
+  constructor(protected _cdr: ChangeDetectorRef, protected _aui: AdminUserInteractionsService) {}
 
   abstract getSelection(): T[];
   abstract getItems(): T[];
   abstract clearSelection(): void;
   abstract selectAll(): void;
-  abstract refreshList(): void;
-
-  /**
-   * Checks if all the rows are selected
-   * @return void
-   */
-  isAllSelected() {
-    const numSelected = this.getSelection().length;
-    const numRows = this.getItems().length;
-    return numSelected === numRows;
-  }
-
-  /**
-   * Toggles the selection of all rows
-   * @return void
-   */
-  masterToggle(): void {
-    this.isAllSelected() ? this.clearSelection() : this.selectAll();
-  }
-
-  /**
-   * Subscribes to the delete event
-   * @return void
-   */
-  private _initService(): void {
-    this._deletionSub.unsubscribe();
-    this._deletionSub = this._deletionEvt
-                            .pipe(
-                                switchMap(
-                                    selected => this._aui.askDeleteConfirm().pipe(
-                                        map(res => ({res, selected})),
-                                        )),
-                                switchMap(
-                                    ({res, selected}):
-                                        Observable<T|T[]|null> => {
-                                          if (res) {
-                                            if (selected.length === 1) {
-                                              return this._service.delete(selected[0]);
-                                            }
-                                            return this._service.bulkDelete(selected);
-                                          }
-                                          return obsOf(null);
-                                        }),
-                                filter(r => r != null),
-                                take(1),
-                                )
-                            .subscribe((r) => {
-                              this._actionProcessed.emit('delete');
-                              this.clearSelection();
-                              this.refreshList();
-                            });
-  }
+  abstract deleteAction(items: T[]): T[];
 
   /**
    * Retrieves the name of the handler functions based on the action name
-   * @param action string
-   * @return string
+   * @param {string} action
+   * @returns {string}
    */
   private _getActionHandler(action: string): string {
-    action = action.charAt(0).toUpperCase() + action.substring(1);
-    return `process${action}Action`;
+    action = action.charAt(0) + action.substring(1);
+    return `${action}Action`;
   }
 
   /**
    * Calls a handler function on the current selection based on the action name
-   * @param action string
-   * @return void
+   * @param {string} action
+   * @returns {void}
    */
-  processAction(action: string): void {
-    const selected = this.getSelection();
-    if (!selected || selected.length === 0) {
+  processAction(action: string, items: T[]): void {
+    if (items.length === 0) {
       return;
     }
     const handlerName = this._getActionHandler(action);
     const handler: (s: T[]) => void = (this as any)[handlerName];
     if (handler != null) {
-      handler.call(this, selected);
+      handler.call(this, items);
     }
-  }
-
-  /**
-   * Deletes the documents of the selected rows, then refreshes the list
-   * @param selected T[]
-   * @return void
-   */
-  processDeleteAction(selected: T[]): void {
-    if (this._service == null) {
-      return;
-    }
-    const s = this._aui.askDeleteConfirm().subscribe(res => {
-      if (s) {
-        s.unsubscribe();
-      }
-      if (res) {
-        if (selected.length === 1) {
-          this._service.delete(selected[0]).subscribe(_ => {
-            this.clearSelection();
-            this.refreshList();
-          });
-        } else {
-          this._service.bulkDelete(selected).subscribe(_ => {
-            this.clearSelection();
-            this.refreshList();
-          });
-        }
-        this._actionProcessed.emit('delete');
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this._deletionSub.unsubscribe();
-    this._deletionEvt.complete();
   }
 }
