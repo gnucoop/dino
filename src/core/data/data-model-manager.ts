@@ -51,6 +51,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   private _context: Observable<PermissionContext<T>>;
   private _collectionInit: Observable<boolean>;
   private _modelName: string;
+  private _collectionSchema: RxDb.RxJsonSchema;
 
   constructor(
       createParams: DataCreateCollectionRequest,
@@ -60,11 +61,20 @@ export abstract class DataModelManager<T extends Model = Model> {
   ) {
     this._context = _contextService.permissionContext;
     this._modelName = createParams.collection.name;
+    this._collectionSchema = createParams.collection.schema;
     this._collectionInit = _dataService.createCollection(createParams)
                                .pipe(
                                    filter(created => created),
                                    shareReplay(1),
                                );
+  }
+
+  /**
+   * Retrieves the collection schema
+   * @return RxDb.RxJsonSchema
+   */
+  get collectionSchema(): RxDb.RxJsonSchema {
+    return this._collectionSchema;
   }
 
   /**
@@ -215,7 +225,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @return an observable of the array of the deleted RxDocuments
    */
-  bulkDelete(data: T[]): Observable<RxDb.RxDocument<T>[] | null> {
+  bulkDelete(data: T[]): Observable<RxDb.RxDocument<T>[]|null> {
     if (data == null || data.length == 0) {
       return of(null);
     }
