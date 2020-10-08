@@ -1,0 +1,55 @@
+<ng-container *ngIf="formGroup|async as fg">
+    <form novalidate [formGroup]="fg">
+        <div class="ajf-form-container">
+            <ng-container *ngIf="(slides|async) as curSlides">
+                <ng-container *ngFor="let slideInstance of curSlides; trackBy:trackNodeById">
+                    <ng-container *ngIf="!(slideInstance|ajfIsRepeatingSlideInstance)">
+                        <div class="ajf-form-page">
+                            <mat-card class="mat-elevation-z4" [style.opacity]="(widgetVisibility|async) ? '1' : '0.2'"
+                                [style.pointer-events]="(widgetVisibility|async) ? 'auto' : 'none'">
+                                <div class="elem">
+                                    <ng-template ngFor let-fieldInstance [ngForOf]="slideInstance.flatNodes"
+                                        [ngForTrackBy]="trackNodeById">
+                                        <mat-card-header>
+                                            <mat-card-title>
+                                                {{ (fieldInstance|ajfAsFieldInstance).node.description }}
+                                            </mat-card-title>
+                                        </mat-card-header>
+                                        <mat-card-content>
+                                            <i [class]="(fieldInstance|ajfAsFieldInstance).node.fieldType | ajfFieldIcon"
+                                                item-right></i>
+                                            <label
+                                                *ngIf="(fieldInstance|ajfAsFieldInstance).node.fieldType !== ajfFieldTypes.Empty"
+                                                [innerHTML]="(fieldInstance|ajfAsFieldInstance).node.label"></label>
+                                            <ajf-field [instance]="(fieldInstance|ajfAsFieldInstance)"
+                                                [readonly]="readonly"></ajf-field>
+                                            <ng-container
+                                                *ngIf="conditionOperatorByFieldType((fieldInstance|ajfAsFieldInstance).node.fieldType) as operators">
+                                                <ng-container *ngIf="operators.length > 0">
+                                                    <mat-button-toggle-group #group (change)="changeOperator($event)"
+                                                        [value]="(fieldInstance.node|asFilterItem).operator ? (fieldInstance.node|asFilterItem).operator?.label : null ">
+                                                        <mat-button-toggle *ngFor="let operator of operators"
+                                                            [value]="operator"
+                                                            [checked]="operatorValue.getValue().label == operator.label">
+                                                            {{ operator.label }}
+                                                        </mat-button-toggle>
+                                                    </mat-button-toggle-group>
+                                                </ng-container>
+                                            </ng-container>
+                                        </mat-card-content>
+                                    </ng-template>
+                                </div>
+                                <mat-card-actions>
+                                    Exclude <mat-slide-toggle #toggleFilter (change)="filterToggle($event)"
+                                        [checked]="widgetData.active"
+                                        [disabled]="checkToggleDisabled(getWidgetFormValue(), toggleFilter)">
+                                    </mat-slide-toggle> Include
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </div>
+    </form>
+</ng-container>
