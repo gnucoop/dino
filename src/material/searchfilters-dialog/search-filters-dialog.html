@@ -1,0 +1,29 @@
+<div class="menu">
+    <div>
+        <h2 mat-dialog-title>Search by values</h2>
+    </div>
+    <div class="elem">
+        <button mat-raised-button (click)="search()" color="accent">search</button>
+    </div>
+    <!-- <button mat-button (click)="closeDialog()">x</button> -->
+    <dewco-mat-searchfilters-chips (excludeFilter)="removeFilter($event, 'temporary')" [chipsType]="'temporary'">
+    </dewco-mat-searchfilters-chips>
+</div>
+
+<mat-dialog-content>
+    <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
+        <mat-tab *ngFor=" let filterGroup of fts.modelFilters|async;" [label]="filterGroup.filterGroupName"
+            style="width: 100%">
+            <ng-template matTabContent>
+                <div class="widgets-container" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="0.5% grid">
+                    <dewco-mat-searchfilters-widget *ngFor="let widget of widgetData|async;" fxFlex="0 1 33%"
+                        fxFlex.lt-lg="0 1 50%" fxFlex.lt-md="100%" 
+                        [widgetData]="widget"
+                        (includeFilter)="addFilter($event, 'temporary')"
+                        (excludeFilter)="removeFilter($event, 'temporary')">
+                    </dewco-mat-searchfilters-widget>
+                </div>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</mat-dialog-content>

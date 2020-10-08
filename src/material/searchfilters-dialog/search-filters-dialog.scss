@@ -1,0 +1,12 @@
+mat-dialog-container {
+    min-width: 75vw;
+    dewco-mat-searchfilters-dialog {
+        .widgets-container {
+            padding: 15px;
+            overflow: hidden;
+        }
+        .mat-tab-body-content {
+            overflow: hidden !important;
+        }
+    }
+}
