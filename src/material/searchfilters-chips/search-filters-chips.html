@@ -1,0 +1,12 @@
+<mat-chip-list aria-label="Fish selection">
+    <mat-chip *ngFor="let item of chipsFilters|async">
+        <span style="margin-right: 5px;"> {{ (item.label ? item.label : item.name)|uppercase|slice:0:30 }} </span>
+        {{  item?.operator?.label }}
+        {{ item.value|json }}
+        <div>
+            <i class="material-icons" (click)="removeFilterItem(item)">
+                close
+            </i>
+        </div>
+    </mat-chip>
+</mat-chip-list>
