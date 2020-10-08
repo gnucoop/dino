@@ -10,5 +10,7 @@
       "@dewco/material/*": ["../material/*"]
     }
   },
-  "include": ["./**/*.ts"]
+  "include": [
+    "./**/*.ts"
+  ]
 }

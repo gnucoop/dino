@@ -8,6 +8,7 @@ import {MAT_TOOLTIP_SCROLL_STRATEGY} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {TranslateModule} from '@ngx-translate/core';
 
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
@@ -27,6 +28,7 @@ import {ExampleFormSelectModule} from './example-form-select/example-form-select
     RouterModule.forRoot(E2E_APP_ROUTES),
     MatDatepickerModule,
     MatNativeDateModule,
+    TranslateModule.forRoot(),
 
     // E2E demos
     ExampleFormCollectModule,

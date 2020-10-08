@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, Model, PermissionContextService} from '@dewco/core/data';
+import {ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
+import {testAjfFormData} from './test-ajf-formdata';
 
 export const schema = {
   'type': 'object',
@@ -9,6 +11,7 @@ export const schema = {
     'name': {'type': 'string', 'description': 'Element name'},
     'weight': {'type': 'number', 'description': 'Element weight'},
     'symbol': {'type': 'string', 'description': 'Element symbol'},
+    'data': {'type': 'object', 'description': 'Form data'},
     'created_at': {'type': 'string', 'description': 'Creation timestamp.'},
     'updated_at': {'type': 'string', 'description': 'Update timestamp.'},
   },
@@ -17,23 +20,59 @@ export const schema = {
   'version': 0,
 } as RxJsonSchema;
 
-export interface PeriodicElement extends Model {
+
+export class PeriodicElement implements Model {
   name: string;
   weight: number;
   symbol: string;
+  data?: any;
+  id: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export const ELEMENT_DATA: PeriodicElement[] = [
-  {id: '', name: 'Hydrogen', weight: 1.0079, symbol: 'H', created_at: '', updated_at: ''},
+  {
+    id: '',
+    name: 'Hydrogen',
+    weight: 1.0079,
+    symbol: 'H',
+    data: testAjfFormData,
+    created_at: '',
+    updated_at: ''
+  },
   {id: '', name: 'Helium', weight: 4.0026, symbol: 'He', created_at: '', updated_at: ''},
   {id: '', name: 'Lithium', weight: 6.941, symbol: 'Li', created_at: '', updated_at: ''},
   {id: '', name: 'Beryllium', weight: 9.0122, symbol: 'Be', created_at: '', updated_at: ''},
-  {id: '', name: 'Boron', weight: 10.811, symbol: 'B', created_at: '', updated_at: ''},
+  {
+    id: '',
+    name: 'Boron',
+    weight: 10.811,
+    symbol: 'B',
+    data: testAjfFormData,
+    created_at: '',
+    updated_at: ''
+  },
   {id: '', name: 'Carbon', weight: 12.0107, symbol: 'C', created_at: '', updated_at: ''},
   {id: '', name: 'Nitrogen', weight: 14.0067, symbol: 'N', created_at: '', updated_at: ''},
-  {id: '', name: 'Oxygen', weight: 15.9994, symbol: 'O', created_at: '', updated_at: ''},
+  {
+    id: '',
+    name: 'Oxygen',
+    weight: 15.9994,
+    symbol: 'O',
+    data: testAjfFormData,
+    created_at: '',
+    updated_at: ''
+  },
   {id: '', name: 'Fluorine', weight: 18.9984, symbol: 'F', created_at: '', updated_at: ''},
   {id: '', name: 'Neon', weight: 20.1797, symbol: 'Ne', created_at: '', updated_at: ''},
+];
+
+export const displayedHeaders: ListHeader<PeriodicElement>[] = [
+  {column: 'name', label: 'Name', sortable: true},
+  {column: 'weight', label: 'Weight', sortable: true},
+  {column: 'data', label: 'FormData', sortable: false},
+  {column: 'symbol', label: 'Symbol', sortable: false},
 ];
 
 @Injectable({providedIn: 'root'})

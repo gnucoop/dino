@@ -1,9 +1,9 @@
 exports.config = {
   useAllAngular2AppRoots: true,
-  allScriptsTimeout: 120000,
-  getPageTimeout: 120000,
+  allScriptsTimeout: 12000,
+  getPageTimeout: 12000,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 120000,
+    defaultTimeoutInterval: 12000,
   },
 
   plugins: [
@@ -15,6 +15,9 @@ exports.config = {
       rules: [
         // Exclude mat-menu elements because those are empty if not active.
         {id: 'aria-required-children', selector: '*:not(mat-menu)'},
+        
+        // Exclude mat-select elements because they do not contain the required aria children (Material issue).
+        {id: 'aria-required-children', selector: '*:not(mat-select)'},
 
         // Disable color contrast checks since the final colors will vary based on the theme.
         {id: 'color-contrast', enabled: false},
