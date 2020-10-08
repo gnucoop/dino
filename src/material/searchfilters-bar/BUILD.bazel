@@ -1,0 +1,79 @@
+load("//src/e2e-app:test_suite.bzl", "e2e_test_suite")
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_e2e_test_library",
+    "ng_module",
+    "ng_test_library",
+    "ng_web_test_suite",
+    "sass_binary",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "searchfilters-bar",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [":search-filters-bar.css"] + glob(["**/*.html"]),
+    module_name = "@dewco/material/searchfilters-bar",
+    deps = [
+        "//src/core/list",
+        "//src/material/searchfilters-chips",
+        "//src/material/searchfilters-dialog",
+        "//src/material/searchfilters-preset-manager",
+        "@npm//@angular/common",
+        "@npm//@angular/forms",
+        "@npm//@angular/material",
+        "@npm//@angular/router",
+    ],
+)
+
+sass_binary(
+    name = "search-filters-bar_scss",
+    src = "search-filters-bar.scss",
+    deps = [],
+)
+
+ng_test_library(
+    name = "unit_test_sources",
+    srcs = glob(
+        ["**/*.spec.ts"],
+        exclude = ["**/*.e2e.spec.ts"],
+    ),
+    deps = [
+        ":searchfilters-bar",
+        "//src/core/list",
+        "@npm//@angular/material",
+        "@npm//@angular/router",
+    ],
+)
+
+ng_e2e_test_library(
+    name = "e2e_test_sources",
+    srcs = glob(["**/*.e2e.spec.ts"]),
+)
+
+ng_web_test_suite(
+    name = "unit_tests",
+    deps = [":unit_test_sources"],
+)
+
+e2e_test_suite(
+    name = "e2e_tests",
+    deps = [
+        ":e2e_test_sources",
+    ],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["search-filters-bar.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)

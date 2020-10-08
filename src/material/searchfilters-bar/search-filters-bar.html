@@ -1,0 +1,47 @@
+<!-- <mat-form-field>
+    <mat-label>FilterBar</mat-label>
+    <input matInput placeholder="Search">
+</mat-form-field> -->
+
+<ng-container>
+
+    <dewco-mat-searchfilters-preset-manager></dewco-mat-searchfilters-preset-manager>
+
+    <div class="toolbar">
+        
+        <ng-container [formGroup]="dateSearchFilters">
+
+            <mat-form-field floatLabel="always">
+                <input formControlName="dateStart" matInput [matDatepicker]="pickerFrom" [placeholder]="'From date'">
+                <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+
+
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="dateEnd" [matDatepicker]="pickerTo" [placeholder]="'To date'">
+                <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+            </mat-form-field>
+
+        </ng-container>
+
+        <ng-container [formGroup]="textSearchFilters">
+
+            <mat-form-field floatLabel="always">
+                <input matInput formControlName="keyword" [placeholder]="'search by keyword'">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+
+        </ng-container>
+
+        <button mat-button (click)="openDialog()" aria-label="Open the advanced filters">
+            <mat-icon matSuffix>filter_list</mat-icon>
+        </button>
+
+    </div>
+
+    <dewco-mat-searchfilters-chips (excludeFilter)="removeFilter($event, ['advanced'])" [chipsType]="'advanced'">
+    </dewco-mat-searchfilters-chips>
+
+</ng-container>
