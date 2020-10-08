@@ -32,12 +32,15 @@ ANGULAR_NO_NGCC_BUNDLES = [
 
 # List of Angular library UMD bundles which will be processed by ngcc.
 ANGULAR_NGCC_BUNDLES = [
+    ("@ajf/core", ["core-forms.umd.js"]),
+    ("@ajf/material", ["material-forms.umd.js"]),
     ("@angular/animations", ["animations-browser.umd.js", "animations.umd.js"]),
     ("@angular/cdk", ["cdk-a11y.umd.js", "cdk-accordion.umd.js", "cdk-bidi.umd.js", "cdk-collections.umd.js", "cdk-keycodes.umd.js", "cdk-observers.umd.js", "cdk-overlay.umd.js", "cdk-platform.umd.js", "cdk-portal.umd.js", "cdk-scrolling.umd.js", "cdk-text-field.umd.js"]),
     ("@angular/common", ["common-http-testing.umd.js", "common-http.umd.js", "common-testing.umd.js", "common.umd.js"]),
     ("@angular/compiler", ["compiler-testing.umd.js"]),
     ("@angular/core", ["core-testing.umd.js", "core.umd.js"]),
     ("@angular/elements", ["elements.umd.js"]),
+    ("@angular/flex-layout", ["flex-layout-core.umd.js"]),
     ("@angular/forms", ["forms.umd.js"]),
     ("@angular/material", ["material-core.umd.js", "material-button.umd.js", "material-divider.umd.js", "material-expansion.umd.js", "material-form-field.umd.js", "material-icon.umd.js", "material-input.umd.js", "material-list.umd.js", "material-sidenav.umd.js", "material-progress-bar.umd.js", "material-toolbar.umd.js"]),
     ("@angular/platform-browser-dynamic", ["platform-browser-dynamic-testing.umd.js", "platform-browser-dynamic.umd.js"]),
@@ -52,7 +55,14 @@ THIRD_PARTY_NGCC_BUNDLES = [
 THIRD_PARTY_NO_NGCC_BUNDLES = [
     ("@ionic/core", []),
     ("@ionic/core/loader", []),
+    ("@zxing/library", []),
+    ("chart.js", []),
+    ("css-element-queries", []),
+    ("date-fns", []),
+    ("esprima", []),
+    ("leaflet", []),
     ("mock-socket", []),
+    ("numeral", []),
     ("pouchdb-adapter-idb", []),
     ("pouchdb-adapter-memory", []),
     ("rxdb", []),
