@@ -1,7 +1,13 @@
 # List of all entry-points of the Dewco core package.
 entryPoints = [
     "list",
+    "list-datasource",
     "login",
+    "searchfilters-bar",
+    "searchfilters-chips",
+    "searchfilters-dialog",
+    "searchfilters-preset-manager",
+    "searchfilters-widget",
 ]
 
 # List of all non-testing entry-points of the Dewco material package.

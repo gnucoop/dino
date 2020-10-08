@@ -2,6 +2,7 @@
 CORE_ENTRYPOINTS = [
     "auth",
     "data",
+    "list",
 ]
 
 CORE_ENTRYPOINTS_WITH_STYLES = [

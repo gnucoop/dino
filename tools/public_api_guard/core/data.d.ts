@@ -76,12 +76,14 @@ export interface DataListOptions {
 }
 
 export declare abstract class DataModelManager<T extends Model = Model> {
+    get collectionSchema(): RxDb.RxJsonSchema;
     constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
     addToContext(data: PermissionContextDataUpdate): void;
     bulkCreate(data: InsertModel<T>[]): Observable<{
         success: RxDocument<T>[];
         error: any[];
     }>;
+    bulkDelete(data: T[]): Observable<RxDocument<T>[] | null>;
     create(obj: InsertModel<T>): Observable<RxDocument<T> | null>;
     delete(data: string | T): Observable<RxDocument<T> | null>;
     get(id: string): Observable<RxDocument<T> | null>;
