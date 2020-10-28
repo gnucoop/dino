@@ -30,8 +30,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {FilterItem, filterListType, FiltersService} from '@dewco/core/list';
-import {combineLatest, Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {combineLatest, Observable, throwError} from 'rxjs';
+import {catchError, map, tap} from 'rxjs/operators';
 
 /**
  * Shows a list of active filters and allows the deletion of any one of those
@@ -77,6 +77,7 @@ export class SearchFiltersChips implements OnInit {
     }
     this.chipsFilters = this.chipsFilters.pipe(
         map(filters => filters.filter(cf => cf.value !== null && cf.value !== '' && cf.isValid)),
+        catchError(err => throwError(err) as Observable<FilterItem[]>),
     );
   }
 

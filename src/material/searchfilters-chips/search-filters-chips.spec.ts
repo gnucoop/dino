@@ -26,7 +26,6 @@ describe(
               declarations: [SearchFiltersChips],
               imports: [RouterTestingModule],
               providers: [
-                FiltersService,
                 {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
               ],
             })
