@@ -127,7 +127,6 @@ describe('ListComponent', () => {
         RouterTestingModule,
       ],
       providers: [
-        {provide: FiltersService, useValue: fts},
         {provide: ActivatedRoute, useValue: fakeActivatedRoute},
         {provide: DummyManager, useValue: dummyManager},
         {provide: AuthService, useValue: authServiceMock},
@@ -136,10 +135,10 @@ describe('ListComponent', () => {
     });
     contextService = TestBed.inject(PermissionContextService);
     dataService = TestBed.inject(DataService);
+    fts = TestBed.inject(FiltersService);
     dummyManager = new DummyManager(createCollectionParams, dataService, contextService);
     route = TestBed.inject(ActivatedRoute);
     router = TestBed.inject(Router);
-    fts = new FiltersService(route, router);
     dataSource = new ListDataSource<DummyModel, DummyManager>(dummyManager, fts);
   });
 

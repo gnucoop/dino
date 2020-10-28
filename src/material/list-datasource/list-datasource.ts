@@ -28,6 +28,7 @@ import {
   DataQueryOptions,
   Model,
 } from '@dewco/core/data';
+import {FormSchema} from '@dewco/core/forms';
 import {
   FilterItem,
   FiltersService,
@@ -38,16 +39,18 @@ import {
   BehaviorSubject,
   combineLatest,
   from,
+  Observable,
   Subscription,
+  throwError,
 } from 'rxjs';
-import {map, switchMap, take} from 'rxjs/operators';
+import {catchError, map, switchMap, take} from 'rxjs/operators';
 
 
 export class ListDataSource<T extends Model = Model,
                                       DM extends DataModelManager<T> = DataModelManager<T>> extends
     MatTableDataSource<T> {
   private _modelSchema: RxJsonSchema;
-  private _formSchema: object;
+  private _formSchema: FormSchema|undefined;
   get modelSchema(): RxJsonSchema {
     return this._modelSchema;
   }
@@ -58,7 +61,11 @@ export class ListDataSource<T extends Model = Model,
   private _dataResultsSub: Subscription = Subscription.EMPTY;
   private _filterParamsSub: Subscription = Subscription.EMPTY;
 
-  constructor(private _dataModelManager: DM, private _fs: FiltersService, formSchema?: any) {
+  constructor(
+      private _dataModelManager: DM,
+      private _fs: FiltersService,
+      formSchema?: FormSchema,
+  ) {
     // @TODO (Marco):  formSchema will be provided by FormSchemaManager
     super();
 
@@ -85,6 +92,7 @@ export class ListDataSource<T extends Model = Model,
         combineLatest([this._fs.queryString, this.refreshList])
             .pipe(
                 map(([queryString, refresh]) => (queryString && refresh) ? queryString : ''),
+                catchError(err => throwError(err) as Observable<string>),
                 )
             .subscribe(queryString => {
               this.queryDM(queryString);
@@ -172,6 +180,14 @@ export class ListDataSource<T extends Model = Model,
                 querySelector, ['created_at', '$lte'], new Date(item.value).toISOString());
           }
           break;
+        case 'location':
+        case 'project':
+          if (item && item.value) {
+            this._addNestedProps(
+                querySelector, [`data.${item.name.trim().toLowerCase()}.name`, '$regex'],
+                item.value);
+          }
+          break;
         default:
           if (item) {
             if (!item.isFormData) {
@@ -186,7 +202,7 @@ export class ListDataSource<T extends Model = Model,
               this._addNestedProps(
                   querySelector,
                   [
-                    `data.${item.name.trim().toLowerCase()}`,
+                    `data.data.${item.name.trim().toLowerCase()}`,
                     item.operator ? item.operator.value : '$eq',
                   ],
                   item.value);
@@ -199,7 +215,6 @@ export class ListDataSource<T extends Model = Model,
       selector: querySelector,
     };
     this.getQueryResults(query);
-
     return query;
   }
 
@@ -216,6 +231,7 @@ export class ListDataSource<T extends Model = Model,
               return res;
             }),
             take(1),
+            catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
             )
         .subscribe((results) => {
           this._dataResults.next(this._rxDocsToJson(results));
@@ -232,6 +248,7 @@ export class ListDataSource<T extends Model = Model,
     this._dataModelManager.bulkDelete(items)
         .pipe(
             take(1),
+            catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]|null>),
             )
         .subscribe(res => {
           results = res;
