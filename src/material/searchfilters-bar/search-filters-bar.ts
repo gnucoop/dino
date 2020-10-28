@@ -22,11 +22,13 @@
 
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
+import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {
   FilterItem,
@@ -35,7 +37,8 @@ import {
   SearchFiltersComponent,
 } from '@dewco/core/list';
 import {SearchFiltersDialog} from '@dewco/material/searchfilters-dialog';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription, throwError} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 /**
  * Opt-in component that handles all SelectionList filters.
@@ -60,8 +63,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   constructor(
       protected _fts: FiltersService,
       public dialog: MatDialog,
+      private _cdr: ChangeDetectorRef,
   ) {
-    super(_fts);
+    super();
   }
 
   ngOnInit() {
@@ -83,11 +87,13 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     dialogConfig.id = 'modal-component';
     dialogConfig.panelClass = 'search-filters-dialog';
     this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);
-    this._dialogSub = this._dialogRef.afterClosed().subscribe(search => {
-      if (search) {
-        this._fts.updateAdvancedFilters();
-      }
-    });
+    this._dialogSub = this._dialogRef.afterClosed()
+                          .pipe(catchError(err => throwError(err) as Observable<boolean>))
+                          .subscribe((search: boolean) => {
+                            if (search) {
+                              this._fts.updateAdvancedFilters();
+                            }
+                          });
   }
 
   /**
@@ -100,11 +106,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Tells the FilterService to initialize the filters and load the filters from the route
+   * Tells the FilterService to initialize the filters and load them from the route
    * queryParams
    */
   private _initFilters() {
-    this._fts.initializeFilters(this.basicFilters);
+    this._fts.initializeFilters(this.basicFilters)
+        .pipe(
+            catchError(err => throwError(err) as Observable<FormGroup[]>),
+            )
+        .subscribe(formGroups => {
+          this.basicFilters = [...this.basicFilters, ...formGroups];
+          this.optionalFilters = formGroups;
+          this.optionalFiltersLabels =
+              this.optionalFilters.map(group => Object.keys(group.controls)[0]);
+          this._cdr.detectChanges();
+        })
+        .unsubscribe();
   }
 
   ngOnDestroy() {

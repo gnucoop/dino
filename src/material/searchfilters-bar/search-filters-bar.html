@@ -8,7 +8,7 @@
     <dewco-mat-searchfilters-preset-manager></dewco-mat-searchfilters-preset-manager>
 
     <div class="toolbar">
-        
+
         <ng-container [formGroup]="dateSearchFilters">
 
             <mat-form-field floatLabel="always">
@@ -30,6 +30,16 @@
 
             <mat-form-field floatLabel="always">
                 <input matInput formControlName="keyword" [placeholder]="'search by keyword'">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+
+        </ng-container>
+
+        <ng-container *ngFor="let group of optionalFilters; let idx = index" [formGroup]="group">
+
+            <mat-form-field floatLabel="always" *ngIf="optionalFiltersLabels[idx]">
+                <input matInput [formControlName]="optionalFiltersLabels[idx]"
+                    placeholder="search by {{optionalFiltersLabels[idx]}}">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
 

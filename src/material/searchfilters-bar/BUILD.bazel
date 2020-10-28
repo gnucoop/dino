@@ -48,6 +48,7 @@ ng_test_library(
         "//src/core/list",
         "@npm//@angular/material",
         "@npm//@angular/router",
+        "@npm//@angular/common",
     ],
 )
 
