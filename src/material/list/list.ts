@@ -40,6 +40,7 @@ import {
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {DataModelManager, Model} from '@dewco/core/data';
+import {ErrorHandlerService} from '@dewco/core/error-handler';
 import {
   FilterGroup,
   FiltersService,
@@ -47,8 +48,8 @@ import {
   SearchFiltersComponent,
 } from '@dewco/core/list';
 import {ListDataSource} from '@dewco/material/list-datasource';
-import {Subscription} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {Subscription, throwError} from 'rxjs';
+import {catchError, map, switchMap} from 'rxjs/operators';
 
 import {ListCellDirective} from './list-cell';
 import {AdminUserInteractionsService} from './user-interactions';
@@ -266,6 +267,8 @@ export class SelectionList<T extends Model = Model,
       };
 
       //
+    } else {
+      this._fts.loadPreset(null);
     }
 
     this._initList();
@@ -275,20 +278,22 @@ export class SelectionList<T extends Model = Model,
    * Initializes the list Actions subscription (delete, download, print, edit)
    */
   private _initList(): void {
-    this._actionsSub = this._actionEvent
-                           .pipe(
-                               switchMap(
-                                   ({action, items}) => this._aui.askConfirm(action).pipe(
-                                       map(confirmation => ({confirmation, action, items})),
-                                       ),
-                                   ),
-                               map(({confirmation, action, items}) => {
-                                 if (confirmation) {
-                                   this.processAction(action, items);
-                                 }
-                               }),
-                               )
-                           .subscribe();
+    this._actionsSub =
+        this._actionEvent
+            .pipe(
+                switchMap(
+                    ({action, items}) => this._aui.askConfirm(action).pipe(
+                        map(confirmation => ({confirmation, action, items})),
+                        ),
+                    ),
+                map(({confirmation, action, items}) => {
+                  if (confirmation) {
+                    this.processAction(action, items);
+                  }
+                }),
+                catchError(err => throwError(err)),
+                )
+            .subscribe();
   }
 
   /**

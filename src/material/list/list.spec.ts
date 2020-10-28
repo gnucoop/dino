@@ -138,9 +138,6 @@ describe('ListComponent', () => {
             RouterTestingModule,
           ],
           providers: [
-            PermissionContextService,
-            DataService,
-            FiltersService,
             {provide: ActivatedRoute, useValue: fakeActivatedRoute},
             {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
             {provide: AdminUserInteractionsService, useValue: adminUIService},
