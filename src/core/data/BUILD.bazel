@@ -18,6 +18,8 @@ ng_module(
     module_name = "@dewco/core/data",
     deps = [
         "//src/core/auth",
+        "@npm//@types/pouchdb-adapter-idb",
+        "@npm//@types/pouchdb-adapter-memory",
         "@npm//@types/uuid",
         "@npm//rxdb",
         "@npm//rxjs",

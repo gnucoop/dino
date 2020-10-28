@@ -1,0 +1,31 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "forms",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [],
+    module_name = "@dewco/core/forms",
+    deps = [
+        "//src/core/data",
+        "@npm//@ajf/core",
+    ],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["forms.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)
