@@ -23,10 +23,12 @@ import {SearchFiltersWidget} from '@dewco/material/searchfilters-widget';
 @Component({
   selector: 'mat-slide-toggle',
   template: '',
-  providers: [{
-    provide: MatSlideToggle,
-    useClass: MatSlideToggleStub,
-  }]
+  providers: [
+    {
+      provide: MatSlideToggle,
+      useClass: MatSlideToggleStub,
+    },
+  ]
 })
 class MatSlideToggleStub {
   toggle() {}
@@ -98,10 +100,9 @@ describe('Search filters widget', () => {
           ],
           providers: [
             AjfValidationService,
-          ],
+          ]
         })
         .compileComponents();
-
     fixtureMatSlideToggleStub = TestBed.createComponent(MatSlideToggleStub);
     matSlideToggleStub = fixtureMatSlideToggleStub.componentInstance;
 
