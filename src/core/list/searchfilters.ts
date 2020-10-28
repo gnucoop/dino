@@ -20,7 +20,6 @@
  *
  */
 import {FormControl, FormGroup} from '@angular/forms';
-import {FiltersService} from './public-api';
 
 /**
  * Abstract base component inherited by FiltersComponents
@@ -28,14 +27,17 @@ import {FiltersService} from './public-api';
 export abstract class SearchFiltersComponent {
   readonly textSearchFilters: FormGroup;
   readonly dateSearchFilters: FormGroup;
-  readonly basicFilters: FormGroup[];
+  basicFilters: FormGroup[];
+  optionalFilters: FormGroup[];
+  optionalFiltersLabels: string[];
 
-  constructor(protected _fts: FiltersService) {
+  constructor() {
     this.textSearchFilters = new FormGroup({keyword: new FormControl()});
     this.dateSearchFilters = new FormGroup({
       dateStart: new FormControl(),
       dateEnd: new FormControl(),
     });
     this.basicFilters = [this.textSearchFilters, this.dateSearchFilters];
+    this.optionalFilters = [];
   }
 }

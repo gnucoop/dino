@@ -3,12 +3,37 @@ import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dewco/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
+import {FormSchema} from '@dewco/core/forms';
 import {
   FilterItem,
   FiltersService,
 } from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
+
+let testDbIdx = 0;
+
+function dataServiceConfig(): DataServiceConfig {
+  return {
+    databaseCreateOptions: {
+      name: `dewco_data_test_db_${testDbIdx++}`,
+      adapter: 'memory',
+    },
+    syncOptions: {
+      url: 'http://dewcoServer/v1/graphql',
+      wsUrl: 'ws://dewcoServer/v1/graphql',
+      webSocketImpl: WebSocket,
+    },
+  };
+}
+
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+};
 
 const dummySchema = {
   'type': 'object',
@@ -23,7 +48,7 @@ const dummySchema = {
   'version': 0,
 } as RxJsonSchema;
 
-const dummyFormSchema = {
+const dummyAjfSchema = {
   'nodes': [
     {
       'id': 1,
@@ -40,17 +65,28 @@ const dummyFormSchema = {
         'fieldType': 0,
         'hasChoices': true,
         'parentNode': 0,
+        'validation': {'notEmpty': true, 'conditions': []},
+        'visibility': {'condition': 'true'},
+        'defaultValue': null,
+        'conditionalBranches': [{'condition': 'true'}]
       }],
+      'parent': 0,
+      'nodeType': 3,
+      'parentNode': 0,
+      'visibility': {'condition': 'true'},
+      'conditionalBranches': [{'condition': 'true'}]
     },
   ],
 };
 
-const createCollectionParams = {
-  collection: {
-    name: 'dummymodel',
-    schema: dummySchema,
-  }
+const dummyFormSchema: FormSchema = {
+  id: '',
+  name: 'testSchema',
+  schema: dummyAjfSchema,
+  created_at: '',
+  updated_at: '',
 };
+
 
 const fakeFilters: FilterItem[] = [
   {name: 'filter_a', value: 'test'},
@@ -78,15 +114,18 @@ describe('FiltersService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule.withRoutes([]),
+      ],
       providers: [
-        {provide: FiltersService, useValue: fts},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: ActivatedRoute, useValue: fakeActivatedRoute},
       ],
     });
     route = TestBed.inject(ActivatedRoute);
     router = TestBed.inject(Router);
-    fts = new FiltersService(route, router);
+    fts = TestBed.inject(FiltersService);
   });
 
   it('should initialize the basic filters formGroup, triggering the preset loading',
@@ -266,6 +305,10 @@ describe('FiltersService', () => {
                parentNode: 0,
                choices: undefined,
                isFormData: true,
+               validation: Object({notEmpty: true, conditions: []}),
+               visibility: Object({condition: 'true'}),
+               defaultValue: null,
+               conditionalBranches: [Object({condition: 'true'})],
              },
            ],
          }

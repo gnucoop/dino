@@ -107,7 +107,6 @@ export abstract class List<T extends Model = Model> {
    * @returns {string}
    */
   private _getActionHandler(action: string): string {
-    action = action.charAt(0) + action.substring(1);
     return `${action}Action`;
   }
 

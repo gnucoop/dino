@@ -21,9 +21,20 @@
  */
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {AjfCondition} from '@ajf/core/models';
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {EventEmitter, Injectable, OnDestroy, Optional} from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ErrorHandlerService} from '@dewco/core/error-handler';
+import {FormSchema} from '@dewco/core/forms';
+import {
+  DEFAULT_MODEL_KEYS,
+  FIELD_TYPES,
+  FilterGroup,
+  FilterItem,
+  filterListType,
+} from '@dewco/core/list';
+import {LocationManager} from '@dewco/core/locations';
+import {ProjectManager} from '@dewco/core/projects';
 import {RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
@@ -33,21 +44,16 @@ import {
   of as obsOf,
   Subject,
   Subscription,
+  throwError,
 } from 'rxjs';
 import {
+  catchError,
   debounceTime,
   map,
   switchMap,
   take,
   withLatestFrom,
 } from 'rxjs/operators';
-import {
-  DEFAULT_MODEL_KEYS,
-  FIELD_TYPES,
-  FilterGroup,
-  FilterItem,
-  filterListType,
-} from '@dewco/core/list';
 
 /**
  * Service that handles all operations related to list Filters.
@@ -72,6 +78,7 @@ export class FiltersService implements OnDestroy {
   }
 
   private _basicFormGroups: FormGroup[];
+  private _basicOptionalFormGroups: FormGroup[] = [];
 
   private _basicFilters: BehaviorSubject<FilterItem[]>;
   get basicFilters(): BehaviorSubject<FilterItem[]> {
@@ -108,6 +115,8 @@ export class FiltersService implements OnDestroy {
   constructor(
       private _route: ActivatedRoute,
       private _router: Router,
+      @Optional() private _locationManager?: LocationManager,
+      @Optional() private _projectManager?: ProjectManager,
   ) {
     /**
      * Filters generated from a Model Schema
@@ -170,11 +179,15 @@ export class FiltersService implements OnDestroy {
     this.loadPresetEvent = new EventEmitter<boolean>(true);
 
     this._basicFiltersSub = Subscription.EMPTY;
+    this._loadingPresetSub = Subscription.EMPTY;
 
     this._modelFiltersSub =
         combineLatest([this._defaultModelFilters, this._defaultFormSchemaFilters])
             .pipe(
                 withLatestFrom(this._modelFilters),
+                catchError(
+                    err => throwError(err) as
+                        Observable<[[FilterGroup[], FilterGroup[]], FilterGroup[]]>),
                 )
             .subscribe(([[defaultModelFilters, defaultSchemaFilters], modelFilters]) => {
               if (!modelFilters.length &&
@@ -183,33 +196,44 @@ export class FiltersService implements OnDestroy {
               }
             });
 
-    this._activeFiltersSub = combineLatest([
-                               this._basicFilters,
-                               this._advancedFilters,
-                               this._listReady,
-                             ]).subscribe(([basicFilters, advancedFilters, listReady]) => {
-      if (!listReady) {
-        return;
-      }
-      let allFilters = [...basicFilters, ...advancedFilters];
-      let actFilters: FilterItem[] = [];
-      this._activeFilters.pipe(take(1)).subscribe(fts => actFilters = fts);
-      if (actFilters.length > 0 && allFilters.length > 0) {
-        actFilters = this._mergeFilterItems(actFilters, allFilters);
-      } else {
-        actFilters = allFilters;
-      }
-      actFilters = actFilters.filter((ft) => ft.value || ft.value === false || ft.value === 0);
-      this._activeFilters.next(actFilters);
-    });
+    this._activeFiltersSub =
+        combineLatest([
+          this._basicFilters,
+          this._advancedFilters,
+          this._listReady,
+        ])
+            .pipe(
+                catchError(
+                    err => throwError(err) as Observable<[FilterItem[], FilterItem[], boolean]>),
+                )
+            .subscribe(([basicFilters, advancedFilters, listReady]) => {
+              if (!listReady) {
+                return;
+              }
+              let allFilters = [...basicFilters, ...advancedFilters];
+              let actFilters: FilterItem[] = [];
+              this._activeFilters.pipe(take(1)).subscribe(fts => actFilters = fts);
+              if (actFilters.length > 0 && allFilters.length > 0) {
+                actFilters = this._mergeFilterItems(actFilters, allFilters);
+              } else {
+                actFilters = allFilters;
+              }
+              actFilters =
+                  actFilters.filter((ft) => ft.value || ft.value === false || ft.value === 0);
+              this._activeFilters.next(actFilters);
+            });
 
-    this._queryStringSub = this._activeFilters.subscribe((items) => {
-      if (this._loadingPreset != null) {
-        this._updateBasicFormValues(items);
-        this._loadingPreset = null;
-      }
-      this._updateQueryString(items);
-    });
+    this._queryStringSub = this._activeFilters
+                               .pipe(
+                                   catchError(err => throwError(err) as Observable<FilterItem[]>),
+                                   )
+                               .subscribe((items) => {
+                                 if (this._loadingPreset != null) {
+                                   this._updateBasicFormValues(items);
+                                   this._loadingPreset = null;
+                                 }
+                                 this._updateQueryString(items);
+                               });
   }
 
   /**
@@ -289,7 +313,9 @@ export class FiltersService implements OnDestroy {
         map(filters => filters.find(f => f.name === filterName)),
         take(1),
     );
-    return filterItem;
+    return filterItem.pipe(
+        catchError(err => throwError(err) as Observable<FilterItem>),
+    );
   }
 
   /**
@@ -412,17 +438,35 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Sets and initializes the basic filters (usually dateStart, dateEnd and keyword) and loads the
-   * filter preset from the queryParams
-   * @param {FormGroup[]} formGroups
+   * Checks for optional default basic filters, based on optional injections
    */
-  initializeFilters(basicFormGroups: FormGroup[]): void {
-    this._basicFormGroups = basicFormGroups;
+  _checkOptionalBasicFilters() {
+    if (this._locationManager) {
+      this._basicOptionalFormGroups.push(new FormGroup({location: new FormControl()}));
+    }
+    if (this._projectManager) {
+      this._basicOptionalFormGroups.push(new FormGroup({project: new FormControl()}));
+    }
+  }
+
+  /**
+   * Sets and initializes the basic filters (dateStart, dateEnd and keyword and all other
+   * opttional basic filters) and loads the filter preset from the queryParams.
+   * Returns an observable of all the optional basic filters initalized.
+   * @param {FormGroup[]} formGroups
+   * @returns {Observable(FormGroup[])}
+   */
+  initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]> {
+    this._checkOptionalBasicFilters();
+    this._basicFormGroups = [...basicFormGroups, ...this._basicOptionalFormGroups];
     const valueChanges = this._basicFormGroups.map(group => group.valueChanges);
 
     this._loadingPresetSub =
         this.loadPresetEvent.asObservable()
-            .pipe(withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))))
+            .pipe(
+                withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))),
+                catchError(err => throwError(err) as Observable<[any, any]>),
+                )
             .subscribe(([loadEvent, preset]) => {
               if (loadEvent) {
                 this.loadPreset(preset);
@@ -439,13 +483,14 @@ export class FiltersService implements OnDestroy {
                     const ftItem: FilterItem = {
                       name: fName,
                       value: flt[fName],
-                      operator: {label: '==', value: '$eq'},
+                      operator: {label: 'Like', value: '$regex'},
                       fieldType: AjfFieldType.String,
                     };
                     filterItems.push(ftItem);
                   }
                   return [filterItems];
                 }),
+                catchError(err => throwError(err) as Observable<FilterItem[]>),
                 )
             .subscribe(filters => {
               const currentValue = this._basicFilters.value.map(a => ({...a}) as FilterItem);
@@ -453,6 +498,8 @@ export class FiltersService implements OnDestroy {
             });
 
     this.LoadPresetTrigger();
+    return obsOf(this._basicOptionalFormGroups)
+        .pipe(catchError(err => throwError(err) as Observable<FormGroup[]>));
   }
 
   /**
@@ -549,7 +596,7 @@ export class FiltersService implements OnDestroy {
    * @param {RxJsonSchema} modelSchema
    * @param {any} formSchema
    */
-  generateFilters(modelSchema: RxJsonSchema, formSchema: any = null) {
+  generateFilters(modelSchema: RxJsonSchema, formSchema?: FormSchema) {
     this.generateModelSchemaFilters(modelSchema);
     this.generateFormSchemaFilters(formSchema);
   }
@@ -581,24 +628,25 @@ export class FiltersService implements OnDestroy {
    * Creates form filters from an AjfFormSchema ()
    * @param {Object} formSchema
    */
-  generateFormSchemaFilters(formSchema: any) {
+  generateFormSchemaFilters(formSchema?: FormSchema) {
     if (!formSchema) {
       this._defaultFormSchemaFilters.next([]);
       return;
     }
-    const slides = formSchema.nodes;
+    const slides = formSchema.schema.nodes;
     const nodes: FilterGroup[] = [];
-    for (let i = 0; i < slides.length; i++) {
-      let advancedFilters = slides[i].nodes as FilterItem[];
-      nodes.push({
-        filterGroupName: slides[i].label,
-        filterGroupAdvancedFilters: advancedFilters.map(f => {
-          f.choices = f.choicesOrigin ? f.choicesOrigin.choices : undefined;
-          f.isFormData = true;
-          return f;
-        })
-
-      } as FilterGroup);
+    if (slides) {
+      for (let i = 0; i < slides.length; i++) {
+        let advancedFilters = slides[i].nodes as FilterItem[];
+        nodes.push({
+          filterGroupName: slides[i].label,
+          filterGroupAdvancedFilters: advancedFilters.map(f => {
+            f.choices = f.choicesOrigin ? f.choicesOrigin.choices : undefined;
+            f.isFormData = true;
+            return f;
+          })
+        } as FilterGroup);
+      }
     }
     this._defaultFormSchemaFilters.next(nodes);
   }
