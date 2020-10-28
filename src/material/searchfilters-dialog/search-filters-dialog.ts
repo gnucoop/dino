@@ -42,6 +42,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ErrorHandlerService} from '@dewco/core/error-handler';
 import {
   DEFAULT_OPERATORS,
   FilterGroup,
@@ -50,8 +51,8 @@ import {
   FiltersService,
   WidgetData
 } from '@dewco/core/list';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
-import {map, take, tap, withLatestFrom} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
+import {catchError, map, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {SearchFiltersWidget} from '../searchfilters-widget';
 
@@ -101,13 +102,17 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
                 group.filterGroupAdvancedFilters.filter(ft => ft.fieldType !== AjfFieldType.Empty) :
                 []),
         map(filters => filters.map(f => this._setupWidget(this._setupFilterItem(f)))),
+        catchError(err => throwError(err) as Observable<WidgetData[]>),
         take(1),
     );
   }
 
   ngAfterViewInit() {
     if (this.widgets) {
-      this._updateWidgetsSub = this._updateWidgetsEvent.asObservable().subscribe(_ => {
+      this._updateWidgetsSub = this._updateWidgetsEvent.asObservable().subscribe(res => {
+        if (res === false) {
+          return;
+        }
         let matchingWidgets = this.widgets.toArray().filter(widget => {
           return this.fts.temporaryFilters.value.some(
               ft => ft.name === widget.widgetName && ft.value === null &&
@@ -164,8 +169,11 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
    */
   removeFilter(filterItem: FilterItem, listType: filterListType[]|filterListType): void {
     this.fts.removeFilter(filterItem, listType)
-        .pipe(take(1))
-        .subscribe(_ => this._updateWidgetsEvent.emit(true));
+        .pipe(
+            take(1),
+            catchError(err => throwError(err) as Observable<boolean>),
+            )
+        .subscribe(res => this._updateWidgetsEvent.emit(res));
   }
 
 

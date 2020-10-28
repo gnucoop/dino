@@ -106,7 +106,6 @@ describe('Search filters dialog', () => {
             RouterTestingModule,
           ],
           providers: [
-            FiltersService,
             {provide: MatDialogRef, useValue: mockDialogRef},
             {provide: ActivatedRoute, useValue: fakeActivatedRoute},
             {provide: MAT_DIALOG_DATA, useValue: {}},
