@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+      "noEmit": true,
+      "experimentalDecorators": true,
+      "skipLibCheck": true,
+      "target": "es2015",
+      "module": "esnext",
+      "moduleResolution": "node",
+      "lib": ["es5", "es2015", "dom"],
+      "baseUrl": ".",
+      "types": [],
+      "paths": {
+        "*": ["../../../npm/node_modules/*"],
+        "@dewco/core/*": ["../../src/core/*"]
+      }
+  }
+}

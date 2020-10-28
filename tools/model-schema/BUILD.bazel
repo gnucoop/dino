@@ -1,0 +1,23 @@
+load("//src/core:config.bzl", "CORE_MODELS")
+load("//tools:defaults.bzl", "ts_library")
+load("//tools/model-schema:model-schema-targets.bzl", "model_schema_targets")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["tsconfig-generate.json"])
+
+ts_library(
+    name = "sources",
+    srcs = glob(["**/*.ts"]),
+    tsconfig = ":tsconfig.json",
+    deps = [
+        "@npm//@types/json-schema",
+        "@npm//@types/minimist",
+        "@npm//@types/node",
+        "@npm//ts-json-schema-generator",
+    ],
+)
+
+MODELS = ["core/%s-json.ts" % m for m in CORE_MODELS]
+
+model_schema_targets(models = MODELS)

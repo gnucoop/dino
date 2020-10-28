@@ -21,6 +21,9 @@ echo "Build - View Engine"
 echo "Unit tests - View Engine"
 "${BAZEL_BINARY}" test src/... --build_tag_filters=-docs-package,-e2e --test_tag_filters=-e2e --config=view-engine --build_tests_only
 
+echo "JSON schema tests"
+yarn -s bazel test tools/model-schema/...
+
 echo "Integration tests"
 yarn integration-tests:view-engine
 
