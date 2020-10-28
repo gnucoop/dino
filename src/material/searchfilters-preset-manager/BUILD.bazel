@@ -42,6 +42,7 @@ ng_test_library(
     deps = [
         ":searchfilters-preset-manager",
         "//src/core/list",
+        "@npm//@angular/common",
         "@npm//@angular/material",
         "@npm//@angular/router",
         "@npm//rxjs",

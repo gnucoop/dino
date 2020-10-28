@@ -30,8 +30,9 @@ import {
 import {FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FiltersService} from '@dewco/core/list';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, throwError} from 'rxjs';
 import {
+  catchError,
   map,
   shareReplay,
   startWith,
@@ -69,12 +70,16 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
    * Saves a filterPreset into the localstorage
    */
   savePreset() {
-    const saveSub = this._presetSaveData.subscribe(([pName, pData]) => {
-      if (pName != '' && pData != null) {
-        localStorage.setItem('filters_preset_' + pName, pData);
-        this._presets.next(Object.keys(localStorage));
-      }
-    });
+    const saveSub = this._presetSaveData
+                        .pipe(
+                            catchError(err => throwError(err) as Observable<[string, any]>),
+                            )
+                        .subscribe(([pName, pData]) => {
+                          if (pName != '' && pData != null) {
+                            localStorage.setItem('filters_preset_' + pName, pData);
+                            this._presets.next(Object.keys(localStorage));
+                          }
+                        });
     saveSub.unsubscribe();
   }
 
@@ -85,6 +90,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
     const loadSub = this.canLoadPreset
                         .pipe(
                             withLatestFrom(this.presetName),
+                            catchError(err => throwError(err) as Observable<[boolean, string]>),
                             )
                         .subscribe(([canLoad, pName]) => {
                           if (canLoad && pName != '') {
@@ -110,6 +116,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
     this._presetOptions = this._presets.pipe(
         map(keys => keys.filter(k => k.includes('filters_preset_'))
                         .map(str => str.replace('filters_preset_', ''))),
+        catchError(err => throwError(err) as Observable<string[]>),
     );
 
 
@@ -119,6 +126,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
           return options.some(option => pName && option === pName);
         }),
         startWith(false),
+        catchError(err => throwError(err) as Observable<boolean>),
     );
 
     this.filteredOptions =
