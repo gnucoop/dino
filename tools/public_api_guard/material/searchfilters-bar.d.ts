@@ -1,7 +1,7 @@
 export declare class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
     protected _fts: FiltersService;
     dialog: MatDialog;
-    constructor(_fts: FiltersService, dialog: MatDialog);
+    constructor(_fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef);
     ngOnDestroy(): void;
     ngOnInit(): void;
     openDialog(): void;

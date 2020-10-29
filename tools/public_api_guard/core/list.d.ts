@@ -47,23 +47,24 @@ export declare class FiltersService implements OnDestroy {
     get queryString(): BehaviorSubject<string>;
     set setCustomFilters(filterGroups: FilterGroup[]);
     get temporaryFilters(): BehaviorSubject<FilterItem[]>;
-    constructor(_route: ActivatedRoute, _router: Router);
+    constructor(_route: ActivatedRoute, _router: Router, _locationManager?: LocationManager | undefined, _projectManager?: ProjectManager | undefined);
     LoadPresetTrigger(): void;
+    _checkOptionalBasicFilters(): void;
     addFilter(filterItem: FilterItem, filterList: filterListType): void;
     checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean;
     checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean;
     checkValues(val_a: string, val_b: string, operator: string): boolean;
     findFilterByName(filterName: string, filterList?: filterListType): Observable<FilterItem | undefined>;
-    generateFilters(modelSchema: RxJsonSchema, formSchema?: any): void;
-    generateFormSchemaFilters(formSchema: any): void;
+    generateFilters(modelSchema: RxJsonSchema, formSchema?: FormSchema): void;
+    generateFormSchemaFilters(formSchema?: FormSchema): void;
     generateModelSchemaFilters(modelSchema: RxJsonSchema): void;
-    initializeFilters(basicFormGroups: FormGroup[]): void;
+    initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]>;
     loadPreset(encodedString: string | null): void;
     ngOnDestroy(): void;
     removeFilter(filterItem: FilterItem, filterList: filterListType[] | filterListType): Observable<boolean>;
     resetTemporaryFilters(): void;
     updateAdvancedFilters(): void;
-    static ɵfac: i0.ɵɵFactoryDef<FiltersService, never>;
+    static ɵfac: i0.ɵɵFactoryDef<FiltersService, [null, null, { optional: true; }, { optional: true; }]>;
     static ɵprov: i0.ɵɵInjectableDef<FiltersService>;
 }
 
@@ -108,11 +109,12 @@ export interface Operator {
 }
 
 export declare abstract class SearchFiltersComponent {
-    protected _fts: FiltersService;
-    readonly basicFilters: FormGroup[];
+    basicFilters: FormGroup[];
     readonly dateSearchFilters: FormGroup;
+    optionalFilters: FormGroup[];
+    optionalFiltersLabels: string[];
     readonly textSearchFilters: FormGroup;
-    constructor(_fts: FiltersService);
+    constructor();
 }
 
 export declare function unzip(base64ZippedString: any): string;
