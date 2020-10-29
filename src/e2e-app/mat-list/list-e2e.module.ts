@@ -5,9 +5,12 @@ import {
   AjfValidationService,
   AjfWarningAlertService,
 } from '@ajf/core/forms';
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 import {AuthService, User} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
+import {ErrorHandlerService} from '@dewco/core/error-handler';
+import {LocationModule} from '@dewco/core/locations';
+import {ProjectModule} from '@dewco/core/projects';
 import {ListModule} from '@dewco/material/list';
 import {SearchFiltersBarModule} from '@dewco/material/searchfilters-bar';
 import {Observable, of as obsOf} from 'rxjs';
@@ -44,10 +47,7 @@ const authServiceMock = {
 
 let testDbIdx = 0;
 
-// const serverUrl = 'http://dewcoServer/v1/graphql';
 const serverUrl = '/';
-const wsServerUrl = 'ws://dewcoServer';
-const wsUrl = `${wsServerUrl}/v1/graphql`;
 
 const warningServiceToken: AjfWarningAlertService = {
   showWarningAlertPrompt(warnings: string[]): Observable<AjfFieldWarningAlertResult> {
@@ -64,8 +64,6 @@ function dataServiceConfig(): DataServiceConfig {
     },
     syncOptions: {
       url: serverUrl,
-      // wsUrl,
-      // webSocketImpl: WebSocket,
     },
   };
 }
@@ -77,6 +75,8 @@ function dataServiceConfig(): DataServiceConfig {
   ],
   imports: [
     ListModule,
+    LocationModule,
+    ProjectModule,
     SearchFiltersBarModule,
   ],
   providers: [
@@ -85,6 +85,7 @@ function dataServiceConfig(): DataServiceConfig {
     {provide: AJF_WARNING_ALERT_SERVICE, useValue: warningServiceToken},
     {provide: AuthService, useValue: authServiceMock},
     {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+    {provide: ErrorHandler, useClass: ErrorHandlerService},
   ],
 })
 export class MaterialListE2eModule {

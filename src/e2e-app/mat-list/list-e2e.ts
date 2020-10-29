@@ -5,7 +5,7 @@ import {ListDataSource} from '@dewco/material/list-datasource';
 import {map, switchMap} from 'rxjs/operators';
 
 import {displayedHeaders, ELEMENT_DATA, ElementManager, PeriodicElement} from './element-manager';
-import {testAjfSchema} from './test-ajf-form';
+import {testAjfSchema} from './test-ajf-formschema';
 
 
 @Component({
@@ -27,6 +27,21 @@ export class MatListE2E {
               fieldType: AjfFieldType.Number,
             },
           ],
+      filterGroupBasicFilters: [{
+        name: 'Location',
+        fieldType: AjfFieldType.MultipleChoice,
+        choicesOrigin: {
+          name: 'location',
+          type: 'fixed',
+          label: 'Location',
+          choices:
+              [
+                {label: 'Location A', value: 'A'},
+                {label: 'Location B', value: 'B'},
+                {label: 'Location C', value: 'C'},
+              ],
+        }
+      }]
     },
     {
       filterGroupName: 'Charts',
@@ -55,10 +70,13 @@ export class MatListE2E {
   readonly baseEditUrl: string = 'edit/';
   readonly headers: ListHeader<PeriodicElement>[] = displayedHeaders;
   readonly dataSource = new ListDataSource<PeriodicElement, ElementManager>(
-      this.service, this.filtersService, testAjfSchema);
+      this.dataService,
+      this.filtersService,
+      testAjfSchema,
+  );
 
   private _setupTestDb() {
-    this.service.list()
+    this.dataService.list()
         .pipe(
             switchMap(query => query.exec()),
             )
@@ -70,7 +88,7 @@ export class MatListE2E {
   }
 
   private _populateTestDb() {
-    this.service.bulkCreate(ELEMENT_DATA)
+    this.dataService.bulkCreate(ELEMENT_DATA)
         .pipe(
             map(docs => docs.success),
             )
@@ -79,7 +97,10 @@ export class MatListE2E {
         });
   }
 
-  constructor(readonly service: ElementManager, readonly filtersService: FiltersService) {
+  constructor(
+      readonly dataService: ElementManager,
+      readonly filtersService: FiltersService,
+  ) {
     this._setupTestDb();
   }
 }

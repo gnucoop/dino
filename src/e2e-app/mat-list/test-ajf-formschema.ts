@@ -1,33 +1,7 @@
-import {AjfForm} from '@ajf/core/forms';
-import {Model} from '@dewco/core/data';
+import {AjfChoicesOriginType} from '@ajf/core/forms';
+import {FormSchema} from '@dewco/core/forms';
 
-export interface FormSchema extends AjfForm {
-  name: string;
-  icon_identifier: string;
-  edit_title?: string;
-  schema?: any;
-  geolevels_allowed?: number[];
-  timelevels_allowed?: number[];
-  unique_for_location_and_timelevel?: boolean;
-  permissions?: any;
-  is_tallysheet?: boolean;
-  is_public?: boolean;
-}
-export interface FormData extends Model {
-  user: number;
-  schema: number;
-  location: number;
-  timelevel: number;
-  geo_level?: number;
-  date_start: string;
-  date_end: string;
-  submitted?: boolean;
-  data?: any;
-  permissions?: any;
-  state?: string;
-}
-
-export const testAjfSchema = {
+export const ajfSchema = {
   'nodes': [
     {
       'id': 1,
@@ -84,10 +58,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'SEX',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Male', 'value': 'Male'}, {'label': 'Female', 'value': 'Female'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'SEX',
@@ -111,7 +85,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'DISTRICT_NAMES',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Quelimane', 'value': 'quelimane'},
@@ -140,7 +114,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'QUELIMANE_COMMUNITY',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Eduba', 'value': 'eduba'}, {'label': 'Mazuere', 'value': 'mazuere'},
@@ -169,7 +143,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'NICOADALA_COMMUNITY',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Curungo', 'value': 'Curungo'},
@@ -200,7 +174,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'NAMACURRA_COMMUNITY',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Cocodane', 'value': 'cocodane'}, {'label': 'Mutange', 'value': 'mutange'},
@@ -228,7 +202,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'season',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'First agricultural campaign (October-March)', 'value': 'first_campaign'}, {
@@ -236,7 +210,7 @@ export const testAjfSchema = {
                 'value': 'second_campaign'
               }
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'season',
@@ -258,14 +232,14 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'affected_by',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Drought', 'value': 'drought'}, {'label': 'Flood', 'value': 'flood'},
               {'label': 'Phytopathological diseases', 'value': 'diseases'},
               {'label': 'None', 'value': 'none'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'affected_by',
@@ -287,13 +261,13 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'severity',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Low', 'value': 'low'}, {'label': 'Medium', 'value': 'medium'},
               {'label': 'High', 'value': 'high'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'severity',
@@ -329,14 +303,14 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'ECONOMIC_ACTIVITY',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Farmer', 'value': 'farmer'}, {'label': 'Trader', 'value': 'trader'},
               {'label': 'Fisherman', 'value': 'fisherman'},
               {'label': 'Other(specificy)', 'value': 'other'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'ECONOMIC_ACTIVITY',
@@ -360,7 +334,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'crop_seeds',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Rice', 'value': 'rice'},
@@ -387,7 +361,7 @@ export const testAjfSchema = {
               {'label': 'Pumpkin', 'value': 'pumpkin'},
               {'label': 'Other (specify)', 'value': 'other'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'crop_seeds',
@@ -428,7 +402,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PARTITION_1000_TO_5000',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': '0-1000', 'value': '0-1000'}, {'label': '1001-2000', 'value': '1001-2000'},
@@ -436,7 +410,7 @@ export const testAjfSchema = {
               {'label': '3001-4000', 'value': '3001-4000'},
               {'label': '4001-5000', 'value': '4001-5000'}, {'label': '>5000', 'value': '>5000'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'PARTITION_1000_TO_5000',
@@ -461,7 +435,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PARTITION_500_TO_3000',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': '0-500', 'value': '0-500'}, {'label': '501-1000', 'value': '501-1000'},
@@ -470,7 +444,7 @@ export const testAjfSchema = {
               {'label': '2001-2500', 'value': '2001-2500'},
               {'label': '2501-3000', 'value': '2501-3000'}, {'label': '>3000', 'value': '>3000'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'PARTITION_500_TO_3000',
@@ -553,13 +527,13 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'NUMBER_1_TO_4',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': '1', 'value': '1'}, {'label': '2', 'value': '2'},
               {'label': '3', 'value': '3'}, {'label': '>4', 'value': '4'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'NUMBER_1_TO_4',
@@ -583,13 +557,13 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'NUMBER_1_TO_4',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': '1', 'value': '1'}, {'label': '2', 'value': '2'},
               {'label': '3', 'value': '3'}, {'label': '>4', 'value': '4'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'NUMBER_1_TO_4',
@@ -1028,10 +1002,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -1070,7 +1044,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PARTITION_200_TO_10000',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': '0-200', 'value': '0-200'}, {'label': '201-500', 'value': '201-500'},
@@ -1081,7 +1055,7 @@ export const testAjfSchema = {
               {'label': '5001-10000', 'value': '5001-10000'},
               {'label': '> 10000', 'value': '> 10000'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'PARTITION_200_TO_10000',
@@ -1105,14 +1079,14 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO_SOMETIMES',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Yes, totally', 'value': 'totally'},
               {'label': 'Yes, sometimes', 'value': 'sometimes'},
               {'label': 'Seldom', 'value': 'seldom'}, {'label': 'Never', 'value': 'never'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO_SOMETIMES',
@@ -1136,7 +1110,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'AGRICULTURAL_PRACTICES',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {
@@ -1171,7 +1145,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'crop_seeds',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Rice', 'value': 'rice'},
@@ -1198,7 +1172,7 @@ export const testAjfSchema = {
               {'label': 'Pumpkin', 'value': 'pumpkin'},
               {'label': 'Other (specify)', 'value': 'other'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'crop_seeds',
@@ -1236,7 +1210,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PARTITION_50_TO_300',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': '0-50', 'value': '0-50'}, {'label': '51-100', 'value': '51-100'},
@@ -1244,7 +1218,7 @@ export const testAjfSchema = {
               {'label': '201-250', 'value': '201-250'}, {'label': '251-300', 'value': '251-300'},
               {'label': '*300', 'value': '*300'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'PARTITION_50_TO_300',
@@ -2195,10 +2169,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2254,10 +2228,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2279,7 +2253,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'crop_seeds',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Rice', 'value': 'rice'},
@@ -2306,7 +2280,7 @@ export const testAjfSchema = {
               {'label': 'Pumpkin', 'value': 'pumpkin'},
               {'label': 'Other (specify)', 'value': 'other'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'crop_seeds',
@@ -2344,7 +2318,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'fertilizer_type',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Organic', 'value': 'organic'},
@@ -2373,10 +2347,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2400,10 +2374,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2443,10 +2417,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2470,13 +2444,13 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'FERTILIZER_PURCHASED_OR_SELF_PRODUCED',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Purchased', 'value': 'purchased'},
               {'label': 'Self-produced fertilizer', 'value': 'Self-produced_fertilizer'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'FERTILIZER_PURCHASED_OR_SELF_PRODUCED',
@@ -2500,10 +2474,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2527,7 +2501,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'ORGANIC_OR_NOT',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Organic', 'value': 'organic'},
@@ -2556,10 +2530,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2598,13 +2572,13 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PESTICIDIES_PURCHASED_OR_SELF_PRODUCED',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Purchased', 'value': 'purchased'},
               {'label': 'Self-produced pesticides', 'value': 'Self-produced_pesticides'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'PESTICIDIES_PURCHASED_OR_SELF_PRODUCED',
@@ -2628,10 +2602,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2655,7 +2629,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'METHOD_OF_CONTROL',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Cultural', 'value': 'cultural'},
@@ -2718,7 +2692,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PARTITION_3_TO_12',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'from 1 to 3', 'value': 'from_1_to_3'},
@@ -2772,10 +2746,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2830,10 +2804,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -2872,7 +2846,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'OBSTACLES',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Water availability', 'value': 'water_availability'},
@@ -2924,7 +2898,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'PRODUCTION_SHARE',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Good growth', 'value': 'good_growth'},
@@ -4854,7 +4828,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'APPLICATION_VALUE',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Domestic utensils', 'value': 'domestic_utensils'},
@@ -4887,10 +4861,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -4948,7 +4922,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'transport',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'My own means of transport', 'value': 'own_means'},
@@ -4956,7 +4930,7 @@ export const testAjfSchema = {
               {'label': 'Project truck', 'value': 'truck'}, {'label': 'Taxi', 'value': 'taxi'},
               {'label': 'Other', 'value': 'other'}
             ],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'transport',
@@ -5018,7 +4992,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'SALES_CHANNELS',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'cooperatives', 'value': 'cooperatives'},
@@ -5063,10 +5037,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -5106,10 +5080,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -5149,10 +5123,10 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'YES_NO',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-            'choicesType': 'string'
+
           },
           'forceExpanded': false,
           'choicesOriginRef': 'YES_NO',
@@ -5208,7 +5182,7 @@ export const testAjfSchema = {
           'defaultValue': null,
           'choicesOrigin': {
             'name': 'MARKETING_PRODUCTS_OSTACLES',
-            'type': 'fixed',
+            'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
               {'label': 'Storage', 'value': 'storage'},
@@ -5258,14 +5232,14 @@ export const testAjfSchema = {
   'choicesOrigins': [
     {
       'name': 'SEX',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [{'label': 'Male', 'value': 'Male'}, {'label': 'Female', 'value': 'Female'}],
-      'choicesType': 'string'
+
     },
     {
       'name': 'DISTRICT_NAMES',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Quelimane', 'value': 'quelimane'}, {'label': 'Nicoadala', 'value': 'nicoadala'},
@@ -5274,7 +5248,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'QUELIMANE_COMMUNITY',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Eduba', 'value': 'eduba'}, {'label': 'Mazuere', 'value': 'mazuere'},
@@ -5284,7 +5258,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'NICOADALA_COMMUNITY',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Curungo', 'value': 'Curungo'}, {'label': '25 de junho', 'value': '25 de junho'},
@@ -5294,7 +5268,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'NAMACURRA_COMMUNITY',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Cocodane', 'value': 'cocodane'}, {'label': 'Mutange', 'value': 'mutange'},
@@ -5304,29 +5278,29 @@ export const testAjfSchema = {
     },
     {
       'name': 'ECONOMIC_ACTIVITY',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Farmer', 'value': 'farmer'}, {'label': 'Trader', 'value': 'trader'},
         {'label': 'Fisherman', 'value': 'fisherman'},
         {'label': 'Other(specificy)', 'value': 'other'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'PARTITION_1000_TO_5000',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': '0-1000', 'value': '0-1000'}, {'label': '1001-2000', 'value': '1001-2000'},
         {'label': '2001-3000', 'value': '2001-3000'}, {'label': '3001-4000', 'value': '3001-4000'},
         {'label': '4001-5000', 'value': '4001-5000'}, {'label': '>5000', 'value': '>5000'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'PARTITION_500_TO_3000',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': '0-500', 'value': '0-500'}, {'label': '501-1000', 'value': '501-1000'},
@@ -5334,11 +5308,11 @@ export const testAjfSchema = {
         {'label': '2001-2500', 'value': '2001-2500'}, {'label': '2501-3000', 'value': '2501-3000'},
         {'label': '>3000', 'value': '>3000'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'PARTITION_200_TO_10000',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': '0-200', 'value': '0-200'}, {'label': '201-500', 'value': '201-500'},
@@ -5346,11 +5320,11 @@ export const testAjfSchema = {
         {'label': '1501-2000', 'value': '1501-2000'}, {'label': '2001-5000', 'value': '2001-5000'},
         {'label': '5001-10000', 'value': '5001-10000'}, {'label': '> 10000', 'value': '> 10000'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'PARTITION_50_TO_300',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': '0-50', 'value': '0-50'}, {'label': '51-100', 'value': '51-100'},
@@ -5358,11 +5332,11 @@ export const testAjfSchema = {
         {'label': '201-250', 'value': '201-250'}, {'label': '251-300', 'value': '251-300'},
         {'label': '*300', 'value': '*300'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'PARTITION_3_TO_12',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'from 1 to 3', 'value': 'from_1_to_3'},
@@ -5373,44 +5347,44 @@ export const testAjfSchema = {
     },
     {
       'name': 'NUMBER_1_TO_4',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': '1', 'value': '1'}, {'label': '2', 'value': '2'}, {'label': '3', 'value': '3'},
         {'label': '>4', 'value': '4'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'YES_NO',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [{'label': 'Yes', 'value': 'yes'}, {'label': 'No', 'value': 'no'}],
-      'choicesType': 'string'
+
     },
     {
       'name': 'FERTILIZER_PURCHASED_OR_SELF_PRODUCED',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Purchased', 'value': 'purchased'},
         {'label': 'Self-produced fertilizer', 'value': 'Self-produced_fertilizer'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'PESTICIDIES_PURCHASED_OR_SELF_PRODUCED',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Purchased', 'value': 'purchased'},
         {'label': 'Self-produced pesticides', 'value': 'Self-produced_pesticides'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'ORGANIC_OR_NOT',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Organic', 'value': 'organic'}, {'label': 'Non-organic', 'value': 'non-organic'}
@@ -5418,7 +5392,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'fertilizer_type',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Organic', 'value': 'organic'}, {'label': 'Non-organic', 'value': 'non-organic'},
@@ -5427,7 +5401,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'METHOD_OF_CONTROL',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Cultural', 'value': 'cultural'}, {'label': 'Biological', 'value': 'biological'},
@@ -5437,7 +5411,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'PRODUCTION_SHARE',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Good growth', 'value': 'good_growth'},
@@ -5451,7 +5425,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'PRODUCTION_PERCENTAGE',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': '0%', 'value': '0'}, {'label': '20%', 'value': '20'},
@@ -5461,7 +5435,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'MANAGES_TRANSPORT',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Beneficiary (household level)', 'value': 'beneficiary_household_level'},
@@ -5471,7 +5445,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'VALUE_CHAIN',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Weak', 'value': 'weak'}, {'label': 'Intermediate', 'value': 'intermediate'},
@@ -5480,7 +5454,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'MARKETING_PRODUCTS_OSTACLES',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Storage', 'value': 'storage'},
@@ -5497,7 +5471,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'AGRICULTURAL_PRACTICES',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {
@@ -5511,7 +5485,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'APPLICATION_VALUE',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Domestic utensils', 'value': 'domestic_utensils'},
@@ -5524,7 +5498,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'OBSTACLES',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Water availability', 'value': 'water_availability'},
@@ -5541,7 +5515,7 @@ export const testAjfSchema = {
     },
     {
       'name': 'SALES_CHANNELS',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'cooperatives', 'value': 'cooperatives'}, {'label': 'market', 'value': 'market'},
@@ -5551,18 +5525,18 @@ export const testAjfSchema = {
     },
     {
       'name': 'affected_by',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Drought', 'value': 'drought'}, {'label': 'Flood', 'value': 'flood'},
         {'label': 'Phytopathological diseases', 'value': 'diseases'},
         {'label': 'None', 'value': 'none'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'crop_seeds',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Rice', 'value': 'rice'},
@@ -5589,31 +5563,31 @@ export const testAjfSchema = {
         {'label': 'Pumpkin', 'value': 'pumpkin'},
         {'label': 'Other (specify)', 'value': 'other'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'season',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'First agricultural campaign (October-March)', 'value': 'first_campaign'},
         {'label': 'Second agricultural campaign (April-September)', 'value': 'second_campaign'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'severity',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Low', 'value': 'low'}, {'label': 'Medium', 'value': 'medium'},
         {'label': 'High', 'value': 'high'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'transport',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'My own means of transport', 'value': 'own_means'},
@@ -5621,18 +5595,18 @@ export const testAjfSchema = {
         {'label': 'Project truck', 'value': 'truck'}, {'label': 'Taxi', 'value': 'taxi'},
         {'label': 'Other', 'value': 'other'}
       ],
-      'choicesType': 'string'
+
     },
     {
       'name': 'YES_NO_SOMETIMES',
-      'type': 'fixed',
+      'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
         {'label': 'Yes, totally', 'value': 'totally'},
         {'label': 'Yes, sometimes', 'value': 'sometimes'}, {'label': 'Seldom', 'value': 'seldom'},
         {'label': 'Never', 'value': 'never'}
       ],
-      'choicesType': 'string'
+
     }
   ],
   'stringIdentifier':
@@ -5640,127 +5614,10 @@ export const testAjfSchema = {
   'attachmentsOrigins': []
 };
 
-export const testAjfData = {
-  '$value': [
-    'transport_to_markets', 'lack_of_information_on_market_prices',
-    'bargaining_with_intermediaries', 'lack_of_direct_contacts_with_retailers'
-  ],
-  '_1_104': 'quelimane',
-  '_2_199':
-      ['rice', 'corn', 'cassava', 'sweet_potato', 'ihame', 'beans', 'okra', 'pumpkin', 'other'],
-  '_2_200': ['farmer'],
-  '_2_202': '0-1000',
-  '_2_204': '0-500',
-  '_2_205': 4,
-  '_2_206': 2,
-  '_3_300': 61,
-  '_3_301': '2',
-  '_3_302': '2',
-  '_3_306': 3,
-  '_3_307': 3,
-  '_3_309': 14,
-  '_3_310': 4,
-  '_3_312': 7,
-  '_3_313': 3,
-  '_3_314': 6,
-  '_3_315': 4,
-  '_4_400': 'yes',
-  '_4_402': '5001-10000',
-  '_4_403': ['traditional_agriculture'],
-  '_4_405': '*300',
-  '_5_500': true,
-  '_5_501': 400,
-  '_5_502': true,
-  '_5_503': 90,
-  '_5_504': true,
-  '_5_505': 150,
-  '_5_506': true,
-  '_5_507': 100,
-  '_5_508': true,
-  '_5_509': 30,
-  '_5_528': true,
-  '_5_529': 30,
-  '_5_536': true,
-  '_5_537': 200,
-  '_5_542': true,
-  '_5_543': 30,
-  '_5_544': 'Manga',
-  '_5_545': 300,
-  '_5_546': 'no',
-  '_5_548': 'Falta de capita',
-  '_5_551': 'no',
-  '_5_553': null,
-  '_5_554': null,
-  '_5_555': 'no',
-  '_5_557': null,
-  '_5_558': null,
-  '_5_559': 'yes',
-  '_5_560': 'cultural',
-  '_5_563': 'from_4_to_6',
-  '_5_564': 9,
-  '_5_565': 'yes',
-  '_5_568': ['domestic_utensils', 'domestic_applicances', 'other'],
-  '_5_570': 'yes',
-  '_5_571': 'Na radio',
-  '_5_572': ['water_availability', 'fertilizer_cost', 'credit'],
-  '_5_575': ['low_growth', 'attack_of_curses', 'excessive_heatstroke'],
-  '_6_605': true,
-  '_6_606': 50,
-  '_6_607': true,
-  '_6_608': 50,
-  '_6_637': true,
-  '_6_638': 150,
-  '_6_645': 'Manga',
-  '_6_646': 150,
-  '_6_647': 400,
-  '_6_648': 8300,
-  '_6_654': true,
-  '_6_655': 20,
-  '_6_656': true,
-  '_6_657': 20,
-  '_6_686': true,
-  '_6_687': 30,
-  '_6_694': 'Manga',
-  '_6_695': 12,
-  '_6_696': null,
-  '_6_699': 930,
-  'season': 'first_campaign',
-  '_5_5490': 'yes',
-  '_5_5510': ['none'],
-  '_5_5550': null,
-  '_6_6000': 'other',
-  '_6_6001': 1,
-  '_6_6002': ['market', 'street'],
-  '_6_6003': 'yes',
-  '_6_6004': 'Porque consigo vender  meus productos',
-  '_6_6005': 'no',
-  '_6_6009': 'yes',
-  '_6_6010': 'Venderia sempre meus productos',
-  '_6_6013': [
-    'transport_to_markets', 'lack_of_information_on_market_prices',
-    'bargaining_with_intermediaries', 'lack_of_direct_contacts_with_retailers'
-  ],
-  'f_1_101': 'Benjame Victor',
-  'f_1_102': 'Abuchamo',
-  'f_1_103': 'Male',
-  'f_1_105': ['nangoela'],
-  'f_1_106': null,
-  'f_1_107': null,
-  'kg_sold': 400,
-  '_4_40222': 'totally',
-  '_4_40333': null,
-  '_5_55334': null,
-  '_6_64999': 8300,
-  'severity': 'low',
-  'self_prod':
-      ['rice', 'corn', 'cassava', 'sweet_potato', 'ihame', 'beans', 'okra', 'pumpkin', 'other'],
-  'affected_by': 'drought',
-  'prod_volume': 1330,
-  'self_prod_other': 'Manga',
-  '__supplementary__state__': 'draft',
-  '__supplementary__date_end__': '2020-05-20',
-  '__supplementary__timelevel__': 4,
-  '__supplementary__created_at__': '2020-06-11T14:15:38.577233Z',
-  '__supplementary__date_start__': '2020-05-20',
-  '__supplementary__updated_at__': '2020-06-11T14:15:38.577622Z'
+export const testAjfSchema: FormSchema = {
+  id: '1',
+  name: 'test_schema',
+  schema: ajfSchema,
+  created_at: '',
+  updated_at: '',
 };

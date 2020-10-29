@@ -1,3 +1,8 @@
+import '@dewco/core/locations/form-data';
+import '@dewco/core/projects/form-data';
+
+import {FormData} from '@dewco/core/forms/form-data';
+
 export const testAjfFormData = {
   '$value': [
     'transport_to_markets', 'lack_of_information_on_market_prices',
@@ -122,3 +127,45 @@ export const testAjfFormData = {
   '__supplementary__date_start__': '2020-05-20',
   '__supplementary__updated_at__': '2020-06-11T14:15:38.577622Z'
 };
+
+export const testFormData_loc: FormData = {
+  location: {
+    id: '',
+    created_at: '',
+    updated_at: '',
+    name: 'test_location',
+  },
+  project: {
+    id: '',
+    created_at: '',
+    updated_at: '',
+    name: '',
+  },
+  id: '1',
+  user_id: 'test_user',
+  schema_id: '1',
+  data: testAjfFormData,
+  created_at: '',
+  updated_at: '',
+};
+
+export const testFormData: FormData = {
+  location: {
+    id: '',
+    created_at: '',
+    updated_at: '',
+    name: '',
+  },
+  project: {
+    id: '',
+    created_at: '',
+    updated_at: '',
+    name: 'test_project',
+  },
+  id: '2',
+  user_id: 'test_other_user',
+  schema_id: '1',
+  data: testAjfFormData,
+  created_at: '',
+  updated_at: '',
+} ;

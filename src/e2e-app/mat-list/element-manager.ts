@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, Model, PermissionContextService} from '@dewco/core/data';
+import {FormData} from '@dewco/core/forms';
 import {ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
-import {testAjfFormData} from './test-ajf-formdata';
+
+import {testFormData, testFormData_loc} from './test-ajf-formdata';
 
 export const schema = {
   'type': 'object',
@@ -25,7 +27,7 @@ export class PeriodicElement implements Model {
   name: string;
   weight: number;
   symbol: string;
-  data?: any;
+  data?: FormData;
   id: string;
   created_at: string;
   updated_at: string;
@@ -37,7 +39,7 @@ export const ELEMENT_DATA: PeriodicElement[] = [
     name: 'Hydrogen',
     weight: 1.0079,
     symbol: 'H',
-    data: testAjfFormData,
+    data: testFormData,
     created_at: '',
     updated_at: ''
   },
@@ -49,7 +51,7 @@ export const ELEMENT_DATA: PeriodicElement[] = [
     name: 'Boron',
     weight: 10.811,
     symbol: 'B',
-    data: testAjfFormData,
+    data: testFormData_loc,
     created_at: '',
     updated_at: ''
   },
@@ -60,11 +62,19 @@ export const ELEMENT_DATA: PeriodicElement[] = [
     name: 'Oxygen',
     weight: 15.9994,
     symbol: 'O',
-    data: testAjfFormData,
+    data: testFormData,
     created_at: '',
     updated_at: ''
   },
-  {id: '', name: 'Fluorine', weight: 18.9984, symbol: 'F', created_at: '', updated_at: ''},
+  {
+    id: '',
+    name: 'Fluorine',
+    weight: 18.9984,
+    symbol: 'F',
+    data: testFormData_loc,
+    created_at: '',
+    updated_at: ''
+  },
   {id: '', name: 'Neon', weight: 20.1797, symbol: 'Ne', created_at: '', updated_at: ''},
 ];
 
