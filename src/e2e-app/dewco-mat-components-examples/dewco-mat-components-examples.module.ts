@@ -24,7 +24,9 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatSelectModule} from '@angular/material/select';
 import {DewcoMatCardModule} from '@dewco/material/dewco-mat-card';
+import {DewcoMatDirectivesModule} from '@dewco/material/dewco-mat-directives';
 import {DewcoMatFormFieldModule} from '@dewco/material/dewco-mat-form-field';
 import {DewcoMatSlideToggleModule} from '@dewco/material/dewco-mat-slide-toggle';
 import {DewcoMatTabGroupModule} from '@dewco/material/dewco-mat-tab-group';
@@ -35,11 +37,13 @@ import {MatDewcoComponents} from './dewco-mat-components-examples';
   imports: [
     CommonModule,
     DewcoMatCardModule,
+    DewcoMatDirectivesModule,
     DewcoMatFormFieldModule,
     DewcoMatTabGroupModule,
     DewcoMatSlideToggleModule,
     MatButtonModule,
     MatButtonToggleModule,
+    MatSelectModule,
   ],
   declarations: [
     MatDewcoComponents,

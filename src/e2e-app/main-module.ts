@@ -1,5 +1,7 @@
+import {OverlayModule} from '@angular/cdk/overlay';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
+import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
@@ -15,6 +17,7 @@ import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
     HttpClientModule,
     E2eAppModule,
     BrowserAnimationsModule,
+    OverlayModule,
     RouterModule.forRoot(E2E_APP_ROUTES),
 
     // E2E demos
@@ -24,6 +27,9 @@ import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
     E2eApp,
   ],
   bootstrap: [E2eApp],
+  providers: [
+    MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
+  ]
 })
 export class MainModule {
 }

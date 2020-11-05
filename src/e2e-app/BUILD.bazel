@@ -30,6 +30,7 @@ ng_module(
         "//src/material/dewco-mat-card",
         "//src/material/dewco-mat-form-field",
         "//src/material/dewco-mat-tab-group",
+        "//src/material/dewco-mat-select",
         "//src/material/dewco-mat-slide-toggle",
         "@npm//@angular/elements",
         "@npm//@angular/material",
