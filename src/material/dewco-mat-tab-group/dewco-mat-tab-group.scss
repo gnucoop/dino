@@ -1,0 +1,30 @@
+dewco-mat-tab-group {
+    .mat-tab-group {
+        font-family: "Roboto";
+        font-size: 14px;
+        line-height: 1.29;
+        letter-spacing: 0.2px;
+        text-align: justify;
+        color: #8b8b8b;
+
+        .mat-tab-header {
+            border-bottom: 1px solid #3b8d61;
+            .mat-ink-bar {
+                background-color: #3b8d61;
+            }
+        }
+        .mat-tab-body {
+            padding: 1rem;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+            background-color: #f5f7f9;
+            .mat-tab-body-content {
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: space-between;
+                align-content: flex-start;
+                align-items: stretch;
+            }
+        }
+    }
+}
