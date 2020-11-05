@@ -34805,15 +34805,27 @@ function hasMergeConflicts(str) {
 function parse(str, fileLoc) {
   const parser = new Parser(str, fileLoc);
   parser.next();
-  try {
-    return parser.parse();
-  } catch (error1) {
+
+  if (!fileLoc.endsWith(`.yml`)) {
     try {
-      return safeLoad(str, {
-        schema: FAILSAFE_SCHEMA
-      });
-    } catch (error2) {
-      throw error1;
+      return parser.parse();
+    } catch (error1) {
+      try {
+        return safeLoad(str, {
+          schema: FAILSAFE_SCHEMA
+        });
+      } catch (error2) {
+        throw error1;
+      }
+    }
+  } else {
+    const result = safeLoad(str, {
+      schema: FAILSAFE_SCHEMA
+    });
+    if (typeof result === 'object') {
+      return result;
+    } else {
+      return {};
     }
   }
 }
@@ -44642,7 +44654,7 @@ const FOLDERS_IGNORE = [
 const DEFAULT_IGNORE = (0, (_filter || _load_filter()).ignoreLinesToRegex)([...FOLDERS_IGNORE,
 
 // ignore cruft
-'yarn.lock', '.lock-wscript', '.wafpickle-{0..9}', '*.swp', '._*', 'npm-debug.log', 'yarn-error.log', '.npmrc', '.yarnrc', '.npmignore', '.gitignore', '.DS_Store']);
+'yarn.lock', '.lock-wscript', '.wafpickle-{0..9}', '*.swp', '._*', 'npm-debug.log', 'yarn-error.log', '.npmrc', '.yarnrc', '.yarnrc.yml', '.npmignore', '.gitignore', '.DS_Store']);
 
 const NEVER_IGNORE = (0, (_filter || _load_filter()).ignoreLinesToRegex)([
 // never ignore these files
@@ -44651,6 +44663,7 @@ const NEVER_IGNORE = (0, (_filter || _load_filter()).ignoreLinesToRegex)([
 function packWithIgnoreAndHeaders(cwd, ignoreFunction, { mapHeader } = {}) {
   return tar.pack(cwd, {
     ignore: ignoreFunction,
+    sort: true,
     map: header => {
       const suffix = header.name === '.' ? '' : `/${header.name}`;
       header.name = `package${suffix}`;
@@ -46666,7 +46679,7 @@ function mkdirfix (name, opts, cb) {
 /* 194 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"yarn","installationMethod":"unknown","version":"1.22.0","license":"BSD-2-Clause","preferGlobal":true,"description":"📦🐈 Fast, reliable, and secure dependency management.","dependencies":{"@zkochan/cmd-shim":"^3.1.0","babel-runtime":"^6.26.0","bytes":"^3.0.0","camelcase":"^4.0.0","chalk":"^2.1.0","cli-table3":"^0.4.0","commander":"^2.9.0","death":"^1.0.0","debug":"^3.0.0","deep-equal":"^1.0.1","detect-indent":"^5.0.0","dnscache":"^1.0.1","glob":"^7.1.1","gunzip-maybe":"^1.4.0","hash-for-dep":"^1.2.3","imports-loader":"^0.8.0","ini":"^1.3.4","inquirer":"^6.2.0","invariant":"^2.2.0","is-builtin-module":"^2.0.0","is-ci":"^1.0.10","is-webpack-bundle":"^1.0.0","js-yaml":"^3.13.1","leven":"^2.0.0","loud-rejection":"^1.2.0","micromatch":"^2.3.11","mkdirp":"^0.5.1","node-emoji":"^1.6.1","normalize-url":"^2.0.0","npm-logical-tree":"^1.2.1","object-path":"^0.11.2","proper-lockfile":"^2.0.0","puka":"^1.0.0","read":"^1.0.7","request":"^2.87.0","request-capture-har":"^1.2.2","rimraf":"^2.5.0","semver":"^5.1.0","ssri":"^5.3.0","strip-ansi":"^4.0.0","strip-bom":"^3.0.0","tar-fs":"^1.16.0","tar-stream":"^1.6.1","uuid":"^3.0.1","v8-compile-cache":"^2.0.0","validate-npm-package-license":"^3.0.4","yn":"^2.0.0"},"devDependencies":{"babel-core":"^6.26.0","babel-eslint":"^7.2.3","babel-loader":"^6.2.5","babel-plugin-array-includes":"^2.0.3","babel-plugin-inline-import":"^3.0.0","babel-plugin-transform-builtin-extend":"^1.1.2","babel-plugin-transform-inline-imports-commonjs":"^1.0.0","babel-plugin-transform-runtime":"^6.4.3","babel-preset-env":"^1.6.0","babel-preset-flow":"^6.23.0","babel-preset-stage-0":"^6.0.0","babylon":"^6.5.0","commitizen":"^2.9.6","cz-conventional-changelog":"^2.0.0","eslint":"^4.3.0","eslint-config-fb-strict":"^22.0.0","eslint-plugin-babel":"^5.0.0","eslint-plugin-flowtype":"^2.35.0","eslint-plugin-jasmine":"^2.6.2","eslint-plugin-jest":"^21.0.0","eslint-plugin-jsx-a11y":"^6.0.2","eslint-plugin-prefer-object-spread":"^1.2.1","eslint-plugin-prettier":"^2.1.2","eslint-plugin-react":"^7.1.0","eslint-plugin-relay":"^0.0.28","eslint-plugin-yarn-internal":"file:scripts/eslint-rules","execa":"^0.11.0","fancy-log":"^1.3.2","flow-bin":"^0.66.0","git-release-notes":"^3.0.0","gulp":"^4.0.0","gulp-babel":"^7.0.0","gulp-if":"^2.0.1","gulp-newer":"^1.0.0","gulp-plumber":"^1.0.1","gulp-sourcemaps":"^2.2.0","jest":"^22.4.4","jsinspect":"^0.12.6","minimatch":"^3.0.4","mock-stdin":"^0.3.0","prettier":"^1.5.2","string-replace-loader":"^2.1.1","temp":"^0.8.3","webpack":"^2.1.0-beta.25","yargs":"^6.3.0"},"resolutions":{"sshpk":"^1.14.2"},"engines":{"node":">=4.0.0"},"repository":"yarnpkg/yarn","bin":{"yarn":"./bin/yarn.js","yarnpkg":"./bin/yarn.js"},"scripts":{"build":"gulp build","build-bundle":"node ./scripts/build-webpack.js","build-chocolatey":"powershell ./scripts/build-chocolatey.ps1","build-deb":"./scripts/build-deb.sh","build-dist":"bash ./scripts/build-dist.sh","build-win-installer":"scripts\\build-windows-installer.bat","changelog":"git-release-notes $(git describe --tags --abbrev=0 $(git describe --tags --abbrev=0)^)..$(git describe --tags --abbrev=0) scripts/changelog.md","dupe-check":"yarn jsinspect ./src","lint":"eslint . && flow check","pkg-tests":"yarn --cwd packages/pkg-tests jest yarn.test.js","prettier":"eslint src __tests__ --fix","release-branch":"./scripts/release-branch.sh","test":"yarn lint && yarn test-only","test-only":"node --max_old_space_size=4096 node_modules/jest/bin/jest.js --verbose","test-only-debug":"node --inspect-brk --max_old_space_size=4096 node_modules/jest/bin/jest.js --runInBand --verbose","test-coverage":"node --max_old_space_size=4096 node_modules/jest/bin/jest.js --coverage --verbose","watch":"gulp watch","commit":"git-cz"},"jest":{"collectCoverageFrom":["src/**/*.js"],"testEnvironment":"node","modulePathIgnorePatterns":["__tests__/fixtures/","packages/pkg-tests/pkg-tests-fixtures","dist/"],"testPathIgnorePatterns":["__tests__/(fixtures|__mocks__)/","updates/","_(temp|mock|install|init|helpers).js$","packages/pkg-tests"]},"config":{"commitizen":{"path":"./node_modules/cz-conventional-changelog"}}}
+module.exports = {"name":"yarn","installationMethod":"unknown","version":"1.22.5","license":"BSD-2-Clause","preferGlobal":true,"description":"📦🐈 Fast, reliable, and secure dependency management.","dependencies":{"@zkochan/cmd-shim":"^3.1.0","babel-runtime":"^6.26.0","bytes":"^3.0.0","camelcase":"^4.0.0","chalk":"^2.1.0","cli-table3":"^0.4.0","commander":"^2.9.0","death":"^1.0.0","debug":"^3.0.0","deep-equal":"^1.0.1","detect-indent":"^5.0.0","dnscache":"^1.0.1","glob":"^7.1.1","gunzip-maybe":"^1.4.0","hash-for-dep":"^1.2.3","imports-loader":"^0.8.0","ini":"^1.3.4","inquirer":"^6.2.0","invariant":"^2.2.0","is-builtin-module":"^2.0.0","is-ci":"^1.0.10","is-webpack-bundle":"^1.0.0","js-yaml":"^3.13.1","leven":"^2.0.0","loud-rejection":"^1.2.0","micromatch":"^2.3.11","mkdirp":"^0.5.1","node-emoji":"^1.6.1","normalize-url":"^2.0.0","npm-logical-tree":"^1.2.1","object-path":"^0.11.2","proper-lockfile":"^2.0.0","puka":"^1.0.0","read":"^1.0.7","request":"^2.87.0","request-capture-har":"^1.2.2","rimraf":"^2.5.0","semver":"^5.1.0","ssri":"^5.3.0","strip-ansi":"^4.0.0","strip-bom":"^3.0.0","tar-fs":"^1.16.0","tar-stream":"^1.6.1","uuid":"^3.0.1","v8-compile-cache":"^2.0.0","validate-npm-package-license":"^3.0.4","yn":"^2.0.0"},"devDependencies":{"babel-core":"^6.26.0","babel-eslint":"^7.2.3","babel-loader":"^6.2.5","babel-plugin-array-includes":"^2.0.3","babel-plugin-inline-import":"^3.0.0","babel-plugin-transform-builtin-extend":"^1.1.2","babel-plugin-transform-inline-imports-commonjs":"^1.0.0","babel-plugin-transform-runtime":"^6.4.3","babel-preset-env":"^1.6.0","babel-preset-flow":"^6.23.0","babel-preset-stage-0":"^6.0.0","babylon":"^6.5.0","commitizen":"^2.9.6","cz-conventional-changelog":"^2.0.0","eslint":"^4.3.0","eslint-config-fb-strict":"^22.0.0","eslint-plugin-babel":"^5.0.0","eslint-plugin-flowtype":"^2.35.0","eslint-plugin-jasmine":"^2.6.2","eslint-plugin-jest":"^21.0.0","eslint-plugin-jsx-a11y":"^6.0.2","eslint-plugin-prefer-object-spread":"^1.2.1","eslint-plugin-prettier":"^2.1.2","eslint-plugin-react":"^7.1.0","eslint-plugin-relay":"^0.0.28","eslint-plugin-yarn-internal":"file:scripts/eslint-rules","execa":"^0.11.0","fancy-log":"^1.3.2","flow-bin":"^0.66.0","git-release-notes":"^3.0.0","gulp":"^4.0.0","gulp-babel":"^7.0.0","gulp-if":"^2.0.1","gulp-newer":"^1.0.0","gulp-plumber":"^1.0.1","gulp-sourcemaps":"^2.2.0","jest":"^22.4.4","jsinspect":"^0.12.6","minimatch":"^3.0.4","mock-stdin":"^0.3.0","prettier":"^1.5.2","string-replace-loader":"^2.1.1","temp":"^0.8.3","webpack":"^2.1.0-beta.25","yargs":"^6.3.0"},"resolutions":{"sshpk":"^1.14.2"},"engines":{"node":">=4.0.0"},"repository":"yarnpkg/yarn","bin":{"yarn":"./bin/yarn.js","yarnpkg":"./bin/yarn.js"},"scripts":{"build":"gulp build","build-bundle":"node ./scripts/build-webpack.js","build-chocolatey":"powershell ./scripts/build-chocolatey.ps1","build-deb":"./scripts/build-deb.sh","build-dist":"bash ./scripts/build-dist.sh","build-win-installer":"scripts\\build-windows-installer.bat","changelog":"git-release-notes $(git describe --tags --abbrev=0 $(git describe --tags --abbrev=0)^)..$(git describe --tags --abbrev=0) scripts/changelog.md","dupe-check":"yarn jsinspect ./src","lint":"eslint . && flow check","pkg-tests":"yarn --cwd packages/pkg-tests jest yarn.test.js","prettier":"eslint src __tests__ --fix","release-branch":"./scripts/release-branch.sh","test":"yarn lint && yarn test-only","test-only":"node --max_old_space_size=4096 node_modules/jest/bin/jest.js --verbose","test-only-debug":"node --inspect-brk --max_old_space_size=4096 node_modules/jest/bin/jest.js --runInBand --verbose","test-coverage":"node --max_old_space_size=4096 node_modules/jest/bin/jest.js --coverage --verbose","watch":"gulp watch","commit":"git-cz"},"jest":{"collectCoverageFrom":["src/**/*.js"],"testEnvironment":"node","modulePathIgnorePatterns":["__tests__/fixtures/","packages/pkg-tests/pkg-tests-fixtures","dist/"],"testPathIgnorePatterns":["__tests__/(fixtures|__mocks__)/","updates/","_(temp|mock|install|init|helpers).js$","packages/pkg-tests"]},"config":{"commitizen":{"path":"./node_modules/cz-conventional-changelog"}}}
 
 /***/ }),
 /* 195 */
@@ -69876,12 +69889,12 @@ function getRcConfigForFolder(cwd) {
 }
 
 function loadRcFile(fileText, filePath) {
-  var _parse = (0, (_lockfile || _load_lockfile()).parse)(fileText, 'yarnrc');
+  var _parse = (0, (_lockfile || _load_lockfile()).parse)(fileText, filePath);
 
   let values = _parse.object;
 
 
-  if (filePath.match(/\.yml$/)) {
+  if (filePath.match(/\.yml$/) && typeof values.yarnPath === 'string') {
     values = { 'yarn-path': values.yarnPath };
   }
 
@@ -98326,7 +98339,7 @@ var _buildSubCommands = (0, (_buildSubCommands2 || _load_buildSubCommands()).def
 
       const bundle = yield fetchBundle(config, bundleUrl);
 
-      const yarnPath = path.resolve(config.lockfileFolder, `.yarn/releases/yarn-${bundleVersion}.js`);
+      const yarnPath = path.resolve(config.lockfileFolder, `.yarn/releases/yarn-${bundleVersion}.cjs`);
       reporter.log(`Saving it into ${chalk.magenta(yarnPath)}...`);
       yield (_fs || _load_fs()).mkdirp(path.dirname(yarnPath));
       yield (_fs || _load_fs()).writeFile(yarnPath, bundle);
@@ -98338,7 +98351,7 @@ var _buildSubCommands = (0, (_buildSubCommands2 || _load_buildSubCommands()).def
         const rcPath = `${config.lockfileFolder}/.yarnrc.yml`;
         reporter.log(`Updating ${chalk.magenta(rcPath)}...`);
 
-        yield (_fs || _load_fs()).writeFilePreservingEol(rcPath, `yarnPath: ${JSON.stringify(yarnPath)}\n`);
+        yield (_fs || _load_fs()).writeFilePreservingEol(rcPath, `yarnPath: ${JSON.stringify(targetPath)}\n`);
       } else {
         const rcPath = `${config.lockfileFolder}/.yarnrc`;
         reporter.log(`Updating ${chalk.magenta(rcPath)}...`);
@@ -100178,7 +100191,7 @@ let main = exports.main = (() => {
 
     const config = new (_config || _load_config()).default(reporter);
     const outputWrapperEnabled = (0, (_conversion || _load_conversion()).boolifyWithDefault)(process.env.YARN_WRAP_OUTPUT, true);
-    const shouldWrapOutput = outputWrapperEnabled && !(_commander || _load_commander()).default.json && command.hasWrapper((_commander || _load_commander()).default, (_commander || _load_commander()).default.args);
+    const shouldWrapOutput = outputWrapperEnabled && !(_commander || _load_commander()).default.json && command.hasWrapper((_commander || _load_commander()).default, (_commander || _load_commander()).default.args) && !(commandName === 'init' && (_commander || _load_commander()).default[`2`]);
 
     if (shouldWrapOutput) {
       reporter.header(commandName, { name: 'yarn', version: (_yarnVersion || _load_yarnVersion()).version });
@@ -100586,8 +100599,13 @@ let start = (() => {
       const opts = { stdio: 'inherit', env: Object.assign({}, process.env, { YARN_IGNORE_PATH: 1 }) };
       let exitCode = 0;
 
+      process.on(`SIGINT`, function () {
+        // We don't want SIGINT to kill our process; we want it to kill the
+        // innermost process, whose end will cause our own to exit.
+      });
+
       try {
-        if (yarnPath.endsWith(`.js`)) {
+        if (/\.[cm]?js$/.test(yarnPath)) {
           exitCode = yield (0, (_child || _load_child()).spawnp)(process.execPath, [yarnPath, ...argv], opts);
         } else {
           exitCode = yield (0, (_child || _load_child()).spawnp)(yarnPath, argv, opts);
@@ -107715,7 +107733,11 @@ function parseRcPaths(paths, parser) {
     try {
       return parser((0, (_fs || _load_fs()).readFileSync)(path).toString(), path);
     } catch (error) {
-      return {};
+      if (error.code === 'ENOENT' || error.code === 'EISDIR') {
+        return {};
+      } else {
+        throw error;
+      }
     }
   }));
 }
