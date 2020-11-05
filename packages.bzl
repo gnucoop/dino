@@ -54,6 +54,7 @@ THIRD_PARTY_GEN_BUNDLES = [
     ("pouchdb-adapter-idb", "pouchdb-adapter-idb-bundle.js"),
     ("pouchdb-adapter-memory", "pouchdb-adapter-memory-bundle.js"),
     ("rxdb", "rxdb-bundle.js"),
+    ("rxdb/plugins/migration", "rxdb-plugins-migration-bundle.js"),
     ("rxdb/plugins/replication-graphql", "rxdb-plugins-replication-graphql-bundle.js"),
     ("subscriptions-transport-ws", "subscriptions-transport-ws-bundle.js"),
     ("uuid", "uuid-bundle.js"),

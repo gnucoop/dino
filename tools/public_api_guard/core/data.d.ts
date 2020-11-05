@@ -34,9 +34,9 @@ export interface DataCreateCollectionRequest {
     pushQueryExtraParams?: PushQueryExtraParams;
 }
 
-export interface DataFindRequest {
+export interface DataFindRequest<T extends Model = Model> {
     collectionName: string;
-    query?: any;
+    query?: MangoQuery<T>;
 }
 
 export interface DataGetRequest {
@@ -72,27 +72,25 @@ export interface DataListOptions {
     limit?: number;
     search?: string;
     skip?: number;
-    sort?: string[] | {
-        [propName: string]: 'asc' | 'desc';
-    }[];
+    sort?: DataQuerySort[];
 }
 
 export declare abstract class DataModelManager<T extends Model = Model> {
     constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
     addToContext(data: PermissionContextDataUpdate): void;
     bulkCreate(data: InsertModel<T>[]): Observable<{
-        success: RxDb.RxDocument<T>[];
+        success: RxDocument<T>[];
         error: any[];
     }>;
-    create(obj: InsertModel<T>): Observable<RxDb.RxDocument<T> | null>;
-    delete(data: string | T): Observable<RxDb.RxDocument<T> | null>;
-    get(id: string): Observable<RxDb.RxDocument<T> | null>;
-    list(options?: DataListOptions): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>>;
+    create(obj: InsertModel<T>): Observable<RxDocument<T> | null>;
+    delete(data: string | T): Observable<RxDocument<T> | null>;
+    get(id: string): Observable<RxDocument<T> | null>;
+    list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>>;
     patch(data: Partial<T> & {
         id: string;
-    }): Observable<RxDb.RxDocument<T> | null>;
-    query(options: DataQueryOptions): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>>;
-    update(obj: T): Observable<RxDb.RxDocument<T> | null>;
+    }): Observable<RxDocument<T> | null>;
+    query(options: DataQueryOptions): Observable<RxQuery<T, RxDocument<T>[]>>;
+    update(obj: T): Observable<RxDocument<T> | null>;
 }
 
 export declare class DataModule {
@@ -113,9 +111,7 @@ export interface DataQueryOptions {
     limit?: number;
     selector: DataQuerySelector;
     skip?: number;
-    sort?: string[] | {
-        [propName: string]: 'asc' | 'desc';
-    }[];
+    sort?: DataQuerySort[];
 }
 
 export declare type DataQuerySelector = {
@@ -136,21 +132,27 @@ export declare type DataQuerySelector = {
     };
 };
 
+export declare type DataQuerySort = string | {
+    [propName: string]: DataQuerySortDir;
+};
+
+export declare type DataQuerySortDir = 'asc' | 'desc';
+
 export declare class DataService {
     readonly collectionChanged: Observable<CollectionChangedEvent>;
     constructor(_authService: AuthService, config: DataServiceConfig);
     bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<{
-        success: RxDb.RxDocument<T>[];
+        success: RxDocument<T>[];
         error: any[];
     }>;
     createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
-    find<T extends Model = Model>(params: DataFindRequest): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>>;
-    findOne<T extends Model = Model>(params: DataFindRequest): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T> | null>>;
-    get<T extends Model = Model>(params: DataGetRequest): Observable<RxDb.RxDocument<T> | null>;
-    insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
+    find<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxQuery<T, RxDocument<T>[]>>;
+    findOne<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxQuery<T, RxDocument<T> | null>>;
+    get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null>;
+    insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
     plugin(plugin: any): void;
-    upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDb.RxDocument<T> | null>;
+    upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
     static ɵfac: i0.ɵɵFactoryDef<DataService, never>;
     static ɵprov: i0.ɵɵInjectableDef<DataService>;
 }

@@ -93,6 +93,25 @@ third_party_bundle(
 )
 
 third_party_bundle(
+    name = "rxdb-plugins-migration",
+    entry_point = "@npm//:node_modules/rxdb/dist/lib/plugins/migration/index.js",
+    globals = {
+        "rxdb": "rxdb",
+        "rxjs": "rxjs",
+        "rxjs/operators": "rxjs.operators",
+    },
+    module_name = "rxdb/plugins/migration",
+    template = "//tools/third-party-libs:pouchdb-stream-rollup.config-tmpl.js",
+    deps = [
+        "@npm//@rollup/plugin-json",
+        "@npm//@rollup/plugin-replace",
+        "@npm//rollup-plugin-node-globals",
+        "@npm//rollup-plugin-node-polyfills",
+        "@npm//rxdb",
+    ],
+)
+
+third_party_bundle(
     name = "rxdb-plugins-replication-graphql",
     entry_point = "@npm//:node_modules/rxdb/dist/lib/plugins/replication-graphql/index.js",
     globals = {

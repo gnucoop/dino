@@ -20,7 +20,7 @@
  *
  */
 
-import * as RxDb from 'rxdb';
+import {MangoQuery, RxDocument, RxQuery} from 'rxdb';
 import {from, Observable, throwError, zip} from 'rxjs';
 import {
   catchError,
@@ -33,7 +33,7 @@ import {
 
 import {PermissionContextService} from './data-context-service';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
-import {DataListOptions, DataQueryOptions} from './data-options-interface';
+import {DataListOptions, DataQueryOptions, DataQuerySort} from './data-options-interface';
 import {Permission} from './data-permission';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {DataService} from './data-service';
@@ -79,7 +79,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param obj
    * @return an observable of the created RxDocument
    */
-  create(obj: InsertModel<T>): Observable<RxDb.RxDocument<T>|null> {
+  create(obj: InsertModel<T>): Observable<RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
       object: obj,
@@ -100,7 +100,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @return an observable of the array of the created RxDocuments
    */
-  bulkCreate(data: InsertModel<T>[]): Observable<{success: RxDb.RxDocument<T>[], error: any[]}> {
+  bulkCreate(data: InsertModel<T>[]): Observable<{success: RxDocument<T>[], error: any[]}> {
     const params = {
       collectionName: this._modelName,
       objects: data,
@@ -123,7 +123,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param id
    * @return an observable of the retrieved RxDocument
    */
-  get(id: string): Observable<RxDb.RxDocument<T>|null> {
+  get(id: string): Observable<RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
       id: id,
@@ -142,13 +142,17 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param options? a list of DataListOptions options.
    * @return  RxQuery object for multiple documents selection.
    */
-  list(options?: DataListOptions): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
-    const params = {collectionName: this._modelName, query: options};
+  list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>> {
+    const params = {
+      collectionName: this._modelName,
+      query: this._optionsToMangoQuery(options),
+    };
     return this._collectionInit.pipe(
         switchMap(
             () => this._dataService.find<T>(params).pipe(
                 take(1),
-                )),
+                ),
+            ),
     );
   }
 
@@ -159,10 +163,10 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param options a list of DataQueryOptions parameters.
    * @return RxQuery object for multiple documents selection.
    */
-  query(options: DataQueryOptions): Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
+  query(options: DataQueryOptions): Observable<RxQuery<T, RxDocument<T>[]>> {
     const params = {
       collectionName: this._modelName,
-      query: options,
+      query: this._optionsToMangoQuery(options),
     };
     return this._collectionInit.pipe(
         switchMap(
@@ -177,7 +181,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @return an observable of the deleted RxDocument
    */
-  delete(data: string|T): Observable<RxDb.RxDocument<T>|null> {
+  delete(data: string|T): Observable<RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
       id: (typeof data === 'string' ? data : data.id),
@@ -212,7 +216,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param obj
    * @return an observable of the updated RxDocument
    */
-  update(obj: T): Observable<RxDb.RxDocument<T>|null> {
+  update(obj: T): Observable<RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
       id: obj.id,
@@ -247,7 +251,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @return an observable of the patched RxDocument
    */
-  patch(data: Partial<T>&{id: string}): Observable<RxDb.RxDocument<T>|null> {
+  patch(data: Partial<T>&{id: string}): Observable<RxDocument<T>|null> {
     const params = {
       collectionName: this._modelName,
       id: data.id,
@@ -315,7 +319,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @return boolean
    */
   private _canModify(
-      data: Partial<T>&{id: string}, object: RxDb.RxDocument<T>,
+      data: Partial<T>&{id: string}, object: RxDocument<T>,
       context?: PermissionContext<T>): boolean {
     const modifyData = {
       data: data,
@@ -339,7 +343,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @return boolean
    */
-  private _canDelete(object: RxDb.RxDocument<T>, context?: PermissionContext<T>): boolean {
+  private _canDelete(object: RxDocument<T>, context?: PermissionContext<T>): boolean {
     const deleteData = {
       object: object,
       context: context,
@@ -364,5 +368,25 @@ export abstract class DataModelManager<T extends Model = Model> {
         .pipe(
             map(([_, context]) => context),
         );
+  }
+
+  /**
+   * Creates a Mango query from a list or query options
+   * @param options The list or query options
+   * @return a Mango query
+   */
+  private _optionsToMangoQuery(options?: DataListOptions|DataQueryOptions): MangoQuery<T> {
+    options = options || {};
+    const selector = (options as DataQueryOptions).selector || {};
+    const sort = options.sort != null ? options.sort.map(s => {
+      if (typeof s === 'string') {
+        const sortEntry: DataQuerySort = {};
+        sortEntry[s] = 'asc';
+        return sortEntry;
+      }
+      return s;
+    }) as {[key in keyof T | string]: 'asc' | 'desc'}[] :
+                                        undefined;
+    return {...options, selector, sort};
   }
 }

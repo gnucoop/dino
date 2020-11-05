@@ -107,12 +107,15 @@ const dummySchema: RxJsonSchema = {
   type: 'object',
   properties: {
     id: {type: 'string', primary: true},
-    name: {type: 'string', index: true},
+    name: {type: 'string'},
     age: {type: 'number'},
     author: {type: 'string'},
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
   },
+  indexes: [
+    'name',
+  ],
 };
 
 describe('Data Model Manager - CRUD methods', () => {
@@ -237,10 +240,10 @@ describe('Data Model Manager - CRUD methods', () => {
     const insertedDummy = await dummyManager!.create(object).toPromise();
     const deletedObject = await dummyManager!.delete(insertedDummy!.id).toPromise();
     const getObject = await dummyManager!.get(deletedObject!.id).toPromise();
-        expect(deletedObject?.deleted).toBeTrue();
-        expect(deletedObject!.name).toEqual(insertedDummy!.name);
-        expect(getObject).toBeNull();
-        expect(deleteSpy).toHaveBeenCalled();
+    expect(deletedObject?.deleted).toBeTrue();
+    expect(deletedObject!.name).toEqual(insertedDummy!.name);
+    expect(getObject).toBeNull();
+    expect(deleteSpy).toHaveBeenCalled();
   });
 
   it('should update an existing object from the database', async () => {

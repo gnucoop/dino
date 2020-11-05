@@ -20,12 +20,14 @@
  *
  */
 
+export type DataQuerySortDir = 'asc'|'desc';
+
+export type DataQuerySort = string|{[propName: string]: DataQuerySortDir};
+
 export interface DataListOptions {
   limit?: number;
   skip?: number;
-  sort?: string[]|{
-    [propName: string]: 'asc' | 'desc',
-  }[];
+  sort?: DataQuerySort[];
   index?: DataIndex;  // @Todo
   search?: string;    // @Todo
   fields?: string[];  // @Todo
@@ -34,9 +36,7 @@ export interface DataListOptions {
 export interface DataQueryOptions {
   selector: DataQuerySelector;
   fields?: string[];  // @Todo
-  sort?: string[]|{
-    [propName: string]: 'asc' | 'desc',
-  }[];
+  sort?: DataQuerySort[];
   limit?: number;
   skip?: number;
   joins?: DataJoinOptions[];  // @Todo

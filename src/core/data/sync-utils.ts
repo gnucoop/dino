@@ -178,7 +178,7 @@ function findSatisfiedDeps(collections: RxCollection[], deps: string[]):
   const unsatisfied = [] as RxCollection[];
   const satisfied = [] as RxCollection[];
   collections.forEach(collection => {
-    const collectionDeps = findDeps(collection.schema.jsonID.properties);
+    const collectionDeps = findDeps(collection.schema.jsonSchema.properties);
     if (depsAreSatisfied(collectionDeps, deps)) {
       satisfied.push(collection);
     } else {
@@ -193,7 +193,7 @@ function findSatisfiedDeps(collections: RxCollection[], deps: string[]):
  * @param collection The input collection.
  */
 function getCollectionFields(collection: RxCollection): string[] {
-  return Object.keys(collection.schema.jsonID.properties)
+  return Object.keys(collection.schema.jsonSchema.properties)
       .filter(property => SYNC_IGNORED_PROPERTIES.indexOf(property) === -1);
 }
 

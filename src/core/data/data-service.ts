@@ -24,10 +24,11 @@ import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {AuthService} from '@dewco/core/auth';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import * as RxDb from 'rxdb';
+import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
+import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {
-  default as GraphQLReplicationPlugin,
-  RxGraphQLReplicationState
+  RxDBReplicationGraphQLPlugin,
+  RxGraphQLReplicationState,
 } from 'rxdb/plugins/replication-graphql';
 import {
   BehaviorSubject,
@@ -56,7 +57,6 @@ import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
-import {DataListOptions, DataQueryOptions} from './data-options-interface';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 import {DataUpsertRequest} from './data-upsert-request';
 import {InsertModel} from './insert-model';
@@ -102,7 +102,7 @@ interface RegisteredCollection extends CollectionSyncParams {
   /**
    * The registered collection.
    */
-  collection: RxDb.RxCollection;
+  collection: RxCollection;
 }
 
 /**
@@ -118,7 +118,7 @@ export class DataService {
   readonly collectionChanged: Observable<CollectionChangedEvent> =
       this._collectionChanged as Observable<CollectionChangedEvent>;
 
-  private _db: Observable<RxDb.RxDatabase>;
+  private _db: Observable<RxDatabase>;
   private _registeredCollections: BehaviorSubject<RegisteredCollection[]> =
       new BehaviorSubject<RegisteredCollection[]>([]);
   private _activeSyncs:
@@ -127,11 +127,12 @@ export class DataService {
 
   constructor(
       private _authService: AuthService, @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig) {
-    RxDb.plugin(pouchdbAdapterIdb);
-    RxDb.plugin(pouchdbAdapterMemory);
-    RxDb.plugin(GraphQLReplicationPlugin);
+    addRxPlugin(pouchdbAdapterIdb);
+    addRxPlugin(pouchdbAdapterMemory);
+    addRxPlugin(RxDBMigrationPlugin);
+    addRxPlugin(RxDBReplicationGraphQLPlugin);
     this._config = fillConfigDefaultValues(config);
-    this._db = from(RxDb.create(this._config.databaseCreateOptions)).pipe(shareReplay(1));
+    this._db = from(createRxDatabase(this._config.databaseCreateOptions)).pipe(shareReplay(1));
 
     this._initSync();
   }
@@ -141,7 +142,7 @@ export class DataService {
    * @param plugin The plugin to add
    */
   plugin(plugin: any): void {
-    RxDb.plugin(plugin);
+    addRxPlugin(plugin);
   }
 
   /**
@@ -149,11 +150,11 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The get request parameters.
    */
-  get<T extends Model = Model>(params: DataGetRequest): Observable<RxDb.RxDocument<T>|null> {
+  get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T>|null> {
     const {collectionName, id} = params;
     return this._db.pipe(
         switchMap(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          const collection = db.collections[collectionName] as RxCollection<T>;
           if (collection == null) {
             return throwError(new Error('Invalid collection'));
           }
@@ -167,12 +168,11 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The insert request parameters.
    */
-  insert<T extends Model = Model>(params: DataInsertRequest<T>):
-      Observable<RxDb.RxDocument<T>|null> {
+  insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T>|null> {
     const {collectionName, object} = params;
     return this._db.pipe(
         switchMap(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          const collection = db.collections[collectionName] as RxCollection<T>;
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
@@ -194,11 +194,11 @@ export class DataService {
    * @param params The bulk insert request parameters.
    */
   bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>):
-      Observable<{success: RxDb.RxDocument<T>[], error: any[]}> {
+      Observable<{success: RxDocument<T>[], error: any[]}> {
     const {collectionName, objects} = params;
     return this._db.pipe(
         switchMap(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          const collection = db.collections[collectionName] as RxCollection<T>;
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
@@ -216,12 +216,11 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The upinsert request parameters.
    */
-  upsert<T extends Model = Model>(params: DataUpsertRequest<T>):
-      Observable<RxDb.RxDocument<T>|null> {
+  upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T>|null> {
     const {collectionName, object} = params;
     return this._db.pipe(
         switchMap(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          const collection = db.collections[collectionName] as RxCollection<T>;
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
@@ -244,20 +243,16 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The find request parameters.
    */
-  find<T extends Model = Model>(params: DataFindRequest):
-      Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>[]>> {
+  find<T extends Model = Model>(params: DataFindRequest<T>):
+      Observable<RxQuery<T, RxDocument<T>[]>> {
     const {collectionName, query} = params;
     return this._db.pipe(
         map(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          const collection = db.collections[collectionName] as RxCollection<T>;
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
-          if (query == null) {
-            return collection.find();
-          } else {
-            return this._dataOptionsToQuery(collection, query);
-          }
+          return collection.find(query);
         }),
     );
   }
@@ -267,12 +262,12 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The find request parameters.
    */
-  findOne<T extends Model = Model>(params: DataFindRequest):
-      Observable<RxDb.RxQuery<T, RxDb.RxDocument<T>|null>> {
+  findOne<T extends Model = Model>(params: DataFindRequest<T>):
+      Observable<RxQuery<T, RxDocument<T>|null>> {
     const {collectionName, query} = params;
     return this._db.pipe(
         map(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection<T>;
+          const collection = db.collections[collectionName] as RxCollection<T>;
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
@@ -308,7 +303,7 @@ export class DataService {
   destroyCollection(collectionName: string): Observable<boolean> {
     return this._db.pipe(
         switchMap(db => {
-          const collection = db.collections[collectionName] as RxDb.RxCollection;
+          const collection = db.collections[collectionName] as RxCollection;
           if (collection == null) {
             throwError(new Error('Invalid collection'));
           }
@@ -335,47 +330,10 @@ export class DataService {
   }
 
   /**
-   * Creates an RxQuery object on the given collection with given options
-   * @param collection the collection on which the query is to be performed
-   * @param options the list of options to be added to the query
-   * @return a RxQuery object
-   */
-  private _dataOptionsToQuery<T extends Model>(
-      collection: RxDb.RxCollection<T>,
-      options: DataListOptions|DataQueryOptions): RxDb.RxQuery<T, RxDb.RxDocument<T, {}>[]> {
-    let selector = null;
-    if ('selector' in options) {
-      selector = options.selector;
-    }
-    let findQuery = collection.find(selector);
-    if (options.limit) {
-      findQuery = findQuery.limit(options.limit);
-    }
-    if (options.skip) {
-      findQuery = findQuery.skip(options.skip);
-    }
-    if (options.sort) {
-      let sortOptions = {};
-      for (let opt of options.sort) {
-        if (typeof opt === 'string') {
-          sortOptions = {
-            ...sortOptions,
-            ...{opt: 'asc'},
-          };
-        } else {
-          sortOptions = {...sortOptions, ...opt};
-        }
-      }
-      findQuery = findQuery.sort(sortOptions);
-    }
-    return findQuery;
-  }
-
-  /**
    * Push a collection to the registered colletions stream.
    */
-  private _addRegisteredCollection(
-      collection: RxDb.RxCollection, params: DataCreateCollectionRequest): void {
+  private _addRegisteredCollection(collection: RxCollection, params: DataCreateCollectionRequest):
+      void {
     const collections = this._registeredCollections.getValue();
     const idx = collections.findIndex(c => c.collection.name === collection.name);
     if (idx !== -1) {
@@ -392,7 +350,7 @@ export class DataService {
   /**
    * Remove a collection from the registered collections stream.
    */
-  private _removeRegisteredCollection(collection: RxDb.RxCollection): void {
+  private _removeRegisteredCollection(collection: RxCollection): void {
     const collections = this._registeredCollections.getValue();
     const idx = collections.findIndex(c => c.collection.name === collection.name);
     if (idx === -1) {
@@ -447,7 +405,7 @@ export class DataService {
    * @param collection The collection to sync.
    * @param parent The sync parameters.
    */
-  private _setupCollectionSync(collection: RxDb.RxCollection, params: CollectionSyncParams): void {
+  private _setupCollectionSync(collection: RxCollection, params: CollectionSyncParams): void {
     const state = collection.syncGraphQL({
       ...this._config.syncOptions,
       url: this._config.syncOptions.url,

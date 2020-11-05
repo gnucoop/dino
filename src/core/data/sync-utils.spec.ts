@@ -40,25 +40,32 @@ const schemas = [
 ] as RxJsonSchema[];
 
 const collections = schemas.map(
-    schema => ({name: schema.title, schema: {jsonID: schema}} as unknown as RxCollection));
+    schema => ({name: schema.title, schema: {jsonSchema: schema}} as RxCollection));
 
 const syncOptions: DataServiceSyncOptions = {
   url: 'host',
   batchSize: 10,
 };
 
+async function getQueryString(query: {query: string}|Promise<{query: string}>): Promise<string> {
+  if (query instanceof Promise) {
+    return (await query).query;
+  }
+  return query.query;
+}
+
 describe('syncOrderedCollections', () => {
   it('should sort collections for sync purposes', () => {
     const sorted = syncOrderedCollections(collections);
     expect(sorted.length).toBe(collections.length);
-    expect(sorted[0].schema.jsonID.title).toBe('model3');
-    expect(sorted[1].schema.jsonID.title).toBe('model1');
-    expect(sorted[2].schema.jsonID.title).toBe('model2');
+    expect(sorted[0].schema.jsonSchema.title).toBe('model3');
+    expect(sorted[1].schema.jsonSchema.title).toBe('model1');
+    expect(sorted[2].schema.jsonSchema.title).toBe('model2');
   });
 });
 
 describe('pullQueryBuilder', () => {
-  it('should create a pull sync query for a given collection', () => {
+  it('should create a pull sync query for a given collection', async () => {
     const collection = collections[0];
     const timestamp = new Date().toISOString();
     let pullQuery = `{ model1( ` +
@@ -70,7 +77,7 @@ describe('pullQueryBuilder', () => {
 
     let queryBuilder = pullQueryBuilder(collection, syncOptions);
     let query = queryBuilder(doc);
-    let queryStr = query.query.replace(/[\s]+/g, ' ');
+    let queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(pullQuery);
 
     pullQuery = `{ model1( ` +
@@ -80,13 +87,13 @@ describe('pullQueryBuilder', () => {
         `) { id } }`;
     queryBuilder = pullQueryBuilder(collection, syncOptions, {where: {foo: 'bar'}, fields: ['id']});
     query = queryBuilder(doc);
-    queryStr = query.query.replace(/[\s]+/g, ' ');
+    queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(pullQuery);
   });
 });
 
 describe('pushQueryBuilder', () => {
-  it('should create a push sync query for a given collection', () => {
+  it('should create a push sync query for a given collection', async () => {
     const collection = collections[0];
     const timestamp = new Date().toISOString();
     const doc: Model = {id: 'foo', created_at: timestamp, updated_at: timestamp};
@@ -96,7 +103,7 @@ describe('pushQueryBuilder', () => {
         `insert_model1( objects: $doc ){ returning {id} } } `;
     const queryBuilder = pushQueryBuilder(collection, {docModifier: dummyModifier.modifier});
     const query = queryBuilder(doc);
-    const queryStr = query.query.replace(/[\s]+/g, ' ');
+    const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(pushQuery);
     expect(modifierSpy).toHaveBeenCalledWith(doc);
   });
