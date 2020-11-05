@@ -26,12 +26,14 @@ ng_module(
     ),
     deps = [
         "//src/dewco-examples/private",
-        "//src/ionic/login",
         "//src/material/login",
+        "//src/material/dewco-mat-card",
+        "//src/material/dewco-mat-form-field",
+        "//src/material/dewco-mat-tab-group",
+        "//src/material/dewco-mat-slide-toggle",
         "@npm//@angular/elements",
         "@npm//@angular/material",
         "@npm//@angular/router",
-        "@npm//@ionic/angular",
     ],
 )
 

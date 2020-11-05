@@ -1,0 +1,81 @@
+<dewco-mat-tab-group>
+    <mat-tab [label]="'Tab A'">
+        <dewco-mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Number</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <dewco-mat-form-field>
+                    <input type="number" matInput placeholder="Test number field">
+                </dewco-mat-form-field>
+                <mat-button-toggle-group>
+                    <mat-button-toggle>
+                        {{'<'}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'>'}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'<='}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'>='}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'=='}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'!='}}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <dewco-mat-slide-toggle [name]="'Test input'" [labelOff]="'Exclude'" [labelOn]="'Include'">
+                </dewco-mat-slide-toggle>
+            </mat-card-actions>
+        </dewco-mat-card>
+        <dewco-mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Boolean</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <dewco-mat-form-field [underline]="false">
+                    <dewco-mat-slide-toggle [name]="'booltest'" [labelOff]="'No'" [labelOn]="'Yes'">
+                    </dewco-mat-slide-toggle>
+                </dewco-mat-form-field>
+            </mat-card-content>
+
+            <mat-card-actions>
+                <dewco-mat-slide-toggle [name]="'Test input'" [labelOff]="'Exclude'" [labelOn]="'Include'">
+                </dewco-mat-slide-toggle>
+            </mat-card-actions>
+        </dewco-mat-card>
+        <dewco-mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Single Choice</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <dewco-mat-form-field>
+                    <input type="number" matInput placeholder="Test single choice field">
+                </dewco-mat-form-field>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                <dewco-mat-slide-toggle [name]="'Test input'" [labelOff]="'Exclude'" [labelOn]="'Include'">
+                </dewco-mat-slide-toggle>
+            </mat-card-actions>
+        </dewco-mat-card>
+    </mat-tab>
+    <mat-tab [label]="'Tab B'"></mat-tab>
+    <mat-tab [label]="'Tab C'"></mat-tab>
+    <mat-tab [label]="'Tab D'"></mat-tab>
+    <mat-tab [label]="'Tab E'"></mat-tab>
+</dewco-mat-tab-group>

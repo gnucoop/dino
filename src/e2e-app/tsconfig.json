@@ -7,7 +7,6 @@
     "paths": {
       "@dewco/core/*": ["../core/*"],
       "@dewco/dewco-examples/*": ["../dewco-examples/*"],
-      "@dewco/ionic/*": ["../ionic/*"],
       "@dewco/material/*": ["../material/*"]
     }
   },
