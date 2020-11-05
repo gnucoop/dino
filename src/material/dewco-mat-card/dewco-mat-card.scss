@@ -1,0 +1,55 @@
+dewco-mat-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 1%;
+
+    .mat-card {
+        flex: 1 1 auto;
+        border-radius: 0%;
+        border-left: 3px solid #7f50b8;
+        .mat-card-header-text {
+            margin: 0;
+        }
+
+        .mat-card-title {
+            font-family: "Roboto";
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.29;
+            letter-spacing: 0.2px;
+            color: #1f2432;
+        }
+
+        .mat-card-content {
+            position: relative;
+            display: flex;
+            flex: 1;
+            flex-flow: row wrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-bottom: 9%;
+        }
+
+        .mat-card-actions {
+            position: absolute;
+            bottom: 2.5%;
+            width: 94%;
+            display: flex;
+            flex: 1;
+            justify-content: flex-end;
+            align-items: center;
+            align-content: center;
+            background-color: rgba(39, 87, 124, 0.1);
+            margin: 0px -16px;
+            padding: 3% !important ;
+
+            font-family: "Roboto";
+            font-size: 13px;
+            line-height: 1.17;
+            letter-spacing: 0.17px;
+            text-align: right;
+            color: #8b8b8b;
+        }
+    }
+}
