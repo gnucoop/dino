@@ -1,7 +1,7 @@
 dewco-mat-card {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 1 1 30%;
     margin: 1%;
 
     .mat-card {
@@ -34,7 +34,7 @@ dewco-mat-card {
         .mat-card-actions {
             position: absolute;
             bottom: 2.5%;
-            width: 94%;
+            width: 94.1%;
             display: flex;
             flex: 1;
             justify-content: flex-end;
