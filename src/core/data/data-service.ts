@@ -116,7 +116,7 @@ export class DataService {
    * Event fired when
    */
   readonly collectionChanged: Observable<CollectionChangedEvent> =
-      this._collectionChanged.asObservable();
+      this._collectionChanged as Observable<CollectionChangedEvent>;
 
   private _db: Observable<RxDb.RxDatabase>;
   private _registeredCollections: BehaviorSubject<RegisteredCollection[]> =

@@ -48,7 +48,7 @@ export class AuthService {
   /**
    * True if a valid JWT access token is available.
    */
-  readonly authenticated: Observable<boolean> = this._authenticated.asObservable();
+  readonly authenticated: Observable<boolean> = this._authenticated as Observable<boolean>;
 
   private _baseUrl: string;
 
