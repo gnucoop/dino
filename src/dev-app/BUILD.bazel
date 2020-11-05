@@ -50,6 +50,7 @@ filegroup(
         "//tools/third-party-libs:pouchdb-adapter-idb-bundle.js",
         "//tools/third-party-libs:pouchdb-adapter-memory-bundle.js",
         "//tools/third-party-libs:rxdb-bundle.js",
+        "//tools/third-party-libs:rxdb-plugins-migration-bundle.js",
         "//tools/third-party-libs:rxdb-plugins-replication-graphql-bundle.js",
         "//tools/third-party-libs:subscriptions-transport-ws-bundle.js",
         "//tools/third-party-libs:uuid-bundle.js",
