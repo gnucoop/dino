@@ -10,5 +10,7 @@ export const commitMessage: CommitMessageConfig = {
   scopes: [
     'core/auth',
     'core/data',
+    'ionic/login',
+    'material/login',
   ],
 };
