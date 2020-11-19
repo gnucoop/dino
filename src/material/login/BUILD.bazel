@@ -5,8 +5,8 @@ load(
     "ng_e2e_test_library",
     "ng_module",
     "ng_test_library",
-    "ng_web_test_suite",
     "sass_binary",
+    "sass_library",
 )
 
 package(default_visibility = ["//visibility:public"])
@@ -26,6 +26,11 @@ ng_module(
         "@npm//@angular/material",
         "@npm//@angular/router",
     ],
+)
+
+sass_library(
+    name = "login_scss_lib",
+    srcs = glob(["**/_*.scss"]),
 )
 
 sass_binary(
@@ -48,11 +53,6 @@ ng_test_library(
 ng_e2e_test_library(
     name = "e2e_test_sources",
     srcs = glob(["**/*.e2e.spec.ts"]),
-)
-
-ng_web_test_suite(
-    name = "unit_tests",
-    deps = [":unit_test_sources"],
 )
 
 e2e_test_suite(

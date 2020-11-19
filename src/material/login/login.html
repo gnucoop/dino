@@ -1,11 +1,11 @@
 <div>
-    <div class="logo-container">
-      <div class="logo">
-        <mat-icon fontSet="dewco-icon" fontIcon="irhis"></mat-icon>
+    <div class="dewco-logo-container">
+      <div class="dewco-logo">
+        <mat-icon fontSet="dewco-icon"></mat-icon>
       </div>
     </div>
-    <div class="login-form-container">
-      <form [class.error]="loginError" [formGroup]="loginForm">
+    <div class="dewco-login-form-container">
+      <form [class.dewco-error]="loginError" [formGroup]="loginForm">
         <input
             formControlName="email"
             name="email"
@@ -18,16 +18,16 @@
             type="password"
             aria-label="password"
             [placeholder]="'Password'">
-        <div *ngIf="loginError === true" class="error-message">Invalid username and/or password</div>
+        <div *ngIf="loginError === true" class="dewco-error-message">Invalid username and/or password</div>
         <button mat-fab type="submit" color="warn" aria-label="submit"
             (click)="login()"
             [disabled]="loggingIn || (submitDisabled|async) === true">
           <mat-icon>arrow_forward</mat-icon>
         </button>
-        <div class="password-recover">
+        <div class="dewco-password-recover">
           <a mat-button routerLink="/auth/recover-password">{{ 'Forgot your password?' }} </a>
         </div>
-        <mat-progress-bar [class.show]="loggingIn === true" mode="indeterminate"></mat-progress-bar>
+        <mat-progress-bar [class.dewco-show]="loggingIn === true" mode="indeterminate"></mat-progress-bar>
       </form>
     </div>
   </div>
