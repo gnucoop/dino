@@ -1,6 +1,7 @@
 # Each individual package uses a placeholder for the version of Angular to ensure they're
 # all in-sync. This map is passed to each ng_package rule to stamp out the appropriate
 # version for the placeholders.
+AJF_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
 ANGULAR_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
 ANGULAR_MATERIAL_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
 IONIC_PACKAGE_VERSION = "^5.0.0"
@@ -14,6 +15,7 @@ UUID_PACKAGE_VERSION = "^8.0.0"
 # value pair. These replacements occur during building of `npm_package` and `ng_package` stamping in
 # the peer dependencies and versions, primarily in `package.json`s.
 VERSION_PLACEHOLDER_REPLACEMENTS = {
+    "0.0.0-AJF": AJF_PACKAGE_VERSION,
     "0.0.0-ANGM": ANGULAR_MATERIAL_PACKAGE_VERSION,
     "0.0.0-ION": IONIC_PACKAGE_VERSION,
     "0.0.0-NG": ANGULAR_PACKAGE_VERSION,
@@ -62,7 +64,7 @@ THIRD_PARTY_NO_NGCC_BUNDLES = [
     ("esprima", []),
     ("leaflet", []),
     ("mock-socket", []),
-    ("numeral", []),
+    ("numbro", []),
     ("pouchdb-adapter-idb", []),
     ("pouchdb-adapter-memory", []),
     ("rxdb", []),

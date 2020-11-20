@@ -49,6 +49,7 @@
   },
   "version": "12.0.0-next.0",
   "dependencies": {
+    "@ajf/calendars": "^12.0.0-next.0",
     "@ajf/core": "^12.0.0-next.0",
     "@ajf/icons": "^1.0.0",
     "@ajf/ionic": "^12.0.0-next.0",

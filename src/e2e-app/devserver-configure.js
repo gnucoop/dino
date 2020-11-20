@@ -10,7 +10,6 @@ require.config({
     'date-fns': 'date-fns/date-fns.umd',
     'debug': 'debug/debug.umd',
     'esprima': 'esprima/esprima.umd',
-    'numeral': 'numeral/numeral.umd',
     'pouchdb': 'pouchdb/pouchdb.umd',
     'pouchdb-adapter-memory': 'pouchdb-adapter-memory/pouchdb-adapter-memory.umd',
     'pouchdb-debug': 'pouchdb-debug/pouchdb-debug.umd',

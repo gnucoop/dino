@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@ajf/calendars@^12.0.0-next.0":
+  version "12.0.0-next.0"
+  resolved "https://registry.yarnpkg.com/@ajf/calendars/-/calendars-12.0.0-next.0.tgz#853e0bbfcd4f700a3484d3e86a0fd1977c2a544b"
+  integrity sha512-tcJ7tNJ1r/nLbBJfWyw49ctGUpsaqbRdX78EWpoaZavHvPBvP/pX1cCgOuiNfxtWCQkVeBjCJx94L09wydIFbg==
+
 "@ajf/core@^12.0.0-next.0":
   version "12.0.0-next.0"
   resolved "https://registry.yarnpkg.com/@ajf/core/-/core-12.0.0-next.0.tgz#fe51d7a636e38954b5cf13c8a6bcdbf02d8eecca"

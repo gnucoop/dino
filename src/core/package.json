@@ -13,6 +13,7 @@
   },
   "homepage": "https://bitbucket.or/gnucoop/dewcocore#readme",
   "peerDependencies": {
+    "@ajf/core": "0.0.0-AJF",
     "@angular/core": "0.0.0-NG",
     "@angular/common": "0.0.0-NG",
     "@angular/router": "0.0.0-NG",

@@ -13,6 +13,7 @@
   },
   "homepage": "https://github.com/gnucoop/dewco#readme",
   "peerDependencies": {
+    "@ajf/material": "0.0.0-AJF",
     "@angular/animations": "0.0.0-NG",
     "@angular/cdk": "0.0.0-ANGM",
     "@angular/material": "0.0.0-ANGM",
