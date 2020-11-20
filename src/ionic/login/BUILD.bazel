@@ -23,7 +23,6 @@ ng_module(
         "//src/core/auth",
         "@npm//@angular/common",
         "@npm//@angular/forms",
-        "@npm//@angular/router",
         "@npm//@ionic/angular",
     ],
 )
