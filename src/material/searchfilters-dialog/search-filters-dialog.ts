@@ -142,8 +142,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Sets the group id in the mat tab group
-   * @param {number} id
-   *
+   * @param id The group id
    */
   setCurrentGroupId(id: number): void {
     this._currentGroupId.next(id);
@@ -151,8 +150,8 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Asks the FilterService to add a FilterItem to the filterItems list of the chosen FilterListType
-   * @param {FilterItem} filterItem
-   * @param {FilterListType} filterList
+   * @param filterItem The filter item to add
+   * @param filterList The filter list type
    */
   addFilter(filterItem: FilterItem, listType: FilterListType): void {
     if (filterItem.value !== null && filterItem.value !== '') {
@@ -163,8 +162,8 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Asks the FilterService to remove a FilterItem from the filterItems lists of the chosen
    * FilterListTypes, then triggers the update of the associated widgets.
-   * @param {FilterItem} filterItem
-   * @param {FilterListType} filterList
+   * @param filterItem The filter item to remove
+   * @param filterList The filter list type
    */
   removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
     this.fts.removeFilter(filterItem, listType)
@@ -175,11 +174,10 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
         .subscribe(res => this._updateWidgetsEvent.emit(res));
   }
 
-
   /**
    * Generates and sets up a FilterItem
-   * @param {FilterItem} item
-   * @return {FilterItem}
+   * @param item The FilterItem to set up
+   * @return The generated FilterItem
    */
   private _setupFilterItem(item: FilterItem): FilterItem {
     const ftItem: FilterItem = {
@@ -204,8 +202,8 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Transforms a FilterItem into a WidgetData object
-   * @param {FilterItem} filterItem
-   * @returns {WidgetData}
+   * @param filterItem The filter item to transform
+   * @returns The WidgetData object
    */
   private _setupWidget(filterItem: FilterItem): WidgetData {
     const activeFilter = this.fts.temporaryFilters.value.find(f => f.name === filterItem.name);

@@ -103,8 +103,8 @@ export abstract class List<T extends Model = Model> {
 
   /**
    * Retrieves the name of the handler functions based on the action name
-   * @param {string} action
-   * @returns {string}
+   * @param action The name of the action
+   * @returns The handler function name
    */
   private _getActionHandler(action: string): string {
     return `${action}Action`;
@@ -112,8 +112,7 @@ export abstract class List<T extends Model = Model> {
 
   /**
    * Calls a handler function on the current selection based on the action name
-   * @param {string} action
-   * @returns {void}
+   * @param action The name of the action
    */
   processAction(action: string, items: T[]): void {
     if (items.length === 0) {

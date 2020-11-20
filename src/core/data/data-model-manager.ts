@@ -20,7 +20,7 @@
  *
  */
 
-import {MangoQuery, RxDocument, RxQuery} from 'rxdb';
+import {MangoQuery, RxDocument, RxJsonSchema, RxQuery} from 'rxdb';
 import {from, Observable, of, throwError, zip} from 'rxjs';
 import {
   catchError,
@@ -51,7 +51,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   private _context: Observable<PermissionContext<T>>;
   private _collectionInit: Observable<boolean>;
   private _modelName: string;
-  private _collectionSchema: RxDb.RxJsonSchema;
+  private _collectionSchema: RxJsonSchema;
 
   constructor(
       createParams: DataCreateCollectionRequest,
@@ -71,9 +71,9 @@ export abstract class DataModelManager<T extends Model = Model> {
 
   /**
    * Retrieves the collection schema
-   * @return RxDb.RxJsonSchema
+   * @return RxJsonSchema
    */
-  get collectionSchema(): RxDb.RxJsonSchema {
+  get collectionSchema(): RxJsonSchema {
     return this._collectionSchema;
   }
 
@@ -225,7 +225,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @return an observable of the array of the deleted RxDocuments
    */
-  bulkDelete(data: T[]): Observable<RxDb.RxDocument<T>[]|null> {
+  bulkDelete(data: T[]): Observable<RxDocument<T>[]|null> {
     if (data == null || data.length == 0) {
       return of(null);
     }

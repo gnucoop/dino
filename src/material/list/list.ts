@@ -297,8 +297,8 @@ export class SelectionList<T extends Model = Model,
 
   /**
    * Queries the DataSource for the deletion of Items
-   * @param {T[]} items
-   * @returns {T[]}
+   * @param items The items to be deleted
+   * @returns The deleted items
    */
   deleteAction(items: T[]): T[] {
     this.selection.deselect(...items);

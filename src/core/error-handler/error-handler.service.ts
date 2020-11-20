@@ -33,9 +33,9 @@ export class ErrorHandlerService implements ErrorHandler {
   constructor(private _injector: Injector) {}
 
   /**
-   * Custom global error handler
-   * @param {any} error
-   * @returns {Observable(T)}
+   * Handle an uncaught exception
+   * @param error The exception
+   * @returns The exception handler stream
    */
   handleError<T>(error: any): Observable<T> {
     const router = this._injector.get(Router);

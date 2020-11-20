@@ -217,7 +217,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
 
   /**
    * Sets the checked state of the MatSlideToggle
-   * @param {MatSlideToggleChange} toggle
+   * @param toggle The MatSlideToggle to set
    */
   filterToggle(toggle: MatSlideToggleChange) {
     this._matToggleValue.next(toggle.checked);
@@ -225,7 +225,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
 
   /**
    * Sets the filter operator value to the one chosen in the MatButtonToggleGroup of the operators
-   * @param {MatButtonToggleChange} operator
+   * @param operator The filter operator value
    */
   changeOperator(operator: MatButtonToggleChange) {
     this.operatorValue.next(operator.value as Operator);
@@ -233,8 +233,8 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
 
   /**
    * Returns the right array of operators associated with the filter type
-   * @param {AjfFieldType} type
-   * @returns {Operator[]}
+   * @param type The type of the filter
+   * @returns The operators
    */
   conditionOperatorByFieldType(type: AjfFieldType): Operator[] {
     switch (type) {
@@ -250,12 +250,13 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
 
   /**
    * Checks and returns the widget slide toggle button disabled state
-   * @param {any} obj
-   * @param {MatSlideToggle} element
-   * @param {boolean} forceToggle?
-   * @returns {boolean}
+   * @param obj The widget form value
+   * @param element The slide toggle
+   * @param forceToggle Wheter to force the slide toggle state
+   * @returns The new slide toggle state
    */
-  checkToggleDisabled(obj: any, element: MatSlideToggle, forceToggle?: boolean): boolean {
+  checkToggleDisabled(
+      obj: {[key: string]: unknown}, element: MatSlideToggle, forceToggle?: boolean): boolean {
     if (!this._widgetVisibility.value || !this._validation) {
       return true;
     }
@@ -274,9 +275,9 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
 
   /**
    * Retrieves the widget ajfform value
-   * @returns {any}
+   * @returns The widget form value
    */
-  getWidgetFormValue(): any {
+  getWidgetFormValue(): {[key: string]: unknown} {
     return this.rendererService.getFormValue();
   }
 

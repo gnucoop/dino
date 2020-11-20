@@ -73,13 +73,8 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Opens a dialog with dewco-mat-searchfilters-dialog component.
+   * Opens a dialog with dewco-searchfilters-dialog component.
    * Subscribes to Dialog closing event, updating the advancedFilters when requested.
-   *
-   * @param {FilterSlide[]} filterSlides
-   * @param {FilterItem[]} activeFilterItems
-   * @return {void}
-   *
    */
   openDialog() {
     this._fts.resetTemporaryFilters();
@@ -98,8 +93,8 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
 
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
-   * @param {FilterItem} filterItem
-   * @param {FilterListType[]|FilterListType} listType
+   * @param filterItem The filter item to remove
+   * @param listType The list type
    */
   removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
     this._fts.removeFilter(filterItem, listType);

@@ -238,8 +238,8 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Returns an observable of the filterItems list of the chosen FilterListType
-   * @param {FilterListType} type
-   * @returns {BehaviorSubject(FilterItem[])}
+   * @param type The filter list type
+   * @returns The filter items of the chosen type
    */
   private _selectFilterListType(type: FilterListType): BehaviorSubject<FilterItem[]> {
     switch (type) {
@@ -255,8 +255,8 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Adds a FilterItem to the filterItems list of the chosen FilterListType
-   * @param {FilterItem} filterItem
-   * @param {FilterListType} filterList
+   * @param filterItem The filter item to add
+   * @param filterList The filter list
    */
   addFilter(filterItem: FilterItem, filterList: FilterListType): void {
     const currentList = this._selectFilterListType(filterList);
@@ -272,8 +272,8 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Removes a FilterItem from the filterItems lists of the chosen FilterListTypes
-   * @param {FilterItem} filterItem
-   * @param {FilterListType} filterList
+   * @param filterItem The filter item to remove
+   * @param filterList The filter list
    */
   removeFilter(filterItem: FilterItem, filterList: FilterListType[]|FilterListType):
       Observable<boolean> {
@@ -299,9 +299,8 @@ export class FiltersService implements OnDestroy {
   /**
    * Searches for a FilterItem by name in filterItems list of the chosen FilterListType.
    * If no FilterListType is specified, it searches in the TemporaryFiltersList
-   * @param {string} filterName
-   * @param {FilterListType?} filterList?
-   * @returns {Observable(FilterItem|undefined)}
+   * @param filterName The name of the filter to search for
+   * @param filterList Optional list of filters to search in
    */
   findFilterByName(filterName: string, filterList?: FilterListType):
       Observable<FilterItem|undefined> {
@@ -320,8 +319,8 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Evaluates a Filter validation conditions
-   * @param {AjfValidationGroup}
-   * @return {boolean}
+   * @param filterItem The filter validation condition to evaluate
+   * @return True if the filter condition is valid
    */
   checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean {
     if (!ajfValidation) {
@@ -359,8 +358,8 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Evaluates if a Filter validation/visibility single condition is met
-   * @param {AjfCondition} condition
-   * @returns {boolean}
+   * @param condition The validation/visibility condition to evaluate
+   * @returns True if the condition is met
    */
   checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean {
     if (ajfCondition.condition == null) {
@@ -401,10 +400,10 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Evaluates string expression with two string values and a string comparison operator
-   * @param {string} val_a;
-   * @param {string} val_b;
-   * @param {string} operator;
-   * @returns {boolean}
+   * @param valA The first value to compare
+   * @param valB The second value to compare
+   * @param operator The comparison operator
+   * @returns True if the comparison is true
    */
   checkValues(val_a: string, val_b: string, operator: string): boolean {
     val_b = val_b.replace(/[\"\']/g, '');
@@ -453,8 +452,8 @@ export class FiltersService implements OnDestroy {
    * Sets and initializes the basic filters (dateStart, dateEnd and keyword and all other
    * opttional basic filters) and loads the filter preset from the queryParams.
    * Returns an observable of all the optional basic filters initalized.
-   * @param {FormGroup[]} formGroups
-   * @returns {Observable(FormGroup[])}
+   * @param formGroups The basic filter form groups
+   * @returns All the optional basic filters initalized
    */
   initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]> {
     this._checkOptionalBasicFilters();
@@ -513,9 +512,9 @@ export class FiltersService implements OnDestroy {
   /**
    * Merges two arrays of FilterItems while overwriting old Filter values with new ones
    *
-   * @param {FilterItem[]} oldFilters
-   * @param {FilterItem[]} newFilters
-   * @returns {FilterItem[]}
+   * @param oldFilters The old filters array
+   * @param newFilters The new filters array
+   * @returns The merged filters
    */
   private _mergeFilterItems(oldFilters: FilterItem[], newFilters: FilterItem[]) {
     for (let i = 0, l = oldFilters.length; i < l; i++) {
@@ -533,7 +532,7 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Loads a filters preset from an encoded string, and initializes filters accordingly
-   * @param {string|null} encodedString
+   * @param encodedString The encoded string
    */
   loadPreset(encodedString: string|null): void {
     if (encodedString == null) {
@@ -559,9 +558,7 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Updates the queryString encoding a FilterItems array, and adds the queryParams to the url
-   *
-   * @param {FilterItem[]} FilterItems
-   *
+   * @param filterItems The filter items array
    */
   private _updateQueryString(filterItems: FilterItem[]) {
     const queryString = btoa(encodeURI(JSON.stringify(filterItems)));
@@ -576,8 +573,7 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Updates the basic filters form values
-   *
-   *  @param {FilterItem[]} filterItems
+   *  @param filterItems The filter items to update
    */
   private _updateBasicFormValues(filterItems: FilterItem[]) {
     if (!filterItems || !this._basicFormGroups) {
@@ -591,10 +587,11 @@ export class FiltersService implements OnDestroy {
       fg.patchValue(formValue, {emitEvent: false});
     });
   }
+
   /**
    * Generates all filters from the model and form schemas
-   * @param {RxJsonSchema} modelSchema
-   * @param {any} formSchema
+   * @param modelSchema The model json schema
+   * @param formSchema The form schema
    */
   generateFilters(modelSchema: RxJsonSchema, formSchema?: FormSchema) {
     this.generateModelSchemaFilters(modelSchema);
@@ -603,9 +600,9 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Creates default filters from a RxJsonSchema of a model
-   * @param {RxJsonSchema} modelSchema
+   * @param modelSchema The model json schema
    */
-  generateModelSchemaFilters(modelSchema: RxJsonSchema) {
+  generateModelSchemaFilters(modelSchema: RxJsonSchema): void {
     if (!modelSchema) {
       this._defaultModelFilters.next([]);
       return;
@@ -626,9 +623,9 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Creates form filters from an AjfFormSchema ()
-   * @param {Object} formSchema
+   * @param formSchema form schema
    */
-  generateFormSchemaFilters(formSchema?: FormSchema) {
+  generateFormSchemaFilters(formSchema?: FormSchema): void {
     if (!formSchema) {
       this._defaultFormSchemaFilters.next([]);
       return;
@@ -653,9 +650,9 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Generates a FilterItem from a Model Property
-   * @param {string} propName
-   * @param {any} prop
-   * @returns {FilterItem}
+   * @param propName The property name
+   * @param prop The property
+   * @returns The generated FilterItem
    */
   private _propToFilterItem(propName: string, prop: any) {
     const propType = FIELD_TYPES[prop.type];

@@ -140,18 +140,17 @@ export class ListDataSource<T extends Model = Model,
 
   /**
    * Returns the items displayed on the current list page
-   * @returns {T[]}
+   * @returns The items displayed
    */
-  getDisplayedItems() {
+  getDisplayedItems(): T[] {
     return this.connect().value;
   }
 
   /**
    * Creates and returns a Mango Query from the Filters Component encoded queryString.
    * Queries the DataModelManager and updates the dataResults
-   *
-   * @param {string} queryString
-   * @returns {DataQueryOptions}
+   * @param queryString The encoded query string
+   * @returns The Mango query options
    */
   queryDM(queryString: string): DataQueryOptions {
     if (!queryString) {
@@ -220,8 +219,7 @@ export class ListDataSource<T extends Model = Model,
 
   /**
    * Queries the dataModelManager and updates the dataResults
-   *
-   * @param {DataQueryOptions} query
+   * @param query The query options
    */
   getQueryResults(query: DataQueryOptions) {
     this._dataModelManager.query(query)
@@ -240,8 +238,8 @@ export class ListDataSource<T extends Model = Model,
 
   /**
    * Deletes the selected items from the db
-   * @param {T[]} items
-   * @return {T[]}
+   * @param items The items to delete
+   * @return The deleted items
    */
   deleteAction(items: T[]): T[] {
     let results: RxDocument<T>[]|null = [];
@@ -272,15 +270,14 @@ export class ListDataSource<T extends Model = Model,
 
   /**
    * Adds a nested object property and an optional value to an object
-   * @param {[key: string]: string|{}} baseObj
-   * @param {string[]} names
-   * @param {any} value?
-   *
+   * @param baseObj The object to modify
+   * @param props The properties
+   * @param value The value to set
+   * @returns The modified object
    */
-
-  private _addNestedProps = function(
-      baseObj: {[key: string]: string|{}}, props: string[], value?: any) {
-    let lastProp = arguments.length === 3 ? props.pop() : false;
+  private _addNestedProps(baseObj: {[key: string]: string|{}}, props: string[], value?: any):
+      {[key: string]: string|{}} {
+    let lastProp = value != undefined ? props.pop() : false;
 
     for (let i = 0; i < props.length; i++) {
       baseObj = baseObj[props[i].toString()] = baseObj[props[i].toString()] || {};
@@ -291,7 +288,7 @@ export class ListDataSource<T extends Model = Model,
     }
 
     return baseObj;
-  };
+  }
 
   disconnect() {
     this._dataResultsSub.unsubscribe();

@@ -83,9 +83,7 @@ export class SearchFiltersChips implements OnInit {
 
   /**
    * Removes a filterItem from the filter list, deleting the chip
-   *
-   * @param {FilterItem} filterItem
-   *
+   * @param filterItem The filter item to remove
    */
   removeFilterItem(filterItem: FilterItem) {
     this.excludeFilter.emit(filterItem);
