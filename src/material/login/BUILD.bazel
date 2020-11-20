@@ -24,7 +24,6 @@ ng_module(
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
-        "@npm//@angular/router",
     ],
 )
 

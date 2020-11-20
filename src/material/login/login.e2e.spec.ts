@@ -8,10 +8,9 @@ describe('dewco-material-login', () => {
   beforeEach(async () => await browser.get('/mat-login'));
 
   it('should not display an error message on init', async () => {
-    const errorMsg = element(by.className('error-message'));
-    await errorMsg.isPresent().then(res => {
-      expect(res).toBe(false);
-    });
+    const errorMsg = element(by.className('dewco-error-message'));
+    const res = await errorMsg.isPresent();
+    expect(res).toBe(false);
   });
 
   it('should disable the login button if the form value is invalid', async () => {
@@ -23,9 +22,8 @@ describe('dewco-material-login', () => {
     await emailInput.clear();
     await pswInput.clear();
 
-    await loginButton.isEnabled().then(res => {
-      expect(res).toBe(false);
-    });
+    const res = await loginButton.isEnabled();
+    expect(res).toBe(false);
   });
 
   it('should enable the login button if the form value is valid', async () => {
@@ -37,9 +35,8 @@ describe('dewco-material-login', () => {
     await emailInput.sendKeys('email@email.io');
     await pswInput.sendKeys('password');
 
-    await loginButton.isEnabled().then(res => {
-      expect(res).toBe(true);
-    });
+    const res = await loginButton.isEnabled();
+    expect(res).toBe(true);
   });
 
   it('should show the error message if login was unsuccessful', async () => {
@@ -47,15 +44,14 @@ describe('dewco-material-login', () => {
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
     const pswInput = form.element(by.name('password'));
-    const errorMsg = form.element(by.className('error-message'));
+    const errorMsg = form.element(by.className('dewco-error-message'));
 
     await emailInput.sendKeys('wrong@email.io');
     await pswInput.sendKeys('wrongpass');
     await loginButton.click();
 
-    await errorMsg.isPresent().then(res => {
-      expect(res).toBe(true);
-    });
+    const res = await errorMsg.isPresent();
+    expect(res).toBe(true);
   });
 
   it('should not show the error message if login was successful', async () => {
@@ -63,15 +59,14 @@ describe('dewco-material-login', () => {
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
     const pswInput = form.element(by.name('password'));
-    const errorMsg = form.element(by.className('error-message'));
+    const errorMsg = form.element(by.className('dewco-error-message'));
 
     await emailInput.sendKeys('user@dewco.io');
     await pswInput.sendKeys('dewco');
     await loginButton.click();
 
-    await errorMsg.isPresent().then(res => {
-      expect(res).toBe(false);
-    });
+    const res = await errorMsg.isPresent();
+    expect(res).toBe(false);
   });
 
   it('should redirect to home url after a successful login', async () => {
@@ -84,9 +79,8 @@ describe('dewco-material-login', () => {
     await pswInput.sendKeys('dewco');
     await loginButton.click();
 
-    await browser.getCurrentUrl().then(res => {
-      expect(res).toEqual(browser.baseUrl + '/');
-    });
+    const res = await browser.getCurrentUrl();
+    expect(res).toEqual(browser.baseUrl + '/');
   });
 
   it('should not redirect to home url after a failed login', async () => {
@@ -99,8 +93,7 @@ describe('dewco-material-login', () => {
     await pswInput.sendKeys('wrongpsw');
     await loginButton.click();
 
-    await browser.getCurrentUrl().then(res => {
-      expect(res).toEqual(browser.baseUrl + '/mat-login');
-    });
+    const res = await browser.getCurrentUrl();
+    expect(res).toEqual(browser.baseUrl + '/mat-login');
   });
 });
