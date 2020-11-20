@@ -153,7 +153,7 @@ describe('Search filters dialog', () => {
     expect(spySetupWidget).toHaveBeenCalled();
   });
 
-  it('should ask the FilterService to add a FilterItem to the list of the chosen filterListType',
+  it('should ask the FilterService to add a FilterItem to the list of the chosen FilterListType',
      () => {
        fixtureDialog.detectChanges();
        const spyAddFilter = spyOn(fts, 'addFilter').and.callThrough();

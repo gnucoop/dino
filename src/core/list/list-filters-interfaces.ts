@@ -187,4 +187,4 @@ export const DEFAULT_MODEL_KEYS: string[] = ['id', 'data', 'created_at', 'update
  * (Dialog: displayed in a dialog)
  * (All: a list of basic and advanced filterItems)
  */
-export type filterListType = 'basic'|'advanced'|'temporary'|'all';
+export type FilterListType = 'basic'|'advanced'|'temporary'|'all';

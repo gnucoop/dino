@@ -42,17 +42,16 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ErrorHandlerService} from '@dewco/core/error-handler';
 import {
   DEFAULT_OPERATORS,
   FilterGroup,
   FilterItem,
-  filterListType,
+  FilterListType,
   FiltersService,
-  WidgetData
+  WidgetData,
 } from '@dewco/core/list';
 import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
-import {catchError, map, take, tap, withLatestFrom} from 'rxjs/operators';
+import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
 
 import {SearchFiltersWidget} from '../searchfilters-widget';
 
@@ -109,7 +108,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.widgets) {
-      this._updateWidgetsSub = this._updateWidgetsEvent.asObservable().subscribe(res => {
+      this._updateWidgetsSub = (this._updateWidgetsEvent as Observable<boolean>).subscribe(res => {
         if (res === false) {
           return;
         }
@@ -151,11 +150,11 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Asks the FilterService to add a FilterItem to the filterItems list of the chosen filterListType
+   * Asks the FilterService to add a FilterItem to the filterItems list of the chosen FilterListType
    * @param {FilterItem} filterItem
-   * @param {filterListType} filterList
+   * @param {FilterListType} filterList
    */
-  addFilter(filterItem: FilterItem, listType: filterListType): void {
+  addFilter(filterItem: FilterItem, listType: FilterListType): void {
     if (filterItem.value !== null && filterItem.value !== '') {
       this.fts.addFilter(filterItem, listType);
     }
@@ -163,11 +162,11 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Asks the FilterService to remove a FilterItem from the filterItems lists of the chosen
-   * filterListTypes, then triggers the update of the associated widgets.
+   * FilterListTypes, then triggers the update of the associated widgets.
    * @param {FilterItem} filterItem
-   * @param {filterListType} filterList
+   * @param {FilterListType} filterList
    */
-  removeFilter(filterItem: FilterItem, listType: filterListType[]|filterListType): void {
+  removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
     this.fts.removeFilter(filterItem, listType)
         .pipe(
             take(1),

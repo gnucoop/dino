@@ -387,8 +387,8 @@ export const ajfSchema = {
           'id': 202,
           'name': '_2_202',
           'size': 'normal',
-          'label':
-              'Total monthly income (Meticais) - income received during the last agricultural campaign',
+          'label': 'Total monthly income (Meticais) - income received during the last' +
+              ' agricultural campaign',
           'parent': 201,
           'choices': [],
           'editable': true,
@@ -420,8 +420,9 @@ export const ajfSchema = {
           'id': 204,
           'name': '_2_204',
           'size': 'normal',
-          'label':
-              'Total monthly expenditures (Meticais) food, clothing, housing (rent), energy, transport, durable goods, health costs, leisure, and miscellaneous services',
+          'label': 'Total monthly expenditures (Meticais) food, clothing, housing (rent),' +
+              ' energy, transport, durable goods, health costs, leisure, and miscellaneous' +
+              ' services',
           'parent': 202,
           'choices': [],
           'editable': true,
@@ -987,8 +988,8 @@ export const ajfSchema = {
           'id': 400,
           'name': '_4_400',
           'size': 'normal',
-          'label':
-              'Do you believe that your diet, and that your family members, are adequate/sufficient for proper physical development and good health?',
+          'label': 'Do you believe that your diet, and that your family members, are' +
+              ' adequate/sufficient for proper physical development and good health?',
           'parent': 4,
           'choices': [],
           'editable': true,
@@ -1096,8 +1097,8 @@ export const ajfSchema = {
           'id': 403,
           'name': '_4_403',
           'size': 'normal',
-          'label':
-              'Agricultural practice that you applied in your individual fields during the last agricultural campaign',
+          'label': 'Agricultural practice that you applied in your individual fields during the' +
+              ' last agricultural campaign',
           'parent': 40222,
           'choices': [],
           'editable': true,
@@ -2140,8 +2141,9 @@ export const ajfSchema = {
           'label': 'Overall volume of production (KG)',
           'parent': 545,
           'formula': {
-            'formula':
-                '_5_501+_5_503+_5_505+_5_507+_5_509 + _5_511+_5_513+_5_515+_5_517+_5_519 + _5_521+_5_523+_5_525+_5_527+_5_529 + _5_531+_5_533+_5_535+_5_537+_5_539 + _5_541+_5_543+_5_545'
+            'formula': '_5_501+_5_503+_5_505+_5_507+_5_509 + _5_511+_5_513+_5_515+_5_517+_5_519' +
+                '+ _5_521+_5_523+_5_525+_5_527+_5_529+_5_531+_5_533+_5_535+_5_537+_5_539+_5_541' +
+                '+_5_543+_5_545'
           },
           'editable': false,
           'nodeType': 0,
@@ -2790,8 +2792,8 @@ export const ajfSchema = {
           'id': 570,
           'name': '_5_570',
           'size': 'normal',
-          'label':
-              'In your daily activity, are you informed about weather conditions, market prices, events and fairs for sale and visibility?',
+          'label': 'In your daily activity, are you informed about weather conditions, market' +
+              ' prices, events and fairs for sale and visibility?',
           'parent': 569,
           'choices': [],
           'editable': true,
@@ -2832,8 +2834,8 @@ export const ajfSchema = {
           'id': 572,
           'name': '_5_572',
           'size': 'normal',
-          'label':
-              'What do you think are the biggest obstacles to the productivity of your fields?(Max 3 choices)',
+          'label': 'What do you think are the biggest obstacles to the productivity of your' +
+              ' fields? (Max 3 choices)',
           'parent': 571,
           'choices': [],
           'editable': true,
@@ -2928,8 +2930,8 @@ export const ajfSchema = {
       'nodes': [
         {
           'id': 600,
-          'HTML':
-              '<h1>How many KG of your agricultural production was earmarked for sale in the last agricultural campaign?</h1>',
+          'HTML': '<h1>How many KG of your agricultural production was earmarked for sale' +
+              ' in the last agricultural campaign?</h1>',
           'name': 'result_2_indicators_text_1',
           'size': 'normal',
           'label': '',
@@ -3846,8 +3848,9 @@ export const ajfSchema = {
           'label': 'Overall volume of production sold (KG)',
           'parent': 646,
           'formula': {
-            'formula':
-                '_6_602+_6_604+_6_606+_6_608 + _6_610+_6_612+_6_614+_6_616+_6_618 + _6_620+_6_622+_6_624+_6_626+_6_628 + _6_630+_6_632+_6_634+_6_636+_6_638 + _6_640+_6_642+_6_644+_6_646'
+            'formula': '_6_602+_6_604+_6_606+_6_608 + _6_610+_6_612+_6_614+_6_616+_6_618+_6_620' +
+                '+_6_622+_6_624+_6_626+_6_628+_6_630+_6_632+_6_634+_6_636+_6_638+_6_640+_6_642' +
+                '+_6_644+_6_646'
           },
           'editable': false,
           'nodeType': 0,
@@ -3861,8 +3864,8 @@ export const ajfSchema = {
           'id': 648,
           'name': '_6_648',
           'size': 'small',
-          'label':
-              'How much do you earn in the last agricultural campaign from the sale of agricultural products from your field?',
+          'label': 'How much do you earn in the last agricultural campaign from the sale of' +
+              ' agricultural products from your field?',
           'parent': 647,
           'editable': true,
           'nodeType': 0,
@@ -4800,8 +4803,11 @@ export const ajfSchema = {
           'label': 'Total monthly income from agricultural activity (Meticais)',
           'parent': 695,
           'formula': {
-            'formula':
-                '_6_602*_6_651+_6_604*_6_653+_6_606*_6_655+_6_608*_6_657+_6_610*_6_659+_6_612*_6_661+_6_614*_6_663+_6_616*_6_665+_6_618*_6_667+_6_620*_6_669+_6_622*_6_671+_6_624*_6_673+_6_626*_6_675+_6_628*_6_677+_6_630*_6_679+_6_632*_6_681+_6_634*_6_683+_6_636*_6_685+_6_638*_6_687+_6_640*_6_689+_6_642*_6_691+_6_644*_6_693+_6_646*_6_695'
+            'formula': '_6_602*_6_651+_6_604*_6_653+_6_606*_6_655+_6_608*_6_657+_6_610*_6_659' +
+                '+_6_612*_6_661+_6_614*_6_663+_6_616*_6_665+_6_618*_6_667+_6_620*_6_669+_6_622' +
+                '*_6_671+_6_624*_6_673+_6_626*_6_675+_6_628*_6_677+_6_630*_6_679+_6_632*_6_681' +
+                '+_6_634*_6_683+_6_636*_6_685+_6_638*_6_687+_6_640*_6_689+_6_642*_6_691+_6_644' +
+                '*_6_693+_6_646*_6_695'
           },
           'editable': false,
           'nodeType': 0,
@@ -4893,8 +4899,11 @@ export const ajfSchema = {
           'label': 'Difference between KG produced and KG sold',
           'parent': 697,
           'formula': {
-            'formula':
-                '(_5_501+_5_503+_5_505+_5_507+_5_509 + _5_511+_5_513+_5_515+_5_517+_5_519 + _5_521+_5_523+_5_525+_5_527+_5_529 + _5_531+_5_533+_5_535+_5_537+_5_539 + _5_541+_5_543+_5_545) - (_6_602+_6_604+_6_606+_6_608 + _6_610+_6_612+_6_614+_6_616+_6_618 + _6_620+_6_622+_6_624+_6_626+_6_628 + _6_630+_6_632+_6_634+_6_636+_6_638 + _6_640+_6_642+_6_644+_6_646)'
+            'formula': '(_5_501+_5_503+_5_505+_5_507+_5_509+_5_511+_5_513+_5_515+_5_517+_5_519' +
+                '+_5_521+_5_523+_5_525+_5_527+_5_529 + _5_531+_5_533+_5_535+_5_537+_5_539+_5_541' +
+                '+_5_543+_5_545) - (_6_602+_6_604+_6_606+_6_608+_6_610+_6_612+_6_614+_6_616' +
+                '+_6_618+ _6_620+_6_622+_6_624+_6_626+_6_628+_6_630+_6_632+_6_634+_6_636+_6_638' +
+                '+ _6_640+_6_642+_6_644+_6_646)'
           },
           'editable': false,
           'nodeType': 0,

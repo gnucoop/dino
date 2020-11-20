@@ -33,10 +33,10 @@ ng_test_library(
     ),
     deps = [
         ":list-datasource",
-        "//src/core/error-handler",
-        "//src/core/forms",
         "//src/core/auth",
         "//src/core/data",
+        "//src/core/error-handler",
+        "//src/core/forms",
         "//src/core/list",
         "@npm//@angular/common",
         "@npm//@angular/router",

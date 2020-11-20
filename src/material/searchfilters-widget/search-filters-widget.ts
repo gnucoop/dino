@@ -167,8 +167,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
      */
     this._changeFiltersSub =
         combineLatest([
-          this._formValueChanges, this._matToggleValue.asObservable(),
-          this.operatorValue.asObservable(), this._widgetVisibility
+          this._formValueChanges, this._matToggleValue, this.operatorValue, this._widgetVisibility
         ])
             .pipe(
                 debounceTime(300),

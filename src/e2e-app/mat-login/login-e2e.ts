@@ -4,4 +4,5 @@ import {Component} from '@angular/core';
   selector: 'mat-login-e2e',
   templateUrl: 'login-e2e.html',
 })
-export class MatLoginE2E {}
+export class MatLoginE2E {
+}

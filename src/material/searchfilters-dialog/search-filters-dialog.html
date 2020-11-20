@@ -15,7 +15,7 @@
         <mat-tab *ngFor=" let filterGroup of fts.modelFilters|async;" [label]="filterGroup.filterGroupName"
             style="width: 100%">
             <ng-template matTabContent>
-                <div class="widgets-container" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="0.5% grid">
+                <div class="dewco-filter-widgets-container" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="0.5% grid">
                     <dewco-mat-searchfilters-widget *ngFor="let widget of widgetData|async;" fxFlex="0 1 33%"
                         fxFlex.lt-lg="0 1 50%" fxFlex.lt-md="100%" 
                         [widgetData]="widget"

@@ -32,7 +32,7 @@ import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {
   FilterItem,
-  filterListType,
+  FilterListType,
   FiltersService,
   SearchFiltersComponent,
 } from '@dewco/core/list';
@@ -99,9 +99,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
    * @param {FilterItem} filterItem
-   * @param {filterListType[]|filterListType} listType
+   * @param {FilterListType[]|FilterListType} listType
    */
-  removeFilter(filterItem: FilterItem, listType: filterListType[]|filterListType): void {
+  removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
     this._fts.removeFilter(filterItem, listType);
   }
 

@@ -1,10 +1,9 @@
-.abs-right {
-    right: 3.2em;
-    position: absolute !important;
-}
-mat-icon {
+dewco-mat-search-filers-bar {
+  .mat-icon {
     cursor: pointer;
-}
-.mat-line {
+  }
+
+  .mat-line {
     cursor: default !important;
+  }
 }

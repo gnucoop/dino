@@ -46,9 +46,9 @@ ng_test_library(
     deps = [
         ":searchfilters-bar",
         "//src/core/list",
+        "@npm//@angular/common",
         "@npm//@angular/material",
         "@npm//@angular/router",
-        "@npm//@angular/common",
     ],
 )
 

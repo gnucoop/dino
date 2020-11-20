@@ -1,4 +1,3 @@
-import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 /**
  * @license
  * Copyright (C) Gnucoop soc. coop.
@@ -21,6 +20,7 @@ import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http'
  *
  */
 
+import {HttpErrorResponse} from '@angular/common/http';
 import {ErrorHandler, Injectable, Injector} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
@@ -30,17 +30,14 @@ import {Observable} from 'rxjs';
  */
 @Injectable({providedIn: 'root'})
 export class ErrorHandlerService implements ErrorHandler {
-  private _loggingUrl: string;
-  constructor(private _injector: Injector) {
-    this._loggingUrl = 'https://test-logging-api/';
-  }
+  constructor(private _injector: Injector) {}
 
   /**
    * Custom global error handler
    * @param {any} error
    * @returns {Observable(T)}
    */
-  handleError<T>(error: any) {
+  handleError<T>(error: any): Observable<T> {
     const router = this._injector.get(Router);
 
     if (error instanceof HttpErrorResponse) {
@@ -54,26 +51,7 @@ export class ErrorHandlerService implements ErrorHandler {
       console.error(`DEWCO ERROR: ${error.message} \n URL: ${router.url}`);
     }
 
-    // this._logHandle(error);
-
     const safeValue = new Observable<T>();
     return safeValue;
-  }
-
-  /**
-   * Sends an error message to an external logging service api
-   * @param {any} error
-   */
-  private _logHandle<T>(error: any) {
-    const http = this._injector.get(HttpClient);
-    const router = this._injector.get(Router);
-
-    const errorData = {
-      'error_message': error.message,
-      'error_status': error.status,
-      'error_url': router.url,
-    };
-    http.post(this._loggingUrl, errorData)
-        .subscribe(res => console.log(`Logging the error: ${res}`));
   }
 }

@@ -10,6 +10,6 @@
     </mat-form-field>
 </form>
 <button mat-stroked-button (click)="loadPreset()"
-    [disabled]="(presetName|async) == '' || (canLoadPreset|async) == false" aria-label="Load the preset">Apply</button>
+    [disabled]="(presetName|async) == '' || (canLoadPreset|async) === false" aria-label="Load the preset">Apply</button>
 <button mat-stroked-button (click)="savePreset()"
-    [disabled]="(presetData|async) == null || (presetName|async) == ''" aria-label="Save the preset">Save</button>
+    [disabled]="(presetData|async) == null || (presetName|async) === ''" aria-label="Save the preset">Save</button>

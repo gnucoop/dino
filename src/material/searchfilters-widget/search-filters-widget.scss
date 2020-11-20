@@ -1,11 +1,12 @@
-dewco-mat-searchfilters-widget {
-    mat-card {
-        min-height: 30vh;
-        display: flex;
-        flex-direction: column;
-        transition: opacity ease 0.5s !important;
-        .mat-card-actions {
-            background: #f2f2f2;
-        }
+dewco-searchfilters-widget {
+  mat-card {
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    transition: opacity ease 0.5s !important;
+
+    .mat-card-actions {
+      background: #f2f2f2;
     }
+  }
 }

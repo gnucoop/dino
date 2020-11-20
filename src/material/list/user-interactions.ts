@@ -21,18 +21,17 @@
  */
 
 import {Injectable} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {AdminUserInteractionsService as CoreAdminUserInteractionsService} from '@dewco/core/list';
 import {Observable, of as obsOf} from 'rxjs';
 
 
 @Injectable()
 export class AdminUserInteractionsService extends CoreAdminUserInteractionsService {
-  constructor(private _dialog?: MatDialog) {
+  constructor() {
     super();
   }
 
-  askConfirm(action: string): Observable<boolean> {
+  askConfirm(_action: string): Observable<boolean> {
     return obsOf(true);  // @todo
   }
 }

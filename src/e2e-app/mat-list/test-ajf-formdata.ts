@@ -168,4 +168,4 @@ export const testFormData: FormData = {
   data: testAjfFormData,
   created_at: '',
   updated_at: '',
-} ;
+};

@@ -39,8 +39,8 @@ const schemas = [
   },
 ] as RxJsonSchema[];
 
-const collections = schemas.map(
-    schema => ({name: schema.title, schema: {jsonSchema: schema}} as RxCollection));
+const collections =
+    schemas.map(schema => ({name: schema.title, schema: {jsonSchema: schema}} as RxCollection));
 
 const syncOptions: DataServiceSyncOptions = {
   url: 'host',

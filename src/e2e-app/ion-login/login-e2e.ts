@@ -4,4 +4,5 @@ import {Component} from '@angular/core';
   selector: 'ion-login-e2e',
   templateUrl: 'login-e2e.html',
 })
-export class IonLoginE2E {}
+export class IonLoginE2E {
+}

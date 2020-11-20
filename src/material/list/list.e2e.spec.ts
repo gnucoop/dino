@@ -141,8 +141,6 @@ describe('dewco-mat-list', () => {
 
   it('should delete all the rows by clicking the bulk-actions checkbox and the bulk delete button',
      async () => {
-       const paginatorNum =
-           +await element(by.css('.mat-paginator .mat-select')).getAttribute('ng-reflect-value');
        const initialRowCount = await element.all(by.tagName('mat-row')).count();
        expect(initialRowCount).not.toEqual(0);
        const bulkBox = element(by.tagName('mat-header-cell')).element(by.tagName('mat-checkbox'));

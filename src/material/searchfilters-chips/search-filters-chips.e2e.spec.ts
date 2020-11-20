@@ -3,7 +3,6 @@ import {
   by,
   element,
   ExpectedConditions as EC,
-  Key,
 } from 'protractor';
 
 describe('dewco-mat-searchfilters-chips', () => {
@@ -50,8 +49,8 @@ describe('dewco-mat-searchfilters-chips', () => {
     await browser.sleep(1000);
 
     const widgetToggle = element.all(by.tagName('dewco-mat-searchfilters-widget'))
-                       .first()
-                       .element(by.tagName('mat-slide-toggle'));
+                             .first()
+                             .element(by.tagName('mat-slide-toggle'));
 
     expect(await widgetToggle.getAttribute('class')).not.toContain('mat-checked');
   });

@@ -29,9 +29,9 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import {FilterItem, filterListType, FiltersService} from '@dewco/core/list';
+import {FilterItem, FilterListType, FiltersService} from '@dewco/core/list';
 import {combineLatest, Observable, throwError} from 'rxjs';
-import {catchError, map, tap} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 /**
  * Shows a list of active filters and allows the deletion of any one of those
@@ -46,7 +46,7 @@ import {catchError, map, tap} from 'rxjs/operators';
 })
 export class SearchFiltersChips implements OnInit {
   chipsFilters: Observable<FilterItem[]>;
-  @Input() chipsType: filterListType;
+  @Input() chipsType: FilterListType;
   @Output() excludeFilter: EventEmitter<FilterItem>;
 
   constructor(private _fts: FiltersService) {
@@ -59,13 +59,13 @@ export class SearchFiltersChips implements OnInit {
   ngOnInit() {
     switch (this.chipsType) {
       case 'basic':
-        this.chipsFilters = this._fts.basicFilters.asObservable();
+        this.chipsFilters = this._fts.basicFilters;
         break;
       case 'advanced':
-        this.chipsFilters = this._fts.advancedFilters.asObservable();
+        this.chipsFilters = this._fts.advancedFilters;
         break;
       case 'temporary':
-        this.chipsFilters = this._fts.temporaryFilters.asObservable();
+        this.chipsFilters = this._fts.temporaryFilters;
         break;
       case 'all':
       default:

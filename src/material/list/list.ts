@@ -40,7 +40,6 @@ import {
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {DataModelManager, Model} from '@dewco/core/data';
-import {ErrorHandlerService} from '@dewco/core/error-handler';
 import {
   FilterGroup,
   FiltersService,
@@ -125,7 +124,8 @@ export class SelectionList<T extends Model = Model,
   /**
    * Querylist of cell non default templates
    */
-  @ContentChildren(ListCellDirective) cellTemplates: QueryList<ListCellDirective>;
+  @ContentChildren(ListCellDirective, {descendants: false})
+  cellTemplates: QueryList<ListCellDirective>;
 
   constructor(
       cdr: ChangeDetectorRef,
@@ -278,22 +278,21 @@ export class SelectionList<T extends Model = Model,
    * Initializes the list Actions subscription (delete, download, print, edit)
    */
   private _initList(): void {
-    this._actionsSub =
-        this._actionEvent
-            .pipe(
-                switchMap(
-                    ({action, items}) => this._aui.askConfirm(action).pipe(
-                        map(confirmation => ({confirmation, action, items})),
-                        ),
-                    ),
-                map(({confirmation, action, items}) => {
-                  if (confirmation) {
-                    this.processAction(action, items);
-                  }
-                }),
-                catchError(err => throwError(err)),
-                )
-            .subscribe();
+    this._actionsSub = this._actionEvent
+                           .pipe(
+                               switchMap(
+                                   ({action, items}) => this._aui.askConfirm(action).pipe(
+                                       map(confirmation => ({confirmation, action, items})),
+                                       ),
+                                   ),
+                               map(({confirmation, action, items}) => {
+                                 if (confirmation) {
+                                   this.processAction(action, items);
+                                 }
+                               }),
+                               catchError(err => throwError(err)),
+                               )
+                           .subscribe();
   }
 
   /**

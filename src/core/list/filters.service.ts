@@ -19,19 +19,19 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
+
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {AjfCondition} from '@ajf/core/models';
 import {EventEmitter, Injectable, OnDestroy, Optional} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ErrorHandlerService} from '@dewco/core/error-handler';
 import {FormSchema} from '@dewco/core/forms';
 import {
   DEFAULT_MODEL_KEYS,
   FIELD_TYPES,
   FilterGroup,
   FilterItem,
-  filterListType,
+  FilterListType,
 } from '@dewco/core/list';
 import {LocationManager} from '@dewco/core/locations';
 import {ProjectManager} from '@dewco/core/projects';
@@ -237,11 +237,11 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Returns an observable of the filterItems list of the chosen filterListType
-   * @param {filterListType} type
+   * Returns an observable of the filterItems list of the chosen FilterListType
+   * @param {FilterListType} type
    * @returns {BehaviorSubject(FilterItem[])}
    */
-  private _selectFilterListType(type: filterListType): BehaviorSubject<FilterItem[]> {
+  private _selectFilterListType(type: FilterListType): BehaviorSubject<FilterItem[]> {
     switch (type) {
       case 'basic':
         return this.basicFilters;
@@ -254,11 +254,11 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Adds a FilterItem to the filterItems list of the chosen filterListType
+   * Adds a FilterItem to the filterItems list of the chosen FilterListType
    * @param {FilterItem} filterItem
-   * @param {filterListType} filterList
+   * @param {FilterListType} filterList
    */
-  addFilter(filterItem: FilterItem, filterList: filterListType): void {
+  addFilter(filterItem: FilterItem, filterList: FilterListType): void {
     const currentList = this._selectFilterListType(filterList);
     const currentValue =
         this._selectFilterListType(filterList).value.map(a => ({...a}) as FilterItem);
@@ -271,11 +271,11 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Removes a FilterItem from the filterItems lists of the chosen filterListTypes
+   * Removes a FilterItem from the filterItems lists of the chosen FilterListTypes
    * @param {FilterItem} filterItem
-   * @param {filterListType} filterList
+   * @param {FilterListType} filterList
    */
-  removeFilter(filterItem: FilterItem, filterList: filterListType[]|filterListType):
+  removeFilter(filterItem: FilterItem, filterList: FilterListType[]|FilterListType):
       Observable<boolean> {
     if (!Array.isArray(filterList)) {
       filterList = [filterList];
@@ -297,13 +297,13 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Searches for a FilterItem by name in filterItems list of the chosen filterListType.
-   * If no filterListType is specified, it searches in the TemporaryFiltersList
+   * Searches for a FilterItem by name in filterItems list of the chosen FilterListType.
+   * If no FilterListType is specified, it searches in the TemporaryFiltersList
    * @param {string} filterName
-   * @param {filterListType?} filterList?
+   * @param {FilterListType?} filterList?
    * @returns {Observable(FilterItem|undefined)}
    */
-  findFilterByName(filterName: string, filterList?: filterListType):
+  findFilterByName(filterName: string, filterList?: FilterListType):
       Observable<FilterItem|undefined> {
     if (filterList == null) {
       filterList = 'temporary';
@@ -462,7 +462,7 @@ export class FiltersService implements OnDestroy {
     const valueChanges = this._basicFormGroups.map(group => group.valueChanges);
 
     this._loadingPresetSub =
-        this.loadPresetEvent.asObservable()
+        this.loadPresetEvent
             .pipe(
                 withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))),
                 catchError(err => throwError(err) as Observable<[any, any]>),

@@ -1,5 +1,5 @@
 import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService, User} from '@dewco/core/auth';
 import {
@@ -10,7 +10,7 @@ import {
   DataService,
   DataServiceConfig,
   Model,
-  PermissionContextService
+  PermissionContextService,
 } from '@dewco/core/data';
 import {
   FilterItem,
@@ -117,8 +117,6 @@ describe('ListComponent', () => {
   let dataService: DataService;
   let contextService: PermissionContextService;
   let fts: FiltersService;
-  let route: ActivatedRoute;
-  let router: Router;
   let dataSource: ListDataSource<DummyModel, DummyManager>;
 
   beforeEach(() => {
@@ -137,8 +135,6 @@ describe('ListComponent', () => {
     dataService = TestBed.inject(DataService);
     fts = TestBed.inject(FiltersService);
     dummyManager = new DummyManager(createCollectionParams, dataService, contextService);
-    route = TestBed.inject(ActivatedRoute);
-    router = TestBed.inject(Router);
     dataSource = new ListDataSource<DummyModel, DummyManager>(dummyManager, fts);
   });
 

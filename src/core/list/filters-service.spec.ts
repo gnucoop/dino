@@ -1,15 +1,12 @@
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {FormControl, FormGroup} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
 import {FormSchema} from '@dewco/core/forms';
-import {
-  FilterItem,
-  FiltersService,
-} from '@dewco/core/list';
+import {FilterItem, FiltersService} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
 
@@ -109,8 +106,6 @@ const fakeActivatedRoute = {
 
 describe('FiltersService', () => {
   let fts: FiltersService;
-  let route: ActivatedRoute;
-  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -123,8 +118,6 @@ describe('FiltersService', () => {
         {provide: ActivatedRoute, useValue: fakeActivatedRoute},
       ],
     });
-    route = TestBed.inject(ActivatedRoute);
-    router = TestBed.inject(Router);
     fts = TestBed.inject(FiltersService);
   });
 

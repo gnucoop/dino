@@ -64,7 +64,6 @@ ng_e2e_test_library(
         "//src/material/list",
         "//src/material/list-datasource",
         "@npm//@angular/core",
-        "@npm//@angular/compiler",
     ],
 )
 

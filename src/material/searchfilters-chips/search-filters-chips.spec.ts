@@ -1,7 +1,7 @@
 import {ChangeDetectorRef} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {FilterItem, FiltersService} from '@dewco/core/list';
+import {FilterItem} from '@dewco/core/list';
 import {SearchFiltersChips} from '@dewco/material/searchfilters-chips';
 
 const changeDetectorRefMock = {
@@ -16,7 +16,6 @@ const fakeFilter: FilterItem = {
 
 describe(
     'Searchfilters Chips. Displays all active filters as MatChips, allowing their deletion', () => {
-      let fts: FiltersService;
       let fixture: ComponentFixture<SearchFiltersChips>;
       let chips: SearchFiltersChips;
 
@@ -30,7 +29,6 @@ describe(
               ],
             })
             .compileComponents();
-        fts = TestBed.inject(FiltersService);
         fixture = TestBed.createComponent(SearchFiltersChips);
         chips = fixture.componentInstance;
       });
