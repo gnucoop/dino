@@ -6,5 +6,5 @@ export declare class Login extends LoginComponent {
 
 export declare class LoginModule {
     static ɵinj: i0.ɵɵInjectorDef<LoginModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<LoginModule, [typeof i1.Login], [typeof i2.CommonModule, typeof i3.MatButtonModule, typeof i4.MatIconModule, typeof i5.MatProgressBarModule, typeof i6.ReactiveFormsModule, typeof i7.RouterModule], [typeof i1.Login]>;
+    static ɵmod: i0.ɵɵNgModuleDefWithMeta<LoginModule, [typeof i1.Login], [typeof i2.CommonModule, typeof i3.MatButtonModule, typeof i4.MatIconModule, typeof i5.MatProgressBarModule, typeof i6.ReactiveFormsModule], [typeof i1.Login]>;
 }
