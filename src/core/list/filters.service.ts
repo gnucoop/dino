@@ -26,13 +26,6 @@ import {EventEmitter, Injectable, OnDestroy, Optional} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormSchema} from '@dewco/core/forms';
-import {
-  DEFAULT_MODEL_KEYS,
-  FIELD_TYPES,
-  FilterGroup,
-  FilterItem,
-  FilterListType,
-} from '@dewco/core/list';
 import {LocationManager} from '@dewco/core/locations';
 import {ProjectManager} from '@dewco/core/projects';
 import {RxJsonSchema} from 'rxdb';
@@ -54,6 +47,14 @@ import {
   take,
   withLatestFrom,
 } from 'rxjs/operators';
+
+import {
+  DEFAULT_MODEL_KEYS,
+  FIELD_TYPES,
+  FilterGroup,
+  FilterItem,
+  FilterListType,
+} from './list-filters-interfaces';
 
 /**
  * Service that handles all operations related to list Filters.
