@@ -1,7 +1,8 @@
 import {Routes} from '@angular/router';
-import {Home} from './e2e-app-layout';
-import {MatLoginE2E} from '../mat-login/login-e2e';
+
 import {IonLoginE2E} from '../ion-login/login-e2e';
+import {MatLoginE2E} from '../mat-login/login-e2e';
+import {Home} from './e2e-app-layout';
 
 
 export const E2E_APP_ROUTES: Routes = [
