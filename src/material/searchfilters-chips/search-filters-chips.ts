@@ -38,7 +38,7 @@ import {catchError, map} from 'rxjs/operators';
  *
  */
 @Component({
-  selector: 'dewco-mat-searchfilters-chips',
+  selector: 'dewco-searchfilters-chips',
   styleUrls: ['search-filters-chips.css'],
   templateUrl: 'search-filters-chips.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

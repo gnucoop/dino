@@ -45,11 +45,11 @@ import {catchError} from 'rxjs/operators';
  * The filters are obtained by parsing the RxJsonSchema of the model and the ajfFormSchema,
  * if present as a model property.
  * It may contain two child components:
- * dewco-mat-searchfilters-chips and dewco-mat-searchfilters-dialog.
+ * dewco-searchfilters-chips and dewco-searchfilters-dialog.
  * This component creates and sends a query string to the SelectionList component DataSource
  */
 @Component({
-  selector: 'dewco-mat-searchfilters-bar',
+  selector: 'dewco-searchfilters-bar',
   styleUrls: ['search-filters-bar.css'],
   templateUrl: 'search-filters-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,6 +81,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.id = 'modal-component';
     dialogConfig.panelClass = 'search-filters-dialog';
+    dialogConfig.minWidth = '75vw';
     this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);
     this._dialogSub = this._dialogRef.afterClosed()
                           .pipe(catchError(err => throwError(err) as Observable<boolean>))

@@ -5,15 +5,15 @@ export declare class SearchFiltersDialog implements OnInit, OnDestroy, AfterView
     widgetData: Observable<WidgetData[]>;
     widgets: QueryList<SearchFiltersWidget>;
     constructor(dialogRef: MatDialogRef<SearchFiltersDialog>, data: any, fts: FiltersService);
-    addFilter(filterItem: FilterItem, listType: filterListType): void;
+    addFilter(filterItem: FilterItem, listType: FilterListType): void;
     closeDialog(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     ngOnInit(): void;
-    removeFilter(filterItem: FilterItem, listType: filterListType[] | filterListType): void;
+    removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void;
     search(): void;
     setCurrentGroupId(id: number): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersDialog, "dewco-mat-searchfilters-dialog", never, {}, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersDialog, "dewco-searchfilters-dialog", never, {}, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDef<SearchFiltersDialog, never>;
 }
 

@@ -1,6 +1,6 @@
 export declare class AdminUserInteractionsService extends CoreAdminUserInteractionsService {
-    constructor(_dialog?: MatDialog | undefined);
-    askConfirm(action: string): Observable<boolean>;
+    constructor();
+    askConfirm(_action: string): Observable<boolean>;
     static ɵfac: i0.ɵɵFactoryDef<AdminUserInteractionsService, never>;
     static ɵprov: i0.ɵɵInjectableDef<AdminUserInteractionsService>;
 }
@@ -37,6 +37,6 @@ export declare class SelectionList<T extends Model = Model, DM extends DataModel
     ngOnDestroy(): void;
     ngOnInit(): void;
     selectAll(): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SelectionList<any, any>, "dewco-mat-list", never, { "dataSource": "dataSource"; "customFilters": "customFilters"; }, {}, ["filtersComponent", "cellTemplates"], ["[filters]"]>;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SelectionList<any, any>, "dewco-list", never, { "dataSource": "dataSource"; "customFilters": "customFilters"; }, {}, ["filtersComponent", "cellTemplates"], ["[filters]"]>;
     static ɵfac: i0.ɵɵFactoryDef<SelectionList<any, any>, never>;
 }

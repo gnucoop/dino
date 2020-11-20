@@ -1,11 +1,11 @@
 export declare class SearchFiltersChips implements OnInit {
     chipsFilters: Observable<FilterItem[]>;
-    chipsType: filterListType;
+    chipsType: FilterListType;
     excludeFilter: EventEmitter<FilterItem>;
     constructor(_fts: FiltersService);
     ngOnInit(): void;
     removeFilterItem(filterItem: FilterItem): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersChips, "dewco-mat-searchfilters-chips", never, { "chipsType": "chipsType"; }, { "excludeFilter": "excludeFilter"; }, never, never>;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersChips, "dewco-searchfilters-chips", never, { "chipsType": "chipsType"; }, { "excludeFilter": "excludeFilter"; }, never, never>;
     static ɵfac: i0.ɵɵFactoryDef<SearchFiltersChips, never>;
 }
 

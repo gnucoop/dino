@@ -16,14 +16,18 @@ export declare class SearchFiltersWidget extends AjfCoreFormRenderer implements 
     get widgetVisibility(): BehaviorSubject<boolean>;
     constructor(rendererService: AjfFormRendererService, changeDetectorRef: ChangeDetectorRef, _fs: FiltersService);
     changeOperator(operator: MatButtonToggleChange): void;
-    checkToggleDisabled(obj: any, element: MatSlideToggle, forceToggle?: boolean): boolean;
+    checkToggleDisabled(obj: {
+        [key: string]: unknown;
+    }, element: MatSlideToggle, forceToggle?: boolean): boolean;
     conditionOperatorByFieldType(type: AjfFieldType): Operator[];
     filterToggle(toggle: MatSlideToggleChange): void;
-    getWidgetFormValue(): any;
+    getWidgetFormValue(): {
+        [key: string]: unknown;
+    };
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     ngOnInit(): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersWidget, "dewco-mat-searchfilters-widget", never, { "widgetData": "widgetData"; }, { "includeFilter": "includeFilter"; "excludeFilter": "excludeFilter"; }, never, never>;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersWidget, "dewco-searchfilters-widget", never, { "widgetData": "widgetData"; }, { "includeFilter": "includeFilter"; "excludeFilter": "excludeFilter"; }, never, never>;
     static ɵfac: i0.ɵɵFactoryDef<SearchFiltersWidget, never>;
 }
 

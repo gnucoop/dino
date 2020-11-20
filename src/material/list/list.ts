@@ -58,7 +58,7 @@ import {AdminUserInteractionsService} from './user-interactions';
  * Provides a template, selection and bulk/individual action functionalities for all list/tables
  */
 @Component({
-  selector: 'dewco-mat-list',
+  selector: 'dewco-list',
   styleUrls: ['list.css'],
   templateUrl: 'list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

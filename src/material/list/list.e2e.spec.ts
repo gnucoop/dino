@@ -35,7 +35,7 @@ export const displayedHeaders: any[] = [
 ];
 
 
-describe('dewco-mat-list', () => {
+describe('dewco-list', () => {
   beforeEach(async () => {
     await browser.get('/mat-list');
     await browser.waitForAngularEnabled(false);
@@ -43,7 +43,7 @@ describe('dewco-mat-list', () => {
   });
 
   it('should display a material table', async () => {
-    const table = await element(by.tagName('dewco-mat-list')).isPresent();
+    const table = await element(by.tagName('dewco-list')).isPresent();
     expect(table).toBe(true);
   });
 
@@ -60,7 +60,7 @@ describe('dewco-mat-list', () => {
   });
 
   it('should display a table Title', async () => {
-    const title = await element(by.tagName('dewco-mat-list h2')).getText();
+    const title = await element(by.tagName('dewco-list h2')).getText();
     expect(title).toEqual('Example List');
   });
 

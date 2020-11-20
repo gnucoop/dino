@@ -6,7 +6,7 @@ import {
   Key,
 } from 'protractor';
 
-describe('dewco-mat-searchfilters-preset-manager', () => {
+describe('dewco-searchfilters-preset-manager', () => {
   beforeAll(async () => {
     await browser.get('/mat-list');
     await browser.waitForAngularEnabled(false);
@@ -16,15 +16,15 @@ describe('dewco-mat-searchfilters-preset-manager', () => {
     await browser.sleep(1000);
   });
 
-  it('should display a dewco-mat-searchfilters-preset-manager component', async () => {
-    const presetManager = element(by.tagName('dewco-mat-searchfilters-preset-manager'));
+  it('should display a dewco-searchfilters-preset-manager component', async () => {
+    const presetManager = element(by.tagName('dewco-searchfilters-preset-manager'));
 
     expect(await presetManager.isPresent()).toBe(true);
     expect(await presetManager.isDisplayed()).toBe(true);
   });
 
   it('should disable apply/save buttons if preset is not valid or stored ', async () => {
-    const presetManager = element(by.tagName('dewco-mat-searchfilters-preset-manager'));
+    const presetManager = element(by.tagName('dewco-searchfilters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const applyBtn = presetManager.all(by.tagName('button')).first();
     const saveBtn = presetManager.all(by.tagName('button')).last();
@@ -41,7 +41,7 @@ describe('dewco-mat-searchfilters-preset-manager', () => {
   });
 
   it('should save or update a preset in the localStorage', async () => {
-    const presetManager = element(by.tagName('dewco-mat-searchfilters-preset-manager'));
+    const presetManager = element(by.tagName('dewco-searchfilters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const saveBtn = presetManager.all(by.tagName('button')).last();
     const keywordFilterInput = element(by.css('input[formcontrolname="keyword"]'));
@@ -75,7 +75,7 @@ describe('dewco-mat-searchfilters-preset-manager', () => {
   });
 
   it('should load a preset from the localStorage', async () => {
-    const presetManager = element(by.tagName('dewco-mat-searchfilters-preset-manager'));
+    const presetManager = element(by.tagName('dewco-searchfilters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const applyBtn = presetManager.all(by.tagName('button')).first();
     const keywordFilterInput = element(by.css('input[formcontrolname="keyword"]'));

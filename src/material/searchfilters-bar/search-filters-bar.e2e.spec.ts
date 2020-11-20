@@ -6,7 +6,7 @@ import {
   ExpectedConditions as EC,
 } from 'protractor';
 
-describe('dewco-mat-searchfilters-bar', () => {
+describe('dewco-searchfilters-bar', () => {
   beforeEach(async () => {
     await browser.get('/mat-list');
     await browser.waitForAngularEnabled(false);
@@ -14,7 +14,7 @@ describe('dewco-mat-searchfilters-bar', () => {
   });
 
   it('should display a Filter Bar component', async () => {
-    const bar = await element(by.tagName('dewco-mat-searchfilters-bar')).isPresent();
+    const bar = await element(by.tagName('dewco-searchfilters-bar')).isPresent();
     expect(bar).toBe(true);
   });
 
@@ -54,14 +54,14 @@ describe('dewco-mat-searchfilters-bar', () => {
   });
 
   it('should open the advanced filters dialog', async () => {
-    const dialog = await element(by.tagName('dewco-mat-searchfilters-dialog')).isPresent();
+    const dialog = await element(by.tagName('dewco-searchfilters-dialog')).isPresent();
     expect(dialog).toBe(false);
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
     await dialogButton.click();
 
-    const dialog_open = await element(by.tagName('dewco-mat-searchfilters-dialog')).isPresent();
+    const dialog_open = await element(by.tagName('dewco-searchfilters-dialog')).isPresent();
     expect(dialog_open).toBe(true);
   });
 });

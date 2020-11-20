@@ -57,10 +57,10 @@ import {SearchFiltersWidget} from '../searchfilters-widget';
 
 /**
  * Dialog component that shows and handles all advancedFilters.
- * It may contain dewco-mat-searchfilters-chips and multiple dewco-mat-searchfilters-widget.
+ * It may contain dewco-searchfilters-chips and multiple dewco-searchfilters-widget.
  */
 @Component({
-  selector: 'dewco-mat-searchfilters-dialog',
+  selector: 'dewco-searchfilters-dialog',
   styleUrls: ['search-filters-dialog.css'],
   templateUrl: 'search-filters-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

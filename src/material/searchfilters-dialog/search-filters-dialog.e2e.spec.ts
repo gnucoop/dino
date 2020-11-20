@@ -5,7 +5,7 @@ import {
   ExpectedConditions as EC,
 } from 'protractor';
 
-describe('dewco-mat-searchfilters-dialog', () => {
+describe('dewco-searchfilters-dialog', () => {
   beforeAll(async () => {
     await browser.get('/mat-list');
     await browser.waitForAngularEnabled(false);
@@ -19,8 +19,8 @@ describe('dewco-mat-searchfilters-dialog', () => {
     await browser.sleep(1000);
   });
 
-  it('should display a dewco-mat-searchfilters-dialog component', async () => {
-    const dialog = await element(by.tagName('dewco-mat-searchfilters-dialog')).isPresent();
+  it('should display a dewco-searchfilters-dialog component', async () => {
+    const dialog = await element(by.tagName('dewco-searchfilters-dialog')).isPresent();
     expect(dialog).toBe(true);
   });
 
@@ -44,7 +44,7 @@ describe('dewco-mat-searchfilters-dialog', () => {
   });
 
   it('should display some number of filter widgets in the selected tab', async () => {
-    const widgets = await element.all(by.tagName('dewco-mat-searchfilters-widget')).count();
+    const widgets = await element.all(by.tagName('dewco-searchfilters-widget')).count();
     expect(widgets).toEqual(3);
     expect(widgets).toBeGreaterThan(0);
   });
@@ -63,7 +63,7 @@ describe('dewco-mat-searchfilters-dialog', () => {
        await searchButton.click();
        await browser.sleep(1000);
 
-       const dialog = await element(by.tagName('dewco-mat-searchfilters-dialog')).isPresent();
+       const dialog = await element(by.tagName('dewco-searchfilters-dialog')).isPresent();
        expect(dialog).toBe(false);
 
        const currentUrl = await browser.getCurrentUrl();

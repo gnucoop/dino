@@ -9,7 +9,7 @@ export declare class SearchFiltersPresetManager implements OnDestroy, OnInit {
     ngOnDestroy(): void;
     ngOnInit(): void;
     savePreset(): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersPresetManager, "dewco-mat-searchfilters-preset-manager", never, {}, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersPresetManager, "dewco-searchfilters-preset-manager", never, {}, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDef<SearchFiltersPresetManager, never>;
 }
 

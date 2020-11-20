@@ -45,7 +45,7 @@ import {
  *
  */
 @Component({
-  selector: 'dewco-mat-searchfilters-preset-manager',
+  selector: 'dewco-searchfilters-preset-manager',
   styleUrls: ['search-filters-preset-manager.css'],
   templateUrl: 'search-filters-preset-manager.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -6,7 +6,7 @@ import {
   Key,
 } from 'protractor';
 
-describe('dewco-mat-searchfilters-widget', () => {
+describe('dewco-searchfilters-widget', () => {
   beforeAll(async () => {
     await browser.get('/mat-list');
     await browser.waitForAngularEnabled(false);
@@ -20,8 +20,8 @@ describe('dewco-mat-searchfilters-widget', () => {
     await browser.sleep(1000);
   });
 
-  it('should display a number of dewco-mat-searchfilters-widget components', async () => {
-    const widgets = element.all(by.tagName('dewco-mat-searchfilters-widget'));
+  it('should display a number of dewco-searchfilters-widget components', async () => {
+    const widgets = element.all(by.tagName('dewco-searchfilters-widget'));
     const widgetsCount = await widgets.count();
     const firstWidget = widgets.get(0);
 
@@ -56,7 +56,7 @@ describe('dewco-mat-searchfilters-widget', () => {
      async () => {
        const firstNumberWidget = element.all(by.css('.mat-card-content input[type="number"]'))
                                      .first()
-                                     .element(by.xpath('ancestor::dewco-mat-searchfilters-widget'));
+                                     .element(by.xpath('ancestor::dewco-searchfilters-widget'));
 
        expect(await firstNumberWidget.isPresent()).toBe(true);
 
@@ -79,7 +79,7 @@ describe('dewco-mat-searchfilters-widget', () => {
 
        const firstChoiceWidget = element.all(by.css('.mat-card-content ajf-checkbox-group'))
                                      .first()
-                                     .element(by.xpath('ancestor::dewco-mat-searchfilters-widget'));
+                                     .element(by.xpath('ancestor::dewco-searchfilters-widget'));
 
        expect(await firstChoiceWidget.isPresent()).toBe(true);
 
@@ -99,7 +99,7 @@ describe('dewco-mat-searchfilters-widget', () => {
     await tabLabels.click();
     await browser.sleep(1000);
 
-    const widget = element.all(by.tagName('dewco-mat-searchfilters-widget')).first();
+    const widget = element.all(by.tagName('dewco-searchfilters-widget')).first();
     const input = widget.element(by.css('.mat-input-element[type="text"]'));
     const toggle = widget.element(by.tagName('mat-slide-toggle'));
 
@@ -115,7 +115,7 @@ describe('dewco-mat-searchfilters-widget', () => {
   });
 
   it('should uncheck and disable the mat-toggle when the input has not a valid value', async () => {
-    const widget = element.all(by.tagName('dewco-mat-searchfilters-widget')).first();
+    const widget = element.all(by.tagName('dewco-searchfilters-widget')).first();
     const input = widget.element(by.css('.mat-input-element[type="text"]'));
     const toggle = widget.element(by.tagName('mat-slide-toggle'));
 
@@ -137,7 +137,7 @@ describe('dewco-mat-searchfilters-widget', () => {
     await tabLabel.click();
     await browser.sleep(1000);
 
-    const widget = element.all(by.tagName('dewco-mat-searchfilters-widget')).get(4);
+    const widget = element.all(by.tagName('dewco-searchfilters-widget')).get(4);
     const input = widget.element(by.css('.mat-input-element[type="number"]'));
 
     expect(await input.isDisplayed()).toBe(true);

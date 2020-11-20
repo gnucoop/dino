@@ -1,11 +1,6 @@
-<!-- <mat-form-field>
-    <mat-label>FilterBar</mat-label>
-    <input matInput placeholder="Search">
-</mat-form-field> -->
-
 <ng-container>
 
-    <dewco-mat-searchfilters-preset-manager></dewco-mat-searchfilters-preset-manager>
+    <dewco-searchfilters-preset-manager></dewco-searchfilters-preset-manager>
 
     <div class="toolbar">
 
@@ -51,7 +46,7 @@
 
     </div>
 
-    <dewco-mat-searchfilters-chips (excludeFilter)="removeFilter($event, ['advanced'])" [chipsType]="'advanced'">
-    </dewco-mat-searchfilters-chips>
+    <dewco-searchfilters-chips (excludeFilter)="removeFilter($event, ['advanced'])" [chipsType]="'advanced'">
+    </dewco-searchfilters-chips>
 
 </ng-container>

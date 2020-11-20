@@ -5,8 +5,8 @@ export declare class SearchFiltersBar extends SearchFiltersComponent implements 
     ngOnDestroy(): void;
     ngOnInit(): void;
     openDialog(): void;
-    removeFilter(filterItem: FilterItem, listType: filterListType[] | filterListType): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersBar, "dewco-mat-searchfilters-bar", never, {}, {}, never, never>;
+    removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersBar, "dewco-searchfilters-bar", never, {}, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDef<SearchFiltersBar, never>;
 }
 
