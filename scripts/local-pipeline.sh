@@ -33,8 +33,8 @@ echo "API guard tests"
 echo "Unit tests - Ivy"
 "${BAZEL_BINARY}" test src/... --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only
 
-# echo "E2E tests"
-# "${BAZEL_BINARY}" test src/... --build_tag_filters=e2e --test_tag_filters=e2e
+echo "E2E tests"
+"${BAZEL_BINARY}" test src/... --build_tag_filters=e2e --test_tag_filters=e2e
 
 echo "Release output"
 yarn build
