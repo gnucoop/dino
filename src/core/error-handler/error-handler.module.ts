@@ -20,19 +20,18 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
+import {ErrorHandler, ModuleWithProviders, NgModule} from '@angular/core';
 
-import {FormSchema, migrationStrategies} from './form-schema';
-import {schema} from './form-schema-json';
+import {ErrorHandlerService} from './error-handler.service';
 
-@Injectable()
-export class FormSchemaManager extends DataModelManager<FormSchema> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
-    const collection = {name: 'form_schema', schema, migrationStrategies};
-    super({collection}, dataService, permissionContextService);
+@NgModule({})
+export class ErrorHandlerModule {
+  forRoot(): ModuleWithProviders<ErrorHandlerModule> {
+    return {
+      ngModule: ErrorHandlerModule,
+      providers: [
+        {provide: ErrorHandler, useClass: ErrorHandlerService},
+      ],
+    };
   }
 }

@@ -20,21 +20,11 @@
  *
  */
 
-import {ModuleWithProviders, NgModule} from '@angular/core';
-
-import {LocationManager} from './location-manager';
+import {NgModule} from '@angular/core';
 
 /**
  * Optional module augmenting Forms that provides the LocationManager service
  */
 @NgModule({})
 export class LocationModule {
-  static forRoot(): ModuleWithProviders<LocationModule> {
-    return {
-      ngModule: LocationModule,
-      providers: [
-        LocationManager,
-      ],
-    };
-  }
 }

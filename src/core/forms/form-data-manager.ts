@@ -26,7 +26,7 @@ import {DataModelManager, DataService, PermissionContextService} from '@dewco/co
 import {FormData, migrationStrategies} from './form-data';
 import {schema} from './form-data-json';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class FormDataManager extends DataModelManager<FormData> {
   constructor(
       dataService: DataService,

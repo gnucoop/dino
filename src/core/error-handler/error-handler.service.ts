@@ -28,7 +28,7 @@ import {Observable} from 'rxjs';
 /**
  * Service that manages errors, providing methods to log and handle them depending on the error type
  */
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class ErrorHandlerService implements ErrorHandler {
   constructor(private _injector: Injector) {}
 

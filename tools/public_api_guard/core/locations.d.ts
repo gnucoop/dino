@@ -11,5 +11,4 @@ export declare class LocationManager extends DataModelManager<Location> {
 export declare class LocationModule {
     static ɵinj: i0.ɵɵInjectorDef<LocationModule>;
     static ɵmod: i0.ɵɵNgModuleDefWithMeta<LocationModule, never, never, never>;
-    static forRoot(): ModuleWithProviders<LocationModule>;
 }

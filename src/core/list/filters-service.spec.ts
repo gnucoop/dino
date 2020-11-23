@@ -113,6 +113,7 @@ describe('FiltersService', () => {
         RouterTestingModule.withRoutes([]),
       ],
       providers: [
+        FiltersService,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: ActivatedRoute, useValue: fakeActivatedRoute},

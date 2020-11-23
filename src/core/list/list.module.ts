@@ -20,19 +20,14 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
+import {NgModule} from '@angular/core';
 
-import {FormSchema, migrationStrategies} from './form-schema';
-import {schema} from './form-schema-json';
+import {FiltersService} from './filters.service';
 
-@Injectable()
-export class FormSchemaManager extends DataModelManager<FormSchema> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
-    const collection = {name: 'form_schema', schema, migrationStrategies};
-    super({collection}, dataService, permissionContextService);
-  }
+@NgModule({
+  providers: [
+    FiltersService,
+  ],
+})
+export class ListModule {
 }

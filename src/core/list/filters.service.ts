@@ -28,7 +28,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormSchema} from '@dewco/core/forms';
 import {LocationManager} from '@dewco/core/locations';
 import {ProjectManager} from '@dewco/core/projects';
-import {RxJsonSchema} from 'rxdb';
+import {PrimaryProperty, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
@@ -59,8 +59,10 @@ import {
 /**
  * Service that handles all operations related to list Filters.
  */
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class FiltersService implements OnDestroy {
+  readonly loadPresetEvent: EventEmitter<boolean>;
+
   private _listReady: BehaviorSubject<boolean>;
   set listReady(status: boolean) {
     this._listReady.next(status);
@@ -111,7 +113,6 @@ export class FiltersService implements OnDestroy {
   private _queryStringSub: Subscription;
   private _loadingPreset: string|null;
   private _loadingPresetSub: Subscription;
-  loadPresetEvent: EventEmitter<boolean>;
 
   constructor(
       private _route: ActivatedRoute,
@@ -406,18 +407,18 @@ export class FiltersService implements OnDestroy {
    * @param operator The comparison operator
    * @returns True if the comparison is true
    */
-  checkValues(val_a: string, val_b: string, operator: string): boolean {
-    val_b = val_b.replace(/[\"\']/g, '');
+  checkValues(valA: string, valB: string, operator: string): boolean {
+    valB = valB.replace(/[\"\']/g, '');
     switch (operator) {
       case '>=':
-        return Number(val_a) >= Number(val_b);
+        return Number(valA) >= Number(valB);
       case '<=':
-        return Number(val_a) <= Number(val_b);
+        return Number(valA) <= Number(valB);
       case '!=':
       case '!==':
-        return '' + val_a != val_b && '' + val_a != null;
+        return '' + valA != valB && '' + valA != null;
       default:
-        return '' + val_a == val_b;
+        return '' + valA == valB;
     }
   }
 
@@ -435,18 +436,6 @@ export class FiltersService implements OnDestroy {
   resetTemporaryFilters(): void {
     const tempFilters = this._advancedFilters.value.map(a => ({...a}) as FilterItem);
     this._temporaryFilters.next(tempFilters);
-  }
-
-  /**
-   * Checks for optional default basic filters, based on optional injections
-   */
-  _checkOptionalBasicFilters() {
-    if (this._locationManager) {
-      this._basicOptionalFormGroups.push(new FormGroup({location: new FormControl()}));
-    }
-    if (this._projectManager) {
-      this._basicOptionalFormGroups.push(new FormGroup({project: new FormControl()}));
-    }
   }
 
   /**
@@ -497,7 +486,7 @@ export class FiltersService implements OnDestroy {
               this._basicFilters.next(this._mergeFilterItems(currentValue, filters));
             });
 
-    this.LoadPresetTrigger();
+    this.loadPresetTrigger();
     return obsOf(this._basicOptionalFormGroups)
         .pipe(catchError(err => throwError(err) as Observable<FormGroup[]>));
   }
@@ -505,10 +494,21 @@ export class FiltersService implements OnDestroy {
   /**
    * Triggers the loadPresetEvent
    */
-  LoadPresetTrigger() {
+  loadPresetTrigger(): void {
     this.loadPresetEvent.emit(true);
   }
 
+  /**
+   * Checks for optional default basic filters, based on optional injections
+   */
+  private _checkOptionalBasicFilters() {
+    if (this._locationManager) {
+      this._basicOptionalFormGroups.push(new FormGroup({location: new FormControl()}));
+    }
+    if (this._projectManager) {
+      this._basicOptionalFormGroups.push(new FormGroup({project: new FormControl()}));
+    }
+  }
 
   /**
    * Merges two arrays of FilterItems while overwriting old Filter values with new ones
@@ -616,7 +616,7 @@ export class FiltersService implements OnDestroy {
     propertyKeys.forEach(prop => {
       if (prop && DEFAULT_MODEL_KEYS.indexOf(prop) < 0) {
         modelFiltersGroup.filterGroupAdvancedFilters?.push(
-            this._propToFilterItem(prop, modelSchema.properties[prop]));
+            this._propToFilterItem(prop, modelSchema.properties[prop] as PrimaryProperty));
       }
     });
     this._defaultModelFilters.next([modelFiltersGroup]);
@@ -655,11 +655,11 @@ export class FiltersService implements OnDestroy {
    * @param prop The property
    * @returns The generated FilterItem
    */
-  private _propToFilterItem(propName: string, prop: any) {
-    const propType = FIELD_TYPES[prop.type];
+  private _propToFilterItem(propName: string, prop: PrimaryProperty): FilterItem {
+    const fieldType = prop.type != null ? FIELD_TYPES[prop.type] : AjfFieldType.String;
     let filterItem: FilterItem = {
       name: propName,
-      fieldType: propType ?? AjfFieldType.String,
+      fieldType,
     };
     return filterItem;
   }

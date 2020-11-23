@@ -35,6 +35,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {ListModule as CoreModule} from '@dewco/core/list';
 
 import {SelectionList} from './list';
 import {AdminUserInteractionsService} from './user-interactions';
@@ -43,6 +44,7 @@ import {AdminUserInteractionsService} from './user-interactions';
   imports: [
     BrowserAnimationsModule,
     CommonModule,
+    CoreModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,

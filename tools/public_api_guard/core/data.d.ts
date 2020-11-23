@@ -76,7 +76,7 @@ export interface DataListOptions {
 }
 
 export declare abstract class DataModelManager<T extends Model = Model> {
-    get collectionSchema(): RxDb.RxJsonSchema;
+    get collectionSchema(): RxJsonSchema;
     constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
     addToContext(data: PermissionContextDataUpdate): void;
     bulkCreate(data: InsertModel<T>[]): Observable<{

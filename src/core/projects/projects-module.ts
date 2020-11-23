@@ -20,21 +20,11 @@
  *
  */
 
-import {ModuleWithProviders, NgModule} from '@angular/core';
-
-import {ProjectManager} from './project-manager';
+import {NgModule} from '@angular/core';
 
 /**
  * Optional module augmenting Forms that provides the ProjectManager service
  */
 @NgModule({})
 export class ProjectModule {
-  static forRoot(): ModuleWithProviders<ProjectModule> {
-    return {
-      ngModule: ProjectModule,
-      providers: [
-        ProjectManager,
-      ],
-    };
-  }
 }
