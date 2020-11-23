@@ -3,11 +3,11 @@ entryPoints = [
     "list",
     "list-datasource",
     "login",
-    "searchfilters-bar",
-    "searchfilters-chips",
-    "searchfilters-dialog",
-    "searchfilters-preset-manager",
-    "searchfilters-widget",
+    "search-filters-bar",
+    "search-filters-chips",
+    "search-filters-dialog",
+    "search-filters-preset-manager",
+    "search-filters-widget",
 ]
 
 # List of all non-testing entry-points of the Dewco material package.

@@ -31,7 +31,7 @@ ng_module(
         "//src/ionic/login",
         "//src/material/list",
         "//src/material/login",
-        "//src/material/searchfilters-bar",
+        "//src/material/search-filters-bar",
         "@npm//@angular/elements",
         "@npm//@angular/material",
         "@npm//@angular/router",
