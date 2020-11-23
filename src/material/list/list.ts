@@ -50,7 +50,7 @@ import {ListDataSource} from '@dewco/material/list-datasource';
 import {Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
 
-import {ListCellDirective} from './list-cell';
+import {ListCell} from './list-cell';
 import {AdminUserInteractionsService} from './user-interactions';
 
 /**
@@ -124,8 +124,7 @@ export class SelectionList<T extends Model = Model,
   /**
    * Querylist of cell non default templates
    */
-  @ContentChildren(ListCellDirective, {descendants: false})
-  cellTemplates: QueryList<ListCellDirective>;
+  @ContentChildren(ListCell, {descendants: false}) cellTemplates: QueryList<ListCell>;
 
   constructor(
       cdr: ChangeDetectorRef,

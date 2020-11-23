@@ -23,7 +23,7 @@
 import {Directive, Input, TemplateRef} from '@angular/core';
 
 @Directive({selector: '[dewcoListCell]'})
-export class ListCellDirective {
+export class ListCell {
   @Input('dewcoListCell') column: string;
 
   constructor(readonly templateRef: TemplateRef<any>) {}

@@ -38,6 +38,7 @@ import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dewco/core/list';
 
 import {SelectionList} from './list';
+import {ListCell} from './list-cell';
 import {AdminUserInteractionsService} from './user-interactions';
 
 @NgModule({
@@ -59,6 +60,7 @@ import {AdminUserInteractionsService} from './user-interactions';
     RouterModule,
   ],
   declarations: [
+    ListCell,
     SelectionList,
   ],
   exports: [
