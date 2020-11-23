@@ -10,6 +10,11 @@ export const commitMessage: CommitMessageConfig = {
   scopes: [
     'core/auth',
     'core/data',
+    'core/error-handler',
+    'core/forms',
+    'core/list',
+    'core/locations',
+    'core/projects',
     'ionic/login',
     'material/login',
     'material',
