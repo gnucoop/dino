@@ -13,7 +13,7 @@ import {
   PermissionContextService
 } from '@dewco/core/data';
 import {FilterItem, FiltersService} from '@dewco/core/list';
-import {AdminUserInteractionsService, SelectionList} from '@dewco/material/list';
+import {AdminUserInteractionsService, ListModule, SelectionList} from '@dewco/material/list';
 import {ListDataSource} from '@dewco/material/list-datasource';
 import {RxJsonSchema} from 'rxdb';
 import {Observable, of as obsOf} from 'rxjs';
@@ -133,8 +133,8 @@ describe('ListComponent', () => {
   beforeEach(() => {
     TestBed
         .configureTestingModule({
-          declarations: [SelectionList],
           imports: [
+            ListModule,
             RouterTestingModule,
           ],
           providers: [

@@ -34,7 +34,7 @@ export interface FilterItem extends Partial<AjfField> {
     [key: string]: any;
 }
 
-export declare type filterListType = 'basic' | 'advanced' | 'temporary' | 'all';
+export declare type FilterListType = 'basic' | 'advanced' | 'temporary' | 'all';
 
 export declare class FiltersService implements OnDestroy {
     _queryString: BehaviorSubject<string>;
@@ -42,26 +42,25 @@ export declare class FiltersService implements OnDestroy {
     get advancedFilters(): BehaviorSubject<FilterItem[]>;
     get basicFilters(): BehaviorSubject<FilterItem[]>;
     set listReady(status: boolean);
-    loadPresetEvent: EventEmitter<boolean>;
+    readonly loadPresetEvent: EventEmitter<boolean>;
     get modelFilters(): BehaviorSubject<FilterGroup[]>;
     get queryString(): BehaviorSubject<string>;
     set setCustomFilters(filterGroups: FilterGroup[]);
     get temporaryFilters(): BehaviorSubject<FilterItem[]>;
     constructor(_route: ActivatedRoute, _router: Router, _locationManager?: LocationManager | undefined, _projectManager?: ProjectManager | undefined);
-    LoadPresetTrigger(): void;
-    _checkOptionalBasicFilters(): void;
-    addFilter(filterItem: FilterItem, filterList: filterListType): void;
+    addFilter(filterItem: FilterItem, filterList: FilterListType): void;
     checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean;
     checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean;
-    checkValues(val_a: string, val_b: string, operator: string): boolean;
-    findFilterByName(filterName: string, filterList?: filterListType): Observable<FilterItem | undefined>;
+    checkValues(valA: string, valB: string, operator: string): boolean;
+    findFilterByName(filterName: string, filterList?: FilterListType): Observable<FilterItem | undefined>;
     generateFilters(modelSchema: RxJsonSchema, formSchema?: FormSchema): void;
     generateFormSchemaFilters(formSchema?: FormSchema): void;
     generateModelSchemaFilters(modelSchema: RxJsonSchema): void;
     initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]>;
     loadPreset(encodedString: string | null): void;
+    loadPresetTrigger(): void;
     ngOnDestroy(): void;
-    removeFilter(filterItem: FilterItem, filterList: filterListType[] | filterListType): Observable<boolean>;
+    removeFilter(filterItem: FilterItem, filterList: FilterListType[] | FilterListType): Observable<boolean>;
     resetTemporaryFilters(): void;
     updateAdvancedFilters(): void;
     static ɵfac: i0.ɵɵFactoryDef<FiltersService, [null, null, { optional: true; }, { optional: true; }]>;
