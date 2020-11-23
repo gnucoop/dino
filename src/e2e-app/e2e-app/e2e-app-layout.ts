@@ -15,6 +15,7 @@ export class E2eAppLayout {
 
   navLinks = [
     {path: 'ion-login', title: 'Ionic - Login'},
+    {path: 'mat-list', title: 'Material - List'},
     {path: 'mat-login', title: 'Material - Login'},
   ];
 }
