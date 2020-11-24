@@ -157,7 +157,7 @@
     "mock-socket": "^9.0.3",
     "parse5": "^5.1.1",
     "postcss": "^7.0.27",
-    "protractor": "^5.4.3",
+    "protractor": "^7.0.0",
     "request": "^2.88.0",
     "requirejs": "^2.3.6",
     "rollup": "~1.25.0",
