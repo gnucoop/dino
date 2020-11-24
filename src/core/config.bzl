@@ -2,11 +2,11 @@
 CORE_ENTRYPOINTS = [
     "auth",
     "data",
-    "list",
+    "error-handler",
     "forms",
+    "list",
     "locations",
     "projects",
-    "error-handler",
 ]
 
 CORE_ENTRYPOINTS_WITH_STYLES = [

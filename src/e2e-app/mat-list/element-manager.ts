@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, Model, PermissionContextService} from '@dewco/core/data';
+import {Model} from '@dewco/core/data';
 import {FormData} from '@dewco/core/forms';
 import {ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
+import {Observable, of as obsOf} from 'rxjs';
 
 import {testFormData, testFormData_loc} from './test-ajf-formdata';
 
@@ -23,7 +23,7 @@ export const schema = {
 } as RxJsonSchema;
 
 
-export class PeriodicElement implements Model {
+export interface PeriodicElement extends Model {
   name: string;
   weight: number;
   symbol: string;
@@ -85,13 +85,19 @@ export const displayedHeaders: ListHeader<PeriodicElement>[] = [
   {column: 'symbol', label: 'Symbol', sortable: false},
 ];
 
-@Injectable({providedIn: 'root'})
-export class ElementManager extends DataModelManager<PeriodicElement> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
-    const collection = {name: 'periodicelement', schema: schema};
-    super({collection}, dataService, permissionContextService);
+let elements = [...ELEMENT_DATA.slice(0, 5)];
+
+type Doc = {
+  toJSON: () => PeriodicElement
+};
+
+export class ElementManager {
+  query(): Observable<{exec: () => Observable<Doc[]>}> {
+    return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
+  }
+
+  bulkDelete(items: PeriodicElement[]): Observable<Doc[]> {
+    elements = elements.filter(e => items.indexOf(e) === -1);
+    return obsOf(elements.map(e => ({toJSON: () => e})));
   }
 }

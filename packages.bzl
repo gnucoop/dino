@@ -34,7 +34,7 @@ ANGULAR_NO_NGCC_BUNDLES = [
 
 # List of Angular library UMD bundles which will be processed by ngcc.
 ANGULAR_NGCC_BUNDLES = [
-    ("@ajf/core", ["core-forms.umd.js"]),
+    ("@ajf/core", ["core-common.umd.js", "core-forms.umd.js"]),
     ("@ajf/material", ["material-forms.umd.js"]),
     ("@angular/animations", ["animations-browser.umd.js", "animations.umd.js"]),
     ("@angular/cdk", ["cdk-a11y.umd.js", "cdk-accordion.umd.js", "cdk-bidi.umd.js", "cdk-collections.umd.js", "cdk-keycodes.umd.js", "cdk-observers.umd.js", "cdk-overlay.umd.js", "cdk-platform.umd.js", "cdk-portal.umd.js", "cdk-scrolling.umd.js", "cdk-text-field.umd.js"]),

@@ -9,11 +9,10 @@ import {
 describe('dewco-search-filters-preset-manager', () => {
   beforeAll(async () => {
     await browser.get('/mat-list');
-    await browser.waitForAngularEnabled(false);
   });
 
   beforeEach(async () => {
-    await browser.sleep(1000);
+    await browser.sleep(300);
   });
 
   it('should display a dewco-search-filters-preset-manager component', async () => {
@@ -33,7 +32,7 @@ describe('dewco-search-filters-preset-manager', () => {
     expect(await presetInput.isDisplayed()).toBe(true);
 
     await presetInput.sendKeys('test_preset');
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     expect(await applyBtn.getAttribute('class')).toContain('mat-button-disabled');
     expect(await saveBtn.getAttribute('class')).toContain('mat-button-disabled');
@@ -49,7 +48,7 @@ describe('dewco-search-filters-preset-manager', () => {
 
     expect(await browser.executeScript(getScript)).toBeNull();
     await keywordFilterInput.sendKeys('t');
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     const currentUrl = await browser.getCurrentUrl();
     expect(currentUrl).toContain('?filters=');
@@ -57,20 +56,20 @@ describe('dewco-search-filters-preset-manager', () => {
     expect(currentUrl).toContain(presetString);
 
     await presetInput.sendKeys('custom');
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     expect(await saveBtn.getAttribute('class')).not.toContain('mat-button-disabled');
 
     await browser.wait(EC.elementToBeClickable(saveBtn), 1000);
     await saveBtn.click();
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     const item = await browser.executeScript(getScript);
 
     expect(item).not.toBeNull();
 
     await keywordFilterInput.sendKeys(Key.BACK_SPACE);
-    await browser.sleep(1000);
+    await browser.sleep(300);
     await presetInput.clear();
   });
 
@@ -95,13 +94,13 @@ describe('dewco-search-filters-preset-manager', () => {
 
     await browser.wait(EC.elementToBeClickable(autocompleteFirstOption), 1000);
     await autocompleteFirstOption.click();
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     expect(await presetInput.getAttribute('value')).toEqual('custom');
 
     await browser.wait(EC.elementToBeClickable(applyBtn), 1000);
     await applyBtn.click();
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     expect(await browser.getCurrentUrl()).toContain('?filters=');
     expect(await keywordFilterInput.getAttribute('value')).toEqual('t');

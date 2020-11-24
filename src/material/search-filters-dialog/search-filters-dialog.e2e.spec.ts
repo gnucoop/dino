@@ -8,15 +8,11 @@ import {
 describe('dewco-search-filters-dialog', () => {
   beforeAll(async () => {
     await browser.get('/mat-list');
-    await browser.waitForAngularEnabled(false);
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
     await dialogButton.click();
-  });
-
-  beforeEach(async () => {
-    await browser.sleep(1000);
+    await browser.sleep(300);
   });
 
   it('should display a dewco-search-filters-dialog component', async () => {
@@ -45,7 +41,6 @@ describe('dewco-search-filters-dialog', () => {
 
   it('should display some number of filter widgets in the selected tab', async () => {
     const widgets = await element.all(by.tagName('dewco-search-filters-widget')).count();
-    expect(widgets).toEqual(3);
     expect(widgets).toBeGreaterThan(0);
   });
 
@@ -59,9 +54,9 @@ describe('dewco-search-filters-dialog', () => {
        expect(await firstWidgetInput.isDisplayed()).toBe(true);
 
        await firstWidgetInput.sendKeys('en');
-       await browser.sleep(1000);
+       await browser.sleep(300);
        await searchButton.click();
-       await browser.sleep(1000);
+       await browser.sleep(300);
 
        const dialog = await element(by.tagName('dewco-search-filters-dialog')).isPresent();
        expect(dialog).toBe(false);

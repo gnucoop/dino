@@ -36,11 +36,7 @@ export const displayedHeaders: any[] = [
 
 
 describe('dewco-list', () => {
-  beforeEach(async () => {
-    await browser.get('/mat-list');
-    await browser.waitForAngularEnabled(false);
-    await browser.sleep(1000);
-  });
+  beforeEach(async () => await browser.get('/mat-list'));
 
   it('should display a material table', async () => {
     const table = await element(by.tagName('dewco-list')).isPresent();
@@ -117,26 +113,23 @@ describe('dewco-list', () => {
                 'mat-cell cdk-cell cdk-column-actions mat-column-actions ng-star-inserted'))
             .get(0);
     const deleteIcon = firstActionCell.element(by.cssContainingText('.mat-icon', 'delete'));
-    await deleteIcon.isPresent().then(res => {
-      expect(res).toBe(true);
-    });
+    let res = await deleteIcon.isPresent();
+    expect(res).toBe(true);
     await browser.actions().mouseMove(deleteIcon).perform();
-    await deleteIcon.isDisplayed().then(res => {
-      expect(res).toBe(true);
-    });
+    res = await deleteIcon.isDisplayed();
+    expect(res).toBe(true);
     await browser.wait(EC.elementToBeClickable(deleteIcon), 1000);
     await deleteIcon.click();
-    await browser.sleep(1000);
+    await browser.sleep(200);
     const newFirstActionCell =
         element
             .all(by.className(
                 'mat-cell cdk-cell cdk-column-actions mat-column-actions ng-star-inserted'))
             .get(0);
-    await element.all(by.tagName('mat-row')).count().then(count => {
-      expect(count).toBeLessThanOrEqual(initialRowCount);
-      expect(count).toBeLessThanOrEqual(paginatorNum);
-      expect(newFirstActionCell).not.toEqual(firstActionCell);
-    });
+    const count = await element.all(by.tagName('mat-row')).count();
+    expect(count).toBeLessThanOrEqual(initialRowCount);
+    expect(count).toBeLessThanOrEqual(paginatorNum);
+    expect(newFirstActionCell).not.toEqual(firstActionCell);
   });
 
   it('should delete all the rows by clicking the bulk-actions checkbox and the bulk delete button',
@@ -151,15 +144,15 @@ describe('dewco-list', () => {
        expect(await bulkDeleteButton.isPresent()).toBe(true);
 
        await bulkBox.click();
-       await browser.sleep(1000);
+       await browser.sleep(300);
 
        expect(await bulkDeleteButton.isEnabled()).toBe(true);
 
        await bulkDeleteButton.click();
-       await browser.sleep(1000);
+       await browser.sleep(300);
 
        const finalRowCount = await element.all(by.tagName('mat-row')).count();
-       expect(finalRowCount).toEqual(initialRowCount - 1);
+       expect(finalRowCount).toEqual(0);
      });
 
   it('should delete only the selected rows by clicking the bulk delete button', async () => {
@@ -172,7 +165,7 @@ describe('dewco-list', () => {
 
     await rowBox_a.click();
     await rowBox_b.click();
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     expect(await rowBox_a.getAttribute('class')).toMatch('mat-checkbox-checked');
     expect(await rowBox_b.getAttribute('class')).toMatch('mat-checkbox-checked');
@@ -181,7 +174,7 @@ describe('dewco-list', () => {
     expect(await bulkDeleteButton.isEnabled()).toBe(true);
 
     await bulkDeleteButton.click();
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     const finalRowCount = await element.all(by.tagName('mat-row')).count();
     expect(finalRowCount).not.toEqual(initialRowCount);

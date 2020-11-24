@@ -14,8 +14,9 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {RouterTestingModule} from '@angular/router/testing';
 import {
   CHOICES_CONDITION_OPERATORS,
+  ListModule,
   NUMBER_CONDITION_OPERATORS,
-  WidgetData
+  WidgetData,
 } from '@dewco/core/list';
 import {
   SearchFiltersWidget,
@@ -90,6 +91,7 @@ describe('Search filters widget', () => {
             MatSlideToggleStub,
           ],
           imports: [
+            ListModule,
             RouterTestingModule,
             SearchFiltersWidgetModule,
           ],
@@ -110,23 +112,22 @@ describe('Search filters widget', () => {
 
   it('should create components and assign data to the widget and toggle the slideToggleButton',
      async () => {
-       await fixtureWidget.whenStable().then(_ => {
-         widget.toggleButton = matSlideToggleStub as MatSlideToggle;
-         const spyToggle = spyOn(widget.toggleButton, 'toggle').and.callThrough();
-         expect(spyToggle).not.toHaveBeenCalled();
+       fixtureWidget.whenStable();
+       widget.toggleButton = matSlideToggleStub as MatSlideToggle;
+       const spyToggle = spyOn(widget.toggleButton, 'toggle').and.callThrough();
+       expect(spyToggle).not.toHaveBeenCalled();
 
-         widget.formGroup.subscribe(fg => {
-           fg?.setValue({
-             'test_number_field': 7,
-           });
+       widget.formGroup.subscribe(fg => {
+         fg?.setValue({
+           'test_number_field': 7,
          });
-
-         expect(widget).toBeTruthy();
-         expect(widget.widgetData).not.toBeNull();
-         expect(widget.widgetData.form).toEqual(fakeAjfForm);
-         expect(widget.toggleButton).not.toBeUndefined();
-         expect(spyToggle).toHaveBeenCalled();
        });
+
+       expect(widget).toBeTruthy();
+       expect(widget.widgetData).not.toBeNull();
+       expect(widget.widgetData.form).toEqual(fakeAjfForm);
+       expect(widget.toggleButton).not.toBeUndefined();
+       expect(spyToggle).toHaveBeenCalled();
      });
 
   it('should change the value of the operator', () => {
@@ -147,15 +148,13 @@ describe('Search filters widget', () => {
   });
 
   it('should check and return the widget slide toggle button disabled state', async () => {
-    await fixtureWidget.whenStable().then(_ => {
-      const testObj = {'test_field': ''};
-      const testObjB = {'test_field': 'value'};
-      const testResult = widget.checkToggleDisabled(testObj, matSlideToggleStub as MatSlideToggle);
-      const testResultB =
-          widget.checkToggleDisabled(testObjB, matSlideToggleStub as MatSlideToggle);
+    fixtureWidget.whenStable();
+    const testObj = {'test_field': ''};
+    const testObjB = {'test_field': 'value'};
+    const testResult = widget.checkToggleDisabled(testObj, matSlideToggleStub as MatSlideToggle);
+    const testResultB = widget.checkToggleDisabled(testObjB, matSlideToggleStub as MatSlideToggle);
 
-      expect(testResult).toBeTrue();
-      expect(testResultB).toBeFalse();
-    });
+    expect(testResult).toBeTrue();
+    expect(testResultB).toBeFalse();
   });
 });

@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {FilterItem, FiltersService} from '@dewco/core/list';
+import {FilterItem, FiltersService, ListModule} from '@dewco/core/list';
 import {SearchFiltersBar, SearchFiltersBarModule} from '@dewco/material/search-filters-bar';
 
 const fakeFilters: FilterItem[] = [
@@ -16,6 +16,7 @@ describe('Search filters Bar', () => {
     TestBed
         .configureTestingModule({
           imports: [
+            ListModule,
             RouterTestingModule,
             SearchFiltersBarModule,
           ],

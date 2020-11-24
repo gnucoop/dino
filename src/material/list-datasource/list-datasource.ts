@@ -94,9 +94,7 @@ export class ListDataSource<T extends Model = Model,
                 map(([queryString, refresh]) => (queryString && refresh) ? queryString : ''),
                 catchError(err => throwError(err) as Observable<string>),
                 )
-            .subscribe(queryString => {
-              this.queryDM(queryString);
-            });
+            .subscribe(queryString => this.queryDM(queryString));
   }
 
   /**

@@ -8,7 +8,6 @@ import {
 describe('dewco-search-filters-chips', () => {
   beforeAll(async () => {
     await browser.get('/mat-list');
-    await browser.waitForAngularEnabled(false);
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
@@ -16,7 +15,7 @@ describe('dewco-search-filters-chips', () => {
   });
 
   beforeEach(async () => {
-    await browser.sleep(1000);
+    await browser.sleep(300);
   });
 
   it('should find a dewco-search-filters-chips component', async () => {
@@ -31,7 +30,7 @@ describe('dewco-search-filters-chips', () => {
     const input = widget.element(by.css('.mat-input-element[type="text"]'));
 
     await input.sendKeys('n');
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     const chips = element(by.css('dewco-search-filters-dialog dewco-search-filters-chips'));
     expect(await chips.isDisplayed()).toBe(true);
@@ -46,7 +45,7 @@ describe('dewco-search-filters-chips', () => {
     const activeChip = chips.all(by.css('dewco-search-filters-dialog mat-chip')).first();
 
     await activeChip.element(by.tagName('i')).click();
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     const widgetToggle = element.all(by.tagName('dewco-search-filters-widget'))
                              .first()

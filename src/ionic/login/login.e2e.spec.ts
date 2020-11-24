@@ -9,9 +9,8 @@ describe('dewco-ionic-login', () => {
 
   it('should not display an error message on init', async () => {
     const errorMsg = element(by.id('dewco-login-error'));
-    await errorMsg.isPresent().then(res => {
-      expect(res).toBe(false);
-    });
+    const res = await errorMsg.isPresent();
+    expect(res).toBe(false);
   });
 
   it('should disable the login button if the form value is invalid', async () => {
@@ -23,9 +22,8 @@ describe('dewco-ionic-login', () => {
     await emailInput.clear();
     await pswInput.clear();
 
-    await loginButton.getAttribute('aria-disabled').then(res => {
-      expect(res).toEqual('true');
-    });
+    const res = await loginButton.getAttribute('aria-disabled');
+    expect(res).toEqual('true');
   });
 
   it('should enable the login button if the form value is valid', async () => {
@@ -37,9 +35,8 @@ describe('dewco-ionic-login', () => {
     await emailInput.sendKeys('email@email.io');
     await pswInput.sendKeys('password');
 
-    await loginButton.getAttribute('aria-disabled').then(res => {
-      expect(res).toBeNull();
-    });
+    const res = await loginButton.getAttribute('aria-disabled');
+    expect(res).toBeNull();
   });
 
   it('should show the error message if login was unsuccessful', async () => {
@@ -53,9 +50,8 @@ describe('dewco-ionic-login', () => {
     await pswInput.sendKeys('wrongpass');
     await loginButton.click();
 
-    await errorMsg.isPresent().then(res => {
-      expect(res).toBe(true);
-    });
+    const res = await errorMsg.isPresent();
+    expect(res).toBe(true);
   });
 
   it('should not show the error message if login was successful', async () => {
@@ -69,9 +65,8 @@ describe('dewco-ionic-login', () => {
     await pswInput.sendKeys('dewco');
     await loginButton.click();
 
-    await errorMsg.isPresent().then(res => {
-      expect(res).toBe(false);
-    });
+    const res = await errorMsg.isPresent();
+    expect(res).toBe(false);
   });
 
   it('should redirect to home url after a successful login', async () => {
@@ -84,9 +79,8 @@ describe('dewco-ionic-login', () => {
     await pswInput.sendKeys('dewco');
     await loginButton.click();
 
-    await browser.getCurrentUrl().then(res => {
-      expect(res).toEqual(browser.baseUrl + '/');
-    });
+    const res = await browser.getCurrentUrl();
+    expect(res).toEqual(browser.baseUrl + '/');
   });
 
   it('should not redirect to home url after a failed login', async () => {
@@ -99,8 +93,7 @@ describe('dewco-ionic-login', () => {
     await pswInput.sendKeys('wrongpsw');
     await loginButton.click();
 
-    await browser.getCurrentUrl().then(res => {
-      expect(res).toEqual(browser.baseUrl + '/ion-login');
-    });
+    const res = await browser.getCurrentUrl();
+    expect(res).toEqual(browser.baseUrl + '/ion-login');
   });
 });

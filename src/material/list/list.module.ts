@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfFormsModule} from '@ajf/core/forms';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
@@ -43,6 +44,7 @@ import {AdminUserInteractionsService} from './user-interactions';
 
 @NgModule({
   imports: [
+    AjfFormsModule,
     BrowserAnimationsModule,
     CommonModule,
     CoreModule,

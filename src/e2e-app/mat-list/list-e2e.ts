@@ -1,12 +1,11 @@
 import {AjfFieldType} from '@ajf/core/forms';
 import {Component} from '@angular/core';
+import {DataModelManager} from '@dewco/core/data';
 import {FilterGroup, FiltersService, ListHeader} from '@dewco/core/list';
 import {ListDataSource} from '@dewco/material/list-datasource';
-import {map, switchMap} from 'rxjs/operators';
 
 import {displayedHeaders, ELEMENT_DATA, ElementManager, PeriodicElement} from './element-manager';
 import {testAjfSchema} from './test-ajf-formschema';
-
 
 @Component({
   selector: 'mat-list-e2e',
@@ -69,38 +68,16 @@ export class MatListE2E {
   readonly title: string = 'Example List';
   readonly baseEditUrl: string = 'edit/';
   readonly headers: ListHeader<PeriodicElement>[] = displayedHeaders;
-  readonly dataSource = new ListDataSource<PeriodicElement, ElementManager>(
-      this.dataService,
-      this.filtersService,
-      testAjfSchema,
-  );
-
-  private _setupTestDb() {
-    this.dataService.list()
-        .pipe(
-            switchMap(query => query.exec()),
-            )
-        .subscribe(items => {
-          if (!items.length) {
-            this._populateTestDb();
-          }
-        });
-  }
-
-  private _populateTestDb() {
-    this.dataService.bulkCreate(ELEMENT_DATA)
-        .pipe(
-            map(docs => docs.success),
-            )
-        .subscribe(_ => {
-          this.filtersService.listReady = true;
-        });
-  }
+  readonly dataSource: ListDataSource<PeriodicElement>;
 
   constructor(
-      readonly dataService: ElementManager,
       readonly filtersService: FiltersService,
   ) {
-    this._setupTestDb();
+    const dataService = new ElementManager() as unknown as DataModelManager<PeriodicElement>;
+    this.dataSource = new ListDataSource(
+        dataService,
+        this.filtersService,
+        testAjfSchema,
+    );
   }
 }

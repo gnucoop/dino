@@ -7,11 +7,7 @@ import {
 } from 'protractor';
 
 describe('dewco-search-filters-bar', () => {
-  beforeEach(async () => {
-    await browser.get('/mat-list');
-    await browser.waitForAngularEnabled(false);
-    await browser.sleep(1000);
-  });
+  beforeEach(async () => await browser.get('/mat-list'));
 
   it('should display a Filter Bar component', async () => {
     const bar = await element(by.tagName('dewco-search-filters-bar')).isPresent();
@@ -38,10 +34,10 @@ describe('dewco-search-filters-bar', () => {
     const initialUrl = await browser.getCurrentUrl();
     const keywords = $('.toolbar .mat-input-element[formcontrolname="keyword"]');
     await keywords.sendKeys('en');
-    await browser.sleep(1000);
+    await browser.sleep(300);
 
     const filteredRowsCount = await element.all(by.tagName('mat-row')).count();
-    expect(filteredRowsCount).toEqual(3);
+    expect(filteredRowsCount).toEqual(1);
 
     const finalUrl = await browser.getCurrentUrl();
     expect(finalUrl).not.toEqual(initialUrl);

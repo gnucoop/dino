@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {FilterItem, FiltersService, WidgetData} from '@dewco/core/list';
+import {FilterItem, FiltersService, ListModule, WidgetData} from '@dewco/core/list';
 import {
   SearchFiltersDialog,
   SearchFiltersDialogModule,
@@ -102,6 +102,7 @@ describe('Search filters dialog', () => {
     TestBed
         .configureTestingModule({
           imports: [
+            ListModule,
             RouterTestingModule,
             SearchFiltersDialogModule,
           ],
@@ -127,15 +128,14 @@ describe('Search filters dialog', () => {
   it('should close the dialog', async () => {
     fixtureDialog.detectChanges();
 
-    await fixtureDialog.whenStable().then(_ => {
-      const spyRefClose = spyOn(dialog.dialogRef, 'close').and.callThrough();
+    await fixtureDialog.whenStable();
+    const spyRefClose = spyOn(dialog.dialogRef, 'close').and.callThrough();
 
-      dialog.closeDialog();
-      expect(spyRefClose).toHaveBeenCalledWith(false);
-      expect(spyRefClose).not.toHaveBeenCalledWith(true);
-      dialog.search();
-      expect(spyRefClose).toHaveBeenCalledWith(true);
-    });
+    dialog.closeDialog();
+    expect(spyRefClose).toHaveBeenCalledWith(false);
+    expect(spyRefClose).not.toHaveBeenCalledWith(true);
+    dialog.search();
+    expect(spyRefClose).toHaveBeenCalledWith(true);
   });
 
   it('should initialize widgetData correctly', async () => {

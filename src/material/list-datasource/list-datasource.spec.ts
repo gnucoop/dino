@@ -15,6 +15,7 @@ import {
 import {
   FilterItem,
   FiltersService,
+  ListModule,
 } from '@dewco/core/list';
 import {ListDataSource} from '@dewco/material/list-datasource';
 import {RxJsonSchema} from 'rxdb';
@@ -122,6 +123,7 @@ describe('ListComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        ListModule,
         RouterTestingModule,
       ],
       providers: [

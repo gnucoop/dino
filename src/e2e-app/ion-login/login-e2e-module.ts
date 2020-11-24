@@ -1,19 +1,7 @@
 import {NgModule} from '@angular/core';
-import {AuthService, Credentials} from '@dewco/core/auth';
 import {LoginModule} from '@dewco/ionic/login';
-import {Observable, of as obsOf} from 'rxjs';
-import {delay} from 'rxjs/operators';
 
 import {IonLoginE2E} from './login-e2e';
-
-const authServiceMock = {
-  login(credentials: Credentials): Observable<boolean> {
-    if (credentials.email == 'user@dewco.io' && credentials.password == 'dewco') {
-      return obsOf(true).pipe(delay(1000));
-    }
-    return obsOf(false).pipe(delay(1000));
-  }
-};
 
 @NgModule({
   declarations: [
@@ -21,9 +9,6 @@ const authServiceMock = {
   ],
   imports: [
     LoginModule,
-  ],
-  providers: [
-    {provide: AuthService, useValue: authServiceMock},
   ],
 })
 export class IonicLoginE2eModule {
