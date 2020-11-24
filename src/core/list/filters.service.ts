@@ -117,7 +117,9 @@ export class FiltersService implements OnDestroy {
   constructor(
       private _route: ActivatedRoute,
       private _router: Router,
+      // tslint:disable-next-line
       @Optional() private _locationManager?: LocationManager,
+      // tslint:disable-next-line
       @Optional() private _projectManager?: ProjectManager,
   ) {
     /**
