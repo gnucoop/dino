@@ -99,6 +99,11 @@ export interface ListHeader<T> {
     sortable?: boolean;
 }
 
+export declare class ListModule {
+    static ɵinj: i0.ɵɵInjectorDef<ListModule>;
+    static ɵmod: i0.ɵɵNgModuleDefWithMeta<ListModule, never, never, never>;
+}
+
 export declare const NUMBER_CONDITION_OPERATORS: Operator[];
 
 export interface Operator {

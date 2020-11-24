@@ -7,7 +7,7 @@ export declare class AdminUserInteractionsService extends CoreAdminUserInteracti
 
 export declare class ListModule {
     static ɵinj: i0.ɵɵInjectorDef<ListModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<ListModule, [typeof i1.ListCell, typeof i2.SelectionList], [typeof i3.BrowserAnimationsModule, typeof i4.CommonModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatListModule, typeof i12.MatPaginatorModule, typeof i13.MatSortModule, typeof i14.MatTableModule, typeof i15.MatToolbarModule, typeof i16.RouterModule], [typeof i9.MatIconModule, typeof i2.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDefWithMeta<ListModule, [typeof i1.ListCell, typeof i2.SelectionList], [typeof i3.BrowserAnimationsModule, typeof i4.CommonModule, typeof i5.ListModule, typeof i6.MatButtonModule, typeof i7.MatCheckboxModule, typeof i8.MatDialogModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatListModule, typeof i13.MatPaginatorModule, typeof i14.MatSortModule, typeof i15.MatTableModule, typeof i16.MatToolbarModule, typeof i17.RouterModule], [typeof i10.MatIconModule, typeof i2.SelectionList]>;
 }
 
 export declare class SelectionList<T extends Model = Model, DM extends DataModelManager<T> = DataModelManager<T>> extends List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
