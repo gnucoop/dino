@@ -112,7 +112,7 @@
     "@types/node": "^12.11.1",
     "@types/node-fetch": "^2.5.5",
     "@types/parse5": "^5.0.0",
-    "@types/run-sequence": "^0.0.29",
+    "@types/run-sequence": "^0.0.30",
     "@types/semver": "^7.3.4",
     "@types/send": "^0.14.5",
     "@types/stylelint": "^9.10.1",
