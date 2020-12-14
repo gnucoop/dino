@@ -1264,6 +1264,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/fs-extra@^9.0.5":
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.5.tgz#2afb76a43a4bef80a363b94b314d0ca1694fc4f8"
+  integrity sha512-wr3t7wIW1c0A2BIJtdVp4EflriVaVVAsCAIHVzzh8B+GiFv9X1xeJjCs4upRXtzp7kQ6lP5xvskjoD4awJ1ZeA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/glob-stream@*":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@types/glob-stream/-/glob-stream-6.1.0.tgz#7ede8a33e59140534f8d8adfb8ac9edfb31897bc"
@@ -1281,15 +1288,14 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/gulp-util@^3.0.34":
-  version "3.0.34"
-  resolved "https://registry.yarnpkg.com/@types/gulp-util/-/gulp-util-3.0.34.tgz#d1291ebf706d93f46eb8df11344bbfd96247697e"
-  integrity sha512-E06WN1OfqL5UsMwJ1T7ClgnaXgaPipb7Ee8euMc3KRHLNqxdvWrDir9KA6uevgzBgT7XbjgmzZA2pkzDqBBX7A==
+"@types/glob@^5.0.36":
+  version "5.0.36"
+  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-5.0.36.tgz#0c80a9c8664fc7d19781de229f287077fd622cb2"
+  integrity sha512-KEzSKuP2+3oOjYYjujue6Z3Yqis5HKA1BsIC+jZ1v3lrRNdsqyNNtX0rQf6LSuI4DJJ2z5UV//zBZCcvM0xikg==
   dependencies:
+    "@types/events" "*"
+    "@types/minimatch" "*"
     "@types/node" "*"
-    "@types/through2" "*"
-    "@types/vinyl" "*"
-    chalk "^2.2.0"
 
 "@types/gulp@*":
   version "4.0.5"
@@ -1300,10 +1306,10 @@
     "@types/undertaker" "*"
     "@types/vinyl-fs" "*"
 
-"@types/gulp@^3.8.36":
-  version "3.8.36"
-  resolved "https://registry.yarnpkg.com/@types/gulp/-/gulp-3.8.36.tgz#11eaf583bf0534669b4ffa9bfed51557faa00a4c"
-  integrity sha512-u6/zWPzYRNPAtvyFJ3/RSXjmBaBM1dVs5kW22/jU6J786ZGLfSndhLoNOpFI6FGQvqTA+QzFHjSMhpkAN+wxcQ==
+"@types/gulp@3.8.32":
+  version "3.8.32"
+  resolved "https://registry.yarnpkg.com/@types/gulp/-/gulp-3.8.32.tgz#83c59c681cc233d1ec7f82d269555566fa133156"
+  integrity sha1-g8WcaBzCM9Hsf4LSaVVVZvoTMVY=
   dependencies:
     "@types/node" "*"
     "@types/orchestrator" "*"
@@ -1332,10 +1338,10 @@
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
   integrity sha512-sz7iLqvVUg1gIedBOvlkxPlc8/uVzyS5OwGz1cKjXzkl3FpL3al0crU8YGU1WoHkxn0Wxbw5tyi6hvzJKNzFsw==
 
-"@types/jasmine@^3.5.7":
-  version "3.5.7"
-  resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-3.5.7.tgz#c4237935a4b0db31ada6b0de10e2b0658e7b2643"
-  integrity sha512-HoPp5ZafWFXr36yRUOJNuRbvFNklxvN+I9JXfAaZTHBiEw4ZkN4FBnjbV4YHRNNG433ypHP2K+lOeQyRdyuGxQ==
+"@types/jasmine@^3.5.4":
+  version "3.6.6"
+  resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-3.6.6.tgz#4c0415f6198b2c643d895789f8c6d20436c1eddc"
+  integrity sha512-kgl+oYOLCBt41iba8cetp+QPOqDAaTJnHtVPCE7JzYmda4juglRBLX35opVcANc7TLA/Lp0DEnajbUNnyxGC+Q==
 
 "@types/json-schema@7.0.7":
   version "7.0.7"
@@ -1376,10 +1382,10 @@
   dependencies:
     "@types/unist" "*"
 
-"@types/merge2@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@types/merge2/-/merge2-1.3.0.tgz#0152526e885184aead524698c42aeae5c85aa1e7"
-  integrity sha512-3xFWjsGhm5GCVlRrcrrVr9oapPxpbG5M3G/4JGF+Gra++7DWoeDOQphCEhyMpbpbptD3w/4PesYIMby/yHrzkQ==
+"@types/merge2@^0.3.30":
+  version "0.3.30"
+  resolved "https://registry.yarnpkg.com/@types/merge2/-/merge2-0.3.30.tgz#9e39d04f6fe4f36fa7477566cad1faf80b2a671f"
+  integrity sha1-njnQT2/k82+nR3VmytH6+AsqZx8=
   dependencies:
     "@types/node" "*"
 
@@ -1409,6 +1415,14 @@
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.7.tgz#20a2afffa882ab04d44ca786449a276f9f6bbf3c"
   integrity sha512-o2WVNf5UhWRkxlf6eq+jMZDu7kjgpgJfl4xVNlvryc95O/6F2ld8ztKX+qu+Rjyet93WAWm5LjeX9H5FGkODvw==
+  dependencies:
+    "@types/node" "*"
+    form-data "^3.0.0"
+
+"@types/node-fetch@^2.5.5":
+  version "2.5.8"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.8.tgz#e199c835d234c7eb0846f6618012e558544ee2fb"
+  integrity sha512-fbjI6ja0N5ZA8TV53RUqzsKNkl9fv8Oj3T7zxW7FGv1GSH7gwJaNF8dzCjrqKaxKeUpTz4yT1DaJFq/omNpGfw==
   dependencies:
     "@types/node" "*"
     form-data "^3.0.0"
@@ -1580,13 +1594,6 @@
   integrity sha512-au+n/CjGixNopJmh51GeZSkqf/ahwOBkzcvizHPe3flfwWag0T+/L7uHD0Hjx7ZhmXGFSEwOCqEybD4domcyRw==
   dependencies:
     postcss "7.x.x"
-
-"@types/through2@*":
-  version "2.0.34"
-  resolved "https://registry.yarnpkg.com/@types/through2/-/through2-2.0.34.tgz#9c2a259a238dace2a05a2f8e94b786961bc27ac4"
-  integrity sha512-nhRG8+RuG/L+0fAZBQYaRflXKjTrHOKH8MFTChnf+dNVMxA3wHYYrfj0tztK0W51ABXjGfRCDc0vRkecCOrsow==
-  dependencies:
-    "@types/node" "*"
 
 "@types/through@*":
   version "0.0.30"
@@ -2994,7 +3001,7 @@ chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chalk@^2.0.0, chalk@^2.0.1, chalk@^2.2.0, chalk@^2.3.0:
+chalk@^2.0.0, chalk@^2.0.1, chalk@^2.3.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
   integrity sha512-ObN6h1v2fTJSmUXoS3nMQ92LbDK9be4TV+6G+omQlGJFdcUX5heKi1LZ1YnRMIgwTLEj3E24bT6tYni50rlCfQ==
