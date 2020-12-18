@@ -20,15 +20,7 @@
  *
  */
 
-import {
-  AjfChoicesOrigin,
-  AjfFieldType,
-  AjfForm,
-  AjfFormSerializer,
-  AjfNode,
-  AjfNodeType,
-  AjfSlide
-} from '@ajf/core/forms';
+import {AjfFieldType, AjfNodeType} from '@ajf/core/forms';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -43,20 +35,30 @@ import {
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {
-  DEFAULT_OPERATORS,
   FilterGroup,
   FilterItem,
   FilterListType,
   FiltersService,
-  WidgetData,
 } from '@dewco/core/list';
 import {SearchFiltersWidget} from '@dewco/material/search-filters-widget';
-import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
-import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  throwError,
+} from 'rxjs';
+import {
+  catchError,
+  map,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 /**
- * Dialog component that shows and handles all advancedFilters.
+ * Dialog component that shows Additional Filters, grouped and divided in Tabs.
  * It may contain dewco-search-filters-chips and multiple dewco-search-filters-widget.
+ * It is usually associated with a main filters component that displays Basic Filters
+ * (eg. dewco-search-filters-bar).
  */
 @Component({
   selector: 'dewco-search-filters-dialog',
@@ -67,20 +69,35 @@ import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
 })
 export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   /**
-   * The Id of the selected tab
+   * Data of all the filters in the Dialog
+   */
+  filterItemsData: Observable<FilterItem[]>;
+
+  /**
+   * A query list of the widgets contained in the dialog.
+   */
+  @ViewChildren(SearchFiltersWidget) widgets: QueryList<SearchFiltersWidget>;
+
+  /**
+   * The index of the selected tab. Defaults to 0 (first tab)
    */
   private _currentGroupId: BehaviorSubject<number>;
 
+  /**
+   * An event emitted to update the state of a widget in the dialog and
+   * toggle its slideToggle, when its value is set to null
+   */
   private _updateWidgetsEvent: EventEmitter<boolean>;
 
   /**
-   * Data of all widgets in the dialog
+   * Subscribes to the updateWidgetsEvent and updates the widgets's toggle states
    */
-  widgetData: Observable<WidgetData[]>;
-
   private _updateWidgetsSub: Subscription = Subscription.EMPTY;
 
-  @ViewChildren(SearchFiltersWidget) widgets: QueryList<SearchFiltersWidget>;
+  /**
+   * Subscribes to the backdrop click event of the dialog ref, closing the Dialog when that emits
+   */
+  private _backdropClickSub: Subscription = Subscription.EMPTY;
 
   constructor(
       public dialogRef: MatDialogRef<SearchFiltersDialog>,
@@ -89,25 +106,27 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   ) {
     this._currentGroupId = new BehaviorSubject<number>(0);
     this._updateWidgetsEvent = new EventEmitter<boolean>();
-    this.dialogRef.backdropClick().subscribe(_ => this.closeDialog());
+    this._backdropClickSub = this.dialogRef.backdropClick().subscribe(_ => this.closeDialog());
   }
 
   ngOnInit() {
-    this.widgetData = this._currentGroupId.pipe(
-        withLatestFrom(this.fts.modelFilters),
+    // This is where the setup of all widgets data happens
+    this.filterItemsData = this._currentGroupId.pipe(
+        withLatestFrom(this.fts.generatedFilters),
         map(([id, groups]) => groups[id] as FilterGroup),
-        map((group) => group.filterGroupAdvancedFilters ?
-                group.filterGroupAdvancedFilters.filter(ft => ft.fieldType !== AjfFieldType.Empty) :
+        map((group) => group.filterGroupAdditionalFilters ?
+                group.filterGroupAdditionalFilters.filter(
+                    ft => ft.fieldType !== AjfFieldType.Empty) :
                 []),
-        map(filters => filters.map(f => this._setupWidget(this._setupFilterItem(f)))),
-        catchError(err => throwError(err) as Observable<WidgetData[]>),
+        map(filters => filters.map(f => this._setupFilterItem(f))),
+        catchError(err => throwError(err) as Observable<FilterItem[]>),
         take(1),
     );
   }
 
   ngAfterViewInit() {
     if (this.widgets) {
-      this._updateWidgetsSub = (this._updateWidgetsEvent as Observable<boolean>).subscribe(res => {
+      this._updateWidgetsSub = this._updateWidgetsEvent.subscribe((res: boolean) => {
         if (res === false) {
           return;
         }
@@ -124,7 +143,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Closes the dialog and resets the Temporary Filters
+   * Closes the dialog without updating the Filters
    *
    */
   closeDialog() {
@@ -132,7 +151,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Closes the dialog and updates the Active Filters
+   * Closes the dialog and updates the Filters
    *
    */
   search() {
@@ -140,7 +159,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Sets the group id in the mat tab group
+   * Sets the group id in the mat tab group (the tab index)
    * @param id The group id
    */
   setCurrentGroupId(id: number): void {
@@ -162,7 +181,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
    * Asks the FilterService to remove a FilterItem from the filterItems lists of the chosen
    * FilterListTypes, then triggers the update of the associated widgets.
    * @param filterItem The filter item to remove
-   * @param filterList The filter list type
+   * @param filterList The filter list type or types
    */
   removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
     this.fts.removeFilter(filterItem, listType)
@@ -174,13 +193,14 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Generates and sets up a FilterItem
+   * Sets up a FilterItem, assigning default fallback values to
+   * required properties where necessary.
    * @param item The FilterItem to set up
-   * @return The generated FilterItem
+   * @returns The generated FilterItem
    */
   private _setupFilterItem(item: FilterItem): FilterItem {
     const ftItem: FilterItem = {
-      id: item.id ?? 11,
+      id: item.id ?? 10,
       parent: 1,
       parentNode: item.parentNode ?? 1,
       choicesOrigin: item.choicesOrigin,
@@ -189,7 +209,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
       label: item.label ?? item.name.charAt(0).toUpperCase() + item.name.slice(1),
       nodeType: AjfNodeType.AjfField,
       fieldType: item.fieldType ? item.fieldType : AjfFieldType.String,
-      isFormData: item.isFormData,
+      isAdditionalFilter: item.isAdditionalFilter,
       editable: item.editable ?? true,
       defaultValue: item.defaultValue ?? null,
       size: item.size ?? 'normal',
@@ -199,46 +219,8 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
     return ftItem;
   }
 
-  /**
-   * Transforms a FilterItem into a WidgetData object
-   * @param filterItem The filter item to transform
-   * @returns The WidgetData object
-   */
-  private _setupWidget(filterItem: FilterItem): WidgetData {
-    const activeFilter = this.fts.temporaryFilters.value.find(f => f.name === filterItem.name);
-    const fieldValue = activeFilter ? activeFilter.value : null;
-    const fieldChoices: AjfChoicesOrigin<any>[] =
-        filterItem.choicesOrigin ? [filterItem.choicesOrigin] : [];
-    filterItem.value = fieldValue;
-    filterItem.operator =
-        activeFilter?.operator ?? DEFAULT_OPERATORS[filterItem.fieldType ?? AjfFieldType.String];
-    const formSchema: Partial<AjfForm> = {
-      choicesOrigins: fieldChoices,
-      nodes: [{
-        parent: 0,
-        parentNode: 0,
-        id: 1,
-        name: filterItem.name,
-        label: filterItem.label,
-        nodeType: AjfNodeType.AjfSlide,
-        nodes: [filterItem as Partial<AjfNode>]
-      } as AjfSlide],
-    };
-    const ctx = Object.create({});
-    ctx[filterItem.name] = fieldValue;
-    const filterVisibility = filterItem.visibility;
-    const form = AjfFormSerializer.fromJson(formSchema, ctx);
-    form.nodes[0].visibility = filterVisibility;
-    return {
-      form: form,
-      operator: filterItem.operator,
-      active: fieldValue != null,
-      validation: filterItem.validation,
-      isFormData: filterItem.isFormData ?? false,
-    };
-  }
-
   ngOnDestroy() {
+    this._backdropClickSub.unsubscribe();
     this._updateWidgetsSub.unsubscribe();
     this._currentGroupId.complete();
   }

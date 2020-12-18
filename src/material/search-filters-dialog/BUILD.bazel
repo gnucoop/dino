@@ -25,7 +25,6 @@ ng_module(
         "//src/material/search-filters-chips",
         "//src/material/search-filters-widget",
         "@npm//@angular/common",
-        "@npm//@angular/flex-layout",
         "@npm//@angular/forms",
         "@npm//@angular/material",
         "@npm//@angular/router",

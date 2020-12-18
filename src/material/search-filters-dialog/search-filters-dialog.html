@@ -12,14 +12,12 @@
 
 <mat-dialog-content>
     <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
-        <mat-tab *ngFor=" let filterGroup of fts.modelFilters|async;" [label]="filterGroup.filterGroupName"
+        <mat-tab *ngFor=" let filterGroup of fts.generatedFilters|async;" [label]="filterGroup.filterGroupName"
             style="width: 100%">
             <ng-template matTabContent>
-                <div class="dewco-filter-widgets-container" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="0.5% grid">
-                    <dewco-search-filters-widget *ngFor="let widget of widgetData|async;" fxFlex="0 1 33%"
-                        fxFlex.lt-lg="0 1 50%" fxFlex.lt-md="100%" 
-                        [widgetData]="widget"
-                        (includeFilter)="addFilter($event, 'temporary')"
+                <div class="dewco-filter-widgets-container">
+                    <dewco-search-filters-widget *ngFor="let filterItem of filterItemsData|async;"
+                        [filterItemData]="filterItem" (includeFilter)="addFilter($event, 'temporary')"
                         (excludeFilter)="removeFilter($event, 'temporary')">
                     </dewco-search-filters-widget>
                 </div>

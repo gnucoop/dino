@@ -1,7 +1,9 @@
 dewco-search-filters-dialog {
   .dewco-filter-widgets-container {
+    display: flex;
     padding: 15px;
     overflow: hidden;
+    flex-flow: row wrap;
   }
 
   .mat-tab-body-content {
