@@ -20,9 +20,8 @@
  *
  */
 
-export {FormData} from './form-data';
-export {FormSchema} from './form-schema';
+import {NgModule} from '@angular/core';
 
-export * from './forms.module';
-export * from './form-schema-manager';
-export * from './form-data-manager';
+@NgModule({})
+export class FormsModule {
+}
