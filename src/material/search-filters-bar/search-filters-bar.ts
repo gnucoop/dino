@@ -46,7 +46,6 @@ import {catchError} from 'rxjs/operators';
  * if present as a model property.
  * It may contain two child components:
  * dewco-search-filters-chips and dewco-search-filters-dialog.
- * This component creates and sends a query string to the SelectionList component DataSource
  */
 @Component({
   selector: 'dewco-search-filters-bar',
@@ -57,7 +56,14 @@ import {catchError} from 'rxjs/operators';
   providers: [{provide: SearchFiltersComponent, useExisting: SearchFiltersBar}]
 })
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
-  private _dialogRef: MatDialogRef<SearchFiltersDialog, any>;
+  /**
+   * A reference to the MatDialog that contains the additionalFilters
+   */
+  private _dialogRef: MatDialogRef<SearchFiltersDialog>;
+
+  /**
+   * Subscribes to the value returned by the MatDialog on its closing event
+   */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
   constructor(
@@ -74,7 +80,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
 
   /**
    * Opens a dialog with dewco-search-filters-dialog component.
-   * Subscribes to Dialog closing event, updating the advancedFilters when requested.
+   * Aligns the temporary filters list to the additional filters list.
+   * Subscribes to Dialog closing event, updating the Additional Filters when
+   * the Dialog closing event value is true.
    */
   openDialog() {
     this._fts.resetTemporaryFilters();
@@ -87,7 +95,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                           .pipe(catchError(err => throwError(err) as Observable<boolean>))
                           .subscribe((search: boolean) => {
                             if (search) {
-                              this._fts.updateAdvancedFilters();
+                              this._fts.updateAdditionalFilters();
                             }
                           });
   }
@@ -95,14 +103,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
    * @param filterItem The filter item to remove
-   * @param listType The list type
+   * @param listType The list/lists to remove the filter from
    */
   removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
     this._fts.removeFilter(filterItem, listType);
   }
 
   /**
-   * Tells the FilterService to initialize the filters and load them from the route
+   * Asks the FilterService to initialize the filters and load them from the route
    * queryParams
    */
   private _initFilters() {
@@ -112,9 +120,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             )
         .subscribe(formGroups => {
           this.basicFilters = [...this.basicFilters, ...formGroups];
-          this.optionalFilters = formGroups;
-          this.optionalFiltersLabels =
-              this.optionalFilters.map(group => Object.keys(group.controls)[0]);
+          this.additionalBasicFilters = formGroups;
+          this.additionalBasicFiltersLabels =
+              this.additionalBasicFilters.map(group => Object.keys(group.controls)[0]);
           this._cdr.detectChanges();
         })
         .unsubscribe();

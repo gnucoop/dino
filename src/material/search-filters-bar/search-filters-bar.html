@@ -30,11 +30,11 @@
 
         </ng-container>
 
-        <ng-container *ngFor="let group of optionalFilters; let idx = index" [formGroup]="group">
+        <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
 
-            <mat-form-field floatLabel="always" *ngIf="optionalFiltersLabels[idx]">
-                <input matInput [formControlName]="optionalFiltersLabels[idx]"
-                    placeholder="search by {{optionalFiltersLabels[idx]}}">
+            <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]">
+                <input matInput [formControlName]="additionalBasicFiltersLabels[idx]"
+                    placeholder="search by {{additionalBasicFiltersLabels[idx]}}">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
 
@@ -46,7 +46,7 @@
 
     </div>
 
-    <dewco-search-filters-chips (excludeFilter)="removeFilter($event, ['advanced'])" [chipsType]="'advanced'">
+    <dewco-search-filters-chips (excludeFilter)="removeFilter($event, ['additional'])" [chipsType]="'additional'">
     </dewco-search-filters-chips>
 
 </ng-container>
