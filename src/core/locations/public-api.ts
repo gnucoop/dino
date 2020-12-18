@@ -22,4 +22,4 @@
 
 export * from './locations';
 export * from './location-manager';
-export * from './locations-module';
+export * from './locations.module';

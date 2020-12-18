@@ -21,10 +21,14 @@
  */
 
 import {NgModule} from '@angular/core';
+import {FiltersService} from '@dewco/core/list';
 
 /**
  * Optional module augmenting Forms that provides the LocationManager service
  */
 @NgModule({})
 export class LocationModule {
+  constructor(private _filtersService: FiltersService) {
+    this._filtersService.addAvailableFilterLabel('location');
+  }
 }

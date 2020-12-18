@@ -25,7 +25,7 @@ import {DataModelManager, DataService, PermissionContextService} from '@dewco/co
 
 import {schema} from './location-json';
 import {Location} from './locations';
-import {LocationModule} from './locations-module';
+import {LocationModule} from './locations.module';
 
 /**
  * Service that manages FormData Locations
@@ -36,7 +36,10 @@ export class LocationManager extends DataModelManager<Location> {
       dataService: DataService,
       permissionContextService: PermissionContextService,
   ) {
-    const collection = {name: 'locations', schema};
-    super({collection}, dataService, permissionContextService);
+    super(
+        {collection: {name: 'locations', schema}},
+        dataService,
+        permissionContextService,
+    );
   }
 }
