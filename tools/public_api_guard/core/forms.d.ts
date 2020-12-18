@@ -19,6 +19,12 @@ export interface FormSchema extends Model {
 
 export declare class FormSchemaManager extends DataModelManager<FormSchema> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
+    generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
     static ɵfac: i0.ɵɵFactoryDef<FormSchemaManager, never>;
     static ɵprov: i0.ɵɵInjectableDef<FormSchemaManager>;
+}
+
+export declare class FormsModule {
+    static ɵinj: i0.ɵɵInjectorDef<FormsModule>;
+    static ɵmod: i0.ɵɵNgModuleDefWithMeta<FormsModule, never, never, never>;
 }

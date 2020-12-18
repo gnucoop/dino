@@ -1,8 +1,8 @@
 export declare class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
     data: any;
     dialogRef: MatDialogRef<SearchFiltersDialog>;
+    filterItemsData: Observable<FilterItem[]>;
     fts: FiltersService;
-    widgetData: Observable<WidgetData[]>;
     widgets: QueryList<SearchFiltersWidget>;
     constructor(dialogRef: MatDialogRef<SearchFiltersDialog>, data: any, fts: FiltersService);
     addFilter(filterItem: FilterItem, listType: FilterListType): void;
@@ -19,5 +19,5 @@ export declare class SearchFiltersDialog implements OnInit, OnDestroy, AfterView
 
 export declare class SearchFiltersDialogModule {
     static ɵinj: i0.ɵɵInjectorDef<SearchFiltersDialogModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<SearchFiltersDialogModule, [typeof i1.SearchFiltersDialog], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.FlexLayoutModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatTabsModule, typeof i12.RouterModule, typeof i13.SearchFiltersChipsModule, typeof i14.SearchFiltersWidgetModule], [typeof i1.SearchFiltersDialog]>;
+    static ɵmod: i0.ɵɵNgModuleDefWithMeta<SearchFiltersDialogModule, [typeof i1.SearchFiltersDialog], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.MatButtonModule, typeof i5.MatCheckboxModule, typeof i6.MatDialogModule, typeof i7.MatFormFieldModule, typeof i8.MatIconModule, typeof i9.MatInputModule, typeof i10.MatTabsModule, typeof i11.RouterModule, typeof i12.SearchFiltersChipsModule, typeof i13.SearchFiltersWidgetModule], [typeof i1.SearchFiltersDialog]>;
 }

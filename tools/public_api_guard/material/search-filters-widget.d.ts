@@ -6,19 +6,18 @@ export declare class NodeAsFilterItemPipe implements PipeTransform {
 
 export declare class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterViewInit, OnInit, OnDestroy {
     excludeFilter: EventEmitter<FilterItem>;
+    filterItemData: FilterItem;
     includeFilter: EventEmitter<FilterItem>;
     get operatorValue(): BehaviorSubject<Operator>;
     rendererService: AjfFormRendererService;
     toggleButton: MatSlideToggle;
-    widgetData: WidgetData;
+    get widgetData(): WidgetData;
     get widgetLabel(): string;
     get widgetName(): string;
     get widgetVisibility(): BehaviorSubject<boolean>;
     constructor(rendererService: AjfFormRendererService, changeDetectorRef: ChangeDetectorRef, _fs: FiltersService);
     changeOperator(operator: MatButtonToggleChange): void;
-    checkToggleDisabled(obj: {
-        [key: string]: unknown;
-    }, element: MatSlideToggle, forceToggle?: boolean): boolean;
+    checkToggleDisabled(): boolean;
     conditionOperatorByFieldType(type: AjfFieldType): Operator[];
     filterToggle(toggle: MatSlideToggleChange): void;
     getWidgetFormValue(): {
@@ -27,7 +26,7 @@ export declare class SearchFiltersWidget extends AjfCoreFormRenderer implements 
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     ngOnInit(): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersWidget, "dewco-search-filters-widget", never, { "widgetData": "widgetData"; }, { "includeFilter": "includeFilter"; "excludeFilter": "excludeFilter"; }, never, never>;
+    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersWidget, "dewco-search-filters-widget", never, { "filterItemData": "filterItemData"; }, { "includeFilter": "includeFilter"; "excludeFilter": "excludeFilter"; }, never, never>;
     static ɵfac: i0.ɵɵFactoryDef<SearchFiltersWidget, never>;
 }
 

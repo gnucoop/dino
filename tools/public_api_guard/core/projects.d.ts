@@ -9,6 +9,7 @@ export declare class ProjectManager extends DataModelManager<Project> {
 }
 
 export declare class ProjectModule {
+    constructor(_filtersService: FiltersService);
     static ɵinj: i0.ɵɵInjectorDef<ProjectModule>;
     static ɵmod: i0.ɵɵNgModuleDefWithMeta<ProjectModule, never, never, never>;
 }

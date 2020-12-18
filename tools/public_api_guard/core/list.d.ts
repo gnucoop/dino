@@ -1,5 +1,7 @@
+export declare type ActionType = 'delete' | 'print' | 'download' | 'edit';
+
 export declare abstract class AdminUserInteractionsService {
-    abstract askConfirm(action: string): Observable<boolean>;
+    abstract askConfirm(action: ListAction): Observable<boolean>;
 }
 
 export declare const ALL_CONDITION_OPERATORS: Operator[];
@@ -13,67 +15,70 @@ export declare const DEFAULT_OPERATORS: {
 };
 
 export declare const FIELD_TYPES: {
-    [key: string]: number;
+    [key: string]: AjfFieldType;
 };
 
 export interface FilterGroup {
-    filterGroupAdvancedFilters?: FilterItem[];
+    filterGroupAdditionalFilters?: FilterItem[];
     filterGroupBasicFilters?: FilterItem[];
     filterGroupName: string;
 }
 
 export interface FilterItem extends Partial<AjfField> {
+    choices?: AjfChoice<any>[];
     choicesOrigin?: AjfChoicesOrigin<any>;
     choicesOriginRef?: string;
     formControlName?: string;
-    isFormData?: boolean;
+    isAdditionalFilter?: boolean;
     isValid?: boolean;
     name: string;
     operator?: Operator;
     value?: any;
-    [key: string]: any;
 }
 
-export declare type FilterListType = 'basic' | 'advanced' | 'temporary' | 'all';
+export declare type FilterListType = 'basic' | 'additional' | 'temporary' | 'all';
 
 export declare class FiltersService implements OnDestroy {
-    _queryString: BehaviorSubject<string>;
     get activeFilters(): Subject<FilterItem[]>;
-    get advancedFilters(): BehaviorSubject<FilterItem[]>;
+    get additionalFilters(): BehaviorSubject<FilterItem[]>;
+    get availableBasicFilterLabels(): string[];
     get basicFilters(): BehaviorSubject<FilterItem[]>;
+    get generatedFilters(): BehaviorSubject<FilterGroup[]>;
+    get generatedModelFilters(): Subject<FilterGroup[]>;
     set listReady(status: boolean);
-    readonly loadPresetEvent: EventEmitter<boolean>;
-    get modelFilters(): BehaviorSubject<FilterGroup[]>;
+    get loadPresetEvent(): EventEmitter<boolean>;
     get queryString(): BehaviorSubject<string>;
     set setCustomFilters(filterGroups: FilterGroup[]);
     get temporaryFilters(): BehaviorSubject<FilterItem[]>;
-    constructor(_route: ActivatedRoute, _router: Router, _locationManager?: LocationManager | undefined, _projectManager?: ProjectManager | undefined);
+    constructor(_route: ActivatedRoute, _router: Router);
+    addAvailableFilterLabel(label: string): void;
+    addBasicFilter(basicFilter: FormGroup): void;
     addFilter(filterItem: FilterItem, filterList: FilterListType): void;
     checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean;
     checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean;
-    checkValues(valA: string, valB: string, operator: string): boolean;
     findFilterByName(filterName: string, filterList?: FilterListType): Observable<FilterItem | undefined>;
-    generateFilters(modelSchema: RxJsonSchema, formSchema?: FormSchema): void;
-    generateFormSchemaFilters(formSchema?: FormSchema): void;
-    generateModelSchemaFilters(modelSchema: RxJsonSchema): void;
+    generateModelFilters(modelSchema: RxJsonSchema): void;
     initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]>;
-    loadPreset(encodedString: string | null): void;
+    loadPreset(encodedString?: string): void;
     loadPresetTrigger(): void;
     ngOnDestroy(): void;
     removeFilter(filterItem: FilterItem, filterList: FilterListType[] | FilterListType): Observable<boolean>;
     resetTemporaryFilters(): void;
-    updateAdvancedFilters(): void;
-    static ɵfac: i0.ɵɵFactoryDef<FiltersService, [null, null, { optional: true; }, { optional: true; }]>;
+    setAdditionalFilters(filters?: FilterGroup[]): void;
+    updateAdditionalFilters(): void;
+    static ɵfac: i0.ɵɵFactoryDef<FiltersService, never>;
     static ɵprov: i0.ɵɵInjectableDef<FiltersService>;
 }
 
-export declare abstract class List<T extends Model = Model> {
+export declare abstract class List<T extends Model = Model, AD extends Model = Model> {
     protected _actionEvent: EventEmitter<{
-        action: string;
+        action: ListAction;
         items: T[];
     }>;
     protected _aui: AdminUserInteractionsService;
     protected _cdr: ChangeDetectorRef;
+    get additionalDataSchema(): AD;
+    set additionalDataSchema(ds: AD);
     get baseEditUrl(): string;
     set baseEditUrl(baseEditUrl: string);
     get displayedColumns(): string[];
@@ -86,14 +91,20 @@ export declare abstract class List<T extends Model = Model> {
     abstract deleteAction(items: T[]): T[];
     abstract getItems(): T[];
     abstract getSelection(): T[];
-    processAction(action: string, items: T[]): void;
+    processAction(action: ListAction, items: T[]): void;
     abstract selectAll(): void;
-    static ɵdir: i0.ɵɵDirectiveDefWithMeta<List<any>, never, never, { "title": "title"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; }, {}, never>;
-    static ɵfac: i0.ɵɵFactoryDef<List<any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDefWithMeta<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; }, {}, never>;
+    static ɵfac: i0.ɵɵFactoryDef<List<any, any>, never>;
+}
+
+export interface ListAction {
+    actionType: ActionType;
+    askConfirm?: boolean;
 }
 
 export interface ListHeader<T> {
     column: keyof T;
+    displayed?: boolean;
     hidden?: boolean;
     label: string;
     sortable?: boolean;
@@ -113,10 +124,10 @@ export interface Operator {
 }
 
 export declare abstract class SearchFiltersComponent {
+    additionalBasicFilters: FormGroup[];
+    additionalBasicFiltersLabels: string[];
     basicFilters: FormGroup[];
     readonly dateSearchFilters: FormGroup;
-    optionalFilters: FormGroup[];
-    optionalFiltersLabels: string[];
     readonly textSearchFilters: FormGroup;
     constructor();
 }
@@ -126,9 +137,9 @@ export declare function unzip(base64ZippedString: any): string;
 export interface WidgetData {
     active: boolean;
     form: AjfForm;
-    isFormData?: boolean;
     operator: Operator;
-    validation?: AjfValidationGroup;
+    validationConditions?: AjfValidationGroup;
+    visibilityConditions: AjfCondition;
 }
 
 export declare function zip(s: string): string;

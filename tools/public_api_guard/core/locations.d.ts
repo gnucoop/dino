@@ -9,6 +9,7 @@ export declare class LocationManager extends DataModelManager<Location> {
 }
 
 export declare class LocationModule {
+    constructor(_filtersService: FiltersService);
     static ɵinj: i0.ɵɵInjectorDef<LocationModule>;
     static ɵmod: i0.ɵɵNgModuleDefWithMeta<LocationModule, never, never, never>;
 }

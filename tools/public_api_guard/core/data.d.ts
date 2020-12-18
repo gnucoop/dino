@@ -86,6 +86,7 @@ export declare abstract class DataModelManager<T extends Model = Model> {
     bulkDelete(data: T[]): Observable<RxDocument<T>[] | null>;
     create(obj: InsertModel<T>): Observable<RxDocument<T> | null>;
     delete(data: string | T): Observable<RxDocument<T> | null>;
+    generateAdditionalFilters(dataSchema?: any): any[];
     get(id: string): Observable<RxDocument<T> | null>;
     list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>>;
     patch(data: Partial<T> & {
