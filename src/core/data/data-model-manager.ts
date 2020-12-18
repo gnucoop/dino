@@ -71,7 +71,7 @@ export abstract class DataModelManager<T extends Model = Model> {
 
   /**
    * Retrieves the collection schema
-   * @return RxJsonSchema
+   * @returns RxJsonSchema
    */
   get collectionSchema(): RxJsonSchema {
     return this._collectionSchema;
@@ -87,7 +87,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Creates a RxDocument object with a unique uuidv4 Id in the model collection
    * @param obj
-   * @return an observable of the created RxDocument
+   * @returns an observable of the created RxDocument
    */
   create(obj: InsertModel<T>): Observable<RxDocument<T>|null> {
     const params = {
@@ -108,7 +108,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Creates multiple RxDocument objects with a unique uuidv4 Id in the model collection
    * @param data
-   * @return an observable of the array of the created RxDocuments
+   * @returns an observable of the array of the created RxDocuments
    */
   bulkCreate(data: InsertModel<T>[]): Observable<{success: RxDocument<T>[], error: any[]}> {
     const params = {
@@ -131,7 +131,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Retrieves a single RxDocument object by id from the model collection
    * @param id
-   * @return an observable of the retrieved RxDocument
+   * @returns an observable of the retrieved RxDocument
    */
   get(id: string): Observable<RxDocument<T>|null> {
     const params = {
@@ -150,7 +150,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * Retrieves a list of RxDocument objects from the model collections.
    * Optional parameters can be passed to modify the returned list.
    * @param options? a list of DataListOptions options.
-   * @return  RxQuery object for multiple documents selection.
+   * @returns  RxQuery object for multiple documents selection.
    */
   list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>> {
     const params = {
@@ -171,7 +171,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * (a mango query selector is a required option).
    * Optional parameters can be passed to modify the returned list.
    * @param options a list of DataQueryOptions parameters.
-   * @return RxQuery object for multiple documents selection.
+   * @returns RxQuery object for multiple documents selection.
    */
   query(options: DataQueryOptions): Observable<RxQuery<T, RxDocument<T>[]>> {
     const params = {
@@ -189,7 +189,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Removes a single RxDocument object by id from the model collection
    * @param data
-   * @return an observable of the deleted RxDocument
+   * @returns an observable of the deleted RxDocument
    */
   delete(data: string|T): Observable<RxDocument<T>|null> {
     const params = {
@@ -223,7 +223,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Deletes multiple RxDocument objects in the model collection
    * @param data
-   * @return an observable of the array of the deleted RxDocuments
+   * @returns an observable of the array of the deleted RxDocuments
    */
   bulkDelete(data: T[]): Observable<RxDocument<T>[]|null> {
     if (data == null || data.length == 0) {
@@ -268,7 +268,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * Updates a single RxDocument object in the model collection,
    * replacing all field values with the passed object properties values.
    * @param obj
-   * @return an observable of the updated RxDocument
+   * @returns an observable of the updated RxDocument
    */
   update(obj: T): Observable<RxDocument<T>|null> {
     const params = {
@@ -303,7 +303,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * Patches a single RxDocument object in the model collection,
    * replacing the values of the fields corresponding to the passed object properties.
    * @param data
-   * @return an observable of the patched RxDocument
+   * @returns an observable of the patched RxDocument
    */
   patch(data: Partial<T>&{id: string}): Observable<RxDocument<T>|null> {
     const params = {
@@ -335,9 +335,20 @@ export abstract class DataModelManager<T extends Model = Model> {
   }
 
   /**
+   * Generates additional filters based of the model of the "data" property of
+   * the main model. This is overridden by methods which are specific for
+   * each concrete DataModelManager.
+   * An optional schema for the filters generation can be provided.
+   * @param dataSchema The schema of the "additionalData" model
+   */
+  generateAdditionalFilters(dataSchema?: any): any[] {
+    return [];
+  }
+
+  /**
    * Transforms an object into a list of Mango update operations
    * @param data
-   * @return a Mango update operation
+   * @returns a Mango update operation
    */
   private _prepareUpdateQuery(data: Partial<T>): any {
     data.updated_at = new Date().toISOString();
@@ -348,7 +359,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Checks all Permissions for creating a RxDocument in a given Context
    * @param data
-   * @return boolean
+   * @returns boolean
    */
   private _canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean {
     const createData = {
@@ -370,7 +381,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Checks all Permissions for modifying a RxDocument in a given Context
    * @param data
-   * @return boolean
+   * @returns boolean
    */
   private _canModify(
       data: Partial<T>&{id: string}, object: RxDocument<T>,
@@ -395,7 +406,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Checks all Permissions for deleting a RxDocument in a given Context
    * @param data
-   * @return boolean
+   * @returns boolean
    */
   private _canDelete(object: RxDocument<T>, context?: PermissionContext<T>): boolean {
     const deleteData = {
@@ -427,7 +438,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   /**
    * Creates a Mango query from a list or query options
    * @param options The list or query options
-   * @return a Mango query
+   * @returns a Mango query
    */
   private _optionsToMangoQuery(options?: DataListOptions|DataQueryOptions): MangoQuery<T> {
     options = options || {};
