@@ -95,7 +95,9 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
                         .subscribe(([canLoad, pName]) => {
                           if (canLoad && pName != '') {
                             const preset = localStorage.getItem(`filters_preset_${pName}`);
-                            this._fs.loadPreset(preset);
+                            if (preset) {
+                              this._fs.loadPreset(preset);
+                            }
                           }
                         });
     loadSub.unsubscribe();
