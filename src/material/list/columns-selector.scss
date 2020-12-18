@@ -1,0 +1,11 @@
+.dewco-selector-container {
+    display: flex;
+    flex-flow: column wrap;
+}
+
+.dewco-column-selector {
+    display: flex;
+    flex: 1 1;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}

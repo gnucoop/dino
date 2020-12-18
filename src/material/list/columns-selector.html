@@ -1,0 +1,11 @@
+<div class="dewco-selector-container">
+    <div>
+        <h4>Customize display</h4>
+        <p>Alter the display of the table by selecting up to 7 columns</p>
+    </div><br><br>
+    <div class="dewco-column-selector" *ngFor="let column of columns; let i = index">
+        {{column.label}} <mat-slide-toggle [checked]="column.displayed || column.displayed === undefined"
+            (change)="toggleColumn(i)"></mat-slide-toggle>
+    </div><br>
+    <button class="dewco-apply-btn" mat-raised-button color="primary" (click)="apply()">Apply</button>
+</div>
