@@ -28,26 +28,41 @@ import {
 } from '@angular/core';
 import {Model} from '@dewco/core/data';
 
+import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
 
 /**
- * The base ListComponent extended by Material List components.
- * Provides the core for a list/table with selection and bulk/individual actions capabilities.
+ * The base List extended by SelectionList component.
+ * Provides the core for a list with selection and bulk/individual actions capabilities.
  */
 @Directive()
-export abstract class List<T extends Model = Model> {
-  private _title: string;
-  private _displayedColumns: string[];
-  private _headers: ListHeader<T>[] = [];
-  private _baseEditUrl = '';
-
-  protected _actionEvent: EventEmitter<{action: string, items: T[]}> =
-      new EventEmitter<{action: string, items: T[]}>();
+export abstract class List<T extends Model = Model, AD extends Model = Model> {
+  /**
+   * An event emitted when an action on a list item is performed.
+   * Contains info about the action name and the list item/items involved.
+   */
+  protected _actionEvent: EventEmitter<{action: ListAction, items: T[]}> =
+      new EventEmitter<{action: ListAction, items: T[]}>();
 
   /**
-   * List/Table title
+   * The model of the "data" property associated with the main model.
    */
+  private _additionalDataSchema: AD;
+
+  get additionalDataSchema(): AD {
+    return this._additionalDataSchema;
+  }
+  @Input()
+  set additionalDataSchema(ds: AD) {
+    this._additionalDataSchema = ds;
+  }
+
+  /**
+   * The list title
+   */
+  private _title: string;
+
   get title(): string {
     return this._title;
   }
@@ -61,28 +76,43 @@ export abstract class List<T extends Model = Model> {
   /**
    * The columns to be displayed
    */
+  private _displayedColumns: string[];
+
   get displayedColumns(): string[] {
     return this._displayedColumns;
   }
 
   /**
-   * The list/table headers
+   * The list column headers
    */
+  private _headers: ListHeader<T>[] = [];
+
   get headers(): ListHeader<T>[] {
     return this._headers;
   }
 
+  /**
+   * Sets the column headers and adds a 'Select' and 'Actions' headers.
+   * Headers with 'displayed' set to false, will not be displayed, but will be
+   * available for selection in the Column Selector.
+   */
   @Input()
   set headers(headers: ListHeader<T>[]) {
+    this._displayedColumns = [
+      'select',
+      ...headers.filter(header => header.displayed || header.displayed === undefined)
+          .map(header => header.column.toString()),
+      'actions'
+    ];
     this._headers = headers;
-    this._displayedColumns =
-        ['select', ...headers.map(header => header.column.toString()), 'actions'];
-    this._cdr.markForCheck();
+    this._cdr.detectChanges();
   }
 
   /**
-   * The base url to be used for the Edit action
+   * The base url to be used for the Edit action on a list item
    */
+  private _baseEditUrl = '';
+
   get baseEditUrl(): string {
     return this._baseEditUrl;
   }
@@ -102,26 +132,26 @@ export abstract class List<T extends Model = Model> {
   abstract deleteAction(items: T[]): T[];
 
   /**
+   * Calls a handler function on the current selection based on the action name
+   * @param action The name of the action to be performed
+   */
+  processAction(action: ListAction, items: T[]): void {
+    if (items.length === 0) {
+      return;
+    }
+    const handlerName = this._getActionHandler(action.actionType);
+    const handler: (s: T[]) => void = (this as any)[handlerName];
+    if (handler != null) {
+      handler.call(this, items);
+    }
+  }
+
+  /**
    * Retrieves the name of the handler functions based on the action name
    * @param action The name of the action
    * @returns The handler function name
    */
   private _getActionHandler(action: string): string {
     return `${action}Action`;
-  }
-
-  /**
-   * Calls a handler function on the current selection based on the action name
-   * @param action The name of the action
-   */
-  processAction(action: string, items: T[]): void {
-    if (items.length === 0) {
-      return;
-    }
-    const handlerName = this._getActionHandler(action);
-    const handler: (s: T[]) => void = (this as any)[handlerName];
-    if (handler != null) {
-      handler.call(this, items);
-    }
   }
 }

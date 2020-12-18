@@ -22,12 +22,6 @@
 
 import {NgModule} from '@angular/core';
 
-import {FiltersService} from './filters.service';
-
-@NgModule({
-  providers: [
-    FiltersService,
-  ],
-})
+@NgModule({})
 export class ListModule {
 }

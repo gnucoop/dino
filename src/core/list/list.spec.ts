@@ -1,15 +1,18 @@
 import {ChangeDetectorRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Model} from '@dewco/core/data';
-import {AdminUserInteractionsService, List} from '@dewco/core/list';
 import {Observable, of as obsOf} from 'rxjs';
+
+import {List} from './list';
+import {ListAction} from './list-actions-interface';
+import {AdminUserInteractionsService} from './user-interactions';
 
 const changeDetectorRefMock = {
   markForCheck() {}
 };
 
 class AdminUIService extends AdminUserInteractionsService {
-  askConfirm(action: string): Observable<boolean> {
+  askConfirm(action: ListAction): Observable<boolean> {
     return obsOf(true);
   }
 }
@@ -27,8 +30,8 @@ const adminUIService = new AdminUIService();
 
 class ListFeatComp extends List<DummyModel> {
   constructor(
-      aui: AdminUIService,
       cdr: ChangeDetectorRef,
+      aui: AdminUIService,
   ) {
     super(cdr, aui);
   }
@@ -51,7 +54,6 @@ describe('Core ListComponent', () => {
   let cdr: ChangeDetectorRef;
   let aui: AdminUIService;
   let listFeatComp: ListFeatComp;
-  let spyDelete: jasmine.Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -62,13 +64,14 @@ describe('Core ListComponent', () => {
     });
     cdr = TestBed.inject(ChangeDetectorRef);
     aui = TestBed.inject(AdminUIService);
-    listFeatComp = new ListFeatComp(aui, cdr);
-    spyDelete = spyOn(listFeatComp, 'deleteAction').and.callThrough();
+    listFeatComp = new ListFeatComp(cdr, aui);
   });
 
   it('should retrieve and call the correct Action Handler method name', () => {
-    const actionName = 'delete';
-    listFeatComp.processAction(actionName, dummySelection);
-    expect(spyDelete).toHaveBeenCalled();
+    const spyAction = spyOn(listFeatComp, 'deleteAction').and.callThrough();
+    const action: ListAction = {actionType: 'delete', askConfirm: true};
+    listFeatComp.processAction(action, dummySelection);
+
+    expect(spyAction).toHaveBeenCalled();
   });
 });

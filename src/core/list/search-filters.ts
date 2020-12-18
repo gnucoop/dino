@@ -23,14 +23,34 @@
 import {FormControl, FormGroup} from '@angular/forms';
 
 /**
- * Abstract base component inherited by FiltersComponents
+ * Abstract base component inherited by any FiltersComponent.
+ * Provides the default basic filters: dateStart, dateEnd and keyword search.
  */
 export abstract class SearchFiltersComponent {
+  /**
+   * Keyword search filters.
+   */
   readonly textSearchFilters: FormGroup;
+
+  /**
+   * "from Date" and "to Date" search filters.
+   */
   readonly dateSearchFilters: FormGroup;
+
+  /**
+   * All the default basic filters.
+   */
   basicFilters: FormGroup[];
-  optionalFilters: FormGroup[];
-  optionalFiltersLabels: string[];
+
+  /**
+   * All the additional and optional basic filter (eg. Project, Location etc.)
+   */
+  additionalBasicFilters: FormGroup[];
+
+  /**
+   * All the available additional basic filters labels.
+   */
+  additionalBasicFiltersLabels: string[];
 
   constructor() {
     this.textSearchFilters = new FormGroup({keyword: new FormControl()});
@@ -39,6 +59,6 @@ export abstract class SearchFiltersComponent {
       dateEnd: new FormControl(),
     });
     this.basicFilters = [this.textSearchFilters, this.dateSearchFilters];
-    this.optionalFilters = [];
+    this.additionalBasicFilters = [];
   }
 }

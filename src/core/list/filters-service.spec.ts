@@ -5,7 +5,6 @@ import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
-import {FormSchema} from '@dewco/core/forms';
 import {FilterItem, FiltersService} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
@@ -41,49 +40,9 @@ const dummySchema = {
     'updated_at': {'type': 'string', 'description': 'Update timestamp.'},
   },
   'additionalProperties': false,
-  'title': 'dummymodel',
+  'title': 'dummyModel',
   'version': 0,
 } as RxJsonSchema;
-
-const dummyAjfSchema = {
-  'nodes': [
-    {
-      'id': 1,
-      'name': 'test',
-      'label': 'TestLabel',
-      'nodes': [{
-        'id': 101,
-        'name': 'test_filter',
-        'size': 'normal',
-        'label': 'Name',
-        'parent': 1,
-        'editable': true,
-        'nodeType': 0,
-        'fieldType': 0,
-        'hasChoices': true,
-        'parentNode': 0,
-        'validation': {'notEmpty': true, 'conditions': []},
-        'visibility': {'condition': 'true'},
-        'defaultValue': null,
-        'conditionalBranches': [{'condition': 'true'}]
-      }],
-      'parent': 0,
-      'nodeType': 3,
-      'parentNode': 0,
-      'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
-    },
-  ],
-};
-
-const dummyFormSchema: FormSchema = {
-  id: '',
-  name: 'testSchema',
-  schema: dummyAjfSchema,
-  created_at: '',
-  updated_at: '',
-};
-
 
 const fakeFilters: FilterItem[] = [
   {name: 'filter_a', value: 'test'},
@@ -124,14 +83,14 @@ describe('FiltersService', () => {
 
   it('should initialize the basic filters formGroup, triggering the preset loading',
      fakeAsync(() => {
-       const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
-       const spyLoadPresetEvent = spyOn(fts.loadPresetEvent, 'emit').and.callThrough();
+       const spyResetTempFilters = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
+       const spyLoadPresetEvent = spyOn<any>(fts.loadPresetEvent, 'emit').and.callThrough();
 
        fts.initializeFilters([fakeFormGroup]);
        flush();
 
        expect(spyLoadPresetEvent).toHaveBeenCalledWith(true);
-       expect(spyLoadPreset).toHaveBeenCalledWith(fakeFiltersPreset);
+       expect(spyResetTempFilters).toHaveBeenCalled();
      }));
 
   it('should add a filterItem to the selected list', () => {
@@ -148,11 +107,11 @@ describe('FiltersService', () => {
       {name: 'test_filter_2', fieldType: AjfFieldType.Number, value: 5},
     ];
     items.forEach(item => {
-      fts.addFilter(item, 'advanced');
+      fts.addFilter(item, 'additional');
     });
-    fts.removeFilter({name: 'test_filter'}, 'advanced');
+    fts.removeFilter({name: 'test_filter'}, 'additional');
 
-    expect(fts.advancedFilters.value).toEqual([
+    expect(fts.additionalFilters.value).toEqual([
       {name: 'test_filter', fieldType: AjfFieldType.String, value: null},
       {name: 'test_filter_2', fieldType: AjfFieldType.Number, value: 5},
     ]);
@@ -212,100 +171,63 @@ describe('FiltersService', () => {
     expect(met_c).toBeFalse();
   });
 
-  it('should evaluate a string expression and return the correct comparison result', () => {
-    const val_a = '5', val_b = '3', val_c = 'test';
-
-    const met_a = fts.checkValues(val_a, val_b, '>=');
-    const met_b = fts.checkValues(val_a, val_b, '<');
-    const met_c = fts.checkValues(val_a, val_c, '==');
-    const met_d = fts.checkValues(val_c, val_b, '>');
-
-    expect(met_a).toBeTrue();
-    expect(met_b).toBeFalse();
-    expect(met_c).toBeFalse();
-    expect(met_d).toBeFalse();
-  });
-
-  it('should update the AdvancedFilters by merging in the temporaryFilters', () => {
+  it('should update the additionalFilters by merging in the temporaryFilters', () => {
     const item_a: FilterItem = {name: 'test_filter', value: 'test'};
     const item_b: FilterItem = {name: 'test_filter_2', value: 5};
 
-    fts.addFilter(item_a, 'advanced');
+    fts.addFilter(item_a, 'additional');
     fts.addFilter(item_b, 'temporary');
-    fts.updateAdvancedFilters();
+    fts.updateAdditionalFilters();
 
-    expect(fts.advancedFilters.value).toEqual([item_a, item_b]);
-    expect(fts.advancedFilters.value).not.toEqual([item_a]);
+    expect(fts.additionalFilters.value).toEqual([item_a, item_b]);
+    expect(fts.additionalFilters.value).not.toEqual([item_a]);
   });
 
-  it('should reset the temporaryFilters to the current AdvancedFilters value', () => {
+  it('should reset the temporaryFilters to the current additionalFilters value', () => {
     const item_a: FilterItem = {name: 'test_filter', value: 'test'};
     const item_b: FilterItem = {name: 'test_filter_2', value: 5};
 
-    fts.addFilter(item_a, 'advanced');
+    fts.addFilter(item_a, 'additional');
     fts.addFilter(item_b, 'temporary');
     fts.resetTemporaryFilters();
 
-    expect(fts.temporaryFilters.value).toEqual(fts.advancedFilters.value);
-    expect(fts.advancedFilters.value).not.toEqual([item_b]);
+    expect(fts.temporaryFilters.value).toEqual(fts.additionalFilters.value);
+    expect(fts.additionalFilters.value).not.toEqual([item_b]);
   });
 
   it('should load a filters preset and update the filters lists', () => {
     const spyBasicNext = spyOn(fts.basicFilters, 'next').and.callThrough();
-    const spyAdvancedNext = spyOn(fts.advancedFilters, 'next').and.callThrough();
+    const spyadditionalNext = spyOn(fts.additionalFilters, 'next').and.callThrough();
     const spyResetTemporary = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
 
     fts.initializeFilters([fakeFormGroup]);
     fts.loadPreset(fakeFiltersPreset_b);
 
     expect(spyBasicNext).toHaveBeenCalledTimes(1);
-    expect(spyAdvancedNext).toHaveBeenCalledTimes(1);
+    expect(spyadditionalNext).toHaveBeenCalledTimes(1);
     expect(spyResetTemporary).toHaveBeenCalledTimes(1);
     expect(fts.basicFilters.value).toEqual([fakeFilters_b[0]]);
-    expect(fts.advancedFilters.value).toEqual([fakeFilters_b[1], fakeFilters_b[2]]);
-    expect(fts.temporaryFilters.value).toEqual(fts.advancedFilters.value);
+    expect(fts.additionalFilters.value).toEqual([fakeFilters_b[1], fakeFilters_b[2]]);
+    expect(fts.temporaryFilters.value).toEqual(fts.additionalFilters.value);
   });
 
-  it('should create a list of filterGroups from a RxJsonSchema of a model and/or an ajfFormSchema',
-     () => {
-       const spyPropToFilterItem = spyOn<any>(fts, '_propToFilterItem').and.callThrough();
+  it('should create a list of filterGroups from a RxJsonSchema of a model', () => {
+    const spyPropToFilterItem = spyOn<any>(fts, '_propToFilterItem').and.callThrough();
 
-       fts.generateFilters(dummySchema, dummyFormSchema);
+    fts.generatedModelFilters.subscribe(gmf => {
+      expect(gmf).toEqual([{
+        filterGroupName: 'dummyModel',
+        filterGroupAdditionalFilters: [
+          {
+            name: 'name',
+            fieldType: 0,
+          },
+        ],
+      }]);
+    });
 
-       expect(spyPropToFilterItem).toHaveBeenCalledTimes(1);
-       expect(fts.modelFilters.value).toEqual([
-         {
-           filterGroupName: 'dummymodel',
-           filterGroupAdvancedFilters: [
-             {
-               name: 'name',
-               fieldType: AjfFieldType.String,
-             },
-           ],
-         },
-         {
-           filterGroupName: 'TestLabel',
-           filterGroupAdvancedFilters: [
-             {
-               id: 101,
-               name: 'test_filter',
-               size: 'normal',
-               label: 'Name',
-               parent: 1,
-               editable: true,
-               nodeType: 0,
-               fieldType: 0,
-               hasChoices: true,
-               parentNode: 0,
-               choices: undefined,
-               isFormData: true,
-               validation: Object({notEmpty: true, conditions: []}),
-               visibility: Object({condition: 'true'}),
-               defaultValue: null,
-               conditionalBranches: [Object({condition: 'true'})],
-             },
-           ],
-         }
-       ]);
-     });
+    fts.generateModelFilters(dummySchema);
+
+    expect(spyPropToFilterItem).toHaveBeenCalledTimes(1);
+  });
 });

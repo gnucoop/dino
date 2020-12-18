@@ -22,11 +22,12 @@
 
 
 import {Observable} from 'rxjs';
+import {ListAction} from './list-actions-interface';
 
 /**
  * The base AdminUserInteractionsService extended by Material and Ionic services.
  * Provides the core for a dialog/confirmation popup for confirming actions on list items
  */
 export abstract class AdminUserInteractionsService {
-  abstract askConfirm(action: string): Observable<boolean>;
+  abstract askConfirm(action: ListAction): Observable<boolean>;
 }

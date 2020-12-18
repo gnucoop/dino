@@ -20,13 +20,22 @@
  *
  */
 
-export * from './string-zip';
-export * from './filters.service';
-export * from './list';
-export * from './list.module';
-export * from './list-header';
-export * from './list-actions-interface';
-export * from './list-filters-interfaces';
-export * from './search-filters';
-export * from './string-zip';
-export * from './user-interactions';
+/**
+ * Type that identifies an action performed on a List item
+ */
+export type ActionType = 'delete'|'print'|'download'|'edit';
+
+/**
+ * Action performed on a List item
+ */
+export interface ListAction {
+  /**
+   * The type of the action
+   */
+  actionType: ActionType;
+
+  /**
+   * User confirmation is needed if set to true
+   */
+  askConfirm?: boolean;
+}

@@ -21,13 +21,10 @@
  */
 
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
-import {AjfCondition} from '@ajf/core/models';
-import {EventEmitter, Injectable, OnDestroy, Optional} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {AjfCondition, evaluateExpression} from '@ajf/core/models';
+import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormSchema} from '@dewco/core/forms';
-import {LocationManager} from '@dewco/core/locations';
-import {ProjectManager} from '@dewco/core/projects';
 import {PrimaryProperty, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
@@ -55,166 +52,224 @@ import {
   FilterItem,
   FilterListType,
 } from './list-filters-interfaces';
+import {ListModule} from './list.module';
 
 /**
  * Service that handles all operations related to list Filters.
+ * It maintains the state of all FilterItems, including the value and operator of the active ones.
+ * It takes care of communication between all Search Filters Components and the ListDataSource,
+ * by generating a querystring from all active filters, which is then sent to the ListDataSource to
+ * retrieve and display the filtered data in the List.
+ * It generates FilterItems from the model RxJsonSchema provided by the ListDataSource.
+ * It can load filters presets from the Preset Manager, and initialize filters accordingly.
  */
-@Injectable()
+@Injectable({providedIn: ListModule})
 export class FiltersService implements OnDestroy {
-  readonly loadPresetEvent: EventEmitter<boolean>;
-
+  /**
+   * Determines if the service can start to query the ListDataSource
+   */
   private _listReady: BehaviorSubject<boolean>;
+
   set listReady(status: boolean) {
     this._listReady.next(status);
   }
 
-  private _defaultModelFilters: Subject<FilterGroup[]>;
+  /**
+   * The labels of all available additional basic filters.
+   * Available filters are added by importing the relative modules.
+   * Used to check if a filter can be added and displayed in the
+   * main filters component (eg. SearchFiltersBar)-
+   */
+  private _availableBasicFilterLabels: string[];
 
-  private _defaultFormSchemaFilters: Subject<FilterGroup[]>;
-
-  private _modelFilters: BehaviorSubject<FilterGroup[]>;
-  get modelFilters(): BehaviorSubject<FilterGroup[]> {
-    return this._modelFilters;
+  get availableBasicFilterLabels(): string[] {
+    return this._availableBasicFilterLabels;
   }
+
+  /**
+   * Filters generated from a Model Schema
+   */
+  private _generatedModelFilters: Subject<FilterGroup[]>;
+
+  get generatedModelFilters(): Subject<FilterGroup[]> {
+    return this._generatedModelFilters;
+  }
+
+  /**
+   * Filters generated from the 'data' property of the model
+   */
+  private _generatedAdditionalFilters: Subject<FilterGroup[]>;
+
+  /**
+   * List of all generated or custom filters
+   */
+  private _generatedFilters: BehaviorSubject<FilterGroup[]>;
+
+  get generatedFilters(): BehaviorSubject<FilterGroup[]> {
+    return this._generatedFilters;
+  }
+  /**
+   * Overwrites the generated filters with a set of custom filters
+   */
   set setCustomFilters(filterGroups: FilterGroup[]) {
-    this._modelFilters.next(filterGroups);
+    this._generatedFilters.next(filterGroups);
   }
 
+  /**
+   * The FormGroups of the basic filters (Date and Keyword fields)
+   */
   private _basicFormGroups: FormGroup[];
-  private _basicOptionalFormGroups: FormGroup[] = [];
 
+  /**
+   * The FormGroups of the Additional filters to be displayed in the main filter component
+   * (eg. Location, Project etc.)
+   */
+  private _basicAdditionalFormGroups: FormGroup[] = [];
+
+  /**
+   * Basic filters such as text keyword search, from/to date search, usually displayed in the main
+   * filter component
+   */
   private _basicFilters: BehaviorSubject<FilterItem[]>;
+
   get basicFilters(): BehaviorSubject<FilterItem[]> {
     return this._basicFilters;
   }
 
+  /**
+   * Additional filters, related to the "data" property of the model, usually displayed in
+   * a secondary filter component (eg. a Dialog)
+   */
+  private _additionalFilters: BehaviorSubject<FilterItem[]>;
+
+  get additionalFilters(): BehaviorSubject<FilterItem[]> {
+    return this._additionalFilters;
+  }
+
+  /**
+   * List of temporary filters that are not immediately applied and need an action to be included
+   * in the activeFilters. (Eg. filters in a Dialog when the "search" button is clicked)
+   */
   private _temporaryFilters: BehaviorSubject<FilterItem[]>;
+
   get temporaryFilters(): BehaviorSubject<FilterItem[]> {
     return this._temporaryFilters;
   }
-  private _advancedFilters: BehaviorSubject<FilterItem[]>;
-  get advancedFilters(): BehaviorSubject<FilterItem[]> {
-    return this._advancedFilters;
-  }
 
+  /**
+   * List of all basic/additional filters that have been given a value and a comparison operator.
+   * Used to compose the query string, sent to the ListDataSource
+   */
   private _activeFilters: Subject<FilterItem[]>;
+
   get activeFilters(): Subject<FilterItem[]> {
     return this._activeFilters;
   }
 
-  _queryString: BehaviorSubject<string>;
+  /**
+   * Encoded string of query parameters, generated from the activeFilters.
+   * ListDataSource subscribes to this subject, to generate queries to the db and
+   * retrieve data.
+   */
+  private _queryString: BehaviorSubject<string>;
+
   get queryString(): BehaviorSubject<string> {
     return this._queryString;
   }
 
-  private _modelFiltersSub: Subscription;
+  /**
+   * Subscribes to the generated model and additional filters
+   * to merge them together in "_generatedFilters"
+   */
+  private _generatedFiltersSub: Subscription;
+
+  /**
+   * Subscribes to the value changes of all the basic filters
+   * (displayed in the main filter component)
+   */
   private _basicFiltersSub: Subscription;
+
+  /**
+   * Subscribes to basic and additional filters, merging all the filters that have
+   * been given a valid value and a comparison operator, in "_activeFilters".
+   */
   private _activeFiltersSub: Subscription;
+
+  /**
+   * Subscribes to "_activeFilters" to update the query string sent to the DataSource
+   */
   private _queryStringSub: Subscription;
+
+  /**
+   * Encoded string of a filters preset currently being loaded
+   */
   private _loadingPreset: string|null;
+
+  /**
+   * Subscribes to the load preset event, loading the filters preset and
+   * updating the filters list accordingly
+   */
   private _loadingPresetSub: Subscription;
+
+  /**
+   * Event that triggers the loading of a filters preset.
+   */
+  private _loadPresetEvent: EventEmitter<boolean>;
+
+  get loadPresetEvent(): EventEmitter<boolean> {
+    return this._loadPresetEvent;
+  }
+
 
   constructor(
       private _route: ActivatedRoute,
       private _router: Router,
-      // tslint:disable-next-line
-      @Optional() private _locationManager?: LocationManager,
-      // tslint:disable-next-line
-      @Optional() private _projectManager?: ProjectManager,
   ) {
-    /**
-     * Filters generated from a Model Schema
-     */
-    this._defaultModelFilters = new Subject<FilterGroup[]>();
-
-    /**
-     * Filters generated from an Ajf Form Schema
-     */
-    this._defaultFormSchemaFilters = new Subject<FilterGroup[]>();
-
-    /**
-     * List of all generated or custom filters
-     */
-    this._modelFilters = new BehaviorSubject<FilterGroup[]>([]);
-
-    /**
-     * Basic filters such as text keyword search, from/to date search, usually displayed in the main
-     * filter component
-     */
+    this._generatedModelFilters = new Subject<FilterGroup[]>();
+    this._generatedAdditionalFilters = new Subject<FilterGroup[]>();
+    this._generatedFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._basicFilters = new BehaviorSubject<FilterItem[]>([]);
-
-    /**
-     * Advanced filters, related to the modelSchema or formSchema properties, usually displayed in
-     * a secondary filter component (Dialog, Chips etc.)
-     */
-    this._advancedFilters = new BehaviorSubject<FilterItem[]>([]);
-
-    /**
-     * List of temporary filters that are not immediately applied and need an action to be included
-     * in the activeFilters. (Ex. filters in a Dialog when the "search" button is clicked)
-     */
+    this._additionalFilters = new BehaviorSubject<FilterItem[]>([]);
     this._temporaryFilters = new BehaviorSubject<FilterItem[]>([]);
-
-    /**
-     * List of all basic/advanced active filters associated with a value and an operator.
-     * Used to compose a query string, sent to the DataSource
-     */
     this._activeFilters = new Subject<FilterItem[]>();
-
-    /**
-     * Encoded string of a mango query, generated with the activeFilters, sent to the dataSource to
-     * retrieve data.
-     */
     this._queryString = new BehaviorSubject<string>('');
-
-    /**
-     * Determines if the service can start to query the ListDataSource
-     */
     this._listReady = new BehaviorSubject<boolean>(true);
-
-    /**
-     * Encoded string of a filters preset currently being loaded
-     */
     this._loadingPreset = null;
-
-    /**
-     * Event that triggers the loading of a filters preset.
-     */
-    this.loadPresetEvent = new EventEmitter<boolean>(true);
-
+    this._loadPresetEvent = new EventEmitter<boolean>(true);
     this._basicFiltersSub = Subscription.EMPTY;
     this._loadingPresetSub = Subscription.EMPTY;
+    this._availableBasicFilterLabels = [];
 
-    this._modelFiltersSub =
-        combineLatest([this._defaultModelFilters, this._defaultFormSchemaFilters])
+    this._generatedFiltersSub =
+        combineLatest([this._generatedModelFilters, this._generatedAdditionalFilters])
             .pipe(
-                withLatestFrom(this._modelFilters),
+                withLatestFrom(this._generatedFilters),
                 catchError(
                     err => throwError(err) as
                         Observable<[[FilterGroup[], FilterGroup[]], FilterGroup[]]>),
                 )
-            .subscribe(([[defaultModelFilters, defaultSchemaFilters], modelFilters]) => {
+            .subscribe(([[defaultModelFilters, defaultAdditionalFilters], modelFilters]) => {
               if (!modelFilters.length &&
-                  (defaultModelFilters.length > 0 || defaultSchemaFilters.length > 0)) {
-                this._modelFilters.next(defaultModelFilters.concat(defaultSchemaFilters));
+                  (defaultModelFilters.length > 0 || defaultAdditionalFilters.length > 0)) {
+                this._generatedFilters.next(defaultModelFilters.concat(defaultAdditionalFilters));
               }
             });
 
     this._activeFiltersSub =
         combineLatest([
           this._basicFilters,
-          this._advancedFilters,
+          this._additionalFilters,
           this._listReady,
         ])
             .pipe(
                 catchError(
                     err => throwError(err) as Observable<[FilterItem[], FilterItem[], boolean]>),
                 )
-            .subscribe(([basicFilters, advancedFilters, listReady]) => {
+            .subscribe(([basicFilters, additionalFilters, listReady]) => {
               if (!listReady) {
                 return;
               }
-              let allFilters = [...basicFilters, ...advancedFilters];
+              let allFilters = [...basicFilters, ...additionalFilters];
               let actFilters: FilterItem[] = [];
               this._activeFilters.pipe(take(1)).subscribe(fts => actFilters = fts);
               if (actFilters.length > 0 && allFilters.length > 0) {
@@ -241,26 +296,68 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Returns an observable of the filterItems list of the chosen FilterListType
-   * @param type The filter list type
-   * @returns The filter items of the chosen type
+   * Generates default filters from the RxJsonSchema of a model
+   * @param modelSchema The model RxJsonSchema schema
    */
-  private _selectFilterListType(type: FilterListType): BehaviorSubject<FilterItem[]> {
-    switch (type) {
-      case 'basic':
-        return this.basicFilters;
-      case 'advanced':
-        return this.advancedFilters;
-      case 'temporary':
-      default:
-        return this.temporaryFilters;
+  generateModelFilters(modelSchema: RxJsonSchema): void {
+    if (!modelSchema) {
+      this._generatedModelFilters.next([]);
+      return;
     }
+    const propertyKeys = Object.keys(modelSchema.properties);
+    let modelFiltersGroup: FilterGroup = {
+      filterGroupName: modelSchema.title ?? '',
+      filterGroupAdditionalFilters: [],
+    };
+    propertyKeys.forEach(prop => {
+      if (prop && DEFAULT_MODEL_KEYS.indexOf(prop) < 0) {
+        modelFiltersGroup.filterGroupAdditionalFilters?.push(
+            this._propToFilterItem(prop, modelSchema.properties[prop] as PrimaryProperty));
+      }
+    });
+    this._generatedModelFilters.next([modelFiltersGroup]);
   }
 
   /**
-   * Adds a FilterItem to the filterItems list of the chosen FilterListType
+   * Sets the additional filters list
+   * @param filters The generated filters. Defaults to an empty array
+   */
+  setAdditionalFilters(filters: FilterGroup[] = []): void {
+    this._generatedAdditionalFilters.next(filters);
+  }
+
+  /**
+   * Loads a filters preset from an encoded string, and initializes filters accordingly.
+   * If no encoded string is passed to the method, it just initializes
+   * the filters lists as empty.
+   * @param encodedString? The optional encoded string
+   */
+  loadPreset(encodedString?: string): void {
+    if (encodedString == null) {
+      this._basicFilters.next([]);
+      this._additionalFilters.next([]);
+      return;
+    }
+    this._loadingPreset = encodedString;
+    const filterItems: FilterItem[] = JSON.parse(decodeURI(atob(encodedString)));
+    let basic: FilterItem[] = [];
+    let advanced: FilterItem[] = [];
+    let basicFormGroupsKeys: string[] = [];
+    if (this._basicFormGroups) {
+      this._basicFormGroups.forEach(fg => basicFormGroupsKeys.push(...Object.keys(fg.value)));
+    }
+    filterItems.forEach(item => {
+      basicFormGroupsKeys.indexOf(item.name) > -1 ? basic.push(item) : advanced.push(item);
+    });
+    this._basicFilters.next(basic);
+    this._additionalFilters.next(advanced);
+    this.resetTemporaryFilters();
+  }
+
+  /**
+   * Adds a FilterItem to the list of the chosen type.
    * @param filterItem The filter item to add
-   * @param filterList The filter list
+   * @param filterList The filter list where it will be added
    */
   addFilter(filterItem: FilterItem, filterList: FilterListType): void {
     const currentList = this._selectFilterListType(filterList);
@@ -275,9 +372,10 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Removes a FilterItem from the filterItems lists of the chosen FilterListTypes
+   * Removes a FilterItem from the list/lists of the chosen type.
    * @param filterItem The filter item to remove
-   * @param filterList The filter list
+   * @param filterList The filter list or lists where it will be removed from
+   * @returns a confirmation of the filter removal
    */
   removeFilter(filterItem: FilterItem, filterList: FilterListType[]|FilterListType):
       Observable<boolean> {
@@ -301,10 +399,11 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Searches for a FilterItem by name in filterItems list of the chosen FilterListType.
-   * If no FilterListType is specified, it searches in the TemporaryFiltersList
+   * Searches for a FilterItem by name in a list of the chosen type.
+   * If no type is specified, it searches in the TemporaryFiltersList
    * @param filterName The name of the filter to search for
-   * @param filterList Optional list of filters to search in
+   * @param filterList? Optional list of filters to search in
+   * @returns The found FilterItem, or undefined if nothing is found
    */
   findFilterByName(filterName: string, filterList?: FilterListType):
       Observable<FilterItem|undefined> {
@@ -322,9 +421,10 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Evaluates a Filter validation conditions
-   * @param filterItem The filter validation condition to evaluate
-   * @return True if the filter condition is valid
+   * Evaluates a Filter's validation conditions
+   * @param filterItem The FilterItem to check
+   * @param ajfValidation The filter validation conditions to evaluate
+   * @returns True if all the conditions are valid
    */
   checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean {
     if (!ajfValidation) {
@@ -363,6 +463,7 @@ export class FiltersService implements OnDestroy {
   /**
    * Evaluates if a Filter validation/visibility single condition is met
    * @param condition The validation/visibility condition to evaluate
+   * @param filterItem Optional filterItem to check
    * @returns True if the condition is met
    */
   checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean {
@@ -388,11 +489,13 @@ export class FiltersService implements OnDestroy {
       strConditions.forEach(cnd => {
         const str = cnd.split(' ');
         const nameToCheck = str[0];
-        const operator = str[1];
-        const valueToCompare = str[2];
         this.findFilterByName(nameToCheck).subscribe(filterToCheck => {
           filterToCheck = filterItem ?? filterToCheck;
-          if (!filterToCheck || !this.checkValues(filterToCheck.value, valueToCompare, operator)) {
+          const conditionNoQuotes = cnd.replace(nameToCheck, filterToCheck?.value);
+          const conditionQuotes = cnd.replace(nameToCheck, `'${filterToCheck?.value}'`);
+          const evaluateConditions =
+              evaluateExpression(conditionNoQuotes) || evaluateExpression(conditionQuotes);
+          if (!filterToCheck || filterToCheck.value == null || !evaluateConditions) {
             valid = false;
           }
         });
@@ -403,57 +506,34 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Evaluates string expression with two string values and a string comparison operator
-   * @param valA The first value to compare
-   * @param valB The second value to compare
-   * @param operator The comparison operator
-   * @returns True if the comparison is true
+   * Merges the temporaryFilters into the additional filters, updating the latter
    */
-  checkValues(valA: string, valB: string, operator: string): boolean {
-    valB = valB.replace(/[\"\']/g, '');
-    switch (operator) {
-      case '>=':
-        return Number(valA) >= Number(valB);
-      case '<=':
-        return Number(valA) <= Number(valB);
-      case '!=':
-      case '!==':
-        return '' + valA != valB && '' + valA != null;
-      default:
-        return '' + valA == valB;
-    }
-  }
-
-  /**
-   * Updates the AdvancedFilters by merging in the temporaryFilters
-   */
-  updateAdvancedFilters(): void {
+  updateAdditionalFilters(): void {
     const newFilters = this._temporaryFilters.value.map(a => ({...a}) as FilterItem);
-    this._advancedFilters.next(this._mergeFilterItems(this._advancedFilters.value, newFilters));
+    this._additionalFilters.next(this._mergeFilterItems(this._additionalFilters.value, newFilters));
   }
 
   /**
-   * Resets the temporaryFilters to the current AdvancedFilters value
+   * Resets the temporaryFilters to the current additionalFilters value
    */
   resetTemporaryFilters(): void {
-    const tempFilters = this._advancedFilters.value.map(a => ({...a}) as FilterItem);
+    const tempFilters = this._additionalFilters.value.map(a => ({...a}) as FilterItem);
     this._temporaryFilters.next(tempFilters);
   }
 
   /**
    * Sets and initializes the basic filters (dateStart, dateEnd and keyword and all other
-   * opttional basic filters) and loads the filter preset from the queryParams.
-   * Returns an observable of all the optional basic filters initalized.
+   * additional basic filters) and loads the filter preset from the queryParams.
+   * Returns an observable of all the additional basic filters initalized.
    * @param formGroups The basic filter form groups
    * @returns All the optional basic filters initalized
    */
   initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]> {
-    this._checkOptionalBasicFilters();
-    this._basicFormGroups = [...basicFormGroups, ...this._basicOptionalFormGroups];
+    this._basicFormGroups = [...basicFormGroups, ...this._basicAdditionalFormGroups];
     const valueChanges = this._basicFormGroups.map(group => group.valueChanges);
 
     this._loadingPresetSub =
-        this.loadPresetEvent
+        this._loadPresetEvent
             .pipe(
                 withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))),
                 catchError(err => throwError(err) as Observable<[any, any]>),
@@ -489,32 +569,44 @@ export class FiltersService implements OnDestroy {
             });
 
     this.loadPresetTrigger();
-    return obsOf(this._basicOptionalFormGroups)
+    return obsOf(this._basicAdditionalFormGroups)
         .pipe(catchError(err => throwError(err) as Observable<FormGroup[]>));
   }
 
   /**
-   * Triggers the loadPresetEvent
+   * Triggers the _loadPresetEvent
    */
   loadPresetTrigger(): void {
-    this.loadPresetEvent.emit(true);
+    this._loadPresetEvent.emit(true);
   }
 
   /**
-   * Checks for optional default basic filters, based on optional injections
+   * Adds a label to the list of available basic filters labels.
+   * A label is added when the module of the relative filter (eg. Projects, Locations etc.)
+   * is imported.
+   * @param label The label of the filter to be displayed.
    */
-  private _checkOptionalBasicFilters() {
-    if (this._locationManager) {
-      this._basicOptionalFormGroups.push(new FormGroup({location: new FormControl()}));
+  addAvailableFilterLabel(label: string): void {
+    if (this._availableBasicFilterLabels.indexOf(label) > -1) {
+      return;
     }
-    if (this._projectManager) {
-      this._basicOptionalFormGroups.push(new FormGroup({project: new FormControl()}));
+    this._availableBasicFilterLabels.push(label);
+  }
+
+  /**
+   * Checks for additional basic filters, related to opt-in modules
+   * (eg. Project, Location, Forms etc.).
+   * @param basicFilter the basic filter to be added
+   */
+  addBasicFilter(basicFilter: FormGroup): void {
+    if (!basicFilter) {
+      return;
     }
+    this._basicAdditionalFormGroups.push(basicFilter);
   }
 
   /**
    * Merges two arrays of FilterItems while overwriting old Filter values with new ones
-   *
    * @param oldFilters The old filters array
    * @param newFilters The new filters array
    * @returns The merged filters
@@ -534,36 +626,10 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * Loads a filters preset from an encoded string, and initializes filters accordingly
-   * @param encodedString The encoded string
-   */
-  loadPreset(encodedString: string|null): void {
-    if (encodedString == null) {
-      this._basicFilters.next([]);
-      this._advancedFilters.next([]);
-      return;
-    }
-    this._loadingPreset = encodedString;
-    const filterItems: FilterItem[] = JSON.parse(decodeURI(atob(encodedString)));
-    let basic: FilterItem[] = [];
-    let advanced: FilterItem[] = [];
-    let basicFormGroupsKeys: string[] = [];
-    if (this._basicFormGroups) {
-      this._basicFormGroups.forEach(fg => basicFormGroupsKeys.push(...Object.keys(fg.value)));
-    }
-    filterItems.forEach(item => {
-      basicFormGroupsKeys.indexOf(item.name) > -1 ? basic.push(item) : advanced.push(item);
-    });
-    this._basicFilters.next(basic);
-    this._advancedFilters.next(advanced);
-    this.resetTemporaryFilters();
-  }
-
-  /**
    * Updates the queryString encoding a FilterItems array, and adds the queryParams to the url
-   * @param filterItems The filter items array
+   * @param filterItems the FilterItems array to be encoded
    */
-  private _updateQueryString(filterItems: FilterItem[]) {
+  private _updateQueryString(filterItems: FilterItem[]): void {
     const queryString = btoa(encodeURI(JSON.stringify(filterItems)));
     if (this._loadingPreset == null) {
       this._router.navigate([], {
@@ -576,9 +642,9 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Updates the basic filters form values
-   *  @param filterItems The filter items to update
+   * @param filterItems The FilterItems used to update the form values
    */
-  private _updateBasicFormValues(filterItems: FilterItem[]) {
+  private _updateBasicFormValues(filterItems: FilterItem[]): void {
     if (!filterItems || !this._basicFormGroups) {
       return;
     }
@@ -589,66 +655,6 @@ export class FiltersService implements OnDestroy {
     this._basicFormGroups.forEach(fg => {
       fg.patchValue(formValue, {emitEvent: false});
     });
-  }
-
-  /**
-   * Generates all filters from the model and form schemas
-   * @param modelSchema The model json schema
-   * @param formSchema The form schema
-   */
-  generateFilters(modelSchema: RxJsonSchema, formSchema?: FormSchema) {
-    this.generateModelSchemaFilters(modelSchema);
-    this.generateFormSchemaFilters(formSchema);
-  }
-
-  /**
-   * Creates default filters from a RxJsonSchema of a model
-   * @param modelSchema The model json schema
-   */
-  generateModelSchemaFilters(modelSchema: RxJsonSchema): void {
-    if (!modelSchema) {
-      this._defaultModelFilters.next([]);
-      return;
-    }
-    const propertyKeys = Object.keys(modelSchema.properties);
-    let modelFiltersGroup: FilterGroup = {
-      filterGroupName: modelSchema.title ?? '',
-      filterGroupAdvancedFilters: [],
-    };
-    propertyKeys.forEach(prop => {
-      if (prop && DEFAULT_MODEL_KEYS.indexOf(prop) < 0) {
-        modelFiltersGroup.filterGroupAdvancedFilters?.push(
-            this._propToFilterItem(prop, modelSchema.properties[prop] as PrimaryProperty));
-      }
-    });
-    this._defaultModelFilters.next([modelFiltersGroup]);
-  }
-
-  /**
-   * Creates form filters from an AjfFormSchema ()
-   * @param formSchema form schema
-   */
-  generateFormSchemaFilters(formSchema?: FormSchema): void {
-    if (!formSchema) {
-      this._defaultFormSchemaFilters.next([]);
-      return;
-    }
-    const slides = formSchema.schema.nodes;
-    const nodes: FilterGroup[] = [];
-    if (slides) {
-      for (let i = 0; i < slides.length; i++) {
-        let advancedFilters = slides[i].nodes as FilterItem[];
-        nodes.push({
-          filterGroupName: slides[i].label,
-          filterGroupAdvancedFilters: advancedFilters.map(f => {
-            f.choices = f.choicesOrigin ? f.choicesOrigin.choices : undefined;
-            f.isFormData = true;
-            return f;
-          })
-        } as FilterGroup);
-      }
-    }
-    this._defaultFormSchemaFilters.next(nodes);
   }
 
   /**
@@ -666,18 +672,38 @@ export class FiltersService implements OnDestroy {
     return filterItem;
   }
 
+  /**
+   * Returns an observable of all the filters in the list of the chosen type.
+   * basic: filters displayed in the main component.
+   * additional: filters displayed in a secondary component, usually related to model's "data".
+   * temporary: filters temporarily stored, that need an action to be merged in the active filters.
+   * @param type The filter list type
+   * @returns The filter items in the chosen list
+   */
+  private _selectFilterListType(type: FilterListType): BehaviorSubject<FilterItem[]> {
+    switch (type) {
+      case 'basic':
+        return this.basicFilters;
+      case 'additional':
+        return this.additionalFilters;
+      case 'temporary':
+      default:
+        return this.temporaryFilters;
+    }
+  }
+
   ngOnDestroy() {
     this._activeFiltersSub.unsubscribe();
     this._basicFiltersSub.unsubscribe();
     this._queryStringSub.unsubscribe();
     this._loadingPresetSub.unsubscribe();
-    this._modelFiltersSub.unsubscribe();
+    this._generatedFiltersSub.unsubscribe();
 
-    this._defaultModelFilters.complete();
-    this._defaultFormSchemaFilters.complete();
-    this._modelFilters.complete();
+    this._generatedModelFilters.complete();
+    this._generatedAdditionalFilters.complete();
+    this._generatedFilters.complete();
     this._basicFilters.complete();
-    this._advancedFilters.complete();
+    this._additionalFilters.complete();
     this._temporaryFilters.complete();
     this._activeFilters.complete();
     this._queryString.complete();

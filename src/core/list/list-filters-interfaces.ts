@@ -20,7 +20,15 @@
  *
  */
 
-import {AjfChoicesOrigin, AjfField, AjfForm, AjfValidationGroup} from '@ajf/core/forms';
+import {
+  AjfChoice,
+  AjfChoicesOrigin,
+  AjfField,
+  AjfFieldType,
+  AjfForm,
+  AjfValidationGroup
+} from '@ajf/core/forms';
+import {AjfCondition} from '@ajf/core/models';
 
 /**
  * Group of Filters (equivalent to a Slide in a Dialog)
@@ -35,9 +43,9 @@ export interface FilterGroup {
    */
   filterGroupBasicFilters?: FilterItem[];
   /**
-   * Advanced Filters contained in the Group, displayed in a secondary filter component
+   * Additional Filters contained in the Group, displayed in a secondary filter component
    */
-  filterGroupAdvancedFilters?: FilterItem[];
+  filterGroupAdditionalFilters?: FilterItem[];
 }
 
 /**
@@ -61,7 +69,7 @@ export interface FilterItem extends Partial<AjfField> {
    */
   formControlName?: string;
   /**
-   * Choices for single/multiple choice filters
+   * Choices origin for single/multiple choice filters
    */
   choicesOrigin?: AjfChoicesOrigin<any>;
   /**
@@ -69,15 +77,17 @@ export interface FilterItem extends Partial<AjfField> {
    */
   choicesOriginRef?: string;
   /**
-   * Specifies if this is a FormData filter
+   * Actual options for single/multiple choice filters
    */
-  isFormData?: boolean;
+  choices?: AjfChoice<any>[];
+  /**
+   * Specifies if this is an additional filter relative to the content of the model 'data' property
+   */
+  isAdditionalFilter?: boolean;
   /**
    * States the validation state of the filter
    */
   isValid?: boolean;
-
-  [key: string]: any;
 }
 
 /**
@@ -89,7 +99,7 @@ export interface WidgetData {
    */
   form: AjfForm;
   /**
-   * Query operator
+   * Query comparison operator
    */
   operator: Operator;
   /**
@@ -99,14 +109,17 @@ export interface WidgetData {
   /**
    * WidgetFilter validation conditions
    */
-  validation?: AjfValidationGroup;
+  validationConditions?: AjfValidationGroup;
   /**
-   * If true, the WidgetData is generated from an AjfFormSchema
+   * WidgetFilter visibility conditions
    */
-  isFormData?: boolean;
+  visibilityConditions: AjfCondition;
 }
 
-export const FIELD_TYPES: {[key: string]: number} = {
+/**
+ * Conversion object from string to AjfFieldType
+ */
+export const FIELD_TYPES: {[key: string]: AjfFieldType} = {
   'string': 0,
   'text': 1,
   'number': 2,
@@ -169,10 +182,10 @@ export const ALL_CONDITION_OPERATORS: Operator[] =
  * Mongodb default operators for different field types
  */
 export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
-  0: {label: 'Like', value: '$regex'},
-  1: {label: 'Like', value: '$regex'},
-  2: {label: '==', value: '$eq'},
-  5: {label: 'is', value: '$in'},
+  [AjfFieldType.String]: {label: 'Like', value: '$regex'},
+  [AjfFieldType.Text]: {label: 'Like', value: '$regex'},
+  [AjfFieldType.Number]: {label: '==', value: '$eq'},
+  [AjfFieldType.MultipleChoice]: {label: 'is', value: '$in'},
 };
 
 /**
@@ -183,8 +196,8 @@ export const DEFAULT_MODEL_KEYS: string[] = ['id', 'data', 'created_at', 'update
 /**
  * Type of a list of filterItems.
  * (Basic: displayed in the main filter component)
- * (Advanced: displayed in a secondary filter component)
+ * (Additional: displayed in a secondary filter component)
  * (Dialog: displayed in a dialog)
- * (All: a list of basic and advanced filterItems)
+ * (All: a list of basic and additional filterItems)
  */
-export type FilterListType = 'basic'|'advanced'|'temporary'|'all';
+export type FilterListType = 'basic'|'additional'|'temporary'|'all';

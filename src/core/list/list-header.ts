@@ -25,4 +25,5 @@ export interface ListHeader<T> {
   label: string;
   sortable?: boolean;
   hidden?: boolean;
+  displayed?: boolean;
 }
