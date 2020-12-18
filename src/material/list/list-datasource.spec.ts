@@ -17,9 +17,10 @@ import {
   FiltersService,
   ListModule,
 } from '@dewco/core/list';
-import {ListDataSource} from '@dewco/material/list-datasource';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
+
+import {ListDataSource} from './list-datasource';
 
 interface DummyModel extends Model {
   name: string;
@@ -113,12 +114,12 @@ class DummyManager extends DataModelManager<DummyModel> {
 }
 
 
-describe('ListComponent', () => {
+describe('ListDataSource', () => {
   let dummyManager: DummyManager;
   let dataService: DataService;
   let contextService: PermissionContextService;
   let fts: FiltersService;
-  let dataSource: ListDataSource<DummyModel, DummyManager>;
+  let dataSource: ListDataSource<DummyModel>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -137,44 +138,42 @@ describe('ListComponent', () => {
     dataService = TestBed.inject(DataService);
     fts = TestBed.inject(FiltersService);
     dummyManager = new DummyManager(createCollectionParams, dataService, contextService);
-    dataSource = new ListDataSource<DummyModel, DummyManager>(dummyManager, fts);
+    dataSource = new ListDataSource<DummyModel>(dummyManager, fts);
   });
 
-  describe('ListDataSource extending MatDataSource. Queries the indexedDb for data', () => {
-    it('should create a Mango Query from an encoded queryString', () => {
-      const spyAddNestedProp = spyOn<any>(dataSource, '_addNestedProps').and.callThrough();
-      const spyQueryResults = spyOn(dataSource, 'getQueryResults').and.callThrough();
+  it('should create a Mango Query from an encoded queryString', () => {
+    const spyAddNestedProp = spyOn<any>(dataSource, '_addNestedProps').and.callThrough();
+    const spyQueryResults = spyOn(dataSource, 'getQueryResults').and.callThrough();
 
-      const query = dataSource.queryDM(fakeFiltersPreset);
-      const expectedMangoQuery: DataQueryOptions = {
-        selector: {
-          filter_a: {$regex: 'test'},
-          filter_b: {$gte: 15},
-          filter_c: {$eq: false},
-        },
-      };
+    const query = dataSource.queryDM(fakeFiltersPreset);
+    const expectedMangoQuery: DataQueryOptions = {
+      selector: {
+        filter_a: {$regex: 'test'},
+        filter_b: {$gte: 15},
+        filter_c: {$eq: false},
+      },
+    };
 
-      expect(spyAddNestedProp).toHaveBeenCalled();
-      expect(spyQueryResults).toHaveBeenCalled();
-      expect(query).toEqual(expectedMangoQuery);
-    });
+    expect(spyAddNestedProp).toHaveBeenCalled();
+    expect(spyQueryResults).toHaveBeenCalled();
+    expect(query).toEqual(expectedMangoQuery);
+  });
 
-    it('should query the dataModelManager', () => {
-      const spyDmQuery = spyOn(dummyManager, 'query').and.callThrough();
-      const mangoQuery: DataQueryOptions = {selector: {name: {$regex: 'it'}}};
+  it('should query the dataModelManager', () => {
+    const spyDmQuery = spyOn(dummyManager, 'query').and.callThrough();
+    const mangoQuery: DataQueryOptions = {selector: {name: {$regex: 'it'}}};
 
-      dataSource.getQueryResults(mangoQuery);
+    dataSource.getQueryResults(mangoQuery);
 
-      expect(spyDmQuery).toHaveBeenCalledWith(mangoQuery);
-    });
+    expect(spyDmQuery).toHaveBeenCalledWith(mangoQuery);
+  });
 
-    it('should call the dataModelManager bulkDelete', () => {
-      const spyDmDelete = spyOn(dummyManager, 'bulkDelete').and.callThrough();
-      const items = [{name: 'item', id: '', created_at: '', updated_at: ''}];
+  it('should call the dataModelManager bulkDelete', () => {
+    const spyDmDelete = spyOn(dummyManager, 'bulkDelete').and.callThrough();
+    const items = [{name: 'item', id: '', created_at: '', updated_at: ''}];
 
-      dataSource.deleteAction(items);
+    dataSource.deleteAction(items);
 
-      expect(spyDmDelete).toHaveBeenCalledWith(items);
-    });
+    expect(spyDmDelete).toHaveBeenCalledWith(items);
   });
 });

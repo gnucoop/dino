@@ -20,15 +20,15 @@
  *
  */
 
+import {Optional} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
+import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {
   DataModelManager,
   DataQueryOptions,
   Model,
 } from '@dewco/core/data';
-import {FormSchema} from '@dewco/core/forms';
 import {
   FilterItem,
   FiltersService,
@@ -40,72 +40,33 @@ import {
   combineLatest,
   from,
   Observable,
+  Subject,
   Subscription,
   throwError,
 } from 'rxjs';
-import {catchError, map, switchMap, take} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 
-
-export class ListDataSource<T extends Model = Model,
-                                      DM extends DataModelManager<T> = DataModelManager<T>> extends
+/**
+ * This class extends MatTableDataSource, and augments it with additional functionalities.
+ * It is associated to a SelectionList component, managing and retrieving data for the list, via
+ * the DataModelManager.
+ * This DataSource subscribes to an encoded queryString of parameters in the FiltersService,
+ * which is used to generate a Mango Query for the DataModelManager, to query the db and
+ */
+export class ListDataSource<T extends Model = Model, AD extends Model = Model> extends
     MatTableDataSource<T> {
-  private _modelSchema: RxJsonSchema;
-  private _formSchema: FormSchema|undefined;
-  get modelSchema(): RxJsonSchema {
-    return this._modelSchema;
-  }
-  private _dataResults: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
-  private _sortParams: BehaviorSubject<Sort|null> = new BehaviorSubject<Sort|null>(null);
-  refreshList: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-
-  private _dataResultsSub: Subscription = Subscription.EMPTY;
-  private _filterParamsSub: Subscription = Subscription.EMPTY;
-
-  constructor(
-      private _dataModelManager: DM,
-      private _fs: FiltersService,
-      formSchema?: FormSchema,
-  ) {
-    // @TODO (Marco):  formSchema will be provided by FormSchemaManager
-    super();
-
-    /**
-     * The model RxJsonSchema
-     */
-    this._modelSchema = this._dataModelManager.collectionSchema;
-
-    /**
-     * The AjfFormSchema
-     */
-    this._formSchema = formSchema;
-    this._dataResultsSub = this._dataResults.subscribe(results => {
-      this.data = results;
-    });
-
-    /**
-     * Asks the FilterService to generate all the default filters, providing the model and, if
-     * present, form schema.
-     */
-    this._fs.generateFilters(this._modelSchema, this._formSchema);
-
-    this._filterParamsSub =
-        combineLatest([this._fs.queryString, this.refreshList])
-            .pipe(
-                map(([queryString, refresh]) => (queryString && refresh) ? queryString : ''),
-                catchError(err => throwError(err) as Observable<string>),
-                )
-            .subscribe(queryString => this.queryDM(queryString));
-  }
-
   /**
-   * The query results
+   * Determines if the list data can be updated, and the SelectionList refreshed
    */
-  get dataResults(): BehaviorSubject<T[]> {
-    return this._dataResults;
-  }
+  refreshListData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   /**
-   * The dataSource Paginator
+   * The ListDataSource Paginator material component
    */
   get getPaginator(): MatPaginator|null {
     return this.paginator;
@@ -115,7 +76,7 @@ export class ListDataSource<T extends Model = Model,
   }
 
   /**
-   * The dataSource Sort
+   * The ListDataSource Sort material component
    */
   get getSort(): MatSort|null {
     return this.sort;
@@ -125,16 +86,102 @@ export class ListDataSource<T extends Model = Model,
   }
 
   /**
-   * The filterComponent associated to the List
+   * The Filters Component associated to this ListDataSource (eg. a SearchFiltersBar)
    */
-  get getFiltersComponent(): SearchFiltersComponent|null {
-    return this._filters.getValue();
-  }
-  set setFiltersComponent(searchFilters: SearchFiltersComponent|null) {
-    this._filters.next(searchFilters);
-  }
-  private _filters: BehaviorSubject<SearchFiltersComponent|null> =
+  private _filtersComponent: BehaviorSubject<SearchFiltersComponent|null> =
       new BehaviorSubject<SearchFiltersComponent|null>(null);
+
+  get getFiltersComponent(): SearchFiltersComponent|null {
+    return this._filtersComponent.getValue();
+  }
+  set setFiltersComponent(component: SearchFiltersComponent|null) {
+    this._filtersComponent.next(component);
+  }
+
+  /**
+   * The RxJsonSchema of the model associated with the ListDataSource
+   */
+  private _modelSchema: RxJsonSchema;
+  get modelSchema(): RxJsonSchema {
+    return this._modelSchema;
+  }
+
+  /**
+   * The model of the "data" property associated with the ListDataSource main model.
+   */
+  private _additionalDataSchema: Subject<AD> = new Subject<AD>();
+
+  set additionalDataSchema(dataSchema: AD) {
+    this._additionalDataSchema.next(dataSchema);
+  }
+
+  /**
+   * Subscribes to the additionalDataSchema and asks the FiltersService to
+   * generate filters from it when one is provided.
+   */
+  private _addionalDataSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * The data resulting from querying the db via the DataModelManager
+   */
+  private _dataResults: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
+
+  get dataResults(): BehaviorSubject<T[]> {
+    return this._dataResults;
+  }
+
+  /**
+   * Subscribes to the _dataResults and updates the actual MatTableDataSource data
+   */
+  private _dataResultsSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the FiltersService queryString, and generates a Mango Query from it
+   */
+  private _filterParamsSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * @param _dataModelManager The main model DataModelManager.
+   * @param _fs The service managing the List filters.
+   * @param _additionalDataManager The optional manager used to generate additional
+   * filters from the "data" property of the main model.
+   */
+  constructor(
+      private _dataModelManager: DataModelManager<T>,
+      private _fs: FiltersService,
+      @Optional() private _additionalDataManager?: DataModelManager<AD>,
+  ) {
+    super();
+
+    this._modelSchema = this._dataModelManager.collectionSchema;
+
+    this._dataResultsSub = this._dataResults.subscribe(results => {
+      this.data = results;
+    });
+
+    // Here we ask the FilterService to generate all the filters based on the model RxJsonSchema
+    this._fs.generateModelFilters(this._modelSchema);
+
+    // Next we call the method that generates additional filters on the additional DataManager
+    // (if present) and set the additional filters on the FiltersService.
+    // If no additional DataManager or data schema are provided, the additional filters
+    // are set to an empty array.
+    this._addionalDataSub = this._additionalDataSchema.subscribe(dataSchema => {
+      let additionalFilters = [];
+      if (this._additionalDataManager) {
+        additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
+      }
+      this._fs.setAdditionalFilters(additionalFilters);
+    });
+
+    this._filterParamsSub =
+        combineLatest([this._fs.queryString, this.refreshListData])
+            .pipe(
+                map(([queryString, refresh]) => (queryString && refresh) ? queryString : ''),
+                catchError(err => throwError(err) as Observable<string>),
+                )
+            .subscribe(queryString => this.queryDM(queryString));
+  }
 
   /**
    * Returns the items displayed on the current list page
@@ -146,9 +193,9 @@ export class ListDataSource<T extends Model = Model,
 
   /**
    * Creates and returns a Mango Query from the Filters Component encoded queryString.
-   * Queries the DataModelManager and updates the dataResults
-   * @param queryString The encoded query string
-   * @returns The Mango query options
+   * Queries the DataModelManager and updates the dataResults.
+   * @param queryString The encoded query string of parameters
+   * @returns The Mango query with the generated query selector
    */
   queryDM(queryString: string): DataQueryOptions {
     if (!queryString) {
@@ -177,17 +224,13 @@ export class ListDataSource<T extends Model = Model,
                 querySelector, ['created_at', '$lte'], new Date(item.value).toISOString());
           }
           break;
-        case 'location':
-        case 'project':
-          if (item && item.value) {
-            this._addNestedProps(
-                querySelector, [`data.${item.name.trim().toLowerCase()}.name`, '$regex'],
-                item.value);
-          }
-          break;
         default:
-          if (item) {
-            if (!item.isFormData) {
+          if (!item.isAdditionalFilter) {
+            if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
+              this._addNestedProps(
+                  querySelector, [`data.${item.name.trim().toLowerCase()}.name`, '$regex'],
+                  item.value);
+            } else {
               this._addNestedProps(
                   querySelector,
                   [
@@ -195,15 +238,15 @@ export class ListDataSource<T extends Model = Model,
                     item.operator ? item.operator.value : '$eq',
                   ],
                   item.value);
-            } else {
-              this._addNestedProps(
-                  querySelector,
-                  [
-                    `data.data.${item.name.trim().toLowerCase()}`,
-                    item.operator ? item.operator.value : '$eq',
-                  ],
-                  item.value);
             }
+          } else {
+            this._addNestedProps(
+                querySelector,
+                [
+                  `data.data.${item.name.trim().toLowerCase()}`,
+                  item.operator ? item.operator.value : '$eq',
+                ],
+                item.value);
           }
           break;
       }
@@ -217,9 +260,9 @@ export class ListDataSource<T extends Model = Model,
 
   /**
    * Queries the dataModelManager and updates the dataResults
-   * @param query The query options
+   * @param query The query object
    */
-  getQueryResults(query: DataQueryOptions) {
+  getQueryResults(query: DataQueryOptions): void {
     this._dataModelManager.query(query)
         .pipe(
             switchMap((rxdbQuery) => {
@@ -237,7 +280,7 @@ export class ListDataSource<T extends Model = Model,
   /**
    * Deletes the selected items from the db
    * @param items The items to delete
-   * @return The deleted items
+   * @returns The deleted items
    */
   deleteAction(items: T[]): T[] {
     let results: RxDocument<T>[]|null = [];
@@ -248,7 +291,7 @@ export class ListDataSource<T extends Model = Model,
             )
         .subscribe(res => {
           results = res;
-          this.refreshList.next(true);
+          this.refreshListData.next(true);
         });
     return this._rxDocsToJson(results);
   }
@@ -256,7 +299,7 @@ export class ListDataSource<T extends Model = Model,
   /**
    * Converts an array of RxDocuments into an array of T objects
    * @param docs RxDocument[]
-   * @retun T[]
+   * @returns The converted objects
    */
   private _rxDocsToJson(docs: RxDocument<T>[]): T[] {
     let docsJson: T[] = [];
@@ -269,8 +312,8 @@ export class ListDataSource<T extends Model = Model,
   /**
    * Adds a nested object property and an optional value to an object
    * @param baseObj The object to modify
-   * @param props The properties
-   * @param value The value to set
+   * @param props The property names tree. The last one is the name of nested property to be added
+   * @param value? The optional value to set for the added property.
    * @returns The modified object
    */
   private _addNestedProps(baseObj: {[key: string]: string|{}}, props: string[], value?: any):
@@ -288,12 +331,15 @@ export class ListDataSource<T extends Model = Model,
     return baseObj;
   }
 
-  disconnect() {
+  /**
+   * Disconnects the ListDataSource, unsubscribing from the data and the filters
+   */
+  disconnect(): void {
+    this._addionalDataSub.unsubscribe();
     this._dataResultsSub.unsubscribe();
     this._filterParamsSub.unsubscribe();
 
     this._dataResults.complete();
-    this._sortParams.complete();
-    this.refreshList.complete();
+    this.refreshListData.complete();
   }
 }
