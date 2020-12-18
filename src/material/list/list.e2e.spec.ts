@@ -5,36 +5,6 @@ import {
   ExpectedConditions as EC,
 } from 'protractor';
 
-export class MockElement {
-  name: string;
-  weight: number;
-  symbol: string;
-  id: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export const ELEMENT_DATA: MockElement[] = [
-  {id: '', name: 'Hydrogen', weight: 1.0079, symbol: 'H', created_at: '', updated_at: ''},
-  {id: '', name: 'Helium', weight: 4.0026, symbol: 'He', created_at: '', updated_at: ''},
-  {id: '', name: 'Lithium', weight: 6.941, symbol: 'Li', created_at: '', updated_at: ''},
-  {id: '', name: 'Beryllium', weight: 9.0122, symbol: 'Be', created_at: '', updated_at: ''},
-  {id: '', name: 'Boron', weight: 10.811, symbol: 'B', created_at: '', updated_at: ''},
-  {id: '', name: 'Carbon', weight: 12.0107, symbol: 'C', created_at: '', updated_at: ''},
-  {id: '', name: 'Nitrogen', weight: 14.0067, symbol: 'N', created_at: '', updated_at: ''},
-  {id: '', name: 'Oxygen', weight: 15.9994, symbol: 'O', created_at: '', updated_at: ''},
-  {id: '', name: 'Fluorine', weight: 18.9984, symbol: 'F', created_at: '', updated_at: ''},
-  {id: '', name: 'Neon', weight: 20.1797, symbol: 'Ne', created_at: '', updated_at: ''},
-];
-
-export const displayedHeaders: any[] = [
-  {column: 'name', label: 'Name', sortable: true},
-  {column: 'weight', label: 'Weight', sortable: true},
-  {column: 'data', label: 'FormData', sortable: false},
-  {column: 'symbol', label: 'Symbol', sortable: false},
-];
-
-
 describe('dewco-list', () => {
   beforeEach(async () => await browser.get('/mat-list'));
 
@@ -61,7 +31,7 @@ describe('dewco-list', () => {
   });
 
   it('should display the correct header cells', async () => {
-    const expectedCells = ['', 'Name', 'Weight', 'FormData', 'Symbol', ''];
+    const expectedCells = ['', 'Name', 'Weight', 'Symbol', ''];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
     expect(headerCells).toEqual(expectedCells);
   });
@@ -71,7 +41,7 @@ describe('dewco-list', () => {
         +await element(by.css('.mat-paginator .mat-select')).getAttribute('ng-reflect-value');
     const rows = await element.all(by.tagName('mat-row')).count();
     expect(rows).toEqual(paginatorNum);
-    expect(rows).toBeLessThanOrEqual(ELEMENT_DATA.length);
+    expect(rows).toBeLessThanOrEqual(5);
   });
 
   it('should select a row by checking the associated checkBox', async () => {
@@ -103,36 +73,47 @@ describe('dewco-list', () => {
     expect(await firstIcon.isDisplayed()).toBe(true);
   });
 
-  it('should delete a row by clicking on its action-delete button', async () => {
-    const paginatorNum =
-        +await element(by.css('.mat-paginator .mat-select')).getAttribute('ng-reflect-value');
-    const initialRowCount = await element.all(by.tagName('mat-row')).count();
-    const firstActionCell =
-        element
-            .all(by.className(
-                'mat-cell cdk-cell cdk-column-actions mat-column-actions ng-star-inserted'))
-            .get(0);
-    const deleteIcon = firstActionCell.element(by.cssContainingText('.mat-icon', 'delete'));
-    let res = await deleteIcon.isPresent();
-    expect(res).toBe(true);
-    await browser.actions().mouseMove(deleteIcon).perform();
-    res = await deleteIcon.isDisplayed();
-    expect(res).toBe(true);
-    await browser.wait(EC.elementToBeClickable(deleteIcon), 1000);
-    await deleteIcon.click();
-    await browser.sleep(200);
-    const newFirstActionCell =
-        element
-            .all(by.className(
-                'mat-cell cdk-cell cdk-column-actions mat-column-actions ng-star-inserted'))
-            .get(0);
-    const count = await element.all(by.tagName('mat-row')).count();
-    expect(count).toBeLessThanOrEqual(initialRowCount);
-    expect(count).toBeLessThanOrEqual(paginatorNum);
-    expect(newFirstActionCell).not.toEqual(firstActionCell);
-  });
+  it(`should delete a row by clicking on its action-delete button,
+      and confirming the action on the Confirmation Dialog`,
+     async () => {
+       const paginatorNum =
+           +await element(by.css('.mat-paginator .mat-select')).getAttribute('ng-reflect-value');
+       const initialRowCount = await element.all(by.tagName('mat-row')).count();
+       const firstActionCell =
+           element
+               .all(by.className(
+                   'mat-cell cdk-cell cdk-column-actions mat-column-actions ng-star-inserted'))
+               .get(0);
+       const deleteIcon = firstActionCell.element(by.cssContainingText('.mat-icon', 'delete'));
+       let res = await deleteIcon.isPresent();
+       expect(res).toBe(true);
+       await browser.actions().mouseMove(deleteIcon).perform();
+       res = await deleteIcon.isDisplayed();
+       expect(res).toBe(true);
+       await browser.wait(EC.elementToBeClickable(deleteIcon), 1000);
+       await deleteIcon.click();
+       await browser.sleep(200);
 
-  it('should delete all the rows by clicking the bulk-actions checkbox and the bulk delete button',
+       const confirmDialog = element(by.css('.confirmation-dialog'));
+       expect(await confirmDialog.isPresent()).toBe(true);
+       const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
+       await browser.actions().mouseMove(confirmButton).perform();
+       await browser.wait(EC.elementToBeClickable(confirmButton), 1000);
+       await confirmButton.click();
+
+       const newFirstActionCell =
+           element
+               .all(by.className(
+                   'mat-cell cdk-cell cdk-column-actions mat-column-actions ng-star-inserted'))
+               .get(0);
+       const count = await element.all(by.tagName('mat-row')).count();
+       expect(count).toBeLessThan(initialRowCount);
+       expect(count).toBeLessThanOrEqual(paginatorNum);
+       expect(newFirstActionCell).not.toEqual(firstActionCell);
+     });
+
+  it(`should delete all the rows by clicking the bulk-actions checkbox and the bulk delete button,
+      then confirming in Confirmation Dialog`,
      async () => {
        const initialRowCount = await element.all(by.tagName('mat-row')).count();
        expect(initialRowCount).not.toEqual(0);
@@ -150,6 +131,13 @@ describe('dewco-list', () => {
 
        await bulkDeleteButton.click();
        await browser.sleep(300);
+
+       const confirmDialog = element(by.css('.confirmation-dialog'));
+       expect(await confirmDialog.isPresent()).toBe(true);
+       const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
+       await browser.actions().mouseMove(confirmButton).perform();
+       await browser.wait(EC.elementToBeClickable(confirmButton), 1000);
+       await confirmButton.click();
 
        const finalRowCount = await element.all(by.tagName('mat-row')).count();
        expect(finalRowCount).toEqual(0);
@@ -175,6 +163,13 @@ describe('dewco-list', () => {
 
     await bulkDeleteButton.click();
     await browser.sleep(300);
+
+    const confirmDialog = element(by.css('.confirmation-dialog'));
+    expect(await confirmDialog.isPresent()).toBe(true);
+    const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
+    await browser.actions().mouseMove(confirmButton).perform();
+    await browser.wait(EC.elementToBeClickable(confirmButton), 1000);
+    await confirmButton.click();
 
     const finalRowCount = await element.all(by.tagName('mat-row')).count();
     expect(finalRowCount).not.toEqual(initialRowCount);

@@ -29,6 +29,7 @@ import {
   Component,
   ContentChild,
   ContentChildren,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
@@ -37,25 +38,31 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
+import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {DataModelManager, Model} from '@dewco/core/data';
+import {Model} from '@dewco/core/data';
 import {
   FilterGroup,
   FiltersService,
   List,
+  ListAction,
+  ListHeader,
   SearchFiltersComponent,
 } from '@dewco/core/list';
-import {ListDataSource} from '@dewco/material/list-datasource';
-import {Subscription, throwError} from 'rxjs';
+import {Observable, Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
+import {ColumnsSelector} from './columns-selector';
 
 import {ListCell} from './list-cell';
-import {AdminUserInteractionsService} from './user-interactions';
+import {ListDataSource} from './list-datasource';
+import {AdminUserInteractionsService} from './user-interactions.service';
 
 /**
- * The base Material List component.
- * Provides a template, selection and bulk/individual action functionalities for all list/tables
+ * The material List component with row selection, extending the core List.
+ * It is populated with data by its associated ListDataSource.
+ * Provides a template, a selection model and bulk/individual actions for all lists.
  */
 @Component({
   selector: 'dewco-list',
@@ -64,13 +71,69 @@ import {AdminUserInteractionsService} from './user-interactions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class SelectionList<T extends Model = Model,
-                                     DM extends DataModelManager<T> = DataModelManager<T>> extends
-    List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
+export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit,
+                                                                               AfterViewInit,
+                                                                               OnInit, OnDestroy {
   /**
-   * the List selection model
+   * The List selection model. Allows selection of individual or multiple elements
+   * of the List, for the purpose of performing bulk actions.
    */
   readonly selection = new SelectionModel<T>(true, []);
+
+  /**
+   * A set of custom filters passed to the FiltersService,
+   * that overwrites the default generated filters
+   */
+  @Input()
+  set customFilters(filters: FilterGroup[]) {
+    if (filters) {
+      this._fts.setCustomFilters = filters;
+    }
+  }
+
+  /**
+   * Adds a list of basic additional filters to the main filters component (eg.
+   * SearchFiltersBar).
+   */
+
+  @Input()
+  set additionalBasicFilters(filterNames: string[]) {
+    if (!filterNames.length) {
+      return;
+    }
+    for (let ftname of filterNames) {
+      if (this._fts.availableBasicFilterLabels.indexOf(ftname) > -1) {
+        const formControl = Object.create({});
+        formControl[ftname] = new FormControl();
+        this._fts.addBasicFilter(new FormGroup(formControl));
+      }
+    }
+  }
+
+  /**
+   * An element reference to the button that opens the Columns Selector
+   */
+  @ViewChild('columns_btn', {read: ElementRef, static: false}) columnsButtonRef: ElementRef;
+
+  /**
+   * A material Paginator associated to the List
+   */
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
+  /**
+   * A material Sort associated to the List
+   */
+  @ViewChild(MatSort, {static: true}) sorting: MatSort;
+
+  /**
+   * The filtersComponent associated with the SelectionList and its ListDataSource
+   */
+  @ContentChild(SearchFiltersComponent, {static: true}) filtersComponent: SearchFiltersComponent;
+
+  /**
+   * Querylist of all non default template cells
+   */
+  @ContentChildren(ListCell, {descendants: false}) cellTemplates: QueryList<ListCell>;
 
   /**
    * Non default table cell templates
@@ -81,54 +144,41 @@ export class SelectionList<T extends Model = Model,
   }
 
   /**
-   * the List dataSource. Extends and augments MatTableDataSource
+   * the List dataSource. Extends and augments MatTableDataSource.
+   * Populates the list with data retrieved from the db.
    */
-  private _dataSource: ListDataSource<T, DM>;
-  get dataSource(): ListDataSource<T, DM> {
+  private _dataSource: ListDataSource<T>;
+  get dataSource(): ListDataSource<T> {
     return this._dataSource;
   }
   @Input()
-  set dataSource(dataSource: ListDataSource<T, DM>) {
+  set dataSource(dataSource: ListDataSource<T>) {
     if (dataSource !== this.dataSource) {
       this._dataSource = dataSource;
     }
   }
 
   /**
-   * A set of custom filters that overwrites the default generated filters
+   * A reference to the MatDialog that contains the Columns Selector
    */
-  @Input()
-  set customFilters(filters: FilterGroup[]) {
-    if (filters) {
-      this._fts.setCustomFilters = filters;
-    }
-  }
+  private _columnsDialogRef: MatDialogRef<ColumnsSelector<T>>;
 
+  /**
+   * Subscribes to the value returned by the Columns Selector dialog on its closing event
+   */
+  private _columnsDialogSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the ActionEvent of the list, processing and executing
+   * the requested action on the selected item/items.
+   */
   private _actionsSub: Subscription = Subscription.EMPTY;
 
-  /**
-   * List Paginator
-   */
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-
-  /**
-   * List Sort
-   */
-  @ViewChild(MatSort, {static: true}) sorting: MatSort;
-
-  /**
-   * The filtersComponent associated with the list
-   */
-  @ContentChild(SearchFiltersComponent, {static: true}) filtersComponent: SearchFiltersComponent;
-
-  /**
-   * Querylist of cell non default templates
-   */
-  @ContentChildren(ListCell, {descendants: false}) cellTemplates: QueryList<ListCell>;
 
   constructor(
       cdr: ChangeDetectorRef,
       aui: AdminUserInteractionsService,
+      public dialog: MatDialog,
       private _fts: FiltersService,
   ) {
     super(cdr, aui);
@@ -151,7 +201,7 @@ export class SelectionList<T extends Model = Model,
 
   /**
    * Gets the currently selected items
-   * @returns T[]
+   * @returns The selected items
    */
   getSelection(): T[] {
     return this.selection ? this.selection.selected : [];
@@ -159,7 +209,7 @@ export class SelectionList<T extends Model = Model,
 
   /**
    * Gets all the items in the dataSource
-   * @returns T[]
+   * @returns The datasource full data
    */
   getItems(): T[] {
     return this.dataSource ? this.dataSource.data : [];
@@ -167,23 +217,25 @@ export class SelectionList<T extends Model = Model,
 
   /**
    * Gets all items in the dataSource currently displayed on the list page
-   * @returns T[]
+   * @returns The displayed items
    */
   getDisplayedItems(): T[] {
     return this.dataSource ? this.dataSource.getDisplayedItems() : [];
   }
 
   /**
-   * Queries the DataSource for the selected items deletion
+   * Performs the chosen for the selected row/rows of the table
+   * @param row The selected row
+   * @param action The action to be performed
    */
-  deleteItems(row: T|T[]) {
+  actionOnItems(row: T|T[], action: ListAction): void {
     if (this.dataSource == null) {
       return;
     }
     if (!Array.isArray(row)) {
       row = [row];
     }
-    this._actionEvent.emit({action: 'delete', items: row});
+    this._actionEvent.emit({action: action, items: row});
   }
 
   /**
@@ -197,7 +249,7 @@ export class SelectionList<T extends Model = Model,
   }
 
   /**
-   * Selects all the items
+   * Selects all the currently displayed items
    */
   selectAll(): void {
     if (this.dataSource == null) {
@@ -207,8 +259,8 @@ export class SelectionList<T extends Model = Model,
   }
 
   /**
-   * Checks if all the items in the list are currently selected
-   * @returns boolean
+   * Checks if all the displayed items in the list are currently selected
+   * @returns True if all items are selected
    */
   isAllSelected(): boolean {
     if (this.dataSource == null) {
@@ -243,7 +295,39 @@ export class SelectionList<T extends Model = Model,
   }
 
   /**
-   * Adds pagination, sorting and a SearchFiltersComponent to the dataSource, if they are present
+   * Opens a dialog with the Columns Selector.
+   * Subscribes to Dialog closing event to update the displayed columns.
+   */
+  openColumnsSelectorDialog() {
+    const dialogConfig = new MatDialogConfig();
+    const columnsBtn = this.columnsButtonRef.nativeElement;
+    const columnsBtnPosition: DOMRect = columnsBtn.getBoundingClientRect();
+    dialogConfig.panelClass = 'columns-selector-dialog';
+    dialogConfig.width = `${columnsBtn.offsetWidth * 4}px`;
+    dialogConfig.position = {
+      bottom: `${columnsBtnPosition.bottom}px`,
+      top: `${columnsBtnPosition.top + columnsBtn.offsetHeight + 5}px`,
+      right: `${columnsBtnPosition.right}px`,
+      left: `${columnsBtnPosition.left - (columnsBtn.offsetWidth * 3)}px`,
+    };
+    dialogConfig.data = {
+      columns: this.headers,
+    };
+    this._columnsDialogRef = this.dialog.open(ColumnsSelector, dialogConfig);
+    this._columnsDialogSub =
+        this._columnsDialogRef.afterClosed()
+            .pipe(catchError(err => throwError(err) as Observable<ListHeader<T>>))
+            .subscribe(columns => {
+              if (!columns) {
+                return;
+              }
+              this.headers = columns;
+            });
+  }
+
+  /**
+   * Adds a Paginator, a Sort and a SearchFiltersComponent to the ListDataSource, if
+   * those are present in the List template.
    */
   private _fillDataSource(): void {
     if (this.dataSource == null) {
@@ -257,17 +341,21 @@ export class SelectionList<T extends Model = Model,
     }
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
+      this.dataSource.additionalDataSchema = this.additionalDataSchema ?? null;
 
-      // @WARNING: comment to allow filtering text data from hidden columns
+      // This next code block avoids searching in hidden colums when filtering data by kewyword,
+      // by providing a custom filterPredicate for the dataSource.
+      // To allow searching in hidden columns, just comment this code block.
 
       this.dataSource.filterPredicate = (data: T, filter: string) => {
         return this.headers.map(key => key.column)
             .some(key => (key in data ? ('' + data[key]).toLowerCase().includes(filter) : false));
       };
 
-      //
     } else {
-      this._fts.loadPreset(null);
+      // If no filtersComponent is found in the template, the list is initalized without
+      // any filters and/or filter presets.
+      this._fts.loadPreset();
     }
 
     this._initList();
@@ -304,8 +392,8 @@ export class SelectionList<T extends Model = Model,
     return this._dataSource.deleteAction(items);
   }
 
-
   ngOnDestroy() {
     this._actionsSub.unsubscribe();
+    this._columnsDialogSub.unsubscribe();
   }
 }

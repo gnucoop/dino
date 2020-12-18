@@ -18,12 +18,15 @@ ng_module(
         ["**/*.ts"],
         exclude = ["**/*.spec.ts"],
     ),
-    assets = [":list.css"] + glob(["**/*.html"]),
+    assets = [
+        ":list.css",
+        ":columns-selector.css",
+        ":confirmation-dialog.css",
+    ] + glob(["**/*.html"]),
     module_name = "@dewco/material/list",
     deps = [
         "//src/core/data",
         "//src/core/list",
-        "//src/material/list-datasource",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
@@ -42,6 +45,18 @@ sass_binary(
     deps = [],
 )
 
+sass_binary(
+    name = "columns_selector_scss",
+    src = "columns-selector.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "confirmation_dialog_scss",
+    src = "confirmation-dialog.scss",
+    deps = [],
+)
+
 ng_test_library(
     name = "unit_test_sources",
     srcs = glob(
@@ -53,9 +68,9 @@ ng_test_library(
         "//src/core/auth",
         "//src/core/data",
         "//src/core/list",
-        "//src/material/list-datasource",
         "@npm//@angular/common",
-        "@npm//@angular/platform-browser",
+        "@npm//@angular/forms",
+        "@npm//@angular/material",
         "@npm//@angular/router",
         "@npm//rxdb",
         "@npm//rxjs",
@@ -68,8 +83,8 @@ ng_e2e_test_library(
     deps = [
         "//src/core/data",
         "//src/material/list",
-        "//src/material/list-datasource",
         "@npm//@angular/core",
+        "@npm//@angular/material",
     ],
 )
 

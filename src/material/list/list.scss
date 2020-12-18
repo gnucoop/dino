@@ -26,5 +26,19 @@ mat-cell:last-of-type.mat-column-actions {
 .mat-row:hover {
   .mat-column-actions {
     visibility: visible;
+    .mat-icon {
+      cursor: pointer;
+    }
+  }
+}
+
+.dewco-columns-sel-btn {
+  margin-left: auto !important;
+}
+
+.dewco-toolbar-btn-container {
+  display: flex;
+  button {
+    margin: 5px;
   }
 }

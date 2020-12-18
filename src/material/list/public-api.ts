@@ -22,4 +22,5 @@
 
 export * from './list';
 export * from './list.module';
-export * from './user-interactions';
+export * from './list-datasource';
+export * from './user-interactions.service';

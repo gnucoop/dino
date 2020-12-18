@@ -3,9 +3,14 @@
 <ng-content select="[filters]"></ng-content>
 
 <div class="toolbar">
-    <div class="left">
-        <button mat-raised-button (click)="deleteItems(selection.selected)" [disabled]="selection.selected.length <= 0" aria-label="Delete all items">
+    <div class="dewco-toolbar-btn-container">
+        <button mat-raised-button (click)="actionOnItems(selection.selected, {actionType: 'delete', askConfirm: true})"
+            [disabled]="selection.selected.length <= 0" aria-label="Delete all items">
             <mat-icon aria-hidden="false" aria-label="delete icon">delete</mat-icon>
+        </button>
+        <button class="dewco-columns-sel-btn" #columns_btn mat-raised-button (click)="openColumnsSelectorDialog()"
+            aria-label="Select the displayed columns">
+            <mat-icon aria-hidden="false" aria-label="view_week icon">view_week</mat-icon>
         </button>
     </div>
 </div>
@@ -65,13 +70,17 @@
         <mat-header-cell *matHeaderCellDef>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
-            <mat-icon mat-list-icon aria-label="delete icon" (click)="$event.stopPropagation();deleteItems(row);">delete
+            <mat-icon mat-list-icon aria-label="delete icon"
+                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'delete', askConfirm: true});">delete
             </mat-icon>
-            <mat-icon mat-list-icon aria-label="printer icon" (click)="$event.stopPropagation();">printer
+            <mat-icon mat-list-icon aria-label="printer icon"
+                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'print', askConfirm: true});">printer
             </mat-icon>
-            <mat-icon mat-list-icon aria-label="get_app icon" (click)="$event.stopPropagation();">get_app
+            <mat-icon mat-list-icon aria-label="get_app icon"
+                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'download'});">get_app
             </mat-icon>
-            <mat-icon mat-list-icon aria-label="create icon" (click)="$event.stopPropagation();">create
+            <mat-icon mat-list-icon aria-label="create icon"
+                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'edit'});">create
             </mat-icon>
         </mat-cell>
     </ng-container>

@@ -31,16 +31,19 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dewco/core/list';
+import {ColumnsSelector} from './columns-selector';
+import {ConfirmationDialog} from './confirmation-dialog';
 
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
-import {AdminUserInteractionsService} from './user-interactions';
+import {AdminUserInteractionsService} from './user-interactions.service';
 
 @NgModule({
   imports: [
@@ -56,12 +59,15 @@ import {AdminUserInteractionsService} from './user-interactions';
     MatInputModule,
     MatListModule,
     MatPaginatorModule,
+    MatSlideToggleModule,
     MatSortModule,
     MatTableModule,
     MatToolbarModule,
     RouterModule,
   ],
   declarations: [
+    ColumnsSelector,
+    ConfirmationDialog,
     ListCell,
     SelectionList,
   ],
@@ -71,7 +77,7 @@ import {AdminUserInteractionsService} from './user-interactions';
   ],
   providers: [
     AdminUserInteractionsService,
-  ],
+  ]
 })
 export class ListModule {
 }
