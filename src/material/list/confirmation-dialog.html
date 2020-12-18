@@ -1,0 +1,8 @@
+<h4 mat-dialog-title>Confirm {{data.action.actionType}}</h4>
+<mat-dialog-content>
+    Do you want to {{data.action.actionType}} the selected items ?
+</mat-dialog-content><br>
+<mat-dialog-actions align="center">
+    <button class="dewco-confirm-button" mat-raised-button color="primary" (click)="confirmationResponse(true)">Yes</button>
+    <button class="dewco-cancel-button" mat-raised-button color="basic" (click)="confirmationResponse(false)">No</button>
+</mat-dialog-actions>
