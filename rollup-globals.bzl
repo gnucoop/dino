@@ -14,7 +14,6 @@ ROLLUP_GLOBALS = {
     "@angular/common/testing": "ng.common.testing",
     "@angular/core": "ng.core",
     "@angular/core/testing": "ng.core.testing",
-    "@angular/flex-layout": "ng.flexLayout",
     "@angular/forms": "ng.forms",
     "@angular/platform-browser": "ng.platformBrowser",
     "@angular/platform-browser-dynamic": "ng.platformBrowserDynamic",

@@ -42,7 +42,6 @@ ANGULAR_NGCC_BUNDLES = [
     ("@angular/compiler", ["compiler-testing.umd.js"]),
     ("@angular/core", ["core-testing.umd.js", "core.umd.js"]),
     ("@angular/elements", ["elements.umd.js"]),
-    ("@angular/flex-layout", ["flex-layout-core.umd.js"]),
     ("@angular/forms", ["forms.umd.js"]),
     ("@angular/material", ["material-core.umd.js", "material-button.umd.js", "material-divider.umd.js", "material-expansion.umd.js", "material-form-field.umd.js", "material-icon.umd.js", "material-input.umd.js", "material-list.umd.js", "material-sidenav.umd.js", "material-progress-bar.umd.js", "material-toolbar.umd.js"]),
     ("@angular/platform-browser-dynamic", ["platform-browser-dynamic-testing.umd.js", "platform-browser-dynamic.umd.js"]),
