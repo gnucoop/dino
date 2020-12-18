@@ -20,18 +20,14 @@
  *
  */
 
-import {ErrorHandler, ModuleWithProviders, NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 
 import {ErrorHandlerService} from './error-handler.service';
 
-@NgModule({})
+@NgModule({
+  providers: [
+    {provide: ErrorHandler, useClass: ErrorHandlerService},
+  ],
+})
 export class ErrorHandlerModule {
-  forRoot(): ModuleWithProviders<ErrorHandlerModule> {
-    return {
-      ngModule: ErrorHandlerModule,
-      providers: [
-        {provide: ErrorHandler, useClass: ErrorHandlerService},
-      ],
-    };
-  }
 }

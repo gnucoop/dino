@@ -1,0 +1,1 @@
+The `@dewco/core/error-handler` module provides a custom Error Handler service, that manages uncaught errors and provides custom actions to perform based on the error type. It also returns an appropriate "safe" stream.

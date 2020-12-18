@@ -26,7 +26,8 @@ import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 
 /**
- * Service that manages errors, providing methods to log and handle them depending on the error type
+ * Service that manages errors, providing custom methods to log and handle them
+ * depending on the error type.
  */
 @Injectable()
 export class ErrorHandlerService implements ErrorHandler {
@@ -37,12 +38,12 @@ export class ErrorHandlerService implements ErrorHandler {
    * @param error The exception
    * @returns The exception handler stream
    */
-  handleError<T>(error: any): Observable<T> {
+  handleError<T>(error: Error | HttpErrorResponse): Observable<T> {
     const router = this._injector.get(Router);
 
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
-        console.warn('NO CONNECTION AVAILABLE!');
+        console.error('NO CONNECTION AVAILABLE!');
       }
       console.error(`DEWCO HTTP ERROR \n Backend returned status code: ${
           error.status} \n Response body: ${error.message} \n URL: ${router.url}`);
