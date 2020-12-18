@@ -1,12 +1,23 @@
 dewco-search-filters-widget {
-  mat-card {
-    min-height: 30vh;
+  display: flex;
+  flex: 0 1 30% !important;
+  margin: 1.5%;
+  // flex-flow: column wrap;
+  transition: opacity ease 0.5s !important;
+  form {
     display: flex;
-    flex-direction: column;
-    transition: opacity ease 0.5s !important;
-
-    .mat-card-actions {
-      background: #f2f2f2;
+    flex-flow: column wrap;
+    flex: 1 1;
+    height: 100%;
+    div {
+      height: 100%;
+    }
+    .mat-card {
+      width: 90%;
+      min-height: 30vh;
+      .mat-card-actions {
+        background: #f2f2f2;
+      }
     }
   }
 }

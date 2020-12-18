@@ -50,8 +50,10 @@ describe('dewco-search-filters-widget', () => {
 
   it('should show an operator toggle-group in case of a Number filter, selecting "==" by default',
      async () => {
-       const secondTab = element.all(by.css('.mat-tab-label')).get(1);
-       await secondTab.click();
+       const firstTab = element.all(by.css('.mat-tab-label')).get(0);
+       await browser.actions().mouseMove(firstTab.getWebElement()).perform();
+       await browser.wait(EC.elementToBeClickable(firstTab), 1000);
+       await firstTab.click();
        await browser.sleep(300);
 
        const firstNumberWidget = element.all(by.css('.mat-card-content input[type=number]'))
@@ -126,27 +128,5 @@ describe('dewco-search-filters-widget', () => {
 
     expect(await toggleUnchecked.getAttribute('class')).toContain('mat-disabled');
     expect(await toggleUnchecked.getAttribute('class')).not.toContain('mat-checked');
-  });
-
-  it('should disable the toggle if the input value is not validated', async () => {
-    const secondTab = element.all(by.css('.mat-tab-label')).get(1);
-    await secondTab.click();
-    await browser.sleep(300);
-
-    const input = element.all(by.css('.mat-card-content input[type=number]')).first();
-    const widget = input.element(by.xpath('ancestor::dewco-search-filters-widget'));
-
-    expect(await input.isDisplayed()).toBe(true);
-
-    await input.sendKeys(6);
-
-    const toggleChecked = widget.element(by.tagName('mat-slide-toggle'));
-
-    expect(await toggleChecked.getAttribute('class')).not.toContain('mat-disabled');
-    expect(await toggleChecked.getAttribute('class')).toContain('mat-checked');
-
-    await input.sendKeys(Key.BACK_SPACE);
-
-    expect(await toggleChecked.getAttribute('class')).toContain('mat-disabled');
   });
 });

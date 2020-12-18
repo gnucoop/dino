@@ -26,7 +26,8 @@
                                             <ng-container
                                                 *ngIf="conditionOperatorByFieldType((fieldInstance|ajfAsFieldInstance).node.fieldType) as operators">
                                                 <ng-container *ngIf="operators.length > 0">
-                                                    <mat-button-toggle-group #group *ngIf="(fieldInstance.node|asFilterItem).operator as operator"
+                                                    <mat-button-toggle-group #group
+                                                        *ngIf="(fieldInstance.node|asFilterItem).operator as operator"
                                                         (change)="changeOperator($event)"
                                                         [value]="operator != null ? operator.label : null ">
                                                         <mat-button-toggle *ngFor="let operator of operators"
@@ -42,8 +43,7 @@
                                 </div>
                                 <mat-card-actions>
                                     Exclude <mat-slide-toggle #toggleFilter (change)="filterToggle($event)"
-                                        [checked]="widgetData.active"
-                                        [disabled]="checkToggleDisabled(getWidgetFormValue(), toggleFilter)">
+                                        [checked]="widgetData.active" [disabled]="checkToggleDisabled()">
                                     </mat-slide-toggle> Include
                                 </mat-card-actions>
                             </mat-card>
