@@ -34,8 +34,9 @@ import {combineLatest, Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 
 /**
- * Shows a list of active filters and allows the deletion of any one of those
- *
+ * Shows a list of active filters and allows their deletion.
+ * Each single active filter is represented by a chip, with it's corrisponding name,
+ * operator and value.
  */
 @Component({
   selector: 'dewco-search-filters-chips',
@@ -45,8 +46,19 @@ import {catchError, map} from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
 })
 export class SearchFiltersChips implements OnInit {
+  /**
+   * The chips to be displayed.
+   */
   chipsFilters: Observable<FilterItem[]>;
+
+  /**
+   * The list of filters which will be displayed by the chips.
+   */
   @Input() chipsType: FilterListType;
+
+  /**
+   * Event emitted when a chip is deleted.
+   */
   @Output() excludeFilter: EventEmitter<FilterItem>;
 
   constructor(private _fts: FiltersService) {
@@ -54,27 +66,29 @@ export class SearchFiltersChips implements OnInit {
   }
 
   /**
-   * Selects which filterList the chips should display on init, by the @Input chipsType
+   * Selects which filterList the chips should display on init, based on the @Input chipsType
    */
   ngOnInit() {
     switch (this.chipsType) {
       case 'basic':
         this.chipsFilters = this._fts.basicFilters;
         break;
-      case 'advanced':
-        this.chipsFilters = this._fts.advancedFilters;
+      case 'additional':
+        this.chipsFilters = this._fts.additionalFilters;
         break;
       case 'temporary':
         this.chipsFilters = this._fts.temporaryFilters;
         break;
       case 'all':
       default:
-        this.chipsFilters = combineLatest([this._fts.basicFilters, this._fts.advancedFilters])
+        this.chipsFilters = combineLatest([this._fts.basicFilters, this._fts.additionalFilters])
                                 .pipe(
-                                    map(([basic, advanced]) => basic.concat(advanced)),
+                                    map(([basic, additional]) => basic.concat(additional)),
                                 );
         break;
     }
+    // Here we make sure that invalid filters or filters with null / empty values
+    // are not displayed as chips
     this.chipsFilters = this.chipsFilters.pipe(
         map(filters => filters.filter(cf => cf.value !== null && cf.value !== '' && cf.isValid)),
         catchError(err => throwError(err) as Observable<FilterItem[]>),
@@ -85,7 +99,7 @@ export class SearchFiltersChips implements OnInit {
    * Removes a filterItem from the filter list, deleting the chip
    * @param filterItem The filter item to remove
    */
-  removeFilterItem(filterItem: FilterItem) {
+  removeFilterItem(filterItem: FilterItem): void {
     this.excludeFilter.emit(filterItem);
   }
 }
