@@ -1,10 +1,18 @@
-import {AjfFieldType} from '@ajf/core/forms';
 import {Component} from '@angular/core';
 import {DataModelManager} from '@dewco/core/data';
-import {FilterGroup, FiltersService, ListHeader} from '@dewco/core/list';
-import {ListDataSource} from '@dewco/material/list-datasource';
+import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
+import {
+  FiltersService,
+  ListHeader,
+} from '@dewco/core/list';
+import {ListDataSource} from '@dewco/material/list';
 
-import {displayedHeaders, ELEMENT_DATA, ElementManager, PeriodicElement} from './element-manager';
+import {
+  displayedHeaders,
+  ElementManager,
+  filters,
+  PeriodicElement,
+} from './element-manager';
 import {testAjfSchema} from './test-ajf-formschema';
 
 @Component({
@@ -12,72 +20,23 @@ import {testAjfSchema} from './test-ajf-formschema';
   templateUrl: 'list-e2e.html',
 })
 export class MatListE2E {
-  readonly filters: FilterGroup[] = [
-    {
-      filterGroupName: 'Stats',
-      filterGroupAdvancedFilters:
-          [
-            {
-              name: 'Name',
-              fieldType: AjfFieldType.String,
-            },
-            {
-              name: 'Weight',
-              fieldType: AjfFieldType.Number,
-            },
-          ],
-      filterGroupBasicFilters: [{
-        name: 'Location',
-        fieldType: AjfFieldType.MultipleChoice,
-        choicesOrigin: {
-          name: 'location',
-          type: 'fixed',
-          label: 'Location',
-          choices:
-              [
-                {label: 'Location A', value: 'A'},
-                {label: 'Location B', value: 'B'},
-                {label: 'Location C', value: 'C'},
-              ],
-        }
-      }]
-    },
-    {
-      filterGroupName: 'Charts',
-      filterGroupAdvancedFilters:
-          [
-            {
-              name: 'Symbol',
-              fieldType: AjfFieldType.MultipleChoice,
-              choicesOrigin: {
-                name: 'symbol',
-                type: 'fixed',
-                label: 'Symbol',
-                choices:
-                    [
-                      {label: 'Ne', value: 'Ne'},
-                      {label: 'Li', value: 'Li'},
-                      {label: 'B', value: 'B'},
-                    ],
-              }
-            },
-          ],
-    },
-  ];
-  readonly data = ELEMENT_DATA;
-  readonly title: string = 'Example List';
-  readonly baseEditUrl: string = 'edit/';
+  readonly customFilters = filters;
+  readonly additionalBasicFilters = ['project', 'location', 'unavailableFilter'];
+  readonly additionalDataSchema = testAjfSchema;
+  readonly title = 'Example List';
+  readonly baseEditUrl = 'edit/';
   readonly headers: ListHeader<PeriodicElement>[] = displayedHeaders;
-  readonly dataSource: ListDataSource<PeriodicElement>;
+  readonly dataSource: ListDataSource<PeriodicElement, FormSchema>;
 
   constructor(
       readonly filtersService: FiltersService,
+      readonly formSchemaManager: FormSchemaManager,
   ) {
     const dataService = new ElementManager() as unknown as DataModelManager<PeriodicElement>;
     this.dataSource = new ListDataSource(
         dataService,
         this.filtersService,
-        testAjfSchema,
+        this.formSchemaManager,
     );
   }
 }

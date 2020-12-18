@@ -27,6 +27,8 @@ ng_module(
     deps = [
         "//src/core/data",
         "//src/core/forms",
+        "//src/core/locations",
+        "//src/core/projects",
         "//src/dewco-examples/private",
         "//src/ionic/login",
         "//src/material/list",

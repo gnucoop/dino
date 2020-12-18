@@ -1,6 +1,7 @@
+import {AjfFieldType} from '@ajf/core/forms';
 import {Model} from '@dewco/core/data';
 import {FormData} from '@dewco/core/forms';
-import {ListHeader} from '@dewco/core/list';
+import {FilterGroup, ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
 import {Observable, of as obsOf} from 'rxjs';
 
@@ -78,10 +79,59 @@ export const ELEMENT_DATA: PeriodicElement[] = [
   {id: '', name: 'Neon', weight: 20.1797, symbol: 'Ne', created_at: '', updated_at: ''},
 ];
 
+export const filters: FilterGroup[] = [
+  {
+    filterGroupName: 'Stats',
+    filterGroupAdditionalFilters: [
+      {
+        name: 'Name',
+        fieldType: AjfFieldType.String,
+      },
+      {
+        name: 'Weight',
+        fieldType: AjfFieldType.Number,
+      },
+    ],
+    filterGroupBasicFilters: [{
+      name: 'Location',
+      fieldType: AjfFieldType.MultipleChoice,
+      choicesOrigin: {
+        name: 'location',
+        type: 'fixed',
+        label: 'Location',
+        choices: [
+          {label: 'Location A', value: 'A'},
+          {label: 'Location B', value: 'B'},
+          {label: 'Location C', value: 'C'},
+        ],
+      }
+    }]
+  },
+  {
+    filterGroupName: 'Charts',
+    filterGroupAdditionalFilters: [
+      {
+        name: 'Symbol',
+        fieldType: AjfFieldType.MultipleChoice,
+        choicesOrigin: {
+          name: 'symbol',
+          type: 'fixed',
+          label: 'Symbol',
+          choices: [
+            {label: 'Ne', value: 'Ne'},
+            {label: 'Li', value: 'Li'},
+            {label: 'B', value: 'B'},
+          ],
+        }
+      },
+    ],
+  },
+];
+
 export const displayedHeaders: ListHeader<PeriodicElement>[] = [
   {column: 'name', label: 'Name', sortable: true},
   {column: 'weight', label: 'Weight', sortable: true},
-  {column: 'data', label: 'FormData', sortable: false},
+  {column: 'data', label: 'FormData', sortable: false, displayed: false},
   {column: 'symbol', label: 'Symbol', sortable: false},
 ];
 
@@ -92,6 +142,10 @@ type Doc = {
 };
 
 export class ElementManager {
+  get collectionSchema(): RxJsonSchema {
+    return schema;
+  }
+
   query(): Observable<{exec: () => Observable<Doc[]>}> {
     return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
   }

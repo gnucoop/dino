@@ -1428,7 +1428,7 @@ export const ajfSchema = {
               'clientValidation': true
             }]
           },
-          'visibility': {'condition': '_5_508 == true'},
+          'visibility': {'condition': '_5_508 == \'true\''},
           'defaultValue': null,
           'conditionalBranches': []
         },

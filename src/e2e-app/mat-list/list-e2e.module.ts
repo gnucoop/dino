@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {FormsModule} from '@dewco/core/forms';
 import {LocationModule} from '@dewco/core/locations';
 import {ProjectModule} from '@dewco/core/projects';
 import {ListModule} from '@dewco/material/list';
@@ -13,6 +14,7 @@ import {MatListE2E} from './list-e2e';
   imports: [
     ListModule,
     LocationModule,
+    FormsModule,
     ProjectModule,
     SearchFiltersBarModule,
   ],
