@@ -21,10 +21,14 @@
  */
 
 import {NgModule} from '@angular/core';
+import {FiltersService} from '@dewco/core/list';
 
 /**
  * Optional module augmenting Forms that provides the ProjectManager service
  */
 @NgModule({})
 export class ProjectModule {
+  constructor(private _filtersService: FiltersService) {
+      this._filtersService.addAvailableFilterLabel('project');
+  }
 }

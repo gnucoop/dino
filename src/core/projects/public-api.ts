@@ -22,4 +22,4 @@
 
 export * from './projects';
 export * from './project-manager';
-export * from './projects-module';
+export * from './projects.module';

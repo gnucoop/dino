@@ -21,11 +21,15 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
+import {
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+} from '@dewco/core/data';
 
 import {schema} from './project-json';
 import {Project} from './projects';
-import {ProjectModule} from './projects-module';
+import {ProjectModule} from './projects.module';
 
 /**
  * Service that manages FormData Projects
@@ -36,7 +40,10 @@ export class ProjectManager extends DataModelManager<Project> {
       dataService: DataService,
       permissionContextService: PermissionContextService,
   ) {
-    const collection = {name: 'projects', schema};
-    super({collection}, dataService, permissionContextService);
+    super(
+        {collection: {name: 'projects', schema}},
+        dataService,
+        permissionContextService,
+    );
   }
 }
