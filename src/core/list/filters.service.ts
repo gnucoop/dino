@@ -23,7 +23,7 @@
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {AjfCondition, evaluateExpression} from '@ajf/core/models';
 import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PrimaryProperty, RxJsonSchema} from 'rxdb';
 import {
@@ -80,12 +80,20 @@ export class FiltersService implements OnDestroy {
    * Used to check if a filter can be added and displayed in the
    * main filters component (eg. SearchFiltersBar)-
    */
-  private _availableBasicFilterLabels: string[];
+  private _availableBasicFilterLabels: string[] = [];
 
   get availableBasicFilterLabels(): string[] {
     return this._availableBasicFilterLabels;
   }
 
+  /**
+   * The labels of all the currently created additional basic filters.
+   */
+  private _currentBasicFilterLabels: string[] = [];
+
+  get currentBasicFilterLabels(): string[] {
+    return this._currentBasicFilterLabels;
+  }
   /**
    * Filters generated from a Model Schema
    */
@@ -598,11 +606,16 @@ export class FiltersService implements OnDestroy {
    * (eg. Project, Location, Forms etc.).
    * @param basicFilter the basic filter to be added
    */
-  addBasicFilter(basicFilter: FormGroup): void {
-    if (!basicFilter) {
+  addBasicFilter(ftName: string): void {
+    if (!ftName || this._currentBasicFilterLabels.indexOf(ftName) > -1) {
       return;
     }
+
+    const formControl = Object.create({});
+    formControl[`${ftName}`] = new FormControl();
+    const basicFilter = new FormGroup(formControl);
     this._basicAdditionalFormGroups.push(basicFilter);
+    this._currentBasicFilterLabels.push(ftName);
   }
 
   /**

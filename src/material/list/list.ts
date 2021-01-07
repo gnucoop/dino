@@ -101,11 +101,9 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     if (!filterNames.length) {
       return;
     }
-    for (let ftname of filterNames) {
-      if (this._fts.availableBasicFilterLabels.indexOf(ftname) > -1) {
-        const formControl = Object.create({});
-        formControl[ftname] = new FormControl();
-        this._fts.addBasicFilter(new FormGroup(formControl));
+    for (let ftName of filterNames) {
+      if (this._fts.availableBasicFilterLabels.indexOf(ftName) > -1) {
+        this._fts.addBasicFilter(ftName);
       }
     }
   }
