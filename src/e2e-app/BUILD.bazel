@@ -57,7 +57,8 @@ ts_devserver(
     # automatically served, but can be loaded manually through HTTP requests.
     static_files = [
         "@npm//zone.js",
-        "@npm//core-js",
+        "@npm//core-js-bundle",
+        "@npm//@webcomponents/custom-elements",
         ":index.html",
     ],
     tags = ["manual"],
