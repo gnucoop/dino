@@ -22,7 +22,7 @@
 
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {AjfCondition, evaluateExpression} from '@ajf/core/models';
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PrimaryProperty, RxJsonSchema} from 'rxdb';
@@ -32,7 +32,6 @@ import {
   merge,
   Observable,
   of as obsOf,
-  Subject,
   Subscription,
   throwError,
 } from 'rxjs';
@@ -40,7 +39,7 @@ import {
   catchError,
   debounceTime,
   map,
-  switchMap,
+  skip,
   take,
   withLatestFrom,
 } from 'rxjs/operators';
@@ -64,7 +63,7 @@ import {ListModule} from './list.module';
  * It can load filters presets from the Preset Manager, and initialize filters accordingly.
  */
 @Injectable({providedIn: ListModule})
-export class FiltersService implements OnDestroy {
+export class FiltersService {
   /**
    * Determines if the service can start to query the ListDataSource
    */
@@ -97,30 +96,33 @@ export class FiltersService implements OnDestroy {
   /**
    * Filters generated from a Model Schema
    */
-  private _generatedModelFilters: Subject<FilterGroup[]>;
+  private _generatedModelFilters: BehaviorSubject<FilterGroup[]>;
 
-  get generatedModelFilters(): Subject<FilterGroup[]> {
+  get generatedModelFilters(): BehaviorSubject<FilterGroup[]> {
     return this._generatedModelFilters;
   }
 
   /**
    * Filters generated from the 'data' property of the model
    */
-  private _generatedAdditionalFilters: Subject<FilterGroup[]>;
+  private _generatedAdditionalFilters: BehaviorSubject<FilterGroup[]>;
 
   /**
    * List of all generated or custom filters
    */
-  private _generatedFilters: BehaviorSubject<FilterGroup[]>;
+  private _generatedFilters: Observable<FilterGroup[]>;
 
-  get generatedFilters(): BehaviorSubject<FilterGroup[]> {
+  get generatedFilters(): Observable<FilterGroup[]> {
     return this._generatedFilters;
   }
+
   /**
-   * Overwrites the generated filters with a set of custom filters
+   * List of custom filters. Overwrites the generated filters with a set of custom filters.
    */
+  private _customFilters: BehaviorSubject<FilterGroup[]>;
+
   set setCustomFilters(filterGroups: FilterGroup[]) {
-    this._generatedFilters.next(filterGroups);
+    this._customFilters.next(filterGroups);
   }
 
   /**
@@ -133,6 +135,11 @@ export class FiltersService implements OnDestroy {
    * (eg. Location, Project etc.)
    */
   private _basicAdditionalFormGroups: FormGroup[] = [];
+
+  /**
+   * An array of the valueChanges observables of all the basicFormGroups
+   */
+  private _formValueChanges: Observable<any>[];
 
   /**
    * Basic filters such as text keyword search, from/to date search, usually displayed in the main
@@ -165,48 +172,21 @@ export class FiltersService implements OnDestroy {
   }
 
   /**
-   * List of all basic/additional filters that have been given a value and a comparison operator.
-   * Used to compose the query string, sent to the ListDataSource
-   */
-  private _activeFilters: Subject<FilterItem[]>;
-
-  get activeFilters(): Subject<FilterItem[]> {
-    return this._activeFilters;
-  }
-
-  /**
-   * Encoded string of query parameters, generated from the activeFilters.
-   * ListDataSource subscribes to this subject, to generate queries to the db and
+   * Encoded string of query parameters, generated from the all filters.
+   * ListDataSource subscribes to this onbservable to generate queries to the db and
    * retrieve data.
    */
-  private _queryString: BehaviorSubject<string>;
+  private _queryString: Observable<string>;
 
-  get queryString(): BehaviorSubject<string> {
+  get queryString(): Observable<string> {
     return this._queryString;
   }
-
-  /**
-   * Subscribes to the generated model and additional filters
-   * to merge them together in "_generatedFilters"
-   */
-  private _generatedFiltersSub: Subscription;
 
   /**
    * Subscribes to the value changes of all the basic filters
    * (displayed in the main filter component)
    */
   private _basicFiltersSub: Subscription;
-
-  /**
-   * Subscribes to basic and additional filters, merging all the filters that have
-   * been given a valid value and a comparison operator, in "_activeFilters".
-   */
-  private _activeFiltersSub: Subscription;
-
-  /**
-   * Subscribes to "_activeFilters" to update the query string sent to the DataSource
-   */
-  private _queryStringSub: Subscription;
 
   /**
    * Encoded string of a filters preset currently being loaded
@@ -233,74 +213,74 @@ export class FiltersService implements OnDestroy {
       private _route: ActivatedRoute,
       private _router: Router,
   ) {
-    this._generatedModelFilters = new Subject<FilterGroup[]>();
-    this._generatedAdditionalFilters = new Subject<FilterGroup[]>();
-    this._generatedFilters = new BehaviorSubject<FilterGroup[]>([]);
+    this._generatedModelFilters = new BehaviorSubject<FilterGroup[]>([]);
+    this._generatedAdditionalFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._basicFilters = new BehaviorSubject<FilterItem[]>([]);
+    this._customFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._additionalFilters = new BehaviorSubject<FilterItem[]>([]);
     this._temporaryFilters = new BehaviorSubject<FilterItem[]>([]);
-    this._activeFilters = new Subject<FilterItem[]>();
     this._queryString = new BehaviorSubject<string>('');
     this._listReady = new BehaviorSubject<boolean>(true);
     this._loadingPreset = null;
-    this._loadPresetEvent = new EventEmitter<boolean>(true);
+    this._loadPresetEvent = new EventEmitter<boolean>();
     this._basicFiltersSub = Subscription.EMPTY;
     this._loadingPresetSub = Subscription.EMPTY;
     this._availableBasicFilterLabels = [];
+    this._formValueChanges = [];
 
-    this._generatedFiltersSub =
-        combineLatest([this._generatedModelFilters, this._generatedAdditionalFilters])
-            .pipe(
-                withLatestFrom(this._generatedFilters),
-                catchError(
-                    err => throwError(err) as
-                        Observable<[[FilterGroup[], FilterGroup[]], FilterGroup[]]>),
-                )
-            .subscribe(([[defaultModelFilters, defaultAdditionalFilters], modelFilters]) => {
-              if (!modelFilters.length &&
-                  (defaultModelFilters.length > 0 || defaultAdditionalFilters.length > 0)) {
-                this._generatedFilters.next(defaultModelFilters.concat(defaultAdditionalFilters));
-              }
-            });
-
-    this._activeFiltersSub =
+    this._generatedFilters =
         combineLatest([
-          this._basicFilters,
-          this._additionalFilters,
-          this._listReady,
+          this._generatedModelFilters,
+          this._generatedAdditionalFilters,
+          this._customFilters,
         ])
             .pipe(
-                catchError(
-                    err => throwError(err) as Observable<[FilterItem[], FilterItem[], boolean]>),
+                map(([defaultModelFilters, defaultAdditionalFilters, customFilters]) => {
+                  if (customFilters.length > 0) {
+                    return customFilters;
+                  }
+                  return defaultModelFilters.concat(defaultAdditionalFilters);
+                }),
+                catchError(err => throwError(err) as Observable<FilterGroup[]>),
+            );
+
+    this._loadingPresetSub.unsubscribe();
+    this._loadingPresetSub =
+        this._loadPresetEvent
+            .pipe(
+                withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))),
+                catchError(err => throwError(err) as Observable<[any, any]>),
                 )
-            .subscribe(([basicFilters, additionalFilters, listReady]) => {
-              if (!listReady) {
-                return;
+            .subscribe(([loadEvent, preset]) => {
+              if (loadEvent) {
+                this.loadPreset(preset);
               }
-              let allFilters = [...basicFilters, ...additionalFilters];
-              let actFilters: FilterItem[] = [];
-              this._activeFilters.pipe(take(1)).subscribe(fts => actFilters = fts);
-              if (actFilters.length > 0 && allFilters.length > 0) {
-                actFilters = this._mergeFilterItems(actFilters, allFilters);
-              } else {
-                actFilters = allFilters;
-              }
-              actFilters =
-                  actFilters.filter((ft) => ft.value || ft.value === false || ft.value === 0);
-              this._activeFilters.next(actFilters);
             });
 
-    this._queryStringSub = this._activeFilters
-                               .pipe(
-                                   catchError(err => throwError(err) as Observable<FilterItem[]>),
-                                   )
-                               .subscribe((items) => {
-                                 if (this._loadingPreset != null) {
-                                   this._updateBasicFormValues(items);
-                                   this._loadingPreset = null;
-                                 }
-                                 this._updateQueryString(items);
-                               });
+    this._queryString = combineLatest([
+                          this._basicFilters.pipe(skip(1)),
+                          this._additionalFilters.pipe(skip(1)),
+                          this._listReady,
+                        ])
+                            .pipe(
+                                map(([
+                                      basicFilters,
+                                      additionalFilters,
+                                      listReady,
+                                    ]) => {
+                                  if (!listReady) {
+                                    return '';
+                                  }
+                                  const allFilters = [...basicFilters, ...additionalFilters].filter(
+                                      (ft) => ft.value || ft.value === false || ft.value === 0);
+                                  if (this._loadingPreset != null) {
+                                    this._updateBasicFormValues(allFilters);
+                                    this._loadingPreset = null;
+                                  }
+                                  return this._updateQueryString(allFilters);
+                                }),
+                                catchError(err => throwError(err) as Observable<string>),
+                            );
   }
 
   /**
@@ -313,6 +293,10 @@ export class FiltersService implements OnDestroy {
       return;
     }
     const propertyKeys = Object.keys(modelSchema.properties);
+    const index = propertyKeys.indexOf('is_deleted');
+    if (index > -1) {
+      propertyKeys.splice(index, 1);
+    }
     let modelFiltersGroup: FilterGroup = {
       filterGroupName: modelSchema.title ?? '',
       filterGroupAdditionalFilters: [],
@@ -538,43 +522,34 @@ export class FiltersService implements OnDestroy {
    */
   initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]> {
     this._basicFormGroups = [...basicFormGroups, ...this._basicAdditionalFormGroups];
-    const valueChanges = this._basicFormGroups.map(group => group.valueChanges);
+    this._formValueChanges = this._basicFormGroups.map(group => group.valueChanges);
 
-    this._loadingPresetSub =
-        this._loadPresetEvent
-            .pipe(
-                withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))),
-                catchError(err => throwError(err) as Observable<[any, any]>),
-                )
-            .subscribe(([loadEvent, preset]) => {
-              if (loadEvent) {
-                this.loadPreset(preset);
-              }
-            });
-
+    this._basicFiltersSub.unsubscribe();
     this._basicFiltersSub =
-        merge(...valueChanges)
+        merge(...this._formValueChanges)
             .pipe(
-                debounceTime(200),
-                switchMap((flt) => {
+                withLatestFrom(this._basicFilters),
+                debounceTime(400),
+                map(([changes, basicFilters]) => {
                   let filterItems: FilterItem[] = [];
-                  for (const fName of Object.keys(flt)) {
+                  for (const fName of Object.keys(changes)) {
                     const ftItem: FilterItem = {
                       name: fName,
-                      value: flt[fName],
+                      value: changes[fName],
                       operator: {label: 'Like', value: '$regex'},
                       fieldType: AjfFieldType.String,
                     };
                     filterItems.push(ftItem);
                   }
-                  return [filterItems];
+                  return [filterItems, basicFilters];
                 }),
-                catchError(err => throwError(err) as Observable<FilterItem[]>),
+                catchError(err => throwError(err) as Observable<[FilterItem[], FilterItem[]]>),
                 )
-            .subscribe(filters => {
-              const currentValue = this._basicFilters.value.map(a => ({...a}) as FilterItem);
+            .subscribe(([filters, currentFilters]) => {
+              const currentValue = currentFilters;
               this._basicFilters.next(this._mergeFilterItems(currentValue, filters));
             });
+
 
     this.loadPresetTrigger();
     return obsOf(this._basicAdditionalFormGroups)
@@ -640,9 +615,10 @@ export class FiltersService implements OnDestroy {
 
   /**
    * Updates the queryString encoding a FilterItems array, and adds the queryParams to the url
-   * @param filterItems the FilterItems array to be encoded
+   * @param filterItems The FilterItems array to be encoded
+   * @returns The encoded query string
    */
-  private _updateQueryString(filterItems: FilterItem[]): void {
+  private _updateQueryString(filterItems: FilterItem[]): string {
     const queryString = btoa(encodeURI(JSON.stringify(filterItems)));
     if (this._loadingPreset == null) {
       this._router.navigate([], {
@@ -650,7 +626,7 @@ export class FiltersService implements OnDestroy {
         queryParams: filterItems.length ? {'filters': queryString} : null
       });
     }
-    this._queryString.next(queryString);
+    return queryString;
   }
 
   /**
@@ -696,29 +672,12 @@ export class FiltersService implements OnDestroy {
   private _selectFilterListType(type: FilterListType): BehaviorSubject<FilterItem[]> {
     switch (type) {
       case 'basic':
-        return this.basicFilters;
+        return this._basicFilters;
       case 'additional':
-        return this.additionalFilters;
+        return this._additionalFilters;
       case 'temporary':
       default:
-        return this.temporaryFilters;
+        return this._temporaryFilters;
     }
-  }
-
-  ngOnDestroy() {
-    this._activeFiltersSub.unsubscribe();
-    this._basicFiltersSub.unsubscribe();
-    this._queryStringSub.unsubscribe();
-    this._loadingPresetSub.unsubscribe();
-    this._generatedFiltersSub.unsubscribe();
-
-    this._generatedModelFilters.complete();
-    this._generatedAdditionalFilters.complete();
-    this._generatedFilters.complete();
-    this._basicFilters.complete();
-    this._additionalFilters.complete();
-    this._temporaryFilters.complete();
-    this._activeFilters.complete();
-    this._queryString.complete();
   }
 }

@@ -97,8 +97,7 @@ describe('FiltersService', () => {
     const item: FilterItem = {name: 'test_filter', fieldType: AjfFieldType.String};
 
     fts.addFilter(item, 'basic');
-
-    expect(fts.basicFilters.value).toEqual([item]);
+    expectAsync(fts.basicFilters.toPromise()).toBeResolvedTo([item]);
   });
 
   it('should remove a filterItem from the selected list', () => {
@@ -203,16 +202,18 @@ describe('FiltersService', () => {
     fts.initializeFilters([fakeFormGroup]);
     fts.loadPreset(fakeFiltersPreset_b);
 
-    expect(spyBasicNext).toHaveBeenCalledTimes(1);
-    expect(spyadditionalNext).toHaveBeenCalledTimes(1);
-    expect(spyResetTemporary).toHaveBeenCalledTimes(1);
-    expect(fts.basicFilters.value).toEqual([fakeFilters_b[0]]);
+    expect(spyBasicNext).toHaveBeenCalled();
+    expect(spyadditionalNext).toHaveBeenCalled();
+    expect(spyResetTemporary).toHaveBeenCalled();
+    expectAsync(fts.basicFilters.toPromise()).toBeResolvedTo([fakeFilters_b[0]]);
     expect(fts.additionalFilters.value).toEqual([fakeFilters_b[1], fakeFilters_b[2]]);
     expect(fts.temporaryFilters.value).toEqual(fts.additionalFilters.value);
   });
 
   it('should create a list of filterGroups from a RxJsonSchema of a model', () => {
     const spyPropToFilterItem = spyOn<any>(fts, '_propToFilterItem').and.callThrough();
+
+    fts.generateModelFilters(dummySchema);
 
     fts.generatedModelFilters.subscribe(gmf => {
       expect(gmf).toEqual([{
@@ -225,8 +226,6 @@ describe('FiltersService', () => {
         ],
       }]);
     });
-
-    fts.generateModelFilters(dummySchema);
 
     expect(spyPropToFilterItem).toHaveBeenCalledTimes(1);
   });
