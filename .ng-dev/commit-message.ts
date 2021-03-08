@@ -16,6 +16,8 @@ export const commitMessage: CommitMessageConfig = {
     'core/locations',
     'core/projects',
     'e2e-mat/list',
+    'e2e-mat/login',
+    'e2e-mat',
     'ionic/login',
     'material/list',
     'material/login',

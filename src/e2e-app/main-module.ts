@@ -9,6 +9,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
+import {AuthModule} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG} from '@dewco/core/data';
 import {TranslateModule} from '@ngx-translate/core';
 
@@ -19,10 +20,15 @@ import {ExampleFormCollectModule} from './example-form-collect/example-form-coll
 import {ExampleFormSelectModule} from './example-form-select/example-form-select.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
-import {authServiceMock} from './mocks';
+import {fusionAuthConfig} from './mockconfig';
+// import {authServiceMock} from './mocks';
+
+const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
+const wsUrl = 'ws://localhost:8080/v1/graphql';
 
 @NgModule({
   imports: [
+    AuthModule.forRoot(fusionAuthConfig),
     BrowserModule,
     HttpClientModule,
     E2eAppModule,
@@ -43,7 +49,8 @@ import {authServiceMock} from './mocks';
     E2eApp,
   ],
   providers: [
-    {provide: AuthService, useValue: authServiceMock},
+    // {provide: AuthService, useValue: authServiceMock},
+    AuthService,
     {
       provide: DATA_SERVICE_CONFIG,
       useValue: {
@@ -52,7 +59,9 @@ import {authServiceMock} from './mocks';
           adapter: 'idb',
         },
         syncOptions: {
-          url: '',
+          url: syncGraphQLUrl,
+          wsUrl: wsUrl,
+          webSocketImpl: WebSocket,
         },
       },
     },

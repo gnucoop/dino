@@ -1,37 +1,44 @@
 import {AjfFieldType} from '@ajf/core/forms';
-import {Model} from '@dewco/core/data';
+import {Injectable} from '@angular/core';
+import {DataModelManager, DataService, Model, PermissionContextService} from '@dewco/core/data';
 import {FormData} from '@dewco/core/forms';
 import {FilterGroup, ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
-import {Observable, of as obsOf} from 'rxjs';
+// import {Observable, of as obsOf} from 'rxjs';
+import {MaterialListE2eModule} from './list-e2e.module';
 
 import {testFormData, testFormData_loc} from './test-ajf-formdata';
 
 export const schema = {
   'type': 'object',
   'properties': {
-    'id': {'type': 'string', 'description': 'UUID v4 identifier.'},
+    'id': {'type': 'string', 'primary': true, 'description': 'UUID v4 identifier.'},
     'name': {'type': 'string', 'description': 'Element name'},
     'weight': {'type': 'number', 'description': 'Element weight'},
     'symbol': {'type': 'string', 'description': 'Element symbol'},
     'data': {'type': 'object', 'description': 'Form data'},
     'created_at': {'type': 'string', 'description': 'Creation timestamp.'},
     'updated_at': {'type': 'string', 'description': 'Update timestamp.'},
+    'is_deleted': {'type': 'boolean', 'description': 'Deleted flag.'}
+
   },
+  'required': [
+        'id',
+        'name',
+        'weight',
+        'symbol',
+        'created_at',
+      ],
   'additionalProperties': false,
   'title': 'periodicelement',
   'version': 0,
 } as RxJsonSchema;
-
 
 export interface PeriodicElement extends Model {
   name: string;
   weight: number;
   symbol: string;
   data?: FormData;
-  id: string;
-  created_at: string;
-  updated_at: string;
 }
 
 export const ELEMENT_DATA: PeriodicElement[] = [
@@ -135,23 +142,37 @@ export const displayedHeaders: ListHeader<PeriodicElement>[] = [
   {column: 'symbol', label: 'Symbol', sortable: false},
 ];
 
-let elements = [...ELEMENT_DATA.slice(0, 5)];
+// let elements = [...ELEMENT_DATA.slice(0, 5)];
 
-type Doc = {
-  toJSON: () => PeriodicElement
-};
+// type Doc = {
+//   toJSON: () => PeriodicElement
+// };
 
-export class ElementManager {
-  get collectionSchema(): RxJsonSchema {
-    return schema;
-  }
+// export class ElementManager {
+//   get collectionSchema(): RxJsonSchema {
+//     return schema;
+//   }
 
-  query(): Observable<{exec: () => Observable<Doc[]>}> {
-    return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
-  }
+//   query(): Observable<{exec: () => Observable<Doc[]>}> {
+//     return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
+//   }
 
-  bulkDelete(items: PeriodicElement[]): Observable<Doc[]> {
-    elements = elements.filter(e => items.indexOf(e) === -1);
-    return obsOf(elements.map(e => ({toJSON: () => e})));
+//   bulkDelete(items: PeriodicElement[]): Observable<Doc[]> {
+//     elements = elements.filter(e => items.indexOf(e) === -1);
+//     return obsOf(elements.map(e => ({toJSON: () => e})));
+//   }
+// }
+
+@Injectable({providedIn: MaterialListE2eModule})
+export class ElementManager extends DataModelManager<PeriodicElement> {
+  constructor(
+      dataService: DataService,
+      permissionContextService: PermissionContextService,
+  ) {
+    super(
+        {collection: {name: 'element', schema}},
+        dataService,
+        permissionContextService,
+    );
   }
 }
