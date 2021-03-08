@@ -24,9 +24,11 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
+import {AuthResponse} from './auth-response';
 
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {Credentials} from './credentials';
+import {JwtToken} from './jwt-token';
 import {LoginResponse} from './login-response';
 import {User} from './user';
 
@@ -50,13 +52,18 @@ export class AuthService {
    */
   readonly authenticated: Observable<boolean> = this._authenticated as Observable<boolean>;
 
+  /**
+   * The current JWT auth token
+   */
+  readonly authToken: BehaviorSubject<string|null>;
+
   private _baseUrl: string;
 
   constructor(
       private _httpClient: HttpClient,
       @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig) {
     this._baseUrl = removeSlashes(_config.host);
-
+    this.authToken = new BehaviorSubject<string|null>(this.getAuthToken());
     this._initAuthentication();
   }
 
@@ -71,7 +78,7 @@ export class AuthService {
       password: credentials.password,
       applicationId: this._config.applicationId,
     };
-    const url = this._generateUrl('api/login');
+    const url = this._generateUrl(this._config.loginEndpoint ?? 'api/login');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
     return this._httpClient.post<LoginResponse>(url, req, {headers})
                .pipe(
@@ -99,25 +106,25 @@ export class AuthService {
     const refreshToken = this.getRefreshToken()!;
     const global = this._stringifyBooleanParam(allDevices);
     const params = new HttpParams({fromObject: {global, refreshToken}});
-    const url = `${this._generateUrl('api/logout')}?${params.toString()}`;
-    return this._httpClient.post(url, {}, {withCredentials: true})
-               .pipe(
-                   map(() => {
-                     this._authenticated.next(false);
-                     this._storeAuthToken(null);
-                     this._storeRefreshToken(null);
-                     this._storeUserInfo(null);
-                     return true;
-                   }),
-                   catchError(() => obsOf(false)),
-                   ) as Observable<boolean>;
+    const url =
+        `${this._generateUrl(this._config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
+    return this._httpClient.post(url, {}).pipe(
+               map(() => {
+                 this._authenticated.next(false);
+                 this._storeAuthToken(null);
+                 this._storeRefreshToken(null);
+                 this._storeUserInfo(null);
+                 return true;
+               }),
+               catchError(() => obsOf(false)),
+               ) as Observable<boolean>;
   }
 
   /**
    * Checks if the user currently has a Jwt auth token
    * @returns True if there is a JWT Auth token stored locally
    */
-  isLoggedIn(): boolean {
+  hasAuthToken(): boolean {
     return !!this.getAuthToken();
   }
 
@@ -153,21 +160,48 @@ export class AuthService {
   }
 
   /**
-   * Refreshes the JWT token
-   * @returns the refreshed Auth jwt token
+   * Refreshes the JWT token by providing a refresh token to FusioAuth refresh api.
+   * Stores the new authToken, if issued.
+   * @returns True if the token was successfully refreshed.
    */
   refreshToken(): Observable<boolean> {
+    if (!this.getAuthToken()) {
+      return obsOf(false);
+    }
     const req = {refreshToken: this.getRefreshToken()};
-    const url = this._generateUrl('api/jwt/refresh');
+    const url = this._generateUrl(this._config.refreshEndpoint ?? 'api/jwt/refresh');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
-    return this._httpClient.post<{token: string}>(url, req, {headers})
+    return this._httpClient.post<AuthResponse>(url, req, {headers})
                .pipe(
                    map(res => {
+                     this._authenticated.next(true);
+                     this._storeRefreshToken(res.refreshToken);
                      this._storeAuthToken(res.token);
                      return true;
                    }),
-                   catchError(() => obsOf(false)),
+                   catchError(
+                       () => {
+                         this._authenticated.next(false);
+                         return obsOf(false);
+                       },
+                       ),
                    ) as Observable<boolean>;
+  }
+
+  /**
+   * Checks the validity of the JWT auth token.
+   * @returns True if the token is valid.
+   */
+  checkToken(): boolean {
+    const token = this.getAuthToken();
+    if (!token) {
+      return false;
+    }
+    const decodedToken = this._decodeJwt(token);
+    if (decodedToken.exp != null && decodedToken.exp > (new Date().getTime() / 1000)) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -197,6 +231,7 @@ export class AuthService {
    * @param token The JWT auth token
    */
   private _storeAuthToken(token: string|null): void {
+    this.authToken.next(token);
     if (this._config.storeAuthToken != null) {
       this._config.storeAuthToken(token);
       return;
@@ -263,18 +298,30 @@ export class AuthService {
    * Check if a valid JWT token is stored and set the authentication status.
    */
   private _initAuthentication(): void {
-    const authToken = this.getAuthToken();
-    if (authToken == null) {
-      return;
-    }
     try {
-      const jwtParts = authToken.split('.');
-      const decoded = atob(jwtParts[1]);
-      const payload = JSON.parse(decoded) as {exp: number};
-      if (payload.exp != null && payload.exp > (new Date().getTime() / 1000)) {
+      if (this.checkToken()) {
         this._authenticated.next(true);
       }
     } catch (e) {
     }
   }
+
+  /**
+   * Decodes and parses a Jwt token
+   * @param token The token to be decoded.
+   * @returns The decoded token.
+   */
+  private _decodeJwt(token: string): JwtToken {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload =
+        decodeURIComponent(atob(base64)
+                               .split('')
+                               .map(function(c) {
+                                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                               })
+                               .join(''));
+
+    return JSON.parse(jsonPayload);
+  };
 }

@@ -20,16 +20,21 @@
  *
  */
 
-export * from './auth.guard';
-export * from './auth-module';
-export * from './auth-response';
-export * from './auth-service-config';
-export * from './auth-service';
-export * from './credentials';
-export * from './jwt-interceptor';
-export * from './jwt-token';
-export * from './login';
-export * from './login-response';
-export * from './two-factor-delivery';
-export * from './user';
-export * from './username-status';
+ /**
+  * Represents a JwtToken
+  */
+export interface JwtToken {
+  applicationId: string;
+  aud: string;
+  authenticationType: string;
+  email: string;
+  email_verified: boolean;
+  exp: number;
+  iat: number;
+  iss: string;
+  jti: string;
+  preferred_username: string;
+  roles: string[];
+  sub: string;
+}
+;

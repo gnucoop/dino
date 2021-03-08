@@ -20,16 +20,19 @@
  *
  */
 
-export * from './auth.guard';
-export * from './auth-module';
-export * from './auth-response';
-export * from './auth-service-config';
-export * from './auth-service';
-export * from './credentials';
-export * from './jwt-interceptor';
-export * from './jwt-token';
-export * from './login';
-export * from './login-response';
-export * from './two-factor-delivery';
-export * from './user';
-export * from './username-status';
+
+/**
+ * FusionAuth api response
+ */
+export interface AuthResponse {
+  /**
+   * The access token, this string is an encoded JSON Web Token (JWT).
+   */
+  token: string;
+
+  /**
+   * The refresh token that can be used to obtain a new access token once the provide
+   * one has expired.
+   */
+  refreshToken: string;
+}

@@ -40,20 +40,37 @@ import {AuthService} from './auth-service';
  */
 @Directive()
 export abstract class LoginComponent {
-  // An optional method to be executed after a successful login
+  /**
+   * True if the user is authenticated and logged in.
+   */
+  loggedIn: Observable<boolean>;
+
+  /**
+   * The login FormGroup.
+   */
+  readonly loginForm: FormGroup;
+
+  /**
+   * True if the submit button is disabled.
+   */
+  readonly submitDisabled: Observable<boolean>;
+  loggingIn = false;
+
+  /**
+   * True if login was not successful.
+   */
+  private _loginError: boolean = false;
+  get loginError(): boolean {
+    return this._loginError;
+  }
+
+  /**
+   * An optional method to be executed after a successful login
+   */
   private _postLogin: Function;
   @Input()
   set postLogin(fn: Function) {
     this._postLogin = fn;
-  }
-
-  readonly loginForm: FormGroup;
-  readonly submitDisabled: Observable<boolean>;
-  loggingIn = false;
-
-  private _loginError: boolean = false;
-  get loginError(): boolean {
-    return this._loginError;
   }
 
   constructor(
@@ -71,6 +88,8 @@ export abstract class LoginComponent {
         map(_ => !this.loginForm.valid),
         startWith(!this.loginForm.valid),
     );
+
+    this.loggedIn = this._authService.authenticated;
   }
 
   /**
@@ -108,6 +127,18 @@ export abstract class LoginComponent {
                           this.loggingIn = false;
                         });
   }
+
+  /**
+   * User logout method.
+   */
+  logout(): void {
+    const sub = this._authService.logout().subscribe(res => {
+      if (res) {
+        this._router.navigate([this._router.url]);
+      }
+    });
+  }
+
 
   private _setLoginError(error: boolean): void {
     if (this._loginError !== error) {

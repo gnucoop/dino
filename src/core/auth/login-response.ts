@@ -20,23 +20,13 @@
  *
  */
 
+import {AuthResponse} from './auth-response';
 import {User} from './user';
 
 /**
- * Login response
+ * Response of the FusionAuth login api.
  */
-export interface LoginResponse {
-  /**
-   * The access token, this string is an encoded JSON Web Token (JWT).
-   */
-  token: string;
-
-  /**
-   * The refresh token that can be used to obtain a new access token once the provide
-   * one has expired.
-   */
-  refreshToken: string;
-
+export interface LoginResponse extends AuthResponse {
   /**
    * The logged in user info.
    */

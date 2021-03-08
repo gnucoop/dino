@@ -45,6 +45,21 @@ export interface AuthServiceConfig {
   apiKey: string;
 
   /**
+   * Optional custom login endpoint url. Defaults to 'api/login',
+   */
+  loginEndpoint?: string;
+
+  /**
+   * Optional custom logout endpoint url. Defaults to 'api/logout',
+   */
+  logoutEndpoint?: string;
+
+  /**
+   * Optional custom jwt token refresh endpoint url. Defaults to 'api/jwt/refresh',
+   */
+  refreshEndpoint?: string;
+
+  /**
    * Function used to store the current JWT token.
    * The token will be stored in local storage if not specified.
    */
