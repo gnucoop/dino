@@ -21,7 +21,7 @@
  */
 
 import {EventEmitter, Inject, Injectable} from '@angular/core';
-import {AuthService} from '@dewco/core/auth';
+import {AuthService, JwtToken} from '@dewco/core/auth';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
@@ -42,12 +42,14 @@ import {
 import {
   catchError,
   debounceTime,
+  delay,
   map,
   mapTo,
   shareReplay,
   switchMap,
   take,
   tap,
+  withLatestFrom,
 } from 'rxjs/operators';
 import {SubscriptionClient} from 'subscriptions-transport-ws';
 import {v4 as uuidv4} from 'uuid';
@@ -124,9 +126,15 @@ export class DataService {
   private _activeSyncs:
       {[key: string]: {state: RxGraphQLReplicationState, sub: {unsubscribe: () => void}}} = {};
   private _config: DataServiceConfig;
+  /**
+   * Subscribes to the authtoken and registered collections changes and resets the graphql sync.
+   */
+  private _syncSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      private _authService: AuthService, @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig) {
+      private _authService: AuthService,
+      @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
+  ) {
     addRxPlugin(pouchdbAdapterIdb);
     addRxPlugin(pouchdbAdapterMemory);
     addRxPlugin(RxDBMigrationPlugin);
@@ -279,18 +287,22 @@ export class DataService {
   /**
    * Create a collection in the local database from a JSON schema
    * and sets up the GraphQL sync.
-   * Throws and error if the collection exist.
    * @param params The create collection request parameters.
    */
   createCollection(params: DataCreateCollectionRequest): Observable<boolean> {
     return this._db.pipe(
         switchMap(db => {
-          return from(db.collection(params.collection))
-              .pipe(
-                  tap(collection => this._addRegisteredCollection(collection, params)),
-                  mapTo(true),
-                  catchError(() => obsOf(false)),
-              );
+          const collection = db[params.collection.name] as RxCollection;
+          if (!collection) {
+            return from(db.collection(params.collection))
+                .pipe(
+                    tap(coll => this._addRegisteredCollection(coll, params)),
+                    mapTo(true),
+                    catchError(() => obsOf(false)),
+                );
+          }
+          this._addRegisteredCollection(collection, params);
+          return obsOf(true);
         }),
     );
   }
@@ -375,41 +387,58 @@ export class DataService {
     const collectionChange = this._registeredCollections.pipe(
         debounceTime(300),
     );
-
-    combineLatest([this._authService.authenticated, collectionChange])
-        .subscribe(
-            ([auth, registeredCollections]) => {
-              if (auth) {
-                const collectionNames = [] as string[];
-                registeredCollections.forEach(registeredCollection => {
-                  const {collection, ...params} = registeredCollection;
-                  collectionNames.push(collection.name);
-                  if (this._activeSyncs[collection.name] == null) {
-                    this._setupCollectionSync(collection, params);
-                  }
-                });
-                Object.keys(this._activeSyncs).forEach(collectionName => {
-                  if (collectionNames.indexOf(collectionName) === -1) {
-                    this._stopCollectionSync(collectionName);
-                  }
-                });
-              } else {
-                Object.keys(this._activeSyncs).forEach(this._stopCollectionSync);
-              }
-            },
-        );
+    this._syncSub.unsubscribe();
+    this._syncSub = combineLatest([
+                      collectionChange,
+                      this._authService.authToken,
+                    ])
+                        .pipe(withLatestFrom(this._authService.authenticated))
+                        .subscribe(
+                            ([
+                              [
+                                registeredCollections,
+                                token,
+                              ],
+                              auth,
+                            ]) => {
+                              if (auth && token != null) {
+                                const collectionNames = [] as string[];
+                                registeredCollections.forEach(registeredCollection => {
+                                  const {collection, ...params} = registeredCollection;
+                                  collectionNames.push(collection.name);
+                                  this._setupCollectionSync(collection, params, token);
+                                });
+                                Object.keys(this._activeSyncs).forEach(collectionName => {
+                                  if (collectionNames.indexOf(collectionName) === -1) {
+                                    this._stopCollectionSync(collectionName);
+                                  }
+                                });
+                              } else {
+                                Object.keys(this._activeSyncs).forEach(k => {
+                                  this._stopCollectionSync(k);
+                                });
+                              }
+                            },
+                        );
   }
 
   /**
    * Set up a collection sync.
    * @param collection The collection to sync.
    * @param parent The sync parameters.
+   * @param token The current JWT authorization token.
    */
-  private _setupCollectionSync(collection: RxCollection, params: CollectionSyncParams): void {
+  private _setupCollectionSync(
+      collection: RxCollection,
+      params: CollectionSyncParams,
+      token: string,
+      ): void {
+    this._stopCollectionSync(collection.name);
     const state = collection.syncGraphQL({
       ...this._config.syncOptions,
       url: this._config.syncOptions.url,
-      deletedFlag: 'deleted',
+      headers: {'Authorization': `Bearer ${token}`},
+      deletedFlag: 'is_deleted',
       pull: {
         queryBuilder:
             pullQueryBuilder(collection, this._config.syncOptions, params.pullQueryExtraParams),
@@ -421,8 +450,23 @@ export class DataService {
     let sub: {unsubscribe: () => void} = Subscription.EMPTY;
     if (this._config.syncOptions.live && this._config.syncOptions.wsUrl != null) {
       const client = new SubscriptionClient(
-          this._config.syncOptions.wsUrl, {reconnect: true},
-          this._config.syncOptions.webSocketImpl);
+          this._config.syncOptions.wsUrl,
+          {
+            reconnect: true,
+            reconnectionAttempts: 5,
+            connectionCallback: (error: Error[]) => {
+              if (error) {
+                const errMessage = error.toString();
+                if (errMessage === 'Could not verify JWT: JWTExpired') {
+                  client.close(true);
+                  this._authService.refreshToken().pipe(take(1)).subscribe();
+                }
+              }
+            },
+            connectionParams: {headers: {'Authorization': `Bearer ${token}`}},
+          },
+          this._config.syncOptions.webSocketImpl,
+      );
       const query = subscriptionQueryBuilder(collection);
       sub = client.request({query}).subscribe({
         next: () => {
@@ -430,6 +474,7 @@ export class DataService {
             state.recieved$
                 .pipe(
                     take(1),
+                    delay(500),
                     )
                 .subscribe(() => {
                   this._collectionChanged.emit({
@@ -465,7 +510,7 @@ export class DataService {
 const DEFAULT_SYNC_OPTIONS = {
   batchSize: 100,
   live: true,
-  liveInterval: 60000,
+  liveInterval: 60 * 1000,
 };
 
 /**

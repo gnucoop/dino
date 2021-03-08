@@ -28,7 +28,8 @@ import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
 
 const MAX_ITERATIONS = 100;
-const SYNC_IGNORED_PROPERTIES = ['_rev', '_attachments'];
+const SYNC_IGNORED_PROPERTIES = ['_rev', '_attachments', '_id'];
+const UPDATE_IGNORED_PROPERTIES = [...SYNC_IGNORED_PROPERTIES, 'created_at', 'id'];
 
 /**
  * Builds a GraphQL query used to pull documents belonging to a given collection in pull sync.
@@ -60,20 +61,22 @@ export function pullQueryBuilder(
         ${fields.join(' ')}
       }
     }`;
+    const unquotedQuery = query.replace(/"([^"]+)":/g, '$1:');
     const variables = {};
-    return {query, variables};
+    return {query: unquotedQuery, variables};
   };
 }
 
 /**
  * Builds a GraphQL query used to push documents belonging to a given collection in pull sync.
  * @param collection The collection to be synced.
- * @param params Option extra parameters to be included in the query.
+ * @param extraParams Option extra parameters to be included in the query.
  */
 export function pushQueryBuilder<T extends Model = Model>(
     collection: RxCollection,
     extraParams?: PushQueryExtraParams): RxGraphQLReplicationQueryBuilder {
   const ucfCollectionName = ucfirst(collection.name);
+  const updateFields = getCollectionUpdateFields(collection);
   return (doc: T) => {
     if (extraParams && extraParams.docModifier) {
       doc = extraParams.docModifier(doc);
@@ -81,13 +84,17 @@ export function pushQueryBuilder<T extends Model = Model>(
     const query = `
       mutation Insert${ucfCollectionName}($doc: [${collection.name}_insert_input!]!) {
         insert_${collection.name}(
-          objects: $doc
-        ){
+          objects: $doc,
+          on_conflict: {
+            constraint: ${collection.name}_pkey,
+            update_columns: [${updateFields.join(', ')}]
+        })
+        {
           returning {id}
         }
       }
     `;
-    const variables = {doc};
+    const variables = {'doc': [doc]};
     return {query, variables};
   };
 }
@@ -98,10 +105,11 @@ export function pushQueryBuilder<T extends Model = Model>(
  */
 export function subscriptionQueryBuilder(collection: RxCollection): string {
   const ucfCollectionName = ucfirst(collection.name);
+  const fields = getCollectionFields(collection);
   return `
     subscription on${ucfCollectionName}Changed {
       ${collection.name} {
-        id
+        ${fields.join(' ')}
       }
     }
   `;
@@ -195,6 +203,15 @@ function findSatisfiedDeps(collections: RxCollection[], deps: string[]):
 function getCollectionFields(collection: RxCollection): string[] {
   return Object.keys(collection.schema.jsonSchema.properties)
       .filter(property => SYNC_IGNORED_PROPERTIES.indexOf(property) === -1);
+}
+
+/**
+ * Returns an array containing the collection fields to be updated.
+ * @param collection The input collection.
+ */
+function getCollectionUpdateFields(collection: RxCollection): string[] {
+  return Object.keys(collection.schema.jsonSchema.properties)
+      .filter(property => UPDATE_IGNORED_PROPERTIES.indexOf(property) === -1);
 }
 
 /**

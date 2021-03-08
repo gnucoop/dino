@@ -36,7 +36,7 @@ import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {DataListOptions, DataQueryOptions, DataQuerySort} from './data-options-interface';
 import {Permission} from './data-permission';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
-import {DataService} from './data-service';
+import {CollectionChangedEvent, DataService} from './data-service';
 import {InsertModel} from './insert-model';
 import {Model} from './model';
 
@@ -75,6 +75,13 @@ export abstract class DataModelManager<T extends Model = Model> {
    */
   get collectionSchema(): RxJsonSchema {
     return this._collectionSchema;
+  }
+
+  /**
+   * Exposes the data services collectionChanged event
+   */
+  get collectionChanged(): Observable<CollectionChangedEvent> {
+    return this._dataService.collectionChanged;
   }
 
   /**
