@@ -23,8 +23,11 @@ def _getDefaultTsConfig(testonly):
         return _DEFAULT_TSCONFIG_BUILD
 
 def sass_binary(sourcemap = False, **kwargs):
+    include_paths = kwargs.pop("include_paths", [])
+    include_paths.append("src")
     _sass_binary(
         sourcemap = sourcemap,
+        include_paths = include_paths,
         **kwargs
     )
 
