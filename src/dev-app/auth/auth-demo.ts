@@ -50,11 +50,4 @@ export class AuthDemo {
     this._authService.login(this.loginForm.value as Credentials)
         .subscribe(loggedIn => (this.loginResult = loggedIn ? 'success' : 'failure'));
   }
-
-  authorized_access(): void {
-    if (!this._authService.isLoggedIn()) {
-      alert('Not logged in!');
-      return;
-    }
-  }
 }
