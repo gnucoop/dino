@@ -1,0 +1,212 @@
+<mat-chip-list aria-label="test">
+    <mat-chip>
+        Chip A
+        <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <mat-chip>
+        Chip B
+        <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <mat-chip>
+        Chip C
+        <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+</mat-chip-list>
+
+<mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+</mat-paginator>
+
+<mat-tab-group>
+    <mat-tab [label]="'Tab A'">
+
+        <!-- Number card -->
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Number</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Test number field">
+                </mat-form-field>
+                <mat-button-toggle-group>
+                    <mat-button-toggle>
+                        {{'<'}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'>'}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'<='}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'>='}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'=='}}
+                    </mat-button-toggle>
+                    <mat-button-toggle>
+                        {{'!='}}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </mat-card-content>
+
+            <mat-card-actions>
+                Exclude <mat-slide-toggle [name]="'Test input'">
+                </mat-slide-toggle> Include
+            </mat-card-actions>
+        </mat-card>
+
+        <!-- Boolean card -->
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Boolean</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <mat-form-field class="dewco-no-underline">
+                    No <mat-slide-toggle matInput [name]="'booltest'">
+                    </mat-slide-toggle> Yes
+                    <textarea matInput hidden></textarea>
+                </mat-form-field>
+            </mat-card-content>
+
+            <mat-card-actions>
+                Exclude <mat-slide-toggle [name]="'Test input'">
+                </mat-slide-toggle> Include
+            </mat-card-actions>
+        </mat-card>
+
+        <!-- Single choice card -->
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Single Choice</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <mat-form-field>
+                    <mat-select placeholder="Single choice select" required>
+                        <mat-option class="dewco-default-option"><span class="material-icons"> arrow_drop_up </span>
+                            Card title
+                        </mat-option>
+                        <mat-option [value]="1">
+                            Option A
+                        </mat-option>
+                        <mat-option [value]="2">
+                            Option B
+                        </mat-option>
+                        <mat-option [value]="3">
+                            Option C
+                        </mat-option>
+                        <mat-option [value]="4">
+                            Option D
+                        </mat-option>
+                        <mat-option [value]="5">
+                            Option E
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                Exclude <mat-slide-toggle [name]="'Test input'">
+                </mat-slide-toggle> Include
+            </mat-card-actions>
+        </mat-card>
+
+        <!-- Multiple choices card -->
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Multiple Choice</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <mat-form-field>
+                    <mat-select placeholder="Multiple choice select" required multiple>
+                        <mat-option class="dewco-default-option"><span class="material-icons"> arrow_drop_up </span>
+                            Card title
+                        </mat-option>
+                        <mat-option [value]="1">
+                            Option A
+                        </mat-option>
+                        <mat-option [value]="2">
+                            Option B
+                        </mat-option>
+                        <mat-option [value]="3">
+                            Option C
+                        </mat-option>
+                        <mat-option [value]="4">
+                            Option D
+                        </mat-option>
+                        <mat-option [value]="5">
+                            Option E
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                Exclude <mat-slide-toggle [name]="'Test input'">
+                </mat-slide-toggle> Include
+            </mat-card-actions>
+        </mat-card>
+
+        <!-- Datepicker card -->
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Dewco Test Mat Card</mat-card-title>
+                <mat-card-subtitle>Datepicker</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <mat-form-field appearance="standard">
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matStartDate placeholder="Start date">
+                        <input matEndDate placeholder="End date">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </mat-card-content>
+
+            <mat-card-actions>
+                Exclude <mat-slide-toggle [name]="'Test input'">
+                </mat-slide-toggle> Include
+            </mat-card-actions>
+        </mat-card>
+
+    </mat-tab>
+    <mat-tab [label]="'Tab B'"></mat-tab>
+    <mat-tab [label]="'Tab C'"></mat-tab>
+    <mat-tab [label]="'Tab D'"></mat-tab>
+    <mat-tab [label]="'Tab E'"></mat-tab>
+</mat-tab-group>
+
+<div class="example-button-row">
+    <button mat-stroked-button>Basic</button>
+    <button mat-stroked-button color="primary">Primary</button>
+    <button mat-stroked-button color="accent">Accent</button>
+    <button mat-stroked-button color="warn">Warn</button>
+    <button mat-stroked-button disabled>Disabled</button>
+    <a mat-stroked-button href="https://www.google.com/" target="_blank">Link</a>
+</div>
+
+<div class="example-button-row">
+    <button mat-raised-button>Basic</button>
+    <button mat-raised-button color="primary">Primary</button>
+    <button mat-raised-button color="accent">Accent</button>
+    <button mat-raised-button color="warn">Warn</button>
+    <button mat-raised-button disabled>Disabled</button>
+    <a mat-raised-button href="https://www.google.com/" target="_blank">Link</a>
+</div>
+<br><br>
+<div class="example-button-row">
+    <button mat-stroked-button (click)="changeTheme('e2e_main_theme')">Main Theme</button>
+    <button mat-stroked-button (click)="changeTheme('e2e_alt_theme')">Alt Theme</button>
+</div>

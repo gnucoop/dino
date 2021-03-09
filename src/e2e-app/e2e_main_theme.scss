@@ -1,0 +1,34 @@
+@import '../material/core/core';
+
+// Include non-theme styles for core.
+@include dewco-mat-core();
+
+// Define a theme.
+$primary: mat-palette($mat-green);
+$accent: mat-palette($mat-deep-purple, 600, 100, 800);
+$warn: mat-palette($mat-red);
+$alt_accent: mat-palette($dewco-blue, 500);
+
+$theme: dewco-light-theme(
+    (
+        color: (
+            primary: $primary,
+            accent: $accent,
+            warn: $warn,
+            alt_accent: $alt_accent,
+        ),
+    )
+);
+
+// Include all theme styles for the components.
+@include dewco-material-theme($theme);
+
+// @include paginator-theme($component-theme);
+
+// Define a custom typography
+// $component-typography: mat-typography-config(
+//     $font-family: "'Big Shoulders Stencil Display', cursive",
+//     $headline: mat-typography-level(32px, 48px, 700),
+//     $body-1: mat-typography-level(13px, 22px, 500),
+// );
+// @include tabs-typography($component-typography);

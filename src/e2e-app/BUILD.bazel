@@ -1,6 +1,6 @@
 load("@npm//@bazel/concatjs:index.bzl", "concatjs_devserver")
 load("//:packages.bzl", "getAngularUmdTargets")
-load("//tools:defaults.bzl", "ng_module")
+load("//tools:defaults.bzl", "ng_module", "sass_binary")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -38,6 +38,22 @@ ng_module(
     ],
 )
 
+sass_binary(
+    name = "e2e_main_theme",
+    src = "e2e_main_theme.scss",
+    deps = [
+        "//src/material/core:theming_scss_lib",
+    ],
+)
+
+sass_binary(
+    name = "e2e_alt_theme",
+    src = "e2e_alt_theme.scss",
+    deps = [
+        "//src/material/core:theming_scss_lib",
+    ],
+)
+
 concatjs_devserver(
     name = "devserver",
     testonly = True,
@@ -63,6 +79,8 @@ concatjs_devserver(
         "@npm//core-js-bundle",
         "@npm//@webcomponents/custom-elements",
         ":index.html",
+        ":e2e_main_theme.css",
+        ":e2e_alt_theme.css",
     ],
     tags = ["manual"],
     deps = [":e2e-app"],
