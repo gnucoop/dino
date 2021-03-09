@@ -5,7 +5,6 @@ import {FormData} from '@dewco/core/forms';
 import {FilterGroup, ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
 // import {Observable, of as obsOf} from 'rxjs';
-import {MaterialListE2eModule} from './list-e2e.module';
 
 import {testFormData, testFormData_loc} from './test-ajf-formdata';
 
@@ -163,7 +162,7 @@ export const displayedHeaders: ListHeader<PeriodicElement>[] = [
 //   }
 // }
 
-@Injectable({providedIn: MaterialListE2eModule})
+@Injectable()
 export class ElementManager extends DataModelManager<PeriodicElement> {
   constructor(
       dataService: DataService,

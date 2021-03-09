@@ -4,6 +4,7 @@ import {LocationModule} from '@dewco/core/locations';
 import {ProjectModule} from '@dewco/core/projects';
 import {ListModule} from '@dewco/material/list';
 import {SearchFiltersBarModule} from '@dewco/material/search-filters-bar';
+import {ElementManager} from './element-manager';
 
 import {MatListE2E} from './list-e2e';
 
@@ -17,6 +18,9 @@ import {MatListE2E} from './list-e2e';
     FormsModule,
     ProjectModule,
     SearchFiltersBarModule,
+  ],
+  providers: [
+    ElementManager,
   ],
 })
 export class MaterialListE2eModule {
