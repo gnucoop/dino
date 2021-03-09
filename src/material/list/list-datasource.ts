@@ -141,6 +141,12 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   private _filterParamsSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the collectionChanged event of the data service, and
+   * refreshes the data whenever it's emitted.
+   */
+  private _collectionChangedSub: Subscription = Subscription.EMPTY;
+
+  /**
    * @param _dataModelManager The main model DataModelManager.
    * @param _fs The service managing the List filters.
    * @param _additionalDataManager The optional manager used to generate additional
@@ -181,7 +187,12 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
                 catchError(err => throwError(err) as Observable<string>),
                 )
             .subscribe(queryString => this.queryDM(queryString));
+
+    this._collectionChangedSub = this._dataModelManager.collectionChanged.subscribe(_ => {
+      this.refreshListData.next(true);
+    });
   }
+
 
   /**
    * Returns the items displayed on the current list page
@@ -336,6 +347,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    */
   disconnect(): void {
     this._addionalDataSub.unsubscribe();
+    this._collectionChangedSub.unsubscribe();
     this._dataResultsSub.unsubscribe();
     this._filterParamsSub.unsubscribe();
 

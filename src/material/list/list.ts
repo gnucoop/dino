@@ -38,7 +38,6 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -393,5 +392,6 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   ngOnDestroy() {
     this._actionsSub.unsubscribe();
     this._columnsDialogSub.unsubscribe();
+    this._dataSource.disconnect();
   }
 }
