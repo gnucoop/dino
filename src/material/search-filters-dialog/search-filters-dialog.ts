@@ -111,9 +111,9 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     // This is where the setup of all widgets data happens
-    this.filterItemsData = this._currentGroupId.pipe(
-        withLatestFrom(this.fts.generatedFilters),
-        map(([id, groups]) => groups[id] as FilterGroup),
+    this.filterItemsData = this.fts.generatedFilters.pipe(
+        withLatestFrom(this._currentGroupId),
+        map(([groups, id]) => groups[id] as FilterGroup),
         map((group) => group.filterGroupAdditionalFilters ?
                 group.filterGroupAdditionalFilters.filter(
                     ft => ft.fieldType !== AjfFieldType.Empty) :
