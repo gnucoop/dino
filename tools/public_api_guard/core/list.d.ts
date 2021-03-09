@@ -38,21 +38,21 @@ export interface FilterItem extends Partial<AjfField> {
 
 export declare type FilterListType = 'basic' | 'additional' | 'temporary' | 'all';
 
-export declare class FiltersService implements OnDestroy {
-    get activeFilters(): Subject<FilterItem[]>;
+export declare class FiltersService {
     get additionalFilters(): BehaviorSubject<FilterItem[]>;
     get availableBasicFilterLabels(): string[];
     get basicFilters(): BehaviorSubject<FilterItem[]>;
-    get generatedFilters(): BehaviorSubject<FilterGroup[]>;
-    get generatedModelFilters(): Subject<FilterGroup[]>;
+    get currentBasicFilterLabels(): string[];
+    get generatedFilters(): Observable<FilterGroup[]>;
+    get generatedModelFilters(): BehaviorSubject<FilterGroup[]>;
     set listReady(status: boolean);
     get loadPresetEvent(): EventEmitter<boolean>;
-    get queryString(): BehaviorSubject<string>;
+    get queryString(): Observable<string>;
     set setCustomFilters(filterGroups: FilterGroup[]);
     get temporaryFilters(): BehaviorSubject<FilterItem[]>;
     constructor(_route: ActivatedRoute, _router: Router);
     addAvailableFilterLabel(label: string): void;
-    addBasicFilter(basicFilter: FormGroup): void;
+    addBasicFilter(ftName: string): void;
     addFilter(filterItem: FilterItem, filterList: FilterListType): void;
     checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean;
     checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean;
@@ -61,7 +61,6 @@ export declare class FiltersService implements OnDestroy {
     initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]>;
     loadPreset(encodedString?: string): void;
     loadPresetTrigger(): void;
-    ngOnDestroy(): void;
     removeFilter(filterItem: FilterItem, filterList: FilterListType[] | FilterListType): Observable<boolean>;
     resetTemporaryFilters(): void;
     setAdditionalFilters(filters?: FilterGroup[]): void;
