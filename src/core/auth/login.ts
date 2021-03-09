@@ -134,6 +134,9 @@ export abstract class LoginComponent {
   logout(): void {
     const sub = this._authService.logout().subscribe(res => {
       if (res) {
+        if (sub) {
+          sub.unsubscribe();
+        }
         this._router.navigate([this._router.url]);
       }
     });

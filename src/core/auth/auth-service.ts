@@ -312,9 +312,9 @@ export class AuthService {
    * @returns The decoded token.
    */
   private _decodeJwt(token: string): JwtToken {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload =
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let jsonPayload =
         decodeURIComponent(atob(base64)
                                .split('')
                                .map(function(c) {
@@ -323,5 +323,5 @@ export class AuthService {
                                .join(''));
 
     return JSON.parse(jsonPayload);
-  };
+  }
 }

@@ -37,4 +37,3 @@ export interface JwtToken {
   roles: string[];
   sub: string;
 }
-;

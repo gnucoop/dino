@@ -8,8 +8,7 @@ import {MAT_TOOLTIP_SCROLL_STRATEGY} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-import {AuthService} from '@dewco/core/auth';
-import {AuthModule} from '@dewco/core/auth';
+import {AuthModule, AuthService} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG} from '@dewco/core/data';
 import {TranslateModule} from '@ngx-translate/core';
 

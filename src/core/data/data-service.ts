@@ -21,7 +21,7 @@
  */
 
 import {EventEmitter, Inject, Injectable} from '@angular/core';
-import {AuthService, JwtToken} from '@dewco/core/auth';
+import {AuthService} from '@dewco/core/auth';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';

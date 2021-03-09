@@ -39,20 +39,20 @@ import {AuthService} from './auth-service';
  */
 @Injectable({providedIn: 'root'})
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private _router: Router, private _authService: AuthService) {}
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
       Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
-    return this.authService.authenticated.pipe(
+    return this._authService.authenticated.pipe(
         map(authenticated => {
-          const validated = this.authService.checkToken();
+          const validated = this._authService.checkToken();
           if (authenticated && validated) {
             return true;
           }
-          this.authService.refreshToken().subscribe(res => {
+          this._authService.refreshToken().subscribe(res => {
             if (res) {
-              this.router.navigate([state.url]);
+              this._router.navigate([state.url]);
             } else {
-              this.router.navigate(['mat-login']);
+              this._router.navigate(['mat-login']);
             }
           });
           return false;

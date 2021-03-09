@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {AuthModule} from '@dewco/core/auth';
 import {LoginModule} from '@dewco/material/login';
@@ -23,7 +23,7 @@ import {MatLoginE2E} from './login-e2e';
   imports: [
     AuthModule,
     CommonModule,
-    LoginModule,    
+    LoginModule,
   ],
   // providers: [
   //   {provide: AuthService, useValue: authServiceMock},
