@@ -1,5 +1,12 @@
 export declare const AUTH_SERVICE_CONFIG: InjectionToken<AuthServiceConfig>;
 
+export declare class AuthGuard implements CanActivate {
+    constructor(_router: Router, _authService: AuthService);
+    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree;
+    static ɵfac: i0.ɵɵFactoryDef<AuthGuard, never>;
+    static ɵprov: i0.ɵɵInjectableDef<AuthGuard>;
+}
+
 export declare class AuthModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<AuthModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<AuthModule>;
@@ -7,13 +14,20 @@ export declare class AuthModule {
     static forRoot(config: AuthServiceConfig): ModuleWithProviders<AuthModule>;
 }
 
+export interface AuthResponse {
+    refreshToken: string;
+    token: string;
+}
+
 export declare class AuthService {
+    readonly authToken: BehaviorSubject<string | null>;
     readonly authenticated: Observable<boolean>;
     constructor(_httpClient: HttpClient, _config: AuthServiceConfig);
+    checkToken(): boolean;
     getAuthToken(): string | null;
     getRefreshToken(): string | null;
     getUserInfo(): User | null;
-    isLoggedIn(): boolean;
+    hasAuthToken(): boolean;
     login(credentials: Credentials): Observable<boolean>;
     logout(allDevices?: boolean): Observable<boolean>;
     refreshToken(): Observable<boolean>;
@@ -26,6 +40,9 @@ export interface AuthServiceConfig {
     applicationId: string;
     authTokenLocalStorageKey?: string;
     host: string;
+    loginEndpoint?: string;
+    logoutEndpoint?: string;
+    refreshEndpoint?: string;
     refreshTokenLocalStorageKey?: string;
     retrieveAuthToken?: () => string | null;
     retrieveRefreshToken?: () => string | null;
@@ -48,7 +65,23 @@ export declare class JWTInterceptor implements HttpInterceptor {
     static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
 }
 
+export interface JwtToken {
+    applicationId: string;
+    aud: string;
+    authenticationType: string;
+    email: string;
+    email_verified: boolean;
+    exp: number;
+    iat: number;
+    iss: string;
+    jti: string;
+    preferred_username: string;
+    roles: string[];
+    sub: string;
+}
+
 export declare abstract class LoginComponent {
+    loggedIn: Observable<boolean>;
     loggingIn: boolean;
     get loginError(): boolean;
     readonly loginForm: FormGroup;
@@ -56,13 +89,12 @@ export declare abstract class LoginComponent {
     readonly submitDisabled: Observable<boolean>;
     constructor(_authService: AuthService, _router: Router, fb: FormBuilder, _cdr: ChangeDetectorRef);
     login(): void;
+    logout(): void;
     static ɵdir: i0.ɵɵDirectiveDeclaration<LoginComponent, never, never, { "postLogin": "postLogin"; }, {}, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<LoginComponent, never>;
 }
 
-export interface LoginResponse {
-    refreshToken: string;
-    token: string;
+export interface LoginResponse extends AuthResponse {
     user: User;
 }
 
