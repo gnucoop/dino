@@ -12,5 +12,7 @@ export const commitMessage: CommitMessageConfig = {
     'core/data',
     'ionic/login',
     'material/login',
+    'material',
+    'e2e-material',
   ],
 };

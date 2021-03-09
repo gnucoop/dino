@@ -1,0 +1,33 @@
+@mixin table-core($typography-config: null) {
+    .mat-table {
+        border-collapse: separate;
+        width: 100%;
+        border-spacing: 0 16px !important;
+        padding-bottom: 8px;
+
+        .mat-header-cell,
+        .mat-cell,
+        .mat-footer-cell {
+            -moz-background-clip: padding;
+            -webkit-background-clip: padding;
+            background-clip: padding-box;
+
+            border-bottom-width: 0 !important;
+            border-bottom-style: none !important;
+            border-color: transparent;
+            height: 60px;
+
+            .mat-icon {
+                padding: 5px;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+        }
+
+        .mat-header-row,
+        .mat-row {
+            margin-bottom: 16px;
+            border-style: none;
+        }
+    }
+}

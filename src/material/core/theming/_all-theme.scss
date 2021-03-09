@@ -1,0 +1,66 @@
+// Import private elevation mixins
+@import '../mat-styles/private';
+
+// Import all the theming functionality.
+@import '../../button/button-theme';
+@import '../../card/card-theme';
+@import '../../checkbox/checkbox-theme';
+@import '../../chips/chips-theme';
+@import '../../table/table-theme';
+@import '../../datepicker/datepicker-theme';
+@import '../../paginator/paginator-theme';
+@import '../../select/select-theme';
+@import '../../sidenav/sidenav-theme';
+@import '../../slide-toggle/slide-toggle-theme';
+@import '../../tabs/tabs-theme';
+@import '../../form-field/form-field-theme';
+
+// Create a theme.
+@mixin dewco-material-theme($theme-or-color-config) {
+    // Legacy themes color handling
+    $theme: _mat-legacy-get-theme($theme-or-color-config);
+
+    // Material core theming mixin
+    @include mat-core-theme($theme);
+
+    // Check for duplicate theme styles
+    @include _mat-check-duplicate-theme-styles($theme, 'dewco-material') {
+        // Material theming mixins
+        @include mat-autocomplete-theme($theme);
+        @include mat-badge-theme($theme);
+        @include mat-bottom-sheet-theme($theme);
+        @include mat-button-toggle-theme($theme);
+        @include mat-dialog-theme($theme);
+        @include mat-divider-theme($theme);
+        @include mat-expansion-panel-theme($theme);
+        @include mat-grid-list-theme($theme);
+        @include mat-icon-theme($theme);
+        @include mat-input-theme($theme);
+        @include mat-list-theme($theme);
+        @include mat-menu-theme($theme);
+        @include mat-progress-bar-theme($theme);
+        @include mat-progress-spinner-theme($theme);
+        @include mat-radio-theme($theme);
+        @include mat-slider-theme($theme);
+        @include mat-stepper-theme($theme);
+        @include mat-sort-theme($theme);
+        @include mat-toolbar-theme($theme);
+        @include mat-tooltip-theme($theme);
+        @include mat-tree-theme($theme);
+        @include mat-snack-bar-theme($theme);
+
+        // Dewco theming mixins
+        @include button-theme($theme);
+        @include card-theme($theme);
+        @include checkbox-theme($theme);
+        @include chips-theme($theme);
+        @include datepicker-theme($theme);
+        @include form-field-theme($theme);
+        @include paginator-theme($theme);
+        @include select-theme($theme);
+        @include sidenav-theme($theme);
+        @include slide-toggle-theme($theme);
+        @include table-theme($theme);
+        @include tabs-theme($theme);
+    }
+}

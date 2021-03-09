@@ -1,0 +1,15 @@
+@mixin chips-core($typography-config: null) {
+    .mat-chip-list {
+        border: none;
+        outline: none;
+        .mat-chip-list-wrapper {
+            padding: 15px 0;
+        }
+    }
+    .mat-chip.mat-standard-chip {
+        border-radius: 15px;
+        .mat-icon.mat-chip-remove {
+            opacity: 0.8;
+        }
+    }
+}

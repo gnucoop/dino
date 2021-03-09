@@ -1,0 +1,93 @@
+@mixin table-color($config-or-theme) {
+  $config: mat-get-color-config($config-or-theme);
+  $primary: map-get($config, primary);
+  $accent: map-get($config, accent);
+  $warn: map-get($config, warn);
+  $alt_accent: map-get($config, alt_accent);
+
+  $background: map-get($config, background);
+  $foreground: map-get($config, foreground);
+
+  .mat-table {
+    background: mat-color($background, background);
+    .mat-row:hover {
+      box-shadow: 0 2px 4px 0 #b9b9b9;
+    }
+
+    .mat-icon {
+      color: mat-color($alt_accent);
+      &:hover {
+        background: mat-color($accent, lighter);
+        color: mat-color($accent);
+      }
+    }
+  }
+
+  .mat-table thead,
+  .mat-table tbody,
+  .mat-table tfoot,
+  .mat-table-sticky {
+    background: inherit;
+  }
+
+  mat-row,
+  mat-footer-row,
+  [mat-row],
+  [mat-footer-row] {
+    background: mat-color($background, card);
+  }
+
+  .mat-cell:first-of-type,
+  .mat-footer-cell:first-of-type {
+    border-left: 3px solid mat-color($alt_accent);
+  }
+
+  .mat-header-cell:first-of-type {
+    border-left: 3px solid transparent;
+  }
+
+  .mat-header-cell {
+    color: mat-color($foreground, secondary-text);
+  }
+
+  .mat-cell,
+  .mat-footer-cell {
+    color: mat-color($foreground, text);
+  }
+}
+
+@mixin mat-table-typography($config-or-theme) {
+  $config: mat-get-typography-config($config-or-theme);
+  .mat-table {
+    font-family: mat-font-family($config);
+  }
+
+  .mat-header-cell {
+    font-size: mat-font-size($config, title);
+    font-weight: mat-font-weight($config, title);
+  }
+
+  .mat-cell,
+  .mat-footer-cell {
+    font-size: mat-font-size($config, body-1);
+  }
+}
+
+@mixin _mat-table-density($config-or-theme) {
+}
+
+@mixin table-theme($theme-or-color-config) {
+  $color: mat-get-color-config($theme-or-color-config);
+  $density: mat-get-density-config($theme-or-color-config);
+  $typography: mat-get-typography-config($theme-or-color-config);
+
+  @if $color != null {
+    @include table-color($color);
+  }
+  @if $density != null {
+    @include _mat-table-density($density);
+  }
+  @if $typography != null {
+    @include mat-table-typography($typography);
+  }
+}

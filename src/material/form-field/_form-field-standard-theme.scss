@@ -1,0 +1,37 @@
+// Theme styles that only apply to the standard appearance of the form-field.
+
+@mixin form-field-standard-color($config-or-theme) {
+    $config: mat-get-color-config($config-or-theme);
+    $foreground: map-get($config, foreground);
+    $is-dark-theme: map-get($config, is-dark);
+
+    $underline-color: mat-color($foreground, divider, if($is-dark-theme, 0.7, 0.42));
+
+    .mat-form-field-appearance-standard {
+        &.mat-form-field-disabled .mat-form-field-underline {
+            color: $underline-color;
+        }
+    }
+}
+
+@mixin mat-form-field-standard-typography($config-or-theme) {
+}
+
+@mixin _mat-form-field-standard-density($config-or-theme) {
+}
+
+@mixin form-field-standard-theme($theme-or-color-config) {
+    $color: mat-get-color-config($theme-or-color-config);
+    $density: mat-get-density-config($theme-or-color-config);
+    $typography: mat-get-typography-config($theme-or-color-config);
+
+    @if $color != null {
+        @include form-field-standard-color($color);
+    }
+    @if $density != null {
+        @include _mat-form-field-standard-density($density);
+    }
+    @if $typography != null {
+        @include mat-form-field-standard-typography($typography);
+    }
+}

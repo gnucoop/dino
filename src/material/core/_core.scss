@@ -1,0 +1,69 @@
+@import '~@angular/material/theming.scss';
+
+@import './theming/palette';
+@import './theming/all-theme';
+@import './all-core';
+
+// Creates a light-themed color configuration from the specified
+// primary, accent and warn palettes.
+@function _light-color-config($primary, $accent, $warn: null, $alt_accent: null) {
+    @return (
+        primary: $primary,
+        accent: $accent,
+        warn: if($warn != null, $warn, mat-palette($mat-red)),
+        alt_accent: if($alt_accent != null, $alt_accent, $accent),
+        is-dark: false,
+        foreground: $light-theme-foreground,
+        background: $light-theme-background
+    );
+}
+
+// Creates a light-themed color configuration from the specified
+// primary, accent and warn palettes.
+@function _dark-color-config($primary, $accent, $warn: null, $alt_accent: null) {
+    @return (
+        primary: $primary,
+        accent: $accent,
+        warn: if($warn != null, $warn, mat-palette($mat-red)),
+        alt_accent: if($alt_accent != null, $alt_accent, $accent),
+        is-dark: true,
+        foreground: $dark-theme-foreground,
+        background: $dark-theme-background
+    );
+}
+
+@function dewco-light-theme($config) {
+    $result: $config;
+    @if map-get($config, color) {
+        $color-settings: map-get($config, color);
+        $primary: map-get($color-settings, primary);
+        $accent: map-get($color-settings, accent);
+        $warn: map-get($color-settings, warn);
+        $alt_accent: map-get($color-settings, alt_accent);
+        $result: map-merge(
+            $result,
+            (
+                color: _light-color-config($primary, $accent, $warn, $alt_accent),
+            )
+        );
+    }
+    @return $result;
+}
+
+@function dewco-dark-theme($config) {
+    $result: $config;
+    @if map-get($config, color) {
+        $color-settings: map-get($config, color);
+        $primary: map-get($color-settings, primary);
+        $accent: map-get($color-settings, accent);
+        $warn: map-get($color-settings, warn);
+        $alt_accent: map-get($color-settings, alt_accent);
+        $result: map-merge(
+            $result,
+            (
+                color: _dark-color-config($primary, $accent, $warn, $alt_accent),
+            )
+        );
+    }
+    @return $result;
+}

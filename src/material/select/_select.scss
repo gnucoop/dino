@@ -1,0 +1,18 @@
+@mixin select-core($typography-config: null) {
+    .mat-select-panel {
+        outline: none;
+    }
+    .dewco-default-option {
+        .mat-option-text span {
+            position: absolute;
+            right: 0;
+        }
+
+        &.mat-option-multiple {
+            pointer-events: none;
+            .mat-pseudo-checkbox.mat-option-pseudo-checkbox {
+                display: none;
+            }
+        }
+    }
+}

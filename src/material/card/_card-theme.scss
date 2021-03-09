@@ -1,0 +1,62 @@
+@mixin card-color($config-or-theme) {
+    $config: mat-get-color-config($config-or-theme);
+    $background: map-get($config, background);
+    $foreground: map-get($config, foreground);
+    $primary: map-get($config, primary);
+    $accent: map-get($config, accent);
+
+    .mat-card {
+        background: mat-color($background, card);
+        color: mat-color($foreground, text);
+        border-left-color: mat-color($accent);
+    }
+
+    .mat-card-subtitle {
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .mat-card-actions {
+        background: mat-color($background, dialog);
+        color: mat-color($foreground, secondary-text);
+    }
+}
+
+@mixin mat-card-typography($config-or-theme) {
+    $config: mat-get-typography-config($config-or-theme);
+    .mat-card {
+        font-family: mat-font-family($config);
+    }
+
+    .mat-card-title {
+        font: {
+            size: mat-font-size($config, title);
+            weight: mat-font-weight($config, title);
+        }
+    }
+
+    .mat-card-subtitle,
+    .mat-card-content,
+    .mat-card-actions {
+        font-size: mat-font-size($config, body-1);
+        font-weight: mat-font-weight($config, body-1);
+    }
+}
+
+@mixin _mat-card-density($config-or-theme) {
+}
+
+@mixin card-theme($theme-or-color-config) {
+    $color: mat-get-color-config($theme-or-color-config);
+    $density: mat-get-density-config($theme-or-color-config);
+    $typography: mat-get-typography-config($theme-or-color-config);
+
+    @if $color != null {
+        @include card-color($color);
+    }
+    @if $density != null {
+        @include _mat-card-density($density);
+    }
+    @if $typography != null {
+        @include mat-card-typography($typography);
+    }
+}

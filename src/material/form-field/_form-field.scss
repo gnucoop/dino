@@ -1,0 +1,14 @@
+@mixin form-field-core($typography-config: null) {
+    .mat-form-field {
+        flex: 1 1 auto;
+        margin-right: 10px;
+        margin-top: 10px !important;
+
+        &.dewco-no-underline .mat-form-field-underline {
+            display: none !important;
+            .mat-form-field-ripple {
+                display: none !important;
+            }
+        }
+    }
+}
