@@ -16,5 +16,7 @@ export class E2eAppLayout {
   navLinks = [
     {path: 'mat-list', title: 'Material - List'},
     {path: 'mat-login', title: 'Material - Login'},
+    {path: 'list-example', title: 'List Example'},
+    {path: 'filters-example', title: 'Filter Widgets Example'},
   ];
 }

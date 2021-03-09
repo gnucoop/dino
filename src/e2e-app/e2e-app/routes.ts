@@ -10,8 +10,8 @@ import {Home} from './e2e-app-layout';
 
 export const E2E_APP_ROUTES: Routes = [
   {path: '', component: Home},
-  {path: 'c', component: ExampleFormSelect},
-  {path: 't', component: ExampleFormCollect},
+  {path: 'filters-example', component: ExampleFormSelect},
+  {path: 'list-example', component: ExampleFormCollect},
   {path: 'mat-list', component: MatListE2E, canActivate: [AuthGuard]},
   {path: 'mat-login', component: MatLoginE2E},
 ];
