@@ -30,7 +30,9 @@ import {FormBuilder} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService, LoginComponent} from '@dewco/core/auth';
 
-
+/**
+ * A basic material Login component.
+ */
 @Component({
   selector: 'dewco-login',
   templateUrl: 'login.html',
