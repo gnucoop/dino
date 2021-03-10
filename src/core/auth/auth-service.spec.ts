@@ -1,4 +1,4 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+  import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {
   AUTH_SERVICE_CONFIG,
@@ -512,7 +512,7 @@ describe('custom storage functions', () => {
 
     expect(storeAuthTokenSpy).toHaveBeenCalledTimes(1);
     authService.getAuthToken();
-    expect(retrieveAuthTokenSpy).toHaveBeenCalledTimes(2);
+    expect(retrieveAuthTokenSpy).toHaveBeenCalled();
   });
 
   it('should save the jwt refresh token using the user defined function upon login', () => {
