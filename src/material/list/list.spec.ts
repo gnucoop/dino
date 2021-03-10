@@ -53,6 +53,7 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();
 
     expect(list).toBeDefined();
@@ -66,13 +67,19 @@ describe('List', () => {
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
     list.filtersComponent = ftComponent as unknown as SearchFiltersComponent;
+    list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();
 
     expect(spyInitList).toHaveBeenCalledTimes(1);
   });
 
-  it('should add a basic filter to the FiltersService basic filters list', () => {
+  it('should add a basic filter to the FiltersService basic filters list', async () => {
     const spyAddBasic = spyOn(filterService, 'addBasicFilter').and.callThrough();
+
+    await fixtureList.whenStable();
+    list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.disconnect = () => {};
+    fixtureList.detectChanges();
 
     list.additionalBasicFilters = ['testFilter', 'otherFilter', 'nopeFilter'];
 
