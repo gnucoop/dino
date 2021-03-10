@@ -2,10 +2,8 @@ import {TestBed} from '@angular/core/testing';
 import {AuthService} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from '@dewco/core/data';
 import {Server, WebSocket} from 'mock-socket';
-import {RxCollection, RxJsonSchema} from 'rxdb';
-import {Observable, of as obsOf} from 'rxjs';
-
-import {subscriptionQueryBuilder} from './sync-utils';
+import {RxJsonSchema} from 'rxdb';
+import {of as obsOf} from 'rxjs';
 
 interface DummyModel extends Model {
   name: string;
@@ -58,20 +56,6 @@ const dummySchema: RxJsonSchema = {
   },
 };
 
-function getWsMessage(server: Server, pattern: RegExp): Observable<string> {
-  return new Observable<string>(subscriber => {
-    server.on('connection', webSocket => {
-      webSocket.on('message', msg => {
-        const message = msg as string;
-        if (pattern.test(message)) {
-          subscriber.next(message as string);
-          subscriber.complete();
-        }
-      });
-    });
-  });
-}
-
 describe('Data service', () => {
   let dataService: DataService;
   let wsServer: Server;
@@ -103,15 +87,6 @@ describe('Data service', () => {
   it('should throw an exception when trying to destroy an unexisting collection', async () => {
     await expectAsync(dataService.destroyCollection('collection').toPromise())
         .toBeRejectedWithError();
-  });
-
-  it('should subscribe to the WebSocket server for collection changes', async () => {
-    const collection = {name: 'dummy', schema: dummySchema};
-    await dataService.createCollection({collection}).toPromise();
-    const message = await getWsMessage(wsServer, /dummy/).toPromise();
-    expect(message).toBeDefined();
-    const query = (JSON.parse(message) as {payload: {query: string}}).payload.query;
-    expect(query).toBe(subscriptionQueryBuilder(collection as unknown as RxCollection));
   });
 });
 

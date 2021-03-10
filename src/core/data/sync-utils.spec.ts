@@ -69,7 +69,7 @@ describe('pullQueryBuilder', () => {
     const collection = collections[0];
     const timestamp = new Date().toISOString();
     let pullQuery = `{ model1( ` +
-        `where: {"updated_at":{"_gt":"${timestamp}"}}, ` +
+        `where: {updated_at:{_gt:"${timestamp}"}}, ` +
         `limit: ${syncOptions.batchSize}, ` +
         `order_by: [{updated_at: asc}] ` +
         `) { id model3Id } }`;
@@ -81,7 +81,7 @@ describe('pullQueryBuilder', () => {
     expect(queryStr).toEqual(pullQuery);
 
     pullQuery = `{ model1( ` +
-        `where: {"foo":"bar","updated_at":{"_gt":"${timestamp}"}}, ` +
+        `where: {foo:"bar",updated_at:{_gt:"${timestamp}"}}, ` +
         `limit: ${syncOptions.batchSize}, ` +
         `order_by: [{updated_at: asc}] ` +
         `) { id } }`;
@@ -100,7 +100,8 @@ describe('pushQueryBuilder', () => {
     const dummyModifier = {modifier: (d: any) => d};
     const modifierSpy = spyOn(dummyModifier, 'modifier').and.callThrough();
     const pushQuery = ` mutation InsertModel1($doc: [model1_insert_input!]!) { ` +
-        `insert_model1( objects: $doc ){ returning {id} } } `;
+        `insert_model1( objects: $doc, on_conflict: ` +
+        `{ constraint: model1_pkey, update_columns: [model3Id] }) { returning {id} } } `;
     const queryBuilder = pushQueryBuilder(collection, {docModifier: dummyModifier.modifier});
     const query = queryBuilder(doc);
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
@@ -112,7 +113,7 @@ describe('pushQueryBuilder', () => {
 describe('subscriptionQueryBuilder', () => {
   it('should create a subscription sync query for a given collection', () => {
     const collection = collections[0];
-    const subscriptionQuery = ` subscription onModel1Changed { model1 { id } } `;
+    const subscriptionQuery = ` subscription onModel1Changed { model1 { id model3Id } } `;
     const query = subscriptionQueryBuilder(collection);
     const queryStr = query.replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(subscriptionQuery);
