@@ -23,6 +23,7 @@
 import {Component, EventEmitter} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {DataService, Model} from '@dewco/core/data';
+import {WithPouchMeta} from 'rxdb/dist/types/types';
 import {from, Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 
@@ -70,7 +71,7 @@ export class DataDemo {
         switchMap(() => this._refreshEvent.pipe(startWith(null))),
         switchMap(() => _dataService.find({collectionName: 'todo'})),
         switchMap(query => from(query.exec())),
-        map(result => result.map(doc => doc._data)),
+        map(result => result.map(doc => doc._data as WithPouchMeta<Todo>)),
     );
   }
 

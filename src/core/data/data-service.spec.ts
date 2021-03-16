@@ -84,7 +84,7 @@ describe('Data service', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
       ],
     });
-    dataService = TestBed.get(DataService);
+    dataService = TestBed.inject(DataService);
     wsServer = new Server(wsUrl);
   });
 
@@ -92,16 +92,17 @@ describe('Data service', () => {
     wsServer.close();
   });
 
-  it('should create and destroy a collection from a valid schema', () => {
+  it('should create and destroy a collection from a valid schema', async () => {
     const collection = {name: 'dummy', schema: dummySchema};
     const created = dataService.createCollection({collection}).toPromise();
-    expectAsync(created).toBeResolvedTo(true);
+    await expectAsync(created).toBeResolvedTo(true);
     const deleted = dataService.destroyCollection(collection.name).toPromise();
-    expectAsync(deleted).toBeResolvedTo(true);
+    await expectAsync(deleted).toBeResolvedTo(true);
   });
 
-  it('should throw an exception when trying to destroy an unexisting collection', () => {
-    expectAsync(dataService.destroyCollection('collection').toPromise()).toBeRejectedWithError();
+  it('should throw an exception when trying to destroy an unexisting collection', async () => {
+    await expectAsync(dataService.destroyCollection('collection').toPromise())
+        .toBeRejectedWithError();
   });
 
   it('should subscribe to the WebSocket server for collection changes', async () => {
@@ -109,7 +110,7 @@ describe('Data service', () => {
     await dataService.createCollection({collection}).toPromise();
     const message = await getWsMessage(wsServer, /dummy/).toPromise();
     expect(message).toBeDefined();
-    const query = JSON.parse(message).payload.query;
+    const query = (JSON.parse(message) as {payload: {query: string}}).payload.query;
     expect(query).toBe(subscriptionQueryBuilder(collection as unknown as RxCollection));
   });
 });

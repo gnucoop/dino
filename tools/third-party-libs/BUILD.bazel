@@ -16,7 +16,7 @@ third_party_bundle(
     },
     module_name = "@ionic/core",
     deps = [
-        "@npm//@ionic/core",
+        "@npm//@ionic",
     ],
 )
 
@@ -28,7 +28,7 @@ third_party_bundle(
     },
     module_name = "@ionic/core/loader",
     deps = [
-        "@npm//@ionic/core",
+        "@npm//@ionic",
     ],
 )
 

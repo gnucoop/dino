@@ -21,7 +21,8 @@ let plugins = [
       '\'isomorphic-fetch\'': '\'isomorphic-fetch/fetch-npm-browserify\'',
       '\'readable-stream\'': '\'rollup-plugin-node-polyfills/polyfills/stream\'',
       '"readable-stream"': '"rollup-plugin-node-polyfills/polyfills/stream"',
-      'require(\'immediate\')': 'require(\'immediate/dist/immediate\')'
+      'require(\'immediate\')': 'require(\'immediate/dist/immediate\')',
+      'import {isBuffer} from \'buffer\';': 'import {isBuffer} from \'rollup-plugin-node-polyfills/polyfills/buffer-es6\';',
     }
   }),
   commonjs({ignoreGlobal: true}),

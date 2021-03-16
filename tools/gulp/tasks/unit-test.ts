@@ -36,7 +36,7 @@ task(':test:build', series(
  * Runs the unit tests. Does not watch for changes.
  * This task should be used when running tests on the CI server.
  */
-task('test:single-run', [':test:pouch-server', ':test:build'], done => {
+task('test:single-run', series(':test:pouch-server', ':test:build', done => {
   // Load karma not outside. Karma pollutes Promise with a different implementation.
   const karma = require('karma');
 

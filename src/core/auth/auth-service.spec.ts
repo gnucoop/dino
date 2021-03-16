@@ -5,6 +5,7 @@ import {
   AuthService,
   AuthServiceConfig,
   LoginResponse,
+  User,
 } from '@dewco/core/auth';
 import {take} from 'rxjs/operators';
 
@@ -124,7 +125,8 @@ describe('AuthService', () => {
        expect(req.request.method).toBe('POST');
        req.flush(loginResponse);
 
-       expect(JSON.parse(localStorage.getItem('dewco_user_info')!)).toEqual(loginResponse.user);
+       expect(JSON.parse(localStorage.getItem('dewco_user_info')!) as User)
+           .toEqual(loginResponse.user);
        expect(authService.getUserInfo()).toEqual(loginResponse.user);
      });
 });
@@ -353,7 +355,8 @@ describe('custom local storage keys', () => {
        expect(req.request.method).toBe('POST');
        req.flush(loginResponse);
 
-       expect(JSON.parse(localStorage.getItem('user_info_ls_key')!)).toEqual(loginResponse.user);
+       expect(JSON.parse(localStorage.getItem('user_info_ls_key')!) as User)
+           .toEqual(loginResponse.user);
        expect(authService.getUserInfo()).toEqual(loginResponse.user);
      });
 });

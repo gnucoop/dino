@@ -305,7 +305,7 @@ export class DataService {
         switchMap(db => {
           const collection = db.collections[collectionName] as RxCollection;
           if (collection == null) {
-            throwError(new Error('Invalid collection'));
+            return throwError(new Error('Invalid collection'));
           }
           return from(collection.destroy())
               .pipe(

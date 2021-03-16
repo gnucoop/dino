@@ -27,7 +27,7 @@
         <div class="dewco-password-recover">
           <a mat-button routerLink="/auth/recover-password">{{ 'Forgot your password?' }} </a>
         </div>
-        <mat-progress-bar [class.dewco-show]="loggingIn === true" mode="indeterminate"></mat-progress-bar>
+        <mat-progress-bar aria-label="Login progress" [class.dewco-show]="loggingIn === true" mode="indeterminate"></mat-progress-bar>
       </form>
     </div>
   </div>

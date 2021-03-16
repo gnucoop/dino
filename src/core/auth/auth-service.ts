@@ -149,7 +149,7 @@ export class AuthService {
       return this._config.retrieveUserInfo();
     }
     const userInfo = localStorage.getItem(this._getUserInfoLocaleStorageKey());
-    return userInfo == null ? null : JSON.parse(userInfo);
+    return userInfo == null ? null : JSON.parse(userInfo) as User;
   }
 
   /**
