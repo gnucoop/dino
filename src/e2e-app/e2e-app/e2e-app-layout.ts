@@ -11,5 +11,10 @@ export class Home {
   encapsulation: ViewEncapsulation.None,
 })
 export class E2eAppLayout {
-  showLinks: boolean = false;
+  showLinks = false;
+
+  navLinks = [
+    {path: 'ion-login', title: 'Ionic - Login'},
+    {path: 'mat-login', title: 'Material - Login'},
+  ];
 }
