@@ -60,7 +60,7 @@
     "@webcomponents/custom-elements": "^1.1.0",
     "core-js": "^2.6.9",
     "pouchdb-adapter-idb": "^7.2.2",
-    "pouchdb-adapter-memory": "^7.2.1",
+    "pouchdb-adapter-memory": "^7.2.2",
     "rxdb": "^9.15.0",
     "rxjs": "^6.5.3",
     "rxjs-tslint-rules": "^4.33.1",
