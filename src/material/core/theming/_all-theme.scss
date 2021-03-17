@@ -1,5 +1,8 @@
-// Import private elevation mixins
-@import '../mat-styles/private';
+// User Angular Material private mixins
+@import '~@angular/material/core/theming/theming';
+
+// Import Angular Material theming
+@import '~@angular/material/theming';
 
 // Import all the theming functionality.
 @import '../../button/button-theme';
