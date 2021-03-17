@@ -20,14 +20,13 @@
 
 // Create a theme.
 @mixin dewco-material-theme($theme-or-color-config) {
-    // Legacy themes color handling
-    $theme: _mat-legacy-get-theme($theme-or-color-config);
+    $theme: mat-private-legacy-get-theme($theme-or-color-config);
 
     // Material core theming mixin
     @include mat-core-theme($theme);
 
     // Check for duplicate theme styles
-    @include _mat-check-duplicate-theme-styles($theme, 'dewco-material') {
+    @include mat-private-check-duplicate-theme-styles($theme, 'dewco-material') {
         // Material theming mixins
         @include mat-autocomplete-theme($theme);
         @include mat-badge-theme($theme);

@@ -70,9 +70,9 @@
         @include paginator-color($color);
     }
     @if $density != null {
-        @include _mat-paginator-density($density);
+        @include mat-paginator-density($density);
     }
     @if $typography != null {
-        @include mat-paginator-typography($typography);
+        @include mat-typography($typography);
     }
 }
