@@ -41,6 +41,7 @@ yarn_install(
     # that Yarn will rerun whenever one of these files has been modified.
     data = [
         "//:tools/postinstall/apply-patches.js",
+        "//:tools/postinstall/copy-material-scss.js",
         "//:tools/postinstall/patch-packages.js",
         "//:tools/postinstall/update-ngcc-main-fields.js",
     ],

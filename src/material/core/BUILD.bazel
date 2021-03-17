@@ -1,16 +1,10 @@
 load("//src/material:config.bzl", "MATERIAL_SCSS_LIBS")
-load(
-    "//tools:defaults.bzl",
-    "sass_library",
-)
+load("//tools:defaults.bzl", "sass_library")
 
 package(default_visibility = ["//visibility:public"])
 
 ALL_THEMING_FILES = [
     "_core.scss",
-    "//src:angular_material_theming_scss",
-    "//src:angular_material_elevation_scss",
-    "//src:variables_scss",
 ]
 
 sass_library(

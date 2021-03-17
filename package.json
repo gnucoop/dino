@@ -13,7 +13,7 @@
     "yarn": ">= 1.19.1"
   },
   "scripts": {
-    "postinstall": "husky install && node tools/postinstall/apply-patches.js && ngcc --properties module main --create-ivy-entry-points && node tools/postinstall/update-ngcc-main-fields.js && node tools/postinstall/patch-packages.js",
+    "postinstall": "husky install && node tools/postinstall/apply-patches.js && ngcc --properties module main --create-ivy-entry-points && node tools/postinstall/update-ngcc-main-fields.js && node tools/postinstall/patch-packages.js && node tools/postinstall/copy-material-scss.js",
     "build": "node ./scripts/build-packages-dist.js",
     "build-docs-content": "node ./scripts/build-docs-content.js",
     "dev-app": "ibazel run //src/dev-app:devserver",

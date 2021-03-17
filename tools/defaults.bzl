@@ -25,6 +25,7 @@ def _getDefaultTsConfig(testonly):
 def sass_binary(sourcemap = False, **kwargs):
     include_paths = kwargs.pop("include_paths", [])
     include_paths.append("src")
+    include_paths.append("external/npm/node_modules")
     _sass_binary(
         sourcemap = sourcemap,
         include_paths = include_paths,
