@@ -1,17 +1,17 @@
 @import './typography/typography';
 
 // Import all the core styles.
-@import '../card/card';
-@import '../checkbox/checkbox';
-@import '../chips/chips';
-@import '../table/table';
-@import '../datepicker/datepicker';
-@import '../paginator/paginator';
-@import '../select/select';
-@import '../sidenav/sidenav';
-@import '../slide-toggle/slide-toggle';
-@import '../tabs/tabs';
-@import '../form-field/form-field';
+@import '../card/card-base';
+@import '../checkbox/checkbox-base';
+@import '../chips/chips-base';
+@import '../table/table-base';
+@import '../datepicker/datepicker-base';
+@import '../paginator/paginator-base';
+@import '../select/select-base';
+@import '../sidenav/sidenav-base';
+@import '../slide-toggle/slide-toggle-base';
+@import '../tabs/tabs-base';
+@import '../form-field/form-field-base';
 
 @mixin dewco-mat-core($typography-config: $dewco-base-typography) {
     @include mat-core($typography-config);
