@@ -64,6 +64,7 @@ THIRD_PARTY_NO_NGCC_BUNDLES = [
     ("leaflet", []),
     ("mock-socket", []),
     ("numbro", []),
+    ("pdfmake", ["pdfmake/build/pdfmake", ]),
     ("pouchdb-adapter-idb", []),
     ("pouchdb-adapter-memory", []),
     ("rxdb", []),

@@ -1,3 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
 exports_files(["npm_umd_bundle.patch"])
+
+filegroup(
+    name = "pdfmake_umd_module",
+    srcs = [
+        ":pdfmake_shims.js",
+        "@npm//pdfmake:pdfmake__umd",
+    ],
+)
