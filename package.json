@@ -204,7 +204,7 @@
     "stylelint": "^13.8.0",
     "terser": "^4.8.0",
     "ts-api-guardian": "^0.6.0",
-    "ts-json-schema-generator": "^0.67.1",
+    "ts-json-schema-generator": "^0.89.0",
     "ts-node": "^9.0.0",
     "tsickle": "0.39.1",
     "tslint": "^6.1.3",
