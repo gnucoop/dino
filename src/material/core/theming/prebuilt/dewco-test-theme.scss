@@ -1,4 +1,4 @@
-@import '../all-theme';
+@use '../all-theme';
 
 // Include non-theme styles for core.
 @include dewco-mat-core();
@@ -17,4 +17,4 @@ $theme: mat-light-theme(
 );
 
 // Include all theme styles for the components.
-@include dewco-material-theme($theme);
+@include all-theme.material-theme($theme);

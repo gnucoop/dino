@@ -1,25 +1,32 @@
-@import './form-field-standard-theme';
+@use 'sass:map';
+@use '~@angular/material/form-field/form-field-fill-theme' as mat-form-field-fill-theme;
+@use '~@angular/material/form-field/form-field-legacy-theme' as mat-form-field-legacy-theme;
+@use '~@angular/material/form-field/form-field-outline-theme' as mat-form-field-outline-theme;
+@use '~@angular/material/form-field/form-field-standard-theme' as mat-form-field-standard-theme;
+@use '~@angular/material/form-field/form-field-theme' as mat-form-field-theme;
+@use '~@angular/material/core/theming/theming' as mat-theming;
+@use 'form-field-standard-theme';
 
 // Color styles that apply to all appearances of the form-field.
 @mixin form-field-color($config-or-theme) {
-    $config: mat-get-color-config($config-or-theme);
-    $primary: map-get($config, primary);
-    $accent: map-get($config, accent);
-    $warn: map-get($config, warn);
-    $background: map-get($config, background);
-    $foreground: map-get($config, foreground);
-    $is-dark-theme: map-get($config, is-dark);
+    $config: mat-theming.get-color-config($config-or-theme);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+    $warn: map.get($config, warn);
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+    $is-dark-theme: map.get($config, is-dark);
 
     // Label colors. Required is used for the `*` star shown in the label.
-    $label-color: mat-color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
-    $focused-label-color: mat-color($primary, text);
-    $required-label-color: mat-color($accent, text);
+    $label-color: mat-theming.color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
+    $focused-label-color: mat-theming.color($primary, text);
+    $required-label-color: mat-theming.color($accent, text);
 
     // Underline colors.
-    $underline-color-base: mat-color($foreground, divider, if($is-dark-theme, 1, 0.87));
-    $underline-color-accent: mat-color($accent, text);
-    $underline-color-warn: mat-color($warn, text);
-    $underline-focused-color: mat-color($primary, text);
+    $underline-color-base: mat-theming.color($foreground, divider, if($is-dark-theme, 1, 0.87));
+    $underline-color-accent: mat-theming.color($accent, text);
+    $underline-color-warn: mat-theming.color($warn, text);
+    $underline-focused-color: mat-theming.color($primary, text);
 
     .mat-form-field .mat-form-field-underline,
     .mat-form-field.mat-form-field-appearance-legacy .mat-form-field-underline,
@@ -27,7 +34,7 @@
     .mat-form-field.mat-form-field-appearance-standard .mat-form-field-ripple,
     .mat-form-field-ripple,
     .mat-form-field.mat-focused .mat-form-field-ripple {
-        background-color: mat-color($primary);
+        background-color: mat-theming.color($primary);
     }
 
     .mat-form-field-label {
@@ -109,10 +116,10 @@
         color: $underline-color-warn;
     }
 
-    @include mat-form-field-legacy-color($config);
-    @include mat-form-field-standard-color($config);
-    @include mat-form-field-fill-color($config);
-    @include mat-form-field-outline-color($config);
+    @include mat-form-field-legacy-theme.legacy-color($config);
+    @include mat-form-field-standard-theme.standard-color($config);
+    @include mat-form-field-fill-theme.fill-color($config);
+    @include mat-form-field-outline-theme.outline-color($config);
 }
 
 // Used to make instances of the mat-private-label-float mixin negligibly different,
@@ -131,7 +138,7 @@ $mat-form-field-dedupe: 0;
 }
 
 @mixin mat-form-field-typography($config-or-theme) {
-    $config: mat-get-typography-config($config-or-theme);
+    $config: mat-theming.get-typography-config($config-or-theme);
     // The unit-less line-height from the font config.
     $line-height: mat-line-height($config, input);
 
@@ -197,7 +204,8 @@ $mat-form-field-dedupe: 0;
 
     .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper {
             .mat-form-field-label {
-                @include mat-private-label-float($sub-font-scale, $infix-padding, $infix-margin-top);
+                @include mat-private-label-float(
+                    $sub-font-scale, $infix-padding, $infix-margin-top);
             }
         }
     }
@@ -227,23 +235,23 @@ $mat-form-field-dedupe: 0;
     }
 
     @include mat-form-field-legacy-typography($config);
-    @include mat-form-field-standard-typography($config);
+    @include form-field-standard-theme.mat-form-field-standard-typography($config);
     @include mat-form-field-fill-typography($config);
     @include mat-form-field-outline-typography($config);
 }
 
 @mixin mat-private-form-field-density($config-or-theme) {
-    $density-scale: mat-get-density-config($config-or-theme);
-    @include mat-private-form-field-legacy-density($density-scale);
-    @include mat-private-form-field-standard-density($density-scale);
-    @include mat-private-form-field-fill-density($density-scale);
-    @include mat-private-form-field-outline-density($density-scale);
+    $density-scale: mat-theming.get-density-config($config-or-theme);
+    @include mat-form-field-legacy-theme.private-form-field-legacy-density($density-scale);
+    @include mat-form-field-standard-theme.private-form-field-standard-density($density-scale);
+    @include mat-form-field-fill-theme.private-form-field-fill-density($density-scale);
+    @include mat-form-field-outline-theme.private-form-field-outline-density($density-scale);
 }
 
 @mixin form-field-theme($theme-or-color-config) {
-    $color: mat-get-color-config($theme-or-color-config);
-    $density: mat-get-density-config($theme-or-color-config);
-    $typography: mat-get-typography-config($theme-or-color-config);
+    $color: mat-theming.get-color-config($theme-or-color-config);
+    $density: mat-theming.get-density-config($theme-or-color-config);
+    $typography: mat-theming.get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include form-field-color($color);

@@ -1,14 +1,19 @@
-@import '../material/core/core';
+@use '~@angular/material/core/theming/palette' as mat-palette;
+@use '~@angular/material/core/theming/theming' as mat-theming;
+
+@use '../material/core/core';
+@use '../material/core/all-core';
+@use '../material/core/theming/all-theme';
 
 // Include non-theme styles for core.
-@include dewco-mat-core();
+@include all-core.mat-core();
 
 // Define an alernative theme.
-$primary: mat-palette($mat-brown);
-$accent: mat-palette($mat-deep-orange, 600, 100, 800);
-$warn: mat-palette($mat-red);
+$primary: mat-theming.palette(mat-palette.$brown);
+$accent: mat-theming.palette(mat-palette.$deep-orange, 600, 100, 800);
+$warn: mat-theming.palette(mat-palette.$red);
 
-$theme: dewco-light-theme(
+$theme: core.light-theme(
     (
         color: (
             primary: $primary,
@@ -19,4 +24,4 @@ $theme: dewco-light-theme(
 );
 
 // Include all theme styles for the components.
-@include dewco-material-theme($theme);
+@include all-theme.material-theme($theme);

@@ -1,15 +1,21 @@
-@import '../material/core/core';
+@use '~@angular/material/core/theming/palette' as mat-palette;
+@use '~@angular/material/core/theming/theming' as mat-theming;
+
+@use '../material/core/core';
+@use '../material/core/all-core';
+@use '../material/core/theming/all-theme';
+@use '../material/core/theming/palette';
 
 // Include non-theme styles for core.
-@include dewco-mat-core();
+@include all-core.mat-core();
 
 // Define a theme.
-$primary: mat-palette($mat-green);
-$accent: mat-palette($mat-deep-purple, 600, 100, 800);
-$warn: mat-palette($mat-red);
-$alt_accent: mat-palette($dewco-blue, 500);
+$primary: mat-theming.palette(mat-palette.$green);
+$accent: mat-theming.palette(mat-palette.$deep-purple, 600, 100, 800);
+$warn: mat-theming.palette(mat-palette.$red);
+$alt_accent: mat-theming.palette(palette.$blue, 500);
 
-$theme: dewco-light-theme(
+$theme: core.light-theme(
     (
         color: (
             primary: $primary,
@@ -21,14 +27,4 @@ $theme: dewco-light-theme(
 );
 
 // Include all theme styles for the components.
-@include dewco-material-theme($theme);
-
-// @include paginator-theme($component-theme);
-
-// Define a custom typography
-// $component-typography: mat-typography-config(
-//     $font-family: "'Big Shoulders Stencil Display', cursive",
-//     $headline: mat-typography-level(32px, 48px, 700),
-//     $body-1: mat-typography-level(13px, 22px, 500),
-// );
-// @include tabs-typography($component-typography);
+@include all-theme.material-theme($theme);

@@ -1,24 +1,27 @@
-@mixin table-color($config-or-theme) {
-  $config: mat-get-color-config($config-or-theme);
-  $primary: map-get($config, primary);
-  $accent: map-get($config, accent);
-  $warn: map-get($config, warn);
-  $alt_accent: map-get($config, alt_accent);
+@use 'sass:map';
+@use '~@angular/material/core/theming/theming' as mat-theming;
 
-  $background: map-get($config, background);
-  $foreground: map-get($config, foreground);
+@mixin table-color($config-or-theme) {
+  $config: mat-theming.get-color-config($config-or-theme);
+  $primary: map.get($config, primary);
+  $accent: map.get($config, accent);
+  $warn: map.get($config, warn);
+  $alt_accent: map.get($config, alt_accent);
+
+  $background: map.get($config, background);
+  $foreground: map.get($config, foreground);
 
   .mat-table {
-    background: mat-color($background, background);
+    background: mat-theming.color($background, background);
     .mat-row:hover {
       box-shadow: 0 2px 4px 0 #b9b9b9;
     }
 
     .mat-icon {
-      color: mat-color($alt_accent);
+      color: mat-theming.color($alt_accent);
       &:hover {
-        background: mat-color($accent, lighter);
-        color: mat-color($accent);
+        background: mat-theming.color($accent, lighter);
+        color: mat-theming.color($accent);
       }
     }
   }
@@ -34,12 +37,12 @@
   mat-footer-row,
   [mat-row],
   [mat-footer-row] {
-    background: mat-color($background, card);
+    background: mat-theming.color($background, card);
   }
 
   .mat-cell:first-of-type,
   .mat-footer-cell:first-of-type {
-    border-left: 3px solid mat-color($alt_accent);
+    border-left: 3px solid mat-theming.color($alt_accent);
   }
 
   .mat-header-cell:first-of-type {
@@ -47,17 +50,17 @@
   }
 
   .mat-header-cell {
-    color: mat-color($foreground, secondary-text);
+    color: mat-theming.color($foreground, secondary-text);
   }
 
   .mat-cell,
   .mat-footer-cell {
-    color: mat-color($foreground, text);
+    color: mat-theming.color($foreground, text);
   }
 }
 
 @mixin mat-table-typography($config-or-theme) {
-  $config: mat-get-typography-config($config-or-theme);
+  $config: mat-theming.get-typography-config($config-or-theme);
   .mat-table {
     font-family: mat-font-family($config);
   }
@@ -77,9 +80,9 @@
 }
 
 @mixin table-theme($theme-or-color-config) {
-  $color: mat-get-color-config($theme-or-color-config);
-  $density: mat-get-density-config($theme-or-color-config);
-  $typography: mat-get-typography-config($theme-or-color-config);
+  $color: mat-theming.get-color-config($theme-or-color-config);
+  $density: mat-theming.get-density-config($theme-or-color-config);
+  $typography: mat-theming.get-typography-config($theme-or-color-config);
 
   @if $color != null {
     @include table-color($color);

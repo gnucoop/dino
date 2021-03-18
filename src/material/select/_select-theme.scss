@@ -1,69 +1,73 @@
+@use 'sass:map';
+@use '~@angular/material/core/theming/theming' as mat-theming;
+@use '~@angular/material/core/style/private' as mat-private;
+
 @mixin select-color($config-or-theme) {
-    $config: mat-get-color-config($config-or-theme);
-    $foreground: map-get($config, foreground);
-    $background: map-get($config, background);
-    $primary: map-get($config, primary);
-    $accent: map-get($config, accent);
-    $warn: map-get($config, warn);
+    $config: mat-theming.get-color-config($config-or-theme);
+    $foreground: map.get($config, foreground);
+    $background: map.get($config, background);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+    $warn: map.get($config, warn);
 
     .mat-select-value {
-        color: mat-color($foreground, text);
+        color: mat-theming.color($foreground, text);
     }
 
     .mat-select-disabled .mat-select-value {
-        color: mat-color($foreground, disabled-text);
+        color: mat-theming.color($foreground, disabled-text);
     }
 
     .mat-select-arrow {
-        color: mat-color($primary);
+        color: mat-theming.color($primary);
     }
 
     .mat-select-panel {
-        background: mat-color($background, card);
-        @include mat-private-theme-overridable-elevation(4, $config);
+        background: mat-theming.color($background, card);
+        @include mat-private.private-theme-overridable-elevation(4, $config);
 
         .mat-option.mat-selected:not(.mat-option-multiple) {
-            background: mat-color($background, hover, 0.12);
+            background: mat-theming.color($background, hover, 0.12);
         }
         .mat-option.mat-option-multiple.mat-selected {
-            color: mat-color($accent);
+            color: mat-theming.color($accent);
         }
         .mat-pseudo-checkbox.mat-option-pseudo-checkbox.mat-pseudo-checkbox-checked {
-            background-color: mat-color($accent);
+            background-color: mat-theming.color($accent);
         }
     }
 
     .dewco-default-option .mat-option-text span {
-        color: mat-color($primary);
+        color: mat-theming.color($primary);
     }
 
     .mat-form-field {
         &.mat-focused {
             &.mat-primary .mat-select-arrow {
-                color: mat-color($primary, text);
+                color: mat-theming.color($primary, text);
             }
 
             &.mat-accent .mat-select-arrow {
-                color: mat-color($accent, text);
+                color: mat-theming.color($accent, text);
             }
 
             &.mat-warn .mat-select-arrow {
-                color: mat-color($warn, text);
+                color: mat-theming.color($warn, text);
             }
         }
 
         .mat-select.mat-select-invalid .mat-select-arrow {
-            color: mat-color($warn, text);
+            color: mat-theming.color($warn, text);
         }
 
         .mat-select.mat-select-disabled .mat-select-arrow {
-            color: mat-color($foreground, disabled-text);
+            color: mat-theming.color($foreground, disabled-text);
         }
     }
 }
 
 @mixin mat-select-typography($config-or-theme) {
-    $config: mat-get-typography-config($config-or-theme);
+    $config: mat-theming.get-typography-config($config-or-theme);
     // The unit-less line-height from the font config.
     $line-height: mat-line-height($config, input);
 
@@ -84,9 +88,9 @@
 }
 
 @mixin select-theme($theme-or-color-config) {
-    $color: mat-get-color-config($theme-or-color-config);
-    $density: mat-get-density-config($theme-or-color-config);
-    $typography: mat-get-typography-config($theme-or-color-config);
+    $color: mat-theming.get-color-config($theme-or-color-config);
+    $density: mat-theming.get-density-config($theme-or-color-config);
+    $typography: mat-theming.get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include select-color($color);

@@ -1,8 +1,9 @@
-@import '~@angular/material/theming';
+@use 'sass:map';
+@use '~@angular/material/theming' as mat-theming;
 
-@import './theming/palette';
-@import './theming/all-theme';
-@import './all-core';
+@use 'theming/palette';
+@use 'theming/all-theme';
+@use 'all-core';
 
 // Creates a light-themed color configuration from the specified
 // primary, accent and warn palettes.
@@ -10,11 +11,11 @@
     @return (
         primary: $primary,
         accent: $accent,
-        warn: if($warn != null, $warn, mat-palette($mat-red)),
+        warn: if($warn != null, $warn, mat-theming.mat-palette(mat-theming.$mat-red)),
         alt_accent: if($alt_accent != null, $alt_accent, $accent),
         is-dark: false,
-        foreground: $light-theme-foreground,
-        background: $light-theme-background
+        foreground: palette.$light-theme-foreground,
+        background: palette.$light-theme-background
     );
 }
 
@@ -24,23 +25,23 @@
     @return (
         primary: $primary,
         accent: $accent,
-        warn: if($warn != null, $warn, mat-palette($mat-red)),
+        warn: if($warn != null, $warn, mat-theming.mat-palette(mat-theming.$mat-red)),
         alt_accent: if($alt_accent != null, $alt_accent, $accent),
         is-dark: true,
-        foreground: $dark-theme-foreground,
-        background: $dark-theme-background
+        foreground: palette.$dark-theme-foreground,
+        background: palette.$dark-theme-background
     );
 }
 
-@function dewco-light-theme($config) {
+@function light-theme($config) {
     $result: $config;
-    @if map-get($config, color) {
-        $color-settings: map-get($config, color);
-        $primary: map-get($color-settings, primary);
-        $accent: map-get($color-settings, accent);
-        $warn: map-get($color-settings, warn);
-        $alt_accent: map-get($color-settings, alt_accent);
-        $result: map-merge(
+    @if map.get($config, color) {
+        $color-settings: map.get($config, color);
+        $primary: map.get($color-settings, primary);
+        $accent: map.get($color-settings, accent);
+        $warn: map.get($color-settings, warn);
+        $alt_accent: map.get($color-settings, alt_accent);
+        $result: map.merge(
             $result,
             (
                 color: _light-color-config($primary, $accent, $warn, $alt_accent),
@@ -50,15 +51,15 @@
     @return $result;
 }
 
-@function dewco-dark-theme($config) {
+@function dark-theme($config) {
     $result: $config;
-    @if map-get($config, color) {
-        $color-settings: map-get($config, color);
-        $primary: map-get($color-settings, primary);
-        $accent: map-get($color-settings, accent);
-        $warn: map-get($color-settings, warn);
-        $alt_accent: map-get($color-settings, alt_accent);
-        $result: map-merge(
+    @if map.get($config, color) {
+        $color-settings: map.get($config, color);
+        $primary: map.get($color-settings, primary);
+        $accent: map.get($color-settings, accent);
+        $warn: map.get($color-settings, warn);
+        $alt_accent: map.get($color-settings, alt_accent);
+        $result: map.merge(
             $result,
             (
                 color: _dark-color-config($primary, $accent, $warn, $alt_accent),

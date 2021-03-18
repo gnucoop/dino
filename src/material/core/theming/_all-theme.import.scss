@@ -1,0 +1,27 @@
+@forward '../../chips/chips-theme.import';
+@forward '../../datepicker/datepicker-theme.import';
+@forward '../../form-field/form-field-theme';
+@forward '../../button/button-theme.import';
+@forward '../../card/card-theme.import';
+@forward '../../checkbox/checkbox-theme.import';
+@forward '../../table/table-theme.import';
+@forward '../../paginator/paginator-theme.import';
+@forward '../../select/select-theme.import';
+@forward '../../sidenav/sidenav-theme.import';
+@forward '../../slide-toggle/slide-toggle-theme.import';
+@forward '../../tabs/tabs-theme.import';
+@forward '../../form-field/form-field-theme.import';
+@forward 'all-theme' as dewco-*;
+
+@import '../../button/button-theme';
+@import '../../card/card-theme';
+@import '../../checkbox/checkbox-theme';
+@import '../../chips/chips-theme';
+@import '../../table/table-theme';
+@import '../../datepicker/datepicker-theme';
+@import '../../paginator/paginator-theme';
+@import '../../select/select-theme';
+@import '../../sidenav/sidenav-theme';
+@import '../../slide-toggle/slide-toggle-theme';
+@import '../../tabs/tabs-theme';
+@import '../../form-field/form-field-theme';

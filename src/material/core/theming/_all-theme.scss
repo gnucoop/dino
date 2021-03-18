@@ -1,68 +1,88 @@
-// User Angular Material private mixins
-@import '~@angular/material/core/theming/theming';
-
-// Import Angular Material theming
-@import '~@angular/material/theming';
+// Import Angular Material themings
+@use '~@angular/material/core/core' as mat-core;
+@use '~@angular/material/core/theming/theming' as mat-core-theming;
+@use '~@angular/material/autocomplete/autocomplete-theme' as mat-autocomplete-theme;
+@use '~@angular/material/badge/badge-theme' as mat-badge-theme;
+@use '~@angular/material/bottom-sheet/bottom-sheet-theme' as mat-bottom-sheet-theme;
+@use '~@angular/material/button-toggle/button-toggle-theme' as mat-button-toggle-theme;
+@use '~@angular/material/dialog/dialog-theme' as mat-dialog-theme;
+@use '~@angular/material/divider/divider-theme' as mat-divider-theme;
+@use '~@angular/material/expansion/expansion-theme' as mat-expansion-theme;
+@use '~@angular/material/grid-list/grid-list-theme' as mat-grid-list-theme;
+@use '~@angular/material/icon/icon-theme' as mat-icon-theme;
+@use '~@angular/material/input/input-theme' as mat-input-theme;
+@use '~@angular/material/list/list-theme' as mat-list-theme;
+@use '~@angular/material/menu/menu-theme' as mat-menu-theme;
+@use '~@angular/material/progress-bar/progress-bar-theme' as mat-progress-bar-theme;
+@use '~@angular/material/progress-spinner/progress-spinner-theme' as mat-progress-spinner-theme;
+@use '~@angular/material/radio/radio-theme' as mat-radio-theme;
+@use '~@angular/material/slider/slider-theme' as mat-slider-theme;
+@use '~@angular/material/snack-bar/snack-bar-theme' as mat-snack-bar-theme;
+@use '~@angular/material/sort/sort-theme' as mat-sort-theme;
+@use '~@angular/material/stepper/stepper-theme' as mat-stepper-theme;
+@use '~@angular/material/toolbar/toolbar-theme' as mat-toolbar-theme;
+@use '~@angular/material/tooltip/tooltip-theme' as mat-tooltip-theme;
+@use '~@angular/material/tree/tree-theme' as mat-tree-theme;
 
 // Import all the theming functionality.
-@import '../../button/button-theme';
-@import '../../card/card-theme';
-@import '../../checkbox/checkbox-theme';
-@import '../../chips/chips-theme';
-@import '../../table/table-theme';
-@import '../../datepicker/datepicker-theme';
-@import '../../paginator/paginator-theme';
-@import '../../select/select-theme';
-@import '../../sidenav/sidenav-theme';
-@import '../../slide-toggle/slide-toggle-theme';
-@import '../../tabs/tabs-theme';
-@import '../../form-field/form-field-theme';
+@use '../../button/button-theme';
+@use '../../card/card-theme';
+@use '../../checkbox/checkbox-theme';
+@use '../../chips/chips-theme';
+@use '../../datepicker/datepicker-theme';
+@use '../../form-field/form-field-theme';
+@use '../../paginator/paginator-theme';
+@use '../../select/select-theme';
+@use '../../sidenav/sidenav-theme';
+@use '../../slide-toggle/slide-toggle-theme';
+@use '../../table/table-theme';
+@use '../../tabs/tabs-theme';
 
 // Create a theme.
-@mixin dewco-material-theme($theme-or-color-config) {
-    $theme: mat-private-legacy-get-theme($theme-or-color-config);
+@mixin material-theme($theme-or-color-config) {
+    $theme: mat-core-theming.private-legacy-get-theme($theme-or-color-config);
 
     // Material core theming mixin
-    @include mat-core-theme($theme);
+    @include mat-core.core($theme);
 
     // Check for duplicate theme styles
-    @include mat-private-check-duplicate-theme-styles($theme, 'dewco-material') {
+    @include mat-core-theming.private-check-duplicate-theme-styles($theme, 'dewco-material') {
         // Material theming mixins
-        @include mat-autocomplete-theme($theme);
-        @include mat-badge-theme($theme);
-        @include mat-bottom-sheet-theme($theme);
-        @include mat-button-toggle-theme($theme);
-        @include mat-dialog-theme($theme);
-        @include mat-divider-theme($theme);
-        @include mat-expansion-panel-theme($theme);
-        @include mat-grid-list-theme($theme);
-        @include mat-icon-theme($theme);
-        @include mat-input-theme($theme);
-        @include mat-list-theme($theme);
-        @include mat-menu-theme($theme);
-        @include mat-progress-bar-theme($theme);
-        @include mat-progress-spinner-theme($theme);
-        @include mat-radio-theme($theme);
-        @include mat-slider-theme($theme);
-        @include mat-stepper-theme($theme);
-        @include mat-sort-theme($theme);
-        @include mat-toolbar-theme($theme);
-        @include mat-tooltip-theme($theme);
-        @include mat-tree-theme($theme);
-        @include mat-snack-bar-theme($theme);
+        @include mat-autocomplete-theme.theme($theme);
+        @include mat-badge-theme.theme($theme);
+        @include mat-bottom-sheet-theme.theme($theme);
+        @include mat-button-toggle-theme.theme($theme);
+        @include mat-dialog-theme.theme($theme);
+        @include mat-divider-theme.theme($theme);
+        @include mat-expansion-theme.theme($theme);
+        @include mat-grid-list-theme.theme($theme);
+        @include mat-icon-theme.theme($theme);
+        @include mat-input-theme.theme($theme);
+        @include mat-list-theme.theme($theme);
+        @include mat-menu-theme.theme($theme);
+        @include mat-progress-bar-theme.theme($theme);
+        @include mat-progress-spinner-theme.theme($theme);
+        @include mat-radio-theme.theme($theme);
+        @include mat-slider-theme.theme($theme);
+        @include mat-snack-bar-theme.theme($theme);
+        @include mat-sort-theme.theme($theme);
+        @include mat-stepper-theme.theme($theme);
+        @include mat-toolbar-theme.theme($theme);
+        @include mat-tooltip-theme.theme($theme);
+        @include mat-tree-theme.theme($theme);
 
         // Dewco theming mixins
-        @include button-theme($theme);
-        @include card-theme($theme);
-        @include checkbox-theme($theme);
-        @include chips-theme($theme);
-        @include datepicker-theme($theme);
-        @include form-field-theme($theme);
-        @include paginator-theme($theme);
-        @include select-theme($theme);
-        @include sidenav-theme($theme);
-        @include slide-toggle-theme($theme);
-        @include table-theme($theme);
-        @include tabs-theme($theme);
+        @include button-theme.button-theme($theme);
+        @include card-theme.card-theme($theme);
+        @include checkbox-theme.checkbox-theme($theme);
+        @include chips-theme.chips-theme($theme);
+        @include datepicker-theme.datepicker-theme($theme);
+        @include form-field-theme.form-field-theme($theme);
+        @include paginator-theme.paginator-theme($theme);
+        @include select-theme.select-theme($theme);
+        @include sidenav-theme.sidenav-theme($theme);
+        @include slide-toggle-theme.slide-toggle-theme($theme);
+        @include table-theme.table-theme($theme);
+        @include tabs-theme.tabs-theme($theme);
     }
 }

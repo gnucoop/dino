@@ -1,30 +1,32 @@
-@import './typography/typography';
+@use '~@angular/material/core/core' as mat-core-theming;
+
+@use 'typography/typography';
 
 // Import all the core styles.
-@import '../card/card-base';
-@import '../checkbox/checkbox-base';
-@import '../chips/chips-base';
-@import '../table/table-base';
-@import '../datepicker/datepicker-base';
-@import '../paginator/paginator-base';
-@import '../select/select-base';
-@import '../sidenav/sidenav-base';
-@import '../slide-toggle/slide-toggle-base';
-@import '../tabs/tabs-base';
-@import '../form-field/form-field-base';
+@use '../card/card-base';
+@use '../checkbox/checkbox-base';
+@use '../chips/chips-base';
+@use '../table/table-base';
+@use '../datepicker/datepicker-base';
+@use '../paginator/paginator-base';
+@use '../select/select-base';
+@use '../sidenav/sidenav-base';
+@use '../slide-toggle/slide-toggle-base';
+@use '../tabs/tabs-base';
+@use '../form-field/form-field-base';
 
-@mixin dewco-mat-core($typography-config: $dewco-base-typography) {
-    @include mat-core($typography-config);
+@mixin mat-core($typography-config: typography.$base-typography) {
+    @include mat-core-theming.core($typography-config);
 
-    @include card-core($typography-config);
-    @include checkbox-core($typography-config);
-    @include chips-core($typography-config);
-    @include datepicker-core($typography-config);
-    @include form-field-core($typography-config);
-    @include paginator-core($typography-config);
-    @include select-core($typography-config);
-    @include sidenav-core($typography-config);
-    @include slide-toggle-core($typography-config);
-    @include table-core($typography-config);
-    @include tabs-core($typography-config);
+    @include card-base.card-core($typography-config);
+    @include checkbox-base.checkbox-core($typography-config);
+    @include chips-base.chips-core($typography-config);
+    @include datepicker-base.datepicker-core($typography-config);
+    @include form-field-base.form-field-core($typography-config);
+    @include paginator-base.paginator-core($typography-config);
+    @include select-base.select-core($typography-config);
+    @include sidenav-base.sidenav-core($typography-config);
+    @include slide-toggle-base.slide-toggle-core($typography-config);
+    @include table-base.table-core($typography-config);
+    @include tabs-base.tabs-core($typography-config);
 }
