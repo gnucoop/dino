@@ -11,9 +11,7 @@ ts_library(
     srcs = glob(["**/*.ts"]),
     tsconfig = ":tsconfig.json",
     deps = [
-        "@npm//@types/json-schema",
-        "@npm//@types/minimist",
-        "@npm//@types/node",
+        "@npm//@types",
         "@npm//ts-json-schema-generator",
     ],
 )
