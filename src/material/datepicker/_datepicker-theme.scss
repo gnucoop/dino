@@ -12,7 +12,9 @@ $mat-calendar-body-font-size: 13px !default;
 $mat-calendar-weekday-table-font-size: 11px !default;
 
 @mixin _mat-datepicker-color($palette) {
-    @include mat-date-range-colors(mat-theming.color($palette, default, $mat-datepicker-range-fade-amount));
+    @include mat-date-range-colors(
+        mat-theming.color($palette, default, $mat-datepicker-range-fade-amount)
+        );
 
     .mat-calendar-body-selected {
         background-color: mat-theming.color($palette);
@@ -36,7 +38,9 @@ $mat-calendar-weekday-table-font-size: 11px !default;
 
     .mat-calendar-body-today.mat-calendar-body-selected {
         box-shadow: inset 0 0 0
-        $mat-datepicker-selected-today-box-shadow-width mat-theming.color($palette, default-contrast);
+        $mat-datepicker-selected-today-box-shadow-width mat-theming.color(
+            $palette, default-contrast
+            );
     }
 }
 
@@ -186,7 +190,7 @@ $mat-calendar-weekday-table-font-size: 11px !default;
 }
 
 @mixin mat-datepicker-typography($config-or-theme) {
-    $config: mat-theming.get-typography-config($config-or-theme);
+    $config: mat-get-typography-config($config-or-theme);
     .mat-date-range-input {
         font-family: mat-font-family($config);
         font-size: mat-font-size($config, input);

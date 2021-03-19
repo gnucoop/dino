@@ -60,7 +60,7 @@
 }
 
 @mixin mat-table-typography($config-or-theme) {
-  $config: mat-theming.get-typography-config($config-or-theme);
+  $config: mat-get-typography-config($config-or-theme);
   .mat-table {
     font-family: mat-font-family($config);
   }

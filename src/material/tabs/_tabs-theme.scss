@@ -136,7 +136,7 @@
 }
 
 @mixin mat-tabs-typography($config-or-theme) {
-  $config: mat-theming.get-typography-config($config-or-theme);
+  $config: mat-get-typography-config($config-or-theme);
   .mat-tab-group {
     font-family: mat-font-family($config);
   }

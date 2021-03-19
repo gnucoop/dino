@@ -138,7 +138,7 @@ $mat-form-field-dedupe: 0;
 }
 
 @mixin mat-form-field-typography($config-or-theme) {
-    $config: mat-theming.get-typography-config($config-or-theme);
+    $config: mat-get-typography-config($config-or-theme);
     // The unit-less line-height from the font config.
     $line-height: mat-line-height($config, input);
 

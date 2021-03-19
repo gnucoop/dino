@@ -28,7 +28,8 @@ $mat-chip-remove-font-size: 18px;
 }
 
 @mixin _mat-chip-theme-color($palette) {
-    @include _mat-chip-element-color(mat-theming.color($palette, default-contrast), mat-theming.color($palette));
+    @include _mat-chip-element-color(mat-theming.color($palette, default-contrast),
+    mat-theming.color($palette));
 
     .mat-ripple-element {
         @include _mat-chips-ripple-background($palette, default-contrast, 0.1);
@@ -91,7 +92,7 @@ $mat-chip-remove-font-size: 18px;
 }
 
 @mixin mat-chips-typography($config-or-theme) {
-    $config: mat-theming.get-typography-config($config-or-theme);
+    $config: mat-get-typography-config($config-or-theme);
     .mat-chip {
         font-size: mat-font-size($config, title);
         font-weight: mat-font-weight($config, body-1);

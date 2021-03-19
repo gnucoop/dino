@@ -25,7 +25,7 @@
 }
 
 @mixin mat-card-typography($config-or-theme) {
-    $config: mat-theming.get-typography-config($config-or-theme);
+    $config: mat-get-typography-config($config-or-theme);
     .mat-card {
         font-family: mat-font-family($config);
     }

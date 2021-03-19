@@ -56,7 +56,7 @@
 }
 
 @mixin mat-paginator-typography($config-or-theme) {
-    $config: mat-theming.get-typography-config($config-or-theme);
+    $config: mat-get-typography-config($config-or-theme);
     .mat-paginator,
     .mat-paginator-page-size .mat-select-trigger {
         font: {

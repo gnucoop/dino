@@ -96,7 +96,7 @@
 }
 
 @mixin mat-checkbox-typography($config-or-theme) {
-    $config: mat-theming.get-typography-config($config-or-theme);
+    $config: mat-get-typography-config($config-or-theme);
     .mat-checkbox {
         font-family: mat-font-family($config);
     }
