@@ -25,7 +25,6 @@
 // converts this template file into the actual SystemJS configuration file.
 
 var CORE_PACKAGES = $CORE_ENTRYPOINTS_TMPL;
-var IONIC_PACKAGES = $IONIC_ENTRYPOINTS_TMPL;
 var MATERIAL_PACKAGES = $MATERIAL_ENTRYPOINTS_TMPL;
 
 /** Map of Angular framework packages and their bundle names. */
@@ -69,7 +68,6 @@ var packagesConfig = {
 // to ensure that the directory imports properly resolve to the "index.js" files within
 // SystemJS, we configure them similar to actual package entry-points.
 CORE_PACKAGES.push('testing/private', 'testing/testbed/fake-events');
-IONIC_PACKAGES.push('testing');
 MATERIAL_PACKAGES.push('testing');
 
 // Configure framework packages.
@@ -172,15 +170,11 @@ function setupLocalReleasePackages() {
   // Configure all primary entry-points.
   configureEntryPoint('core');
   configureEntryPoint('dewco-examples');
-  configureEntryPoint('ionic');
   configureEntryPoint('material');
 
   // Configure all secondary entry-points.
   CORE_PACKAGES.forEach(function(pkgName) {
     configureEntryPoint('core', pkgName);
-  });
-  IONIC_PACKAGES.forEach(function(pkgName) {
-    configureEntryPoint('ionic', pkgName);
   });
   MATERIAL_PACKAGES.forEach(function(pkgName) {
     configureEntryPoint('material', pkgName);

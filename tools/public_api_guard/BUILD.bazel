@@ -1,16 +1,13 @@
 load("//src/core:config.bzl", "CORE_ENTRYPOINTS")
-load("//src/ionic:config.bzl", "IONIC_ENTRYPOINTS", "IONIC_TESTING_ENTRYPOINTS")
 load("//src/material:config.bzl", "MATERIAL_ENTRYPOINTS", "MATERIAL_TESTING_ENTRYPOINTS")
 load(":generate-guard-tests.bzl", "generate_test_targets")
 
 package(default_visibility = ["//visibility:public"])
 
 golden_files = ["core/%s.d.ts" % e for e in CORE_ENTRYPOINTS] + \
-               ["ionic/%s.d.ts" % e for e in IONIC_ENTRYPOINTS + IONIC_TESTING_ENTRYPOINTS] + \
                ["material/%s.d.ts" % e for e in MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS] + [
     # Primary entry-points.
     "core/core.d.ts",
-    "ionic/ionic.d.ts",
     "material/material.d.ts",
 ]
 

@@ -8,7 +8,6 @@
     "baseUrl": ".",
     "paths": {
       "@dewco/core/*": ["../core/*"],
-      "@dewco/ionic/*": ["../ionic/*"],
       "@dewco/material/*": ["../material/*"]
     }
   },

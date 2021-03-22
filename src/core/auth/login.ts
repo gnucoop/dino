@@ -36,7 +36,7 @@ import {
 import {AuthService} from './auth-service';
 
 /**
- * The base Login Component extended by Material and Ionic Login Components
+ * The base Login Component extended by Material Login Components
  */
 @Directive()
 export abstract class LoginComponent {

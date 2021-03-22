@@ -27,7 +27,6 @@
       "@dewco/core/*": ["./src/core/*"],
       "@dewco/dewco-examples": ["./src/packages/dewco-examples"],
       "@dewco/dewco-examples/*": ["./src/packages/dewco-examples/*"],
-      "@dewco/ionic/*": ["./src/ionic/*"],
       "@dewco/material/*": ["./src/material/*"]
     }
   },

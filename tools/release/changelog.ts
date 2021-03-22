@@ -28,7 +28,6 @@ interface ChangelogPackage {
 /** Hardcoded order of packages shown in the changelog. */
 const orderedChangelogPackages = [
   'core',
-  'ionic',
   'material',
 ];
 

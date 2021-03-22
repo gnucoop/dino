@@ -8,7 +8,7 @@ const commonTypos = new Map([
 // List of packages where the specified component could be defined in. The script uses the
 // first package that contains the component (if no package is specified explicitly).
 // e.g. "calendar" will become "material/calendar", and "sync" becomes "core/sync".
-const orderedGuessPackages = ['material', 'ionic', 'core'];
+const orderedGuessPackages = ['material', 'core'];
 
 /**
  * Tries to guess the full name of a package, based on a shorthand name.

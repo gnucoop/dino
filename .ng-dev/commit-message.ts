@@ -18,7 +18,6 @@ export const commitMessage: CommitMessageConfig = {
     'e2e-mat/list',
     'e2e-mat/login',
     'e2e-mat',
-    'ionic/login',
     'material/list',
     'material/login',
     'material',

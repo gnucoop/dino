@@ -26,7 +26,6 @@ typescript_version_packages = [
             "test.js",
             ":import-all-entry-points-file",
             "//src/core:npm_package",
-            "//src/ionic:npm_package",
             "//src/material:npm_package",
             "@npm//shelljs",
             "@npm//%s" % ts_pkg_name,

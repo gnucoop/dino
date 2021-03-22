@@ -11,9 +11,7 @@ export interface BuildConfig {
   angularMaterialVersion: string;
   /** Required Ngx Translate version for the project. */
   ngxtVersion: string;
-  /** Required Ionic version for the project. */
-  ionicVersion: string;
-  /** Required Ionic version for the project. */
+  /** Required Ajf version for the project. */
   ajfVersion: string;
   /** Path to the root of the project. */
   projectDir: string;

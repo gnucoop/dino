@@ -1,6 +1,5 @@
 load("//:rollup-globals.bzl", "ROLLUP_GLOBALS")
 load("//src/core:config.bzl", "CORE_ENTRYPOINTS")
-load("//src/ionic:config.bzl", "IONIC_ENTRYPOINTS", "IONIC_TESTING_ENTRYPOINTS")
 load("//src/material:config.bzl", "MATERIAL_ENTRYPOINTS", "MATERIAL_TESTING_ENTRYPOINTS")
 
 package(default_visibility = ["//visibility:public"])
@@ -19,7 +18,6 @@ genrule(
 )
 
 entryPoints = ["core/%s" % e for e in CORE_ENTRYPOINTS] + \
-              ["ionic/%s" % e for e in IONIC_ENTRYPOINTS + IONIC_TESTING_ENTRYPOINTS] + \
               ["material/%s" % e for e in MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS]
 
 genrule(

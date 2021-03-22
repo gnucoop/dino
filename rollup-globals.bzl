@@ -1,5 +1,4 @@
 load("//src/core:config.bzl", "CORE_ENTRYPOINTS")
-load("//src/ionic:config.bzl", "IONIC_ENTRYPOINTS", "IONIC_TESTING_ENTRYPOINTS")
 load("//src/material:config.bzl", "MATERIAL_ENTRYPOINTS", "MATERIAL_TESTING_ENTRYPOINTS")
 
 # Base rollup globals for everything in the repo. Note that we want to disable
@@ -48,7 +47,6 @@ ROLLUP_GLOBALS = {
 
     # Primary entry-points in the project.
     "@dewco/core": "dewco.core",
-    "@dewco/ionic": "dewco.ionic",
     "@dewco/material": "dewco.material",
 
     # Third-party libraries.
@@ -57,7 +55,6 @@ ROLLUP_GLOBALS = {
     "@ajf/core/models": "ajf.core.models",
     "@ajf/material/common": "ajf.material.common",
     "@ajf/material/forms": "ajf.material.forms",
-    "@ionic/angular": "ionic.angular",
     "pouchdb-adapter-idb": "PouchDB.adapter.idb",
     "pouchdb-adapter-memory": "PouchDB.adapter.memory",
     "rxdb": "rxdb",
@@ -88,10 +85,9 @@ def create_globals(packageName, entryPoints):
     })
 
 create_globals("core", CORE_ENTRYPOINTS)
-create_globals("ionic", IONIC_ENTRYPOINTS + IONIC_TESTING_ENTRYPOINTS)
 create_globals("material", MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS)
 
 # Rollup globals the examples package. Since individual examples are
 # grouped by package and component, the primary entry-point imports
 # from entry-points which should be treated as external imports.
-create_globals("dewco-examples", IONIC_ENTRYPOINTS + MATERIAL_ENTRYPOINTS)
+create_globals("dewco-examples", MATERIAL_ENTRYPOINTS)

@@ -25,7 +25,6 @@ const NGCC_MAIN_FIELD_NAME = 'main_ivy_ngcc';
 const entries = [
   'node_modules/@ajf/**/package.json',
   'node_modules/@angular/**/package.json',
-  'node_modules/@ionic/**/package.json',
   'node_modules/ngx-color-picker/**/package.json',
 ];
 entries.forEach(entry => {

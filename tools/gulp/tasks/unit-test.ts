@@ -27,7 +27,6 @@ task(':test:build-system-config', done => {
 task(':test:build', series(
   'clean',
   'core:build-no-bundles',
-  'ionic:build-no-bundles',
   'material:build-no-bundles',
   ':test:build-system-config'
 ));

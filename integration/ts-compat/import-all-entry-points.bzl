@@ -1,5 +1,4 @@
 load("//src/core:config.bzl", "CORE_ENTRYPOINTS")
-load("//src/ionic:config.bzl", "IONIC_ENTRYPOINTS", "IONIC_TESTING_ENTRYPOINTS")
 load("//src/material:config.bzl", "MATERIAL_ENTRYPOINTS", "MATERIAL_TESTING_ENTRYPOINTS")
 
 """Converts the given string to an identifier."""
@@ -24,14 +23,12 @@ def create_import_export(entry_point, pkg_name):
 def generate_import_all_entry_points_file():
     output = """
     import * as core from "@dewco/core";
-    // Note: The primary entry-points for Dewco Ionic and Material does not have
+    // Note: The primary entry-points for Dewco Material does not have
     // any exports, so it cannot be imported as module.
     export { core };
   """
     for ep in CORE_ENTRYPOINTS:
         output += create_import_export(ep, "core")
-    for ep in IONIC_ENTRYPOINTS + IONIC_TESTING_ENTRYPOINTS:
-        output += create_import_export(ep, "ionic")
     for ep in MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS:
         output += create_import_export(ep, "material")
     return output

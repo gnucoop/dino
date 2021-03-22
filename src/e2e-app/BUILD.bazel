@@ -30,7 +30,6 @@ ng_module(
         "//src/core/locations",
         "//src/core/projects",
         "//src/dewco-examples/private",
-        "//src/ionic/login",
         "//src/material/list",
         "//src/material/login",
         "//src/material/search-filters-bar",

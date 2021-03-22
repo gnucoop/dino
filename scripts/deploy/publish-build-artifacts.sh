@@ -16,8 +16,8 @@ cd $(dirname ${0})/../..
 # fi
 
 # Dewco packages that need to published.
-PACKAGES=(core ionic material)
-REPOSITORIES=(dewco-core-builds dewco-ionic-builds dewco-material-builds)
+PACKAGES=(core material)
+REPOSITORIES=(dewco-core-builds dewco-material-builds)
 
 # Command line arguments.
 COMMAND_ARGS=${*}

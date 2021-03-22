@@ -4,7 +4,6 @@
 AJF_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
 ANGULAR_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
 ANGULAR_MATERIAL_PACKAGE_VERSION = "^12.0.0-0 || ^13.0.0-0"
-IONIC_PACKAGE_VERSION = "^5.0.0"
 POUCHDB_PACKAGE_VERSION = "^7.0.0"
 RXDB_PACKAGE_VERSION = "^9.0.0"
 STWS_PACKAGE_VERSION = "^0.9.16"
@@ -17,7 +16,6 @@ UUID_PACKAGE_VERSION = "^8.0.0"
 VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-AJF": AJF_PACKAGE_VERSION,
     "0.0.0-ANGM": ANGULAR_MATERIAL_PACKAGE_VERSION,
-    "0.0.0-ION": IONIC_PACKAGE_VERSION,
     "0.0.0-NG": ANGULAR_PACKAGE_VERSION,
     "0.0.0-POUCHDB": POUCHDB_PACKAGE_VERSION,
     "0.0.0-RXDB": RXDB_PACKAGE_VERSION,
@@ -50,12 +48,9 @@ ANGULAR_NGCC_BUNDLES = [
 ]
 
 THIRD_PARTY_NGCC_BUNDLES = [
-    ("@ionic/angular", "ionic-angular.umd.js"),
 ]
 
 THIRD_PARTY_NO_NGCC_BUNDLES = [
-    ("@ionic/core", []),
-    ("@ionic/core/loader", []),
     ("@zxing/library", []),
     ("chart.js", []),
     ("css-element-queries", []),
@@ -64,7 +59,7 @@ THIRD_PARTY_NO_NGCC_BUNDLES = [
     ("leaflet", []),
     ("mock-socket", []),
     ("numbro", []),
-    ("pdfmake", ["pdfmake/build/pdfmake", ]),
+    ("pdfmake", ["pdfmake/build/pdfmake"]),
     ("pouchdb-adapter-idb", []),
     ("pouchdb-adapter-memory", []),
     ("rxdb", []),

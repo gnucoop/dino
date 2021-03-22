@@ -1,12 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-let packageJsonPath = path.posix.join('node_modules', '@ionic', 'core', 'loader', 'package.json');
-let packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-packageJson.name = '@ionic/core/loader';
-packageJson.browser = './index.cjs.js';
-fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson));
-
 const memorySrc = path.posix.join('node_modules', 'pouchdb', 'dist', 'pouchdb.memory.js');
 const memoryDst = path.posix.join('node_modules', 'pouchdb-adapter-memory', 'lib', 'pouchdb.memory.js');
 const rep = 'if (typeof PouchDB === \'undefined\') {\n' +

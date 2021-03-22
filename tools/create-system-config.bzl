@@ -1,6 +1,5 @@
 load("//:packages.bzl", "ANGULAR_PACKAGE_BUNDLES", "THIRD_PARTY_NO_NGCC_PACKAGE_BUNDLES", "THIRD_PARTY_PACKAGE_BUNDLES")
 load("//src/core:config.bzl", "CORE_ENTRYPOINTS")
-load("//src/ionic:config.bzl", "IONIC_ENTRYPOINTS", "IONIC_TESTING_ENTRYPOINTS")
 load("//src/material:config.bzl", "MATERIAL_ENTRYPOINTS", "MATERIAL_TESTING_ENTRYPOINTS")
 load("//tools:expand_template.bzl", "expand_template")
 
@@ -31,7 +30,6 @@ def create_system_config(
             "$ANGULAR_PACKAGE_BUNDLES": str(ANGULAR_PACKAGE_BUNDLES),
             "$BASE_URL": base_url,
             "$CORE_ENTRYPOINTS_TMPL": str(CORE_ENTRYPOINTS),
-            "$IONIC_ENTRYPOINTS_TMPL": str(IONIC_ENTRYPOINTS + IONIC_TESTING_ENTRYPOINTS),
             "$MATERIAL_ENTRYPOINTS_TMPL": str(MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS),
             "$NODE_MODULES_BASE_PATH": node_modules_base_path,
             "$PACKAGES_DIR": packages_dir,

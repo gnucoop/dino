@@ -19,7 +19,6 @@ const ajfVersion = packageJson.requiredAjfVersion;
 const angularMaterialVersion = packageJson.requiredAngularMaterialVersion;
 const angularFlexLayoutVersion = packageJson.requiredAngularFlexLayoutVersion;
 const ngxtVersion = packageJson.requiredNgxtVersion;
-const ionicVersion = packageJson.requiredIonicVersion;
 
 /** License that will be placed inside of all created bundles. */
 const buildLicense = `/**
@@ -51,7 +50,6 @@ module.exports = {
   angularFlexLayoutVersion: angularFlexLayoutVersion,
   angularMaterialVersion: angularMaterialVersion,
   ngxtVersion: ngxtVersion,
-  ionicVersion: ionicVersion,
   projectDir: __dirname,
   packagesDir: join(__dirname, 'src'),
   outputDir: join(__dirname, 'dist'),
