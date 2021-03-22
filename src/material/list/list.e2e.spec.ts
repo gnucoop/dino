@@ -37,8 +37,7 @@ describe('dewco-list', () => {
   });
 
   it('should display all the table rows', async () => {
-    const paginatorNum =
-        +await element(by.css('.mat-paginator .mat-select')).getAttribute('ng-reflect-value');
+    const paginatorNum = +await element(by.css('.mat-select-min-line')).getText();
     const rows = await element.all(by.tagName('mat-row')).count();
     expect(rows).toEqual(paginatorNum);
     expect(rows).toBeLessThanOrEqual(5);
@@ -76,8 +75,7 @@ describe('dewco-list', () => {
   it(`should delete a row by clicking on its action-delete button,
       and confirming the action on the Confirmation Dialog`,
      async () => {
-       const paginatorNum =
-           +await element(by.css('.mat-paginator .mat-select')).getAttribute('ng-reflect-value');
+       const paginatorNum = +await element(by.css('.mat-select-min-line')).getText();
        const initialRowCount = await element.all(by.tagName('mat-row')).count();
        const firstActionCell =
            element

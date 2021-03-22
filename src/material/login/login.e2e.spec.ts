@@ -2,13 +2,15 @@ import {
   browser,
   by,
   element,
+  ExpectedConditions as EC,
 } from 'protractor';
 
 describe('dewco-material-login', () => {
   beforeEach(async () => await browser.get('/mat-login'));
+  beforeEach(async () => await browser.get('/mat-login'));
 
   it('should not display an error message on init', async () => {
-    const errorMsg = element(by.className('dewco-error-message'));
+    const errorMsg = element(by.css('.dewco-error-message'));
     const res = await errorMsg.isPresent();
     expect(res).toBe(false);
   });
@@ -61,39 +63,58 @@ describe('dewco-material-login', () => {
     const pswInput = form.element(by.name('password'));
     const errorMsg = form.element(by.className('dewco-error-message'));
 
-    await emailInput.sendKeys('user@dewco.io');
-    await pswInput.sendKeys('dewco');
-    await loginButton.click();
+    expect(await loginButton.isPresent()).toBe(true);
+    expect(await emailInput.isPresent()).toBe(true);
+    expect(await pswInput.isPresent()).toBe(true);
 
-    const res = await errorMsg.isPresent();
-    expect(res).toBe(false);
+    await emailInput.clear();
+    await emailInput.sendKeys('user@dewco.io');
+    await pswInput.clear();
+    await pswInput.sendKeys('dewco');
+
+    await browser.sleep(1000);
+    await browser.wait(EC.elementToBeClickable(loginButton), 5000);
+    await loginButton.click();
+    await browser.sleep(1000);
+
+    expect(await errorMsg.isPresent()).toBe(false);
   });
 
-  it('should redirect to home url after a successful login', async () => {
+  it('should redirect to the post-login url after a successful login', async () => {
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
     const pswInput = form.element(by.name('password'));
 
+    await emailInput.clear();
     await emailInput.sendKeys('user@dewco.io');
+    await pswInput.clear();
     await pswInput.sendKeys('dewco');
-    await loginButton.click();
 
-    const res = await browser.getCurrentUrl();
-    expect(res).toEqual(browser.baseUrl + '/');
+    await browser.sleep(1000);
+    await browser.wait(EC.elementToBeClickable(loginButton), 5000);
+    await loginButton.click();
+    await browser.sleep(1000);
+
+    expect(await browser.getCurrentUrl()).toEqual(browser.baseUrl + '/mat-list');
   });
 
-  it('should not redirect to home url after a failed login', async () => {
+  it('should not redirect to post-login url after a failed login', async () => {
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
     const pswInput = form.element(by.name('password'));
 
-    await emailInput.sendKeys('wrong@mail.io');
-    await pswInput.sendKeys('wrongpsw');
-    await loginButton.click();
+    await emailInput.clear();
+    await emailInput.sendKeys('wrong@dewco.io');
+    await pswInput.clear();
+    await pswInput.sendKeys('wrong');
 
-    const res = await browser.getCurrentUrl();
-    expect(res).toEqual(browser.baseUrl + '/mat-login');
+    await browser.sleep(1000);
+    await browser.wait(EC.elementToBeClickable(loginButton), 5000);
+    await loginButton.click();
+    await browser.sleep(1000);
+
+    expect(await browser.getCurrentUrl()).not.toEqual(browser.baseUrl + '/mat-list');
   });
 });

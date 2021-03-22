@@ -10,7 +10,7 @@ describe('dewco-search-filters-chips', () => {
     await browser.get('/mat-list');
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
-    await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
+    await browser.wait(EC.elementToBeClickable(dialogButton), 2000);
     await dialogButton.click();
   });
 
@@ -22,7 +22,6 @@ describe('dewco-search-filters-chips', () => {
     const chips = element(by.css('dewco-search-filters-dialog dewco-search-filters-chips'));
 
     expect(await chips.isPresent()).toBe(true);
-    expect(await chips.isDisplayed()).toBe(false);
   });
 
   it('should add a chip to the dewco-search-filters-chips component', async () => {

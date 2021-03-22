@@ -38,7 +38,7 @@ describe('dewco-search-filters-widget', () => {
 
     expect(await firstWidgetToggle.isPresent()).toBe(true);
     expect(await firstWidgetToggle.isDisplayed()).toBe(true);
-    expect(await firstWidgetToggle.getAttribute('ng-reflect-disabled')).toBe('true');
+    expect(await firstWidgetToggle.getAttribute('class')).toMatch('mat-disabled');
   });
 
   it('should display a mat-input', async () => {
