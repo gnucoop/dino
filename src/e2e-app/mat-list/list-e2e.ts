@@ -1,5 +1,5 @@
 import {Component, OnDestroy} from '@angular/core';
-import {DataService, PermissionContextService} from '@dewco/core/data';
+import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
 import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
 import {
   FiltersService,
@@ -35,7 +35,8 @@ export class MatListE2E implements OnDestroy {
       readonly service: DataService,
       readonly permissionService: PermissionContextService,
   ) {
-    const dataService = new ElementManager(service, permissionService);
+    // const dataService = new ElementManager(service, permissionService);
+    const dataService = new ElementManager() as unknown as DataModelManager<PeriodicElement>;
 
     this.dataSource = new ListDataSource(
         dataService,

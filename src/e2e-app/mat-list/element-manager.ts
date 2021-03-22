@@ -1,10 +1,9 @@
 import {AjfFieldType} from '@ajf/core/forms';
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, Model, PermissionContextService} from '@dewco/core/data';
+import {Model} from '@dewco/core/data';
 import {FormData} from '@dewco/core/forms';
 import {FilterGroup, ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
-// import {Observable, of as obsOf} from 'rxjs';
+import {Observable, of as obsOf} from 'rxjs';
 
 import {testFormData, testFormData_loc} from './test-ajf-formdata';
 
@@ -22,12 +21,12 @@ export const schema = {
 
   },
   'required': [
-        'id',
-        'name',
-        'weight',
-        'symbol',
-        'created_at',
-      ],
+    'id',
+    'name',
+    'weight',
+    'symbol',
+    'created_at',
+  ],
   'additionalProperties': false,
   'title': 'periodicelement',
   'version': 0,
@@ -141,37 +140,39 @@ export const displayedHeaders: ListHeader<PeriodicElement>[] = [
   {column: 'symbol', label: 'Symbol', sortable: false},
 ];
 
-// let elements = [...ELEMENT_DATA.slice(0, 5)];
+let elements = [...ELEMENT_DATA.slice(0, 5)];
 
-// type Doc = {
-//   toJSON: () => PeriodicElement
-// };
+type Doc = {
+  toJSON: () => PeriodicElement
+};
 
-// export class ElementManager {
-//   get collectionSchema(): RxJsonSchema {
-//     return schema;
-//   }
+export class ElementManager {
+  get collectionSchema(): RxJsonSchema {
+    return schema;
+  }
+  get collectionChanged(): Observable<boolean> {
+    return obsOf(true);
+  }
+  query(): Observable<{exec: () => Observable<Doc[]>}> {
+    return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
+  }
 
-//   query(): Observable<{exec: () => Observable<Doc[]>}> {
-//     return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
-//   }
-
-//   bulkDelete(items: PeriodicElement[]): Observable<Doc[]> {
-//     elements = elements.filter(e => items.indexOf(e) === -1);
-//     return obsOf(elements.map(e => ({toJSON: () => e})));
-//   }
-// }
-
-@Injectable()
-export class ElementManager extends DataModelManager<PeriodicElement> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
-    super(
-        {collection: {name: 'element', schema}},
-        dataService,
-        permissionContextService,
-    );
+  bulkDelete(items: PeriodicElement[]): Observable<Doc[]> {
+    elements = elements.filter(e => items.indexOf(e) === -1);
+    return obsOf(elements.map(e => ({toJSON: () => e})));
   }
 }
+
+// @Injectable()
+// export class ElementManager extends DataModelManager<PeriodicElement> {
+//   constructor(
+//       dataService: DataService,
+//       permissionContextService: PermissionContextService,
+//   ) {
+//     super(
+//         {collection: {name: 'element', schema}},
+//         dataService,
+//         permissionContextService,
+//     );
+//   }
+// }

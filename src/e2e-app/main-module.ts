@@ -20,7 +20,7 @@ import {ExampleFormSelectModule} from './example-form-select/example-form-select
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {fusionAuthConfig} from './mockconfig';
-// import {authServiceMock} from './mocks';
+import {AuthServiceMock} from './mocks';
 
 const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 const wsUrl = 'ws://localhost:8080/v1/graphql';
@@ -48,8 +48,8 @@ const wsUrl = 'ws://localhost:8080/v1/graphql';
     E2eApp,
   ],
   providers: [
-    // {provide: AuthService, useValue: authServiceMock},
-    AuthService,
+    {provide: AuthService, useClass: AuthServiceMock},
+    // AuthService,
     {
       provide: DATA_SERVICE_CONFIG,
       useValue: {

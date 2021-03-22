@@ -1,5 +1,7 @@
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {AuthService, Credentials, User} from '@dewco/core/auth';
-import {Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay} from 'rxjs/operators';
 
 const dummyUser: User = {
@@ -20,15 +22,35 @@ const dummyUser: User = {
   registrations: []
 };
 
-export const authServiceMock = {
+@Injectable()
+export class AuthServiceMock {
+  authenticated: BehaviorSubject<boolean>;
+  constructor() {
+    this.authenticated = new BehaviorSubject<boolean>(false);
+  }
   login(credentials: Credentials): Observable<boolean> {
     if (credentials.email == 'user@dewco.io' && credentials.password == 'dewco') {
+      this.authenticated.next(true);
       return obsOf(true).pipe(delay(1000));
     }
     return obsOf(false).pipe(delay(1000));
-  },
-  authenticated: obsOf(true),
-  getUserInfo: () => {
+  }
+  getUserInfo(): User {
     return dummyUser;
-  },
-} as unknown as AuthService;
+  }
+  checkToken(): boolean {
+    return true;
+  }
+  refreshToken(): Observable<boolean> {
+    return obsOf(true);
+  }
+}
+
+@Injectable({providedIn: 'root'})
+export class AuthGuardMock implements CanActivate {
+  constructor(private _auth: AuthService) {}
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
+      Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
+    return this._auth.authenticated;
+  }
+}
