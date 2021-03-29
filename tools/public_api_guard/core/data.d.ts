@@ -94,6 +94,7 @@ export declare abstract class DataModelManager<T extends Model = Model> {
 }
 
 export declare class DataModule {
+    static ɵfac: i0.ɵɵFactoryDef<DataModule, never>;
     static ɵinj: i0.ɵɵInjectorDef<DataModule>;
     static ɵmod: i0.ɵɵNgModuleDefWithMeta<DataModule, never, never, never>;
     static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule>;

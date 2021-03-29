@@ -7,7 +7,7 @@ IONIC_PACKAGE_VERSION = "^5.0.0"
 POUCHDB_PACKAGE_VERSION = "^7.0.0"
 RXDB_PACKAGE_VERSION = "^9.0.0"
 STWS_PACKAGE_VERSION = "^0.9.16"
-TSLIB_PACKAGE_VERSION = "^2.0.0"
+TSLIB_PACKAGE_VERSION = "^2.1.0"
 UUID_PACKAGE_VERSION = "^8.0.0"
 
 # Each placer holder is used to stamp versions during the build process, replacing the key with it's

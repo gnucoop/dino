@@ -1,6 +1,7 @@
 export declare const AUTH_SERVICE_CONFIG: InjectionToken<AuthServiceConfig>;
 
 export declare class AuthModule {
+    static ɵfac: i0.ɵɵFactoryDef<AuthModule, never>;
     static ɵinj: i0.ɵɵInjectorDef<AuthModule>;
     static ɵmod: i0.ɵɵNgModuleDefWithMeta<AuthModule, never, never, never>;
     static forRoot(config: AuthServiceConfig): ModuleWithProviders<AuthModule>;
