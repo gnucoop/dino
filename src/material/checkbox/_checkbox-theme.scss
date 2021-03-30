@@ -11,7 +11,7 @@
     $foreground: map.get($config, foreground);
 
     // The color of the checkbox's checkmark / mixedmark.
-    $checkbox-mark-color: mat-theming.color($background, background);
+    $checkbox-mark-color: mat-theming.get-color-from-palette($background, background);
 
     // NOTE(traviskaufman): While the spec calls for translucent blacks/whites for disabled colors,
     // this does not work well with elements layered on top of one another. To get around this we
@@ -22,7 +22,7 @@
     if($is-dark-theme, $white-30pct-opacity-on-dark, $black-26pct-opacity-on-light);
 
     .mat-checkbox-frame {
-        border-color: mat-theming.color($foreground, secondary-text);
+        border-color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
 
     .mat-checkbox-checkmark {
@@ -42,15 +42,15 @@
     .mat-checkbox-indeterminate,
     .mat-checkbox-checked {
         &.mat-primary .mat-checkbox-background {
-            background-color: mat-theming.color($primary);
+            background-color: mat-theming.get-color-from-palette($primary);
         }
 
         &.mat-accent .mat-checkbox-background {
-            background-color: mat-theming.color($accent);
+            background-color: mat-theming.get-color-from-palette($accent);
         }
 
         &.mat-warn .mat-checkbox-background {
-            background-color: mat-theming.color($warn);
+            background-color: mat-theming.get-color-from-palette($warn);
         }
     }
 
@@ -69,7 +69,7 @@
         }
 
         .mat-checkbox-label {
-            color: mat-theming.color($foreground, secondary-text);
+            color: mat-theming.get-color-from-palette($foreground, secondary-text);
         }
     }
 
@@ -82,15 +82,15 @@
     .mat-checkbox-checked:not(.mat-checkbox-disabled),
     .mat-checkbox:active:not(.mat-checkbox-disabled) {
         &.mat-primary .mat-ripple-element {
-            background: mat-theming.color($primary);
+            background: mat-theming.get-color-from-palette($primary);
         }
 
         &.mat-accent .mat-ripple-element {
-            background: mat-theming.color($accent);
+            background: mat-theming.get-color-from-palette($accent);
         }
 
         &.mat-warn .mat-ripple-element {
-            background: mat-theming.color($warn);
+            background: mat-theming.get-color-from-palette($warn);
         }
     }
 }

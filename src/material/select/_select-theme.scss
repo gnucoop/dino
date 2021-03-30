@@ -11,57 +11,57 @@
     $warn: map.get($config, warn);
 
     .mat-select-value {
-        color: mat-theming.color($foreground, text);
+        color: mat-theming.get-color-from-palette($foreground, text);
     }
 
     .mat-select-disabled .mat-select-value {
-        color: mat-theming.color($foreground, disabled-text);
+        color: mat-theming.get-color-from-palette($foreground, disabled-text);
     }
 
     .mat-select-arrow {
-        color: mat-theming.color($primary);
+        color: mat-theming.get-color-from-palette($primary);
     }
 
     .mat-select-panel {
-        background: mat-theming.color($background, card);
+        background: mat-theming.get-color-from-palette($background, card);
         @include mat-private.private-theme-overridable-elevation(4, $config);
 
         .mat-option.mat-selected:not(.mat-option-multiple) {
-            background: mat-theming.color($background, hover, 0.12);
+            background: mat-theming.get-color-from-palette($background, hover, 0.12);
         }
         .mat-option.mat-option-multiple.mat-selected {
-            color: mat-theming.color($accent);
+            color: mat-theming.get-color-from-palette($accent);
         }
         .mat-pseudo-checkbox.mat-option-pseudo-checkbox.mat-pseudo-checkbox-checked {
-            background-color: mat-theming.color($accent);
+            background-color: mat-theming.get-color-from-palette($accent);
         }
     }
 
     .dewco-default-option .mat-option-text span {
-        color: mat-theming.color($primary);
+        color: mat-theming.get-color-from-palette($primary);
     }
 
     .mat-form-field {
         &.mat-focused {
             &.mat-primary .mat-select-arrow {
-                color: mat-theming.color($primary, text);
+                color: mat-theming.get-color-from-palette($primary, text);
             }
 
             &.mat-accent .mat-select-arrow {
-                color: mat-theming.color($accent, text);
+                color: mat-theming.get-color-from-palette($accent, text);
             }
 
             &.mat-warn .mat-select-arrow {
-                color: mat-theming.color($warn, text);
+                color: mat-theming.get-color-from-palette($warn, text);
             }
         }
 
         .mat-select.mat-select-invalid .mat-select-arrow {
-            color: mat-theming.color($warn, text);
+            color: mat-theming.get-color-from-palette($warn, text);
         }
 
         .mat-select.mat-select-disabled .mat-select-arrow {
-            color: mat-theming.color($foreground, disabled-text);
+            color: mat-theming.get-color-from-palette($foreground, disabled-text);
         }
     }
 }

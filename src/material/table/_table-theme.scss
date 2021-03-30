@@ -12,16 +12,16 @@
   $foreground: map.get($config, foreground);
 
   .mat-table {
-    background: mat-theming.color($background, background);
+    background: mat-theming.get-color-from-palette($background, background);
     .mat-row:hover {
       box-shadow: 0 2px 4px 0 #b9b9b9;
     }
 
     .mat-icon {
-      color: mat-theming.color($alt_accent);
+      color: mat-theming.get-color-from-palette($alt_accent);
       &:hover {
-        background: mat-theming.color($accent, lighter);
-        color: mat-theming.color($accent);
+        background: mat-theming.get-color-from-palette($accent, lighter);
+        color: mat-theming.get-color-from-palette($accent);
       }
     }
   }
@@ -37,12 +37,12 @@
   mat-footer-row,
   [mat-row],
   [mat-footer-row] {
-    background: mat-theming.color($background, card);
+    background: mat-theming.get-color-from-palette($background, card);
   }
 
   .mat-cell:first-of-type,
   .mat-footer-cell:first-of-type {
-    border-left: 3px solid mat-theming.color($alt_accent);
+    border-left: 3px solid mat-theming.get-color-from-palette($alt_accent);
   }
 
   .mat-header-cell:first-of-type {
@@ -50,12 +50,12 @@
   }
 
   .mat-header-cell {
-    color: mat-theming.color($foreground, secondary-text);
+    color: mat-theming.get-color-from-palette($foreground, secondary-text);
   }
 
   .mat-cell,
   .mat-footer-cell {
-    color: mat-theming.color($foreground, text);
+    color: mat-theming.get-color-from-palette($foreground, text);
   }
 }
 

@@ -2,10 +2,10 @@
 
 // Dewco default typography
 
-$base-typography: typography.config(
+$base-typography: typography.define-typography-config(
     $font-family: "'Roboto', monospace",
-    $headline: typography.level(32px, 48px, 700),
-    $body-1: typography.level(13px, 22px, 400),
-    $body-2: typography.level(13px, 22px, 500),
-    $title: typography.level(14px, 22px, 700),
+    $headline: typography.define-typography-level(32px, 48px, 700),
+    $body-1: typography.define-typography-level(13px, 22px, 400),
+    $body-2: typography.define-typography-level(13px, 22px, 500),
+    $title: typography.define-typography-level(14px, 22px, 700),
 );

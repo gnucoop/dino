@@ -12,19 +12,19 @@
     $background: map.get($config, background);
     $foreground: map.get($config, foreground);
 
-    $drawer-background-color: mat-theming.color($background, background);
-    $drawer-container-background-color: mat-theming.color($background, background);
-    $drawer-push-background-color: mat-theming.color($background, dialog);
-    $drawer-side-border: solid 1px mat-theming.color($foreground, divider);
+    $drawer-background-color: mat-theming.get-color-from-palette($background, background);
+    $drawer-container-background-color: mat-theming.get-color-from-palette($background, background);
+    $drawer-push-background-color: mat-theming.get-color-from-palette($background, dialog);
+    $drawer-side-border: solid 1px mat-theming.get-color-from-palette($foreground, divider);
 
     .mat-drawer-container {
         background-color: $drawer-container-background-color;
-        color: mat-theming.color($foreground, text);
+        color: mat-theming.get-color-from-palette($foreground, text);
     }
 
     .mat-drawer {
         background-color: $drawer-background-color;
-        color: mat-theming.color($foreground, text);
+        color: mat-theming.get-color-from-palette($foreground, text);
 
         &.mat-drawer-push {
             background-color: $drawer-push-background-color;
@@ -38,9 +38,9 @@
         &.mat-drawer-side.mat-sidenav {
             .mat-list-item {
                 &:hover {
-                    background-color: mat-theming.color($accent, lighter);
-                    color: mat-theming.color($accent);
-                    border-left: 3px solid mat-theming.color($accent);
+                    background-color: mat-theming.get-color-from-palette($accent, lighter);
+                    color: mat-theming.get-color-from-palette($accent);
+                    border-left: 3px solid mat-theming.get-color-from-palette($accent);
                 }
             }
         }
@@ -67,7 +67,7 @@
 
     .mat-drawer-backdrop.mat-drawer-shown {
         $opacity: 0.6;
-        $backdrop-color: mat-theming.color($background, card, $opacity);
+        $backdrop-color: mat-theming.get-color-from-palette($background, card, $opacity);
 
         @if (meta.type-of($backdrop-color) == color) {
             // We use invert() here to have the darken

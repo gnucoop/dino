@@ -9,18 +9,18 @@
     $accent: map.get($config, accent);
 
     .mat-card {
-        background: mat-theming.color($background, card);
-        color: mat-theming.color($foreground, text);
-        border-left-color: mat-theming.color($accent);
+        background: mat-theming.get-color-from-palette($background, card);
+        color: mat-theming.get-color-from-palette($foreground, text);
+        border-left-color: mat-theming.get-color-from-palette($accent);
     }
 
     .mat-card-subtitle {
-        color: mat-theming.color($foreground, secondary-text);
+        color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
 
     .mat-card-actions {
-        background: mat-theming.color($background, dialog);
-        color: mat-theming.color($foreground, secondary-text);
+        background: mat-theming.get-color-from-palette($background, dialog);
+        color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
 }
 

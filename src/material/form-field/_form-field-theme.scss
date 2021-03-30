@@ -18,15 +18,17 @@
     $is-dark-theme: map.get($config, is-dark);
 
     // Label colors. Required is used for the `*` star shown in the label.
-    $label-color: mat-theming.color($foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
-    $focused-label-color: mat-theming.color($primary, text);
-    $required-label-color: mat-theming.color($accent, text);
+    $label-color: mat-theming.get-color-from-palette(
+        $foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
+    $focused-label-color: mat-theming.get-color-from-palette($primary, text);
+    $required-label-color: mat-theming.get-color-from-palette($accent, text);
 
     // Underline colors.
-    $underline-color-base: mat-theming.color($foreground, divider, if($is-dark-theme, 1, 0.87));
-    $underline-color-accent: mat-theming.color($accent, text);
-    $underline-color-warn: mat-theming.color($warn, text);
-    $underline-focused-color: mat-theming.color($primary, text);
+    $underline-color-base: mat-theming.get-color-from-palette(
+        $foreground, divider, if($is-dark-theme, 1, 0.87));
+    $underline-color-accent: mat-theming.get-color-from-palette($accent, text);
+    $underline-color-warn: mat-theming.get-color-from-palette($warn, text);
+    $underline-focused-color: mat-theming.get-color-from-palette($primary, text);
 
     .mat-form-field .mat-form-field-underline,
     .mat-form-field.mat-form-field-appearance-legacy .mat-form-field-underline,
@@ -34,7 +36,7 @@
     .mat-form-field.mat-form-field-appearance-standard .mat-form-field-ripple,
     .mat-form-field-ripple,
     .mat-form-field.mat-focused .mat-form-field-ripple {
-        background-color: mat-theming.color($primary);
+        background-color: mat-theming.get-color-from-palette($primary);
     }
 
     .mat-form-field-label {

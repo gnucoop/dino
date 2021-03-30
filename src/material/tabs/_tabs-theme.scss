@@ -8,16 +8,16 @@
   $warn: map.get($config, warn);
   $background: map.get($config, background);
   $foreground: map.get($config, foreground);
-  $header-border: 1px solid mat-theming.color($foreground, divider);
+  $header-border: 1px solid mat-theming.get-color-from-palette($foreground, divider);
 
   .mat-tab-nav-bar,
   .mat-tab-header {
     border-bottom: $header-border;
-    background-color: mat-theming.color($background, background);
+    background-color: mat-theming.get-color-from-palette($background, background);
   }
 
   .mat-tab-body {
-    background-color: mat-theming.color($background, background);
+    background-color: mat-theming.get-color-from-palette($background, background);
   }
 
   .mat-tab-group-inverted-header {
@@ -30,19 +30,19 @@
 
   .mat-tab-label,
   .mat-tab-link {
-    color: mat-theming.color($foreground, text);
+    color: mat-theming.get-color-from-palette($foreground, text);
 
     &.mat-tab-disabled {
-      color: mat-theming.color($foreground, disabled-text);
+      color: mat-theming.get-color-from-palette($foreground, disabled-text);
     }
   }
 
   .mat-tab-header-pagination-chevron {
-    border-color: mat-theming.color($foreground, text);
+    border-color: mat-theming.get-color-from-palette($foreground, text);
   }
 
   .mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {
-    border-color: mat-theming.color($foreground, disabled-text);
+    border-color: mat-theming.get-color-from-palette($foreground, disabled-text);
   }
 
   // Remove header border when there is a background color
@@ -85,7 +85,7 @@
 
 @mixin _mat-ink-bar($color, $hue: default) {
   .mat-ink-bar {
-    background-color: mat-theming.color($color, $hue);
+    background-color: mat-theming.get-color-from-palette($color, $hue);
   }
 }
 
@@ -95,7 +95,7 @@
     &.cdk-keyboard-focused,
     &.cdk-program-focused {
       &:not(.mat-tab-disabled) {
-        background-color: mat-theming.color($tab-focus-color, lighter, 0.3);
+        background-color: mat-theming.get-color-from-palette($tab-focus-color, lighter, 0.3);
       }
     }
   }
@@ -106,32 +106,32 @@
   .mat-tab-header,
   .mat-tab-links,
   .mat-tab-header-pagination {
-    background-color: mat-theming.color($background-color);
+    background-color: mat-theming.get-color-from-palette($background-color);
   }
 
   // Set labels to contrast against background
   .mat-tab-label,
   .mat-tab-link {
-    color: mat-theming.color($background-color, default-contrast);
+    color: mat-theming.get-color-from-palette($background-color, default-contrast);
 
     &.mat-tab-disabled {
-      color: mat-theming.color($background-color, default-contrast, 0.4);
+      color: mat-theming.get-color-from-palette($background-color, default-contrast, 0.4);
     }
   }
 
   // Set pagination chevrons to contrast background
   .mat-tab-header-pagination-chevron {
-    border-color: mat-theming.color($background-color, default-contrast);
+    border-color: mat-theming.get-color-from-palette($background-color, default-contrast);
   }
 
   .mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {
-    border-color: mat-theming.color($background-color, default-contrast, 0.4);
+    border-color: mat-theming.get-color-from-palette($background-color, default-contrast, 0.4);
   }
 
   // Set ripples color to be the contrast color of the new background. Otherwise the ripple
   // color will be based on the app background color.
   .mat-ripple-element {
-    background-color: mat-theming.color($background-color, default-contrast, 0.12);
+    background-color: mat-theming.get-color-from-palette($background-color, default-contrast, 0.12);
   }
 }
 
