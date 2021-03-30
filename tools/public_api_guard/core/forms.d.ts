@@ -8,7 +8,7 @@ export interface FormData extends Model {
 
 export declare class FormDataManager extends DataModelManager<FormData> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
-    static ɵfac: i0.ɵɵFactoryDef<FormDataManager, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FormDataManager, never>;
     static ɵprov: i0.ɵɵInjectableDef<FormDataManager>;
 }
 
@@ -20,11 +20,12 @@ export interface FormSchema extends Model {
 export declare class FormSchemaManager extends DataModelManager<FormSchema> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
     generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
-    static ɵfac: i0.ɵɵFactoryDef<FormSchemaManager, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FormSchemaManager, never>;
     static ɵprov: i0.ɵɵInjectableDef<FormSchemaManager>;
 }
 
 export declare class FormsModule {
-    static ɵinj: i0.ɵɵInjectorDef<FormsModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<FormsModule, never, never, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FormsModule, never>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<FormsModule>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<FormsModule, never, never, never>;
 }

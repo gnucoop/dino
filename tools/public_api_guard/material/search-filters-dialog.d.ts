@@ -13,11 +13,12 @@ export declare class SearchFiltersDialog implements OnInit, OnDestroy, AfterView
     removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void;
     search(): void;
     setCurrentGroupId(id: number): void;
-    static ɵcmp: i0.ɵɵComponentDefWithMeta<SearchFiltersDialog, "dewco-search-filters-dialog", never, {}, {}, never, never>;
-    static ɵfac: i0.ɵɵFactoryDef<SearchFiltersDialog, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersDialog, "dewco-search-filters-dialog", never, {}, {}, never, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersDialog, never>;
 }
 
 export declare class SearchFiltersDialogModule {
-    static ɵinj: i0.ɵɵInjectorDef<SearchFiltersDialogModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<SearchFiltersDialogModule, [typeof i1.SearchFiltersDialog], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.MatButtonModule, typeof i5.MatCheckboxModule, typeof i6.MatDialogModule, typeof i7.MatFormFieldModule, typeof i8.MatIconModule, typeof i9.MatInputModule, typeof i10.MatTabsModule, typeof i11.RouterModule, typeof i12.SearchFiltersChipsModule, typeof i13.SearchFiltersWidgetModule], [typeof i1.SearchFiltersDialog]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersDialogModule, never>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<SearchFiltersDialogModule>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersDialogModule, [typeof i1.SearchFiltersDialog], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.MatButtonModule, typeof i5.MatCheckboxModule, typeof i6.MatDialogModule, typeof i7.MatFormFieldModule, typeof i8.MatIconModule, typeof i9.MatInputModule, typeof i10.MatTabsModule, typeof i11.RouterModule, typeof i12.SearchFiltersChipsModule, typeof i13.SearchFiltersWidgetModule], [typeof i1.SearchFiltersDialog]>;
 }

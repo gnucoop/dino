@@ -3,7 +3,7 @@ export declare const AUTH_SERVICE_CONFIG: InjectionToken<AuthServiceConfig>;
 export declare class AuthGuard implements CanActivate {
     constructor(_router: Router, _authService: AuthService);
     canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree;
-    static ɵfac: i0.ɵɵFactoryDef<AuthGuard, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AuthGuard, never>;
     static ɵprov: i0.ɵɵInjectableDef<AuthGuard>;
 }
 

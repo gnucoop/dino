@@ -65,7 +65,7 @@ export declare class FiltersService {
     resetTemporaryFilters(): void;
     setAdditionalFilters(filters?: FilterGroup[]): void;
     updateAdditionalFilters(): void;
-    static ɵfac: i0.ɵɵFactoryDef<FiltersService, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FiltersService, never>;
     static ɵprov: i0.ɵɵInjectableDef<FiltersService>;
 }
 
@@ -92,8 +92,8 @@ export declare abstract class List<T extends Model = Model, AD extends Model = M
     abstract getSelection(): T[];
     processAction(action: ListAction, items: T[]): void;
     abstract selectAll(): void;
-    static ɵdir: i0.ɵɵDirectiveDefWithMeta<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; }, {}, never>;
-    static ɵfac: i0.ɵɵFactoryDef<List<any, any>, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; }, {}, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<List<any, any>, never>;
 }
 
 export interface ListAction {
@@ -110,8 +110,9 @@ export interface ListHeader<T> {
 }
 
 export declare class ListModule {
-    static ɵinj: i0.ɵɵInjectorDef<ListModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<ListModule, never, never, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ListModule, never>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, never, never, never>;
 }
 
 export declare const NUMBER_CONDITION_OPERATORS: Operator[];
