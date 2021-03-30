@@ -1,9 +1,9 @@
 export declare const AUTH_SERVICE_CONFIG: InjectionToken<AuthServiceConfig>;
 
 export declare class AuthModule {
-    static ɵfac: i0.ɵɵFactoryDef<AuthModule, never>;
-    static ɵinj: i0.ɵɵInjectorDef<AuthModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<AuthModule, never, never, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AuthModule, never>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<AuthModule>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<AuthModule, never, never, never>;
     static forRoot(config: AuthServiceConfig): ModuleWithProviders<AuthModule>;
 }
 
@@ -17,7 +17,7 @@ export declare class AuthService {
     login(credentials: Credentials): Observable<boolean>;
     logout(allDevices?: boolean): Observable<boolean>;
     refreshToken(): Observable<boolean>;
-    static ɵfac: i0.ɵɵFactoryDef<AuthService, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AuthService, never>;
     static ɵprov: i0.ɵɵInjectableDef<AuthService>;
 }
 
@@ -44,7 +44,7 @@ export interface Credentials {
 export declare class JWTInterceptor implements HttpInterceptor {
     constructor(_authService: AuthService);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
-    static ɵfac: i0.ɵɵFactoryDef<JWTInterceptor, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<JWTInterceptor, never>;
     static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
 }
 
@@ -56,8 +56,8 @@ export declare abstract class LoginComponent {
     readonly submitDisabled: Observable<boolean>;
     constructor(_authService: AuthService, _router: Router, fb: FormBuilder, _cdr: ChangeDetectorRef);
     login(): void;
-    static ɵdir: i0.ɵɵDirectiveDefWithMeta<LoginComponent, never, never, { "postLogin": "postLogin"; }, {}, never>;
-    static ɵfac: i0.ɵɵFactoryDef<LoginComponent, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<LoginComponent, never, never, { "postLogin": "postLogin"; }, {}, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<LoginComponent, never>;
 }
 
 export interface LoginResponse {

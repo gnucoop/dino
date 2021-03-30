@@ -94,9 +94,9 @@ export declare abstract class DataModelManager<T extends Model = Model> {
 }
 
 export declare class DataModule {
-    static ɵfac: i0.ɵɵFactoryDef<DataModule, never>;
-    static ɵinj: i0.ɵɵInjectorDef<DataModule>;
-    static ɵmod: i0.ɵɵNgModuleDefWithMeta<DataModule, never, never, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DataModule, never>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<DataModule>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<DataModule, never, never, never>;
     static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule>;
 }
 
@@ -154,7 +154,7 @@ export declare class DataService {
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
     plugin(plugin: any): void;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
-    static ɵfac: i0.ɵɵFactoryDef<DataService, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DataService, never>;
     static ɵprov: i0.ɵɵInjectableDef<DataService>;
 }
 
@@ -201,7 +201,7 @@ export declare class PermissionContextService {
     readonly permissionContext: Observable<PermissionContext>;
     constructor(authService: AuthService);
     addToContext(param: PermissionContextDataUpdate): void;
-    static ɵfac: i0.ɵɵFactoryDef<PermissionContextService, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<PermissionContextService, never>;
     static ɵprov: i0.ɵɵInjectableDef<PermissionContextService>;
 }
 

@@ -167,7 +167,7 @@ def karma_web_test_suite(name, **kwargs):
             # Note: when changing the browser names here, also update the "yarn test"
             # script to reflect the new browser names.
             "@npm//@angular/dev-infra-private/browsers/chromium:chromium",
-            # "@npm//@angular/dev-infra-private/browsers/firefox:firefox",
+            "@npm//@angular/dev-infra-private/browsers/firefox:firefox",
         ]
 
     for opt_name in kwargs.keys():
