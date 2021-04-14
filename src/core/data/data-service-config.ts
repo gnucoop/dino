@@ -42,6 +42,12 @@ export interface DataServiceSyncOptions extends
    * WebSocket implementation class. Used mainly for testing.
    */
   webSocketImpl?: any;
+
+  /**
+   * Error message returned by the webSocket endpoint for signaling
+   * the JWT token expiration
+   */
+  authErrorMessage?: string;
 }
 
 /**

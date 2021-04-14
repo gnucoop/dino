@@ -28,7 +28,6 @@ import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQ
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {
   RxDBReplicationGraphQLPlugin,
-  RxGraphQLReplicationState,
 } from 'rxdb/plugins/replication-graphql';
 import {
   BehaviorSubject,
@@ -53,6 +52,7 @@ import {
 } from 'rxjs/operators';
 import {SubscriptionClient} from 'subscriptions-transport-ws';
 import {v4 as uuidv4} from 'uuid';
+import {ActiveSync} from './active-sync-interface';
 
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
@@ -80,6 +80,11 @@ export interface CollectionChangedEvent {
    * Collection name.
    */
   collection: string;
+
+  /**
+   * The Action triggering the event.
+   */
+  action?: string;
 }
 
 /**
@@ -114,22 +119,22 @@ interface RegisteredCollection extends CollectionSyncParams {
 export class DataService {
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
       new EventEmitter<CollectionChangedEvent>();
-  /**
-   * Event fired when
-   */
+
   readonly collectionChanged: Observable<CollectionChangedEvent> =
       this._collectionChanged as Observable<CollectionChangedEvent>;
 
   private _db: Observable<RxDatabase>;
   private _registeredCollections: BehaviorSubject<RegisteredCollection[]> =
       new BehaviorSubject<RegisteredCollection[]>([]);
-  private _activeSyncs:
-      {[key: string]: {state: RxGraphQLReplicationState, sub: {unsubscribe: () => void}}} = {};
+  private _activeSyncs: {[key: string]: ActiveSync} = {};
   private _config: DataServiceConfig;
+
   /**
-   * Subscribes to the authtoken and registered collections changes and resets the graphql sync.
+   * Emits when a websocket throws an error in its connection callback,
+   * stating that the JWT token is expired, and asks the authService for its
+   * refreshing.
    */
-  private _syncSub: Subscription = Subscription.EMPTY;
+  private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
       private _authService: AuthService,
@@ -143,6 +148,13 @@ export class DataService {
     this._db = from(createRxDatabase(this._config.databaseCreateOptions)).pipe(shareReplay(1));
 
     this._initSync();
+
+    this._refreshEvt
+        .pipe(
+            debounceTime(3000),
+            switchMap(() => this._authService.refreshToken()),
+            )
+        .subscribe();
   }
 
   /**
@@ -301,7 +313,6 @@ export class DataService {
                     catchError(() => obsOf(false)),
                 );
           }
-          this._addRegisteredCollection(collection, params);
           return obsOf(true);
         }),
     );
@@ -317,7 +328,7 @@ export class DataService {
         switchMap(db => {
           const collection = db.collections[collectionName] as RxCollection;
           if (collection == null) {
-            return throwError(new Error('Invalid collection'));
+            throwError(new Error('Invalid collection'));
           }
           return from(collection.destroy())
               .pipe(
@@ -387,39 +398,39 @@ export class DataService {
     const collectionChange = this._registeredCollections.pipe(
         debounceTime(300),
     );
-    this._syncSub.unsubscribe();
-    this._syncSub = combineLatest([
-                      collectionChange,
-                      this._authService.authToken,
-                    ])
-                        .pipe(withLatestFrom(this._authService.authenticated))
-                        .subscribe(
-                            ([
-                              [
-                                registeredCollections,
-                                token,
-                              ],
-                              auth,
-                            ]) => {
-                              if (auth && token != null) {
-                                const collectionNames = [] as string[];
-                                registeredCollections.forEach(registeredCollection => {
-                                  const {collection, ...params} = registeredCollection;
-                                  collectionNames.push(collection.name);
-                                  this._setupCollectionSync(collection, params, token);
-                                });
-                                Object.keys(this._activeSyncs).forEach(collectionName => {
-                                  if (collectionNames.indexOf(collectionName) === -1) {
-                                    this._stopCollectionSync(collectionName);
-                                  }
-                                });
-                              } else {
-                                Object.keys(this._activeSyncs).forEach(k => {
-                                  this._stopCollectionSync(k);
-                                });
-                              }
-                            },
-                        );
+    combineLatest([
+      collectionChange,
+      this._authService.authToken,
+    ])
+        .pipe(withLatestFrom(this._authService.authenticated))
+        .subscribe(
+            ([
+              [
+                registeredCollections,
+                token,
+              ],
+              auth,
+            ]) => {
+              const activeSyncs = Object.keys(this._activeSyncs);
+              if (auth && token != null) {
+                const collectionNames = [] as string[];
+                registeredCollections.forEach(registeredCollection => {
+                  const {collection, ...params} = registeredCollection;
+                  collectionNames.push(collection.name);
+                  this._setupCollectionSync(collection, params, token);
+                });
+                activeSyncs.forEach(collectionName => {
+                  if (collectionNames.indexOf(collectionName) === -1) {
+                    this._stopCollectionSync(collectionName);
+                  }
+                });
+              } else {
+                activeSyncs.forEach(k => {
+                  this._stopCollectionSync(k);
+                });
+              }
+            },
+        );
   }
 
   /**
@@ -457,9 +468,10 @@ export class DataService {
             connectionCallback: (error: Error[]) => {
               if (error) {
                 const errMessage = error.toString();
-                if (errMessage === 'Could not verify JWT: JWTExpired') {
+                if (this._config.syncOptions.authErrorMessage &&
+                    errMessage === this._config.syncOptions.authErrorMessage) {
                   client.close(true);
-                  this._authService.refreshToken().pipe(take(1)).subscribe();
+                  this._refreshEvt.emit();
                 }
               }
             },
@@ -468,18 +480,32 @@ export class DataService {
           this._config.syncOptions.webSocketImpl,
       );
       const query = subscriptionQueryBuilder(collection);
-      sub = client.request({query}).subscribe({
+      const clientRequest = client.request({query}) as Observable<any>;
+      const repComplete = state.initialReplicationComplete$;
+      const repRequest = combineLatest([
+        repComplete,
+        clientRequest,
+      ]);
+      sub = repRequest.subscribe({
         next: () => {
           state.run().then(() => {
+            this._collectionChanged.emit({
+              timestamp: new Date().getTime(),
+              collection: collection.name,
+              action: 'replication complete',
+            });
             state.recieved$
                 .pipe(
                     take(1),
-                    delay(500),
+                    // @TODO(marco): To be tested with a much larger amount of data received at
+                    // once.
+                    delay(1000),
                     )
                 .subscribe(() => {
                   this._collectionChanged.emit({
                     timestamp: new Date().getTime(),
                     collection: collection.name,
+                    action: 'change received',
                   });
                 });
           });

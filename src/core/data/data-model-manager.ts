@@ -21,7 +21,7 @@
  */
 
 import {MangoQuery, RxDocument, RxJsonSchema, RxQuery} from 'rxdb';
-import {from, Observable, of, throwError, zip} from 'rxjs';
+import {from, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {
   catchError,
   filter,
@@ -70,6 +70,14 @@ export abstract class DataModelManager<T extends Model = Model> {
   }
 
   /**
+   * Retrieves the collection name
+   * @returns The name of the model/collection
+   */
+  get collectionName(): string {
+    return this._modelName;
+  }
+
+  /**
    * Retrieves the collection schema
    * @returns RxJsonSchema
    */
@@ -78,10 +86,14 @@ export abstract class DataModelManager<T extends Model = Model> {
   }
 
   /**
-   * Exposes the data services collectionChanged event
+   * Exposes the data service collectionChanged event.
+   * Emits only when the change event is related to the
+   * data model manager own collection.
    */
   get collectionChanged(): Observable<CollectionChangedEvent> {
-    return this._dataService.collectionChanged;
+    return this._dataService.collectionChanged.pipe(
+        filter(changeEvt => changeEvt.collection === this._modelName),
+    );
   }
 
   /**
@@ -234,7 +246,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    */
   bulkDelete(data: T[]): Observable<RxDocument<T>[]|null> {
     if (data == null || data.length == 0) {
-      return of(null);
+      return obsOf(null);
     }
     const ids = data.map(d => d.id);
     const selectorParams = {id: {$in: ids}};

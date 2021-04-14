@@ -20,22 +20,20 @@
  *
  */
 
-export * from './active-sync-interface';
-export * from './data-context-service';
-export * from './data-bulk-insert-request';
-export * from './data-create-collection-request';
-export * from './data-find-request';
-export * from './data-get-request';
-export * from './data-insert-request';
-export * from './data-model-manager';
-export * from './data-module';
-export * from './data-options-interface';
-export * from './data-permission';
-export * from './data-permission-interface';
-export * from './data-service';
-export * from './data-service-config';
-export * from './data-upsert-request';
-export * from './insert-model';
-export * from './model';
-export * from './pull-query-extra-params';
-export * from './push-query-extra-params';
+ import {RxGraphQLReplicationState} from 'rxdb/dist/types/plugins/replication-graphql';
+
+ /**
+  * A collection synchronization state object
+  */
+ export interface ActiveSync {
+   /**
+    * The synchronization state
+    */
+   state: RxGraphQLReplicationState;
+ 
+   /**
+    * The state graphql subscription
+    */
+   sub: {unsubscribe: () => void};
+ }
+ 
