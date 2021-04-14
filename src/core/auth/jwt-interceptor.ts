@@ -27,31 +27,69 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError, debounceTime, map, switchMap} from 'rxjs/operators';
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '.';
 
 import {AuthService} from './auth-service';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
-  constructor(private _authService: AuthService) {}
+  /**
+   * Emits when a http request returns a 401 error response after
+   * a refresh token attempt.
+   */
+  private _handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]> =
+      new EventEmitter<[HttpRequest<any>, HttpHandler]>();
 
+  constructor(
+      private _authService: AuthService,
+      @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
+  ) {
+    this._handleRefreshEvt
+        .pipe(
+            debounceTime(this._config.retryRefreshTime ?? 5000),
+            map(([request, next]) => this._authService.refreshToken().pipe(
+                    switchMap(() => next.handle(request)),
+                    )),
+            )
+        .subscribe();
+  }
+
+  /**
+   * Intercepts http requests from angular http client.
+   * If the response is a status 401 'Unauthorized', and is not a Login request,
+   * it handles it by emitting a refreshEvent.
+   * @param request the Http request.
+   * @param next the request handler.
+   */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
                catchError(error => {
-                 if (error instanceof HttpErrorResponse && error.status === 401) {
-                   return this._handle401(request, next);
-                 } else {
-                   return throwError(error);
+                 if (error instanceof HttpErrorResponse && error.status === 401 &&
+                     !this._isLoginRequest(request)) {
+                   this._handleRefreshEvt.emit([request, next]);
                  }
+                 return throwError(error);
                }),
                ) as Observable<HttpEvent<any>>;
   }
 
-  private _handle401(request: HttpRequest<any>, next: HttpHandler) {
-    return this._authService.refreshToken().pipe(
-        switchMap(() => next.handle(request)),
-    );
+  /**
+   * Checks wether a http request is a Login request, by checking its url and
+   * matching it with the api login endpoint url.
+   * @param request the Http request.
+   * @returns true if it's a Login request.
+   */
+  private _isLoginRequest(request: HttpRequest<any>): boolean {
+    const loginEndpoint = this._config.loginEndpoint;
+    if (loginEndpoint && request.url.includes(loginEndpoint)) {
+      return true;
+    }
+    if (request.url.includes('api/login')) {
+      return true;
+    }
+    return false;
   }
 }

@@ -29,20 +29,30 @@ import {User} from './user';
  */
 export interface AuthServiceConfig {
   /**
-   * FusionAuth host (needs leading protocol).
+   * Authorization service host (needs leading protocol).
    * eg. http://localhost:9011
    */
   host: string;
 
   /**
-   * FusionAuth application id.
+   * Authorization external service application id.
    */
   applicationId: string;
 
   /**
-   * API key used to call the FusionAuth /api/login endpoint.
+   * API key used to call the external authorization service login endpoint.
    */
-  apiKey: string;
+  apiKey?: string;
+
+  /**
+   * Custom login credential key to be sent in the login request to the api.
+   */
+  userCredential?: string;
+
+  /**
+   * Custom password credential key to be sent in the login request to the api.
+   */
+  passwordCredential?: string;
 
   /**
    * Optional custom login endpoint url. Defaults to 'api/login',
@@ -58,6 +68,11 @@ export interface AuthServiceConfig {
    * Optional custom jwt token refresh endpoint url. Defaults to 'api/jwt/refresh',
    */
   refreshEndpoint?: string;
+
+  /**
+   * Time interval to retry refresh token calls in milliseconds. Defaults to 5000.
+   */
+  retryRefreshTime?: number;
 
   /**
    * Function used to store the current JWT token.

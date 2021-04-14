@@ -32,13 +32,20 @@ import {JwtToken} from './jwt-token';
 import {LoginResponse} from './login-response';
 import {User} from './user';
 
-const defaultAuthTokenKey = 'dewco_auth_token';
-const defaultRefreshTokenKey = 'dewco_refresh_token';
-const defaultUserInfoKey = 'dewco_user_info';
-
 function removeSlashes(uri: string): string {
   return uri.replace(/^\/+|\/+$/g, '');
 }
+
+/**
+ * Default Credentials and Token keys
+ */
+export const DEFAULT_AUTH_OPTIONS = {
+  authTokenKey: 'dewco_auth_token',
+  refreshTokenKey: 'dewco_refresh_token',
+  userInfoKey: 'dewco_user_info',
+  userCredentialKey: 'loginId',
+  passwordCredentialKey: 'password',
+};
 
 /**
  * Injectable service used to authenticate against a FusionAuth backend.
@@ -73,11 +80,13 @@ export class AuthService {
    * @returns True if the user has been authenticated otherwise false
    */
   login(credentials: Credentials): Observable<boolean> {
-    const req = {
-      loginId: credentials.email,
-      password: credentials.password,
+    const req: {[key: string]: any} = {
+      [this._config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
+      [this._config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
+          credentials.password,
       applicationId: this._config.applicationId,
     };
+
     const url = this._generateUrl(this._config.loginEndpoint ?? 'api/login');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
     return this._httpClient.post<LoginResponse>(url, req, {headers})
@@ -106,18 +115,21 @@ export class AuthService {
     const refreshToken = this.getRefreshToken()!;
     const global = this._stringifyBooleanParam(allDevices);
     const params = new HttpParams({fromObject: {global, refreshToken}});
+    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} :
+                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
     const url =
         `${this._generateUrl(this._config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
-    return this._httpClient.post(url, {}).pipe(
-               map(() => {
-                 this._authenticated.next(false);
-                 this._storeAuthToken(null);
-                 this._storeRefreshToken(null);
-                 this._storeUserInfo(null);
-                 return true;
-               }),
-               catchError(() => obsOf(false)),
-               ) as Observable<boolean>;
+    return this._httpClient.post(url, null, {headers})
+               .pipe(
+                   map(() => {
+                     this._authenticated.next(false);
+                     this._storeAuthToken(null);
+                     this._storeRefreshToken(null);
+                     this._storeUserInfo(null);
+                     return true;
+                   }),
+                   catchError(() => obsOf(false)),
+                   ) as Observable<boolean>;
   }
 
   /**
@@ -156,7 +168,7 @@ export class AuthService {
       return this._config.retrieveUserInfo();
     }
     const userInfo = localStorage.getItem(this._getUserInfoLocaleStorageKey());
-    return userInfo == null ? null : JSON.parse(userInfo) as User;
+    return userInfo == null ? null : JSON.parse(userInfo);
   }
 
   /**
@@ -168,9 +180,12 @@ export class AuthService {
     if (!this.getAuthToken()) {
       return obsOf(false);
     }
+
     const req = {refreshToken: this.getRefreshToken()};
+
     const url = this._generateUrl(this._config.refreshEndpoint ?? 'api/jwt/refresh');
-    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
+    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} :
+                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
     return this._httpClient.post<AuthResponse>(url, req, {headers})
                .pipe(
                    map(res => {
@@ -208,21 +223,21 @@ export class AuthService {
    * @returns The local storage key used to store the JWT token
    */
   private _getAuthTokenLocaleStorageKey(): string {
-    return this._config.authTokenLocalStorageKey || defaultAuthTokenKey;
+    return this._config.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;
   }
 
   /**
    * @returns The local storage key used to store the JWT refresh token
    */
   private _getRefreshTokenLocaleStorageKey(): string {
-    return this._config.refreshTokenLocalStorageKey || defaultRefreshTokenKey;
+    return this._config.refreshTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.refreshTokenKey;
   }
 
   /**
    * @returns The local storage key used to store the logged in user info
    */
   private _getUserInfoLocaleStorageKey(): string {
-    return this._config.userInfoLocalStorageKey || defaultUserInfoKey;
+    return this._config.userInfoLocalStorageKey || DEFAULT_AUTH_OPTIONS.userInfoKey;
   }
 
   /**

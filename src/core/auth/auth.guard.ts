@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
           }
           this._authService.refreshToken().subscribe(res => {
             if (res) {
-              this._router.navigate([state.url]);
+              this._router.navigateByUrl(state.url);
             } else {
               this._router.navigate(['mat-login']);
             }
