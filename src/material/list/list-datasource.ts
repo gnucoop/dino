@@ -47,7 +47,6 @@ import {
 } from 'rxjs';
 import {
   catchError,
-  filter,
   map,
   switchMap,
   take,
