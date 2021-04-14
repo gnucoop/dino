@@ -28,11 +28,11 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import {EventEmitter, Inject, Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, debounceTime, map, switchMap} from 'rxjs/operators';
-import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '.';
 
 import {AuthService} from './auth-service';
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
@@ -40,14 +40,14 @@ export class JWTInterceptor implements HttpInterceptor {
    * Emits when a http request returns a 401 error response after
    * a refresh token attempt.
    */
-  private _handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]> =
+  handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]> =
       new EventEmitter<[HttpRequest<any>, HttpHandler]>();
 
   constructor(
       private _authService: AuthService,
       @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
   ) {
-    this._handleRefreshEvt
+    this.handleRefreshEvt
         .pipe(
             debounceTime(this._config.retryRefreshTime ?? 5000),
             map(([request, next]) => this._authService.refreshToken().pipe(
@@ -69,7 +69,8 @@ export class JWTInterceptor implements HttpInterceptor {
                catchError(error => {
                  if (error instanceof HttpErrorResponse && error.status === 401 &&
                      !this._isLoginRequest(request)) {
-                   this._handleRefreshEvt.emit([request, next]);
+                   this.handleRefreshEvt.emit([request, next]);
+                   return obsOf(null);
                  }
                  return throwError(error);
                }),

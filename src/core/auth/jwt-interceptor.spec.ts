@@ -5,12 +5,7 @@ import {
 } from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
-import {
-  AUTH_SERVICE_CONFIG,
-  AuthService,
-  AuthServiceConfig,
-  JWTInterceptor
-} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig, JWTInterceptor} from '@dewco/core/auth';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -28,7 +23,6 @@ const response = {
   status: 200
 };
 describe(`JWTInterceptor`, () => {
-  let authService: AuthService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -41,8 +35,7 @@ describe(`JWTInterceptor`, () => {
       ]
     });
 
-    authService = TestBed.get(AuthService);
-    httpMock = TestBed.get(HttpTestingController);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it('should handle the 401 response and ask the service to refresh the Jwt auth token',
@@ -52,8 +45,8 @@ describe(`JWTInterceptor`, () => {
                interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
            expect(jwtInterceptor).toBeDefined();
 
-           let handle401Spy = spyOn<any>(jwtInterceptor, '_handle401').and.callThrough();
-           let refreshSpy = spyOn(authService, 'refreshToken').and.callThrough();
+           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isLoginRequest').and.callThrough();
+           let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
            http.post('http://test-auth-backend/data', {}).subscribe(res => {
              expect(res).toBeDefined();
@@ -62,7 +55,7 @@ describe(`JWTInterceptor`, () => {
            expect(req.request.method).toBe('POST');
            req.flush(null, unauthorizedResponse);
 
-           expect(handle401Spy).toHaveBeenCalledTimes(1);
+           expect(isLoginSpy).toHaveBeenCalledTimes(1);
            expect(refreshSpy).toHaveBeenCalledTimes(1);
          }));
 
@@ -73,8 +66,8 @@ describe(`JWTInterceptor`, () => {
                interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
            expect(jwtInterceptor).toBeDefined();
 
-           let handle401Spy = spyOn<any>(jwtInterceptor, '_handle401').and.callThrough();
-           let refreshSpy = spyOn(authService, 'refreshToken').and.callThrough();
+           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isLoginRequest').and.callThrough();
+           let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
            http.post('http://test-auth-backend/data', {}).subscribe(res => {
              expect(res).toBeDefined();
@@ -83,7 +76,7 @@ describe(`JWTInterceptor`, () => {
            expect(req.request.method).toBe('POST');
            req.flush(response);
 
-           expect(handle401Spy).not.toHaveBeenCalled();
+           expect(isLoginSpy).not.toHaveBeenCalled();
            expect(refreshSpy).not.toHaveBeenCalled();
          }));
 });

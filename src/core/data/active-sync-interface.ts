@@ -20,20 +20,19 @@
  *
  */
 
- import {RxGraphQLReplicationState} from 'rxdb/dist/types/plugins/replication-graphql';
+import {RxGraphQLReplicationState} from 'rxdb/plugins/replication-graphql';
 
- /**
-  * A collection synchronization state object
-  */
- export interface ActiveSync {
-   /**
-    * The synchronization state
-    */
-   state: RxGraphQLReplicationState;
- 
-   /**
-    * The state graphql subscription
-    */
-   sub: {unsubscribe: () => void};
- }
- 
+/**
+ * A collection synchronization state object
+ */
+export interface ActiveSync {
+  /**
+   * The synchronization state
+   */
+  state: RxGraphQLReplicationState;
+
+  /**
+   * The state graphql subscription
+   */
+  sub: {unsubscribe: () => void};
+}
