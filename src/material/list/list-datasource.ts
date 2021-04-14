@@ -25,6 +25,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {
+  CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
   Model,
@@ -46,6 +47,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  filter,
   map,
   switchMap,
   take,
@@ -63,7 +65,12 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   /**
    * Determines if the list data can be updated, and the SelectionList refreshed
    */
-  refreshListData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  refreshListData: BehaviorSubject<CollectionChangedEvent> =
+      new BehaviorSubject<CollectionChangedEvent>({
+        timestamp: new Date().getTime(),
+        collection: '',
+        action: 'init datasource',
+      });
 
   /**
    * The ListDataSource Paginator material component
@@ -119,7 +126,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * Subscribes to the additionalDataSchema and asks the FiltersService to
    * generate filters from it when one is provided.
    */
-  private _addionalDataSub: Subscription = Subscription.EMPTY;
+  private _additionalDataSub: Subscription = Subscription.EMPTY;
 
   /**
    * The data resulting from querying the db via the DataModelManager
@@ -172,7 +179,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     // (if present) and set the additional filters on the FiltersService.
     // If no additional DataManager or data schema are provided, the additional filters
     // are set to an empty array.
-    this._addionalDataSub = this._additionalDataSchema.subscribe(dataSchema => {
+    this._additionalDataSub = this._additionalDataSchema.subscribe(dataSchema => {
       let additionalFilters = [];
       if (this._additionalDataManager) {
         additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
@@ -180,17 +187,20 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
       this._fs.setAdditionalFilters(additionalFilters);
     });
 
+    this._collectionChangedSub = this._dataModelManager.collectionChanged.subscribe(evt => {
+      this.refreshListData.next(evt);
+    });
+
     this._filterParamsSub =
-        combineLatest([this._fs.queryString, this.refreshListData])
+        combineLatest([
+          this._fs.queryString,
+          this.refreshListData,
+        ])
             .pipe(
                 map(([queryString, refresh]) => (queryString && refresh) ? queryString : ''),
                 catchError(err => throwError(err) as Observable<string>),
                 )
             .subscribe(queryString => this.queryDM(queryString));
-
-    this._collectionChangedSub = this._dataModelManager.collectionChanged.subscribe(_ => {
-      this.refreshListData.next(true);
-    });
   }
 
 
@@ -302,7 +312,11 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
             )
         .subscribe(res => {
           results = res;
-          this.refreshListData.next(true);
+          this.refreshListData.next({
+            timestamp: new Date().getTime(),
+            collection: this._dataModelManager.collectionName,
+            action: 'delete',
+          });
         });
     return this._rxDocsToJson(results);
   }
@@ -346,7 +360,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * Disconnects the ListDataSource, unsubscribing from the data and the filters
    */
   disconnect(): void {
-    this._addionalDataSub.unsubscribe();
+    this._additionalDataSub.unsubscribe();
     this._collectionChangedSub.unsubscribe();
     this._dataResultsSub.unsubscribe();
     this._filterParamsSub.unsubscribe();

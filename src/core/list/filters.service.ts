@@ -65,15 +65,6 @@ import {ListModule} from './list.module';
 @Injectable({providedIn: ListModule})
 export class FiltersService {
   /**
-   * Determines if the service can start to query the ListDataSource
-   */
-  private _listReady: BehaviorSubject<boolean>;
-
-  set listReady(status: boolean) {
-    this._listReady.next(status);
-  }
-
-  /**
    * The labels of all available additional basic filters.
    * Available filters are added by importing the relative modules.
    * Used to check if a filter can be added and displayed in the
@@ -220,7 +211,6 @@ export class FiltersService {
     this._additionalFilters = new BehaviorSubject<FilterItem[]>([]);
     this._temporaryFilters = new BehaviorSubject<FilterItem[]>([]);
     this._queryString = new BehaviorSubject<string>('');
-    this._listReady = new BehaviorSubject<boolean>(true);
     this._loadingPreset = null;
     this._loadPresetEvent = new EventEmitter<boolean>();
     this._basicFiltersSub = Subscription.EMPTY;
@@ -260,17 +250,12 @@ export class FiltersService {
     this._queryString = combineLatest([
                           this._basicFilters.pipe(skip(1)),
                           this._additionalFilters.pipe(skip(1)),
-                          this._listReady,
                         ])
                             .pipe(
                                 map(([
                                       basicFilters,
                                       additionalFilters,
-                                      listReady,
                                     ]) => {
-                                  if (!listReady) {
-                                    return '';
-                                  }
                                   const allFilters = [...basicFilters, ...additionalFilters].filter(
                                       (ft) => ft.value || ft.value === false || ft.value === 0);
                                   if (this._loadingPreset != null) {
@@ -333,16 +318,16 @@ export class FiltersService {
     this._loadingPreset = encodedString;
     const filterItems: FilterItem[] = JSON.parse(decodeURI(atob(encodedString)));
     let basic: FilterItem[] = [];
-    let advanced: FilterItem[] = [];
+    let additional: FilterItem[] = [];
     let basicFormGroupsKeys: string[] = [];
     if (this._basicFormGroups) {
       this._basicFormGroups.forEach(fg => basicFormGroupsKeys.push(...Object.keys(fg.value)));
     }
     filterItems.forEach(item => {
-      basicFormGroupsKeys.indexOf(item.name) > -1 ? basic.push(item) : advanced.push(item);
+      basicFormGroupsKeys.indexOf(item.name) > -1 ? basic.push(item) : additional.push(item);
     });
     this._basicFilters.next(basic);
-    this._additionalFilters.next(advanced);
+    this._additionalFilters.next(additional);
     this.resetTemporaryFilters();
   }
 
