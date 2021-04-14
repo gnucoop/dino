@@ -37,10 +37,8 @@ describe('dewco-list', () => {
   });
 
   it('should display all the table rows', async () => {
-    const paginatorNum = +await element(by.css('.mat-select-min-line')).getText();
     const rows = await element.all(by.tagName('mat-row')).count();
-    expect(rows).toEqual(paginatorNum);
-    expect(rows).toBeLessThanOrEqual(5);
+    expect(rows).toEqual(5);
   });
 
   it('should select a row by checking the associated checkBox', async () => {
