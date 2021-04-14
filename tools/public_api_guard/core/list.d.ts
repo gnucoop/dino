@@ -45,7 +45,6 @@ export declare class FiltersService {
     get currentBasicFilterLabels(): string[];
     get generatedFilters(): Observable<FilterGroup[]>;
     get generatedModelFilters(): BehaviorSubject<FilterGroup[]>;
-    set listReady(status: boolean);
     get loadPresetEvent(): EventEmitter<boolean>;
     get queryString(): Observable<string>;
     set setCustomFilters(filterGroups: FilterGroup[]);

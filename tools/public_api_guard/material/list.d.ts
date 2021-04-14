@@ -12,7 +12,7 @@ export declare class ListDataSource<T extends Model = Model, AD extends Model = 
     get getPaginator(): MatPaginator | null;
     get getSort(): MatSort | null;
     get modelSchema(): RxJsonSchema;
-    refreshListData: BehaviorSubject<boolean>;
+    refreshListData: BehaviorSubject<CollectionChangedEvent>;
     set setFiltersComponent(component: SearchFiltersComponent | null);
     set setPaginator(paginator: MatPaginator | null);
     set setSort(sort: MatSort | null);

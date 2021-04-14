@@ -1,3 +1,10 @@
+export interface ActiveSync {
+    state: RxGraphQLReplicationState;
+    sub: {
+        unsubscribe: () => void;
+    };
+}
+
 export interface CanCreateData<T extends {} = {}, M extends Model = Model> {
     context?: PermissionContext<T>;
     object: InsertModel<M>;
@@ -17,6 +24,7 @@ export interface CanModifyData<T extends {} = {}, M extends Model = Model> {
 }
 
 export interface CollectionChangedEvent {
+    action?: string;
     collection: string;
     timestamp: number;
 }
@@ -77,6 +85,7 @@ export interface DataListOptions {
 
 export declare abstract class DataModelManager<T extends Model = Model> {
     get collectionChanged(): Observable<CollectionChangedEvent>;
+    get collectionName(): string;
     get collectionSchema(): RxJsonSchema;
     constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
     addToContext(data: PermissionContextDataUpdate): void;
@@ -168,6 +177,7 @@ export interface DataServiceConfig {
 }
 
 export interface DataServiceSyncOptions extends Omit<SyncOptionsGraphQL, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
+    authErrorMessage?: string;
     batchSize?: number;
     webSocketImpl?: any;
     wsUrl?: string;

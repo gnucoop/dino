@@ -36,20 +36,23 @@ export declare class AuthService {
 }
 
 export interface AuthServiceConfig {
-    apiKey: string;
+    apiKey?: string;
     applicationId: string;
     authTokenLocalStorageKey?: string;
     host: string;
     loginEndpoint?: string;
     logoutEndpoint?: string;
+    passwordCredential?: string;
     refreshEndpoint?: string;
     refreshTokenLocalStorageKey?: string;
     retrieveAuthToken?: () => string | null;
     retrieveRefreshToken?: () => string | null;
     retrieveUserInfo?: () => User | null;
+    retryRefreshTime?: number;
     storeAuthToken?: (token: string | null) => void;
     storeRefreshToken?: (token: string | null) => void;
     storeUserInfo?: (userInfo: User | null) => void;
+    userCredential?: string;
     userInfoLocalStorageKey?: string;
 }
 
@@ -58,8 +61,17 @@ export interface Credentials {
     password: string;
 }
 
+export declare const DEFAULT_AUTH_OPTIONS: {
+    authTokenKey: string;
+    refreshTokenKey: string;
+    userInfoKey: string;
+    userCredentialKey: string;
+    passwordCredentialKey: string;
+};
+
 export declare class JWTInterceptor implements HttpInterceptor {
-    constructor(_authService: AuthService);
+    handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]>;
+    constructor(_authService: AuthService, _config: AuthServiceConfig);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
     static ɵfac: i0.ɵɵFactoryDeclaration<JWTInterceptor, never>;
     static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
