@@ -3,6 +3,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
 import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {MAT_TOOLTIP_SCROLL_STRATEGY} from '@angular/material/tooltip';
 import {BrowserModule} from '@angular/platform-browser';
@@ -19,11 +20,12 @@ import {ExampleFormCollectModule} from './example-form-collect/example-form-coll
 import {ExampleFormSelectModule} from './example-form-select/example-form-select.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
-import {fusionAuthConfig} from './mockconfig';
+import {fusionAuthConfig, paginatorConfig} from './mockconfig';
 import {AuthServiceMock} from './mocks';
 
 const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 const wsUrl = 'ws://localhost:8080/v1/graphql';
+const authErrorMessage = 'Could not verify JWT: JWTExpired';
 
 @NgModule({
   imports: [
@@ -61,11 +63,13 @@ const wsUrl = 'ws://localhost:8080/v1/graphql';
           url: syncGraphQLUrl,
           wsUrl: wsUrl,
           webSocketImpl: WebSocket,
+          authErrorMessage: authErrorMessage,
         },
       },
     },
     MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
     {provide: MAT_TOOLTIP_SCROLL_STRATEGY, useValue: {}},
+    {provide: MAT_PAGINATOR_DEFAULT_OPTIONS, useValue: paginatorConfig},
   ],
   bootstrap: [E2eApp],
 })

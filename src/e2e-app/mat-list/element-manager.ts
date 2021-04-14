@@ -1,5 +1,5 @@
 import {AjfFieldType} from '@ajf/core/forms';
-import {Model} from '@dewco/core/data';
+import {CollectionChangedEvent, Model} from '@dewco/core/data';
 import {FormData} from '@dewco/core/forms';
 import {FilterGroup, ListHeader} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
@@ -150,13 +150,19 @@ export class ElementManager {
   get collectionSchema(): RxJsonSchema {
     return schema;
   }
-  get collectionChanged(): Observable<boolean> {
-    return obsOf(true);
+  get collectionChanged(): Observable<CollectionChangedEvent> {
+    return obsOf({
+      timestamp: new Date().getTime(),
+      collection: 'element',
+      action: '',
+    });
+  }
+  get collectionName(): string {
+    return 'element';
   }
   query(): Observable<{exec: () => Observable<Doc[]>}> {
     return obsOf({exec: () => obsOf(elements.map(e => ({toJSON: () => e})))});
   }
-
   bulkDelete(items: PeriodicElement[]): Observable<Doc[]> {
     elements = elements.filter(e => items.indexOf(e) === -1);
     return obsOf(elements.map(e => ({toJSON: () => e})));

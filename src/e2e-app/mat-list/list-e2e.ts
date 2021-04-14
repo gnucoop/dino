@@ -1,5 +1,5 @@
-import {Component, OnDestroy} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
+import {Component} from '@angular/core';
+import {DataModelManager} from '@dewco/core/data';
 import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
 import {
   FiltersService,
@@ -20,7 +20,7 @@ import {testAjfSchema} from './test-ajf-formschema';
   selector: 'mat-list-e2e',
   templateUrl: 'list-e2e.html',
 })
-export class MatListE2E implements OnDestroy {
+export class MatListE2E {
   readonly customFilters = filters;
   readonly additionalBasicFilters = ['project', 'location', 'unavailableFilter'];
   readonly additionalDataSchema = testAjfSchema;
@@ -31,22 +31,14 @@ export class MatListE2E implements OnDestroy {
 
   constructor(
       readonly filtersService: FiltersService,
+      readonly elementManager: ElementManager,
       readonly formSchemaManager: FormSchemaManager,
-      readonly service: DataService,
-      readonly permissionService: PermissionContextService,
   ) {
-    // const dataService = new ElementManager(service, permissionService);
-    const dataService = new ElementManager() as unknown as DataModelManager<PeriodicElement>;
-
     this.dataSource = new ListDataSource(
-        dataService,
+        this.elementManager as unknown as DataModelManager<PeriodicElement>,
         this.filtersService,
         this.formSchemaManager,
     );
     // dataService.bulkCreate(ELEMENT_DATA).subscribe(docs => console.log(docs));
-  }
-
-  ngOnDestroy() {
-    this.dataSource.disconnect();
   }
 }
