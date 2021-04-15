@@ -23,7 +23,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, mapTo, tap} from 'rxjs/operators';
 import {AuthResponse} from './auth-response';
 
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
@@ -48,7 +48,7 @@ export const DEFAULT_AUTH_OPTIONS = {
 };
 
 /**
- * Injectable service used to authenticate against a FusionAuth backend.
+ * Injectable service used to authenticate against an external authentication backend.
  * Stores the authentication token and the logged in user info.
  */
 @Injectable({providedIn: 'root'})
@@ -75,12 +75,15 @@ export class AuthService {
   }
 
   /**
-   * Make a login request to the FusionAuth server and stores the
+   * Make a login request to the authentication server and stores the
    * authentication token and the logged in user info.
    * @returns True if the user has been authenticated otherwise false
    */
   login(credentials: Credentials): Observable<boolean> {
-    const req: {[key: string]: any} = {
+    if (credentials == null) {
+      return obsOf(false);
+    }
+    const req: {[key: string]: string} = {
       [this._config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
       [this._config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
           credentials.password,
@@ -90,23 +93,23 @@ export class AuthService {
     const url = this._generateUrl(this._config.loginEndpoint ?? 'api/login');
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
     return this._httpClient.post<LoginResponse>(url, req, {headers})
-               .pipe(
-                   map(res => {
-                     this._authenticated.next(true);
-                     this._storeAuthToken(res.token);
-                     this._storeRefreshToken(res.refreshToken);
-                     this._storeUserInfo(res.user);
-                     return true;
-                   }),
-                   catchError(() => {
-                     this._authenticated.next(false);
-                     return obsOf(false);
-                   }),
-                   ) as Observable<boolean>;
+        .pipe(
+            tap(res => {
+              this._authenticated.next(true);
+              this._storeAuthToken(res.token);
+              this._storeRefreshToken(res.refreshToken);
+              this._storeUserInfo(res.user);
+            }),
+            mapTo(true),
+            catchError(() => {
+              this._authenticated.next(false);
+              return obsOf(false);
+            }),
+        );
   }
 
   /**
-   * Make a logout request to the FusionAuth server and removes the
+   * Make a logout request to the authentication server and removes the
    * authentication token and the logged in user info stored.
    * @param allDevices Whether to invalidate all the refresh token issued for this user.
    * @returns True if the user has been logged out otherwise false
@@ -120,16 +123,16 @@ export class AuthService {
     const url =
         `${this._generateUrl(this._config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
     return this._httpClient.post(url, null, {headers})
-               .pipe(
-                   map(() => {
-                     this._authenticated.next(false);
-                     this._storeAuthToken(null);
-                     this._storeRefreshToken(null);
-                     this._storeUserInfo(null);
-                     return true;
-                   }),
-                   catchError(() => obsOf(false)),
-                   ) as Observable<boolean>;
+        .pipe(
+            tap(() => {
+              this._authenticated.next(false);
+              this._storeAuthToken(null);
+              this._storeRefreshToken(null);
+              this._storeUserInfo(null);
+            }),
+            mapTo(true),
+            catchError(() => obsOf(false)),
+        );
   }
 
   /**
@@ -187,20 +190,20 @@ export class AuthService {
     const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} :
                                                   {Authorization: `Bearer ${this.getAuthToken()}`};
     return this._httpClient.post<AuthResponse>(url, req, {headers})
-               .pipe(
-                   map(res => {
-                     this._authenticated.next(true);
-                     this._storeRefreshToken(res.refreshToken);
-                     this._storeAuthToken(res.token);
-                     return true;
-                   }),
-                   catchError(
-                       () => {
-                         this._authenticated.next(false);
-                         return obsOf(false);
-                       },
-                       ),
-                   ) as Observable<boolean>;
+        .pipe(
+            tap(res => {
+              this._authenticated.next(true);
+              this._storeRefreshToken(res.refreshToken);
+              this._storeAuthToken(res.token);
+            }),
+            mapTo(true),
+            catchError(
+                () => {
+                  this._authenticated.next(false);
+                  return obsOf(false);
+                },
+                ),
+        );
   }
 
   /**
@@ -294,8 +297,8 @@ export class AuthService {
   }
 
   /**
-   * Generate a full URL given a FusionAuth endpoint.
-   * @param endpoint The FusionAuth endpoint.
+   * Generate a full URL given an authentication endpoint.
+   * @param endpoint The authentication endpoint.
    * @returns The full URL
    */
   private _generateUrl(endpoint: string): string {
