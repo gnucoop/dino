@@ -411,7 +411,7 @@ export class DataService {
               ],
               auth,
             ]) => {
-              const activeSyncs = Object.keys(this._activeSyncs);
+              const activeSyncsKeys = Object.keys(this._activeSyncs);
               if (auth && token != null) {
                 const collectionNames = [] as string[];
                 registeredCollections.forEach(registeredCollection => {
@@ -419,13 +419,13 @@ export class DataService {
                   collectionNames.push(collection.name);
                   this._setupCollectionSync(collection, params, token);
                 });
-                activeSyncs.forEach(collectionName => {
+                activeSyncsKeys.forEach(collectionName => {
                   if (collectionNames.indexOf(collectionName) === -1) {
                     this._stopCollectionSync(collectionName);
                   }
                 });
               } else {
-                activeSyncs.forEach(k => {
+                activeSyncsKeys.forEach(k => {
                   this._stopCollectionSync(k);
                 });
               }
