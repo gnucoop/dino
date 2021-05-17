@@ -24,7 +24,7 @@ import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
 import {FilterGroup, FilterItem} from '@dewco/core/list';
 
-import {FormSchema, migrationStrategies} from './form-schema';
+import {FormSchema} from './form-schema';
 import {schema} from './form-schema-json';
 import {FormsModule} from './forms.module';
 
@@ -35,7 +35,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'form_schema', schema, migrationStrategies}},
+        {collection: {name: 'form_schema', schema}},
         dataService,
         permissionContextService,
     );

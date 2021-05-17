@@ -39,9 +39,9 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
-    'is_deleted': {
-      'type': 'boolean',
-      'description': 'Deleted flag.'
+    "is_deleted": {
+      "type": "boolean", 
+      "description": "Deleted flag."
     },
     "name": {
       "type": "string",
