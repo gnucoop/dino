@@ -1,0 +1,90 @@
+dewco-main-nav {
+    .dewco-toolbar {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        background-color: inherit;
+        &.shadowed {
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
+            animation-name: shadowed-toolbar;
+            animation-duration: 2s;
+            animation-direction: alternate-reverse;
+            animation-timing-function: ease-in-out;
+        }
+        .dewco-toolbar-logo {
+            position: relative;
+            max-width: 10vw;
+            max-height: 80%;
+            margin: auto 10px;
+        }
+        .dewco-toolbar-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-left: auto;
+            .mat-icon {
+                flex: 1 0 auto;
+            }
+        }
+    }
+    mat-sidenav-container.dewco-sidenav-container {
+        position: fixed;
+        height: 100vh;
+        min-height: 100vh;
+        width: 100vw;
+        min-width: 100vw;
+    }
+    mat-sidenav-content.dewco-sidenav-content {
+        padding: 10px;
+        height: 90vh;
+        background-color: #f5f7f9;
+        transition: all ease-in-out 0.2s;
+        -webkit-transition: all ease-in-out 0.2s;
+    }
+
+    .mat-sidenav.large-sidenav {
+        box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.2);
+        animation-name: shadowed-sidenav;
+        animation-duration: 2s;
+        animation-direction: alternate-reverse;
+        animation-timing-function: ease-in-out;
+    }
+
+    .mat-nav-list {
+        width: auto;
+        .mat-list-item {
+            padding: 5px;
+            &:focus,
+            &:hover {
+                background-color: inherit;
+            }
+            span {
+                padding-left: 20px;
+            }
+        }
+        &.mat-list-base {
+            padding-top: 0px;
+        }
+        .dewco-extend-menu-button {
+            position: absolute;
+            bottom: 50px;
+        }
+    }
+}
+
+@keyframes shadowed-toolbar {
+    from {
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
+    }
+    to {
+        box-shadow: none;
+    }
+}
+
+@keyframes shadowed-sidenav {
+    from {
+        box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.2);
+    }
+    to {
+        box-shadow: none;
+    }
+}
