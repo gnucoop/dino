@@ -1,0 +1,142 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Dewco (dewco).
+ *
+ * Dewco (dewco) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Dewco (dewco) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Dewco (dewco).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import {FormSchemaManager} from '@dewco/core/forms';
+import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
+import {BehaviorSubject, from} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import {CollectItem} from './collect-item-interface';
+
+/**
+ * Dino collect home component.
+ * Gateway to the individual list views.
+ */
+@Component({
+  selector: 'dewco-collect',
+  templateUrl: 'collect.html',
+  styleUrls: ['collect.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+})
+export class Collect implements OnInit {
+  /**
+   * An array of items to be displayed in the grid.
+   * They can represent Forms or any generic Item (eg. a Section of the app)
+   */
+  private _items: BehaviorSubject<CollectItem[]>;
+  get items(): BehaviorSubject<CollectItem[]> {
+    return this._items;
+  }
+  @Input()
+  set setCustomItems(customItems: CollectItem[]) {
+    if (customItems == null || customItems.length <= 0) {
+      return;
+    }
+    this._items.next(customItems);
+  }
+
+  /**
+   * The number of grid columns for small screens/devices.
+   * Defaults to 2.
+   */
+  private _columnsSmall = 2
+  get columnsSmall(): number {
+    return this._columnsSmall;
+  }
+  @Input()
+  set columnsSmall(num: number) {
+    if (num <= 0) {
+      return;
+    }
+    this._columnsSmall = num;
+  }
+
+  /**
+   * The number of grid columns for medium to large screens/devices.
+   * Defaults to 4.
+   */
+  private _columnsLarge = 4
+  get columnsLarge(): number {
+    return this._columnsLarge;
+  }
+  @Input()
+  set columnsLarge(num: number) {
+    if (num <= 0) {
+      return;
+    }
+    this._columnsLarge = num;
+  }
+
+  /**
+   * When true, the collect shows the list of available form schemas, gathered by
+   * the Form Schema manager.
+   * When false, a custom list of items must be provided. This way, this Collect component
+   * can be used as a simple menu.
+   * Defaults to true.
+   */
+  private _isFormsCollect: boolean = true;
+  get isFormsCollect(): boolean {
+    return this._isFormsCollect;
+  }
+  @Input()
+  set isFormsCollect(res: boolean) {
+    this._isFormsCollect = res;
+  }
+
+  constructor(
+      readonly breakpointObserver: BreakpointObserverService,
+      private _fs: FormSchemaManager,
+  ) {
+    this._items = new BehaviorSubject<CollectItem[]>([]);
+  }
+  ngOnInit() {
+    if (this._isFormsCollect) {
+      this._items = this._fs.list().pipe(
+                        switchMap((rxdbQuery) => {
+                          const res = from(rxdbQuery.exec());
+                          return res;
+                        }),
+                        map(docs => {
+                          let collectItems: CollectItem[] = [];
+                          for (let doc of docs.filter(doc => doc != null)) {
+                            let collectItem: CollectItem = {
+                              label: doc.name,
+                              name: doc.name,
+                              icon: doc.name,
+                              schemaId: doc.id,
+                            };
+                            collectItems.push(collectItem);
+                          }
+                          return collectItems.sort(
+                              (a, b) => (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0);
+                        }),
+                        ) as BehaviorSubject<CollectItem[]>;
+    }
+  }
+}

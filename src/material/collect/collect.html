@@ -1,0 +1,21 @@
+<mat-grid-list
+  class="dewco-grid-list"
+  [cols]="(breakpointObserver.small|async) ? columnsSmall : columnsLarge"
+  gutterSize="2.5em"
+  rowHeight="1:1"
+>
+  <ng-container *ngFor="let item of items|async">
+    <mat-grid-tile
+      class="dewco-grid-tile"
+      [routerLink]="item.url? item.url : ['/list', item.schemaId ? item.schemaId : item.name]"
+    >
+      <div>
+        <div class="title"></div>
+        <div class="dewco-grid-icon">
+          <img src="assets/icons/forms/{{ item.name }}.svg" alt="" />
+        </div>
+        <div class="dewco-grid-label">{{ item.label }}</div>
+      </div>
+    </mat-grid-tile>
+  </ng-container>
+</mat-grid-list>

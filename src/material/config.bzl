@@ -1,7 +1,10 @@
 # List of all entry-points of the Dewco core package.
 entryPoints = [
+    "collect",
+    "edit-form",
     "list",
     "login",
+    "main-nav",
     "search-filters-bar",
     "search-filters-chips",
     "search-filters-dialog",
