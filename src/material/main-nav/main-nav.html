@@ -1,7 +1,7 @@
 <mat-toolbar
   *ngIf="sidenav != null && (authService.authenticated|async)"
   class="dewco-toolbar"
-  [class.shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
+  [class.dewco-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
 >
   <button mat-icon-button (click)="menuToggle()">
     <mat-icon
@@ -26,7 +26,7 @@
     [mode]="(breakpointObserver.large|async) ? 'side' : 'over'"
     [opened]="breakpointObserver.large|async"
     class="dewco-sidenav"
-    [class.large-sidenav]="breakpointObserver.large|async"
+    [class.dewco-large-sidenav]="breakpointObserver.large|async"
     [class.extended]="extendedSidenav|async"
   >
     <mat-nav-list>
@@ -42,7 +42,7 @@
       </a>
 
       <a
-        *ngIf="!(breakpointObserver.large|async)"
+        *ngIf="(breakpointObserver.large|async) === false"
         class="dewco-extend-menu-button"
         mat-list-item
         [disableRipple]="true"
@@ -57,7 +57,7 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="dewco-sidenav-content">
-    <ng-container *ngIf="!(isLoading|async)">
+    <ng-container *ngIf="(isLoading|async) === false">
       <router-outlet (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>
   </mat-sidenav-content>

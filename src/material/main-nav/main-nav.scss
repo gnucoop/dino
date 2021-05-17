@@ -4,7 +4,7 @@ dewco-main-nav {
         flex-flow: row wrap;
         justify-content: flex-start;
         background-color: inherit;
-        &.shadowed {
+        &.dewco-shadowed {
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
             animation-name: shadowed-toolbar;
             animation-duration: 2s;
@@ -41,7 +41,7 @@ dewco-main-nav {
         -webkit-transition: all ease-in-out 0.2s;
     }
 
-    .mat-sidenav.large-sidenav {
+    .mat-sidenav.dewco-large-sidenav {
         box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.2);
         animation-name: shadowed-sidenav;
         animation-duration: 2s;

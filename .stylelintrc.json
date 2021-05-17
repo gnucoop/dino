@@ -47,7 +47,6 @@
     "function-whitespace-after": "always",
     "number-leading-zero": "always",
     "number-no-trailing-zeros": true,
-    "length-zero-no-unit": true,
     "string-no-newline": true,
     "string-quotes": "single",
     "unit-case": "lower",
@@ -99,7 +98,7 @@
     "max-line-length": 100,
     "linebreaks": "unix",
     "selector-class-pattern": [
-      "^_?(dewco-|mat-|cdk-|example-|demo-|ng-|mdc-|map-)",
+      "^_?(ajf-|dewco-|mat-|cdk-|example-|demo-|ng-|mdc-|map-)",
       {
         "resolveNestedSelectors": true
       }

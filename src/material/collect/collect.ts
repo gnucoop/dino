@@ -65,7 +65,7 @@ export class Collect implements OnInit {
    * The number of grid columns for small screens/devices.
    * Defaults to 2.
    */
-  private _columnsSmall = 2
+  private _columnsSmall = 2;
   get columnsSmall(): number {
     return this._columnsSmall;
   }
@@ -81,7 +81,7 @@ export class Collect implements OnInit {
    * The number of grid columns for medium to large screens/devices.
    * Defaults to 4.
    */
-  private _columnsLarge = 4
+  private _columnsLarge = 4;
   get columnsLarge(): number {
     return this._columnsLarge;
   }
@@ -124,17 +124,27 @@ export class Collect implements OnInit {
                         }),
                         map(docs => {
                           let collectItems: CollectItem[] = [];
-                          for (let doc of docs.filter(doc => doc != null)) {
+                          for (let document of docs.filter(dcm => dcm != null)) {
                             let collectItem: CollectItem = {
-                              label: doc.name,
-                              name: doc.name,
-                              icon: doc.name,
-                              schemaId: doc.id,
+                              label: document.name,
+                              name: document.name,
+                              icon: document.name,
+                              schemaId: document.id,
                             };
                             collectItems.push(collectItem);
                           }
                           return collectItems.sort(
-                              (a, b) => (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0);
+                              (a, b) => {
+                                if (a.name < b.name) {
+                                  return -1;
+                                } else {
+                                  if (a.name > b.name) {
+                                    return 1;
+                                  } else {
+                                    return 0;
+                                  }
+                                }
+                              });
                         }),
                         ) as BehaviorSubject<CollectItem[]>;
     }

@@ -212,7 +212,7 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
                             this._currentDoc.next(item as T);
                             if ('data' in item) {
                               if (item['data']['schema_id'] != null) {
-                                this._formSchemaId.next(item['data']['schema_id'])
+                                this._formSchemaId.next(item['data']['schema_id']);
                               }
                               return item['data']['data'];
                             }
@@ -236,12 +236,12 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
     );
 
     this._saveFormSub =
-        combineLatest([this._saveFormEvt.asObservable(), this._currentDoc])
+        combineLatest([this._saveFormEvt as Observable<AjfFormActionEvent>, this._currentDoc])
             .pipe(
                 map(([_, item]) => {
                   return {
                     doc: item, formValue: this._rendererService.getFormValue()
-                  }
+                  };
                 }),
                 switchMap(formObj => {
                   let newItem = formObj.doc as {[key: string]: any};

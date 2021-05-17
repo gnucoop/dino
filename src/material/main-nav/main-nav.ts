@@ -31,7 +31,7 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
@@ -144,7 +144,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit() {
-    this._menuToggleSub = this._menuToggleEvt.asObservable()
+    this._menuToggleSub = this._menuToggleEvt
                               .pipe(
                                   withLatestFrom(this.breakpointObserver.large),
                                   tap(([_, res]) => {
@@ -158,7 +158,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
                                   )
                               .subscribe();
 
-    this._menuClickSub = this._menuClickEvt.asObservable()
+    this._menuClickSub = this._menuClickEvt
                              .pipe(
                                  withLatestFrom(this.breakpointObserver.large),
                                  tap(([_, res]) => {
