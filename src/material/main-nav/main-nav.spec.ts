@@ -5,7 +5,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService} from '@dewco/core/auth';
 import {of} from 'rxjs';
 
-import {Main} from './main-nav';
+import {MainNav} from './main-nav';
 import {MainModule} from './main-nav.module';
 
 const authServiceMock = {
@@ -20,8 +20,9 @@ const authServiceMock = {
 
 
 describe('Main', () => {
-  let fixtureMain: ComponentFixture<Main>;
-  let main: Main;
+  let fixtureMain: ComponentFixture<MainNav>;
+  let main: MainNav;
+  let authService: AuthService;
 
   beforeEach(() => {
     TestBed
@@ -37,8 +38,8 @@ describe('Main', () => {
           ],
         })
         .compileComponents();
-
-    fixtureMain = TestBed.createComponent(Main);
+    authService = TestBed.inject(AuthService);
+    fixtureMain = TestBed.createComponent(MainNav);
     main = fixtureMain.componentInstance;
   });
 
@@ -50,13 +51,13 @@ describe('Main', () => {
   });
 
   it('should ask the authservice to log the user out, then open a snackbar message', async () => {
-    let logoutSpy = spyOn(authServiceMock, 'logout').and.callThrough();
+    let logoutSpy = spyOn(authService, 'logout').and.callThrough();
     let snackbarSpy = spyOn(main.snackbar, 'open').and.callThrough();
 
     await fixtureMain.whenStable();
     fixtureMain.detectChanges();
 
-    await main.logout();
+    main.logout();
 
     expect(logoutSpy).toHaveBeenCalled();
     expect(snackbarSpy).toHaveBeenCalled();
