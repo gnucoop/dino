@@ -19,6 +19,7 @@
     "@angular/router": "0.0.0-NG",
     "pouchdb-adapter-idb": "0.0.0-POUCHDB",
     "pouchdb-adapter-memory": "0.0.0-POUCHDB",
+    "rxjs": "0.0.0-RXJS",
     "rxdb": "0.0.0-RXDB",
     "subscriptions-transport-ws": "0.0.0-STWS",
     "uuid": "0.0.0-UUID"

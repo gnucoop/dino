@@ -8,6 +8,7 @@ POUCHDB_PACKAGE_VERSION = "^7.0.0"
 RXDB_PACKAGE_VERSION = "^9.0.0"
 STWS_PACKAGE_VERSION = "^0.9.16"
 TSLIB_PACKAGE_VERSION = "^2.1.0"
+RXJS_PACKAGE_VERSION = "^6.5.3"
 UUID_PACKAGE_VERSION = "^8.0.0"
 
 # Each placer holder is used to stamp versions during the build process, replacing the key with it's
@@ -19,10 +20,13 @@ VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-NG": ANGULAR_PACKAGE_VERSION,
     "0.0.0-POUCHDB": POUCHDB_PACKAGE_VERSION,
     "0.0.0-RXDB": RXDB_PACKAGE_VERSION,
+    "0.0.0-STWS": STWS_PACKAGE_VERSION,
     "0.0.0-TSLIB": TSLIB_PACKAGE_VERSION,
     "0.0.0-UUID": UUID_PACKAGE_VERSION,
     # Version of the local package being built, generated via the `--workspace_status_command` flag.
     "0.0.0-PLACEHOLDER": "{BUILD_SCM_VERSION}",
+    # Version of `rxjs`
+    "0.0.0-RXJS": RXJS_PACKAGE_VERSION,
 }
 
 # List of default Angular library UMD bundles which are not processed by ngcc.
