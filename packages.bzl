@@ -54,6 +54,7 @@ THIRD_PARTY_NGCC_BUNDLES = [
 ]
 
 THIRD_PARTY_NO_NGCC_BUNDLES = [
+    ("@zxing/browser", []),
     ("@zxing/library", []),
     ("chart.js", []),
     ("css-element-queries", []),

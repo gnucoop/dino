@@ -24,6 +24,7 @@ ng_module(
         "@npm//rxdb",
         "@npm//rxjs",
         "@npm//subscriptions-transport-ws",
+        "@npm//uuid",
     ],
 )
 
