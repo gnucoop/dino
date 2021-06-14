@@ -139,7 +139,7 @@
     "@types/uuid": "^3.4.8",
     "@types/yaml": "^1.9.7",
     "autoprefixer": "^6.7.6",
-    "browser-sync": "^2.26.7",
+    "browser-sync": "2.26.13",
     "chalk": "^4.1.0",
     "clang-format": "^1.5.0",
     "codelyzer": "^6.0.0-next.2",
@@ -210,6 +210,7 @@
   "resolutions": {
     "@types/express": "4.17.8",
     "@types/express-serve-static-core": "4.17.13",
+    "browser-sync-client" : "2.26.13",
     "dgeni-packages/typescript": "4.2.3",
     "ltgt": "2.2.1"
   }
