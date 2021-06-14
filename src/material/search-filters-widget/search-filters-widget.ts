@@ -91,12 +91,12 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
   /**
    * Event emitted when the widget's toggle is checked
    */
-  @Output() includeFilter: EventEmitter<FilterItem> = new EventEmitter<FilterItem>();
+  @Output() readonly includeFilter: EventEmitter<FilterItem> = new EventEmitter<FilterItem>();
 
   /**
    * Event emitted when the widget's toggle is unchecked
    */
-  @Output() excludeFilter: EventEmitter<FilterItem> = new EventEmitter<FilterItem>();
+  @Output() readonly excludeFilter: EventEmitter<FilterItem> = new EventEmitter<FilterItem>();
 
   /**
    * Slide toggle to include/exclude filter

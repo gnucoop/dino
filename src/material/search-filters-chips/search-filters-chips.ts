@@ -59,7 +59,7 @@ export class SearchFiltersChips implements OnInit {
   /**
    * Event emitted when a chip is deleted.
    */
-  @Output() excludeFilter: EventEmitter<FilterItem>;
+  @Output() readonly excludeFilter: EventEmitter<FilterItem>;
 
   constructor(private _fts: FiltersService) {
     this.excludeFilter = new EventEmitter<FilterItem>();
