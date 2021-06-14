@@ -33,7 +33,6 @@ ng_module(
         "//src/material/list",
         "//src/material/login",
         "//src/material/search-filters-bar",
-        "@npm//@angular/elements",
         "@npm//@angular/material",
         "@npm//@angular/router",
     ],
@@ -78,7 +77,6 @@ concatjs_devserver(
     static_files = [
         "@npm//zone.js",
         "@npm//core-js-bundle",
-        "@npm//@webcomponents/custom-elements",
         ":index.html",
         ":e2e_main_theme.css",
         ":e2e_alt_theme.css",

@@ -9,7 +9,6 @@ ng_module(
         "//src/dewco-examples",
         "//src/dewco-examples/private",
         "@npm//@angular/cdk",
-        "@npm//@angular/elements",
         "@npm//@angular/material",
     ],
 )
