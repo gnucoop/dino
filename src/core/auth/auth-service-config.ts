@@ -55,6 +55,11 @@ export interface AuthServiceConfig {
   passwordCredential?: string;
 
   /**
+   * User info key returned by the auth endpoint
+   */
+  userAuthInfo?: string;
+
+  /**
    * Optional custom login endpoint url. Defaults to 'api/login',
    */
   loginEndpoint?: string;

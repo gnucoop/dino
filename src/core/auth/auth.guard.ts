@@ -29,7 +29,7 @@ import {
   UrlTree
 } from '@angular/router';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {debounceTime, map} from 'rxjs/operators';
 import {AuthService} from './auth-service';
 
 /**
@@ -48,11 +48,11 @@ export class AuthGuard implements CanActivate {
           if (authenticated && validated) {
             return true;
           }
-          this._authService.refreshToken().subscribe(res => {
+          this._authService.refreshToken().pipe(debounceTime(3000)).subscribe(res => {
             if (res) {
               this._router.navigateByUrl(state.url);
             } else {
-              this._router.navigate(['mat-login']);
+              this._router.navigate(['login']);
             }
           });
           return false;

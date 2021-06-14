@@ -30,6 +30,7 @@ export * from './jwt-interceptor';
 export * from './jwt-token';
 export * from './login';
 export * from './login-response';
+export * from './network-status.service';
 export * from './two-factor-delivery';
 export * from './user';
 export * from './username-status';

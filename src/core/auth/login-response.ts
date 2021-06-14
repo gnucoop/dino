@@ -24,11 +24,16 @@ import {AuthResponse} from './auth-response';
 import {User} from './user';
 
 /**
- * Response of the FusionAuth login api.
+ * Response of the login api.
  */
 export interface LoginResponse extends AuthResponse {
   /**
    * The logged in user info.
    */
   user: User;
+
+  /**
+   * Any other data returned by the Auth endpoint
+   */
+  [key: string]: any;
 }

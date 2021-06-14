@@ -28,11 +28,13 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import {EventEmitter, Inject, Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 import {Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, debounceTime, map, switchMap} from 'rxjs/operators';
+import {catchError, debounceTime, filter, skip, switchMap} from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
+import {NetworkStatusService} from './network-status.service';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
@@ -43,16 +45,66 @@ export class JWTInterceptor implements HttpInterceptor {
   handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]> =
       new EventEmitter<[HttpRequest<any>, HttpHandler]>();
 
+  /**
+   * Number of retry attemps for refreshing the token.
+   * Defaults to 1.
+   */
+  private _retryAttemptsMax: number = 1;
+
+  /**
+   * Counter of the retry attemps for refreshing the token.
+   * If the counter reaches the retry attempts max, the user is
+   * redirected to the login page, and asked to log in again.
+   */
+  private _retryAttempts: number = 0;
+
   constructor(
+      private _router: Router,
       private _authService: AuthService,
+      private _nss: NetworkStatusService,
       @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
   ) {
     this.handleRefreshEvt
         .pipe(
             debounceTime(this._config.retryRefreshTime ?? 5000),
-            map(([request, next]) => this._authService.refreshToken().pipe(
+            switchMap(([request, next]) => {
+              if (!this._nss.isOnline) {
+                return obsOf(true);
+              }
+              if (this._retryAttempts < this._retryAttemptsMax) {
+                this._retryAttempts++;
+                return this._authService.refreshToken().pipe(
                     switchMap(() => next.handle(request)),
-                    )),
+                );
+              } else {
+                this._authService.authenticated.next(false);
+                this._router.navigate(['login', 'expired']);
+                return obsOf(false);
+              }
+            }),
+            )
+        .subscribe();
+
+    this._nss.isOnline$
+        .pipe(
+            filter(res => res === true),
+            skip(1),
+            switchMap(_ => {
+              if (!this._authService.checkToken()) {
+                return this._authService.refreshToken().pipe(
+                    switchMap(refreshed => {
+                      if (refreshed) {
+                        return obsOf(true);
+                      } else {
+                        this._authService.authenticated.next(false);
+                        this._router.navigate(['login', 'expired']);
+                        return obsOf(false);
+                      }
+                    }),
+                );
+              }
+              return obsOf(false);
+            }),
             )
         .subscribe();
   }

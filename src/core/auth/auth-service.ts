@@ -30,6 +30,7 @@ import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {Credentials} from './credentials';
 import {JwtToken} from './jwt-token';
 import {LoginResponse} from './login-response';
+import {NetworkStatusService} from './network-status.service';
 import {User} from './user';
 
 function removeSlashes(uri: string): string {
@@ -45,6 +46,7 @@ export const DEFAULT_AUTH_OPTIONS = {
   userInfoKey: 'dewco_user_info',
   userCredentialKey: 'loginId',
   passwordCredentialKey: 'password',
+  userAuthInfo: 'user',
 };
 
 /**
@@ -57,7 +59,9 @@ export class AuthService {
   /**
    * True if a valid JWT access token is available.
    */
-  readonly authenticated: Observable<boolean> = this._authenticated as Observable<boolean>;
+  get authenticated(): BehaviorSubject<boolean> {
+    return this._authenticated;
+  }
 
   /**
    * The current JWT auth token
@@ -67,8 +71,10 @@ export class AuthService {
   private _baseUrl: string;
 
   constructor(
+      private _nss: NetworkStatusService,
       private _httpClient: HttpClient,
-      @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig) {
+      @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
+  ) {
     this._baseUrl = removeSlashes(_config.host);
     this.authToken = new BehaviorSubject<string|null>(this.getAuthToken());
     this._initAuthentication();
@@ -98,7 +104,13 @@ export class AuthService {
               this._authenticated.next(true);
               this._storeAuthToken(res.token);
               this._storeRefreshToken(res.refreshToken);
-              this._storeUserInfo(res.user);
+              let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
+              if (this._config.userAuthInfo != null) {
+                const userAuthInfo = res[this._config.userAuthInfo];
+                let usr: User = {[this._config.userAuthInfo]: userAuthInfo};
+                userInfo = usr;
+              }
+              this._storeUserInfo(userInfo);
             }),
             mapTo(true),
             catchError(() => {
@@ -183,6 +195,9 @@ export class AuthService {
     if (!this.getAuthToken()) {
       return obsOf(false);
     }
+    if (!this._nss.isOnline) {
+      return obsOf(true);
+    }
 
     const req = {refreshToken: this.getRefreshToken()};
 
@@ -214,6 +229,9 @@ export class AuthService {
     const token = this.getAuthToken();
     if (!token) {
       return false;
+    }
+    if (!this._nss.isOnline) {
+      return true;
     }
     const decodedToken = this._decodeJwt(token);
     if (decodedToken.exp != null && decodedToken.exp > (new Date().getTime() / 1000)) {
