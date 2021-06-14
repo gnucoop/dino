@@ -29,6 +29,11 @@
     "node_modules/@angular/common/upgrade*",
     "node_modules/@angular/compiler-cli/**",
     "node_modules/@angular/dev-infra-private/**",
-    "node_modules/@angular/router/upgrade*"
+    "node_modules/@angular/router/upgrade*",
+    // We also list the packages built as part of this repository. The Bazel NodeJS rules can link
+    // these packages into the `node_modules/` folder and this would break the summary file generation.
+    "node_modules/@dewco/core/**",
+    "node_modules/@dewco/dewco-examples/**",
+    "node_modules/@dewco/material/**"
   ]
 }
