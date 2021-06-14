@@ -5,7 +5,7 @@ export interface Location extends Model {
 export declare class LocationManager extends DataModelManager<Location> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
     static ɵfac: i0.ɵɵFactoryDeclaration<LocationManager, never>;
-    static ɵprov: i0.ɵɵInjectableDef<LocationManager>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<LocationManager>;
 }
 
 export declare class LocationModule {

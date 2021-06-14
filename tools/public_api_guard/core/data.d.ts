@@ -168,7 +168,7 @@ export declare class DataService {
     plugin(plugin: any): void;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
     static ɵfac: i0.ɵɵFactoryDeclaration<DataService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<DataService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<DataService>;
 }
 
 export interface DataServiceConfig {
@@ -216,7 +216,7 @@ export declare class PermissionContextService {
     constructor(authService: AuthService);
     addToContext(param: PermissionContextDataUpdate): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<PermissionContextService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<PermissionContextService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<PermissionContextService>;
 }
 
 export interface PullQueryExtraParams {

@@ -9,7 +9,7 @@ export interface FormData extends Model {
 export declare class FormDataManager extends DataModelManager<FormData> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
     static ɵfac: i0.ɵɵFactoryDeclaration<FormDataManager, never>;
-    static ɵprov: i0.ɵɵInjectableDef<FormDataManager>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FormDataManager>;
 }
 
 export interface FormSchema extends Model {
@@ -21,7 +21,7 @@ export declare class FormSchemaManager extends DataModelManager<FormSchema> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
     generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
     static ɵfac: i0.ɵɵFactoryDeclaration<FormSchemaManager, never>;
-    static ɵprov: i0.ɵɵInjectableDef<FormSchemaManager>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FormSchemaManager>;
 }
 
 export declare class FormsModule {

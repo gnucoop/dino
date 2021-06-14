@@ -1,7 +1,7 @@
 export declare class SearchFiltersChips implements OnInit {
     chipsFilters: Observable<FilterItem[]>;
     chipsType: FilterListType;
-    excludeFilter: EventEmitter<FilterItem>;
+    readonly excludeFilter: EventEmitter<FilterItem>;
     constructor(_fts: FiltersService);
     ngOnInit(): void;
     removeFilterItem(filterItem: FilterItem): void;

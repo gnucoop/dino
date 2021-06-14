@@ -2,7 +2,7 @@ export declare class AdminUserInteractionsService extends CoreAdminUserInteracti
     constructor(_dialog: MatDialog);
     askConfirm(action: ListAction): Observable<boolean>;
     static ɵfac: i0.ɵɵFactoryDeclaration<AdminUserInteractionsService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<AdminUserInteractionsService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<AdminUserInteractionsService>;
 }
 
 export declare class ListDataSource<T extends Model = Model, AD extends Model = Model> extends MatTableDataSource<T> {

@@ -5,7 +5,7 @@ export interface Project extends Model {
 export declare class ProjectManager extends DataModelManager<Project> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
     static ɵfac: i0.ɵɵFactoryDeclaration<ProjectManager, never>;
-    static ɵprov: i0.ɵɵInjectableDef<ProjectManager>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ProjectManager>;
 }
 
 export declare class ProjectModule {

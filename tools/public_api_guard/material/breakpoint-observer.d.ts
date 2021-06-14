@@ -10,5 +10,5 @@ export declare class BreakpointObserverService {
     small: Observable<boolean>;
     constructor(_breakPointObserver: BreakpointObserver);
     static ɵfac: i0.ɵɵFactoryDeclaration<BreakpointObserverService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<BreakpointObserverService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<BreakpointObserverService>;
 }

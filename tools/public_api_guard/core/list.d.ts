@@ -65,7 +65,7 @@ export declare class FiltersService {
     setAdditionalFilters(filters?: FilterGroup[]): void;
     updateAdditionalFilters(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<FiltersService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<FiltersService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FiltersService>;
 }
 
 export declare abstract class List<T extends Model = Model, AD extends Model = Model> {

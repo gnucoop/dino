@@ -4,7 +4,7 @@ export declare class AuthGuard implements CanActivate {
     constructor(_router: Router, _authService: AuthService);
     canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree;
     static ɵfac: i0.ɵɵFactoryDeclaration<AuthGuard, never>;
-    static ɵprov: i0.ɵɵInjectableDef<AuthGuard>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<AuthGuard>;
 }
 
 export declare class AuthModule {
@@ -32,7 +32,7 @@ export declare class AuthService {
     logout(allDevices?: boolean): Observable<boolean>;
     refreshToken(): Observable<boolean>;
     static ɵfac: i0.ɵɵFactoryDeclaration<AuthService, never>;
-    static ɵprov: i0.ɵɵInjectableDef<AuthService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<AuthService>;
 }
 
 export interface AuthServiceConfig {
@@ -74,7 +74,7 @@ export declare class JWTInterceptor implements HttpInterceptor {
     constructor(_authService: AuthService, _config: AuthServiceConfig);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
     static ɵfac: i0.ɵɵFactoryDeclaration<JWTInterceptor, never>;
-    static ɵprov: i0.ɵɵInjectableDef<JWTInterceptor>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<JWTInterceptor>;
 }
 
 export interface JwtToken {

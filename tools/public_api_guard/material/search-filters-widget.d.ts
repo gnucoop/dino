@@ -5,9 +5,9 @@ export declare class NodeAsFilterItemPipe implements PipeTransform {
 }
 
 export declare class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterViewInit, OnInit, OnDestroy {
-    excludeFilter: EventEmitter<FilterItem>;
+    readonly excludeFilter: EventEmitter<FilterItem>;
     filterItemData: FilterItem;
-    includeFilter: EventEmitter<FilterItem>;
+    readonly includeFilter: EventEmitter<FilterItem>;
     get operatorValue(): BehaviorSubject<Operator>;
     rendererService: AjfFormRendererService;
     toggleButton: MatSlideToggle;
