@@ -21,7 +21,7 @@
  */
 
 import {EventEmitter, Inject, Injectable} from '@angular/core';
-import {AuthService} from '@dewco/core/auth';
+import {AuthService, NetworkStatusService} from '@dewco/core/auth';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
@@ -138,6 +138,7 @@ export class DataService {
 
   constructor(
       private _authService: AuthService,
+      private _nss: NetworkStatusService,
       @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
   ) {
     addRxPlugin(pouchdbAdapterIdb);
@@ -401,6 +402,7 @@ export class DataService {
     combineLatest([
       collectionChange,
       this._authService.authToken,
+      this._nss.isOnline$,
     ])
         .pipe(withLatestFrom(this._authService.authenticated))
         .subscribe(
@@ -408,11 +410,12 @@ export class DataService {
               [
                 registeredCollections,
                 token,
+                isOnline,
               ],
               auth,
             ]) => {
               const activeSyncsKeys = Object.keys(this._activeSyncs);
-              if (auth && token != null) {
+              if (auth && token != null && isOnline) {
                 const collectionNames = [] as string[];
                 registeredCollections.forEach(registeredCollection => {
                   const {collection, ...params} = registeredCollection;
@@ -467,10 +470,10 @@ export class DataService {
             reconnectionAttempts: 5,
             connectionCallback: (error: Error[]) => {
               if (error) {
+                client.close(true);
                 const errMessage = error.toString();
                 if (this._config.syncOptions.authErrorMessage &&
                     errMessage === this._config.syncOptions.authErrorMessage) {
-                  client.close(true);
                   this._refreshEvt.emit();
                 }
               }
@@ -486,7 +489,7 @@ export class DataService {
         repComplete,
         clientRequest,
       ]);
-      sub = repRequest.subscribe({
+      sub = clientRequest.subscribe({
         next: () => {
           state.run().then(() => {
             this._collectionChanged.emit({

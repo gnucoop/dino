@@ -33,7 +33,12 @@ import {
 
 import {PermissionContextService} from './data-context-service';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
-import {DataListOptions, DataQueryOptions, DataQuerySort} from './data-options-interface';
+import {
+  DataListOptions,
+  DataQueryOptions,
+  DataQuerySelector,
+  DataQuerySort
+} from './data-options-interface';
 import {Permission} from './data-permission';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {CollectionChangedEvent, DataService} from './data-service';
@@ -48,6 +53,19 @@ import {Model} from './model';
  * provided in the DataModelManager constructor.
  */
 export abstract class DataModelManager<T extends Model = Model> {
+  /**
+   * A foreign key to retrieve child docs (details) in an
+   * expandable list
+   */
+  detailsKey: keyof T;
+  /**
+   * The data manager to get details in an expandable list
+   */
+  detailsManager: DataModelManager<any>;
+
+  get permissions(): Permission[] {
+    return this._permissions;
+  }
   private _context: Observable<PermissionContext<T>>;
   private _collectionInit: Observable<boolean>;
   private _modelName: string;
@@ -94,6 +112,13 @@ export abstract class DataModelManager<T extends Model = Model> {
     return this._dataService.collectionChanged.pipe(
         filter(changeEvt => changeEvt.collection === this._modelName),
     );
+  }
+
+  /**
+   * Initializes and creates the collection.
+   */
+  init(): Observable<boolean> {
+    return this._collectionInit;
   }
 
   /**
@@ -365,6 +390,15 @@ export abstract class DataModelManager<T extends Model = Model> {
   }
 
   /**
+   * Gets the child docs of a parent doc, in expandable lists.
+   * @param doc The parent doc
+   * @param querySelector? Additional query params
+   */
+  getSubData(doc: T, querySelector?: any): Observable<T[]> {
+    return obsOf([]);
+  }
+
+  /**
    * Transforms an object into a list of Mango update operations
    * @param data
    * @returns a Mango update operation
@@ -373,6 +407,29 @@ export abstract class DataModelManager<T extends Model = Model> {
     data.updated_at = new Date().toISOString();
     delete data.created_at;
     return {$set: {...data}};
+  }
+
+  /**
+   * Checks all Permissions for viewing a RxDocument in a given Context
+   * @param object The doc to be viewed
+   * @param context? The permission context data
+   * @returns True if the permission is granted
+   */
+  canView(object: T, context?: PermissionContext<T>): boolean {
+    const viewData = {
+      object: object,
+      context: context,
+    };
+    for (let permission of this._permissions) {
+      if (permission.canView === undefined) {
+        continue;
+      } else {
+        if (!permission.canView(viewData)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   /**
@@ -452,6 +509,10 @@ export abstract class DataModelManager<T extends Model = Model> {
         .pipe(
             map(([_, context]) => context),
         );
+  }
+
+  get permissionContext(): Observable<PermissionContext> {
+    return this._getPermissionContext();
   }
 
   /**

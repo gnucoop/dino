@@ -24,6 +24,7 @@ import {
   CanCreateData,
   CanDeleteData,
   CanModifyData,
+  CanViewData,
 } from './data-permission-interface';
 import {Model} from './model';
 
@@ -34,6 +35,7 @@ import {Model} from './model';
  * in a given Context.
  */
 export interface Permission<T extends Model = Model> {
+  canView?(data: CanViewData<T>): boolean;
   canCreate?(data: CanCreateData<T>): boolean;
   canModify?(data: CanModifyData<T>): boolean;
   canDelete?(data: CanDeleteData<T>): boolean;

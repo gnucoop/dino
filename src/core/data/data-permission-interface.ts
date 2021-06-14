@@ -50,6 +50,21 @@ export interface PermissionContextDataUpdate {
 /**
  * The data used to evaluate Creation permissions
  */
+export interface CanViewData<T extends {} = {}, M extends Model = Model> {
+  /**
+   * The document to be created
+   */
+  object: M;
+
+  /**
+   * The Context of the operation
+   */
+  context?: PermissionContext<T>;
+}
+
+/**
+ * The data used to evaluate Creation permissions
+ */
 export interface CanCreateData<T extends {} = {}, M extends Model = Model> {
   /**
    * The document to be created

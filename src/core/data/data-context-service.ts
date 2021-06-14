@@ -60,7 +60,7 @@ export class PermissionContextService {
     );
 
     this.permissionContext =
-        combineLatest(this._basePermissionContext, ctxUpdate)
+        combineLatest([this._basePermissionContext, ctxUpdate])
             .pipe(
                 map(([baseContext, contextUpdate]) => ({...baseContext, ...contextUpdate})),
                 debounceTime(300),
