@@ -10,7 +10,8 @@
     "./tools/stylelint/no-top-level-ampersand-in-mixin.ts",
     "./tools/stylelint/theme-mixin-api.ts",
     "./tools/stylelint/no-import.ts",
-    "./tools/stylelint/single-line-comment-only.ts"
+    "./tools/stylelint/single-line-comment-only.ts",
+    "./tools/stylelint/no-unused-import.ts"
   ],
   "rules": {
     "dewco/no-prefixes": [true, {
@@ -20,6 +21,7 @@
     "dewco/theme-mixin-api": true,
     "dewco/selector-no-deep": true,
     "dewco/no-nested-mixin": true,
+    "dewco/no-unused-import": true,
     "dewco/single-line-comment-only": [true, {
       "filePattern": "\\.scss$"
     }],

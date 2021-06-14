@@ -2,8 +2,6 @@
 @use '~@angular/material/theming' as mat-theming;
 
 @use 'theming/palette';
-@use 'theming/all-theme';
-@use 'all-core';
 
 // Creates a light-themed color configuration from the specified
 // primary, accent and warn palettes.
