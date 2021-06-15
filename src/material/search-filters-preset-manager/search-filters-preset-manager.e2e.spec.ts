@@ -8,7 +8,7 @@ import {
 
 describe('dewco-search-filters-preset-manager', () => {
   beforeAll(async () => {
-    await browser.get('/mat-list');
+    await browser.get('/list');
   });
 
   beforeEach(async () => {
