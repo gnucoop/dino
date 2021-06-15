@@ -2,7 +2,7 @@
     .mat-card {
         display: flex;
         flex-direction: column;
-        flex: 1 1 28%;
+        flex: 1 1 auto;
         margin: 1%;
         margin-top: 5px;
         border-radius: 0%;
@@ -30,7 +30,6 @@
             justify-content: flex-end;
             align-items: center;
             align-content: center;
-            margin: 0 -16px;
             padding: 10px 3% !important;
             text-align: right;
         }

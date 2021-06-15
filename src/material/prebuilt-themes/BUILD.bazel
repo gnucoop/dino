@@ -1,0 +1,8 @@
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "dino-theme",
+    srcs = ["//src/material/core:theming/prebuilt/dino-theme.css"],
+    outs = ["dino-theme.css"],
+    cmd = "cp $< $@",
+)

@@ -11,6 +11,9 @@
 @forward '../../slide-toggle/slide-toggle-theme.import';
 @forward '../../tabs/tabs-theme.import';
 @forward '../../form-field/form-field-theme.import';
+@forward '../../dialog/dialog-theme.import';
+@forward '../../grid/grid-theme.import';
+
 @forward 'all-theme' as dewco-*;
 
 @import '../../button/button-theme';
@@ -25,3 +28,6 @@
 @import '../../slide-toggle/slide-toggle-theme';
 @import '../../tabs/tabs-theme';
 @import '../../form-field/form-field-theme';
+@import '../../dialog/dialog-theme';
+@import '../../grid/grid-theme';
+

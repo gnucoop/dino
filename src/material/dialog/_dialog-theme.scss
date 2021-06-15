@@ -1,0 +1,42 @@
+@use 'sass:map';
+@use '~@angular/material/core/theming/theming' as mat-theming;
+@use '~@angular/material/dialog/dialog-theme' as mat-dialog-theme;
+
+@mixin dialog-color($config-or-theme) {
+    $config: mat-theming.get-color-config($config-or-theme);
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+
+    @include mat-dialog-theme.color($config-or-theme);
+}
+
+@mixin mat-dialog-typography($config-or-theme) {
+    $config: mat-get-typography-config($config-or-theme);
+
+    @include mat-dialog-theme.typography($config-or-theme);
+    .mat-dialog-container div {
+        font-family: mat-font-family($config);
+        font-size: mat-font-size($config, body-1);
+    }
+}
+
+@mixin _mat-dialog-density($config-or-theme) {
+}
+
+@mixin dialog-theme($theme-or-color-config) {
+    $color: mat-theming.get-color-config($theme-or-color-config);
+    $density: mat-theming.get-density-config($theme-or-color-config);
+    $typography: mat-theming.get-typography-config($theme-or-color-config);
+
+    @if $color != null {
+        @include dialog-color($color);
+    }
+    @if $density != null {
+        @include _mat-dialog-density($density);
+    }
+    @if $typography != null {
+        @include mat-dialog-typography($typography);
+    }
+}

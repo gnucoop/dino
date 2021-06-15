@@ -14,6 +14,8 @@
 @use '../slide-toggle/slide-toggle-base';
 @use '../tabs/tabs-base';
 @use '../form-field/form-field-base';
+@use '../grid/grid-base';
+@use '../dialog/dialog-base';
 
 @mixin mat-core($typography-config: typography.$base-typography) {
     @include mat-core-theming.core($typography-config);
@@ -29,4 +31,6 @@
     @include slide-toggle-base.slide-toggle-core($typography-config);
     @include table-base.table-core($typography-config);
     @include tabs-base.tabs-core($typography-config);
+    @include grid-base.grid-core($typography-config);
+    @include dialog-base.dialog-core($typography-config);
 }

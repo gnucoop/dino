@@ -22,6 +22,16 @@
         background: mat-theming.get-color-from-palette($background, dialog);
         color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
+
+    .mat-card
+        .mat-card-content
+        .ajf-choices-container
+        .ajf-checkbox-group-checked
+        .mat-button
+        .mat-button-wrapper
+        .mat-icon {
+        color: mat-theming.get-color-from-palette($accent) !important;
+    }
 }
 
 @mixin mat-card-typography($config-or-theme) {

@@ -37,6 +37,8 @@
 @use '../../slide-toggle/slide-toggle-theme';
 @use '../../table/table-theme';
 @use '../../tabs/tabs-theme';
+@use '../../dialog/dialog-theme';
+@use '../../grid/grid-theme';
 
 // Create a theme.
 @mixin material-theme($theme-or-color-config) {
@@ -52,7 +54,6 @@
         @include mat-badge-theme.theme($theme);
         @include mat-bottom-sheet-theme.theme($theme);
         @include mat-button-toggle-theme.theme($theme);
-        @include mat-dialog-theme.theme($theme);
         @include mat-divider-theme.theme($theme);
         @include mat-expansion-theme.theme($theme);
         @include mat-grid-list-theme.theme($theme);
@@ -84,5 +85,7 @@
         @include slide-toggle-theme.slide-toggle-theme($theme);
         @include table-theme.table-theme($theme);
         @include tabs-theme.tabs-theme($theme);
+        @include dialog-theme.dialog-theme($theme);
+        @include grid-theme.grid-theme($theme);
     }
 }

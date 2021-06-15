@@ -5,7 +5,7 @@ load(
     "MATERIAL_TARGETS",
     "MATERIAL_TESTING_TARGETS",
 )
-load("//tools:defaults.bzl", "ng_package", "ts_library")
+load("//tools:defaults.bzl", "ng_package", "sass_library", "ts_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -20,6 +20,16 @@ filegroup(
     srcs = ["//src/material/%s:overview" % name for name in MATERIAL_ENTRYPOINTS],
 )
 
+# Makes the theming bundle available in the release output as `dewco/material/theming`.
+sass_library(
+    name = "theming_bundle",
+    srcs = [
+        "_index.scss",
+        "_theming.scss",
+    ],
+    deps = ["//src/material/core:theming_scss_lib"],
+)
+
 # Creates the @angular/material package published to npm.
 ng_package(
     name = "npm_package",
@@ -27,6 +37,9 @@ ng_package(
         "package.json",
     ],
     data = [
+        ":theming_bundle",
+        "//src/material/core:theming_scss_lib",
+        "//src/material/prebuilt-themes:dino-theme",
     ] + MATERIAL_SCSS_LIBS,
     entry_point = ":index.ts",
     entry_point_name = "material",

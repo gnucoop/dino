@@ -14,7 +14,10 @@
             border-bottom-width: 0 !important;
             border-bottom-style: none !important;
             border-color: transparent;
-            height: 60px;
+            &:not(.dewco-expanded-cell) {
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
 
             .mat-icon {
                 padding: 5px;
@@ -27,6 +30,9 @@
         .mat-row {
             margin-bottom: 16px;
             border-style: none;
+        }
+        &.dewco-inner-table {
+            background: inherit;
         }
     }
 }

@@ -1,0 +1,58 @@
+@use 'sass:map';
+@use '~@angular/material/core/theming/theming' as mat-theming;
+@use '~@angular/material/grid-list/grid-list-theme' as mat-grid-theme;
+
+@mixin grid-color($config-or-theme) {
+    $config: mat-theming.get-color-config($config-or-theme);
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+
+    @include mat-grid-theme.color($config-or-theme);
+
+    .mat-grid-tile.dewco-grid-tile {
+        border-radius: 5px;
+        border: 1px solid mat-theming.get-color-from-palette($primary);
+        div.dewco-grid-icon {
+            fill: mat-theming.get-color-from-palette($primary);
+        }
+        div.dewco-grid-label {
+            color: mat-theming.get-color-from-palette($primary);
+        }
+        &:hover {
+            border-color: mat-theming.get-color-from-palette($accent);
+            background: mat-theming.get-color-from-palette($accent, lighter);
+            div.dewco-grid-icon {
+                fill: mat-theming.get-color-from-palette($accent);
+            }
+            div.dewco-grid-label {
+                color: mat-theming.get-color-from-palette($accent);
+            }
+        }
+    }
+}
+
+@mixin mat-grid-typography($config-or-theme) {
+    $config: mat-get-typography-config($config-or-theme);
+    @include mat-grid-theme.typography($config-or-theme);
+}
+
+@mixin _mat-grid-density($config-or-theme) {
+}
+
+@mixin grid-theme($theme-or-color-config) {
+    $color: mat-theming.get-color-config($theme-or-color-config);
+    $density: mat-theming.get-density-config($theme-or-color-config);
+    $typography: mat-theming.get-typography-config($theme-or-color-config);
+
+    @if $color != null {
+        @include grid-color($color);
+    }
+    @if $density != null {
+        @include _mat-grid-density($density);
+    }
+    @if $typography != null {
+        @include mat-grid-typography($typography);
+    }
+}

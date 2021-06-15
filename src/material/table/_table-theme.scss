@@ -17,6 +17,17 @@
       box-shadow: 0 2px 4px 0 #b9b9b9;
     }
 
+    .mat-row.dewco-highlighted-row {
+      background-color: mat-theming.get-color-from-palette($accent, lighter);
+    }
+    .dewco-inner-table-container .mat-row.dewco-details-row.dewco-highlighted-row {
+      background-color: mat-theming.get-color-from-palette($primary, lighter);
+    }
+
+    .dewco-inner-table-container .mat-row.dewco-details-row:not(.dewco-highlighted-row) {
+      background-color: mat-theming.get-color-from-palette($warn, lighter);
+    }
+
     .mat-icon {
       color: mat-theming.get-color-from-palette($alt_accent);
       &:hover {
@@ -28,8 +39,7 @@
 
   .mat-table thead,
   .mat-table tbody,
-  .mat-table tfoot,
-  .mat-table-sticky {
+  .mat-table tfoot {
     background: inherit;
   }
 

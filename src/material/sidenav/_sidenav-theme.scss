@@ -35,12 +35,14 @@
             // See https://material.io/design/components/navigation-drawer.html
             @include mat-private.private-theme-elevation(16, $config);
         }
-        &.mat-drawer-side.mat-sidenav {
+        &.mat-drawer-side.mat-sidenav,
+        &.mat-drawer-push.mat-sidenav,
+        &.mat-drawer-over.mat-sidenav {
             .mat-list-item {
                 &:hover {
                     background-color: mat-theming.get-color-from-palette($accent, lighter);
                     color: mat-theming.get-color-from-palette($accent);
-                    border-left: 3px solid mat-theming.get-color-from-palette($accent);
+                    box-shadow: 3px 0px 0px 0px mat-theming.get-color-from-palette($accent) inset;
                 }
             }
         }
@@ -75,8 +77,7 @@
             // background is light, we use a dark backdrop. If the background is dark,
             // we use a light backdrop.
             background-color: color.invert($backdrop-color);
-        }
-        @else {
+        } @else {
             // If we couldn't resolve the backdrop color to a color value, fall back to using
             // `opacity` to make it opaque since its end value could be a solid color.
             background-color: $backdrop-color;

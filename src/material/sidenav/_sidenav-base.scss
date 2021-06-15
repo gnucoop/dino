@@ -4,15 +4,9 @@
         .mat-nav-list,
         .mat-list-base {
             overflow: hidden;
-            padding-top: 0;
         }
         .mat-list-item {
             padding: 6px;
-            &:hover {
-                .mat-icon {
-                    margin-left: -3px;
-                }
-            }
         }
     }
 }

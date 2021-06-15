@@ -1,0 +1,30 @@
+@use '~@angular/material/core/theming/palette' as mat-palette;
+@use '~@angular/material/core/theming/theming' as mat-theming;
+
+@use '../../core';
+@use '../../all-core';
+@use '../all-theme';
+@use '../palette';
+
+// Include non-theme styles for core.
+@include all-core.mat-core();
+
+// Define a theme.
+$primary: mat-theming.define-palette(mat-palette.$indigo-palette);
+$accent: mat-theming.define-palette(mat-palette.$deep-orange-palette, 600, 100, 800);
+$warn: mat-theming.define-palette(mat-palette.$deep-orange-palette, 700, 300, 900);
+$alt_accent: mat-theming.define-palette(palette.$blue, 500);
+
+$theme: core.light-theme(
+    (
+        color: (
+            primary: $primary,
+            accent: $accent,
+            warn: $warn,
+            alt_accent: $alt_accent,
+        ),
+    )
+);
+
+// Include all theme styles for the components.
+@include all-theme.material-theme($theme);

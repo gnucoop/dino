@@ -13,6 +13,23 @@ entryPoints = [
     "search-filters-widget",
 ]
 
+scssOnlyEntryPoints = [
+    "button",
+    "card",
+    "checkbox",
+    "chips",
+    "datepicker",
+    "dialog",
+    "form-field",
+    "grid",
+    "paginator",
+    "select",
+    "sidenav",
+    "slide-toggle",
+    "table",
+    "tabs",
+]
+
 # List of all non-testing entry-points of the Dewco material package.
 MATERIAL_ENTRYPOINTS = [
     ep
@@ -35,5 +52,5 @@ MATERIAL_TESTING_TARGETS = ["//src/material/%s" % ep for ep in MATERIAL_TESTING_
 
 MATERIAL_SCSS_LIBS = [
     "//src/material/%s:%s_scss_lib" % (p, p.replace("-", "_"))
-    for p in MATERIAL_ENTRYPOINTS
+    for p in MATERIAL_ENTRYPOINTS + scssOnlyEntryPoints
 ]

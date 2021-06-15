@@ -34,24 +34,69 @@
         font-weight: bold;
     }
 
-    .ajf-form-page .mat-card {
-        max-width: 100%;
-        display: flex;
-        flex-flow: column wrap;
-        .ajf-field-entry {
+    .ajf-form-page {
+        .mat-card {
+            padding: 8px;
+            max-width: 100%;
             display: flex;
             flex-flow: column wrap;
-            label,
-            span {
-                flex: 1 1 auto;
-                max-width: 80vw;
-                overflow-x: auto;
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-                &::-webkit-scrollbar {
-                    display: none;
+            .ajf-field-entry {
+                display: flex;
+                flex-flow: column wrap;
+                justify-content: start;
+                label,
+                span:not(.mat-ripple, .mat-button-focus-overlay) {
+                    max-width: 80vw;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
+                ajf-checkbox-group-item {
+                    flex: 1 0 auto;
+                    display: flex;
+                    flex-flow: row wrap;
+                }
+                .mat-radio-button,
+                ajf-checkbox-group-item .mat-button {
+                    .mat-icon {
+                        color: inherit;
+                    }
+                    padding: 10px;
+                    flex: 1 0 auto;
+                    min-height: auto;
+                    align-items: stretch;
+                    background-color: #fff;
+                    border: 1px solid rgba(200, 199, 204, 0.7);
+                    border-radius: 2px;
+                    margin-top: 10px;
+                    margin-right: 10px;
+                    line-height: 1.6em;
+                    label {
+                        font-weight: normal;
+                    }
+                    .mat-radio-ripple {
+                        display: none;
+                    }
+                }
+                .mat-select {
+                    width: 25%;
+                    @media only screen and (max-width: 768px) {
+                        width: 100%;
+                    }
+                }
+                ajf-field {
+                    margin-top: 5px;
+                    margin-bottom: 10px;
                 }
             }
         }
+    }
+}
+
+.ajf-slider-container {
+    .ajf-info-box.ajf-error {
+        visibility: hidden;
     }
 }

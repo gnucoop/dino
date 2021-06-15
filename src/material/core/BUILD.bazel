@@ -1,5 +1,5 @@
 load("//src/material:config.bzl", "MATERIAL_SCSS_LIBS")
-load("//tools:defaults.bzl", "sass_library")
+load("//tools:defaults.bzl", "sass_binary", "sass_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -11,4 +11,10 @@ sass_library(
     name = "theming_scss_lib",
     srcs = ALL_THEMING_FILES,
     deps = MATERIAL_SCSS_LIBS,
+)
+
+sass_binary(
+    name = "dino_theme_prebuilt",
+    src = "theming/prebuilt/dino-theme.scss",
+    deps = [":theming_scss_lib"],
 )

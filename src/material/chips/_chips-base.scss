@@ -1,9 +1,22 @@
+@use '~@angular/material/core/typography/typography-utils' as typography-utils;
+@use '../core/typography/typography';
+
 @mixin chips-core($typography-config: null) {
     .mat-chip-list {
+        font-size: typography-utils.font-size(typography.$base-typography, body-1);
+        font-family: typography-utils.font-family(typography.$base-typography, body-1);
+        font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
         border: none;
         outline: none;
-        .mat-chip-list-wrapper {
+        div.mat-chip-list-wrapper {
             padding: 15px 0;
+            margin: 0px;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            .mat-chip {
+                flex: 0 0 auto;
+            }
         }
     }
     .mat-chip.mat-standard-chip {
