@@ -46,6 +46,10 @@ export interface FilterGroup {
    * Additional Filters contained in the Group, displayed in a secondary filter component
    */
   filterGroupAdditionalFilters?: FilterItem[];
+  /**
+   * Indicates if the FilterGroup refers to a details list (in exandable tables)
+   */
+  isFilterGroupDetails?: boolean;
 }
 
 /**
@@ -88,6 +92,10 @@ export interface FilterItem extends Partial<AjfField> {
    * States the validation state of the filter
    */
   isValid?: boolean;
+  /**
+   * Indicates if the FilterItem refers to a details list (in exandable tables)
+   */
+   isFilterItemDetails?: boolean;
 }
 
 /**
@@ -152,6 +160,9 @@ export interface Operator {
    * Operator value
    */
   value: '$lt'|'$gt'|'$lte'|'$gte'|'$eq'|'$ne'|'$exist'|'$in'|'$nin'|'$in'|'$regex';
+  /**
+   * Operator options
+   */
   options?: string;
 }
 
@@ -182,8 +193,8 @@ export const ALL_CONDITION_OPERATORS: Operator[] =
  * Mongodb default operators for different field types
  */
 export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
-  [AjfFieldType.String]: {label: 'Like', value: '$regex'},
-  [AjfFieldType.Text]: {label: 'Like', value: '$regex'},
+  [AjfFieldType.String]: {label: 'Like', value: '$regex', options: 'i'},
+  [AjfFieldType.Text]: {label: 'Like', value: '$regex', options: 'i'},
   [AjfFieldType.Number]: {label: '==', value: '$eq'},
   [AjfFieldType.MultipleChoice]: {label: 'is', value: '$in'},
 };

@@ -283,7 +283,9 @@ export class FiltersService {
       propertyKeys.splice(index, 1);
     }
     let modelFiltersGroup: FilterGroup = {
-      filterGroupName: modelSchema.title ?? '',
+      filterGroupName: modelSchema.title ?
+          modelSchema.title.charAt(0).toUpperCase() + modelSchema.title.slice(1) :
+          '',
       filterGroupAdditionalFilters: [],
     };
     propertyKeys.forEach(prop => {
@@ -292,7 +294,15 @@ export class FiltersService {
             this._propToFilterItem(prop, modelSchema.properties[prop] as PrimaryProperty));
       }
     });
-    this._generatedModelFilters.next([modelFiltersGroup]);
+    const currentModelFilters = this._generatedModelFilters.getValue();
+    this._generatedModelFilters.next([...currentModelFilters, modelFiltersGroup]);
+  }
+
+  /**
+   * Clears all generated model filters
+   */
+  clearModelFilters(): void {
+    this._generatedModelFilters.next([]);
   }
 
   /**

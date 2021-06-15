@@ -23,7 +23,7 @@
 /**
  * Type that identifies an action performed on a List item
  */
-export type ActionType = 'delete'|'print'|'download'|'edit';
+export type ActionType = 'delete'|'print'|'download'|'edit'|'view'|'select'|'expand';
 
 /**
  * Action performed on a List item
@@ -33,6 +33,11 @@ export interface ListAction {
    * The type of the action
    */
   actionType: ActionType;
+
+  /**
+   * The Material Icon for the action
+   */
+  matIcon?: string;
 
   /**
    * User confirmation is needed if set to true
