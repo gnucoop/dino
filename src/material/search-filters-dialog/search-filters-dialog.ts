@@ -115,8 +115,11 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
         withLatestFrom(this._currentGroupId),
         map(([groups, id]) => groups[id] as FilterGroup),
         map((group) => group.filterGroupAdditionalFilters ?
-                group.filterGroupAdditionalFilters.filter(
-                    ft => ft.fieldType !== AjfFieldType.Empty) :
+                group.filterGroupAdditionalFilters.filter(ft => ft.fieldType !== AjfFieldType.Empty)
+                    .map(flt => {
+                      flt.isFilterItemDetails = group.isFilterGroupDetails;
+                      return flt;
+                    }) :
                 []),
         map(filters => filters.map(f => this._setupFilterItem(f))),
         catchError(err => throwError(err) as Observable<FilterItem[]>),
@@ -215,6 +218,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
       size: item.size ?? 'normal',
       validation: item.validation,
       visibility: item.visibility != null ? item.visibility : {condition: 'true'},
+      isFilterItemDetails: item.isFilterItemDetails,
     };
     return ftItem;
   }

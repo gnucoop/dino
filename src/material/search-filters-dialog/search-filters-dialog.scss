@@ -1,12 +1,44 @@
-dewco-search-filters-dialog {
-  .dewco-filter-widgets-container {
-    display: flex;
-    padding: 15px;
-    overflow: hidden;
-    flex-flow: row wrap;
-  }
+.dewco-filter-widgets-container {
+  display: flex;
+  padding: 5px;
+  overflow: hidden;
+  flex-flow: row wrap;
+}
 
-  .mat-tab-body-content {
-    overflow: hidden !important;
+.mat-tab-body-content {
+  overflow: hidden !important;
+}
+
+.dewco-filters-dialog-menu {
+  padding: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  align-content: center;
+  justify-content: space-between;
+  .mat-raised-button{
+    flex: 0 1 auto;
+    margin: 5px;
+  }
+}
+
+.mat-dialog-container {
+  padding: 15px;
+  overflow-x: hidden;
+  .mat-dialog-content {
+    position: relative;
+    max-height: 80vh;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .mat-tab-group {
+      min-width: 100%;
+    }
   }
 }

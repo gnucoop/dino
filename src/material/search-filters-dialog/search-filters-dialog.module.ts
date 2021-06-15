@@ -29,7 +29,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatTabsModule} from '@angular/material/tabs';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {SearchFiltersChipsModule} from '@dewco/material/search-filters-chips';
 import {SearchFiltersWidgetModule} from '@dewco/material/search-filters-widget';
@@ -38,7 +37,6 @@ import {SearchFiltersDialog} from './search-filters-dialog';
 
 @NgModule({
   imports: [
-    BrowserAnimationsModule,
     CommonModule,
     MatButtonModule,
     MatCheckboxModule,
