@@ -18,7 +18,7 @@
                                         <mat-card-content>
                                             <i [class]="(fieldInstance|ajfAsFieldInstance).node.fieldType | ajfFieldIcon"
                                                 item-right></i>
-                                            <label
+                                            <label class="dewco-filter-widget-label"
                                                 *ngIf="(fieldInstance|ajfAsFieldInstance).node.fieldType !== ajfFieldTypes.Empty"
                                                 [innerHTML]="(fieldInstance|ajfAsFieldInstance).node.label"></label>
                                             <ajf-field [instance]="(fieldInstance|ajfAsFieldInstance)"

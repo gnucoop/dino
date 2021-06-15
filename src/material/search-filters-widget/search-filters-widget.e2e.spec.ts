@@ -8,7 +8,7 @@ import {
 
 describe('dewco-search-filters-widget', () => {
   beforeAll(async () => {
-    await browser.get('/mat-list');
+    await browser.get('/list');
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);

@@ -2,7 +2,6 @@ dewco-search-filters-widget {
   display: flex;
   flex: 0 1 30% !important;
   margin: 1.5%;
-  // flex-flow: column wrap;
   transition: opacity ease 0.5s !important;
   form {
     display: flex;
@@ -17,6 +16,43 @@ dewco-search-filters-widget {
       min-height: 30vh;
       .mat-card-actions {
         background: #f2f2f2;
+        margin-left: -15px;
+      }
+    }
+  }
+  .dewco-filter-widget-label {
+    width: 100%;
+    flex: 1 1 auto;
+    padding-bottom: 20px;
+    font-weight: bold;
+  }
+
+  ajf-field {
+    .mat-radio-group {
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: space-between;
+      .mat-radio-button {
+        flex: 1 1 30%;
+        padding: 5px;
+      }
+    }
+
+    ajf-checkbox-group.ajf-choices-container {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-end;
+      ajf-checkbox-group-item {
+        width: 100%;
+        .mat-button {
+          width: 100%;
+          span.mat-button-wrapper {
+            flex-flow: row wrap;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        }
       }
     }
   }
