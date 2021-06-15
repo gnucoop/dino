@@ -46,10 +46,6 @@ export const schema = {
       "type": "string",
       "description": "The schema identifier"
     },
-    "is_deleted": {
-      "type": "boolean", 
-      "description": "Deleted flag."
-    },
     "data": {
       "type": "object",
       "description": "A plain object containing the data collected."

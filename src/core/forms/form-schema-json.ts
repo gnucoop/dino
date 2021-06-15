@@ -28,7 +28,6 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      'primary': true,
       "description": "UUID v4 identifier."
     },
     "created_at": {
@@ -38,10 +37,6 @@ export const schema = {
     "updated_at": {
       "type": "string",
       "description": "Update timestamp."
-    },
-    "is_deleted": {
-      "type": "boolean", 
-      "description": "Deleted flag."
     },
     "name": {
       "type": "string",
@@ -61,6 +56,6 @@ export const schema = {
   ],
   "additionalProperties": false,
   "description": "This model is used to store the Ajf form schemas.",
-  "title": "form_schema",
+  "title": "FormSchema",
   "version": 0
 } as RxJsonSchema;
