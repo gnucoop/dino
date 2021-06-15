@@ -3,10 +3,8 @@
         <span style="margin-right: 5px;"> {{ (item.label ? item.label : item.name)|uppercase|slice:0:30 }} </span>
         {{  item?.operator?.label }}
         {{ item.value|json }}
-        <div>
-            <i class="material-icons" (click)="removeFilterItem(item)">
-                close
-            </i>
-        </div>
+            <mat-icon matChipRemove (click)="removeFilterItem(item)">
+                cancel
+            </mat-icon>
     </mat-chip>
 </mat-chip-list>

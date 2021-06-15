@@ -24,18 +24,18 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 
 import {SearchFiltersChips} from './search-filters-chips';
 
 @NgModule({
   imports: [
-    BrowserAnimationsModule,
     CommonModule,
     MatButtonModule,
     MatChipsModule,
+    MatIconModule,
     MatInputModule,
     RouterModule,
   ],
