@@ -26,9 +26,9 @@ diff --git a/internal/npm_install/index.js b/internal/npm_install/index.js
 index bdb7d664..67e97879 100644
 --- a/internal/npm_install/index.js
 +++ b/internal/npm_install/index.js
-@@ -50,6 +50,14 @@ function createFileSymlinkSync(target, p) {
- function main() {
-     const deps = getDirectDependencySet(PKG_JSON_FILE_PATH);
+@@ -53,6 +53,14 @@
+     config.limited_visibility = `@${config.workspace}//:__subpackages__`;
+     const deps = getDirectDependencySet(config.package_json);
      const pkgs = findPackages('node_modules', deps);
 +    [
 +        '@gic/core/loader',
@@ -41,7 +41,7 @@ index bdb7d664..67e97879 100644
      flattenDependencies(pkgs);
      generateBazelWorkspaces(pkgs);
      generateBuildFiles(pkgs);
-@@ -333,8 +341,8 @@ function findScopes() {
+@@ -356,8 +364,8 @@
          .map(f => f.substring('node_modules/'.length));
      return scopes;
  }
