@@ -24,6 +24,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnDestroy,
   OnInit,
   ViewEncapsulation,
@@ -36,6 +37,7 @@ import {
   FiltersService,
   SearchFiltersComponent,
 } from '@dewco/core/list';
+import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {SearchFiltersDialog} from '@dewco/material/search-filters-dialog';
 import {Observable, Subscription, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -57,6 +59,29 @@ import {catchError} from 'rxjs/operators';
 })
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
   /**
+   * If true, the Preset Manager is available and displayed.
+   * Defaults to false.
+   */
+  private _presetManager: boolean = false;
+  get presetManager(): boolean {
+    return this._presetManager;
+  }
+  @Input()
+  set presetManager(state: boolean) {
+    this._presetManager = state;
+  }
+
+  /**
+   * Allows the customization of the filters dialog width
+   */
+  private _filtersDialogWidth: number = 95;
+  @Input()
+  set filtersDialogWidth(w: number) {
+    if (w != null && w > 0) {
+      this._filtersDialogWidth = w;
+    }
+  }
+  /**
    * A reference to the MatDialog that contains the additionalFilters
    */
   private _dialogRef: MatDialogRef<SearchFiltersDialog>;
@@ -70,6 +95,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       protected _fts: FiltersService,
       public dialog: MatDialog,
       private _cdr: ChangeDetectorRef,
+      readonly breakpointObserver: BreakpointObserverService,
   ) {
     super();
   }
@@ -87,9 +113,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   openDialog() {
     this._fts.resetTemporaryFilters();
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.id = 'modal-component';
-    dialogConfig.panelClass = 'search-filters-dialog';
-    dialogConfig.minWidth = '75vw';
+    dialogConfig.panelClass = 'dewco-search-filters-dialog';
+    dialogConfig.minWidth = `${this._filtersDialogWidth}vw`;
+    dialogConfig.maxWidth = `${this._filtersDialogWidth}vw`;
     this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);
     this._dialogSub = this._dialogRef.afterClosed()
                           .pipe(catchError(err => throwError(err) as Observable<boolean>))

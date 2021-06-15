@@ -7,7 +7,7 @@ import {
 } from 'protractor';
 
 describe('dewco-search-filters-bar', () => {
-  beforeEach(async () => await browser.get('/mat-list'));
+  beforeEach(async () => await browser.get('/list'));
 
   it('should display a Filter Bar component', async () => {
     const bar = await element(by.tagName('dewco-search-filters-bar')).isPresent();
