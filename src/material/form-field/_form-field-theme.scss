@@ -3,6 +3,7 @@
 @use '~@angular/material/form-field/form-field-legacy-theme' as mat-form-field-legacy-theme;
 @use '~@angular/material/form-field/form-field-outline-theme' as mat-form-field-outline-theme;
 @use '~@angular/material/form-field/form-field-standard-theme' as mat-form-field-standard-theme;
+@use '~@angular/material/core/style/private' as mat-private;
 @use '~@angular/material/core/theming/theming' as mat-theming;
 @use 'form-field-standard-theme';
 
@@ -133,7 +134,7 @@ $mat-form-field-dedupe: 0;
 @mixin mat-private-label-float($font-scale, $infix-padding, $infix-margin-top) {
     transform: translateY(-$infix-margin-top - $infix-padding + $mat-form-field-dedupe)
     scale($font-scale);
-    width: 100% / $font-scale + $mat-form-field-dedupe;
+    width: mat-private.mat-private-div(100%, $font-scale) + $mat-form-field-dedupe;
 
     $mat-form-field-dedupe: $mat-form-field-dedupe + 0.00001 !global;
 }
@@ -160,7 +161,7 @@ $mat-form-field-dedupe: 0;
     // Mocks show half of the text size, but this margin is applied to an element with the subscript
     // text font size, so we need to divide by the scale factor to make it half of the original text
     // size.
-    $subscript-margin-top: 0.5em / $sub-font-scale;
+    $subscript-margin-top: mat-private.mat-private-div(0.5em, $sub-font-scale);
     $wrapper-padding-bottom: ($subscript-margin-top + $line-height) * $sub-font-scale;
 
     .mat-form-field {
@@ -232,7 +233,7 @@ $mat-form-field-dedupe: 0;
 
         // We want the subscript to start at the end of the content box, not the padding box,
         // so we move it up by the padding amount (adjusted for the smaller font size);
-        top: calc(100% - #{$wrapper-padding-bottom / $sub-font-scale});
+        top: calc(100% - #{mat-private.mat-private-div($wrapper-padding-bottom, $sub-font-scale)});
     }
 
     @include mat-form-field-legacy-typography($config);
