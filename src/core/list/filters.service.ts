@@ -449,7 +449,7 @@ export class FiltersService {
     }
     const condition = ajfCondition.condition;
     let valid: boolean = true;
-    if (condition.indexOf('valueInChoice') > -1) {
+    if (condition.includes('valueInChoice')) {
       const str = condition.replace('valueInChoice', '').replace(/[()]/g, '').split(' ');
       const nameToCheck = str[0].replace(',', '');
       const valueToCheck = str[1].replace(/[\"\']/g, '');
