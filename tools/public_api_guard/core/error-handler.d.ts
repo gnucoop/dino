@@ -5,7 +5,7 @@ export declare class ErrorHandlerModule {
 }
 
 export declare class ErrorHandlerService implements ErrorHandler {
-    constructor(_injector: Injector);
+    constructor(_router: Router);
     handleError<T>(error: Error | HttpErrorResponse): Observable<T>;
     static ɵfac: i0.ɵɵFactoryDeclaration<ErrorHandlerService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<ErrorHandlerService>;

@@ -21,7 +21,7 @@
  */
 
 import {HttpErrorResponse} from '@angular/common/http';
-import {ErrorHandler, Injectable, Injector} from '@angular/core';
+import {ErrorHandler, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 
@@ -31,25 +31,24 @@ import {Observable} from 'rxjs';
  */
 @Injectable()
 export class ErrorHandlerService implements ErrorHandler {
-  constructor(private _injector: Injector) {}
+  constructor(private _router: Router) {}
 
   /**
    * Handle an uncaught exception
    * @param error The exception
    * @returns The exception handler stream
    */
-  handleError<T>(error: Error | HttpErrorResponse): Observable<T> {
-    const router = this._injector.get(Router);
+  handleError<T>(error: Error|HttpErrorResponse): Observable<T> {
+    const {url} = this._router;
 
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
         console.error('NO CONNECTION AVAILABLE!');
       }
       console.error(`DEWCO HTTP ERROR \n Backend returned status code: ${
-          error.status} \n Response body: ${error.message} \n URL: ${router.url}`);
-
+          error.status} \n Response body: ${error.message} \n URL: ${url}`);
     } else {
-      console.error(`DEWCO ERROR: ${error.message} \n URL: ${router.url}`);
+      console.error(`DEWCO ERROR: ${error.message} \n URL: ${url}`);
     }
 
     const safeValue = new Observable<T>();
