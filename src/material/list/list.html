@@ -1,93 +1,219 @@
-<h2>{{ title }}</h2>
-
 <ng-content select="[filters]"></ng-content>
 
-<div class="toolbar">
-    <div class="dewco-toolbar-btn-container">
-        <button mat-raised-button (click)="actionOnItems(selection.selected, {actionType: 'delete', askConfirm: true})"
-            [disabled]="selection.selected.length <= 0" aria-label="Delete all items">
-            <mat-icon aria-hidden="false" aria-label="delete icon">delete</mat-icon>
-        </button>
-        <button class="dewco-columns-sel-btn" #columns_btn mat-raised-button (click)="openColumnsSelectorDialog()"
-            aria-label="Select the displayed columns">
-            <mat-icon aria-hidden="false" aria-label="view_week icon">view_week</mat-icon>
-        </button>
-    </div>
-</div>
+<ng-container *ngIf="expandable">
+  <button
+    mat-icon-button
+    color="primary"
+    aria-label="Fold or unfold all rows button"
+    (click)="expandAllRows.next(!expandAllRows.getValue())"
+    class="dewco-expand-all-button"
+  >
+    <mat-icon
+      >{{(expandAllRows|async) ? 'unfold_less' : 'unfold_more' }}</mat-icon
+    >
+  </button>
+</ng-container>
 
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
-
+<ng-template #tableTemplate let-ctx="ctx">
+  <mat-table
+    [dataSource]="ctx.dataSource"
+    class="mat-elevation-z8 dewco-main-table"
+    matSort
+    multiTemplateDataRows
+  >
     <!-- Checkbox Column -->
-    <ng-container matColumnDef="select">
+    <ng-container matColumnDef="select" sticky>
+      <ng-container>
         <mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-            </mat-checkbox>
+          <mat-checkbox
+            class="dewco-row-actions"
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [aria-label]="checkboxLabel()"
+          >
+          </mat-checkbox>
+          <button
+            class="dewco-bulk-delete-button"
+            (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
+            [disabled]="selection.selected.length <= 0"
+            aria-label="Delete all items"
+          >
+            <mat-icon aria-hidden="false" aria-label="delete icon"
+              >delete</mat-icon
+            >
+          </button>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-                [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-            </mat-checkbox>
+          <mat-checkbox
+            class="dewco-row-actions"
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)"
+          >
+          </mat-checkbox>
         </mat-cell>
+      </ng-container>
     </ng-container>
 
-    <ng-container *ngFor="let header of headers;" [matColumnDef]="header.column.toString()">
+    <!-- Row Item Columns -->
+    <ng-container
+      *ngFor="let header of ctx.headers|async;"
+      [matColumnDef]="header.column.toString()"
+    >
+      <ng-container *ngIf="header.sortable; else notSortable">
+        <mat-header-cell *matHeaderCellDef [mat-sort-header]="header.column">
+          <ng-container
+            *ngTemplateOutlet="cellTemplatesMap[header.label] ?
+        cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
+        context: {$implicit: header.label}"
+          >
+          </ng-container>
+        </mat-header-cell>
+      </ng-container>
 
-        <ng-container *ngIf="header.sortable; else notSortable">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>
-                <ng-container *ngTemplateOutlet="cellTemplatesMap[header.label] ?
-          cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
-          context: {$implicit: header.label}">
-                </ng-container>
-            </mat-header-cell>
+      <ng-template #notSortable>
+        <mat-header-cell *matHeaderCellDef>
+          <ng-container
+            *ngTemplateOutlet="cellTemplatesMap[header.label] ?
+        cellTemplatesMap[header.label] : defaultHeaderCellTemplate;"
+          >
+          </ng-container>
+        </mat-header-cell>
+      </ng-template>
+
+      <ng-template #defaultHeaderCellTemplate> {{ header.label }} </ng-template>
+
+      <mat-cell *matCellDef="let element">
+        <ng-container
+          *ngTemplateOutlet="cellTemplatesMap[header.column.toString()] ?
+    cellTemplatesMap[header.column.toString()] : defaultCellTemplate;"
+        >
         </ng-container>
-
-        <ng-template #notSortable>
-            <mat-header-cell *matHeaderCellDef>
-                <ng-container *ngTemplateOutlet="cellTemplatesMap[header.label] ?
-          cellTemplatesMap[header.label] : defaultHeaderCellTemplate;">
-                </ng-container>
-            </mat-header-cell>
+        <ng-template #defaultCellTemplate>
+          {{ element[header.column.toString()] }}
         </ng-template>
-
-        <ng-template #defaultHeaderCellTemplate>
-            {{ header.label }}
-        </ng-template>
-
-        <mat-cell *matCellDef="let element">
-            <ng-container *ngTemplateOutlet="cellTemplatesMap[header.column.toString()] ?
-      cellTemplatesMap[header.column.toString()] : defaultCellTemplate;">
-            </ng-container>
-            <ng-template #defaultCellTemplate>
-                {{ element[header.column.toString()] }}
-            </ng-template>
-        </mat-cell>
-
+      </mat-cell>
     </ng-container>
 
     <!-- Actions Column -->
-    <ng-container matColumnDef="actions" class="right">
-        <mat-header-cell *matHeaderCellDef>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <mat-icon mat-list-icon aria-label="delete icon"
-                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'delete', askConfirm: true});">delete
+    <ng-container matColumnDef="actions" class="right" stickyEnd>
+      <mat-header-cell *matHeaderCellDef class="dewco-row-actions">
+        <mat-icon
+          *ngIf="ctx.showColumnsSelector != false"
+          mat-list-icon
+          aria-label="delete icon"
+          class="dewco-columns-sel-btn"
+          #columns_btn
+          (click)="openColumnsSelectorDialog()"
+          aria-label="Select the displayed columns"
+        >
+          view_week
+        </mat-icon>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row" class="dewco-row-actions">
+        <ng-container *ngFor="let action of ctx.listRowActions">
+          <ng-container
+            *ngIf="!(row.data.data == null && (action.actionType === 'edit' || action.actionType === 'view'))"
+          >
+            <mat-icon
+              mat-list-icon
+              (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+              >{{action.matIcon}}
             </mat-icon>
-            <mat-icon mat-list-icon aria-label="printer icon"
-                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'print', askConfirm: true});">printer
-            </mat-icon>
-            <mat-icon mat-list-icon aria-label="get_app icon"
-                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'download'});">get_app
-            </mat-icon>
-            <mat-icon mat-list-icon aria-label="create icon"
-                (click)="$event.stopPropagation(); actionOnItems(row, {actionType: 'edit'});">create
-            </mat-icon>
-        </mat-cell>
+          </ng-container>
+        </ng-container>
+      </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
-    </mat-row>
-</mat-table>
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <mat-cell
+        *matCellDef="let row;"
+        [attr.colspan]="ctx.displayedColumns.value.length"
+        [@detailExpand]="isRowExpanded(row)"
+        class="dewco-expanded-cell"
+      >
+        <div
+          *ngIf="(breakpointObserver.small|async) && isRowExpanded(row)"
+          class="dewco-expanded-row-actions"
+        >
+          <div
+            class="dewco-row-action-box"
+            *ngFor="let action of ctx.listRowActions"
+          >
+            <mat-icon
+              mat-list-icon
+              (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+              >{{action.matIcon}}
+            </mat-icon>
+          </div>
+        </div>
 
-<mat-paginator showFirstLastButtons></mat-paginator>
+        <div
+          class="dewco-inner-table-container"
+          *ngIf="isRowExpanded(row) && !ctx.isDetails"
+        >
+          <ng-container *ngIf="expandedRowsData[row.id]?.data?.length">
+            <mat-form-field
+              class="dewco-details-search"
+              floatLabel="always"
+              (click)="$event.stopPropagation()"
+            >
+              <input
+                matInput
+                (keyup)="detailsKeywordsFilter($event, expandedRowsData[row.id])"
+                [placeholder]="'search by keyword'"
+              />
+              <mat-icon color="primary" matSuffix>search</mat-icon>
+            </mat-form-field>
+            <ng-container
+              *ngTemplateOutlet="tableTemplate; context: {ctx: {
+                            showCheckBox: detailsListContext.showCheckBox,
+                            showPaginator: detailsListContext.showPaginator,
+                            showColumnsSelector: detailsListContext.showColumnsSelector,
+                            dataSource: expandedRowsData[row.id],
+                            headers: detailsListContext.headers,
+                            displayedColumns: detailsListContext.displayedColumns,
+                            listRowActions: detailsListContext.listRowActions,
+                            isDetails: true
+                        }}"
+            >
+            </ng-container>
+          </ng-container>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row
+      *matHeaderRowDef="(ctx.displayedColumns|async)"
+    ></mat-header-row>
+
+    <mat-row
+      *matRowDef="let row; columns: (ctx.displayedColumns|async);"
+      [class.dewco-highlighted-row]="selection.isSelected(row)"
+      [class.dewco-expanded-row]="isRowExpanded(row)"
+      [class.dewco-details-row]="ctx.isDetails"
+      (click)="rowToggle(row)"
+    >
+    </mat-row>
+
+    <mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      class="dewco-row-details"
+      [class.dewco-highlighted-row]="selection.isSelected(row)"
+      [class.dewco-details-row]="ctx.isDetails"
+    >
+    </mat-row>
+  </mat-table>
+  <ng-container *ngIf="ctx.showPaginator">
+    <mat-paginator></mat-paginator>
+  </ng-container>
+</ng-template>
+
+<div class="dewco-table-container">
+  <ng-container
+    *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"
+  ></ng-container>
+</div>

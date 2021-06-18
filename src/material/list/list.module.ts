@@ -35,12 +35,12 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dewco/core/list';
+import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
+
 import {ColumnsSelector} from './columns-selector';
 import {ConfirmationDialog} from './confirmation-dialog';
-
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
 import {AdminUserInteractionsService} from './user-interactions.service';
@@ -48,7 +48,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
 @NgModule({
   imports: [
     AjfFormsModule,
-    BrowserAnimationsModule,
+    BreakpointObserverModule,
     CommonModule,
     CoreModule,
     MatButtonModule,

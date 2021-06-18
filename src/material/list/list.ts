@@ -20,6 +20,7 @@
  *
  */
 
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {SelectionModel} from '@angular/cdk/collections';
 import {
   AfterContentInit,
@@ -36,13 +37,17 @@ import {
   QueryList,
   TemplateRef,
   ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+import {Router} from '@angular/router';
 import {Model} from '@dewco/core/data';
 import {
+  ActionType,
   FilterGroup,
   FiltersService,
   List,
@@ -50,11 +55,13 @@ import {
   ListHeader,
   SearchFiltersComponent,
 } from '@dewco/core/list';
-import {Observable, Subscription, throwError} from 'rxjs';
+import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
+import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
-import {ColumnsSelector} from './columns-selector';
 
+import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
+import {ListContext} from './list-context';
 import {ListDataSource} from './list-datasource';
 import {AdminUserInteractionsService} from './user-interactions.service';
 
@@ -69,6 +76,13 @@ import {AdminUserInteractionsService} from './user-interactions.service';
   templateUrl: 'list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  animations: [trigger(
+      'detailExpand',
+      [
+        state('collapsed, void', style({height: '0px'})), state('expanded', style({height: '*'})),
+        transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+      ])],
 })
 export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit,
                                                                                AfterViewInit,
@@ -78,6 +92,31 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * of the List, for the purpose of performing bulk actions.
    */
   readonly selection = new SelectionModel<T>(true, []);
+
+  /**
+   * Determines the expanded state all rows, if the list is expandable
+   */
+  expandAllRows: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * The currently expanded rows.
+   */
+  expandedRows: T[] = [];
+
+  /**
+   * The currently expanded rows data.
+   */
+  expandedRowsData: {[key: string]: MatTableDataSource<T>} = {};
+
+  /**
+   * The Main list template context
+   */
+  mainListContext: ListContext<T>;
+
+  /**
+   * The Details list template context
+   */
+  @Input() detailsListContext: ListContext<any>;
 
   /**
    * A set of custom filters passed to the FiltersService,
@@ -115,12 +154,26 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   /**
    * A material Paginator associated to the List
    */
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false})
+  set paginator(mp: MatPaginator) {
+    if (mp == null) {
+      return;
+    }
+    this._dataSource.setPaginator = mp;
+  }
 
   /**
    * A material Sort associated to the List
    */
-  @ViewChild(MatSort, {static: true}) sorting: MatSort;
+  @ViewChild(MatSort, {static: false})
+  set sorting(ms: MatSort) {
+    if (ms == null) {
+      return;
+    }
+    this._dataSource.setSort = ms;
+  }
+
+  @ViewChildren(MatSort) private _matSortsList: QueryList<MatSort>;
 
   /**
    * The filtersComponent associated with the SelectionList and its ListDataSource
@@ -133,11 +186,87 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   @ContentChildren(ListCell, {descendants: false}) cellTemplates: QueryList<ListCell>;
 
   /**
+   * Determines if the list has expandable rows.
+   * Defaults to false.
+   * NB: rows will always be expandable on small screens (mobile)
+   * to show row action icons.
+   */
+  private _expandable: boolean = false;
+  @Input()
+  set expandable(exp: boolean) {
+    this._expandable = exp;
+  }
+  get expandable(): boolean {
+    return this._expandable;
+  }
+
+  /**
+   * Subcribes to the exanded state of all rows, and unfolds / folds them accordingly.
+   */
+  private _expandAllRowsSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Determines if the list has a paginator.
+   * Defaults to true.
+   */
+  private _showPaginator: boolean = true;
+  @Input()
+  set showPaginator(exp: boolean) {
+    this._showPaginator = exp;
+  }
+  get showPaginator(): boolean {
+    return this._showPaginator;
+  }
+
+  /**
+   * Determines if the columns selector should be.
+   * Defaults to true.
+   */
+  private _showColumnsSelector: boolean = true;
+  @Input()
+  set showColumnsSelector(exp: boolean) {
+    this._showColumnsSelector = exp;
+  }
+  get showColumnsSelector(): boolean {
+    return this._showColumnsSelector;
+  }
+
+  /**
    * Non default table cell templates
    */
   private _cellTemplatesMap: {[column: string]: TemplateRef<any>} = {};
   get cellTemplatesMap(): {[column: string]: TemplateRef<any>} {
     return this._cellTemplatesMap;
+  }
+
+  /**
+   * The available user-called actions that can be performed on
+   * the list items.
+   */
+  private _listRowActions: ListAction[] = [];
+  get listRowActions(): ListAction[] {
+    return this._listRowActions;
+  }
+  @Input()
+  set listRowActions(actions: ListAction[]) {
+    if (actions != null) {
+      this._listRowActions = actions;
+    }
+  }
+
+  /**
+   * The default list actions performed when a list item is clicked.
+   * Defaults to 'select and expand'.
+   */
+  private _defaultListRowActions: ActionType[] = ['select', 'expand'];
+  get defaultListRowActions(): ActionType[] {
+    return this._defaultListRowActions;
+  }
+  @Input()
+  set defaultListRowActions(actionType: ActionType[]) {
+    if (actionType != null) {
+      this._defaultListRowActions = actionType;
+    }
   }
 
   /**
@@ -171,12 +300,13 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    */
   private _actionsSub: Subscription = Subscription.EMPTY;
 
-
   constructor(
       cdr: ChangeDetectorRef,
       aui: AdminUserInteractionsService,
       public dialog: MatDialog,
       private _fts: FiltersService,
+      readonly breakpointObserver: BreakpointObserverService,
+      private _router: Router,
   ) {
     super(cdr, aui);
   }
@@ -194,6 +324,15 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     if (this._dataSource) {
       this._fillDataSource();
     }
+    this._expandAllRowsSub = this.expandAllRows.subscribe(res => {
+      const forceExpand = res;
+      forceExpand ? this.selectAll() : this.clearSelection();
+      const allRows = this.getItems();
+
+      for (let row of allRows) {
+        this.expansionRowsUpdate(row, forceExpand);
+      }
+    });
   }
 
   /**
@@ -222,17 +361,14 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
 
   /**
    * Performs the chosen for the selected row/rows of the table
-   * @param row The selected row
+   * @param row The selected row or rows
    * @param action The action to be performed
    */
-  actionOnItems(row: T|T[], action: ListAction): void {
+  actionOnItems(row: T|T[], action: ListAction, isDetails: boolean = false): void {
     if (this.dataSource == null) {
       return;
     }
-    if (!Array.isArray(row)) {
-      row = [row];
-    }
-    this._actionEvent.emit({action: action, items: row});
+    this._actionEvent.emit({action: action, items: row, isDetails: isDetails});
   }
 
   /**
@@ -280,6 +416,73 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   }
 
   /**
+   * Returns the current row expansion state
+   */
+  isRowExpanded(row: T): boolean {
+    return this.expandedRows.indexOf(row) > -1 && this.expandable ? true : false;
+  }
+
+  /**
+   * Adds or removes a row to the expanded rows, based on its current state.
+   * @param row The row to be added or removes
+   */
+  expansionRowsUpdate(row: T, forceExpand?: boolean): void {
+    if (this.isRowExpanded(row) || forceExpand === false) {
+      const idx = this.expandedRows.indexOf(row);
+      if (idx > -1) {
+        this.expandedRows.splice(idx, 1);
+      }
+      delete this.expandedRowsData[row.id];
+    } else if (!this.isRowExpanded(row) || forceExpand === true) {
+      const detailSourceSub = this.getDetails(row).subscribe(data => {
+        const dds = new MatTableDataSource(data);
+        this.expandedRowsData[row.id] = dds;
+        this.expandedRows.push(row);
+        this._cdr.detectChanges();
+        const sortsList = this._matSortsList.toArray();
+        this.expandedRowsData[row.id].sort = sortsList[sortsList.length - 1];
+        if (detailSourceSub != null) {
+          detailSourceSub.unsubscribe();
+        }
+      });
+    }
+  }
+
+  /**
+   * Retrieves the expanded row details, a list of document
+   * to be displayed in the details subtable.
+   * @param row The parent row
+   * @returns A list of child documents
+   */
+  getDetails(row: T): Observable<T[]> {
+    return this._dataSource.getDetailsData(row);
+  }
+
+  detailsKeywordsFilter(event: Event, dataSource: MatTableDataSource<T>): void {
+    if (dataSource == null) {
+      return;
+    }
+    const filterValue = (event.target as HTMLInputElement).value;
+    dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  /**
+   * Toggles the selection and expanded state of the passed row.
+   * @param row The selected row
+   */
+  rowToggle(row: T): void {
+    if (this._defaultListRowActions.some(act => act === 'select')) {
+      this.selection.toggle(row);
+    }
+    if (this._defaultListRowActions.some(act => act === 'expand')) {
+      this.expansionRowsUpdate(row);
+    }
+    if (this._defaultListRowActions.some(act => act === 'view')) {
+      this.actionOnItems(row, {actionType: 'view'});
+    }
+  }
+
+  /**
    * Checks the current selection state of the row and changes its aria-label accordingly
    * @param row T
    * @returns string
@@ -297,16 +500,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    */
   openColumnsSelectorDialog() {
     const dialogConfig = new MatDialogConfig();
-    const columnsBtn = this.columnsButtonRef.nativeElement;
-    const columnsBtnPosition: DOMRect = columnsBtn.getBoundingClientRect();
     dialogConfig.panelClass = 'columns-selector-dialog';
-    dialogConfig.width = `${columnsBtn.offsetWidth * 4}px`;
-    dialogConfig.position = {
-      bottom: `${columnsBtnPosition.bottom}px`,
-      top: `${columnsBtnPosition.top + columnsBtn.offsetHeight + 5}px`,
-      right: `${columnsBtnPosition.right}px`,
-      left: `${columnsBtnPosition.left - (columnsBtn.offsetWidth * 3)}px`,
-    };
     dialogConfig.data = {
       columns: this.headers,
     };
@@ -319,6 +513,8 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
                 return;
               }
               this.headers = columns;
+              this.mainListContext.headers.next(this.headers);
+              this.mainListContext.displayedColumns?.next(this.displayedColumns);
             });
   }
 
@@ -329,12 +525,6 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   private _fillDataSource(): void {
     if (this.dataSource == null) {
       return;
-    }
-    if (this.paginator) {
-      this.dataSource.setPaginator = this.paginator;
-    }
-    if (this.sorting) {
-      this.dataSource.setSort = this.sorting;
     }
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
@@ -355,6 +545,15 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       this._fts.loadPreset();
     }
 
+    this.mainListContext = {
+      dataSource: this._dataSource,
+      headers: new BehaviorSubject<ListHeader<T>[]>(this._headers),
+      displayedColumns: new BehaviorSubject<string[]>(this.displayedColumns),
+      listRowActions: this._listRowActions,
+      showPaginator: this.showPaginator,
+      showCheckBox: this.showCheckBox,
+    };
+
     this._initList();
   }
 
@@ -362,21 +561,22 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * Initializes the list Actions subscription (delete, download, print, edit)
    */
   private _initList(): void {
-    this._actionsSub = this._actionEvent
-                           .pipe(
-                               switchMap(
-                                   ({action, items}) => this._aui.askConfirm(action).pipe(
-                                       map(confirmation => ({confirmation, action, items})),
-                                       ),
-                                   ),
-                               map(({confirmation, action, items}) => {
-                                 if (confirmation) {
-                                   this.processAction(action, items);
-                                 }
-                               }),
-                               catchError(err => throwError(err)),
-                               )
-                           .subscribe();
+    this._actionsSub =
+        this._actionEvent
+            .pipe(
+                switchMap(
+                    ({action, items, isDetails}) => this._aui.askConfirm(action).pipe(
+                        map(confirmation => ({confirmation, action, items, isDetails})),
+                        ),
+                    ),
+                map(({confirmation, action, items, isDetails}) => {
+                  if (confirmation) {
+                    this.processAction(action, items, isDetails);
+                  }
+                }),
+                catchError(err => throwError(err)),
+                )
+            .subscribe();
   }
 
   /**
@@ -384,14 +584,52 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * @param items The items to be deleted
    * @returns The deleted items
    */
-  deleteAction(items: T[]): T[] {
+  deleteAction(items: T|T[], isDetails: boolean = false): T[] {
+    if (!Array.isArray(items)) {
+      items = [items];
+    }
     this.selection.deselect(...items);
-    return this._dataSource.deleteAction(items);
+    this.expandedRowsData = {};
+    return this._dataSource.deleteAction(items, isDetails);
+  }
+
+  /**
+   * Loads the Edit Form component for the the item.
+   * @param item The item to be edited
+   */
+  editAction(item: T, isDetails: boolean = false): void {
+    if (item == null) {
+      return;
+    }
+    const path = [`${this.baseEditUrl}`];
+    if (isDetails) {
+      path.push('details');
+    }
+    path.push(`${item.id}`);
+    this._router.navigate(path);
+  }
+
+  /**
+   * Loads the Edit Form component for the the item in readOnly mode.
+   * @param item The item to be viewed
+   */
+  viewAction(item: T, isDetails: boolean = false): void {
+    if (item == null) {
+      return;
+    }
+    const path = [`${this.baseViewUrl}`];
+    if (isDetails) {
+      path.push('details');
+    }
+    path.push(`${item.id}`);
+    this._router.navigate(path);
   }
 
   ngOnDestroy() {
     this._actionsSub.unsubscribe();
     this._columnsDialogSub.unsubscribe();
+    this._expandAllRowsSub.unsubscribe();
     this._dataSource.disconnect();
+    this._fts.clearModelFilters();
   }
 }

@@ -6,7 +6,7 @@ import {
 } from 'protractor';
 
 describe('dewco-list', () => {
-  beforeEach(async () => await browser.get('/mat-list'));
+  beforeEach(async () => await browser.get('/list'));
 
   it('should display a material table', async () => {
     const table = await element(by.tagName('dewco-list')).isPresent();

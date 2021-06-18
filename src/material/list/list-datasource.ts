@@ -39,8 +39,10 @@ import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
+  forkJoin,
   from,
   Observable,
+  of as obsOf,
   Subject,
   Subscription,
   throwError,
@@ -128,6 +130,16 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   private _additionalDataSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the initialization of the addional data manager collection.
+   */
+  private _additionalCollectionInitSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the initialization of the details data manager collection.
+   */
+  private _detailsCollectionInitSub: Subscription = Subscription.EMPTY;
+
+  /**
    * The data resulting from querying the db via the DataModelManager
    */
   private _dataResults: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
@@ -171,6 +183,10 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
       this.data = results;
     });
 
+    if (this._dataModelManager.detailsManager != null) {
+      this._detailsCollectionInitSub = this._dataModelManager.detailsManager.init().subscribe();
+    }
+
     // Here we ask the FilterService to generate all the filters based on the model RxJsonSchema
     this._fs.generateModelFilters(this._modelSchema);
 
@@ -181,6 +197,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     this._additionalDataSub = this._additionalDataSchema.subscribe(dataSchema => {
       let additionalFilters = [];
       if (this._additionalDataManager) {
+        this._additionalCollectionInitSub = this._additionalDataManager.init().subscribe();
         additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
       }
       this._fs.setAdditionalFilters(additionalFilters);
@@ -218,16 +235,19 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * @returns The Mango query with the generated query selector
    */
   queryDM(queryString: string): DataQueryOptions {
+    let querySelector = {};
+    let detailsQuerySelector = {};
+
     if (!queryString) {
-      return {selector: {}};
+      return {selector: querySelector};
     }
     const filterItems: FilterItem[] = JSON.parse(decodeURI(atob(queryString)));
-    let querySelector = {};
 
     if (!filterItems.find(f => f.name === 'keyword')) {
       this.filter = '';
     }
     filterItems.forEach(item => {
+      const selector: {} = item.isFilterItemDetails ? detailsQuerySelector : querySelector;
       switch (item.name) {
         case 'keyword':
           this.filter = item.value.trim().toLowerCase();
@@ -235,38 +255,41 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
         case 'dateStart':
           if (item && item.value) {
             this._addNestedProps(
-                querySelector, ['created_at', '$gte'], new Date(item.value).toISOString());
+                selector, ['created_at', '$gte'], new Date(item.value).toISOString());
           }
           break;
         case 'dateEnd':
           if (item && item.value) {
             this._addNestedProps(
-                querySelector, ['created_at', '$lte'], new Date(item.value).toISOString());
+                selector, ['created_at', '$lte'], new Date(item.value).toISOString());
           }
           break;
         default:
           if (!item.isAdditionalFilter) {
             if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
               this._addNestedProps(
-                  querySelector, [`data.${item.name.trim().toLowerCase()}.name`, '$regex'],
-                  item.value);
+                  selector, [`data.${item.name.trim().toLowerCase()}.name`, '$regex'], item.value);
             } else {
               this._addNestedProps(
-                  querySelector,
+                  selector,
                   [
                     item.name.trim().toLowerCase(),
                     item.operator ? item.operator.value : '$eq',
                   ],
-                  item.value);
+                  item.value,
+                  item.operator?.options,
+              );
             }
           } else {
             this._addNestedProps(
-                querySelector,
+                selector,
                 [
                   `data.data.${item.name.trim().toLowerCase()}`,
                   item.operator ? item.operator.value : '$eq',
                 ],
-                item.value);
+                item.value,
+                item.operator?.options,
+            );
           }
           break;
       }
@@ -274,27 +297,90 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     const query: DataQueryOptions = {
       selector: querySelector,
     };
-    this.getQueryResults(query);
+    const detailsQuery: DataQueryOptions = {
+      selector: detailsQuerySelector,
+    };
+
+    this.getQueryResults(query, detailsQuery);
     return query;
   }
 
   /**
    * Queries the dataModelManager and updates the dataResults
    * @param query The query object
+   * @param detailsQuery? The optional query, performed by the dataModelManager detailsManager
    */
-  getQueryResults(query: DataQueryOptions): void {
-    this._dataModelManager.query(query)
-        .pipe(
-            switchMap((rxdbQuery) => {
-              const res = from(rxdbQuery.exec());
-              return res;
-            }),
-            take(1),
-            catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
-            )
-        .subscribe((results) => {
-          this._dataResults.next(this._rxDocsToJson(results));
+  getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void {
+    const dmMainQuery = this._dataModelManager.query(query).pipe(
+        switchMap((rxdbQuery) => {
+          const res = from(rxdbQuery.exec());
+          return res;
+        }),
+        take(1),
+        catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
+    );
+
+    let dmDetailsQuery: Observable<RxDocument<T, {}>[]> = obsOf([]);
+    const hasDetailsQuery = detailsQuery != null && Object.keys(detailsQuery.selector).length > 0;
+
+    if (detailsQuery != null && hasDetailsQuery && this._dataModelManager.detailsManager != null) {
+      dmDetailsQuery =
+          this._dataModelManager.detailsManager.query(detailsQuery)
+              .pipe(
+                  switchMap((rxdbQuery) => {
+                    const res = from(rxdbQuery.exec());
+                    return res;
+                  }),
+                  take(1),
+                  catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
+              );
+    }
+
+    forkJoin([
+      dmMainQuery,
+      dmDetailsQuery,
+      this._dataModelManager.permissionContext,
+    ])
+        .subscribe(([
+                     mainDocs,
+                     detailsDocs,
+                     context,
+                   ]) => {
+          const detailsKey = this._dataModelManager.detailsKey;
+          let resultDocs = mainDocs;
+          if (detailsKey != null && hasDetailsQuery) {
+            resultDocs = mainDocs.filter(
+                doc => detailsDocs.some(detailDoc => doc[detailsKey] == detailDoc[detailsKey]));
+          }
+          if (this._dataModelManager.permissions.some(permission => permission.canView != null)) {
+            resultDocs = resultDocs.filter(doc => {
+              for (let permission of this._dataModelManager.permissions) {
+                if (permission.canView != null) {
+                  const allowedToView = permission.canView({object: doc, context: context});
+                  if (!allowedToView) {
+                    return false;
+                  }
+                }
+              }
+              return true;
+            });
+          }
+          this._dataResults.next(this._rxDocsToJson(resultDocs));
         });
+  }
+
+  /**
+   * Retrieves the subdata from the dataModelManager, based on the
+   * provided parent row object.
+   * @param row The parent row object
+   * @param querySelector? Additional query params
+   * @returns The details data
+   */
+  getDetailsData(row: T, querySelector?: {}): Observable<T[]> {
+    if (this._dataModelManager == null || this._dataModelManager.detailsManager == null) {
+      return obsOf([]);
+    }
+    return this._dataModelManager.getSubData(row, querySelector);
   }
 
   /**
@@ -302,9 +388,12 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * @param items The items to delete
    * @returns The deleted items
    */
-  deleteAction(items: T[]): T[] {
+  deleteAction(items: T[], isDetails: boolean = false): T[] {
     let results: RxDocument<T>[]|null = [];
-    this._dataModelManager.bulkDelete(items)
+    const dm = isDetails && this._dataModelManager.detailsManager != null ?
+        this._dataModelManager.detailsManager :
+        this._dataModelManager;
+    dm.bulkDelete(items)
         .pipe(
             take(1),
             catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]|null>),
@@ -313,7 +402,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
           results = res;
           this.refreshListData.next({
             timestamp: new Date().getTime(),
-            collection: this._dataModelManager.collectionName,
+            collection: dm.collectionName,
             action: 'delete',
           });
         });
@@ -338,10 +427,15 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * @param baseObj The object to modify
    * @param props The property names tree. The last one is the name of nested property to be added
    * @param value? The optional value to set for the added property.
+   * @param options? The optional regex flags.
    * @returns The modified object
    */
-  private _addNestedProps(baseObj: {[key: string]: string|{}}, props: string[], value?: any):
-      {[key: string]: string|{}} {
+  private _addNestedProps(
+      baseObj: {[key: string]: string|{}},
+      props: string[],
+      value?: any,
+      options?: any,
+      ): {[key: string]: string|{}} {
     let lastProp = value != undefined ? props.pop() : false;
 
     for (let i = 0; i < props.length; i++) {
@@ -349,7 +443,10 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     }
 
     if (lastProp) {
-      baseObj = baseObj[lastProp.toString()] = value;
+      baseObj[lastProp.toString()] = value;
+      if (options != null && lastProp === '$regex') {
+        baseObj[lastProp.toString()] = new RegExp(value, options);
+      }
     }
 
     return baseObj;
@@ -359,7 +456,9 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * Disconnects the ListDataSource, unsubscribing from the data and the filters
    */
   disconnect(): void {
+    this._additionalCollectionInitSub.unsubscribe();
     this._additionalDataSub.unsubscribe();
+    this._detailsCollectionInitSub.unsubscribe();
     this._collectionChangedSub.unsubscribe();
     this._dataResultsSub.unsubscribe();
     this._filterParamsSub.unsubscribe();
