@@ -48,6 +48,7 @@ class ListFeatComp extends List<DummyModel> {
   deleteAction(items: DummyModel[]) {
     return items;
   }
+  editAction(item: DummyModel, isDetails: boolean = false) {}
 }
 
 describe('Core ListComponent', () => {

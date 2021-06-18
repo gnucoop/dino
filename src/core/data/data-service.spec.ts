@@ -1,5 +1,5 @@
 import {TestBed} from '@angular/core/testing';
-import {AuthService} from '@dewco/core/auth';
+import {AuthService, NetworkStatusService} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from '@dewco/core/data';
 import {Server, WebSocket} from 'mock-socket';
 import {RxJsonSchema} from 'rxdb';
@@ -14,6 +14,10 @@ let testDbIdx = 0;
 const authServiceMock = {
   authenticated: obsOf(true),
 } as unknown as AuthService;
+
+const networkStatusServiceMock = {
+  isOnline$: obsOf(true),
+} as unknown as NetworkStatusService;
 
 const serverUrl = 'http://dewcoServer/v1/graphql';
 const wsServerUrl = 'ws://dewcoServer';
@@ -182,6 +186,8 @@ describe('Data service - CRUD methods', () => {
 
 describe('Invalid data service config', () => {
   it('should fail creating the service instance when an invalid adapter is defined', () => {
-    expect(() => new DataService(authServiceMock, invalidDataServiceConfig)).toThrowError();
+    expect(
+        () => new DataService(authServiceMock, networkStatusServiceMock, invalidDataServiceConfig))
+        .toThrowError();
   });
 });

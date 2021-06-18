@@ -217,7 +217,7 @@ describe('FiltersService', () => {
 
     fts.generatedModelFilters.subscribe(gmf => {
       expect(gmf).toEqual([{
-        filterGroupName: 'dummyModel',
+        filterGroupName: 'DummyModel',
         filterGroupAdditionalFilters: [
           {
             name: 'name',
