@@ -37,7 +37,7 @@
         [routerLink]="[section.url]"
         (click)="menuClick()"
       >
-        <mat-icon>{{section.icon}}</mat-icon>
+        <i class="material-icons material-icons-outlined">{{section.icon}}</i>
         <span *ngIf="extendedSidenav|async">{{section.label}}</span>
       </a>
 
