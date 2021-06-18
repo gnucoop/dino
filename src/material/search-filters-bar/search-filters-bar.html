@@ -14,7 +14,7 @@
           </mat-accordion>
     </ng-container>
 
-    <ng-container *ngIf="!(breakpointObserver.small|async)">
+    <ng-container *ngIf="(breakpointObserver.small|async) === (false | null | undefined)">
         <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
     </ng-container>
 
@@ -41,7 +41,7 @@
 
             </ng-container>
 
-            <ng-container [formGroup]="textSearchFilters" *ngIf="!(breakpointObserver.small|async)">
+            <ng-container [formGroup]="textSearchFilters" *ngIf="(breakpointObserver.small|async) === (false | null | undefined)">
 
                 <mat-form-field floatLabel="always">
                     <input matInput formControlName="keyword" [placeholder]="'search by keyword'">
@@ -60,7 +60,7 @@
 
             </ng-container>
 
-            <button *ngIf="!(breakpointObserver.small|async)" class="dewco-filters-dialog-button" mat-button color="primary" (click)="openDialog()" aria-label="Open the advanced filters">
+            <button *ngIf="(breakpointObserver.small|async) == (false | null | undefined)" class="dewco-filters-dialog-button" mat-button color="primary" (click)="openDialog()" aria-label="Open the advanced filters">
                 <mat-icon matSuffix>filter_list</mat-icon>
             </button>
             <button *ngIf="breakpointObserver.small|async" class="dewco-filters-dialog-button" mat-flat-button color="primary" (click)="openDialog()" aria-label="Open the advanced filters">

@@ -36,7 +36,6 @@ import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {
   DataListOptions,
   DataQueryOptions,
-  DataQuerySelector,
   DataQuerySort
 } from './data-options-interface';
 import {Permission} from './data-permission';

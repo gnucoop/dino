@@ -192,12 +192,12 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * to show row action icons.
    */
   private _expandable: boolean = false;
+  get expandable(): boolean {
+    return this._expandable;
+  }
   @Input()
   set expandable(exp: boolean) {
     this._expandable = exp;
-  }
-  get expandable(): boolean {
-    return this._expandable;
   }
 
   /**
@@ -210,12 +210,12 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * Defaults to true.
    */
   private _showPaginator: boolean = true;
+  get showPaginator(): boolean {
+    return this._showPaginator;
+  }
   @Input()
   set showPaginator(exp: boolean) {
     this._showPaginator = exp;
-  }
-  get showPaginator(): boolean {
-    return this._showPaginator;
   }
 
   /**
@@ -223,12 +223,12 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * Defaults to true.
    */
   private _showColumnsSelector: boolean = true;
+  get showColumnsSelector(): boolean {
+    return this._showColumnsSelector;
+  }
   @Input()
   set showColumnsSelector(exp: boolean) {
     this._showColumnsSelector = exp;
-  }
-  get showColumnsSelector(): boolean {
-    return this._showColumnsSelector;
   }
 
   /**

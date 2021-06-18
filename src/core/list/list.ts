@@ -109,12 +109,12 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    * Defaults to true.
    */
   private _showCheckbox: boolean = true;
+  get showCheckBox(): boolean {
+    return this._showCheckbox;
+  }
   @Input()
   set showCheckBox(show: boolean) {
     this._showCheckbox = show;
-  }
-  get showCheckBox(): boolean {
-    return this._showCheckbox;
   }
 
   /**

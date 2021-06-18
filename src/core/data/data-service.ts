@@ -484,11 +484,6 @@ export class DataService {
       );
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = client.request({query}) as Observable<any>;
-      const repComplete = state.initialReplicationComplete$;
-      const repRequest = combineLatest([
-        repComplete,
-        clientRequest,
-      ]);
       sub = clientRequest.subscribe({
         next: () => {
           state.run().then(() => {
@@ -500,8 +495,6 @@ export class DataService {
             state.recieved$
                 .pipe(
                     take(1),
-                    // @TODO(marco): To be tested with a much larger amount of data received at
-                    // once.
                     delay(1000),
                     )
                 .subscribe(() => {

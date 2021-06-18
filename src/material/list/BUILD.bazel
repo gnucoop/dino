@@ -25,9 +25,9 @@ ng_module(
     ] + glob(["**/*.html"]),
     module_name = "@dewco/material/list",
     deps = [
-        "//src/material/breakpoint-observer",
         "//src/core/data",
         "//src/core/list",
+        "//src/material/breakpoint-observer",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
