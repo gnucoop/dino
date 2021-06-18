@@ -18,9 +18,11 @@ dewco-login {
 
         .dewco-logo {
           flex: 1 0 auto;
+          margin: 3em auto;
 
-          mat-icon {
-            vertical-align: middle;
+          img {
+            max-width: 33vw;
+            margin: auto;
           }
         }
       }
@@ -30,7 +32,9 @@ dewco-login {
           input {
             display: block;
             background-color: transparent;
-            margin: 0 auto;
+            font-size: 1.1em;
+            line-height: 2.5em;
+            margin: 0 auto 1.1em;
             border: none;
             text-align: center;
 
@@ -46,6 +50,9 @@ dewco-login {
           &.dewco-error {
             .dewco-error-message {
               display: block;
+              font-size: 1.1em;
+              line-height: 2.5em;
+              color: rgba(91, 91, 96, 0.87);
             }
           }
 
@@ -56,10 +63,6 @@ dewco-login {
             &.dewco-show {
               opacity: 1;
             }
-          }
-
-          .dewco-password-recover {
-            padding: 1em 0;
           }
         }
       }
