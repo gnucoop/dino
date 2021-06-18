@@ -21,6 +21,7 @@ export const commitMessage: CommitMessageConfig = {
     'e2e-mat',
     'material/list',
     'material/login',
+    'material/main-nav',
     'material',
     'e2e-material',
     'material/breakpoint-observer',
