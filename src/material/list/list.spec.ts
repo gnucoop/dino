@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
+import {RouterTestingModule} from '@angular/router/testing';
 import {FilterGroup, FiltersService, SearchFiltersComponent} from '@dewco/core/list';
 import {Observable, of as obsOf} from 'rxjs';
 import {SelectionList} from './list';
@@ -19,6 +20,7 @@ class FiltersServiceStub {
   set setCustomFilters(fg: FilterGroup[]) {}
   loadPreset() {}
   addBasicFilter(): void {}
+  clearModelFilters() {}
 }
 
 class SearchFiltersComponentStub {}
@@ -33,6 +35,7 @@ describe('List', () => {
         .configureTestingModule({
           imports: [
             ListModule,
+            RouterTestingModule,
             MatDialogModule,
           ],
           providers: [
