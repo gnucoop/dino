@@ -7,6 +7,7 @@ import {
   ComponentFixture,
   TestBed,
 } from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {
   CHOICES_CONDITION_OPERATORS,
@@ -46,6 +47,7 @@ describe('Search filters widget', () => {
         .configureTestingModule({
           imports: [
             ListModule,
+            NoopAnimationsModule,
             RouterTestingModule,
             SearchFiltersWidgetModule,
           ],

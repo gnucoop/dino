@@ -1,4 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {FilterItem, FiltersService, ListModule} from '@dewco/core/list';
 import {SearchFiltersBar, SearchFiltersBarModule} from '@dewco/material/search-filters-bar';
@@ -17,6 +18,7 @@ describe('Search filters Bar', () => {
         .configureTestingModule({
           imports: [
             ListModule,
+            NoopAnimationsModule,
             RouterTestingModule,
             SearchFiltersBarModule,
           ],
