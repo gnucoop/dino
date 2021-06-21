@@ -28,25 +28,26 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier.",
+      "description": "UUID v4 identifier."
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp.",
+      "description": "Creation timestamp."
     },
     "updated_at": {
       "type": "string",
-      "description": "Update timestamp.",
+      "description": "Update timestamp."
     },
     "name": {
       "type": "string",
-      "description": "the Project name identifier",
+      "description": "The Location name identifier"
     }
   },
   "required": [
     "created_at",
     "id",
     "name",
+    "updated_at"
   ],
   "additionalProperties": false,
   "description": "This model is used to store Projects.",

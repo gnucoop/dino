@@ -23,4 +23,6 @@ CORE_SCSS_LIBS = [
 CORE_MODELS = [
     "forms/form-data",
     "forms/form-schema",
+    "locations/location",
+    "projects/project",
 ]

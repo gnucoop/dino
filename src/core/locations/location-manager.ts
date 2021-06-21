@@ -23,8 +23,8 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
 
+import {Location} from './location';
 import {schema} from './location-json';
-import {Location} from './locations';
 import {LocationModule} from './locations.module';
 
 /**

@@ -20,7 +20,7 @@
  *
  */
 
-import {Location} from './locations';
+import {Location} from './location';
 
 declare module '@dewco/core/forms/form-data' {
   interface FormData {

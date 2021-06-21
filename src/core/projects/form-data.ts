@@ -20,7 +20,7 @@
  *
  */
 
-import {Project} from './projects';
+import {Project} from './project';
 
 declare module '@dewco/core/forms/form-data' {
   interface FormData {

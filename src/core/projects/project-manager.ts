@@ -27,8 +27,8 @@ import {
   PermissionContextService,
 } from '@dewco/core/data';
 
+import {Project} from './project';
 import {schema} from './project-json';
-import {Project} from './projects';
 import {ProjectModule} from './projects.module';
 
 /**

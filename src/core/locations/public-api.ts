@@ -20,6 +20,7 @@
  *
  */
 
-export * from './locations';
+export {Location} from './location';
+
 export * from './location-manager';
 export * from './locations.module';

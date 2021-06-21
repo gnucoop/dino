@@ -20,10 +20,19 @@
  *
  */
 import {Model} from '@dewco/core/data';
+import {KeyFunctionMap} from 'rxdb';
 
 /**
- * FormData Location interface
+ * This model is used to store Locations.
+ * @title Location
  */
 export interface Location extends Model {
+  /**
+   * The Location name identifier
+   */
   name: string;
 }
+
+export const VERSION = 0;
+
+export const migrationStrategies: KeyFunctionMap = {};
