@@ -33,6 +33,7 @@ ROLLUP_GLOBALS = {
     "@angular/material/core": "ng.material.core",
     "@angular/material/datepicker": "ng.material.checkbox",
     "@angular/material/dialog": "ng.material.dialog",
+    "@angular/material/expansion": "ng.material.expansion",
     "@angular/material/form-field": "ng.material.formField",
     "@angular/material/grid-list": "ng.material.gridList",
     "@angular/material/icon": "ng.material.icon",
