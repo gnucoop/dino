@@ -20,6 +20,11 @@
  *
  */
 
-export * from './is-false-or-null.pipe';
-export * from './search-filters-bar';
-export * from './search-filters-bar.module';
+import {Pipe, PipeTransform} from '@angular/core';
+
+@Pipe({name: 'isFalseOrNull'})
+export class IsFalseOrNullPipe implements PipeTransform {
+  transform(value: boolean|null): boolean {
+    return value == null || value === false;
+  }
+}

@@ -42,6 +42,7 @@ import {SearchFiltersChipsModule} from '@dewco/material/search-filters-chips';
 import {SearchFiltersDialogModule} from '@dewco/material/search-filters-dialog';
 import {SearchFiltersPresetManagerModule} from '@dewco/material/search-filters-preset-manager';
 
+import {IsFalseOrNullPipe} from './is-false-or-null.pipe';
 import {SearchFiltersBar} from './search-filters-bar';
 
 @NgModule({
@@ -68,6 +69,7 @@ import {SearchFiltersBar} from './search-filters-bar';
     SearchFiltersPresetManagerModule,
   ],
   declarations: [
+    IsFalseOrNullPipe,
     SearchFiltersBar,
   ],
   exports: [
