@@ -1,7 +1,7 @@
 <div *ngIf="(loggedIn|async) === false">
   <div class="dewco-logo-container">
     <div class="dewco-logo">
-      <img [src]="logoImagePath" />
+      <img [src]="logoImagePath" alt="" />
     </div>
   </div>
   <ng-content select="[dropdownSelect]"></ng-content>

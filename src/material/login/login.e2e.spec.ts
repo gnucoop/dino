@@ -7,7 +7,6 @@ import {
 
 describe('dewco-material-login', () => {
   beforeEach(async () => await browser.get('/mat-login'));
-  beforeEach(async () => await browser.get('/mat-login'));
 
   it('should not display an error message on init', async () => {
     const errorMsg = element(by.css('.dewco-error-message'));
