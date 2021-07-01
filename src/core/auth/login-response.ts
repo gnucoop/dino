@@ -20,20 +20,27 @@
  *
  */
 
-import {AuthResponse} from './auth-response';
 import {User} from './user';
 
 /**
  * Response of the login api.
  */
-export interface LoginResponse extends AuthResponse {
+export type LoginResponse<T extends {[key: string]: any} = {
+  [key: string]: any
+}> = {
   /**
    * The logged in user info.
    */
-  user: User;
+  user: User,
 
   /**
-   * Any other data returned by the Auth endpoint
+   * The access token, this string is an encoded JSON Web Token (JWT).
    */
-  [key: string]: any;
-}
+  token: string,
+
+  /**
+   * The refresh token that can be used to obtain a new access token once the provide
+   * one has expired.
+   */
+  refreshToken: string,
+}&T;

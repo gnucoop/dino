@@ -29,7 +29,7 @@ import {
   UrlTree
 } from '@angular/router';
 import {Observable} from 'rxjs';
-import {debounceTime, map} from 'rxjs/operators';
+import {debounceTime, map, withLatestFrom} from 'rxjs/operators';
 import {AuthService} from './auth-service';
 
 /**
@@ -39,22 +39,28 @@ import {AuthService} from './auth-service';
  */
 @Injectable({providedIn: 'root'})
 export class AuthGuard implements CanActivate {
-  constructor(private _router: Router, private _authService: AuthService) {}
+  constructor(
+      private _router: Router,
+      private _authService: AuthService,
+  ) {}
+
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
       Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
     return this._authService.authenticated.pipe(
-        map(authenticated => {
-          const validated = this._authService.checkToken();
+        withLatestFrom(this._authService.checkToken()),
+        map(([authenticated, validated]) => {
           if (authenticated && validated) {
             return true;
           }
-          this._authService.refreshToken().pipe(debounceTime(3000)).subscribe(res => {
-            if (res) {
-              this._router.navigateByUrl(state.url);
-            } else {
-              this._router.navigate(['login']);
-            }
-          });
+          this._authService.refreshToken()
+              .pipe(debounceTime(this._authService.config.retryRefreshTime))
+              .subscribe(res => {
+                if (res) {
+                  this._router.navigateByUrl(state.url);
+                } else {
+                  this._router.navigate([this._authService.config.failedAuthRedirect]);
+                }
+              });
           return false;
         }),
     );

@@ -22,12 +22,12 @@
 
 import {InjectionToken} from '@angular/core';
 
-import {User} from './user';
+import {DinoUserInfo, User} from './user';
 
 /**
  * Auth service configuration
  */
-export interface AuthServiceConfig {
+export interface AuthServiceConfig<T = DinoUserInfo> {
   /**
    * Authorization service host (needs leading protocol).
    * eg. http://localhost:9011
@@ -75,9 +75,21 @@ export interface AuthServiceConfig {
   refreshEndpoint?: string;
 
   /**
-   * Time interval to retry refresh token calls in milliseconds. Defaults to 5000.
+   * Time interval to retry refresh token calls in milliseconds.
    */
-  retryRefreshTime?: number;
+  retryRefreshTime: number;
+
+  /**
+   * Path to be redirected to in case of failed Authentication Check, Refresh Attempt
+   * or successful Logout.
+   */
+  failedAuthRedirect: string;
+
+  /**
+   * The maximum number of the JWT interceptor attempts to refresh the jwt token, before
+   * logging the user out.
+   */
+  retryAttemptsMax: number;
 
   /**
    * Function used to store the current JWT token.
@@ -119,13 +131,13 @@ export interface AuthServiceConfig {
    * Function used to store the logged in user info.
    * The token will be stored in local storage if not specified.
    */
-  storeUserInfo?: (userInfo: User|null) => void;
+  storeUserInfo?: (userInfo: User<T>|null) => void;
 
   /**
    * Function used to retrieve the logged in user info.
    * The token will be retrieved from the local storage if not specified.
    */
-  retrieveUserInfo?: () => User | null;
+  retrieveUserInfo?: () => User<T>| null;
 
   /**
    * Name of the locale storage entry where the logged in user info will be stored.

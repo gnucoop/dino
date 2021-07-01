@@ -30,7 +30,7 @@ import {
 import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, debounceTime, filter, skip, switchMap} from 'rxjs/operators';
+import {catchError, debounceTime, filter, skip, switchMap, withLatestFrom} from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
@@ -44,12 +44,6 @@ export class JWTInterceptor implements HttpInterceptor {
    */
   handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]> =
       new EventEmitter<[HttpRequest<any>, HttpHandler]>();
-
-  /**
-   * Number of retry attemps for refreshing the token.
-   * Defaults to 1.
-   */
-  private _retryAttemptsMax: number = 1;
 
   /**
    * Counter of the retry attemps for refreshing the token.
@@ -66,19 +60,23 @@ export class JWTInterceptor implements HttpInterceptor {
   ) {
     this.handleRefreshEvt
         .pipe(
-            debounceTime(this._config.retryRefreshTime ?? 5000),
-            switchMap(([request, next]) => {
-              if (!this._nss.isOnline) {
+            withLatestFrom(this._nss.isOnline$),
+            debounceTime(this._config.retryRefreshTime),
+            switchMap(([
+                        [request, next],
+                        isOnline,
+                      ]) => {
+              if (!isOnline) {
                 return obsOf(true);
               }
-              if (this._retryAttempts < this._retryAttemptsMax) {
+              if (this._retryAttempts < (this._config.retryAttemptsMax)) {
                 this._retryAttempts++;
                 return this._authService.refreshToken().pipe(
                     switchMap(() => next.handle(request)),
                 );
               } else {
                 this._authService.authenticated.next(false);
-                this._router.navigate(['login', 'expired']);
+                this._router.navigate([this._config.failedAuthRedirect, 'expired']);
                 return obsOf(false);
               }
             }),
@@ -89,15 +87,16 @@ export class JWTInterceptor implements HttpInterceptor {
         .pipe(
             filter(res => res === true),
             skip(1),
-            switchMap(_ => {
-              if (!this._authService.checkToken()) {
+            withLatestFrom(this._authService.checkToken()),
+            switchMap(([_, check]) => {
+              if (!check) {
                 return this._authService.refreshToken().pipe(
                     switchMap(refreshed => {
                       if (refreshed) {
                         return obsOf(true);
                       } else {
                         this._authService.authenticated.next(false);
-                        this._router.navigate(['login', 'expired']);
+                        this._router.navigate([this._config.failedAuthRedirect, 'expired']);
                         return obsOf(false);
                       }
                     }),

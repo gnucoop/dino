@@ -11,7 +11,10 @@ import {AUTH_SERVICE_CONFIG, AuthServiceConfig, JWTInterceptor} from '@dewco/cor
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
   applicationId: 'applicationId',
-  apiKey: 'apiKey'
+  apiKey: 'apiKey',
+  retryRefreshTime: 3000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
 };
 
 const unauthorizedResponse = {

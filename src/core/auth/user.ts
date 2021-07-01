@@ -24,70 +24,75 @@ import {Registration} from './registration';
 import {TwoFactorDelivery} from './two-factor-delivery';
 import {UsernameStatus} from './username-status';
 
+
 /**
- * The FusionAuth user.
+ * The basic User model.
  */
-export interface User {
+export type User<T = DinoUserInfo> = {
   /**
    * The User’s unique Id.
    */
-  id?: string;
-
+  id: string;
   /**
    * The User’s email address.
    */
-  email?: string;
+  email: string;
+}&T;
 
+/**
+ * The Dino user info
+ */
+export interface DinoUserInfo {
   /**
    * The User’s first name.
    */
-  firstName?: string;
+  firstName: string;
 
   /**
    * The User’s last name.
    */
-  lastName?: string;
+  lastName: string;
 
   /**
    * True if the User is active. False if the User has been deactivated. Deactivated Users will
    * not be able to login.
    */
-  active?: boolean;
+  active: boolean;
 
   /**
    * Whether or not the User’s email has been verified.
    */
-  verified?: boolean;
+  verified: boolean;
 
   /**
    * The Id of the Tenant that this User belongs to.
    */
-  tenantId?: string;
+  tenantId: string;
 
   /**
    * The instant when user was created.
    */
-  insertInstant?: number;
+  insertInstant: number;
 
   /**
    * The instant when the User logged in last.
    */
-  lastLoginInstant?: number;
+  lastLoginInstant: number;
 
   /**
    * ndicates that the User’s password needs to be changed during their next login attempt.
    */
-  passwordChangeRequired?: boolean;
+  passwordChangeRequired: boolean;
 
   /**
    * The instant that the User last changed their password.
    */
-  passwordLastUpdateInstant?: number;
+  passwordLastUpdateInstant: number;
 
   /**
    * Determines if the User has two factor authentication enabled for their account or not.
    */
-  twoFactorEnabled?: boolean;
+  twoFactorEnabled: boolean;
 
   /**
    * The User’s preferred delivery for verification codes during a two factor login request.
@@ -95,7 +100,7 @@ export interface User {
    * - None
    * - TextMessage
    */
-  twoFactorDelivery?: TwoFactorDelivery;
+  twoFactorDelivery: TwoFactorDelivery;
 
   /**
    * The current status of the username. The possible values are:
@@ -103,15 +108,10 @@ export interface User {
    * PENDING - the username is pending approval/moderation
    * REJECTED - the username was rejected during moderation
    */
-  usernameStatus?: UsernameStatus;
+  usernameStatus: UsernameStatus;
 
   /**
    * The list of registrations for the User.
    */
-  registrations?: Registration[];
-
-  /**
-   * Any other User related data.
-   */
-  [key: string]: any;
+  registrations: Registration[];
 }

@@ -22,7 +22,7 @@
 
 import {Injectable} from '@angular/core';
 import {fromEvent, merge, Observable, of as obsOf} from 'rxjs';
-import {mapTo} from 'rxjs/operators';
+import {mapTo, startWith} from 'rxjs/operators';
 
 /**
  * Service that detects the current Network connection status.
@@ -30,31 +30,18 @@ import {mapTo} from 'rxjs/operators';
 @Injectable({providedIn: 'root'})
 export class NetworkStatusService {
   /**
-   * The current Network connection status.
-   * It is evaluated true when online, false when disconnected.
-   */
-  private _isOnline: boolean = true;
-  get isOnline(): boolean {
-    return this._isOnline;
-  }
-
-  /**
    * The current Network connection status stream.
    */
-  private _isOnline$: Observable<boolean> = new Observable<boolean>();
-  get isOnline$(): Observable<boolean> {
-    return this._isOnline$;
-  }
+  readonly isOnline$: Observable<boolean>;
 
   constructor() {
-    this._isOnline$ = merge(
-        fromEvent(window, 'offline').pipe(mapTo(false)),
-        fromEvent(window, 'online').pipe(mapTo(true)),
-        obsOf(navigator.onLine),
-    );
-
-    this._isOnline$.subscribe(res => {
-      this._isOnline = res;
-    });
+    this.isOnline$ = merge(
+                         fromEvent(window, 'offline').pipe(mapTo(false)),
+                         fromEvent(window, 'online').pipe(mapTo(true)),
+                         obsOf(navigator.onLine),
+                         )
+                         .pipe(
+                             startWith(true),
+                         );
   }
 }

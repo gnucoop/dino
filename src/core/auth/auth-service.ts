@@ -23,9 +23,9 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, mapTo, tap} from 'rxjs/operators';
-import {AuthResponse} from './auth-response';
+import {catchError, mapTo, switchMap, tap} from 'rxjs/operators';
 
+import {AuthResponse} from './auth-response';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {Credentials} from './credentials';
 import {JwtToken} from './jwt-token';
@@ -55,13 +55,10 @@ export const DEFAULT_AUTH_OPTIONS = {
  */
 @Injectable({providedIn: 'root'})
 export class AuthService {
-  private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   /**
    * True if a valid JWT access token is available.
    */
-  get authenticated(): BehaviorSubject<boolean> {
-    return this._authenticated;
-  }
+  readonly authenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * The current JWT auth token
@@ -73,9 +70,9 @@ export class AuthService {
   constructor(
       private _nss: NetworkStatusService,
       private _httpClient: HttpClient,
-      @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
+      @Inject(AUTH_SERVICE_CONFIG) readonly config: AuthServiceConfig,
   ) {
-    this._baseUrl = removeSlashes(_config.host);
+    this._baseUrl = removeSlashes(config.host);
     this.authToken = new BehaviorSubject<string|null>(this.getAuthToken());
     this._initAuthentication();
   }
@@ -90,31 +87,30 @@ export class AuthService {
       return obsOf(false);
     }
     const req: {[key: string]: string} = {
-      [this._config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
-      [this._config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
+      [this.config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
+      [this.config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
           credentials.password,
-      applicationId: this._config.applicationId,
+      applicationId: this.config.applicationId,
     };
 
-    const url = this._generateUrl(this._config.loginEndpoint ?? 'api/login');
-    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} : undefined;
+    const url = this._generateUrl(this.config.loginEndpoint ?? 'api/login');
+    const headers = this.config.apiKey != null ? {Authorization: this.config.apiKey} : undefined;
     return this._httpClient.post<LoginResponse>(url, req, {headers})
         .pipe(
             tap(res => {
-              this._authenticated.next(true);
+              this.authenticated.next(true);
               this._storeAuthToken(res.token);
               this._storeRefreshToken(res.refreshToken);
               let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
-              if (this._config.userAuthInfo != null) {
-                const userAuthInfo = res[this._config.userAuthInfo];
-                let usr: User = {[this._config.userAuthInfo]: userAuthInfo};
-                userInfo = usr;
+              if (this.config.userAuthInfo != null) {
+                const userAuthInfo = res[this.config.userAuthInfo];
+                userInfo = userAuthInfo;
               }
               this._storeUserInfo(userInfo);
             }),
             mapTo(true),
             catchError(() => {
-              this._authenticated.next(false);
+              this.authenticated.next(false);
               return obsOf(false);
             }),
         );
@@ -130,14 +126,14 @@ export class AuthService {
     const refreshToken = this.getRefreshToken()!;
     const global = this._stringifyBooleanParam(allDevices);
     const params = new HttpParams({fromObject: {global, refreshToken}});
-    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} :
-                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
+    const headers = this.config.apiKey != null ? {Authorization: this.config.apiKey} :
+                                                 {Authorization: `Bearer ${this.getAuthToken()}`};
     const url =
-        `${this._generateUrl(this._config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
+        `${this._generateUrl(this.config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
     return this._httpClient.post(url, null, {headers})
         .pipe(
             tap(() => {
-              this._authenticated.next(false);
+              this.authenticated.next(false);
               this._storeAuthToken(null);
               this._storeRefreshToken(null);
               this._storeUserInfo(null);
@@ -159,8 +155,8 @@ export class AuthService {
    * @returns The last stored JWT auth token.
    */
   getAuthToken(): string|null {
-    if (this._config.retrieveAuthToken != null) {
-      return this._config.retrieveAuthToken();
+    if (this.config.retrieveAuthToken != null) {
+      return this.config.retrieveAuthToken();
     }
     return localStorage.getItem(this._getAuthTokenLocaleStorageKey());
   }
@@ -169,8 +165,8 @@ export class AuthService {
    * @returns The last stored JWT refresh token.
    */
   getRefreshToken(): string|null {
-    if (this._config.retrieveRefreshToken != null) {
-      return this._config.retrieveRefreshToken();
+    if (this.config.retrieveRefreshToken != null) {
+      return this.config.retrieveRefreshToken();
     }
     return localStorage.getItem(this._getRefreshTokenLocaleStorageKey());
   }
@@ -179,8 +175,8 @@ export class AuthService {
    * @returns The last stored logged in user info.
    */
   getUserInfo(): User|null {
-    if (this._config.retrieveUserInfo != null) {
-      return this._config.retrieveUserInfo();
+    if (this.config.retrieveUserInfo != null) {
+      return this.config.retrieveUserInfo();
     }
     const userInfo = localStorage.getItem(this._getUserInfoLocaleStorageKey());
     return userInfo == null ? null : JSON.parse(userInfo);
@@ -195,70 +191,84 @@ export class AuthService {
     if (!this.getAuthToken()) {
       return obsOf(false);
     }
-    if (!this._nss.isOnline) {
-      return obsOf(true);
-    }
 
     const req = {refreshToken: this.getRefreshToken()};
 
-    const url = this._generateUrl(this._config.refreshEndpoint ?? 'api/jwt/refresh');
-    const headers = this._config.apiKey != null ? {Authorization: this._config.apiKey} :
-                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
-    return this._httpClient.post<AuthResponse>(url, req, {headers})
-        .pipe(
-            tap(res => {
-              this._authenticated.next(true);
-              this._storeRefreshToken(res.refreshToken);
-              this._storeAuthToken(res.token);
-            }),
-            mapTo(true),
-            catchError(
-                () => {
-                  this._authenticated.next(false);
-                  return obsOf(false);
-                },
-                ),
-        );
+    const url = this._generateUrl(this.config.refreshEndpoint ?? 'api/jwt/refresh');
+    const headers = this.config.apiKey != null ? {Authorization: this.config.apiKey} :
+                                                 {Authorization: `Bearer ${this.getAuthToken()}`};
+
+    const refreshHttpCall: Observable<boolean> =
+        this._httpClient.post<AuthResponse>(url, req, {headers})
+            .pipe(
+                tap(res => {
+                  this.authenticated.next(true);
+                  this._storeRefreshToken(res.refreshToken);
+                  this._storeAuthToken(res.token);
+                }),
+                mapTo(true),
+                catchError(
+                    () => {
+                      this.authenticated.next(false);
+                      return obsOf(false);
+                    },
+                    ),
+            );
+
+    return this._nss.isOnline$.pipe(
+        switchMap(isOnline => {
+          if (!isOnline) {
+            return obsOf(true);
+          } else {
+            return refreshHttpCall;
+          }
+        }),
+    );
   }
 
   /**
    * Checks the validity of the JWT auth token.
    * @returns True if the token is valid.
    */
-  checkToken(): boolean {
+  checkToken(): Observable<boolean> {
     const token = this.getAuthToken();
     if (!token) {
-      return false;
+      return obsOf(false);
     }
-    if (!this._nss.isOnline) {
-      return true;
-    }
+
     const decodedToken = this._decodeJwt(token);
-    if (decodedToken.exp != null && decodedToken.exp > (new Date().getTime() / 1000)) {
-      return true;
-    }
-    return false;
+    const tokenCheck = decodedToken.exp != null && decodedToken.exp > (new Date().getTime() / 1000);
+
+    return this._nss.isOnline$.pipe(
+        switchMap(isOnline => {
+          if (!isOnline) {
+            return obsOf(true);
+          } else {
+            return obsOf(tokenCheck);
+          }
+        }),
+    );
   }
 
   /**
    * @returns The local storage key used to store the JWT token
    */
   private _getAuthTokenLocaleStorageKey(): string {
-    return this._config.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;
+    return this.config.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;
   }
 
   /**
    * @returns The local storage key used to store the JWT refresh token
    */
   private _getRefreshTokenLocaleStorageKey(): string {
-    return this._config.refreshTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.refreshTokenKey;
+    return this.config.refreshTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.refreshTokenKey;
   }
 
   /**
    * @returns The local storage key used to store the logged in user info
    */
   private _getUserInfoLocaleStorageKey(): string {
-    return this._config.userInfoLocalStorageKey || DEFAULT_AUTH_OPTIONS.userInfoKey;
+    return this.config.userInfoLocalStorageKey || DEFAULT_AUTH_OPTIONS.userInfoKey;
   }
 
   /**
@@ -268,8 +278,8 @@ export class AuthService {
    */
   private _storeAuthToken(token: string|null): void {
     this.authToken.next(token);
-    if (this._config.storeAuthToken != null) {
-      this._config.storeAuthToken(token);
+    if (this.config.storeAuthToken != null) {
+      this.config.storeAuthToken(token);
       return;
     }
     if (token == null) {
@@ -286,8 +296,8 @@ export class AuthService {
    * @param token The JWT refresh token
    */
   private _storeRefreshToken(token: string|null): void {
-    if (this._config.storeRefreshToken != null) {
-      this._config.storeRefreshToken(token);
+    if (this.config.storeRefreshToken != null) {
+      this.config.storeRefreshToken(token);
       return;
     }
     if (token == null) {
@@ -303,8 +313,8 @@ export class AuthService {
    * @param user The logged in user info.
    */
   private _storeUserInfo(user: User|null): void {
-    if (this._config.storeUserInfo != null) {
-      this._config.storeUserInfo(user);
+    if (this.config.storeUserInfo != null) {
+      this.config.storeUserInfo(user);
       return;
     }
     if (user == null) {
@@ -335,9 +345,12 @@ export class AuthService {
    */
   private _initAuthentication(): void {
     try {
-      if (this.checkToken()) {
-        this._authenticated.next(true);
-      }
+      const checkTokenSub = this.checkToken().subscribe(check => {
+        this.authenticated.next(check);
+        if (checkTokenSub) {
+          checkTokenSub.unsubscribe();
+        }
+      });
     } catch (e) {
     }
   }

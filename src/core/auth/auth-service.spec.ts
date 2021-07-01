@@ -1,4 +1,4 @@
-  import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {
   AUTH_SERVICE_CONFIG,
@@ -13,6 +13,9 @@ const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
   applicationId: 'applicationId',
   apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
 };
 
 const jwtPayload = JSON.stringify({exp: Math.floor(new Date().getTime() / 1000) + 30});
@@ -37,10 +40,6 @@ const loginResponse: LoginResponse = {
     usernameStatus: 'ACTIVE',
     registrations: [],
   },
-};
-
-const refreshResponse: {token: string} = {
-  token: 'newToken'
 };
 
 describe('AuthService', () => {
@@ -157,29 +156,15 @@ describe('refresh token', () => {
     localStorage.removeItem('dewco_refresh_token');
   });
 
-  it('should refresh and save the jwt token in local storage using the default key upon login',
-     () => {
-       authService.refreshToken().subscribe(res => {
-         expect(res).toBeDefined();
-       });
-       const req = httpMock.expectOne('http://test-auth-backend/api/jwt/refresh');
-       expect(req.request.method).toBe('POST');
-       req.flush(refreshResponse);
-
-       expect(localStorage.getItem('dewco_auth_token')).toEqual(refreshResponse.token);
-       expect(authService.getAuthToken()).toEqual(refreshResponse.token);
-     });
-
-  it('should fail refreshing the jwt token if no/wrong refresh token is provided', () => {
-    authService.refreshToken().subscribe(() => {}, err => {
-      expect(err).toBeDefined();
+  it('should attempt to call the jwt refresh api, passing the refreshToken in the request', () => {
+    authService.refreshToken().subscribe(res => {
+      expect(res).toBeDefined();
     });
-    const req = httpMock.expectOne('http://test-auth-backend/api/jwt/refresh');
-    expect(req.request.method).toBe('POST');
-    req.error(new ErrorEvent(''));
+    const req = httpMock.match('http://test-auth-backend/api/jwt/refresh')[0];
+    console.log(req.request);
 
-    expect(localStorage.getItem('dewco_auth_token')).toEqual(loginResponse.token);
-    expect(authService.getAuthToken()).toEqual(loginResponse.token);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body.refreshToken).toBe(loginResponse.refreshToken);
   });
 });
 
