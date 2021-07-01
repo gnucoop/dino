@@ -26,6 +26,7 @@ import {
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
+import {Location} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -138,6 +139,7 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
       private _fs: FormSchemaManager,
       private _rendererService: AjfFormRendererService,
       readonly snackbar: MatSnackBar,
+      private _location: Location,
   ) {
     this.formId = this._route.params.pipe(
         map(params => params.form_id),
@@ -180,9 +182,9 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
 
     this._formSchema = this._formSchemaId.pipe(
         map(
-            id => this._fs.get(id).pipe(
+            schemaId => this._fs.get(schemaId).pipe(
                 map(doc => {
-                  if (!doc) {
+                  if (doc == null) {
                     return null;
                   }
                   const item = doc.toJSON();
@@ -210,11 +212,12 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
                             const rxDoc = docs[0];
                             const item: {[key: string]: any} = rxDoc.toJSON();
                             this._currentDoc.next(item as T);
-                            if ('data' in item) {
-                              if (item['data']['schema_id'] != null) {
-                                this._formSchemaId.next(item['data']['schema_id']);
+                            if ('data' in item && item['data'] != null) {
+                              if (item['data']['schema_id'] != null || item['schema_id'] != null) {
+                                this._formSchemaId.next(
+                                    item['data']['schema_id'] ?? item['schema_id']);
                               }
-                              return item['data']['data'];
+                              return item['data']['data'] ?? item['data'] ?? null;
                             }
                             return null;
                           }),
@@ -227,6 +230,12 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
     this._form = this._formSchema.pipe(
         withLatestFrom(this._formData),
         map(([fschema, fdata]) => {
+          if (fschema == null) {
+            this._location.back();
+            this.snackbar.open(
+                'Oops! We could not find this Form Schema', 'FORM NOT FOUND', {duration: 5000});
+            return AjfFormSerializer.fromJson({});
+          }
           if (fschema.schema.choicesOrigins == null) {
             fschema.schema.choicesOrigins = [];
           }
@@ -239,9 +248,7 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
         combineLatest([this._saveFormEvt as Observable<AjfFormActionEvent>, this._currentDoc])
             .pipe(
                 map(([_, item]) => {
-                  return {
-                    doc: item, formValue: this._rendererService.getFormValue()
-                  };
+                  return {doc: item, formValue: this._rendererService.getFormValue()};
                 }),
                 switchMap(formObj => {
                   let newItem = formObj.doc as {[key: string]: any};
