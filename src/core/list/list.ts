@@ -27,6 +27,7 @@ import {
   Input,
 } from '@angular/core';
 import {Model} from '@dewco/core/data';
+import {Subject} from 'rxjs';
 
 import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
@@ -44,17 +45,15 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   protected _actionEvent: EventEmitter<{action: ListAction, items: T|T[], isDetails: boolean}> =
       new EventEmitter<{action: ListAction, items: T|T[], isDetails: boolean}>();
+
   /**
    * The model of the "data" property associated with the main model.
    */
-  private _additionalDataSchema: AD;
+  readonly _additionalDataSchema: Subject<AD|null> = new Subject<AD|null>();
 
-  get additionalDataSchema(): AD {
-    return this._additionalDataSchema;
-  }
   @Input()
-  set additionalDataSchema(ds: AD) {
-    this._additionalDataSchema = ds;
+  set additionalDataSchema(ds: AD|null) {
+    this._additionalDataSchema.next(ds);
   }
 
   /**
@@ -85,8 +84,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     this._displayedColumns = [
       ...headers
           .filter(
-              header =>
-                  (header.displayed || header.displayed === undefined && header.column !== 'data'))
+              header => ((header.displayed || header.displayed === undefined) && !header.hidden))
           .map(header => header.column.toString()),
       'actions'
     ];

@@ -21,9 +21,24 @@
  */
 
 export interface ListHeader<T> {
+  /**
+   * The object key corresponding to the header.
+   */
   column: keyof T;
+  /**
+   * The header label.
+   */
   label: string;
+  /**
+   * If true, the column is sortable.
+   */
   sortable?: boolean;
+  /**
+   * If true, the column can't be displayed.
+   */
   hidden?: boolean;
+  /**
+   * Determines if the column is displayed.
+   */
   displayed?: boolean;
 }
