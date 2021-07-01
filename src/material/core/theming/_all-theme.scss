@@ -8,7 +8,6 @@
 @use '~@angular/material/divider/divider-theme' as mat-divider-theme;
 @use '~@angular/material/expansion/expansion-theme' as mat-expansion-theme;
 @use '~@angular/material/grid-list/grid-list-theme' as mat-grid-list-theme;
-@use '~@angular/material/icon/icon-theme' as mat-icon-theme;
 @use '~@angular/material/input/input-theme' as mat-input-theme;
 @use '~@angular/material/list/list-theme' as mat-list-theme;
 @use '~@angular/material/menu/menu-theme' as mat-menu-theme;
@@ -38,6 +37,7 @@
 @use '../../tabs/tabs-theme';
 @use '../../dialog/dialog-theme';
 @use '../../grid/grid-theme';
+@use '../../icon/icon-theme';
 
 // Create a theme.
 @mixin material-theme($theme-or-color-config) {
@@ -56,7 +56,6 @@
         @include mat-divider-theme.theme($theme);
         @include mat-expansion-theme.theme($theme);
         @include mat-grid-list-theme.theme($theme);
-        @include mat-icon-theme.theme($theme);
         @include mat-input-theme.theme($theme);
         @include mat-list-theme.theme($theme);
         @include mat-menu-theme.theme($theme);
@@ -86,5 +85,6 @@
         @include tabs-theme.tabs-theme($theme);
         @include dialog-theme.dialog-theme($theme);
         @include grid-theme.grid-theme($theme);
+        @include icon-theme.icon-theme($theme);
     }
 }

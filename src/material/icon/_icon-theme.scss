@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use '~@angular/material/core/theming/theming' as mat-theming;
+@use '~@angular/material/icon/icon-theme' as mat-icon-theme;
+
+@mixin icon-color($config-or-theme) {
+    $config: mat-theming.get-color-config($config-or-theme);
+    $background: map.get($config, background);
+    $foreground: map.get($config, foreground);
+    $primary: map.get($config, primary);
+    $accent: map.get($config, accent);
+
+    @include mat-icon-theme.color($config-or-theme);
+
+    .mat-icon.dewco-mat-icon {
+        color: mat-theming.get-color-from-palette($primary);
+        &:hover {
+            color: mat-theming.get-color-from-palette($accent);
+        }
+    }
+}
+
+@mixin mat-icon-typography($config-or-theme) {
+    $config: mat-get-typography-config($config-or-theme);
+    @include mat-icon-theme.typography($config-or-theme);
+}
+
+@mixin _mat-icon-density($config-or-theme) {
+}
+
+@mixin icon-theme($theme-or-color-config) {
+    $color: mat-theming.get-color-config($theme-or-color-config);
+    $density: mat-theming.get-density-config($theme-or-color-config);
+    $typography: mat-theming.get-typography-config($theme-or-color-config);
+
+    @if $color != null {
+        @include icon-color($color);
+    }
+    @if $density != null {
+        @include _mat-icon-density($density);
+    }
+    @if $typography != null {
+        @include mat-icon-typography($typography);
+    }
+}

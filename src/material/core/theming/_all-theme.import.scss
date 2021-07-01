@@ -13,6 +13,7 @@
 @forward '../../form-field/form-field-theme.import';
 @forward '../../dialog/dialog-theme.import';
 @forward '../../grid/grid-theme.import';
+@forward '../../icon/icon-theme.import';
 
 @forward 'all-theme' as dewco-*;
 
@@ -30,4 +31,4 @@
 @import '../../form-field/form-field-theme';
 @import '../../dialog/dialog-theme';
 @import '../../grid/grid-theme';
-
+@import '../../icon/icon-theme';

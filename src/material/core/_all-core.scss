@@ -16,6 +16,7 @@
 @use '../form-field/form-field-base';
 @use '../grid/grid-base';
 @use '../dialog/dialog-base';
+@use '../icon/icon-base';
 
 @mixin mat-core($typography-config: typography.$base-typography) {
     @include mat-core-theming.core($typography-config);
@@ -33,4 +34,5 @@
     @include tabs-base.tabs-core($typography-config);
     @include grid-base.grid-core($typography-config);
     @include dialog-base.dialog-core($typography-config);
+    @include icon-base.icon-core($typography-config);
 }

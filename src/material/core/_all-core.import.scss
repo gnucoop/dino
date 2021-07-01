@@ -12,6 +12,7 @@
 @forward '../form-field/form-field-base.import';
 @forward '../grid/grid-base.import';
 @forward '../dialog/dialog-base.import';
+@forward '../icon/icon-base.import';
 @forward 'all-core' as dewco-*;
 
 @import './typography/typography';
@@ -28,3 +29,5 @@
 @import '../form-field/form-field-base';
 @import '../grid/grid-base';
 @import '../dialog/dialog-base';
+@import '../icon/icon-base';
+
