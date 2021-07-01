@@ -21,7 +21,12 @@
  */
 
 import {EventEmitter, Inject, Injectable} from '@angular/core';
-import {AuthService, NetworkStatusService} from '@dewco/core/auth';
+import {
+  AUTH_SERVICE_CONFIG,
+  AuthService,
+  AuthServiceConfig,
+  NetworkStatusService,
+} from '@dewco/core/auth';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
@@ -52,8 +57,8 @@ import {
 } from 'rxjs/operators';
 import {SubscriptionClient} from 'subscriptions-transport-ws';
 import {v4 as uuidv4} from 'uuid';
-import {ActiveSync} from './active-sync-interface';
 
+import {ActiveSync} from './active-sync-interface';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {DataFindRequest} from './data-find-request';
@@ -140,6 +145,8 @@ export class DataService {
       private _authService: AuthService,
       private _nss: NetworkStatusService,
       @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
+      @Inject(AUTH_SERVICE_CONFIG) private _authConfig: AuthServiceConfig,
+
   ) {
     addRxPlugin(pouchdbAdapterIdb);
     addRxPlugin(pouchdbAdapterMemory);
@@ -152,7 +159,7 @@ export class DataService {
 
     this._refreshEvt
         .pipe(
-            debounceTime(3000),
+            debounceTime(this._authConfig.retryRefreshTime),
             switchMap(() => this._authService.refreshToken()),
             )
         .subscribe();

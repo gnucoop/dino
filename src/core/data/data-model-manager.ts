@@ -33,11 +33,7 @@ import {
 
 import {PermissionContextService} from './data-context-service';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
-import {
-  DataListOptions,
-  DataQueryOptions,
-  DataQuerySort
-} from './data-options-interface';
+import {DataListOptions, DataQueryOptions, DataQuerySort} from './data-options-interface';
 import {Permission} from './data-permission';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {CollectionChangedEvent, DataService} from './data-service';
@@ -57,10 +53,18 @@ export abstract class DataModelManager<T extends Model = Model> {
    * expandable list
    */
   detailsKey: keyof T;
+
   /**
    * The data manager to get details in an expandable list
    */
   detailsManager: DataModelManager<any>;
+
+  /**
+   * Gets the child docs of a parent doc, in expandable lists.
+   * @param doc The parent doc
+   * @param querySelector? Additional query params
+   */
+  getSubData: (doc: T, querySelector?: any) => Observable<T[]>;
 
   get permissions(): Permission[] {
     return this._permissions;
@@ -333,7 +337,9 @@ export abstract class DataModelManager<T extends Model = Model> {
             } else {
               return from(doc.update(this._prepareUpdateQuery(obj)))
                   .pipe(
-                      map(_ => doc),
+                      map(_ => {
+                        return doc;
+                      }),
                       catchError(err => throwError(err)),
                   );
             }
@@ -386,15 +392,6 @@ export abstract class DataModelManager<T extends Model = Model> {
    */
   generateAdditionalFilters(dataSchema?: any): any[] {
     return [];
-  }
-
-  /**
-   * Gets the child docs of a parent doc, in expandable lists.
-   * @param doc The parent doc
-   * @param querySelector? Additional query params
-   */
-  getSubData(doc: T, querySelector?: any): Observable<T[]> {
-    return obsOf([]);
   }
 
   /**

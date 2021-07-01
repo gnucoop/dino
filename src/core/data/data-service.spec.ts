@@ -1,5 +1,10 @@
 import {TestBed} from '@angular/core/testing';
-import {AuthService, NetworkStatusService} from '@dewco/core/auth';
+import {
+  AUTH_SERVICE_CONFIG,
+  AuthService,
+  AuthServiceConfig,
+  NetworkStatusService
+} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from '@dewco/core/data';
 import {Server, WebSocket} from 'mock-socket';
 import {RxJsonSchema} from 'rxdb';
@@ -47,6 +52,15 @@ const invalidDataServiceConfig: DataServiceConfig = {
   },
 };
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
 const dummySchema: RxJsonSchema = {
   title: 'dummy schema',
   version: 0,
@@ -70,6 +84,7 @@ describe('Data service', () => {
         DataService,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
     dataService = TestBed.inject(DataService);
@@ -105,6 +120,7 @@ describe('Data service - CRUD methods', () => {
         DataService,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
     dataService = TestBed.get(DataService);
@@ -187,7 +203,8 @@ describe('Data service - CRUD methods', () => {
 describe('Invalid data service config', () => {
   it('should fail creating the service instance when an invalid adapter is defined', () => {
     expect(
-        () => new DataService(authServiceMock, networkStatusServiceMock, invalidDataServiceConfig))
+        () => new DataService(
+            authServiceMock, networkStatusServiceMock, invalidDataServiceConfig, authServiceConfig))
         .toThrowError();
   });
 });

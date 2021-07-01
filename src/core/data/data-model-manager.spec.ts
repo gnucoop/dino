@@ -1,6 +1,6 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {AuthService, User} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
 import {
   CanCreateData,
   CanDeleteData,
@@ -100,6 +100,15 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
 const dummySchema: RxJsonSchema = {
   title: 'dummy schema',
   version: 0,
@@ -135,6 +144,7 @@ describe('Data Model Manager - CRUD methods', () => {
         DataService,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
     contextService = TestBed.get(PermissionContextService);
