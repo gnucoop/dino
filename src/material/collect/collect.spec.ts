@@ -1,7 +1,7 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AuthService} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
 import {FormSchemaManager} from '@dewco/core/forms';
 import {of} from 'rxjs';
@@ -30,6 +30,14 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
 
 describe('Collect', () => {
   let fsm: FormSchemaManager;
@@ -47,6 +55,7 @@ describe('Collect', () => {
           providers: [
             {provide: AuthService, useValue: authServiceMock},
             {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
           ],
         })
         .compileComponents();

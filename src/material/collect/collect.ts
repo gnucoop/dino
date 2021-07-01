@@ -21,15 +21,15 @@
  */
 
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormSchemaManager} from '@dewco/core/forms';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {BehaviorSubject, from} from 'rxjs';
+import {BehaviorSubject, combineLatest, from, of as obsOf} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 
@@ -44,21 +44,27 @@ import {CollectItem} from './collect-item-interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class Collect implements OnInit {
+export class Collect implements AfterViewInit {
   /**
    * An array of items to be displayed in the grid.
    * They can represent Forms or any generic Item (eg. a Section of the app)
    */
-  private _items: BehaviorSubject<CollectItem[]>;
+  private _items: BehaviorSubject<CollectItem[]> = new BehaviorSubject<CollectItem[]>([]);
   get items(): BehaviorSubject<CollectItem[]> {
     return this._items;
   }
+
+  /**
+   * An array of items to be displayed in the Dashboard menu grid.
+   * They represent generic Items (eg. a Section of the app)
+   */
+  private _menuItems: BehaviorSubject<CollectItem[]> = new BehaviorSubject<CollectItem[]>([]);
   @Input()
-  set setCustomItems(customItems: CollectItem[]) {
-    if (customItems == null || customItems.length <= 0) {
+  set menuItems(menuItems: CollectItem[]) {
+    if (menuItems == null || menuItems.length <= 0) {
       return;
     }
-    this._items.next(customItems);
+    this._items.next(menuItems);
   }
 
   /**
@@ -100,53 +106,51 @@ export class Collect implements OnInit {
    * can be used as a simple menu.
    * Defaults to true.
    */
-  private _isFormsCollect: boolean = true;
-  get isFormsCollect(): boolean {
-    return this._isFormsCollect;
-  }
+  private _isFormsCollect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   @Input()
   set isFormsCollect(res: boolean) {
-    this._isFormsCollect = res;
+    this._isFormsCollect.next(res);
   }
 
   constructor(
       readonly breakpointObserver: BreakpointObserverService,
       private _fs: FormSchemaManager,
-  ) {
-    this._items = new BehaviorSubject<CollectItem[]>([]);
-  }
-  ngOnInit() {
-    if (this._isFormsCollect) {
-      this._items = this._fs.list().pipe(
-                        switchMap((rxdbQuery) => {
-                          const res = from(rxdbQuery.exec());
-                          return res;
-                        }),
-                        map(docs => {
-                          let collectItems: CollectItem[] = [];
-                          for (let document of docs.filter(dcm => dcm != null)) {
-                            let collectItem: CollectItem = {
-                              label: document.name,
-                              name: document.name,
-                              icon: document.name,
-                              schemaId: document.id,
-                            };
-                            collectItems.push(collectItem);
-                          }
-                          return collectItems.sort(
-                              (a, b) => {
-                                if (a.name < b.name) {
-                                  return -1;
-                                } else {
-                                  if (a.name > b.name) {
-                                    return 1;
-                                  } else {
-                                    return 0;
-                                  }
-                                }
-                              });
-                        }),
-                        ) as BehaviorSubject<CollectItem[]>;
-    }
+  ) {}
+
+  ngAfterViewInit() {
+    this._items = combineLatest([this._fs.list(), this._isFormsCollect, this._menuItems])
+                      .pipe(
+                          switchMap(([rxdbQuery, isCollect, menuItems]) => {
+                            if (isCollect) {
+                              const res = from(rxdbQuery.exec());
+                              return res.pipe(
+                                  map(docs => {
+                                    let collectItems: CollectItem[] = [];
+                                    for (let document of docs.filter(dcm => dcm != null)) {
+                                      let collectItem: CollectItem = {
+                                        name: document.name,
+                                        label: document.label ?? document.name,
+                                        icon: document.icon,
+                                        schemaId: document.id,
+                                      };
+                                      collectItems.push(collectItem);
+                                    }
+                                    return collectItems.sort((a, b) => {
+                                      if (a.name < b.name) {
+                                        return -1;
+                                      } else {
+                                        if (a.name > b.name) {
+                                          return 1;
+                                        } else {
+                                          return 0;
+                                        }
+                                      }
+                                    });
+                                  }),
+                              );
+                            }
+                            return obsOf(menuItems);
+                          }),
+                          ) as BehaviorSubject<CollectItem[]>;
   }
 }

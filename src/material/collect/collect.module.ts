@@ -23,6 +23,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatGridListModule} from '@angular/material/grid-list';
+import {MatIconModule} from '@angular/material/icon';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dewco/core/forms';
 import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
@@ -36,6 +37,7 @@ import {Collect} from './collect';
     FormsModule,
     RouterModule,
     MatGridListModule,
+    MatIconModule,
   ],
   declarations: [
     Collect,

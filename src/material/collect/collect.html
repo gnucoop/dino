@@ -12,9 +12,9 @@
       <div>
         <div class="title"></div>
         <div class="dewco-grid-icon">
-          <img src="assets/icons/forms/{{ item.name }}.svg" alt="" />
+          <mat-icon class="dewco-mat-icon">{{item.icon ?? 'list'}}</mat-icon>
         </div>
-        <div class="dewco-grid-label">{{ item.label }}</div>
+        <div class="dewco-grid-label">{{ item.label ?? item.name }}</div>
       </div>
     </mat-grid-tile>
   </ng-container>

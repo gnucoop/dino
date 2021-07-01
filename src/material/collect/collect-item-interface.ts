@@ -25,19 +25,19 @@
  */
 export interface CollectItem {
   /**
-   * The Item label
-   */
-  label: string;
-
-  /**
    * The Item name identifier
    */
   name: string;
 
   /**
+   * The Item label
+   */
+  label?: string;
+
+  /**
    * The Item svg icon filename
    */
-  icon: string;
+  icon?: string;
 
   /**
    * The Item custom url
