@@ -13,6 +13,8 @@ export declare class FormDataManager extends DataModelManager<FormData> {
 }
 
 export interface FormSchema extends Model {
+    icon?: string;
+    label?: string;
     name: string;
     schema: AjfFormCreate;
 }

@@ -1,4 +1,4 @@
-export declare const AUTH_SERVICE_CONFIG: InjectionToken<AuthServiceConfig>;
+export declare const AUTH_SERVICE_CONFIG: InjectionToken<AuthServiceConfig<DinoUserInfo>>;
 
 export declare class AuthGuard implements CanActivate {
     constructor(_router: Router, _authService: AuthService);
@@ -21,9 +21,10 @@ export interface AuthResponse {
 
 export declare class AuthService {
     readonly authToken: BehaviorSubject<string | null>;
-    readonly authenticated: Observable<boolean>;
-    constructor(_httpClient: HttpClient, _config: AuthServiceConfig);
-    checkToken(): boolean;
+    readonly authenticated: BehaviorSubject<boolean>;
+    readonly config: AuthServiceConfig;
+    constructor(_nss: NetworkStatusService, _httpClient: HttpClient, config: AuthServiceConfig);
+    checkToken(): Observable<boolean>;
     getAuthToken(): string | null;
     getRefreshToken(): string | null;
     getUserInfo(): User | null;
@@ -35,10 +36,11 @@ export declare class AuthService {
     static ɵprov: i0.ɵɵInjectableDeclaration<AuthService>;
 }
 
-export interface AuthServiceConfig {
+export interface AuthServiceConfig<T = DinoUserInfo> {
     apiKey?: string;
     applicationId: string;
     authTokenLocalStorageKey?: string;
+    failedAuthRedirect: string;
     host: string;
     loginEndpoint?: string;
     logoutEndpoint?: string;
@@ -47,11 +49,13 @@ export interface AuthServiceConfig {
     refreshTokenLocalStorageKey?: string;
     retrieveAuthToken?: () => string | null;
     retrieveRefreshToken?: () => string | null;
-    retrieveUserInfo?: () => User | null;
-    retryRefreshTime?: number;
+    retrieveUserInfo?: () => User<T> | null;
+    retryAttemptsMax: number;
+    retryRefreshTime: number;
     storeAuthToken?: (token: string | null) => void;
     storeRefreshToken?: (token: string | null) => void;
-    storeUserInfo?: (userInfo: User | null) => void;
+    storeUserInfo?: (userInfo: User<T> | null) => void;
+    userAuthInfo?: string;
     userCredential?: string;
     userInfoLocalStorageKey?: string;
 }
@@ -67,11 +71,28 @@ export declare const DEFAULT_AUTH_OPTIONS: {
     userInfoKey: string;
     userCredentialKey: string;
     passwordCredentialKey: string;
+    userAuthInfo: string;
 };
+
+export interface DinoUserInfo {
+    active: boolean;
+    firstName: string;
+    insertInstant: number;
+    lastLoginInstant: number;
+    lastName: string;
+    passwordChangeRequired: boolean;
+    passwordLastUpdateInstant: number;
+    registrations: Registration[];
+    tenantId: string;
+    twoFactorDelivery: TwoFactorDelivery;
+    twoFactorEnabled: boolean;
+    usernameStatus: UsernameStatus;
+    verified: boolean;
+}
 
 export declare class JWTInterceptor implements HttpInterceptor {
     handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]>;
-    constructor(_authService: AuthService, _config: AuthServiceConfig);
+    constructor(_router: Router, _authService: AuthService, _nss: NetworkStatusService, _config: AuthServiceConfig);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
     static ɵfac: i0.ɵɵFactoryDeclaration<JWTInterceptor, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<JWTInterceptor>;
@@ -106,28 +127,28 @@ export declare abstract class LoginComponent {
     static ɵfac: i0.ɵɵFactoryDeclaration<LoginComponent, never>;
 }
 
-export interface LoginResponse extends AuthResponse {
+export declare type LoginResponse<T extends {
+    [key: string]: any;
+} = {
+    [key: string]: any;
+}> = {
     user: User;
+    token: string;
+    refreshToken: string;
+} & T;
+
+export declare class NetworkStatusService {
+    readonly isOnline$: Observable<boolean>;
+    constructor();
+    static ɵfac: i0.ɵɵFactoryDeclaration<NetworkStatusService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<NetworkStatusService>;
 }
 
 export declare type TwoFactorDelivery = 'None' | 'TextMessage';
 
-export interface User {
-    active: boolean;
-    email: string;
-    firstName: string;
+export declare type User<T = DinoUserInfo> = {
     id: string;
-    insertInstant: number;
-    lastLoginInstant: number;
-    lastName: string;
-    passwordChangeRequired: boolean;
-    passwordLastUpdateInstant: number;
-    registrations: Registration[];
-    tenantId: string;
-    twoFactorDelivery: TwoFactorDelivery;
-    twoFactorEnabled: boolean;
-    usernameStatus: UsernameStatus;
-    verified: boolean;
-}
+    email: string;
+} & T;
 
 export declare type UsernameStatus = 'ACTIVE' | 'PENDING' | 'REJECTED';

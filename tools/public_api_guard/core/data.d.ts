@@ -23,6 +23,11 @@ export interface CanModifyData<T extends {} = {}, M extends Model = Model> {
     object: M;
 }
 
+export interface CanViewData<T extends {} = {}, M extends Model = Model> {
+    context?: PermissionContext<T>;
+    object: M;
+}
+
 export interface CollectionChangedEvent {
     action?: string;
     collection: string;
@@ -87,6 +92,11 @@ export declare abstract class DataModelManager<T extends Model = Model> {
     get collectionChanged(): Observable<CollectionChangedEvent>;
     get collectionName(): string;
     get collectionSchema(): RxJsonSchema;
+    detailsKey: keyof T;
+    detailsManager: DataModelManager<any>;
+    getSubData: (doc: T, querySelector?: any) => Observable<T[]>;
+    get permissionContext(): Observable<PermissionContext>;
+    get permissions(): Permission[];
     constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
     addToContext(data: PermissionContextDataUpdate): void;
     bulkCreate(data: InsertModel<T>[]): Observable<{
@@ -94,10 +104,12 @@ export declare abstract class DataModelManager<T extends Model = Model> {
         error: any[];
     }>;
     bulkDelete(data: T[]): Observable<RxDocument<T>[] | null>;
+    canView(object: T, context?: PermissionContext<T>): boolean;
     create(obj: InsertModel<T>): Observable<RxDocument<T> | null>;
     delete(data: string | T): Observable<RxDocument<T> | null>;
     generateAdditionalFilters(dataSchema?: any): any[];
     get(id: string): Observable<RxDocument<T> | null>;
+    init(): Observable<boolean>;
     list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>>;
     patch(data: Partial<T> & {
         id: string;
@@ -154,7 +166,7 @@ export declare type DataQuerySortDir = 'asc' | 'desc';
 
 export declare class DataService {
     readonly collectionChanged: Observable<CollectionChangedEvent>;
-    constructor(_authService: AuthService, config: DataServiceConfig);
+    constructor(_authService: AuthService, _nss: NetworkStatusService, config: DataServiceConfig, _authConfig: AuthServiceConfig);
     bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<{
         success: RxDocument<T>[];
         error: any[];
@@ -200,6 +212,7 @@ export interface Permission<T extends Model = Model> {
     canCreate?(data: CanCreateData<T>): boolean;
     canDelete?(data: CanDeleteData<T>): boolean;
     canModify?(data: CanModifyData<T>): boolean;
+    canView?(data: CanViewData<T>): boolean;
 }
 
 export interface PermissionContext<T extends {} = {}> {

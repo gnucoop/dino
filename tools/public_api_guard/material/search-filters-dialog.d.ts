@@ -20,5 +20,5 @@ export declare class SearchFiltersDialog implements OnInit, OnDestroy, AfterView
 export declare class SearchFiltersDialogModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersDialogModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<SearchFiltersDialogModule>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersDialogModule, [typeof i1.SearchFiltersDialog], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.MatButtonModule, typeof i5.MatCheckboxModule, typeof i6.MatDialogModule, typeof i7.MatFormFieldModule, typeof i8.MatIconModule, typeof i9.MatInputModule, typeof i10.MatTabsModule, typeof i11.RouterModule, typeof i12.SearchFiltersChipsModule, typeof i13.SearchFiltersWidgetModule], [typeof i1.SearchFiltersDialog]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersDialogModule, [typeof i1.SearchFiltersDialog], [typeof i2.CommonModule, typeof i3.MatButtonModule, typeof i4.MatCheckboxModule, typeof i5.MatDialogModule, typeof i6.MatFormFieldModule, typeof i7.MatIconModule, typeof i8.MatInputModule, typeof i9.MatTabsModule, typeof i10.RouterModule, typeof i11.SearchFiltersChipsModule, typeof i12.SearchFiltersWidgetModule], [typeof i1.SearchFiltersDialog]>;
 }

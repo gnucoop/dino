@@ -1,4 +1,4 @@
-export declare type ActionType = 'delete' | 'print' | 'download' | 'edit';
+export declare type ActionType = 'delete' | 'print' | 'download' | 'edit' | 'view' | 'select' | 'expand';
 
 export declare abstract class AdminUserInteractionsService {
     abstract askConfirm(action: ListAction): Observable<boolean>;
@@ -22,6 +22,7 @@ export interface FilterGroup {
     filterGroupAdditionalFilters?: FilterItem[];
     filterGroupBasicFilters?: FilterItem[];
     filterGroupName: string;
+    isFilterGroupDetails?: boolean;
 }
 
 export interface FilterItem extends Partial<AjfField> {
@@ -30,6 +31,7 @@ export interface FilterItem extends Partial<AjfField> {
     choicesOriginRef?: string;
     formControlName?: string;
     isAdditionalFilter?: boolean;
+    isFilterItemDetails?: boolean;
     isValid?: boolean;
     name: string;
     operator?: Operator;
@@ -55,6 +57,7 @@ export declare class FiltersService {
     addFilter(filterItem: FilterItem, filterList: FilterListType): void;
     checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean;
     checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean;
+    clearModelFilters(): void;
     findFilterByName(filterName: string, filterList?: FilterListType): Observable<FilterItem | undefined>;
     generateModelFilters(modelSchema: RxJsonSchema): void;
     initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]>;
@@ -71,33 +74,43 @@ export declare class FiltersService {
 export declare abstract class List<T extends Model = Model, AD extends Model = Model> {
     protected _actionEvent: EventEmitter<{
         action: ListAction;
-        items: T[];
+        items: T | T[];
+        isDetails: boolean;
     }>;
+    readonly _additionalDataSchema: Subject<AD | null>;
     protected _aui: AdminUserInteractionsService;
     protected _cdr: ChangeDetectorRef;
-    get additionalDataSchema(): AD;
-    set additionalDataSchema(ds: AD);
+    protected _displayedColumns: string[];
+    protected _headers: ListHeader<T>[];
+    set additionalDataSchema(ds: AD | null);
     get baseEditUrl(): string;
     set baseEditUrl(baseEditUrl: string);
+    get baseViewUrl(): string;
+    set baseViewUrl(baseViewUrl: string);
     get displayedColumns(): string[];
     get headers(): ListHeader<T>[];
     set headers(headers: ListHeader<T>[]);
+    get showCheckBox(): boolean;
+    set showCheckBox(show: boolean);
     get title(): string;
     set title(title: string);
     constructor(_cdr: ChangeDetectorRef, _aui: AdminUserInteractionsService);
     abstract clearSelection(): void;
-    abstract deleteAction(items: T[]): T[];
+    abstract deleteAction(items: T[], isDetails: boolean): T[];
+    abstract editAction(item: T, isDetails: boolean): void;
     abstract getItems(): T[];
     abstract getSelection(): T[];
-    processAction(action: ListAction, items: T[]): void;
+    processAction(action: ListAction, items: T | T[], isDetails?: boolean): void;
     abstract selectAll(): void;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; }, {}, never>;
+    setDisplayedColumns(headers: ListHeader<T>[]): void;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "showCheckBox": "showCheckBox"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; "baseViewUrl": "baseViewUrl"; }, {}, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<List<any, any>, never>;
 }
 
 export interface ListAction {
     actionType: ActionType;
     askConfirm?: boolean;
+    matIcon?: string;
 }
 
 export interface ListHeader<T> {

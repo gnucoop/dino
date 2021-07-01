@@ -12,5 +12,5 @@ export declare class SearchFiltersChips implements OnInit {
 export declare class SearchFiltersChipsModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersChipsModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<SearchFiltersChipsModule>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersChipsModule, [typeof i1.SearchFiltersChips], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.MatButtonModule, typeof i5.MatChipsModule, typeof i6.MatInputModule, typeof i7.RouterModule], [typeof i1.SearchFiltersChips]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersChipsModule, [typeof i1.SearchFiltersChips], [typeof i2.CommonModule, typeof i3.MatButtonModule, typeof i4.MatChipsModule, typeof i5.MatIconModule, typeof i6.MatInputModule, typeof i7.RouterModule], [typeof i1.SearchFiltersChips]>;
 }

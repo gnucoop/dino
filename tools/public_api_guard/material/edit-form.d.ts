@@ -8,7 +8,7 @@ export declare class EditForm<T extends Model = Model> implements OnInit, OnDest
     readonly isValid: Observable<boolean>;
     readonly isView: Observable<boolean>;
     readonly snackbar: MatSnackBar;
-    constructor(_router: Router, _route: ActivatedRoute, _fs: FormSchemaManager, _rendererService: AjfFormRendererService, snackbar: MatSnackBar);
+    constructor(_router: Router, _route: ActivatedRoute, _fs: FormSchemaManager, _rendererService: AjfFormRendererService, snackbar: MatSnackBar, _location: Location);
     ngOnDestroy(): void;
     ngOnInit(): void;
     onFormAction(evt: AjfFormActionEvent): void;
