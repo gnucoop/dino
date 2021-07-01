@@ -8,12 +8,15 @@ import {
 
 describe('dewco-search-filters-preset-manager', () => {
   beforeAll(async () => {
-    await browser.get('/list');
+    await browser.get('/collect');
+    const gridTile = element.all(by.tagName('mat-grid-tile')).first();
+
+    await browser.wait(EC.elementToBeClickable(gridTile), 1000);
+    await gridTile.click();
+    await browser.sleep(1000);
   });
 
-  beforeEach(async () => {
-    await browser.sleep(300);
-  });
+  beforeEach(async () => await browser.sleep(300));
 
   it('should display a dewco-search-filters-preset-manager component', async () => {
     const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));

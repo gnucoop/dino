@@ -6,7 +6,7 @@ import {
 } from 'protractor';
 
 describe('dewco-material-login', () => {
-  beforeEach(async () => await browser.get('/mat-login'));
+  beforeEach(async () => await browser.get('/login'));
 
   it('should not display an error message on init', async () => {
     const errorMsg = element(by.css('.dewco-error-message'));
@@ -67,9 +67,9 @@ describe('dewco-material-login', () => {
     expect(await pswInput.isPresent()).toBe(true);
 
     await emailInput.clear();
-    await emailInput.sendKeys('user@dewco.io');
+    await emailInput.sendKeys('dino');
     await pswInput.clear();
-    await pswInput.sendKeys('dewco');
+    await pswInput.sendKeys('dino');
 
     await browser.sleep(1000);
     await browser.wait(EC.elementToBeClickable(loginButton), 5000);
@@ -86,34 +86,15 @@ describe('dewco-material-login', () => {
     const pswInput = form.element(by.name('password'));
 
     await emailInput.clear();
-    await emailInput.sendKeys('user@dewco.io');
+    await emailInput.sendKeys('dino');
     await pswInput.clear();
-    await pswInput.sendKeys('dewco');
+    await pswInput.sendKeys('dino');
 
     await browser.sleep(1000);
     await browser.wait(EC.elementToBeClickable(loginButton), 5000);
     await loginButton.click();
     await browser.sleep(1000);
 
-    expect(await browser.getCurrentUrl()).toEqual(browser.baseUrl + '/mat-list');
-  });
-
-  it('should not redirect to post-login url after a failed login', async () => {
-    const form = element(by.tagName('form'));
-    const loginButton = form.element(by.className('mat-fab mat-button-base'));
-    const emailInput = form.element(by.name('email'));
-    const pswInput = form.element(by.name('password'));
-
-    await emailInput.clear();
-    await emailInput.sendKeys('wrong@dewco.io');
-    await pswInput.clear();
-    await pswInput.sendKeys('wrong');
-
-    await browser.sleep(1000);
-    await browser.wait(EC.elementToBeClickable(loginButton), 5000);
-    await loginButton.click();
-    await browser.sleep(1000);
-
-    expect(await browser.getCurrentUrl()).not.toEqual(browser.baseUrl + '/mat-list');
+    expect(await browser.getCurrentUrl()).toEqual(browser.baseUrl + '/dashboard');
   });
 });

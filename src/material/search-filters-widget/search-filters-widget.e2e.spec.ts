@@ -8,7 +8,12 @@ import {
 
 describe('dewco-search-filters-widget', () => {
   beforeAll(async () => {
-    await browser.get('/list');
+    await browser.get('/collect');
+    const gridTile = element.all(by.tagName('mat-grid-tile')).first();
+
+    await browser.wait(EC.elementToBeClickable(gridTile), 1000);
+    await gridTile.click();
+    await browser.sleep(1000);
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
@@ -30,7 +35,7 @@ describe('dewco-search-filters-widget', () => {
 
     expect(await firstWidgetLabel.isPresent()).toBe(true);
     expect(await firstWidgetLabel.isDisplayed()).toBe(true);
-    expect(await firstWidgetLabel.getText()).toEqual('Name');
+    expect(await firstWidgetLabel.getText()).toEqual('User_id');
   });
 
   it('should display a mat-slide-toggle in disabled state', async () => {
@@ -50,7 +55,7 @@ describe('dewco-search-filters-widget', () => {
 
   it('should show an operator toggle-group in case of a Number filter, selecting "==" by default',
      async () => {
-       const firstTab = element.all(by.css('.mat-tab-label')).get(0);
+       const firstTab = element.all(by.css('.mat-tab-label')).get(3);
        await browser.actions().mouseMove(firstTab.getWebElement()).perform();
        await browser.wait(EC.elementToBeClickable(firstTab), 1000);
        await firstTab.click();
@@ -79,7 +84,7 @@ describe('dewco-search-filters-widget', () => {
        await tabLabels.click();
        await browser.sleep(300);
 
-       const firstChoiceWidget = element.all(by.css('.mat-card-content ajf-checkbox-group'))
+       const firstChoiceWidget = element.all(by.css('.mat-card-content .mat-button-toggle-group'))
                                      .first()
                                      .element(by.xpath('ancestor::dewco-search-filters-widget'));
 

@@ -7,7 +7,12 @@ import {
 
 describe('dewco-search-filters-dialog', () => {
   beforeAll(async () => {
-    await browser.get('/list');
+    await browser.get('/collect');
+    const gridTile = element.all(by.tagName('mat-grid-tile')).first();
+
+    await browser.wait(EC.elementToBeClickable(gridTile), 1000);
+    await gridTile.click();
+    await browser.sleep(1000);
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
@@ -20,9 +25,12 @@ describe('dewco-search-filters-dialog', () => {
     expect(dialog).toBe(true);
   });
 
-  it('should display a search button', async () => {
-    const search = await element(by.cssContainingText('.mat-button-wrapper', 'search')).isPresent();
+  it('should display a search and a close buttons', async () => {
+    const search = await element(by.cssContainingText('.mat-button-wrapper', 'Search')).isPresent();
+    const close = await element(by.cssContainingText('.mat-button-wrapper', 'Close')).isPresent();
+
     expect(search).toBe(true);
+    expect(close).toBe(true);
   });
 
   it('should display a mat-tab-group inside the dialog content', async () => {
@@ -48,7 +56,7 @@ describe('dewco-search-filters-dialog', () => {
      async () => {
        const initialUrl = await browser.getCurrentUrl();
        const searchButton =
-           element(by.cssContainingText('.mat-button-wrapper', 'search')).element(by.xpath('..'));
+           element(by.cssContainingText('.mat-button-wrapper', 'Search')).element(by.xpath('..'));
        const firstWidgetInput = element.all(by.css('.mat-card-content input')).first();
 
        expect(await firstWidgetInput.isDisplayed()).toBe(true);
