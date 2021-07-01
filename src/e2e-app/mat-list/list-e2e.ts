@@ -1,44 +1,83 @@
-import {Component} from '@angular/core';
-import {DataModelManager} from '@dewco/core/data';
-import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
 import {
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {
+  FormData,
+  FormDataManager,
+  FormSchema,
+  FormSchemaManager,
+} from '@dewco/core/forms';
+import {
+  ActionType,
   FiltersService,
+  ListAction,
   ListHeader,
 } from '@dewco/core/list';
 import {ListDataSource} from '@dewco/material/list';
-
-import {
-  displayedHeaders,
-  // ELEMENT_DATA,
-  ElementManager,
-  filters,
-  PeriodicElement,
-} from './element-manager';
-import {testAjfSchema} from './test-ajf-formschema';
+import {Observable, of as obsOf} from 'rxjs';
+import {filter, shareReplay, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'mat-list-e2e',
   templateUrl: 'list-e2e.html',
 })
-export class MatListE2E {
-  readonly customFilters = filters;
+export class MatListE2E implements OnDestroy, OnInit {
   readonly additionalBasicFilters = ['project', 'location', 'unavailableFilter'];
-  readonly additionalDataSchema = testAjfSchema;
-  readonly title = 'Example List';
+  readonly additionalDataSchema: Observable<FormSchema|null>;
   readonly baseEditUrl = 'edit/';
-  readonly headers: ListHeader<PeriodicElement>[] = displayedHeaders;
-  readonly dataSource: ListDataSource<PeriodicElement, FormSchema>;
+  readonly dataSource: ListDataSource<FormData, FormSchema>;
+  readonly headers: ListHeader<FormData>[] = [
+    {column: 'id', label: 'ID', sortable: true, displayed: false},
+    {column: 'user_id', label: 'User', sortable: true},
+    {column: 'created_at', label: 'Creation Date', sortable: true},
+  ];
+  readonly onClickRowActions: ActionType[] = ['select'];
+  readonly listRowActions: ListAction[] = [
+    {
+      actionType: 'view',
+      matIcon: 'visibility',
+    },
+    {
+      actionType: 'edit',
+      matIcon: 'create',
+    },
+    {
+      actionType: 'delete',
+      matIcon: 'delete',
+      askConfirm: true,
+    },
+  ];
 
   constructor(
       readonly filtersService: FiltersService,
-      readonly elementManager: ElementManager,
+      readonly formDataManager: FormDataManager,
       readonly formSchemaManager: FormSchemaManager,
+      private _route: ActivatedRoute,
   ) {
+    this.additionalDataSchema = this._route.params.pipe(
+        switchMap(params => {
+          if (params.form_schema_id != null) {
+            return this.formSchemaManager.get(params.form_schema_id);
+          }
+          return obsOf(null);
+        }),
+        filter(id => id != null),
+        shareReplay(1),
+    );
+
     this.dataSource = new ListDataSource(
-        this.elementManager as unknown as DataModelManager<PeriodicElement>,
+        this.formDataManager,
         this.filtersService,
         this.formSchemaManager,
+        true,
     );
-    // dataService.bulkCreate(ELEMENT_DATA).subscribe(docs => console.log(docs));
   }
+
+  ngOnInit() {}
+
+
+  ngOnDestroy() {}
 }

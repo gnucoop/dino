@@ -1,8 +1,17 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree} from '@angular/router';
-import {AuthService, Credentials, User} from '@dewco/core/auth';
+import {Credentials, User} from '@dewco/core/auth';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay} from 'rxjs/operators';
+
+
+export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
+export const wsUrl = 'ws://localhost:8080/v1/graphql';
+export const authErrorMessage = 'Could not verify JWT: JWTExpired';
+
+export class MockBreakpointObserver {
+  small = obsOf(false);
+  large = obsOf(true);
+}
 
 const dummyUser: User = {
   id: 'userid',
@@ -26,14 +35,18 @@ const dummyUser: User = {
 export class AuthServiceMock {
   authenticated: BehaviorSubject<boolean>;
   constructor() {
-    this.authenticated = new BehaviorSubject<boolean>(false);
+    this.authenticated = new BehaviorSubject<boolean>(true);
   }
   login(credentials: Credentials): Observable<boolean> {
-    if (credentials.email == 'user@dewco.io' && credentials.password == 'dewco') {
+    if (credentials.email == 'dino' && credentials.password == 'dino') {
       this.authenticated.next(true);
       return obsOf(true).pipe(delay(1000));
     }
     return obsOf(false).pipe(delay(1000));
+  }
+  logout(): Observable<boolean> {
+    this.authenticated.next(false);
+    return obsOf(true);
   }
   getUserInfo(): User {
     return dummyUser;
@@ -43,14 +56,5 @@ export class AuthServiceMock {
   }
   refreshToken(): Observable<boolean> {
     return obsOf(true);
-  }
-}
-
-@Injectable({providedIn: 'root'})
-export class AuthGuardMock implements CanActivate {
-  constructor(private _auth: AuthService) {}
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
-      Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
-    return this._auth.authenticated;
   }
 }

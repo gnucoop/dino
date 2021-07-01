@@ -1,10 +1,10 @@
+import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@dewco/core/forms';
-import {LocationModule} from '@dewco/core/locations';
-import {ProjectModule} from '@dewco/core/projects';
+import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {ListModule} from '@dewco/material/list';
 import {SearchFiltersBarModule} from '@dewco/material/search-filters-bar';
-import {ElementManager} from './element-manager';
+import {MockBreakpointObserver} from '../mocks';
 
 import {MatListE2E} from './list-e2e';
 
@@ -13,14 +13,13 @@ import {MatListE2E} from './list-e2e';
     MatListE2E,
   ],
   imports: [
+    CommonModule,
     ListModule,
-    LocationModule,
     FormsModule,
-    ProjectModule,
     SearchFiltersBarModule,
   ],
   providers: [
-    ElementManager,
+    {provide: BreakpointObserverService, useClass: MockBreakpointObserver},
   ],
 })
 export class MaterialListE2eModule {

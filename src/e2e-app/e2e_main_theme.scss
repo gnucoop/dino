@@ -10,10 +10,10 @@
 @include all-core.mat-core();
 
 // Define a theme.
-$primary: mat-theming.define-palette(mat-palette.$green-palette);
-$accent: mat-theming.define-palette(mat-palette.$deep-purple-palette, 600, 100, 800);
+$primary: mat-theming.define-palette(mat-palette.$pink-palette);
+$accent: mat-theming.define-palette(mat-palette.$deep-orange-palette, 600, 100, 800);
 $warn: mat-theming.define-palette(mat-palette.$red-palette);
-$alt_accent: mat-theming.define-palette(palette.$blue, 500);
+$alt_accent: mat-theming.define-palette(mat-palette.$indigo-palette, 500);
 
 $theme: core.light-theme(
     (

@@ -25,7 +25,7 @@ import {Component, ViewEncapsulation} from '@angular/core';
 /** Root component for the e2e-app demos. */
 @Component({
   selector: 'e2e-app',
-  template: '<e2e-app-layout><router-outlet></router-outlet></e2e-app-layout>',
+  template: '<app-main><router-outlet></router-outlet></app-main>',
   encapsulation: ViewEncapsulation.None,
 })
 export class E2eApp {

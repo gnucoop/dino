@@ -1,0 +1,31 @@
+import {DataModelManager, Model} from '@dewco/core/data';
+import {RxDocument} from 'rxdb';
+import {from, Observable, of as obsOf} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
+
+/**
+ * Class that generates formdata/schemas for the e2e app
+ */
+export class FakeDataGenerator<T extends Model = Model> {
+  /**
+   * Generates dummy docs.
+   * @param manager The data model manager
+   * @param docs The docs to generate
+   */
+  generateData(manager: DataModelManager<T>, docs: T[]):
+      Observable<{success: RxDocument<T, {}>[]; error: any[]; }> {
+    if (manager == null || docs.length == 0) {
+      return obsOf({success: [], error: []});
+    }
+    return manager.list().pipe(
+        switchMap(listquery => from(listquery.exec())),
+        switchMap(doclist => {
+          if (doclist.length === 0) {
+            return manager.bulkCreate(docs);
+          }
+          return obsOf({success: [], error: []});
+        }),
+    );
+  }
+  constructor() {}
+}
