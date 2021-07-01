@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AuthService, User} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
 import {
   DATA_SERVICE_CONFIG,
   DataCreateCollectionRequest,
@@ -103,6 +103,15 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
 class DummyManager extends DataModelManager<DummyModel> {
   constructor(
       createParams: DataCreateCollectionRequest,
@@ -132,6 +141,7 @@ describe('ListDataSource', () => {
         {provide: DummyManager, useValue: dummyManager},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
     contextService = TestBed.inject(PermissionContextService);

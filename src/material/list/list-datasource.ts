@@ -165,17 +165,32 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   private _collectionChangedSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Main subscription, to which every other subscription is added.
+   * Used for unsubscribing all subscriptions.
+   */
+  private _mainSubscription: Subscription = Subscription.EMPTY;
+
+  /**
    * @param _dataModelManager The main model DataModelManager.
    * @param _fs The service managing the List filters.
    * @param _additionalDataManager The optional manager used to generate additional
    * filters from the "data" property of the main model.
+   * @param _isFormDataList If true, this is the datasource for a list of FormDatas.
    */
   constructor(
       private _dataModelManager: DataModelManager<T>,
       private _fs: FiltersService,
       @Optional() private _additionalDataManager?: DataModelManager<AD>,
+      private _isFormDataList: boolean = false,
   ) {
     super();
+
+    this._mainSubscription.add(this._additionalDataSub)
+        .add(this._additionalCollectionInitSub)
+        .add(this._detailsCollectionInitSub)
+        .add(this._dataResultsSub)
+        .add(this._filterParamsSub)
+        .add(this._collectionChangedSub);
 
     this._modelSchema = this._dataModelManager.collectionSchema;
 
@@ -284,7 +299,8 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
             this._addNestedProps(
                 selector,
                 [
-                  `data.data.${item.name.trim().toLowerCase()}`,
+                  this._isFormDataList ? `data.${item.name.trim().toLowerCase()}` :
+                                         `data.data.${item.name.trim().toLowerCase()}`,
                   item.operator ? item.operator.value : '$eq',
                 ],
                 item.value,
@@ -377,7 +393,8 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * @returns The details data
    */
   getDetailsData(row: T, querySelector?: {}): Observable<T[]> {
-    if (this._dataModelManager == null || this._dataModelManager.detailsManager == null) {
+    if (this._dataModelManager == null || this._dataModelManager.detailsManager == null ||
+        this._dataModelManager.getSubData == null) {
       return obsOf([]);
     }
     return this._dataModelManager.getSubData(row, querySelector);
@@ -456,12 +473,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * Disconnects the ListDataSource, unsubscribing from the data and the filters
    */
   disconnect(): void {
-    this._additionalCollectionInitSub.unsubscribe();
-    this._additionalDataSub.unsubscribe();
-    this._detailsCollectionInitSub.unsubscribe();
-    this._collectionChangedSub.unsubscribe();
-    this._dataResultsSub.unsubscribe();
-    this._filterParamsSub.unsubscribe();
+    this._mainSubscription.unsubscribe();
 
     this._dataResults.complete();
     this.refreshListData.complete();

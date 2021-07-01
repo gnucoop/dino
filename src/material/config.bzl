@@ -21,6 +21,7 @@ scssOnlyEntryPoints = [
     "datepicker",
     "dialog",
     "form-field",
+    "icon",
     "grid",
     "paginator",
     "select",

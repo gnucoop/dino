@@ -52,7 +52,7 @@ export class ColumnsSelector<T> implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.columns = this.data.columns.map(header => ({...header})).filter(h => h.column !== 'data');
+    this.columns = this.data.columns.map(header => ({...header})).filter(h => !h.hidden);
   }
 
   /**

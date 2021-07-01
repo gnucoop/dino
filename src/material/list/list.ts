@@ -96,12 +96,12 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   /**
    * Determines the expanded state all rows, if the list is expandable
    */
-  expandAllRows: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  readonly expandAllRows: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * The currently expanded rows.
    */
-  expandedRows: T[] = [];
+  readonly expandedRows: T[] = [];
 
   /**
    * The currently expanded rows data.
@@ -258,14 +258,14 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * The default list actions performed when a list item is clicked.
    * Defaults to 'select and expand'.
    */
-  private _defaultListRowActions: ActionType[] = ['select', 'expand'];
-  get defaultListRowActions(): ActionType[] {
-    return this._defaultListRowActions;
+  private _onClickRowActions: ActionType[] = ['select', 'expand'];
+  get onClickRowActions(): ActionType[] {
+    return this._onClickRowActions;
   }
   @Input()
-  set defaultListRowActions(actionType: ActionType[]) {
+  set onClickRowActions(actionType: ActionType[]) {
     if (actionType != null) {
-      this._defaultListRowActions = actionType;
+      this._onClickRowActions = actionType;
     }
   }
 
@@ -300,15 +300,32 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    */
   private _actionsSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Subscribes to an optional data schema, used to automatically generate
+   * additional list filters in the filters dialog.
+   */
+  private _additionalDataSchemaSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Main subscription, to which every other subscription is added.
+   * Used for unsubscribing all subscriptions.
+   */
+  private _mainSubscription: Subscription = Subscription.EMPTY;
+
   constructor(
       cdr: ChangeDetectorRef,
       aui: AdminUserInteractionsService,
-      public dialog: MatDialog,
+      private _dialog: MatDialog,
       private _fts: FiltersService,
       readonly breakpointObserver: BreakpointObserverService,
       private _router: Router,
   ) {
     super(cdr, aui);
+
+    this._mainSubscription.add(this._expandAllRowsSub)
+        .add(this._columnsDialogSub)
+        .add(this._actionsSub)
+        .add(this._additionalDataSchemaSub);
   }
 
   ngAfterContentInit(): void {
@@ -471,13 +488,13 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * @param row The selected row
    */
   rowToggle(row: T): void {
-    if (this._defaultListRowActions.some(act => act === 'select')) {
+    if (this._onClickRowActions.some(act => act === 'select')) {
       this.selection.toggle(row);
     }
-    if (this._defaultListRowActions.some(act => act === 'expand')) {
+    if (this._onClickRowActions.some(act => act === 'expand')) {
       this.expansionRowsUpdate(row);
     }
-    if (this._defaultListRowActions.some(act => act === 'view')) {
+    if (this._onClickRowActions.some(act => act === 'view')) {
       this.actionOnItems(row, {actionType: 'view'});
     }
   }
@@ -504,7 +521,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     dialogConfig.data = {
       columns: this.headers,
     };
-    this._columnsDialogRef = this.dialog.open(ColumnsSelector, dialogConfig);
+    this._columnsDialogRef = this._dialog.open(ColumnsSelector, dialogConfig);
     this._columnsDialogSub =
         this._columnsDialogRef.afterClosed()
             .pipe(catchError(err => throwError(err) as Observable<ListHeader<T>>))
@@ -528,7 +545,14 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     }
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
-      this.dataSource.additionalDataSchema = this.additionalDataSchema ?? null;
+      if (this._additionalDataSchema != null) {
+        this._additionalDataSchemaSub = this._additionalDataSchema.subscribe(schema => {
+          if (schema != null) {
+            this.dataSource.additionalDataSchema = schema;
+          }
+        });
+      }
+
 
       // This next code block avoids searching in hidden colums when filtering data by kewyword,
       // by providing a custom filterPredicate for the dataSource.
@@ -626,9 +650,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   }
 
   ngOnDestroy() {
-    this._actionsSub.unsubscribe();
-    this._columnsDialogSub.unsubscribe();
-    this._expandAllRowsSub.unsubscribe();
+    this._mainSubscription.unsubscribe();
     this._dataSource.disconnect();
     this._fts.clearModelFilters();
   }

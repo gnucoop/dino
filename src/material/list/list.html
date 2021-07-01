@@ -115,7 +115,7 @@
       <mat-cell *matCellDef="let row" class="dewco-row-actions">
         <ng-container *ngFor="let action of ctx.listRowActions">
           <ng-container
-            *ngIf="!(row.data.data == null && (action.actionType === 'edit' || action.actionType === 'view'))"
+            *ngIf="!((row.data == null && row.data?.data == null) && (action.actionType === 'edit' || action.actionType === 'view'))"
           >
             <mat-icon
               mat-list-icon
@@ -199,13 +199,16 @@
     >
     </mat-row>
 
-    <mat-row
-      *matRowDef="let row; columns: ['expandedDetail']"
-      class="dewco-row-details"
-      [class.dewco-highlighted-row]="selection.isSelected(row)"
-      [class.dewco-details-row]="ctx.isDetails"
-    >
-    </mat-row>
+    <ng-container *ngIf="expandable">
+      <mat-row
+        *matRowDef="let row; columns: ['expandedDetail']"
+        class="dewco-row-details"
+        [class.dewco-highlighted-row]="selection.isSelected(row)"
+        [class.dewco-details-row]="ctx.isDetails"
+      >
+      </mat-row>
+    </ng-container>
+
   </mat-table>
   <ng-container *ngIf="ctx.showPaginator">
     <mat-paginator></mat-paginator>
