@@ -26,6 +26,9 @@ const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
   applicationId: 'applicationId',
   apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
 };
 
 const testAjfSchema = {

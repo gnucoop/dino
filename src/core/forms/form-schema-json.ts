@@ -42,6 +42,14 @@ export const schema = {
       "type": "string",
       "description": "The form schema name."
     },
+    "label": {
+      "type": "string",
+      "description": "The form schema displayed label."
+    },
+    "icon": {
+      "type": "string",
+      "description": "The form schema icon identifier."
+    },
     "schema": {
       "description": "JSON definition of the Ajf form schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-form-schema.json).",
       "type": "object"

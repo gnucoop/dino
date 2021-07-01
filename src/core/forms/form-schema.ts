@@ -35,6 +35,16 @@ export interface FormSchema extends Model {
   name: string;
 
   /**
+   * The form schema displayed label.
+   */
+  label?: string;
+
+  /**
+   * The form schema icon identifier.
+   */
+  icon?: string;
+
+  /**
    * JSON definition of the Ajf form schema.
    * It must be valid against the [non-scrict
    * version](https://ajf.rocks/schemas/ajf-form-schema.json).
