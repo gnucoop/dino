@@ -24,6 +24,6 @@ import {Project} from './project';
 
 declare module '@dewco/core/forms/form-data' {
   interface FormData {
-    project: Project;
+    project?: Project;
   }
 }
