@@ -2,7 +2,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AuthService} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {of} from 'rxjs';
 
 import {MainNav} from './main-nav';
@@ -17,6 +17,15 @@ const authServiceMock = {
     return of(true);
   }
 } as unknown as AuthService;
+
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
 
 
 describe('Main', () => {
@@ -35,6 +44,7 @@ describe('Main', () => {
           ],
           providers: [
             {provide: AuthService, useValue: authServiceMock},
+            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
           ],
         })
         .compileComponents();

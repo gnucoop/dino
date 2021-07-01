@@ -3,7 +3,7 @@
   class="dewco-toolbar"
   [class.dewco-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
 >
-  <button mat-icon-button (click)="menuToggle()">
+  <button mat-icon-button (click)="menuToggle()" aria-label="Toggle menu button">
     <mat-icon
       *ngIf="(breakpointObserver.large|async) ? (extendedSidenav|async) : sidenav.opened;else closed_menu"
       >menu_open</mat-icon
@@ -12,7 +12,7 @@
 
   <ng-template #closed_menu><mat-icon>menu</mat-icon></ng-template>
 
-  <img class="dewco-toolbar-logo" [src]="logoImagePath" />
+  <img class="dewco-toolbar-logo" [src]="logoImagePath" alt="logo"/>
 
   <div class="dewco-toolbar-actions">
     <mat-icon class="dewco-logout-button" (click)="logout()">logout</mat-icon>
