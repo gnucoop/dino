@@ -1,12 +1,12 @@
 import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dewco/core/auth';
 
-const applicationId = 'a1c21574-d057-4477-b65e-e9a8af5d3f6e';
+const applicationId = 'c7576d4b-1be7-4381-98b5-d02f13f5dadd';
 const host = `http://localhost:9011`;
 export const fusionAuthConfig: AuthServiceConfig = {
   host: host,
   applicationId: applicationId,
-  apiKey: `HMz6kUZwwyu9D4PEVb-HPAeVUghw_YcXSc7QnAWdB8O470s4FPDEsVZI`,
+  apiKey: `jVe6r5r3u-0sAHjo1nzAIk6j5JTB1_qZOunuY4oMSSBIXClCKbA-3rJb`,
   retryRefreshTime: 3000,
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
@@ -26,10 +26,16 @@ export const additionalConfig = {
    * If true, fake data is generated from test-ajf-formschema and test-ajf-formdata
    * when the e2e-app starts
    */
-  generateData: true,
+  generateData: false,
 
   /**
    * Config the breakpointobserver service for "large" or "small" screens
    */
   isSmallScreen: false,
+
+  /**
+   * If true, authGuard is on for all guarded routes.
+   * Set this to false to correctly perform e2e-tests.
+   */
+  authGuard: true,
 };
