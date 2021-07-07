@@ -25,11 +25,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormSchemaManager} from '@dewco/core/forms';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {BehaviorSubject, combineLatest, from, of as obsOf} from 'rxjs';
+import {BehaviorSubject, from, of as obsOf, Subscription} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 
@@ -44,7 +45,7 @@ import {CollectItem} from './collect-item-interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class Collect implements AfterViewInit {
+export class Collect implements AfterViewInit, OnDestroy {
   /**
    * An array of items to be displayed in the grid.
    * They can represent Forms or any generic Item (eg. a Section of the app)
@@ -55,10 +56,15 @@ export class Collect implements AfterViewInit {
   }
 
   /**
+   * Subscribes to the collect isFormsCollect flag and to the custom
+   * list of menu items passed in input.
+   */
+  private _itemsSub: Subscription = Subscription.EMPTY;
+
+  /**
    * An array of items to be displayed in the Dashboard menu grid.
    * They represent generic Items (eg. a Section of the app)
    */
-  private _menuItems: BehaviorSubject<CollectItem[]> = new BehaviorSubject<CollectItem[]>([]);
   @Input()
   set menuItems(menuItems: CollectItem[]) {
     if (menuItems == null || menuItems.length <= 0) {
@@ -118,39 +124,51 @@ export class Collect implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    this._items = combineLatest([this._fs.list(), this._isFormsCollect, this._menuItems])
-                      .pipe(
-                          switchMap(([rxdbQuery, isCollect, menuItems]) => {
-                            if (isCollect) {
-                              const res = from(rxdbQuery.exec());
-                              return res.pipe(
-                                  map(docs => {
-                                    let collectItems: CollectItem[] = [];
-                                    for (let document of docs.filter(dcm => dcm != null)) {
-                                      let collectItem: CollectItem = {
-                                        name: document.name,
-                                        label: document.label ?? document.name,
-                                        icon: document.icon,
-                                        schemaId: document.id,
-                                      };
-                                      collectItems.push(collectItem);
-                                    }
-                                    return collectItems.sort((a, b) => {
-                                      if (a.name < b.name) {
-                                        return -1;
-                                      } else {
-                                        if (a.name > b.name) {
-                                          return 1;
-                                        } else {
-                                          return 0;
-                                        }
-                                      }
-                                    });
-                                  }),
-                              );
-                            }
-                            return obsOf(menuItems);
-                          }),
-                          ) as BehaviorSubject<CollectItem[]>;
+    this._itemsSub = this._isFormsCollect
+                         .pipe(
+                             switchMap(isCollect => {
+                               if (isCollect) {
+                                 const res = this._fs.list().pipe(
+                                     switchMap(rxdbQuery => from(rxdbQuery.exec())));
+                                 return res.pipe(
+                                     map(docs => {
+                                       let collectItems: CollectItem[] = [];
+                                       for (let document of docs.filter(dcm => dcm != null)) {
+                                         let collectItem: CollectItem = {
+                                           name: document.name,
+                                           label: document.label ?? document.name,
+                                           icon: document.icon,
+                                           schemaId: document.id,
+                                         };
+                                         collectItems.push(collectItem);
+                                       }
+                                       return collectItems.sort((a, b) => {
+                                         if (a.name < b.name) {
+                                           return -1;
+                                         } else {
+                                           if (a.name > b.name) {
+                                             return 1;
+                                           } else {
+                                             return 0;
+                                           }
+                                         }
+                                       });
+                                     }),
+                                 );
+                               }
+                               return obsOf(null);
+                             }),
+                             )
+                         .subscribe({
+                           next: items => {
+                             if (items != null) {
+                               this._items.next(items);
+                             }
+                           }
+                         });
+  }
+
+  ngOnDestroy() {
+    this._itemsSub.unsubscribe();
   }
 }

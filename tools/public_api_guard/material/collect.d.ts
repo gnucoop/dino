@@ -1,4 +1,4 @@
-export declare class Collect implements AfterViewInit {
+export declare class Collect implements AfterViewInit, OnDestroy {
     readonly breakpointObserver: BreakpointObserverService;
     get columnsLarge(): number;
     set columnsLarge(num: number);
@@ -9,6 +9,7 @@ export declare class Collect implements AfterViewInit {
     set menuItems(menuItems: CollectItem[]);
     constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager);
     ngAfterViewInit(): void;
+    ngOnDestroy(): void;
     static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dewco-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "isFormsCollect": "isFormsCollect"; }, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }
