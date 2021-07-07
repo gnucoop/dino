@@ -130,7 +130,7 @@ export class AuthService {
                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
     const url =
         `${this._generateUrl(this.config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
-    return this._httpClient.post(url, null, {headers})
+    return this._httpClient.post(url, {}, {headers})
         .pipe(
             tap(() => {
               this.authenticated.next(false);

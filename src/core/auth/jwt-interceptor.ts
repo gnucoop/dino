@@ -76,7 +76,9 @@ export class JWTInterceptor implements HttpInterceptor {
                 );
               } else {
                 this._authService.authenticated.next(false);
-                this._router.navigate([this._config.failedAuthRedirect, 'expired']);
+                if (this._authService.getAuthToken() != null) {
+                  this._router.navigate([this._config.failedAuthRedirect, 'expired']);
+                }
                 return obsOf(false);
               }
             }),
@@ -96,7 +98,9 @@ export class JWTInterceptor implements HttpInterceptor {
                         return obsOf(true);
                       } else {
                         this._authService.authenticated.next(false);
-                        this._router.navigate([this._config.failedAuthRedirect, 'expired']);
+                        if (this._authService.getAuthToken() != null) {
+                          this._router.navigate([this._config.failedAuthRedirect, 'expired']);
+                        }
                         return obsOf(false);
                       }
                     }),
