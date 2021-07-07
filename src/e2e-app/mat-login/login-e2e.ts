@@ -1,6 +1,7 @@
 import {
   Component,
 } from '@angular/core';
+import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {Router} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
 
@@ -17,6 +18,14 @@ export class MatLoginE2E {
   }
 
   postLogin() {
-    this._router.navigate(['mat-list']);
+    this._router.navigate(['dashboard']);
+  }
+
+  changeTheme(changeEvt: MatSlideToggleChange) {
+    const themeAsset: HTMLLinkElement = document.getElementById('themeAsset') as HTMLLinkElement;
+
+    if (themeAsset != null) {
+      themeAsset.href = changeEvt.checked ? `e2e_alt_theme.css` : `e2e_main_theme.css`;
+    }
   }
 }

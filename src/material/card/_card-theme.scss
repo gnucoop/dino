@@ -12,6 +12,10 @@
         background: mat-theming.get-color-from-palette($background, card);
         color: mat-theming.get-color-from-palette($foreground, text);
         border-left-color: mat-theming.get-color-from-palette($accent);
+        .ajf-field-entry .mat-radio-button,
+        .ajf-field-entry ajf-checkbox-group-item .mat-button {
+            background-color: inherit !important;
+        }
     }
 
     .mat-card-subtitle {
@@ -19,7 +23,7 @@
     }
 
     .mat-card-actions {
-        background: mat-theming.get-color-from-palette($background, dialog);
+        background-color: mat-theming.get-color-from-palette($accent, 900, 0.2) !important;
         color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
 

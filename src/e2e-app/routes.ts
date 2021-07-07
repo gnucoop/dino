@@ -8,8 +8,6 @@ import {MatLoginE2E} from './mat-login/login-e2e';
 
 
 export const E2E_APP_ROUTES: Routes = [
-  // {path: 'filters-example', component: ExampleFormSelect},
-  // {path: 'list-example', component: ExampleFormCollect},
   {
     path: 'edit',
     children: [
@@ -49,7 +47,6 @@ export const E2E_APP_ROUTES: Routes = [
       {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
       {path: '**', redirectTo: '/dashboard', pathMatch: 'full'},
     ],
-
   },
   {
     path: 'login',

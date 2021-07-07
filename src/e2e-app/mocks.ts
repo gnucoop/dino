@@ -3,14 +3,16 @@ import {Credentials, User} from '@dewco/core/auth';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay} from 'rxjs/operators';
 
+import {additionalConfig} from './mockconfig';
+
 
 export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 export const wsUrl = 'ws://localhost:8080/v1/graphql';
 export const authErrorMessage = 'Could not verify JWT: JWTExpired';
 
 export class MockBreakpointObserver {
-  small = obsOf(false);
-  large = obsOf(true);
+  small = obsOf(additionalConfig.isSmallScreen);
+  large = obsOf(!additionalConfig.isSmallScreen);
 }
 
 const dummyUser: User = {

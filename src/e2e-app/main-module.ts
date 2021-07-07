@@ -10,21 +10,36 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AuthModule, AuthService} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG} from '@dewco/core/data';
-import {FormsModule} from '@dewco/core/forms';
+import {
+  FormData,
+  FormDataManager,
+  FormSchema,
+  FormSchemaManager,
+  FormsModule
+} from '@dewco/core/forms';
 import {TranslateModule} from '@ngx-translate/core';
-import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
+import {of as obsOf} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
-import {ExampleFormCollectModule} from './example-form-collect/example-form-collect.module';
-import {ExampleFormSelectModule} from './example-form-select/example-form-select.module';
+import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialCollectE2eModule} from './mat-collect/collect-e2e.module';
+import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
-import {fusionAuthConfig, paginatorConfig} from './mockconfig';
-import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
+import {additionalConfig, fusionAuthConfig, paginatorConfig} from './mockconfig';
+import {authErrorMessage, syncGraphQLUrl, wsUrl} from './mocks';
 import {E2E_APP_ROUTES} from './routes';
+import {formDatas} from './test-ajf-formdata';
+import {formSchemas} from './test-ajf-formschema';
+
+/**
+ * Only used to generate fake data for the e2e app
+ */
+const fakeSchemaGenerator = new FakeDataGenerator<FormSchema>();
+const fakeDataGenerator = new FakeDataGenerator<FormData>();
 
 @NgModule({
   imports: [
@@ -41,8 +56,6 @@ import {E2E_APP_ROUTES} from './routes';
     FormsModule,
 
     // E2E demos
-    ExampleFormCollectModule,
-    ExampleFormSelectModule,
     MaterialDashboardE2eModule,
     MaterialCollectE2eModule,
     MaterialListE2eModule,
@@ -53,7 +66,8 @@ import {E2E_APP_ROUTES} from './routes';
     E2eApp,
   ],
   providers: [
-    {provide: AuthService, useClass: AuthServiceMock},
+    AuthService,
+    // {provide: AuthService, useClass: AuthServiceMock},
     {
       provide: DATA_SERVICE_CONFIG,
       useValue: {
@@ -75,4 +89,30 @@ import {E2E_APP_ROUTES} from './routes';
   bootstrap: [E2eApp],
 })
 export class MainModule {
+  /**
+   * If true, fake data is generated.
+   */
+  readonly generateData: boolean = additionalConfig.generateData;
+
+  constructor(
+      readonly fsm: FormSchemaManager,
+      readonly fdm: FormDataManager,
+  ) {
+    if (this.generateData) {
+      fakeSchemaGenerator.generateData(this.fsm, formSchemas)
+          .pipe(
+              switchMap(res => {
+                if (res.success == null || res.success.length === 0) {
+                  return obsOf(null);
+                }
+                const genSchemaId = res.success[0].id;
+                for (let idx = 0; idx < formDatas.length; idx++) {
+                  formDatas[idx].schema_id = genSchemaId;
+                }
+                return fakeDataGenerator.generateData(this.fdm, formDatas);
+              }),
+              )
+          .subscribe(items => console.log('DATA GENERATED:', items));
+    }
+  }
 }

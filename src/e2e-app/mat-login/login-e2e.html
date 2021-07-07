@@ -1,4 +1,31 @@
 <dewco-login
   [postLogin]="postLogin"
   [logoImagePath]="'https://logos.textgiraffe.com/logos/logo-name/Dino-designstyle-smoothie-m.png'"
-></dewco-login>
+>
+  <ng-container additionalContent>
+    <div
+      style="
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20vh;
+      "
+    >
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Light mode"
+        style="opacity: 0.5"
+        >light_mode</mat-icon
+      >
+      <mat-slide-toggle (change)="changeTheme($event)" style="margin: 20px">
+      </mat-slide-toggle>
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Dark mode"
+        style="opacity: 0.5"
+        >dark_mode</mat-icon
+      >
+    </div>
+  </ng-container>
+</dewco-login>

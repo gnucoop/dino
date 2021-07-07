@@ -10,10 +10,10 @@
 
 // Define an alernative theme.
 $primary: mat-theming.define-palette(mat-palette.$brown-palette);
-$accent: mat-theming.define-palette(mat-palette.$deep-orange-palette, 600, 100, 800);
+$accent: mat-theming.define-palette(mat-palette.$deep-orange-palette, 100, 900, A700);
 $warn: mat-theming.define-palette(mat-palette.$red-palette);
 
-$theme: core.light-theme(
+$theme: core.dark-theme(
     (
         color: (
             primary: $primary,
