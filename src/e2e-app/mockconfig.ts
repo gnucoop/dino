@@ -3,7 +3,7 @@ import {AuthServiceConfig} from '@dewco/core/auth';
 
 const applicationId = 'c7576d4b-1be7-4381-98b5-d02f13f5dadd';
 const host = `http://localhost:9011`;
-export const fusionAuthConfig: AuthServiceConfig = {
+export const authConfig: AuthServiceConfig = {
   host: host,
   applicationId: applicationId,
   apiKey: `jVe6r5r3u-0sAHjo1nzAIk6j5JTB1_qZOunuY4oMSSBIXClCKbA-3rJb`,
@@ -26,16 +26,23 @@ export const additionalConfig = {
    * If true, fake data is generated from test-ajf-formschema and test-ajf-formdata
    * when the e2e-app starts
    */
-  generateData: false,
-
-  /**
-   * Config the breakpointobserver service for "large" or "small" screens
-   */
-  isSmallScreen: false,
+  generateData: true,
 
   /**
    * If true, authGuard is on for all guarded routes.
    * Set this to false to correctly perform e2e-tests.
    */
-  authGuard: true,
+  authGuard: false,
+
+  /**
+   * If true, the real auth service will be used to authenticate
+   * users against the external authentication platform.
+   * Set this to false to correctly perform e2e-tests.
+   */
+  externalAuthentication: false,
+
+  /**
+   * Config the breakpointobserver service for "large" or "small" screens
+   */
+  isSmallScreen: false,
 };

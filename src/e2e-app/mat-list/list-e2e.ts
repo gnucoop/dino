@@ -25,7 +25,13 @@ import {filter, shareReplay, switchMap} from 'rxjs/operators';
   templateUrl: 'list-e2e.html',
 })
 export class MatListE2E implements OnDestroy, OnInit {
-  readonly additionalBasicFilters = ['project', 'location', 'unavailableFilter'];
+  readonly additionalBasicFilters = [
+    'project',
+    'location',
+    'area',
+    'organization',
+    'unavailableFilter',
+  ];
   readonly additionalDataSchema: Observable<FormSchema|null>;
   readonly baseEditUrl = 'edit/';
   readonly dataSource: ListDataSource<FormData, FormSchema>;

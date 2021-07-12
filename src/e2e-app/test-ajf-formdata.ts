@@ -1,9 +1,10 @@
 // import '@dewco/core/locations/form-data';
 // import '@dewco/core/projects/form-data';
+import '@dewco/core/areas/form-data';
 
-import {FormData} from '@dewco/core/forms/form-data';
 // import {Location} from '@dewco/core/locations';
 // import {Project} from '@dewco/core/projects';
+import {FormData} from '@dewco/core/forms/form-data';
 
 const ajfFormDatas = [
   {
@@ -263,18 +264,21 @@ const ajfFormDatas = [
 // const projects: {[key: string]: Project} = {
 //   'project_a': {
 //     id: '',
+//     code: 'Project A',
 //     created_at: '',
 //     updated_at: '',
 //     name: 'project_a',
 //   },
 //   'project_b': {
 //     id: '',
+//     code: 'Project B',
 //     created_at: '',
 //     updated_at: '',
 //     name: 'project_b',
 //   },
 //   'project_c': {
 //     id: '',
+//     code: 'Project C',
 //     created_at: '',
 //     updated_at: '',
 //     name: 'project_c',
