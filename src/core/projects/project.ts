@@ -19,18 +19,38 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-import {Model} from '@dewco/core/data';
+import {Metric} from '@dewco/core/data';
 import {KeyFunctionMap} from 'rxdb';
 
 /**
  * This model is used to store Projects.
  * @title Project
  */
-export interface Project extends Model {
+export interface Project extends Metric {
   /**
-   * The Location name identifier
+   * The project Code identifier
    */
-  name: string;
+  code: string;
+
+  /**
+   * The project sectors of intervention
+   */
+  sectors_of_intervention?: string;
+
+  /**
+   * The project Donors
+   */
+  donors?: string;
+
+  /**
+   * Project start date timestamp.
+   */
+  start_date?: string;
+
+  /**
+   * Project end date timestamp.
+   */
+  end_date?: string;
 }
 
 export const VERSION = 0;

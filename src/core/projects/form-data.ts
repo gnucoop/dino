@@ -20,10 +20,16 @@
  *
  */
 
-import {Project} from './project';
+import {FormData as BaseFormData} from '@dewco/core/forms';
 
+/**
+ * Augments Form Data with the id of its Project
+ */
 declare module '@dewco/core/forms/form-data' {
-  interface FormData {
-    project?: Project;
+  interface FormData extends BaseFormData {
+    /**
+     * The Form Data project id.
+     */
+    project_id?: string;
   }
 }

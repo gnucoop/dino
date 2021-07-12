@@ -28,7 +28,8 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "primary": true
     },
     "created_at": {
       "type": "string",
@@ -41,6 +42,30 @@ export const schema = {
     "name": {
       "type": "string",
       "description": "The Location name identifier"
+    },
+    "parent_id": {
+      "type": ["string", "null"],
+      "description": "Optional parent project ID"
+    },
+    "code": {
+      "type": "string",
+      "description": "Project code identifier"
+    },
+    "sectors_of_intervention": {
+      "type": ["string", "null"],
+      "description": "Optional sectors of intervention"
+    },
+    "donors": {
+      "type": ["string", "null"],
+      "description": "Optional Donors of the project"
+    },
+    "start_date": {
+      "type": ["string", "null"],
+      "description": "Optional Project starting date timestamp"
+    },
+    "end_date": {
+      "type": ["string", "null"],
+      "description": "Optional Project ending date timestamp"
     }
   },
   "required": [
