@@ -1,0 +1,35 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "organizations",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [],
+    module_name = "@dewco/core/organizations",
+    deps = [
+        "//src/core/data",
+        "//src/core/forms",
+        "//src/core/list",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//rxdb",
+    ],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["organizations.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)
