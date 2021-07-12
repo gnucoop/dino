@@ -29,7 +29,7 @@ export const schema = {
     "id": {
       "type": "string",
       "description": "UUID v4 identifier.",
-      'primary': true
+      "primary": true
     },
     "created_at": {
       "type": "string",

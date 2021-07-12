@@ -26,3 +26,4 @@ export {FormSchema} from './form-schema';
 export * from './forms.module';
 export * from './form-schema-manager';
 export * from './form-data-manager';
+export * from './form-data-json';
