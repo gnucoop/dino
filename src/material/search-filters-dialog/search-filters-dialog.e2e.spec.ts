@@ -6,34 +6,42 @@ import {
 } from 'protractor';
 
 describe('dewco-search-filters-dialog', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await browser.get('/collect');
-    const gridTile = element.all(by.tagName('mat-grid-tile')).first();
+  });
 
-    await browser.wait(EC.elementToBeClickable(gridTile), 1000);
-    await gridTile.click();
+  it('should display a Dewco collect component', async () => {
+    const collect = await element(by.tagName('dewco-collect')).isPresent();
+    expect(collect).toBe(true);
+  });
+
+  it('should display one or more Grid Tiles', async () => {
+    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
+    expect(tilesCount).toBeGreaterThan(0);
+  });
+
+  it('should display a dewco-search-filters-dialog component and its parts', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
     await browser.sleep(1000);
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
     await dialogButton.click();
-    await browser.sleep(300);
-  });
+    await browser.sleep(1000);
 
-  it('should display a dewco-search-filters-dialog component', async () => {
     const dialog = await element(by.tagName('dewco-search-filters-dialog')).isPresent();
     expect(dialog).toBe(true);
-  });
 
-  it('should display a search and a close buttons', async () => {
     const search = await element(by.cssContainingText('.mat-button-wrapper', 'Search')).isPresent();
     const close = await element(by.cssContainingText('.mat-button-wrapper', 'Close')).isPresent();
 
     expect(search).toBe(true);
     expect(close).toBe(true);
-  });
 
-  it('should display a mat-tab-group inside the dialog content', async () => {
     const matTab = await element(by.tagName('mat-dialog-content'))
                        .element(by.tagName('mat-tab-group'))
                        .isPresent();
@@ -41,6 +49,18 @@ describe('dewco-search-filters-dialog', () => {
   });
 
   it('should select the first tab by default', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
+    const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
+    await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
+    await dialogButton.click();
+    await browser.sleep(1000);
+
     const matTabs = element.all(by.tagName('.mat-tab-label[role="tab"]'));
     const firstTab = matTabs.first();
     const selected = await firstTab.getAttribute('aria-selected');
@@ -48,12 +68,36 @@ describe('dewco-search-filters-dialog', () => {
   });
 
   it('should display some number of filter widgets in the selected tab', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
+    const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
+    await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
+    await dialogButton.click();
+    await browser.sleep(1000);
+
     const widgets = await element.all(by.tagName('dewco-search-filters-widget')).count();
     expect(widgets).toBeGreaterThan(0);
   });
 
   it('should close the dialog and change the url with filter params when clicking Search button',
      async () => {
+       const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+       const tile = gridTiles[0];
+
+       await browser.wait(EC.elementToBeClickable(tile), 1000);
+       await tile.click();
+       await browser.sleep(1000);
+
+       const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
+       await browser.wait(EC.elementToBeClickable(dialogButton), 1000);
+       await dialogButton.click();
+       await browser.sleep(1000);
+
        const initialUrl = await browser.getCurrentUrl();
        const searchButton =
            element(by.cssContainingText('.mat-button-wrapper', 'Search')).element(by.xpath('..'));

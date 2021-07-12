@@ -11,30 +11,48 @@ const filterFieldCss = (field: string) =>
 describe('dewco-search-filters-bar', () => {
   beforeEach(async () => {
     await browser.get('/collect');
-    const gridTile = element.all(by.tagName('mat-grid-tile')).first();
-
-    await browser.wait(EC.elementToBeClickable(gridTile), 1000);
-    await gridTile.click();
-    await browser.sleep(1000);
   });
 
-  it('should display a Filter Bar component', async () => {
+  it('should display a Dewco collect component', async () => {
+    const collect = await element(by.tagName('dewco-collect')).isPresent();
+    expect(collect).toBe(true);
+  });
+
+  it('should display one or more Grid Tiles', async () => {
+    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
+    expect(tilesCount).toBeGreaterThan(0);
+  });
+
+  it('should display a Filter Bar component and its filters', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
     const bar = await element(by.tagName('dewco-search-filters-bar')).isPresent();
     expect(bar).toBe(true);
-  });
 
-  it('should display a filters toolbar', async () => {
     const toolbar = await element(by.className('dewco-filters-bar')).isPresent();
     expect(toolbar).toBe(true);
-  });
 
-  it('should display Date and Keywords filters in the toolbar', async () => {
     await browser.wait(EC.presenceOf(element(by.css(filterFieldCss('dateStart')))));
     await browser.wait(EC.presenceOf(element(by.css(filterFieldCss('dateEnd')))));
     await browser.wait(EC.presenceOf(element(by.css(filterFieldCss('keyword')))));
+    const dialogButton = await element(by.cssContainingText('mat-icon', 'filter_list')).isPresent();
+    expect(dialogButton).toBe(true);
   });
 
+
   it('should change the displayed rows and the url on toolbar filters keydown', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
     const initialUrl = await browser.getCurrentUrl();
     const keywords = element(by.css(filterFieldCss('keyword')));
     expect(await keywords.isPresent()).toBe(true);
@@ -49,12 +67,15 @@ describe('dewco-search-filters-bar', () => {
     expect(finalUrl).toContain('?filters=');
   });
 
-  it('should display a button for opening the dialog/advanced filters', async () => {
-    const dialogButton = await element(by.cssContainingText('mat-icon', 'filter_list')).isPresent();
-    expect(dialogButton).toBe(true);
-  });
-
   it('should open the advanced filters dialog', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
+
     const dialog = await element(by.tagName('dewco-search-filters-dialog')).isPresent();
     expect(dialog).toBe(false);
 

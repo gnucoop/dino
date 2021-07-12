@@ -7,18 +7,28 @@ import {
 } from 'protractor';
 
 describe('dewco-search-filters-preset-manager', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await browser.get('/collect');
-    const gridTile = element.all(by.tagName('mat-grid-tile')).first();
-
-    await browser.wait(EC.elementToBeClickable(gridTile), 1000);
-    await gridTile.click();
-    await browser.sleep(1000);
   });
 
-  beforeEach(async () => await browser.sleep(300));
+  it('should display a Dewco collect component', async () => {
+    const collect = await element(by.tagName('dewco-collect')).isPresent();
+    expect(collect).toBe(true);
+  });
+
+  it('should display one or more Grid Tiles', async () => {
+    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
+    expect(tilesCount).toBeGreaterThan(0);
+  });
 
   it('should display a dewco-search-filters-preset-manager component', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
     const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
 
     expect(await presetManager.isPresent()).toBe(true);
@@ -26,6 +36,13 @@ describe('dewco-search-filters-preset-manager', () => {
   });
 
   it('should disable apply/save buttons if preset is not valid or stored ', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
     const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const applyBtn = presetManager.all(by.tagName('button')).first();
@@ -43,6 +60,13 @@ describe('dewco-search-filters-preset-manager', () => {
   });
 
   it('should save or update a preset in the localStorage', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
     const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const saveBtn = presetManager.all(by.tagName('button')).last();
@@ -77,6 +101,13 @@ describe('dewco-search-filters-preset-manager', () => {
   });
 
   it('should load a preset from the localStorage', async () => {
+    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
+    const tile = gridTiles[0];
+
+    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await tile.click();
+    await browser.sleep(1000);
+
     const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const applyBtn = presetManager.all(by.tagName('button')).first();
