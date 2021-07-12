@@ -202,6 +202,11 @@ export interface DataUpsertRequest<T extends Model> {
 
 export declare type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at'>;
 
+export interface Metric extends Model {
+    name: string;
+    parent_id?: string;
+}
+
 export interface Model {
     created_at: string;
     id: string;

@@ -1,5 +1,9 @@
-export interface Project extends Model {
-    name: string;
+export interface Project extends Metric {
+    code: string;
+    donors?: string;
+    end_date?: string;
+    sectors_of_intervention?: string;
+    start_date?: string;
 }
 
 export declare class ProjectManager extends DataModelManager<Project> {

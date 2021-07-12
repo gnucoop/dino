@@ -9,12 +9,14 @@ export const commitMessage: CommitMessageConfig = {
   minBodyLengthTypeExcludes: ['docs'],
   scopes: [
     'multiple', // For when a commit applies to multiple components.
+    'core/areas',
     'core/auth',
     'core/data',
     'core/error-handler',
     'core/forms',
     'core/list',
     'core/locations',
+    'core/organizations',
     'core/projects',
     'e2e-mat/list',
     'e2e-mat/login',

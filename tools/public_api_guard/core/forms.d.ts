@@ -31,3 +31,5 @@ export declare class FormsModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<FormsModule>;
     static ɵmod: i0.ɵɵNgModuleDeclaration<FormsModule, never, never, never>;
 }
+
+export declare const schema: RxJsonSchema<any>;
