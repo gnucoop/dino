@@ -28,7 +28,8 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "primary": true
     },
     "created_at": {
       "type": "string",
@@ -41,6 +42,14 @@ export const schema = {
     "name": {
       "type": "string",
       "description": "The Location name identifier"
+    },
+    "parent_id": {
+      "type": ["string", "null"],
+      "description": "Optional parent location ID"
+    },
+    "coordinates": {
+      "type": ["object", "null"],
+      "description": "Optional location map coordinates"
     }
   },
   "required": [

@@ -20,10 +20,16 @@
  *
  */
 
-import {Location} from './location';
+import {FormData as BaseFormData} from '@dewco/core/forms';
 
+/**
+ * Augments Form Data with the id of its location
+ */
 declare module '@dewco/core/forms/form-data' {
-  interface FormData {
-    location?: Location;
+  interface FormData extends BaseFormData {
+    /**
+     * The Form Data location id.
+     */
+    location_id?: string;
   }
 }
