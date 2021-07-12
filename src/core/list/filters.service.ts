@@ -273,7 +273,7 @@ export class FiltersService {
    * @param modelSchema The model RxJsonSchema schema
    */
   generateModelFilters(modelSchema: RxJsonSchema): void {
-    if (!modelSchema) {
+    if (!modelSchema || modelSchema.title === 'FormData') {
       this._generatedModelFilters.next([]);
       return;
     }
