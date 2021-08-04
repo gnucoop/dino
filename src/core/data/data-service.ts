@@ -314,9 +314,10 @@ export class DataService {
         switchMap(db => {
           const collection = db[params.collection.name] as RxCollection;
           if (!collection) {
-            return from(db.collection(params.collection))
+            return from(db.addCollections({[params.collection.name]: params.collection}))
                 .pipe(
-                    tap(coll => this._addRegisteredCollection(coll, params)),
+                    tap(coll =>
+                            this._addRegisteredCollection(coll[params.collection.name], params)),
                     mapTo(true),
                     catchError(() => obsOf(false)),
                 );
