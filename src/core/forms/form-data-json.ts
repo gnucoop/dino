@@ -63,5 +63,5 @@ export const schema = {
   "additionalProperties": false,
   "description": "This model is used to store the data collected through an Ajf form.",
   "title": "FormData",
-  "version": 0
+  "version": 1
 } as RxJsonSchema;

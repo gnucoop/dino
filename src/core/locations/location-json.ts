@@ -41,25 +41,25 @@ export const schema = {
     },
     "name": {
       "type": "string",
-      "description": "The Location name identifier"
+      "description": "The metric name."
     },
     "parent_id": {
-      "type": ["string", "null"],
-      "description": "Optional parent location ID"
+      "type": "string",
+      "description": "The optional ID of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
     "coordinates": {
-      "type": ["object", "null"],
-      "description": "Optional location map coordinates"
+      "$ref": "#/definitions/Coordinates",
+      "description": "The optional location map coordinates"
     }
   },
+  "additionalProperties": false,
   "required": [
     "created_at",
     "id",
     "name",
     "updated_at"
   ],
-  "additionalProperties": false,
   "description": "This model is used to store Locations.",
   "title": "Location",
-  "version": 0
+  "version": 1
 } as RxJsonSchema;

@@ -41,34 +41,35 @@ export const schema = {
     },
     "name": {
       "type": "string",
-      "description": "The Location name identifier"
+      "description": "The metric name."
     },
     "parent_id": {
-      "type": ["string", "null"],
-      "description": "Optional parent project ID"
+      "type": "string",
+      "description": "The optional ID of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
     "code": {
       "type": "string",
-      "description": "Project code identifier"
+      "description": "The project Code identifier"
     },
     "sectors_of_intervention": {
-      "type": ["string", "null"],
-      "description": "Optional sectors of intervention"
+      "type": "string",
+      "description": "The project sectors of intervention"
     },
     "donors": {
-      "type": ["string", "null"],
-      "description": "Optional Donors of the project"
+      "type": "string",
+      "description": "The project Donors"
     },
     "start_date": {
-      "type": ["string", "null"],
-      "description": "Optional Project starting date timestamp"
+      "type": "string",
+      "description": "Project start date timestamp."
     },
     "end_date": {
-      "type": ["string", "null"],
-      "description": "Optional Project ending date timestamp"
+      "type": "string",
+      "description": "Project end date timestamp."
     }
   },
   "required": [
+    "code",
     "created_at",
     "id",
     "name",
@@ -77,5 +78,5 @@ export const schema = {
   "additionalProperties": false,
   "description": "This model is used to store Projects.",
   "title": "Project",
-  "version": 0
+  "version": 1
 } as RxJsonSchema;

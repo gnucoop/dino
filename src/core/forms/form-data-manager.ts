@@ -23,7 +23,7 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
 
-import {FormData} from './form-data';
+import {FormData, migrationStrategies} from './form-data';
 import {schema} from './form-data-json';
 import {FormsModule} from './forms.module';
 
@@ -33,7 +33,7 @@ export class FormDataManager extends DataModelManager<FormData> {
       dataService: DataService,
       permissionContextService: PermissionContextService,
   ) {
-    const collection = {name: 'form_data', schema};
+    const collection = {name: 'form_data', schema, migrationStrategies};
     super({collection}, dataService, permissionContextService);
   }
 }

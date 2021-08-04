@@ -23,7 +23,7 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
 
-import {Location} from './location';
+import {Location, migrationStrategies} from './location';
 import {schema} from './location-json';
 import {LocationModule} from './locations.module';
 
@@ -37,7 +37,7 @@ export class LocationManager extends DataModelManager<Location> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'locations', schema}},
+        {collection: {name: 'locations', schema, migrationStrategies}},
         dataService,
         permissionContextService,
     );

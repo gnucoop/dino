@@ -27,7 +27,7 @@ import {
   PermissionContextService,
 } from '@dewco/core/data';
 
-import {Project} from './project';
+import {migrationStrategies, Project} from './project';
 import {schema} from './project-json';
 import {ProjectModule} from './projects.module';
 
@@ -41,7 +41,7 @@ export class ProjectManager extends DataModelManager<Project> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'projects', schema}},
+        {collection: {name: 'projects', schema, migrationStrategies}},
         dataService,
         permissionContextService,
     );

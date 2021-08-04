@@ -22,7 +22,7 @@
 
 import {AjfFormCreate} from '@ajf/core/forms';
 import {Model} from '@dewco/core/data';
-import {KeyFunctionMap} from 'rxdb';
+import {KeyFunctionMap, RxDocument} from 'rxdb';
 
 /**
  * This model is used to store the Ajf form schemas.
@@ -53,6 +53,8 @@ export interface FormSchema extends Model {
   schema: AjfFormCreate;
 }
 
-export const VERSION = 0;
+export const VERSION = 1;
 
-export const migrationStrategies: KeyFunctionMap = {};
+export const migrationStrategies: KeyFunctionMap = {
+  1: (doc: RxDocument) => doc,
+};
