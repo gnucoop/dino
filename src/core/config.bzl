@@ -1,11 +1,13 @@
 # List of all entry-points of the Dewco core package.
 CORE_ENTRYPOINTS = [
+    "areas",
     "auth",
     "data",
     "error-handler",
     "forms",
     "list",
     "locations",
+    "organizations",
     "projects",
 ]
 
