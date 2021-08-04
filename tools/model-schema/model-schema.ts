@@ -27,6 +27,7 @@ const config = {
   type,
   topRef,
   jsDoc,
+  extraTags: ['primary'],
 } as Config;
 
 const generator = createGenerator(config);
