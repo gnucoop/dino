@@ -28,7 +28,7 @@ import {
 } from '@angular/core';
 import {FormSchemaManager} from '@dewco/core/forms';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {BehaviorSubject, combineLatest, from, Observable, of as obsOf, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, from, Observable, of as obsOf} from 'rxjs';
 import {map, shareReplay, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 
