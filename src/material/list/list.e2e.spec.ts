@@ -6,92 +6,85 @@ import {
 } from 'protractor';
 
 describe('dewco-list', () => {
-  beforeEach(async () => {
-    await browser.get('/collect');
-  });
+  beforeEach(async () => await browser.get('/collect'));
 
   it('should display a Dewco collect component', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
     const collect = await element(by.tagName('dewco-collect')).isPresent();
     expect(collect).toBe(true);
   });
 
   it('should display one or more Grid Tiles', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
     expect(tilesCount).toBeGreaterThan(0);
   });
 
   it('should display a material table', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
-    const table = await element(by.tagName('dewco-list')).isPresent();
-    expect(table).toBe(true);
+    await browser.wait(EC.presenceOf(element(by.tagName('dewco-list'))));
   });
 
   it('should display a checkbox column and a checkBox for bulk actions', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
-    const checkboxColumn = await element(by.className('mat-column-select')).isPresent();
-    const checkBox = await element(by.tagName('mat-checkbox')).isPresent();
-    expect(checkboxColumn).toBe(true);
-    expect(checkBox).toBe(true);
+    await browser.wait(EC.presenceOf(element(by.className('mat-column-select'))));
+    await browser.wait(EC.presenceOf(element(by.className('mat-checkbox'))));
   });
 
   it('should display a header row', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
-    const headerRow = await element(by.tagName('mat-header-row')).isPresent();
-    expect(headerRow).toBe(true);
+    await browser.wait(EC.presenceOf(element(by.className('mat-header-row'))));
   });
 
   it('should display the correct header cells', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-header-cell'))));
     const expectedCells = ['User', 'Creation Date'];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
     expect(headerCells.slice(1, -1)).toEqual(expectedCells);
   });
 
   it('should select a row by checking the associated checkBox', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
-    const box = element.all(by.tagName('mat-row')).all(by.tagName('mat-checkbox')).get(0);
+    await browser.wait(EC.presenceOf(element(by.css('.mat-row .mat-checkbox'))));
+    const box = element(by.css('.mat-row .mat-checkbox'));
     await box.click();
     expect(await box.getAttribute('class')).toMatch('mat-checkbox-checked');
   });
 
   it('should select all rows (bulk actions checkBox)', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-checkbox'))));
     const rowBoxes = element.all(by.tagName('mat-row')).all(by.tagName('mat-checkbox'));
     const bulkBox = element(by.tagName('mat-header-cell')).element(by.tagName('mat-checkbox'));
     await bulkBox.click();
@@ -100,17 +93,16 @@ describe('dewco-list', () => {
   });
 
   it('should display the row action icons on mouseover', async () => {
-    const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-    const tile = gridTiles[0];
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element(by.tagName('mat-grid-tile'));
 
-    await browser.wait(EC.elementToBeClickable(tile), 1000);
+    await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
-    await browser.sleep(1000);
 
-    const firstRow = element.all(by.tagName('mat-row')).first();
-    expect(await firstRow.isPresent()).toBe(true);
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
+    const firstRow = element(by.tagName('mat-row'));
     const actions = firstRow.element(by.className('mat-column-actions'));
-    const firstIcon = actions.all(by.tagName('mat-icon')).first();
+    const firstIcon = actions.element(by.tagName('mat-icon'));
 
     expect(await firstIcon.isDisplayed()).toBe(false);
 
@@ -124,12 +116,13 @@ describe('dewco-list', () => {
   it(`should delete a row by clicking on its action-delete button,
       and confirming the action on the Confirmation Dialog`,
      async () => {
-       const gridTiles = await element.all(by.tagName('mat-grid-tile'));
-       const tile = gridTiles[0];
+       await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+       const tile = element(by.tagName('mat-grid-tile'));
 
-       await browser.wait(EC.elementToBeClickable(tile), 1000);
+       await browser.wait(EC.elementToBeClickable(tile));
        await tile.click();
-       await browser.sleep(1000);
+
+       await browser.wait(EC.presenceOf(element(by.css('.mat-select-min-line'))));
 
        const paginatorNum = +await element(by.css('.mat-select-min-line')).getText();
        const initialRowCount = await element.all(by.tagName('mat-row')).count();
@@ -144,18 +137,19 @@ describe('dewco-list', () => {
        await browser.actions().mouseMove(deleteIcon).perform();
        res = await deleteIcon.isDisplayed();
        expect(res).toBe(true);
-       await browser.wait(EC.elementToBeClickable(deleteIcon), 1000);
+       await browser.wait(EC.elementToBeClickable(deleteIcon));
        await deleteIcon.click();
-       await browser.sleep(1000);
+
+       await browser.wait(EC.presenceOf(element(by.css('.confirmation-dialog'))));
 
        const confirmDialog = element(by.css('.confirmation-dialog'));
        expect(await confirmDialog.isPresent()).toBe(true);
        const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
        await browser.actions().mouseMove(confirmButton).perform();
-       await browser.wait(EC.elementToBeClickable(confirmButton), 1000);
+       await browser.wait(EC.elementToBeClickable(confirmButton));
        await confirmButton.click();
-       await browser.sleep(1000);
 
+       await browser.sleep(300);
        const newFirstActionCell =
            element
                .all(by.className(

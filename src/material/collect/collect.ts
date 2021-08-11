@@ -21,17 +21,15 @@
  */
 
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormSchemaManager} from '@dewco/core/forms';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {BehaviorSubject, from, of as obsOf, Subscription} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, from, Observable, of as obsOf, Subscription} from 'rxjs';
+import {map, shareReplay, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 
 /**
@@ -45,21 +43,14 @@ import {CollectItem} from './collect-item-interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class Collect implements AfterViewInit, OnDestroy {
+export class Collect {
   /**
    * An array of items to be displayed in the grid.
    * They can represent Forms or any generic Item (eg. a Section of the app)
    */
-  private _items: BehaviorSubject<CollectItem[]> = new BehaviorSubject<CollectItem[]>([]);
-  get items(): BehaviorSubject<CollectItem[]> {
-    return this._items;
-  }
+  readonly items: Observable<CollectItem[]>;
 
-  /**
-   * Subscribes to the collect isFormsCollect flag and to the custom
-   * list of menu items passed in input.
-   */
-  private _itemsSub: Subscription = Subscription.EMPTY;
+  private _menuItems = new BehaviorSubject<CollectItem[]>([]);
 
   /**
    * An array of items to be displayed in the Dashboard menu grid.
@@ -70,7 +61,7 @@ export class Collect implements AfterViewInit, OnDestroy {
     if (menuItems == null || menuItems.length <= 0) {
       return;
     }
-    this._items.next(menuItems);
+    this._menuItems.next(menuItems);
   }
 
   /**
@@ -121,54 +112,43 @@ export class Collect implements AfterViewInit, OnDestroy {
   constructor(
       readonly breakpointObserver: BreakpointObserverService,
       private _fs: FormSchemaManager,
-  ) {}
-
-  ngAfterViewInit() {
-    this._itemsSub = this._isFormsCollect
-                         .pipe(
-                             switchMap(isCollect => {
-                               if (isCollect) {
-                                 const res = this._fs.list().pipe(
-                                     switchMap(rxdbQuery => from(rxdbQuery.exec())));
-                                 return res.pipe(
-                                     map(docs => {
-                                       let collectItems: CollectItem[] = [];
-                                       for (let document of docs.filter(dcm => dcm != null)) {
-                                         let collectItem: CollectItem = {
-                                           name: document.name,
-                                           label: document.label ?? document.name,
-                                           icon: document.icon,
-                                           schemaId: document.id,
-                                         };
-                                         collectItems.push(collectItem);
+  ) {
+    this.items = combineLatest([this._isFormsCollect, this._menuItems])
+                     .pipe(
+                         switchMap(([isCollect, menuItems]) => {
+                           if (isCollect) {
+                             const res = this._fs.list().pipe(
+                                 switchMap(rxdbQuery => from(rxdbQuery.exec())),
+                             );
+                             return res.pipe(
+                                 map(docs => {
+                                   let collectItems: CollectItem[] = [];
+                                   for (let document of docs.filter(dcm => dcm != null)) {
+                                     let collectItem: CollectItem = {
+                                       name: document.name,
+                                       label: document.label ?? document.name,
+                                       icon: document.icon,
+                                       schemaId: document.id,
+                                     };
+                                     collectItems.push(collectItem);
+                                   }
+                                   return collectItems.sort((a, b) => {
+                                     if (a.name < b.name) {
+                                       return -1;
+                                     } else {
+                                       if (a.name > b.name) {
+                                         return 1;
+                                       } else {
+                                         return 0;
                                        }
-                                       return collectItems.sort((a, b) => {
-                                         if (a.name < b.name) {
-                                           return -1;
-                                         } else {
-                                           if (a.name > b.name) {
-                                             return 1;
-                                           } else {
-                                             return 0;
-                                           }
-                                         }
-                                       });
-                                     }),
-                                 );
-                               }
-                               return obsOf(null);
-                             }),
-                             )
-                         .subscribe({
-                           next: items => {
-                             if (items != null) {
-                               this._items.next(items);
-                             }
+                                     }
+                                   });
+                                 }),
+                             );
                            }
-                         });
-  }
-
-  ngOnDestroy() {
-    this._itemsSub.unsubscribe();
+                           return obsOf(menuItems);
+                         }),
+                         shareReplay(1),
+                     );
   }
 }

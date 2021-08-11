@@ -1,6 +1,6 @@
 import {OverlayModule} from '@angular/cdk/overlay';
 import {HttpClientModule} from '@angular/common/http';
-import {NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
@@ -22,8 +22,8 @@ import {
 // import {OrganizationsModule} from '@dewco/core/organizations';
 // import {ProjectModule} from '@dewco/core/projects';
 import {TranslateModule} from '@ngx-translate/core';
-import {of as obsOf} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {Observable, of as obsOf} from 'rxjs';
+import {switchMap, tap} from 'rxjs/operators';
 
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
@@ -44,6 +44,28 @@ import {formSchemas} from './test-ajf-formschema';
  */
 const fakeSchemaGenerator = new FakeDataGenerator<FormSchema>();
 const fakeDataGenerator = new FakeDataGenerator<FormData>();
+
+function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Observable<any> {
+  return () => {
+    if (additionalConfig.generateData) {
+      return fakeSchemaGenerator.generateData(fsm, formSchemas)
+          .pipe(
+              switchMap(res => {
+                if (res.success == null || res.success.length === 0) {
+                  return obsOf(null);
+                }
+                const genSchemaId = res.success[0].id;
+                for (let idx = 0; idx < formDatas.length; idx++) {
+                  formDatas[idx].schema_id = genSchemaId;
+                }
+                return fakeDataGenerator.generateData(fdm, formDatas);
+              }),
+              tap(items => console.log('DATA GENERATED:', items)),
+          );
+    }
+    return obsOf(null);
+  };
+}
 
 @NgModule({
   imports: [
@@ -97,34 +119,14 @@ const fakeDataGenerator = new FakeDataGenerator<FormData>();
     },
     MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
     {provide: MAT_PAGINATOR_DEFAULT_OPTIONS, useValue: paginatorConfig},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (fsm: FormSchemaManager, fdm: FormDataManager) => initializeApp(fsm, fdm),
+      multi: true,
+      deps: [FormSchemaManager, FormDataManager],
+    },
   ],
   bootstrap: [E2eApp],
 })
 export class MainModule {
-  /**
-   * If true, fake data is generated.
-   */
-  readonly generateData: boolean = additionalConfig.generateData;
-
-  constructor(
-      readonly fsm: FormSchemaManager,
-      readonly fdm: FormDataManager,
-  ) {
-    if (this.generateData) {
-      fakeSchemaGenerator.generateData(this.fsm, formSchemas)
-          .pipe(
-              switchMap(res => {
-                if (res.success == null || res.success.length === 0) {
-                  return obsOf(null);
-                }
-                const genSchemaId = res.success[0].id;
-                for (let idx = 0; idx < formDatas.length; idx++) {
-                  formDatas[idx].schema_id = genSchemaId;
-                }
-                return fakeDataGenerator.generateData(this.fdm, formDatas);
-              }),
-              )
-          .subscribe(items => console.log('DATA GENERATED:', items));
-    }
-  }
 }

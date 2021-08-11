@@ -35,10 +35,7 @@ const dummyUser: User = {
 
 @Injectable()
 export class AuthServiceMock {
-  authenticated: BehaviorSubject<boolean>;
-  constructor() {
-    this.authenticated = new BehaviorSubject<boolean>(true);
-  }
+  authenticated = new BehaviorSubject<boolean>(true);
   login(credentials: Credentials): Observable<boolean> {
     if (credentials.email == 'dino' && credentials.password == 'dino') {
       this.authenticated.next(true);
@@ -53,8 +50,8 @@ export class AuthServiceMock {
   getUserInfo(): User {
     return dummyUser;
   }
-  checkToken(): boolean {
-    return true;
+  checkToken(): Observable<boolean> {
+    return obsOf(true);
   }
   refreshToken(): Observable<boolean> {
     return obsOf(true);
