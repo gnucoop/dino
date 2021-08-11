@@ -99,6 +99,7 @@ describe('dewco-search-filters-dialog', () => {
        const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
        await browser.wait(EC.elementToBeClickable(dialogButton));
        await dialogButton.click();
+       await browser.sleep(1000);
 
        await browser.wait(
            EC.presenceOf(element(by.cssContainingText('.mat-button-wrapper', 'Search'))));
