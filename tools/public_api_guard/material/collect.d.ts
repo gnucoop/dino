@@ -1,15 +1,13 @@
-export declare class Collect implements AfterViewInit, OnDestroy {
+export declare class Collect {
     readonly breakpointObserver: BreakpointObserverService;
     get columnsLarge(): number;
     set columnsLarge(num: number);
     get columnsSmall(): number;
     set columnsSmall(num: number);
     set isFormsCollect(res: boolean);
-    get items(): BehaviorSubject<CollectItem[]>;
+    readonly items: Observable<CollectItem[]>;
     set menuItems(menuItems: CollectItem[]);
     constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager);
-    ngAfterViewInit(): void;
-    ngOnDestroy(): void;
     static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dewco-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "isFormsCollect": "isFormsCollect"; }, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }
