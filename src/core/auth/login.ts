@@ -31,6 +31,7 @@ import {Observable} from 'rxjs';
 import {
   map,
   startWith,
+  take,
 } from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
@@ -101,45 +102,43 @@ export abstract class LoginComponent {
     }
     this.loggingIn = true;
     const credentials = this.loginForm.value;
-    const sub = this._authService.login(credentials)
-                    .subscribe(
-                        (res) => {
-                          if (res) {
-                            this._setLoginError(false);
-                            if (this._postLogin != undefined) {
-                              this._postLogin();
-                            } else {
-                              this._router.navigateByUrl('/', {replaceUrl: true});
-                            }
-                          } else {
-                            this._setLoginError(true);
-                          }
-                          if (sub) {
-                            sub.unsubscribe();
-                          }
-                          this.loggingIn = false;
-                        },
-                        _ => {
-                          this._setLoginError(true);
-                          if (sub) {
-                            sub.unsubscribe();
-                          }
-                          this.loggingIn = false;
-                        });
+    this._authService.login(credentials)
+        .pipe(
+            take(1),
+            )
+        .subscribe(
+            (res) => {
+              if (res) {
+                this._setLoginError(false);
+                if (this._postLogin != undefined) {
+                  this._postLogin();
+                } else {
+                  this._router.navigateByUrl('/', {replaceUrl: true});
+                }
+              } else {
+                this._setLoginError(true);
+              }
+              this.loggingIn = false;
+            },
+            _ => {
+              this._setLoginError(true);
+              this.loggingIn = false;
+            });
   }
 
   /**
    * User logout method.
    */
   logout(): void {
-    const sub = this._authService.logout().subscribe(res => {
-      if (res) {
-        if (sub) {
-          sub.unsubscribe();
-        }
-        this._router.navigate([this._router.url]);
-      }
-    });
+    this._authService.logout()
+        .pipe(
+            take(1),
+            )
+        .subscribe(res => {
+          if (res) {
+            this._router.navigate([this._router.url]);
+          }
+        });
   }
 
 

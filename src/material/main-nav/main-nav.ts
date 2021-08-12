@@ -37,7 +37,7 @@ import {Router} from '@angular/router';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {BehaviorSubject, Subscription} from 'rxjs';
-import {tap, withLatestFrom} from 'rxjs/operators';
+import {take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
 
@@ -184,15 +184,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * User logout method.
    */
   logout(): void {
-    const sub = this.authService.logout().subscribe(res => {
-      if (res) {
-        if (sub) {
-          sub.unsubscribe();
-        }
-        this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
-        this._router.navigate([this._authConfig.failedAuthRedirect]);
-      }
-    });
+    this.authService.logout()
+        .pipe(
+            take(1),
+            )
+        .subscribe(res => {
+          if (res) {
+            this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
+            this._router.navigate([this._authConfig.failedAuthRedirect]);
+          }
+        });
   }
 
   ngOnDestroy() {
