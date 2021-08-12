@@ -49,8 +49,13 @@ content = JSON.stringify({
 packageJsonPath = path.posix.join('node_modules', 'rxdb', 'dist', 'lib', 'package' + '.json');
 fs.writeFileSync(packageJsonPath, content);
 
-const uuidV4 = path.posix.join('node_modules', 'pouchdb-utils', 'node_modules', 'uuid', 'dist', 'v4.js');
-const uuidV4Cont = fs.readFileSync(uuidV4, 'utf8');
-const uuidV4Search = 'var _rng = _interopRequireDefault(require("./rng.js"));';
-const uuidV4Replace = 'var _rng = _interopRequireDefault(require("./rng-browser.js"));';
-fs.writeFileSync(uuidV4, uuidV4Cont.replace(uuidV4Search, uuidV4Replace));
+const uuidPkgs = [
+  path.posix.join('node_modules', 'uuid', 'package.json'),
+  path.posix.join('node_modules', 'pouchdb-utils', 'node_modules', 'uuid', 'package.json'),
+];
+uuidPkgs.forEach(pkg => {
+  const content = JSON.parse(fs.readFileSync(pkg, 'utf8'));
+  content.main = './dist/umd/uuid.min.js';
+  content.module = './dist/esm-browser/index.js';
+  fs.writeFileSync(pkg, JSON.stringify(content, null, 2));
+});
