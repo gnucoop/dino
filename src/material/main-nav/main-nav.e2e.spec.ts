@@ -40,7 +40,8 @@ describe('dewco-main-nav', () => {
     await browser.actions().mouseMove(logoutButton).perform();
     await browser.wait(EC.elementToBeClickable(logoutButton));
     await logoutButton.click();
-    await browser.sleep(2000);
+
+    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
 
     expect(await browser.getCurrentUrl()).toContain('login');
   });
