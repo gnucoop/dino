@@ -18,6 +18,7 @@ ng_module(
     module_name = "@dewco/core/data",
     deps = [
         "//src/core/auth",
+        "//src/core/config",
         "@npm//@types/pouchdb-adapter-idb",
         "@npm//@types/pouchdb-adapter-memory",
         "@npm//@types/uuid",
@@ -37,6 +38,7 @@ ng_test_library(
     deps = [
         ":data",
         "//src/core/auth",
+        "//src/core/config",
         "@npm//@angular/common",
         "@npm//mock-socket",
         "@npm//rxdb",

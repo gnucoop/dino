@@ -20,13 +20,12 @@
  *
  */
 
-import {EventEmitter, Inject, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
 import {
-  AUTH_SERVICE_CONFIG,
   AuthService,
-  AuthServiceConfig,
   NetworkStatusService,
 } from '@dewco/core/auth';
+import {ConfigService} from '@dewco/core/config';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
@@ -38,6 +37,7 @@ import {
   BehaviorSubject,
   combineLatest,
   from,
+  interval,
   Observable,
   of as obsOf,
   Subscription,
@@ -45,6 +45,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  debounce,
   debounceTime,
   delay,
   map,
@@ -122,6 +123,8 @@ interface RegisteredCollection extends CollectionSyncParams {
  */
 @Injectable({providedIn: 'root'})
 export class DataService {
+  readonly config: DataServiceConfig;
+
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
       new EventEmitter<CollectionChangedEvent>();
 
@@ -129,10 +132,21 @@ export class DataService {
       this._collectionChanged as Observable<CollectionChangedEvent>;
 
   private _db: Observable<RxDatabase>;
+
   private _registeredCollections: BehaviorSubject<RegisteredCollection[]> =
       new BehaviorSubject<RegisteredCollection[]>([]);
+
   private _activeSyncs: {[key: string]: ActiveSync} = {};
-  private _config: DataServiceConfig;
+
+  /**
+   * The Data service configuration settings stream.
+   */
+  private _dataConfig: BehaviorSubject<DataServiceConfig>;
+
+  /**
+   * The Data config currently stored in the local storage, if present.
+   */
+  private _currentlyStoredConfig: DataServiceConfig|null;
 
   /**
    * Emits when a websocket throws an error in its connection callback,
@@ -144,25 +158,43 @@ export class DataService {
   constructor(
       private _authService: AuthService,
       private _nss: NetworkStatusService,
-      @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
-      @Inject(AUTH_SERVICE_CONFIG) private _authConfig: AuthServiceConfig,
-
+      @Inject(DATA_SERVICE_CONFIG) private _config: DataServiceConfig,
+      @Optional() private _configService: ConfigService|null,
   ) {
     addRxPlugin(pouchdbAdapterIdb);
     addRxPlugin(pouchdbAdapterMemory);
     addRxPlugin(RxDBMigrationPlugin);
     addRxPlugin(RxDBReplicationGraphQLPlugin);
-    this._config = fillConfigDefaultValues(config);
-    this._db = from(createRxDatabase(this._config.databaseCreateOptions)).pipe(shareReplay(1));
+    this.config = fillConfigDefaultValues(this._config);
+    this._dataConfig = new BehaviorSubject<DataServiceConfig>(this.config);
+    this._currentlyStoredConfig = this._getDataConfig();
+    if (this._currentlyStoredConfig != null) {
+      this._dataConfig.next(this._currentlyStoredConfig);
+    }
+
+    this._db = this._dataConfig.pipe(
+        switchMap(config => from(createRxDatabase(config.databaseCreateOptions))),
+        shareReplay(1),
+    );
 
     this._initSync();
 
     this._refreshEvt
         .pipe(
-            debounceTime(this._authConfig.retryRefreshTime),
+            debounceTime(this._authService.authConfig.retryRefreshTime),
             switchMap(() => this._authService.refreshToken()),
             )
         .subscribe();
+
+    if (this._configService != null) {
+      this._setDynamicConfigSub();
+    }
+
+    this._authService.resetEvt.pipe(debounce(_ => interval(1000))).subscribe(reset => {
+      if (reset) {
+        this._resetDataConfig();
+      }
+    });
   }
 
   /**
@@ -397,6 +429,13 @@ export class DataService {
   }
 
   /**
+   * Removes all registered collections.
+   */
+  private _clearRegisteredCollections(): void {
+    this._registeredCollections.next([]);
+  }
+
+  /**
    * Initialize the GraphQL sync for all the registered collections.
    * As soon as the user logs in, the sync will start.
    * If a log out event occurs, all the active syncs will be stopped.
@@ -457,22 +496,23 @@ export class DataService {
       ): void {
     this._stopCollectionSync(collection.name);
     const state = collection.syncGraphQL({
-      ...this._config.syncOptions,
-      url: this._config.syncOptions.url,
+      ...this._dataConfig.value.syncOptions,
+      url: this._dataConfig.value.syncOptions.url,
       headers: {'Authorization': `Bearer ${token}`},
       deletedFlag: 'is_deleted',
       pull: {
-        queryBuilder:
-            pullQueryBuilder(collection, this._config.syncOptions, params.pullQueryExtraParams),
+        queryBuilder: pullQueryBuilder(
+            collection, this._dataConfig.value.syncOptions, params.pullQueryExtraParams),
       },
       push: {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
       },
     });
     let sub: {unsubscribe: () => void} = Subscription.EMPTY;
-    if (this._config.syncOptions.live && this._config.syncOptions.wsUrl != null) {
+    if (this._dataConfig.value.syncOptions.live &&
+        this._dataConfig.value.syncOptions.wsUrl != null) {
       const client = new SubscriptionClient(
-          this._config.syncOptions.wsUrl,
+          this._dataConfig.value.syncOptions.wsUrl,
           {
             reconnect: true,
             reconnectionAttempts: 5,
@@ -480,15 +520,15 @@ export class DataService {
               if (error) {
                 client.close(true);
                 const errMessage = error.toString();
-                if (this._config.syncOptions.authErrorMessage &&
-                    errMessage === this._config.syncOptions.authErrorMessage) {
+                if (this._dataConfig.value.syncOptions.authErrorMessage &&
+                    errMessage === this._dataConfig.value.syncOptions.authErrorMessage) {
                   this._refreshEvt.emit();
                 }
               }
             },
             connectionParams: {headers: {'Authorization': `Bearer ${token}`}},
           },
-          this._config.syncOptions.webSocketImpl,
+          this._dataConfig.value.syncOptions.webSocketImpl,
       );
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = client.request({query}) as Observable<any>;
@@ -531,6 +571,91 @@ export class DataService {
     sub.unsubscribe();
     state.cancel().then(() => {});
     delete this._activeSyncs[collectionName];
+  }
+
+  /**
+   * Subscribes to the Config Service and listens for changes
+   * in the Data configuration.
+   */
+  private _setDynamicConfigSub(): void {
+    if (this._configService == null) {
+      return;
+    }
+    this._configService.configurationSet.subscribe(config => {
+      if (config == null) {
+        return;
+      }
+
+      const dataDbOptions = {
+        ...this._dataConfig.value.databaseCreateOptions,
+        ...config.dataConfig.databaseCreateOptions
+      };
+      const dataSyncOptions = {
+        ...this._dataConfig.value.syncOptions,
+        ...config.dataConfig.syncOptions
+      };
+      const dataConfig = {
+        databaseCreateOptions: dataDbOptions,
+        syncOptions: dataSyncOptions,
+      };
+
+      this._setDataConfig(dataConfig);
+    });
+  }
+
+  /**
+   * Dynamically sets the configuration params for the Data Service.
+   * @param config The configuration data
+   */
+  private _setDataConfig(config: DataServiceConfig): void {
+    if (config == null) {
+      return;
+    }
+    this._storeDataConfig(config);
+    this._dataConfig.next(config);
+  }
+
+  /**
+   * Resets the Data config, removing config from local storage.
+   */
+  private _resetDataConfig(): void {
+    this._currentlyStoredConfig = null;
+    this._removeDataConfig();
+    setTimeout(() => {
+      this._clearRegisteredCollections();
+    }, 1000);
+  }
+
+  /**
+   * Stores an Data service configuration object into the
+   * local storage.
+   * @param config The configuration data
+   */
+  private _storeDataConfig(config: DataServiceConfig): void {
+    if (config == null) {
+      return;
+    }
+    localStorage.setItem('data_config', btoa(JSON.stringify(config)));
+  }
+
+  /**
+   * Retrieves the Data service configuration currently stored in the
+   * local storage.
+   */
+  private _getDataConfig(): DataServiceConfig|null {
+    const config = localStorage.getItem('data_config');
+    if (config == null) {
+      return null;
+    }
+    return JSON.parse(atob(config));
+  }
+
+  /**
+   * Removes the Data service configuration currently stored in the
+   * local storage.
+   */
+  private _removeDataConfig(): void {
+    localStorage.removeItem('data_config');
   }
 }
 

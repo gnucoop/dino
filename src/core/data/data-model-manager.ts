@@ -504,6 +504,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     return zip(this._collectionInit, this._context)
         .pipe(
             map(([_, context]) => context),
+            take(1),
         );
   }
 

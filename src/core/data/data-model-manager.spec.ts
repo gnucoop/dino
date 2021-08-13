@@ -18,6 +18,7 @@ import {
 } from '@dewco/core/data';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
+import {take} from 'rxjs/operators';
 
 interface DummyModel extends Model {
   name: string;
@@ -80,22 +81,22 @@ class AgeAuthPermission implements Permission<DummyModel> {
 
 const ageAuthPermission = new AgeAuthPermission();
 let testDbIdx = 0;
-
-const authServiceMock = {
-  authenticated: obsOf(true),
-  getUserInfo: () => {
-    return dummyUser;
-  },
-} as unknown as AuthService;
+const serverUrl = 'http://dewcoServer/v1/graphql';
+const wsServerUrl = 'ws://dewcoServer';
+const wsUrl = `${wsServerUrl}/v1/graphql`;
 
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_datamanager_test_db_${testDbIdx++}`,
       adapter: 'memory',
+      ignoreDuplicate: true,
     },
     syncOptions: {
-      url: 'host',
+      url: serverUrl,
+      wsUrl,
+      webSocketImpl: WebSocket,
+      authErrorMessage: 'Could not verify JWT: JWTExpired',
     },
   };
 }
@@ -108,6 +109,16 @@ const authServiceConfig: AuthServiceConfig = {
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
 };
+
+const authServiceMock = {
+  authenticated: obsOf(true),
+  authToken: obsOf('test_auth_token'),
+  authConfig: authServiceConfig,
+  resetEvt: obsOf(true),
+  getUserInfo: () => {
+    return dummyUser;
+  },
+} as unknown as AuthService;
 
 const dummySchema: RxJsonSchema = {
   title: 'dummy schema',
@@ -147,20 +158,20 @@ describe('Data Model Manager - CRUD methods', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    contextService = TestBed.get(PermissionContextService);
-    dataService = TestBed.get(DataService);
+    contextService = TestBed.inject(PermissionContextService);
+    dataService = TestBed.inject(DataService);
     dummyManager = new DummyManager({collection}, dataService, contextService, [ageAuthPermission]);
   });
 
   afterEach(async () => {
-    await dataService.destroyCollection(collection.name).toPromise();
+    await dataService.destroyCollection(collection.name).pipe(take(1)).toPromise();
     dummyManager = null;
   });
 
   it('should create a new object in the database', async () => {
     const object = {name: 'exampleDummy'};
     const createSpy = spyOn(ageAuthPermission, 'canCreate').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).toPromise();
+    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
     expect(insertedDummy).not.toBeNull();
     expect(insertedDummy!.name).toBe('exampleDummy');
     expect(createSpy).toHaveBeenCalled();
@@ -168,8 +179,8 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should get an existing object from the database', async () => {
     const object = {name: 'exampleDummy'};
-    const insertedDummy = await dummyManager!.create(object).toPromise();
-    const getObject = await dummyManager!.get(insertedDummy!.id).toPromise();
+    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
+    const getObject = await dummyManager!.get(insertedDummy!.id).pipe(take(1)).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual(insertedDummy!.name);
     expect(getObject!).toEqual(jasmine.objectContaining(object));
@@ -177,7 +188,7 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should create a bulk of objects in the database', async () => {
     const objects = [{name: 'firstDummy'}, {name: 'secondDummy'}];
-    const insertedDummies = await dummyManager!.bulkCreate(objects).toPromise();
+    const insertedDummies = await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
     expect(insertedDummies).not.toBeNull();
     expect(insertedDummies.success).not.toBeNull();
     expect(insertedDummies.success.length).toEqual(objects.length);
@@ -191,8 +202,8 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'dummyOne'},
       {name: 'dummyTwo'},
     ];
-    await dummyManager!.bulkCreate(objects).toPromise();
-    const getObjects = await dummyManager!.list().toPromise();
+    await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
+    const getObjects = await dummyManager!.list().pipe(take(1)).toPromise();
     await getObjects.exec();
     expect(getObjects).not.toBeNull();
     expect(getObjects._resultsData.length).toEqual(objects.length);
@@ -205,13 +216,13 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'C'},
       {name: 'D'},
     ];
-    await dummyManager!.bulkCreate(objects).toPromise();
+    await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
     const listOptions: DataListOptions = {
       sort: [{name: 'desc'}],
       limit: 5,
       skip: 1,
     };
-    const getObjects = await dummyManager!.list(listOptions).toPromise();
+    const getObjects = await dummyManager!.list(listOptions).pipe(take(1)).toPromise();
     const results = await getObjects.exec();
     expect(results).not.toBeNull();
     expect(results.length).toEqual(3);
@@ -226,7 +237,7 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'D'},
       {name: 'E', age: 55},
     ];
-    await dummyManager!.bulkCreate(objects).toPromise();
+    await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
     const queryOptions: DataQueryOptions = {
       selector: {
         age: {$gte: 20},
@@ -234,7 +245,7 @@ describe('Data Model Manager - CRUD methods', () => {
       },
       sort: [{name: 'asc'}],
     };
-    const getObjects = await dummyManager!.query(queryOptions).toPromise();
+    const getObjects = await dummyManager!.query(queryOptions).pipe(take(1)).toPromise();
     const results = await getObjects.exec();
     expect(results).not.toBeNull();
     expect(results.length).toEqual(2);
@@ -247,9 +258,9 @@ describe('Data Model Manager - CRUD methods', () => {
   it('should remove an existing object from the database', async () => {
     const object = {name: 'testDummy', author: 'user@dewco.gnu'};
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).toPromise();
-    const deletedObject = await dummyManager!.delete(insertedDummy!.id).toPromise();
-    const getObject = await dummyManager!.get(deletedObject!.id).toPromise();
+    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
+    const deletedObject = await dummyManager!.delete(insertedDummy!.id).pipe(take(1)).toPromise();
+    const getObject = await dummyManager!.get(deletedObject!.id).pipe(take(1)).toPromise();
     expect(deletedObject?.deleted).toBeTrue();
     expect(deletedObject!.name).toEqual(insertedDummy!.name);
     expect(getObject).toBeNull();
@@ -261,11 +272,13 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'firstDummy', author: 'user@dewco.gnu'},
       {name: 'secondDummy', author: 'user@dewco.gnu'},
     ];
-    const insertedDummies = await dummyManager!.bulkCreate(objects).toPromise();
+    const insertedDummies = await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
-    const deletedObjects = await dummyManager!.bulkDelete(insertedDummies.success).toPromise();
-    const getFirstObject = await dummyManager!.get(deletedObjects![0].id).toPromise();
-    const getSecondObject = await dummyManager!.get(deletedObjects![1].id).toPromise();
+    const deletedObjects =
+        await dummyManager!.bulkDelete(insertedDummies.success).pipe(take(1)).toPromise();
+    const getFirstObject = await dummyManager!.get(deletedObjects![0].id).pipe(take(1)).toPromise();
+    const getSecondObject =
+        await dummyManager!.get(deletedObjects![1].id).pipe(take(1)).toPromise();
     deletedObjects!.forEach(deletedObject => {
       expect(deletedObject?.deleted).toBeTrue();
     });
@@ -277,15 +290,15 @@ describe('Data Model Manager - CRUD methods', () => {
   it('should update an existing object from the database', async () => {
     const object = {name: 'newDummy'};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).toPromise();
+    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
     const updObject = {
       id: insertedDummy!.id,
       name: 'upDummy',
       created_at: '',
       updated_at: '',
     };
-    await dummyManager!.update(updObject).toPromise();
-    const getObject = await dummyManager!.get(updObject.id).toPromise();
+    await dummyManager!.update(updObject).pipe(take(1)).toPromise();
+    const getObject = await dummyManager!.get(updObject.id).pipe(take(1)).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('upDummy');
     expect(getObject!).not.toEqual(jasmine.objectContaining(object));
@@ -295,13 +308,13 @@ describe('Data Model Manager - CRUD methods', () => {
   it('should patch an existing object from the database', async () => {
     const object = {name: 'newDummy'};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).toPromise();
+    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
     const objectToPatch = {
       id: insertedDummy!.id,
       name: 'patchedDummy',
     };
-    await dummyManager!.patch(objectToPatch).toPromise();
-    const getObject = await dummyManager!.get(objectToPatch.id).toPromise();
+    await dummyManager!.patch(objectToPatch).pipe(take(1)).toPromise();
+    const getObject = await dummyManager!.get(objectToPatch.id).pipe(take(1)).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('patchedDummy');
     expect(getObject!).not.toEqual(jasmine.objectContaining(object));

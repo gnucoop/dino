@@ -1,14 +1,10 @@
 import {TestBed} from '@angular/core/testing';
-import {
-  AUTH_SERVICE_CONFIG,
-  AuthService,
-  AuthServiceConfig,
-  NetworkStatusService
-} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from '@dewco/core/data';
 import {Server, WebSocket} from 'mock-socket';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
+import {take} from 'rxjs/operators';
 
 interface DummyModel extends Model {
   name: string;
@@ -16,39 +12,21 @@ interface DummyModel extends Model {
 
 let testDbIdx = 0;
 
-const authServiceMock = {
-  authenticated: obsOf(true),
-} as unknown as AuthService;
-
-const networkStatusServiceMock = {
-  isOnline$: obsOf(true),
-} as unknown as NetworkStatusService;
-
 const serverUrl = 'http://dewcoServer/v1/graphql';
 const wsServerUrl = 'ws://dewcoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
-function dataServiceConfig(): DataServiceConfig {
-  return {
-    databaseCreateOptions: {
-      name: `dewco_data_test_db_${testDbIdx++}`,
-      adapter: 'memory',
-    },
-    syncOptions: {
-      url: serverUrl,
-      wsUrl,
-      webSocketImpl: WebSocket,
-    },
-  };
-}
-
-const invalidDataServiceConfig: DataServiceConfig = {
+const dataServiceConfig: DataServiceConfig = {
   databaseCreateOptions: {
-    name: 'dewco_data_test_db',
-    adapter: 'dummy',
+    name: `dewco_data_test_db_${testDbIdx++}`,
+    adapter: 'memory',
+    ignoreDuplicate: true,
   },
   syncOptions: {
-    url: 'http://dewcoServer/v1/graphql',
+    url: serverUrl,
+    wsUrl,
+    webSocketImpl: WebSocket,
+    authErrorMessage: 'Could not verify JWT: JWTExpired',
   },
 };
 
@@ -60,6 +38,13 @@ const authServiceConfig: AuthServiceConfig = {
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
 };
+
+const authServiceMock = {
+  authenticated: obsOf(true),
+  authConfig: authServiceConfig,
+  authToken: obsOf('test_auth_token'),
+  resetEvt: obsOf(true),
+} as unknown as AuthService;
 
 const dummySchema: RxJsonSchema = {
   title: 'dummy schema',
@@ -83,7 +68,7 @@ describe('Data service', () => {
       providers: [
         DataService,
         {provide: AuthService, useValue: authServiceMock},
-        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
@@ -97,14 +82,14 @@ describe('Data service', () => {
 
   it('should create and destroy a collection from a valid schema', async () => {
     const collection = {name: 'dummy', schema: dummySchema};
-    const created = dataService.createCollection({collection}).toPromise();
+    const created = dataService.createCollection({collection}).pipe(take(1)).toPromise();
     await expectAsync(created).toBeResolvedTo(true);
-    const deleted = dataService.destroyCollection(collection.name).toPromise();
+    const deleted = dataService.destroyCollection(collection.name).pipe(take(1)).toPromise();
     await expectAsync(deleted).toBeResolvedTo(true);
   });
 
   it('should throw an exception when trying to destroy an unexisting collection', async () => {
-    await expectAsync(dataService.destroyCollection('collection').toPromise())
+    await expectAsync(dataService.destroyCollection('collection').pipe(take(1)).toPromise())
         .toBeRejectedWithError();
   });
 });
@@ -119,22 +104,22 @@ describe('Data service - CRUD methods', () => {
       providers: [
         DataService,
         {provide: AuthService, useValue: authServiceMock},
-        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    dataService = TestBed.get(DataService);
-    await dataService.createCollection({collection}).toPromise();
+    dataService = TestBed.inject(DataService);
+    await dataService.createCollection({collection}).pipe(take(1)).toPromise();
   });
 
   afterEach(async () => {
-    await dataService.destroyCollection(collection.name).toPromise();
+    await dataService.destroyCollection(collection.name).pipe(take(1)).toPromise();
   });
 
   it('should insert a new object in the database', async () => {
     const object = {name: 'dummy'};
     const insParams = {collectionName, object};
-    const inserted = await dataService.insert<DummyModel>(insParams).toPromise();
+    const inserted = await dataService.insert<DummyModel>(insParams).pipe(take(1)).toPromise();
     expect(inserted).not.toBeNull();
     expect(inserted!.name).toBe('dummy');
   });
@@ -142,9 +127,9 @@ describe('Data service - CRUD methods', () => {
   it('should get an existing object from the database', async () => {
     const object = {name: 'dummy'};
     const insParams = {collectionName, object};
-    const inserted = await dataService.insert<DummyModel>(insParams).toPromise();
+    const inserted = await dataService.insert<DummyModel>(insParams).pipe(take(1)).toPromise();
     const getParams = {collectionName, id: inserted!.id};
-    const getObject = await dataService.get<DummyModel>(getParams).toPromise();
+    const getObject = await dataService.get<DummyModel>(getParams).pipe(take(1)).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(inserted!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object));
@@ -153,9 +138,9 @@ describe('Data service - CRUD methods', () => {
   it('should create a new object when upserting an unexisting object', async () => {
     const object = {name: 'foo'};
     const insParams = {collectionName, object};
-    const inserted = await dataService.upsert<DummyModel>(insParams).toPromise();
+    const inserted = await dataService.upsert<DummyModel>(insParams).pipe(take(1)).toPromise();
     const getParams = {collectionName, id: inserted!.id};
-    const getObject = await dataService.get<DummyModel>(getParams).toPromise();
+    const getObject = await dataService.get<DummyModel>(getParams).pipe(take(1)).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(inserted!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object));
@@ -164,12 +149,12 @@ describe('Data service - CRUD methods', () => {
   it('should overwrite the old object when upserting an existing object', async () => {
     const object1 = {name: 'dummy'};
     let insParams = {collectionName, object: object1};
-    const inserted = await dataService.insert<DummyModel>(insParams).toPromise();
+    const inserted = await dataService.insert<DummyModel>(insParams).pipe(take(1)).toPromise();
     const object2 = {id: inserted!.id, name: 'foo'};
     insParams.object = object2;
-    const updated = await dataService.upsert<DummyModel>(insParams).toPromise();
+    const updated = await dataService.upsert<DummyModel>(insParams).pipe(take(1)).toPromise();
     const getParams = {collectionName, id: inserted!.id};
-    const getObject = await dataService.get<DummyModel>(getParams).toPromise();
+    const getObject = await dataService.get<DummyModel>(getParams).pipe(take(1)).toPromise();
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(updated!._data);
     expect(getObject!._data).toEqual(jasmine.objectContaining(object2));
@@ -178,7 +163,7 @@ describe('Data service - CRUD methods', () => {
   it('should bulk insert new objects in the database', async () => {
     const objects = [{name: 'foo'}, {name: 'bar'}];
     const insParams = {collectionName, objects};
-    const result = await dataService.bulkInsert<DummyModel>(insParams).toPromise();
+    const result = await dataService.bulkInsert<DummyModel>(insParams).pipe(take(1)).toPromise();
     expect(result).not.toBeNull();
     expect(result.success).not.toBeNull();
     expect(result.success.length).toEqual(objects.length);
@@ -189,22 +174,13 @@ describe('Data service - CRUD methods', () => {
 
   it('should create a single doc query', async () => {
     const findParams = {collectionName};
-    const result = await dataService.findOne<DummyModel>(findParams).toPromise();
+    const result = await dataService.findOne<DummyModel>(findParams).pipe(take(1)).toPromise();
     expect(result).not.toBeNull();
   });
 
   it('should create a multiple docs query', async () => {
     const findParams = {collectionName};
-    const result = await dataService.find<DummyModel>(findParams).toPromise();
+    const result = await dataService.find<DummyModel>(findParams).pipe(take(1)).toPromise();
     expect(result).not.toBeNull();
-  });
-});
-
-describe('Invalid data service config', () => {
-  it('should fail creating the service instance when an invalid adapter is defined', () => {
-    expect(
-        () => new DataService(
-            authServiceMock, networkStatusServiceMock, invalidDataServiceConfig, authServiceConfig))
-        .toThrowError();
   });
 });
