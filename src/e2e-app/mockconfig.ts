@@ -1,5 +1,6 @@
 import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dewco/core/auth';
+import {ConfigServiceConfig} from '@dewco/core/config';
 
 const applicationId = 'c7576d4b-1be7-4381-98b5-d02f13f5dadd';
 const host = `http://localhost:9011`;
@@ -10,6 +11,10 @@ export const authConfig: AuthServiceConfig = {
   retryRefreshTime: 3000,
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
+};
+
+export const configurationConfig: ConfigServiceConfig = {
+  apiUrl: 'https://dev.cpainitiative.org/instances',
 };
 
 // Paginator default config

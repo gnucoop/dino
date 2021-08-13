@@ -8,8 +8,8 @@ import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-import {AreasModule} from '@dewco/core/areas';
 import {AuthModule, AuthService} from '@dewco/core/auth';
+import {ConfigModule} from '@dewco/core/config';
 import {DATA_SERVICE_CONFIG} from '@dewco/core/data';
 import {
   FormData,
@@ -18,9 +18,6 @@ import {
   FormSchemaManager,
   FormsModule
 } from '@dewco/core/forms';
-// import {LocationModule} from '@dewco/core/locations';
-// import {OrganizationsModule} from '@dewco/core/organizations';
-// import {ProjectModule} from '@dewco/core/projects';
 import {TranslateModule} from '@ngx-translate/core';
 import {Observable, of as obsOf} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
@@ -33,7 +30,7 @@ import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
-import {additionalConfig, authConfig, paginatorConfig} from './mockconfig';
+import {additionalConfig, authConfig, configurationConfig, paginatorConfig} from './mockconfig';
 import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
 import {E2E_APP_ROUTES} from './routes';
 import {formDatas} from './test-ajf-formdata';
@@ -70,6 +67,7 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
 @NgModule({
   imports: [
     AuthModule.forRoot(authConfig),
+    ConfigModule.forRoot(configurationConfig),
     BrowserModule,
     HttpClientModule,
     E2eAppModule,
@@ -79,13 +77,9 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     MatDatepickerModule,
     MatNativeDateModule,
     TranslateModule.forRoot(),
+    FormsModule,
 
     // Optional Metrics
-    AreasModule,
-    FormsModule,
-    // LocationModule,
-    // OrganizationsModule,
-    // ProjectModule,
 
     // E2E demos
     MaterialDashboardE2eModule,
@@ -108,6 +102,7 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
         databaseCreateOptions: {
           name: `dewco_test_db`,
           adapter: 'idb',
+          ignoreDuplicate: true,
         },
         syncOptions: {
           url: syncGraphQLUrl,

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Credentials, User} from '@dewco/core/auth';
+import {AuthServiceConfig, Credentials, User} from '@dewco/core/auth';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay} from 'rxjs/operators';
 
@@ -9,6 +9,15 @@ import {additionalConfig} from './mockconfig';
 export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 export const wsUrl = 'ws://localhost:8080/v1/graphql';
 export const authErrorMessage = 'Could not verify JWT: JWTExpired';
+
+export const authMockConfig: AuthServiceConfig = {
+  host: '',
+  applicationId: '',
+  apiKey: '',
+  retryRefreshTime: 3000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
 
 export class MockBreakpointObserver {
   small = obsOf(additionalConfig.isSmallScreen);
@@ -35,7 +44,13 @@ const dummyUser: User = {
 
 @Injectable()
 export class AuthServiceMock {
-  authenticated = new BehaviorSubject<boolean>(true);
+  authenticated: BehaviorSubject<boolean>;
+  authConfig: AuthServiceConfig = authMockConfig;
+  resetEvt: Observable<boolean> = obsOf(false);
+  constructor() {
+    this.authenticated = new BehaviorSubject<boolean>(true);
+  }
+  resetAuth(): void {}
   login(credentials: Credentials): Observable<boolean> {
     if (credentials.email == 'dino' && credentials.password == 'dino') {
       this.authenticated.next(true);

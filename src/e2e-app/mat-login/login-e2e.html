@@ -12,20 +12,30 @@
         margin-top: 20vh;
       "
     >
-      <mat-icon
-        aria-hidden="false"
-        aria-label="Light mode"
-        style="opacity: 0.5"
+      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5"
         >light_mode</mat-icon
       >
-      <mat-slide-toggle (change)="changeTheme($event)" style="margin: 20px" aria-label="Toggle Dino Theme">
+      <mat-slide-toggle
+        (change)="changeTheme($event)"
+        style="margin: 20px"
+        aria-label="Toggle Dino Theme"
+      >
       </mat-slide-toggle>
-      <mat-icon
-        aria-hidden="false"
-        aria-label="Dark mode"
-        style="opacity: 0.5"
+      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5"
         >dark_mode</mat-icon
       >
     </div>
   </ng-container>
+
+  <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+    <mat-label>Choose your platform</mat-label>
+    <mat-select #platformselect>
+      <mat-option
+        *ngFor="let set of configurationSets|async"
+        [value]="set"
+      >
+        {{set.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </dewco-login>
