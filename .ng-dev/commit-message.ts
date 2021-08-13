@@ -11,6 +11,7 @@ export const commitMessage: CommitMessageConfig = {
     'multiple', // For when a commit applies to multiple components.
     'core/areas',
     'core/auth',
+    'core/config',
     'core/data',
     'core/error-handler',
     'core/forms',
