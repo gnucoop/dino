@@ -25,7 +25,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   ViewChild,
@@ -34,7 +33,7 @@ import {
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
+import {AuthService} from '@dewco/core/auth';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {take, tap, withLatestFrom} from 'rxjs/operators';
@@ -142,7 +141,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
       readonly authService: AuthService,
       readonly snackbar: MatSnackBar,
       private _router: Router,
-      @Inject(AUTH_SERVICE_CONFIG) private _authConfig: AuthServiceConfig,
   ) {}
 
   ngAfterViewInit() {
@@ -184,16 +182,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * User logout method.
    */
   logout(): void {
-    this.authService.logout()
-        .pipe(
-            take(1),
-            )
-        .subscribe(res => {
-          if (res) {
-            this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
-            this._router.navigate([this._authConfig.failedAuthRedirect]);
-          }
-        });
+    this.authService.logout().pipe(take(1)).subscribe(res => {
+      if (res) {
+        this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
+        this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
+      }
+    });
   }
 
   ngOnDestroy() {
