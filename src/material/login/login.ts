@@ -32,7 +32,7 @@ import {FormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, LoginComponent} from '@dewco/core/auth';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 /**
@@ -59,6 +59,18 @@ export class Login extends LoginComponent implements OnDestroy {
   }
 
   /**
+   * The login form visibility optional condition.
+   */
+  private _loginFormVisible: Observable<boolean>;
+  get loginFormVisible(): Observable<boolean> {
+    return this._loginFormVisible;
+  }
+  @Input()
+  set loginFormVisible(visibility: Observable<boolean>) {
+    this._loginFormVisible = visibility;
+  }
+
+  /**
    * Subscribes to the "expired" data parameter of the route.
    * If true, an error message is displayed, asking the user to
    * log in again.
@@ -74,19 +86,21 @@ export class Login extends LoginComponent implements OnDestroy {
       private _route: ActivatedRoute,
   ) {
     super(authService, router, fb, cdr);
-
-    if (this._route.firstChild) {
-      this._expiredSub = this._route.firstChild.data
-                             .pipe(
-                                 map(data => {
-                                   if (data != null && data.isExpired) {
-                                     this._snackBar.open(
-                                         'Your token has expired. Please log in again.',
-                                         'AUTHENTICATION ERROR', {duration: 10000});
-                                   }
-                                 }),
-                                 )
-                             .subscribe();
+    if (this._route.data) {
+      this._expiredSub =
+          this._route.data
+              .pipe(
+                  map(data => {
+                    if (data != null && data.isExpired) {
+                      this._snackBar.open(
+                          `There was a problem connecting to the
+                           Authentication server or your token has expired.
+                           Please log in again.`,
+                          'AUTHENTICATION ERROR', {duration: 10000});
+                    }
+                  }),
+                  )
+              .subscribe();
     }
   }
 

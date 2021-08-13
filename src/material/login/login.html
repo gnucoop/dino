@@ -5,7 +5,10 @@
     </div>
   </div>
   <ng-content select="[dropdownSelect]"></ng-content>
-  <div class="dewco-login-form-container">
+  <div
+    class="dewco-login-form-container"
+    *ngIf="loginFormVisible == null || (loginFormVisible|async) == true"
+  >
     <form [class.dewco-error]="loginError" [formGroup]="loginForm">
       <input
         matInput
