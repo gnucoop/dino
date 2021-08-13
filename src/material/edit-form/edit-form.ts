@@ -68,6 +68,11 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
   readonly isView: Observable<boolean>;
 
   /**
+   * True if the form has a parent (is in a nested details list row)
+   */
+  readonly isDetails: Observable<boolean>;
+
+  /**
    * True if no validation errors are encountered
    */
   readonly isValid: Observable<boolean>;
@@ -159,6 +164,13 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
       return false;
     }));
 
+    this.isDetails = this._route.data.pipe(map(data => {
+      if (data != null && data.isDetails != null) {
+        return data.isDetails;
+      }
+      return false;
+    }));
+
     this.isValid =
         this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1));
   }
@@ -197,32 +209,36 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
     );
 
     this._formData = this.formId.pipe(
-        map(
-            id => this._dataModelManager.query({selector: {id: id}})
-                      .pipe(
-                          switchMap((rxdbQuery) => {
-                            const res = from(rxdbQuery.exec());
-                            return res;
-                          }),
-                          map((docs) => {
-                            if (!docs.length) {
-                              this._router.navigateByUrl('');
-                              return null;
-                            }
-                            const rxDoc = docs[0];
-                            const item: {[key: string]: any} = rxDoc.toJSON();
-                            this._currentDoc.next(item as T);
-                            if ('data' in item && item['data'] != null) {
-                              if (item['data']['schema_id'] != null || item['schema_id'] != null) {
-                                this._formSchemaId.next(
-                                    item['data']['schema_id'] ?? item['schema_id']);
-                              }
-                              return item['data']['data'] ?? item['data'] ?? null;
-                            }
-                            return null;
-                          }),
-                          ),
-            ),
+        withLatestFrom(this.isDetails),
+        map(([id, isDetails]) => {
+          const dm: DataModelManager<T> =
+              isDetails && this._dataModelManager.detailsManager != null ?
+              this._dataModelManager.detailsManager :
+              this._dataModelManager;
+          return dm.query({selector: {id: id}})
+              .pipe(
+                  switchMap((rxdbQuery) => {
+                    const res = from(rxdbQuery.exec());
+                    return res;
+                  }),
+                  map((docs) => {
+                    if (!docs.length) {
+                      this._router.navigateByUrl('');
+                      return null;
+                    }
+                    const rxDoc = docs[0];
+                    const item: {[key: string]: any} = rxDoc.toJSON();
+                    this._currentDoc.next(item as T);
+                    if ('data' in item && item['data'] != null) {
+                      if (item['data']['schema_id'] != null || item['schema_id'] != null) {
+                        this._formSchemaId.next(item['data']['schema_id'] ?? item['schema_id']);
+                      }
+                      return item['data']['data'] ?? item['data'] ?? null;
+                    }
+                    return null;
+                  }),
+              );
+        }),
         switchMap(data => data as Observable<FormData>),
         shareReplay(1),
     );
@@ -250,10 +266,15 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
                 map(([_, item]) => {
                   return {doc: item, formValue: this._rendererService.getFormValue()};
                 }),
-                switchMap(formObj => {
+                withLatestFrom(this.isDetails),
+                switchMap(([formObj, isDetails]) => {
                   let newItem = formObj.doc as {[key: string]: any};
                   newItem.data.data = formObj.formValue;
-                  return this._dataModelManager.update(newItem as T);
+                  const dm: DataModelManager<T> =
+                      isDetails && this._dataModelManager.detailsManager != null ?
+                      this._dataModelManager.detailsManager :
+                      this._dataModelManager;
+                  return dm.update(newItem as T);
                 }),
                 catchError(err => {
                   this.snackbar.open(err, 'ERROR', {duration: 5000});

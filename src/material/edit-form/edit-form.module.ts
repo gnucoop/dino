@@ -33,7 +33,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 
 import {EditForm} from './edit-form';
@@ -41,7 +40,6 @@ import {EditForm} from './edit-form';
 @NgModule({
   imports: [
     AjfFormsModule,
-    BrowserAnimationsModule,
     CommonModule,
     MatButtonModule,
     MatCheckboxModule,
