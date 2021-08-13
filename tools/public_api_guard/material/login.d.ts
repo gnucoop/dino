@@ -1,9 +1,11 @@
 export declare class Login extends LoginComponent implements OnDestroy {
+    get loginFormVisible(): Observable<boolean>;
+    set loginFormVisible(visibility: Observable<boolean>);
     get logoImagePath(): string;
     set logoImagePath(url: string);
     constructor(authService: AuthService, router: Router, fb: FormBuilder, cdr: ChangeDetectorRef, _snackBar: MatSnackBar, _route: ActivatedRoute);
     ngOnDestroy(): void;
-    static ɵcmp: i0.ɵɵComponentDeclaration<Login, "dewco-login", never, { "logoImagePath": "logoImagePath"; }, {}, never, ["[dropdownSelect]", "[additionalContent]"]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Login, "dewco-login", never, { "logoImagePath": "logoImagePath"; "loginFormVisible": "loginFormVisible"; }, {}, never, ["[dropdownSelect]", "[additionalContent]"]>;
     static ɵfac: i0.ɵɵFactoryDeclaration<Login, never>;
 }
 

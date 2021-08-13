@@ -5,6 +5,7 @@ export declare class EditForm<T extends Model = Model> implements OnInit, OnDest
     get formData(): Observable<FormData>;
     readonly formId: Observable<string>;
     get formSchema(): Observable<FormSchema>;
+    readonly isDetails: Observable<boolean>;
     readonly isValid: Observable<boolean>;
     readonly isView: Observable<boolean>;
     readonly snackbar: MatSnackBar;
@@ -19,5 +20,5 @@ export declare class EditForm<T extends Model = Model> implements OnInit, OnDest
 export declare class EditFormModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<EditFormModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<EditFormModule>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<EditFormModule, [typeof i1.EditForm], [typeof i2.AjfFormsModule, typeof i3.BrowserAnimationsModule, typeof i4.CommonModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatInputModule, typeof i10.MatSlideToggleModule, typeof i11.MatSnackBarModule, typeof i12.MatSortModule, typeof i13.MatTableModule, typeof i14.MatToolbarModule, typeof i15.RouterModule], [typeof i1.EditForm]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<EditFormModule, [typeof i1.EditForm], [typeof i2.AjfFormsModule, typeof i3.CommonModule, typeof i4.MatButtonModule, typeof i5.MatCheckboxModule, typeof i6.MatDialogModule, typeof i7.MatFormFieldModule, typeof i8.MatInputModule, typeof i9.MatSlideToggleModule, typeof i10.MatSnackBarModule, typeof i11.MatSortModule, typeof i12.MatTableModule, typeof i13.MatToolbarModule, typeof i14.RouterModule], [typeof i1.EditForm]>;
 }

@@ -166,7 +166,8 @@ export declare type DataQuerySortDir = 'asc' | 'desc';
 
 export declare class DataService {
     readonly collectionChanged: Observable<CollectionChangedEvent>;
-    constructor(_authService: AuthService, _nss: NetworkStatusService, config: DataServiceConfig, _authConfig: AuthServiceConfig);
+    readonly config: DataServiceConfig;
+    constructor(_authService: AuthService, _nss: NetworkStatusService, _config: DataServiceConfig, _configService: ConfigService | null);
     bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<{
         success: RxDocument<T>[];
         error: any[];
@@ -179,7 +180,7 @@ export declare class DataService {
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
     plugin(plugin: any): void;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<DataService, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DataService, [null, null, null, { optional: true; }]>;
     static ɵprov: i0.ɵɵInjectableDeclaration<DataService>;
 }
 

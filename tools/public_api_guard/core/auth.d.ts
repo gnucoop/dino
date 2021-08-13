@@ -20,10 +20,12 @@ export interface AuthResponse {
 }
 
 export declare class AuthService {
+    get authConfig(): AuthServiceConfig;
     readonly authToken: BehaviorSubject<string | null>;
     readonly authenticated: BehaviorSubject<boolean>;
     readonly config: AuthServiceConfig;
-    constructor(_nss: NetworkStatusService, _httpClient: HttpClient, config: AuthServiceConfig);
+    readonly resetEvt: EventEmitter<boolean>;
+    constructor(_nss: NetworkStatusService, _httpClient: HttpClient, config: AuthServiceConfig, _configService: ConfigService | null);
     checkToken(): Observable<boolean>;
     getAuthToken(): string | null;
     getRefreshToken(): string | null;
@@ -32,7 +34,8 @@ export declare class AuthService {
     login(credentials: Credentials): Observable<boolean>;
     logout(allDevices?: boolean): Observable<boolean>;
     refreshToken(): Observable<boolean>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<AuthService, never>;
+    resetAuth(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AuthService, [null, null, null, { optional: true; }]>;
     static ɵprov: i0.ɵɵInjectableDeclaration<AuthService>;
 }
 
@@ -92,7 +95,7 @@ export interface DinoUserInfo {
 
 export declare class JWTInterceptor implements HttpInterceptor {
     handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]>;
-    constructor(_router: Router, _authService: AuthService, _nss: NetworkStatusService, _config: AuthServiceConfig);
+    constructor(_router: Router, _authService: AuthService, _nss: NetworkStatusService);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
     static ɵfac: i0.ɵɵFactoryDeclaration<JWTInterceptor, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<JWTInterceptor>;
