@@ -21,7 +21,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {fromEvent, merge, Observable, of as obsOf} from 'rxjs';
+import {fromEvent, merge, Observable} from 'rxjs';
 import {mapTo, startWith} from 'rxjs/operators';
 
 /**
@@ -38,10 +38,9 @@ export class NetworkStatusService {
     this.isOnline$ = merge(
                          fromEvent(window, 'offline').pipe(mapTo(false)),
                          fromEvent(window, 'online').pipe(mapTo(true)),
-                         obsOf(navigator.onLine),
                          )
                          .pipe(
-                             startWith(true),
+                             startWith(navigator.onLine),
                          );
   }
 }

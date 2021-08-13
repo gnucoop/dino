@@ -15,7 +15,8 @@ const authServiceMock = {
   loginSuccess: true,
   login(_: Credentials): Observable<boolean> {
     return obsOf(authServiceMock.loginSuccess);
-  }
+  },
+  resetAuth: (): void => {},
 };
 
 const changeDetectorRefMock = {

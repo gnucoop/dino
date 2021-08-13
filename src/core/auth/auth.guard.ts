@@ -29,7 +29,7 @@ import {
   UrlTree
 } from '@angular/router';
 import {Observable} from 'rxjs';
-import {debounceTime, map, withLatestFrom} from 'rxjs/operators';
+import {debounceTime, map, take, withLatestFrom} from 'rxjs/operators';
 import {AuthService} from './auth-service';
 
 /**
@@ -48,6 +48,7 @@ export class AuthGuard implements CanActivate {
       Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
     return this._authService.authenticated.pipe(
         withLatestFrom(this._authService.checkToken()),
+        take(1),
         map(([authenticated, validated]) => {
           if (authenticated && validated) {
             return true;

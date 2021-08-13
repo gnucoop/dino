@@ -2,6 +2,7 @@
 CORE_ENTRYPOINTS = [
     "areas",
     "auth",
+    "config",
     "data",
     "error-handler",
     "forms",

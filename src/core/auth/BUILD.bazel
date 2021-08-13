@@ -17,6 +17,7 @@ ng_module(
     assets = [],
     module_name = "@dewco/core/auth",
     deps = [
+        "//src/core/config",
         "@npm//@angular/common",
         "@npm//@angular/core",
         "@npm//@angular/forms",

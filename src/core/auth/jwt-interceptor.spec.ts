@@ -52,7 +52,7 @@ describe(`JWTInterceptor`, () => {
                interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
            expect(jwtInterceptor).toBeDefined();
 
-           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isLoginRequest').and.callThrough();
+           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
            let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
            http.post('http://test-auth-backend/data', {}).subscribe(res => {
@@ -73,7 +73,7 @@ describe(`JWTInterceptor`, () => {
                interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
            expect(jwtInterceptor).toBeDefined();
 
-           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isLoginRequest').and.callThrough();
+           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
            let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
            http.post('http://test-auth-backend/data', {}).subscribe(res => {

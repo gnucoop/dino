@@ -56,8 +56,8 @@ describe('AuthService', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    authService = TestBed.get(AuthService);
-    httpMock = TestBed.get(HttpTestingController);
+    authService = TestBed.inject(AuthService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

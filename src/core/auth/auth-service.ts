@@ -21,7 +21,8 @@
  */
 
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
+import {ConfigService} from '@dewco/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, mapTo, switchMap, tap} from 'rxjs/operators';
 
@@ -65,16 +66,65 @@ export class AuthService {
    */
   readonly authToken: BehaviorSubject<string|null>;
 
+  /**
+   * Emits when reset auth is called, indicating the removal of all
+   * stored token and config data.
+   */
+  readonly resetEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  /**
+   * The Auth service configuration settings stream.
+   */
+  private _authConfig: BehaviorSubject<AuthServiceConfig>;
+
+  get authConfig(): AuthServiceConfig {
+    return this._authConfig.value;
+  }
+
+  /**
+   * The auth config currently stored in the local storage, if present.
+   */
+  private _currentlyStoredConfig: AuthServiceConfig|null;
+
   private _baseUrl: string;
 
   constructor(
       private _nss: NetworkStatusService,
       private _httpClient: HttpClient,
       @Inject(AUTH_SERVICE_CONFIG) readonly config: AuthServiceConfig,
+      @Optional() private _configService: ConfigService|null,
   ) {
-    this._baseUrl = removeSlashes(config.host);
+    this._authConfig = new BehaviorSubject<AuthServiceConfig>(this.config);
+
+    this._currentlyStoredConfig = this._getAuthConfig();
+
+    this._baseUrl = removeSlashes(this._authConfig.value.host);
+
+    if (this._currentlyStoredConfig != null) {
+      this._authConfig.next(this._currentlyStoredConfig);
+    }
     this.authToken = new BehaviorSubject<string|null>(this.getAuthToken());
     this._initAuthentication();
+    if (this._configService != null) {
+      this._setDynamicConfigSub();
+    }
+  }
+
+  /**
+   * Resets the auth state, removing tokens and config from local storage.
+   */
+  resetAuth(): void {
+    this.resetEvt.emit(true);
+
+    this._currentlyStoredConfig = null;
+    this.authenticated.next(false);
+    this._storeAuthToken(null);
+    this._storeRefreshToken(null);
+    this._storeUserInfo(null);
+    this._removeAuthConfig();
+    if (this._configService) {
+      this._configService.resetConfigurationset();
+    }
   }
 
   /**
@@ -86,34 +136,38 @@ export class AuthService {
     if (credentials == null) {
       return obsOf(false);
     }
-    const req: {[key: string]: string} = {
-      [this.config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
-      [this.config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
-          credentials.password,
-      applicationId: this.config.applicationId,
-    };
 
-    const url = this._generateUrl(this.config.loginEndpoint ?? 'api/login');
-    const headers = this.config.apiKey != null ? {Authorization: this.config.apiKey} : undefined;
-    return this._httpClient.post<LoginResponse>(url, req, {headers})
-        .pipe(
-            tap(res => {
-              this.authenticated.next(true);
-              this._storeAuthToken(res.token);
-              this._storeRefreshToken(res.refreshToken);
-              let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
-              if (this.config.userAuthInfo != null) {
-                const userAuthInfo = res[this.config.userAuthInfo];
-                userInfo = userAuthInfo;
-              }
-              this._storeUserInfo(userInfo);
-            }),
-            mapTo(true),
-            catchError(() => {
-              this.authenticated.next(false);
-              return obsOf(false);
-            }),
-        );
+    return this._authConfig.pipe(switchMap(config => {
+      const req: {[key: string]: string} = {
+        [config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
+        [config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
+            credentials.password,
+        applicationId: config.applicationId,
+      };
+
+      const url =
+          this._generateUrl(config.loginEndpoint ?? 'api/login', removeSlashes(config.host));
+      const headers = config.apiKey != null ? {Authorization: config.apiKey} : undefined;
+      return this._httpClient.post<LoginResponse>(url, req, {headers})
+          .pipe(
+              tap(res => {
+                this.authenticated.next(true);
+                this._storeAuthToken(res.token);
+                this._storeRefreshToken(res.refreshToken);
+                let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
+                if (config.userAuthInfo != null) {
+                  const userAuthInfo = res[config.userAuthInfo];
+                  userInfo = userAuthInfo;
+                }
+                this._storeUserInfo(userInfo);
+              }),
+              mapTo(true),
+              catchError(() => {
+                this.authenticated.next(false);
+                return obsOf(false);
+              }),
+          );
+    }));
   }
 
   /**
@@ -123,24 +177,31 @@ export class AuthService {
    * @returns True if the user has been logged out otherwise false
    */
   logout(allDevices = false): Observable<boolean> {
-    const refreshToken = this.getRefreshToken()!;
-    const global = this._stringifyBooleanParam(allDevices);
-    const params = new HttpParams({fromObject: {global, refreshToken}});
-    const headers = this.config.apiKey != null ? {Authorization: this.config.apiKey} :
-                                                 {Authorization: `Bearer ${this.getAuthToken()}`};
-    const url =
-        `${this._generateUrl(this.config.logoutEndpoint ?? 'api/logout')}?${params.toString()}`;
-    return this._httpClient.post(url, {}, {headers})
-        .pipe(
-            tap(() => {
-              this.authenticated.next(false);
-              this._storeAuthToken(null);
-              this._storeRefreshToken(null);
-              this._storeUserInfo(null);
-            }),
-            mapTo(true),
-            catchError(() => obsOf(false)),
-        );
+    return this._authConfig.pipe(
+        switchMap(config => {
+          const refreshToken = this.getRefreshToken()!;
+          const global = this._stringifyBooleanParam(allDevices);
+          const params = new HttpParams({fromObject: {global, refreshToken}});
+          const headers = config.apiKey != null ? {Authorization: config.apiKey} :
+                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
+          const url = `${
+              this._generateUrl(
+                  config.logoutEndpoint ?? 'api/logout',
+                  removeSlashes(config.host))}?${params.toString()}`;
+          return this._httpClient.post(url, {}, {headers})
+              .pipe(
+                  tap(() => {
+                    this.authenticated.next(false);
+                    this._storeAuthToken(null);
+                    this._storeRefreshToken(null);
+                    this._storeUserInfo(null);
+                    this._removeAuthConfig();
+                  }),
+                  mapTo(true),
+                  catchError(() => obsOf(false)),
+              );
+        }),
+    );
   }
 
   /**
@@ -155,8 +216,8 @@ export class AuthService {
    * @returns The last stored JWT auth token.
    */
   getAuthToken(): string|null {
-    if (this.config.retrieveAuthToken != null) {
-      return this.config.retrieveAuthToken();
+    if (this._authConfig.value.retrieveAuthToken != null) {
+      return this._authConfig.value.retrieveAuthToken();
     }
     return localStorage.getItem(this._getAuthTokenLocaleStorageKey());
   }
@@ -165,8 +226,8 @@ export class AuthService {
    * @returns The last stored JWT refresh token.
    */
   getRefreshToken(): string|null {
-    if (this.config.retrieveRefreshToken != null) {
-      return this.config.retrieveRefreshToken();
+    if (this._authConfig.value.retrieveRefreshToken != null) {
+      return this._authConfig.value.retrieveRefreshToken();
     }
     return localStorage.getItem(this._getRefreshTokenLocaleStorageKey());
   }
@@ -175,8 +236,8 @@ export class AuthService {
    * @returns The last stored logged in user info.
    */
   getUserInfo(): User|null {
-    if (this.config.retrieveUserInfo != null) {
-      return this.config.retrieveUserInfo();
+    if (this._authConfig.value.retrieveUserInfo != null) {
+      return this._authConfig.value.retrieveUserInfo();
     }
     const userInfo = localStorage.getItem(this._getUserInfoLocaleStorageKey());
     return userInfo == null ? null : JSON.parse(userInfo);
@@ -192,36 +253,41 @@ export class AuthService {
       return obsOf(false);
     }
 
-    const req = {refreshToken: this.getRefreshToken()};
+    return this._authConfig.pipe(
+        switchMap(config => {
+          const req = {refreshToken: this.getRefreshToken()};
 
-    const url = this._generateUrl(this.config.refreshEndpoint ?? 'api/jwt/refresh');
-    const headers = this.config.apiKey != null ? {Authorization: this.config.apiKey} :
-                                                 {Authorization: `Bearer ${this.getAuthToken()}`};
+          const url = this._generateUrl(
+              config.refreshEndpoint ?? 'api/jwt/refresh', removeSlashes(config.host));
+          const headers = config.apiKey != null ? {Authorization: config.apiKey} :
+                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
 
-    const refreshHttpCall: Observable<boolean> =
-        this._httpClient.post<AuthResponse>(url, req, {headers})
-            .pipe(
-                tap(res => {
-                  this.authenticated.next(true);
-                  this._storeRefreshToken(res.refreshToken);
-                  this._storeAuthToken(res.token);
-                }),
-                mapTo(true),
-                catchError(
-                    () => {
-                      this.authenticated.next(false);
-                      return obsOf(false);
-                    },
-                    ),
-            );
+          const refreshHttpCall: Observable<boolean> =
+              this._httpClient.post<AuthResponse>(url, req, {headers})
+                  .pipe(
+                      tap(res => {
+                        this.authenticated.next(true);
+                        this._storeRefreshToken(res.refreshToken);
+                        this._storeAuthToken(res.token);
+                      }),
+                      mapTo(true),
+                      catchError(
+                          () => {
+                            this.authenticated.next(false);
+                            return obsOf(false);
+                          },
+                          ),
+                  );
 
-    return this._nss.isOnline$.pipe(
-        switchMap(isOnline => {
-          if (!isOnline) {
-            return obsOf(true);
-          } else {
-            return refreshHttpCall;
-          }
+          return this._nss.isOnline$.pipe(
+              switchMap(isOnline => {
+                if (!isOnline) {
+                  return obsOf(true);
+                } else {
+                  return refreshHttpCall;
+                }
+              }),
+          );
         }),
     );
   }
@@ -251,24 +317,87 @@ export class AuthService {
   }
 
   /**
+   * Subscribes to the Config Service and listens for changes
+   * in the Auth configuration.
+   */
+  private _setDynamicConfigSub(): void {
+    if (this._configService == null) {
+      return;
+    }
+    this._configService.configurationSet.subscribe(config => {
+      if (config == null) {
+        return;
+      }
+      const authConfig = {...this._authConfig.value, ...config.authConfig};
+      this._setAuthConfig(authConfig);
+    });
+  }
+
+  /**
+   * Dynamically sets the configuration params for the Auth Service.
+   * @param config The configuration data
+   */
+  private _setAuthConfig(config: AuthServiceConfig): void {
+    if (config == null) {
+      return;
+    }
+    this._storeAuthConfig(config);
+    this._authConfig.next(config);
+  }
+
+  /**
+   * Stores an Auth service configuration object into the
+   * local storage.
+   * @param config The configuration data
+   */
+  private _storeAuthConfig(config: AuthServiceConfig): void {
+    if (config == null) {
+      return;
+    }
+    localStorage.setItem('auth_config', btoa(JSON.stringify(config)));
+  }
+
+  /**
+   * Retrieves the Auth service configuration currently stored in the
+   * local storage.
+   */
+  private _getAuthConfig(): AuthServiceConfig|null {
+    const config = localStorage.getItem('auth_config');
+    if (config == null) {
+      return null;
+    }
+    return JSON.parse(atob(config));
+  }
+
+  /**
+   * Removes the Auth service configuration currently stored in the
+   * local storage.
+   */
+  private _removeAuthConfig(): void {
+    localStorage.removeItem('auth_config');
+  }
+
+
+  /**
    * @returns The local storage key used to store the JWT token
    */
   private _getAuthTokenLocaleStorageKey(): string {
-    return this.config.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;
+    return this._authConfig.value.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;
   }
 
   /**
    * @returns The local storage key used to store the JWT refresh token
    */
   private _getRefreshTokenLocaleStorageKey(): string {
-    return this.config.refreshTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.refreshTokenKey;
+    return this._authConfig.value.refreshTokenLocalStorageKey ||
+        DEFAULT_AUTH_OPTIONS.refreshTokenKey;
   }
 
   /**
    * @returns The local storage key used to store the logged in user info
    */
   private _getUserInfoLocaleStorageKey(): string {
-    return this.config.userInfoLocalStorageKey || DEFAULT_AUTH_OPTIONS.userInfoKey;
+    return this._authConfig.value.userInfoLocalStorageKey || DEFAULT_AUTH_OPTIONS.userInfoKey;
   }
 
   /**
@@ -278,8 +407,8 @@ export class AuthService {
    */
   private _storeAuthToken(token: string|null): void {
     this.authToken.next(token);
-    if (this.config.storeAuthToken != null) {
-      this.config.storeAuthToken(token);
+    if (this._authConfig.value.storeAuthToken != null) {
+      this._authConfig.value.storeAuthToken(token);
       return;
     }
     if (token == null) {
@@ -296,8 +425,8 @@ export class AuthService {
    * @param token The JWT refresh token
    */
   private _storeRefreshToken(token: string|null): void {
-    if (this.config.storeRefreshToken != null) {
-      this.config.storeRefreshToken(token);
+    if (this._authConfig.value.storeRefreshToken != null) {
+      this._authConfig.value.storeRefreshToken(token);
       return;
     }
     if (token == null) {
@@ -313,8 +442,8 @@ export class AuthService {
    * @param user The logged in user info.
    */
   private _storeUserInfo(user: User|null): void {
-    if (this.config.storeUserInfo != null) {
-      this.config.storeUserInfo(user);
+    if (this._authConfig.value.storeUserInfo != null) {
+      this._authConfig.value.storeUserInfo(user);
       return;
     }
     if (user == null) {
@@ -329,8 +458,8 @@ export class AuthService {
    * @param endpoint The authentication endpoint.
    * @returns The full URL
    */
-  private _generateUrl(endpoint: string): string {
-    return `${this._baseUrl}/${removeSlashes(endpoint)}`;
+  private _generateUrl(endpoint: string, baseUrl?: string): string {
+    return `${baseUrl ?? this._baseUrl}/${removeSlashes(endpoint)}`;
   }
 
   /**
@@ -344,15 +473,9 @@ export class AuthService {
    * Check if a valid JWT token is stored and set the authentication status.
    */
   private _initAuthentication(): void {
-    try {
-      const checkTokenSub = this.checkToken().subscribe(check => {
-        this.authenticated.next(check);
-        if (checkTokenSub) {
-          checkTokenSub.unsubscribe();
-        }
-      });
-    } catch (e) {
-    }
+    this.checkToken().subscribe(check => {
+      this.authenticated.next(check);
+    });
   }
 
   /**

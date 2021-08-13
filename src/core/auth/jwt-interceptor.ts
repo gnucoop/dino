@@ -27,13 +27,12 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import {EventEmitter, Inject, Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, debounceTime, filter, skip, switchMap, withLatestFrom} from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
-import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {NetworkStatusService} from './network-status.service';
 
 @Injectable()
@@ -56,20 +55,16 @@ export class JWTInterceptor implements HttpInterceptor {
       private _router: Router,
       private _authService: AuthService,
       private _nss: NetworkStatusService,
-      @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
   ) {
     this.handleRefreshEvt
         .pipe(
             withLatestFrom(this._nss.isOnline$),
-            debounceTime(this._config.retryRefreshTime),
-            switchMap(([
-                        [request, next],
-                        isOnline,
-                      ]) => {
+            debounceTime(this._authService.authConfig.retryRefreshTime),
+            switchMap(([[request, next], isOnline]) => {
               if (!isOnline) {
                 return obsOf(true);
               }
-              if (this._retryAttempts < (this._config.retryAttemptsMax)) {
+              if (this._retryAttempts < (this._authService.authConfig.retryAttemptsMax)) {
                 this._retryAttempts++;
                 return this._authService.refreshToken().pipe(
                     switchMap(() => next.handle(request)),
@@ -77,7 +72,8 @@ export class JWTInterceptor implements HttpInterceptor {
               } else {
                 this._authService.authenticated.next(false);
                 if (this._authService.getAuthToken() != null) {
-                  this._router.navigate([this._config.failedAuthRedirect, 'expired']);
+                  this._router.navigate([this._authService.authConfig.failedAuthRedirect,
+                    'expired']);
                 }
                 return obsOf(false);
               }
@@ -99,7 +95,8 @@ export class JWTInterceptor implements HttpInterceptor {
                       } else {
                         this._authService.authenticated.next(false);
                         if (this._authService.getAuthToken() != null) {
-                          this._router.navigate([this._config.failedAuthRedirect, 'expired']);
+                          this._router.navigate([this._authService.authConfig.failedAuthRedirect,
+                            'expired']);
                         }
                         return obsOf(false);
                       }
@@ -122,8 +119,9 @@ export class JWTInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
                catchError(error => {
-                 if (error instanceof HttpErrorResponse && error.status === 401 &&
-                     !this._isLoginRequest(request)) {
+                 if (error instanceof HttpErrorResponse &&
+                    (error.status === 401 || error.status === 400) &&
+                     !this._isAllowedRequest(request)) {
                    this.handleRefreshEvt.emit([request, next]);
                    return obsOf(null);
                  }
@@ -133,17 +131,16 @@ export class JWTInterceptor implements HttpInterceptor {
   }
 
   /**
-   * Checks wether a http request is a Login request, by checking its url and
-   * matching it with the api login endpoint url.
+   * Checks wether a http request should trigger the Refresh handling.
    * @param request the Http request.
-   * @returns true if it's a Login request.
+   * @returns true if it's an allowed request.
    */
-  private _isLoginRequest(request: HttpRequest<any>): boolean {
-    const loginEndpoint = this._config.loginEndpoint;
+  private _isAllowedRequest(request: HttpRequest<any>): boolean {
+    const loginEndpoint = this._authService.authConfig.loginEndpoint;
     if (loginEndpoint && request.url.includes(loginEndpoint)) {
       return true;
     }
-    if (request.url.includes('api/login')) {
+    if (request.url.includes('api/login') || request.url.includes('instances')) {
       return true;
     }
     return false;

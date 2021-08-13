@@ -80,6 +80,8 @@ export abstract class LoginComponent {
       fb: FormBuilder,
       private _cdr: ChangeDetectorRef,
   ) {
+    this._authService.resetAuth();
+
     this.loginForm = fb.group({
       email: [null, [Validators.required]],
       password: [null, [Validators.required]],
