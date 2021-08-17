@@ -46,6 +46,14 @@ export const schema = {
     "parent_id": {
       "type": ["string", "null"],
       "description": "Optional parent area ID"
+    },
+    "parent_name": {
+      "type": ["string", "null"],
+      "description": "Optional parent area Name"
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "The soft deletion flag."
     }
   },
   "required": [

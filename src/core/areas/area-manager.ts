@@ -37,7 +37,7 @@ export class AreaManager extends DataModelManager<Area> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'areas', schema}},
+        {collection: {name: 'area', schema}},
         dataService,
         permissionContextService,
     );
