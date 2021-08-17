@@ -44,7 +44,7 @@ export const schema = {
       "description": "The metric name."
     },
     "parent_id": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "The optional ID of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
     "parent_name": {
@@ -53,7 +53,7 @@ export const schema = {
     },
     "coordinates": {
       "$ref": "#/definitions/Coordinates",
-      "type": ["object", "null"],
+      "type": ["string", "null"],
       "description": "Optional location map coordinates"
     },
     "is_deleted": {
