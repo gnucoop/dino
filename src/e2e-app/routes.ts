@@ -1,11 +1,16 @@
 import {Routes} from '@angular/router';
 import {AuthGuard} from '@dewco/core/auth';
 
+import {MatAreasE2E} from './mat-areas/areas-e2e.component';
 import {MatCollectE2E} from './mat-collect/collect-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
 import {MatEditE2E} from './mat-edit/edit-e2e.component';
 import {MatListE2E} from './mat-list/list-e2e';
+import {MatLocationsE2E} from './mat-locations/locations-e2e.component';
 import {MatLoginE2E} from './mat-login/login-e2e';
+import {MatMetricsE2E} from './mat-metrics/metrics-e2e.component';
+import {MatOrganizationsE2E} from './mat-organizations/organizations-e2e.component';
+import {MatProjectsE2E} from './mat-projects/projects-e2e.component';
 import {additionalConfig} from './mockconfig';
 
 const authGuard = additionalConfig.authGuard ? [AuthGuard] : undefined;
@@ -66,6 +71,32 @@ export const E2E_APP_ROUTES: Routes = [
         component: MatLoginE2E,
       },
     ]
+  },
+  {
+    path: 'metrics',
+    canActivate: authGuard,
+    children: [
+      {
+        path: 'thematic_areas',
+        component: MatAreasE2E,
+      },
+      {
+        path: 'projects',
+        component: MatProjectsE2E,
+      },
+      {
+        path: 'locations',
+        component: MatLocationsE2E,
+      },
+      {
+        path: 'organizations',
+        component: MatOrganizationsE2E,
+      },
+      {
+        path: '',
+        component: MatMetricsE2E,
+      },
+    ],
   },
   {
     path: 'collect',

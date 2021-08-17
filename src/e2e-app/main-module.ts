@@ -8,6 +8,7 @@ import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
+import {AreasModule} from '@dewco/core/areas';
 import {AuthModule, AuthService} from '@dewco/core/auth';
 import {ConfigModule} from '@dewco/core/config';
 import {DATA_SERVICE_CONFIG} from '@dewco/core/data';
@@ -18,6 +19,9 @@ import {
   FormSchemaManager,
   FormsModule
 } from '@dewco/core/forms';
+import {LocationModule} from '@dewco/core/locations';
+import {OrganizationsModule} from '@dewco/core/organizations';
+import {ProjectModule} from '@dewco/core/projects';
 import {DewcoTranslationsModule} from '@dewco/core/translations';
 import {Observable, of as obsOf} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
@@ -25,11 +29,14 @@ import {switchMap, tap} from 'rxjs/operators';
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
 import {FakeDataGenerator} from './fake-data-generator';
+import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
 import {MaterialCollectE2eModule} from './mat-collect/collect-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
+import {MaterialMetricsE2eModule} from './mat-metrics/metrics-e2e.module';
+import {MaterialProjectsE2eModule} from './mat-projects/projects-e2e.module';
 import {additionalConfig, authConfig, configurationConfig, paginatorConfig} from './mockconfig';
 import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
 import {E2E_APP_ROUTES} from './routes';
@@ -80,6 +87,11 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     RouterModule.forRoot(E2E_APP_ROUTES),
 
     // Optional Metrics
+    AreasModule,
+    FormsModule,
+    LocationModule,
+    OrganizationsModule,
+    ProjectModule,
 
     // E2E demos
     MaterialDashboardE2eModule,
@@ -87,6 +99,9 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     MaterialListE2eModule,
     MaterialLoginE2eModule,
     MaterialMainE2EModule,
+    MaterialMetricsE2eModule,
+    MaterialAreasE2eModule,
+    MaterialProjectsE2eModule,
   ],
   declarations: [
     E2eApp,

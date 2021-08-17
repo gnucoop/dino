@@ -1,3 +1,4 @@
+import {MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dewco/core/auth';
 import {ConfigServiceConfig} from '@dewco/core/config';
@@ -23,6 +24,11 @@ export const paginatorConfig: MatPaginatorDefaultOptions = {
   pageSizeOptions: [5, 10, 25, 50, 100],
 };
 
+// Dialog default config
+export const dialogConfig: MatDialogConfig = new MatDialogConfig();
+dialogConfig.minWidth = '95vw';
+dialogConfig.maxWidth = '95vw';
+
 /**
  * Any additional configurable parameters
  */
@@ -31,20 +37,20 @@ export const additionalConfig = {
    * If true, fake data is generated from test-ajf-formschema and test-ajf-formdata
    * when the e2e-app starts
    */
-  generateData: true,
+  generateData: false,
 
   /**
    * If true, authGuard is on for all guarded routes.
    * Set this to false to correctly perform e2e-tests.
    */
-  authGuard: false,
+  authGuard: true,
 
   /**
    * If true, the real auth service will be used to authenticate
    * users against the external authentication platform.
    * Set this to false to correctly perform e2e-tests.
    */
-  externalAuthentication: false,
+  externalAuthentication: true,
 
   /**
    * Config the breakpointobserver service for "large" or "small" screens

@@ -9,7 +9,7 @@
 @include all-core.mat-core();
 
 // Define an alernative theme.
-$primary: mat-theming.define-palette(mat-palette.$brown-palette);
+$primary: mat-theming.define-palette(mat-palette.$brown-palette, 400, 800, 600);
 $accent: mat-theming.define-palette(mat-palette.$deep-orange-palette, 100, 900, A700);
 $warn: mat-theming.define-palette(mat-palette.$red-palette);
 

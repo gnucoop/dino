@@ -11,12 +11,20 @@ export class MatMainE2E {
     {
       label: 'Dashboard',
       url: 'dashboard',
-      icon: 'widgets',
+      icon: 'apps',
     },
     {
       label: 'Collect Forms',
       url: 'collect',
       icon: 'list_alt',
+    },
+  ];
+
+  adminSections: Section[] = [
+    {
+      label: 'Users',
+      url: 'users',
+      icon: 'people',
     },
   ];
 }

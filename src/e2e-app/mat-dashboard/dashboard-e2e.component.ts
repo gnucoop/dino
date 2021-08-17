@@ -15,6 +15,18 @@ export class MatDashboardE2E {
       icon: 'list_alt',
       url: '/collect',
     },
+    {
+      name: 'users',
+      label: 'Users',
+      icon: 'people',
+      url: '/users',
+    },
+    {
+      name: 'metrics',
+      label: 'Metrics',
+      icon: 'bookmarks',
+      url: '/metrics',
+    },
   ];
 
   constructor(
