@@ -326,6 +326,8 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
         .add(this._columnsDialogSub)
         .add(this._actionsSub)
         .add(this._additionalDataSchemaSub);
+
+    this._fts.clearAdditionalBasicFilters();
   }
 
   ngAfterContentInit(): void {
@@ -383,6 +385,10 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    */
   actionOnItems(row: T|T[], action: ListAction, isDetails: boolean = false): void {
     if (this.dataSource == null) {
+      return;
+    }
+    if (action.customAction != null) {
+      action.customAction(row);
       return;
     }
     this._actionEvent.emit({action: action, items: row, isDetails: isDetails});

@@ -119,7 +119,7 @@
       <mat-cell *matCellDef="let row" class="dewco-row-actions">
         <ng-container *ngFor="let action of ctx.listRowActions">
           <ng-container
-            *ngIf="!((row.data == null && row.data?.data == null) && (action.actionType === 'edit' || action.actionType === 'view'))"
+            *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view'))"
           >
             <mat-icon
               mat-list-icon
