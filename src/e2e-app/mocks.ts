@@ -45,10 +45,14 @@ const dummyUser: User = {
 @Injectable()
 export class AuthServiceMock {
   authenticated: BehaviorSubject<boolean>;
-  authConfig: AuthServiceConfig = authMockConfig;
+  private _authConfig: BehaviorSubject<AuthServiceConfig>;
+  get authConfig(): AuthServiceConfig {
+    return this._authConfig.value;
+  }
   resetEvt: Observable<boolean> = obsOf(false);
   constructor() {
-    this.authenticated = new BehaviorSubject<boolean>(true);
+    this.authenticated = new BehaviorSubject<boolean>(false);
+    this._authConfig = new BehaviorSubject<AuthServiceConfig>(authMockConfig);
   }
   resetAuth(): void {}
   login(credentials: Credentials): Observable<boolean> {

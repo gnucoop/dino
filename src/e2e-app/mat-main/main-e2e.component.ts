@@ -11,7 +11,7 @@ export class MatMainE2E {
     {
       label: 'Dashboard',
       url: 'dashboard',
-      icon: 'grid_viewv',
+      icon: 'widgets',
     },
     {
       label: 'Collect Forms',

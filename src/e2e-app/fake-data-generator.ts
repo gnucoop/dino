@@ -1,7 +1,7 @@
 import {DataModelManager, Model} from '@dewco/core/data';
 import {RxDocument} from 'rxdb';
 import {from, Observable, of as obsOf} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {switchMap, take} from 'rxjs/operators';
 
 /**
  * Class that generates formdata/schemas for the e2e app
@@ -25,6 +25,7 @@ export class FakeDataGenerator<T extends Model = Model> {
           }
           return obsOf({success: [], error: []});
         }),
+        take(1),
     );
   }
   constructor() {}
