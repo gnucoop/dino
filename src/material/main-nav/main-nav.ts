@@ -34,6 +34,7 @@ import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, Router} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
+import {MetricsService} from '@dewco/core/data';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, map, take, tap, withLatestFrom} from 'rxjs/operators';
@@ -104,7 +105,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _menuClickSub: Subscription = Subscription.EMPTY;
 
   /**
-   * A list of all sections in the Dino app.
+   * A list of all public sections in the Dino app.
    */
   private _sections: Section[];
   get sections(): Section[] {
@@ -117,6 +118,28 @@ export class MainNav implements AfterViewInit, OnDestroy {
     }
     this._sections = sec;
   }
+
+  /**
+   * A list of all Admin only sections in the Dino app.
+   */
+  private _adminSections: Section[] = [];
+  get adminSections(): Section[] {
+    return this._adminSections;
+  }
+  @Input()
+  set adminSections(sec: Section[]) {
+    if (sec == null) {
+      return;
+    }
+    this._adminSections = sec;
+  }
+
+  /**
+   * Subscribes to the Activated optional Metrics and
+   * adds the relative section to the nav, if one ore more are
+   * present.
+   */
+  private _metricsSub: Subscription = Subscription.EMPTY;
 
   /**
    * A flag to show or hide section labels in the sidenav.
@@ -144,6 +167,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   constructor(
       readonly breakpointObserver: BreakpointObserverService,
+      readonly metricsService: MetricsService,
       readonly authService: AuthService,
       readonly snackbar: MatSnackBar,
       private _router: Router,
@@ -161,6 +185,24 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this._metricsSub =
+        this.metricsService.hasActiveMetrics
+            .pipe(
+                map(hasMetrics => {
+                  if (hasMetrics) {
+                    const metricsSection: Section = {
+                      label: 'Metrics',
+                      icon: 'bookmarks',
+                      url: 'metrics',
+                    };
+                    return [metricsSection];
+                  } else {
+                    return [];
+                  }
+                }),
+                )
+            .subscribe(metrics => this.adminSections = [...this.adminSections, ...metrics]);
+
     this._menuToggleSub = this._menuToggleEvt
                               .pipe(
                                   withLatestFrom(this.breakpointObserver.large),
@@ -210,5 +252,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this._menuClickSub.unsubscribe();
     this._menuToggleSub.unsubscribe();
+    this._metricsSub.unsubscribe();
   }
 }

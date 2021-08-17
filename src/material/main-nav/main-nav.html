@@ -46,6 +46,23 @@
         <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
       </a>
 
+      <ng-container *ngIf="adminSections && adminSections.length > 0">
+        <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
+        <a
+          mat-list-item
+          [disableRipple]="true"
+          *ngFor="let adminSection of adminSections"
+          [routerLink]="[adminSection.url]"
+          (click)="menuClick()"
+        >
+          <i class="material-icons material-icons-outlined"
+            >{{adminSection.icon}}</i
+          >
+          <span *ngIf="extendedSidenav|async">{{adminSection.label}}</span>
+        </a>
+      </ng-container>
+
       <a
         *ngIf="(breakpointObserver.large|async) === false"
         class="dewco-extend-menu-button"
