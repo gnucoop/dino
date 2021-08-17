@@ -1,0 +1,16 @@
+<dewco-list
+  [headers]="headers"
+  [dataSource]="dataSource"
+  [listRowActions]="listRowActions"
+>
+  <dewco-search-filters-bar
+    filters
+    [additionalFilters]="false"
+  ></dewco-search-filters-bar>
+</dewco-list>
+
+<dewco-floating-button
+  [buttonIcon]="'add'"
+  tooltipMessage="Add New {{metricLabel}}"
+  (click)="openDialog()"
+></dewco-floating-button>
