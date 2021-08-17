@@ -41,7 +41,7 @@ export class ProjectManager extends DataModelManager<Project> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'projects', schema, migrationStrategies}},
+        {collection: {name: 'project', schema, migrationStrategies}},
         dataService,
         permissionContextService,
     );

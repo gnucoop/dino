@@ -47,6 +47,10 @@ export const schema = {
       "type": "string",
       "description": "The optional ID of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
+    "parent_name": {
+      "type": ["string", "null"],
+      "description": "Optional parent project Name"
+    },
     "code": {
       "type": "string",
       "description": "The project Code identifier"
@@ -60,12 +64,16 @@ export const schema = {
       "description": "The project Donors"
     },
     "start_date": {
-      "type": "string",
-      "description": "Project start date timestamp."
+      "type": ["string", "null"],
+      "description": "Optional Project starting date"
     },
     "end_date": {
-      "type": "string",
-      "description": "Project end date timestamp."
+      "type": ["string", "null"],
+      "description": "Optional Project ending date"
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "The soft deletion flag"
     }
   },
   "required": [
@@ -73,6 +81,7 @@ export const schema = {
     "created_at",
     "id",
     "name",
+    "code",
     "updated_at"
   ],
   "additionalProperties": false,

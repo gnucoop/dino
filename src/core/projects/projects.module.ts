@@ -22,13 +22,22 @@
 
 import {NgModule} from '@angular/core';
 import {FiltersService} from '@dewco/core/list';
+import {ActiveMetric, MetricsService} from '@dewco/core/data';
 
 /**
  * Optional module augmenting Forms that provides the ProjectManager service
  */
 @NgModule({})
 export class ProjectModule {
-  constructor(private _filtersService: FiltersService) {
-      this._filtersService.addAvailableFilterLabel('project');
+  readonly projectMetric: ActiveMetric = {
+    label: 'Projects',
+    icon: 'assignment',
+  };
+  constructor(
+      private _filtersService: FiltersService,
+      private _metricsService: MetricsService,
+  ) {
+    this._filtersService.addAvailableFilterLabel('project');
+    this._metricsService.activateMetric(this.projectMetric);
   }
 }
