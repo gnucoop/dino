@@ -1,11 +1,31 @@
 import {ChangeDetectorRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Model} from '@dewco/core/data';
-import {Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
+
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
 
 import {List} from './list';
 import {ListAction} from './list-actions-interface';
 import {AdminUserInteractionsService} from './user-interactions';
+
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 const changeDetectorRefMock = {
   markForCheck() {}
@@ -61,6 +81,8 @@ describe('Core ListComponent', () => {
       providers: [
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
         {provide: AdminUIService, useValue: adminUIService},
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
     cdr = TestBed.inject(ChangeDetectorRef);

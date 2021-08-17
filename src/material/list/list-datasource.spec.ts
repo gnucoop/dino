@@ -18,7 +18,7 @@ import {
   ListModule,
 } from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
-import {of as obsOf} from 'rxjs';
+import {BehaviorSubject, of as obsOf, of} from 'rxjs';
 
 import {ListDataSource} from './list-datasource';
 
@@ -70,12 +70,24 @@ const dummyUser: User = {
   registrations: []
 };
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
 const authServiceMock = {
-  authenticated: obsOf(true),
+  authenticated: of(true),
   getUserInfo: () => {
     return dummyUser;
   },
-} as AuthService;
+  resetEvt: of(false),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 const fakeFilters: FilterItem[] = [
   {name: 'filter_a', value: 'test', operator: {label: 'Like', value: '$regex'}},
@@ -102,15 +114,6 @@ function dataServiceConfig(): DataServiceConfig {
     },
   };
 }
-
-const authServiceConfig: AuthServiceConfig = {
-  host: 'http://test-auth-backend',
-  applicationId: 'applicationId',
-  apiKey: 'apiKey',
-  retryRefreshTime: 5000,
-  retryAttemptsMax: 1,
-  failedAuthRedirect: 'login',
-};
 
 class DummyManager extends DataModelManager<DummyModel> {
   constructor(

@@ -2,12 +2,31 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {FilterItem, FiltersService, ListModule} from '@dewco/core/list';
 import {
   SearchFiltersDialog,
   SearchFiltersDialogModule,
 } from '@dewco/material/search-filters-dialog';
-import {of} from 'rxjs';
+import {BehaviorSubject, of} from 'rxjs';
+
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 const fakeFilters: FilterItem[] = [
   {name: 'filter_a', value: 'test'},
@@ -43,6 +62,8 @@ describe('Search filters dialog', () => {
           providers: [
             {provide: MatDialogRef, useValue: mockDialogRef},
             {provide: ActivatedRoute, useValue: fakeActivatedRoute},
+            {provide: AuthService, useValue: authServiceMock},
+            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
             {provide: MAT_DIALOG_DATA, useValue: {}},
           ],
         })

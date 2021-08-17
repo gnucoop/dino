@@ -1,7 +1,8 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dewco/core/auth';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
+import {BehaviorSubject, of} from 'rxjs';
 
 import {FormSchema} from '.';
 import {FormSchemaManager} from './form-schema-manager';
@@ -30,6 +31,16 @@ const authServiceConfig: AuthServiceConfig = {
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
 };
+
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  resetEvt: of(false),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 const testAjfSchema = {
   'nodes': [
@@ -83,6 +94,7 @@ describe('FormSchemaManager', () => {
         FormSchemaManager,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: AuthService, useValue: authServiceMock},
       ],
     });
     fsm = TestBed.inject(FormSchemaManager);

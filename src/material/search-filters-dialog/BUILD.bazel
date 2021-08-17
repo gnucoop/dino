@@ -50,6 +50,7 @@ ng_test_library(
     ),
     deps = [
         ":search-filters-dialog",
+        "//src/core/auth",
         "//src/core/list",
         "@npm//@ajf/core",
         "@npm//@angular/common",

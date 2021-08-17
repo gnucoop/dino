@@ -4,17 +4,10 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
 import {FormSchemaManager} from '@dewco/core/forms';
-import {of} from 'rxjs';
+import {BehaviorSubject, of} from 'rxjs';
 
 import {Collect} from './collect';
 import {CollectModule} from './collect.module';
-
-const authServiceMock = {
-  authenticated: of(true),
-  getUserInfo: () => {
-    return {};
-  },
-} as unknown as AuthService;
 
 let testDbIdx = 0;
 
@@ -38,6 +31,16 @@ const authServiceConfig: AuthServiceConfig = {
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
 };
+
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  resetEvt: of(false),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 describe('Collect', () => {
   let fsm: FormSchemaManager;

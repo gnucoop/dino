@@ -3,20 +3,10 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {MainNav} from './main-nav';
 import {MainModule} from './main-nav.module';
-
-const authServiceMock = {
-  authenticated: of(true),
-  getUserInfo: () => {
-    return {};
-  },
-  logout: () => {
-    return of(true);
-  }
-} as unknown as AuthService;
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -27,6 +17,18 @@ const authServiceConfig: AuthServiceConfig = {
   failedAuthRedirect: 'login',
 };
 
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  logout(): Observable<boolean> {
+    return of(true);
+  },
+  resetEvt: of(false),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 describe('Main', () => {
   let fixtureMain: ComponentFixture<MainNav>;

@@ -4,17 +4,10 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dewco/core/data';
 import {FormSchemaManager} from '@dewco/core/forms';
-import {of} from 'rxjs';
+import {BehaviorSubject, of} from 'rxjs';
 
 import {EditForm} from './edit-form';
 import {EditFormModule} from './edit-form.module';
-
-const authServiceMock = {
-  authenticated: of(true),
-  getUserInfo: () => {
-    return {};
-  },
-} as unknown as AuthService;
 
 let testDbIdx = 0;
 
@@ -38,6 +31,16 @@ const authServiceConfig: AuthServiceConfig = {
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
 };
+
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  resetEvt: of(false),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 describe('Edit Form', () => {
   let fsm: FormSchemaManager;

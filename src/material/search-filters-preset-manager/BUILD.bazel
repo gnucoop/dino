@@ -47,6 +47,7 @@ ng_test_library(
     ),
     deps = [
         ":search-filters-preset-manager",
+        "//src/core/auth",
         "//src/core/list",
         "@npm//@angular/common",
         "@npm//@angular/material",

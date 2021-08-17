@@ -1,12 +1,33 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {FilterGroup, FiltersService, SearchFiltersComponent} from '@dewco/core/list';
-import {Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
+
 import {SelectionList} from './list';
 import {ListDataSource} from './list-datasource';
 import {ListModule} from './list.module';
 import {AdminUserInteractionsService} from './user-interactions.service';
+
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
+const authServiceMock = {
+  authenticated: of(true),
+  getUserInfo: () => {
+    return {};
+  },
+  resetEvt: of(false),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
 
 class AUIServiceStub {
   askConfirm(): Observable<boolean> {
@@ -41,6 +62,8 @@ describe('List', () => {
           providers: [
             {provide: AdminUserInteractionsService, useClass: AUIServiceStub},
             {provide: FiltersService, useClass: FiltersServiceStub},
+            {provide: AuthService, useValue: authServiceMock},
+            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
           ],
         })
         .compileComponents();
