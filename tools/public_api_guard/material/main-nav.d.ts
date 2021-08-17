@@ -14,6 +14,7 @@ export declare class MainNav implements AfterViewInit, OnDestroy {
     get sections(): Section[];
     set sections(sec: Section[]);
     set setShowNavLabels(opened: boolean);
+    readonly showNav: Observable<boolean>;
     get showNavLabels(): BehaviorSubject<boolean>;
     sidenav: MatSidenav;
     readonly snackbar: MatSnackBar;

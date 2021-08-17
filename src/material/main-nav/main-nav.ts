@@ -32,11 +32,11 @@ import {
 } from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {take, tap, withLatestFrom} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {filter, map, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
 
@@ -74,6 +74,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * Determines the extended state of the sidenav on large screens
    */
   extendedSidenav: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * If true, the navigation bar and sidenav are displayed.
+   * Should be false in the login page.
+   */
+  readonly showNav: Observable<boolean>;
 
   /**
    * Event emitted when the sidenav menu is toggled
@@ -141,7 +147,18 @@ export class MainNav implements AfterViewInit, OnDestroy {
       readonly authService: AuthService,
       readonly snackbar: MatSnackBar,
       private _router: Router,
-  ) {}
+  ) {
+    this.showNav = this._router.events.pipe(
+        filter(evt => evt instanceof NavigationEnd),
+        map(evt => {
+          const navEndEvt = evt as NavigationEnd;
+          if (navEndEvt.url.includes('login')) {
+            return false;
+          }
+          return true;
+        }),
+    );
+  }
 
   ngAfterViewInit() {
     this._menuToggleSub = this._menuToggleEvt
