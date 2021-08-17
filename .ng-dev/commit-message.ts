@@ -30,6 +30,7 @@ export const commitMessage: CommitMessageConfig = {
     'material/breakpoint-observer',
     'material/edit-form',
     'material/main-nav',
+    'material/metric-editor',
     'material/collect',
     'material/floating-button',
     'material/search-filters-bar',

@@ -1,0 +1,50 @@
+dewco-metric-editor {
+    .dewco-metric-editor-field {
+        padding: 25px;
+        font-size: 1.2em;
+    }
+
+    .mat-form-field {
+        position: relative;
+        flex: 1 1 auto;
+    }
+
+    .mat-datepicker-toggle,
+    .mat-input-element {
+        flex: 1 1 auto;
+        width: auto !important;
+    }
+    .mat-datepicker-toggle {
+        position: absolute;
+        right: 0px;
+        bottom: 10px;
+    }
+
+    overflow: hidden;
+    .mat-dialog-title,
+    .mat-dialog-actions .mat-raised-button {
+        flex: 0.25 0 auto;
+        margin: auto;
+        text-align: center;
+    }
+    .mat-dialog-content {
+        form {
+            position: relative;
+            max-height: 80vh;
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            overflow: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
