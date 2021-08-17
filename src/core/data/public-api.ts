@@ -40,3 +40,4 @@ export * from './metric';
 export * from './model';
 export * from './pull-query-extra-params';
 export * from './push-query-extra-params';
+export * from './metrics.service';

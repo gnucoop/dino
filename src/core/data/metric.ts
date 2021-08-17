@@ -33,8 +33,9 @@ export interface Metric extends Model {
   name: string;
 
   /**
-   * The optional ID of this metric Parent.
+   * The optional ID and Name of this metric Parent.
    * (ex. Africa - Tanzania, Project - Sub-project etc.)
    */
   parent_id?: string;
+  parent_name?: string;
 }
