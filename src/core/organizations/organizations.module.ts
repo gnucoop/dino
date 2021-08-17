@@ -21,6 +21,7 @@
  */
 
 import {NgModule} from '@angular/core';
+import {ActiveMetric, MetricsService} from '@dewco/core/data';
 import {FiltersService} from '@dewco/core/list';
 
 /**
@@ -28,7 +29,15 @@ import {FiltersService} from '@dewco/core/list';
  */
 @NgModule({})
 export class OrganizationsModule {
-  constructor(private _filtersService: FiltersService) {
+  readonly organizationMetric: ActiveMetric = {
+    label: 'Organizations',
+    icon: 'public',
+  }
+  constructor(
+      private _filtersService: FiltersService,
+      private _metricsService: MetricsService,
+  ) {
     this._filtersService.addAvailableFilterLabel('organization');
+    this._metricsService.activateMetric(this.organizationMetric);
   }
 }

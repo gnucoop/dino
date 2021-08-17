@@ -47,6 +47,10 @@ export const schema = {
       "type": ["string", "null"],
       "description": "Optional parent organization ID"
     },
+    "parent_name": {
+      "type": ["string", "null"],
+      "description": "Optional parent organization Name"
+    },
     "logo_path": {
       "type": ["string", "null"],
       "description": "Optional path of the Organization Logo"
@@ -54,6 +58,10 @@ export const schema = {
     "website_url": {
       "type": ["string", "null"],
       "description": "Optional url of the Organization Website"
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "The soft deletion flag."
     }
   },
   "required": [
