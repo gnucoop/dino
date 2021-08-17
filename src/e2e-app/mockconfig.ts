@@ -37,20 +37,20 @@ export const additionalConfig = {
    * If true, fake data is generated from test-ajf-formschema and test-ajf-formdata
    * when the e2e-app starts
    */
-  generateData: true,
+  generateData: false,
 
   /**
    * If true, authGuard is on for all guarded routes.
    * Set this to false to correctly perform e2e-tests.
    */
-  authGuard: false,
+  authGuard: true,
 
   /**
    * If true, the real auth service will be used to authenticate
    * users against the external authentication platform.
    * Set this to false to correctly perform e2e-tests.
    */
-  externalAuthentication: false,
+  externalAuthentication: true,
 
   /**
    * Config the breakpointobserver service for "large" or "small" screens
