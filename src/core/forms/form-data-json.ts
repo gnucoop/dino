@@ -50,6 +50,10 @@ export const schema = {
     "data": {
       "type": "object",
       "description": "A plain object containing the data collected."
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "The soft deletion flag."
     }
   },
   "required": [
