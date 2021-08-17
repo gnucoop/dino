@@ -20,6 +20,8 @@
  *
  */
 
+import {Model} from '../data';
+
 /**
  * Type that identifies an action performed on a List item
  */
@@ -38,6 +40,11 @@ export interface ListAction {
    * The Material Icon for the action
    */
   matIcon?: string;
+
+  /**
+   * A custom action to be performed
+   */
+  customAction?: (row: any) => void;
 
   /**
    * User confirmation is needed if set to true

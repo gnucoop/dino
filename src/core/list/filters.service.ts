@@ -589,6 +589,14 @@ export class FiltersService {
   }
 
   /**
+   * Clears the additional basic filters arrays.
+   */
+  clearAdditionalBasicFilters(): void {
+    this._basicAdditionalFormGroups = [];
+    this._currentBasicFilterLabels = [];
+  }
+
+  /**
    * Merges two arrays of FilterItems while overwriting old Filter values with new ones
    * @param oldFilters The old filters array
    * @param newFilters The new filters array
