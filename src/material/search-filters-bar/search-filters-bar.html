@@ -1,24 +1,17 @@
 <ng-container *ngIf="breakpointObserver.small|async">
   <mat-accordion>
-    <mat-expansion-panel class="mat-elevation-z">
-      <mat-expansion-panel-header>
-        <ng-container [formGroup]="textSearchFilters">
-          <mat-form-field
-            floatLabel="always"
-            (click)="$event.stopPropagation()"
-          >
-            <input
-              matInput
-              formControlName="keyword"
-              [placeholder]="'search by keyword'|transloco"
-            />
-            <mat-icon color="primary" matSuffix>search</mat-icon>
-          </mat-form-field>
-        </ng-container>
-      </mat-expansion-panel-header>
-      <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
-    </mat-expansion-panel>
-  </mat-accordion>
+      <mat-expansion-panel class="mat-elevation-z">
+        <mat-expansion-panel-header>
+          <ng-container [formGroup]="textSearchFilters">
+              <mat-form-field floatLabel="always" (click)="$event.stopPropagation()">
+                  <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco">
+                  <mat-icon color="primary" matSuffix>search</mat-icon>
+              </mat-form-field>
+          </ng-container>
+        </mat-expansion-panel-header>
+        <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
+      </mat-expansion-panel>
+    </mat-accordion>
 </ng-container>
 
 <ng-container *ngIf="breakpointObserver.small|async|isFalseOrNull">
@@ -26,97 +19,59 @@
 </ng-container>
 
 <ng-template #filtersbar>
+
   <div class="dewco-filters-bar">
-    <dewco-search-filters-preset-manager
-      *ngIf="presetManager"
-    ></dewco-search-filters-preset-manager>
 
-    <ng-container [formGroup]="dateSearchFilters">
-      <mat-form-field floatLabel="always">
-        <input
-          formControlName="dateStart"
-          matInput
-          [matDatepicker]="pickerFrom"
-          [placeholder]="'From date'|transloco"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="pickerFrom"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #pickerFrom></mat-datepicker>
-      </mat-form-field>
+      <dewco-search-filters-preset-manager *ngIf="presetManager"></dewco-search-filters-preset-manager>
 
-      <mat-form-field floatLabel="always">
-        <input
-          matInput
-          formControlName="dateEnd"
-          [matDatepicker]="pickerTo"
-          [placeholder]="'To date'|transloco"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="pickerTo"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #pickerTo></mat-datepicker>
-      </mat-form-field>
-    </ng-container>
+      <ng-container [formGroup]="dateSearchFilters">
+          
+          <mat-form-field floatLabel="always">
+              <input formControlName="dateStart" matInput [matDatepicker]="pickerFrom" [placeholder]="'From date'|transloco">
+              <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFrom></mat-datepicker>
+          </mat-form-field>
 
-    <ng-container
-      [formGroup]="textSearchFilters"
-      *ngIf="breakpointObserver.small|async|isFalseOrNull"
-    >
-      <mat-form-field floatLabel="always">
-        <input
-          matInput
-          formControlName="keyword"
-          [placeholder]="'search by keyword'|transloco"
-        />
-        <mat-icon color="primary" matSuffix>search</mat-icon>
-      </mat-form-field>
-    </ng-container>
 
-    <ng-container
-      *ngFor="let group of additionalBasicFilters; let idx = index"
-      [formGroup]="group"
-    >
-      <mat-form-field
-        floatLabel="always"
-        *ngIf="additionalBasicFiltersLabels[idx]"
-      >
-        <input
-          matInput
-          [formControlName]="additionalBasicFiltersLabels[idx]"
-          placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
-        />
-        <mat-icon matSuffix color="primary">search</mat-icon>
-      </mat-form-field>
-    </ng-container>
+          <mat-form-field floatLabel="always">
+              <input matInput formControlName="dateEnd" [matDatepicker]="pickerTo" [placeholder]="'To date'|transloco">
+              <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerTo></mat-datepicker>
+          </mat-form-field>
 
-    <button
-      *ngIf="breakpointObserver.small|async|isFalseOrNull"
-      class="dewco-filters-dialog-button"
-      mat-button
-      color="primary"
-      (click)="openDialog()"
-      [attr.aria-label]="'Open the advanced filters'|transloco"
-    >
-      <mat-icon matSuffix>filter_list</mat-icon>
-    </button>
-    <button
-      *ngIf="breakpointObserver.small|async"
-      class="dewco-filters-dialog-button"
-      mat-flat-button
-      color="primary"
-      (click)="openDialog()"
-      [attr.aria-label]="'Open the advanced filters'|transloco"
-    >
-      <mat-icon matSuffix>filter_list</mat-icon>
-    </button>
+      </ng-container>
+
+      <ng-container [formGroup]="textSearchFilters" *ngIf="breakpointObserver.small|async|isFalseOrNull">
+
+          <mat-form-field floatLabel="always">
+              <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco">
+              <mat-icon color="primary" matSuffix>search</mat-icon>
+          </mat-form-field>
+
+      </ng-container>
+
+      <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
+
+          <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]">
+              <input matInput [formControlName]="additionalBasicFiltersLabels[idx]"
+                  placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}">
+              <mat-icon matSuffix color="primary">search</mat-icon>
+          </mat-form-field>
+
+      </ng-container>
+
+      <ng-container *ngIf="additionalFilters">
+          <button *ngIf="breakpointObserver.small|async|isFalseOrNull" class="dewco-filters-dialog-button" mat-button color="primary" (click)="openDialog()" [attr.aria-label]="'Open the advanced filters'|transloco">
+              <mat-icon matSuffix>filter_list</mat-icon>
+          </button>
+          <button *ngIf="breakpointObserver.small|async" class="dewco-filters-dialog-button" mat-flat-button color="primary" (click)="openDialog()" [attr.aria-label]="'Open the advanced filters'|transloco">
+              <mat-icon matSuffix>filter_list</mat-icon>
+          </button>
+      </ng-container>
+
   </div>
+
 </ng-template>
 
-<dewco-search-filters-chips
-  (excludeFilter)="removeFilter($event, ['additional'])"
-  [chipsType]="'additional'"
->
+<dewco-search-filters-chips (excludeFilter)="removeFilter($event, ['additional'])" [chipsType]="'additional'">
 </dewco-search-filters-chips>

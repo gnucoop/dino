@@ -72,6 +72,20 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * If true, the Additional Filters button and dialog 
+   * are available and displayed.
+   * Defaults to true.
+   */
+  private _additionalFilters: boolean = true;
+  get additionalFilters(): boolean {
+    return this._additionalFilters;
+  }
+  @Input()
+  set additionalFilters(state: boolean) {
+    this._additionalFilters = state;
+  }
+
+  /**
    * Allows the customization of the filters dialog width
    */
   private _filtersDialogWidth: number = 95;
