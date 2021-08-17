@@ -1,0 +1,55 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Dewco (dewco).
+ *
+ * Dewco (dewco) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Dewco (dewco) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Dewco (dewco).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+
+import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
+
+/**
+ * Dino Metric Editor component.
+ * Allows the Admin to add and edit entries for any optional metric.
+ * The generic type refers to the model of the Metric to be edited.
+ */
+@Component({
+  selector: 'dewco-floating-button',
+  templateUrl: 'floating-button.html',
+  styleUrls: ['floating-button.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+})
+export class FloatingButton {
+  /**
+   * The message displayed by the button tooltip.
+   */
+  @Input() readonly tooltipMessage: string;
+
+  /**
+   * The url to which the button points.
+   * If no url is specified, no redirection happens.
+   */
+  @Input() readonly buttonUrl: string;
+
+  /**
+   * The button icon codename.
+   */
+  @Input() readonly buttonIcon: string;
+
+  constructor() {}
+}

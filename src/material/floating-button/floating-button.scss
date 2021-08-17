@@ -1,0 +1,12 @@
+.mat-fab-bottom-right {
+    position: fixed !important;
+    right: 1vw;
+    bottom: 1vh;
+    z-index: 100;
+    opacity: 0.7;
+    &:hover {
+        opacity: 1;
+        transition: all ease-in-out 0.5;
+        -webkit-transition: all ease-in-out 0.5s;
+    }
+}

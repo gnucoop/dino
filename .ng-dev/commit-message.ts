@@ -31,6 +31,7 @@ export const commitMessage: CommitMessageConfig = {
     'material/edit-form',
     'material/main-nav',
     'material/collect',
+    'material/floating-button',
     'material/search-filters-bar',
     'material/search-filters-chips',
     'material/search-filters-dialog',
