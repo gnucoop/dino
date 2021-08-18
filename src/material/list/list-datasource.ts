@@ -44,14 +44,15 @@ import {
   Observable,
   of as obsOf,
   Subject,
-  Subscription,
   throwError,
 } from 'rxjs';
 import {
   catchError,
   map,
+  skipWhile,
   switchMap,
   take,
+  takeUntil,
 } from 'rxjs/operators';
 
 /**
@@ -117,27 +118,11 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   /**
    * The model of the "data" property associated with the ListDataSource main model.
    */
-  private _additionalDataSchema: Subject<AD> = new Subject<AD>();
+  private _additionalDataSchema: BehaviorSubject<AD|null> = new BehaviorSubject<AD|null>(null);
 
   set additionalDataSchema(dataSchema: AD) {
     this._additionalDataSchema.next(dataSchema);
   }
-
-  /**
-   * Subscribes to the additionalDataSchema and asks the FiltersService to
-   * generate filters from it when one is provided.
-   */
-  private _additionalDataSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the initialization of the addional data manager collection.
-   */
-  private _additionalCollectionInitSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the initialization of the details data manager collection.
-   */
-  private _detailsCollectionInitSub: Subscription = Subscription.EMPTY;
 
   /**
    * The data resulting from querying the db via the DataModelManager
@@ -149,26 +134,10 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   }
 
   /**
-   * Subscribes to the _dataResults and updates the actual MatTableDataSource data
-   */
-  private _dataResultsSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the FiltersService queryString, and generates a Mango Query from it
-   */
-  private _filterParamsSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the collectionChanged event of the data service, and
-   * refreshes the data whenever it's emitted.
-   */
-  private _collectionChangedSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Main subscription, to which every other subscription is added.
+   * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */
-  private _mainSubscription: Subscription = Subscription.EMPTY;
+  private _mainUnsubscribe: Subject<void> = new Subject();
 
   /**
    * @param _dataModelManager The main model DataModelManager.
@@ -185,21 +154,14 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   ) {
     super();
 
-    this._mainSubscription.add(this._additionalDataSub)
-        .add(this._additionalCollectionInitSub)
-        .add(this._detailsCollectionInitSub)
-        .add(this._dataResultsSub)
-        .add(this._filterParamsSub)
-        .add(this._collectionChangedSub);
-
     this._modelSchema = this._dataModelManager.collectionSchema;
 
-    this._dataResultsSub = this._dataResults.subscribe(results => {
+    this._dataResults.pipe(takeUntil(this._mainUnsubscribe)).subscribe(results => {
       this.data = results;
     });
 
     if (this._dataModelManager.detailsManager != null) {
-      this._detailsCollectionInitSub = this._dataModelManager.detailsManager.init().subscribe();
+      this._dataModelManager.detailsManager.init().pipe(take(1)).subscribe();
     }
 
     // Here we ask the FilterService to generate all the filters based on the model RxJsonSchema
@@ -209,29 +171,42 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     // (if present) and set the additional filters on the FiltersService.
     // If no additional DataManager or data schema are provided, the additional filters
     // are set to an empty array.
-    this._additionalDataSub = this._additionalDataSchema.subscribe(dataSchema => {
-      let additionalFilters = [];
-      if (this._additionalDataManager) {
-        this._additionalCollectionInitSub = this._additionalDataManager.init().subscribe();
-        additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
+    this._additionalDataSchema.pipe(takeUntil(this._mainUnsubscribe)).subscribe(dataSchema => {
+      if (dataSchema != null) {
+        let additionalFilters = [];
+        if (this._additionalDataManager) {
+          this._additionalDataManager.init().pipe(take(1)).subscribe();
+          additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
+        }
+        this._fs.setAdditionalFilters(additionalFilters);
       }
-      this._fs.setAdditionalFilters(additionalFilters);
     });
 
-    this._collectionChangedSub = this._dataModelManager.collectionChanged.subscribe(evt => {
-      this.refreshListData.next(evt);
-    });
+    this._dataModelManager.collectionChanged.pipe(takeUntil(this._mainUnsubscribe))
+        .subscribe(evt => {
+          this.refreshListData.next(evt);
+        });
 
-    this._filterParamsSub =
-        combineLatest([
-          this._fs.queryString,
-          this.refreshListData,
-        ])
-            .pipe(
-                map(([queryString, refresh]) => (queryString && refresh) ? queryString : ''),
-                catchError(err => throwError(err) as Observable<string>),
-                )
-            .subscribe(queryString => this.queryDM(queryString));
+    // Subscribes to the FiltersService queryString, and generates a Mango Query from it.
+    combineLatest([
+      this._fs.queryString,
+      this.refreshListData,
+      this._additionalDataSchema.pipe(
+          skipWhile(schema => (this._isFormDataList && schema == null))),
+    ])
+        .pipe(
+            map(([queryString, refresh, addSchema]) => {
+              if (queryString && refresh) {
+                return {queryString, addSchema};
+              } else {
+                return {queryString: '', addSchema};
+              }
+            }),
+            catchError(
+                err => throwError(err) as Observable<{queryString: string, addSchema: AD | null}>),
+            takeUntil(this._mainUnsubscribe),
+            )
+        .subscribe(res => this.queryDM(res.queryString, res.addSchema));
   }
 
 
@@ -247,11 +222,12 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * Creates and returns a Mango Query from the Filters Component encoded queryString.
    * Queries the DataModelManager and updates the dataResults.
    * @param queryString The encoded query string of parameters
+   * @param additionalDataSchema? The additional data schema
    * @returns The Mango query with the generated query selector
    */
-  queryDM(queryString: string): DataQueryOptions {
-    let querySelector = {};
-    let detailsQuerySelector = {};
+  queryDM(queryString: string, additionalDataSchema?: AD|null): DataQueryOptions {
+    let querySelector: {[key: string]: any} = {};
+    let detailsQuerySelector: {[key: string]: any} = {};
 
     if (!queryString) {
       return {selector: querySelector};
@@ -310,6 +286,10 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
           break;
       }
     });
+
+    if (additionalDataSchema != null) {
+      this._addNestedProps(querySelector, ['schema_id', '$eq'], additionalDataSchema.id);
+    }
     const query: DataQueryOptions = {
       selector: querySelector,
     };
@@ -473,7 +453,8 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * Disconnects the ListDataSource, unsubscribing from the data and the filters
    */
   disconnect(): void {
-    this._mainSubscription.unsubscribe();
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
 
     this._dataResults.complete();
     this.refreshListData.complete();

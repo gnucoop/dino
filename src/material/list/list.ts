@@ -56,8 +56,8 @@ import {
   SearchFiltersComponent,
 } from '@dewco/core/list';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subject, throwError} from 'rxjs';
+import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
 
 import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
@@ -201,11 +201,6 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   }
 
   /**
-   * Subcribes to the exanded state of all rows, and unfolds / folds them accordingly.
-   */
-  private _expandAllRowsSub: Subscription = Subscription.EMPTY;
-
-  /**
    * Determines if the list has a paginator.
    * Defaults to true.
    */
@@ -290,27 +285,11 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   private _columnsDialogRef: MatDialogRef<ColumnsSelector<T>>;
 
   /**
-   * Subscribes to the value returned by the Columns Selector dialog on its closing event
-   */
-  private _columnsDialogSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the ActionEvent of the list, processing and executing
-   * the requested action on the selected item/items.
-   */
-  private _actionsSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to an optional data schema, used to automatically generate
-   * additional list filters in the filters dialog.
-   */
-  private _additionalDataSchemaSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Main subscription, to which every other subscription is added.
+   * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */
-  private _mainSubscription: Subscription = Subscription.EMPTY;
+  private _mainUnsubscribe: Subject<void> = new Subject();
+
 
   constructor(
       cdr: ChangeDetectorRef,
@@ -321,11 +300,6 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       private _router: Router,
   ) {
     super(cdr, aui);
-
-    this._mainSubscription.add(this._expandAllRowsSub)
-        .add(this._columnsDialogSub)
-        .add(this._actionsSub)
-        .add(this._additionalDataSchemaSub);
 
     this._fts.clearAdditionalBasicFilters();
   }
@@ -343,7 +317,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     if (this._dataSource) {
       this._fillDataSource();
     }
-    this._expandAllRowsSub = this.expandAllRows.subscribe(res => {
+    this.expandAllRows.pipe(takeUntil(this._mainUnsubscribe)).subscribe(res => {
       const forceExpand = res;
       forceExpand ? this.selectAll() : this.clearSelection();
       const allRows = this.getItems();
@@ -457,16 +431,13 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       }
       delete this.expandedRowsData[row.id];
     } else if (!this.isRowExpanded(row) || forceExpand === true) {
-      const detailSourceSub = this.getDetails(row).subscribe(data => {
+      this.getDetails(row).pipe(take(1)).subscribe(data => {
         const dds = new MatTableDataSource(data);
         this.expandedRowsData[row.id] = dds;
         this.expandedRows.push(row);
         this._cdr.detectChanges();
         const sortsList = this._matSortsList.toArray();
         this.expandedRowsData[row.id].sort = sortsList[sortsList.length - 1];
-        if (detailSourceSub != null) {
-          detailSourceSub.unsubscribe();
-        }
       });
     }
   }
@@ -528,17 +499,19 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       columns: this.headers,
     };
     this._columnsDialogRef = this._dialog.open(ColumnsSelector, dialogConfig);
-    this._columnsDialogSub =
-        this._columnsDialogRef.afterClosed()
-            .pipe(catchError(err => throwError(err) as Observable<ListHeader<T>>))
-            .subscribe(columns => {
-              if (!columns) {
-                return;
-              }
-              this.headers = columns;
-              this.mainListContext.headers.next(this.headers);
-              this.mainListContext.displayedColumns?.next(this.displayedColumns);
-            });
+    this._columnsDialogRef.afterClosed()
+        .pipe(
+            catchError(err => throwError(err) as Observable<ListHeader<T>>),
+            takeUntil(this._mainUnsubscribe),
+            )
+        .subscribe(columns => {
+          if (!columns) {
+            return;
+          }
+          this.headers = columns;
+          this.mainListContext.headers.next(this.headers);
+          this.mainListContext.displayedColumns?.next(this.displayedColumns);
+        });
   }
 
   /**
@@ -552,7 +525,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
       if (this._additionalDataSchema != null) {
-        this._additionalDataSchemaSub = this._additionalDataSchema.subscribe(schema => {
+        this._additionalDataSchema.pipe(take(1)).subscribe(schema => {
           if (schema != null) {
             this.dataSource.additionalDataSchema = schema;
           }
@@ -591,22 +564,22 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * Initializes the list Actions subscription (delete, download, print, edit)
    */
   private _initList(): void {
-    this._actionsSub =
-        this._actionEvent
-            .pipe(
-                switchMap(
-                    ({action, items, isDetails}) => this._aui.askConfirm(action).pipe(
-                        map(confirmation => ({confirmation, action, items, isDetails})),
-                        ),
+    this._actionEvent
+        .pipe(
+            switchMap(
+                ({action, items, isDetails}) => this._aui.askConfirm(action).pipe(
+                    map(confirmation => ({confirmation, action, items, isDetails})),
                     ),
-                map(({confirmation, action, items, isDetails}) => {
-                  if (confirmation) {
-                    this.processAction(action, items, isDetails);
-                  }
-                }),
-                catchError(err => throwError(err)),
-                )
-            .subscribe();
+                ),
+            map(({confirmation, action, items, isDetails}) => {
+              if (confirmation) {
+                this.processAction(action, items, isDetails);
+              }
+            }),
+            catchError(err => throwError(err)),
+            takeUntil(this._mainUnsubscribe),
+            )
+        .subscribe();
   }
 
   /**
@@ -656,7 +629,9 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   }
 
   ngOnDestroy() {
-    this._mainSubscription.unsubscribe();
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
+
     this._dataSource.disconnect();
     this._fts.clearModelFilters();
   }
