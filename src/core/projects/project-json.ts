@@ -33,7 +33,6 @@ export const schema = {
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp."
     },
     "updated_at": {
       "type": "string",
@@ -44,7 +43,7 @@ export const schema = {
       "description": "The metric name."
     },
     "parent_id": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "The optional ID of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
     "parent_name": {
@@ -56,11 +55,11 @@ export const schema = {
       "description": "The project Code identifier"
     },
     "sectors_of_intervention": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "The project sectors of intervention"
     },
     "donors": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "The project Donors"
     },
     "start_date": {
@@ -81,7 +80,6 @@ export const schema = {
     "created_at",
     "id",
     "name",
-    "code",
     "updated_at"
   ],
   "additionalProperties": false,
