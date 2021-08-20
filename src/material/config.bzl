@@ -2,6 +2,7 @@
 entryPoints = [
     "breakpoint-observer",
     "collect",
+    "create-form",
     "edit-form",
     "floating-button",
     "list",

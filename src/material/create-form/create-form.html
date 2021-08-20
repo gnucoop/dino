@@ -1,0 +1,9 @@
+<ng-container *ngIf="(form|async) != null">
+  <ajf-form
+    #formContainer
+    [form]="(form|async)!"
+    [saveDisabled]="(isValid|async) === false"
+    [topBar]="true"
+    (formAction)="onFormAction($event)"
+  ></ajf-form
+></ng-container>
