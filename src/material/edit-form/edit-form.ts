@@ -85,7 +85,7 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
   /**
    * The Form schema id
    */
-  private _formSchemaId: Subject<string> = new Subject<string>();
+  private _formSchemaId: Observable<string>;
 
   /**
    * The Form schema object
@@ -98,8 +98,8 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
   /**
    * The Form data object
    */
-  private _formData: Observable<FormData>;
-  get formData(): Observable<FormData> {
+  private _formData: Observable<{data: FormData, schemaId: string}>;
+  get formData(): Observable<{data: FormData, schemaId: string}> {
     return this._formData;
   }
 
@@ -192,6 +192,49 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
       throw new Error('No Data manager was provided');
     }
 
+    this._formData = this.formId.pipe(
+        withLatestFrom(this.isDetails),
+        map(([id, isDetails]) => {
+          const dm: DataModelManager<T> =
+              isDetails && this._dataModelManager.detailsManager != null ?
+              this._dataModelManager.detailsManager :
+              this._dataModelManager;
+
+          return dm.query({selector: {id: id}})
+              .pipe(
+                  switchMap((rxdbQuery) => {
+                    const res = from(rxdbQuery.exec());
+                    return res;
+                  }),
+                  map((docs) => {
+                    if (!docs.length) {
+                      this._router.navigateByUrl('');
+                      return null;
+                    }
+                    const rxDoc = docs[0];
+                    const item: {[key: string]: any} = rxDoc.toJSON();
+                    this._currentDoc.next(item as T);
+                    if ('data' in item && item['data'] != null) {
+                      const formDataObj = {
+                        data: item['data']['data'] ?? item['data'] ?? null,
+                        schemaId: item['data']['schema_id'] ?? item['schema_id'] ?? null,
+                      };
+                      return formDataObj;
+                    }
+                    return null;
+                  }),
+              );
+        }),
+        switchMap(data => data as Observable<{data: FormData, schemaId: string}>),
+        shareReplay(1),
+    );
+
+    this._formSchemaId = this._formData.pipe(
+        map(formDataObj => formDataObj.schemaId),
+        filter(id => id != null),
+        shareReplay(1),
+    );
+
     this._formSchema = this._formSchemaId.pipe(
         map(
             schemaId => this._fs.get(schemaId).pipe(
@@ -208,41 +251,6 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
         shareReplay(1),
     );
 
-    this._formData = this.formId.pipe(
-        withLatestFrom(this.isDetails),
-        map(([id, isDetails]) => {
-          const dm: DataModelManager<T> =
-              isDetails && this._dataModelManager.detailsManager != null ?
-              this._dataModelManager.detailsManager :
-              this._dataModelManager;
-          return dm.query({selector: {id: id}})
-              .pipe(
-                  switchMap((rxdbQuery) => {
-                    const res = from(rxdbQuery.exec());
-                    return res;
-                  }),
-                  map((docs) => {
-                    if (!docs.length) {
-                      this._router.navigateByUrl('');
-                      return null;
-                    }
-                    const rxDoc = docs[0];
-                    const item: {[key: string]: any} = rxDoc.toJSON();
-                    this._currentDoc.next(item as T);
-                    if ('data' in item && item['data'] != null) {
-                      if (item['data']['schema_id'] != null || item['schema_id'] != null) {
-                        this._formSchemaId.next(item['data']['schema_id'] ?? item['schema_id']);
-                      }
-                      return item['data']['data'] ?? item['data'] ?? null;
-                    }
-                    return null;
-                  }),
-              );
-        }),
-        switchMap(data => data as Observable<FormData>),
-        shareReplay(1),
-    );
-
     this._form = this._formSchema.pipe(
         withLatestFrom(this._formData),
         map(([fschema, fdata]) => {
@@ -255,7 +263,7 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
           if (fschema.schema.choicesOrigins == null) {
             fschema.schema.choicesOrigins = [];
           }
-          return AjfFormSerializer.fromJson(fschema.schema, fdata);
+          return AjfFormSerializer.fromJson(fschema.schema, fdata.data);
         }),
         shareReplay(1),
     );
@@ -269,7 +277,8 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
                 withLatestFrom(this.isDetails),
                 switchMap(([formObj, isDetails]) => {
                   let newItem = formObj.doc as {[key: string]: any};
-                  newItem.data.data = formObj.formValue;
+                  newItem.data.data != null ? newItem.data.data = formObj.formValue :
+                                              newItem.data = formObj.formValue;
                   const dm: DataModelManager<T> =
                       isDetails && this._dataModelManager.detailsManager != null ?
                       this._dataModelManager.detailsManager :
@@ -288,6 +297,5 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
     this._saveFormSub.unsubscribe();
     this._saveFormEvt.complete();
     this._currentDoc.complete();
-    this._formSchemaId.complete();
   }
 }
