@@ -585,6 +585,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   /**
    * Queries the DataSource for the deletion of Items
    * @param items The items to be deleted
+   * @param isDetails If true, the items are in the details of a parent
    * @returns The deleted items
    */
   deleteAction(items: T|T[], isDetails: boolean = false): T[] {
@@ -599,6 +600,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   /**
    * Loads the Edit Form component for the the item.
    * @param item The item to be edited
+   * @param isDetails If true, the item is in the details of a parent
    */
   editAction(item: T, isDetails: boolean = false): void {
     if (item == null) {
@@ -609,6 +611,23 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       path.push('details');
     }
     path.push(`${item.id}`);
+    this._router.navigate(path);
+  }
+
+  /**
+   * Loads the Edit Form component to create a new item.
+   * @param schemaId The schema Id of the created Form
+   * @param isFormData If true, a formData is being created
+   */
+  createAction(schemaId: string, isFormData: boolean = false): void {
+    if (schemaId == null) {
+      return;
+    }
+    const path = [`${this.baseCreateUrl}`];
+    if (isFormData) {
+      path.push('form');
+    }
+    path.push(`${schemaId}`);
     this._router.navigate(path);
   }
 
