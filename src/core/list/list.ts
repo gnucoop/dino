@@ -131,7 +131,6 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   private _baseEditUrl = 'edit/';
 
-
   get baseEditUrl(): string {
     return this._baseEditUrl;
   }
@@ -139,6 +138,21 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   @Input()
   set baseEditUrl(baseEditUrl: string) {
     this._baseEditUrl = baseEditUrl;
+    this._cdr.markForCheck();
+  }
+
+  /**
+   * The base url to be used for the Create action on a list item
+   */
+  private _baseCreateUrl = 'create/';
+
+  get baseCreateUrl(): string {
+    return this._baseCreateUrl;
+  }
+
+  @Input()
+  set baseCreateUrl(baseCreateUrl: string) {
+    this._baseCreateUrl = baseCreateUrl;
     this._cdr.markForCheck();
   }
 
@@ -166,6 +180,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   abstract selectAll(): void;
   abstract deleteAction(items: T[], isDetails: boolean): T[];
   abstract editAction(item: T, isDetails: boolean): void;
+  abstract createAction(schemaId: string, isFormData: boolean): void;
 
   /**
    * Calls a handler function on the current selection based on the action name
