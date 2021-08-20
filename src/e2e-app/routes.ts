@@ -3,6 +3,7 @@ import {AuthGuard} from '@dewco/core/auth';
 
 import {MatAreasE2E} from './mat-areas/areas-e2e.component';
 import {MatCollectE2E} from './mat-collect/collect-e2e.component';
+import {MatCreateE2E} from './mat-create/create-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
 import {MatEditE2E} from './mat-edit/edit-e2e.component';
 import {MatListE2E} from './mat-list/list-e2e';
@@ -43,6 +44,22 @@ export const E2E_APP_ROUTES: Routes = [
         path: 'details/:form_id',
         component: MatEditE2E,
         data: {isDetails: true},
+      },
+    ],
+  },
+  {
+    path: 'create',
+    canActivate: authGuard,
+    children: [
+      {
+        path: ':form_schema_id',
+        component: MatCreateE2E,
+        data: {isFormData: false},
+      },
+      {
+        path: 'form/:form_schema_id',
+        component: MatCreateE2E,
+        data: {isFormData: true},
       },
     ],
   },

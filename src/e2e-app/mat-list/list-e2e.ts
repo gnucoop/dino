@@ -2,6 +2,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {
@@ -16,15 +17,21 @@ import {
   ListAction,
   ListHeader,
 } from '@dewco/core/list';
-import {ListDataSource} from '@dewco/material/list';
+import {ListDataSource, SelectionList} from '@dewco/material/list';
 import {Observable, of as obsOf} from 'rxjs';
-import {filter, shareReplay, switchMap} from 'rxjs/operators';
+import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 @Component({
   selector: 'mat-list-e2e',
   templateUrl: 'list-e2e.html',
 })
 export class MatListE2E implements OnDestroy, OnInit {
+  @ViewChild(SelectionList) list: SelectionList;
+
+  /**
+   * If true, this is a list of simple form datas.
+   */
+  readonly isFormDataList = true;
   readonly additionalBasicFilters = [
     'project',
     'location',
@@ -33,6 +40,7 @@ export class MatListE2E implements OnDestroy, OnInit {
     'unavailableFilter',
   ];
   readonly additionalDataSchema: Observable<FormSchema|null>;
+  readonly formSchemaId: Observable<string|null>;
   readonly baseEditUrl = 'edit/';
   readonly dataSource: ListDataSource<FormData, FormSchema>;
   readonly headers: ListHeader<FormData>[] = [
@@ -40,7 +48,7 @@ export class MatListE2E implements OnDestroy, OnInit {
     {column: 'user_id', label: 'User', sortable: true},
     {column: 'created_at', label: 'Creation Date', sortable: true},
   ];
-  readonly onClickRowActions: ActionType[] = ['select'];
+  readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [
     {
       actionType: 'view',
@@ -63,10 +71,11 @@ export class MatListE2E implements OnDestroy, OnInit {
       readonly formSchemaManager: FormSchemaManager,
       private _route: ActivatedRoute,
   ) {
-    this.additionalDataSchema = this._route.params.pipe(
-        switchMap(params => {
-          if (params.form_schema_id != null) {
-            return this.formSchemaManager.get(params.form_schema_id);
+    this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
+    this.additionalDataSchema = this.formSchemaId.pipe(
+        switchMap(schemaId => {
+          if (schemaId != null) {
+            return this.formSchemaManager.get(schemaId);
           }
           return obsOf(null);
         }),
@@ -78,12 +87,24 @@ export class MatListE2E implements OnDestroy, OnInit {
         this.formDataManager,
         this.filtersService,
         this.formSchemaManager,
-        true,
+        this.isFormDataList,
     );
   }
 
-  ngOnInit() {}
+  addForm(): void {
+    this.formSchemaId
+        .pipe(
+            map(schemaId => {
+              if (schemaId != null) {
+                return this.list.createAction(schemaId, this.isFormDataList);
+              }
+            }),
+            take(1),
+            )
+        .subscribe();
+  }
 
+  ngOnInit() {}
 
   ngOnDestroy() {}
 }

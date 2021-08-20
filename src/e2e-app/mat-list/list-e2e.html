@@ -5,6 +5,7 @@
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
   [listRowActions]="listRowActions"
+  [expandable]="true"
   [onClickRowActions]="onClickRowActions"
 >
   <dewco-search-filters-bar
@@ -12,3 +13,10 @@
     [presetManager]="true"
   ></dewco-search-filters-bar>
 </dewco-list>
+
+<dewco-floating-button
+  [buttonIcon]="'add'"
+  tooltipMessage="Add New form"
+  (click)="addForm()"
+></dewco-floating-button>
+

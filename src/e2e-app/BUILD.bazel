@@ -46,6 +46,7 @@ ng_module(
         "//src/core/translations",
         "//src/dewco-examples/private",
         "//src/material/collect",
+        "//src/material/create-form",
         "//src/material/edit-form",
         "//src/material/list",
         "//src/material/login",
