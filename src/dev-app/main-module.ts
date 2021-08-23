@@ -29,6 +29,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dewco/core/auth';
 import {DataModule} from '@dewco/core/data';
+import {LangSelectorModule} from '@dewco/material/lang-selector';
 
 import {DemoHttpInterceptor} from './demo-http-interceptor';
 import {DevAppComponent} from './dev-app';
@@ -61,6 +62,7 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
     }),
     DevAppModule,
     HttpClientModule,
+    LangSelectorModule,
     RouterModule.forRoot(DEV_APP_ROUTES),
   ],
   declarations: [

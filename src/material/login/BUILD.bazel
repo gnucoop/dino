@@ -21,6 +21,7 @@ ng_module(
     module_name = "@dewco/material/login",
     deps = [
         "//src/core/auth",
+        "@npm//@ajf/core",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",

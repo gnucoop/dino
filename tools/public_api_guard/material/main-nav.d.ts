@@ -1,7 +1,7 @@
 export declare class MainModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<MainModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<MainModule>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<MainModule, [typeof i1.MainNav], [typeof i2.AuthModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.MatButtonModule, typeof i6.MatIconModule, typeof i7.MatListModule, typeof i8.MatSidenavModule, typeof i9.MatSnackBarModule, typeof i10.MatToolbarModule, typeof i11.RouterModule], [typeof i1.MainNav]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<MainModule, [typeof i1.MainNav], [typeof i2.AjfTranslocoModule, typeof i3.LangSelectorModule, typeof i4.AuthModule, typeof i5.BreakpointObserverModule, typeof i6.CommonModule, typeof i7.MatButtonModule, typeof i8.MatIconModule, typeof i9.MatListModule, typeof i10.MatSidenavModule, typeof i11.MatSnackBarModule, typeof i12.MatToolbarModule, typeof i13.RouterModule], [typeof i1.MainNav]>;
 }
 
 export declare class MainNav implements AfterViewInit, OnDestroy {

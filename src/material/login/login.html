@@ -16,7 +16,7 @@
         name="email"
         type="text"
         aria-label="email"
-        [placeholder]="'Username / email'"
+        [placeholder]="'Username / email'|transloco"
       />
       <input
         matInput
@@ -24,10 +24,10 @@
         name="password"
         type="password"
         aria-label="password"
-        [placeholder]="'Password'"
+        [placeholder]="'Password'|transloco"
       />
       <div *ngIf="loginError === true" class="dewco-error-message">
-        Invalid username and/or password
+        {{'Invalid username and/or password'|transloco}}
       </div>
       <button
         mat-fab

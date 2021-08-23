@@ -10,6 +10,7 @@ CORE_ENTRYPOINTS = [
     "locations",
     "organizations",
     "projects",
+    "translations",
 ]
 
 CORE_ENTRYPOINTS_WITH_STYLES = [

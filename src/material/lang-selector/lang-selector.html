@@ -1,0 +1,8 @@
+<mat-form-field>
+  <mat-select-trigger> {{ currentLang }} </mat-select-trigger>
+  <mat-select>
+    <mat-option *ngFor="let lang of langsShowed$|async" (click)="setLang(lang)"
+      >{{ lang }}</mat-option
+    >
+  </mat-select>
+</mat-form-field>

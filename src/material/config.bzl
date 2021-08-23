@@ -5,6 +5,7 @@ entryPoints = [
     "edit-form",
     "list",
     "login",
+    "lang-selector",
     "main-nav",
     "search-filters-bar",
     "search-filters-chips",

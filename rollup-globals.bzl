@@ -58,6 +58,7 @@ ROLLUP_GLOBALS = {
     "@ajf/core/common": "ajf.core.common",
     "@ajf/core/forms": "ajf.core.forms",
     "@ajf/core/models": "ajf.core.models",
+    "@ajf/core/transloco": "ajf.core.transloco",
     "@ajf/material/common": "ajf.material.common",
     "@ajf/material/forms": "ajf.material.forms",
     "pouchdb-adapter-idb": "PouchDB.adapter.idb",

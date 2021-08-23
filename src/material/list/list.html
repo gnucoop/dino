@@ -37,10 +37,12 @@
             class="dewco-bulk-delete-button"
             (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
             [disabled]="selection.selected.length <= 0"
-            aria-label="Delete all items"
+            [attr.aria-label]="'Delete all items'|transloco"
           >
-            <mat-icon aria-hidden="false" aria-label="delete icon"
-              >delete</mat-icon
+            <mat-icon
+              aria-hidden="false"
+              [attr.aria-label]="'delete icon'|transloco"
+              >{{'delete'|transloco}}</mat-icon
             >
           </button>
         </mat-header-cell>
@@ -67,7 +69,7 @@
           <ng-container
             *ngTemplateOutlet="cellTemplatesMap[header.label] ?
         cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
-        context: {$implicit: header.label}"
+        context: {$implicit: header.label|transloco}"
           >
           </ng-container>
         </mat-header-cell>
@@ -83,7 +85,9 @@
         </mat-header-cell>
       </ng-template>
 
-      <ng-template #defaultHeaderCellTemplate> {{ header.label }} </ng-template>
+      <ng-template #defaultHeaderCellTemplate>
+        {{ header.label|transloco }}
+      </ng-template>
 
       <mat-cell *matCellDef="let element">
         <ng-container
@@ -208,7 +212,6 @@
       >
       </mat-row>
     </ng-container>
-
   </mat-table>
   <ng-container *ngIf="ctx.showPaginator">
     <mat-paginator></mat-paginator>

@@ -23,6 +23,7 @@ ng_module(
     deps = [
         "//src/core/auth",
         "//src/material/breakpoint-observer",
+        "//src/material/lang-selector",
         "@npm//@angular/common",
         "@npm//@angular/material",
     ],

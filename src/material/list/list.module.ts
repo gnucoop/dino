@@ -21,6 +21,7 @@
  */
 
 import {AjfFormsModule} from '@ajf/core/forms';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
@@ -48,6 +49,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
 @NgModule({
   imports: [
     AjfFormsModule,
+    AjfTranslocoModule,
     BreakpointObserverModule,
     CommonModule,
     CoreModule,

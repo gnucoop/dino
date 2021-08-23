@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
@@ -37,6 +38,7 @@ import {SearchFiltersDialog} from './search-filters-dialog';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
     CommonModule,
     MatButtonModule,
     MatCheckboxModule,

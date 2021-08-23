@@ -5,18 +5,16 @@ import {
   ExpectedConditions as EC,
 } from 'protractor';
 
-describe('dewco-login', () => {
+describe('dewco-material-login', () => {
   beforeEach(async () => await browser.get('/login'));
 
   it('should not display an error message on init', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
     const errorMsg = element(by.css('.dewco-error-message'));
     const res = await errorMsg.isPresent();
     expect(res).toBe(false);
   });
 
   it('should disable the login button if the form value is invalid', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
@@ -30,7 +28,6 @@ describe('dewco-login', () => {
   });
 
   it('should enable the login button if the form value is valid', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
@@ -44,7 +41,6 @@ describe('dewco-login', () => {
   });
 
   it('should show the error message if login was unsuccessful', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
@@ -60,7 +56,6 @@ describe('dewco-login', () => {
   });
 
   it('should not show the error message if login was successful', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
@@ -85,7 +80,6 @@ describe('dewco-login', () => {
   });
 
   it('should redirect to the post-login url after a successful login', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
     const form = element(by.tagName('form'));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));

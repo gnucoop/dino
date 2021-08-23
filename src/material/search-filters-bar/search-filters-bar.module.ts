@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -47,6 +48,7 @@ import {SearchFiltersBar} from './search-filters-bar';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
     BreakpointObserverModule,
     CommonModule,
     MatButtonModule,

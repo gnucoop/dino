@@ -59,6 +59,7 @@ THIRD_PARTY_NO_NGCC_BUNDLES = [
     ("chart.js", []),
     ("css-element-queries", []),
     ("date-fns", []),
+    ("flat", []),
     ("esprima", []),
     ("leaflet", []),
     ("mock-socket", []),

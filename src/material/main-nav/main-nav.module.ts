@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
@@ -31,11 +32,14 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dewco/core/auth';
 import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
+import {LangSelectorModule} from '@dewco/material/lang-selector';
 
 import {MainNav} from './main-nav';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
+    LangSelectorModule,
     AuthModule,
     BreakpointObserverModule,
     CommonModule,

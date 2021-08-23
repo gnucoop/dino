@@ -25,6 +25,7 @@ import {
   AjfFormRendererService,
   AjfFormsModule as AjfCoreFormsModule,
 } from '@ajf/core/forms';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {AjfFormsModule} from '@ajf/material/forms';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
@@ -47,6 +48,7 @@ import {SearchFiltersWidget} from './search-filters-widget';
     AjfCommonModule,
     AjfCoreFormsModule,
     AjfFormsModule,
+    AjfTranslocoModule,
     CommonModule,
     MatButtonModule,
     MatButtonToggleModule,

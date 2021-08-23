@@ -18,7 +18,7 @@ import {
   FormSchemaManager,
   FormsModule
 } from '@dewco/core/forms';
-import {TranslateModule} from '@ngx-translate/core';
+import {DewcoTranslationsModule} from '@dewco/core/translations';
 import {Observable, of as obsOf} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
@@ -67,17 +67,17 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
 @NgModule({
   imports: [
     AuthModule.forRoot(authConfig),
+    BrowserAnimationsModule,
     ConfigModule.forRoot(configurationConfig),
     BrowserModule,
-    HttpClientModule,
+    DewcoTranslationsModule.forRoot(),
+    FormsModule,
     E2eAppModule,
-    BrowserAnimationsModule,
-    OverlayModule,
-    RouterModule.forRoot(E2E_APP_ROUTES),
+    HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    TranslateModule.forRoot(),
-    FormsModule,
+    OverlayModule,
+    RouterModule.forRoot(E2E_APP_ROUTES),
 
     // Optional Metrics
 

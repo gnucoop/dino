@@ -1,0 +1,38 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+    "sass_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "translations",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [],
+    module_name = "@dewco/core/translations",
+    deps = [
+        "@npm//@ajf/core",
+        "@npm//@angular/core",
+    ],
+)
+
+sass_library(
+    name = "translations_scss_lib",
+    srcs = glob(["**/_*.scss"]),
+    deps = [],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["translations.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)

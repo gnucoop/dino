@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -35,6 +36,7 @@ import {SearchFiltersPresetManager} from './search-filters-preset-manager';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
     CommonModule,
     FormsModule,
     MatAutocompleteModule,

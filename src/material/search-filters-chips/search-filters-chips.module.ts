@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
@@ -32,6 +33,7 @@ import {SearchFiltersChips} from './search-filters-chips';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
     CommonModule,
     MatButtonModule,
     MatChipsModule,

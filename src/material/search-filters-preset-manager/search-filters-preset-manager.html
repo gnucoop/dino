@@ -1,24 +1,46 @@
 <div class="dewco-preset-container">
-    <div class="dewco-preset-manager-field">
-        <form>
-            <mat-form-field>
-                <mat-icon matSuffix color="primary">filter_alt</mat-icon>
-                <input type="text" placeholder="Pick a preset name" aria-label="Pick a preset" matInput [formControl]="presetControl"
-                    [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                        {{option}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-        </form>
-    </div>
+  <div class="dewco-preset-manager-field">
+    <form>
+      <mat-form-field>
+        <mat-icon matSuffix color="primary">filter_alt</mat-icon>
+        <input
+          type="text"
+          [placeholder]="'Pick a preset name'|transloco"
+          [attr.aria-label]="'Pick a preset'|transloco"
+          matInput
+          [formControl]="presetControl"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let option of filteredOptions | async"
+            [value]="option"
+          >
+            {{option|transloco}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+  </div>
 
-    <div class="dewco-preset-manager-buttons">
-        <button mat-stroked-button color="accent" (click)="loadPreset()"
-            [disabled]="(presetName|async) == '' || (canLoadPreset|async) === false" aria-label="Load the preset">Apply</button>
-        <button mat-stroked-button color="primary" (click)="savePreset()"
-            [disabled]="(presetData|async) == null || (presetName|async) === ''" aria-label="Save the preset">Save</button>
-    </div>
-
+  <div class="dewco-preset-manager-buttons">
+    <button
+      mat-stroked-button
+      color="accent"
+      (click)="loadPreset()"
+      [disabled]="(presetName|async) == '' || (canLoadPreset|async) === false"
+      [attr.aria-label]="'Load the preset'|transloco"
+    >
+      {{'Apply'|transloco}}
+    </button>
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="savePreset()"
+      [disabled]="(presetData|async) == null || (presetName|async) === ''"
+      [attr.aria-label]="'Save the preset'|transloco"
+    >
+      {{'Save'|transloco}}
+    </button>
+  </div>
 </div>

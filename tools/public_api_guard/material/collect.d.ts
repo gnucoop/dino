@@ -23,5 +23,5 @@ export interface CollectItem {
 export declare class CollectModule {
     static ɵfac: i0.ɵɵFactoryDeclaration<CollectModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<CollectModule>;
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.BreakpointObserverModule, typeof i3.CommonModule, typeof i4.FormsModule, typeof i5.RouterModule, typeof i6.MatGridListModule, typeof i7.MatIconModule], [typeof i1.Collect]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.AjfTranslocoModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.FormsModule, typeof i6.RouterModule, typeof i7.MatGridListModule, typeof i8.MatIconModule], [typeof i1.Collect]>;
 }

@@ -1,0 +1,33 @@
+dewco-lang-selector {
+  margin-left: 1em;
+  margin-right: 1em;
+  height: 100%;
+
+  mat-form-field {
+    width: 40px;
+    mat-select {
+      width: unset !important;
+    }
+  }
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+
+  .mat-form-field-infix {
+    border: 0;
+    padding-top: 18px;
+  }
+
+  .mat-input-underline {
+    position: static;
+  }
+
+  .mat-form-field-underline {
+    background-color: white;
+  }
+
+  .mat-select-arrow {
+    color: white;
+  }
+}

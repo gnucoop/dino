@@ -16,5 +16,6 @@
     "**/dist": true,
   },
   "git.ignoreLimitWarning": true,
-  "typescript.tsdk": "./node_modules/typescript/lib",
+	"typescript.tsdk": "./node_modules/typescript/lib",
+	"angular.enable-strict-mode-prompt": false,
 }

@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -32,6 +33,7 @@ import {Login} from './login';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
     CommonModule,
     MatButtonModule,
     MatIconModule,

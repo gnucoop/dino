@@ -14,7 +14,9 @@
         <div class="dewco-grid-icon">
           <mat-icon class="dewco-mat-icon">{{item.icon ?? 'list'}}</mat-icon>
         </div>
-        <div class="dewco-grid-label">{{ item.label ?? item.name }}</div>
+        <div class="dewco-grid-label">
+          {{ (item.label ?? item.name)|transloco }}
+        </div>
       </div>
     </mat-grid-tile>
   </ng-container>

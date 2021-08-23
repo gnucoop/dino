@@ -1,20 +1,33 @@
 <div class="dewco-filters-dialog-menu">
-    <button mat-raised-button (click)="search()" color="accent">Search</button>
-    <button mat-raised-button (click)="closeDialog()" color="warn">Close</button>
+  <button mat-raised-button (click)="search()" color="accent">
+    {{'Search'|transloco}}
+  </button>
+  <button mat-raised-button (click)="closeDialog()" color="warn">
+    {{'Close'|transloco}}
+  </button>
 </div>
 
 <mat-dialog-content>
-    <dewco-search-filters-chips (excludeFilter)="removeFilter($event, 'temporary')" [chipsType]="'temporary'">
-    </dewco-search-filters-chips>
-    <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
-        <mat-tab *ngFor=" let filterGroup of fts.generatedFilters|async;" [label]="filterGroup.filterGroupName"
-            style="width: 100%">
-            <ng-template matTabContent>
-                <dewco-search-filters-widget *ngFor="let filterItem of filterItemsData|async;"
-                    [filterItemData]="filterItem" (includeFilter)="addFilter($event, 'temporary')"
-                    (excludeFilter)="removeFilter($event, 'temporary')">
-                </dewco-search-filters-widget>
-            </ng-template>
-        </mat-tab>
-    </mat-tab-group>
+  <dewco-search-filters-chips
+    (excludeFilter)="removeFilter($event, 'temporary')"
+    [chipsType]="'temporary'"
+  >
+  </dewco-search-filters-chips>
+  <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
+    <mat-tab
+      *ngFor=" let filterGroup of fts.generatedFilters|async;"
+      [label]="filterGroup.filterGroupName|transloco"
+      style="width: 100%"
+    >
+      <ng-template matTabContent>
+        <dewco-search-filters-widget
+          *ngFor="let filterItem of filterItemsData|async;"
+          [filterItemData]="filterItem"
+          (includeFilter)="addFilter($event, 'temporary')"
+          (excludeFilter)="removeFilter($event, 'temporary')"
+        >
+        </dewco-search-filters-widget>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </mat-dialog-content>

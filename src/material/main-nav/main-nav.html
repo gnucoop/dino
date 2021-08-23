@@ -19,6 +19,7 @@
   <img class="dewco-toolbar-logo" [src]="logoImagePath" alt="logo" />
 
   <div class="dewco-toolbar-actions">
+    <dewco-lang-selector></dewco-lang-selector>
     <mat-icon class="dewco-logout-button" (click)="logout()">logout</mat-icon>
   </div>
 </mat-toolbar>
@@ -42,7 +43,7 @@
         (click)="menuClick()"
       >
         <i class="material-icons material-icons-outlined">{{section.icon}}</i>
-        <span *ngIf="extendedSidenav|async">{{section.label}}</span>
+        <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
       </a>
 
       <a

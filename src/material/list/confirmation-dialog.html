@@ -1,8 +1,22 @@
-<h4 mat-dialog-title>Confirm {{data.action.actionType}}</h4>
+<h4 mat-dialog-title>{{'Confirm'|transloco}} {{data.action.actionType|transloco}}</h4>
 <mat-dialog-content>
-    Do you want to {{data.action.actionType}} the selected items ?
-</mat-dialog-content><br>
+  {{'Do you want to'|transloco}} {{data.action.actionType|transloco}} {{'the selected items'|transloco}} ? </mat-dialog-content
+><br />
 <mat-dialog-actions align="center">
-    <button class="dewco-confirm-button" mat-raised-button color="primary" (click)="confirmationResponse(true)">Yes</button>
-    <button class="dewco-cancel-button" mat-raised-button color="basic" (click)="confirmationResponse(false)">No</button>
+  <button
+    class="dewco-confirm-button"
+    mat-raised-button
+    color="primary"
+    (click)="confirmationResponse(true)"
+  >
+    {{'Yes'|transloco}}
+  </button>
+  <button
+    class="dewco-cancel-button"
+    mat-raised-button
+    color="basic"
+    (click)="confirmationResponse(false)"
+  >
+    {{'No'|transloco}}
+  </button>
 </mat-dialog-actions>

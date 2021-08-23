@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -32,6 +33,7 @@ import {Collect} from './collect';
 
 @NgModule({
   imports: [
+    AjfTranslocoModule,
     BreakpointObserverModule,
     CommonModule,
     FormsModule,
