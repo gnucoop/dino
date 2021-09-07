@@ -42,6 +42,7 @@ class FiltersServiceStub {
   loadPreset() {}
   addBasicFilter(): void {}
   clearModelFilters() {}
+  clearAdditionalBasicFilters() {}
 }
 
 class SearchFiltersComponentStub {}

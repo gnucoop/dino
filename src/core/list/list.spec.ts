@@ -56,6 +56,7 @@ class ListFeatComp extends List<DummyModel> {
     super(cdr, aui);
   }
 
+  createAction(schemaId: string, isFormData: boolean) {}
   getSelection() {
     return dummySelection;
   }
