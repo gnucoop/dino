@@ -128,7 +128,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   /**
    * The value of the Parent metric name (autcomplete)
    */
-  metricParentValue: Observable<string|ParentMetric>;
+  metricParentValue: Observable<string|ParentMetric> = new Observable<string|ParentMetric>();
 
   /**
    * The available Parent options
@@ -152,9 +152,11 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   private _saveSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      private _router: Router, readonly snackbar: MatSnackBar,
+      private _router: Router,
+      readonly snackbar: MatSnackBar,
       public dialogRef: MatDialogRef<MetricEditor>,
-      @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>) {
+      @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>,
+  ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
       this.metricName = this._metricManager.collectionName.toUpperCase();
@@ -294,7 +296,14 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
                               }
                             }),
                             )
-                        .subscribe();
+                        .subscribe(res => {
+                          if (res == null) {
+                            this.snackbar.open(
+                                `Oops! Something went wrong. 
+                                Please check if a Metric with the same Name already exists.`,
+                                'SAVE ERROR', {duration: 10000});
+                          }
+                        });
 
     this.parentOptions = this.metricParentValue.pipe(
         withLatestFrom(
@@ -309,7 +318,9 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
           if (parent != null && typeof parent === 'string') {
             const parentName = parent.toLowerCase();
             return parentOptions.filter(option => {
-              return option.parent_name.toLowerCase().includes(parentName);
+              return (
+                  option.parent_name.toLowerCase().includes(parentName) &&
+                  option.parent_name != this.metricForm.get('name')?.value);
             });
           }
           return [];
