@@ -29,6 +29,8 @@ import {Model} from './model';
 export interface Metric extends Model {
   /**
    * The metric name.
+   * 
+   * @primary true
    */
   name: string;
 

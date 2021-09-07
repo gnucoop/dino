@@ -29,7 +29,6 @@ export const schema = {
     "id": {
       "type": "string",
       "description": "UUID v4 identifier.",
-      "primary": true
     },
     "created_at": {
       "type": "string",
@@ -41,7 +40,8 @@ export const schema = {
     },
     "name": {
       "type": "string",
-      "description": "The Area name identifier"
+      "description": "The Area name identifier",
+      "primary": true
     },
     "parent_id": {
       "type": ["string", "null"],

@@ -29,7 +29,6 @@ export const schema = {
     "id": {
       "type": "string",
       "description": "UUID v4 identifier.",
-      "primary": true
     },
     "created_at": {
       "type": "string",
@@ -40,7 +39,8 @@ export const schema = {
     },
     "name": {
       "type": "string",
-      "description": "The metric name."
+      "description": "The metric name.",
+      "primary": true
     },
     "parent_id": {
       "type": ["string", "null"],
