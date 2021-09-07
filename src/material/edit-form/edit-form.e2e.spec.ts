@@ -29,6 +29,7 @@ describe('dewco-edit-form', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-list'))));
 
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
     const matRow = element.all(by.tagName('mat-row')).get(0);
 
     await browser.actions().mouseMove(matRow).perform();
