@@ -4,7 +4,6 @@ load(
     "markdown_to_html",
     "ng_e2e_test_library",
     "ng_module",
-    "ng_test_library",
     "ng_web_test_suite",
     "sass_binary",
     "sass_library",
@@ -47,23 +46,6 @@ sass_binary(
     name = "metric_section_scss",
     src = "metric-section.scss",
     deps = [],
-)
-
-ng_test_library(
-    name = "unit_test_sources",
-    srcs = glob(
-        ["**/*.spec.ts"],
-        exclude = ["**/*.e2e.spec.ts"],
-    ),
-    deps = [
-        ":metric-section",
-        "@npm//@angular/common",
-        "@npm//@angular/forms",
-        "@npm//@angular/material",
-        "@npm//@angular/router",
-        "@npm//rxdb",
-        "@npm//rxjs",
-    ],
 )
 
 ng_e2e_test_library(
