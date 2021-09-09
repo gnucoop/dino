@@ -1,7 +1,7 @@
 <div class="dewco-metric-editor-container">
-  <h1 mat-dialog-title>Add new {{metricName}}</h1>
+  <h1 mat-dialog-title>{{data.metricAction?.toUpperCase()}} {{metricName}}</h1>
   <mat-dialog-content>
-    <form [formGroup]="metricForm">
+    <form [formGroup]="metricForm" autocomplete="off">
       <ng-container *ngFor="let field of metricFormFields; let idx = index">
         <mat-form-field class="dewco-metric-editor-field" appearance="fill">
           <ng-template #autocompleteField>
@@ -64,6 +64,12 @@
             *ngIf="metricForm.controls[field.fieldName].hasError('incorrect')"
           >
             Please select a valid parent
+          </mat-error>
+
+          <mat-error
+            *ngIf="metricForm.controls[field.fieldName].hasError('nameAlreadyExists')"
+          >
+            A Metric with this name already exists. Please choose another.
           </mat-error>
 
           <mat-hint>{{field.hint}}</mat-hint>

@@ -38,6 +38,7 @@ import {AuthModule} from '@dewco/core/auth';
 import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
 
 import {MetricEditor} from './metric-editor';
+import {NameMatchValidator} from './metric-name-validator';
 
 @NgModule({
   imports: [
@@ -63,7 +64,12 @@ import {MetricEditor} from './metric-editor';
   entryComponents: [
     MetricEditor,
   ],
-  exports: [MetricEditor],
+  exports: [
+    MetricEditor,
+  ],
+  providers: [
+    NameMatchValidator,
+  ]
 })
 export class MetricEditorModule {
 }

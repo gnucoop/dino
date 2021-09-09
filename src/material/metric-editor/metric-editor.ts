@@ -22,6 +22,7 @@
 
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Inject,
@@ -40,6 +41,7 @@ import {map, switchMap, withLatestFrom} from 'rxjs/operators';
 import {RequireMatch} from './metric-autocomplete-validator';
 
 import {METRIC_DEFAULT_PROPERTIES} from './metric-defaults';
+import {NameMatchValidator} from './metric-name-validator';
 
 /**
  * Represents the data to be passed to a MetricEditor dialog.
@@ -58,7 +60,7 @@ export interface MetricDialogData<T extends Metric = Metric> {
   /**
    * The dialog mode.
    */
-  metricAction?: 'view'|'edit';
+  metricAction?: 'view'|'edit'|'create';
 }
 
 /**
@@ -156,6 +158,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       readonly snackbar: MatSnackBar,
       public dialogRef: MatDialogRef<MetricEditor>,
       @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>,
+      private _nameMatchValidator: NameMatchValidator<T>,
+      private _cdr: ChangeDetectorRef,
   ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
@@ -246,7 +250,16 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       },
     ];
 
-    group['name'] = new FormControl(currentMetricItem?.name ?? '', Validators.required);
+    group['name'] = new FormControl(
+        currentMetricItem?.name ?? '',
+        Validators.required,
+        this._nameMatchValidator.nameCheck(
+            this._metricManager,
+            this._cdr,
+            currentMetricItem?.name,
+            this.data.metricAction,
+            ),
+    );
     group['parent'] = new FormControl(
         {
           parent_name: currentMetricItem?.parent_name ?? null,
@@ -299,9 +312,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
                         .subscribe(res => {
                           if (res == null) {
                             this.snackbar.open(
-                                `Oops! Something went wrong. 
-                                Please check if a Metric with the same Name already exists.`,
-                                'SAVE ERROR', {duration: 10000});
+                                `Oops! Something went wrong while saving the Metric.`, 'SAVE ERROR',
+                                {duration: 10000});
                           }
                         });
 

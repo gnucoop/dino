@@ -20,14 +20,14 @@
  *
  */
 
-import {AbstractControl} from '@angular/forms';
+import {AbstractControl, ValidationErrors} from '@angular/forms';
 
 /**
  * Custom validator method for autocomplete field,
  * to force the selection of a suggested option.
  * @param control The form control.
  */
-export function RequireMatch(control: AbstractControl): {[key: string]: boolean}|null {
+export function RequireMatch(control: AbstractControl): ValidationErrors|null {
   const selection: any = control.value;
   if (selection === '') {
     control.setValue({parent_name: null, parent_id: null});

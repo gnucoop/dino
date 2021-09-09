@@ -22,3 +22,5 @@
 
 export * from './metric-editor';
 export * from './metric-editor.module';
+export * from './metric-autocomplete-validator';
+export * from './metric-name-validator';
