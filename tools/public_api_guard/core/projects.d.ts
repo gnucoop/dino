@@ -1,9 +1,9 @@
 export interface Project extends Metric {
     code: string;
-    donors?: string;
-    end_date?: string;
-    sectors_of_intervention?: string;
-    start_date?: string;
+    donors: string | null;
+    end_date: string | null;
+    sectors_of_intervention: string | null;
+    start_date: string | null;
 }
 
 export declare class ProjectManager extends DataModelManager<Project> {
@@ -13,7 +13,8 @@ export declare class ProjectManager extends DataModelManager<Project> {
 }
 
 export declare class ProjectModule {
-    constructor(_filtersService: FiltersService);
+    readonly projectMetric: ActiveMetric;
+    constructor(_filtersService: FiltersService, _metricsService: MetricsService);
     static ɵfac: i0.ɵɵFactoryDeclaration<ProjectModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<ProjectModule>;
     static ɵmod: i0.ɵɵNgModuleDeclaration<ProjectModule, never, never, never>;

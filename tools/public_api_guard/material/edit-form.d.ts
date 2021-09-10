@@ -2,7 +2,10 @@ export declare class EditForm<T extends Model = Model> implements OnInit, OnDest
     set dataModelManager(dmm: DataModelManager<T>);
     get form(): Observable<AjfForm>;
     formCmp: AjfFormRenderer;
-    get formData(): Observable<FormData>;
+    get formData(): Observable<{
+        data: FormData;
+        schemaId: string;
+    }>;
     readonly formId: Observable<string>;
     get formSchema(): Observable<FormSchema>;
     readonly isDetails: Observable<boolean>;

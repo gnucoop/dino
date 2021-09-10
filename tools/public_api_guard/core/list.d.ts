@@ -57,6 +57,7 @@ export declare class FiltersService {
     addFilter(filterItem: FilterItem, filterList: FilterListType): void;
     checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean;
     checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean;
+    clearAdditionalBasicFilters(): void;
     clearModelFilters(): void;
     findFilterByName(filterName: string, filterList?: FilterListType): Observable<FilterItem | undefined>;
     generateModelFilters(modelSchema: RxJsonSchema): void;
@@ -83,6 +84,8 @@ export declare abstract class List<T extends Model = Model, AD extends Model = M
     protected _displayedColumns: string[];
     protected _headers: ListHeader<T>[];
     set additionalDataSchema(ds: AD | null);
+    get baseCreateUrl(): string;
+    set baseCreateUrl(baseCreateUrl: string);
     get baseEditUrl(): string;
     set baseEditUrl(baseEditUrl: string);
     get baseViewUrl(): string;
@@ -96,6 +99,7 @@ export declare abstract class List<T extends Model = Model, AD extends Model = M
     set title(title: string);
     constructor(_cdr: ChangeDetectorRef, _aui: AdminUserInteractionsService);
     abstract clearSelection(): void;
+    abstract createAction(schemaId: string, isFormData: boolean): void;
     abstract deleteAction(items: T[], isDetails: boolean): T[];
     abstract editAction(item: T, isDetails: boolean): void;
     abstract getItems(): T[];
@@ -103,13 +107,14 @@ export declare abstract class List<T extends Model = Model, AD extends Model = M
     processAction(action: ListAction, items: T | T[], isDetails?: boolean): void;
     abstract selectAll(): void;
     setDisplayedColumns(headers: ListHeader<T>[]): void;
-    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "showCheckBox": "showCheckBox"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; "baseViewUrl": "baseViewUrl"; }, {}, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "showCheckBox": "showCheckBox"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; "baseCreateUrl": "baseCreateUrl"; "baseViewUrl": "baseViewUrl"; }, {}, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<List<any, any>, never>;
 }
 
 export interface ListAction {
     actionType: ActionType;
     askConfirm?: boolean;
+    customAction?: (row: any) => void;
     matIcon?: string;
 }
 

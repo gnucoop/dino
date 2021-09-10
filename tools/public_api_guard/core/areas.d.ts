@@ -8,7 +8,8 @@ export declare class AreaManager extends DataModelManager<Area> {
 }
 
 export declare class AreasModule {
-    constructor(_filtersService: FiltersService);
+    readonly areaMetric: ActiveMetric;
+    constructor(_filtersService: FiltersService, _metricsService: MetricsService);
     static ɵfac: i0.ɵɵFactoryDeclaration<AreasModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<AreasModule>;
     static ɵmod: i0.ɵɵNgModuleDeclaration<AreasModule, never, never, never>;

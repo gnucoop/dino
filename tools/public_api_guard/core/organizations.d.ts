@@ -1,6 +1,6 @@
 export interface Organization extends Metric {
-    logo_path?: string;
-    website_url?: string;
+    logo_path: string | null;
+    website_url: string | null;
 }
 
 export declare class OrganizationManager extends DataModelManager<Organization> {
@@ -10,7 +10,8 @@ export declare class OrganizationManager extends DataModelManager<Organization> 
 }
 
 export declare class OrganizationsModule {
-    constructor(_filtersService: FiltersService);
+    readonly organizationMetric: ActiveMetric;
+    constructor(_filtersService: FiltersService, _metricsService: MetricsService);
     static ɵfac: i0.ɵɵFactoryDeclaration<OrganizationsModule, never>;
     static ɵinj: i0.ɵɵInjectorDeclaration<OrganizationsModule>;
     static ɵmod: i0.ɵɵNgModuleDeclaration<OrganizationsModule, never, never, never>;

@@ -6,6 +6,8 @@ export declare class IsFalseOrNullPipe implements PipeTransform {
 
 export declare class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
     protected _fts: FiltersService;
+    get additionalFilters(): boolean;
+    set additionalFilters(state: boolean);
     readonly breakpointObserver: BreakpointObserverService;
     dialog: MatDialog;
     set filtersDialogWidth(w: number);
@@ -16,7 +18,7 @@ export declare class SearchFiltersBar extends SearchFiltersComponent implements 
     ngOnInit(): void;
     openDialog(): void;
     removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dewco-search-filters-bar", never, { "presetManager": "presetManager"; "filtersDialogWidth": "filtersDialogWidth"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dewco-search-filters-bar", never, { "presetManager": "presetManager"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, never>;
 }
 

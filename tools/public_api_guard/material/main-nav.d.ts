@@ -5,12 +5,15 @@ export declare class MainModule {
 }
 
 export declare class MainNav implements AfterViewInit, OnDestroy {
+    get adminSections(): Section[];
+    set adminSections(sec: Section[]);
     readonly authService: AuthService;
     readonly breakpointObserver: BreakpointObserverService;
     extendedSidenav: BehaviorSubject<boolean>;
     isLoading: BehaviorSubject<boolean>;
     get logoImagePath(): string;
     set logoImagePath(url: string);
+    readonly metricsService: MetricsService;
     get sections(): Section[];
     set sections(sec: Section[]);
     set setShowNavLabels(opened: boolean);
@@ -18,14 +21,14 @@ export declare class MainNav implements AfterViewInit, OnDestroy {
     get showNavLabels(): BehaviorSubject<boolean>;
     sidenav: MatSidenav;
     readonly snackbar: MatSnackBar;
-    constructor(breakpointObserver: BreakpointObserverService, authService: AuthService, snackbar: MatSnackBar, _router: Router);
+    constructor(breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, snackbar: MatSnackBar, _router: Router);
     logout(): void;
     menuClick(): void;
     menuToggle(): void;
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     onRouterOutletLoading(elementRef: any): void;
-    static ɵcmp: i0.ɵɵComponentDeclaration<MainNav, "dewco-main-nav", never, { "sections": "sections"; "setShowNavLabels": "setShowNavLabels"; "logoImagePath": "logoImagePath"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MainNav, "dewco-main-nav", never, { "sections": "sections"; "adminSections": "adminSections"; "setShowNavLabels": "setShowNavLabels"; "logoImagePath": "logoImagePath"; }, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<MainNav, never>;
 }
 

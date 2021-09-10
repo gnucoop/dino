@@ -49,6 +49,7 @@ ROLLUP_GLOBALS = {
     "@angular/material/table": "ng.material.table",
     "@angular/material/tabs": "ng.material.tabs",
     "@angular/material/toolbar": "ng.material.toolbar",
+    "@angular/material/tooltip": "ng.material.tooltip",
 
     # Primary entry-points in the project.
     "@dewco/core": "dewco.core",

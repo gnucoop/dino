@@ -35,7 +35,7 @@ export declare class ListDataSource<T extends Model = Model, AD extends Model = 
     getDetailsData(row: T, querySelector?: {}): Observable<T[]>;
     getDisplayedItems(): T[];
     getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void;
-    queryDM(queryString: string): DataQueryOptions;
+    queryDM(queryString: string, additionalDataSchema?: AD | null): DataQueryOptions;
 }
 
 export declare class ListModule {
@@ -80,6 +80,7 @@ export declare class SelectionList<T extends Model = Model> extends List<T> impl
     actionOnItems(row: T | T[], action: ListAction, isDetails?: boolean): void;
     checkboxLabel(row?: T): string;
     clearSelection(): void;
+    createAction(schemaId: string, isFormData?: boolean): void;
     deleteAction(items: T | T[], isDetails?: boolean): T[];
     detailsKeywordsFilter(event: Event, dataSource: MatTableDataSource<T>): void;
     editAction(item: T, isDetails?: boolean): void;
