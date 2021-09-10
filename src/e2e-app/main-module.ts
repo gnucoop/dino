@@ -98,6 +98,7 @@ export function provideDataServiceConfig() {
   imports: [
     AuthModule.forRoot(authConfig),
     BrowserAnimationsModule,
+    additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
     BrowserModule,
     DewcoTranslationsModule.forRoot(),
     E2eAppModule,
@@ -127,8 +128,6 @@ export function provideDataServiceConfig() {
     MaterialMetricsE2eModule,
     MaterialOrganizationsE2eModule,
     MaterialProjectsE2eModule,
-
-    ...additionalConfig.dynamicConfiguration ? [ConfigModule.forRoot(configurationConfig)] : [],
   ],
   declarations: [
     E2eApp,
