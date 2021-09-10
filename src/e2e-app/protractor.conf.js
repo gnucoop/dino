@@ -1,9 +1,9 @@
 exports.config = {
   useAllAngular2AppRoots: true,
-  allScriptsTimeout: 12000,
-  getPageTimeout: 12000,
+  allScriptsTimeout: 120000,
+  getPageTimeout: 120000,
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 12000,
+    defaultTimeoutInterval: 120000,
   },
 
   plugins: [

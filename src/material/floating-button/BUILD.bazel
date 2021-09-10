@@ -5,7 +5,6 @@ load(
     "ng_e2e_test_library",
     "ng_module",
     "ng_test_library",
-    "ng_web_test_suite",
     "sass_binary",
     "sass_library",
 )
@@ -68,11 +67,6 @@ ng_e2e_test_library(
         "@npm//@angular/core",
         "@npm//@angular/material",
     ],
-)
-
-ng_web_test_suite(
-    name = "unit_tests",
-    deps = [":unit_test_sources"],
 )
 
 e2e_test_suite(

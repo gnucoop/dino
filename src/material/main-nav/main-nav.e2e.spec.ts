@@ -16,6 +16,7 @@ describe('dewco-main-nav', () => {
 
   it('should expand the Menu showing section labels', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-main-nav'))));
+    await browser.wait(EC.presenceOf(element(by.css('button[aria-label="Toggle menu button"]'))));
     const menuButton = element(by.css('button[aria-label="Toggle menu button"]'));
     const sideNav = element(by.css('.mat-sidenav.dewco-sidenav'));
 

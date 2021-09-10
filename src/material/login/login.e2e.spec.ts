@@ -16,6 +16,7 @@ describe('dewco-material-login', () => {
 
   it('should disable the login button if the form value is invalid', async () => {
     const form = element(by.tagName('form'));
+    await browser.wait(EC.presenceOf(form.element(by.className('mat-fab mat-button-base'))));
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
     const pswInput = form.element(by.name('password'));
@@ -53,30 +54,6 @@ describe('dewco-material-login', () => {
 
     const res = await errorMsg.isPresent();
     expect(res).toBe(true);
-  });
-
-  it('should not show the error message if login was successful', async () => {
-    const form = element(by.tagName('form'));
-    const loginButton = form.element(by.className('mat-fab mat-button-base'));
-    const emailInput = form.element(by.name('email'));
-    const pswInput = form.element(by.name('password'));
-    const errorMsg = form.element(by.className('dewco-error-message'));
-
-    expect(await loginButton.isPresent()).toBe(true);
-    expect(await emailInput.isPresent()).toBe(true);
-    expect(await pswInput.isPresent()).toBe(true);
-
-    await emailInput.clear();
-    await emailInput.sendKeys('dino');
-    await pswInput.clear();
-    await pswInput.sendKeys('dino');
-
-    await browser.sleep(1000);
-    await browser.wait(EC.elementToBeClickable(loginButton), 5000);
-    await loginButton.click();
-    await browser.sleep(1000);
-
-    expect(await errorMsg.isPresent()).toBe(false);
   });
 
   it('should redirect to the post-login url after a successful login', async () => {

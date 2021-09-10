@@ -28,6 +28,8 @@ const mockMetric: Metric = {
   id: '',
   created_at: '',
   updated_at: '',
+  parent_id: null,
+  parent_name: null,
 };
 
 describe('Metric Editor', () => {

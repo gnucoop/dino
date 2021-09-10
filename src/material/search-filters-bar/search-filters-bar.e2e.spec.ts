@@ -11,13 +11,8 @@ const filterFieldCss = (field: string) =>
 describe('dewco-search-filters-bar', () => {
   beforeEach(async () => await browser.get('/collect'));
 
-  it('should display a Dewco collect component', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
-    const collect = await element(by.tagName('dewco-collect')).isPresent();
-    expect(collect).toBe(true);
-  });
-
   it('should display one or more Grid Tiles', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
     expect(tilesCount).toBeGreaterThan(0);
