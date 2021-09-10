@@ -75,7 +75,6 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
   imports: [
     AuthModule.forRoot(authConfig),
     BrowserAnimationsModule,
-    ConfigModule.forRoot(configurationConfig),
     BrowserModule,
     DewcoTranslationsModule.forRoot(),
     FormsModule,
@@ -102,6 +101,8 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     MaterialMetricsE2eModule,
     MaterialAreasE2eModule,
     MaterialProjectsE2eModule,
+
+    ...additionalConfig.dynamicConfiguration ? [ConfigModule.forRoot(configurationConfig)] : [],
   ],
   declarations: [
     E2eApp,

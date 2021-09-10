@@ -37,7 +37,7 @@ import {AuthService} from '@dewco/core/auth';
 import {MetricsService} from '@dewco/core/data';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
-import {filter, map, take, tap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, shareReplay, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
 
@@ -181,6 +181,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
           }
           return true;
         }),
+        shareReplay(1),
     );
   }
 

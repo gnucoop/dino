@@ -56,4 +56,11 @@ export const additionalConfig = {
    * Config the breakpointobserver service for "large" or "small" screens
    */
   isSmallScreen: false,
+
+  /**
+   * If true, Dynamic Configuration is activated, and the user can choose
+   * the Platform to log in to from a select dropdown during login.
+   * Those configs must be provided by an external API.
+   */
+  dynamicConfiguration: true,
 };

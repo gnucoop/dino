@@ -73,6 +73,9 @@ describe('dewco-list', () => {
     const rowBoxes = element.all(by.tagName('mat-row')).all(by.tagName('mat-checkbox'));
     const bulkBox = element(by.tagName('mat-header-cell')).element(by.tagName('mat-checkbox'));
     await bulkBox.click();
+
+    await browser.sleep(300);
+
     const countChecked = await element.all(by.className('mat-checkbox-checked')).count();
     expect(countChecked).toEqual(await rowBoxes.count() + 1);
   });

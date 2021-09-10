@@ -23,7 +23,7 @@
     </div>
   </ng-container>
 
-  <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+  <mat-form-field *ngIf="dynamicConfig" class="dino-platform-dropdown" dropdownSelect>
     <mat-label>Choose your platform</mat-label>
     <mat-select #platformselect>
       <mat-option

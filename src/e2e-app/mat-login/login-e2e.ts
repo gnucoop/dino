@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   OnInit,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import {MatSelect} from '@angular/material/select';
@@ -10,35 +11,44 @@ import {Router} from '@angular/router';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dewco/core/config';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'mat-login-e2e',
   templateUrl: 'login-e2e.html',
 })
 export class MatLoginE2E implements OnInit, AfterViewInit {
+  dynamicConfig: boolean = additionalConfig.dynamicConfiguration;
   configurationSets: Observable<ConfigSet[]|null>;
-  @ViewChild('platformselect') platformSelect: MatSelect;
+  @ViewChild('platformselect') platformSelect: MatSelect|undefined;
 
   constructor(
       private _router: Router,
-      private _configService: ConfigService,
+      @Optional() private _configService: ConfigService|null,
   ) {}
 
   ngOnInit(): void {
-    this.configurationSets = this._configService.getConfigs(this.setupCpaConfig)
-                                 .pipe(
-                                     map(configResp => {
-                                       if (configResp != null) {
-                                         return configResp.configSets;
-                                       }
-                                       return null;
-                                     }),
-                                 );
+    if (this._configService != null && this.dynamicConfig) {
+      this.configurationSets = this._configService.getConfigs(this.setupCpaConfig)
+                                   .pipe(
+                                       map(configResp => {
+                                         if (configResp != null) {
+                                           return configResp.configSets;
+                                         }
+                                         return null;
+                                       }),
+                                   );
+    }
   }
 
   ngAfterViewInit(): void {
-    this.platformSelect.valueChange.subscribe(
-        confSet => this._configService.configurationSet.next(confSet));
+    if (this._configService != null && this.platformSelect != undefined && this.dynamicConfig) {
+      this.platformSelect.valueChange.subscribe(confSet => {
+        if (this._configService != null) {
+          this._configService.configurationSet.next(confSet);
+        }
+      });
+    }
   }
 
   setupCpaConfig(apiConfig: {instances: [{[key: string]: any}]}): ConfigResponse {
