@@ -4,7 +4,6 @@ load(
     "markdown_to_html",
     "ng_e2e_test_library",
     "ng_module",
-    "ng_web_test_suite",
     "sass_binary",
     "sass_library",
 )
@@ -25,11 +24,11 @@ ng_module(
         "//src/core/data",
         "//src/core/forms",
         "//src/core/list",
+        "//src/material/breakpoint-observer",
+        "//src/material/floating-button",
         "//src/material/list",
         "//src/material/metric-editor",
-        "//src/material/floating-button",
         "//src/material/search-filters-bar",
-        "//src/material/breakpoint-observer",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
@@ -57,11 +56,6 @@ ng_e2e_test_library(
         "@npm//@angular/core",
         "@npm//@angular/material",
     ],
-)
-
-ng_web_test_suite(
-    name = "unit_tests",
-    deps = [":unit_test_sources"],
 )
 
 e2e_test_suite(

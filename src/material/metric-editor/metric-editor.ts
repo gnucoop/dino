@@ -271,7 +271,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
 
     for (let propKey in schema.properties) {
       const propValue = schema.properties[propKey];
-      const propRequired = schema.required!.indexOf(propKey) >= 0;
+      const propRequired = schema.required!.indexOf(propKey) >= 0 &&
+          !(propValue.type?.length && propValue.type.indexOf('null') > 0);
       if (METRIC_DEFAULT_PROPERTIES.indexOf(propKey) < 0) {
         group[propKey] = new FormControl(
             currentMetricItem != null ? currentMetricItem![propKey] : null,
