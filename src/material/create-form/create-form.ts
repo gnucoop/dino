@@ -41,9 +41,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
 import {DataModelManager, Model} from '@dewco/core/data';
-import {FormData, FormSchema, FormSchemaManager} from '@dewco/core/forms';
-import {combineLatest, from, Observable, of as obsOf, Subject, Subscription} from 'rxjs';
-import {catchError, filter, map, shareReplay, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
+import {Observable, of as obsOf, Subscription} from 'rxjs';
+import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
 
 /**
  * The Form Edit component.

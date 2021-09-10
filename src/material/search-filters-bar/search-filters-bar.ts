@@ -72,7 +72,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * If true, the Additional Filters button and dialog 
+   * If true, the Additional Filters button and dialog
    * are available and displayed.
    * Defaults to true.
    */

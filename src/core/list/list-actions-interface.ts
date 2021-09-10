@@ -20,8 +20,6 @@
  *
  */
 
-import {Model} from '../data';
-
 /**
  * Type that identifies an action performed on a List item
  */
