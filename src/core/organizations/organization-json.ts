@@ -29,6 +29,7 @@ export const schema = {
     "id": {
       "type": "string",
       "description": "UUID v4 identifier.",
+      "primary": true
     },
     "created_at": {
       "type": "string",
@@ -38,37 +39,51 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
-    "name": {
-      "type": "string",
-      "description": "The Organization name identifier",
-      "primary": true
-    },
-    "parent_id": {
-      "type": ["string", "null"],
-      "description": "Optional parent organization ID"
-    },
-    "parent_name": {
-      "type": ["string", "null"],
-      "description": "Optional parent organization Name"
-    },
-    "logo_path": {
-      "type": ["string", "null"],
-      "description": "Optional path of the Organization Logo"
-    },
-    "website_url": {
-      "type": ["string", "null"],
-      "description": "Optional url of the Organization Website"
-    },
     "is_deleted": {
       "type": "boolean",
-      "description": "The soft deletion flag."
+      "description": "Soft delete flag"
+    },
+    "name": {
+      "type": "string",
+      "description": "The metric name."
+    },
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
+    },
+    "parent_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "logo_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The Organization logo path"
+    },
+    "website_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The Organization website url"
     }
   },
   "required": [
     "created_at",
     "id",
+    "logo_path",
     "name",
-    "updated_at"
+    "parent_id",
+    "parent_name",
+    "updated_at",
+    "website_url"
   ],
   "additionalProperties": false,
   "description": "This model is used to store Organizations.",

@@ -30,7 +30,7 @@ export interface Location extends Metric {
   /**
    * The optional location map coordinates
    */
-  coordinates?: Coordinates;
+  coordinates: Coordinates|null;
 }
 
 /**

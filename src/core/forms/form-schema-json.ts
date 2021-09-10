@@ -39,6 +39,10 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Soft delete flag"
+    },
     "name": {
       "type": "string",
       "description": "The form schema name."
@@ -54,10 +58,6 @@ export const schema = {
     "schema": {
       "description": "JSON definition of the Ajf form schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-form-schema.json).",
       "type": "object"
-    },
-    "is_deleted": {
-      "type": "boolean",
-      "description": "The soft deletion flag."
     }
   },
   "required": [

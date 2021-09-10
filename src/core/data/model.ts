@@ -40,4 +40,9 @@ export interface Model {
    * Update timestamp.
    */
   updated_at: string;
+
+  /**
+   * Soft delete flag
+   */
+  is_deleted?: boolean;
 }

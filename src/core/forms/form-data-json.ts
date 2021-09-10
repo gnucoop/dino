@@ -39,6 +39,10 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Soft delete flag"
+    },
     "user_id": {
       "type": "string",
       "description": "The collector user identifier."
@@ -50,10 +54,6 @@ export const schema = {
     "data": {
       "type": "object",
       "description": "A plain object containing the data collected."
-    },
-    "is_deleted": {
-      "type": "boolean",
-      "description": "The soft deletion flag."
     }
   },
   "required": [

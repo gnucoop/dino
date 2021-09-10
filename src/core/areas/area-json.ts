@@ -25,10 +25,12 @@ import {RxJsonSchema} from 'rxdb';
 // tslint:disable
 export const schema = {
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "id": {
       "type": "string",
       "description": "UUID v4 identifier.",
+      "primary": true
     },
     "created_at": {
       "type": "string",
@@ -38,31 +40,36 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
-    "name": {
-      "type": "string",
-      "description": "The Area name identifier",
-      "primary": true
-    },
-    "parent_id": {
-      "type": ["string", "null"],
-      "description": "Optional parent area ID"
-    },
-    "parent_name": {
-      "type": ["string", "null"],
-      "description": "Optional parent area Name"
-    },
     "is_deleted": {
       "type": "boolean",
-      "description": "The soft deletion flag."
+      "description": "Soft delete flag"
+    },
+    "name": {
+      "type": "string",
+      "description": "The metric name."
+    },
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
+    },
+    "parent_name": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "required": [
     "created_at",
     "id",
     "name",
+    "parent_id",
+    "parent_name",
     "updated_at"
   ],
-  "additionalProperties": false,
   "description": "This model is used to store Areas.",
   "title": "Area",
   "version": 0

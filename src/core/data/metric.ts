@@ -29,8 +29,6 @@ import {Model} from './model';
 export interface Metric extends Model {
   /**
    * The metric name.
-   * 
-   * @primary true
    */
   name: string;
 
@@ -38,6 +36,6 @@ export interface Metric extends Model {
    * The optional ID and Name of this metric Parent.
    * (ex. Africa - Tanzania, Project - Sub-project etc.)
    */
-  parent_id?: string;
-  parent_name?: string;
+  parent_id: string|null;
+  parent_name: string|null;
 }

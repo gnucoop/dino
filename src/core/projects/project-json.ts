@@ -29,57 +29,81 @@ export const schema = {
     "id": {
       "type": "string",
       "description": "UUID v4 identifier.",
+      "primary": true
     },
     "created_at": {
       "type": "string",
+      "description": "Creation timestamp."
     },
     "updated_at": {
       "type": "string",
       "description": "Update timestamp."
     },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Soft delete flag"
+    },
     "name": {
       "type": "string",
-      "description": "The metric name.",
-      "primary": true
+      "description": "The metric name."
     },
     "parent_id": {
-      "type": ["string", "null"],
-      "description": "The optional ID of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
     "parent_name": {
-      "type": ["string", "null"],
-      "description": "Optional parent project Name"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "code": {
       "type": "string",
       "description": "The project Code identifier"
     },
     "sectors_of_intervention": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "The project sectors of intervention"
     },
     "donors": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "The project Donors"
     },
     "start_date": {
-      "type": ["string", "null"],
-      "description": "Optional Project starting date"
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project start date timestamp."
     },
     "end_date": {
-      "type": ["string", "null"],
-      "description": "Optional Project ending date"
-    },
-    "is_deleted": {
-      "type": "boolean",
-      "description": "The soft deletion flag"
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project end date timestamp."
     }
   },
   "required": [
     "code",
     "created_at",
+    "donors",
+    "end_date",
     "id",
     "name",
+    "parent_id",
+    "parent_name",
+    "sectors_of_intervention",
+    "start_date",
     "updated_at"
   ],
   "additionalProperties": false,

@@ -29,4 +29,6 @@ CORE_MODELS = [
     "forms/form-schema",
     "locations/location",
     "projects/project",
+    "areas/area",
+    "organizations/organization",
 ]

@@ -35,22 +35,22 @@ export interface Project extends Metric {
   /**
    * The project sectors of intervention
    */
-  sectors_of_intervention?: string;
+  sectors_of_intervention: string|null;
 
   /**
    * The project Donors
    */
-  donors?: string;
+  donors: string|null;
 
   /**
    * Project start date timestamp.
    */
-  start_date?: string;
+  start_date: string|null;
 
   /**
    * Project end date timestamp.
    */
-  end_date?: string;
+  end_date: string|null;
 }
 
 export const VERSION = 1;

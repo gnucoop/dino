@@ -21,8 +21,8 @@
  */
 
 import {NgModule} from '@angular/core';
-import {FiltersService} from '@dewco/core/list';
 import {ActiveMetric, MetricsService} from '@dewco/core/data';
+import {FiltersService} from '@dewco/core/list';
 
 /**
  * Optional module augmenting Forms that provides the AreasManager service
@@ -32,7 +32,7 @@ export class AreasModule {
   readonly areaMetric: ActiveMetric = {
     label: 'Thematic Areas',
     icon: 'volunteer_activism',
-  }
+  };
   constructor(
       private _filtersService: FiltersService,
       private _metricsService: MetricsService,
