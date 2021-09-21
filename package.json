@@ -52,9 +52,9 @@
   },
   "version": "12.1.0-next.0",
   "dependencies": {
-    "@ajf/core": "https://jenkins.gnucoop.com/job/GitHub/job/ajf/job/master/lastSuccessfulBuild/artifact/dist/releases/core/ajf-core-v12.1.0-next.1-sha-c8484d1.tgz",
+    "@ajf/core": "^12.1.0",
     "@ajf/icons": "^1.0.0",
-    "@ajf/material": "https://jenkins.gnucoop.com/job/GitHub/job/ajf/job/master/lastSuccessfulBuild/artifact/dist/releases/material/ajf-material-v12.1.0-next.1-sha-c8484d1.tgz",
+    "@ajf/material": "^12.1.0",
     "@angular/animations": "^12.1.0-next.5",
     "@angular/cdk": "^12.1.0-next.0",
     "@angular/common": "^12.1.0-next.5",

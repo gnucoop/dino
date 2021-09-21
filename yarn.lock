@@ -2,9 +2,10 @@
 # yarn lockfile v1
 
 
-"@ajf/core@https://jenkins.gnucoop.com/job/GitHub/job/ajf/job/master/lastSuccessfulBuild/artifact/dist/releases/core/ajf-core-v12.1.0-next.1-sha-c8484d1.tgz":
-  version "12.1.0-next.1-sha-c8484d1"
-  resolved "https://jenkins.gnucoop.com/job/GitHub/job/ajf/job/master/lastSuccessfulBuild/artifact/dist/releases/core/ajf-core-v12.1.0-next.1-sha-c8484d1.tgz#4d6de90489f717e9a621a7f5e5c78ed120e52063"
+"@ajf/core@^12.1.0":
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-12.1.2.tgz#1c2ae39506a5b38bc5a57ffbec3f51d3f25083cd"
+  integrity sha512-CdrH/u/ear30/Y6TICQTsumsLri/dVCrucY9NAxEbvMmxwT0qm7Jwjc6Yp89OPHreYBU2ArDgAx0UZUhmQwvxw==
   dependencies:
     tslib "^2.2.0"
 
@@ -13,9 +14,10 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@https://jenkins.gnucoop.com/job/GitHub/job/ajf/job/master/lastSuccessfulBuild/artifact/dist/releases/material/ajf-material-v12.1.0-next.1-sha-c8484d1.tgz":
-  version "12.1.0-next.1-sha-c8484d1"
-  resolved "https://jenkins.gnucoop.com/job/GitHub/job/ajf/job/master/lastSuccessfulBuild/artifact/dist/releases/material/ajf-material-v12.1.0-next.1-sha-c8484d1.tgz#4250dbfeb838d9e872b6027473d449c8f14c68ca"
+"@ajf/material@^12.1.0":
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-12.1.2.tgz#e542e5618b7a9a6ad51766b249c9675113eb32db"
+  integrity sha512-mFCBsSk/ccNXcFfZZ+i3LkD8lirFneNEHDS5Xi0N1QwOkr85g0257EscBwDVDzDXSQtJd3DRi7XMRUZ1YlUrxQ==
   dependencies:
     tslib "^2.2.0"
 
