@@ -2,8 +2,8 @@ load("//src/e2e-app:test_suite.bzl", "e2e_test_suite")
 load(
     "//tools:defaults.bzl",
     "markdown_to_html",
-    "ng_module",
     "ng_e2e_test_library",
+    "ng_module",
     "ng_test_library",
     "ng_web_test_suite",
     "sass_binary",

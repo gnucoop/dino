@@ -12,4 +12,4 @@ golden_files = ["core/%s.d.ts" % e for e in CORE_ENTRYPOINTS] + \
 ]
 
 # Generate the API guard test targets for each golden file in the current package.
-generate_test_targets(golden_files)
+generate_test_targets(targets = golden_files)
