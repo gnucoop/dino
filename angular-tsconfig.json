@@ -20,7 +20,7 @@
   "include": [
     "node_modules/@ajf/**/*",
     "node_modules/@angular/**/*",
-    "node_modules/@ngx-translate/**/*"
+    "node_modules/@ngneat/transloco/**/*"
   ],
   "exclude": [
     "node_modules/@angular/**/schematics/**",
@@ -30,6 +30,7 @@
     "node_modules/@angular/compiler-cli/**",
     "node_modules/@angular/dev-infra-private/**",
     "node_modules/@angular/router/upgrade*",
+    "node_modules/@ngneat/transloco/schematics/**/*",
     // We also list the packages built as part of this repository. The Bazel NodeJS rules can link
     // these packages into the `node_modules/` folder and this would break the summary file generation.
     "node_modules/@dewco/core/**",

@@ -9,8 +9,6 @@ export interface BuildConfig {
   angularFlexLayoutVersion: string;
   /** Required Dewco version for the project. */
   angularMaterialVersion: string;
-  /** Required Ngx Translate version for the project. */
-  ngxtVersion: string;
   /** Required Ajf version for the project. */
   ajfVersion: string;
   /** Path to the root of the project. */

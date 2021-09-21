@@ -51,6 +51,7 @@ ANGULAR_NGCC_BUNDLES = [
 ]
 
 THIRD_PARTY_NGCC_BUNDLES = [
+    ("@ngneat/transloco", "ngneat-transloco.umd.js"),
 ]
 
 THIRD_PARTY_NO_NGCC_BUNDLES = [
