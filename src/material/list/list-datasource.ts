@@ -452,7 +452,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   /**
    * Disconnects the ListDataSource, unsubscribing from the data and the filters
    */
-  disconnect(): void {
+  override disconnect(): void {
     this._mainUnsubscribe.next();
     this._mainUnsubscribe.complete();
 

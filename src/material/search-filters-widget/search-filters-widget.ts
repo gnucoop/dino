@@ -248,7 +248,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
             });
   }
 
-  ngAfterViewInit() {
+  override ngAfterViewInit() {
     super.ngAfterViewInit();
     this._toggleSub =
         this._formValueChanges
@@ -374,7 +374,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
     return this.rendererService.getFormValue();
   }
 
-  ngOnDestroy() {
+  override ngOnDestroy() {
     super.ngOnDestroy();
     this._changeFiltersSub.unsubscribe();
     this._toggleSub.unsubscribe();

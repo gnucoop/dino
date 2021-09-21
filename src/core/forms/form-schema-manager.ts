@@ -46,7 +46,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
    * @param formSchema The form schema definition
    * @returns The generated FilterGroup
    */
-  generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[] {
+  override generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[] {
     if (!formSchema) {
       return [];
     }
