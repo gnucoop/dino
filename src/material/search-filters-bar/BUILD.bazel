@@ -3,6 +3,7 @@ load(
     "//tools:defaults.bzl",
     "markdown_to_html",
     "ng_module",
+    "ng_e2e_test_library",
     "ng_test_library",
     "ng_web_test_suite",
     "sass_binary",
@@ -57,6 +58,11 @@ ng_test_library(
         "@npm//@angular/platform-browser",
         "@npm//@angular/router",
     ],
+)
+
+ng_e2e_test_library(
+    name = "e2e_test_sources",
+    srcs = glob(["**/*.e2e.spec.ts"]),
 )
 
 ng_web_test_suite(
