@@ -2,7 +2,6 @@ load(
     "//tools:defaults.bzl",
     "markdown_to_html",
     "ng_module",
-    "sass_library",
 )
 
 package(default_visibility = ["//visibility:public"])
@@ -19,12 +18,6 @@ ng_module(
         "@npm//@ajf/core",
         "@npm//@angular/core",
     ],
-)
-
-sass_library(
-    name = "translations_scss_lib",
-    srcs = glob(["**/_*.scss"]),
-    deps = [],
 )
 
 markdown_to_html(
