@@ -8,7 +8,6 @@ exports_files([
     "build-config.js",
     "LICENSE",
     "package.json",
-    "scss-bundle.config.json",
 ])
 
 genrule(
