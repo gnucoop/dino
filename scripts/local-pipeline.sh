@@ -16,28 +16,25 @@ yarn -s lint
 yarn -s ts-circular-deps:check
 
 echo "Build - View Engine"
-"${BAZEL_BINARY}" build --build_tag_filters=-docs-package,-release-package --config=view-engine -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF
+"${BAZEL_BINARY}" build --build_tag_filters=-docs-package,-release-package --config=view-engine -- src/...
 
 echo "Unit tests - View Engine"
-"${BAZEL_BINARY}" test --build_tag_filters=-docs-package,-e2e --test_tag_filters=-e2e --config=view-engine --build_tests_only -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF
-
-echo "JSON schema tests"
-"${BAZEL_BINARY}" test tools/model-schema/...
+"${BAZEL_BINARY}" test --build_tag_filters=-docs-package,-e2e --test_tag_filters=-e2e --config=view-engine --build_tests_only -- src/...
 
 echo "Integration tests - View Engine"
 yarn integration-tests:view-engine
 
 echo "E2E tests"
-"${BAZEL_BINARY}" test src/... --build_tag_filters=e2e --test_tag_filters=e2e --build_tests_only
+"${BAZEL_BINARY}" test src/... --build_tag_filters=e2e --test_tag_filters=e2e --build_tests_only --flaky_test_attempts=2
 
 echo "Build - Ivy"
-"${BAZEL_BINARY}" build --build_tag_filters=-docs-package,-release-package -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF
+"${BAZEL_BINARY}" build --build_tag_filters=-docs-package,-release-package -- src/...
 
 echo "API guard tests"
 "${BAZEL_BINARY}" test tools/public_api_guard/...
 
 echo "Unit tests - Ivy"
-"${BAZEL_BINARY}" test --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF
+"${BAZEL_BINARY}" test --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only -- src/...
 
 echo "Integration tests - Ivy"
 yarn integration-tests:partial-ivy
@@ -46,8 +43,9 @@ echo "Release output"
 yarn build
 pkg_json_version=$(node -pe "require('./package.json').version")
 expected_version="${pkg_json_version}-sha-$(git rev-parse --short HEAD)"
-yarn -s check-release-output ${expected_version}
-yarn -s check-tools
+yarn check-release-output ${expected_version}
+yarn check-tools
+rm -Rf node_modules/@dewco
 mkdir -p node_modules/@dewco
 cp -R dist/releases/* node_modules/@dewco/
 mv node_modules/__ngcc_entry_points__.json node_modules/__ngcc_entry_points__.json.back
