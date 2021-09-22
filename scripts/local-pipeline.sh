@@ -41,7 +41,7 @@ yarn integration-tests:partial-ivy
 
 echo "Release output"
 yarn build-and-check-release-output
-yarn check-tools
+yarn check-tooling-setup
 rm -Rf node_modules/@dewco
 mkdir -p node_modules/@dewco
 cp -R dist/releases/* node_modules/@dewco/
