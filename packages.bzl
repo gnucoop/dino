@@ -1,9 +1,9 @@
 # Each individual package uses a placeholder for the version of Angular to ensure they're
 # all in-sync. This map is passed to each ng_package rule to stamp out the appropriate
 # version for the placeholders.
-AJF_PACKAGE_VERSION = "^12.0.0 || ^13.0.0-0"
-ANGULAR_PACKAGE_VERSION = "^12.0.0 || ^13.0.0-0"
-ANGULAR_MATERIAL_PACKAGE_VERSION = "^12.0.0 || ^13.0.0-0"
+AJF_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
+ANGULAR_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
+ANGULAR_MATERIAL_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
 POUCHDB_PACKAGE_VERSION = "^7.0.0"
 RXDB_PACKAGE_VERSION = "^9.0.0"
 STWS_PACKAGE_VERSION = "^0.9.16"
