@@ -7,6 +7,7 @@
 import { AuthService } from '@dewco/core/auth';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '@dewco/core/config';
+import { DeepReadonlyObject } from 'rxdb';
 import * as i0 from '@angular/core';
 import { InjectionToken } from '@angular/core';
 import { MangoQuery } from 'rxdb';
@@ -29,8 +30,8 @@ export interface ActiveMetric {
 }
 
 // @public
-export interface ActiveSync {
-    state: RxGraphQLReplicationState;
+export interface ActiveSync<T extends Model = Model> {
+    state: RxGraphQLReplicationState<T>;
     sub: {
         unsubscribe: () => void;
     };
@@ -63,6 +64,9 @@ export interface CanViewData<T extends {} = {}, M extends Model = Model> {
     object: M;
 }
 
+// @public (undocumented)
+export const clone: <T extends Model>(obj: DeepReadonlyObject<T>) => T;
+
 // @public
 export interface CollectionChangedEvent {
     action?: string;
@@ -71,7 +75,7 @@ export interface CollectionChangedEvent {
 }
 
 // @public
-export const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig>;
+export const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig<Model>>;
 
 // @public
 export interface DataBulkInsertRequest<T extends Model> {
@@ -82,6 +86,7 @@ export interface DataBulkInsertRequest<T extends Model> {
 // @public
 export interface DataCreateCollectionRequest {
     collection: RxCollectionCreator;
+    name: string;
     pullQueryExtraParams?: PullQueryExtraParams;
     pushQueryExtraParams?: PushQueryExtraParams;
 }
@@ -160,7 +165,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     canView(object: T, context?: PermissionContext<T>): boolean;
     get collectionChanged(): Observable<CollectionChangedEvent>;
     get collectionName(): string;
-    get collectionSchema(): RxJsonSchema;
+    get collectionSchema(): RxJsonSchema<T>;
     create(obj: InsertModel<T>): Observable<RxDocument<T> | null>;
     delete(data: string | T): Observable<RxDocument<T> | null>;
     detailsKey: keyof T;
@@ -272,13 +277,13 @@ export class DataService {
 }
 
 // @public
-export interface DataServiceConfig {
+export interface DataServiceConfig<T extends Model = Model> {
     databaseCreateOptions: RxDatabaseCreator;
-    syncOptions: DataServiceSyncOptions;
+    syncOptions: DataServiceSyncOptions<T>;
 }
 
 // @public
-export interface DataServiceSyncOptions extends Omit<SyncOptionsGraphQL, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
+export interface DataServiceSyncOptions<T extends Model = Model> extends Omit<SyncOptionsGraphQL<T>, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
     authErrorMessage?: string;
     batchSize?: number;
     webSocketImpl?: any;

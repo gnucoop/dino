@@ -37,7 +37,7 @@ export class LocationManager extends DataModelManager<Location> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'location', schema, migrationStrategies}},
+        {name: 'location', collection: {schema, migrationStrategies}},
         dataService,
         permissionContextService,
     );

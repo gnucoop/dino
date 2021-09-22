@@ -20,7 +20,7 @@
  *
  */
 import {Metric} from '@dewco/core/data';
-import {KeyFunctionMap, RxDocument} from 'rxdb';
+import {MigrationStrategies, RxDocument} from 'rxdb';
 
 /**
  * This model is used to store Projects.
@@ -55,6 +55,6 @@ export interface Project extends Metric {
 
 export const VERSION = 1;
 
-export const migrationStrategies: KeyFunctionMap = {
+export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
 };

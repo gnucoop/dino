@@ -30,6 +30,11 @@ import {PushQueryExtraParams} from './push-query-extra-params';
  */
 export interface DataCreateCollectionRequest {
   /**
+   * The collection name
+   */
+  name: string;
+
+  /**
    * The collection to create.
    */
   collection: RxCollectionCreator;

@@ -35,11 +35,12 @@ const schemas = [
     title: 'model3',
     version: 0,
     type: 'object',
+    primaryKey: 'id',
     properties: {
-      id: {type: 'string', primary: true},
+      id: {type: 'string'},
     },
   },
-] as RxJsonSchema[];
+] as RxJsonSchema<any>[];
 
 const collections =
     schemas.map(schema => ({name: schema.title, schema: {jsonSchema: schema}} as RxCollection));

@@ -33,7 +33,7 @@ export class FormDataManager extends DataModelManager<FormData> {
       dataService: DataService,
       permissionContextService: PermissionContextService,
   ) {
-    const collection = {name: 'form_data', schema, migrationStrategies};
-    super({collection}, dataService, permissionContextService);
+    const collection = {name: 'form_data', collection: {schema, migrationStrategies}};
+    super(collection, dataService, permissionContextService);
   }
 }

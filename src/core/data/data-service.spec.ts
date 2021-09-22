@@ -1,6 +1,8 @@
 import {TestBed} from '@angular/core/testing';
 import {Server, WebSocket} from 'mock-socket';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
@@ -17,10 +19,11 @@ const serverUrl = 'http://dewcoServer/v1/graphql';
 const wsServerUrl = 'ws://dewcoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
+addPouchPlugin(pouchdbAdapterMemory);
 const dataServiceConfig: DataServiceConfig = {
   databaseCreateOptions: {
     name: `dewco_data_test_db_${testDbIdx++}`,
-    adapter: 'memory',
+    storage: getRxStoragePouch('memory'),
     ignoreDuplicate: true,
   },
   syncOptions: {
@@ -47,13 +50,14 @@ const authServiceMock = {
   resetEvt: obsOf(true),
 } as unknown as AuthService;
 
-const dummySchema: RxJsonSchema = {
+const dummySchema: RxJsonSchema<any> = {
   title: 'dummy schema',
   version: 0,
   description: 'describe a dummy model',
   type: 'object',
+  primaryKey: 'id',
   properties: {
-    id: {type: 'string', primary: true},
+    id: {type: 'string'},
     name: {type: 'string'},
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
@@ -82,8 +86,8 @@ describe('Data service', () => {
   });
 
   it('should create and destroy a collection from a valid schema', async () => {
-    const collection = {name: 'dummy', schema: dummySchema};
-    const created = dataService.createCollection({collection}).pipe(take(1)).toPromise();
+    const collection = {name: 'dummy', collection: {schema: dummySchema}};
+    const created = dataService.createCollection(collection).pipe(take(1)).toPromise();
     await expectAsync(created).toBeResolvedTo(true);
     const deleted = dataService.destroyCollection(collection.name).pipe(take(1)).toPromise();
     await expectAsync(deleted).toBeResolvedTo(true);
@@ -97,7 +101,7 @@ describe('Data service', () => {
 
 describe('Data service - CRUD methods', () => {
   const collectionName = 'dummy';
-  const collection = {name: collectionName, schema: dummySchema};
+  const collection = {name: collectionName, collection: {schema: dummySchema}};
   let dataService: DataService;
 
   beforeEach(async () => {
@@ -110,7 +114,7 @@ describe('Data service - CRUD methods', () => {
       ],
     });
     dataService = TestBed.inject(DataService);
-    await dataService.createCollection({collection}).pipe(take(1)).toPromise();
+    await dataService.createCollection(collection).pipe(take(1)).toPromise();
   });
 
   afterEach(async () => {

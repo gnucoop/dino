@@ -6,7 +6,7 @@ def esbuild(**kwargs):
 
 """Generates an AMD bundle for the specified entry-point with the given AMD module name."""
 
-def esbuild_amd(name, entry_point, module_name, testonly, deps):
+def esbuild_amd(name, entry_point, module_name, testonly, deps, external = []):
     expand_template(
         name = "%s_config" % name,
         testonly = testonly,
@@ -14,6 +14,7 @@ def esbuild_amd(name, entry_point, module_name, testonly, deps):
         output_name = "%s_config.mjs" % name,
         substitutions = {
             "TMPL_MODULE_NAME": module_name,
+            "TMPL_EXTERNAL": str(external),
         },
     )
 

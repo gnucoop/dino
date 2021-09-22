@@ -1,6 +1,8 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
@@ -30,11 +32,12 @@ const authServiceMock = {
 
 let testDbIdx = 0;
 
+addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_datamanager_test_db_${testDbIdx++}`,
-      adapter: 'memory',
+      storage: getRxStoragePouch('memory'),
     },
     syncOptions: {
       url: 'host',

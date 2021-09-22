@@ -21,6 +21,7 @@
  */
 
 export * from './active-sync-interface';
+export * from './clone';
 export * from './data-context-service';
 export * from './data-bulk-insert-request';
 export * from './data-create-collection-request';

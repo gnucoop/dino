@@ -1,11 +1,151 @@
+load("//tools/esbuild:index.bzl", "esbuild_amd")
+
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["npm_umd_bundle.patch"])
+genrule(
+    name = "dummy_pouchdb_plugin",
+    outs = ["dummy-pouchdb-plugin.js"],
+    cmd = "echo \"module.exports = function() { return {} };\" > $@",
+)
 
-filegroup(
-    name = "pdfmake_umd_module",
-    srcs = [
-        ":pdfmake_shims.js",
-        "@npm//pdfmake:pdfmake__umd",
+esbuild_amd(
+    name = "amd_date_fns",
+    testonly = True,
+    entry_point = "@npm//:node_modules/date-fns/esm/index.js",
+    module_name = "date-fns",
+    deps = ["@npm//date-fns"],
+)
+
+esbuild_amd(
+    name = "amd_esprima",
+    testonly = True,
+    entry_point = "@npm//:node_modules/esprima/dist/esprima.js",
+    module_name = "esprima",
+    deps = ["@npm//esprima"],
+)
+
+esbuild_amd(
+    name = "amd_flat",
+    testonly = True,
+    entry_point = "@npm//:node_modules/flat/index.js",
+    module_name = "flat",
+    deps = ["@npm//flat"],
+)
+
+esbuild_amd(
+    name = "amd_mock_socket",
+    testonly = True,
+    entry_point = "@npm//:node_modules/mock-socket/dist/mock-socket.js",
+    module_name = "mock-socket",
+    deps = ["@npm//mock-socket"],
+)
+
+esbuild_amd(
+    name = "amd_numbro",
+    testonly = True,
+    entry_point = "@npm//:node_modules/numbro/dist/numbro.js",
+    module_name = "numbro",
+    deps = ["@npm//numbro"],
+)
+
+esbuild_amd(
+    name = "amd_pdfmake",
+    testonly = True,
+    entry_point = "@npm//:node_modules/pdfmake/build/pdfmake.js",
+    module_name = "pdfmake/build/pdfmake",
+    deps = ["@npm//pdfmake"],
+)
+
+esbuild_amd(
+    name = "amd_pouchdb",
+    testonly = True,
+    entry_point = "@npm//:node_modules/pouchdb/dist/pouchdb.js",
+    module_name = "pouchdb",
+    deps = ["@npm//pouchdb"],
+)
+
+esbuild_amd(
+    name = "amd_pouchdb_adapter_idb",
+    testonly = True,
+    entry_point = ":dummy-pouchdb-plugin.js",
+    module_name = "pouchdb-adapter-idb",
+    deps = ["@npm//pouchdb"],
+)
+
+esbuild_amd(
+    name = "amd_pouchdb_adapter_memory",
+    testonly = True,
+    entry_point = "@npm//:node_modules/pouchdb/dist/pouchdb.memory.js",
+    module_name = "pouchdb-adapter-memory",
+    deps = ["@npm//pouchdb"],
+)
+
+esbuild_amd(
+    name = "amd_rxdb",
+    testonly = True,
+    entry_point = "@npm//:node_modules/rxdb/dist/rxdb.browserify.js",
+    module_name = "rxdb",
+    deps = ["@npm//rxdb"],
+)
+
+esbuild_amd(
+    name = "amd_rxdb_plugins_migration",
+    testonly = True,
+    entry_point = "@npm//:node_modules/rxdb/dist/lib/plugins/migration/index.js",
+    module_name = "rxdb/plugins/migration",
+    deps = [
+        "@npm//events",
+        "@npm//rxdb",
     ],
+)
+
+esbuild_amd(
+    name = "amd_rxdb_plugins_pouchdb",
+    testonly = True,
+    entry_point = "@npm//:node_modules/rxdb/dist/rxdb.browserify.js",
+    module_name = "rxdb/plugins/pouchdb",
+    deps = ["@npm//rxdb"],
+)
+
+esbuild_amd(
+    name = "amd_rxdb_plugins_replication_graphql",
+    testonly = True,
+    entry_point = "@npm//:node_modules/rxdb/dist/lib/plugins/replication-graphql/index.js",
+    module_name = "rxdb/plugins/replication-graphql",
+    deps = [
+        "@npm//events",
+        "@npm//rxdb",
+    ],
+)
+
+esbuild_amd(
+    name = "amd_subscriptions_transport_ws",
+    testonly = True,
+    entry_point = "@npm//:node_modules/subscriptions-transport-ws/dist/client.js",
+    module_name = "subscriptions-transport-ws",
+    deps = ["@npm//subscriptions-transport-ws"],
+)
+
+esbuild_amd(
+    name = "amd_uuid",
+    testonly = True,
+    entry_point = "@npm//:node_modules/uuid/dist/esm-browser/index.js",
+    module_name = "uuid",
+    deps = ["@npm//uuid"],
+)
+
+esbuild_amd(
+    name = "amd_zxing_browser",
+    testonly = True,
+    entry_point = "@npm//:node_modules/@zxing/browser/esm/index.js",
+    module_name = "@zxing/browser",
+    deps = ["@npm//@zxing/browser"],
+)
+
+esbuild_amd(
+    name = "amd_zxing_library",
+    testonly = True,
+    entry_point = "@npm//:node_modules/@zxing/library/esm/index.js",
+    module_name = "@zxing/library",
+    deps = ["@npm//@zxing/library"],
 )

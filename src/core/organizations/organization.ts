@@ -20,7 +20,7 @@
  *
  */
 import {Metric} from '@dewco/core/data';
-import {KeyFunctionMap} from 'rxdb';
+import {MigrationStrategies} from 'rxdb';
 
 /**
  * This model is used to store Organizations.
@@ -40,4 +40,4 @@ export interface Organization extends Metric {
 
 export const VERSION = 0;
 
-export const migrationStrategies: KeyFunctionMap = {};
+export const migrationStrategies: MigrationStrategies = {};

@@ -72,7 +72,7 @@ export abstract class DataModelManager<T extends Model = Model> {
   private _context: Observable<PermissionContext<T>>;
   private _collectionInit: Observable<boolean>;
   private _modelName: string;
-  private _collectionSchema: RxJsonSchema;
+  private _collectionSchema: RxJsonSchema<T>;
 
   constructor(
       createParams: DataCreateCollectionRequest,
@@ -81,7 +81,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       private _permissions: Permission[] = [],
   ) {
     this._context = _contextService.permissionContext;
-    this._modelName = createParams.collection.name;
+    this._modelName = createParams.name;
     this._collectionSchema = createParams.collection.schema;
     this._collectionInit = _dataService.createCollection(createParams)
                                .pipe(
@@ -102,7 +102,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * Retrieves the collection schema
    * @returns RxJsonSchema
    */
-  get collectionSchema(): RxJsonSchema {
+  get collectionSchema(): RxJsonSchema<T> {
     return this._collectionSchema;
   }
 

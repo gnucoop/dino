@@ -25,6 +25,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {
+  clone,
   CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
@@ -110,8 +111,8 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   /**
    * The RxJsonSchema of the model associated with the ListDataSource
    */
-  private _modelSchema: RxJsonSchema;
-  get modelSchema(): RxJsonSchema {
+  private _modelSchema: RxJsonSchema<T>;
+  get modelSchema(): RxJsonSchema<T> {
     return this._modelSchema;
   }
 
@@ -165,7 +166,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     }
 
     // Here we ask the FilterService to generate all the filters based on the model RxJsonSchema
-    this._fs.generateModelFilters(this._modelSchema);
+    this._fs.generateModelFilters(this._modelSchema as RxJsonSchema<Model>);
 
     // Next we call the method that generates additional filters on the additional DataManager
     // (if present) and set the additional filters on the FiltersService.
@@ -414,7 +415,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
   private _rxDocsToJson(docs: RxDocument<T>[]): T[] {
     let docsJson: T[] = [];
     docs.forEach(doc => {
-      docsJson.push(doc.toJSON());
+      docsJson.push(clone(doc.toJSON()) as T);
     });
     return docsJson;
   }

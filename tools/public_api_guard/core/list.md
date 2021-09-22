@@ -14,7 +14,7 @@ import { AjfForm } from '@ajf/core/forms';
 import { AjfValidationGroup } from '@ajf/core/forms';
 import { BehaviorSubject } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
-import { EventEmitter } from '@angular/core';
+import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
 import { Model } from '@dewco/core/data';
@@ -77,7 +77,7 @@ export interface FilterItem extends Partial<AjfField> {
 export type FilterListType = 'basic' | 'additional' | 'temporary' | 'all';
 
 // @public
-export class FiltersService {
+export class FiltersService<T extends Model = Model> {
     constructor(_route: ActivatedRoute, _router: Router);
     addAvailableFilterLabel(label: string): void;
     addBasicFilter(ftName: string): void;
@@ -99,11 +99,11 @@ export class FiltersService {
     get generatedFilters(): Observable<FilterGroup[]>;
     // (undocumented)
     get generatedModelFilters(): BehaviorSubject<FilterGroup[]>;
-    generateModelFilters(modelSchema: RxJsonSchema): void;
+    generateModelFilters(modelSchema: RxJsonSchema<T>): void;
     initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]>;
     loadPreset(encodedString?: string): void;
     // (undocumented)
-    get loadPresetEvent(): EventEmitter<boolean>;
+    get loadPresetEvent(): EventEmitter_2<boolean>;
     loadPresetTrigger(): void;
     // (undocumented)
     get queryString(): Observable<string>;
@@ -116,15 +116,15 @@ export class FiltersService {
     get temporaryFilters(): BehaviorSubject<FilterItem[]>;
     updateAdditionalFilters(): void;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<FiltersService, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FiltersService<any>, never>;
     // (undocumented)
-    static ɵprov: i0.ɵɵInjectableDeclaration<FiltersService>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<FiltersService<any>>;
 }
 
 // @public
 export abstract class List<T extends Model = Model, AD extends Model = Model> {
     constructor(_cdr: ChangeDetectorRef, _aui: AdminUserInteractionsService);
-    protected _actionEvent: EventEmitter<{
+    protected _actionEvent: EventEmitter_2<{
         action: ListAction;
         items: T | T[];
         isDetails: boolean;

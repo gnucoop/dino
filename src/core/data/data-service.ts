@@ -30,6 +30,7 @@ import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
+import {addPouchPlugin} from 'rxdb/plugins/pouchdb';
 import {
   RxDBReplicationGraphQLPlugin,
 } from 'rxdb/plugins/replication-graphql';
@@ -161,8 +162,8 @@ export class DataService {
       @Inject(DATA_SERVICE_CONFIG) private _config: DataServiceConfig,
       @Optional() private _configService: ConfigService|null,
   ) {
-    addRxPlugin(pouchdbAdapterIdb);
-    addRxPlugin(pouchdbAdapterMemory);
+    addPouchPlugin(pouchdbAdapterIdb);
+    addPouchPlugin(pouchdbAdapterMemory);
     addRxPlugin(RxDBMigrationPlugin);
     addRxPlugin(RxDBReplicationGraphQLPlugin);
     this.config = fillConfigDefaultValues(this._config);
@@ -344,12 +345,11 @@ export class DataService {
   createCollection(params: DataCreateCollectionRequest): Observable<boolean> {
     return this._db.pipe(
         switchMap(db => {
-          const collection = db[params.collection.name] as RxCollection;
+          const collection = db[params.name] as RxCollection;
           if (!collection) {
-            return from(db.addCollections({[params.collection.name]: params.collection}))
+            return from(db.addCollections({[params.name]: params.collection}))
                 .pipe(
-                    tap(coll =>
-                            this._addRegisteredCollection(coll[params.collection.name], params)),
+                    tap(coll => this._addRegisteredCollection(coll[params.name], params)),
                     mapTo(true),
                     catchError(() => obsOf(false)),
                 );

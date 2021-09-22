@@ -145,7 +145,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void;
     get getSort(): MatSort | null;
     // (undocumented)
-    get modelSchema(): RxJsonSchema;
+    get modelSchema(): RxJsonSchema<T>;
     queryDM(queryString: string, additionalDataSchema?: AD | null): DataQueryOptions;
     refreshListData: BehaviorSubject<CollectionChangedEvent>;
     // (undocumented)

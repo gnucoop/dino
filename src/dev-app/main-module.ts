@@ -28,14 +28,31 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dewco/core/auth';
-import {DataModule} from '@dewco/core/data';
+import {DATA_SERVICE_CONFIG, DataModule} from '@dewco/core/data';
 import {LangSelectorModule} from '@dewco/material/lang-selector';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 
 import {DemoHttpInterceptor} from './demo-http-interceptor';
 import {DevAppComponent} from './dev-app';
 import {DevAppDirectionality} from './dev-app/dev-app-directionality';
 import {DevAppModule} from './dev-app/dev-app-module';
 import {DEV_APP_ROUTES} from './dev-app/routes';
+
+export function provideDataServiceConfig() {
+  addPouchPlugin(pouchdbAdapterMemory);
+  return {
+    databaseCreateOptions: {
+      name: 'dewco_dev_app_db',
+      storage: getRxStoragePouch('memory'),
+    },
+    syncOptions: {
+      url: 'http://dewcoServer/v1/graphql',
+      live: false,
+      liveInterval: 60000,
+    },
+  };
+}
 
 @NgModule({
   imports: [
@@ -49,17 +66,7 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
     }),
     BrowserAnimationsModule,
     BrowserModule,
-    DataModule.forRoot({
-      databaseCreateOptions: {
-        name: 'dewco_dev_app_db',
-        adapter: 'idb',
-      },
-      syncOptions: {
-        url: 'http://dewcoServer/v1/graphql',
-        live: false,
-        liveInterval: 60000,
-      },
-    }),
+    DataModule,
     DevAppModule,
     HttpClientModule,
     LangSelectorModule,
@@ -72,6 +79,7 @@ import {DEV_APP_ROUTES} from './dev-app/routes';
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
     {provide: Directionality, useClass: DevAppDirectionality},
     {provide: HTTP_INTERCEPTORS, useClass: DemoHttpInterceptor, multi: true},
+    {provide: DATA_SERVICE_CONFIG, useFactory: provideDataServiceConfig},
   ],
   bootstrap: [DevAppComponent],
 })

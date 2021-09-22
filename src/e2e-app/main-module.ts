@@ -23,6 +23,8 @@ import {LocationModule} from '@dewco/core/locations';
 import {OrganizationsModule} from '@dewco/core/organizations';
 import {ProjectModule} from '@dewco/core/projects';
 import {DewcoTranslationsModule} from '@dewco/core/translations';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {Observable, of as obsOf} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
@@ -53,7 +55,7 @@ import {formSchemas} from './test-ajf-formschema';
 const fakeSchemaGenerator = new FakeDataGenerator<FormSchema>();
 const fakeDataGenerator = new FakeDataGenerator<FormData>();
 
-function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Observable<any> {
+export function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Observable<any> {
   return () => {
     if (additionalConfig.generateData) {
       return fakeSchemaGenerator.generateData(fsm, formSchemas)
@@ -72,6 +74,23 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
           );
     }
     return obsOf(null);
+  };
+}
+
+export function provideDataServiceConfig() {
+  addPouchPlugin(pouchdbAdapterMemory);
+  return {
+    databaseCreateOptions: {
+      name: `dewco_test_db`,
+      storage: getRxStoragePouch('memory'),
+      ignoreDuplicate: true,
+    },
+    syncOptions: {
+      url: syncGraphQLUrl,
+      wsUrl: wsUrl,
+      webSocketImpl: WebSocket,
+      authErrorMessage: authErrorMessage,
+    },
   };
 }
 
@@ -121,19 +140,7 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     },
     {
       provide: DATA_SERVICE_CONFIG,
-      useValue: {
-        databaseCreateOptions: {
-          name: `dewco_test_db`,
-          adapter: 'idb',
-          ignoreDuplicate: true,
-        },
-        syncOptions: {
-          url: syncGraphQLUrl,
-          wsUrl: wsUrl,
-          webSocketImpl: WebSocket,
-          authErrorMessage: authErrorMessage,
-        },
-      },
+      useFactory: provideDataServiceConfig,
     },
     MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
     {provide: MAT_PAGINATOR_DEFAULT_OPTIONS, useValue: paginatorConfig},

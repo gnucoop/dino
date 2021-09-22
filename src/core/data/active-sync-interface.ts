@@ -21,15 +21,16 @@
  */
 
 import {RxGraphQLReplicationState} from 'rxdb/plugins/replication-graphql';
+import {Model} from './model';
 
 /**
  * A collection synchronization state object
  */
-export interface ActiveSync {
+export interface ActiveSync<T extends Model = Model> {
   /**
    * The synchronization state
    */
-  state: RxGraphQLReplicationState;
+  state: RxGraphQLReplicationState<T>;
 
   /**
    * The state graphql subscription

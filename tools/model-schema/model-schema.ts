@@ -27,13 +27,13 @@ const config = {
   type,
   topRef,
   jsDoc,
-  extraTags: ['primary'],
 } as Config;
 
 const generator = createGenerator(config);
 const schema = generator.createSchema(config.type);
 const definition = {
   ...schema.definitions[config.type] as JSONSchema7,
+  primaryKey: 'id',
   version: VERSION,
 };
 const properties = definition.properties || {};
@@ -43,11 +43,15 @@ Object.keys(definition.properties || {}).forEach(propertyName => {
     delete property.$ref;
   }
 });
+
 const schemaString = JSON.stringify(definition, null, 2);
+const modelName = definition.title || '';
+const modelModule = modelName.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 const expected = `${licenseBanner}\n\n` +
     `import {RxJsonSchema} from 'rxdb';\n\n` +
+    `import {${modelName}} from './${modelModule}';\n\n` +
     `// tslint:disable\n` +
-    `export const schema = ${schemaString} as RxJsonSchema;\n`;
+    `export const schema = ${schemaString} as RxJsonSchema<${modelName}>;\n`;
 
 if (accept) {
   writeFileSync(actualFile, expected);

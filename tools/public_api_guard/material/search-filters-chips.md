@@ -4,7 +4,7 @@
 
 ```ts
 
-import { EventEmitter } from '@angular/core';
+import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FilterItem } from '@dewco/core/list';
 import { FilterListType } from '@dewco/core/list';
 import { FiltersService } from '@dewco/core/list';
@@ -24,7 +24,7 @@ export class SearchFiltersChips implements OnInit {
     constructor(_fts: FiltersService);
     chipsFilters: Observable<FilterItem[]>;
     chipsType: FilterListType;
-    readonly excludeFilter: EventEmitter<FilterItem>;
+    readonly excludeFilter: EventEmitter_2<FilterItem>;
     ngOnInit(): void;
     removeFilterItem(filterItem: FilterItem): void;
     // (undocumented)

@@ -3,7 +3,9 @@ import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {of as obsOf} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '../auth';
@@ -12,11 +14,12 @@ import {FilterItem, FiltersService} from './index';
 
 let testDbIdx = 0;
 
+addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_data_test_db_${testDbIdx++}`,
-      adapter: 'memory',
+      storage: getRxStoragePouch('memory'),
     },
     syncOptions: {
       url: 'http://dewcoServer/v1/graphql',
@@ -36,17 +39,18 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const dummySchema = {
-  'type': 'object',
-  'properties': {
-    'id': {'type': 'string', 'description': 'UUID v4 identifier.'},
-    'name': {'type': 'string', 'description': 'Element name'},
-    'created_at': {'type': 'string', 'description': 'Creation timestamp.'},
-    'updated_at': {'type': 'string', 'description': 'Update timestamp.'},
+  type: 'object',
+  properties: {
+    id: {type: 'string', description: 'UUID v4 identifier.'},
+    name: {type: 'string', description: 'Element name'},
+    created_at: {type: 'string', description: 'Creation timestamp.'},
+    updated_at: {type: 'string', description: 'Update timestamp.'},
   },
-  'additionalProperties': false,
-  'title': 'dummyModel',
-  'version': 0,
-} as RxJsonSchema;
+  primaryKey: 'id',
+  additionalProperties: false,
+  title: 'dummyModel',
+  version: 0,
+} as RxJsonSchema<any>;
 
 const fakeFilters: FilterItem[] = [
   {name: 'filter_a', value: 'test'},

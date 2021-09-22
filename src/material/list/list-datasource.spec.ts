@@ -1,7 +1,9 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of as obsOf, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '../../core/auth';
@@ -43,12 +45,13 @@ const dummySchema = {
   },
   'additionalProperties': false,
   'title': 'dummymodel',
+  'primaryKey': 'id',
   'version': 0,
-} as RxJsonSchema;
+} as RxJsonSchema<any>;
 
 const createCollectionParams = {
+  name: 'dummymodel',
   collection: {
-    name: 'dummymodel',
     schema: dummySchema,
   }
 };
@@ -104,11 +107,12 @@ const fakeActivatedRoute = {
 
 let testDbIdx = 0;
 
+addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_datamanager_test_db_${testDbIdx++}`,
-      adapter: 'memory',
+      storage: getRxStoragePouch('memory'),
     },
     syncOptions: {
       url: 'host',

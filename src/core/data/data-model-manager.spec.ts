@@ -1,6 +1,8 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
@@ -87,11 +89,12 @@ const serverUrl = 'http://dewcoServer/v1/graphql';
 const wsServerUrl = 'ws://dewcoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
+addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_datamanager_test_db_${testDbIdx++}`,
-      adapter: 'memory',
+      storage: getRxStoragePouch('memory'),
       ignoreDuplicate: true,
     },
     syncOptions: {
@@ -122,13 +125,14 @@ const authServiceMock = {
   },
 } as unknown as AuthService;
 
-const dummySchema: RxJsonSchema = {
+const dummySchema: RxJsonSchema<any> = {
   title: 'dummy schema',
   version: 0,
   description: 'describe a dummy model',
   type: 'object',
+  primaryKey: 'id',
   properties: {
-    id: {type: 'string', primary: true},
+    id: {type: 'string'},
     name: {type: 'string'},
     age: {type: 'number'},
     author: {type: 'string'},
@@ -142,7 +146,7 @@ const dummySchema: RxJsonSchema = {
 
 describe('Data Model Manager - CRUD methods', () => {
   const collectionName = 'dummymodel';
-  const collection = {name: collectionName, schema: dummySchema};
+  const collection = {name: collectionName, collection: {schema: dummySchema}};
   let dataService: DataService;
   let contextService: PermissionContextService;
   let dummyManager: DummyManager|null;
@@ -162,7 +166,7 @@ describe('Data Model Manager - CRUD methods', () => {
     });
     contextService = TestBed.inject(PermissionContextService);
     dataService = TestBed.inject(DataService);
-    dummyManager = new DummyManager({collection}, dataService, contextService, [ageAuthPermission]);
+    dummyManager = new DummyManager(collection, dataService, contextService, [ageAuthPermission]);
   });
 
   afterEach(async () => {

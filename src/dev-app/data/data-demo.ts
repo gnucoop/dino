@@ -22,8 +22,7 @@
 
 import {Component, EventEmitter} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {DataService, Model} from '@dewco/core/data';
-import {WithPouchMeta} from 'rxdb/dist/types/types';
+import {clone, DataService, Model} from '@dewco/core/data';
 import {from, Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 
@@ -46,15 +45,16 @@ export class DataDemo {
 
   constructor(private _dataService: DataService) {
     const req = {
+      name: 'todo',
       collection: {
-        name: 'todo',
         schema: {
           title: 'Todo',
           version: 0,
           description: 'Todo',
           type: 'object',
+          primaryKey: 'id',
           properties: {
-            id: {type: 'string', primary: true},
+            id: {type: 'string'},
             message: {type: 'string'},
             created_at: {type: 'string'},
             updated_at: {type: ['string', 'null']},
@@ -69,9 +69,9 @@ export class DataDemo {
 
     this.todos = collection.pipe(
         switchMap(() => this._refreshEvent.pipe(startWith(null))),
-        switchMap(() => _dataService.find({collectionName: 'todo'})),
+        switchMap(() => _dataService.find<Todo>({collectionName: 'todo'})),
         switchMap(query => from(query.exec())),
-        map(result => result.map(doc => doc._data as WithPouchMeta<Todo>)),
+        map(result => result.map(doc => clone(doc.toJSON()))),
     );
   }
 

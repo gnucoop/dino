@@ -61,7 +61,7 @@ export class FormsModule {
 }
 
 // @public (undocumented)
-export const schema: RxJsonSchema<any>;
+export const schema: RxJsonSchema<FormData_2>;
 
 // (No @packageDocumentation comment for this package)
 

@@ -35,7 +35,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'form_schema', schema, migrationStrategies}},
+        {name: 'form_schema', collection: {schema, migrationStrategies}},
         dataService,
         permissionContextService,
     );

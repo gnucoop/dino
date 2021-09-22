@@ -22,14 +22,15 @@
 
 import {RxJsonSchema} from 'rxdb';
 
+import {FormSchema} from './form-schema';
+
 // tslint:disable
 export const schema = {
   "type": "object",
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier.",
-      "primary": true
+      "description": "UUID v4 identifier."
     },
     "created_at": {
       "type": "string",
@@ -70,5 +71,6 @@ export const schema = {
   "additionalProperties": false,
   "description": "This model is used to store the Ajf form schemas.",
   "title": "FormSchema",
+  "primaryKey": "id",
   "version": 1
-} as RxJsonSchema;
+} as RxJsonSchema<FormSchema>;

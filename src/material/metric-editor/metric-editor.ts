@@ -226,7 +226,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
    * @param schema
    * @param metricItem? The selected Metric Item to open
    */
-  private _schemaToForm(schema: RxJsonSchema, metricItem?: T): void {
+  private _schemaToForm(schema: RxJsonSchema<T>, metricItem?: T): void {
     if (schema == null) {
       return;
     }

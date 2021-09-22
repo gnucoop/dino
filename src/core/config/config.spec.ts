@@ -3,7 +3,8 @@ import {TestBed} from '@angular/core/testing';
 import {take} from 'rxjs/operators';
 
 import {CONFIG_SERVICE_CONFIG, ConfigResponse, ConfigSet} from '.';
-import {ConfigService, ConfigServiceConfig} from './index';
+import {ConfigServiceConfig} from './config.token';
+import {ConfigService} from './index';
 
 const configServiceConfig: ConfigServiceConfig = {
   apiUrl: 'https://test-config-url',

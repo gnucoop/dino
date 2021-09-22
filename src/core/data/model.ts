@@ -26,8 +26,6 @@
 export interface Model {
   /**
    * UUID v4 identifier.
-   *
-   * @primary true
    */
   id: string;
 

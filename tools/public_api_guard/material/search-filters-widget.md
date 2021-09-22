@@ -11,7 +11,7 @@ import { AjfFormRendererService } from '@ajf/core/forms';
 import { AjfNode } from '@ajf/core/forms';
 import { BehaviorSubject } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
-import { EventEmitter } from '@angular/core';
+import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FilterItem } from '@dewco/core/list';
 import { FiltersService } from '@dewco/core/list';
 import * as i0 from '@angular/core';
@@ -55,13 +55,13 @@ export class SearchFiltersWidget extends AjfFormRenderer implements AfterViewIni
     changeOperator(operator: MatButtonToggleChange): void;
     checkToggleDisabled(): boolean;
     conditionOperatorByFieldType(type: AjfFieldType): Operator[];
-    readonly excludeFilter: EventEmitter<FilterItem>;
+    readonly excludeFilter: EventEmitter_2<FilterItem>;
     filterItemData: FilterItem;
     filterToggle(toggle: MatSlideToggleChange): void;
     getWidgetFormValue(): {
         [key: string]: unknown;
     };
-    readonly includeFilter: EventEmitter<FilterItem>;
+    readonly includeFilter: EventEmitter_2<FilterItem>;
     // (undocumented)
     ngAfterViewInit(): void;
     // (undocumented)

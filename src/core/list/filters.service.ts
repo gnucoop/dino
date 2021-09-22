@@ -25,7 +25,9 @@ import {AjfCondition, evaluateExpression} from '@ajf/core/models';
 import {EventEmitter, Injectable} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {PrimaryProperty, RxJsonSchema} from 'rxdb';
+import {Model} from '@dewco/core/data';
+import {RxJsonSchema} from 'rxdb';
+import {TopLevelProperty} from 'rxdb/dist/types/types/rx-schema';
 import {
   BehaviorSubject,
   combineLatest,
@@ -63,7 +65,7 @@ import {ListModule} from './list.module';
  * It can load filters presets from the Preset Manager, and initialize filters accordingly.
  */
 @Injectable({providedIn: ListModule})
-export class FiltersService {
+export class FiltersService<T extends Model = Model> {
   /**
    * The labels of all available additional basic filters.
    * Available filters are added by importing the relative modules.
@@ -272,7 +274,7 @@ export class FiltersService {
    * Generates default filters from the RxJsonSchema of a model
    * @param modelSchema The model RxJsonSchema schema
    */
-  generateModelFilters(modelSchema: RxJsonSchema): void {
+  generateModelFilters(modelSchema: RxJsonSchema<T>): void {
     if (!modelSchema || modelSchema.title === 'FormData') {
       this._generatedModelFilters.next([]);
       return;
@@ -291,7 +293,7 @@ export class FiltersService {
     propertyKeys.forEach(prop => {
       if (prop && DEFAULT_MODEL_KEYS.indexOf(prop) < 0) {
         modelFiltersGroup.filterGroupAdditionalFilters?.push(
-            this._propToFilterItem(prop, modelSchema.properties[prop] as PrimaryProperty));
+            this._propToFilterItem(prop, modelSchema.properties[prop as keyof T]));
       }
     });
     const currentModelFilters = this._generatedModelFilters.getValue();
@@ -655,8 +657,9 @@ export class FiltersService {
    * @param prop The property
    * @returns The generated FilterItem
    */
-  private _propToFilterItem(propName: string, prop: PrimaryProperty): FilterItem {
-    const fieldType = prop.type != null ? FIELD_TYPES[prop.type] : AjfFieldType.String;
+  private _propToFilterItem(propName: string, prop: TopLevelProperty): FilterItem {
+    const fieldType = prop.type != null && typeof prop.type === 'string' ? FIELD_TYPES[prop.type] :
+                                                                           AjfFieldType.String;
     let filterItem: FilterItem = {
       name: propName,
       fieldType,

@@ -22,6 +22,8 @@
 
 import {RxJsonSchema} from 'rxdb';
 
+import {Area} from './area';
+
 // tslint:disable
 export const schema = {
   "type": "object",
@@ -29,8 +31,7 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier.",
-      "primary": true
+      "description": "UUID v4 identifier."
     },
     "created_at": {
       "type": "string",
@@ -72,5 +73,6 @@ export const schema = {
   ],
   "description": "This model is used to store Areas.",
   "title": "Area",
+  "primaryKey": "id",
   "version": 0
-} as RxJsonSchema;
+} as RxJsonSchema<Area>;

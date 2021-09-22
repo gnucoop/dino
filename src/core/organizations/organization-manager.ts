@@ -37,7 +37,7 @@ export class OrganizationManager extends DataModelManager<Organization> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'organization', schema}},
+        {name: 'organization', collection: {schema}},
         dataService,
         permissionContextService,
     );

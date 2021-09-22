@@ -1,5 +1,7 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
@@ -9,11 +11,12 @@ import {FormSchema, FormSchemaManager} from './index';
 
 let testDbIdx = 0;
 
+addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dewco_data_test_db_${testDbIdx++}`,
-      adapter: 'memory',
+      storage: getRxStoragePouch('memory'),
     },
     syncOptions: {
       url: 'http://dewcoServer/v1/graphql',

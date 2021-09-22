@@ -19,38 +19,10 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-import {Metric} from '@dewco/core/data';
-import {MigrationStrategies, RxDocument} from 'rxdb';
 
-/**
- * This model is used to store Locations.
- * @title Location
- */
-export interface Location extends Metric {
-  /**
-   * The optional location map coordinates
-   */
-  coordinates: Coordinates|null;
-}
+import {DeepReadonlyObject} from 'rxdb';
 
-/**
- * Represets a location map coordinates
- * @title Coordinates
- */
-export interface Coordinates {
-  /**
-   * Latitude coordinate
-   */
-  latitude: string;
+import {Model} from './model';
 
-  /**
-   * Longitude coordinate
-   */
-  longitude: string;
-}
-
-export const VERSION = 1;
-
-export const migrationStrategies: MigrationStrategies = {
-  1: (doc: RxDocument) => doc,
-};
+export const clone = <T extends Model>(obj: DeepReadonlyObject<T>) =>
+    JSON.parse(JSON.stringify(obj)) as T;

@@ -5,10 +5,10 @@ AJF_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
 ANGULAR_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
 ANGULAR_MATERIAL_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
 POUCHDB_PACKAGE_VERSION = "^7.0.0"
-RXDB_PACKAGE_VERSION = "^9.0.0"
+RXJS_PACKAGE_VERSION = "^6.5.3 || ^7.0.0"
+RXDB_PACKAGE_VERSION = "^10.0.0"
 STWS_PACKAGE_VERSION = "^0.9.16"
 TSLIB_PACKAGE_VERSION = "^2.2.0"
-RXJS_PACKAGE_VERSION = "^6.5.3 || ^7.0.0"
 UUID_PACKAGE_VERSION = "^8.0.0"
 
 # Each placer holder is used to stamp versions during the build process, replacing the key with it's
@@ -54,27 +54,6 @@ THIRD_PARTY_NGCC_BUNDLES = [
     ("@ngneat/transloco", "ngneat-transloco.umd.js"),
 ]
 
-THIRD_PARTY_NO_NGCC_BUNDLES = [
-    ("@zxing/browser", []),
-    ("@zxing/library", []),
-    ("chart.js", []),
-    ("css-element-queries", []),
-    ("date-fns", []),
-    ("flat", []),
-    ("esprima", []),
-    ("leaflet", []),
-    ("mock-socket", []),
-    ("numbro", []),
-    ("pdfmake", ["pdfmake/build/pdfmake"]),
-    ("pouchdb-adapter-idb", []),
-    ("pouchdb-adapter-memory", []),
-    ("rxdb", []),
-    ("rxdb/dist", []),
-    ("rxdb/dist/lib", []),
-    ("subscriptions-transport-ws", []),
-    ("uuid", []),
-]
-
 """
   Gets a dictionary of all packages and their bundle names.
 """
@@ -92,12 +71,6 @@ def getFrameworkPackageBundles():
 def getThirdPartyPackageBundles():
     res = {}
     for pkgName, bundleName in THIRD_PARTY_NGCC_BUNDLES:
-        res[pkgName] = bundleName
-    return res
-
-def getThirdPartyNoNgccPackageBundles():
-    res = {}
-    for pkgName, bundleName in THIRD_PARTY_NO_NGCC_BUNDLES:
         res[pkgName] = bundleName
     return res
 
@@ -136,17 +109,14 @@ def getThirdPartyNoNgccUmdFilePaths(packages):
 ANGULAR_PACKAGE_BUNDLES = getFrameworkPackageBundles()
 
 THIRD_PARTY_PACKAGE_BUNDLES = getThirdPartyPackageBundles()
-THIRD_PARTY_NO_NGCC_PACKAGE_BUNDLES = getThirdPartyNoNgccPackageBundles()
 
 ANGULAR_LIBRARY_VIEW_ENGINE_UMDS = getUmdFilePaths(ANGULAR_NO_NGCC_BUNDLES, False) + \
                                    getUmdFilePaths(ANGULAR_NGCC_BUNDLES, False) + \
-                                   getThirdPartyUmdFilePaths(THIRD_PARTY_NGCC_BUNDLES, False) + \
-                                   getThirdPartyNoNgccUmdFilePaths(THIRD_PARTY_NO_NGCC_BUNDLES)
+                                   getThirdPartyUmdFilePaths(THIRD_PARTY_NGCC_BUNDLES, False)
 
 ANGULAR_LIBRARY_IVY_UMDS = getUmdFilePaths(ANGULAR_NO_NGCC_BUNDLES, False) + \
                            getUmdFilePaths(ANGULAR_NGCC_BUNDLES, True) + \
-                           getThirdPartyUmdFilePaths(THIRD_PARTY_NGCC_BUNDLES, True) + \
-                           getThirdPartyNoNgccUmdFilePaths(THIRD_PARTY_NO_NGCC_BUNDLES)
+                           getThirdPartyUmdFilePaths(THIRD_PARTY_NGCC_BUNDLES, True)
 
 """
   Gets the list of targets for the Angular library UMD bundles. Conditionally
@@ -159,10 +129,3 @@ def getAngularUmdTargets():
         "//tools:view_engine_mode": ANGULAR_LIBRARY_VIEW_ENGINE_UMDS,
         "//conditions:default": ANGULAR_LIBRARY_IVY_UMDS,
     })
-
-"""
-  Gets the list of targets for the third party librariers UMD bundles.
-"""
-
-def getThirdPartyUmdTargets():
-    return getThirdPartyNoNgccUmdFilePaths(THIRD_PARTY_NO_NGCC_BUNDLES)

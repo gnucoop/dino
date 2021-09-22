@@ -23,11 +23,13 @@
 import {InjectionToken} from '@angular/core';
 import {RxDatabaseCreator, SyncOptionsGraphQL} from 'rxdb';
 
+import {Model} from './model';
+
 /**
  * Data service GraphQL sync options.
  */
-export interface DataServiceSyncOptions extends
-    Omit<SyncOptionsGraphQL, 'headers'|'pull'|'push'|'deletedFlag'> {
+export interface DataServiceSyncOptions<T extends Model = Model> extends
+    Omit<SyncOptionsGraphQL<T>, 'headers'|'pull'|'push'|'deletedFlag'> {
   /**
    * The number of documents synced in each request.
    */
@@ -53,7 +55,7 @@ export interface DataServiceSyncOptions extends
 /**
  * Data service configuration.
  */
-export interface DataServiceConfig {
+export interface DataServiceConfig<T extends Model = Model> {
   /**
    * Options used to create the RxDB database.
    */
@@ -62,7 +64,7 @@ export interface DataServiceConfig {
   /**
    * Options used to set up the GraphQL sync.
    */
-  syncOptions: DataServiceSyncOptions;
+  syncOptions: DataServiceSyncOptions<T>;
 }
 
 /**
