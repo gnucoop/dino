@@ -12,8 +12,6 @@ ng_module(
         ["**/*.ts"],
         exclude = ["**/*.spec.ts"],
     ),
-    assets = [],
-    module_name = "@dewco/core/locations",
     deps = [
         "//src/core/data",
         "//src/core/forms",

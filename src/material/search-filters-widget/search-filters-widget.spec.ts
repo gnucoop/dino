@@ -14,10 +14,9 @@ import {
   FilterItem,
   ListModule,
   NUMBER_CONDITION_OPERATORS,
-} from '@dewco/core/list';
+} from '../../core/list';
 
-import {SearchFiltersWidget} from './search-filters-widget';
-import {SearchFiltersWidgetModule} from './search-filters-widget.module';
+import {SearchFiltersWidget, SearchFiltersWidgetModule} from './index';
 
 class MockValidationService {}
 

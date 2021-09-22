@@ -23,7 +23,6 @@ ng_module(
         ":columns-selector.css",
         ":confirmation-dialog.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/list",
     deps = [
         "//src/core/data",
         "//src/core/list",

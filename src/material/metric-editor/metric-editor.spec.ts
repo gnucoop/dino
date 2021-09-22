@@ -2,12 +2,12 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AreaManager} from '@dewco/core/areas';
-import {DataService, Metric, PermissionContextService} from '@dewco/core/data';
 import {of} from 'rxjs';
 
-import {MetricEditor} from './metric-editor';
-import {MetricEditorModule} from './metric-editor.module';
+import {AreaManager} from '../../core/areas';
+import {DataService, Metric, PermissionContextService} from '../../core/data';
+
+import {MetricEditor, MetricEditorModule} from './index';
 
 const dataServiceMock = {
   createCollection: () => of(true)

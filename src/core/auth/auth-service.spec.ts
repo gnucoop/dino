@@ -1,13 +1,14 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {take} from 'rxjs/operators';
+
 import {
   AUTH_SERVICE_CONFIG,
   AuthService,
   AuthServiceConfig,
   LoginResponse,
   User,
-} from '@dewco/core/auth';
-import {take} from 'rxjs/operators';
+} from './index';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',

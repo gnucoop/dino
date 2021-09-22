@@ -5,7 +5,6 @@ package(default_visibility = ["//visibility:public"])
 ts_library(
     name = "private",
     srcs = glob(["*.ts"]),
-    module_name = "@dewco/dewco-examples/private",
     deps = [
         "//src/dewco-examples",
         "@npm//@angular/core",

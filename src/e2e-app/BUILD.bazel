@@ -35,6 +35,7 @@ ng_module(
     ),
     deps = [
         "//src/core/areas",
+        "//src/core/auth",
         "//src/core/config",
         "//src/core/data",
         "//src/core/forms",
@@ -43,6 +44,7 @@ ng_module(
         "//src/core/projects",
         "//src/core/translations",
         "//src/dewco-examples/private",
+        "//src/material/breakpoint-observer",
         "//src/material/collect",
         "//src/material/create-form",
         "//src/material/edit-form",

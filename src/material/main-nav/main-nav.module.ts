@@ -58,5 +58,5 @@ import {MainNav} from './main-nav';
     MainNav,
   ],
 })
-export class MainModule {
+export class MainNavModule {
 }

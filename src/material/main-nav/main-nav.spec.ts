@@ -2,11 +2,11 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 
-import {MainNav} from './main-nav';
-import {MainModule} from './main-nav.module';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
+
+import {MainNav, MainNavModule} from './index';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -40,7 +40,7 @@ describe('Main', () => {
         .configureTestingModule({
           imports: [
             BrowserAnimationsModule,
-            MainModule,
+            MainNavModule,
             HttpClientTestingModule,
             RouterTestingModule,
           ],

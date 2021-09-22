@@ -1,11 +1,11 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
 import {BehaviorSubject, of} from 'rxjs';
 
-import {FormSchema} from '.';
-import {FormSchemaManager} from './form-schema-manager';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '../data';
+
+import {FormSchema, FormSchemaManager} from './index';
 
 let testDbIdx = 0;
 

@@ -1,13 +1,11 @@
 import {ChangeDetectorRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {Model} from '@dewco/core/data';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
+import {Model} from '../data';
 
-import {List} from './list';
-import {ListAction} from './list-actions-interface';
-import {AdminUserInteractionsService} from './user-interactions';
+import {AdminUserInteractionsService, List, ListAction} from './index';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',

@@ -1,14 +1,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {FilterGroup, FiltersService, SearchFiltersComponent} from '@dewco/core/list';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
-import {SelectionList} from './list';
-import {ListDataSource} from './list-datasource';
-import {ListModule} from './list.module';
-import {AdminUserInteractionsService} from './user-interactions.service';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
+import {FilterGroup, FiltersService, SearchFiltersComponent} from '../../core/list';
+
+import {
+  AdminUserInteractionsService,
+  ListDataSource,
+  ListModule,
+  SelectionList,
+} from './index';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',

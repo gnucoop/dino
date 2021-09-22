@@ -3,11 +3,12 @@ import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dewco/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
-import {FilterItem, FiltersService} from '@dewco/core/list';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
+
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '../auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '../data';
+import {FilterItem, FiltersService} from './index';
 
 let testDbIdx = 0;
 

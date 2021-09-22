@@ -18,7 +18,6 @@ ng_module(
         exclude = ["**/*.spec.ts"],
     ),
     assets = [":login.css"] + glob(["**/*.html"]),
-    module_name = "@dewco/material/login",
     deps = [
         "//src/core/auth",
         "@npm//@ajf/core",

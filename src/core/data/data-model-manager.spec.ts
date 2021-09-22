@@ -1,6 +1,11 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
+import {RxJsonSchema} from 'rxdb';
+import {of as obsOf} from 'rxjs';
+import {take} from 'rxjs/operators';
+
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '../auth';
+
 import {
   CanCreateData,
   CanDeleteData,
@@ -14,11 +19,8 @@ import {
   DataServiceConfig,
   Model,
   Permission,
-  PermissionContextService
-} from '@dewco/core/data';
-import {RxJsonSchema} from 'rxdb';
-import {of as obsOf} from 'rxjs';
-import {take} from 'rxjs/operators';
+  PermissionContextService,
+} from './index';
 
 interface DummyModel extends Model {
   name: string;

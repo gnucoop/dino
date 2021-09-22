@@ -19,7 +19,6 @@ ng_module(
         exclude = ["**/*.spec.ts"],
     ),
     assets = [":search-filters-widget.css"] + glob(["**/*.html"]),
-    module_name = "@dewco/material/search-filters-widget",
     deps = [
         "//src/core/list",
         "@npm//@ajf/core",

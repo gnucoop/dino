@@ -1,8 +1,9 @@
 import {ChangeDetectorRef} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {FilterItem, ListModule} from '@dewco/core/list';
 import {SearchFiltersChips, SearchFiltersChipsModule} from '@dewco/material/search-filters-chips';
+
+import {FilterItem, ListModule} from '../../core/list';
 
 const changeDetectorRefMock = {
   markForCheck() {}

@@ -19,7 +19,6 @@ ng_module(
         exclude = ["**/*.spec.ts"],
     ),
     assets = [":collect.css"] + glob(["**/*.html"]),
-    module_name = "@dewco/material/collect",
     deps = [
         "//src/core/auth",
         "//src/core/forms",

@@ -1,7 +1,10 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
+import {RxJsonSchema} from 'rxdb';
+import {BehaviorSubject, of as obsOf, of} from 'rxjs';
+
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '../../core/auth';
 import {
   DATA_SERVICE_CONFIG,
   DataCreateCollectionRequest,
@@ -11,16 +14,14 @@ import {
   DataServiceConfig,
   Model,
   PermissionContextService,
-} from '@dewco/core/data';
+} from '../../core/data';
 import {
   FilterItem,
   FiltersService,
   ListModule,
-} from '@dewco/core/list';
-import {RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, of as obsOf, of} from 'rxjs';
+} from '../../core/list';
 
-import {ListDataSource} from './list-datasource';
+import {ListDataSource} from './index';
 
 interface DummyModel extends Model {
   name: string;

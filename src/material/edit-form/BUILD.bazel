@@ -21,7 +21,6 @@ ng_module(
     assets = [
         ":edit-form.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/edit-form",
     deps = [
         "//src/core/data",
         "//src/core/forms",

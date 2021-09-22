@@ -13,8 +13,6 @@ ng_module(
         ["**/*.ts"],
         exclude = ["**/*.spec.ts"],
     ),
-    assets = [],
-    module_name = "@dewco/material/breakpoint-observer",
     deps = [
         "@npm//@angular/cdk",
         "@npm//@angular/common",

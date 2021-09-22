@@ -19,7 +19,6 @@ ng_module(
         exclude = ["**/*.spec.ts"],
     ),
     assets = [":search-filters-bar.css"] + glob(["**/*.html"]),
-    module_name = "@dewco/material/search-filters-bar",
     deps = [
         "//src/core/list",
         "//src/material/breakpoint-observer",

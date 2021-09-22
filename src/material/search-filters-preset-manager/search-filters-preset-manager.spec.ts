@@ -2,13 +2,14 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {FilterItem, FiltersService, ListModule} from '@dewco/core/list';
 import {
   SearchFiltersPresetManager,
   SearchFiltersPresetManagerModule,
 } from '@dewco/material/search-filters-preset-manager';
 import {BehaviorSubject, of as obsOf, of} from 'rxjs';
+
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
+import {FilterItem, FiltersService, ListModule} from '../../core/list';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',

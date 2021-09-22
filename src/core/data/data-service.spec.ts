@@ -1,10 +1,11 @@
 import {TestBed} from '@angular/core/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from '@dewco/core/data';
 import {Server, WebSocket} from 'mock-socket';
 import {RxJsonSchema} from 'rxdb';
 import {of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
+
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
+import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from './index';
 
 interface DummyModel extends Model {
   name: string;

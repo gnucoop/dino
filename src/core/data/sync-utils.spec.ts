@@ -1,7 +1,9 @@
 import {RxCollection, RxJsonSchema} from 'rxdb';
 
-import {DataServiceSyncOptions} from './data-service-config';
-import {Model} from './model';
+import {
+  DataServiceSyncOptions,
+  Model,
+} from './index';
 import {
   pullQueryBuilder,
   pushQueryBuilder,

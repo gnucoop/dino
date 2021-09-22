@@ -14,8 +14,6 @@ ng_module(
         ["**/*.ts"],
         exclude = ["**/*.spec.ts"],
     ),
-    assets = [],
-    module_name = "@dewco/core/config",
     deps = [
         "@npm//@angular/common",
         "@npm//@angular/core",

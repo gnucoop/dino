@@ -17,7 +17,7 @@ import {
   FormDataManager,
   FormSchema,
   FormSchemaManager,
-  FormsModule
+  FormsModule,
 } from '@dewco/core/forms';
 import {LocationModule} from '@dewco/core/locations';
 import {OrganizationsModule} from '@dewco/core/organizations';
@@ -31,11 +31,15 @@ import {E2eAppModule} from './e2e-app/e2e-app-module';
 import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
 import {MaterialCollectE2eModule} from './mat-collect/collect-e2e.module';
+import {MaterialCreateE2eModule} from './mat-create/create-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
+import {MaterialEditE2eModule} from './mat-edit/edit-e2e.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
+import {MaterialLocationsE2eModule} from './mat-locations/locations-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
 import {MaterialMetricsE2eModule} from './mat-metrics/metrics-e2e.module';
+import {MaterialOrganizationsE2eModule} from './mat-organizations/organizations-e2e.module';
 import {MaterialProjectsE2eModule} from './mat-projects/projects-e2e.module';
 import {additionalConfig, authConfig, configurationConfig, paginatorConfig} from './mockconfig';
 import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
@@ -77,7 +81,6 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     BrowserAnimationsModule,
     BrowserModule,
     DewcoTranslationsModule.forRoot(),
-    FormsModule,
     E2eAppModule,
     HttpClientModule,
     MatDatepickerModule,
@@ -93,13 +96,17 @@ function initializeApp(fsm: FormSchemaManager, fdm: FormDataManager): () => Obse
     ProjectModule,
 
     // E2E demos
+    MaterialAreasE2eModule,
     MaterialDashboardE2eModule,
     MaterialCollectE2eModule,
+    MaterialCreateE2eModule,
+    MaterialEditE2eModule,
     MaterialListE2eModule,
+    MaterialLocationsE2eModule,
     MaterialLoginE2eModule,
     MaterialMainE2EModule,
     MaterialMetricsE2eModule,
-    MaterialAreasE2eModule,
+    MaterialOrganizationsE2eModule,
     MaterialProjectsE2eModule,
 
     ...additionalConfig.dynamicConfiguration ? [ConfigModule.forRoot(configurationConfig)] : [],

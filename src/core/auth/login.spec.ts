@@ -4,12 +4,13 @@ import {TestBed} from '@angular/core/testing';
 import {FormBuilder} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {Observable, of as obsOf} from 'rxjs';
+
 import {
   AuthService,
   Credentials,
   LoginComponent,
-} from '@dewco/core/auth';
-import {Observable, of as obsOf} from 'rxjs';
+} from './index';
 
 const authServiceMock = {
   loginSuccess: true,

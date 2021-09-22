@@ -20,7 +20,6 @@ ng_module(
     assets = [
         ":floating-button.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/floating-button",
     deps = [
         "//src/core/data",
         "//src/material/breakpoint-observer",

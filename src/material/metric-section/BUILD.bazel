@@ -19,7 +19,6 @@ ng_module(
     assets = [
         ":metric-section.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/metric-section",
     deps = [
         "//src/core/data",
         "//src/core/forms",

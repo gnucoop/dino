@@ -21,7 +21,6 @@ ng_module(
     assets = [
         ":metric-editor.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/metric-editor",
     deps = [
         "//src/core/data",
         "//src/material/breakpoint-observer",

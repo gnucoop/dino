@@ -21,7 +21,6 @@ ng_module(
     assets = [
         ":create-form.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/create-form",
     deps = [
         "//src/core/auth",
         "//src/core/data",

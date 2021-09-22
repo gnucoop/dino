@@ -16,7 +16,6 @@ ng_module(
         exclude = ["**/*.spec.ts"],
     ),
     assets = [":lang-selector.css"] + glob(["**/*.html"]),
-    module_name = "@dewco/material/lang-selector",
     deps = [
         "@npm//@ajf/core",
         "@npm//@angular/common",

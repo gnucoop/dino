@@ -1,13 +1,13 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dewco/core/data';
-import {FormSchemaManager} from '@dewco/core/forms';
 import {BehaviorSubject, of} from 'rxjs';
 
-import {EditForm} from './edit-form';
-import {EditFormModule} from './edit-form.module';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
+import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '../../core/data';
+import {FormSchemaManager} from '../../core/forms';
+
+import {EditForm, EditFormModule} from './index';
 
 let testDbIdx = 0;
 
