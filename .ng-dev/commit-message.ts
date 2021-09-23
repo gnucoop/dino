@@ -42,5 +42,6 @@ export const commitMessage: CommitMessageConfig = {
     'material/search-filters-dialog',
     'material/search-filters-preset-manager',
     'material/search-filters-widget',
+    'material/user-editor',
   ],
 };

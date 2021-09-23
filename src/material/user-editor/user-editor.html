@@ -1,0 +1,56 @@
+<div class="dewco-user-editor-container">
+  <h1 mat-dialog-title>{{data.userAction?.toUpperCase()}} USER</h1>
+  <mat-dialog-content>
+    <form [formGroup]="userForm" autocomplete="off">
+      <ng-container *ngFor="let field of userFormFields; let idx = index">
+        <mat-form-field class="dewco-user-editor-field" appearance="fill">
+          <input
+            matInput
+            [formControlName]="field.fieldName"
+            [placeholder]="field.placeholder ?? ''"
+            [readonly]="data.userAction === 'view'"
+            value="{{field.value}}"
+          />
+
+          <mat-error
+            *ngIf="userForm.controls[field.fieldName].hasError('required')"
+          >
+            Please enter a {{field.placeholder}}
+          </mat-error>
+
+          <mat-hint>{{field.hint}}</mat-hint>
+        </mat-form-field>
+      </ng-container>
+      <mat-form-field class="dewco-user-editor-field dewco-user-editor-field-big" appearance="fill">
+        <mat-label>User Permission Groups</mat-label>
+        <mat-select
+          formControlName="user_group_ids"
+          multiple
+          [disabled]="data.userAction === 'view'"
+        >
+          <mat-option
+            *ngFor="let userGroup of userGroups|async"
+            [value]="userGroup.id"
+            >{{userGroup.groupName}}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </form></mat-dialog-content
+  >
+  <div mat-dialog-actions>
+    <button mat-raised-button color="warn" (click)="closeEditor()">
+      Close
+    </button>
+    <button
+      *ngIf="data.userAction !== 'view'"
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="data"
+      cdkFocusInitial
+      (click)="saveUser()"
+      [disabled]="!isFormValid()"
+    >
+      Save
+    </button>
+  </div>
+</div>
