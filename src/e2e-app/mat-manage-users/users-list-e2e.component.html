@@ -1,0 +1,19 @@
+<dewco-list
+  [headers]="headers"
+  [dataSource]="dataSource"
+  [listRowActions]="listRowActions"
+  [customFilters]="customFilters"
+  [expandable]="true"
+  [onClickRowActions]="onClickRowActions"
+>
+  <dewco-search-filters-bar
+    filters
+    [additionalFilters]="false"
+  ></dewco-search-filters-bar>
+</dewco-list>
+
+<dewco-floating-button
+  [buttonIcon]="'add'"
+  tooltipMessage="Add New User"
+  (click)="openDialog(undefined, 'create')"
+></dewco-floating-button>

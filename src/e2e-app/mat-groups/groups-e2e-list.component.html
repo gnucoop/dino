@@ -1,0 +1,18 @@
+<dewco-list
+  [headers]="headers"
+  [dataSource]="dataSource"
+  [listRowActions]="listRowActions"
+  [onClickRowActions]="onClickRowActions"
+  [expandable]="true"
+>
+  <dewco-search-filters-bar
+    filters
+    [additionalFilters]="false"
+  ></dewco-search-filters-bar>
+</dewco-list>
+
+<dewco-floating-button
+  [buttonIcon]="'add'"
+  tooltipMessage="Add New User Permissions Group"
+  (click)="openDialog(undefined, 'create')"
+></dewco-floating-button>

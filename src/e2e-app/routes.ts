@@ -6,12 +6,15 @@ import {MatCollectE2E} from './mat-collect/collect-e2e.component';
 import {MatCreateE2E} from './mat-create/create-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
 import {MatEditE2E} from './mat-edit/edit-e2e.component';
+import {MatGroupsListE2E} from './mat-groups/groups-e2e-list.component';
 import {MatListE2E} from './mat-list/list-e2e';
 import {MatLocationsE2E} from './mat-locations/locations-e2e.component';
 import {MatLoginE2E} from './mat-login/login-e2e';
+import {MatUsersListE2E} from './mat-manage-users/users-list-e2e.component';
 import {MatMetricsE2E} from './mat-metrics/metrics-e2e.component';
 import {MatOrganizationsE2E} from './mat-organizations/organizations-e2e.component';
 import {MatProjectsE2E} from './mat-projects/projects-e2e.component';
+import {MatUsersE2E} from './mat-users/users-e2e.component';
 import {additionalConfig} from './mockconfig';
 
 const authGuard = additionalConfig.authGuard ? [AuthGuard] : undefined;
@@ -112,6 +115,28 @@ export const E2E_APP_ROUTES: Routes = [
       {
         path: '',
         component: MatMetricsE2E,
+      },
+    ],
+  },
+  {
+    path: 'users',
+    canActivate: authGuard,
+    children: [
+      {
+        path: 'roles',
+        component: MatUsersE2E,
+      },
+      {
+        path: 'groups',
+        component: MatGroupsListE2E,
+      },
+      {
+        path: 'list',
+        component: MatUsersListE2E,
+      },
+      {
+        path: '',
+        component: MatUsersE2E,
       },
     ],
   },

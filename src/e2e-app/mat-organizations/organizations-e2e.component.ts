@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {ListAction, ListHeader} from '@dewco/core/list';
+import {ActionType, ListAction, ListHeader} from '@dewco/core/list';
 import {Organization, OrganizationManager} from '@dewco/core/organizations';
 import {MetricSection} from '@dewco/material/metric-section';
 
@@ -18,6 +18,7 @@ export class MatOrganizationsE2E {
     {column: 'website_url', label: 'Website Url', sortable: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
+  readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [
     {
       actionType: 'view',

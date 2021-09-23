@@ -53,7 +53,7 @@ export const additionalConfig = {
   externalAuthentication: false,
 
   /**
-   * Config the breakpointobserver service for "large" or "small" screens
+   * Config the mocked breakpointobserver service for "large" or "small" screens
    */
   isSmallScreen: false,
 
@@ -62,5 +62,31 @@ export const additionalConfig = {
    * the Platform to log in to from a select dropdown during login.
    * Those configs must be provided by an external API.
    */
-  dynamicConfiguration: true,
+  dynamicConfiguration: false,
+};
+
+/**
+ * Optional Modules Config.
+ * Can activate/deactivate all optional modules in the app.
+ */
+export const optionalModulesConfig = {
+  /**
+   * Thematic areas module.
+   */
+  areasModule: true,
+
+  /**
+   * Projects module.
+   */
+  projectsModule: true,
+
+  /**
+   * Locations module.
+   */
+  locationsModule: true,
+
+  /**
+   * Organizations module.
+   */
+  organizationsModule: true,
 };

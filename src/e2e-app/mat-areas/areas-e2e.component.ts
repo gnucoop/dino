@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {Area, AreaManager} from '@dewco/core/areas';
-import {ListAction, ListHeader} from '@dewco/core/list';
+import {ActionType, ListAction, ListHeader} from '@dewco/core/list';
 import {MetricSection} from '@dewco/material/metric-section';
 
 @Component({
@@ -16,6 +16,7 @@ export class MatAreasE2E {
     {column: 'parent_name', label: 'Parent Area', sortable: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
+  readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [
     {
       actionType: 'view',

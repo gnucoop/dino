@@ -1731,7 +1731,7 @@ export const formSchemas: FormSchema[] = [{
   id: '',
   name: 'prova',
   label: 'Human Resources',
-  icon: 'groups',
+  icon: 'supervised_user_circle',
   schema: ajfSchema,
   created_at: '',
   updated_at: '',

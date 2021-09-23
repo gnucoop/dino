@@ -25,6 +25,7 @@ import {ProjectModule} from '@dewco/core/projects';
 import {DewcoTranslationsModule} from '@dewco/core/translations';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {UsersModule} from '@dewco/core/users';
 import {Observable, of as obsOf} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
@@ -36,6 +37,7 @@ import {MaterialCollectE2eModule} from './mat-collect/collect-e2e.module';
 import {MaterialCreateE2eModule} from './mat-create/create-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
 import {MaterialEditE2eModule} from './mat-edit/edit-e2e.module';
+import {MaterialGroupsE2eModule} from './mat-groups/groups-e2e.module';
 import {MaterialListE2eModule} from './mat-list/list-e2e.module';
 import {MaterialLocationsE2eModule} from './mat-locations/locations-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
@@ -43,14 +45,21 @@ import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
 import {MaterialMetricsE2eModule} from './mat-metrics/metrics-e2e.module';
 import {MaterialOrganizationsE2eModule} from './mat-organizations/organizations-e2e.module';
 import {MaterialProjectsE2eModule} from './mat-projects/projects-e2e.module';
-import {additionalConfig, authConfig, configurationConfig, paginatorConfig} from './mockconfig';
+import {MaterialUsersE2eModule} from './mat-users/users-e2e.module';
+import {
+  additionalConfig,
+  authConfig,
+  configurationConfig,
+  optionalModulesConfig,
+  paginatorConfig,
+} from './mockconfig';
 import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
 import {E2E_APP_ROUTES} from './routes';
 import {formDatas} from './test-ajf-formdata';
 import {formSchemas} from './test-ajf-formschema';
 
 /**
- * Only used to generate fake data for the e2e app
+ * Used to generate fake data for the e2e app
  */
 const fakeSchemaGenerator = new FakeDataGenerator<FormSchema>();
 const fakeDataGenerator = new FakeDataGenerator<FormData>();
@@ -107,13 +116,14 @@ export function provideDataServiceConfig() {
     MatNativeDateModule,
     OverlayModule,
     RouterModule.forRoot(E2E_APP_ROUTES),
+    FormsModule,
+    UsersModule,
 
     // Optional Metrics
-    AreasModule,
-    FormsModule,
-    LocationModule,
-    OrganizationsModule,
-    ProjectModule,
+    optionalModulesConfig.areasModule ? AreasModule : [],
+    optionalModulesConfig.locationsModule ? LocationModule : [],
+    optionalModulesConfig.organizationsModule ? OrganizationsModule : [],
+    optionalModulesConfig.projectsModule ? ProjectModule : [],
 
     // E2E demos
     MaterialAreasE2eModule,
@@ -121,6 +131,7 @@ export function provideDataServiceConfig() {
     MaterialCollectE2eModule,
     MaterialCreateE2eModule,
     MaterialEditE2eModule,
+    MaterialGroupsE2eModule,
     MaterialListE2eModule,
     MaterialLocationsE2eModule,
     MaterialLoginE2eModule,
@@ -128,6 +139,7 @@ export function provideDataServiceConfig() {
     MaterialMetricsE2eModule,
     MaterialOrganizationsE2eModule,
     MaterialProjectsE2eModule,
+    MaterialUsersE2eModule,
   ],
   declarations: [
     E2eApp,
