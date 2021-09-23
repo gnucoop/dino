@@ -4,6 +4,7 @@
 
 // Import all the core styles.
 @use '../card/card-base';
+@use '../cdk-drop-list/cdk-drop-list-base';
 @use '../checkbox/checkbox-base';
 @use '../chips/chips-base';
 @use '../table/table-base';
@@ -22,6 +23,7 @@
     @include mat-core-theming.core($typography-config);
 
     @include card-base.card-core($typography-config);
+    @include cdk-drop-list-base.cdk-drop-list-core($typography-config);
     @include checkbox-base.checkbox-core($typography-config);
     @include chips-base.chips-core($typography-config);
     @include datepicker-base.datepicker-core($typography-config);

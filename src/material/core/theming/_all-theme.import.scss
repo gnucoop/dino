@@ -3,6 +3,7 @@
 @forward '../../form-field/form-field-theme';
 @forward '../../button/button-theme.import';
 @forward '../../card/card-theme.import';
+@forward '../../cdk-drop-list/cdk-drop-list-theme.import';
 @forward '../../checkbox/checkbox-theme.import';
 @forward '../../table/table-theme.import';
 @forward '../../paginator/paginator-theme.import';
@@ -19,6 +20,7 @@
 
 @import '../../button/button-theme';
 @import '../../card/card-theme';
+@import '../../cdk-drop-list/cdk-drop-list-theme';
 @import '../../checkbox/checkbox-theme';
 @import '../../chips/chips-theme';
 @import '../../table/table-theme';

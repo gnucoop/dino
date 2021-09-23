@@ -5,6 +5,7 @@
 @forward 'typography/typography.import';
 @forward '../button/button-theme.import';
 @forward '../card/card-theme.import';
+@forward '../cdk-drop-list/cdk-drop-list-theme';
 @forward '../checkbox/checkbox-theme.import';
 @forward '../table/table-theme.import';
 @forward '../paginator/paginator-theme.import';
@@ -16,6 +17,7 @@
 @forward '../form-field/form-field-theme.import';
 @forward 'theming/all-theme' as dewco-*;
 @forward '../card/card-base.import';
+@forward '../cdk-drop-list/cdk-drop-list-base.import';
 @forward '../checkbox/checkbox-base.import';
 @forward '../chips/chips-base.import';
 @forward '../table/table-base.import';

@@ -25,6 +25,7 @@
 // Import all the theming functionality.
 @use '../../button/button-theme';
 @use '../../card/card-theme';
+@use '../../cdk-drop-list/cdk-drop-list-theme';
 @use '../../checkbox/checkbox-theme';
 @use '../../chips/chips-theme';
 @use '../../datepicker/datepicker-theme';
@@ -73,6 +74,7 @@
         // Dewco theming mixins
         @include button-theme.button-theme($theme);
         @include card-theme.card-theme($theme);
+        @include cdk-drop-list-theme.cdk-drop-list-theme($theme);
         @include checkbox-theme.checkbox-theme($theme);
         @include chips-theme.chips-theme($theme);
         @include datepicker-theme.datepicker-theme($theme);

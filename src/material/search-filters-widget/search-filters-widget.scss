@@ -19,13 +19,16 @@ dewco-search-filters-widget {
       }
     }
   }
-  .dewco-filter-widget-label {
-    width: 100%;
-    flex: 1 1 auto;
-    padding-bottom: 20px;
-    font-weight: bold;
+  .mat-card-content {
+    .dewco-filter-widget-label {
+      width: 100%;
+      flex: 1 1 auto;
+      font-weight: bold;
+    }
+    .mat-select {
+      margin: 20px 0px;
+    }
   }
-
   ajf-field {
     .mat-radio-group {
       display: flex;

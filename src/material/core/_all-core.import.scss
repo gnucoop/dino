@@ -1,5 +1,6 @@
 @forward 'typography/typography.import';
 @forward '../card/card-base.import';
+@forward '../cdk-drop-list/cdk-drop-list-base.import';
 @forward '../checkbox/checkbox-base.import';
 @forward '../chips/chips-base.import';
 @forward '../table/table-base.import';
@@ -17,6 +18,7 @@
 
 @import './typography/typography';
 @import '../card/card-base';
+@import '../cdk-drop-list/cdk-drop-list-base';
 @import '../checkbox/checkbox-base';
 @import '../chips/chips-base';
 @import '../table/table-base';
@@ -30,4 +32,3 @@
 @import '../grid/grid-base';
 @import '../dialog/dialog-base';
 @import '../icon/icon-base';
-
