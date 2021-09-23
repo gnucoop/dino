@@ -66,6 +66,8 @@ pipeline {
       steps {
         sh 'yarn build-and-check-release-output'
         sh 'yarn check-tooling-setup'
+        sh './scripts/jenkins/create-build-artifacts.js'
+        archiveArtifacts 'dist/releases/**/*.tgz'
       }
     }
     stage('Ngcc compatibility check') {
@@ -89,8 +91,6 @@ pipeline {
         sh 'yarn build-docs-content'
         sh './scripts/circleci/publish-snapshots.sh'
         sh 'node ./scripts/deploy-dev-app.js'
-        sh './scripts/jenkins/create-build-artifacts.sh'
-        archiveArtifacts 'dist/releases/**/*.tgz'
       }
     }
     stage('Build') {
