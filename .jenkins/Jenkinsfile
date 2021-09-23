@@ -109,16 +109,6 @@ pipeline {
         saveCache(cacheParams)
       }
     }
-    stage('Publish') {
-      when {
-        expression {
-          return gitBranch == 'master'
-        }
-      }
-      steps {
-        sh './scripts/publish.sh'
-      }
-    }
   }
 }
 
