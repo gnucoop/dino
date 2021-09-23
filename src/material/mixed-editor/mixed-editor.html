@@ -1,0 +1,118 @@
+<div class="dewco-mixed-editor-container">
+  <div
+    [class]="'dewco-mixed-list-container' + (viewOnly ? ' dewco-mixed-list-container-hidden' : '')"
+  >
+    <div class="dewco-mixed-list-filter">
+      <mat-form-field appearance="fill">
+        <mat-label>Search Items</mat-label>
+        <input #search matInput />
+        <mat-icon matSuffix>rule</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div
+      id="targetsList"
+      cdkDropList
+      [cdkDropListDisabled]="true"
+      [cdkDropListData]="(sourceList|async)!"
+      class="dewco-mixed-list"
+    >
+      <ng-container *ngFor="let item of (sourceList|async)">
+        <ng-container *ngIf="item.displayed">
+          <div
+            [class]="item.disabled? 'dewco-mixed-list-item-disabled' : 'dewco-mixed-list-item'"
+          >
+            <mat-icon class="dewco-mixed-list-icon-identifier"
+              >{{item.itemIcon}}</mat-icon
+            >
+            <div class="dewco-mixed-list-entry-tile">{{item.itemName}}</div>
+
+            <ng-template #boxBtn>
+              <button
+                mat-icon-button
+                color="primary"
+                aria-label="Add item"
+                (click)="addItem(item)"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </ng-template>
+
+            <ng-template #boxDisabledBtn>
+              <button
+                mat-icon-button
+                color="primary"
+                aria-label="Disabled item"
+              >
+                <mat-icon>not_interested</mat-icon>
+              </button>
+            </ng-template>
+
+            <ng-container
+              *ngTemplateOutlet="item.disabled ? boxDisabledBtn : boxBtn"
+            ></ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="dewco-mixed-list-container">
+    <div class="dewco-mixed-list-savename">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input #saveListName matInput [disabled]="viewOnly" />
+        <mat-icon matSuffix>badge</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div
+      id="groupTargetList"
+      cdkDropList
+      [cdkDropListDisabled]="true"
+      [cdkDropListData]="saveList"
+      class="dewco-mixed-list"
+    >
+      <div
+        class="dewco-mixed-list-item dewco-mixed-list-item-savelist"
+        *ngFor="let item of saveList"
+      >
+        <mat-icon class="dewco-mixed-list-icon-identifier"
+          >{{item.itemIcon}}</mat-icon
+        >
+        <div class="dewco-mixed-list-entry-tile">{{item.itemName}}</div>
+        <button
+          *ngIf="!viewOnly"
+          mat-icon-button
+          color="primary"
+          aria-label="Remove item"
+          (click)="removeItem(item)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dewco-mixed-list-action-buttons-container">
+    <button
+      *ngIf="!viewOnly"
+      mat-raised-button
+      class="dewco-mixed-list-action-button"
+      color="primary"
+      cdkFocusInitial
+      (click)="saveMixedList()"
+      [disabled]="!validateSaveList()"
+    >
+      Save
+    </button>
+    <button
+      mat-raised-button
+      class="dewco-mixed-list-action-button"
+      color="warn"
+      (click)="onClose()"
+    >
+      Close
+    </button>
+  </div>
+</div>

@@ -33,6 +33,7 @@ export const commitMessage: CommitMessageConfig = {
     'material/main-nav',
     'material/metric-editor',
     'material/metric-section',
+    'material/mixed-editor',
     'material/collect',
     'material/floating-button',
     'material/form-metric-selector',
