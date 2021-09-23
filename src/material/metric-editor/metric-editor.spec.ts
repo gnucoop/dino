@@ -10,7 +10,8 @@ import {DataService, Metric, PermissionContextService} from '../../core/data';
 import {MetricEditor, MetricEditorModule} from './index';
 
 const dataServiceMock = {
-  createCollection: () => of(true)
+  createCollection: () => of(true),
+  find: () => of({exec: () => Promise.resolve({})}),
 } as unknown as DataService;
 
 const permissionContextServiceMock = {
