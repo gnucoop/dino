@@ -32,6 +32,7 @@ export class LocationModule {
   readonly locationsMetric: ActiveMetric = {
     label: 'Locations',
     icon: 'place',
+    metricName: 'location',
   };
   constructor(
       private _filtersService: FiltersService,

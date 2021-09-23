@@ -32,6 +32,7 @@ export class ProjectModule {
   readonly projectMetric: ActiveMetric = {
     label: 'Projects',
     icon: 'assignment',
+    metricName: 'project',
   };
   constructor(
       private _filtersService: FiltersService,

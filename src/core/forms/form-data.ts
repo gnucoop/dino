@@ -42,6 +42,26 @@ export interface FormData extends Model {
    * A plain object containing the data collected.
    */
   data: {[key: string]: any};
+
+  /**
+   * The Form Data area id.
+   */
+  area_id?: string;
+
+  /**
+   * The Form Data project id.
+   */
+  project_id?: string;
+
+  /**
+   * The Form Data location id.
+   */
+  location_id?: string;
+
+  /**
+   * The Form Data organization id.
+   */
+  organization_id?: string;
 }
 
 export const VERSION = 1;

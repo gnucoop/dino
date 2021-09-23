@@ -62,19 +62,12 @@ export const schema = {
       ]
     },
     "coordinates": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/Coordinates"
-        },
-        {
-          "type": "null"
-        }
-      ],
+      "$ref": "#/definitions/Coordinates",
       "description": "The optional location map coordinates"
     }
   },
+  "additionalProperties": false,
   "required": [
-    "coordinates",
     "created_at",
     "id",
     "name",
@@ -82,7 +75,6 @@ export const schema = {
     "parent_name",
     "updated_at"
   ],
-  "additionalProperties": false,
   "description": "This model is used to store Locations.",
   "title": "Location",
   "primaryKey": "id",

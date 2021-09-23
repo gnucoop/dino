@@ -37,6 +37,11 @@ export interface ActiveMetric {
    * The metric icon identifier.
    */
   icon: string;
+
+  /**
+   * The metric name identifier
+   */
+  metricName: string;
 }
 
 /**

@@ -55,6 +55,22 @@ export const schema = {
     "data": {
       "type": "object",
       "description": "A plain object containing the data collected."
+    },
+    "area_id": {
+      "type": "string",
+      "description": "The Form Data area id."
+    },
+    "project_id": {
+      "type": "string",
+      "description": "The Form Data project id."
+    },
+    "location_id": {
+      "type": "string",
+      "description": "The Form Data location id."
+    },
+    "organization_id": {
+      "type": "string",
+      "description": "The Form Data organization id."
     }
   },
   "required": [

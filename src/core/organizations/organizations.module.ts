@@ -32,6 +32,7 @@ export class OrganizationsModule {
   readonly organizationMetric: ActiveMetric = {
     label: 'Organizations',
     icon: 'public',
+    metricName: 'organization',
   };
   constructor(
       private _filtersService: FiltersService,

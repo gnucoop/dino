@@ -32,6 +32,7 @@ export class AreasModule {
   readonly areaMetric: ActiveMetric = {
     label: 'Thematic Areas',
     icon: 'volunteer_activism',
+    metricName: 'area',
   };
   constructor(
       private _filtersService: FiltersService,
