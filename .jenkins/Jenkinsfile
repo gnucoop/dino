@@ -22,6 +22,21 @@ pipeline {
         sh './scripts/circleci/setup_bazel_binary.sh'
       }
     }
+    stage('Unit tests - View Engine') {
+      steps {
+        sh 'bazel test --build_tag_filters=-docs-package,-e2e --test_tag_filters=-e2e --config=view-engine --build_tests_only -- src/...'
+      }
+    }
+    stage('Build - View Engine') {
+      steps {
+        sh 'bazel build --build_tag_filters=-docs-package,-release-package --config=view-engine -- src/...'
+      }
+    }
+    stage('Test local browsers') {
+      steps {
+        sh 'bazel test --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only -- src/...'
+      }
+    }
     stage('Lint') {
       steps {
         sh 'bazel build //:rollup_globals'
@@ -32,19 +47,9 @@ pipeline {
         sh 'yarn -s ts-circular-deps:check'
       }
     }
-    stage('Build - View Engine') {
+    stage('Integration tests - Partial Ivy') {
       steps {
-        sh 'bazel build --build_tag_filters=-docs-package,-release-package --config=view-engine -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF'
-      }
-    }
-    stage('Unit tests - View Engine') {
-      steps {
-        sh 'bazel test --build_tag_filters=-docs-package,-e2e --test_tag_filters=-e2e --config=view-engine --build_tests_only -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF'
-      }
-    }
-    stage('JSON schema tests') {
-      steps {
-        sh 'yarn -s bazel test tools/model-schema/...'
+        sh 'yarn integration-tests:partial-ivy'
       }
     }
     stage('Integration tests - View Engine') {
@@ -54,44 +59,23 @@ pipeline {
     }
     stage('E2E tests') {
       steps {
-        sh 'bazel test src/... --build_tag_filters=e2e --test_tag_filters=e2e'
+        sh 'yarn e2e --flaky_test_attempts=2'
       }
     }
-    stage('Build - Ivy') {
-      steps {
-        sh 'bazel build --build_tag_filters=-docs-package,-release-package -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF'
-      }
-    }
-    stage('API guard tests') {
-      steps {
-        sh 'bazel test tools/public_api_guard/...'
-      }
-    }
-    stage('Unit tests - Ivy') {
-      steps {
-        sh 'bazel test --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only -- src/... -//src/e2e-app:devserver_with_linked_declarations.MF'
-      }
-    }
-    stage('Integration tests - Ivy') {
-      steps {
-        sh 'yarn integration-tests:partial-ivy'
-      }
-    }
-    stage('Release output') {
+    stage('Build release packages') {
       steps {
         sh 'yarn build-and-check-release-output'
         sh 'yarn check-tooling-setup'
+      }
+    }
+    stage('Ngcc compatibility check') {
+      steps {
         sh 'mkdir -p node_modules/@dewco'
         sh 'cp -R dist/releases/* node_modules/@dewco/'
         sh 'mv node_modules/__ngcc_entry_points__.json node_modules/__ngcc_entry_points__.json.back'
         sh 'yarn ngcc --error-on-failed-entry-point --no-tsconfig'
         sh 'mv node_modules/__ngcc_entry_points__.json.back node_modules/__ngcc_entry_points__.json'
         sh 'rm -Rf node_modules/@dewco'
-      }
-    }
-    stage('Save cache') {
-      steps {
-        saveCache(cacheParams)
       }
     }
     stage('Publish snapshots') {
@@ -107,6 +91,22 @@ pipeline {
         sh 'node ./scripts/deploy-dev-app.js'
         sh './scripts/jenkins/create-build-artifacts.sh'
         archiveArtifacts 'dist/releases/**/*.tgz'
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'bazel build --build_tag_filters=-docs-package,-release-package -- src/...'
+      }
+    }
+    stage('API golden checks') {
+      steps {
+        sh 'bazel test tools/public_api_guard/...'
+        sh 'bazel test tools/model-schema/...'
+      }
+    }
+    stage('Save cache') {
+      steps {
+        saveCache(cacheParams)
       }
     }
     stage('Publish') {
