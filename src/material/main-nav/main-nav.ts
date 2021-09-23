@@ -23,6 +23,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -171,6 +172,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
       readonly authService: AuthService,
       readonly snackbar: MatSnackBar,
       private _router: Router,
+      private _cdr: ChangeDetectorRef,
   ) {
     this.showNav = this._router.events.pipe(
         filter(evt => evt instanceof NavigationEnd),
@@ -228,6 +230,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
                                  }),
                                  )
                              .subscribe();
+
+    this._cdr.detectChanges();
   }
 
   menuToggle(): void {

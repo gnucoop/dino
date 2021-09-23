@@ -1,5 +1,5 @@
 <mat-toolbar
-  *ngIf="sidenav != null && (showNav|async) === true"
+  *ngIf="sidenav != null && (showNav|async) !== false"
   class="dewco-toolbar"
   [class.dewco-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
 >
