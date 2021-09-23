@@ -22,26 +22,28 @@
 import {
   AjfForm,
   AjfFormActionEvent,
-  AjfFormRenderer,
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
 import {Location} from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
-  ViewChild,
+  QueryList,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@dewco/core/auth';
-import {DataModelManager, Model} from '@dewco/core/data';
+import {DataModelManager, MetricsService, Model} from '@dewco/core/data';
 import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
+import {FormMetricSelector} from '@dewco/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
 
@@ -57,11 +59,21 @@ import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'r
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class CreateForm<T extends Model = Model> implements OnInit, OnDestroy {
+export class CreateForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
   /**
-   * True if no validation errors are encountered
+   * True if no validation errors are encountered in the AjfForm
    */
-  readonly isValid: Observable<boolean>;
+  isAjfFormValid: Observable<boolean>;
+
+  /**
+   * True if no validation errors are encountered in the Form Metrics selector form
+   */
+  isFormMetricsSelectorValid: Observable<boolean>;
+
+  /**
+   * The Form Metric Selector
+   */
+  private _formMetricsSelector: Observable<FormMetricSelector|null>;
 
   /**
    * The Form schema id
@@ -113,9 +125,9 @@ export class CreateForm<T extends Model = Model> implements OnInit, OnDestroy {
   }
 
   /**
-   * The Ajf Form Renderer
+   * The Form Metrics Selector
    */
-  @ViewChild(AjfFormRenderer, {static: true}) formCmp: AjfFormRenderer;
+  @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
 
   constructor(
       private _authService: AuthService,
@@ -123,12 +135,10 @@ export class CreateForm<T extends Model = Model> implements OnInit, OnDestroy {
       private _route: ActivatedRoute,
       private _fs: FormSchemaManager,
       private _rendererService: AjfFormRendererService,
-      readonly snackbar: MatSnackBar,
       private _location: Location,
-  ) {
-    this.isValid =
-        this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1));
-  }
+      readonly snackbar: MatSnackBar,
+      readonly metricsService: MetricsService,
+  ) {}
 
   /**
    * Called whenever the user invokes an action on a row item.
@@ -190,18 +200,48 @@ export class CreateForm<T extends Model = Model> implements OnInit, OnDestroy {
         }),
         shareReplay(1),
     );
+  }
+
+  ngAfterViewInit() {
+    this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
+        switchMap(active => {
+          if (!active) {
+            return obsOf(null);
+          }
+          return this.formMetricsSelectorComponent.changes.pipe(
+              map((comps: QueryList<FormMetricSelector>) => comps.first));
+        }),
+    );
 
     this._saveFormSub =
         this._saveFormEvt
             .pipe(
-                withLatestFrom(this._isFormData, this._formSchemaId),
-                switchMap(([_, isFormData, formSchemaId]) => {
+                withLatestFrom(
+                    this._isFormData,
+                    this._formSchemaId,
+                    this._formMetricsSelector,
+                    ),
+                switchMap(([
+                            _,
+                            isFormData,
+                            formSchemaId,
+                            formMetricsSelector,
+                          ]) => {
                   const formValue = this._rendererService.getFormValue();
                   let newItem: {[key: string]: any} = {};
                   if (isFormData) {
                     newItem.data = formValue;
                     newItem.schema_id = formSchemaId;
                     newItem.user_id = this._authService.getUserInfo()?.id;
+                    if (formMetricsSelector != null) {
+                      const selectedMetrics = formMetricsSelector.selectedMetrics;
+                      for (let key of Object.keys(selectedMetrics)) {
+                        if (selectedMetrics[key].metricId != null) {
+                          const saveKey = `${key}_id`;
+                          newItem[saveKey] = selectedMetrics[key].metricId;
+                        }
+                      }
+                    }
                   } else {
                     newItem.data.data = formValue;
                     newItem.data.schema_id = formSchemaId;
@@ -216,8 +256,21 @@ export class CreateForm<T extends Model = Model> implements OnInit, OnDestroy {
                 }),
                 )
             .subscribe(_ => this.snackbar.open('Document created', 'SAVE', {duration: 5000}));
-  }
 
+    this.isAjfFormValid =
+        this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1))
+            .pipe(map(ajfFormValid => {
+              return ajfFormValid;
+            }));
+
+    this.isFormMetricsSelectorValid =
+        this._formMetricsSelector.pipe(switchMap(formMetricsSelector => {
+          if (formMetricsSelector == null) {
+            return obsOf(false);
+          }
+          return formMetricsSelector.isFormMetricsValid();
+        }));
+  }
   ngOnDestroy() {
     this._saveFormSub.unsubscribe();
     this._saveFormEvt.complete();

@@ -26,6 +26,7 @@ ng_module(
         "//src/core/auth",
         "//src/core/data",
         "//src/core/forms",
+        "//src/material/form-metric-selector",
         "@npm//@ajf/core",
         "@npm//@ajf/material",
         "@npm//@angular/common",

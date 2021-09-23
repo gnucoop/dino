@@ -29,6 +29,7 @@ export const commitMessage: CommitMessageConfig = {
     'material',
     'e2e-material',
     'material/breakpoint-observer',
+    'material/create-form',
     'material/edit-form',
     'material/main-nav',
     'material/metric-editor',

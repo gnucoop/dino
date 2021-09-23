@@ -27,30 +27,34 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSortModule} from '@angular/material/sort';
+import {MatStepperModule} from '@angular/material/stepper';
 import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-
-import {CreateForm} from './create-form';
+import {FormMetricSelectorModule} from '@dewco/material/form-metric-selector';
 
 @NgModule({
   imports: [
     AjfFormsModule,
     BrowserAnimationsModule,
     CommonModule,
+    FormMetricSelectorModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
+    MatStepperModule,
     MatTableModule,
     MatToolbarModule,
     RouterModule,
@@ -64,3 +68,5 @@ import {CreateForm} from './create-form';
 })
 export class CreateFormModule {
 }
+
+import {CreateForm} from './create-form';
