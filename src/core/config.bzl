@@ -11,6 +11,7 @@ CORE_ENTRYPOINTS = [
     "organizations",
     "projects",
     "translations",
+    "users",
 ]
 
 CORE_ENTRYPOINTS_WITH_STYLES = [
@@ -31,4 +32,7 @@ CORE_MODELS = [
     "projects/project",
     "areas/area",
     "organizations/organization",
+    "users/user-model",
+    "users/user-group",
+    "users/user-role",
 ]

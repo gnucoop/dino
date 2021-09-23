@@ -1,0 +1,34 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "users",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [],
+    module_name = "@dewco/core/users",
+    deps = [
+        "//src/core/auth",
+        "//src/core/data",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//rxdb",
+    ],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["users.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)
