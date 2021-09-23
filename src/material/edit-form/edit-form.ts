@@ -28,21 +28,34 @@ import {
 } from '@ajf/core/forms';
 import {Location} from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  QueryList,
   ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataModelManager, Model} from '@dewco/core/data';
+import {DataModelManager, MetricsService, Model} from '@dewco/core/data';
 import {FormData, FormSchema, FormSchemaManager} from '@dewco/core/forms';
-import {combineLatest, from, Observable, of as obsOf, Subject, Subscription} from 'rxjs';
-import {catchError, filter, map, shareReplay, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {FormMetricSelector} from '@dewco/material/form-metric-selector';
+import {combineLatest, Observable, of as obsOf, Subject, Subscription} from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom
+} from 'rxjs/operators';
 
 /**
  * The Form Edit component.
@@ -56,7 +69,17 @@ import {catchError, filter, map, shareReplay, switchMap, tap, withLatestFrom} fr
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
+export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
+  /**
+   * True if no validation errors are encountered in the AjfForm
+   */
+  isAjfFormValid: Observable<boolean>;
+
+  /**
+   * True if no validation errors are encountered in the Form Metrics selector form
+   */
+  isFormMetricsSelectorValid: Observable<boolean>;
+
   /**
    * The Form data id
    */
@@ -73,9 +96,9 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
   readonly isDetails: Observable<boolean>;
 
   /**
-   * True if no validation errors are encountered
+   * The Form Metric Selector
    */
-  readonly isValid: Observable<boolean>;
+  private _formMetricsSelector: Observable<FormMetricSelector|null>;
 
   /**
    * The current document object
@@ -138,13 +161,19 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
    */
   @ViewChild(AjfFormRenderer, {static: true}) formCmp: AjfFormRenderer;
 
+  /**
+   * The Form Metrics Selector
+   */
+  @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
+
   constructor(
       private _router: Router,
       private _route: ActivatedRoute,
       private _fs: FormSchemaManager,
       private _rendererService: AjfFormRendererService,
-      readonly snackbar: MatSnackBar,
       private _location: Location,
+      readonly snackbar: MatSnackBar,
+      readonly metricsService: MetricsService,
   ) {
     this.formId = this._route.params.pipe(
         map(params => params.form_id),
@@ -157,22 +186,23 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
         shareReplay(1),
     );
 
-    this.isView = this._route.data.pipe(map(data => {
-      if (data != null && data.isView != null) {
-        return data.isView;
-      }
-      return false;
-    }));
+    this.isView = this._route.data.pipe(
+        map(data => {
+          if (data != null && data.isView != null) {
+            return data.isView;
+          }
+          return false;
+        }),
+    );
 
-    this.isDetails = this._route.data.pipe(map(data => {
-      if (data != null && data.isDetails != null) {
-        return data.isDetails;
-      }
-      return false;
-    }));
-
-    this.isValid =
-        this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1));
+    this.isDetails = this._route.data.pipe(
+        map(data => {
+          if (data != null && data.isDetails != null) {
+            return data.isDetails;
+          }
+          return false;
+        }),
+    );
   }
 
   /**
@@ -200,30 +230,24 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
               this._dataModelManager.detailsManager :
               this._dataModelManager;
 
-          return dm.query({selector: {id: id}})
-              .pipe(
-                  switchMap((rxdbQuery) => {
-                    const res = from(rxdbQuery.exec());
-                    return res;
-                  }),
-                  map((docs) => {
-                    if (!docs.length) {
-                      this._router.navigateByUrl('');
-                      return null;
-                    }
-                    const rxDoc = docs[0];
-                    const item: {[key: string]: any} = rxDoc.toJSON();
-                    this._currentDoc.next(item as T);
-                    if ('data' in item && item['data'] != null) {
-                      const formDataObj = {
-                        data: item['data']['data'] ?? item['data'] ?? null,
-                        schemaId: item['data']['schema_id'] ?? item['schema_id'] ?? null,
-                      };
-                      return formDataObj;
-                    }
-                    return null;
-                  }),
-              );
+          return dm.get(id).pipe(
+              map((doc) => {
+                if (doc == null) {
+                  this._router.navigateByUrl('');
+                  return null;
+                }
+                const item: {[key: string]: any} = doc.toJSON();
+                this._currentDoc.next(item as T);
+                if ('data' in item && item['data'] != null) {
+                  const formDataObj = {
+                    data: item['data']['data'] ?? item['data'] ?? null,
+                    schemaId: item['data']['schema_id'] ?? item['schema_id'] ?? null,
+                  };
+                  return formDataObj;
+                }
+                return null;
+              }),
+          );
         }),
         switchMap(data => data as Observable<{data: FormData, schemaId: string}>),
         shareReplay(1),
@@ -267,30 +291,88 @@ export class EditForm<T extends Model = Model> implements OnInit, OnDestroy {
         }),
         shareReplay(1),
     );
+  }
 
-    this._saveFormSub =
-        combineLatest([this._saveFormEvt as Observable<AjfFormActionEvent>, this._currentDoc])
-            .pipe(
-                map(([_, item]) => {
-                  return {doc: item, formValue: this._rendererService.getFormValue()};
-                }),
-                withLatestFrom(this.isDetails),
-                switchMap(([formObj, isDetails]) => {
-                  let newItem = formObj.doc as {[key: string]: any};
-                  newItem.data.data != null ? newItem.data.data = formObj.formValue :
-                                              newItem.data = formObj.formValue;
-                  const dm: DataModelManager<T> =
-                      isDetails && this._dataModelManager.detailsManager != null ?
-                      this._dataModelManager.detailsManager :
-                      this._dataModelManager;
-                  return dm.update(newItem as T);
-                }),
-                catchError(err => {
-                  this.snackbar.open(err, 'ERROR', {duration: 5000});
-                  return obsOf(err);
-                }),
-                )
-            .subscribe(_ => this.snackbar.open('Document saved', 'SAVE', {duration: 5000}));
+  ngAfterViewInit() {
+    this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(switchMap(active => {
+      if (!active) {
+        return obsOf(null);
+      }
+      return this.formMetricsSelectorComponent.changes.pipe(
+          map((comps: QueryList<FormMetricSelector>) => comps.first));
+    }));
+
+    combineLatest([this._formMetricsSelector, this._currentDoc, this.isView])
+        .pipe(
+            switchMap(([fms, currentDoc, isView]) => {
+              if (fms == null) {
+                return obsOf(false);
+              }
+              fms.addFormData(currentDoc, isView);
+              return obsOf(true);
+            }),
+            take(1),
+            )
+        .subscribe();
+
+    this._saveFormSub = combineLatest([
+                          this._saveFormEvt as Observable<AjfFormActionEvent>,
+                          this._currentDoc,
+                          this._formMetricsSelector,
+                        ])
+                            .pipe(
+                                map(([_, item, formMetricsSelector]) => {
+                                  return {
+                                    doc: item,
+                                    formValue: this._rendererService.getFormValue(),
+                                    fmSelector: formMetricsSelector
+                                  };
+                                }),
+                                withLatestFrom(this.isDetails),
+                                switchMap(([formObj, isDetails]) => {
+                                  let newItem = formObj.doc as {[key: string]: any};
+                                  newItem.data.data != null ?
+                                      newItem.data.data = formObj.formValue :
+                                      newItem.data = formObj.formValue;
+
+                                  if (formObj.fmSelector != null) {
+                                    const selectedMetrics = formObj.fmSelector.selectedMetrics;
+                                    for (let key of Object.keys(selectedMetrics)) {
+                                      if (selectedMetrics[key].metricId != null) {
+                                        const saveKey = `${key}_id`;
+                                        newItem[saveKey] = selectedMetrics[key].metricId;
+                                      }
+                                    }
+                                  }
+
+                                  const dm: DataModelManager<T> =
+                                      isDetails && this._dataModelManager.detailsManager != null ?
+                                      this._dataModelManager.detailsManager :
+                                      this._dataModelManager;
+                                  return dm.update(newItem as T);
+                                }),
+                                catchError(err => {
+                                  this.snackbar.open(err, 'ERROR', {duration: 5000});
+                                  return obsOf(err);
+                                }),
+                                )
+                            .subscribe(_ => {
+                              this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
+                            });
+
+    this.isAjfFormValid =
+        this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1))
+            .pipe(map(ajfFormValid => {
+              return ajfFormValid;
+            }));
+
+    this.isFormMetricsSelectorValid =
+        this._formMetricsSelector.pipe(switchMap(formMetricsSelector => {
+          if (formMetricsSelector == null) {
+            return obsOf(false);
+          }
+          return formMetricsSelector.isFormMetricsValid();
+        }));
   }
 
   ngOnDestroy() {

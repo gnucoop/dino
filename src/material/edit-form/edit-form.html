@@ -1,10 +1,52 @@
 <ng-container *ngIf="(form|async) != null">
-  <ajf-form
-    #formContainer
-    [form]="(form|async)!"
-    [saveDisabled]="(isView|async) || ((isValid|async) === false)"
-    [topBar]="true"
-    (formAction)="onFormAction($event)"
-    [readonly]="isView|async"
-  ></ajf-form
-></ng-container>
+  <ng-container *ngIf="metricsService.hasActiveMetrics|async">
+    <mat-stepper labelPosition="bottom" #stepper linear>
+      <mat-step
+        [completed]="(isFormMetricsSelectorValid|async) || (isView|async)"
+      >
+        <ng-template matStepLabel>FORM METRICS</ng-template>
+        <div class="dewco-edit-form-step-buttons">
+          <button
+            mat-icon-button
+            matStepperNext
+            aria-label="Next step"
+            [color]="(isFormMetricsSelectorValid|async) || (isView|async) ? '' : 'warn'"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+        <div class="dewco-edit-form-step-container">
+          <dewco-form-metric-selector> </dewco-form-metric-selector>
+        </div>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>FORM DATA</ng-template>
+        <div>
+          <button mat-icon-button matStepperPrevious aria-label="Previous step">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+        </div>
+        <div class="dewco-edit-form-step-container">
+          <ajf-form
+            #formContainer
+            [form]="(form|async)!"
+            [saveDisabled]="(isView|async) || ((isAjfFormValid|async) === false)"
+            [topBar]="true"
+            (formAction)="onFormAction($event)"
+            [readonly]="isView|async"
+          ></ajf-form>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </ng-container>
+  <ng-container *ngIf="(metricsService.hasActiveMetrics|async) == false">
+    <ajf-form
+      #formContainer
+      [form]="(form|async)!"
+      [saveDisabled]="(isView|async) || ((isAjfFormValid|async) === false)"
+      [topBar]="true"
+      (formAction)="onFormAction($event)"
+      [readonly]="isView|async"
+    ></ajf-form>
+  </ng-container>
+</ng-container>
