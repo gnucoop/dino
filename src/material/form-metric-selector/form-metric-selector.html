@@ -1,0 +1,44 @@
+<div class="dewco-form-metric-selector-container">
+  <form [formGroup]="formMetrics" autocomplete="off">
+    <ng-container *ngFor="let field of formMetricsFields let idx = index">
+      <mat-form-field
+        class="dewco-form-metric-selector-field"
+        appearance="fill"
+      >
+        <input
+          matInput
+          [formControlName]="field.fieldName"
+          [placeholder]="field.placeholder ?? ''"
+          [matAutocomplete]="auto"
+        />
+        <mat-icon matSuffix>{{field.icon}}</mat-icon>
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          [autoActiveFirstOption]="false"
+          [displayWith]="displayMetricName"
+        >
+          <mat-option
+            *ngFor="let option of formMetricsOptions[field.fieldName] | async"
+            [value]="option"
+          >
+            {{option.metricName}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="formMetrics.controls[field.fieldName].hasError('required')"
+        >
+          Please enter a {{field.fieldName}}
+        </mat-error>
+
+        <mat-error
+          *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')"
+        >
+          Please select a valid {{field.fieldName}}
+        </mat-error>
+
+        <mat-hint>{{field.hint}}</mat-hint>
+      </mat-form-field>
+    </ng-container>
+  </form>
+</div>
