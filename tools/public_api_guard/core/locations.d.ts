@@ -1,5 +1,5 @@
 export interface Location extends Metric {
-    coordinates: Coordinates | null;
+    coordinates?: Coordinates;
 }
 
 export declare class LocationManager extends DataModelManager<Location> {

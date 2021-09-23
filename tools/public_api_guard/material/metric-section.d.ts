@@ -5,12 +5,13 @@ export declare class MetricSection<T extends Metric = Metric> implements OnInit 
     readonly listRowActions: ListAction[];
     metricLabel: string;
     set metricManager(mm: DataModelManager<T>);
+    readonly onClickRowActions: ActionType[];
     readonly showEditor: boolean;
     readonly showList: boolean;
     constructor(_filtersService: FiltersService, dialog: MatDialog);
     ngOnInit(): void;
     openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void;
-    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dewco-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "metricManager": "metricManager"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dewco-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, never>;
     static ɵfac: i0.ɵɵFactoryDeclaration<MetricSection<any>, never>;
 }
 

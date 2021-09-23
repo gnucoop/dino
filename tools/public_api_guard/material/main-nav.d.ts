@@ -15,7 +15,7 @@ export declare class MainNav implements AfterViewInit, OnDestroy {
     get showNavLabels(): BehaviorSubject<boolean>;
     sidenav: MatSidenav;
     readonly snackbar: MatSnackBar;
-    constructor(breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, snackbar: MatSnackBar, _router: Router);
+    constructor(breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
     logout(): void;
     menuClick(): void;
     menuToggle(): void;

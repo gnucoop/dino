@@ -1,6 +1,7 @@
 export interface ActiveMetric {
     icon: string;
     label: string;
+    metricName: string;
 }
 
 export interface ActiveSync {

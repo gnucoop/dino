@@ -1,7 +1,11 @@
 export interface FormData extends Model {
+    area_id?: string;
     data: {
         [key: string]: any;
     };
+    location_id?: string;
+    organization_id?: string;
+    project_id?: string;
     schema_id: string;
     user_id: string;
 }
