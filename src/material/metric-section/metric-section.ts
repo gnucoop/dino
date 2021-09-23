@@ -23,7 +23,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {DataModelManager, Metric} from '@dewco/core/data';
-import {FiltersService, ListAction, ListHeader} from '@dewco/core/list';
+import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
 import {ListDataSource} from '@dewco/material/list';
 import {MetricEditor} from '@dewco/material/metric-editor';
 
@@ -59,6 +59,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
    * The Metrics List available row actions
    */
   @Input() readonly listRowActions: ListAction[];
+
+  /**
+   * The Metrics List actions to be performed on a row click
+   */
+  @Input() readonly onClickRowActions: ActionType[];
 
   /**
    * The Label of the Metric

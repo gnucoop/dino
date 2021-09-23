@@ -80,9 +80,13 @@ export interface MetricFormField {
    */
   placeholder?: string;
   /**
-   * The field starting value
+   * The field starting value.
    */
   value?: any;
+  /**
+   * The field icon identifier.
+   */
+  icon?: string;
 }
 
 /**
@@ -315,6 +319,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
                             this.snackbar.open(
                                 `Oops! Something went wrong while saving the Metric.`, 'SAVE ERROR',
                                 {duration: 10000});
+                          } else {
+                            this.snackbar.open(`Metric saved`, 'METRIC SAVED', {duration: 10000});
                           }
                         });
 
