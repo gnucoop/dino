@@ -42,5 +42,5 @@ export interface Model {
   /**
    * Soft delete flag
    */
-  is_deleted?: boolean;
+  _deleted?: boolean;
 }

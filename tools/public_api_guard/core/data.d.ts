@@ -207,7 +207,7 @@ export interface DataUpsertRequest<T extends Model> {
     object: UpsertModel<T>;
 }
 
-export declare type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | 'is_deleted'>;
+export declare type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | '_deleted'>;
 
 export interface Metric extends Model {
     name: string;
@@ -226,7 +226,7 @@ export declare class MetricsService {
 export interface Model {
     created_at: string;
     id: string;
-    is_deleted?: boolean;
+    _deleted?: boolean;
     updated_at: string;
 }
 

@@ -21,7 +21,7 @@
  */
 import {User} from '@dewco/core/auth';
 import {Model} from '@dewco/core/data';
-import {KeyFunctionMap} from 'rxdb';
+import {MigrationStrategies} from 'rxdb';
 
 /**
  * This model is used to store Users.
@@ -41,4 +41,4 @@ export interface UserModel extends Omit<User<{}>, 'id'>, Model {
 
 export const VERSION = 0;
 
-export const migrationStrategies: KeyFunctionMap = {};
+export const migrationStrategies: MigrationStrategies = {};

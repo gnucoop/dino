@@ -17,7 +17,6 @@ ng_module(
     assets = [
         ":mixed-editor.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/mixed-editor",
     deps = [
         "//src/core/data",
         "//src/core/forms",

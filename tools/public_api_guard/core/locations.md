@@ -15,7 +15,7 @@ import { PermissionContextService } from '@dewco/core/data';
 
 // @public
 interface Location_2 extends Metric {
-    coordinates: Coordinates | null;
+    coordinates?: Coordinates;
 }
 export { Location_2 as Location }
 

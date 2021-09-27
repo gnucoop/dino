@@ -8,6 +8,7 @@ import { AfterViewInit } from '@angular/core';
 import { AuthService } from '@dewco/core/auth';
 import { BehaviorSubject } from 'rxjs';
 import { BreakpointObserverService } from '@dewco/material/breakpoint-observer';
+import { ChangeDetectorRef } from '@angular/core';
 import * as i0 from '@angular/core';
 import * as i10 from '@angular/material/sidenav';
 import * as i11 from '@angular/material/snack-bar';
@@ -30,7 +31,7 @@ import { Router } from '@angular/router';
 
 // @public
 export class MainNav implements AfterViewInit, OnDestroy {
-    constructor(breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, snackbar: MatSnackBar, _router: Router);
+    constructor(breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
     // (undocumented)
     get adminSections(): Section[];
     set adminSections(sec: Section[]);

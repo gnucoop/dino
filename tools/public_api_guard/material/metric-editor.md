@@ -83,6 +83,7 @@ export class MetricEditorModule {
 export interface MetricFormField {
     fieldName: string;
     hint?: string;
+    icon?: string;
     placeholder?: string;
     value?: any;
 }

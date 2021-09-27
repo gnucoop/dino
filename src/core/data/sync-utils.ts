@@ -50,7 +50,11 @@ export function pullQueryBuilder(
       };
     }
     extraParams = extraParams || {};
-    const where = {...(extraParams.where || {}), updated_at: {_gt: `${doc.updated_at}`}};
+    const where = {
+      ...(extraParams.where || {}),
+      updated_at: {_gt: `${doc.updated_at}`},
+      _deleted: {_eq: false}
+    };
     const fields = extraParams.fields || getCollectionFields(collection);
     const query = `{
       ${collection.name}(

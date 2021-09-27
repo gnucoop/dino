@@ -27,6 +27,7 @@ import { User } from '@dewco/core/auth';
 export interface ActiveMetric {
     icon: string;
     label: string;
+    metricName: string;
 }
 
 // @public
@@ -297,7 +298,7 @@ export interface DataUpsertRequest<T extends Model> {
 }
 
 // @public
-export type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | 'is_deleted'>;
+export type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | '_deleted'>;
 
 // @public
 export interface Metric extends Model {
@@ -321,8 +322,8 @@ export class MetricsService {
 // @public
 export interface Model {
     created_at: string;
+    _deleted?: boolean;
     id: string;
-    is_deleted?: boolean;
     updated_at: string;
 }
 

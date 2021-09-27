@@ -36,7 +36,8 @@ export class UserRoleManager extends DataModelManager<UserRole> {
       dataService: DataService,
       permissionContextService: PermissionContextService,
   ) {
-    const collection = {name: 'user_role', schema, migrationStrategies};
-    super({collection}, dataService, permissionContextService);
+    super(
+        {name: 'user_role', collection: {schema, migrationStrategies}}, dataService,
+        permissionContextService);
   }
 }

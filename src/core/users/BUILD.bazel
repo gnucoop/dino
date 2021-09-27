@@ -13,7 +13,6 @@ ng_module(
         exclude = ["**/*.spec.ts"],
     ),
     assets = [],
-    module_name = "@dewco/core/users",
     deps = [
         "//src/core/auth",
         "//src/core/data",

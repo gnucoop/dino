@@ -4,6 +4,7 @@
 
 ```ts
 
+import { ActionType } from '@dewco/core/list';
 import { DataModelManager } from '@dewco/core/data';
 import { FiltersService } from '@dewco/core/list';
 import * as i0 from '@angular/core';
@@ -36,12 +37,13 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     set metricManager(mm: DataModelManager<T>);
     // (undocumented)
     ngOnInit(): void;
+    readonly onClickRowActions: ActionType[];
     // (undocumented)
     openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void;
     readonly showEditor: boolean;
     readonly showList: boolean;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dewco-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "metricManager": "metricManager"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dewco-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<MetricSection<any>, never>;
 }

@@ -27,4 +27,4 @@ import {Model} from './model';
  * The base model interface for item upsert.
  */
 export type UpsertModel<T extends Model> =
-    InsertModel<T>&Partial<Pick<T, 'id'|'created_at'|'updated_at'|'is_deleted'>>;
+    InsertModel<T>&Partial<Pick<T, 'id'|'created_at'|'updated_at'|'_deleted'>>;

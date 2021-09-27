@@ -41,7 +41,7 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
-    "is_deleted": {
+    "_deleted": {
       "type": "boolean",
       "description": "Soft delete flag"
     },

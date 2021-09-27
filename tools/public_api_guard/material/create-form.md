@@ -5,48 +5,59 @@
 ```ts
 
 import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit } from '@angular/core';
 import { AjfForm } from '@ajf/core/forms';
 import { AjfFormActionEvent } from '@ajf/core/forms';
-import { AjfFormRenderer } from '@ajf/core/forms';
 import { AjfFormRendererService } from '@ajf/core/forms';
 import { AuthService } from '@dewco/core/auth';
 import { DataModelManager } from '@dewco/core/data';
+import { FormMetricSelector } from '@dewco/material/form-metric-selector';
 import { FormSchema } from '@dewco/core/forms';
 import { FormSchemaManager } from '@dewco/core/forms';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/slide-toggle';
-import * as i11 from '@angular/material/snack-bar';
-import * as i12 from '@angular/material/sort';
-import * as i13 from '@angular/material/table';
-import * as i14 from '@angular/material/toolbar';
-import * as i15 from '@angular/router';
+import * as i10 from '@angular/material/icon';
+import * as i11 from '@angular/material/input';
+import * as i12 from '@angular/material/slide-toggle';
+import * as i13 from '@angular/material/snack-bar';
+import * as i14 from '@angular/material/sort';
+import * as i15 from '@angular/material/stepper';
+import * as i16 from '@angular/material/table';
+import * as i17 from '@angular/material/toolbar';
+import * as i18 from '@angular/router';
 import * as i2 from '@ajf/material/forms';
 import * as i3 from '@angular/platform-browser/animations';
 import * as i4 from '@angular/common';
-import * as i5 from '@angular/material/button';
-import * as i6 from '@angular/material/checkbox';
-import * as i7 from '@angular/material/dialog';
-import * as i8 from '@angular/material/form-field';
-import * as i9 from '@angular/material/input';
+import * as i5 from '@dewco/material/form-metric-selector';
+import * as i6 from '@angular/material/button';
+import * as i7 from '@angular/material/checkbox';
+import * as i8 from '@angular/material/dialog';
+import * as i9 from '@angular/material/form-field';
 import { Location as Location_2 } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MetricsService } from '@dewco/core/data';
 import { Model } from '@dewco/core/data';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 
 // @public
-export class CreateForm<T extends Model = Model> implements OnInit, OnDestroy {
-    constructor(_authService: AuthService, _router: Router, _route: ActivatedRoute, _fs: FormSchemaManager, _rendererService: AjfFormRendererService, snackbar: MatSnackBar, _location: Location_2);
+export class CreateForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
+    constructor(_authService: AuthService, _router: Router, _route: ActivatedRoute, _fs: FormSchemaManager, _rendererService: AjfFormRendererService, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
     // (undocumented)
     set dataModelManager(dmm: DataModelManager<T>);
     // (undocumented)
     get form(): Observable<AjfForm>;
-    formCmp: AjfFormRenderer;
+    formMetricsSelectorComponent: QueryList<FormMetricSelector>;
     // (undocumented)
     get formSchema(): Observable<FormSchema>;
-    readonly isValid: Observable<boolean>;
+    isAjfFormValid: Observable<boolean>;
+    isFormMetricsSelectorValid: Observable<boolean>;
+    // (undocumented)
+    readonly metricsService: MetricsService;
+    // (undocumented)
+    ngAfterViewInit(): void;
     // (undocumented)
     ngOnDestroy(): void;
     // (undocumented)
@@ -67,7 +78,7 @@ export class CreateFormModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<CreateFormModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CreateFormModule, [typeof i1.CreateForm], [typeof i2.AjfFormsModule, typeof i3.BrowserAnimationsModule, typeof i4.CommonModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatInputModule, typeof i10.MatSlideToggleModule, typeof i11.MatSnackBarModule, typeof i12.MatSortModule, typeof i13.MatTableModule, typeof i14.MatToolbarModule, typeof i15.RouterModule], [typeof i1.CreateForm]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CreateFormModule, [typeof i1.CreateForm], [typeof i2.AjfFormsModule, typeof i3.BrowserAnimationsModule, typeof i4.CommonModule, typeof i5.FormMetricSelectorModule, typeof i6.MatButtonModule, typeof i7.MatCheckboxModule, typeof i8.MatDialogModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatSlideToggleModule, typeof i13.MatSnackBarModule, typeof i14.MatSortModule, typeof i15.MatStepperModule, typeof i16.MatTableModule, typeof i17.MatToolbarModule, typeof i18.RouterModule], [typeof i1.CreateForm]>;
 }
 
 // (No @packageDocumentation comment for this package)

@@ -280,7 +280,7 @@ export class FiltersService<T extends Model = Model> {
       return;
     }
     const propertyKeys = Object.keys(modelSchema.properties);
-    const index = propertyKeys.indexOf('is_deleted');
+    const index = propertyKeys.indexOf('_deleted');
     if (index > -1) {
       propertyKeys.splice(index, 1);
     }

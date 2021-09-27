@@ -17,7 +17,6 @@ ng_module(
     assets = [
         ":user-editor.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/user-editor",
     deps = [
         "//src/core/data",
         "//src/core/users",

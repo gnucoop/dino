@@ -17,7 +17,6 @@ ng_module(
     assets = [
         ":form-metric-selector.css",
     ] + glob(["**/*.html"]),
-    module_name = "@dewco/material/form-metric-selector",
     deps = [
         "//src/core/areas",
         "//src/core/data",

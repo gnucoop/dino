@@ -41,7 +41,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
       permissionContextService: PermissionContextService,
   ) {
     super(
-        {collection: {name: 'user_group', schema, migrationStrategies}}, dataService,
+        {name: 'user_group', collection: {schema, migrationStrategies}}, dataService,
         permissionContextService);
   }
 

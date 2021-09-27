@@ -499,7 +499,7 @@ export class DataService {
       ...this._dataConfig.value.syncOptions,
       url: this._dataConfig.value.syncOptions.url,
       headers: {'Authorization': `Bearer ${token}`},
-      deletedFlag: 'is_deleted',
+      deletedFlag: '_deleted',
       pull: {
         queryBuilder: pullQueryBuilder(
             collection, this._dataConfig.value.syncOptions, params.pullQueryExtraParams),

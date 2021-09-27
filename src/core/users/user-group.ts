@@ -21,7 +21,7 @@
  */
 
 import {Model} from '@dewco/core/data';
-import {KeyFunctionMap} from 'rxdb';
+import {KeyFunctionMap, MigrationStrategies} from 'rxdb';
 
 /**
  * Metric basic info for a User Group.
@@ -76,4 +76,4 @@ export interface UserGroup extends Model {
 
 export const VERSION = 0;
 
-export const migrationStrategies: KeyFunctionMap = {};
+export const migrationStrategies: MigrationStrategies = {};

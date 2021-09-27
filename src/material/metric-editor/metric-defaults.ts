@@ -32,5 +32,5 @@ export const METRIC_DEFAULT_PROPERTIES: string[] = [
   'updated_at',
   'parent_id',
   'parent_name',
-  'is_deleted',
+  '_deleted',
 ];
