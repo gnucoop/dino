@@ -21,7 +21,7 @@
  */
 
 import {Model} from '@dewco/core/data';
-import {KeyFunctionMap, MigrationStrategies} from 'rxdb';
+import {MigrationStrategies} from 'rxdb';
 
 /**
  * Represents an action to be performed on a model Doc.

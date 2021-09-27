@@ -72,7 +72,7 @@ describe('pullQueryBuilder', () => {
     const collection = collections[0];
     const timestamp = new Date().toISOString();
     let pullQuery = `{ model1( ` +
-        `where: {updated_at:{_gt:"${timestamp}"}}, ` +
+        `where: {updated_at:{_gt:"${timestamp}"},_deleted:{_eq:false}}, ` +
         `limit: ${syncOptions.batchSize}, ` +
         `order_by: [{updated_at: asc}] ` +
         `) { id model3Id } }`;
@@ -84,7 +84,7 @@ describe('pullQueryBuilder', () => {
     expect(queryStr).toEqual(pullQuery);
 
     pullQuery = `{ model1( ` +
-        `where: {foo:"bar",updated_at:{_gt:"${timestamp}"}}, ` +
+        `where: {foo:"bar",updated_at:{_gt:"${timestamp}"},_deleted:{_eq:false}}, ` +
         `limit: ${syncOptions.batchSize}, ` +
         `order_by: [{updated_at: asc}] ` +
         `) { id } }`;

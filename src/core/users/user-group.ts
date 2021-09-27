@@ -21,7 +21,7 @@
  */
 
 import {Model} from '@dewco/core/data';
-import {KeyFunctionMap, MigrationStrategies} from 'rxdb';
+import {MigrationStrategies} from 'rxdb';
 
 /**
  * Metric basic info for a User Group.
