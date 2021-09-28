@@ -23,6 +23,7 @@ ROLLUP_GLOBALS = {
 
     # Angular Components packages
     "@angular/cdk/collections": "ng.cdk.collections",
+    "@angular/cdk/drag-drop": "ng.cdk.drag-drop",
     "@angular/cdk/layout": "ng.cdk.layout",
     "@angular/material/autocomplete": "ng.material.autocomplete",
     "@angular/material/button": "ng.material.button",
@@ -46,6 +47,7 @@ ROLLUP_GLOBALS = {
     "@angular/material/slide-toggle": "ng.material.slideToggle",
     "@angular/material/snack-bar": "ng.material.snackBar",
     "@angular/material/sort": "ng.material.sort",
+    "@angular/material/stepper": "ng.material.stepper",
     "@angular/material/table": "ng.material.table",
     "@angular/material/tabs": "ng.material.tabs",
     "@angular/material/toolbar": "ng.material.toolbar",

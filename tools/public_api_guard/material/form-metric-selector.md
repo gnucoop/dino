@@ -8,14 +8,13 @@ import { AbstractControl } from '@angular/forms';
 import { AreaManager } from '@dewco/core/areas';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
-import * as i2 from '@angular/platform-browser/animations';
-import * as i3 from '@angular/common';
-import * as i4 from '@angular/material/autocomplete';
-import * as i5 from '@angular/material/button';
-import * as i6 from '@angular/material/form-field';
-import * as i7 from '@angular/material/icon';
-import * as i8 from '@angular/material/input';
-import * as i9 from '@angular/forms';
+import * as i2 from '@angular/common';
+import * as i3 from '@angular/material/autocomplete';
+import * as i4 from '@angular/material/button';
+import * as i5 from '@angular/material/form-field';
+import * as i6 from '@angular/material/icon';
+import * as i7 from '@angular/material/input';
+import * as i8 from '@angular/forms';
 import { LocationManager } from '@dewco/core/locations';
 import { MetricBasicInfo } from '@dewco/core/users';
 import { MetricFormField } from '@dewco/material/metric-editor';
@@ -61,7 +60,7 @@ export class FormMetricSelectorModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<FormMetricSelectorModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<FormMetricSelectorModule, [typeof i1.FormMetricSelector], [typeof i2.BrowserAnimationsModule, typeof i3.CommonModule, typeof i4.MatAutocompleteModule, typeof i5.MatButtonModule, typeof i6.MatFormFieldModule, typeof i7.MatIconModule, typeof i8.MatInputModule, typeof i9.ReactiveFormsModule], [typeof i1.FormMetricSelector]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<FormMetricSelectorModule, [typeof i1.FormMetricSelector], [typeof i2.CommonModule, typeof i3.MatAutocompleteModule, typeof i4.MatButtonModule, typeof i5.MatFormFieldModule, typeof i6.MatIconModule, typeof i7.MatInputModule, typeof i8.ReactiveFormsModule], [typeof i1.FormMetricSelector]>;
 }
 
 // @public

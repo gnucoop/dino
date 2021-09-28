@@ -14,9 +14,9 @@ import * as i6 from '@angular/router';
 // @public
 export class FloatingButton {
     constructor();
-    readonly buttonIcon: string;
-    readonly buttonUrl: string;
-    readonly tooltipMessage: string;
+    buttonIcon: string;
+    buttonUrl: string;
+    tooltipMessage: string;
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<FloatingButton, "dewco-floating-button", never, { "tooltipMessage": "tooltipMessage"; "buttonUrl": "buttonUrl"; "buttonIcon": "buttonIcon"; }, {}, never, never>;
     // (undocumented)

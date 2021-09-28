@@ -27,22 +27,22 @@ import * as i9 from '@angular/material/input';
 export class MixedEditor implements AfterViewInit {
     constructor(_cdr: ChangeDetectorRef);
     addItem(item: MixedEditorItem | undefined): void;
-    readonly closeMethod?: () => void;
+    closeMethod?: () => void;
     findItem(itemId: string, list?: 'source' | 'save'): MixedEditorItem | undefined;
     // (undocumented)
     ngAfterViewInit(): void;
     onClose(): void;
     removeItem(item: MixedEditorItem | undefined): void;
     saveList: MixedEditorItem[];
-    readonly saveListMethod: (list: MixedEditorItem[], listName: string) => void;
+    saveListMethod: (list: MixedEditorItem[], listName: string) => void;
     saveListName: ElementRef<HTMLInputElement>;
     saveMixedList(): void;
     search: ElementRef<HTMLInputElement>;
-    readonly sourceList: BehaviorSubject<MixedEditorItem[]>;
+    sourceList: BehaviorSubject<MixedEditorItem[]>;
     updateFilter(evt: any): void;
-    readonly validateListMethod?: (list: MixedEditorItem[]) => boolean;
+    validateListMethod?: (list: MixedEditorItem[]) => boolean;
     validateSaveList(): boolean;
-    readonly viewOnly?: boolean;
+    viewOnly?: boolean;
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<MixedEditor, "dewco-mixed-editor", never, { "sourceList": "sourceList"; "saveListMethod": "saveListMethod"; "validateListMethod": "validateListMethod"; "closeMethod": "closeMethod"; "viewOnly": "viewOnly"; }, {}, never, never>;
     // (undocumented)

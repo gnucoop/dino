@@ -35,14 +35,12 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dewco/material/form-metric-selector';
 
 @NgModule({
   imports: [
     AjfFormsModule,
-    BrowserAnimationsModule,
     CommonModule,
     FormMetricSelectorModule,
     MatButtonModule,

@@ -43,27 +43,27 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
   /**
    * If true, the Metrics List is displayed
    */
-  @Input() readonly showList: boolean = true;
+  @Input() showList: boolean = true;
 
   /**
    * If true, the Metrics Editor is available
    */
-  @Input() readonly showEditor: boolean = true;
+  @Input() showEditor: boolean = true;
 
   /**
    * The Metrics List headers
    */
-  @Input() readonly headers: ListHeader<T>[];
+  @Input() headers: ListHeader<T>[];
 
   /**
    * The Metrics List available row actions
    */
-  @Input() readonly listRowActions: ListAction[];
+  @Input() listRowActions: ListAction[];
 
   /**
    * The Metrics List actions to be performed on a row click
    */
-  @Input() readonly onClickRowActions: ActionType[];
+  @Input() onClickRowActions: ActionType[];
 
   /**
    * The Label of the Metric

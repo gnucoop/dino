@@ -38,18 +38,18 @@ export class FloatingButton {
   /**
    * The message displayed by the button tooltip.
    */
-  @Input() readonly tooltipMessage: string;
+  @Input() tooltipMessage: string;
 
   /**
    * The url to which the button points.
    * If no url is specified, no redirection happens.
    */
-  @Input() readonly buttonUrl: string;
+  @Input() buttonUrl: string;
 
   /**
    * The button icon codename.
    */
-  @Input() readonly buttonIcon: string;
+  @Input() buttonIcon: string;
 
   constructor() {}
 }

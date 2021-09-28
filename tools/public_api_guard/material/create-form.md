@@ -15,23 +15,22 @@ import { FormMetricSelector } from '@dewco/material/form-metric-selector';
 import { FormSchema } from '@dewco/core/forms';
 import { FormSchemaManager } from '@dewco/core/forms';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/icon';
-import * as i11 from '@angular/material/input';
-import * as i12 from '@angular/material/slide-toggle';
-import * as i13 from '@angular/material/snack-bar';
-import * as i14 from '@angular/material/sort';
-import * as i15 from '@angular/material/stepper';
-import * as i16 from '@angular/material/table';
-import * as i17 from '@angular/material/toolbar';
-import * as i18 from '@angular/router';
+import * as i10 from '@angular/material/input';
+import * as i11 from '@angular/material/slide-toggle';
+import * as i12 from '@angular/material/snack-bar';
+import * as i13 from '@angular/material/sort';
+import * as i14 from '@angular/material/stepper';
+import * as i15 from '@angular/material/table';
+import * as i16 from '@angular/material/toolbar';
+import * as i17 from '@angular/router';
 import * as i2 from '@ajf/material/forms';
-import * as i3 from '@angular/platform-browser/animations';
-import * as i4 from '@angular/common';
-import * as i5 from '@dewco/material/form-metric-selector';
-import * as i6 from '@angular/material/button';
-import * as i7 from '@angular/material/checkbox';
-import * as i8 from '@angular/material/dialog';
-import * as i9 from '@angular/material/form-field';
+import * as i3 from '@angular/common';
+import * as i4 from '@dewco/material/form-metric-selector';
+import * as i5 from '@angular/material/button';
+import * as i6 from '@angular/material/checkbox';
+import * as i7 from '@angular/material/dialog';
+import * as i8 from '@angular/material/form-field';
+import * as i9 from '@angular/material/icon';
 import { Location as Location_2 } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MetricsService } from '@dewco/core/data';
@@ -78,7 +77,7 @@ export class CreateFormModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<CreateFormModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CreateFormModule, [typeof i1.CreateForm], [typeof i2.AjfFormsModule, typeof i3.BrowserAnimationsModule, typeof i4.CommonModule, typeof i5.FormMetricSelectorModule, typeof i6.MatButtonModule, typeof i7.MatCheckboxModule, typeof i8.MatDialogModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatSlideToggleModule, typeof i13.MatSnackBarModule, typeof i14.MatSortModule, typeof i15.MatStepperModule, typeof i16.MatTableModule, typeof i17.MatToolbarModule, typeof i18.RouterModule], [typeof i1.CreateForm]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CreateFormModule, [typeof i1.CreateForm], [typeof i2.AjfFormsModule, typeof i3.CommonModule, typeof i4.FormMetricSelectorModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatSlideToggleModule, typeof i12.MatSnackBarModule, typeof i13.MatSortModule, typeof i14.MatStepperModule, typeof i15.MatTableModule, typeof i16.MatToolbarModule, typeof i17.RouterModule], [typeof i1.CreateForm]>;
 }
 
 // (No @packageDocumentation comment for this package)

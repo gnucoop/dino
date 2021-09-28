@@ -30,18 +30,18 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     dataSource: ListDataSource<T>;
     // (undocumented)
     dialog: MatDialog;
-    readonly headers: ListHeader<T>[];
-    readonly listRowActions: ListAction[];
+    headers: ListHeader<T>[];
+    listRowActions: ListAction[];
     metricLabel: string;
     // (undocumented)
     set metricManager(mm: DataModelManager<T>);
     // (undocumented)
     ngOnInit(): void;
-    readonly onClickRowActions: ActionType[];
+    onClickRowActions: ActionType[];
     // (undocumented)
     openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void;
-    readonly showEditor: boolean;
-    readonly showList: boolean;
+    showEditor: boolean;
+    showList: boolean;
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dewco-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, never>;
     // (undocumented)

@@ -55,27 +55,27 @@ export class MixedEditor implements AfterViewInit {
   /**
    * The list of all items available to the editor.
    */
-  @Input() readonly sourceList: BehaviorSubject<MixedEditorItem[]>;
+  @Input() sourceList: BehaviorSubject<MixedEditorItem[]>;
 
   /**
    * The list saving method.
    */
-  @Input() readonly saveListMethod: (list: MixedEditorItem[], listName: string) => void;
+  @Input() saveListMethod: (list: MixedEditorItem[], listName: string) => void;
 
   /**
    * The optional list validation method.
    */
-  @Input() readonly validateListMethod?: (list: MixedEditorItem[]) => boolean;
+  @Input() validateListMethod?: (list: MixedEditorItem[]) => boolean;
 
   /**
    * The optional close method.
    */
-  @Input() readonly closeMethod?: () => void;
+  @Input() closeMethod?: () => void;
 
   /**
    * If true, the editor is opened in view mode (no editing and saving).
    */
-  @Input() readonly viewOnly?: boolean;
+  @Input() viewOnly?: boolean;
 
   /**
    * The text input filtering the source list.
