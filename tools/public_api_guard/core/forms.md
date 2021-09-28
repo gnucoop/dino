@@ -15,13 +15,13 @@ import { RxJsonSchema } from 'rxdb';
 
 // @public
 interface FormData_2 extends Model {
-    area_id?: string;
+    area_id: string | null;
     data: {
         [key: string]: any;
     };
-    location_id?: string;
-    organization_id?: string;
-    project_id?: string;
+    location_id: string | null;
+    organization_id: string | null;
+    project_id: string | null;
     schema_id: string;
     user_id: string;
 }

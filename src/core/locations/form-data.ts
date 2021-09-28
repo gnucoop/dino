@@ -30,6 +30,6 @@ declare module '@dewco/core/forms/form-data' {
     /**
      * The Form Data location id.
      */
-    location_id?: string;
+    location_id: string|null;
   }
 }

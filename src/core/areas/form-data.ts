@@ -30,6 +30,6 @@ declare module '@dewco/core/forms/form-data' {
     /**
      * The Form Data area id.
      */
-    area_id?: string;
+    area_id: string|null;
   }
 }
