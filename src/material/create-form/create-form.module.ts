@@ -38,6 +38,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dewco/material/form-metric-selector';
 
+import {CreateForm} from './create-form';
+
 @NgModule({
   imports: [
     AjfFormsModule,
@@ -66,5 +68,3 @@ import {FormMetricSelectorModule} from '@dewco/material/form-metric-selector';
 })
 export class CreateFormModule {
 }
-
-import {CreateForm} from './create-form';
