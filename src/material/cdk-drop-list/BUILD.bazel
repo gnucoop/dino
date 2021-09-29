@@ -13,7 +13,7 @@ sass_library(
 
 markdown_to_html(
     name = "overview",
-    srcs = ["cdk_drop_list.md"],
+    srcs = ["cdk-drop-list.md"],
 )
 
 filegroup(
