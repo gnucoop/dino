@@ -315,50 +315,50 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             )
         .subscribe();
 
-    this._saveFormSub =
-        combineLatest([
-          this._saveFormEvt as Observable<AjfFormActionEvent>,
-          this._currentDoc,
-          this._formMetricsSelector,
-        ])
-            .pipe(
-                map(([_, item, formMetricsSelector]) => {
-                  return {
-                    doc: item,
-                    formValue: this._rendererService.getFormValue(),
-                    fmSelector: formMetricsSelector
-                  };
-                }),
-                withLatestFrom(this.isDetails),
-                switchMap(([formObj, isDetails]) => {
-                  let newItem = Object.assign({}, formObj.doc) as {[key: string]: any};
-                  newItem.data.data != null ? newItem.data.data = formObj.formValue :
-                                              newItem.data = formObj.formValue;
+    this._saveFormSub = combineLatest([
+                          this._saveFormEvt as Observable<AjfFormActionEvent>,
+                          this._currentDoc,
+                          this._formMetricsSelector,
+                        ])
+                            .pipe(
+                                map(([_, item, formMetricsSelector]) => {
+                                  return {
+                                    doc: item,
+                                    formValue: this._rendererService.getFormValue(),
+                                    fmSelector: formMetricsSelector
+                                  };
+                                }),
+                                withLatestFrom(this.isDetails),
+                                switchMap(([formObj, isDetails]) => {
+                                  let newItem = {...formObj.doc} as {[key: string]: any};
+                                  newItem.data.data != null ?
+                                      newItem.data.data = formObj.formValue :
+                                      newItem.data = formObj.formValue;
 
-                  if (formObj.fmSelector != null) {
-                    const selectedMetrics = formObj.fmSelector.selectedMetrics;
-                    for (let key of Object.keys(selectedMetrics)) {
-                      if (selectedMetrics[key].metricId != null) {
-                        const saveKey = `${key}_id`;
-                        newItem[saveKey] = selectedMetrics[key].metricId;
-                      }
-                    }
-                  }
+                                  if (formObj.fmSelector != null) {
+                                    const selectedMetrics = formObj.fmSelector.selectedMetrics;
+                                    for (let key of Object.keys(selectedMetrics)) {
+                                      if (selectedMetrics[key].metricId != null) {
+                                        const saveKey = `${key}_id`;
+                                        newItem[saveKey] = selectedMetrics[key].metricId;
+                                      }
+                                    }
+                                  }
 
-                  const dm: DataModelManager<T> =
-                      isDetails && this._dataModelManager.detailsManager != null ?
-                      this._dataModelManager.detailsManager :
-                      this._dataModelManager;
-                  return dm.update(newItem as T);
-                }),
-                catchError(err => {
-                  this.snackbar.open(err, 'ERROR', {duration: 5000});
-                  return obsOf(err);
-                }),
-                )
-            .subscribe(_ => {
-              this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
-            });
+                                  const dm: DataModelManager<T> =
+                                      isDetails && this._dataModelManager.detailsManager != null ?
+                                      this._dataModelManager.detailsManager :
+                                      this._dataModelManager;
+                                  return dm.update(newItem as T);
+                                }),
+                                catchError(err => {
+                                  this.snackbar.open(err, 'ERROR', {duration: 5000});
+                                  return obsOf(err);
+                                }),
+                                )
+                            .subscribe(_ => {
+                              this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
+                            });
 
     this.isAjfFormValid =
         this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1))
