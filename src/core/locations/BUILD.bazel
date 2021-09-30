@@ -15,6 +15,7 @@ ng_module(
     deps = [
         "//src/core/data",
         "//src/core/forms",
+        "//src/core/reports",
         "//src/core/list",
         "@npm//@angular/common",
         "@npm//@angular/core",

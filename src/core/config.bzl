@@ -6,6 +6,7 @@ CORE_ENTRYPOINTS = [
     "data",
     "error-handler",
     "forms",
+    "reports",
     "list",
     "locations",
     "organizations",
@@ -28,6 +29,8 @@ CORE_SCSS_LIBS = [
 CORE_MODELS = [
     "forms/form-data",
     "forms/form-schema",
+    "reports/report-data",
+    "reports/report-schema",
     "locations/location",
     "projects/project",
     "areas/area",

@@ -19,6 +19,7 @@
     "build-and-check-release-output": "ts-node --project scripts/tsconfig.json scripts/build-and-check-release-output.ts",
     "build-docs-content": "node ./scripts/build-docs-content.js",
     "dev-app": "ibazel run //src/dev-app:devserver",
+    "e2e-app": "ibazel run //src/e2e-app:devserver",
     "test": "node ./scripts/run-component-tests.js",
     "test-local": "yarn -s test --local",
     "test-firefox": "yarn -s test --firefox",
