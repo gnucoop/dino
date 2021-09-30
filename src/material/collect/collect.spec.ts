@@ -80,12 +80,12 @@ describe('Collect', () => {
   });
 
   it('should search for all Form Schemas', async () => {
-    let isFormsCollectSpy = spyOn(fsm, 'list').and.callThrough();
+    let collectTypeSpy = spyOn(fsm, 'list').and.callThrough();
 
     await fixtureCollect.whenStable();
-    collect.isFormsCollect = true;
+    collect.collectType = 'form';
     fixtureCollect.detectChanges();
 
-    expect(isFormsCollectSpy).toHaveBeenCalled();
+    expect(collectTypeSpy).toHaveBeenCalled();
   });
 });

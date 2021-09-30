@@ -26,11 +26,18 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormSchemaManager} from '@dewco/core/forms';
+import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
+import {ReportSchema, ReportSchemaManager} from '@dewco/core/reports';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {BehaviorSubject, combineLatest, from, Observable, of as obsOf} from 'rxjs';
 import {map, shareReplay, switchMap} from 'rxjs/operators';
+
 import {CollectItem} from './collect-item-interface';
+
+/**
+ * Type representing the available Collect component types.
+ */
+export type CollectType = 'report'|'form'|'custom';
 
 /**
  * Dino collect home component.
@@ -97,30 +104,39 @@ export class Collect {
   }
 
   /**
-   * When true, the collect shows the list of available form schemas, gathered by
-   * the Form Schema manager.
-   * When false, a custom list of items must be provided. This way, this Collect component
-   * can be used as a simple menu.
-   * Defaults to true.
+   * Specifies the type of the collect component instance.
+   * It can automatically gather a list of formschemas, report schemas, or can be
+   * provided a custom list of generic menu items.
    */
-  private _isFormsCollect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private _collectType: BehaviorSubject<CollectType> = new BehaviorSubject<CollectType>('custom');
   @Input()
-  set isFormsCollect(res: boolean) {
-    this._isFormsCollect.next(res);
+  set collectType(res: CollectType) {
+    this._collectType.next(res);
+  }
+  get getCollectType(): CollectType {
+    return this._collectType.value;
   }
 
   constructor(
       readonly breakpointObserver: BreakpointObserverService,
       private _fs: FormSchemaManager,
+      private _rs: ReportSchemaManager,
   ) {
-    this.items = combineLatest([this._isFormsCollect, this._menuItems])
+    this.items = combineLatest([this._collectType, this._menuItems])
                      .pipe(
                          switchMap(([isCollect, menuItems]) => {
-                           if (isCollect) {
-                             const res = this._fs.list().pipe(
-                                 switchMap(rxdbQuery => from(rxdbQuery.exec())),
-                             );
-                             return res.pipe(
+                           if (isCollect !== 'custom') {
+                             let result: Observable<(FormSchema | ReportSchema)[]>;
+                             if (isCollect === 'report') {
+                               result = this._rs.list().pipe(
+                                   switchMap(rxdbQuery => from(rxdbQuery.exec())),
+                               );
+                             } else {
+                               result = this._fs.list().pipe(
+                                   switchMap(rxdbQuery => from(rxdbQuery.exec())),
+                               );
+                             }
+                             return result.pipe(
                                  map(docs => {
                                    let collectItems: CollectItem[] = [];
                                    for (let document of docs.filter(dcm => dcm != null)) {

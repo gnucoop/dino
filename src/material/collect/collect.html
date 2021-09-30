@@ -7,7 +7,7 @@
   <ng-container *ngFor="let item of items|async">
     <mat-grid-tile
       class="dewco-grid-tile"
-      [routerLink]="item.url? item.url : ['/list', item.schemaId ? item.schemaId : item.name]"
+      [routerLink]="item.url? item.url : ['/' + getCollectType + '-list', item.schemaId ? item.schemaId : item.name]"
     >
       <div>
         <div class="title"></div>
