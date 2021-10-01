@@ -10,10 +10,16 @@ import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 export class MatDashboardE2E {
   readonly collectItems = [
     {
-      name: 'list',
-      label: 'Collect Forms',
+      name: 'forms',
+      label: 'Forms',
       icon: 'list_alt',
       url: '/collect',
+    },
+    {
+      name: 'reports',
+      label: 'Reports',
+      icon: 'stacked_bar_chart',
+      url: '/reports',
     },
     {
       name: 'users',

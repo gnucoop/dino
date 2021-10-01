@@ -2,8 +2,6 @@
 // import '@dewco/core/projects/form-data';
 import '@dewco/core/areas/form-data';
 
-// import {Location} from '@dewco/core/locations';
-// import {Project} from '@dewco/core/projects';
 import {FormData} from '@dewco/core/forms/form-data';
 
 const ajfFormDatas = [
@@ -240,55 +238,8 @@ const ajfFormDatas = [
   },
 ];
 
-// const locations: {[key: string]: Location} = {
-//   'location_a': {
-//     id: '',
-//     created_at: '',
-//     updated_at: '',
-//     name: 'location_a',
-//   },
-//   'location_b': {
-//     id: '',
-//     created_at: '',
-//     updated_at: '',
-//     name: 'location_b',
-//   },
-//   'location_c': {
-//     id: '',
-//     created_at: '',
-//     updated_at: '',
-//     name: 'location_c',
-//   },
-// };
-
-// const projects: {[key: string]: Project} = {
-//   'project_a': {
-//     id: '',
-//     code: 'Project A',
-//     created_at: '',
-//     updated_at: '',
-//     name: 'project_a',
-//   },
-//   'project_b': {
-//     id: '',
-//     code: 'Project B',
-//     created_at: '',
-//     updated_at: '',
-//     name: 'project_b',
-//   },
-//   'project_c': {
-//     id: '',
-//     code: 'Project C',
-//     created_at: '',
-//     updated_at: '',
-//     name: 'project_c',
-//   },
-// };
-
 export const formDatas: FormData[] = [
   {
-    // location: locations.location_a,
-    // project: projects.project_a,
     id: '',
     user_id: 'user_a',
     schema_id: 'prova',
@@ -313,8 +264,6 @@ export const formDatas: FormData[] = [
     project_id: null,
   },
   {
-    // location: locations.location_b,
-    // project: projects.project_c,
     id: '',
     user_id: 'user_b',
     schema_id: 'prova',
@@ -327,8 +276,6 @@ export const formDatas: FormData[] = [
     project_id: null,
   },
   {
-    // location: locations.location_c,
-    // project: projects.project_c,
     id: '',
     user_id: 'user_b',
     schema_id: 'prova',
@@ -341,7 +288,6 @@ export const formDatas: FormData[] = [
     project_id: null,
   },
   {
-    // project: projects.project_c,
     id: '',
     user_id: 'user_a',
     schema_id: 'prova',
@@ -354,8 +300,6 @@ export const formDatas: FormData[] = [
     project_id: null,
   },
   {
-    // location: locations.location_b,
-    // project: projects.project_a,
     id: '',
     user_id: 'user_c',
     schema_id: 'prova',
@@ -368,7 +312,6 @@ export const formDatas: FormData[] = [
     project_id: null,
   },
   {
-    // location: locations.location_a,
     id: '',
     user_id: 'user_c',
     schema_id: 'prova',

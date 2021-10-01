@@ -1,6 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@dewco/core/forms';
+import {ReportsModule} from '@dewco/core/reports';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {FloatingButtonModule} from '@dewco/material/floating-button';
 import {ListModule} from '@dewco/material/list';
@@ -8,22 +8,22 @@ import {SearchFiltersBarModule} from '@dewco/material/search-filters-bar';
 
 import {MockBreakpointObserver} from '../mocks';
 
-import {MatListE2E} from './list-e2e';
+import {MatReportsListE2E} from './reports-list-e2e';
 
 @NgModule({
   declarations: [
-    MatListE2E,
+    MatReportsListE2E,
   ],
   imports: [
     CommonModule,
     ListModule,
     FloatingButtonModule,
-    FormsModule,
+    ReportsModule,
     SearchFiltersBarModule,
   ],
   providers: [
     {provide: BreakpointObserverService, useClass: MockBreakpointObserver},
   ],
 })
-export class MaterialListE2eModule {
+export class MaterialReportsListE2eModule {
 }

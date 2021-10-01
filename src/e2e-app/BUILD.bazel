@@ -40,6 +40,7 @@ ng_module(
         "//src/core/config",
         "//src/core/data",
         "//src/core/forms",
+        "//src/core/reports",
         "//src/core/locations",
         "//src/core/organizations",
         "//src/core/projects",

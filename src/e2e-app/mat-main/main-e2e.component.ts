@@ -14,9 +14,14 @@ export class MatMainE2E {
       icon: 'apps',
     },
     {
-      label: 'Collect Forms',
+      label: 'Forms',
       url: 'collect',
       icon: 'list_alt',
+    },
+    {
+      label: 'Reports',
+      url: 'reports',
+      icon: 'stacked_bar_chart',
     },
   ];
 

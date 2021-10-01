@@ -2,18 +2,20 @@ import {Routes} from '@angular/router';
 import {AuthGuard} from '@dewco/core/auth';
 
 import {MatAreasE2E} from './mat-areas/areas-e2e.component';
-import {MatCollectE2E} from './mat-collect/collect-e2e.component';
 import {MatCreateE2E} from './mat-create/create-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
 import {MatEditE2E} from './mat-edit/edit-e2e.component';
+import {MatFormsListE2E} from './mat-forms-list/forms-list-e2e';
+import {MatCollectE2E} from './mat-forms/collect-e2e.component';
 import {MatGroupsListE2E} from './mat-groups/groups-e2e-list.component';
-import {MatListE2E} from './mat-list/list-e2e';
 import {MatLocationsE2E} from './mat-locations/locations-e2e.component';
 import {MatLoginE2E} from './mat-login/login-e2e';
 import {MatUsersListE2E} from './mat-manage-users/users-list-e2e.component';
 import {MatMetricsE2E} from './mat-metrics/metrics-e2e.component';
 import {MatOrganizationsE2E} from './mat-organizations/organizations-e2e.component';
 import {MatProjectsE2E} from './mat-projects/projects-e2e.component';
+import {MatReportsListE2E} from './mat-reports-list/reports-list-e2e';
+import {MatReportsE2E} from './mat-reports/reports-e2e.component';
 import {MatUsersE2E} from './mat-users/users-e2e.component';
 import {additionalConfig} from './mockconfig';
 
@@ -67,12 +69,24 @@ export const E2E_APP_ROUTES: Routes = [
     ],
   },
   {
-    path: 'list',
+    path: 'form-list',
     canActivate: authGuard,
     children: [
       {
         path: ':form_schema_id',
-        component: MatListE2E,
+        component: MatFormsListE2E,
+      },
+      {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
+      {path: '**', redirectTo: '/dashboard', pathMatch: 'full'},
+    ],
+  },
+  {
+    path: 'report-list',
+    canActivate: authGuard,
+    children: [
+      {
+        path: ':form_schema_id',
+        component: MatReportsListE2E,
       },
       {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
       {path: '**', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -144,6 +158,11 @@ export const E2E_APP_ROUTES: Routes = [
     path: 'collect',
     canActivate: authGuard,
     component: MatCollectE2E,
+  },
+  {
+    path: 'reports',
+    canActivate: authGuard,
+    component: MatReportsE2E,
   },
   {
     path: 'dashboard',

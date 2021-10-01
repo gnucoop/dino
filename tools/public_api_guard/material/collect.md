@@ -15,12 +15,15 @@ import * as i6 from '@angular/router';
 import * as i7 from '@angular/material/grid-list';
 import * as i8 from '@angular/material/icon';
 import { Observable } from 'rxjs';
+import { ReportSchemaManager } from '@dewco/core/reports';
 
 // @public
 export class Collect {
-    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager);
+    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager);
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
+    // (undocumented)
+    set collectType(res: CollectType);
     // (undocumented)
     get columnsLarge(): number;
     set columnsLarge(num: number);
@@ -28,11 +31,11 @@ export class Collect {
     get columnsSmall(): number;
     set columnsSmall(num: number);
     // (undocumented)
-    set isFormsCollect(res: boolean);
+    get getCollectType(): CollectType;
     readonly items: Observable<CollectItem[]>;
     set menuItems(menuItems: CollectItem[]);
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dewco-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "isFormsCollect": "isFormsCollect"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dewco-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; }, {}, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }
@@ -55,6 +58,9 @@ export class CollectModule {
     // (undocumented)
     static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.AjfTranslocoModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.FormsModule, typeof i6.RouterModule, typeof i7.MatGridListModule, typeof i8.MatIconModule], [typeof i1.Collect]>;
 }
+
+// @public
+export type CollectType = 'report' | 'form' | 'custom';
 
 // (No @packageDocumentation comment for this package)
 

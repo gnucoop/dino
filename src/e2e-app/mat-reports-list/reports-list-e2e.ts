@@ -6,26 +6,26 @@ import {
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {
-  FormData,
-  FormDataManager,
-  FormSchema,
-  FormSchemaManager,
-} from '@dewco/core/forms';
-import {
   ActionType,
   FiltersService,
   ListAction,
   ListHeader,
 } from '@dewco/core/list';
+import {
+  ReportData,
+  ReportDataManager,
+  ReportSchema,
+  ReportSchemaManager,
+} from '@dewco/core/reports';
 import {ListDataSource, SelectionList} from '@dewco/material/list';
 import {Observable, of as obsOf} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 @Component({
-  selector: 'mat-list-e2e',
-  templateUrl: 'list-e2e.html',
+  selector: 'mat-reports-list-e2e',
+  templateUrl: 'reports-list-e2e.html',
 })
-export class MatListE2E implements OnDestroy, OnInit {
+export class MatReportsListE2E implements OnDestroy, OnInit {
   @ViewChild(SelectionList) list: SelectionList;
 
   /**
@@ -39,11 +39,11 @@ export class MatListE2E implements OnDestroy, OnInit {
     'organization',
     'unavailableFilter',
   ];
-  readonly additionalDataSchema: Observable<FormSchema|null>;
+  readonly additionalDataSchema: Observable<ReportSchema|null>;
   readonly formSchemaId: Observable<string|null>;
   readonly baseEditUrl = 'edit/';
-  readonly dataSource: ListDataSource<FormData, FormSchema>;
-  readonly headers: ListHeader<FormData>[] = [
+  readonly dataSource: ListDataSource<ReportData, ReportSchema>;
+  readonly headers: ListHeader<ReportData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
     {column: 'user_id', label: 'User', sortable: true},
     {column: 'created_at', label: 'Creation Date', sortable: true},
@@ -67,8 +67,8 @@ export class MatListE2E implements OnDestroy, OnInit {
 
   constructor(
       readonly filtersService: FiltersService,
-      readonly formDataManager: FormDataManager,
-      readonly formSchemaManager: FormSchemaManager,
+      readonly formDataManager: ReportDataManager,
+      readonly formSchemaManager: ReportSchemaManager,
       private _route: ActivatedRoute,
   ) {
     this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
