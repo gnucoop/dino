@@ -233,11 +233,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                     newItem.data = formValue;
                     newItem.schema_id = formSchemaId;
                     newItem.user_id = this._authService.getUserInfo()?.id;
+                    newItem.area_id = null;
+                    newItem.location_id = null;
+                    newItem.organization_id = null;
+                    newItem.project_id = null;
                     if (formMetricsSelector != null) {
                       const selectedMetrics = formMetricsSelector.selectedMetrics;
                       for (let key of Object.keys(selectedMetrics)) {
+                        const saveKey = `${key}_id`;
                         if (selectedMetrics[key].metricId != null) {
-                          const saveKey = `${key}_id`;
                           newItem[saveKey] = selectedMetrics[key].metricId;
                         }
                       }
