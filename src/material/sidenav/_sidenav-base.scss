@@ -1,12 +1,35 @@
+@use '~@angular/material/core/typography/typography-utils' as typography-utils;
+@use '../core/typography/typography';
+
 @mixin sidenav-core($typography-config: null) {
-    .mat-drawer-side.mat-sidenav {
-        border-right: none;
-        .mat-nav-list,
-        .mat-list-base {
-            overflow: hidden;
-        }
-        .mat-list-item {
-            padding: 6px;
-        }
+  .mat-drawer-side.mat-sidenav {
+    font-family: typography-utils.font-family(
+      typography.$base-typography,
+      body-1
+    );
+    font-size: typography-utils.font-size(typography.$base-typography, body-1);
+    font-weight: typography-utils.font-weight(
+      typography.$base-typography,
+      body-1
+    );
+    border-right: none;
+    .mat-nav-list,
+    .mat-list-base {
+      overflow: hidden;
     }
+    .mat-list-item {
+      padding: 6px;
+    }
+  }
+  .mat-drawer-container.mat-sidenav-container {
+    font-family: typography-utils.font-family(
+      typography.$base-typography,
+      body-1
+    );
+    font-size: typography-utils.font-size(typography.$base-typography, body-1);
+    font-weight: typography-utils.font-weight(
+      typography.$base-typography,
+      body-1
+    );
+  }
 }

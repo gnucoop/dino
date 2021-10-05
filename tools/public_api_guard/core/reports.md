@@ -15,10 +15,12 @@ import { RxJsonSchema } from 'rxdb';
 // @public
 export interface ReportData extends Model {
     area_id: string | null;
+    date_end: string | null;
+    date_start: string | null;
     location_id: string | null;
     metadata: {
         [key: string]: any;
-    } | null;
+    };
     organization_id: string | null;
     project_id: string | null;
     schema_id: string;

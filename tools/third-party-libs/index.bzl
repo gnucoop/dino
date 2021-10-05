@@ -11,11 +11,14 @@ DATA_DEPS = [
 ]
 
 AJF_DEPS = [
+    "//tools/third-party-libs:amd_chart_js",
     "//tools/third-party-libs:amd_date_fns",
     "//tools/third-party-libs:amd_esprima",
     "//tools/third-party-libs:amd_flat",
+    "//tools/third-party-libs:amd_leaflet",
     "//tools/third-party-libs:amd_numbro",
     "//tools/third-party-libs:amd_pdfmake",
+    "//tools/third-party-libs:amd_xlsx",
     "//tools/third-party-libs:amd_zxing_browser",
     "//tools/third-party-libs:amd_zxing_library",
 ]

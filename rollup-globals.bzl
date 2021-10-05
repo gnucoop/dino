@@ -61,9 +61,13 @@ ROLLUP_GLOBALS = {
     "@ajf/core/common": "ajf.core.common",
     "@ajf/core/forms": "ajf.core.forms",
     "@ajf/core/models": "ajf.core.models",
+    "@ajf/core/reports": "ajf.core.reports",
     "@ajf/core/transloco": "ajf.core.transloco",
     "@ajf/material/common": "ajf.material.common",
     "@ajf/material/forms": "ajf.material.forms",
+    "@ajf/material/reports": "ajf.material.reports",
+    "chart.js": "Chart",
+    "leaflet": "leaflet",
     "pouchdb-adapter-idb": "PouchDB.adapter.idb",
     "pouchdb-adapter-memory": "PouchDB.adapter.memory",
     "rxdb": "rxdb",
@@ -74,6 +78,7 @@ ROLLUP_GLOBALS = {
     "rxjs": "rxjs",
     "rxjs/operators": "rxjs.operators",
     "subscriptions-transport-ws": "stws",
+    "xlsx": "xlsx",
     "uuid": "uuid",
 }
 

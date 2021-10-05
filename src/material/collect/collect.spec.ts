@@ -1,13 +1,13 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dewco/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
+import {FormSchemaManager, FormsModule} from '@dewco/core/forms';
+import {ReportSchemaManager, ReportsModule} from '@dewco/core/reports';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
-
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '../../core/data';
-import {FormSchemaManager} from '../../core/forms';
 
 import {Collect, CollectModule} from './index';
 
@@ -46,6 +46,7 @@ const authServiceMock = {
 } as unknown as AuthService;
 
 describe('Collect', () => {
+  let rsm: ReportSchemaManager;
   let fsm: FormSchemaManager;
   let fixtureCollect: ComponentFixture<Collect>;
   let collect: Collect;
@@ -57,6 +58,8 @@ describe('Collect', () => {
             CollectModule,
             HttpClientTestingModule,
             RouterTestingModule,
+            ReportsModule,
+            FormsModule,
           ],
           providers: [
             {provide: AuthService, useValue: authServiceMock},
@@ -67,6 +70,7 @@ describe('Collect', () => {
         .compileComponents();
 
     fsm = TestBed.inject(FormSchemaManager);
+    rsm = TestBed.inject(ReportSchemaManager);
     fixtureCollect = TestBed.createComponent(Collect);
     collect = fixtureCollect.componentInstance;
   });

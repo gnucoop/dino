@@ -9,6 +9,14 @@ genrule(
 )
 
 esbuild_amd(
+    name = "amd_chart_js",
+    testonly = True,
+    entry_point = "@npm//:node_modules/chart.js/dist/Chart.js",
+    module_name = "chart.js",
+    deps = ["@npm//chart.js"],
+)
+
+esbuild_amd(
     name = "amd_date_fns",
     testonly = True,
     entry_point = "@npm//:node_modules/date-fns/esm/index.js",
@@ -30,6 +38,14 @@ esbuild_amd(
     entry_point = "@npm//:node_modules/flat/index.js",
     module_name = "flat",
     deps = ["@npm//flat"],
+)
+
+esbuild_amd(
+    name = "amd_leaflet",
+    testonly = True,
+    entry_point = "@npm//:node_modules/leaflet/dist/leaflet.js",
+    module_name = "leaflet",
+    deps = ["@npm//leaflet"],
 )
 
 esbuild_amd(
@@ -132,6 +148,14 @@ esbuild_amd(
     entry_point = "@npm//:node_modules/uuid/dist/esm-browser/index.js",
     module_name = "uuid",
     deps = ["@npm//uuid"],
+)
+
+esbuild_amd(
+    name = "amd_xlsx",
+    testonly = True,
+    entry_point = "@npm//:node_modules/xlsx/dist/xlsx.js",
+    module_name = "xlsx",
+    deps = ["@npm//xlsx"],
 )
 
 esbuild_amd(

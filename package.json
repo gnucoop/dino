@@ -54,9 +54,9 @@
   },
   "version": "13.0.0-next.1",
   "dependencies": {
-    "@ajf/core": "13.0.0-next.1",
+    "@ajf/core": "12.1.4",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "13.0.0-next.1",
+    "@ajf/material": "12.1.4",
     "@angular/animations": "13.0.0-next.2",
     "@angular/cdk": "13.0.0-next.2",
     "@angular/common": "13.0.0-next.2",
@@ -90,6 +90,7 @@
     "systemjs": "0.19.43",
     "tslib": "^2.2.0",
     "uuid": "^8.3.2",
+    "xlsx": "^0.17.0",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {

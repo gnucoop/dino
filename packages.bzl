@@ -4,11 +4,14 @@
 AJF_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
 ANGULAR_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
 ANGULAR_MATERIAL_PACKAGE_VERSION = "^13.0.0-0 || ^14.0.0-0"
+CHARTJS_PACKAGE_VERSION = "^2.9.3"
+LEAFLET_PACKAGE_VERSION = "^1.6.0"
 POUCHDB_PACKAGE_VERSION = "^7.0.0"
 RXJS_PACKAGE_VERSION = "^6.5.3 || ^7.0.0"
 RXDB_PACKAGE_VERSION = "^10.0.0"
 STWS_PACKAGE_VERSION = "^0.9.16"
 TSLIB_PACKAGE_VERSION = "^2.2.0"
+XLSX_PACKAGE_VERSION = "^0.17.0"
 UUID_PACKAGE_VERSION = "^8.0.0"
 
 # Each placer holder is used to stamp versions during the build process, replacing the key with it's
@@ -18,6 +21,8 @@ VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-AJF": AJF_PACKAGE_VERSION,
     "0.0.0-ANGM": ANGULAR_MATERIAL_PACKAGE_VERSION,
     "0.0.0-NG": ANGULAR_PACKAGE_VERSION,
+    "0.0.0-CHART": CHARTJS_PACKAGE_VERSION,
+    "0.0.0-LEAFLET": LEAFLET_PACKAGE_VERSION,
     "0.0.0-POUCHDB": POUCHDB_PACKAGE_VERSION,
     "0.0.0-RXDB": RXDB_PACKAGE_VERSION,
     "0.0.0-STWS": STWS_PACKAGE_VERSION,
@@ -27,6 +32,7 @@ VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-PLACEHOLDER": "{BUILD_SCM_VERSION}",
     # Version of `rxjs`
     "0.0.0-RXJS": RXJS_PACKAGE_VERSION,
+    "0.0.0-XLSX": XLSX_PACKAGE_VERSION,
 }
 
 # List of default Angular library UMD bundles which are not processed by ngcc.
@@ -36,8 +42,8 @@ ANGULAR_NO_NGCC_BUNDLES = [
 
 # List of Angular library UMD bundles which will be processed by ngcc.
 ANGULAR_NGCC_BUNDLES = [
-    ("@ajf/core", ["core-common.umd.js", "core-forms.umd.js"]),
-    ("@ajf/material", ["material-forms.umd.js"]),
+    ("@ajf/core", ["core-common.umd.js", "core-forms.umd.js", "core-reports.umd.js"]),
+    ("@ajf/material", ["material-forms.umd.js", "material-reports.umd.js"]),
     ("@angular/animations", ["animations-browser.umd.js", "animations.umd.js"]),
     ("@angular/cdk", ["cdk-a11y.umd.js", "cdk-accordion.umd.js", "cdk-bidi.umd.js", "cdk-collections.umd.js", "cdk-keycodes.umd.js", "cdk-observers.umd.js", "cdk-overlay.umd.js", "cdk-platform.umd.js", "cdk-portal.umd.js", "cdk-scrolling.umd.js", "cdk-text-field.umd.js"]),
     ("@angular/common", ["common-http-testing.umd.js", "common-http.umd.js", "common-testing.umd.js", "common.umd.js"]),
