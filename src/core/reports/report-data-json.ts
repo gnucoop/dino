@@ -56,6 +56,20 @@ export const schema = {
       "type": "object",
       "description": "Additional metadata json that can be provided to build the report based on the desired conditions."
     },
+    "date_start": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The starting date of the collected form data used by the Report."
+    },
+    "date_end": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The ending date of the collected form data used by the Report."
+    },
     "area_id": {
       "type": [
         "string",
@@ -88,6 +102,8 @@ export const schema = {
   "required": [
     "area_id",
     "created_at",
+    "date_end",
+    "date_start",
     "id",
     "location_id",
     "metadata",

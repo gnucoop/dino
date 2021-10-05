@@ -45,6 +45,18 @@ export interface ReportData extends Model {
   metadata: {[key: string]: any};
 
   /**
+   * The starting date of the collected form data used by
+   * the Report.
+   */
+  date_start: string|null;
+
+  /**
+   * The ending date of the collected form data used by
+   * the Report.
+   */
+  date_end: string|null;
+
+  /**
    * The Report Data area id.
    */
   area_id: string|null;
