@@ -1,0 +1,26 @@
+dewco-edit-report {
+  .dewco-edit-report-step-buttons {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: end;
+  }
+  .dewco-edit-report-step-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 70vh;
+  }
+  .mat-stepper-horizontal {
+    background-color: transparent;
+  }
+  .mat-horizontal-stepper-header-container {
+    border-bottom: 1px solid white;
+    .mat-stepper-label-position-bottom.mat-horizontal-stepper-header {
+      padding: 8px;
+    }
+  }
+  .mat-horizontal-content-container {
+    padding: 0px 4px 4px;
+  }
+}

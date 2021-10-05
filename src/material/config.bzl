@@ -4,6 +4,7 @@ entryPoints = [
     "collect",
     "create-form",
     "edit-form",
+    "edit-report",
     "floating-button",
     "form-metric-selector",
     "list",
