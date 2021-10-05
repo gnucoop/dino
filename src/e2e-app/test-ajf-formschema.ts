@@ -14,8 +14,7 @@ export const ajfSchema = {
       'nodes': [
         {
           'id': 1000,
-          'HTML':
-              'Please use this form only for local staff.',
+          'HTML': 'Please use this form only for local staff.',
           'name': '',
           'size': 'normal',
           'label': '',
@@ -353,8 +352,7 @@ export const ajfSchema = {
         },
         {
           'id': 1004,
-          'hint':
-              'Date of birth.',
+          'hint': 'Date of birth.',
           'name': 'dob',
           'size': 'normal',
           'label': 'Date of birth',
@@ -711,8 +709,7 @@ export const ajfSchema = {
         },
         {
           'id': 1008,
-          'hint':
-              'Select one.',
+          'hint': 'Select one.',
           'name': 'edulevel',
           'size': 'normal',
           'label': 'Education level',
@@ -950,8 +947,7 @@ export const ajfSchema = {
         },
         {
           'id': 2007,
-          'hint':
-              'The percentage of employment.',
+          'hint': 'The percentage of employment.',
           'name': 'parttime_perc',
           'size': 'normal',
           'label': 'Part-time %',
@@ -1722,17 +1718,981 @@ export const ajfSchema = {
       'choicesType': 'string'
     }
   ],
-  'stringIdentifier': [{'label': '', 'value': ['firstname']},
-  {'label': '', 'value': ['name']}],
+  'stringIdentifier': [{'label': '', 'value': ['firstname']}, {'label': '', 'value': ['name']}],
   'attachmentsOrigins': []
 };
 
-export const formSchemas: FormSchema[] = [{
-  id: '',
-  name: 'prova',
-  label: 'Human Resources',
-  icon: 'supervised_user_circle',
-  schema: ajfSchema,
-  created_at: '',
-  updated_at: '',
-}];
+export const ajfSourceReportFormSchema = {
+  'nodes': [
+    {
+      'id': 1,
+      'name': 'location',
+      'label': 'Location',
+      'nodes': [
+        {
+          'id': 1001,
+          'name': 'district',
+          'label': 'District',
+          'parent': 1,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'validation': {'notEmpty': true},
+          'choicesOriginRef': 'district_choice',
+        },
+        {
+          'id': 1002,
+          'name': 'sub_county',
+          'label': 'Sub County',
+          'parent': 1001,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'validation': {'notEmpty': true},
+          'choicesFilter': {'formula': '$choice.district === district'},
+          'choicesOriginRef': 'subcounty_choice'
+        },
+        {
+          'id': 1003,
+          'name': 'settlement',
+          'label': 'Settlement',
+          'parent': 1002,
+          'nodeType': 0,
+          'fieldType': 0
+        },
+        {
+          'id': 1004,
+          'name': 'parish',
+          'label': 'Parish',
+          'parent': 1003,
+          'nodeType': 0,
+          'fieldType': 0
+        },
+        {
+          'id': 1005,
+          'name': 'village',
+          'label': 'Village',
+          'parent': 1004,
+          'nodeType': 0,
+          'fieldType': 0
+        },
+        {
+          'id': 1006,
+          'name': 'poc',
+          'label': 'Point of care',
+          'parent': 1005,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'poc_choice'
+        }
+      ],
+      'parent': 0,
+      'nodeType': 3,
+      'parentNode': 0,
+      'visibility': {'condition': 'true'},
+      'conditionalBranches': [{'condition': 'true'}]
+    },
+    {
+      'id': 2,
+      'name': 'information',
+      'label': 'Patient Information',
+      'nodes': [
+        {
+          'id': 2001,
+          'name': 'patient_id',
+          'label': 'Patient id number',
+          'parent': 2,
+          'nodeType': 0,
+          'fieldType': 0
+        },
+        {
+          'id': 2002,
+          'name': 'nationality',
+          'label': 'Nationality',
+          'parent': 2001,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'validation': {'notEmpty': true},
+          'choicesOriginRef': 'nationality_choice'
+        },
+        {
+          'id': 2003,
+          'name': 'age',
+          'label': 'Age',
+          'parent': 2002,
+          'nodeType': 0,
+          'fieldType': 2,
+          'validation': {
+            'notEmpty': true,
+            'conditions': [{
+              'condition': '!notEmpty(age) || isInt(age)',
+              'errorMessage': 'The field value must be an integer.',
+              'clientValidation': true
+            }]
+          }
+        },
+        {
+          'id': 2004,
+          'name': 'gender',
+          'label': 'Gender',
+          'parent': 2003,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'validation': {'notEmpty': true},
+          'choicesOriginRef': 'gender_choice'
+        },
+        {
+          'id': 2005,
+          'name': 'disability_status',
+          'label': 'Disability Status',
+          'parent': 2004,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'validation': {'notEmpty': true},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 2006,
+          'name': 'disabilities',
+          'label': 'Disabilities',
+          'parent': 2005,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 5,
+          'visibility': {'condition': 'valueInChoice(disability_status, "y")'},
+          'choicesOriginRef': 'disabilities_choice'
+        },
+        {
+          'id': 2007,
+          'name': 'pregnancy',
+          'label': 'Pregnancy',
+          'parent': 2006,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'valueInChoice(gender, "f")'},
+          'choicesOriginRef': 'yn'
+        }
+      ],
+      'parent': 1,
+      'nodeType': 3,
+      'parentNode': 0,
+      'visibility': {'condition': 'true'},
+      'conditionalBranches': [{'condition': 'true'}]
+    },
+    {
+      'id': 3,
+      'name': 'eyes',
+      'label': 'Exam',
+      'nodes': [
+        {
+          'id': 3001,
+          'name': 'chief_complaint',
+          'label': 'Chief complain/Complaint of the patient',
+          'parent': 3,
+          'nodeType': 0,
+          'fieldType': 0
+        },
+        {
+          'id': 3002,
+          'name': 'eyes_checked',
+          'label': 'Eyes Checked',
+          'parent': 3001,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 5,
+          'choicesOriginRef': 'eyes_lr'
+        }
+      ],
+      'parent': 2,
+      'nodeType': 3,
+      'parentNode': 0,
+      'visibility': {'condition': 'true'},
+      'conditionalBranches': [{'condition': 'true'}]
+    },
+    {
+      'id': 4,
+      'name': 'medical_history',
+      'label': 'Exam RE',
+      'nodes': [
+        {
+          'id': 4001,
+          'name': 'va_od',
+          'label': 'Visual acuity (VA)',
+          'parent': 4,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'va_choice'
+        },
+        {
+          'id': 4002,
+          'name': 'cf_od',
+          'label': 'CF (Counting fingers)',
+          'parent': 4001,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'va_od === "6_60-"'},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 4003,
+          'name': 'hm_od',
+          'label': 'HM (Hand motion)',
+          'parent': 4002,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'cf_od === "n"'},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 4004,
+          'name': 'lp_od',
+          'label': 'LP (Light perception)',
+          'parent': 4003,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'hm_od === "n"'},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 4005,
+          'name': 'iop_od',
+          'label': 'IOP/Intra-ocular pressure (0-21 mmHg)',
+          'parent': 4004,
+          'nodeType': 0,
+          'fieldType': 2
+        }
+      ],
+      'parent': 3,
+      'nodeType': 3,
+      'parentNode': 0,
+      'conditionalBranches': [{'condition': 'true'}],
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "od")'}
+    },
+    {
+      'id': 5,
+      'name': 'examination_findings',
+      'label': 'EXAMINATION FINDINGS RE',
+      'nodes': [
+        {
+          'id': 5001,
+          'name': 'eye_lid_od',
+          'label': 'Eye Lid',
+          'parent': 5,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'norm_abnorm_choice'
+        },
+        {
+          'id': 5002,
+          'name': 'abnormal_details_eyelid_od',
+          'label': 'Specify Abnormal',
+          'parent': 5001,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(eye_lid_od, "abnormal")'}
+        },
+        {
+          'id': 5003,
+          'name': 'conjunctiva_od',
+          'label': 'Conjunctiva',
+          'parent': 5002,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'conjunctiva_choice'
+        },
+        {
+          'id': 5004,
+          'name': 'cornea_od',
+          'label': 'Cornea',
+          'parent': 5003,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'cornea_choice'
+        },
+        {
+          'id': 5005,
+          'name': 'anterior_chamber_od',
+          'label': 'Anterior chamber',
+          'parent': 5004,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'anterior_chamber_choice'
+        },
+        {
+          'id': 5006,
+          'name': 'lens_od',
+          'label': 'Lens',
+          'parent': 5005,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'lens_choice'
+        },
+        {
+          'id': 5007,
+          'name': 'fundus_od',
+          'label': 'Fundus',
+          'parent': 5006,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'fundus_choice'
+        },
+        {
+          'id': 5008,
+          'name': 'fundus_od_others',
+          'label': 'Specify Other',
+          'parent': 5007,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(fundus_od, "fundus_other")'}
+        },
+        {
+          'id': 5009,
+          'name': 'pupil_od',
+          'label': 'Pupil',
+          'parent': 5008,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'pupil_choice'
+        },
+        {
+          'id': 5010,
+          'name': 'pupil_od_irregular',
+          'label': 'Describe Irregular',
+          'parent': 5009,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(pupil_od, "pupil_irregular")'}
+        },
+        {
+          'id': 5011,
+          'name': 'diagnosis_od',
+          'label': 'Diagnosis',
+          'parent': 5010,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 5,
+          'choicesOriginRef': 'diagnosis_choice'
+        },
+        {
+          'id': 5012,
+          'name': 'treatment_od',
+          'label': 'Any medications/Treatment',
+          'parent': 5011,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 5,
+          'choicesOriginRef': 'treatment_choice'
+        },
+        {
+          'id': 5013,
+          'name': 'treatment_other_od',
+          'label': 'If Other, specify',
+          'parent': 5012,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(treatment_od, "other")'}
+        }
+      ],
+      'parent': 4,
+      'nodeType': 3,
+      'parentNode': 0,
+      'conditionalBranches': [{'condition': 'true'}],
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "od")'}
+    },
+    {
+      'id': 6,
+      'name': 'medical_history',
+      'label': 'EXAM LE',
+      'nodes': [
+        {
+          'id': 6001,
+          'name': 'va_os',
+          'label': 'Visual acuity (VA)',
+          'parent': 6,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'va_choice'
+        },
+        {
+          'id': 6002,
+          'name': 'cf_os',
+          'label': 'CF (Counting fingers)',
+          'parent': 6001,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'va_os === "6_60-"'},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 6003,
+          'name': 'hm_os',
+          'label': 'HM (Hand motion)',
+          'parent': 6002,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'cf_os === "n"'},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 6004,
+          'name': 'lp_os',
+          'label': 'LP (Light perception)',
+          'parent': 6003,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'visibility': {'condition': 'hm_os === "n"'},
+          'choicesOriginRef': 'yn'
+        },
+        {
+          'id': 6005,
+          'name': 'iop_os',
+          'label': 'IOP/Intra-ocular pressure',
+          'parent': 6004,
+          'nodeType': 0,
+          'fieldType': 0
+        }
+      ],
+      'parent': 5,
+      'nodeType': 3,
+      'parentNode': 0,
+      'conditionalBranches': [{'condition': 'true'}],
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "os")'}
+    },
+    {
+      'id': 7,
+      'name': 'examination_findings',
+      'label': 'EXAMINATION FINDINGS LE',
+      'nodes': [
+        {
+          'id': 7001,
+          'name': 'eye_lid_os',
+          'label': 'Eye Lid',
+          'parent': 7,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'norm_abnorm_choice'
+        },
+        {
+          'id': 7002,
+          'name': 'abnormal_details_eyelid_os',
+          'label': 'Specify Abnormal',
+          'parent': 7001,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(eye_lid_os, "abnormal")'}
+        },
+        {
+          'id': 7003,
+          'name': 'conjunctiva_os',
+          'label': 'Conjunctiva',
+          'parent': 7002,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'conjunctiva_choice'
+        },
+        {
+          'id': 7004,
+          'name': 'cornea_os',
+          'label': 'Cornea',
+          'parent': 7003,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'cornea_choice'
+        },
+        {
+          'id': 7005,
+          'name': 'anterior_chamber_os',
+          'label': 'Anterior chamber',
+          'parent': 7004,
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'anterior_chamber_choice'
+        },
+        {
+          'id': 7006,
+          'name': 'lens_os',
+          'label': 'Lens',
+          'parent': 7005,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'lens_choice'
+        },
+        {
+          'id': 7007,
+          'name': 'fundus_os',
+          'label': 'Fundus',
+          'parent': 7006,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'fundus_choice'
+        },
+        {
+          'id': 7008,
+          'name': 'fundus_os_others',
+          'label': 'Specify Other',
+          'parent': 7007,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(fundus_os, "fundus_other")'}
+        },
+        {
+          'id': 7009,
+          'name': 'pupil_os',
+          'label': 'Pupil',
+          'parent': 7008,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 4,
+          'choicesOriginRef': 'pupil_choice'
+        },
+        {
+          'id': 7010,
+          'name': 'pupil_os_irregular',
+          'label': 'Describe Irregular',
+          'parent': 7009,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(pupil_os, "pupil_irregular")'}
+        },
+        {
+          'id': 7011,
+          'name': 'diagnosis_os',
+          'label': 'Diagnosis',
+          'parent': 7010,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 5,
+          'choicesOriginRef': 'diagnosis_choice'
+        },
+        {
+          'id': 7012,
+          'name': 'treatment_os',
+          'label': 'Any medications/Treatment',
+          'parent': 7011,
+          'choices': [
+
+          ],
+          'nodeType': 0,
+          'fieldType': 5,
+          'choicesOriginRef': 'treatment_choice'
+        },
+        {
+          'id': 7013,
+          'name': 'treatment_other_os',
+          'label': 'If Other, specify',
+          'parent': 7012,
+          'nodeType': 0,
+          'fieldType': 0,
+          'visibility': {'condition': 'valueInChoice(treatment_os, "other")'}
+        }
+      ],
+      'parent': 6,
+      'nodeType': 3,
+      'parentNode': 0,
+      'conditionalBranches': [{'condition': 'true'}],
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "os")'}
+    }
+  ],
+  'choicesOrigins': [
+    {
+      'name': 'anterior_chamber_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Normal Depth', 'value': 'anterior_chamber_normal'},
+        {'label': 'Swallow', 'value': 'anterior_chamber_swallow'},
+        {'label': 'Hyphema', 'value': 'anterior_chamber_hyphema'},
+        {'label': 'Hypopyon', 'value': 'anterior_chamber_hypopyon'},
+        {'label': 'KPs', 'value': 'anterior_chamber_kps'},
+        {'label': 'Cells and flare', 'value': 'anterior_chamber_cell_flare'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'conjunctiva_choice',
+      'type': 'fixed',
+      'choices':
+          [{'label': 'Normal', 'value': 'normal'}, {'label': 'Inflamed', 'value': 'inflamed'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'cornea_choice',
+      'type': 'fixed',
+      'choices': [{'label': 'Clear', 'value': 'clear'}, {'label': 'Opaque', 'value': 'opaque'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'diagnosis_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'EC00. Normal eye', 'value': 'ec00'},
+        {'label': 'EC01. Allergic conjunctivitis', 'value': 'ec01'},
+        {'label': 'EC02. Bacterial Conjunctivitis', 'value': 'ec02'},
+        {'label': 'EC03. Ophthalmia neonatorum', 'value': 'ec03'},
+        {'label': 'EC04. Other Forms of Conjunctivitis', 'value': 'ec04'},
+        {'label': 'EC05. Corneal Ulcers/ Keratitis', 'value': 'ec05'},
+        {'label': 'EC06. Un Operable Cataract (>6/60)', 'value': 'ec06'},
+        {'label': 'EC07. Operable Cataract (< 6/60)', 'value': 'ec07'},
+        {'label': 'EC08. Refractive errors', 'value': 'ec08'},
+        {'label': 'EC09. Glaucoma', 'value': 'ec09'},
+        {'label': 'EC10. Trachoma', 'value': 'ec10'},
+        {'label': 'EC11. Vitamin A Deficiency', 'value': 'ec11'},
+        {'label': 'EC12. Ocular trauma and Burns', 'value': 'ec12'},
+        {'label': 'EC13. Diabetic Retinopathy (All stages)', 'value': 'ec13'},
+        {'label': 'EC14. Chorioretinal, Macular & Vitreous Disorders', 'value': 'ec14'},
+        {'label': 'EC15. Uveitis', 'value': 'ec15'},
+        {'label': 'EC16. Endophthalmitis', 'value': 'ec16'},
+        {'label': 'EC17. Corneal scars (Non trachomatous)', 'value': 'ec17'},
+        {'label': 'EC18. Tumours', 'value': 'ec18'},
+        {'label': 'EC19. Strabismus ( All types)', 'value': 'ec19'},
+        {'label': 'EC20. Ptosis and other lid Disorders', 'value': 'ec20'},
+        {'label': 'EC21. Squamous Cell Carcinoma of Conjunctiva', 'value': 'ec21'},
+        {'label': 'EC22. Retinoblastoma', 'value': 'ec22'},
+        {'label': 'EC23. Other Malignant Tumours', 'value': 'ec23'},
+        {'label': 'EC24. Other Benign Tumours/Growths', 'value': 'ec24'},
+        {'label': 'EC25. Other Eye Disorders', 'value': 'ec25'},
+        {'label': 'EC26. Blindness', 'value': 'ec26'},
+        {'label': 'EC27. Other eye conditions', 'value': 'ec27'},
+        {'label': 'EC28. Spectacles Dispensed', 'value': 'ec28'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'disabilities_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'DS01.Individuals with Difficulty in seeing', 'value': 'ds01'},
+        {'label': 'DS02.Individuals with Albinism', 'value': 'ds02'},
+        {'label': 'DS03.Individuals with Difficulty in hearing', 'value': 'ds03'},
+        {'label': 'DS04.Individuals with Speech Difficulties', 'value': 'ds04'},
+        {'label': 'DS05.Individuals with delayed age specific motor development', 'value': 'ds05'},
+        {'label': 'DS06.Individuals with Dwarfism', 'value': 'ds06'},
+        {'label': 'DS07.Individuals with Difficulty understanding', 'value': 'ds07'},
+        {'label': 'DS08.Individuals with Difficulty in remembering', 'value': 'ds08'},
+        {'label': 'DS09.Individuals with Difficulty in reading', 'value': 'ds09'},
+        {'label': 'DS10.Individuals with Difficulty in writing', 'value': 'ds10'},
+        {'label': 'DS11.Individuals with Difficulty in self-care', 'value': 'ds11'},
+        {'label': 'DS12.Individuals with Mentally impairment', 'value': 'ds12'},
+        {'label': 'DS13. Individuals with Emotionally impairment', 'value': 'ds13'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'district_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Agago', 'value': 'agago'}, {'label': 'Arua', 'value': 'arua'},
+        {'label': 'Lamwo', 'value': 'lamwo'}, {'label': 'Kitgum', 'value': 'kitgum'},
+        {'label': 'Pader', 'value': 'pader'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'eyes_lr',
+      'type': 'fixed',
+      'choices': [{'label': 'RE', 'value': 'od'}, {'label': 'LE', 'value': 'os'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'fundus_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Normal', 'value': 'fundus_normal'},
+        {'label': 'Bleeding', 'value': 'fundus_bleeding'},
+        {'label': 'Diabetic retinopathy', 'value': 'fundus_dr'},
+        {'label': 'Other', 'value': 'fundus_other'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'gender_choice',
+      'type': 'fixed',
+      'choices': [{'label': 'Male', 'value': 'm'}, {'label': 'Female', 'value': 'f'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'lens_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Clear', 'value': 'lens_clear'},
+        {'label': 'Cataractous', 'value': 'lens_cataractous'},
+        {'label': 'Phseudophakic', 'value': 'lens_phseudophakic'},
+        {'label': 'Aphakic', 'value': 'lens_aphakic'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'nationality_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Ugandans', 'value': 'ugandans'}, {'label': 'Refugees', 'value': 'refugees'},
+        {'label': 'Foreigners', 'value': 'foreigners'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'norm_abnorm_choice',
+      'type': 'fixed',
+      'choices':
+          [{'label': 'Normal', 'value': 'normal'}, {'label': 'Abnormal', 'value': 'abnormal'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'odos_value',
+      'type': 'fixed',
+      'choices':
+          [{'label': 'RE (Right eye)', 'value': 'od'}, {'label': 'LE (Left eye)', 'value': 'os'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'poc_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'OPD', 'value': 'opd'}, {'label': 'Outreach', 'value': 'outreach'},
+        {'label': 'ANC', 'value': 'anc'}, {'label': 'MAT', 'value': 'mat'},
+        {'label': 'PNC', 'value': 'pnc'}, {'label': 'YCC', 'value': 'ycc'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'pupil_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Central Regular and reacting to light-Normal-(CRRL)', 'value': 'pupil_crrl'},
+        {'label': 'Irregular', 'value': 'pupil_irregular'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'subcounty_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'Aiivu', 'value': 'aiivu', 'district': 'arua'},
+        {'label': 'Andelezu HCII', 'value': 'andelezu-hcii', 'district': 'arua'},
+        {'label': 'Aivu', 'value': 'aivu', 'district': 'arua'},
+        {'label': 'Adumi', 'value': 'adumi', 'district': 'arua'},
+        {'label': 'Ajia', 'value': 'ajia', 'district': 'arua'},
+        {'label': 'Arivu', 'value': 'arivu', 'district': 'arua'},
+        {'label': 'Aroi', 'value': 'aroi', 'district': 'arua'},
+        {'label': 'Ayivuni ', 'value': 'ayivuni', 'district': 'arua'},
+        {'label': 'Bileaffe', 'value': 'bileaffe', 'district': 'arua'},
+        {'label': 'Bileafe HCIII', 'value': 'bileaffe-hcii', 'district': 'arua'},
+        {'label': 'Omugo', 'value': 'omugo', 'district': 'arua'},
+        {'label': 'Odupi', 'value': 'odupi', 'district': 'arua'},
+        {'label': 'Omugo HCIV', 'value': 'omugo_hciv', 'district': 'arua'},
+        {'label': 'Omugo Extension (Settlement)', 'value': 'omugo_extension', 'district': 'arua'},
+        {'label': 'Ofua HCIII', 'value': 'ofua_hciii', 'district': 'arua'},
+        {'label': 'Uriama', 'value': 'uriama', 'district': 'arua'},
+        {'label': 'Uriama/Rigbo', 'value': 'uriama_rigbo', 'district': 'arua'},
+        {'label': 'Oluko', 'value': 'oluko', 'district': 'arua'},
+        {'label': 'Oli River Division', 'value': 'oli_river_division', 'district': 'arua'},
+        {'label': 'Vurra', 'value': 'vurra', 'district': 'arua'},
+        {'label': 'Wandi HC III', 'value': 'wandi_hciii', 'district': 'arua'},
+        {'label': 'Pajulu', 'value': 'pajulu', 'district': 'arua'},
+        {'label': 'Manibe', 'value': 'manibe', 'district': 'arua'},
+        {'label': 'Logiri', 'value': 'logiri', 'district': 'arua'},
+        {'label': 'Katrini', 'value': 'katrini', 'district': 'arua'},
+        {'label': 'Dadamu', 'value': 'dadamu', 'district': 'arua'},
+        {'label': 'Ndaapi HCII', 'value': 'ndaapi_hcii', 'district': 'arua'},
+        {'label': 'Cilio HC III', 'value': 'cilio_hcii', 'district': 'arua'},
+        {
+          'label': 'St.Francis-Ocodri HC III',
+          'value': 'st.francis-ocodri_hciii',
+          'district': 'arua'
+        },
+        {'label': 'Katriini', 'value': 'katriini', 'district': 'arua'},
+        {'label': 'Imvepi settlement', 'value': 'imvepi_settlement', 'district': 'arua'},
+        {'label': 'RhinoCamp ext.', 'value': 'rhinocamp_ext.', 'district': 'arua'},
+        {'label': 'Paluga', 'value': 'paluga', 'district': 'lamwo'},
+        {'label': 'Padibe', 'value': 'padibe', 'district': 'lamwo'},
+        {'label': 'Potika', 'value': 'potika', 'district': 'lamwo'},
+        {'label': 'Lokung', 'value': 'lokung', 'district': 'lamwo'},
+        {'label': 'Madi Opei', 'value': 'madi_opei', 'district': 'lamwo'},
+        {'label': 'Agoro', 'value': 'agoro', 'district': 'lamwo'},
+        {'label': 'Palabek Kal', 'value': 'palabek_kal', 'district': 'lamwo'},
+        {'label': 'Palabek Gem', 'value': 'palabek_gem', 'district': 'lamwo'},
+        {'label': 'Paluda', 'value': 'paluda', 'district': 'lamwo'},
+        {'label': 'Ogili', 'value': 'ogili', 'district': 'lamwo'},
+        {'label': 'Orom', 'value': 'orom', 'district': 'kitgum'},
+        {'label': 'Namokora', 'value': 'namokora', 'district': 'kitgum'},
+        {'label': 'Omiya Nyima', 'value': 'omiya_nyima', 'district': 'kitgum'},
+        {'label': 'Kitgum Matidi', 'value': 'kitgum_matidi', 'district': 'kitgum'},
+        {'label': 'Lagoro', 'value': 'lagoro', 'district': 'kitgum'},
+        {'label': 'Amida', 'value': 'amida', 'district': 'kitgum'},
+        {'label': 'Akwang', 'value': 'akwang', 'district': 'kitgum'},
+        {'label': 'Mucwini', 'value': 'mucwini', 'district': 'kitgum'},
+        {'label': 'Central Division', 'value': 'central_division', 'district': 'kitgum'},
+        {'label': 'Pager Division', 'value': 'pager_division', 'district': 'kitgum'},
+        {'label': 'Pandwong division', 'value': 'pandwong_division', 'district': 'kitgum'},
+        {'label': 'Layamo', 'value': 'layamo', 'district': 'kitgum'},
+        {'label': 'Adilang', 'value': 'adilang', 'district': 'agago'},
+        {'label': 'Arum', 'value': 'arum', 'district': 'agago'},
+        {'label': 'Kalongo', 'value': 'kalongo', 'district': 'agago'},
+        {'label': 'Kotomor', 'value': 'kotomor', 'district': 'agago'},
+        {'label': 'Lamiyo', 'value': 'lamiyo', 'district': 'agago'},
+        {'label': 'Lapono', 'value': 'lapono', 'district': 'agago'},
+        {'label': 'Lira Palwoo', 'value': 'lira_palwoo', 'district': 'agago'},
+        {'label': 'Lukole', 'value': 'lukole', 'district': 'agago'},
+        {'label': 'Omot', 'value': 'omot', 'district': 'agago'},
+        {'label': 'Omiya Pachwa', 'value': 'omiya_pachwa', 'district': 'agago'},
+        {'label': 'Paimol', 'value': 'paimol', 'district': 'agago'},
+        {'label': 'Parabongo', 'value': 'parabongo', 'district': 'agago'},
+        {'label': 'Patongo', 'value': 'patongo', 'district': 'agago'},
+        {'label': 'Patongo TC', 'value': 'patongo_tc', 'district': 'agago'},
+        {'label': 'Wol', 'value': 'wol', 'district': 'agago'},
+        {'label': 'Pajule', 'value': 'pajule', 'district': 'pader'},
+        {'label': 'Acholibur', 'value': 'acholibur', 'district': 'pader'},
+        {'label': 'Pader TC', 'value': 'pader_tc', 'district': 'pader'},
+        {'label': 'Anga gura', 'value': 'anga_gura', 'district': 'pader'},
+        {'label': 'Atanga', 'value': 'atanga', 'district': 'pader'},
+        {'label': 'Laguti', 'value': 'laguti', 'district': 'pader'},
+        {'label': 'Latanya', 'value': 'latanya', 'district': 'pader'},
+        {'label': 'Dure', 'value': 'dure', 'district': 'pader'},
+        {'label': 'Ogom', 'value': 'ogom', 'district': 'pader'},
+        {'label': 'Pader S/C', 'value': 'pader_sc', 'district': 'pader'},
+        {'label': 'Puranga TC', 'value': 'puranga_tc', 'district': 'pader'},
+        {'label': 'Puranga S/C', 'value': 'puranga_sc', 'district': 'pader'},
+        {'label': 'Awere', 'value': 'awere', 'district': 'pader'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'treatment_choice',
+      'type': 'fixed',
+      'choices':
+          [{'label': 'Spectacle', 'value': 'spectacle'}, {'label': 'Other', 'value': 'other'}],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'va_choice',
+      'type': 'fixed',
+      'choices': [
+        {'label': 'less than 6/60 ', 'value': '6_60-'}, {'label': '6/60', 'value': '6_60'},
+        {'label': '6/36', 'value': '6_36'}, {'label': '6/24', 'value': '6_24'},
+        {'label': '6/18', 'value': '6_18'}, {'label': '6/12', 'value': '6_12'},
+        {'label': '6/9', 'value': '6_9'}, {'label': '6/6', 'value': '6_6'}
+      ],
+      'choicesType': 'string'
+    },
+    {
+      'name': 'yn',
+      'type': 'fixed',
+      'choices': [{'label': 'y', 'value': 'y'}, {'label': 'n', 'value': 'n'}],
+      'choicesType': 'string'
+    }
+  ]
+};
+
+export const formSchemas: FormSchema[] = [
+  {
+    id: '',
+    name: 'prova',
+    label: 'Human Resources',
+    icon: 'supervised_user_circle',
+    schema: ajfSchema,
+    created_at: '',
+    updated_at: '',
+  },
+];
+
+export const sourceReportFormSchemas: FormSchema[] = [
+  {
+    id: '',
+    name: 'cbm',
+    label: 'CBM',
+    icon: 'star',
+    schema: ajfSourceReportFormSchema,
+    created_at: '',
+    updated_at: '',
+  },
+] as unknown as FormSchema[];

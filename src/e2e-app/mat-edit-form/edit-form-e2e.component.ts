@@ -2,10 +2,10 @@ import {Component} from '@angular/core';
 import {FormDataManager} from '@dewco/core/forms';
 
 @Component({
-  selector: 'app-edit',
-  templateUrl: './edit-e2e.component.html',
+  selector: 'app-edit-form',
+  templateUrl: './edit-form-e2e.component.html',
 })
-export class MatEditE2E {
+export class MatEditFormE2E {
   readonly manager: FormDataManager;
 
   constructor(

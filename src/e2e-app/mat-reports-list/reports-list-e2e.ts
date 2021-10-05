@@ -41,22 +41,20 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   ];
   readonly additionalDataSchema: Observable<ReportSchema|null>;
   readonly formSchemaId: Observable<string|null>;
-  readonly baseEditUrl = 'edit/';
+  readonly baseViewUrl = 'view-report/';
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
     {column: 'user_id', label: 'User', sortable: true},
-    {column: 'created_at', label: 'Creation Date', sortable: true},
+    {column: 'date_start', label: 'Collected Since', sortable: true},
+    {column: 'date_end', label: 'Collected Until', sortable: true},
+    {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [
     {
       actionType: 'view',
       matIcon: 'visibility',
-    },
-    {
-      actionType: 'edit',
-      matIcon: 'create',
     },
     {
       actionType: 'delete',

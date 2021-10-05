@@ -13,7 +13,7 @@ export class FakeDataGenerator<T extends Model = Model> {
    * @param docs The docs to generate
    */
   generateData(manager: DataModelManager<T>, docs: T[]):
-      Observable<{success: RxDocument<T, {}>[]; error: any[];}> {
+      Observable<{success: RxDocument<T, {}>[]; error: any[]; }> {
     if (manager == null || docs.length == 0) {
       return obsOf({success: [], error: []});
     }

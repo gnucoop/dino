@@ -42,7 +42,7 @@ import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
 import {MaterialCreateE2eModule} from './mat-create/create-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
-import {MaterialEditE2eModule} from './mat-edit/edit-e2e.module';
+import {MaterialEditFormE2eModule} from './mat-edit-form/edit-form-e2e.module';
 import {MaterialFormsListE2eModule} from './mat-forms-list/forms-list-e2e.module';
 import {MaterialCollectE2eModule} from './mat-forms/collect-e2e.module';
 import {MaterialGroupsE2eModule} from './mat-groups/groups-e2e.module';
@@ -63,9 +63,9 @@ import {
 } from './mockconfig';
 import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
 import {E2E_APP_ROUTES} from './routes';
-import {formDatas} from './test-ajf-formdata';
-import {formSchemas} from './test-ajf-formschema';
-import {reportDatas} from './test-ajf-reportdata'
+import {formDatas, sourceReportFormDatas} from './test-ajf-formdata';
+import {formSchemas, sourceReportFormSchemas} from './test-ajf-formschema';
+import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
 
 /**
@@ -86,28 +86,34 @@ export function initializeApp(
     if (additionalConfig.generateData) {
       return combineLatest([
                fakeFormSchemaGenerator.generateData(fsm, formSchemas),
+               fakeFormSchemaGenerator.generateData(fsm, sourceReportFormSchemas),
                fakeReportSchemaGenerator.generateData(rsm, reportSchemas)
              ])
           .pipe(
-              switchMap(([resForm, resReport]) => {
+              switchMap(([resForm, resSourceForm, resReport]) => {
                 if (resForm.success == null || resForm.success.length === 0 ||
                     resReport.success == null || resReport.success.length === 0) {
                   return obsOf(null);
                 }
                 const genFormSchemaId = resForm.success[0].id;
+                const genSourceFormSchemaId = resSourceForm.success[0].id;
                 const genReportSchemaId = resReport.success[0].id;
                 for (let idx = 0; idx < formDatas.length; idx++) {
                   formDatas[idx].schema_id = genFormSchemaId;
+                }
+                for (let idx = 0; idx < sourceReportFormDatas.length; idx++) {
+                  sourceReportFormDatas[idx].schema_id = genSourceFormSchemaId;
                 }
                 for (let idx = 0; idx < reportDatas.length; idx++) {
                   reportDatas[idx].schema_id = genReportSchemaId;
                 }
                 return combineLatest([
-                  fakeFormDataGenerator.generateData(fdm, formDatas),
-                  fakeReportDataGenerator.generateData(rdm, reportDatas)
+                  // fakeFormDataGenerator.generateData(fdm, formDatas),
+                  fakeFormDataGenerator.generateData(fdm, sourceReportFormDatas),
+                  fakeReportDataGenerator.generateData(rdm, reportDatas),
                 ]);
               }),
-              tap(items => console.log('DATA GENERATED:', items)),
+              tap(items => console.log('DATA GENERATED')),
           );
     }
     return obsOf(null);
@@ -159,7 +165,7 @@ export function provideDataServiceConfig() {
     MaterialDashboardE2eModule,
     MaterialCollectE2eModule,
     MaterialCreateE2eModule,
-    MaterialEditE2eModule,
+    MaterialEditFormE2eModule,
     MaterialGroupsE2eModule,
     MaterialFormsListE2eModule,
     MaterialReportsListE2eModule,

@@ -1,6 +1,8 @@
 <dewco-list
   [headers]="headers"
   [baseEditUrl]="baseEditUrl"
+  [baseViewUrl]="baseViewUrl"
+  [baseCreateUrl]="baseCreateUrl"
   [dataSource]="dataSource"
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
@@ -19,4 +21,3 @@
   tooltipMessage="Add New form"
   (click)="addForm()"
 ></dewco-floating-button>
-

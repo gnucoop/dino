@@ -4,7 +4,8 @@ import {AuthGuard} from '@dewco/core/auth';
 import {MatAreasE2E} from './mat-areas/areas-e2e.component';
 import {MatCreateE2E} from './mat-create/create-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
-import {MatEditE2E} from './mat-edit/edit-e2e.component';
+import {MatEditFormE2E} from './mat-edit-form/edit-form-e2e.component';
+import {MatEditReportE2E} from './mat-edit-report/edit-report-e2e.component';
 import {MatFormsListE2E} from './mat-forms-list/forms-list-e2e';
 import {MatCollectE2E} from './mat-forms/collect-e2e.component';
 import {MatGroupsListE2E} from './mat-groups/groups-e2e-list.component';
@@ -22,38 +23,38 @@ import {additionalConfig} from './mockconfig';
 const authGuard = additionalConfig.authGuard ? [AuthGuard] : undefined;
 export const E2E_APP_ROUTES: Routes = [
   {
-    path: 'edit',
+    path: 'edit-form',
     canActivate: authGuard,
     children: [
       {
         path: ':form_id',
-        component: MatEditE2E,
+        component: MatEditFormE2E,
       },
       {
         path: 'details/:form_id',
-        component: MatEditE2E,
+        component: MatEditFormE2E,
         data: {isDetails: true},
       },
     ],
   },
   {
-    path: 'view',
+    path: 'view-form',
     canActivate: authGuard,
     data: {isView: true},
     children: [
       {
         path: ':form_id',
-        component: MatEditE2E,
+        component: MatEditFormE2E,
       },
       {
         path: 'details/:form_id',
-        component: MatEditE2E,
+        component: MatEditFormE2E,
         data: {isDetails: true},
       },
     ],
   },
   {
-    path: 'create',
+    path: 'create-form',
     canActivate: authGuard,
     children: [
       {
@@ -78,6 +79,17 @@ export const E2E_APP_ROUTES: Routes = [
       },
       {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
       {path: '**', redirectTo: '/dashboard', pathMatch: 'full'},
+    ],
+  },
+  {
+    path: 'view-report',
+    canActivate: authGuard,
+    data: {isView: true},
+    children: [
+      {
+        path: ':report_id',
+        component: MatEditReportE2E,
+      },
     ],
   },
   {
