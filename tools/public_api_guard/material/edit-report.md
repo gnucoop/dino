@@ -66,6 +66,14 @@ export class EditReportModule {
 // @public (undocumented)
 export type PrintLayout = 'landscape' | 'portrait';
 
+// @public
+export interface ReportContext {
+    // (undocumented)
+    [form_schema_id: string]: {
+        [key: string]: any;
+    }[];
+}
+
 // (No @packageDocumentation comment for this package)
 
 ```

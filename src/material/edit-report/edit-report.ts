@@ -46,6 +46,14 @@ import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 export type PrintLayout = 'landscape'|'portrait';
 
 /**
+ * Represents the context data of the forms necessary
+ * for creating a Report Instance.
+ */
+export interface ReportContext {
+  [form_schema_id: string]: {[key: string]: any}[],
+}
+
+/**
  * The Report Edit component.
  * Reports' data can be viewed or saved here.
  */
@@ -230,8 +238,14 @@ export class EditReport implements OnInit, AfterViewInit {
             .pipe(
                 filter(([rData, rSchema, _]) => rData != null && rSchema != null),
                 map(([rData, rSchema, sfData]) => {
-                  const fData = sfData.map(formData => formData.data);
-                  const context = {forms: fData, report_data: rData};
+                  const formSchemaIds = rSchema.form_schema_ids;
+                  const contextForms: ReportContext = {};
+                  for (let formSchemaId of formSchemaIds) {
+                    const data =
+                        sfData.filter(fdata => fdata.schema_id === formSchemaId).map(fd => fd.data);
+                    contextForms[formSchemaId] = data;
+                  }
+                  const context = {forms: contextForms, report_data: rData};
                   return createReportInstance(rSchema.schema, context, this._translateService);
                 }),
             );
