@@ -50,7 +50,7 @@ export type PrintLayout = 'landscape'|'portrait';
  * for creating a Report Instance.
  */
 export interface ReportContext {
-  [form_schema_id: string]: {[key: string]: any}[],
+  [form_schema_id: string]: {[key: string]: any}[];
 }
 
 /**

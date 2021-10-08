@@ -3,7 +3,6 @@ load(
     "markdown_to_html",
     "ng_module",
 )
-load("//tools/third-party-libs:index.bzl", "DATA_DEPS")
 
 package(default_visibility = ["//visibility:public"])
 
