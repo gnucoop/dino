@@ -1,10 +1,15 @@
+load("//src/e2e-app:test_suite.bzl", "e2e_test_suite")
 load(
     "//tools:defaults.bzl",
     "markdown_to_html",
+    "ng_e2e_test_library",
     "ng_module",
+    "ng_test_library",
+    "ng_web_test_suite",
     "sass_binary",
     "sass_library",
 )
+load("//tools/third-party-libs:index.bzl", "AJF_DEPS", "DATA_DEPS")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -39,6 +44,49 @@ sass_binary(
     name = "edit_report_scss",
     src = "edit-report.scss",
     deps = [],
+)
+
+ng_test_library(
+    name = "unit_test_sources",
+    srcs = glob(
+        ["**/*.spec.ts"],
+        exclude = ["**/*.e2e.spec.ts"],
+    ),
+    deps = [
+        ":edit-report",
+        "//src/core/auth",
+        "//src/core/data",
+        "//src/core/forms",
+        "//src/core/reports",
+        "@npm//@angular/common",
+        "@npm//@angular/forms",
+        "@npm//@angular/router",
+        "@npm//@types/pouchdb-adapter-memory",
+        "@npm//rxdb",
+        "@npm//rxjs",
+    ],
+)
+
+ng_e2e_test_library(
+    name = "e2e_test_sources",
+    srcs = glob(["**/*.e2e.spec.ts"]),
+    deps = [
+        "//src/core/data",
+        "@npm//@angular/core",
+        "@npm//@angular/material",
+    ],
+)
+
+ng_web_test_suite(
+    name = "unit_tests",
+    deps = [":unit_test_sources"] + AJF_DEPS + DATA_DEPS,
+)
+
+e2e_test_suite(
+    name = "e2e_tests",
+    deps = [
+        ":e2e_test_sources",
+    ],
 )
 
 markdown_to_html(

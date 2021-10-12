@@ -62,7 +62,7 @@ export const additionalConfig = {
    * the Platform to log in to from a select dropdown during login.
    * Those configs must be provided by an external API.
    */
-  dynamicConfiguration: false,
+  dynamicConfiguration: true,
 };
 
 /**
