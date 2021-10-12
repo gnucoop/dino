@@ -49,7 +49,7 @@
     "i18n:extract": "transloco-keys-manager extract",
     "i18n:find": "transloco-keys-manager find"
   },
-  "version": "13.0.0-next.1",
+  "version": "13.0.0-next.2",
   "dependencies": {
     "@ajf/core": "13.0.0-next.9",
     "@ajf/icons": "1.0.0",
