@@ -72,6 +72,6 @@ describe('dewco-material-login', () => {
     await loginButton.click();
     await browser.sleep(1000);
 
-    expect(await browser.getCurrentUrl()).toEqual(browser.baseUrl + '/dashboard');
+    await browser.wait(EC.urlContains('dashboard'), 1000);
   });
 });

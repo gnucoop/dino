@@ -5,7 +5,6 @@ load(
     "ng_test_library",
     "ng_web_test_suite",
 )
-load("//tools/third-party-libs:index.bzl", "DATA_DEPS")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -21,6 +20,9 @@ ng_module(
         "@npm//@types/pouchdb-adapter-idb",
         "@npm//@types/pouchdb-adapter-memory",
         "@npm//@types/uuid",
+        "@npm//events",
+        "@npm//pouchdb",
+        "@npm//pouchdb-adapter-idb",
         "@npm//rxdb",
         "@npm//rxjs",
         "@npm//subscriptions-transport-ws",
@@ -48,7 +50,7 @@ ng_test_library(
 
 ng_web_test_suite(
     name = "unit_tests",
-    deps = [":unit_test_sources"] + DATA_DEPS,
+    deps = [":unit_test_sources"],
 )
 
 markdown_to_html(

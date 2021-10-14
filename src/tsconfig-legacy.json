@@ -19,9 +19,9 @@
   ],
   "exclude": [
     "**/*.e2e.spec.ts",
-    "./cdk/schematics/**/*",
+    "./core/schematics/**/*",
     "./material/schematics/**/*",
-    "./components-examples/**/*",
+    "./dewoc-examples/**/*",
     "./material/core/theming/tests/**/*"
   ],
   "angularCompilerOptions": {

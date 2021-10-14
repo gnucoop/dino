@@ -36,29 +36,25 @@ VERSION_PLACEHOLDER_REPLACEMENTS = {
 }
 ANGULAR_PACKAGES_CONFIG = [
     ("@angular/animations", struct(entry_points = ["browser"])),
-    ("@angular/cdk", struct(entry_points = ["a11y", "accordion", "bidi", "coercion", "collections", "drag-drop", "keycodes", "layout", "observers", "overlay", "platform", "portal", "scrolling", "table", "text-field"])),
+    ("@angular/cdk", struct(entry_points = ["a11y", "accordion", "bidi", "coercion", "collections", "drag-drop", "keycodes", "layout", "observers", "overlay", "platform", "portal", "scrolling", "stepper", "table", "text-field"])),
     ("@angular/common", struct(entry_points = ["http/testing", "http", "testing"])),
     ("@angular/compiler", struct(entry_points = ["testing"])),
     ("@angular/core", struct(entry_points = ["testing"])),
     ("@angular/forms", struct(entry_points = [])),
-    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "card", "checkbox", "chips", "core", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "radio", "select", "sidenav", "slide-toggle", "slider", "table", "tabs", "toolbar", "tooltip"])),
+    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "card", "checkbox", "chips", "core", "datepicker", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "paginator", "progress-bar", "radio", "select", "sidenav", "slide-toggle", "slider", "snack-bar", "sort", "stepper", "table", "tabs", "toolbar", "tooltip"])),
     ("@angular/platform-browser", struct(entry_points = ["testing", "animations"])),
     ("@angular/platform-server", struct(entry_points = [], platform = "node")),
     ("@angular/platform-browser-dynamic", struct(entry_points = ["testing"])),
     ("@angular/router", struct(entry_points = [])),
 ]
 
-ANGULAR_PACKAGES = [
-    struct(
-        name = name[len("@angular/"):],
-        entry_points = config.entry_points,
-        platform = config.platform if hasattr(config, "platform") else "browser",
-        module_name = name,
-    )
-    for name, config in ANGULAR_PACKAGES_CONFIG
+THIRD_PARTY_NG_PACKAGES_CONFIG = [
+    ("@ajf/core", struct(entry_points = ["barcode", "calendar", "chart", "checkbox-group", "common", "file-input", "forms", "image", "map", "page-break", "page-slider", "range", "reports", "table", "transloco", "text", "time"])),
+    ("@ajf/material", struct(entry_points = ["barcode", "calendar", "checkbox-group", "forms", "image", "page-slider", "reports", "time"])),
 ]
 
 THIRD_PARTY_PACKAGES_CONFIG = [
+    ("@ngneat/transloco", "ngneat-transloco", struct(entry_points = [])),
 ]
 
 ANGULAR_PACKAGES = [
@@ -69,4 +65,25 @@ ANGULAR_PACKAGES = [
         module_name = name,
     )
     for name, config in ANGULAR_PACKAGES_CONFIG
+]
+
+THIRD_PARTY_NG_PACKAGES = [
+    struct(
+        name = name.replace("@", "").replace("/", "_"),
+        entry_points = config.entry_points,
+        platform = "browser",
+        module_name = name,
+    )
+    for name, config in THIRD_PARTY_NG_PACKAGES_CONFIG
+]
+
+THIRD_PARTY_PACKAGES = [
+    struct(
+        name = name,
+        main_entry_point = ep,
+        entry_points = config.entry_points,
+        platform = "browser",
+        module_name = name,
+    )
+    for name, ep, config in THIRD_PARTY_PACKAGES_CONFIG
 ]

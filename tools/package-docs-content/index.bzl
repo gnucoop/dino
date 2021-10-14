@@ -9,7 +9,7 @@ def _package_docs_content(ctx):
 
     # Directory that will contain all grouped input files. This directory will be
     # created relatively to the current target package. For example:
-    # "bin/src/components-examples/docs-content/docs-content". The reason we need to
+    # "bin/src/dewco-examples/docs-content/docs-content". The reason we need to
     # repeat `docs-content` is that the ng_package rule does not properly handle tree
     # artifacts in data. Instead, we create a tree artifact that can be put into nested_packages.
     # Nested packages do not preserve the tree artifact name (i.e. the directory name),

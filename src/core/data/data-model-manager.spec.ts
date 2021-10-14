@@ -3,7 +3,7 @@ import {TestBed} from '@angular/core/testing';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {of as obsOf} from 'rxjs';
+import {firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '../auth';
@@ -170,14 +170,14 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   afterEach(async () => {
-    await dataService.destroyCollection(collection.name).pipe(take(1)).toPromise();
+    await firstValueFrom(dataService.destroyCollection(collection.name).pipe(take(1)));
     dummyManager = null;
   });
 
   it('should create a new object in the database', async () => {
     const object = {name: 'exampleDummy'};
     const createSpy = spyOn(ageAuthPermission, 'canCreate').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
+    const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     expect(insertedDummy).not.toBeNull();
     expect(insertedDummy!.name).toBe('exampleDummy');
     expect(createSpy).toHaveBeenCalled();
@@ -185,8 +185,8 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should get an existing object from the database', async () => {
     const object = {name: 'exampleDummy'};
-    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
-    const getObject = await dummyManager!.get(insertedDummy!.id).pipe(take(1)).toPromise();
+    const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
+    const getObject = await firstValueFrom(dummyManager!.get(insertedDummy!.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual(insertedDummy!.name);
     expect(getObject!).toEqual(jasmine.objectContaining(object));
@@ -194,7 +194,7 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should create a bulk of objects in the database', async () => {
     const objects = [{name: 'firstDummy'}, {name: 'secondDummy'}];
-    const insertedDummies = await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
+    const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     expect(insertedDummies).not.toBeNull();
     expect(insertedDummies.success).not.toBeNull();
     expect(insertedDummies.success.length).toEqual(objects.length);
@@ -208,8 +208,8 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'dummyOne'},
       {name: 'dummyTwo'},
     ];
-    await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
-    const getObjects = await dummyManager!.list().pipe(take(1)).toPromise();
+    await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
+    const getObjects = await firstValueFrom(dummyManager!.list().pipe(take(1)));
     await getObjects.exec();
     expect(getObjects).not.toBeNull();
     expect(getObjects._resultsData.length).toEqual(objects.length);
@@ -222,13 +222,13 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'C'},
       {name: 'D'},
     ];
-    await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
+    await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const listOptions: DataListOptions = {
       sort: [{name: 'desc'}],
       limit: 5,
       skip: 1,
     };
-    const getObjects = await dummyManager!.list(listOptions).pipe(take(1)).toPromise();
+    const getObjects = await firstValueFrom(dummyManager!.list(listOptions).pipe(take(1)));
     const results = await getObjects.exec();
     expect(results).not.toBeNull();
     expect(results.length).toEqual(3);
@@ -243,7 +243,7 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'D'},
       {name: 'E', age: 55},
     ];
-    await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
+    await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const queryOptions: DataQueryOptions = {
       selector: {
         age: {$gte: 20},
@@ -251,7 +251,7 @@ describe('Data Model Manager - CRUD methods', () => {
       },
       sort: [{name: 'asc'}],
     };
-    const getObjects = await dummyManager!.query(queryOptions).pipe(take(1)).toPromise();
+    const getObjects = await firstValueFrom(dummyManager!.query(queryOptions).pipe(take(1)));
     const results = await getObjects.exec();
     expect(results).not.toBeNull();
     expect(results.length).toEqual(2);
@@ -264,9 +264,10 @@ describe('Data Model Manager - CRUD methods', () => {
   it('should remove an existing object from the database', async () => {
     const object = {name: 'testDummy', author: 'user@dewco.gnu'};
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
-    const deletedObject = await dummyManager!.delete(insertedDummy!.id).pipe(take(1)).toPromise();
-    const getObject = await dummyManager!.get(deletedObject!.id).pipe(take(1)).toPromise();
+    const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
+    const deletedObject =
+        await firstValueFrom(dummyManager!.delete(insertedDummy!.id).pipe(take(1)));
+    const getObject = await firstValueFrom(dummyManager!.get(deletedObject!.id).pipe(take(1)));
     expect(deletedObject?.deleted).toBeTrue();
     expect(deletedObject!.name).toEqual(insertedDummy!.name);
     expect(getObject).toBeNull();
@@ -278,13 +279,14 @@ describe('Data Model Manager - CRUD methods', () => {
       {name: 'firstDummy', author: 'user@dewco.gnu'},
       {name: 'secondDummy', author: 'user@dewco.gnu'},
     ];
-    const insertedDummies = await dummyManager!.bulkCreate(objects).pipe(take(1)).toPromise();
+    const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
     const deletedObjects =
-        await dummyManager!.bulkDelete(insertedDummies.success).pipe(take(1)).toPromise();
-    const getFirstObject = await dummyManager!.get(deletedObjects![0].id).pipe(take(1)).toPromise();
+        await firstValueFrom(dummyManager!.bulkDelete(insertedDummies.success).pipe(take(1)));
+    const getFirstObject =
+        await firstValueFrom(dummyManager!.get(deletedObjects![0].id).pipe(take(1)));
     const getSecondObject =
-        await dummyManager!.get(deletedObjects![1].id).pipe(take(1)).toPromise();
+        await firstValueFrom(dummyManager!.get(deletedObjects![1].id).pipe(take(1)));
     deletedObjects!.forEach(deletedObject => {
       expect(deletedObject?.deleted).toBeTrue();
     });
@@ -296,15 +298,15 @@ describe('Data Model Manager - CRUD methods', () => {
   it('should update an existing object from the database', async () => {
     const object = {name: 'newDummy'};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
+    const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const updObject = {
       id: insertedDummy!.id,
       name: 'upDummy',
       created_at: '',
       updated_at: '',
     };
-    await dummyManager!.update(updObject).pipe(take(1)).toPromise();
-    const getObject = await dummyManager!.get(updObject.id).pipe(take(1)).toPromise();
+    await firstValueFrom(dummyManager!.update(updObject).pipe(take(1)));
+    const getObject = await firstValueFrom(dummyManager!.get(updObject.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('upDummy');
     expect(getObject!).not.toEqual(jasmine.objectContaining(object));
@@ -314,13 +316,13 @@ describe('Data Model Manager - CRUD methods', () => {
   it('should patch an existing object from the database', async () => {
     const object = {name: 'newDummy'};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
-    const insertedDummy = await dummyManager!.create(object).pipe(take(1)).toPromise();
+    const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const objectToPatch = {
       id: insertedDummy!.id,
       name: 'patchedDummy',
     };
-    await dummyManager!.patch(objectToPatch).pipe(take(1)).toPromise();
-    const getObject = await dummyManager!.get(objectToPatch.id).pipe(take(1)).toPromise();
+    await firstValueFrom(dummyManager!.patch(objectToPatch).pipe(take(1)));
+    const getObject = await firstValueFrom(dummyManager!.get(objectToPatch.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('patchedDummy');
     expect(getObject!).not.toEqual(jasmine.objectContaining(object));

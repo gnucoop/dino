@@ -38,6 +38,7 @@ import {switchMap, tap} from 'rxjs/operators';
 
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
+import {E2E_APP_ROUTES} from './routes';
 import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
 import {MaterialCreateE2eModule} from './mat-create/create-e2e.module';
@@ -62,7 +63,6 @@ import {
   paginatorConfig,
 } from './mockconfig';
 import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
-import {E2E_APP_ROUTES} from './routes';
 import {formDatas, sourceReportFormDatas} from './test-ajf-formdata';
 import {formSchemas, sourceReportFormSchemas} from './test-ajf-formschema';
 import {reportDatas} from './test-ajf-reportdata';

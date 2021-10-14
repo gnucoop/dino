@@ -9,7 +9,6 @@ load(
     "sass_binary",
     "sass_library",
 )
-load("//tools/third-party-libs:index.bzl", "AJF_DEPS", "DATA_DEPS")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -64,7 +63,7 @@ ng_e2e_test_library(
 
 ng_web_test_suite(
     name = "unit_tests",
-    deps = [":unit_test_sources"] + AJF_DEPS + DATA_DEPS,
+    deps = [":unit_test_sources"],
 )
 
 e2e_test_suite(

@@ -20,13 +20,10 @@
  *
  */
 
-import {Component} from '@angular/core';
-import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
+import {customResolvePlugin} from '../../tools/esbuild/custom_resolve_esbuild_plugin.mjs';
 
-/** Renders all dewco examples listed in the generated EXAMPLE_COMPONENTS. */
-@Component({
-  template: `<dewco-example-list [ids]="examples"></dewco-example-list>`,
-})
-export class ExamplesPage {
-  examples = Object.keys(EXAMPLE_COMPONENTS);
-}
+export default {
+  resolveExtensions: ['.js'],
+  format: 'esm',
+  plugins: [customResolvePlugin],
+};

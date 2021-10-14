@@ -56,7 +56,7 @@ if (require.main === module) {
   // to the specified output directory.
   for (const execPath of inputFiles) {
     // Compute a relative path from the package to the actual input file.
-    // e.g `src/components-examples/cdk/<..>/example.ts` becomes `cdk/<..>/example.ts`.
+    // e.g `src/dewco-examples/core/<..>/example.ts` becomes `core/<..>/example.ts`.
     const basePath = relative(packageName, execPath);
     const fileExtension = extname(basePath).substring(1);
     const parsed = regionParser(readFileSync(execPath, 'utf8'), fileExtension);
