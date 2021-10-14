@@ -29,7 +29,7 @@ sass_library(
     deps = ["//src/material/core:theming_scss_lib"],
 )
 
-# Creates the @angular/material package published to npm.
+# Creates the @dewco/material package published to npm.
 ng_package(
     name = "npm_package",
     srcs = [
@@ -40,8 +40,6 @@ ng_package(
         "//src/material/core:theming_scss_lib",
         "//src/material/prebuilt-themes:dino-theme",
     ] + MATERIAL_SCSS_LIBS,
-    entry_point = ":index.ts",
-    entry_point_name = "material",
     tags = ["release-package"],
     deps = MATERIAL_TARGETS + MATERIAL_TESTING_TARGETS,
 )

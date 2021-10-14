@@ -12,12 +12,11 @@ ts_library(
     deps = ["@npm//@angular/core"],
 )
 
-# Creates the @angular/cdk package published to npm.
+# Creates the @dewco/core package published to npm.
 ng_package(
     name = "npm_package",
     srcs = ["package.json"],
     data = CORE_SCSS_LIBS,
-    entry_point = ":public-api.ts",
     tags = ["release-package"],
     deps = CORE_TARGETS,
 )
