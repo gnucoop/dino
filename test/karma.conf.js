@@ -31,9 +31,6 @@ module.exports = config => {
     files: [
       {pattern: 'node_modules/core-js-bundle/minified.js', included: true, watched: false},
       {pattern: 'node_modules/core-js-bundle/minified.js.map', included: false, watched: false},
-      {pattern: 'node_modules/tslib/tslib.js', included: false, watched: false},
-      {pattern: 'node_modules/systemjs/dist/system.js', included: true, watched: false},
-      {pattern: 'node_modules/systemjs/dist/system.js.map', included: false, watched: false},
       {pattern: 'node_modules/zone.js/dist/zone.min.js', included: true, watched: false},
       {pattern: 'node_modules/zone.js/dist/proxy.min.js', included: true, watched: false},
       {pattern: 'node_modules/zone.js/dist/sync-test.js', included: true, watched: false},
@@ -41,46 +38,13 @@ module.exports = config => {
       {pattern: 'node_modules/zone.js/dist/async-test.js', included: true, watched: false},
       {pattern: 'node_modules/zone.js/dist/fake-async-test.js', included: true, watched: false},
 
-      // Include all Dewco dependencies
-      {pattern: 'node_modules/@angular/**/*', included: false, watched: false},
-      {pattern: 'node_modules/@dewco/**/*', included: false, watched: false},
-      {pattern: 'node_modules/rxjs/**/*', included: false, watched: false},
-
-      // The Karma system configuration is built by Bazel. The built System config
       // is copied into the "dist/" folder so that the Karma config can use it.
-      {pattern: 'dist/karma-system-config.js', included: true, watched: false},
-      {pattern: 'test/karma-test-shim.js', included: true, watched: false},
-
-      // Third party AMD bundles
-      {pattern: 'dist/amd_date_fns.js', included: false, watched: false},
-      {pattern: 'dist/amd_esprima.js', included: false, watched: false},
-      {pattern: 'dist/amd_flat.js', included: false, watched: false},
-      {pattern: 'dist/amd_mock_socket.js', included: false, watched: false},
-      {pattern: 'dist/amd_numbro.js', included: false, watched: false},
-      {pattern: 'dist/amd_pdfmake.js', included: false, watched: false},
-      {pattern: 'dist/amd_pouchdb_adapter_idb.js', included: false, watched: false},
-      {pattern: 'dist/amd_pouchdb_adapter_memory.js', included: false, watched: false},
-      {pattern: 'dist/amd_rxdb.js', included: false, watched: false},
-      {pattern: 'dist/amd_rxdb_plugins_migration.js', included: false, watched: false},
-      {pattern: 'dist/amd_rxdb_plugins_pouchdb.js', included: false, watched: false},
-      {pattern: 'dist/amd_rxdb_plugins_replication_graphql.js', included: false, watched: false},
-      {pattern: 'dist/amd_subscriptions_transport_ws.js', included: false, watched: false},
-      {pattern: 'dist/amd_uuid.js', included: false, watched: false},
-      {pattern: 'dist/amd_zxing_browser.js', included: false, watched: false},
-      {pattern: 'dist/amd_zxing_library.js', included: false, watched: false},
-
-      // Needed for exposing the RxJS operators through the RxJS UMD bundle. This
-      // is done for performance reasons since fetching individual files is slow.
-      {pattern: 'tools/system-rxjs-operators.js', included: false, watched: false},
-
-      // Includes all package tests and source files into karma. Those files will be watched.
-      // This pattern also matches all sourcemap files and TypeScript files for debugging.
-      {pattern: 'dist/packages/**/*', included: false, watched: true},
+      {pattern: 'dist/legacy-test-bundle.spec.js', included: true, watched: false},
     ],
 
     customLaunchers: customLaunchers,
 
-    preprocessors: {'dist/packages/**/*.js': ['sourcemap']},
+    preprocessors: {'dist/*.js': ['sourcemap']},
 
     reporters: ['dots'],
     autoWatch: false,
