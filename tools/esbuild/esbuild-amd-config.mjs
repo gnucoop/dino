@@ -1,6 +1,9 @@
-import {readFileSync} from 'fs';
 import url from 'url';
 import path from 'path';
+
+import {customResolvePlugin} from './custom_resolve_esbuild_plugin.mjs';
+
+const plugins = [customResolvePlugin];
 
 /** Path to the ESBuild configuration maintained by the user. */
 const userConfigExecPath = "TMPL_CONFIG_PATH"
@@ -22,4 +25,5 @@ export default {
   format: 'iife',
   banner: {js: 'define("TMPL_MODULE_NAME", [], function() {'},
   footer: {js: 'return __exports;})'},
+  plugins,
 };

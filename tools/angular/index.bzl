@@ -1,4 +1,4 @@
-load("//:packages.bzl", "ANGULAR_PACKAGES", "THIRD_PARTY_PACKAGES")
+load("//:packages.bzl", "ANGULAR_PACKAGES", "THIRD_PARTY_NG_PACKAGES", "THIRD_PARTY_PACKAGES")
 load("//tools/esbuild:index.bzl", "esbuild")
 load("@build_bazel_rules_nodejs//internal/linker:link_node_modules.bzl", "LinkerPackageMappingInfo")
 load("@build_bazel_rules_nodejs//:providers.bzl", "ExternalNpmPackageInfo", "JSModuleInfo")
@@ -89,12 +89,44 @@ def _create_third_party_bundle_targets(pkg, entry_point, module_name):
         subpath = target_name_base,
     )
 
+def _create_third_party_ng_bundle_targets(pkg, entry_point, module_name):
+    target_name_base = _get_target_name_base(pkg, entry_point)
+    divider_pos = pkg.name.find("_")
+    scope_name = pkg.name[:divider_pos]
+    package_name = pkg.name[divider_pos + 1:]
+    fesm_bundle_path = "fesm2020/%s.mjs" % (entry_point if entry_point else package_name)
+
+    esbuild(
+        name = "%s_linked_bundle" % target_name_base,
+        output = "%s/index.mjs" % target_name_base,
+        platform = pkg.platform,
+        entry_point = "@npm//:node_modules/@%s/%s/%s" % (scope_name, package_name, fesm_bundle_path),
+        config = "//tools/angular:esbuild_config",
+        # List of dependencies which should never be bundled into these linker-processed bundles.
+        external = ["rxjs", "@angular", "@gic", "@ionic", "@ngneat", "@zxing", "chart.js", "date-fns", "domino", "esprima", "leaflet", "pdfmake", "xhr2", "xlsx", "@" + scope_name],
+    )
+
+    _linker_mapping(
+        name = "%s_linked" % target_name_base,
+        srcs = [":%s_linked_bundle" % target_name_base],
+        package = "@npm//@%s/%s" % (scope_name, package_name),
+        module_name = module_name,
+        subpath = target_name_base,
+    )
+
 def create_angular_bundle_targets():
     for pkg in ANGULAR_PACKAGES:
         _create_bundle_targets(pkg, None, pkg.module_name)
 
         for entry_point in pkg.entry_points:
             _create_bundle_targets(pkg, entry_point, "%s/%s" % (pkg.module_name, entry_point))
+
+def create_third_party_ng_bundle_targets():
+    for pkg in THIRD_PARTY_NG_PACKAGES:
+        _create_third_party_ng_bundle_targets(pkg, None, pkg.module_name)
+
+        for entry_point in pkg.entry_points:
+            _create_third_party_ng_bundle_targets(pkg, entry_point, "%s/%s" % (pkg.module_name, entry_point))
 
 def create_third_party_bundle_targets():
     for pkg in THIRD_PARTY_PACKAGES:
@@ -106,6 +138,10 @@ def create_third_party_bundle_targets():
 LINKER_PROCESSED_FW_PACKAGES = [
     "//tools/angular:%s_linked" % _get_target_name_base(pkg, entry_point)
     for pkg in ANGULAR_PACKAGES
+    for entry_point in [None] + pkg.entry_points
+] + [
+    "//tools/angular:%s_linked" % _get_target_name_base(pkg, entry_point)
+    for pkg in THIRD_PARTY_NG_PACKAGES
     for entry_point in [None] + pkg.entry_points
 ] + [
     "//tools/angular:%s_linked" % _get_third_party_target_name_base(pkg, entry_point)
