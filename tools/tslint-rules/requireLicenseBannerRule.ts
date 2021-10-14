@@ -1,8 +1,7 @@
-import * as fs from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
 import * as Lint from 'tslint';
-import * as minimatch from 'minimatch';
+import minimatch from 'minimatch';
 
 const buildConfig = require('../../build-config');
 
@@ -11,7 +10,7 @@ const licenseBanner = buildConfig.licenseBanner;
 
 /** Failure message that will be shown if a license banner is missing. */
 const ERROR_MESSAGE = 'Missing license header in this TypeScript file. ' +
-  'Every TypeScript file of the library needs to have the Dewco license banner at the top.';
+  'Every TypeScript file of the library needs to have the Google license banner at the top.';
 
 /** TSLint fix that can be used to add the license banner easily. */
 const tslintFix = Lint.Replacement.appendText(0, licenseBanner + '\n\n');
@@ -38,14 +37,8 @@ class RequireLicenseBannerWalker extends Lint.RuleWalker {
     // Globs that are used to determine which files to lint.
     const fileGlobs = options.ruleArguments;
 
-    // Since tslint resolved file names are lowercase when working on a case insensitive
-    // filesystem, we need to transform the current working directory and the source
-    // file name to the real native paths using fs.realpathSync.native function.
-    const cwd = fs.realpathSync.native(process.cwd());
-    const fileName = fs.realpathSync.native(sourceFile.fileName);
-
     // Relative path for the current TypeScript source file.
-    const relativeFilePath = path.relative(cwd, fileName);
+    const relativeFilePath = path.relative(process.cwd(), sourceFile.fileName);
 
     // Whether the file should be checked at all.
     this._enabled = fileGlobs.some(p => minimatch(relativeFilePath, p));

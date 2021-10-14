@@ -1,3 +1,5 @@
+import {transformSync} from '@babel/core';
+import traverse from '@babel/traverse';
 import {existsSync, readFileSync, writeFileSync} from 'fs';
 import {JSONSchema7} from 'json-schema';
 import * as minimist from 'minimist';
@@ -14,7 +16,17 @@ const {tsconfig, source, expose, topRef, jsDoc, accept} = minimist(args, {
 const basePath = join(process.cwd(), '..', process.env.BAZEL_WORKSPACE);
 const {licenseBanner} = require(join(basePath, 'build-config.js'));
 const sourceWoExt = source.replace('.d.ts', '');
-const {VERSION} = require(join(basePath, sourceWoExt));
+const sourceContent = readFileSync(join(basePath, `${sourceWoExt}.js`), 'utf8');
+const {ast} = transformSync(sourceContent, {ast: true});
+let VERSION = 0;
+traverse(ast, {
+  VariableDeclarator: astPath => {
+    const {id, init} = astPath.node;
+    if (id.type === 'Identifier' && id.name == 'VERSION' && init.type == 'NumericLiteral') {
+      VERSION = init.value;
+    }
+  },
+});
 const fileName = basename(sourceWoExt);
 const type =
     fileName.split('-').map(p => `${p.slice(0, 1).toLocaleUpperCase()}${p.slice(1)}`).join('');

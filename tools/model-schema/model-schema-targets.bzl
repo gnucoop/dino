@@ -62,6 +62,7 @@ def model_schema_targets(models, name = "model-schemas", expose = "export", top_
             expose,
             "--jsDoc",
             js_doc,
+            "--bazel_patch_module_resolver",
         ]
         if top_ref:
             args.append("--topRef")
