@@ -1,10 +1,10 @@
 @use 'sass:map';
-@use '~@angular/material/form-field/form-field-fill-theme' as mat-form-field-fill-theme;
-@use '~@angular/material/form-field/form-field-legacy-theme' as mat-form-field-legacy-theme;
-@use '~@angular/material/form-field/form-field-outline-theme' as mat-form-field-outline-theme;
-@use '~@angular/material/form-field/form-field-standard-theme' as mat-form-field-standard-theme;
-@use '~@angular/material/core/style/private' as mat-private;
-@use '~@angular/material/core/theming/theming' as mat-theming;
+@use '@angular/material/form-field/form-field-fill-theme' as mat-form-field-fill-theme;
+@use '@angular/material/form-field/form-field-legacy-theme' as mat-form-field-legacy-theme;
+@use '@angular/material/form-field/form-field-outline-theme' as mat-form-field-outline-theme;
+@use '@angular/material/form-field/form-field-standard-theme' as mat-form-field-standard-theme;
+@use '@angular/material/core/style/private' as mat-private;
+@use '@angular/material/core/theming/theming' as mat-theming;
 @use 'form-field-standard-theme';
 
 // Color styles that apply to all appearances of the form-field.

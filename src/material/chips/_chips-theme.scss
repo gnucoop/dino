@@ -1,6 +1,6 @@
 @use 'sass:map';
 @use 'sass:meta';
-@use '~@angular/material/core/theming/theming' as mat-theming;
+@use '@angular/material/core/theming/theming' as mat-theming;
 
 $mat-chip-remove-font-size: 18px;
 

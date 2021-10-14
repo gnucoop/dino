@@ -1,7 +1,7 @@
 @use 'sass:map';
 @use 'sass:meta';
-@use '~@angular/material/core/theming/theming' as mat-theming;
-@use '~@angular/material/core/style/private' as mat-private;
+@use '@angular/material/core/theming/theming' as mat-theming;
+@use '@angular/material/core/style/private' as mat-private;
 
 $_mat-button-ripple-opacity: 0.1;
 

@@ -1,8 +1,8 @@
 @use 'sass:color';
 @use 'sass:map';
 @use 'sass:meta';
-@use '~@angular/material/core/theming/theming' as mat-theming;
-@use '~@angular/material/core/style/private' as mat-private;
+@use '@angular/material/core/theming/theming' as mat-theming;
+@use '@angular/material/core/style/private' as mat-private;
 
 @mixin sidenav-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);

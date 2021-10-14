@@ -1,6 +1,6 @@
 @use 'sass:map';
-@use '~@angular/material/core/theming/theming' as mat-theming;
-@use '~@angular/material/grid-list/grid-list-theme' as mat-grid-theme;
+@use '@angular/material/core/theming/theming' as mat-theming;
+@use '@angular/material/grid-list/grid-list-theme' as mat-grid-theme;
 
 @mixin grid-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);
