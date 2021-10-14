@@ -34,104 +34,39 @@ VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-RXJS": RXJS_PACKAGE_VERSION,
     "0.0.0-XLSX": XLSX_PACKAGE_VERSION,
 }
-
-# List of default Angular library UMD bundles which are not processed by ngcc.
-ANGULAR_NO_NGCC_BUNDLES = [
-    ("@angular/compiler", ["compiler.umd.js"]),
+ANGULAR_PACKAGES_CONFIG = [
+    ("@angular/animations", struct(entry_points = ["browser"])),
+    ("@angular/cdk", struct(entry_points = ["a11y", "accordion", "bidi", "coercion", "collections", "drag-drop", "keycodes", "layout", "observers", "overlay", "platform", "portal", "scrolling", "table", "text-field"])),
+    ("@angular/common", struct(entry_points = ["http/testing", "http", "testing"])),
+    ("@angular/compiler", struct(entry_points = ["testing"])),
+    ("@angular/core", struct(entry_points = ["testing"])),
+    ("@angular/forms", struct(entry_points = [])),
+    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "card", "checkbox", "chips", "core", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "radio", "select", "sidenav", "slide-toggle", "slider", "table", "tabs", "toolbar", "tooltip"])),
+    ("@angular/platform-browser", struct(entry_points = ["testing", "animations"])),
+    ("@angular/platform-server", struct(entry_points = [], platform = "node")),
+    ("@angular/platform-browser-dynamic", struct(entry_points = ["testing"])),
+    ("@angular/router", struct(entry_points = [])),
 ]
 
-# List of Angular library UMD bundles which will be processed by ngcc.
-ANGULAR_NGCC_BUNDLES = [
-    ("@ajf/core", ["core-common.umd.js", "core-forms.umd.js", "core-reports.umd.js"]),
-    ("@ajf/material", ["material-forms.umd.js", "material-reports.umd.js"]),
-    ("@angular/animations", ["animations-browser.umd.js", "animations.umd.js"]),
-    ("@angular/cdk", ["cdk-a11y.umd.js", "cdk-accordion.umd.js", "cdk-bidi.umd.js", "cdk-collections.umd.js", "cdk-keycodes.umd.js", "cdk-observers.umd.js", "cdk-overlay.umd.js", "cdk-platform.umd.js", "cdk-portal.umd.js", "cdk-scrolling.umd.js", "cdk-text-field.umd.js"]),
-    ("@angular/common", ["common-http-testing.umd.js", "common-http.umd.js", "common-testing.umd.js", "common.umd.js"]),
-    ("@angular/compiler", ["compiler-testing.umd.js"]),
-    ("@angular/core", ["core-testing.umd.js", "core.umd.js"]),
-    ("@angular/forms", ["forms.umd.js"]),
-    ("@angular/material", ["material-core.umd.js", "material-button.umd.js", "material-divider.umd.js", "material-expansion.umd.js", "material-form-field.umd.js", "material-icon.umd.js", "material-input.umd.js", "material-list.umd.js", "material-sidenav.umd.js", "material-progress-bar.umd.js", "material-toolbar.umd.js"]),
-    ("@angular/platform-browser-dynamic", ["platform-browser-dynamic-testing.umd.js", "platform-browser-dynamic.umd.js"]),
-    ("@angular/platform-browser", ["platform-browser.umd.js", "platform-browser-testing.umd.js", "platform-browser-animations.umd.js"]),
-    ("@angular/router", ["router.umd.js"]),
+ANGULAR_PACKAGES = [
+    struct(
+        name = name[len("@angular/"):],
+        entry_points = config.entry_points,
+        platform = config.platform if hasattr(config, "platform") else "browser",
+        module_name = name,
+    )
+    for name, config in ANGULAR_PACKAGES_CONFIG
 ]
 
-THIRD_PARTY_NGCC_BUNDLES = [
-    ("@ngneat/transloco", "ngneat-transloco.umd.js"),
+THIRD_PARTY_PACKAGES_CONFIG = [
 ]
 
-"""
-  Gets a dictionary of all packages and their bundle names.
-"""
-
-def getFrameworkPackageBundles():
-    res = {}
-    for pkgName, bundleNames in ANGULAR_NGCC_BUNDLES + ANGULAR_NO_NGCC_BUNDLES:
-        res[pkgName] = res.get(pkgName, []) + bundleNames
-    return res
-
-"""
-  Gets a dictionary of all third party packages and their bundle names.
-"""
-
-def getThirdPartyPackageBundles():
-    res = {}
-    for pkgName, bundleName in THIRD_PARTY_NGCC_BUNDLES:
-        res[pkgName] = bundleName
-    return res
-
-"""
-  Gets a list of labels which resolve to the UMD bundles of the given packages.
-"""
-
-def getUmdFilePaths(packages, ngcc_artifacts):
-    tmpl = "@npm//:node_modules/%s" + ("/__ivy_ngcc__" if ngcc_artifacts else "") + "/bundles/%s"
-    return [
-        tmpl % (pkgName, bundleName)
-        for pkgName, bundleNames in packages
-        for bundleName in bundleNames
-    ]
-
-def getThirdPartyUmdFilePaths(packages, ngcc_artifacts):
-    tmpl = "@npm//:node_modules/%s" + ("/__ivy_ngcc__" if ngcc_artifacts else "") + "/bundles/%s"
-    return [
-        tmpl % (pkgName, bundleName)
-        for pkgName, bundleName in packages
-    ]
-
-def getThirdPartyNoNgccUmdFilePaths(packages):
-    bundles = []
-    no_shim_tmpl = "@npm//%s:%s__umd"
-    shim_tmpl = "//tools/third-party-libs:%s_umd_module"
-    for package, shims in packages:
-        has_shims = len(shims) > 0
-        if has_shims:
-            bundles.append(shim_tmpl % package)
-        else:
-            bundles.append(no_shim_tmpl % (package, package.split("/")[-1]))
-    bundles.append("@npm//:node_modules/rxdb/dist/rxdb.browserify.js")
-    return bundles
-
-ANGULAR_PACKAGE_BUNDLES = getFrameworkPackageBundles()
-
-THIRD_PARTY_PACKAGE_BUNDLES = getThirdPartyPackageBundles()
-
-ANGULAR_LIBRARY_VIEW_ENGINE_UMDS = getUmdFilePaths(ANGULAR_NO_NGCC_BUNDLES, False) + \
-                                   getUmdFilePaths(ANGULAR_NGCC_BUNDLES, False) + \
-                                   getThirdPartyUmdFilePaths(THIRD_PARTY_NGCC_BUNDLES, False)
-
-ANGULAR_LIBRARY_IVY_UMDS = getUmdFilePaths(ANGULAR_NO_NGCC_BUNDLES, False) + \
-                           getUmdFilePaths(ANGULAR_NGCC_BUNDLES, True) + \
-                           getThirdPartyUmdFilePaths(THIRD_PARTY_NGCC_BUNDLES, True)
-
-"""
-  Gets the list of targets for the Angular library UMD bundles. Conditionally
-  switches between View Engine or Ivy UMD bundles based on the
-  "--config={ivy,view-engine}" flag.
-"""
-
-def getAngularUmdTargets():
-    return select({
-        "//tools:view_engine_mode": ANGULAR_LIBRARY_VIEW_ENGINE_UMDS,
-        "//conditions:default": ANGULAR_LIBRARY_IVY_UMDS,
-    })
+ANGULAR_PACKAGES = [
+    struct(
+        name = name[len("@angular/"):],
+        entry_points = config.entry_points,
+        platform = config.platform if hasattr(config, "platform") else "browser",
+        module_name = name,
+    )
+    for name, config in ANGULAR_PACKAGES_CONFIG
+]

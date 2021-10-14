@@ -14,7 +14,6 @@
     "npm": "Please use Yarn instead of NPM to install dependencies. See: https://yarnpkg.com/lang/en/docs/install/"
   },
   "scripts": {
-    "postinstall": "node tools/postinstall/apply-patches.js && ngcc --properties module main --create-ivy-entry-points && node tools/postinstall/update-ngcc-main-fields.js && node tools/postinstall/copy-material-scss.js",
     "build": "ts-node --project scripts/tsconfig.json ./scripts/build-packages-dist.ts",
     "build-and-check-release-output": "ts-node --project scripts/tsconfig.json scripts/build-and-check-release-output.ts",
     "build-docs-content": "node ./scripts/build-docs-content.js",
@@ -29,8 +28,7 @@
     "breaking-changes": "ts-node --project scripts/tsconfig.json scripts/breaking-changes.ts",
     "gulp": "gulp",
     "check-entry-point-setup": "node ./scripts/check-entry-point-setup.js",
-    "check-rollup-globals": "ts-node --project scripts/tsconfig.json scripts/check-rollup-globals.ts",
-    "changelog": "ts-node --project tools/release/tsconfig.json tools/release/changelog.ts",
+    "check-package-externals": "ts-node --project scripts/tsconfig.json scripts/check-package-externals.ts",
     "format": "yarn ng-dev format changed",
     "cherry-pick-patch": "ts-node --project tools/cherry-pick-patch/tsconfig.json tools/cherry-pick-patch/cherry-pick-patch.ts",
     "ownerslint": "ts-node --project scripts/tsconfig.json scripts/ownerslint.ts",
@@ -66,7 +64,7 @@
     "@angular/material": "13.0.0-next.8",
     "@angular/platform-browser": "13.0.0-next.12",
     "@gnucoop/ngx-color-picker": "^12.0.0",
-    "@ngneat/transloco": "^2.21.0",
+    "@ngneat/transloco": "^3.0.5",
     "@zxing/browser": "^0.0.9",
     "@zxing/library": "^0.18.6",
     "chart.js": "^2.9.3",

@@ -957,7 +957,7 @@
     glob "7.1.6"
     ora "5.0.0"
 
-"@ngneat/transloco-utils@1.1.2", "@ngneat/transloco-utils@^1.0.6":
+"@ngneat/transloco-utils@1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@ngneat/transloco-utils/-/transloco-utils-1.1.2.tgz#d542de59842071b991638eb45b365c6256cf6a3b"
   integrity sha512-yljMAoRNr+qr1z+DTUlY98SWm/ldbssCNmI3tE+A1183ppYKcnpdfSJQKrx1rg4rmwNfyKyexlmZ6EubosqZ8A==
@@ -965,17 +965,25 @@
     cosmiconfig "6.0.0"
     tslib "^1.9.0"
 
-"@ngneat/transloco@^2.21.0":
-  version "2.23.3"
-  resolved "https://registry.yarnpkg.com/@ngneat/transloco/-/transloco-2.23.3.tgz#8ba02012f1ac1a38a18309b7165407451e02364c"
-  integrity sha512-E4/onu81/JemE1ENOwvWrJbmgYRqhxsNJZ1zzHayMEKGHpBTmFqLMIbIZw5bdjGxS14kvdDGH3EJ7YaMNVc1Yw==
+"@ngneat/transloco-utils@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@ngneat/transloco-utils/-/transloco-utils-3.0.0.tgz#4265a345634489ed423b97f36e5ea482e8a98034"
+  integrity sha512-kEBoaJdY2orKhPH5eAHQpos1NiOnQoPMKUBINXObSe3SjjWNnGVrqytJRD+ruOFnBJlhXS2sRIiruQru/U/QuQ==
   dependencies:
-    "@ngneat/transloco-utils" "^1.0.6"
+    cosmiconfig "^7.0.0"
+    tslib "^2.3.0"
+
+"@ngneat/transloco@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@ngneat/transloco/-/transloco-3.0.5.tgz#a1ae768312ae2cee0cf78b9fdba91e0788de2508"
+  integrity sha512-7RpQaJ57JFHQCV703prMPUfInAqL3vigDiZ+kvJoFZ5KO2/YPpXYGmZqB9l96vax8KsOwKp+LCN3DK2CF1Z+WA==
+  dependencies:
+    "@ngneat/transloco-utils" "3.0.0"
     flat "5.0.2"
     lodash.kebabcase "^4.1.1"
-    ora "^3.4.0"
-    replace-in-file "^4.1.2"
-    tslib "^1.9.0"
+    ora "^5.4.1"
+    replace-in-file "^6.2.0"
+    tslib "^2.2.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -11403,7 +11411,7 @@ ora@5.0.0:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
-ora@5.4.1, ora@^5.1.0, ora@^5.3.0:
+ora@5.4.1, ora@^5.1.0, ora@^5.3.0, ora@^5.4.1:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/ora/-/ora-5.4.1.tgz#1b2678426af4ac4a509008e5e4ac9e9959db9e18"
   integrity sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==
@@ -13124,14 +13132,14 @@ replace-homedir@^1.0.0:
     is-absolute "^1.0.0"
     remove-trailing-separator "^1.1.0"
 
-replace-in-file@^4.1.2:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/replace-in-file/-/replace-in-file-4.3.1.tgz#c67c92178b38052008e379197cc0d86ca927f7b0"
-  integrity sha512-FqVvfmpqGTD2JRGI1JjJ86b24P17x/WWwGdxExeyJxnh/2rVQz2+jXfD1507UnnhEQw092X0u0DPCBf1WC4ooQ==
+replace-in-file@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/replace-in-file/-/replace-in-file-6.2.0.tgz#9c0e381b0e02f27f83d5ba500bb4046f63d18566"
+  integrity sha512-Im2AF9G/qgkYneOc9QwWwUS/efyyonTUBvzXS2VXuxPawE5yQIjT/e6x4CTijO0Quq48lfAujuo+S89RR2TP2Q==
   dependencies:
-    chalk "^2.4.2"
+    chalk "^4.1.0"
     glob "^7.1.6"
-    yargs "^15.0.2"
+    yargs "^16.2.0"
 
 request@^2.87.0, request@^2.88.0, request@^2.88.2:
   version "2.88.2"
@@ -16559,7 +16567,7 @@ yargs@16.2.0, yargs@^16.0.0, yargs@^16.0.3, yargs@^16.1.1, yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yargs@^15.0.2, yargs@^15.3.1, yargs@^15.4.1:
+yargs@^15.3.1, yargs@^15.4.1:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.4.1.tgz#0d87a16de01aee9d8bec2bfbf74f67851730f4f8"
   integrity sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==
