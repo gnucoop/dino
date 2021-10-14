@@ -21,6 +21,7 @@ const authServiceConfig: AuthServiceConfig = {
 
 const authServiceMock = {
   authenticated: of(true),
+  authToken: of('test_auth_token'),
   getUserInfo: () => {
     return {};
   },

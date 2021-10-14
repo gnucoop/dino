@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthServiceConfig, Credentials, User} from '@dewco/core/auth';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {delay} from 'rxjs/operators';
+import {delay, map, shareReplay} from 'rxjs/operators';
 
 import {additionalConfig} from './mockconfig';
 
@@ -45,6 +45,7 @@ const dummyUser: User = {
 @Injectable()
 export class AuthServiceMock {
   authenticated: BehaviorSubject<boolean>;
+  authToken: Observable<string|undefined>;
   private _authConfig: BehaviorSubject<AuthServiceConfig>;
   get authConfig(): AuthServiceConfig {
     return this._authConfig.value;
@@ -53,6 +54,10 @@ export class AuthServiceMock {
   constructor() {
     this.authenticated = new BehaviorSubject<boolean>(false);
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(authMockConfig);
+    this.authToken = this.authenticated.pipe(
+        map(auth => auth ? 'test_auth_token' : undefined),
+        shareReplay(1),
+    );
   }
   resetAuth(): void {}
   login(credentials: Credentials): Observable<boolean> {

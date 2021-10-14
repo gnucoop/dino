@@ -6,7 +6,7 @@ import {
   SearchFiltersPresetManager,
   SearchFiltersPresetManagerModule,
 } from '@dewco/material/search-filters-preset-manager';
-import {BehaviorSubject, of as obsOf, of} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, of as obsOf, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
 import {FilterItem, FiltersService, ListModule} from '../../core/list';
@@ -22,6 +22,7 @@ const authServiceConfig: AuthServiceConfig = {
 
 const authServiceMock = {
   authenticated: of(true),
+  authToken: of('test_auth_token'),
   getUserInfo: () => {
     return {};
   },
@@ -79,7 +80,7 @@ describe('Search filters Bar', () => {
   it('should load the preset data on init', async () => {
     fixturePresetManager.detectChanges();
 
-    const presetData = await presetManager.presetData.toPromise();
+    const presetData = await firstValueFrom(presetManager.presetData);
     expect(presetData).not.toBeNull();
     expect(presetData).toEqual(fakeFiltersPreset);
   });
