@@ -8,6 +8,8 @@
     $foreground: map.get($config, foreground);
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
+    $alt_accent: map.get($config, alt_accent);
+    $warn: map.get($config, warn);
 
     @include mat-grid-theme.color($config-or-theme);
 
@@ -23,11 +25,18 @@
         &:hover {
             border-color: mat-theming.get-color-from-palette($accent);
             background: mat-theming.get-color-from-palette($accent, lighter);
-            div.dewco-grid-icon {
-                fill: mat-theming.get-color-from-palette($accent);
+            div.dewco-grid-icon .mat-icon.dewco-mat-icon {
+                color: mat-theming.get-color-from-palette($accent);
             }
             div.dewco-grid-label {
                 color: mat-theming.get-color-from-palette($accent);
+            }
+        }
+        .dewco-grid-action-icons:hover {
+            .mat-mini-fab.mat-button-base {
+                opacity: 1;
+                color: mat-theming.get-color-from-palette($warn);
+                background-color: mat-theming.get-color-from-palette($accent);
             }
         }
     }

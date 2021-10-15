@@ -13,7 +13,7 @@ export class MatDashboardE2E {
       name: 'forms',
       label: 'Forms',
       icon: 'list_alt',
-      url: '/collect',
+      url: '/forms',
     },
     {
       name: 'reports',

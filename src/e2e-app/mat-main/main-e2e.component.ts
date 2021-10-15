@@ -15,7 +15,7 @@ export class MatMainE2E {
     },
     {
       label: 'Forms',
-      url: 'collect',
+      url: 'forms',
       icon: 'list_alt',
     },
     {

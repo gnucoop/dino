@@ -52,6 +52,7 @@ ng_module(
         "//src/material/collect",
         "//src/material/create-form",
         "//src/material/edit-form",
+        "//src/material/edit-form-schema",
         "//src/material/edit-report",
         "//src/material/floating-button",
         "//src/material/list",

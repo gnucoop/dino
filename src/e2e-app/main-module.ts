@@ -32,6 +32,7 @@ import {
 import {DewcoTranslationsModule} from '@dewco/core/translations';
 import {UsersModule} from '@dewco/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {combineLatest, Observable, of as obsOf} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
@@ -43,6 +44,7 @@ import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
 import {MaterialCreateE2eModule} from './mat-create/create-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
+import {MaterialEditFormSchemaE2eModule} from './mat-edit-form-schema/edit-form-schema-e2e.module';
 import {MaterialEditFormE2eModule} from './mat-edit-form/edit-form-e2e.module';
 import {MaterialFormsListE2eModule} from './mat-forms-list/forms-list-e2e.module';
 import {MaterialCollectE2eModule} from './mat-forms/collect-e2e.module';
@@ -166,6 +168,7 @@ export function provideDataServiceConfig() {
     MaterialCollectE2eModule,
     MaterialCreateE2eModule,
     MaterialEditFormE2eModule,
+    MaterialEditFormSchemaE2eModule,
     MaterialGroupsE2eModule,
     MaterialFormsListE2eModule,
     MaterialReportsListE2eModule,

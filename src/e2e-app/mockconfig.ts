@@ -62,7 +62,12 @@ export const additionalConfig = {
    * the Platform to log in to from a select dropdown during login.
    * Those configs must be provided by an external API.
    */
-  dynamicConfiguration: true,
+  dynamicConfiguration: false,
+
+  /**
+   * Url of the Go FormConv endpoint
+   */
+  formconv_post_url: 'https://formconv.herokuapp.com/result.json',
 };
 
 /**
