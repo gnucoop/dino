@@ -18,7 +18,7 @@ describe('dewco-collect-dashboard', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('collect');
+    expect(currentUrl).toContain('forms');
   });
 });
 

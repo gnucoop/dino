@@ -23,11 +23,13 @@
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatIconModule} from '@angular/material/icon';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dewco/core/forms';
 import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
+import {FloatingButtonModule} from '@dewco/material/floating-button';
 
 import {Collect} from './collect';
 
@@ -36,8 +38,10 @@ import {Collect} from './collect';
     AjfTranslocoModule,
     BreakpointObserverModule,
     CommonModule,
+    FloatingButtonModule,
     FormsModule,
     RouterModule,
+    MatButtonModule,
     MatGridListModule,
     MatIconModule,
   ],

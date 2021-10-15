@@ -26,6 +26,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
+import {Router} from '@angular/router';
 import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dewco/core/reports';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
@@ -121,6 +122,7 @@ export class Collect {
       readonly breakpointObserver: BreakpointObserverService,
       private _fs: FormSchemaManager,
       private _rs: ReportSchemaManager,
+      private _router: Router,
   ) {
     this.items = combineLatest([this._collectType, this._menuItems])
                      .pipe(
@@ -166,5 +168,22 @@ export class Collect {
                          }),
                          shareReplay(1),
                      );
+  }
+
+  /**
+   * Redirects to the Edit Form Schema component
+   * @param schemaId The clicked item schema id
+   */
+  editFormSchema(schemaId: string|undefined): void {
+    if (schemaId != null) {
+      this._router.navigate(['edit-form-schema', schemaId]);
+    }
+  }
+
+  /**
+   * Redirects to the Edit Form Schema component, in create mode.
+   */
+  addFormSchema(): void {
+    this._router.navigate(['add-form-schema']);
   }
 }
