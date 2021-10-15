@@ -14,10 +14,10 @@ TSLIB_PACKAGE_VERSION = "^2.3.0"
 XLSX_PACKAGE_VERSION = "^0.17.0"
 UUID_PACKAGE_VERSION = "^8.0.0"
 
-# Each placer holder is used to stamp versions during the build process, replacing the key with it's
+# Each placeholder is used to stamp versions during the build process, replacing the key with it's
 # value pair. These replacements occur during building of `npm_package` and `ng_package` stamping in
 # the peer dependencies and versions, primarily in `package.json`s.
-VERSION_PLACEHOLDER_REPLACEMENTS = {
+NPM_PACKAGE_SUBSTITUTIONS = {
     "0.0.0-AJF": AJF_PACKAGE_VERSION,
     "0.0.0-ANGM": ANGULAR_MATERIAL_PACKAGE_VERSION,
     "0.0.0-NG": ANGULAR_PACKAGE_VERSION,
@@ -34,6 +34,13 @@ VERSION_PLACEHOLDER_REPLACEMENTS = {
     "0.0.0-RXJS": RXJS_PACKAGE_VERSION,
     "0.0.0-XLSX": XLSX_PACKAGE_VERSION,
 }
+
+NO_STAMP_NPM_PACKAGE_SUBSTITUTIONS = dict(NPM_PACKAGE_SUBSTITUTIONS, **{
+    # When building NPM packages for tests (where stamping is disabled),
+    # we use `0.0.0` for the version placeholder.
+    "0.0.0-PLACEHOLDER": "0.0.0",
+})
+
 ANGULAR_PACKAGES_CONFIG = [
     ("@angular/animations", struct(entry_points = ["browser"])),
     ("@angular/cdk", struct(entry_points = ["a11y", "accordion", "bidi", "coercion", "collections", "drag-drop", "keycodes", "layout", "observers", "overlay", "platform", "portal", "scrolling", "stepper", "table", "text-field"])),

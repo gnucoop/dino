@@ -22,8 +22,8 @@ typescript_version_packages = [
         name = ts_pkg_name,
         args = [ts_pkg_name],
         data = [
-            "helpers.js",
-            "test.js",
+            "helpers.mjs",
+            "test.mjs",
             ":import-all-entry-points-file",
             "//integration:npm-packages-from-runfiles",
             "//src/core:npm_package",
@@ -31,10 +31,12 @@ typescript_version_packages = [
             "@npm//@bazel/runfiles",
             "@npm//shelljs",
             "@npm//%s" % ts_pkg_name,
+            "@npm//@types/chart.js",
+            "@npm//@types/leaflet",
             "@npm//@types/node",
             "@npm//@types/pdfmake",
         ],
-        entry_point = "test.js",
+        entry_point = "test.mjs",
     )
     for ts_pkg_name in typescript_version_packages
 ]

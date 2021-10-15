@@ -4,8 +4,8 @@ set -e
 
 BAZEL_BINARY="./node_modules/.bin/bazel"
 
-# echo "Setup"
-# yarn install --non-interactive
+echo "Setup"
+yarn install --non-interactive
 
 echo "Lint"
 "${BAZEL_BINARY}" build //:package_externals
@@ -24,6 +24,9 @@ echo "API golden checks"
 
 echo "Integration tests - Partial Ivy"
 yarn integration-tests:partial-ivy
+
+echo "Integration tests"
+yarn integration-tests
 
 echo "Test local browsers"
 "${BAZEL_BINARY}" test --build_tag_filters=-e2e --test_tag_filters=-e2e --build_tests_only -- src/...
