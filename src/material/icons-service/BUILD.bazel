@@ -1,0 +1,37 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+    "sass_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "icons-service",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    deps = [
+        "@npm//@angular/cdk",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//rxjs",
+    ],
+)
+
+sass_library(
+    name = "icons_service_scss_lib",
+    srcs = glob(["**/_*.scss"]),
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["icons-service.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)

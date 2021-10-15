@@ -24,6 +24,7 @@ export const commitMessage: CommitMessageConfig = {
     'e2e-mat/list',
     'e2e-mat/login',
     'e2e-mat',
+    'material/icons-service',
     'material/list',
     'material/login',
     'material/main-nav',
