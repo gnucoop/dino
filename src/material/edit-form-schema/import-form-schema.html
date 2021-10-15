@@ -1,0 +1,37 @@
+<ng-container *ngIf="importForm|async as importForm">
+  <mat-card class="form-container">
+    <mat-toolbar color="primary"> Import form</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="importForm">
+        <div class="dewco-upload-container">
+          <div>Upload an xlsform file to modify the schema:<br /></div>
+          <input
+            type="file"
+            id="excelFileInput"
+            accept=".xls,.xlsx"
+            (change)="onExcelfileSelected($event)"
+            style="visibility: hidden; height: 1px"
+          /><br />
+          <label for="excelFileInput">
+            <a color="primary" mat-raised-button>Choose file</a>
+          </label>
+          <b>{{convStatus}}</b>
+        </div>
+      </form>
+      <br />
+    </mat-card-content>
+    <mat-card-actions>
+      <button (click)="closeDialog()" color="warn" mat-raised-button>
+        {{ 'Cancel' }}
+      </button>
+      <button
+        [disabled]="processing || !importForm.valid"
+        (click)="apply()"
+        color="primary"
+        mat-raised-button
+      >
+        {{ 'Apply' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>

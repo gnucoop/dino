@@ -1,0 +1,65 @@
+<ng-container *ngIf="form|async as form">
+  <mat-card class="form-container">
+    <mat-card-header>
+      <ng-container *ngIf="formGroup|async as fgroup">
+        <form [formGroup]="fgroup" class="dewco-form-attributes">
+          <mat-form-field>
+            <b
+              ><input
+                matInput
+                formControlName="label"
+                [placeholder]="'Form Label'"
+            /></b>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              formControlName="name"
+              [placeholder]="'Form Name'"
+            />
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              formControlName="icon"
+              [placeholder]="'Icon Identifier'"
+              [matAutocomplete]="autoicons"
+            />
+            <mat-icon matSuffix>{{fgroup.get('icon')?.value}}</mat-icon>
+            <mat-autocomplete #autoicons="matAutocomplete">
+              <mat-option
+                *ngFor="let icon of filteredIcons | async"
+                [value]="icon"
+              >
+                <span>{{icon.replace('_', ' ')}}</span> <mat-icon>{{icon}}</mat-icon>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </form>
+
+        <div class="dewco-edit-form-schema-actions">
+          <button
+            mat-raised-button
+            color="accent"
+            translate
+            (click)="openImportDialog()"
+          >
+            Import <mat-icon>file_upload</mat-icon>
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            translate
+            (click)="save()"
+            [disabled]="!fgroup.valid"
+          >
+            Save <mat-icon>save</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+    </mat-card-header>
+    <mat-card-content>
+      <ajf-form-builder [form]="form"></ajf-form-builder>
+    </mat-card-content>
+  </mat-card>
+</ng-container>
