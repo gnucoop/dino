@@ -7,14 +7,12 @@ package(default_visibility = ["//visibility:public"])
 exports_files(["tsconfig-generate.json"])
 
 ts_library(
-    name = "sources",
-    srcs = glob(["**/*.ts"]),
+    name = "model-schema",
+    srcs = ["model-schema.ts"],
     # TODO(ESM): remove this once the Bazel NodeJS rules can handle ESM with `nodejs_binary`.
     devmode_module = "commonjs",
-    tsconfig = ":tsconfig.json",
     deps = [
-        "@npm//@babel/core",
-        "@npm//@types",
+        "@npm//:node_modules",
         "@npm//ts-json-schema-generator",
     ],
 )

@@ -73,7 +73,7 @@ def model_schema_targets(models, name = "model-schemas", expose = "export", top_
             ":%s" % deps_target,
             "//:build-config.js",
             "//:package.json",
-            "//tools/model-schema:sources",
+            "//tools/model-schema:model-schema",
             "//tools/model-schema:tsconfig-generate.json",
             "@npm//minimist",
             "@npm//ts-json-schema-generator",

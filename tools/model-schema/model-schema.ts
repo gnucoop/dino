@@ -1,8 +1,8 @@
-import {transformSync} from '@babel/core';
+import {BabelFileResult, transformSync} from '@babel/core';
 import traverse from '@babel/traverse';
 import {existsSync, readFileSync, writeFileSync} from 'fs';
-import {JSONSchema7} from 'json-schema';
-import * as minimist from 'minimist';
+import {JSONSchema7, JSONSchema7Definition} from 'json-schema';
+import minimist from 'minimist';
 import {basename, join} from 'path';
 import {Config, createGenerator} from 'ts-json-schema-generator';
 
@@ -13,16 +13,17 @@ const {tsconfig, source, expose, topRef, jsDoc, accept} = minimist(args, {
   default: {expose: 'export', topRef: true, jsDoc: 'extended', accept: false},
 });
 
-const basePath = join(process.cwd(), '..', process.env.BAZEL_WORKSPACE);
+const basePath = join(process.cwd(), '..', process.env.BAZEL_WORKSPACE as string);
 const {licenseBanner} = require(join(basePath, 'build-config.js'));
 const sourceWoExt = source.replace('.d.ts', '');
 const sourceContent = readFileSync(join(basePath, `${sourceWoExt}.js`), 'utf8');
-const {ast} = transformSync(sourceContent, {ast: true});
+const {ast} = transformSync(sourceContent, {ast: true}) as BabelFileResult;
 let VERSION = 0;
 traverse(ast, {
   VariableDeclarator: astPath => {
     const {id, init} = astPath.node;
-    if (id.type === 'Identifier' && id.name == 'VERSION' && init.type == 'NumericLiteral') {
+    if (id.type === 'Identifier' && id.name == 'VERSION' && init != null &&
+        init.type == 'NumericLiteral') {
       VERSION = init.value;
     }
   },
@@ -44,7 +45,8 @@ const config = {
 const generator = createGenerator(config);
 const schema = generator.createSchema(config.type);
 const definition = {
-  ...schema.definitions[config.type] as JSONSchema7,
+  ...(schema.definitions as {[key: string]: JSONSchema7Definition})[config.type as string] as
+      JSONSchema7,
   primaryKey: 'id',
   version: VERSION,
 };
