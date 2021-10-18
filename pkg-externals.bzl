@@ -66,6 +66,7 @@ PKG_EXTERNALS = [
     "@ajf/core/transloco",
     "@ajf/core/utils",
     "@ajf/material/forms",
+    "@ajf/material/form-builder",
     "@ajf/material/reports",
     "pouchdb-adapter-idb",
     "pouchdb-adapter-memory",
