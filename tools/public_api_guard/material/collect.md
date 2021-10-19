@@ -7,19 +7,23 @@
 import { BreakpointObserverService } from '@dewco/material/breakpoint-observer';
 import { FormSchemaManager } from '@dewco/core/forms';
 import * as i0 from '@angular/core';
+import * as i10 from '@angular/material/icon';
 import * as i2 from '@ajf/core/transloco';
 import * as i3 from '@dewco/material/breakpoint-observer';
 import * as i4 from '@angular/common';
-import * as i5 from '@dewco/core/forms';
-import * as i6 from '@angular/router';
-import * as i7 from '@angular/material/grid-list';
-import * as i8 from '@angular/material/icon';
+import * as i5 from '@dewco/material/floating-button';
+import * as i6 from '@dewco/core/forms';
+import * as i7 from '@angular/router';
+import * as i8 from '@angular/material/button';
+import * as i9 from '@angular/material/grid-list';
 import { Observable } from 'rxjs';
 import { ReportSchemaManager } from '@dewco/core/reports';
+import { Router } from '@angular/router';
 
 // @public
 export class Collect {
-    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager);
+    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _router: Router);
+    addFormSchema(): void;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
     // (undocumented)
@@ -30,6 +34,7 @@ export class Collect {
     // (undocumented)
     get columnsSmall(): number;
     set columnsSmall(num: number);
+    editFormSchema(schemaId: string | undefined): void;
     // (undocumented)
     get getCollectType(): CollectType;
     readonly items: Observable<CollectItem[]>;
@@ -56,7 +61,7 @@ export class CollectModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<CollectModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.AjfTranslocoModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.FormsModule, typeof i6.RouterModule, typeof i7.MatGridListModule, typeof i8.MatIconModule], [typeof i1.Collect]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.AjfTranslocoModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.FloatingButtonModule, typeof i6.FormsModule, typeof i7.RouterModule, typeof i8.MatButtonModule, typeof i9.MatGridListModule, typeof i10.MatIconModule], [typeof i1.Collect]>;
 }
 
 // @public
