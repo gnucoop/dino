@@ -6,7 +6,7 @@ import {
 } from 'protractor';
 
 describe('dewco-form-metric-selector', () => {
-  beforeEach(async () => await browser.get('/collect'));
+  beforeEach(async () => await browser.get('/forms'));
 
   it('should enter a form-metric-selector page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));

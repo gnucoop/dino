@@ -6,18 +6,11 @@ import {
 } from 'protractor';
 
 describe('dewco-edit-form', () => {
-  beforeEach(async () => await browser.get('/collect'));
-
-  it('should display one or more Grid Tiles', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
-    expect(tilesCount).toBeGreaterThan(0);
-  });
+  beforeEach(async () => await browser.get('/forms'));
 
   it('should enter an edit form page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
+    const tile = element.all(by.tagName('mat-grid-tile')).first();
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
@@ -41,6 +34,6 @@ describe('dewco-edit-form', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-edit-form'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('edit');
+    expect(currentUrl).toContain('edit-form');
   });
 });

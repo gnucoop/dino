@@ -8,7 +8,7 @@ import {
 describe('dewco-edit-report', () => {
   beforeEach(async () => await browser.get('/reports'));
 
-  it('should enter an edit form page', async () => {
+  it('should enter a view report page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
 

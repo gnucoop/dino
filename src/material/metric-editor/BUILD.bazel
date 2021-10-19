@@ -1,8 +1,6 @@
-load("//src/e2e-app:test_suite.bzl", "e2e_test_suite")
 load(
     "//tools:defaults.bzl",
     "markdown_to_html",
-    "ng_e2e_test_library",
     "ng_module",
     "ng_test_library",
     "ng_web_test_suite",
@@ -63,27 +61,9 @@ ng_test_library(
     ],
 )
 
-ng_e2e_test_library(
-    name = "e2e_test_sources",
-    srcs = glob(["**/*.e2e.spec.ts"]),
-    deps = [
-        "//src/core/data",
-        "//src/material/metric-editor",
-        "@npm//@angular/core",
-        "@npm//@angular/material",
-    ],
-)
-
 ng_web_test_suite(
     name = "unit_tests",
     deps = [":unit_test_sources"],
-)
-
-e2e_test_suite(
-    name = "e2e_tests",
-    deps = [
-        ":e2e_test_sources",
-    ],
 )
 
 markdown_to_html(

@@ -56,8 +56,8 @@ ANGULAR_PACKAGES_CONFIG = [
 ]
 
 THIRD_PARTY_NG_PACKAGES_CONFIG = [
-    ("@ajf/core", struct(entry_points = ["barcode", "calendar", "chart", "checkbox-group", "common", "file-input", "forms", "image", "map", "page-break", "page-slider", "range", "reports", "table", "transloco", "text", "time", "utils"])),
-    ("@ajf/material", struct(entry_points = ["barcode", "calendar", "checkbox-group", "forms", "form-builder", "image", "page-slider", "reports", "time"])),
+    ("@ajf/core", struct(entry_points = ["barcode", "calendar", "chart", "checkbox-group", "common", "file-input", "forms", "image", "map", "node-icon", "page-break", "page-slider", "range", "reports", "table", "transloco", "text", "time", "utils"])),
+    ("@ajf/material", struct(entry_points = ["barcode", "calendar", "checkbox-group", "forms", "form-builder", "image", "monaco-editor", "node-icon", "page-slider", "reports", "time"])),
 ]
 
 THIRD_PARTY_PACKAGES_CONFIG = [

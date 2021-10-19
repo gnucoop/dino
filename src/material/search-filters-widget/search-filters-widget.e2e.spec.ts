@@ -7,22 +7,16 @@ import {
 
 
 describe('dewco-search-filters-widget', () => {
-  beforeEach(async () => await browser.get('/collect'));
-
-  it('should display one or more Grid Tiles', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
+  beforeEach(async () => {
+    await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
-    expect(tilesCount).toBeGreaterThan(0);
-  });
-
-  it('should display a number of dewco-search-filters-widget components', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
+    const tile = element.all(by.tagName('mat-grid-tile')).first();
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
+  });
 
+  it('should display a number of dewco-search-filters-widget components', async () => {
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton));
@@ -38,12 +32,6 @@ describe('dewco-search-filters-widget', () => {
   });
 
   it('should display a mat-slide-toggle in disabled state', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton));
@@ -58,12 +46,6 @@ describe('dewco-search-filters-widget', () => {
   });
 
   it('should display a mat-input', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton));

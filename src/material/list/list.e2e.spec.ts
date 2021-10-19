@@ -6,43 +6,25 @@ import {
 } from 'protractor';
 
 describe('dewco-list', () => {
-  beforeEach(async () => await browser.get('/collect'));
-
-  it('should display one or more Grid Tiles', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
+  beforeEach(async () => {
+    await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
-    expect(tilesCount).toBeGreaterThan(0);
-  });
-
-  it('should display a material table', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
+    const tile = element.all(by.tagName('mat-grid-tile')).first();
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
+  });
 
+  it('should display a material table', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-list'))));
   });
 
   it('should display a checkbox column and a checkBox for bulk actions', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.className('mat-column-select'))));
     await browser.wait(EC.presenceOf(element(by.className('mat-checkbox'))));
   });
 
   it('should display the correct header cells', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.tagName('mat-header-cell'))));
     const expectedCells = ['User', 'Creation Date'];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
@@ -50,12 +32,6 @@ describe('dewco-list', () => {
   });
 
   it('should select a row by checking the associated checkBox', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.css('.mat-row .mat-checkbox'))));
     const box = element(by.css('.mat-row .mat-checkbox'));
     await box.click();
@@ -63,12 +39,6 @@ describe('dewco-list', () => {
   });
 
   it('should select all rows (bulk actions checkBox)', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.tagName('mat-checkbox'))));
     const rowBoxes = element.all(by.tagName('mat-row')).all(by.tagName('mat-checkbox'));
     const bulkBox = element(by.tagName('mat-header-cell')).element(by.tagName('mat-checkbox'));
@@ -81,12 +51,6 @@ describe('dewco-list', () => {
   });
 
   it('should display the row action icons on mouseover', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
     const firstRow = element(by.tagName('mat-row'));
     const actions = firstRow.element(by.className('mat-column-actions'));
@@ -104,12 +68,6 @@ describe('dewco-list', () => {
   it(`should delete a row by clicking on its action-delete button,
       and confirming the action on the Confirmation Dialog`,
      async () => {
-       await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-       const tile = element(by.tagName('mat-grid-tile'));
-
-       await browser.wait(EC.elementToBeClickable(tile));
-       await tile.click();
-
        await browser.wait(EC.presenceOf(element(by.css('.mat-select-min-line'))));
        await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
 

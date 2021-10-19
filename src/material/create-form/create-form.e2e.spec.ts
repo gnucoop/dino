@@ -6,12 +6,12 @@ import {
 } from 'protractor';
 
 describe('dewco-create-form', () => {
-  beforeEach(async () => await browser.get('/collect'));
+  beforeAll(async () => await browser.get('/forms'));
 
   it('should enter a create form page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
+    const tile = element.all(by.tagName('mat-grid-tile')).first();
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
@@ -27,6 +27,13 @@ describe('dewco-create-form', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dewco-create-form'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('create');
+    expect(currentUrl).toContain('create-form');
+  });
+
+  it('should show a Metric selector', async () => {
+    const metricSelector = element(by.tagName('dewco-form-metric-selector'));
+    await browser.wait(EC.presenceOf(metricSelector));
+    const isMetricSelectorPresent = await metricSelector.isPresent();
+    expect(isMetricSelectorPresent).toEqual(true);
   });
 });

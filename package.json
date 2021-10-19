@@ -38,6 +38,8 @@
     "ts-circular-deps:check": "yarn -s ng-dev ts-circular-deps check --config ./src/circular-deps-test.conf.js",
     "ts-circular-deps:approve": "yarn -s ng-dev ts-circular-deps approve --config ./src/circular-deps-test.conf.js",
     "merge": "ng-dev pr merge",
+    "public-api-guard": "bazel test tools/public_api_guard/...",
+    "model-schema-test": "bazel test tools/model-schema/...",
     "approve-api": "node ./scripts/approve-api-golden.js",
     "approve-size-tests": "node ./scripts/approve-size-golden.js",
     "integration-tests": "bazel test --test_tag_filters=-linker-integration-test --build_tests_only -- //integration/... -//integration/size-test/... -//integration/ng-add/... -//integration/ng-update-v13/...",

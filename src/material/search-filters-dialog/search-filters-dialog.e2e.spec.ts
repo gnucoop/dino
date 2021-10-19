@@ -6,22 +6,16 @@ import {
 } from 'protractor';
 
 describe('dewco-search-filters-dialog', () => {
-  beforeEach(async () => await browser.get('/collect'));
-
-  it('should display one or more Grid Tiles', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
+  beforeEach(async () => {
+    await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
-    expect(tilesCount).toBeGreaterThan(0);
-  });
-
-  it('should display a dewco-search-filters-dialog component and its parts', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
+    const tile = element.all(by.tagName('mat-grid-tile')).first();
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
+  });
 
+  it('should display a dewco-search-filters-dialog component and its parts', async () => {
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
@@ -43,12 +37,6 @@ describe('dewco-search-filters-dialog', () => {
   });
 
   it('should select the first tab by default', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
@@ -63,12 +51,6 @@ describe('dewco-search-filters-dialog', () => {
   });
 
   it('should display some number of filter widgets in the selected tab', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-    const tile = element(by.tagName('mat-grid-tile'));
-
-    await browser.wait(EC.elementToBeClickable(tile));
-    await tile.click();
-
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
@@ -83,12 +65,6 @@ describe('dewco-search-filters-dialog', () => {
 
   it('should close the dialog and change the url with filter params when clicking Search button',
      async () => {
-       await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
-       const tile = element(by.tagName('mat-grid-tile'));
-
-       await browser.wait(EC.elementToBeClickable(tile));
-       await tile.click();
-
        await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
 
        const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));

@@ -1,13 +1,12 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AuthService, AuthServiceConfig} from '@dewco/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
+import {FormSchemaManager} from '@dewco/core/forms';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
-
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
-import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '../../core/data';
-import {FormSchemaManager} from '../../core/forms';
 
 import {EditFormSchema, EditFormSchemaModule} from './index';
 
@@ -37,6 +36,7 @@ const authServiceConfig: AuthServiceConfig = {
 
 const authServiceMock = {
   authenticated: of(true),
+  authToken: of('test_auth_token'),
   getUserInfo: () => {
     return {};
   },
@@ -45,39 +45,34 @@ const authServiceMock = {
   authConfig: authServiceConfig,
 } as unknown as AuthService;
 
-describe('Edit Form', () => {
-  let fsm: FormSchemaManager;
-  let fixtureEditForm: ComponentFixture<EditFormSchema>;
-  let editForm: EditFormSchema;
+describe('Edit FormSchema', () => {
+  let fixtureEditFormSchema: ComponentFixture<EditFormSchema>;
+  let editFormSchema: EditFormSchema;
 
   beforeEach(() => {
     TestBed
         .configureTestingModule({
           imports: [
+            BrowserAnimationsModule,
             EditFormSchemaModule,
-            HttpClientTestingModule,
             RouterTestingModule,
           ],
           providers: [
             FormSchemaManager,
             {provide: AuthService, useValue: authServiceMock},
             {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
           ],
         })
         .compileComponents();
 
-    fsm = TestBed.inject(FormSchemaManager);
-    fixtureEditForm = TestBed.createComponent(EditFormSchema);
-    editForm = fixtureEditForm.componentInstance;
+    fixtureEditFormSchema = TestBed.createComponent(EditFormSchema);
+    editFormSchema = fixtureEditFormSchema.componentInstance;
   });
 
   it('should create the component', async () => {
-    await fixtureEditForm.whenStable();
-    editForm.dataModelManager = fsm as unknown as DataModelManager<Model>;
-    fixtureEditForm.detectChanges();
+    await fixtureEditFormSchema.whenStable();
+    fixtureEditFormSchema.detectChanges();
 
-    expect(editForm).toBeTruthy();
-    expect(fsm).toBeTruthy();
+    expect(editFormSchema).toBeTruthy();
   });
 });
