@@ -23,67 +23,49 @@
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatSortModule} from '@angular/material/sort';
-import {MatTableModule} from '@angular/material/table';
-import {RouterModule} from '@angular/router';
-import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
-import {ExportFormModule} from '@dewco/material/export-form';
-import {SearchFiltersChipsModule} from '@dewco/material/search-filters-chips';
-import {SearchFiltersDialogModule} from '@dewco/material/search-filters-dialog';
-import {SearchFiltersPresetManagerModule} from '@dewco/material/search-filters-preset-manager';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {ExportForm} from './export-form';
 
-import {IsFalseOrNullPipe} from './is-false-or-null.pipe';
-import {SearchFiltersBar} from './search-filters-bar';
+import {ExportBottomSheet} from './export-form-bottom-sheet';
+import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
+
 
 @NgModule({
   imports: [
-    AjfTranslocoModule,
-    BreakpointObserverModule,
     CommonModule,
-    ExportFormModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatDialogModule,
-    MatExpansionModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
     MatListModule,
     MatNativeDateModule,
-    MatPaginatorModule,
-    MatBottomSheetModule,
-    MatSortModule,
-    MatTableModule,
-    ReactiveFormsModule,
-    RouterModule,
-    SearchFiltersChipsModule,
-    SearchFiltersDialogModule,
-    SearchFiltersPresetManagerModule,
+    MatTabsModule,
+    MatToolbarModule,
+    AjfTranslocoModule,
   ],
   declarations: [
-    IsFalseOrNullPipe,
-    SearchFiltersBar,
+    ExportForm,
+    ExportSelectAllButtonComponent,
+    ExportBottomSheet,
   ],
   exports: [
-    SearchFiltersBar,
-  ],
-  providers: [
-    MatDatepickerModule,
+    ExportSelectAllButtonComponent,
+    ExportBottomSheet,
   ],
 })
-export class SearchFiltersBarModule {
+export class ExportFormModule {
 }

@@ -134,6 +134,7 @@
     "@types/leaflet": "^1.7.5",
     "@types/marked": "^2.0.0",
     "@types/merge2": "^0.3.30",
+    "@types/mime": "^2.0.3",
     "@types/minimist": "^1.2.0",
     "@types/node": "^14.14.22",
     "@types/node-fetch": "^2.5.5",

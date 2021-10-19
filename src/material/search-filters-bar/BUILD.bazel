@@ -22,6 +22,7 @@ ng_module(
     deps = [
         "//src/core/list",
         "//src/material/breakpoint-observer",
+        "//src/material/export-form",
         "//src/material/search-filters-chips",
         "//src/material/search-filters-dialog",
         "//src/material/search-filters-preset-manager",

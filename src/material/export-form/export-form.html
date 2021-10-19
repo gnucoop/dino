@@ -1,0 +1,61 @@
+<ng-container *ngIf="exportModel$|async as exportModel">
+  <mat-toolbar>
+    <h1>{{exportModel.schemaName|transloco}}</h1>
+    <span class="dewco-spacer"></span>
+  </mat-toolbar>
+  <mat-toolbar>
+    <dewco-export-form-select-all-button (change)="selectAll($event.checked)">
+      {{'select all form fields'| transloco}}
+    </dewco-export-form-select-all-button>
+    <dewco-export-form-select-all-button
+      class="dewco-export-translate-btn"
+      (change)="setTranslation($event.checked)"
+      >{{'label values'|transloco}}</dewco-export-form-select-all-button
+    >
+    <span class="dewco-export-toolbar-spacer"></span>
+    <span class="dewco-export-toolbar-count"
+      >{{maxNumberOfForm$|async}} {{'forms'|transloco}}</span
+    ><span class="dewco-export-toolbar-spacer"></span>
+
+    <mat-button-toggle-group
+      name="format"
+      aria-label="format of export"
+      [(ngModel)]="exportFormat"
+    >
+      <mat-button-toggle value="csv">{{'csv'|transloco}}</mat-button-toggle>
+      <mat-button-toggle value="xlsx">{{'xlsx'|transloco}}</mat-button-toggle>
+      <mat-button-toggle value="splitted-xlsx"
+        >{{'splitted xlsx'|transloco}}</mat-button-toggle
+      >
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="export()"
+        [disabled]="disableExport$|async"
+      >
+        {{'export'|transloco}}
+      </button>
+    </mat-button-toggle-group>
+  </mat-toolbar>
+  <mat-tab-group selectedIndex="0" (selectedTabChange)="tabChange($event)">
+    <mat-tab
+      *ngFor="let label of exportModel.slideLabels; let idx = index"
+      [label]="label|transloco"
+    >
+      <dewco-export-form-select-all-button
+        [group]="'tab'"
+        (change)="selectAllfieldSlides($event.checked)"
+        >{{'select all fields of'|transloco}} {{label| transloco}}
+      </dewco-export-form-select-all-button>
+      <mat-selection-list
+        [attr.aria-label]="'slide fields'|transloco"
+        (selectionChange)="updateExportDisable()"
+        *ngIf="exportModel.slides[idx] as slide"
+      >
+        <mat-list-option *ngFor="let field of slide" [value]="field">
+          {{field.label| transloco}}
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>

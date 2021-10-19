@@ -1,0 +1,33 @@
+dewco-export-form {
+  mat-spinner {
+    display: block !important;
+    position: absolute !important;
+    top: 45%;
+    left: 45%;
+    z-index: 2;
+  }
+  mat-toolbar {
+    .mat-form-field {
+      min-width: 400px;
+    }
+    .dewco-export-toolbar-spacer {
+      flex: 1 1 auto;
+    }
+    .dewco-spacer {
+      flex: 1 1 auto;
+    }
+    dewco-export-form-select-all-button {
+      width: auto;
+    }
+
+    height: auto !important;
+    min-height: 64px;
+  }
+  .dewco-checked {
+    background-color: red;
+  }
+  .dewco-export-translate-btn {
+    max-width: 110px;
+    margin: 10px;
+  }
+}

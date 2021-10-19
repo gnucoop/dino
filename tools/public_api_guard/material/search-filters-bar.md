@@ -6,31 +6,35 @@
 
 import { BreakpointObserverService } from '@dewco/material/breakpoint-observer';
 import { ChangeDetectorRef } from '@angular/core';
+import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FilterItem } from '@dewco/core/list';
 import { FilterListType } from '@dewco/core/list';
 import { FiltersService } from '@dewco/core/list';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/expansion';
-import * as i11 from '@angular/material/form-field';
-import * as i12 from '@angular/material/icon';
-import * as i13 from '@angular/material/input';
-import * as i14 from '@angular/material/list';
-import * as i15 from '@angular/material/core';
-import * as i16 from '@angular/material/paginator';
-import * as i17 from '@angular/material/sort';
-import * as i18 from '@angular/material/table';
-import * as i19 from '@angular/forms';
-import * as i20 from '@angular/router';
-import * as i21 from '@dewco/material/search-filters-chips';
-import * as i22 from '@dewco/material/search-filters-dialog';
-import * as i23 from '@dewco/material/search-filters-preset-manager';
+import * as i10 from '@angular/material/dialog';
+import * as i11 from '@angular/material/expansion';
+import * as i12 from '@angular/material/form-field';
+import * as i13 from '@angular/material/icon';
+import * as i14 from '@angular/material/input';
+import * as i15 from '@angular/material/list';
+import * as i16 from '@angular/material/core';
+import * as i17 from '@angular/material/paginator';
+import * as i18 from '@angular/material/bottom-sheet';
+import * as i19 from '@angular/material/sort';
+import * as i20 from '@angular/material/table';
+import * as i21 from '@angular/forms';
+import * as i22 from '@angular/router';
+import * as i23 from '@dewco/material/search-filters-chips';
+import * as i24 from '@dewco/material/search-filters-dialog';
+import * as i25 from '@dewco/material/search-filters-preset-manager';
 import * as i3 from '@ajf/core/transloco';
 import * as i4 from '@dewco/material/breakpoint-observer';
 import * as i5 from '@angular/common';
-import * as i6 from '@angular/material/button';
-import * as i7 from '@angular/material/checkbox';
-import * as i8 from '@angular/material/datepicker';
-import * as i9 from '@angular/material/dialog';
+import * as i6 from '@dewco/material/export-form';
+import * as i7 from '@angular/material/button';
+import * as i8 from '@angular/material/checkbox';
+import * as i9 from '@angular/material/datepicker';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
@@ -49,7 +53,7 @@ export class IsFalseOrNullPipe implements PipeTransform {
 
 // @public
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
-    constructor(_fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef, breakpointObserver: BreakpointObserverService);
+    constructor(_fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef, _bottomSheet: MatBottomSheet, breakpointObserver: BreakpointObserverService);
     // (undocumented)
     get additionalFilters(): boolean;
     set additionalFilters(state: boolean);
@@ -57,6 +61,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     readonly breakpointObserver: BreakpointObserverService;
     // (undocumented)
     dialog: MatDialog;
+    // (undocumented)
+    get exportable(): boolean;
+    set exportable(state: boolean);
+    // (undocumented)
+    readonly exportEvt: EventEmitter_2<'XLSX' | 'CSV' | 'dialog'>;
     // (undocumented)
     set filtersDialogWidth(w: number);
     // (undocumented)
@@ -67,11 +76,13 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     ngOnInit(): void;
     openDialog(): void;
     // (undocumented)
+    openExportBottomSheet(): void;
+    // (undocumented)
     get presetManager(): boolean;
     set presetManager(state: boolean);
     removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dewco-search-filters-bar", never, { "presetManager": "presetManager"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dewco-search-filters-bar", never, { "presetManager": "presetManager"; "exportable": "exportable"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, { "exportEvt": "exportEvt"; }, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, never>;
 }
@@ -83,7 +94,7 @@ export class SearchFiltersBarModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<SearchFiltersBarModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersBarModule, [typeof i1.IsFalseOrNullPipe, typeof i2.SearchFiltersBar], [typeof i3.AjfTranslocoModule, typeof i4.BreakpointObserverModule, typeof i5.CommonModule, typeof i6.MatButtonModule, typeof i7.MatCheckboxModule, typeof i8.MatDatepickerModule, typeof i9.MatDialogModule, typeof i10.MatExpansionModule, typeof i11.MatFormFieldModule, typeof i12.MatIconModule, typeof i13.MatInputModule, typeof i14.MatListModule, typeof i15.MatNativeDateModule, typeof i16.MatPaginatorModule, typeof i17.MatSortModule, typeof i18.MatTableModule, typeof i19.ReactiveFormsModule, typeof i20.RouterModule, typeof i21.SearchFiltersChipsModule, typeof i22.SearchFiltersDialogModule, typeof i23.SearchFiltersPresetManagerModule], [typeof i2.SearchFiltersBar]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersBarModule, [typeof i1.IsFalseOrNullPipe, typeof i2.SearchFiltersBar], [typeof i3.AjfTranslocoModule, typeof i4.BreakpointObserverModule, typeof i5.CommonModule, typeof i6.ExportFormModule, typeof i7.MatButtonModule, typeof i8.MatCheckboxModule, typeof i9.MatDatepickerModule, typeof i10.MatDialogModule, typeof i11.MatExpansionModule, typeof i12.MatFormFieldModule, typeof i13.MatIconModule, typeof i14.MatInputModule, typeof i15.MatListModule, typeof i16.MatNativeDateModule, typeof i17.MatPaginatorModule, typeof i18.MatBottomSheetModule, typeof i19.MatSortModule, typeof i20.MatTableModule, typeof i21.ReactiveFormsModule, typeof i22.RouterModule, typeof i23.SearchFiltersChipsModule, typeof i24.SearchFiltersDialogModule, typeof i25.SearchFiltersPresetManagerModule], [typeof i2.SearchFiltersBar]>;
 }
 
 // (No @packageDocumentation comment for this package)

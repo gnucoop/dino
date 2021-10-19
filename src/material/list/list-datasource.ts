@@ -120,7 +120,9 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
    * The model of the "data" property associated with the ListDataSource main model.
    */
   private _additionalDataSchema: BehaviorSubject<AD|null> = new BehaviorSubject<AD|null>(null);
-
+  get additionalDataSchema(): AD {
+    return this._additionalDataSchema.value as AD;
+  }
   set additionalDataSchema(dataSchema: AD) {
     this._additionalDataSchema.next(dataSchema);
   }

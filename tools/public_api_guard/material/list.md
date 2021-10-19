@@ -12,30 +12,33 @@ import { BehaviorSubject } from 'rxjs';
 import { BreakpointObserverService } from '@dewco/material/breakpoint-observer';
 import { ChangeDetectorRef } from '@angular/core';
 import { CollectionChangedEvent } from '@dewco/core/data';
+import { ComponentFactoryResolver } from '@angular/core';
 import { DataModelManager } from '@dewco/core/data';
 import { DataQueryOptions } from '@dewco/core/data';
 import { ElementRef } from '@angular/core';
 import { FilterGroup } from '@dewco/core/list';
 import { FiltersService } from '@dewco/core/list';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/button';
-import * as i11 from '@angular/material/checkbox';
-import * as i12 from '@angular/material/dialog';
-import * as i13 from '@angular/material/form-field';
-import * as i14 from '@angular/material/icon';
-import * as i15 from '@angular/material/input';
-import * as i16 from '@angular/material/list';
-import * as i17 from '@angular/material/paginator';
-import * as i18 from '@angular/material/slide-toggle';
-import * as i19 from '@angular/material/sort';
-import * as i20 from '@angular/material/table';
-import * as i21 from '@angular/material/toolbar';
-import * as i22 from '@angular/router';
+import * as i10 from '@dewco/core/list';
+import * as i11 from '@angular/material/button';
+import * as i12 from '@angular/material/checkbox';
+import * as i13 from '@angular/material/dialog';
+import * as i14 from '@angular/material/form-field';
+import * as i15 from '@angular/material/icon';
+import * as i16 from '@angular/material/input';
+import * as i17 from '@angular/material/list';
+import * as i18 from '@angular/material/paginator';
+import * as i19 from '@angular/material/slide-toggle';
+import * as i20 from '@angular/material/sort';
+import * as i21 from '@angular/material/table';
+import * as i22 from '@angular/material/toolbar';
+import * as i23 from '@angular/router';
 import * as i5 from '@ajf/core/forms';
 import * as i6 from '@ajf/core/transloco';
 import * as i7 from '@dewco/material/breakpoint-observer';
-import * as i8 from '@angular/common';
-import * as i9 from '@dewco/core/list';
+import * as i8 from '@dewco/material/export-form';
+import * as i9 from '@angular/common';
+import { Injector } from '@angular/core';
 import { List } from '@dewco/core/list';
 import { ListAction } from '@dewco/core/list';
 import { ListHeader } from '@dewco/core/list';
@@ -132,6 +135,7 @@ export interface ListContext<T extends Model = Model> {
 export class ListDataSource<T extends Model = Model, AD extends Model = Model> extends MatTableDataSource<T> {
     constructor(_dataModelManager: DataModelManager<T>, _fs: FiltersService, _additionalDataManager?: DataModelManager<AD> | undefined, _isFormDataList?: boolean);
     // (undocumented)
+    get additionalDataSchema(): AD;
     set additionalDataSchema(dataSchema: AD);
     // (undocumented)
     get dataResults(): BehaviorSubject<T[]>;
@@ -163,12 +167,12 @@ export class ListModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.CommonModule, typeof i9.ListModule, typeof i10.MatButtonModule, typeof i11.MatCheckboxModule, typeof i12.MatDialogModule, typeof i13.MatFormFieldModule, typeof i14.MatIconModule, typeof i15.MatInputModule, typeof i16.MatListModule, typeof i17.MatPaginatorModule, typeof i18.MatSlideToggleModule, typeof i19.MatSortModule, typeof i20.MatTableModule, typeof i21.MatToolbarModule, typeof i22.RouterModule], [typeof i14.MatIconModule, typeof i4.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSortModule, typeof i21.MatTableModule, typeof i22.MatToolbarModule, typeof i23.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
 }
 
 // @public
 export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
-    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router);
+    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _componentFactoryResolver: ComponentFactoryResolver, _injector: Injector);
     actionOnItems(row: T | T[], action: ListAction, isDetails?: boolean): void;
     set additionalBasicFilters(filterNames: string[]);
     // (undocumented)
@@ -200,6 +204,8 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
         [key: string]: MatTableDataSource<T>;
     };
     expansionRowsUpdate(row: T, forceExpand?: boolean): void;
+    // (undocumented)
+    export(ev: 'XLSX' | 'CSV' | 'dialog'): void;
     filtersComponent: SearchFiltersComponent;
     getDetails(row: T): Observable<T[]>;
     getDisplayedItems(): T[];

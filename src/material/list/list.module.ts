@@ -39,6 +39,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dewco/core/list';
 import {BreakpointObserverModule} from '@dewco/material/breakpoint-observer';
+import {ExportFormModule} from '@dewco/material/export-form';
 
 import {ColumnsSelector} from './columns-selector';
 import {ConfirmationDialog} from './confirmation-dialog';
@@ -48,23 +49,12 @@ import {AdminUserInteractionsService} from './user-interactions.service';
 
 @NgModule({
   imports: [
-    AjfFormsModule,
-    AjfTranslocoModule,
-    BreakpointObserverModule,
-    CommonModule,
-    CoreModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatPaginatorModule,
-    MatSlideToggleModule,
-    MatSortModule,
-    MatTableModule,
-    MatToolbarModule,
+    AjfFormsModule,     AjfTranslocoModule, BreakpointObserverModule,
+    ExportFormModule,   CommonModule,       CoreModule,
+    MatButtonModule,    MatCheckboxModule,  MatDialogModule,
+    MatFormFieldModule, MatIconModule,      MatInputModule,
+    MatListModule,      MatPaginatorModule, MatSlideToggleModule,
+    MatSortModule,      MatTableModule,     MatToolbarModule,
     RouterModule,
   ],
   declarations: [

@@ -1,4 +1,5 @@
 <dewco-list
+  #dewcoList
   [headers]="headers"
   [baseEditUrl]="baseEditUrl"
   [baseViewUrl]="baseViewUrl"
@@ -13,6 +14,8 @@
   <dewco-search-filters-bar
     filters
     [presetManager]="true"
+    [exportable]="true"
+    (exportEvt)="dewcoList.export($event)"
   ></dewco-search-filters-bar>
 </dewco-list>
 

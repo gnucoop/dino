@@ -28,9 +28,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ComponentFactoryResolver,
   ContentChild,
   ContentChildren,
   ElementRef,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -46,6 +48,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {Model} from '@dewco/core/data';
+import {FormSchema} from '@dewco/core/forms';
 import {
   ActionType,
   FilterGroup,
@@ -56,6 +59,7 @@ import {
   SearchFiltersComponent,
 } from '@dewco/core/list';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
+import {ExportForm} from '@dewco/material/export-form';
 import {BehaviorSubject, Observable, Subject, throwError} from 'rxjs';
 import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
 
@@ -184,7 +188,6 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * Querylist of all non default template cells
    */
   @ContentChildren(ListCell, {descendants: false}) cellTemplates: QueryList<ListCell>;
-
   /**
    * Determines if the list has expandable rows.
    * Defaults to false.
@@ -290,18 +293,40 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    */
   private _mainUnsubscribe: Subject<void> = new Subject();
 
-
   constructor(
-      cdr: ChangeDetectorRef,
-      aui: AdminUserInteractionsService,
-      private _dialog: MatDialog,
-      private _fts: FiltersService,
-      readonly breakpointObserver: BreakpointObserverService,
-      private _router: Router,
-  ) {
+      cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, private _dialog: MatDialog,
+      private _fts: FiltersService, readonly breakpointObserver: BreakpointObserverService,
+      private _router: Router, private _componentFactoryResolver: ComponentFactoryResolver,
+      private _injector: Injector) {
     super(cdr, aui);
 
     this._fts.clearAdditionalBasicFilters();
+  }
+
+  export(ev: 'XLSX'|'CSV'|'dialog') {
+    if (this.dataSource.additionalDataSchema != null &&
+        (this.dataSource.additionalDataSchema as FormSchema).schema != null &&
+        this.dataSource.dataResults.value != null) {
+      const formSchema: FormSchema = (this.dataSource.additionalDataSchema as FormSchema);
+      if (ev === 'dialog') {
+        let dialogRef = this._dialog.open(ExportForm);
+        dialogRef.componentInstance.formSchema = formSchema;
+        dialogRef.componentInstance.data = this.dataSource.data as any[];
+      } else {
+        const componentFactory = this._componentFactoryResolver.resolveComponentFactory(ExportForm);
+        const cmp = componentFactory.create(this._injector);
+        cmp.instance.formSchema = formSchema;
+        cmp.instance.data = this.dataSource.data as any[];
+        if (ev === 'XLSX') {
+          cmp.instance.exportFormat = 'xlsx';
+        }
+        cmp.changeDetectorRef.detectChanges();
+        cmp.instance.selectAll(true);
+        cmp.changeDetectorRef.detectChanges();
+        cmp.instance.export();
+        cmp.destroy();
+      }
+    }
   }
 
   ngAfterContentInit(): void {
@@ -533,9 +558,9 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       }
 
 
-      // This next code block avoids searching in hidden colums when filtering data by kewyword,
-      // by providing a custom filterPredicate for the dataSource.
-      // To allow searching in hidden columns, just comment this code block.
+      // This next code block avoids searching in hidden colums when filtering data by
+      // kewyword, by providing a custom filterPredicate for the dataSource. To allow
+      // searching in hidden columns, just comment this code block.
 
       this.dataSource.filterPredicate = (data: T, filter: string) => {
         return this.headers.map(key => key.column)

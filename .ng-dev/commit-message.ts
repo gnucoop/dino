@@ -8,7 +8,7 @@ export const commitMessage: CommitMessageConfig = {
   minBodyLength: 0,
   minBodyLengthTypeExcludes: ['docs'],
   scopes: [
-    'multiple', // For when a commit applies to multiple components.
+    'multiple',  // For when a commit applies to multiple components.
     'core/areas',
     'core/auth',
     'core/config',
@@ -32,6 +32,7 @@ export const commitMessage: CommitMessageConfig = {
     'material/breakpoint-observer',
     'material/create-form',
     'material/edit-form',
+    'material/export-form',
     'material/main-nav',
     'material/metric-editor',
     'material/metric-section',

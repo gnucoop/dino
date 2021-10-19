@@ -24,12 +24,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {
   FilterItem,
@@ -38,6 +41,7 @@ import {
   SearchFiltersComponent,
 } from '@dewco/core/list';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
+import {ExportBottomSheet} from '@dewco/material/export-form';
 import {SearchFiltersDialog} from '@dewco/material/search-filters-dialog';
 import {Observable, Subscription, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -71,6 +75,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._presetManager = state;
   }
 
+  private _exportable = false;
+  get exportable() {
+    return this._exportable;
+  }
+  @Input()
+  set exportable(state: boolean) {
+    this._exportable = state;
+  }
   /**
    * If true, the Additional Filters button and dialog
    * are available and displayed.
@@ -109,10 +121,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       protected _fts: FiltersService,
       public dialog: MatDialog,
       private _cdr: ChangeDetectorRef,
+      private _bottomSheet: MatBottomSheet,
       readonly breakpointObserver: BreakpointObserverService,
   ) {
     super();
   }
+  @Output()
+  readonly exportEvt: EventEmitter<'XLSX'|'CSV'|'dialog'> =
+      new EventEmitter<'XLSX'|'CSV'|'dialog'>();
 
   ngOnInit() {
     this._initFilters();
@@ -140,6 +156,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                           });
   }
 
+  openExportBottomSheet(): void {
+    this._bottomSheet.open(ExportBottomSheet)
+        .afterDismissed()
+        .subscribe((ev: 'XLSX'|'CSV'|'dialog') => this.exportEvt.emit(ev));
+  }
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
    * @param filterItem The filter item to remove

@@ -48,7 +48,7 @@ ANGULAR_PACKAGES_CONFIG = [
     ("@angular/compiler", struct(entry_points = ["testing"])),
     ("@angular/core", struct(entry_points = ["testing"])),
     ("@angular/forms", struct(entry_points = [])),
-    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "card", "checkbox", "chips", "core", "datepicker", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "paginator", "progress-bar", "radio", "select", "sidenav", "slide-toggle", "slider", "snack-bar", "sort", "stepper", "table", "tabs", "toolbar", "tooltip"])),
+    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "bottom-sheet", "card", "checkbox", "chips", "core", "datepicker", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "paginator", "progress-bar", "radio", "select", "sidenav", "slide-toggle", "slider", "snack-bar", "sort", "stepper", "table", "tabs", "toolbar", "tooltip"])),
     ("@angular/platform-browser", struct(entry_points = ["testing", "animations"])),
     ("@angular/platform-server", struct(entry_points = [], platform = "node")),
     ("@angular/platform-browser-dynamic", struct(entry_points = ["testing"])),
@@ -56,7 +56,7 @@ ANGULAR_PACKAGES_CONFIG = [
 ]
 
 THIRD_PARTY_NG_PACKAGES_CONFIG = [
-    ("@ajf/core", struct(entry_points = ["barcode", "calendar", "chart", "checkbox-group", "common", "file-input", "forms", "image", "map", "page-break", "page-slider", "range", "reports", "table", "transloco", "text", "time"])),
+    ("@ajf/core", struct(entry_points = ["barcode", "calendar", "chart", "checkbox-group", "common", "file-input", "forms", "image", "map", "page-break", "page-slider", "range", "reports", "table", "transloco", "text", "time", "utils"])),
     ("@ajf/material", struct(entry_points = ["barcode", "calendar", "checkbox-group", "forms", "image", "page-slider", "reports", "time"])),
 ]
 
