@@ -30,9 +30,7 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
+import {FormSchema} from '@dewco/core/forms';
 import {Observable} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
 
@@ -86,11 +84,7 @@ export class ImportFormSchema {
   constructor(
       private _cdr: ChangeDetectorRef,
       private _http: HttpClient,
-      private _router: Router,
-      private _route: ActivatedRoute,
-      private _formSchemaManager: FormSchemaManager,
       private _formBuilder: FormBuilder,
-      private _snackbar: MatSnackBar,
       public dialogRef: MatDialogRef<ImportFormSchema>,
       @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
@@ -99,7 +93,7 @@ export class ImportFormSchema {
     this._formConvUrl = this.data.formConvUrl;
 
     this.importForm = this._formSchema.pipe(
-        map(f => this._formBuilder.group({})),
+        map(() => this._formBuilder.group({})),
         shareReplay(1),
     );
   }
@@ -108,7 +102,7 @@ export class ImportFormSchema {
    * Updates the status message of the Form Conv
    * @param msg The message string
    */
-  private setConvStatus(msg: string): void {
+  private _setConvStatus(msg: string): void {
     this.convStatus = msg;
     this._cdr.markForCheck();
   }
@@ -123,7 +117,7 @@ export class ImportFormSchema {
     }
     const file = event.target.files[0];
     this._processing = true;
-    this.setConvStatus('converting file...');
+    this._setConvStatus('converting file...');
 
     const data = new FormData();
     data.append('excelFile', file);
@@ -134,11 +128,11 @@ export class ImportFormSchema {
         .subscribe(
             resp => {
               this._xlsformSchema = resp;
-              this.setConvStatus('Excel file converted successfully!');
+              this._setConvStatus('Excel file converted successfully!');
               this._processing = false;
             },
             err => {
-              this.setConvStatus(err.error);
+              this._setConvStatus(err.error);
             });
   }
 

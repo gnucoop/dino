@@ -34,7 +34,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import { InsertModel } from '@dewco/core/data';
+import {InsertModel} from '@dewco/core/data';
 import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
 import {IconsService} from '@dewco/material/icons-service';
 import {
@@ -45,16 +45,7 @@ import {
   Subscription,
   throwError
 } from 'rxjs';
-import {
-  catchError,
-  filter,
-  map,
-  shareReplay,
-  switchMap,
-  take,
-  tap,
-  withLatestFrom
-} from 'rxjs/operators';
+import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 
 import {ImportFormSchema} from './import-form-schema';
 
@@ -180,7 +171,8 @@ export class EditFormSchema implements OnInit, OnDestroy {
                           if (ifs != null) {
                             return AjfFormSerializer.fromJson(ifs);
                           }
-                          return fs != null ? AjfFormSerializer.fromJson(fs.schema) : AjfFormSerializer.fromJson({});
+                          return fs != null ? AjfFormSerializer.fromJson(fs.schema) :
+                                              AjfFormSerializer.fromJson({});
                         }),
                         shareReplay(1),
                     );
@@ -203,12 +195,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
                     label: formGroup.get('label')?.value,
                     icon: formGroup.get('icon')?.value,
                   };
-                  if(fs == null){
-                    return this._formSchemaManager.create(formPatch)
-                      .pipe(
-                          catchError(() => obsOf(null)),
-                          take(1),
-                      );
+                  if (fs == null) {
+                    return this._formSchemaManager.create(formPatch).pipe(
+                        catchError(() => obsOf(null)),
+                        take(1),
+                    );
                   }
                   return this._formSchemaManager.patch({...fs, ...formPatch})
                       .pipe(
@@ -220,7 +211,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             .subscribe(fs => {
               if (fs != null) {
                 this._snackbar.open(`"${fs.label}" saved`, 'SAVE', {duration: 5000});
-                this._router.navigateByUrl('/forms')
+                this._router.navigateByUrl('/forms');
               } else {
                 this._snackbar.open(
                     'Oops! Something went wrong saving the Form', 'ERROR', {duration: 5000});
@@ -238,7 +229,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
           }
           return this._filterIcons(availableIcons, iconValue);
         }),
-    )
+    );
   }
 
   /**
@@ -294,5 +285,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._saveEvt.complete();
     this._saveSub.unsubscribe();
+    this._dialogSub.unsubscribe();
   }
 }
