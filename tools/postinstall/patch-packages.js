@@ -11,3 +11,17 @@ ngDev = ngDev.replace(
     }`,
 );
 fs.writeFileSync(ngDevFile, ngDev);
+
+const cleanDirs = [
+  '@angular/common/locales',
+  '@angular/core/schematics',
+  '@angular/cdk/schematics',
+  '@angular/material/schematics',
+  '@ngneat/transloco/schematics',
+];
+cleanDirs.forEach(cleanDir => {
+  const cleanDirPath = path.join('node_modules', cleanDir);
+  if (fs.existsSync(cleanDirPath) && fs.statSync(cleanDirPath).isDirectory()) {
+    fs.rmdirSync(cleanDirPath, {recursive: true});
+  }
+});
