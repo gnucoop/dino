@@ -20,7 +20,7 @@
  *
  */
 
-import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
+import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {AuthService, NetworkStatusService} from '@dewco/core/auth';
 import {ConfigService} from '@dewco/core/config';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
@@ -344,7 +344,12 @@ export class DataService {
           return from(db.addCollections({[params.name]: params.collection})).pipe(
             tap(coll => this._addRegisteredCollection(coll[params.name], params)),
             mapTo(true),
-            catchError(() => obsOf(false)),
+            catchError(err => {
+              if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                console.error(err);
+              }
+              return obsOf(false);
+            }),
           );
         }
         return obsOf(true);

@@ -3,7 +3,7 @@
 // the compiler options are somewhat loose, which is intentional in order to mimic the default
 // options used by `ts-node` when running the scripts.
 {
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "../dev-mode-types.d.ts"],
   "compilerOptions": {
     "outDir": "../dist/tools",
     "target": "es2020",
