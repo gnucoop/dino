@@ -49,3 +49,8 @@ ts_library(
     name = "dev_mode_types",
     srcs = ["dev-mode-types.d.ts"],
 )
+
+filegroup(
+    name = "source-files",
+    srcs = apiSourceFiles,
+)
