@@ -69,6 +69,11 @@ pipeline {
         archiveArtifacts 'dist/releases/**/*.tgz'
       }
     }
+    stage('Publish') {
+      steps {
+        sh './scripts/publish.sh next'
+      }
+    }
     stage('Save cache') {
       steps {
         saveCache(cacheParams)
