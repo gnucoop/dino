@@ -24,10 +24,10 @@
   dependencies:
     tunnel "0.0.6"
 
-"@ajf/core@13.0.0-next.9":
-  version "13.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-13.0.0-next.9.tgz#1332da68cfefa71285af052adddc9651ba233025"
-  integrity sha512-OBIsftPzbOhULIV1wFEuaFrk1LzW8NfGKZ7PDGkGETJ6jKprpo1E4JhDUg5GIjiXJreGqCIz75IyOP6cCb/Tdg==
+"@ajf/core@13.0.0-next.10":
+  version "13.0.0-next.10"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-13.0.0-next.10.tgz#ac00884dc3803fa4280ba0a3983f571f7a24f199"
+  integrity sha512-S2W3GKFw9WH2zPZR15CFLvP6De0nb6fuMSXEwIxFovtCEPjH/wbr3DHieJOlAjem4e4KxjIU44WAONt7JX0M7Q==
   dependencies:
     tslib "^2.2.0"
 
@@ -36,10 +36,10 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@13.0.0-next.9":
-  version "13.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-13.0.0-next.9.tgz#6b17b8118fe180b2ad93d7bdab2ce9287dbcf09d"
-  integrity sha512-Ngh16GvDTiCEiqNy6YWODOEbMrrq/j+zAiUdbfqZZJP6HtRyC1HL5TNfWAN/eSOLM8RpA9pqf6hcc/0OvWsPKg==
+"@ajf/material@13.0.0-next.10":
+  version "13.0.0-next.10"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-13.0.0-next.10.tgz#f9ab113eb45228449292bcee3af4c84adbb4ac12"
+  integrity sha512-Ooqn0qskpqbLkb5HRDebpucOZ+++LbxUoHLNM8Wa1lq1UHfyvcdLTdMazd9upolJblAwrKlzV9Mt2nf24PqSUw==
   dependencies:
     tslib "^2.2.0"
 
@@ -1740,13 +1740,6 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
-
-"@gnucoop/ngx-color-picker@^12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@gnucoop/ngx-color-picker/-/ngx-color-picker-12.0.0.tgz#e8e8181e7f53988902f748703d9ee3a894b8bb4b"
-  integrity sha512-p35Mx0e1a/eWg3w5vz7ZwJPrlbq0CsLdDBObbTKzKBObPqD3gWTuPhOROXkFFKSd84EXpxh8GAsRUJrKG5Z+qQ==
-  dependencies:
-    tslib "^2.2.0"
 
 "@google-cloud/paginator@^3.0.0":
   version "3.0.5"
@@ -12094,6 +12087,11 @@ merge2@^1.2.3, merge2@^1.3.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
+
+meriyah@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/meriyah/-/meriyah-4.2.0.tgz#29d28c37ac7b67f8b9aaa92df0b8ac12469fe98b"
+  integrity sha512-fCVh5GB9YT53Bq14l00HLYE3i9DywrY0JVZxbk0clXWDuMsUKKwluvC5sY0bMBqHbnIbpIjfSSIsnrzbauA8Yw==
 
 methods@~1.1.2:
   version "1.1.2"
