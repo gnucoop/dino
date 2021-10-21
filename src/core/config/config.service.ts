@@ -44,13 +44,13 @@ export class ConfigService {
    * The currently selected configuration set.
    */
 
-  readonly configurationSet: BehaviorSubject<ConfigSet|null>;
+  readonly configurationSet: BehaviorSubject<ConfigSet | null>;
 
   constructor(
-      private _httpClient: HttpClient,
-      @Inject(CONFIG_SERVICE_CONFIG) readonly config: ConfigServiceConfig,
+    private _httpClient: HttpClient,
+    @Inject(CONFIG_SERVICE_CONFIG) readonly config: ConfigServiceConfig,
   ) {
-    this.configurationSet = new BehaviorSubject<ConfigSet|null>(null);
+    this.configurationSet = new BehaviorSubject<ConfigSet | null>(null);
     this._configApiUrl = config.apiUrl.replace(/^\/+|\/+$/g, '');
   }
 
@@ -59,23 +59,22 @@ export class ConfigService {
    * @param setupFn? Optional transform function
    * @returns The configs from the config API, if present
    */
-  getConfigs(setupFn?: ConfigTransformFunction): Observable<ConfigResponse|null> {
+  getConfigs(setupFn?: ConfigTransformFunction): Observable<ConfigResponse | null> {
     if (this._configApiUrl != null) {
-      return this._httpClient.post<ConfigResponse>(this._configApiUrl, null)
-          .pipe(
-              map(configs => {
-                if (configs != null) {
-                  let confResp: ConfigResponse;
-                  if (setupFn != null) {
-                    confResp = setupFn(configs);
-                  } else {
-                    confResp = configs;
-                  }
-                  return confResp;
-                }
-                return null;
-              }),
-          );
+      return this._httpClient.post<ConfigResponse>(this._configApiUrl, null).pipe(
+        map(configs => {
+          if (configs != null) {
+            let confResp: ConfigResponse;
+            if (setupFn != null) {
+              confResp = setupFn(configs);
+            } else {
+              confResp = configs;
+            }
+            return confResp;
+          }
+          return null;
+        }),
+      );
     } else {
       return obsOf(null);
     }

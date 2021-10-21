@@ -23,5 +23,4 @@
 import {NgModule} from '@angular/core';
 
 @NgModule({})
-export class BreakpointObserverModule {
-}
+export class BreakpointObserverModule {}

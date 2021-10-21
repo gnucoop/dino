@@ -32,14 +32,7 @@ import {OrganizationsModule} from './organizations.module';
  */
 @Injectable({providedIn: OrganizationsModule})
 export class OrganizationManager extends DataModelManager<Organization> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
-    super(
-        {name: 'organization', collection: {schema}},
-        dataService,
-        permissionContextService,
-    );
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    super({name: 'organization', collection: {schema}}, dataService, permissionContextService);
   }
 }

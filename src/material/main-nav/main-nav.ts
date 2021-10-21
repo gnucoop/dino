@@ -29,7 +29,7 @@ import {
   Input,
   OnDestroy,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -167,69 +167,68 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   constructor(
-      readonly breakpointObserver: BreakpointObserverService,
-      readonly metricsService: MetricsService,
-      readonly authService: AuthService,
-      readonly snackbar: MatSnackBar,
-      private _router: Router,
-      private _cdr: ChangeDetectorRef,
+    readonly breakpointObserver: BreakpointObserverService,
+    readonly metricsService: MetricsService,
+    readonly authService: AuthService,
+    readonly snackbar: MatSnackBar,
+    private _router: Router,
+    private _cdr: ChangeDetectorRef,
   ) {
     this.showNav = this._router.events.pipe(
-        filter(evt => evt instanceof NavigationEnd),
-        map(evt => {
-          const navEndEvt = evt as NavigationEnd;
-          if (navEndEvt.url.includes('login')) {
-            return false;
-          }
-          return true;
-        }),
-        shareReplay(1),
+      filter(evt => evt instanceof NavigationEnd),
+      map(evt => {
+        const navEndEvt = evt as NavigationEnd;
+        if (navEndEvt.url.includes('login')) {
+          return false;
+        }
+        return true;
+      }),
+      shareReplay(1),
     );
   }
 
   ngAfterViewInit() {
-    this._metricsSub =
-        this.metricsService.hasActiveMetrics
-            .pipe(
-                map(hasMetrics => {
-                  if (hasMetrics) {
-                    const metricsSection: Section = {
-                      label: 'Metrics',
-                      icon: 'bookmarks',
-                      url: 'metrics',
-                    };
-                    return [metricsSection];
-                  } else {
-                    return [];
-                  }
-                }),
-                )
-            .subscribe(metrics => this.adminSections = [...this.adminSections, ...metrics]);
+    this._metricsSub = this.metricsService.hasActiveMetrics
+      .pipe(
+        map(hasMetrics => {
+          if (hasMetrics) {
+            const metricsSection: Section = {
+              label: 'Metrics',
+              icon: 'bookmarks',
+              url: 'metrics',
+            };
+            return [metricsSection];
+          } else {
+            return [];
+          }
+        }),
+      )
+      .subscribe(metrics => (this.adminSections = [...this.adminSections, ...metrics]));
 
     this._menuToggleSub = this._menuToggleEvt
-                              .pipe(
-                                  withLatestFrom(this.breakpointObserver.large),
-                                  tap(([_, res]) => {
-                                    if (res) {
-                                      const currentState = this.extendedSidenav.getValue();
-                                      this.extendedSidenav.next(!currentState);
-                                    } else {
-                                      this.sidenav.toggle();
-                                    }
-                                  }),
-                                  )
-                              .subscribe();
+      .pipe(
+        withLatestFrom(this.breakpointObserver.large),
+        tap(([_, res]) => {
+          if (res) {
+            const currentState = this.extendedSidenav.getValue();
+            this.extendedSidenav.next(!currentState);
+          } else {
+            this.sidenav.toggle();
+          }
+        }),
+      )
+      .subscribe();
 
     this._menuClickSub = this._menuClickEvt
-                             .pipe(
-                                 withLatestFrom(this.breakpointObserver.large),
-                                 tap(([_, res]) => {
-                                   if (!res) {
-                                     this._menuToggleEvt.emit();
-                                   }
-                                 }),
-                                 )
-                             .subscribe();
+      .pipe(
+        withLatestFrom(this.breakpointObserver.large),
+        tap(([_, res]) => {
+          if (!res) {
+            this._menuToggleEvt.emit();
+          }
+        }),
+      )
+      .subscribe();
 
     this._cdr.detectChanges();
   }
@@ -246,12 +245,15 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * User logout method.
    */
   logout(): void {
-    this.authService.logout().pipe(take(1)).subscribe(res => {
-      if (res) {
-        this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
-        this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
-      }
-    });
+    this.authService
+      .logout()
+      .pipe(take(1))
+      .subscribe(res => {
+        if (res) {
+          this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
+          this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
+        }
+      });
   }
 
   ngOnDestroy() {

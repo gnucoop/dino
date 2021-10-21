@@ -40,7 +40,7 @@ const fakeFilters: FilterItem[] = [
 const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
 
 const fakeActivatedRoute = {
-  queryParams: obsOf({'filters': fakeFiltersPreset})
+  queryParams: obsOf({'filters': fakeFiltersPreset}),
 } as unknown as ActivatedRoute;
 
 describe('Search filters Bar', () => {
@@ -49,21 +49,19 @@ describe('Search filters Bar', () => {
   let presetManager: SearchFiltersPresetManager;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            ListModule,
-            NoopAnimationsModule,
-            RouterTestingModule,
-            SearchFiltersPresetManagerModule,
-          ],
-          providers: [
-            {provide: ActivatedRoute, useValue: fakeActivatedRoute},
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [
+        ListModule,
+        NoopAnimationsModule,
+        RouterTestingModule,
+        SearchFiltersPresetManagerModule,
+      ],
+      providers: [
+        {provide: ActivatedRoute, useValue: fakeActivatedRoute},
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    }).compileComponents();
 
     fts = TestBed.inject(FiltersService);
     fixturePresetManager = TestBed.createComponent(SearchFiltersPresetManager);

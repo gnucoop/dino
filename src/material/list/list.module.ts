@@ -49,27 +49,28 @@ import {AdminUserInteractionsService} from './user-interactions.service';
 
 @NgModule({
   imports: [
-    AjfFormsModule,     AjfTranslocoModule, BreakpointObserverModule,
-    ExportFormModule,   CommonModule,       CoreModule,
-    MatButtonModule,    MatCheckboxModule,  MatDialogModule,
-    MatFormFieldModule, MatIconModule,      MatInputModule,
-    MatListModule,      MatPaginatorModule, MatSlideToggleModule,
-    MatSortModule,      MatTableModule,     MatToolbarModule,
+    AjfFormsModule,
+    AjfTranslocoModule,
+    BreakpointObserverModule,
+    ExportFormModule,
+    CommonModule,
+    CoreModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatPaginatorModule,
+    MatSlideToggleModule,
+    MatSortModule,
+    MatTableModule,
+    MatToolbarModule,
     RouterModule,
   ],
-  declarations: [
-    ColumnsSelector,
-    ConfirmationDialog,
-    ListCell,
-    SelectionList,
-  ],
-  exports: [
-    MatIconModule,
-    SelectionList,
-  ],
-  providers: [
-    AdminUserInteractionsService,
-  ]
+  declarations: [ColumnsSelector, ConfirmationDialog, ListCell, SelectionList],
+  exports: [MatIconModule, SelectionList],
+  providers: [AdminUserInteractionsService],
 })
-export class ListModule {
-}
+export class ListModule {}

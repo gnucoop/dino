@@ -20,7 +20,6 @@
  *
  */
 
-
 export const iconsList = [
   '10k',
   '10mp',
@@ -1936,5 +1935,5 @@ export const iconsList = [
   'zoom_in',
   'zoom_in_map',
   'zoom_out',
-  'zoom_out_map'
+  'zoom_out_map',
 ];

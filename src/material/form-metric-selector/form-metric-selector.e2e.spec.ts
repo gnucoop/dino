@@ -1,9 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dewco-form-metric-selector', () => {
   beforeEach(async () => await browser.get('/forms'));
@@ -23,7 +18,8 @@ describe('dewco-form-metric-selector', () => {
     await browser.actions().mouseMove(matRow).perform();
 
     await browser.wait(
-        EC.presenceOf(element(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))));
+      EC.presenceOf(element(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))),
+    );
 
     const actionIcons = element.all(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'));
     const editIcon = actionIcons.get(1);

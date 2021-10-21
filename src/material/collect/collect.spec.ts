@@ -52,22 +52,20 @@ describe('Collect', () => {
   let collect: Collect;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            CollectModule,
-            HttpClientTestingModule,
-            RouterTestingModule,
-            ReportsModule,
-            FormsModule,
-          ],
-          providers: [
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [
+        CollectModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        ReportsModule,
+        FormsModule,
+      ],
+      providers: [
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    }).compileComponents();
 
     fsm = TestBed.inject(FormSchemaManager);
     fixtureCollect = TestBed.createComponent(Collect);

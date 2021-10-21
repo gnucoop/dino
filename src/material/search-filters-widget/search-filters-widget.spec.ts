@@ -1,12 +1,5 @@
-import {
-  AjfFieldType,
-  AjfNodeType,
-  AjfValidationService,
-} from '@ajf/core/forms';
-import {
-  ComponentFixture,
-  TestBed,
-} from '@angular/core/testing';
+import {AjfFieldType, AjfNodeType, AjfValidationService} from '@ajf/core/forms';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {
@@ -42,19 +35,10 @@ describe('Search filters widget', () => {
   let fixtureWidget: ComponentFixture<SearchFiltersWidget>;
   let widgetComponent: SearchFiltersWidget;
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            ListModule,
-            NoopAnimationsModule,
-            RouterTestingModule,
-            SearchFiltersWidgetModule,
-          ],
-          providers: [
-            {provide: AjfValidationService, useClass: MockValidationService},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [ListModule, NoopAnimationsModule, RouterTestingModule, SearchFiltersWidgetModule],
+      providers: [{provide: AjfValidationService, useClass: MockValidationService}],
+    }).compileComponents();
     fixtureWidget = TestBed.createComponent<SearchFiltersWidget>(SearchFiltersWidget);
     widgetComponent = fixtureWidget.componentInstance;
   });

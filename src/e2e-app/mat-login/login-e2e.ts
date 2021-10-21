@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  Optional,
-  ViewChild,
-} from '@angular/core';
+import {AfterViewInit, Component, OnInit, Optional, ViewChild} from '@angular/core';
 import {MatSelect} from '@angular/material/select';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {Router} from '@angular/router';
@@ -19,25 +13,21 @@ import {additionalConfig} from '../mockconfig';
 })
 export class MatLoginE2E implements OnInit, AfterViewInit {
   dynamicConfig: boolean = additionalConfig.dynamicConfiguration;
-  configurationSets: Observable<ConfigSet[]|null>;
-  @ViewChild('platformselect') platformSelect: MatSelect|undefined;
+  configurationSets: Observable<ConfigSet[] | null>;
+  @ViewChild('platformselect') platformSelect: MatSelect | undefined;
 
-  constructor(
-      private _router: Router,
-      @Optional() private _configService: ConfigService|null,
-  ) {}
+  constructor(private _router: Router, @Optional() private _configService: ConfigService | null) {}
 
   ngOnInit(): void {
     if (this._configService != null && this.dynamicConfig) {
-      this.configurationSets = this._configService.getConfigs(this.setupCpaConfig)
-                                   .pipe(
-                                       map(configResp => {
-                                         if (configResp != null) {
-                                           return configResp.configSets;
-                                         }
-                                         return null;
-                                       }),
-                                   );
+      this.configurationSets = this._configService.getConfigs(this.setupCpaConfig).pipe(
+        map(configResp => {
+          if (configResp != null) {
+            return configResp.configSets;
+          }
+          return null;
+        }),
+      );
     }
   }
 

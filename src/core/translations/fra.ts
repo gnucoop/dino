@@ -22,9 +22,9 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
-  'Customize display': 'Personnaliser l\'affichage',
+  'Customize display': "Personnaliser l'affichage",
   'Alter the display of the table by selecting up to 7 columns':
-      'Modifier l\'affichage du tableau en sélectionnant jusqu\'à 7 colonnes',
+    "Modifier l'affichage du tableau en sélectionnant jusqu'à 7 colonnes",
   'Apply': 'Appliquer',
   'Confirm': 'Confirmer',
   'Do you want to': 'Voulez-vous',
@@ -32,11 +32,11 @@ export const FRA: Translation = {
   'Yes': 'Oui',
   'No': 'Non',
   'Delete all items': 'Supprimer tous les éléments',
-  'delete icon': 'supprimer l\'icône',
+  'delete icon': "supprimer l'icône",
   'delete': 'supprimer',
-  'Username / email': 'Nom d\'utilisateur / e-mail',
+  'Username / email': "Nom d'utilisateur / e-mail",
   'Password': 'Mot de passe',
-  'Invalid username and/or password': 'Nom d\'utilisateur et/ou mot de passe invalide',
+  'Invalid username and/or password': "Nom d'utilisateur et/ou mot de passe invalide",
   'search by keyword': 'recherche par mot-clé',
   'From date': 'De date',
   'To date': 'À ce jour',
@@ -52,5 +52,5 @@ export const FRA: Translation = {
   'Save the preset': 'Enregistrer le préréglage',
   'Save': 'Enregistrer',
   'Exclude': 'Exclure',
-  'Include': 'Inclure'
+  'Include': 'Inclure',
 };

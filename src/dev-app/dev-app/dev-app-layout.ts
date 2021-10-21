@@ -33,19 +33,22 @@ import {DevAppDirectionality} from './dev-app-directionality';
 })
 export class DevAppLayout {
   dark = false;
-  navGroups = [{
-    name: 'Common',
-    children:
-        [
-          {name: 'Examples', route: '/examples'},
-          {name: 'Auth', route: '/auth'},
-          {name: 'Data', route: '/data'},
-        ],
-  }];
+  navGroups = [
+    {
+      name: 'Common',
+      children: [
+        {name: 'Examples', route: '/examples'},
+        {name: 'Auth', route: '/auth'},
+        {name: 'Data', route: '/data'},
+      ],
+    },
+  ];
 
   constructor(
-      private _element: ElementRef<HTMLElement>,
-      @Inject(Directionality) public dir: DevAppDirectionality, cdr: ChangeDetectorRef) {
+    private _element: ElementRef<HTMLElement>,
+    @Inject(Directionality) public dir: DevAppDirectionality,
+    cdr: ChangeDetectorRef,
+  ) {
     dir.change.subscribe(() => cdr.markForCheck());
   }
 

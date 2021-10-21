@@ -1,9 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dewco-edit-report', () => {
   beforeEach(async () => await browser.get('/reports'));
@@ -22,8 +17,9 @@ describe('dewco-edit-report', () => {
 
     await browser.actions().mouseMove(matRow).perform();
 
-    await browser.wait(EC.presenceOf(element(by.css
-      ('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))));
+    await browser.wait(
+      EC.presenceOf(element(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))),
+    );
 
     const actionIcons = element.all(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'));
     const editIcon = actionIcons.get(0);

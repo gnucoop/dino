@@ -26,14 +26,12 @@ import {DevAppHome} from './dev-app/dev-app-home';
 
 export const DEV_APP_ROUTES: Routes = [
   {path: '', component: DevAppHome},
-  {path: 'auth', loadChildren: () =>
-  import('./auth/auth-demo-module').then(m => m.AuthDemoModule)},
-  {path: 'data', loadChildren: () =>
-  import('./data/data-demo-module').then(m => m.DataDemoModule)},
+  {path: 'auth', loadChildren: () => import('./auth/auth-demo-module').then(m => m.AuthDemoModule)},
+  {path: 'data', loadChildren: () => import('./data/data-demo-module').then(m => m.DataDemoModule)},
   {
     path: 'examples',
     loadChildren: () =>
-        import('./examples-page/examples-page-module').then(m => m.ExamplesPageModule)
+      import('./examples-page/examples-page-module').then(m => m.ExamplesPageModule),
   },
   {path: '**', component: DevApp404},
 ];

@@ -59,15 +59,8 @@ import {UserEditor} from './user-editor';
     ReactiveFormsModule,
     RouterModule,
   ],
-  declarations: [
-    UserEditor,
-  ],
-  entryComponents: [
-    UserEditor,
-  ],
-  exports: [
-    UserEditor,
-  ],
+  declarations: [UserEditor],
+  entryComponents: [UserEditor],
+  exports: [UserEditor],
 })
-export class UserEditorModule {
-}
+export class UserEditorModule {}

@@ -24,7 +24,7 @@ import {Translation} from '@ajf/core/transloco';
 export const ITA: Translation = {
   'Customize display': 'Personalizza visualizzazione',
   'Alter the display of the table by selecting up to 7 columns':
-      'Modifica la visualizzazione della tabella selezionando fino a 7 colonne',
+    'Modifica la visualizzazione della tabella selezionando fino a 7 colonne',
   'Apply': 'Applica',
   'Confirm': 'Conferma',
   'Do you want to': 'Vuoi',
@@ -52,5 +52,5 @@ export const ITA: Translation = {
   'Save the preset': 'Salva la preimpostazione',
   'Save': 'Salva',
   'Exclude': 'Escludi',
-  'Include': 'Includi'
+  'Include': 'Includi',
 };

@@ -1,8 +1,4 @@
-import {
-  HTTP_INTERCEPTORS,
-  HttpClient,
-  HttpInterceptor,
-} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpInterceptor} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -20,71 +16,68 @@ const authServiceConfig: AuthServiceConfig = {
 
 const unauthorizedResponse = {
   statusText: 'Unauthorized',
-  status: 401
+  status: 401,
 };
 
 const response = {
   statusText: 'Test response',
-  status: 200
+  status: 200,
 };
 describe(`JWTInterceptor`, () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       providers: [
         JWTInterceptor,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true},
-      ]
+      ],
     });
 
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should handle the 401 response and ask the service to refresh the Jwt auth token',
-     inject(
-         [HTTP_INTERCEPTORS, HttpClient], (interceptors: HttpInterceptor[], http: HttpClient) => {
-           const jwtInterceptor =
-               interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
-           expect(jwtInterceptor).toBeDefined();
+  it('should handle the 401 response and ask the service to refresh the Jwt auth token', inject(
+    [HTTP_INTERCEPTORS, HttpClient],
+    (interceptors: HttpInterceptor[], http: HttpClient) => {
+      const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
+      expect(jwtInterceptor).toBeDefined();
 
-           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
-           let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
+      let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
+      let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
-           http.post('http://test-auth-backend/data', {}).subscribe(res => {
-             expect(res).toBeDefined();
-           });
-           const req = httpMock.expectOne('http://test-auth-backend/data');
-           expect(req.request.method).toBe('POST');
-           req.flush(null, unauthorizedResponse);
+      http.post('http://test-auth-backend/data', {}).subscribe(res => {
+        expect(res).toBeDefined();
+      });
+      const req = httpMock.expectOne('http://test-auth-backend/data');
+      expect(req.request.method).toBe('POST');
+      req.flush(null, unauthorizedResponse);
 
-           expect(isLoginSpy).toHaveBeenCalledTimes(1);
-           expect(refreshSpy).toHaveBeenCalledTimes(1);
-         }));
+      expect(isLoginSpy).toHaveBeenCalledTimes(1);
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+    },
+  ));
 
-  it('should not call the 401 handler or ask the service to refresh the Jwt auth token',
-     inject(
-         [HTTP_INTERCEPTORS, HttpClient], (interceptors: HttpInterceptor[], http: HttpClient) => {
-           const jwtInterceptor =
-               interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
-           expect(jwtInterceptor).toBeDefined();
+  it('should not call the 401 handler or ask the service to refresh the Jwt auth token', inject(
+    [HTTP_INTERCEPTORS, HttpClient],
+    (interceptors: HttpInterceptor[], http: HttpClient) => {
+      const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
+      expect(jwtInterceptor).toBeDefined();
 
-           let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
-           let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
+      let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
+      let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
-           http.post('http://test-auth-backend/data', {}).subscribe(res => {
-             expect(res).toBeDefined();
-           });
-           const req = httpMock.expectOne('http://test-auth-backend/data');
-           expect(req.request.method).toBe('POST');
-           req.flush(response);
+      http.post('http://test-auth-backend/data', {}).subscribe(res => {
+        expect(res).toBeDefined();
+      });
+      const req = httpMock.expectOne('http://test-auth-backend/data');
+      expect(req.request.method).toBe('POST');
+      req.flush(response);
 
-           expect(isLoginSpy).not.toHaveBeenCalled();
-           expect(refreshSpy).not.toHaveBeenCalled();
-         }));
+      expect(isLoginSpy).not.toHaveBeenCalled();
+      expect(refreshSpy).not.toHaveBeenCalled();
+    },
+  ));
 });

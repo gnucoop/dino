@@ -23,5 +23,4 @@
 import {NgModule} from '@angular/core';
 
 @NgModule({})
-export class FormsModule {
-}
+export class FormsModule {}

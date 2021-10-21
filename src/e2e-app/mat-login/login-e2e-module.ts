@@ -10,9 +10,7 @@ import {LoginModule} from '@dewco/material/login';
 import {MatLoginE2E} from './login-e2e';
 
 @NgModule({
-  declarations: [
-    MatLoginE2E,
-  ],
+  declarations: [MatLoginE2E],
   imports: [
     CommonModule,
     LoginModule,
@@ -23,5 +21,4 @@ import {MatLoginE2E} from './login-e2e';
     MatSelectModule,
   ],
 })
-export class MaterialLoginE2eModule {
-}
+export class MaterialLoginE2eModule {}

@@ -5,9 +5,7 @@ import {SearchFiltersBar, SearchFiltersBarModule} from '@dewco/material/search-f
 
 import {FilterItem, FiltersService, ListModule} from '../../core/list';
 
-const fakeFilters: FilterItem[] = [
-  {name: 'filter_a', value: 'test'},
-];
+const fakeFilters: FilterItem[] = [{name: 'filter_a', value: 'test'}];
 
 describe('Search filters Bar', () => {
   let fts: FiltersService;
@@ -15,16 +13,9 @@ describe('Search filters Bar', () => {
   let bar: SearchFiltersBar;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            ListModule,
-            NoopAnimationsModule,
-            RouterTestingModule,
-            SearchFiltersBarModule,
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [ListModule, NoopAnimationsModule, RouterTestingModule, SearchFiltersBarModule],
+    }).compileComponents();
 
     fts = TestBed.inject(FiltersService);
     fixtureBar = TestBed.createComponent(SearchFiltersBar);

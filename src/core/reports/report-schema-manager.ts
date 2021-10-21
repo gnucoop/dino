@@ -29,14 +29,11 @@ import {ReportsModule} from './reports.module';
 
 @Injectable({providedIn: ReportsModule})
 export class ReportSchemaManager extends DataModelManager<ReportSchema> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-        {name: 'report_schema', collection: {schema, migrationStrategies}},
-        dataService,
-        permissionContextService,
+      {name: 'report_schema', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
     );
   }
 }

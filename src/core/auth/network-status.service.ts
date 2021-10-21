@@ -36,11 +36,8 @@ export class NetworkStatusService {
 
   constructor() {
     this.isOnline$ = merge(
-                         fromEvent(window, 'offline').pipe(mapTo(false)),
-                         fromEvent(window, 'online').pipe(mapTo(true)),
-                         )
-                         .pipe(
-                             startWith(navigator.onLine),
-                         );
+      fromEvent(window, 'offline').pipe(mapTo(false)),
+      fromEvent(window, 'online').pipe(mapTo(true)),
+    ).pipe(startWith(navigator.onLine));
   }
 }

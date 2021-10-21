@@ -38,7 +38,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -54,7 +54,7 @@ import {
   switchMap,
   take,
   tap,
-  withLatestFrom
+  withLatestFrom,
 } from 'rxjs/operators';
 
 /**
@@ -98,7 +98,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * The Form Metric Selector
    */
-  private _formMetricsSelector: Observable<FormMetricSelector|null>;
+  private _formMetricsSelector: Observable<FormMetricSelector | null>;
 
   /**
    * The current document object
@@ -121,8 +121,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * The Form data object
    */
-  private _formData: Observable<{data: FormData, schemaId: string}>;
-  get formData(): Observable<{data: FormData, schemaId: string}> {
+  private _formData: Observable<{data: FormData; schemaId: string}>;
+  get formData(): Observable<{data: FormData; schemaId: string}> {
     return this._formData;
   }
 
@@ -167,41 +167,41 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
 
   constructor(
-      private _router: Router,
-      private _route: ActivatedRoute,
-      private _fs: FormSchemaManager,
-      private _rendererService: AjfFormRendererService,
-      private _location: Location,
-      readonly snackbar: MatSnackBar,
-      readonly metricsService: MetricsService,
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private _fs: FormSchemaManager,
+    private _rendererService: AjfFormRendererService,
+    private _location: Location,
+    readonly snackbar: MatSnackBar,
+    readonly metricsService: MetricsService,
   ) {
     this.formId = this._route.params.pipe(
-        map(params => params.form_id),
-        tap(id => {
-          if (id == null) {
-            this._router.navigateByUrl('/');
-          }
-        }),
-        filter(id => id != null),
-        shareReplay(1),
+      map(params => params.form_id),
+      tap(id => {
+        if (id == null) {
+          this._router.navigateByUrl('/');
+        }
+      }),
+      filter(id => id != null),
+      shareReplay(1),
     );
 
     this.isView = this._route.data.pipe(
-        map(data => {
-          if (data != null && data.isView != null) {
-            return data.isView;
-          }
-          return false;
-        }),
+      map(data => {
+        if (data != null && data.isView != null) {
+          return data.isView;
+        }
+        return false;
+      }),
     );
 
     this.isDetails = this._route.data.pipe(
-        map(data => {
-          if (data != null && data.isDetails != null) {
-            return data.isDetails;
-          }
-          return false;
-        }),
+      map(data => {
+        if (data != null && data.isDetails != null) {
+          return data.isDetails;
+        }
+        return false;
+      }),
     );
   }
 
@@ -223,156 +223,166 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     }
 
     this._formData = this.formId.pipe(
-        withLatestFrom(this.isDetails),
-        map(([id, isDetails]) => {
-          const dm: DataModelManager<T> =
-              isDetails && this._dataModelManager.detailsManager != null ?
-              this._dataModelManager.detailsManager :
-              this._dataModelManager;
+      withLatestFrom(this.isDetails),
+      map(([id, isDetails]) => {
+        const dm: DataModelManager<T> =
+          isDetails && this._dataModelManager.detailsManager != null
+            ? this._dataModelManager.detailsManager
+            : this._dataModelManager;
 
-          return dm.get(id).pipe(
-              map((doc) => {
-                if (doc == null) {
-                  this._router.navigateByUrl('');
-                  return null;
-                }
-                const item: {[key: string]: any} = doc.toJSON();
-                this._currentDoc.next(item as T);
-                if ('data' in item && item['data'] != null) {
-                  const formDataObj = {
-                    data: item['data']['data'] ?? item['data'] ?? null,
-                    schemaId: item['data']['schema_id'] ?? item['schema_id'] ?? null,
-                  };
-                  return formDataObj;
-                }
-                return null;
-              }),
-          );
-        }),
-        switchMap(data => data as Observable<{data: FormData, schemaId: string}>),
-        shareReplay(1),
+        return dm.get(id).pipe(
+          map(doc => {
+            if (doc == null) {
+              this._router.navigateByUrl('');
+              return null;
+            }
+            const item: {[key: string]: any} = doc.toJSON();
+            this._currentDoc.next(item as T);
+            if ('data' in item && item['data'] != null) {
+              const formDataObj = {
+                data: item['data']['data'] ?? item['data'] ?? null,
+                schemaId: item['data']['schema_id'] ?? item['schema_id'] ?? null,
+              };
+              return formDataObj;
+            }
+            return null;
+          }),
+        );
+      }),
+      switchMap(data => data as Observable<{data: FormData; schemaId: string}>),
+      shareReplay(1),
     );
 
     this._formSchemaId = this._formData.pipe(
-        map(formDataObj => formDataObj.schemaId),
-        filter(id => id != null),
-        shareReplay(1),
+      map(formDataObj => formDataObj.schemaId),
+      filter(id => id != null),
+      shareReplay(1),
     );
 
     this._formSchema = this._formSchemaId.pipe(
-        map(
-            schemaId => this._fs.get(schemaId).pipe(
-                map(doc => {
-                  if (doc == null) {
-                    return null;
-                  }
-                  const item = doc.toJSON();
-                  return item;
-                }),
-                ),
-            ),
-        switchMap(schema => schema as Observable<FormSchema>),
-        shareReplay(1),
+      map(schemaId =>
+        this._fs.get(schemaId).pipe(
+          map(doc => {
+            if (doc == null) {
+              return null;
+            }
+            const item = doc.toJSON();
+            return item;
+          }),
+        ),
+      ),
+      switchMap(schema => schema as Observable<FormSchema>),
+      shareReplay(1),
     );
 
     this._form = this._formSchema.pipe(
-        withLatestFrom(this._formData),
-        map(([fschema, fdata]) => {
-          if (fschema == null) {
-            this._location.back();
-            this.snackbar.open(
-                'Oops! We could not find this Form Schema', 'FORM NOT FOUND', {duration: 5000});
-            return AjfFormSerializer.fromJson({});
-          }
-          if (fschema.schema.choicesOrigins == null) {
-            fschema.schema.choicesOrigins = [];
-          }
-          return AjfFormSerializer.fromJson(fschema.schema, fdata.data);
-        }),
-        shareReplay(1),
+      withLatestFrom(this._formData),
+      map(([fschema, fdata]) => {
+        if (fschema == null) {
+          this._location.back();
+          this.snackbar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
+            duration: 5000,
+          });
+          return AjfFormSerializer.fromJson({});
+        }
+        if (fschema.schema.choicesOrigins == null) {
+          fschema.schema.choicesOrigins = [];
+        }
+        return AjfFormSerializer.fromJson(fschema.schema, fdata.data);
+      }),
+      shareReplay(1),
     );
   }
 
   ngAfterViewInit() {
-    this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(switchMap(active => {
-      if (!active) {
-        return obsOf(null);
-      }
-      return this.formMetricsSelectorComponent.changes.pipe(
-          map((comps: QueryList<FormMetricSelector>) => comps.first));
-    }));
+    this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
+      switchMap(active => {
+        if (!active) {
+          return obsOf(null);
+        }
+        return this.formMetricsSelectorComponent.changes.pipe(
+          map((comps: QueryList<FormMetricSelector>) => comps.first),
+        );
+      }),
+    );
 
     combineLatest([this._formMetricsSelector, this._currentDoc, this.isView])
-        .pipe(
-            switchMap(([fms, currentDoc, isView]) => {
-              if (fms == null) {
-                return obsOf(false);
-              }
-              fms.addFormData(currentDoc, isView);
-              return obsOf(true);
-            }),
-            take(1),
-            )
-        .subscribe();
-
-    this._saveFormSub = combineLatest([
-                          this._saveFormEvt as Observable<AjfFormActionEvent>,
-                          this._currentDoc,
-                          this._formMetricsSelector,
-                        ])
-                            .pipe(
-                                map(([_, item, formMetricsSelector]) => {
-                                  return {
-                                    doc: item,
-                                    formValue: this._rendererService.getFormValue(),
-                                    fmSelector: formMetricsSelector
-                                  };
-                                }),
-                                withLatestFrom(this.isDetails),
-                                switchMap(([formObj, isDetails]) => {
-                                  let newItem = {...formObj.doc} as {[key: string]: any};
-                                  newItem.data.data != null ?
-                                      newItem.data.data = formObj.formValue :
-                                      newItem.data = formObj.formValue;
-
-                                  if (formObj.fmSelector != null) {
-                                    const selectedMetrics = formObj.fmSelector.selectedMetrics;
-                                    for (let key of Object.keys(selectedMetrics)) {
-                                      if (selectedMetrics[key].metricId != null) {
-                                        const saveKey = `${key}_id`;
-                                        newItem[saveKey] = selectedMetrics[key].metricId;
-                                      }
-                                    }
-                                  }
-
-                                  const dm: DataModelManager<T> =
-                                      isDetails && this._dataModelManager.detailsManager != null ?
-                                      this._dataModelManager.detailsManager :
-                                      this._dataModelManager;
-                                  return dm.update(newItem as T);
-                                }),
-                                catchError(err => {
-                                  this.snackbar.open(err, 'ERROR', {duration: 5000});
-                                  return obsOf(err);
-                                }),
-                                )
-                            .subscribe(_ => {
-                              this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
-                            });
-
-    this.isAjfFormValid =
-        this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1))
-            .pipe(map(ajfFormValid => {
-              return ajfFormValid;
-            }));
-
-    this.isFormMetricsSelectorValid =
-        this._formMetricsSelector.pipe(switchMap(formMetricsSelector => {
-          if (formMetricsSelector == null) {
+      .pipe(
+        switchMap(([fms, currentDoc, isView]) => {
+          if (fms == null) {
             return obsOf(false);
           }
-          return formMetricsSelector.isFormMetricsValid();
-        }));
+          fms.addFormData(currentDoc, isView);
+          return obsOf(true);
+        }),
+        take(1),
+      )
+      .subscribe();
+
+    this._saveFormSub = combineLatest([
+      this._saveFormEvt as Observable<AjfFormActionEvent>,
+      this._currentDoc,
+      this._formMetricsSelector,
+    ])
+      .pipe(
+        map(([_, item, formMetricsSelector]) => {
+          return {
+            doc: item,
+            formValue: this._rendererService.getFormValue(),
+            fmSelector: formMetricsSelector,
+          };
+        }),
+        withLatestFrom(this.isDetails),
+        switchMap(([formObj, isDetails]) => {
+          let newItem = {...formObj.doc} as {[key: string]: any};
+          newItem.data.data != null
+            ? (newItem.data.data = formObj.formValue)
+            : (newItem.data = formObj.formValue);
+
+          if (formObj.fmSelector != null) {
+            const selectedMetrics = formObj.fmSelector.selectedMetrics;
+            for (let key of Object.keys(selectedMetrics)) {
+              if (selectedMetrics[key].metricId != null) {
+                const saveKey = `${key}_id`;
+                newItem[saveKey] = selectedMetrics[key].metricId;
+              }
+            }
+          }
+
+          const dm: DataModelManager<T> =
+            isDetails && this._dataModelManager.detailsManager != null
+              ? this._dataModelManager.detailsManager
+              : this._dataModelManager;
+          return dm.update(newItem as T);
+        }),
+        catchError(err => {
+          this.snackbar.open(err, 'ERROR', {duration: 5000});
+          return obsOf(err);
+        }),
+      )
+      .subscribe(_ => {
+        this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
+      });
+
+    this.isAjfFormValid = this._rendererService.errors
+      .pipe(
+        map((errors: number) => errors === 0),
+        shareReplay(1),
+      )
+      .pipe(
+        map(ajfFormValid => {
+          return ajfFormValid;
+        }),
+      );
+
+    this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(
+      switchMap(formMetricsSelector => {
+        if (formMetricsSelector == null) {
+          return obsOf(false);
+        }
+        return formMetricsSelector.isFormMetricsValid();
+      }),
+    );
   }
 
   ngOnDestroy() {

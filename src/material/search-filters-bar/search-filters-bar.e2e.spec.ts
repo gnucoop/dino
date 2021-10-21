@@ -1,12 +1,7 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 const filterFieldCss = (field: string) =>
-    `.dewco-filters-bar .mat-input-element[formcontrolname="${field}"]`;
+  `.dewco-filters-bar .mat-input-element[formcontrolname="${field}"]`;
 
 describe('dewco-search-filters-bar', () => {
   beforeEach(async () => {

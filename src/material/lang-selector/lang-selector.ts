@@ -28,7 +28,7 @@ import {Observable, of} from 'rxjs';
   styleUrls: ['lang-selector.scss'],
   templateUrl: 'lang-selector.html',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LangSelector {
   currentLang: string;

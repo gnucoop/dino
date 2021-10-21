@@ -132,7 +132,7 @@ export const E2E_APP_ROUTES: Routes = [
         path: '',
         component: MatLoginE2E,
       },
-    ]
+    ],
   },
   {
     path: 'metrics',

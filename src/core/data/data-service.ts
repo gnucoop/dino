@@ -21,19 +21,14 @@
  */
 
 import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
-import {
-  AuthService,
-  NetworkStatusService,
-} from '@dewco/core/auth';
+import {AuthService, NetworkStatusService} from '@dewco/core/auth';
 import {ConfigService} from '@dewco/core/config';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {addPouchPlugin} from 'rxdb/plugins/pouchdb';
-import {
-  RxDBReplicationGraphQLPlugin,
-} from 'rxdb/plugins/replication-graphql';
+import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
 import {
   BehaviorSubject,
   combineLatest,
@@ -127,15 +122,16 @@ export class DataService {
   readonly config: DataServiceConfig;
 
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
-      new EventEmitter<CollectionChangedEvent>();
+    new EventEmitter<CollectionChangedEvent>();
 
-  readonly collectionChanged: Observable<CollectionChangedEvent> =
-      this._collectionChanged as Observable<CollectionChangedEvent>;
+  readonly collectionChanged: Observable<CollectionChangedEvent> = this
+    ._collectionChanged as Observable<CollectionChangedEvent>;
 
   private _db: Observable<RxDatabase>;
 
-  private _registeredCollections: BehaviorSubject<RegisteredCollection[]> =
-      new BehaviorSubject<RegisteredCollection[]>([]);
+  private _registeredCollections: BehaviorSubject<RegisteredCollection[]> = new BehaviorSubject<
+    RegisteredCollection[]
+  >([]);
 
   private _activeSyncs: {[key: string]: ActiveSync} = {};
 
@@ -147,7 +143,7 @@ export class DataService {
   /**
    * The Data config currently stored in the local storage, if present.
    */
-  private _currentlyStoredConfig: DataServiceConfig|null;
+  private _currentlyStoredConfig: DataServiceConfig | null;
 
   /**
    * Emits when a websocket throws an error in its connection callback,
@@ -157,10 +153,10 @@ export class DataService {
   private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
-      private _authService: AuthService,
-      private _nss: NetworkStatusService,
-      @Inject(DATA_SERVICE_CONFIG) private _config: DataServiceConfig,
-      @Optional() private _configService: ConfigService|null,
+    private _authService: AuthService,
+    private _nss: NetworkStatusService,
+    @Inject(DATA_SERVICE_CONFIG) private _config: DataServiceConfig,
+    @Optional() private _configService: ConfigService | null,
   ) {
     addPouchPlugin(pouchdbAdapterIdb);
     addPouchPlugin(pouchdbAdapterMemory);
@@ -174,18 +170,18 @@ export class DataService {
     }
 
     this._db = this._dataConfig.pipe(
-        switchMap(config => from(createRxDatabase(config.databaseCreateOptions))),
-        shareReplay(1),
+      switchMap(config => from(createRxDatabase(config.databaseCreateOptions))),
+      shareReplay(1),
     );
 
     this._initSync();
 
     this._refreshEvt
-        .pipe(
-            debounceTime(this._authService.authConfig.retryRefreshTime),
-            switchMap(() => this._authService.refreshToken()),
-            )
-        .subscribe();
+      .pipe(
+        debounceTime(this._authService.authConfig.retryRefreshTime),
+        switchMap(() => this._authService.refreshToken()),
+      )
+      .subscribe();
 
     if (this._configService != null) {
       this._setDynamicConfigSub();
@@ -211,16 +207,16 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The get request parameters.
    */
-  get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T>|null> {
+  get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null> {
     const {collectionName, id} = params;
     return this._db.pipe(
-        switchMap(db => {
-          const collection = db.collections[collectionName] as RxCollection<T>;
-          if (collection == null) {
-            return throwError(new Error('Invalid collection'));
-          }
-          return from(collection.findOne().where('id').eq(id).exec());
-        }),
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          return throwError(new Error('Invalid collection'));
+        }
+        return from(collection.findOne().where('id').eq(id).exec());
+      }),
     );
   }
 
@@ -229,23 +225,22 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The insert request parameters.
    */
-  insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T>|null> {
+  insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null> {
     const {collectionName, object} = params;
     return this._db.pipe(
-        switchMap(db => {
-          const collection = db.collections[collectionName] as RxCollection<T>;
-          if (collection == null) {
-            throwError(new Error('Invalid collection'));
-          }
-          const insertObject = this._prepareInsertObject(object);
-          return from(collection.insert(insertObject))
-              .pipe(
-                  catchError(e => {
-                    console.log(e);
-                    return obsOf(null);
-                  }),
-              );
-        }),
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(new Error('Invalid collection'));
+        }
+        const insertObject = this._prepareInsertObject(object);
+        return from(collection.insert(insertObject)).pipe(
+          catchError(e => {
+            console.log(e);
+            return obsOf(null);
+          }),
+        );
+      }),
     );
   }
 
@@ -254,21 +249,21 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The bulk insert request parameters.
    */
-  bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>):
-      Observable<{success: RxDocument<T>[], error: any[]}> {
+  bulkInsert<T extends Model = Model>(
+    params: DataBulkInsertRequest<T>,
+  ): Observable<{success: RxDocument<T>[]; error: any[]}> {
     const {collectionName, objects} = params;
     return this._db.pipe(
-        switchMap(db => {
-          const collection = db.collections[collectionName] as RxCollection<T>;
-          if (collection == null) {
-            throwError(new Error('Invalid collection'));
-          }
-          const docsData = objects.map(object => this._prepareInsertObject(object));
-          return from(collection.bulkInsert(docsData))
-              .pipe(
-                  catchError(() => obsOf({success: [], error: []})),
-              );
-        }),
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(new Error('Invalid collection'));
+        }
+        const docsData = objects.map(object => this._prepareInsertObject(object));
+        return from(collection.bulkInsert(docsData)).pipe(
+          catchError(() => obsOf({success: [], error: []})),
+        );
+      }),
     );
   }
 
@@ -277,25 +272,22 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The upinsert request parameters.
    */
-  upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T>|null> {
+  upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null> {
     const {collectionName, object} = params;
     return this._db.pipe(
-        switchMap(db => {
-          const collection = db.collections[collectionName] as RxCollection<T>;
-          if (collection == null) {
-            throwError(new Error('Invalid collection'));
-          }
-          const insertObject = {
-            id: object.id || uuidv4(),
-            ...object,
-            created_at: object.created_at || new Date().toISOString(),
-            updated_at: object.updated_at || null,
-          } as T;
-          return from(collection.upsert(insertObject))
-              .pipe(
-                  catchError(() => obsOf(null)),
-              );
-        }),
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(new Error('Invalid collection'));
+        }
+        const insertObject = {
+          id: object.id || uuidv4(),
+          ...object,
+          created_at: object.created_at || new Date().toISOString(),
+          updated_at: object.updated_at || null,
+        } as T;
+        return from(collection.upsert(insertObject)).pipe(catchError(() => obsOf(null)));
+      }),
     );
   }
 
@@ -304,17 +296,18 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The find request parameters.
    */
-  find<T extends Model = Model>(params: DataFindRequest<T>):
-      Observable<RxQuery<T, RxDocument<T>[]>> {
+  find<T extends Model = Model>(
+    params: DataFindRequest<T>,
+  ): Observable<RxQuery<T, RxDocument<T>[]>> {
     const {collectionName, query} = params;
     return this._db.pipe(
-        map(db => {
-          const collection = db.collections[collectionName] as RxCollection<T>;
-          if (collection == null) {
-            throwError(new Error('Invalid collection'));
-          }
-          return collection.find(query);
-        }),
+      map(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(new Error('Invalid collection'));
+        }
+        return collection.find(query);
+      }),
     );
   }
 
@@ -323,17 +316,18 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The find request parameters.
    */
-  findOne<T extends Model = Model>(params: DataFindRequest<T>):
-      Observable<RxQuery<T, RxDocument<T>|null>> {
+  findOne<T extends Model = Model>(
+    params: DataFindRequest<T>,
+  ): Observable<RxQuery<T, RxDocument<T> | null>> {
     const {collectionName, query} = params;
     return this._db.pipe(
-        map(db => {
-          const collection = db.collections[collectionName] as RxCollection<T>;
-          if (collection == null) {
-            throwError(new Error('Invalid collection'));
-          }
-          return collection.findOne(query);
-        }),
+      map(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(new Error('Invalid collection'));
+        }
+        return collection.findOne(query);
+      }),
     );
   }
 
@@ -344,18 +338,17 @@ export class DataService {
    */
   createCollection(params: DataCreateCollectionRequest): Observable<boolean> {
     return this._db.pipe(
-        switchMap(db => {
-          const collection = db[params.name] as RxCollection;
-          if (!collection) {
-            return from(db.addCollections({[params.name]: params.collection}))
-                .pipe(
-                    tap(coll => this._addRegisteredCollection(coll[params.name], params)),
-                    mapTo(true),
-                    catchError(() => obsOf(false)),
-                );
-          }
-          return obsOf(true);
-        }),
+      switchMap(db => {
+        const collection = db[params.name] as RxCollection;
+        if (!collection) {
+          return from(db.addCollections({[params.name]: params.collection})).pipe(
+            tap(coll => this._addRegisteredCollection(coll[params.name], params)),
+            mapTo(true),
+            catchError(() => obsOf(false)),
+          );
+        }
+        return obsOf(true);
+      }),
     );
   }
 
@@ -366,16 +359,15 @@ export class DataService {
    */
   destroyCollection(collectionName: string): Observable<boolean> {
     return this._db.pipe(
-        switchMap(db => {
-          const collection = db.collections[collectionName] as RxCollection;
-          if (collection == null) {
-            throwError(new Error('Invalid collection'));
-          }
-          return from(collection.destroy())
-              .pipe(
-                  tap(() => this._removeRegisteredCollection(collection)),
-              );
-        }),
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection;
+        if (collection == null) {
+          throwError(new Error('Invalid collection'));
+        }
+        return from(collection.destroy()).pipe(
+          tap(() => this._removeRegisteredCollection(collection)),
+        );
+      }),
     );
   }
 
@@ -396,8 +388,10 @@ export class DataService {
   /**
    * Push a collection to the registered colletions stream.
    */
-  private _addRegisteredCollection(collection: RxCollection, params: DataCreateCollectionRequest):
-      void {
+  private _addRegisteredCollection(
+    collection: RxCollection,
+    params: DataCreateCollectionRequest,
+  ): void {
     const collections = this._registeredCollections.getValue();
     const idx = collections.findIndex(c => c.collection.name === collection.name);
     if (idx !== -1) {
@@ -422,10 +416,7 @@ export class DataService {
       // collection.
       return;
     }
-    this._registeredCollections.next([
-      ...collections.slice(0, idx),
-      ...collections.slice(idx + 1),
-    ]);
+    this._registeredCollections.next([...collections.slice(0, idx), ...collections.slice(idx + 1)]);
   }
 
   /**
@@ -443,44 +434,29 @@ export class DataService {
    * current authentication status.
    */
   private _initSync(): void {
-    const collectionChange = this._registeredCollections.pipe(
-        debounceTime(300),
-    );
-    combineLatest([
-      collectionChange,
-      this._authService.authToken,
-      this._nss.isOnline$,
-    ])
-        .pipe(withLatestFrom(this._authService.authenticated))
-        .subscribe(
-            ([
-              [
-                registeredCollections,
-                token,
-                isOnline,
-              ],
-              auth,
-            ]) => {
-              const activeSyncsKeys = Object.keys(this._activeSyncs);
-              if (auth && token != null && isOnline) {
-                const collectionNames = [] as string[];
-                registeredCollections.forEach(registeredCollection => {
-                  const {collection, ...params} = registeredCollection;
-                  collectionNames.push(collection.name);
-                  this._setupCollectionSync(collection, params, token);
-                });
-                activeSyncsKeys.forEach(collectionName => {
-                  if (collectionNames.indexOf(collectionName) === -1) {
-                    this._stopCollectionSync(collectionName);
-                  }
-                });
-              } else {
-                activeSyncsKeys.forEach(k => {
-                  this._stopCollectionSync(k);
-                });
-              }
-            },
-        );
+    const collectionChange = this._registeredCollections.pipe(debounceTime(300));
+    combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
+      .pipe(withLatestFrom(this._authService.authenticated))
+      .subscribe(([[registeredCollections, token, isOnline], auth]) => {
+        const activeSyncsKeys = Object.keys(this._activeSyncs);
+        if (auth && token != null && isOnline) {
+          const collectionNames = [] as string[];
+          registeredCollections.forEach(registeredCollection => {
+            const {collection, ...params} = registeredCollection;
+            collectionNames.push(collection.name);
+            this._setupCollectionSync(collection, params, token);
+          });
+          activeSyncsKeys.forEach(collectionName => {
+            if (collectionNames.indexOf(collectionName) === -1) {
+              this._stopCollectionSync(collectionName);
+            }
+          });
+        } else {
+          activeSyncsKeys.forEach(k => {
+            this._stopCollectionSync(k);
+          });
+        }
+      });
   }
 
   /**
@@ -490,10 +466,10 @@ export class DataService {
    * @param token The current JWT authorization token.
    */
   private _setupCollectionSync(
-      collection: RxCollection,
-      params: CollectionSyncParams,
-      token: string,
-      ): void {
+    collection: RxCollection,
+    params: CollectionSyncParams,
+    token: string,
+  ): void {
     this._stopCollectionSync(collection.name);
     const state = collection.syncGraphQL({
       ...this._dataConfig.value.syncOptions,
@@ -502,33 +478,40 @@ export class DataService {
       deletedFlag: '_deleted',
       pull: {
         queryBuilder: pullQueryBuilder(
-            collection, this._dataConfig.value.syncOptions, params.pullQueryExtraParams),
+          collection,
+          this._dataConfig.value.syncOptions,
+          params.pullQueryExtraParams,
+        ),
       },
       push: {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
       },
     });
     let sub: {unsubscribe: () => void} = Subscription.EMPTY;
-    if (this._dataConfig.value.syncOptions.live &&
-        this._dataConfig.value.syncOptions.wsUrl != null) {
+    if (
+      this._dataConfig.value.syncOptions.live &&
+      this._dataConfig.value.syncOptions.wsUrl != null
+    ) {
       const client = new SubscriptionClient(
-          this._dataConfig.value.syncOptions.wsUrl,
-          {
-            reconnect: true,
-            reconnectionAttempts: 5,
-            connectionCallback: (error: Error[]) => {
-              if (error) {
-                client.close(true);
-                const errMessage = error.toString();
-                if (this._dataConfig.value.syncOptions.authErrorMessage &&
-                    errMessage === this._dataConfig.value.syncOptions.authErrorMessage) {
-                  this._refreshEvt.emit();
-                }
+        this._dataConfig.value.syncOptions.wsUrl,
+        {
+          reconnect: true,
+          reconnectionAttempts: 5,
+          connectionCallback: (error: Error[]) => {
+            if (error) {
+              client.close(true);
+              const errMessage = error.toString();
+              if (
+                this._dataConfig.value.syncOptions.authErrorMessage &&
+                errMessage === this._dataConfig.value.syncOptions.authErrorMessage
+              ) {
+                this._refreshEvt.emit();
               }
-            },
-            connectionParams: {headers: {'Authorization': `Bearer ${token}`}},
+            }
           },
-          this._dataConfig.value.syncOptions.webSocketImpl,
+          connectionParams: {headers: {'Authorization': `Bearer ${token}`}},
+        },
+        this._dataConfig.value.syncOptions.webSocketImpl,
       );
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = client.request({query}) as Observable<any>;
@@ -540,18 +523,13 @@ export class DataService {
               collection: collection.name,
               action: 'replication complete',
             });
-            state.recieved$
-                .pipe(
-                    take(1),
-                    delay(1000),
-                    )
-                .subscribe(() => {
-                  this._collectionChanged.emit({
-                    timestamp: new Date().getTime(),
-                    collection: collection.name,
-                    action: 'change received',
-                  });
-                });
+            state.recieved$.pipe(take(1), delay(1000)).subscribe(() => {
+              this._collectionChanged.emit({
+                timestamp: new Date().getTime(),
+                collection: collection.name,
+                action: 'change received',
+              });
+            });
           });
         },
       });
@@ -588,11 +566,11 @@ export class DataService {
 
       const dataDbOptions = {
         ...this._dataConfig.value.databaseCreateOptions,
-        ...config.dataConfig.databaseCreateOptions
+        ...config.dataConfig.databaseCreateOptions,
       };
       const dataSyncOptions = {
         ...this._dataConfig.value.syncOptions,
-        ...config.dataConfig.syncOptions
+        ...config.dataConfig.syncOptions,
       };
       const dataConfig = {
         databaseCreateOptions: dataDbOptions,
@@ -642,7 +620,7 @@ export class DataService {
    * Retrieves the Data service configuration currently stored in the
    * local storage.
    */
-  private _getDataConfig(): DataServiceConfig|null {
+  private _getDataConfig(): DataServiceConfig | null {
     const config = localStorage.getItem('data_config');
     if (config == null) {
       return null;

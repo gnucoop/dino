@@ -34,10 +34,7 @@ export class LocationModule {
     icon: 'place',
     metricName: 'location',
   };
-  constructor(
-      private _filtersService: FiltersService,
-      private _metricsService: MetricsService,
-  ) {
+  constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('location');
     this._metricsService.activateMetric(this.locationsMetric);
   }

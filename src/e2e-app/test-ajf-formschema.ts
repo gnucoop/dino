@@ -24,7 +24,7 @@ export const ajfSchema = {
           'fieldType': 7,
           'parentNode': 0,
           'visibility': {'condition': 'true'},
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 1001,
@@ -43,9 +43,9 @@ export const ajfSchema = {
             'notEmpty': {
               'condition': 'notEmpty($value)',
               'errorMessage': 'Value must not be empty',
-              'clientValidation': false
+              'clientValidation': false,
             },
-            'conditions': []
+            'conditions': [],
           },
           'visibility': {'condition': 'true'},
           'description': null,
@@ -114,7 +114,7 @@ export const ajfSchema = {
               {'label': 'Cura\u00e7ao', 'value': 'CUW'},
               {'label': 'Cyprus', 'value': 'CYP'},
               {'label': 'Czechia', 'value': 'CZE'},
-              {'label': 'C\u00f4te d\'Ivoire', 'value': 'CIV'},
+              {'label': "C\u00f4te d'Ivoire", 'value': 'CIV'},
               {'label': 'Denmark', 'value': 'DNK'},
               {'label': 'Djibouti', 'value': 'DJI'},
               {'label': 'Dominica', 'value': 'DMA'},
@@ -173,11 +173,11 @@ export const ajfSchema = {
               {'label': 'Kazakhstan', 'value': 'KAZ'},
               {'label': 'Kenya', 'value': 'KEN'},
               {'label': 'Kiribati', 'value': 'KIR'},
-              {'label': 'Korea (the Democratic People\'s Republic of)', 'value': 'PRK'},
+              {'label': "Korea (the Democratic People's Republic of)", 'value': 'PRK'},
               {'label': 'Korea (the Republic of)', 'value': 'KOR'},
               {'label': 'Kuwait', 'value': 'KWT'},
               {'label': 'Kyrgyzstan', 'value': 'KGZ'},
-              {'label': 'Lao People\'s Democratic Republic (the)', 'value': 'LAO'},
+              {'label': "Lao People's Democratic Republic (the)", 'value': 'LAO'},
               {'label': 'Latvia', 'value': 'LVA'},
               {'label': 'Lebanon', 'value': 'LBN'},
               {'label': 'Lesotho', 'value': 'LSO'},
@@ -291,7 +291,7 @@ export const ajfSchema = {
               {'label': 'United Arab Emirates (the)', 'value': 'ARE'},
               {
                 'label': 'United Kingdom of Great Britain and Northern Ireland (the)',
-                'value': 'GBR'
+                'value': 'GBR',
               },
               {'label': 'United States Minor Outlying Islands (the)', 'value': 'UMI'},
               {'label': 'United States of America (the)', 'value': 'USA'},
@@ -307,18 +307,18 @@ export const ajfSchema = {
               {'label': 'Yemen', 'value': 'YEM'},
               {'label': 'Zambia', 'value': 'ZMB'},
               {'label': 'Zimbabwe', 'value': 'ZWE'},
-              {'label': '\u00c5land Islands', 'value': 'ALA'}
+              {'label': '\u00c5land Islands', 'value': 'ALA'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'countries',
           'triggerConditions': [],
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 1002,
-          'hint': 'Person\'s last name',
+          'hint': "Person's last name",
           'name': 'name',
           'size': 'normal',
           'label': 'Last name',
@@ -332,11 +332,11 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'description': null,
           'defaultValue': null,
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 1003,
-          'hint': 'Person\'s first name',
+          'hint': "Person's first name",
           'name': 'firstname',
           'size': 'normal',
           'label': 'First Name',
@@ -348,7 +348,7 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1004,
@@ -364,7 +364,7 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1005,
@@ -386,15 +386,16 @@ export const ajfSchema = {
             'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
-              {'label': 'Male', 'value': 'M'}, {'label': 'Female', 'value': 'F'},
-              {'label': 'Other/not specified', 'value': 'O'}
+              {'label': 'Male', 'value': 'M'},
+              {'label': 'Female', 'value': 'F'},
+              {'label': 'Other/not specified', 'value': 'O'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'mf',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1006,
@@ -474,7 +475,7 @@ export const ajfSchema = {
               {'label': 'Cura\u00e7ao', 'value': 'CUW'},
               {'label': 'Cyprus', 'value': 'CYP'},
               {'label': 'Czechia', 'value': 'CZE'},
-              {'label': 'C\u00f4te d\'Ivoire', 'value': 'CIV'},
+              {'label': "C\u00f4te d'Ivoire", 'value': 'CIV'},
               {'label': 'Denmark', 'value': 'DNK'},
               {'label': 'Djibouti', 'value': 'DJI'},
               {'label': 'Dominica', 'value': 'DMA'},
@@ -533,11 +534,11 @@ export const ajfSchema = {
               {'label': 'Kazakhstan', 'value': 'KAZ'},
               {'label': 'Kenya', 'value': 'KEN'},
               {'label': 'Kiribati', 'value': 'KIR'},
-              {'label': 'Korea (the Democratic People\'s Republic of)', 'value': 'PRK'},
+              {'label': "Korea (the Democratic People's Republic of)", 'value': 'PRK'},
               {'label': 'Korea (the Republic of)', 'value': 'KOR'},
               {'label': 'Kuwait', 'value': 'KWT'},
               {'label': 'Kyrgyzstan', 'value': 'KGZ'},
-              {'label': 'Lao People\'s Democratic Republic (the)', 'value': 'LAO'},
+              {'label': "Lao People's Democratic Republic (the)", 'value': 'LAO'},
               {'label': 'Latvia', 'value': 'LVA'},
               {'label': 'Lebanon', 'value': 'LBN'},
               {'label': 'Lesotho', 'value': 'LSO'},
@@ -651,7 +652,7 @@ export const ajfSchema = {
               {'label': 'United Arab Emirates (the)', 'value': 'ARE'},
               {
                 'label': 'United Kingdom of Great Britain and Northern Ireland (the)',
-                'value': 'GBR'
+                'value': 'GBR',
               },
               {'label': 'United States Minor Outlying Islands (the)', 'value': 'UMI'},
               {'label': 'United States of America (the)', 'value': 'USA'},
@@ -667,14 +668,14 @@ export const ajfSchema = {
               {'label': 'Yemen', 'value': 'YEM'},
               {'label': 'Zambia', 'value': 'ZMB'},
               {'label': 'Zimbabwe', 'value': 'ZWE'},
-              {'label': '\u00c5land Islands', 'value': 'ALA'}
+              {'label': '\u00c5land Islands', 'value': 'ALA'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'countries_nat',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1007,
@@ -696,16 +697,18 @@ export const ajfSchema = {
             'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
-              {'label': 'Not married', 'value': 'single'}, {'label': 'Married', 'value': 'married'},
-              {'label': 'Divorced', 'value': 'divorced'}, {'label': 'Widow', 'value': 'widow'},
-              {'label': 'Other/not specified', 'value': 'other'}
+              {'label': 'Not married', 'value': 'single'},
+              {'label': 'Married', 'value': 'married'},
+              {'label': 'Divorced', 'value': 'divorced'},
+              {'label': 'Widow', 'value': 'widow'},
+              {'label': 'Other/not specified', 'value': 'other'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'civstats',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1008,
@@ -727,18 +730,19 @@ export const ajfSchema = {
             'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
-              {'label': 'None', 'value': 'none'}, {'label': 'Primary school', 'value': 'prim'},
+              {'label': 'None', 'value': 'none'},
+              {'label': 'Primary school', 'value': 'prim'},
               {'label': 'Secondary', 'value': 'sec'},
               {'label': 'High School Diploma', 'value': 'high'},
               {'label': 'University degree', 'value': 'univ'},
-              {'label': 'Master / Phd', 'value': 'phd'}
+              {'label': 'Master / Phd', 'value': 'phd'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'edulevels',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1009,
@@ -754,7 +758,7 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 1010,
@@ -770,14 +774,14 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
-        }
+          'validation': {'notEmpty': true},
+        },
       ],
       'parent': 0,
       'nodeType': 3,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
+      'conditionalBranches': [{'condition': 'true'}],
     },
     {
       'id': 2,
@@ -795,7 +799,7 @@ export const ajfSchema = {
           'fieldType': 7,
           'parentNode': 0,
           'visibility': {'condition': 'true'},
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 2001,
@@ -821,14 +825,14 @@ export const ajfSchema = {
               {'label': 'Administration and Human resources', 'value': 'adminhr'},
               {'label': 'Logistics and support', 'value': 'support'},
               {'label': 'Sponsorship', 'value': 'sad'},
-              {'label': 'Communication and Advocacy', 'value': 'comm'}
+              {'label': 'Communication and Advocacy', 'value': 'comm'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'areas',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2002,
@@ -850,20 +854,21 @@ export const ajfSchema = {
             'type': 'fixed' as AjfChoicesOriginType,
             'label': '',
             'choices': [
-              {'label': 'Manager - Responsible of areas or projects', 'value': 'manager'}, {
+              {'label': 'Manager - Responsible of areas or projects', 'value': 'manager'},
+              {
                 'label': 'Specialist - Specialized technicians (not managers)',
-                'value': 'specialist'
+                'value': 'specialist',
               },
               {'label': 'Officer - Clerks/executives', 'value': 'officer'},
               {'label': 'Support - Eg. logisticians, drivers', 'value': 'support'},
-              {'label': 'Other (please specify)', 'value': 'other'}
+              {'label': 'Other (please specify)', 'value': 'other'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'positions',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2003,
@@ -875,10 +880,10 @@ export const ajfSchema = {
           'nodeType': 0,
           'fieldType': 0,
           'parentNode': 0,
-          'visibility': {'condition': 'position === \'other\''},
+          'visibility': {'condition': "position === 'other'"},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2004,
@@ -894,7 +899,7 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2005,
@@ -920,14 +925,15 @@ export const ajfSchema = {
               {'label': 'Staff - Fixed term', 'value': 'staff_fixed'},
               {'label': 'Collaborator', 'value': 'collab'},
               {'label': 'Consultant', 'value': 'consultant'},
-              {'label': 'Volunteer', 'value': 'volunteer'}, {'label': 'Intern', 'value': 'intern'}
+              {'label': 'Volunteer', 'value': 'volunteer'},
+              {'label': 'Intern', 'value': 'intern'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'contracts',
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2006,
@@ -943,7 +949,7 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': false,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2007,
@@ -957,16 +963,18 @@ export const ajfSchema = {
           'fieldType': 2,
           'parentNode': 0,
           'validation': {
-            'conditions': [{
-              'condition': '!notEmpty(parttime_perc) || isInt(parttime_perc)',
-              'errorMessage': 'The field value must be an integer.',
-              'clientValidation': true
-            }],
-            'notEmpty': true
+            'conditions': [
+              {
+                'condition': '!notEmpty(parttime_perc) || isInt(parttime_perc)',
+                'errorMessage': 'The field value must be an integer.',
+                'clientValidation': true,
+              },
+            ],
+            'notEmpty': true,
           },
           'visibility': {'condition': 'parttime === true'},
           'defaultValue': null,
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 2008,
@@ -982,7 +990,7 @@ export const ajfSchema = {
           'visibility': {'condition': 'true'},
           'defaultValue': null,
           'conditionalBranches': [],
-          'validation': {'notEmpty': true}
+          'validation': {'notEmpty': true},
         },
         {
           'id': 2009,
@@ -997,7 +1005,7 @@ export const ajfSchema = {
           'parentNode': 0,
           'visibility': {'condition': 'true'},
           'defaultValue': null,
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 2010,
@@ -1020,14 +1028,14 @@ export const ajfSchema = {
             'choices': [
               {'label': 'Natural contract termination', 'value': 'natural'},
               {'label': 'Decision taken by WWGVC', 'value': 'byorg'},
-              {'label': 'Decision taken by employee', 'value': 'bystaff'}
+              {'label': 'Decision taken by employee', 'value': 'bystaff'},
             ],
-            'choicesType': 'string'
+            'choicesType': 'string',
           },
           'forceExpanded': false,
           'choicesOriginRef': 'reasons',
-          'conditionalBranches': []
-        }
+          'conditionalBranches': [],
+        },
       ],
       'parent': 1,
       'maxReps': 0,
@@ -1035,7 +1043,7 @@ export const ajfSchema = {
       'nodeType': 4,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
+      'conditionalBranches': [{'condition': 'true'}],
     },
     {
       'id': 3,
@@ -1053,7 +1061,7 @@ export const ajfSchema = {
           'fieldType': 7,
           'parentNode': 0,
           'visibility': {'condition': 'true'},
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 3001,
@@ -1067,16 +1075,18 @@ export const ajfSchema = {
           'fieldType': 2,
           'parentNode': 0,
           'validation': {
-            'conditions': [{
-              'condition': '!notEmpty(ntrainings) || isInt(ntrainings)',
-              'errorMessage': 'The field value must be an integer.',
-              'clientValidation': true
-            }],
-            'notEmpty': true
+            'conditions': [
+              {
+                'condition': '!notEmpty(ntrainings) || isInt(ntrainings)',
+                'errorMessage': 'The field value must be an integer.',
+                'clientValidation': true,
+              },
+            ],
+            'notEmpty': true,
           },
           'visibility': {'condition': 'true'},
           'defaultValue': null,
-          'conditionalBranches': []
+          'conditionalBranches': [],
         },
         {
           'id': 3002,
@@ -1095,29 +1105,29 @@ export const ajfSchema = {
               {
                 'condition': '!notEmpty(nhourstraining) || isInt(nhourstraining)',
                 'errorMessage': 'The field value must be an integer.',
-                'clientValidation': false
+                'clientValidation': false,
               },
               {
                 'condition': '(nhourstraining >= ntrainings)',
                 'errorMessage':
-                    'Number of days should be greater or equal to the number of trainings',
-                'clientValidation': false
-              }
+                  'Number of days should be greater or equal to the number of trainings',
+                'clientValidation': false,
+              },
             ],
-            'notEmpty': true
+            'notEmpty': true,
           },
           'visibility': {'condition': 'true'},
           'description': null,
           'defaultValue': null,
-          'conditionalBranches': []
-        }
+          'conditionalBranches': [],
+        },
       ],
       'parent': 2,
       'nodeType': 3,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
-    }
+      'conditionalBranches': [{'condition': 'true'}],
+    },
   ],
   'initContext': {},
   'choicesOrigins': [
@@ -1130,20 +1140,22 @@ export const ajfSchema = {
         {'label': 'Administration and Human resources', 'value': 'adminhr'},
         {'label': 'Logistics and support', 'value': 'support'},
         {'label': 'Sponsorship', 'value': 'sad'},
-        {'label': 'Communication and Advocacy', 'value': 'comm'}
+        {'label': 'Communication and Advocacy', 'value': 'comm'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'civstats',
       'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
-        {'label': 'Not married', 'value': 'single'}, {'label': 'Married', 'value': 'married'},
-        {'label': 'Divorced', 'value': 'divorced'}, {'label': 'Widow', 'value': 'widow'},
-        {'label': 'Other/not specified', 'value': 'other'}
+        {'label': 'Not married', 'value': 'single'},
+        {'label': 'Married', 'value': 'married'},
+        {'label': 'Divorced', 'value': 'divorced'},
+        {'label': 'Widow', 'value': 'widow'},
+        {'label': 'Other/not specified', 'value': 'other'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'contracts',
@@ -1154,9 +1166,10 @@ export const ajfSchema = {
         {'label': 'Staff - Fixed term', 'value': 'staff_fixed'},
         {'label': 'Collaborator', 'value': 'collab'},
         {'label': 'Consultant', 'value': 'consultant'},
-        {'label': 'Volunteer', 'value': 'volunteer'}, {'label': 'Intern', 'value': 'intern'}
+        {'label': 'Volunteer', 'value': 'volunteer'},
+        {'label': 'Intern', 'value': 'intern'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'countries',
@@ -1221,7 +1234,7 @@ export const ajfSchema = {
         {'label': 'Cura\u00e7ao', 'value': 'CUW'},
         {'label': 'Cyprus', 'value': 'CYP'},
         {'label': 'Czechia', 'value': 'CZE'},
-        {'label': 'C\u00f4te d\'Ivoire', 'value': 'CIV'},
+        {'label': "C\u00f4te d'Ivoire", 'value': 'CIV'},
         {'label': 'Denmark', 'value': 'DNK'},
         {'label': 'Djibouti', 'value': 'DJI'},
         {'label': 'Dominica', 'value': 'DMA'},
@@ -1280,11 +1293,11 @@ export const ajfSchema = {
         {'label': 'Kazakhstan', 'value': 'KAZ'},
         {'label': 'Kenya', 'value': 'KEN'},
         {'label': 'Kiribati', 'value': 'KIR'},
-        {'label': 'Korea (the Democratic People\'s Republic of)', 'value': 'PRK'},
+        {'label': "Korea (the Democratic People's Republic of)", 'value': 'PRK'},
         {'label': 'Korea (the Republic of)', 'value': 'KOR'},
         {'label': 'Kuwait', 'value': 'KWT'},
         {'label': 'Kyrgyzstan', 'value': 'KGZ'},
-        {'label': 'Lao People\'s Democratic Republic (the)', 'value': 'LAO'},
+        {'label': "Lao People's Democratic Republic (the)", 'value': 'LAO'},
         {'label': 'Latvia', 'value': 'LVA'},
         {'label': 'Lebanon', 'value': 'LBN'},
         {'label': 'Lesotho', 'value': 'LSO'},
@@ -1411,9 +1424,9 @@ export const ajfSchema = {
         {'label': 'Yemen', 'value': 'YEM'},
         {'label': 'Zambia', 'value': 'ZMB'},
         {'label': 'Zimbabwe', 'value': 'ZWE'},
-        {'label': '\u00c5land Islands', 'value': 'ALA'}
+        {'label': '\u00c5land Islands', 'value': 'ALA'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'countries_nat',
@@ -1478,7 +1491,7 @@ export const ajfSchema = {
         {'label': 'Cura\u00e7ao', 'value': 'CUW'},
         {'label': 'Cyprus', 'value': 'CYP'},
         {'label': 'Czechia', 'value': 'CZE'},
-        {'label': 'C\u00f4te d\'Ivoire', 'value': 'CIV'},
+        {'label': "C\u00f4te d'Ivoire", 'value': 'CIV'},
         {'label': 'Denmark', 'value': 'DNK'},
         {'label': 'Djibouti', 'value': 'DJI'},
         {'label': 'Dominica', 'value': 'DMA'},
@@ -1537,11 +1550,11 @@ export const ajfSchema = {
         {'label': 'Kazakhstan', 'value': 'KAZ'},
         {'label': 'Kenya', 'value': 'KEN'},
         {'label': 'Kiribati', 'value': 'KIR'},
-        {'label': 'Korea (the Democratic People\'s Republic of)', 'value': 'PRK'},
+        {'label': "Korea (the Democratic People's Republic of)", 'value': 'PRK'},
         {'label': 'Korea (the Republic of)', 'value': 'KOR'},
         {'label': 'Kuwait', 'value': 'KWT'},
         {'label': 'Kyrgyzstan', 'value': 'KGZ'},
-        {'label': 'Lao People\'s Democratic Republic (the)', 'value': 'LAO'},
+        {'label': "Lao People's Democratic Republic (the)", 'value': 'LAO'},
         {'label': 'Latvia', 'value': 'LVA'},
         {'label': 'Lebanon', 'value': 'LBN'},
         {'label': 'Lesotho', 'value': 'LSO'},
@@ -1668,30 +1681,34 @@ export const ajfSchema = {
         {'label': 'Yemen', 'value': 'YEM'},
         {'label': 'Zambia', 'value': 'ZMB'},
         {'label': 'Zimbabwe', 'value': 'ZWE'},
-        {'label': '\u00c5land Islands', 'value': 'ALA'}
+        {'label': '\u00c5land Islands', 'value': 'ALA'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'edulevels',
       'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
-        {'label': 'None', 'value': 'none'}, {'label': 'Primary school', 'value': 'prim'},
-        {'label': 'Secondary', 'value': 'sec'}, {'label': 'High School Diploma', 'value': 'high'},
-        {'label': 'University degree', 'value': 'univ'}, {'label': 'Master / Phd', 'value': 'phd'}
+        {'label': 'None', 'value': 'none'},
+        {'label': 'Primary school', 'value': 'prim'},
+        {'label': 'Secondary', 'value': 'sec'},
+        {'label': 'High School Diploma', 'value': 'high'},
+        {'label': 'University degree', 'value': 'univ'},
+        {'label': 'Master / Phd', 'value': 'phd'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'mf',
       'type': 'fixed' as AjfChoicesOriginType,
       'label': '',
       'choices': [
-        {'label': 'Male', 'value': 'M'}, {'label': 'Female', 'value': 'F'},
-        {'label': 'Other/not specified', 'value': 'O'}
+        {'label': 'Male', 'value': 'M'},
+        {'label': 'Female', 'value': 'F'},
+        {'label': 'Other/not specified', 'value': 'O'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'positions',
@@ -1702,9 +1719,9 @@ export const ajfSchema = {
         {'label': 'Specialist - Specialized technicians (not managers)', 'value': 'specialist'},
         {'label': 'Officer - Clerks/executives', 'value': 'officer'},
         {'label': 'Support - Eg. logisticians, drivers', 'value': 'support'},
-        {'label': 'Other (please specify)', 'value': 'other'}
+        {'label': 'Other (please specify)', 'value': 'other'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'reasons',
@@ -1713,13 +1730,16 @@ export const ajfSchema = {
       'choices': [
         {'label': 'Natural contract termination', 'value': 'natural'},
         {'label': 'Decision taken by WWGVC', 'value': 'byorg'},
-        {'label': 'Decision taken by employee', 'value': 'bystaff'}
+        {'label': 'Decision taken by employee', 'value': 'bystaff'},
       ],
-      'choicesType': 'string'
-    }
+      'choicesType': 'string',
+    },
   ],
-  'stringIdentifier': [{'label': '', 'value': ['firstname']}, {'label': '', 'value': ['name']}],
-  'attachmentsOrigins': []
+  'stringIdentifier': [
+    {'label': '', 'value': ['firstname']},
+    {'label': '', 'value': ['name']},
+  ],
+  'attachmentsOrigins': [],
 };
 
 export const ajfSourceReportFormSchema = {
@@ -1734,9 +1754,7 @@ export const ajfSourceReportFormSchema = {
           'name': 'district',
           'label': 'District',
           'parent': 1,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'validation': {'notEmpty': true},
@@ -1747,14 +1765,12 @@ export const ajfSourceReportFormSchema = {
           'name': 'sub_county',
           'label': 'Sub County',
           'parent': 1001,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'validation': {'notEmpty': true},
           'choicesFilter': {'formula': '$choice.district === district'},
-          'choicesOriginRef': 'subcounty_choice'
+          'choicesOriginRef': 'subcounty_choice',
         },
         {
           'id': 1003,
@@ -1762,7 +1778,7 @@ export const ajfSourceReportFormSchema = {
           'label': 'Settlement',
           'parent': 1002,
           'nodeType': 0,
-          'fieldType': 0
+          'fieldType': 0,
         },
         {
           'id': 1004,
@@ -1770,7 +1786,7 @@ export const ajfSourceReportFormSchema = {
           'label': 'Parish',
           'parent': 1003,
           'nodeType': 0,
-          'fieldType': 0
+          'fieldType': 0,
         },
         {
           'id': 1005,
@@ -1778,26 +1794,24 @@ export const ajfSourceReportFormSchema = {
           'label': 'Village',
           'parent': 1004,
           'nodeType': 0,
-          'fieldType': 0
+          'fieldType': 0,
         },
         {
           'id': 1006,
           'name': 'poc',
           'label': 'Point of care',
           'parent': 1005,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'poc_choice'
-        }
+          'choicesOriginRef': 'poc_choice',
+        },
       ],
       'parent': 0,
       'nodeType': 3,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
+      'conditionalBranches': [{'condition': 'true'}],
     },
     {
       'id': 2,
@@ -1810,20 +1824,18 @@ export const ajfSourceReportFormSchema = {
           'label': 'Patient id number',
           'parent': 2,
           'nodeType': 0,
-          'fieldType': 0
+          'fieldType': 0,
         },
         {
           'id': 2002,
           'name': 'nationality',
           'label': 'Nationality',
           'parent': 2001,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'validation': {'notEmpty': true},
-          'choicesOriginRef': 'nationality_choice'
+          'choicesOriginRef': 'nationality_choice',
         },
         {
           'id': 2003,
@@ -1834,71 +1846,65 @@ export const ajfSourceReportFormSchema = {
           'fieldType': 2,
           'validation': {
             'notEmpty': true,
-            'conditions': [{
-              'condition': '!notEmpty(age) || isInt(age)',
-              'errorMessage': 'The field value must be an integer.',
-              'clientValidation': true
-            }]
-          }
+            'conditions': [
+              {
+                'condition': '!notEmpty(age) || isInt(age)',
+                'errorMessage': 'The field value must be an integer.',
+                'clientValidation': true,
+              },
+            ],
+          },
         },
         {
           'id': 2004,
           'name': 'gender',
           'label': 'Gender',
           'parent': 2003,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'validation': {'notEmpty': true},
-          'choicesOriginRef': 'gender_choice'
+          'choicesOriginRef': 'gender_choice',
         },
         {
           'id': 2005,
           'name': 'disability_status',
           'label': 'Disability Status',
           'parent': 2004,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'validation': {'notEmpty': true},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 2006,
           'name': 'disabilities',
           'label': 'Disabilities',
           'parent': 2005,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 5,
           'visibility': {'condition': 'valueInChoice(disability_status, "y")'},
-          'choicesOriginRef': 'disabilities_choice'
+          'choicesOriginRef': 'disabilities_choice',
         },
         {
           'id': 2007,
           'name': 'pregnancy',
           'label': 'Pregnancy',
           'parent': 2006,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'valueInChoice(gender, "f")'},
-          'choicesOriginRef': 'yn'
-        }
+          'choicesOriginRef': 'yn',
+        },
       ],
       'parent': 1,
       'nodeType': 3,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
+      'conditionalBranches': [{'condition': 'true'}],
     },
     {
       'id': 3,
@@ -1911,26 +1917,24 @@ export const ajfSourceReportFormSchema = {
           'label': 'Chief complain/Complaint of the patient',
           'parent': 3,
           'nodeType': 0,
-          'fieldType': 0
+          'fieldType': 0,
         },
         {
           'id': 3002,
           'name': 'eyes_checked',
           'label': 'Eyes Checked',
           'parent': 3001,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 5,
-          'choicesOriginRef': 'eyes_lr'
-        }
+          'choicesOriginRef': 'eyes_lr',
+        },
       ],
       'parent': 2,
       'nodeType': 3,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
+      'conditionalBranches': [{'condition': 'true'}],
     },
     {
       'id': 4,
@@ -1942,51 +1946,43 @@ export const ajfSourceReportFormSchema = {
           'name': 'va_od',
           'label': 'Visual acuity (VA)',
           'parent': 4,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'va_choice'
+          'choicesOriginRef': 'va_choice',
         },
         {
           'id': 4002,
           'name': 'cf_od',
           'label': 'CF (Counting fingers)',
           'parent': 4001,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'va_od === "6_60-"'},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 4003,
           'name': 'hm_od',
           'label': 'HM (Hand motion)',
           'parent': 4002,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'cf_od === "n"'},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 4004,
           'name': 'lp_od',
           'label': 'LP (Light perception)',
           'parent': 4003,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'hm_od === "n"'},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 4005,
@@ -1994,14 +1990,14 @@ export const ajfSourceReportFormSchema = {
           'label': 'IOP/Intra-ocular pressure (0-21 mmHg)',
           'parent': 4004,
           'nodeType': 0,
-          'fieldType': 2
-        }
+          'fieldType': 2,
+        },
       ],
       'parent': 3,
       'nodeType': 3,
       'parentNode': 0,
       'conditionalBranches': [{'condition': 'true'}],
-      'visibility': {'condition': 'valueInChoice(eyes_checked, "od")'}
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "od")'},
     },
     {
       'id': 5,
@@ -2013,12 +2009,10 @@ export const ajfSourceReportFormSchema = {
           'name': 'eye_lid_od',
           'label': 'Eye Lid',
           'parent': 5,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'norm_abnorm_choice'
+          'choicesOriginRef': 'norm_abnorm_choice',
         },
         {
           'id': 5002,
@@ -2027,67 +2021,57 @@ export const ajfSourceReportFormSchema = {
           'parent': 5001,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(eye_lid_od, "abnormal")'}
+          'visibility': {'condition': 'valueInChoice(eye_lid_od, "abnormal")'},
         },
         {
           'id': 5003,
           'name': 'conjunctiva_od',
           'label': 'Conjunctiva',
           'parent': 5002,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'conjunctiva_choice'
+          'choicesOriginRef': 'conjunctiva_choice',
         },
         {
           'id': 5004,
           'name': 'cornea_od',
           'label': 'Cornea',
           'parent': 5003,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'cornea_choice'
+          'choicesOriginRef': 'cornea_choice',
         },
         {
           'id': 5005,
           'name': 'anterior_chamber_od',
           'label': 'Anterior chamber',
           'parent': 5004,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'anterior_chamber_choice'
+          'choicesOriginRef': 'anterior_chamber_choice',
         },
         {
           'id': 5006,
           'name': 'lens_od',
           'label': 'Lens',
           'parent': 5005,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'lens_choice'
+          'choicesOriginRef': 'lens_choice',
         },
         {
           'id': 5007,
           'name': 'fundus_od',
           'label': 'Fundus',
           'parent': 5006,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'fundus_choice'
+          'choicesOriginRef': 'fundus_choice',
         },
         {
           'id': 5008,
@@ -2096,19 +2080,17 @@ export const ajfSourceReportFormSchema = {
           'parent': 5007,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(fundus_od, "fundus_other")'}
+          'visibility': {'condition': 'valueInChoice(fundus_od, "fundus_other")'},
         },
         {
           'id': 5009,
           'name': 'pupil_od',
           'label': 'Pupil',
           'parent': 5008,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'pupil_choice'
+          'choicesOriginRef': 'pupil_choice',
         },
         {
           'id': 5010,
@@ -2117,31 +2099,27 @@ export const ajfSourceReportFormSchema = {
           'parent': 5009,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(pupil_od, "pupil_irregular")'}
+          'visibility': {'condition': 'valueInChoice(pupil_od, "pupil_irregular")'},
         },
         {
           'id': 5011,
           'name': 'diagnosis_od',
           'label': 'Diagnosis',
           'parent': 5010,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 5,
-          'choicesOriginRef': 'diagnosis_choice'
+          'choicesOriginRef': 'diagnosis_choice',
         },
         {
           'id': 5012,
           'name': 'treatment_od',
           'label': 'Any medications/Treatment',
           'parent': 5011,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 5,
-          'choicesOriginRef': 'treatment_choice'
+          'choicesOriginRef': 'treatment_choice',
         },
         {
           'id': 5013,
@@ -2150,14 +2128,14 @@ export const ajfSourceReportFormSchema = {
           'parent': 5012,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(treatment_od, "other")'}
-        }
+          'visibility': {'condition': 'valueInChoice(treatment_od, "other")'},
+        },
       ],
       'parent': 4,
       'nodeType': 3,
       'parentNode': 0,
       'conditionalBranches': [{'condition': 'true'}],
-      'visibility': {'condition': 'valueInChoice(eyes_checked, "od")'}
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "od")'},
     },
     {
       'id': 6,
@@ -2169,51 +2147,43 @@ export const ajfSourceReportFormSchema = {
           'name': 'va_os',
           'label': 'Visual acuity (VA)',
           'parent': 6,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'va_choice'
+          'choicesOriginRef': 'va_choice',
         },
         {
           'id': 6002,
           'name': 'cf_os',
           'label': 'CF (Counting fingers)',
           'parent': 6001,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'va_os === "6_60-"'},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 6003,
           'name': 'hm_os',
           'label': 'HM (Hand motion)',
           'parent': 6002,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'cf_os === "n"'},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 6004,
           'name': 'lp_os',
           'label': 'LP (Light perception)',
           'parent': 6003,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
           'visibility': {'condition': 'hm_os === "n"'},
-          'choicesOriginRef': 'yn'
+          'choicesOriginRef': 'yn',
         },
         {
           'id': 6005,
@@ -2221,14 +2191,14 @@ export const ajfSourceReportFormSchema = {
           'label': 'IOP/Intra-ocular pressure',
           'parent': 6004,
           'nodeType': 0,
-          'fieldType': 0
-        }
+          'fieldType': 0,
+        },
       ],
       'parent': 5,
       'nodeType': 3,
       'parentNode': 0,
       'conditionalBranches': [{'condition': 'true'}],
-      'visibility': {'condition': 'valueInChoice(eyes_checked, "os")'}
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "os")'},
     },
     {
       'id': 7,
@@ -2240,12 +2210,10 @@ export const ajfSourceReportFormSchema = {
           'name': 'eye_lid_os',
           'label': 'Eye Lid',
           'parent': 7,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'norm_abnorm_choice'
+          'choicesOriginRef': 'norm_abnorm_choice',
         },
         {
           'id': 7002,
@@ -2254,31 +2222,27 @@ export const ajfSourceReportFormSchema = {
           'parent': 7001,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(eye_lid_os, "abnormal")'}
+          'visibility': {'condition': 'valueInChoice(eye_lid_os, "abnormal")'},
         },
         {
           'id': 7003,
           'name': 'conjunctiva_os',
           'label': 'Conjunctiva',
           'parent': 7002,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'conjunctiva_choice'
+          'choicesOriginRef': 'conjunctiva_choice',
         },
         {
           'id': 7004,
           'name': 'cornea_os',
           'label': 'Cornea',
           'parent': 7003,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'cornea_choice'
+          'choicesOriginRef': 'cornea_choice',
         },
         {
           'id': 7005,
@@ -2287,31 +2251,27 @@ export const ajfSourceReportFormSchema = {
           'parent': 7004,
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'anterior_chamber_choice'
+          'choicesOriginRef': 'anterior_chamber_choice',
         },
         {
           'id': 7006,
           'name': 'lens_os',
           'label': 'Lens',
           'parent': 7005,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'lens_choice'
+          'choicesOriginRef': 'lens_choice',
         },
         {
           'id': 7007,
           'name': 'fundus_os',
           'label': 'Fundus',
           'parent': 7006,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'fundus_choice'
+          'choicesOriginRef': 'fundus_choice',
         },
         {
           'id': 7008,
@@ -2320,19 +2280,17 @@ export const ajfSourceReportFormSchema = {
           'parent': 7007,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(fundus_os, "fundus_other")'}
+          'visibility': {'condition': 'valueInChoice(fundus_os, "fundus_other")'},
         },
         {
           'id': 7009,
           'name': 'pupil_os',
           'label': 'Pupil',
           'parent': 7008,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 4,
-          'choicesOriginRef': 'pupil_choice'
+          'choicesOriginRef': 'pupil_choice',
         },
         {
           'id': 7010,
@@ -2341,31 +2299,27 @@ export const ajfSourceReportFormSchema = {
           'parent': 7009,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(pupil_os, "pupil_irregular")'}
+          'visibility': {'condition': 'valueInChoice(pupil_os, "pupil_irregular")'},
         },
         {
           'id': 7011,
           'name': 'diagnosis_os',
           'label': 'Diagnosis',
           'parent': 7010,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 5,
-          'choicesOriginRef': 'diagnosis_choice'
+          'choicesOriginRef': 'diagnosis_choice',
         },
         {
           'id': 7012,
           'name': 'treatment_os',
           'label': 'Any medications/Treatment',
           'parent': 7011,
-          'choices': [
-
-          ],
+          'choices': [],
           'nodeType': 0,
           'fieldType': 5,
-          'choicesOriginRef': 'treatment_choice'
+          'choicesOriginRef': 'treatment_choice',
         },
         {
           'id': 7013,
@@ -2374,15 +2328,15 @@ export const ajfSourceReportFormSchema = {
           'parent': 7012,
           'nodeType': 0,
           'fieldType': 0,
-          'visibility': {'condition': 'valueInChoice(treatment_os, "other")'}
-        }
+          'visibility': {'condition': 'valueInChoice(treatment_os, "other")'},
+        },
       ],
       'parent': 6,
       'nodeType': 3,
       'parentNode': 0,
       'conditionalBranches': [{'condition': 'true'}],
-      'visibility': {'condition': 'valueInChoice(eyes_checked, "os")'}
-    }
+      'visibility': {'condition': 'valueInChoice(eyes_checked, "os")'},
+    },
   ],
   'choicesOrigins': [
     {
@@ -2394,22 +2348,27 @@ export const ajfSourceReportFormSchema = {
         {'label': 'Hyphema', 'value': 'anterior_chamber_hyphema'},
         {'label': 'Hypopyon', 'value': 'anterior_chamber_hypopyon'},
         {'label': 'KPs', 'value': 'anterior_chamber_kps'},
-        {'label': 'Cells and flare', 'value': 'anterior_chamber_cell_flare'}
+        {'label': 'Cells and flare', 'value': 'anterior_chamber_cell_flare'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'conjunctiva_choice',
       'type': 'fixed',
-      'choices':
-          [{'label': 'Normal', 'value': 'normal'}, {'label': 'Inflamed', 'value': 'inflamed'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'Normal', 'value': 'normal'},
+        {'label': 'Inflamed', 'value': 'inflamed'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'cornea_choice',
       'type': 'fixed',
-      'choices': [{'label': 'Clear', 'value': 'clear'}, {'label': 'Opaque', 'value': 'opaque'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'Clear', 'value': 'clear'},
+        {'label': 'Opaque', 'value': 'opaque'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'diagnosis_choice',
@@ -2443,9 +2402,9 @@ export const ajfSourceReportFormSchema = {
         {'label': 'EC25. Other Eye Disorders', 'value': 'ec25'},
         {'label': 'EC26. Blindness', 'value': 'ec26'},
         {'label': 'EC27. Other eye conditions', 'value': 'ec27'},
-        {'label': 'EC28. Spectacles Dispensed', 'value': 'ec28'}
+        {'label': 'EC28. Spectacles Dispensed', 'value': 'ec28'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'disabilities_choice',
@@ -2463,25 +2422,30 @@ export const ajfSourceReportFormSchema = {
         {'label': 'DS10.Individuals with Difficulty in writing', 'value': 'ds10'},
         {'label': 'DS11.Individuals with Difficulty in self-care', 'value': 'ds11'},
         {'label': 'DS12.Individuals with Mentally impairment', 'value': 'ds12'},
-        {'label': 'DS13. Individuals with Emotionally impairment', 'value': 'ds13'}
+        {'label': 'DS13. Individuals with Emotionally impairment', 'value': 'ds13'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'district_choice',
       'type': 'fixed',
       'choices': [
-        {'label': 'Agago', 'value': 'agago'}, {'label': 'Arua', 'value': 'arua'},
-        {'label': 'Lamwo', 'value': 'lamwo'}, {'label': 'Kitgum', 'value': 'kitgum'},
-        {'label': 'Pader', 'value': 'pader'}
+        {'label': 'Agago', 'value': 'agago'},
+        {'label': 'Arua', 'value': 'arua'},
+        {'label': 'Lamwo', 'value': 'lamwo'},
+        {'label': 'Kitgum', 'value': 'kitgum'},
+        {'label': 'Pader', 'value': 'pader'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'eyes_lr',
       'type': 'fixed',
-      'choices': [{'label': 'RE', 'value': 'od'}, {'label': 'LE', 'value': 'os'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'RE', 'value': 'od'},
+        {'label': 'LE', 'value': 'os'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'fundus_choice',
@@ -2490,15 +2454,18 @@ export const ajfSourceReportFormSchema = {
         {'label': 'Normal', 'value': 'fundus_normal'},
         {'label': 'Bleeding', 'value': 'fundus_bleeding'},
         {'label': 'Diabetic retinopathy', 'value': 'fundus_dr'},
-        {'label': 'Other', 'value': 'fundus_other'}
+        {'label': 'Other', 'value': 'fundus_other'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'gender_choice',
       'type': 'fixed',
-      'choices': [{'label': 'Male', 'value': 'm'}, {'label': 'Female', 'value': 'f'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'Male', 'value': 'm'},
+        {'label': 'Female', 'value': 'f'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'lens_choice',
@@ -2507,51 +2474,59 @@ export const ajfSourceReportFormSchema = {
         {'label': 'Clear', 'value': 'lens_clear'},
         {'label': 'Cataractous', 'value': 'lens_cataractous'},
         {'label': 'Phseudophakic', 'value': 'lens_phseudophakic'},
-        {'label': 'Aphakic', 'value': 'lens_aphakic'}
+        {'label': 'Aphakic', 'value': 'lens_aphakic'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'nationality_choice',
       'type': 'fixed',
       'choices': [
-        {'label': 'Ugandans', 'value': 'ugandans'}, {'label': 'Refugees', 'value': 'refugees'},
-        {'label': 'Foreigners', 'value': 'foreigners'}
+        {'label': 'Ugandans', 'value': 'ugandans'},
+        {'label': 'Refugees', 'value': 'refugees'},
+        {'label': 'Foreigners', 'value': 'foreigners'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'norm_abnorm_choice',
       'type': 'fixed',
-      'choices':
-          [{'label': 'Normal', 'value': 'normal'}, {'label': 'Abnormal', 'value': 'abnormal'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'Normal', 'value': 'normal'},
+        {'label': 'Abnormal', 'value': 'abnormal'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'odos_value',
       'type': 'fixed',
-      'choices':
-          [{'label': 'RE (Right eye)', 'value': 'od'}, {'label': 'LE (Left eye)', 'value': 'os'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'RE (Right eye)', 'value': 'od'},
+        {'label': 'LE (Left eye)', 'value': 'os'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'poc_choice',
       'type': 'fixed',
       'choices': [
-        {'label': 'OPD', 'value': 'opd'}, {'label': 'Outreach', 'value': 'outreach'},
-        {'label': 'ANC', 'value': 'anc'}, {'label': 'MAT', 'value': 'mat'},
-        {'label': 'PNC', 'value': 'pnc'}, {'label': 'YCC', 'value': 'ycc'}
+        {'label': 'OPD', 'value': 'opd'},
+        {'label': 'Outreach', 'value': 'outreach'},
+        {'label': 'ANC', 'value': 'anc'},
+        {'label': 'MAT', 'value': 'mat'},
+        {'label': 'PNC', 'value': 'pnc'},
+        {'label': 'YCC', 'value': 'ycc'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'pupil_choice',
       'type': 'fixed',
       'choices': [
         {'label': 'Central Regular and reacting to light-Normal-(CRRL)', 'value': 'pupil_crrl'},
-        {'label': 'Irregular', 'value': 'pupil_irregular'}
+        {'label': 'Irregular', 'value': 'pupil_irregular'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'subcounty_choice',
@@ -2588,7 +2563,7 @@ export const ajfSourceReportFormSchema = {
         {
           'label': 'St.Francis-Ocodri HC III',
           'value': 'st.francis-ocodri_hciii',
-          'district': 'arua'
+          'district': 'arua',
         },
         {'label': 'Katriini', 'value': 'katriini', 'district': 'arua'},
         {'label': 'Imvepi settlement', 'value': 'imvepi_settlement', 'district': 'arua'},
@@ -2642,35 +2617,44 @@ export const ajfSourceReportFormSchema = {
         {'label': 'Pader S/C', 'value': 'pader_sc', 'district': 'pader'},
         {'label': 'Puranga TC', 'value': 'puranga_tc', 'district': 'pader'},
         {'label': 'Puranga S/C', 'value': 'puranga_sc', 'district': 'pader'},
-        {'label': 'Awere', 'value': 'awere', 'district': 'pader'}
+        {'label': 'Awere', 'value': 'awere', 'district': 'pader'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'treatment_choice',
       'type': 'fixed',
-      'choices':
-          [{'label': 'Spectacle', 'value': 'spectacle'}, {'label': 'Other', 'value': 'other'}],
-      'choicesType': 'string'
+      'choices': [
+        {'label': 'Spectacle', 'value': 'spectacle'},
+        {'label': 'Other', 'value': 'other'},
+      ],
+      'choicesType': 'string',
     },
     {
       'name': 'va_choice',
       'type': 'fixed',
       'choices': [
-        {'label': 'less than 6/60 ', 'value': '6_60-'}, {'label': '6/60', 'value': '6_60'},
-        {'label': '6/36', 'value': '6_36'}, {'label': '6/24', 'value': '6_24'},
-        {'label': '6/18', 'value': '6_18'}, {'label': '6/12', 'value': '6_12'},
-        {'label': '6/9', 'value': '6_9'}, {'label': '6/6', 'value': '6_6'}
+        {'label': 'less than 6/60 ', 'value': '6_60-'},
+        {'label': '6/60', 'value': '6_60'},
+        {'label': '6/36', 'value': '6_36'},
+        {'label': '6/24', 'value': '6_24'},
+        {'label': '6/18', 'value': '6_18'},
+        {'label': '6/12', 'value': '6_12'},
+        {'label': '6/9', 'value': '6_9'},
+        {'label': '6/6', 'value': '6_6'},
       ],
-      'choicesType': 'string'
+      'choicesType': 'string',
     },
     {
       'name': 'yn',
       'type': 'fixed',
-      'choices': [{'label': 'y', 'value': 'y'}, {'label': 'n', 'value': 'n'}],
-      'choicesType': 'string'
-    }
-  ]
+      'choices': [
+        {'label': 'y', 'value': 'y'},
+        {'label': 'n', 'value': 'n'},
+      ],
+      'choicesType': 'string',
+    },
+  ],
 };
 
 export const formSchemas: FormSchema[] = [

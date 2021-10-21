@@ -32,12 +32,11 @@ import {UsersModule} from './users.module';
  */
 @Injectable({providedIn: UsersModule})
 export class UserRoleManager extends DataModelManager<UserRole> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-        {name: 'user_role', collection: {schema, migrationStrategies}}, dataService,
-        permissionContextService);
+      {name: 'user_role', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
+    );
   }
 }

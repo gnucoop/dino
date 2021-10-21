@@ -43,31 +43,30 @@ export class NameMatchValidator<T extends Metric = Metric> {
    * @param action The action performed on the metric
    */
   nameCheck(
-      manager: DataModelManager<T>,
-      cdr: ChangeDetectorRef,
-      currentName: string,
-      action?: 'view'|'edit'|'create',
-      ): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors|null> => {
-      return manager.query({selector: {name: {$eq: control.value}}})
-          .pipe(
-              debounceTime(300),
-              switchMap(query => from(query.exec())),
-              map(docs => {
-                if (action === 'edit' || action === 'view') {
-                  docs = docs.filter(doc => doc.name != currentName);
-                }
-                if (docs.length) {
-                  return {'nameAlreadyExists': true};
-                }
-                return null;
-              }),
-              finalize(() => {
-                control.markAsTouched();
-                cdr.detectChanges();
-              }),
-              take(1),
-          );
+    manager: DataModelManager<T>,
+    cdr: ChangeDetectorRef,
+    currentName: string,
+    action?: 'view' | 'edit' | 'create',
+  ): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return manager.query({selector: {name: {$eq: control.value}}}).pipe(
+        debounceTime(300),
+        switchMap(query => from(query.exec())),
+        map(docs => {
+          if (action === 'edit' || action === 'view') {
+            docs = docs.filter(doc => doc.name != currentName);
+          }
+          if (docs.length) {
+            return {'nameAlreadyExists': true};
+          }
+          return null;
+        }),
+        finalize(() => {
+          control.markAsTouched();
+          cdr.detectChanges();
+        }),
+        take(1),
+      );
     };
   }
 }

@@ -1,9 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dewco-edit-form-schema', () => {
   beforeEach(async () => {

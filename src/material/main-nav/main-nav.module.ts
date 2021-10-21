@@ -51,12 +51,7 @@ import {MainNav} from './main-nav';
     MatToolbarModule,
     RouterModule,
   ],
-  declarations: [
-    MainNav,
-  ],
-  exports: [
-    MainNav,
-  ],
+  declarations: [MainNav],
+  exports: [MainNav],
 })
-export class MainNavModule {
-}
+export class MainNavModule {}

@@ -83,7 +83,7 @@ export function unzip(base64ZippedString: any) {
 }
 
 // ucs-2 string to base64 encoded ascii
-function utoa(str: string|number|boolean) {
+function utoa(str: string | number | boolean) {
   return window.btoa(unescape(encodeURIComponent(str)));
 }
 // base64 encoded ascii to ucs-2 string

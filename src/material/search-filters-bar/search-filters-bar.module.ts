@@ -74,16 +74,8 @@ import {SearchFiltersBar} from './search-filters-bar';
     SearchFiltersDialogModule,
     SearchFiltersPresetManagerModule,
   ],
-  declarations: [
-    IsFalseOrNullPipe,
-    SearchFiltersBar,
-  ],
-  exports: [
-    SearchFiltersBar,
-  ],
-  providers: [
-    MatDatepickerModule,
-  ],
+  declarations: [IsFalseOrNullPipe, SearchFiltersBar],
+  exports: [SearchFiltersBar],
+  providers: [MatDatepickerModule],
 })
-export class SearchFiltersBarModule {
-}
+export class SearchFiltersBarModule {}

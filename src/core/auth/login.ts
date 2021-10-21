@@ -21,18 +21,10 @@
  */
 
 import {ChangeDetectorRef, Directive, Input} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {
-  map,
-  startWith,
-  take,
-} from 'rxjs/operators';
+import {map, startWith, take} from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
 
@@ -75,10 +67,10 @@ export abstract class LoginComponent {
   }
 
   constructor(
-      private _authService: AuthService,
-      private _router: Router,
-      fb: FormBuilder,
-      private _cdr: ChangeDetectorRef,
+    private _authService: AuthService,
+    private _router: Router,
+    fb: FormBuilder,
+    private _cdr: ChangeDetectorRef,
   ) {
     this._authService.resetAuth();
 
@@ -88,8 +80,8 @@ export abstract class LoginComponent {
     });
 
     this.submitDisabled = this.loginForm.valueChanges.pipe(
-        map(_ => !this.loginForm.valid),
-        startWith(!this.loginForm.valid),
+      map(_ => !this.loginForm.valid),
+      startWith(!this.loginForm.valid),
     );
 
     this.loggedIn = this._authService.authenticated;
@@ -104,45 +96,43 @@ export abstract class LoginComponent {
     }
     this.loggingIn = true;
     const credentials = this.loginForm.value;
-    this._authService.login(credentials)
-        .pipe(
-            take(1),
-            )
-        .subscribe(
-            (res) => {
-              if (res) {
-                this._setLoginError(false);
-                if (this._postLogin != undefined) {
-                  this._postLogin();
-                } else {
-                  this._router.navigateByUrl('/', {replaceUrl: true});
-                }
-              } else {
-                this._setLoginError(true);
-              }
-              this.loggingIn = false;
-            },
-            _ => {
-              this._setLoginError(true);
-              this.loggingIn = false;
-            });
+    this._authService
+      .login(credentials)
+      .pipe(take(1))
+      .subscribe(
+        res => {
+          if (res) {
+            this._setLoginError(false);
+            if (this._postLogin != undefined) {
+              this._postLogin();
+            } else {
+              this._router.navigateByUrl('/', {replaceUrl: true});
+            }
+          } else {
+            this._setLoginError(true);
+          }
+          this.loggingIn = false;
+        },
+        _ => {
+          this._setLoginError(true);
+          this.loggingIn = false;
+        },
+      );
   }
 
   /**
    * User logout method.
    */
   logout(): void {
-    this._authService.logout()
-        .pipe(
-            take(1),
-            )
-        .subscribe(res => {
-          if (res) {
-            this._router.navigate([this._router.url]);
-          }
-        });
+    this._authService
+      .logout()
+      .pipe(take(1))
+      .subscribe(res => {
+        if (res) {
+          this._router.navigate([this._router.url]);
+        }
+      });
   }
-
 
   private _setLoginError(error: boolean): void {
     if (this._loginError !== error) {

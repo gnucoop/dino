@@ -51,21 +51,15 @@ describe('Create Form', () => {
   let createForm: CreateForm;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            CreateFormModule,
-            HttpClientTestingModule,
-            RouterTestingModule,
-          ],
-          providers: [
-            FormSchemaManager,
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [CreateFormModule, HttpClientTestingModule, RouterTestingModule],
+      providers: [
+        FormSchemaManager,
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    }).compileComponents();
 
     fsm = TestBed.inject(FormSchemaManager);
     fixtureCreateForm = TestBed.createComponent(CreateForm);

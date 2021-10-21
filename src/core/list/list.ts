@@ -20,12 +20,7 @@
  *
  */
 
-import {
-  ChangeDetectorRef,
-  Directive,
-  EventEmitter,
-  Input,
-} from '@angular/core';
+import {ChangeDetectorRef, Directive, EventEmitter, Input} from '@angular/core';
 import {Model} from '@dewco/core/data';
 import {Subject} from 'rxjs';
 
@@ -43,16 +38,16 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    * An event emitted when an action on a list item is performed.
    * Contains info about the action name and the list item/items involved.
    */
-  protected _actionEvent: EventEmitter<{action: ListAction, items: T|T[], isDetails: boolean}> =
-      new EventEmitter<{action: ListAction, items: T|T[], isDetails: boolean}>();
+  protected _actionEvent: EventEmitter<{action: ListAction; items: T | T[]; isDetails: boolean}> =
+    new EventEmitter<{action: ListAction; items: T | T[]; isDetails: boolean}>();
 
   /**
    * The model of the "data" property associated with the main model.
    */
-  readonly _additionalDataSchema: Subject<AD|null> = new Subject<AD|null>();
+  readonly _additionalDataSchema: Subject<AD | null> = new Subject<AD | null>();
 
   @Input()
-  set additionalDataSchema(ds: AD|null) {
+  set additionalDataSchema(ds: AD | null) {
     this._additionalDataSchema.next(ds);
   }
 
@@ -83,10 +78,9 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   setDisplayedColumns(headers: ListHeader<T>[]) {
     this._displayedColumns = [
       ...headers
-          .filter(
-              header => ((header.displayed || header.displayed === undefined) && !header.hidden))
-          .map(header => header.column.toString()),
-      'actions'
+        .filter(header => (header.displayed || header.displayed === undefined) && !header.hidden)
+        .map(header => header.column.toString()),
+      'actions',
     ];
     if (this._showCheckbox) {
       this._displayedColumns.unshift('select');
@@ -161,7 +155,6 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   private _baseViewUrl = 'view/';
 
-
   get baseViewUrl(): string {
     return this._baseViewUrl;
   }
@@ -186,12 +179,12 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    * Calls a handler function on the current selection based on the action name
    * @param action The name of the action to be performed
    */
-  processAction(action: ListAction, items: T|T[], isDetails: boolean = false): void {
+  processAction(action: ListAction, items: T | T[], isDetails: boolean = false): void {
     if ((Array.isArray(items) && items.length === 0) || items == null) {
       return;
     }
     const handlerName = this._getActionHandler(action.actionType);
-    const handler: (s: T|T[], d: boolean) => void = (this as any)[handlerName];
+    const handler: (s: T | T[], d: boolean) => void = (this as any)[handlerName];
     if (handler != null) {
       handler.call(this, items, isDetails);
     }

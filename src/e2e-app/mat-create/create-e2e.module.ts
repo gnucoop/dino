@@ -6,11 +6,6 @@ import {MatCreateE2E} from './create-e2e.component';
 
 @NgModule({
   declarations: [MatCreateE2E],
-  imports: [
-    CommonModule,
-    DinoCreateFormModule,
-    DinoFormsModule,
-  ],
+  imports: [CommonModule, DinoCreateFormModule, DinoFormsModule],
 })
-export class MaterialCreateE2eModule {
-}
+export class MaterialCreateE2eModule {}

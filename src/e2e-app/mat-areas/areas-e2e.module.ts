@@ -6,10 +6,6 @@ import {MatAreasE2E} from './areas-e2e.component';
 
 @NgModule({
   declarations: [MatAreasE2E],
-  imports: [
-    CommonModule,
-    MetricSectionModule,
-  ],
+  imports: [CommonModule, MetricSectionModule],
 })
-export class MaterialAreasE2eModule {
-}
+export class MaterialAreasE2eModule {}

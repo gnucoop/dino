@@ -95,7 +95,7 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
    * Function used to store the current JWT token.
    * The token will be stored in local storage if not specified.
    */
-  storeAuthToken?: (token: string|null) => void;
+  storeAuthToken?: (token: string | null) => void;
 
   /**
    * Function used to retrieve the current JWT token.
@@ -113,7 +113,7 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
    * Function used to store the current JWT refresh token.
    * The token will be stored in local storage if not specified.
    */
-  storeRefreshToken?: (token: string|null) => void;
+  storeRefreshToken?: (token: string | null) => void;
 
   /**
    * Function used to retrieve the current JWT refresh token.
@@ -131,13 +131,13 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
    * Function used to store the logged in user info.
    * The token will be stored in local storage if not specified.
    */
-  storeUserInfo?: (userInfo: User<T>|null) => void;
+  storeUserInfo?: (userInfo: User<T> | null) => void;
 
   /**
    * Function used to retrieve the logged in user info.
    * The token will be retrieved from the local storage if not specified.
    */
-  retrieveUserInfo?: () => User<T>| null;
+  retrieveUserInfo?: () => User<T> | null;
 
   /**
    * Name of the locale storage entry where the logged in user info will be stored.
@@ -146,5 +146,6 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
   userInfoLocalStorageKey?: string;
 }
 
-export const AUTH_SERVICE_CONFIG =
-    new InjectionToken<AuthServiceConfig>('dewco-auth-service-config');
+export const AUTH_SERVICE_CONFIG = new InjectionToken<AuthServiceConfig>(
+  'dewco-auth-service-config',
+);

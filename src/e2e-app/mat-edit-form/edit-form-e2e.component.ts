@@ -8,9 +8,7 @@ import {FormDataManager} from '@dewco/core/forms';
 export class MatEditFormE2E {
   readonly manager: FormDataManager;
 
-  constructor(
-      private _formDataManager: FormDataManager,
-  ) {
+  constructor(private _formDataManager: FormDataManager) {
     this.manager = this._formDataManager;
   }
 }

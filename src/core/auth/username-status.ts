@@ -26,4 +26,4 @@
  * PENDING - the username is pending approval/moderation
  * REJECTED - the username was rejected during moderation
  */
-export type UsernameStatus = 'ACTIVE'|'PENDING'|'REJECTED';
+export type UsernameStatus = 'ACTIVE' | 'PENDING' | 'REJECTED';

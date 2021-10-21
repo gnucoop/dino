@@ -48,12 +48,7 @@ import {SearchFiltersPresetManager} from './search-filters-preset-manager';
     ReactiveFormsModule,
     RouterModule,
   ],
-  declarations: [
-    SearchFiltersPresetManager,
-  ],
-  exports: [
-    SearchFiltersPresetManager,
-  ],
+  declarations: [SearchFiltersPresetManager],
+  exports: [SearchFiltersPresetManager],
 })
-export class SearchFiltersPresetManagerModule {
-}
+export class SearchFiltersPresetManagerModule {}

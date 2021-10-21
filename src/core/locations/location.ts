@@ -41,12 +41,12 @@ export interface Coordinates {
   /**
    * Latitude coordinate
    */
-  latitude: string|null;
+  latitude: string | null;
 
   /**
    * Longitude coordinate
    */
-  longitude: string|null;
+  longitude: string | null;
 }
 
 export const VERSION = 1;

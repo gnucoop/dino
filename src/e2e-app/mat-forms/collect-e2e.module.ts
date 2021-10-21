@@ -5,14 +5,8 @@ import {CollectModule as DinoCollectModule} from '@dewco/material/collect';
 
 import {MatCollectE2E} from './collect-e2e.component';
 
-
 @NgModule({
   declarations: [MatCollectE2E],
-  imports: [
-    BreakpointObserverModule,
-    CommonModule,
-    DinoCollectModule,
-  ]
+  imports: [BreakpointObserverModule, CommonModule, DinoCollectModule],
 })
-export class MaterialCollectE2eModule {
-}
+export class MaterialCollectE2eModule {}

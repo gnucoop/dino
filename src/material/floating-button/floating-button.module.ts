@@ -30,17 +30,8 @@ import {RouterModule} from '@angular/router';
 import {FloatingButton} from './floating-button';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    RouterModule,
-  ],
-  declarations: [
-    FloatingButton,
-  ],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule],
+  declarations: [FloatingButton],
   exports: [FloatingButton],
 })
-export class FloatingButtonModule {
-}
+export class FloatingButtonModule {}

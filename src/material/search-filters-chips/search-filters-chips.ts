@@ -81,17 +81,17 @@ export class SearchFiltersChips implements OnInit {
         break;
       case 'all':
       default:
-        this.chipsFilters = combineLatest([this._fts.basicFilters, this._fts.additionalFilters])
-                                .pipe(
-                                    map(([basic, additional]) => basic.concat(additional)),
-                                );
+        this.chipsFilters = combineLatest([
+          this._fts.basicFilters,
+          this._fts.additionalFilters,
+        ]).pipe(map(([basic, additional]) => basic.concat(additional)));
         break;
     }
     // Here we make sure that invalid filters or filters with null / empty values
     // are not displayed as chips
     this.chipsFilters = this.chipsFilters.pipe(
-        map(filters => filters.filter(cf => cf.value !== null && cf.value !== '' && cf.isValid)),
-        catchError(err => throwError(err) as Observable<FilterItem[]>),
+      map(filters => filters.filter(cf => cf.value !== null && cf.value !== '' && cf.isValid)),
+      catchError(err => throwError(err) as Observable<FilterItem[]>),
     );
   }
 

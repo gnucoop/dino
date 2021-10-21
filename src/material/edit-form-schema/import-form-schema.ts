@@ -26,7 +26,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -60,7 +60,7 @@ export class ImportFormSchema {
   /**
    * The edited form schema
    */
-  private _formSchema: Observable<FormSchema|null>;
+  private _formSchema: Observable<FormSchema | null>;
 
   /**
    * True if the form is currently being processed.
@@ -79,22 +79,22 @@ export class ImportFormSchema {
   /**
    * The converted XlsFormSchema
    */
-  private _xlsformSchema: {[key: string]: any}|null = null;
+  private _xlsformSchema: {[key: string]: any} | null = null;
 
   constructor(
-      private _cdr: ChangeDetectorRef,
-      private _http: HttpClient,
-      private _formBuilder: FormBuilder,
-      public dialogRef: MatDialogRef<ImportFormSchema>,
-      @Inject(MAT_DIALOG_DATA) public data: any,
+    private _cdr: ChangeDetectorRef,
+    private _http: HttpClient,
+    private _formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<ImportFormSchema>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this._formSchema = this.data.formSchema;
 
     this._formConvUrl = this.data.formConvUrl;
 
     this.importForm = this._formSchema.pipe(
-        map(() => this._formBuilder.group({})),
-        shareReplay(1),
+      map(() => this._formBuilder.group({})),
+      shareReplay(1),
     );
   }
 
@@ -121,19 +121,19 @@ export class ImportFormSchema {
 
     const data = new FormData();
     data.append('excelFile', file);
-    this._http.post(this._formConvUrl, data)
-        .pipe(
-            take(1),
-            )
-        .subscribe(
-            resp => {
-              this._xlsformSchema = resp;
-              this._setConvStatus('Excel file converted successfully!');
-              this._processing = false;
-            },
-            err => {
-              this._setConvStatus(err.error);
-            });
+    this._http
+      .post(this._formConvUrl, data)
+      .pipe(take(1))
+      .subscribe(
+        resp => {
+          this._xlsformSchema = resp;
+          this._setConvStatus('Excel file converted successfully!');
+          this._processing = false;
+        },
+        err => {
+          this._setConvStatus(err.error);
+        },
+      );
   }
 
   /**

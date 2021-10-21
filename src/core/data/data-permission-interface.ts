@@ -32,12 +32,12 @@ export interface PermissionContext<T extends {} = {}> {
   /**
    * The User performing the operation
    */
-  user: User|null;
+  user: User | null;
 
   /**
    * The additional context info
    */
-  contextData?: any;  // @Todo(marco)
+  contextData?: any; // @Todo(marco)
 }
 
 /**
@@ -84,7 +84,7 @@ export interface CanModifyData<T extends {} = {}, M extends Model = Model> {
   /**
    * The data used to modify the document
    */
-  data: Partial<M>&{id: string};
+  data: Partial<M> & {id: string};
 
   /**
    * The document to be modified

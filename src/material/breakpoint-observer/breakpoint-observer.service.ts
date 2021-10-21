@@ -46,19 +46,16 @@ export class BreakpointObserverService {
   large: Observable<boolean>;
 
   constructor(private _breakPointObserver: BreakpointObserver) {
-    this.small = this._breakPointObserver.observe([Breakpoints.Handset])
-                     .pipe(
-                         map(result => result.matches),
-                     );
+    this.small = this._breakPointObserver
+      .observe([Breakpoints.Handset])
+      .pipe(map(result => result.matches));
 
-    this.medium = this._breakPointObserver.observe([Breakpoints.Tablet])
-                      .pipe(
-                          map(result => result.matches),
-                      );
+    this.medium = this._breakPointObserver
+      .observe([Breakpoints.Tablet])
+      .pipe(map(result => result.matches));
 
-    this.large = this._breakPointObserver.observe([Breakpoints.Web])
-                     .pipe(
-                         map(result => result.matches),
-                     );
+    this.large = this._breakPointObserver
+      .observe([Breakpoints.Web])
+      .pipe(map(result => result.matches));
   }
 }

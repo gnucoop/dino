@@ -7,7 +7,6 @@ import {ListDataSource} from '@dewco/material/list';
 import {UserDialogData} from '@dewco/material/user-editor';
 import {MatUsersEditorE2E} from './users-editor-e2e.component';
 
-
 @Component({
   selector: 'app-users-list',
   templateUrl: 'users-list-e2e.component.html',
@@ -23,17 +22,18 @@ export class MatUsersListE2E implements OnInit {
 
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
 
-  readonly customFilters: FilterGroup[] = [{
-    filterGroupName: 'User Permission Groups',
-    filterGroupAdditionalFilters:
-        [
-          {
-            name: 'user_group_ids',
-            label: 'User Groups',
-            fieldType: AjfFieldType.MultipleChoice,
-          },
-        ],
-  }];
+  readonly customFilters: FilterGroup[] = [
+    {
+      filterGroupName: 'User Permission Groups',
+      filterGroupAdditionalFilters: [
+        {
+          name: 'user_group_ids',
+          label: 'User Groups',
+          fieldType: AjfFieldType.MultipleChoice,
+        },
+      ],
+    },
+  ];
 
   dataSource: ListDataSource<UserModel>;
 
@@ -41,12 +41,12 @@ export class MatUsersListE2E implements OnInit {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: (row) => this.openDialog(row, 'view'),
+      customAction: row => this.openDialog(row, 'view'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: (row) => this.openDialog(row, 'edit'),
+      customAction: row => this.openDialog(row, 'edit'),
     },
     {
       actionType: 'delete',
@@ -56,19 +56,16 @@ export class MatUsersListE2E implements OnInit {
   ];
 
   constructor(
-      private _userModelManager: UserModelManager,
-      private _filtersService: FiltersService,
-      public dialog: MatDialog,
+    private _userModelManager: UserModelManager,
+    private _filtersService: FiltersService,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = new ListDataSource(
-        this._userModelManager,
-        this._filtersService,
-    );
+    this.dataSource = new ListDataSource(this._userModelManager, this._filtersService);
   }
 
-  openDialog(group?: UserModel, action?: 'view'|'edit'|'create'): void {
+  openDialog(group?: UserModel, action?: 'view' | 'edit' | 'create'): void {
     this.dialog.open(MatUsersEditorE2E, {
       data: {
         userItem: group,

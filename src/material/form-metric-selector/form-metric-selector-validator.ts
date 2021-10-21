@@ -28,10 +28,15 @@ import {MetricBasicInfo} from '@dewco/core/users';
  * to force the selection of a suggested option.
  * @param control The form control.
  */
-export function RequireMetricMatch(control: AbstractControl): ValidationErrors|null {
-  const selection: string|MetricBasicInfo = control.value;
-  if ((typeof selection === 'string' && selection !== '') || selection === '' ||
-      selection == null || selection.metricId == null || selection.metricName == null) {
+export function RequireMetricMatch(control: AbstractControl): ValidationErrors | null {
+  const selection: string | MetricBasicInfo = control.value;
+  if (
+    (typeof selection === 'string' && selection !== '') ||
+    selection === '' ||
+    selection == null ||
+    selection.metricId == null ||
+    selection.metricName == null
+  ) {
     return {incorrect: true};
   }
   return null;

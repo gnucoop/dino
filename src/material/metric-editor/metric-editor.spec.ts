@@ -14,9 +14,7 @@ const dataServiceMock = {
   find: () => of({exec: () => Promise.resolve({})}),
 } as unknown as DataService;
 
-const permissionContextServiceMock = {
-
-} as PermissionContextService;
+const permissionContextServiceMock = {} as PermissionContextService;
 
 const mockDialogRef = {
   close: () => of(null),
@@ -37,27 +35,20 @@ describe('Metric Editor', () => {
   let fixtureEditor: ComponentFixture<MetricEditor>;
   let editor: MetricEditor;
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            MetricEditorModule,
-            RouterTestingModule,
-            MatDialogModule,
-            BrowserAnimationsModule,
-          ],
-          providers: [
-            {provide: MatDialogRef, useValue: mockDialogRef},
-            {
-              provide: MAT_DIALOG_DATA,
-              useValue: {
-                metricManager: new AreaManager(dataServiceMock, permissionContextServiceMock),
-                metricItem: mockMetric,
-                metricAction: 'edit',
-              }
-            },
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [MetricEditorModule, RouterTestingModule, MatDialogModule, BrowserAnimationsModule],
+      providers: [
+        {provide: MatDialogRef, useValue: mockDialogRef},
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            metricManager: new AreaManager(dataServiceMock, permissionContextServiceMock),
+            metricItem: mockMetric,
+            metricAction: 'edit',
+          },
+        },
+      ],
+    }).compileComponents();
     fixtureEditor = TestBed.createComponent<MetricEditor>(MetricEditor);
     editor = fixtureEditor.componentInstance;
   });

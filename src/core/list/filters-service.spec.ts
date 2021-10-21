@@ -68,7 +68,7 @@ const fakeFormGroup = new FormGroup({
 const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
 const fakeFiltersPreset_b = btoa(encodeURI(JSON.stringify(fakeFilters_b)));
 const fakeActivatedRoute = {
-  queryParams: obsOf({'filters': fakeFiltersPreset})
+  queryParams: obsOf({'filters': fakeFiltersPreset}),
 } as unknown as ActivatedRoute;
 
 describe('FiltersService', () => {
@@ -76,9 +76,7 @@ describe('FiltersService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes([]),
-      ],
+      imports: [RouterTestingModule.withRoutes([])],
       providers: [
         FiltersService,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
@@ -89,17 +87,16 @@ describe('FiltersService', () => {
     fts = TestBed.inject(FiltersService);
   });
 
-  it('should initialize the basic filters formGroup, triggering the preset loading',
-     fakeAsync(() => {
-       const spyResetTempFilters = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
-       const spyLoadPresetEvent = spyOn<any>(fts.loadPresetEvent, 'emit').and.callThrough();
+  it('should initialize the basic filters formGroup, triggering the preset loading', fakeAsync(() => {
+    const spyResetTempFilters = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
+    const spyLoadPresetEvent = spyOn<any>(fts.loadPresetEvent, 'emit').and.callThrough();
 
-       fts.initializeFilters([fakeFormGroup]);
-       flush();
+    fts.initializeFilters([fakeFormGroup]);
+    flush();
 
-       expect(spyLoadPresetEvent).toHaveBeenCalledWith(true);
-       expect(spyResetTempFilters).toHaveBeenCalled();
-     }));
+    expect(spyLoadPresetEvent).toHaveBeenCalledWith(true);
+    expect(spyResetTempFilters).toHaveBeenCalled();
+  }));
 
   it('should add a filterItem to the selected list', () => {
     const item: FilterItem = {name: 'test_filter', fieldType: AjfFieldType.String};
@@ -139,11 +136,13 @@ describe('FiltersService', () => {
     const validation = {
       'maxValue': 6,
       'notEmpty': true,
-      'conditions': [{
-        'condition': 'test_filter >= 0',
-        'errorMessage': 'Cannot be negative',
-        'clientValidation': true
-      }]
+      'conditions': [
+        {
+          'condition': 'test_filter >= 0',
+          'errorMessage': 'Cannot be negative',
+          'clientValidation': true,
+        },
+      ],
     } as unknown as AjfValidationGroup;
     const item_1: FilterItem = {name: 'test_filter', value: 3};
     const item_2: FilterItem = {name: 'test_filter', value: 7};
@@ -224,15 +223,17 @@ describe('FiltersService', () => {
     fts.generateModelFilters(dummySchema);
 
     fts.generatedModelFilters.subscribe(gmf => {
-      expect(gmf).toEqual([{
-        filterGroupName: 'DummyModel',
-        filterGroupAdditionalFilters: [
-          {
-            name: 'name',
-            fieldType: 0,
-          },
-        ],
-      }]);
+      expect(gmf).toEqual([
+        {
+          filterGroupName: 'DummyModel',
+          filterGroupAdditionalFilters: [
+            {
+              name: 'name',
+              fieldType: 0,
+            },
+          ],
+        },
+      ]);
     });
 
     expect(spyPropToFilterItem).toHaveBeenCalledTimes(1);

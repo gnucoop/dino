@@ -1,16 +1,6 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {
-  ActionType,
-  FiltersService,
-  ListAction,
-  ListHeader,
-} from '@dewco/core/list';
+import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
 import {
   ReportData,
   ReportDataManager,
@@ -39,8 +29,8 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     'organization',
     'unavailableFilter',
   ];
-  readonly additionalDataSchema: Observable<ReportSchema|null>;
-  readonly formSchemaId: Observable<string|null>;
+  readonly additionalDataSchema: Observable<ReportSchema | null>;
+  readonly formSchemaId: Observable<string | null>;
   readonly baseViewUrl = 'view-report/';
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
@@ -64,42 +54,42 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   ];
 
   constructor(
-      readonly filtersService: FiltersService,
-      readonly formDataManager: ReportDataManager,
-      readonly formSchemaManager: ReportSchemaManager,
-      private _route: ActivatedRoute,
+    readonly filtersService: FiltersService,
+    readonly formDataManager: ReportDataManager,
+    readonly formSchemaManager: ReportSchemaManager,
+    private _route: ActivatedRoute,
   ) {
     this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
     this.additionalDataSchema = this.formSchemaId.pipe(
-        switchMap(schemaId => {
-          if (schemaId != null) {
-            return this.formSchemaManager.get(schemaId);
-          }
-          return obsOf(null);
-        }),
-        filter(id => id != null),
-        shareReplay(1),
+      switchMap(schemaId => {
+        if (schemaId != null) {
+          return this.formSchemaManager.get(schemaId);
+        }
+        return obsOf(null);
+      }),
+      filter(id => id != null),
+      shareReplay(1),
     );
 
     this.dataSource = new ListDataSource(
-        this.formDataManager,
-        this.filtersService,
-        this.formSchemaManager,
-        this.isFormDataList,
+      this.formDataManager,
+      this.filtersService,
+      this.formSchemaManager,
+      this.isFormDataList,
     );
   }
 
   addForm(): void {
     this.formSchemaId
-        .pipe(
-            map(schemaId => {
-              if (schemaId != null) {
-                return this.list.createAction(schemaId, this.isFormDataList);
-              }
-            }),
-            take(1),
-            )
-        .subscribe();
+      .pipe(
+        map(schemaId => {
+          if (schemaId != null) {
+            return this.list.createAction(schemaId, this.isFormDataList);
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
   }
 
   ngOnInit() {}

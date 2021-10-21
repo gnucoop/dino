@@ -1,9 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dewco-material-login', () => {
   beforeEach(async () => await browser.get('/login'));

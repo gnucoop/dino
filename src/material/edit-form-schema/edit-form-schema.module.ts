@@ -54,14 +54,7 @@ import {ImportFormSchema} from './import-form-schema';
     ReactiveFormsModule,
     RouterModule,
   ],
-  declarations: [
-    EditFormSchema,
-    ImportFormSchema,
-  ],
-  exports: [
-    EditFormSchema,
-    ImportFormSchema,
-  ],
+  declarations: [EditFormSchema, ImportFormSchema],
+  exports: [EditFormSchema, ImportFormSchema],
 })
-export class EditFormSchemaModule {
-}
+export class EditFormSchemaModule {}

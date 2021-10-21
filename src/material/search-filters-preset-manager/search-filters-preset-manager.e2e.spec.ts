@@ -1,10 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-  Key,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC, Key} from 'protractor';
 
 describe('dewco-search-filters-preset-manager', () => {
   beforeEach(async () => {
@@ -48,7 +42,7 @@ describe('dewco-search-filters-preset-manager', () => {
     const presetInput = presetManager.element(by.tagName('input'));
     const saveBtn = presetManager.all(by.tagName('button')).last();
     const keywordFilterInput = element(by.css('input[formcontrolname="keyword"]'));
-    const getScript = 'return window.localStorage.getItem(\'filters_preset_custom\');';
+    const getScript = "return window.localStorage.getItem('filters_preset_custom');";
 
     expect(await browser.executeScript(getScript)).toBeNull();
     await keywordFilterInput.sendKeys('t');

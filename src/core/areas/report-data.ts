@@ -30,6 +30,6 @@ declare module '@dewco/core/reports/report-data' {
     /**
      * The Report Data area id.
      */
-    area_id: string|null;
+    area_id: string | null;
   }
 }

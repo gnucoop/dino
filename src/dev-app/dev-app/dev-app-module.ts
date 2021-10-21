@@ -48,5 +48,4 @@ import {DevAppLayout} from './dev-app-layout';
   declarations: [DevAppLayout, DevAppHome, DevApp404],
   exports: [DevAppLayout],
 })
-export class DevAppModule {
-}
+export class DevAppModule {}

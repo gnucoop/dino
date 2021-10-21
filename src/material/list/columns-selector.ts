@@ -20,13 +20,7 @@
  *
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ListHeader} from '@dewco/core/list';
 
@@ -47,8 +41,8 @@ export class ColumnsSelector<T> implements OnInit {
    */
   columns: ListHeader<T>[];
   constructor(
-      public dialogRef: MatDialogRef<ColumnsSelector<T>>,
-      @Inject(MAT_DIALOG_DATA) public data: {columns: ListHeader<T>[]},
+    public dialogRef: MatDialogRef<ColumnsSelector<T>>,
+    @Inject(MAT_DIALOG_DATA) public data: {columns: ListHeader<T>[]},
   ) {}
 
   ngOnInit() {
@@ -62,7 +56,7 @@ export class ColumnsSelector<T> implements OnInit {
    */
   toggleColumn(index: number): void {
     this.columns[index].displayed =
-        this.columns[index].displayed === undefined ? false : !this.columns[index].displayed;
+      this.columns[index].displayed === undefined ? false : !this.columns[index].displayed;
   }
 
   /**

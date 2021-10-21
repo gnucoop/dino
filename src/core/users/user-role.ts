@@ -26,14 +26,14 @@ import {MigrationStrategies} from 'rxdb';
 /**
  * Represents an action to be performed on a model Doc.
  */
-export type ModelAction = 'create'|'edit'|'delete'|'view'|'export';
+export type ModelAction = 'create' | 'edit' | 'delete' | 'view' | 'export';
 
 /**
  * Represents the available Model Actions for a given Model.
  */
 export type ModelPermissions = {
-  modelName: string,
-  modelActions: ModelAction[],
+  modelName: string;
+  modelActions: ModelAction[];
 };
 
 /**

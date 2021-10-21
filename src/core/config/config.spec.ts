@@ -25,8 +25,8 @@ const instances = {
       'host_url': 'https://si.org',
       'api_url': 'https://si-api.org/',
       'additional_stuff': 'si additional',
-    }
-  ]
+    },
+  ],
 };
 
 const setupFn = (apiConfig: {instances: [{[key: string]: any}]}): ConfigResponse => {
@@ -75,20 +75,14 @@ const setupFn = (apiConfig: {instances: [{[key: string]: any}]}): ConfigResponse
   return confResp;
 };
 
-
 describe('Config service', () => {
   let configService: ConfigService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
-      providers: [
-        ConfigService,
-        {provide: CONFIG_SERVICE_CONFIG, useValue: configServiceConfig},
-      ],
+      imports: [HttpClientTestingModule],
+      providers: [ConfigService, {provide: CONFIG_SERVICE_CONFIG, useValue: configServiceConfig}],
     });
     configService = TestBed.inject(ConfigService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -120,9 +114,11 @@ describe('Config service', () => {
 
     expect(returnedConfigs?.configSets).not.toBeNull();
     expect(returnedConfigs?.configSets.length).toEqual(2);
-    expect(returnedConfigs?.configSets[0].authConfig.authTokenLocalStorageKey)
-        .toEqual('first_instance_auth_token');
-    expect(returnedConfigs?.configSets[1].dataConfig.databaseCreateOptions.name)
-        .toEqual('dino_second_instance_db');
+    expect(returnedConfigs?.configSets[0].authConfig.authTokenLocalStorageKey).toEqual(
+      'first_instance_auth_token',
+    );
+    expect(returnedConfigs?.configSets[1].dataConfig.databaseCreateOptions.name).toEqual(
+      'dino_second_instance_db',
+    );
   });
 });

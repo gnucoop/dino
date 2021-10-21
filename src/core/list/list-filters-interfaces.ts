@@ -26,7 +26,7 @@ import {
   AjfField,
   AjfFieldType,
   AjfForm,
-  AjfValidationGroup
+  AjfValidationGroup,
 } from '@ajf/core/forms';
 import {AjfCondition} from '@ajf/core/models';
 
@@ -95,7 +95,7 @@ export interface FilterItem extends Partial<AjfField> {
   /**
    * Indicates if the FilterItem refers to a details list (in exandable tables)
    */
-   isFilterItemDetails?: boolean;
+  isFilterItemDetails?: boolean;
 }
 
 /**
@@ -154,12 +154,35 @@ export interface Operator {
   /**
    * Operator label
    */
-  label: '<'|'>'|'<='|'>='|'=='|'!='|'exists'|'includes'|'not includes'|'is'|'not'|'Like'|
-      'Not like';
+  label:
+    | '<'
+    | '>'
+    | '<='
+    | '>='
+    | '=='
+    | '!='
+    | 'exists'
+    | 'includes'
+    | 'not includes'
+    | 'is'
+    | 'not'
+    | 'Like'
+    | 'Not like';
   /**
    * Operator value
    */
-  value: '$lt'|'$gt'|'$lte'|'$gte'|'$eq'|'$ne'|'$exist'|'$in'|'$nin'|'$in'|'$regex';
+  value:
+    | '$lt'
+    | '$gt'
+    | '$lte'
+    | '$gte'
+    | '$eq'
+    | '$ne'
+    | '$exist'
+    | '$in'
+    | '$nin'
+    | '$in'
+    | '$regex';
   /**
    * Operator options
    */
@@ -186,8 +209,10 @@ export const CHOICES_CONDITION_OPERATORS: Operator[] = [
   {label: 'not', value: '$nin'},
 ];
 
-export const ALL_CONDITION_OPERATORS: Operator[] =
-    [...NUMBER_CONDITION_OPERATORS, ...CHOICES_CONDITION_OPERATORS];
+export const ALL_CONDITION_OPERATORS: Operator[] = [
+  ...NUMBER_CONDITION_OPERATORS,
+  ...CHOICES_CONDITION_OPERATORS,
+];
 
 /**
  * Mongodb default operators for different field types
@@ -211,4 +236,4 @@ export const DEFAULT_MODEL_KEYS: string[] = ['id', 'data', 'created_at', 'update
  * (Dialog: displayed in a dialog)
  * (All: a list of basic and additional filterItems)
  */
-export type FilterListType = 'basic'|'additional'|'temporary'|'all';
+export type FilterListType = 'basic' | 'additional' | 'temporary' | 'all';

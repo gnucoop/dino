@@ -25,4 +25,4 @@ import {DeepReadonlyObject} from 'rxdb';
 import {Model} from './model';
 
 export const clone = <T extends Model>(obj: DeepReadonlyObject<T>) =>
-    JSON.parse(JSON.stringify(obj)) as T;
+  JSON.parse(JSON.stringify(obj)) as T;

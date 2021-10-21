@@ -63,20 +63,19 @@ export class DataDemo {
       },
     };
 
-    const collection = _dataService.createCollection(req).pipe(
-        shareReplay(1),
-    );
+    const collection = _dataService.createCollection(req).pipe(shareReplay(1));
 
     this.todos = collection.pipe(
-        switchMap(() => this._refreshEvent.pipe(startWith(null))),
-        switchMap(() => _dataService.find<Todo>({collectionName: 'todo'})),
-        switchMap(query => from(query.exec())),
-        map(result => result.map(doc => clone(doc.toJSON()))),
+      switchMap(() => this._refreshEvent.pipe(startWith(null))),
+      switchMap(() => _dataService.find<Todo>({collectionName: 'todo'})),
+      switchMap(query => from(query.exec())),
+      map(result => result.map(doc => clone(doc.toJSON()))),
     );
   }
 
   insertTodo(): void {
-    this._dataService.insert({collectionName: 'todo', object: this.todoForm.value})
-        .subscribe(() => this._refreshEvent.emit());
+    this._dataService
+      .insert({collectionName: 'todo', object: this.todoForm.value})
+      .subscribe(() => this._refreshEvent.emit());
   }
 }

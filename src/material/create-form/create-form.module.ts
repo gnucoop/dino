@@ -59,12 +59,7 @@ import {CreateForm} from './create-form';
     MatToolbarModule,
     RouterModule,
   ],
-  declarations: [
-    CreateForm,
-  ],
-  exports: [
-    CreateForm,
-  ],
+  declarations: [CreateForm],
+  exports: [CreateForm],
 })
-export class CreateFormModule {
-}
+export class CreateFormModule {}

@@ -59,12 +59,7 @@ import {EditForm} from './edit-form';
     MatToolbarModule,
     RouterModule,
   ],
-  declarations: [
-    EditForm,
-  ],
-  exports: [
-    EditForm,
-  ],
+  declarations: [EditForm],
+  exports: [EditForm],
 })
-export class EditFormModule {
-}
+export class EditFormModule {}

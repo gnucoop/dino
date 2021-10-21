@@ -41,12 +41,7 @@ import {Login} from './login';
     MatSnackBarModule,
     ReactiveFormsModule,
   ],
-  declarations: [
-    Login,
-  ],
-  exports: [
-    Login,
-  ],
+  declarations: [Login],
+  exports: [Login],
 })
-export class LoginModule {
-}
+export class LoginModule {}

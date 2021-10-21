@@ -23,7 +23,7 @@
 if (typeof define === 'function' && define.amd) {
   // Note that this needs to be in ES5, because we load it
   // directly into the browser without transpiling.
-  define(['exports', 'rxjs'], function(exports, rxjs) {
+  define(['exports', 'rxjs'], function (exports, rxjs) {
     // Re-export all operators in this AMD module.
     Object.assign(exports, rxjs.operators);
   });

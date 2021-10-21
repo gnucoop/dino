@@ -48,33 +48,33 @@ export interface ReportData extends Model {
    * The starting date of the collected form data used by
    * the Report.
    */
-  date_start: string|null;
+  date_start: string | null;
 
   /**
    * The ending date of the collected form data used by
    * the Report.
    */
-  date_end: string|null;
+  date_end: string | null;
 
   /**
    * The Report Data area id.
    */
-  area_id: string|null;
+  area_id: string | null;
 
   /**
    * The Report Data project id.
    */
-  project_id: string|null;
+  project_id: string | null;
 
   /**
    * The Report Data location id.
    */
-  location_id: string|null;
+  location_id: string | null;
 
   /**
    * The Report Data organization id.
    */
-  organization_id: string|null;
+  organization_id: string | null;
 }
 
 export const VERSION = 0;

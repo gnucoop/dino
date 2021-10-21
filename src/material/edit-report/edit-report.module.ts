@@ -43,12 +43,7 @@ import {EditReport} from './edit-report';
     MatSelectModule,
     MatStepperModule,
   ],
-  declarations: [
-    EditReport,
-  ],
-  exports: [
-    EditReport,
-  ],
+  declarations: [EditReport],
+  exports: [EditReport],
 })
-export class EditReportModule {
-}
+export class EditReportModule {}

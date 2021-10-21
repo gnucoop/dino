@@ -45,15 +45,15 @@ const dummyUser: User = {
   twoFactorEnabled: false,
   twoFactorDelivery: 'None',
   usernameStatus: 'ACTIVE',
-  registrations: []
+  registrations: [],
 };
 
 class DummyManager extends DataModelManager<DummyModel> {
   constructor(
-      createParams: DataCreateCollectionRequest,
-      dataService: DataService,
-      contextService: PermissionContextService,
-      permissions: Permission[],
+    createParams: DataCreateCollectionRequest,
+    dataService: DataService,
+    contextService: PermissionContextService,
+    permissions: Permission[],
   ) {
     super(createParams, dataService, contextService, permissions);
   }
@@ -68,8 +68,12 @@ class AgeAuthPermission implements Permission<DummyModel> {
   }
 
   canDelete(data: CanDeleteData<{}, DummyModel>): boolean {
-    if (data.context && data.object.author && data.context.user &&
-        data.context.user.email === data.object.author) {
+    if (
+      data.context &&
+      data.object.author &&
+      data.context.user &&
+      data.context.user.email === data.object.author
+    ) {
       return true;
     }
     return false;
@@ -139,9 +143,7 @@ const dummySchema: RxJsonSchema<any> = {
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
   },
-  indexes: [
-    'name',
-  ],
+  indexes: ['name'],
 };
 
 describe('Data Model Manager - CRUD methods', () => {
@@ -149,13 +151,11 @@ describe('Data Model Manager - CRUD methods', () => {
   const collection = {name: collectionName, collection: {schema: dummySchema}};
   let dataService: DataService;
   let contextService: PermissionContextService;
-  let dummyManager: DummyManager|null;
+  let dummyManager: DummyManager | null;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         PermissionContextService,
         DataService,
@@ -204,10 +204,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should retrieve a list of all objects in the collection', async () => {
-    const objects = [
-      {name: 'dummyOne'},
-      {name: 'dummyTwo'},
-    ];
+    const objects = [{name: 'dummyOne'}, {name: 'dummyTwo'}];
     await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const getObjects = await firstValueFrom(dummyManager!.list().pipe(take(1)));
     await getObjects.exec();
@@ -216,12 +213,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should retrieve a list of all objects in the collection matching the options', async () => {
-    const objects = [
-      {name: 'A'},
-      {name: 'B'},
-      {name: 'C'},
-      {name: 'D'},
-    ];
+    const objects = [{name: 'A'}, {name: 'B'}, {name: 'C'}, {name: 'D'}];
     await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const listOptions: DataListOptions = {
       sort: [{name: 'desc'}],
@@ -265,8 +257,9 @@ describe('Data Model Manager - CRUD methods', () => {
     const object = {name: 'testDummy', author: 'user@dewco.gnu'};
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
-    const deletedObject =
-        await firstValueFrom(dummyManager!.delete(insertedDummy!.id).pipe(take(1)));
+    const deletedObject = await firstValueFrom(
+      dummyManager!.delete(insertedDummy!.id).pipe(take(1)),
+    );
     const getObject = await firstValueFrom(dummyManager!.get(deletedObject!.id).pipe(take(1)));
     expect(deletedObject?.deleted).toBeTrue();
     expect(deletedObject!.name).toEqual(insertedDummy!.name);
@@ -281,12 +274,15 @@ describe('Data Model Manager - CRUD methods', () => {
     ];
     const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
-    const deletedObjects =
-        await firstValueFrom(dummyManager!.bulkDelete(insertedDummies.success).pipe(take(1)));
-    const getFirstObject =
-        await firstValueFrom(dummyManager!.get(deletedObjects![0].id).pipe(take(1)));
-    const getSecondObject =
-        await firstValueFrom(dummyManager!.get(deletedObjects![1].id).pipe(take(1)));
+    const deletedObjects = await firstValueFrom(
+      dummyManager!.bulkDelete(insertedDummies.success).pipe(take(1)),
+    );
+    const getFirstObject = await firstValueFrom(
+      dummyManager!.get(deletedObjects![0].id).pipe(take(1)),
+    );
+    const getSecondObject = await firstValueFrom(
+      dummyManager!.get(deletedObjects![1].id).pipe(take(1)),
+    );
     deletedObjects!.forEach(deletedObject => {
       expect(deletedObject?.deleted).toBeTrue();
     });

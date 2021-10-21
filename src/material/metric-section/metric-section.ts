@@ -88,19 +88,13 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     this._metricManager = mm;
   }
 
-  constructor(
-      private _filtersService: FiltersService,
-      public dialog: MatDialog,
-  ) {}
+  constructor(private _filtersService: FiltersService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.dataSource = new ListDataSource(
-        this._metricManager,
-        this._filtersService,
-    );
+    this.dataSource = new ListDataSource(this._metricManager, this._filtersService);
   }
 
-  openDialog(metric?: T, action?: 'view'|'edit'|'create'): void {
+  openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void {
     this.dialog.open(MetricEditor, {
       data: {
         metricManager: this._metricManager,

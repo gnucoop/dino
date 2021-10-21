@@ -32,5 +32,5 @@ export const dewcoTranslations: {[key: string]: Translation} = {
   ESP,
   FRA,
   ITA,
-  PRT
+  PRT,
 };

@@ -22,12 +22,12 @@ export class MatLocationsE2E {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: (row) => this.section.openDialog(row, 'view'),
+      customAction: row => this.section.openDialog(row, 'view'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: (row) => this.section.openDialog(row, 'edit'),
+      customAction: row => this.section.openDialog(row, 'edit'),
     },
     {
       actionType: 'delete',
@@ -36,9 +36,7 @@ export class MatLocationsE2E {
     },
   ];
 
-  constructor(
-      private _locationManager: LocationManager,
-  ) {
+  constructor(private _locationManager: LocationManager) {
     this.manager = this._locationManager;
   }
 }

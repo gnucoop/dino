@@ -34,10 +34,7 @@ export class AreasModule {
     icon: 'volunteer_activism',
     metricName: 'area',
   };
-  constructor(
-      private _filtersService: FiltersService,
-      private _metricsService: MetricsService,
-  ) {
+  constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('area');
     this._metricsService.activateMetric(this.areaMetric);
   }

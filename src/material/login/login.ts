@@ -26,7 +26,7 @@ import {
   Component,
   Input,
   OnDestroy,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -78,29 +78,30 @@ export class Login extends LoginComponent implements OnDestroy {
   private _expiredSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      authService: AuthService,
-      router: Router,
-      fb: FormBuilder,
-      cdr: ChangeDetectorRef,
-      private _snackBar: MatSnackBar,
-      private _route: ActivatedRoute,
+    authService: AuthService,
+    router: Router,
+    fb: FormBuilder,
+    cdr: ChangeDetectorRef,
+    private _snackBar: MatSnackBar,
+    private _route: ActivatedRoute,
   ) {
     super(authService, router, fb, cdr);
     if (this._route.data) {
-      this._expiredSub =
-          this._route.data
-              .pipe(
-                  map(data => {
-                    if (data != null && data.isExpired) {
-                      this._snackBar.open(
-                          `There was a problem connecting to the
+      this._expiredSub = this._route.data
+        .pipe(
+          map(data => {
+            if (data != null && data.isExpired) {
+              this._snackBar.open(
+                `There was a problem connecting to the
                            Authentication server or your token has expired.
                            Please log in again.`,
-                          'AUTHENTICATION ERROR', {duration: 10000});
-                    }
-                  }),
-                  )
-              .subscribe();
+                'AUTHENTICATION ERROR',
+                {duration: 10000},
+              );
+            }
+          }),
+        )
+        .subscribe();
     }
   }
 

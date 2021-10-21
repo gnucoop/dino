@@ -24,7 +24,6 @@ import {Registration} from './registration';
 import {TwoFactorDelivery} from './two-factor-delivery';
 import {UsernameStatus} from './username-status';
 
-
 /**
  * The basic User model.
  */
@@ -37,7 +36,7 @@ export type User<T = DinoUserInfo> = {
    * The User’s email address.
    */
   email: string;
-}&T;
+} & T;
 
 /**
  * The Dino user info

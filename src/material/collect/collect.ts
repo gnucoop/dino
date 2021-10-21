@@ -20,12 +20,7 @@
  *
  */
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  ViewEncapsulation,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dewco/core/reports';
@@ -38,7 +33,7 @@ import {CollectItem} from './collect-item-interface';
 /**
  * Type representing the available Collect component types.
  */
-export type CollectType = 'report'|'form'|'custom';
+export type CollectType = 'report' | 'form' | 'custom';
 
 /**
  * Dino collect home component.
@@ -119,62 +114,57 @@ export class Collect {
   }
 
   constructor(
-      readonly breakpointObserver: BreakpointObserverService,
-      private _fs: FormSchemaManager,
-      private _rs: ReportSchemaManager,
-      private _router: Router,
+    readonly breakpointObserver: BreakpointObserverService,
+    private _fs: FormSchemaManager,
+    private _rs: ReportSchemaManager,
+    private _router: Router,
   ) {
-    this.items = combineLatest([this._collectType, this._menuItems])
-                     .pipe(
-                         switchMap(([isCollect, menuItems]) => {
-                           if (isCollect !== 'custom') {
-                             let result: Observable<(FormSchema | ReportSchema)[]>;
-                             if (isCollect === 'report') {
-                               result = this._rs.list().pipe(
-                                   switchMap(rxdbQuery => from(rxdbQuery.exec())),
-                               );
-                             } else {
-                               result = this._fs.list().pipe(
-                                   switchMap(rxdbQuery => from(rxdbQuery.exec())),
-                               );
-                             }
-                             return result.pipe(
-                                 map(docs => {
-                                   let collectItems: CollectItem[] = [];
-                                   for (let document of docs.filter(dcm => dcm != null)) {
-                                     let collectItem: CollectItem = {
-                                       name: document.name,
-                                       label: document.label ?? document.name,
-                                       icon: document.icon,
-                                       schemaId: document.id,
-                                     };
-                                     collectItems.push(collectItem);
-                                   }
-                                   return collectItems.sort((a, b) => {
-                                     if (a.name < b.name) {
-                                       return -1;
-                                     } else {
-                                       if (a.name > b.name) {
-                                         return 1;
-                                       } else {
-                                         return 0;
-                                       }
-                                     }
-                                   });
-                                 }),
-                             );
-                           }
-                           return obsOf(menuItems);
-                         }),
-                         shareReplay(1),
-                     );
+    this.items = combineLatest([this._collectType, this._menuItems]).pipe(
+      switchMap(([isCollect, menuItems]) => {
+        if (isCollect !== 'custom') {
+          let result: Observable<(FormSchema | ReportSchema)[]>;
+          if (isCollect === 'report') {
+            result = this._rs.list().pipe(switchMap(rxdbQuery => from(rxdbQuery.exec())));
+          } else {
+            result = this._fs.list().pipe(switchMap(rxdbQuery => from(rxdbQuery.exec())));
+          }
+          return result.pipe(
+            map(docs => {
+              let collectItems: CollectItem[] = [];
+              for (let document of docs.filter(dcm => dcm != null)) {
+                let collectItem: CollectItem = {
+                  name: document.name,
+                  label: document.label ?? document.name,
+                  icon: document.icon,
+                  schemaId: document.id,
+                };
+                collectItems.push(collectItem);
+              }
+              return collectItems.sort((a, b) => {
+                if (a.name < b.name) {
+                  return -1;
+                } else {
+                  if (a.name > b.name) {
+                    return 1;
+                  } else {
+                    return 0;
+                  }
+                }
+              });
+            }),
+          );
+        }
+        return obsOf(menuItems);
+      }),
+      shareReplay(1),
+    );
   }
 
   /**
    * Redirects to the Edit Form Schema component
    * @param schemaId The clicked item schema id
    */
-  editFormSchema(schemaId: string|undefined): void {
+  editFormSchema(schemaId: string | undefined): void {
     if (schemaId != null) {
       this._router.navigate(['edit-form-schema', schemaId]);
     }

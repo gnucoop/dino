@@ -64,7 +64,7 @@ export class AuthService {
   /**
    * The current JWT auth token
    */
-  readonly authToken: BehaviorSubject<string|null>;
+  readonly authToken: BehaviorSubject<string | null>;
 
   /**
    * Emits when reset auth is called, indicating the removal of all
@@ -84,15 +84,15 @@ export class AuthService {
   /**
    * The auth config currently stored in the local storage, if present.
    */
-  private _currentlyStoredConfig: AuthServiceConfig|null;
+  private _currentlyStoredConfig: AuthServiceConfig | null;
 
   private _baseUrl: string;
 
   constructor(
-      private _nss: NetworkStatusService,
-      private _httpClient: HttpClient,
-      @Inject(AUTH_SERVICE_CONFIG) readonly config: AuthServiceConfig,
-      @Optional() private _configService: ConfigService|null,
+    private _nss: NetworkStatusService,
+    private _httpClient: HttpClient,
+    @Inject(AUTH_SERVICE_CONFIG) readonly config: AuthServiceConfig,
+    @Optional() private _configService: ConfigService | null,
   ) {
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(this.config);
 
@@ -103,7 +103,7 @@ export class AuthService {
     if (this._currentlyStoredConfig != null) {
       this._authConfig.next(this._currentlyStoredConfig);
     }
-    this.authToken = new BehaviorSubject<string|null>(this.getAuthToken());
+    this.authToken = new BehaviorSubject<string | null>(this.getAuthToken());
     this._initAuthentication();
     if (this._configService != null) {
       this._setDynamicConfigSub();
@@ -137,37 +137,40 @@ export class AuthService {
       return obsOf(false);
     }
 
-    return this._authConfig.pipe(switchMap(config => {
-      const req: {[key: string]: string} = {
-        [config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
-        [config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
+    return this._authConfig.pipe(
+      switchMap(config => {
+        const req: {[key: string]: string} = {
+          [config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
+          [config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
             credentials.password,
-        applicationId: config.applicationId,
-      };
+          applicationId: config.applicationId,
+        };
 
-      const url =
-          this._generateUrl(config.loginEndpoint ?? 'api/login', removeSlashes(config.host));
-      const headers = config.apiKey != null ? {Authorization: config.apiKey} : undefined;
-      return this._httpClient.post<LoginResponse>(url, req, {headers})
-          .pipe(
-              tap(res => {
-                this.authenticated.next(true);
-                this._storeAuthToken(res.token);
-                this._storeRefreshToken(res.refreshToken);
-                let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
-                if (config.userAuthInfo != null) {
-                  const userAuthInfo = res[config.userAuthInfo];
-                  userInfo = userAuthInfo;
-                }
-                this._storeUserInfo(userInfo);
-              }),
-              mapTo(true),
-              catchError(() => {
-                this.authenticated.next(false);
-                return obsOf(false);
-              }),
-          );
-    }));
+        const url = this._generateUrl(
+          config.loginEndpoint ?? 'api/login',
+          removeSlashes(config.host),
+        );
+        const headers = config.apiKey != null ? {Authorization: config.apiKey} : undefined;
+        return this._httpClient.post<LoginResponse>(url, req, {headers}).pipe(
+          tap(res => {
+            this.authenticated.next(true);
+            this._storeAuthToken(res.token);
+            this._storeRefreshToken(res.refreshToken);
+            let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
+            if (config.userAuthInfo != null) {
+              const userAuthInfo = res[config.userAuthInfo];
+              userInfo = userAuthInfo;
+            }
+            this._storeUserInfo(userInfo);
+          }),
+          mapTo(true),
+          catchError(() => {
+            this.authenticated.next(false);
+            return obsOf(false);
+          }),
+        );
+      }),
+    );
   }
 
   /**
@@ -178,29 +181,30 @@ export class AuthService {
    */
   logout(allDevices = false): Observable<boolean> {
     return this._authConfig.pipe(
-        switchMap(config => {
-          const refreshToken = this.getRefreshToken()!;
-          const global = this._stringifyBooleanParam(allDevices);
-          const params = new HttpParams({fromObject: {global, refreshToken}});
-          const headers = config.apiKey != null ? {Authorization: config.apiKey} :
-                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
-          const url = `${
-              this._generateUrl(
-                  config.logoutEndpoint ?? 'api/logout',
-                  removeSlashes(config.host))}?${params.toString()}`;
-          return this._httpClient.post(url, {}, {headers})
-              .pipe(
-                  tap(() => {
-                    this.authenticated.next(false);
-                    this._storeAuthToken(null);
-                    this._storeRefreshToken(null);
-                    this._storeUserInfo(null);
-                    this._removeAuthConfig();
-                  }),
-                  mapTo(true),
-                  catchError(() => obsOf(false)),
-              );
-        }),
+      switchMap(config => {
+        const refreshToken = this.getRefreshToken()!;
+        const global = this._stringifyBooleanParam(allDevices);
+        const params = new HttpParams({fromObject: {global, refreshToken}});
+        const headers =
+          config.apiKey != null
+            ? {Authorization: config.apiKey}
+            : {Authorization: `Bearer ${this.getAuthToken()}`};
+        const url = `${this._generateUrl(
+          config.logoutEndpoint ?? 'api/logout',
+          removeSlashes(config.host),
+        )}?${params.toString()}`;
+        return this._httpClient.post(url, {}, {headers}).pipe(
+          tap(() => {
+            this.authenticated.next(false);
+            this._storeAuthToken(null);
+            this._storeRefreshToken(null);
+            this._storeUserInfo(null);
+            this._removeAuthConfig();
+          }),
+          mapTo(true),
+          catchError(() => obsOf(false)),
+        );
+      }),
     );
   }
 
@@ -215,7 +219,7 @@ export class AuthService {
   /**
    * @returns The last stored JWT auth token.
    */
-  getAuthToken(): string|null {
+  getAuthToken(): string | null {
     if (this._authConfig.value.retrieveAuthToken != null) {
       return this._authConfig.value.retrieveAuthToken();
     }
@@ -225,7 +229,7 @@ export class AuthService {
   /**
    * @returns The last stored JWT refresh token.
    */
-  getRefreshToken(): string|null {
+  getRefreshToken(): string | null {
     if (this._authConfig.value.retrieveRefreshToken != null) {
       return this._authConfig.value.retrieveRefreshToken();
     }
@@ -235,7 +239,7 @@ export class AuthService {
   /**
    * @returns The last stored logged in user info.
    */
-  getUserInfo(): User|null {
+  getUserInfo(): User | null {
     if (this._authConfig.value.retrieveUserInfo != null) {
       return this._authConfig.value.retrieveUserInfo();
     }
@@ -254,41 +258,43 @@ export class AuthService {
     }
 
     return this._authConfig.pipe(
-        switchMap(config => {
-          const req = {refreshToken: this.getRefreshToken()};
+      switchMap(config => {
+        const req = {refreshToken: this.getRefreshToken()};
 
-          const url = this._generateUrl(
-              config.refreshEndpoint ?? 'api/jwt/refresh', removeSlashes(config.host));
-          const headers = config.apiKey != null ? {Authorization: config.apiKey} :
-                                                  {Authorization: `Bearer ${this.getAuthToken()}`};
+        const url = this._generateUrl(
+          config.refreshEndpoint ?? 'api/jwt/refresh',
+          removeSlashes(config.host),
+        );
+        const headers =
+          config.apiKey != null
+            ? {Authorization: config.apiKey}
+            : {Authorization: `Bearer ${this.getAuthToken()}`};
 
-          const refreshHttpCall: Observable<boolean> =
-              this._httpClient.post<AuthResponse>(url, req, {headers})
-                  .pipe(
-                      tap(res => {
-                        this.authenticated.next(true);
-                        this._storeRefreshToken(res.refreshToken);
-                        this._storeAuthToken(res.token);
-                      }),
-                      mapTo(true),
-                      catchError(
-                          () => {
-                            this.authenticated.next(false);
-                            return obsOf(false);
-                          },
-                          ),
-                  );
-
-          return this._nss.isOnline$.pipe(
-              switchMap(isOnline => {
-                if (!isOnline) {
-                  return obsOf(true);
-                } else {
-                  return refreshHttpCall;
-                }
-              }),
+        const refreshHttpCall: Observable<boolean> = this._httpClient
+          .post<AuthResponse>(url, req, {headers})
+          .pipe(
+            tap(res => {
+              this.authenticated.next(true);
+              this._storeRefreshToken(res.refreshToken);
+              this._storeAuthToken(res.token);
+            }),
+            mapTo(true),
+            catchError(() => {
+              this.authenticated.next(false);
+              return obsOf(false);
+            }),
           );
-        }),
+
+        return this._nss.isOnline$.pipe(
+          switchMap(isOnline => {
+            if (!isOnline) {
+              return obsOf(true);
+            } else {
+              return refreshHttpCall;
+            }
+          }),
+        );
+      }),
     );
   }
 
@@ -303,16 +309,16 @@ export class AuthService {
     }
 
     const decodedToken = this._decodeJwt(token);
-    const tokenCheck = decodedToken.exp != null && decodedToken.exp > (new Date().getTime() / 1000);
+    const tokenCheck = decodedToken.exp != null && decodedToken.exp > new Date().getTime() / 1000;
 
     return this._nss.isOnline$.pipe(
-        switchMap(isOnline => {
-          if (!isOnline) {
-            return obsOf(true);
-          } else {
-            return obsOf(tokenCheck);
-          }
-        }),
+      switchMap(isOnline => {
+        if (!isOnline) {
+          return obsOf(true);
+        } else {
+          return obsOf(tokenCheck);
+        }
+      }),
     );
   }
 
@@ -361,7 +367,7 @@ export class AuthService {
    * Retrieves the Auth service configuration currently stored in the
    * local storage.
    */
-  private _getAuthConfig(): AuthServiceConfig|null {
+  private _getAuthConfig(): AuthServiceConfig | null {
     const config = localStorage.getItem('auth_config');
     if (config == null) {
       return null;
@@ -377,7 +383,6 @@ export class AuthService {
     localStorage.removeItem('auth_config');
   }
 
-
   /**
    * @returns The local storage key used to store the JWT token
    */
@@ -389,8 +394,9 @@ export class AuthService {
    * @returns The local storage key used to store the JWT refresh token
    */
   private _getRefreshTokenLocaleStorageKey(): string {
-    return this._authConfig.value.refreshTokenLocalStorageKey ||
-        DEFAULT_AUTH_OPTIONS.refreshTokenKey;
+    return (
+      this._authConfig.value.refreshTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.refreshTokenKey
+    );
   }
 
   /**
@@ -405,7 +411,7 @@ export class AuthService {
    * If a custom function is not provided, the JWT auth token will be stored in the local storage.
    * @param token The JWT auth token
    */
-  private _storeAuthToken(token: string|null): void {
+  private _storeAuthToken(token: string | null): void {
     this.authToken.next(token);
     if (this._authConfig.value.storeAuthToken != null) {
       this._authConfig.value.storeAuthToken(token);
@@ -424,7 +430,7 @@ export class AuthService {
    * local storage.
    * @param token The JWT refresh token
    */
-  private _storeRefreshToken(token: string|null): void {
+  private _storeRefreshToken(token: string | null): void {
     if (this._authConfig.value.storeRefreshToken != null) {
       this._authConfig.value.storeRefreshToken(token);
       return;
@@ -441,7 +447,7 @@ export class AuthService {
    * If a custom function is not provided, the user info will be stored in the local storage.
    * @param user The logged in user info.
    */
-  private _storeUserInfo(user: User|null): void {
+  private _storeUserInfo(user: User | null): void {
     if (this._authConfig.value.storeUserInfo != null) {
       this._authConfig.value.storeUserInfo(user);
       return;
@@ -486,13 +492,14 @@ export class AuthService {
   private _decodeJwt(token: string): JwtToken {
     let base64Url = token.split('.')[1];
     let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    let jsonPayload =
-        decodeURIComponent(atob(base64)
-                               .split('')
-                               .map(function(c) {
-                                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                               })
-                               .join(''));
+    let jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(''),
+    );
 
     return JSON.parse(jsonPayload);
   }

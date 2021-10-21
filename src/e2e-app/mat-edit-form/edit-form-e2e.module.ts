@@ -6,11 +6,6 @@ import {MatEditFormE2E} from './edit-form-e2e.component';
 
 @NgModule({
   declarations: [MatEditFormE2E],
-  imports: [
-    CommonModule,
-    DinoEditFormModule,
-    DinoFormsModule,
-  ],
+  imports: [CommonModule, DinoEditFormModule, DinoFormsModule],
 })
-export class MaterialEditFormE2eModule {
-}
+export class MaterialEditFormE2eModule {}

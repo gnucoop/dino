@@ -30,12 +30,12 @@ export interface Organization extends Metric {
   /**
    * The Organization logo path
    */
-  logo_path: string|null;
+  logo_path: string | null;
 
   /**
    * The Organization website url
    */
-  website_url: string|null;
+  website_url: string | null;
 }
 
 export const VERSION = 0;

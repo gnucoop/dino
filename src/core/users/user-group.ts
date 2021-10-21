@@ -30,7 +30,7 @@ export type MetricBasicInfo = {
   /**
    * The type of the Metric
    */
-  metricType: string,
+  metricType: string;
 
   /**
    * The Metric name
@@ -40,7 +40,7 @@ export type MetricBasicInfo = {
   /**
    * The Metric UUID
    */
-  metricId: string
+  metricId: string;
 };
 
 /**

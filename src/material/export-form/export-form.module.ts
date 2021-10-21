@@ -39,7 +39,6 @@ import {ExportForm} from './export-form';
 import {ExportBottomSheet} from './export-form-bottom-sheet';
 import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
 
-
 @NgModule({
   imports: [
     CommonModule,
@@ -57,15 +56,7 @@ import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
     MatToolbarModule,
     AjfTranslocoModule,
   ],
-  declarations: [
-    ExportForm,
-    ExportSelectAllButtonComponent,
-    ExportBottomSheet,
-  ],
-  exports: [
-    ExportSelectAllButtonComponent,
-    ExportBottomSheet,
-  ],
+  declarations: [ExportForm, ExportSelectAllButtonComponent, ExportBottomSheet],
+  exports: [ExportSelectAllButtonComponent, ExportBottomSheet],
 })
-export class ExportFormModule {
-}
+export class ExportFormModule {}

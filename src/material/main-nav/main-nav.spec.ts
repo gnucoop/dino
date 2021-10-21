@@ -37,20 +37,18 @@ describe('Main', () => {
   let authService: AuthService;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            BrowserAnimationsModule,
-            MainNavModule,
-            HttpClientTestingModule,
-            RouterTestingModule,
-          ],
-          providers: [
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [
+        BrowserAnimationsModule,
+        MainNavModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
+      providers: [
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    }).compileComponents();
     authService = TestBed.inject(AuthService);
     fixtureMain = TestBed.createComponent(MainNav);
     main = fixtureMain.componentInstance;

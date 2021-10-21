@@ -32,14 +32,7 @@ import {AreasModule} from './areas.module';
  */
 @Injectable({providedIn: AreasModule})
 export class AreaManager extends DataModelManager<Area> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
-    super(
-        {name: 'area', collection: {schema}},
-        dataService,
-        permissionContextService,
-    );
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    super({name: 'area', collection: {schema}}, dataService, permissionContextService);
   }
 }

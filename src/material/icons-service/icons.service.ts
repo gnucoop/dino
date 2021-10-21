@@ -26,7 +26,6 @@ import {iconsList} from './icons-list';
 
 import {IconsServiceModule} from './icons-service.module';
 
-
 /**
  * Service that provides a list of all available Material Icons code identifiers
  */

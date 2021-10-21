@@ -21,12 +21,12 @@ export class MatAreasE2E {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: (row) => this.section.openDialog(row, 'view'),
+      customAction: row => this.section.openDialog(row, 'view'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: (row) => this.section.openDialog(row, 'edit'),
+      customAction: row => this.section.openDialog(row, 'edit'),
     },
     {
       actionType: 'delete',
@@ -35,9 +35,7 @@ export class MatAreasE2E {
     },
   ];
 
-  constructor(
-      private _areaManager: AreaManager,
-  ) {
+  constructor(private _areaManager: AreaManager) {
     this.manager = this._areaManager;
   }
 }

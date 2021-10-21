@@ -50,20 +50,14 @@ describe('Edit FormSchema', () => {
   let editFormSchema: EditFormSchema;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            BrowserAnimationsModule,
-            EditFormSchemaModule,
-            RouterTestingModule,
-          ],
-          providers: [
-            FormSchemaManager,
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule, EditFormSchemaModule, RouterTestingModule],
+      providers: [
+        FormSchemaManager,
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+      ],
+    }).compileComponents();
 
     fixtureEditFormSchema = TestBed.createComponent(EditFormSchema);
     editFormSchema = fixtureEditFormSchema.componentInstance;

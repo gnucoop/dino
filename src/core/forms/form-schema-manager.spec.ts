@@ -67,16 +67,16 @@ const testAjfSchema = {
           'validation': {'notEmpty': true, 'conditions': []},
           'visibility': {'condition': 'true'},
           'defaultValue': null,
-          'conditionalBranches': [{'condition': 'true'}]
+          'conditionalBranches': [{'condition': 'true'}],
         },
       ],
       'parent': 0,
       'nodeType': 3,
       'parentNode': 0,
       'visibility': {'condition': 'true'},
-      'conditionalBranches': [{'condition': 'true'}]
+      'conditionalBranches': [{'condition': 'true'}],
     },
-  ]
+  ],
 };
 
 export const formSchema: FormSchema = {
@@ -91,9 +91,7 @@ describe('FormSchemaManager', () => {
   let fsm: FormSchemaManager;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         FormSchemaManager,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},

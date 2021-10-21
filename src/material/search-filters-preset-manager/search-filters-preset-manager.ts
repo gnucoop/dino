@@ -31,14 +31,7 @@ import {FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FiltersService} from '@dewco/core/list';
 import {BehaviorSubject, Observable, throwError} from 'rxjs';
-import {
-  catchError,
-  map,
-  shareReplay,
-  startWith,
-  take,
-  withLatestFrom,
-} from 'rxjs/operators';
+import {catchError, map, shareReplay, startWith, take, withLatestFrom} from 'rxjs/operators';
 
 /**
  * Shows a list of active filters and allows the deletion of any one of those
@@ -61,25 +54,20 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
   private _presets: BehaviorSubject<string[]>;
   private _presetSaveData: Observable<any>;
 
-  constructor(
-      private _route: ActivatedRoute,
-      private _fs: FiltersService,
-  ) {}
+  constructor(private _route: ActivatedRoute, private _fs: FiltersService) {}
 
   /**
    * Saves a filterPreset into the localstorage
    */
   savePreset() {
     const saveSub = this._presetSaveData
-                        .pipe(
-                            catchError(err => throwError(err) as Observable<[string, any]>),
-                            )
-                        .subscribe(([pName, pData]) => {
-                          if (pName != '' && pData != null) {
-                            localStorage.setItem('filters_preset_' + pName, pData);
-                            this._presets.next(Object.keys(localStorage));
-                          }
-                        });
+      .pipe(catchError(err => throwError(err) as Observable<[string, any]>))
+      .subscribe(([pName, pData]) => {
+        if (pName != '' && pData != null) {
+          localStorage.setItem('filters_preset_' + pName, pData);
+          this._presets.next(Object.keys(localStorage));
+        }
+      });
     saveSub.unsubscribe();
   }
 
@@ -88,53 +76,51 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
    */
   loadPreset() {
     const loadSub = this.canLoadPreset
-                        .pipe(
-                            withLatestFrom(this.presetName),
-                            catchError(err => throwError(err) as Observable<[boolean, string]>),
-                            )
-                        .subscribe(([canLoad, pName]) => {
-                          if (canLoad && pName != '') {
-                            const preset = localStorage.getItem(`filters_preset_${pName}`);
-                            if (preset) {
-                              this._fs.loadPreset(preset);
-                            }
-                          }
-                        });
+      .pipe(
+        withLatestFrom(this.presetName),
+        catchError(err => throwError(err) as Observable<[boolean, string]>),
+      )
+      .subscribe(([canLoad, pName]) => {
+        if (canLoad && pName != '') {
+          const preset = localStorage.getItem(`filters_preset_${pName}`);
+          if (preset) {
+            this._fs.loadPreset(preset);
+          }
+        }
+      });
     loadSub.unsubscribe();
   }
 
   ngOnInit() {
-    this.presetName = this.presetControl.valueChanges.pipe(
-        startWith(''),
-        shareReplay(1),
-    );
-    this.presetData = this._route.queryParams.pipe(map((f) => f['filters']));
-    this._presetSaveData = this.presetName.pipe(
-        withLatestFrom(this.presetData),
-        take(1),
-    );
+    this.presetName = this.presetControl.valueChanges.pipe(startWith(''), shareReplay(1));
+    this.presetData = this._route.queryParams.pipe(map(f => f['filters']));
+    this._presetSaveData = this.presetName.pipe(withLatestFrom(this.presetData), take(1));
 
     this._presets = new BehaviorSubject<string[]>(Object.keys(localStorage));
     this._presetOptions = this._presets.pipe(
-        map(keys => keys.filter(k => k.includes('filters_preset_'))
-                        .map(str => str.replace('filters_preset_', ''))),
-        catchError(err => throwError(err) as Observable<string[]>),
+      map(keys =>
+        keys
+          .filter(k => k.includes('filters_preset_'))
+          .map(str => str.replace('filters_preset_', '')),
+      ),
+      catchError(err => throwError(err) as Observable<string[]>),
     );
-
 
     this.canLoadPreset = this.presetName.pipe(
-        withLatestFrom(this._presetOptions),
-        map(([pName, options]) => {
-          return options.some(option => pName && option === pName);
-        }),
-        startWith(false),
-        catchError(err => throwError(err) as Observable<boolean>),
+      withLatestFrom(this._presetOptions),
+      map(([pName, options]) => {
+        return options.some(option => pName && option === pName);
+      }),
+      startWith(false),
+      catchError(err => throwError(err) as Observable<boolean>),
     );
 
-    this.filteredOptions =
-        this.presetName.pipe(withLatestFrom(this._presetOptions), map(([value, options]) => {
-                               return this._filter(value, options);
-                             }));
+    this.filteredOptions = this.presetName.pipe(
+      withLatestFrom(this._presetOptions),
+      map(([value, options]) => {
+        return this._filter(value, options);
+      }),
+    );
   }
 
   private _filter(value: string, options: string[]): string[] {

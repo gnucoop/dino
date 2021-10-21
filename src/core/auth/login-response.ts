@@ -25,22 +25,24 @@ import {User} from './user';
 /**
  * Response of the login api.
  */
-export type LoginResponse<T extends {[key: string]: any} = {
-  [key: string]: any
-}> = {
+export type LoginResponse<
+  T extends {[key: string]: any} = {
+    [key: string]: any;
+  },
+> = {
   /**
    * The logged in user info.
    */
-  user: User,
+  user: User;
 
   /**
    * The access token, this string is an encoded JSON Web Token (JWT).
    */
-  token: string,
+  token: string;
 
   /**
    * The refresh token that can be used to obtain a new access token once the provide
    * one has expired.
    */
-  refreshToken: string,
-}&T;
+  refreshToken: string;
+} & T;

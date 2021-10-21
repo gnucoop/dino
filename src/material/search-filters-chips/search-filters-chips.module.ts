@@ -41,12 +41,7 @@ import {SearchFiltersChips} from './search-filters-chips';
     MatInputModule,
     RouterModule,
   ],
-  declarations: [
-    SearchFiltersChips,
-  ],
-  exports: [
-    SearchFiltersChips,
-  ],
+  declarations: [SearchFiltersChips],
+  exports: [SearchFiltersChips],
 })
-export class SearchFiltersChipsModule {
-}
+export class SearchFiltersChipsModule {}

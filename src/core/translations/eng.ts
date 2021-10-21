@@ -24,7 +24,7 @@ import {Translation} from '@ajf/core/transloco';
 export const ENG: Translation = {
   'Customize display': 'Customize display',
   'Alter the display of the table by selecting up to 7 columns':
-      'Alter the display of the table by selecting up to 7 columns',
+    'Alter the display of the table by selecting up to 7 columns',
   'Apply': 'Apply',
   'Confirm': 'Confirm',
   'Do you want to': 'Do you want to',
@@ -52,5 +52,5 @@ export const ENG: Translation = {
   'Save the preset': 'Save the preset',
   'Save': 'Save',
   'Exclude': 'Exclude',
-  'Include': 'Include'
+  'Include': 'Include',
 };

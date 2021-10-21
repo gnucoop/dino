@@ -38,15 +38,16 @@ export class ErrorHandlerService implements ErrorHandler {
    * @param error The exception
    * @returns The exception handler stream
    */
-  handleError<T>(error: Error|HttpErrorResponse): Observable<T> {
+  handleError<T>(error: Error | HttpErrorResponse): Observable<T> {
     const {url} = this._router;
 
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
         console.error('NO CONNECTION AVAILABLE!');
       }
-      console.error(`DEWCO HTTP ERROR \n Backend returned status code: ${
-          error.status} \n Response body: ${error.message} \n URL: ${url}`);
+      console.error(
+        `DEWCO HTTP ERROR \n Backend returned status code: ${error.status} \n Response body: ${error.message} \n URL: ${url}`,
+      );
     } else {
       console.error(`DEWCO ERROR: ${error.message} \n URL: ${url}`);
     }

@@ -38,8 +38,10 @@ const UPDATE_IGNORED_PROPERTIES = [...SYNC_IGNORED_PROPERTIES, 'created_at', 'id
  * @param params Option extra parameters to be included in the query.
  */
 export function pullQueryBuilder(
-    collection: RxCollection, options: DataServiceSyncOptions,
-    extraParams?: PullQueryExtraParams): RxGraphQLReplicationQueryBuilder {
+  collection: RxCollection,
+  options: DataServiceSyncOptions,
+  extraParams?: PullQueryExtraParams,
+): RxGraphQLReplicationQueryBuilder {
   const batchSize = options.batchSize;
   return (doc: Model) => {
     if (doc == null) {
@@ -53,7 +55,7 @@ export function pullQueryBuilder(
     const where = {
       ...(extraParams.where || {}),
       updated_at: {_gt: `${doc.updated_at}`},
-      _deleted: {_eq: false}
+      _deleted: {_eq: false},
     };
     const fields = extraParams.fields || getCollectionFields(collection);
     const query = `{
@@ -77,8 +79,9 @@ export function pullQueryBuilder(
  * @param extraParams Option extra parameters to be included in the query.
  */
 export function pushQueryBuilder<T extends Model = Model>(
-    collection: RxCollection,
-    extraParams?: PushQueryExtraParams): RxGraphQLReplicationQueryBuilder {
+  collection: RxCollection,
+  extraParams?: PushQueryExtraParams,
+): RxGraphQLReplicationQueryBuilder {
   const ucfCollectionName = ucfirst(collection.name);
   const updateFields = getCollectionUpdateFields(collection);
   return (doc: T) => {
@@ -185,8 +188,10 @@ function findDeps(properties: {[key: string]: any}): string[] {
  * @param collections The input array of collections.
  * @param deps The dependencies already satisfied.
  */
-function findSatisfiedDeps(collections: RxCollection[], deps: string[]):
-    {satisfied: RxCollection[], unsatisfied: RxCollection[]} {
+function findSatisfiedDeps(
+  collections: RxCollection[],
+  deps: string[],
+): {satisfied: RxCollection[]; unsatisfied: RxCollection[]} {
   const unsatisfied = [] as RxCollection[];
   const satisfied = [] as RxCollection[];
   collections.forEach(collection => {
@@ -205,8 +210,9 @@ function findSatisfiedDeps(collections: RxCollection[], deps: string[]):
  * @param collection The input collection.
  */
 function getCollectionFields(collection: RxCollection): string[] {
-  return Object.keys(collection.schema.jsonSchema.properties)
-      .filter(property => SYNC_IGNORED_PROPERTIES.indexOf(property) === -1);
+  return Object.keys(collection.schema.jsonSchema.properties).filter(
+    property => SYNC_IGNORED_PROPERTIES.indexOf(property) === -1,
+  );
 }
 
 /**
@@ -214,8 +220,9 @@ function getCollectionFields(collection: RxCollection): string[] {
  * @param collection The input collection.
  */
 function getCollectionUpdateFields(collection: RxCollection): string[] {
-  return Object.keys(collection.schema.jsonSchema.properties)
-      .filter(property => UPDATE_IGNORED_PROPERTIES.indexOf(property) === -1);
+  return Object.keys(collection.schema.jsonSchema.properties).filter(
+    property => UPDATE_IGNORED_PROPERTIES.indexOf(property) === -1,
+  );
 }
 
 /**

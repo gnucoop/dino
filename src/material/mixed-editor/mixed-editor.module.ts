@@ -53,15 +53,8 @@ import {MixedEditor} from './mixed-editor';
     RouterModule,
     UsersModule,
   ],
-  declarations: [
-    MixedEditor,
-  ],
-  entryComponents: [
-    MixedEditor,
-  ],
-  exports: [
-    MixedEditor,
-  ],
+  declarations: [MixedEditor],
+  entryComponents: [MixedEditor],
+  exports: [MixedEditor],
 })
-export class MixedEditorModule {
-}
+export class MixedEditorModule {}

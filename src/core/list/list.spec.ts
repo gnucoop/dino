@@ -27,7 +27,7 @@ const authServiceMock = {
 } as unknown as AuthService;
 
 const changeDetectorRefMock = {
-  markForCheck() {}
+  markForCheck() {},
 };
 
 class AdminUIService extends AdminUserInteractionsService {
@@ -48,10 +48,7 @@ const dummySelection: DummyModel[] = [
 const adminUIService = new AdminUIService();
 
 class ListFeatComp extends List<DummyModel> {
-  constructor(
-      cdr: ChangeDetectorRef,
-      aui: AdminUIService,
-  ) {
+  constructor(cdr: ChangeDetectorRef, aui: AdminUIService) {
     super(cdr, aui);
   }
 

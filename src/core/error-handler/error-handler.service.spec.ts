@@ -8,9 +8,7 @@ describe('ErrorHandlerService', () => {
   let ehs: ErrorHandlerService;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-      ],
+      imports: [RouterTestingModule],
       providers: [ErrorHandlerService],
     });
     ehs = TestBed.inject(ErrorHandlerService);
@@ -30,8 +28,7 @@ describe('ErrorHandlerService', () => {
     const httpError = new HttpErrorResponse(errorResponse);
     ehs.handleError(httpError);
 
-    const expectedError = `DEWCO HTTP ERROR \n Backend returned status code: ${
-        httpError.status} \n Response body: ${httpError.message} \n URL: /`;
+    const expectedError = `DEWCO HTTP ERROR \n Backend returned status code: ${httpError.status} \n Response body: ${httpError.message} \n URL: /`;
 
     expect(spyLog).toHaveBeenCalledWith(expectedError);
   });

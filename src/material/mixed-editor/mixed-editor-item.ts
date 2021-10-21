@@ -58,7 +58,7 @@ export interface MixedEditorItem {
   /**
    * The ID of the Item parent
    */
-  itemParentId: string|null;
+  itemParentId: string | null;
 
   /**
    * If true, the item can't be added or removed.

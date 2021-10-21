@@ -30,6 +30,6 @@ declare module '@dewco/core/forms/form-data' {
     /**
      * The Form Data project id.
      */
-    project_id: string|null;
+    project_id: string | null;
   }
 }

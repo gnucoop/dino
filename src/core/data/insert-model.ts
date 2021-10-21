@@ -25,4 +25,4 @@ import {Model} from './model';
 /**
  * The base model interface for item creation.
  */
-export type InsertModel<T extends Model> = Omit<T, 'id'|'created_at'|'updated_at'|'_deleted'>;
+export type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | '_deleted'>;

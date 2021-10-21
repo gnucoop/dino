@@ -32,14 +32,11 @@ import {LocationModule} from './locations.module';
  */
 @Injectable({providedIn: LocationModule})
 export class LocationManager extends DataModelManager<Location> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-        {name: 'location', collection: {schema, migrationStrategies}},
-        dataService,
-        permissionContextService,
+      {name: 'location', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
     );
   }
 }

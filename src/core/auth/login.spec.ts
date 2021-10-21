@@ -6,11 +6,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable, of as obsOf} from 'rxjs';
 
-import {
-  AuthService,
-  Credentials,
-  LoginComponent,
-} from './index';
+import {AuthService, Credentials, LoginComponent} from './index';
 
 const authServiceMock = {
   loginSuccess: true,
@@ -21,21 +17,16 @@ const authServiceMock = {
 };
 
 const changeDetectorRefMock = {
-  markForCheck() {}
+  markForCheck() {},
 };
 
 class LoginFeatComp extends LoginComponent {
   loginResult = '';
-  constructor(
-      authService: AuthService,
-      router: Router,
-      fb: FormBuilder,
-      cdr: ChangeDetectorRef,
-  ) {
+  constructor(authService: AuthService, router: Router, fb: FormBuilder, cdr: ChangeDetectorRef) {
     super(authService, router, fb, cdr);
   }
 
-  setLoginResult = function(this: LoginFeatComp, res: string) {
+  setLoginResult = function (this: LoginFeatComp, res: string) {
     this.loginResult = res;
   };
 }
@@ -53,10 +44,7 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([]),
-      ],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
       providers: [
         FormBuilder,
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
@@ -69,12 +57,7 @@ describe('LoginComponent', () => {
     router = TestBed.get(Router);
     fb = TestBed.get(FormBuilder);
     cdr = TestBed.get(ChangeDetectorRef);
-    loginFeatComp = new LoginFeatComp(
-        authService,
-        router,
-        fb,
-        cdr,
-    );
+    loginFeatComp = new LoginFeatComp(authService, router, fb, cdr);
     spyLogin = spyOn(authService, 'login').and.callThrough();
     spyPostLogin = spyOn(loginFeatComp, 'setLoginResult').and.callThrough();
   });

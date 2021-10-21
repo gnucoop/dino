@@ -20,61 +20,63 @@
  *
  */
 
-export type DataQuerySortDir = 'asc'|'desc';
+export type DataQuerySortDir = 'asc' | 'desc';
 
-export type DataQuerySort = string|{[propName: string]: DataQuerySortDir};
+export type DataQuerySort = string | {[propName: string]: DataQuerySortDir};
 
 export interface DataListOptions {
   limit?: number;
   skip?: number;
   sort?: DataQuerySort[];
-  index?: DataIndex;  // @Todo
-  search?: string;    // @Todo
-  fields?: string[];  // @Todo
+  index?: DataIndex; // @Todo
+  search?: string; // @Todo
+  fields?: string[]; // @Todo
 }
 
 export interface DataQueryOptions {
   selector: DataQuerySelector;
-  fields?: string[];  // @Todo
+  fields?: string[]; // @Todo
   sort?: DataQuerySort[];
   limit?: number;
   skip?: number;
-  joins?: DataJoinOptions[];  // @Todo
-  index?: DataIndex;          // @Todo
+  joins?: DataJoinOptions[]; // @Todo
+  index?: DataIndex; // @Todo
   attributes?: {
-    [attributeName: string]: any,
-  };                    // @Todo
-  group_by?: string[];  // @Todo
-  distinct?: string[];  // @Todo
+    [attributeName: string]: any;
+  }; // @Todo
+  group_by?: string[]; // @Todo
+  distinct?: string[]; // @Todo
 }
 
 export interface DataIndex {
   name: string;
-  fields: (string|DataIndexField)[];
+  fields: (string | DataIndexField)[];
   startKey?: string;
   endKey?: string;
 }
 
 export interface DataIndexField {
-  [prop: string]: 'asc'|'desc';
+  [prop: string]: 'asc' | 'desc';
 }
 
 export type DataQuerySelector = {
-  [propName: string]: any|{
-    $lt?: any,
-    $gt?: any,
-    $lte?: any,
-    $gte?: any,
-    $eq?: any,
-    $ne?: any,
-    $exists?: any,
-    $in?: any,
-    $nin?: any,
-    $or?: any,
-    $nor?: any,
-    $not?: any,
-    $regex?: any
-  };
+  [propName: string]:
+    | any
+    | {
+        $lt?: any;
+        $gt?: any;
+        $lte?: any;
+        $gte?: any;
+        $eq?: any;
+        $ne?: any;
+        $exists?: any;
+        $in?: any;
+        $nin?: any;
+        $or?: any;
+        $nor?: any;
+        $not?: any;
+        $regex?: any;
+      };
 };
 
 export interface DataJoinOptions {

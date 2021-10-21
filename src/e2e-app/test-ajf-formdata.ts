@@ -36,7 +36,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'consultant',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
   {
     'dob': '1993-04-14',
@@ -69,7 +69,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'staff_fixed',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
   {
     'dob': '1977-10-13',
@@ -102,7 +102,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'staff_fixed',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
   {
     'dob': '1989-04-24',
@@ -135,7 +135,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'staff_fixed',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
   {
     'dob': '1992-07-13',
@@ -168,7 +168,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'staff_fixed',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
   {
     'dob': '1969-06-15',
@@ -201,7 +201,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'staff_fixed',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
   {
     'dob': '1983-01-01',
@@ -234,7 +234,7 @@ const ajfFormDatas = [
     'date_start__1': '',
     'nhourstraining': 0.0,
     'contract_type__0': 'staff_fixed',
-    'contract_type__1': ''
+    'contract_type__1': '',
   },
 ];
 
@@ -281,7 +281,7 @@ const ajfSourceReportFormDatas = [
     'disability_status': 'n',
     'pupil_os_irregular': null,
     'anterior_chamber_od': null,
-    'anterior_chamber_os': 'anterior_chamber_normal'
+    'anterior_chamber_os': 'anterior_chamber_normal',
   },
   {
     'age': 56,
@@ -326,7 +326,7 @@ const ajfSourceReportFormDatas = [
     'disability_status': 'y',
     'treatment_other_od': 'antibiotics',
     'anterior_chamber_od': 'anterior_chamber_normal',
-    'anterior_chamber_os': null
+    'anterior_chamber_os': null,
   },
   {
     'age': 56,
@@ -367,7 +367,7 @@ const ajfSourceReportFormDatas = [
     'conjunctiva_os': null,
     'disability_status': 'n',
     'anterior_chamber_od': null,
-    'anterior_chamber_os': null
+    'anterior_chamber_os': null,
   },
   {
     'age': 19,
@@ -409,10 +409,9 @@ const ajfSourceReportFormDatas = [
     'conjunctiva_os': null,
     'disability_status': 'n',
     'anterior_chamber_od': null,
-    'anterior_chamber_os': null
+    'anterior_chamber_os': null,
   },
 ];
-
 
 export const formDatas: FormData[] = [
   {

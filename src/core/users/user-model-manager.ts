@@ -36,32 +36,34 @@ import {UsersModule} from './users.module';
 @Injectable({providedIn: UsersModule})
 export class UserModelManager extends DataModelManager<UserModel> {
   constructor(
-      private _authService: AuthService,
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
+    private _authService: AuthService,
+    dataService: DataService,
+    permissionContextService: PermissionContextService,
   ) {
     super(
-        {name: 'user_model', collection: {schema, migrationStrategies}}, dataService,
-        permissionContextService);
+      {name: 'user_model', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
+    );
   }
 
   /**
    * Gets the UserModel of the active user.
    * @returns The user model data
    */
-  getActiveUserModel(): Observable<UserModel|null> {
+  getActiveUserModel(): Observable<UserModel | null> {
     return this._authService.authenticated.pipe(
-        switchMap(_ => {
-          const userId = this._authService.getUserInfo()?.id;
-          if (userId == null) {
-            return obsOf(null);
-          }
-          return this.get(userId).pipe(shareReplay(1));
-        }),
-        tap(userModel => {
-          this.addToContext({userModel: userModel});
-        }),
-        take(1),
+      switchMap(_ => {
+        const userId = this._authService.getUserInfo()?.id;
+        if (userId == null) {
+          return obsOf(null);
+        }
+        return this.get(userId).pipe(shareReplay(1));
+      }),
+      tap(userModel => {
+        this.addToContext({userModel: userModel});
+      }),
+      take(1),
     );
   }
 }

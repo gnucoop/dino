@@ -20,7 +20,6 @@
  *
  */
 
-
 import {Observable} from 'rxjs';
 import {ListAction} from './list-actions-interface';
 

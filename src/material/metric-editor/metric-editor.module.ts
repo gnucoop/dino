@@ -58,18 +58,9 @@ import {NameMatchValidator} from './metric-name-validator';
     ReactiveFormsModule,
     RouterModule,
   ],
-  declarations: [
-    MetricEditor,
-  ],
-  entryComponents: [
-    MetricEditor,
-  ],
-  exports: [
-    MetricEditor,
-  ],
-  providers: [
-    NameMatchValidator,
-  ]
+  declarations: [MetricEditor],
+  entryComponents: [MetricEditor],
+  exports: [MetricEditor],
+  providers: [NameMatchValidator],
 })
-export class MetricEditorModule {
-}
+export class MetricEditorModule {}

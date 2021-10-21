@@ -21,11 +21,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {
-  DataModelManager,
-  DataService,
-  PermissionContextService,
-} from '@dewco/core/data';
+import {DataModelManager, DataService, PermissionContextService} from '@dewco/core/data';
 
 import {migrationStrategies, Project} from './project';
 import {schema} from './project-json';
@@ -36,14 +32,11 @@ import {ProjectModule} from './projects.module';
  */
 @Injectable({providedIn: ProjectModule})
 export class ProjectManager extends DataModelManager<Project> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-        {name: 'project', collection: {schema, migrationStrategies}},
-        dataService,
-        permissionContextService,
+      {name: 'project', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
     );
   }
 }

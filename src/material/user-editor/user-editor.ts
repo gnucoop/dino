@@ -27,7 +27,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -48,7 +48,7 @@ export interface UserDialogData {
   /**
    * The dialog mode.
    */
-  userAction?: 'view'|'edit'|'create';
+  userAction?: 'view' | 'edit' | 'create';
 }
 
 /**
@@ -111,46 +111,43 @@ export class UserEditor implements OnDestroy, OnInit {
   private _saveSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      private _userModelManager: UserModelManager,
-      private _userGroupManager: UserGroupManager,
-      readonly snackbar: MatSnackBar,
-      @Inject(MAT_DIALOG_DATA) public data: UserDialogData,
-      public dialogRef: MatDialogRef<UserEditor>,
+    private _userModelManager: UserModelManager,
+    private _userGroupManager: UserGroupManager,
+    readonly snackbar: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) public data: UserDialogData,
+    public dialogRef: MatDialogRef<UserEditor>,
   ) {
     this._populateForm();
-    this.userGroups = this._userGroupManager.list().pipe(
-        switchMap(qry => from(qry.exec())),
-    );
+    this.userGroups = this._userGroupManager.list().pipe(switchMap(qry => from(qry.exec())));
   }
 
   ngOnInit(): void {
-    this._saveSub =
-        this._saveEvt
-            .pipe(
-                switchMap(item => {
-                  if (this.data.userAction === 'edit') {
-                    return this._userModelManager.update(item);
-                  } else {
-                    return this._userModelManager.create(item);
-                  }
-                }),
-                )
-            .subscribe(res => {
-              if (res == null) {
-                this.snackbar.open(
-                    `Oops! Something went wrong while saving the User.`, 'SAVE ERROR',
-                    {duration: 10000});
-              } else {
-                this.snackbar.open(`${res.full_name} saved`, 'USER SAVED', {duration: 10000});
-              }
-            });
+    this._saveSub = this._saveEvt
+      .pipe(
+        switchMap(item => {
+          if (this.data.userAction === 'edit') {
+            return this._userModelManager.update(item);
+          } else {
+            return this._userModelManager.create(item);
+          }
+        }),
+      )
+      .subscribe(res => {
+        if (res == null) {
+          this.snackbar.open(`Oops! Something went wrong while saving the User.`, 'SAVE ERROR', {
+            duration: 10000,
+          });
+        } else {
+          this.snackbar.open(`${res.full_name} saved`, 'USER SAVED', {duration: 10000});
+        }
+      });
   }
 
   /**
    * Generates and populates the editor.
    */
   private _populateForm(): void {
-    const currentUser: UserModel|undefined = this.data.userItem;
+    const currentUser: UserModel | undefined = this.data.userItem;
     const group: {[key: string]: FormControl} = {};
     const fields: UserFormField[] = [
       {
@@ -167,18 +164,10 @@ export class UserEditor implements OnDestroy, OnInit {
       },
     ];
 
-    group['full_name'] = new FormControl(
-        currentUser?.full_name ?? '',
-        Validators.required,
-    );
-    group['email'] = new FormControl(
-        currentUser?.email ?? '',
-        Validators.required,
-    );
+    group['full_name'] = new FormControl(currentUser?.full_name ?? '', Validators.required);
+    group['email'] = new FormControl(currentUser?.email ?? '', Validators.required);
 
-    group['user_group_ids'] = new FormControl(
-        currentUser?.user_group_ids ?? [],
-    );
+    group['user_group_ids'] = new FormControl(currentUser?.user_group_ids ?? []);
     const formGroup = new FormGroup(group);
 
     this.userForm = formGroup;

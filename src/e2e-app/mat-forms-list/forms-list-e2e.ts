@@ -1,22 +1,7 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {
-  FormData,
-  FormDataManager,
-  FormSchema,
-  FormSchemaManager,
-} from '@dewco/core/forms';
-import {
-  ActionType,
-  FiltersService,
-  ListAction,
-  ListHeader,
-} from '@dewco/core/list';
+import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dewco/core/forms';
+import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
 import {ListDataSource, SelectionList} from '@dewco/material/list';
 import {Observable, of as obsOf} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
@@ -39,8 +24,8 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
     'organization',
     'unavailableFilter',
   ];
-  readonly additionalDataSchema: Observable<FormSchema|null>;
-  readonly formSchemaId: Observable<string|null>;
+  readonly additionalDataSchema: Observable<FormSchema | null>;
+  readonly formSchemaId: Observable<string | null>;
   readonly baseEditUrl = 'edit-form/';
   readonly baseViewUrl = 'view-form/';
   readonly baseCreateUrl = 'create-form/';
@@ -68,42 +53,42 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   ];
 
   constructor(
-      readonly filtersService: FiltersService,
-      readonly formDataManager: FormDataManager,
-      readonly formSchemaManager: FormSchemaManager,
-      private _route: ActivatedRoute,
+    readonly filtersService: FiltersService,
+    readonly formDataManager: FormDataManager,
+    readonly formSchemaManager: FormSchemaManager,
+    private _route: ActivatedRoute,
   ) {
     this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
     this.additionalDataSchema = this.formSchemaId.pipe(
-        switchMap(schemaId => {
-          if (schemaId != null) {
-            return this.formSchemaManager.get(schemaId);
-          }
-          return obsOf(null);
-        }),
-        filter(id => id != null),
-        shareReplay(1),
+      switchMap(schemaId => {
+        if (schemaId != null) {
+          return this.formSchemaManager.get(schemaId);
+        }
+        return obsOf(null);
+      }),
+      filter(id => id != null),
+      shareReplay(1),
     );
 
     this.dataSource = new ListDataSource(
-        this.formDataManager,
-        this.filtersService,
-        this.formSchemaManager,
-        this.isFormDataList,
+      this.formDataManager,
+      this.filtersService,
+      this.formSchemaManager,
+      this.isFormDataList,
     );
   }
 
   addForm(): void {
     this.formSchemaId
-        .pipe(
-            map(schemaId => {
-              if (schemaId != null) {
-                return this.list.createAction(schemaId, this.isFormDataList);
-              }
-            }),
-            take(1),
-            )
-        .subscribe();
+      .pipe(
+        map(schemaId => {
+          if (schemaId != null) {
+            return this.list.createAction(schemaId, this.isFormDataList);
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
   }
 
   ngOnInit() {}

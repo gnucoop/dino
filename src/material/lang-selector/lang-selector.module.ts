@@ -37,12 +37,7 @@ import {LangSelector} from './lang-selector';
     MatSelectModule,
     ReactiveFormsModule,
   ],
-  declarations: [
-    LangSelector,
-  ],
-  exports: [
-    LangSelector,
-  ],
+  declarations: [LangSelector],
+  exports: [LangSelector],
 })
-export class LangSelectorModule {
-}
+export class LangSelectorModule {}

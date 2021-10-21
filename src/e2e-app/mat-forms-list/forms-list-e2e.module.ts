@@ -11,19 +11,8 @@ import {MockBreakpointObserver} from '../mocks';
 import {MatFormsListE2E} from './forms-list-e2e';
 
 @NgModule({
-  declarations: [
-    MatFormsListE2E,
-  ],
-  imports: [
-    CommonModule,
-    ListModule,
-    FloatingButtonModule,
-    FormsModule,
-    SearchFiltersBarModule,
-  ],
-  providers: [
-    {provide: BreakpointObserverService, useClass: MockBreakpointObserver},
-  ],
+  declarations: [MatFormsListE2E],
+  imports: [CommonModule, ListModule, FloatingButtonModule, FormsModule, SearchFiltersBarModule],
+  providers: [{provide: BreakpointObserverService, useClass: MockBreakpointObserver}],
 })
-export class MaterialFormsListE2eModule {
-}
+export class MaterialFormsListE2eModule {}

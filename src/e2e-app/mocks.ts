@@ -5,7 +5,6 @@ import {delay, map, shareReplay} from 'rxjs/operators';
 
 import {additionalConfig} from './mockconfig';
 
-
 export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 export const wsUrl = 'ws://localhost:8080/v1/graphql';
 export const authErrorMessage = 'Could not verify JWT: JWTExpired';
@@ -39,13 +38,13 @@ const dummyUser: User = {
   twoFactorEnabled: false,
   twoFactorDelivery: 'None',
   usernameStatus: 'ACTIVE',
-  registrations: []
+  registrations: [],
 };
 
 @Injectable()
 export class AuthServiceMock {
   authenticated: BehaviorSubject<boolean>;
-  authToken: Observable<string|undefined>;
+  authToken: Observable<string | undefined>;
   private _authConfig: BehaviorSubject<AuthServiceConfig>;
   get authConfig(): AuthServiceConfig {
     return this._authConfig.value;
@@ -55,8 +54,8 @@ export class AuthServiceMock {
     this.authenticated = new BehaviorSubject<boolean>(false);
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(authMockConfig);
     this.authToken = this.authenticated.pipe(
-        map(auth => auth ? 'test_auth_token' : undefined),
-        shareReplay(1),
+      map(auth => (auth ? 'test_auth_token' : undefined)),
+      shareReplay(1),
     );
   }
   resetAuth(): void {}

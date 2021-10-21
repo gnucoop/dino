@@ -33,15 +33,15 @@ export type ConfigSet = {
   /**
    * The configuration set name identifier
    */
-  name: string,
-  authConfig: {[key: string]: any},
-  dataConfig: {[key: string]: any},
-  additionalConfig?: {[key: string]: any},
+  name: string;
+  authConfig: {[key: string]: any};
+  dataConfig: {[key: string]: any};
+  additionalConfig?: {[key: string]: any};
 };
 
 /**
  * The type of the config API response.
  */
 export type ConfigResponse = {
-  configSets: ConfigSet[],
+  configSets: ConfigSet[];
 };

@@ -95,8 +95,9 @@ describe('Data service', () => {
   });
 
   it('should throw an exception when trying to destroy an unexisting collection', async () => {
-    await expectAsync(firstValueFrom(dataService.destroyCollection('collection').pipe(take(1))))
-        .toBeRejectedWithError();
+    await expectAsync(
+      firstValueFrom(dataService.destroyCollection('collection').pipe(take(1))),
+    ).toBeRejectedWithError();
   });
 });
 
@@ -169,8 +170,9 @@ describe('Data service - CRUD methods', () => {
   it('should bulk insert new objects in the database', async () => {
     const objects = [{name: 'foo'}, {name: 'bar'}];
     const insParams = {collectionName, objects};
-    const result =
-        await firstValueFrom(dataService.bulkInsert<DummyModel>(insParams).pipe(take(1)));
+    const result = await firstValueFrom(
+      dataService.bulkInsert<DummyModel>(insParams).pipe(take(1)),
+    );
     expect(result).not.toBeNull();
     expect(result.success).not.toBeNull();
     expect(result.success.length).toEqual(objects.length);

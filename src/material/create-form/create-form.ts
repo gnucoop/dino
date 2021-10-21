@@ -36,7 +36,7 @@ import {
   OnInit,
   QueryList,
   ViewChildren,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -73,7 +73,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   /**
    * The Form Metric Selector
    */
-  private _formMetricsSelector: Observable<FormMetricSelector|null>;
+  private _formMetricsSelector: Observable<FormMetricSelector | null>;
 
   /**
    * The Form schema id
@@ -130,14 +130,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
 
   constructor(
-      private _authService: AuthService,
-      private _router: Router,
-      private _route: ActivatedRoute,
-      private _fs: FormSchemaManager,
-      private _rendererService: AjfFormRendererService,
-      private _location: Location,
-      readonly snackbar: MatSnackBar,
-      readonly metricsService: MetricsService,
+    private _authService: AuthService,
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private _fs: FormSchemaManager,
+    private _rendererService: AjfFormRendererService,
+    private _location: Location,
+    readonly snackbar: MatSnackBar,
+    readonly metricsService: MetricsService,
   ) {}
 
   /**
@@ -158,122 +158,120 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     }
 
     this._isFormData = this._route.data.pipe(
-        map(data => data.isFormData),
-        filter(isFormData => isFormData != null),
-        shareReplay(1),
+      map(data => data.isFormData),
+      filter(isFormData => isFormData != null),
+      shareReplay(1),
     );
 
     this._formSchemaId = this._route.params.pipe(
-        map(params => params.form_schema_id),
-        filter(id => id != null),
-        shareReplay(1),
+      map(params => params.form_schema_id),
+      filter(id => id != null),
+      shareReplay(1),
     );
 
     this._formSchema = this._formSchemaId.pipe(
-        map(
-            schemaId => this._fs.get(schemaId).pipe(
-                map(doc => {
-                  if (doc == null) {
-                    return null;
-                  }
-                  const item = doc.toJSON();
-                  return item;
-                }),
-                ),
-            ),
-        switchMap(schema => schema as Observable<FormSchema>),
-        shareReplay(1),
+      map(schemaId =>
+        this._fs.get(schemaId).pipe(
+          map(doc => {
+            if (doc == null) {
+              return null;
+            }
+            const item = doc.toJSON();
+            return item;
+          }),
+        ),
+      ),
+      switchMap(schema => schema as Observable<FormSchema>),
+      shareReplay(1),
     );
 
     this._form = this._formSchema.pipe(
-        map(fschema => {
-          if (fschema == null) {
-            this._location.back();
-            this.snackbar.open(
-                'Oops! We could not find this Form Schema', 'FORM NOT FOUND', {duration: 5000});
-            return AjfFormSerializer.fromJson({});
-          }
-          if (fschema.schema.choicesOrigins == null) {
-            fschema.schema.choicesOrigins = [];
-          }
-          return AjfFormSerializer.fromJson(fschema.schema);
-        }),
-        shareReplay(1),
+      map(fschema => {
+        if (fschema == null) {
+          this._location.back();
+          this.snackbar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
+            duration: 5000,
+          });
+          return AjfFormSerializer.fromJson({});
+        }
+        if (fschema.schema.choicesOrigins == null) {
+          fschema.schema.choicesOrigins = [];
+        }
+        return AjfFormSerializer.fromJson(fschema.schema);
+      }),
+      shareReplay(1),
     );
   }
 
   ngAfterViewInit() {
     this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
-        switchMap(active => {
-          if (!active) {
-            return obsOf(null);
-          }
-          return this.formMetricsSelectorComponent.changes.pipe(
-              map((comps: QueryList<FormMetricSelector>) => comps.first));
-        }),
+      switchMap(active => {
+        if (!active) {
+          return obsOf(null);
+        }
+        return this.formMetricsSelectorComponent.changes.pipe(
+          map((comps: QueryList<FormMetricSelector>) => comps.first),
+        );
+      }),
     );
 
-    this._saveFormSub =
-        this._saveFormEvt
-            .pipe(
-                withLatestFrom(
-                    this._isFormData,
-                    this._formSchemaId,
-                    this._formMetricsSelector,
-                    ),
-                switchMap(([
-                            _,
-                            isFormData,
-                            formSchemaId,
-                            formMetricsSelector,
-                          ]) => {
-                  const formValue = this._rendererService.getFormValue();
-                  let newItem: {[key: string]: any} = {};
-                  if (isFormData) {
-                    newItem.data = formValue;
-                    newItem.schema_id = formSchemaId;
-                    newItem.user_id = this._authService.getUserInfo()?.id;
-                    newItem.area_id = null;
-                    newItem.location_id = null;
-                    newItem.organization_id = null;
-                    newItem.project_id = null;
-                    if (formMetricsSelector != null) {
-                      const selectedMetrics = formMetricsSelector.selectedMetrics;
-                      for (let key of Object.keys(selectedMetrics)) {
-                        const saveKey = `${key}_id`;
-                        if (selectedMetrics[key].metricId != null) {
-                          newItem[saveKey] = selectedMetrics[key].metricId;
-                        }
-                      }
-                    }
-                  } else {
-                    newItem.data.data = formValue;
-                    newItem.data.schema_id = formSchemaId;
-                    newItem.data.user_id = this._authService.getUserInfo()?.id;
-                  }
-
-                  return this._dataModelManager.create(newItem as T);
-                }),
-                catchError(err => {
-                  this.snackbar.open(err, 'ERROR', {duration: 5000});
-                  return obsOf(err);
-                }),
-                )
-            .subscribe(_ => this.snackbar.open('Document created', 'SAVE', {duration: 5000}));
-
-    this.isAjfFormValid =
-        this._rendererService.errors.pipe(map((errors: number) => errors === 0), shareReplay(1))
-            .pipe(map(ajfFormValid => {
-              return ajfFormValid;
-            }));
-
-    this.isFormMetricsSelectorValid =
-        this._formMetricsSelector.pipe(switchMap(formMetricsSelector => {
-          if (formMetricsSelector == null) {
-            return obsOf(false);
+    this._saveFormSub = this._saveFormEvt
+      .pipe(
+        withLatestFrom(this._isFormData, this._formSchemaId, this._formMetricsSelector),
+        switchMap(([_, isFormData, formSchemaId, formMetricsSelector]) => {
+          const formValue = this._rendererService.getFormValue();
+          let newItem: {[key: string]: any} = {};
+          if (isFormData) {
+            newItem.data = formValue;
+            newItem.schema_id = formSchemaId;
+            newItem.user_id = this._authService.getUserInfo()?.id;
+            newItem.area_id = null;
+            newItem.location_id = null;
+            newItem.organization_id = null;
+            newItem.project_id = null;
+            if (formMetricsSelector != null) {
+              const selectedMetrics = formMetricsSelector.selectedMetrics;
+              for (let key of Object.keys(selectedMetrics)) {
+                const saveKey = `${key}_id`;
+                if (selectedMetrics[key].metricId != null) {
+                  newItem[saveKey] = selectedMetrics[key].metricId;
+                }
+              }
+            }
+          } else {
+            newItem.data.data = formValue;
+            newItem.data.schema_id = formSchemaId;
+            newItem.data.user_id = this._authService.getUserInfo()?.id;
           }
-          return formMetricsSelector.isFormMetricsValid();
-        }));
+
+          return this._dataModelManager.create(newItem as T);
+        }),
+        catchError(err => {
+          this.snackbar.open(err, 'ERROR', {duration: 5000});
+          return obsOf(err);
+        }),
+      )
+      .subscribe(_ => this.snackbar.open('Document created', 'SAVE', {duration: 5000}));
+
+    this.isAjfFormValid = this._rendererService.errors
+      .pipe(
+        map((errors: number) => errors === 0),
+        shareReplay(1),
+      )
+      .pipe(
+        map(ajfFormValid => {
+          return ajfFormValid;
+        }),
+      );
+
+    this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(
+      switchMap(formMetricsSelector => {
+        if (formMetricsSelector == null) {
+          return obsOf(false);
+        }
+        return formMetricsSelector.isFormMetricsValid();
+      }),
+    );
   }
   ngOnDestroy() {
     this._saveFormSub.unsubscribe();

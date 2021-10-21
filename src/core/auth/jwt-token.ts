@@ -20,9 +20,9 @@
  *
  */
 
- /**
-  * Represents a JwtToken
-  */
+/**
+ * Represents a JwtToken
+ */
 export interface JwtToken {
   applicationId: string;
   aud: string;

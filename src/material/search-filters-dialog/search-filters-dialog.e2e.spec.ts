@@ -1,9 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dewco-search-filters-dialog', () => {
   beforeEach(async () => {
@@ -31,8 +26,8 @@ describe('dewco-search-filters-dialog', () => {
     expect(close).toBe(true);
 
     const matTab = await element(by.tagName('mat-dialog-content'))
-                       .element(by.tagName('mat-tab-group'))
-                       .isPresent();
+      .element(by.tagName('mat-tab-group'))
+      .isPresent();
     expect(matTab).toBe(true);
   });
 
@@ -63,35 +58,35 @@ describe('dewco-search-filters-dialog', () => {
     expect(widgets).toBeGreaterThan(0);
   });
 
-  it('should close the dialog and change the url with filter params when clicking Search button',
-     async () => {
-       await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
+  it('should close the dialog and change the url with filter params when clicking Search button', async () => {
+    await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
 
-       const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
-       await browser.wait(EC.elementToBeClickable(dialogButton));
-       await dialogButton.click();
-       await browser.sleep(1000);
+    const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
+    await browser.wait(EC.elementToBeClickable(dialogButton));
+    await dialogButton.click();
+    await browser.sleep(1000);
 
-       await browser.wait(
-           EC.presenceOf(element(by.cssContainingText('.mat-button-wrapper', 'Search'))));
+    await browser.wait(
+      EC.presenceOf(element(by.cssContainingText('.mat-button-wrapper', 'Search'))),
+    );
 
-       const initialUrl = await browser.getCurrentUrl();
-       const searchButton =
-           element(by.cssContainingText('.mat-button-wrapper', 'Search')).element(by.xpath('..'));
-       const firstWidgetInput = element(by.css('.mat-card-content input'));
+    const initialUrl = await browser.getCurrentUrl();
+    const searchButton = element(by.cssContainingText('.mat-button-wrapper', 'Search')).element(
+      by.xpath('..'),
+    );
+    const firstWidgetInput = element(by.css('.mat-card-content input'));
 
-       expect(await firstWidgetInput.isDisplayed()).toBe(true);
+    expect(await firstWidgetInput.isDisplayed()).toBe(true);
 
-       await firstWidgetInput.sendKeys('en');
-       await browser.sleep(300);
-       await searchButton.click();
-       await browser.sleep(300);
+    await firstWidgetInput.sendKeys('en');
+    await browser.sleep(300);
+    await searchButton.click();
+    await browser.sleep(300);
 
-       await browser.wait(
-           EC.not(EC.presenceOf(element(by.tagName('dewco-search-filters-dialog')))));
+    await browser.wait(EC.not(EC.presenceOf(element(by.tagName('dewco-search-filters-dialog')))));
 
-       await browser.sleep(1000);
-       const currentUrl = await browser.getCurrentUrl();
-       expect(currentUrl).not.toEqual(initialUrl);
-     });
+    await browser.sleep(1000);
+    const currentUrl = await browser.getCurrentUrl();
+    expect(currentUrl).not.toEqual(initialUrl);
+  });
 });

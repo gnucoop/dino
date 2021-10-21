@@ -30,14 +30,11 @@ import {FormsModule} from './forms.module';
 
 @Injectable({providedIn: FormsModule})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
-  constructor(
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
-  ) {
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-        {name: 'form_schema', collection: {schema, migrationStrategies}},
-        dataService,
-        permissionContextService,
+      {name: 'form_schema', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
     );
   }
 
@@ -61,7 +58,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
             f.choices = f.choicesOrigin ? f.choicesOrigin.choices : undefined;
             f.isAdditionalFilter = true;
             return f;
-          })
+          }),
         } as FilterGroup);
       }
     }

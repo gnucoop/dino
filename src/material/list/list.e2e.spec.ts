@@ -1,9 +1,4 @@
-import {
-  browser,
-  by,
-  element,
-  ExpectedConditions as EC,
-} from 'protractor';
+import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dewco-list', () => {
   beforeEach(async () => {
@@ -47,7 +42,7 @@ describe('dewco-list', () => {
     await browser.sleep(300);
 
     const countChecked = await element.all(by.className('mat-checkbox-checked')).count();
-    expect(countChecked).toEqual(await rowBoxes.count() + 1);
+    expect(countChecked).toEqual((await rowBoxes.count()) + 1);
   });
 
   it('should display the row action icons on mouseover', async () => {
@@ -66,40 +61,39 @@ describe('dewco-list', () => {
   });
 
   it(`should delete a row by clicking on its action-delete button,
-      and confirming the action on the Confirmation Dialog`,
-     async () => {
-       await browser.wait(EC.presenceOf(element(by.css('.mat-select-min-line'))));
-       await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
+      and confirming the action on the Confirmation Dialog`, async () => {
+    await browser.wait(EC.presenceOf(element(by.css('.mat-select-min-line'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
 
-       const initialRowCount = await element.all(by.tagName('mat-row')).count();
+    const initialRowCount = await element.all(by.tagName('mat-row')).count();
 
-       const matRow = element.all(by.tagName('mat-row')).get(0);
+    const matRow = element.all(by.tagName('mat-row')).get(0);
 
-       await browser.actions().mouseMove(matRow).perform();
+    await browser.actions().mouseMove(matRow).perform();
 
-       await browser.wait(
-           EC.presenceOf(element(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))));
+    await browser.wait(
+      EC.presenceOf(element(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))),
+    );
 
-       const actionIcons =
-           element.all(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'));
-       const deleteIcon = actionIcons.get(2);
+    const actionIcons = element.all(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'));
+    const deleteIcon = actionIcons.get(2);
 
-       await browser.actions().mouseMove(deleteIcon).perform();
-       await browser.wait(EC.elementToBeClickable(deleteIcon));
-       await browser.actions().click().perform();
+    await browser.actions().mouseMove(deleteIcon).perform();
+    await browser.wait(EC.elementToBeClickable(deleteIcon));
+    await browser.actions().click().perform();
 
-       await browser.wait(EC.presenceOf(element(by.css('.confirmation-dialog'))));
+    await browser.wait(EC.presenceOf(element(by.css('.confirmation-dialog'))));
 
-       const confirmDialog = element(by.css('.confirmation-dialog'));
-       expect(await confirmDialog.isPresent()).toBe(true);
-       const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
-       await browser.actions().mouseMove(confirmButton).perform();
-       await browser.wait(EC.elementToBeClickable(confirmButton));
-       await confirmButton.click();
+    const confirmDialog = element(by.css('.confirmation-dialog'));
+    expect(await confirmDialog.isPresent()).toBe(true);
+    const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
+    await browser.actions().mouseMove(confirmButton).perform();
+    await browser.wait(EC.elementToBeClickable(confirmButton));
+    await confirmButton.click();
 
-       await browser.sleep(300);
+    await browser.sleep(300);
 
-       const count = await element.all(by.tagName('mat-row')).count();
-       expect(count).toBeLessThan(initialRowCount);
-     });
+    const count = await element.all(by.tagName('mat-row')).count();
+    expect(count).toBeLessThan(initialRowCount);
+  });
 });

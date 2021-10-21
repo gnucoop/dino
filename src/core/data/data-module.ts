@@ -29,9 +29,7 @@ export class DataModule {
   static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule> {
     return {
       ngModule: DataModule,
-      providers: [
-        {provide: DATA_SERVICE_CONFIG, useValue: config},
-      ],
+      providers: [{provide: DATA_SERVICE_CONFIG, useValue: config}],
     };
   }
 }

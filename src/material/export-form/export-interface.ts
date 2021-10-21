@@ -20,11 +20,7 @@
  *
  */
 
-import {
-  AjfField as AjfFieldCore,
-  AjfNode,
-  AjfNodeType,
-} from '@ajf/core/forms';
+import {AjfField as AjfFieldCore, AjfNode, AjfNodeType} from '@ajf/core/forms';
 
 export interface AjfField extends AjfFieldCore {
   slideIndex?: number;
@@ -50,6 +46,6 @@ export interface ExportData extends Context {
   dewco: Context;
 }
 
-export type ExportFormat = 'csv'|'xlsx'|'splitted-xlsx';
+export type ExportFormat = 'csv' | 'xlsx' | 'splitted-xlsx';
 
 export const MAX_SHEETNAME_LENGTH = 31;

@@ -37,9 +37,6 @@ import {AuthDemo} from './auth-demo';
     ReactiveFormsModule,
     RouterModule.forChild([{path: '', component: AuthDemo}]),
   ],
-  declarations: [
-    AuthDemo,
-  ],
+  declarations: [AuthDemo],
 })
-export class AuthDemoModule {
-}
+export class AuthDemoModule {}

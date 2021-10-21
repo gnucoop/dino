@@ -12,20 +12,22 @@ export class FakeDataGenerator<T extends Model = Model> {
    * @param manager The data model manager
    * @param docs The docs to generate
    */
-  generateData(manager: DataModelManager<T>, docs: T[]):
-      Observable<{success: RxDocument<T, {}>[]; error: any[]; }> {
+  generateData(
+    manager: DataModelManager<T>,
+    docs: T[],
+  ): Observable<{success: RxDocument<T, {}>[]; error: any[]}> {
     if (manager == null || docs.length == 0) {
       return obsOf({success: [], error: []});
     }
     return manager.list().pipe(
-        switchMap(listquery => from(listquery.exec())),
-        switchMap(doclist => {
-          if (doclist.length === 0) {
-            return manager.bulkCreate(docs);
-          }
-          return obsOf({success: [], error: []});
-        }),
-        take(1),
+      switchMap(listquery => from(listquery.exec())),
+      switchMap(doclist => {
+        if (doclist.length === 0) {
+          return manager.bulkCreate(docs);
+        }
+        return obsOf({success: [], error: []});
+      }),
+      take(1),
     );
   }
   constructor() {}

@@ -34,12 +34,7 @@ import {
 import {FormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {
-  FilterItem,
-  FilterListType,
-  FiltersService,
-  SearchFiltersComponent,
-} from '@dewco/core/list';
+import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dewco/core/list';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dewco/material/export-form';
 import {SearchFiltersDialog} from '@dewco/material/search-filters-dialog';
@@ -59,7 +54,7 @@ import {catchError} from 'rxjs/operators';
   templateUrl: 'search-filters-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  providers: [{provide: SearchFiltersComponent, useExisting: SearchFiltersBar}]
+  providers: [{provide: SearchFiltersComponent, useExisting: SearchFiltersBar}],
 })
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
   /**
@@ -118,17 +113,18 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   private _dialogSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      protected _fts: FiltersService,
-      public dialog: MatDialog,
-      private _cdr: ChangeDetectorRef,
-      private _bottomSheet: MatBottomSheet,
-      readonly breakpointObserver: BreakpointObserverService,
+    protected _fts: FiltersService,
+    public dialog: MatDialog,
+    private _cdr: ChangeDetectorRef,
+    private _bottomSheet: MatBottomSheet,
+    readonly breakpointObserver: BreakpointObserverService,
   ) {
     super();
   }
   @Output()
-  readonly exportEvt: EventEmitter<'XLSX'|'CSV'|'dialog'> =
-      new EventEmitter<'XLSX'|'CSV'|'dialog'>();
+  readonly exportEvt: EventEmitter<'XLSX' | 'CSV' | 'dialog'> = new EventEmitter<
+    'XLSX' | 'CSV' | 'dialog'
+  >();
 
   ngOnInit() {
     this._initFilters();
@@ -147,26 +143,28 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     dialogConfig.minWidth = `${this._filtersDialogWidth}vw`;
     dialogConfig.maxWidth = `${this._filtersDialogWidth}vw`;
     this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);
-    this._dialogSub = this._dialogRef.afterClosed()
-                          .pipe(catchError(err => throwError(err) as Observable<boolean>))
-                          .subscribe((search: boolean) => {
-                            if (search) {
-                              this._fts.updateAdditionalFilters();
-                            }
-                          });
+    this._dialogSub = this._dialogRef
+      .afterClosed()
+      .pipe(catchError(err => throwError(err) as Observable<boolean>))
+      .subscribe((search: boolean) => {
+        if (search) {
+          this._fts.updateAdditionalFilters();
+        }
+      });
   }
 
   openExportBottomSheet(): void {
-    this._bottomSheet.open(ExportBottomSheet)
-        .afterDismissed()
-        .subscribe((ev: 'XLSX'|'CSV'|'dialog') => this.exportEvt.emit(ev));
+    this._bottomSheet
+      .open(ExportBottomSheet)
+      .afterDismissed()
+      .subscribe((ev: 'XLSX' | 'CSV' | 'dialog') => this.exportEvt.emit(ev));
   }
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
    * @param filterItem The filter item to remove
    * @param listType The list/lists to remove the filter from
    */
-  removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
+  removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void {
     this._fts.removeFilter(filterItem, listType);
   }
 
@@ -175,18 +173,18 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * queryParams
    */
   private _initFilters() {
-    this._fts.initializeFilters(this.basicFilters)
-        .pipe(
-            catchError(err => throwError(err) as Observable<FormGroup[]>),
-            )
-        .subscribe(formGroups => {
-          this.basicFilters = [...this.basicFilters, ...formGroups];
-          this.additionalBasicFilters = formGroups;
-          this.additionalBasicFiltersLabels =
-              this.additionalBasicFilters.map(group => Object.keys(group.controls)[0]);
-          this._cdr.detectChanges();
-        })
-        .unsubscribe();
+    this._fts
+      .initializeFilters(this.basicFilters)
+      .pipe(catchError(err => throwError(err) as Observable<FormGroup[]>))
+      .subscribe(formGroups => {
+        this.basicFilters = [...this.basicFilters, ...formGroups];
+        this.additionalBasicFilters = formGroups;
+        this.additionalBasicFiltersLabels = this.additionalBasicFilters.map(
+          group => Object.keys(group.controls)[0],
+        );
+        this._cdr.detectChanges();
+      })
+      .unsubscribe();
   }
 
   ngOnDestroy() {

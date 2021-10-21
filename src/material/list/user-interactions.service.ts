@@ -24,13 +24,9 @@ import {Injectable} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {
   AdminUserInteractionsService as CoreAdminUserInteractionsService,
-  ListAction
+  ListAction,
 } from '@dewco/core/list';
-import {
-  Observable,
-  of as obsOf,
-  throwError,
-} from 'rxjs';
+import {Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ConfirmationDialog} from './confirmation-dialog';
 
@@ -45,9 +41,7 @@ export class AdminUserInteractionsService extends CoreAdminUserInteractionsServi
    */
   private _confirmationDialogRef: MatDialogRef<ConfirmationDialog>;
 
-  constructor(
-      private _dialog: MatDialog,
-  ) {
+  constructor(private _dialog: MatDialog) {
     super();
   }
 
@@ -63,7 +57,8 @@ export class AdminUserInteractionsService extends CoreAdminUserInteractionsServi
     dialogConfig.panelClass = 'confirmation-dialog';
     dialogConfig.data = {action: action};
     this._confirmationDialogRef = this._dialog.open(ConfirmationDialog, dialogConfig);
-    return this._confirmationDialogRef.afterClosed().pipe(
-        catchError(err => throwError(err) as Observable<boolean>));
+    return this._confirmationDialogRef
+      .afterClosed()
+      .pipe(catchError(err => throwError(err) as Observable<boolean>));
   }
 }

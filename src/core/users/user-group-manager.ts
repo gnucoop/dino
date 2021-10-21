@@ -36,13 +36,15 @@ import {UsersModule} from './users.module';
 @Injectable({providedIn: UsersModule})
 export class UserGroupManager extends DataModelManager<UserGroup> {
   constructor(
-      private _userModelManager: UserModelManager,
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
+    private _userModelManager: UserModelManager,
+    dataService: DataService,
+    permissionContextService: PermissionContextService,
   ) {
     super(
-        {name: 'user_group', collection: {schema, migrationStrategies}}, dataService,
-        permissionContextService);
+      {name: 'user_group', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
+    );
   }
 
   /**
@@ -50,14 +52,18 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
    * @returns The associated Groups
    */
   getActiveUserGroups(): Observable<UserGroup[]> {
-    return this._userModelManager.getActiveUserModel().pipe(switchMap(userModel => {
-      if (userModel == null) {
-        return [];
-      }
-      const userGroupIds = userModel.user_group_ids;
-      const querySelector = {id: {$in: userGroupIds}};
-      return this.query({selector: querySelector})
-          .pipe(switchMap(query => from(query.exec())), shareReplay(1));
-    }));
+    return this._userModelManager.getActiveUserModel().pipe(
+      switchMap(userModel => {
+        if (userModel == null) {
+          return [];
+        }
+        const userGroupIds = userModel.user_group_ids;
+        const querySelector = {id: {$in: userGroupIds}};
+        return this.query({selector: querySelector}).pipe(
+          switchMap(query => from(query.exec())),
+          shareReplay(1),
+        );
+      }),
+    );
   }
 }

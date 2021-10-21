@@ -31,7 +31,6 @@ import {ListModule} from '@dewco/material/list';
 import {MetricEditorModule} from '@dewco/material/metric-editor';
 import {SearchFiltersBarModule} from '@dewco/material/search-filters-bar';
 
-
 import {MetricSection} from './metric-section';
 
 @NgModule({
@@ -49,5 +48,4 @@ import {MetricSection} from './metric-section';
   ],
   exports: [MetricSection],
 })
-export class MetricSectionModule {
-}
+export class MetricSectionModule {}

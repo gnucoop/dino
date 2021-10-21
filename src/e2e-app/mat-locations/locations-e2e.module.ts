@@ -6,10 +6,6 @@ import {MatLocationsE2E} from './locations-e2e.component';
 
 @NgModule({
   declarations: [MatLocationsE2E],
-  imports: [
-    CommonModule,
-    MetricSectionModule,
-  ],
+  imports: [CommonModule, MetricSectionModule],
 })
-export class MaterialLocationsE2eModule {
-}
+export class MaterialLocationsE2eModule {}

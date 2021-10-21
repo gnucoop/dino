@@ -28,7 +28,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -60,7 +60,7 @@ export interface MetricDialogData<T extends Metric = Metric> {
   /**
    * The dialog mode.
    */
-  metricAction?: 'view'|'edit'|'create';
+  metricAction?: 'view' | 'edit' | 'create';
 }
 
 /**
@@ -96,11 +96,11 @@ export interface ParentMetric {
   /**
    * The Parent metric name
    */
-  parent_name: string|null;
+  parent_name: string | null;
   /**
    * The Parent metric uuid
    */
-  parent_id: string|null;
+  parent_id: string | null;
 }
 
 /**
@@ -134,7 +134,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   /**
    * The value of the Parent metric name (autcomplete)
    */
-  metricParentValue: Observable<string|ParentMetric> = new Observable<string|ParentMetric>();
+  metricParentValue: Observable<string | ParentMetric> = new Observable<string | ParentMetric>();
 
   /**
    * The available Parent options
@@ -158,12 +158,12 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   private _saveSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      private _router: Router,
-      readonly snackbar: MatSnackBar,
-      public dialogRef: MatDialogRef<MetricEditor>,
-      @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>,
-      private _nameMatchValidator: NameMatchValidator<T>,
-      private _cdr: ChangeDetectorRef,
+    private _router: Router,
+    readonly snackbar: MatSnackBar,
+    public dialogRef: MatDialogRef<MetricEditor>,
+    @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>,
+    private _nameMatchValidator: NameMatchValidator<T>,
+    private _cdr: ChangeDetectorRef,
   ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
@@ -255,37 +255,40 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     ];
 
     group['name'] = new FormControl(
-        currentMetricItem?.name ?? '',
-        Validators.required,
-        this._nameMatchValidator.nameCheck(
-            this._metricManager,
-            this._cdr,
-            currentMetricItem?.name,
-            this.data.metricAction,
-            ),
+      currentMetricItem?.name ?? '',
+      Validators.required,
+      this._nameMatchValidator.nameCheck(
+        this._metricManager,
+        this._cdr,
+        currentMetricItem?.name,
+        this.data.metricAction,
+      ),
     );
     group['parent'] = new FormControl(
-        {
-          parent_name: currentMetricItem?.parent_name ?? null,
-          parent_id: currentMetricItem?.parent_id ?? null,
-        },
-        RequireMatch);
+      {
+        parent_name: currentMetricItem?.parent_name ?? null,
+        parent_id: currentMetricItem?.parent_id ?? null,
+      },
+      RequireMatch,
+    );
 
     this.metricParentValue = group['parent'].valueChanges;
 
     for (let propKey in schema.properties) {
       const propValue = schema.properties[propKey];
-      const propRequired = schema.required!.indexOf(propKey) >= 0 &&
-          !(propValue.type?.length && propValue.type.indexOf('null') > 0);
+      const propRequired =
+        schema.required!.indexOf(propKey) >= 0 &&
+        !(propValue.type?.length && propValue.type.indexOf('null') > 0);
       if (METRIC_DEFAULT_PROPERTIES.indexOf(propKey) < 0) {
         group[propKey] = new FormControl(
-            currentMetricItem != null ? currentMetricItem![propKey] : null,
-            propRequired ? Validators.required : null);
+          currentMetricItem != null ? currentMetricItem![propKey] : null,
+          propRequired ? Validators.required : null,
+        );
         const field: MetricFormField = {
           fieldName: propKey,
           hint: `${propValue['description']} ${propRequired ? '' : '  (optional)'}`,
-          placeholder: propKey.replace('0', ' ').charAt(0).toUpperCase() +
-              propKey.replace('_', ' ').slice(1),
+          placeholder:
+            propKey.replace('0', ' ').charAt(0).toUpperCase() + propKey.replace('_', ' ').slice(1),
         };
         fields.push(field);
       }
@@ -299,51 +302,55 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   ngOnInit(): void {
     if (this._metricManager == null) {
       this._router.navigateByUrl('');
-      this.snackbar.open(
-          'Oops! Something went wrong opening the Metric', 'ERROR', {duration: 5000});
+      this.snackbar.open('Oops! Something went wrong opening the Metric', 'ERROR', {
+        duration: 5000,
+      });
       throw new Error('No metric manager was provided');
     }
 
     this._saveSub = this._saveEvt
-                        .pipe(
-                            switchMap(item => {
-                              if (this.data.metricAction === 'edit') {
-                                return this._metricManager.update(item);
-                              } else {
-                                return this._metricManager.create(item);
-                              }
-                            }),
-                            )
-                        .subscribe(res => {
-                          if (res == null) {
-                            this.snackbar.open(
-                                `Oops! Something went wrong while saving the Metric.`, 'SAVE ERROR',
-                                {duration: 10000});
-                          } else {
-                            this.snackbar.open(`Metric saved`, 'METRIC SAVED', {duration: 10000});
-                          }
-                        });
+      .pipe(
+        switchMap(item => {
+          if (this.data.metricAction === 'edit') {
+            return this._metricManager.update(item);
+          } else {
+            return this._metricManager.create(item);
+          }
+        }),
+      )
+      .subscribe(res => {
+        if (res == null) {
+          this.snackbar.open(`Oops! Something went wrong while saving the Metric.`, 'SAVE ERROR', {
+            duration: 10000,
+          });
+        } else {
+          this.snackbar.open(`Metric saved`, 'METRIC SAVED', {duration: 10000});
+        }
+      });
 
     this.parentOptions = this.metricParentValue.pipe(
-        withLatestFrom(
-            this._metricManager.list().pipe(
-                switchMap(query => from(query.exec())),
-                map(docs => docs.map(doc => {
-                  return {parent_id: doc.id, parent_name: doc.name};
-                })),
-                ),
-            ),
-        map(([parent, parentOptions]) => {
-          if (parent != null && typeof parent === 'string') {
-            const parentName = parent.toLowerCase();
-            return parentOptions.filter(option => {
-              return (
-                  option.parent_name.toLowerCase().includes(parentName) &&
-                  option.parent_name != this.metricForm.get('name')?.value);
-            });
-          }
-          return [];
-        }),
+      withLatestFrom(
+        this._metricManager.list().pipe(
+          switchMap(query => from(query.exec())),
+          map(docs =>
+            docs.map(doc => {
+              return {parent_id: doc.id, parent_name: doc.name};
+            }),
+          ),
+        ),
+      ),
+      map(([parent, parentOptions]) => {
+        if (parent != null && typeof parent === 'string') {
+          const parentName = parent.toLowerCase();
+          return parentOptions.filter(option => {
+            return (
+              option.parent_name.toLowerCase().includes(parentName) &&
+              option.parent_name != this.metricForm.get('name')?.value
+            );
+          });
+        }
+        return [];
+      }),
     );
   }
 

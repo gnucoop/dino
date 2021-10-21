@@ -34,10 +34,7 @@ export class ProjectModule {
     icon: 'assignment',
     metricName: 'project',
   };
-  constructor(
-      private _filtersService: FiltersService,
-      private _metricsService: MetricsService,
-  ) {
+  constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('project');
     this._metricsService.activateMetric(this.projectMetric);
   }

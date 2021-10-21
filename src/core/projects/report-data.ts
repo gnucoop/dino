@@ -30,6 +30,6 @@ declare module '@dewco/core/reports/report-data' {
     /**
      * The Report Data project id.
      */
-    project_id: string|null;
+    project_id: string | null;
   }
 }

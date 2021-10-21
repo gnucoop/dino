@@ -21,10 +21,7 @@
  */
 
 import {AjfCommonModule} from '@ajf/core/common';
-import {
-  AjfFormRendererService,
-  AjfFormsModule as AjfCoreFormsModule,
-} from '@ajf/core/forms';
+import {AjfFormRendererService, AjfFormsModule as AjfCoreFormsModule} from '@ajf/core/forms';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {AjfFormsModule} from '@ajf/material/forms';
 import {CommonModule} from '@angular/common';
@@ -61,17 +58,8 @@ import {SearchFiltersWidget} from './search-filters-widget';
     ReactiveFormsModule,
     RouterModule,
   ],
-  declarations: [
-    NodeAsFilterItemPipe,
-    SearchFiltersWidget,
-  ],
-  exports: [
-    NodeAsFilterItemPipe,
-    SearchFiltersWidget,
-  ],
-  providers: [
-    AjfFormRendererService,
-  ],
+  declarations: [NodeAsFilterItemPipe, SearchFiltersWidget],
+  exports: [NodeAsFilterItemPipe, SearchFiltersWidget],
+  providers: [AjfFormRendererService],
 })
-export class SearchFiltersWidgetModule {
-}
+export class SearchFiltersWidgetModule {}

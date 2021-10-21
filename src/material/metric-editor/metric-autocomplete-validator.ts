@@ -27,7 +27,7 @@ import {AbstractControl, ValidationErrors} from '@angular/forms';
  * to force the selection of a suggested option.
  * @param control The form control.
  */
-export function RequireMatch(control: AbstractControl): ValidationErrors|null {
+export function RequireMatch(control: AbstractControl): ValidationErrors | null {
   const selection: any = control.value;
   if (selection === '') {
     control.setValue({parent_name: null, parent_id: null});

@@ -22,18 +22,8 @@
 
 import {Injectable} from '@angular/core';
 import {AuthService} from '@dewco/core/auth';
-import {
-  combineLatest,
-  Observable,
-  Subject,
-} from 'rxjs';
-import {
-  debounceTime,
-  map,
-  scan,
-  shareReplay,
-  startWith,
-} from 'rxjs/operators';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {debounceTime, map, scan, shareReplay, startWith} from 'rxjs/operators';
 
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 
@@ -47,25 +37,23 @@ export class PermissionContextService {
 
   private _basePermissionContext: Observable<PermissionContext>;
   private _permissionContextDataUpdate: Subject<PermissionContextDataUpdate> =
-      new Subject<PermissionContextDataUpdate>();
+    new Subject<PermissionContextDataUpdate>();
 
   constructor(authService: AuthService) {
     this._basePermissionContext = authService.authenticated.pipe(
-        map(authenticated => ({user: authenticated ? authService.getUserInfo() : null})),
+      map(authenticated => ({user: authenticated ? authService.getUserInfo() : null})),
     );
 
     const ctxUpdate = this._permissionContextDataUpdate.pipe(
-        scan((acc, val) => ({...acc, ...val}), {} as PermissionContextDataUpdate),
-        startWith({}),
+      scan((acc, val) => ({...acc, ...val}), {} as PermissionContextDataUpdate),
+      startWith({}),
     );
 
-    this.permissionContext =
-        combineLatest([this._basePermissionContext, ctxUpdate])
-            .pipe(
-                map(([baseContext, contextUpdate]) => ({...baseContext, ...contextUpdate})),
-                debounceTime(300),
-                shareReplay(1),
-            );
+    this.permissionContext = combineLatest([this._basePermissionContext, ctxUpdate]).pipe(
+      map(([baseContext, contextUpdate]) => ({...baseContext, ...contextUpdate})),
+      debounceTime(300),
+      shareReplay(1),
+    );
   }
 
   /**

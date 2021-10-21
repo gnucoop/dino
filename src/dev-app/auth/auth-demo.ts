@@ -21,11 +21,7 @@
  */
 
 import {Component} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthService, Credentials} from '@dewco/core/auth';
 
 @Component({
@@ -37,7 +33,7 @@ export class AuthDemo {
   loginResult = '';
   readonly loginForm: FormGroup = new FormGroup({
     email: new FormControl(null, Validators.required),
-    password: new FormControl(null, Validators.required)
+    password: new FormControl(null, Validators.required),
   });
 
   constructor(private _authService: AuthService) {}
@@ -47,7 +43,8 @@ export class AuthDemo {
       return;
     }
 
-    this._authService.login(this.loginForm.value as Credentials)
-        .subscribe(loggedIn => (this.loginResult = loggedIn ? 'success' : 'failure'));
+    this._authService
+      .login(this.loginForm.value as Credentials)
+      .subscribe(loggedIn => (this.loginResult = loggedIn ? 'success' : 'failure'));
   }
 }

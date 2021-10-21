@@ -34,25 +34,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {
-  FilterGroup,
-  FilterItem,
-  FilterListType,
-  FiltersService,
-} from '@dewco/core/list';
+import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dewco/core/list';
 import {SearchFiltersWidget} from '@dewco/material/search-filters-widget';
-import {
-  BehaviorSubject,
-  Observable,
-  Subscription,
-  throwError,
-} from 'rxjs';
-import {
-  catchError,
-  map,
-  take,
-  withLatestFrom,
-} from 'rxjs/operators';
+import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
+import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -100,9 +85,9 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   private _backdropClickSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      public dialogRef: MatDialogRef<SearchFiltersDialog>,
-      @Inject(MAT_DIALOG_DATA) public data: any,
-      public fts: FiltersService,
+    public dialogRef: MatDialogRef<SearchFiltersDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public fts: FiltersService,
   ) {
     this._currentGroupId = new BehaviorSubject<number>(0);
     this._updateWidgetsEvent = new EventEmitter<boolean>();
@@ -112,18 +97,21 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     // This is where the setup of all widgets data happens
     this.filterItemsData = this.fts.generatedFilters.pipe(
-        withLatestFrom(this._currentGroupId),
-        map(([groups, id]) => groups[id] as FilterGroup),
-        map((group) => group.filterGroupAdditionalFilters ?
-                group.filterGroupAdditionalFilters.filter(ft => ft.fieldType !== AjfFieldType.Empty)
-                    .map(flt => {
-                      flt.isFilterItemDetails = group.isFilterGroupDetails;
-                      return flt;
-                    }) :
-                []),
-        map(filters => filters.map(f => this._setupFilterItem(f))),
-        catchError(err => throwError(err) as Observable<FilterItem[]>),
-        take(1),
+      withLatestFrom(this._currentGroupId),
+      map(([groups, id]) => groups[id] as FilterGroup),
+      map(group =>
+        group.filterGroupAdditionalFilters
+          ? group.filterGroupAdditionalFilters
+              .filter(ft => ft.fieldType !== AjfFieldType.Empty)
+              .map(flt => {
+                flt.isFilterItemDetails = group.isFilterGroupDetails;
+                return flt;
+              })
+          : [],
+      ),
+      map(filters => filters.map(f => this._setupFilterItem(f))),
+      catchError(err => throwError(err) as Observable<FilterItem[]>),
+      take(1),
     );
   }
 
@@ -135,8 +123,8 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
         }
         let matchingWidgets = this.widgets.toArray().filter(widget => {
           return this.fts.temporaryFilters.value.some(
-              ft => ft.name === widget.widgetName && ft.value === null &&
-                  widget.toggleButton.checked);
+            ft => ft.name === widget.widgetName && ft.value === null && widget.toggleButton.checked,
+          );
         });
         matchingWidgets.map(w => {
           w.toggleButton.toggle();
@@ -186,13 +174,14 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
    * @param filterItem The filter item to remove
    * @param filterList The filter list type or types
    */
-  removeFilter(filterItem: FilterItem, listType: FilterListType[]|FilterListType): void {
-    this.fts.removeFilter(filterItem, listType)
-        .pipe(
-            take(1),
-            catchError(err => throwError(err) as Observable<boolean>),
-            )
-        .subscribe(res => this._updateWidgetsEvent.emit(res));
+  removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void {
+    this.fts
+      .removeFilter(filterItem, listType)
+      .pipe(
+        take(1),
+        catchError(err => throwError(err) as Observable<boolean>),
+      )
+      .subscribe(res => this._updateWidgetsEvent.emit(res));
   }
 
   /**

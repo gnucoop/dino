@@ -28,7 +28,6 @@ import {
 } from './data-permission-interface';
 import {Model} from './model';
 
-
 /**
  * Interface to check and manage User permissions.
  * Exposes methods for checking User permissions to create, delete, or modify a document

@@ -29,9 +29,7 @@ export class ConfigModule {
   static forRoot(config: ConfigServiceConfig): ModuleWithProviders<ConfigModule> {
     return {
       ngModule: ConfigModule,
-      providers: [
-        {provide: CONFIG_SERVICE_CONFIG, useValue: config},
-      ],
+      providers: [{provide: CONFIG_SERVICE_CONFIG, useValue: config}],
     };
   }
 }

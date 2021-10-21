@@ -41,9 +41,6 @@ import {DataDemo} from './data-demo';
     ReactiveFormsModule,
     RouterModule.forChild([{path: '', component: DataDemo}]),
   ],
-  declarations: [
-    DataDemo,
-  ],
+  declarations: [DataDemo],
 })
-export class DataDemoModule {
-}
+export class DataDemoModule {}

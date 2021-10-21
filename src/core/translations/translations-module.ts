@@ -27,7 +27,7 @@ import {dewcoTranslations} from './translations';
 export class DewcoTranslationsModule {
   constructor(ts: TranslocoService) {
     const langs = ts.getAvailableLangs() as string[];
-    langs.forEach((lang) => {
+    langs.forEach(lang => {
       if (dewcoTranslations[lang] != null) {
         ts.setTranslation(dewcoTranslations[lang], lang);
       }

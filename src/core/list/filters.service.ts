@@ -37,14 +37,7 @@ import {
   Subscription,
   throwError,
 } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  map,
-  skip,
-  take,
-  withLatestFrom,
-} from 'rxjs/operators';
+import {catchError, debounceTime, map, skip, take, withLatestFrom} from 'rxjs/operators';
 
 import {
   DEFAULT_MODEL_KEYS,
@@ -184,7 +177,7 @@ export class FiltersService<T extends Model = Model> {
   /**
    * Encoded string of a filters preset currently being loaded
    */
-  private _loadingPreset: string|null;
+  private _loadingPreset: string | null;
 
   /**
    * Subscribes to the load preset event, loading the filters preset and
@@ -201,11 +194,7 @@ export class FiltersService<T extends Model = Model> {
     return this._loadPresetEvent;
   }
 
-
-  constructor(
-      private _route: ActivatedRoute,
-      private _router: Router,
-  ) {
+  constructor(private _route: ActivatedRoute, private _router: Router) {
     this._generatedModelFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._generatedAdditionalFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._basicFilters = new BehaviorSubject<FilterItem[]>([]);
@@ -220,54 +209,48 @@ export class FiltersService<T extends Model = Model> {
     this._availableBasicFilterLabels = [];
     this._formValueChanges = [];
 
-    this._generatedFilters =
-        combineLatest([
-          this._generatedModelFilters,
-          this._generatedAdditionalFilters,
-          this._customFilters,
-        ])
-            .pipe(
-                map(([defaultModelFilters, defaultAdditionalFilters, customFilters]) => {
-                  if (customFilters.length > 0) {
-                    return customFilters;
-                  }
-                  return defaultModelFilters.concat(defaultAdditionalFilters);
-                }),
-                catchError(err => throwError(err) as Observable<FilterGroup[]>),
-            );
+    this._generatedFilters = combineLatest([
+      this._generatedModelFilters,
+      this._generatedAdditionalFilters,
+      this._customFilters,
+    ]).pipe(
+      map(([defaultModelFilters, defaultAdditionalFilters, customFilters]) => {
+        if (customFilters.length > 0) {
+          return customFilters;
+        }
+        return defaultModelFilters.concat(defaultAdditionalFilters);
+      }),
+      catchError(err => throwError(err) as Observable<FilterGroup[]>),
+    );
 
     this._loadingPresetSub.unsubscribe();
-    this._loadingPresetSub =
-        this._loadPresetEvent
-            .pipe(
-                withLatestFrom(this._route.queryParams.pipe(map((f) => f['filters']))),
-                catchError(err => throwError(err) as Observable<[any, any]>),
-                )
-            .subscribe(([loadEvent, preset]) => {
-              if (loadEvent) {
-                this.loadPreset(preset);
-              }
-            });
+    this._loadingPresetSub = this._loadPresetEvent
+      .pipe(
+        withLatestFrom(this._route.queryParams.pipe(map(f => f['filters']))),
+        catchError(err => throwError(err) as Observable<[any, any]>),
+      )
+      .subscribe(([loadEvent, preset]) => {
+        if (loadEvent) {
+          this.loadPreset(preset);
+        }
+      });
 
     this._queryString = combineLatest([
-                          this._basicFilters.pipe(skip(1)),
-                          this._additionalFilters.pipe(skip(1)),
-                        ])
-                            .pipe(
-                                map(([
-                                      basicFilters,
-                                      additionalFilters,
-                                    ]) => {
-                                  const allFilters = [...basicFilters, ...additionalFilters].filter(
-                                      (ft) => ft.value || ft.value === false || ft.value === 0);
-                                  if (this._loadingPreset != null) {
-                                    this._updateBasicFormValues(allFilters);
-                                    this._loadingPreset = null;
-                                  }
-                                  return this._updateQueryString(allFilters);
-                                }),
-                                catchError(err => throwError(err) as Observable<string>),
-                            );
+      this._basicFilters.pipe(skip(1)),
+      this._additionalFilters.pipe(skip(1)),
+    ]).pipe(
+      map(([basicFilters, additionalFilters]) => {
+        const allFilters = [...basicFilters, ...additionalFilters].filter(
+          ft => ft.value || ft.value === false || ft.value === 0,
+        );
+        if (this._loadingPreset != null) {
+          this._updateBasicFormValues(allFilters);
+          this._loadingPreset = null;
+        }
+        return this._updateQueryString(allFilters);
+      }),
+      catchError(err => throwError(err) as Observable<string>),
+    );
   }
 
   /**
@@ -285,15 +268,16 @@ export class FiltersService<T extends Model = Model> {
       propertyKeys.splice(index, 1);
     }
     let modelFiltersGroup: FilterGroup = {
-      filterGroupName: modelSchema.title ?
-          modelSchema.title.charAt(0).toUpperCase() + modelSchema.title.slice(1) :
-          '',
+      filterGroupName: modelSchema.title
+        ? modelSchema.title.charAt(0).toUpperCase() + modelSchema.title.slice(1)
+        : '',
       filterGroupAdditionalFilters: [],
     };
     propertyKeys.forEach(prop => {
       if (prop && DEFAULT_MODEL_KEYS.indexOf(prop) < 0) {
         modelFiltersGroup.filterGroupAdditionalFilters?.push(
-            this._propToFilterItem(prop, modelSchema.properties[prop as keyof T]));
+          this._propToFilterItem(prop, modelSchema.properties[prop as keyof T]),
+        );
       }
     });
     const currentModelFilters = this._generatedModelFilters.getValue();
@@ -350,8 +334,9 @@ export class FiltersService<T extends Model = Model> {
    */
   addFilter(filterItem: FilterItem, filterList: FilterListType): void {
     const currentList = this._selectFilterListType(filterList);
-    const currentValue =
-        this._selectFilterListType(filterList).value.map(a => ({...a}) as FilterItem);
+    const currentValue = this._selectFilterListType(filterList).value.map(
+      a => ({...a} as FilterItem),
+    );
     if (filterList === 'basic') {
       this._updateBasicFormValues([filterItem]);
     }
@@ -366,8 +351,10 @@ export class FiltersService<T extends Model = Model> {
    * @param filterList The filter list or lists where it will be removed from
    * @returns a confirmation of the filter removal
    */
-  removeFilter(filterItem: FilterItem, filterList: FilterListType[]|FilterListType):
-      Observable<boolean> {
+  removeFilter(
+    filterItem: FilterItem,
+    filterList: FilterListType[] | FilterListType,
+  ): Observable<boolean> {
     if (!Array.isArray(filterList)) {
       filterList = [filterList];
     }
@@ -394,19 +381,19 @@ export class FiltersService<T extends Model = Model> {
    * @param filterList? Optional list of filters to search in
    * @returns The found FilterItem, or undefined if nothing is found
    */
-  findFilterByName(filterName: string, filterList?: FilterListType):
-      Observable<FilterItem|undefined> {
+  findFilterByName(
+    filterName: string,
+    filterList?: FilterListType,
+  ): Observable<FilterItem | undefined> {
     if (filterList == null) {
       filterList = 'temporary';
     }
     const currentList = this._selectFilterListType(filterList);
-    const filterItem: Observable<FilterItem|undefined> = currentList.pipe(
-        map(filters => filters.find(f => f.name === filterName)),
-        take(1),
+    const filterItem: Observable<FilterItem | undefined> = currentList.pipe(
+      map(filters => filters.find(f => f.name === filterName)),
+      take(1),
     );
-    return filterItem.pipe(
-        catchError(err => throwError(err) as Observable<FilterItem>),
-    );
+    return filterItem.pipe(catchError(err => throwError(err) as Observable<FilterItem>));
   }
 
   /**
@@ -467,9 +454,12 @@ export class FiltersService<T extends Model = Model> {
       const valueToCheck = str[1].replace(/[\"\']/g, '');
       this.findFilterByName(nameToCheck).subscribe(filterToCheck => {
         filterToCheck = filterItem ?? filterToCheck;
-        if (!filterToCheck || filterToCheck.value == null ||
-            filterToCheck.value.indexOf(valueToCheck) < 0 ||
-            filterToCheck.operator?.value == '$nin') {
+        if (
+          !filterToCheck ||
+          filterToCheck.value == null ||
+          filterToCheck.value.indexOf(valueToCheck) < 0 ||
+          filterToCheck.operator?.value == '$nin'
+        ) {
           valid = false;
         }
       });
@@ -483,7 +473,7 @@ export class FiltersService<T extends Model = Model> {
           const conditionNoQuotes = cnd.replace(nameToCheck, filterToCheck?.value);
           const conditionQuotes = cnd.replace(nameToCheck, `'${filterToCheck?.value}'`);
           const evaluateConditions =
-              evaluateExpression(conditionNoQuotes) || evaluateExpression(conditionQuotes);
+            evaluateExpression(conditionNoQuotes) || evaluateExpression(conditionQuotes);
           if (!filterToCheck || filterToCheck.value == null || !evaluateConditions) {
             valid = false;
           }
@@ -498,7 +488,7 @@ export class FiltersService<T extends Model = Model> {
    * Merges the temporaryFilters into the additional filters, updating the latter
    */
   updateAdditionalFilters(): void {
-    const newFilters = this._temporaryFilters.value.map(a => ({...a}) as FilterItem);
+    const newFilters = this._temporaryFilters.value.map(a => ({...a} as FilterItem));
     this._additionalFilters.next(this._mergeFilterItems(this._additionalFilters.value, newFilters));
   }
 
@@ -506,7 +496,7 @@ export class FiltersService<T extends Model = Model> {
    * Resets the temporaryFilters to the current additionalFilters value
    */
   resetTemporaryFilters(): void {
-    const tempFilters = this._additionalFilters.value.map(a => ({...a}) as FilterItem);
+    const tempFilters = this._additionalFilters.value.map(a => ({...a} as FilterItem));
     this._temporaryFilters.next(tempFilters);
   }
 
@@ -522,35 +512,34 @@ export class FiltersService<T extends Model = Model> {
     this._formValueChanges = this._basicFormGroups.map(group => group.valueChanges);
 
     this._basicFiltersSub.unsubscribe();
-    this._basicFiltersSub =
-        merge(...this._formValueChanges)
-            .pipe(
-                withLatestFrom(this._basicFilters),
-                debounceTime(400),
-                map(([changes, basicFilters]) => {
-                  let filterItems: FilterItem[] = [];
-                  for (const fName of Object.keys(changes)) {
-                    const ftItem: FilterItem = {
-                      name: fName,
-                      value: changes[fName],
-                      operator: {label: 'Like', value: '$regex'},
-                      fieldType: AjfFieldType.String,
-                    };
-                    filterItems.push(ftItem);
-                  }
-                  return [filterItems, basicFilters];
-                }),
-                catchError(err => throwError(err) as Observable<[FilterItem[], FilterItem[]]>),
-                )
-            .subscribe(([filters, currentFilters]) => {
-              const currentValue = currentFilters;
-              this._basicFilters.next(this._mergeFilterItems(currentValue, filters));
-            });
-
+    this._basicFiltersSub = merge(...this._formValueChanges)
+      .pipe(
+        withLatestFrom(this._basicFilters),
+        debounceTime(400),
+        map(([changes, basicFilters]) => {
+          let filterItems: FilterItem[] = [];
+          for (const fName of Object.keys(changes)) {
+            const ftItem: FilterItem = {
+              name: fName,
+              value: changes[fName],
+              operator: {label: 'Like', value: '$regex'},
+              fieldType: AjfFieldType.String,
+            };
+            filterItems.push(ftItem);
+          }
+          return [filterItems, basicFilters];
+        }),
+        catchError(err => throwError(err) as Observable<[FilterItem[], FilterItem[]]>),
+      )
+      .subscribe(([filters, currentFilters]) => {
+        const currentValue = currentFilters;
+        this._basicFilters.next(this._mergeFilterItems(currentValue, filters));
+      });
 
     this.loadPresetTrigger();
-    return obsOf(this._basicAdditionalFormGroups)
-        .pipe(catchError(err => throwError(err) as Observable<FormGroup[]>));
+    return obsOf(this._basicAdditionalFormGroups).pipe(
+      catchError(err => throwError(err) as Observable<FormGroup[]>),
+    );
   }
 
   /**
@@ -613,7 +602,7 @@ export class FiltersService<T extends Model = Model> {
         }
       }
     }
-    const diff = newFilters.filter((item) => !oldFilters.some((ft) => ft.name === item.name));
+    const diff = newFilters.filter(item => !oldFilters.some(ft => ft.name === item.name));
     oldFilters = oldFilters.concat(diff);
     return oldFilters;
   }
@@ -628,7 +617,7 @@ export class FiltersService<T extends Model = Model> {
     if (this._loadingPreset == null) {
       this._router.navigate([], {
         relativeTo: this._route,
-        queryParams: filterItems.length ? {'filters': queryString} : null
+        queryParams: filterItems.length ? {'filters': queryString} : null,
       });
     }
     return queryString;
@@ -658,8 +647,10 @@ export class FiltersService<T extends Model = Model> {
    * @returns The generated FilterItem
    */
   private _propToFilterItem(propName: string, prop: TopLevelProperty): FilterItem {
-    const fieldType = prop.type != null && typeof prop.type === 'string' ? FIELD_TYPES[prop.type] :
-                                                                           AjfFieldType.String;
+    const fieldType =
+      prop.type != null && typeof prop.type === 'string'
+        ? FIELD_TYPES[prop.type]
+        : AjfFieldType.String;
     let filterItem: FilterItem = {
       name: propName,
       fieldType,

@@ -46,22 +46,22 @@ export interface FormData extends Model {
   /**
    * The Form Data area id.
    */
-  area_id: string|null;
+  area_id: string | null;
 
   /**
    * The Form Data project id.
    */
-  project_id: string|null;
+  project_id: string | null;
 
   /**
    * The Form Data location id.
    */
-  location_id: string|null;
+  location_id: string | null;
 
   /**
    * The Form Data organization id.
    */
-  organization_id: string|null;
+  organization_id: string | null;
 }
 
 export const VERSION = 1;

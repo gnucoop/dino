@@ -34,7 +34,7 @@ export interface UserGroupDialogData {
   /**
    * The dialog mode.
    */
-  userGroupAction?: 'view'|'edit'|'create';
+  userGroupAction?: 'view' | 'edit' | 'create';
 }
 
 @Component({
@@ -50,8 +50,9 @@ export class MatUsersEditorE2E implements OnDestroy, AfterViewInit {
 
   metricTypes: string[] = [];
 
-  private _saveEvt: EventEmitter<InsertModel<UserGroup>> =
-      new EventEmitter<InsertModel<UserGroup>>();
+  private _saveEvt: EventEmitter<InsertModel<UserGroup>> = new EventEmitter<
+    InsertModel<UserGroup>
+  >();
 
   private _saveSub: Subscription = Subscription.EMPTY;
 
@@ -60,33 +61,34 @@ export class MatUsersEditorE2E implements OnDestroy, AfterViewInit {
   private _populatedSourceListEvt: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
-      private _userGroupManager: UserGroupManager,
-      private _userRoleManager: UserRoleManager,
-      private _formSchemaManager: FormSchemaManager,
-      private _snackbar: MatSnackBar,
-      public dialogRef: MatDialogRef<MixedEditor>,
-      @Inject(MAT_DIALOG_DATA) public data: UserGroupDialogData,
-      @Optional() private _areaManager: AreaManager|null,
-      @Optional() private _projectManager: ProjectManager|null,
-      @Optional() private _locationManager: LocationManager|null,
-      @Optional() private _organizationManager: OrganizationManager|null,
+    private _userGroupManager: UserGroupManager,
+    private _userRoleManager: UserRoleManager,
+    private _formSchemaManager: FormSchemaManager,
+    private _snackbar: MatSnackBar,
+    public dialogRef: MatDialogRef<MixedEditor>,
+    @Inject(MAT_DIALOG_DATA) public data: UserGroupDialogData,
+    @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _projectManager: ProjectManager | null,
+    @Optional() private _locationManager: LocationManager | null,
+    @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this._populateListSchedule.push(
-        this._populateList(this._userRoleManager, 'roleName', 'school', true),
-        this._populateList(this._formSchemaManager, 'name', 'view_list'),
+      this._populateList(this._userRoleManager, 'roleName', 'school', true),
+      this._populateList(this._formSchemaManager, 'name', 'view_list'),
     );
-
 
     if (this._areaManager != null) {
       this.metricTypes.push('area');
       this._populateListSchedule.push(
-          this._populateList(this._areaManager, 'name', 'volunteer_activism'));
+        this._populateList(this._areaManager, 'name', 'volunteer_activism'),
+      );
     }
 
     if (this._projectManager != null) {
       this.metricTypes.push('project');
       this._populateListSchedule.push(
-          this._populateList(this._projectManager, 'name', 'assignment'));
+        this._populateList(this._projectManager, 'name', 'assignment'),
+      );
     }
 
     if (this._locationManager != null) {
@@ -97,48 +99,51 @@ export class MatUsersEditorE2E implements OnDestroy, AfterViewInit {
     if (this._organizationManager != null) {
       this.metricTypes.push('organization');
       this._populateListSchedule.push(
-          this._populateList(this._organizationManager, 'name', 'public', true));
+        this._populateList(this._organizationManager, 'name', 'public', true),
+      );
     }
-
 
     combineLatest([...this._populateListSchedule]).subscribe(items => {
       const allItems: MixedEditorItem[] = [];
-      this.mixedEditorItems.next(allItems.concat(...items).sort((a, b) => {
-        let textA = a.itemName.toUpperCase();
-        let textB = b.itemName.toUpperCase();
-        const less = textA < textB;
-        const more = textA > textB;
-        if (less) {
-          return -1;
-        } else if (more) {
-          return 1;
-        } else {
-          return 0;
-        }
-      }));
+      this.mixedEditorItems.next(
+        allItems.concat(...items).sort((a, b) => {
+          let textA = a.itemName.toUpperCase();
+          let textB = b.itemName.toUpperCase();
+          const less = textA < textB;
+          const more = textA > textB;
+          if (less) {
+            return -1;
+          } else if (more) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }),
+      );
       this._populatedSourceListEvt.emit();
     });
 
-    this._saveSub =
-        this._saveEvt
-            .pipe(
-                switchMap(item => {
-                  if (this.data.userGroupAction === 'edit' && this.data.userGroupItem != null) {
-                    const updateItem = {...this.data.userGroupItem, ...item};
-                    return this._userGroupManager.update(updateItem);
-                  } else {
-                    return this._userGroupManager.create(item);
-                  }
-                }),
-                )
-            .subscribe(
-                success => {
-                  this._snackbar.open(`"${success?.groupName}" saved`, 'SAVE', {duration: 5000});
-                  this.dialogRef.close();
-                },
-                _ => this._snackbar.open(
-                    'Oops! Something went wrong saving the List', 'ERROR', {duration: 5000}),
-            );
+    this._saveSub = this._saveEvt
+      .pipe(
+        switchMap(item => {
+          if (this.data.userGroupAction === 'edit' && this.data.userGroupItem != null) {
+            const updateItem = {...this.data.userGroupItem, ...item};
+            return this._userGroupManager.update(updateItem);
+          } else {
+            return this._userGroupManager.create(item);
+          }
+        }),
+      )
+      .subscribe(
+        success => {
+          this._snackbar.open(`"${success?.groupName}" saved`, 'SAVE', {duration: 5000});
+          this.dialogRef.close();
+        },
+        _ =>
+          this._snackbar.open('Oops! Something went wrong saving the List', 'ERROR', {
+            duration: 5000,
+          }),
+      );
   }
 
   ngAfterViewInit(): void {
@@ -179,18 +184,21 @@ export class MatUsersEditorE2E implements OnDestroy, AfterViewInit {
       }
       const groupName = listName;
       const userRoleId = list.find(item => item.itemType === 'user_role')?.itemId;
-      const groupMetrics =
-          list.filter(item => this.metricTypes.indexOf(item.itemType) > -1).map(itm => {
-            return {
-              metricType: itm.itemType,
-              metricId: itm.itemId,
-              metricName: itm.itemName,
-            };
-          });
-      const groupFormSchemaIds =
-          list.filter(item => item.itemType === 'form_schema').map(itm => itm.itemId);
-      const groupReportSchemaIds =
-          list.filter(item => item.itemType === 'report_schema').map(itm => itm.itemId);
+      const groupMetrics = list
+        .filter(item => this.metricTypes.indexOf(item.itemType) > -1)
+        .map(itm => {
+          return {
+            metricType: itm.itemType,
+            metricId: itm.itemId,
+            metricName: itm.itemName,
+          };
+        });
+      const groupFormSchemaIds = list
+        .filter(item => item.itemType === 'form_schema')
+        .map(itm => itm.itemId);
+      const groupReportSchemaIds = list
+        .filter(item => item.itemType === 'report_schema')
+        .map(itm => itm.itemId);
 
       if (userRoleId) {
         const newUserGroup: InsertModel<UserGroup> = {
@@ -212,14 +220,15 @@ export class MatUsersEditorE2E implements OnDestroy, AfterViewInit {
   }
 
   private _populateList(
-      manager: DataModelManager<any>,
-      nameKey: string,
-      itemIcon: string,
-      uniqueItem: boolean = false,
-      ): Observable<MixedEditorItem[]> {
+    manager: DataModelManager<any>,
+    nameKey: string,
+    itemIcon: string,
+    uniqueItem: boolean = false,
+  ): Observable<MixedEditorItem[]> {
     return manager.list().pipe(
-        switchMap(qry => from(qry.exec())),
-        map(list => list.map(doc => {
+      switchMap(qry => from(qry.exec())),
+      map(list =>
+        list.map(doc => {
           const item: MixedEditorItem = {
             itemName: doc[nameKey],
             itemType: doc.collection.name,
@@ -230,8 +239,9 @@ export class MatUsersEditorE2E implements OnDestroy, AfterViewInit {
             itemParentId: doc.parent_id,
           };
           return item;
-        })),
-        take(1),
+        }),
+      ),
+      take(1),
     );
   }
 

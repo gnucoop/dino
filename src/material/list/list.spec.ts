@@ -6,12 +6,7 @@ import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
 import {FilterGroup, FiltersService, SearchFiltersComponent} from '../../core/list';
 
-import {
-  AdminUserInteractionsService,
-  ListDataSource,
-  ListModule,
-  SelectionList,
-} from './index';
+import {AdminUserInteractionsService, ListDataSource, ListModule, SelectionList} from './index';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -57,21 +52,15 @@ describe('List', () => {
   let list: SelectionList;
   let filterService: FiltersService;
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            ListModule,
-            RouterTestingModule,
-            MatDialogModule,
-          ],
-          providers: [
-            {provide: AdminUserInteractionsService, useClass: AUIServiceStub},
-            {provide: FiltersService, useClass: FiltersServiceStub},
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [ListModule, RouterTestingModule, MatDialogModule],
+      providers: [
+        {provide: AdminUserInteractionsService, useClass: AUIServiceStub},
+        {provide: FiltersService, useClass: FiltersServiceStub},
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    }).compileComponents();
     filterService = TestBed.inject(FiltersService);
     ftComponent = new SearchFiltersComponentStub();
     fixtureList = TestBed.createComponent<SelectionList>(SelectionList);

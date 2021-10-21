@@ -40,7 +40,7 @@ import {
   TemplateRef,
   ViewChild,
   ViewChildren,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
@@ -80,17 +80,19 @@ import {AdminUserInteractionsService} from './user-interactions.service';
   templateUrl: 'list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  animations: [trigger(
-      'detailExpand',
-      [
-        state('collapsed, void', style({height: '0px'})), state('expanded', style({height: '*'})),
-        transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-        transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-      ])],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed, void', style({height: '0px'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
-export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit,
-                                                                               AfterViewInit,
-                                                                               OnInit, OnDestroy {
+export class SelectionList<T extends Model = Model>
+  extends List<T>
+  implements AfterContentInit, AfterViewInit, OnInit, OnDestroy
+{
   /**
    * The List selection model. Allows selection of individual or multiple elements
    * of the List, for the purpose of performing bulk actions.
@@ -294,20 +296,27 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
   private _mainUnsubscribe: Subject<void> = new Subject();
 
   constructor(
-      cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, private _dialog: MatDialog,
-      private _fts: FiltersService, readonly breakpointObserver: BreakpointObserverService,
-      private _router: Router, private _componentFactoryResolver: ComponentFactoryResolver,
-      private _injector: Injector) {
+    cdr: ChangeDetectorRef,
+    aui: AdminUserInteractionsService,
+    private _dialog: MatDialog,
+    private _fts: FiltersService,
+    readonly breakpointObserver: BreakpointObserverService,
+    private _router: Router,
+    private _componentFactoryResolver: ComponentFactoryResolver,
+    private _injector: Injector,
+  ) {
     super(cdr, aui);
 
     this._fts.clearAdditionalBasicFilters();
   }
 
-  export(ev: 'XLSX'|'CSV'|'dialog') {
-    if (this.dataSource.additionalDataSchema != null &&
-        (this.dataSource.additionalDataSchema as FormSchema).schema != null &&
-        this.dataSource.dataResults.value != null) {
-      const formSchema: FormSchema = (this.dataSource.additionalDataSchema as FormSchema);
+  export(ev: 'XLSX' | 'CSV' | 'dialog') {
+    if (
+      this.dataSource.additionalDataSchema != null &&
+      (this.dataSource.additionalDataSchema as FormSchema).schema != null &&
+      this.dataSource.dataResults.value != null
+    ) {
+      const formSchema: FormSchema = this.dataSource.additionalDataSchema as FormSchema;
       if (ev === 'dialog') {
         let dialogRef = this._dialog.open(ExportForm);
         dialogRef.componentInstance.formSchema = formSchema;
@@ -382,7 +391,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * @param row The selected row or rows
    * @param action The action to be performed
    */
-  actionOnItems(row: T|T[], action: ListAction, isDetails: boolean = false): void {
+  actionOnItems(row: T | T[], action: ListAction, isDetails: boolean = false): void {
     if (this.dataSource == null) {
       return;
     }
@@ -456,14 +465,16 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       }
       delete this.expandedRowsData[row.id];
     } else if (!this.isRowExpanded(row) || forceExpand === true) {
-      this.getDetails(row).pipe(take(1)).subscribe(data => {
-        const dds = new MatTableDataSource(data);
-        this.expandedRowsData[row.id] = dds;
-        this.expandedRows.push(row);
-        this._cdr.detectChanges();
-        const sortsList = this._matSortsList.toArray();
-        this.expandedRowsData[row.id].sort = sortsList[sortsList.length - 1];
-      });
+      this.getDetails(row)
+        .pipe(take(1))
+        .subscribe(data => {
+          const dds = new MatTableDataSource(data);
+          this.expandedRowsData[row.id] = dds;
+          this.expandedRows.push(row);
+          this._cdr.detectChanges();
+          const sortsList = this._matSortsList.toArray();
+          this.expandedRowsData[row.id].sort = sortsList[sortsList.length - 1];
+        });
     }
   }
 
@@ -524,19 +535,20 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
       columns: this.headers,
     };
     this._columnsDialogRef = this._dialog.open(ColumnsSelector, dialogConfig);
-    this._columnsDialogRef.afterClosed()
-        .pipe(
-            catchError(err => throwError(err) as Observable<ListHeader<T>>),
-            takeUntil(this._mainUnsubscribe),
-            )
-        .subscribe(columns => {
-          if (!columns) {
-            return;
-          }
-          this.headers = columns;
-          this.mainListContext.headers.next(this.headers);
-          this.mainListContext.displayedColumns?.next(this.displayedColumns);
-        });
+    this._columnsDialogRef
+      .afterClosed()
+      .pipe(
+        catchError(err => throwError(err) as Observable<ListHeader<T>>),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe(columns => {
+        if (!columns) {
+          return;
+        }
+        this.headers = columns;
+        this.mainListContext.headers.next(this.headers);
+        this.mainListContext.displayedColumns?.next(this.displayedColumns);
+      });
   }
 
   /**
@@ -557,16 +569,15 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
         });
       }
 
-
       // This next code block avoids searching in hidden colums when filtering data by
       // kewyword, by providing a custom filterPredicate for the dataSource. To allow
       // searching in hidden columns, just comment this code block.
 
       this.dataSource.filterPredicate = (data: T, filter: string) => {
-        return this.headers.map(key => key.column)
-            .some(key => (key in data ? ('' + data[key]).toLowerCase().includes(filter) : false));
+        return this.headers
+          .map(key => key.column)
+          .some(key => (key in data ? ('' + data[key]).toLowerCase().includes(filter) : false));
       };
-
     } else {
       // If no filtersComponent is found in the template, the list is initalized without
       // any filters and/or filter presets.
@@ -590,21 +601,21 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    */
   private _initList(): void {
     this._actionEvent
-        .pipe(
-            switchMap(
-                ({action, items, isDetails}) => this._aui.askConfirm(action).pipe(
-                    map(confirmation => ({confirmation, action, items, isDetails})),
-                    ),
-                ),
-            map(({confirmation, action, items, isDetails}) => {
-              if (confirmation) {
-                this.processAction(action, items, isDetails);
-              }
-            }),
-            catchError(err => throwError(err)),
-            takeUntil(this._mainUnsubscribe),
-            )
-        .subscribe();
+      .pipe(
+        switchMap(({action, items, isDetails}) =>
+          this._aui
+            .askConfirm(action)
+            .pipe(map(confirmation => ({confirmation, action, items, isDetails}))),
+        ),
+        map(({confirmation, action, items, isDetails}) => {
+          if (confirmation) {
+            this.processAction(action, items, isDetails);
+          }
+        }),
+        catchError(err => throwError(err)),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe();
   }
 
   /**
@@ -613,7 +624,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
    * @param isDetails If true, the items are in the details of a parent
    * @returns The deleted items
    */
-  deleteAction(items: T|T[], isDetails: boolean = false): T[] {
+  deleteAction(items: T | T[], isDetails: boolean = false): T[] {
     if (!Array.isArray(items)) {
       items = [items];
     }

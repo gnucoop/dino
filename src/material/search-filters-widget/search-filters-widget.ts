@@ -81,8 +81,10 @@ import {catchError, debounceTime, switchMap} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [AjfFormRendererService],
 })
-export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterViewInit, OnInit,
-                                                                        OnDestroy {
+export class SearchFiltersWidget
+  extends AjfCoreFormRenderer
+  implements AfterViewInit, OnInit, OnDestroy
+{
   /**
    * The filterItem used to generate the AjfForm, and the widgetData
    */
@@ -172,20 +174,21 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
   /**
    * Operator value of the widget
    */
-  private _operatorValue: BehaviorSubject<Operator> =
-      new BehaviorSubject<Operator>({label: 'Like', value: '$regex'});
+  private _operatorValue: BehaviorSubject<Operator> = new BehaviorSubject<Operator>({
+    label: 'Like',
+    value: '$regex',
+  });
   get operatorValue(): BehaviorSubject<Operator> {
     return this._operatorValue;
   }
 
   constructor(
-      public rendererService: AjfFormRendererService,
-      changeDetectorRef: ChangeDetectorRef,
-      private _fs: FiltersService,
+    public rendererService: AjfFormRendererService,
+    changeDetectorRef: ChangeDetectorRef,
+    private _fs: FiltersService,
   ) {
     super(rendererService, changeDetectorRef);
   }
-
 
   ngOnInit() {
     this._widgetData = this._setupWidget(this.filterItemData);
@@ -194,8 +197,10 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
     this._matToggleValue.next(this._widgetData.active);
 
     // Here we check if the visibility conditions of the widget are met
-    if (this._widgetData.visibilityConditions != null &&
-        this._widgetData.visibilityConditions.condition != 'true') {
+    if (
+      this._widgetData.visibilityConditions != null &&
+      this._widgetData.visibilityConditions.condition != 'true'
+    ) {
       this._widgetVisibilitySub = this._fs.temporaryFilters.subscribe(_ => {
         const conditionVerified = this._fs.checkCondition(this._widgetData.visibilityConditions);
         if (conditionVerified !== this._widgetVisibility.value) {
@@ -205,62 +210,55 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
     }
 
     this._formValueChanges = this.formGroup.pipe(
-        switchMap(fg => fg ? fg.valueChanges : obsOf(null)),
+      switchMap(fg => (fg ? fg.valueChanges : obsOf(null))),
     );
 
-    this._changeFiltersSub =
-        combineLatest([
-          this._formValueChanges,
-          this._matToggleValue,
-          this.operatorValue,
-          this._widgetVisibility,
-        ])
-            .pipe(
-                debounceTime(300),
-                catchError(
-                    err => throwError(err) as
-                        Observable<[{[key: string]: any}, boolean, Operator, boolean]>),
-                )
-            .subscribe(([
-                         formValue,
-                         toggleValue,
-                         operatorValue,
-                         visibility,
-                       ]) => {
-              if (!formValue) {
-                return;
-              }
-              delete formValue.$value;
-              Object.keys(formValue).forEach(key => {
-                this.filterItemData.value = formValue[key];
-                this.filterItemData.operator = operatorValue;
-                this._validation = this._fs.checkValidation(
-                    this.filterItemData, this._widgetData.validationConditions);
-                this.filterItemData.isValid = this._validation;
-              });
-              if (toggleValue && this.filterItemData.value != null && visibility) {
-                this._widgetData.active = true;
-                this.includeFilter.emit(this.filterItemData);
-              } else if ((!toggleValue || !visibility) && this._widgetData.active) {
-                this._widgetData.active = false;
-                this.excludeFilter.emit(this.filterItemData);
-              }
-            });
+    this._changeFiltersSub = combineLatest([
+      this._formValueChanges,
+      this._matToggleValue,
+      this.operatorValue,
+      this._widgetVisibility,
+    ])
+      .pipe(
+        debounceTime(300),
+        catchError(
+          err => throwError(err) as Observable<[{[key: string]: any}, boolean, Operator, boolean]>,
+        ),
+      )
+      .subscribe(([formValue, toggleValue, operatorValue, visibility]) => {
+        if (!formValue) {
+          return;
+        }
+        delete formValue.$value;
+        Object.keys(formValue).forEach(key => {
+          this.filterItemData.value = formValue[key];
+          this.filterItemData.operator = operatorValue;
+          this._validation = this._fs.checkValidation(
+            this.filterItemData,
+            this._widgetData.validationConditions,
+          );
+          this.filterItemData.isValid = this._validation;
+        });
+        if (toggleValue && this.filterItemData.value != null && visibility) {
+          this._widgetData.active = true;
+          this.includeFilter.emit(this.filterItemData);
+        } else if ((!toggleValue || !visibility) && this._widgetData.active) {
+          this._widgetData.active = false;
+          this.excludeFilter.emit(this.filterItemData);
+        }
+      });
   }
 
   override ngAfterViewInit() {
     super.ngAfterViewInit();
-    this._toggleSub =
-        this._formValueChanges
-            .pipe(
-                catchError(err => throwError(err) as Observable<{[key: string]: any}>),
-                )
-            .subscribe(formValue => {
-              if (this.toggleButton && formValue != null && !this.toggleButton.checked) {
-                this.toggleButton.toggle();
-                this._matToggleValue.next(true);
-              }
-            });
+    this._toggleSub = this._formValueChanges
+      .pipe(catchError(err => throwError(err) as Observable<{[key: string]: any}>))
+      .subscribe(formValue => {
+        if (this.toggleButton && formValue != null && !this.toggleButton.checked) {
+          this.toggleButton.toggle();
+          this._matToggleValue.next(true);
+        }
+      });
   }
 
   /**
@@ -273,22 +271,25 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
   private _setupWidget(filterItem: FilterItem): WidgetData {
     const activeFilter = this._fs.temporaryFilters.value.find(f => f.name === filterItem.name);
     const fieldValue = activeFilter ? activeFilter.value : null;
-    const fieldChoices: AjfChoicesOrigin<any>[] =
-        filterItem.choicesOrigin ? [filterItem.choicesOrigin] : [];
+    const fieldChoices: AjfChoicesOrigin<any>[] = filterItem.choicesOrigin
+      ? [filterItem.choicesOrigin]
+      : [];
     filterItem.value = fieldValue;
     filterItem.operator =
-        activeFilter?.operator ?? DEFAULT_OPERATORS[filterItem.fieldType ?? AjfFieldType.String];
+      activeFilter?.operator ?? DEFAULT_OPERATORS[filterItem.fieldType ?? AjfFieldType.String];
     const formSchema: Partial<AjfForm> = {
       choicesOrigins: fieldChoices,
-      nodes: [{
-        parent: 0,
-        parentNode: 0,
-        id: 1,
-        name: filterItem.name,
-        label: filterItem.label,
-        nodeType: AjfNodeType.AjfSlide,
-        nodes: [filterItem as Partial<AjfNode>]
-      } as AjfSlide],
+      nodes: [
+        {
+          parent: 0,
+          parentNode: 0,
+          id: 1,
+          name: filterItem.name,
+          label: filterItem.label,
+          nodeType: AjfNodeType.AjfSlide,
+          nodes: [filterItem as Partial<AjfNode>],
+        } as AjfSlide,
+      ],
     };
     const ctx = Object.create({});
     ctx[filterItem.name] = fieldValue;
@@ -358,7 +359,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements AfterVie
         return false;
       }
     }
-    if ((this.toggleButton && this.toggleButton.checked)) {
+    if (this.toggleButton && this.toggleButton.checked) {
       this.toggleButton.toggle();
       this._matToggleValue.next(false);
       this.toggleButton.setDisabledState(true);

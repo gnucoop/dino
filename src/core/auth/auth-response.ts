@@ -20,7 +20,6 @@
  *
  */
 
-
 /**
  * FusionAuth api response
  */

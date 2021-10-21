@@ -6,10 +6,6 @@ import {MatOrganizationsE2E} from './organizations-e2e.component';
 
 @NgModule({
   declarations: [MatOrganizationsE2E],
-  imports: [
-    CommonModule,
-    MetricSectionModule,
-  ],
+  imports: [CommonModule, MetricSectionModule],
 })
-export class MaterialOrganizationsE2eModule {
-}
+export class MaterialOrganizationsE2eModule {}

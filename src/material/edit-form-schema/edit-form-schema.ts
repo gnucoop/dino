@@ -28,7 +28,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
@@ -43,12 +43,11 @@ import {
   Observable,
   of as obsOf,
   Subscription,
-  throwError
+  throwError,
 } from 'rxjs';
 import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 
 import {ImportFormSchema} from './import-form-schema';
-
 
 /**
  * The Form Schema Editor component.
@@ -81,23 +80,24 @@ export class EditFormSchema implements OnInit, OnDestroy {
   /**
    * The Ajf Form built from the Form Schema
    */
-  readonly form: Observable<AjfForm|null>;
+  readonly form: Observable<AjfForm | null>;
 
   /**
    * The Form schema id
    */
-  private _formSchemaId: Observable<string|null>;
+  private _formSchemaId: Observable<string | null>;
 
   /**
    * The Form schema object
    */
-  private _formSchema: Observable<FormSchema|null>;
+  private _formSchema: Observable<FormSchema | null>;
 
   /**
    * The Schema object imported from Form Conv
    */
-  private _importedFormSchema: BehaviorSubject<{[key: string]: any}|null> =
-      new BehaviorSubject<{[key: string]: any}|null>(null);
+  private _importedFormSchema: BehaviorSubject<{[key: string]: any} | null> = new BehaviorSubject<{
+    [key: string]: any;
+  } | null>(null);
 
   /**
    * Emitted when the Form Schema is saved
@@ -120,115 +120,108 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _dialogSub: Subscription = Subscription.EMPTY;
 
   constructor(
-      private _router: Router,
-      private _route: ActivatedRoute,
-      private _fs: FormSchemaManager,
-      private _formBuilderService: AjfFormBuilderService,
-      private _formSchemaManager: FormSchemaManager,
-      private _snackbar: MatSnackBar,
-      private _dialog: MatDialog,
-      private _formBuilder: FormBuilder,
-      private _iconsService: IconsService,
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private _fs: FormSchemaManager,
+    private _formBuilderService: AjfFormBuilderService,
+    private _formSchemaManager: FormSchemaManager,
+    private _snackbar: MatSnackBar,
+    private _dialog: MatDialog,
+    private _formBuilder: FormBuilder,
+    private _iconsService: IconsService,
   ) {
     this._formSchemaId = this._route.params.pipe(
-        map(params => params.form_schema_id),
-        shareReplay(1),
+      map(params => params.form_schema_id),
+      shareReplay(1),
     );
 
     this._formSchema = this._formSchemaId.pipe(
-        map(schemaId => {
-          if (schemaId == null) {
-            return obsOf(null);
-          }
-          return this._fs.get(schemaId).pipe(
-              map(doc => {
-                if (doc == null) {
-                  return null;
-                }
-                const item = doc.toJSON();
-                return item;
-              }),
-          );
-        }),
-        switchMap(schema => schema as Observable<FormSchema>),
-        shareReplay(1),
+      map(schemaId => {
+        if (schemaId == null) {
+          return obsOf(null);
+        }
+        return this._fs.get(schemaId).pipe(
+          map(doc => {
+            if (doc == null) {
+              return null;
+            }
+            const item = doc.toJSON();
+            return item;
+          }),
+        );
+      }),
+      switchMap(schema => schema as Observable<FormSchema>),
+      shareReplay(1),
     );
 
     this.formGroup = this._formSchema.pipe(
-        map(
-            fs => this._formBuilder.group({
-              name: [fs ? fs.name : null, Validators.required],
-              label: [fs ? fs.label : null, Validators.required],
-              icon: [fs ? fs.icon : null],
-            }),
-            ),
-        shareReplay(1),
+      map(fs =>
+        this._formBuilder.group({
+          name: [fs ? fs.name : null, Validators.required],
+          label: [fs ? fs.label : null, Validators.required],
+          icon: [fs ? fs.icon : null],
+        }),
+      ),
+      shareReplay(1),
     );
 
-    this.form = combineLatest([this._formSchema, this._importedFormSchema])
-                    .pipe(
-                        map(([fs, ifs]) => {
-                          if (ifs != null) {
-                            return AjfFormSerializer.fromJson(ifs);
-                          }
-                          return fs != null ? AjfFormSerializer.fromJson(fs.schema) :
-                                              AjfFormSerializer.fromJson({});
-                        }),
-                        shareReplay(1),
-                    );
+    this.form = combineLatest([this._formSchema, this._importedFormSchema]).pipe(
+      map(([fs, ifs]) => {
+        if (ifs != null) {
+          return AjfFormSerializer.fromJson(ifs);
+        }
+        return fs != null ? AjfFormSerializer.fromJson(fs.schema) : AjfFormSerializer.fromJson({});
+      }),
+      shareReplay(1),
+    );
 
-    this._saveSub =
-        this._saveEvt
-            .pipe(
-                withLatestFrom(
-                    this._formSchema,
-                    this._formBuilderService.getCurrentForm(),
-                    this.formGroup,
-                    ),
-                switchMap(([_, fs, schema, formGroup]) => {
-                  if (schema == null) {
-                    return obsOf(null);
-                  }
-                  const formPatch: InsertModel<FormSchema> = {
-                    schema: schema,
-                    name: formGroup.get('name')?.value,
-                    label: formGroup.get('label')?.value,
-                    icon: formGroup.get('icon')?.value,
-                  };
-                  if (fs == null) {
-                    return this._formSchemaManager.create(formPatch).pipe(
-                        catchError(() => obsOf(null)),
-                        take(1),
-                    );
-                  }
-                  return this._formSchemaManager.patch({...fs, ...formPatch})
-                      .pipe(
-                          catchError(() => obsOf(null)),
-                          take(1),
-                      );
-                }),
-                )
-            .subscribe(fs => {
-              if (fs != null) {
-                this._snackbar.open(`"${fs.label}" saved`, 'SAVE', {duration: 5000});
-                this._router.navigateByUrl('/forms');
-              } else {
-                this._snackbar.open(
-                    'Oops! Something went wrong saving the Form', 'ERROR', {duration: 5000});
-              }
-            });
+    this._saveSub = this._saveEvt
+      .pipe(
+        withLatestFrom(this._formSchema, this._formBuilderService.getCurrentForm(), this.formGroup),
+        switchMap(([_, fs, schema, formGroup]) => {
+          if (schema == null) {
+            return obsOf(null);
+          }
+          const formPatch: InsertModel<FormSchema> = {
+            schema: schema,
+            name: formGroup.get('name')?.value,
+            label: formGroup.get('label')?.value,
+            icon: formGroup.get('icon')?.value,
+          };
+          if (fs == null) {
+            return this._formSchemaManager.create(formPatch).pipe(
+              catchError(() => obsOf(null)),
+              take(1),
+            );
+          }
+          return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
+            catchError(() => obsOf(null)),
+            take(1),
+          );
+        }),
+      )
+      .subscribe(fs => {
+        if (fs != null) {
+          this._snackbar.open(`"${fs.label}" saved`, 'SAVE', {duration: 5000});
+          this._router.navigateByUrl('/forms');
+        } else {
+          this._snackbar.open('Oops! Something went wrong saving the Form', 'ERROR', {
+            duration: 5000,
+          });
+        }
+      });
   }
 
   ngOnInit() {
     const iconValueChanges = this.formGroup.pipe(switchMap(fg => fg.get('icon')!.valueChanges));
     this.filteredIcons = iconValueChanges.pipe(
-        withLatestFrom(this._iconsService.getIcons()),
-        map(([iconValue, availableIcons]) => {
-          if (iconValue == null) {
-            return [];
-          }
-          return this._filterIcons(availableIcons, iconValue);
-        }),
+      withLatestFrom(this._iconsService.getIcons()),
+      map(([iconValue, availableIcons]) => {
+        if (iconValue == null) {
+          return [];
+        }
+        return this._filterIcons(availableIcons, iconValue);
+      }),
     );
   }
 
@@ -239,8 +232,9 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   private _filterIcons(icons: string[], code: string): string[] {
     const filterValue = code.toLowerCase();
-    return icons.filter(icon => icon.toLowerCase().replace('_', ' ').includes(filterValue)) as
-        string[];
+    return icons.filter(icon =>
+      icon.toLowerCase().replace('_', ' ').includes(filterValue),
+    ) as string[];
   }
   /**
    * Opens the Import Xlsform dialog
@@ -252,16 +246,17 @@ export class EditFormSchema implements OnInit, OnDestroy {
       formConvUrl: this.formConvUrl,
     };
     this._dialogRef = this._dialog.open(ImportFormSchema, dialogConfig);
-    this._dialogSub = this._dialogRef.afterClosed()
-                          .pipe(
-                              catchError(err => throwError(err) as Observable<boolean>),
-                              take(1),
-                              )
-                          .subscribe((formSchema: {[key: string]: any}) => {
-                            if (formSchema != null) {
-                              this._updateImportedFormSchema(formSchema);
-                            }
-                          });
+    this._dialogSub = this._dialogRef
+      .afterClosed()
+      .pipe(
+        catchError(err => throwError(err) as Observable<boolean>),
+        take(1),
+      )
+      .subscribe((formSchema: {[key: string]: any}) => {
+        if (formSchema != null) {
+          this._updateImportedFormSchema(formSchema);
+        }
+      });
   }
 
   /**

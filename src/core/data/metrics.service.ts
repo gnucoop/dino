@@ -57,8 +57,9 @@ export class MetricsService {
   /**
    * True if one or more optional metrics are activated.
    */
-  readonly hasActiveMetrics: Observable<boolean> =
-      this.activeMetrics.pipe(map(metrics => metrics.length > 0));
+  readonly hasActiveMetrics: Observable<boolean> = this.activeMetrics.pipe(
+    map(metrics => metrics.length > 0),
+  );
 
   /**
    * Adds an optional Metric to the list when it's activated.

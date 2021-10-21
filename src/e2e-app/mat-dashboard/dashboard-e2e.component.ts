@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {NetworkStatusService} from '@dewco/core/auth';
 import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard-e2e.component.html',
@@ -36,7 +35,7 @@ export class MatDashboardE2E {
   ];
 
   constructor(
-      readonly breakpointObserver: BreakpointObserverService,
-      readonly networkStatus: NetworkStatusService,
+    readonly breakpointObserver: BreakpointObserverService,
+    readonly networkStatus: NetworkStatusService,
   ) {}
 }

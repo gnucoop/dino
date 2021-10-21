@@ -33,7 +33,7 @@ const dummyUser: User = {
   twoFactorEnabled: false,
   twoFactorDelivery: 'None',
   usernameStatus: 'ACTIVE',
-  registrations: []
+  registrations: [],
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -85,9 +85,7 @@ describe('User Model Manager', () => {
   let userModelManager: UserModelManager;
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [
-        UsersModule,
-      ],
+      imports: [UsersModule],
       providers: [
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
@@ -109,9 +107,7 @@ describe('User Group Manager', () => {
   let userGroupManager: UserGroupManager;
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [
-        UsersModule,
-      ],
+      imports: [UsersModule],
       providers: [
         {provide: UserModelManager, useValue: userModelManagerMock},
         {provide: AuthService, useValue: authServiceMock},

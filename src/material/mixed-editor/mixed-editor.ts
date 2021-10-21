@@ -28,7 +28,7 @@ import {
   ElementRef,
   Input,
   ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import {BehaviorSubject, fromEvent} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
@@ -87,21 +87,19 @@ export class MixedEditor implements AfterViewInit {
    */
   @ViewChild('saveListName', {static: true}) saveListName: ElementRef<HTMLInputElement>;
 
-  constructor(
-      private _cdr: ChangeDetectorRef,
-  ) {}
+  constructor(private _cdr: ChangeDetectorRef) {}
 
   /**
    * Moves an item from the source list to the target list.
    * @param item  A list item
    */
-  addItem(item: MixedEditorItem|undefined): void {
+  addItem(item: MixedEditorItem | undefined): void {
     if (item == null) {
       return;
     }
     const itemAlreadyExists = this.saveList.find(itm => itm.itemId === item.itemId);
     const typeAlreadyExists =
-        item.uniqueItem && this.saveList.find(itm => itm.itemType === item.itemType);
+      item.uniqueItem && this.saveList.find(itm => itm.itemType === item.itemType);
 
     if (!itemAlreadyExists && !typeAlreadyExists) {
       const idx = this.sourceList.value.findIndex(doc => doc.itemId === item.itemId);
@@ -124,7 +122,7 @@ export class MixedEditor implements AfterViewInit {
    * Removes an item from the target list, returning it to the source list.
    * @param item  A list item
    */
-  removeItem(item: MixedEditorItem|undefined): void {
+  removeItem(item: MixedEditorItem | undefined): void {
     if (item == null) {
       return;
     }
@@ -153,7 +151,7 @@ export class MixedEditor implements AfterViewInit {
    * @param list The list string identifier. Defaults to the source list.
    * @returns The found Item, or undefined
    */
-  findItem(itemId: string, list: 'source'|'save' = 'source'): MixedEditorItem|undefined {
+  findItem(itemId: string, list: 'source' | 'save' = 'source'): MixedEditorItem | undefined {
     const searchInList = list == 'source' ? this.sourceList.value : this.saveList;
     return searchInList.find(itm => itm.itemId === itemId);
   }
@@ -199,15 +197,19 @@ export class MixedEditor implements AfterViewInit {
    * @param evt The input event of the "Search" input
    */
   updateFilter(evt: any) {
-    this.sourceList.next(this.sourceList.value.map(item => {
-      if (evt.target == null) {
-        return item;
-      }
-      return item.itemName.toLocaleLowerCase().trim().match(
-                 evt.target.value.toLocaleLowerCase().trim()) ?
-          {...item, displayed: true} :
-          {...item, displayed: false};
-    }));
+    this.sourceList.next(
+      this.sourceList.value.map(item => {
+        if (evt.target == null) {
+          return item;
+        }
+        return item.itemName
+          .toLocaleLowerCase()
+          .trim()
+          .match(evt.target.value.toLocaleLowerCase().trim())
+          ? {...item, displayed: true}
+          : {...item, displayed: false};
+      }),
+    );
 
     this.sourceList.value.sort((a, b) => this._sortAlphabetically(a, b));
     this._cdr.detectChanges();
@@ -215,12 +217,10 @@ export class MixedEditor implements AfterViewInit {
 
   ngAfterViewInit(): void {
     fromEvent(this.search.nativeElement, 'keydown')
-        .pipe(
-            debounceTime(300),
-            )
-        .subscribe(event => {
-          this.updateFilter(event as any);
-        });
+      .pipe(debounceTime(300))
+      .subscribe(event => {
+        this.updateFilter(event as any);
+      });
   }
 
   /**
@@ -249,12 +249,14 @@ export class MixedEditor implements AfterViewInit {
    * @param disable The disabled state of the toggled items
    */
   private _toggleSameTypeItems(item: MixedEditorItem, disable: boolean): void {
-    this.sourceList.next(this.sourceList.value.map(itm => {
-      if (itm.itemType === item.itemType) {
-        return {...itm, disabled: disable};
-      }
-      return itm;
-    }));
+    this.sourceList.next(
+      this.sourceList.value.map(itm => {
+        if (itm.itemType === item.itemType) {
+          return {...itm, disabled: disable};
+        }
+        return itm;
+      }),
+    );
   }
 
   /**
@@ -262,7 +264,7 @@ export class MixedEditor implements AfterViewInit {
    * @param item The moved list item
    * @param operation The action performed on the moved Item
    */
-  private _toggleChildrenItems(item: MixedEditorItem, operation: 'add'|'remove'): void {
+  private _toggleChildrenItems(item: MixedEditorItem, operation: 'add' | 'remove'): void {
     const childrenItems = this._findDescendantItems(item);
 
     this.sourceList.value.map(itm => {

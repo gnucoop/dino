@@ -41,12 +41,7 @@ import {FormMetricSelector} from './form-metric-selector';
     MatInputModule,
     ReactiveFormsModule,
   ],
-  declarations: [
-    FormMetricSelector,
-  ],
-  exports: [
-    FormMetricSelector,
-  ],
+  declarations: [FormMetricSelector],
+  exports: [FormMetricSelector],
 })
-export class FormMetricSelectorModule {
-}
+export class FormMetricSelectorModule {}

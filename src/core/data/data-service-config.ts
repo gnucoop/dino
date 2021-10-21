@@ -28,8 +28,8 @@ import {Model} from './model';
 /**
  * Data service GraphQL sync options.
  */
-export interface DataServiceSyncOptions<T extends Model = Model> extends
-    Omit<SyncOptionsGraphQL<T>, 'headers'|'pull'|'push'|'deletedFlag'> {
+export interface DataServiceSyncOptions<T extends Model = Model>
+  extends Omit<SyncOptionsGraphQL<T>, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
   /**
    * The number of documents synced in each request.
    */
@@ -70,5 +70,6 @@ export interface DataServiceConfig<T extends Model = Model> {
 /**
  * DataServiceConfig injection token
  */
-export const DATA_SERVICE_CONFIG =
-    new InjectionToken<DataServiceConfig>('dewco-data-service-config');
+export const DATA_SERVICE_CONFIG = new InjectionToken<DataServiceConfig>(
+  'dewco-data-service-config',
+);

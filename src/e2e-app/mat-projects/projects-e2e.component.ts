@@ -26,12 +26,12 @@ export class MatProjectsE2E {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: (row) => this.section.openDialog(row, 'view'),
+      customAction: row => this.section.openDialog(row, 'view'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: (row) => this.section.openDialog(row, 'edit'),
+      customAction: row => this.section.openDialog(row, 'edit'),
     },
     {
       actionType: 'delete',
@@ -40,9 +40,7 @@ export class MatProjectsE2E {
     },
   ];
 
-  constructor(
-      private _projectManager: ProjectManager,
-  ) {
+  constructor(private _projectManager: ProjectManager) {
     this.manager = this._projectManager;
   }
 }

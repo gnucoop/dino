@@ -17,11 +17,7 @@ import {
   Model,
   PermissionContextService,
 } from '../../core/data';
-import {
-  FilterItem,
-  FiltersService,
-  ListModule,
-} from '../../core/list';
+import {FilterItem, FiltersService, ListModule} from '../../core/list';
 
 import {ListDataSource} from './index';
 
@@ -53,7 +49,7 @@ const createCollectionParams = {
   name: 'dummymodel',
   collection: {
     schema: dummySchema,
-  }
+  },
 };
 
 const dummyUser: User = {
@@ -71,7 +67,7 @@ const dummyUser: User = {
   twoFactorEnabled: false,
   twoFactorDelivery: 'None',
   usernameStatus: 'ACTIVE',
-  registrations: []
+  registrations: [],
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -103,7 +99,7 @@ const fakeFilters: FilterItem[] = [
 const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
 
 const fakeActivatedRoute = {
-  queryParams: obsOf({'filters': fakeFiltersPreset})
+  queryParams: obsOf({'filters': fakeFiltersPreset}),
 } as unknown as ActivatedRoute;
 
 let testDbIdx = 0;
@@ -123,14 +119,13 @@ function dataServiceConfig(): DataServiceConfig {
 
 class DummyManager extends DataModelManager<DummyModel> {
   constructor(
-      createParams: DataCreateCollectionRequest,
-      dataService: DataService,
-      permissionContextService: PermissionContextService,
+    createParams: DataCreateCollectionRequest,
+    dataService: DataService,
+    permissionContextService: PermissionContextService,
   ) {
     super(createParams, dataService, permissionContextService);
   }
 }
-
 
 describe('ListDataSource', () => {
   let dummyManager: DummyManager;
@@ -141,10 +136,7 @@ describe('ListDataSource', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ListModule,
-        RouterTestingModule,
-      ],
+      imports: [ListModule, RouterTestingModule],
       providers: [
         {provide: ActivatedRoute, useValue: fakeActivatedRoute},
         {provide: DummyManager, useValue: dummyManager},

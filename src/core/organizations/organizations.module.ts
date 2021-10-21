@@ -34,10 +34,7 @@ export class OrganizationsModule {
     icon: 'public',
     metricName: 'organization',
   };
-  constructor(
-      private _filtersService: FiltersService,
-      private _metricsService: MetricsService,
-  ) {
+  constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('organization');
     this._metricsService.activateMetric(this.organizationMetric);
   }

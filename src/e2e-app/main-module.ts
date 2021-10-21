@@ -27,7 +27,7 @@ import {
   ReportDataManager,
   ReportSchema,
   ReportSchemaManager,
-  ReportsModule
+  ReportsModule,
 } from '@dewco/core/reports';
 import {DewcoTranslationsModule} from '@dewco/core/translations';
 import {UsersModule} from '@dewco/core/users';
@@ -79,44 +79,47 @@ const fakeReportSchemaGenerator = new FakeDataGenerator<ReportSchema>();
 const fakeReportDataGenerator = new FakeDataGenerator<ReportData>();
 
 export function initializeApp(
-    fsm: FormSchemaManager,
-    fdm: FormDataManager,
-    rsm: ReportSchemaManager,
-    rdm: ReportDataManager,
-    ): () => Observable<any> {
+  fsm: FormSchemaManager,
+  fdm: FormDataManager,
+  rsm: ReportSchemaManager,
+  rdm: ReportDataManager,
+): () => Observable<any> {
   return () => {
     if (additionalConfig.generateData) {
       return combineLatest([
-               fakeFormSchemaGenerator.generateData(fsm, formSchemas),
-               fakeFormSchemaGenerator.generateData(fsm, sourceReportFormSchemas),
-               fakeReportSchemaGenerator.generateData(rsm, reportSchemas)
-             ])
-          .pipe(
-              switchMap(([resForm, resSourceForm, resReport]) => {
-                if (resForm.success == null || resForm.success.length === 0 ||
-                    resReport.success == null || resReport.success.length === 0) {
-                  return obsOf(null);
-                }
-                const genFormSchemaId = resForm.success[0].id;
-                const genSourceFormSchemaId = resSourceForm.success[0].id;
-                const genReportSchemaId = resReport.success[0].id;
-                for (let idx = 0; idx < formDatas.length; idx++) {
-                  formDatas[idx].schema_id = genFormSchemaId;
-                }
-                for (let idx = 0; idx < sourceReportFormDatas.length; idx++) {
-                  sourceReportFormDatas[idx].schema_id = genSourceFormSchemaId;
-                }
-                for (let idx = 0; idx < reportDatas.length; idx++) {
-                  reportDatas[idx].schema_id = genReportSchemaId;
-                }
-                return combineLatest([
-                  // fakeFormDataGenerator.generateData(fdm, formDatas),
-                  fakeFormDataGenerator.generateData(fdm, sourceReportFormDatas),
-                  fakeReportDataGenerator.generateData(rdm, reportDatas),
-                ]);
-              }),
-              tap(items => console.log('DATA GENERATED')),
-          );
+        fakeFormSchemaGenerator.generateData(fsm, formSchemas),
+        fakeFormSchemaGenerator.generateData(fsm, sourceReportFormSchemas),
+        fakeReportSchemaGenerator.generateData(rsm, reportSchemas),
+      ]).pipe(
+        switchMap(([resForm, resSourceForm, resReport]) => {
+          if (
+            resForm.success == null ||
+            resForm.success.length === 0 ||
+            resReport.success == null ||
+            resReport.success.length === 0
+          ) {
+            return obsOf(null);
+          }
+          const genFormSchemaId = resForm.success[0].id;
+          const genSourceFormSchemaId = resSourceForm.success[0].id;
+          const genReportSchemaId = resReport.success[0].id;
+          for (let idx = 0; idx < formDatas.length; idx++) {
+            formDatas[idx].schema_id = genFormSchemaId;
+          }
+          for (let idx = 0; idx < sourceReportFormDatas.length; idx++) {
+            sourceReportFormDatas[idx].schema_id = genSourceFormSchemaId;
+          }
+          for (let idx = 0; idx < reportDatas.length; idx++) {
+            reportDatas[idx].schema_id = genReportSchemaId;
+          }
+          return combineLatest([
+            // fakeFormDataGenerator.generateData(fdm, formDatas),
+            fakeFormDataGenerator.generateData(fdm, sourceReportFormDatas),
+            fakeReportDataGenerator.generateData(rdm, reportDatas),
+          ]);
+        }),
+        tap(items => console.log('DATA GENERATED')),
+      );
     }
     return obsOf(null);
   };
@@ -180,9 +183,7 @@ export function provideDataServiceConfig() {
     MaterialProjectsE2eModule,
     MaterialUsersE2eModule,
   ],
-  declarations: [
-    E2eApp,
-  ],
+  declarations: [E2eApp],
   providers: [
     {
       provide: AuthService,
@@ -197,21 +198,15 @@ export function provideDataServiceConfig() {
     {
       provide: APP_INITIALIZER,
       useFactory: (
-          fsm: FormSchemaManager,
-          fdm: FormDataManager,
-          rsm: ReportSchemaManager,
-          rdm: ReportDataManager,
-          ) => initializeApp(fsm, fdm, rsm, rdm),
+        fsm: FormSchemaManager,
+        fdm: FormDataManager,
+        rsm: ReportSchemaManager,
+        rdm: ReportDataManager,
+      ) => initializeApp(fsm, fdm, rsm, rdm),
       multi: true,
-      deps: [
-        FormSchemaManager,
-        FormDataManager,
-        ReportSchemaManager,
-        ReportDataManager,
-      ],
+      deps: [FormSchemaManager, FormDataManager, ReportSchemaManager, ReportDataManager],
     },
   ],
   bootstrap: [E2eApp],
 })
-export class MainModule {
-}
+export class MainModule {}

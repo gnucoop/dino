@@ -72,9 +72,7 @@ export function provideDataServiceConfig() {
     LangSelectorModule,
     RouterModule.forRoot(DEV_APP_ROUTES),
   ],
-  declarations: [
-    DevAppComponent,
-  ],
+  declarations: [DevAppComponent],
   providers: [
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
     {provide: Directionality, useClass: DevAppDirectionality},
@@ -83,5 +81,4 @@ export function provideDataServiceConfig() {
   ],
   bootstrap: [DevAppComponent],
 })
-export class MainModule {
-}
+export class MainModule {}

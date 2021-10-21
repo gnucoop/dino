@@ -45,12 +45,7 @@ import {Collect} from './collect';
     MatGridListModule,
     MatIconModule,
   ],
-  declarations: [
-    Collect,
-  ],
-  exports: [
-    Collect,
-  ],
+  declarations: [Collect],
+  exports: [Collect],
 })
-export class CollectModule {
-}
+export class CollectModule {}

@@ -27,7 +27,7 @@ import {
   EventEmitter,
   Input,
   Output,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 
 /** Change event object emitted by ExportSelectAllButtonComponent. */
@@ -51,12 +51,12 @@ export class ExportSelectAllChange {
 })
 export class ExportSelectAllButtonComponent {
   checked: boolean = false;
-  private _groupName: string|null;
-  get group(): string|null {
+  private _groupName: string | null;
+  get group(): string | null {
     return this._groupName;
   }
   @Input()
-  set group(name: string|null) {
+  set group(name: string | null) {
     this._groupName = name;
   }
 

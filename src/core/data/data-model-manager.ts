@@ -22,14 +22,7 @@
 
 import {MangoQuery, RxDocument, RxJsonSchema, RxQuery} from 'rxdb';
 import {from, Observable, of as obsOf, throwError, zip} from 'rxjs';
-import {
-  catchError,
-  filter,
-  map,
-  shareReplay,
-  switchMap,
-  take,
-} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
@@ -39,7 +32,6 @@ import {PermissionContext, PermissionContextDataUpdate} from './data-permission-
 import {CollectionChangedEvent, DataService} from './data-service';
 import {InsertModel} from './insert-model';
 import {Model} from './model';
-
 
 /**
  * This class will manage the data model, providing basic and generic Crud methods
@@ -75,19 +67,18 @@ export abstract class DataModelManager<T extends Model = Model> {
   private _collectionSchema: RxJsonSchema<T>;
 
   constructor(
-      createParams: DataCreateCollectionRequest,
-      private _dataService: DataService,
-      private _contextService: PermissionContextService,
-      private _permissions: Permission[] = [],
+    createParams: DataCreateCollectionRequest,
+    private _dataService: DataService,
+    private _contextService: PermissionContextService,
+    private _permissions: Permission[] = [],
   ) {
     this._context = _contextService.permissionContext;
     this._modelName = createParams.name;
     this._collectionSchema = createParams.collection.schema;
-    this._collectionInit = _dataService.createCollection(createParams)
-                               .pipe(
-                                   filter(created => created),
-                                   shareReplay(1),
-                               );
+    this._collectionInit = _dataService.createCollection(createParams).pipe(
+      filter(created => created),
+      shareReplay(1),
+    );
   }
 
   /**
@@ -113,7 +104,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    */
   get collectionChanged(): Observable<CollectionChangedEvent> {
     return this._dataService.collectionChanged.pipe(
-        filter(changeEvt => changeEvt.collection === this._modelName),
+      filter(changeEvt => changeEvt.collection === this._modelName),
     );
   }
 
@@ -136,19 +127,19 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param obj
    * @returns an observable of the created RxDocument
    */
-  create(obj: InsertModel<T>): Observable<RxDocument<T>|null> {
+  create(obj: InsertModel<T>): Observable<RxDocument<T> | null> {
     const params = {
       collectionName: this._modelName,
       object: obj,
     };
     return this._getPermissionContext().pipe(
-        switchMap(context => {
-          if (!this._canCreate(obj, context)) {
-            return throwError(new Error('Creation not allowed'));
-          }
-          return this._dataService.insert<T>(params);
-        }),
-        take(1),
+      switchMap(context => {
+        if (!this._canCreate(obj, context)) {
+          return throwError(new Error('Creation not allowed'));
+        }
+        return this._dataService.insert<T>(params);
+      }),
+      take(1),
     );
   }
 
@@ -157,21 +148,21 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns an observable of the array of the created RxDocuments
    */
-  bulkCreate(data: InsertModel<T>[]): Observable<{success: RxDocument<T>[], error: any[]}> {
+  bulkCreate(data: InsertModel<T>[]): Observable<{success: RxDocument<T>[]; error: any[]}> {
     const params = {
       collectionName: this._modelName,
       objects: data,
     };
     return this._getPermissionContext().pipe(
-        switchMap(context => {
-          for (let obj of data) {
-            if (!this._canCreate(obj, context)) {
-              return throwError(new Error('Creation not allowed'));
-            }
+      switchMap(context => {
+        for (let obj of data) {
+          if (!this._canCreate(obj, context)) {
+            return throwError(new Error('Creation not allowed'));
           }
-          return this._dataService.bulkInsert<T>(params);
-        }),
-        take(1),
+        }
+        return this._dataService.bulkInsert<T>(params);
+      }),
+      take(1),
     );
   }
 
@@ -180,16 +171,13 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param id
    * @returns an observable of the retrieved RxDocument
    */
-  get(id: string): Observable<RxDocument<T>|null> {
+  get(id: string): Observable<RxDocument<T> | null> {
     const params = {
       collectionName: this._modelName,
       id: id,
     };
     return this._collectionInit.pipe(
-        switchMap(
-            () => this._dataService.get<T>(params).pipe(
-                take(1),
-                )),
+      switchMap(() => this._dataService.get<T>(params).pipe(take(1))),
     );
   }
 
@@ -205,11 +193,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       query: this._optionsToMangoQuery(options),
     };
     return this._collectionInit.pipe(
-        switchMap(
-            () => this._dataService.find<T>(params).pipe(
-                take(1),
-                ),
-            ),
+      switchMap(() => this._dataService.find<T>(params).pipe(take(1))),
     );
   }
 
@@ -226,10 +210,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       query: this._optionsToMangoQuery(options),
     };
     return this._collectionInit.pipe(
-        switchMap(
-            () => this._dataService.find<T>(params).pipe(
-                take(1),
-                )),
+      switchMap(() => this._dataService.find<T>(params).pipe(take(1))),
     );
   }
 
@@ -238,32 +219,28 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns an observable of the deleted RxDocument
    */
-  delete(data: string|T): Observable<RxDocument<T>|null> {
+  delete(data: string | T): Observable<RxDocument<T> | null> {
     const params = {
       collectionName: this._modelName,
-      id: (typeof data === 'string' ? data : data.id),
+      id: typeof data === 'string' ? data : data.id,
     };
 
     return this._getPermissionContext().pipe(
-        switchMap(
-            context => this._dataService.get<T>(params).pipe(map(
-                doc => ({doc, context}),
-                ))),
-        switchMap(({doc, context}) => {
-          if (doc == null) {
-            return throwError(new Error('Invalid document'));
+      switchMap(context => this._dataService.get<T>(params).pipe(map(doc => ({doc, context})))),
+      switchMap(({doc, context}) => {
+        if (doc == null) {
+          return throwError(new Error('Invalid document'));
+        } else {
+          if (!this._canDelete(doc, context)) {
+            return throwError(new Error('Deletion not allowed'));
           } else {
-            if (!this._canDelete(doc, context)) {
-              return throwError(new Error('Deletion not allowed'));
-            } else {
-              return from(doc.remove())
-                  .pipe(
-                      map(_ => doc),
-                      catchError(err => throwError(err)),
-                  );
-            }
+            return from(doc.remove()).pipe(
+              map(_ => doc),
+              catchError(err => throwError(err)),
+            );
           }
-        }),
+        }
+      }),
     );
   }
 
@@ -272,7 +249,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns an observable of the array of the deleted RxDocuments
    */
-  bulkDelete(data: T[]): Observable<RxDocument<T>[]|null> {
+  bulkDelete(data: T[]): Observable<RxDocument<T>[] | null> {
     if (data == null || data.length == 0) {
       return obsOf(null);
     }
@@ -285,29 +262,21 @@ export abstract class DataModelManager<T extends Model = Model> {
       },
     };
     return this._getPermissionContext().pipe(
-        switchMap(
-            context => this._dataService.find<T>(params).pipe(
-                map(query => ({query, context})),
-                )),
-        switchMap(({query, context}) => {
-          const res = from(query.exec())
-                          .pipe(
-                              map(docs => ({docs, context, query})),
-                          );
-          return res;
-        }),
-        switchMap(res => {
-          for (let obj of res.docs) {
-            if (!this._canDelete(obj, res.context)) {
-              return throwError(new Error('Deletion not allowed'));
-            }
+      switchMap(context =>
+        this._dataService.find<T>(params).pipe(map(query => ({query, context}))),
+      ),
+      switchMap(({query, context}) => {
+        const res = from(query.exec()).pipe(map(docs => ({docs, context, query})));
+        return res;
+      }),
+      switchMap(res => {
+        for (let obj of res.docs) {
+          if (!this._canDelete(obj, res.context)) {
+            return throwError(new Error('Deletion not allowed'));
           }
-          return from(res.query.remove())
-              .pipe(
-                  catchError(err => throwError(err)),
-              );
-        }),
-
+        }
+        return from(res.query.remove()).pipe(catchError(err => throwError(err)));
+      }),
     );
   }
 
@@ -317,34 +286,30 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param obj
    * @returns an observable of the updated RxDocument
    */
-  update(obj: T): Observable<RxDocument<T>|null> {
+  update(obj: T): Observable<RxDocument<T> | null> {
     const params = {
       collectionName: this._modelName,
       id: obj.id,
     };
 
     return this._getPermissionContext().pipe(
-        switchMap(
-            context => this._dataService.get<T>(params).pipe(map(
-                doc => ({doc, context}),
-                ))),
-        switchMap(({doc, context}) => {
-          if (doc == null) {
-            return throwError(new Error('Invalid document'));
+      switchMap(context => this._dataService.get<T>(params).pipe(map(doc => ({doc, context})))),
+      switchMap(({doc, context}) => {
+        if (doc == null) {
+          return throwError(new Error('Invalid document'));
+        } else {
+          if (!this._canModify(obj, doc, context)) {
+            return throwError(new Error('Modification not allowed'));
           } else {
-            if (!this._canModify(obj, doc, context)) {
-              return throwError(new Error('Modification not allowed'));
-            } else {
-              return from(doc.update(this._prepareUpdateQuery(obj)))
-                  .pipe(
-                      map(_ => {
-                        return doc;
-                      }),
-                      catchError(err => throwError(err)),
-                  );
-            }
+            return from(doc.update(this._prepareUpdateQuery(obj))).pipe(
+              map(_ => {
+                return doc;
+              }),
+              catchError(err => throwError(err)),
+            );
           }
-        }),
+        }
+      }),
     );
   }
 
@@ -354,32 +319,28 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns an observable of the patched RxDocument
    */
-  patch(data: Partial<T>&{id: string}): Observable<RxDocument<T>|null> {
+  patch(data: Partial<T> & {id: string}): Observable<RxDocument<T> | null> {
     const params = {
       collectionName: this._modelName,
       id: data.id,
     };
 
     return this._getPermissionContext().pipe(
-        switchMap(
-            context => this._dataService.get<T>(params).pipe(map(
-                doc => ({doc, context}),
-                ))),
-        switchMap(({doc, context}) => {
-          if (doc == null) {
-            return throwError(new Error('Invalid document'));
+      switchMap(context => this._dataService.get<T>(params).pipe(map(doc => ({doc, context})))),
+      switchMap(({doc, context}) => {
+        if (doc == null) {
+          return throwError(new Error('Invalid document'));
+        } else {
+          if (!this._canModify(data, doc, context)) {
+            return throwError(new Error('Modification not allowed'));
           } else {
-            if (!this._canModify(data, doc, context)) {
-              return throwError(new Error('Modification not allowed'));
-            } else {
-              return from(doc.update(this._prepareUpdateQuery(data)))
-                  .pipe(
-                      map(_ => doc),
-                      catchError(err => throwError(err)),
-                  );
-            }
+            return from(doc.update(this._prepareUpdateQuery(data))).pipe(
+              map(_ => doc),
+              catchError(err => throwError(err)),
+            );
           }
-        }),
+        }
+      }),
     );
   }
 
@@ -456,8 +417,10 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @returns boolean
    */
   private _canModify(
-      data: Partial<T>&{id: string}, object: RxDocument<T>,
-      context?: PermissionContext<T>): boolean {
+    data: Partial<T> & {id: string},
+    object: RxDocument<T>,
+    context?: PermissionContext<T>,
+  ): boolean {
     const modifyData = {
       data: data,
       object: object,
@@ -501,11 +464,10 @@ export abstract class DataModelManager<T extends Model = Model> {
    * Returns permission context after collection initialization.
    */
   private _getPermissionContext(): Observable<PermissionContext> {
-    return zip(this._collectionInit, this._context)
-        .pipe(
-            map(([_, context]) => context),
-            take(1),
-        );
+    return zip(this._collectionInit, this._context).pipe(
+      map(([_, context]) => context),
+      take(1),
+    );
   }
 
   get permissionContext(): Observable<PermissionContext> {
@@ -517,18 +479,20 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param options The list or query options
    * @returns a Mango query
    */
-  private _optionsToMangoQuery(options?: DataListOptions|DataQueryOptions): MangoQuery<T> {
+  private _optionsToMangoQuery(options?: DataListOptions | DataQueryOptions): MangoQuery<T> {
     options = options || {};
     const selector = (options as DataQueryOptions).selector || {};
-    const sort = options.sort != null ? options.sort.map(s => {
-      if (typeof s === 'string') {
-        const sortEntry: DataQuerySort = {};
-        sortEntry[s] = 'asc';
-        return sortEntry;
-      }
-      return s;
-    }) as {[key in keyof T | string]: 'asc' | 'desc'}[] :
-                                        undefined;
+    const sort =
+      options.sort != null
+        ? (options.sort.map(s => {
+            if (typeof s === 'string') {
+              const sortEntry: DataQuerySort = {};
+              sortEntry[s] = 'asc';
+              return sortEntry;
+            }
+            return s;
+          }) as {[key in keyof T | string]: 'asc' | 'desc'}[])
+        : undefined;
     return {...options, selector, sort};
   }
 }

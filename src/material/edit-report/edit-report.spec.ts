@@ -52,23 +52,21 @@ describe('Edit Report', () => {
   let editReport: EditReport;
 
   beforeEach(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            FormsModule,
-            ReportsModule,
-            EditReportModule,
-            HttpClientTestingModule,
-            RouterTestingModule,
-          ],
-          providers: [
-            FormSchemaManager,
-            {provide: AuthService, useValue: authServiceMock},
-            {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-            {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-          ],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        ReportsModule,
+        EditReportModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
+      providers: [
+        FormSchemaManager,
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
+    }).compileComponents();
 
     fixtureEditReport = TestBed.createComponent(EditReport);
     editReport = fixtureEditReport.componentInstance;

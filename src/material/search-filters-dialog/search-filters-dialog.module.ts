@@ -51,15 +51,8 @@ import {SearchFiltersDialog} from './search-filters-dialog';
     SearchFiltersChipsModule,
     SearchFiltersWidgetModule,
   ],
-  declarations: [
-    SearchFiltersDialog,
-  ],
-  entryComponents: [
-    SearchFiltersDialog,
-  ],
-  exports: [
-    SearchFiltersDialog,
-  ],
+  declarations: [SearchFiltersDialog],
+  entryComponents: [SearchFiltersDialog],
+  exports: [SearchFiltersDialog],
 })
-export class SearchFiltersDialogModule {
-}
+export class SearchFiltersDialogModule {}

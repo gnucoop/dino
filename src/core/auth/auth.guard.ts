@@ -26,7 +26,7 @@ import {
   CanActivate,
   Router,
   RouterStateSnapshot,
-  UrlTree
+  UrlTree,
 } from '@angular/router';
 import {Observable} from 'rxjs';
 import {debounceTime, map, take, withLatestFrom} from 'rxjs/operators';
@@ -39,31 +39,31 @@ import {AuthService} from './auth-service';
  */
 @Injectable({providedIn: 'root'})
 export class AuthGuard implements CanActivate {
-  constructor(
-      private _router: Router,
-      private _authService: AuthService,
-  ) {}
+  constructor(private _router: Router, private _authService: AuthService) {}
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot):
-      Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot,
+  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._authService.authenticated.pipe(
-        withLatestFrom(this._authService.checkToken()),
-        take(1),
-        map(([authenticated, validated]) => {
-          if (authenticated && validated) {
-            return true;
-          }
-          this._authService.refreshToken()
-              .pipe(debounceTime(this._authService.config.retryRefreshTime))
-              .subscribe(res => {
-                if (res) {
-                  this._router.navigateByUrl(state.url);
-                } else {
-                  this._router.navigate([this._authService.config.failedAuthRedirect]);
-                }
-              });
-          return false;
-        }),
+      withLatestFrom(this._authService.checkToken()),
+      take(1),
+      map(([authenticated, validated]) => {
+        if (authenticated && validated) {
+          return true;
+        }
+        this._authService
+          .refreshToken()
+          .pipe(debounceTime(this._authService.config.retryRefreshTime))
+          .subscribe(res => {
+            if (res) {
+              this._router.navigateByUrl(state.url);
+            } else {
+              this._router.navigate([this._authService.config.failedAuthRedirect]);
+            }
+          });
+        return false;
+      }),
     );
   }
 }

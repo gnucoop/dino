@@ -30,6 +30,6 @@ declare module '@dewco/core/forms/form-data' {
     /**
      * The Form Data organization id.
      */
-    organization_id: string|null;
+    organization_id: string | null;
   }
 }

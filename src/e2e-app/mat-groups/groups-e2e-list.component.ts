@@ -1,7 +1,4 @@
-import {
-  Component,
-  OnInit,
-} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
 import {UserGroup, UserGroupManager} from '@dewco/core/users';
@@ -27,12 +24,12 @@ export class MatGroupsListE2E implements OnInit {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: (row) => this.openDialog(row, 'view'),
+      customAction: row => this.openDialog(row, 'view'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: (row) => this.openDialog(row, 'edit'),
+      customAction: row => this.openDialog(row, 'edit'),
     },
     {
       actionType: 'delete',
@@ -42,19 +39,16 @@ export class MatGroupsListE2E implements OnInit {
   ];
 
   constructor(
-      private _userGroupManager: UserGroupManager,
-      private _filtersService: FiltersService,
-      public dialog: MatDialog,
+    private _userGroupManager: UserGroupManager,
+    private _filtersService: FiltersService,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = new ListDataSource(
-        this._userGroupManager,
-        this._filtersService,
-    );
+    this.dataSource = new ListDataSource(this._userGroupManager, this._filtersService);
   }
 
-  openDialog(group?: UserGroup, action?: 'view'|'edit'|'create'): void {
+  openDialog(group?: UserGroup, action?: 'view' | 'edit' | 'create'): void {
     this.dialog.open(MatGroupsEditorE2E, {
       data: {
         userGroupItem: group,
