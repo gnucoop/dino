@@ -2,7 +2,7 @@ import {createPlugin, Plugin, utils} from 'stylelint';
 import {AtRule, atRule, decl, Declaration, Node, Result, Root} from 'postcss';
 
 /** Name of this stylelint rule. */
-const ruleName = 'dewco/theme-mixin-api';
+const ruleName = 'dino/theme-mixin-api';
 
 /** Regular expression that matches all theme mixins. */
 const themeMixinRegex =

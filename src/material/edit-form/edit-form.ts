@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -42,9 +42,9 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataModelManager, MetricsService, Model} from '@dewco/core/data';
-import {FormData, FormSchema, FormSchemaManager} from '@dewco/core/forms';
-import {FormMetricSelector} from '@dewco/material/form-metric-selector';
+import {DataModelManager, MetricsService, Model} from '@dino/core/data';
+import {FormData, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {combineLatest, Observable, of as obsOf, Subject, Subscription} from 'rxjs';
 import {
   catchError,
@@ -63,7 +63,7 @@ import {
  * The form is rendered by the Ajf AjfFormRenderer
  */
 @Component({
-  selector: 'dewco-edit-form',
+  selector: 'dino-edit-form',
   styleUrls: ['edit-form.css'],
   templateUrl: 'edit-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

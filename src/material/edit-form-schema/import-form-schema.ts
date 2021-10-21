@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -30,7 +30,7 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {FormSchema} from '@dewco/core/forms';
+import {FormSchema} from '@dino/core/forms';
 import {Observable} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
 
@@ -40,7 +40,7 @@ import {map, shareReplay, take} from 'rxjs/operators';
  * as Form Schemas.
  */
 @Component({
-  selector: 'dewco-import-form-schema',
+  selector: 'dino-import-form-schema',
   styleUrls: ['import-form-schema.css'],
   templateUrl: 'import-form-schema.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

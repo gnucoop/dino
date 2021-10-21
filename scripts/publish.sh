@@ -16,7 +16,7 @@ else
   for PACKAGE in ${PACKAGES[@]}
   do
     PACKAGE_DIR="${BASE_DIR}/${PACKAGE}"
-    CURRENT_VERSION=`npm show @dewco/${PACKAGE} version`
+    CURRENT_VERSION=`npm show @dino/${PACKAGE} version`
     echo $CURRENT_VERSION
     echo $TAG_VERSION
     if [[ "${CURRENT_VERSION}" == "${TAG_VERSION}" ]]; then

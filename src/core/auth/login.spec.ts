@@ -68,8 +68,8 @@ describe('LoginComponent', () => {
 
   it('should login successfully and navigate to home url with correct credentials', async () => {
     const formValue = {
-      email: 'user@dewco.io',
-      password: 'dewco',
+      email: 'user@dino.io',
+      password: 'dino',
     };
     loginFeatComp.loginForm.setValue(formValue);
     loginFeatComp.login();
@@ -80,8 +80,8 @@ describe('LoginComponent', () => {
 
   it('should login successfully with correct credentials and call postLogin function', async () => {
     const formValue = {
-      email: 'user@dewco.io',
-      password: 'dewco',
+      email: 'user@dino.io',
+      password: 'dino',
     };
     loginFeatComp.postLogin = loginFeatComp.setLoginResult;
     loginFeatComp.loginForm.setValue(formValue);

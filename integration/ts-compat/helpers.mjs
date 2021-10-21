@@ -23,16 +23,16 @@ const testFilePath = runfiles.resolveWorkspaceRelative(
  */
 export async function runTypeScriptCompatibilityTest(tscBinPath) {
   return new Promise((resolve, reject) => {
-    const dewcoDir = join(nodeModulesDir, '@dewco/');
+    const dinoDir = join(nodeModulesDir, '@dino/');
 
-    // Create the `node_modules/@dewco` directory in case it's not present.
-    shelljs.mkdir('-p', dewcoDir);
+    // Create the `node_modules/@dino` directory in case it's not present.
+    shelljs.mkdir('-p', dinoDir);
 
     // Symlink npm packages into `node_modules/` so that the project can
     // be compiled without path mappings (simulating a real project).
     for (const {name, pkgPath} of npmPackages) {
-      console.info(`Linking "@dewco/${name}" into node modules..`);
-      shelljs.ln('-sf', pkgPath, join(dewcoDir, name));
+      console.info(`Linking "@dino/${name}" into node modules..`);
+      shelljs.ln('-sf', pkgPath, join(dinoDir, name));
     }
 
     const tscArgs = [
@@ -52,9 +52,9 @@ export async function runTypeScriptCompatibilityTest(tscBinPath) {
     tscProcess.on('exit', (exitCode) => {
       // Remove symlinks to keep a clean repository state.
       for (const {name} of npmPackages) {
-        console.info(`Removing link for "@dewco/${name}"..`);
-        unlinkSync(join(dewcoDir, name));
-        shelljs.rm('-rf', join(dewcoDir, name));
+        console.info(`Removing link for "@dino/${name}"..`);
+        unlinkSync(join(dinoDir, name));
+        shelljs.rm('-rf', join(dinoDir, name));
       }
       exitCode === 0 ? resolve() : reject();
     });

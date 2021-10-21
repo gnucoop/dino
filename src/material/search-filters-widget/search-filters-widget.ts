@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -54,7 +54,7 @@ import {
   NUMBER_CONDITION_OPERATORS,
   Operator,
   WidgetData,
-} from '@dewco/core/list';
+} from '@dino/core/list';
 import {
   BehaviorSubject,
   combineLatest,
@@ -74,7 +74,7 @@ import {catchError, debounceTime, switchMap} from 'rxjs/operators';
  * (eg. It could be hidden if another widget's field value doesn't match its visibility conditions)
  */
 @Component({
-  selector: 'dewco-search-filters-widget',
+  selector: 'dino-search-filters-widget',
   templateUrl: 'search-filters-widget.html',
   styleUrls: ['search-filters-widget.scss'],
   encapsulation: ViewEncapsulation.None,

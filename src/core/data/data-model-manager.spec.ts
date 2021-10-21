@@ -32,9 +32,9 @@ interface DummyModel extends Model {
 
 const dummyUser: User = {
   id: 'userid',
-  email: 'user@dewco.gnu',
+  email: 'user@dino.gnu',
   firstName: 'dummy',
-  lastName: 'dewco',
+  lastName: 'dino',
   active: true,
   verified: true,
   tenantId: '1',
@@ -89,15 +89,15 @@ class AgeAuthPermission implements Permission<DummyModel> {
 
 const ageAuthPermission = new AgeAuthPermission();
 let testDbIdx = 0;
-const serverUrl = 'http://dewcoServer/v1/graphql';
-const wsServerUrl = 'ws://dewcoServer';
+const serverUrl = 'http://dinoServer/v1/graphql';
+const wsServerUrl = 'ws://dinoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
 addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
-      name: `dewco_datamanager_test_db_${testDbIdx++}`,
+      name: `dino_datamanager_test_db_${testDbIdx++}`,
       storage: getRxStoragePouch('memory'),
       ignoreDuplicate: true,
     },
@@ -254,7 +254,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should remove an existing object from the database', async () => {
-    const object = {name: 'testDummy', author: 'user@dewco.gnu'};
+    const object = {name: 'testDummy', author: 'user@dino.gnu'};
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const deletedObject = await firstValueFrom(
@@ -269,8 +269,8 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should remove a bulk of existing objects from the database', async () => {
     const objects = [
-      {name: 'firstDummy', author: 'user@dewco.gnu'},
-      {name: 'secondDummy', author: 'user@dewco.gnu'},
+      {name: 'firstDummy', author: 'user@dino.gnu'},
+      {name: 'secondDummy', author: 'user@dino.gnu'},
     ];
     const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();

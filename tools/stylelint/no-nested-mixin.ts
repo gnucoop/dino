@@ -1,6 +1,6 @@
 import {createPlugin, utils} from 'stylelint';
 
-const ruleName = 'dewco/no-nested-mixin';
+const ruleName = 'dino/no-nested-mixin';
 const messages = utils.ruleMessages(ruleName, {
   expected: () => 'Nested mixins are not allowed.',
 });

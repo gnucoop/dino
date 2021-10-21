@@ -1,5 +1,5 @@
 import {Routes} from '@angular/router';
-import {AuthGuard} from '@dewco/core/auth';
+import {AuthGuard} from '@dino/core/auth';
 
 import {MatAreasE2E} from './mat-areas/areas-e2e.component';
 import {MatCreateE2E} from './mat-create/create-e2e.component';

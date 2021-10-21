@@ -2,29 +2,29 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
 
 import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
 import {Router} from '@angular/router';
-import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
-import {ReportSchema, ReportSchemaManager} from '@dewco/core/reports';
-import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
+import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {BehaviorSubject, combineLatest, from, Observable, of as obsOf} from 'rxjs';
 import {map, shareReplay, switchMap} from 'rxjs/operators';
 
@@ -40,7 +40,7 @@ export type CollectType = 'report' | 'form' | 'custom';
  * Gateway to the individual list views.
  */
 @Component({
-  selector: 'dewco-collect',
+  selector: 'dino-collect',
   templateUrl: 'collect.html',
   styleUrls: ['collect.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

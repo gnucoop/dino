@@ -132,9 +132,9 @@ void saveCache(cacheParams) {
 
 Map getCacheParams() {
   cacheKey = sh(script: "./scripts/jenkins/cache-key.sh", returnStdout: true).trim()
-  nodeModulesCache = "dewco-node-modules-${cacheKey}.tar.gz"
-  bazeliskCache = "dewco-bazelisk-${cacheKey}.tar.gz"
-  bazelRepositoryCache = "dewco-bazel-repository-${cacheKey}.tar.gz"
+  nodeModulesCache = "dino-node-modules-${cacheKey}.tar.gz"
+  bazeliskCache = "dino-bazelisk-${cacheKey}.tar.gz"
+  bazelRepositoryCache = "dino-bazel-repository-${cacheKey}.tar.gz"
   try {
     sh "gsutil stat gs://dino-bazel-remote-cache/${nodeModulesCache}"
     hasNodeModulesCache = true

@@ -77,7 +77,7 @@ if (require.main === module) {
         const entryPointIndexPath = `${entryPointPath}/index.ts`;
 
         entryPointGrouper.entryPoints.push(entryPointPath);
-        tsParser.options.paths![`@dewco/${entryPointPath}`] = [entryPointIndexPath];
+        tsParser.options.paths![`@dino/${entryPointPath}`] = [entryPointIndexPath];
         readTypeScriptModules.sourceFiles.push(entryPointIndexPath);
       });
     }

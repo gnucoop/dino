@@ -54,9 +54,9 @@ const createCollectionParams = {
 
 const dummyUser: User = {
   id: 'userid',
-  email: 'user@dewco.gnu',
+  email: 'user@dino.gnu',
   firstName: 'dummy',
-  lastName: 'dewco',
+  lastName: 'dino',
   active: true,
   verified: true,
   tenantId: '1',
@@ -108,7 +108,7 @@ addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
-      name: `dewco_datamanager_test_db_${testDbIdx++}`,
+      name: `dino_datamanager_test_db_${testDbIdx++}`,
       storage: getRxStoragePouch('memory'),
     },
     syncOptions: {

@@ -1,10 +1,10 @@
 import {AjfFieldType} from '@ajf/core/forms';
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {ActionType, FilterGroup, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
-import {UserModel, UserModelManager} from '@dewco/core/users';
-import {ListDataSource} from '@dewco/material/list';
-import {UserDialogData} from '@dewco/material/user-editor';
+import {ActionType, FilterGroup, FiltersService, ListAction, ListHeader} from '@dino/core/list';
+import {UserModel, UserModelManager} from '@dino/core/users';
+import {ListDataSource} from '@dino/material/list';
+import {UserDialogData} from '@dino/material/user-editor';
 import {MatUsersEditorE2E} from './users-editor-e2e.component';
 
 @Component({

@@ -1,19 +1,19 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco-main-nav', () => {
+describe('dino-main-nav', () => {
   beforeEach(async () => await browser.get('/dashboard'));
 
   it('should display a Main Nav component', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-main-nav'))));
-    const nav = await element(by.tagName('dewco-main-nav')).isPresent();
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-main-nav'))));
+    const nav = await element(by.tagName('dino-main-nav')).isPresent();
     expect(nav).toBe(true);
   });
 
   it('should expand the Menu showing section labels', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-main-nav'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-main-nav'))));
     await browser.wait(EC.presenceOf(element(by.css('button[aria-label="Toggle menu button"]'))));
     const menuButton = element(by.css('button[aria-label="Toggle menu button"]'));
-    const sideNav = element(by.css('.mat-sidenav.dewco-sidenav'));
+    const sideNav = element(by.css('.mat-sidenav.dino-sidenav'));
 
     expect(await menuButton.isPresent()).toBe(true);
     expect(await sideNav.isPresent()).toBe(true);
@@ -28,8 +28,8 @@ describe('dewco-main-nav', () => {
   });
 
   it('should logout the user and redirect to the login page', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-main-nav'))));
-    const logoutButton = element(by.css('.dewco-logout-button'));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-main-nav'))));
+    const logoutButton = element(by.css('.dino-logout-button'));
 
     expect(await logoutButton.isPresent()).toBe(true);
 
@@ -37,7 +37,7 @@ describe('dewco-main-nav', () => {
     await browser.wait(EC.elementToBeClickable(logoutButton));
     await logoutButton.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-login'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-login'))));
 
     expect(await browser.getCurrentUrl()).toContain('login');
   });

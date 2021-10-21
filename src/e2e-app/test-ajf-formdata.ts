@@ -1,8 +1,8 @@
-// import '@dewco/core/locations/form-data';
-// import '@dewco/core/projects/form-data';
-import '@dewco/core/areas/form-data';
+// import '@dino/core/locations/form-data';
+// import '@dino/core/projects/form-data';
+import '@dino/core/areas/form-data';
 
-import {FormData} from '@dewco/core/forms/form-data';
+import {FormData} from '@dino/core/forms/form-data';
 
 const ajfFormDatas = [
   {

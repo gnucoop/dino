@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
-import {UserGroup, UserGroupManager} from '@dewco/core/users';
-import {ListDataSource} from '@dewco/material/list';
+import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
+import {UserGroup, UserGroupManager} from '@dino/core/users';
+import {ListDataSource} from '@dino/material/list';
 import {MatGroupsEditorE2E} from './groups-e2e-editor.component';
 
 @Component({

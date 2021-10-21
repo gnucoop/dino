@@ -1,10 +1,10 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco forms collect', () => {
+describe('dino forms collect', () => {
   beforeEach(async () => await browser.get('/forms'));
 
   it('should display one or more Grid Tiles', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
     expect(tilesCount).toBeGreaterThan(0);
@@ -17,17 +17,17 @@ describe('dewco forms collect', () => {
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-list'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
     const currentUrl = await browser.getCurrentUrl();
     expect(currentUrl).toContain('form-list');
   });
 });
 
-describe('dewco reports collect', () => {
+describe('dino reports collect', () => {
   beforeEach(async () => await browser.get('/reports'));
 
   it('should display one or more Grid Tiles', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-collect'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tilesCount = await element.all(by.tagName('mat-grid-tile')).count();
     expect(tilesCount).toBeGreaterThan(0);
@@ -40,7 +40,7 @@ describe('dewco reports collect', () => {
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-list'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
     const currentUrl = await browser.getCurrentUrl();
     expect(currentUrl).toContain('report-list');
   });

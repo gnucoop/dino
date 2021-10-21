@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tunnelTmpDir="/tmp/dewco-saucelabs"
+tunnelTmpDir="/tmp/dino-saucelabs"
 tunnelReadyFile="${tunnelTmpDir}/readyfile"
 
 WAIT_DELAY=120

@@ -54,9 +54,9 @@ PKG_EXTERNALS = [
     "@angular/router",
 
     # Primary entry-points in the project.
-    "@dewco/core",
-    "@dewco/ionic",
-    "@dewco/material",
+    "@dino/core",
+    "@dino/ionic",
+    "@dino/material",
 
     # Third-party libraries.
     "@ajf/core/common",
@@ -85,11 +85,11 @@ PKG_EXTERNALS = [
 
 # Creates externals for a given package and its entry-points.
 def setup_entry_point_externals(packageName, entryPoints):
-    PKG_EXTERNALS.extend(["@dewco/%s/%s" % (packageName, ep) for ep in entryPoints])
+    PKG_EXTERNALS.extend(["@dino/%s/%s" % (packageName, ep) for ep in entryPoints])
 
 setup_entry_point_externals("core", CORE_ENTRYPOINTS)
 setup_entry_point_externals("material", MATERIAL_ENTRYPOINTS + MATERIAL_TESTING_ENTRYPOINTS)
 
 # External module names in the examples package. Individual examples are grouped
 # by package and component, so we add configure such entry-points as external.
-setup_entry_point_externals("dewco-examples/material", [])
+setup_entry_point_externals("dino-examples/material", [])

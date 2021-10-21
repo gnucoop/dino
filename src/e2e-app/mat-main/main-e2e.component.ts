@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {Section} from '@dewco/material/main-nav';
+import {Section} from '@dino/material/main-nav';
 
 @Component({
   selector: 'app-main',

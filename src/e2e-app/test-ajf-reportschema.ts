@@ -1,4 +1,4 @@
-import {ReportSchema} from '@dewco/core/reports';
+import {ReportSchema} from '@dino/core/reports';
 
 /**
  * The test schema is taken from WWGVC "hr".

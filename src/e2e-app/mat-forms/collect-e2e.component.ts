@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {NetworkStatusService} from '@dewco/core/auth';
-import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
+import {NetworkStatusService} from '@dino/core/auth';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 
 @Component({
   selector: 'app-collect',

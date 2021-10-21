@@ -1,4 +1,4 @@
-<div class="dewco-filters-dialog-menu">
+<div class="dino-filters-dialog-menu">
   <button mat-raised-button (click)="search()" color="accent">
     {{'Search'|transloco}}
   </button>
@@ -8,11 +8,11 @@
 </div>
 
 <mat-dialog-content>
-  <dewco-search-filters-chips
+  <dino-search-filters-chips
     (excludeFilter)="removeFilter($event, 'temporary')"
     [chipsType]="'temporary'"
   >
-  </dewco-search-filters-chips>
+  </dino-search-filters-chips>
   <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
     <mat-tab
       *ngFor=" let filterGroup of fts.generatedFilters|async;"
@@ -20,13 +20,13 @@
       style="width: 100%"
     >
       <ng-template matTabContent>
-        <dewco-search-filters-widget
+        <dino-search-filters-widget
           *ngFor="let filterItem of filterItemsData|async;"
           [filterItemData]="filterItem"
           (includeFilter)="addFilter($event, 'temporary')"
           (excludeFilter)="removeFilter($event, 'temporary')"
         >
-        </dewco-search-filters-widget>
+        </dino-search-filters-widget>
       </ng-template>
     </mat-tab>
   </mat-tab-group>

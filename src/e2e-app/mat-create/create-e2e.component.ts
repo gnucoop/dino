@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {FormDataManager} from '@dewco/core/forms';
+import {FormDataManager} from '@dino/core/forms';
 
 @Component({
   selector: 'app-create',

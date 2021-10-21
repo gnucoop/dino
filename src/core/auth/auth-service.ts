@@ -2,27 +2,27 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
 
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
-import {ConfigService} from '@dewco/core/config';
+import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, mapTo, switchMap, tap} from 'rxjs/operators';
 
@@ -42,9 +42,9 @@ function removeSlashes(uri: string): string {
  * Default Credentials and Token keys
  */
 export const DEFAULT_AUTH_OPTIONS = {
-  authTokenKey: 'dewco_auth_token',
-  refreshTokenKey: 'dewco_refresh_token',
-  userInfoKey: 'dewco_user_info',
+  authTokenKey: 'dino_auth_token',
+  refreshTokenKey: 'dino_refresh_token',
+  userInfoKey: 'dino_user_info',
   userCredentialKey: 'loginId',
   passwordCredentialKey: 'password',
   userAuthInfo: 'user',

@@ -9,15 +9,15 @@ set -e
 # Go to the project root directory
 cd $(dirname ${0})/../..
 
-# if [ -z ${DEWCO_BUILDS_TOKEN} ]; then
+# if [ -z ${DINO_BUILDS_TOKEN} ]; then
 #   echo "Error: No access token for GitHub could be found." \
-#        "Please set the environment variable 'DEWCO_BUILDS_TOKEN'."
+#        "Please set the environment variable 'DINO_BUILDS_TOKEN'."
 #   exit 1
 # fi
 
-# Dewco packages that need to published.
+# Dino packages that need to published.
 PACKAGES=(core material)
-REPOSITORIES=(dewco-core-builds dewco-material-builds)
+REPOSITORIES=(dino-core-builds dino-material-builds)
 
 # Command line arguments.
 COMMAND_ARGS=${*}
@@ -94,7 +94,7 @@ publishPackage() {
   git config user.email "${commitAuthorEmail}"
   # git config credential.helper "store --file=.git/credentials"
 
-  # echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
+  # echo "https://${DINO_BUILDS_TOKEN}:@github.com" > .git/credentials
 
   echo "Git configuration has been updated to match the last commit author. Publishing now.."
 

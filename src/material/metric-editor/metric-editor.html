@@ -1,9 +1,9 @@
-<div class="dewco-metric-editor-container">
+<div class="dino-metric-editor-container">
   <h1 mat-dialog-title>{{data.metricAction?.toUpperCase()}} {{metricName}}</h1>
   <mat-dialog-content>
     <form [formGroup]="metricForm" autocomplete="off">
       <ng-container *ngFor="let field of metricFormFields; let idx = index">
-        <mat-form-field class="dewco-metric-editor-field" appearance="fill">
+        <mat-form-field class="dino-metric-editor-field" appearance="fill">
           <ng-template #autocompleteField>
             <input
               matInput

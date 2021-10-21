@@ -23,11 +23,11 @@
     "types": ["jasmine"],
     "baseUrl": ".",
     "paths": {
-      "@dewco/core": ["./src/core"],
-      "@dewco/core/*": ["./src/core/*"],
-      "@dewco/dewco-examples": ["./src/packages/dewco-examples"],
-      "@dewco/dewco-examples/*": ["./src/packages/dewco-examples/*"],
-      "@dewco/material/*": ["./src/material/*"]
+      "@dino/core": ["./src/core"],
+      "@dino/core/*": ["./src/core/*"],
+      "@dino/dino-examples": ["./src/packages/dino-examples"],
+      "@dino/dino-examples/*": ["./src/packages/dino-examples/*"],
+      "@dino/material/*": ["./src/material/*"]
     }
   },
   "include": [

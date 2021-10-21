@@ -1,16 +1,16 @@
-# Dewco core
+# Dino core
 /src/core/*                                        @trik
 /src/core/data/*                                   @trik
 
-# Dewco material
+# Dino material
 /src/material/*                                    @trik
 
-# Dewco ionic
+# Dino ionic
 /src/ionic/*                                       @trik
 
 # Docs examples & guides
 /guides/**                                         @trik
-/src/dewco-examples/**                             @trik
+/src/dino-examples/**                             @trik
 
 # Dev app
 /src/dev-app/*                                     @trik

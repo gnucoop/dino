@@ -1,15 +1,15 @@
 <div *ngIf="(loggedIn|async) === false">
-  <div class="dewco-logo-container">
-    <div class="dewco-logo">
+  <div class="dino-logo-container">
+    <div class="dino-logo">
       <img [src]="logoImagePath" alt="" />
     </div>
   </div>
   <ng-content select="[dropdownSelect]"></ng-content>
   <div
-    class="dewco-login-form-container"
+    class="dino-login-form-container"
     *ngIf="loginFormVisible == null || (loginFormVisible|async) == true"
   >
-    <form [class.dewco-error]="loginError" [formGroup]="loginForm">
+    <form [class.dino-error]="loginError" [formGroup]="loginForm">
       <input
         matInput
         formControlName="email"
@@ -26,7 +26,7 @@
         aria-label="password"
         [placeholder]="'Password'|transloco"
       />
-      <div *ngIf="loginError === true" class="dewco-error-message">
+      <div *ngIf="loginError === true" class="dino-error-message">
         {{'Invalid username and/or password'|transloco}}
       </div>
       <button
@@ -41,7 +41,7 @@
       </button>
       <mat-progress-bar
         aria-label="Login progress"
-        [class.dewco-show]="loggingIn === true"
+        [class.dino-show]="loggingIn === true"
         [color]="'accent'"
         mode="indeterminate"
       >

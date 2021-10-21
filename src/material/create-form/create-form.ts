@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -40,10 +40,10 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '@dewco/core/auth';
-import {DataModelManager, MetricsService, Model} from '@dewco/core/data';
-import {FormSchema, FormSchemaManager} from '@dewco/core/forms';
-import {FormMetricSelector} from '@dewco/material/form-metric-selector';
+import {AuthService} from '@dino/core/auth';
+import {DataModelManager, MetricsService, Model} from '@dino/core/data';
+import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
 
@@ -53,7 +53,7 @@ import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'r
  * The form is rendered by the Ajf AjfFormRenderer
  */
 @Component({
-  selector: 'dewco-create-form',
+  selector: 'dino-create-form',
   styleUrls: ['create-form.css'],
   templateUrl: 'create-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

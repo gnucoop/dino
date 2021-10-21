@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -34,19 +34,19 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dewco/core/list';
-import {SearchFiltersWidget} from '@dewco/material/search-filters-widget';
+import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dino/core/list';
+import {SearchFiltersWidget} from '@dino/material/search-filters-widget';
 import {BehaviorSubject, Observable, Subscription, throwError} from 'rxjs';
 import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
- * It may contain dewco-search-filters-chips and multiple dewco-search-filters-widget.
+ * It may contain dino-search-filters-chips and multiple dino-search-filters-widget.
  * It is usually associated with a main filters component that displays Basic Filters
- * (eg. dewco-search-filters-bar).
+ * (eg. dino-search-filters-bar).
  */
 @Component({
-  selector: 'dewco-search-filters-dialog',
+  selector: 'dino-search-filters-dialog',
   styleUrls: ['search-filters-dialog.css'],
   templateUrl: 'search-filters-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

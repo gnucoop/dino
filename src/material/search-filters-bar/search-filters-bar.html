@@ -26,10 +26,10 @@
 </ng-container>
 
 <ng-template #filtersbar>
-  <div class="dewco-filters-bar">
-    <dewco-search-filters-preset-manager
+  <div class="dino-filters-bar">
+    <dino-search-filters-preset-manager
       *ngIf="presetManager"
-    ></dewco-search-filters-preset-manager>
+    ></dino-search-filters-preset-manager>
 
     <ng-container [formGroup]="dateSearchFilters">
       <mat-form-field floatLabel="always">
@@ -95,7 +95,7 @@
     <ng-container *ngIf="additionalFilters">
       <button
         *ngIf="breakpointObserver.small|async|isFalseOrNull"
-        class="dewco-filters-dialog-button"
+        class="dino-filters-dialog-button"
         mat-button
         color="primary"
         (click)="openDialog()"
@@ -105,7 +105,7 @@
       </button>
       <button
         *ngIf="breakpointObserver.small|async"
-        class="dewco-filters-dialog-button"
+        class="dino-filters-dialog-button"
         mat-flat-button
         color="primary"
         (click)="openDialog()"
@@ -124,8 +124,8 @@
   </div>
 </ng-template>
 
-<dewco-search-filters-chips
+<dino-search-filters-chips
   (excludeFilter)="removeFilter($event, ['additional'])"
   [chipsType]="'additional'"
 >
-</dewco-search-filters-chips>
+</dino-search-filters-chips>

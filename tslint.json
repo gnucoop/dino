@@ -145,15 +145,15 @@
           "descendants": "^(true|false)$"
         }
       }
-    }, "src/!(e2e-app|dewco-examples|universal-app|dev-app)/**/!(*.spec).ts"],
+    }, "src/!(e2e-app|dino-examples|universal-app|dev-app)/**/!(*.spec).ts"],
     "require-license-banner": [
       true,
-      "src/!(e2e-app|dewco-examples|universal-app)/**/!(*.spec).ts",
+      "src/!(e2e-app|dino-examples|universal-app)/**/!(*.spec).ts",
       "test/benchmarks/**/*.ts"
     ],
     "no-cross-entry-point-relative-imports": [
       true,
-      "src/!(e2e-app|dewco-examples|universal-app|dev-app)/**/!(*.spec).ts"
+      "src/!(e2e-app|dino-examples|universal-app|dev-app)/**/!(*.spec).ts"
     ],
     "file-name-casing": [true, {
       // Exclude custom lint rule files since they have to always be camel-cased and end

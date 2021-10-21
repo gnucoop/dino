@@ -1,7 +1,7 @@
 load("//tools/dev-server:index.bzl", "dev_server")
 load("//tools:defaults.bzl", "ng_module", "sass_binary")
 load("//tools/esbuild:index.bzl", "esbuild", "esbuild_config")
-load("//src/dewco-examples:config.bzl", "ALL_EXAMPLES")
+load("//src/dino-examples:config.bzl", "ALL_EXAMPLES")
 load("//tools/angular:index.bzl", "LINKER_PROCESSED_FW_PACKAGES")
 
 package(default_visibility = ["//visibility:public"])
@@ -47,7 +47,7 @@ ng_module(
         "//src/core/reports",
         "//src/core/translations",
         "//src/core/users",
-        "//src/dewco-examples/private",
+        "//src/dino-examples/private",
         "//src/material/breakpoint-observer",
         "//src/material/collect",
         "//src/material/create-form",

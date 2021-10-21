@@ -3,7 +3,7 @@ import {createPlugin, utils} from 'stylelint';
 const isStandardSyntaxRule = require('stylelint/lib/utils/isStandardSyntaxRule');
 const isStandardSyntaxSelector = require('stylelint/lib/utils/isStandardSyntaxSelector');
 
-const ruleName = 'dewco/selector-no-deep';
+const ruleName = 'dino/selector-no-deep';
 const messages = utils.ruleMessages(ruleName, {
   expected: selector => `Usage of the /deep/ in "${selector}" is not allowed`,
 });

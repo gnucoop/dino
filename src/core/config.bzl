@@ -1,4 +1,4 @@
-# List of all entry-points of the Dewco core package.
+# List of all entry-points of the Dino core package.
 CORE_ENTRYPOINTS = [
     "areas",
     "auth",
@@ -18,7 +18,7 @@ CORE_ENTRYPOINTS = [
 CORE_ENTRYPOINTS_WITH_STYLES = [
 ]
 
-# List of all entry-point targets of the Dewco core package.
+# List of all entry-point targets of the Dino core package.
 CORE_TARGETS = ["//src/core"] + ["//src/core/%s" % ep for ep in CORE_ENTRYPOINTS]
 
 CORE_SCSS_LIBS = [

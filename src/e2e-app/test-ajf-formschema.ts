@@ -1,5 +1,5 @@
 import {AjfChoicesOriginType} from '@ajf/core/forms';
-import {FormSchema} from '@dewco/core/forms';
+import {FormSchema} from '@dino/core/forms';
 /**
  * The test schema is taken from WWGVC "hr".
  *

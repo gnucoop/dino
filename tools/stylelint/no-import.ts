@@ -1,7 +1,7 @@
 import {createPlugin, utils} from 'stylelint';
 import {basename} from 'path';
 
-const ruleName = 'dewco/no-import';
+const ruleName = 'dino/no-import';
 const messages = utils.ruleMessages(ruleName, {
   expected: () => '@import is not allowed. Use @use instead.',
 });

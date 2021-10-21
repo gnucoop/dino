@@ -6,7 +6,7 @@ const exampleCommentRegex = /<!--\s*example\(([^)]+)\)\s*-->/g;
 
 /**
  * Custom renderer for marked that will be used to transform markdown files to HTML
- * files that can be used in the Dewco docs.
+ * files that can be used in the Dino docs.
  */
 export class DocsMarkdownRenderer extends Renderer {
   /** Set of fragment links discovered in the currently rendered file. */

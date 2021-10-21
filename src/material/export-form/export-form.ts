@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -48,7 +48,7 @@ import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
-import {FormSchema} from '@dewco/core/forms';
+import {FormSchema} from '@dino/core/forms';
 
 import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
 import {
@@ -62,7 +62,7 @@ import {
 } from './export-interface';
 
 @Component({
-  selector: 'dewco-export-form',
+  selector: 'dino-export-form',
   templateUrl: 'export-form.html',
   styleUrls: ['export-form.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,7 +89,7 @@ export class ExportForm implements OnDestroy {
   );
 
   private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private _dewcoFields: string[] = ['id', 'user_id', 'created_at'];
+  private _dinoFields: string[] = ['id', 'user_id', 'created_at'];
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
   // it is a dictionary with keu the name of the slide and the list of selected field name as value.
@@ -272,8 +272,8 @@ export class ExportForm implements OnDestroy {
                 }
               });
             if (Object.keys(exportCtx).length > 0) {
-              this._dewcoFields.forEach(field => {
-                exportCtx[field] = ctx.dewco[field];
+              this._dinoFields.forEach(field => {
+                exportCtx[field] = ctx.dino[field];
               });
               exportCtxList.push(exportCtx);
             }
@@ -301,12 +301,12 @@ export class ExportForm implements OnDestroy {
   set data(data: Data[]) {
     this.exportDataList$.next(
       data.map(row => {
-        const ctx: ExportData = {...row.data, dewco: {}};
+        const ctx: ExportData = {...row.data, dino: {}};
         const keys = Object.keys(row);
         keys
           .filter(k => k != 'data')
           .forEach(key => {
-            ctx.dewco[key] = row[key];
+            ctx.dino[key] = row[key];
           });
         return ctx;
       }),
@@ -314,8 +314,8 @@ export class ExportForm implements OnDestroy {
   }
 
   @Input()
-  set dewcoFields(fieldNames: string[]) {
-    this._dewcoFields = fieldNames;
+  set dinoFields(fieldNames: string[]) {
+    this._dinoFields = fieldNames;
   }
 
   @Input()
@@ -424,7 +424,7 @@ export class ExportForm implements OnDestroy {
     const labels: {[name: string]: string} = {};
     names.forEach(name => {
       const fieldName = this._getFieldName(name);
-      if (this._dewcoFields.indexOf(name) === -1) {
+      if (this._dinoFields.indexOf(name) === -1) {
         labels[name] =
           this._translateCtxValuesDic[fieldName] != null
             ? this._translateCtxValuesDic[fieldName]
@@ -453,7 +453,7 @@ export class ExportForm implements OnDestroy {
   private _buildWorksheet(ctxList: Context[], slideFieldNames: string[]): XLSX.WorkSheet {
     let fieldNames = [];
 
-    fieldNames = [...this._dewcoFields, ...slideFieldNames];
+    fieldNames = [...this._dinoFields, ...slideFieldNames];
     const fieldLabels = this._buildLabelsRow(fieldNames);
     const data = [fieldLabels, ...ctxList];
     return XLSX.utils.json_to_sheet(data);
@@ -629,7 +629,7 @@ export class ExportForm implements OnDestroy {
    */
   private _getSlideContex(ctxList: Context[], names: string[]): Context[] {
     const slidesCtx: Context[] = [];
-    names = [...this._dewcoFields, ...names];
+    names = [...this._dinoFields, ...names];
     ctxList.forEach(ctx => {
       const slideCtx: Context = {};
       names.forEach(name => {

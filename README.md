@@ -1,3 +1,3 @@
-# Dewco
+# Dino
 
-This is the home for the Gnucoop's Dewco.
+This is the home for the Gnucoop's Dino.

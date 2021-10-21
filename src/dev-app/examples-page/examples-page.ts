@@ -2,30 +2,30 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
 
 import {Component} from '@angular/core';
-import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
+import {EXAMPLE_COMPONENTS} from '@dino/dino-examples';
 
-/** Renders all dewco examples listed in the generated EXAMPLE_COMPONENTS. */
+/** Renders all dino examples listed in the generated EXAMPLE_COMPONENTS. */
 @Component({
-  template: `<dewco-example-list [ids]="examples"></dewco-example-list>`,
+  template: `<dino-example-list [ids]="examples"></dino-example-list>`,
 })
 export class ExamplesPage {
   examples = Object.keys(EXAMPLE_COMPONENTS);

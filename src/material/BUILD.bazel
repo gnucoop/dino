@@ -19,7 +19,7 @@ filegroup(
     srcs = ["//src/material/%s:overview" % name for name in MATERIAL_ENTRYPOINTS],
 )
 
-# Makes the theming bundle available in the release output as `dewco/material/theming`.
+# Makes the theming bundle available in the release output as `dino/material/theming`.
 sass_library(
     name = "theming_bundle",
     srcs = [
@@ -29,7 +29,7 @@ sass_library(
     deps = ["//src/material/core:theming_scss_lib"],
 )
 
-# Creates the @dewco/material package published to npm.
+# Creates the @dino/material package published to npm.
 ng_package(
     name = "npm_package",
     srcs = [

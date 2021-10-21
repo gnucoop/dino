@@ -1,9 +1,9 @@
-<div class="dewco-user-editor-container">
+<div class="dino-user-editor-container">
   <h1 mat-dialog-title>{{data.userAction?.toUpperCase()}} USER</h1>
   <mat-dialog-content>
     <form [formGroup]="userForm" autocomplete="off">
       <ng-container *ngFor="let field of userFormFields; let idx = index">
-        <mat-form-field class="dewco-user-editor-field" appearance="fill">
+        <mat-form-field class="dino-user-editor-field" appearance="fill">
           <input
             matInput
             [formControlName]="field.fieldName"
@@ -21,7 +21,7 @@
           <mat-hint>{{field.hint}}</mat-hint>
         </mat-form-field>
       </ng-container>
-      <mat-form-field class="dewco-user-editor-field dewco-user-editor-field-big" appearance="fill">
+      <mat-form-field class="dino-user-editor-field dino-user-editor-field-big" appearance="fill">
         <mat-label>User Permission Groups</mat-label>
         <mat-select
           formControlName="user_group_ids"

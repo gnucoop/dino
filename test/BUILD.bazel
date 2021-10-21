@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 
 exports_files(["bazel-karma-local-config.js"])
 
-# Common set-up for all Dewco core tests.
+# Common set-up for all Dino core tests.
 ts_library(
     name = "angular_test_init",
     testonly = True,

@@ -11,7 +11,7 @@
 
     @include mat-icon-theme.color($config-or-theme);
 
-    .mat-icon.dewco-mat-icon {
+    .mat-icon.dino-mat-icon {
         color: mat-theming.get-color-from-palette($primary);
         &:hover {
             color: mat-theming.get-color-from-palette($accent);

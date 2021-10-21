@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, Optional, ViewChild} from '@angular/co
 import {MatSelect} from '@angular/material/select';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {Router} from '@angular/router';
-import {ConfigResponse, ConfigService, ConfigSet} from '@dewco/core/config';
+import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {additionalConfig} from '../mockconfig';
@@ -65,7 +65,7 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
         },
         dataConfig: {
           databaseCreateOptions: {
-            name: `dewco_${instanceName}_db`,
+            name: `dino_${instanceName}_db`,
             adapter: 'idb',
             ignoreDuplicate: true,
           },

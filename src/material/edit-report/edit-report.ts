@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -31,15 +31,10 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataQuerySelector, MetricsService} from '@dewco/core/data';
-import {FormData, FormDataManager} from '@dewco/core/forms';
-import {
-  ReportData,
-  ReportDataManager,
-  ReportSchema,
-  ReportSchemaManager,
-} from '@dewco/core/reports';
-import {FormMetricSelector} from '@dewco/material/form-metric-selector';
+import {DataQuerySelector, MetricsService} from '@dino/core/data';
+import {FormData, FormDataManager} from '@dino/core/forms';
+import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
+import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {combineLatest, from, Observable, of as obsOf, Subject} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
@@ -58,7 +53,7 @@ export interface ReportContext {
  * Reports' data can be viewed or saved here.
  */
 @Component({
-  selector: 'dewco-edit-report',
+  selector: 'dino-edit-report',
   styleUrls: ['edit-report.css'],
   templateUrl: 'edit-report.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

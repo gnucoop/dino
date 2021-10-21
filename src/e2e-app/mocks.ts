@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AuthServiceConfig, Credentials, User} from '@dewco/core/auth';
+import {AuthServiceConfig, Credentials, User} from '@dino/core/auth';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay, map, shareReplay} from 'rxjs/operators';
 
@@ -25,9 +25,9 @@ export class MockBreakpointObserver {
 
 const dummyUser: User = {
   id: 'userid',
-  email: 'user@dewco.gnu',
+  email: 'user@dino.gnu',
   firstName: 'dummy',
-  lastName: 'dewco',
+  lastName: 'dino',
   active: true,
   verified: true,
   tenantId: '1',

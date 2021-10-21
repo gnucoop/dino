@@ -1,4 +1,4 @@
-The `@dewco/core/list` module provides the core List class for the creation of lists and tables with row/element selection and filtering capabilities.
+The `@dino/core/list` module provides the core List class for the creation of lists and tables with row/element selection and filtering capabilities.
 
 The List class also handles and calls the appropriate method for any action to be performed on a single element or a selection of elements in the list
 (Eg. Delete, Edit, View etc.).

@@ -1,9 +1,9 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AuthService, AuthServiceConfig} from '@dewco/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
-import {FormSchemaManager} from '@dewco/core/forms';
+import {AuthService, AuthServiceConfig} from '@dino/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {FormSchemaManager} from '@dino/core/forms';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
@@ -16,7 +16,7 @@ addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
-      name: `dewco_datamanager_test_db_${testDbIdx++}`,
+      name: `dino_datamanager_test_db_${testDbIdx++}`,
       storage: getRxStoragePouch('memory'),
     },
     syncOptions: {

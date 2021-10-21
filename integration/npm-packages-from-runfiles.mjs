@@ -17,7 +17,7 @@ export function getNpmPackagesFromRunfiles() {
   // Path to the Bazel runfiles manifest if present. This file is present if runfiles are
   // not symlinked into the runfiles directory.
   const runfilesManifestPath = process.env.RUNFILES_MANIFEST_FILE;
-  const workspacePath = 'gc_dewco/src';
+  const workspacePath = 'gc_dino/src';
   if (!runfilesManifestPath) {
     const packageRunfilesDir = path.join(process.env.RUNFILES, workspacePath);
     return fs.readdirSync(packageRunfilesDir)

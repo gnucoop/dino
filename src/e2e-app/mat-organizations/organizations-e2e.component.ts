@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
-import {ActionType, ListAction, ListHeader} from '@dewco/core/list';
-import {Organization, OrganizationManager} from '@dewco/core/organizations';
-import {MetricSection} from '@dewco/material/metric-section';
+import {ActionType, ListAction, ListHeader} from '@dino/core/list';
+import {Organization, OrganizationManager} from '@dino/core/organizations';
+import {MetricSection} from '@dino/material/metric-section';
 
 @Component({
   selector: 'app-organizations',

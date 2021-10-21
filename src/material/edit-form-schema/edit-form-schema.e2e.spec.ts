@@ -1,11 +1,11 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco-edit-form-schema', () => {
+describe('dino-edit-form-schema', () => {
   beforeEach(async () => {
     await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
-    const tileActions = tile.element(by.className('dewco-grid-action-icons'));
+    const tileActions = tile.element(by.className('dino-grid-action-icons'));
     const editButton = tileActions.element(by.tagName('button'));
 
     await browser.wait(EC.elementToBeClickable(editButton));
@@ -13,7 +13,7 @@ describe('dewco-edit-form-schema', () => {
   });
 
   it('should enter an edit form schema page', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-edit-form-schema'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-form-schema'))));
     const currentUrl = await browser.getCurrentUrl();
     expect(currentUrl).toContain('edit-form-schema');
   });
@@ -26,7 +26,7 @@ describe('dewco-edit-form-schema', () => {
   });
 
   it('should show a form with all Form Schema basic attributes inputs', async () => {
-    const ajfFormAttributes = element(by.className('dewco-form-attributes'));
+    const ajfFormAttributes = element(by.className('dino-form-attributes'));
     const formAttributesDisplayed = await ajfFormAttributes.isDisplayed();
 
     expect(formAttributesDisplayed).toEqual(true);

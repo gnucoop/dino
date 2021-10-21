@@ -1,7 +1,7 @@
 import {MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
-import {AuthServiceConfig} from '@dewco/core/auth';
-import {ConfigServiceConfig} from '@dewco/core/config';
+import {AuthServiceConfig} from '@dino/core/auth';
+import {ConfigServiceConfig} from '@dino/core/config';
 
 const applicationId = 'c7576d4b-1be7-4381-98b5-d02f13f5dadd';
 const host = `http://localhost:9011`;

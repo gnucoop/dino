@@ -1,11 +1,11 @@
 {
-  "name": "dewco-srcs",
+  "name": "dino-srcs",
   "description": "",
-  "homepage": "https://github.com/gnucoop/dewco",
-  "bugs": "https://github.com/gnucoop/dewco/issues",
+  "homepage": "https://bitbucket.org/gnucoop/dewco",
+  "bugs": "https://bitbucket.org/gnucoop/dewco/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gnucoop/dewco.git"
+    "url": "https://bitbucket.org/gnucoop/dewco.git"
   },
   "license": "AGPL-3.0-or-later",
   "engines": {

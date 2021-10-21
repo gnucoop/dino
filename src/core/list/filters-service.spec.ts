@@ -18,12 +18,12 @@ addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
-      name: `dewco_data_test_db_${testDbIdx++}`,
+      name: `dino_data_test_db_${testDbIdx++}`,
       storage: getRxStoragePouch('memory'),
     },
     syncOptions: {
-      url: 'http://dewcoServer/v1/graphql',
-      wsUrl: 'ws://dewcoServer/v1/graphql',
+      url: 'http://dinoServer/v1/graphql',
+      wsUrl: 'ws://dinoServer/v1/graphql',
       webSocketImpl: WebSocket,
     },
   };

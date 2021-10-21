@@ -107,7 +107,7 @@ function buildReleasePackages(distPath: string, isSnapshotBuild: boolean): Built
   return packageNames.map(pkg => {
     const outputPath = getOutputPath(pkg);
     return {
-      name: `@dewco/${pkg}`,
+      name: `@dino/${pkg}`,
       outputPath,
     };
   });

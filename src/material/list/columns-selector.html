@@ -1,11 +1,11 @@
-<div class="dewco-selector-container">
+<div class="dino-selector-container">
   <div>
     <h4>{{'Customize display'|transloco}}</h4>
     <p>{{'Alter the display of the table by selecting up to 7 columns'|transloco}}</p>
   </div>
   <br /><br />
   <div
-    class="dewco-column-selector"
+    class="dino-column-selector"
     *ngFor="let column of columns; let i = index"
   >
     {{column.label|transloco}}
@@ -16,7 +16,7 @@
   </div>
   <br />
   <button
-    class="dewco-apply-btn"
+    class="dino-apply-btn"
     mat-raised-button
     color="primary"
     (click)="apply()"

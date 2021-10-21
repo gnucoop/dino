@@ -1,4 +1,4 @@
-dewco-login {
+dino-login {
   display: flex;
   align-items: stretch;
 
@@ -12,11 +12,11 @@ dewco-login {
       flex: 1 0 auto;
       align-self: center;
 
-      &.dewco-logo-container {
+      &.dino-logo-container {
         display: flex;
         align-items: center;
 
-        .dewco-logo {
+        .dino-logo {
           flex: 1 0 auto;
           margin: 3em auto;
 
@@ -27,7 +27,7 @@ dewco-login {
         }
       }
 
-      &.dewco-login-form-container {
+      &.dino-login-form-container {
         form {
           input {
             display: block;
@@ -43,12 +43,12 @@ dewco-login {
             }
           }
 
-          .dewco-error-message {
+          .dino-error-message {
             display: none;
           }
 
-          &.dewco-error {
-            .dewco-error-message {
+          &.dino-error {
+            .dino-error-message {
               display: block;
               font-size: 1.1em;
               line-height: 2.5em;
@@ -60,7 +60,7 @@ dewco-login {
             margin-top: 1em;
             opacity: 0;
 
-            &.dewco-show {
+            &.dino-show {
               opacity: 1;
             }
           }

@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
-import {ActionType, ListAction, ListHeader} from '@dewco/core/list';
-import {Project, ProjectManager} from '@dewco/core/projects';
-import {MetricSection} from '@dewco/material/metric-section';
+import {ActionType, ListAction, ListHeader} from '@dino/core/list';
+import {Project, ProjectManager} from '@dino/core/projects';
+import {MetricSection} from '@dino/material/metric-section';
 
 @Component({
   selector: 'app-projects',

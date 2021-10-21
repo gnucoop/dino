@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -34,10 +34,10 @@ import {
 import {FormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dewco/core/list';
-import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {ExportBottomSheet} from '@dewco/material/export-form';
-import {SearchFiltersDialog} from '@dewco/material/search-filters-dialog';
+import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {ExportBottomSheet} from '@dino/material/export-form';
+import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
 import {Observable, Subscription, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
@@ -46,10 +46,10 @@ import {catchError} from 'rxjs/operators';
  * The filters are obtained by parsing the RxJsonSchema of the model and the ajfFormSchema,
  * if present as a model property.
  * It may contain two child components:
- * dewco-search-filters-chips and dewco-search-filters-dialog.
+ * dino-search-filters-chips and dino-search-filters-dialog.
  */
 @Component({
-  selector: 'dewco-search-filters-bar',
+  selector: 'dino-search-filters-bar',
   styleUrls: ['search-filters-bar.css'],
   templateUrl: 'search-filters-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -131,7 +131,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Opens a dialog with dewco-search-filters-dialog component.
+   * Opens a dialog with dino-search-filters-dialog component.
    * Aligns the temporary filters list to the additional filters list.
    * Subscribes to Dialog closing event, updating the Additional Filters when
    * the Dialog closing event value is true.
@@ -139,7 +139,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   openDialog() {
     this._fts.resetTemporaryFilters();
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.panelClass = 'dewco-search-filters-dialog';
+    dialogConfig.panelClass = 'dino-search-filters-dialog';
     dialogConfig.minWidth = `${this._filtersDialogWidth}vw`;
     dialogConfig.maxWidth = `${this._filtersDialogWidth}vw`;
     this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);

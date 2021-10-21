@@ -1,6 +1,6 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco-search-filters-widget', () => {
+describe('dino-search-filters-widget', () => {
   beforeEach(async () => {
     await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
@@ -10,14 +10,14 @@ describe('dewco-search-filters-widget', () => {
     await tile.click();
   });
 
-  it('should display a number of dewco-search-filters-widget components', async () => {
+  it('should display a number of dino-search-filters-widget components', async () => {
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton));
     await dialogButton.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-widget'))));
-    const widgets = element.all(by.tagName('dewco-search-filters-widget'));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-widget'))));
+    const widgets = element.all(by.tagName('dino-search-filters-widget'));
     const widgetsCount = await widgets.count();
     const firstWidget = widgets.get(0);
 

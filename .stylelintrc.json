@@ -16,27 +16,27 @@
     "./tools/stylelint/no-unused-import.ts"
   ],
   "rules": {
-    "dewco/no-prefixes": [true, {
+    "dino/no-prefixes": [true, {
       "browsers": ["last 2 versions", "not dead", "not and_qq > 0", "not OperaMini all"],
       "filePattern": "**/!(*-example.css)"
     }],
-    "dewco/theme-mixin-api": true,
-    "dewco/selector-no-deep": true,
-    "dewco/no-nested-mixin": true,
-    "dewco/no-unused-import": true,
-    "dewco/single-line-comment-only": [true, {
+    "dino/theme-mixin-api": true,
+    "dino/selector-no-deep": true,
+    "dino/no-nested-mixin": true,
+    "dino/no-unused-import": true,
+    "dino/single-line-comment-only": [true, {
       "filePattern": "\\.scss$"
     }],
-    "dewco/no-import": [true, {
+    "dino/no-import": [true, {
       "exclude": "\\.import\\.scss$"
     }],
-    "dewco/no-ampersand-beyond-selector-start": [true, {
+    "dino/no-ampersand-beyond-selector-start": [true, {
       "filePattern": "-theme\\.scss$"
     }],
-    "dewco/no-concrete-rules": [true, {
+    "dino/no-concrete-rules": [true, {
       "filePattern": "^_.*\\.scss$"
     }],
-    "dewco/no-top-level-ampersand-in-mixin": [true, {
+    "dino/no-top-level-ampersand-in-mixin": [true, {
       "filePattern": "-theme\\.scss$"
     }],
 
@@ -102,7 +102,7 @@
     "max-line-length": 100,
     "linebreaks": "unix",
     "selector-class-pattern": [
-      "^_?(ajf-|dewco-|mat-|cdk-|example-|demo-|ng-|mdc-|map-)",
+      "^_?(ajf-|dino-|mat-|cdk-|example-|demo-|ng-|mdc-|map-)",
       {
         "resolveNestedSelectors": true
       }

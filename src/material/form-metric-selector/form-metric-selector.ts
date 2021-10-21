@@ -2,34 +2,34 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
 
 import {ChangeDetectionStrategy, Component, Optional, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {AreaManager} from '@dewco/core/areas';
-import {MetricsService} from '@dewco/core/data';
-import {FormData} from '@dewco/core/forms';
-import {LocationManager} from '@dewco/core/locations';
-import {OrganizationManager} from '@dewco/core/organizations';
-import {ProjectManager} from '@dewco/core/projects';
-import {MetricBasicInfo, UserGroupManager} from '@dewco/core/users';
-import {MetricFormField} from '@dewco/material/metric-editor';
+import {AreaManager} from '@dino/core/areas';
+import {MetricsService} from '@dino/core/data';
+import {FormData} from '@dino/core/forms';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
+import {ProjectManager} from '@dino/core/projects';
+import {MetricBasicInfo, UserGroupManager} from '@dino/core/users';
+import {MetricFormField} from '@dino/material/metric-editor';
 import {combineLatest, Observable, of as obsOf, Subject} from 'rxjs';
 import {map, switchMap, take} from 'rxjs/operators';
 
@@ -39,7 +39,7 @@ import {RequireMetricMatch} from './form-metric-selector-validator';
  * This component allows the selection and association of Metrics to the created or edited Form.
  */
 @Component({
-  selector: 'dewco-form-metric-selector',
+  selector: 'dino-form-metric-selector',
   styleUrls: ['form-metric-selector.css'],
   templateUrl: 'form-metric-selector.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

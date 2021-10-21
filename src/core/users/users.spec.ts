@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dewco/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dewco/core/data';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb';
 import {of as obsOf} from 'rxjs';
@@ -11,7 +11,7 @@ import {UserModel} from './user-model';
 
 const dummyUserModel: UserModel = {
   id: 'dino_user_id',
-  email: 'user@dewco.gnu',
+  email: 'user@dino.gnu',
   full_name: 'dino_user',
   user_group_ids: ['1', '2', '3'],
   created_at: '',
@@ -20,9 +20,9 @@ const dummyUserModel: UserModel = {
 
 const dummyUser: User = {
   id: 'dino_user_id',
-  email: 'user@dewco.gnu',
+  email: 'user@dino.gnu',
   firstName: 'dummy',
-  lastName: 'dewco',
+  lastName: 'dino',
   active: true,
   verified: true,
   tenantId: '1',
@@ -60,15 +60,15 @@ const userModelManagerMock = {
 } as unknown as UserModelManager;
 
 let testDbIdx = 0;
-const serverUrl = 'http://dewcoServer/v1/graphql';
-const wsServerUrl = 'ws://dewcoServer';
+const serverUrl = 'http://dinoServer/v1/graphql';
+const wsServerUrl = 'ws://dinoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
 addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
-      name: `dewco_usermanager_test_db_${testDbIdx++}`,
+      name: `dino_usermanager_test_db_${testDbIdx++}`,
       storage: getRxStoragePouch('memory'),
       ignoreDuplicate: true,
     },

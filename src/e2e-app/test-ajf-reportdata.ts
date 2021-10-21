@@ -1,4 +1,4 @@
-import {ReportData} from '@dewco/core/reports';
+import {ReportData} from '@dino/core/reports';
 
 export const reportDatas: ReportData[] = [
   {

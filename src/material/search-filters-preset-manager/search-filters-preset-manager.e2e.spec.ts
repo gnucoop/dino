@@ -1,6 +1,6 @@
 import {browser, by, element, ExpectedConditions as EC, Key} from 'protractor';
 
-describe('dewco-search-filters-preset-manager', () => {
+describe('dino-search-filters-preset-manager', () => {
   beforeEach(async () => {
     await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
@@ -10,17 +10,17 @@ describe('dewco-search-filters-preset-manager', () => {
     await tile.click();
   });
 
-  it('should display a dewco-search-filters-preset-manager component', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-preset-manager'))));
-    const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
+  it('should display a dino-search-filters-preset-manager component', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-preset-manager'))));
+    const presetManager = element(by.tagName('dino-search-filters-preset-manager'));
 
     expect(await presetManager.isPresent()).toBe(true);
     expect(await presetManager.isDisplayed()).toBe(true);
   });
 
   it('should disable apply/save buttons if preset is not valid or stored ', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-preset-manager'))));
-    const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-preset-manager'))));
+    const presetManager = element(by.tagName('dino-search-filters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const applyBtn = presetManager.all(by.tagName('button')).first();
     const saveBtn = presetManager.all(by.tagName('button')).last();
@@ -37,8 +37,8 @@ describe('dewco-search-filters-preset-manager', () => {
   });
 
   it('should save or update a preset in the localStorage', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-preset-manager'))));
-    const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-preset-manager'))));
+    const presetManager = element(by.tagName('dino-search-filters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const saveBtn = presetManager.all(by.tagName('button')).last();
     const keywordFilterInput = element(by.css('input[formcontrolname="keyword"]'));
@@ -72,8 +72,8 @@ describe('dewco-search-filters-preset-manager', () => {
   });
 
   it('should load a preset from the localStorage', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-preset-manager'))));
-    const presetManager = element(by.tagName('dewco-search-filters-preset-manager'));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-preset-manager'))));
+    const presetManager = element(by.tagName('dino-search-filters-preset-manager'));
     const presetInput = presetManager.element(by.tagName('input'));
     const applyBtn = presetManager.all(by.tagName('button')).first();
     const keywordFilterInput = element(by.css('input[formcontrolname="keyword"]'));

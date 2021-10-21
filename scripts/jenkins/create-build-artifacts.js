@@ -17,7 +17,7 @@ for (const package of packages) {
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   packageJson.version = version;
   for (const dep in packageJson.dependencies) {
-    if (dep.startsWith('@dewco') && packageJson.dependencies[dep] === baseVersion) {
+    if (dep.startsWith('@dino') && packageJson.dependencies[dep] === baseVersion) {
       packageJson.dependencies[dep] = version;
     }
   }

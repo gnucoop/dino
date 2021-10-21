@@ -3,7 +3,7 @@ import minimatch from 'minimatch';
 import {NeedsPrefix} from './needs-prefix';
 
 const parseSelector = require('stylelint/lib/utils/parseSelector');
-const ruleName = 'dewco/no-prefixes';
+const ruleName = 'dino/no-prefixes';
 const messages = utils.ruleMessages(ruleName, {
   property: (property: string, browsers: string[]) => {
     return `Unprefixed property "${property}" needs a prefix for browsers ${browsers.join(', ')}.`;

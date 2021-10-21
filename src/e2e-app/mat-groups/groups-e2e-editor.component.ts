@@ -11,14 +11,14 @@ import {
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {AreaManager} from '@dewco/core/areas';
-import {DataModelManager, InsertModel} from '@dewco/core/data';
-import {FormSchemaManager} from '@dewco/core/forms';
-import {LocationManager} from '@dewco/core/locations';
-import {OrganizationManager} from '@dewco/core/organizations';
-import {ProjectManager} from '@dewco/core/projects';
-import {UserGroup, UserGroupManager, UserRoleManager} from '@dewco/core/users';
-import {MixedEditor, MixedEditorItem} from '@dewco/material/mixed-editor';
+import {AreaManager} from '@dino/core/areas';
+import {DataModelManager, InsertModel} from '@dino/core/data';
+import {FormSchemaManager} from '@dino/core/forms';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
+import {ProjectManager} from '@dino/core/projects';
+import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
+import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
 import {BehaviorSubject, combineLatest, from, Observable, Subscription} from 'rxjs';
 import {map, switchMap, take} from 'rxjs/operators';
 

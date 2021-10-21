@@ -20,7 +20,7 @@ const loginResponse: LoginResponse = {
   token: `header.${btoa(jwtPayload)}.signature`,
   user: {
     id: 'id',
-    email: 'test@dewco.io',
+    email: 'test@dino.io',
     firstName: 'Test',
     lastName: 'User',
     active: true,
@@ -52,15 +52,15 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.removeItem('dewco_auth_token');
-    localStorage.removeItem('dewco_refresh_token');
-    localStorage.removeItem('dewco_user_info');
+    localStorage.removeItem('dino_auth_token');
+    localStorage.removeItem('dino_refresh_token');
+    localStorage.removeItem('dino_user_info');
   });
 
   it('should login successfully with correct credentials', async () => {
     const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
     await expectAsync(authStatus()).toBeResolvedTo(false);
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -70,7 +70,7 @@ describe('AuthService', () => {
   });
 
   it('should fail logging in with bad credentials', () => {
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(
       () => {},
       err => {
         expect(err).toBeDefined();
@@ -82,43 +82,41 @@ describe('AuthService', () => {
   });
 
   it('should save the jwt token in local storage using the default key upon login', () => {
-    expect(localStorage.getItem('dewco_auth_token')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    expect(localStorage.getItem('dino_auth_token')).toBeNull();
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
 
-    expect(localStorage.getItem('dewco_auth_token')).toEqual(loginResponse.token);
+    expect(localStorage.getItem('dino_auth_token')).toEqual(loginResponse.token);
     expect(authService.getAuthToken()).toEqual(loginResponse.token);
   });
 
   it('should save the jwt refresh token in local storage using the default key upon login', () => {
-    expect(localStorage.getItem('dewco_refresh_token')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    expect(localStorage.getItem('dino_refresh_token')).toBeNull();
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
 
-    expect(localStorage.getItem('dewco_refresh_token')).toEqual(loginResponse.refreshToken);
+    expect(localStorage.getItem('dino_refresh_token')).toEqual(loginResponse.refreshToken);
     expect(authService.getRefreshToken()).toEqual(loginResponse.refreshToken);
   });
 
   it('should save the logged in user info in local storage using the default key upon login', () => {
-    expect(localStorage.getItem('dewco_user_info')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    expect(localStorage.getItem('dino_user_info')).toBeNull();
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
 
-    expect(JSON.parse(localStorage.getItem('dewco_user_info')!) as User).toEqual(
-      loginResponse.user,
-    );
+    expect(JSON.parse(localStorage.getItem('dino_user_info')!) as User).toEqual(loginResponse.user);
     expect(authService.getUserInfo()).toEqual(loginResponse.user);
   });
 });
@@ -135,13 +133,13 @@ describe('refresh token', () => {
     authService = TestBed.get(AuthService);
     httpMock = TestBed.get(HttpTestingController);
 
-    localStorage.setItem('dewco_auth_token', loginResponse.token);
-    localStorage.setItem('dewco_refresh_token', loginResponse.refreshToken);
+    localStorage.setItem('dino_auth_token', loginResponse.token);
+    localStorage.setItem('dino_refresh_token', loginResponse.refreshToken);
   });
 
   afterEach(() => {
-    localStorage.removeItem('dewco_auth_token');
-    localStorage.removeItem('dewco_refresh_token');
+    localStorage.removeItem('dino_auth_token');
+    localStorage.removeItem('dino_refresh_token');
   });
 
   it('should attempt to call the jwt refresh api, passing the refreshToken in the request', () => {
@@ -166,18 +164,18 @@ describe('logged in', () => {
       providers: [AuthService, {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig}],
     });
 
-    localStorage.setItem('dewco_auth_token', loginResponse.token);
-    localStorage.setItem('dewco_refresh_token', loginResponse.refreshToken);
-    localStorage.setItem('dewco_user_info', JSON.stringify(loginResponse.user));
+    localStorage.setItem('dino_auth_token', loginResponse.token);
+    localStorage.setItem('dino_refresh_token', loginResponse.refreshToken);
+    localStorage.setItem('dino_user_info', JSON.stringify(loginResponse.user));
 
     authService = TestBed.get(AuthService);
     httpMock = TestBed.get(HttpTestingController);
   });
 
   afterEach(() => {
-    localStorage.removeItem('dewco_auth_token');
-    localStorage.removeItem('dewco_refresh_token');
-    localStorage.removeItem('dewco_user_info');
+    localStorage.removeItem('dino_auth_token');
+    localStorage.removeItem('dino_refresh_token');
+    localStorage.removeItem('dino_user_info');
   });
 
   it('should logout successfully', async () => {
@@ -190,7 +188,7 @@ describe('logged in', () => {
   });
 
   it('should delete the jwt token saved in local storage using the default key upon logout', () => {
-    expect(localStorage.getItem('dewco_auth_token')).not.toBeNull();
+    expect(localStorage.getItem('dino_auth_token')).not.toBeNull();
     authService.logout().subscribe(res => {
       expect(res).toBeDefined();
     });
@@ -201,12 +199,12 @@ describe('logged in', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
 
-    expect(localStorage.getItem('dewco_auth_token')).toBeNull();
+    expect(localStorage.getItem('dino_auth_token')).toBeNull();
     expect(authService.getAuthToken()).toBeNull();
   });
 
   it('should delete the jwt refresh token saved in local storage using the default key upon logout', () => {
-    expect(localStorage.getItem('dewco_refresh_token')).not.toBeNull();
+    expect(localStorage.getItem('dino_refresh_token')).not.toBeNull();
     authService.logout().subscribe(res => {
       expect(res).toBeDefined();
     });
@@ -217,12 +215,12 @@ describe('logged in', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
 
-    expect(localStorage.getItem('dewco_refresh_token')).toBeNull();
+    expect(localStorage.getItem('dino_refresh_token')).toBeNull();
     expect(authService.getAuthToken()).toBeNull();
   });
 
   it('should delete the user info saved in local storage using the default key upon logout', () => {
-    expect(localStorage.getItem('dewco_user_info')).not.toBeNull();
+    expect(localStorage.getItem('dino_user_info')).not.toBeNull();
     authService.logout().subscribe(res => {
       expect(res).toBeDefined();
     });
@@ -233,7 +231,7 @@ describe('logged in', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
 
-    expect(localStorage.getItem('dewco_user_info')).toBeNull();
+    expect(localStorage.getItem('dino_user_info')).toBeNull();
     expect(authService.getAuthToken()).toBeNull();
   });
 });
@@ -271,7 +269,7 @@ describe('custom local storage keys', () => {
 
   it('should save the jwt auth token in local storage using the user defined key upon login', () => {
     expect(localStorage.getItem('auth_token_ls_key')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -284,7 +282,7 @@ describe('custom local storage keys', () => {
 
   it('should save the jwt refresh token in local storage using the user defined key upon login', () => {
     expect(localStorage.getItem('refresh_token_ls_key')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -296,7 +294,7 @@ describe('custom local storage keys', () => {
 
   it('should save the jwt refresh token in local storage using the user defined key upon login', () => {
     expect(localStorage.getItem('refresh_token_ls_key')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -309,7 +307,7 @@ describe('custom local storage keys', () => {
 
   it('should save the logged in user info in local storage using the user defined key upon login', () => {
     expect(localStorage.getItem('user_info_ls_key')).toBeNull();
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -462,7 +460,7 @@ describe('custom storage functions', () => {
   });
 
   it('should save the jwt refresh token using the user defined function upon login', () => {
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -475,7 +473,7 @@ describe('custom storage functions', () => {
   });
 
   it('should save the jwt refresh token using the user defined function upon login', () => {
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
@@ -488,7 +486,7 @@ describe('custom storage functions', () => {
   });
 
   it('should save the logged in user info using the user defined function upon login', () => {
-    authService.login({email: 'test@dewco.io', password: 'test'}).subscribe(res => {
+    authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');

@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -105,7 +105,7 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
 
   /**
    * Name of the locale storage entry where the JWT token will be stored.
-   * Defaults to dewco_auth_token
+   * Defaults to dino_auth_token
    */
   authTokenLocalStorageKey?: string;
 
@@ -123,7 +123,7 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
 
   /**
    * Name of the locale storage entry where the JWT refresh token will be stored.
-   * Defaults to dewco_auth_refresh_token
+   * Defaults to dino_auth_refresh_token
    */
   refreshTokenLocalStorageKey?: string;
 
@@ -141,11 +141,11 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
 
   /**
    * Name of the locale storage entry where the logged in user info will be stored.
-   * Defaults to dewco_auth_user_info
+   * Defaults to dino_auth_user_info
    */
   userInfoLocalStorageKey?: string;
 }
 
 export const AUTH_SERVICE_CONFIG = new InjectionToken<AuthServiceConfig>(
-  'dewco-auth-service-config',
+  'dino-auth-service-config',
 );

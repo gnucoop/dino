@@ -1,8 +1,8 @@
-.dewco-preset-container {
+.dino-preset-container {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
-    .dewco-preset-manager-field {
+    .dino-preset-manager-field {
         flex: 1 1 auto;
         form {
             display: flex;
@@ -11,7 +11,7 @@
             }
         }
     }
-    .dewco-preset-manager-buttons {
+    .dino-preset-manager-buttons {
         display: flex;
         flex: 1 1 auto;
         .mat-stroked-button {

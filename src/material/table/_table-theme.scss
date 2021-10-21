@@ -17,14 +17,14 @@
       box-shadow: 0 2px 4px 0 #b9b9b9;
     }
 
-    .mat-row.dewco-highlighted-row {
+    .mat-row.dino-highlighted-row {
       background-color: mat-theming.get-color-from-palette($accent, lighter);
     }
-    .dewco-inner-table-container .mat-row.dewco-details-row.dewco-highlighted-row {
+    .dino-inner-table-container .mat-row.dino-details-row.dino-highlighted-row {
       background-color: mat-theming.get-color-from-palette($primary, lighter);
     }
 
-    .dewco-inner-table-container .mat-row.dewco-details-row:not(.dewco-highlighted-row) {
+    .dino-inner-table-container .mat-row.dino-details-row:not(.dino-highlighted-row) {
       background-color: mat-theming.get-color-from-palette($warn, lighter);
     }
 

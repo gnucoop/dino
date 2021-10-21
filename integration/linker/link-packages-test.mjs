@@ -27,7 +27,7 @@ let failedPackages = false;
 for (const pkg of npmPackages) {
   const {failures, passedFiles} = testPackage(pkg);
 
-  console.info(chalk.cyan(`------- Package: @dewco/${pkg.name} -------`));
+  console.info(chalk.cyan(`------- Package: @dino/${pkg.name} -------`));
   console.info(`Passed files: ${passedFiles.length}`);
   console.info(`Failed files: ${failures.length}`);
 

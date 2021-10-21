@@ -37,7 +37,7 @@
         }
     }
 
-    .dewco-default-option .mat-option-text span {
+    .dino-default-option .mat-option-text span {
         color: mat-theming.get-color-from-palette($primary);
     }
 
@@ -79,7 +79,7 @@
         height: $line-height * 1em;
     }
 
-    .mat-select-panel .mat-option.dewco-default-option {
+    .mat-select-panel .mat-option.dino-default-option {
         font-weight: mat-font-weight($config, title);
     }
 }

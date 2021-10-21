@@ -5,8 +5,8 @@
     "rootDir": "..",
     "baseUrl": ".",
     "paths": {
-      "@dewco/core/*": ["../core/*"],
-      "@dewco/material/*": ["../material/*"]
+      "@dino/core/*": ["../core/*"],
+      "@dino/material/*": ["../material/*"]
     }
   },
   "include": ["./**/*.ts", "../dev-mode-types.d.ts"]

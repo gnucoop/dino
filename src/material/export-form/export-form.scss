@@ -1,4 +1,4 @@
-dewco-export-form {
+dino-export-form {
   mat-spinner {
     display: block !important;
     position: absolute !important;
@@ -10,23 +10,23 @@ dewco-export-form {
     .mat-form-field {
       min-width: 400px;
     }
-    .dewco-export-toolbar-spacer {
+    .dino-export-toolbar-spacer {
       flex: 1 1 auto;
     }
-    .dewco-spacer {
+    .dino-spacer {
       flex: 1 1 auto;
     }
-    dewco-export-form-select-all-button {
+    dino-export-form-select-all-button {
       width: auto;
     }
 
     height: auto !important;
     min-height: 64px;
   }
-  .dewco-checked {
+  .dino-checked {
     background-color: red;
   }
-  .dewco-export-translate-btn {
+  .dino-export-translate-btn {
     max-width: 110px;
     margin: 10px;
   }

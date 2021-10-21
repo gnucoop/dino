@@ -5,8 +5,8 @@ load("//tools:defaults.bzl", "node_integration_test")
 npmPackageMappings = dicts.add(
     CLI_PROJECT_MAPPINGS,
     {
-        "//src/core:npm_package_archive": "@dewco/core",
-        "//src/material:npm_package_archive": "@dewco/material",
+        "//src/core:npm_package_archive": "@dino/core",
+        "//src/material:npm_package_archive": "@dino/material",
     },
 )
 

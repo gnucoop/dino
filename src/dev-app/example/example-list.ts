@@ -2,31 +2,31 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
 
 import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {Component, Input} from '@angular/core';
-import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
+import {EXAMPLE_COMPONENTS} from '@dino/dino-examples';
 
-/** Displays a set of dewco examples in a mat-accordion. */
+/** Displays a set of dino examples in a mat-accordion. */
 @Component({
-  selector: 'dewco-example-list',
+  selector: 'dino-example-list',
   template: `
     <mat-accordion multi>
       <mat-expansion-panel *ngFor="let id of ids" [expanded]="expandAll">
@@ -38,7 +38,7 @@ import {EXAMPLE_COMPONENTS} from '@dewco/dewco-examples';
         </mat-expansion-panel-header>
 
         <ng-template matExpansionPanelContent>
-          <dewco-example [id]="id"></dewco-example>
+          <dino-example [id]="id"></dino-example>
         </ng-template>
       </mat-expansion-panel>
     </mat-accordion>

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# Publish dewco docs assets to the dewco-docs-content repo
-# dewco.io will pull from this assets repo to get the latest docs
+# Publish dino docs assets to the dino-docs-content repo
+# dino.io will pull from this assets repo to get the latest docs
 
 # The script should immediately exit if any command in the script fails.
 set -e
 
 cd "$(dirname $0)/../../"
 
-# if [ -z ${DEWCO_BUILDS_TOKEN} ]; then
+# if [ -z ${DINO_BUILDS_TOKEN} ]; then
 #   echo "Error: No access token for GitHub could be found." \
-#        "Please set the environment variable 'DEWCO_BUILDS_TOKEN'."
+#        "Please set the environment variable 'DINO_BUILDS_TOKEN'."
 #   exit 1
 # fi
 
@@ -21,16 +21,16 @@ projectPath="$(pwd)"
 docsDistPath="${projectPath}/dist/docs"
 
 # Path to the cloned docs-content repository.
-docsContentPath="${projectPath}/tmp/dewco-docs-content"
+docsContentPath="${projectPath}/tmp/dino-docs-content"
 
-# Path to the build output of the Bazel "@dewco/dewco-examples" NPM package.
+# Path to the build output of the Bazel "@dino/dino-examples" NPM package.
 # Note: When changing this, also change the path in `scripts/build-docs-content.js`.
 examplesPackagePath="${projectPath}/dist/docs-content-pkg/"
 
-# Git clone URL for the dewco-docs-content repository.
-docsContentRepoUrl="git@bitbucket.org:gnucoop/dewco-docs-content.git"
+# Git clone URL for the dino-docs-content repository.
+docsContentRepoUrl="git@bitbucket.org:gnucoop/dino-docs-content.git"
 
-# Current version of Dewco from the package.json file
+# Current version of Dino from the package.json file
 buildVersion=$(node -pe "require('./package.json').version")
 
 # Name of the branch that is currently being deployed.
@@ -96,7 +96,7 @@ git config user.name "$commitAuthorName"
 git config user.email "$commitAuthorEmail"
 # git config credential.helper "store --file=.git/credentials"
 
-# echo "https://${DEWCO_BUILDS_TOKEN}:@github.com" > .git/credentials
+# echo "https://${DINO_BUILDS_TOKEN}:@github.com" > .git/credentials
 
 echo "Credentials for docs-content repository are now set up. Publishing.."
 

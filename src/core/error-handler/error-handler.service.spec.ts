@@ -14,12 +14,12 @@ describe('ErrorHandlerService', () => {
     ehs = TestBed.inject(ErrorHandlerService);
   });
 
-  it('should print a `DEWCO ERROR` in the console, with the URL origin of the error', () => {
+  it('should print a `DINO ERROR` in the console, with the URL origin of the error', () => {
     const spyLog = spyOn(window.console, 'error').and.callThrough();
     const error = new Error('Test error');
     ehs.handleError(error);
 
-    expect(spyLog).toHaveBeenCalledWith(`DEWCO ERROR: ${error.message} \n URL: /`);
+    expect(spyLog).toHaveBeenCalledWith(`DINO ERROR: ${error.message} \n URL: /`);
   });
 
   it('should correctly handle HttpErrorResponses', () => {
@@ -28,7 +28,7 @@ describe('ErrorHandlerService', () => {
     const httpError = new HttpErrorResponse(errorResponse);
     ehs.handleError(httpError);
 
-    const expectedError = `DEWCO HTTP ERROR \n Backend returned status code: ${httpError.status} \n Response body: ${httpError.message} \n URL: /`;
+    const expectedError = `DINO HTTP ERROR \n Backend returned status code: ${httpError.status} \n Response body: ${httpError.message} \n URL: /`;
 
     expect(spyLog).toHaveBeenCalledWith(expectedError);
   });

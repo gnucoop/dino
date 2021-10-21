@@ -2,7 +2,7 @@ import {createPlugin, Plugin, utils} from 'stylelint';
 import {basename, join} from 'path';
 import {Result, Root} from 'postcss';
 
-const ruleName = 'dewco/no-unused-import';
+const ruleName = 'dino/no-unused-import';
 const messages = utils.ruleMessages(ruleName, {
   expected: (namespace: string) => `Namespace ${namespace} is not being used.`,
   invalid: (rule: string) =>

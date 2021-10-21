@@ -8,29 +8,29 @@ import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
-import {AreasModule} from '@dewco/core/areas';
-import {AuthModule, AuthService} from '@dewco/core/auth';
-import {ConfigModule} from '@dewco/core/config';
-import {DATA_SERVICE_CONFIG} from '@dewco/core/data';
+import {AreasModule} from '@dino/core/areas';
+import {AuthModule, AuthService} from '@dino/core/auth';
+import {ConfigModule} from '@dino/core/config';
+import {DATA_SERVICE_CONFIG} from '@dino/core/data';
 import {
   FormData,
   FormDataManager,
   FormSchema,
   FormSchemaManager,
   FormsModule,
-} from '@dewco/core/forms';
-import {LocationModule} from '@dewco/core/locations';
-import {OrganizationsModule} from '@dewco/core/organizations';
-import {ProjectModule} from '@dewco/core/projects';
+} from '@dino/core/forms';
+import {LocationModule} from '@dino/core/locations';
+import {OrganizationsModule} from '@dino/core/organizations';
+import {ProjectModule} from '@dino/core/projects';
 import {
   ReportData,
   ReportDataManager,
   ReportSchema,
   ReportSchemaManager,
   ReportsModule,
-} from '@dewco/core/reports';
-import {DewcoTranslationsModule} from '@dewco/core/translations';
-import {UsersModule} from '@dewco/core/users';
+} from '@dino/core/reports';
+import {DinoTranslationsModule} from '@dino/core/translations';
+import {UsersModule} from '@dino/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
@@ -129,7 +129,7 @@ export function provideDataServiceConfig() {
   addPouchPlugin(pouchdbAdapterMemory);
   return {
     databaseCreateOptions: {
-      name: `dewco_test_db`,
+      name: `dino_test_db`,
       storage: getRxStoragePouch('memory'),
       ignoreDuplicate: true,
     },
@@ -148,7 +148,7 @@ export function provideDataServiceConfig() {
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
     BrowserModule,
-    DewcoTranslationsModule.forRoot(),
+    DinoTranslationsModule.forRoot(),
     E2eAppModule,
     HttpClientModule,
     MatDatepickerModule,

@@ -2,8 +2,8 @@
 @use '../core/typography/typography';
 
 @mixin grid-core($typography-config: null) {
-    .mat-grid-tile.dewco-grid-tile {
-        div.dewco-grid-label {
+    .mat-grid-tile.dino-grid-tile {
+        div.dino-grid-label {
             font-size: typography-utils.font-size(typography.$base-typography, title);
             font-family: typography-utils.font-family(typography.$base-typography, title);
             font-weight: typography-utils.font-weight(typography.$base-typography, title);

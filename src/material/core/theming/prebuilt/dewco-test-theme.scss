@@ -1,7 +1,7 @@
 @use '../all-theme';
 
 // Include non-theme styles for core.
-@include dewco-mat-core();
+@include dino-mat-core();
 
 // Define a theme.
 $primary: mat-palette($mat-red);

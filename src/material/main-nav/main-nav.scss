@@ -1,22 +1,22 @@
-dewco-main-nav {
-  .dewco-toolbar {
+dino-main-nav {
+  .dino-toolbar {
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
-    &.dewco-shadowed {
+    &.dino-shadowed {
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
       animation-name: shadowed-toolbar;
       animation-duration: 2s;
       animation-direction: alternate-reverse;
       animation-timing-function: ease-in-out;
     }
-    .dewco-toolbar-logo {
+    .dino-toolbar-logo {
       position: relative;
       max-width: 10vw;
       max-height: 80%;
       margin: auto 10px;
     }
-    .dewco-toolbar-actions {
+    .dino-toolbar-actions {
       cursor: pointer;
       margin-left: auto;
       display: flex;
@@ -30,14 +30,14 @@ dewco-main-nav {
       }
     }
   }
-  mat-sidenav-container.dewco-sidenav-container {
+  mat-sidenav-container.dino-sidenav-container {
     position: fixed;
     height: 100vh;
     min-height: 100vh;
     width: 100vw;
     min-width: 100vw;
   }
-  mat-sidenav-content.dewco-sidenav-content {
+  mat-sidenav-content.dino-sidenav-content {
     padding: 10px;
     height: 90vh;
     background-color: inherit;
@@ -45,7 +45,7 @@ dewco-main-nav {
     -webkit-transition: all ease-in-out 0.2s;
   }
 
-  .mat-sidenav.dewco-large-sidenav {
+  .mat-sidenav.dino-large-sidenav {
     box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.2);
     animation-name: shadowed-sidenav;
     animation-duration: 2s;
@@ -68,7 +68,7 @@ dewco-main-nav {
     &.mat-list-base {
       padding-top: 0px;
     }
-    .dewco-extend-menu-button {
+    .dino-extend-menu-button {
       position: absolute;
       bottom: 50px;
     }

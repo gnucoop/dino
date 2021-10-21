@@ -5,7 +5,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {
   SearchFiltersPresetManager,
   SearchFiltersPresetManagerModule,
-} from '@dewco/material/search-filters-preset-manager';
+} from '@dino/material/search-filters-preset-manager';
 import {BehaviorSubject, firstValueFrom, of as obsOf, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';

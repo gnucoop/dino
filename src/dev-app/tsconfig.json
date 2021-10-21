@@ -5,11 +5,11 @@
     "rootDir": "..",
     "baseUrl": ".",
     "paths": {
-      "@dewco/core/*": ["../core/*"],
-      "@dewco/dewco-examples": ["../../dist/packages/dewco-examples"],
-      "@dewco/dewco-examples/*": ["../../dist/packages/dewco-examples/*"],
-      "@dewco/material/*": ["../material/*"],
-      "@dewco/material": ["../material/public-api.ts"]
+      "@dino/core/*": ["../core/*"],
+      "@dino/dino-examples": ["../../dist/packages/dino-examples"],
+      "@dino/dino-examples/*": ["../../dist/packages/dino-examples/*"],
+      "@dino/material/*": ["../material/*"],
+      "@dino/material": ["../material/public-api.ts"]
     }
   },
   "include": ["./**/*.ts"]

@@ -2,7 +2,7 @@ load("@build_bazel_rules_nodejs//:index.bzl", "pkg_web")
 load("//tools:defaults.bzl", "ng_module")
 load("//tools/dev-server:index.bzl", "dev_server")
 load("//tools/esbuild:index.bzl", "esbuild", "esbuild_config")
-load("//src/dewco-examples:config.bzl", "ALL_EXAMPLES")
+load("//src/dino-examples:config.bzl", "ALL_EXAMPLES")
 load("//tools/angular:index.bzl", "LINKER_PROCESSED_FW_PACKAGES")
 
 package(default_visibility = ["//visibility:public"])
@@ -89,7 +89,7 @@ dev_server(
         "npm/node_modules",
         # Needed for compatibility with "pkg_web" which always uses the tree
         # artifact output as workspace root.
-        "gc_dewco",
+        "gc_dino",
     ],
     tags = ["manual"],
     deps = [

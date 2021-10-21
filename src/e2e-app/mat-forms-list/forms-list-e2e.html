@@ -1,5 +1,5 @@
-<dewco-list
-  #dewcoList
+<dino-list
+  #dinoList
   [headers]="headers"
   [baseEditUrl]="baseEditUrl"
   [baseViewUrl]="baseViewUrl"
@@ -11,16 +11,16 @@
   [expandable]="true"
   [onClickRowActions]="onClickRowActions"
 >
-  <dewco-search-filters-bar
+  <dino-search-filters-bar
     filters
     [presetManager]="true"
     [exportable]="true"
-    (exportEvt)="dewcoList.export($event)"
-  ></dewco-search-filters-bar>
-</dewco-list>
+    (exportEvt)="dinoList.export($event)"
+  ></dino-search-filters-bar>
+</dino-list>
 
-<dewco-floating-button
+<dino-floating-button
   [buttonIcon]="'add'"
   tooltipMessage="Add New form"
   (click)="addForm()"
-></dewco-floating-button>
+></dino-floating-button>

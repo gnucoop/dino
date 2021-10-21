@@ -5,9 +5,9 @@
     "rootDir": "..",
     "baseUrl": ".",
     "paths": {
-      "@dewco/core/*": ["../core/*"],
-      "@dewco/dewco-examples/*": ["../dewco-examples/*"],
-      "@dewco/material/*": ["../material/*"]
+      "@dino/core/*": ["../core/*"],
+      "@dino/dino-examples/*": ["../dino-examples/*"],
+      "@dino/material/*": ["../material/*"]
     }
   },
   "include": [

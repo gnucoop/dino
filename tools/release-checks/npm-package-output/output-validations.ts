@@ -10,7 +10,7 @@ const inlineStylesSourcemapRegex = /styles: ?\[["'].*sourceMappingURL=.*["']/;
 const externalReferencesRegex = /(templateUrl|styleUrls): *["'[]/;
 
 /** RegExp that matches common Bazel manifest paths in this workspace */
-const bazelManifestPath = /(gc_dewco|external)\//;
+const bazelManifestPath = /(gc_dino|external)\//;
 
 /**
  * List of fields which are mandatory in entry-point "package.json" files and refer

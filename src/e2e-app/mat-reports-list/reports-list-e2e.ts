@@ -1,13 +1,8 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
-import {
-  ReportData,
-  ReportDataManager,
-  ReportSchema,
-  ReportSchemaManager,
-} from '@dewco/core/reports';
-import {ListDataSource, SelectionList} from '@dewco/material/list';
+import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
+import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
+import {ListDataSource, SelectionList} from '@dino/material/list';
 import {Observable, of as obsOf} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 

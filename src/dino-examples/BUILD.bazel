@@ -6,7 +6,7 @@ load(":config.bzl", "ALL_EXAMPLES")
 package(default_visibility = ["//visibility:public"])
 
 ng_module(
-    name = "dewco-examples",
+    name = "dino-examples",
     srcs = glob(["*.ts"]) + [":example-module.ts"],
     deps = ALL_EXAMPLES,
 )
@@ -28,7 +28,7 @@ package_docs_content(
         # in the documentation.
         "//guides": "guides",
 
-        # Package the overviews for "@dewco/core" into the docs content
+        # Package the overviews for "@dino/core" into the docs content
         "//src/core:overviews": "overviews/core",
         "//src/material:overviews": "overviews/material",
 
@@ -54,7 +54,7 @@ ng_package(
     # ng_package does not properly handle tree artifacts currently so we escalate to nested_packages
     nested_packages = [":docs-content"],
     tags = ["docs-package"],
-    deps = [":dewco-examples"] + ALL_EXAMPLES,
+    deps = [":dino-examples"] + ALL_EXAMPLES,
 )
 
 genrule(
@@ -66,14 +66,14 @@ genrule(
     ],
     cmd = """
       # Create source file manifest
-      echo "$(execpaths //src/dewco-examples:example-source-files)" \
+      echo "$(execpaths //src/dino-examples:example-source-files)" \
           > $(execpath _example_module.MF)
 
       # Run the bazel entry-point for generating the example module.
       ./$(execpath //tools/example-module:bazel-bin) \
           "$(execpath _example_module.MF)" \
           "$(execpath example-module.ts)" \
-          "$$PWD/src/dewco-examples"
+          "$$PWD/src/dino-examples"
     """,
     output_to_bindir = True,
     tools = ["//tools/example-module:bazel-bin"],

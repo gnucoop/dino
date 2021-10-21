@@ -2,20 +2,20 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
@@ -34,7 +34,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
-import {DataModelManager, Metric} from '@dewco/core/data';
+import {DataModelManager, Metric} from '@dino/core/data';
 import {RxJsonSchema} from 'rxdb';
 import {from, Observable, Subscription} from 'rxjs';
 import {map, switchMap, withLatestFrom} from 'rxjs/operators';
@@ -109,7 +109,7 @@ export interface ParentMetric {
  * The generic type refers to the model of the Metric to be edited.
  */
 @Component({
-  selector: 'dewco-metric-editor',
+  selector: 'dino-metric-editor',
   templateUrl: 'metric-editor.html',
   styleUrls: ['metric-editor.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

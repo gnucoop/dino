@@ -1,10 +1,10 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco-material-login', () => {
+describe('dino-material-login', () => {
   beforeEach(async () => await browser.get('/login'));
 
   it('should not display an error message on init', async () => {
-    const errorMsg = element(by.css('.dewco-error-message'));
+    const errorMsg = element(by.css('.dino-error-message'));
     const res = await errorMsg.isPresent();
     expect(res).toBe(false);
   });
@@ -41,7 +41,7 @@ describe('dewco-material-login', () => {
     const loginButton = form.element(by.className('mat-fab mat-button-base'));
     const emailInput = form.element(by.name('email'));
     const pswInput = form.element(by.name('password'));
-    const errorMsg = form.element(by.className('dewco-error-message'));
+    const errorMsg = form.element(by.className('dino-error-message'));
 
     await emailInput.sendKeys('wrong@email.io');
     await pswInput.sendKeys('wrongpass');

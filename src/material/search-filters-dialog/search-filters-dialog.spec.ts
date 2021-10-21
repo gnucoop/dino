@@ -2,10 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {
-  SearchFiltersDialog,
-  SearchFiltersDialogModule,
-} from '@dewco/material/search-filters-dialog';
+import {SearchFiltersDialog, SearchFiltersDialogModule} from '@dino/material/search-filters-dialog';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';

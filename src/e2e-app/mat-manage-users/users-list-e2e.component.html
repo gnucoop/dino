@@ -1,4 +1,4 @@
-<dewco-list
+<dino-list
   [headers]="headers"
   [dataSource]="dataSource"
   [listRowActions]="listRowActions"
@@ -6,14 +6,14 @@
   [expandable]="true"
   [onClickRowActions]="onClickRowActions"
 >
-  <dewco-search-filters-bar
+  <dino-search-filters-bar
     filters
     [additionalFilters]="false"
-  ></dewco-search-filters-bar>
-</dewco-list>
+  ></dino-search-filters-bar>
+</dino-list>
 
-<dewco-floating-button
+<dino-floating-button
   [buttonIcon]="'add'"
   tooltipMessage="Add New User"
   (click)="openDialog(undefined, 'create')"
-></dewco-floating-button>
+></dino-floating-button>

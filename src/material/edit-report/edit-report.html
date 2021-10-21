@@ -6,7 +6,7 @@
           [completed]="(isReportMetricsSelectorValid|async) || (isView|async)"
         >
           <ng-template matStepLabel>REPORT METRICS</ng-template>
-          <div class="dewco-edit-report-step-buttons">
+          <div class="dino-edit-report-step-buttons">
             <button
               mat-icon-button
               matStepperNext
@@ -16,8 +16,8 @@
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </div>
-          <div class="dewco-edit-report-step-container">
-            <dewco-form-metric-selector> </dewco-form-metric-selector>
+          <div class="dino-edit-report-step-container">
+            <dino-form-metric-selector> </dino-form-metric-selector>
           </div>
         </mat-step>
         <mat-step>
@@ -31,7 +31,7 @@
               <mat-icon>arrow_back</mat-icon>
             </button>
           </div>
-          <div class="dewco-edit-report-step-container">
+          <div class="dino-edit-report-step-container">
             <ajf-report id="report print" [instance]="repInstance"></ajf-report>
           </div>
         </mat-step>

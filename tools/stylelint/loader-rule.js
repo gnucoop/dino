@@ -8,4 +8,4 @@ require('ts-node').register({
 });
 
 // Dummy rule so Stylelint doesn't complain that there aren't rules in the file.
-module.exports = stylelint.createPlugin('dewco/loader', () => {});
+module.exports = stylelint.createPlugin('dino/loader', () => {});

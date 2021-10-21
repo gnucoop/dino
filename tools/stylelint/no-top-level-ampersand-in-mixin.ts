@@ -1,7 +1,7 @@
 import {basename} from 'path';
 import {createPlugin, utils} from 'stylelint';
 
-const ruleName = 'dewco/no-top-level-ampersand-in-mixin';
+const ruleName = 'dino/no-top-level-ampersand-in-mixin';
 const messages = utils.ruleMessages(ruleName, {
   expected: () =>
     `Selectors starting with an ampersand ` + `are not allowed inside top-level mixin rules`,

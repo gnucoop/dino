@@ -1,7 +1,7 @@
 import {basename} from 'path';
 import {createPlugin, utils} from 'stylelint';
 
-const ruleName = 'dewco/no-concrete-rules';
+const ruleName = 'dino/no-concrete-rules';
 const messages = utils.ruleMessages(ruleName, {
   expected: pattern => `CSS rules must be placed inside a mixin for files matching '${pattern}'.`,
 });

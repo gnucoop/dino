@@ -15,7 +15,7 @@
   flex: 0 0 2% !important;
   min-width: 104px;
 }
-.mat-form-field.dewco-details-search {
+.mat-form-field.dino-details-search {
   margin-top: 25px !important;
   @media only screen and (max-width: 768px) {
     width: 100%;
@@ -34,26 +34,26 @@ mat-cell:last-of-type.mat-column-actions {
   visibility: hidden;
 }
 
-.mat-cell.dewco-expanded-cell {
+.mat-cell.dino-expanded-cell {
   display: flex;
   flex-flow: column wrap;
   transition: all ease-in-out 0.25s;
   -webkit-transition: all ease-in-out 0.25s;
 }
 
-.mat-row:not(.dewco-row-details):hover {
+.mat-row:not(.dino-row-details):hover {
   .mat-column-actions {
     visibility: visible;
     .mat-icon {
       cursor: pointer;
     }
   }
-  &.dewco-expanded-row {
+  &.dino-expanded-row {
     box-shadow: none;
   }
 }
 
-.dewco-bulk-delete-button {
+.dino-bulk-delete-button {
   background-color: transparent;
   border: none;
   outline: none;
@@ -64,17 +64,17 @@ mat-cell:last-of-type.mat-column-actions {
   }
 }
 
-.mat-row.dewco-row-details {
+.mat-row.dino-row-details {
   position: relative;
   bottom: 16px;
   min-height: 0px;
 }
 
-.dewco-expanded-row-actions {
+.dino-expanded-row-actions {
   display: none;
 }
 
-div.dewco-inner-table-container {
+div.dino-inner-table-container {
   width: 100%;
   transition: all ease-in-out 0.25s;
   -webkit-transition: all ease-in-out 0.25s;
@@ -84,7 +84,7 @@ div.dewco-inner-table-container {
 }
 
 @media only screen and (min-width: 769px) {
-  .mat-icon-button.dewco-expand-all-button {
+  .mat-icon-button.dino-expand-all-button {
     margin-left: 17px;
   }
 }
@@ -93,20 +93,20 @@ div.dewco-inner-table-container {
   .mat-column-select {
     min-width: 5px;
   }
-  .dewco-row-actions {
+  .dino-row-actions {
     display: none !important;
   }
-  .dewco-expanded-row-actions {
+  .dino-expanded-row-actions {
     width: 100%;
     display: flex;
     flex-flow: row wrap;
     padding-bottom: 10px;
-    .dewco-row-action-box {
+    .dino-row-action-box {
       flex: 1 1 auto;
       text-align: center;
     }
   }
-  .dewco-select-item-checkbox {
+  .dino-select-item-checkbox {
     display: none;
   }
 }

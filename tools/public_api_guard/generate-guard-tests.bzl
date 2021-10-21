@@ -29,9 +29,9 @@ def generate_test_targets(targets):
         # Create the test rule that compares the build output with the golden file.
         api_golden_test(
             name = "%s_api" % golden_file,
-            entry_point = "gc_dewco/src/%s/index.d.ts" % entry_point_path,
+            entry_point = "gc_dino/src/%s/index.d.ts" % entry_point_path,
             data = [golden_file] + [
                 "//src/%s" % (entry_point_path),
             ],
-            golden = "gc_dewco/tools/public_api_guard/%s" % golden_file,
+            golden = "gc_dino/tools/public_api_guard/%s" % golden_file,
         )

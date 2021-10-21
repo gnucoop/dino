@@ -11,7 +11,7 @@
       "types": [],
       "paths": {
         "*": ["../../../npm/node_modules/*"],
-        "@dewco/core/*": ["../../src/core/*"]
+        "@dino/core/*": ["../../src/core/*"]
       }
   }
 }

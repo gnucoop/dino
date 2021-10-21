@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
-import {Area, AreaManager} from '@dewco/core/areas';
-import {ActionType, ListAction, ListHeader} from '@dewco/core/list';
-import {MetricSection} from '@dewco/material/metric-section';
+import {Area, AreaManager} from '@dino/core/areas';
+import {ActionType, ListAction, ListHeader} from '@dino/core/list';
+import {MetricSection} from '@dino/material/metric-section';
 
 @Component({
   selector: 'app-areas',

@@ -1,4 +1,4 @@
-dewco-edit-form-schema {
+dino-edit-form-schema {
     > .mat-card:first-child {
         border-left: none;
         margin: 0%;
@@ -10,7 +10,7 @@ dewco-edit-form-schema {
             padding-bottom: 10px;
             align-items: center;
             justify-content: space-between;
-            .dewco-form-attributes {
+            .dino-form-attributes {
                 flex: 1 1 auto;
                 display: flex;
                 flex-flow: row wrap;
@@ -20,7 +20,7 @@ dewco-edit-form-schema {
                     font-size: 125%;
                 }
             }
-            .dewco-edit-form-schema-actions {
+            .dino-edit-form-schema-actions {
                 display: flex;
                 justify-self: end;
                 justify-content: end;

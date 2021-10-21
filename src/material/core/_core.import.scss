@@ -15,7 +15,7 @@
 @forward '../tabs/tabs-theme.import';
 @forward '../icon/icon-theme.import';
 @forward '../form-field/form-field-theme.import';
-@forward 'theming/all-theme' as dewco-*;
+@forward 'theming/all-theme' as dino-*;
 @forward '../card/card-base.import';
 @forward '../cdk-drop-list/cdk-drop-list-base.import';
 @forward '../checkbox/checkbox-base.import';
@@ -28,8 +28,8 @@
 @forward '../slide-toggle/slide-toggle-base.import';
 @forward '../tabs/tabs-base.import';
 @forward '../form-field/form-field-base.import';
-@forward 'all-core' as dewco-*;
-@forward 'core' as dewco-*;
+@forward 'all-core' as dino-*;
+@forward 'core' as dino-*;
 
 @import './theming/palette';
 @import './theming/all-theme';

@@ -48,7 +48,7 @@
     @include mat-core.core($theme);
 
     // Check for duplicate theme styles
-    @include mat-core-theming.private-check-duplicate-theme-styles($theme, 'dewco-material') {
+    @include mat-core-theming.private-check-duplicate-theme-styles($theme, 'dino-material') {
         // Material theming mixins
         @include mat-autocomplete-theme.theme($theme);
         @include mat-badge-theme.theme($theme);
@@ -71,7 +71,7 @@
         @include mat-tooltip-theme.theme($theme);
         @include mat-tree-theme.theme($theme);
 
-        // Dewco theming mixins
+        // Dino theming mixins
         @include button-theme.button-theme($theme);
         @include card-theme.card-theme($theme);
         @include cdk-drop-list-theme.cdk-drop-list-theme($theme);

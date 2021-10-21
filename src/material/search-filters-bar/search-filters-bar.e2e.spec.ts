@@ -1,9 +1,9 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 const filterFieldCss = (field: string) =>
-  `.dewco-filters-bar .mat-input-element[formcontrolname="${field}"]`;
+  `.dino-filters-bar .mat-input-element[formcontrolname="${field}"]`;
 
-describe('dewco-search-filters-bar', () => {
+describe('dino-search-filters-bar', () => {
   beforeEach(async () => {
     await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
@@ -14,8 +14,8 @@ describe('dewco-search-filters-bar', () => {
   });
 
   it('should display a Filter Bar component and its filters', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-bar'))));
-    await browser.wait(EC.presenceOf(element(by.className('dewco-filters-bar'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-bar'))));
+    await browser.wait(EC.presenceOf(element(by.className('dino-filters-bar'))));
 
     await browser.wait(EC.presenceOf(element(by.css(filterFieldCss('dateStart')))));
     await browser.wait(EC.presenceOf(element(by.css(filterFieldCss('dateEnd')))));
@@ -39,13 +39,13 @@ describe('dewco-search-filters-bar', () => {
   });
 
   it('should open the advanced filters dialog', async () => {
-    await browser.wait(EC.not(EC.presenceOf(element(by.tagName('dewco-search-filters-dialog')))));
+    await browser.wait(EC.not(EC.presenceOf(element(by.tagName('dino-search-filters-dialog')))));
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton));
     await dialogButton.click();
 
-    const dialog_open = await element(by.tagName('dewco-search-filters-dialog')).isPresent();
+    const dialog_open = await element(by.tagName('dino-search-filters-dialog')).isPresent();
     expect(dialog_open).toBe(true);
   });
 });

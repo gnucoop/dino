@@ -1,4 +1,4 @@
-import {DataModelManager, Model} from '@dewco/core/data';
+import {DataModelManager, Model} from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {from, Observable, of as obsOf} from 'rxjs';
 import {switchMap, take} from 'rxjs/operators';

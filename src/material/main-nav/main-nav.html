@@ -1,7 +1,7 @@
 <mat-toolbar
   *ngIf="sidenav != null && (showNav|async) !== false"
-  class="dewco-toolbar"
-  [class.dewco-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
+  class="dino-toolbar"
+  [class.dino-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
 >
   <button
     mat-icon-button
@@ -16,22 +16,22 @@
 
   <ng-template #closed_menu><mat-icon>menu</mat-icon></ng-template>
 
-  <img class="dewco-toolbar-logo" [src]="logoImagePath" alt="logo" />
+  <img class="dino-toolbar-logo" [src]="logoImagePath" alt="logo" />
 
-  <div class="dewco-toolbar-actions">
-    <dewco-lang-selector></dewco-lang-selector>
-    <mat-icon class="dewco-logout-button" (click)="logout()">logout</mat-icon>
+  <div class="dino-toolbar-actions">
+    <dino-lang-selector></dino-lang-selector>
+    <mat-icon class="dino-logout-button" (click)="logout()">logout</mat-icon>
   </div>
 </mat-toolbar>
 
-<mat-sidenav-container class="dewco-sidenav-container" autosize>
+<mat-sidenav-container class="dino-sidenav-container" autosize>
   <mat-sidenav
     *ngIf="(showNav|async) !== false"
     #sidenav
     [mode]="(breakpointObserver.large|async) ? 'side' : 'over'"
     [opened]="breakpointObserver.large|async"
-    class="dewco-sidenav"
-    [class.dewco-large-sidenav]="breakpointObserver.large|async"
+    class="dino-sidenav"
+    [class.dino-large-sidenav]="breakpointObserver.large|async"
     [class.extended]="extendedSidenav|async"
   >
     <mat-nav-list>
@@ -65,7 +65,7 @@
 
       <a
         *ngIf="(breakpointObserver.large|async) === false"
-        class="dewco-extend-menu-button"
+        class="dino-extend-menu-button"
         mat-list-item
         [disableRipple]="true"
         (click)="extendedSidenav.next(!extendedSidenav.getValue())"
@@ -78,7 +78,7 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content class="dewco-sidenav-content">
+  <mat-sidenav-content class="dino-sidenav-content">
     <ng-container *ngIf="(isLoading|async) === false">
       <router-outlet (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>

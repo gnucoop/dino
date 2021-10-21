@@ -6,7 +6,7 @@
     color="primary"
     aria-label="Fold or unfold all rows button"
     (click)="expandAllRows.next(!expandAllRows.getValue())"
-    class="dewco-expand-all-button"
+    class="dino-expand-all-button"
   >
     <mat-icon
       >{{(expandAllRows|async) ? 'unfold_less' : 'unfold_more' }}</mat-icon
@@ -17,7 +17,7 @@
 <ng-template #tableTemplate let-ctx="ctx">
   <mat-table
     [dataSource]="ctx.dataSource"
-    class="mat-elevation-z8 dewco-main-table"
+    class="mat-elevation-z8 dino-main-table"
     matSort
     multiTemplateDataRows
   >
@@ -26,7 +26,7 @@
       <ng-container>
         <mat-header-cell *matHeaderCellDef>
           <mat-checkbox
-            class="dewco-row-actions"
+            class="dino-row-actions"
             (change)="$event ? masterToggle() : null"
             [checked]="selection.hasValue() && isAllSelected()"
             [indeterminate]="selection.hasValue() && !isAllSelected()"
@@ -34,7 +34,7 @@
           >
           </mat-checkbox>
           <button
-            class="dewco-bulk-delete-button"
+            class="dino-bulk-delete-button"
             (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
             [disabled]="selection.selected.length <= 0"
             [attr.aria-label]="'Delete all items'|transloco"
@@ -48,7 +48,7 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
           <mat-checkbox
-            class="dewco-row-actions"
+            class="dino-row-actions"
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
             [checked]="selection.isSelected(row)"
@@ -103,12 +103,12 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" class="right" stickyEnd>
-      <mat-header-cell *matHeaderCellDef class="dewco-row-actions">
+      <mat-header-cell *matHeaderCellDef class="dino-row-actions">
         <mat-icon
           *ngIf="ctx.showColumnsSelector != false"
           mat-list-icon
           aria-label="delete icon"
-          class="dewco-columns-sel-btn"
+          class="dino-columns-sel-btn"
           #columns_btn
           (click)="openColumnsSelectorDialog()"
           aria-label="Select the displayed columns"
@@ -116,7 +116,7 @@
           view_week
         </mat-icon>
       </mat-header-cell>
-      <mat-cell *matCellDef="let row" class="dewco-row-actions">
+      <mat-cell *matCellDef="let row" class="dino-row-actions">
         <ng-container *ngFor="let action of ctx.listRowActions">
           <ng-container
             *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view'))"
@@ -137,14 +137,14 @@
         *matCellDef="let row;"
         [attr.colspan]="ctx.displayedColumns.value.length"
         [@detailExpand]="isRowExpanded(row)"
-        class="dewco-expanded-cell"
+        class="dino-expanded-cell"
       >
         <div
           *ngIf="(breakpointObserver.small|async) && isRowExpanded(row)"
-          class="dewco-expanded-row-actions"
+          class="dino-expanded-row-actions"
         >
           <div
-            class="dewco-row-action-box"
+            class="dino-row-action-box"
             *ngFor="let action of ctx.listRowActions"
           >
             <mat-icon
@@ -156,12 +156,12 @@
         </div>
 
         <div
-          class="dewco-inner-table-container"
+          class="dino-inner-table-container"
           *ngIf="isRowExpanded(row) && !ctx.isDetails"
         >
           <ng-container *ngIf="expandedRowsData[row.id]?.data?.length">
             <mat-form-field
-              class="dewco-details-search"
+              class="dino-details-search"
               floatLabel="always"
               (click)="$event.stopPropagation()"
             >
@@ -196,9 +196,9 @@
 
     <mat-row
       *matRowDef="let row; columns: (ctx.displayedColumns|async);"
-      [class.dewco-highlighted-row]="selection.isSelected(row)"
-      [class.dewco-expanded-row]="isRowExpanded(row)"
-      [class.dewco-details-row]="ctx.isDetails"
+      [class.dino-highlighted-row]="selection.isSelected(row)"
+      [class.dino-expanded-row]="isRowExpanded(row)"
+      [class.dino-details-row]="ctx.isDetails"
       (click)="rowToggle(row)"
     >
     </mat-row>
@@ -206,9 +206,9 @@
     <ng-container *ngIf="expandable">
       <mat-row
         *matRowDef="let row; columns: ['expandedDetail']"
-        class="dewco-row-details"
-        [class.dewco-highlighted-row]="selection.isSelected(row)"
-        [class.dewco-details-row]="ctx.isDetails"
+        class="dino-row-details"
+        [class.dino-highlighted-row]="selection.isSelected(row)"
+        [class.dino-details-row]="ctx.isDetails"
       >
       </mat-row>
     </ng-container>
@@ -218,7 +218,7 @@
   </ng-container>
 </ng-template>
 
-<div class="dewco-table-container">
+<div class="dino-table-container">
   <ng-container
     *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"
   ></ng-container>

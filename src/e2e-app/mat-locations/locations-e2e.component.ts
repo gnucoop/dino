@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
-import {ActionType, ListAction, ListHeader} from '@dewco/core/list';
-import {Location, LocationManager} from '@dewco/core/locations';
-import {MetricSection} from '@dewco/material/metric-section';
+import {ActionType, ListAction, ListHeader} from '@dino/core/list';
+import {Location, LocationManager} from '@dino/core/locations';
+import {MetricSection} from '@dino/material/metric-section';
 
 @Component({
   selector: 'app-locations',

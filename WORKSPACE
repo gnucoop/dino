@@ -1,5 +1,5 @@
 workspace(
-    name = "gc_dewco",
+    name = "gc_dino",
     managed_directories = {"@npm": ["node_modules"]},
 )
 

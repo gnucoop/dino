@@ -1,21 +1,21 @@
 <ng-container *ngIf="exportModel$|async as exportModel">
   <mat-toolbar>
     <h1>{{exportModel.schemaName|transloco}}</h1>
-    <span class="dewco-spacer"></span>
+    <span class="dino-spacer"></span>
   </mat-toolbar>
   <mat-toolbar>
-    <dewco-export-form-select-all-button (change)="selectAll($event.checked)">
+    <dino-export-form-select-all-button (change)="selectAll($event.checked)">
       {{'select all form fields'| transloco}}
-    </dewco-export-form-select-all-button>
-    <dewco-export-form-select-all-button
-      class="dewco-export-translate-btn"
+    </dino-export-form-select-all-button>
+    <dino-export-form-select-all-button
+      class="dino-export-translate-btn"
       (change)="setTranslation($event.checked)"
-      >{{'label values'|transloco}}</dewco-export-form-select-all-button
+      >{{'label values'|transloco}}</dino-export-form-select-all-button
     >
-    <span class="dewco-export-toolbar-spacer"></span>
-    <span class="dewco-export-toolbar-count"
+    <span class="dino-export-toolbar-spacer"></span>
+    <span class="dino-export-toolbar-count"
       >{{maxNumberOfForm$|async}} {{'forms'|transloco}}</span
-    ><span class="dewco-export-toolbar-spacer"></span>
+    ><span class="dino-export-toolbar-spacer"></span>
 
     <mat-button-toggle-group
       name="format"
@@ -42,11 +42,11 @@
       *ngFor="let label of exportModel.slideLabels; let idx = index"
       [label]="label|transloco"
     >
-      <dewco-export-form-select-all-button
+      <dino-export-form-select-all-button
         [group]="'tab'"
         (change)="selectAllfieldSlides($event.checked)"
         >{{'select all fields of'|transloco}} {{label| transloco}}
-      </dewco-export-form-select-all-button>
+      </dino-export-form-select-all-button>
       <mat-selection-list
         [attr.aria-label]="'slide fields'|transloco"
         (selectionChange)="updateExportDisable()"

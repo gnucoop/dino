@@ -21,8 +21,8 @@ const ignorePatterns = [
   'material/_theming.scss',
 ];
 const materialPrefixes = [
-  ...getPrefixes('material', 'dewco'),
-  ...getPrefixes('material/core', 'dewco'),
+  ...getPrefixes('material', 'dino'),
+  ...getPrefixes('material/core', 'dino'),
 ];
 
 // Restore the source directory to a clean state.

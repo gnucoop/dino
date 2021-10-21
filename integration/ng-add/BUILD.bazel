@@ -5,8 +5,8 @@ load("//tools:defaults.bzl", "node_integration_test")
 npmPackageMappings = dicts.add(
     CLI_PROJECT_MAPPINGS,
     {
-        "//src/core:npm_package_archive": "@dewco/core",
-        "//src/material:npm_package_archive": "@dewco/material",
+        "//src/core:npm_package_archive": "@dino/core",
+        "//src/material:npm_package_archive": "@dino/material",
     },
 )
 
@@ -19,7 +19,7 @@ node_integration_test(
         # See: https://github.com/yarnpkg/yarn/issues/2165.
         # TODO(devversion): determine if a solution/workaround could live in the test runner.
         "yarn install --cache-folder .yarn_cache_folder/",
-        "yarn ng add @dewco/material",
+        "yarn ng add @dino/material",
         "yarn test",
     ],
     npm_packages = npmPackageMappings,
@@ -43,7 +43,7 @@ node_integration_test(
         "yarn install --cache-folder .yarn_cache_folder/",
         "node --version",
         "yarn node --version",
-        "yarn ng add @dewco/material",
+        "yarn ng add @dino/material",
         "yarn test",
     ],
     npm_packages = npmPackageMappings,

@@ -1,7 +1,7 @@
 import {createPlugin, utils} from 'stylelint';
 import {basename} from 'path';
 
-const ruleName = 'dewco/single-line-comment-only';
+const ruleName = 'dino/single-line-comment-only';
 const messages = utils.ruleMessages(ruleName, {
   expected: () =>
     'Multi-line comments are not allowed (e.g. /* */). ' + 'Use single-line comments instead (//).',

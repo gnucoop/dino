@@ -33,11 +33,11 @@ cd(projectDir);
 const bazelBinPath = exec(`${bazelCmd} info bazel-bin`).stdout.trim();
 
 /** Path where the NPM package is built into by Bazel. */
-const bazelBinOutDir = join(bazelBinPath, 'src/dewco-examples/npm_package');
+const bazelBinOutDir = join(bazelBinPath, 'src/dino-examples/npm_package');
 
 // Build the docs-content package with the snapshot-build mode. That will help
 // determining which commit is associated with the built docs-content.
-exec(`${bazelCmd} build src/dewco-examples:npm_package --config=snapshot-build`);
+exec(`${bazelCmd} build src/dino-examples:npm_package --config=snapshot-build`);
 
 // Clean the output directory to ensure that the docs-content package
 // will not contain outdated files from previous builds.

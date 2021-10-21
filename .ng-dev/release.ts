@@ -80,7 +80,7 @@ export const release: ReleaseConfig = {
     },
   },
   publishRegistry: 'https://sinopia.gnucoop.com',
-  npmPackages: releasePackages.map(pkg => `@dewco/${pkg}`),
+  npmPackages: releasePackages.map(pkg => `@dino/${pkg}`),
   buildPackages: async () => {
     // The `performNpmReleaseBuild` function is loaded at runtime as loading of the
     // script results in an invocation of Bazel for any `yarn ng-dev` command.

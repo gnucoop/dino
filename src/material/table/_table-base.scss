@@ -14,7 +14,7 @@
             border-bottom-width: 0 !important;
             border-bottom-style: none !important;
             border-color: transparent;
-            &:not(.dewco-expanded-cell) {
+            &:not(.dino-expanded-cell) {
                 padding-top: 12px;
                 padding-bottom: 12px;
             }
@@ -31,7 +31,7 @@
             margin-bottom: 16px;
             border-style: none;
         }
-        &.dewco-inner-table {
+        &.dino-inner-table {
             background: inherit;
         }
     }

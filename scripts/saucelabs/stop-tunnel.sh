@@ -2,7 +2,7 @@
 
 set -e -o pipefail
 
-tunnelTmpDir="/tmp/dewco-saucelabs"
+tunnelTmpDir="/tmp/dino-saucelabs"
 tunnelPidFile="${tunnelTmpDir}/pidfile"
 
 if [[ ! -f ${tunnelPidFile} ]]; then

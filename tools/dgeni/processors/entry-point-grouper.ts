@@ -109,7 +109,7 @@ export class EntryPointGrouper implements Processor {
           packageDisplayName = 'Material';
       }
 
-      const moduleImportPath = `@dewco/${packageName}/${moduleInfo.entryPointName}`;
+      const moduleImportPath = `@dino/${packageName}/${moduleInfo.entryPointName}`;
       const entryPointName = packageName + '-' + moduleInfo.name;
 
       // Compute a public URL that refers to the document. This is helpful if we want to

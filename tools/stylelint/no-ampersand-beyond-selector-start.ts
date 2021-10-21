@@ -4,7 +4,7 @@ import {basename} from 'path';
 const isStandardSyntaxRule = require('stylelint/lib/utils/isStandardSyntaxRule');
 const isStandardSyntaxSelector = require('stylelint/lib/utils/isStandardSyntaxSelector');
 
-const ruleName = 'dewco/no-ampersand-beyond-selector-start';
+const ruleName = 'dino/no-ampersand-beyond-selector-start';
 const messages = utils.ruleMessages(ruleName, {
   expected: () => 'Ampersand is only allowed at the beginning of a selector',
 });

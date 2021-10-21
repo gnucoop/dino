@@ -16,14 +16,14 @@ interface DummyModel extends Model {
 
 let testDbIdx = 0;
 
-const serverUrl = 'http://dewcoServer/v1/graphql';
-const wsServerUrl = 'ws://dewcoServer';
+const serverUrl = 'http://dinoServer/v1/graphql';
+const wsServerUrl = 'ws://dinoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
 addPouchPlugin(pouchdbAdapterMemory);
 const dataServiceConfig: DataServiceConfig = {
   databaseCreateOptions: {
-    name: `dewco_data_test_db_${testDbIdx++}`,
+    name: `dino_data_test_db_${testDbIdx++}`,
     storage: getRxStoragePouch('memory'),
     ignoreDuplicate: true,
   },

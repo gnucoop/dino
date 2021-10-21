@@ -1,8 +1,8 @@
-<div class="dewco-mixed-editor-container">
+<div class="dino-mixed-editor-container">
   <div
-    [class]="'dewco-mixed-list-container' + (viewOnly ? ' dewco-mixed-list-container-hidden' : '')"
+    [class]="'dino-mixed-list-container' + (viewOnly ? ' dino-mixed-list-container-hidden' : '')"
   >
-    <div class="dewco-mixed-list-filter">
+    <div class="dino-mixed-list-filter">
       <mat-form-field appearance="fill">
         <mat-label>Search Items</mat-label>
         <input #search matInput />
@@ -15,17 +15,17 @@
       cdkDropList
       [cdkDropListDisabled]="true"
       [cdkDropListData]="(sourceList|async)!"
-      class="dewco-mixed-list"
+      class="dino-mixed-list"
     >
       <ng-container *ngFor="let item of (sourceList|async)">
         <ng-container *ngIf="item.displayed">
           <div
-            [class]="item.disabled? 'dewco-mixed-list-item-disabled' : 'dewco-mixed-list-item'"
+            [class]="item.disabled? 'dino-mixed-list-item-disabled' : 'dino-mixed-list-item'"
           >
-            <mat-icon class="dewco-mixed-list-icon-identifier"
+            <mat-icon class="dino-mixed-list-icon-identifier"
               >{{item.itemIcon}}</mat-icon
             >
-            <div class="dewco-mixed-list-entry-tile">{{item.itemName}}</div>
+            <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
 
             <ng-template #boxBtn>
               <button
@@ -57,8 +57,8 @@
     </div>
   </div>
 
-  <div class="dewco-mixed-list-container">
-    <div class="dewco-mixed-list-savename">
+  <div class="dino-mixed-list-container">
+    <div class="dino-mixed-list-savename">
       <mat-form-field appearance="fill">
         <mat-label>Name</mat-label>
         <input #saveListName matInput [disabled]="viewOnly" />
@@ -71,16 +71,16 @@
       cdkDropList
       [cdkDropListDisabled]="true"
       [cdkDropListData]="saveList"
-      class="dewco-mixed-list"
+      class="dino-mixed-list"
     >
       <div
-        class="dewco-mixed-list-item dewco-mixed-list-item-savelist"
+        class="dino-mixed-list-item dino-mixed-list-item-savelist"
         *ngFor="let item of saveList"
       >
-        <mat-icon class="dewco-mixed-list-icon-identifier"
+        <mat-icon class="dino-mixed-list-icon-identifier"
           >{{item.itemIcon}}</mat-icon
         >
-        <div class="dewco-mixed-list-entry-tile">{{item.itemName}}</div>
+        <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
         <button
           *ngIf="!viewOnly"
           mat-icon-button
@@ -94,11 +94,11 @@
     </div>
   </div>
 
-  <div class="dewco-mixed-list-action-buttons-container">
+  <div class="dino-mixed-list-action-buttons-container">
     <button
       *ngIf="!viewOnly"
       mat-raised-button
-      class="dewco-mixed-list-action-button"
+      class="dino-mixed-list-action-button"
       color="primary"
       cdkFocusInitial
       (click)="saveMixedList()"
@@ -108,7 +108,7 @@
     </button>
     <button
       mat-raised-button
-      class="dewco-mixed-list-action-button"
+      class="dino-mixed-list-action-button"
       color="warn"
       (click)="onClose()"
     >

@@ -12,9 +12,9 @@
         font-family: Roboto, 'Helvetica Neue', sans-serif;
         background: mat-theming.get-color-from-palette($background, cdk-drop-list);
         color: mat-theming.get-color-from-palette($foreground, text);
-        .dewco-mixed-list-item {
+        .dino-mixed-list-item {
             border-bottom: dotted 0.5px mat-theming.get-color-from-palette($accent, 0.5);
-            &.dewco-mixed-list-item-savelist {
+            &.dino-mixed-list-item-savelist {
                 background: mat-theming.get-color-from-palette($foreground, text);
                 color: mat-theming.get-color-from-palette($primary);
             }

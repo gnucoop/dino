@@ -1,6 +1,6 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco-list', () => {
+describe('dino-list', () => {
   beforeEach(async () => {
     await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
@@ -11,7 +11,7 @@ describe('dewco-list', () => {
   });
 
   it('should display a material table', async () => {
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-list'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
   });
 
   it('should display a checkbox column and a checkBox for bulk actions', async () => {
@@ -72,10 +72,10 @@ describe('dewco-list', () => {
     await browser.actions().mouseMove(matRow).perform();
 
     await browser.wait(
-      EC.presenceOf(element(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'))),
+      EC.presenceOf(element(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'))),
     );
 
-    const actionIcons = element.all(by.css('.mat-cell.dewco-row-actions .mat-icon.mat-list-icon'));
+    const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
     const deleteIcon = actionIcons.get(2);
 
     await browser.actions().mouseMove(deleteIcon).perform();
@@ -86,7 +86,7 @@ describe('dewco-list', () => {
 
     const confirmDialog = element(by.css('.confirmation-dialog'));
     expect(await confirmDialog.isPresent()).toBe(true);
-    const confirmButton = confirmDialog.element(by.css('.dewco-confirm-button'));
+    const confirmButton = confirmDialog.element(by.css('.dino-confirm-button'));
     await browser.actions().mouseMove(confirmButton).perform();
     await browser.wait(EC.elementToBeClickable(confirmButton));
     await confirmButton.click();

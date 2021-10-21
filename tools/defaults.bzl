@@ -45,7 +45,7 @@ def _compute_module_name(testonly):
 
     # Construct module names based on the current Bazel package. e.g. if a target is
     # defined within `src/cdk/a11y` then the module name will be `@angular/cdk/a11y`.
-    return "@dewco/%s" % current_pkg[len("src/"):]
+    return "@dino/%s" % current_pkg[len("src/"):]
 
 def _getDefaultTsConfig(testonly):
     if testonly:

@@ -51,7 +51,7 @@ module.exports = config => {
     autoWatch: false,
 
     sauceLabs: {
-      testName: 'Dewco Unit Tests',
+      testName: 'Dino Unit Tests',
       startConnect: false,
       recordVideo: false,
       recordScreenshots: false,
@@ -61,7 +61,7 @@ module.exports = config => {
     },
 
     browserStack: {
-      project: 'Dewco Unit Tests',
+      project: 'Dino Unit Tests',
       startTunnel: true,
       retryLimit: 3,
       timeout: 1800,

@@ -13,7 +13,7 @@ export async function loadExample(
   injector: Injector,
 ): Promise<{component: Type<any>; injector: Injector}> {
   const {componentName, module} = EXAMPLE_COMPONENTS[name];
-  const moduleExports = await import(`/bundles/dewco-examples/${module.importSpecifier}/index.js`);
+  const moduleExports = await import(`/bundles/dino-examples/${module.importSpecifier}/index.js`);
   const moduleType: Type<any> = moduleExports[module.name];
   const componentType: Type<any> = moduleExports[componentName];
   const moduleRef = createNgModuleRef(moduleType, injector);

@@ -1,6 +1,6 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
-describe('dewco-search-filters-dialog', () => {
+describe('dino-search-filters-dialog', () => {
   beforeEach(async () => {
     await browser.get('/forms');
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
@@ -10,14 +10,14 @@ describe('dewco-search-filters-dialog', () => {
     await tile.click();
   });
 
-  it('should display a dewco-search-filters-dialog component and its parts', async () => {
+  it('should display a dino-search-filters-dialog component and its parts', async () => {
     await browser.wait(EC.presenceOf(element(by.cssContainingText('mat-icon', 'filter_list'))));
 
     const dialogButton = element(by.cssContainingText('mat-icon', 'filter_list'));
     await browser.wait(EC.elementToBeClickable(dialogButton));
     await dialogButton.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-dialog'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-dialog'))));
 
     const search = await element(by.cssContainingText('.mat-button-wrapper', 'Search')).isPresent();
     const close = await element(by.cssContainingText('.mat-button-wrapper', 'Close')).isPresent();
@@ -52,9 +52,9 @@ describe('dewco-search-filters-dialog', () => {
     await browser.wait(EC.elementToBeClickable(dialogButton));
     await dialogButton.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dewco-search-filters-widget'))));
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-search-filters-widget'))));
 
-    const widgets = await element.all(by.tagName('dewco-search-filters-widget')).count();
+    const widgets = await element.all(by.tagName('dino-search-filters-widget')).count();
     expect(widgets).toBeGreaterThan(0);
   });
 
@@ -83,7 +83,7 @@ describe('dewco-search-filters-dialog', () => {
     await searchButton.click();
     await browser.sleep(300);
 
-    await browser.wait(EC.not(EC.presenceOf(element(by.tagName('dewco-search-filters-dialog')))));
+    await browser.wait(EC.not(EC.presenceOf(element(by.tagName('dino-search-filters-dialog')))));
 
     await browser.sleep(1000);
     const currentUrl = await browser.getCurrentUrl();

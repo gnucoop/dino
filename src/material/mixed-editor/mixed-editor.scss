@@ -1,4 +1,4 @@
-.dewco-mixed-editor-container {
+.dino-mixed-editor-container {
     min-width: 50vw;
     max-height: 80vh;
     overflow-y: scroll;
@@ -10,8 +10,8 @@
     padding: 0px 15px;
 }
 
-.dewco-mixed-list-container,
-.dewco-mixed-list-action-buttons-container {
+.dino-mixed-list-container,
+.dino-mixed-list-action-buttons-container {
     margin: auto;
     margin-bottom: 20px;
     max-width: 60vw;
@@ -21,14 +21,14 @@
     text-align: center;
 }
 
-.dewco-mixed-list-container-hidden {
+.dino-mixed-list-container-hidden {
     display: none;
 }
 
-.dewco-mixed-list-action-buttons-container {
+.dino-mixed-list-action-buttons-container {
     display: flex;
     justify-content: space-between;
-    .dewco-mixed-list-action-button {
+    .dino-mixed-list-action-button {
         flex: 1 0 auto;
         padding: 5px;
         margin-bottom: 10px;
@@ -39,23 +39,23 @@
     }
 }
 
-.dewco-mixed-list-filter,
-.dewco-mixed-list-savename {
+.dino-mixed-list-filter,
+.dino-mixed-list-savename {
     text-align: center;
     .mat-form-field {
         width: 100%;
     }
 }
 
-.dewco-mixed-list-icon-identifier {
+.dino-mixed-list-icon-identifier {
     margin-right: auto;
 }
 
-.dewco-mixed-list-entry-tile {
+.dino-mixed-list-entry-tile {
     margin-right: auto;
 }
 
-.dewco-mixed-list {
+.dino-mixed-list {
     margin: auto;
     min-height: 60px;
     min-width: 10vw;
@@ -72,8 +72,8 @@
     }
 }
 
-.dewco-mixed-list-item,
-.dewco-mixed-list-item-disabled {
+.dino-mixed-list-item,
+.dino-mixed-list-item-disabled {
     padding: 20px 10px;
     display: flex;
     align-items: center;
@@ -85,7 +85,7 @@
     }
 }
 
-.dewco-mixed-list-item-disabled {
+.dino-mixed-list-item-disabled {
     opacity: 0.3;
     pointer-events: none;
 }

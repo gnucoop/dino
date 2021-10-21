@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {NetworkStatusService} from '@dewco/core/auth';
-import {MetricsService} from '@dewco/core/data';
-import {BreakpointObserverService} from '@dewco/material/breakpoint-observer';
-import {CollectItem} from '@dewco/material/collect';
+import {NetworkStatusService} from '@dino/core/auth';
+import {MetricsService} from '@dino/core/data';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {CollectItem} from '@dino/material/collect';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 

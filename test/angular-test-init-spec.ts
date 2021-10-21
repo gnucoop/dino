@@ -5,7 +5,7 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 
 /*
- * Common setup / initialization for all unit tests in Dewco.
+ * Common setup / initialization for all unit tests in Dino.
  */
 
 TestBed.initTestEnvironment([BrowserDynamicTestingModule], platformBrowserDynamicTesting(), {

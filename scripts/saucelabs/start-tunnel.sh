@@ -5,7 +5,7 @@ set -e -o pipefail
 tunnelFileName="sc-4.6.2-linux.tar.gz"
 tunnelUrl="https://saucelabs.com/downloads/${tunnelFileName}"
 
-tunnelTmpDir="/tmp/dewco-saucelabs"
+tunnelTmpDir="/tmp/dino-saucelabs"
 tunnelReadyFile="${tunnelTmpDir}/readyfile"
 tunnelPidFile="${tunnelTmpDir}/pidfile"
 

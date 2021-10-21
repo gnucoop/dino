@@ -2,30 +2,30 @@
  * @license
  * Copyright (C) Gnucoop soc. coop.
  *
- * This file is part of the Dewco (dewco).
+ * This file is part of the Dino (dino).
  *
- * Dewco (dewco) is free software: you can redistribute it and/or
+ * Dino (dino) is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * Dewco (dewco) is distributed in the hope that it will be useful,
+ * Dino (dino) is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Dewco (dewco).
+ * along with Dino (dino).
  * If not, see http://www.gnu.org/licenses/.
  *
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {DataModelManager, Metric} from '@dewco/core/data';
-import {ActionType, FiltersService, ListAction, ListHeader} from '@dewco/core/list';
-import {ListDataSource} from '@dewco/material/list';
-import {MetricEditor} from '@dewco/material/metric-editor';
+import {DataModelManager, Metric} from '@dino/core/data';
+import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
+import {ListDataSource} from '@dino/material/list';
+import {MetricEditor} from '@dino/material/metric-editor';
 
 /**
  * Dino Metric Section component.
@@ -33,7 +33,7 @@ import {MetricEditor} from '@dewco/material/metric-editor';
  * list and a Metrics Editor dialog.
  */
 @Component({
-  selector: 'dewco-metric-section',
+  selector: 'dino-metric-section',
   templateUrl: './metric-section.html',
   styleUrls: ['metric-section.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

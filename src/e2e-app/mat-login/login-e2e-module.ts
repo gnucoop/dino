@@ -5,7 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {LoginModule} from '@dewco/material/login';
+import {LoginModule} from '@dino/material/login';
 
 import {MatLoginE2E} from './login-e2e';
 

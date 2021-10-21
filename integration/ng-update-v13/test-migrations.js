@@ -20,8 +20,8 @@ const expectationFiles = glob.sync('**/*.expected', {cwd: projectDir});
 const fromVersion = '12.0.0';
 const toVersion = '13.0.0';
 
-runUpdateCommand('@dewco/core');
-runUpdateCommand('@dewco/material');
+runUpdateCommand('@dino/core');
+runUpdateCommand('@dino/material');
 
 let testsPassing = true;
 
