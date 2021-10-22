@@ -1,3 +1,184 @@
+<a name="12.1.0"></a>
+# 12.1.0 "cruel-earwig" (2021-10-22)
+### core
+| Commit | Type | Description |
+| -- | -- | -- |
+| [8f5ad24ab](https://github.com/gnucoop/dino/commit/8f5ad24ab366e5dce1fc1452d1f12055f51a118c) | feat | **reports:** Added Core Reports module. |
+| [d6438dd23](https://github.com/gnucoop/dino/commit/d6438dd2335515362328361c03d288a891bffb3d) | feat | **users:** Added Users core package. |
+| [29f8b9148](https://github.com/gnucoop/dino/commit/29f8b9148d3ee14ed51e7e72f1e638df12ff2125) | feat | **list:** Added base CreateAction |
+| [33b9db7f2](https://github.com/gnucoop/dino/commit/33b9db7f275bc3f5ef18372cc5a6b75b8637f1a8) | feat | **data:** Metrics service added. |
+| [7d18b7607](https://github.com/gnucoop/dino/commit/7d18b760744c02c8ca483ad99c6faa004bbcba8e) | feat | **config:** Added Config module to Core. |
+| [5de438f36](https://github.com/gnucoop/dino/commit/5de438f361f0ab49e84651f6c4d541822791d8d4) | feat | **data:** Added generic Metric interface. |
+| [361e190f4](https://github.com/gnucoop/dino/commit/361e190f4e61d45e100963433ab53bd664fde78b) | feat | **organizations:** Added Organizations module. |
+| [edf3183c4](https://github.com/gnucoop/dino/commit/edf3183c4a761575d59e9c6ef7a9a80f4b71840c) | feat | **areas:** Areas module added. |
+| [258c24cd1](https://github.com/gnucoop/dino/commit/258c24cd18239057a1144da91faeeb8578a38c6b) | feat | **list:** Revamped row actions. |
+| [6408f77cd](https://github.com/gnucoop/dino/commit/6408f77cda74399799e3c7e744925248bbaf6313) | feat | **data:** Data details logic added. CanView permission added. |
+| [0b77c6039](https://github.com/gnucoop/dino/commit/0b77c6039e67dd463d4867a95968dd62882318d8) | feat | **auth:** Network status dependant behavior |
+| [859884397](https://github.com/gnucoop/dino/commit/859884397ba71d88063575df2b31d92e33817f99) | feat | **projects:** Created Projects package |
+| [527cc1b76](https://github.com/gnucoop/dino/commit/527cc1b76eaf228b48a6befcfa1ce6c77f8c86a3) | feat | **locations:** Created Locations package |
+| [68cc3bb23](https://github.com/gnucoop/dino/commit/68cc3bb234eae59e0fa4c3ec0cf46f372f0df057) | feat | **error-handler:** Created Error Handler service |
+| [f4ebdf908](https://github.com/gnucoop/dino/commit/f4ebdf90860a19c192d5f0d41d5c53afe5dc3a6c) | feat | **forms:** new forms core package |
+| [bf58fa9a9](https://github.com/gnucoop/dino/commit/bf58fa9a93e614449f46dc6fb064191dce0e1008) | feat | **list:** Created List component abstract class |
+| [600ff70d5](https://github.com/gnucoop/dino/commit/600ff70d5eb2b66f29a62b902231190d4bd9f9d0) | feat | **data:** Added bulkDelete to DataModelManager |
+| [b0e8799b7](https://github.com/gnucoop/dino/commit/b0e8799b769c38f41656dd5fe49cb05aaefdac84) | feat | **list:** Created ListComponent |
+| [fd6a59528](https://github.com/gnucoop/dino/commit/fd6a59528de92669ce23401f4b80ec66312aa56a) | feat | **auth:** Created LoginComponent |
+| [73db1d5a0](https://github.com/gnucoop/dino/commit/73db1d5a0b84f3dfba58016b26bcd3797cb7f051) | fix | **projects:** Required properties schema fixes. |
+| [c29be2991](https://github.com/gnucoop/dino/commit/c29be29914531401b1c05fcfda7b4ca7fddf10e1) | fix | **locations:** Locations coordinates and parent id schema fixes. |
+| [e33cf389b](https://github.com/gnucoop/dino/commit/e33cf389b6958f431263b6ad00945be075740703) | fix | **forms:** Form data and schema json deleted flag fix. |
+| [7ed7abbf3](https://github.com/gnucoop/dino/commit/7ed7abbf33504aaac063d6038b1a4e85a7da7421) | fix | **list:** Filters service generateModelFilters fix. |
+| [6219e49b3](https://github.com/gnucoop/dino/commit/6219e49b343b0ab95fdbdf5165267d24bd0b23c1) | fix | **forms:** Primary keys fix |
+| [1ee7bde2f](https://github.com/gnucoop/dino/commit/1ee7bde2ff95f1e6325de920ad66321b596638d5) | fix | **forms:** Added primary attribute to form data/schema id. |
+| [8acf4ad9a](https://github.com/gnucoop/dino/commit/8acf4ad9afff8bee38bb4bfc7433ac20c0da5fdf) | fix | **auth:** Minor Auth and Interceptor fixes |
+| [e8599fdba](https://github.com/gnucoop/dino/commit/e8599fdba46ce7268dda36e8ddc72d3650ac15f3) | fix | **forms:** Added soft delete flag |
+| [d32e642c8](https://github.com/gnucoop/dino/commit/d32e642c8285310e4cc21b5b8d4151b9a66f4bca) | fix | **data:** Minor nomenclature changes. |
+| [f0311bdef](https://github.com/gnucoop/dino/commit/f0311bdef81bbe78b0779de956f79e1a5fd70b3e) | fix | **auth:** Missing null checks added. Minor fixes. |
+| [7d0ac67a3](https://github.com/gnucoop/dino/commit/7d0ac67a3c8038c1907e7d50b97fafa785e78277) | fix | **forms:** Minor changes to form schema json. |
+| [7b9b31fdc](https://github.com/gnucoop/dino/commit/7b9b31fdc56f6b68e223c2777e24eaf4a2ed8cba) | fix | **data:** Initial graphql replication and timing issues fixed. |
+| [018c393ff](https://github.com/gnucoop/dino/commit/018c393ff367eeec6c53edb0c3a71cb4da0ebdc2) | fix | **auth:** Auth enhancements and small fixes |
+| [a78c561e3](https://github.com/gnucoop/dino/commit/a78c561e3fc5e24c107500f2581670ed4202c2ad) | fix | **list:** Filters service fixes and optimization |
+| [482f9f89f](https://github.com/gnucoop/dino/commit/482f9f89f13bf302248ee7f76e38a21e7366de53) | fix | **auth:** FusionAuth setup and fixes |
+| [a94cbbcbe](https://github.com/gnucoop/dino/commit/a94cbbcbe892d5d430cb4115df2e4b057d134e38) | fix | **data:** RxDb sync with Hasura setup |
+| [fc37efd4a](https://github.com/gnucoop/dino/commit/fc37efd4aa1a7cfcba16e4e07b99b72f11d123e7) | fix | **list:** Fixed basic filters duplication |
+| [9ae6d4caf](https://github.com/gnucoop/dino/commit/9ae6d4caf441361a3700f8f9e3c1401489ae4eef) | fix | **list:** importing self package content by package name |
+| [6dfa6cae2](https://github.com/gnucoop/dino/commit/6dfa6cae27f7a7ac01c7ee17f371d69cb7bf6fa8) | fix | **data:** DataModelManager exposes rxDb collection schema |
+### material
+| Commit | Type | Description |
+| -- | -- | -- |
+| [cc2d91ac2](https://github.com/gnucoop/dino/commit/cc2d91ac2097dd3fc6727c28515c0ef93ea1887a) | feat | **icons-service:** Added icons service. |
+| [46388c400](https://github.com/gnucoop/dino/commit/46388c40036acbb95570f5bf5d87230dd0faa841) | feat | **edit-form-schema:** Added edit-form-schema module. |
+| [2449fa896](https://github.com/gnucoop/dino/commit/2449fa8968d5614b57dc67488937a57fd7a38550) | feat | **export:** add export module |
+| [fde91e596](https://github.com/gnucoop/dino/commit/fde91e596b68bc08394ade65426b26a052587311) | feat | **edit-report:** Added material Edit Report component. |
+| [a2e601696](https://github.com/gnucoop/dino/commit/a2e6016962be2d992f16d7e13d797e6e4fb74474) | feat | **edit-form:** Form Metrics Selector integrated. |
+| [fce1c9b5e](https://github.com/gnucoop/dino/commit/fce1c9b5ec201eb8497a66eb4b1f0cd8be34ab57) | feat | **create-form:** Form Metrics Selector integrated. |
+| [d10586899](https://github.com/gnucoop/dino/commit/d105868999eb8041b7fb1c47c63df113cdcd4ebc) | feat | **user-editor:** Added Material User Editor package. |
+| [ba2658eda](https://github.com/gnucoop/dino/commit/ba2658eda94768ca0bcf898063ccdda37a97c098) | feat | **mixed-editor:** Added Material Mixed Editor package. |
+| [96e094c63](https://github.com/gnucoop/dino/commit/96e094c63ad25801890aa4fca6ea9995e5659a4d) | feat | **form-metric-selector:** Added Material Form Metric Selector package. |
+| [199abb578](https://github.com/gnucoop/dino/commit/199abb578bf7868ab4b7eb64a393ee66bbf159d6) | feat | **metric-editor:** Added asyncvalidator to check already existing  Metrics. |
+| [384fb9079](https://github.com/gnucoop/dino/commit/384fb9079b766fdc8c98dcfba0bc0be882f1c50e) | feat | **list:** Added Create Action to list actions, for creating forms. |
+| [0ad50613f](https://github.com/gnucoop/dino/commit/0ad50613ff2460dcb5a77d972c03972bd2aadc6e) | feat | **create-form:** Added Create Form module. |
+| [da660d222](https://github.com/gnucoop/dino/commit/da660d222fc06490070db632d08543f75ab7f276) | feat | **search-filters-bar:** Addional filters button can now be hidden. |
+| [7021fd21a](https://github.com/gnucoop/dino/commit/7021fd21aca1e804ef56f43876f117679dfbe10c) | feat | **metric-section:** Metric section module added. |
+| [15fbd05f5](https://github.com/gnucoop/dino/commit/15fbd05f5fd167f9bedc10196ea7dc1d08bcd82e) | feat | **metric-editor:** Metric editor module added. |
+| [4218eb387](https://github.com/gnucoop/dino/commit/4218eb387f09303566365c5ce85a7b5117188bae) | feat | **floating-button:** Added Floating button module. |
+| [ae22d6b98](https://github.com/gnucoop/dino/commit/ae22d6b98d1b65d2e1bd531956c3ac3eed79319d) | feat | **login:** Login form visibility input. |
+| [e3d098afe](https://github.com/gnucoop/dino/commit/e3d098afec88c434c9540f7beef1c5afd023b386) | feat | E2e app and theming updates |
+| [bbe3813e4](https://github.com/gnucoop/dino/commit/bbe3813e47365b79b394e0e20e99428273db8b93) | feat | Added Dino Material theming. |
+| [751e9ab6e](https://github.com/gnucoop/dino/commit/751e9ab6e70bc33683bbfefc30cb1921bcc02886) | feat | **login:** Customizable logo and additional content. |
+| [ea1ba7e0f](https://github.com/gnucoop/dino/commit/ea1ba7e0fdba18eb93b8e8af1dbd07b209c03055) | feat | **list:** Expandable list logic |
+| [76f521d5a](https://github.com/gnucoop/dino/commit/76f521d5abe90289ba7a0897d1865ab0945a1269) | feat | **search-filters-bar:** Responsive view template |
+| [711333acf](https://github.com/gnucoop/dino/commit/711333acf03a880e7050c17fc38bbee7014d86eb) | feat | **main-nav:** Main navigation component |
+| [974d9bf85](https://github.com/gnucoop/dino/commit/974d9bf853c7f372e0eb74f2cd329faf0f041ee8) | feat | **edit-form:** Edit form component |
+| [d191df9aa](https://github.com/gnucoop/dino/commit/d191df9aa707c931464bc1290b7796f648f2db3b) | feat | **collect:** Collect component |
+| [39a6f66ba](https://github.com/gnucoop/dino/commit/39a6f66ba7ce2525ea2bf633a77ba209a9cbfa3a) | feat | **breakpoint-observer:** Breakpoint observer service |
+| [2a7c9a940](https://github.com/gnucoop/dino/commit/2a7c9a940679664dc7d9546c8154e48008c4e092) | feat | **core:** migrate to the Sass module system |
+| [4e42402f3](https://github.com/gnucoop/dino/commit/4e42402f37218b48644f72e35e6c59bfe33ea6db) | feat | **list:** Added User Interaction service. |
+| [757700bfc](https://github.com/gnucoop/dino/commit/757700bfc821435482adb002e5e91b275c10b1e2) | feat | **list:** Added Confirmation Dialog component. |
+| [a9c774626](https://github.com/gnucoop/dino/commit/a9c774626671c6a9a8311311269b5f3b1bb6bc3f) | feat | **list:** Column Selector component |
+| [9eec9282d](https://github.com/gnucoop/dino/commit/9eec9282d8b8367d34f0076735c64d06bd961272) | feat | **searchfilters-bar:** Added optional filters and integrated Forms Package |
+| [6312dba56](https://github.com/gnucoop/dino/commit/6312dba56e54e28975393780b3454058a20a336e) | feat | **SearchFiltersPresetManager:** Created material SearchFiltersPresetManager component |
+| [d22c7ae4e](https://github.com/gnucoop/dino/commit/d22c7ae4ee47645953279b22c683906bcf1136ef) | feat | **SearchFiltersWidget:** Created material SearchFiltersWidget component |
+| [03983f027](https://github.com/gnucoop/dino/commit/03983f027cb9db154535a9f9241c11dee3bb17d9) | feat | **SearchFiltersChips:** Created material SearchFiltersChips component |
+| [88cb49bb5](https://github.com/gnucoop/dino/commit/88cb49bb504e86e774ab8bf88da49d87cb094846) | feat | **SearchFiltersDialog:** Created material SearchFilterDialog component |
+| [5f32199b3](https://github.com/gnucoop/dino/commit/5f32199b3fcb60905a2808ff90b67626ba1bd3c3) | feat | **SearchFiltersBar:** Created material SearchFiltersBar component |
+| [d79f6fa7f](https://github.com/gnucoop/dino/commit/d79f6fa7f79a7b52edd9618a856098e000228d42) | feat | **listDataSource:** Create a custom DataSource for SelectionList |
+| [f4c4a6008](https://github.com/gnucoop/dino/commit/f4c4a6008ecb74bce6ab3ad467d3a545390c8bfa) | feat | **list:** Created material List component |
+| [b2a22325a](https://github.com/gnucoop/dino/commit/b2a22325aa16e18069ca737cd8aa0881475cfc0e) | feat | **list:** Created Material List component |
+| [1f62945b5](https://github.com/gnucoop/dino/commit/1f62945b54894c817c26b3626e97564f7368249d) | feat | Added theming for dewco material components |
+| [713ccc4df](https://github.com/gnucoop/dino/commit/713ccc4df69723be01740eeb6fa46afb9dbcfc86) | feat | **dewco-mat-directives:** Custom attribute directives for material components |
+| [bd93bd96f](https://github.com/gnucoop/dino/commit/bd93bd96f57e3c4723a569d9b0102a483c3a6295) | feat | **dewco-mat-tab-group:** Created mat-tab-group wrapper with custom styles |
+| [37eab00c6](https://github.com/gnucoop/dino/commit/37eab00c6d2e5e95aa2fe272e82199f3bb61f412) | feat | **dewco-mat-slide-toggle:** Created mat-slide-toggle wrapper with custom styles |
+| [a6cfbd789](https://github.com/gnucoop/dino/commit/a6cfbd789d6d12cba6aa5b3cf1c7f002eaf06ba2) | feat | **dewco-mat-form-field:** Created mat-form-field wrapper with custom styles |
+| [7ba642194](https://github.com/gnucoop/dino/commit/7ba6421947ed2bb6e16c8043cdad276c8815daa3) | feat | **dewco-mat-card:** Created mat-card wrapper with custom styles |
+| [da7277d76](https://github.com/gnucoop/dino/commit/da7277d7669e5bc872bdacaaaf4d63d0f2e67d91) | feat | **login:** Added Material Login component |
+| [daa9c5174](https://github.com/gnucoop/dino/commit/daa9c5174216307120a28cedcedf224f8a4f5b83) | fix | **edit-report:** Report Context format changed. |
+| [dbcc67ec8](https://github.com/gnucoop/dino/commit/dbcc67ec8541d68bb6d7abc5dcd6e1f0659e53a1) | fix | **create-form:** Added default null values for metric ids on form creation. |
+| [13fb824e4](https://github.com/gnucoop/dino/commit/13fb824e4f5f71d1961c70caf5b90b5fba3969e6) | fix | **main-nav:** Main nav showNav fix. |
+| [bdedfc054](https://github.com/gnucoop/dino/commit/bdedfc054a69f054cbf389a84c2f95994f4d462b) | fix | **lang-selector:** add missing aria label to lang selector |
+| [74b7eb379](https://github.com/gnucoop/dino/commit/74b7eb3794616c75190ea88553103bde460575d4) | fix | **floating-button:** Small css changes |
+| [744c875f2](https://github.com/gnucoop/dino/commit/744c875f285bdae898f99a63043f9607f38199df) | fix | **metric-editor:** Required properties fix. |
+| [87c4a9eb1](https://github.com/gnucoop/dino/commit/87c4a9eb14a297db19296ac73104cdcd72cdbb8f) | fix | **list:** Small fix in list template. |
+| [6d2846822](https://github.com/gnucoop/dino/commit/6d2846822b43680d54cbd56a07b9debe6cdc5ecb) | fix | **main-nav:** Minor fixes related to Authservice changes. |
+| [47fe6f71a](https://github.com/gnucoop/dino/commit/47fe6f71af3d0e6bd35c8deedf9c9678353a6cac) | fix | **edit-form:** Edit details forms fix. |
+| [38a10c808](https://github.com/gnucoop/dino/commit/38a10c808852adfda581da0cabf7521db9f325f4) | fix | **list:** Added routerTestingModule and missing method to unit test. |
+| [e82e6a7e4](https://github.com/gnucoop/dino/commit/e82e6a7e46975f653c810ac96f2be15df541d5b9) | fix | **login:** add alt text to login image |
+| [8f07ffc73](https://github.com/gnucoop/dino/commit/8f07ffc73733679364b81465100660072137a194) | fix | **main-nav:** Minor changes |
+| [5090baea3](https://github.com/gnucoop/dino/commit/5090baea3f07f2b0a5b0f8b46b89f1d598106385) | fix | Widespread theming and css adjustments. |
+| [a37d425ea](https://github.com/gnucoop/dino/commit/a37d425ea075813ea7c7c628af932301ecf67bb0) | fix | **search-filters-widget:** Css changes |
+| [172206bc5](https://github.com/gnucoop/dino/commit/172206bc519bb50f0d6c023e935af24c35b7f103) | fix | **search-filters-preset-manager:** Template and css changes |
+| [a006c30a9](https://github.com/gnucoop/dino/commit/a006c30a93e2c0d6b2e77a83399d5df7a41c3911) | fix | **search-filters-dialog:** Added menu button. Template and style changes. |
+| [da70f6695](https://github.com/gnucoop/dino/commit/da70f66953e4488a7f7038d6a6e1d9ada0a8e732) | fix | **search-filters-chips:** Minor css changes |
+| [c056d072b](https://github.com/gnucoop/dino/commit/c056d072b79da5394bd890516cb1d4d3e4c1994d) | fix | **list:** Datasource timing issues fixed. |
+| [a440dadea](https://github.com/gnucoop/dino/commit/a440dadea2800fcff0776d86c9aaa9402e4f202d) | fix | angular components private mixins have been renamed |
+| [e22dcf2ce](https://github.com/gnucoop/dino/commit/e22dcf2ceb9eb656d1fd65259b7eaefe5ba1b1d3) | fix | **core:** do not use scss extension in sass imports |
+| [3af43638a](https://github.com/gnucoop/dino/commit/3af43638a35895cac80cdeb6ce1f872bafe525a1) | fix | **list:** ListDataSource refreshes data on collection changed |
+| [9ebe2af0f](https://github.com/gnucoop/dino/commit/9ebe2af0f175e5872222a27f05364a711a182f7a) | fix | **login:** don't provide child roots in login module |
+| [79acd4bc7](https://github.com/gnucoop/dino/commit/79acd4bc779d60e395f4212f86aa4362371fc2e9) | fix | **login:** Stylelint and format fixes |
+### 
+| Commit | Type | Description |
+| -- | -- | -- |
+| [a996e38ea](https://github.com/gnucoop/dino/commit/a996e38ea51171dea428feb0d8722ae7f8167a6f) | feat | add support for TypeScript 4.0 |
+| [a79039d39](https://github.com/gnucoop/dino/commit/a79039d3929b2a3e54b71fbd9a5b057d9f76ec0d) | feat | report warning if duplicate theme styles are generated |
+| [75fa9917a](https://github.com/gnucoop/dino/commit/75fa9917a1cdb4fb17f066aa1a9593d3882234cb) | fix | various build errors |
+| [3c00383d0](https://github.com/gnucoop/dino/commit/3c00383d0a6a3011bff49b7b0b1b40df0e68a24c) | fix | update sass imports from angular material library |
+| [b8db77bdb](https://github.com/gnucoop/dino/commit/b8db77bdbabbe97bd9e724f39cbc4203ced788a0) | fix | temporarly disable lint for optional injection in core FiltersService |
+| [5cd5afe8c](https://github.com/gnucoop/dino/commit/5cd5afe8cd0df3a971002eb4dc95d7d3854f7178) | fix | approve api-changes in core/list and material/list |
+| [b121ee12f](https://github.com/gnucoop/dino/commit/b121ee12f0b0a8d0314d8a3d387be9e603ed3a94) | fix | approve api changes in material/login and ionic/login |
+### dev-app
+| Commit | Type | Description |
+| -- | -- | -- |
+| [76446812d](https://github.com/gnucoop/dino/commit/76446812d11ed7f6401a1ad5c63ebd94557fa89c) | fix | GestureConfig has been removed in angular components |
+### e2e
+| Commit | Type | Description |
+| -- | -- | -- |
+| [89fbafd42](https://github.com/gnucoop/dino/commit/89fbafd42a92cdf81a69d45cd9b7311fbaa7f257) | feat | **dewco-mat-directives:** Updated e2e app with custom attribute directives |
+| [229f6dd77](https://github.com/gnucoop/dino/commit/229f6dd7746f2d0f8fd122aa449428fd08f103a2) | feat | **dewco-mat-components:** Created an example component to display custom dewco-mat-components |
+### e2e App
+| Commit | Type | Description |
+| -- | -- | -- |
+| [c1cf64d44](https://github.com/gnucoop/dino/commit/c1cf64d443fc276b68e409974a016565c0cf5ca6) | feat | **List:** Updated e2e app with List component |
+### e2e-mat
+| Commit | Type | Description |
+| -- | -- | -- |
+| [67977c798](https://github.com/gnucoop/dino/commit/67977c798c774eb6277ebf62f299bcbb90de071d) | feat | **list:** Added List component to e2e-app |
+| [dc92bca2f](https://github.com/gnucoop/dino/commit/dc92bca2f1c2000989c22a6783182ce6ae1610a1) | fix | **list:** Removed circular dependency from list |
+### e2e-material
+| Commit | Type | Description |
+| -- | -- | -- |
+| [466d0a8dc](https://github.com/gnucoop/dino/commit/466d0a8dc633319a9f7a280d25ad32ed23d3f02a) | feat | Added Edit Form Schema module to e2e app. |
+| [0fad3bc52](https://github.com/gnucoop/dino/commit/0fad3bc52167a57307f72d8438f505ca47f66074) | feat | List and Edit for both Reports and Forms. |
+| [d06eb3696](https://github.com/gnucoop/dino/commit/d06eb369656faf890d899d76d121555568b31cd5) | feat | Added Reports components. |
+| [44f4f3c68](https://github.com/gnucoop/dino/commit/44f4f3c6845fe5e3113b7b1e741ee97383210347) | feat | Added Groups and Manage Users modules. |
+| [831c49796](https://github.com/gnucoop/dino/commit/831c497967ce49c35ce696841b4bcd341eaacc79) | feat | Added E2e app setting to toggle Dynamic Configuration |
+| [8c459599e](https://github.com/gnucoop/dino/commit/8c459599ee8e9da255080369abe88bfd6e2440ed) | feat | Added Metrics section to E2e app. |
+| [924ab9f9e](https://github.com/gnucoop/dino/commit/924ab9f9eab0fcfaed0085c685e63c5039948346) | feat | Added E2e app setting to toggle Dynamic Configuration |
+| [6cd771364](https://github.com/gnucoop/dino/commit/6cd771364353f0cc541d05c931cfffd128514831) | feat | Added create form component. |
+| [62bc4be0d](https://github.com/gnucoop/dino/commit/62bc4be0d99f3eca70b606f7a1fc586ec98f3299) | feat | Added Metrics section to E2e app. |
+| [99afa320e](https://github.com/gnucoop/dino/commit/99afa320e951a4400d015631ab4e00d2e9148a7e) | feat | Dynamic configuration selection added to e2e app. |
+| [d9839da75](https://github.com/gnucoop/dino/commit/d9839da759f5dcc3972f3d32458cd5188eba6e03) | feat | Added example components to show theming functionalities |
+| [dc3c3b9b1](https://github.com/gnucoop/dino/commit/dc3c3b9b1b3cead3f9dab4ffc3521a5061c4a8e1) | fix | Changes in mocks and fake data generator. |
+| [ce0f62b82](https://github.com/gnucoop/dino/commit/ce0f62b82a544849308b67c50ab15042d308adf7) | fix | Updated e2e app |
+| [219d3bfee](https://github.com/gnucoop/dino/commit/219d3bfeedb0e047c0848c2898d49c9d9fa84540) | fix | Service mocks config adjustments |
+| [979193f19](https://github.com/gnucoop/dino/commit/979193f1975fb1c45da0013792602101dc8aa95e) | fix | Changed e2e app routes |
+### ionic
+| Commit | Type | Description |
+| -- | -- | -- |
+| [ca60e51f8](https://github.com/gnucoop/dino/commit/ca60e51f81a636f0d5de896ebbe66b8ab4828107) | feat | **login:** Added Ionic Login component |
+| [c061b1baf](https://github.com/gnucoop/dino/commit/c061b1bafb986e508dcda3c51bea439ccf862344) | fix | **login:** don't provide child roots in login module |
+| [2333f4399](https://github.com/gnucoop/dino/commit/2333f4399e33e1b0048cc2fb76d09e0e3ddf4d24) | fix | **login:** Stylelint and format fixes |
+### mat
+| Commit | Type | Description |
+| -- | -- | -- |
+| [4a3237c1b](https://github.com/gnucoop/dino/commit/4a3237c1bfd15f6684bf250dc34af9a14f4021e5) | fix | Minor fixes to dewco-mat-card css and material bazel config |
+### multiple
+| Commit | Type | Description |
+| -- | -- | -- |
+| [7a3851580](https://github.com/gnucoop/dino/commit/7a385158086240250a6e99ede6969e63cfa8a020) | fix | Metrics section and editor Name Checking changes |
+| [7ac055fe3](https://github.com/gnucoop/dino/commit/7ac055fe3417790edf395e54f50823d8a5f21441) | fix | Updated json schemas and model |
+## Special Thanks
+Marco Marche, Marco Tozzi, peppedeka and trik
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.0.0-rc.3"></a>
 # 13.0.0-rc.3 "conceptual-vole" (2021-10-21)
 ### core
