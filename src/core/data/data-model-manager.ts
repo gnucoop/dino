@@ -234,7 +234,7 @@ export abstract class DataModelManager<T extends Model = Model> {
           if (!this._canDelete(doc, context)) {
             return throwError(new Error('Deletion not allowed'));
           } else {
-            return from(doc.remove()).pipe(
+            return from(doc.update({$set : {_deleted: true, is_deleted: true}})).pipe(
               map(_ => doc),
               catchError(err => throwError(err)),
             );
@@ -275,7 +275,7 @@ export abstract class DataModelManager<T extends Model = Model> {
             return throwError(new Error('Deletion not allowed'));
           }
         }
-        return from(res.query.remove()).pipe(catchError(err => throwError(err)));
+        return from(res.query.update({$set : {_deleted: true, is_deleted: true}})).pipe(catchError(err => throwError(err)));
       }),
     );
   }

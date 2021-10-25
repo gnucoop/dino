@@ -528,7 +528,7 @@ export class DataService {
               collection: collection.name,
               action: 'replication complete',
             });
-            state.recieved$.pipe(take(1), delay(1000)).subscribe(() => {
+            state.received$.pipe(take(1), delay(1000)).subscribe(() => {
               this._collectionChanged.emit({
                 timestamp: new Date().getTime(),
                 collection: collection.name,

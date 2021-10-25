@@ -42,5 +42,10 @@ export interface Model {
   /**
    * Soft delete flag
    */
+  is_deleted?: boolean;
+
+  /**
+   * Pouchdb delete flag
+   */
   _deleted?: boolean;
 }

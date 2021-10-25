@@ -40,9 +40,13 @@ export const schema = {
       "type": "string",
       "description": "Update timestamp."
     },
-    "_deleted": {
+    "is_deleted": {
       "type": "boolean",
       "description": "Soft delete flag"
+    },
+    "_deleted": {
+      "type": "boolean",
+      "description": "Pouchdb delete flag"
     },
     "groupName": {
       "type": "string",
