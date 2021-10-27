@@ -2,11 +2,35 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
 
 import {MainNav, MainNavModule} from './index';
+
+let testDbIdx = 0;
+
+const serverUrl = 'http://dinoServer/v1/graphql';
+const wsServerUrl = 'ws://dinoServer';
+const wsUrl = `${wsServerUrl}/v1/graphql`;
+
+addPouchPlugin(pouchdbAdapterMemory);
+const dataServiceConfig: DataServiceConfig = {
+  databaseCreateOptions: {
+    name: `dino_data_test_db_${testDbIdx++}`,
+    storage: getRxStoragePouch('memory'),
+    ignoreDuplicate: true,
+  },
+  syncOptions: {
+    url: serverUrl,
+    wsUrl,
+    webSocketImpl: WebSocket,
+    authErrorMessage: 'Could not verify JWT: JWTExpired',
+  },
+};
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -47,6 +71,7 @@ describe('Main', () => {
       providers: [
         {provide: AuthService, useValue: authServiceMock},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);

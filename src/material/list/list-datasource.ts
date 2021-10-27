@@ -292,7 +292,7 @@ export class ListDataSource<
       this._addNestedProps(querySelector, ['schema_id', '$eq'], additionalDataSchema.id);
     }
 
-    this._addNestedProps(querySelector, ['is_deleted', '$eq'], false);
+    this._addNestedProps(querySelector, ['is_deleted', '$ne'], true);
 
     const query: DataQueryOptions = {
       selector: querySelector,

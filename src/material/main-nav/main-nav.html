@@ -3,11 +3,7 @@
   class="dino-toolbar"
   [class.dino-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
 >
-  <button
-    mat-icon-button
-    (click)="menuToggle()"
-    aria-label="Toggle menu button"
-  >
+  <button mat-icon-button (click)="menuToggle()" aria-label="Toggle menu button">
     <mat-icon
       *ngIf="(breakpointObserver.large|async) ? (extendedSidenav|async) : sidenav.opened;else closed_menu"
       >menu_open</mat-icon
@@ -19,6 +15,18 @@
   <img class="dino-toolbar-logo" [src]="logoImagePath" alt="logo" />
 
   <div class="dino-toolbar-actions">
+    <ng-template #syncOnline>
+      <mat-icon class="dino-sync-detector" [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
+        >sync</mat-icon
+      >
+    </ng-template>
+    <ng-template #syncOffline>
+      <mat-icon class="dino-sync-detector">sync_disabled</mat-icon>
+    </ng-template>
+    <ng-container
+      [ngTemplateOutlet]="(networkStatusService.isOnline$|async) ? syncOnline : syncOffline "
+    >
+    </ng-container>
     <dino-lang-selector></dino-lang-selector>
     <mat-icon class="dino-logout-button" (click)="logout()">logout</mat-icon>
   </div>
@@ -56,9 +64,7 @@
           [routerLink]="[adminSection.url]"
           (click)="menuClick()"
         >
-          <i class="material-icons material-icons-outlined"
-            >{{adminSection.icon}}</i
-          >
+          <i class="material-icons material-icons-outlined">{{adminSection.icon}}</i>
           <span *ngIf="extendedSidenav|async">{{adminSection.label}}</span>
         </a>
       </ng-container>
@@ -70,10 +76,7 @@
         [disableRipple]="true"
         (click)="extendedSidenav.next(!extendedSidenav.getValue())"
       >
-        <mat-icon
-          >{{(extendedSidenav|async) ? 'close_fullscreen' : 'open_in_full'
-          }}</mat-icon
-        >
+        <mat-icon>{{(extendedSidenav|async) ? 'close_fullscreen' : 'open_in_full' }}</mat-icon>
       </a>
     </mat-nav-list>
   </mat-sidenav>

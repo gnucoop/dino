@@ -34,8 +34,8 @@ import {
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, Router} from '@angular/router';
-import {AuthService} from '@dino/core/auth';
-import {MetricsService} from '@dino/core/data';
+import {AuthService, NetworkStatusService} from '@dino/core/auth';
+import {DataService, MetricsService} from '@dino/core/data';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, map, shareReplay, take, tap, withLatestFrom} from 'rxjs/operators';
@@ -71,6 +71,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * The loading state of the component rendered in the router outlet
    */
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * If true, rxDb is currently syncing data with the backend.
+   */
+  isSyncing: Observable<boolean> = this.dataService.isSyncing;
 
   /**
    * Determines the extended state of the sidenav on large screens
@@ -167,9 +172,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   constructor(
+    readonly networkStatusService: NetworkStatusService,
     readonly breakpointObserver: BreakpointObserverService,
     readonly metricsService: MetricsService,
     readonly authService: AuthService,
+    readonly dataService: DataService,
     readonly snackbar: MatSnackBar,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
