@@ -71,7 +71,7 @@ describe('pullQueryBuilder', () => {
     const timestamp = new Date().toISOString();
     let pullQuery =
       `{ model1( ` +
-      `where: {updated_at:{_gt:"${timestamp}"},_deleted:{_eq:false}}, ` +
+      `where: {updated_at:{_gt:"${timestamp}"}}, ` +
       `limit: ${syncOptions.batchSize}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id model3Id } }`;
@@ -84,7 +84,7 @@ describe('pullQueryBuilder', () => {
 
     pullQuery =
       `{ model1( ` +
-      `where: {foo:"bar",updated_at:{_gt:"${timestamp}"},_deleted:{_eq:false}}, ` +
+      `where: {foo:"bar",updated_at:{_gt:"${timestamp}"}}, ` +
       `limit: ${syncOptions.batchSize}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id } }`;

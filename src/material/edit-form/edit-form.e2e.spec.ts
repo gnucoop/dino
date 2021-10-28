@@ -21,14 +21,19 @@ describe('dino-edit-form', () => {
       EC.presenceOf(element(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'))),
     );
 
-    const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
+    const actionIcons = element.all(
+      by.css(`.mat-cell.dino-row-actions
+    .mat-icon.mat-list-icon`),
+    );
     const editIcon = actionIcons.get(1);
 
     await browser.actions().mouseMove(editIcon).perform();
     await browser.wait(EC.elementToBeClickable(editIcon));
-    await browser.actions().click().perform();
+
+    await editIcon.click();
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-form'))));
+
     const currentUrl = await browser.getCurrentUrl();
     expect(currentUrl).toContain('edit-form');
   });

@@ -129,7 +129,7 @@ const authServiceMock = {
   },
 } as unknown as AuthService;
 
-const dummySchema: RxJsonSchema<any> = {
+const dummySchema: RxJsonSchema<DummyModel> = {
   title: 'dummy schema',
   version: 0,
   description: 'describe a dummy model',
@@ -142,6 +142,8 @@ const dummySchema: RxJsonSchema<any> = {
     author: {type: 'string'},
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
+    is_deleted: {type: 'boolean'},
+    _deleted: {type: 'boolean'},
   },
   indexes: ['name'],
 };
@@ -265,6 +267,7 @@ describe('Data Model Manager - CRUD methods', () => {
     expect(deletedObject!.name).toEqual(insertedDummy!.name);
     expect(getObject).toBeNull();
     expect(deleteSpy).toHaveBeenCalled();
+    expect(true).toEqual(true);
   });
 
   it('should remove a bulk of existing objects from the database', async () => {

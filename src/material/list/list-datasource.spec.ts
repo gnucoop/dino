@@ -162,6 +162,7 @@ describe('ListDataSource', () => {
         filter_a: {$regex: 'test'},
         filter_b: {$gte: 15},
         filter_c: {$eq: false},
+        is_deleted: {$ne: true},
       },
     };
 

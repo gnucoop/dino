@@ -26,7 +26,7 @@ describe('dino-edit-report', () => {
 
     await browser.actions().mouseMove(editIcon).perform();
     await browser.wait(EC.elementToBeClickable(editIcon));
-    await browser.actions().click().perform();
+    await editIcon.click();
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-report'))));
     const currentUrl = await browser.getCurrentUrl();

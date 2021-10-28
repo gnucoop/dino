@@ -5,6 +5,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 import {ReportsModule} from '@dino/core/reports';
+import {UsersModule} from '@dino/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
@@ -59,6 +60,7 @@ describe('Collect', () => {
         RouterTestingModule,
         ReportsModule,
         FormsModule,
+        UsersModule,
       ],
       providers: [
         {provide: AuthService, useValue: authServiceMock},
@@ -84,7 +86,10 @@ describe('Collect', () => {
     let collectTypeSpy = spyOn(fsm, 'list').and.callThrough();
 
     await fixtureCollect.whenStable();
+    fixtureCollect.detectChanges();
     collect.collectType = 'form';
+
+    await fixtureCollect.whenStable();
     fixtureCollect.detectChanges();
 
     expect(collectTypeSpy).toHaveBeenCalled();
