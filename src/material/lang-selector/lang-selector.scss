@@ -1,22 +1,22 @@
 dino-lang-selector {
-  margin-left: 1em;
-  margin-right: 1em;
-  height: 100%;
+  margin-right: 1.5em;
+  display: flex;
+  align-items: center;
 
   mat-form-field {
+    font-size: 80% !important;
     width: 40px;
     mat-select {
       width: unset !important;
     }
-  }
-
-  .mat-form-field-wrapper {
-    padding-bottom: 0;
+    .mat-form-field-wrapper {
+      padding-bottom: 10px !important;
+    }
   }
 
   .mat-form-field-infix {
     border: 0;
-    padding-top: 18px;
+    padding: 0px !important;
   }
 
   .mat-input-underline {
@@ -24,10 +24,11 @@ dino-lang-selector {
   }
 
   .mat-form-field-underline {
-    background-color: white;
+    background-color: transparent;
+    display: none;
   }
 
   .mat-select-arrow {
-    color: white;
+    color: transparent;
   }
 }

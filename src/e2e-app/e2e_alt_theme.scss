@@ -9,9 +9,10 @@
 @include all-core.mat-core();
 
 // Define an alernative theme.
-$primary: mat-theming.define-palette(mat-palette.$brown-palette, 400, 800, 600);
-$accent: mat-theming.define-palette(mat-palette.$deep-orange-palette, 100, 900, A700);
-$warn: mat-theming.define-palette(mat-palette.$red-palette);
+$primary: mat-theming.define-palette(mat-palette.$light-blue-palette, 700, 500);
+$accent: mat-theming.define-palette(mat-palette.$blue-grey-palette, 700);
+$warn: mat-theming.define-palette(mat-palette.$red-palette, 500);
+$alt_accent: mat-theming.define-palette(mat-palette.$light-blue-palette, 900);
 
 $theme: core.dark-theme(
     (
