@@ -269,6 +269,7 @@ export class DataService {
     findOne<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxQuery<T, RxDocument<T> | null>>;
     get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null>;
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
+    isSyncing: BehaviorSubject<boolean>;
     plugin(plugin: any): void;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
     // (undocumented)
@@ -324,6 +325,7 @@ export interface Model {
     created_at: string;
     _deleted?: boolean;
     id: string;
+    is_deleted?: boolean;
     updated_at: string;
 }
 

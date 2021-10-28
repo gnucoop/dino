@@ -9,6 +9,7 @@ import { AuthService } from '@dino/core/auth';
 import { BehaviorSubject } from 'rxjs';
 import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
 import { ChangeDetectorRef } from '@angular/core';
+import { DataService } from '@dino/core/data';
 import * as i0 from '@angular/core';
 import * as i10 from '@angular/material/sidenav';
 import * as i11 from '@angular/material/snack-bar';
@@ -25,13 +26,14 @@ import * as i9 from '@angular/material/list';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MetricsService } from '@dino/core/data';
+import { NetworkStatusService } from '@dino/core/auth';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 // @public
 export class MainNav implements AfterViewInit, OnDestroy {
-    constructor(breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
+    constructor(networkStatusService: NetworkStatusService, breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, dataService: DataService, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
     // (undocumented)
     get adminSections(): Section[];
     set adminSections(sec: Section[]);
@@ -39,8 +41,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly authService: AuthService;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
+    // (undocumented)
+    readonly dataService: DataService;
     extendedSidenav: BehaviorSubject<boolean>;
     isLoading: BehaviorSubject<boolean>;
+    isSyncing: Observable<boolean>;
     // (undocumented)
     get logoImagePath(): string;
     set logoImagePath(url: string);
@@ -51,6 +56,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
     menuToggle(): void;
     // (undocumented)
     readonly metricsService: MetricsService;
+    // (undocumented)
+    readonly networkStatusService: NetworkStatusService;
     // (undocumented)
     ngAfterViewInit(): void;
     // (undocumented)
