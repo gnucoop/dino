@@ -119,6 +119,12 @@ interface RegisteredCollection extends CollectionSyncParams {
  */
 @Injectable({providedIn: 'root'})
 export class DataService {
+  /**
+   * True when the Syncing process is currently operating
+   * (A replication cycle is undergoing)
+   */
+  isSyncing: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   readonly config: DataServiceConfig;
 
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
@@ -528,15 +534,24 @@ export class DataService {
               collection: collection.name,
               action: 'replication complete',
             });
+            this.isSyncing.next(true);
             state.received$.pipe(take(1), delay(1000)).subscribe(() => {
               this._collectionChanged.emit({
                 timestamp: new Date().getTime(),
                 collection: collection.name,
                 action: 'change received',
               });
+              setTimeout(() => {
+                this.isSyncing.next(false);
+              }, 2000);
             });
           });
         },
+      });
+      state.awaitInitialReplication().then(() => {
+        setTimeout(() => {
+          this.isSyncing.next(false);
+        }, 4000);
       });
     }
     this._activeSyncs[collection.name] = {state, sub};
