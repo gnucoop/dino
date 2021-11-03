@@ -11,6 +11,7 @@ CORE_ENTRYPOINTS = [
     "locations",
     "organizations",
     "projects",
+    "sync",
     "translations",
     "users",
 ]

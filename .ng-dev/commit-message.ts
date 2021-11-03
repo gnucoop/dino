@@ -20,6 +20,7 @@ export const commitMessage: CommitMessageConfig = {
     'core/organizations',
     'core/projects',
     'core/reports',
+    'core/sync',
     'core/users',
     'e2e-mat/list',
     'e2e-mat/login',

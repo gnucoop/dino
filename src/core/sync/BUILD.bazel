@@ -1,0 +1,37 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "sync",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    deps = [
+        "//src/core/areas",
+        "//src/core/auth",
+        "//src/core/forms",
+        "//src/core/locations",
+        "//src/core/organizations",
+        "//src/core/projects",
+        "//src/core/reports",
+        "//src/core/users",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+    ],
+)
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["sync.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)
