@@ -60,43 +60,47 @@ export const schema = {
       "type": "object",
       "description": "A plain object containing the data collected."
     },
-    "area_id": {
+    "area_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Form Data area id."
+      "description": "The Form Data area id.",
+      "ref": "area"
     },
-    "project_id": {
+    "project_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Form Data project id."
+      "description": "The Form Data project id.",
+      "ref": "project"
     },
-    "location_id": {
+    "location_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Form Data location id."
+      "description": "The Form Data location id.",
+      "ref": "location"
     },
-    "organization_id": {
+    "organization_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Form Data organization id."
+      "description": "The Form Data organization id.",
+      "ref": "organization"
     }
   },
   "required": [
-    "area_id",
+    "area_ref_id",
     "created_at",
     "data",
     "id",
-    "location_id",
-    "organization_id",
-    "project_id",
+    "location_ref_id",
+    "organization_ref_id",
+    "project_ref_id",
     "schema_id",
     "updated_at",
     "user_id"

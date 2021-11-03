@@ -30,6 +30,6 @@ declare module '@dino/core/forms/form-data' {
     /**
      * The Form Data organization id.
      */
-    organization_id: string | null;
+    organization_ref_id: string | null;
   }
 }

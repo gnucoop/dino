@@ -30,6 +30,6 @@ declare module '@dino/core/forms/form-data' {
     /**
      * The Form Data area id.
      */
-    area_id: string | null;
+    area_ref_id: string | null;
   }
 }

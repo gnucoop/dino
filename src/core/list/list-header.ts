@@ -41,4 +41,10 @@ export interface ListHeader<T> {
    * Determines if the column is displayed.
    */
   displayed?: boolean;
+  /**
+   * Specifies if the column must be populated by referring to
+   * an external collection's property.
+   * The reference string will be equal to the "column" property.
+   */
+  populateWith?: string;
 }
