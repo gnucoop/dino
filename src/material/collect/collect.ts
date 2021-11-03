@@ -24,11 +24,9 @@ import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@ang
 import {Router} from '@angular/router';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
-import {UserGroupManager, UserModelManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {BehaviorSubject, combineLatest, from, Observable, of as obsOf} from 'rxjs';
 import {map, shareReplay, switchMap} from 'rxjs/operators';
-
 import {CollectItem} from './collect-item-interface';
 
 /**
@@ -118,18 +116,9 @@ export class Collect {
     readonly breakpointObserver: BreakpointObserverService,
     private _fs: FormSchemaManager,
     private _rs: ReportSchemaManager,
-    private _um: UserModelManager,
-    private _ug: UserGroupManager,
     private _router: Router,
   ) {
-    this.items = combineLatest([
-      this._collectType,
-      this._menuItems,
-      this._fs.init(),
-      this._rs.init(),
-      this._um.init(),
-      this._ug.init(),
-    ]).pipe(
+    this.items = combineLatest([this._collectType, this._menuItems]).pipe(
       switchMap(([isCollect, menuItems]) => {
         if (isCollect !== 'custom') {
           let result: Observable<(FormSchema | ReportSchema)[]>;
