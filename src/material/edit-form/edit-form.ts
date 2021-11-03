@@ -167,7 +167,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
 
   constructor(
-    private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
     private _rendererService: AjfFormRendererService,
@@ -179,7 +178,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       map(params => params.form_id),
       tap(id => {
         if (id == null) {
-          this._router.navigateByUrl('/');
+          this._location.back();
         }
       }),
       filter(id => id != null),
@@ -217,7 +216,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
 
   ngOnInit() {
     if (this._dataModelManager == null) {
-      this._router.navigateByUrl('');
+      this._location.back();
       this.snackbar.open('Oops! Something went wrong opening the form', 'ERROR', {duration: 5000});
       throw new Error('No Data manager was provided');
     }
@@ -233,7 +232,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         return dm.get(id).pipe(
           map(doc => {
             if (doc == null) {
-              this._router.navigateByUrl('');
+              this._location.back();
               return null;
             }
             const item: {[key: string]: any} = doc.toJSON();
@@ -343,7 +342,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             const selectedMetrics = formObj.fmSelector.selectedMetrics;
             for (let key of Object.keys(selectedMetrics)) {
               if (selectedMetrics[key].metricId != null) {
-                const saveKey = `${key}_id`;
+                const saveKey = `${key}_ref_id`;
                 newItem[saveKey] = selectedMetrics[key].metricId;
               }
             }
@@ -356,11 +355,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           return dm.update(newItem as T);
         }),
         catchError(err => {
+          this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
         }),
       )
       .subscribe(_ => {
+        this._location.back();
         this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
       });
 

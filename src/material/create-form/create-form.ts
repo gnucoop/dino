@@ -131,7 +131,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
   constructor(
     private _authService: AuthService,
-    private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
     private _rendererService: AjfFormRendererService,
@@ -152,7 +151,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
   ngOnInit() {
     if (this._dataModelManager == null) {
-      this._router.navigateByUrl('');
+      this._location.back();
       this.snackbar.open('Oops! Something went wrong opening the form', 'ERROR', {duration: 5000});
       throw new Error('No Data manager was provided');
     }
@@ -225,14 +224,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             newItem.data = formValue;
             newItem.schema_id = formSchemaId;
             newItem.user_id = this._authService.getUserInfo()?.id;
-            newItem.area_id = null;
-            newItem.location_id = null;
-            newItem.organization_id = null;
-            newItem.project_id = null;
+            newItem.area_ref_id = null;
+            newItem.location_ref_id = null;
+            newItem.organization_ref_id = null;
+            newItem.project_ref_id = null;
             if (formMetricsSelector != null) {
               const selectedMetrics = formMetricsSelector.selectedMetrics;
               for (let key of Object.keys(selectedMetrics)) {
-                const saveKey = `${key}_id`;
+                const saveKey = `${key}_ref_id`;
                 if (selectedMetrics[key].metricId != null) {
                   newItem[saveKey] = selectedMetrics[key].metricId;
                 }
@@ -247,11 +246,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           return this._dataModelManager.create(newItem as T);
         }),
         catchError(err => {
+          this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
         }),
       )
-      .subscribe(_ => this.snackbar.open('Document created', 'SAVE', {duration: 5000}));
+      .subscribe(_ => {
+        this._location.back();
+        this.snackbar.open('Document created', 'SAVE', {duration: 5000});
+      });
 
     this.isAjfFormValid = this._rendererService.errors
       .pipe(
