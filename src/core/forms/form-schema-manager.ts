@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfChoice, AjfChoicesOrigin} from '@ajf/core/forms';
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {FilterGroup, FilterItem} from '@dino/core/list';
@@ -48,6 +49,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       return [];
     }
     const slides = formSchema.schema.nodes;
+    const choicesOrigins = formSchema.schema.choicesOrigins as AjfChoicesOrigin<any>[];
     const nodes: FilterGroup[] = [];
     if (slides) {
       for (let i = 0; i < slides.length; i++) {
@@ -55,7 +57,9 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         nodes.push({
           filterGroupName: slides[i].label,
           filterGroupAdditionalFilters: additionalFilters.map(f => {
-            f.choices = f.choicesOrigin ? f.choicesOrigin.choices : undefined;
+            f.choicesOrigin = f.choicesOriginRef
+              ? this._getChoiceOriginFromRef(choicesOrigins, f.choicesOriginRef)
+              : undefined;
             f.isAdditionalFilter = true;
             return f;
           }),
@@ -63,5 +67,12 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       }
     }
     return nodes;
+  }
+
+  private _getChoiceOriginFromRef(
+    choicesOrigins: AjfChoicesOrigin<any>[],
+    choicesOriginRef: string,
+  ): AjfChoicesOrigin<any> {
+    return choicesOrigins.filter(f => f.name === choicesOriginRef)[0] || [];
   }
 }
