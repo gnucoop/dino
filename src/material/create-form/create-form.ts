@@ -39,7 +39,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {AuthService} from '@dino/core/auth';
 import {DataModelManager, MetricsService, Model} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';

@@ -41,7 +41,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {DataModelManager, MetricsService, Model} from '@dino/core/data';
 import {FormData, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';

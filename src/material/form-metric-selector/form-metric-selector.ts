@@ -214,7 +214,7 @@ export class FormMetricSelector {
         map(([formData, userGroups]) => {
           const startingValues: {[key: string]: MetricBasicInfo} = {};
           for (let activeMetric of this._metricService.activeMetrics.value) {
-            if (formData[`${activeMetric.metricName}_id`] != null) {
+            if (formData[`${activeMetric.metricName}_ref_id`] != null) {
               const availableMetrics: MetricBasicInfo[] = [];
               userGroups.map(group =>
                 group.groupMetrics.map(metric =>
@@ -224,7 +224,7 @@ export class FormMetricSelector {
                 ),
               );
               const startingMetric = availableMetrics.find(
-                mtr => mtr.metricId === formData[`${activeMetric.metricName}_id`],
+                mtr => mtr.metricId === formData[`${activeMetric.metricName}_ref_id`],
               );
               if (startingMetric != null) {
                 startingValues[activeMetric.metricName] = {
