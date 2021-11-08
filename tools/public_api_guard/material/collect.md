@@ -19,12 +19,10 @@ import * as i9 from '@angular/material/grid-list';
 import { Observable } from 'rxjs';
 import { ReportSchemaManager } from '@dino/core/reports';
 import { Router } from '@angular/router';
-import { UserGroupManager } from '@dino/core/users';
-import { UserModelManager } from '@dino/core/users';
 
 // @public
 export class Collect {
-    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _um: UserModelManager, _ug: UserGroupManager, _router: Router);
+    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _router: Router);
     addFormSchema(): void;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;

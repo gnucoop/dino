@@ -22,11 +22,12 @@ import { ListDataSource } from '@dino/material/list';
 import { ListHeader } from '@dino/core/list';
 import { MatDialog } from '@angular/material/dialog';
 import { Metric } from '@dino/core/data';
+import { MetricsService } from '@dino/core/data';
 import { OnInit } from '@angular/core';
 
 // @public
 export class MetricSection<T extends Metric = Metric> implements OnInit {
-    constructor(_filtersService: FiltersService, dialog: MatDialog);
+    constructor(_filtersService: FiltersService, _metricService: MetricsService, dialog: MatDialog);
     dataSource: ListDataSource<T>;
     // (undocumented)
     dialog: MatDialog;

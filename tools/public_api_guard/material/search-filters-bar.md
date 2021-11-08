@@ -4,41 +4,50 @@
 
 ```ts
 
+import { AreaManager } from '@dino/core/areas';
 import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
 import { ChangeDetectorRef } from '@angular/core';
 import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FilterItem } from '@dino/core/list';
 import { FilterListType } from '@dino/core/list';
 import { FiltersService } from '@dino/core/list';
+import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/dialog';
-import * as i11 from '@angular/material/expansion';
-import * as i12 from '@angular/material/form-field';
-import * as i13 from '@angular/material/icon';
-import * as i14 from '@angular/material/input';
-import * as i15 from '@angular/material/list';
-import * as i16 from '@angular/material/core';
-import * as i17 from '@angular/material/paginator';
-import * as i18 from '@angular/material/bottom-sheet';
-import * as i19 from '@angular/material/sort';
-import * as i20 from '@angular/material/table';
-import * as i21 from '@angular/forms';
-import * as i22 from '@angular/router';
-import * as i23 from '@dino/material/search-filters-chips';
-import * as i24 from '@dino/material/search-filters-dialog';
-import * as i25 from '@dino/material/search-filters-preset-manager';
+import * as i10 from '@angular/material/datepicker';
+import * as i11 from '@angular/material/dialog';
+import * as i12 from '@angular/material/expansion';
+import * as i13 from '@angular/material/form-field';
+import * as i14 from '@angular/material/icon';
+import * as i15 from '@angular/material/input';
+import * as i16 from '@angular/material/list';
+import * as i17 from '@angular/material/core';
+import * as i18 from '@angular/material/paginator';
+import * as i19 from '@angular/material/bottom-sheet';
+import * as i20 from '@angular/material/sort';
+import * as i21 from '@angular/material/table';
+import * as i22 from '@angular/forms';
+import * as i23 from '@angular/router';
+import * as i24 from '@dino/material/search-filters-chips';
+import * as i25 from '@dino/material/search-filters-dialog';
+import * as i26 from '@dino/material/search-filters-preset-manager';
 import * as i3 from '@ajf/core/transloco';
 import * as i4 from '@dino/material/breakpoint-observer';
 import * as i5 from '@angular/common';
 import * as i6 from '@dino/material/export-form';
-import * as i7 from '@angular/material/button';
-import * as i8 from '@angular/material/checkbox';
-import * as i9 from '@angular/material/datepicker';
+import * as i7 from '@angular/material/autocomplete';
+import * as i8 from '@angular/material/button';
+import * as i9 from '@angular/material/checkbox';
+import { LocationManager } from '@dino/core/locations';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
+import { MetricBasicInfo } from '@dino/core/users';
+import { MetricsService } from '@dino/core/data';
+import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { OrganizationManager } from '@dino/core/organizations';
 import { PipeTransform } from '@angular/core';
+import { ProjectManager } from '@dino/core/projects';
 import { SearchFiltersComponent } from '@dino/core/list';
 
 // @public (undocumented)
@@ -53,7 +62,7 @@ export class IsFalseOrNullPipe implements PipeTransform {
 
 // @public
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
-    constructor(_fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef, _bottomSheet: MatBottomSheet, breakpointObserver: BreakpointObserverService);
+    constructor(metricsService: MetricsService, _fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef, _bottomSheet: MatBottomSheet, breakpointObserver: BreakpointObserverService, _areaManager: AreaManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
     // (undocumented)
     get additionalFilters(): boolean;
     set additionalFilters(state: boolean);
@@ -61,6 +70,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     readonly breakpointObserver: BreakpointObserverService;
     // (undocumented)
     dialog: MatDialog;
+    displayMetricName(metric: MetricBasicInfo): string;
     // (undocumented)
     get exportable(): boolean;
     set exportable(state: boolean);
@@ -70,6 +80,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     set filtersDialogWidth(w: number);
     // (undocumented)
     protected _fts: FiltersService;
+    // (undocumented)
+    getControlKey(group: FormGroup): string;
+    isMetric(group: FormGroup): boolean;
+    metricFiltersOptions: {
+        [key: string]: Observable<MetricBasicInfo[]>;
+    };
+    // (undocumented)
+    readonly metricsService: MetricsService;
     // (undocumented)
     ngOnDestroy(): void;
     // (undocumented)
@@ -84,7 +102,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dino-search-filters-bar", never, { "presetManager": "presetManager"; "exportable": "exportable"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, { "exportEvt": "exportEvt"; }, never, never>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
 
 // @public (undocumented)
@@ -94,7 +112,7 @@ export class SearchFiltersBarModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<SearchFiltersBarModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersBarModule, [typeof i1.IsFalseOrNullPipe, typeof i2.SearchFiltersBar], [typeof i3.AjfTranslocoModule, typeof i4.BreakpointObserverModule, typeof i5.CommonModule, typeof i6.ExportFormModule, typeof i7.MatButtonModule, typeof i8.MatCheckboxModule, typeof i9.MatDatepickerModule, typeof i10.MatDialogModule, typeof i11.MatExpansionModule, typeof i12.MatFormFieldModule, typeof i13.MatIconModule, typeof i14.MatInputModule, typeof i15.MatListModule, typeof i16.MatNativeDateModule, typeof i17.MatPaginatorModule, typeof i18.MatBottomSheetModule, typeof i19.MatSortModule, typeof i20.MatTableModule, typeof i21.ReactiveFormsModule, typeof i22.RouterModule, typeof i23.SearchFiltersChipsModule, typeof i24.SearchFiltersDialogModule, typeof i25.SearchFiltersPresetManagerModule], [typeof i2.SearchFiltersBar]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<SearchFiltersBarModule, [typeof i1.IsFalseOrNullPipe, typeof i2.SearchFiltersBar], [typeof i3.AjfTranslocoModule, typeof i4.BreakpointObserverModule, typeof i5.CommonModule, typeof i6.ExportFormModule, typeof i7.MatAutocompleteModule, typeof i8.MatButtonModule, typeof i9.MatCheckboxModule, typeof i10.MatDatepickerModule, typeof i11.MatDialogModule, typeof i12.MatExpansionModule, typeof i13.MatFormFieldModule, typeof i14.MatIconModule, typeof i15.MatInputModule, typeof i16.MatListModule, typeof i17.MatNativeDateModule, typeof i18.MatPaginatorModule, typeof i19.MatBottomSheetModule, typeof i20.MatSortModule, typeof i21.MatTableModule, typeof i22.ReactiveFormsModule, typeof i23.RouterModule, typeof i24.SearchFiltersChipsModule, typeof i25.SearchFiltersDialogModule, typeof i26.SearchFiltersPresetManagerModule], [typeof i2.SearchFiltersBar]>;
 }
 
 // (No @packageDocumentation comment for this package)

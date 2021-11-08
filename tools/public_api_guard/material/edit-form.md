@@ -40,11 +40,10 @@ import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { QueryList } from '@angular/core';
-import { Router } from '@angular/router';
 
 // @public
 export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
-    constructor(_router: Router, _route: ActivatedRoute, _fs: FormSchemaManager, _rendererService: AjfFormRendererService, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
+    constructor(_route: ActivatedRoute, _fs: FormSchemaManager, _rendererService: AjfFormRendererService, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
     // (undocumented)
     set dataModelManager(dmm: DataModelManager<T>);
     // (undocumented)

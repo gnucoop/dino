@@ -195,6 +195,7 @@ export interface ListHeader<T> {
     displayed?: boolean;
     hidden?: boolean;
     label: string;
+    populateWith?: string;
     sortable?: boolean;
 }
 

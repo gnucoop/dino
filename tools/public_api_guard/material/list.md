@@ -47,6 +47,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MetricsService } from '@dino/core/data';
 import { Model } from '@dino/core/data';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
@@ -133,7 +134,7 @@ export interface ListContext<T extends Model = Model> {
 
 // @public
 export class ListDataSource<T extends Model = Model, AD extends Model = Model> extends MatTableDataSource<T> {
-    constructor(_dataModelManager: DataModelManager<T>, _fs: FiltersService, _additionalDataManager?: DataModelManager<AD> | undefined, _isFormDataList?: boolean);
+    constructor(_dataModelManager: DataModelManager<T>, _fs: FiltersService, _metricService: MetricsService, _additionalDataManager?: DataModelManager<AD> | undefined, _isFormDataList?: boolean);
     // (undocumented)
     get additionalDataSchema(): AD;
     set additionalDataSchema(dataSchema: AD);
@@ -210,6 +211,11 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     getDetails(row: T): Observable<T[]>;
     getDisplayedItems(): T[];
     getItems(): T[];
+    // (undocumented)
+    getPopulatedRef(refObj: {
+        [key: string]: string;
+    } | null, populateWith: string): string | null;
+    getRef(header: ListHeader<T>): string;
     getSelection(): T[];
     isAllSelected(): boolean;
     isRowExpanded(row: T): boolean;
