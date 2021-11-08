@@ -69,6 +69,7 @@ import {formDatas, sourceReportFormDatas} from './test-ajf-formdata';
 import {formSchemas, sourceReportFormSchemas} from './test-ajf-formschema';
 import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
+import {SyncModule} from '@dino/core/sync';
 
 /**
  * Used to generate fake data for the e2e app
@@ -157,6 +158,7 @@ export function provideDataServiceConfig() {
     RouterModule.forRoot(E2E_APP_ROUTES),
     FormsModule,
     ReportsModule,
+    SyncModule,
     UsersModule,
 
     // Optional Metrics

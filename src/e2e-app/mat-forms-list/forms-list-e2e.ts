@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {MetricsService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource, SelectionList} from '@dino/material/list';
@@ -32,7 +33,11 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   readonly dataSource: ListDataSource<FormData, FormSchema>;
   readonly headers: ListHeader<FormData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'user_id', label: 'User', sortable: true},
+    {column: 'user_id', label: 'User', sortable: true, displayed: false},
+    {column: 'area_ref_id', label: 'Area', sortable: true, populateWith: 'name'},
+    {column: 'location_ref_id', label: 'Location', sortable: true, populateWith: 'name'},
+    {column: 'organization_ref_id', label: 'Organization', sortable: true, populateWith: 'name'},
+    {column: 'project_ref_id', label: 'Project', sortable: true, populateWith: 'name'},
     {column: 'created_at', label: 'Creation Date', sortable: true},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
@@ -54,6 +59,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
 
   constructor(
     readonly filtersService: FiltersService,
+    readonly metricService: MetricsService,
     readonly formDataManager: FormDataManager,
     readonly formSchemaManager: FormSchemaManager,
     private _route: ActivatedRoute,
@@ -73,6 +79,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
     this.dataSource = new ListDataSource(
       this.formDataManager,
       this.filtersService,
+      this.metricService,
       this.formSchemaManager,
       this.isFormDataList,
     );

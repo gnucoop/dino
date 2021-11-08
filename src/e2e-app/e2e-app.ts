@@ -21,6 +21,7 @@
  */
 
 import {Component, ViewEncapsulation} from '@angular/core';
+import {SyncManager} from '@dino/core/sync';
 
 /** Root component for the e2e-app demos. */
 @Component({
@@ -28,4 +29,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
   template: '<app-main><router-outlet></router-outlet></app-main>',
   encapsulation: ViewEncapsulation.None,
 })
-export class E2eApp {}
+export class E2eApp {
+  constructor(private _sync: SyncManager) {
+    this._sync.initializeCollections().subscribe(() => console.log('Initialization Complete'));
+  }
+}

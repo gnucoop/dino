@@ -20,7 +20,7 @@ import {ProjectManager} from '@dino/core/projects';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
 import {BehaviorSubject, combineLatest, from, Observable, Subscription} from 'rxjs';
-import {map, switchMap, take} from 'rxjs/operators';
+import {map, shareReplay, switchMap} from 'rxjs/operators';
 
 /**
  * Represents the data to be passed to a UserGroup editor dialog.
@@ -59,6 +59,10 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
   private _populateListSchedule: Observable<MixedEditorItem[]>[] = [];
 
   private _populatedSourceListEvt: EventEmitter<void> = new EventEmitter<void>();
+
+  private _populationScheduleSub: Subscription = Subscription.EMPTY;
+
+  private _populationSub: Subscription = Subscription.EMPTY;
 
   constructor(
     private _userGroupManager: UserGroupManager,
@@ -103,25 +107,27 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
       );
     }
 
-    combineLatest([...this._populateListSchedule]).subscribe(items => {
-      const allItems: MixedEditorItem[] = [];
-      this.mixedEditorItems.next(
-        allItems.concat(...items).sort((a, b) => {
-          let textA = a.itemName.toUpperCase();
-          let textB = b.itemName.toUpperCase();
-          const less = textA < textB;
-          const more = textA > textB;
-          if (less) {
-            return -1;
-          } else if (more) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }),
-      );
-      this._populatedSourceListEvt.emit();
-    });
+    this._populationScheduleSub = combineLatest([...this._populateListSchedule]).subscribe(
+      items => {
+        const allItems: MixedEditorItem[] = [];
+        this.mixedEditorItems.next(
+          allItems.concat(...items).sort((a, b) => {
+            let textA = a.itemName.toUpperCase();
+            let textB = b.itemName.toUpperCase();
+            const less = textA < textB;
+            const more = textA > textB;
+            if (less) {
+              return -1;
+            } else if (more) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }),
+        );
+        this.loadGroup();
+      },
+    );
 
     this._saveSub = this._saveEvt
       .pipe(
@@ -148,6 +154,25 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.data.userGroupAction !== 'create' && this.data.userGroupItem != null) {
+      this._populationSub = this._populatedSourceListEvt.subscribe(_ => {
+        const group = this.data.userGroupItem;
+        const mixedEditor = this.mixedEditor;
+        if (group == null || this.mixedEditor == null) {
+          return;
+        }
+
+        mixedEditor.saveListName.nativeElement.value = group.groupName;
+        mixedEditor.addItem(mixedEditor.findItem(group.userRoleId));
+        for (let metric of group.groupMetrics) {
+          mixedEditor.addItem(mixedEditor.findItem(metric.metricId));
+        }
+        for (let formSchemaId of group.groupFormSchemaIds) {
+          mixedEditor.addItem(mixedEditor.findItem(formSchemaId));
+        }
+        for (let reportSchemaId of group.groupReportSchemaIds) {
+          mixedEditor.addItem(mixedEditor.findItem(reportSchemaId));
+        }
+      });
       this.loadGroup();
     }
   }
@@ -157,24 +182,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
   }
 
   loadGroup() {
-    const group = this.data.userGroupItem;
-    const mixedEditor = this.mixedEditor;
-    if (group == null || this.mixedEditor == null) {
-      return;
-    }
-    this._populatedSourceListEvt.pipe(take(1)).subscribe(_ => {
-      mixedEditor.saveListName.nativeElement.value = group.groupName;
-      mixedEditor.addItem(mixedEditor.findItem(group.userRoleId));
-      for (let metric of group.groupMetrics) {
-        mixedEditor.addItem(mixedEditor.findItem(metric.metricId));
-      }
-      for (let formSchemaId of group.groupFormSchemaIds) {
-        mixedEditor.addItem(mixedEditor.findItem(formSchemaId));
-      }
-      for (let reportSchemaId of group.groupReportSchemaIds) {
-        mixedEditor.addItem(mixedEditor.findItem(reportSchemaId));
-      }
-    });
+    this._populatedSourceListEvt.emit();
   }
 
   saveGroup(): (list: MixedEditorItem[], listName: string) => void {
@@ -241,11 +249,13 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           return item;
         }),
       ),
-      take(1),
+      shareReplay(1),
     );
   }
 
   ngOnDestroy(): void {
     this._saveSub.unsubscribe();
+    this._populationSub.unsubscribe();
+    this._populationScheduleSub.unsubscribe();
   }
 }

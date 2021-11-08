@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {MetricsService} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {ListDataSource, SelectionList} from '@dino/material/list';
@@ -50,6 +51,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
 
   constructor(
     readonly filtersService: FiltersService,
+    readonly metricsService: MetricsService,
     readonly formDataManager: ReportDataManager,
     readonly formSchemaManager: ReportSchemaManager,
     private _route: ActivatedRoute,
@@ -69,6 +71,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     this.dataSource = new ListDataSource(
       this.formDataManager,
       this.filtersService,
+      this.metricsService,
       this.formSchemaManager,
       this.isFormDataList,
     );

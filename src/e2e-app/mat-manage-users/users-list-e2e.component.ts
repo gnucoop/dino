@@ -1,6 +1,7 @@
 import {AjfFieldType} from '@ajf/core/forms';
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {MetricsService} from '@dino/core/data';
 import {ActionType, FilterGroup, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {UserModel, UserModelManager} from '@dino/core/users';
 import {ListDataSource} from '@dino/material/list';
@@ -58,11 +59,16 @@ export class MatUsersListE2E implements OnInit {
   constructor(
     private _userModelManager: UserModelManager,
     private _filtersService: FiltersService,
+    private _metricService: MetricsService,
     public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = new ListDataSource(this._userModelManager, this._filtersService);
+    this.dataSource = new ListDataSource(
+      this._userModelManager,
+      this._filtersService,
+      this._metricService,
+    );
   }
 
   openDialog(group?: UserModel, action?: 'view' | 'edit' | 'create'): void {

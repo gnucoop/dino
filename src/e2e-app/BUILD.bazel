@@ -45,6 +45,7 @@ ng_module(
         "//src/core/organizations",
         "//src/core/projects",
         "//src/core/reports",
+        "//src/core/sync",
         "//src/core/translations",
         "//src/core/users",
         "//src/dino-examples/private",

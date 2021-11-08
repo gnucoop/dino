@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {MetricsService} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {UserGroup, UserGroupManager} from '@dino/core/users';
 import {ListDataSource} from '@dino/material/list';
@@ -41,11 +42,16 @@ export class MatGroupsListE2E implements OnInit {
   constructor(
     private _userGroupManager: UserGroupManager,
     private _filtersService: FiltersService,
+    private _metricService: MetricsService,
     public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = new ListDataSource(this._userGroupManager, this._filtersService);
+    this.dataSource = new ListDataSource(
+      this._userGroupManager,
+      this._filtersService,
+      this._metricService,
+    );
   }
 
   openDialog(group?: UserGroup, action?: 'view' | 'edit' | 'create'): void {
