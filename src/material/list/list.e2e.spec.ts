@@ -21,7 +21,7 @@ describe('dino-list', () => {
 
   it('should display the correct header cells', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('mat-header-cell'))));
-    const expectedCells = ['User', 'Creation Date'];
+    const expectedCells = ['Area', 'Location', 'Organization', 'Project', 'Creation Date'];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
     expect(headerCells.slice(1, -1)).toEqual(expectedCells);
   });

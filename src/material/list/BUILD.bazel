@@ -28,6 +28,7 @@ ng_module(
         "//src/core/list",
         "//src/material/breakpoint-observer",
         "//src/material/export-form",
+        "@npm//@ajf/core",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",

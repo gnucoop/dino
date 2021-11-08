@@ -20,6 +20,7 @@
  *
  */
 
+import {deepCopy} from '@ajf/core/utils';
 import {Optional} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -29,6 +30,7 @@ import {
   CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
+  MetricsService,
   Model,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, SearchFiltersComponent} from '@dino/core/list';
@@ -143,6 +145,7 @@ export class ListDataSource<
   constructor(
     private _dataModelManager: DataModelManager<T>,
     private _fs: FiltersService,
+    private _metricService: MetricsService,
     @Optional() private _additionalDataManager?: DataModelManager<AD>,
     private _isFormDataList: boolean = false,
   ) {
@@ -260,8 +263,8 @@ export class ListDataSource<
             if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
               this._addNestedProps(
                 selector,
-                [`data.${item.name.trim().toLowerCase()}.name`, '$regex'],
-                item.value,
+                [`${item.name.trim().toLowerCase()}_ref_id`, '$regex'],
+                item.value.metricId,
               );
             } else {
               this._addNestedProps(
@@ -356,7 +359,7 @@ export class ListDataSource<
             return true;
           });
         }
-        this._dataResults.next(this._rxDocsToJson(resultDocs));
+        this._dataResults.next(this._populateDocRefs(resultDocs));
       },
     );
   }
@@ -417,6 +420,29 @@ export class ListDataSource<
       docsJson.push(clone(doc.toJSON()) as T);
     });
     return docsJson;
+  }
+
+  /**
+   * Populates all references to external collections in RxDocuments
+   * @param docs RxDocument array
+   * @returns The documents with populated refs
+   */
+  private _populateDocRefs(docs: RxDocument<T>[]): RxDocument<T>[] {
+    const activeMetrics = this._metricService.activeMetrics.value.map(metric => metric.metricName);
+    return docs.map(doc => {
+      let refProps = {};
+      for (let prop in doc) {
+        if (prop.includes('_ref_id')) {
+          const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
+          if (activeMetrics.indexOf(propKey as string) > -1) {
+            const refProp = {[propKey]: from(doc.populate(prop)).pipe(take(1))};
+            refProps = {...refProps, ...refProp};
+          }
+        }
+      }
+      const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<T>;
+      return popDoc;
+    });
   }
 
   /**

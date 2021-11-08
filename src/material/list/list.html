@@ -8,9 +8,7 @@
     (click)="expandAllRows.next(!expandAllRows.getValue())"
     class="dino-expand-all-button"
   >
-    <mat-icon
-      >{{(expandAllRows|async) ? 'unfold_less' : 'unfold_more' }}</mat-icon
-    >
+    <mat-icon>{{(expandAllRows|async) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
   </button>
 </ng-container>
 
@@ -39,9 +37,7 @@
             [disabled]="selection.selected.length <= 0"
             [attr.aria-label]="'Delete all items'|transloco"
           >
-            <mat-icon
-              aria-hidden="false"
-              [attr.aria-label]="'delete icon'|transloco"
+            <mat-icon aria-hidden="false" [attr.aria-label]="'delete icon'|transloco"
               >{{'delete'|transloco}}</mat-icon
             >
           </button>
@@ -85,19 +81,18 @@
         </mat-header-cell>
       </ng-template>
 
-      <ng-template #defaultHeaderCellTemplate>
-        {{ header.label|transloco }}
-      </ng-template>
+      <ng-template #defaultHeaderCellTemplate> {{ header.label|transloco }} </ng-template>
 
-      <mat-cell *matCellDef="let element">
+      <mat-cell *matCellDef="let element;">
         <ng-container
-          *ngTemplateOutlet="cellTemplatesMap[header.column.toString()] ?
-    cellTemplatesMap[header.column.toString()] : defaultCellTemplate;"
+          *ngTemplateOutlet="header.populateWith != null ?
+          externalRefCellTemplate : defaultCellTemplate;"
         >
         </ng-container>
-        <ng-template #defaultCellTemplate>
-          {{ element[header.column.toString()] }}
+        <ng-template #externalRefCellTemplate>
+          {{ getPopulatedRef( (element[getRef(header)])|async, header.populateWith) }}
         </ng-template>
+        <ng-template #defaultCellTemplate> {{ element[header.column.toString()] }} </ng-template>
       </mat-cell>
     </ng-container>
 
@@ -143,10 +138,7 @@
           *ngIf="(breakpointObserver.small|async) && isRowExpanded(row)"
           class="dino-expanded-row-actions"
         >
-          <div
-            class="dino-row-action-box"
-            *ngFor="let action of ctx.listRowActions"
-          >
+          <div class="dino-row-action-box" *ngFor="let action of ctx.listRowActions">
             <mat-icon
               mat-list-icon
               (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
@@ -155,10 +147,7 @@
           </div>
         </div>
 
-        <div
-          class="dino-inner-table-container"
-          *ngIf="isRowExpanded(row) && !ctx.isDetails"
-        >
+        <div class="dino-inner-table-container" *ngIf="isRowExpanded(row) && !ctx.isDetails">
           <ng-container *ngIf="expandedRowsData[row.id]?.data?.length">
             <mat-form-field
               class="dino-details-search"
@@ -190,9 +179,7 @@
       </mat-cell>
     </ng-container>
 
-    <mat-header-row
-      *matHeaderRowDef="(ctx.displayedColumns|async)"
-    ></mat-header-row>
+    <mat-header-row *matHeaderRowDef="(ctx.displayedColumns|async)"></mat-header-row>
 
     <mat-row
       *matRowDef="let row; columns: (ctx.displayedColumns|async);"
@@ -219,7 +206,5 @@
 </ng-template>
 
 <div class="dino-table-container">
-  <ng-container
-    *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"
-  ></ng-container>
+  <ng-container *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"></ng-container>
 </div>

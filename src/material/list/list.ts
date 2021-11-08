@@ -619,6 +619,22 @@ export class SelectionList<T extends Model = Model>
   }
 
   /**
+   * Returns the reference string to an external collection
+   * @param header A list header
+   * @returns The ref string
+   */
+  getRef(header: ListHeader<T>): string {
+    return header.column.toString().replace('_ref_id', '');
+  }
+
+  getPopulatedRef(refObj: {[key: string]: string} | null, populateWith: string): string | null {
+    if (refObj == null || populateWith == null) {
+      return null;
+    }
+    return refObj[populateWith];
+  }
+
+  /**
    * Queries the DataSource for the deletion of Items
    * @param items The items to be deleted
    * @param isDetails If true, the items are in the details of a parent
