@@ -3,10 +3,7 @@
     <mat-expansion-panel class="mat-elevation-z">
       <mat-expansion-panel-header>
         <ng-container [formGroup]="textSearchFilters">
-          <mat-form-field
-            floatLabel="always"
-            (click)="$event.stopPropagation()"
-          >
+          <mat-form-field floatLabel="always" (click)="$event.stopPropagation()">
             <input
               matInput
               formControlName="keyword"
@@ -27,9 +24,7 @@
 
 <ng-template #filtersbar>
   <div class="dino-filters-bar">
-    <dino-search-filters-preset-manager
-      *ngIf="presetManager"
-    ></dino-search-filters-preset-manager>
+    <dino-search-filters-preset-manager *ngIf="presetManager"></dino-search-filters-preset-manager>
 
     <ng-container [formGroup]="dateSearchFilters">
       <mat-form-field floatLabel="always">
@@ -39,10 +34,7 @@
           [matDatepicker]="pickerFrom"
           [placeholder]="'From date'|transloco"
         />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="pickerFrom"
-        ></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
         <mat-datepicker #pickerFrom></mat-datepicker>
       </mat-form-field>
 
@@ -53,10 +45,7 @@
           [matDatepicker]="pickerTo"
           [placeholder]="'To date'|transloco"
         />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="pickerTo"
-        ></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
         <mat-datepicker #pickerTo></mat-datepicker>
       </mat-form-field>
     </ng-container>
@@ -66,30 +55,48 @@
       *ngIf="breakpointObserver.small|async|isFalseOrNull"
     >
       <mat-form-field floatLabel="always">
-        <input
-          matInput
-          formControlName="keyword"
-          [placeholder]="'search by keyword'|transloco"
-        />
+        <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco" />
         <mat-icon color="primary" matSuffix>search</mat-icon>
       </mat-form-field>
     </ng-container>
 
-    <ng-container
-      *ngFor="let group of additionalBasicFilters; let idx = index"
-      [formGroup]="group"
-    >
-      <mat-form-field
-        floatLabel="always"
-        *ngIf="additionalBasicFiltersLabels[idx]"
-      >
-        <input
-          matInput
-          [formControlName]="additionalBasicFiltersLabels[idx]"
-          placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
-        />
-        <mat-icon matSuffix color="primary">search</mat-icon>
-      </mat-form-field>
+    <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
+      <ng-template #metricField>
+        <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]">
+          <input
+            matInput
+            [formControlName]="additionalBasicFiltersLabels[idx]"
+            placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
+            [matAutocomplete]="auto"
+          />
+          <mat-icon matSuffix color="primary">search</mat-icon>
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            [autoActiveFirstOption]="false"
+            [displayWith]="displayMetricName"
+          >
+            <mat-option
+              *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
+              [value]="option"
+            >
+              {{option.metricName}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </ng-template>
+
+      <ng-template #default>
+        <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]">
+          <input
+            matInput
+            [formControlName]="additionalBasicFiltersLabels[idx]"
+            placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
+          />
+          <mat-icon matSuffix color="primary">search</mat-icon>
+        </mat-form-field>
+      </ng-template>
+
+      <ng-container *ngTemplateOutlet="isMetric(group) ? metricField : default"></ng-container>
     </ng-container>
 
     <ng-container *ngIf="additionalFilters">
@@ -114,12 +121,7 @@
         <mat-icon matSuffix>filter_list</mat-icon>
       </button>
     </ng-container>
-    <button
-      color="primary"
-      mat-icon-button
-      *ngIf="exportable"
-      (click)="openExportBottomSheet()"
-    >
+    <button color="primary" mat-icon-button *ngIf="exportable" (click)="openExportBottomSheet()">
       <mat-icon>cloud_download</mat-icon>
     </button>
   </div>

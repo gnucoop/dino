@@ -24,6 +24,7 @@ import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -54,6 +55,7 @@ import {SearchFiltersBar} from './search-filters-bar';
     BreakpointObserverModule,
     CommonModule,
     ExportFormModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDatepickerModule,

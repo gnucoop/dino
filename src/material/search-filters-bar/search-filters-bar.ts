@@ -28,18 +28,25 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import {AreaManager} from '@dino/core/areas';
+import {DataModelManager, MetricsService} from '@dino/core/data';
 import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
+import {ProjectManager} from '@dino/core/projects';
+import {MetricBasicInfo} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
-import {Observable, Subscription, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {from, Observable, Subscription, throwError} from 'rxjs';
+import {catchError, map, switchMap, take} from 'rxjs/operators';
 
 /**
  * Opt-in component that handles all SelectionList filters.
@@ -57,6 +64,11 @@ import {catchError} from 'rxjs/operators';
   providers: [{provide: SearchFiltersComponent, useExisting: SearchFiltersBar}],
 })
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
+  /**
+   * All the metrics filters autocomplete options.
+   */
+  metricFiltersOptions: {[key: string]: Observable<MetricBasicInfo[]>} = {};
+
   /**
    * If true, the Preset Manager is available and displayed.
    * Defaults to false.
@@ -113,13 +125,30 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   private _dialogSub: Subscription = Subscription.EMPTY;
 
   constructor(
+    readonly metricsService: MetricsService,
     protected _fts: FiltersService,
     public dialog: MatDialog,
     private _cdr: ChangeDetectorRef,
     private _bottomSheet: MatBottomSheet,
     readonly breakpointObserver: BreakpointObserverService,
+    @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _projectManager: ProjectManager | null,
+    @Optional() private _locationManager: LocationManager | null,
+    @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     super();
+    if (this._areaManager != null) {
+      this._populateMetricsOptions('area', this._areaManager);
+    }
+    if (this._projectManager != null) {
+      this._populateMetricsOptions('project', this._projectManager);
+    }
+    if (this._locationManager != null) {
+      this._populateMetricsOptions('location', this._locationManager);
+    }
+    if (this._organizationManager != null) {
+      this._populateMetricsOptions('organization', this._organizationManager);
+    }
   }
   @Output()
   readonly exportEvt: EventEmitter<'XLSX' | 'CSV' | 'dialog'> = new EventEmitter<
@@ -169,13 +198,71 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Returns true if the Form Group refers to an active Metric
+   *
+   * @param group The FormGroup of the filter
+   */
+  isMetric(group: FormGroup): boolean {
+    if (group == null) {
+      return false;
+    }
+    const groupControlKey = this.getControlKey(group);
+    if (groupControlKey == null) {
+      return false;
+    }
+    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
+
+    return activeMetrics.indexOf(groupControlKey) >= 0;
+  }
+
+  getControlKey(group: FormGroup): string {
+    if (group == null) {
+      return '';
+    }
+    const groupControl = Object.keys(group.controls)[0];
+    return groupControl;
+  }
+
+  /**
+   * Displays the Metric Name only in the Metric
+   * autocomplete field.
+   */
+  displayMetricName(metric: MetricBasicInfo): string {
+    if (metric == null) {
+      return '';
+    }
+    return metric.metricName && metric.metricId ? metric.metricName : '';
+  }
+
+  private _populateMetricsOptions(metricType: string, metricManager: DataModelManager<any>): void {
+    if (metricType == null || metricManager == null) {
+      return;
+    }
+    this.metricFiltersOptions[metricType] = metricManager.list().pipe(
+      switchMap(qry => from(qry.exec())),
+      map(docs =>
+        docs.map(doc => {
+          return {
+            metricType: metricType,
+            metricName: doc.name,
+            metricId: doc.id,
+          } as MetricBasicInfo;
+        }),
+      ),
+    );
+  }
+
+  /**
    * Asks the FilterService to initialize the filters and load them from the route
    * queryParams
    */
   private _initFilters() {
     this._fts
       .initializeFilters(this.basicFilters)
-      .pipe(catchError(err => throwError(err) as Observable<FormGroup[]>))
+      .pipe(
+        take(1),
+        catchError(err => throwError(err) as Observable<FormGroup[]>),
+      )
       .subscribe(formGroups => {
         this.basicFilters = [...this.basicFilters, ...formGroups];
         this.additionalBasicFilters = formGroups;
@@ -183,8 +270,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           group => Object.keys(group.controls)[0],
         );
         this._cdr.detectChanges();
-      })
-      .unsubscribe();
+      });
   }
 
   ngOnDestroy() {
