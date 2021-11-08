@@ -63,6 +63,10 @@ Object.keys(definition.properties || {}).forEach(propertyName => {
   if (property.$ref != null && property.type === 'object') {
     delete property.$ref;
   }
+  if (propertyName.includes('_ref_id')) {
+    const collectionRef = propertyName.replace('_ref_id', '');
+    (property as {[key: string]: string}).ref = collectionRef;
+  }
 });
 
 const schemaString = JSON.stringify(definition, null, 2);
