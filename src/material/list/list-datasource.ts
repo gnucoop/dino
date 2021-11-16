@@ -30,7 +30,6 @@ import {
   CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
-  MetricsService,
   Model,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, SearchFiltersComponent} from '@dino/core/list';
@@ -45,7 +44,7 @@ import {
   Subject,
   throwError,
 } from 'rxjs';
-import {catchError, map, skipWhile, switchMap, take, takeUntil} from 'rxjs/operators';
+import {catchError, map, shareReplay, skipWhile, switchMap, take, takeUntil} from 'rxjs/operators';
 
 /**
  * This class extends MatTableDataSource, and augments it with additional functionalities.
@@ -145,7 +144,6 @@ export class ListDataSource<
   constructor(
     private _dataModelManager: DataModelManager<T>,
     private _fs: FiltersService,
-    private _metricService: MetricsService,
     @Optional() private _additionalDataManager?: DataModelManager<AD>,
     private _isFormDataList: boolean = false,
   ) {
@@ -264,7 +262,7 @@ export class ListDataSource<
               this._addNestedProps(
                 selector,
                 [`${item.name.trim().toLowerCase()}_ref_id`, '$regex'],
-                item.value.metricId,
+                item.value.id,
               );
             } else {
               this._addNestedProps(
@@ -428,16 +426,18 @@ export class ListDataSource<
    * @returns The documents with populated refs
    */
   private _populateDocRefs(docs: RxDocument<T>[]): RxDocument<T>[] {
-    const activeMetrics = this._metricService.activeMetrics.value.map(metric => metric.metricName);
     return docs.map(doc => {
       let refProps = {};
       for (let prop in doc) {
         if (prop.includes('_ref_id')) {
           const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
-          if (activeMetrics.indexOf(propKey as string) > -1) {
-            const refProp = {[propKey]: from(doc.populate(prop)).pipe(take(1))};
-            refProps = {...refProps, ...refProp};
+          let refProp;
+          try {
+            refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+          } catch (_) {
+            refProp = {[propKey]: obsOf(null)};
           }
+          refProps = {...refProps, ...refProp};
         }
       }
       const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<T>;

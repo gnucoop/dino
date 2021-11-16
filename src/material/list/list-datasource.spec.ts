@@ -16,7 +16,6 @@ import {
   DataServiceConfig,
   Model,
   PermissionContextService,
-  MetricsService,
 } from '../../core/data';
 import {FilterItem, FiltersService, ListModule} from '../../core/list';
 
@@ -133,7 +132,6 @@ describe('ListDataSource', () => {
   let dataService: DataService;
   let contextService: PermissionContextService;
   let fts: FiltersService;
-  let mts: MetricsService;
   let dataSource: ListDataSource<DummyModel>;
 
   beforeEach(() => {
@@ -150,9 +148,8 @@ describe('ListDataSource', () => {
     contextService = TestBed.inject(PermissionContextService);
     dataService = TestBed.inject(DataService);
     fts = TestBed.inject(FiltersService);
-    mts = TestBed.inject(MetricsService);
     dummyManager = new DummyManager(createCollectionParams, dataService, contextService);
-    dataSource = new ListDataSource<DummyModel>(dummyManager, fts, mts);
+    dataSource = new ListDataSource<DummyModel>(dummyManager, fts);
   });
 
   it('should create a Mango Query from an encoded queryString', () => {
