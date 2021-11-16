@@ -29,7 +29,8 @@ import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {SyncModule} from './sync.module';
-import {combineLatest, Observable, shareReplay, skipWhile, switchMap, take} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
+import {shareReplay, skipWhile, switchMap, take} from 'rxjs/operators';
 import {AuthService} from '@dino/core/auth';
 
 /**
