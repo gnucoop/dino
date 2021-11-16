@@ -21,7 +21,7 @@
  */
 
 import {AbstractControl, ValidationErrors} from '@angular/forms';
-import {MetricBasicInfo} from '@dino/core/users';
+import {Metric} from '@dino/core/data';
 
 /**
  * Custom validator method for autocomplete field,
@@ -29,13 +29,13 @@ import {MetricBasicInfo} from '@dino/core/users';
  * @param control The form control.
  */
 export function RequireMetricMatch(control: AbstractControl): ValidationErrors | null {
-  const selection: string | MetricBasicInfo = control.value;
+  const selection: string | Metric = control.value;
   if (
     (typeof selection === 'string' && selection !== '') ||
     selection === '' ||
     selection == null ||
-    selection.metricId == null ||
-    selection.metricName == null
+    selection.id == null ||
+    selection.name == null
   ) {
     return {incorrect: true};
   }

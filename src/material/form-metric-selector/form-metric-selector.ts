@@ -20,18 +20,24 @@
  *
  */
 
-import {ChangeDetectionStrategy, Component, Optional, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
-import {MetricsService} from '@dino/core/data';
+import {Metric, MetricsService} from '@dino/core/data';
 import {FormData} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import {MetricBasicInfo, UserGroupManager} from '@dino/core/users';
+import {UserGroupManager} from '@dino/core/users';
 import {MetricFormField} from '@dino/material/metric-editor';
-import {combineLatest, Observable, of as obsOf, Subject} from 'rxjs';
-import {map, switchMap, take} from 'rxjs/operators';
+import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
+import {map, shareReplay, take} from 'rxjs/operators';
 
 import {RequireMetricMatch} from './form-metric-selector-validator';
 
@@ -45,12 +51,12 @@ import {RequireMetricMatch} from './form-metric-selector-validator';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class FormMetricSelector {
+export class FormMetricSelector implements OnDestroy {
   /**
    * The Selector form group.
    */
   formMetrics: FormGroup;
-  get selectedMetrics(): {[key: string]: MetricBasicInfo} {
+  get selectedMetrics(): {[key: string]: Metric} {
     return this.formMetrics.value;
   }
 
@@ -62,12 +68,12 @@ export class FormMetricSelector {
   /**
    * All the metrics fields values
    */
-  formMetricsValues: {[key: string]: Observable<MetricBasicInfo | string>} = {};
+  formMetricsValues: {[key: string]: Observable<Metric | string>} = {};
 
   /**
    * All the metrics autocomplete options.
    */
-  formMetricsOptions: {[key: string]: Observable<MetricBasicInfo[]>} = {};
+  formMetricsOptions: {[key: string]: Observable<Metric[]>} = {};
 
   /**
    * True if the Form is in view mode
@@ -78,6 +84,8 @@ export class FormMetricSelector {
    * The Form Data object of the edited / viewed form.
    */
   private _formData: Subject<{[key: string]: any}> = new Subject<{[key: string]: any}>();
+
+  private _startingValuesSub: Subscription = Subscription.EMPTY;
 
   constructor(
     private _userGroupManager: UserGroupManager,
@@ -188,8 +196,11 @@ export class FormMetricSelector {
    * Displays the Metric Name only in the Metric
    * autocomplete field.
    */
-  displayMetricName(metric: MetricBasicInfo): string {
-    return metric.metricName && metric.metricId ? metric.metricName : '';
+  displayMetricName(metric: Metric): string {
+    if (metric == null) {
+      return '';
+    }
+    return metric.name && metric.id ? metric.name : '';
   }
 
   /**
@@ -209,45 +220,24 @@ export class FormMetricSelector {
    * sets the form control values accordingly.
    */
   private _setStartingValues(): void {
-    combineLatest([this._formData, this._userGroupManager.getActiveUserGroups()])
+    combineLatest([this._formData, this._userGroupManager.getGroupsAllMetrics()])
       .pipe(
-        map(([formData, userGroups]) => {
-          const startingValues: {[key: string]: MetricBasicInfo} = {};
-          for (let activeMetric of this._metricService.activeMetrics.value) {
-            if (formData[`${activeMetric.metricName}_ref_id`] != null) {
-              const availableMetrics: MetricBasicInfo[] = [];
-              userGroups.map(group =>
-                group.groupMetrics.map(metric =>
-                  metric.metricType === activeMetric.metricName
-                    ? availableMetrics.push(metric)
-                    : null,
-                ),
-              );
-              const startingMetric = availableMetrics.find(
-                mtr => mtr.metricId === formData[`${activeMetric.metricName}_ref_id`],
-              );
-              if (startingMetric != null) {
-                startingValues[activeMetric.metricName] = {
-                  metricName: startingMetric.metricName ?? null,
-                  metricId: startingMetric.metricId ?? null,
-                  metricType: startingMetric.metricType ?? null,
-                };
-              }
-            }
-          }
-          return startingValues;
-        }),
-        take(1),
+        map(([fdata, groupMetrics]) =>
+          this._metricService.activeMetrics.value.map(amt => {
+            return groupMetrics.find(mt => {
+              return mt.id == fdata[`${amt.metricName}_ref_id`];
+            });
+          }),
+        ),
+        map(values => values.filter(val => val != null)),
+        shareReplay(1),
       )
       .subscribe(startingValues => {
-        if (startingValues == null || Object.keys(startingValues).length <= 0) {
-          return;
-        }
-        for (let sv in startingValues) {
-          const strValue = startingValues[sv];
-          const formControl = this.formMetrics.get(strValue.metricType);
+        const startValue = startingValues.find(val => val != null);
+        if (startValue != null) {
+          const formControl = this.formMetrics.get(startValue?.collection.name);
           if (formControl != null) {
-            formControl.setValue(strValue);
+            formControl.setValue(startValue);
           }
         }
       });
@@ -259,24 +249,17 @@ export class FormMetricSelector {
    * @param metricType The type identifier of the metric.
    */
   private _addFormMetricsOptions(metricType: string): void {
-    this.formMetricsOptions[metricType] = this._userGroupManager.getActiveUserGroups().pipe(
-      switchMap(userGroups => {
-        const availableMetrics: MetricBasicInfo[] = [];
-        userGroups.map(group =>
-          group.groupMetrics.map(metric =>
-            metric.metricType === metricType ? availableMetrics.push(metric) : null,
-          ),
-        );
-
-        return combineLatest([this.formMetricsValues[metricType], obsOf(availableMetrics)]);
-      }),
-      map(([metricValue, metricOptions]) => {
-        if (metricValue != null && typeof metricValue === 'string') {
+    this.formMetricsOptions[metricType] = combineLatest([
+      this._userGroupManager.getGroupsMetricsByType(metricType),
+      this.formMetricsValues[metricType],
+    ]).pipe(
+      map(([metricOptions, metricValue]) => {
+        if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
           const mtrName = metricValue.toLowerCase();
           return metricOptions.filter(option => {
             return (
-              option.metricName.toLowerCase().includes(mtrName) &&
-              option.metricName != this.formMetrics.get('name')?.value
+              option.name.toLowerCase().includes(mtrName) &&
+              option.name != this.formMetrics.get('name')?.value
             );
           });
         }
@@ -294,5 +277,9 @@ export class FormMetricSelector {
         Object.keys(this.formMetrics.controls).forEach(key => this.formMetrics.get(key)?.disable());
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this._startingValuesSub.unsubscribe();
   }
 }
