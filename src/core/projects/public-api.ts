@@ -24,3 +24,4 @@ export {Project} from './project';
 
 export * from './project-manager';
 export * from './projects.module';
+export * from './populated-with-project';

@@ -24,3 +24,4 @@ export {Area} from './area';
 
 export * from './area-manager';
 export * from './areas.module';
+export * from './populated-with-area';

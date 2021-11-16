@@ -20,8 +20,15 @@
  *
  */
 
-export {Organization} from './organization';
+import {Observable} from 'rxjs';
+import {Project} from './project';
 
-export * from './organization-manager';
-export * from './organizations.module';
-export * from './populated-with-organization';
+/**
+ * Interface that represents the populated Project refs.
+ */
+export interface PopulatedWithProject {
+  /**
+   * The populated Project observable.
+   */
+  project: Observable<Project[]>;
+}

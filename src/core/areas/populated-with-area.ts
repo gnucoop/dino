@@ -20,8 +20,15 @@
  *
  */
 
-export {Organization} from './organization';
+import {Observable} from 'rxjs';
+import {Area} from './area';
 
-export * from './organization-manager';
-export * from './organizations.module';
-export * from './populated-with-organization';
+/**
+ * Interface that represents the populated Area refs.
+ */
+export interface PopulatedWithArea {
+  /**
+   * The populated Areas observable.
+   */
+  area: Observable<Area[]>;
+}

@@ -20,8 +20,15 @@
  *
  */
 
-export {Organization} from './organization';
+import {Observable} from 'rxjs';
+import {Location} from './location';
 
-export * from './organization-manager';
-export * from './organizations.module';
-export * from './populated-with-organization';
+/**
+ * Interface that represents the populated Location refs.
+ */
+export interface PopulatedWithLocation {
+  /**
+   * The populated Location observable.
+   */
+  location: Observable<Location[]>;
+}
