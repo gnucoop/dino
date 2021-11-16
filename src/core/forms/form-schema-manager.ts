@@ -20,7 +20,7 @@
  *
  */
 
-import {AjfChoice, AjfChoicesOrigin} from '@ajf/core/forms';
+import {AjfChoicesOrigin} from '@ajf/core/forms';
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {FilterGroup, FilterItem} from '@dino/core/list';

@@ -74,12 +74,13 @@ describe('dino-search-filters-dialog', () => {
     const searchButton = element(by.cssContainingText('.mat-button-wrapper', 'Search')).element(
       by.xpath('..'),
     );
-    const firstWidgetInput = element(by.css('.mat-card-content input'));
+    const firstWidgeRadioBtn = element.all(by.css('.mat-card-content .mat-radio-button')).first();
 
-    expect(await firstWidgetInput.isDisplayed()).toBe(true);
+    expect(await firstWidgeRadioBtn.isDisplayed()).toBe(true);
 
-    await firstWidgetInput.sendKeys('en');
-    await browser.sleep(300);
+    await browser.wait(EC.elementToBeClickable(firstWidgeRadioBtn));
+    await firstWidgeRadioBtn.click();
+    await browser.sleep(1000);
     await searchButton.click();
     await browser.sleep(300);
 
