@@ -23,7 +23,7 @@
 import {Injectable, Optional} from '@angular/core';
 import {FormSchemaManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
-import {UserModelManager, UserGroupManager} from '@dino/core/users';
+import {UserDataManager, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {AreaManager} from '@dino/core/areas';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
@@ -46,14 +46,21 @@ export class SyncManager {
     private _auth: AuthService,
     private _fs: FormSchemaManager,
     private _rs: ReportSchemaManager,
-    private _um: UserModelManager,
+    private _um: UserDataManager,
+    private _ur: UserRoleManager,
     private _ug: UserGroupManager,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _pj: ProjectManager | null,
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
   ) {
-    this._managersInit = [this._fs.init(), this._rs.init(), this._um.init(), this._ug.init()];
+    this._managersInit = [
+      this._fs.init(),
+      this._rs.init(),
+      this._um.init(),
+      this._ur.init(),
+      this._ug.init(),
+    ];
     if (this._ar != null) {
       this._managersInit.push(this._ar.init());
     }
