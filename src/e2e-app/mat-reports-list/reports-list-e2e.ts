@@ -71,7 +71,6 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     this.dataSource = new ListDataSource(
       this.formDataManager,
       this.filtersService,
-      this.metricsService,
       this.formSchemaManager,
       this.isFormDataList,
     );

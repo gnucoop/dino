@@ -11,16 +11,26 @@ import {
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {AreaManager} from '@dino/core/areas';
-import {DataModelManager, InsertModel} from '@dino/core/data';
+import {AreaManager, PopulatedWithArea} from '@dino/core/areas';
+import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
 import {FormSchemaManager} from '@dino/core/forms';
-import {LocationManager} from '@dino/core/locations';
-import {OrganizationManager} from '@dino/core/organizations';
-import {ProjectManager} from '@dino/core/projects';
+import {LocationManager, PopulatedWithLocation} from '@dino/core/locations';
+import {OrganizationManager, PopulatedWithOrganization} from '@dino/core/organizations';
+import {PopulatedWithProject, ProjectManager} from '@dino/core/projects';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
 import {BehaviorSubject, combineLatest, from, Observable, Subscription} from 'rxjs';
-import {map, shareReplay, switchMap} from 'rxjs/operators';
+import {map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
+
+/**
+ * Represents an UserGroup populated with its metrics.
+ */
+export interface UserGroupWithMetrics
+  extends UserGroup,
+    PopulatedWithArea,
+    PopulatedWithLocation,
+    PopulatedWithOrganization,
+    PopulatedWithProject {}
 
 /**
  * Represents the data to be passed to a UserGroup editor dialog.
@@ -29,7 +39,7 @@ export interface UserGroupDialogData {
   /**
    * The selected UserGroup item.
    */
-  userGroupItem?: UserGroup;
+  userGroupItem?: UserGroupWithMetrics;
 
   /**
    * The dialog mode.
@@ -69,6 +79,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     private _userRoleManager: UserRoleManager,
     private _formSchemaManager: FormSchemaManager,
     private _snackbar: MatSnackBar,
+    private _metricService: MetricsService,
     public dialogRef: MatDialogRef<MixedEditor>,
     @Inject(MAT_DIALOG_DATA) public data: UserGroupDialogData,
     @Optional() private _areaManager: AreaManager | null,
@@ -133,7 +144,12 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
       .pipe(
         switchMap(item => {
           if (this.data.userGroupAction === 'edit' && this.data.userGroupItem != null) {
-            const updateItem = {...this.data.userGroupItem, ...item};
+            const updateItem: UserGroup = {
+              ...item,
+              id: this.data.userGroupItem.id,
+              created_at: this.data.userGroupItem.created_at,
+              updated_at: '',
+            };
             return this._userGroupManager.update(updateItem);
           } else {
             return this._userGroupManager.create(item);
@@ -145,34 +161,43 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           this._snackbar.open(`"${success?.groupName}" saved`, 'SAVE', {duration: 5000});
           this.dialogRef.close();
         },
-        _ =>
+        () => {
           this._snackbar.open('Oops! Something went wrong saving the List', 'ERROR', {
             duration: 5000,
-          }),
+          });
+        },
       );
   }
 
   ngAfterViewInit(): void {
     if (this.data.userGroupAction !== 'create' && this.data.userGroupItem != null) {
-      this._populationSub = this._populatedSourceListEvt.subscribe(_ => {
-        const group = this.data.userGroupItem;
-        const mixedEditor = this.mixedEditor;
-        if (group == null || this.mixedEditor == null) {
-          return;
-        }
-
-        mixedEditor.saveListName.nativeElement.value = group.groupName;
-        mixedEditor.addItem(mixedEditor.findItem(group.userRoleId));
-        for (let metric of group.groupMetrics) {
-          mixedEditor.addItem(mixedEditor.findItem(metric.metricId));
-        }
-        for (let formSchemaId of group.groupFormSchemaIds) {
-          mixedEditor.addItem(mixedEditor.findItem(formSchemaId));
-        }
-        for (let reportSchemaId of group.groupReportSchemaIds) {
-          mixedEditor.addItem(mixedEditor.findItem(reportSchemaId));
-        }
-      });
+      const group = this.data.userGroupItem as {[key: string]: any};
+      const activeMetrics = this._metricService.activeMetrics.value.map(
+        metric => metric.metricName,
+      );
+      const groupMetrics: Observable<Metric[]>[] = activeMetrics.map(
+        metricName => group[metricName] ?? null,
+      );
+      const metricsStream = combineLatest(groupMetrics);
+      this._populationSub = this._populatedSourceListEvt
+        .pipe(withLatestFrom(metricsStream))
+        .subscribe(([_, metrics]) => {
+          const mixedEditor = this.mixedEditor;
+          if (group == null || this.mixedEditor == null) {
+            return;
+          }
+          mixedEditor.saveListName.nativeElement.value = group.groupName;
+          mixedEditor.addItem(mixedEditor.findItem(group.userRoleId));
+          for (let formSchemaId of group.groupFormSchemaIds) {
+            mixedEditor.addItem(mixedEditor.findItem(formSchemaId));
+          }
+          for (let reportSchemaId of group.groupReportSchemaIds) {
+            mixedEditor.addItem(mixedEditor.findItem(reportSchemaId));
+          }
+          for (let metric of metrics) {
+            metric.forEach(mt => mixedEditor.addItem(mixedEditor.findItem(mt.id)));
+          }
+        });
       this.loadGroup();
     }
   }
@@ -191,30 +216,27 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
         return;
       }
       const groupName = listName;
-      const userRoleId = list.find(item => item.itemType === 'user_role')?.itemId;
-      const groupMetrics = list
-        .filter(item => this.metricTypes.indexOf(item.itemType) > -1)
-        .map(itm => {
-          return {
-            metricType: itm.itemType,
-            metricId: itm.itemId,
-            metricName: itm.itemName,
-          };
-        });
-      const groupFormSchemaIds = list
-        .filter(item => item.itemType === 'form_schema')
-        .map(itm => itm.itemId);
-      const groupReportSchemaIds = list
-        .filter(item => item.itemType === 'report_schema')
-        .map(itm => itm.itemId);
+      const newUserGroupData: {[key: string]: any} = {};
+      list.forEach(item => {
+        if (newUserGroupData[item.itemType] == null) {
+          newUserGroupData[item.itemType] = [];
+        }
+        if (Array.isArray(newUserGroupData[item.itemType])) {
+          newUserGroupData[item.itemType].push(item.itemId);
+        }
+      });
+      const userRoleId = newUserGroupData['user_role'][0];
 
       if (userRoleId) {
         const newUserGroup: InsertModel<UserGroup> = {
           groupName: groupName,
           userRoleId: userRoleId,
-          groupMetrics: groupMetrics,
-          groupFormSchemaIds: groupFormSchemaIds,
-          groupReportSchemaIds: groupReportSchemaIds,
+          area_ref_id: newUserGroupData['area'] ?? [],
+          location_ref_id: newUserGroupData['location'] ?? [],
+          organization_ref_id: newUserGroupData['organization'] ?? [],
+          project_ref_id: newUserGroupData['project'] ?? [],
+          groupFormSchemaIds: newUserGroupData['form_schema'] ?? [],
+          groupReportSchemaIds: newUserGroupData['report_schema'] ?? [],
         };
         this._saveEvt.emit(newUserGroup);
       }
@@ -257,5 +279,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     this._saveSub.unsubscribe();
     this._populationSub.unsubscribe();
     this._populationScheduleSub.unsubscribe();
+
+    this.mixedEditorItems.complete();
   }
 }

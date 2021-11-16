@@ -33,7 +33,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   readonly dataSource: ListDataSource<FormData, FormSchema>;
   readonly headers: ListHeader<FormData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'user_id', label: 'User', sortable: true, displayed: false},
+    {column: 'user_data_ref_id', label: 'User', sortable: true, populateWith: 'full_name'},
     {column: 'area_ref_id', label: 'Area', sortable: true, populateWith: 'name'},
     {column: 'location_ref_id', label: 'Location', sortable: true, populateWith: 'name'},
     {column: 'organization_ref_id', label: 'Organization', sortable: true, populateWith: 'name'},
@@ -79,7 +79,6 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
     this.dataSource = new ListDataSource(
       this.formDataManager,
       this.filtersService,
-      this.metricService,
       this.formSchemaManager,
       this.isFormDataList,
     );

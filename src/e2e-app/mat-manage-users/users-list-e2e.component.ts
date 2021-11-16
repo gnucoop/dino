@@ -1,9 +1,8 @@
 import {AjfFieldType} from '@ajf/core/forms';
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MetricsService} from '@dino/core/data';
 import {ActionType, FilterGroup, FiltersService, ListAction, ListHeader} from '@dino/core/list';
-import {UserModel, UserModelManager} from '@dino/core/users';
+import {UserData, UserDataManager} from '@dino/core/users';
 import {ListDataSource} from '@dino/material/list';
 import {UserDialogData} from '@dino/material/user-editor';
 import {MatUsersEditorE2E} from './users-editor-e2e.component';
@@ -15,7 +14,7 @@ import {MatUsersEditorE2E} from './users-editor-e2e.component';
   encapsulation: ViewEncapsulation.None,
 })
 export class MatUsersListE2E implements OnInit {
-  readonly headers: ListHeader<UserModel>[] = [
+  readonly headers: ListHeader<UserData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
     {column: 'email', label: 'Email', sortable: true},
     {column: 'full_name', label: 'Full Name', sortable: true},
@@ -36,7 +35,7 @@ export class MatUsersListE2E implements OnInit {
     },
   ];
 
-  dataSource: ListDataSource<UserModel>;
+  dataSource: ListDataSource<UserData>;
 
   readonly listRowActions: ListAction[] = [
     {
@@ -57,21 +56,16 @@ export class MatUsersListE2E implements OnInit {
   ];
 
   constructor(
-    private _userModelManager: UserModelManager,
+    private _UserDataManager: UserDataManager,
     private _filtersService: FiltersService,
-    private _metricService: MetricsService,
     public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = new ListDataSource(
-      this._userModelManager,
-      this._filtersService,
-      this._metricService,
-    );
+    this.dataSource = new ListDataSource(this._UserDataManager, this._filtersService);
   }
 
-  openDialog(group?: UserModel, action?: 'view' | 'edit' | 'create'): void {
+  openDialog(group?: UserData, action?: 'view' | 'edit' | 'create'): void {
     this.dialog.open(MatUsersEditorE2E, {
       data: {
         userItem: group,
