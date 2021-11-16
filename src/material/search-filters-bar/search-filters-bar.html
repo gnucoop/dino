@@ -29,9 +29,10 @@
     <ng-container [formGroup]="dateSearchFilters">
       <mat-form-field floatLabel="always">
         <input
-          formControlName="dateStart"
           matInput
+          formControlName="dateStart"
           [matDatepicker]="pickerFrom"
+          [matDatepickerFilter]="maxDatePicker"
           [placeholder]="'From date'|transloco"
         />
         <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
@@ -43,6 +44,7 @@
           matInput
           formControlName="dateEnd"
           [matDatepicker]="pickerTo"
+          [matDatepickerFilter]="minDatePicker"
           [placeholder]="'To date'|transloco"
         />
         <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
@@ -79,7 +81,7 @@
               *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
               [value]="option"
             >
-              {{option.metricName}}
+              {{option.name}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

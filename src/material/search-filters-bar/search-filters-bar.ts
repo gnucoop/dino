@@ -36,17 +36,16 @@ import {FormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
-import {DataModelManager, MetricsService} from '@dino/core/data';
+import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
 import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import {MetricBasicInfo} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
 import {from, Observable, Subscription, throwError} from 'rxjs';
-import {catchError, map, switchMap, take} from 'rxjs/operators';
+import {catchError, switchMap, take} from 'rxjs/operators';
 
 /**
  * Opt-in component that handles all SelectionList filters.
@@ -67,7 +66,13 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   /**
    * All the metrics filters autocomplete options.
    */
-  metricFiltersOptions: {[key: string]: Observable<MetricBasicInfo[]>} = {};
+  metricFiltersOptions: {[key: string]: Observable<Metric[]>} = {};
+
+  /**
+   * Date Picker input filtering methods.
+   */
+  minDatePicker: (d: Date | null) => boolean;
+  maxDatePicker: (d: Date | null) => boolean;
 
   /**
    * If true, the Preset Manager is available and displayed.
@@ -137,6 +142,32 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     super();
+    this.minDatePicker = (d: Date | null): boolean => {
+      const minDate = this.dateSearchFilters.get('dateStart')?.value
+        ? new Date(this.dateSearchFilters.get('dateStart')?.value)
+        : null;
+      if (minDate != null && d != null) {
+        return d > minDate;
+      }
+      return true;
+    };
+    this.maxDatePicker = (d: Date | null): boolean => {
+      const maxDate = this.dateSearchFilters.get('dateEnd')?.value
+        ? new Date(this.dateSearchFilters.get('dateEnd')?.value)
+        : null;
+      if (maxDate != null && d != null) {
+        return d < maxDate;
+      }
+      return true;
+    };
+  }
+  @Output()
+  readonly exportEvt: EventEmitter<'XLSX' | 'CSV' | 'dialog'> = new EventEmitter<
+    'XLSX' | 'CSV' | 'dialog'
+  >();
+
+  ngOnInit() {
+    this._initFilters();
     if (this._areaManager != null) {
       this._populateMetricsOptions('area', this._areaManager);
     }
@@ -149,14 +180,6 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     if (this._organizationManager != null) {
       this._populateMetricsOptions('organization', this._organizationManager);
     }
-  }
-  @Output()
-  readonly exportEvt: EventEmitter<'XLSX' | 'CSV' | 'dialog'> = new EventEmitter<
-    'XLSX' | 'CSV' | 'dialog'
-  >();
-
-  ngOnInit() {
-    this._initFilters();
   }
 
   /**
@@ -227,29 +250,31 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * Displays the Metric Name only in the Metric
    * autocomplete field.
    */
-  displayMetricName(metric: MetricBasicInfo): string {
+  displayMetricName(metric: Metric): string {
     if (metric == null) {
       return '';
     }
-    return metric.metricName && metric.metricId ? metric.metricName : '';
+    return metric.name && metric.id ? metric.name : '';
   }
 
   private _populateMetricsOptions(metricType: string, metricManager: DataModelManager<any>): void {
     if (metricType == null || metricManager == null) {
       return;
     }
-    this.metricFiltersOptions[metricType] = metricManager.list().pipe(
-      switchMap(qry => from(qry.exec())),
-      map(docs =>
-        docs.map(doc => {
-          return {
-            metricType: metricType,
-            metricName: doc.name,
-            metricId: doc.id,
-          } as MetricBasicInfo;
+    const inputControl = this.additionalBasicFilters.find(group => group.get(metricType) != null);
+    const inputValue = inputControl?.get(metricType)?.valueChanges;
+    if (inputValue != null) {
+      this.metricFiltersOptions[metricType] = inputValue.pipe(
+        switchMap(val => {
+          if (typeof val === 'string') {
+            return metricManager
+              .query({selector: {name: {$regex: val}}})
+              .pipe(switchMap(qry => from(qry.exec())));
+          }
+          return [];
         }),
-      ),
-    );
+      );
+    }
   }
 
   /**
