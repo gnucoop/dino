@@ -26,32 +26,32 @@ import {DataModelManager, DataService, PermissionContextService} from '@dino/cor
 import {Observable, of as obsOf} from 'rxjs';
 import {shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
-import {migrationStrategies, UserModel} from './user-model';
-import {schema} from './user-model-json';
+import {migrationStrategies, UserData} from './user-data';
+import {schema} from './user-data-json';
 import {UsersModule} from './users.module';
 
 /**
  * Service that manages User Roles
  */
 @Injectable({providedIn: UsersModule})
-export class UserModelManager extends DataModelManager<UserModel> {
+export class UserDataManager extends DataModelManager<UserData> {
   constructor(
     private _authService: AuthService,
     dataService: DataService,
     permissionContextService: PermissionContextService,
   ) {
     super(
-      {name: 'user_model', collection: {schema, migrationStrategies}},
+      {name: 'user_data', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
     );
   }
 
   /**
-   * Gets the UserModel of the active user.
-   * @returns The user model data
+   * Gets the UserData of the active user.
+   * @returns The user data
    */
-  getActiveUserModel(): Observable<UserModel | null> {
+  getActiveUserData(): Observable<UserData | null> {
     return this._authService.authenticated.pipe(
       switchMap(_ => {
         const userId = this._authService.getUserInfo()?.id;
@@ -60,8 +60,8 @@ export class UserModelManager extends DataModelManager<UserModel> {
         }
         return this.get(userId).pipe(shareReplay(1));
       }),
-      tap(userModel => {
-        this.addToContext({userModel: userModel});
+      tap(userData => {
+        this.addToContext({userData: userData});
       }),
       take(1),
     );

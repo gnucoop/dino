@@ -24,26 +24,6 @@ import {Model} from '@dino/core/data';
 import {MigrationStrategies} from 'rxdb';
 
 /**
- * Metric basic info for a User Group.
- */
-export type MetricBasicInfo = {
-  /**
-   * The type of the Metric
-   */
-  metricType: string;
-
-  /**
-   * The Metric name
-   */
-  metricName: string;
-
-  /**
-   * The Metric UUID
-   */
-  metricId: string;
-};
-
-/**
  * This model is used to store UserGroups.
  * @title UserGroup
  */
@@ -59,9 +39,24 @@ export interface UserGroup extends Model {
   userRoleId: string;
 
   /**
-   * The Metrics to which the User Group Role permissions apply
+   * The Areas to which the User Group Role permissions apply
    */
-  groupMetrics: MetricBasicInfo[];
+  area_ref_id: string[];
+
+  /**
+   * The Locations to which the User Group Role permissions apply
+   */
+  location_ref_id: string[];
+
+  /**
+   * The Organizations to which the User Group Role permissions apply
+   */
+  organization_ref_id: string[];
+
+  /**
+   * The Projects to which the User Group Role permissions apply
+   */
+  project_ref_id: string[];
 
   /**
    * The specific Form Schemas (by ID) to which the User Group Role permissions apply.

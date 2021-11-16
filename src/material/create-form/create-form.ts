@@ -223,7 +223,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           if (isFormData) {
             newItem.data = formValue;
             newItem.schema_id = formSchemaId;
-            newItem.user_id = this._authService.getUserInfo()?.id;
+            newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
             newItem.area_ref_id = null;
             newItem.location_ref_id = null;
             newItem.organization_ref_id = null;
@@ -232,15 +232,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               const selectedMetrics = formMetricsSelector.selectedMetrics;
               for (let key of Object.keys(selectedMetrics)) {
                 const saveKey = `${key}_ref_id`;
-                if (selectedMetrics[key].metricId != null) {
-                  newItem[saveKey] = selectedMetrics[key].metricId;
+                if (selectedMetrics[key].id != null) {
+                  newItem[saveKey] = selectedMetrics[key].id;
                 }
               }
             }
           } else {
             newItem.data.data = formValue;
             newItem.data.schema_id = formSchemaId;
-            newItem.data.user_id = this._authService.getUserInfo()?.id;
+            newItem.data.user_data_ref_id = this._authService.getUserInfo()?.id;
           }
 
           return this._dataModelManager.create(newItem as T);

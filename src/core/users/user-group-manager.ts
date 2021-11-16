@@ -21,13 +21,20 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
-import {from, Observable} from 'rxjs';
-import {shareReplay, switchMap} from 'rxjs/operators';
+import {
+  DataModelManager,
+  DataService,
+  Metric,
+  MetricsService,
+  PermissionContextService,
+} from '@dino/core/data';
+import {RxDocument} from 'rxdb';
+import {from, merge, Observable, of as obsOf} from 'rxjs';
+import {map, shareReplay, switchMap} from 'rxjs/operators';
 
 import {migrationStrategies, UserGroup} from './user-group';
 import {schema} from './user-group-json';
-import {UserModelManager} from './user-model-manager';
+import {UserDataManager} from './user-data-manager';
 import {UsersModule} from './users.module';
 
 /**
@@ -36,7 +43,8 @@ import {UsersModule} from './users.module';
 @Injectable({providedIn: UsersModule})
 export class UserGroupManager extends DataModelManager<UserGroup> {
   constructor(
-    private _userModelManager: UserModelManager,
+    private _userModelManager: UserDataManager,
+    private _metricService: MetricsService,
     dataService: DataService,
     permissionContextService: PermissionContextService,
   ) {
@@ -51,13 +59,13 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
    * Gets the Permission Groups associated with the active user.
    * @returns The associated Groups
    */
-  getActiveUserGroups(): Observable<UserGroup[]> {
-    return this._userModelManager.getActiveUserModel().pipe(
-      switchMap(userModel => {
-        if (userModel == null) {
+  getActiveUserGroups(): Observable<RxDocument<UserGroup>[]> {
+    return this._userModelManager.getActiveUserData().pipe(
+      switchMap(userData => {
+        if (userData == null) {
           return [];
         }
-        const userGroupIds = userModel.user_group_ids;
+        const userGroupIds = userData.user_group_ids;
         const querySelector = {id: {$in: userGroupIds}};
         return this.query({selector: querySelector}).pipe(
           switchMap(query => from(query.exec())),
@@ -65,5 +73,49 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
         );
       }),
     );
+  }
+
+  /**
+   * Gets the available metrics of the specified type from the Permission Groups associated
+   * with the active user
+   * @param metricType The string type of the Metric (eg. 'area', 'organization'...)
+   * @returns The available Metrics of the Groups.
+   */
+  getGroupsMetricsByType<T extends Metric = Metric>(
+    metricType: string,
+  ): Observable<RxDocument<T>[]> {
+    const activeMetrics = this._metricService.activeMetrics.value.map(metric => metric.metricName);
+    if (activeMetrics.indexOf(metricType) < 0) {
+      return obsOf([]);
+    }
+    const refKey = (metricType + '_ref_id') as keyof UserGroup;
+    return this.getActiveUserGroups().pipe(
+      map(groups =>
+        groups.map(gr => {
+          let refProp;
+          try {
+            refProp = from(gr.populate(refKey));
+          } catch (err) {
+            refProp = obsOf([]);
+          }
+          return refProp;
+        }),
+      ),
+      switchMap(mts => merge(...mts)),
+    );
+  }
+
+  /**
+   * Gets the available metrics from the Permission Groups associated
+   * with the active user.
+   * @returns The available Metrics of the Groups.
+   */
+  getGroupsAllMetrics<T extends Metric = Metric>(): Observable<RxDocument<T>[]> {
+    const activeMetrics = this._metricService.activeMetrics.value.map(metric => metric.metricName);
+    const groupMetrics: Observable<RxDocument<T>[]>[] = [];
+    activeMetrics.forEach(mt => {
+      groupMetrics.push(this.getGroupsMetricsByType(mt));
+    });
+    return merge(...groupMetrics);
   }
 }

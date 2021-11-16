@@ -6,10 +6,10 @@ import {addPouchPlugin, getRxStoragePouch} from 'rxdb';
 import {of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
-import {UserGroupManager, UserModelManager, UsersModule} from '.';
-import {UserModel} from './user-model';
+import {UserGroupManager, UserDataManager, UsersModule} from '.';
+import {UserData} from './user-data';
 
-const dummyUserModel: UserModel = {
+const dummyUserModel: UserData = {
   id: 'dino_user_id',
   email: 'user@dino.gnu',
   full_name: 'dino_user',
@@ -55,9 +55,9 @@ const authServiceMock = {
   },
 } as unknown as AuthService;
 
-const userModelManagerMock = {
-  getActiveUserModel: () => obsOf(dummyUserModel),
-} as unknown as UserModelManager;
+const userDataManagerMock = {
+  getActiveUserData: () => obsOf(dummyUserModel),
+} as unknown as UserDataManager;
 
 let testDbIdx = 0;
 const serverUrl = 'http://dinoServer/v1/graphql';
@@ -82,7 +82,7 @@ function dataServiceConfig(): DataServiceConfig {
 }
 
 describe('User Model Manager', () => {
-  let userModelManager: UserModelManager;
+  let userModelManager: UserDataManager;
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [UsersModule],
@@ -92,12 +92,12 @@ describe('User Model Manager', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    userModelManager = TestBed.inject(UserModelManager);
+    userModelManager = TestBed.inject(UserDataManager);
   });
 
   it('should retrieve the user model by its UUID', async () => {
     const getSpy = spyOn(userModelManager, 'get').and.callThrough();
-    await userModelManager.getActiveUserModel().toPromise();
+    await userModelManager.getActiveUserData().toPromise();
     expect(getSpy).toHaveBeenCalledTimes(1);
     expect(getSpy).toHaveBeenCalledWith(dummyUserModel.id);
   });
@@ -109,7 +109,7 @@ describe('User Group Manager', () => {
     TestBed.configureTestingModule({
       imports: [UsersModule],
       providers: [
-        {provide: UserModelManager, useValue: userModelManagerMock},
+        {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},

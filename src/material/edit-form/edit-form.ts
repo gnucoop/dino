@@ -341,9 +341,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (formObj.fmSelector != null) {
             const selectedMetrics = formObj.fmSelector.selectedMetrics;
             for (let key of Object.keys(selectedMetrics)) {
-              if (selectedMetrics[key].metricId != null) {
+              if (selectedMetrics[key].id != null) {
                 const saveKey = `${key}_ref_id`;
-                newItem[saveKey] = selectedMetrics[key].metricId;
+                newItem[saveKey] = selectedMetrics[key].id;
               }
             }
           }

@@ -89,7 +89,7 @@ export class ExportForm implements OnDestroy {
   );
 
   private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private _dinoFields: string[] = ['id', 'user_id', 'created_at'];
+  private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at'];
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
   // it is a dictionary with keu the name of the slide and the list of selected field name as value.

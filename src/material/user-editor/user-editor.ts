@@ -32,7 +32,7 @@ import {
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {UserGroup, UserGroupManager, UserModel, UserModelManager} from '@dino/core/users';
+import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
 import {from, Observable, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -43,7 +43,7 @@ export interface UserDialogData {
   /**
    * The selected User.
    */
-  userItem?: UserModel;
+  userItem?: UserData;
 
   /**
    * The dialog mode.
@@ -103,7 +103,7 @@ export class UserEditor implements OnDestroy, OnInit {
   /**
    * Emits when an User is created or edited.
    */
-  private _saveEvt: EventEmitter<UserModel> = new EventEmitter<UserModel>();
+  private _saveEvt: EventEmitter<UserData> = new EventEmitter<UserData>();
 
   /**
    * Subscribes to the save event.
@@ -111,7 +111,7 @@ export class UserEditor implements OnDestroy, OnInit {
   private _saveSub: Subscription = Subscription.EMPTY;
 
   constructor(
-    private _userModelManager: UserModelManager,
+    private _UserDataManager: UserDataManager,
     private _userGroupManager: UserGroupManager,
     readonly snackbar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: UserDialogData,
@@ -126,9 +126,9 @@ export class UserEditor implements OnDestroy, OnInit {
       .pipe(
         switchMap(item => {
           if (this.data.userAction === 'edit') {
-            return this._userModelManager.update(item);
+            return this._UserDataManager.update(item);
           } else {
-            return this._userModelManager.create(item);
+            return this._UserDataManager.create(item);
           }
         }),
       )
@@ -147,7 +147,7 @@ export class UserEditor implements OnDestroy, OnInit {
    * Generates and populates the editor.
    */
   private _populateForm(): void {
-    const currentUser: UserModel | undefined = this.data.userItem;
+    const currentUser: UserData | undefined = this.data.userItem;
     const group: {[key: string]: FormControl} = {};
     const fields: UserFormField[] = [
       {
@@ -197,7 +197,7 @@ export class UserEditor implements OnDestroy, OnInit {
     if (formValue != null && this.isFormValid()) {
       let obj = {...formValue};
       if (this.data.userItem != null && this.data.userAction === 'edit') {
-        const editedItem: UserModel = this.data.userItem;
+        const editedItem: UserData = this.data.userItem;
         obj = {...editedItem, ...formValue};
       }
 

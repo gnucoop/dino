@@ -48,9 +48,10 @@ export const schema = {
       "type": "boolean",
       "description": "Pouchdb delete flag"
     },
-    "user_id": {
+    "user_data_ref_id": {
       "type": "string",
-      "description": "The collector user identifier."
+      "description": "The collector user identifier.",
+      "ref": "user_data"
     },
     "schema_id": {
       "type": "string",
@@ -103,7 +104,7 @@ export const schema = {
     "project_ref_id",
     "schema_id",
     "updated_at",
-    "user_id"
+    "user_data_ref_id"
   ],
   "additionalProperties": false,
   "description": "This model is used to store the data collected through an Ajf form.",

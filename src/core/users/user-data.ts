@@ -25,9 +25,9 @@ import {MigrationStrategies} from 'rxdb';
 
 /**
  * This model is used to store Users.
- * @title UserModel
+ * @title UserData
  */
-export interface UserModel extends Omit<User<{}>, 'id'>, Model {
+export interface UserData extends Omit<User<{}>, 'id'>, Model {
   /**
    * The User fullname.
    */

@@ -31,7 +31,7 @@ export interface FormData extends Model {
   /**
    * The collector user identifier.
    */
-  user_id: string;
+  user_data_ref_id: string;
 
   /**
    * The schema identifier

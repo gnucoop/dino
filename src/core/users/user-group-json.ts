@@ -56,12 +56,37 @@ export const schema = {
       "type": "string",
       "description": "The Role (by ID) granted by the User Group"
     },
-    "groupMetrics": {
+    "area_ref_id": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/MetricBasicInfo"
+        "type": "string"
       },
-      "description": "The Metrics to which the User Group Role permissions apply"
+      "description": "The Areas to which the User Group Role permissions apply",
+      "ref": "area"
+    },
+    "location_ref_id": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The Locations to which the User Group Role permissions apply",
+      "ref": "location"
+    },
+    "organization_ref_id": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The Organizations to which the User Group Role permissions apply",
+      "ref": "organization"
+    },
+    "project_ref_id": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The Projects to which the User Group Role permissions apply",
+      "ref": "project"
     },
     "groupFormSchemaIds": {
       "type": "array",
@@ -79,12 +104,15 @@ export const schema = {
     }
   },
   "required": [
+    "area_ref_id",
     "created_at",
     "groupFormSchemaIds",
-    "groupMetrics",
     "groupName",
     "groupReportSchemaIds",
     "id",
+    "location_ref_id",
+    "organization_ref_id",
+    "project_ref_id",
     "updated_at",
     "userRoleId"
   ],

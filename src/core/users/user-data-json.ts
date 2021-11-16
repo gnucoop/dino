@@ -22,7 +22,7 @@
 
 import {RxJsonSchema} from 'rxdb';
 
-import {UserModel} from './user-model';
+import {UserData} from './user-data';
 
 // tslint:disable
 export const schema = {
@@ -74,7 +74,7 @@ export const schema = {
   ],
   "additionalProperties": false,
   "description": "This model is used to store Users.",
-  "title": "UserModel",
+  "title": "UserData",
   "primaryKey": "id",
   "version": 0
-} as RxJsonSchema<UserModel>;
+} as RxJsonSchema<UserData>;

@@ -416,7 +416,7 @@ const ajfSourceReportFormDatas = [
 export const formDatas: FormData[] = [
   {
     id: '',
-    user_id: 'user_a',
+    user_data_ref_id: 'user_a',
     schema_id: 'prova',
     data: ajfFormDatas[0],
     created_at: '',
@@ -428,7 +428,7 @@ export const formDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_b',
+    user_data_ref_id: 'user_b',
     schema_id: 'prova',
     data: ajfFormDatas[1],
     created_at: '',
@@ -440,7 +440,7 @@ export const formDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_b',
+    user_data_ref_id: 'user_b',
     schema_id: 'prova',
     data: ajfFormDatas[2],
     created_at: '',
@@ -452,7 +452,7 @@ export const formDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_b',
+    user_data_ref_id: 'user_b',
     schema_id: 'prova',
     data: ajfFormDatas[3],
     created_at: '',
@@ -464,7 +464,7 @@ export const formDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_a',
+    user_data_ref_id: 'user_a',
     schema_id: 'prova',
     data: ajfFormDatas[4],
     created_at: '',
@@ -476,7 +476,7 @@ export const formDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_c',
+    user_data_ref_id: 'user_c',
     schema_id: 'prova',
     data: ajfFormDatas[5],
     created_at: '',
@@ -488,7 +488,7 @@ export const formDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_c',
+    user_data_ref_id: 'user_c',
     schema_id: 'prova',
     data: ajfFormDatas[6],
     created_at: '',
@@ -503,7 +503,7 @@ export const formDatas: FormData[] = [
 export const sourceReportFormDatas: FormData[] = [
   {
     id: '',
-    user_id: 'user_a',
+    user_data_ref_id: 'user_a',
     schema_id: 'prova',
     data: ajfSourceReportFormDatas[0],
     created_at: '',
@@ -515,7 +515,7 @@ export const sourceReportFormDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_a',
+    user_data_ref_id: 'user_a',
     schema_id: 'prova',
     data: ajfSourceReportFormDatas[1],
     created_at: '',
@@ -527,7 +527,7 @@ export const sourceReportFormDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_b',
+    user_data_ref_id: 'user_b',
     schema_id: 'prova',
     data: ajfSourceReportFormDatas[2],
     created_at: '',
@@ -539,7 +539,7 @@ export const sourceReportFormDatas: FormData[] = [
   },
   {
     id: '',
-    user_id: 'user_b',
+    user_data_ref_id: 'user_b',
     schema_id: 'prova',
     data: ajfSourceReportFormDatas[3],
     created_at: '',

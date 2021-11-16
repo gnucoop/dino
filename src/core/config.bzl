@@ -36,7 +36,7 @@ CORE_MODELS = [
     "projects/project",
     "areas/area",
     "organizations/organization",
-    "users/user-model",
+    "users/user-data",
     "users/user-group",
     "users/user-role",
 ]
