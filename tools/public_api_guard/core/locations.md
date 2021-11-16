@@ -11,6 +11,7 @@ import { FiltersService } from '@dino/core/list';
 import * as i0 from '@angular/core';
 import { Metric } from '@dino/core/data';
 import { MetricsService } from '@dino/core/data';
+import { Observable } from 'rxjs';
 import { PermissionContextService } from '@dino/core/data';
 
 // @public
@@ -39,6 +40,11 @@ export class LocationModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<LocationModule>;
     // (undocumented)
     static ɵmod: i0.ɵɵNgModuleDeclaration<LocationModule, never, never, never>;
+}
+
+// @public
+export interface PopulatedWithLocation {
+    location: Observable<Location_2[]>;
 }
 
 // (No @packageDocumentation comment for this package)

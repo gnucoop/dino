@@ -8,51 +8,52 @@ import { AuthService } from '@dino/core/auth';
 import { DataModelManager } from '@dino/core/data';
 import { DataService } from '@dino/core/data';
 import * as i0 from '@angular/core';
+import { Metric } from '@dino/core/data';
+import { MetricsService } from '@dino/core/data';
 import { Model } from '@dino/core/data';
 import { Observable } from 'rxjs';
 import { PermissionContextService } from '@dino/core/data';
+import { RxDocument } from 'rxdb';
 import { User } from '@dino/core/auth';
 
 // @public
-export type MetricBasicInfo = {
-    metricType: string;
-    metricName: string;
-    metricId: string;
-};
-
-// @public
-export interface UserGroup extends Model {
-    groupFormSchemaIds: string[];
-    groupMetrics: MetricBasicInfo[];
-    groupName: string;
-    groupReportSchemaIds: string[];
-    userRoleId: string;
-}
-
-// @public
-export class UserGroupManager extends DataModelManager<UserGroup> {
-    constructor(_userModelManager: UserModelManager, dataService: DataService, permissionContextService: PermissionContextService);
-    getActiveUserGroups(): Observable<UserGroup[]>;
-    // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<UserGroupManager, never>;
-    // (undocumented)
-    static ɵprov: i0.ɵɵInjectableDeclaration<UserGroupManager>;
-}
-
-// @public
-export interface UserModel extends Omit<User<{}>, 'id'>, Model {
+export interface UserData extends Omit<User<{}>, 'id'>, Model {
     full_name: string;
     user_group_ids: string[];
 }
 
 // @public
-export class UserModelManager extends DataModelManager<UserModel> {
+export class UserDataManager extends DataModelManager<UserData> {
     constructor(_authService: AuthService, dataService: DataService, permissionContextService: PermissionContextService);
-    getActiveUserModel(): Observable<UserModel | null>;
+    getActiveUserData(): Observable<UserData | null>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<UserModelManager, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<UserDataManager, never>;
     // (undocumented)
-    static ɵprov: i0.ɵɵInjectableDeclaration<UserModelManager>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<UserDataManager>;
+}
+
+// @public
+export interface UserGroup extends Model {
+    area_ref_id: string[];
+    groupFormSchemaIds: string[];
+    groupName: string;
+    groupReportSchemaIds: string[];
+    location_ref_id: string[];
+    organization_ref_id: string[];
+    project_ref_id: string[];
+    userRoleId: string;
+}
+
+// @public
+export class UserGroupManager extends DataModelManager<UserGroup> {
+    constructor(_userModelManager: UserDataManager, _metricService: MetricsService, dataService: DataService, permissionContextService: PermissionContextService);
+    getActiveUserGroups(): Observable<RxDocument<UserGroup>[]>;
+    getGroupsAllMetrics<T extends Metric = Metric>(): Observable<RxDocument<T>[]>;
+    getGroupsMetricsByType<T extends Metric = Metric>(metricType: string): Observable<RxDocument<T>[]>;
+    // (undocumented)
+    static ɵfac: i0.ɵɵFactoryDeclaration<UserGroupManager, never>;
+    // (undocumented)
+    static ɵprov: i0.ɵɵInjectableDeclaration<UserGroupManager>;
 }
 
 // @public

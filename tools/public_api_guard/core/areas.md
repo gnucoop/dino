@@ -11,6 +11,7 @@ import { FiltersService } from '@dino/core/list';
 import * as i0 from '@angular/core';
 import { Metric } from '@dino/core/data';
 import { MetricsService } from '@dino/core/data';
+import { Observable } from 'rxjs';
 import { PermissionContextService } from '@dino/core/data';
 
 // @public
@@ -37,6 +38,11 @@ export class AreasModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<AreasModule>;
     // (undocumented)
     static ɵmod: i0.ɵɵNgModuleDeclaration<AreasModule, never, never, never>;
+}
+
+// @public
+export interface PopulatedWithArea {
+    area: Observable<Area[]>;
 }
 
 // (No @packageDocumentation comment for this package)

@@ -13,15 +13,16 @@ import { Observable } from 'rxjs';
 import { OrganizationManager } from '@dino/core/organizations';
 import { ProjectManager } from '@dino/core/projects';
 import { ReportSchemaManager } from '@dino/core/reports';
+import { UserDataManager } from '@dino/core/users';
 import { UserGroupManager } from '@dino/core/users';
-import { UserModelManager } from '@dino/core/users';
+import { UserRoleManager } from '@dino/core/users';
 
 // @public
 export class SyncManager {
-    constructor(_auth: AuthService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _um: UserModelManager, _ug: UserGroupManager, _ar: AreaManager | null, _pj: ProjectManager | null, _lc: LocationManager | null, _og: OrganizationManager | null);
+    constructor(_auth: AuthService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _um: UserDataManager, _ur: UserRoleManager, _ug: UserGroupManager, _ar: AreaManager | null, _pj: ProjectManager | null, _lc: LocationManager | null, _og: OrganizationManager | null);
     initializeCollections(): Observable<boolean[]>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<SyncManager, [null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SyncManager, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
     // (undocumented)
     static ɵprov: i0.ɵɵInjectableDeclaration<SyncManager>;
 }

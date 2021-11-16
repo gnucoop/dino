@@ -31,7 +31,7 @@ import { TranslocoService } from '@ajf/core/transloco';
 
 // @public
 export class EditReport implements OnInit, AfterViewInit {
-    constructor(_translateService: TranslocoService, _route: ActivatedRoute, _router: Router, _formDataManager: FormDataManager, _reportDataManager: ReportDataManager, _reportSchemaManager: ReportSchemaManager, metricsService: MetricsService);
+    constructor(metricsService: MetricsService, _translateService: TranslocoService, _route: ActivatedRoute, _router: Router, _formDataManager: FormDataManager, _reportDataManager: ReportDataManager, _reportSchemaManager: ReportSchemaManager);
     isReportMetricsSelectorValid: Observable<boolean>;
     readonly isView: Observable<boolean>;
     // (undocumented)

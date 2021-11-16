@@ -23,7 +23,7 @@ interface FormData_2 extends Model {
     organization_ref_id: string | null;
     project_ref_id: string | null;
     schema_id: string;
-    user_id: string;
+    user_data_ref_id: string;
 }
 export { FormData_2 as FormData }
 

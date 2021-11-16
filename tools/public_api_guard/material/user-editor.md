@@ -27,20 +27,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { UserData } from '@dino/core/users';
+import { UserDataManager } from '@dino/core/users';
 import { UserGroup } from '@dino/core/users';
 import { UserGroupManager } from '@dino/core/users';
-import { UserModel } from '@dino/core/users';
-import { UserModelManager } from '@dino/core/users';
 
 // @public
 export interface UserDialogData {
     userAction?: 'view' | 'edit' | 'create';
-    userItem?: UserModel;
+    userItem?: UserData;
 }
 
 // @public
 export class UserEditor implements OnDestroy, OnInit {
-    constructor(_userModelManager: UserModelManager, _userGroupManager: UserGroupManager, snackbar: MatSnackBar, data: UserDialogData, dialogRef: MatDialogRef<UserEditor>);
+    constructor(_UserDataManager: UserDataManager, _userGroupManager: UserGroupManager, snackbar: MatSnackBar, data: UserDialogData, dialogRef: MatDialogRef<UserEditor>);
     closeEditor(): void;
     // (undocumented)
     data: UserDialogData;

@@ -16,10 +16,11 @@ import * as i6 from '@angular/material/icon';
 import * as i7 from '@angular/material/input';
 import * as i8 from '@angular/forms';
 import { LocationManager } from '@dino/core/locations';
-import { MetricBasicInfo } from '@dino/core/users';
+import { Metric } from '@dino/core/data';
 import { MetricFormField } from '@dino/material/metric-editor';
 import { MetricsService } from '@dino/core/data';
 import { Observable } from 'rxjs';
+import { OnDestroy } from '@angular/core';
 import { OrganizationManager } from '@dino/core/organizations';
 import { ProjectManager } from '@dino/core/projects';
 import { Subject } from 'rxjs';
@@ -27,25 +28,27 @@ import { UserGroupManager } from '@dino/core/users';
 import { ValidationErrors } from '@angular/forms';
 
 // @public
-export class FormMetricSelector {
+export class FormMetricSelector implements OnDestroy {
     constructor(_userGroupManager: UserGroupManager, _metricService: MetricsService, _areaManager: AreaManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
     addFormData(formData: {
         [key: string]: any;
     }, isView?: boolean): void;
-    displayMetricName(metric: MetricBasicInfo): string;
+    displayMetricName(metric: Metric): string;
     formMetrics: FormGroup;
     formMetricsFields: MetricFormField[];
     formMetricsOptions: {
-        [key: string]: Observable<MetricBasicInfo[]>;
+        [key: string]: Observable<Metric[]>;
     };
     formMetricsValues: {
-        [key: string]: Observable<MetricBasicInfo | string>;
+        [key: string]: Observable<Metric | string>;
     };
     isFormMetricsValid(): Observable<boolean>;
     isView: Subject<boolean>;
     // (undocumented)
+    ngOnDestroy(): void;
+    // (undocumented)
     get selectedMetrics(): {
-        [key: string]: MetricBasicInfo;
+        [key: string]: Metric;
     };
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<FormMetricSelector, "dino-form-metric-selector", never, {}, {}, never, never>;

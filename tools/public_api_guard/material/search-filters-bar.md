@@ -40,7 +40,7 @@ import * as i9 from '@angular/material/checkbox';
 import { LocationManager } from '@dino/core/locations';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
-import { MetricBasicInfo } from '@dino/core/users';
+import { Metric } from '@dino/core/data';
 import { MetricsService } from '@dino/core/data';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
@@ -70,7 +70,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     readonly breakpointObserver: BreakpointObserverService;
     // (undocumented)
     dialog: MatDialog;
-    displayMetricName(metric: MetricBasicInfo): string;
+    displayMetricName(metric: Metric): string;
     // (undocumented)
     get exportable(): boolean;
     set exportable(state: boolean);
@@ -83,11 +83,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     // (undocumented)
     getControlKey(group: FormGroup): string;
     isMetric(group: FormGroup): boolean;
+    // (undocumented)
+    maxDatePicker: (d: Date | null) => boolean;
     metricFiltersOptions: {
-        [key: string]: Observable<MetricBasicInfo[]>;
+        [key: string]: Observable<Metric[]>;
     };
     // (undocumented)
     readonly metricsService: MetricsService;
+    minDatePicker: (d: Date | null) => boolean;
     // (undocumented)
     ngOnDestroy(): void;
     // (undocumented)

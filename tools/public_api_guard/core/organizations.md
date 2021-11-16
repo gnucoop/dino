@@ -11,6 +11,7 @@ import { FiltersService } from '@dino/core/list';
 import * as i0 from '@angular/core';
 import { Metric } from '@dino/core/data';
 import { MetricsService } from '@dino/core/data';
+import { Observable } from 'rxjs';
 import { PermissionContextService } from '@dino/core/data';
 
 // @public
@@ -39,6 +40,11 @@ export class OrganizationsModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<OrganizationsModule>;
     // (undocumented)
     static ɵmod: i0.ɵɵNgModuleDeclaration<OrganizationsModule, never, never, never>;
+}
+
+// @public
+export interface PopulatedWithOrganization {
+    organization: Observable<Organization[]>;
 }
 
 // (No @packageDocumentation comment for this package)
