@@ -31,12 +31,13 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataQuerySelector, MetricsService} from '@dino/core/data';
+import {DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
 import {FormData, FormDataManager} from '@dino/core/forms';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {combineLatest, from, Observable, of as obsOf, Subject} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {RxDocument} from 'rxdb';
+import {combineLatest, forkJoin, from, Observable, of as obsOf, Subject} from 'rxjs';
+import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -104,7 +105,7 @@ export class EditReport implements OnInit, AfterViewInit {
   /**
    * The Form Datas that are the source of data for the Report creation.
    */
-  private _sourceFormData: Observable<FormData[]>;
+  private _sourceFormData: Observable<RxDocument<FormData>[]>;
 
   /**
    * The current Report Data object
@@ -122,13 +123,13 @@ export class EditReport implements OnInit, AfterViewInit {
   readonly isView: Observable<boolean>;
 
   constructor(
+    readonly metricsService: MetricsService,
     private _translateService: TranslocoService,
     private _route: ActivatedRoute,
     private _router: Router,
     private _formDataManager: FormDataManager,
     private _reportDataManager: ReportDataManager,
     private _reportSchemaManager: ReportSchemaManager,
-    readonly metricsService: MetricsService,
   ) {
     this.isView = this._route.data.pipe(
       map(data => {
@@ -222,10 +223,9 @@ export class EditReport implements OnInit, AfterViewInit {
             }
           }
         }
-        return this._formDataManager.query({selector: querySelector}).pipe(
-          switchMap(qry => from(qry.exec())),
-          map(docs => docs.map(doc => doc.toJSON())),
-        );
+        return this._formDataManager
+          .query({selector: querySelector})
+          .pipe(switchMap(qry => from(qry.exec())));
       }),
     );
 
@@ -234,17 +234,67 @@ export class EditReport implements OnInit, AfterViewInit {
       this._reportSchema,
       this._sourceFormData,
     ]).pipe(
-      filter(([rData, rSchema, _]) => rData != null && rSchema != null),
-      map(([rData, rSchema, sfData]) => {
+      filter(([rData, rSchema]) => rData != null && rSchema != null),
+      switchMap(([rData, rSchema, sfData]) => {
         const formSchemaIds = rSchema.form_schema_ids;
-        const contextForms: ReportContext = {};
+        let populatedData: Observable<{[key: string]: any}>[] = [];
         for (let formSchemaId of formSchemaIds) {
-          const data = sfData.filter(fdata => fdata.schema_id === formSchemaId).map(fd => fd.data);
-          contextForms[formSchemaId] = data;
+          const data = sfData
+            .filter(fdata => fdata.schema_id === formSchemaId)
+            .map(fd => this._populateData(fd));
+          populatedData.push(...data);
         }
+        return forkJoin(populatedData).pipe(withLatestFrom(obsOf(rData), obsOf(rSchema)));
+      }),
+      map(([ctx, rData, rSchema]) => {
+        const contextForms: ReportContext = {};
+        ctx.forEach(fdata => {
+          if (contextForms[fdata['schema_id']] == null) {
+            contextForms[fdata['schema_id']] = [];
+          }
+          contextForms[fdata['schema_id']].push(fdata);
+        });
         const context = {forms: contextForms, report_data: rData};
         return createReportInstance(rSchema.schema, context, this._translateService);
       }),
+    );
+  }
+
+  /**
+   * Returns a plain data object of a Form Data populated with metrics
+   * @param formData The form data to be populated
+   * @returns An observable of the populated data
+   */
+  private _populateData(formData: RxDocument<FormData>): Observable<{[key: string]: any}> {
+    return this.metricsService.activeMetrics.pipe(
+      map(metrics => metrics.map(metric => metric.metricName)),
+      switchMap(metrics => {
+        const populatedMetrics: Observable<RxDocument<Metric>>[] = [];
+        metrics.forEach(metricType => {
+          populatedMetrics.push(from(formData.populate(`${metricType}_ref_id`)));
+        });
+        return forkJoin(populatedMetrics);
+      }),
+      map(mts =>
+        mts.map(mt => {
+          if (mt == null) {
+            return null;
+          }
+          const metricType = mt.collection.name;
+          const jsonDoc: {[key: string]: any} = mt.toJSON();
+          const dataJsonAdd: {[key: string]: any} = {};
+          for (let key in jsonDoc) {
+            dataJsonAdd[`${metricType}__${key}`] = jsonDoc[key];
+          }
+          return dataJsonAdd;
+        }),
+      ),
+      map(addedDatas => {
+        let addData = {};
+        addedDatas.forEach(data => (addData = {...addData, ...data}));
+        return {...formData.data, ...addData, schema_id: formData.schema_id};
+      }),
+      take(1),
     );
   }
 
