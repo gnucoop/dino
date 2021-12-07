@@ -36,7 +36,7 @@ export interface UserGroup extends Model {
   /**
    * The Role (by ID) granted by the User Group
    */
-  userRoleId: string;
+  user_role_ref_id: string;
 
   /**
    * The Areas to which the User Group Role permissions apply

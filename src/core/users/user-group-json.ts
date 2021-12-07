@@ -52,9 +52,10 @@ export const schema = {
       "type": "string",
       "description": "The Name identifier for the User Group"
     },
-    "userRoleId": {
+    "user_role_ref_id": {
       "type": "string",
-      "description": "The Role (by ID) granted by the User Group"
+      "description": "The Role (by ID) granted by the User Group",
+      "ref": "user_role"
     },
     "area_ref_id": {
       "type": "array",
@@ -114,7 +115,7 @@ export const schema = {
     "organization_ref_id",
     "project_ref_id",
     "updated_at",
-    "userRoleId"
+    "user_role_ref_id"
   ],
   "additionalProperties": false,
   "description": "This model is used to store UserGroups.",

@@ -32,8 +32,7 @@ export type ModelAction = 'create' | 'edit' | 'delete' | 'view' | 'export';
  * Represents the available Model Actions for a given Model.
  */
 export type ModelPermissions = {
-  modelName: string;
-  modelActions: ModelAction[];
+  [modelName: string]: ModelAction[];
 };
 
 /**
@@ -49,7 +48,7 @@ export interface UserRole extends Model {
   /**
    * The actions allowed for the User Role
    */
-  rolePermissions: ModelPermissions[];
+  rolePermissions: ModelPermissions;
 }
 
 export const VERSION = 0;

@@ -53,10 +53,7 @@ export const schema = {
       "description": "The Name identifier for the User Role"
     },
     "rolePermissions": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ModelPermissions"
-      },
+      "$ref": "#/definitions/ModelPermissions",
       "description": "The actions allowed for the User Role"
     }
   },

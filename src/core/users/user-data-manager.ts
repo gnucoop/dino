@@ -24,7 +24,7 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
-import {shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {delay, map, retryWhen, shareReplay, skipWhile, switchMap, take, tap} from 'rxjs/operators';
 
 import {migrationStrategies, UserData} from './user-data';
 import {schema} from './user-data-json';
@@ -53,6 +53,7 @@ export class UserDataManager extends DataModelManager<UserData> {
    */
   getActiveUserData(): Observable<UserData | null> {
     return this._authService.authenticated.pipe(
+      skipWhile(auth => auth != true),
       switchMap(_ => {
         const userId = this._authService.getUserInfo()?.id;
         if (userId == null) {
@@ -60,8 +61,15 @@ export class UserDataManager extends DataModelManager<UserData> {
         }
         return this.get(userId).pipe(shareReplay(1));
       }),
+      map(ud => {
+        if (ud == null) {
+          throw new Error('User Data not found');
+        }
+        return ud;
+      }),
+      retryWhen(err => err.pipe(delay(1000), take(10))),
       tap(userData => {
-        this.addToContext({userData: userData});
+        this.addToContext({user_data: userData});
       }),
       take(1),
     );
