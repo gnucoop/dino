@@ -431,13 +431,6 @@ export class DataService {
   }
 
   /**
-   * Removes all registered collections.
-   */
-  private _clearRegisteredCollections(): void {
-    this._registeredCollections.next([]);
-  }
-
-  /**
    * Initialize the GraphQL sync for all the registered collections.
    * As soon as the user logs in, the sync will start.
    * If a log out event occurs, all the active syncs will be stopped.
@@ -619,9 +612,6 @@ export class DataService {
   private _resetDataConfig(): void {
     this._currentlyStoredConfig = null;
     this._removeDataConfig();
-    setTimeout(() => {
-      this._clearRegisteredCollections();
-    }, 1000);
   }
 
   /**

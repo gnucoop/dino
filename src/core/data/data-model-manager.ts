@@ -134,7 +134,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     };
     return this._getPermissionContext().pipe(
       switchMap(context => {
-        if (!this._canCreate(obj, context)) {
+        if (!this.canCreate(obj, context)) {
           return throwError(new Error('Creation not allowed'));
         }
         return this._dataService.insert<T>(params);
@@ -156,7 +156,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     return this._getPermissionContext().pipe(
       switchMap(context => {
         for (let obj of data) {
-          if (!this._canCreate(obj, context)) {
+          if (!this.canCreate(obj, context)) {
             return throwError(new Error('Creation not allowed'));
           }
         }
@@ -176,7 +176,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       collectionName: this._modelName,
       id: id,
     };
-    return this._collectionInit.pipe(
+    return this._getPermissionContext().pipe(
       switchMap(() => this._dataService.get<T>(params).pipe(take(1))),
     );
   }
@@ -187,13 +187,24 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param options? a list of DataListOptions options.
    * @returns  RxQuery object for multiple documents selection.
    */
-  list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>> {
+  list(options?: DataListOptions): Observable<RxDocument<T>[]> {
     const params = {
       collectionName: this._modelName,
       query: this._optionsToMangoQuery(options),
     };
-    return this._collectionInit.pipe(
-      switchMap(() => this._dataService.find<T>(params).pipe(take(1))),
+    return this._getPermissionContext().pipe(
+      switchMap(context =>
+        this._dataService.find<T>(params).pipe(
+          switchMap(qry => from(qry.exec())),
+          map(docs => {
+            if (context.user_permissions != null && context.user_metrics != null) {
+              return docs.filter(doc => this.canView(doc, context));
+            }
+            return docs;
+          }),
+          take(1),
+        ),
+      ),
     );
   }
 
@@ -204,13 +215,24 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param options a list of DataQueryOptions parameters.
    * @returns RxQuery object for multiple documents selection.
    */
-  query(options: DataQueryOptions): Observable<RxQuery<T, RxDocument<T>[]>> {
+  query(options: DataQueryOptions): Observable<RxDocument<T>[]> {
     const params = {
       collectionName: this._modelName,
       query: this._optionsToMangoQuery(options),
     };
-    return this._collectionInit.pipe(
-      switchMap(() => this._dataService.find<T>(params).pipe(take(1))),
+    return this._getPermissionContext().pipe(
+      switchMap(context =>
+        this._dataService.find<T>(params).pipe(
+          switchMap(qry => from(qry.exec())),
+          map(docs => {
+            if (context.user_permissions != null && context.user_metrics != null) {
+              return docs.filter(doc => this.canView(doc, context));
+            }
+            return docs;
+          }),
+          take(1),
+        ),
+      ),
     );
   }
 
@@ -231,7 +253,7 @@ export abstract class DataModelManager<T extends Model = Model> {
         if (doc == null) {
           return throwError(new Error('Invalid document'));
         } else {
-          if (!this._canDelete(doc, context)) {
+          if (!this.canDelete(doc, context)) {
             return throwError(new Error('Deletion not allowed'));
           } else {
             return from(doc.update({$set: {_deleted: true, is_deleted: true}})).pipe(
@@ -271,7 +293,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       }),
       switchMap(res => {
         for (let obj of res.docs) {
-          if (!this._canDelete(obj, res.context)) {
+          if (!this.canDelete(obj, res.context)) {
             return throwError(new Error('Deletion not allowed'));
           }
         }
@@ -300,7 +322,7 @@ export abstract class DataModelManager<T extends Model = Model> {
         if (doc == null) {
           return throwError(new Error('Invalid document'));
         } else {
-          if (!this._canModify(obj, doc, context)) {
+          if (!this.canModify(obj, doc, context)) {
             return throwError(new Error('Modification not allowed'));
           } else {
             return from(doc.update(this._prepareUpdateQuery(obj))).pipe(
@@ -333,7 +355,7 @@ export abstract class DataModelManager<T extends Model = Model> {
         if (doc == null) {
           return throwError(new Error('Invalid document'));
         } else {
-          if (!this._canModify(data, doc, context)) {
+          if (!this.canModify(data, doc, context)) {
             return throwError(new Error('Modification not allowed'));
           } else {
             return from(doc.update(this._prepareUpdateQuery(data))).pipe(
@@ -374,7 +396,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param context? The permission context data
    * @returns True if the permission is granted
    */
-  canView(object: T, context?: PermissionContext<T>): boolean {
+  canView(object: RxDocument<T>, context?: PermissionContext<T>): boolean {
     const viewData = {
       object: object,
       context: context,
@@ -388,6 +410,12 @@ export abstract class DataModelManager<T extends Model = Model> {
         }
       }
     }
+    if (!this._contextService.getMatchingMetric(object, context)) {
+      return false;
+    }
+    if (!this._contextService.checkPermission<T>(object.id, this.collectionName, 'view', context)) {
+      return false;
+    }
     return true;
   }
 
@@ -396,7 +424,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns boolean
    */
-  private _canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean {
+  canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean {
     const createData = {
       object: object,
       context: context,
@@ -418,7 +446,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns boolean
    */
-  private _canModify(
+  canModify(
     data: Partial<T> & {id: string},
     object: RxDocument<T>,
     context?: PermissionContext<T>,
@@ -437,6 +465,9 @@ export abstract class DataModelManager<T extends Model = Model> {
         }
       }
     }
+    if (!this._contextService.checkPermission<T>(object.id, this.collectionName, 'edit', context)) {
+      return false;
+    }
     return true;
   }
 
@@ -445,7 +476,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * @param data
    * @returns boolean
    */
-  private _canDelete(object: RxDocument<T>, context?: PermissionContext<T>): boolean {
+  canDelete(object: RxDocument<T>, context?: PermissionContext<T>): boolean {
     const deleteData = {
       object: object,
       context: context,
@@ -458,6 +489,11 @@ export abstract class DataModelManager<T extends Model = Model> {
           return false;
         }
       }
+    }
+    if (
+      !this._contextService.checkPermission<T>(object.id, this.collectionName, 'delete', context)
+    ) {
+      return false;
     }
     return true;
   }

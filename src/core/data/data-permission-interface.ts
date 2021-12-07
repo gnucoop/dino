@@ -37,7 +37,7 @@ export interface PermissionContext<T extends {} = {}> {
   /**
    * The additional context info
    */
-  contextData?: any; // @Todo(marco)
+  [contextDataKey: string]: any;
 }
 
 /**
