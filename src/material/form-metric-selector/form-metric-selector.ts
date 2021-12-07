@@ -29,15 +29,16 @@ import {
 } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
-import {Metric, MetricsService} from '@dino/core/data';
+import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
 import {FormData} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserGroupManager} from '@dino/core/users';
 import {MetricFormField} from '@dino/material/metric-editor';
-import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
-import {map, shareReplay, take} from 'rxjs/operators';
+import {RxDocument} from 'rxdb';
+import {combineLatest, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
+import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 import {RequireMetricMatch} from './form-metric-selector-validator';
 
@@ -87,6 +88,11 @@ export class FormMetricSelector implements OnDestroy {
 
   private _startingValuesSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * A Dictionary of all the optional Metrics managers
+   */
+  private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
+
   constructor(
     private _userGroupManager: UserGroupManager,
     private _metricService: MetricsService,
@@ -96,6 +102,13 @@ export class FormMetricSelector implements OnDestroy {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     const group: {[key: string]: FormControl} = {};
+
+    this._metricManagers = {
+      area: this._areaManager,
+      location: this._locationManager,
+      organization: this._organizationManager,
+      project: this._projectManager,
+    } as {[metricType: string]: DataModelManager<Metric> | null};
 
     if (this._areaManager != null) {
       const field = {
@@ -222,17 +235,40 @@ export class FormMetricSelector implements OnDestroy {
   private _setStartingValues(): void {
     combineLatest([this._formData, this._userGroupManager.getGroupsAllMetrics()])
       .pipe(
-        map(([fdata, groupMetrics]) =>
-          this._metricService.activeMetrics.value.map(amt => {
-            return groupMetrics.find(mt => {
-              return mt.id == fdata[`${amt.metricName}_ref_id`];
-            });
-          }),
-        ),
-        map(values => values.filter(val => val != null)),
+        switchMap(([formData, groupMetrics]) => {
+          const activeMetrics = this._metricService.activeMetrics.getValue();
+          const values: Observable<RxDocument<Metric, {}> | null>[] = activeMetrics.map(
+            activeMetric => {
+              const allowedMetrics = groupMetrics[activeMetric.metricName];
+              const manager = this._metricManagers[activeMetric.metricName];
+              const startingValueId = formData[`${activeMetric.metricName}_ref_id`];
+              if (
+                allowedMetrics == null ||
+                startingValueId == null ||
+                !(allowedMetrics.includes(startingValueId) || allowedMetrics.includes('all')) ||
+                manager == null
+              ) {
+                return of(null);
+              }
+              return manager.get(startingValueId);
+            },
+          );
+          return forkJoin(values).pipe(filter(val => val != null));
+        }),
         shareReplay(1),
       )
       .subscribe(startingValues => {
+        if (startingValues == null) {
+          return;
+        }
+        startingValues.forEach(startValue => {
+          if (startValue != null) {
+            const formControl = this.formMetrics.get(startValue?.collection.name);
+            if (formControl != null) {
+              formControl.setValue(startValue);
+            }
+          }
+        });
         const startValue = startingValues.find(val => val != null);
         if (startValue != null) {
           const formControl = this.formMetrics.get(startValue?.collection.name);
@@ -250,7 +286,18 @@ export class FormMetricSelector implements OnDestroy {
    */
   private _addFormMetricsOptions(metricType: string): void {
     this.formMetricsOptions[metricType] = combineLatest([
-      this._userGroupManager.getGroupsMetricsByType(metricType),
+      this._userGroupManager.getGroupsMetricsByType(metricType).pipe(
+        switchMap(metricsIds => {
+          const querySelector = {id: {$in: metricsIds}};
+          if (this._metricManagers[metricType] == null) {
+            return [];
+          }
+          if (metricsIds.includes('all')) {
+            return this._metricManagers[metricType]!.list();
+          }
+          return this._metricManagers[metricType]!.query({selector: querySelector});
+        }),
+      ),
       this.formMetricsValues[metricType],
     ]).pipe(
       map(([metricOptions, metricValue]) => {
