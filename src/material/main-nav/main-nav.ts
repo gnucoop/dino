@@ -36,6 +36,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService} from '@dino/core/data';
+import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, map, shareReplay, take, tap, withLatestFrom} from 'rxjs/operators';
@@ -81,6 +82,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * Determines the extended state of the sidenav on large screens
    */
   extendedSidenav: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * True if the active user is an Admin
+   */
+  isAdmin: Observable<boolean>;
 
   /**
    * If true, the navigation bar and sidenav are displayed.
@@ -177,10 +183,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly metricsService: MetricsService,
     readonly authService: AuthService,
     readonly dataService: DataService,
+    readonly userGroupManager: UserGroupManager,
     readonly snackbar: MatSnackBar,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
   ) {
+    this.isAdmin = this.userGroupManager.isActiveUserAdmin();
+
     this.showNav = this._router.events.pipe(
       filter(evt => evt instanceof NavigationEnd),
       map(evt => {

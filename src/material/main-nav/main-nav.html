@@ -54,7 +54,7 @@
         <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
       </a>
 
-      <ng-container *ngIf="adminSections && adminSections.length > 0">
+      <ng-container *ngIf="adminSections && adminSections.length > 0 && (isAdmin|async)">
         <mat-divider></mat-divider>
         <mat-divider></mat-divider>
         <a
