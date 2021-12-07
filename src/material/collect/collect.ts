@@ -22,10 +22,12 @@
 
 import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
 import {Router} from '@angular/router';
+import {PermissionContextService} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {BehaviorSubject, combineLatest, from, Observable, of as obsOf} from 'rxjs';
+import {RxDocument} from 'rxdb';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {map, shareReplay, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 
@@ -51,6 +53,11 @@ export class Collect {
    * They can represent Forms or any generic Item (eg. a Section of the app)
    */
   readonly items: Observable<CollectItem[]>;
+
+  /**
+   * True if the Add button must be displayed
+   */
+  displayAddButton: Observable<boolean>;
 
   private _menuItems = new BehaviorSubject<CollectItem[]>([]);
 
@@ -116,16 +123,27 @@ export class Collect {
     readonly breakpointObserver: BreakpointObserverService,
     private _fs: FormSchemaManager,
     private _rs: ReportSchemaManager,
+    private _pcs: PermissionContextService,
     private _router: Router,
   ) {
-    this.items = combineLatest([this._collectType, this._menuItems]).pipe(
-      switchMap(([isCollect, menuItems]) => {
+    this.items = combineLatest([
+      this._collectType,
+      this._menuItems,
+      this._pcs.permissionContext,
+    ]).pipe(
+      switchMap(([isCollect, menuItems, permissionContext]) => {
         if (isCollect !== 'custom') {
-          let result: Observable<(FormSchema | ReportSchema)[]>;
+          let result: Observable<(RxDocument<FormSchema> | RxDocument<ReportSchema>)[]>;
           if (isCollect === 'report') {
-            result = this._rs.list().pipe(switchMap(rxdbQuery => from(rxdbQuery.exec())));
+            result = this._rs.list();
+            this.displayAddButton = this._pcs
+              .getAllowedActions('report_schema')
+              .pipe(map(actions => actions.some(act => act === 'create')));
           } else {
-            result = this._fs.list().pipe(switchMap(rxdbQuery => from(rxdbQuery.exec())));
+            result = this._fs.list();
+            this.displayAddButton = this._pcs
+              .getAllowedActions('form_schema')
+              .pipe(map(actions => actions.some(act => act === 'create')));
           }
           return result.pipe(
             map(docs => {
@@ -136,6 +154,12 @@ export class Collect {
                   label: document.label ?? document.name,
                   icon: document.icon,
                   schemaId: document.id,
+                  editable: this._pcs.checkPermission(
+                    document.id,
+                    document.collection.name,
+                    'edit',
+                    permissionContext,
+                  ),
                 };
                 collectItems.push(collectItem);
               }

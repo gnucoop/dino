@@ -10,7 +10,7 @@
       [routerLink]="item.url? item.url : ['/' + getCollectType + '-list', item.schemaId ? item.schemaId : item.name]"
     >
       <div>
-        <div class="dino-grid-action-icons" *ngIf="getCollectType === 'form'">
+        <div class="dino-grid-action-icons" *ngIf="getCollectType === 'form' && item.editable">
           <button
             mat-mini-fab
             color="primary"
@@ -24,16 +24,14 @@
         <div class="dino-grid-icon">
           <mat-icon class="dino-mat-icon">{{item.icon ?? 'list'}}</mat-icon>
         </div>
-        <div class="dino-grid-label">
-          {{ (item.label ?? item.name)|transloco }}
-        </div>
+        <div class="dino-grid-label">{{ (item.label ?? item.name)|transloco }}</div>
       </div>
     </mat-grid-tile>
   </ng-container>
 </mat-grid-list>
 
 <dino-floating-button
-  *ngIf="getCollectType === 'form'"
+  *ngIf="displayAddButton|async"
   [buttonIcon]="'add'"
   tooltipMessage="Add New Form Schema"
   (click)="addFormSchema()"

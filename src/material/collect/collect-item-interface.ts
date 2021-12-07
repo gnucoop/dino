@@ -48,4 +48,9 @@ export interface CollectItem {
    * The Form Schema id
    */
   schemaId?: string;
+
+  /**
+   * If true, an Edit Icon will be displayed on the item
+   */
+  editable?: boolean;
 }
