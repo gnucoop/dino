@@ -331,7 +331,6 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     this.parentOptions = this.metricParentValue.pipe(
       withLatestFrom(
         this._metricManager.list().pipe(
-          switchMap(query => from(query.exec())),
           map(docs =>
             docs.map(doc => {
               return {parent_id: doc.id, parent_name: doc.name};

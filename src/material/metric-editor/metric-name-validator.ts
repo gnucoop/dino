@@ -51,7 +51,6 @@ export class NameMatchValidator<T extends Metric = Metric> {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return manager.query({selector: {name: {$eq: control.value}}}).pipe(
         debounceTime(300),
-        switchMap(query => from(query.exec())),
         map(docs => {
           if (action === 'edit' || action === 'view') {
             docs = docs.filter(doc => doc.name != currentName);

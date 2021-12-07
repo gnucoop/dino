@@ -267,9 +267,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       this.metricFiltersOptions[metricType] = inputValue.pipe(
         switchMap(val => {
           if (typeof val === 'string') {
-            return metricManager
-              .query({selector: {name: {$regex: val}}})
-              .pipe(switchMap(qry => from(qry.exec())));
+            return metricManager.query({selector: {name: {$regex: val}}});
           }
           return [];
         }),

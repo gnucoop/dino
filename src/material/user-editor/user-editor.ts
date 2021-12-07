@@ -118,7 +118,7 @@ export class UserEditor implements OnDestroy, OnInit {
     public dialogRef: MatDialogRef<UserEditor>,
   ) {
     this._populateForm();
-    this.userGroups = this._userGroupManager.list().pipe(switchMap(qry => from(qry.exec())));
+    this.userGroups = this._userGroupManager.list();
   }
 
   ngOnInit(): void {

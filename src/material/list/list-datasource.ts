@@ -313,10 +313,6 @@ export class ListDataSource<
    */
   getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void {
     const dmMainQuery = this._dataModelManager.query(query).pipe(
-      switchMap(rxdbQuery => {
-        const res = from(rxdbQuery.exec());
-        return res;
-      }),
       take(1),
       catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
     );
@@ -326,10 +322,6 @@ export class ListDataSource<
 
     if (detailsQuery != null && hasDetailsQuery && this._dataModelManager.detailsManager != null) {
       dmDetailsQuery = this._dataModelManager.detailsManager.query(detailsQuery).pipe(
-        switchMap(rxdbQuery => {
-          const res = from(rxdbQuery.exec());
-          return res;
-        }),
         take(1),
         catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
       );

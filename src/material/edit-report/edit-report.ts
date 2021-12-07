@@ -223,9 +223,7 @@ export class EditReport implements OnInit, AfterViewInit {
             }
           }
         }
-        return this._formDataManager
-          .query({selector: querySelector})
-          .pipe(switchMap(qry => from(qry.exec())));
+        return this._formDataManager.query({selector: querySelector});
       }),
     );
 
@@ -255,6 +253,7 @@ export class EditReport implements OnInit, AfterViewInit {
           contextForms[fdata['schema_id']].push(fdata);
         });
         const context = {forms: contextForms, report_data: rData};
+        console.log(context);
         return createReportInstance(rSchema.schema, context, this._translateService);
       }),
     );
@@ -284,7 +283,7 @@ export class EditReport implements OnInit, AfterViewInit {
           const jsonDoc: {[key: string]: any} = mt.toJSON();
           const dataJsonAdd: {[key: string]: any} = {};
           for (let key in jsonDoc) {
-            dataJsonAdd[`${metricType}__${key}`] = jsonDoc[key];
+            dataJsonAdd[`dino_${metricType}_${key}`] = jsonDoc[key];
           }
           return dataJsonAdd;
         }),
