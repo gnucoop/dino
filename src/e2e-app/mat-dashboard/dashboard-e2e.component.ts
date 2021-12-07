@@ -1,41 +1,58 @@
 import {Component} from '@angular/core';
 import {NetworkStatusService} from '@dino/core/auth';
+import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {CollectItem} from '@dino/material/collect';
+import {map, shareReplay} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'dashboard-e2e.component.html',
 })
 export class MatDashboardE2E {
-  readonly collectItems = [
-    {
-      name: 'forms',
-      label: 'Forms',
-      icon: 'list_alt',
-      url: '/forms',
-    },
-    {
-      name: 'reports',
-      label: 'Reports',
-      icon: 'stacked_bar_chart',
-      url: '/reports',
-    },
-    {
-      name: 'users',
-      label: 'Users',
-      icon: 'people',
-      url: '/users',
-    },
-    {
-      name: 'metrics',
-      label: 'Metrics',
-      icon: 'bookmarks',
-      url: '/metrics',
-    },
-  ];
+  collectItems: Observable<CollectItem[]>;
 
   constructor(
     readonly breakpointObserver: BreakpointObserverService,
     readonly networkStatus: NetworkStatusService,
-  ) {}
+    readonly userGroupManager: UserGroupManager,
+  ) {
+    this.collectItems = this.userGroupManager.isActiveUserAdmin().pipe(
+      map(isAdmin => {
+        let items = [
+          {
+            name: 'forms',
+            label: 'Forms',
+            icon: 'list_alt',
+            url: '/forms',
+          },
+          {
+            name: 'reports',
+            label: 'Reports',
+            icon: 'stacked_bar_chart',
+            url: '/reports',
+          },
+        ];
+        if (isAdmin) {
+          items.push(
+            {
+              name: 'users',
+              label: 'Users',
+              icon: 'people',
+              url: '/users',
+            },
+            {
+              name: 'metrics',
+              label: 'Metrics',
+              icon: 'bookmarks',
+              url: '/metrics',
+            },
+          );
+        }
+        return items;
+      }),
+      shareReplay(1),
+    );
+  }
 }

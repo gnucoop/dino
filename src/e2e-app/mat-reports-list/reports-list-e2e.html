@@ -4,7 +4,7 @@
   [dataSource]="dataSource"
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
-  [listRowActions]="listRowActions"
+  [listRowActions]="(listRowActions|async)!"
   [expandable]="true"
   [onClickRowActions]="onClickRowActions"
 >

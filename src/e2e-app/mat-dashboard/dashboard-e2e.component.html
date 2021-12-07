@@ -1,4 +1,1 @@
-<dino-collect
-  [collectType]="'custom'"
-  [menuItems]="collectItems"
-></dino-collect>
+<dino-collect [collectType]="'custom'" [menuItems]="(collectItems|async)!"></dino-collect>

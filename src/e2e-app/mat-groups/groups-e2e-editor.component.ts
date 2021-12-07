@@ -17,6 +17,7 @@ import {FormSchemaManager} from '@dino/core/forms';
 import {LocationManager, PopulatedWithLocation} from '@dino/core/locations';
 import {OrganizationManager, PopulatedWithOrganization} from '@dino/core/organizations';
 import {PopulatedWithProject, ProjectManager} from '@dino/core/projects';
+import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
 import {BehaviorSubject, combineLatest, from, Observable, Subscription} from 'rxjs';
@@ -78,6 +79,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     private _userGroupManager: UserGroupManager,
     private _userRoleManager: UserRoleManager,
     private _formSchemaManager: FormSchemaManager,
+    private _reportSchemaManager: ReportSchemaManager,
     private _snackbar: MatSnackBar,
     private _metricService: MetricsService,
     public dialogRef: MatDialogRef<MixedEditor>,
@@ -90,6 +92,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     this._populateListSchedule.push(
       this._populateList(this._userRoleManager, 'roleName', 'school', true),
       this._populateList(this._formSchemaManager, 'name', 'list_alt'),
+      this._populateList(this._reportSchemaManager, 'name', 'stacked_bar_chart'),
     );
 
     if (this._areaManager != null) {
@@ -187,7 +190,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
             return;
           }
           mixedEditor.saveListName.nativeElement.value = group.groupName;
-          mixedEditor.addItem(mixedEditor.findItem(group.userRoleId));
+          mixedEditor.addItem(mixedEditor.findItem(group.user_role_ref_id));
           for (let formSchemaId of group.groupFormSchemaIds) {
             mixedEditor.addItem(mixedEditor.findItem(formSchemaId));
           }
@@ -225,12 +228,12 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           newUserGroupData[item.itemType].push(item.itemId);
         }
       });
-      const userRoleId = newUserGroupData['user_role'][0];
+      const user_role_ref_id = newUserGroupData['user_role'][0];
 
-      if (userRoleId) {
+      if (user_role_ref_id) {
         const newUserGroup: InsertModel<UserGroup> = {
           groupName: groupName,
-          userRoleId: userRoleId,
+          user_role_ref_id: user_role_ref_id,
           area_ref_id: newUserGroupData['area'] ?? [],
           location_ref_id: newUserGroupData['location'] ?? [],
           organization_ref_id: newUserGroupData['organization'] ?? [],
@@ -256,7 +259,6 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     uniqueItem: boolean = false,
   ): Observable<MixedEditorItem[]> {
     return manager.list().pipe(
-      switchMap(qry => from(qry.exec())),
       map(list =>
         list.map(doc => {
           const item: MixedEditorItem = {

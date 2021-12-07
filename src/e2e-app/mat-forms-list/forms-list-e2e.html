@@ -7,19 +7,20 @@
   [dataSource]="dataSource"
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
-  [listRowActions]="listRowActions"
+  [listRowActions]="(listRowActions|async)!"
   [expandable]="true"
   [onClickRowActions]="onClickRowActions"
 >
   <dino-search-filters-bar
     filters
     [presetManager]="true"
-    [exportable]="true"
+    [exportable]="(displayExportButton|async) ?? false"
     (exportEvt)="dinoList.export($event)"
   ></dino-search-filters-bar>
 </dino-list>
 
 <dino-floating-button
+  *ngIf="displayAddButton|async"
   [buttonIcon]="'add'"
   tooltipMessage="Add New form"
   (click)="addForm()"

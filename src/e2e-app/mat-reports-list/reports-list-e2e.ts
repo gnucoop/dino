@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {MetricsService} from '@dino/core/data';
+import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {Observable, of as obsOf} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 @Component({
   selector: 'mat-reports-list-e2e',
@@ -37,17 +37,11 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
-  readonly listRowActions: ListAction[] = [
-    {
-      actionType: 'view',
-      matIcon: 'visibility',
-    },
-    {
-      actionType: 'delete',
-      matIcon: 'delete',
-      askConfirm: true,
-    },
-  ];
+  readonly listRowActionsIcons: {[key: string]: string} = {
+    view: 'visibility',
+    delete: 'delete',
+  };
+  readonly listRowActions: Observable<ListAction[]>;
 
   constructor(
     readonly filtersService: FiltersService,
@@ -55,6 +49,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     readonly formDataManager: ReportDataManager,
     readonly formSchemaManager: ReportSchemaManager,
     private _route: ActivatedRoute,
+    private _pcs: PermissionContextService,
   ) {
     this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
     this.additionalDataSchema = this.formSchemaId.pipe(
@@ -66,6 +61,29 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
       }),
       filter(id => id != null),
       shareReplay(1),
+    );
+
+    this.listRowActions = this.formSchemaId.pipe(
+      map(schemaId => {
+        if (schemaId == null) {
+          return [];
+        }
+        return this._pcs.getAllowedActions('report_schema', schemaId, true).pipe(
+          map(actions => {
+            const displayedActions = actions.filter(
+              action => Object.keys(this.listRowActionsIcons).indexOf(action) >= 0,
+            );
+            return displayedActions.map(action => ({
+              actionType: action as ActionType,
+              matIcon: this.listRowActionsIcons[action],
+              askConfirm: action === 'delete' ? true : false,
+            }));
+          }),
+        );
+      }),
+      switchMap(actions => actions),
+      catchError(_ => obsOf([])),
+      take(1),
     );
 
     this.dataSource = new ListDataSource(

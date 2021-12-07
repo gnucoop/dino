@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {MetricsService} from '@dino/core/data';
+import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {schema} from '@dino/core/forms/form-schema-json';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource, SelectionList} from '@dino/material/list';
-import {Observable, of as obsOf} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {combineLatest, Observable, of as obsOf} from 'rxjs';
+import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 @Component({
   selector: 'mat-forms-list-e2e',
@@ -41,27 +42,21 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
     {column: 'created_at', label: 'Creation Date', sortable: true},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
-  readonly listRowActions: ListAction[] = [
-    {
-      actionType: 'view',
-      matIcon: 'visibility',
-    },
-    {
-      actionType: 'edit',
-      matIcon: 'create',
-    },
-    {
-      actionType: 'delete',
-      matIcon: 'delete',
-      askConfirm: true,
-    },
-  ];
+  readonly listRowActionsIcons: {[key: string]: string} = {
+    view: 'visibility',
+    edit: 'create',
+    delete: 'delete',
+  };
+  readonly displayAddButton: Observable<boolean>;
+  readonly displayExportButton: Observable<boolean>;
+  readonly listRowActions: Observable<ListAction[]>;
 
   constructor(
     readonly filtersService: FiltersService,
     readonly metricService: MetricsService,
     readonly formDataManager: FormDataManager,
     readonly formSchemaManager: FormSchemaManager,
+    private _pcs: PermissionContextService,
     private _route: ActivatedRoute,
   ) {
     this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
@@ -74,6 +69,47 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
       }),
       filter(id => id != null),
       shareReplay(1),
+    );
+
+    this.listRowActions = this.formSchemaId.pipe(
+      map(schemaId => {
+        if (schemaId == null) {
+          return [];
+        }
+        return this._pcs.getAllowedActions('form_schema', schemaId, true).pipe(
+          map(actions => {
+            const displayedActions = actions.filter(
+              action => Object.keys(this.listRowActionsIcons).indexOf(action) >= 0,
+            );
+            return displayedActions.map(action => ({
+              actionType: action as ActionType,
+              matIcon: this.listRowActionsIcons[action],
+              askConfirm: action === 'delete' ? true : false,
+            }));
+          }),
+        );
+      }),
+      switchMap(actions => actions),
+      catchError(_ => obsOf([])),
+      take(1),
+    );
+
+    this.displayAddButton = combineLatest([this._pcs.permissionContext, this.formSchemaId]).pipe(
+      map(([context, schemaId]) => {
+        if (schemaId == null) {
+          return false;
+        }
+        return this._pcs.checkPermission(schemaId, 'form_schema', 'create', context, true);
+      }),
+    );
+
+    this.displayExportButton = combineLatest([this._pcs.permissionContext, this.formSchemaId]).pipe(
+      map(([context, schemaId]) => {
+        if (schemaId == null) {
+          return false;
+        }
+        return this._pcs.checkPermission(schemaId, 'form_schema', 'export', context, true);
+      }),
     );
 
     this.dataSource = new ListDataSource(

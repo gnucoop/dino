@@ -31,6 +31,6 @@ import {SyncManager} from '@dino/core/sync';
 })
 export class E2eApp {
   constructor(private _sync: SyncManager) {
-    this._sync.initializeCollections().subscribe(() => console.log('Initialization Complete'));
+    this._sync.initializeCollections().subscribe();
   }
 }

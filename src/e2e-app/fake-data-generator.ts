@@ -20,7 +20,6 @@ export class FakeDataGenerator<T extends Model = Model> {
       return obsOf({success: [], error: []});
     }
     return manager.list().pipe(
-      switchMap(listquery => from(listquery.exec())),
       switchMap(doclist => {
         if (doclist.length === 0) {
           return manager.bulkCreate(docs);
