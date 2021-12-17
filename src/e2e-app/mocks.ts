@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
+import {NavigationStart, Router} from '@angular/router';
 import {AuthServiceConfig, Credentials, User} from '@dino/core/auth';
+import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {delay, map, shareReplay} from 'rxjs/operators';
+import {delay, map, shareReplay, tap} from 'rxjs/operators';
 
 import {additionalConfig} from './mockconfig';
 
@@ -50,8 +52,19 @@ export class AuthServiceMock {
     return this._authConfig.value;
   }
   resetEvt: Observable<boolean> = obsOf(false);
-  constructor() {
-    this.authenticated = new BehaviorSubject<boolean>(false);
+  constructor(private _router: Router) {
+    this._router.events
+      .pipe(
+        tap(event => {
+          if (event instanceof NavigationStart) {
+            if (event.url.includes('login')) {
+              this.authenticated.next(false);
+            }
+          }
+        }),
+      )
+      .subscribe();
+    this.authenticated = new BehaviorSubject<boolean>(true);
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(authMockConfig);
     this.authToken = this.authenticated.pipe(
       map(auth => (auth ? 'test_auth_token' : undefined)),
@@ -78,5 +91,48 @@ export class AuthServiceMock {
   }
   refreshToken(): Observable<boolean> {
     return obsOf(true);
+  }
+}
+
+@Injectable()
+export class UserGroupManagerMock extends UserGroupManager {
+  override isActiveUserAdmin() {
+    const userMetrics = {
+      'area': ['all'],
+      'location': ['all'],
+      'organization': ['all'],
+      'project': ['all'],
+    };
+    const userPrivileges = {
+      'admin': {
+        'actions': {
+          'form_data': ['all'],
+          'form_schema': ['all'],
+          'report_data': ['all'],
+          'report_schema': ['all'],
+        },
+        'form_schema': ['all'],
+        'report_schema': ['all'],
+      },
+    };
+    this.addToContext({user_metrics: userMetrics});
+    this.addToContext({user_permissions: userPrivileges});
+    return obsOf(true);
+  }
+}
+
+const userDataMock: UserData = {
+  id: '',
+  email: 'test@dino.com',
+  full_name: 'Test user',
+  user_group_ids: [],
+  created_at: '',
+  updated_at: '',
+};
+
+@Injectable()
+export class UserDataManagerMock extends UserDataManager {
+  override getActiveUserData(): Observable<UserData | null> {
+    return obsOf(userDataMock);
   }
 }

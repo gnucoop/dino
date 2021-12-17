@@ -99,6 +99,9 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
           map(privileges => {
             let prvs: {[role_name: string]: any} = {};
             privileges.forEach(prv => {
+              if (prv[0] == null || prv[1] == null) {
+                return;
+              }
               const role = prv[0];
               const group = prv[1];
               if (role.roleName && prvs[role.roleName] == null) {

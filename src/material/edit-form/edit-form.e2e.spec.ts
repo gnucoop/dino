@@ -4,15 +4,16 @@ describe('dino-edit-form', () => {
   beforeEach(async () => await browser.get('/forms'));
 
   it('should enter an edit form page', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
-
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
 
     await browser.wait(EC.presenceOf(element(by.tagName('mat-row'))));
+
     const matRow = element.all(by.tagName('mat-row')).get(0);
 
     await browser.actions().mouseMove(matRow).perform();
@@ -25,7 +26,7 @@ describe('dino-edit-form', () => {
       by.css(`.mat-cell.dino-row-actions
     .mat-icon.mat-list-icon`),
     );
-    const editIcon = actionIcons.get(1);
+    const editIcon = actionIcons.get(0);
 
     await browser.actions().mouseMove(editIcon).perform();
     await browser.wait(EC.elementToBeClickable(editIcon));

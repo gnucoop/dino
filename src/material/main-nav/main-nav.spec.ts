@@ -6,8 +6,8 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-
-import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../../core/auth';
+import {UsersModule} from '@dino/core/users';
+import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 
 import {MainNav, MainNavModule} from './index';
 
@@ -67,6 +67,7 @@ describe('Main', () => {
         MainNavModule,
         HttpClientTestingModule,
         RouterTestingModule,
+        UsersModule,
       ],
       providers: [
         {provide: AuthService, useValue: authServiceMock},

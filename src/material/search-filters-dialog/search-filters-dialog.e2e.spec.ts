@@ -3,11 +3,13 @@ import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 describe('dino-search-filters-dialog', () => {
   beforeEach(async () => {
     await browser.get('/forms');
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
   });
 
   it('should display a dino-search-filters-dialog component and its parts', async () => {

@@ -4,6 +4,7 @@ describe('dino-edit-report', () => {
   beforeEach(async () => await browser.get('/reports'));
 
   it('should enter a view report page', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
 
@@ -22,11 +23,11 @@ describe('dino-edit-report', () => {
     );
 
     const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
-    const editIcon = actionIcons.get(0);
+    const viewIcon = actionIcons.get(1);
 
-    await browser.actions().mouseMove(editIcon).perform();
-    await browser.wait(EC.elementToBeClickable(editIcon));
-    await editIcon.click();
+    await browser.actions().mouseMove(viewIcon).perform();
+    await browser.wait(EC.elementToBeClickable(viewIcon));
+    await viewIcon.click();
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-report'))));
     const currentUrl = await browser.getCurrentUrl();

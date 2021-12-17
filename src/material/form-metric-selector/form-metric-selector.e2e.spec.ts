@@ -4,6 +4,7 @@ describe('dino-form-metric-selector', () => {
   beforeEach(async () => await browser.get('/forms'));
 
   it('should enter a form-metric-selector page', async () => {
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
 
@@ -22,7 +23,7 @@ describe('dino-form-metric-selector', () => {
     );
 
     const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
-    const editIcon = actionIcons.get(1);
+    const editIcon = actionIcons.get(0);
 
     await browser.actions().mouseMove(editIcon).perform();
     await browser.wait(EC.elementToBeClickable(editIcon));

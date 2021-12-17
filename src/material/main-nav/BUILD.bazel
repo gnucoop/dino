@@ -51,6 +51,7 @@ ng_test_library(
         ":main-nav",
         "//src/core/auth",
         "//src/core/data",
+        "//src/core/users",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/platform-browser",

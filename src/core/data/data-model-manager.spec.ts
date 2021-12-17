@@ -1,4 +1,5 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {Injectable} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
@@ -48,11 +49,18 @@ const dummyUser: User = {
   registrations: [],
 };
 
+@Injectable()
+class ContextServiceMock extends PermissionContextService {
+  override checkPermission() {
+    return true;
+  }
+}
+
 class DummyManager extends DataModelManager<DummyModel> {
   constructor(
     createParams: DataCreateCollectionRequest,
     dataService: DataService,
-    contextService: PermissionContextService,
+    contextService: ContextServiceMock,
     permissions: Permission[],
   ) {
     super(createParams, dataService, contextService, permissions);
@@ -152,21 +160,21 @@ describe('Data Model Manager - CRUD methods', () => {
   const collectionName = 'dummymodel';
   const collection = {name: collectionName, collection: {schema: dummySchema}};
   let dataService: DataService;
-  let contextService: PermissionContextService;
+  let contextService: ContextServiceMock;
   let dummyManager: DummyManager | null;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        PermissionContextService,
+        ContextServiceMock,
         DataService,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    contextService = TestBed.inject(PermissionContextService);
+    contextService = TestBed.inject(ContextServiceMock);
     dataService = TestBed.inject(DataService);
     dummyManager = new DummyManager(collection, dataService, contextService, [ageAuthPermission]);
   });
@@ -209,9 +217,9 @@ describe('Data Model Manager - CRUD methods', () => {
     const objects = [{name: 'dummyOne'}, {name: 'dummyTwo'}];
     await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const getObjects = await firstValueFrom(dummyManager!.list().pipe(take(1)));
-    await getObjects.exec();
+
     expect(getObjects).not.toBeNull();
-    expect(getObjects._resultsData.length).toEqual(objects.length);
+    expect(getObjects.length).toEqual(objects.length);
   });
 
   it('should retrieve a list of all objects in the collection matching the options', async () => {
@@ -223,10 +231,9 @@ describe('Data Model Manager - CRUD methods', () => {
       skip: 1,
     };
     const getObjects = await firstValueFrom(dummyManager!.list(listOptions).pipe(take(1)));
-    const results = await getObjects.exec();
-    expect(results).not.toBeNull();
-    expect(results.length).toEqual(3);
-    expect(results[0].name).toEqual(objects[2].name);
+    expect(getObjects).not.toBeNull();
+    expect(getObjects.length).toEqual(3);
+    expect(getObjects[0].name).toEqual(objects[2].name);
   });
 
   it('should retrieve all objects in the collection matching the query options', async () => {
@@ -246,10 +253,9 @@ describe('Data Model Manager - CRUD methods', () => {
       sort: [{name: 'asc'}],
     };
     const getObjects = await firstValueFrom(dummyManager!.query(queryOptions).pipe(take(1)));
-    const results = await getObjects.exec();
-    expect(results).not.toBeNull();
-    expect(results.length).toEqual(2);
-    for (const obj of results) {
+    expect(getObjects).not.toBeNull();
+    expect(getObjects.length).toEqual(2);
+    for (const obj of getObjects) {
       expect(obj.age).toBeGreaterThanOrEqual(20);
       expect(obj.name).not.toEqual('E');
     }

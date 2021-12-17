@@ -3,6 +3,7 @@ import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 describe('dino-list', () => {
   beforeEach(async () => {
     await browser.get('/forms');
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
     await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
     const tile = element.all(by.tagName('mat-grid-tile')).first();
 
@@ -76,7 +77,7 @@ describe('dino-list', () => {
     );
 
     const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
-    const deleteIcon = actionIcons.get(2);
+    const deleteIcon = actionIcons.get(1);
 
     await browser.actions().mouseMove(deleteIcon).perform();
     await browser.wait(EC.elementToBeClickable(deleteIcon));

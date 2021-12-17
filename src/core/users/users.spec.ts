@@ -2,21 +2,21 @@ import {TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb';
-import {of as obsOf} from 'rxjs';
+import {addPouchPlugin, getRxStoragePouch, RxDocument} from 'rxdb';
+import {BehaviorSubject, firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {UserGroupManager, UserDataManager, UsersModule} from '.';
 import {UserData} from './user-data';
 
-const dummyUserModel: UserData = {
+const dummyUserData: RxDocument<UserData> = {
   id: 'dino_user_id',
   email: 'user@dino.gnu',
   full_name: 'dino_user',
   user_group_ids: ['1', '2', '3'],
   created_at: '',
   updated_at: '',
-};
+} as RxDocument<UserData>;
 
 const dummyUser: User = {
   id: 'dino_user_id',
@@ -46,7 +46,7 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: obsOf(true),
+  authenticated: new BehaviorSubject<boolean>(true),
   authToken: obsOf('test_auth_token'),
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
@@ -56,7 +56,7 @@ const authServiceMock = {
 } as unknown as AuthService;
 
 const userDataManagerMock = {
-  getActiveUserData: () => obsOf(dummyUserModel),
+  getActiveUserData: () => obsOf(dummyUserData),
 } as unknown as UserDataManager;
 
 let testDbIdx = 0;
@@ -81,8 +81,8 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
-describe('User Model Manager', () => {
-  let userModelManager: UserDataManager;
+describe('User Data Manager', () => {
+  let userDataManager: UserDataManager;
   beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [UsersModule],
@@ -92,14 +92,14 @@ describe('User Model Manager', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     });
-    userModelManager = TestBed.inject(UserDataManager);
+    userDataManager = TestBed.inject(UserDataManager);
   });
 
   it('should retrieve the user model by its UUID', async () => {
-    const getSpy = spyOn(userModelManager, 'get').and.callThrough();
-    await userModelManager.getActiveUserData().toPromise();
+    const getSpy = spyOn(userDataManager, 'get').and.returnValue(obsOf(dummyUserData));
+    await firstValueFrom(userDataManager.getActiveUserData());
     expect(getSpy).toHaveBeenCalledTimes(1);
-    expect(getSpy).toHaveBeenCalledWith(dummyUserModel.id);
+    expect(getSpy).toHaveBeenCalledWith(dummyUserData.id);
   });
 });
 
@@ -120,8 +120,8 @@ describe('User Group Manager', () => {
 
   it('should retrieve the active user groups', async () => {
     const querySpy = spyOn(userGroupManager, 'query').and.callThrough();
-    await userGroupManager.getActiveUserGroups().pipe(take(1)).toPromise();
-    const expectedQuerySelector = {selector: {id: {$in: dummyUserModel.user_group_ids}}};
+    await firstValueFrom(userGroupManager.getActiveUserGroups().pipe(take(1)));
+    const expectedQuerySelector = {selector: {id: {$in: dummyUserData.user_group_ids}}};
     expect(querySpy).toHaveBeenCalledTimes(1);
     expect(querySpy).toHaveBeenCalledWith(expectedQuerySelector);
   });
