@@ -30,11 +30,11 @@ import {
   ReportsModule,
 } from '@dino/core/reports';
 import {DinoTranslationsModule} from '@dino/core/translations';
-import {UsersModule} from '@dino/core/users';
+import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {combineLatest, Observable, of as obsOf} from 'rxjs';
+import {combineLatest, Observable, of as obsOf, zip} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
 import {E2eApp} from './e2e-app';
@@ -64,9 +64,16 @@ import {
   optionalModulesConfig,
   paginatorConfig,
 } from './mockconfig';
-import {authErrorMessage, AuthServiceMock, syncGraphQLUrl, wsUrl} from './mocks';
-import {formDatas, sourceReportFormDatas} from './test-ajf-formdata';
-import {formSchemas, sourceReportFormSchemas} from './test-ajf-formschema';
+import {
+  authErrorMessage,
+  AuthServiceMock,
+  syncGraphQLUrl,
+  UserDataManagerMock,
+  UserGroupManagerMock,
+  wsUrl,
+} from './mocks';
+import {formDatas} from './test-ajf-formdata';
+import {formSchemas} from './test-ajf-formschema';
 import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
 import {SyncModule} from '@dino/core/sync';
@@ -87,39 +94,43 @@ export function initializeApp(
 ): () => Observable<any> {
   return () => {
     if (additionalConfig.generateData) {
-      return combineLatest([
-        fakeFormSchemaGenerator.generateData(fsm, formSchemas),
-        fakeFormSchemaGenerator.generateData(fsm, sourceReportFormSchemas),
-        fakeReportSchemaGenerator.generateData(rsm, reportSchemas),
-      ]).pipe(
-        switchMap(([resForm, resSourceForm, resReport]) => {
+      return fakeFormSchemaGenerator.generateData(fsm, formSchemas).pipe(
+        switchMap(resForm => {
+          if (resForm.success[0] != null) {
+            const genFormSchemaId = resForm.success[0].id;
+            for (let idx = 0; idx < reportSchemas.length; idx++) {
+              reportSchemas[idx].form_schema_ids.push(genFormSchemaId);
+            }
+            return zip(
+              obsOf(resForm.success[0].id),
+              fakeReportSchemaGenerator.generateData(rsm, reportSchemas),
+            );
+          }
+          return obsOf([null, null]);
+        }),
+        switchMap(([formSchemaId, resReport]) => {
           if (
-            resForm.success == null ||
-            resForm.success.length === 0 ||
+            formSchemaId == null ||
+            resReport == null ||
             resReport.success == null ||
             resReport.success.length === 0
           ) {
             return obsOf(null);
           }
-          const genFormSchemaId = resForm.success[0].id;
-          const genSourceFormSchemaId = resSourceForm.success[0].id;
           const genReportSchemaId = resReport.success[0].id;
+
           for (let idx = 0; idx < formDatas.length; idx++) {
-            formDatas[idx].schema_id = genFormSchemaId;
-          }
-          for (let idx = 0; idx < sourceReportFormDatas.length; idx++) {
-            sourceReportFormDatas[idx].schema_id = genSourceFormSchemaId;
+            formDatas[idx].schema_id = formSchemaId;
           }
           for (let idx = 0; idx < reportDatas.length; idx++) {
             reportDatas[idx].schema_id = genReportSchemaId;
           }
           return combineLatest([
-            // fakeFormDataGenerator.generateData(fdm, formDatas),
-            fakeFormDataGenerator.generateData(fdm, sourceReportFormDatas),
+            fakeFormDataGenerator.generateData(fdm, formDatas),
             fakeReportDataGenerator.generateData(rdm, reportDatas),
           ]);
         }),
-        tap(items => console.log('DATA GENERATED')),
+        tap(() => console.log('DATA GENERATED')),
       );
     }
     return obsOf(null);
@@ -136,7 +147,8 @@ export function provideDataServiceConfig() {
     },
     syncOptions: {
       url: syncGraphQLUrl,
-      wsUrl: wsUrl,
+      wsUrl: additionalConfig.externalAuthentication ? wsUrl : null,
+      live: additionalConfig.externalAuthentication ? true : false,
       webSocketImpl: WebSocket,
       authErrorMessage: authErrorMessage,
     },
@@ -190,6 +202,14 @@ export function provideDataServiceConfig() {
     {
       provide: AuthService,
       useClass: additionalConfig.externalAuthentication ? AuthService : AuthServiceMock,
+    },
+    {
+      provide: UserGroupManager,
+      useClass: additionalConfig.externalAuthentication ? UserGroupManager : UserGroupManagerMock,
+    },
+    {
+      provide: UserDataManager,
+      useClass: additionalConfig.externalAuthentication ? UserDataManager : UserDataManagerMock,
     },
     {
       provide: DATA_SERVICE_CONFIG,
