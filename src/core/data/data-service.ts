@@ -348,7 +348,14 @@ export class DataService {
         const collection = db[params.name] as RxCollection;
         if (!collection) {
           return from(db.addCollections({[params.name]: params.collection})).pipe(
-            tap(coll => this._addRegisteredCollection(coll[params.name], params)),
+            tap(coll => {
+              if (
+                this._dataConfig.value.syncOptions.live &&
+                this._dataConfig.value.syncOptions.wsUrl
+              ) {
+                this._addRegisteredCollection(coll[params.name], params);
+              }
+            }),
             mapTo(true),
             catchError(err => {
               if (typeof ngDevMode === 'undefined' || ngDevMode) {
