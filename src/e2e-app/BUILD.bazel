@@ -55,6 +55,7 @@ ng_module(
         "//src/material/edit-form",
         "//src/material/edit-form-schema",
         "//src/material/edit-report",
+        "//src/material/edit-report-schema",
         "//src/material/floating-button",
         "//src/material/list",
         "//src/material/login",

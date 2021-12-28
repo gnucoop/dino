@@ -26,7 +26,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     'unavailableFilter',
   ];
   readonly additionalDataSchema: Observable<ReportSchema | null>;
-  readonly formSchemaId: Observable<string | null>;
+  readonly reportSchemaId: Observable<string | null>;
   readonly baseViewUrl = 'view-report/';
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
@@ -41,21 +41,21 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     view: 'visibility',
     delete: 'delete',
   };
-  readonly listRowActions: Observable<ListAction[]>;
+  readonly listRowActions: Observable<ListAction[] | null>;
 
   constructor(
     readonly filtersService: FiltersService,
     readonly metricsService: MetricsService,
-    readonly formDataManager: ReportDataManager,
-    readonly formSchemaManager: ReportSchemaManager,
+    readonly reportDataManager: ReportDataManager,
+    readonly reportSchemaManager: ReportSchemaManager,
     private _route: ActivatedRoute,
     private _pcs: PermissionContextService,
   ) {
-    this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
-    this.additionalDataSchema = this.formSchemaId.pipe(
+    this.reportSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
+    this.additionalDataSchema = this.reportSchemaId.pipe(
       switchMap(schemaId => {
         if (schemaId != null) {
-          return this.formSchemaManager.get(schemaId);
+          return this.reportSchemaManager.get(schemaId);
         }
         return obsOf(null);
       }),
@@ -63,7 +63,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
       shareReplay(1),
     );
 
-    this.listRowActions = this.formSchemaId.pipe(
+    this.listRowActions = this.reportSchemaId.pipe(
       map(schemaId => {
         if (schemaId == null) {
           return [];
@@ -76,7 +76,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
             return displayedActions.map(action => ({
               actionType: action as ActionType,
               matIcon: this.listRowActionsIcons[action],
-              askConfirm: action === 'delete' ? true : false,
+              askConfirm: ['delete', 'print'].includes(action) ? true : false,
             }));
           }),
         );
@@ -87,24 +87,11 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     );
 
     this.dataSource = new ListDataSource(
-      this.formDataManager,
+      this.reportDataManager,
       this.filtersService,
-      this.formSchemaManager,
+      this.reportSchemaManager,
       this.isFormDataList,
     );
-  }
-
-  addForm(): void {
-    this.formSchemaId
-      .pipe(
-        map(schemaId => {
-          if (schemaId != null) {
-            return this.list.createAction(schemaId, this.isFormDataList);
-          }
-        }),
-        take(1),
-      )
-      .subscribe();
   }
 
   ngOnInit() {}

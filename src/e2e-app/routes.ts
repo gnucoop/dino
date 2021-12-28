@@ -7,6 +7,7 @@ import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
 import {MatEditFormSchemaE2E} from './mat-edit-form-schema/edit-form-schema-e2e.component';
 import {MatEditFormE2E} from './mat-edit-form/edit-form-e2e.component';
 import {MatEditReportE2E} from './mat-edit-report/edit-report-e2e.component';
+import {MatEditReportSchemaE2E} from './mat-edit-report-schema/edit-report-schema-e2e.component';
 import {MatFormsListE2E} from './mat-forms-list/forms-list-e2e';
 import {MatCollectE2E} from './mat-forms/collect-e2e.component';
 import {MatGroupsListE2E} from './mat-groups/groups-e2e-list.component';
@@ -81,9 +82,24 @@ export const E2E_APP_ROUTES: Routes = [
     ],
   },
   {
+    path: 'edit-report-schema',
+    canActivate: authGuard,
+    children: [
+      {
+        path: ':report_schema_id',
+        component: MatEditReportSchemaE2E,
+      },
+    ],
+  },
+  {
     path: 'add-form-schema',
     canActivate: authGuard,
     component: MatEditFormSchemaE2E,
+  },
+  {
+    path: 'add-report-schema',
+    canActivate: authGuard,
+    component: MatEditReportSchemaE2E,
   },
   {
     path: 'form-list',
@@ -95,6 +111,16 @@ export const E2E_APP_ROUTES: Routes = [
       },
       {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
       {path: '**', redirectTo: '/dashboard', pathMatch: 'full'},
+    ],
+  },
+  {
+    path: 'edit-report',
+    canActivate: authGuard,
+    children: [
+      {
+        path: ':report_id',
+        component: MatEditReportE2E,
+      },
     ],
   },
   {

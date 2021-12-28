@@ -7,6 +7,7 @@ entryPoints = [
     "export-form",
     "edit-form-schema",
     "edit-report",
+    "edit-report-schema",
     "floating-button",
     "form-metric-selector",
     "icons-service",

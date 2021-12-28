@@ -1,3 +1,4 @@
+import {AjfForm, createFormPdf} from '@ajf/core/forms';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {MetricsService, PermissionContextService} from '@dino/core/data';
@@ -68,11 +69,12 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   readonly listRowActionsIcons: {[key: string]: string} = {
     view: 'visibility',
     edit: 'create',
+    print: 'printer',
     delete: 'delete',
   };
   readonly displayAddButton: Observable<boolean>;
   readonly displayExportButton: Observable<boolean>;
-  readonly listRowActions: Observable<ListAction[]>;
+  readonly listRowActions: Observable<ListAction[] | null>;
 
   constructor(
     readonly filtersService: FiltersService,
@@ -107,7 +109,15 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
             return displayedActions.map(action => ({
               actionType: action as ActionType,
               matIcon: this.listRowActionsIcons[action],
-              askConfirm: action === 'delete' ? true : false,
+              askConfirm: ['delete', 'print'].includes(action) ? true : false,
+              customAction:
+                action === 'print'
+                  ? (dataRow: FormData | null) => {
+                      if (dataRow != null) {
+                        this.printPdf(dataRow);
+                      }
+                    }
+                  : undefined,
             }));
           }),
         );
@@ -160,6 +170,26 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
     const activeMetrics = this.metricService.activeMetrics.getValue();
     const isMetricActive = activeMetrics.find(mt => mt.metricName === metricType) != null;
     return isMetricActive;
+  }
+
+  printPdf(formData: FormData): void {
+    if (formData == null) {
+      return;
+    }
+    this.additionalDataSchema.pipe(take(1)).subscribe(schema => {
+      if (schema != null) {
+        const header: any = [
+          {
+            text: schema.label,
+            fontSize: 22,
+            bold: true,
+            alignment: 'center',
+            margin: [0, 0, 0, 10],
+          },
+        ];
+        createFormPdf(schema.schema as AjfForm, undefined, undefined, header, formData.data).open();
+      }
+    });
   }
 
   ngOnInit() {}
