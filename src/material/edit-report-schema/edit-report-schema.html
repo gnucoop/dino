@@ -1,0 +1,48 @@
+<mat-card class="report-container">
+  <mat-card-header>
+    <ng-container *ngIf="formGroup|async as fgroup">
+      <form [formGroup]="fgroup" class="dino-report-attributes">
+        <mat-form-field>
+          <b><input matInput formControlName="label" [placeholder]="'Report Label'" /></b>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="name" [placeholder]="'Report Name'" />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            formControlName="icon"
+            [placeholder]="'Icon Identifier'"
+            [matAutocomplete]="autoicons"
+          />
+          <mat-icon matSuffix>{{fgroup.get('icon')?.value}}</mat-icon>
+          <mat-autocomplete #autoicons="matAutocomplete">
+            <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
+              <span>{{icon.replace('_', ' ')}}</span> <mat-icon>{{icon}}</mat-icon>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </form>
+
+      <div class="dino-edit-report-schema-actions">
+        <button mat-raised-button color="accent" translate (click)="openImportDialog()">
+          Import <mat-icon>file_upload</mat-icon>
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          translate
+          (click)="save()"
+          [disabled]="!fgroup.valid"
+        >
+          Save <mat-icon>save</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+  </mat-card-header>
+  <mat-card-content
+    ><ng-container *ngIf="reportInstance$|async as reportInstance">
+      <ajf-report [instance]="reportInstance"></ajf-report>
+    </ng-container>
+  </mat-card-content>
+</mat-card>
