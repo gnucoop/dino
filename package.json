@@ -53,9 +53,9 @@
   },
   "version": "13.0.0-next.3",
   "dependencies": {
-    "@ajf/core": "https://drive.google.com/u/2/uc?id=1AsCm3HiKfO3n9vvBBQ6IdV2YsL8WCyLS&export=download",
+    "@ajf/core": "https://drive.google.com/u/2/uc?id=104UCmQ2JLUUei8NPpNWeoiYXmHo3KTKe&export=download",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "https://drive.google.com/u/2/uc?id=14Sdf3KhwiNnuHK3g_30SAkelCbGH-agq&export=download",
+    "@ajf/material": "https://drive.google.com/u/2/uc?id=1PZHuSzl_WoQwJQEqzUvLkY83JXakozIt&export=download",
     "@angular/animations": "13.0.0-next.12",
     "@angular/cdk": "13.0.0-next.8",
     "@angular/common": "13.0.0-next.12",

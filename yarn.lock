@@ -24,9 +24,9 @@
   dependencies:
     tunnel "0.0.6"
 
-"@ajf/core@https://drive.google.com/u/2/uc?id=1AsCm3HiKfO3n9vvBBQ6IdV2YsL8WCyLS&export=download":
-  version "13.1.0-next.0-0dc2248a"
-  resolved "https://drive.google.com/u/2/uc?id=1AsCm3HiKfO3n9vvBBQ6IdV2YsL8WCyLS&export=download#4d8925484dad2fd09558c09ddae08ca487aff32b"
+"@ajf/core@https://drive.google.com/u/2/uc?id=104UCmQ2JLUUei8NPpNWeoiYXmHo3KTKe&export=download":
+  version "13.1.0-next.0-b07fd5ae"
+  resolved "https://drive.google.com/u/2/uc?id=104UCmQ2JLUUei8NPpNWeoiYXmHo3KTKe&export=download#3004b3aba335cc3f1c8fee1b627e41f82dcab586"
   dependencies:
     tslib "^2.2.0"
 
@@ -35,9 +35,9 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@https://drive.google.com/u/2/uc?id=14Sdf3KhwiNnuHK3g_30SAkelCbGH-agq&export=download":
-  version "13.1.0-next.0-0dc2248a"
-  resolved "https://drive.google.com/u/2/uc?id=14Sdf3KhwiNnuHK3g_30SAkelCbGH-agq&export=download#7ba1d10afc16f71df848771be1346cb7be7b6b0a"
+"@ajf/material@https://drive.google.com/u/2/uc?id=1PZHuSzl_WoQwJQEqzUvLkY83JXakozIt&export=download":
+  version "13.1.0-next.0-b07fd5ae"
+  resolved "https://drive.google.com/u/2/uc?id=1PZHuSzl_WoQwJQEqzUvLkY83JXakozIt&export=download#07e4770a1ea639215506530187f7a8ad811117f0"
   dependencies:
     tslib "^2.2.0"
 
