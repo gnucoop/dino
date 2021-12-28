@@ -34,10 +34,34 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   readonly headers: ListHeader<FormData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
     {column: 'user_data_ref_id', label: 'User', sortable: true, populateWith: 'full_name'},
-    {column: 'area_ref_id', label: 'Area', sortable: true, populateWith: 'name'},
-    {column: 'location_ref_id', label: 'Location', sortable: true, populateWith: 'name'},
-    {column: 'organization_ref_id', label: 'Organization', sortable: true, populateWith: 'name'},
-    {column: 'project_ref_id', label: 'Project', sortable: true, populateWith: 'name'},
+    {
+      column: 'area_ref_id',
+      label: 'Area',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.isActiveMetric('area'),
+    },
+    {
+      column: 'location_ref_id',
+      label: 'Location',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.isActiveMetric('location'),
+    },
+    {
+      column: 'organization_ref_id',
+      label: 'Organization',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.isActiveMetric('organization'),
+    },
+    {
+      column: 'project_ref_id',
+      label: 'Project',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.isActiveMetric('project'),
+    },
     {column: 'created_at', label: 'Creation Date', sortable: true},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
@@ -130,6 +154,12 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
         take(1),
       )
       .subscribe();
+  }
+
+  isActiveMetric(metricType: string): boolean {
+    const activeMetrics = this.metricService.activeMetrics.getValue();
+    const isMetricActive = activeMetrics.find(mt => mt.metricName === metricType) != null;
+    return isMetricActive;
   }
 
   ngOnInit() {}

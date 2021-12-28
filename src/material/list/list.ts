@@ -192,17 +192,26 @@ export class SelectionList<T extends Model = Model>
   @ContentChildren(ListCell, {descendants: false}) cellTemplates: QueryList<ListCell>;
   /**
    * Determines if the list has expandable rows.
-   * Defaults to false.
-   * NB: rows will always be expandable on small screens (mobile)
+   * Defaults to true.
+   * NB: rows should always be expandable on small screens (mobile)
    * to show row action icons.
    */
-  private _expandable: boolean = false;
+  private _expandable: boolean = true;
   get expandable(): boolean {
     return this._expandable;
   }
   @Input()
   set expandable(exp: boolean) {
     this._expandable = exp;
+  }
+
+  private _displayExpandAllBtn: boolean = false;
+  get displayExpandAllBtn(): boolean {
+    return this._displayExpandAllBtn;
+  }
+  @Input()
+  set displayExpandAllBtn(exp: boolean) {
+    this._displayExpandAllBtn = exp;
   }
 
   /**

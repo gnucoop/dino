@@ -1,6 +1,6 @@
 <ng-content select="[filters]"></ng-content>
 
-<ng-container *ngIf="expandable">
+<ng-container *ngIf="expandable && displayExpandAllBtn">
   <button
     mat-icon-button
     color="primary"
