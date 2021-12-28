@@ -40,6 +40,7 @@ export class EditReport implements OnInit, AfterViewInit {
     ngAfterViewInit(): void;
     // (undocumented)
     ngOnInit(): void;
+    printReport(orientation: 'portrait' | 'landscape'): void;
     // (undocumented)
     get reportData(): Observable<ReportData | null>;
     reportId: Observable<string>;

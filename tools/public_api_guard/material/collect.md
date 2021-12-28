@@ -24,7 +24,7 @@ import { Router } from '@angular/router';
 // @public
 export class Collect {
     constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _pcs: PermissionContextService, _router: Router);
-    addFormSchema(): void;
+    addSchema(): void;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
     // (undocumented)
@@ -36,7 +36,7 @@ export class Collect {
     get columnsSmall(): number;
     set columnsSmall(num: number);
     displayAddButton: Observable<boolean>;
-    editFormSchema(schemaId: string | undefined): void;
+    editSchema(schemaId: string | undefined): void;
     // (undocumented)
     get getCollectType(): CollectType;
     readonly items: Observable<CollectItem[]>;

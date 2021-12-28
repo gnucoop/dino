@@ -220,7 +220,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     isRowExpanded(row: T): boolean;
     // (undocumented)
     get listRowActions(): ListAction[];
-    set listRowActions(actions: ListAction[]);
+    set listRowActions(actions: ListAction[] | null);
     mainListContext: ListContext<T>;
     masterToggle(): void;
     // (undocumented)
