@@ -19,7 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-import {AjfReportInstance, createReportInstance} from '@ajf/core/reports';
+import {AjfReportInstance, createReportInstance, openReportPdf} from '@ajf/core/reports';
 import {TranslocoService} from '@ajf/core/transloco';
 import {
   AfterViewInit,
@@ -257,6 +257,18 @@ export class EditReport implements OnInit, AfterViewInit {
         return createReportInstance(rSchema.schema, context, this._translateService);
       }),
     );
+  }
+
+  /**
+   * Prints a report Instance to pdf
+   * @param orientation
+   */
+  printReport(orientation: 'portrait' | 'landscape') {
+    this.reportInstance.pipe(take(1)).subscribe(reportInstance => {
+      if (reportInstance != null) {
+        openReportPdf(reportInstance, orientation);
+      }
+    });
   }
 
   /**

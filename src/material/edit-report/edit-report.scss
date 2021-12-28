@@ -38,4 +38,8 @@ dino-edit-report {
   .mat-horizontal-content-container {
     padding: 0px 4px 4px;
   }
+  .dino-edit-report-print {
+    display: flex;
+    justify-content: end;
+  }
 }
