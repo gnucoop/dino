@@ -168,7 +168,7 @@ export class PermissionContextService {
           return index === self.indexOf(elem);
         });
         if (uniqueActions.some(act => act === 'all')) {
-          uniqueActions = ['create', 'edit', 'delete', 'view', 'export'];
+          uniqueActions = ['create', 'edit', 'delete', 'view', 'export', 'print'];
         }
         return uniqueActions;
       }),
