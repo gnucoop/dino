@@ -9,15 +9,30 @@ dino-edit-report {
     align-items: center;
     justify-content: center;
     position: relative;
-    min-height: 70vh;
+    min-height: 85vh;
   }
   .mat-stepper-horizontal {
     background-color: transparent;
+    .mat-horizontal-stepper-content .mat-stepper-previous {
+      display: none;
+    }
   }
   .mat-horizontal-stepper-header-container {
     border-bottom: 1px solid white;
-    .mat-stepper-label-position-bottom.mat-horizontal-stepper-header {
+    .mat-horizontal-stepper-header {
       padding: 8px;
+      flex-direction: row;
+      &::before,
+      &::after {
+        visibility: hidden;
+      }
+      .mat-step-label {
+        padding: 0px;
+        padding-left: 5px;
+      }
+    }
+    .mat-stepper-horizontal-line {
+      visibility: hidden;
     }
   }
   .mat-horizontal-content-container {

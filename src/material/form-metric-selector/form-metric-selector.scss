@@ -1,4 +1,12 @@
 .dino-form-metric-selector-container {
+    min-width: 80vw;
+    .mat-form-field {
+        font-size: 115%;
+        margin: auto;
+        @media only screen and (max-width: 992px) {
+            font-size: 110%;
+        }
+    }
     form {
         .dino-form-metric-selector-field {
             min-width: 60vw;

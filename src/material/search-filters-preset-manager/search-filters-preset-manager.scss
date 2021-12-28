@@ -1,22 +1,29 @@
-.dino-preset-container {
+dino-search-filters-preset-manager {
+    flex: 1 1 auto;
     display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-    .dino-preset-manager-field {
-        flex: 1 1 auto;
-        form {
-            display: flex;
-            .mat-form-field {
-                flex: 1 1 auto;
+    .dino-preset-container {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1 0 auto;
+        min-width: 100%;
+        .dino-preset-manager-field {
+            flex: 1 1 auto;
+            form {
+                display: flex;
+                .mat-form-field {
+                    flex: 1 1 auto;
+                }
             }
         }
-    }
-    .dino-preset-manager-buttons {
-        display: flex;
-        flex: 1 1 auto;
-        .mat-stroked-button {
+        .dino-preset-manager-buttons {
+            display: flex;
             flex: 1 1 auto;
-            margin: 5px;
+            .mat-stroked-button {
+                flex: 1 1 auto;
+                margin: 5px;
+            }
         }
     }
 }

@@ -3,21 +3,15 @@
     <mat-stepper labelPosition="bottom" #stepper linear>
       <mat-step [completed]="isFormMetricsSelectorValid|async">
         <ng-template matStepLabel>FORM METRICS</ng-template>
-        <div class="dino-create-form-step-buttons">
-          <button
-            mat-icon-button
-            matStepperNext
-            aria-label="Next step"
-            [color]="(isFormMetricsSelectorValid|async) ? '' : 'warn'"
-          >
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </div>
+
         <div class="dino-create-form-step-container">
           <dino-form-metric-selector> </dino-form-metric-selector>
         </div>
       </mat-step>
-      <mat-step>
+      <mat-step
+        [editable]="(isFormMetricsSelectorValid|async) "
+        [completed]="(isAjfFormValid|async) "
+      >
         <ng-template matStepLabel>FORM DATA</ng-template>
         <div>
           <button mat-icon-button matStepperPrevious aria-label="Previous step">

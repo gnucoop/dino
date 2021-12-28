@@ -12,7 +12,12 @@
   justify-content: space-between;
   .mat-form-field {
     padding: 5px;
-    flex: 0.5 1 auto;
+    flex: 0.35 1 auto;
+    @media only screen and (max-width: 992px) {
+      padding: 0px;
+      flex: 1 1 auto;
+      margin: auto;
+    }
   }
   .dino-filters-dialog-button {
     flex: 1 1 auto;
@@ -32,12 +37,21 @@
 }
 
 .mat-expansion-panel,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
-.mat-expansion-panel-header:hover {
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
   background: inherit;
 }
 .mat-expansion-panel {
   padding: 5px;
+  @media only screen and (max-width: 1200px) {
+    .mat-expansion-panel-body,
+    .mat-expansion-panel-header {
+      padding: 0px;
+    }
+    .mat-expansion-indicator::after {
+      padding: 6px;
+      margin-right: 10px;
+    }
+  }
 }
 
 @media only screen and (max-width: 768px) {
