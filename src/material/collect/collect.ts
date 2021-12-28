@@ -184,19 +184,19 @@ export class Collect {
   }
 
   /**
-   * Redirects to the Edit Form Schema component
+   * Redirects to the Edit Form/Report Schema component
    * @param schemaId The clicked item schema id
    */
-  editFormSchema(schemaId: string | undefined): void {
+  editSchema(schemaId: string | undefined): void {
     if (schemaId != null) {
-      this._router.navigate(['edit-form-schema', schemaId]);
+      this._router.navigate([`edit-${this._collectType.getValue()}-schema`, schemaId]);
     }
   }
 
   /**
-   * Redirects to the Edit Form Schema component, in create mode.
+   * Redirects to the Edit Form/Report Schema component, in create mode.
    */
-  addFormSchema(): void {
-    this._router.navigate(['add-form-schema']);
+  addSchema(): void {
+    this._router.navigate([`add-${this._collectType.getValue()}-schema`]);
   }
 }

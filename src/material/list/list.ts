@@ -257,7 +257,7 @@ export class SelectionList<T extends Model = Model>
     return this._listRowActions;
   }
   @Input()
-  set listRowActions(actions: ListAction[]) {
+  set listRowActions(actions: ListAction[] | null) {
     if (actions != null) {
       this._listRowActions = actions;
     }
