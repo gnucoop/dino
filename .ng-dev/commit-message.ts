@@ -43,6 +43,7 @@ export const commitMessage: CommitMessageConfig = {
     'material/collect',
     'material/floating-button',
     'material/form-metric-selector',
+    'material/create-report',
     'material/edit-report',
     'material/edit-report-schema',
     'material/search-filters-bar',

@@ -3,6 +3,7 @@ entryPoints = [
     "breakpoint-observer",
     "collect",
     "create-form",
+    "create-report",
     "edit-form",
     "export-form",
     "edit-form-schema",
