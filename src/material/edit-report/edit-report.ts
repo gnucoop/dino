@@ -25,6 +25,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  Input,
   OnInit,
   QueryList,
   ViewChildren,
@@ -80,6 +81,13 @@ export class EditReport implements OnInit, AfterViewInit {
    * True if no validation errors are encountered in the Report Metrics selector form
    */
   isReportMetricsSelectorValid: Observable<boolean>;
+
+  /**
+   * True if the Report can have one or more null Metrics.
+   * Defaults to false.
+   */
+  @Input()
+  hasOptionalMetrics: boolean = false;
 
   /**
    * The Report schema id
@@ -216,7 +224,7 @@ export class EditReport implements OnInit, AfterViewInit {
         }
         if (activeMetrics != null && activeMetrics.length > 0) {
           for (let metric of activeMetrics) {
-            const metricKey = `${metric.metricName}_id`;
+            const metricKey = `${metric.metricName}_ref_id`;
             const rDataObject = rData as {[key: string]: any};
             if (rDataObject[metricKey] != null) {
               querySelector[metricKey] = {$eq: rDataObject[metricKey]};

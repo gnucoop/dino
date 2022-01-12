@@ -1,7 +1,9 @@
 import {browser, by, element, ExpectedConditions as EC} from 'protractor';
 
 describe('dino-edit-report', () => {
-  beforeEach(async () => await browser.get('/reports'));
+  beforeEach(async () => {
+    await browser.get('/reports');
+  });
 
   it('should enter a view report page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dino-collect'))));
@@ -18,12 +20,10 @@ describe('dino-edit-report', () => {
 
     await browser.actions().mouseMove(matRow).perform();
 
-    await browser.wait(
-      EC.presenceOf(element(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'))),
-    );
-
     const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
     const viewIcon = actionIcons.get(1);
+
+    await browser.wait(EC.presenceOf(viewIcon));
 
     await browser.actions().mouseMove(viewIcon).perform();
     await browser.wait(EC.elementToBeClickable(viewIcon));
