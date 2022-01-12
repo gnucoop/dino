@@ -73,4 +73,15 @@ export class MetricsService {
       this.activeMetrics.next([...this.activeMetrics.getValue(), metric]);
     }
   }
+
+  /**
+   * Checks if a Metric module is Active
+   * @param metricType  The Metric type
+   * @returns True if the Metric module is active
+   */
+  isActiveMetric(metricType: string): boolean {
+    const activeMetrics = this.activeMetrics.getValue();
+    const isMetricActive = activeMetrics.find(mt => mt.metricName === metricType) != null;
+    return isMetricActive;
+  }
 }
