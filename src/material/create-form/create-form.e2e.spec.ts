@@ -22,7 +22,8 @@ describe('dino-create-form', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-create-form'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('create-form');
+    expect(currentUrl).toContain('create');
+    expect(currentUrl).toContain('form');
   });
 
   it('should show a Metric selector', async () => {

@@ -71,6 +71,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   isFormMetricsSelectorValid: Observable<boolean>;
 
   /**
+   * True if the Form can have one or more null Metrics.
+   * Defaults to false.
+   */
+  @Input()
+  hasOptionalMetrics: boolean = false;
+
+  /**
    * The Form Metric Selector
    */
   private _formMetricsSelector: Observable<FormMetricSelector | null>;
