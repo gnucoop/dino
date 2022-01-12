@@ -81,6 +81,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   isFormMetricsSelectorValid: Observable<boolean>;
 
   /**
+   * True if the Form can have one or more null Metrics.
+   * Defaults to false.
+   */
+  @Input()
+  hasOptionalMetrics: boolean = false;
+
+  /**
    * The Form data id
    */
   readonly formId: Observable<string>;
