@@ -30,6 +30,6 @@ declare module '@dino/core/reports/report-data' {
     /**
      * The Report Data organization id.
      */
-    organization_id: string | null;
+    organization_ref_id: string | null;
   }
 }

@@ -48,9 +48,10 @@ export const schema = {
       "type": "boolean",
       "description": "Pouchdb delete flag"
     },
-    "user_id": {
+    "user_data_ref_id": {
       "type": "string",
-      "description": "The collector user identifier."
+      "description": "The collector user identifier.",
+      "ref": "user_data"
     },
     "schema_id": {
       "type": "string",
@@ -74,48 +75,52 @@ export const schema = {
       ],
       "description": "The ending date of the collected form data used by the Report."
     },
-    "area_id": {
+    "area_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Report Data area id."
+      "description": "The Report Data area id.",
+      "ref": "area"
     },
-    "project_id": {
+    "project_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Report Data project id."
+      "description": "The Report Data project id.",
+      "ref": "project"
     },
-    "location_id": {
+    "location_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Report Data location id."
+      "description": "The Report Data location id.",
+      "ref": "location"
     },
-    "organization_id": {
+    "organization_ref_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Report Data organization id."
+      "description": "The Report Data organization id.",
+      "ref": "organization"
     }
   },
   "required": [
-    "area_id",
+    "area_ref_id",
     "created_at",
     "date_end",
     "date_start",
     "id",
-    "location_id",
+    "location_ref_id",
     "metadata",
-    "organization_id",
-    "project_id",
+    "organization_ref_id",
+    "project_ref_id",
     "schema_id",
     "updated_at",
-    "user_id"
+    "user_data_ref_id"
   ],
   "additionalProperties": false,
   "description": "This model is used to store the data collected through an Ajf report.",

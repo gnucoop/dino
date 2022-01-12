@@ -30,6 +30,6 @@ declare module '@dino/core/reports/report-data' {
     /**
      * The Report Data location id.
      */
-    location_id: string | null;
+    location_ref_id: string | null;
   }
 }

@@ -30,6 +30,6 @@ declare module '@dino/core/reports/report-data' {
     /**
      * The Report Data area id.
      */
-    area_id: string | null;
+    area_ref_id: string | null;
   }
 }

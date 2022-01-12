@@ -31,7 +31,7 @@ export interface ReportData extends Model {
   /**
    * The collector user identifier.
    */
-  user_id: string;
+  user_data_ref_id: string;
 
   /**
    * The schema identifier.
@@ -59,22 +59,22 @@ export interface ReportData extends Model {
   /**
    * The Report Data area id.
    */
-  area_id: string | null;
+  area_ref_id: string | null;
 
   /**
    * The Report Data project id.
    */
-  project_id: string | null;
+  project_ref_id: string | null;
 
   /**
    * The Report Data location id.
    */
-  location_id: string | null;
+  location_ref_id: string | null;
 
   /**
    * The Report Data organization id.
    */
-  organization_id: string | null;
+  organization_ref_id: string | null;
 }
 
 export const VERSION = 0;

@@ -30,6 +30,6 @@ declare module '@dino/core/reports/report-data' {
     /**
      * The Report Data project id.
      */
-    project_id: string | null;
+    project_ref_id: string | null;
   }
 }
