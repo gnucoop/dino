@@ -21,13 +21,15 @@
  */
 
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  Input,
   OnDestroy,
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, ValidationErrors} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
 import {FormData} from '@dino/core/forms';
@@ -37,10 +39,18 @@ import {ProjectManager} from '@dino/core/projects';
 import {UserGroupManager} from '@dino/core/users';
 import {MetricFormField} from '@dino/material/metric-editor';
 import {RxDocument} from 'rxdb';
-import {combineLatest, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import {filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
-import {RequireMetricMatch} from './form-metric-selector-validator';
+import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -52,7 +62,7 @@ import {RequireMetricMatch} from './form-metric-selector-validator';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class FormMetricSelector implements OnDestroy {
+export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * The Selector form group.
    */
@@ -77,9 +87,22 @@ export class FormMetricSelector implements OnDestroy {
   formMetricsOptions: {[key: string]: Observable<Metric[]>} = {};
 
   /**
-   * True if the Form is in view mode
+   * True if the Form is in view mode.
    */
   isView: Subject<boolean> = new Subject<boolean>();
+
+  /**
+   * True if the Form/Report can have one or more null Metrics.
+   * Defaults to false.
+   */
+  private _hasOptionalMetrics: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @Input()
+  set hasOptionalMetrics(allowed: boolean) {
+    if (allowed == null) {
+      return;
+    }
+    this._hasOptionalMetrics.next(allowed);
+  }
 
   /**
    * The Form Data object of the edited / viewed form.
@@ -102,6 +125,9 @@ export class FormMetricSelector implements OnDestroy {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     const group: {[key: string]: FormControl} = {};
+    const validatorFn: ValidationErrors | null = this._hasOptionalMetrics.getValue()
+      ? RequireMetricMatch
+      : RequireNotNullMetricMatch;
 
     this._metricManagers = {
       area: this._areaManager,
@@ -118,13 +144,7 @@ export class FormMetricSelector implements OnDestroy {
         icon: 'volunteer_activism',
       };
       this.formMetricsFields.push(field);
-      group['area'] = new FormControl(
-        {
-          metricName: null,
-          metricId: null,
-        },
-        RequireMetricMatch,
-      );
+      group['area'] = new FormControl('', validatorFn);
       this.formMetricsValues['area'] = group['area'].valueChanges;
       this._addFormMetricsOptions('area');
     }
@@ -137,13 +157,7 @@ export class FormMetricSelector implements OnDestroy {
         icon: 'assignment',
       };
       this.formMetricsFields.push(field);
-      group['project'] = new FormControl(
-        {
-          metricName: null,
-          metricId: null,
-        },
-        RequireMetricMatch,
-      );
+      group['project'] = new FormControl('', validatorFn);
       this.formMetricsValues['project'] = group['project'].valueChanges;
       this._addFormMetricsOptions('project');
     }
@@ -156,13 +170,7 @@ export class FormMetricSelector implements OnDestroy {
         icon: 'place',
       };
       this.formMetricsFields.push(field);
-      group['location'] = new FormControl(
-        {
-          metricName: null,
-          metricId: null,
-        },
-        RequireMetricMatch,
-      );
+      group['location'] = new FormControl('', validatorFn);
       this.formMetricsValues['location'] = group['location'].valueChanges;
       this._addFormMetricsOptions('location');
     }
@@ -175,13 +183,7 @@ export class FormMetricSelector implements OnDestroy {
         icon: 'public',
       };
       this.formMetricsFields.push(field);
-      group['organization'] = new FormControl(
-        {
-          metricName: null,
-          metricId: null,
-        },
-        RequireMetricMatch,
-      );
+      group['organization'] = new FormControl('', validatorFn);
       this.formMetricsValues['organization'] = group['organization'].valueChanges;
       this._addFormMetricsOptions('organization');
     }
@@ -194,6 +196,17 @@ export class FormMetricSelector implements OnDestroy {
     this._setFieldInitialStatus();
   }
 
+  ngAfterViewInit(): void {
+    this._hasOptionalMetrics.pipe(take(1)).subscribe(optMetrics => {
+      Object.keys(this.formMetrics.controls).forEach(key => {
+        this.formMetrics.controls[key].setValidators(
+          optMetrics ? RequireMetricMatch : RequireNotNullMetricMatch,
+        );
+        this.formMetrics.controls[key].updateValueAndValidity();
+      });
+    });
+  }
+
   /**
    * Checks the form validation
    */
@@ -202,6 +215,7 @@ export class FormMetricSelector implements OnDestroy {
       map(status => {
         return status === 'VALID' ? true : false;
       }),
+      startWith(this.formMetrics.valid),
     );
   }
 

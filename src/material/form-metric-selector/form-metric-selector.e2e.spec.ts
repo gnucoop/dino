@@ -25,13 +25,17 @@ describe('dino-form-metric-selector', () => {
     const actionIcons = element.all(by.css('.mat-cell.dino-row-actions .mat-icon.mat-list-icon'));
     const editIcon = actionIcons.get(0);
 
+    await browser.wait(editIcon.isDisplayed());
     await browser.actions().mouseMove(editIcon).perform();
     await browser.wait(EC.elementToBeClickable(editIcon));
-    await browser.actions().click().perform();
+    await editIcon.click();
 
-    await browser.wait(EC.presenceOf(element(by.tagName('dino-form-metric-selector'))));
-    const isPresent = await element(by.tagName('dino-form-metric-selector')).isPresent();
-
+    const currentUrl = await browser.getCurrentUrl();
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-stepper'))));
+    await browser.wait(EC.presenceOf(element(by.className('dino-edit-form-step-container'))));
+    const dinoFormMetricSelector = element.all(by.tagName('dino-form-metric-selector')).first();
+    const isPresent = await dinoFormMetricSelector.isPresent();
+    expect(currentUrl).toContain('edit-form');
     expect(isPresent).toBe(true);
   });
 });

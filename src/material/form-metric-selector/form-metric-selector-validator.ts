@@ -28,7 +28,7 @@ import {Metric} from '@dino/core/data';
  * to force the selection of a suggested option.
  * @param control The form control.
  */
-export function RequireMetricMatch(control: AbstractControl): ValidationErrors | null {
+export function RequireNotNullMetricMatch(control: AbstractControl): ValidationErrors | null {
   const selection: string | Metric = control.value;
   if (
     (typeof selection === 'string' && selection !== '') ||
@@ -37,6 +37,20 @@ export function RequireMetricMatch(control: AbstractControl): ValidationErrors |
     selection.id == null ||
     selection.name == null
   ) {
+    return {incorrect: true};
+  }
+  return null;
+}
+
+/**
+ * Custom validator method for autocomplete field,
+ * to force the selection of a suggested option.
+ * Can have a Null value.
+ * @param control The form control.
+ */
+export function RequireMetricMatch(control: AbstractControl): ValidationErrors | null {
+  const selection: string | Metric | null = control.value;
+  if (typeof selection === 'string' && selection !== '') {
     return {incorrect: true};
   }
   return null;
