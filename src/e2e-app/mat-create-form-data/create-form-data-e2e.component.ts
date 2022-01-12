@@ -2,10 +2,10 @@ import {Component} from '@angular/core';
 import {FormDataManager} from '@dino/core/forms';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create-e2e.component.html',
+  selector: 'app-create-form-data',
+  templateUrl: './create-form-data-e2e.component.html',
 })
-export class MatCreateE2E {
+export class MatCreateFormDataE2E {
   readonly manager: FormDataManager;
 
   constructor(private _formDataManager: FormDataManager) {

@@ -52,6 +52,7 @@ ng_module(
         "//src/material/breakpoint-observer",
         "//src/material/collect",
         "//src/material/create-form",
+        "//src/material/create-report",
         "//src/material/edit-form",
         "//src/material/edit-form-schema",
         "//src/material/edit-report",

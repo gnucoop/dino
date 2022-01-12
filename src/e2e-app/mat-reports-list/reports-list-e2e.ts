@@ -4,7 +4,7 @@ import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {ListDataSource, SelectionList} from '@dino/material/list';
-import {Observable, of as obsOf} from 'rxjs';
+import {combineLatest, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 @Component({
@@ -15,9 +15,9 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   @ViewChild(SelectionList) list: SelectionList;
 
   /**
-   * If true, this is a list of simple form datas.
+   * If true, this is a list of simple report datas.
    */
-  readonly isFormDataList = true;
+  readonly isReportDataList = true;
   readonly additionalBasicFilters = [
     'project',
     'location',
@@ -28,10 +28,39 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   readonly additionalDataSchema: Observable<ReportSchema | null>;
   readonly reportSchemaId: Observable<string | null>;
   readonly baseViewUrl = 'view-report/';
+  readonly baseCreateUrl = 'create/';
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'user_id', label: 'User', sortable: true},
+    {column: 'user_data_ref_id', label: 'User', sortable: true, populateWith: 'full_name'},
+    {
+      column: 'area_ref_id',
+      label: 'Area',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.metricsService.isActiveMetric('area'),
+    },
+    {
+      column: 'location_ref_id',
+      label: 'Location',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.metricsService.isActiveMetric('location'),
+    },
+    {
+      column: 'organization_ref_id',
+      label: 'Organization',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.metricsService.isActiveMetric('organization'),
+    },
+    {
+      column: 'project_ref_id',
+      label: 'Project',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.metricsService.isActiveMetric('project'),
+    },
     {column: 'date_start', label: 'Collected Since', sortable: true},
     {column: 'date_end', label: 'Collected Until', sortable: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
@@ -42,6 +71,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     delete: 'delete',
   };
   readonly listRowActions: Observable<ListAction[] | null>;
+  readonly displayAddButton: Observable<boolean>;
 
   constructor(
     readonly filtersService: FiltersService,
@@ -86,12 +116,34 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
       take(1),
     );
 
+    this.displayAddButton = combineLatest([this._pcs.permissionContext, this.reportSchemaId]).pipe(
+      map(([context, schemaId]) => {
+        if (schemaId == null) {
+          return false;
+        }
+        return this._pcs.checkPermission(schemaId, 'report_data', 'create', context, true);
+      }),
+    );
+
     this.dataSource = new ListDataSource(
       this.reportDataManager,
       this.filtersService,
       this.reportSchemaManager,
-      this.isFormDataList,
+      this.isReportDataList,
     );
+  }
+
+  addReport(): void {
+    this.reportSchemaId
+      .pipe(
+        map(schemaId => {
+          if (schemaId != null) {
+            return this.list.createAction(schemaId, false, this.isReportDataList);
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
   }
 
   ngOnInit() {}

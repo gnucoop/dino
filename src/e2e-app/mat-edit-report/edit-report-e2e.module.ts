@@ -8,4 +8,4 @@ import {MatEditReportE2E} from './edit-report-e2e.component';
   declarations: [MatEditReportE2E],
   imports: [CommonModule, DinoEditReportModule, DinoFormsModule],
 })
-export class MaterialEditFormE2eModule {}
+export class MaterialEditReportE2eModule {}

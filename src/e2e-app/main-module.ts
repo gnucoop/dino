@@ -42,7 +42,8 @@ import {E2eAppModule} from './e2e-app/e2e-app-module';
 import {E2E_APP_ROUTES} from './routes';
 import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
-import {MaterialCreateE2eModule} from './mat-create/create-e2e.module';
+import {MaterialCreateFormDataE2eModule} from './mat-create-form-data/create-form-data-e2e.module';
+import {MaterialCreateReportDataE2eModule} from './mat-create-report-data/create-report-data-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
 import {MaterialEditFormSchemaE2eModule} from './mat-edit-form-schema/edit-form-schema-e2e.module';
 import {MaterialEditFormE2eModule} from './mat-edit-form/edit-form-e2e.module';
@@ -183,7 +184,8 @@ export function provideDataServiceConfig() {
     MaterialAreasE2eModule,
     MaterialDashboardE2eModule,
     MaterialCollectE2eModule,
-    MaterialCreateE2eModule,
+    MaterialCreateFormDataE2eModule,
+    MaterialCreateReportDataE2eModule,
     MaterialEditFormE2eModule,
     MaterialEditFormSchemaE2eModule,
     MaterialGroupsE2eModule,

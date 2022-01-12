@@ -30,7 +30,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   readonly formSchemaId: Observable<string | null>;
   readonly baseEditUrl = 'edit-form/';
   readonly baseViewUrl = 'view-form/';
-  readonly baseCreateUrl = 'create-form/';
+  readonly baseCreateUrl = 'create/';
   readonly dataSource: ListDataSource<FormData, FormSchema>;
   readonly headers: ListHeader<FormData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
@@ -40,28 +40,28 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
       label: 'Area',
       sortable: true,
       populateWith: 'name',
-      hidden: !this.isActiveMetric('area'),
+      hidden: !this.metricService.isActiveMetric('area'),
     },
     {
       column: 'location_ref_id',
       label: 'Location',
       sortable: true,
       populateWith: 'name',
-      hidden: !this.isActiveMetric('location'),
+      hidden: !this.metricService.isActiveMetric('location'),
     },
     {
       column: 'organization_ref_id',
       label: 'Organization',
       sortable: true,
       populateWith: 'name',
-      hidden: !this.isActiveMetric('organization'),
+      hidden: !this.metricService.isActiveMetric('organization'),
     },
     {
       column: 'project_ref_id',
       label: 'Project',
       sortable: true,
       populateWith: 'name',
-      hidden: !this.isActiveMetric('project'),
+      hidden: !this.metricService.isActiveMetric('project'),
     },
     {column: 'created_at', label: 'Creation Date', sortable: true},
   ];
@@ -164,12 +164,6 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
         take(1),
       )
       .subscribe();
-  }
-
-  isActiveMetric(metricType: string): boolean {
-    const activeMetrics = this.metricService.activeMetrics.getValue();
-    const isMetricActive = activeMetrics.find(mt => mt.metricName === metricType) != null;
-    return isMetricActive;
   }
 
   printPdf(formData: FormData): void {

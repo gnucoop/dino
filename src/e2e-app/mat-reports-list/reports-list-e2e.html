@@ -13,3 +13,9 @@
   ></dino-search-filters-bar>
 </dino-list>
 
+<dino-floating-button
+  *ngIf="displayAddButton|async"
+  [buttonIcon]="'add'"
+  tooltipMessage="Add New Report"
+  (click)="addReport()"
+></dino-floating-button>

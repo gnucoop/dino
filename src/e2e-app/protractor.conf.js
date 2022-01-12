@@ -5,7 +5,12 @@ exports.config = {
   jasmineNodeOpts: {
     defaultTimeoutInterval: 120000,
   },
-
+  capabilities: {
+    browserName: 'chrome',
+    chromeOptions: {
+      args: ['--window-size=1920,1080'],
+    },
+  },
   plugins: [
     {
       // Runs the axe-core accessibility checks each time the e2e page changes and

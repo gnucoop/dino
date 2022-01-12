@@ -2,7 +2,8 @@ import {Routes} from '@angular/router';
 import {AuthGuard} from '@dino/core/auth';
 
 import {MatAreasE2E} from './mat-areas/areas-e2e.component';
-import {MatCreateE2E} from './mat-create/create-e2e.component';
+import {MatCreateFormDataE2E} from './mat-create-form-data/create-form-data-e2e.component';
+import {MatCreateReportDataE2E} from './mat-create-report-data/create-report-data-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
 import {MatEditFormSchemaE2E} from './mat-edit-form-schema/edit-form-schema-e2e.component';
 import {MatEditFormE2E} from './mat-edit-form/edit-form-e2e.component';
@@ -56,18 +57,22 @@ export const E2E_APP_ROUTES: Routes = [
     ],
   },
   {
-    path: 'create-form',
+    path: 'create',
     canActivate: authGuard,
     children: [
       {
         path: ':form_schema_id',
-        component: MatCreateE2E,
-        data: {isFormData: false},
+        component: MatCreateFormDataE2E,
       },
       {
         path: 'form/:form_schema_id',
-        component: MatCreateE2E,
+        component: MatCreateFormDataE2E,
         data: {isFormData: true},
+      },
+      {
+        path: 'report/:report_schema_id',
+        component: MatCreateReportDataE2E,
+        data: {isReportData: true},
       },
     ],
   },
