@@ -8,7 +8,6 @@ import { AuthService } from '@dino/core/auth';
 import { DataModelManager } from '@dino/core/data';
 import { DataService } from '@dino/core/data';
 import * as i0 from '@angular/core';
-import { Metric } from '@dino/core/data';
 import { MetricsService } from '@dino/core/data';
 import { Model } from '@dino/core/data';
 import { Observable } from 'rxjs';
@@ -41,15 +40,21 @@ export interface UserGroup extends Model {
     location_ref_id: string[];
     organization_ref_id: string[];
     project_ref_id: string[];
-    userRoleId: string;
+    user_role_ref_id: string;
 }
 
 // @public
 export class UserGroupManager extends DataModelManager<UserGroup> {
     constructor(_userModelManager: UserDataManager, _metricService: MetricsService, dataService: DataService, permissionContextService: PermissionContextService);
     getActiveUserGroups(): Observable<RxDocument<UserGroup>[]>;
-    getGroupsAllMetrics<T extends Metric = Metric>(): Observable<RxDocument<T>[]>;
-    getGroupsMetricsByType<T extends Metric = Metric>(metricType: string): Observable<RxDocument<T>[]>;
+    getActiveUserPermissions(): Observable<{
+        [role_name: string]: {};
+    }>;
+    getGroupsAllMetrics(): Observable<{
+        [metricType: string]: string[];
+    }>;
+    getGroupsMetricsByType(metricType: string): Observable<string[]>;
+    isActiveUserAdmin(): Observable<boolean>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<UserGroupManager, never>;
     // (undocumented)
@@ -59,7 +64,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
 // @public
 export interface UserRole extends Model {
     roleName: string;
-    rolePermissions: ModelPermissions[];
+    rolePermissions: ModelPermissions;
 }
 
 // @public

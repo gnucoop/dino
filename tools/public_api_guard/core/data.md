@@ -163,7 +163,12 @@ export abstract class DataModelManager<T extends Model = Model> {
         error: any[];
     }>;
     bulkDelete(data: T[]): Observable<RxDocument<T>[] | null>;
-    canView(object: T, context?: PermissionContext<T>): boolean;
+    canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean;
+    canDelete(object: RxDocument<T>, context?: PermissionContext<T>): boolean;
+    canModify(data: Partial<T> & {
+        id: string;
+    }, object: RxDocument<T>, context?: PermissionContext<T>): boolean;
+    canView(object: RxDocument<T>, context?: PermissionContext<T>): boolean;
     get collectionChanged(): Observable<CollectionChangedEvent>;
     get collectionName(): string;
     get collectionSchema(): RxJsonSchema<T>;
@@ -175,7 +180,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     get(id: string): Observable<RxDocument<T> | null>;
     getSubData: (doc: T, querySelector?: any) => Observable<T[]>;
     init(): Observable<boolean>;
-    list(options?: DataListOptions): Observable<RxQuery<T, RxDocument<T>[]>>;
+    list(options?: DataListOptions): Observable<RxDocument<T>[]>;
     patch(data: Partial<T> & {
         id: string;
     }): Observable<RxDocument<T> | null>;
@@ -183,7 +188,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     get permissionContext(): Observable<PermissionContext>;
     // (undocumented)
     get permissions(): Permission[];
-    query(options: DataQueryOptions): Observable<RxQuery<T, RxDocument<T>[]>>;
+    query(options: DataQueryOptions): Observable<RxDocument<T>[]>;
     update(obj: T): Observable<RxDocument<T> | null>;
 }
 
@@ -343,7 +348,7 @@ export interface Permission<T extends Model = Model> {
 
 // @public
 export interface PermissionContext<T extends {} = {}> {
-    contextData?: any;
+    [contextDataKey: string]: any;
     user: User | null;
 }
 
@@ -355,10 +360,15 @@ export interface PermissionContextDataUpdate {
 
 // @public
 export class PermissionContextService {
-    constructor(authService: AuthService);
+    constructor(authService: AuthService, _ms: MetricsService);
     addToContext(param: PermissionContextDataUpdate): void;
+    checkPermission<T extends Model = Model>(docId: string, collectionName: string, action: string, context?: PermissionContext<T>, isData?: boolean): boolean;
+    getAllowedActions(collectionName: string, docId?: string, isData?: boolean): Observable<string[]>;
+    // (undocumented)
+    getMatchingMetric<T>(doc: RxDocument<T>, context?: PermissionContext<T>): boolean;
     // (undocumented)
     readonly permissionContext: Observable<PermissionContext>;
+    resetContext(): void;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<PermissionContextService, never>;
     // (undocumented)

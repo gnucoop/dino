@@ -30,10 +30,11 @@ import { NetworkStatusService } from '@dino/core/auth';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserGroupManager } from '@dino/core/users';
 
 // @public
 export class MainNav implements AfterViewInit, OnDestroy {
-    constructor(networkStatusService: NetworkStatusService, breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, dataService: DataService, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
+    constructor(networkStatusService: NetworkStatusService, breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, dataService: DataService, userGroupManager: UserGroupManager, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
     // (undocumented)
     get adminSections(): Section[];
     set adminSections(sec: Section[]);
@@ -44,6 +45,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     // (undocumented)
     readonly dataService: DataService;
     extendedSidenav: BehaviorSubject<boolean>;
+    isAdmin: Observable<boolean>;
     isLoading: BehaviorSubject<boolean>;
     isSyncing: Observable<boolean>;
     // (undocumented)
@@ -75,6 +77,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
     sidenav: MatSidenav;
     // (undocumented)
     readonly snackbar: MatSnackBar;
+    // (undocumented)
+    readonly userGroupManager: UserGroupManager;
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<MainNav, "dino-main-nav", never, { "sections": "sections"; "adminSections": "adminSections"; "setShowNavLabels": "setShowNavLabels"; "logoImagePath": "logoImagePath"; }, {}, never, never>;
     // (undocumented)

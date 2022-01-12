@@ -17,12 +17,13 @@ import * as i7 from '@angular/router';
 import * as i8 from '@angular/material/button';
 import * as i9 from '@angular/material/grid-list';
 import { Observable } from 'rxjs';
+import { PermissionContextService } from '@dino/core/data';
 import { ReportSchemaManager } from '@dino/core/reports';
 import { Router } from '@angular/router';
 
 // @public
 export class Collect {
-    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _router: Router);
+    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _pcs: PermissionContextService, _router: Router);
     addFormSchema(): void;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
@@ -34,6 +35,7 @@ export class Collect {
     // (undocumented)
     get columnsSmall(): number;
     set columnsSmall(num: number);
+    displayAddButton: Observable<boolean>;
     editFormSchema(schemaId: string | undefined): void;
     // (undocumented)
     get getCollectType(): CollectType;
@@ -47,6 +49,7 @@ export class Collect {
 
 // @public
 export interface CollectItem {
+    editable?: boolean;
     icon?: string;
     label?: string;
     name: string;
