@@ -676,17 +676,20 @@ export class SelectionList<T extends Model = Model>
   }
 
   /**
-   * Loads the Edit Form component to create a new item.
-   * @param schemaId The schema Id of the created Form
+   * Loads the component to create a new item.
+   * @param schemaId The schema Id of the created Document
    * @param isFormData If true, a formData is being created
+   * @param isReportData If true, a reportData is being created
    */
-  createAction(schemaId: string, isFormData: boolean = false): void {
+  createAction(schemaId: string, isFormData: boolean = false, isReportData: boolean = false): void {
     if (schemaId == null) {
       return;
     }
     const path = [`${this.baseCreateUrl}`];
     if (isFormData) {
       path.push('form');
+    } else if (isReportData) {
+      path.push('report');
     }
     path.push(`${schemaId}`);
     this._router.navigate(path);
