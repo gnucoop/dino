@@ -189,7 +189,8 @@ export class PermissionContextService {
         docMetric != null &&
         !Array.isArray(docMetric) &&
         !Object.keys(contextMetrics).find(
-          mt => contextMetrics[mt].includes(docMetric) || contextMetrics[mt].includes('all'),
+          metType =>
+            contextMetrics[metType].includes(docMetric) || contextMetrics[metType].includes('all'),
         )
       ) {
         ret = false;

@@ -269,11 +269,11 @@ export class FormMetricSelector implements OnDestroy {
             }
           }
         });
-        const startValue = startingValues.find(val => val != null);
-        if (startValue != null) {
-          const formControl = this.formMetrics.get(startValue?.collection.name);
+        const strValue = startingValues.find(val => val != null);
+        if (strValue != null) {
+          const formControl = this.formMetrics.get(strValue?.collection.name);
           if (formControl != null) {
-            formControl.setValue(startValue);
+            formControl.setValue(strValue);
           }
         }
       });

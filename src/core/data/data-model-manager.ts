@@ -20,7 +20,7 @@
  *
  */
 
-import {MangoQuery, RxDocument, RxJsonSchema, RxQuery} from 'rxdb';
+import {MangoQuery, RxDocument, RxJsonSchema} from 'rxdb';
 import {from, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 

@@ -22,8 +22,8 @@
 import {ChangeDetectorRef, Injectable} from '@angular/core';
 import {AbstractControl, AsyncValidatorFn, ValidationErrors} from '@angular/forms';
 import {DataModelManager, Metric} from '@dino/core/data';
-import {from, Observable} from 'rxjs';
-import {debounceTime, finalize, map, switchMap, take} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {debounceTime, finalize, map, take} from 'rxjs/operators';
 
 /**
  * Custom validator service that checks for an already existing

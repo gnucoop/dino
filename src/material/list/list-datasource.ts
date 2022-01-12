@@ -44,7 +44,7 @@ import {
   Subject,
   throwError,
 } from 'rxjs';
-import {catchError, map, shareReplay, skipWhile, switchMap, take, takeUntil} from 'rxjs/operators';
+import {catchError, map, shareReplay, skipWhile, take, takeUntil} from 'rxjs/operators';
 
 /**
  * This class extends MatTableDataSource, and augments it with additional functionalities.

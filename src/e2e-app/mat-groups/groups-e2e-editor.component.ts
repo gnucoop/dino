@@ -20,7 +20,7 @@ import {PopulatedWithProject, ProjectManager} from '@dino/core/projects';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
-import {BehaviorSubject, combineLatest, from, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
 import {map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
 
 /**

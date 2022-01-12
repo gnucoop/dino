@@ -36,7 +36,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {DataModelManager, Metric} from '@dino/core/data';
 import {RxJsonSchema} from 'rxdb';
-import {from, Observable, Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {map, switchMap, withLatestFrom} from 'rxjs/operators';
 import {RequireMatch} from './metric-autocomplete-validator';
 

@@ -44,7 +44,7 @@ import {ProjectManager} from '@dino/core/projects';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
-import {from, Observable, Subscription, throwError} from 'rxjs';
+import {Observable, Subscription, throwError} from 'rxjs';
 import {catchError, switchMap, take} from 'rxjs/operators';
 
 /**

@@ -24,12 +24,11 @@ import {Injectable} from '@angular/core';
 import {
   DataModelManager,
   DataService,
-  Metric,
   MetricsService,
   PermissionContextService,
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
-import {forkJoin, from, merge, Observable, of as obsOf} from 'rxjs';
+import {forkJoin, from, Observable, of as obsOf} from 'rxjs';
 import {delay, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
 import {migrationStrategies, UserGroup} from './user-group';
@@ -98,9 +97,9 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
         return forkJoin(ug).pipe(
           map(privileges => {
             let prvs: {[role_name: string]: any} = {};
-            privileges.forEach(prv => {
+            for (let prv of privileges) {
               if (prv[0] == null || prv[1] == null) {
-                return;
+                continue;
               }
               const role = prv[0];
               const group = prv[1];
@@ -131,7 +130,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
                   prvs[role.roleName]['actions'][k] === undefined &&
                   delete prvs[role.roleName]['actions'][k],
               );
-            });
+            }
             this.addToContext({user_metrics: userMetrics});
             this.addToContext({user_permissions: prvs});
             return prvs;

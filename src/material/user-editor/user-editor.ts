@@ -33,7 +33,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
-import {from, Observable, Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
 /**
