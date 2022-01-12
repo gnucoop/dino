@@ -185,7 +185,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     checkboxLabel(row?: T): string;
     clearSelection(): void;
     columnsButtonRef: ElementRef;
-    createAction(schemaId: string, isFormData?: boolean): void;
+    createAction(schemaId: string, isFormData?: boolean, isReportData?: boolean): void;
     set customFilters(filters: FilterGroup[]);
     // (undocumented)
     get dataSource(): ListDataSource<T>;

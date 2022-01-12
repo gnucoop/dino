@@ -50,6 +50,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     formMetricsSelectorComponent: QueryList<FormMetricSelector>;
     // (undocumented)
     get formSchema(): Observable<FormSchema>;
+    hasOptionalMetrics: boolean;
     isAjfFormValid: Observable<boolean>;
     isFormMetricsSelectorValid: Observable<boolean>;
     // (undocumented)
@@ -64,7 +65,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     // (undocumented)
     readonly snackbar: MatSnackBar;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<CreateForm<any>, "dino-create-form", never, { "dataModelManager": "dataModelManager"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CreateForm<any>, "dino-create-form", never, { "hasOptionalMetrics": "hasOptionalMetrics"; "dataModelManager": "dataModelManager"; }, {}, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<CreateForm<any>, never>;
 }

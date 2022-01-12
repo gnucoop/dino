@@ -32,6 +32,7 @@ import { TranslocoService } from '@ajf/core/transloco';
 // @public
 export class EditReport implements OnInit, AfterViewInit {
     constructor(metricsService: MetricsService, _translateService: TranslocoService, _route: ActivatedRoute, _router: Router, _formDataManager: FormDataManager, _reportDataManager: ReportDataManager, _reportSchemaManager: ReportSchemaManager);
+    hasOptionalMetrics: boolean;
     isReportMetricsSelectorValid: Observable<boolean>;
     readonly isView: Observable<boolean>;
     // (undocumented)
@@ -49,7 +50,7 @@ export class EditReport implements OnInit, AfterViewInit {
     // (undocumented)
     get reportSchema(): Observable<ReportSchema>;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<EditReport, "dino-edit-report", never, {}, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EditReport, "dino-edit-report", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<EditReport, never>;
 }

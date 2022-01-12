@@ -5,6 +5,7 @@
 ```ts
 
 import { AbstractControl } from '@angular/forms';
+import { AfterViewInit } from '@angular/core';
 import { AreaManager } from '@dino/core/areas';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
@@ -28,7 +29,7 @@ import { UserGroupManager } from '@dino/core/users';
 import { ValidationErrors } from '@angular/forms';
 
 // @public
-export class FormMetricSelector implements OnDestroy {
+export class FormMetricSelector implements OnDestroy, AfterViewInit {
     constructor(_userGroupManager: UserGroupManager, _metricService: MetricsService, _areaManager: AreaManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
     addFormData(formData: {
         [key: string]: any;
@@ -42,8 +43,12 @@ export class FormMetricSelector implements OnDestroy {
     formMetricsValues: {
         [key: string]: Observable<Metric | string>;
     };
+    // (undocumented)
+    set hasOptionalMetrics(allowed: boolean);
     isFormMetricsValid(): Observable<boolean>;
     isView: Subject<boolean>;
+    // (undocumented)
+    ngAfterViewInit(): void;
     // (undocumented)
     ngOnDestroy(): void;
     // (undocumented)
@@ -51,7 +56,7 @@ export class FormMetricSelector implements OnDestroy {
         [key: string]: Metric;
     };
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<FormMetricSelector, "dino-form-metric-selector", never, {}, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<FormMetricSelector, "dino-form-metric-selector", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<FormMetricSelector, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
@@ -68,6 +73,9 @@ export class FormMetricSelectorModule {
 
 // @public
 export function RequireMetricMatch(control: AbstractControl): ValidationErrors | null;
+
+// @public
+export function RequireNotNullMetricMatch(control: AbstractControl): ValidationErrors | null;
 
 // (No @packageDocumentation comment for this package)
 

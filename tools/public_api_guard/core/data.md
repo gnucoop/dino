@@ -319,6 +319,7 @@ export class MetricsService {
     activateMetric(metric: ActiveMetric): void;
     readonly activeMetrics: BehaviorSubject<ActiveMetric[]>;
     readonly hasActiveMetrics: Observable<boolean>;
+    isActiveMetric(metricType: string): boolean;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<MetricsService, never>;
     // (undocumented)
