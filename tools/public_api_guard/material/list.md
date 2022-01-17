@@ -194,6 +194,9 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     // (undocumented)
     detailsKeywordsFilter(event: Event, dataSource: MatTableDataSource<T>): void;
     detailsListContext: ListContext<any>;
+    // (undocumented)
+    get displayExpandAllBtn(): boolean;
+    set displayExpandAllBtn(exp: boolean);
     editAction(item: T, isDetails?: boolean): void;
     // (undocumented)
     get expandable(): boolean;
@@ -248,7 +251,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     set sorting(ms: MatSort);
     viewAction(item: T, isDetails?: boolean): void;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<SelectionList<any>, "dino-list", never, { "detailsListContext": "detailsListContext"; "customFilters": "customFilters"; "additionalBasicFilters": "additionalBasicFilters"; "expandable": "expandable"; "showPaginator": "showPaginator"; "showColumnsSelector": "showColumnsSelector"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "dataSource": "dataSource"; }, {}, ["filtersComponent", "cellTemplates"], ["[filters]"]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SelectionList<any>, "dino-list", never, { "detailsListContext": "detailsListContext"; "customFilters": "customFilters"; "additionalBasicFilters": "additionalBasicFilters"; "expandable": "expandable"; "displayExpandAllBtn": "displayExpandAllBtn"; "showPaginator": "showPaginator"; "showColumnsSelector": "showColumnsSelector"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "dataSource": "dataSource"; }, {}, ["filtersComponent", "cellTemplates"], ["[filters]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<SelectionList<any>, never>;
 }
