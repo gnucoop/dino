@@ -34,7 +34,7 @@ import {CollectItem} from './collect-item-interface';
 /**
  * Type representing the available Collect component types.
  */
-export type CollectType = 'report' | 'form' | 'custom';
+export type CollectType = 'reports' | 'forms' | 'custom';
 
 /**
  * Dino collect home component.
@@ -134,7 +134,7 @@ export class Collect {
       switchMap(([isCollect, menuItems, permissionContext]) => {
         if (isCollect !== 'custom') {
           let result: Observable<(RxDocument<FormSchema> | RxDocument<ReportSchema>)[]>;
-          if (isCollect === 'report') {
+          if (isCollect === 'reports') {
             result = this._rs.list();
             this.displayAddButton = this._pcs
               .getAllowedActions('report_schema')
@@ -189,7 +189,7 @@ export class Collect {
    */
   editSchema(schemaId: string | undefined): void {
     if (schemaId != null) {
-      this._router.navigate([`edit-${this._collectType.getValue()}-schema`, schemaId]);
+      this._router.navigate([this._collectType.getValue(), 'schema', schemaId, 'edit']);
     }
   }
 
@@ -197,6 +197,6 @@ export class Collect {
    * Redirects to the Edit Form/Report Schema component, in create mode.
    */
   addSchema(): void {
-    this._router.navigate([`add-${this._collectType.getValue()}-schema`]);
+    this._router.navigate([this._collectType.getValue(), 'schema', 'create']);
   }
 }

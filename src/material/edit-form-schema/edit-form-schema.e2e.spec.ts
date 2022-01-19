@@ -15,7 +15,9 @@ describe('dino-edit-form-schema', () => {
   it('should enter an edit form schema page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-form-schema'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('edit-form-schema');
+    expect(currentUrl).toContain('forms');
+    expect(currentUrl).toContain('schema');
+    expect(currentUrl).toContain('edit');
   });
 
   it('should show an Ajf Form Builder', async () => {

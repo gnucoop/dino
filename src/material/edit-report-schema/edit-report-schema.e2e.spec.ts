@@ -15,7 +15,9 @@ describe('dino-edit-report-schema', () => {
   it('should enter an edit report schema page', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-report-schema'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('edit-report-schema');
+    expect(currentUrl).toContain('reports');
+    expect(currentUrl).toContain('edit');
+    expect(currentUrl).toContain('schema');
   });
 
   it('should show a rendered Ajf Report Instance', async () => {

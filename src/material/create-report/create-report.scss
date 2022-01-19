@@ -6,6 +6,9 @@ dino-create-report {
         justify-content: center;
         position: relative;
         min-height: 85vh;
+        @media only screen and (max-width : 992px) {
+            min-height: 75vh;
+        }
     }
     .mat-stepper-horizontal {
         background-color: transparent;
@@ -37,7 +40,7 @@ dino-create-report {
     .dino-save-report-data-button {
         position: absolute;
         z-index: 10;
-        bottom: 0px;
+        bottom: 10px;
         left: 33.5%;
         font-size: 90%;
         text-transform: uppercase;
@@ -57,5 +60,8 @@ dino-create-report {
         &:hover {
             background-color: rgba(50, 219, 100, 0.1);
         }
+    }
+    .ajf-toolbar {
+        margin-bottom: 12px;
     }
 }

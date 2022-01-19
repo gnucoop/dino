@@ -4,10 +4,8 @@
   [listRowActions]="listRowActions"
   [onClickRowActions]="onClickRowActions"
 >
-  <dino-search-filters-bar
-    filters
-    [additionalFilters]="false"
-  ></dino-search-filters-bar>
+  <dino-search-filters-bar filters [additionalFilters]="false"></dino-search-filters-bar>
+  <ng-content select="[breadcrumbs]" breadcrumbs></ng-content>
 </dino-list>
 
 <dino-floating-button

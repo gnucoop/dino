@@ -1,3 +1,4 @@
+<ng-content select="[breadcrumbs]"></ng-content>
 <mat-grid-list
   class="dino-grid-list"
   [cols]="(breakpointObserver.small|async) ? columnsSmall : columnsLarge"
@@ -7,10 +8,13 @@
   <ng-container *ngFor="let item of items|async">
     <mat-grid-tile
       class="dino-grid-tile"
-      [routerLink]="item.url? item.url : ['/' + getCollectType + '-list', item.schemaId ? item.schemaId : item.name]"
+      [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
     >
       <div>
-        <div class="dino-grid-action-icons" *ngIf="(getCollectType === 'form' ||  getCollectType === 'report') && item.editable">
+        <div
+          class="dino-grid-action-icons"
+          *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"
+        >
           <button
             mat-mini-fab
             color="primary"

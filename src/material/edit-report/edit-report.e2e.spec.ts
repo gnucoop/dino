@@ -31,6 +31,7 @@ describe('dino-edit-report', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-report'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('view-report');
+    expect(currentUrl).toContain('reports');
+    expect(currentUrl).toContain('view');
   });
 });

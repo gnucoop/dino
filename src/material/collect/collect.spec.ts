@@ -87,7 +87,7 @@ describe('Collect', () => {
 
     await fixtureCollect.whenStable();
     fixtureCollect.detectChanges();
-    collect.collectType = 'form';
+    collect.collectType = 'forms';
 
     await fixtureCollect.whenStable();
     fixtureCollect.detectChanges();

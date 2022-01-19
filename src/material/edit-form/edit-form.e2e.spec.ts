@@ -36,6 +36,7 @@ describe('dino-edit-form', () => {
     await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-form'))));
 
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('edit-form');
+    expect(currentUrl).toContain('forms');
+    expect(currentUrl).toContain('edit');
   });
 });

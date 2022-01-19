@@ -1,10 +1,12 @@
+<ng-content select="[breadcrumbs]"></ng-content>
 <ng-container *ngIf="(form|async) != null">
   <ng-container *ngIf="metricsService.hasActiveMetrics|async">
     <mat-stepper labelPosition="bottom" #stepper linear>
       <mat-step [completed]="(isFormMetricsSelectorValid|async) || (isView|async)">
         <ng-template matStepLabel>FORM METRICS</ng-template>
         <div class="dino-edit-form-step-container">
-          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics"> </dino-form-metric-selector>
+          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics">
+          </dino-form-metric-selector>
         </div>
       </mat-step>
       <mat-step

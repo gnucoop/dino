@@ -1,4 +1,5 @@
 <mat-card class="report-container">
+  <ng-content select="[breadcrumbs]"></ng-content>
   <mat-card-header>
     <ng-container *ngIf="formGroup|async as fgroup">
       <form [formGroup]="fgroup" class="dino-report-attributes">

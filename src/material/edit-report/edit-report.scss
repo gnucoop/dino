@@ -10,6 +10,9 @@ dino-edit-report {
     justify-content: center;
     position: relative;
     min-height: 85vh;
+    @media only screen and (max-width : 992px) {
+      min-height: 75vh;
+  }
   }
   .mat-stepper-horizontal {
     background-color: transparent;

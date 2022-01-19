@@ -35,7 +35,8 @@ describe('dino-form-metric-selector', () => {
     await browser.wait(EC.presenceOf(element(by.className('dino-edit-form-step-container'))));
     const dinoFormMetricSelector = element.all(by.tagName('dino-form-metric-selector')).first();
     const isPresent = await dinoFormMetricSelector.isPresent();
-    expect(currentUrl).toContain('edit-form');
+    expect(currentUrl).toContain('forms');
+    expect(currentUrl).toContain('edit');
     expect(isPresent).toBe(true);
   });
 });

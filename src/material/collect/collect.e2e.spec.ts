@@ -19,7 +19,7 @@ describe('dino forms collect', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('form-list');
+    expect(currentUrl).toContain('forms');
   });
 });
 
@@ -42,6 +42,6 @@ describe('dino reports collect', () => {
 
     await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
     const currentUrl = await browser.getCurrentUrl();
-    expect(currentUrl).toContain('report-list');
+    expect(currentUrl).toContain('reports');
   });
 });
