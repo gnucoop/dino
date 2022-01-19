@@ -48,7 +48,7 @@ import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
 import {MaterialEditFormSchemaE2eModule} from './mat-edit-form-schema/edit-form-schema-e2e.module';
 import {MaterialEditFormE2eModule} from './mat-edit-form/edit-form-e2e.module';
 import {MaterialFormsListE2eModule} from './mat-forms-list/forms-list-e2e.module';
-import {MaterialCollectE2eModule} from './mat-forms/collect-e2e.module';
+import {MaterialFormsE2eModule} from './mat-forms/forms-e2e.module';
 import {MaterialGroupsE2eModule} from './mat-groups/groups-e2e.module';
 import {MaterialLocationsE2eModule} from './mat-locations/locations-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
@@ -183,7 +183,7 @@ export function provideDataServiceConfig() {
     // E2E demos
     MaterialAreasE2eModule,
     MaterialDashboardE2eModule,
-    MaterialCollectE2eModule,
+    MaterialFormsE2eModule,
     MaterialCreateFormDataE2eModule,
     MaterialCreateReportDataE2eModule,
     MaterialEditFormE2eModule,

@@ -1,6 +1,6 @@
 <dino-list
   [headers]="headers"
-  [baseViewUrl]="baseViewUrl"
+  [baseUrl]="baseUrl"
   [dataSource]="dataSource"
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
@@ -11,6 +11,7 @@
     filters
     [presetManager]="true"
   ></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
 
 <dino-floating-button

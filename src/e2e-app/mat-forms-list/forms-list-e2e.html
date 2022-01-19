@@ -1,9 +1,7 @@
 <dino-list
   #dinoList
   [headers]="headers"
-  [baseEditUrl]="baseEditUrl"
-  [baseViewUrl]="baseViewUrl"
-  [baseCreateUrl]="baseCreateUrl"
+  [baseUrl]="baseUrl"
   [dataSource]="dataSource"
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
@@ -16,6 +14,7 @@
     [exportable]="(displayExportButton|async) ?? false"
     (exportEvt)="dinoList.export($event)"
   ></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
 
 <dino-floating-button

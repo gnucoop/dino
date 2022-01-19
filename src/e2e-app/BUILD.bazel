@@ -49,6 +49,7 @@ ng_module(
         "//src/core/translations",
         "//src/core/users",
         "//src/dino-examples/private",
+        "//src/material/breadcrumbs",
         "//src/material/breakpoint-observer",
         "//src/material/collect",
         "//src/material/create-form",

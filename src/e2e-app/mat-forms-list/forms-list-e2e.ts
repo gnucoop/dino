@@ -28,9 +28,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   ];
   readonly additionalDataSchema: Observable<FormSchema | null>;
   readonly formSchemaId: Observable<string | null>;
-  readonly baseEditUrl = 'edit-form/';
-  readonly baseViewUrl = 'view-form/';
-  readonly baseCreateUrl = 'create/';
+  readonly baseUrl = 'forms';
   readonly dataSource: ListDataSource<FormData, FormSchema>;
   readonly headers: ListHeader<FormData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
@@ -158,7 +156,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
       .pipe(
         map(schemaId => {
           if (schemaId != null) {
-            return this.list.createAction(schemaId, this.isFormDataList);
+            return this.list.createAction(schemaId);
           }
         }),
         take(1),

@@ -5,6 +5,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {FloatingButtonModule} from '@dino/material/floating-button';
 import {ListModule} from '@dino/material/list';
 import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
+import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
 
 import {MockBreakpointObserver} from '../mocks';
 
@@ -12,7 +13,14 @@ import {MatReportsListE2E} from './reports-list-e2e';
 
 @NgModule({
   declarations: [MatReportsListE2E],
-  imports: [CommonModule, ListModule, FloatingButtonModule, ReportsModule, SearchFiltersBarModule],
+  imports: [
+    CommonModule,
+    DinoBreadcrumbsModule,
+    ListModule,
+    FloatingButtonModule,
+    ReportsModule,
+    SearchFiltersBarModule,
+  ],
   providers: [{provide: BreakpointObserverService, useClass: MockBreakpointObserver}],
 })
 export class MaterialReportsListE2eModule {}

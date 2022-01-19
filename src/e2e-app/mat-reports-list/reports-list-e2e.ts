@@ -27,8 +27,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   ];
   readonly additionalDataSchema: Observable<ReportSchema | null>;
   readonly reportSchemaId: Observable<string | null>;
-  readonly baseViewUrl = 'view-report/';
-  readonly baseCreateUrl = 'create/';
+  readonly baseUrl = 'reports';
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
@@ -81,7 +80,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     private _route: ActivatedRoute,
     private _pcs: PermissionContextService,
   ) {
-    this.reportSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
+    this.reportSchemaId = this._route.params.pipe(map(params => params.report_schema_id));
     this.additionalDataSchema = this.reportSchemaId.pipe(
       switchMap(schemaId => {
         if (schemaId != null) {
@@ -138,7 +137,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
       .pipe(
         map(schemaId => {
           if (schemaId != null) {
-            return this.list.createAction(schemaId, false, this.isReportDataList);
+            return this.list.createAction(schemaId);
           }
         }),
         take(1),
