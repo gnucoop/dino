@@ -121,9 +121,24 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   }
 
   /**
+   * The base url identifying the list Docs type
+   */
+  private _baseUrl: string;
+
+  get baseUrl(): string {
+    return this._baseUrl;
+  }
+
+  @Input()
+  set baseUrl(baseUrl: string) {
+    this._baseUrl = baseUrl;
+    this._cdr.markForCheck();
+  }
+
+  /**
    * The base url to be used for the Edit action on a list item
    */
-  private _baseEditUrl = 'edit/';
+  private _baseEditUrl = 'edit';
 
   get baseEditUrl(): string {
     return this._baseEditUrl;
@@ -138,7 +153,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   /**
    * The base url to be used for the Create action on a list item
    */
-  private _baseCreateUrl = 'create/';
+  private _baseCreateUrl = 'create';
 
   get baseCreateUrl(): string {
     return this._baseCreateUrl;
@@ -153,7 +168,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   /**
    * The base url to be used for the View action on a list item
    */
-  private _baseViewUrl = 'view/';
+  private _baseViewUrl = 'view';
 
   get baseViewUrl(): string {
     return this._baseViewUrl;
@@ -173,7 +188,8 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   abstract selectAll(): void;
   abstract deleteAction(items: T[], isDetails: boolean): T[];
   abstract editAction(item: T, isDetails: boolean): void;
-  abstract createAction(schemaId: string, isFormData: boolean): void;
+  abstract viewAction(item: T, isDetails: boolean): void;
+  abstract createAction(schemaId: string, baseUrl: string): void;
 
   /**
    * Calls a handler function on the current selection based on the action name

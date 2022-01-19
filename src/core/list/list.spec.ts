@@ -52,7 +52,8 @@ class ListFeatComp extends List<DummyModel> {
     super(cdr, aui);
   }
 
-  createAction(schemaId: string, isFormData: boolean) {}
+  createAction(schemaId: string, baseUrl: string) {}
+  viewAction(item: DummyModel, isDetails: boolean): void {}
   getSelection() {
     return dummySelection;
   }
