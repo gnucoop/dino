@@ -54,7 +54,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     // (undocumented)
     readonly snackbar: MatSnackBar;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<CreateReport, "dino-create-report", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CreateReport, "dino-create-report", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<CreateReport, never>;
 }

@@ -65,7 +65,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     // (undocumented)
     readonly snackbar: MatSnackBar;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<CreateForm<any>, "dino-create-form", never, { "hasOptionalMetrics": "hasOptionalMetrics"; "dataModelManager": "dataModelManager"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CreateForm<any>, "dino-create-form", never, { "hasOptionalMetrics": "hasOptionalMetrics"; "dataModelManager": "dataModelManager"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<CreateForm<any>, never>;
 }

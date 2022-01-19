@@ -48,7 +48,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
     reportInstance$: Observable<AjfReportInstance | null>;
     save(): void;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<EditReportSchema, "dino-edit-report-schema", never, {}, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EditReportSchema, "dino-edit-report-schema", never, {}, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<EditReportSchema, never>;
 }

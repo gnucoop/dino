@@ -49,7 +49,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     openImportDialog(): void;
     save(): void;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<EditFormSchema, "dino-edit-form-schema", never, { "formConvUrl": "formConvUrl"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EditFormSchema, "dino-edit-form-schema", never, { "formConvUrl": "formConvUrl"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<EditFormSchema, never>;
 }

@@ -141,6 +141,9 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     get baseEditUrl(): string;
     set baseEditUrl(baseEditUrl: string);
     // (undocumented)
+    get baseUrl(): string;
+    set baseUrl(baseUrl: string);
+    // (undocumented)
     get baseViewUrl(): string;
     set baseViewUrl(baseViewUrl: string);
     // (undocumented)
@@ -148,7 +151,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     // (undocumented)
     abstract clearSelection(): void;
     // (undocumented)
-    abstract createAction(schemaId: string, isFormData: boolean): void;
+    abstract createAction(schemaId: string, baseUrl: string): void;
     // (undocumented)
     abstract deleteAction(items: T[], isDetails: boolean): T[];
     // (undocumented)
@@ -176,7 +179,9 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     get title(): string;
     set title(title: string);
     // (undocumented)
-    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "showCheckBox": "showCheckBox"; "headers": "headers"; "baseEditUrl": "baseEditUrl"; "baseCreateUrl": "baseCreateUrl"; "baseViewUrl": "baseViewUrl"; }, {}, never>;
+    abstract viewAction(item: T, isDetails: boolean): void;
+    // (undocumented)
+    static ɵdir: i0.ɵɵDirectiveDeclaration<List<any, any>, never, never, { "additionalDataSchema": "additionalDataSchema"; "title": "title"; "showCheckBox": "showCheckBox"; "headers": "headers"; "baseUrl": "baseUrl"; "baseEditUrl": "baseEditUrl"; "baseCreateUrl": "baseCreateUrl"; "baseViewUrl": "baseViewUrl"; }, {}, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<List<any, any>, never>;
 }

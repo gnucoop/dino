@@ -75,7 +75,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     // (undocumented)
     readonly snackbar: MatSnackBar;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<EditForm<any>, "dino-edit-form", never, { "hasOptionalMetrics": "hasOptionalMetrics"; "dataModelManager": "dataModelManager"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EditForm<any>, "dino-edit-form", never, { "hasOptionalMetrics": "hasOptionalMetrics"; "dataModelManager": "dataModelManager"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<EditForm<any>, never>;
 }

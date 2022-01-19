@@ -43,7 +43,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     showEditor: boolean;
     showList: boolean;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dino-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dino-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<MetricSection<any>, never>;
 }

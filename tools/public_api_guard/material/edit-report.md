@@ -50,7 +50,7 @@ export class EditReport implements OnInit, AfterViewInit {
     // (undocumented)
     get reportSchema(): Observable<ReportSchema>;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<EditReport, "dino-edit-report", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<EditReport, "dino-edit-report", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<EditReport, never>;
 }

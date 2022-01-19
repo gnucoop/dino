@@ -42,7 +42,7 @@ export class Collect {
     readonly items: Observable<CollectItem[]>;
     set menuItems(menuItems: CollectItem[]);
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }
@@ -68,7 +68,7 @@ export class CollectModule {
 }
 
 // @public
-export type CollectType = 'report' | 'form' | 'custom';
+export type CollectType = 'reports' | 'forms' | 'custom';
 
 // (No @packageDocumentation comment for this package)
 
