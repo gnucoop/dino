@@ -1,0 +1,27 @@
+<ng-container *ngIf="breadcrumbs|async as crumbs">
+  <div class="dino-breadcrumbs-toolbar">
+    <mat-toolbar class="dino-breadcrumbs">
+      <ng-container *ngFor="let breadcrumb of crumbs; index as i; last as isLast">
+        <span
+          class="dino-breadcrumb-current-route"
+          [class.dino-breadcrumb-history-link]="!isLast && breadcrumb?.url"
+          (click)="crumbNavigate(breadcrumb.url)"
+          >{{breadcrumb?.label}}</span
+        >
+        <ng-container *ngIf="breadcrumb">
+          <ng-container *ngIf="breadcrumb.icon"
+            ><mat-icon
+              class="dino-breadcrumb-icon"
+              [class.dino-breadcrumb-history-link]="!isLast && breadcrumb?.url"
+              (click)="crumbNavigate(breadcrumb.url)"
+              >{{breadcrumb.icon}}</mat-icon
+            ></ng-container
+          >
+          <ng-container *ngIf="!isLast">
+            <mat-icon class="dino-breadcrumb-separator-icon">navigate_next</mat-icon>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </mat-toolbar>
+  </div>
+</ng-container>

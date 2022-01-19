@@ -1,5 +1,6 @@
 # List of all entry-points of the Dino core package.
 entryPoints = [
+    "breadcrumbs",
     "breakpoint-observer",
     "collect",
     "create-form",
