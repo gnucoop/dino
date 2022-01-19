@@ -1,5 +1,8 @@
+<div class="dino-list-toolbar">
+  <ng-content select="[breadcrumbs]"></ng-content>
+  <mat-paginator></mat-paginator>
+</div>
 <ng-content select="[filters]"></ng-content>
-
 <ng-container *ngIf="expandable && displayExpandAllBtn">
   <button
     mat-icon-button
@@ -200,9 +203,6 @@
       </mat-row>
     </ng-container>
   </mat-table>
-  <ng-container *ngIf="ctx.showPaginator">
-    <mat-paginator></mat-paginator>
-  </ng-container>
 </ng-template>
 
 <div class="dino-table-container">

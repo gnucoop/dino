@@ -659,55 +659,61 @@ export class SelectionList<T extends Model = Model>
   }
 
   /**
-   * Loads the Edit Form component for the the item.
+   * Loads the Edit component for the the item.
    * @param item The item to be edited
-   * @param isDetails If true, the item is in the details of a parent
+   * @param isDetails If true, the form is a sub-form displayed in a sub list. Defaults to false
    */
   editAction(item: T, isDetails: boolean = false): void {
-    if (item == null) {
+    const genItem = item as {[key: string]: any};
+    if (
+      item == null ||
+      genItem.schema_id == null ||
+      this.baseUrl == null ||
+      this.baseEditUrl == null
+    ) {
       return;
     }
-    const path = [`${this.baseEditUrl}`];
+    const path = [this.baseUrl, genItem.schema_id, this.baseEditUrl];
     if (isDetails) {
       path.push('details');
     }
-    path.push(`${item.id}`);
+    path.push(item.id);
     this._router.navigate(path);
   }
 
   /**
    * Loads the component to create a new item.
    * @param schemaId The schema Id of the created Document
-   * @param isFormData If true, a formData is being created
-   * @param isReportData If true, a reportData is being created
+   * @param baseUrl The base url of the doc being created
    */
-  createAction(schemaId: string, isFormData: boolean = false, isReportData: boolean = false): void {
-    if (schemaId == null) {
+  createAction(schemaId: string): void {
+    if (schemaId == null || this.baseUrl == null || this.baseCreateUrl == null) {
       return;
     }
-    const path = [`${this.baseCreateUrl}`];
-    if (isFormData) {
-      path.push('form');
-    } else if (isReportData) {
-      path.push('report');
-    }
-    path.push(`${schemaId}`);
+    const path = [this.baseUrl, schemaId, this.baseCreateUrl];
     this._router.navigate(path);
   }
 
   /**
-   * Loads the Edit Form component for the the item in readOnly mode.
+   * Loads the Edit component for the the item in readOnly mode.
    * @param item The item to be viewed
+   * @param isDetails If true, the form is a sub-form displayed in a sub list. Defaults to false
    */
   viewAction(item: T, isDetails: boolean = false): void {
-    if (item == null) {
+    const genItem = item as {[key: string]: any};
+    if (
+      item == null ||
+      genItem.schema_id == null ||
+      this.baseUrl == null ||
+      this.baseViewUrl == null
+    ) {
       return;
     }
-    const path = [`${this.baseViewUrl}`];
+    const path = [this.baseUrl, genItem.schema_id, this.baseViewUrl];
     if (isDetails) {
       path.push('details');
     }
-    path.push(`${item.id}`);
+    path.push(item.id);
     this._router.navigate(path);
   }
 
