@@ -112,7 +112,7 @@ export const E2E_APP_ROUTES: Routes = [
   {
     path: 'forms',
     canActivate: authGuard,
-    data: {breadcrumbs: [{label: 'Forms', url: 'forms', icon: 'list_alt'}]},
+    data: {isFormData: true, breadcrumbs: [{label: 'Forms', url: 'forms', icon: 'list_alt'}]},
     children: [
       {
         path: 'schema',
@@ -194,7 +194,10 @@ export const E2E_APP_ROUTES: Routes = [
   {
     path: 'reports',
     canActivate: authGuard,
-    data: {breadcrumbs: [{label: 'Reports', url: 'reports', icon: 'stacked_bar_chart'}]},
+    data: {
+      isReportData: true,
+      breadcrumbs: [{label: 'Reports', url: 'reports', icon: 'stacked_bar_chart'}],
+    },
     children: [
       {
         path: 'schema',

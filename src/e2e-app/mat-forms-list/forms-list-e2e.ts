@@ -6,7 +6,7 @@ import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/co
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {combineLatest, Observable, of as obsOf} from 'rxjs';
-import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
 @Component({
   selector: 'mat-forms-list-e2e',
@@ -30,39 +30,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
   readonly formSchemaId: Observable<string | null>;
   readonly baseUrl = 'forms';
   readonly dataSource: ListDataSource<FormData, FormSchema>;
-  readonly headers: ListHeader<FormData>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'user_data_ref_id', label: 'User', sortable: true, populateWith: 'full_name'},
-    {
-      column: 'area_ref_id',
-      label: 'Area',
-      sortable: true,
-      populateWith: 'name',
-      hidden: !this.metricService.isActiveMetric('area'),
-    },
-    {
-      column: 'location_ref_id',
-      label: 'Location',
-      sortable: true,
-      populateWith: 'name',
-      hidden: !this.metricService.isActiveMetric('location'),
-    },
-    {
-      column: 'organization_ref_id',
-      label: 'Organization',
-      sortable: true,
-      populateWith: 'name',
-      hidden: !this.metricService.isActiveMetric('organization'),
-    },
-    {
-      column: 'project_ref_id',
-      label: 'Project',
-      sortable: true,
-      populateWith: 'name',
-      hidden: !this.metricService.isActiveMetric('project'),
-    },
-    {column: 'created_at', label: 'Creation Date', sortable: true},
-  ];
+  readonly headers: Observable<ListHeader<FormData>[]>;
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActionsIcons: {[key: string]: string} = {
     view: 'visibility',
@@ -90,8 +58,18 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
         }
         return obsOf(null);
       }),
-      filter(id => id != null),
+      filter(schema => schema != null),
       shareReplay(1),
+    );
+
+    this.headers = this.additionalDataSchema.pipe(
+      map(schema => {
+        if (schema == null) {
+          return [];
+        }
+        return this.formSchemaManager.generateSchemListHeaders(schema);
+      }),
+      startWith([]),
     );
 
     this.listRowActions = this.formSchemaId.pipe(

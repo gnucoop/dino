@@ -913,6 +913,12 @@ export const ajfSourceReportFormSchema = {
       'choicesType': 'string',
     },
   ],
+  'stringIdentifier': [
+    {
+      'label': 'District',
+      'value': ['district'],
+    },
+  ],
 };
 
 export const formSchemas: FormSchema[] = [
