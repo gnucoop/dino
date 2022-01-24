@@ -95,7 +95,10 @@
         <ng-template #externalRefCellTemplate>
           {{ getPopulatedRef( (element[getRef(header)])|async, header.populateWith) }}
         </ng-template>
-        <ng-template #defaultCellTemplate> {{ element[header.column.toString()] }} </ng-template>
+        <ng-template #defaultCellTemplate>
+          {{ header.dataColumn ?
+          element.data[header.column.toString()]:element[header.column.toString()] }}
+        </ng-template>
       </mat-cell>
     </ng-container>
 

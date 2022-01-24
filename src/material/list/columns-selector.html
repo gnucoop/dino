@@ -1,26 +1,31 @@
 <div class="dino-selector-container">
   <div>
-    <h4>{{'Customize display'|transloco}}</h4>
-    <p>{{'Alter the display of the table by selecting up to 7 columns'|transloco}}</p>
+    <h4>{{'Customize Table'|transloco}}</h4>
+    <p>{{'Choose which columns should be displayed in the table'|transloco}}</p>
   </div>
   <br /><br />
-  <div
-    class="dino-column-selector"
-    *ngFor="let column of columns; let i = index"
-  >
-    {{column.label|transloco}}
-    <mat-slide-toggle
-      [checked]="column.displayed || column.displayed === undefined"
-      (change)="toggleColumn(i)"
-    ></mat-slide-toggle>
+  <form [formGroup]="columnSearchFilter" class="dino-column-search">
+    <mat-form-field floatLabel="always">
+      <input
+        matInput
+        formControlName="column_search"
+        [placeholder]="'search by keyword'|transloco"
+      />
+      <mat-icon color="primary" matSuffix>search</mat-icon>
+    </mat-form-field>
+  </form>
+  <br />
+  <div class="dino-column-selectors-list">
+    <div class="dino-column-selector" *ngFor="let column of columns|async">
+      {{column.label|transloco}}
+      <mat-slide-toggle
+        [checked]="column.displayed || column.displayed === undefined"
+        (change)="toggleColumn(column.column)"
+      ></mat-slide-toggle>
+    </div>
   </div>
   <br />
-  <button
-    class="dino-apply-btn"
-    mat-raised-button
-    color="primary"
-    (click)="apply()"
-  >
+  <button class="dino-apply-btn" mat-raised-button color="primary" (click)="apply()">
     {{'Apply'|transloco}}
   </button>
 </div>

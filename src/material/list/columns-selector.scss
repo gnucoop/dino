@@ -1,6 +1,23 @@
 .dino-selector-container {
     display: flex;
     flex-flow: column wrap;
+    .dino-column-search {
+        display: flex;
+        flex: 1 0 auto;
+        .mat-form-field {
+            flex: 1 0 auto;
+        }
+    }
+    .dino-column-selectors-list {
+        max-height: 70vh;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
 }
 
 .dino-column-selector {

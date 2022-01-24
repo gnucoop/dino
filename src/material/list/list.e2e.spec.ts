@@ -20,9 +20,9 @@ describe('dino-list', () => {
     await browser.wait(EC.presenceOf(element(by.className('mat-checkbox'))));
   });
 
-  it('should display the correct header cells', async () => {
+  it('should display the correct header cells, including the ones specified by the string identifier', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('mat-header-cell'))));
-    const expectedCells = ['User', 'Area', 'Location', 'Organization', 'Project', 'Creation Date'];
+    const expectedCells = ['District', 'Location', 'Organization', 'Project', 'Thematic Area'];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
     expect(headerCells.slice(1, -1)).toEqual(expectedCells);
   });

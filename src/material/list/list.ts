@@ -568,6 +568,18 @@ export class SelectionList<T extends Model = Model>
     if (this.dataSource == null) {
       return;
     }
+    const sortingDataAccessor = (item: T & {[key: string]: any}, property: string) => {
+      if (item != null && property) {
+        if (item[property] != null) {
+          return item[property];
+        } else if (item['data'] != null && item['data'][property] != null) {
+          return item['data'][property];
+        }
+      }
+      return null;
+    };
+    this.dataSource.sortingDataAccessor = sortingDataAccessor;
+
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
       if (this._additionalDataSchema != null) {
@@ -621,10 +633,20 @@ export class SelectionList<T extends Model = Model>
             this.processAction(action, items, isDetails);
           }
         }),
-        catchError(err => throwError(err)),
+        catchError(err => throwError(() => new Error(err))),
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe();
+
+    this._headersUpdateEvt
+      .pipe(
+        catchError(err => throwError(() => new Error(err))),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe(headers => {
+        this.mainListContext.headers.next(headers);
+        this.mainListContext.displayedColumns?.next(this.displayedColumns);
+      });
   }
 
   /**
