@@ -25,7 +25,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AjfReport, AjfReportSerializer, reportFromXls} from '@ajf/core/reports';
+import {AjfReport, AjfReportSerializer, xlsReport} from '@ajf/core/reports';
 import {HttpClient} from '@angular/common/http';
 
 /**
@@ -72,7 +72,7 @@ export class ImportReportSchema {
     reader.onload = () => {
       const data = reader.result as string;
       if (data != null) {
-        this._xlsReportSchema = reportFromXls(data, this._httpClient).pipe(
+        this._xlsReportSchema = xlsReport(data, this._httpClient).pipe(
           map(ajfReport => {
             if (ajfReport == null) {
               return null;
