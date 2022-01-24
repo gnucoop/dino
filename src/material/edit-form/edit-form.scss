@@ -6,7 +6,7 @@ dino-edit-form {
         justify-content: center;
         position: relative;
         min-height: 85vh;
-        @media only screen and (max-width : 992px) {
+        @media only screen and (max-width: 992px) {
             min-height: 75vh;
         }
     }
@@ -36,6 +36,12 @@ dino-edit-form {
     }
     .mat-horizontal-content-container {
         padding: 0px 4px 4px;
+        @media only screen and (max-height: 900px) {
+            padding-bottom: 10vh;
+        }
+        @media only screen and (max-height: 580px) {
+            padding-bottom: 30vh;
+        }
     }
 
     .ajf-form-container {

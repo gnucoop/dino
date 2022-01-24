@@ -36,6 +36,12 @@ dino-create-report {
     }
     .mat-horizontal-content-container {
         padding: 0px 4px 4px;
+        @media only screen and (max-height: 900px) {
+            padding-bottom: 10vh;
+        }
+        @media only screen and (max-height: 580px) {
+            padding-bottom: 30vh;
+        }
     }
     .dino-save-report-data-button {
         position: absolute;
