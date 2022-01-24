@@ -62,6 +62,18 @@ export class Collect {
   private _menuItems = new BehaviorSubject<CollectItem[]>([]);
 
   /**
+   * Displayed when no items are available
+   */
+  readonly noItemsMessage = new BehaviorSubject<string>('');
+  @Input()
+  set setNoItemsMessage(message: string) {
+    if (message == null) {
+      return;
+    }
+    this.noItemsMessage.next(message);
+  }
+
+  /**
    * An array of items to be displayed in the Dashboard menu grid.
    * They represent generic Items (eg. a Section of the app)
    */
