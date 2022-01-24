@@ -28,6 +28,13 @@ dino-main-nav {
       .mat-icon {
         flex: 1 0 auto;
       }
+      .dino-link-button {
+        margin-right: 25px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        text-decoration: none;
+      }
       .dino-sync-detector {
         margin-right: 25px;
         transition: all 0.2s ease-in-out;

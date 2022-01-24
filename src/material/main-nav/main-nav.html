@@ -15,6 +15,13 @@
   <img class="dino-toolbar-logo" [src]="logoImagePath" alt="logo" />
 
   <div class="dino-toolbar-actions">
+    <ng-container *ngIf="linkIcons|async as actionLinkIcons">
+      <ng-container *ngFor="let linkIcon of actionLinkIcons">
+        <a [href]="linkIcon.url" target="_blank" class="dino-link-button">
+          <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
+        </a>
+      </ng-container>
+    </ng-container>
     <ng-template #syncOnline>
       <mat-icon class="dino-sync-detector" [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
         >sync</mat-icon
@@ -28,7 +35,9 @@
     >
     </ng-container>
     <dino-lang-selector></dino-lang-selector>
-    <mat-icon class="dino-logout-button" (click)="logout()">logout</mat-icon>
+    <mat-icon *ngIf="(logoutDisabled|async) != true" class="dino-logout-button" (click)="logout()"
+      >logout</mat-icon
+    >
   </div>
 </mat-toolbar>
 

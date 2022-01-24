@@ -69,6 +69,32 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * If true, the logout button is not displayed.
+   */
+  readonly logoutDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @Input()
+  set setLogoutDisabled(state: boolean) {
+    if (state == null) {
+      return;
+    }
+    this.logoutDisabled.next(state);
+  }
+
+  /**
+   * Additional action icons that can redirect to the specified urls
+   */
+  readonly linkIcons: BehaviorSubject<{icon: string; url: string}[]> = new BehaviorSubject<
+    {icon: string; url: string}[]
+  >([]);
+  @Input()
+  set setLinkIcons(icons: {icon: string; url: string}[]) {
+    if (icons == null) {
+      return;
+    }
+    this.linkIcons.next(icons);
+  }
+
+  /**
    * The loading state of the component rendered in the router outlet
    */
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
