@@ -42,6 +42,11 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     new EventEmitter<{action: ListAction; items: T | T[]; isDetails: boolean}>();
 
   /**
+   * An  event emitted whenever the liste headers are updated.
+   */
+  protected _headersUpdateEvt: EventEmitter<ListHeader<T>[]> = new EventEmitter<ListHeader<T>[]>();
+
+  /**
    * The model of the "data" property associated with the main model.
    */
   readonly _additionalDataSchema: Subject<AD | null> = new Subject<AD | null>();
@@ -118,6 +123,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   set headers(headers: ListHeader<T>[]) {
     this.setDisplayedColumns(headers);
     this._headers = headers;
+    this._headersUpdateEvt.emit(this._headers);
   }
 
   /**

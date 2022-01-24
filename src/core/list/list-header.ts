@@ -47,4 +47,9 @@ export interface ListHeader<T> {
    * The reference string will be equal to the "column" property.
    */
   populateWith?: string;
+  /**
+   * If true, the content displayed in the list cell will be retrieved
+   * from the Data attribute of the document. (eg. FormData.data)
+   */
+  dataColumn?: boolean;
 }
