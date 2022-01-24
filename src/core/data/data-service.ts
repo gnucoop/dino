@@ -241,6 +241,15 @@ export class DataService {
         }
         const insertObject = this._prepareInsertObject(object);
         return from(collection.insert(insertObject)).pipe(
+          tap(doc => {
+            if (doc != null) {
+              this._collectionChanged.emit({
+                timestamp: new Date().getTime(),
+                collection: collection.name,
+                action: `Document created`,
+              });
+            }
+          }),
           catchError(e => {
             console.log(e);
             return obsOf(null);
@@ -267,9 +276,42 @@ export class DataService {
         }
         const docsData = objects.map(object => this._prepareInsertObject(object));
         return from(collection.bulkInsert(docsData)).pipe(
+          tap(doc => {
+            if (doc.success != null) {
+              this._collectionChanged.emit({
+                timestamp: new Date().getTime(),
+                collection: collection.name,
+                action: `Documents created`,
+              });
+            }
+          }),
           catchError(() => obsOf({success: [], error: []})),
         );
       }),
+    );
+  }
+
+  update<T extends Model = Model>(
+    doc: RxDocument<T>,
+    updateData: Partial<T>,
+  ): Observable<RxDocument<T> | null> {
+    if (doc == null || updateData == null) {
+      return obsOf(null);
+    }
+    return from(doc.update(updateData)).pipe(
+      tap(dc => {
+        if (dc != null) {
+          this._collectionChanged.emit({
+            timestamp: new Date().getTime(),
+            collection: doc.collection.name,
+            action: `Document Updated`,
+          });
+        }
+      }),
+      map(_ => {
+        return doc;
+      }),
+      catchError(err => throwError(() => new Error(err))),
     );
   }
 
@@ -292,7 +334,18 @@ export class DataService {
           created_at: object.created_at || new Date().toISOString(),
           updated_at: object.updated_at || null,
         } as T;
-        return from(collection.upsert(insertObject)).pipe(catchError(() => obsOf(null)));
+        return from(collection.upsert(insertObject)).pipe(
+          tap(doc => {
+            if (doc != null) {
+              this._collectionChanged.emit({
+                timestamp: new Date().getTime(),
+                collection: collection.name,
+                action: `Document Updated`,
+              });
+            }
+          }),
+          catchError(() => obsOf(null)),
+        );
       }),
     );
   }

@@ -325,12 +325,7 @@ export abstract class DataModelManager<T extends Model = Model> {
           if (!this.canModify(obj, doc, context)) {
             return throwError(new Error('Modification not allowed'));
           } else {
-            return from(doc.update(this._prepareUpdateQuery(obj))).pipe(
-              map(_ => {
-                return doc;
-              }),
-              catchError(err => throwError(err)),
-            );
+            return this._dataService.update(doc, this._prepareUpdateQuery(obj));
           }
         }
       }),
