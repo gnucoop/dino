@@ -9,6 +9,8 @@ import { DataModelManager } from '@dino/core/data';
 import { DataService } from '@dino/core/data';
 import { FilterGroup } from '@dino/core/list';
 import * as i0 from '@angular/core';
+import { ListHeader } from '@dino/core/list';
+import { MetricsService } from '@dino/core/data';
 import { Model } from '@dino/core/data';
 import { PermissionContextService } from '@dino/core/data';
 import { RxJsonSchema } from 'rxdb';
@@ -46,8 +48,9 @@ export interface FormSchema extends Model {
 
 // @public (undocumented)
 export class FormSchemaManager extends DataModelManager<FormSchema> {
-    constructor(dataService: DataService, permissionContextService: PermissionContextService);
+    constructor(dataService: DataService, permissionContextService: PermissionContextService, _metricService: MetricsService);
     generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
+    generateSchemListHeaders(formSchema?: FormSchema): ListHeader<any>[];
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<FormSchemaManager, never>;
     // (undocumented)

@@ -18,6 +18,7 @@ import { DataQueryOptions } from '@dino/core/data';
 import { ElementRef } from '@angular/core';
 import { FilterGroup } from '@dino/core/list';
 import { FiltersService } from '@dino/core/list';
+import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
 import * as i10 from '@dino/core/list';
 import * as i11 from '@angular/material/button';
@@ -32,7 +33,8 @@ import * as i19 from '@angular/material/slide-toggle';
 import * as i20 from '@angular/material/sort';
 import * as i21 from '@angular/material/table';
 import * as i22 from '@angular/material/toolbar';
-import * as i23 from '@angular/router';
+import * as i23 from '@angular/forms';
+import * as i24 from '@angular/router';
 import * as i5 from '@ajf/core/forms';
 import * as i6 from '@ajf/core/transloco';
 import * as i7 from '@dino/material/breakpoint-observer';
@@ -74,7 +76,8 @@ class ColumnsSelector<T> implements OnInit {
         columns: ListHeader<T>[];
     });
     apply(): void;
-    columns: ListHeader<T>[];
+    columns: Observable<ListHeader<T>[]>;
+    readonly columnSearchFilter: FormGroup;
     // (undocumented)
     data: {
         columns: ListHeader<T>[];
@@ -83,7 +86,7 @@ class ColumnsSelector<T> implements OnInit {
     dialogRef: MatDialogRef<ColumnsSelector<T>>;
     // (undocumented)
     ngOnInit(): void;
-    toggleColumn(index: number): void;
+    toggleColumn(columnName: any): void;
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<ColumnsSelector<any>, "dino-columns-selector", never, {}, {}, never, never>;
     // (undocumented)
@@ -167,7 +170,7 @@ export class ListModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSortModule, typeof i21.MatTableModule, typeof i22.MatToolbarModule, typeof i23.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSortModule, typeof i21.MatTableModule, typeof i22.MatToolbarModule, typeof i23.ReactiveFormsModule, typeof i24.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
 }
 
 // @public

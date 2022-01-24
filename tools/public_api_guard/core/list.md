@@ -167,6 +167,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     get headers(): ListHeader<T>[];
     set headers(headers: ListHeader<T>[]);
     protected _headers: ListHeader<T>[];
+    protected _headersUpdateEvt: EventEmitter_2<ListHeader<T>[]>;
     processAction(action: ListAction, items: T | T[], isDetails?: boolean): void;
     // (undocumented)
     abstract selectAll(): void;
@@ -197,6 +198,8 @@ export interface ListAction {
 // @public
 export interface ListHeader<T> {
     column: keyof T;
+    // (undocumented)
+    dataColumn?: boolean;
     displayed?: boolean;
     hidden?: boolean;
     label: string;
