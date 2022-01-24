@@ -20,10 +20,16 @@
  *
  */
 
+import {AjfStringIdentifier} from '@ajf/core/common';
 import {AjfChoicesOrigin} from '@ajf/core/forms';
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
-import {FilterGroup, FilterItem} from '@dino/core/list';
+import {
+  DataModelManager,
+  DataService,
+  MetricsService,
+  PermissionContextService,
+} from '@dino/core/data';
+import {FilterGroup, FilterItem, ListHeader} from '@dino/core/list';
 
 import {FormSchema, migrationStrategies} from './form-schema';
 import {schema} from './form-schema-json';
@@ -31,7 +37,11 @@ import {FormsModule} from './forms.module';
 
 @Injectable({providedIn: FormsModule})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    dataService: DataService,
+    permissionContextService: PermissionContextService,
+    private _metricService: MetricsService,
+  ) {
     super(
       {name: 'form_schema', collection: {schema, migrationStrategies}},
       dataService,
@@ -67,6 +77,63 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       }
     }
     return nodes;
+  }
+
+  /**
+   * Generates List Headers based on an AjfFormSchema
+   * @param formSchema The form schema definition
+   * @returns The generated Schema List Headers
+   */
+  generateSchemListHeaders(formSchema?: FormSchema): ListHeader<any>[] {
+    if (formSchema == null || formSchema.schema.nodes == null) {
+      return [];
+    }
+    const metricHeaders: ListHeader<any>[] = this._metricService.activeMetrics
+      .getValue()
+      .map(metric => ({
+        column: `${metric.metricName}_ref_id`,
+        label: metric.label.slice(0, -1),
+        sortable: true,
+        populateWith: 'name',
+      }));
+    const defaultHeaders: ListHeader<any>[] = [
+      {
+        column: 'user_data_ref_id',
+        label: 'User',
+        sortable: true,
+        populateWith: 'full_name',
+        displayed: false,
+      },
+      ...metricHeaders,
+      {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    ];
+    const stringIdentifier: AjfStringIdentifier[] | undefined = formSchema.schema.stringIdentifier;
+    const identifierColumns = [];
+    if (stringIdentifier != null) {
+      for (let stringId of stringIdentifier) {
+        identifierColumns.push(...stringId.value);
+      }
+    }
+    const dataHeadersDisplayed = [...new Set(identifierColumns)];
+    const dataHeaders: ListHeader<any>[] = formSchema.schema.nodes
+      ?.map(slide => slide.nodes)
+      .flat(1)
+      .map(
+        node =>
+          ({
+            column: node.name,
+            label: node.label,
+            dataColumn: true,
+            displayed: dataHeadersDisplayed.includes(node.name),
+            sortable: true,
+          } as ListHeader<any>),
+      );
+
+    return [
+      {column: 'id', label: 'ID', sortable: true, displayed: false},
+      ...dataHeaders,
+      ...defaultHeaders,
+    ].sort((a, b) => (a.label > b.label ? 1 : -1));
   }
 
   private _getChoiceOriginFromRef(
