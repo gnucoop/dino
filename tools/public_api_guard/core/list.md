@@ -198,7 +198,6 @@ export interface ListAction {
 // @public
 export interface ListHeader<T> {
     column: keyof T;
-    // (undocumented)
     dataColumn?: boolean;
     displayed?: boolean;
     hidden?: boolean;

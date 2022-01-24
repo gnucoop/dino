@@ -48,10 +48,15 @@ export class MainNav implements AfterViewInit, OnDestroy {
     isAdmin: Observable<boolean>;
     isLoading: BehaviorSubject<boolean>;
     isSyncing: Observable<boolean>;
+    readonly linkIcons: BehaviorSubject<{
+        icon: string;
+        url: string;
+    }[]>;
     // (undocumented)
     get logoImagePath(): string;
     set logoImagePath(url: string);
     logout(): void;
+    readonly logoutDisabled: BehaviorSubject<boolean>;
     // (undocumented)
     menuClick(): void;
     // (undocumented)
@@ -69,6 +74,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
     get sections(): Section[];
     set sections(sec: Section[]);
     // (undocumented)
+    set setLinkIcons(icons: {
+        icon: string;
+        url: string;
+    }[]);
+    // (undocumented)
+    set setLogoutDisabled(state: boolean);
+    // (undocumented)
     set setShowNavLabels(opened: boolean);
     readonly showNav: Observable<boolean>;
     // (undocumented)
@@ -80,7 +92,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     // (undocumented)
     readonly userGroupManager: UserGroupManager;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<MainNav, "dino-main-nav", never, { "sections": "sections"; "adminSections": "adminSections"; "setShowNavLabels": "setShowNavLabels"; "logoImagePath": "logoImagePath"; }, {}, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MainNav, "dino-main-nav", never, { "setLogoutDisabled": "setLogoutDisabled"; "setLinkIcons": "setLinkIcons"; "sections": "sections"; "adminSections": "adminSections"; "setShowNavLabels": "setShowNavLabels"; "logoImagePath": "logoImagePath"; }, {}, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<MainNav, never>;
 }

@@ -276,6 +276,8 @@ export class DataService {
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
     isSyncing: BehaviorSubject<boolean>;
     plugin(plugin: any): void;
+    // (undocumented)
+    update<T extends Model = Model>(doc: RxDocument<T>, updateData: Partial<T>): Observable<RxDocument<T> | null>;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<DataService, [null, null, null, { optional: true; }]>;

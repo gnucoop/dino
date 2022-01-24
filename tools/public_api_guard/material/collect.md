@@ -4,6 +4,7 @@
 
 ```ts
 
+import { BehaviorSubject } from 'rxjs';
 import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
 import { FormSchemaManager } from '@dino/core/forms';
 import * as i0 from '@angular/core';
@@ -41,8 +42,11 @@ export class Collect {
     get getCollectType(): CollectType;
     readonly items: Observable<CollectItem[]>;
     set menuItems(menuItems: CollectItem[]);
+    readonly noItemsMessage: BehaviorSubject<string>;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; }, {}, never, ["[breadcrumbs]"]>;
+    set setNoItemsMessage(message: string);
+    // (undocumented)
+    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "setNoItemsMessage": "setNoItemsMessage"; "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }
