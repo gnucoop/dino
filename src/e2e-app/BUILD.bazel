@@ -129,9 +129,10 @@ esbuild(
 dev_server(
     name = "devserver",
     testonly = True,
-    srcs = devserverIndexHtmlDependencies,
+    srcs = devserverIndexHtmlDependencies + ["//src:source-files"],
     additional_root_paths = [
         "npm/node_modules",
+        "gc_dino",
     ],
     tags = ["manual"],
     deps = [
