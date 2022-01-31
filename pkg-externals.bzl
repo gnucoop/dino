@@ -68,6 +68,7 @@ PKG_EXTERNALS = [
     "@ajf/material/forms",
     "@ajf/material/form-builder",
     "@ajf/material/reports",
+    "@ngneat/transloco",
     "pouchdb-adapter-idb",
     "pouchdb-adapter-memory",
     "rxdb",
