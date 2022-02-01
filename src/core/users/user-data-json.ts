@@ -62,6 +62,14 @@ export const schema = {
         "type": "string"
       },
       "description": "The Permission Groups (by ID) associated with the User."
+    },
+    "user_auth_ref_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The UUID of the authenticated user on the authentication server.",
+      "ref": "user_auth"
     }
   },
   "required": [
@@ -70,6 +78,7 @@ export const schema = {
     "full_name",
     "id",
     "updated_at",
+    "user_auth_ref_id",
     "user_group_ids"
   ],
   "additionalProperties": false,

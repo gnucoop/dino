@@ -27,4 +27,5 @@ export {UserRole} from './user-role';
 export * from './user-data-manager';
 export * from './user-role-manager';
 export * from './user-group-manager';
+export * from './user-admin-check-permissions';
 export * from './users.module';

@@ -29,6 +29,7 @@ import {delay, map, retryWhen, shareReplay, skipWhile, switchMap, take, tap} fro
 import {migrationStrategies, UserData} from './user-data';
 import {schema} from './user-data-json';
 import {UsersModule} from './users.module';
+import {UserSelfExclude} from './user-admin-check-permissions';
 
 /**
  * Service that manages User Roles
@@ -44,6 +45,7 @@ export class UserDataManager extends DataModelManager<UserData> {
       {name: 'user_data', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
+      [new UserSelfExclude(_authService)],
     );
   }
 
@@ -59,7 +61,15 @@ export class UserDataManager extends DataModelManager<UserData> {
         if (userId == null) {
           return obsOf(null);
         }
-        return this.get(userId).pipe(shareReplay(1));
+        return this.query({selector: {user_auth_ref_id: {$eq: userId}}}).pipe(
+          map(docs => {
+            if (!docs.length || docs[0] == null) {
+              return null;
+            }
+            return docs[0];
+          }),
+          shareReplay(1),
+        );
       }),
       map(ud => {
         if (ud == null) {
@@ -67,7 +77,7 @@ export class UserDataManager extends DataModelManager<UserData> {
         }
         return ud;
       }),
-      retryWhen(err => err.pipe(delay(1000), take(10))),
+      retryWhen(err => err.pipe(delay(2000))),
       tap(userData => {
         this.addToContext({user_data: userData});
       }),

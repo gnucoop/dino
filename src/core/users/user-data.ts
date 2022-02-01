@@ -37,6 +37,11 @@ export interface UserData extends Omit<User<{}>, 'id'>, Model {
    * The Permission Groups (by ID) associated with the User.
    */
   user_group_ids: string[];
+
+  /**
+   * The UUID of the authenticated user on the authentication server.
+   */
+  user_auth_ref_id: string | null;
 }
 
 export const VERSION = 0;

@@ -36,6 +36,7 @@ import {schema} from './user-group-json';
 import {UserDataManager} from './user-data-manager';
 import {UsersModule} from './users.module';
 import {UserRole} from './user-role';
+import {AdminGroupExclude} from './user-admin-check-permissions';
 
 /**
  * Service that manages User Groups
@@ -52,6 +53,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
       {name: 'user_group', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
+      [new AdminGroupExclude()],
     );
   }
 
@@ -91,7 +93,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
                 throw new Error('No Role or Group found');
               }
             }),
-            retryWhen(err => err.pipe(delay(2000), take(2))),
+            retryWhen(err => err.pipe(delay(2000))),
           );
         });
         return forkJoin(ug).pipe(

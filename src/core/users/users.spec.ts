@@ -96,10 +96,11 @@ describe('User Data Manager', () => {
   });
 
   it('should retrieve the user model by its UUID', async () => {
-    const getSpy = spyOn(userDataManager, 'get').and.returnValue(obsOf(dummyUserData));
+    const getSpy = spyOn(userDataManager, 'query').and.returnValue(obsOf([dummyUserData]));
     await firstValueFrom(userDataManager.getActiveUserData());
+    const expectedQuerySelector = {selector: {user_auth_ref_id: {$eq: dummyUser.id}}};
     expect(getSpy).toHaveBeenCalledTimes(1);
-    expect(getSpy).toHaveBeenCalledWith(dummyUserData.id);
+    expect(getSpy).toHaveBeenCalledWith(expectedQuerySelector);
   });
 });
 
