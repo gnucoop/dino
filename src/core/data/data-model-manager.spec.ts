@@ -4,10 +4,11 @@ import {TestBed} from '@angular/core/testing';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {firstValueFrom, of as obsOf} from 'rxjs';
+import {firstValueFrom, Observable, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '../auth';
+import {PermissionContext} from './data-permission-interface';
 
 import {
   CanCreateData,
@@ -54,6 +55,14 @@ class ContextServiceMock extends PermissionContextService {
   override checkPermission() {
     return true;
   }
+  override getMatchingMetric() {
+    return true;
+  }
+  override permissionContext: Observable<PermissionContext<{}>> = obsOf({
+    user: dummyUser,
+    user_permissions: [],
+    user_metrics: [],
+  }) as Observable<PermissionContext<{}>>;
 }
 
 class DummyManager extends DataModelManager<DummyModel> {

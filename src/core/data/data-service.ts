@@ -219,7 +219,10 @@ export class DataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          return throwError(new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
+        }
+        if (id == null) {
+          return throwError(() => new Error('Invalid ID'));
         }
         return from(collection.findOne().where('id').eq(id).exec());
       }),
@@ -596,7 +599,7 @@ export class DataService {
               });
               setTimeout(() => {
                 this.isSyncing.next(false);
-              }, 2000);
+              }, 5000);
             });
           });
         },
@@ -604,7 +607,7 @@ export class DataService {
       state.awaitInitialReplication().then(() => {
         setTimeout(() => {
           this.isSyncing.next(false);
-        }, 4000);
+        }, 10000);
       });
     }
     this._activeSyncs[collection.name] = {state, sub};

@@ -24,7 +24,7 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {delay, map, retryWhen, take} from 'rxjs/operators';
+import {delay, map, retryWhen} from 'rxjs/operators';
 import {MetricsService} from './metrics.service';
 
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
@@ -144,7 +144,7 @@ export class PermissionContextService {
         }
         return permissions;
       }),
-      retryWhen(err => err.pipe(delay(1000), take(10))),
+      retryWhen(err => err.pipe(delay(2000))),
       map(permissions => {
         if (permissions == null) {
           return [];

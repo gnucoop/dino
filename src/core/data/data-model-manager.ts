@@ -200,7 +200,7 @@ export abstract class DataModelManager<T extends Model = Model> {
             if (context.user_permissions != null && context.user_metrics != null) {
               return docs.filter(doc => this.canView(doc, context));
             }
-            return docs;
+            return [];
           }),
           take(1),
         ),
@@ -254,11 +254,11 @@ export abstract class DataModelManager<T extends Model = Model> {
           return throwError(new Error('Invalid document'));
         } else {
           if (!this.canDelete(doc, context)) {
-            return throwError(new Error('Deletion not allowed'));
+            return throwError(() => new Error('Deletion not allowed'));
           } else {
             return from(doc.update({$set: {_deleted: true, is_deleted: true}})).pipe(
               map(_ => doc),
-              catchError(err => throwError(err)),
+              catchError(err => throwError(() => new Error(err))),
             );
           }
         }
@@ -320,10 +320,10 @@ export abstract class DataModelManager<T extends Model = Model> {
       switchMap(context => this._dataService.get<T>(params).pipe(map(doc => ({doc, context})))),
       switchMap(({doc, context}) => {
         if (doc == null) {
-          return throwError(new Error('Invalid document'));
+          return throwError(() => new Error('Invalid document'));
         } else {
           if (!this.canModify(obj, doc, context)) {
-            return throwError(new Error('Modification not allowed'));
+            return throwError(() => new Error('Modification not allowed'));
           } else {
             return this._dataService.update(doc, this._prepareUpdateQuery(obj));
           }

@@ -48,11 +48,11 @@ export interface PermissionContextDataUpdate {
 }
 
 /**
- * The data used to evaluate Creation permissions
+ * The data used to evaluate Visualization permissions
  */
 export interface CanViewData<T extends {} = {}, M extends Model = Model> {
   /**
-   * The document to be created
+   * The document to be viewed
    */
   object: M;
 
