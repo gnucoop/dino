@@ -36,10 +36,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService} from '@dino/core/data';
-import {UserGroupManager} from '@dino/core/users';
+import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
-import {filter, map, shareReplay, take, tap, withLatestFrom} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of as obsOf, Subscription} from 'rxjs';
+import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
 
@@ -113,6 +113,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * True if the active user is an Admin
    */
   isAdmin: Observable<boolean>;
+
+  /**
+   * The Active user full name, displayed in the top nav bar.
+   */
+  userDisplayName: Observable<string | null>;
 
   /**
    * If true, the navigation bar and sidenav are displayed.
@@ -210,10 +215,22 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly authService: AuthService,
     readonly dataService: DataService,
     readonly userGroupManager: UserGroupManager,
+    readonly userDataManager: UserDataManager,
     readonly snackbar: MatSnackBar,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
   ) {
+    this.userDisplayName = this.authService.authenticated.pipe(
+      switchMap(auth => {
+        if (auth) {
+          return this.userDataManager
+            .getActiveUserData()
+            .pipe(map(userData => userData?.full_name ?? null));
+        }
+        return obsOf(null);
+      }),
+    );
+
     this.isAdmin = this.userGroupManager.isActiveUserAdmin();
 
     this.showNav = this._router.events.pipe(

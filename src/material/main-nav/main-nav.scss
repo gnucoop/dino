@@ -44,6 +44,21 @@ dino-main-nav {
           animation: spin 2s linear infinite;
         }
       }
+      .dino-active-user-icon {
+        color: inherit;
+        margin-right: 5px;
+      }
+      .dino-active-user-text {
+        margin-right: 20px;
+        font-size: 70%;
+      }
+      .dino-active-user-icon,
+      .dino-active-user-text {
+        opacity: 0.3;
+        @media only screen and (max-width: 992px) {
+          display: none;
+        }
+      }
     }
   }
   mat-sidenav-container.dino-sidenav-container {
