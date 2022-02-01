@@ -21,7 +21,7 @@
  */
 
 import {deepCopy} from '@ajf/core/utils';
-import {Optional} from '@angular/core';
+import {EventEmitter, Optional} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -66,6 +66,11 @@ export class ListDataSource<
       collection: '',
       action: 'init datasource',
     });
+
+  /**
+   * Event that emits whenever an action performed on an Item throws an error
+   */
+  actionErrorEvt: EventEmitter<Error> = new EventEmitter<Error>();
 
   /**
    * The ListDataSource Paginator material component
@@ -386,17 +391,20 @@ export class ListDataSource<
     dm.bulkDelete(items)
       .pipe(
         take(1),
-        catchError(err => throwError(err) as Observable<RxDocument<T, {}>[] | null>),
+        catchError(err => throwError(() => new Error(err))),
       )
-      .subscribe(res => {
-        results = res;
-        this.refreshListData.next({
-          timestamp: new Date().getTime(),
-          collection: dm.collectionName,
-          action: 'delete',
-        });
+      .subscribe({
+        next: res => {
+          results = res;
+          this.refreshListData.next({
+            timestamp: new Date().getTime(),
+            collection: dm.collectionName,
+            action: 'delete',
+          });
+        },
+        error: err => this.actionErrorEvt.emit(err),
       });
-    return this._rxDocsToJson(results);
+    return results ? this._rxDocsToJson(results) : [];
   }
 
   /**

@@ -1,3 +1,4 @@
+import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -73,6 +74,7 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.actionErrorEvt = new EventEmitter<Error>();
     list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();
 
@@ -86,6 +88,7 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.actionErrorEvt = new EventEmitter<Error>();
     list.filtersComponent = ftComponent as unknown as SearchFiltersComponent;
     list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();
@@ -98,6 +101,7 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.actionErrorEvt = new EventEmitter<Error>();
     list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();
 

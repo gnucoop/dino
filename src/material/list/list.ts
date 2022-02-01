@@ -44,6 +44,7 @@ import {
 } from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
@@ -313,6 +314,7 @@ export class SelectionList<T extends Model = Model>
     private _router: Router,
     private _componentFactoryResolver: ComponentFactoryResolver,
     private _injector: Injector,
+    private _snackbar: MatSnackBar,
   ) {
     super(cdr, aui);
 
@@ -637,6 +639,16 @@ export class SelectionList<T extends Model = Model>
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe();
+
+    this._dataSource.actionErrorEvt.pipe(takeUntil(this._mainUnsubscribe)).subscribe(errEvt => {
+      this._snackbar.open(
+        `Oops! Something went wrong while performing the requested action.`,
+        errEvt.message.toUpperCase(),
+        {
+          duration: 5000,
+        },
+      );
+    });
 
     this._headersUpdateEvt
       .pipe(

@@ -261,7 +261,6 @@ export class EditReport implements OnInit, AfterViewInit {
           contextForms[fdata['schema_id']].push(fdata);
         });
         const context = {forms: contextForms, report_data: rData};
-        console.log(context);
         return createReportInstance(rSchema.schema, context, this._translateService);
       }),
     );

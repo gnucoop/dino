@@ -20,7 +20,6 @@
  *
  */
 
-export * from './string-zip';
 export * from './filters.service';
 export * from './list';
 export * from './list.module';
@@ -28,5 +27,4 @@ export * from './list-header';
 export * from './list-actions-interface';
 export * from './list-filters-interfaces';
 export * from './search-filters';
-export * from './string-zip';
 export * from './user-interactions';
