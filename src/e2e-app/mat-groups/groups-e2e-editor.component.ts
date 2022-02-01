@@ -159,17 +159,22 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           }
         }),
       )
-      .subscribe(
-        success => {
+      .subscribe({
+        next: success => {
           this._snackbar.open(`"${success?.groupName}" saved`, 'SAVE', {duration: 5000});
           this.dialogRef.close();
         },
-        () => {
-          this._snackbar.open('Oops! Something went wrong saving the List', 'ERROR', {
-            duration: 5000,
-          });
+        error: err => {
+          this._snackbar.open(
+            `Oops! Something went wrong while performing the requested action.`,
+            err.message.toUpperCase(),
+            {
+              duration: 5000,
+            },
+          );
+          this.dialogRef.close();
         },
-      );
+      });
   }
 
   ngAfterViewInit(): void {

@@ -12,6 +12,7 @@ import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcr
 
 import {MatUsersEditorE2E} from './users-editor-e2e.component';
 import {MatUsersListE2E} from './users-list-e2e.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [MatUsersEditorE2E, MatUsersListE2E],
@@ -25,6 +26,7 @@ import {MatUsersListE2E} from './users-list-e2e.component';
     DinoListModule,
     DinoSearchFiltersBarModule,
     DinoUserEditorModule,
+    MatSnackBarModule,
   ],
 })
 export class MaterialUsersManageE2eModule {}

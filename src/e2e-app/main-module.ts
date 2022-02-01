@@ -72,6 +72,7 @@ import {
   UserDataManagerMock,
   UserGroupManagerMock,
   wsUrl,
+  instanceName,
 } from './mocks';
 import {formDatas} from './test-ajf-formdata';
 import {formSchemas} from './test-ajf-formschema';
@@ -142,7 +143,7 @@ export function provideDataServiceConfig() {
   addPouchPlugin(pouchdbAdapterMemory);
   return {
     databaseCreateOptions: {
-      name: `dino_test_db`,
+      name: `${instanceName}_db`,
       storage: getRxStoragePouch('memory'),
       ignoreDuplicate: true,
     },

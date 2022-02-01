@@ -7,8 +7,20 @@ import {delay, map, shareReplay, tap} from 'rxjs/operators';
 
 import {additionalConfig} from './mockconfig';
 
+/**
+ * Local Backend
+ */
 export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 export const wsUrl = 'ws://localhost:8080/v1/graphql';
+export const instanceName = 'local_dev';
+
+/**
+ * NHost dev backend
+ */
+// export const syncGraphQLUrl = 'https://ktaskcckfnzewxcsyrvu.nhost.run/v1/graphql';
+// export const wsUrl = 'wss://ktaskcckfnzewxcsyrvu.nhost.run/v1/graphql';
+// export const instanceName = 'nhost_dev';
+
 export const authErrorMessage = 'Could not verify JWT: JWTExpired';
 
 export const authMockConfig: AuthServiceConfig = {
@@ -131,6 +143,7 @@ const userDataMock: UserData = {
   user_group_ids: [],
   created_at: '',
   updated_at: '',
+  user_auth_ref_id: null,
 };
 
 @Injectable()

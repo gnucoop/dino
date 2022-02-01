@@ -3,6 +3,9 @@ import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dino/core/auth';
 import {ConfigServiceConfig} from '@dino/core/config';
 
+/**
+ * Local Backend
+ */
 const applicationId = 'c7576d4b-1be7-4381-98b5-d02f13f5dadd';
 const host = `http://localhost:9011`;
 export const authConfig: AuthServiceConfig = {
@@ -13,6 +16,20 @@ export const authConfig: AuthServiceConfig = {
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
 };
+
+/**
+ * NHost dev backend
+ */
+// const host = `https://ktaskcckfnzewxcsyrvu.nhost.run`;
+// export const authConfig: AuthServiceConfig = {
+//   host: host,
+//   nHostAuth: true,
+//   userCredential: 'email',
+//   applicationId: null,
+//   retryRefreshTime: 3000,
+//   retryAttemptsMax: 1,
+//   failedAuthRedirect: 'login',
+// };
 
 export const configurationConfig: ConfigServiceConfig = {
   apiUrl: 'https://dev.cpainitiative.org/instances',

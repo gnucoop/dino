@@ -1,6 +1,8 @@
 import {AjfFieldType} from '@ajf/core/forms';
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {NetworkStatusService} from '@dino/core/auth';
 import {ActionType, FilterGroup, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {ListDataSource} from '@dino/material/list';
@@ -58,6 +60,8 @@ export class MatUsersListE2E implements OnInit {
   constructor(
     private _UserDataManager: UserDataManager,
     private _filtersService: FiltersService,
+    readonly nss: NetworkStatusService,
+    readonly snackbar: MatSnackBar,
     public dialog: MatDialog,
   ) {}
 
@@ -66,11 +70,21 @@ export class MatUsersListE2E implements OnInit {
   }
 
   openDialog(group?: UserData, action?: 'view' | 'edit' | 'create'): void {
-    this.dialog.open(MatUsersEditorE2E, {
-      data: {
-        userItem: group,
-        userAction: action,
-      } as UserDialogData,
+    if (window.navigator.onLine || action === 'edit' || action === 'view') {
+      this.dialog.open(MatUsersEditorE2E, {
+        data: {
+          userItem: group,
+          userAction: action,
+        } as UserDialogData,
+      });
+    } else {
+      this.showOfflineMessage();
+    }
+  }
+
+  showOfflineMessage() {
+    this.snackbar.open(`New User accounts cannot be created while offline.`, 'NO CONNECTION', {
+      duration: 10000,
     });
   }
 }
