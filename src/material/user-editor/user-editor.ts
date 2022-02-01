@@ -29,12 +29,14 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
-import {Observable, Subscription} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {Observable, of as obsOf, Subscription} from 'rxjs';
+import {switchMap, take} from 'rxjs/operators';
+import {PasswordMatch} from './user-password-validator';
 
 /**
  * Represents the data to be passed to a UserEditor dialog.
@@ -71,6 +73,10 @@ export interface UserFormField {
    * The field starting value
    */
   value?: any;
+  /**
+   * The field input type
+   */
+  inputType?: string;
 }
 
 /**
@@ -111,14 +117,16 @@ export class UserEditor implements OnDestroy, OnInit {
   private _saveSub: Subscription = Subscription.EMPTY;
 
   constructor(
-    private _UserDataManager: UserDataManager,
+    private _userDataManager: UserDataManager,
     private _userGroupManager: UserGroupManager,
-    readonly snackbar: MatSnackBar,
+    private _authService: AuthService,
+    @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
     @Inject(MAT_DIALOG_DATA) public data: UserDialogData,
     public dialogRef: MatDialogRef<UserEditor>,
+    readonly snackbar: MatSnackBar,
   ) {
     this._populateForm();
-    this.userGroups = this._userGroupManager.list();
+    this.userGroups = this._userGroupManager.query({selector: {is_deleted: {$eq: false}}});
   }
 
   ngOnInit(): void {
@@ -126,20 +134,68 @@ export class UserEditor implements OnDestroy, OnInit {
       .pipe(
         switchMap(item => {
           if (this.data.userAction === 'edit') {
-            return this._UserDataManager.update(item);
+            if (this.data.userItem == null || this.data.userItem.id == null) {
+              return obsOf(null);
+            }
+            return this._userDataManager.update({...item, id: this.data.userItem.id});
           } else {
-            return this._UserDataManager.create(item);
+            if (!this._config.nHostAuth) {
+              return this._userDataManager.create({
+                full_name: item.full_name,
+                email: item.email,
+                user_group_ids: item.user_group_ids,
+                user_auth_ref_id: null,
+              });
+            }
+            const nHostItem = item as UserData & {password: string};
+            return this._authService
+              .signupNHost({
+                email: nHostItem.email,
+                password: nHostItem.password,
+                options: {displayName: nHostItem.full_name},
+              })
+              .pipe(
+                switchMap(nhostRes => {
+                  if (
+                    nhostRes == null ||
+                    nhostRes.session == null ||
+                    nhostRes.session.user == null
+                  ) {
+                    return obsOf(null);
+                  }
+                  return this._userDataManager.create({
+                    full_name: item.full_name,
+                    email: item.email,
+                    user_group_ids: item.user_group_ids,
+                    user_auth_ref_id: nhostRes.session.user.id,
+                  });
+                }),
+              );
           }
         }),
+        take(1),
       )
-      .subscribe(res => {
-        if (res == null) {
-          this.snackbar.open(`Oops! Something went wrong while saving the User.`, 'SAVE ERROR', {
-            duration: 10000,
-          });
-        } else {
-          this.snackbar.open(`${res.full_name} saved`, 'USER SAVED', {duration: 10000});
-        }
+      .subscribe({
+        next: res => {
+          if (res == null) {
+            this.snackbar.open(`Oops! Something went wrong while saving the User.`, 'SAVE ERROR', {
+              duration: 10000,
+            });
+          } else {
+            this.snackbar.open(`${res.full_name} saved`, 'USER SAVED', {duration: 10000});
+          }
+          this.closeEditor();
+        },
+        error: err => {
+          this.snackbar.open(
+            `Oops! Something went wrong while performing the requested action.`,
+            `ERROR: ${err.message.toUpperCase()}`,
+            {
+              duration: 5000,
+            },
+          );
+          this.closeEditor();
+        },
       });
   }
 
@@ -156,22 +212,75 @@ export class UserEditor implements OnDestroy, OnInit {
         placeholder: 'Full Name',
         value: currentUser?.full_name ?? '',
       },
-      {
+    ];
+    if (this.data.userAction !== 'edit') {
+      fields.push({
         fieldName: 'email',
         hint: `The User Email address`,
         placeholder: 'Email',
         value: currentUser?.email ?? '',
-      },
-    ];
+      });
+    }
+    if (this._config.nHostAuth && this.data.userAction === 'create') {
+      fields.push({
+        fieldName: 'password',
+        hint: `The User password`,
+        placeholder: 'Password',
+        inputType: 'password',
+      });
+      fields.push({
+        fieldName: 'confirm_password',
+        hint: `Confirm the User password`,
+        placeholder: 'Confirm Password',
+        inputType: 'password',
+      });
+      group['password'] = new FormControl(null, [Validators.minLength(8), Validators.required]);
+      group['confirm_password'] = new FormControl(null, [
+        Validators.minLength(8),
+        PasswordMatch,
+        Validators.required,
+      ]);
+    }
 
     group['full_name'] = new FormControl(currentUser?.full_name ?? '', Validators.required);
-    group['email'] = new FormControl(currentUser?.email ?? '', Validators.required);
+    group['email'] = new FormControl(currentUser?.email ?? '', [
+      Validators.email,
+      Validators.required,
+    ]);
 
     group['user_group_ids'] = new FormControl(currentUser?.user_group_ids ?? []);
     const formGroup = new FormGroup(group);
 
     this.userForm = formGroup;
     this.userFormFields = fields;
+  }
+
+  /**
+   * Display the User Editor form validation errors
+   * @param formControl The formgroup control to be checked
+   * @param field The User form field
+   * @returns The error message to be displayed
+   */
+  showValidationErrors(formControl: AbstractControl | null, field: UserFormField | null): string {
+    if (formControl == null || field == null) {
+      return '';
+    }
+    let errorMessages: string[] = [];
+    if (formControl.hasError('required')) {
+      errorMessages.push(`Please enter ${field.placeholder}`);
+    }
+    if (formControl.hasError('email')) {
+      errorMessages.push(`Please enter a valid Email`);
+    }
+    if (formControl.hasError('minlength')) {
+      errorMessages.push(
+        `Minimum length: ${formControl.getError('minlength').requiredLength} characters`,
+      );
+    }
+    if (formControl.hasError('password_not_matching')) {
+      errorMessages.push(`Password values do not match`);
+    }
+    return errorMessages.toString().replace(',', ', ');
   }
 
   /**
@@ -195,13 +304,7 @@ export class UserEditor implements OnDestroy, OnInit {
   saveUser(): void {
     const formValue = this.userForm.value;
     if (formValue != null && this.isFormValid()) {
-      let obj = {...formValue};
-      if (this.data.userItem != null && this.data.userAction === 'edit') {
-        const editedItem: UserData = this.data.userItem;
-        obj = {...editedItem, ...formValue};
-      }
-
-      this._saveEvt.emit(obj);
+      this._saveEvt.emit(formValue);
     }
   }
 

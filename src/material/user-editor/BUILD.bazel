@@ -18,6 +18,7 @@ ng_module(
         ":user-editor.css",
     ] + glob(["**/*.html"]),
     deps = [
+        "//src/core/auth",
         "//src/core/data",
         "//src/core/users",
         "//src/material/breakpoint-observer",
