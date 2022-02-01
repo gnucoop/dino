@@ -37,12 +37,17 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
   /**
    * Authorization external service application id.
    */
-  applicationId: string;
+  applicationId: string | null;
 
   /**
    * API key used to call the external authorization service login endpoint.
    */
   apiKey?: string;
+
+  /**
+   * If true, the Authentication process is performed against a nHost backend.
+   */
+  nHostAuth?: boolean;
 
   /**
    * Custom login credential key to be sent in the login request to the api.
@@ -73,6 +78,11 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
    * Optional custom jwt token refresh endpoint url. Defaults to 'api/jwt/refresh',
    */
   refreshEndpoint?: string;
+
+  /**
+   * Optional custom User signup endpoint
+   */
+  signupEndpoint?: string;
 
   /**
    * Time interval to retry refresh token calls in milliseconds.

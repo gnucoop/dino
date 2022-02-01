@@ -25,8 +25,9 @@ import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, mapTo, switchMap, tap} from 'rxjs/operators';
+import {NHostSignupRequest, NHostSignupResponse} from '.';
 
-import {AuthResponse} from './auth-response';
+import {AuthResponse, NHostRefreshResponse} from './auth-response';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {Credentials} from './credentials';
 import {JwtToken} from './jwt-token';
@@ -139,32 +140,42 @@ export class AuthService {
 
     return this._authConfig.pipe(
       switchMap(config => {
-        const req: {[key: string]: string} = {
+        const req: {[key: string]: string | null} = {
           [config.userCredential ?? DEFAULT_AUTH_OPTIONS.userCredentialKey]: credentials.email,
           [config.passwordCredential ?? DEFAULT_AUTH_OPTIONS.passwordCredentialKey]:
             credentials.password,
-          applicationId: config.applicationId,
         };
 
+        if (!config.nHostAuth) {
+          req.applicationId = config.applicationId;
+        }
+        const defaulLoginUrl = config.nHostAuth ? 'v1/auth/signin/email-password' : 'api/login';
         const url = this._generateUrl(
-          config.loginEndpoint ?? 'api/login',
+          config.loginEndpoint ?? defaulLoginUrl,
           removeSlashes(config.host),
         );
         const headers = config.apiKey != null ? {Authorization: config.apiKey} : undefined;
         return this._httpClient.post<LoginResponse>(url, req, {headers}).pipe(
           tap(res => {
+            if (config.nHostAuth && res.session == null) {
+              throw new Error(`${res.error} - ${res.message}`);
+            }
             this.authenticated.next(true);
-            this._storeAuthToken(res.token);
-            this._storeRefreshToken(res.refreshToken);
-            let userInfo = res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
+            this._storeAuthToken(res.session?.accessToken ?? res.token);
+            this._storeRefreshToken(res.session?.refreshToken ?? res.refreshToken);
+            let userInfo =
+              res.session && res.session[DEFAULT_AUTH_OPTIONS.userAuthInfo]
+                ? res.session[DEFAULT_AUTH_OPTIONS.userAuthInfo]
+                : res[DEFAULT_AUTH_OPTIONS.userAuthInfo];
             if (config.userAuthInfo != null) {
-              const userAuthInfo = res[config.userAuthInfo];
+              const userAuthInfo = res.session[config.userAuthInfo] ?? res[config.userAuthInfo];
               userInfo = userAuthInfo;
             }
             this._storeUserInfo(userInfo);
           }),
           mapTo(true),
-          catchError(() => {
+          catchError(err => {
+            console.log(err.error ?? err);
             this.authenticated.next(false);
             return obsOf(false);
           }),
@@ -182,19 +193,27 @@ export class AuthService {
   logout(allDevices = false): Observable<boolean> {
     return this._authConfig.pipe(
       switchMap(config => {
+        const req: {[key: string]: string | boolean} = {};
         const refreshToken = this.getRefreshToken()!;
         const global = this._stringifyBooleanParam(allDevices);
         const params = new HttpParams({fromObject: {global, refreshToken}});
-        const headers =
+        const headers: {[key: string]: any} =
           config.apiKey != null
             ? {Authorization: config.apiKey}
             : {Authorization: `Bearer ${this.getAuthToken()}`};
-        const url = `${this._generateUrl(
-          config.logoutEndpoint ?? 'api/logout',
+        let options: {headers: {[key: string]: any}; responseType?: any} = {headers: headers};
+        const defaulLogoutUrl = config.nHostAuth ? 'v1/auth/signout' : 'api/logout';
+        let url = `${this._generateUrl(
+          config.logoutEndpoint ?? defaulLogoutUrl,
           removeSlashes(config.host),
         )}?${params.toString()}`;
-        return this._httpClient.post(url, {}, {headers}).pipe(
-          tap(() => {
+        if (config.nHostAuth) {
+          req.refreshToken = refreshToken;
+          req.all = allDevices;
+          options.responseType = 'text';
+        }
+        return this._httpClient.post(url, req, options).pipe(
+          tap(_ => {
             this.authenticated.next(false);
             this._storeAuthToken(null);
             this._storeRefreshToken(null);
@@ -202,8 +221,32 @@ export class AuthService {
             this._removeAuthConfig();
           }),
           mapTo(true),
-          catchError(() => obsOf(false)),
+          catchError(err => {
+            console.log(err.error ?? err);
+            return obsOf(false);
+          }),
         );
+      }),
+    );
+  }
+
+  /**
+   * Make a signup request to the nHost authentication api to create a new user.
+   * @param requestData The Nhost request params
+   * @returns the NHost signup Api response
+   */
+  signupNHost(requestData: NHostSignupRequest): Observable<NHostSignupResponse | null> {
+    if (requestData == null || requestData.email == null || requestData.password == null) {
+      return obsOf(null);
+    }
+
+    return this._authConfig.pipe(
+      switchMap(config => {
+        const url = this._generateUrl(
+          config.signupEndpoint ?? 'v1/auth/signup/email-password',
+          removeSlashes(config.host),
+        );
+        return this._httpClient.post<NHostSignupResponse>(url, requestData);
       }),
     );
   }
@@ -260,9 +303,9 @@ export class AuthService {
     return this._authConfig.pipe(
       switchMap(config => {
         const req = {refreshToken: this.getRefreshToken()};
-
+        const defaulRefreshUrl = config.nHostAuth ? 'v1/auth/token' : 'api/jwt/refresh';
         const url = this._generateUrl(
-          config.refreshEndpoint ?? 'api/jwt/refresh',
+          config.refreshEndpoint ?? defaulRefreshUrl,
           removeSlashes(config.host),
         );
         const headers =
@@ -271,15 +314,16 @@ export class AuthService {
             : {Authorization: `Bearer ${this.getAuthToken()}`};
 
         const refreshHttpCall: Observable<boolean> = this._httpClient
-          .post<AuthResponse>(url, req, {headers})
+          .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
             tap(res => {
               this.authenticated.next(true);
               this._storeRefreshToken(res.refreshToken);
-              this._storeAuthToken(res.token);
+              this._storeAuthToken(res.accessToken ?? res.token);
             }),
             mapTo(true),
-            catchError(() => {
+            catchError(err => {
+              console.log(err.error ?? err);
               this.authenticated.next(false);
               return obsOf(false);
             }),

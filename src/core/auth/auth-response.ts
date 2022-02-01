@@ -35,3 +35,57 @@ export interface AuthResponse {
    */
   refreshToken: string;
 }
+
+/**
+ * Nhost Refresh api response
+ */
+export interface NHostRefreshResponse {
+  /**
+   * The access token, this string is an encoded JSON Web Token (JWT).
+   */
+  accessToken: string;
+
+  /**
+   * The access token expiry time
+   */
+  accessTokenExpiresIn: number;
+
+  /**
+   * The refresh token that can be used to obtain a new access token once the provide
+   * one has expired.
+   */
+  refreshToken: string;
+
+  /**
+   * The NHost user info object
+   */
+  user: {[key: string]: any};
+}
+
+/**
+ * Request to the nHost signup api.
+ */
+export type NHostSignupRequest = {
+  /**
+   * User email
+   */
+  email: string;
+  /**
+   * User password
+   */
+  password: string;
+  /**
+   * User displayed name options
+   */
+  options: {displayName: string};
+};
+
+/**
+ * Response of the nHost signup api.
+ */
+export type NHostSignupResponse = {
+  /**
+   * The NHost session, including the created user info.
+   */
+  session: {user: {id: string; displayName: string; email: string}};
+};

@@ -138,7 +138,10 @@ export class JWTInterceptor implements HttpInterceptor {
    * @returns true if it's an allowed request.
    */
   private _isAllowedRequest(request: HttpRequest<any>): boolean {
-    const loginEndpoint = this._authService.authConfig.loginEndpoint;
+    const defaultLoginEndpoint = this._authService.authConfig.nHostAuth
+      ? 'v1/auth/signin/email-password'
+      : 'api/login';
+    const loginEndpoint = this._authService.authConfig.loginEndpoint ?? defaultLoginEndpoint;
     if (loginEndpoint && request.url.includes(loginEndpoint)) {
       return true;
     }

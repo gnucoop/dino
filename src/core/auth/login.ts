@@ -99,8 +99,8 @@ export abstract class LoginComponent {
     this._authService
       .login(credentials)
       .pipe(take(1))
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           if (res) {
             this._setLoginError(false);
             if (this._postLogin != undefined) {
@@ -113,11 +113,11 @@ export abstract class LoginComponent {
           }
           this.loggingIn = false;
         },
-        _ => {
+        error: _ => {
           this._setLoginError(true);
           this.loggingIn = false;
         },
-      );
+      });
   }
 
   /**
