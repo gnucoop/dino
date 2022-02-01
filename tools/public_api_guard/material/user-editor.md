@@ -4,6 +4,9 @@
 
 ```ts
 
+import { AbstractControl } from '@angular/forms';
+import { AuthService } from '@dino/core/auth';
+import { AuthServiceConfig } from '@dino/core/auth';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
 import * as i10 from '@angular/material/icon';
@@ -40,7 +43,7 @@ export interface UserDialogData {
 
 // @public
 export class UserEditor implements OnDestroy, OnInit {
-    constructor(_UserDataManager: UserDataManager, _userGroupManager: UserGroupManager, snackbar: MatSnackBar, data: UserDialogData, dialogRef: MatDialogRef<UserEditor>);
+    constructor(_userDataManager: UserDataManager, _userGroupManager: UserGroupManager, _authService: AuthService, _config: AuthServiceConfig, data: UserDialogData, dialogRef: MatDialogRef<UserEditor>, snackbar: MatSnackBar);
     closeEditor(): void;
     // (undocumented)
     data: UserDialogData;
@@ -52,6 +55,7 @@ export class UserEditor implements OnDestroy, OnInit {
     // (undocumented)
     ngOnInit(): void;
     saveUser(): void;
+    showValidationErrors(formControl: AbstractControl | null, field: UserFormField | null): string;
     // (undocumented)
     readonly snackbar: MatSnackBar;
     userForm: FormGroup;
@@ -77,6 +81,7 @@ export class UserEditorModule {
 export interface UserFormField {
     fieldName: string;
     hint?: string;
+    inputType?: string;
     placeholder: string;
     value?: any;
 }

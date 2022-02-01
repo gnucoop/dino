@@ -16,6 +16,7 @@ import { ComponentFactoryResolver } from '@angular/core';
 import { DataModelManager } from '@dino/core/data';
 import { DataQueryOptions } from '@dino/core/data';
 import { ElementRef } from '@angular/core';
+import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FilterGroup } from '@dino/core/list';
 import { FiltersService } from '@dino/core/list';
 import { FormGroup } from '@angular/forms';
@@ -30,11 +31,12 @@ import * as i16 from '@angular/material/input';
 import * as i17 from '@angular/material/list';
 import * as i18 from '@angular/material/paginator';
 import * as i19 from '@angular/material/slide-toggle';
-import * as i20 from '@angular/material/sort';
-import * as i21 from '@angular/material/table';
-import * as i22 from '@angular/material/toolbar';
-import * as i23 from '@angular/forms';
-import * as i24 from '@angular/router';
+import * as i20 from '@angular/material/snack-bar';
+import * as i21 from '@angular/material/sort';
+import * as i22 from '@angular/material/table';
+import * as i23 from '@angular/material/toolbar';
+import * as i24 from '@angular/forms';
+import * as i25 from '@angular/router';
 import * as i5 from '@ajf/core/forms';
 import * as i6 from '@ajf/core/transloco';
 import * as i7 from '@dino/material/breakpoint-observer';
@@ -47,6 +49,7 @@ import { ListHeader } from '@dino/core/list';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Model } from '@dino/core/data';
@@ -137,6 +140,7 @@ export interface ListContext<T extends Model = Model> {
 // @public
 export class ListDataSource<T extends Model = Model, AD extends Model = Model> extends MatTableDataSource<T> {
     constructor(_dataModelManager: DataModelManager<T>, _fs: FiltersService, _additionalDataManager?: DataModelManager<AD> | undefined, _isFormDataList?: boolean);
+    actionErrorEvt: EventEmitter_2<Error>;
     // (undocumented)
     get additionalDataSchema(): AD;
     set additionalDataSchema(dataSchema: AD);
@@ -170,12 +174,12 @@ export class ListModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSortModule, typeof i21.MatTableModule, typeof i22.MatToolbarModule, typeof i23.ReactiveFormsModule, typeof i24.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSnackBarModule, typeof i21.MatSortModule, typeof i22.MatTableModule, typeof i23.MatToolbarModule, typeof i24.ReactiveFormsModule, typeof i25.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
 }
 
 // @public
 export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
-    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _componentFactoryResolver: ComponentFactoryResolver, _injector: Injector);
+    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _componentFactoryResolver: ComponentFactoryResolver, _injector: Injector, _snackbar: MatSnackBar);
     actionOnItems(row: T | T[], action: ListAction, isDetails?: boolean): void;
     set additionalBasicFilters(filterNames: string[]);
     // (undocumented)

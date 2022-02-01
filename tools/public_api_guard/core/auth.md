@@ -79,6 +79,7 @@ export class AuthService {
     refreshToken(): Observable<boolean>;
     resetAuth(): void;
     readonly resetEvt: EventEmitter<boolean>;
+    signupNHost(requestData: NHostSignupRequest): Observable<NHostSignupResponse | null>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<AuthService, [null, null, null, { optional: true; }]>;
     // (undocumented)
@@ -88,12 +89,13 @@ export class AuthService {
 // @public
 export interface AuthServiceConfig<T = DinoUserInfo> {
     apiKey?: string;
-    applicationId: string;
+    applicationId: string | null;
     authTokenLocalStorageKey?: string;
     failedAuthRedirect: string;
     host: string;
     loginEndpoint?: string;
     logoutEndpoint?: string;
+    nHostAuth?: boolean;
     passwordCredential?: string;
     refreshEndpoint?: string;
     refreshTokenLocalStorageKey?: string;
@@ -102,6 +104,7 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
     retrieveUserInfo?: () => User<T> | null;
     retryAttemptsMax: number;
     retryRefreshTime: number;
+    signupEndpoint?: string;
     storeAuthToken?: (token: string | null) => void;
     storeRefreshToken?: (token: string | null) => void;
     storeUserInfo?: (userInfo: User<T> | null) => void;
@@ -224,6 +227,36 @@ export class NetworkStatusService {
     // (undocumented)
     static ɵprov: i0.ɵɵInjectableDeclaration<NetworkStatusService>;
 }
+
+// @public
+export interface NHostRefreshResponse {
+    accessToken: string;
+    accessTokenExpiresIn: number;
+    refreshToken: string;
+    user: {
+        [key: string]: any;
+    };
+}
+
+// @public
+export type NHostSignupRequest = {
+    email: string;
+    password: string;
+    options: {
+        displayName: string;
+    };
+};
+
+// @public
+export type NHostSignupResponse = {
+    session: {
+        user: {
+            id: string;
+            displayName: string;
+            email: string;
+        };
+    };
+};
 
 // @public
 export type TwoFactorDelivery = 'None' | 'TextMessage';

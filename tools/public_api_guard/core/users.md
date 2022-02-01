@@ -5,19 +5,31 @@
 ```ts
 
 import { AuthService } from '@dino/core/auth';
+import { CanDeleteData } from '@dino/core/data';
+import { CanModifyData } from '@dino/core/data';
 import { DataModelManager } from '@dino/core/data';
 import { DataService } from '@dino/core/data';
 import * as i0 from '@angular/core';
 import { MetricsService } from '@dino/core/data';
 import { Model } from '@dino/core/data';
 import { Observable } from 'rxjs';
+import { Permission } from '@dino/core/data';
 import { PermissionContextService } from '@dino/core/data';
 import { RxDocument } from 'rxdb';
 import { User } from '@dino/core/auth';
 
 // @public
+export class AdminGroupExclude implements Permission<UserGroup> {
+    // (undocumented)
+    canDelete(data: CanDeleteData<{}, UserGroup>): boolean;
+    // (undocumented)
+    canModify(data: CanModifyData<{}, UserGroup>): boolean;
+}
+
+// @public
 export interface UserData extends Omit<User<{}>, 'id'>, Model {
     full_name: string;
+    user_auth_ref_id: string | null;
     user_group_ids: string[];
 }
 
@@ -74,6 +86,15 @@ export class UserRoleManager extends DataModelManager<UserRole> {
     static ɵfac: i0.ɵɵFactoryDeclaration<UserRoleManager, never>;
     // (undocumented)
     static ɵprov: i0.ɵɵInjectableDeclaration<UserRoleManager>;
+}
+
+// @public
+export class UserSelfExclude implements Permission<UserData> {
+    constructor(_authService: AuthService);
+    // (undocumented)
+    canDelete(data: CanDeleteData<{}, UserData>): boolean;
+    // (undocumented)
+    canModify(data: CanModifyData<{}, UserData>): boolean;
 }
 
 // @public

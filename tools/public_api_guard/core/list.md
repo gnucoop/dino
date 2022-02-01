@@ -236,9 +236,6 @@ export abstract class SearchFiltersComponent {
     readonly textSearchFilters: FormGroup;
 }
 
-// @public (undocumented)
-export function unzip(base64ZippedString: any): string;
-
 // @public
 export interface WidgetData {
     active: boolean;
@@ -247,9 +244,6 @@ export interface WidgetData {
     validationConditions?: AjfValidationGroup;
     visibilityConditions: AjfCondition;
 }
-
-// @public
-export function zip(s: string): string;
 
 // (No @packageDocumentation comment for this package)
 
