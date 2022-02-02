@@ -1,50 +1,57 @@
-.dino-grid-list {
-    margin: auto;
-    margin-bottom: 2em;
-    .dino-no-items-message {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        align-content: center;
-        height: 85vh;
-        opacity: 0.4;
+dino-collect {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
     }
-    .dino-grid-tile {
-        .dino-grid-action-icons {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            .mat-mini-fab.mat-button-base {
-                opacity: 0.5;
-                transition: all ease-in-out 0.3;
-                -webkit-transition: all ease-in-out 0.3s;
-                cursor: pointer;
-            }
-        }
-        outline: none;
-        .mat-grid-tile-content div {
-            outline: none;
+    .dino-grid-list {
+        margin: auto;
+        margin-bottom: 12vh;
+        .dino-no-items-message {
             display: flex;
-            flex-flow: column wrap;
+            flex-flow: row wrap;
             justify-content: center;
+            align-content: center;
+            height: 85vh;
+            opacity: 0.4;
         }
-        transition: all ease-in-out 0.5;
-        -webkit-transition: all ease-in-out 0.3s;
-        cursor: pointer;
-        .dino-grid-icon {
-            max-width: 100%;
-            max-height: 100%;
-            margin: auto;
-            img {
-                flex: 1 0 auto;
-                width: 10vw;
-                margin: auto;
+        .dino-grid-tile {
+            .dino-grid-action-icons {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                .mat-mini-fab.mat-button-base {
+                    opacity: 0.5;
+                    transition: all ease-in-out 0.3;
+                    -webkit-transition: all ease-in-out 0.3s;
+                    cursor: pointer;
+                }
             }
-        }
-        .dino-grid-label {
-            text-align: center;
-            margin: auto;
-            margin-top: 5vh;
+            outline: none;
+            .mat-grid-tile-content div {
+                outline: none;
+                display: flex;
+                flex-flow: column wrap;
+                justify-content: center;
+            }
+            transition: all ease-in-out 0.5;
+            -webkit-transition: all ease-in-out 0.3s;
+            cursor: pointer;
+            .dino-grid-icon {
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto;
+                img {
+                    flex: 1 0 auto;
+                    width: 10vw;
+                    margin: auto;
+                }
+            }
+            .dino-grid-label {
+                text-align: center;
+                margin: auto;
+                margin-top: 5vh;
+            }
         }
     }
 }

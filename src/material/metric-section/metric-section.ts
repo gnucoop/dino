@@ -51,6 +51,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
   @Input() showEditor: boolean = true;
 
   /**
+   * List of the names of fields that cannot be edited by the user
+   */
+  @Input() readOnlyFields: string[] | null = null;
+
+  /**
    * The Metrics List headers
    */
   @Input() headers: ListHeader<T>[];
@@ -100,6 +105,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
         metricManager: this._metricManager,
         metricItem: metric,
         metricAction: action,
+        readOnlyFields: this.readOnlyFields,
       },
     });
   }

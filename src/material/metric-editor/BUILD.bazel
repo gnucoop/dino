@@ -49,8 +49,8 @@ ng_test_library(
     deps = [
         ":metric-editor",
         "//src/core/areas",
-        "//src/core/cases",
         "//src/core/auth",
+        "//src/core/cases",
         "//src/core/data",
         "@npm//@angular/common",
         "@npm//@angular/forms",

@@ -61,6 +61,11 @@ export interface MetricDialogData<T extends Metric = Metric> {
    * The dialog mode.
    */
   metricAction?: 'view' | 'edit' | 'create';
+
+  /**
+   * List of the names of fields that cannot be edited by the user
+   */
+  readOnlyFields?: string[];
 }
 
 /**
@@ -275,6 +280,9 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     this.metricParentValue = group['parent'].valueChanges;
 
     for (let propKey in schema.properties) {
+      if (this.data.readOnlyFields && this.data.readOnlyFields.includes(propKey)) {
+        continue;
+      }
       const propValue = schema.properties[propKey];
       const propRequired =
         schema.required!.indexOf(propKey) >= 0 &&
