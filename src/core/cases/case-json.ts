@@ -22,7 +22,7 @@
 
 import {RxJsonSchema} from 'rxdb';
 
-import {FormData} from './form-data';
+import {Case} from './case';
 
 // tslint:disable
 export const schema = {
@@ -48,76 +48,39 @@ export const schema = {
       "type": "boolean",
       "description": "Pouchdb delete flag"
     },
-    "user_data_ref_id": {
+    "name": {
       "type": "string",
-      "description": "The collector user identifier.",
-      "ref": "user_data"
+      "description": "The metric name."
     },
-    "schema_id": {
-      "type": "string",
-      "description": "The schema identifier"
-    },
-    "data": {
-      "type": "object",
-      "description": "A plain object containing the data collected."
-    },
-    "area_ref_id": {
+    "parent_id": {
       "type": [
         "string",
         "null"
       ],
-      "description": "The Form Data area id.",
-      "ref": "area"
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
-    "case_ref_id": {
+    "parent_name": {
       "type": [
         "string",
         "null"
-      ],
-      "description": "The Form Data case id.",
-      "ref": "case"
+      ]
     },
-    "project_ref_id": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "The Form Data project id.",
-      "ref": "project"
-    },
-    "location_ref_id": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "The Form Data location id.",
-      "ref": "location"
-    },
-    "organization_ref_id": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "The Form Data organization id.",
-      "ref": "organization"
+    "code": {
+      "type": "number",
+      "description": "The Case Code identifier"
     }
   },
-  "required": [
-    "area_ref_id",
-    "case_ref_id",
-    "created_at",
-    "data",
-    "id",
-    "location_ref_id",
-    "organization_ref_id",
-    "project_ref_id",
-    "schema_id",
-    "updated_at",
-    "user_data_ref_id"
-  ],
   "additionalProperties": false,
-  "description": "This model is used to store the data collected through an Ajf form.",
-  "title": "FormData",
+  "required": [
+    "created_at",
+    "id",
+    "name",
+    "parent_id",
+    "parent_name",
+    "updated_at"
+  ],
+  "description": "This model is used to store Cases.",
+  "title": "Case",
   "primaryKey": "id",
-  "version": 1
-} as RxJsonSchema<FormData>;
+  "version": 0
+} as RxJsonSchema<Case>;

@@ -5,6 +5,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {of} from 'rxjs';
 
 import {AreaManager} from '../../core/areas';
+import {CaseManager} from '../../core/cases';
 import {DataService, Metric, PermissionContextService} from '../../core/data';
 
 import {MetricEditor, MetricEditorModule} from './index';

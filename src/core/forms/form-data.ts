@@ -49,6 +49,11 @@ export interface FormData extends Model {
   area_ref_id: string | null;
 
   /**
+   * The Form Data case id.
+   */
+  case_ref_id: string | null;
+
+  /**
    * The Form Data project id.
    */
   project_ref_id: string | null;

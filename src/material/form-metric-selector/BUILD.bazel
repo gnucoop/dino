@@ -21,6 +21,7 @@ ng_module(
     ] + glob(["**/*.html"]),
     deps = [
         "//src/core/areas",
+        "//src/core/cases",
         "//src/core/data",
         "//src/core/forms",
         "//src/core/locations",

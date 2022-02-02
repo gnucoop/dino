@@ -12,6 +12,7 @@ export const commitMessage: CommitMessageConfig = {
     'core/areas',
     'core/auth',
     'core/config',
+    'core/cases',
     'core/data',
     'core/error-handler',
     'core/forms',

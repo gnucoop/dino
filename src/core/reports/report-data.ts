@@ -62,6 +62,11 @@ export interface ReportData extends Model {
   area_ref_id: string | null;
 
   /**
+   * The Report Data case id.
+   */
+  case_ref_id: string | null;
+
+  /**
    * The Report Data project id.
    */
   project_ref_id: string | null;

@@ -232,6 +232,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             newItem.schema_id = formSchemaId;
             newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
             newItem.area_ref_id = null;
+            newItem.case_ref_id = null;
             newItem.location_ref_id = null;
             newItem.organization_ref_id = null;
             newItem.project_ref_id = null;

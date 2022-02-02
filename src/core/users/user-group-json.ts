@@ -65,6 +65,14 @@ export const schema = {
       "description": "The Areas to which the User Group Role permissions apply",
       "ref": "area"
     },
+    "case_ref_id": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The Cases to which the User Group Role permissions apply",
+      "ref": "case"
+    },
     "location_ref_id": {
       "type": "array",
       "items": {
@@ -106,6 +114,7 @@ export const schema = {
   },
   "required": [
     "area_ref_id",
+    "case_ref_id",
     "created_at",
     "groupFormSchemaIds",
     "groupName",

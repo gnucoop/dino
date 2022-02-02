@@ -25,6 +25,7 @@ import {FormSchemaManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -51,6 +52,7 @@ export class SyncManager {
     private _ur: UserRoleManager,
     private _ug: UserGroupManager,
     @Optional() private _ar: AreaManager | null,
+    @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
@@ -64,6 +66,9 @@ export class SyncManager {
     ];
     if (this._ar != null) {
       this._managersInit.push(this._ar.init());
+    }
+    if (this._cs != null) {
+      this._managersInit.push(this._cs.init());
     }
     if (this._pj != null) {
       this._managersInit.push(this._pj.init());

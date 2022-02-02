@@ -36,6 +36,7 @@ import {FormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
 import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
@@ -137,6 +138,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     private _bottomSheet: MatBottomSheet,
     readonly breakpointObserver: BreakpointObserverService,
     @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
@@ -170,6 +172,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._initFilters();
     if (this._areaManager != null) {
       this._populateMetricsOptions('area', this._areaManager);
+    }
+    if (this._caseManager != null) {
+      this._populateMetricsOptions('case', this._caseManager);
     }
     if (this._projectManager != null) {
       this._populateMetricsOptions('project', this._projectManager);

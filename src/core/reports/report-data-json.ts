@@ -83,6 +83,14 @@ export const schema = {
       "description": "The Report Data area id.",
       "ref": "area"
     },
+    "case_ref_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The Report Data case id.",
+      "ref": "case"
+    },
     "project_ref_id": {
       "type": [
         "string",
@@ -110,6 +118,7 @@ export const schema = {
   },
   "required": [
     "area_ref_id",
+    "case_ref_id",
     "created_at",
     "date_end",
     "date_start",

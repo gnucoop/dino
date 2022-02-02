@@ -31,6 +31,7 @@ import {
 } from '@angular/core';
 import {FormControl, FormGroup, ValidationErrors} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
 import {FormData} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
@@ -120,6 +121,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     private _userGroupManager: UserGroupManager,
     private _metricService: MetricsService,
     @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
@@ -131,6 +133,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
 
     this._metricManagers = {
       area: this._areaManager,
+      case: this._caseManager,
       location: this._locationManager,
       organization: this._organizationManager,
       project: this._projectManager,
@@ -147,6 +150,18 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       group['area'] = new FormControl('', validatorFn);
       this.formMetricsValues['area'] = group['area'].valueChanges;
       this._addFormMetricsOptions('area');
+    }
+    if (this._caseManager != null) {
+      const field = {
+        fieldName: 'case',
+        hint: `Case of the form`,
+        placeholder: 'Case management *',
+        icon: 'people',
+      };
+      this.formMetricsFields.push(field);
+      group['case'] = new FormControl('', validatorFn);
+      this.formMetricsValues['case'] = group['case'].valueChanges;
+      this._addFormMetricsOptions('case');
     }
 
     if (this._projectManager != null) {

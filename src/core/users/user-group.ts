@@ -44,6 +44,11 @@ export interface UserGroup extends Model {
   area_ref_id: string[];
 
   /**
+   * The Cases to which the User Group Role permissions apply
+   */
+  case_ref_id: string[];
+
+  /**
    * The Locations to which the User Group Role permissions apply
    */
   location_ref_id: string[];

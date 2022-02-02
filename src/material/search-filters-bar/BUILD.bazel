@@ -21,6 +21,7 @@ ng_module(
     assets = [":search-filters-bar.css"] + glob(["**/*.html"]),
     deps = [
         "//src/core/areas",
+        "//src/core/cases",
         "//src/core/data",
         "//src/core/list",
         "//src/core/locations",
@@ -59,6 +60,7 @@ ng_test_library(
     deps = [
         ":search-filters-bar",
         "//src/core/areas",
+        "//src/core/cases",
         "//src/core/data",
         "//src/core/list",
         "//src/core/locations",
