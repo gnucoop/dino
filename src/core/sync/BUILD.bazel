@@ -14,8 +14,8 @@ ng_module(
     ),
     deps = [
         "//src/core/areas",
-        "//src/core/cases",
         "//src/core/auth",
+        "//src/core/cases",
         "//src/core/forms",
         "//src/core/locations",
         "//src/core/organizations",

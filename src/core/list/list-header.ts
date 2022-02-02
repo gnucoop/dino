@@ -52,4 +52,8 @@ export interface ListHeader<T> {
    * from the Data attribute of the document. (eg. FormData.data)
    */
   dataColumn?: boolean;
+  /**
+   * Optional header icon identifier
+   */
+  icon?: string;
 }

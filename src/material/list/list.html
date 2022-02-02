@@ -84,7 +84,10 @@
         </mat-header-cell>
       </ng-template>
 
-      <ng-template #defaultHeaderCellTemplate> {{ header.label|transloco }} </ng-template>
+      <ng-template #defaultHeaderCellTemplate>
+        {{ header.label|transloco }}
+        <mat-icon class="dino-header-icon" *ngIf="header.icon">{{header.icon}}</mat-icon></ng-template
+      >
 
       <mat-cell *matCellDef="let element;">
         <ng-container

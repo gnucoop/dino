@@ -33,11 +33,16 @@ dino-list {
     }
   }
 
+  mat-cell,
+  mat-header-cell,
+  mat-footer-cell {
+    flex: 0.2 1;
+  }
+
   mat-header-cell:last-of-type.mat-column-actions,
   mat-cell:last-of-type.mat-column-actions {
     padding-right: 10px;
     position: absolute !important;
-    right: 20px !important;
     background-color: inherit;
   }
 

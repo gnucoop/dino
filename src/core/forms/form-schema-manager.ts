@@ -95,6 +95,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         label: metric.label.slice(0, -1),
         sortable: true,
         populateWith: 'name',
+        icon: metric.icon,
       }));
     const defaultHeaders: ListHeader<any>[] = [
       {
