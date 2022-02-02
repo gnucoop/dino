@@ -23,6 +23,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
     'project',
     'location',
     'area',
+    'case',
     'organization',
     'unavailableFilter',
   ];

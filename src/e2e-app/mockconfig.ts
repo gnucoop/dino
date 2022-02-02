@@ -98,6 +98,11 @@ export const optionalModulesConfig = {
   areasModule: true,
 
   /**
+   * Cases module.
+   */
+  casesModule: true,
+
+  /**
    * Projects module.
    */
   projectsModule: true,

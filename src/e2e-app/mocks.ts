@@ -111,6 +111,7 @@ export class UserGroupManagerMock extends UserGroupManager {
   override isActiveUserAdmin() {
     const userMetrics = {
       'area': ['all'],
+      'case': ['all'],
       'location': ['all'],
       'organization': ['all'],
       'project': ['all'],

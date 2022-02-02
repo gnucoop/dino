@@ -1,6 +1,7 @@
 // import '@dino/core/locations/form-data';
 // import '@dino/core/projects/form-data';
 // import '@dino/core/areas/form-data';
+// import '@dino/core/cases/form-data';
 
 import {FormData} from '@dino/core/forms/form-data';
 
@@ -188,6 +189,7 @@ export const formDatas: FormData[] = [
     created_at: '',
     updated_at: '',
     area_ref_id: null,
+    case_ref_id: null,
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
@@ -200,6 +202,7 @@ export const formDatas: FormData[] = [
     created_at: '',
     updated_at: '',
     area_ref_id: null,
+    case_ref_id: null,
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
@@ -212,6 +215,7 @@ export const formDatas: FormData[] = [
     created_at: '',
     updated_at: '',
     area_ref_id: null,
+    case_ref_id: null,
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
@@ -224,6 +228,7 @@ export const formDatas: FormData[] = [
     created_at: '',
     updated_at: '',
     area_ref_id: null,
+    case_ref_id: null,
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,

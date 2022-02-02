@@ -12,6 +12,7 @@ import {
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AreaManager, PopulatedWithArea} from '@dino/core/areas';
+import {CaseManager, PopulatedWithCase} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
 import {FormSchemaManager} from '@dino/core/forms';
 import {LocationManager, PopulatedWithLocation} from '@dino/core/locations';
@@ -29,6 +30,7 @@ import {map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
 export interface UserGroupWithMetrics
   extends UserGroup,
     PopulatedWithArea,
+    PopulatedWithCase,
     PopulatedWithLocation,
     PopulatedWithOrganization,
     PopulatedWithProject {}
@@ -85,6 +87,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     public dialogRef: MatDialogRef<MixedEditor>,
     @Inject(MAT_DIALOG_DATA) public data: UserGroupDialogData,
     @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
@@ -100,6 +103,10 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
       this._populateListSchedule.push(
         this._populateList(this._areaManager, 'name', 'volunteer_activism'),
       );
+    }
+    if (this._caseManager != null) {
+      this.metricTypes.push('case');
+      this._populateListSchedule.push(this._populateList(this._caseManager, 'name', 'people'));
     }
 
     if (this._projectManager != null) {
@@ -240,6 +247,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           groupName: groupName,
           user_role_ref_id: user_role_ref_id,
           area_ref_id: newUserGroupData['area'] ?? [],
+          case_ref_id: newUserGroupData['case'] ?? [],
           location_ref_id: newUserGroupData['location'] ?? [],
           organization_ref_id: newUserGroupData['organization'] ?? [],
           project_ref_id: newUserGroupData['project'] ?? [],

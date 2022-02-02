@@ -38,6 +38,7 @@ ng_module(
     deps = [
         "//src/core/areas",
         "//src/core/auth",
+        "//src/core/cases",
         "//src/core/config",
         "//src/core/data",
         "//src/core/forms",

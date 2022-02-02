@@ -9,6 +9,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AreasModule} from '@dino/core/areas';
+import {CasesModule} from '@dino/core/cases';
 import {AuthModule, AuthService} from '@dino/core/auth';
 import {ConfigModule} from '@dino/core/config';
 import {DATA_SERVICE_CONFIG} from '@dino/core/data';
@@ -42,6 +43,7 @@ import {E2eAppModule} from './e2e-app/e2e-app-module';
 import {E2E_APP_ROUTES} from './routes';
 import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
+import {MaterialCasesE2eModule} from './mat-cases/cases-e2e.module';
 import {MaterialCreateFormDataE2eModule} from './mat-create-form-data/create-form-data-e2e.module';
 import {MaterialCreateReportDataE2eModule} from './mat-create-report-data/create-report-data-e2e.module';
 import {MaterialDashboardE2eModule} from './mat-dashboard/dashboard-e2e.module';
@@ -177,12 +179,14 @@ export function provideDataServiceConfig() {
 
     // Optional Metrics
     optionalModulesConfig.areasModule ? AreasModule : [],
+    optionalModulesConfig.casesModule ? CasesModule : [],
     optionalModulesConfig.locationsModule ? LocationModule : [],
     optionalModulesConfig.organizationsModule ? OrganizationsModule : [],
     optionalModulesConfig.projectsModule ? ProjectModule : [],
 
     // E2E demos
     MaterialAreasE2eModule,
+    MaterialCasesE2eModule,
     MaterialDashboardE2eModule,
     MaterialFormsE2eModule,
     MaterialCreateFormDataE2eModule,

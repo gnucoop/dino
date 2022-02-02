@@ -22,6 +22,7 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
     'project',
     'location',
     'area',
+    'case',
     'organization',
     'unavailableFilter',
   ];
@@ -38,6 +39,13 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
       sortable: true,
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('area'),
+    },
+    {
+      column: 'case_ref_id',
+      label: 'Case',
+      sortable: true,
+      populateWith: 'name',
+      hidden: !this.metricsService.isActiveMetric('case'),
     },
     {
       column: 'location_ref_id',

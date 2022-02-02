@@ -2,6 +2,7 @@ import {Routes} from '@angular/router';
 import {AuthGuard} from '@dino/core/auth';
 
 import {MatAreasE2E} from './mat-areas/areas-e2e.component';
+import {MatCasesE2E} from './mat-cases/cases-e2e.component';
 import {MatCreateFormDataE2E} from './mat-create-form-data/create-form-data-e2e.component';
 import {MatCreateReportDataE2E} from './mat-create-report-data/create-report-data-e2e.component';
 import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
@@ -61,6 +62,13 @@ export const E2E_APP_ROUTES: Routes = [
           breadcrumbs: [
             {label: 'Thematic Areas', url: 'metrics/thematic_areas', icon: 'volunteer_activism'},
           ],
+        },
+      },
+      {
+        path: 'cases',
+        component: MatCasesE2E,
+        data: {
+          breadcrumbs: [{label: 'Cases', url: 'metrics/cases', icon: 'people'}],
         },
       },
       {

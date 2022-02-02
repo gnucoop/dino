@@ -9,6 +9,7 @@ export const reportDatas: ReportData[] = [
     created_at: '',
     updated_at: '',
     area_ref_id: null,
+    case_ref_id: null,
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
