@@ -15,6 +15,7 @@ import { RxJsonSchema } from 'rxdb';
 // @public
 export interface ReportData extends Model {
     area_ref_id: string | null;
+    case_ref_id: string | null;
     date_end: string | null;
     date_start: string | null;
     location_ref_id: string | null;

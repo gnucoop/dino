@@ -201,6 +201,7 @@ export interface ListHeader<T> {
     dataColumn?: boolean;
     displayed?: boolean;
     hidden?: boolean;
+    icon?: string;
     label: string;
     populateWith?: string;
     sortable?: boolean;

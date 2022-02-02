@@ -39,6 +39,7 @@ export interface MetricDialogData<T extends Metric = Metric> {
     metricAction?: 'view' | 'edit' | 'create';
     metricItem?: T;
     metricManager: DataModelManager<T>;
+    readOnlyFields?: string[];
 }
 
 // @public

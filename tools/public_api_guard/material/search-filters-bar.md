@@ -6,6 +6,7 @@
 
 import { AreaManager } from '@dino/core/areas';
 import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
+import { CaseManager } from '@dino/core/cases';
 import { ChangeDetectorRef } from '@angular/core';
 import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FilterItem } from '@dino/core/list';
@@ -62,7 +63,7 @@ export class IsFalseOrNullPipe implements PipeTransform {
 
 // @public
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
-    constructor(metricsService: MetricsService, _fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef, _bottomSheet: MatBottomSheet, breakpointObserver: BreakpointObserverService, _areaManager: AreaManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
+    constructor(metricsService: MetricsService, _fts: FiltersService, dialog: MatDialog, _cdr: ChangeDetectorRef, _bottomSheet: MatBottomSheet, breakpointObserver: BreakpointObserverService, _areaManager: AreaManager | null, _caseManager: CaseManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
     // (undocumented)
     get additionalFilters(): boolean;
     set additionalFilters(state: boolean);
@@ -105,7 +106,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dino-search-filters-bar", never, { "presetManager": "presetManager"; "exportable": "exportable"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, { "exportEvt": "exportEvt"; }, never, never>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
 
 // @public (undocumented)

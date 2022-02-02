@@ -40,10 +40,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     onClickRowActions: ActionType[];
     // (undocumented)
     openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void;
+    readOnlyFields: string[] | null;
     showEditor: boolean;
     showList: boolean;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dino-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, ["[breadcrumbs]"]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MetricSection<any>, "dino-metric-section", never, { "showList": "showList"; "showEditor": "showEditor"; "readOnlyFields": "readOnlyFields"; "headers": "headers"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "metricManager": "metricManager"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<MetricSection<any>, never>;
 }

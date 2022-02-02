@@ -46,6 +46,7 @@ export class UserDataManager extends DataModelManager<UserData> {
 // @public
 export interface UserGroup extends Model {
     area_ref_id: string[];
+    case_ref_id: string[];
     groupFormSchemaIds: string[];
     groupName: string;
     groupReportSchemaIds: string[];

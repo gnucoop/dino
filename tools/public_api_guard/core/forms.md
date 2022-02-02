@@ -18,6 +18,7 @@ import { RxJsonSchema } from 'rxdb';
 // @public
 interface FormData_2 extends Model {
     area_ref_id: string | null;
+    case_ref_id: string | null;
     data: {
         [key: string]: any;
     };

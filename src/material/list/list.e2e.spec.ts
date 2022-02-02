@@ -20,9 +20,16 @@ describe('dino-list', () => {
     await browser.wait(EC.presenceOf(element(by.className('mat-checkbox'))));
   });
 
-  it('should display the correct header cells, including the ones specified by the string identifier', async () => {
+  it('should display the correct header cells with their icon identifiers, including the ones specified by the string identifier', async () => {
     await browser.wait(EC.presenceOf(element(by.tagName('mat-header-cell'))));
-    const expectedCells = ['District', 'Location', 'Organization', 'Project', 'Thematic Area'];
+    const expectedCells = [
+      'Case\npeople',
+      'District',
+      'Location\nplace',
+      'Organization\npublic',
+      'Project\nassignment',
+      'Thematic Area\nvolunteer_activism',
+    ];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
     expect(headerCells.slice(1, -1)).toEqual(expectedCells);
   });

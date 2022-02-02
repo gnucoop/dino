@@ -7,6 +7,7 @@
 import { AbstractControl } from '@angular/forms';
 import { AfterViewInit } from '@angular/core';
 import { AreaManager } from '@dino/core/areas';
+import { CaseManager } from '@dino/core/cases';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
 import * as i2 from '@angular/common';
@@ -30,7 +31,7 @@ import { ValidationErrors } from '@angular/forms';
 
 // @public
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
-    constructor(_userGroupManager: UserGroupManager, _metricService: MetricsService, _areaManager: AreaManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
+    constructor(_userGroupManager: UserGroupManager, _metricService: MetricsService, _areaManager: AreaManager | null, _caseManager: CaseManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
     addFormData(formData: {
         [key: string]: any;
     }, isView?: boolean): void;
@@ -58,7 +59,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<FormMetricSelector, "dino-form-metric-selector", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, never>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<FormMetricSelector, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FormMetricSelector, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
 
 // @public (undocumented)
