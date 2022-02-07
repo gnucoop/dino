@@ -60,7 +60,7 @@ export function pullQueryBuilder(
     const query = `{
       ${collection.name}(
         where: ${JSON.stringify(where)},
-        limit: ${batchSize},
+        limit: ${batchSize ?? null},
         order_by: [{updated_at: asc}]
       ) {
         ${fields.join(' ')}

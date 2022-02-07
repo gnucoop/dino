@@ -714,7 +714,6 @@ export class DataService {
  * Default data service sync options.
  */
 const DEFAULT_SYNC_OPTIONS = {
-  batchSize: 100,
   live: true,
   liveInterval: 60 * 1000,
 };

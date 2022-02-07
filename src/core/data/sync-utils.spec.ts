@@ -72,7 +72,7 @@ describe('pullQueryBuilder', () => {
     let pullQuery =
       `{ model1( ` +
       `where: {updated_at:{_gt:"${timestamp}"}}, ` +
-      `limit: ${syncOptions.batchSize}, ` +
+      `limit: ${syncOptions.batchSize ?? null}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id model3Id } }`;
     const doc: Model = {id: 'foo', created_at: timestamp, updated_at: timestamp};
@@ -85,7 +85,7 @@ describe('pullQueryBuilder', () => {
     pullQuery =
       `{ model1( ` +
       `where: {foo:"bar",updated_at:{_gt:"${timestamp}"}}, ` +
-      `limit: ${syncOptions.batchSize}, ` +
+      `limit: ${syncOptions.batchSize ?? null}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id } }`;
     queryBuilder = pullQueryBuilder(collection, syncOptions, {where: {foo: 'bar'}, fields: ['id']});
