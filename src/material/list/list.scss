@@ -1,6 +1,7 @@
 dino-list {
   .dino-table-container {
     padding-bottom: 9vh;
+    overflow-x: scroll;
   }
   .dino-list-toolbar {
     background: transparent;
@@ -11,13 +12,21 @@ dino-list {
   }
   .mat-table__wrapper .mat-table {
     min-width: auto !important;
-    width: 100% !important;
+    width: auto !important;
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
   }
 
+  .mat-table {
+    width: auto !important;
+    transition: all ease-in-out 0.25s;
+    -webkit-transition: all ease-in-out 0.25s;
+    overflow: auto;
+  }
+
   .mat-row {
-    width: 100%;
+    display: inline-flex;
+    min-width: 100%;
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
   }
@@ -36,7 +45,16 @@ dino-list {
   mat-cell,
   mat-header-cell,
   mat-footer-cell {
-    flex: 0.2 1;
+    flex: 1 0;
+  }
+
+  mat-header-cell,
+  mat-footer-cell,
+  mat-cell:not(:last-of-type.mat-column-actions):not(.mat-column-select) {
+    min-width: 12vw;
+    @media only screen and (max-width: 992px) {
+      min-width: 25vw;
+    }
   }
 
   mat-header-cell:last-of-type.mat-column-actions,
@@ -52,14 +70,18 @@ dino-list {
 
   .mat-cell.dino-expanded-cell {
     display: flex;
+    flex: 1 0 auto;
     flex-flow: column wrap;
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
   }
 
+
   .mat-row:not(.dino-row-details):hover {
     .mat-column-actions {
-      visibility: visible;
+      @media only screen and (min-width : 991px) {
+        visibility: visible;
+      }
       .mat-icon {
         cursor: pointer;
       }
@@ -81,9 +103,11 @@ dino-list {
   }
 
   .mat-row.dino-row-details {
-    position: relative;
-    bottom: 16px;
     min-height: 0px;
+    position: sticky;
+    left: 0;
+    background-color: transparent !important;
+    margin-bottom: 8px;
   }
 
   .dino-expanded-row-actions {
@@ -97,6 +121,24 @@ dino-list {
     .mat-table {
       background: transparent !important;
     }
+  }
+
+  .dino-columns-sel-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 55px;
+  }
+  .dino-columns-sel-btn,
+  .dino-header-icon {
+    transition: all ease-in-out 0.25s;
+    -webkit-transition: all ease-in-out 0.25s;
+    opacity: 0.7;
+  }
+
+  .dino-header-icon:hover,
+  .dino-columns-sel-btn:hover {
+    background: transparent !important;
+    opacity: 1;
   }
 
   .mat-paginator {
@@ -125,13 +167,15 @@ dino-list {
       min-width: 5px;
     }
     .dino-row-actions {
-      display: none !important;
+      visibility: hidden;
+      .dino-columns-sel-btn {
+        visibility: visible;
+      }
     }
     .dino-expanded-row-actions {
       width: 100%;
       display: flex;
       flex-flow: row wrap;
-      padding-bottom: 10px;
       .dino-row-action-box {
         flex: 1 1 auto;
         text-align: center;

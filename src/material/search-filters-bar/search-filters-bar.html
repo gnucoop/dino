@@ -122,10 +122,28 @@
       >
         <mat-icon matSuffix>filter_list</mat-icon>
       </button>
+
+      <button
+        *ngIf="breakpointObserver.small|async|isFalseOrNull"
+        class="dino-export-button"
+        mat-button
+        color="primary"
+        (click)="openExportBottomSheet()"
+        [attr.aria-label]="'Export items in the list'|transloco"
+      >
+        <mat-icon matSuffix>cloud_download</mat-icon>
+      </button>
+      <button
+        *ngIf="breakpointObserver.small|async"
+        class="dino-export-button"
+        mat-flat-button
+        color="primary"
+        (click)="openExportBottomSheet()"
+        [attr.aria-label]="'Export items in the list'|transloco"
+      >
+        <mat-icon matSuffix>cloud_download</mat-icon>
+      </button>
     </ng-container>
-    <button color="primary" mat-icon-button *ngIf="exportable" (click)="openExportBottomSheet()">
-      <mat-icon>cloud_download</mat-icon>
-    </button>
   </div>
 </ng-template>
 

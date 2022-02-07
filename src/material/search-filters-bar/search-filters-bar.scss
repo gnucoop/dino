@@ -19,7 +19,8 @@
       margin: auto;
     }
   }
-  .dino-filters-dialog-button {
+  .dino-filters-dialog-button,
+  .dino-export-button {
     flex: 1 1 auto;
   }
 
@@ -37,8 +38,7 @@
 }
 
 .mat-expansion-panel,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
-.mat-expansion-panel-header:hover {
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
   background: inherit;
 }
 .mat-expansion-panel {
@@ -56,7 +56,9 @@
 }
 
 @media only screen and (max-width: 768px) {
-  .dino-filters-dialog-button {
+  .dino-filters-dialog-button,
+  .dino-export-button {
+    margin-bottom: 15px;
     width: 100%;
   }
 }

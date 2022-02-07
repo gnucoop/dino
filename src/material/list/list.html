@@ -86,7 +86,9 @@
 
       <ng-template #defaultHeaderCellTemplate>
         {{ header.label|transloco }}
-        <mat-icon class="dino-header-icon" *ngIf="header.icon">{{header.icon}}</mat-icon></ng-template
+        <mat-icon class="dino-header-icon" *ngIf="header.icon && (breakpointObserver.large|async)"
+          >{{header.icon}}</mat-icon
+        ></ng-template
       >
 
       <mat-cell *matCellDef="let element;">
@@ -113,6 +115,7 @@
           mat-list-icon
           aria-label="delete icon"
           class="dino-columns-sel-btn"
+          color="primary"
           #columns_btn
           (click)="openColumnsSelectorDialog()"
           aria-label="Select the displayed columns"
