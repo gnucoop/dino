@@ -17,7 +17,7 @@
   <br />
   <div class="dino-column-selectors-list">
     <div class="dino-column-selector" *ngFor="let column of columns|async">
-      {{column.label|transloco}}
+      {{column.label|transloco}} <mat-icon class="dino-column-selector-icon">{{column.icon}}</mat-icon>
       <mat-slide-toggle
         [checked]="column.displayed || column.displayed === undefined"
         (change)="toggleColumn(column.column)"

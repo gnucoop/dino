@@ -47,7 +47,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Model} from '@dino/core/data';
 import {FormSchema} from '@dino/core/forms';
 import {
@@ -308,6 +308,7 @@ export class SelectionList<T extends Model = Model>
   constructor(
     cdr: ChangeDetectorRef,
     aui: AdminUserInteractionsService,
+    actroute: ActivatedRoute,
     private _dialog: MatDialog,
     private _fts: FiltersService,
     readonly breakpointObserver: BreakpointObserverService,
@@ -316,7 +317,7 @@ export class SelectionList<T extends Model = Model>
     private _injector: Injector,
     private _snackbar: MatSnackBar,
   ) {
-    super(cdr, aui);
+    super(cdr, aui, actroute);
 
     this._fts.clearAdditionalBasicFilters();
   }
@@ -552,10 +553,11 @@ export class SelectionList<T extends Model = Model>
         catchError(err => throwError(err) as Observable<ListHeader<T>>),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(columns => {
+      .subscribe((columns: ListHeader<T>[]) => {
         if (!columns) {
           return;
         }
+        this._saveColumnsSelectionPreset(columns);
         this.headers = columns;
         this.mainListContext.headers.next(this.headers);
         this.mainListContext.displayedColumns?.next(this.displayedColumns);
@@ -667,7 +669,10 @@ export class SelectionList<T extends Model = Model>
    * @returns The ref string
    */
   getRef(header: ListHeader<T>): string {
-    return header.column.toString().replace('_ref_id', '');
+    if (header == null || header.external_ref == null) {
+      return header.column.toString().replace('_ref_id', '');
+    }
+    return header.external_ref.toString().replace('_ref_id', '');
   }
 
   getPopulatedRef(refObj: {[key: string]: string} | null, populateWith: string): string | null {

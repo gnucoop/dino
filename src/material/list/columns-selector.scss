@@ -25,4 +25,9 @@
     flex: 1 1;
     justify-content: space-between;
     margin-bottom: 10px;
+    .dino-column-selector-icon {
+        margin-left: auto;
+        margin-right: 5px;
+        opacity: 0.3;
+    }
 }
