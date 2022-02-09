@@ -71,15 +71,16 @@
 
         @if (meta.type-of($backdrop-color) == color) {
             background-color: color.invert($backdrop-color);
-        } @else {
+        }
+        @else {
             background-color: $backdrop-color;
             opacity: $opacity;
         }
     }
 
     ::-webkit-scrollbar {
-        max-width: 5px !important ;
-        max-height: 5px !important ;
+        max-width: 5px !important;
+        max-height: 5px !important;
     }
 
     ::-webkit-scrollbar-track {
@@ -92,7 +93,6 @@
         border-radius: 5px;
         max-width: 20%;
     }
-    
 }
 
 @mixin mat-sidenav-typography($config-or-theme) {

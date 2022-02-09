@@ -28,6 +28,7 @@ export interface ActiveMetric {
     icon: string;
     label: string;
     metricName: string;
+    metricSchema?: RxJsonSchema<any>;
 }
 
 // @public
@@ -304,6 +305,9 @@ export interface DataUpsertRequest<T extends Model> {
     collectionName: string;
     object: UpsertModel<T>;
 }
+
+// @public
+export const DEFAULT_EXCLUDED_METRIC_KEYS: string[];
 
 // @public
 export type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | '_deleted'>;

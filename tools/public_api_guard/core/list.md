@@ -123,7 +123,7 @@ export class FiltersService<T extends Model = Model> {
 
 // @public
 export abstract class List<T extends Model = Model, AD extends Model = Model> {
-    constructor(_cdr: ChangeDetectorRef, _aui: AdminUserInteractionsService);
+    constructor(_cdr: ChangeDetectorRef, _aui: AdminUserInteractionsService, _route: ActivatedRoute);
     protected _actionEvent: EventEmitter_2<{
         action: ListAction;
         items: T | T[];
@@ -159,6 +159,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     protected _displayedColumns: string[];
     // (undocumented)
     abstract editAction(item: T, isDetails: boolean): void;
+    protected _getColumnsSelectionPresetKey(): string | null;
     // (undocumented)
     abstract getItems(): T[];
     // (undocumented)
@@ -168,7 +169,11 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     set headers(headers: ListHeader<T>[]);
     protected _headers: ListHeader<T>[];
     protected _headersUpdateEvt: EventEmitter_2<ListHeader<T>[]>;
+    protected _loadColumnsSelectionPreset(): ListHeader<T>[] | null;
     processAction(action: ListAction, items: T | T[], isDetails?: boolean): void;
+    // (undocumented)
+    protected _route: ActivatedRoute;
+    protected _saveColumnsSelectionPreset(columns: ListHeader<T>[] | null): void;
     // (undocumented)
     abstract selectAll(): void;
     // (undocumented)
@@ -200,6 +205,7 @@ export interface ListHeader<T> {
     column: keyof T;
     dataColumn?: boolean;
     displayed?: boolean;
+    external_ref?: string;
     hidden?: boolean;
     icon?: string;
     label: string;

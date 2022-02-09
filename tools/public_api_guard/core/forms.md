@@ -51,7 +51,7 @@ export interface FormSchema extends Model {
 export class FormSchemaManager extends DataModelManager<FormSchema> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService, _metricService: MetricsService);
     generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
-    generateSchemListHeaders(formSchema?: FormSchema): ListHeader<any>[];
+    generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[];
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<FormSchemaManager, never>;
     // (undocumented)

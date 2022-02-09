@@ -5,6 +5,7 @@
 ```ts
 
 import { ActionType } from '@dino/core/list';
+import { ActivatedRoute } from '@angular/router';
 import { AdminUserInteractionsService as AdminUserInteractionsService_2 } from '@dino/core/list';
 import { AfterContentInit } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
@@ -179,7 +180,7 @@ export class ListModule {
 
 // @public
 export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
-    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _componentFactoryResolver: ComponentFactoryResolver, _injector: Injector, _snackbar: MatSnackBar);
+    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, actroute: ActivatedRoute, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _componentFactoryResolver: ComponentFactoryResolver, _injector: Injector, _snackbar: MatSnackBar);
     actionOnItems(row: T | T[], action: ListAction, isDetails?: boolean): void;
     set additionalBasicFilters(filterNames: string[]);
     // (undocumented)
