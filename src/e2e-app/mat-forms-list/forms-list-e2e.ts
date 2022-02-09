@@ -68,7 +68,7 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
         if (schema == null) {
           return [];
         }
-        return this.formSchemaManager.generateSchemListHeaders(schema);
+        return this.formSchemaManager.generateSchemaListHeaders(schema);
       }),
       startWith([]),
     );

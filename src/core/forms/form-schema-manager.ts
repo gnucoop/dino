@@ -28,6 +28,7 @@ import {
   DataService,
   MetricsService,
   PermissionContextService,
+  DEFAULT_EXCLUDED_METRIC_KEYS,
 } from '@dino/core/data';
 import {FilterGroup, FilterItem, ListHeader} from '@dino/core/list';
 
@@ -84,19 +85,37 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
    * @param formSchema The form schema definition
    * @returns The generated Schema List Headers
    */
-  generateSchemListHeaders(formSchema?: FormSchema): ListHeader<any>[] {
+  generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[] {
     if (formSchema == null || formSchema.schema.nodes == null) {
       return [];
     }
-    const metricHeaders: ListHeader<any>[] = this._metricService.activeMetrics
-      .getValue()
-      .map(metric => ({
+    const metricHeaders: ListHeader<any>[] = [];
+    this._metricService.activeMetrics.getValue().forEach(metric => {
+      metricHeaders.push({
         column: `${metric.metricName}_ref_id`,
+        external_ref: `${metric.metricName}_ref_id`,
         label: metric.label.slice(0, -1),
         sortable: true,
         populateWith: 'name',
         icon: metric.icon,
-      }));
+      });
+      if (metric.metricSchema != null && metric.metricSchema.properties != null) {
+        const metricSchemaKeys = Object.keys(metric.metricSchema.properties);
+        for (let key of metricSchemaKeys) {
+          if (!DEFAULT_EXCLUDED_METRIC_KEYS.includes(key)) {
+            metricHeaders.push({
+              column: `${metric.metricName}_${key}`,
+              external_ref: `${metric.metricName}_ref_id`,
+              label: `${metric.label.slice(0, -1)} ${key.replace('_', ' ')}`,
+              sortable: true,
+              displayed: false,
+              populateWith: key,
+              icon: metric.icon,
+            });
+          }
+        }
+      }
+    });
     const defaultHeaders: ListHeader<any>[] = [
       {
         column: 'user_data_ref_id',
