@@ -1,5 +1,6 @@
 import {ChangeDetectorRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
@@ -30,6 +31,12 @@ const changeDetectorRefMock = {
   markForCheck() {},
 };
 
+const fakeActivatedRoute = {
+  params: obsOf(null),
+  data: obsOf(null),
+  snapshot: {},
+} as unknown as ActivatedRoute;
+
 class AdminUIService extends AdminUserInteractionsService {
   askConfirm(action: ListAction): Observable<boolean> {
     return obsOf(true);
@@ -48,8 +55,8 @@ const dummySelection: DummyModel[] = [
 const adminUIService = new AdminUIService();
 
 class ListFeatComp extends List<DummyModel> {
-  constructor(cdr: ChangeDetectorRef, aui: AdminUIService) {
-    super(cdr, aui);
+  constructor(cdr: ChangeDetectorRef, aui: AdminUIService, actroute: ActivatedRoute) {
+    super(cdr, aui, actroute);
   }
 
   createAction(schemaId: string, baseUrl: string) {}
@@ -72,11 +79,13 @@ class ListFeatComp extends List<DummyModel> {
 describe('Core ListComponent', () => {
   let cdr: ChangeDetectorRef;
   let aui: AdminUIService;
+  let actRoute: ActivatedRoute;
   let listFeatComp: ListFeatComp;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        {provide: ActivatedRoute, useValue: fakeActivatedRoute},
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
         {provide: AdminUIService, useValue: adminUIService},
         {provide: AuthService, useValue: authServiceMock},
@@ -85,7 +94,8 @@ describe('Core ListComponent', () => {
     });
     cdr = TestBed.inject(ChangeDetectorRef);
     aui = TestBed.inject(AdminUIService);
-    listFeatComp = new ListFeatComp(cdr, aui);
+    actRoute = TestBed.inject(ActivatedRoute);
+    listFeatComp = new ListFeatComp(cdr, aui, actRoute);
   });
 
   it('should retrieve and call the correct Action Handler method name', () => {

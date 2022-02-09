@@ -21,6 +21,7 @@
  */
 
 import {ChangeDetectorRef, Directive, EventEmitter, Input} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {Model} from '@dino/core/data';
 import {Subject} from 'rxjs';
 
@@ -121,8 +122,9 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   @Input()
   set headers(headers: ListHeader<T>[]) {
-    this.setDisplayedColumns(headers);
-    this._headers = headers;
+    const setHeaders = this._loadColumnsSelectionPreset() ?? headers;
+    this.setDisplayedColumns(setHeaders);
+    this._headers = setHeaders;
     this._headersUpdateEvt.emit(this._headers);
   }
 
@@ -186,7 +188,11 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     this._cdr.markForCheck();
   }
 
-  constructor(protected _cdr: ChangeDetectorRef, protected _aui: AdminUserInteractionsService) {}
+  constructor(
+    protected _cdr: ChangeDetectorRef,
+    protected _aui: AdminUserInteractionsService,
+    protected _route: ActivatedRoute,
+  ) {}
 
   abstract getSelection(): T[];
   abstract getItems(): T[];
@@ -210,6 +216,54 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     if (handler != null) {
       handler.call(this, items, isDetails);
     }
+  }
+
+  /**
+   * Saves a columns preset into the localstorage
+   * @param columns The columns selection to be stored in the preset
+   */
+  protected _saveColumnsSelectionPreset(columns: ListHeader<T>[] | null): void {
+    if (columns == null) {
+      return;
+    }
+    if (this._getColumnsSelectionPresetKey() != null) {
+      localStorage.setItem(
+        this._getColumnsSelectionPresetKey() as string,
+        btoa(JSON.stringify(columns)),
+      );
+    }
+  }
+
+  /**
+   * Loads a columns preset from the localstorage
+   */
+  protected _loadColumnsSelectionPreset(): ListHeader<T>[] | null {
+    let preset: string | null = null;
+    if (this._getColumnsSelectionPresetKey() != null) {
+      preset = localStorage.getItem(this._getColumnsSelectionPresetKey() as string);
+    }
+    if (preset == null) {
+      return null;
+    }
+    return JSON.parse(atob(preset));
+  }
+
+  /**
+   * Retrieves the list columns selection key in the localstorage
+   * @returns The key, if present.
+   */
+  protected _getColumnsSelectionPresetKey(): string | null {
+    const snapshot = this._route.snapshot;
+    if (snapshot.data.isFormData) {
+      return snapshot.params.form_schema_id ? `columns_${snapshot.params.form_schema_id}` : null;
+    } else if (snapshot.data.isReportData) {
+      return snapshot.params.report_schema_id
+        ? `columns_${snapshot.params.report_schema_id}`
+        : null;
+    } else if (this._title) {
+      return `columns_${this._title}`;
+    }
+    return null;
   }
 
   /**

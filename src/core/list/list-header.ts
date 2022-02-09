@@ -42,6 +42,10 @@ export interface ListHeader<T> {
    */
   displayed?: boolean;
   /**
+   * The external object reference key (eg. area_ref_id)
+   */
+  external_ref?: string;
+  /**
    * Specifies if the column must be populated by referring to
    * an external collection's property.
    * The reference string will be equal to the "column" property.
