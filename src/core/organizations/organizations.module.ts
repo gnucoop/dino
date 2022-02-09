@@ -23,6 +23,7 @@
 import {NgModule} from '@angular/core';
 import {ActiveMetric, MetricsService} from '@dino/core/data';
 import {FiltersService} from '@dino/core/list';
+import {schema} from './organization-json';
 
 /**
  * Optional module augmenting Forms that provides the OrganizationManager service
@@ -33,6 +34,7 @@ export class OrganizationsModule {
     label: 'Organizations',
     icon: 'public',
     metricName: 'organization',
+    metricSchema: schema,
   };
   constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('organization');

@@ -23,6 +23,7 @@
 import {NgModule} from '@angular/core';
 import {ActiveMetric, MetricsService} from '@dino/core/data';
 import {FiltersService} from '@dino/core/list';
+import {schema} from './location-json';
 
 /**
  * Optional module augmenting Forms that provides the LocationManager service
@@ -33,6 +34,7 @@ export class LocationModule {
     label: 'Locations',
     icon: 'place',
     metricName: 'location',
+    metricSchema: schema,
   };
   constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('location');

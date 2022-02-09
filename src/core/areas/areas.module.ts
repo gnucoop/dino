@@ -23,6 +23,7 @@
 import {NgModule} from '@angular/core';
 import {ActiveMetric, MetricsService} from '@dino/core/data';
 import {FiltersService} from '@dino/core/list';
+import {schema} from './area-json';
 
 /**
  * Optional module augmenting Forms that provides the AreasManager service
@@ -33,6 +34,7 @@ export class AreasModule {
     label: 'Thematic Areas',
     icon: 'volunteer_activism',
     metricName: 'area',
+    metricSchema: schema,
   };
   constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('area');

@@ -21,6 +21,7 @@
  */
 
 import {Injectable} from '@angular/core';
+import {RxJsonSchema} from 'rxdb';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -42,7 +43,26 @@ export interface ActiveMetric {
    * The metric name identifier
    */
   metricName: string;
+
+  /**
+   * The metric json schema
+   */
+  metricSchema?: RxJsonSchema<any>;
 }
+
+/**
+ * Metrick keys common to all metrics that should not be used to
+ * automatically generate headers in forms and reports lists.
+ */
+export const DEFAULT_EXCLUDED_METRIC_KEYS = [
+  '_deleted',
+  'is_deleted',
+  'created_at',
+  'updated_at',
+  'parent_id',
+  'id',
+  'name',
+];
 
 /**
  * Service that keeps track of the active optional Metrics.

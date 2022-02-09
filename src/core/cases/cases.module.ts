@@ -23,6 +23,7 @@
 import {NgModule} from '@angular/core';
 import {ActiveMetric, MetricsService} from '@dino/core/data';
 import {FiltersService} from '@dino/core/list';
+import {schema} from './case-json';
 
 /**
  * Optional module augmenting Forms that provides the CasesManager service
@@ -33,6 +34,7 @@ export class CasesModule {
     label: 'Cases',
     icon: 'people',
     metricName: 'case',
+    metricSchema: schema,
   };
   constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('case');

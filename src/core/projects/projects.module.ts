@@ -23,6 +23,7 @@
 import {NgModule} from '@angular/core';
 import {FiltersService} from '@dino/core/list';
 import {ActiveMetric, MetricsService} from '@dino/core/data';
+import {schema} from './project-json';
 
 /**
  * Optional module augmenting Forms that provides the ProjectManager service
@@ -33,6 +34,7 @@ export class ProjectModule {
     label: 'Projects',
     icon: 'assignment',
     metricName: 'project',
+    metricSchema: schema,
   };
   constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('project');
