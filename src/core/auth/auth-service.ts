@@ -25,9 +25,13 @@ import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, mapTo, switchMap, tap} from 'rxjs/operators';
-import {NHostSignupRequest, NHostSignupResponse} from '.';
 
-import {AuthResponse, NHostRefreshResponse} from './auth-response';
+import {
+  AuthResponse,
+  NHostRefreshResponse,
+  NHostSignupRequest,
+  NHostSignupResponse,
+} from './auth-response';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
 import {Credentials} from './credentials';
 import {JwtToken} from './jwt-token';
