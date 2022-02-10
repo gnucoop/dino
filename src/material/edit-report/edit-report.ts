@@ -33,7 +33,7 @@ import {
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormDataManager} from '@dino/core/forms';
+import {FormData, FormDataManager, FormSchemaManager} from '@dino/core/forms';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {RxDocument} from 'rxdb';
@@ -136,6 +136,7 @@ export class EditReport implements OnInit, AfterViewInit {
     private _route: ActivatedRoute,
     private _router: Router,
     private _formDataManager: FormDataManager,
+    private _formSchemaManager: FormSchemaManager,
     private _reportDataManager: ReportDataManager,
     private _reportSchemaManager: ReportSchemaManager,
   ) {
@@ -250,17 +251,26 @@ export class EditReport implements OnInit, AfterViewInit {
             .map(fd => this._populateData(fd));
           populatedData.push(...data);
         }
-        return forkJoin(populatedData).pipe(withLatestFrom(obsOf(rData), obsOf(rSchema)));
+        const ctxSchemas = this._formSchemaManager.query({selector: {id: {$in: formSchemaIds}}});
+        return forkJoin(populatedData).pipe(
+          withLatestFrom(ctxSchemas, obsOf(rData), obsOf(rSchema)),
+        );
       }),
-      map(([ctx, rData, rSchema]) => {
+      map(([ctx, ctxSchemas, rData, rSchema]) => {
         const contextForms: ReportContext = {};
+        const contextSchemas: {[schema_id: string]: any} = {};
         ctx.forEach(fdata => {
           if (contextForms[fdata['schema_id']] == null) {
             contextForms[fdata['schema_id']] = [];
           }
           contextForms[fdata['schema_id']].push(fdata);
         });
-        const context = {forms: contextForms, report_data: rData};
+        ctxSchemas.forEach(fschema => {
+          if (fschema != null) {
+            contextSchemas[fschema.id] = fschema.schema;
+          }
+        });
+        const context = {forms: contextForms, schemas: contextSchemas, report_data: rData};
         return createReportInstance(rSchema.schema, context, this._translateService);
       }),
     );
