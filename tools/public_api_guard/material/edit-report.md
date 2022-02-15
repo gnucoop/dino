@@ -9,6 +9,7 @@ import { AfterViewInit } from '@angular/core';
 import { AjfReportInstance } from '@ajf/core/reports';
 import { FormDataManager } from '@dino/core/forms';
 import { FormMetricSelector } from '@dino/material/form-metric-selector';
+import { FormSchemaManager } from '@dino/core/forms';
 import * as i0 from '@angular/core';
 import * as i2 from '@ajf/material/reports';
 import * as i3 from '@angular/common';
@@ -31,7 +32,7 @@ import { TranslocoService } from '@ajf/core/transloco';
 
 // @public
 export class EditReport implements OnInit, AfterViewInit {
-    constructor(metricsService: MetricsService, _translateService: TranslocoService, _route: ActivatedRoute, _router: Router, _formDataManager: FormDataManager, _reportDataManager: ReportDataManager, _reportSchemaManager: ReportSchemaManager);
+    constructor(metricsService: MetricsService, _translateService: TranslocoService, _route: ActivatedRoute, _router: Router, _formDataManager: FormDataManager, _formSchemaManager: FormSchemaManager, _reportDataManager: ReportDataManager, _reportSchemaManager: ReportSchemaManager);
     hasOptionalMetrics: boolean;
     isReportMetricsSelectorValid: Observable<boolean>;
     readonly isView: Observable<boolean>;

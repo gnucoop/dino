@@ -33,7 +33,9 @@ export interface ActiveMetric {
 
 // @public
 export interface ActiveSync<T extends Model = Model> {
+    collectionName: string;
     state: RxGraphQLReplicationState<T>;
+    stateActivity: Observable<boolean>;
     sub: {
         unsubscribe: () => void;
     };
@@ -73,6 +75,7 @@ export const clone: <T extends Model>(obj: DeepReadonlyObject<T>) => T;
 export interface CollectionChangedEvent {
     action?: string;
     collection: string;
+    count?: number;
     timestamp: number;
 }
 
@@ -275,7 +278,7 @@ export class DataService {
     findOne<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxQuery<T, RxDocument<T> | null>>;
     get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null>;
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
-    isSyncing: BehaviorSubject<boolean>;
+    isSyncing: Observable<boolean>;
     plugin(plugin: any): void;
     // (undocumented)
     update<T extends Model = Model>(doc: RxDocument<T>, updateData: Partial<T>): Observable<RxDocument<T> | null>;
@@ -310,7 +313,7 @@ export interface DataUpsertRequest<T extends Model> {
 export const DEFAULT_EXCLUDED_METRIC_KEYS: string[];
 
 // @public
-export type InsertModel<T extends Model> = Omit<T, 'id' | 'created_at' | 'updated_at' | '_deleted'>;
+export type InsertModel<T extends Model> = Omit<T, 'id' | 'updated_at' | '_deleted'>;
 
 // @public
 export interface Metric extends Model {

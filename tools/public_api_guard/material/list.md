@@ -57,11 +57,13 @@ import { Model } from '@dino/core/data';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 import { RxJsonSchema } from 'rxdb';
 import { SearchFiltersComponent } from '@dino/core/list';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Sort } from '@angular/material/sort';
 import { TemplateRef } from '@angular/core';
 
 // @public
@@ -145,6 +147,12 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     // (undocumented)
     get additionalDataSchema(): AD;
     set additionalDataSchema(dataSchema: AD);
+    customPaginator: BehaviorSubject<MatPaginator | null>;
+    customPaginatorCurrentPageIndex: number;
+    customPaginatorLength: EventEmitter_2<number>;
+    customSort: BehaviorSubject<MatSort | null>;
+    // (undocumented)
+    set dataHeaders(headers: ListHeader<T>[]);
     // (undocumented)
     get dataResults(): BehaviorSubject<T[]>;
     deleteAction(items: T[], isDetails?: boolean): T[];
@@ -158,7 +166,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     get getSort(): MatSort | null;
     // (undocumented)
     get modelSchema(): RxJsonSchema<T>;
-    queryDM(queryString: string, additionalDataSchema?: AD | null): DataQueryOptions;
+    queryDM(queryString: string, additionalDataSchema?: AD | null, page?: PageEvent | null, sort?: Sort | null, dataHeaders?: ListHeader<T>[]): DataQueryOptions;
     refreshListData: BehaviorSubject<CollectionChangedEvent>;
     // (undocumented)
     set setFiltersComponent(component: SearchFiltersComponent | null);

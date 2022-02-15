@@ -5,6 +5,7 @@
 ```ts
 
 import { ActionType } from '@dino/core/list';
+import { AfterViewInit } from '@angular/core';
 import { DataModelManager } from '@dino/core/data';
 import { FiltersService } from '@dino/core/list';
 import * as i0 from '@angular/core';
@@ -25,7 +26,7 @@ import { Metric } from '@dino/core/data';
 import { OnInit } from '@angular/core';
 
 // @public
-export class MetricSection<T extends Metric = Metric> implements OnInit {
+export class MetricSection<T extends Metric = Metric> implements OnInit, AfterViewInit {
     constructor(_filtersService: FiltersService, dialog: MatDialog);
     dataSource: ListDataSource<T>;
     // (undocumented)
@@ -35,6 +36,8 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     metricLabel: string;
     // (undocumented)
     set metricManager(mm: DataModelManager<T>);
+    // (undocumented)
+    ngAfterViewInit(): void;
     // (undocumented)
     ngOnInit(): void;
     onClickRowActions: ActionType[];

@@ -13,10 +13,11 @@ import * as i0 from '@angular/core';
 import * as i2 from '@angular/common';
 import * as i3 from '@angular/material/autocomplete';
 import * as i4 from '@angular/material/button';
-import * as i5 from '@angular/material/form-field';
-import * as i6 from '@angular/material/icon';
-import * as i7 from '@angular/material/input';
-import * as i8 from '@angular/forms';
+import * as i5 from '@angular/material/datepicker';
+import * as i6 from '@angular/material/form-field';
+import * as i7 from '@angular/material/icon';
+import * as i8 from '@angular/material/input';
+import * as i9 from '@angular/forms';
 import { LocationManager } from '@dino/core/locations';
 import { Metric } from '@dino/core/data';
 import { MetricFormField } from '@dino/material/metric-editor';
@@ -36,6 +37,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         [key: string]: any;
     }, isView?: boolean): void;
     displayMetricName(metric: Metric): string;
+    formCreationDate: Observable<Date>;
+    formDate: FormGroup;
     formMetrics: FormGroup;
     formMetricsFields: MetricFormField[];
     formMetricsOptions: {
@@ -69,7 +72,7 @@ export class FormMetricSelectorModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<FormMetricSelectorModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<FormMetricSelectorModule, [typeof i1.FormMetricSelector], [typeof i2.CommonModule, typeof i3.MatAutocompleteModule, typeof i4.MatButtonModule, typeof i5.MatFormFieldModule, typeof i6.MatIconModule, typeof i7.MatInputModule, typeof i8.ReactiveFormsModule], [typeof i1.FormMetricSelector]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<FormMetricSelectorModule, [typeof i1.FormMetricSelector], [typeof i2.CommonModule, typeof i3.MatAutocompleteModule, typeof i4.MatButtonModule, typeof i5.MatDatepickerModule, typeof i6.MatFormFieldModule, typeof i7.MatIconModule, typeof i8.MatInputModule, typeof i9.ReactiveFormsModule], [typeof i1.FormMetricSelector]>;
 }
 
 // @public
