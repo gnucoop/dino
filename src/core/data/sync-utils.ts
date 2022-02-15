@@ -29,7 +29,7 @@ import {PushQueryExtraParams} from './push-query-extra-params';
 
 const MAX_ITERATIONS = 100;
 const SYNC_IGNORED_PROPERTIES = ['_rev', '_attachments', '_id'];
-const UPDATE_IGNORED_PROPERTIES = [...SYNC_IGNORED_PROPERTIES, 'created_at', 'id'];
+const UPDATE_IGNORED_PROPERTIES = [...SYNC_IGNORED_PROPERTIES, 'id'];
 
 /**
  * Builds a GraphQL query used to pull documents belonging to a given collection in pull sync.

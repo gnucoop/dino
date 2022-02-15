@@ -381,7 +381,6 @@ export abstract class DataModelManager<T extends Model = Model> {
    */
   private _prepareUpdateQuery(data: Partial<T>): any {
     data.updated_at = new Date().toISOString();
-    delete data.created_at;
     return {$set: {...data}};
   }
 

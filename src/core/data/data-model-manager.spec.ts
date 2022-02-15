@@ -168,6 +168,7 @@ const dummySchema: RxJsonSchema<DummyModel> = {
 describe('Data Model Manager - CRUD methods', () => {
   const collectionName = 'dummymodel';
   const collection = {name: collectionName, collection: {schema: dummySchema}};
+  let currentDate: string;
   let dataService: DataService;
   let contextService: ContextServiceMock;
   let dummyManager: DummyManager | null;
@@ -186,6 +187,7 @@ describe('Data Model Manager - CRUD methods', () => {
     contextService = TestBed.inject(ContextServiceMock);
     dataService = TestBed.inject(DataService);
     dummyManager = new DummyManager(collection, dataService, contextService, [ageAuthPermission]);
+    currentDate = new Date().toISOString().split('T')[0];
   });
 
   afterEach(async () => {
@@ -194,7 +196,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should create a new object in the database', async () => {
-    const object = {name: 'exampleDummy'};
+    const object = {name: 'exampleDummy', created_at: currentDate};
     const createSpy = spyOn(ageAuthPermission, 'canCreate').and.callThrough();
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     expect(insertedDummy).not.toBeNull();
@@ -203,16 +205,19 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should get an existing object from the database', async () => {
-    const object = {name: 'exampleDummy'};
+    const object = {name: 'exampleDummy', created_at: currentDate};
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const getObject = await firstValueFrom(dummyManager!.get(insertedDummy!.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual(insertedDummy!.name);
-    expect(getObject!).toEqual(jasmine.objectContaining(object));
+    expect({name: getObject!.name}).toEqual(jasmine.objectContaining({name: object.name}));
   });
 
   it('should create a bulk of objects in the database', async () => {
-    const objects = [{name: 'firstDummy'}, {name: 'secondDummy'}];
+    const objects = [
+      {name: 'firstDummy', created_at: currentDate},
+      {name: 'secondDummy', created_at: currentDate},
+    ];
     const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     expect(insertedDummies).not.toBeNull();
     expect(insertedDummies.success).not.toBeNull();
@@ -223,7 +228,10 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should retrieve a list of all objects in the collection', async () => {
-    const objects = [{name: 'dummyOne'}, {name: 'dummyTwo'}];
+    const objects = [
+      {name: 'dummyOne', created_at: currentDate},
+      {name: 'dummyTwo', created_at: currentDate},
+    ];
     await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const getObjects = await firstValueFrom(dummyManager!.list().pipe(take(1)));
 
@@ -232,7 +240,12 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should retrieve a list of all objects in the collection matching the options', async () => {
-    const objects = [{name: 'A'}, {name: 'B'}, {name: 'C'}, {name: 'D'}];
+    const objects = [
+      {name: 'A', created_at: currentDate},
+      {name: 'B', created_at: currentDate},
+      {name: 'C', created_at: currentDate},
+      {name: 'D', created_at: currentDate},
+    ];
     await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const listOptions: DataListOptions = {
       sort: [{name: 'desc'}],
@@ -247,11 +260,11 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should retrieve all objects in the collection matching the query options', async () => {
     const objects = [
-      {name: 'A', age: 18},
-      {name: 'B', age: 20},
-      {name: 'C', age: 60},
-      {name: 'D'},
-      {name: 'E', age: 55},
+      {name: 'A', age: 18, created_at: currentDate},
+      {name: 'B', age: 20, created_at: currentDate},
+      {name: 'C', age: 60, created_at: currentDate},
+      {name: 'D', created_at: currentDate},
+      {name: 'E', age: 55, created_at: currentDate},
     ];
     await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const queryOptions: DataQueryOptions = {
@@ -271,7 +284,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should remove an existing object from the database', async () => {
-    const object = {name: 'testDummy', author: 'user@dino.gnu'};
+    const object = {name: 'testDummy', author: 'user@dino.gnu', created_at: currentDate};
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const deletedObject = await firstValueFrom(
@@ -287,8 +300,8 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should remove a bulk of existing objects from the database', async () => {
     const objects = [
-      {name: 'firstDummy', author: 'user@dino.gnu'},
-      {name: 'secondDummy', author: 'user@dino.gnu'},
+      {name: 'firstDummy', author: 'user@dino.gnu', created_at: currentDate},
+      {name: 'secondDummy', author: 'user@dino.gnu', created_at: currentDate},
     ];
     const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
     const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
@@ -310,7 +323,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should update an existing object from the database', async () => {
-    const object = {name: 'newDummy'};
+    const object = {name: 'newDummy', created_at: currentDate};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const updObject = {
@@ -328,7 +341,7 @@ describe('Data Model Manager - CRUD methods', () => {
   });
 
   it('should patch an existing object from the database', async () => {
-    const object = {name: 'newDummy'};
+    const object = {name: 'newDummy', created_at: currentDate};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const objectToPatch = {

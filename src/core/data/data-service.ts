@@ -87,6 +87,11 @@ export interface CollectionChangedEvent {
    * The Action triggering the event.
    */
   action?: string;
+
+  /**
+   * The total docs of the changed collection
+   */
+  count?: number;
 }
 
 /**
@@ -123,7 +128,7 @@ export class DataService {
    * True when the Syncing process is currently operating
    * (A replication cycle is undergoing)
    */
-  isSyncing: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isSyncing: Observable<boolean>;
 
   readonly config: DataServiceConfig;
 
@@ -139,7 +144,12 @@ export class DataService {
     RegisteredCollection[]
   >([]);
 
-  private _activeSyncs: {[key: string]: ActiveSync} = {};
+  /**
+   * The currently synchronized Collections
+   */
+  private _activeSyncs: BehaviorSubject<{[key: string]: ActiveSync}> = new BehaviorSubject<{
+    [key: string]: ActiveSync;
+  }>({});
 
   /**
    * The Data service configuration settings stream.
@@ -178,6 +188,26 @@ export class DataService {
     this._db = this._dataConfig.pipe(
       switchMap(config => from(createRxDatabase(config.databaseCreateOptions))),
       shareReplay(1),
+    );
+
+    this.isSyncing = this._activeSyncs.pipe(
+      switchMap(syncs => {
+        const syncsStateActivity: Observable<Boolean>[] = [];
+        for (let key in syncs) {
+          if (syncs[key] != null) {
+            syncsStateActivity.push(syncs[key].stateActivity);
+          }
+        }
+        return combineLatest(syncsStateActivity).pipe(
+          switchMap(states => {
+            if (states.some(state => state === true)) {
+              return obsOf(true);
+            } else {
+              return obsOf(false).pipe(delay(2000), debounceTime(100));
+            }
+          }),
+        );
+      }),
     );
 
     this._initSync();
@@ -246,11 +276,7 @@ export class DataService {
         return from(collection.insert(insertObject)).pipe(
           tap(doc => {
             if (doc != null) {
-              this._collectionChanged.emit({
-                timestamp: new Date().getTime(),
-                collection: collection.name,
-                action: `Document created`,
-              });
+              this._collectionChangedEmit('Document created', collection);
             }
           }),
           catchError(e => {
@@ -281,11 +307,7 @@ export class DataService {
         return from(collection.bulkInsert(docsData)).pipe(
           tap(doc => {
             if (doc.success != null) {
-              this._collectionChanged.emit({
-                timestamp: new Date().getTime(),
-                collection: collection.name,
-                action: `Documents created`,
-              });
+              this._collectionChangedEmit('Documents created', collection);
             }
           }),
           catchError(() => obsOf({success: [], error: []})),
@@ -304,11 +326,7 @@ export class DataService {
     return from(doc.update(updateData)).pipe(
       tap(dc => {
         if (dc != null) {
-          this._collectionChanged.emit({
-            timestamp: new Date().getTime(),
-            collection: doc.collection.name,
-            action: `Document Updated`,
-          });
+          this._collectionChangedEmit('Document updated', doc.collection);
         }
       }),
       map(_ => {
@@ -340,11 +358,7 @@ export class DataService {
         return from(collection.upsert(insertObject)).pipe(
           tap(doc => {
             if (doc != null) {
-              this._collectionChanged.emit({
-                timestamp: new Date().getTime(),
-                collection: collection.name,
-                action: `Document Updated`,
-              });
+              this._collectionChangedEmit('Document Updated', collection);
             }
           }),
           catchError(() => obsOf(null)),
@@ -505,13 +519,16 @@ export class DataService {
     combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
       .pipe(withLatestFrom(this._authService.authenticated))
       .subscribe(([[registeredCollections, token, isOnline], auth]) => {
-        const activeSyncsKeys = Object.keys(this._activeSyncs);
+        const activeSyncsKeys = Object.keys(this._activeSyncs.getValue());
         if (auth && token != null && isOnline) {
-          const collectionNames = [] as string[];
+          const collectionNames: string[] = Object.values(this._activeSyncs.getValue()).map(
+            coll => coll.collectionName,
+          );
           registeredCollections.forEach(registeredCollection => {
             const {collection, ...params} = registeredCollection;
-            collectionNames.push(collection.name);
-            this._setupCollectionSync(collection, params, token);
+            if (collectionNames.indexOf(collection.name) < 0) {
+              this._setupCollectionSync(collection, params, token);
+            }
           });
           activeSyncsKeys.forEach(collectionName => {
             if (collectionNames.indexOf(collectionName) === -1) {
@@ -554,6 +571,7 @@ export class DataService {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
       },
     });
+    let stateActivity: Observable<boolean> = state.active$;
     let sub: {unsubscribe: () => void} = Subscription.EMPTY;
     if (
       this._dataConfig.value.syncOptions.live &&
@@ -581,36 +599,28 @@ export class DataService {
         this._dataConfig.value.syncOptions.webSocketImpl,
       );
       const query = subscriptionQueryBuilder(collection);
-      const clientRequest = client.request({query}) as Observable<any>;
+      const clientRequest = client.request({query});
       sub = clientRequest.subscribe({
-        next: () => {
+        next: st => {
+          if (st.data && st.data[collection.name]) {
+            this._collectionChangedEmit(
+              'websocket change received',
+              collection,
+              st.data[collection.name].length,
+            );
+          }
           state.run().then(() => {
-            this._collectionChanged.emit({
-              timestamp: new Date().getTime(),
-              collection: collection.name,
-              action: 'replication complete',
-            });
-            this.isSyncing.next(true);
+            this._collectionChangedEmit('replication cycle complete', collection);
             state.received$.pipe(take(1), delay(1000)).subscribe(() => {
-              this._collectionChanged.emit({
-                timestamp: new Date().getTime(),
-                collection: collection.name,
-                action: 'change received',
-              });
-              setTimeout(() => {
-                this.isSyncing.next(false);
-              }, 5000);
+              this._collectionChangedEmit('changed data pulled', collection);
             });
           });
         },
       });
-      state.awaitInitialReplication().then(() => {
-        setTimeout(() => {
-          this.isSyncing.next(false);
-        }, 10000);
-      });
     }
-    this._activeSyncs[collection.name] = {state, sub};
+    const actSyncs = this._activeSyncs.getValue();
+    actSyncs[collection.name] = {state, sub, stateActivity, collectionName: collection.name};
+    this._activeSyncs.next(actSyncs);
   }
 
   /**
@@ -618,13 +628,34 @@ export class DataService {
    * @param collection The collection for which the sync must be stopped.
    */
   private _stopCollectionSync(collectionName: string): void {
-    if (this._activeSyncs[collectionName] == null) {
+    if (this._activeSyncs.getValue()[collectionName] == null) {
       return;
     }
-    const {state, sub} = this._activeSyncs[collectionName];
+    const actSyncs = this._activeSyncs.getValue();
+    const {state, sub} = actSyncs[collectionName];
     sub.unsubscribe();
     state.cancel().then(() => {});
-    delete this._activeSyncs[collectionName];
+    delete actSyncs[collectionName];
+    this._activeSyncs.next(actSyncs);
+  }
+
+  /**
+   * Emits the Collection Changed event, triggering the refresh of the
+   * data.
+   * @param msg The event message
+   * @param collection The changed RxCollection
+   * @param count? The changed RxCollection docs count
+   */
+  private _collectionChangedEmit(msg: string, collection: RxCollection, count?: number): void {
+    if (collection == null) {
+      return;
+    }
+    this._collectionChanged.emit({
+      timestamp: new Date().getTime(),
+      collection: collection.name,
+      action: msg,
+      ...(count != null && {count}),
+    });
   }
 
   /**
@@ -715,7 +746,8 @@ export class DataService {
  */
 const DEFAULT_SYNC_OPTIONS = {
   live: true,
-  liveInterval: 60 * 1000,
+  liveInterval: 60 * 1000 * 10,
+  batchSize: 1000,
 };
 
 /**

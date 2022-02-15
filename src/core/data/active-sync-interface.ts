@@ -21,6 +21,7 @@
  */
 
 import {RxGraphQLReplicationState} from 'rxdb/plugins/replication-graphql';
+import {Observable} from 'rxjs';
 import {Model} from './model';
 
 /**
@@ -33,7 +34,18 @@ export interface ActiveSync<T extends Model = Model> {
   state: RxGraphQLReplicationState<T>;
 
   /**
+   * The synchronized collection name
+   */
+  collectionName: string;
+
+  /**
    * The state graphql subscription
    */
   sub: {unsubscribe: () => void};
+
+  /**
+   * Observable of the activity state.
+   * If true, the sync is currenctly active.
+   */
+  stateActivity: Observable<boolean>;
 }
