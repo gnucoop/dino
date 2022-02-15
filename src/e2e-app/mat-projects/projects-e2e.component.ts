@@ -11,14 +11,14 @@ export class MatProjectsE2E {
   @ViewChild(MetricSection) section: MetricSection;
   readonly manager: ProjectManager;
   readonly headers: ListHeader<Project>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'name', label: 'Name', sortable: true},
-    {column: 'parent_name', label: 'Parent Project', sortable: true},
-    {column: 'code', label: 'Code', sortable: true},
-    {column: 'sectors_of_intervention', label: 'Sectors of Intervention', sortable: true},
-    {column: 'donors', label: 'Donors', sortable: true},
-    {column: 'start_date', label: 'Start Date', sortable: true},
-    {column: 'end_date', label: 'End Date', sortable: true},
+    {column: 'id', label: 'ID', displayed: false},
+    {column: 'name', label: 'Name'},
+    {column: 'parent_name', label: 'Parent Project'},
+    {column: 'code', label: 'Code'},
+    {column: 'sectors_of_intervention', label: 'Sectors of Intervention'},
+    {column: 'donors', label: 'Donors'},
+    {column: 'start_date', label: 'Start Date'},
+    {column: 'end_date', label: 'End Date'},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

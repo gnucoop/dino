@@ -37,11 +37,11 @@ dino-main-nav {
       }
       .dino-sync-detector {
         margin-right: 25px;
-        transition: all 0.2s ease-in-out;
+        transition: all 2s ease-in-out;
         &.dino-sync-active {
-          -webkit-animation: spin 2s linear infinite;
-          -moz-animation: spin 2s linear infinite;
-          animation: spin 2s linear infinite;
+          -webkit-animation: spin 2s ease-in-out infinite;
+          -moz-animation: spin 2s ease-in-out infinite;
+          animation: spin 2s ease-in-out infinite;
         }
       }
       .dino-active-user-icon {

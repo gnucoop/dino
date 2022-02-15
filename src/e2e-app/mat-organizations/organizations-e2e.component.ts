@@ -11,11 +11,11 @@ export class MatOrganizationsE2E {
   @ViewChild(MetricSection) section: MetricSection;
   readonly manager: OrganizationManager;
   readonly headers: ListHeader<Organization>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'name', label: 'Name', sortable: true},
-    {column: 'parent_name', label: 'Parent Organization', sortable: true},
-    {column: 'logo_path', label: 'Logo Path', sortable: true},
-    {column: 'website_url', label: 'Website Url', sortable: true},
+    {column: 'id', label: 'ID', displayed: false},
+    {column: 'name', label: 'Name'},
+    {column: 'parent_name', label: 'Parent Organization'},
+    {column: 'logo_path', label: 'Logo Path'},
+    {column: 'website_url', label: 'Website Url'},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

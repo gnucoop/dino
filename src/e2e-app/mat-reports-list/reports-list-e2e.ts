@@ -31,45 +31,45 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   readonly baseUrl = 'reports';
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'user_data_ref_id', label: 'User', sortable: true, populateWith: 'full_name'},
+    {column: 'id', label: 'ID', displayed: false},
+    {column: 'user_data_ref_id', label: 'User', populateWith: 'full_name'},
     {
       column: 'area_ref_id',
       label: 'Area',
-      sortable: true,
+
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('area'),
     },
     {
       column: 'case_ref_id',
       label: 'Case',
-      sortable: true,
+
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('case'),
     },
     {
       column: 'location_ref_id',
       label: 'Location',
-      sortable: true,
+
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('location'),
     },
     {
       column: 'organization_ref_id',
       label: 'Organization',
-      sortable: true,
+
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('organization'),
     },
     {
       column: 'project_ref_id',
       label: 'Project',
-      sortable: true,
+
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('project'),
     },
-    {column: 'date_start', label: 'Collected Since', sortable: true},
-    {column: 'date_end', label: 'Collected Until', sortable: true},
+    {column: 'date_start', label: 'Collected Since'},
+    {column: 'date_end', label: 'Collected Until'},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

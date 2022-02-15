@@ -11,9 +11,9 @@ export class MatAreasE2E {
   @ViewChild(MetricSection) section: MetricSection;
   readonly manager: AreaManager;
   readonly headers: ListHeader<Area>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'name', label: 'Name', sortable: true},
-    {column: 'parent_name', label: 'Parent Area', sortable: true},
+    {column: 'id', label: 'ID', displayed: false},
+    {column: 'name', label: 'Name', displayed: true},
+    {column: 'parent_name', label: 'Parent Area', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

@@ -20,7 +20,14 @@
  *
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {DataModelManager, Metric} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
@@ -39,7 +46,7 @@ import {MetricEditor} from '@dino/material/metric-editor';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class MetricSection<T extends Metric = Metric> implements OnInit {
+export class MetricSection<T extends Metric = Metric> implements OnInit, AfterViewInit {
   /**
    * If true, the Metrics List is displayed
    */
@@ -99,6 +106,9 @@ export class MetricSection<T extends Metric = Metric> implements OnInit {
     this.dataSource = new ListDataSource(this._metricManager, this._filtersService);
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.dataHeaders = this.headers;
+  }
   openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void {
     this.dialog.open(MetricEditor, {
       data: {

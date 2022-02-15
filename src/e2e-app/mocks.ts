@@ -17,8 +17,8 @@ export const instanceName = 'local_dev';
 /**
  * NHost dev backend
  */
-// export const syncGraphQLUrl = 'https://ktaskcckfnzewxcsyrvu.nhost.run/v1/graphql';
-// export const wsUrl = 'wss://ktaskcckfnzewxcsyrvu.nhost.run/v1/graphql';
+// export const syncGraphQLUrl = 'https://sehdprpmtgoonqyxyuhk.nhost.run/v1/graphql';
+// export const wsUrl = 'wss://sehdprpmtgoonqyxyuhk.nhost.run/v1/graphql';
 // export const instanceName = 'nhost_dev';
 
 export const authErrorMessage = 'Could not verify JWT: JWTExpired';

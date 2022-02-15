@@ -20,7 +20,7 @@ export const authConfig: AuthServiceConfig = {
 /**
  * NHost dev backend
  */
-// const host = `https://ktaskcckfnzewxcsyrvu.nhost.run`;
+// const host = `https://sehdprpmtgoonqyxyuhk.nhost.run`;
 // export const authConfig: AuthServiceConfig = {
 //   host: host,
 //   nHostAuth: true,
@@ -38,7 +38,7 @@ export const configurationConfig: ConfigServiceConfig = {
 // Paginator default config
 export const paginatorConfig: MatPaginatorDefaultOptions = {
   pageSize: 10,
-  pageSizeOptions: [5, 10, 25, 50, 100],
+  pageSizeOptions: [5, 10, 25, 50, 100, 500],
 };
 
 // Dialog default config

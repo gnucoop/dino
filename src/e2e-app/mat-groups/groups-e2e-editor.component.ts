@@ -253,6 +253,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           project_ref_id: newUserGroupData['project'] ?? [],
           groupFormSchemaIds: newUserGroupData['form_schema'] ?? [],
           groupReportSchemaIds: newUserGroupData['report_schema'] ?? [],
+          created_at: new Date().toISOString(),
         };
         this._saveEvt.emit(newUserGroup);
       }

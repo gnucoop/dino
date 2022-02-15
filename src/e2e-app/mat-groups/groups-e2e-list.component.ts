@@ -11,8 +11,8 @@ import {MatGroupsEditorE2E} from './groups-e2e-editor.component';
 })
 export class MatGroupsListE2E implements OnInit {
   readonly headers: ListHeader<UserGroup>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'groupName', label: 'Name', sortable: true},
+    {column: 'id', label: 'ID', displayed: false},
+    {column: 'groupName', label: 'Name'},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
 

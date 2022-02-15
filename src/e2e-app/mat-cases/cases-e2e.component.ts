@@ -11,7 +11,7 @@ export class MatCasesE2E {
   @ViewChild(MetricSection) section: MetricSection;
   readonly manager: CaseManager;
   readonly headers: ListHeader<Case>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
+    {column: 'id', label: 'ID', displayed: false},
     {column: 'name', label: 'Name', sortable: true},
     {column: 'code', label: 'Code', sortable: true},
     {column: 'parent_name', label: 'Parent case', sortable: true},

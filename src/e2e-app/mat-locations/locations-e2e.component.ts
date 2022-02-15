@@ -11,10 +11,10 @@ export class MatLocationsE2E {
   @ViewChild(MetricSection) section: MetricSection;
   readonly manager: LocationManager;
   readonly headers: ListHeader<Location>[] = [
-    {column: 'id', label: 'ID', sortable: true, displayed: false},
-    {column: 'name', label: 'Name', sortable: true},
-    {column: 'parent_name', label: 'Parent Location', sortable: true},
-    {column: 'coordinates', label: 'Coordinates', sortable: true},
+    {column: 'id', label: 'ID', displayed: false},
+    {column: 'name', label: 'Name'},
+    {column: 'parent_name', label: 'Parent Location'},
+    {column: 'coordinates', label: 'Coordinates'},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

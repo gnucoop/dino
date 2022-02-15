@@ -145,6 +145,7 @@ export class UserEditor implements OnDestroy, OnInit {
                 email: item.email,
                 user_group_ids: item.user_group_ids,
                 user_auth_ref_id: null,
+                created_at: new Date().toISOString(),
               });
             }
             const nHostItem = item as UserData & {password: string};
@@ -168,6 +169,7 @@ export class UserEditor implements OnDestroy, OnInit {
                     email: item.email,
                     user_group_ids: item.user_group_ids,
                     user_auth_ref_id: nhostRes.session.user.id,
+                    created_at: new Date().toISOString(),
                   });
                 }),
               );
