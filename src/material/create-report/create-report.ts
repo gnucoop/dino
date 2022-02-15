@@ -182,12 +182,15 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
             : null;
           if (formMetricsSelector != null) {
             const selectedMetrics = formMetricsSelector.selectedMetrics;
+            const creationDate = formMetricsSelector.formDate.value.created_at;
             for (let key of Object.keys(selectedMetrics)) {
               const saveKey = `${key}_ref_id`;
               if (selectedMetrics[key].id != null) {
                 newItem[saveKey] = selectedMetrics[key].id;
               }
             }
+            const formattedDate = new Date(creationDate).toISOString().split('T')[0];
+            newItem['created_at'] = formattedDate;
           }
           return this._rd.create(newItem as ReportData);
         }),

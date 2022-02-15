@@ -187,6 +187,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
+            created_at: new Date().toISOString(),
           };
           if (fs == null) {
             return this._formSchemaManager.create(formPatch).pipe(

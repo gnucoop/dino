@@ -194,6 +194,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
+            created_at: new Date().toISOString(),
           };
           if (reportSchema == null) {
             return this._reportSchemaManager.create(reportPatch).pipe(

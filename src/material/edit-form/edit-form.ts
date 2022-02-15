@@ -347,12 +347,15 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
 
           if (formObj.fmSelector != null) {
             const selectedMetrics = formObj.fmSelector.selectedMetrics;
+            const creationDate = formObj.fmSelector.formDate.value.created_at;
             for (let key of Object.keys(selectedMetrics)) {
               if (selectedMetrics[key].id != null) {
                 const saveKey = `${key}_ref_id`;
                 newItem[saveKey] = selectedMetrics[key].id;
               }
             }
+            const formattedDate = new Date(creationDate).toISOString().split('T')[0];
+            newItem['created_at'] = formattedDate;
           }
 
           const dm: DataModelManager<T> =
