@@ -29,7 +29,7 @@ import {
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup, ValidationErrors} from '@angular/forms';
+import {FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
@@ -65,12 +65,22 @@ import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selec
 })
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
-   * The Selector form group.
+   * The Selector metrics form group.
    */
   formMetrics: FormGroup;
   get selectedMetrics(): {[key: string]: Metric} {
     return this.formMetrics.value;
   }
+
+  /**
+   * The Selector date form group.
+   */
+  formDate: FormGroup;
+
+  /**
+   * The form creation date
+   */
+  formCreationDate: Observable<Date>;
 
   /**
    * The Selector form fields.
@@ -126,6 +136,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
+    this.formCreationDate = this._formData.pipe(
+      map(data => data.created_at),
+      take(1),
+    );
+    this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));
+    this.formDate = new FormGroup({'created_at': new FormControl(new Date(), Validators.required)});
     const group: {[key: string]: FormControl} = {};
     const validatorFn: ValidationErrors | null = this._hasOptionalMetrics.getValue()
       ? RequireMetricMatch
@@ -226,9 +242,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * Checks the form validation
    */
   isFormMetricsValid(): Observable<boolean> {
-    return this.formMetrics.statusChanges.pipe(
-      map(status => {
-        return status === 'VALID' ? true : false;
+    return combineLatest([this.formMetrics.statusChanges, this.formDate.statusChanges]).pipe(
+      map(([statusMetrics, statusDate]) => {
+        return statusMetrics === 'VALID' && statusDate == 'VALID' ? true : false;
       }),
       startWith(this.formMetrics.valid),
     );
@@ -351,6 +367,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     this.isView.pipe(take(1)).subscribe(isView => {
       if (isView) {
         Object.keys(this.formMetrics.controls).forEach(key => this.formMetrics.get(key)?.disable());
+        this.formDate.get('created_at')?.disable();
       }
     });
   }

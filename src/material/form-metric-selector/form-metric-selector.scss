@@ -8,9 +8,14 @@
         }
     }
     form {
-        .dino-form-metric-selector-field {
+        .dino-form-metric-selector-field,
+        .dino-form-date-selector-field {
             min-width: 60vw;
             display: block;
+            .mat-datepicker-toggle {
+                position: relative;
+                left: 10px;
+            }
         }
     }
 }

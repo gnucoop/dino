@@ -1,10 +1,20 @@
 <div class="dino-form-metric-selector-container">
+  <form [formGroup]="formDate" autocomplete="off">
+    <mat-form-field class="dino-form-date-selector-field" appearance="fill">
+      <mat-label>Creation Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="pickerDate"
+        [formControlName]="'created_at'"
+        [placeholder]="'mm/dd/yyyy'"
+      />
+      <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+      <mat-datepicker [xPosition]="'end'" #pickerDate></mat-datepicker>
+    </mat-form-field>
+  </form>
   <form [formGroup]="formMetrics" autocomplete="off">
     <ng-container *ngFor="let field of formMetricsFields let idx = index">
-      <mat-form-field
-        class="dino-form-metric-selector-field"
-        appearance="fill"
-      >
+      <mat-form-field class="dino-form-metric-selector-field" appearance="fill">
         <input
           matInput
           [formControlName]="field.fieldName"
@@ -25,15 +35,11 @@
           </mat-option>
         </mat-autocomplete>
 
-        <mat-error
-          *ngIf="formMetrics.controls[field.fieldName].hasError('required')"
-        >
+        <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('required')">
           Please enter a {{field.fieldName}}
         </mat-error>
 
-        <mat-error
-          *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')"
-        >
+        <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')">
           Please select a valid {{field.fieldName}}
         </mat-error>
 
