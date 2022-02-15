@@ -1,6 +1,7 @@
 <div class="dino-list-toolbar">
   <ng-content select="[breadcrumbs]"></ng-content>
-  <mat-paginator></mat-paginator>
+  <mat-paginator #pag [length]="dataSource.customPaginatorLength|async"></mat-paginator>
+  <div class="dino-list-page"><span>Pag. {{pag.pageIndex + 1}}</span></div>
 </div>
 <ng-content select="[filters]"></ng-content>
 <ng-container *ngIf="expandable && displayExpandAllBtn">

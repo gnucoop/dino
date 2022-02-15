@@ -22,17 +22,18 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {EventEmitter, Optional} from '@angular/core';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {
   clone,
   CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
+  DataQuerySortDir,
   Model,
 } from '@dino/core/data';
-import {FilterItem, FiltersService, SearchFiltersComponent} from '@dino/core/list';
+import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
@@ -44,7 +45,7 @@ import {
   Subject,
   throwError,
 } from 'rxjs';
-import {catchError, map, shareReplay, skipWhile, take, takeUntil} from 'rxjs/operators';
+import {catchError, map, shareReplay, skipWhile, switchMap, take, takeUntil} from 'rxjs/operators';
 
 /**
  * This class extends MatTableDataSource, and augments it with additional functionalities.
@@ -73,23 +74,64 @@ export class ListDataSource<
   actionErrorEvt: EventEmitter<Error> = new EventEmitter<Error>();
 
   /**
-   * The ListDataSource Paginator material component
+   * A Material sort triggering queries sorting for indexed fields
+   * (NOT connected to the material datasource)
    */
-  get getPaginator(): MatPaginator | null {
-    return this.paginator;
-  }
-  set setPaginator(paginator: MatPaginator | null) {
-    this.paginator = paginator;
-  }
+  customSort: BehaviorSubject<MatSort | null> = new BehaviorSubject<MatSort | null>(null);
 
   /**
    * The ListDataSource Sort material component
    */
   get getSort(): MatSort | null {
-    return this.sort;
+    return this.customSort.getValue();
   }
   set setSort(sort: MatSort | null) {
-    this.sort = sort;
+    if (sort == null) {
+      return;
+    }
+    this.customSort.next(sort);
+  }
+
+  /**
+   * A Material paginator triggering queries with limit and skip
+   * (NOT connected to the material datasource)
+   */
+  customPaginator: BehaviorSubject<MatPaginator | null> = new BehaviorSubject<MatPaginator | null>(
+    null,
+  );
+
+  /**
+   * The ListDataSource Paginator material component
+   */
+  get getPaginator(): MatPaginator | null {
+    return this.customPaginator.getValue();
+  }
+  set setPaginator(paginator: MatPaginator | null) {
+    if (paginator == null) {
+      return;
+    }
+    this.customPaginator.next(paginator);
+  }
+
+  /**
+   * The Material paginator current page index
+   */
+  customPaginatorCurrentPageIndex: number = 0;
+
+  /**
+   * The Material paginator length observable
+   */
+  customPaginatorLength: EventEmitter<number> = new EventEmitter<number>();
+
+  /**
+   * The list currently displayed Headers for the model Data
+   */
+  private _dataHeaders: BehaviorSubject<ListHeader<T>[]> = new BehaviorSubject<ListHeader<T>[]>([]);
+  set dataHeaders(headers: ListHeader<T>[]) {
+    if (headers == null) {
+      return;
+    }
+    this._dataHeaders.next(headers);
   }
 
   /**
@@ -155,7 +197,7 @@ export class ListDataSource<
     super();
 
     this._modelSchema = this._dataModelManager.collectionSchema;
-
+    this.data = [];
     this._dataResults.pipe(takeUntil(this._mainUnsubscribe)).subscribe(results => {
       this.data = results;
     });
@@ -193,21 +235,51 @@ export class ListDataSource<
       this._fs.queryString,
       this.refreshListData,
       this._additionalDataSchema.pipe(skipWhile(schema => this._isFormDataList && schema == null)),
+      this.customPaginator.pipe(switchMap(pag => (pag ? pag.page : obsOf(null)))),
+      this.customSort.pipe(switchMap(sort => (sort ? sort.sortChange : obsOf(null)))),
+      this._dataHeaders,
     ])
       .pipe(
-        map(([queryString, refresh, addSchema]) => {
-          if (queryString && refresh) {
-            return {queryString, addSchema};
+        map(([queryString, refreshEvt, addSchema, pageEvt, sortEvt, dataHeaders]) => {
+          if (pageEvt) {
+            if (
+              this.getPaginator &&
+              this.customPaginatorCurrentPageIndex == pageEvt.pageIndex &&
+              pageEvt.pageIndex != 0
+            ) {
+              pageEvt = this._resetPaginator(pageEvt);
+            }
+            if (
+              this.getPaginator &&
+              (pageEvt.previousPageIndex ?? 0) <= pageEvt.pageIndex &&
+              this.data.length < pageEvt.pageSize
+            ) {
+              pageEvt = this._resetPaginator(pageEvt);
+            }
+            this.customPaginatorCurrentPageIndex = pageEvt.pageIndex;
+          }
+
+          if (queryString && refreshEvt) {
+            return {queryString, pageEvt, sortEvt, addSchema, dataHeaders};
           } else {
-            return {queryString: '', addSchema};
+            return {queryString: '', pageEvt, sortEvt, addSchema, dataHeaders};
           }
         }),
         catchError(
-          err => throwError(err) as Observable<{queryString: string; addSchema: AD | null}>,
+          err =>
+            throwError(() => new Error(err)) as Observable<{
+              queryString: string;
+              addSchema: AD | null;
+              pageEvt: PageEvent | null;
+              sortEvt: Sort | null;
+              dataHeaders: ListHeader<T>[];
+            }>,
         ),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(res => this.queryDM(res.queryString, res.addSchema));
+      .subscribe(res =>
+        this.queryDM(res.queryString, res.addSchema, res.pageEvt, res.sortEvt, res.dataHeaders),
+      );
   }
 
   /**
@@ -223,9 +295,16 @@ export class ListDataSource<
    * Queries the DataModelManager and updates the dataResults.
    * @param queryString The encoded query string of parameters
    * @param additionalDataSchema? The additional data schema
+   * @param page? The paginator change event
    * @returns The Mango query with the generated query selector
    */
-  queryDM(queryString: string, additionalDataSchema?: AD | null): DataQueryOptions {
+  queryDM(
+    queryString: string,
+    additionalDataSchema?: AD | null,
+    page?: PageEvent | null,
+    sort?: Sort | null,
+    dataHeaders?: ListHeader<T>[],
+  ): DataQueryOptions {
     let querySelector: {[key: string]: any} = {};
     let detailsQuerySelector: {[key: string]: any} = {};
 
@@ -238,10 +317,29 @@ export class ListDataSource<
       this.filter = '';
     }
     filterItems.forEach(item => {
-      const selector: {} = item.isFilterItemDetails ? detailsQuerySelector : querySelector;
+      const selector: {[key: string]: any} = item.isFilterItemDetails
+        ? detailsQuerySelector
+        : querySelector;
       switch (item.name) {
         case 'keyword':
-          this.filter = item.value.trim().toLowerCase();
+          if (dataHeaders) {
+            const dataHeadersSearchExpressions = dataHeaders.map(header => {
+              return {
+                [`data.${header.column}`]: {
+                  '$regex': new RegExp(item.value, 'i'),
+                },
+              };
+            });
+            const headersSearchExpressions = dataHeaders.map(header => {
+              return {
+                [`${header.column}`]: {
+                  '$regex': new RegExp(item.value, 'i'),
+                },
+              };
+            });
+            selector['$or'] = [...dataHeadersSearchExpressions, ...headersSearchExpressions];
+          }
+
           break;
         case 'dateStart':
           if (item && item.value) {
@@ -293,7 +391,6 @@ export class ListDataSource<
           break;
       }
     });
-
     if (additionalDataSchema != null) {
       this._addNestedProps(querySelector, ['schema_id', '$eq'], additionalDataSchema.id);
     }
@@ -302,7 +399,15 @@ export class ListDataSource<
 
     const query: DataQueryOptions = {
       selector: querySelector,
+      limit: this.getPaginator?.pageSize,
     };
+    if (page) {
+      query.limit = page.pageSize;
+      query.skip = page.pageSize * page.pageIndex;
+    }
+    if (sort) {
+      query.sort = [{[sort.active]: sort.direction as DataQuerySortDir}];
+    }
     const detailsQuery: DataQueryOptions = {
       selector: detailsQuerySelector,
     };
@@ -354,7 +459,13 @@ export class ListDataSource<
             return true;
           });
         }
-        this._dataResults.next(this._populateDocRefs(resultDocs));
+        const populatedDocs = this._populateDocRefs(resultDocs);
+        if (this.getPaginator != null) {
+          this.customPaginatorLength.emit(
+            (this.getPaginator.pageIndex + 1) * populatedDocs.length * this.getPaginator.pageSize,
+          );
+        }
+        this._dataResults.next(populatedDocs);
       },
     );
   }
@@ -407,6 +518,19 @@ export class ListDataSource<
     return results ? this._rxDocsToJson(results) : [];
   }
 
+  /**
+   * Resets the Custom Paginator to the first page
+   * @param pageEvt The pagination change event
+   * @returns The reset pagination change event
+   */
+  private _resetPaginator(pageEvt: PageEvent): PageEvent {
+    pageEvt.pageIndex = 0;
+    this.customPaginatorCurrentPageIndex = 0;
+    if (this.getPaginator) {
+      this.getPaginator.firstPage();
+    }
+    return pageEvt;
+  }
   /**
    * Converts an array of RxDocuments into an array of T objects
    * @param docs RxDocument[]

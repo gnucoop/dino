@@ -163,7 +163,7 @@ export class SelectionList<T extends Model = Model>
    */
   @ViewChild(MatPaginator, {static: false})
   set paginator(mp: MatPaginator) {
-    if (mp == null) {
+    if (mp == null || this._dataSource.customPaginator.getValue() != null) {
       return;
     }
     this._dataSource.setPaginator = mp;
@@ -174,7 +174,7 @@ export class SelectionList<T extends Model = Model>
    */
   @ViewChild(MatSort, {static: false})
   set sorting(ms: MatSort) {
-    if (ms == null) {
+    if (ms == null || this._dataSource.customSort.getValue() != null) {
       return;
     }
     this._dataSource.setSort = ms;
@@ -593,16 +593,6 @@ export class SelectionList<T extends Model = Model>
           }
         });
       }
-
-      // This next code block avoids searching in hidden colums when filtering data by
-      // kewyword, by providing a custom filterPredicate for the dataSource. To allow
-      // searching in hidden columns, just comment this code block.
-
-      this.dataSource.filterPredicate = (data: T, filter: string) => {
-        return this.headers
-          .map(key => key.column)
-          .some(key => (key in data ? ('' + data[key]).toLowerCase().includes(filter) : false));
-      };
     } else {
       // If no filtersComponent is found in the template, the list is initalized without
       // any filters and/or filter presets.
@@ -660,6 +650,7 @@ export class SelectionList<T extends Model = Model>
       .subscribe(headers => {
         this.mainListContext.headers.next(headers);
         this.mainListContext.displayedColumns?.next(this.displayedColumns);
+        this.dataSource.dataHeaders = headers.filter(header => header.displayed);
       });
   }
 

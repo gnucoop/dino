@@ -1,6 +1,8 @@
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
 import {RouterTestingModule} from '@angular/router/testing';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
@@ -74,6 +76,8 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.customSort = new BehaviorSubject<MatSort | null>(null);
+    list.dataSource.customPaginator = new BehaviorSubject<MatPaginator | null>(null);
     list.dataSource.actionErrorEvt = new EventEmitter<Error>();
     list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();
@@ -88,6 +92,8 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.customSort = new BehaviorSubject<MatSort | null>(null);
+    list.dataSource.customPaginator = new BehaviorSubject<MatPaginator | null>(null);
     list.dataSource.actionErrorEvt = new EventEmitter<Error>();
     list.filtersComponent = ftComponent as unknown as SearchFiltersComponent;
     list.dataSource.disconnect = () => {};
@@ -101,6 +107,8 @@ describe('List', () => {
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.customSort = new BehaviorSubject<MatSort | null>(null);
+    list.dataSource.customPaginator = new BehaviorSubject<MatPaginator | null>(null);
     list.dataSource.actionErrorEvt = new EventEmitter<Error>();
     list.dataSource.disconnect = () => {};
     fixtureList.detectChanges();

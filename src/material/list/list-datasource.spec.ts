@@ -164,6 +164,7 @@ describe('ListDataSource', () => {
         filter_c: {$eq: false},
         is_deleted: {$ne: true},
       },
+      limit: undefined,
     };
 
     expect(spyAddNestedProp).toHaveBeenCalled();
