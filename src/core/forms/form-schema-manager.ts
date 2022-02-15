@@ -95,7 +95,6 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         column: `${metric.metricName}_ref_id`,
         external_ref: `${metric.metricName}_ref_id`,
         label: metric.label.slice(0, -1),
-        sortable: true,
         populateWith: 'name',
         icon: metric.icon,
       });
@@ -107,7 +106,6 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
               column: `${metric.metricName}_${key}`,
               external_ref: `${metric.metricName}_ref_id`,
               label: `${metric.label.slice(0, -1)} ${key.replace('_', ' ')}`,
-              sortable: true,
               displayed: false,
               populateWith: key,
               icon: metric.icon,
@@ -120,7 +118,6 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       {
         column: 'user_data_ref_id',
         label: 'User',
-        sortable: true,
         populateWith: 'full_name',
         displayed: false,
       },
@@ -145,7 +142,6 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
             label: node.label,
             dataColumn: true,
             displayed: dataHeadersDisplayed.includes(node.name),
-            sortable: true,
           } as ListHeader<any>),
       );
 

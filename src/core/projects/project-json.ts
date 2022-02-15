@@ -114,6 +114,10 @@ export const schema = {
   "additionalProperties": false,
   "description": "This model is used to store Projects.",
   "title": "Project",
+  "indexes": [
+    "created_at",
+    "updated_at"
+  ],
   "primaryKey": "id",
   "version": 1
 } as RxJsonSchema<Project>;
