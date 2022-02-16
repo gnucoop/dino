@@ -145,6 +145,11 @@ export class DataService {
   >([]);
 
   /**
+   * The auth token currently stored, added to the request headers.
+   */
+  private _currentToken: string | null = null;
+
+  /**
    * The currently synchronized Collections
    */
   private _activeSyncs: BehaviorSubject<{[key: string]: ActiveSync}> = new BehaviorSubject<{
@@ -526,7 +531,7 @@ export class DataService {
           );
           registeredCollections.forEach(registeredCollection => {
             const {collection, ...params} = registeredCollection;
-            if (collectionNames.indexOf(collection.name) < 0) {
+            if (token != this._currentToken || collectionNames.indexOf(collection.name) < 0) {
               this._setupCollectionSync(collection, params, token);
             }
           });
@@ -535,6 +540,7 @@ export class DataService {
               this._stopCollectionSync(collectionName);
             }
           });
+          this._currentToken = token;
         } else {
           activeSyncsKeys.forEach(k => {
             this._stopCollectionSync(k);
