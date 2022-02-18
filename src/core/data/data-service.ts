@@ -575,6 +575,7 @@ export class DataService {
       },
       push: {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
+        batchSize: DEFAULT_SYNC_OPTIONS.batchSize,
       },
     });
     let stateActivity: Observable<boolean> = state.active$;

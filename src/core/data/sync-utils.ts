@@ -42,7 +42,6 @@ export function pullQueryBuilder(
   options: DataServiceSyncOptions,
   extraParams?: PullQueryExtraParams,
 ): RxGraphQLReplicationQueryBuilder {
-  const batchSize = options.batchSize;
   return (doc: Model) => {
     if (doc == null) {
       doc = {
@@ -60,7 +59,6 @@ export function pullQueryBuilder(
     const query = `{
       ${collection.name}(
         where: ${JSON.stringify(where)},
-        limit: ${batchSize ?? null},
         order_by: [{updated_at: asc}]
       ) {
         ${fields.join(' ')}
