@@ -64,7 +64,7 @@
 
     <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
       <ng-template #metricField>
-        <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]">
+        <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]" (click)="showOptions(group)">
           <input
             matInput
             [formControlName]="additionalBasicFiltersLabels[idx]"

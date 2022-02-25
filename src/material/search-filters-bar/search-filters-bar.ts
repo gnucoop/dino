@@ -45,8 +45,9 @@ import {ProjectManager} from '@dino/core/projects';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
+import {RxDocument} from 'rxdb';
 import {Observable, Subscription, throwError} from 'rxjs';
-import {catchError, switchMap, take} from 'rxjs/operators';
+import {catchError, map, switchMap, take} from 'rxjs/operators';
 
 /**
  * Opt-in component that handles all SelectionList filters.
@@ -214,7 +215,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._bottomSheet
       .open(ExportBottomSheet)
       .afterDismissed()
-      .subscribe((ev: 'XLSX' | 'CSV' | 'dialog') => this.exportEvt.emit(ev));
+      .subscribe((ev: 'XLSX' | 'CSV' | 'dialog' | null) => {
+        if (ev != null) {
+          this.exportEvt.emit(ev);
+        }
+      });
   }
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
@@ -262,6 +267,39 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     return metric.name && metric.id ? metric.name : '';
   }
 
+  showOptions(group: FormGroup) {
+    const metricType = Object.keys(group.controls)[0];
+    const inputControl = this.additionalBasicFilters.find(grp => grp.get(metricType) != null);
+    if (inputControl && inputControl.value[metricType] == null) {
+      inputControl.setValue({[metricType]: ''});
+    }
+  }
+
+  /**
+   * Sorts Metric options alphabetically by their name property.
+   * @param a Prev item
+   * @param b Next Item
+   * @returns Sort order
+   */
+  private _sortMetricsAlphabetically(a: RxDocument<Metric>, b: RxDocument<Metric>): number {
+    let textA = a.name.toUpperCase();
+    let textB = b.name.toUpperCase();
+    const less = textA < textB;
+    const more = textA > textB;
+    if (less) {
+      return -1;
+    } else if (more) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
+   * Populates the autocomplete panels of metric filters with options
+   * @param metricType The type of metric
+   * @param metricManager The related metric manager
+   */
   private _populateMetricsOptions(metricType: string, metricManager: DataModelManager<any>): void {
     if (metricType == null || metricManager == null) {
       return;
@@ -272,7 +310,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       this.metricFiltersOptions[metricType] = inputValue.pipe(
         switchMap(val => {
           if (typeof val === 'string') {
-            return metricManager.query({selector: {name: {$regex: val}}});
+            return metricManager
+              .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$eq: false}}})
+              .pipe(map(results => results.sort((a, b) => this._sortMetricsAlphabetically(a, b))));
           }
           return [];
         }),
