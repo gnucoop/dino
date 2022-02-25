@@ -5,12 +5,12 @@
   </mat-toolbar>
   <mat-toolbar>
     <dino-export-form-select-all-button (change)="selectAll($event.checked)">
-      {{'select all form fields'| transloco}}
+      {{'Select all Form fields'| transloco}}
     </dino-export-form-select-all-button>
     <dino-export-form-select-all-button
       class="dino-export-translate-btn"
       (change)="setTranslation($event.checked)"
-      >{{'label values'|transloco}}</dino-export-form-select-all-button
+      >{{'Label values'|transloco}}</dino-export-form-select-all-button
     >
     <span class="dino-export-toolbar-spacer"></span>
     <span class="dino-export-toolbar-count"
@@ -33,7 +33,7 @@
         (click)="export()"
         [disabled]="disableExport$|async"
       >
-        {{'export'|transloco}}
+        {{'Export'|transloco}}
       </button>
     </mat-button-toggle-group>
   </mat-toolbar>
@@ -45,7 +45,7 @@
       <dino-export-form-select-all-button
         [group]="'tab'"
         (change)="selectAllfieldSlides($event.checked)"
-        >{{'select all fields of'|transloco}} {{label| transloco}}
+        >{{'Select all fields of'|transloco}} {{label| transloco}}
       </dino-export-form-select-all-button>
       <mat-selection-list
         [attr.aria-label]="'slide fields'|transloco"

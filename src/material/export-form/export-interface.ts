@@ -44,6 +44,7 @@ export interface Data extends Context {
 
 export interface ExportData extends Context {
   dino: Context;
+  externalRefs: Context;
 }
 
 export type ExportFormat = 'csv' | 'xlsx' | 'splitted-xlsx';

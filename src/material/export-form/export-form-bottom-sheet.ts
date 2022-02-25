@@ -35,7 +35,7 @@ import {MatBottomSheetRef} from '@angular/material/bottom-sheet';
     <span mat-line>CSV</span>
   </a>
   <a mat-list-item (click)="export('dialog')">
-    <span mat-line>select fields</span>
+    <span mat-line>Select fields</span>
   </a>
 </mat-nav-list>
   `,

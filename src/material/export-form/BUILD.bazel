@@ -19,8 +19,13 @@ ng_module(
         ":export-form-select-all-button.css",
     ] + glob(["**/*.html"]),
     deps = [
+        "//src/core/areas",
+        "//src/core/cases",
         "//src/core/data",
         "//src/core/forms",
+        "//src/core/locations",
+        "//src/core/organizations",
+        "//src/core/projects",
         "@npm//@ajf/core",
         "@npm//@ajf/material",
         "@npm//@angular/common",

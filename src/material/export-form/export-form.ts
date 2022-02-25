@@ -33,18 +33,21 @@ import {
 import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
+  Optional,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSelectionList} from '@angular/material/list';
 import {MatTabChangeEvent} from '@angular/material/tabs';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
@@ -60,6 +63,28 @@ import {
   ExportModel,
   MAX_SHEETNAME_LENGTH,
 } from './export-interface';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
+import {ProjectManager} from '@dino/core/projects';
+import {DataModelManager} from '@dino/core/data';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
+/**
+ * The export form component dialog data interface
+ */
+export interface ExportFormData {
+  /**
+   * The desired export format
+   */
+  exportFormat?: 'xlsx' | 'csv';
+  /**
+   * If true, all fields are automatically selected when the
+   * dialog is opened.
+   */
+  selectAll?: boolean;
+}
 
 @Component({
   selector: 'dino-export-form',
@@ -68,7 +93,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ExportForm implements OnDestroy {
+export class ExportForm implements AfterViewInit, OnDestroy {
   disableExport$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   exportFormat: ExportFormat = 'csv';
   @ViewChildren(ExportSelectAllButtonComponent)
@@ -88,8 +113,17 @@ export class ExportForm implements OnDestroy {
     [],
   );
 
+  private _exportedDataListPopulated$: Observable<ExportData[]>;
   private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at'];
+  private _dinoBaseModelFields: string[] = ['_deleted', 'id', 'is_deleted', 'updated_at'];
+  private _metricManagers: (DataModelManager<any> | null)[] = [
+    this._ar,
+    this._cs,
+    this._pj,
+    this._lc,
+    this._og,
+  ];
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
   // it is a dictionary with keu the name of the slide and the list of selected field name as value.
@@ -103,7 +137,16 @@ export class ExportForm implements OnDestroy {
   // value.
   private _translateCtxValuesDic: {[name: string]: string} = {};
 
-  constructor(private _ts: TranslocoService) {
+  constructor(
+    public dialogRef: MatDialogRef<ExportForm>,
+    @Inject(MAT_DIALOG_DATA) public dialogData: ExportFormData,
+    private _ts: TranslocoService,
+    @Optional() private _ar: AreaManager | null,
+    @Optional() private _cs: CaseManager | null,
+    @Optional() private _pj: ProjectManager | null,
+    @Optional() private _lc: LocationManager | null,
+    @Optional() private _og: OrganizationManager | null,
+  ) {
     this._selectAllSub = (this._selectAllFieldsofCurrentSlideEvt as Observable<boolean>)
       .pipe(withLatestFrom(this._currentTabIndex$))
       .subscribe(([checked, tabIndex]) => {
@@ -114,6 +157,33 @@ export class ExportForm implements OnDestroy {
           selectionList.deselectAll();
         }
       });
+
+    this._exportedDataListPopulated$ = this.exportDataList$.pipe(
+      switchMap(expData => {
+        const expObjData: Observable<{[k: string]: any}>[] = [];
+        for (let data of expData) {
+          const dinoData = data.dino;
+          const itemObj: {[k: string]: Observable<any>} = {};
+          for (let dKey in dinoData) {
+            itemObj[dKey] = isObservable(dinoData[dKey]) ? dinoData[dKey] : obsOf(dinoData[dKey]);
+          }
+          expObjData.push(forkJoin(itemObj));
+        }
+        return forkJoin(expObjData).pipe(
+          map(newDinoData => {
+            const populatedData: ExportData[] = [];
+            expData.forEach(exp => {
+              const newData = newDinoData.find(ndd => ndd.id === exp.dino.id);
+              if (newData) {
+                exp.dino = newData;
+              }
+              populatedData.push(exp);
+            });
+            return populatedData;
+          }),
+        );
+      }),
+    );
 
     this.maxNumberOfForm$ = this.exportDataList$.pipe(map(l => l.length));
 
@@ -249,7 +319,7 @@ export class ExportForm implements OnDestroy {
     this._exportSub = this._exportEvt
       .pipe(
         switchMap(() => slideNodesWithAllRepeatingInstance$),
-        withLatestFrom(this.exportDataList$),
+        withLatestFrom(this._exportedDataListPopulated$),
         map(([slideNodesWithAllRepeatingInstance, ctxList]) => {
           const exportCtxList: Context[] = [];
           ctxList.forEach(ctx => {
@@ -275,6 +345,18 @@ export class ExportForm implements OnDestroy {
               this._dinoFields.forEach(field => {
                 exportCtx[field] = ctx.dino[field];
               });
+              const metricManagers = this._metricManagers.filter(mm => mm != null);
+              metricManagers.forEach(manager => {
+                if (manager != null) {
+                  const metricName = manager.collectionName.toLowerCase();
+                  const metricProperties = manager.collectionSchema.properties;
+                  for (let prop in metricProperties) {
+                    if (ctx.dino[metricName] && !this._dinoBaseModelFields.includes(prop)) {
+                      exportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop];
+                    }
+                  }
+                }
+              });
               exportCtxList.push(exportCtx);
             }
           });
@@ -294,19 +376,33 @@ export class ExportForm implements OnDestroy {
             this._buildCsv(res);
             break;
         }
+        this.dialogRef.close();
       });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.dialogData) {
+      if (this.dialogData.selectAll && this.exportSelectAllButton.first != null) {
+        this.exportSelectAllButton.first.toggle();
+      }
+      if (this.dialogData.exportFormat) {
+        this.exportFormat = this.dialogData.exportFormat;
+      }
+    }
   }
 
   @Input()
   set data(data: Data[]) {
     this.exportDataList$.next(
       data.map(row => {
-        const ctx: ExportData = {...row.data, dino: {}};
+        const ctx: ExportData = {...row.data, dino: {}, externalRefs: {}};
         const keys = Object.keys(row);
         keys
           .filter(k => k != 'data')
           .forEach(key => {
-            ctx.dino[key] = row[key];
+            key.includes('ref_id')
+              ? (ctx.externalRefs[key] = row[key])
+              : (ctx.dino[key] = row[key]);
           });
         return ctx;
       }),
