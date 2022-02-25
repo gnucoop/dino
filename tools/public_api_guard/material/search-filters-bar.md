@@ -104,6 +104,8 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     set presetManager(state: boolean);
     removeFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void;
     // (undocumented)
+    showOptions(group: FormGroup): void;
+    // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dino-search-filters-bar", never, { "presetManager": "presetManager"; "exportable": "exportable"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, { "exportEvt": "exportEvt"; }, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;

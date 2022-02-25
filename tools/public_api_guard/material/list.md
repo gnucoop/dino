@@ -34,10 +34,11 @@ import * as i18 from '@angular/material/paginator';
 import * as i19 from '@angular/material/slide-toggle';
 import * as i20 from '@angular/material/snack-bar';
 import * as i21 from '@angular/material/sort';
-import * as i22 from '@angular/material/table';
-import * as i23 from '@angular/material/toolbar';
-import * as i24 from '@angular/forms';
-import * as i25 from '@angular/router';
+import * as i22 from '@angular/material/tabs';
+import * as i23 from '@angular/material/table';
+import * as i24 from '@angular/material/toolbar';
+import * as i25 from '@angular/forms';
+import * as i26 from '@angular/router';
 import * as i5 from '@ajf/core/forms';
 import * as i6 from '@ajf/core/transloco';
 import * as i7 from '@dino/material/breakpoint-observer';
@@ -52,6 +53,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
+import { MatTabGroup } from '@angular/material/tabs';
 import { MatTableDataSource } from '@angular/material/table';
 import { Model } from '@dino/core/data';
 import { Observable } from 'rxjs';
@@ -183,7 +185,7 @@ export class ListModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSnackBarModule, typeof i21.MatSortModule, typeof i22.MatTableModule, typeof i23.MatToolbarModule, typeof i24.ReactiveFormsModule, typeof i25.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSnackBarModule, typeof i21.MatSortModule, typeof i22.MatTabsModule, typeof i23.MatTableModule, typeof i24.MatToolbarModule, typeof i25.ReactiveFormsModule, typeof i26.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
 }
 
 // @public
@@ -234,6 +236,10 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
         [key: string]: string;
     } | null, populateWith: string): string | null;
     getRef(header: ListHeader<T>): string;
+    getRepeatingSlideCellContent(elementData: {
+        [key: string]: any;
+    }, header: ListHeader<T>): string[];
+    getRepeatingSlideTabCount(tab: MatTabGroup): number;
     getSelection(): T[];
     isAllSelected(): boolean;
     isRowExpanded(row: T): boolean;
@@ -242,6 +248,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     set listRowActions(actions: ListAction[] | null);
     mainListContext: ListContext<T>;
     masterToggle(): void;
+    moveRepeatingSlideTab(tab: MatTabGroup, index: number): void;
     // (undocumented)
     ngAfterContentInit(): void;
     // (undocumented)

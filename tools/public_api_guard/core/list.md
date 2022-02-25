@@ -210,6 +210,8 @@ export interface ListHeader<T> {
     icon?: string;
     label: string;
     populateWith?: string;
+    repeatingSlideColumn?: boolean;
+    repeatingSlideName?: string;
     sortable?: boolean;
 }
 

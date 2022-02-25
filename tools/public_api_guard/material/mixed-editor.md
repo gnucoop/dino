@@ -22,6 +22,7 @@ import * as i6 from '@angular/material/dialog';
 import * as i7 from '@angular/material/form-field';
 import * as i8 from '@angular/material/icon';
 import * as i9 from '@angular/material/input';
+import { Observable } from 'rxjs';
 
 // @public
 export class MixedEditor implements AfterViewInit {
@@ -29,6 +30,10 @@ export class MixedEditor implements AfterViewInit {
     addItem(item: MixedEditorItem | undefined): void;
     closeMethod?: () => void;
     findItem(itemId: string, list?: 'source' | 'save'): MixedEditorItem | undefined;
+    mixedItemTypes: Observable<{
+        type: string;
+        icon: string;
+    }[]>;
     // (undocumented)
     ngAfterViewInit(): void;
     onClose(): void;
@@ -51,6 +56,7 @@ export class MixedEditor implements AfterViewInit {
 
 // @public
 export interface MixedEditorItem {
+    allOptionItem: boolean;
     disabled?: boolean;
     displayed: boolean;
     itemIcon: string;

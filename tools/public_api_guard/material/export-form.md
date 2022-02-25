@@ -4,10 +4,13 @@
 
 ```ts
 
+import { AfterViewInit } from '@angular/core';
 import { AjfField as AjfField_2 } from '@ajf/core/forms';
 import { AjfNode } from '@ajf/core/forms';
 import { AjfNodeType } from '@ajf/core/forms';
+import { AreaManager } from '@dino/core/areas';
 import { BehaviorSubject } from 'rxjs';
+import { CaseManager } from '@dino/core/cases';
 import { ChangeDetectorRef } from '@angular/core';
 import { EventEmitter as EventEmitter_2 } from '@angular/core';
 import { FormSchema } from '@dino/core/forms';
@@ -25,11 +28,15 @@ import * as i6 from '@angular/material/button';
 import * as i7 from '@angular/material/button-toggle';
 import * as i8 from '@angular/material/checkbox';
 import * as i9 from '@angular/material/datepicker';
+import { LocationManager } from '@dino/core/locations';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatSelectionList } from '@angular/material/list';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
+import { OrganizationManager } from '@dino/core/organizations';
+import { ProjectManager } from '@dino/core/projects';
 import { QueryList } from '@angular/core';
 import { TranslocoService } from '@ajf/core/transloco';
 
@@ -70,14 +77,20 @@ export class ExportBottomSheet {
 export interface ExportData extends Context {
     // (undocumented)
     dino: Context;
+    // (undocumented)
+    externalRefs: Context;
 }
 
 // @public (undocumented)
-export class ExportForm implements OnDestroy {
-    constructor(_ts: TranslocoService);
+export class ExportForm implements AfterViewInit, OnDestroy {
+    constructor(dialogRef: MatDialogRef<ExportForm>, dialogData: ExportFormData, _ts: TranslocoService, _ar: AreaManager | null, _cs: CaseManager | null, _pj: ProjectManager | null, _lc: LocationManager | null, _og: OrganizationManager | null);
     _buildCsv(ctxList: Context[], all?: boolean): void;
     // (undocumented)
     set data(data: Data[]);
+    // (undocumented)
+    dialogData: ExportFormData;
+    // (undocumented)
+    dialogRef: MatDialogRef<ExportForm>;
     // (undocumented)
     set dinoFields(fieldNames: string[]);
     // (undocumented)
@@ -103,6 +116,8 @@ export class ExportForm implements OnDestroy {
     // (undocumented)
     readonly maxNumberOfForm$: Observable<number>;
     // (undocumented)
+    ngAfterViewInit(): void;
+    // (undocumented)
     ngOnDestroy(): void;
     // (undocumented)
     selectAll(checked: boolean): void;
@@ -117,11 +132,17 @@ export class ExportForm implements OnDestroy {
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<ExportForm, "dino-export-form", never, { "data": "data"; "dinoFields": "dinoFields"; "formSchema": "formSchema"; }, {}, never, never>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<ExportForm, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ExportForm, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
 
 // @public (undocumented)
 export type ExportFormat = 'csv' | 'xlsx' | 'splitted-xlsx';
+
+// @public
+export interface ExportFormData {
+    exportFormat?: 'xlsx' | 'csv';
+    selectAll?: boolean;
+}
 
 // @public (undocumented)
 export class ExportFormModule {
