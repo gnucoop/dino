@@ -35,10 +35,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchemaManager} from '@dino/core/forms';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
+import {UserData} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {RxDocument} from 'rxdb';
-import {combineLatest, forkJoin, from, Observable, of as obsOf, Subject} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {combineLatest, forkJoin, from, Observable, of as obsOf, Subject, zip} from 'rxjs';
+import {filter, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -232,8 +233,10 @@ export class EditReport implements OnInit, AfterViewInit {
             }
           }
         }
+        querySelector['is_deleted'] = {$eq: false};
         return this._formDataManager.query({selector: querySelector});
       }),
+      startWith([]),
     );
 
     this.reportInstance = combineLatest([
@@ -252,9 +255,7 @@ export class EditReport implements OnInit, AfterViewInit {
           populatedData.push(...data);
         }
         const ctxSchemas = this._formSchemaManager.query({selector: {id: {$in: formSchemaIds}}});
-        return forkJoin(populatedData).pipe(
-          withLatestFrom(ctxSchemas, obsOf(rData), obsOf(rSchema)),
-        );
+        return zip(forkJoin(populatedData), ctxSchemas, obsOf(rData), obsOf(rSchema));
       }),
       map(([ctx, ctxSchemas, rData, rSchema]) => {
         const contextForms: ReportContext = {};
@@ -298,13 +299,16 @@ export class EditReport implements OnInit, AfterViewInit {
       map(metrics => metrics.map(metric => metric.metricName)),
       switchMap(metrics => {
         const populatedMetrics: Observable<RxDocument<Metric>>[] = [];
+        const populatedUser: Observable<RxDocument<UserData>> = from(
+          formData.populate('user_data_ref_id'),
+        );
         metrics.forEach(metricType => {
           populatedMetrics.push(from(formData.populate(`${metricType}_ref_id`)));
         });
-        return forkJoin(populatedMetrics);
+        return zip(forkJoin(populatedMetrics), populatedUser);
       }),
-      map(mts =>
-        mts.map(mt => {
+      map(([mts, usr]) => {
+        const addedMetrics = mts.map(mt => {
           if (mt == null) {
             return null;
           }
@@ -315,8 +319,16 @@ export class EditReport implements OnInit, AfterViewInit {
             dataJsonAdd[`dino_${metricType}_${key}`] = jsonDoc[key];
           }
           return dataJsonAdd;
-        }),
-      ),
+        });
+        const addedUserData: {[key: string]: any} = {};
+        if (usr != null) {
+          const userJsonDoc: {[key: string]: any} = usr.toJSON();
+          for (let key in userJsonDoc) {
+            addedUserData[`dino_user_${key}`] = userJsonDoc[key];
+          }
+        }
+        return [...addedMetrics, addedUserData];
+      }),
       map(addedDatas => {
         let addData = {};
         addedDatas.forEach(data => (addData = {...addData, ...data}));
