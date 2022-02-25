@@ -57,6 +57,15 @@ export interface ListHeader<T> {
    */
   dataColumn?: boolean;
   /**
+   * If true, the content of the list cell is retrieved from fields inside
+   * a repeating slide.
+   */
+  repeatingSlideColumn?: boolean;
+  /**
+   * The name identifier of the repeating slide the header belongs to
+   */
+  repeatingSlideName?: string;
+  /**
    * Optional header icon identifier
    */
   icon?: string;

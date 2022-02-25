@@ -84,7 +84,7 @@ dino-list {
 
   .mat-row:not(.dino-row-details):hover {
     .mat-column-actions {
-      @media only screen and (min-width: 991px) {
+      @media only screen and (min-width: 768px) {
         visibility: visible;
       }
       .mat-icon {
@@ -139,11 +139,25 @@ dino-list {
     -webkit-transition: all ease-in-out 0.25s;
     opacity: 0.7;
   }
-
   .dino-header-icon:hover,
-  .dino-columns-sel-btn:hover {
+  .dino-columns-sel-btn:hover,
+  .dino-repeating-slide-icon:hover {
     background: transparent !important;
     opacity: 1;
+  }
+
+  .mat-tab-header {
+    display: none;
+  }
+
+  .mat-tab-group {
+    flex: 1 0 auto;
+  }
+  .mat-tab-body {
+    background-color: inherit;
+    .mat-tab-body-content {
+      align-items: center !important;
+    }
   }
 
   .mat-paginator {

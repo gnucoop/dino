@@ -21,7 +21,7 @@
  */
 
 import {AjfStringIdentifier} from '@ajf/core/common';
-import {AjfChoicesOrigin} from '@ajf/core/forms';
+import {AjfChoicesOrigin, AjfNodeType} from '@ajf/core/forms';
 import {Injectable} from '@angular/core';
 import {
   DataModelManager,
@@ -133,7 +133,13 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     }
     const dataHeadersDisplayed = [...new Set(identifierColumns)];
     const dataHeaders: ListHeader<any>[] = formSchema.schema.nodes
-      ?.map(slide => slide.nodes)
+      ?.map(slide =>
+        slide.nodes.map(node => ({
+          ...node,
+          repeatingSlideColumn: slide.nodeType === AjfNodeType.AjfRepeatingSlide,
+          slideName: slide.name,
+        })),
+      )
       .flat(1)
       .map(
         node =>
@@ -141,6 +147,8 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
             column: node.name,
             label: node.label,
             dataColumn: true,
+            repeatingSlideColumn: node.repeatingSlideColumn,
+            repeatingSlideName: node.repeatingSlideColumn ? node.slideName : undefined,
             displayed: dataHeadersDisplayed.includes(node.name),
           } as ListHeader<any>),
       );

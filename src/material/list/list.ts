@@ -28,11 +28,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ComponentFactoryResolver,
   ContentChild,
   ContentChildren,
   ElementRef,
-  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -47,6 +45,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Model} from '@dino/core/data';
 import {FormSchema} from '@dino/core/forms';
@@ -182,6 +181,8 @@ export class SelectionList<T extends Model = Model>
 
   @ViewChildren(MatSort) private _matSortsList: QueryList<MatSort>;
 
+  @ViewChildren(MatTabGroup) private _matTabGroups: QueryList<MatTabGroup>;
+
   /**
    * The filtersComponent associated with the SelectionList and its ListDataSource
    */
@@ -313,8 +314,6 @@ export class SelectionList<T extends Model = Model>
     private _fts: FiltersService,
     readonly breakpointObserver: BreakpointObserverService,
     private _router: Router,
-    private _componentFactoryResolver: ComponentFactoryResolver,
-    private _injector: Injector,
     private _snackbar: MatSnackBar,
   ) {
     super(cdr, aui, actroute);
@@ -329,24 +328,21 @@ export class SelectionList<T extends Model = Model>
       this.dataSource.dataResults.value != null
     ) {
       const formSchema: FormSchema = this.dataSource.additionalDataSchema as FormSchema;
-      if (ev === 'dialog') {
-        let dialogRef = this._dialog.open(ExportForm);
-        dialogRef.componentInstance.formSchema = formSchema;
-        dialogRef.componentInstance.data = this.dataSource.data as any[];
-      } else {
-        const componentFactory = this._componentFactoryResolver.resolveComponentFactory(ExportForm);
-        const cmp = componentFactory.create(this._injector);
-        cmp.instance.formSchema = formSchema;
-        cmp.instance.data = this.dataSource.data as any[];
-        if (ev === 'XLSX') {
-          cmp.instance.exportFormat = 'xlsx';
-        }
-        cmp.changeDetectorRef.detectChanges();
-        cmp.instance.selectAll(true);
-        cmp.changeDetectorRef.detectChanges();
-        cmp.instance.export();
-        cmp.destroy();
+      const dialogConfig = new MatDialogConfig();
+      if (ev === 'XLSX') {
+        dialogConfig.data = {
+          exportFormat: 'xlsx',
+          selectAll: true,
+        };
+      } else if (ev === 'CSV') {
+        dialogConfig.data = {
+          exportFormat: 'csv',
+          selectAll: true,
+        };
       }
+      let dialogRef = this._dialog.open(ExportForm, dialogConfig);
+      dialogRef.componentInstance.formSchema = formSchema;
+      dialogRef.componentInstance.data = this.dataSource.data as any[];
     }
   }
 
@@ -671,6 +667,52 @@ export class SelectionList<T extends Model = Model>
       return null;
     }
     return refObj[populateWith];
+  }
+
+  /**
+   * Retrieves the list cell content for a cell belonging to a Repeating Slide
+   * @param elementData The row element data
+   * @param header The list cell header
+   * @returns The content of the cell
+   */
+  getRepeatingSlideCellContent(elementData: {[key: string]: any}, header: ListHeader<T>): string[] {
+    const aggregateData: string[] = [];
+    for (let key in elementData) {
+      if (key.includes(header.column.toString())) {
+        aggregateData.push(elementData[key]);
+      }
+    }
+    return aggregateData;
+  }
+
+  /**
+   * Returns the total number of tabs in a repeating slide
+   * tab group
+   * @param tab The material tab group
+   * @returns Total number of tabs contained in it
+   */
+  getRepeatingSlideTabCount(tab: MatTabGroup): number {
+    if (tab._tabs) {
+      return tab._tabs.length;
+    }
+    return 0;
+  }
+
+  /**
+   * Changes the tab index of all tab groups belonging
+   * to the same repeating slide
+   * @param tab The material tab group
+   * @param index The index to be set in all liked tab groups
+   */
+  moveRepeatingSlideTab(tab: MatTabGroup, index: number): void {
+    const tabGroupElement = tab._elementRef.nativeElement as Element;
+    const tabGroupId = tabGroupElement.getAttribute('tabgroupid');
+    this._matTabGroups.forEach(tabGroup => {
+      const tgId = (<Element>tabGroup._elementRef.nativeElement).getAttribute('tabgroupid');
+      if (tgId === tabGroupId) {
+        tabGroup.selectedIndex = index;
+      }
+    });
   }
 
   /**

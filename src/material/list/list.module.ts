@@ -37,6 +37,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dino/core/list';
@@ -68,6 +69,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
     MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
+    MatTabsModule,
     MatTableModule,
     MatToolbarModule,
     ReactiveFormsModule,
