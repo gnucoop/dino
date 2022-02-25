@@ -22,7 +22,7 @@ import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
-import {map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
+import {map, shareReplay, switchMap} from 'rxjs/operators';
 
 /**
  * Represents an UserGroup populated with its metrics.
@@ -93,38 +93,42 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this._populateListSchedule.push(
-      this._populateList(this._userRoleManager, 'roleName', 'school', true),
-      this._populateList(this._formSchemaManager, 'name', 'list_alt'),
-      this._populateList(this._reportSchemaManager, 'name', 'stacked_bar_chart'),
+      this._populateList(this._userRoleManager, 'roleName', 'school', false, true),
+      this._populateList(this._formSchemaManager, 'name', 'list_alt', true),
+      this._populateList(this._reportSchemaManager, 'name', 'stacked_bar_chart', true),
     );
 
     if (this._areaManager != null) {
       this.metricTypes.push('area');
       this._populateListSchedule.push(
-        this._populateList(this._areaManager, 'name', 'volunteer_activism'),
+        this._populateList(this._areaManager, 'name', 'volunteer_activism', true),
       );
     }
     if (this._caseManager != null) {
       this.metricTypes.push('case');
-      this._populateListSchedule.push(this._populateList(this._caseManager, 'name', 'people'));
+      this._populateListSchedule.push(
+        this._populateList(this._caseManager, 'name', 'people', true),
+      );
     }
 
     if (this._projectManager != null) {
       this.metricTypes.push('project');
       this._populateListSchedule.push(
-        this._populateList(this._projectManager, 'name', 'assignment'),
+        this._populateList(this._projectManager, 'name', 'assignment', true),
       );
     }
 
     if (this._locationManager != null) {
       this.metricTypes.push('location');
-      this._populateListSchedule.push(this._populateList(this._locationManager, 'name', 'place'));
+      this._populateListSchedule.push(
+        this._populateList(this._locationManager, 'name', 'place', true),
+      );
     }
 
     if (this._organizationManager != null) {
       this.metricTypes.push('organization');
       this._populateListSchedule.push(
-        this._populateList(this._organizationManager, 'name', 'public', true),
+        this._populateList(this._organizationManager, 'name', 'public', true, true),
       );
     }
 
@@ -194,9 +198,8 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
         metricName => group[metricName] ?? null,
       );
       const metricsStream = combineLatest(groupMetrics);
-      this._populationSub = this._populatedSourceListEvt
-        .pipe(withLatestFrom(metricsStream))
-        .subscribe(([_, metrics]) => {
+      this._populationSub = combineLatest([this._populatedSourceListEvt, metricsStream]).subscribe(
+        ([_, metrics]) => {
           const mixedEditor = this.mixedEditor;
           if (group == null || this.mixedEditor == null) {
             return;
@@ -204,15 +207,30 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           mixedEditor.saveListName.nativeElement.value = group.groupName;
           mixedEditor.addItem(mixedEditor.findItem(group.user_role_ref_id));
           for (let formSchemaId of group.groupFormSchemaIds) {
-            mixedEditor.addItem(mixedEditor.findItem(formSchemaId));
+            const itemId: string = formSchemaId === 'all' ? 'all_form_schema' : formSchemaId;
+            const formItem = mixedEditor.findItem(itemId);
+            if (formItem) {
+              mixedEditor.addItem(formItem);
+            }
           }
           for (let reportSchemaId of group.groupReportSchemaIds) {
-            mixedEditor.addItem(mixedEditor.findItem(reportSchemaId));
+            const itemId: string = reportSchemaId === 'all' ? 'all_report_schema' : reportSchemaId;
+            const reportItem = mixedEditor.findItem(itemId);
+            if (reportItem) {
+              mixedEditor.addItem(reportItem);
+            }
           }
           for (let metric of metrics) {
             metric.forEach(mt => mixedEditor.addItem(mixedEditor.findItem(mt.id)));
           }
-        });
+          for (let activeMetric of activeMetrics) {
+            const activeMetricRefIds: string[] = group[`${activeMetric}_ref_id`];
+            if (activeMetricRefIds && activeMetricRefIds.includes('all')) {
+              mixedEditor.addItem(mixedEditor.findItem(`all_${activeMetric}`));
+            }
+          }
+        },
+      );
       this.loadGroup();
     }
   }
@@ -233,6 +251,9 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
       const groupName = listName;
       const newUserGroupData: {[key: string]: any} = {};
       list.forEach(item => {
+        if (item.allOptionItem) {
+          item.itemId = 'all';
+        }
         if (newUserGroupData[item.itemType] == null) {
           newUserGroupData[item.itemType] = [];
         }
@@ -270,11 +291,12 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     manager: DataModelManager<any>,
     nameKey: string,
     itemIcon: string,
+    allOption: boolean = false,
     uniqueItem: boolean = false,
   ): Observable<MixedEditorItem[]> {
-    return manager.list().pipe(
-      map(list =>
-        list.map(doc => {
+    return manager.query({selector: {is_deleted: {$eq: false}}}).pipe(
+      map(list => {
+        const res = list.map(doc => {
           const item: MixedEditorItem = {
             itemName: doc[nameKey],
             itemType: doc.collection.name,
@@ -282,11 +304,26 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
             itemIcon: itemIcon,
             displayed: true,
             uniqueItem: uniqueItem,
+            allOptionItem: false,
             itemParentId: doc.parent_id,
           };
           return item;
-        }),
-      ),
+        });
+        if (allOption) {
+          res.push({
+            itemName: `All ${manager.collectionName.replace('_', ' ')}s`,
+            itemType: manager.collectionName,
+            itemId: `all_${manager.collectionName}`,
+            itemIcon: itemIcon,
+            displayed: true,
+            uniqueItem: true,
+            allOptionItem: true,
+            itemParentId: null,
+          });
+        }
+
+        return res;
+      }),
       shareReplay(1),
     );
   }

@@ -51,6 +51,12 @@ export interface MixedEditorItem {
   uniqueItem: boolean;
 
   /**
+   * If true, the Item represents the inclusion of all options
+   * of its category
+   */
+  allOptionItem: boolean;
+
+  /**
    * If true, the Item is displayed in the list
    */
   displayed: boolean;

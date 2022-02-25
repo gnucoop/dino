@@ -30,8 +30,8 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {BehaviorSubject, fromEvent} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import {BehaviorSubject, fromEvent, Observable} from 'rxjs';
+import {debounceTime, map} from 'rxjs/operators';
 import {MixedEditorItem} from './mixed-editor-item';
 
 /**
@@ -56,6 +56,12 @@ export class MixedEditor implements AfterViewInit {
    * The list of all items available to the editor.
    */
   @Input() sourceList: BehaviorSubject<MixedEditorItem[]>;
+
+  /**
+   * A list of all mixedItems types currently present in the
+   * sourceList
+   */
+  mixedItemTypes: Observable<{type: string; icon: string}[]>;
 
   /**
    * The list saving method.
@@ -216,6 +222,18 @@ export class MixedEditor implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.mixedItemTypes = this.sourceList.pipe(
+      map(items => {
+        const allTypes: {type: string; icon: string}[] = [];
+        items.forEach(item => {
+          if (!allTypes.find(t => t.type === item.itemType)) {
+            allTypes.push({type: item.itemType, icon: item.itemIcon});
+          }
+        });
+        return allTypes;
+      }),
+    );
+
     fromEvent(this.search.nativeElement, 'keydown')
       .pipe(debounceTime(300))
       .subscribe(event => {

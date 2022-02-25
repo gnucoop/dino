@@ -20,30 +20,21 @@
       <ng-container *ngFor="let item of (sourceList|async)">
         <ng-container *ngIf="item.displayed">
           <div
-            [class]="item.disabled? 'dino-mixed-list-item-disabled' : 'dino-mixed-list-item'"
+            class="dino-mixed-list-item"
+            [class.dino-mixed-list-item-disabled]="item.disabled"
+            [class.dino-mixed-list-item-alloption]="item.allOptionItem"
           >
-            <mat-icon class="dino-mixed-list-icon-identifier"
-              >{{item.itemIcon}}</mat-icon
-            >
+            <mat-icon class="dino-mixed-list-icon-identifier">{{item.itemIcon}}</mat-icon>
             <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
 
             <ng-template #boxBtn>
-              <button
-                mat-icon-button
-                color="primary"
-                aria-label="Add item"
-                (click)="addItem(item)"
-              >
+              <button mat-icon-button color="primary" aria-label="Add item" (click)="addItem(item)">
                 <mat-icon>add</mat-icon>
               </button>
             </ng-template>
 
             <ng-template #boxDisabledBtn>
-              <button
-                mat-icon-button
-                color="primary"
-                aria-label="Disabled item"
-              >
+              <button mat-icon-button color="primary" aria-label="Disabled item">
                 <mat-icon>not_interested</mat-icon>
               </button>
             </ng-template>
@@ -73,13 +64,8 @@
       [cdkDropListData]="saveList"
       class="dino-mixed-list"
     >
-      <div
-        class="dino-mixed-list-item dino-mixed-list-item-savelist"
-        *ngFor="let item of saveList"
-      >
-        <mat-icon class="dino-mixed-list-icon-identifier"
-          >{{item.itemIcon}}</mat-icon
-        >
+      <div class="dino-mixed-list-item dino-mixed-list-item-savelist" *ngFor="let item of saveList">
+        <mat-icon class="dino-mixed-list-icon-identifier">{{item.itemIcon}}</mat-icon>
         <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
         <button
           *ngIf="!viewOnly"
