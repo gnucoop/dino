@@ -180,6 +180,9 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
    */
   getGroupsAllMetrics(): Observable<{[metricType: string]: string[]}> {
     const activeMetrics = this._metricService.activeMetrics.value.map(metric => metric.metricName);
+    if (!activeMetrics.length) {
+      return obsOf({});
+    }
     const groupMetrics: Observable<{[metricType: string]: string[]}>[] = [];
     activeMetrics.forEach(mt => {
       groupMetrics.push(this.getGroupsMetricsByType(mt).pipe(map(gmts => ({[mt]: gmts}))));
