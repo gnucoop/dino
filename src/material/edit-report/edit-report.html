@@ -6,7 +6,8 @@
         <mat-step [completed]="(isReportMetricsSelectorValid|async) || (isView|async)">
           <ng-template matStepLabel>REPORT METRICS</ng-template>
           <div class="dino-edit-report-step-container">
-            <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics"> </dino-form-metric-selector>
+            <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics">
+            </dino-form-metric-selector>
           </div>
         </mat-step>
         <mat-step>
@@ -29,7 +30,9 @@
     </ng-container>
 
     <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false">
-      <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+      <div class="dino-edit-report-step-container">
+        <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+      </div>
     </ng-container>
   </div>
 </ng-container>

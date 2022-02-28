@@ -6,7 +6,8 @@
         <ng-template matStepLabel>FORM METRICS</ng-template>
 
         <div class="dino-create-form-step-container">
-          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics"> </dino-form-metric-selector>
+          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics">
+          </dino-form-metric-selector>
         </div>
       </mat-step>
       <mat-step
@@ -32,12 +33,14 @@
     </mat-stepper>
   </ng-container>
   <ng-container *ngIf="(metricsService.hasActiveMetrics|async) == false">
-    <ajf-form
-      #formContainer
-      [form]="(form|async)!"
-      [saveDisabled]="(isAjfFormValid|async) === false"
-      [topBar]="true"
-      (formAction)="onFormAction($event)"
-    ></ajf-form>
+    <div class="dino-create-form-step-container">
+      <ajf-form
+        #formContainer
+        [form]="(form|async)!"
+        [saveDisabled]="(isAjfFormValid|async) === false"
+        [topBar]="true"
+        (formAction)="onFormAction($event)"
+      ></ajf-form>
+    </div>
   </ng-container>
 </ng-container>

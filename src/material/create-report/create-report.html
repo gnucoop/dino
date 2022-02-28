@@ -6,7 +6,8 @@
         <ng-template matStepLabel>REPORT METRICS</ng-template>
 
         <div class="dino-create-report-step-container">
-          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics"> </dino-form-metric-selector>
+          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics">
+          </dino-form-metric-selector>
         </div>
       </mat-step>
       <mat-step [editable]="(isFormMetricsSelectorValid|async) ">
@@ -32,11 +33,35 @@
             </mat-form-field>
           </form>
           <div>
-            <button mat-button default class="dino-save-report-data-button" (click)="saveReport()">Save</button>
+            <button mat-button default class="dino-save-report-data-button" (click)="saveReport()">
+              Save
+            </button>
           </div>
         </div>
-       
       </mat-step>
     </mat-stepper>
+  </ng-container>
+  <ng-container *ngIf="(metricsService.hasActiveMetrics|async) == false">
+    <div class="dino-create-report-step-container">
+      <form [formGroup]="dateIntervalForm" autocomplete="off">
+        <mat-form-field appearance="fill">
+          <mat-label>Data collected since</mat-label>
+          <input matInput [matDatepicker]="pickerFrom" [formControlName]="'date_start'" />
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Data collected until</mat-label>
+          <input matInput [matDatepicker]="pickerTo" [formControlName]="'date_end'" />
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+      </form>
+      <div>
+        <button mat-button default class="dino-save-report-data-button" (click)="saveReport()">
+          Save
+        </button>
+      </div>
+    </div>
   </ng-container>
 </ng-container>
