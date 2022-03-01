@@ -32,7 +32,7 @@ import {
 } from '@dino/core/reports';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {combineLatest, Observable, of as obsOf, zip} from 'rxjs';
@@ -142,11 +142,11 @@ export function initializeApp(
 }
 
 export function provideDataServiceConfig() {
-  addPouchPlugin(pouchdbAdapterMemory);
+  addPouchPlugin(pouchdbAdapterIdb);
   return {
     databaseCreateOptions: {
       name: `${instanceName}_db`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStoragePouch('idb'),
       ignoreDuplicate: true,
     },
     syncOptions: {
