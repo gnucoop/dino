@@ -41,7 +41,7 @@
       </mat-step>
     </mat-stepper>
   </ng-container>
-  <ng-container *ngIf="(metricsService.hasActiveMetrics|async) == false">
+  <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false">
     <div class="dino-create-report-step-container">
       <form [formGroup]="dateIntervalForm" autocomplete="off">
         <mat-form-field appearance="fill">
