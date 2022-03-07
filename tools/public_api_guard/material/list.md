@@ -13,7 +13,6 @@ import { BehaviorSubject } from 'rxjs';
 import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
 import { ChangeDetectorRef } from '@angular/core';
 import { CollectionChangedEvent } from '@dino/core/data';
-import { ComponentFactoryResolver } from '@angular/core';
 import { DataModelManager } from '@dino/core/data';
 import { DataQueryOptions } from '@dino/core/data';
 import { ElementRef } from '@angular/core';
@@ -44,7 +43,6 @@ import * as i6 from '@ajf/core/transloco';
 import * as i7 from '@dino/material/breakpoint-observer';
 import * as i8 from '@dino/material/export-form';
 import * as i9 from '@angular/common';
-import { Injector } from '@angular/core';
 import { List } from '@dino/core/list';
 import { ListAction } from '@dino/core/list';
 import { ListHeader } from '@dino/core/list';
@@ -190,7 +188,7 @@ export class ListModule {
 
 // @public
 export class SelectionList<T extends Model = Model> extends List<T> implements AfterContentInit, AfterViewInit, OnInit, OnDestroy {
-    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, actroute: ActivatedRoute, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _componentFactoryResolver: ComponentFactoryResolver, _injector: Injector, _snackbar: MatSnackBar);
+    constructor(cdr: ChangeDetectorRef, aui: AdminUserInteractionsService, actroute: ActivatedRoute, _dialog: MatDialog, _fts: FiltersService, breakpointObserver: BreakpointObserverService, _router: Router, _snackbar: MatSnackBar);
     actionOnItems(row: T | T[], action: ListAction, isDetails?: boolean): void;
     set additionalBasicFilters(filterNames: string[]);
     // (undocumented)
