@@ -167,10 +167,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
     this.form = combineLatest([this._formSchema, this._importedFormSchema]).pipe(
       map(([fs, ifs]) => {
+        let schema = {} as any;
         if (ifs != null) {
-          return AjfFormSerializer.fromJson(ifs);
+          schema = ifs;
+        } else if (fs != null) {
+          schema = fs.schema;
         }
-        return fs != null ? AjfFormSerializer.fromJson(fs.schema) : AjfFormSerializer.fromJson({});
+        return AjfFormSerializer.fromJson(JSON.parse(JSON.stringify(schema)));
       }),
       shareReplay(1),
     );
