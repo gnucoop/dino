@@ -1,12 +1,18 @@
 .mat-fab-bottom-right {
-    position: fixed !important;
-    right: 2vw;
-    bottom: 22.5vh;
-    z-index: 10;
-    opacity: 0.7;
-    &:hover {
-        opacity: 1;
-        transition: all ease-in-out 0.5;
-        -webkit-transition: all ease-in-out 0.5s;
-    }
+  position: fixed !important;
+  right: 2vw;
+  bottom: 22.5vh;
+  z-index: 10;
+  opacity: 0.7;
+  &:hover {
+    opacity: 1;
+    transition: all ease-in-out 0.5;
+    -webkit-transition: all ease-in-out 0.5s;
+  }
+}
+
+dino-floating-button + dino-floating-button {
+  .mat-fab-bottom-right {
+    bottom: 12vh;
+  }
 }

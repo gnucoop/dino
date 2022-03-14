@@ -23,3 +23,10 @@
   tooltipMessage="Add New form"
   (click)="addForm()"
 ></dino-floating-button>
+
+<dino-floating-button
+  *ngIf="displayAddButton|async"
+  [buttonIcon]="'cloud_upload'"
+  tooltipMessage="Import forms"
+  (click)="openImportForms()"
+></dino-floating-button>

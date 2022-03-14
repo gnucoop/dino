@@ -5,7 +5,7 @@ import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource, SelectionList} from '@dino/material/list';
-import {combineLatest, Observable, of as obsOf} from 'rxjs';
+import {combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
 @Component({
@@ -136,6 +136,19 @@ export class MatFormsListE2E implements OnDestroy, OnInit {
         map(schemaId => {
           if (schemaId != null) {
             return this.list.createAction(schemaId);
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
+  }
+
+  openImportForms(): void {
+    this.formSchemaId
+      .pipe(
+        map(schemaId => {
+          if (schemaId != null) {
+            return this.list.openImportForms(schemaId);
           }
         }),
         take(1),

@@ -13,6 +13,7 @@ entryPoints = [
     "floating-button",
     "form-metric-selector",
     "icons-service",
+    "import-form",
     "list",
     "login",
     "lang-selector",

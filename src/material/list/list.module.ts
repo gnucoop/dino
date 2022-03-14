@@ -43,6 +43,7 @@ import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dino/core/list';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ExportFormModule} from '@dino/material/export-form';
+import {ImportFormModule} from '@dino/material/import-form';
 
 import {ColumnsSelector} from './columns-selector';
 import {ConfirmationDialog} from './confirmation-dialog';
@@ -58,6 +59,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
     ExportFormModule,
     CommonModule,
     CoreModule,
+    ImportFormModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,

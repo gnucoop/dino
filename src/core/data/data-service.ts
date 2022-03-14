@@ -315,7 +315,7 @@ export class DataService {
               this._collectionChangedEmit('Documents created', collection);
             }
           }),
-          catchError(() => obsOf({success: [], error: []})),
+          catchError(e => obsOf({success: [], error: [{'msg': e}]})),
         );
       }),
     );

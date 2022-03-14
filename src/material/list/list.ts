@@ -60,7 +60,8 @@ import {
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportForm} from '@dino/material/export-form';
-import {BehaviorSubject, Observable, Subject, throwError} from 'rxjs';
+import {ImportForm} from '@dino/material/import-form';
+import {BehaviorSubject, Observable, Subject, Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
 
 import {ColumnsSelector} from './columns-selector';
@@ -305,6 +306,16 @@ export class SelectionList<T extends Model = Model>
    * Used for unsubscribing all subscriptions.
    */
   private _mainUnsubscribe: Subject<void> = new Subject();
+
+  /**
+   * A reference to the MatDialog that contains the Import component
+   */
+  private _dialogRef: MatDialogRef<ImportForm>;
+
+  /**
+   * Subscribes to the value returned by the MatDialog on its closing event
+   */
+  private _dialogSub: Subscription = Subscription.EMPTY;
 
   constructor(
     cdr: ChangeDetectorRef,
@@ -767,6 +778,35 @@ export class SelectionList<T extends Model = Model>
   }
 
   /**
+   * Loads the component to import new items.
+   * @param schemaId The schema Id of the documents
+   */
+  openImportForms(schemaId: string): void {
+    if (schemaId == null || this.baseUrl == null || this.baseCreateUrl == null) {
+      return;
+    }
+    if (schemaId != null) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        formSchema: schemaId,
+      };
+      this._dialogRef = this._dialog.open(ImportForm, dialogConfig);
+      this._dialogSub = this._dialogRef
+        .afterClosed()
+        .pipe(
+          catchError(err => throwError(err) as Observable<boolean>),
+          take(1),
+        )
+        .subscribe((formSchema: {[key: string]: any}) => {
+          if (formSchema != null) {
+            console.log('forms imported');
+            // this._updateImportedFormData(formSchema);
+          }
+        });
+    }
+  }
+
+  /**
    * Loads the Edit component for the the item in readOnly mode.
    * @param item The item to be viewed
    * @param isDetails If true, the form is a sub-form displayed in a sub list. Defaults to false
@@ -795,5 +835,6 @@ export class SelectionList<T extends Model = Model>
 
     this._dataSource.disconnect();
     this._fts.clearModelFilters();
+    this._dialogSub.unsubscribe();
   }
 }

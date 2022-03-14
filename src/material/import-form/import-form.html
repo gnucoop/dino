@@ -1,0 +1,37 @@
+<ng-container *ngIf="importForm">
+  <mat-card class="form-container">
+    <mat-toolbar color="primary"> Import form</mat-toolbar>
+    <mat-card-content>
+      <form [formGroup]="importForm">
+        <div class="dino-upload-container">
+          <div>Upload an xls or csv file to import form data:<br /></div>
+          <input
+            type="file"
+            id="excelFileInput"
+            accept=".xls,.xlsx,.csv"
+            (change)="onExcelfileSelected($event)"
+            style="visibility: hidden; height: 1px"
+          /><br />
+          <label for="excelFileInput">
+            <a color="primary" mat-raised-button>Choose file</a>
+          </label>
+          <b>{{importStatus}}</b>
+        </div>
+      </form>
+      <br />
+    </mat-card-content>
+    <mat-card-actions>
+      <button (click)="closeDialog()" color="warn" mat-raised-button>
+        {{ 'Close' }}
+      </button>
+      <button
+        [disabled]="processing"
+        (click)="apply()"
+        color="primary"
+        mat-raised-button
+      >
+        {{ 'Apply' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>

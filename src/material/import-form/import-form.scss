@@ -1,0 +1,49 @@
+dino-import-form {
+  .mat-card {
+    display: flex;
+    justify-content: center;
+    border-left: none;
+    .mat-card-content {
+      form {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        .dino-upload-container {
+          margin-top: 50px;
+          flex: 1 0 auto;
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: space-between;
+          align-items: center;
+          div {
+            flex: 1 1 50%;
+          }
+          input {
+            flex: 0 1 10%;
+          }
+          label {
+            flex: 0 1 35%;
+            display: flex;
+            justify-content: end;
+            a {
+              flex: 1 0 auto;
+            }
+          }
+          @media only screen and (max-width: 992px) {
+            justify-content: center;
+          }
+        }
+      }
+    }
+    .mat-card-actions {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      background-color: transparent !important;
+      .mat-raised-button {
+        transition: all ease-in-out 0.3;
+        -webkit-transition: all ease-in-out 0.3s;
+      }
+    }
+  }
+}

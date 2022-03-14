@@ -116,7 +116,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   private _exportedDataListPopulated$: Observable<ExportData[]>;
   private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at'];
-  private _dinoBaseModelFields: string[] = ['_deleted', 'id', 'is_deleted', 'updated_at'];
+  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at'];
   private _metricManagers: (DataModelManager<any> | null)[] = [
     this._ar,
     this._cs,
