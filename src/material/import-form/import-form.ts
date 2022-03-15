@@ -41,7 +41,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, zip} from 'rxjs';
-import {catchError, exhaustMap, filter, switchMap, take} from 'rxjs/operators';
+import {catchError, exhaustMap, switchMap, take} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 /**

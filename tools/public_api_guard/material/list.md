@@ -22,22 +22,23 @@ import { FiltersService } from '@dino/core/list';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
 import * as i10 from '@dino/core/list';
-import * as i11 from '@angular/material/button';
-import * as i12 from '@angular/material/checkbox';
-import * as i13 from '@angular/material/dialog';
-import * as i14 from '@angular/material/form-field';
-import * as i15 from '@angular/material/icon';
-import * as i16 from '@angular/material/input';
-import * as i17 from '@angular/material/list';
-import * as i18 from '@angular/material/paginator';
-import * as i19 from '@angular/material/slide-toggle';
-import * as i20 from '@angular/material/snack-bar';
-import * as i21 from '@angular/material/sort';
-import * as i22 from '@angular/material/tabs';
-import * as i23 from '@angular/material/table';
-import * as i24 from '@angular/material/toolbar';
-import * as i25 from '@angular/forms';
-import * as i26 from '@angular/router';
+import * as i11 from '@dino/material/import-form';
+import * as i12 from '@angular/material/button';
+import * as i13 from '@angular/material/checkbox';
+import * as i14 from '@angular/material/dialog';
+import * as i15 from '@angular/material/form-field';
+import * as i16 from '@angular/material/icon';
+import * as i17 from '@angular/material/input';
+import * as i18 from '@angular/material/list';
+import * as i19 from '@angular/material/paginator';
+import * as i20 from '@angular/material/slide-toggle';
+import * as i21 from '@angular/material/snack-bar';
+import * as i22 from '@angular/material/sort';
+import * as i23 from '@angular/material/tabs';
+import * as i24 from '@angular/material/table';
+import * as i25 from '@angular/material/toolbar';
+import * as i26 from '@angular/forms';
+import * as i27 from '@angular/router';
 import * as i5 from '@ajf/core/forms';
 import * as i6 from '@ajf/core/transloco';
 import * as i7 from '@dino/material/breakpoint-observer';
@@ -183,7 +184,7 @@ export class ListModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.MatButtonModule, typeof i12.MatCheckboxModule, typeof i13.MatDialogModule, typeof i14.MatFormFieldModule, typeof i15.MatIconModule, typeof i16.MatInputModule, typeof i17.MatListModule, typeof i18.MatPaginatorModule, typeof i19.MatSlideToggleModule, typeof i20.MatSnackBarModule, typeof i21.MatSortModule, typeof i22.MatTabsModule, typeof i23.MatTableModule, typeof i24.MatToolbarModule, typeof i25.ReactiveFormsModule, typeof i26.RouterModule], [typeof i15.MatIconModule, typeof i4.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.ImportFormModule, typeof i12.MatButtonModule, typeof i13.MatCheckboxModule, typeof i14.MatDialogModule, typeof i15.MatFormFieldModule, typeof i16.MatIconModule, typeof i17.MatInputModule, typeof i18.MatListModule, typeof i19.MatPaginatorModule, typeof i20.MatSlideToggleModule, typeof i21.MatSnackBarModule, typeof i22.MatSortModule, typeof i23.MatTabsModule, typeof i24.MatTableModule, typeof i25.MatToolbarModule, typeof i26.ReactiveFormsModule, typeof i27.RouterModule], [typeof i16.MatIconModule, typeof i4.SelectionList]>;
 }
 
 // @public
@@ -259,6 +260,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     get onClickRowActions(): ActionType[];
     set onClickRowActions(actionType: ActionType[]);
     openColumnsSelectorDialog(): void;
+    openImportForms(schemaId: string): void;
     set paginator(mp: MatPaginator);
     rowToggle(row: T): void;
     selectAll(): void;

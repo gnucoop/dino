@@ -38,6 +38,7 @@ export const commitMessage: CommitMessageConfig = {
     'material/edit-form',
     'material/edit-form-schema',
     'material/export-form',
+    'material/import-form',
     'material/main-nav',
     'material/metric-editor',
     'material/metric-section',

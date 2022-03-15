@@ -15,6 +15,7 @@
   },
   "scripts": {
     "postinstall": "node tools/postinstall/apply-patches.js",
+    "api-guards": "yarn bazel test tools/public_api_guard/...",
     "build": "ts-node --project scripts/tsconfig.json ./scripts/build-packages-dist.ts",
     "build-and-check-release-output": "ts-node --project scripts/tsconfig.json scripts/build-and-check-release-output.ts",
     "build-docs-content": "node ./scripts/build-docs-content.js",
