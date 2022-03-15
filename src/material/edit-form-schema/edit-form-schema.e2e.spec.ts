@@ -34,3 +34,37 @@ describe('dino-edit-form-schema', () => {
     expect(formAttributesDisplayed).toEqual(true);
   });
 });
+
+describe('dino-import-form-schema', () => {
+  beforeEach(async () => {
+    await browser.get('/forms');
+    await browser.wait(EC.presenceOf(element(by.tagName('mat-grid-tile'))));
+    const tile = element.all(by.tagName('mat-grid-tile')).first();
+    const tileActions = tile.element(by.className('dino-grid-action-icons'));
+    const editButton = tileActions.element(by.tagName('button'));
+
+    await browser.wait(EC.elementToBeClickable(editButton));
+    await editButton.click();
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-edit-form-schema'))));
+  });
+
+  it('should show an Import button', async () => {
+    const importBtn = element(by.cssContainingText('.mat-button-wrapper', 'Import'));
+    const importBtnPresent = await importBtn.isPresent();
+
+    expect(importBtnPresent).toEqual(true);
+  });
+
+  it('should open the Import Form Schema dialog', async () => {
+    const importBtn = element(by.cssContainingText('.mat-button-wrapper', 'Import'));
+    await browser.wait(EC.presenceOf(importBtn));
+    await browser.wait(EC.elementToBeClickable(importBtn));
+
+    await importBtn.click();
+
+    const importFormSchema = element(by.tagName('dino-import-form-schema'));
+    const importFormSchemaPresent = await importFormSchema.isPresent();
+
+    expect(importFormSchemaPresent).toEqual(true);
+  });
+});
