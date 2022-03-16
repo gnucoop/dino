@@ -1,8 +1,14 @@
 dino-main-nav {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
   .dino-toolbar {
+    flex: 0 0 auto;
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
+
     &.dino-shadowed {
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
       animation-name: shadowed-toolbar;
@@ -10,12 +16,14 @@ dino-main-nav {
       animation-direction: alternate-reverse;
       animation-timing-function: ease-in-out;
     }
+
     .dino-toolbar-logo {
       position: relative;
       max-width: 10vw;
       max-height: 80%;
       margin: auto 10px;
     }
+
     .dino-toolbar-actions {
       cursor: pointer;
       margin-left: auto;
@@ -61,14 +69,12 @@ dino-main-nav {
       }
     }
   }
-  mat-sidenav-container.dino-sidenav-container {
-    position: fixed;
-    height: 100vh;
-    min-height: 100vh;
-    width: 100vw;
-    min-width: 100vw;
+
+  .mat-sidenav-container.dino-sidenav-container {
+    flex: 1 0 auto;
   }
-  mat-sidenav-content.dino-sidenav-content {
+  
+  .mat-sidenav-content.dino-sidenav-content {
     padding: 5px;
     background-color: inherit;
     transition: all ease-in-out 0.2s;
