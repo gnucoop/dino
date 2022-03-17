@@ -1,15 +1,41 @@
 dino-create-form {
+    display: flex;
+    flex-direction: column;
     font-size: 110%;
+    height: 100%;
+
+    dino-breadcrumbs {
+        flex: 0 0 auto;
+    }
+
+    mat-stepper, .dino-create-form-step-container {
+        flex: 1 1 auto;
+    }
+
+    .mat-horizontal-stepper-content, .dino-create-form-step-container {
+        height: 100%;
+    }
+
+    .mat-stepper-horizontal {
+        display: flex;
+        flex-direction: column;
+
+        .mat-horizontal-stepper-header-container {
+            flex: 0 0 auto;
+        }
+
+        .mat-horizontal-content-container {
+            flex: 1 1 auto;
+        }
+    }
+
     .dino-create-form-step-container {
         display: flex;
         align-items: center;
         justify-content: center;
         position: relative;
-        min-height: 85vh;
-        @media only screen and (max-width : 992px) {
-            min-height: 75vh;
-        }
     }
+
     .mat-stepper-horizontal {
         background-color: transparent;
         .mat-horizontal-stepper-content .mat-stepper-previous {
@@ -36,20 +62,9 @@ dino-create-form {
     }
     .mat-horizontal-content-container {
         padding: 0px 4px 4px;
-        @media only screen and (max-height: 900px) {
-            padding-bottom: 10vh;
-        }
-        @media only screen and (max-height: 580px) {
-            padding-bottom: 30vh;
-        }
     }
 
     .ajf-form-container {
-        .ajf-slider-container ajf-page-slider {
-            @media only screen and (max-width: 992px) {
-                height: 97.5% !important;
-            }
-        }
         .ajf-slider-container .ajf-page-slider-content
         .ajf-page-slider-body .ajf-page-slider-item-content,
         .mat-toolbar-single-row {

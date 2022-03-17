@@ -27,7 +27,23 @@ import {SyncManager} from '@dino/core/sync';
 @Component({
   selector: 'e2e-app',
   template: '<app-main><router-outlet></router-outlet></app-main>',
-  styles: ['body, html { height: 100%; width: 100%; } e2e-app { display: block; height: 100%; }'],
+  styles: [
+    `
+    body, html {
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+    e2e-app {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  `,
+  ],
   encapsulation: ViewEncapsulation.None,
 })
 export class E2eApp {
