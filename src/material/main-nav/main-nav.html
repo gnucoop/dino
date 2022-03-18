@@ -60,6 +60,7 @@
         mat-list-item
         [disableRipple]="true"
         *ngFor="let section of sections"
+        [attr.aria-label]="section.label|transloco"
         [routerLink]="[section.url]"
         (click)="menuClick()"
       >
@@ -74,6 +75,7 @@
           mat-list-item
           [disableRipple]="true"
           *ngFor="let adminSection of adminSections"
+          [attr.aria-label]="adminSection.label"
           [routerLink]="[adminSection.url]"
           (click)="menuClick()"
         >
@@ -86,6 +88,7 @@
         *ngIf="(breakpointObserver.large|async) === false"
         class="dino-extend-menu-button"
         mat-list-item
+        [attr.aria-label]="(extendedSidenav|async) ? 'close' : 'open'"
         [disableRipple]="true"
         (click)="extendedSidenav.next(!extendedSidenav.getValue())"
       >
