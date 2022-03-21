@@ -75,7 +75,7 @@ export class ImportForm {
   /**
    * The selected file
    */
-  private _file: any;
+  private _file: Blob;
 
   /**
    * True if the form is currently being processed.
@@ -317,15 +317,16 @@ export class ImportForm {
         catchError(_ => obsOf(null)),
         take(1),
       )
-      .subscribe(res => {
-        if (res && res.success.length) {
+      .subscribe(bulkRes => {
+        console.log(bulkRes);
+        if (bulkRes && bulkRes.success.length) {
           this._setImportStatus(
-            'File imported successfully: ' + res.success.length + ' forms created!',
+            'File imported successfully: ' + bulkRes.success.length + ' forms created!',
           );
         } else {
           let errMsg = 'File not imported! ';
-          if (res?.error.length) {
-            errMsg = errMsg + res?.error[0].msg;
+          if (bulkRes?.error.length) {
+            errMsg = errMsg + bulkRes?.error[0].msg;
           }
           this._setImportStatus(errMsg);
         }
