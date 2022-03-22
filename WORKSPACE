@@ -79,8 +79,6 @@ yarn_install(
     # the file is modified.
     data = [
         "//:tools/postinstall/apply-patches.js",
-        "//:tools/postinstall/copy-material-scss.js",
-        "//:tools/postinstall/patch-packages.js",
     ],
     # Add archive targets for some NPM packages that are needed in integration tests.
     manual_build_file_contents = create_npm_package_archive_build_file(),
