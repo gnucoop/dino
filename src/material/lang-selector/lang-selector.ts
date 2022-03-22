@@ -37,7 +37,8 @@ export class LangSelector {
   constructor(private _ts: TranslocoService) {
     this.langsShowed$ = of(['ITA', 'ENG', 'FRA', 'PRT', 'ESP']);
     this.currentLang = localStorage.getItem('lang') || 'ENG';
-    this._ts.setDefaultLang(this.currentLang);
+    this._ts.setDefaultLang('ENG');
+    this._ts.setActiveLang(this.currentLang);
   }
 
   setLang(lang: string) {
