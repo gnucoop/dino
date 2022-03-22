@@ -6,7 +6,7 @@
           class="dino-breadcrumb-current-route"
           [class.dino-breadcrumb-history-link]="!isLast && breadcrumb?.url"
           (click)="crumbNavigate(breadcrumb.url)"
-          >{{breadcrumb?.label}}</span
+          >{{breadcrumb?.label|transloco}}</span
         >
         <ng-container *ngIf="breadcrumb">
           <ng-container *ngIf="breadcrumb.icon"

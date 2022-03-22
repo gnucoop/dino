@@ -29,6 +29,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {FormMetricSelector} from './form-metric-selector';
 
@@ -42,6 +43,7 @@ import {FormMetricSelector} from './form-metric-selector';
     MatIconModule,
     MatInputModule,
     ReactiveFormsModule,
+    TranslocoModule,
   ],
   declarations: [FormMetricSelector],
   exports: [FormMetricSelector],

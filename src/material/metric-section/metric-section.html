@@ -9,7 +9,7 @@
 </dino-list>
 
 <dino-floating-button
-  [buttonIcon]="'add'"
-  tooltipMessage="Add New {{metricLabel}}"
+  buttonIcon="add"
+  [tooltipMessage]="('Add New'|transloco) + ' ' + metricLabel"
   (click)="openDialog(undefined, 'create')"
 ></dino-floating-button>

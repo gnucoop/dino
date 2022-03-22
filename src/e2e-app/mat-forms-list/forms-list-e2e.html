@@ -19,14 +19,14 @@
 
 <dino-floating-button
   *ngIf="displayAddButton|async"
-  [buttonIcon]="'add'"
-  tooltipMessage="Add New form"
+  buttonIcon="add"
+  [tooltipMessage]="'Add New form'|transloco"
   (click)="addForm()"
 ></dino-floating-button>
 
 <dino-floating-button
   *ngIf="displayAddButton|async"
   [buttonIcon]="'cloud_upload'"
-  tooltipMessage="Import forms"
+  [tooltipMessage]="'Import forms'|transloco"
   (click)="openImportForms()"
 ></dino-floating-button>

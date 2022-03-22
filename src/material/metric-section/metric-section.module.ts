@@ -30,6 +30,7 @@ import {FloatingButtonModule} from '@dino/material/floating-button';
 import {ListModule} from '@dino/material/list';
 import {MetricEditorModule} from '@dino/material/metric-editor';
 import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {MetricSection} from './metric-section';
 
@@ -45,6 +46,7 @@ import {MetricSection} from './metric-section';
     MatTooltipModule,
     MetricEditorModule,
     SearchFiltersBarModule,
+    TranslocoModule,
   ],
   exports: [MetricSection],
 })

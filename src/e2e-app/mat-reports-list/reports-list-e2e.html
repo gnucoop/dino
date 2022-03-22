@@ -16,7 +16,7 @@
 
 <dino-floating-button
   *ngIf="displayAddButton|async"
-  [buttonIcon]="'add'"
-  tooltipMessage="Add New Report"
+  buttonIcon="add"
+  [tooltipMessage]="'Add New Report'|transloco"
   (click)="addReport()"
 ></dino-floating-button>

@@ -18,7 +18,7 @@
         <input
           matInput
           [formControlName]="field.fieldName"
-          [placeholder]="field.placeholder ?? ''"
+          [placeholder]="(field.placeholder ?? '')|transloco"
           [matAutocomplete]="auto"
         />
         <mat-icon matSuffix>{{field.icon}}</mat-icon>
@@ -36,14 +36,14 @@
         </mat-autocomplete>
 
         <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('required')">
-          Please enter a {{field.fieldName}}
+          {{ 'Please enter a'|transloco}} {{field.fieldName}}
         </mat-error>
 
         <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')">
-          Please select a valid {{field.fieldName}}
+          {{ 'Please select a valid'|transloco}} {{field.fieldName}}
         </mat-error>
 
-        <mat-hint>{{field.hint}}</mat-hint>
+        <mat-hint>{{field.hint|transloco}}</mat-hint>
       </mat-form-field>
     </ng-container>
   </form>

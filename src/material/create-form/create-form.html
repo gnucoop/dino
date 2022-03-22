@@ -3,7 +3,7 @@
   <ng-container *ngIf="metricsService.hasActiveMetrics|async">
     <mat-stepper labelPosition="bottom" #stepper linear>
       <mat-step [completed]="isFormMetricsSelectorValid|async">
-        <ng-template matStepLabel>FORM METRICS</ng-template>
+        <ng-template matStepLabel>{{ 'FORM METRICS'|transloco }}</ng-template>
 
         <div class="dino-create-form-step-container">
           <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics">
@@ -14,7 +14,7 @@
         [editable]="(isFormMetricsSelectorValid|async) "
         [completed]="(isAjfFormValid|async) "
       >
-        <ng-template matStepLabel>FORM DATA</ng-template>
+        <ng-template matStepLabel>{{ 'FORM DATA'|transloco }}</ng-template>
         <div>
           <button mat-icon-button matStepperPrevious aria-label="Previous step">
             <mat-icon>arrow_back</mat-icon>

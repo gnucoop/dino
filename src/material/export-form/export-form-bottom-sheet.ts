@@ -28,14 +28,14 @@ import {MatBottomSheetRef} from '@angular/material/bottom-sheet';
   template: `
   <mat-nav-list>
   <a  mat-list-item (click)="export('XLSX')">
-    <span mat-line>XLSX</span>
+    <span mat-line>{{ 'XLSX'|transloco }}</span>
   </a>
 
   <a mat-list-item (click)="export('CSV')">
-    <span mat-line>CSV</span>
+    <span mat-line>{{ 'CSV'|transloco }}</span>
   </a>
   <a mat-list-item (click)="export('dialog')">
-    <span mat-line>Select fields</span>
+    <span mat-line>{{ 'Select fields'|transloco }}</span>
   </a>
 </mat-nav-list>
   `,

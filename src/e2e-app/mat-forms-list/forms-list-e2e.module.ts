@@ -6,6 +6,7 @@ import {FloatingButtonModule} from '@dino/material/floating-button';
 import {ListModule} from '@dino/material/list';
 import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
 import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
+import {TranslocoModule} from '@ngneat/transloco';
 import {MockBreakpointObserver} from '../mocks';
 
 import {MatFormsListE2E} from './forms-list-e2e';
@@ -19,6 +20,7 @@ import {MatFormsListE2E} from './forms-list-e2e';
     FloatingButtonModule,
     FormsModule,
     SearchFiltersBarModule,
+    TranslocoModule,
   ],
   providers: [{provide: BreakpointObserverService, useClass: MockBreakpointObserver}],
 })

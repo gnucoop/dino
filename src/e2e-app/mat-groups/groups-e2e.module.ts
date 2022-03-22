@@ -6,6 +6,7 @@ import {MixedEditorModule as DinoMixedEditorModule} from '@dino/material/mixed-e
 import {SearchFiltersBarModule as DinoSearchFiltersBarModule} from '@dino/material/search-filters-bar';
 import {MatGroupsEditorE2E} from './groups-e2e-editor.component';
 import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {MatGroupsListE2E} from './groups-e2e-list.component';
 
@@ -18,6 +19,7 @@ import {MatGroupsListE2E} from './groups-e2e-list.component';
     DinoListModule,
     DinoMixedEditorModule,
     DinoSearchFiltersBarModule,
+    TranslocoModule,
   ],
 })
 export class MaterialGroupsE2eModule {}

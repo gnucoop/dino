@@ -11,6 +11,6 @@
 
 <dino-floating-button
   [buttonIcon]="(nss.isOnline$|async) ? 'add' : 'wifi_off' "
-  tooltipMessage="Add New User"
+  [tooltipMessage]="'Add New User'|transloco"
   (click)="openDialog(undefined, 'create')"
 ></dino-floating-button>

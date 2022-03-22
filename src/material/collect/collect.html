@@ -32,7 +32,10 @@
           <div class="dino-grid-icon">
             <mat-icon class="dino-mat-icon">{{item.icon ?? 'list'}}</mat-icon>
           </div>
-          <div class="dino-grid-label">{{ (item.label ?? item.name)|transloco }}</div>
+          <div class="dino-grid-label">
+            <ng-container *ngIf="item.label ; else itemName">{{ item.label|transloco }}</ng-container>
+            <ng-template #itemName>{{ item.name|transloco }}</ng-template>
+          </div>
         </div>
       </mat-grid-tile>
     </ng-container>
@@ -41,7 +44,7 @@
 
 <dino-floating-button
   *ngIf="displayAddButton|async"
-  [buttonIcon]="'add'"
-  tooltipMessage="Add New {{getCollectType.charAt(0).toUpperCase() + getCollectType.slice(1)}} Schema"
+  buttonIcon="add"
+  [tooltipMessage]="'Add New {{schema}} Schema'|transloco:{schema: getCollectType.charAt(0).toUpperCase() + getCollectType.slice(1)}"
   (click)="addSchema()"
 ></dino-floating-button>
