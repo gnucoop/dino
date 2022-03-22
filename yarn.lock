@@ -24,22 +24,24 @@
   dependencies:
     tunnel "0.0.6"
 
-"@ajf/core@https://drive.google.com/uc?id=1BAWQa9d0n7HHCvmXGeNnbqf2FWtNgHoU&export=download":
-  version "13.1.0-next.0-cab93d5d"
-  resolved "https://drive.google.com/uc?id=1BAWQa9d0n7HHCvmXGeNnbqf2FWtNgHoU&export=download#6a4447879e20588d35b2953052e688e62339c75f"
+"@ajf/core@^13.1.1":
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-13.1.1.tgz#9666cadcfe6157162d927210d39c81fb22923632"
+  integrity sha512-mt+PB+uTTrAKMJMO1OivQYKQLqds+KFiBOufMoRAVgnOaELMnMMeUgDryyk5Ol0ICyRoj/PNIWviZWkCYDOw6A==
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
 
 "@ajf/icons@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@https://drive.google.com/uc?id=1XS-RIlTq50cDpoC7_UIchy-9NG7onMhn&export=download":
-  version "13.1.0-next.0-cab93d5d"
-  resolved "https://drive.google.com/uc?id=1XS-RIlTq50cDpoC7_UIchy-9NG7onMhn&export=download#9447b475860469e8480a87f46d2180241b054e4e"
+"@ajf/material@^13.1.1":
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-13.1.1.tgz#3d56c605bec23e72db5d64e363fa565135980113"
+  integrity sha512-A32XknuVpxUMfXRDire7uRv3LvTtuXE2ayZv2c/ZyDR8l1/Vp/mp5vOaMVKNPNdf4zg7uqBvqNJ+wZL20pNuuA==
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
 
 "@ampproject/remapping@1.0.1":
   version "1.0.1"

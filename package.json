@@ -54,9 +54,9 @@
   },
   "version": "13.0.0-next.3",
   "dependencies": {
-    "@ajf/core": "https://drive.google.com/uc?id=1BAWQa9d0n7HHCvmXGeNnbqf2FWtNgHoU&export=download",
+    "@ajf/core": "^13.1.1",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "https://drive.google.com/uc?id=1XS-RIlTq50cDpoC7_UIchy-9NG7onMhn&export=download",
+    "@ajf/material": "^13.1.1",
     "@angular/animations": "13.0.0-next.12",
     "@angular/cdk": "13.0.0-next.8",
     "@angular/common": "13.0.0-next.12",

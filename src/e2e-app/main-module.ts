@@ -1,3 +1,4 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
@@ -9,8 +10,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AreasModule} from '@dino/core/areas';
-import {CasesModule} from '@dino/core/cases';
 import {AuthModule, AuthService} from '@dino/core/auth';
+import {CasesModule} from '@dino/core/cases';
 import {ConfigModule} from '@dino/core/config';
 import {DATA_SERVICE_CONFIG} from '@dino/core/data';
 import {
@@ -161,6 +162,7 @@ export function provideDataServiceConfig() {
 
 @NgModule({
   imports: [
+    AjfTranslocoModule.forRoot({reRenderOnLangChange: true}),
     AuthModule.forRoot(authConfig),
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],

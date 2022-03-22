@@ -94,7 +94,10 @@ def _create_third_party_ng_bundle_targets(pkg, entry_point, module_name):
     divider_pos = pkg.name.find("_")
     scope_name = pkg.name[:divider_pos]
     package_name = pkg.name[divider_pos + 1:]
-    fesm_bundle_path = "fesm2020/%s.mjs" % (entry_point if entry_point else package_name)
+    bundle_name = (entry_point if entry_point else package_name)
+    if scope_name == "ajf":
+        bundle_name = "ajf-%s" % ("%s-%s" % (package_name, entry_point) if entry_point else package_name)
+    fesm_bundle_path = "fesm2020/%s.mjs" % bundle_name
 
     esbuild(
         name = "%s_linked_bundle" % target_name_base,
