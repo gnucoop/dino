@@ -53,4 +53,10 @@ export const ITA: Translation = {
   'Save': 'Salva',
   'Exclude': 'Escludi',
   'Include': 'Includi',
+  'Items per page:': 'Elementi per pagina:',
+  'Next page': 'Pagina successiva',
+  'Previous page': 'Pagina precedente',
+  'First page': 'Prima pagina',
+  'Last page': 'Ultima pagina',
+  'Page {{page}} of {{pages}}': 'Pagina {{page}} di {{pages}}',
 };

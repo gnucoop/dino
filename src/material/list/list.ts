@@ -41,7 +41,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -68,6 +68,7 @@ import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
 import {ListContext} from './list-context';
 import {ListDataSource} from './list-datasource';
+import {PaginatorIntl} from './paginator-intl';
 import {AdminUserInteractionsService} from './user-interactions.service';
 
 /**
@@ -81,6 +82,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
   templateUrl: 'list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  providers: [{provide: MatPaginatorIntl, useClass: PaginatorIntl}],
   animations: [
     trigger('detailExpand', [
       state('collapsed, void', style({height: '0px'})),

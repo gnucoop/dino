@@ -53,4 +53,10 @@ export const PRT: Translation = {
   'Save': 'Salvar',
   'Exclude': 'Excluir',
   'Include': 'Incluir',
+  'Items per page:': 'Itens por página:',
+  'Next page': 'Página seguinte',
+  'Previous page': 'Página anterior',
+  'First page': 'Primeira página',
+  'Last page': 'Última página',
+  'Page {{page}} of {{pages}}': 'Página {{page}} de {{pages}}',
 };

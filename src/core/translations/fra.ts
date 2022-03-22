@@ -53,4 +53,10 @@ export const FRA: Translation = {
   'Save': 'Enregistrer',
   'Exclude': 'Exclure',
   'Include': 'Inclure',
+  'Items per page:': 'Objets par page:',
+  'Next page': 'Page suivante',
+  'Previous page': 'Page précédente',
+  'First page': 'Première page',
+  'Last page': 'Dernière page',
+  'Page {{page}} of {{pages}}': 'Page {{page}} sur {{pages}}',
 };

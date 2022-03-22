@@ -53,4 +53,10 @@ export const ESP: Translation = {
   'Save': 'Guardar',
   'Exclude': 'Excluir',
   'Include': 'Incluir',
+  'Items per page:': 'Elementos por página:',
+  'Next page': 'Página siguiente',
+  'Previous page': 'Página anterior',
+  'First page': 'Primera página',
+  'Last page': 'Última página',
+  'Page {{page}} of {{pages}}': 'Página {{page}} de {{pages}}',
 };

@@ -53,4 +53,10 @@ export const ENG: Translation = {
   'Save': 'Save',
   'Exclude': 'Exclude',
   'Include': 'Include',
+  'Items per page:': 'Items per page:',
+  'Next page': 'Next page',
+  'Previous page': 'Previous page',
+  'First page': 'First page',
+  'Last page': 'Last page',
+  'Page {{page}} of {{pages}}': 'Page {{page}} of {{pages}}',
 };
