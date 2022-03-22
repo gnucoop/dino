@@ -101,6 +101,11 @@ export class ImportForm {
   ];
 
   /**
+   * If true, metric name must be unique
+   */
+  private _metricMustBeUnique: boolean = false;
+
+  /**
    * All metric managers
    */
   private _metricManagers: {[key: string]: DataModelManager<any> | null} = {
@@ -164,25 +169,33 @@ export class ImportForm {
     this.dialogRef.close();
   }
 
+  /**
+   * Check and return, if unique enabled (_metricMustBeUnique must be true),
+   * the existing metrics, that have the same name of the new metrics
+   * @param newMetrics the new metrics to be created
+   * @returns the list of metrics
+   */
   private _checkIfMetricsAlreadyExist(newMetrics: {
     [key: string]: {[key: string]: any}[];
   }): Observable<any[][]> {
     const metricsObs: Observable<any[]>[] = [];
-    Object.keys(newMetrics).forEach(metricType => {
-      const manager = this._metricManagers[metricType];
-      if (manager !== null) {
-        if (newMetrics[metricType] && newMetrics[metricType].length) {
-          const allMetricNames: string[] = newMetrics[metricType].map(m => m.name);
-          const selector = {selector: {name: {$in: allMetricNames}}};
-          metricsObs.push(
-            manager.query(selector).pipe(
-              take(1),
-              catchError(_ => obsOf([])),
-            ),
-          );
+    if (this._metricMustBeUnique) {
+      Object.keys(newMetrics).forEach(metricType => {
+        const manager = this._metricManagers[metricType];
+        if (manager !== null) {
+          if (newMetrics[metricType] && newMetrics[metricType].length) {
+            const allMetricNames: string[] = newMetrics[metricType].map(m => m.name);
+            const selector = {selector: {name: {$in: allMetricNames}}};
+            metricsObs.push(
+              manager.query(selector).pipe(
+                take(1),
+                catchError(_ => obsOf([])),
+              ),
+            );
+          }
         }
-      }
-    });
+      });
+    }
     return metricsObs.length ? forkJoin(metricsObs) : obsOf([]);
   }
 
@@ -278,13 +291,20 @@ export class ImportForm {
   ): void {
     const forms: InsertModel<FormData>[] = [];
     const createdAtKey = 'created_at';
+    const idKey = 'id';
 
     rows.forEach((row: {[key: string]: any}) => {
-      // TODO: Check if is not a second header..
-      if (row[createdAtKey] !== createdAtKey) {
+      // Check if is not a second header
+      if (row[idKey] !== idKey) {
         let newItem: {[key: string]: any} = {};
         newItem.schema_id = this._formSchemaId;
         newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
+        if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
+          try {
+            const rowDate = new Date(row[createdAtKey]).toISOString().split('T')[0];
+            newItem.created_at = rowDate;
+          } catch (e) {}
+        }
         newItem.data = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
@@ -372,6 +392,7 @@ export class ImportForm {
    * @param rows The rows to be imported
    */
   private _importFormDataRows(rows: {[key: string]: any}[]): void {
+    console.log('sono quiiiiii');
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
     const newMetricsInRows = this._getMetricsToBeCreated(rows, activeMetrics);
     if (Object.keys(newMetricsInRows).length) {
@@ -405,7 +426,7 @@ export class ImportForm {
         )
         .subscribe(r => {
           const createdMetrics = r[0];
-          const newMetrics = r[1];
+          const requiredNewMetrics = r[1];
           const existingMetrics = r[2];
           let metricsError: string[] = [];
           let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
@@ -413,7 +434,8 @@ export class ImportForm {
             createdMetrics.forEach(metrics => {
               if (metrics && metrics.success.length) {
                 if (
-                  metrics.success.length === newMetrics[metrics.success[0].collection.name].length
+                  metrics.success.length ===
+                  requiredNewMetrics[metrics.success[0].collection.name].length
                 ) {
                   metrics.success.forEach(metric => {
                     this._addMetricDetails(metric, metricsIdByName);

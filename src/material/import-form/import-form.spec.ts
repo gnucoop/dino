@@ -59,7 +59,7 @@ const authServiceMock = {
 
 const formDataManagerMock = {
   bulkCreate: (_: any[]) => {
-    return of({succes: [], error: []});
+    return of({success: [], error: []});
   },
 };
 
@@ -94,19 +94,14 @@ describe('Import Forms', () => {
     expect(importForm).toBeTruthy();
   });
 
-  it('should import new forms from file', async () => {
+  it('should start the import forms process from csv file', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-
+    const spyImportXlsx = spyOn<any>(importForm, '_importXlsx').and.callThrough();
     const file = new Blob([formDatasCsv], {type: 'text/csv'});
-
     const excelEvt = {target: {files: [file]}};
-    await importForm.onExcelfileSelected(excelEvt);
-
-    await importForm.apply();
-
-    // const spyInitFilters = spyOn<any>(importForm, '_importFormDataRows').and.callThrough();
-
-    expect(1).toBe(1);
+    importForm.onExcelfileSelected(excelEvt);
+    importForm.apply();
+    expect(spyImportXlsx).toHaveBeenCalledTimes(1);
   });
 });

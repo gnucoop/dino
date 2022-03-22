@@ -473,7 +473,7 @@ export class DataService {
     return {
       ...object,
       id: uuidv4(),
-      created_at: timestamp,
+      created_at: object.created_at ? object.created_at : timestamp,
       updated_at: timestamp,
     } as T;
   }
