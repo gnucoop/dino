@@ -53,9 +53,10 @@ export const schema = {
       "description": "The collector user identifier.",
       "ref": "user_data"
     },
-    "schema_id": {
+    "report_schema_ref_id": {
       "type": "string",
-      "description": "The schema identifier."
+      "description": "The schema identifier.",
+      "ref": "report_schema"
     },
     "metadata": {
       "type": "object",
@@ -127,7 +128,7 @@ export const schema = {
     "metadata",
     "organization_ref_id",
     "project_ref_id",
-    "schema_id",
+    "report_schema_ref_id",
     "updated_at",
     "user_data_ref_id"
   ],

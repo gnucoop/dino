@@ -23,13 +23,14 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 
-import {migrationStrategies, ReportData} from './report-data';
+import {indexes, migrationStrategies, ReportData} from './report-data';
 import {schema} from './report-data-json';
 import {ReportsModule} from './reports.module';
 
 @Injectable({providedIn: ReportsModule})
 export class ReportDataManager extends DataModelManager<ReportData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    schema.indexes = [...(schema.indexes || []), ...indexes];
     const collection = {name: 'report_data', collection: {schema, migrationStrategies}};
     super(collection, dataService, permissionContextService);
   }

@@ -36,7 +36,7 @@ export interface ReportData extends Model {
   /**
    * The schema identifier.
    */
-  schema_id: string;
+  report_schema_ref_id: string;
 
   /**
    * Additional metadata json that can be provided to build the
@@ -85,3 +85,5 @@ export interface ReportData extends Model {
 export const VERSION = 0;
 
 export const migrationStrategies: MigrationStrategies = {};
+
+export const indexes = ['report_schema_ref_id'];
