@@ -21,7 +21,7 @@
  */
 
 import {MangoQuery, RxDocument, RxJsonSchema} from 'rxdb';
-import {from, Observable, of as obsOf, throwError, zip} from 'rxjs';
+import {combineLatest, from, Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
@@ -496,7 +496,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    * Returns permission context after collection initialization.
    */
   private _getPermissionContext(): Observable<PermissionContext> {
-    return zip(this._collectionInit, this._context).pipe(
+    return combineLatest([this._collectionInit, this._context]).pipe(
       map(([_, context]) => context),
       take(1),
     );
