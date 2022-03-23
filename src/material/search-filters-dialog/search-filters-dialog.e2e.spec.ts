@@ -10,6 +10,12 @@ describe('dino-search-filters-dialog', () => {
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
     await browser.wait(EC.presenceOf(element(by.tagName('dino-list'))));
+
+    await browser.wait(EC.presenceOf(element(by.className('mat-expansion-indicator'))));
+
+    const expandBarButton = element(by.className('mat-expansion-indicator'));
+    await browser.wait(EC.elementToBeClickable(expandBarButton));
+    await expandBarButton.click();
   });
 
   it('should display a dino-search-filters-dialog component and its parts', async () => {

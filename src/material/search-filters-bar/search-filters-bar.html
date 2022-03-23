@@ -1,30 +1,33 @@
-<ng-container *ngIf="breakpointObserver.small|async">
-  <mat-accordion>
-    <mat-expansion-panel class="mat-elevation-z">
-      <mat-expansion-panel-header>
-        <ng-container [formGroup]="textSearchFilters">
-          <mat-form-field floatLabel="always" (click)="$event.stopPropagation()">
-            <input
-              matInput
-              formControlName="keyword"
-              [placeholder]="'search by keyword'|transloco"
-            />
-            <mat-icon color="primary" matSuffix>search</mat-icon>
-          </mat-form-field>
-        </ng-container>
-      </mat-expansion-panel-header>
-      <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
-    </mat-expansion-panel>
-  </mat-accordion>
-</ng-container>
+<mat-accordion>
+  <mat-expansion-panel class="mat-elevation-z">
+    <mat-expansion-panel-header>
+      <ng-container *ngIf="!aggregationFilters; else openFilterPanel">
+        <ng-container *ngTemplateOutlet="keywordfilter"></ng-container>
+      </ng-container>
+      <ng-template #openFilterPanel
+        ><div class="dino-open-aggregation-filters">
+          <mat-icon color="primary" matSuffix>search</mat-icon>
+        </div></ng-template
+      >
+    </mat-expansion-panel-header>
+    <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
+  </mat-expansion-panel>
+</mat-accordion>
 
-<ng-container *ngIf="breakpointObserver.small|async|isFalseOrNull">
-  <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
-</ng-container>
+<ng-template #keywordfilter>
+  <ng-container [formGroup]="textSearchFilters">
+    <mat-form-field floatLabel="always" (click)="$event.stopPropagation()">
+      <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco" />
+      <mat-icon color="primary" matSuffix>search</mat-icon>
+    </mat-form-field>
+  </ng-container>
+</ng-template>
 
 <ng-template #filtersbar>
   <div class="dino-filters-bar">
-    <dino-search-filters-preset-manager *ngIf="presetManager"></dino-search-filters-preset-manager>
+    <dino-search-filters-preset-manager
+      *ngIf="presetManager && (breakpointObserver.small|async|isFalseOrNull)"
+    ></dino-search-filters-preset-manager>
 
     <ng-container [formGroup]="dateSearchFilters">
       <mat-form-field floatLabel="always">
@@ -52,19 +55,13 @@
       </mat-form-field>
     </ng-container>
 
-    <ng-container
-      [formGroup]="textSearchFilters"
-      *ngIf="breakpointObserver.small|async|isFalseOrNull"
-    >
-      <mat-form-field floatLabel="always">
-        <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco" />
-        <mat-icon color="primary" matSuffix>search</mat-icon>
-      </mat-form-field>
-    </ng-container>
-
     <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
       <ng-template #metricField>
-        <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]" (click)="showOptions(group)">
+        <mat-form-field
+          floatLabel="always"
+          *ngIf="additionalBasicFiltersLabels[idx]"
+          (click)="showOptions(group)"
+        >
           <input
             matInput
             [formControlName]="additionalBasicFiltersLabels[idx]"
@@ -103,46 +100,26 @@
 
     <ng-container *ngIf="additionalFilters">
       <button
-        *ngIf="breakpointObserver.small|async|isFalseOrNull"
-        class="dino-filters-dialog-button"
-        mat-button
-        color="primary"
-        (click)="openDialog()"
-        [attr.aria-label]="'Open the advanced filters'|transloco"
-      >
-        <mat-icon matSuffix>filter_list</mat-icon>
-      </button>
-      <button
-        *ngIf="breakpointObserver.small|async"
         class="dino-filters-dialog-button"
         mat-flat-button
         color="primary"
         (click)="openDialog()"
         [attr.aria-label]="'Open the advanced filters'|transloco"
       >
-        <mat-icon matSuffix>filter_list</mat-icon>
+        <mat-icon color="primary" matSuffix>filter_list</mat-icon>
       </button>
 
-      <button
-        *ngIf="breakpointObserver.small|async|isFalseOrNull"
-        class="dino-export-button"
-        mat-button
-        color="primary"
-        (click)="openExportBottomSheet()"
-        [attr.aria-label]="'Export items in the list'|transloco"
-      >
-        <mat-icon matSuffix>cloud_download</mat-icon>
-      </button>
-      <button
-        *ngIf="breakpointObserver.small|async"
-        class="dino-export-button"
-        mat-flat-button
-        color="primary"
-        (click)="openExportBottomSheet()"
-        [attr.aria-label]="'Export items in the list'|transloco"
-      >
-        <mat-icon matSuffix>cloud_download</mat-icon>
-      </button>
+      <ng-container *ngIf="exportable">
+        <button
+          class="dino-export-button"
+          mat-flat-button
+          color="primary"
+          (click)="openExportBottomSheet()"
+          [attr.aria-label]="'Export items in the list'|transloco"
+        >
+          <mat-icon color="primary" matSuffix>cloud_download</mat-icon>
+        </button>
+      </ng-container>
     </ng-container>
   </div>
 </ng-template>

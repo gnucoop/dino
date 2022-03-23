@@ -8,6 +8,12 @@ describe('dino-search-filters-widget', () => {
 
     await browser.wait(EC.elementToBeClickable(tile));
     await tile.click();
+
+    await browser.wait(EC.presenceOf(element(by.className('mat-expansion-indicator'))));
+
+    const expandBarButton = element(by.className('mat-expansion-indicator'));
+    await browser.wait(EC.elementToBeClickable(expandBarButton));
+    await expandBarButton.click();
   });
 
   it('should display a number of dino-search-filters-widget components', async () => {

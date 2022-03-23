@@ -77,6 +77,13 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   maxDatePicker: (d: Date | null) => boolean;
 
   /**
+   * If true, the search filters bar is associated to an aggregation list.
+   * Filters availability and disposition in the template will change
+   * accordingly.
+   */
+  @Input() aggregationFilters: boolean = false;
+
+  /**
    * If true, the Preset Manager is available and displayed.
    * Defaults to false.
    */
