@@ -81,14 +81,10 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
-   * Generates List Headers based on an AjfFormSchema
-   * @param formSchema The form schema definition
-   * @returns The generated Schema List Headers
+   * Generates List Headers for the active Metrics
+   * @returns The generated Metrics List Headers
    */
-  generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[] {
-    if (formSchema == null || formSchema.schema.nodes == null) {
-      return [];
-    }
+  generateMetricsHeaders(): ListHeader<any>[] {
     const metricHeaders: ListHeader<any>[] = [];
     this._metricService.activeMetrics.getValue().forEach(metric => {
       metricHeaders.push({
@@ -114,6 +110,19 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         }
       }
     });
+    return metricHeaders;
+  }
+
+  /**
+   * Generates List Headers based on an AjfFormSchema
+   * @param formSchema The form schema definition
+   * @returns The generated Schema List Headers
+   */
+  generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[] {
+    if (formSchema == null || formSchema.schema.nodes == null) {
+      return [];
+    }
+    const metricHeaders: ListHeader<any>[] = this.generateMetricsHeaders();
     const defaultHeaders: ListHeader<any>[] = [
       {
         column: 'user_data_ref_id',

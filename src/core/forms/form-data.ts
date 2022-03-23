@@ -36,7 +36,7 @@ export interface FormData extends Model {
   /**
    * The schema identifier
    */
-  schema_id: string;
+  form_schema_ref_id: string;
 
   /**
    * A plain object containing the data collected.
@@ -74,3 +74,5 @@ export const VERSION = 1;
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
 };
+
+export const indexes = ['form_schema_ref_id'];

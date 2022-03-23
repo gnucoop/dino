@@ -23,13 +23,14 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 
-import {FormData, migrationStrategies} from './form-data';
+import {FormData, indexes, migrationStrategies} from './form-data';
 import {schema} from './form-data-json';
 import {FormsModule} from './forms.module';
 
 @Injectable({providedIn: FormsModule})
 export class FormDataManager extends DataModelManager<FormData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    schema.indexes = [...(schema.indexes || []), ...indexes];
     const collection = {name: 'form_data', collection: {schema, migrationStrategies}};
     super(collection, dataService, permissionContextService);
   }
