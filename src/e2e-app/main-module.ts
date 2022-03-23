@@ -125,10 +125,10 @@ export function initializeApp(
           const genReportSchemaId = resReport.success[0].id;
 
           for (let idx = 0; idx < formDatas.length; idx++) {
-            formDatas[idx].schema_id = formSchemaId;
+            formDatas[idx].form_schema_ref_id = formSchemaId;
           }
           for (let idx = 0; idx < reportDatas.length; idx++) {
-            reportDatas[idx].schema_id = genReportSchemaId;
+            reportDatas[idx].report_schema_ref_id = genReportSchemaId;
           }
           return combineLatest([
             fakeFormDataGenerator.generateData(fdm, formDatas),

@@ -1,6 +1,8 @@
 import {Component, ViewEncapsulation} from '@angular/core';
+import {PermissionContextService} from '@dino/core/data';
 import {Section} from '@dino/material/main-nav';
-
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 @Component({
   selector: 'app-main',
   templateUrl: 'main-e2e.component.html',
@@ -16,23 +18,37 @@ import {Section} from '@dino/material/main-nav';
   encapsulation: ViewEncapsulation.None,
 })
 export class MatMainE2E {
-  sections: Section[] = [
-    {
-      label: 'Dashboard',
-      url: 'dashboard',
-      icon: 'apps',
-    },
-    {
-      label: 'Forms',
-      url: 'forms',
-      icon: 'list_alt',
-    },
-    {
-      label: 'Reports',
-      url: 'reports',
-      icon: 'stacked_bar_chart',
-    },
-  ];
+  constructor(private _pcs: PermissionContextService) {}
+  sections: Observable<Section[]> = this._pcs.permissionContext.pipe(
+    map(context => {
+      const sections = [
+        {
+          label: 'Dashboard',
+          url: 'dashboard',
+          icon: 'apps',
+        },
+        {
+          label: 'Forms',
+          url: 'forms',
+          icon: 'list_alt',
+        },
+      ];
+      if (context.user_permissions != null) {
+        sections.push({
+          label: 'Aggregation',
+          url: 'aggregation',
+          icon: 'manage_search',
+        });
+      }
+      sections.push({
+        label: 'Reports',
+        url: 'reports',
+        icon: 'stacked_bar_chart',
+      });
+
+      return sections;
+    }),
+  );
 
   adminSections: Section[] = [
     {

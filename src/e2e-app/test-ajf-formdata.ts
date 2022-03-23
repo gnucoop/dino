@@ -184,7 +184,7 @@ export const formDatas: FormData[] = [
   {
     id: '',
     user_data_ref_id: 'user_a',
-    schema_id: 'prova',
+    form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[0],
     created_at: '',
     updated_at: '',
@@ -197,7 +197,7 @@ export const formDatas: FormData[] = [
   {
     id: '',
     user_data_ref_id: 'user_a',
-    schema_id: 'prova',
+    form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[1],
     created_at: '',
     updated_at: '',
@@ -210,7 +210,7 @@ export const formDatas: FormData[] = [
   {
     id: '',
     user_data_ref_id: 'user_b',
-    schema_id: 'prova',
+    form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[2],
     created_at: '',
     updated_at: '',
@@ -223,7 +223,7 @@ export const formDatas: FormData[] = [
   {
     id: '',
     user_data_ref_id: 'user_b',
-    schema_id: 'prova',
+    form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[3],
     created_at: '',
     updated_at: '',

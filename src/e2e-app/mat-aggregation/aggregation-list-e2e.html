@@ -1,0 +1,21 @@
+<dino-list
+  #dinoList
+  [headers]="(headers|async)!"
+  [baseUrl]="baseUrl"
+  [dataSource]="dataSource"
+  [bulkActions]="false"
+  [additionalBasicFilters]="additionalBasicFilters"
+  [emitRowDataOnHover]="true"
+  [listRowActions]="listRowActions|async"
+  [onClickRowActions]="onClickRowActions"
+  (emitRowDataEvt)="emitSchemaId($event)"
+>
+  <dino-search-filters-bar
+    filters
+    [presetManager]="false"
+    [exportable]="false"
+    [additionalFilters]="false"
+    [aggregationFilters]="true"
+  ></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+</dino-list>

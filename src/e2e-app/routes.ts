@@ -23,6 +23,7 @@ import {MatReportsListE2E} from './mat-reports-list/reports-list-e2e';
 import {MatReportsE2E} from './mat-reports/reports-e2e.component';
 import {MatUsersE2E} from './mat-users/users-e2e.component';
 import {additionalConfig} from './mockconfig';
+import {MatAggregationListE2E} from './mat-aggregation/aggregation-list-e2e';
 
 const authGuard = additionalConfig.authGuard ? [AuthGuard] : undefined;
 export const E2E_APP_ROUTES: Routes = [
@@ -113,6 +114,18 @@ export const E2E_APP_ROUTES: Routes = [
       {
         path: '',
         component: MatUsersE2E,
+        data: {breadcrumbs: null},
+      },
+    ],
+  },
+  {
+    path: 'aggregation',
+    canActivate: authGuard,
+    data: {breadcrumbs: [{label: 'Aggregation', url: 'aggregation', icon: 'manage_search'}]},
+    children: [
+      {
+        path: '',
+        component: MatAggregationListE2E,
         data: {breadcrumbs: null},
       },
     ],

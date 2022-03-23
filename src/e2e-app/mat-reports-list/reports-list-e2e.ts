@@ -17,7 +17,6 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
   /**
    * If true, this is a list of simple report datas.
    */
-  readonly isReportDataList = true;
   readonly additionalBasicFilters = [
     'project',
     'location',
@@ -136,7 +135,6 @@ export class MatReportsListE2E implements OnDestroy, OnInit {
       this.reportDataManager,
       this.filtersService,
       this.reportSchemaManager,
-      this.isReportDataList,
     );
   }
 

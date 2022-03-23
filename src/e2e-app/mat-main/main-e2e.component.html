@@ -1,6 +1,6 @@
 <main>
   <dino-main-nav
-    [sections]="sections"
+    [sections]="(sections|async)!"
     [adminSections]="adminSections"
     [logoImagePath]="'https://e-laics.gnucoop.com/wp-content/uploads/2021/01/cropped-logognu-nonprofit-e1613290012970.png'"
   ></dino-main-nav>

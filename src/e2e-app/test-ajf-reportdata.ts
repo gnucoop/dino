@@ -4,7 +4,7 @@ export const reportDatas: ReportData[] = [
   {
     id: '',
     user_data_ref_id: 'user_a',
-    schema_id: 'generic_report',
+    report_schema_ref_id: 'generic_report',
     metadata: {},
     created_at: '',
     updated_at: '',
