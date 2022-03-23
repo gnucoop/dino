@@ -99,6 +99,8 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
         return forkJoin(ug).pipe(
           map(privileges => {
             let prvs: {[role_name: string]: any} = {};
+            const allFormSchemas: string[] = [];
+            const allReportSchemas: string[] = [];
             for (let prv of privileges) {
               if (prv[0] == null || prv[1] == null) {
                 continue;
@@ -126,7 +128,12 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
                 ...prvs[role.roleName]['report_schema'],
                 ...group.groupReportSchemaIds,
               ];
+
               prvs[role.roleName]['actions'] = role.rolePermissions;
+
+              allFormSchemas.push(...group.groupFormSchemaIds);
+              allReportSchemas.push(...group.groupReportSchemaIds);
+
               Object.keys(prvs[role.roleName]['actions']).forEach(
                 k =>
                   prvs[role.roleName]['actions'][k] === undefined &&
@@ -135,6 +142,12 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
             }
             this.addToContext({user_metrics: userMetrics});
             this.addToContext({user_permissions: prvs});
+            this.addToContext({
+              user_form_schemas: new Set(allFormSchemas),
+            });
+            this.addToContext({
+              user_report_schemas: new Set(allReportSchemas),
+            });
             return prvs;
           }),
         );
