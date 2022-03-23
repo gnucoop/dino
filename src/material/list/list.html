@@ -27,24 +27,26 @@
     <ng-container matColumnDef="select" sticky>
       <ng-container>
         <mat-header-cell *matHeaderCellDef>
-          <mat-checkbox
-            class="dino-row-actions"
-            (change)="$event ? masterToggle() : null"
-            [checked]="selection.hasValue() && isAllSelected()"
-            [indeterminate]="selection.hasValue() && !isAllSelected()"
-            [aria-label]="checkboxLabel()"
-          >
-          </mat-checkbox>
-          <button
-            class="dino-bulk-delete-button"
-            (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
-            [disabled]="selection.selected.length <= 0"
-            [attr.aria-label]="'Delete all items'|transloco"
-          >
-            <mat-icon aria-hidden="false" [attr.aria-label]="'delete icon'|transloco"
-              >{{'delete'|transloco}}</mat-icon
+          <ng-container *ngIf="bulkActions">
+            <mat-checkbox
+              class="dino-row-actions"
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              [aria-label]="checkboxLabel()"
             >
-          </button>
+            </mat-checkbox>
+            <button
+              class="dino-bulk-delete-button"
+              (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
+              [disabled]="selection.selected.length <= 0"
+              [attr.aria-label]="'Delete all items'|transloco"
+            >
+              <mat-icon aria-hidden="false" [attr.aria-label]="'delete icon'|transloco"
+                >{{'delete'|transloco}}</mat-icon
+              >
+            </button>
+          </ng-container>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
           <mat-checkbox
@@ -165,7 +167,7 @@
         </mat-icon>
       </mat-header-cell>
       <mat-cell *matCellDef="let row" class="dino-row-actions">
-        <ng-container *ngFor="let action of ctx.listRowActions">
+        <ng-container *ngFor="let action of ctx.listRowActions|async">
           <ng-container
             *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view'))"
           >
@@ -191,7 +193,7 @@
           *ngIf="(breakpointObserver.small|async) && isRowExpanded(row)"
           class="dino-expanded-row-actions"
         >
-          <div class="dino-row-action-box" *ngFor="let action of ctx.listRowActions">
+          <div class="dino-row-action-box" *ngFor="let action of ctx.listRowActions|async">
             <mat-icon
               mat-list-icon
               (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
@@ -240,6 +242,7 @@
       [class.dino-expanded-row]="isRowExpanded(row)"
       [class.dino-details-row]="ctx.isDetails"
       (click)="rowToggle(row)"
+      (mouseenter)="emitRowDataOnHover ? emitRowData(row) : null"
     >
     </mat-row>
 

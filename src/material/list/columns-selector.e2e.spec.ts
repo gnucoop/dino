@@ -21,6 +21,8 @@ describe('dino-columns-selector', () => {
     await browser.wait(EC.presenceOf(colButton));
     await colButton.click();
 
+    await browser.wait(EC.presenceOf(element(by.tagName('dino-columns-selector'))));
+
     const colSelector = element(by.tagName('dino-columns-selector'));
     await browser.wait(EC.presenceOf(colSelector));
     expect(await colSelector.isDisplayed()).toBe(true);

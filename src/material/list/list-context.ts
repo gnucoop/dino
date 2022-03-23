@@ -48,7 +48,7 @@ export interface ListContext<T extends Model = Model> {
   /**
    * The actions allowed on the list rows
    */
-  listRowActions?: ListAction[];
+  listRowActions?: BehaviorSubject<ListAction[]>;
 
   /**
    * If true, the selection checkboxes are displayed

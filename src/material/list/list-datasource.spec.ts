@@ -4,7 +4,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {BehaviorSubject, of as obsOf, of} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, of as obsOf, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '../../core/auth';
 import {
@@ -152,11 +152,12 @@ describe('ListDataSource', () => {
     dataSource = new ListDataSource<DummyModel>(dummyManager, fts);
   });
 
-  it('should create a Mango Query from an encoded queryString', () => {
+  it('should create a Mango Query from an encoded queryString', async () => {
     const spyAddNestedProp = spyOn<any>(dataSource, '_addNestedProps').and.callThrough();
     const spyQueryResults = spyOn(dataSource, 'getQueryResults').and.callThrough();
 
-    const query = dataSource.queryDM(fakeFiltersPreset);
+    const permissionContext = await firstValueFrom(dummyManager.permissionContext);
+    const query = dataSource.queryDM(fakeFiltersPreset, permissionContext);
     const expectedMangoQuery: DataQueryOptions = {
       selector: {
         filter_a: {$regex: 'test'},
@@ -164,7 +165,7 @@ describe('ListDataSource', () => {
         filter_c: {$eq: false},
         is_deleted: {$ne: true},
       },
-      limit: undefined,
+      limit: 10,
     };
 
     expect(spyAddNestedProp).toHaveBeenCalled();

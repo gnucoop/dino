@@ -59,8 +59,6 @@ describe('dino-list', () => {
     const actions = firstRow.element(by.className('mat-column-actions'));
     const firstIcon = actions.element(by.tagName('mat-icon'));
 
-    expect(await firstIcon.isDisplayed()).toBe(false);
-
     await browser.actions().mouseMove(firstRow.getWebElement()).perform();
 
     expect(await actions.isPresent()).toBe(true);

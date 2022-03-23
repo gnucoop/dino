@@ -117,6 +117,7 @@ dino-list {
 
   .dino-expanded-row-actions {
     display: none;
+    z-index: 10;
   }
 
   div.dino-inner-table-container {

@@ -23,7 +23,7 @@
 import {deepCopy} from '@ajf/core/utils';
 import {EventEmitter, Optional} from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
+import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {
   clone,
@@ -32,6 +32,7 @@ import {
   DataQueryOptions,
   DataQuerySortDir,
   Model,
+  PermissionContext,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
 import {RxDocument, RxJsonSchema} from 'rxdb';
@@ -193,9 +194,9 @@ export class ListDataSource<
     private _fs: FiltersService,
     @Optional() private _additionalDataManager?: DataModelManager<AD>,
     private _isFormDataList: boolean = false,
+    private _isAggregationList: 'form' | 'report' | null = null,
   ) {
     super();
-
     this._modelSchema = this._dataModelManager.collectionSchema;
     this.data = [];
     this._dataResults.pipe(takeUntil(this._mainUnsubscribe)).subscribe(results => {
@@ -233,42 +234,67 @@ export class ListDataSource<
     // Subscribes to the FiltersService queryString, and generates a Mango Query from it.
     combineLatest([
       this._fs.queryString,
+      this._dataModelManager.permissionContext,
       this.refreshListData,
       this._additionalDataSchema.pipe(skipWhile(schema => this._isFormDataList && schema == null)),
       this.customPaginator.pipe(switchMap(pag => (pag ? pag.page : obsOf(null)))),
-      this.customSort.pipe(switchMap(sort => (sort ? sort.sortChange : obsOf(null)))),
+      this.customSort.pipe(
+        switchMap(sort =>
+          sort
+            ? sort.sortChange
+            : obsOf(
+                this._isAggregationList
+                  ? {
+                      active: `${this._isAggregationList}_schema_ref_id`,
+                      direction: 'asc' as SortDirection,
+                    }
+                  : null,
+              ),
+        ),
+      ),
       this._dataHeaders,
     ])
       .pipe(
-        map(([queryString, refreshEvt, addSchema, pageEvt, sortEvt, dataHeaders]) => {
-          if (pageEvt) {
-            if (
-              this.getPaginator &&
-              this.customPaginatorCurrentPageIndex == pageEvt.pageIndex &&
-              pageEvt.pageIndex != 0
-            ) {
-              pageEvt = this._resetPaginator(pageEvt);
+        map(
+          ([
+            queryString,
+            permissionContext,
+            refreshEvt,
+            addSchema,
+            pageEvt,
+            sortEvt,
+            dataHeaders,
+          ]) => {
+            if (pageEvt) {
+              if (
+                this.getPaginator &&
+                this.customPaginatorCurrentPageIndex == pageEvt.pageIndex &&
+                pageEvt.pageIndex != 0
+              ) {
+                pageEvt = this._resetPaginator(pageEvt);
+              }
+              if (
+                this.getPaginator &&
+                (pageEvt.previousPageIndex ?? 0) <= pageEvt.pageIndex &&
+                this.data.length < pageEvt.pageSize
+              ) {
+                pageEvt = this._resetPaginator(pageEvt);
+              }
+              this.customPaginatorCurrentPageIndex = pageEvt.pageIndex;
             }
-            if (
-              this.getPaginator &&
-              (pageEvt.previousPageIndex ?? 0) <= pageEvt.pageIndex &&
-              this.data.length < pageEvt.pageSize
-            ) {
-              pageEvt = this._resetPaginator(pageEvt);
-            }
-            this.customPaginatorCurrentPageIndex = pageEvt.pageIndex;
-          }
 
-          if (queryString && refreshEvt) {
-            return {queryString, pageEvt, sortEvt, addSchema, dataHeaders};
-          } else {
-            return {queryString: '', pageEvt, sortEvt, addSchema, dataHeaders};
-          }
-        }),
+            if (queryString && refreshEvt) {
+              return {queryString, permissionContext, pageEvt, sortEvt, addSchema, dataHeaders};
+            } else {
+              return {queryString: '', permissionContext, pageEvt, sortEvt, addSchema, dataHeaders};
+            }
+          },
+        ),
         catchError(
           err =>
             throwError(() => new Error(err)) as Observable<{
               queryString: string;
+              permissionContext: PermissionContext;
               addSchema: AD | null;
               pageEvt: PageEvent | null;
               sortEvt: Sort | null;
@@ -278,7 +304,14 @@ export class ListDataSource<
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe(res =>
-        this.queryDM(res.queryString, res.addSchema, res.pageEvt, res.sortEvt, res.dataHeaders),
+        this.queryDM(
+          res.queryString,
+          res.permissionContext,
+          res.addSchema,
+          res.pageEvt,
+          res.sortEvt,
+          res.dataHeaders,
+        ),
       );
   }
 
@@ -294,12 +327,14 @@ export class ListDataSource<
    * Creates and returns a Mango Query from the Filters Component encoded queryString.
    * Queries the DataModelManager and updates the dataResults.
    * @param queryString The encoded query string of parameters
+   * @param permissionContext The user permissions context
    * @param additionalDataSchema? The additional data schema
    * @param page? The paginator change event
    * @returns The Mango query with the generated query selector
    */
   queryDM(
     queryString: string,
+    permissionContext: PermissionContext,
     additionalDataSchema?: AD | null,
     page?: PageEvent | null,
     sort?: Sort | null,
@@ -392,14 +427,26 @@ export class ListDataSource<
       }
     });
     if (additionalDataSchema != null) {
-      this._addNestedProps(querySelector, ['schema_id', '$eq'], additionalDataSchema.id);
+      const schemaKey = this._isFormDataList ? 'form_schema_ref_id' : 'report_schema_ref_id';
+      this._addNestedProps(querySelector, [schemaKey, '$eq'], additionalDataSchema.id);
+    }
+    if (
+      this._isAggregationList &&
+      permissionContext.user_form_schemas != null &&
+      !permissionContext.user_form_schemas.has('all')
+    ) {
+      this._addNestedProps(
+        querySelector,
+        [`${this._isAggregationList}_schema_ref_id`, '$in'],
+        [...permissionContext.user_form_schemas],
+      );
     }
 
     this._addNestedProps(querySelector, ['is_deleted', '$ne'], true);
 
     const query: DataQueryOptions = {
       selector: querySelector,
-      limit: this.getPaginator?.pageSize,
+      limit: this.getPaginator?.pageSize ?? 10,
     };
     if (page) {
       query.limit = page.pageSize;
@@ -411,7 +458,6 @@ export class ListDataSource<
     const detailsQuery: DataQueryOptions = {
       selector: detailsQuerySelector,
     };
-
     this.getQueryResults(query, detailsQuery);
     return query;
   }

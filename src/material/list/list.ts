@@ -31,9 +31,11 @@ import {
   ContentChild,
   ContentChildren,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   TemplateRef,
   ViewChild,
@@ -246,6 +248,12 @@ export class SelectionList<T extends Model = Model>
   }
 
   /**
+   * If true, the bulk action checkbox is available
+   */
+  @Input()
+  bulkActions: boolean = true;
+
+  /**
    * Non default table cell templates
    */
   private _cellTemplatesMap: {[column: string]: TemplateRef<any>} = {};
@@ -257,16 +265,26 @@ export class SelectionList<T extends Model = Model>
    * The available user-called actions that can be performed on
    * the list items.
    */
-  private _listRowActions: ListAction[] = [];
+  private _listRowActions: BehaviorSubject<ListAction[]> = new BehaviorSubject<ListAction[]>([]);
   get listRowActions(): ListAction[] {
-    return this._listRowActions;
+    return this._listRowActions.value;
   }
   @Input()
   set listRowActions(actions: ListAction[] | null) {
     if (actions != null) {
-      this._listRowActions = actions;
+      this._listRowActions.next(actions);
     }
   }
+
+  /**
+   * If True, the list will emit an event with row data when the user hovers or selects a row.
+   * Defaults to false.
+   */
+  @Input() emitRowDataOnHover: boolean = true;
+  /**
+   * Event emitted when row is selected/hovered.
+   */
+  @Output() readonly emitRowDataEvt: EventEmitter<T> = new EventEmitter<T>();
 
   /**
    * The default list actions performed when a list item is clicked.
@@ -534,6 +552,14 @@ export class SelectionList<T extends Model = Model>
   }
 
   /**
+   * Emits the row data on hover/selection
+   * @param row The hovered or selected row
+   */
+  emitRowData(row: T): void {
+    this.emitRowDataEvt.emit(row);
+  }
+
+  /**
    * Checks the current selection state of the row and changes its aria-label accordingly
    * @param row T
    * @returns string
@@ -679,6 +705,7 @@ export class SelectionList<T extends Model = Model>
     if (refObj == null || populateWith == null) {
       return null;
     }
+
     return refObj[populateWith];
   }
 
@@ -752,13 +779,17 @@ export class SelectionList<T extends Model = Model>
     const genItem = item as {[key: string]: any};
     if (
       item == null ||
-      genItem.schema_id == null ||
+      (genItem.form_schema_ref_id == null && genItem.report_schema_ref_id == null) ||
       this.baseUrl == null ||
       this.baseEditUrl == null
     ) {
       return;
     }
-    const path = [this.baseUrl, genItem.schema_id, this.baseEditUrl];
+    const path = [
+      this.baseUrl,
+      genItem.form_schema_ref_id ?? genItem.report_schema_ref_id,
+      this.baseEditUrl,
+    ];
     if (isDetails) {
       path.push('details');
     }
@@ -817,13 +848,17 @@ export class SelectionList<T extends Model = Model>
     const genItem = item as {[key: string]: any};
     if (
       item == null ||
-      genItem.schema_id == null ||
+      (genItem.form_schema_ref_id == null && genItem.report_schema_ref_id == null) ||
       this.baseUrl == null ||
       this.baseViewUrl == null
     ) {
       return;
     }
-    const path = [this.baseUrl, genItem.schema_id, this.baseViewUrl];
+    const path = [
+      this.baseUrl,
+      genItem.form_schema_ref_id ?? genItem.report_schema_ref_id,
+      this.baseViewUrl,
+    ];
     if (isDetails) {
       path.push('details');
     }
@@ -834,7 +869,7 @@ export class SelectionList<T extends Model = Model>
   ngOnDestroy() {
     this._mainUnsubscribe.next();
     this._mainUnsubscribe.complete();
-
+    this.emitRowDataEvt.complete();
     this._dataSource.disconnect();
     this._fts.clearModelFilters();
     this._dialogSub.unsubscribe();
