@@ -59,6 +59,7 @@ import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { PermissionContext } from '@dino/core/data';
 import { QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 import { RxJsonSchema } from 'rxdb';
@@ -135,7 +136,7 @@ export interface ListContext<T extends Model = Model> {
     expandable?: string;
     headers: BehaviorSubject<ListHeader<T>[]>;
     isDetails?: boolean;
-    listRowActions?: ListAction[];
+    listRowActions?: BehaviorSubject<ListAction[]>;
     showCheckBox?: boolean;
     showColumnsSelector?: boolean;
     showPaginator?: boolean;
@@ -143,7 +144,7 @@ export interface ListContext<T extends Model = Model> {
 
 // @public
 export class ListDataSource<T extends Model = Model, AD extends Model = Model> extends MatTableDataSource<T> {
-    constructor(_dataModelManager: DataModelManager<T>, _fs: FiltersService, _additionalDataManager?: DataModelManager<AD> | undefined, _isFormDataList?: boolean);
+    constructor(_dataModelManager: DataModelManager<T>, _fs: FiltersService, _additionalDataManager?: DataModelManager<AD> | undefined, _isFormDataList?: boolean, _isAggregationList?: 'form' | 'report' | null);
     actionErrorEvt: EventEmitter_2<Error>;
     // (undocumented)
     get additionalDataSchema(): AD;
@@ -167,7 +168,7 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     get getSort(): MatSort | null;
     // (undocumented)
     get modelSchema(): RxJsonSchema<T>;
-    queryDM(queryString: string, additionalDataSchema?: AD | null, page?: PageEvent | null, sort?: Sort | null, dataHeaders?: ListHeader<T>[]): DataQueryOptions;
+    queryDM(queryString: string, permissionContext: PermissionContext, additionalDataSchema?: AD | null, page?: PageEvent | null, sort?: Sort | null, dataHeaders?: ListHeader<T>[]): DataQueryOptions;
     refreshListData: BehaviorSubject<CollectionChangedEvent>;
     // (undocumented)
     set setFiltersComponent(component: SearchFiltersComponent | null);
@@ -194,6 +195,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     set additionalBasicFilters(filterNames: string[]);
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
+    bulkActions: boolean;
     cellTemplates: QueryList<ListCell>;
     // (undocumented)
     get cellTemplatesMap(): {
@@ -215,6 +217,9 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     get displayExpandAllBtn(): boolean;
     set displayExpandAllBtn(exp: boolean);
     editAction(item: T, isDetails?: boolean): void;
+    emitRowData(row: T): void;
+    readonly emitRowDataEvt: EventEmitter_2<T>;
+    emitRowDataOnHover: boolean;
     // (undocumented)
     get expandable(): boolean;
     set expandable(exp: boolean);
@@ -274,7 +279,7 @@ export class SelectionList<T extends Model = Model> extends List<T> implements A
     set sorting(ms: MatSort);
     viewAction(item: T, isDetails?: boolean): void;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<SelectionList<any>, "dino-list", never, { "detailsListContext": "detailsListContext"; "customFilters": "customFilters"; "additionalBasicFilters": "additionalBasicFilters"; "expandable": "expandable"; "displayExpandAllBtn": "displayExpandAllBtn"; "showPaginator": "showPaginator"; "showColumnsSelector": "showColumnsSelector"; "listRowActions": "listRowActions"; "onClickRowActions": "onClickRowActions"; "dataSource": "dataSource"; }, {}, ["filtersComponent", "cellTemplates"], ["[breadcrumbs]", "[filters]"]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SelectionList<any>, "dino-list", never, { "detailsListContext": "detailsListContext"; "customFilters": "customFilters"; "additionalBasicFilters": "additionalBasicFilters"; "expandable": "expandable"; "displayExpandAllBtn": "displayExpandAllBtn"; "showPaginator": "showPaginator"; "showColumnsSelector": "showColumnsSelector"; "bulkActions": "bulkActions"; "listRowActions": "listRowActions"; "emitRowDataOnHover": "emitRowDataOnHover"; "onClickRowActions": "onClickRowActions"; "dataSource": "dataSource"; }, { "emitRowDataEvt": "emitRowDataEvt"; }, ["filtersComponent", "cellTemplates"], ["[breadcrumbs]", "[filters]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<SelectionList<any>, never>;
 }

@@ -22,10 +22,10 @@ interface FormData_2 extends Model {
     data: {
         [key: string]: any;
     };
+    form_schema_ref_id: string;
     location_ref_id: string | null;
     organization_ref_id: string | null;
     project_ref_id: string | null;
-    schema_id: string;
     user_data_ref_id: string;
 }
 export { FormData_2 as FormData }
@@ -51,6 +51,7 @@ export interface FormSchema extends Model {
 export class FormSchemaManager extends DataModelManager<FormSchema> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService, _metricService: MetricsService);
     generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
+    generateMetricsHeaders(): ListHeader<any>[];
     generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[];
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<FormSchemaManager, never>;

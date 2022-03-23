@@ -24,7 +24,7 @@ export interface ReportData extends Model {
     };
     organization_ref_id: string | null;
     project_ref_id: string | null;
-    schema_id: string;
+    report_schema_ref_id: string;
     user_data_ref_id: string;
 }
 

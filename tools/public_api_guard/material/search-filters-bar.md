@@ -67,6 +67,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     // (undocumented)
     get additionalFilters(): boolean;
     set additionalFilters(state: boolean);
+    aggregationFilters: boolean;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
     // (undocumented)
@@ -106,7 +107,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     // (undocumented)
     showOptions(group: FormGroup): void;
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dino-search-filters-bar", never, { "presetManager": "presetManager"; "exportable": "exportable"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, { "exportEvt": "exportEvt"; }, never, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersBar, "dino-search-filters-bar", never, { "aggregationFilters": "aggregationFilters"; "presetManager": "presetManager"; "exportable": "exportable"; "additionalFilters": "additionalFilters"; "filtersDialogWidth": "filtersDialogWidth"; }, { "exportEvt": "exportEvt"; }, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersBar, [null, null, null, null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
