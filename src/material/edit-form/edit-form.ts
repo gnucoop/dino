@@ -247,7 +247,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             if ('data' in item && item['data'] != null) {
               const formDataObj = {
                 data: item['data']['data'] ?? item['data'] ?? null,
-                schemaId: item['data']['schema_id'] ?? item['schema_id'] ?? null,
+                schemaId: item['data']['form_schema_ref_id'] ?? item['form_schema_ref_id'] ?? null,
               };
               return formDataObj;
             }

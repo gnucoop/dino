@@ -229,7 +229,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           let newItem: {[key: string]: any} = {};
           if (isFormData) {
             newItem.data = formValue;
-            newItem.schema_id = formSchemaId;
+            newItem.form_schema_ref_id = formSchemaId;
             newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
             newItem.area_ref_id = null;
             newItem.case_ref_id = null;
@@ -250,7 +250,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             }
           } else {
             newItem.data.data = formValue;
-            newItem.data.schema_id = formSchemaId;
+            newItem.data.form_schema_ref_id = formSchemaId;
             newItem.data.user_data_ref_id = this._authService.getUserInfo()?.id;
           }
 

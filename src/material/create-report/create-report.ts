@@ -166,7 +166,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
         switchMap(([_, reportSchemaId, formMetricsSelector]) => {
           const dateIntervalValue = this.dateIntervalForm.value;
           let newItem: {[key: string]: any} = {};
-          newItem.schema_id = reportSchemaId;
+          newItem.report_schema_ref_id = reportSchemaId;
           newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
           newItem.area_ref_id = null;
           newItem.case_ref_id = null;

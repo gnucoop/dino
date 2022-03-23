@@ -180,7 +180,7 @@ export class EditReport implements OnInit, AfterViewInit {
     );
 
     this._reportSchemaId = this._reportData.pipe(
-      map(reportDataObj => (reportDataObj != null ? reportDataObj.schema_id : null)),
+      map(reportDataObj => (reportDataObj != null ? reportDataObj.report_schema_ref_id : null)),
       filter(id => id != null),
       shareReplay(1),
     );
@@ -217,7 +217,9 @@ export class EditReport implements OnInit, AfterViewInit {
         ) {
           return obsOf([]);
         }
-        const querySelector: DataQuerySelector = {schema_id: {$in: rSchema.form_schema_ids}};
+        const querySelector: DataQuerySelector = {
+          form_schema_ref_id: {$in: rSchema.form_schema_ids},
+        };
         if (rData.date_start != null) {
           querySelector['created_at'] = {$gte: rData.date_start};
         }
@@ -250,7 +252,7 @@ export class EditReport implements OnInit, AfterViewInit {
         let populatedData: Observable<{[key: string]: any}>[] = [];
         for (let formSchemaId of formSchemaIds) {
           const data = sfData
-            .filter(fdata => fdata.schema_id === formSchemaId)
+            .filter(fdata => fdata.form_schema_ref_id === formSchemaId)
             .map(fd => this._populateData(fd));
           populatedData.push(...data);
         }
@@ -259,12 +261,12 @@ export class EditReport implements OnInit, AfterViewInit {
       }),
       map(([ctx, ctxSchemas, rData, rSchema]) => {
         const contextForms: ReportContext = {};
-        const contextSchemas: {[schema_id: string]: any} = {};
+        const contextSchemas: {[schema_ref_id: string]: any} = {};
         ctx.forEach(fdata => {
-          if (contextForms[fdata['schema_id']] == null) {
-            contextForms[fdata['schema_id']] = [];
+          if (contextForms[fdata['form_schema_ref_id']] == null) {
+            contextForms[fdata['form_schema_ref_id']] = [];
           }
-          contextForms[fdata['schema_id']].push(fdata);
+          contextForms[fdata['form_schema_ref_id']].push(fdata);
         });
         ctxSchemas.forEach(fschema => {
           if (fschema != null) {
@@ -332,7 +334,7 @@ export class EditReport implements OnInit, AfterViewInit {
       map(addedDatas => {
         let addData = {};
         addedDatas.forEach(data => (addData = {...addData, ...data}));
-        return {...formData.data, ...addData, schema_id: formData.schema_id};
+        return {...formData.data, ...addData, form_schema_ref_id: formData.form_schema_ref_id};
       }),
       take(1),
     );
