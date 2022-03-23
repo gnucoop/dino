@@ -17,7 +17,7 @@
   <div class="dino-toolbar-actions">
     <ng-container *ngIf="linkIcons|async as actionLinkIcons">
       <ng-container *ngFor="let linkIcon of actionLinkIcons">
-        <a [href]="linkIcon.url" target="_blank" class="dino-link-button">
+        <a [href]="linkIcon.url" target="_blank" class="dino-link-button" aria-label="Toolbar action">
           <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
         </a>
       </ng-container>
@@ -63,6 +63,7 @@
         [attr.aria-label]="section.label|transloco"
         [routerLink]="[section.url]"
         (click)="menuClick()"
+        aria-label="Section"
       >
         <mat-icon>{{section.icon}}</mat-icon>
         <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
@@ -78,6 +79,7 @@
           [attr.aria-label]="adminSection.label"
           [routerLink]="[adminSection.url]"
           (click)="menuClick()"
+          aria-label="Admin Section"
         >
           <mat-icon>{{adminSection.icon}}</mat-icon>
           <span *ngIf="extendedSidenav|async">{{adminSection.label}}</span>
@@ -91,6 +93,7 @@
         [attr.aria-label]="(extendedSidenav|async) ? 'close' : 'open'"
         [disableRipple]="true"
         (click)="extendedSidenav.next(!extendedSidenav.getValue())"
+        aria-label="Expand menu"
       >
         <mat-icon>{{(extendedSidenav|async) ? 'close_fullscreen' : 'open_in_full' }}</mat-icon>
       </a>

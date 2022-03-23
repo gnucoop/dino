@@ -72,6 +72,8 @@ dino-main-nav {
 
   .mat-sidenav-container.dino-sidenav-container {
     flex: 1 0 auto;
+    height: 100%;
+    padding-bottom: 10px;
   }
 
   .mat-sidenav-content.dino-sidenav-content {
