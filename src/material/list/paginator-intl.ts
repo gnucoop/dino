@@ -43,10 +43,10 @@ export class PaginatorIntl implements MatPaginatorIntl {
   firstPageLabel: string;
   lastPageLabel: string;
 
-  constructor(private ts: TranslocoService) {
-    this.getCurrentLabels();
-    ts.langChanges$.subscribe(() => {
-      this.getCurrentLabels();
+  constructor(private _ts: TranslocoService) {
+    this._getCurrentLabels();
+    _ts.langChanges$.subscribe(() => {
+      this._getCurrentLabels();
       this.changes.next();
     });
   }
@@ -58,14 +58,17 @@ export class PaginatorIntl implements MatPaginatorIntl {
       amountPages = Math.ceil(length / pageSize);
       currentPage = page + 1;
     }
-    return this.ts.translate(`Page {{page}} of {{pages}}`, {page: currentPage, pages: amountPages});
+    return this._ts.translate(`Page {{page}} of {{pages}}`, {
+      page: currentPage,
+      pages: amountPages,
+    });
   }
 
-  private getCurrentLabels(): void {
+  private _getCurrentLabels(): void {
     for (const k in defaultLabels) {
       const key = k as keyof typeof defaultLabels;
       const label = defaultLabels[key];
-      this[key] = this.ts.translate(label);
+      this[key] = this._ts.translate(label);
     }
   }
 }

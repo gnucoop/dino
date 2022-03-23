@@ -24,6 +24,7 @@ import * as i14 from '@angular/material/stepper';
 import * as i15 from '@angular/material/table';
 import * as i16 from '@angular/material/toolbar';
 import * as i17 from '@angular/router';
+import * as i18 from '@ngneat/transloco';
 import * as i2 from '@ajf/material/forms';
 import * as i3 from '@angular/common';
 import * as i4 from '@dino/material/form-metric-selector';
@@ -87,7 +88,7 @@ export class EditFormModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<EditFormModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<EditFormModule, [typeof i1.EditForm], [typeof i2.AjfFormsModule, typeof i3.CommonModule, typeof i4.FormMetricSelectorModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatSlideToggleModule, typeof i12.MatSnackBarModule, typeof i13.MatSortModule, typeof i14.MatStepperModule, typeof i15.MatTableModule, typeof i16.MatToolbarModule, typeof i17.RouterModule], [typeof i1.EditForm]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<EditFormModule, [typeof i1.EditForm], [typeof i2.AjfFormsModule, typeof i3.CommonModule, typeof i4.FormMetricSelectorModule, typeof i5.MatButtonModule, typeof i6.MatCheckboxModule, typeof i7.MatDialogModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatSlideToggleModule, typeof i12.MatSnackBarModule, typeof i13.MatSortModule, typeof i14.MatStepperModule, typeof i15.MatTableModule, typeof i16.MatToolbarModule, typeof i17.RouterModule, typeof i18.TranslocoModule], [typeof i1.EditForm]>;
 }
 
 // (No @packageDocumentation comment for this package)

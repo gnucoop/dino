@@ -28,7 +28,7 @@ describe('dino-list', () => {
       'Location\nplace',
       'Organization\npublic',
       'Project\nassignment',
-      'Thematic Area\nvolunteer_activism',
+      'Thematic area\nvolunteer_activism',
     ];
     const headerCells = await element.all(by.tagName('mat-header-cell')).getText();
     expect(headerCells.slice(1, -1)).toEqual(expectedCells);

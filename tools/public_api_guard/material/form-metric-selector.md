@@ -10,6 +10,7 @@ import { AreaManager } from '@dino/core/areas';
 import { CaseManager } from '@dino/core/cases';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
+import * as i10 from '@ngneat/transloco';
 import * as i2 from '@angular/common';
 import * as i3 from '@angular/material/autocomplete';
 import * as i4 from '@angular/material/button';
@@ -72,7 +73,7 @@ export class FormMetricSelectorModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<FormMetricSelectorModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<FormMetricSelectorModule, [typeof i1.FormMetricSelector], [typeof i2.CommonModule, typeof i3.MatAutocompleteModule, typeof i4.MatButtonModule, typeof i5.MatDatepickerModule, typeof i6.MatFormFieldModule, typeof i7.MatIconModule, typeof i8.MatInputModule, typeof i9.ReactiveFormsModule], [typeof i1.FormMetricSelector]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<FormMetricSelectorModule, [typeof i1.FormMetricSelector], [typeof i2.CommonModule, typeof i3.MatAutocompleteModule, typeof i4.MatButtonModule, typeof i5.MatDatepickerModule, typeof i6.MatFormFieldModule, typeof i7.MatIconModule, typeof i8.MatInputModule, typeof i9.ReactiveFormsModule, typeof i10.TranslocoModule], [typeof i1.FormMetricSelector]>;
 }
 
 // @public

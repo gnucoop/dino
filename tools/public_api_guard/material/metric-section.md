@@ -10,6 +10,7 @@ import { DataModelManager } from '@dino/core/data';
 import { FiltersService } from '@dino/core/list';
 import * as i0 from '@angular/core';
 import * as i10 from '@dino/material/search-filters-bar';
+import * as i11 from '@ngneat/transloco';
 import * as i2 from '@dino/material/breakpoint-observer';
 import * as i3 from '@angular/common';
 import * as i4 from '@dino/material/list';
@@ -59,7 +60,7 @@ export class MetricSectionModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<MetricSectionModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<MetricSectionModule, [typeof i1.MetricSection], [typeof i2.BreakpointObserverModule, typeof i3.CommonModule, typeof i4.ListModule, typeof i5.FloatingButtonModule, typeof i6.FormsModule, typeof i7.MatButtonModule, typeof i8.MatTooltipModule, typeof i9.MetricEditorModule, typeof i10.SearchFiltersBarModule], [typeof i1.MetricSection]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<MetricSectionModule, [typeof i1.MetricSection], [typeof i2.BreakpointObserverModule, typeof i3.CommonModule, typeof i4.ListModule, typeof i5.FloatingButtonModule, typeof i6.FormsModule, typeof i7.MatButtonModule, typeof i8.MatTooltipModule, typeof i9.MetricEditorModule, typeof i10.SearchFiltersBarModule, typeof i11.TranslocoModule], [typeof i1.MetricSection]>;
 }
 
 // (No @packageDocumentation comment for this package)
