@@ -297,7 +297,7 @@ export class ImportForm {
       // Check if is not a second header
       if (row[idKey] !== idKey) {
         let newItem: {[key: string]: any} = {};
-        newItem.schema_id = this._formSchemaId;
+        newItem.form_schema_ref_id = this._formSchemaId;
         newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
           try {
@@ -338,7 +338,6 @@ export class ImportForm {
         take(1),
       )
       .subscribe(bulkRes => {
-        console.log(bulkRes);
         if (bulkRes && bulkRes.success.length) {
           this._setImportStatus(
             'File imported successfully: ' + bulkRes.success.length + ' forms created!',
@@ -392,7 +391,6 @@ export class ImportForm {
    * @param rows The rows to be imported
    */
   private _importFormDataRows(rows: {[key: string]: any}[]): void {
-    console.log('sono quiiiiii');
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
     const newMetricsInRows = this._getMetricsToBeCreated(rows, activeMetrics);
     if (Object.keys(newMetricsInRows).length) {
