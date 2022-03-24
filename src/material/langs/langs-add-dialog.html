@@ -1,0 +1,17 @@
+<h1 mat-dialog-title> <span class="dino-text"></span></h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <ng-container *ngFor="let item of data">
+      <ng-container>
+        <mat-form-field>
+          <mat-label>{{item}}</mat-label>
+          <input matInput [formControlName]="item" type="text">
+        </mat-form-field>
+      </ng-container>
+    </ng-container>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">{{'Undo'|transloco}}</button>
+  <button mat-button  (click)="save()"cdkFocusInitial>{{'Save'|transloco}}</button>
+</div>

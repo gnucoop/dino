@@ -31,6 +31,7 @@ import {
   ReportSchemaManager,
   ReportsModule,
 } from '@dino/core/reports';
+import {SyncModule} from '@dino/core/sync';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
@@ -53,6 +54,7 @@ import {MaterialEditFormE2eModule} from './mat-edit-form/edit-form-e2e.module';
 import {MaterialFormsListE2eModule} from './mat-forms-list/forms-list-e2e.module';
 import {MaterialFormsE2eModule} from './mat-forms/forms-e2e.module';
 import {MaterialGroupsE2eModule} from './mat-groups/groups-e2e.module';
+import {MaterialLangsE2eModule} from './mat-langs/langs-e2e.module';
 import {MaterialLocationsE2eModule} from './mat-locations/locations-e2e.module';
 import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
 import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
@@ -81,7 +83,6 @@ import {formDatas} from './test-ajf-formdata';
 import {formSchemas} from './test-ajf-formschema';
 import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
-import {SyncModule} from '@dino/core/sync';
 
 /**
  * Used to generate fake data for the e2e app
@@ -198,6 +199,7 @@ export function provideDataServiceConfig() {
     MaterialGroupsE2eModule,
     MaterialFormsListE2eModule,
     MaterialReportsListE2eModule,
+    MaterialLangsE2eModule,
     MaterialLocationsE2eModule,
     MaterialLoginE2eModule,
     MaterialMainE2EModule,

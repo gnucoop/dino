@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>
+  <button mat-button
+    color="warn"
+    [disabled]="loading$|async"
+    (click)="remove(data.key)">
+    {{'Remove'|transloco}}
+  </button>
+  <pre>{{data|json}}</pre>
+</h1>
+<div mat-dialog-content>
+  <dino-langs-loading *ngIf="loading$|async"></dino-langs-loading>
+  <form  [formGroup]="form">
+    <mat-form-field>
+      <mat-label>key</mat-label>
+      <input matInput formControlName="key" type="text" [placeholder]="data.key|transloco">
+    </mat-form-field>
+    <ng-container *ngFor="let item of data|keyvalue">
+      <ng-container *ngIf="(item.key|dinoAsString) !== 'key'">
+        <mat-form-field>
+          <mat-label>{{item.key}}</mat-label>
+          <input matInput
+          type="text"
+          [formControlName]="item.key|dinoAsString"
+          [placeholder]="item.key|dinoAsString">
+        </mat-form-field>
+      </ng-container>
+    </ng-container>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" [disabled]="loading$|async">{{'Undo'|transloco}}</button>
+  <button mat-button cdkFocusInitial
+    color="primary"
+    [mat-dialog-close]="data"
+    [disabled]="loading$|async"
+    (click)="save()">
+      {{'Save'|transloco}}
+  </button>
+</div>

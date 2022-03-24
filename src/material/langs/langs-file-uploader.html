@@ -1,0 +1,5 @@
+<button type="button" mat-button (click)="fileInput.click()">
+  <mat-icon>file_upload</mat-icon>
+  <ng-content></ng-content>
+</button>
+<input hidden (change)="onChange($event)" #fileInput type="file" id="file">

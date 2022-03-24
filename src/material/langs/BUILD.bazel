@@ -1,0 +1,115 @@
+load(
+    "//tools:defaults.bzl",
+    "markdown_to_html",
+    "ng_module",
+    "sass_binary",
+    "sass_library",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+ng_module(
+    name = "langs",
+    srcs = glob(
+        ["**/*.ts"],
+        exclude = ["**/*.spec.ts"],
+    ),
+    assets = [
+        ":langs.css",
+        ":langs-add-dialog.css",
+        ":langs-confirm-dialog.css",
+        ":langs-export-dialog.css",
+        ":langs-file-uploader.css",
+        ":langs-loading.css",
+        ":langs-settings-dialog.css",
+        ":langs-update-dialog.css",
+    ] + glob(["**/*.html"]),
+    deps = [
+        "//src/core/langs",
+        "@npm//@ajf/material",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@angular/forms",
+        "@npm//@angular/material",
+    ],
+)
+
+sass_library(
+    name = "langs_scss_lib",
+    srcs = glob(["**/_*.scss"]),
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_scss",
+    src = "langs.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_add_dialog_scss",
+    src = "langs-add-dialog.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_confirm_dialog_scss",
+    src = "langs-confirm-dialog.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_export_dialog_scss",
+    src = "langs-export-dialog.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_file_uploader_scss",
+    src = "langs-file-uploader.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_loading_scss",
+    src = "langs-loading.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_settings_dialog_scss",
+    src = "langs-settings-dialog.scss",
+    deps = [],
+)
+
+sass_binary(
+    name = "langs_update_dialog_scss",
+    src = "langs-update-dialog.scss",
+    deps = [],
+)
+
+# ng_test_library(
+#     name = "unit_test_sources",
+#     srcs = glob(
+#         ["**/*.spec.ts"],
+#         exclude = ["**/*.e2e.spec.ts"],
+#     ),
+#     deps = [
+#         "@npm//@angular/platform-browser",
+#     ],
+# )
+
+# ng_web_test_suite(
+#     name = "unit_tests",
+#     deps = [":unit_test_sources"],
+# )
+
+markdown_to_html(
+    name = "overview",
+    srcs = ["langs.md"],
+)
+
+filegroup(
+    name = "source-files",
+    srcs = glob(["**/*.ts"]),
+)

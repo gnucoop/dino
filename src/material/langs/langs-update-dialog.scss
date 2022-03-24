@@ -1,0 +1,13 @@
+dino-langs-update-dialog {
+  mat-form-field {
+    width: 100%;
+  }
+  h1 > button {
+    float: right;
+  }
+  dino-langs-loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+}

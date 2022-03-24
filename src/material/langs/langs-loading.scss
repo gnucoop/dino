@@ -1,0 +1,12 @@
+$loading-container-heigth: 200px;
+dino-langs-loading {
+  display: block;
+  text-align: center;
+  min-height: $loading-container-heigth;
+
+  mat-spinner {
+    width: 60px;
+    height: 60px;
+    margin: 70px auto;
+  }
+}

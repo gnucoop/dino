@@ -1,0 +1,9 @@
+<div mat-dialog-title>
+  {{ 'Are you sure?'|transloco }}
+</div>
+<div mat-dialog-content>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">{{ 'No'|transloco }}</button>
+  <button mat-button [mat-dialog-close]="" (click)="ok()"cdkFocusInitial>{{ 'Yes'|transloco }}</button>
+</div>

@@ -1,0 +1,42 @@
+dino-langs {
+  table {
+    width: 100%;
+    height: 400px;
+  }
+  .mat-list-item {
+    cursor: pointer;
+  }
+  .dino-langs-toolbar {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: flex-start;
+    div:nth-child(1),
+    div:nth-child(3) {
+      order: 0;
+      flex: 0 1 auto;
+      align-self: auto;
+    }
+    div:nth-child(2) {
+      order: 0;
+      flex: 1 1 auto;
+      align-self: auto;
+    }
+    div:nth-child(1) {
+      mat-button-toggle-group {
+        margin-left: 20px;
+      }
+    }
+  }
+  .dino-langs-selected {
+    color: rebeccapurple;
+    margin-left: 2px;
+  }
+  .dino-langs-no-translation {
+    color: red;
+    margin-left: 2px;
+  }
+}

@@ -14,6 +14,7 @@ entryPoints = [
     "form-metric-selector",
     "icons-service",
     "import-form",
+    "langs",
     "list",
     "login",
     "lang-selector",

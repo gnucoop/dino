@@ -56,5 +56,10 @@ export class MatMainE2E {
       url: 'users',
       icon: 'people',
     },
+    {
+      label: 'Languages',
+      url: 'langs',
+      icon: 'translate',
+    },
   ];
 }

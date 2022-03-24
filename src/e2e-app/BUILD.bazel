@@ -60,6 +60,7 @@ ng_module(
         "//src/material/edit-report",
         "//src/material/edit-report-schema",
         "//src/material/floating-button",
+        "//src/material/langs",
         "//src/material/list",
         "//src/material/login",
         "//src/material/main-nav",
