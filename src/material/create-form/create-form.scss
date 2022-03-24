@@ -8,11 +8,11 @@ dino-create-form {
         flex: 0 0 auto;
     }
 
-    mat-stepper, .dino-create-form-step-container {
+    mat-stepper, {
         flex: 1 1 auto;
     }
 
-    .mat-horizontal-stepper-content, .dino-create-form-step-container {
+    .mat-horizontal-stepper-content {
         height: 100%;
     }
 
@@ -34,6 +34,10 @@ dino-create-form {
         align-items: center;
         justify-content: center;
         position: relative;
+        min-height: 85vh;
+        @media only screen and (max-width: 992px) {
+            min-height: 75vh;
+        }
     }
 
     .mat-stepper-horizontal {
