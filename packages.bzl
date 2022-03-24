@@ -42,7 +42,7 @@ ANGULAR_PACKAGES_CONFIG = [
     ("@angular/compiler", struct(entry_points = ["testing"])),
     ("@angular/core", struct(entry_points = ["testing"])),
     ("@angular/forms", struct(entry_points = [])),
-    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "bottom-sheet", "card", "checkbox", "chips", "core", "datepicker", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "paginator", "progress-bar", "radio", "select", "sidenav", "slide-toggle", "slider", "snack-bar", "sort", "stepper", "table", "tabs", "toolbar", "tooltip"])),
+    ("@angular/material", struct(entry_points = ["autocomplete", "button", "button-toggle", "bottom-sheet", "card", "checkbox", "chips", "core", "datepicker", "dialog", "divider", "expansion", "form-field", "grid-list", "icon", "input", "list", "menu", "paginator", "progress-bar", "progress-spinner", "radio", "select", "sidenav", "slide-toggle", "slider", "snack-bar", "sort", "stepper", "table", "tabs", "toolbar", "tooltip"])),
     ("@angular/platform-browser", struct(entry_points = ["testing", "animations"])),
     ("@angular/platform-server", struct(entry_points = [], platform = "node")),
     ("@angular/platform-browser-dynamic", struct(entry_points = ["testing"])),
