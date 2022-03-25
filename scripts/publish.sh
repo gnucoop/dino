@@ -1,7 +1,6 @@
 #!/bin/bash
 
 PACKAGES=(core
-  ionic
   material)
 PWD=`pwd`
 BASE_DIR="${PWD}/dist/releases"

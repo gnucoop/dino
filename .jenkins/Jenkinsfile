@@ -71,7 +71,7 @@ pipeline {
     }
     stage('Publish') {
       steps {
-        sh './scripts/publish.sh next'
+        sh './scripts/publish.sh'
       }
     }
     stage('Save cache') {
