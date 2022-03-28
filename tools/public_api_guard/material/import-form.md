@@ -15,18 +15,19 @@ import { FormBuilder } from '@angular/forms';
 import { FormDataManager } from '@dino/core/forms';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/snack-bar';
-import * as i11 from '@angular/material/toolbar';
-import * as i12 from '@angular/forms';
-import * as i13 from '@angular/router';
+import * as i10 from '@angular/material/input';
+import * as i11 from '@angular/material/snack-bar';
+import * as i12 from '@angular/material/toolbar';
+import * as i13 from '@angular/forms';
+import * as i14 from '@angular/router';
 import * as i2 from '@ajf/material/form-builder';
 import * as i3 from '@angular/common';
 import * as i4 from '@angular/material/autocomplete';
 import * as i5 from '@angular/material/button';
 import * as i6 from '@angular/material/card';
-import * as i7 from '@angular/material/form-field';
-import * as i8 from '@angular/material/icon';
-import * as i9 from '@angular/material/input';
+import * as i7 from '@angular/material/checkbox';
+import * as i8 from '@angular/material/form-field';
+import * as i9 from '@angular/material/icon';
 import { LocationManager } from '@dino/core/locations';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MetricsService } from '@dino/core/data';
@@ -95,7 +96,7 @@ export class ImportFormModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ImportFormModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ImportFormModule, [typeof i1.ImportForm], [typeof i2.AjfFormBuilderModule, typeof i3.CommonModule, typeof i4.MatAutocompleteModule, typeof i5.MatButtonModule, typeof i6.MatCardModule, typeof i7.MatFormFieldModule, typeof i8.MatIconModule, typeof i9.MatInputModule, typeof i10.MatSnackBarModule, typeof i11.MatToolbarModule, typeof i12.ReactiveFormsModule, typeof i13.RouterModule], [typeof i1.ImportForm]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ImportFormModule, [typeof i1.ImportForm], [typeof i2.AjfFormBuilderModule, typeof i3.CommonModule, typeof i4.MatAutocompleteModule, typeof i5.MatButtonModule, typeof i6.MatCardModule, typeof i7.MatCheckboxModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatSnackBarModule, typeof i12.MatToolbarModule, typeof i13.ReactiveFormsModule, typeof i14.RouterModule], [typeof i1.ImportForm]>;
 }
 
 // @public (undocumented)
