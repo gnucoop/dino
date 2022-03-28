@@ -131,6 +131,18 @@ export class Collect {
     return this._collectType.value;
   }
 
+  /**
+   * Items sorting key
+   */
+  private _sortBy = new BehaviorSubject<keyof CollectItem>('name');
+  get sortBy(): keyof CollectItem {
+    return this._sortBy.value;
+  }
+  @Input()
+  set sortBy(value: keyof CollectItem) {
+    this._sortBy.next(value);
+  }
+
   constructor(
     readonly breakpointObserver: BreakpointObserverService,
     private _fs: FormSchemaManager,
@@ -138,7 +150,7 @@ export class Collect {
     private _pcs: PermissionContextService,
     private _router: Router,
   ) {
-    this.items = combineLatest([
+    const res = combineLatest([
       this._collectType,
       this._menuItems,
       this._pcs.permissionContext,
@@ -175,21 +187,27 @@ export class Collect {
                 };
                 collectItems.push(collectItem);
               }
-              return collectItems.sort((a, b) => {
-                if (a.name < b.name) {
-                  return -1;
-                } else {
-                  if (a.name > b.name) {
-                    return 1;
-                  } else {
-                    return 0;
-                  }
-                }
-              });
+              return collectItems;
             }),
           );
         }
         return obsOf(menuItems);
+      }),
+      shareReplay(1),
+    );
+
+    this.items = res.pipe(
+      switchMap(items => combineLatest([this._sortBy]).pipe(map(([sortBy]) => ({items, sortBy})))),
+      map(({items, sortBy}) => {
+        return items.sort((a, b) => {
+          const v1 = a[sortBy];
+          const v2 = b[sortBy];
+          const bToI = (v: boolean | string | undefined) => ((v as boolean) || false ? 1 : 1);
+          if (typeof v1 === 'boolean' || typeof v2 === 'boolean') {
+            return bToI(v1) - bToI(v2);
+          }
+          return ((v1 as string) || '').localeCompare((v2 as string) || '');
+        });
       }),
       shareReplay(1),
     );

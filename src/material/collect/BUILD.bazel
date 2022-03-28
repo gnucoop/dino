@@ -53,6 +53,7 @@ ng_test_library(
         "//src/core/data",
         "//src/core/forms",
         "//src/core/reports",
+        "//src/core/translations",
         "//src/core/users",
         "@npm//@angular/common",
         "@npm//@angular/forms",

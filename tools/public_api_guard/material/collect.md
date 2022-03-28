@@ -46,7 +46,10 @@ export class Collect {
     // (undocumented)
     set setNoItemsMessage(message: string);
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "setNoItemsMessage": "setNoItemsMessage"; "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; }, {}, never, ["[breadcrumbs]"]>;
+    get sortBy(): keyof CollectItem;
+    set sortBy(value: keyof CollectItem);
+    // (undocumented)
+    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "setNoItemsMessage": "setNoItemsMessage"; "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; "sortBy": "sortBy"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }

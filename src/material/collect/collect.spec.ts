@@ -2,9 +2,10 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {DATA_SERVICE_CONFIG, DataServiceConfig, PermissionContextService} from '@dino/core/data';
 import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 import {ReportsModule} from '@dino/core/reports';
+import {DinoTranslationsModule} from '@dino/core/translations';
 import {UsersModule} from '@dino/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
@@ -47,6 +48,39 @@ const authServiceMock = {
   authConfig: authServiceConfig,
 } as unknown as AuthService;
 
+const formSchemaManagerMock = {
+  list: () => {
+    return of([
+      {
+        id: '',
+        name: 'form1',
+        label: '2. First form',
+        icon: 'star',
+        schema: {},
+        collection: {name: ''},
+        created_at: '',
+        updated_at: '',
+      },
+      {
+        id: '',
+        name: 'form2',
+        label: '1. Second form',
+        icon: 'star',
+        schema: {},
+        collection: {name: ''},
+        created_at: '',
+        updated_at: '',
+      },
+    ]);
+  },
+};
+
+const pcsMock = {
+  permissionContext: of({}),
+  checkPermission: () => true,
+  getAllowedActions: () => of([]),
+};
+
 describe('Collect', () => {
   let fsm: FormSchemaManager;
   let fixtureCollect: ComponentFixture<Collect>;
@@ -56,6 +90,7 @@ describe('Collect', () => {
     TestBed.configureTestingModule({
       imports: [
         CollectModule,
+        DinoTranslationsModule,
         HttpClientTestingModule,
         RouterTestingModule,
         ReportsModule,
@@ -64,6 +99,8 @@ describe('Collect', () => {
       ],
       providers: [
         {provide: AuthService, useValue: authServiceMock},
+        {provide: FormSchemaManager, useValue: formSchemaManagerMock},
+        {provide: PermissionContextService, useValue: pcsMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
@@ -93,5 +130,26 @@ describe('Collect', () => {
     fixtureCollect.detectChanges();
 
     expect(collectTypeSpy).toHaveBeenCalled();
+  });
+
+  it('should sort items', async () => {
+    collect.collectType = 'forms';
+
+    fixtureCollect.detectChanges();
+    await fixtureCollect.whenStable();
+
+    const el = fixtureCollect.nativeElement as HTMLElement;
+    let tiles = el.getElementsByClassName('dino-grid-label');
+    expect(tiles.length).toBe(2);
+    expect(tiles[0].innerHTML).toContain('2.');
+    expect(tiles[1].innerHTML).toContain('1.');
+
+    collect.sortBy = 'label';
+
+    fixtureCollect.detectChanges();
+    await fixtureCollect.whenStable();
+    tiles = el.getElementsByClassName('dino-grid-label');
+    expect(tiles[0].innerHTML).toContain('1.');
+    expect(tiles[1].innerHTML).toContain('2.');
   });
 });
