@@ -1,13 +1,14 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormBuilder} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
 import {FormDataManager} from '@dino/core/forms';
+import {TranslocoModule} from '@ngneat/transloco';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 import {ImportForm} from './index';
 
@@ -81,7 +82,7 @@ describe('Import Forms', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule],
+      imports: [BrowserAnimationsModule, TranslocoModule],
       providers: [
         FormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},
