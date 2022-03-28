@@ -35,7 +35,7 @@ import {AreaManager} from '@dino/core/areas';
 import {AuthService} from '@dino/core/auth';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
-import {FormDataManager, FormData} from '@dino/core/forms';
+import {FormData, FormDataManager} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -46,8 +46,8 @@ import * as XLSX from 'xlsx';
 
 /**
  * The Form Data import component.
- * Allows importing of Xls or Csv file with form data, which will be processed and saved
- * as Form Datas.
+ * Allows importing of Xls or Csv file with form data, which will be processed
+ * and saved as Form Datas.
  */
 @Component({
   selector: 'dino-import-form',
@@ -189,7 +189,9 @@ export class ImportForm {
         if (manager !== null) {
           if (newMetrics[metricType] && newMetrics[metricType].length) {
             const allMetricNames: string[] = newMetrics[metricType].map(m => m.name);
-            const selector = {selector: {name: {$in: allMetricNames}}};
+            const selector = {
+              selector: {name: {$in: allMetricNames}, is_deleted: {$ne: true}},
+            };
             metricsObs.push(
               manager.query(selector).pipe(
                 take(1),
@@ -245,9 +247,9 @@ export class ImportForm {
                 ? manager.collectionSchema.required
                 : ['name'];
               props.forEach(prop => {
-                newMetric[prop as string] = row[metric + '_' + (prop as string)]
-                  ? row[metric + '_' + (prop as string)]
-                  : null;
+                newMetric[prop as string] = this._getValueFromRow(
+                  row[metric + '_' + (prop as string)],
+                );
               });
               if (!(metric in newMetrics)) {
                 newMetrics[metric] = [];
@@ -286,6 +288,27 @@ export class ImportForm {
   }
 
   /**
+   * Return the input value casted to the correct type (string, list or Date)
+   * @param rowValue the initial value found in xls file
+   * @returns
+   */
+  private _getValueFromRow(rowValue: any): any {
+    let value = rowValue || null;
+    if (rowValue !== null) {
+      if (typeof rowValue === 'string') {
+        if (rowValue.startsWith('[') && rowValue.endsWith(']')) {
+          value = rowValue.slice(1, -1).split(',');
+        }
+      } else if (typeof rowValue === 'object') {
+        try {
+          value = new Date(rowValue).toISOString().split('T')[0];
+        } catch (e) {}
+      }
+    }
+    return value;
+  }
+
+  /**
    * Insert all the rows into Dino
    * @param rows The rows to be imported
    * @param activeMetrics The list of the currently active metrics
@@ -307,7 +330,7 @@ export class ImportForm {
         newItem.form_schema_ref_id = this._formSchemaId;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
           try {
-            const rowDate = new Date(row[createdAtKey]).toISOString().split('T')[0];
+            const rowDate = new Date(row[createdAtKey]).toISOString();
             newItem.created_at = rowDate;
           } catch (e) {}
         }
@@ -318,7 +341,8 @@ export class ImportForm {
         newItem.data = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
-            return {...obj, [key]: row[key]};
+            const value = this._getValueFromRow(row[key]);
+            return {...obj, [key]: value};
           }, {});
 
         Object.keys(this._metricManagers).forEach(metric => {
@@ -373,7 +397,8 @@ export class ImportForm {
   /**
    * Add into metricsIdByName object the metric name and id
    * @param metric the metric document
-   * @param metricsIdByName object with metrics id by metric name and metric type
+   * @param metricsIdByName object with metrics id by metric name and metric
+   * type
    */
   private _addMetricDetails(
     metric: RxDocument<Metric>,
@@ -388,7 +413,8 @@ export class ImportForm {
 
   /**
    * Add existing metrics id/name to the new metricts object list
-   * @param metricsIdByName object with metrics id by metric name and metric type
+   * @param metricsIdByName object with metrics id by metric name and metric
+   * type
    * @param existingMetrics list of already existing metrics
    */
   private _addExistingMetricsIntoList(
