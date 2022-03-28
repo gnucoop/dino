@@ -25,7 +25,9 @@ ng_module(
         "//src/core/reports",
         "//src/material/breakpoint-observer",
         "//src/material/floating-button",
+        "@npm//@angular/cdk",
         "@npm//@angular/common",
+        "@npm//@angular/forms",
         "@npm//@angular/material",
     ],
 )

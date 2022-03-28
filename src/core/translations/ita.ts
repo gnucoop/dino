@@ -155,4 +155,5 @@ export const ITA: Translation = {
   'update:': 'aggiornato:',
   'Reuse metrics if name exists': 'Riutilizza le metriche esistenti con lo stesso nome',
   'Choose file': 'Seleziona un file',
+  'Filter': 'Filtra',
 };

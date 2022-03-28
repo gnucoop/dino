@@ -23,9 +23,12 @@
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dino/core/forms';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
@@ -42,8 +45,11 @@ import {Collect} from './collect';
     FormsModule,
     RouterModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatGridListModule,
     MatIconModule,
+    MatInputModule,
+    ReactiveFormsModule,
   ],
   declarations: [Collect],
   exports: [Collect],

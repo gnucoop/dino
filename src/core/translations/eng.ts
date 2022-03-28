@@ -154,4 +154,5 @@ export const ENG: Translation = {
   'update:': 'update:',
   'Reuse metrics if name exists': 'Reuse metrics if name exists',
   'Choose file': 'Choose file',
+  'Filter': 'Filter',
 };

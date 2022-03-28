@@ -7,6 +7,7 @@ load("//src/material:config.bzl", "MATERIAL_ENTRYPOINTS", "MATERIAL_TESTING_ENTR
 PKG_EXTERNALS = [
     # Framework packages.
     "@angular/animations",
+    "@angular/cdk/coercion",
     "@angular/cdk/collections",
     "@angular/cdk/drag-drop",
     "@angular/cdk/layout",

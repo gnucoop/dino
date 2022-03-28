@@ -152,4 +152,39 @@ describe('Collect', () => {
     expect(tiles[0].innerHTML).toContain('1.');
     expect(tiles[1].innerHTML).toContain('2.');
   });
+
+  it('should filter items based on keyword', async () => {
+    collect.collectType = 'forms';
+
+    fixtureCollect.detectChanges();
+    await fixtureCollect.whenStable();
+
+    const el = fixtureCollect.nativeElement as HTMLElement;
+    let tiles = el.getElementsByClassName('dino-grid-label');
+    expect(tiles.length).toBe(2);
+
+    collect.filterCtrl.setValue('RST');
+    await new Promise<void>(resolve => {
+      setTimeout(() => resolve(), 200);
+    });
+
+    fixtureCollect.detectChanges();
+    await fixtureCollect.whenStable();
+
+    tiles = el.getElementsByClassName('dino-grid-label');
+    expect(tiles.length).toBe(1);
+    expect(tiles[0].innerHTML).toContain('First');
+
+    collect.filterCtrl.setValue('oNd');
+    await new Promise<void>(resolve => {
+      setTimeout(() => resolve(), 200);
+    });
+
+    fixtureCollect.detectChanges();
+    await fixtureCollect.whenStable();
+
+    tiles = el.getElementsByClassName('dino-grid-label');
+    expect(tiles.length).toBe(1);
+    expect(tiles[0].innerHTML).toContain('Second');
+  });
 });

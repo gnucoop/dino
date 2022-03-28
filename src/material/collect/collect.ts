@@ -20,7 +20,15 @@
  *
  */
 
-import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
+import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  ViewEncapsulation,
+} from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {PermissionContextService} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
@@ -28,7 +36,7 @@ import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {map, shareReplay, switchMap} from 'rxjs/operators';
+import {debounceTime, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 
 /**
@@ -143,12 +151,28 @@ export class Collect {
     this._sortBy.next(value);
   }
 
+  /**
+   * Show items filter input
+   */
+  private _filterBar = false;
+  get filterBar(): boolean {
+    return this._filterBar;
+  }
+  @Input()
+  set filterBar(value: BooleanInput) {
+    this._filterBar = coerceBooleanProperty(value);
+    this._cdr.markForCheck();
+  }
+
+  readonly filterCtrl = new FormControl('');
+
   constructor(
     readonly breakpointObserver: BreakpointObserverService,
     private _fs: FormSchemaManager,
     private _rs: ReportSchemaManager,
     private _pcs: PermissionContextService,
     private _router: Router,
+    private _cdr: ChangeDetectorRef,
   ) {
     const res = combineLatest([
       this._collectType,
@@ -196,9 +220,27 @@ export class Collect {
       shareReplay(1),
     );
 
-    this.items = res.pipe(
-      switchMap(items => combineLatest([this._sortBy]).pipe(map(([sortBy]) => ({items, sortBy})))),
-      map(({items, sortBy}) => {
+    const filter$ = this.filterCtrl.valueChanges.pipe(
+      debounceTime(100),
+      startWith(this.filterCtrl.value as string),
+    ) as Observable<string>;
+
+    this.items = combineLatest([res, this._sortBy, filter$]).pipe(
+      map(([items, sortBy, filterKey]) => {
+        console.log(filterKey);
+        filterKey = filterKey.trim().toLocaleLowerCase();
+        if (filterKey.length > 0) {
+          items = items.filter(item => {
+            const keys = Object.keys(item) as (keyof typeof item)[];
+            for (const key of keys) {
+              const v = item[key];
+              if (typeof v === 'string' && v.includes(filterKey)) {
+                return true;
+              }
+            }
+            return false;
+          });
+        }
         return items.sort((a, b) => {
           const v1 = a[sortBy];
           const v2 = b[sortBy];
@@ -229,4 +271,6 @@ export class Collect {
   addSchema(): void {
     this._router.navigate([this._collectType.getValue(), 'schema', 'create']);
   }
+
+  static ngAcceptInputType_filterBar: BooleanInput;
 }

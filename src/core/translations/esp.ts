@@ -155,4 +155,5 @@ export const ESP: Translation = {
   'update:': 'actualizado:',
   'Reuse metrics if name exists': 'Reutilizar métricas si existe el nombre',
   'Choose file': 'Escoge un archivo',
+  'Filter': 'Filtrar',
 };

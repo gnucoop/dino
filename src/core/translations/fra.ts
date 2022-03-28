@@ -155,4 +155,5 @@ export const FRA: Translation = {
   'update:': 'mise à jour:',
   'Reuse metrics if name exists': 'Réutiliser les métriques si le nom existe',
   'Choose file': 'Choisir un fichier',
+  'Filter': 'Filtre',
 };

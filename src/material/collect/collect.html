@@ -1,4 +1,11 @@
 <ng-content select="[breadcrumbs]"></ng-content>
+<ng-container *ngIf="filterBar === true">
+  <mat-form-field>
+    <mat-label>{{ 'Filter' | transloco }}</mat-label>
+    <input matInput [formControl]="filterCtrl">
+    <mat-icon matSuffix>filter_alt</mat-icon>
+  </mat-form-field>
+</ng-container>
 <mat-grid-list
   class="dino-grid-list"
   [cols]="(breakpointObserver.small|async) ? columnsSmall : columnsLarge"

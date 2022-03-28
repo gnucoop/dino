@@ -5,10 +5,16 @@
 ```ts
 
 import { BehaviorSubject } from 'rxjs';
+import { BooleanInput } from '@angular/cdk/coercion';
 import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
+import { ChangeDetectorRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { FormSchemaManager } from '@dino/core/forms';
 import * as i0 from '@angular/core';
-import * as i10 from '@angular/material/icon';
+import * as i10 from '@angular/material/grid-list';
+import * as i11 from '@angular/material/icon';
+import * as i12 from '@angular/material/input';
+import * as i13 from '@angular/forms';
 import * as i2 from '@ajf/core/transloco';
 import * as i3 from '@dino/material/breakpoint-observer';
 import * as i4 from '@angular/common';
@@ -16,7 +22,7 @@ import * as i5 from '@dino/material/floating-button';
 import * as i6 from '@dino/core/forms';
 import * as i7 from '@angular/router';
 import * as i8 from '@angular/material/button';
-import * as i9 from '@angular/material/grid-list';
+import * as i9 from '@angular/material/form-field';
 import { Observable } from 'rxjs';
 import { PermissionContextService } from '@dino/core/data';
 import { ReportSchemaManager } from '@dino/core/reports';
@@ -24,7 +30,7 @@ import { Router } from '@angular/router';
 
 // @public
 export class Collect {
-    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _pcs: PermissionContextService, _router: Router);
+    constructor(breakpointObserver: BreakpointObserverService, _fs: FormSchemaManager, _rs: ReportSchemaManager, _pcs: PermissionContextService, _router: Router, _cdr: ChangeDetectorRef);
     addSchema(): void;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
@@ -39,9 +45,16 @@ export class Collect {
     displayAddButton: Observable<boolean>;
     editSchema(schemaId: string | undefined): void;
     // (undocumented)
+    get filterBar(): boolean;
+    set filterBar(value: BooleanInput);
+    // (undocumented)
+    readonly filterCtrl: FormControl;
+    // (undocumented)
     get getCollectType(): CollectType;
     readonly items: Observable<CollectItem[]>;
     set menuItems(menuItems: CollectItem[]);
+    // (undocumented)
+    static ngAcceptInputType_filterBar: BooleanInput;
     readonly noItemsMessage: BehaviorSubject<string>;
     // (undocumented)
     set setNoItemsMessage(message: string);
@@ -49,7 +62,7 @@ export class Collect {
     get sortBy(): keyof CollectItem;
     set sortBy(value: keyof CollectItem);
     // (undocumented)
-    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "setNoItemsMessage": "setNoItemsMessage"; "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; "sortBy": "sortBy"; }, {}, never, ["[breadcrumbs]"]>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Collect, "dino-collect", never, { "setNoItemsMessage": "setNoItemsMessage"; "menuItems": "menuItems"; "columnsSmall": "columnsSmall"; "columnsLarge": "columnsLarge"; "collectType": "collectType"; "sortBy": "sortBy"; "filterBar": "filterBar"; }, {}, never, ["[breadcrumbs]"]>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<Collect, never>;
 }
@@ -71,7 +84,7 @@ export class CollectModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<CollectModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.AjfTranslocoModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.FloatingButtonModule, typeof i6.FormsModule, typeof i7.RouterModule, typeof i8.MatButtonModule, typeof i9.MatGridListModule, typeof i10.MatIconModule], [typeof i1.Collect]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<CollectModule, [typeof i1.Collect], [typeof i2.AjfTranslocoModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.FloatingButtonModule, typeof i6.FormsModule, typeof i7.RouterModule, typeof i8.MatButtonModule, typeof i9.MatFormFieldModule, typeof i10.MatGridListModule, typeof i11.MatIconModule, typeof i12.MatInputModule, typeof i13.ReactiveFormsModule], [typeof i1.Collect]>;
 }
 
 // @public

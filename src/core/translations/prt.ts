@@ -155,4 +155,5 @@ export const PRT: Translation = {
   'update:': 'atualizado:',
   'Reuse metrics if name exists': 'Reutilizar métricas se o nome existir',
   'Choose file': 'Escolha um arquivo',
+  'Filter': 'Filtrar',
 };
