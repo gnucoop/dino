@@ -34,6 +34,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {ImportForm} from './import-form';
 
@@ -52,6 +53,7 @@ import {ImportForm} from './import-form';
     MatToolbarModule,
     ReactiveFormsModule,
     RouterModule,
+    TranslocoModule,
   ],
   declarations: [ImportForm],
   exports: [ImportForm],

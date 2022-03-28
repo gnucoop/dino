@@ -153,4 +153,6 @@ export const ESP: Translation = {
   "key: '{{key}}' removed": "llave: '{{key}}' removida",
   'forbidden deleting default key': 'prohibido borrar clave por defecto',
   'update:': 'actualizado:',
+  'Reuse metrics if name exists': 'Reutilizar métricas si existe el nombre',
+  'Choose file': 'Escoge un archivo',
 };

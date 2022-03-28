@@ -153,4 +153,6 @@ export const ITA: Translation = {
   "key: '{{key}}' removed": "chiave: '{{key}}' eliminata",
   'forbidden deleting default key': 'impossibile eliminare una chiave di default',
   'update:': 'aggiornato:',
+  'Reuse metrics if name exists': 'Riutilizza le metriche esistenti con lo stesso nome',
+  'Choose file': 'Seleziona un file',
 };

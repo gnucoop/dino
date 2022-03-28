@@ -152,4 +152,6 @@ export const ENG: Translation = {
   "key: '{{key}}' removed": "key: '{{key}}' removed",
   'forbidden deleting default key': 'forbidden deleting default key',
   'update:': 'update:',
+  'Reuse metrics if name exists': 'Reuse metrics if name exists',
+  'Choose file': 'Choose file',
 };

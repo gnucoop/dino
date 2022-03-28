@@ -20,6 +20,7 @@ import * as i11 from '@angular/material/snack-bar';
 import * as i12 from '@angular/material/toolbar';
 import * as i13 from '@angular/forms';
 import * as i14 from '@angular/router';
+import * as i15 from '@ngneat/transloco';
 import * as i2 from '@ajf/material/form-builder';
 import * as i3 from '@angular/common';
 import * as i4 from '@angular/material/autocomplete';
@@ -96,7 +97,7 @@ export class ImportFormModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ImportFormModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ImportFormModule, [typeof i1.ImportForm], [typeof i2.AjfFormBuilderModule, typeof i3.CommonModule, typeof i4.MatAutocompleteModule, typeof i5.MatButtonModule, typeof i6.MatCardModule, typeof i7.MatCheckboxModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatSnackBarModule, typeof i12.MatToolbarModule, typeof i13.ReactiveFormsModule, typeof i14.RouterModule], [typeof i1.ImportForm]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ImportFormModule, [typeof i1.ImportForm], [typeof i2.AjfFormBuilderModule, typeof i3.CommonModule, typeof i4.MatAutocompleteModule, typeof i5.MatButtonModule, typeof i6.MatCardModule, typeof i7.MatCheckboxModule, typeof i8.MatFormFieldModule, typeof i9.MatIconModule, typeof i10.MatInputModule, typeof i11.MatSnackBarModule, typeof i12.MatToolbarModule, typeof i13.ReactiveFormsModule, typeof i14.RouterModule, typeof i15.TranslocoModule], [typeof i1.ImportForm]>;
 }
 
 // @public (undocumented)

@@ -153,4 +153,6 @@ export const PRT: Translation = {
   "key: '{{key}}' removed": "chave: '{{key}}' removida",
   'forbidden deleting default key': 'proibido excluir chave padrão',
   'update:': 'atualizado:',
+  'Reuse metrics if name exists': 'Reutilizar métricas se o nome existir',
+  'Choose file': 'Escolha um arquivo',
 };
