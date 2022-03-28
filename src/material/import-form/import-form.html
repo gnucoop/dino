@@ -15,21 +15,19 @@
           <label for="excelFileInput">
             <a color="primary" mat-raised-button>Choose file</a>
           </label>
-          <b>{{importStatus}}</b>
+          <mat-checkbox formControlName="reuseMetricName"
+            >Reuse metrics if name exists</mat-checkbox
+          >
         </div>
       </form>
+      <div *ngIf="importStatus" class="dino-upload-respose">
+        <b>{{importStatus}}</b>
+      </div>
       <br />
     </mat-card-content>
     <mat-card-actions>
-      <button (click)="closeDialog()" color="warn" mat-raised-button>
-        {{ 'Close' }}
-      </button>
-      <button
-        [disabled]="processing"
-        (click)="apply()"
-        color="primary"
-        mat-raised-button
-      >
+      <button (click)="closeDialog()" color="warn" mat-raised-button>{{ 'Close' }}</button>
+      <button [disabled]="processing" (click)="apply()" color="primary" mat-raised-button>
         {{ 'Apply' }}
       </button>
     </mat-card-actions>

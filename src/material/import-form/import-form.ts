@@ -79,9 +79,9 @@ export class ImportForm {
 
   /**
    * True if the form is currently being processed.
-   * Defaults to false.
+   * Defaults to true.
    */
-  private _processing: boolean = false;
+  private _processing: boolean = true;
   get processing(): boolean {
     return this._processing;
   }
@@ -131,7 +131,9 @@ export class ImportForm {
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this._formSchemaId = this.data.formSchema;
-    this.importForm = this._formBuilder.group({});
+    this.importForm = this._formBuilder.group({
+      reuseMetricName: [false],
+    });
   }
 
   /**
@@ -152,6 +154,7 @@ export class ImportForm {
       return;
     }
     this._file = event.target.files[0];
+    this._processing = false;
   }
 
   /**
@@ -159,6 +162,7 @@ export class ImportForm {
    */
   apply(): void {
     this._processing = true;
+    this._metricMustBeUnique = this.importForm.controls['reuseMetricName'].value;
     this._importXlsx(this._file);
   }
 
@@ -241,7 +245,9 @@ export class ImportForm {
                 ? manager.collectionSchema.required
                 : ['name'];
               props.forEach(prop => {
-                newMetric[prop as string] = row[metric + '_' + (prop as string)] ?? null;
+                newMetric[prop as string] = row[metric + '_' + (prop as string)]
+                  ? row[metric + '_' + (prop as string)]
+                  : null;
               });
               if (!(metric in newMetrics)) {
                 newMetrics[metric] = [];
@@ -291,6 +297,7 @@ export class ImportForm {
   ): void {
     const forms: InsertModel<FormData>[] = [];
     const createdAtKey = 'created_at';
+    const userDataKey = 'user_data_ref_id';
     const idKey = 'id';
 
     rows.forEach((row: {[key: string]: any}) => {
@@ -298,12 +305,15 @@ export class ImportForm {
       if (row[idKey] !== idKey) {
         let newItem: {[key: string]: any} = {};
         newItem.form_schema_ref_id = this._formSchemaId;
-        newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
           try {
             const rowDate = new Date(row[createdAtKey]).toISOString().split('T')[0];
             newItem.created_at = rowDate;
           } catch (e) {}
+        }
+        newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
+        if (row[userDataKey] && row[userDataKey].length) {
+          newItem.user_data_ref_id = row[userDataKey];
         }
         newItem.data = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
@@ -311,10 +321,10 @@ export class ImportForm {
             return {...obj, [key]: row[key]};
           }, {});
 
-        if (activeMetrics.length) {
-          activeMetrics.forEach(metric => {
-            newItem[metric + '_ref_id'] = row[metric + '_id'] ?? null;
-            const metricName = (row[metric + '_name'] as string) ?? null;
+        Object.keys(this._metricManagers).forEach(metric => {
+          if (activeMetrics.length && activeMetrics.includes(metric)) {
+            newItem[metric + '_ref_id'] = row[metric + '_id'] ? row[metric + '_id'] : null;
+            const metricName = row[metric + '_name'] ? (row[metric + '_name'] as string) : null;
             if (
               newItem[metric + '_ref_id'] === null &&
               metricName !== null &&
@@ -325,8 +335,10 @@ export class ImportForm {
             ) {
               newItem[metric + '_ref_id'] = metricsIdByName[metric][metricName];
             }
-          });
-        }
+          } else {
+            newItem[metric + '_ref_id'] = null;
+          }
+        });
         forms.push(newItem as InsertModel<FormData>);
       }
     });
@@ -345,7 +357,13 @@ export class ImportForm {
         } else {
           let errMsg = 'File not imported! ';
           if (bulkRes?.error.length) {
-            errMsg = errMsg + bulkRes?.error[0].msg;
+            console.log('Import form error: ' + bulkRes.error[0].msg);
+            if (
+              bulkRes?.error[0].msg?.parameters?.errors &&
+              bulkRes?.error[0].msg?.parameters?.errors.length
+            ) {
+              errMsg = errMsg + JSON.stringify(bulkRes?.error[0].msg?.parameters?.errors[0]);
+            }
           }
           this._setImportStatus(errMsg);
         }
@@ -443,8 +461,13 @@ export class ImportForm {
                 }
               } else {
                 if (metrics && metrics.error.length && metrics.error[0].msg) {
-                  console.log('Import error: ' + metrics.error[0].msg?.parameters);
-                  metricsError.push(metrics.error[0].msg?.parameters?.schema?.title);
+                  console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
+                  if (
+                    metrics.error[0].msg?.parameters?.errors &&
+                    metrics.error[0].msg?.parameters?.errors.length
+                  ) {
+                    metricsError.push(JSON.stringify(metrics.error[0].msg?.parameters?.errors[0]));
+                  }
                 } else {
                   metricsError.push('-');
                 }
