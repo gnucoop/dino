@@ -175,6 +175,13 @@ export class PermissionContextService {
     );
   }
 
+  /**
+   * If true, the metric passed as an argument matches with one in the current
+   * permission context
+   * @param doc The metric to check
+   * @param context The current permission context
+   * @returns True if it matches
+   */
   getMatchingMetric<T>(doc: RxDocument<T>, context?: PermissionContext<T>): boolean {
     const contextMetrics: {[metricType: string]: string[]} = context?.user_metrics;
     if (contextMetrics == null || doc == null) {
@@ -198,5 +205,17 @@ export class PermissionContextService {
       }
     }
     return ret;
+  }
+
+  /**
+   * Checks if the active user is a Guest Only user
+   * @param permissions The current user permissions
+   * @returns True if the user is Guest only
+   */
+  isActiveUserGuestOnly(permissions: {[key: string]: any}): boolean {
+    if (permissions == null) {
+      return true;
+    }
+    return !Object.keys(permissions).some(key => key.toLowerCase() !== 'guest');
   }
 }

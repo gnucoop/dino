@@ -68,6 +68,13 @@ export interface CanViewData<T extends {} = {}, M extends Model = Model> {
     object: M;
 }
 
+// @public
+export class CheckMetricPermission<T extends Metric = Metric> implements Permission<T> {
+    constructor();
+    // (undocumented)
+    canView(data: CanViewData<{}, T>): boolean;
+}
+
 // @public (undocumented)
 export const clone: <T extends Model>(obj: DeepReadonlyObject<T>) => T;
 
@@ -374,8 +381,10 @@ export class PermissionContextService {
     addToContext(param: PermissionContextDataUpdate): void;
     checkPermission<T extends Model = Model>(docId: string, collectionName: string, action: string, context?: PermissionContext<T>, isData?: boolean): boolean;
     getAllowedActions(collectionName: string, docId?: string, isData?: boolean): Observable<string[]>;
-    // (undocumented)
     getMatchingMetric<T>(doc: RxDocument<T>, context?: PermissionContext<T>): boolean;
+    isActiveUserGuestOnly(permissions: {
+        [key: string]: any;
+    }): boolean;
     // (undocumented)
     readonly permissionContext: Observable<PermissionContext>;
     resetContext(): void;

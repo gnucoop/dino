@@ -21,6 +21,7 @@
  */
 
 export * from './active-sync-interface';
+export * from './check-metric-permission';
 export * from './clone';
 export * from './data-context-service';
 export * from './data-bulk-insert-request';
