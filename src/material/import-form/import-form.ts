@@ -293,15 +293,15 @@ export class ImportForm {
    * @returns
    */
   private _getValueFromRow(rowValue: any): any {
-    let value = rowValue || null;
-    if (rowValue !== null) {
-      if (typeof rowValue === 'string') {
-        if (rowValue.startsWith('[') && rowValue.endsWith(']')) {
-          value = rowValue.slice(1, -1).split(',');
+    let value = rowValue === undefined ? null : rowValue;
+    if (value !== null) {
+      if (typeof value === 'string') {
+        if (value.startsWith('[') && value.endsWith(']')) {
+          value = value.slice(1, -1).split(',');
         }
-      } else if (typeof rowValue === 'object') {
+      } else if (typeof value === 'object') {
         try {
-          value = new Date(rowValue).toISOString().split('T')[0];
+          value = new Date(value).toISOString().split('T')[0];
         } catch (e) {}
       }
     }
