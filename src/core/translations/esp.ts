@@ -156,4 +156,6 @@ export const ESP: Translation = {
   'Reuse metrics if name exists': 'Reutilizar métricas si existe el nombre',
   'Choose file': 'Escoge un archivo',
   'Filter': 'Filtrar',
+  'A Metric with this name already exists. Maybe you should choose another':
+    'Ya existe una métrica con este nombre. Tal vez deberías elegir otro',
 };

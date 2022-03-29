@@ -155,4 +155,6 @@ export const ENG: Translation = {
   'Reuse metrics if name exists': 'Reuse metrics if name exists',
   'Choose file': 'Choose file',
   'Filter': 'Filter',
+  'A Metric with this name already exists. Maybe you should choose another':
+    'A Metric with this name already exists. Maybe you should choose another',
 };

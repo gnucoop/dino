@@ -156,4 +156,6 @@ export const FRA: Translation = {
   'Reuse metrics if name exists': 'Réutiliser les métriques si le nom existe',
   'Choose file': 'Choisir un fichier',
   'Filter': 'Filtre',
+  'A Metric with this name already exists. Maybe you should choose another':
+    'Une métrique portant ce nom existe déjà. Peut-être devriez-vous en choisir un autre',
 };
