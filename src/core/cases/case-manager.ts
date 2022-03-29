@@ -21,7 +21,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  CheckMetricPermission,
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 
 import {Case} from './case';
 import {schema} from './case-json';
@@ -33,6 +38,8 @@ import {CasesModule} from './cases.module';
 @Injectable({providedIn: CasesModule})
 export class CaseManager extends DataModelManager<Case> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
-    super({name: 'case', collection: {schema}}, dataService, permissionContextService);
+    super({name: 'case', collection: {schema}}, dataService, permissionContextService, [
+      new CheckMetricPermission<Case>(),
+    ]);
   }
 }

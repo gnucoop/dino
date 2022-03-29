@@ -21,7 +21,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  CheckMetricPermission,
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 
 import {migrationStrategies, Project} from './project';
 import {schema} from './project-json';
@@ -37,6 +42,7 @@ export class ProjectManager extends DataModelManager<Project> {
       {name: 'project', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
+      [new CheckMetricPermission<Project>()],
     );
   }
 }

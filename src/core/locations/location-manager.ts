@@ -21,7 +21,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  CheckMetricPermission,
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 
 import {Location, migrationStrategies} from './location';
 import {schema} from './location-json';
@@ -37,6 +42,7 @@ export class LocationManager extends DataModelManager<Location> {
       {name: 'location', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
+      [new CheckMetricPermission<Location>()],
     );
   }
 }

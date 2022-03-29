@@ -21,7 +21,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  CheckMetricPermission,
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 
 import {Area} from './area';
 import {schema} from './area-json';
@@ -33,6 +38,8 @@ import {AreasModule} from './areas.module';
 @Injectable({providedIn: AreasModule})
 export class AreaManager extends DataModelManager<Area> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
-    super({name: 'area', collection: {schema}}, dataService, permissionContextService);
+    super({name: 'area', collection: {schema}}, dataService, permissionContextService, [
+      new CheckMetricPermission<Area>(),
+    ]);
   }
 }
