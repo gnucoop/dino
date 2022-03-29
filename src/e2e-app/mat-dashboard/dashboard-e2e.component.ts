@@ -4,7 +4,8 @@ import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {CollectItem} from '@dino/material/collect';
 import {map, shareReplay} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
+import {PermissionContextService} from '@dino/core/data';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,9 +18,13 @@ export class MatDashboardE2E {
     readonly breakpointObserver: BreakpointObserverService,
     readonly networkStatus: NetworkStatusService,
     readonly userGroupManager: UserGroupManager,
+    private _pcs: PermissionContextService,
   ) {
-    this.collectItems = this.userGroupManager.isActiveUserAdmin().pipe(
-      map(isAdmin => {
+    this.collectItems = combineLatest([
+      this.userGroupManager.isActiveUserAdmin(),
+      this._pcs.permissionContext,
+    ]).pipe(
+      map(([isAdmin, context]) => {
         let items = [
           {
             name: 'forms',
@@ -35,20 +40,20 @@ export class MatDashboardE2E {
           },
         ];
         if (isAdmin) {
-          items.push(
-            {
-              name: 'users',
-              label: 'Users',
-              icon: 'people',
-              url: '/users',
-            },
-            {
-              name: 'metrics',
-              label: 'Metrics',
-              icon: 'bookmarks',
-              url: '/metrics',
-            },
-          );
+          items.push({
+            name: 'users',
+            label: 'Users',
+            icon: 'people',
+            url: '/users',
+          });
+        }
+        if (context != null && !this._pcs.isActiveUserGuestOnly(context.user_permissions)) {
+          items.push({
+            name: 'metrics',
+            label: 'Metrics',
+            icon: 'bookmarks',
+            url: '/metrics',
+          });
         }
         return items;
       }),

@@ -178,13 +178,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Subscribes to the Activated optional Metrics and
-   * adds the relative section to the nav, if one ore more are
-   * present.
-   */
-  private _metricsSub: Subscription = Subscription.EMPTY;
-
-  /**
    * A flag to show or hide section labels in the sidenav.
    */
   private _showNavLabels: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -247,23 +240,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this._metricsSub = this.metricsService.hasActiveMetrics
-      .pipe(
-        map(hasMetrics => {
-          if (hasMetrics) {
-            const metricsSection: Section = {
-              label: 'Metrics',
-              icon: 'bookmarks',
-              url: 'metrics',
-            };
-            return [metricsSection];
-          } else {
-            return [];
-          }
-        }),
-      )
-      .subscribe(metrics => (this.adminSections = [...this.adminSections, ...metrics]));
-
     this._menuToggleSub = this._menuToggleEvt
       .pipe(
         withLatestFrom(this.breakpointObserver.large),
@@ -318,6 +294,5 @@ export class MainNav implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this._menuClickSub.unsubscribe();
     this._menuToggleSub.unsubscribe();
-    this._metricsSub.unsubscribe();
   }
 }

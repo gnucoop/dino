@@ -45,6 +45,9 @@ export class MatMainE2E {
         url: 'reports',
         icon: 'stacked_bar_chart',
       });
+      if (!this._pcs.isActiveUserGuestOnly(context.user_permissions)) {
+        sections.push({label: 'Metrics', icon: 'bookmarks', url: 'metrics'});
+      }
 
       return sections;
     }),
