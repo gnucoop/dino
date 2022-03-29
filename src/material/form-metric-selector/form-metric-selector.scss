@@ -8,7 +8,18 @@ dino-form-metric-selector {
             display: none;
         }
     }
-
+    .mat-form-field-suffix .mat-icon {
+        display: inline-block !important;
+        margin-left: 15px;
+    }
+    .dino-add-metric-button {
+        opacity: 0.5;
+        transition: all 0.5s ease-in-out;
+        &:hover {
+            opacity: 1;
+        }
+        cursor: pointer;
+    }
     .dino-form-metric-selector-container {
         min-width: 80vw;
         .mat-form-field {

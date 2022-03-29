@@ -22,6 +22,14 @@
           [matAutocomplete]="auto"
         />
         <mat-icon matSuffix>{{field.icon}}</mat-icon>
+        <mat-icon
+          matSuffix
+          color="primary"
+          class="dino-add-metric-button"
+          (click)="openCreateMetricDialog($event, field.fieldName)"
+          >add</mat-icon
+        >
+
         <mat-autocomplete
           #auto="matAutocomplete"
           [autoActiveFirstOption]="false"

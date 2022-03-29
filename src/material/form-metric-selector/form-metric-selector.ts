@@ -30,6 +30,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
@@ -38,7 +39,7 @@ import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserGroupManager} from '@dino/core/users';
-import {MetricFormField} from '@dino/material/metric-editor';
+import {MetricEditor, MetricFormField} from '@dino/material/metric-editor';
 import {RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
@@ -123,6 +124,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   private _startingValuesSub: Subscription = Subscription.EMPTY;
 
   /**
+   * A reference to the MatDialog that contains the Metric Editor component
+   */
+  private _dialogRef: MatDialogRef<MetricEditor>;
+
+  private _metricDialogSub: Subscription = Subscription.EMPTY;
+
+  /**
    * A Dictionary of all the optional Metrics managers
    */
   private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
@@ -130,6 +138,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   constructor(
     private _userGroupManager: UserGroupManager,
     private _metricService: MetricsService,
+    private _dialog: MatDialog,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
@@ -274,11 +283,45 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   }
 
   /**
+   * Opens a dialog for the creation of a Metric
+   * @param event The click/pointer event
+   * @param metricType The type string identifier of the metric to be created
+   */
+  openCreateMetricDialog(event: Event, metricType: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const manager = this._metricManagers[metricType];
+    if (manager != null) {
+      this._dialogRef = this._dialog.open(MetricEditor, {
+        data: {
+          metricManager: manager,
+          metricAction: 'create',
+          readOnlyFields: metricType === 'case' ? ['code'] : null,
+        },
+      });
+      this._metricDialogSub = this._dialogRef
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe(res => {
+          if (res) {
+            const formControl = this.formMetrics.get(metricType);
+            if (formControl) {
+              formControl.setValue(res);
+            }
+          }
+        });
+    }
+  }
+
+  /**
    * Retrieves the existing values (if present) of the Form Metrics and
    * sets the form control values accordingly.
    */
   private _setStartingValues(): void {
-    combineLatest([this._formData, this._userGroupManager.getGroupsAllMetrics()])
+    this._startingValuesSub = combineLatest([
+      this._formData,
+      this._userGroupManager.getGroupsAllMetrics(),
+    ])
       .pipe(
         switchMap(([formData, groupMetrics]) => {
           const activeMetrics = this._metricService.activeMetrics.getValue();
@@ -374,5 +417,6 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this._startingValuesSub.unsubscribe();
+    this._metricDialogSub.unsubscribe();
   }
 }
