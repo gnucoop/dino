@@ -20,6 +20,7 @@ import * as i7 from '@angular/material/icon';
 import * as i8 from '@angular/material/input';
 import * as i9 from '@angular/forms';
 import { LocationManager } from '@dino/core/locations';
+import { MatDialog } from '@angular/material/dialog';
 import { Metric } from '@dino/core/data';
 import { MetricFormField } from '@dino/material/metric-editor';
 import { MetricsService } from '@dino/core/data';
@@ -33,7 +34,7 @@ import { ValidationErrors } from '@angular/forms';
 
 // @public
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
-    constructor(_userGroupManager: UserGroupManager, _metricService: MetricsService, _areaManager: AreaManager | null, _caseManager: CaseManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
+    constructor(_userGroupManager: UserGroupManager, _metricService: MetricsService, _dialog: MatDialog, _areaManager: AreaManager | null, _caseManager: CaseManager | null, _projectManager: ProjectManager | null, _locationManager: LocationManager | null, _organizationManager: OrganizationManager | null);
     addFormData(formData: {
         [key: string]: any;
     }, isView?: boolean): void;
@@ -56,6 +57,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     ngAfterViewInit(): void;
     // (undocumented)
     ngOnDestroy(): void;
+    openCreateMetricDialog(event: Event, metricType: string): void;
     // (undocumented)
     get selectedMetrics(): {
         [key: string]: Metric;
@@ -63,7 +65,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<FormMetricSelector, "dino-form-metric-selector", never, { "hasOptionalMetrics": "hasOptionalMetrics"; }, {}, never, never>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<FormMetricSelector, [null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FormMetricSelector, [null, null, null, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }, { optional: true; }]>;
 }
 
 // @public (undocumented)

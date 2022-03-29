@@ -8,6 +8,7 @@ import { AbstractControl } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 import { DataModelManager } from '@dino/core/data';
+import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
 import * as i10 from '@angular/material/icon';
@@ -17,6 +18,7 @@ import * as i13 from '@angular/material/core';
 import * as i14 from '@angular/material/snack-bar';
 import * as i15 from '@angular/forms';
 import * as i16 from '@angular/router';
+import * as i17 from '@ngneat/transloco';
 import * as i2 from '@dino/core/auth';
 import * as i3 from '@dino/material/breakpoint-observer';
 import * as i4 from '@angular/common';
@@ -31,8 +33,30 @@ import { Metric } from '@dino/core/data';
 import { Observable } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { PermissionContextService } from '@dino/core/data';
 import { Router } from '@angular/router';
+import { UserGroupManager } from '@dino/core/users';
 import { ValidationErrors } from '@angular/forms';
+
+// @public (undocumented)
+export interface AbstractControlWithWarnings extends AbstractControl {
+    // (undocumented)
+    warning?: string;
+}
+
+// @public (undocumented)
+export interface FormControlControlWithWarnings extends FormControl {
+    // (undocumented)
+    warning: string;
+}
+
+// @public (undocumented)
+export interface FormGroupWithWarnings extends FormGroup {
+    // (undocumented)
+    controls: {
+        [key: string]: AbstractControlWithWarnings;
+    };
+}
 
 // @public
 export interface MetricDialogData<T extends Metric = Metric> {
@@ -44,7 +68,7 @@ export interface MetricDialogData<T extends Metric = Metric> {
 
 // @public
 export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestroy {
-    constructor(_router: Router, snackbar: MatSnackBar, dialogRef: MatDialogRef<MetricEditor>, data: MetricDialogData<T>, _nameMatchValidator: NameMatchValidator<T>, _cdr: ChangeDetectorRef);
+    constructor(_router: Router, snackbar: MatSnackBar, _userGroupManager: UserGroupManager, _contextService: PermissionContextService, dialogRef: MatDialogRef<MetricEditor>, data: MetricDialogData<T>, _nameMatchValidator: NameMatchValidator<T>, _cdr: ChangeDetectorRef);
     closeEditor(): void;
     // (undocumented)
     data: MetricDialogData<T>;
@@ -52,7 +76,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     dialogRef: MatDialogRef<MetricEditor>;
     displayParentName(parent: ParentMetric): string;
     isFormValid(): boolean;
-    metricForm: FormGroup;
+    metricForm: FormGroupWithWarnings;
     metricFormFields: MetricFormField[];
     metricName: string;
     metricParentValue: Observable<string | ParentMetric>;
@@ -77,7 +101,7 @@ export class MetricEditorModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<MetricEditorModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<MetricEditorModule, [typeof i1.MetricEditor], [typeof i2.AuthModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.MatAutocompleteModule, typeof i6.MatButtonModule, typeof i7.MatDatepickerModule, typeof i8.MatDialogModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatListModule, typeof i13.MatNativeDateModule, typeof i14.MatSnackBarModule, typeof i15.ReactiveFormsModule, typeof i16.RouterModule], [typeof i1.MetricEditor]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<MetricEditorModule, [typeof i1.MetricEditor], [typeof i2.AuthModule, typeof i3.BreakpointObserverModule, typeof i4.CommonModule, typeof i5.MatAutocompleteModule, typeof i6.MatButtonModule, typeof i7.MatDatepickerModule, typeof i8.MatDialogModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatListModule, typeof i13.MatNativeDateModule, typeof i14.MatSnackBarModule, typeof i15.ReactiveFormsModule, typeof i16.RouterModule, typeof i17.TranslocoModule], [typeof i1.MetricEditor]>;
 }
 
 // @public

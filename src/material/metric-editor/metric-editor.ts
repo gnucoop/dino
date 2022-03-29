@@ -20,6 +20,7 @@
  *
  */
 
+import {deepCopy} from '@ajf/core/utils';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -34,14 +35,19 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
-import {DataModelManager, Metric} from '@dino/core/data';
-import {RxJsonSchema} from 'rxdb';
-import {Observable, Subscription} from 'rxjs';
-import {map, switchMap, withLatestFrom} from 'rxjs/operators';
+import {DataModelManager, Metric, PermissionContextService} from '@dino/core/data';
+import {UserGroup, UserGroupManager} from '@dino/core/users';
+import {RxDocument, RxJsonSchema} from 'rxdb';
+import {combineLatest, Observable, of as obsOf, Subscription, zip} from 'rxjs';
+import {map, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import {RequireMatch} from './metric-autocomplete-validator';
 
 import {METRIC_DEFAULT_PROPERTIES} from './metric-defaults';
-import {NameMatchValidator} from './metric-name-validator';
+import {
+  FormControlControlWithWarnings,
+  FormGroupWithWarnings,
+  NameMatchValidator,
+} from './metric-name-validator';
 
 /**
  * Represents the data to be passed to a MetricEditor dialog.
@@ -129,7 +135,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   /**
    * The form group derived from the Metric Schema.
    */
-  metricForm: FormGroup;
+  metricForm: FormGroupWithWarnings;
 
   /**
    * The editor form fields
@@ -165,6 +171,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   constructor(
     private _router: Router,
     readonly snackbar: MatSnackBar,
+    private _userGroupManager: UserGroupManager,
+    private _contextService: PermissionContextService,
     public dialogRef: MatDialogRef<MetricEditor>,
     @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>,
     private _nameMatchValidator: NameMatchValidator<T>,
@@ -240,7 +248,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       return;
     }
     const currentMetricItem = metricItem as {[key: string]: any} | undefined;
-    const group: {[key: string]: FormControl} = {};
+    const group: {[key: string]: FormControlControlWithWarnings} = {};
     const fields: MetricFormField[] = [
       {
         fieldName: 'name',
@@ -268,14 +276,14 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         currentMetricItem?.name,
         this.data.metricAction,
       ),
-    );
+    ) as FormControlControlWithWarnings;
     group['parent'] = new FormControl(
       {
         parent_name: currentMetricItem?.parent_name ?? null,
         parent_id: currentMetricItem?.parent_id ?? null,
       },
       RequireMatch,
-    );
+    ) as FormControlControlWithWarnings;
 
     this.metricParentValue = group['parent'].valueChanges;
 
@@ -291,7 +299,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         group[propKey] = new FormControl(
           currentMetricItem != null ? currentMetricItem![propKey] : null,
           propRequired ? Validators.required : null,
-        );
+        ) as FormControlControlWithWarnings;
         const field: MetricFormField = {
           fieldName: propKey,
           hint: `${propValue['description']} ${propRequired ? '' : '  (optional)'}`,
@@ -301,10 +309,36 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         fields.push(field);
       }
     }
-    const formGroup = new FormGroup(group);
+    const formGroup = new FormGroup(group) as FormGroupWithWarnings;
 
     this.metricForm = formGroup;
     this.metricFormFields = fields;
+  }
+
+  /**
+   * Updates the current user permission groups by adding the just created metric
+   * to those groups.
+   * @param metricDoc The created Metric
+   * @param groups The currente active user permission Groups
+   */
+  private _updateUserGroups(
+    metricDoc: RxDocument<T> | null,
+    groups: RxDocument<UserGroup>[],
+  ): Observable<RxDocument<UserGroup> | null>[] {
+    if (metricDoc == null || groups == null || !groups.length) {
+      return [];
+    }
+    const metricKey = `${metricDoc.collection.name}_ref_id` as keyof UserGroup;
+    const groupUpdates: Observable<RxDocument<UserGroup> | null>[] = [];
+    groups.forEach(group => {
+      const groupClone = deepCopy(group);
+      const groupMetricIds: string[] = groupClone[metricKey] as string[];
+      if (groupMetricIds && !groupMetricIds.includes('all')) {
+        groupMetricIds.push(metricDoc.id);
+        groupUpdates.push(this._userGroupManager.update(groupClone));
+      }
+    });
+    return groupUpdates;
   }
 
   ngOnInit(): void {
@@ -319,14 +353,35 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     this._saveSub = this._saveEvt
       .pipe(
         switchMap(item => {
+          let metricDoc: Observable<RxDocument<T> | null>;
           if (this.data.metricAction === 'edit') {
-            return this._metricManager.update(item);
+            metricDoc = this._metricManager.update(item);
           } else {
-            return this._metricManager.create(item);
+            metricDoc = this._metricManager.create(item);
           }
+          return combineLatest([metricDoc, this._userGroupManager.getActiveUserGroups()]);
+        }),
+        switchMap(([res, userGroups]) => {
+          const updatedUserGroups = this._updateUserGroups(res, userGroups);
+          let groupUpdates = updatedUserGroups.length ? zip(updatedUserGroups) : obsOf(false);
+          return combineLatest([
+            obsOf(res),
+            this._contextService.permissionContext.pipe(take(1)),
+            groupUpdates,
+          ]);
         }),
       )
-      .subscribe(res => {
+      .subscribe(([res, context, _]) => {
+        const contextUserMetrics: {[metricKey: string]: string[]} | null = context.user_metrics;
+        if (
+          contextUserMetrics != null &&
+          res != null &&
+          !contextUserMetrics[res.collection.name].includes('all')
+        ) {
+          contextUserMetrics[res.collection.name].push(res.id);
+          this._userGroupManager.addToContext({user_metrics: contextUserMetrics});
+        }
+        this.dialogRef.close(res);
         if (res == null) {
           this.snackbar.open(`Oops! Something went wrong while saving the Metric.`, 'SAVE ERROR', {
             duration: 10000,

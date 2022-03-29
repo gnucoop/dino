@@ -20,11 +20,30 @@
  *
  */
 import {ChangeDetectorRef, Injectable} from '@angular/core';
-import {AbstractControl, AsyncValidatorFn, ValidationErrors} from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+} from '@angular/forms';
 import {DataModelManager, Metric} from '@dino/core/data';
 import {Observable} from 'rxjs';
 import {debounceTime, finalize, map, take} from 'rxjs/operators';
 
+export interface AbstractControlWithWarnings extends AbstractControl {
+  warning?: string;
+}
+
+export interface FormControlControlWithWarnings extends FormControl {
+  warning: string;
+}
+
+export interface FormGroupWithWarnings extends FormGroup {
+  controls: {
+    [key: string]: AbstractControlWithWarnings;
+  };
+}
 /**
  * Custom validator service that checks for an already existing
  * Metric with the given name.
@@ -48,7 +67,7 @@ export class NameMatchValidator<T extends Metric = Metric> {
     currentName: string,
     action?: 'view' | 'edit' | 'create',
   ): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    return (control: AbstractControlWithWarnings): Observable<ValidationErrors | null> => {
       return manager.query({selector: {name: {$eq: control.value}}}).pipe(
         debounceTime(300),
         map(docs => {
@@ -56,7 +75,9 @@ export class NameMatchValidator<T extends Metric = Metric> {
             docs = docs.filter(doc => doc.name != currentName);
           }
           if (docs.length) {
-            return {'nameAlreadyExists': true};
+            control.warning = `A Metric with this name already exists. Maybe you should choose another`;
+          } else {
+            control.warning = undefined;
           }
           return null;
         }),

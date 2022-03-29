@@ -36,6 +36,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {MetricEditor} from './metric-editor';
 import {NameMatchValidator} from './metric-name-validator';
@@ -57,6 +58,7 @@ import {NameMatchValidator} from './metric-name-validator';
     MatSnackBarModule,
     ReactiveFormsModule,
     RouterModule,
+    TranslocoModule,
   ],
   declarations: [MetricEditor],
   entryComponents: [MetricEditor],

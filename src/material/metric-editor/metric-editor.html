@@ -18,10 +18,7 @@
               [autoActiveFirstOption]="true"
               [displayWith]="displayParentName"
             >
-              <mat-option
-                *ngFor="let option of parentOptions | async"
-                [value]="option"
-              >
+              <mat-option *ngFor="let option of parentOptions | async" [value]="option">
                 {{option.parent_name}}
               </mat-option>
             </mat-autocomplete>
@@ -44,43 +41,31 @@
               [matDatepicker]="picker"
               value="{{field.value}}"
             />
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="picker"
-            ></mat-datepicker-toggle>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </ng-template>
 
           <ng-container
             *ngTemplateOutlet="field.fieldName === 'parent' ? autocompleteField : field.fieldName.includes('date') ? dateField : regularField"
           ></ng-container>
-          <mat-error
-            *ngIf="metricForm.controls[field.fieldName].hasError('required')"
-          >
+          <mat-error *ngIf="metricForm.controls[field.fieldName].hasError('required')">
             Please enter a {{field.fieldName}}
           </mat-error>
 
-          <mat-error
-            *ngIf="metricForm.controls[field.fieldName].hasError('incorrect')"
-          >
+          <mat-error *ngIf="metricForm.controls[field.fieldName].hasError('incorrect')">
             Please select a valid parent
           </mat-error>
 
-          <mat-error
-            *ngIf="metricForm.controls[field.fieldName].hasError('nameAlreadyExists')"
+          <mat-hint [class.dino-warning]="metricForm.controls[field.fieldName].warning"
+            >{{ metricForm.controls[field.fieldName].warning ?
+            (metricForm.controls[field.fieldName].warning|transloco) : field.hint}}</mat-hint
           >
-            A Metric with this name already exists. Please choose another.
-          </mat-error>
-
-          <mat-hint>{{field.hint}}</mat-hint>
         </mat-form-field>
       </ng-container>
     </form>
   </mat-dialog-content>
   <div mat-dialog-actions>
-    <button mat-raised-button color="warn" (click)="closeEditor()">
-      Close
-    </button>
+    <button mat-raised-button color="warn" (click)="closeEditor()">Close</button>
     <button
       *ngIf="data.metricAction !== 'view'"
       mat-raised-button

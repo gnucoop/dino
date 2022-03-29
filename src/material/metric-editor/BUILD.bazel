@@ -21,7 +21,9 @@ ng_module(
     ] + glob(["**/*.html"]),
     deps = [
         "//src/core/data",
+        "//src/core/users",
         "//src/material/breakpoint-observer",
+        "@npm//@ajf/core",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
@@ -52,6 +54,8 @@ ng_test_library(
         "//src/core/auth",
         "//src/core/cases",
         "//src/core/data",
+        "//src/core/users",
+        "@npm//@ajf/core",
         "@npm//@angular/common",
         "@npm//@angular/forms",
         "@npm//@angular/material",
