@@ -227,7 +227,6 @@ export class Collect {
 
     this.items = combineLatest([res, this._sortBy, filter$]).pipe(
       map(([items, sortBy, filterKey]) => {
-        console.log(filterKey);
         filterKey = filterKey.trim().toLocaleLowerCase();
         if (filterKey.length > 0) {
           items = items.filter(item => {
