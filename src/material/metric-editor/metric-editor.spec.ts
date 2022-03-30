@@ -53,7 +53,6 @@ const mockMetric: Metric = {
 describe('Metric Editor', () => {
   let fixtureEditor: ComponentFixture<MetricEditor>;
   let editor: MetricEditor;
-  let userGroupManager: UserGroupManager;
   let httpMock: HttpTestingController;
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -79,7 +78,6 @@ describe('Metric Editor', () => {
       ],
     }).compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
-    userGroupManager = TestBed.inject(UserGroupManager);
     fixtureEditor = TestBed.createComponent<MetricEditor>(MetricEditor);
     editor = fixtureEditor.componentInstance;
   });
