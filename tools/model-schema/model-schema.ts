@@ -1,10 +1,10 @@
-import {BabelFileResult, transformSync} from '@babel/core';
-import traverse from '@babel/traverse';
 import {existsSync, readFileSync, writeFileSync} from 'fs';
-import {JSONSchema7, JSONSchema7Definition} from 'json-schema';
 import minimist from 'minimist';
 import {basename, join} from 'path';
 import {Config, createGenerator} from 'ts-json-schema-generator';
+
+const {transformSync} = require('@babel/core');
+const traverse = require('@babel/traverse').default;
 
 const args = process.argv.slice(2);
 const {tsconfig, source, expose, topRef, jsDoc, accept} = minimist(args, {
@@ -17,10 +17,10 @@ const basePath = join(process.cwd(), '..', process.env.BAZEL_WORKSPACE as string
 const {licenseBanner} = require(join(basePath, 'build-config.js'));
 const sourceWoExt = source.replace('.d.ts', '');
 const sourceContent = readFileSync(join(basePath, `${sourceWoExt}.js`), 'utf8');
-const {ast} = transformSync(sourceContent, {ast: true}) as BabelFileResult;
+const {ast} = transformSync(sourceContent, {ast: true});
 let VERSION = 0;
 traverse(ast, {
-  VariableDeclarator: astPath => {
+  VariableDeclarator: (astPath: any) => {
     const {id, init} = astPath.node;
     if (
       id.type === 'Identifier' &&
@@ -51,16 +51,14 @@ const config = {
 const generator = createGenerator(config);
 const schema = generator.createSchema(config.type);
 const definition = {
-  ...((schema.definitions as {[key: string]: JSONSchema7Definition})[
-    config.type as string
-  ] as JSONSchema7),
+  ...((schema.definitions as {[key: string]: any})[config.type as string] as any),
   indexes: ['created_at', 'updated_at'],
   primaryKey: 'id',
   version: VERSION,
 };
 const properties = definition.properties || {};
 Object.keys(definition.properties || {}).forEach(propertyName => {
-  const property = properties[propertyName] as JSONSchema7;
+  const property = properties[propertyName] as any;
   if (property.$ref != null && property.type === 'object') {
     delete property.$ref;
   }
