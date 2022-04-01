@@ -158,4 +158,7 @@ export const ESP: Translation = {
   'Filter': 'Filtrar',
   'A Metric with this name already exists. Maybe you should choose another':
     'Ya existe una métrica con este nombre. Tal vez deberías elegir otro',
+  'Visibility': 'Visibilidad',
+  'Private': 'Privado',
+  'Public': 'Público',
 };

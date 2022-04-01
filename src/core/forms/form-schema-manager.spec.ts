@@ -7,7 +7,7 @@ import {BehaviorSubject, of} from 'rxjs';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '../auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '../data';
 
-import {FormSchema, FormSchemaManager} from './index';
+import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './index';
 
 let testDbIdx = 0;
 
@@ -85,6 +85,7 @@ export const formSchema: FormSchema = {
   schema: testAjfSchema,
   created_at: '',
   updated_at: '',
+  visibility: FormSchemaVisibility.Private,
 };
 
 describe('FormSchemaManager', () => {

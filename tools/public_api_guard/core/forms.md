@@ -31,6 +31,9 @@ interface FormData_2 extends Model {
 export { FormData_2 as FormData }
 
 // @public (undocumented)
+export const formDataJson: RxJsonSchema<FormData_2>;
+
+// @public (undocumented)
 export class FormDataManager extends DataModelManager<FormData_2> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService);
     // (undocumented)
@@ -45,7 +48,11 @@ export interface FormSchema extends Model {
     label?: string;
     name: string;
     schema: AjfFormCreate;
+    visibility: FormSchemaVisibility;
 }
+
+// @public (undocumented)
+export const formSchemaJson: RxJsonSchema<FormSchema>;
 
 // @public (undocumented)
 export class FormSchemaManager extends DataModelManager<FormSchema> {
@@ -59,6 +66,14 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     static ɵprov: i0.ɵɵInjectableDeclaration<FormSchemaManager>;
 }
 
+// @public
+export const enum FormSchemaVisibility {
+    // (undocumented)
+    Private = 0,
+    // (undocumented)
+    Public = 1
+}
+
 // @public (undocumented)
 export class FormsModule {
     // (undocumented)
@@ -68,9 +83,6 @@ export class FormsModule {
     // (undocumented)
     static ɵmod: i0.ɵɵNgModuleDeclaration<FormsModule, never, never, never>;
 }
-
-// @public (undocumented)
-export const schema: RxJsonSchema<FormData_2>;
 
 // (No @packageDocumentation comment for this package)
 

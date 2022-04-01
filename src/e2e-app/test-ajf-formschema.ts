@@ -1,4 +1,4 @@
-import {FormSchema} from '@dino/core/forms';
+import {FormSchema, FormSchemaVisibility} from '@dino/core/forms';
 
 export const ajfSourceReportFormSchema = {
   'nodes': [
@@ -928,6 +928,7 @@ export const formSchemas: FormSchema[] = [
     label: 'CBM',
     icon: 'star',
     schema: ajfSourceReportFormSchema,
+    visibility: FormSchemaVisibility.Private,
     created_at: '',
     updated_at: '',
   },

@@ -158,4 +158,7 @@ export const PRT: Translation = {
   'Filter': 'Filtrar',
   'A Metric with this name already exists. Maybe you should choose another':
     'Já existe uma métrica com este nome. Talvez você devesse escolher outro',
+  'Visibility': 'Visibilidade',
+  'Private': 'Privado',
+  'Public': 'Público',
 };

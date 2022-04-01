@@ -35,7 +35,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
-import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {FormSchema, FormSchemaManager, FormSchemaVisibility} from '@dino/core/forms';
 import {IconsService} from '@dino/material/icons-service';
 import {
   BehaviorSubject,
@@ -160,6 +160,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
           name: [fs ? fs.name : null, Validators.required],
           label: [fs ? fs.label : null, Validators.required],
           icon: [fs ? fs.icon : null],
+          visibility: [fs ? fs.visibility : FormSchemaVisibility.Private, Validators.required],
         }),
       ),
       shareReplay(1),
@@ -190,6 +191,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
+            visibility: formGroup.get('visibility')?.value,
             created_at: new Date().toISOString(),
           };
           if (fs == null) {

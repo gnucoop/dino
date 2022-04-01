@@ -15,10 +15,12 @@ import { HttpClient } from '@angular/common/http';
 import * as i0 from '@angular/core';
 import * as i10 from '@angular/material/icon';
 import * as i11 from '@angular/material/input';
-import * as i12 from '@angular/material/snack-bar';
-import * as i13 from '@angular/material/toolbar';
-import * as i14 from '@angular/forms';
-import * as i15 from '@angular/router';
+import * as i12 from '@angular/material/select';
+import * as i13 from '@angular/material/snack-bar';
+import * as i14 from '@angular/material/toolbar';
+import * as i15 from '@angular/forms';
+import * as i16 from '@angular/router';
+import * as i17 from '@ngneat/transloco';
 import * as i3 from '@ajf/material/form-builder';
 import * as i4 from '@angular/common';
 import * as i5 from '@dino/material/icons-service';
@@ -61,7 +63,7 @@ export class EditFormSchemaModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<EditFormSchemaModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<EditFormSchemaModule, [typeof i1.EditFormSchema, typeof i2.ImportFormSchema], [typeof i3.AjfFormBuilderModule, typeof i4.CommonModule, typeof i5.IconsServiceModule, typeof i6.MatAutocompleteModule, typeof i7.MatButtonModule, typeof i8.MatCardModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatSnackBarModule, typeof i13.MatToolbarModule, typeof i14.ReactiveFormsModule, typeof i15.RouterModule], [typeof i1.EditFormSchema, typeof i2.ImportFormSchema]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<EditFormSchemaModule, [typeof i1.EditFormSchema, typeof i2.ImportFormSchema], [typeof i3.AjfFormBuilderModule, typeof i4.CommonModule, typeof i5.IconsServiceModule, typeof i6.MatAutocompleteModule, typeof i7.MatButtonModule, typeof i8.MatCardModule, typeof i9.MatFormFieldModule, typeof i10.MatIconModule, typeof i11.MatInputModule, typeof i12.MatSelectModule, typeof i13.MatSnackBarModule, typeof i14.MatToolbarModule, typeof i15.ReactiveFormsModule, typeof i16.RouterModule, typeof i17.TranslocoModule], [typeof i1.EditFormSchema, typeof i2.ImportFormSchema]>;
 }
 
 // @public

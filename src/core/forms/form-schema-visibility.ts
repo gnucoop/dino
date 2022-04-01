@@ -20,12 +20,7 @@
  *
  */
 
-export {FormData} from './form-data';
-export {schema as formDataJson} from './form-data-json';
-export {FormSchema} from './form-schema';
-export {schema as formSchemaJson} from './form-schema-json';
-
-export * from './forms.module';
-export * from './form-schema-manager';
-export * from './form-schema-visibility';
-export * from './form-data-manager';
+export const enum FormSchemaVisibility {
+  Private = 0,
+  Public = 1,
+}

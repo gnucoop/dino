@@ -37,6 +37,12 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+          <mat-form-field>
+            <mat-select formControlName="visibility" [placeholder]="'Visibility'|transloco">
+              <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
+              <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </form>
 
         <div class="dino-edit-form-schema-actions">

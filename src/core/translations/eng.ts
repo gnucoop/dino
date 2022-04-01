@@ -157,4 +157,7 @@ export const ENG: Translation = {
   'Filter': 'Filter',
   'A Metric with this name already exists. Maybe you should choose another':
     'A Metric with this name already exists. Maybe you should choose another',
+  'Visibility': 'Visibility',
+  'Private': 'Private',
+  'Public': 'Public',
 };

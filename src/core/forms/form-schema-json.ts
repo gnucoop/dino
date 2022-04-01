@@ -60,6 +60,10 @@ export const schema = {
       "type": "string",
       "description": "The form schema icon identifier."
     },
+    "visibility": {
+      "description": "The form schema visibility",
+      "type": "number"
+    },
     "schema": {
       "description": "JSON definition of the Ajf form schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-form-schema.json).",
       "type": "object"
@@ -70,7 +74,8 @@ export const schema = {
     "id",
     "name",
     "schema",
-    "updated_at"
+    "updated_at",
+    "visibility"
   ],
   "additionalProperties": false,
   "description": "This model is used to store the Ajf form schemas.",
@@ -80,5 +85,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<FormSchema>;
