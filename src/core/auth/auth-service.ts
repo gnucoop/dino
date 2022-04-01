@@ -33,6 +33,7 @@ import {
   NHostSignupResponse,
 } from './auth-response';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
+import {buildAuthorizationHeader} from './auth-utils';
 import {Credentials} from './credentials';
 import {JwtToken} from './jwt-token';
 import {LoginResponse} from './login-response';
@@ -204,7 +205,7 @@ export class AuthService {
         const headers: {[key: string]: any} =
           config.apiKey != null
             ? {Authorization: config.apiKey}
-            : {Authorization: `Bearer ${this.getAuthToken()}`};
+            : {Authorization: buildAuthorizationHeader(this.getAuthToken())};
         let options: {headers: {[key: string]: any}; responseType?: any} = {headers: headers};
         const defaulLogoutUrl = config.nHostAuth ? 'v1/auth/signout' : 'api/logout';
         let url = `${this._generateUrl(

@@ -114,6 +114,9 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
 }
 
 // @public
+export const buildAuthorizationHeader: (token: string | null) => string;
+
+// @public
 export interface Credentials {
     // (undocumented)
     email: string;

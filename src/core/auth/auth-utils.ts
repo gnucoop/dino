@@ -20,18 +20,4 @@
  *
  */
 
-export * from './auth.guard';
-export * from './auth-module';
-export * from './auth-response';
-export * from './auth-service-config';
-export * from './auth-service';
-export * from './auth-utils';
-export * from './credentials';
-export * from './jwt-interceptor';
-export * from './jwt-token';
-export * from './login';
-export * from './login-response';
-export * from './network-status.service';
-export * from './two-factor-delivery';
-export * from './user';
-export * from './username-status';
+export const buildAuthorizationHeader = (token: string | null): string => `Bearer ${token}`;
