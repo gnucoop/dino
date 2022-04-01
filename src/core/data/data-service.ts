@@ -25,7 +25,7 @@ import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {ConfigService} from '@dino/core/config';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument, RxQuery} from 'rxdb';
+import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument} from 'rxdb';
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {addPouchPlugin} from 'rxdb/plugins/pouchdb';
 import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
@@ -62,6 +62,7 @@ import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
+import {DEFAULT_SYNC_OPTIONS, fillConfigDefaultValues} from './data-service-utils';
 import {DataUpsertRequest} from './data-upsert-request';
 import {InsertModel} from './insert-model';
 import {Model} from './model';
@@ -92,6 +93,20 @@ export interface CollectionChangedEvent {
    * The total docs of the changed collection
    */
   count?: number;
+}
+
+/**
+ * The result of a bulk insert operation.
+ */
+export interface BulkInsertResult<T extends Model = Model> {
+  /**
+   * List of successfully inserted documents
+   */
+  success: T[];
+  /**
+   * List of errors
+   */
+  error: any[];
 }
 
 /**
@@ -128,7 +143,7 @@ export class DataService {
    * True when the Syncing process is currently operating
    * (A replication cycle is undergoing)
    */
-  isSyncing: Observable<boolean>;
+  readonly isSyncing: Observable<boolean>;
 
   readonly config: DataServiceConfig;
 
@@ -176,14 +191,14 @@ export class DataService {
   constructor(
     private _authService: AuthService,
     private _nss: NetworkStatusService,
-    @Inject(DATA_SERVICE_CONFIG) private _config: DataServiceConfig,
+    @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
     @Optional() private _configService: ConfigService | null,
   ) {
     addPouchPlugin(pouchdbAdapterIdb);
     addPouchPlugin(pouchdbAdapterMemory);
     addRxPlugin(RxDBMigrationPlugin);
     addRxPlugin(RxDBReplicationGraphQLPlugin);
-    this.config = fillConfigDefaultValues(this._config);
+    this.config = fillConfigDefaultValues(config);
     this._dataConfig = new BehaviorSubject<DataServiceConfig>(this.config);
     this._currentlyStoredConfig = this._getDataConfig();
     if (this._currentlyStoredConfig != null) {
@@ -191,7 +206,7 @@ export class DataService {
     }
 
     this._db = this._dataConfig.pipe(
-      switchMap(config => from(createRxDatabase(config.databaseCreateOptions))),
+      switchMap(cfg => from(createRxDatabase(cfg.databaseCreateOptions))),
       shareReplay(1),
     );
 
@@ -288,7 +303,7 @@ export class DataService {
             console.log(e);
             return obsOf(null);
           }),
-        );
+        ) as Observable<RxDocument<T> | null>;
       }),
     );
   }
@@ -300,7 +315,7 @@ export class DataService {
    */
   bulkInsert<T extends Model = Model>(
     params: DataBulkInsertRequest<T>,
-  ): Observable<{success: RxDocument<T>[]; error: any[]}> {
+  ): Observable<BulkInsertResult<RxDocument<T>>> {
     const {collectionName, objects} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -321,14 +336,44 @@ export class DataService {
     );
   }
 
+  /**
+   * Update multiple objects in the database.
+   * Throws and error if the collection does not exist.
+   * @param params The bulk update request parameters.
+   * @param update The updated fields set.
+   */
+  bulkUpdate<T extends Model = Model>(
+    params: DataFindRequest<T>,
+    update: Partial<T>,
+  ): Observable<RxDocument<T>[]> {
+    const {collectionName, query} = params;
+    return this._db.pipe(
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(() => new Error('Invalid collection'));
+        }
+        return from(collection.find(query).update({$set: update})).pipe(
+          tap(doc => {
+            if (doc != null && doc.length > 0) {
+              this._collectionChangedEmit('Documents updated', collection);
+            }
+          }),
+          catchError(() => obsOf([])),
+        );
+      }),
+    );
+  }
+
   update<T extends Model = Model>(
+    _collectionName: string,
     doc: RxDocument<T>,
     updateData: Partial<T>,
   ): Observable<RxDocument<T> | null> {
     if (doc == null || updateData == null) {
       return obsOf(null);
     }
-    return from(doc.update(updateData)).pipe(
+    return from(doc.update({$set: updateData})).pipe(
       tap(dc => {
         if (dc != null) {
           this._collectionChangedEmit('Document updated', doc.collection);
@@ -373,41 +418,19 @@ export class DataService {
   }
 
   /**
-   * Create a RxQuery query object for multiple documents selection.
+   * Get multiple documents selected by a mango-style query.
    * Throws and error if the collection does not exist.
    * @param params The find request parameters.
    */
-  find<T extends Model = Model>(
-    params: DataFindRequest<T>,
-  ): Observable<RxQuery<T, RxDocument<T>[]>> {
+  find<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxDocument<T>[]> {
     const {collectionName, query} = params;
     return this._db.pipe(
-      map(db => {
+      switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(new Error('Invalid collection'));
+          throwError(() => new Error('Invalid collection'));
         }
-        return collection.find(query);
-      }),
-    );
-  }
-
-  /**
-   * Create a RxQuery query object for single document selection.
-   * Throws and error if the collection does not exist.
-   * @param params The find request parameters.
-   */
-  findOne<T extends Model = Model>(
-    params: DataFindRequest<T>,
-  ): Observable<RxQuery<T, RxDocument<T> | null>> {
-    const {collectionName, query} = params;
-    return this._db.pipe(
-      map(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          throwError(new Error('Invalid collection'));
-        }
-        return collection.findOne(query);
+        return from(collection.find(query).exec());
       }),
     );
   }
@@ -613,7 +636,7 @@ export class DataService {
             this._collectionChangedEmit(
               'websocket change received',
               collection,
-              st.data[collection.name].length,
+              (st.data[collection.name] as unknown[]).length,
             );
           }
           state.run().then(() => {
@@ -746,22 +769,4 @@ export class DataService {
   private _removeDataConfig(): void {
     localStorage.removeItem('data_config');
   }
-}
-
-/**
- * Default data service sync options.
- */
-const DEFAULT_SYNC_OPTIONS = {
-  live: true,
-  liveInterval: 60 * 1000 * 10,
-  batchSize: 1000,
-};
-
-/**
- * Fills the data service configuration with default values if missing.
- * @param config Data service configuration.
- */
-function fillConfigDefaultValues(config: DataServiceConfig): DataServiceConfig {
-  config.syncOptions = {...DEFAULT_SYNC_OPTIONS, ...config.syncOptions};
-  return config;
 }

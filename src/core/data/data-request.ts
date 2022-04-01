@@ -20,17 +20,12 @@
  *
  */
 
-import {MangoQuery} from 'rxdb';
-
-import {DataRequest} from './data-request';
-import {Model} from './model';
-
 /**
- * Data query request parameters.
+ * Base data request
  */
-export interface DataFindRequest<T extends Model = Model> extends DataRequest {
+export interface DataRequest {
   /**
-   * Mango query
+   * Name of the item collection.
    */
-  query?: MangoQuery<T>;
+  collectionName: string;
 }

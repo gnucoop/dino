@@ -20,14 +20,12 @@
  *
  */
 
+import {DataRequest} from './data-request';
+
 /**
  * Data get item request parameters.
  */
-export interface DataGetRequest {
-  /**
-   * Name of the item collection.
-   */
-  collectionName: string;
+export interface DataGetRequest extends DataRequest {
   /**
    * UUID v4 identifier
    */

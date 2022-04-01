@@ -19,7 +19,6 @@ import { RxDatabaseCreator } from 'rxdb';
 import { RxDocument } from 'rxdb';
 import { RxGraphQLReplicationState } from 'rxdb/plugins/replication-graphql';
 import { RxJsonSchema } from 'rxdb';
-import { RxQuery } from 'rxdb';
 import { SyncOptionsGraphQL } from 'rxdb';
 import { User } from '@dino/core/auth';
 
@@ -39,6 +38,12 @@ export interface ActiveSync<T extends Model = Model> {
     sub: {
         unsubscribe: () => void;
     };
+}
+
+// @public
+export interface BulkInsertResult<T extends Model = Model> {
+    error: any[];
+    success: T[];
 }
 
 // @public
@@ -90,8 +95,7 @@ export interface CollectionChangedEvent {
 export const DATA_SERVICE_CONFIG: InjectionToken<DataServiceConfig<Model>>;
 
 // @public
-export interface DataBulkInsertRequest<T extends Model> {
-    collectionName: string;
+export interface DataBulkInsertRequest<T extends Model> extends DataRequest {
     objects: InsertModel<T>[];
 }
 
@@ -104,14 +108,12 @@ export interface DataCreateCollectionRequest {
 }
 
 // @public
-export interface DataFindRequest<T extends Model = Model> {
-    collectionName: string;
+export interface DataFindRequest<T extends Model = Model> extends DataRequest {
     query?: MangoQuery<T>;
 }
 
 // @public
-export interface DataGetRequest {
-    collectionName: string;
+export interface DataGetRequest extends DataRequest {
     id: string;
 }
 
@@ -134,8 +136,7 @@ export interface DataIndexField {
 }
 
 // @public
-export interface DataInsertRequest<T extends Model> {
-    collectionName: string;
+export interface DataInsertRequest<T extends Model> extends DataRequest {
     object: InsertModel<T>;
 }
 
@@ -270,25 +271,22 @@ export type DataQuerySortDir = 'asc' | 'desc';
 
 // @public
 export class DataService {
-    constructor(_authService: AuthService, _nss: NetworkStatusService, _config: DataServiceConfig, _configService: ConfigService | null);
-    bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<{
-        success: RxDocument<T>[];
-        error: any[];
-    }>;
+    constructor(_authService: AuthService, _nss: NetworkStatusService, config: DataServiceConfig, _configService: ConfigService | null);
+    bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<BulkInsertResult<RxDocument<T>>>;
+    bulkUpdate<T extends Model = Model>(params: DataFindRequest<T>, update: Partial<T>): Observable<RxDocument<T>[]>;
     // (undocumented)
     readonly collectionChanged: Observable<CollectionChangedEvent>;
     // (undocumented)
     readonly config: DataServiceConfig;
     createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
-    find<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxQuery<T, RxDocument<T>[]>>;
-    findOne<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxQuery<T, RxDocument<T> | null>>;
+    find<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxDocument<T>[]>;
     get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null>;
     insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
-    isSyncing: Observable<boolean>;
+    readonly isSyncing: Observable<boolean>;
     plugin(plugin: any): void;
     // (undocumented)
-    update<T extends Model = Model>(doc: RxDocument<T>, updateData: Partial<T>): Observable<RxDocument<T> | null>;
+    update<T extends Model = Model>(_collectionName: string, doc: RxDocument<T>, updateData: Partial<T>): Observable<RxDocument<T> | null>;
     upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<DataService, [null, null, null, { optional: true; }]>;
@@ -311,8 +309,7 @@ export interface DataServiceSyncOptions<T extends Model = Model> extends Omit<Sy
 }
 
 // @public
-export interface DataUpsertRequest<T extends Model> {
-    collectionName: string;
+export interface DataUpsertRequest<T extends Model> extends DataRequest {
     object: UpsertModel<T>;
 }
 

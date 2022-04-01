@@ -20,17 +20,15 @@
  *
  */
 
+import {DataRequest} from './data-request';
+
 import {Model} from './model';
 import {UpsertModel} from './upsert-model';
 
 /**
  * Data upsert item request parameters.
  */
-export interface DataUpsertRequest<T extends Model> {
-  /**
-   * Name of the item collection.
-   */
-  collectionName: string;
+export interface DataUpsertRequest<T extends Model> extends DataRequest {
   /**
    * The object to upsert.
    */

@@ -23,7 +23,7 @@
 import {Component, EventEmitter} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {clone, DataService, Model} from '@dino/core/data';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 
 interface Todo extends Model {
@@ -68,7 +68,6 @@ export class DataDemo {
     this.todos = collection.pipe(
       switchMap(() => this._refreshEvent.pipe(startWith(null))),
       switchMap(() => _dataService.find<Todo>({collectionName: 'todo'})),
-      switchMap(query => from(query.exec())),
       map(result => result.map(doc => clone(doc.toJSON()))),
     );
   }

@@ -20,17 +20,14 @@
  *
  */
 
+import {DataRequest} from './data-request';
 import {InsertModel} from './insert-model';
 import {Model} from './model';
 
 /**
  * Data insert item request parameters.
  */
-export interface DataInsertRequest<T extends Model> {
-  /**
-   * Name of the item collection.
-   */
-  collectionName: string;
+export interface DataInsertRequest<T extends Model> extends DataRequest {
   /**
    * The object to insert.
    */

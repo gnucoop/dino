@@ -195,7 +195,6 @@ export abstract class DataModelManager<T extends Model = Model> {
     return this._getPermissionContext().pipe(
       switchMap(context =>
         this._dataService.find<T>(params).pipe(
-          switchMap(qry => from(qry.exec())),
           map(docs => {
             if (context.user_permissions != null && context.user_metrics != null) {
               return docs.filter(doc => this.canView(doc, context));
@@ -223,7 +222,6 @@ export abstract class DataModelManager<T extends Model = Model> {
     return this._getPermissionContext().pipe(
       switchMap(context =>
         this._dataService.find<T>(params).pipe(
-          switchMap(qry => from(qry.exec())),
           map(docs => {
             if (context.user_permissions != null && context.user_metrics != null) {
               return docs.filter(doc => this.canView(doc, context));
@@ -256,10 +254,12 @@ export abstract class DataModelManager<T extends Model = Model> {
           if (!this.canDelete(doc, context)) {
             return throwError(() => new Error('Deletion not allowed'));
           } else {
-            return from(doc.update({$set: {_deleted: true, is_deleted: true}})).pipe(
-              map(_ => doc),
-              catchError(err => throwError(() => new Error(err))),
-            );
+            return this._dataService
+              .update(this._modelName, doc, {_deleted: true, is_deleted: true} as Partial<T>)
+              .pipe(
+                map(_ => doc),
+                catchError(err => throwError(() => new Error(err))),
+              );
           }
         }
       }),
@@ -284,22 +284,16 @@ export abstract class DataModelManager<T extends Model = Model> {
       },
     };
     return this._getPermissionContext().pipe(
-      switchMap(context =>
-        this._dataService.find<T>(params).pipe(map(query => ({query, context}))),
-      ),
-      switchMap(({query, context}) => {
-        const res = from(query.exec()).pipe(map(docs => ({docs, context, query})));
-        return res;
-      }),
-      switchMap(res => {
-        for (let obj of res.docs) {
-          if (!this.canDelete(obj, res.context)) {
-            return throwError(new Error('Deletion not allowed'));
+      switchMap(context => this._dataService.find<T>(params).pipe(map(docs => ({docs, context})))),
+      switchMap(({docs, context}) => {
+        for (let obj of docs) {
+          if (!this.canDelete(obj, context)) {
+            return throwError(() => new Error('Deletion not allowed'));
           }
         }
-        return from(res.query.update({$set: {_deleted: true, is_deleted: true}})).pipe(
-          catchError(err => throwError(err)),
-        );
+        return from(
+          this._dataService.bulkUpdate<T>(params, {_deleted: true, is_deleted: true} as Partial<T>),
+        ).pipe(catchError(err => throwError(() => err)));
       }),
     );
   }
@@ -325,7 +319,7 @@ export abstract class DataModelManager<T extends Model = Model> {
           if (!this.canModify(obj, doc, context)) {
             return throwError(() => new Error('Modification not allowed'));
           } else {
-            return this._dataService.update(doc, this._prepareUpdateQuery(obj));
+            return this._dataService.update(this._modelName, doc, this._prepareUpdateQuery(obj));
           }
         }
       }),
@@ -353,10 +347,12 @@ export abstract class DataModelManager<T extends Model = Model> {
           if (!this.canModify(data, doc, context)) {
             return throwError(new Error('Modification not allowed'));
           } else {
-            return from(doc.update(this._prepareUpdateQuery(data))).pipe(
-              map(_ => doc),
-              catchError(err => throwError(err)),
-            );
+            return this._dataService
+              .update(this._modelName, doc, this._prepareUpdateQuery(data))
+              .pipe(
+                map(_ => doc),
+                catchError(err => throwError(err)),
+              );
           }
         }
       }),
@@ -381,7 +377,7 @@ export abstract class DataModelManager<T extends Model = Model> {
    */
   private _prepareUpdateQuery(data: Partial<T>): any {
     data.updated_at = new Date().toISOString();
-    return {$set: {...data}};
+    return {...data};
   }
 
   /**

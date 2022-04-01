@@ -20,17 +20,22 @@
  *
  */
 
-import {MangoQuery} from 'rxdb';
-
-import {DataRequest} from './data-request';
-import {Model} from './model';
+import {DataServiceConfig} from './data-service-config';
 
 /**
- * Data query request parameters.
+ * Default data service sync options.
  */
-export interface DataFindRequest<T extends Model = Model> extends DataRequest {
-  /**
-   * Mango query
-   */
-  query?: MangoQuery<T>;
+export const DEFAULT_SYNC_OPTIONS = {
+  live: true,
+  liveInterval: 60 * 1000 * 10,
+  batchSize: 1000,
+};
+
+/**
+ * Fills the data service configuration with default values if missing.
+ * @param config Data service configuration.
+ */
+export function fillConfigDefaultValues(config: DataServiceConfig): DataServiceConfig {
+  config.syncOptions = {...DEFAULT_SYNC_OPTIONS, ...config.syncOptions};
+  return config;
 }

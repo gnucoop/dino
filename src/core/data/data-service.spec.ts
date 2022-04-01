@@ -186,12 +186,6 @@ describe('Data service - CRUD methods', () => {
     }
   });
 
-  it('should create a single doc query', async () => {
-    const findParams = {collectionName};
-    const result = await firstValueFrom(dataService.findOne<DummyModel>(findParams).pipe(take(1)));
-    expect(result).not.toBeNull();
-  });
-
   it('should create a multiple docs query', async () => {
     const findParams = {collectionName};
     const result = await firstValueFrom(dataService.find<DummyModel>(findParams).pipe(take(1)));
