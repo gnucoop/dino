@@ -138,6 +138,43 @@ def create_third_party_bundle_targets():
         for entry_point in pkg.entry_points:
             _create_third_party_bundle_targets(pkg, entry_point, "%s/%s" % (pkg.module_name, entry_point))
 
+def create_apollo_bundle_targets():
+    esbuild(
+        name = "apollo-angular_linked_bundle",
+        output = "apollo-angular/index.mjs",
+        platform = "browser",
+        entry_point = "@npm//:node_modules/apollo-angular/build/fesm2020/ngApollo.mjs",
+        config = "//tools/angular:esbuild_config",
+        # List of dependencies which should never be bundled into these linker-processed bundles.
+        external = ["rxjs", "@angular", "@apollo", "apollo-angular", "graphql"],
+    )
+
+    _linker_mapping(
+        name = "apollo-angular_linked",
+        srcs = [":apollo-angular_linked_bundle"],
+        package = "@npm//apollo-angular",
+        module_name = "apollo-angular",
+        subpath = "apollo-angular",
+    )
+
+    esbuild(
+        name = "apollo-angular_http_linked_bundle",
+        output = "apollo-angular_http/index.mjs",
+        platform = "browser",
+        entry_point = "@npm//:node_modules/apollo-angular/build/fesm2020/ngApolloLinkHttp.mjs",
+        config = "//tools/angular:esbuild_config",
+        # List of dependencies which should never be bundled into these linker-processed bundles.
+        external = ["rxjs", "@angular", "@apollo", "apollo-angular", "graphql"],
+    )
+
+    _linker_mapping(
+        name = "apollo-angular_http_linked",
+        srcs = [":apollo-angular_http_linked_bundle"],
+        package = "@npm//apollo-angular",
+        module_name = "apollo-angular/http",
+        subpath = "apollo-angular_http",
+    )
+
 LINKER_PROCESSED_FW_PACKAGES = [
     "//tools/angular:%s_linked" % _get_target_name_base(pkg, entry_point)
     for pkg in ANGULAR_PACKAGES
@@ -150,4 +187,7 @@ LINKER_PROCESSED_FW_PACKAGES = [
     "//tools/angular:%s_linked" % _get_third_party_target_name_base(pkg, entry_point)
     for pkg in THIRD_PARTY_PACKAGES
     for entry_point in [pkg.main_entry_point] + pkg.entry_points
+] + [
+    "//tools/angular:apollo-angular_linked",
+    "//tools/angular:apollo-angular_http_linked",
 ]

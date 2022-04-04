@@ -4,11 +4,14 @@
 
 ```ts
 
+import { Apollo } from 'apollo-angular';
 import { AuthService } from '@dino/core/auth';
 import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from '@dino/core/config';
 import { DeepReadonlyObject } from 'rxdb';
 import * as i0 from '@angular/core';
+import * as i1 from 'apollo-angular';
+import * as i2 from '@angular/common/http';
 import { InjectionToken } from '@angular/core';
 import { MangoQuery } from 'rxdb';
 import { ModuleWithProviders } from '@angular/core';
@@ -213,7 +216,7 @@ export class DataModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<DataModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<DataModule, never, never, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<DataModule, never, [typeof i1.ApolloModule, typeof i2.HttpClientModule], never>;
 }
 
 // @public (undocumented)
@@ -270,24 +273,24 @@ export type DataQuerySort = string | {
 export type DataQuerySortDir = 'asc' | 'desc';
 
 // @public
-export class DataService {
+export class DataService implements IDataService {
     constructor(_authService: AuthService, _nss: NetworkStatusService, config: DataServiceConfig, _configService: ConfigService | null);
-    bulkInsert<T extends Model = Model>(params: DataBulkInsertRequest<T>): Observable<BulkInsertResult<RxDocument<T>>>;
-    bulkUpdate<T extends Model = Model>(params: DataFindRequest<T>, update: Partial<T>): Observable<RxDocument<T>[]>;
+    bulkInsert<T extends Model, R extends T = RxDocument<T>>(params: DataBulkInsertRequest<T>): Observable<BulkInsertResult<R>>;
+    bulkUpdate<T extends Model = Model, R extends T = RxDocument<T>>(params: DataFindRequest<T>, update: Partial<T>): Observable<R[]>;
     // (undocumented)
     readonly collectionChanged: Observable<CollectionChangedEvent>;
     // (undocumented)
     readonly config: DataServiceConfig;
     createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
     destroyCollection(collectionName: string): Observable<boolean>;
-    find<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxDocument<T>[]>;
-    get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null>;
-    insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null>;
+    find<T extends Model = Model, R extends T = RxDocument<T>>(params: DataFindRequest<T>): Observable<R[]>;
+    get<T extends Model = Model, R extends T = RxDocument<T>>(params: DataGetRequest): Observable<R | null>;
+    insert<T extends Model = Model, R extends T = RxDocument<T>>(params: DataInsertRequest<T>): Observable<R | null>;
     readonly isSyncing: Observable<boolean>;
     plugin(plugin: any): void;
     // (undocumented)
-    update<T extends Model = Model>(_collectionName: string, doc: RxDocument<T>, updateData: Partial<T>): Observable<RxDocument<T> | null>;
-    upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null>;
+    update<T extends Model = Model, R extends T = RxDocument<T>>(_collectionName: string, doc: R, updateData: Partial<T>): Observable<R | null>;
+    upsert<T extends Model = Model, R extends T = RxDocument<T>>(params: DataUpsertRequest<T>): Observable<R | null>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<DataService, [null, null, null, { optional: true; }]>;
     // (undocumented)
@@ -315,6 +318,25 @@ export interface DataUpsertRequest<T extends Model> extends DataRequest {
 
 // @public
 export const DEFAULT_EXCLUDED_METRIC_KEYS: string[];
+
+// @public
+export interface IDataService {
+    bulkInsert<T extends Model = Model, R extends T = T>(params: DataBulkInsertRequest<T>): Observable<BulkInsertResult<R>>;
+    bulkUpdate<T extends Model = Model, R extends T = T>(params: DataFindRequest<T>, update: Partial<T>): Observable<R[]>;
+    // (undocumented)
+    readonly collectionChanged: Observable<CollectionChangedEvent>;
+    // (undocumented)
+    readonly config: DataServiceConfig;
+    createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
+    destroyCollection(collectionName: string): Observable<boolean>;
+    find<T extends Model = Model, R extends T = T>(params: DataFindRequest<T>): Observable<R[]>;
+    get<T extends Model, R extends T>(params: DataGetRequest): Observable<R | null>;
+    insert<T extends Model, R extends T>(params: DataInsertRequest<T>): Observable<R | null>;
+    readonly isSyncing: Observable<boolean>;
+    // (undocumented)
+    update<T extends Model = Model, R extends T = T>(collectionName: string, doc: R, updateData: Partial<T>): Observable<R | null>;
+    upsert<T extends Model = Model, R extends T = T>(params: DataUpsertRequest<T>): Observable<R | null>;
+}
 
 // @public
 export type InsertModel<T extends Model> = Omit<T, 'id' | 'updated_at' | '_deleted'>;
@@ -346,6 +368,30 @@ export interface Model {
     id: string;
     is_deleted?: boolean;
     updated_at: string;
+}
+
+// @public
+export class OnlineDataService implements IDataService {
+    constructor(config: DataServiceConfig, _apollo: Apollo, _authService: AuthService);
+    bulkInsert<T extends Model = Model, R extends T = T>(params: DataBulkInsertRequest<T>): Observable<BulkInsertResult<R>>;
+    bulkUpdate<T extends Model = Model, R extends T = T>(params: DataFindRequest<T>, update: Partial<T>): Observable<R[]>;
+    // (undocumented)
+    readonly collectionChanged: Observable<CollectionChangedEvent>;
+    // (undocumented)
+    readonly config: DataServiceConfig;
+    createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
+    destroyCollection(_collectionName: string): Observable<boolean>;
+    find<T extends Model = Model, R extends T = T>(params: DataFindRequest<T>): Observable<R[]>;
+    get<T extends Model = Model>(params: DataGetRequest): Observable<T | null>;
+    insert<T extends Model = Model, R extends T = T>(params: DataInsertRequest<T>): Observable<R | null>;
+    readonly isSyncing: Observable<boolean>;
+    // (undocumented)
+    update<T extends Model = Model, R extends T = T>(collectionName: string, doc: T, updateData: Partial<T>): Observable<R | null>;
+    upsert<T extends Model = Model, R extends T = T>(params: DataUpsertRequest<T>): Observable<R | null>;
+    // (undocumented)
+    static ɵfac: i0.ɵɵFactoryDeclaration<OnlineDataService, never>;
+    // (undocumented)
+    static ɵprov: i0.ɵɵInjectableDeclaration<OnlineDataService>;
 }
 
 // @public

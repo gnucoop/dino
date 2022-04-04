@@ -20,16 +20,34 @@
  *
  */
 
+import {HttpClientModule} from '@angular/common/http';
 import {ModuleWithProviders, NgModule} from '@angular/core';
+import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
+import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
+import {HttpLink} from 'apollo-angular/http';
 
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 
-@NgModule({})
+@NgModule({
+  imports: [ApolloModule, HttpClientModule],
+})
 export class DataModule {
   static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule> {
     return {
       ngModule: DataModule,
-      providers: [{provide: DATA_SERVICE_CONFIG, useValue: config}],
+      providers: [
+        {provide: DATA_SERVICE_CONFIG, useValue: config},
+        {
+          provide: APOLLO_OPTIONS,
+          useFactory: (httpLink: HttpLink): ApolloClientOptions<any> => {
+            return {
+              cache: new InMemoryCache(),
+              link: httpLink.create({uri: config.syncOptions.url}),
+            };
+          },
+          deps: [HttpLink],
+        },
+      ],
     };
   }
 }

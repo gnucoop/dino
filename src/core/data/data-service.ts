@@ -62,6 +62,7 @@ import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
+import {BulkInsertResult, CollectionChangedEvent, IDataService} from './data-service-interface';
 import {DEFAULT_SYNC_OPTIONS, fillConfigDefaultValues} from './data-service-utils';
 import {DataUpsertRequest} from './data-upsert-request';
 import {InsertModel} from './insert-model';
@@ -69,45 +70,6 @@ import {Model} from './model';
 import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
 import {pullQueryBuilder, pushQueryBuilder, subscriptionQueryBuilder} from './sync-utils';
-
-/**
- * Event fired when collection data changes.
- */
-export interface CollectionChangedEvent {
-  /**
-   * Change event time.
-   */
-  timestamp: number;
-
-  /**
-   * Collection name.
-   */
-  collection: string;
-
-  /**
-   * The Action triggering the event.
-   */
-  action?: string;
-
-  /**
-   * The total docs of the changed collection
-   */
-  count?: number;
-}
-
-/**
- * The result of a bulk insert operation.
- */
-export interface BulkInsertResult<T extends Model = Model> {
-  /**
-   * List of successfully inserted documents
-   */
-  success: T[];
-  /**
-   * List of errors
-   */
-  error: any[];
-}
 
 /**
  * Parameters needed to set up the collection sync.
@@ -138,7 +100,7 @@ interface RegisteredCollection extends CollectionSyncParams {
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
-export class DataService {
+export class DataService implements IDataService {
   /**
    * True when the Syncing process is currently operating
    * (A replication cycle is undergoing)
@@ -263,7 +225,9 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The get request parameters.
    */
-  get<T extends Model = Model>(params: DataGetRequest): Observable<RxDocument<T> | null> {
+  get<T extends Model = Model, R extends T = RxDocument<T>>(
+    params: DataGetRequest,
+  ): Observable<R | null> {
     const {collectionName, id} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -276,7 +240,7 @@ export class DataService {
         }
         return from(collection.findOne().where('id').eq(id).exec());
       }),
-    );
+    ) as Observable<R | null>;
   }
 
   /**
@@ -284,7 +248,9 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The insert request parameters.
    */
-  insert<T extends Model = Model>(params: DataInsertRequest<T>): Observable<RxDocument<T> | null> {
+  insert<T extends Model = Model, R extends T = RxDocument<T>>(
+    params: DataInsertRequest<T>,
+  ): Observable<R | null> {
     const {collectionName, object} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -303,7 +269,7 @@ export class DataService {
             console.log(e);
             return obsOf(null);
           }),
-        ) as Observable<RxDocument<T> | null>;
+        ) as Observable<R | null>;
       }),
     );
   }
@@ -313,9 +279,9 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The bulk insert request parameters.
    */
-  bulkInsert<T extends Model = Model>(
+  bulkInsert<T extends Model, R extends T = RxDocument<T>>(
     params: DataBulkInsertRequest<T>,
-  ): Observable<BulkInsertResult<RxDocument<T>>> {
+  ): Observable<BulkInsertResult<R>> {
     const {collectionName, objects} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -331,7 +297,7 @@ export class DataService {
             }
           }),
           catchError(e => obsOf({success: [], error: [{'msg': e}]})),
-        );
+        ) as Observable<BulkInsertResult<R>>;
       }),
     );
   }
@@ -342,10 +308,10 @@ export class DataService {
    * @param params The bulk update request parameters.
    * @param update The updated fields set.
    */
-  bulkUpdate<T extends Model = Model>(
+  bulkUpdate<T extends Model = Model, R extends T = RxDocument<T>>(
     params: DataFindRequest<T>,
     update: Partial<T>,
-  ): Observable<RxDocument<T>[]> {
+  ): Observable<R[]> {
     const {collectionName, query} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -360,17 +326,17 @@ export class DataService {
             }
           }),
           catchError(() => obsOf([])),
-        );
+        ) as Observable<R[]>;
       }),
     );
   }
 
-  update<T extends Model = Model>(
+  update<T extends Model = Model, R extends T = RxDocument<T>>(
     _collectionName: string,
-    doc: RxDocument<T>,
+    doc: R,
     updateData: Partial<T>,
-  ): Observable<RxDocument<T> | null> {
-    if (doc == null || updateData == null) {
+  ): Observable<R | null> {
+    if (doc == null || updateData == null || !isRxDocument(doc)) {
       return obsOf(null);
     }
     return from(doc.update({$set: updateData})).pipe(
@@ -379,11 +345,9 @@ export class DataService {
           this._collectionChangedEmit('Document updated', doc.collection);
         }
       }),
-      map(_ => {
-        return doc;
-      }),
+      map(_ => doc),
       catchError(err => throwError(() => new Error(err))),
-    );
+    ) as Observable<R | null>;
   }
 
   /**
@@ -391,7 +355,9 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The upinsert request parameters.
    */
-  upsert<T extends Model = Model>(params: DataUpsertRequest<T>): Observable<RxDocument<T> | null> {
+  upsert<T extends Model = Model, R extends T = RxDocument<T>>(
+    params: DataUpsertRequest<T>,
+  ): Observable<R | null> {
     const {collectionName, object} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -414,7 +380,7 @@ export class DataService {
           catchError(() => obsOf(null)),
         );
       }),
-    );
+    ) as Observable<R | null>;
   }
 
   /**
@@ -422,7 +388,9 @@ export class DataService {
    * Throws and error if the collection does not exist.
    * @param params The find request parameters.
    */
-  find<T extends Model = Model>(params: DataFindRequest<T>): Observable<RxDocument<T>[]> {
+  find<T extends Model = Model, R extends T = RxDocument<T>>(
+    params: DataFindRequest<T>,
+  ): Observable<R[]> {
     const {collectionName, query} = params;
     return this._db.pipe(
       switchMap(db => {
@@ -432,7 +400,7 @@ export class DataService {
         }
         return from(collection.find(query).exec());
       }),
-    );
+    ) as Observable<T[]> as Observable<R[]>;
   }
 
   /**
@@ -770,3 +738,10 @@ export class DataService {
     localStorage.removeItem('data_config');
   }
 }
+
+const isRxDocument = <T extends Model, R extends T = RxDocument<T>>(
+  doc: T,
+): doc is RxDocument<T> => {
+  const d = doc as any;
+  return d.update != null && d.collection != null;
+};
