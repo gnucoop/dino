@@ -77,6 +77,7 @@ export class EditReport implements OnInit, AfterViewInit {
    * The Report instance used for rendering the Report
    */
   reportInstance: Observable<AjfReportInstance | null>;
+  private _currentReportInstance: AjfReportInstance | null = null;
 
   /**
    * True if no validation errors are encountered in the Report Metrics selector form
@@ -274,21 +275,20 @@ export class EditReport implements OnInit, AfterViewInit {
           }
         });
         const context = {forms: contextForms, schemas: contextSchemas, report_data: rData};
-        return createReportInstance(rSchema.schema, context, this._translateService);
+        this._currentReportInstance = createReportInstance(rSchema.schema, context, this._translateService);
+        return this._currentReportInstance;
       }),
     );
   }
 
   /**
-   * Prints a report Instance to pdf
+   * Prints the current report Instance to pdf
    * @param orientation
    */
   printReport(orientation: 'portrait' | 'landscape') {
-    this.reportInstance.pipe(take(1)).subscribe(reportInstance => {
-      if (reportInstance != null) {
-        openReportPdf(reportInstance, orientation);
-      }
-    });
+    if (this._currentReportInstance != null) {
+      openReportPdf(this._currentReportInstance, orientation);
+    }
   }
 
   /**
