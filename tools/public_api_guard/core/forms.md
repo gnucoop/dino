@@ -90,6 +90,15 @@ export class FormsModule {
 }
 
 // @public (undocumented)
+export class OnlineFormDataManager extends OnlineDataModelManager<FormData_2> {
+    constructor(dataService: OnlineDataService, permissionContextService: PermissionContextService);
+    // (undocumented)
+    static ɵfac: i0.ɵɵFactoryDeclaration<OnlineFormDataManager, never>;
+    // (undocumented)
+    static ɵprov: i0.ɵɵInjectableDeclaration<OnlineFormDataManager>;
+}
+
+// @public (undocumented)
 export class OnlineFormSchemaManager extends OnlineDataModelManager<FormSchema> {
     constructor(dataService: OnlineDataService, permissionContextService: PermissionContextService, _metricService: MetricsService);
     // (undocumented)

@@ -20,14 +20,18 @@
  *
  */
 
-export {FormData} from './form-data';
-export {schema as formDataJson} from './form-data-json';
-export {FormSchema} from './form-schema';
-export {schema as formSchemaJson} from './form-schema-json';
+import {Injectable} from '@angular/core';
+import {OnlineDataModelManager, OnlineDataService, PermissionContextService} from '@dino/core/data';
 
-export * from './forms.module';
-export * from './form-schema-manager';
-export * from './form-schema-visibility';
-export * from './form-data-manager';
-export * from './online-form-data-manager';
-export * from './online-form-schema-manager';
+import {FormData, indexes, migrationStrategies} from './form-data';
+import {schema} from './form-data-json';
+import {FormsModule} from './forms.module';
+
+@Injectable({providedIn: FormsModule})
+export class OnlineFormDataManager extends OnlineDataModelManager<FormData> {
+  constructor(dataService: OnlineDataService, permissionContextService: PermissionContextService) {
+    schema.indexes = [...(schema.indexes || []), ...indexes];
+    const collection = {name: 'form_data', collection: {schema, migrationStrategies}};
+    super(collection, dataService, permissionContextService);
+  }
+}
