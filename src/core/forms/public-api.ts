@@ -29,3 +29,4 @@ export * from './forms.module';
 export * from './form-schema-manager';
 export * from './form-schema-visibility';
 export * from './form-data-manager';
+export * from './online-form-schema-manager';

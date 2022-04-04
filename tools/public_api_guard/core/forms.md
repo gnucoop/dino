@@ -12,6 +12,8 @@ import * as i0 from '@angular/core';
 import { ListHeader } from '@dino/core/list';
 import { MetricsService } from '@dino/core/data';
 import { Model } from '@dino/core/data';
+import { OnlineDataModelManager } from '@dino/core/data';
+import { OnlineDataService } from '@dino/core/data';
 import { PermissionContextService } from '@dino/core/data';
 import { RxJsonSchema } from 'rxdb';
 
@@ -57,8 +59,11 @@ export const formSchemaJson: RxJsonSchema<FormSchema>;
 // @public (undocumented)
 export class FormSchemaManager extends DataModelManager<FormSchema> {
     constructor(dataService: DataService, permissionContextService: PermissionContextService, _metricService: MetricsService);
+    // (undocumented)
     generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
+    // (undocumented)
     generateMetricsHeaders(): ListHeader<any>[];
+    // (undocumented)
     generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[];
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<FormSchemaManager, never>;
@@ -82,6 +87,21 @@ export class FormsModule {
     static ɵinj: i0.ɵɵInjectorDeclaration<FormsModule>;
     // (undocumented)
     static ɵmod: i0.ɵɵNgModuleDeclaration<FormsModule, never, never, never>;
+}
+
+// @public (undocumented)
+export class OnlineFormSchemaManager extends OnlineDataModelManager<FormSchema> {
+    constructor(dataService: OnlineDataService, permissionContextService: PermissionContextService, _metricService: MetricsService);
+    // (undocumented)
+    generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[];
+    // (undocumented)
+    generateMetricsHeaders(): ListHeader<any>[];
+    // (undocumented)
+    generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[];
+    // (undocumented)
+    static ɵfac: i0.ɵɵFactoryDeclaration<OnlineFormSchemaManager, never>;
+    // (undocumented)
+    static ɵprov: i0.ɵɵInjectableDeclaration<OnlineFormSchemaManager>;
 }
 
 // (No @packageDocumentation comment for this package)

@@ -22,9 +22,9 @@
 
 import {Injectable} from '@angular/core';
 import {
-  DataModelManager,
-  DataService,
   MetricsService,
+  OnlineDataService,
+  OnlineDataModelManager,
   PermissionContextService,
 } from '@dino/core/data';
 import {FilterGroup, ListHeader} from '@dino/core/list';
@@ -34,9 +34,9 @@ import {FormSchema} from './form-schema';
 import {FormsModule} from './forms.module';
 
 @Injectable({providedIn: FormsModule})
-export class FormSchemaManager extends DataModelManager<FormSchema> {
+export class OnlineFormSchemaManager extends OnlineDataModelManager<FormSchema> {
   constructor(
-    dataService: DataService,
+    dataService: OnlineDataService,
     permissionContextService: PermissionContextService,
     private _metricService: MetricsService,
   ) {
