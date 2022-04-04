@@ -110,7 +110,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
           : [],
       ),
       map(filters => filters.map(f => this._setupFilterItem(f))),
-      catchError(err => throwError(err) as Observable<FilterItem[]>),
+      catchError(err => throwError(() => err) as Observable<FilterItem[]>),
       take(1),
     );
   }
@@ -179,7 +179,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
       .removeFilter(filterItem, listType)
       .pipe(
         take(1),
-        catchError(err => throwError(err) as Observable<boolean>),
+        catchError(err => throwError(() => err) as Observable<boolean>),
       )
       .subscribe(res => this._updateWidgetsEvent.emit(res));
   }

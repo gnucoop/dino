@@ -136,7 +136,7 @@ export abstract class DataModelManager<T extends Model = Model> {
     return this._getPermissionContext().pipe(
       switchMap(context => {
         if (!this.canCreate(obj, context)) {
-          return throwError(new Error('Creation not allowed'));
+          return throwError(() => new Error('Creation not allowed'));
         }
         return this._dataService.insert<T>(params);
       }),
@@ -158,7 +158,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       switchMap(context => {
         for (let obj of data) {
           if (!this.canCreate(obj, context)) {
-            return throwError(new Error('Creation not allowed'));
+            return throwError(() => new Error('Creation not allowed'));
           }
         }
         return this._dataService.bulkInsert<T>(params);
@@ -250,7 +250,7 @@ export abstract class DataModelManager<T extends Model = Model> {
       switchMap(context => this._dataService.get<T>(params).pipe(map(doc => ({doc, context})))),
       switchMap(({doc, context}) => {
         if (doc == null) {
-          return throwError(new Error('Invalid document'));
+          return throwError(() => new Error('Invalid document'));
         } else {
           if (!this.canDelete(doc, context)) {
             return throwError(() => new Error('Deletion not allowed'));
@@ -343,16 +343,16 @@ export abstract class DataModelManager<T extends Model = Model> {
       switchMap(context => this._dataService.get<T>(params).pipe(map(doc => ({doc, context})))),
       switchMap(({doc, context}) => {
         if (doc == null) {
-          return throwError(new Error('Invalid document'));
+          return throwError(() => new Error('Invalid document'));
         } else {
           if (!this.canModify(data, doc, context)) {
-            return throwError(new Error('Modification not allowed'));
+            return throwError(() => new Error('Modification not allowed'));
           } else {
             return this._dataService
               .update(this._modelName, doc, this._prepareUpdateQuery(data))
               .pipe(
                 map(_ => doc),
-                catchError(err => throwError(err)),
+                catchError(err => throwError(() => err)),
               );
           }
         }

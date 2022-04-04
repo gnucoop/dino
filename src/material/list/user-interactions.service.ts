@@ -59,6 +59,6 @@ export class AdminUserInteractionsService extends CoreAdminUserInteractionsServi
     this._confirmationDialogRef = this._dialog.open(ConfirmationDialog, dialogConfig);
     return this._confirmationDialogRef
       .afterClosed()
-      .pipe(catchError(err => throwError(err) as Observable<boolean>));
+      .pipe(catchError(err => throwError(() => err) as Observable<boolean>));
   }
 }

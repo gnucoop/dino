@@ -256,7 +256,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(new Error('Invalid collection'));
+          throwError(() => new Error('Invalid collection'));
         }
         const insertObject = this._prepareInsertObject(object);
         return from(collection.insert(insertObject)).pipe(
@@ -287,7 +287,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(new Error('Invalid collection'));
+          throwError(() => new Error('Invalid collection'));
         }
         const docsData = objects.map(object => this._prepareInsertObject(object));
         return from(collection.bulkInsert(docsData)).pipe(
@@ -363,7 +363,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(new Error('Invalid collection'));
+          throwError(() => new Error('Invalid collection'));
         }
         const insertObject = {
           id: object.id || uuidv4(),
@@ -446,7 +446,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection;
         if (collection == null) {
-          throwError(new Error('Invalid collection'));
+          throwError(() => new Error('Invalid collection'));
         }
         return from(collection.destroy()).pipe(
           tap(() => this._removeRegisteredCollection(collection)),

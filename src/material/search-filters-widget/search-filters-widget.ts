@@ -222,7 +222,8 @@ export class SearchFiltersWidget
       .pipe(
         debounceTime(300),
         catchError(
-          err => throwError(err) as Observable<[{[key: string]: any}, boolean, Operator, boolean]>,
+          err =>
+            throwError(() => err) as Observable<[{[key: string]: any}, boolean, Operator, boolean]>,
         ),
       )
       .subscribe(([formValue, toggleValue, operatorValue, visibility]) => {
@@ -252,7 +253,7 @@ export class SearchFiltersWidget
   override ngAfterViewInit() {
     super.ngAfterViewInit();
     this._toggleSub = this._formValueChanges
-      .pipe(catchError(err => throwError(err) as Observable<{[key: string]: any}>))
+      .pipe(catchError(err => throwError(() => err) as Observable<{[key: string]: any}>))
       .subscribe(formValue => {
         if (this.toggleButton && formValue != null && !this.toggleButton.checked) {
           this.toggleButton.toggle();

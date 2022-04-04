@@ -58,7 +58,7 @@ export class DemoHttpInterceptor implements HttpInterceptor {
           }),
         );
       }
-      return throwError(new HttpErrorResponse({status: 400}));
+      return throwError(() => new HttpErrorResponse({status: 400}));
     }
     if (req.url === 'http://auth-backend/api/jwt/refresh') {
       if (this._authService.getRefreshToken() === this._loginRefreshToken) {
@@ -69,7 +69,7 @@ export class DemoHttpInterceptor implements HttpInterceptor {
           }),
         );
       }
-      return throwError(new HttpErrorResponse({status: 400}));
+      return throwError(() => new HttpErrorResponse({status: 400}));
     }
     if (req.url === 'http://auth-backend/access_data') {
       if (this._authService.getAuthToken() === this._newToken) {
@@ -80,7 +80,7 @@ export class DemoHttpInterceptor implements HttpInterceptor {
           }),
         );
       }
-      return throwError(new HttpErrorResponse({status: 401}));
+      return throwError(() => new HttpErrorResponse({status: 401}));
     }
     return next.handle(req);
   }

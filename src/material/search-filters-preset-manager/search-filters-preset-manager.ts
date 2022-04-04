@@ -61,7 +61,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
    */
   savePreset() {
     const saveSub = this._presetSaveData
-      .pipe(catchError(err => throwError(err) as Observable<[string, any]>))
+      .pipe(catchError(err => throwError(() => err) as Observable<[string, any]>))
       .subscribe(([pName, pData]) => {
         if (pName != '' && pData != null) {
           localStorage.setItem('filters_preset_' + pName, pData);
@@ -78,7 +78,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
     const loadSub = this.canLoadPreset
       .pipe(
         withLatestFrom(this.presetName),
-        catchError(err => throwError(err) as Observable<[boolean, string]>),
+        catchError(err => throwError(() => err) as Observable<[boolean, string]>),
       )
       .subscribe(([canLoad, pName]) => {
         if (canLoad && pName != '') {
@@ -103,7 +103,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
           .filter(k => k.includes('filters_preset_'))
           .map(str => str.replace('filters_preset_', '')),
       ),
-      catchError(err => throwError(err) as Observable<string[]>),
+      catchError(err => throwError(() => err) as Observable<string[]>),
     );
 
     this.canLoadPreset = this.presetName.pipe(
@@ -112,7 +112,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
         return options.some(option => pName && option === pName);
       }),
       startWith(false),
-      catchError(err => throwError(err) as Observable<boolean>),
+      catchError(err => throwError(() => err) as Observable<boolean>),
     );
 
     this.filteredOptions = this.presetName.pipe(

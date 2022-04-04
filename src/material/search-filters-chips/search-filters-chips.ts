@@ -91,7 +91,7 @@ export class SearchFiltersChips implements OnInit {
     // are not displayed as chips
     this.chipsFilters = this.chipsFilters.pipe(
       map(filters => filters.filter(cf => cf.value !== null && cf.value !== '' && cf.isValid)),
-      catchError(err => throwError(err) as Observable<FilterItem[]>),
+      catchError(err => throwError(() => err) as Observable<FilterItem[]>),
     );
   }
 

@@ -253,7 +253,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._dialogSub = this._dialogRef
       .afterClosed()
       .pipe(
-        catchError(err => throwError(err) as Observable<boolean>),
+        catchError(err => throwError(() => err) as Observable<boolean>),
         take(1),
       )
       .subscribe((formSchema: {[key: string]: any}) => {

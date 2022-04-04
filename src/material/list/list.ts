@@ -585,7 +585,7 @@ export class SelectionList<T extends Model = Model>
     this._columnsDialogRef
       .afterClosed()
       .pipe(
-        catchError(err => throwError(err) as Observable<ListHeader<T>>),
+        catchError(err => throwError(() => err) as Observable<ListHeader<T>>),
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe((columns: ListHeader<T>[]) => {
@@ -827,7 +827,7 @@ export class SelectionList<T extends Model = Model>
       this._dialogSub = this._dialogRef
         .afterClosed()
         .pipe(
-          catchError(err => throwError(err) as Observable<boolean>),
+          catchError(err => throwError(() => err) as Observable<boolean>),
           take(1),
         )
         .subscribe((formSchema: {[key: string]: any}) => {

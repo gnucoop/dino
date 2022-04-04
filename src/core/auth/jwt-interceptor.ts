@@ -127,7 +127,7 @@ export class JWTInterceptor implements HttpInterceptor {
           this.handleRefreshEvt.emit([request, next]);
           return obsOf(null);
         }
-        return throwError(error);
+        return throwError(() => error);
       }),
     ) as Observable<HttpEvent<any>>;
   }

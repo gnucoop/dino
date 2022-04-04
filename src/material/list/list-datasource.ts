@@ -470,7 +470,7 @@ export class ListDataSource<
   getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void {
     const dmMainQuery = this._dataModelManager.query(query).pipe(
       take(1),
-      catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
+      catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
     );
 
     let dmDetailsQuery: Observable<RxDocument<T, {}>[]> = obsOf([]);
@@ -479,7 +479,7 @@ export class ListDataSource<
     if (detailsQuery != null && hasDetailsQuery && this._dataModelManager.detailsManager != null) {
       dmDetailsQuery = this._dataModelManager.detailsManager.query(detailsQuery).pipe(
         take(1),
-        catchError(err => throwError(err) as Observable<RxDocument<T, {}>[]>),
+        catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
       );
     }
 

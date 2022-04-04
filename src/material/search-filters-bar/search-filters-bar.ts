@@ -210,7 +210,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);
     this._dialogSub = this._dialogRef
       .afterClosed()
-      .pipe(catchError(err => throwError(err) as Observable<boolean>))
+      .pipe(catchError(err => throwError(() => err) as Observable<boolean>))
       .subscribe((search: boolean) => {
         if (search) {
           this._fts.updateAdditionalFilters();
@@ -336,7 +336,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       .initializeFilters(this.basicFilters)
       .pipe(
         take(1),
-        catchError(err => throwError(err) as Observable<FormGroup[]>),
+        catchError(err => throwError(() => err) as Observable<FormGroup[]>),
       )
       .subscribe(formGroups => {
         this.basicFilters = [...this.basicFilters, ...formGroups];

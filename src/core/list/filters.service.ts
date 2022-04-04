@@ -220,14 +220,14 @@ export class FiltersService<T extends Model = Model> {
         }
         return defaultModelFilters.concat(defaultAdditionalFilters);
       }),
-      catchError(err => throwError(err) as Observable<FilterGroup[]>),
+      catchError(err => throwError(() => err) as Observable<FilterGroup[]>),
     );
 
     this._loadingPresetSub.unsubscribe();
     this._loadingPresetSub = this._loadPresetEvent
       .pipe(
         withLatestFrom(this._route.queryParams.pipe(map(f => f['filters']))),
-        catchError(err => throwError(err) as Observable<[any, any]>),
+        catchError(err => throwError(() => err) as Observable<[any, any]>),
       )
       .subscribe(([loadEvent, preset]) => {
         if (loadEvent) {
@@ -249,7 +249,7 @@ export class FiltersService<T extends Model = Model> {
         }
         return this._updateQueryString(allFilters);
       }),
-      catchError(err => throwError(err) as Observable<string>),
+      catchError(err => throwError(() => err) as Observable<string>),
     );
   }
 
@@ -393,7 +393,7 @@ export class FiltersService<T extends Model = Model> {
       map(filters => filters.find(f => f.name === filterName)),
       take(1),
     );
-    return filterItem.pipe(catchError(err => throwError(err) as Observable<FilterItem>));
+    return filterItem.pipe(catchError(err => throwError(() => err) as Observable<FilterItem>));
   }
 
   /**
@@ -529,7 +529,7 @@ export class FiltersService<T extends Model = Model> {
           }
           return [filterItems, basicFilters];
         }),
-        catchError(err => throwError(err) as Observable<[FilterItem[], FilterItem[]]>),
+        catchError(err => throwError(() => err) as Observable<[FilterItem[], FilterItem[]]>),
       )
       .subscribe(([filters, currentFilters]) => {
         const currentValue = currentFilters;
@@ -538,7 +538,7 @@ export class FiltersService<T extends Model = Model> {
 
     this.loadPresetTrigger();
     return obsOf(this._basicAdditionalFormGroups).pipe(
-      catchError(err => throwError(err) as Observable<FormGroup[]>),
+      catchError(err => throwError(() => err) as Observable<FormGroup[]>),
     );
   }
 
