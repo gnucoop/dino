@@ -20,42 +20,35 @@
  *
  */
 
-import {DeepReadonlyObject, RxDocument} from 'rxdb';
-
 import {BaseDataModelManager} from './base-data-model-manager';
 import {PermissionContextService} from './data-context-service';
 import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {IDataModelManager} from './data-model-manager-interface';
 import {Permission} from './data-permission';
-import {DataService} from './data-service';
-import {IDataService} from './data-service-interface';
 import {Model} from './model';
+import {OnlineDataService} from './online-data-service';
 
 /**
  * This class will manage the data model, providing basic and generic Crud methods
  * to all services extending it.
- * All the operations will be performed on the RxDb collection named as _modelName,
- * provided in the DataModelManager constructor.
+ * All the operations will be performed on the remote database table named as _modelName,
+ * provided in the OnlineDataModelManager constructor.
  */
-export abstract class DataModelManager<T extends Model = Model>
-  extends BaseDataModelManager<T, RxDocument<T>>
-  implements IDataModelManager<T, RxDocument<T>>
+export abstract class OnlineDataModelManager<T extends Model = Model>
+  extends BaseDataModelManager<T, T>
+  implements IDataModelManager<T, T>
 {
   /**
    * The data manager to get details in an expandable list
    */
-  override detailsManager: DataModelManager<any>;
+  override detailsManager: OnlineDataModelManager<any>;
 
   constructor(
     createParams: DataCreateCollectionRequest,
-    dataService: DataService,
+    dataService: OnlineDataService,
     contextService: PermissionContextService,
     permissions: Permission[] = [],
   ) {
-    super(createParams, dataService as IDataService, contextService, permissions);
-  }
-
-  protected override _objectToJSON(obj: RxDocument<T, {}>): DeepReadonlyObject<T> {
-    return obj.toJSON() as DeepReadonlyObject<T>;
+    super(createParams, dataService, contextService, permissions);
   }
 }

@@ -170,41 +170,11 @@ export interface DataListOptions {
 }
 
 // @public
-export abstract class DataModelManager<T extends Model = Model> {
-    constructor(createParams: DataCreateCollectionRequest, _dataService: DataService, _contextService: PermissionContextService, _permissions?: Permission[]);
-    addToContext(data: PermissionContextDataUpdate): void;
-    bulkCreate(data: InsertModel<T>[]): Observable<{
-        success: RxDocument<T>[];
-        error: any[];
-    }>;
-    bulkDelete(data: T[]): Observable<RxDocument<T>[] | null>;
-    canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean;
-    canDelete(object: RxDocument<T>, context?: PermissionContext<T>): boolean;
-    canModify(data: Partial<T> & {
-        id: string;
-    }, object: RxDocument<T>, context?: PermissionContext<T>): boolean;
-    canView(object: RxDocument<T>, context?: PermissionContext<T>): boolean;
-    get collectionChanged(): Observable<CollectionChangedEvent>;
-    get collectionName(): string;
-    get collectionSchema(): RxJsonSchema<T>;
-    create(obj: InsertModel<T>): Observable<RxDocument<T> | null>;
-    delete(data: string | T): Observable<RxDocument<T> | null>;
-    detailsKey: keyof T;
+export abstract class DataModelManager<T extends Model = Model> extends BaseDataModelManager<T, RxDocument<T>> implements IDataModelManager<T, RxDocument<T>> {
+    constructor(createParams: DataCreateCollectionRequest, dataService: DataService, contextService: PermissionContextService, permissions?: Permission[]);
     detailsManager: DataModelManager<any>;
-    generateAdditionalFilters(dataSchema?: any): any[];
-    get(id: string): Observable<RxDocument<T> | null>;
-    getSubData: (doc: T, querySelector?: any) => Observable<T[]>;
-    init(): Observable<boolean>;
-    list(options?: DataListOptions): Observable<RxDocument<T>[]>;
-    patch(data: Partial<T> & {
-        id: string;
-    }): Observable<RxDocument<T> | null>;
     // (undocumented)
-    get permissionContext(): Observable<PermissionContext>;
-    // (undocumented)
-    get permissions(): Permission[];
-    query(options: DataQueryOptions): Observable<RxDocument<T>[]>;
-    update(obj: T): Observable<RxDocument<T> | null>;
+    protected _objectToJSON(obj: RxDocument<T, {}>): DeepReadonlyObject<T>;
 }
 
 // @public (undocumented)
@@ -320,6 +290,42 @@ export interface DataUpsertRequest<T extends Model> extends DataRequest {
 export const DEFAULT_EXCLUDED_METRIC_KEYS: string[];
 
 // @public
+export interface IDataModelManager<T extends Model = Model, R extends T = T> {
+    addToContext(data: PermissionContextDataUpdate): void;
+    bulkCreate(data: InsertModel<T>[]): Observable<{
+        success: R[];
+        error: any[];
+    }>;
+    bulkDelete(data: T[]): Observable<R[] | null>;
+    canCreate(object: InsertModel<T>, context?: PermissionContext<T>): boolean;
+    canDelete(object: R, context?: PermissionContext<T>): boolean;
+    canModify(data: Partial<T> & {
+        id: string;
+    }, object: R, context?: PermissionContext<T>): boolean;
+    canView(object: R, context?: PermissionContext<T>): boolean;
+    readonly collectionChanged: Observable<CollectionChangedEvent>;
+    readonly collectionName: string;
+    create(obj: InsertModel<T>): Observable<R | null>;
+    delete(data: string | T): Observable<T | null>;
+    detailsKey: keyof T;
+    detailsManager: IDataModelManager<any>;
+    generateAdditionalFilters(dataSchema?: any): any[];
+    get(id: string): Observable<R | null>;
+    getSubData: (doc: T, querySelector?: any) => Observable<T[]>;
+    init(): Observable<boolean>;
+    list(options?: DataListOptions): Observable<R[]>;
+    patch(data: Partial<T> & {
+        id: string;
+    }): Observable<R | null>;
+    // (undocumented)
+    readonly permissionContext: Observable<PermissionContext>;
+    // (undocumented)
+    readonly permissions: Permission[];
+    query(options: DataQueryOptions): Observable<T[]>;
+    update(obj: T): Observable<R | null>;
+}
+
+// @public
 export interface IDataService {
     bulkInsert<T extends Model = Model, R extends T = T>(params: DataBulkInsertRequest<T>): Observable<BulkInsertResult<R>>;
     bulkUpdate<T extends Model = Model, R extends T = T>(params: DataFindRequest<T>, update: Partial<T>): Observable<R[]>;
@@ -368,6 +374,12 @@ export interface Model {
     id: string;
     is_deleted?: boolean;
     updated_at: string;
+}
+
+// @public
+export abstract class OnlineDataModelManager<T extends Model = Model> extends BaseDataModelManager<T, T> implements IDataModelManager<T, T> {
+    constructor(createParams: DataCreateCollectionRequest, dataService: OnlineDataService, contextService: PermissionContextService, permissions?: Permission[]);
+    detailsManager: OnlineDataModelManager<any>;
 }
 
 // @public
@@ -424,7 +436,7 @@ export class PermissionContextService {
     addToContext(param: PermissionContextDataUpdate): void;
     checkPermission<T extends Model = Model>(docId: string, collectionName: string, action: string, context?: PermissionContext<T>, isData?: boolean): boolean;
     getAllowedActions(collectionName: string, docId?: string, isData?: boolean): Observable<string[]>;
-    getMatchingMetric<T>(doc: RxDocument<T>, context?: PermissionContext<T>): boolean;
+    getMatchingMetric<T>(doc: T, context?: PermissionContext<T>): boolean;
     isActiveUserGuestOnly(permissions: {
         [key: string]: any;
     }): boolean;

@@ -22,7 +22,6 @@
 
 import {Injectable} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
-import {RxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {delay, map, retryWhen} from 'rxjs/operators';
 import {MetricsService} from './metrics.service';
@@ -182,16 +181,15 @@ export class PermissionContextService {
    * @param context The current permission context
    * @returns True if it matches
    */
-  getMatchingMetric<T>(doc: RxDocument<T>, context?: PermissionContext<T>): boolean {
+  getMatchingMetric<T>(doc: T, context?: PermissionContext<T>): boolean {
     const contextMetrics: {[metricType: string]: string[]} = context?.user_metrics;
     if (contextMetrics == null || doc == null) {
       return true;
     }
     const activeMetrics = this._ms.activeMetrics.value;
-    const jsonDoc = doc.toJSON() as {[key: string]: any};
     let ret = true;
     for (let mt of activeMetrics) {
-      const docMetric = jsonDoc[`${mt.metricName}_ref_id`];
+      const docMetric = doc[`${mt.metricName}_ref_id` as keyof T] as unknown as string;
       if (
         docMetric != null &&
         !Array.isArray(docMetric) &&
