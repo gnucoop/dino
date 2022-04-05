@@ -275,7 +275,11 @@ export class EditReport implements OnInit, AfterViewInit {
           }
         });
         const context = {forms: contextForms, schemas: contextSchemas, report_data: rData};
-        this._currentReportInstance = createReportInstance(rSchema.schema, context, this._translateService);
+        this._currentReportInstance = createReportInstance(
+          rSchema.schema,
+          context,
+          this._translateService,
+        );
         return this._currentReportInstance;
       }),
     );
