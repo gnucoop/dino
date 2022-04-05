@@ -1,0 +1,13 @@
+<ng-container *ngIf="(submitted|async) === false ; else successMsg">
+  <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
+    <ajf-form
+      [form]="currentForm"
+      [saveDisabled]="(isValid|async) === false"
+      [topBar]="true"
+      (formAction)="onFormAction($event)"
+    ></ajf-form>
+  </div>
+</ng-container>
+<ng-template #successMsg>
+  <ng-content select=".dino-edit-public-form-success"></ng-content>
+</ng-template>

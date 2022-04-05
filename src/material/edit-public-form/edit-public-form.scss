@@ -1,0 +1,9 @@
+dino-edit-public-form {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+
+  .dino-edit-form-step-container {
+    flex: 1 1 auto;
+  }
+}

@@ -8,6 +8,7 @@ entryPoints = [
     "edit-form",
     "export-form",
     "edit-form-schema",
+    "edit-public-form",
     "edit-report",
     "edit-report-schema",
     "floating-button",
