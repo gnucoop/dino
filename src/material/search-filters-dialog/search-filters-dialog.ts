@@ -208,6 +208,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
       validation: item.validation,
       visibility: item.visibility != null ? item.visibility : {condition: 'true'},
       isFilterItemDetails: item.isFilterItemDetails,
+      isRepeatingSlideFilter: item.isRepeatingSlideFilter,
     };
     return ftItem;
   }

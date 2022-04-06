@@ -335,6 +335,7 @@ export class SearchFiltersWidget
   conditionOperatorByFieldType(type: AjfFieldType): Operator[] {
     switch (type) {
       case AjfFieldType.Number:
+      case AjfFieldType.Date:
       case AjfFieldType.DateInput:
         return NUMBER_CONDITION_OPERATORS;
       case AjfFieldType.MultipleChoice:
