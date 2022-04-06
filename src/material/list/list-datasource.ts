@@ -136,6 +136,18 @@ export class ListDataSource<
   }
 
   /**
+   * The maximum index of repeating slides instances on which filtering is performed.
+   * Defaults to 9.
+   */
+  private _maxRepeatingSlidesFiltering: number = 9;
+  set maxRepeatingSlidesFiltering(max: number) {
+    if (max == null) {
+      return;
+    }
+    this._maxRepeatingSlidesFiltering = max;
+  }
+
+  /**
    * The Filters Component associated to this ListDataSource (eg. a SearchFiltersBar)
    */
   private _filtersComponent: BehaviorSubject<SearchFiltersComponent | null> =
@@ -358,21 +370,45 @@ export class ListDataSource<
       switch (item.name) {
         case 'keyword':
           if (dataHeaders) {
-            const dataHeadersSearchExpressions = dataHeaders.map(header => {
-              return {
-                [`data.${header.column}`]: {
-                  '$regex': new RegExp(item.value, 'i'),
-                },
-              };
-            });
-            const headersSearchExpressions = dataHeaders.map(header => {
-              return {
-                [`${header.column}`]: {
-                  '$regex': new RegExp(item.value, 'i'),
-                },
-              };
-            });
-            selector['$or'] = [...dataHeadersSearchExpressions, ...headersSearchExpressions];
+            const dataHeadersSearchExpressions = dataHeaders
+              .filter(h => h.dataColumn)
+              .map(header => {
+                // Repeating Slide Field Filter
+                if (header.repeatingSlideColumn) {
+                  const repeatedFilters: {[key: string]: {$regex: RegExp}}[] = [];
+                  let slideIdx = 0;
+                  while (slideIdx <= this._maxRepeatingSlidesFiltering) {
+                    repeatedFilters.push({
+                      [`data.${header.column}__${slideIdx}`]: {
+                        '$regex': new RegExp(item.value, 'i'),
+                      },
+                    });
+                    slideIdx++;
+                  }
+                  return repeatedFilters;
+                }
+                // Single Slide Field Filter
+                else {
+                  return {
+                    [`data.${header.column}`]: {
+                      '$regex': new RegExp(item.value, 'i'),
+                    },
+                  };
+                }
+              });
+            const headersSearchExpressions = dataHeaders
+              .filter(h => !h.dataColumn)
+              .map(header => {
+                return {
+                  [`${header.column}`]: {
+                    '$regex': new RegExp(item.value, 'i'),
+                  },
+                };
+              });
+            selector['$or'] = [
+              ...dataHeadersSearchExpressions.flat(1),
+              ...headersSearchExpressions,
+            ];
           }
 
           break;
@@ -395,6 +431,7 @@ export class ListDataSource<
           }
           break;
         default:
+          // Basic Filter
           if (!item.isAdditionalFilter) {
             if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
               this._addNestedProps(
@@ -410,18 +447,41 @@ export class ListDataSource<
                 item.operator?.options,
               );
             }
+            // Additional Filter
           } else {
-            this._addNestedProps(
-              selector,
-              [
-                this._isFormDataList
-                  ? `data.${item.name.trim().toLowerCase()}`
-                  : `data.data.${item.name.trim().toLowerCase()}`,
-                item.operator ? item.operator.value : '$eq',
-              ],
-              item.value,
-              item.operator?.options,
-            );
+            // Repeating Slide Field Filter
+            if (item.isRepeatingSlideFilter) {
+              const repeatedFilters: {[key: string]: any}[] = [];
+              let slideIdx = 0;
+              while (slideIdx <= this._maxRepeatingSlidesFiltering) {
+                repeatedFilters.push({
+                  [this._isFormDataList
+                    ? `data.${item.name}__${slideIdx}`
+                    : `data.data.${item.name}__${slideIdx}`]: {
+                    [item.operator ? item.operator.value : '$eq']: item.value,
+                  },
+                });
+                slideIdx++;
+              }
+              if (selector['$or'] && selector['$or'].length) {
+                selector['$or'] = [...selector['$or'], ...repeatedFilters];
+              } else {
+                selector['$or'] = repeatedFilters;
+              }
+              // Single Slide Field Filter
+            } else {
+              this._addNestedProps(
+                selector,
+                [
+                  this._isFormDataList
+                    ? `data.${item.name.trim().toLowerCase()}`
+                    : `data.data.${item.name.trim().toLowerCase()}`,
+                  item.operator ? item.operator.value : '$eq',
+                ],
+                item.value,
+                item.operator?.options,
+              );
+            }
           }
           break;
       }

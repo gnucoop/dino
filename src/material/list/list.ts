@@ -636,7 +636,7 @@ export class SelectionList<T extends Model = Model>
 
     this.mainListContext = {
       dataSource: this._dataSource,
-      headers: new BehaviorSubject<ListHeader<T>[]>(this._headers),
+      headers: new BehaviorSubject<ListHeader<T>[]>(this.headers),
       displayedColumns: new BehaviorSubject<string[]>(this.displayedColumns),
       listRowActions: this._listRowActions,
       showPaginator: this.showPaginator,
@@ -677,7 +677,7 @@ export class SelectionList<T extends Model = Model>
       );
     });
 
-    this._headersUpdateEvt
+    this._headers
       .pipe(
         catchError(err => throwError(() => new Error(err))),
         takeUntil(this._mainUnsubscribe),
