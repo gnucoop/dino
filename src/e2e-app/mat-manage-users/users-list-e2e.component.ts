@@ -18,8 +18,8 @@ import {MatUsersEditorE2E} from './users-editor-e2e.component';
 export class MatUsersListE2E implements OnInit {
   readonly headers: ListHeader<UserData>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'email', label: 'Email'},
-    {column: 'full_name', label: 'Full Name'},
+    {column: 'email', label: 'Email', displayed: true},
+    {column: 'full_name', label: 'Full Name', displayed: true},
   ];
 
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

@@ -167,6 +167,8 @@ export class ListDataSource<T extends Model = Model, AD extends Model = Model> e
     getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void;
     get getSort(): MatSort | null;
     // (undocumented)
+    set maxRepeatingSlidesFiltering(max: number);
+    // (undocumented)
     get modelSchema(): RxJsonSchema<T>;
     queryDM(queryString: string, permissionContext: PermissionContext, additionalDataSchema?: AD | null, page?: PageEvent | null, sort?: Sort | null, dataHeaders?: ListHeader<T>[]): DataQueryOptions;
     refreshListData: BehaviorSubject<CollectionChangedEvent>;

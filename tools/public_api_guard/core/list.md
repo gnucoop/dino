@@ -67,6 +67,7 @@ export interface FilterItem extends Partial<AjfField> {
     formControlName?: string;
     isAdditionalFilter?: boolean;
     isFilterItemDetails?: boolean;
+    isRepeatingSlideFilter?: boolean;
     isValid?: boolean;
     name: string;
     operator?: Operator;
@@ -167,8 +168,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     // (undocumented)
     get headers(): ListHeader<T>[];
     set headers(headers: ListHeader<T>[]);
-    protected _headers: ListHeader<T>[];
-    protected _headersUpdateEvt: EventEmitter_2<ListHeader<T>[]>;
+    protected _headers: BehaviorSubject<ListHeader<T>[]>;
     protected _loadColumnsSelectionPreset(): ListHeader<T>[] | null;
     processAction(action: ListAction, items: T | T[], isDetails?: boolean): void;
     // (undocumented)
