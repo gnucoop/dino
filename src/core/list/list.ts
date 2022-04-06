@@ -23,7 +23,7 @@
 import {ChangeDetectorRef, Directive, EventEmitter, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Model} from '@dino/core/data';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 
 import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
@@ -41,11 +41,6 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   protected _actionEvent: EventEmitter<{action: ListAction; items: T | T[]; isDetails: boolean}> =
     new EventEmitter<{action: ListAction; items: T | T[]; isDetails: boolean}>();
-
-  /**
-   * An  event emitted whenever the liste headers are updated.
-   */
-  protected _headersUpdateEvt: EventEmitter<ListHeader<T>[]> = new EventEmitter<ListHeader<T>[]>();
 
   /**
    * The model of the "data" property associated with the main model.
@@ -96,10 +91,10 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   /**
    * The list column headers
    */
-  protected _headers: ListHeader<T>[] = [];
+  protected _headers: BehaviorSubject<ListHeader<T>[]> = new BehaviorSubject<ListHeader<T>[]>([]);
 
   get headers(): ListHeader<T>[] {
-    return this._headers;
+    return this._headers.value;
   }
 
   /**
@@ -124,8 +119,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   set headers(headers: ListHeader<T>[]) {
     const setHeaders = this._loadColumnsSelectionPreset() ?? headers;
     this.setDisplayedColumns(setHeaders);
-    this._headers = setHeaders;
-    this._headersUpdateEvt.emit(this._headers);
+    this._headers.next(setHeaders);
   }
 
   /**

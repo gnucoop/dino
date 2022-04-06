@@ -89,6 +89,10 @@ export interface FilterItem extends Partial<AjfField> {
    */
   isAdditionalFilter?: boolean;
   /**
+   * Specifies if this filter refers to a field belonging to a Repeating Slide
+   */
+  isRepeatingSlideFilter?: boolean;
+  /**
    * States the validation state of the filter
    */
   isValid?: boolean;
@@ -221,6 +225,8 @@ export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
   [AjfFieldType.String]: {label: 'Like', value: '$regex', options: 'i'},
   [AjfFieldType.Text]: {label: 'Like', value: '$regex', options: 'i'},
   [AjfFieldType.Number]: {label: '==', value: '$eq'},
+  [AjfFieldType.DateInput]: {label: '==', value: '$eq'},
+  [AjfFieldType.Date]: {label: '==', value: '$eq'},
   [AjfFieldType.MultipleChoice]: {label: 'is', value: '$in'},
 };
 
