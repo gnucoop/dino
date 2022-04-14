@@ -59,6 +59,7 @@ export const generateAdditionalFilters = (formSchema?: FormSchema): FilterGroup[
             ? getChoiceOriginFromRef(choicesOrigins, f.choicesOriginRef)
             : undefined;
           f.isAdditionalFilter = true;
+          f.isRepeatingSlideFilter = slides[i].nodeType == 4;
           return f;
         }),
       } as FilterGroup);

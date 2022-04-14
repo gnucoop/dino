@@ -17,6 +17,7 @@ ng_module(
         "//src/core/auth",
         "//src/core/cases",
         "//src/core/forms",
+        "//src/core/langs",
         "//src/core/locations",
         "//src/core/organizations",
         "//src/core/projects",

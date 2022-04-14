@@ -68,7 +68,9 @@ export class LangManager extends DataModelManager<Lang> {
 
   // le langs storate su django
   readonly langsStored$ = new BehaviorSubject<Lang[]>([]);
-  readonly langsShowed$: Observable<Lang[]> = this.langsStored$.pipe(
+  readonly langsShowed$: Observable<Lang[]> = this.query({
+    selector: {is_deleted: {$eq: false}},
+  }).pipe(
     map((langsStored: Lang[]) => {
       const langsShowed: Lang[] = [];
 
@@ -84,7 +86,6 @@ export class LangManager extends DataModelManager<Lang> {
           langsShowed.push({name: lang, schema: translation} as Lang);
         }
       });
-
       return langsShowed;
     }),
   );
@@ -215,7 +216,7 @@ export class LangManager extends DataModelManager<Lang> {
         catchError(e => {
           return obsOf([]);
         }),
-        map(r => r.filter(l => !l.deleted)),
+        map(r => r.filter(l => !l.is_deleted)),
       )
       .subscribe(langs => {
         this.langsStored$.next(langs);
@@ -257,7 +258,10 @@ export class LangManager extends DataModelManager<Lang> {
       switchMap(() => iif(() => this.newLang != null, obsOf(this.newLang as Lang), savePipe)),
       take(1),
       switchMap(l => this.saveLang(l)),
-      map((l: Lang) => {
+      map((l: Lang | null) => {
+        if (l == null) {
+          return;
+        }
         const langsStoredNames = this.langsStored$.value.map((lang: Lang) => lang.name);
         const idx = langsStoredNames.indexOf(l.name);
         if (idx > -1 && this.langsStored$.value[idx].id) {
@@ -340,10 +344,24 @@ export class LangManager extends DataModelManager<Lang> {
     );
   }
 
-  saveLang(lang: LangCreate): Observable<Lang> {
-    return this.patch(lang as Lang).pipe(
-      catchError(_ => this.create(lang)),
-      map(l => l || {...lang, id: '', created_at: '', updated_at: ''}),
+  saveLang(lang: LangCreate): Observable<Lang | null> {
+    if (lang == null) {
+      return obsOf(null);
+    }
+    return this.query({selector: {name: {$eq: lang.name}}}).pipe(
+      switchMap(queryRes => {
+        if (!queryRes.length || queryRes[0] == null) {
+          return this.create(lang);
+        }
+        const upDoc: Partial<Lang> & {id: string} = {
+          schema: {...queryRes[0].schema, ...lang.schema},
+          id: queryRes[0].id,
+        };
+        return this.patch(upDoc).pipe(
+          catchError(_ => this.create(lang)),
+          map(l => l || {...lang, id: '', created_at: '', updated_at: ''}),
+        );
+      }),
     );
   }
 

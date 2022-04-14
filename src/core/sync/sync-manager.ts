@@ -33,6 +33,7 @@ import {SyncModule} from './sync.module';
 import {combineLatest, Observable} from 'rxjs';
 import {shareReplay, skipWhile, switchMap, take} from 'rxjs/operators';
 import {AuthService} from '@dino/core/auth';
+import {LangManager} from '@dino/core/langs';
 
 /**
  * Service that manages the Initialization of rxCollections
@@ -51,6 +52,7 @@ export class SyncManager {
     private _um: UserDataManager,
     private _ur: UserRoleManager,
     private _ug: UserGroupManager,
+    private _lm: LangManager,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -63,6 +65,7 @@ export class SyncManager {
       this._um.init(),
       this._ur.init(),
       this._ug.init(),
+      this._lm.init(),
     ];
     if (this._ar != null) {
       this._managersInit.push(this._ar.init());
