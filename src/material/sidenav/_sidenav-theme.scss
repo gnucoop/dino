@@ -37,7 +37,8 @@
         &.mat-drawer-push.mat-sidenav,
         &.mat-drawer-over.mat-sidenav {
             .mat-list-item {
-                &:hover {
+                &:hover,
+                &.sectionSelected {
                     background-color: mat-theming.get-color-from-palette($accent, lighter);
                     color: mat-theming.get-color-from-palette($accent);
                     box-shadow: 3px 0px 0px 0px mat-theming.get-color-from-palette($accent) inset;
@@ -71,8 +72,7 @@
 
         @if (meta.type-of($backdrop-color) == color) {
             background-color: color.invert($backdrop-color);
-        }
-        @else {
+        } @else {
             background-color: $backdrop-color;
             opacity: $opacity;
         }

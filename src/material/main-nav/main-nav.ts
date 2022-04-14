@@ -33,12 +33,12 @@ import {
 } from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {NavigationEnd, Router} from '@angular/router';
+import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService} from '@dino/core/data';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {BehaviorSubject, Observable, of as obsOf, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
@@ -120,6 +120,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
   userDisplayName: Observable<string | null>;
 
   /**
+   * The current Section
+   */
+  readonly currentSection: BehaviorSubject<Section | null> = new BehaviorSubject<Section | null>(
+    null,
+  );
+
+  /**
    * If true, the navigation bar and sidenav are displayed.
    * Should be false in the login page.
    */
@@ -148,33 +155,35 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _menuClickSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the the menu click event and performs the appropriate
+   * action on the sidenav.
+   */
+  private _currentSectionSub: Subscription = Subscription.EMPTY;
+
+  /**
    * A list of all public sections in the Dino app.
    */
-  private _sections: Section[];
-  get sections(): Section[] {
-    return this._sections;
-  }
+  readonly sections$: BehaviorSubject<Section[]> = new BehaviorSubject<Section[]>([]);
+
   @Input()
   set sections(sec: Section[]) {
     if (sec == null) {
       return;
     }
-    this._sections = sec;
+    this.sections$.next(sec);
   }
 
   /**
    * A list of all Admin only sections in the Dino app.
    */
-  private _adminSections: Section[] = [];
-  get adminSections(): Section[] {
-    return this._adminSections;
-  }
+  readonly adminSections$: BehaviorSubject<Section[]> = new BehaviorSubject<Section[]>([]);
+
   @Input()
   set adminSections(sec: Section[]) {
     if (sec == null) {
       return;
     }
-    this._adminSections = sec;
+    this.adminSections$.next(sec);
   }
 
   /**
@@ -213,6 +222,21 @@ export class MainNav implements AfterViewInit, OnDestroy {
     private _router: Router,
     private _cdr: ChangeDetectorRef,
   ) {
+    this._currentSectionSub = combineLatest([
+      this._router.events.pipe(
+        filter(evt => evt instanceof NavigationEnd || evt instanceof NavigationStart),
+      ),
+      this.sections$,
+      this.adminSections$,
+    ]).subscribe(([evt, sections, adminSections]) => {
+      const navEvt = evt as NavigationEnd | NavigationStart;
+      const allSections = [...sections, ...adminSections];
+      const selSection: Section | undefined = allSections.find(section =>
+        navEvt.url.includes(section.url),
+      );
+      this.currentSection.next(selSection ?? null);
+    });
+
     this.userDisplayName = this.authService.authenticated.pipe(
       switchMap(auth => {
         if (auth) {
@@ -277,6 +301,19 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Checks if a section is selected in the menu.
+   *
+   * @param section The section to be checked
+   * @returns True if the section is currently selected
+   */
+  isSectionSelected(section: Section): boolean {
+    if (section != null && section == this.currentSection.value) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * User logout method.
    */
   logout(): void {
@@ -294,5 +331,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this._menuClickSub.unsubscribe();
     this._menuToggleSub.unsubscribe();
+    this._currentSectionSub.unsubscribe();
   }
 }

@@ -17,7 +17,12 @@
   <div class="dino-toolbar-actions">
     <ng-container *ngIf="linkIcons|async as actionLinkIcons">
       <ng-container *ngFor="let linkIcon of actionLinkIcons">
-        <a [href]="linkIcon.url" target="_blank" class="dino-link-button" aria-label="Toolbar action">
+        <a
+          [href]="linkIcon.url"
+          target="_blank"
+          class="dino-link-button"
+          aria-label="Toolbar action"
+        >
           <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
         </a>
       </ng-container>
@@ -59,8 +64,9 @@
       <a
         mat-list-item
         [disableRipple]="true"
-        *ngFor="let section of sections"
+        *ngFor="let section of sections$|async"
         [attr.aria-label]="section.label|transloco"
+        [class.sectionSelected]="isSectionSelected(section)"
         [routerLink]="[section.url]"
         (click)="menuClick()"
         aria-label="Section"
@@ -69,21 +75,24 @@
         <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
       </a>
 
-      <ng-container *ngIf="adminSections && adminSections.length > 0 && (isAdmin|async)">
-        <mat-divider></mat-divider>
-        <mat-divider></mat-divider>
-        <a
-          mat-list-item
-          [disableRipple]="true"
-          *ngFor="let adminSection of adminSections"
-          [attr.aria-label]="adminSection.label"
-          [routerLink]="[adminSection.url]"
-          (click)="menuClick()"
-          aria-label="Admin Section"
-        >
-          <mat-icon>{{adminSection.icon}}</mat-icon>
-          <span *ngIf="extendedSidenav|async">{{adminSection.label}}</span>
-        </a>
+      <ng-container *ngIf="adminSections$|async as adminSections">
+        <ng-container *ngIf="adminSections.length > 0 && (isAdmin|async)">
+          <mat-divider></mat-divider>
+          <mat-divider></mat-divider>
+          <a
+            mat-list-item
+            [disableRipple]="true"
+            *ngFor="let adminSection of adminSections"
+            [attr.aria-label]="adminSection.label"
+            [class.sectionSelected]="isSectionSelected(adminSection)"
+            [routerLink]="[adminSection.url]"
+            (click)="menuClick()"
+            aria-label="Admin Section"
+          >
+            <mat-icon>{{adminSection.icon}}</mat-icon>
+            <span *ngIf="extendedSidenav|async">{{adminSection.label}}</span>
+          </a>
+        </ng-container>
       </ng-container>
 
       <a
