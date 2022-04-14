@@ -38,6 +38,7 @@ import {ActivatedRoute} from '@angular/router';
 import {AuthService} from '@dino/core/auth';
 import {MetricsService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
+import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
@@ -109,6 +110,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _rs: ReportSchemaManager,
     private _rd: ReportDataManager,
+    private _udm: UserDataManager,
     private _location: Location,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
@@ -162,12 +164,16 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
 
     this._saveReportSub = this._saveReportEvt
       .pipe(
-        withLatestFrom(this._reportSchemaId, this._formMetricsSelector),
-        switchMap(([_, reportSchemaId, formMetricsSelector]) => {
+        withLatestFrom(
+          this._reportSchemaId,
+          this._formMetricsSelector,
+          this._udm.getActiveUserData(),
+        ),
+        switchMap(([_, reportSchemaId, formMetricsSelector, userData]) => {
           const dateIntervalValue = this.dateIntervalForm.value;
           let newItem: {[key: string]: any} = {};
           newItem.report_schema_ref_id = reportSchemaId;
-          newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
+          newItem.user_data_ref_id = userData?.id;
           newItem.area_ref_id = null;
           newItem.case_ref_id = null;
           newItem.location_ref_id = null;
