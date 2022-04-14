@@ -43,6 +43,7 @@ import {ActivatedRoute} from '@angular/router';
 import {AuthService} from '@dino/core/auth';
 import {DataModelManager, MetricsService, Model} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
@@ -142,6 +143,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     private _fs: FormSchemaManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
+    private _udm: UserDataManager,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
   ) {}
@@ -223,14 +225,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._saveFormSub = this._saveFormEvt
       .pipe(
-        withLatestFrom(this._isFormData, this._formSchemaId, this._formMetricsSelector),
-        switchMap(([_, isFormData, formSchemaId, formMetricsSelector]) => {
+        withLatestFrom(
+          this._isFormData,
+          this._formSchemaId,
+          this._formMetricsSelector,
+          this._udm.getActiveUserData(),
+        ),
+        switchMap(([_, isFormData, formSchemaId, formMetricsSelector, userData]) => {
           const formValue = this._rendererService.getFormValue();
           let newItem: {[key: string]: any} = {};
           if (isFormData) {
             newItem.data = formValue;
             newItem.form_schema_ref_id = formSchemaId;
-            newItem.user_data_ref_id = this._authService.getUserInfo()?.id;
+            newItem.user_data_ref_id = userData?.id;
             newItem.area_ref_id = null;
             newItem.case_ref_id = null;
             newItem.location_ref_id = null;
@@ -251,7 +258,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           } else {
             newItem.data.data = formValue;
             newItem.data.form_schema_ref_id = formSchemaId;
-            newItem.data.user_data_ref_id = this._authService.getUserInfo()?.id;
+            newItem.data.user_data_ref_id = userData?.id;
           }
 
           return this._dataModelManager.create(newItem as T);
