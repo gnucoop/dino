@@ -37,12 +37,18 @@
         &.mat-drawer-push.mat-sidenav,
         &.mat-drawer-over.mat-sidenav {
             .mat-list-item {
-                transition: background-color ease 0.25s;
+                transition: all ease 0.5s;
                 &:hover,
                 &.sectionSelected {
                     background-color: mat-theming.get-color-from-palette($accent, lighter);
                     color: mat-theming.get-color-from-palette($accent);
                     box-shadow: 3px 0px 0px 0px mat-theming.get-color-from-palette($accent) inset;
+                }
+                &:hover {
+                    opacity: 0.6;
+                }
+                &.sectionSelected {
+                    opacity: 1;
                 }
             }
         }

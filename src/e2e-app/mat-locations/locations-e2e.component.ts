@@ -12,9 +12,9 @@ export class MatLocationsE2E {
   readonly manager: LocationManager;
   readonly headers: ListHeader<Location>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name'},
-    {column: 'parent_name', label: 'Parent Location'},
-    {column: 'coordinates', label: 'Coordinates'},
+    {column: 'name', label: 'Name', displayed: true},
+    {column: 'parent_name', label: 'Parent Location', displayed: true},
+    {column: 'coordinates', label: 'Coordinates', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];

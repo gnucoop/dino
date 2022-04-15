@@ -12,10 +12,10 @@ export class MatOrganizationsE2E {
   readonly manager: OrganizationManager;
   readonly headers: ListHeader<Organization>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name'},
-    {column: 'parent_name', label: 'Parent Organization'},
-    {column: 'logo_path', label: 'Logo Path'},
-    {column: 'website_url', label: 'Website Url'},
+    {column: 'name', label: 'Name', displayed: true},
+    {column: 'parent_name', label: 'Parent Organization', displayed: true},
+    {column: 'logo_path', label: 'Logo Path', displayed: true},
+    {column: 'website_url', label: 'Website Url', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
