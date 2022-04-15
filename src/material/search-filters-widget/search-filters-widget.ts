@@ -137,20 +137,6 @@ export class SearchFiltersWidget
   private _changeFiltersSub: Subscription = Subscription.EMPTY;
 
   /**
-   * State of the Widget visibility
-   */
-  private _widgetVisibility: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  get widgetVisibility(): BehaviorSubject<boolean> {
-    return this._widgetVisibility;
-  }
-
-  /**
-   * Subscribes to the temporary filters list and
-   * determines the state of the widget's visibility
-   */
-  private _widgetVisibilitySub: Subscription = Subscription.EMPTY;
-
-  /**
    * State of the filter validation
    */
   private _validation: boolean;
@@ -196,19 +182,6 @@ export class SearchFiltersWidget
     this._operatorValue.next(this._widgetData.operator);
     this._matToggleValue.next(this._widgetData.active);
 
-    // Here we check if the visibility conditions of the widget are met
-    if (
-      this._widgetData.visibilityConditions != null &&
-      this._widgetData.visibilityConditions.condition != 'true'
-    ) {
-      this._widgetVisibilitySub = this._fs.temporaryFilters.subscribe(_ => {
-        const conditionVerified = this._fs.checkCondition(this._widgetData.visibilityConditions);
-        if (conditionVerified !== this._widgetVisibility.value) {
-          this._widgetVisibility.next(conditionVerified);
-        }
-      });
-    }
-
     this._formValueChanges = this.formGroup.pipe(
       switchMap(fg => (fg ? fg.valueChanges : obsOf(null))),
     );
@@ -217,7 +190,6 @@ export class SearchFiltersWidget
       this._formValueChanges,
       this._matToggleValue,
       this.operatorValue,
-      this._widgetVisibility,
     ])
       .pipe(
         debounceTime(300),
@@ -226,7 +198,7 @@ export class SearchFiltersWidget
             throwError(() => err) as Observable<[{[key: string]: any}, boolean, Operator, boolean]>,
         ),
       )
-      .subscribe(([formValue, toggleValue, operatorValue, visibility]) => {
+      .subscribe(([formValue, toggleValue, operatorValue]) => {
         if (!formValue) {
           return;
         }
@@ -240,10 +212,10 @@ export class SearchFiltersWidget
           );
           this.filterItemData.isValid = this._validation;
         });
-        if (toggleValue && this.filterItemData.value != null && visibility) {
+        if (toggleValue && this.filterItemData.value != null) {
           this._widgetData.active = true;
           this.includeFilter.emit(this.filterItemData);
-        } else if ((!toggleValue || !visibility) && this._widgetData.active) {
+        } else if (!toggleValue && this._widgetData.active) {
           this._widgetData.active = false;
           this.excludeFilter.emit(this.filterItemData);
         }
@@ -294,9 +266,7 @@ export class SearchFiltersWidget
     };
     const ctx = Object.create({});
     ctx[filterItem.name] = fieldValue;
-    const filterVisibility = filterItem.visibility;
     const form = AjfFormSerializer.fromJson(formSchema, ctx);
-    form.nodes[0].visibility = filterVisibility;
 
     this.form = form;
     this._widgetName = filterItem.name;
@@ -307,7 +277,6 @@ export class SearchFiltersWidget
       operator: filterItem.operator,
       active: fieldValue != null,
       validationConditions: filterItem.validation,
-      visibilityConditions: filterVisibility ?? {condition: 'true'},
     };
   }
 
@@ -352,7 +321,7 @@ export class SearchFiltersWidget
    * @returns The new slide toggle state
    */
   checkToggleDisabled(): boolean {
-    if (!this._widgetVisibility.value || !this._validation) {
+    if (!this._validation) {
       return true;
     }
     const formValue = this.getWidgetFormValue();
@@ -381,12 +350,10 @@ export class SearchFiltersWidget
     super.ngOnDestroy();
     this._changeFiltersSub.unsubscribe();
     this._toggleSub.unsubscribe();
-    this._widgetVisibilitySub.unsubscribe();
 
     this.includeFilter.complete();
     this.excludeFilter.complete();
     this._matToggleValue.complete();
     this._operatorValue.complete();
-    this._widgetVisibility.complete();
   }
 }

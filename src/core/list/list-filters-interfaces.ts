@@ -122,10 +122,6 @@ export interface WidgetData {
    * WidgetFilter validation conditions
    */
   validationConditions?: AjfValidationGroup;
-  /**
-   * WidgetFilter visibility conditions
-   */
-  visibilityConditions: AjfCondition;
 }
 
 /**
