@@ -343,8 +343,13 @@ export class ExportForm implements AfterViewInit, OnDestroy {
               });
             if (Object.keys(exportCtx).length > 0) {
               this._dinoFields.forEach(field => {
-                exportCtx[field] = ctx.dino[field];
+                const isDinoRefField = field.includes('_ref_id');
+                const dinoField = isDinoRefField ? field.replace('_ref_id', '') : field;
+                exportCtx[field] = isDinoRefField ? ctx.dino[dinoField].id : ctx.dino[dinoField];
               });
+              if (ctx.dino['user_data'] != null) {
+                exportCtx['user_data_full_name'] = ctx.dino['user_data'].full_name;
+              }
               const metricManagers = this._metricManagers.filter(mm => mm != null);
               metricManagers.forEach(manager => {
                 if (manager != null) {
@@ -360,7 +365,6 @@ export class ExportForm implements AfterViewInit, OnDestroy {
               exportCtxList.push(exportCtx);
             }
           });
-
           return exportCtxList;
         }),
       )
