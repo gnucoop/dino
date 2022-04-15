@@ -251,7 +251,6 @@ export interface WidgetData {
     form: AjfForm;
     operator: Operator;
     validationConditions?: AjfValidationGroup;
-    visibilityConditions: AjfCondition;
 }
 
 // (No @packageDocumentation comment for this package)

@@ -22,7 +22,6 @@ ng_module(
         ":create-report.css",
     ] + glob(["**/*.html"]),
     deps = [
-        "//src/core/auth",
         "//src/core/data",
         "//src/core/reports",
         "//src/core/users",

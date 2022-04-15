@@ -39,7 +39,7 @@
             .mat-list-item {
                 transition: all ease 0.5s;
                 &:hover,
-                &.sectionSelected {
+                &.dino-section-selected {
                     background-color: mat-theming.get-color-from-palette($accent, lighter);
                     color: mat-theming.get-color-from-palette($accent);
                     box-shadow: 3px 0px 0px 0px mat-theming.get-color-from-palette($accent) inset;
@@ -47,7 +47,7 @@
                 &:hover {
                     opacity: 0.6;
                 }
-                &.sectionSelected {
+                &.dino-section-selected {
                     opacity: 1;
                 }
             }
@@ -79,7 +79,8 @@
 
         @if (meta.type-of($backdrop-color) == color) {
             background-color: color.invert($backdrop-color);
-        } @else {
+        }
+        @else {
             background-color: $backdrop-color;
             opacity: $opacity;
         }

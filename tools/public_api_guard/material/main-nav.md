@@ -36,18 +36,20 @@ import { UserGroupManager } from '@dino/core/users';
 // @public
 export class MainNav implements AfterViewInit, OnDestroy {
     constructor(networkStatusService: NetworkStatusService, breakpointObserver: BreakpointObserverService, metricsService: MetricsService, authService: AuthService, dataService: DataService, userGroupManager: UserGroupManager, userDataManager: UserDataManager, snackbar: MatSnackBar, _router: Router, _cdr: ChangeDetectorRef);
+    readonly adminSections$: BehaviorSubject<Section[]>;
     // (undocumented)
-    get adminSections(): Section[];
     set adminSections(sec: Section[]);
     // (undocumented)
     readonly authService: AuthService;
     // (undocumented)
     readonly breakpointObserver: BreakpointObserverService;
+    readonly currentSection: BehaviorSubject<Section | null>;
     // (undocumented)
     readonly dataService: DataService;
     extendedSidenav: BehaviorSubject<boolean>;
     isAdmin: Observable<boolean>;
     isLoading: BehaviorSubject<boolean>;
+    isSectionSelected(section: Section): boolean;
     isSyncing: Observable<boolean>;
     readonly linkIcons: BehaviorSubject<{
         icon: string;
@@ -71,8 +73,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
     // (undocumented)
     ngOnDestroy(): void;
     onRouterOutletLoading(elementRef: any): void;
+    readonly sections$: BehaviorSubject<Section[]>;
     // (undocumented)
-    get sections(): Section[];
     set sections(sec: Section[]);
     // (undocumented)
     set setLinkIcons(icons: {

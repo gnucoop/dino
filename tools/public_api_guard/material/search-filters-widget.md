@@ -80,8 +80,6 @@ export class SearchFiltersWidget extends AjfFormRenderer implements AfterViewIni
     // (undocumented)
     get widgetName(): string;
     // (undocumented)
-    get widgetVisibility(): BehaviorSubject<boolean>;
-    // (undocumented)
     static ɵcmp: i0.ɵɵComponentDeclaration<SearchFiltersWidget, "dino-search-filters-widget", never, { "filterItemData": "filterItemData"; }, { "includeFilter": "includeFilter"; "excludeFilter": "excludeFilter"; }, never, never>;
     // (undocumented)
     static ɵfac: i0.ɵɵFactoryDeclaration<SearchFiltersWidget, never>;

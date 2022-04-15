@@ -32,10 +32,11 @@ import { QueryList } from '@angular/core';
 import { ReportDataManager } from '@dino/core/reports';
 import { ReportSchema } from '@dino/core/reports';
 import { ReportSchemaManager } from '@dino/core/reports';
+import { UserDataManager } from '@dino/core/users';
 
 // @public
 export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
-    constructor(_authService: AuthService, _route: ActivatedRoute, _rs: ReportSchemaManager, _rd: ReportDataManager, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
+    constructor(_authService: AuthService, _route: ActivatedRoute, _rs: ReportSchemaManager, _rd: ReportDataManager, _udm: UserDataManager, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
     dateIntervalForm: FormGroup;
     formMetricsSelectorComponent: QueryList<FormMetricSelector>;
     hasOptionalMetrics: boolean;

@@ -35,7 +35,6 @@ import {
 import {FormControl, FormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {AuthService} from '@dino/core/auth';
 import {MetricsService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager} from '@dino/core/users';
@@ -106,7 +105,6 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
 
   constructor(
-    private _authService: AuthService,
     private _route: ActivatedRoute,
     private _rs: ReportSchemaManager,
     private _rd: ReportDataManager,

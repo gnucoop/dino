@@ -40,7 +40,6 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {AuthService} from '@dino/core/auth';
 import {DataModelManager, MetricsService, Model} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {UserDataManager} from '@dino/core/users';
@@ -138,7 +137,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent: QueryList<FormMetricSelector>;
 
   constructor(
-    private _authService: AuthService,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
     private _rendererService: AjfFormRendererService,

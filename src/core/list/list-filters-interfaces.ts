@@ -28,7 +28,6 @@ import {
   AjfForm,
   AjfValidationGroup,
 } from '@ajf/core/forms';
-import {AjfCondition} from '@ajf/core/models';
 
 /**
  * Group of Filters (equivalent to a Slide in a Dialog)

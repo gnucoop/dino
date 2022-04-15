@@ -22,7 +22,6 @@ ng_module(
         ":create-form.css",
     ] + glob(["**/*.html"]),
     deps = [
-        "//src/core/auth",
         "//src/core/data",
         "//src/core/forms",
         "//src/core/users",

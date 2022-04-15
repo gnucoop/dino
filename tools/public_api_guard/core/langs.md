@@ -81,7 +81,7 @@ export class LangManager extends DataModelManager<Lang> {
     // (undocumented)
     removeLang(lang: Lang): Observable<string>;
     // (undocumented)
-    saveLang(lang: LangCreate): Observable<Lang>;
+    saveLang(lang: LangCreate): Observable<Lang | null>;
     // (undocumented)
     readonly saveLangEvt: EventEmitter_2<void>;
     // (undocumented)
