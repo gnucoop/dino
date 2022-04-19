@@ -6,7 +6,6 @@
 
 import { ActivatedRoute } from '@angular/router';
 import { AfterViewInit } from '@angular/core';
-import { AuthService } from '@dino/core/auth';
 import { FormGroup } from '@angular/forms';
 import { FormMetricSelector } from '@dino/material/form-metric-selector';
 import * as i0 from '@angular/core';
@@ -36,7 +35,7 @@ import { UserDataManager } from '@dino/core/users';
 
 // @public
 export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
-    constructor(_authService: AuthService, _route: ActivatedRoute, _rs: ReportSchemaManager, _rd: ReportDataManager, _udm: UserDataManager, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
+    constructor(_route: ActivatedRoute, _rs: ReportSchemaManager, _rd: ReportDataManager, _udm: UserDataManager, _location: Location_2, snackbar: MatSnackBar, metricsService: MetricsService);
     dateIntervalForm: FormGroup;
     formMetricsSelectorComponent: QueryList<FormMetricSelector>;
     hasOptionalMetrics: boolean;
