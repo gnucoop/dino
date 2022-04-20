@@ -53,6 +53,7 @@ ng_module(
         "//src/material/breadcrumbs",
         "//src/material/breakpoint-observer",
         "//src/material/collect",
+        "//src/material/core",
         "//src/material/create-form",
         "//src/material/create-report",
         "//src/material/edit-form",

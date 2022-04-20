@@ -1,0 +1,106 @@
+@use 'sass:map';
+
+@use 'all-core' as dino-core;
+@use 'typography/typography';
+
+@use '@angular/material' as mat;
+@use 'angular-material-css-vars/src/lib/variables';
+@use 'angular-material-css-vars/src/lib/main' as amcv;
+
+@use 'mat-lib-overwrites' as amcvo;
+
+@mixin init-mat-theme($dark-theme-selector, $typography-config: null) {
+  @include dino-core.mat-core($typography-config);
+
+  $primary: mat.define-palette(variables.$mat-css-palette-primary);
+  $accent: mat.define-palette(variables.$mat-css-palette-accent);
+  $warn: mat.define-palette(variables.$mat-css-palette-warn);
+
+  $theme: mat.define-light-theme((
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn
+    )
+  ));
+
+  $tmp1: map-remove($theme, color, foreground, background);
+  $tmp1: map-merge($tmp1, foreground, variables.$mat-css-palette-foreground);
+  $tmp1: map-merge($tmp1, background, variables.$mat-css-palette-background);
+  $tmp2: map-merge((), color, $tmp1);
+  $theme: map-merge($tmp2, $tmp1);
+
+  $dark-theme: mat.define-dark-theme((
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn
+    )
+  ));
+
+  $tmp1: map-remove($dark-theme, color, foreground, background);
+  $tmp1: map-merge($tmp1, foreground, variables.$mat-css-palette-foreground-dark);
+  $tmp1: map-merge($tmp1, background, variables.$mat-css-palette-background-dark);
+  $tmp2: map-merge((), color, $tmp1);
+  $dark-theme: map-merge($tmp2, $tmp1);
+
+  // set global variable so passed-in content can use the theme
+  $mat-css-theme: $theme !global;
+
+  // NOTE: light theme is the default theme
+  @include mat.all-component-themes($theme);
+  @content;
+
+  @if $dark-theme-selector {
+    $mat-css-theme: $dark-theme !global;
+    #{$dark-theme-selector} {
+      @include mat.all-component-colors($dark-theme);
+      // add content passed in, which can use the $theme variable to apply the dark theme to
+      // other theme mixins needed by the app
+      @content;
+    }
+  }
+
+  @include amcvo.mat-css-other-overwrites;
+
+  $mat-css-theme: null !global;
+}
+
+@function _mat-css-hex-to-rgb($color) {
+  @if ($color == null) {
+    @return null;
+  }
+  @return red($color), green($color), blue($color);
+}
+
+@mixin init-dino-css-vars(
+  $default-theme: variables.$mat-css-default-light-theme,
+  $dark-theme-selector: variables.$mat-css-dark-theme-selector,
+  $default-theme-text: variables.$mat-css-text,
+  $typography-config: null
+) {
+  @include amcv.init-css-vars($default-theme, $default-theme-text);
+  @include init-mat-theme($dark-theme-selector, $typography-config) {
+    @content;
+  }
+}
+
+@mixin dino-theme($theme: null) {
+  @include init-dino-css-vars($typography-config: typography.$base-typography);
+
+  @if $theme != null and map.get($theme, color) {
+    $colorConf: map.get($theme, color);
+    @at-root :root {
+      @each $paletteType, $paletteColor in $colorConf {
+        @each $var, $val in $paletteColor {
+          @if ($var != 'is-dark' and $var != 'contrast') {
+            $colorVal: _mat-css-hex-to-rgb($val);
+            @if $colorVal != null {
+              --palette-#{$paletteType}-#{$var}: #{$colorVal};
+            }
+          }
+        }
+      }
+    }
+  }
+}

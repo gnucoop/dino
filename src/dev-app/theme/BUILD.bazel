@@ -3,21 +3,25 @@ load("//tools:defaults.bzl", "ng_module", "sass_binary")
 package(default_visibility = ["//visibility:public"])
 
 ng_module(
-    name = "dev-app",
+    name = "theme",
     srcs = glob(["**/*.ts"]),
     assets = [
-        "dev-app-layout.html",
-        ":dev_app_layout_scss",
+        "theme-demo.html",
+        ":theme_demo_scss",
     ],
     deps = [
         "//src/material/core",
         "@npm//@angular/cdk",
+        "@npm//@angular/core",
         "@npm//@angular/material",
         "@npm//@angular/router",
+        "@npm//angular-material-css-vars",
+        "@npm//ngx-color-picker",
+        "@npm//rxjs",
     ],
 )
 
 sass_binary(
-    name = "dev_app_layout_scss",
-    src = "dev-app-layout.scss",
+    name = "theme_demo_scss",
+    src = "theme-demo.scss",
 )

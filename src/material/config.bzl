@@ -3,6 +3,7 @@ entryPoints = [
     "breadcrumbs",
     "breakpoint-observer",
     "collect",
+    "core",
     "create-form",
     "create-report",
     "edit-form",
@@ -73,4 +74,5 @@ MATERIAL_TESTING_TARGETS = ["//src/material/%s" % ep for ep in MATERIAL_TESTING_
 MATERIAL_SCSS_LIBS = [
     "//src/material/%s:%s_scss_lib" % (p, p.replace("-", "_"))
     for p in MATERIAL_ENTRYPOINTS + scssOnlyEntryPoints
+    if p != "core"
 ]

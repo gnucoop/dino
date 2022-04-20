@@ -1,3 +1,5 @@
+@use '../../material/core/dino-theme';
+
 html,
 body {
   width: 100%;
@@ -70,3 +72,5 @@ body {
   // Removes extra space on top of toolbar on IE.
   display: block;
 }
+
+@include dino-theme.dino-theme();

@@ -1726,6 +1726,11 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
+"@ctrl/tinycolor@^3.4.0":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz#75b4c27948c81e88ccd3a8902047bcd797f38d32"
+  integrity sha512-ej5oVy6lykXsvieQtqZxCOaLT+xD4+QNarq78cIYISHmZXshCvROLudpQN3lfL8G0NL7plMSSK+zlyvCaIJ4Iw==
+
 "@dabh/diagnostics@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@dabh/diagnostics/-/diagnostics-2.0.2.tgz#290d08f7b381b8f94607dc8f471a12c675f9db31"
@@ -3616,6 +3621,14 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
+
+angular-material-css-vars@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/angular-material-css-vars/-/angular-material-css-vars-3.0.0.tgz#1b4e4aa3520adbfee9b874b2250d9557ab04b7f6"
+  integrity sha512-NkrLQlMUqBf7SoJr0VY2YXwY6oWAOssB9CykWIxdJyqMENY4ZqVEhSjCzROAJgxafvanAn4n2h7byFLvq4iMTw==
+  dependencies:
+    "@ctrl/tinycolor" "^3.4.0"
+    tslib "^2.3.0"
 
 ansi-align@^3.0.0:
   version "3.0.0"
@@ -12627,6 +12640,13 @@ next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
+
+ngx-color-picker@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-color-picker/-/ngx-color-picker-12.0.1.tgz#bb3159fd685dfd23505e5a27300fa32bb42ebce8"
+  integrity sha512-ODLePeqN7dnhTmjHGJrxFHaEXb3o2vH4n8qUzkUAIFmz5vOOxCCEYY4/bg+5VK62PonaK7j0fFf8AjnwrqhFHQ==
+  dependencies:
+    tslib "^2.3.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"

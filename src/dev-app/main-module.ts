@@ -29,6 +29,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModule} from '@dino/core/data';
+import {CoreModule} from '@dino/material/core';
 import {LangSelectorModule} from '@dino/material/lang-selector';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
@@ -66,6 +67,7 @@ export function provideDataServiceConfig() {
     }),
     BrowserAnimationsModule,
     BrowserModule,
+    CoreModule.forRoot(),
     DataModule,
     DevAppModule,
     HttpClientModule,

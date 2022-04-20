@@ -52,6 +52,9 @@ import {Section} from './section-interface';
   styleUrls: ['main-nav.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  host: {
+    'class': 'mat-typography',
+  },
 })
 export class MainNav implements AfterViewInit, OnDestroy {
   @ViewChild('sidenav') sidenav: MatSidenav;

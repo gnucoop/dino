@@ -2,12 +2,7 @@
 @use '@angular/material/core/theming/theming' as mat-theming;
 
 @use '../material/core/core';
-@use '../material/core/all-core';
-@use '../material/core/theming/all-theme';
-@use '../material/core/theming/palette';
-
-// Include non-theme styles for core.
-@include all-core.mat-core();
+@use '../material/core/dino-theme';
 
 // Define a theme.
 $primary: mat-theming.define-palette(mat-palette.$light-blue-palette, 900, 700);
@@ -26,5 +21,4 @@ $theme: core.light-theme(
     )
 );
 
-// Include all theme styles for the components.
-@include all-theme.material-theme($theme);
+@include dino-theme.dino-theme($theme);

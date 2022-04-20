@@ -34,6 +34,10 @@
       <div class="demo-toolbar">
         <h1>Dino Demos</h1>
         <div>
+          <button mat-icon-button (click)="toggleDarkMode()" title="Toggle dark mode">
+            <mat-icon *ngIf="dark === true">light_mode</mat-icon>
+            <mat-icon *ngIf="dark === false">dark_mode</mat-icon>
+          </button>
           <button mat-icon-button (click)="toggleFullscreen()" title="Toggle fullscreen">
             <mat-icon>fullscreen</mat-icon>
           </button>

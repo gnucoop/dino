@@ -20,22 +20,5 @@
  *
  */
 
-import {Routes} from '@angular/router';
-import {DevApp404} from './dev-app/dev-app-404';
-import {DevAppHome} from './dev-app/dev-app-home';
-
-export const DEV_APP_ROUTES: Routes = [
-  {path: '', component: DevAppHome},
-  {path: 'auth', loadChildren: () => import('./auth/auth-demo-module').then(m => m.AuthDemoModule)},
-  {path: 'data', loadChildren: () => import('./data/data-demo-module').then(m => m.DataDemoModule)},
-  {
-    path: 'theme',
-    loadChildren: () => import('./theme/theme-demo-module').then(m => m.ThemeDemoModule),
-  },
-  {
-    path: 'examples',
-    loadChildren: () =>
-      import('./examples-page/examples-page-module').then(m => m.ExamplesPageModule),
-  },
-  {path: '**', component: DevApp404},
-];
+export * from './core.module';
+export * from './theme.service';

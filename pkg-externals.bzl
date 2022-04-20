@@ -76,6 +76,7 @@ PKG_EXTERNALS = [
     "@ajf/material/reports",
     "@apollo/client/core",
     "@ngneat/transloco",
+    "angular-material-css-vars",
     "apollo-angular",
     "apollo-angular/http",
     "date-fns",

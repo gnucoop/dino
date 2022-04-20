@@ -23,6 +23,8 @@ ng_module(
         "//src/dev-app/dev-app",
         "//src/dev-app/example",
         "//src/dev-app/examples-page",
+        "//src/dev-app/theme",
+        "//src/material/core",
         "//src/material/lang-selector",
         "@npm//@angular/cdk",
         "@npm//@angular/common",

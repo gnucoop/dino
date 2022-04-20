@@ -21,7 +21,17 @@
  */
 
 import {Directionality} from '@angular/cdk/bidi';
-import {ChangeDetectorRef, Component, ElementRef, Inject, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import {ThemeService} from '@dino/material/core';
+import {Subscription} from 'rxjs';
 import {DevAppDirectionality} from './dev-app-directionality';
 
 /** Root component for the dev-app demos. */
@@ -31,7 +41,7 @@ import {DevAppDirectionality} from './dev-app-directionality';
   styleUrls: ['dev-app-layout.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DevAppLayout {
+export class DevAppLayout implements OnDestroy, OnInit {
   dark = false;
   navGroups = [
     {
@@ -40,16 +50,33 @@ export class DevAppLayout {
         {name: 'Examples', route: '/examples'},
         {name: 'Auth', route: '/auth'},
         {name: 'Data', route: '/data'},
+        {name: 'Theme', route: '/theme'},
       ],
     },
   ];
+
+  private _sub = Subscription.EMPTY;
 
   constructor(
     private _element: ElementRef<HTMLElement>,
     @Inject(Directionality) public dir: DevAppDirectionality,
     cdr: ChangeDetectorRef,
+    private _themeService: ThemeService,
   ) {
     dir.change.subscribe(() => cdr.markForCheck());
+  }
+
+  ngOnDestroy(): void {
+    this._sub.unsubscribe();
+  }
+
+  ngOnInit(): void {
+    this._sub = this._themeService.darkModeChange.subscribe(darkMode => (this.dark = darkMode));
+  }
+
+  toggleDarkMode() {
+    this.dark = !this.dark;
+    this._themeService.setDarkMode(this.dark);
   }
 
   toggleFullscreen() {

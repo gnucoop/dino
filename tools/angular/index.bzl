@@ -175,6 +175,44 @@ def create_apollo_bundle_targets():
         subpath = "apollo-angular_http",
     )
 
+def create_ngmcv_bundle_targets():
+    esbuild(
+        name = "angular-material-css-vars_linked_bundle",
+        output = "angular-material-css-vars/index.mjs",
+        platform = "browser",
+        entry_point = "@npm//:node_modules/angular-material-css-vars/fesm2015/angular-material-css-vars.js",
+        config = "//tools/angular:esbuild_config",
+        # List of dependencies which should never be bundled into these linker-processed bundles.
+        external = ["rxjs", "@angular", "@ctrl/tinycolor", "angular-material-css-vars"],
+    )
+
+    _linker_mapping(
+        name = "angular-material-css-vars_linked",
+        srcs = [":angular-material-css-vars_linked_bundle"],
+        package = "@npm//angular-material-css-vars",
+        module_name = "angular-material-css-vars",
+        subpath = "angular-material-css-vars",
+    )
+
+def create_ngxcp_bundle_targets():
+    esbuild(
+        name = "ngx-color-picker_linked_bundle",
+        output = "ngx-color-picker/index.mjs",
+        platform = "browser",
+        entry_point = "@npm//:node_modules/ngx-color-picker/fesm2020/ngx-color-picker.mjs",
+        config = "//tools/angular:esbuild_config",
+        # List of dependencies which should never be bundled into these linker-processed bundles.
+        external = ["rxjs", "@angular", "ngx-color-picker"],
+    )
+
+    _linker_mapping(
+        name = "ngx-color-picker_linked",
+        srcs = [":ngx-color-picker_linked_bundle"],
+        package = "@npm//ngx-color-picker",
+        module_name = "ngx-color-picker",
+        subpath = "ngx-color-picker",
+    )
+
 LINKER_PROCESSED_FW_PACKAGES = [
     "//tools/angular:%s_linked" % _get_target_name_base(pkg, entry_point)
     for pkg in ANGULAR_PACKAGES
@@ -190,4 +228,6 @@ LINKER_PROCESSED_FW_PACKAGES = [
 ] + [
     "//tools/angular:apollo-angular_linked",
     "//tools/angular:apollo-angular_http_linked",
+    "//tools/angular:angular-material-css-vars_linked",
+    "//tools/angular:ngx-color-picker_linked",
 ]

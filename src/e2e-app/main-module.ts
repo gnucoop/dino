@@ -34,6 +34,7 @@ import {
 import {SyncModule} from '@dino/core/sync';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
+import {CoreModule as DinoCoreModule} from '@dino/material/core';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
@@ -179,6 +180,14 @@ export function provideDataServiceConfig() {
     ReportsModule,
     SyncModule,
     UsersModule,
+    DinoCoreModule.forRoot({
+      theme: {
+        // primary: '#0288d1',
+        // accent: '#455a64',
+        // warn: '#f44336',
+        // isDarkTheme: true,
+      },
+    }),
 
     // Optional Metrics
     optionalModulesConfig.areasModule ? AreasModule : [],

@@ -2,13 +2,9 @@
 @use '@angular/material/core/theming/theming' as mat-theming;
 
 @use '../material/core/core';
-@use '../material/core/all-core';
-@use '../material/core/theming/all-theme';
+@use '../material/core/dino-theme';
 
-// Include non-theme styles for core.
-@include all-core.mat-core();
-
-// Define an alernative theme.
+// Define a theme.
 $primary: mat-theming.define-palette(mat-palette.$light-blue-palette, 700, 500);
 $accent: mat-theming.define-palette(mat-palette.$blue-grey-palette, 700);
 $warn: mat-theming.define-palette(mat-palette.$red-palette, 500);
@@ -20,9 +16,9 @@ $theme: core.dark-theme(
             primary: $primary,
             accent: $accent,
             warn: $warn,
+            alt_accent: $alt_accent,
         ),
     )
 );
 
-// Include all theme styles for the components.
-@include all-theme.material-theme($theme);
+@include dino-theme.dino-theme($theme);
