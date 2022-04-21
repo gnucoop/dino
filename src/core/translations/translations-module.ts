@@ -20,8 +20,17 @@
  *
  */
 import {TranslocoService} from '@ajf/core/transloco';
+import {registerLocaleData} from '@angular/common';
+import enLocale from '@angular/common/locales/en';
+import esLocale from '@angular/common/locales/es';
+import frLocale from '@angular/common/locales/fr';
+import itLocale from '@angular/common/locales/it';
+import prLocale from '@angular/common/locales/pt';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {dinoTranslations} from './translations';
+
+const locales = [enLocale, esLocale, frLocale, itLocale, prLocale];
+locales.forEach(locale => registerLocaleData(locale));
 
 @NgModule({})
 export class DinoTranslationsModule {

@@ -14,6 +14,7 @@ ng_module(
     ),
     deps = [
         "@npm//@ajf/core",
+        "@npm//@angular/common",
         "@npm//@angular/core",
     ],
 )

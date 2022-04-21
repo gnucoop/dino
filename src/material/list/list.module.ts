@@ -49,6 +49,7 @@ import {ColumnsSelector} from './columns-selector';
 import {ConfirmationDialog} from './confirmation-dialog';
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
+import {ListCellValue} from './list-cell-value';
 import {AdminUserInteractionsService} from './user-interactions.service';
 
 @NgModule({
@@ -77,7 +78,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
     ReactiveFormsModule,
     RouterModule,
   ],
-  declarations: [ColumnsSelector, ConfirmationDialog, ListCell, SelectionList],
+  declarations: [ColumnsSelector, ConfirmationDialog, ListCell, ListCellValue, SelectionList],
   exports: [MatIconModule, SelectionList],
   providers: [AdminUserInteractionsService],
 })

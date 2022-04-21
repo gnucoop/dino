@@ -143,10 +143,7 @@
             </mat-tab>
           </mat-tab-group>
         </ng-template>
-        <ng-template #defaultCellTemplate>
-          {{ header.dataColumn ?
-          element.data[header.column.toString()]:element[header.column.toString()] }}
-        </ng-template>
+        <ng-template #defaultCellTemplate>{{ element|dinoListCellValue:header }}</ng-template>
       </mat-cell>
     </ng-container>
 

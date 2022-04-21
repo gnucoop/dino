@@ -1,0 +1,67 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Dino (dino).
+ *
+ * Dino (dino) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Dino (dino) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Dino (dino).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+
+import {TranslocoService} from '@ajf/core/transloco';
+import {DatePipe} from '@angular/common';
+import {Pipe, PipeTransform} from '@angular/core';
+import {Model} from '@dino/core/data';
+import {ListHeader} from '@dino/core/list';
+import {parse, parseISO} from 'date-fns';
+
+@Pipe({name: 'dinoListCellValue', pure: false})
+export class ListCellValue implements PipeTransform {
+  constructor(private _ts: TranslocoService) {}
+
+  transform<T extends Model = Model>(element: T, header: ListHeader<T>): string {
+    if (header == null || element == null) return '';
+    const dataEl = element as Model & {data?: {[key: string]: any}};
+    const col = header.column.toString() as keyof typeof dataEl;
+    const val = header.dataColumn ? (dataEl.data || {})[col] : dataEl[col];
+    let dt = parseISO(val);
+    if (!isNaN(dt.valueOf())) {
+      const datePipe = new DatePipe(this._getCurrentLocale());
+      return datePipe.transform(dt, 'short') as string;
+    }
+    dt = parse(val, 'yyyy-MM-dd', new Date());
+    if (!isNaN(dt.valueOf())) {
+      const datePipe = new DatePipe(this._getCurrentLocale());
+      return datePipe.transform(dt, 'shortDate') as string;
+    }
+    return val;
+  }
+
+  private _getCurrentLocale(): string {
+    const lang = this._ts.getActiveLang();
+    switch (lang) {
+      case 'ESP':
+        return 'es';
+      case 'FRA':
+        return 'fr';
+      case 'ITA':
+        return 'it';
+      case 'PRT':
+        return 'pt';
+      default:
+        return 'en';
+    }
+  }
+}
