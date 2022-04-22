@@ -21,29 +21,29 @@ import { FilterGroup } from '@dino/core/list';
 import { FiltersService } from '@dino/core/list';
 import { FormGroup } from '@angular/forms';
 import * as i0 from '@angular/core';
-import * as i10 from '@dino/core/list';
-import * as i11 from '@dino/material/import-form';
-import * as i12 from '@angular/material/button';
-import * as i13 from '@angular/material/checkbox';
-import * as i14 from '@angular/material/dialog';
-import * as i15 from '@angular/material/form-field';
-import * as i16 from '@angular/material/icon';
-import * as i17 from '@angular/material/input';
-import * as i18 from '@angular/material/list';
-import * as i19 from '@angular/material/paginator';
-import * as i20 from '@angular/material/slide-toggle';
-import * as i21 from '@angular/material/snack-bar';
-import * as i22 from '@angular/material/sort';
-import * as i23 from '@angular/material/tabs';
-import * as i24 from '@angular/material/table';
-import * as i25 from '@angular/material/toolbar';
-import * as i26 from '@angular/forms';
-import * as i27 from '@angular/router';
-import * as i5 from '@ajf/core/forms';
-import * as i6 from '@ajf/core/transloco';
-import * as i7 from '@dino/material/breakpoint-observer';
-import * as i8 from '@dino/material/export-form';
-import * as i9 from '@angular/common';
+import * as i10 from '@angular/common';
+import * as i11 from '@dino/core/list';
+import * as i12 from '@dino/material/import-form';
+import * as i13 from '@angular/material/button';
+import * as i14 from '@angular/material/checkbox';
+import * as i15 from '@angular/material/dialog';
+import * as i16 from '@angular/material/form-field';
+import * as i17 from '@angular/material/icon';
+import * as i18 from '@angular/material/input';
+import * as i19 from '@angular/material/list';
+import * as i20 from '@angular/material/paginator';
+import * as i21 from '@angular/material/slide-toggle';
+import * as i22 from '@angular/material/snack-bar';
+import * as i23 from '@angular/material/sort';
+import * as i24 from '@angular/material/tabs';
+import * as i25 from '@angular/material/table';
+import * as i26 from '@angular/material/toolbar';
+import * as i27 from '@angular/forms';
+import * as i28 from '@angular/router';
+import * as i6 from '@ajf/core/forms';
+import * as i7 from '@ajf/core/transloco';
+import * as i8 from '@dino/material/breakpoint-observer';
+import * as i9 from '@dino/material/export-form';
 import { List } from '@dino/core/list';
 import { ListAction } from '@dino/core/list';
 import { ListHeader } from '@dino/core/list';
@@ -60,6 +60,7 @@ import { OnDestroy } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { PermissionContext } from '@dino/core/data';
+import { PipeTransform } from '@angular/core';
 import { QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 import { RxJsonSchema } from 'rxdb';
@@ -67,6 +68,7 @@ import { SearchFiltersComponent } from '@dino/core/list';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Sort } from '@angular/material/sort';
 import { TemplateRef } from '@angular/core';
+import { TranslocoService } from '@ajf/core/transloco';
 
 // @public
 export class AdminUserInteractionsService extends AdminUserInteractionsService_2 {
@@ -128,6 +130,17 @@ class ListCell {
     static ɵfac: i0.ɵɵFactoryDeclaration<ListCell, never>;
 }
 
+// @public (undocumented)
+class ListCellValue implements PipeTransform {
+    constructor(_ts: TranslocoService);
+    // (undocumented)
+    transform<T extends Model = Model>(element: T, header: ListHeader<T>): string;
+    // (undocumented)
+    static ɵfac: i0.ɵɵFactoryDeclaration<ListCellValue, never>;
+    // (undocumented)
+    static ɵpipe: i0.ɵɵPipeDeclaration<ListCellValue, "dinoListCellValue">;
+}
+
 // @public
 export interface ListContext<T extends Model = Model> {
     baseEditUrl?: string;
@@ -187,7 +200,7 @@ export class ListModule {
     // (undocumented)
     static ɵinj: i0.ɵɵInjectorDeclaration<ListModule>;
     // (undocumented)
-    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.SelectionList], [typeof i5.AjfFormsModule, typeof i6.AjfTranslocoModule, typeof i7.BreakpointObserverModule, typeof i8.ExportFormModule, typeof i9.CommonModule, typeof i10.ListModule, typeof i11.ImportFormModule, typeof i12.MatButtonModule, typeof i13.MatCheckboxModule, typeof i14.MatDialogModule, typeof i15.MatFormFieldModule, typeof i16.MatIconModule, typeof i17.MatInputModule, typeof i18.MatListModule, typeof i19.MatPaginatorModule, typeof i20.MatSlideToggleModule, typeof i21.MatSnackBarModule, typeof i22.MatSortModule, typeof i23.MatTabsModule, typeof i24.MatTableModule, typeof i25.MatToolbarModule, typeof i26.ReactiveFormsModule, typeof i27.RouterModule], [typeof i16.MatIconModule, typeof i4.SelectionList]>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ListModule, [typeof i1.ColumnsSelector, typeof i2.ConfirmationDialog, typeof i3.ListCell, typeof i4.ListCellValue, typeof i5.SelectionList], [typeof i6.AjfFormsModule, typeof i7.AjfTranslocoModule, typeof i8.BreakpointObserverModule, typeof i9.ExportFormModule, typeof i10.CommonModule, typeof i11.ListModule, typeof i12.ImportFormModule, typeof i13.MatButtonModule, typeof i14.MatCheckboxModule, typeof i15.MatDialogModule, typeof i16.MatFormFieldModule, typeof i17.MatIconModule, typeof i18.MatInputModule, typeof i19.MatListModule, typeof i20.MatPaginatorModule, typeof i21.MatSlideToggleModule, typeof i22.MatSnackBarModule, typeof i23.MatSortModule, typeof i24.MatTabsModule, typeof i25.MatTableModule, typeof i26.MatToolbarModule, typeof i27.ReactiveFormsModule, typeof i28.RouterModule], [typeof i17.MatIconModule, typeof i5.SelectionList]>;
 }
 
 // @public
