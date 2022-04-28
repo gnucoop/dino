@@ -56,7 +56,7 @@ dino-list {
 
   mat-header-cell,
   mat-footer-cell,
-  mat-cell:not(:last-of-type.mat-column-actions):not(.mat-column-select) {
+  mat-cell:not(.mat-column-actions):not(.mat-column-select) {
     min-width: 12vw;
     @media only screen and (max-width: 992px) {
       min-width: 25vw;
@@ -116,7 +116,6 @@ dino-list {
   }
 
   .dino-expanded-row-actions {
-    display: none;
     z-index: 10;
   }
 
@@ -185,6 +184,9 @@ dino-list {
   }
 
   @media only screen and (min-width: 769px) {
+    .dino-expanded-row-actions {
+      display: none;
+    }
     .mat-icon-button.dino-expand-all-button {
       margin-left: 17px;
     }

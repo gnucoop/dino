@@ -189,7 +189,7 @@
         class="dino-expanded-cell"
       >
         <div
-          *ngIf="(breakpointObserver.small|async) && isRowExpanded(row)"
+          *ngIf="((breakpointObserver.small|async) || (breakpointObserver.medium|async)) && isRowExpanded(row)"
           class="dino-expanded-row-actions"
         >
           <div class="dino-row-action-box" *ngFor="let action of ctx.listRowActions|async">
