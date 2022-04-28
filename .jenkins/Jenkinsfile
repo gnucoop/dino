@@ -23,6 +23,11 @@ pipeline {
         sh './scripts/build.mjs'
       }
     }
+    stage('Model schema tests') {
+      steps {
+        sh 'yarn -s model-schema-test'
+      }
+    }
     stage('Unit tests') {
       steps {
         sh 'yarn -s test:ci'

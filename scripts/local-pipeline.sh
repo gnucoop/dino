@@ -11,8 +11,11 @@ yarn -s lint
 echo "Build"
 ./scripts/build.mjs
 
-echo "Unit tests"
-yarn -s test:ci
+echo "Build"
+./scripts/build.mjs
+
+echo "Model schema tests"
+yarn -s model-schema-test
 
 echo "E2E tests"
 ./scripts/e2e-ci.mjs

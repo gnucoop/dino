@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+      "noEmit": true,
+      "experimentalDecorators": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "target": "es2015",
+      "module": "esnext",
+      "moduleResolution": "node",
+      "lib": ["es5", "es2017", "dom"],
+      "baseUrl": ".",
+      "types": [],
+      "paths": {
+        "*": ["../../node_modules/*"],
+        "@dino/core/*": ["../../projects/core/*"]
+      }
+  },
+  "include": [
+    "../projects/core/forms/**/*.ts"
+  ],
+}
