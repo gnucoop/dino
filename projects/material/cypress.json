@@ -7,5 +7,5 @@
   "fixturesFolder": "projects/material/cypress/fixtures",
   "video": false,
   "baseUrl": "http://localhost:4200",
-  "defaultCommandTimeout": 15000
+  "defaultCommandTimeout": 10000
 }
