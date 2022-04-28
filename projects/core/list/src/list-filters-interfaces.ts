@@ -21,9 +21,9 @@
  */
 
 import {
+  AjfBaseField,
   AjfChoice,
   AjfChoicesOrigin,
-  AjfField,
   AjfFieldType,
   AjfForm,
   AjfValidationGroup,
@@ -54,7 +54,7 @@ export interface FilterGroup {
 /**
  * Filter with value
  */
-export interface FilterItem extends Partial<AjfField> {
+export interface FilterItem extends Partial<AjfBaseField> {
   /**
    * Name of the filter.
    */

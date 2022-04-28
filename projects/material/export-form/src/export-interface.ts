@@ -20,7 +20,7 @@
  *
  */
 
-import {AjfField as AjfFieldCore, AjfNode, AjfNodeType} from '@ajf/core/forms';
+import {AjfBaseField as AjfFieldCore, AjfNode, AjfNodeType} from '@ajf/core/forms';
 
 export interface AjfField extends AjfFieldCore {
   slideIndex?: number;
