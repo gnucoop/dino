@@ -6,5 +6,6 @@
   "pluginsFile": "projects/material/cypress/plugins/index.ts",
   "fixturesFolder": "projects/material/cypress/fixtures",
   "video": false,
-  "baseUrl": "http://localhost:4200"
+  "baseUrl": "http://localhost:4200",
+  "defaultCommandTimeout": 15000
 }
