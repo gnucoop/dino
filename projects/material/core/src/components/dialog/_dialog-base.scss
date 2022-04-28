@@ -1,0 +1,14 @@
+@use '@angular/material' as typography-utils;
+@use '../../typography/typography';
+
+@mixin dialog-core($typography-config: null) {
+    .mat-dialog-container {
+        font-family: typography-utils.font-family(typography.$base-typography, body-1);
+        font-size: typography-utils.font-size(typography.$base-typography, body-1);
+        font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
+        h4 {
+            font-size: typography-utils.font-size(typography.$base-typography, title);
+            font-weight: typography-utils.font-weight(typography.$base-typography, title);
+        }
+    }
+}

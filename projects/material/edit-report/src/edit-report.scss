@@ -1,0 +1,55 @@
+dino-edit-report {
+  .dino-edit-report-step-buttons {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+  }
+  .dino-edit-report-step-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 85vh;
+    @media only screen and (max-width: 992px) {
+      min-height: 75vh;
+    }
+    padding-bottom: 15vh;
+  }
+  .mat-stepper-horizontal {
+    background-color: transparent;
+    .mat-horizontal-stepper-content .mat-stepper-previous {
+      display: none;
+    }
+  }
+  .mat-horizontal-stepper-header-container {
+    border-bottom: 1px solid white;
+    .mat-horizontal-stepper-header {
+      padding: 8px;
+      flex-direction: row;
+      &::before,
+      &::after {
+        visibility: hidden;
+      }
+      .mat-step-label {
+        padding: 0px;
+        padding-left: 5px;
+      }
+    }
+    .mat-stepper-horizontal-line {
+      visibility: hidden;
+    }
+  }
+  .mat-horizontal-content-container {
+    padding: 0px 4px 4px;
+    @media only screen and (max-height: 900px) {
+      padding-bottom: 10vh;
+    }
+    @media only screen and (max-height: 580px) {
+      padding-bottom: 30vh;
+    }
+  }
+  .dino-edit-report-print {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

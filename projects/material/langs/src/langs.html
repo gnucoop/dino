@@ -1,0 +1,60 @@
+<div class="dino-langs-toolbar">
+  <div>
+    <mat-form-field>
+      <input matInput class="search-field" [formControl]="searchField" />
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+      </span>
+    </mat-form-field>
+    <mat-button-toggle-group
+      appearance="legacy"
+      value="key"
+      [formControl]="searchLangField"
+    >
+      <mat-button-toggle value="key">Key</mat-button-toggle>
+      <mat-button-toggle [value]="lang" *ngFor="let lang of allLangNames$|async"
+        >{{lang}}</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </div>
+  <div></div>
+  <div>
+    <button mat-button (click)="openAddTranslation()">
+      <mat-icon>add</mat-icon>
+      {{'Translation'|transloco}}
+    </button>
+    <button mat-button (click)="openAddLanguage()">
+      {{'Language'|transloco}}
+    </button>
+    <button mat-button (click)="openExportLanguage()">
+      <mat-icon>get_app</mat-icon>
+      {{'Export'|transloco}}
+    </button>
+  </div>
+</div>
+<dino-langs-loading *ngIf="loading$|async"></dino-langs-loading>
+<ng-container *ngIf="(searchLangKeyStream$|async|dinoAsString) as langKey">
+  <mat-list *ngIf="(items$|async) as items">
+    <ng-container
+      *ngFor="let item of items|dinoLangsFilter:(searchKeyStream$|async|dinoAsString):langKey"
+    >
+      <mat-list-item (click)="openUpdate(item)">
+        {{item.key}}
+        <ng-container *ngIf="langKey !== 'key'">
+          <span
+            *ngIf="item[langKey] && item[langKey] !== ''"
+            class="dino-langs-selected"
+          >
+            ({{item[langKey]}})
+          </span>
+          <span
+            *ngIf="item[langKey] === null || item[langKey] === undefined || item[langKey] === ''"
+            class="dino-langs-no-translation"
+          >
+            ({{'No translation'|transloco}})
+          </span>
+        </ng-container>
+      </mat-list-item>
+    </ng-container>
+  </mat-list>
+</ng-container>

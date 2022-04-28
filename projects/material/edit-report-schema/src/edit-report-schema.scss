@@ -1,0 +1,50 @@
+dino-edit-report-schema {
+    > .mat-card:first-child {
+        border-left: none;
+        margin: 0%;
+        padding: 0px;
+        background: transparent;
+        .mat-card-header {
+            display: flex;
+            flex-flow: row wrap;
+            padding-bottom: 10px;
+            align-items: center;
+            justify-content: space-between;
+            .dino-report-attributes {
+                flex: 1 1 auto;
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: space-between;
+                .mat-form-field {
+                    flex: 1 1 auto;
+                    font-size: 125%;
+                }
+            }
+            .dino-edit-report-schema-actions {
+                display: flex;
+                justify-self: flex-end;
+                justify-content: flex-end;
+                .mat-raised-button {
+                    margin-left: 20px;
+                }
+            }
+        }
+        .mat-card-content {
+            padding-bottom: 0%;
+        }
+    }
+}
+
+.mat-autocomplete-panel {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    .mat-option-text {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+    }
+}

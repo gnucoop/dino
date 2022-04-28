@@ -7,9 +7,9 @@ import {ModuleInfo} from '../processors/entry-point-grouper';
  */
 export function computeApiDocumentUrl(apiDoc: Document, moduleInfo: ModuleInfo): string {
   // Base URL for the given package. This is currently either:
-  //   1) ajf.rocks/core
-  //   2) ajf.rocks/ionic
-  //   3) ajf.rocks/material
+  //   1) dino.io/core
+  //   2) dino.io/ionic
+  //   3) dino.io/material
   const baseUrl = moduleInfo.packageName;
   return `${baseUrl}/${moduleInfo.entryPointName}/api#${apiDoc.name}`;
 }

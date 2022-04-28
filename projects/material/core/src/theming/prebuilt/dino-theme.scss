@@ -1,0 +1,29 @@
+@use '@angular/material';
+
+@use '../../core';
+@use '../../all-core';
+@use '../all-theme';
+@use '../palette';
+
+// Include non-theme styles for core.
+@include all-core.mat-core();
+
+// Define a theme.
+$primary: material.define-palette(material.$light-blue-palette, 900, 700);
+$accent: material.define-palette(material.$blue-grey-palette, 700);
+$warn: material.define-palette(material.$red-palette, 900);
+$alt_accent: material.define-palette(material.$light-blue-palette, 900);
+
+$theme: core.light-theme(
+    (
+        color: (
+            primary: $primary,
+            accent: $accent,
+            warn: $warn,
+            alt_accent: $alt_accent,
+        ),
+    )
+);
+
+// Include all theme styles for the components.
+@include all-theme.material-theme($theme);

@@ -1,0 +1,27 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "../../out-tsc/core-spec",
+    "types": [
+      "jasmine"
+    ],
+    "paths": {
+      "@dino/core": ["."],
+      "@dino/core/*": ["./*"],
+      "assert": ["../../node_modules/assert"],
+      "stream": ["../../node_modules/stream-browserify"]
+    }
+  },
+  "files": [
+    "src/test.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "cypress/**/*.ts"
+  ]
+}

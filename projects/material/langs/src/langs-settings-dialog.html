@@ -1,0 +1,77 @@
+<div mat-dialog-title>
+  <button class="dino-add" mat-fab (click)="addLang()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <div>
+    <span>{{'language'|transloco|uppercase}}: </span>
+    <button mat-button
+      *ngFor="let langName of (langNames$|async)"
+      [color]="langName === (currentLangName$|async)?'primary':''"
+      (click)="setCurrentLang(langName)">
+        {{langName}}
+    </button>
+  </div>
+  <div class="dino-buttons"  *ngIf="(currentLang$|async) as currentLang">
+      <button mat-button
+        color="warn"
+        (click)="remove()">
+          {{'Remove custom translation'|transloco}}
+      </button>
+      <dino-langs-file-uploader
+        fileType="json"
+        (uploaded)="setUploaded($event)"
+        (errors)="setError($event)">
+          {{'Update translation'|transloco}}
+      </dino-langs-file-uploader>
+    </div>
+</div>
+<div mat-dialog-content>
+  <ng-container *ngIf="(currentLang$|async) as currentLang;else newLang">
+    <ng-container *ngIf="((diff$|async) === null || (diff$|async) === undefined) && ((modified$|async) === null || (modified$|async) === undefined)">
+      {{currentLang.schema|dinoObjectLength}} {{'rows'|transloco}}:
+      <pre>{{currentLang.schema|json}}</pre>
+    </ng-container>
+    <ng-container *ngIf="(diff$|async) as diff">
+      {{'added'|transloco}} {{diff|dinoObjectLength}} {{'rows'|transloco}}:
+      <pre class="dino-diff">{{diff|json}}</pre>
+    </ng-container>
+    <ng-container *ngIf="(modified$|async) as modified">
+      {{'modified'|transloco}} {{modified|dinoObjectLength}} {{'rows'|transloco}}:
+      <pre class="dino-modified">{{modified|json}}</pre>
+    </ng-container>
+  </ng-container>
+  <ng-template #newLang>
+    <form  [formGroup]="form">
+      <mat-form-field>
+        <mat-label>{{'Add lang label'|transloco}}</mat-label>
+        <input
+          matInput
+          formControlName="key"
+          type="text"
+          placeholder="{{'Add lang label'|transloco}}">
+      </mat-form-field>
+    </form>
+    <dino-langs-file-uploader
+      fileType="json"
+      (uploaded)="setNewTranslation($event)"
+      (errors)="setError($event)"
+      (name)="setName($event)">
+        {{'Add JSON'|transloco}}
+    </dino-langs-file-uploader>
+    <ng-container *ngIf="(newLang$|async) as newLang">
+      {{newLang.schema|dinoObjectLength}} {{'rows'|transloco}}:
+      <pre>{{newLang.schema|json}}</pre>
+    </ng-container>
+  </ng-template>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">{{'Undo'|transloco}}</button>
+  <button
+    mat-button
+    [mat-dialog-close]=""
+    (click)="save()"
+    cdkFocusInitial
+  >
+    {{'Save'|transloco}}
+  </button>
+</div>

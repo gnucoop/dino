@@ -1,21 +1,21 @@
-import {Package} from 'dgeni';
-import {ReadTypeScriptModules} from 'dgeni-packages/typescript/processors/readTypeScriptModules';
-import {Host} from 'dgeni-packages/typescript/services/ts-host/host';
-import {TypeFormatFlags} from 'typescript';
-import {HighlightNunjucksExtension} from './nunjucks-tags/highlight';
-import {patchLogService} from './patch-log-service';
-import {AsyncFunctionsProcessor} from './processors/async-functions';
-import {categorizer} from './processors/categorizer';
-import {DocsPrivateFilter} from './processors/docs-private-filter';
-import {EntryPointGrouper} from './processors/entry-point-grouper';
-import {FilterDuplicateExports} from './processors/filter-duplicate-exports';
-import {mergeInheritedProperties} from './processors/merge-inherited-properties';
-import {resolveInheritedDocs} from './processors/resolve-inherited-docs';
+import { Package } from "dgeni";
+import { ReadTypeScriptModules } from "dgeni-packages/typescript/processors/readTypeScriptModules";
+import { Host } from "dgeni-packages/typescript/services/ts-host/host";
+import { TypeFormatFlags } from "typescript";
+import { HighlightNunjucksExtension } from "./nunjucks-tags/highlight";
+import { patchLogService } from "./patch-log-service";
+import { AsyncFunctionsProcessor } from "./processors/async-functions";
+import { categorizer } from "./processors/categorizer";
+import { DocsPrivateFilter } from "./processors/docs-private-filter";
+import { EntryPointGrouper } from "./processors/entry-point-grouper";
+import { FilterDuplicateExports } from "./processors/filter-duplicate-exports";
+import { mergeInheritedProperties } from "./processors/merge-inherited-properties";
+import { resolveInheritedDocs } from "./processors/resolve-inherited-docs";
 
 // Dgeni packages that the Material docs package depends on.
-const jsdocPackage = require('dgeni-packages/jsdoc');
-const nunjucksPackage = require('dgeni-packages/nunjucks');
-const typescriptPackage = require('dgeni-packages/typescript');
+const jsdocPackage = require("dgeni-packages/jsdoc");
+const nunjucksPackage = require("dgeni-packages/nunjucks");
+const typescriptPackage = require("dgeni-packages/typescript");
 
 /**
  * Dgeni package for the Dino docs. This just defines the package, but doesn't
@@ -30,7 +30,7 @@ const typescriptPackage = require('dgeni-packages/typescript');
  * Similar to AngularJS, there is also a `config` lifecycle hook, that can be used to
  * configure specific processors, services before the procession begins.
  */
-export const apiDocsPackage = new Package('material2-api-docs', [
+export const apiDocsPackage = new Package("material2-api-docs", [
   jsdocPackage,
   nunjucksPackage,
   typescriptPackage,
@@ -63,7 +63,7 @@ apiDocsPackage.processor(new AsyncFunctionsProcessor());
 
 // Configure the log level of the API docs dgeni package.
 apiDocsPackage.config(function (log: any) {
-  return (log.level = 'warning');
+  return (log.level = "warning");
 });
 
 // Configure the processor for reading files from the file system.
@@ -81,9 +81,9 @@ apiDocsPackage.config(function (log: any) {
 apiDocsPackage.config(function (computePathsProcessor: any) {
   computePathsProcessor.pathTemplates = [
     {
-      docTypes: ['entry-point'],
-      pathTemplate: '${name}',
-      outputPathTemplate: '${name}.html',
+      docTypes: ["entry-point"],
+      pathTemplate: "${name}",
+      outputPathTemplate: "${name}.html",
     },
   ];
 });
@@ -91,16 +91,18 @@ apiDocsPackage.config(function (computePathsProcessor: any) {
 // Configure custom JsDoc tags.
 apiDocsPackage.config(function (parseTagsProcessor: any) {
   parseTagsProcessor.tagDefinitions = parseTagsProcessor.tagDefinitions.concat([
-    {name: 'docs-private'},
-    {name: 'docs-public'},
-    {name: 'docs-primary-export'},
-    {name: 'breaking-change'},
+    { name: "docs-private" },
+    { name: "docs-public" },
+    { name: "docs-primary-export" },
+    { name: "breaking-change" },
   ]);
 });
 
 apiDocsPackage.config(function (checkAnchorLinksProcessor: any) {
   // This ensures that Dgeni will fail if we generate links that don't follow this format.
-  checkAnchorLinksProcessor.ignoredLinks.push(/(components|cdk)\/[\w-]+\/api#\w+/);
+  checkAnchorLinksProcessor.ignoredLinks.push(
+    /(components|cdk)\/[\w-]+\/api#\w+/
+  );
 });
 
 // Configure the processor for understanding TypeScript.
@@ -126,17 +128,17 @@ apiDocsPackage.config(function (tsHost: Host) {
 apiDocsPackage.config(function (templateFinder: any, templateEngine: any) {
   // Standard patterns for matching docs to templates
   templateFinder.templatePatterns = [
-    '${ doc.template }',
-    '${ doc.id }.${ doc.docType }.template.html',
-    '${ doc.id }.template.html',
-    '${ doc.docType }.template.html',
-    '${ doc.id }.${ doc.docType }.template.js',
-    '${ doc.id }.template.js',
-    '${ doc.docType }.template.js',
-    '${ doc.id }.${ doc.docType }.template.json',
-    '${ doc.id }.template.json',
-    '${ doc.docType }.template.json',
-    'common.template.html',
+    "${ doc.template }",
+    "${ doc.id }.${ doc.docType }.template.html",
+    "${ doc.id }.template.html",
+    "${ doc.docType }.template.html",
+    "${ doc.id }.${ doc.docType }.template.js",
+    "${ doc.id }.template.js",
+    "${ doc.docType }.template.js",
+    "${ doc.id }.${ doc.docType }.template.json",
+    "${ doc.id }.template.json",
+    "${ doc.docType }.template.json",
+    "common.template.html",
   ];
 
   // Dgeni disables autoescape by default, but we want this turned on.
@@ -144,8 +146,8 @@ apiDocsPackage.config(function (templateFinder: any, templateEngine: any) {
 
   // Nunjucks and Angular conflict in their template bindings so change Nunjucks
   templateEngine.config.tags = {
-    variableStart: '{$',
-    variableEnd: '$}',
+    variableStart: "{$",
+    variableEnd: "$}",
   };
 
   templateEngine.tags.push(new HighlightNunjucksExtension());

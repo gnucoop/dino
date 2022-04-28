@@ -63,11 +63,13 @@ if (require.main === module) {
     // Compute a relative path from the package to the actual input file.
     // e.g `src/dino-examples/core/<..>/example.ts` becomes `core/<..>/example.ts`.
     const basePath = relative(packageName, execPath);
+    const idx = basePath.indexOf(`/${packageName}/`);
     const fileExtension = extname(basePath).substring(1);
     const parsed = regionParser(readFileSync(execPath, 'utf8'), fileExtension);
-    detectAndHighlightRegionBlocks(parsed, basePath, outDir);
-    // Convert "my-component-example.ts" into "my-component-example-ts.html"
-    const baseOutputPath = basePath.replace(`.${fileExtension}`, `-${fileExtension}.html`);
+    const fixedBasePath = basePath.substring(idx + 1);
+    detectAndHighlightRegionBlocks(parsed, fixedBasePath, outDir);
+    // Convert "my-dino-example.ts" into "my-dino-example-ts.html"
+    const baseOutputPath = fixedBasePath.replace(`.${fileExtension}`, `-${fileExtension}.html`);
     const outputPath = join(outDir, baseOutputPath);
     const htmlOutput = highlightCodeBlock(parsed.contents, fileExtension);
 

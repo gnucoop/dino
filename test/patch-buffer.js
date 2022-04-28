@@ -1,1 +1,0 @@
-global.Buffer = BufferModule.Buffer;

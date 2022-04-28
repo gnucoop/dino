@@ -10,9 +10,6 @@
       "node"
     ]
   },
-  "exclude": [
-    "*.spec.ts",
-  ],
   "bazelOptions": {
     "suppressTsconfigOverrideWarnings": true
   }

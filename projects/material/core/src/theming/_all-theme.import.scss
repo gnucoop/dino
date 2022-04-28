@@ -1,0 +1,36 @@
+@forward '../components/chips/chips-theme.import';
+@forward '../components/datepicker/datepicker-theme.import';
+@forward '../components/form-field/form-field-theme';
+@forward '../components/button/button-theme.import';
+@forward '../components/card/card-theme.import';
+@forward '../components/cdk-drop-list/cdk-drop-list-theme.import';
+@forward '../components/checkbox/checkbox-theme.import';
+@forward '../components/table/table-theme.import';
+@forward '../components/paginator/paginator-theme.import';
+@forward '../components/select/select-theme.import';
+@forward '../components/sidenav/sidenav-theme.import';
+@forward '../components/slide-toggle/slide-toggle-theme.import';
+@forward '../components/tabs/tabs-theme.import';
+@forward '../components/form-field/form-field-theme.import';
+@forward '../components/dialog/dialog-theme.import';
+@forward '../components/grid/grid-theme.import';
+@forward '../components/icon/icon-theme.import';
+
+@forward 'all-theme' as dino-*;
+
+@import '../components/button/button-theme';
+@import '../components/card/card-theme';
+@import '../components/cdk-drop-list/cdk-drop-list-theme';
+@import '../components/checkbox/checkbox-theme';
+@import '../components/chips/chips-theme';
+@import '../components/table/table-theme';
+@import '../components/datepicker/datepicker-theme';
+@import '../components/paginator/paginator-theme';
+@import '../components/select/select-theme';
+@import '../components/sidenav/sidenav-theme';
+@import '../components/slide-toggle/slide-toggle-theme';
+@import '../components/tabs/tabs-theme';
+@import '../components/form-field/form-field-theme';
+@import '../components/dialog/dialog-theme';
+@import '../components/grid/grid-theme';
+@import '../components/icon/icon-theme';

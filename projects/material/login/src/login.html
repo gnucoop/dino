@@ -1,0 +1,52 @@
+<div *ngIf="(loggedIn|async) !== true">
+  <div class="dino-logo-container">
+    <div class="dino-logo">
+      <img [src]="logoImagePath" alt="" />
+    </div>
+  </div>
+  <ng-content select="[dropdownSelect]"></ng-content>
+  <div
+    class="dino-login-form-container"
+    *ngIf="loginFormVisible === undefined || (loginFormVisible|async) === true"
+  >
+    <form [class.dino-error]="loginError" [formGroup]="loginForm">
+      <input
+        matInput
+        formControlName="email"
+        name="email"
+        type="text"
+        aria-label="email"
+        [placeholder]="'Username / email'|transloco"
+      />
+      <input
+        matInput
+        formControlName="password"
+        name="password"
+        type="password"
+        aria-label="password"
+        [placeholder]="'Password'|transloco"
+      />
+      <div *ngIf="loginError === true" class="dino-error-message">
+        {{'Invalid username and/or password'|transloco}}
+      </div>
+      <button
+        mat-fab
+        type="submit"
+        color="accent"
+        aria-label="submit"
+        (click)="login()"
+        [disabled]="loggingIn || (submitDisabled|async) === true"
+      >
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+      <mat-progress-bar
+        aria-label="Login progress"
+        [class.dino-show]="loggingIn === true"
+        [color]="'accent'"
+        mode="indeterminate"
+      >
+      </mat-progress-bar>
+    </form>
+  </div>
+  <ng-content select="[additionalContent]"></ng-content>
+</div>

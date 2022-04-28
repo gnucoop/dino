@@ -1,0 +1,23 @@
+@use '@angular/material';
+
+@use '../../material/core/src/core';
+@use '../../material/core/src/dino-theme';
+
+// Define a theme.
+$primary: material.define-palette(material.$light-blue-palette, 700, 500);
+$accent: material.define-palette(material.$blue-grey-palette, 700);
+$warn: material.define-palette(material.$red-palette, 500);
+$alt_accent: material.define-palette(material.$light-blue-palette, 900);
+
+$theme: core.dark-theme(
+    (
+        color: (
+            primary: $primary,
+            accent: $accent,
+            warn: $warn,
+            alt_accent: $alt_accent,
+        ),
+    )
+);
+
+@include dino-theme.dino-theme($theme);
