@@ -5,9 +5,9 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import {default as esMain} from 'es-main';
 import {rollup} from 'rollup';
 
-const buildKarmaPolyfills = async () => {
+export const buildKarmaPolyfills = async () => {
   const config = {
-    input: 'scripts/karma-polyfills-source.js',
+    input: 'scripts/postinstall/karma-polyfills-source.js',
     plugins: [nodeResolve({preferBuiltins: false}), commonjs()],
   };
   const res = await rollup(config);
