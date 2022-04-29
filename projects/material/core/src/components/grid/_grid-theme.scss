@@ -1,6 +1,5 @@
 @use 'sass:map';
-@use '@angular/material/core/theming/theming' as mat-theming;
-@use '@angular/material/grid-list/grid-list-theme' as mat-grid-theme;
+@use '@angular/material' as mat-theming;
 
 @mixin grid-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);
@@ -11,7 +10,7 @@
     $alt_accent: map.get($config, alt_accent);
     $warn: map.get($config, warn);
 
-    @include mat-grid-theme.color($config-or-theme);
+    @include mat-theming.grid-list-color($config-or-theme);
 
     .mat-grid-tile.dino-grid-tile {
         border-radius: 5px;
@@ -44,7 +43,7 @@
 
 @mixin mat-grid-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
-    @include mat-grid-theme.typography($config-or-theme);
+    @include mat-theming.grid-typography($config-or-theme);
 }
 
 @mixin _mat-grid-density($config-or-theme) {

@@ -1,6 +1,5 @@
 @use 'sass:map';
-@use '@angular/material/core/theming/theming' as mat-theming;
-@use '@angular/material/icon/icon-theme' as mat-icon-theme;
+@use '@angular/material' as mat-theming;
 
 @mixin icon-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);
@@ -9,7 +8,7 @@
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
 
-    @include mat-icon-theme.color($config-or-theme);
+    @include mat-theming.icon-color($config-or-theme);
 
     .mat-icon.dino-mat-icon {
         color: mat-theming.get-color-from-palette($primary);
@@ -21,7 +20,7 @@
 
 @mixin mat-icon-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
-    @include mat-icon-theme.typography($config-or-theme);
+    @include mat-theming.icon-typography($config-or-theme);
 }
 
 @mixin _mat-icon-density($config-or-theme) {

@@ -2,7 +2,7 @@
 @use 'sass:map';
 @use 'sass:math';
 @use 'sass:meta';
-@use '@angular/material/core/theming/theming' as mat-theming;
+@use '@angular/material' as mat-theming;
 
 $mat-datepicker-selected-today-box-shadow-width: 1px;
 $mat-datepicker-selected-fade-amount: 0.6;

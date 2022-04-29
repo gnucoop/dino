@@ -1,6 +1,7 @@
 @use 'sass:map';
-@use '@angular/material/core/theming/theming' as mat-theming;
-@use '@angular/material/core/style/private' as mat-private;
+@use '@angular/material' as mat-theming;
+
+@use '../../theming/private';
 
 @mixin select-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);
@@ -24,7 +25,7 @@
 
     .mat-select-panel {
         background: mat-theming.get-color-from-palette($background, card);
-        @include mat-private.private-theme-overridable-elevation(4, $config);
+        @include private.private-theme-overridable-elevation(4, $config);
 
         .mat-option.mat-selected:not(.mat-option-multiple) {
             background: mat-theming.get-color-from-palette($background, hover, 0.12);

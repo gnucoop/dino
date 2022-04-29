@@ -1,6 +1,5 @@
 @use 'sass:map';
-@use '@angular/material/core/theming/theming' as mat-theming;
-@use '@angular/material/dialog/dialog-theme' as mat-dialog-theme;
+@use '@angular/material' as mat-theming;
 
 @mixin dialog-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);
@@ -9,7 +8,7 @@
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
 
-    @include mat-dialog-theme.color($config-or-theme);
+    @include mat-theming.dialog-color($config-or-theme);
 }
 
 @mixin mat-dialog-typography($config-or-theme) {

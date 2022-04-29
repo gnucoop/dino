@@ -1,6 +1,7 @@
 @use 'sass:map';
 
 @use 'all-core' as dino-core;
+@use 'theming/all-theme';
 @use 'typography/typography';
 
 @use '@angular/material' as mat;
@@ -103,4 +104,6 @@
       }
     }
   }
+
+  @include all-theme.material-theme($theme);
 }

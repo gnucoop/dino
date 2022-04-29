@@ -1,6 +1,5 @@
 @use 'sass:map';
-@use '@angular/material/core/theming/theming' as mat-theming;
-@use '@angular/material/paginator/paginator-theme' as mat-paginator-theme;
+@use '@angular/material' as mat-theming;
 
 @mixin paginator-color($config-or-theme) {
     $config: mat-theming.get-color-config($config-or-theme);
@@ -74,9 +73,9 @@
     @if $color != null {
         @include paginator-color($color);
     }
-    @if $density != null {
-        @include mat-paginator-theme.density($density);
-    }
+    // @if $density != null {
+    //     @include mat-theming.paginator-theme-density($density);
+    // }
     @if $typography != null {
         @include mat-typography($typography);
     }
