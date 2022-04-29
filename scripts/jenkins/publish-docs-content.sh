@@ -25,7 +25,8 @@ docsContentPath="${projectPath}/tmp/dino-docs-content"
 examplesPackagePath="${projectPath}/dist/dino-examples"
 
 # Git clone URL for the dino-docs-content repository.
-docsContentRepoUrl="https://bitbucket.org/gnucoop/dino-docs-content"
+docsContentRepoUrl="https://${DINO_BUILDS_TOKEN}@bitbucket.org/gnucoop/dino-docs-content"
+docsContentRepoUrlLog="https://bitbucket.org/gnucoop/dino-docs-content"
 
 # Current version of Dino from the package.json file
 buildVersion=$(node -pe "require('./package.json').version")
@@ -48,7 +49,7 @@ echo "Starting deployment of the docs-content for ${buildVersionName} in ${branc
 # Remove the docs-content repository if the directory exists
 rm -Rf ${docsContentPath}
 
-echo "Starting cloning process of ${docsContentRepoUrl} into ${docsContentPath}.."
+echo "Starting cloning process of ${docsContentRepoUrlLog} into ${docsContentPath}.."
 
 if [[ $(git ls-remote --heads ${docsContentRepoUrl} ${branchName}) ]]; then
   echo "Branch ${branchName} already exists. Cloning that branch."
@@ -88,7 +89,7 @@ git config user.name "$commitAuthorName"
 git config user.email "$commitAuthorEmail"
 git config credential.helper "store --file=.git/credentials"
 
-echo "https://devgnucoop:${DINO_BUILDS_TOKEN}:@bitbucket.org" > .git/credentials
+echo "https://${DINO_BUILDS_TOKEN}@bitbucket.org" > .git/credentials
 
 echo "Credentials for docs-content repository are now set up. Publishing.."
 

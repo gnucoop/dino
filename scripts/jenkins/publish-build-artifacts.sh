@@ -42,7 +42,8 @@ publishPackage() {
   buildTagName="${branchName}-${commitSha}"
   buildCommitMessage="${branchName} - ${commitMessage}"
 
-  repoUrl="https://bitbucket.org/gnucoop/${packageRepo}.git"
+  repoUrl="https://${DINO_BUILDS_TOKEN}@bitbucket.org/gnucoop/${packageRepo}.git"
+  repoUrlLog="https://bitbucket.org/gnucoop/${packageRepo}.git"
   repoDir="tmp/${packageRepo}"
 
   echo "Starting publish process of ${packageName} for ${buildVersionName} into ${branchName}.."
@@ -51,7 +52,7 @@ publishPackage() {
   rm -rf ${repoDir}
   mkdir -p ${repoDir}
 
-  echo "Starting cloning process of ${repoUrl} into ${repoDir}.."
+  echo "Starting cloning process of ${repoUrlLog} into ${repoDir}.."
 
   if [[ $(git ls-remote --heads ${repoUrl} ${branchName}) ]]; then
     echo "Branch ${branchName} already exists. Cloning that branch."
@@ -89,7 +90,7 @@ publishPackage() {
   git config user.email "${commitAuthorEmail}"
   git config credential.helper "store --file=.git/credentials"
 
-  echo "https://devgnucoop:${DINO_BUILDS_TOKEN}:@bitbucket.org" > .git/credentials
+  echo "https://${DINO_BUILDS_TOKEN}@bitbucket.org" > .git/credentials
 
   echo "Git configuration has been updated to match the last commit author. Publishing now.."
 
