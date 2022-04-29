@@ -96,7 +96,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * All the metrics autocomplete options.
    */
-  formMetricsOptions: {[key: string]: Observable<Metric[]>} = {};
+  formMetricsOptions: {[key: string]: BehaviorSubject<Metric[]>} = {};
 
   /**
    * True if the Form is in view mode.
@@ -307,6 +307,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
             const formControl = this.formMetrics.get(metricType);
             if (formControl) {
               formControl.setValue(res);
+              this._addFormMetricsOptions(metricType);
             }
           }
         });
@@ -373,7 +374,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * @param metricType The type identifier of the metric.
    */
   private _addFormMetricsOptions(metricType: string): void {
-    this.formMetricsOptions[metricType] = combineLatest([
+    combineLatest([
       this._userGroupManager.getGroupsMetricsByType(metricType).pipe(
         switchMap(metricsIds => {
           const querySelector = {id: {$in: metricsIds}, is_deleted: {$eq: false}};
@@ -387,20 +388,27 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         }),
       ),
       this.formMetricsValues[metricType],
-    ]).pipe(
-      map(([metricOptions, metricValue]) => {
-        if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
-          const mtrName = metricValue.toLowerCase();
-          return metricOptions.filter(option => {
-            return (
-              option.name.toLowerCase().includes(mtrName) &&
-              option.name != this.formMetrics.get('name')?.value
-            );
-          });
-        }
-        return [];
-      }),
-    );
+    ])
+      .pipe(
+        map(([metricOptions, metricValue]) => {
+          if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
+            const mtrName = metricValue.toLowerCase();
+            return metricOptions.filter(option => {
+              return (
+                option.name.toLowerCase().includes(mtrName) &&
+                option.name != this.formMetrics.get('name')?.value
+              );
+            });
+          }
+          return [];
+        }),
+        take(1),
+      )
+      .subscribe(metricOptions =>
+        this.formMetricsOptions[metricType]
+          ? this.formMetricsOptions[metricType].next(metricOptions)
+          : (this.formMetricsOptions[metricType] = new BehaviorSubject<Metric[]>(metricOptions)),
+      );
   }
 
   /**
