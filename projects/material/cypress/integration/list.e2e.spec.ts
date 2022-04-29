@@ -15,9 +15,6 @@ describe('dino-list', () => {
   });
 
   it('should display the correct header cells with their icon identifiers, including the ones specified by the string identifier', () => {
-    const headers = cy.get('mat-header-cell').first();
-
-    // await browser.wait(EC.presenceOf(element(by.tagName('mat-header-cell'))));
     [
       'Case people',
       'District',
@@ -26,7 +23,7 @@ describe('dino-list', () => {
       'Project assignment',
       'Thematic area volunteer_activism',
     ].forEach(expected => {
-      headers.next().should('contain.text', expected);
+      cy.get(`mat-header-cell:contains("${expected}")`).should('exist');
     });
   });
 
