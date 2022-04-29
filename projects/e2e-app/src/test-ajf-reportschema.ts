@@ -1,5 +1,3 @@
-import {ReportSchema} from '@dino/core/reports';
-
 /**
  * The test schema is taken from WWGVC "hr".
  *
@@ -4423,7 +4421,7 @@ export const ajfReportSchema = {
   },
   'variables': [{'name': 'forms', 'formula': {'formula': 'forms[1]'}}],
 };
-export const reportSchemas: ReportSchema[] = [
+export const reportSchemas = [
   {
     id: 'a29f8b15-1576-4c93-b745-21efdfce2c74',
     name: 'report_cbm',
@@ -4434,4 +4432,4 @@ export const reportSchemas: ReportSchema[] = [
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
-];
+] as any[];

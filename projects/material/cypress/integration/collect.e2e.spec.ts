@@ -11,6 +11,17 @@ describe('dino forms collect', () => {
     cy.get('dino-list').should('exist');
     cy.url().should('contain', 'forms');
   });
+
+  it('should enter an edit form schema page', () => {
+    cy.get('mat-grid-tile')
+      .should('exist')
+      .first()
+      .find('.dino-grid-action-icons button')
+      .first()
+      .click();
+    cy.get('dino-edit-form-schema').should('exist');
+    cy.url().should('contain', 'forms').should('contain', 'schema').should('contain', 'edit');
+  });
 });
 
 describe('dino reports collect', () => {
@@ -25,5 +36,16 @@ describe('dino reports collect', () => {
     cy.get('mat-grid-tile').should('exist').first().click();
     cy.get('dino-list').should('exist');
     cy.url().should('contain', 'reports');
+  });
+
+  it('should enter an edit form schema page', () => {
+    cy.get('mat-grid-tile')
+      .should('exist')
+      .first()
+      .find('.dino-grid-action-icons button')
+      .first()
+      .click();
+    cy.get('dino-edit-report-schema').should('exist');
+    cy.url().should('contain', 'reports').should('contain', 'schema').should('contain', 'edit');
   });
 });

@@ -9,11 +9,6 @@ describe('dino-edit-report-schema', () => {
       .click();
   });
 
-  it('should enter an edit report schema page', async () => {
-    cy.get('dino-edit-report-schema').should('exist');
-    cy.url().should('contain', 'reports').should('contain', 'schema').should('contain', 'edit');
-  });
-
   it('should show a rendered Ajf Report Instance', async () => {
     cy.get('ajf-report').should('exist');
   });

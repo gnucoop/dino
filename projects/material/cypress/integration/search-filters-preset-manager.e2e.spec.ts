@@ -1,3 +1,7 @@
+import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
+
+const url = `/forms/${formSchemas[0].id}`;
+
 const presetValue = btoa(
   encodeURI(
     '[{"name":"keyword","value":"t","operator":{"label":"Like","value":"$regex"},"fieldType":0}]',
@@ -6,8 +10,7 @@ const presetValue = btoa(
 
 describe('dino-search-filters-preset-manager', () => {
   beforeEach(() => {
-    cy.visit('/forms');
-    cy.get('mat-grid-tile').should('exist').first().click();
+    cy.visit(url);
     cy.get('.mat-expansion-indicator').click();
     cy.get('dino-search-filters-preset-manager').should('exist');
     localStorage.setItem('filters_preset_custom_load', presetValue);

@@ -1,11 +1,9 @@
+import {reportSchemas} from '../../../e2e-app/src/test-ajf-reportschema';
+
+const url = `/reports/${reportSchemas[0].id}/create`;
+
 describe('dino-create-report', () => {
-  beforeEach(() => {
-    cy.visit('/reports');
-    cy.get('dino-collect').should('exist');
-    cy.get('mat-grid-tile').should('exist').first().click();
-    cy.get('dino-list').should('exist');
-    cy.get('dino-floating-button button').should('exist').first().click();
-  });
+  beforeEach(() => cy.visit(url));
 
   it('should enter a create report page', async () => {
     cy.get('dino-create-report').should('exist');

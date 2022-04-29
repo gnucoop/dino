@@ -13,6 +13,7 @@ describe('dino-edit-report', () => {
       .invoke('addClass', 'dino-hover');
     cy.get('mat-row .mat-cell.dino-row-actions .mat-icon.mat-list-icon')
       .first()
+      .invoke('mouseover')
       .next()
       .invoke('mouseover')
       .click();

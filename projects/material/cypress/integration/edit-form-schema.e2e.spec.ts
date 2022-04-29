@@ -1,18 +1,9 @@
-describe('dino-edit-form-schema', () => {
-  beforeEach(() => {
-    cy.visit('/forms');
-    cy.get('mat-grid-tile')
-      .should('exist')
-      .first()
-      .find('.dino-grid-action-icons button')
-      .first()
-      .click();
-  });
+import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
 
-  it('should enter an edit form schema page', () => {
-    cy.get('dino-edit-form-schema').should('exist');
-    cy.url().should('contain', 'forms').should('contain', 'schema').should('contain', 'edit');
-  });
+const url = `/forms/schema/${formSchemas[0].id}/edit`;
+
+describe('dino-edit-form-schema', () => {
+  beforeEach(() => cy.visit(url));
 
   it('should show an Ajf Form Builder', () => {
     cy.get('ajf-form-builder').should('exist');
@@ -24,16 +15,7 @@ describe('dino-edit-form-schema', () => {
 });
 
 describe('dino-import-form-schema', () => {
-  beforeEach(() => {
-    cy.visit('/forms');
-    cy.get('mat-grid-tile')
-      .should('exist')
-      .first()
-      .find('.dino-grid-action-icons button')
-      .first()
-      .click();
-    cy.get('dino-edit-form-schema').should('exist');
-  });
+  beforeEach(() => cy.visit(url));
 
   it('should show an Import button', () => {
     cy.get('.mat-button-wrapper:contains("Import")').should('exist');

@@ -1,6 +1,4 @@
-import {ReportData} from '@dino/core/reports';
-
-export const reportDatas: ReportData[] = [
+export const reportDatas = [
   {
     id: 'b0170e25-5e0b-42a1-a8c1-938fb65bd102',
     user_data_ref_id: 'user_a',
@@ -31,4 +29,4 @@ export const reportDatas: ReportData[] = [
     date_start: null,
     date_end: null,
   },
-];
+] as any[];

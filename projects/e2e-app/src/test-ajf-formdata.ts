@@ -1,5 +1,3 @@
-import {FormData} from '@dino/core/forms';
-
 import {projects} from './test-projects';
 
 const ajfSourceReportFormDatas = [
@@ -177,7 +175,7 @@ const ajfSourceReportFormDatas = [
   },
 ];
 
-export const formDatas: FormData[] = [
+export const formDatas = [
   {
     id: '3a627515-bd5f-4599-b0c6-5a5ad4c42bba',
     user_data_ref_id: 'user_a',
@@ -230,4 +228,4 @@ export const formDatas: FormData[] = [
     organization_ref_id: null,
     project_ref_id: null,
   },
-];
+] as any[];
