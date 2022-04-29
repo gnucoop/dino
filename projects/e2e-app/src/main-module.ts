@@ -13,7 +13,7 @@ import {AreasModule} from '@dino/core/areas';
 import {AuthModule, AuthService} from '@dino/core/auth';
 import {CasesModule} from '@dino/core/cases';
 import {ConfigModule} from '@dino/core/config';
-import {DATA_SERVICE_CONFIG} from '@dino/core/data';
+import {DATA_SERVICE_CONFIG, DataService} from '@dino/core/data';
 import {
   FormData,
   FormDataManager,
@@ -23,7 +23,7 @@ import {
 } from '@dino/core/forms';
 import {LocationModule} from '@dino/core/locations';
 import {OrganizationsModule} from '@dino/core/organizations';
-import {ProjectModule} from '@dino/core/projects';
+import {Project, ProjectManager, ProjectModule} from '@dino/core/projects';
 import {
   ReportData,
   ReportDataManager,
@@ -90,24 +90,31 @@ import {formDatas} from './test-ajf-formdata';
 import {formSchemas} from './test-ajf-formschema';
 import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
+import {projects} from './test-projects';
 
 /**
  * Used to generate fake data for the e2e app
  */
 const fakeFormSchemaGenerator = new FakeDataGenerator<FormSchema>();
 const fakeFormDataGenerator = new FakeDataGenerator<FormData>();
+const fakeProjectsGenerator = new FakeDataGenerator<Project>();
 const fakeReportSchemaGenerator = new FakeDataGenerator<ReportSchema>();
 const fakeReportDataGenerator = new FakeDataGenerator<ReportData>();
 
 export function initializeApp(
+  ds: DataService,
   fsm: FormSchemaManager,
   fdm: FormDataManager,
+  pm: ProjectManager,
   rsm: ReportSchemaManager,
   rdm: ReportDataManager,
 ): () => Observable<any> {
   return () => {
     if (additionalConfig.generateData) {
-      return fakeFormSchemaGenerator.generateData(fsm, formSchemas).pipe(
+      return fakeProjectsGenerator.generateData(ds, pm, projects).pipe(
+        switchMap(() => {
+          return fakeFormSchemaGenerator.generateData(ds, fsm, formSchemas);
+        }),
         switchMap(resForm => {
           if (resForm.success[0] != null) {
             const genFormSchemaId = resForm.success[0].id;
@@ -116,7 +123,7 @@ export function initializeApp(
             }
             return zip(
               obsOf(resForm.success[0].id),
-              fakeReportSchemaGenerator.generateData(rsm, reportSchemas),
+              fakeReportSchemaGenerator.generateData(ds, rsm, reportSchemas),
             );
           }
           return obsOf([null, null]);
@@ -139,8 +146,8 @@ export function initializeApp(
             reportDatas[idx].report_schema_ref_id = genReportSchemaId;
           }
           return combineLatest([
-            fakeFormDataGenerator.generateData(fdm, formDatas),
-            fakeReportDataGenerator.generateData(rdm, reportDatas),
+            fakeFormDataGenerator.generateData(ds, fdm, formDatas),
+            fakeReportDataGenerator.generateData(ds, rdm, reportDatas),
           ]);
         }),
         tap(() => console.log('DATA GENERATED')),
@@ -252,13 +259,22 @@ export function provideDataServiceConfig() {
     {
       provide: APP_INITIALIZER,
       useFactory: (
+        ds: DataService,
         fsm: FormSchemaManager,
         fdm: FormDataManager,
+        pm: ProjectManager,
         rsm: ReportSchemaManager,
         rdm: ReportDataManager,
-      ) => initializeApp(fsm, fdm, rsm, rdm),
+      ) => initializeApp(ds, fsm, fdm, pm, rsm, rdm),
       multi: true,
-      deps: [FormSchemaManager, FormDataManager, ReportSchemaManager, ReportDataManager],
+      deps: [
+        DataService,
+        FormSchemaManager,
+        FormDataManager,
+        ProjectManager,
+        ReportSchemaManager,
+        ReportDataManager,
+      ],
     },
   ],
   bootstrap: [E2eApp],

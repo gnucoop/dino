@@ -4425,13 +4425,13 @@ export const ajfReportSchema = {
 };
 export const reportSchemas: ReportSchema[] = [
   {
-    id: '',
+    id: 'a29f8b15-1576-4c93-b745-21efdfce2c74',
     name: 'report_cbm',
     form_schema_ids: [],
     label: 'CBM Report',
     icon: 'star',
     schema: ajfReportSchema,
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   },
 ];

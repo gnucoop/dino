@@ -1,9 +1,6 @@
-// import '@dino/core/locations/form-data';
-// import '@dino/core/projects/form-data';
-// import '@dino/core/areas/form-data';
-// import '@dino/core/cases/form-data';
-
 import {FormData} from '@dino/core/forms';
+
+import {projects} from './test-projects';
 
 const ajfSourceReportFormDatas = [
   {
@@ -182,25 +179,25 @@ const ajfSourceReportFormDatas = [
 
 export const formDatas: FormData[] = [
   {
-    id: '',
+    id: '3a627515-bd5f-4599-b0c6-5a5ad4c42bba',
     user_data_ref_id: 'user_a',
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[0],
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     area_ref_id: null,
     case_ref_id: null,
     location_ref_id: null,
     organization_ref_id: null,
-    project_ref_id: null,
+    project_ref_id: projects[0].id,
   },
   {
-    id: '',
+    id: '5c98aa0d-ded0-4cce-a8a1-f5be18c12433',
     user_data_ref_id: 'user_a',
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[1],
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     area_ref_id: null,
     case_ref_id: null,
     location_ref_id: null,
@@ -208,12 +205,12 @@ export const formDatas: FormData[] = [
     project_ref_id: null,
   },
   {
-    id: '',
+    id: '1a95052e-8068-4456-8e70-357109970a83',
     user_data_ref_id: 'user_b',
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[2],
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     area_ref_id: null,
     case_ref_id: null,
     location_ref_id: null,
@@ -221,12 +218,12 @@ export const formDatas: FormData[] = [
     project_ref_id: null,
   },
   {
-    id: '',
+    id: 'aa6fa67a-a8ad-46bd-92ad-69d8549c03d6',
     user_data_ref_id: 'user_b',
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[3],
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     area_ref_id: null,
     case_ref_id: null,
     location_ref_id: null,

@@ -2,12 +2,12 @@ import {ReportData} from '@dino/core/reports';
 
 export const reportDatas: ReportData[] = [
   {
-    id: '',
+    id: 'b0170e25-5e0b-42a1-a8c1-938fb65bd102',
     user_data_ref_id: 'user_a',
     report_schema_ref_id: 'generic_report',
     metadata: {},
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     area_ref_id: null,
     case_ref_id: null,
     location_ref_id: null,
@@ -17,12 +17,12 @@ export const reportDatas: ReportData[] = [
     date_end: null,
   },
   {
-    id: '',
+    id: '709cebb5-7ea0-4e59-969a-7b095d7fec3e',
     user_data_ref_id: 'user_a',
     report_schema_ref_id: 'generic_report',
     metadata: {},
-    created_at: '',
-    updated_at: '',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     area_ref_id: null,
     case_ref_id: null,
     location_ref_id: null,
