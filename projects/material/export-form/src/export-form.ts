@@ -345,7 +345,10 @@ export class ExportForm implements AfterViewInit, OnDestroy {
               this._dinoFields.forEach(field => {
                 const isDinoRefField = field.includes('_ref_id');
                 const dinoField = isDinoRefField ? field.replace('_ref_id', '') : field;
-                exportCtx[field] = isDinoRefField ? ctx.dino[dinoField].id : ctx.dino[dinoField];
+                exportCtx[field] =
+                  isDinoRefField && ctx.dino[dinoField]
+                    ? ctx.dino[dinoField].id
+                    : ctx.dino[dinoField];
               });
               if (ctx.dino['user_data'] != null) {
                 exportCtx['user_data_full_name'] = ctx.dino['user_data'].full_name;
