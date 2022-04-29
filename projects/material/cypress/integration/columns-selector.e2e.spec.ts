@@ -9,7 +9,7 @@ describe('dino-columns-selector', () => {
   });
 
   it('should open the column selector', () => {
-    cy.get('.mat-list-icon.dino-columns-sel-btn').click();
+    cy.get('.mat-list-icon.dino-columns-sel-btn').trigger('mouseover').click();
     cy.get('dino-columns-selector').should('be.visible');
   });
 
