@@ -21,7 +21,7 @@
  */
 
 import {AjfStringIdentifier} from '@ajf/core/common';
-import {AjfChoicesOrigin, AjfNodeType} from '@ajf/core/forms';
+import {AjfChoicesOrigin, AjfField, AjfNodeType} from '@ajf/core/forms';
 import {DEFAULT_EXCLUDED_METRIC_KEYS, MetricsService} from '@dino/core/data';
 import {FilterGroup, FilterItem, ListHeader} from '@dino/core/list';
 
@@ -134,11 +134,13 @@ export const generateSchemaListHeaders = (
   const dataHeadersDisplayed = [...new Set(identifierColumns)];
   const dataHeaders: ListHeader<any>[] = formSchema.schema.nodes
     ?.map(slide =>
-      slide.nodes.map(node => ({
-        ...node,
-        repeatingSlideColumn: slide.nodeType === AjfNodeType.AjfRepeatingSlide,
-        slideName: slide.name,
-      })),
+      slide.nodes
+        .map(node => ({
+          ...node,
+          repeatingSlideColumn: slide.nodeType === AjfNodeType.AjfRepeatingSlide,
+          slideName: slide.name,
+        }))
+        .filter(nd => (nd as AjfField).fieldType != 7),
     )
     .flat(1)
     .map(
