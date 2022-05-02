@@ -7,6 +7,7 @@ import {
   FilterItem,
   ListModule,
   NUMBER_CONDITION_OPERATORS,
+  TEXT_CONDITION_OPERATORS,
 } from '@dino/core/list';
 
 import {SearchFiltersWidget, SearchFiltersWidgetModule} from './public_api';
@@ -62,7 +63,7 @@ describe('Search filters widget', () => {
     const opMultiChoice = widgetComponent.conditionOperatorByFieldType(AjfFieldType.MultipleChoice);
 
     expect(opNumber).toEqual(NUMBER_CONDITION_OPERATORS);
-    expect(opString).toEqual([]);
+    expect(opString).toEqual(TEXT_CONDITION_OPERATORS);
     expect(opMultiChoice).toEqual(CHOICES_CONDITION_OPERATORS);
   });
 });

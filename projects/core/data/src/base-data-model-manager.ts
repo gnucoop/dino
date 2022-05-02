@@ -524,7 +524,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    */
   private _optionsToMangoQuery(options?: DataListOptions | DataQueryOptions): MangoQuery<T> {
     options = options || {};
-    const selector = (options as DataQueryOptions).selector || {is_deleted: {$eq: false}};
+    const selector = (options as DataQueryOptions).selector || {is_deleted: {$ne: true}};
     const sort =
       options.sort != null
         ? (options.sort.map(s => {
