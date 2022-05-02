@@ -199,13 +199,14 @@ export class ListDataSource<
    * @param _fs The service managing the List filters.
    * @param _additionalDataManager The optional manager used to generate additional
    * filters from the "data" property of the main model.
-   * @param _isFormDataList If true, this is the datasource for a list of FormDatas.
+   * @param _isDataList If not null, this is the datasource for a list of Form or Report Datas.
+   * @param _isAggregationList If not null, this is the datasource for an aggregation list of Form or Report Datas.
    */
   constructor(
     private _dataModelManager: DataModelManager<T>,
     private _fs: FiltersService,
     @Optional() private _additionalDataManager?: DataModelManager<AD>,
-    private _isFormDataList: boolean = false,
+    private _isDataList: 'form' | 'report' | null = null,
     private _isAggregationList: 'form' | 'report' | null = null,
   ) {
     super();
@@ -248,7 +249,9 @@ export class ListDataSource<
       this._fs.queryString,
       this._dataModelManager.permissionContext,
       this.refreshListData,
-      this._additionalDataSchema.pipe(skipWhile(schema => this._isFormDataList && schema == null)),
+      this._additionalDataSchema.pipe(
+        skipWhile(schema => this._isDataList != null && schema == null),
+      ),
       this.customPaginator.pipe(switchMap(pag => (pag ? pag.page : obsOf(null)))),
       this.customSort.pipe(
         switchMap(sort =>
@@ -455,7 +458,7 @@ export class ListDataSource<
               let slideIdx = 0;
               while (slideIdx <= this._maxRepeatingSlidesFiltering) {
                 repeatedFilters.push({
-                  [this._isFormDataList
+                  [this._isDataList != null
                     ? `data.${item.name}__${slideIdx}`
                     : `data.data.${item.name}__${slideIdx}`]: {
                     [item.operator ? item.operator.value : '$eq']: item.value,
@@ -473,7 +476,7 @@ export class ListDataSource<
               this._addNestedProps(
                 selector,
                 [
-                  this._isFormDataList
+                  this._isDataList != null
                     ? `data.${item.name.trim().toLowerCase()}`
                     : `data.data.${item.name.trim().toLowerCase()}`,
                   item.operator ? item.operator.value : '$eq',
@@ -486,8 +489,8 @@ export class ListDataSource<
           break;
       }
     });
-    if (additionalDataSchema != null) {
-      const schemaKey = this._isFormDataList ? 'form_schema_ref_id' : 'report_schema_ref_id';
+    if (additionalDataSchema != null && this._isDataList != null) {
+      const schemaKey = this._isDataList === 'form' ? 'form_schema_ref_id' : 'report_schema_ref_id';
       this._addNestedProps(querySelector, [schemaKey, '$eq'], additionalDataSchema.id);
     }
     if (
