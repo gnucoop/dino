@@ -14,9 +14,7 @@ import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operat
 export class MatReportsListE2E {
   @ViewChild(SelectionList) list!: SelectionList;
 
-  /**
-   * If true, this is a list of simple report datas.
-   */
+  readonly isDataList = 'report';
   readonly additionalBasicFilters = [
     'project',
     'location',
@@ -135,6 +133,7 @@ export class MatReportsListE2E {
       this.reportDataManager,
       this.filtersService,
       this.reportSchemaManager,
+      this.isDataList,
     );
   }
 

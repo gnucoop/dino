@@ -14,10 +14,6 @@ import {catchError, filter, map, switchMap, take} from 'rxjs/operators';
 export class MatAggregationListE2E implements AfterViewInit {
   @ViewChild(SelectionList) list!: SelectionList;
 
-  /**
-   * If true, this is a list of simple form datas.
-   */
-  readonly isFormDataList = true;
   readonly additionalBasicFilters = [
     'project',
     'location',
@@ -95,7 +91,7 @@ export class MatAggregationListE2E implements AfterViewInit {
       this.formDataManager,
       this.filtersService,
       undefined,
-      false,
+      null,
       'form',
     );
   }

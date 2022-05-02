@@ -132,7 +132,7 @@ export class UserGroupManagerMock extends UserGroupManager {
     this.addToContext({user_permissions: userPrivileges});
     return obsOf(true);
   }
-  override getGroupsMetricsByType(metricType: string): Observable<string[]> {
+  override getGroupsMetricsByType(_metricType: string): Observable<string[]> {
     return obsOf(['all']);
   }
 }

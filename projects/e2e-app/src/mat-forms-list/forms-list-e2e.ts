@@ -15,10 +15,7 @@ import {catchError, filter, map, shareReplay, startWith, switchMap, take} from '
 export class MatFormsListE2E {
   @ViewChild(SelectionList) list!: SelectionList;
 
-  /**
-   * If true, this is a list of simple form datas.
-   */
-  readonly isFormDataList = true;
+  readonly isDataList = 'form';
   readonly additionalBasicFilters = [
     'project',
     'location',
@@ -126,7 +123,7 @@ export class MatFormsListE2E {
       this.formDataManager,
       this.filtersService,
       this.formSchemaManager,
-      this.isFormDataList,
+      this.isDataList,
     );
   }
 

@@ -294,7 +294,12 @@ export const E2E_APP_ROUTES: Routes = [
     data: {breadcrumbs: [{label: 'Dashboard', url: 'dashboard', icon: 'apps'}]},
     component: MatDashboardE2E,
   },
-  // {path: 'langs', canActivate: authGuard, component: MatLangsE2e, data: {breadcrumbs: null}},
+  {
+    path: 'langs',
+    canActivate: authGuard,
+    component: MatLangsE2e,
+    data: {breadcrumbs: [{label: 'Languages', url: 'langs', icon: 'translate'}]},
+  },
   {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
   {path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
 ];

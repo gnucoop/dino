@@ -21,6 +21,7 @@ export class MatUsersListE2E implements OnInit {
     {column: 'id', label: 'ID', displayed: false},
     {column: 'email', label: 'Email', displayed: true},
     {column: 'full_name', label: 'Full Name', displayed: true},
+    {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
 
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
