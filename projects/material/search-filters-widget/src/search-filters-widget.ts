@@ -53,6 +53,7 @@ import {
   FiltersService,
   NUMBER_CONDITION_OPERATORS,
   Operator,
+  TEXT_CONDITION_OPERATORS,
   WidgetData,
 } from '@dino/core/list';
 import {
@@ -314,6 +315,9 @@ export class SearchFiltersWidget
         return NUMBER_CONDITION_OPERATORS;
       case AjfFieldType.MultipleChoice:
         return CHOICES_CONDITION_OPERATORS;
+      case AjfFieldType.String:
+      case AjfFieldType.Text:
+        return TEXT_CONDITION_OPERATORS;
       default:
         return [];
     }

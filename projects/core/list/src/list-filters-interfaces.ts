@@ -160,11 +160,11 @@ export interface Operator {
     | '>='
     | '=='
     | '!='
-    | 'exists'
-    | 'includes'
-    | 'not includes'
-    | 'is'
-    | 'not'
+    | 'Exists'
+    | 'Includes'
+    | 'Not includes'
+    | 'Is'
+    | 'Not'
     | 'Like'
     | 'Not like';
   /**
@@ -204,8 +204,17 @@ export const NUMBER_CONDITION_OPERATORS: Operator[] = [
  * Mongodb operators for single/multiple choice conditions
  */
 export const CHOICES_CONDITION_OPERATORS: Operator[] = [
-  {label: 'is', value: '$in'},
-  {label: 'not', value: '$nin'},
+  {label: 'Is', value: '$in'},
+  {label: 'Not', value: '$nin'},
+];
+
+/**
+ * Mongodb operators for string/text conditions
+ */
+export const TEXT_CONDITION_OPERATORS: Operator[] = [
+  {label: 'Includes', value: '$regex', options: 'i'},
+  {label: 'Is', value: '$eq'},
+  {label: 'Not', value: '$ne'},
 ];
 
 export const ALL_CONDITION_OPERATORS: Operator[] = [
@@ -222,7 +231,7 @@ export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
   [AjfFieldType.Number]: {label: '==', value: '$eq'},
   [AjfFieldType.DateInput]: {label: '==', value: '$eq'},
   [AjfFieldType.Date]: {label: '==', value: '$eq'},
-  [AjfFieldType.MultipleChoice]: {label: 'is', value: '$in'},
+  [AjfFieldType.MultipleChoice]: {label: 'Is', value: '$in'},
 };
 
 /**
