@@ -26,12 +26,12 @@ export const models = {
   core: {
     areas: ['area'],
     cases: ['case'],
-    forms: ['form-data', 'form-schema'],
+    forms: ['form-data'],
     langs: ['lang'],
     locations: ['location'],
     organizations: ['organization'],
     projects: ['project'],
-    reports: ['report-data', 'report-schema'],
+    reports: ['report-data'],
     users: ['user-group', 'user-role', 'user-data'],
   },
 };
