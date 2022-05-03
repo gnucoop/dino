@@ -181,7 +181,6 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
       this.metricName = this._metricManager.collectionName.toUpperCase();
-      this._schemaToForm(this._metricManager.collectionSchema, data.metricItem);
     }
   }
 
@@ -345,6 +344,10 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
+    if (this.data != null && this._metricManager != null) {
+      this._schemaToForm(this._metricManager.collectionSchema, this.data.metricItem);
+    }
+
     if (this._metricManager == null) {
       this._router.navigateByUrl('');
       this.snackbar.open('Oops! Something went wrong opening the Metric', 'ERROR', {
