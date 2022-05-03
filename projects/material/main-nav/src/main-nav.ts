@@ -317,15 +317,18 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   /**
    * User logout method.
+   * @param redirect If true, redirects to the specified url after logging out
    */
-  logout(): void {
+  logout(redirect: boolean = !this.logoutDisabled.value): void {
     this.authService
       .logout()
       .pipe(take(1))
       .subscribe(res => {
         if (res) {
           this.snackbar.open('Successfully logged out', 'LOGOUT', {duration: 5000});
-          this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
+          if (redirect) {
+            this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
+          }
         }
       });
   }

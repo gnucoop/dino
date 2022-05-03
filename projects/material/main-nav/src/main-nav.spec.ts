@@ -94,7 +94,7 @@ describe('Main', () => {
     await fixtureMain.whenStable();
     fixtureMain.detectChanges();
 
-    main.logout();
+    main.logout(false);
 
     expect(logoutSpy).toHaveBeenCalled();
     expect(snackbarSpy).toHaveBeenCalled();
