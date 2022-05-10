@@ -31,6 +31,11 @@ export interface Case extends Metric {
    * The Case Code identifier
    */
   code?: number;
+
+  /**
+   * The case notes
+   */
+  notes?: string | null;
 }
 
 export const VERSION = 0;

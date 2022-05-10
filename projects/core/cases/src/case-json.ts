@@ -68,6 +68,13 @@ export const schema = {
     "code": {
       "type": "number",
       "description": "The Case Code identifier"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The case notes"
     }
   },
   "additionalProperties": false,
