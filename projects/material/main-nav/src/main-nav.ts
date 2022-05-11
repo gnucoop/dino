@@ -32,6 +32,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
@@ -39,6 +40,7 @@ import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService} from '@dino/core/data';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {UserArea} from '@dino/material/user-area';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
@@ -135,6 +137,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   readonly showNav: Observable<boolean>;
 
   /**
+   * A list of all public sections in the Dino app.
+   */
+  readonly sections$: BehaviorSubject<Section[]> = new BehaviorSubject<Section[]>([]);
+
+  /**
    * Event emitted when the sidenav menu is toggled
    */
   private _menuToggleEvt: EventEmitter<void> = new EventEmitter<void>();
@@ -161,11 +168,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * action on the sidenav.
    */
   private _currentSectionSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * A list of all public sections in the Dino app.
-   */
-  readonly sections$: BehaviorSubject<Section[]> = new BehaviorSubject<Section[]>([]);
 
   @Input()
   set sections(sec: Section[]) {
@@ -221,6 +223,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly userGroupManager: UserGroupManager,
     readonly userDataManager: UserDataManager,
     readonly snackbar: MatSnackBar,
+    public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
   ) {
@@ -300,6 +303,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   menuClick(): void {
     this._menuClickEvt.emit();
+  }
+
+  /**
+   * Opens the User Area dialog
+   */
+  openUserArea(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.minWidth = `95vw`;
+    dialogConfig.maxWidth = `95vw`;
+    this.dialog.open(UserArea, dialogConfig);
   }
 
   /**

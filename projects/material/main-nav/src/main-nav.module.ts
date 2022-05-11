@@ -24,6 +24,7 @@ import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -33,6 +34,7 @@ import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {LangSelectorModule} from '@dino/material/lang-selector';
+import {UserAreaModule} from '@dino/material/user-area';
 
 import {MainNav} from './main-nav';
 
@@ -44,12 +46,14 @@ import {MainNav} from './main-nav';
     BreakpointObserverModule,
     CommonModule,
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatListModule,
     MatSidenavModule,
     MatSnackBarModule,
     MatToolbarModule,
     RouterModule,
+    UserAreaModule,
   ],
   declarations: [MainNav],
   exports: [MainNav],

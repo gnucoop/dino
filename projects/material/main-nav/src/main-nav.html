@@ -41,8 +41,10 @@
     </ng-container>
     <dino-lang-selector></dino-lang-selector>
     <ng-container *ngIf="userDisplayName|async as userDisplayName">
-      <mat-icon class="dino-active-user-icon" color="primary">person</mat-icon>
-      <span class="dino-active-user-text">{{userDisplayName}}</span>
+      <mat-icon class="dino-active-user-icon" color="primary" (click)="openUserArea()"
+        >person</mat-icon
+      >
+      <span class="dino-active-user-text" (click)="openUserArea()">{{userDisplayName}}</span>
     </ng-container>
     <mat-icon *ngIf="(logoutDisabled|async) !== true" class="dino-logout-button" (click)="logout()"
       >logout</mat-icon
