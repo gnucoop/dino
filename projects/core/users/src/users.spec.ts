@@ -50,9 +50,9 @@ const authServiceMock = {
   authToken: obsOf('test_auth_token'),
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
-  getUserInfo: () => {
-    return dummyUser;
-  },
+  getUserInfo: () => dummyUser,
+  getNewUser: () => null,
+  resetNewUser: () => {},
 } as unknown as AuthService;
 
 const userDataManagerMock = {

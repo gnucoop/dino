@@ -56,20 +56,32 @@ export class UserDataManager extends DataModelManager<UserData> {
   getActiveUserData(): Observable<UserData | null> {
     return this._authService.authenticated.pipe(
       skipWhile(auth => auth != true),
-      switchMap(_ => {
-        const userId = this._authService.getUserInfo()?.id;
-        if (userId == null) {
-          return obsOf(null);
+      switchMap(() => {
+        const newUser = this._authService.getNewUser();
+        this._authService.resetNewUser();
+        if (newUser != null) {
+          return this.create({
+            full_name: newUser.displayName,
+            email: newUser.email,
+            user_group_ids: [],
+            user_auth_ref_id: newUser.id,
+            created_at: new Date().toISOString(),
+          });
+        } else {
+          const userId = this._authService.getUserInfo()?.id;
+          if (userId == null) {
+            return obsOf(null);
+          }
+          return this.query({selector: {user_auth_ref_id: {$eq: userId}}}).pipe(
+            map(docs => {
+              if (!docs.length || docs[0] == null) {
+                return null;
+              }
+              return docs[0];
+            }),
+            shareReplay(1),
+          );
         }
-        return this.query({selector: {user_auth_ref_id: {$eq: userId}}}).pipe(
-          map(docs => {
-            if (!docs.length || docs[0] == null) {
-              return null;
-            }
-            return docs[0];
-          }),
-          shareReplay(1),
-        );
       }),
       map(ud => {
         if (ud == null) {
