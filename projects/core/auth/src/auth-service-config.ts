@@ -50,6 +50,12 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
   nHostAuth?: boolean;
 
   /**
+   * If true, users can create their own account from the sign-up form in the
+   * login view
+   */
+  signUp?: boolean;
+
+  /**
    * Custom login credential key to be sent in the login request to the api.
    */
   userCredential?: string;
@@ -83,6 +89,11 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
    * Optional custom User signup endpoint
    */
   signupEndpoint?: string;
+
+  /**
+   * Optional custom User Password change endpoint
+   */
+  changePasswordEndpoint?: string;
 
   /**
    * Time interval to retry refresh token calls in milliseconds.

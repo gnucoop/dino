@@ -20,14 +20,15 @@
  *
  */
 
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, mapTo, switchMap, tap} from 'rxjs/operators';
+import {catchError, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 
 import {
   AuthResponse,
+  BasicUserInfo,
   NHostRefreshResponse,
   NHostSignupRequest,
   NHostSignupResponse,
@@ -77,6 +78,27 @@ export class AuthService {
    * stored token and config data.
    */
   readonly resetEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  /**
+   * When not null it holds the newly signed up User basic info.
+   * The User Data Manager should create a new User Data based
+   * on this, then set this to null.
+   */
+  private _newUser: BehaviorSubject<BasicUserInfo | null> =
+    new BehaviorSubject<BasicUserInfo | null>(null);
+
+  setNewUser(newUser: BasicUserInfo): void {
+    if (!newUser) {
+      return;
+    }
+    this._newUser.next(newUser);
+  }
+  getNewUser(): BasicUserInfo | null {
+    return this._newUser.value;
+  }
+  resetNewUser(): void {
+    this._newUser.next(null);
+  }
 
   /**
    * The Auth service configuration settings stream.
@@ -138,7 +160,7 @@ export class AuthService {
    * authentication token and the logged in user info.
    * @returns True if the user has been authenticated otherwise false
    */
-  login(credentials: Credentials): Observable<boolean> {
+  login(credentials: Credentials): Observable<boolean | HttpErrorResponse> {
     if (credentials == null) {
       return obsOf(false);
     }
@@ -180,11 +202,6 @@ export class AuthService {
             this._storeUserInfo(userInfo);
           }),
           mapTo(true),
-          catchError(err => {
-            console.log(err.error ?? err);
-            this.authenticated.next(false);
-            return obsOf(false);
-          }),
         );
       }),
     );
@@ -252,7 +269,11 @@ export class AuthService {
           config.signupEndpoint ?? 'v1/auth/signup/email-password',
           removeSlashes(config.host),
         );
-        return this._httpClient.post<NHostSignupResponse>(url, requestData);
+        return this._httpClient.post<NHostSignupResponse>(url, requestData).pipe(
+          catchError(err => {
+            return obsOf(err.error);
+          }),
+        );
       }),
     );
   }
@@ -367,6 +388,34 @@ export class AuthService {
           return obsOf(true);
         } else {
           return obsOf(tokenCheck);
+        }
+      }),
+    );
+  }
+
+  /**
+   * User Change Password method.
+   */
+  changePassword(
+    credentials: Credentials,
+    newPass: string,
+  ): Observable<boolean | HttpErrorResponse> {
+    return this.login(credentials).pipe(
+      withLatestFrom(this._authConfig),
+      switchMap(([logRes, config]) => {
+        if (logRes === true) {
+          const defaultChangePwdUrl = config.nHostAuth ? 'v1/auth/user/password' : 'api/password';
+          const url = this._generateUrl(
+            config.changePasswordEndpoint ?? defaultChangePwdUrl,
+            removeSlashes(config.host),
+          );
+          const headers =
+            config.apiKey != null
+              ? {Authorization: config.apiKey}
+              : {Authorization: `Bearer ${this.getAuthToken()}`};
+          return this._httpClient.post<any>(url, {newPassword: newPass}, {headers});
+        } else {
+          return obsOf(logRes);
         }
       }),
     );

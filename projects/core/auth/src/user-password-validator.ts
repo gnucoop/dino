@@ -20,20 +20,24 @@
  *
  */
 
-export * from './auth.guard';
-export * from './auth-module';
-export * from './auth-response';
-export * from './auth-service-config';
-export * from './auth-service';
-export * from './auth-utils';
-export * from './credentials';
-export * from './jwt-interceptor';
-export * from './jwt-token';
-export * from './login';
-export * from './login-response';
-export * from './network-status.service';
-export * from './two-factor-delivery';
-export * from './user';
-export * from './username-status';
-export * from './user-password-validator';
-export * from './validation-errors';
+import {AbstractControl, ValidationErrors} from '@angular/forms';
+
+/**
+ * Custom validator method for the User Password,
+ * to check password matching.
+ * @param control The form control.
+ */
+export function PasswordMatch(control: AbstractControl): ValidationErrors | null {
+  const selection: string = control.value;
+  const matchingValue: AbstractControl | null | undefined = control.parent?.get('password');
+
+  if (
+    selection === '' ||
+    selection == null ||
+    matchingValue == null ||
+    selection != matchingValue.value
+  ) {
+    return {password_not_matching: true};
+  }
+  return null;
+}

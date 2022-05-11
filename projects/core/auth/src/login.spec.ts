@@ -2,18 +2,21 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {ChangeDetectorRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormBuilder} from '@angular/forms';
+import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable, of as obsOf} from 'rxjs';
 
-import {AuthService, Credentials, LoginComponent} from './public_api';
+import {AuthService, Credentials, LoginComponent, NHostSignupRequest} from './public_api';
 
 const authServiceMock = {
   loginSuccess: true,
   login(_: Credentials): Observable<boolean> {
     return obsOf(authServiceMock.loginSuccess);
   },
+  config: {signUp: true},
   resetAuth: (): void => {},
+  signupNHost: (_requestData: NHostSignupRequest): Observable<boolean> => obsOf(true),
 };
 
 const changeDetectorRefMock = {
@@ -22,8 +25,14 @@ const changeDetectorRefMock = {
 
 class LoginFeatComp extends LoginComponent {
   loginResult = '';
-  constructor(authService: AuthService, router: Router, fb: FormBuilder, cdr: ChangeDetectorRef) {
-    super(authService, router, fb, cdr);
+  constructor(
+    authService: AuthService,
+    router: Router,
+    fb: FormBuilder,
+    cdr: ChangeDetectorRef,
+    snackBar: MatSnackBar,
+  ) {
+    super(authService, router, fb, cdr, snackBar);
   }
 
   setLoginResult = function (this: LoginFeatComp, res: string) {
@@ -36,6 +45,7 @@ describe('LoginComponent', () => {
   let httpMock: HttpTestingController;
   let router: Router;
   let fb: FormBuilder;
+  let snackBar: MatSnackBar;
   let cdr: ChangeDetectorRef;
   let loginFeatComp: LoginFeatComp;
   let spyLogin: jasmine.Spy;
@@ -44,7 +54,7 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), MatSnackBarModule],
       providers: [
         FormBuilder,
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
@@ -57,7 +67,8 @@ describe('LoginComponent', () => {
     router = TestBed.inject(Router);
     fb = TestBed.inject(FormBuilder);
     cdr = TestBed.inject(ChangeDetectorRef);
-    loginFeatComp = new LoginFeatComp(authService, router, fb, cdr);
+    snackBar = TestBed.inject(MatSnackBar);
+    loginFeatComp = new LoginFeatComp(authService, router, fb, cdr, snackBar);
     spyLogin = spyOn(authService, 'login').and.callThrough();
     spyPostLogin = spyOn(loginFeatComp, 'setLoginResult').and.callThrough();
   });
@@ -101,7 +112,28 @@ describe('LoginComponent', () => {
     loginFeatComp.login();
     await Promise.resolve();
     expect(spyLogin).toHaveBeenCalledWith(formValue);
-    expect(loginFeatComp.loginError).toBeTrue();
+    expect(loginFeatComp.loginError.error).toBeTrue();
     authServiceMock.loginSuccess = true;
+  });
+
+  it('should attempt to signup a new user', async () => {
+    const spySignup = spyOn(authService, 'signupNHost').and.callThrough();
+    const signupFormValue = {
+      full_name: 'New User',
+      email: 'new@mail.io',
+      password: 'password',
+      confirm_password: 'password',
+    };
+    const signupCredentials: NHostSignupRequest = {
+      email: signupFormValue.email,
+      password: signupFormValue.password,
+      options: {
+        displayName: signupFormValue.full_name,
+      },
+    };
+    loginFeatComp.signupForm?.setValue(signupFormValue);
+    loginFeatComp.signup();
+    await Promise.resolve();
+    expect(spySignup).toHaveBeenCalledWith(signupCredentials);
   });
 });

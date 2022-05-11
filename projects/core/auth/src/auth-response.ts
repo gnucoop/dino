@@ -81,11 +81,32 @@ export type NHostSignupRequest = {
 };
 
 /**
+ * Newly signed up user basic attributes
+ */
+export type BasicUserInfo = {
+  id: string;
+  displayName: string;
+  email: string;
+};
+
+/**
  * Response of the nHost signup api.
  */
 export type NHostSignupResponse = {
   /**
    * The NHost session, including the created user info.
    */
-  session: {user: {id: string; displayName: string; email: string}};
+  session: {user: BasicUserInfo};
+  /**
+   * NHost response error label
+   */
+  error?: string;
+  /**
+   * NHost response error message
+   */
+  message?: string;
+  /**
+   * NHost response error status
+   */
+  status?: number;
 };
