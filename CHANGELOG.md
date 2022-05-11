@@ -1,3 +1,10 @@
+<a name="13.0.5"></a>
+# 13.0.5 "labour-duck" (2022-05-11)
+### Bug Fixes
+* **material/form-metric-selector:** Fixed a bug causing metric name filtering not to work properly. ([1073ea5](https://bitbucket.org/gnucoop/dino/commits/1073ea58d7c918b1086ae9b39859f7ce7634f9f1))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.0.4"></a>
 # 13.0.4 "nearby-carp" (2022-05-03)
 ### Bug Fixes
