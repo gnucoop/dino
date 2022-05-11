@@ -1,0 +1,79 @@
+<ng-container *ngIf="userData|async as userInfo">
+  <h1 mat-dialog-title>User Area - {{userInfo.full_name}}</h1>
+
+  <mat-dialog-content>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Change Password </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form
+          class="dino-change-pass-form"
+          [class.dino-error]="changePassForm"
+          [formGroup]="changePassForm"
+        >
+          <mat-form-field>
+            <mat-label>Current Password</mat-label>
+            <input
+              matInput
+              formControlName="current_password"
+              name="current_password"
+              type="password"
+              aria-label="Current Password"
+              [placeholder]="'Current Password'|transloco"
+            />
+            <mat-error>
+              {{showValErrors(changePassForm.get('current_password'), 'Current Password')}}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>New Password</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              name="password"
+              type="password"
+              aria-label="New Password"
+              [placeholder]="'New Password'|transloco"
+            />
+            <mat-error>
+              {{showValErrors(changePassForm.get('password'), 'New Password')}}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Confirm New Password</mat-label>
+            <input
+              matInput
+              formControlName="confirm_password"
+              name="confirm_password"
+              type="password"
+              aria-label="Confirm New Password"
+              [placeholder]="'Confirm New Password'|transloco"
+            />
+            <mat-error>
+              {{showValErrors(changePassForm.get('confirm_password'), 'Confirm New Password')}}
+            </mat-error>
+          </mat-form-field>
+          <div *ngIf="changePassError.error === true" class="dino-error-message">
+            {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect password'|transloco}}
+          </div>
+          <button
+            mat-fab
+            type="submit"
+            color="accent"
+            aria-label="submit"
+            [disabled]="processing || (changePassDisabled|async) === true"
+            (click)="changePassword()"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="dino-user-area-menu">
+    <button mat-raised-button (click)="closeDialog()" color="warn">{{'Close'|transloco}}</button>
+  </div>
+</ng-container>
