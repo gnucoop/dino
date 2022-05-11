@@ -94,6 +94,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   formMetricsValues: {[key: string]: Observable<Metric | string>} = {};
 
   /**
+   * All the metrics fields valuechanges subscriptions
+   */
+  formMetricsSubs: {[key: string]: Subscription} = {};
+
+  /**
    * All the metrics autocomplete options.
    */
   formMetricsOptions: {[key: string]: BehaviorSubject<Metric[]>} = {};
@@ -108,6 +113,14 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * Defaults to false.
    */
   private _hasOptionalMetrics: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * Emits when a new metric has been created by the user
+   * via Form Metric Selector
+   */
+  private _newMetric: BehaviorSubject<RxDocument<Metric> | null> =
+    new BehaviorSubject<RxDocument<Metric> | null>(null);
+
   @Input()
   set hasOptionalMetrics(allowed: boolean) {
     if (allowed == null) {
@@ -307,7 +320,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
             const formControl = this.formMetrics.get(metricType);
             if (formControl) {
               formControl.setValue(res);
-              this._addFormMetricsOptions(metricType);
+              this._newMetric.next(res);
             }
           }
         });
@@ -374,7 +387,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * @param metricType The type identifier of the metric.
    */
   private _addFormMetricsOptions(metricType: string): void {
-    combineLatest([
+    this.formMetricsSubs[metricType] = combineLatest([
       this._userGroupManager.getGroupsMetricsByType(metricType).pipe(
         switchMap(metricsIds => {
           const querySelector = {id: {$in: metricsIds}, is_deleted: {$eq: false}};
@@ -388,9 +401,17 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         }),
       ),
       this.formMetricsValues[metricType],
+      this._newMetric,
     ])
       .pipe(
-        map(([metricOptions, metricValue]) => {
+        map(([metricOptions, metricValue, newMetric]) => {
+          if (
+            newMetric != null &&
+            newMetric.collection.name === metricType &&
+            !metricOptions.includes(newMetric)
+          ) {
+            metricOptions.push(newMetric);
+          }
           if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
             const mtrName = metricValue.toLowerCase();
             return metricOptions.filter(option => {
@@ -402,7 +423,6 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           }
           return [];
         }),
-        take(1),
       )
       .subscribe(metricOptions =>
         this.formMetricsOptions[metricType]
@@ -426,5 +446,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this._startingValuesSub.unsubscribe();
     this._metricDialogSub.unsubscribe();
+    Object.keys(this.formMetricsSubs).forEach(metricType => {
+      this.formMetricsSubs[metricType].unsubscribe();
+    });
   }
 }
