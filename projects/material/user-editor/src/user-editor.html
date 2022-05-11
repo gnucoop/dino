@@ -13,7 +13,9 @@
             value="{{field.value}}"
           />
 
-          <mat-error> {{showValidationErrors(userForm.get([field.fieldName]), field)}} </mat-error>
+          <mat-error>
+            {{showValErrors(userForm.get([field.fieldName]), field.placeholder)}}
+          </mat-error>
 
           <mat-hint>{{field.hint}}</mat-hint>
         </mat-form-field>

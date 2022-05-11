@@ -29,14 +29,14 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {switchMap, take} from 'rxjs/operators';
-import {PasswordMatch} from './user-password-validator';
+import {showValidationErrors, PasswordMatch} from '@dino/core/auth';
 
 /**
  * Represents the data to be passed to a UserEditor dialog.
@@ -100,6 +100,11 @@ export class UserEditor implements OnDestroy, OnInit {
    * The editor form fields
    */
   userFormFields: UserFormField[] = [];
+
+  /**
+   * Displays the user editor form validation errors
+   */
+  readonly showValErrors = showValidationErrors;
 
   /**
    * The available User Permission Groups.
@@ -255,34 +260,6 @@ export class UserEditor implements OnDestroy, OnInit {
 
     this.userForm = formGroup;
     this.userFormFields = fields;
-  }
-
-  /**
-   * Display the User Editor form validation errors
-   * @param formControl The formgroup control to be checked
-   * @param field The User form field
-   * @returns The error message to be displayed
-   */
-  showValidationErrors(formControl: AbstractControl | null, field: UserFormField | null): string {
-    if (formControl == null || field == null) {
-      return '';
-    }
-    let errorMessages: string[] = [];
-    if (formControl.hasError('required')) {
-      errorMessages.push(`Please enter ${field.placeholder}`);
-    }
-    if (formControl.hasError('email')) {
-      errorMessages.push(`Please enter a valid Email`);
-    }
-    if (formControl.hasError('minlength')) {
-      errorMessages.push(
-        `Minimum length: ${formControl.getError('minlength').requiredLength} characters`,
-      );
-    }
-    if (formControl.hasError('password_not_matching')) {
-      errorMessages.push(`Password values do not match`);
-    }
-    return errorMessages.toString().replace(',', ', ');
   }
 
   /**
