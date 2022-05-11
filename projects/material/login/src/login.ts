@@ -47,6 +47,11 @@ import {map} from 'rxjs/operators';
 })
 export class Login extends LoginComponent implements OnDestroy {
   /**
+   * If true, users can signup and create a new account.
+   */
+  readonly signupAvailable: boolean | undefined;
+
+  /**
    * The Login page logo image path/url.
    */
   private _logoImagePath: string = '';
@@ -82,16 +87,19 @@ export class Login extends LoginComponent implements OnDestroy {
     router: Router,
     fb: FormBuilder,
     cdr: ChangeDetectorRef,
-    private _snackBar: MatSnackBar,
+    snackBar: MatSnackBar,
     private _route: ActivatedRoute,
   ) {
-    super(authService, router, fb, cdr);
+    super(authService, router, fb, cdr, snackBar);
+
+    this.signupAvailable = authService.authConfig.signUp;
+
     if (this._route.data) {
       this._expiredSub = this._route.data
         .pipe(
           map(data => {
             if (data != null && data['isExpired']) {
-              this._snackBar.open(
+              snackBar.open(
                 `There was a problem connecting to the
                            Authentication server or your token has expired.
                            Please log in again.`,

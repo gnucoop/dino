@@ -9,44 +9,141 @@
     class="dino-login-form-container"
     *ngIf="loginFormVisible === undefined || (loginFormVisible|async) === true"
   >
-    <form [class.dino-error]="loginError" [formGroup]="loginForm">
-      <input
-        matInput
-        formControlName="email"
-        name="email"
-        type="text"
-        aria-label="email"
-        [placeholder]="'Username / email'|transloco"
-      />
-      <input
-        matInput
-        formControlName="password"
-        name="password"
-        type="password"
-        aria-label="password"
-        [placeholder]="'Password'|transloco"
-      />
-      <div *ngIf="loginError === true" class="dino-error-message">
-        {{'Invalid username and/or password'|transloco}}
-      </div>
-      <button
-        mat-fab
-        type="submit"
-        color="accent"
-        aria-label="submit"
-        (click)="login()"
-        [disabled]="loggingIn || (submitDisabled|async) === true"
-      >
-        <mat-icon>arrow_forward</mat-icon>
+    <ng-container *ngIf="(showSignupForm|async) && signupForm; else showLogin">
+      <form [class.dino-error]="loginError" [formGroup]="signupForm">
+        <mat-form-field>
+          <mat-label>Full Name</mat-label>
+          <input
+            matInput
+            formControlName="full_name"
+            name="full_name"
+            type="text"
+            aria-label="full_name"
+            [placeholder]="'Full Name'|transloco"
+          />
+          <mat-error> {{showValErrors(signupForm.get('full_name'), 'Full Name')}} </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            name="email"
+            type="email"
+            aria-label="email"
+            [placeholder]="'Email'|transloco"
+          />
+          <mat-error> {{showValErrors(signupForm.get('email'), 'Email')}} </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            name="password"
+            type="password"
+            aria-label="password"
+            [placeholder]="'Password'|transloco"
+          />
+          <mat-error> {{showValErrors(signupForm.get('password'), 'Password')}} </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Confirm Password</mat-label>
+          <input
+            matInput
+            formControlName="confirm_password"
+            name="confirm_password"
+            type="password"
+            aria-label="confirm_password"
+            [placeholder]="'Confirm Password'|transloco"
+          />
+          <mat-error>
+            {{showValErrors(signupForm.get('confirm_password'), 'Confirm Password')}}
+          </mat-error>
+        </mat-form-field>
+
+        <div *ngIf="signupError.error === true" class="dino-error-message">
+          {{signupError.message ? (signupError.message|transloco) : 'Invalid email and/or password'|transloco}}
+        </div>
+        <button
+          mat-fab
+          type="submit"
+          color="accent"
+          aria-label="submit"
+          (click)="signup()"
+          [disabled]="processing || (signupDisabled|async) === true"
+        >
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+        <mat-progress-bar
+          aria-label="Signup progress"
+          [class.dino-show]="processing === true"
+          [color]="'accent'"
+          mode="indeterminate"
+        >
+        </mat-progress-bar>
+      </form>
+
+      <button mat-button color="primary" (click)="toggleSignupForm(false)">
+        Already have an account? Login
       </button>
-      <mat-progress-bar
-        aria-label="Login progress"
-        [class.dino-show]="loggingIn === true"
-        [color]="'accent'"
-        mode="indeterminate"
-      >
-      </mat-progress-bar>
-    </form>
+    </ng-container>
+
+    <ng-template #showLogin>
+      <form [class.dino-error]="loginError" [formGroup]="loginForm">
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            name="email"
+            type="text"
+            aria-label="email"
+            [placeholder]="'Username / email'|transloco"
+          />
+          <mat-error> {{showValErrors(loginForm.get('email'), 'Email')}} </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            name="password"
+            type="password"
+            aria-label="password"
+            [placeholder]="'Password'|transloco"
+          />
+          <mat-error> {{showValErrors(loginForm.get('password'), 'Password')}} </mat-error>
+        </mat-form-field>
+        <div *ngIf="loginError.error === true" class="dino-error-message">
+          {{loginError.message ? (loginError.message|transloco) : 'Incorrect email and/or password'|transloco}}
+        </div>
+        <button
+          mat-fab
+          type="submit"
+          color="accent"
+          aria-label="submit"
+          (click)="login()"
+          [disabled]="processing || (loginDisabled|async) === true"
+        >
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+        <mat-progress-bar
+          aria-label="Login progress"
+          [class.dino-show]="processing === true"
+          [color]="'accent'"
+          mode="indeterminate"
+        >
+        </mat-progress-bar>
+      </form>
+      <button *ngIf="signupAvailable" mat-button color="primary" (click)="toggleSignupForm(true)">
+        New User? Create new account
+      </button>
+    </ng-template>
   </div>
   <ng-content select="[additionalContent]"></ng-content>
 </div>

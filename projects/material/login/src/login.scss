@@ -29,6 +29,12 @@ dino-login {
 
       &.dino-login-form-container {
         form {
+          mat-form-field {
+            display: block;
+            .mat-form-field-wrapper {
+              padding-bottom: 0px;
+            }
+          }
           input {
             display: block;
             background-color: transparent;
