@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit, Optional, ViewChild} from '@angular/core';
 import {MatSelect} from '@angular/material/select';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
 import {Observable, of as obsOf} from 'rxjs';
@@ -91,6 +92,18 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
 
   postLogin() {
     this._router.navigate(['dashboard']);
+  }
+
+  postSignup(snackBar?: MatSnackBar, emailAddress?: string) {
+    if (snackBar && emailAddress) {
+      snackBar.open(
+        `An Email has been sent to ${emailAddress}. Please verify your Email to access Dino`,
+        'EMAIL VERIFICATION SENT',
+        {
+          duration: 10000,
+        },
+      );
+    }
   }
 
   changeTheme(changeEvt: MatSlideToggleChange) {

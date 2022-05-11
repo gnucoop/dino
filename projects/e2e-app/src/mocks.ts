@@ -27,6 +27,7 @@ export const authMockConfig: AuthServiceConfig = {
   host: '',
   applicationId: '',
   apiKey: '',
+  signUp: true,
   retryRefreshTime: 3000,
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
@@ -57,6 +58,7 @@ const dummyUser: User = {
 
 @Injectable()
 export class AuthServiceMock {
+  config: AuthServiceConfig;
   authenticated: BehaviorSubject<boolean>;
   authToken: Observable<string | undefined>;
   private _authConfig: BehaviorSubject<AuthServiceConfig>;
@@ -76,6 +78,7 @@ export class AuthServiceMock {
         }),
       )
       .subscribe();
+    this.config = authMockConfig;
     this.authenticated = new BehaviorSubject<boolean>(true);
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(authMockConfig);
     this.authToken = this.authenticated.pipe(
