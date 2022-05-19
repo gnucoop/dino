@@ -26,6 +26,7 @@ import {
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
+import {deepCopy} from '@ajf/core/utils';
 import {Location} from '@angular/common';
 import {
   AfterViewInit,
@@ -43,9 +44,10 @@ import {
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {DataModelManager, MetricsService, Model} from '@dino/core/data';
-import {FormData, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {FormData, FormSchema, FormSchemaDeps, FormSchemaManager} from '@dino/core/forms';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {combineLatest, Observable, of as obsOf, Subject, Subscription} from 'rxjs';
+import {RxDocument} from 'rxdb';
+import {combineLatest, forkJoin, from, Observable, of as obsOf, Subject, Subscription} from 'rxjs';
 import {
   catchError,
   filter,
@@ -126,10 +128,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
+   * The populated Form data object with dependencies
+   */
+  private _populatedFormData: Observable<{data: FormData; schemaId: string}> = obsOf();
+  get populatedFormData(): Observable<{data: FormData; schemaId: string}> {
+    return this._populatedFormData;
+  }
+
+  /**
    * The Form data object
    */
-  private _formData: Observable<{data: FormData; schemaId: string}> = obsOf();
-  get formData(): Observable<{data: FormData; schemaId: string}> {
+  private _formData: Observable<{data: FormData; schemaId: string; doc: RxDocument<T>}> = obsOf();
+  get formData(): Observable<{data: FormData; schemaId: string; doc: RxDocument<T>}> {
     return this._formData;
   }
 
@@ -162,6 +172,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     }
     this._dataModelManager = dmm;
   }
+
+  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at', 'created_at'];
 
   /**
    * The Ajf Form Renderer
@@ -248,6 +260,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               const formDataObj = {
                 data: item['data']['data'] ?? item['data'] ?? null,
                 schemaId: item['data']['form_schema_ref_id'] ?? item['form_schema_ref_id'] ?? null,
+                doc,
               };
               return formDataObj;
             }
@@ -255,7 +268,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           }),
         );
       }),
-      switchMap(data => data as Observable<{data: FormData; schemaId: string}>),
+      switchMap(data => data as Observable<{data: FormData; schemaId: string; doc: RxDocument<T>}>),
       shareReplay(1),
     );
 
@@ -272,7 +285,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             if (doc == null) {
               return null;
             }
-            const item = doc.toJSON();
+            const item = this._populateDocRefs(doc);
             return item;
           }),
         ),
@@ -281,8 +294,69 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       shareReplay(1),
     );
 
-    this._form = this._formSchema.pipe(
+    const formDataDeps = this._formSchema.pipe(
       withLatestFrom(this._formData),
+      map(([fschema, fdata]) =>
+        (fschema as any)['form_schema_deps'].pipe(
+          map((doc: RxDocument<FormSchemaDeps>) => {
+            if (doc == null) {
+              return null;
+            }
+            const populatedFdata = this._populateDocDeps(fdata.doc, doc);
+            return populatedFdata;
+          }),
+        ),
+      ),
+      switchMap(populatedFdata => populatedFdata as Observable<FormData>),
+      shareReplay(1),
+    );
+
+    this._populatedFormData = formDataDeps.pipe(
+      map(fdata => {
+        const metricsDataObs: Observable<any>[] = [];
+        this.metricsService.activeMetrics.value.forEach(metric => {
+          const name = metric.metricName;
+          if (name in fdata) {
+            const metricObs = (fdata as any)[name] as Observable<any>;
+            if (metricObs) {
+              metricsDataObs.push(metricObs);
+            }
+          }
+        });
+
+        if (metricsDataObs.length > 0) {
+          return forkJoin(metricsDataObs).pipe(
+            map(metricsData => {
+              let depsCtx: {[key: string]: any} = {};
+              metricsData.forEach(metric => {
+                const metricName = metric.collection.name;
+                const metricProps = metric.toJSON();
+                for (let prop in metricProps) {
+                  if (!this._dinoBaseModelFields.includes(prop)) {
+                    depsCtx[`${metricName}_${prop}`] = metricProps[prop];
+                  }
+                }
+              });
+              const formDataObj = {
+                data: {...fdata.data, ...depsCtx},
+                schemaId: fdata.form_schema_ref_id,
+              };
+              return formDataObj;
+            }),
+          );
+        } else {
+          const formDataObj = {
+            data: fdata.data,
+            schemaId: fdata.form_schema_ref_id,
+          };
+          return formDataObj;
+        }
+      }),
+      switchMap(data => data as Observable<{data: FormData; schemaId: string}>),
+      shareReplay(1),
+    );
+
+    this._form = combineLatest([this._formSchema, this._populatedFormData]).pipe(
       map(([fschema, fdata]) => {
         if (fschema == null) {
           this._location.back();
@@ -402,5 +476,50 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this._saveFormSub.unsubscribe();
     this._saveFormEvt.complete();
     this._currentDoc.complete();
+  }
+
+  /**
+   * Populates all references to external collections in RxDocument
+   * @param doc RxDocument
+   * @returns The document with populated refs
+   */
+  private _populateDocRefs(doc: RxDocument<FormSchema>): RxDocument<FormSchema> {
+    let refProps = {};
+    for (let prop in doc) {
+      if (prop.includes('_ref_id')) {
+        const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
+        let refProp;
+        try {
+          refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+        } catch (e) {
+          refProp = {[propKey]: obsOf(null)};
+        }
+        refProps = {...refProps, ...refProp};
+      }
+    }
+    const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<FormSchema>;
+    return popDoc;
+  }
+
+  private _populateDocDeps(doc: RxDocument<T>, fschemadeps: FormSchemaDeps): {[key: string]: any} {
+    let refProps = {};
+    if (fschemadeps && fschemadeps.metric_data_to_show) {
+      for (let prop in doc) {
+        if (prop.includes('_ref_id')) {
+          if (fschemadeps.metric_data_to_show.includes(prop.replace('_ref_id', ''))) {
+            const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
+            let refProp;
+            try {
+              refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+            } catch (_) {
+              refProp = {[propKey]: obsOf(null)};
+            }
+            refProps = {...refProps, ...refProp};
+          }
+        }
+      }
+    }
+    const popDoc = {...deepCopy(doc), ...refProps};
+    return popDoc;
   }
 }

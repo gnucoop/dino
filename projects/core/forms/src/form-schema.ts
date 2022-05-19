@@ -64,6 +64,11 @@ export interface FormSchema extends Model {
    * @asType object
    */
   schema: AjfFormCreate;
+
+  /**
+   * The related form schema deps id.
+   */
+  form_schema_deps_ref_id?: string;
 }
 
 export const VERSION = 3;

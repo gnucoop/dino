@@ -21,7 +21,7 @@
  */
 
 import {Injectable, Optional} from '@angular/core';
-import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
+import {FormSchemaDepsManager, FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {AreaManager} from '@dino/core/areas';
@@ -49,6 +49,7 @@ export class SyncManager {
     private _auth: AuthService,
     private _fst: FormStatusManager,
     private _fs: FormSchemaManager,
+    private _fsdeps: FormSchemaDepsManager,
     private _rs: ReportSchemaManager,
     private _um: UserDataManager,
     private _ur: UserRoleManager,
@@ -62,6 +63,7 @@ export class SyncManager {
   ) {
     this._managersInit = [
       this._fst.init(),
+      this._fsdeps.init(),
       this._fs.init(),
       this._rs.init(),
       this._um.init(),

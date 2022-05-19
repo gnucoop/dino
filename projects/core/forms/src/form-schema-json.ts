@@ -77,6 +77,11 @@ export const schema = {
         'JSON definition of the Ajf form schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-form-schema.json).',
       'type': 'object',
     },
+    'form_schema_deps_ref_id': {
+      'type': 'string',
+      'description': 'The related form schema deps id',
+      'ref': 'form_schema_deps',
+    },
   },
   'required': ['created_at', 'id', 'name', 'schema', 'updated_at', 'visibility'],
   'additionalProperties': false,

@@ -20,19 +20,16 @@
  *
  */
 
-export {FormData} from './form-data';
-export {schema as formDataJson} from './form-data-json';
-export {FormSchema} from './form-schema';
-export {schema as formSchemaJson} from './form-schema-json';
-export {FormStatus} from './form-status';
-export {schema as formStatusJson} from './form-status-json';
-export {FormSchemaDeps} from './form-schema-deps';
+import {Injectable} from '@angular/core';
+import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 
-export * from './forms.module';
-export * from './form-schema-manager';
-export * from './form-schema-deps-manager';
-export * from './form-schema-visibility';
-export * from './form-data-manager';
-export * from './form-status-manager';
-export * from './online-form-data-manager';
-export * from './online-form-schema-manager';
+import {schema} from './form-schema-deps-json';
+import {FormSchemaDeps} from './form-schema-deps';
+import {FormsModule} from './forms.module';
+
+@Injectable({providedIn: FormsModule})
+export class FormSchemaDepsManager extends DataModelManager<FormSchemaDeps> {
+  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    super({name: 'form_schema_deps', collection: {schema}}, dataService, permissionContextService);
+  }
+}
