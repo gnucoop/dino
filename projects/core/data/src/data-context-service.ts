@@ -24,7 +24,6 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {delay, map, retryWhen} from 'rxjs/operators';
-
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {MetricsService} from './metrics.service';
 
@@ -103,7 +102,7 @@ export class PermissionContextService {
         actionsCollectionName = collectionName.replace('_schema', '_data');
       }
       let allowedActions: string[] = permissions[group].actions[actionsCollectionName];
-      if (allowedDocs == null) {
+      if (allowedDocs == null || allowedActions == null) {
         return true;
       }
       if (
@@ -166,7 +165,7 @@ export class PermissionContextService {
           return index === self.indexOf(elem);
         });
         if (uniqueActions.some(act => act === 'all')) {
-          uniqueActions = ['create', 'edit', 'delete', 'view', 'export', 'print'];
+          uniqueActions = ['create', 'edit', 'delete', 'view', 'export', 'print', 'status edit'];
         }
         return uniqueActions;
       }),
