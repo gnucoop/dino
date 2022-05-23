@@ -50,7 +50,7 @@ dino-edit-form-schema {
     }
 }
 
-.mat-autocomplete-panel {
+.mat-autocomplete-panel, .mat-select-panel {
     -ms-overflow-style: none;
     scrollbar-width: none;
     &::-webkit-scrollbar {
@@ -63,3 +63,5 @@ dino-edit-form-schema {
         align-content: center;
     }
 }
+
+

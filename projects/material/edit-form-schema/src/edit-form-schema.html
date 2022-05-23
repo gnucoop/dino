@@ -1,4 +1,3 @@
-
 <ng-container *ngIf="form|async as form">
   <mat-card class="form-container">
     <ng-content select="[breadcrumbs]"></ng-content>
@@ -6,19 +5,10 @@
       <ng-container *ngIf="formGroup|async as fgroup">
         <form [formGroup]="fgroup" class="dino-form-attributes">
           <mat-form-field>
-            <b
-              ><input
-                matInput
-                formControlName="label"
-                [placeholder]="'Form Label'"
-            /></b>
+            <b><input matInput formControlName="label" [placeholder]="'Form Label'" /></b>
           </mat-form-field>
           <mat-form-field>
-            <input
-              matInput
-              formControlName="name"
-              [placeholder]="'Form Name'"
-            />
+            <input matInput formControlName="name" [placeholder]="'Form Name'" />
           </mat-form-field>
           <mat-form-field>
             <input
@@ -29,14 +19,24 @@
             />
             <mat-icon matSuffix>{{fgroup.get('icon')?.value}}</mat-icon>
             <mat-autocomplete #autoicons="matAutocomplete">
-              <mat-option
-                *ngFor="let icon of filteredIcons | async"
-                [value]="icon"
-              >
+              <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
                 <span>{{icon.replace('_', ' ')}}</span> <mat-icon>{{icon}}</mat-icon>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+
+          <mat-form-field>
+            <mat-select formControlName="status" [placeholder]="'Form Statuses'|transloco" multiple>
+              <mat-option
+                *ngFor="let status of availableFormStatuses | async"
+                [value]="status.id"
+                [ngStyle]="{'color': status.color ?? 'inherit'}"
+              >
+                <span>{{status.label}}</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <mat-form-field>
             <mat-select formControlName="visibility" [placeholder]="'Visibility'|transloco">
               <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
@@ -46,12 +46,7 @@
         </form>
 
         <div class="dino-edit-form-schema-actions">
-          <button
-            mat-raised-button
-            color="accent"
-            translate
-            (click)="openImportDialog()"
-          >
+          <button mat-raised-button color="accent" translate (click)="openImportDialog()">
             Import <mat-icon>file_upload</mat-icon>
           </button>
           <button

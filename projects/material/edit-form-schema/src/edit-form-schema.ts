@@ -35,7 +35,13 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
-import {FormSchema, FormSchemaManager, FormSchemaVisibility} from '@dino/core/forms';
+import {
+  FormSchema,
+  FormSchemaManager,
+  FormSchemaVisibility,
+  FormStatus,
+  FormStatusManager,
+} from '@dino/core/forms';
 import {IconsService} from '@dino/material/icons-service';
 import {
   BehaviorSubject,
@@ -66,6 +72,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * The Form Conv endpoint url
    */
   @Input() formConvUrl: string = '';
+
+  /**
+   * All the available Form Status objects.
+   */
+  availableFormStatuses: Observable<FormStatus[]>;
 
   /**
    * List of filtered Material Icons identifiers
@@ -124,6 +135,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
     private _formBuilderService: AjfFormBuilderService,
+    private _formStatusManager: FormStatusManager,
     private _formSchemaManager: FormSchemaManager,
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog,
@@ -154,12 +166,15 @@ export class EditFormSchema implements OnInit, OnDestroy {
       shareReplay(1),
     );
 
+    this.availableFormStatuses = this._formStatusManager.list();
+
     this.formGroup = this._formSchema.pipe(
       map(fs =>
         this._formBuilder.group({
           name: [fs ? fs.name : null, Validators.required],
           label: [fs ? fs.label : null, Validators.required],
           icon: [fs ? fs.icon : null],
+          status: [fs ? fs.form_status_ref_id : null],
           visibility: [fs ? fs.visibility : FormSchemaVisibility.Private, Validators.required],
         }),
       ),
@@ -192,6 +207,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
             visibility: formGroup.get('visibility')?.value,
+            form_status_ref_id: formGroup.get('status')?.value ?? undefined,
             created_at: new Date().toISOString(),
           };
           if (fs == null) {

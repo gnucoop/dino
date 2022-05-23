@@ -3,7 +3,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {FormSchemaManager} from '@dino/core/forms';
+import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
@@ -54,6 +54,7 @@ describe('Edit FormSchema', () => {
       imports: [BrowserAnimationsModule, EditFormSchemaModule, RouterTestingModule],
       providers: [
         FormSchemaManager,
+        FormStatusManager,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
       ],
