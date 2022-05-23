@@ -19,12 +19,7 @@
 </ng-container>
 
 <ng-template #tableTemplate let-ctx="ctx">
-  <mat-table
-    [dataSource]="ctx.dataSource"
-    class="dino-main-table"
-    matSort
-    multiTemplateDataRows
-  >
+  <mat-table [dataSource]="ctx.dataSource" class="dino-main-table" matSort multiTemplateDataRows>
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select" sticky>
       <ng-container>
@@ -103,7 +98,18 @@
         >
         </ng-container>
         <ng-template #externalRefCellTemplate>
-          {{ getPopulatedRef( (element[getRef(header)])|async, header.populateWith) }}
+          <ng-container *ngIf="(element[getRef(header)])|async as elemRef">
+            <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
+              >{{ getPopulatedRef( elemRef, header.populateWith) }}</span
+            >
+          </ng-container>
+          <mat-icon
+            class="dino-edit-status-icon"
+            *ngIf="header.isEditable && header.isEditable(element) && header.editMethod && ctx.showStatusEdit|async"
+            mat-list-icon
+            (click)="$event.stopPropagation();header.editMethod(element);"
+            >create
+          </mat-icon>
         </ng-template>
         <ng-template #repeatingCellTemplate>
           <mat-tab-group #tabGroup [attr.tabgroupid]="header.repeatingSlideName + '_' + element.id">

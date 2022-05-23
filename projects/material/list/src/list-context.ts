@@ -51,6 +51,11 @@ export interface ListContext<T extends Model = Model, U extends Model = Model> {
   listRowActions?: BehaviorSubject<ListAction[]>;
 
   /**
+   * If true, the Status Edit button is displayed
+   */
+  showStatusEdit?: BehaviorSubject<boolean>;
+
+  /**
    * If true, the selection checkboxes are displayed
    */
   showCheckBox?: boolean;

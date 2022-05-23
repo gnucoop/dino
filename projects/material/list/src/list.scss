@@ -67,10 +67,14 @@ dino-list {
   mat-cell:last-of-type.mat-column-actions {
     padding-right: 10px;
     position: absolute !important;
-    background-color: inherit;
   }
 
-  mat-cell:last-of-type.mat-column-actions {
+  mat-header-cell:last-of-type.mat-column-actions {
+    background-color: transparent;
+  }
+
+  mat-cell:last-of-type.mat-column-actions,
+  .dino-edit-status-icon {
     visibility: hidden;
   }
 
@@ -82,8 +86,10 @@ dino-list {
     -webkit-transition: all ease-in-out 0.25s;
   }
 
-  .mat-row:not(.dino-row-details):hover, .mat-row:not(.dino-row-details).dino-hover {
-    .mat-column-actions {
+  .mat-row:not(.dino-row-details):hover,
+  .mat-row:not(.dino-row-details).dino-hover {
+    .mat-column-actions,
+    .dino-edit-status-icon {
       @media only screen and (min-width: 768px) {
         visibility: visible;
       }

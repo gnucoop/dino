@@ -281,6 +281,20 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * If true, the Status Edit button is displayed
+   */
+  private _showStatusEditButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  get showStatusEditButton(): boolean {
+    return this._showStatusEditButton.value;
+  }
+  @Input()
+  set showStatusEditButton(show: boolean | null) {
+    if (show != null) {
+      this._showStatusEditButton.next(show);
+    }
+  }
+
+  /**
    * If True, the list will emit an event with row data when the user hovers or selects a row.
    * Defaults to false.
    */
@@ -648,6 +662,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       headers: new BehaviorSubject<ListHeader<T>[]>(this.headers),
       displayedColumns: new BehaviorSubject<string[]>(this.displayedColumns),
       listRowActions: this._listRowActions,
+      showStatusEdit: this._showStatusEditButton,
       showPaginator: this.showPaginator,
       showCheckBox: this.showCheckBox,
     };
@@ -716,7 +731,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     return header.external_ref.toString().replace('_ref_id', '');
   }
 
-  getPopulatedRef(refObj: {[key: string]: string} | null, populateWith: string): string | null {
+  getPopulatedRef(
+    refObj: {[key: string]: string} | any | null,
+    populateWith: string,
+  ): string | null {
     if (refObj == null || populateWith == null) {
       return null;
     }
