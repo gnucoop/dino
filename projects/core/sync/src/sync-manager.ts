@@ -34,6 +34,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {shareReplay, skipWhile, switchMap, take} from 'rxjs/operators';
 import {AuthService} from '@dino/core/auth';
 import {LangManager} from '@dino/core/langs';
+import {FormStatusManager} from '@dino/core/forms/src/form-status-manager';
 
 /**
  * Service that manages the Initialization of rxCollections
@@ -47,6 +48,7 @@ export class SyncManager {
 
   constructor(
     private _auth: AuthService,
+    private _fst: FormStatusManager,
     private _fs: FormSchemaManager,
     private _rs: ReportSchemaManager,
     private _um: UserDataManager,
@@ -60,6 +62,7 @@ export class SyncManager {
     @Optional() private _og: OrganizationManager | null,
   ) {
     this._managersInit = [
+      this._fst.init(),
       this._fs.init(),
       this._rs.init(),
       this._um.init(),
