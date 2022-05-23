@@ -101,6 +101,14 @@ export const schema = {
       ],
       "description": "The Form Data organization id.",
       "ref": "organization"
+    },
+    "form_status_ref_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The UUID of the optional associated Form Status.",
+      "ref": "form_status"
     }
   },
   "required": [
@@ -109,6 +117,7 @@ export const schema = {
     "created_at",
     "data",
     "form_schema_ref_id",
+    "form_status_ref_id",
     "id",
     "location_ref_id",
     "organization_ref_id",

@@ -26,64 +26,63 @@ import {FormSchema} from './form-schema';
 
 // tslint:disable
 export const schema = {
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "description": "UUID v4 identifier."
+  'type': 'object',
+  'properties': {
+    'id': {
+      'type': 'string',
+      'description': 'UUID v4 identifier.',
     },
-    "created_at": {
-      "type": "string",
-      "description": "Creation timestamp."
+    'created_at': {
+      'type': 'string',
+      'description': 'Creation timestamp.',
     },
-    "updated_at": {
-      "type": "string",
-      "description": "Update timestamp."
+    'updated_at': {
+      'type': 'string',
+      'description': 'Update timestamp.',
     },
-    "is_deleted": {
-      "type": "boolean",
-      "description": "Soft delete flag"
+    'is_deleted': {
+      'type': 'boolean',
+      'description': 'Soft delete flag',
     },
-    "_deleted": {
-      "type": "boolean",
-      "description": "Pouchdb delete flag"
+    '_deleted': {
+      'type': 'boolean',
+      'description': 'Pouchdb delete flag',
     },
-    "name": {
-      "type": "string",
-      "description": "The form schema name."
+    'name': {
+      'type': 'string',
+      'description': 'The form schema name.',
     },
-    "label": {
-      "type": "string",
-      "description": "The form schema displayed label."
+    'label': {
+      'type': 'string',
+      'description': 'The form schema displayed label.',
     },
-    "icon": {
-      "type": "string",
-      "description": "The form schema icon identifier."
+    'icon': {
+      'type': 'string',
+      'description': 'The form schema icon identifier.',
     },
-    "visibility": {
-      "description": "The form schema visibility",
-      "type": "number"
+    'form_status_ref_id': {
+      'type': 'array',
+      'items': {
+        'type': 'string',
+      },
+      'description': 'The UUIDs of the optional associated Form Statuses.',
+      'ref': 'form_status',
     },
-    "schema": {
-      "description": "JSON definition of the Ajf form schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-form-schema.json).",
-      "type": "object"
-    }
+    'visibility': {
+      'description': 'The form schema visibility',
+      'type': 'number',
+    },
+    'schema': {
+      'description':
+        'JSON definition of the Ajf form schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-form-schema.json).',
+      'type': 'object',
+    },
   },
-  "required": [
-    "created_at",
-    "id",
-    "name",
-    "schema",
-    "updated_at",
-    "visibility"
-  ],
-  "additionalProperties": false,
-  "description": "This model is used to store the Ajf form schemas.",
-  "title": "FormSchema",
-  "indexes": [
-    "created_at",
-    "updated_at"
-  ],
-  "primaryKey": "id",
-  "version": 2
+  'required': ['created_at', 'id', 'name', 'schema', 'updated_at', 'visibility'],
+  'additionalProperties': false,
+  'description': 'This model is used to store the Ajf form schemas.',
+  'title': 'FormSchema',
+  'indexes': ['created_at', 'updated_at'],
+  'primaryKey': 'id',
+  'version': 3,
 } as RxJsonSchema<FormSchema>;

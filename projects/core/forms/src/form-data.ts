@@ -67,6 +67,11 @@ export interface FormData extends Model {
    * The Form Data organization id.
    */
   organization_ref_id: string | null;
+
+  /**
+   * The UUID of the optional associated Form Status.
+   */
+  form_status_ref_id: string | null;
 }
 
 export const VERSION = 1;

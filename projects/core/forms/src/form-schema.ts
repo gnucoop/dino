@@ -47,6 +47,11 @@ export interface FormSchema extends Model {
   icon?: string;
 
   /**
+   * The UUIDs of the optional associated Form Statuses.
+   */
+  form_status_ref_id?: string[];
+
+  /**
    * The form schema visibility
    * @asType number
    */
@@ -61,9 +66,10 @@ export interface FormSchema extends Model {
   schema: AjfFormCreate;
 }
 
-export const VERSION = 2;
+export const VERSION = 3;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
   2: (doc: RxDocument<FormSchema>) => ({...doc, visibility: FormSchemaVisibility.Private}),
+  3: (doc: RxDocument<FormSchema>) => ({...doc, form_status_ref_id: undefined}),
 };
