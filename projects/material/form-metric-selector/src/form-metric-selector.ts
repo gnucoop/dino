@@ -74,6 +74,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   }
 
   /**
+   * The Selector metrics valueChanges
+   */
+  get selectedMetricsChanges(): Observable<{[key: string]: RxDocument<Metric>}> {
+    return this.formMetrics.valueChanges;
+  }
+
+  /**
    * The Selector date form group.
    */
   formDate: FormGroup;
