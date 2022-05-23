@@ -188,6 +188,7 @@ export const formDatas = [
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: projects[0].id,
+    form_status_ref_id: null,
   },
   {
     id: '5c98aa0d-ded0-4cce-a8a1-f5be18c12433',
@@ -201,6 +202,7 @@ export const formDatas = [
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
+    form_status_ref_id: null,
   },
   {
     id: '1a95052e-8068-4456-8e70-357109970a83',
@@ -214,6 +216,7 @@ export const formDatas = [
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
+    form_status_ref_id: null,
   },
   {
     id: 'aa6fa67a-a8ad-46bd-92ad-69d8549c03d6',
@@ -227,5 +230,6 @@ export const formDatas = [
     location_ref_id: null,
     organization_ref_id: null,
     project_ref_id: null,
+    form_status_ref_id: null,
   },
 ] as any[];

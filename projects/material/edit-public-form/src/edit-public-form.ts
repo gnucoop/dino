@@ -147,6 +147,7 @@ export class EditPublicForm implements OnDestroy {
             location_ref_id: null,
             project_ref_id: null,
             organization_ref_id: null,
+            form_status_ref_id: null,
             data,
             created_at: new Date().toISOString(),
           };

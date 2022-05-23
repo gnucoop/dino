@@ -1,5 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {MatDialogModule} from '@angular/material/dialog';
 import {FormsModule} from '@dino/core/forms';
 import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
@@ -19,6 +20,7 @@ import {MatFormsListE2E} from './forms-list-e2e';
     ListModule,
     FloatingButtonModule,
     FormsModule,
+    MatDialogModule,
     SearchFiltersBarModule,
     TranslocoModule,
   ],

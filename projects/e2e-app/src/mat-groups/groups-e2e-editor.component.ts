@@ -14,7 +14,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {AreaManager, PopulatedWithArea} from '@dino/core/areas';
 import {CaseManager, PopulatedWithCase} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
-import {FormSchemaManager} from '@dino/core/forms';
+import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {LocationManager, PopulatedWithLocation} from '@dino/core/locations';
 import {OrganizationManager, PopulatedWithOrganization} from '@dino/core/organizations';
 import {PopulatedWithProject, ProjectManager} from '@dino/core/projects';
@@ -81,6 +81,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     private _userGroupManager: UserGroupManager,
     private _userRoleManager: UserRoleManager,
     private _formSchemaManager: FormSchemaManager,
+    private _formStatusManager: FormStatusManager,
     private _reportSchemaManager: ReportSchemaManager,
     private _snackbar: MatSnackBar,
     private _metricService: MetricsService,
@@ -95,6 +96,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     this._populateListSchedule.push(
       this._populateList(this._userRoleManager, 'roleName', 'school', false, true),
       this._populateList(this._formSchemaManager, 'name', 'list_alt', true),
+      this._populateList(this._formStatusManager, 'label', 'account_tree', true),
       this._populateList(this._reportSchemaManager, 'name', 'stacked_bar_chart', true),
     );
 
@@ -220,6 +222,13 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
               mixedEditor.addItem(reportItem);
             }
           }
+          for (let formStatusId of group['form_status_ref_id']) {
+            const itemId: string = formStatusId === 'all' ? 'all_form_status' : formStatusId;
+            const statusItem = mixedEditor.findItem(itemId);
+            if (statusItem) {
+              mixedEditor.addItem(statusItem);
+            }
+          }
           for (let metric of metrics) {
             metric.forEach(mt => mixedEditor.addItem(mixedEditor.findItem(mt.id)));
           }
@@ -272,6 +281,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           location_ref_id: newUserGroupData['location'] ?? [],
           organization_ref_id: newUserGroupData['organization'] ?? [],
           project_ref_id: newUserGroupData['project'] ?? [],
+          form_status_ref_id: newUserGroupData['form_status'] ?? [],
           groupFormSchemaIds: newUserGroupData['form_schema'] ?? [],
           groupReportSchemaIds: newUserGroupData['report_schema'] ?? [],
           created_at: new Date().toISOString(),
@@ -310,8 +320,14 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
           return item;
         });
         if (allOption) {
+          let itemName = manager.collectionName.replace('_', ' ');
+          if (itemName.charAt(itemName.length - 1) === 's') {
+            itemName += 'es';
+          } else {
+            itemName += 's';
+          }
           res.push({
-            itemName: `All ${manager.collectionName.replace('_', ' ')}s`,
+            itemName: `All ${itemName}`,
             itemType: manager.collectionName,
             itemId: `all_${manager.collectionName}`,
             itemIcon: itemIcon,

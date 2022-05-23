@@ -21,7 +21,7 @@
  */
 
 import {Injectable, Optional} from '@angular/core';
-import {FormSchemaManager} from '@dino/core/forms';
+import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {AreaManager} from '@dino/core/areas';
@@ -34,7 +34,6 @@ import {combineLatest, Observable} from 'rxjs';
 import {shareReplay, skipWhile, switchMap, take} from 'rxjs/operators';
 import {AuthService} from '@dino/core/auth';
 import {LangManager} from '@dino/core/langs';
-import {FormStatusManager} from '@dino/core/forms/src/form-status-manager';
 
 /**
  * Service that manages the Initialization of rxCollections
