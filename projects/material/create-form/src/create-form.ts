@@ -41,7 +41,7 @@ import {
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {DataModelManager, MetricsService, Model} from '@dino/core/data';
-import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {FormSchema, FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription, throwError} from 'rxjs';
@@ -96,6 +96,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   /**
+   * The Form schema statuses
+   */
+  private _formStatuses: Observable<FormStatus[] | null> = obsOf(null);
+  get formStatuses(): Observable<FormStatus[] | null> {
+    return this._formStatuses;
+  }
+
+  /**
    * The Ajf Form object
    */
   private _form: Observable<AjfForm> = new Observable<AjfForm>();
@@ -139,6 +147,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   constructor(
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
+    private _fst: FormStatusManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
     private _udm: UserDataManager,
@@ -191,6 +200,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       shareReplay(1),
     );
 
+    this._formStatuses = this._formSchema.pipe(
+      switchMap(schema => this._fst.formStatusesOfSchema(schema)),
+    );
+
     this._form = this._formSchema.pipe(
       map(fschema => {
         if (fschema == null) {
@@ -228,14 +241,22 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           this._formSchemaId,
           this._formMetricsSelector,
           this._udm.getActiveUserData(),
+          this._formStatuses,
         ),
-        switchMap(([_, isFormData, formSchemaId, formMetricsSelector, userData]) => {
+        switchMap(([_, isFormData, formSchemaId, formMetricsSelector, userData, formStatuses]) => {
           const formValue = this._rendererService.getFormValue();
           let newItem: {[key: string]: any} = {};
           if (isFormData) {
+            const defaultFormStatus: string | null =
+              formStatuses && formStatuses.length
+                ? formStatuses.reduce((prev, curr) =>
+                    prev.status_level < curr.status_level ? prev : curr,
+                  ).id
+                : null;
             newItem['data'] = formValue;
             newItem['form_schema_ref_id'] = formSchemaId;
             newItem['user_data_ref_id'] = userData?.id;
+            newItem['form_status_ref_id'] = defaultFormStatus;
             newItem['area_ref_id'] = null;
             newItem['case_ref_id'] = null;
             newItem['location_ref_id'] = null;

@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dino/core/data';
-import {FormSchemaManager} from '@dino/core/forms';
+import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {UserData, UserDataManager} from '@dino/core/users';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxDocument} from 'rxdb';
@@ -70,6 +70,7 @@ describe('Create Form', () => {
       imports: [CreateFormModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         FormSchemaManager,
+        FormStatusManager,
         {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
