@@ -242,6 +242,20 @@ export class MixedEditor implements AfterViewInit {
   }
 
   /**
+   * Generates the Mixed Item tooltip label
+   * @param item MixedEditorItem
+   * @returns The tooltip label
+   */
+  getTooltip(item: MixedEditorItem): string {
+    if (item == null) {
+      return '';
+    }
+    let tip = item.itemType.replace('_', ' ');
+    tip = tip.charAt(0).toUpperCase() + tip.slice(1);
+    return tip;
+  }
+
+  /**
    * Sorts list items alphabetically by their itemName property.
    * @param a Prev item
    * @param b Next Item

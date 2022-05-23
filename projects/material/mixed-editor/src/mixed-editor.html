@@ -24,7 +24,12 @@
             [class.dino-mixed-list-item-disabled]="item.disabled"
             [class.dino-mixed-list-item-alloption]="item.allOptionItem"
           >
-            <mat-icon class="dino-mixed-list-icon-identifier">{{item.itemIcon}}</mat-icon>
+            <mat-icon
+              class="dino-mixed-list-icon-identifier"
+              [matTooltip]="getTooltip(item)"
+              [matTooltipPosition]="'after'"
+              >{{item.itemIcon}}</mat-icon
+            >
             <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
 
             <ng-template #boxBtn>
@@ -65,7 +70,12 @@
       class="dino-mixed-list"
     >
       <div class="dino-mixed-list-item dino-mixed-list-item-savelist" *ngFor="let item of saveList">
-        <mat-icon class="dino-mixed-list-icon-identifier">{{item.itemIcon}}</mat-icon>
+        <mat-icon
+          class="dino-mixed-list-icon-identifier"
+          [matTooltip]="getTooltip(item)"
+          [matTooltipPosition]="'after'"
+          >{{item.itemIcon}}</mat-icon
+        >
         <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
         <button
           *ngIf="!viewOnly"

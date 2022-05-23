@@ -31,6 +31,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {UsersModule} from '@dino/core/users';
@@ -49,6 +50,7 @@ import {MixedEditor} from './mixed-editor';
     MatInputModule,
     MatListModule,
     MatSnackBarModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
     UsersModule,
