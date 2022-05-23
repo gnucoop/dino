@@ -1,0 +1,23 @@
+<ng-container *ngIf="availableStatuses|async as avStatuses">
+  <h1 mat-dialog-title>{{'Form Status'|transloco}}</h1>
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>{{'Select the Form Status'|transloco}}</mat-label>
+      <mat-select [value]="currentStatusId" #statusSelect>
+        <mat-option
+          *ngFor="let status of avStatuses"
+          [value]="status.id"
+          [ngStyle]="{'color': status.color ?? 'inherit'}"
+        >
+          <span> {{status.label|transloco}}</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" (click)="saveStatus(statusSelect.value)">
+      {{'Save'|transloco}}
+    </button>
+    <button mat-raised-button color="basic" (click)="closeDialog()">{{'Close'|transloco}}</button>
+  </mat-dialog-actions>
+</ng-container>
