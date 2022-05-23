@@ -341,6 +341,7 @@ export class ImportForm {
         if (row[userDataKey] && row[userDataKey].length) {
           newItem['user_data_ref_id'] = row[userDataKey];
         }
+        newItem['form_status_ref_id'] = null;
         newItem['data'] = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
