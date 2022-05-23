@@ -97,6 +97,14 @@ export const schema = {
       "description": "The Projects to which the User Group Role permissions apply",
       "ref": "project"
     },
+    "form_status_ref_id": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The Statuses to which the User Group Role permissions apply associated with the Form",
+      "ref": "form_status"
+    },
     "groupFormSchemaIds": {
       "type": "array",
       "items": {
@@ -116,6 +124,7 @@ export const schema = {
     "area_ref_id",
     "case_ref_id",
     "created_at",
+    "form_status_ref_id",
     "groupFormSchemaIds",
     "groupName",
     "groupReportSchemaIds",
@@ -134,5 +143,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 0
+  "version": 1
 } as RxJsonSchema<UserGroup>;

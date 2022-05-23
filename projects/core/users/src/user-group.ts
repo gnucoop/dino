@@ -21,7 +21,7 @@
  */
 
 import {Model} from '@dino/core/data';
-import {MigrationStrategies} from 'rxdb';
+import {MigrationStrategies, RxDocument} from 'rxdb';
 
 /**
  * This model is used to store UserGroups.
@@ -64,6 +64,11 @@ export interface UserGroup extends Model {
   project_ref_id: string[];
 
   /**
+   * The Statuses to which the User Group Role permissions apply associated with the Form
+   */
+  form_status_ref_id: string[];
+
+  /**
    * The specific Form Schemas (by ID) to which the User Group Role permissions apply.
    */
   groupFormSchemaIds: string[];
@@ -74,6 +79,8 @@ export interface UserGroup extends Model {
   groupReportSchemaIds: string[];
 }
 
-export const VERSION = 0;
+export const VERSION = 1;
 
-export const migrationStrategies: MigrationStrategies = {};
+export const migrationStrategies: MigrationStrategies = {
+  1: (doc: RxDocument<UserGroup>) => ({...doc, form_status_ref_id: []}),
+};

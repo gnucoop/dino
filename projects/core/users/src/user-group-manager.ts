@@ -100,6 +100,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
           map(privileges => {
             let prvs: {[role_name: string]: any} = {};
             const allFormSchemas: string[] = [];
+            const allFormStatuses: string[] = [];
             const allReportSchemas: string[] = [];
             for (let prv of privileges) {
               if (prv[0] == null || prv[1] == null) {
@@ -107,11 +108,15 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
               }
               const role = prv[0];
               const group = prv[1];
+
               if (role.roleName && prvs[role.roleName] == null) {
                 prvs[role.roleName] = {};
               }
               if (prvs[role.roleName]['form_schema'] == null) {
                 prvs[role.roleName]['form_schema'] = [];
+              }
+              if (prvs[role.roleName]['form_status'] == null) {
+                prvs[role.roleName]['form_status'] = [];
               }
               if (prvs[role.roleName]['report_schema'] == null) {
                 prvs[role.roleName]['report_schema'] = [];
@@ -124,6 +129,10 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
                 ...prvs[role.roleName]['form_schema'],
                 ...group.groupFormSchemaIds,
               ];
+              prvs[role.roleName]['form_status'] = [
+                ...prvs[role.roleName]['form_status'],
+                ...group.form_status_ref_id,
+              ];
               prvs[role.roleName]['report_schema'] = [
                 ...prvs[role.roleName]['report_schema'],
                 ...group.groupReportSchemaIds,
@@ -132,6 +141,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
               prvs[role.roleName]['actions'] = role.rolePermissions;
 
               allFormSchemas.push(...group.groupFormSchemaIds);
+              allFormStatuses.push(...group.form_status_ref_id);
               allReportSchemas.push(...group.groupReportSchemaIds);
 
               Object.keys(prvs[role.roleName]['actions']).forEach(
@@ -145,6 +155,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
             this.addToContext({
               user_form_schemas: new Set(allFormSchemas),
             });
+            this.addToContext({user_form_statuses: new Set(allFormStatuses)});
             this.addToContext({
               user_report_schemas: new Set(allReportSchemas),
             });
