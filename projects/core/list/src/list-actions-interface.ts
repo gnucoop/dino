@@ -23,7 +23,15 @@
 /**
  * Type that identifies an action performed on a List item
  */
-export type ActionType = 'delete' | 'print' | 'download' | 'edit' | 'view' | 'select' | 'expand';
+export type ActionType =
+  | 'delete'
+  | 'print'
+  | 'download'
+  | 'edit'
+  | 'view'
+  | 'select'
+  | 'expand'
+  | 'status edit';
 
 /**
  * Action performed on a List item

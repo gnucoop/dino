@@ -69,4 +69,15 @@ export interface ListHeader<T> {
    * Optional header icon identifier
    */
   icon?: string;
+  /**
+   * Method needed to evaluate the editability of a cell.
+   * If true and if the active user has the proper permissions,
+   * the column cells can be edited directly from the list view.
+   * A custom editor must be provided.
+   */
+  isEditable?: (rowData: {[key: string]: any}) => boolean;
+  /**
+   * The edit method provided for editable cells
+   */
+  editMethod?: (rowData: {[key: string]: any}) => void;
 }
