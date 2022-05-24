@@ -10,14 +10,17 @@ describe('dino-columns-selector', () => {
   });
 
   it('should open the column selector', () => {
+    cy.get('.mat-list-icon.dino-columns-sel-btn').should('exist');
     cy.get('.mat-list-icon.dino-columns-sel-btn').should('be.visible');
-    cy.get('.mat-list-icon.dino-columns-sel-btn').click();
+    cy.get('.mat-list-icon.dino-columns-sel-btn').trigger('mouseover').click();
     cy.get('dino-columns-selector').should('be.visible');
   });
 
   it('should filter the available columns in the selector', () => {
+    cy.get('.mat-list-icon.dino-columns-sel-btn').should('exist');
     cy.get('.mat-list-icon.dino-columns-sel-btn').should('be.visible');
-    cy.get('.mat-list-icon.dino-columns-sel-btn').click();
+    cy.get('.mat-list-icon.dino-columns-sel-btn').trigger('mouseover').click();
+    cy.get('dino-columns-selector').should('exist');
     cy.get('dino-columns-selector').should('be.visible');
     cy.get('.dino-column-selector')
       .its('length')
