@@ -40,7 +40,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserGroupManager} from '@dino/core/users';
 import {MetricEditor, MetricFormField} from '@dino/material/metric-editor';
-import {RxDocument} from 'rxdb';
+import {isRxDocument, RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
@@ -412,6 +412,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     ])
       .pipe(
         map(([metricOptions, metricValue, newMetric]) => {
+          if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
+            metricValue = '';
+          }
           if (
             newMetric != null &&
             newMetric.collection.name === metricType &&

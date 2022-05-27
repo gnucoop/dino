@@ -29,7 +29,7 @@ import {Model} from '@dino/core/data';
  */
 export interface FormSchemaDeps extends Model {
   /**
-   * A list with dependencies origin info
+   * A list with external form dependencies info
    */
   deps_origin?: FormSchemaDepsOrigin[];
 
@@ -39,38 +39,58 @@ export interface FormSchemaDeps extends Model {
   metric_data_to_show?: string[];
 }
 
+/**
+ * This model is used to store the external form dependencies info
+ * @title FormSchemaDepsOrigin
+ */
 export interface FormSchemaDepsOrigin {
   /**
-   * The form schema that have choices and/or fields that this schema needs to show
+   * The form schema that have fields that this schema needs to show
    */
   form_schema_ref_id: string;
 
   /**
-   * All the fields to be updated in the context form, when the select value change
-   * or when the value is only one.
-   * Add here also fields to show in label_key.
+   * All the fields to be updated in the context form
    */
   fields_to_update: string[];
 
   /**
+   * The metrics to use to filter the form data
+   */
+  filter_by_metric: string[];
+
+  /**
+   * The name of the choicesOrigins to be added or replaced in the form schema
+   * TODO: not yet implemented
+   */
+  choices_origin?: FormSchemaChoiceOrigin;
+
+  /**
+   * Order by field for the query
+   */
+  order_by?: string;
+}
+
+/**
+ * This model is used to store the info for the choicesOrigins
+ * to be added or replaced in the form schema
+ * @title FormSchemaChoiceOrigin
+ */
+export interface FormSchemaChoiceOrigin {
+  /**
    * The name of the choicesOrigins to be added or replaced in the form schema
    */
-  choices_origin_name?: string;
+  choices_origin_name: string;
 
   /**
    * The formula for the labels in the select options
    */
-  label_key?: AjfFormula;
+  label_key: AjfFormula;
 
   /**
    * The value to used in the select options
    */
-  value_key?: string;
-
-  /**
-   * Order by field for the select option values
-   */
-  orderBy?: string;
+  value_key: string;
 
   /**
    * An optional extra value to be added in the Choice object.
@@ -84,9 +104,4 @@ export interface FormSchemaDepsOrigin {
    * ],
    */
   extra_value_key?: string;
-
-  /**
-   * If true, populate only fieldsToUpdate. No choice origin needs to be created.
-   */
-  // updateFieldsOnly?: boolean;
 }
