@@ -1,0 +1,43 @@
+dino-form-deps-editor {
+  .mat-form-field {
+    position: relative;
+    flex: 1 1 auto;
+  }
+  .mat-input-element {
+    flex: 1 1 auto;
+    width: auto !important;
+  }
+
+  overflow: hidden;
+  .mat-dialog-title,
+  .mat-dialog-actions .mat-raised-button {
+    flex: 0.25 0 auto;
+    margin: auto;
+    text-align: center;
+  }
+  .mat-dialog-content {
+    form {
+      position: relative;
+      max-height: 80vh;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      overflow: hidden;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subtitle {
+      padding: 0 16px;
+      margin-bottom: 20px;
+    }
+  }
+}

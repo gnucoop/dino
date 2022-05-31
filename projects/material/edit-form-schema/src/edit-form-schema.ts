@@ -42,6 +42,7 @@ import {
   FormStatus,
   FormStatusManager,
 } from '@dino/core/forms';
+import {FormDepsEditor} from '@dino/material/form-deps-editor';
 import {IconsService} from '@dino/material/icons-service';
 import {
   BehaviorSubject,
@@ -279,6 +280,23 @@ export class EditFormSchema implements OnInit, OnDestroy {
           this._updateImportedFormSchema(formSchema);
         }
       });
+  }
+
+  /**
+   * Opens the Form Relationships dialog
+   */
+  openRelationshipsDialog(): void {
+    const dialogConfig = {
+      disableClose: true,
+      width: '60%',
+      height: '80%',
+      data: {
+        formSchemaId: this._formSchemaId,
+        formSchema: this._formSchema,
+      },
+    } as MatDialogConfig;
+
+    this._dialog.open(FormDepsEditor, dialogConfig);
   }
 
   /**
