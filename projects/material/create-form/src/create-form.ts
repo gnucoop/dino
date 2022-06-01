@@ -25,6 +25,7 @@ import {
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
+import {deepCopy} from '@ajf/core/utils';
 import {Location} from '@angular/common';
 import {
   AfterViewInit,
@@ -40,12 +41,37 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {DataModelManager, MetricsService, Model} from '@dino/core/data';
-import {FormSchema, FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
+import {DataModelManager, DataQueryOptions, Metric, MetricsService, Model} from '@dino/core/data';
+import {
+  FormData,
+  FormSchema,
+  FormSchemaDeps,
+  FormSchemaManager,
+  FormStatus,
+  FormStatusManager,
+} from '@dino/core/forms';
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {Observable, of as obsOf, Subscription, throwError} from 'rxjs';
-import {catchError, filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
+import {RxDocument} from 'rxdb';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  from,
+  Observable,
+  of as obsOf,
+  Subscription,
+  throwError,
+} from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 /**
  * The Form Edit component.
@@ -96,6 +122,23 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   /**
+   * The Form Schema Deps object
+   */
+  private _formSchemaDeps: Observable<FormSchemaDeps> = obsOf();
+  get formSchemaDeps(): Observable<FormSchemaDeps> {
+    return this._formSchemaDeps;
+  }
+
+  /**
+   * All the metric changes in the metric selector
+   */
+  private _metricChangesSub: Subscription = Subscription.EMPTY;
+  readonly metricChanges: BehaviorSubject<{[key: string]: RxDocument<Metric>} | null> =
+    new BehaviorSubject<{
+      [key: string]: RxDocument<Metric>;
+    } | null>(null);
+
+  /**
    * The Form schema statuses
    */
   private _formStatuses: Observable<FormStatus[] | null> = obsOf(null);
@@ -117,9 +160,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
 
   /**
+   * Subscribes to the populated form data object with dependencies
+   */
+  private _populatedFormDataSub: Subscription = Subscription.EMPTY;
+
+  /**
    * Subscribes to the save form event
    */
   private _saveFormSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the update form event
+   */
+  private _updateFormDataSub: Subscription = Subscription.EMPTY;
 
   /**
    * If true, a form data is being created.
@@ -138,6 +191,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     }
     this._dataModelManager = dmm;
   }
+
+  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at', 'created_at'];
 
   /**
    * The Form Metrics Selector
@@ -191,7 +246,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             if (doc == null) {
               return null;
             }
-            const item = doc.toJSON();
+            const item = this._populateDocRefs(doc);
             return item;
           }),
         ),
@@ -199,6 +254,101 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       switchMap(schema => schema as Observable<FormSchema>),
       shareReplay(1),
     );
+
+    this._formSchemaDeps = this._formSchema.pipe(
+      map(fschema =>
+        (fschema as any)['form_schema_deps'].pipe(
+          map((doc: RxDocument<FormSchemaDeps>) => {
+            if (doc == null) {
+              return null;
+            }
+            return doc.toJSON();
+          }),
+        ),
+      ),
+      switchMap(fschemadeps => fschemadeps as Observable<FormSchemaDeps>),
+      shareReplay(1),
+    );
+
+    this._populatedFormDataSub = combineLatest([this._formSchemaDeps, this.metricChanges])
+      .pipe(
+        withLatestFrom(this._rendererService.formGroup),
+        map(([[fschemadeps, metricSel], formGroup]) => {
+          let depsCtx: {[key: string]: any} = {};
+          let extFormDataObs: Observable<any>[] = [];
+
+          if (fschemadeps) {
+            if (metricSel != null) {
+              Object.keys(metricSel).forEach(metricName => {
+                if (
+                  metricSel[metricName] &&
+                  fschemadeps.metric_data_to_show &&
+                  fschemadeps.metric_data_to_show.includes(metricName)
+                ) {
+                  const metricProps = metricSel[metricName].toJSON();
+                  for (let prop in metricProps) {
+                    if (!this._dinoBaseModelFields.includes(prop)) {
+                      depsCtx[`${metricName}_${prop}`] = (metricProps as {[key: string]: any})[
+                        prop
+                      ];
+                    }
+                  }
+                }
+              });
+              if (Object.keys(depsCtx).length) {
+                formGroup?.patchValue(depsCtx);
+              }
+
+              if (fschemadeps.deps_origin) {
+                extFormDataObs = this._getExternalFormData(fschemadeps, metricSel);
+                if (extFormDataObs.length) {
+                  return forkJoin(extFormDataObs).pipe(
+                    map(extDatas => {
+                      let extCtx: {[key: string]: any} = {};
+                      extDatas.forEach(extData => {
+                        if (extData !== null) {
+                          const item = extData.toJSON() as {[key: string]: any} as FormData;
+                          extCtx[item.form_schema_ref_id] = item['data'];
+                        }
+                      });
+                      return extCtx;
+                    }),
+                  );
+                }
+              }
+            }
+          }
+          return obsOf({});
+        }),
+        switchMap(data => {
+          return data as Observable<{[key: string]: any}>;
+        }),
+        shareReplay(1),
+        withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps),
+      )
+      .subscribe(([changes, formGroup, fschemadeps]) => {
+        if (fschemadeps && fschemadeps.deps_origin && changes) {
+          let extCtx: {[key: string]: any} = {};
+          fschemadeps.deps_origin.forEach(depsOrigin => {
+            if (depsOrigin.form_schema_ref_id && depsOrigin.fields_to_update) {
+              let extFormData: {[key: string]: any} = {};
+              if (depsOrigin.form_schema_ref_id in changes) {
+                extFormData = changes[depsOrigin.form_schema_ref_id];
+              }
+              depsOrigin.fields_to_update.forEach(field => {
+                if (extFormData && field in extFormData) {
+                  extCtx[field] = extFormData[field];
+                } else {
+                  extCtx[field] = null;
+                }
+              });
+            }
+          });
+          if (Object.keys(extCtx).length) {
+            formGroup?.patchValue(extCtx);
+          }
+        }
+      });
 
     this._formStatuses = this._formSchema.pipe(
       switchMap(schema => this._fst.formStatusesOfSchema(schema)),
@@ -233,6 +383,43 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         );
       }),
     );
+
+    this._formMetricsSelector
+      .pipe(
+        map(fmSelector => {
+          if (fmSelector != null) {
+            return fmSelector.selectedMetricsChanges.pipe(
+              withLatestFrom(this._formSchemaDeps),
+              map(([metricSel, fschemadeps]) => {
+                if (fschemadeps && fschemadeps.metric_data_to_show) {
+                  let setNextMetricValue = false;
+                  Object.keys(metricSel).forEach(metricName => {
+                    if (
+                      metricSel[metricName] &&
+                      fschemadeps.metric_data_to_show &&
+                      fschemadeps.metric_data_to_show.includes(metricName)
+                    ) {
+                      setNextMetricValue = true;
+                    }
+                  });
+                  if (setNextMetricValue) {
+                    this.metricChanges.next(metricSel);
+                  }
+                }
+                return metricSel;
+              }),
+              distinctUntilChanged((x, y) => {
+                return JSON.stringify(x).localeCompare(JSON.stringify(y)) === 0;
+              }),
+            );
+          } else {
+            return obsOf(null);
+          }
+        }),
+        switchMap(data => data as Observable<{[key: string]: Metric}>),
+        shareReplay(1),
+      )
+      .subscribe();
 
     this._saveFormSub = this._saveFormEvt
       .pipe(
@@ -318,8 +505,86 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       }),
     );
   }
+
   ngOnDestroy() {
     this._saveFormSub.unsubscribe();
+    this._metricChangesSub.unsubscribe();
+    this._updateFormDataSub.unsubscribe();
+    this._populatedFormDataSub.unsubscribe();
     this._saveFormEvt.complete();
+  }
+
+  /**
+   * Populates all references to external collections in RxDocument
+   * @param doc RxDocument
+   * @returns The document with populated refs
+   */
+  private _populateDocRefs(doc: RxDocument<FormSchema>): RxDocument<FormSchema> {
+    let refProps = {};
+    for (let prop in doc) {
+      if (prop.includes('_ref_id')) {
+        const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
+        let refProp;
+        try {
+          refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+        } catch (e) {
+          refProp = {[propKey]: obsOf(null)};
+        }
+        refProps = {...refProps, ...refProp};
+      }
+    }
+    const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<FormSchema>;
+    return popDoc;
+  }
+
+  private _getExternalFormData(
+    fschemadeps: FormSchemaDeps,
+    metricSel: {
+      [key: string]: RxDocument<Metric>;
+    },
+  ): Observable<any>[] {
+    const extFormDataObs: Observable<any>[] = [];
+    if (fschemadeps.deps_origin) {
+      const activeMetrics = this.metricsService.activeMetrics.value.map(
+        metric => metric.metricName,
+      );
+      const dmm = this._dataModelManager as DataModelManager<T>;
+      fschemadeps.deps_origin.forEach(depsOrigin => {
+        if (
+          depsOrigin.form_schema_ref_id &&
+          depsOrigin.filter_by_metric &&
+          depsOrigin.filter_by_metric.length
+        ) {
+          const opt: DataQueryOptions = {
+            selector: {form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id}},
+          };
+
+          let missingMetric = false;
+          depsOrigin.filter_by_metric.forEach(metric => {
+            if (activeMetrics.includes(metric) && metricSel[metric]) {
+              const metricProps = metricSel[metric].toJSON();
+              opt['selector'][metric + '_ref_id'] = metricProps.id;
+            } else {
+              missingMetric = true;
+            }
+          });
+
+          if (!missingMetric) {
+            extFormDataObs.push(
+              dmm.query(opt).pipe(
+                map(docs => {
+                  if (!docs.length || docs[0] == null) {
+                    return null;
+                  }
+                  return docs[0];
+                }),
+                shareReplay(1),
+              ),
+            );
+          }
+        }
+      });
+    }
+    return extFormDataObs;
   }
 }
