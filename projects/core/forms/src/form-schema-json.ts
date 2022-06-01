@@ -78,7 +78,7 @@ export const schema = {
       'type': 'object',
     },
     'form_schema_deps_ref_id': {
-      'type': 'string',
+      'type': ['string', 'null'],
       'description': 'The related form schema deps id',
       'ref': 'form_schema_deps',
     },

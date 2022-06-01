@@ -68,7 +68,7 @@ export interface FormSchema extends Model {
   /**
    * The related form schema deps id.
    */
-  form_schema_deps_ref_id?: string;
+  form_schema_deps_ref_id?: string | null;
 }
 
 export const VERSION = 3;

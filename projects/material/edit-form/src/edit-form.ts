@@ -146,7 +146,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
-   * Alle the metric changes in the metric selector
+   * All the metric changes in the metric selector
    */
   private _metricChangesSub: Subscription = Subscription.EMPTY;
   readonly metricChanges: BehaviorSubject<{[key: string]: RxDocument<Metric>} | null> =
