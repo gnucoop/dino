@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Inject,
   OnDestroy,
+  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -57,11 +58,11 @@ export interface FormDepsEditorData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class FormDepsEditor implements OnDestroy {
+export class FormDepsEditor implements OnInit, OnDestroy {
   /**
    * The Form schema object
    */
-  private _formSchema: Observable<FormSchema | null>;
+  readonly formSchema: Observable<FormSchema | null>;
 
   /**
    * The Form schema deps object
@@ -124,12 +125,19 @@ export class FormDepsEditor implements OnDestroy {
     readonly metricsService: MetricsService,
     readonly snackbar: MatSnackBar,
   ) {
-    this._formSchema = data.formSchema;
+    this.formSchema = data.formSchema;
     this.currentMetrics = [];
 
     this.activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
 
     this.availableSchemas = this._fs.list().pipe(
+      withLatestFrom(this.formSchema),
+      switchMap(([avSchemas, schema]) => {
+        if (schema !== null) {
+          return obsOf(avSchemas.filter(s => s.id !== schema.id));
+        }
+        return obsOf(avSchemas);
+      }),
       map(schemas => {
         if (schemas) {
           schemas.forEach(fschema => {
@@ -185,7 +193,7 @@ export class FormDepsEditor implements OnDestroy {
   ngOnInit(): void {
     this._saveSub = this._saveEvt
       .pipe(
-        withLatestFrom(this._formSchema, this._formSchemaDeps),
+        withLatestFrom(this.formSchema, this._formSchemaDeps),
         switchMap(([selMetrics, fschema, fschemadeps]) => {
           if (fschema && fschemadeps) {
             const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
@@ -195,6 +203,7 @@ export class FormDepsEditor implements OnDestroy {
           } else {
             const fsdeps = {
               deps_origin: this.dataSource.data,
+              metric_data_to_show: selMetrics,
             } as FormSchemaDeps;
             return combineLatest([this._fsd.create(fsdeps), obsOf('create'), obsOf(fschema)]);
           }

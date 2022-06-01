@@ -1,94 +1,96 @@
-<h3 matDialogTitle>{{'Edit Form Relationships'|transloco}}</h3>
-<mat-dialog-content>
-  <div class="subtitle">
-    <h3>{{'Select Metrics to include in the form data'|transloco}}</h3>
-    <mat-form-field>
-      <mat-label>{{'Select metrics'|transloco}}</mat-label>
-      <mat-select [value]="currentMetrics" #metricSelect multiple>
-        <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
-          <span> {{metric|transloco}}</span>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+<ng-container *ngIf="formSchema|async as fs">
+  <h3 matDialogTitle>{{'Edit Form Relationships'|transloco}} - {{fs.name|transloco}}</h3>
+  <mat-dialog-content>
+    <div class="subtitle">
+      <h3>{{'Select Metrics to include in the form data'|transloco}}</h3>
+      <mat-form-field>
+        <mat-label>{{'Select metrics'|transloco}}</mat-label>
+        <mat-select [value]="currentMetrics" #metricSelect multiple>
+          <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
+            <span> {{metric|transloco}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-  <button (click)="addRow()" mat-button>
-    <mat-icon>add</mat-icon>
-    <span>{{'Add relationship with other forms'|transloco}}</span>
-  </button>
-  <mat-table [dataSource]="dataSource">
-    <ng-container matColumnDef="form_schema_ref_id">
-      <mat-header-cell *matHeaderCellDef>{{'Form Schema'|transloco}}</mat-header-cell>
-      <mat-cell *matCellDef="let row; let idx = index">
-        <mat-form-field>
-          <mat-select matNativeControl [(ngModel)]="row.form_schema_ref_id">
-            <mat-option *ngFor="let s of (availableSchemas|async)" [value]="s.id">
-              <span> {{s.name|transloco}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="fields_to_update">
-      <mat-header-cell *matHeaderCellDef>{{'Fields'|transloco}}</mat-header-cell>
-      <mat-cell *matCellDef="let row; let idx = index">
-        <mat-form-field>
-          <mat-chip-list #chipList>
-            <mat-chip
-              *ngFor="let field of row.fields_to_update"
-              (removed)="removeValue(row, field)"
-            >
-              {{ field }}
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
-          <input
-            #valueInput
-            [ngModel]="row.fields_to_update"
-            [matAutocomplete]="valueAc"
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            [matChipInputAddOnBlur]="true"
-            (matChipInputTokenEnd)="addValue(row, $event, valueInput)"
-            [placeholder]="'Value'|transloco"
-          />
-          <mat-autocomplete #valueAc="matAutocomplete" (optionSelected)="selected(row, $event)">
-            <ng-container *ngIf="row.form_schema_ref_id">
-              <mat-option
-                *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                [value]="field"
-                >{{field}}</mat-option
+    <button (click)="addRow()" mat-button>
+      <mat-icon>add</mat-icon>
+      <span>{{'Add relationship with other forms'|transloco}}</span>
+    </button>
+    <mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="form_schema_ref_id">
+        <mat-header-cell *matHeaderCellDef>{{'Form Schema'|transloco}}</mat-header-cell>
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-form-field>
+            <mat-select matNativeControl [(ngModel)]="row.form_schema_ref_id">
+              <mat-option *ngFor="let s of (availableSchemas|async)" [value]="s.id">
+                <span> {{s.name|transloco}}</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="fields_to_update">
+        <mat-header-cell *matHeaderCellDef>{{'Fields'|transloco}}</mat-header-cell>
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-form-field>
+            <mat-chip-list #chipList>
+              <mat-chip
+                *ngFor="let field of row.fields_to_update"
+                (removed)="removeValue(row, field)"
               >
-            </ng-container>
-          </mat-autocomplete>
-        </mat-form-field>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="filter_by_metric">
-      <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
-      <mat-cell *matCellDef="let row; let idx = index">
-        <mat-form-field>
-          <mat-select matNativeControl [(ngModel)]="row.filter_by_metric" multiple>
-            <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
-              <span> {{metric|transloco}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="delete">
-      <mat-header-cell *matHeaderCellDef>{{'Delete'|transloco}}</mat-header-cell>
-      <mat-cell *matCellDef="let row; let idx = index">
-        <mat-icon (click)="deleteRow(idx)">delete</mat-icon>
-      </mat-cell>
-    </ng-container>
+                {{ field }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+            <input
+              #valueInput
+              [ngModel]="row.fields_to_update"
+              [matAutocomplete]="valueAc"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="addValue(row, $event, valueInput)"
+              [placeholder]="'Value'|transloco"
+            />
+            <mat-autocomplete #valueAc="matAutocomplete" (optionSelected)="selected(row, $event)">
+              <ng-container *ngIf="row.form_schema_ref_id">
+                <mat-option
+                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
+                  [value]="field"
+                  >{{field}}</mat-option
+                >
+              </ng-container>
+            </mat-autocomplete>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="filter_by_metric">
+        <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-form-field>
+            <mat-select matNativeControl [(ngModel)]="row.filter_by_metric" multiple>
+              <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
+                <span> {{metric|transloco}}</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef>{{'Delete'|transloco}}</mat-header-cell>
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-icon (click)="deleteRow(idx)">delete</mat-icon>
+        </mat-cell>
+      </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
-</mat-dialog-content>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </mat-dialog-content>
 
-<div mat-dialog-actions>
-  <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
-  <button mat-raised-button color="primary" (click)="saveDeps(metricSelect.value)">Save</button>
-</div>
+  <div mat-dialog-actions>
+    <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
+    <button mat-raised-button color="primary" (click)="saveDeps(metricSelect.value)">Save</button>
+  </div>
+</ng-container>
