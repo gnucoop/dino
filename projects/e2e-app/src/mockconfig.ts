@@ -85,6 +85,13 @@ export const additionalConfig = {
    * Url of the Go FormConv endpoint
    */
   formconv_post_url: 'https://formconv.herokuapp.com/result.json',
+
+  /**
+   * If true, Metrics are set to optional for both Forms or Reports
+   * Form or Report datas can be created without selecting any metric.
+   */
+  optionalFormMetrics: true,
+  optionalReportMetrics: true,
 };
 
 /**

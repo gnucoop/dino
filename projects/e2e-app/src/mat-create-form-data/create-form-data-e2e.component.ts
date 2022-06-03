@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FormDataManager} from '@dino/core/forms';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-create-form-data',
@@ -7,6 +8,7 @@ import {FormDataManager} from '@dino/core/forms';
 })
 export class MatCreateFormDataE2E {
   readonly manager: FormDataManager;
+  readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
 
   constructor(private _formDataManager: FormDataManager) {
     this.manager = this._formDataManager;

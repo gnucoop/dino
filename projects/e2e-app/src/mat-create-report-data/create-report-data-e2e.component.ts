@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {ReportDataManager} from '@dino/core/reports';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-create-report-data',
@@ -7,6 +8,7 @@ import {ReportDataManager} from '@dino/core/reports';
 })
 export class MatCreateReportDataE2E {
   readonly manager: ReportDataManager;
+  readonly optionalMetrics: boolean = additionalConfig.optionalReportMetrics;
 
   constructor(private _reportDataManager: ReportDataManager) {
     this.manager = this._reportDataManager;
