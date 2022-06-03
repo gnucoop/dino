@@ -1,3 +1,10 @@
+<a name="13.0.7"></a>
+# 13.0.7 "historical-gorilla" (2022-06-03)
+### Bug Fixes
+* **multiple:** Fixed a bug causing the wrong evaluation of the metrics selector validity status, in case of mandatory metrics. ([f28c85e](https://bitbucket.org/gnucoop/dino/commits/f28c85ee205f451d39797aee7e468ad503076cb9))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.0.6"></a>
 # 13.0.6 "silly-weasel" (2022-05-24)
 ### Bug Fixes
