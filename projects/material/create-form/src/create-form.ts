@@ -312,7 +312,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         if (formMetricsSelector == null) {
           return obsOf(false);
         }
-        return formMetricsSelector.isFormMetricsValid();
+        return formMetricsSelector.formMetrics.statusChanges.pipe(
+          switchMap(() => formMetricsSelector.isFormMetricsValid()),
+        );
       }),
     );
   }

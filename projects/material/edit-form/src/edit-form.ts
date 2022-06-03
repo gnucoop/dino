@@ -391,7 +391,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         if (formMetricsSelector == null) {
           return obsOf(false);
         }
-        return formMetricsSelector.isFormMetricsValid();
+        return formMetricsSelector.formMetrics.statusChanges.pipe(
+          switchMap(() => formMetricsSelector.isFormMetricsValid()),
+        );
       }),
     );
   }

@@ -209,7 +209,9 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
         if (formMetricsSelector == null) {
           return obsOf(false);
         }
-        return formMetricsSelector.isFormMetricsValid();
+        return formMetricsSelector.formMetrics.statusChanges.pipe(
+          switchMap(() => formMetricsSelector.isFormMetricsValid()),
+        );
       }),
     );
   }

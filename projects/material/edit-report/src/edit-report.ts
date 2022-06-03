@@ -374,7 +374,9 @@ export class EditReport implements OnInit, AfterViewInit {
         if (reportMetricsSelector == null) {
           return obsOf(false);
         }
-        return reportMetricsSelector.isFormMetricsValid();
+        return reportMetricsSelector.formMetrics.statusChanges.pipe(
+          switchMap(() => reportMetricsSelector.isFormMetricsValid()),
+        );
       }),
     );
   }
