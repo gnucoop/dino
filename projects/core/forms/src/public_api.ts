@@ -30,6 +30,7 @@ export {FormSchemaDeps} from './form-schema-deps';
 
 export * from './forms.module';
 export * from './form-schema-manager';
+export * from './form-schema-deps';
 export * from './form-schema-deps-manager';
 export * from './form-schema-visibility';
 export * from './form-data-manager';

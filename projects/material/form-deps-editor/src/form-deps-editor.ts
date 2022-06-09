@@ -14,6 +14,7 @@ import {
   FormSchema,
   FormSchemaDeps,
   FormSchemaDepsManager,
+  FormSchemaDepsOrigin,
   FormSchemaManager,
 } from '@dino/core/forms';
 import {
@@ -31,7 +32,6 @@ import {
 import {MetricsService} from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {MatTableDataSource} from '@angular/material/table';
-import {FormSchemaDepsOrigin} from '@dino/core/forms/src/form-schema-deps';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
