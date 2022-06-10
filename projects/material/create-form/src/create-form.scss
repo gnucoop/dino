@@ -197,6 +197,9 @@ dino-create-form {
                     ajf-field {
                         margin-top: 5px;
                         margin-bottom: 10px;
+                        .mat-select-min-line {
+                          display: inline-block;
+                        }
                     }
                 }
             }

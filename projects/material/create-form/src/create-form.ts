@@ -25,8 +25,9 @@ import {
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
+import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
-import {Location} from '@angular/common';
+import {DatePipe, Location} from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -205,6 +206,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     private _fst: FormStatusManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
+    private _ts: TranslocoService,
     private _udm: UserDataManager,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
@@ -458,7 +460,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   newItem[saveKey] = selectedMetrics[key].id;
                 }
               }
-              const formattedDate = new Date(creationDate).toISOString().split('T')[0];
+              const datePipe = new DatePipe(this._getCurrentLocale());
+              const formattedDate = datePipe.transform(creationDate, 'short') as string;
+
               newItem['created_at'] = formattedDate;
             }
           } else {
@@ -586,5 +590,21 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       });
     }
     return extFormDataObs;
+  }
+
+  private _getCurrentLocale(): string {
+    const lang = this._ts.getActiveLang();
+    switch (lang) {
+      case 'ESP':
+        return 'es';
+      case 'FRA':
+        return 'fr';
+      case 'ITA':
+        return 'it';
+      case 'PRT':
+        return 'pt';
+      default:
+        return 'en';
+    }
   }
 }
