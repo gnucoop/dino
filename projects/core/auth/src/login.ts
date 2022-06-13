@@ -138,7 +138,7 @@ export abstract class LoginComponent {
       startWith(!this.loginForm.valid),
     );
 
-    this.loggedIn = this._authService.authenticated;
+    this.loggedIn = this._authService.authenticated.pipe(map(authEvt => authEvt.auth));
   }
 
   /**

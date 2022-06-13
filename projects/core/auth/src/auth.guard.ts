@@ -49,7 +49,7 @@ export class AuthGuard implements CanActivate {
       withLatestFrom(this._authService.checkToken()),
       take(1),
       map(([authenticated, validated]) => {
-        if (authenticated && validated) {
+        if (authenticated.auth && validated) {
           return true;
         }
         this._authService

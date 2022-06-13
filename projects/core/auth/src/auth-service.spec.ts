@@ -1,5 +1,6 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {firstValueFrom} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {
@@ -64,15 +65,15 @@ describe('AuthService', () => {
   });
 
   it('should login successfully with correct credentials', async () => {
-    const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
-    await expectAsync(authStatus()).toBeResolvedTo(false);
+    const authStatus = () => firstValueFrom(authService.authenticated.pipe(take(1)));
+    await expectAsync(authStatus()).toBeResolvedTo({auth: false, evt: 'no auth token'});
     authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
-    await expectAsync(authStatus()).toBeResolvedTo(true);
+    await expectAsync(authStatus()).toBeResolvedTo({auth: true, evt: 'login'});
   });
 
   it('should fail logging in with bad credentials', () => {
@@ -185,11 +186,11 @@ describe('logged in', () => {
   });
 
   it('should logout successfully', async () => {
-    const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
-    await expectAsync(authStatus()).toBeResolvedTo(true);
+    const authStatus = () => firstValueFrom(authService.authenticated.pipe(take(1)));
+    await expectAsync(authStatus()).toBeResolvedTo({auth: true, evt: 'init'});
     return authService.logout().subscribe(async res => {
       expect(res).toBeDefined();
-      await expectAsync(authStatus()).toBeResolvedTo(false);
+      await expectAsync(authStatus()).toBeResolvedTo({auth: false, evt: 'logout'});
     });
   });
 

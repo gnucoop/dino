@@ -1,5 +1,5 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {ChangeDetectorRef} from '@angular/core';
+import {ChangeDetectorRef, EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormBuilder} from '@angular/forms';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
@@ -10,12 +10,14 @@ import {Observable, of as obsOf} from 'rxjs';
 import {AuthService, Credentials, LoginComponent, NHostSignupRequest} from './public_api';
 
 const authServiceMock = {
+  authenticated: obsOf({auth: true, evt: 'init'}),
   loginSuccess: true,
   login(_: Credentials): Observable<boolean> {
     return obsOf(authServiceMock.loginSuccess);
   },
   config: {signUp: true},
   resetAuth: (): void => {},
+  logoutEvt: new EventEmitter<void>(),
   signupNHost: (_requestData: NHostSignupRequest): Observable<boolean> => obsOf(true),
 };
 

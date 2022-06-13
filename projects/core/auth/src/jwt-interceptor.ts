@@ -69,7 +69,7 @@ export class JWTInterceptor implements HttpInterceptor {
             this._retryAttempts++;
             return this._authService.refreshToken().pipe(switchMap(() => next.handle(request)));
           } else {
-            this._authService.authenticated.next(false);
+            this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
             if (this._authService.getAuthToken() != null) {
               this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
             }
@@ -91,7 +91,7 @@ export class JWTInterceptor implements HttpInterceptor {
                 if (refreshed) {
                   return obsOf(true);
                 } else {
-                  this._authService.authenticated.next(false);
+                  this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
                   if (this._authService.getAuthToken() != null) {
                     this._router.navigate([
                       this._authService.authConfig.failedAuthRedirect,

@@ -21,10 +21,11 @@
  */
 
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {EventEmitter, Inject, Injectable, Optional} from '@angular/core';
+import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {catchError, map, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {AuthenticationEvent, AuthEvt} from './auth-event';
 
 import {
   AuthResponse,
@@ -66,7 +67,8 @@ export class AuthService {
   /**
    * True if a valid JWT access token is available.
    */
-  readonly authenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  readonly authenticated: BehaviorSubject<AuthenticationEvent> =
+    new BehaviorSubject<AuthenticationEvent>({auth: false, evt: null});
 
   /**
    * The current JWT auth token
@@ -78,6 +80,11 @@ export class AuthService {
    * stored token and config data.
    */
   readonly resetEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  /**
+   * Emits when the current User actively logs out
+   */
+  readonly logoutEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   /**
    * When not null it holds the newly signed up User basic info.
@@ -145,7 +152,7 @@ export class AuthService {
     this.resetEvt.emit(true);
 
     this._currentlyStoredConfig = null;
-    this.authenticated.next(false);
+    this.authenticated.next({auth: false, evt: null});
     this._storeAuthToken(null);
     this._storeRefreshToken(null);
     this._storeUserInfo(null);
@@ -188,7 +195,7 @@ export class AuthService {
               throw new Error(`${res['error']} - ${res['message']}`);
             }
             const session = res['session'];
-            this.authenticated.next(true);
+            this.authenticated.next({auth: true, evt: 'login'});
             this._storeAuthToken(session?.accessToken ?? res.token);
             this._storeRefreshToken(session?.refreshToken ?? res.refreshToken);
             let userInfo =
@@ -237,15 +244,18 @@ export class AuthService {
         }
         return this._httpClient.post(url, req, options).pipe(
           tap(_ => {
-            this.authenticated.next(false);
+            this.authenticated.next({auth: false, evt: 'logout'});
             this._storeAuthToken(null);
             this._storeRefreshToken(null);
             this._storeUserInfo(null);
             this._removeAuthConfig();
+            this.logoutEvt.emit(true);
           }),
           mapTo(true),
           catchError(err => {
-            console.log(err.error ?? err);
+            if (isDevMode()) {
+              console.log(err.error ?? err);
+            }
             return obsOf(false);
           }),
         );
@@ -344,14 +354,16 @@ export class AuthService {
           .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
             tap(res => {
-              this.authenticated.next(true);
+              this.authenticated.next({auth: true, evt: 'refresh successful'});
               this._storeRefreshToken(res.refreshToken);
               this._storeAuthToken(res.accessToken ?? res.token);
             }),
             mapTo(true),
             catchError(err => {
-              console.log(err.error ?? err);
-              this.authenticated.next(false);
+              if (isDevMode()) {
+                console.log(err.error ?? err);
+              }
+              this.authenticated.next({auth: false, evt: 'refresh failed'});
               return obsOf(false);
             }),
           );
@@ -373,21 +385,21 @@ export class AuthService {
    * Checks the validity of the JWT auth token.
    * @returns True if the token is valid.
    */
-  checkToken(): Observable<boolean> {
+  checkToken(): Observable<{token: boolean; evt: AuthEvt}> {
     const token = this.getAuthToken();
     if (!token) {
-      return obsOf(false);
+      return obsOf({token: false, evt: 'no auth token'});
     }
 
     const decodedToken = this._decodeJwt(token);
     const tokenCheck = decodedToken.exp != null && decodedToken.exp > new Date().getTime() / 1000;
 
     return this._nss.isOnline$.pipe(
-      switchMap(isOnline => {
+      map(isOnline => {
         if (!isOnline) {
-          return obsOf(true);
+          return {token: true, evt: 'offline'};
         } else {
-          return obsOf(tokenCheck);
+          return {token: tokenCheck, evt: 'init'};
         }
       }),
     );
@@ -579,7 +591,7 @@ export class AuthService {
    */
   private _initAuthentication(): void {
     this.checkToken().subscribe(check => {
-      this.authenticated.next(check);
+      this.authenticated.next({auth: check.token, evt: check.evt});
     });
   }
 
