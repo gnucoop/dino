@@ -38,8 +38,12 @@ import {OrganizationsModule} from './organizations.module';
 @Injectable({providedIn: OrganizationsModule})
 export class OrganizationManager extends DataModelManager<Organization> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
-    super({name: 'organization', collection: {schema}}, dataService, permissionContextService, [
-      new CheckMetricPermission<Organization>(),
-    ]);
+    super(
+      {name: 'organization', collection: {schema}},
+      dataService,
+      permissionContextService,
+      [new CheckMetricPermission<Organization>()],
+      [{checkName: 'user_metrics', checkKey: 'organization'}],
+    );
   }
 }

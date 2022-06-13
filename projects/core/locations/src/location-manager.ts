@@ -43,6 +43,7 @@ export class LocationManager extends DataModelManager<Location> {
       dataService,
       permissionContextService,
       [new CheckMetricPermission<Location>()],
+      [{checkName: 'user_metrics', checkKey: 'location'}],
     );
   }
 }

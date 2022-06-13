@@ -22,7 +22,12 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+  PullQueryContextChecks,
+} from '@dino/core/data';
 import {delay, map, Observable, of as obsOf, retryWhen} from 'rxjs';
 
 import {FormData, indexes, migrationStrategies} from './form-data';
@@ -32,9 +37,13 @@ import {FormsModule} from './forms.module';
 @Injectable({providedIn: FormsModule})
 export class FormDataManager extends DataModelManager<FormData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    const pullQueryContextChecks: PullQueryContextChecks = [
+      {checkName: 'user_form_schemas', checkKey: 'form_schema_ref_id'},
+      {checkName: 'user_metrics'},
+    ];
     schema.indexes = [...(schema.indexes || []), ...indexes];
     const collection = {name: 'form_data', collection: {schema, migrationStrategies}};
-    super(collection, dataService, permissionContextService);
+    super(collection, dataService, permissionContextService, [], pullQueryContextChecks);
   }
 
   /**

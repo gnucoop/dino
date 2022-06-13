@@ -20,7 +20,7 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Injectable, isDevMode} from '@angular/core';
 import {
   DataModelManager,
   DataService,
@@ -81,22 +81,25 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
   getActiveUserPermissions(): Observable<{[role_name: string]: {}}> {
     return forkJoin([this.getActiveUserGroups(), this.getGroupsAllMetrics()]).pipe(
       switchMap(([userGroups, userMetrics]) => {
-        const ug = userGroups.map(gr => {
-          let refProp: Observable<RxDocument<UserRole>>;
-          refProp = from(gr.populate('user_role_ref_id'));
-          return forkJoin([refProp, obsOf(gr)]).pipe(
-            tap(([role, group]) => {
-              if (role == null || group == null) {
-                console.log(
-                  `No Role found for Group ${group.groupName}: ${gr['user_role_ref_id']}`,
-                );
-                throw new Error('No Role or Group found');
-              }
-            }),
-            retryWhen(err => err.pipe(delay(2000))),
-          );
-        });
-        return forkJoin(ug).pipe(
+        const ug: Observable<[RxDocument<UserRole, {}>, RxDocument<UserGroup, {}>]>[] =
+          userGroups.map(gr => {
+            let refProp: Observable<RxDocument<UserRole>>;
+            refProp = from(gr.populate('user_role_ref_id'));
+            return forkJoin([refProp, obsOf(gr)]).pipe(
+              tap(([role, group]) => {
+                if (role == null || group == null) {
+                  if (isDevMode()) {
+                    console.log(
+                      `No Role found for Group ${group.groupName}: ${gr['user_role_ref_id']}`,
+                    );
+                  }
+                  throw new Error('No Role or Group found');
+                }
+              }),
+              retryWhen(err => err.pipe(delay(2000))),
+            );
+          });
+        return (ug.length ? forkJoin(ug) : obsOf([])).pipe(
           map(privileges => {
             let prvs: {[role_name: string]: any} = {};
             const allFormSchemas: string[] = [];

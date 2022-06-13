@@ -34,6 +34,8 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
       {name: 'report_schema', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
+      [],
+      [{checkName: 'user_report_schemas'}],
     );
   }
 }

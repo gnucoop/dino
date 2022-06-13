@@ -38,8 +38,12 @@ import {CasesModule} from './cases.module';
 @Injectable({providedIn: CasesModule})
 export class CaseManager extends DataModelManager<Case> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
-    super({name: 'case', collection: {schema}}, dataService, permissionContextService, [
-      new CheckMetricPermission<Case>(),
-    ]);
+    super(
+      {name: 'case', collection: {schema}},
+      dataService,
+      permissionContextService,
+      [new CheckMetricPermission<Case>()],
+      [{checkName: 'user_metrics', checkKey: 'case'}],
+    );
   }
 }

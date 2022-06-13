@@ -68,7 +68,7 @@ export class UserDataManager extends DataModelManager<UserData> {
    */
   getActiveUserData(): Observable<UserData | null> {
     return this._authService.authenticated.pipe(
-      skipWhile(auth => auth != true),
+      skipWhile(authEvt => authEvt.auth != true),
       switchMap(() => {
         const newUser = this._authService.getNewUser();
         this._authService.resetNewUser();

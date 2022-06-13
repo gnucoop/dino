@@ -225,8 +225,6 @@ export class LangManager extends DataModelManager<Lang> {
         this._ts.setActiveLang(langName);
         this.currentLangName$.next(langName);
       });
-    this._reloadLangsStoredEvt.emit();
-    this.langsShowed$.subscribe(() => {});
 
     const savePipe: Observable<LangCreate> = zip(
       this.currentLangStored$,

@@ -40,7 +40,13 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     permissionContextService: PermissionContextService,
     private _metricService: MetricsService,
   ) {
-    super(baseFsm.creationParams, dataService, permissionContextService);
+    super(
+      baseFsm.creationParams,
+      dataService,
+      permissionContextService,
+      [],
+      [{checkName: 'user_form_schemas'}],
+    );
   }
 
   override generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[] {
