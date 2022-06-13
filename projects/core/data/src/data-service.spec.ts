@@ -1,3 +1,4 @@
+import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {Server, WebSocket} from 'mock-socket';
@@ -44,10 +45,11 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: obsOf(true),
+  authenticated: obsOf({auth: true, evt: 'init'}),
   authConfig: authServiceConfig,
   authToken: obsOf('test_auth_token'),
   resetEvt: obsOf(true),
+  logoutEvt: new EventEmitter<void>(),
 } as unknown as AuthService;
 
 const dummySchema: RxJsonSchema<any> = {

@@ -21,6 +21,8 @@
  */
 
 import {RxCollection, RxGraphQLReplicationQueryBuilder} from 'rxdb';
+import {PullQueryContextChecks} from './data-create-collection-request';
+import {PermissionContext} from './data-permission-interface';
 
 import {DataServiceSyncOptions} from './data-service-config';
 import {Model} from './model';
@@ -57,13 +59,13 @@ export function pullQueryBuilder(
     };
     const fields = extraParams.fields || getCollectionFields(collection);
     const query = `{
-      ${collection.name}(
-        where: ${JSON.stringify(where)},
-        order_by: [{updated_at: asc}]
-      ) {
-        ${fields.join(' ')}
-      }
-    }`;
+        ${collection.name}(
+          where: ${JSON.stringify(where)},
+          order_by: [{updated_at: asc}]
+        ) {
+          ${fields.join(' ')}
+        }
+      }`;
     const unquotedQuery = query.replace(/"([^"]+)":/g, '$1:');
     const variables = {};
     return {query: unquotedQuery, variables};
@@ -118,12 +120,12 @@ export function subscriptionQueryBuilder(collection: RxCollection): string {
   const ucfCollectionName = ucfirst(collection.name);
   const fields = getCollectionFields(collection);
   return `
-    subscription on${ucfCollectionName}Changed {
-      ${collection.name} {
-        ${fields.join(' ')}
+      subscription on${ucfCollectionName}Changed {
+        ${collection.name} {
+          ${fields.join(' ')}
+        }
       }
-    }
-  `;
+    `;
 }
 
 /**
@@ -145,6 +147,100 @@ export function syncOrderedCollections(collections: RxCollection[]): RxCollectio
     iteration++;
   }
   return sorted;
+}
+
+/**
+ * Generates the 'where' attribute object of a PullQueryExtraParams object
+ * @param context The current permission context
+ * @param checks The attributes of the context on which to perform the checks
+ */
+export function generateSyncPullChecks(
+  context: PermissionContext,
+  checks: PullQueryContextChecks,
+): {_and: {[key: string]: any}[]} {
+  let where: {_and: {[key: string]: any}[]} = {_and: []};
+  for (let checkObj of checks) {
+    switch (checkObj.checkName) {
+      case 'user_metrics':
+        const mts = generateSyncPullMetricChecks(context[checkObj.checkName], checkObj.checkKey);
+        where._and.push(...mts);
+        break;
+      case 'user_form_schemas':
+      case 'user_report_schemas':
+        const fschemas = generateSyncPullSchemaChecks(
+          context[checkObj.checkName],
+          checkObj.checkKey,
+        );
+        where._and.push(...fschemas);
+        break;
+      default:
+        break;
+    }
+  }
+  return where;
+}
+
+/**
+ * Generates 'and' conditions for schemas checks
+ * @param userSchemas The context user schemas
+ * @returns The conditions
+ */
+function generateSyncPullSchemaChecks(
+  userSchemas: Set<string> | null,
+  checkKey?: string,
+): {
+  [key: string]: any;
+}[] {
+  if (userSchemas == null || userSchemas.has('all')) {
+    return [];
+  }
+  let whereAndConditions: {[key: string]: any}[] = [];
+  const wObj: {[key: string]: any} = {[checkKey ?? 'id']: {_in: [...userSchemas]}};
+  whereAndConditions.push(wObj);
+
+  return whereAndConditions;
+}
+
+/**
+ * Generates 'and' conditions for metric checks
+ * @param userMetrics The context user metrics
+ * @returns The conditions
+ */
+function generateSyncPullMetricChecks(
+  userMetrics: {[key: string]: string[]} | null,
+  checkKey?: string,
+): {
+  [key: string]: any;
+}[] {
+  if (userMetrics == null) {
+    return [];
+  }
+
+  let whereAndConditions: {[key: string]: any}[] = [];
+
+  if (checkKey && userMetrics[checkKey] != null) {
+    if (!userMetrics[checkKey].includes('all')) {
+      const wObj: {[key: string]: any} = {
+        _or: [{id: {_in: userMetrics[checkKey]}}],
+      };
+      whereAndConditions.push(wObj);
+    }
+  } else {
+    const mtKeys = Object.keys(userMetrics);
+    for (let mtKey of mtKeys) {
+      if (!userMetrics[mtKey].includes('all')) {
+        const wObj: {[key: string]: any} = {
+          _or: [{[checkKey ?? `${mtKey}_ref_id`]: {_in: userMetrics[mtKey]}}],
+        };
+        if (!checkKey) {
+          wObj['_or'].push({[`${mtKey}_ref_id`]: {_is_null: true}});
+        }
+        whereAndConditions.push(wObj);
+      }
+    }
+  }
+
+  return whereAndConditions;
 }
 
 /**

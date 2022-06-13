@@ -20,10 +20,10 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {AuthService} from '@dino/core/auth';
+import {Injectable, isDevMode} from '@angular/core';
+import {AuthService, DinoUserInfo, User} from '@dino/core/auth';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {delay, map, retryWhen} from 'rxjs/operators';
+import {delay, filter, map, retryWhen} from 'rxjs/operators';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {MetricsService} from './metrics.service';
 
@@ -35,18 +35,46 @@ import {MetricsService} from './metrics.service';
 export class PermissionContextService {
   readonly permissionContext: Observable<PermissionContext>;
 
+  readonly fullContext: BehaviorSubject<PermissionContext | null>;
   private _basePermissionContext: Observable<PermissionContext>;
   private _permissionContextDataUpdate: BehaviorSubject<PermissionContextDataUpdate> =
     new BehaviorSubject<PermissionContextDataUpdate>({});
 
-  constructor(authService: AuthService, private _ms: MetricsService) {
-    this._basePermissionContext = authService.authenticated.pipe(
-      map(auth => {
-        if (auth) {
-          return {user: authService.getUserInfo()};
+  private _currentUser: User<DinoUserInfo> | null = null;
+  private _emptyContext: PermissionContext = {
+    user: null,
+    user_data: null,
+    user_form_schemas: null,
+    user_report_schemas: null,
+    user_form_statuses: null,
+    user_metrics: null,
+    user_permissions: null,
+  };
+
+  constructor(private _authService: AuthService, private _ms: MetricsService) {
+    this.fullContext = new BehaviorSubject<PermissionContext | null>(null);
+
+    this._authService.authenticated
+      .pipe(filter(authEvt => authEvt.auth === false))
+      .subscribe(() => this.resetContext());
+
+    this._basePermissionContext = this._authService.authenticated.pipe(
+      map(authEvt => {
+        if (authEvt.auth) {
+          this._currentUser = this._authService.getUserInfo();
+          const baseContext: PermissionContext = {
+            user: this._authService.getUserInfo(),
+            user_data: null,
+            user_form_schemas: null,
+            user_report_schemas: null,
+            user_form_statuses: null,
+            user_metrics: null,
+            user_permissions: null,
+          };
+          return baseContext;
+        } else {
+          return this._emptyContext;
         }
-        this.resetContext();
-        return {user: null};
       }),
     );
 
@@ -61,7 +89,21 @@ export class PermissionContextService {
    */
   addToContext(param: PermissionContextDataUpdate): void {
     const currentVal = this._permissionContextDataUpdate.value;
-    this._permissionContextDataUpdate.next({...currentVal, ...param});
+    const fullContextKeys = Object.keys(currentVal);
+    if (!fullContextKeys.some(cckey => Object.keys(param).includes(cckey))) {
+      this._permissionContextDataUpdate.next({...currentVal, ...param});
+      const fullContext = {
+        ...this._emptyContext,
+        user: this._currentUser,
+        ...this._permissionContextDataUpdate.value,
+      };
+      if (!Object.values(fullContext).some(val => val == null)) {
+        this.fullContext.next(fullContext as PermissionContext);
+        if (isDevMode()) {
+          console.log('FULL CONTEXT', fullContext);
+        }
+      }
+    }
   }
 
   /**
@@ -69,6 +111,10 @@ export class PermissionContextService {
    */
   resetContext(): void {
     this._permissionContextDataUpdate.next({});
+    this.fullContext.next(null);
+    if (isDevMode()) {
+      console.log('Context RESET');
+    }
   }
 
   /**
@@ -180,9 +226,8 @@ export class PermissionContextService {
    * @returns True if it matches
    */
   getMatchingMetric<T>(doc: T, context?: PermissionContext): boolean {
-    const contextMetrics: {[metricType: string]: string[]} = context
-      ? context['user_metrics']
-      : null;
+    const contextMetrics: {[metricType: string]: string[]} | null =
+      context && context.user_metrics ? context.user_metrics : null;
     if (contextMetrics == null || doc == null) {
       return true;
     }

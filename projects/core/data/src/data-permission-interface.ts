@@ -21,6 +21,7 @@
  */
 
 import {User} from '@dino/core/auth';
+import {RxDocument} from 'rxdb';
 
 import {InsertModel} from './insert-model';
 import {Model} from './model';
@@ -35,9 +36,47 @@ export interface PermissionContext {
   user: User | null;
 
   /**
-   * The additional context info
+   * The User Data
    */
-  [contextDataKey: string]: any;
+  user_data: RxDocument<any> | null;
+
+  /**
+   * Form Schemas associated with the user
+   */
+  user_form_schemas: Set<string> | null;
+
+  /**
+   * Report Schemas associated with the user
+   */
+  user_report_schemas: Set<string> | null;
+
+  /**
+   * Form Statuses associated with the user
+   */
+  user_form_statuses: Set<string> | null;
+
+  /**
+   * Metrics associated with the user
+   */
+  user_metrics: {[key: string]: string[]} | null;
+
+  /**
+   * Summary of the actions that can be performed by the user
+   */
+  user_permissions: {[key: string]: PermissionGroup} | null;
+}
+
+/**
+ * Represents a single Permission Group in PermissionContext 'user_permissions'
+ */
+export interface PermissionGroup {
+  actions: {
+    [key: string]: any;
+  };
+  form_schema: string[];
+  form_status: string[];
+  report_schema: string[];
+  [permissionKey: string]: any;
 }
 
 /**

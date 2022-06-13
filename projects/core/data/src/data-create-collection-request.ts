@@ -21,6 +21,7 @@
  */
 
 import {RxCollectionCreator} from 'rxdb';
+import {PermissionContext} from './data-permission-interface';
 
 import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
@@ -49,3 +50,9 @@ export interface DataCreateCollectionRequest {
    */
   pushQueryExtraParams?: PushQueryExtraParams;
 }
+
+/**
+ * Represents data that need to be matched against the
+ * active user permission context to filter the synced data.
+ */
+export type PullQueryContextChecks = {checkName: keyof PermissionContext; checkKey?: string}[];

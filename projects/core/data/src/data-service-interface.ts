@@ -21,8 +21,10 @@
  */
 
 import {Observable} from 'rxjs';
-
-import {DataCreateCollectionRequest} from './data-create-collection-request';
+import {
+  DataCreateCollectionRequest,
+  PullQueryContextChecks,
+} from './data-create-collection-request';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
@@ -145,7 +147,10 @@ export interface IDataService {
    * and sets up the GraphQL sync.
    * @param params The create collection request parameters.
    */
-  createCollection(params: DataCreateCollectionRequest): Observable<boolean>;
+  createCollection(
+    params: DataCreateCollectionRequest,
+    pullQueryContextChecks?: PullQueryContextChecks,
+  ): Observable<boolean>;
 
   /**
    * Destroy an existing collection in the local database.

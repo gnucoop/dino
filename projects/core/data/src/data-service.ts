@@ -32,6 +32,7 @@ import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
 import {
   BehaviorSubject,
   combineLatest,
+  forkJoin,
   from,
   interval,
   Observable,
@@ -47,6 +48,7 @@ import {
   map,
   mapTo,
   shareReplay,
+  skipWhile,
   switchMap,
   take,
   tap,
@@ -57,7 +59,11 @@ import {v4 as uuidv4} from 'uuid';
 
 import {ActiveSync} from './active-sync-interface';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
-import {DataCreateCollectionRequest} from './data-create-collection-request';
+import {PermissionContextService} from './data-context-service';
+import {
+  DataCreateCollectionRequest,
+  PullQueryContextChecks,
+} from './data-create-collection-request';
 import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
@@ -69,7 +75,12 @@ import {InsertModel} from './insert-model';
 import {Model} from './model';
 import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
-import {pullQueryBuilder, pushQueryBuilder, subscriptionQueryBuilder} from './sync-utils';
+import {
+  generateSyncPullChecks,
+  pullQueryBuilder,
+  pushQueryBuilder,
+  subscriptionQueryBuilder,
+} from './sync-utils';
 
 /**
  * Parameters needed to set up the collection sync.
@@ -152,6 +163,7 @@ export class DataService implements IDataService {
 
   constructor(
     private _authService: AuthService,
+    private _contextService: PermissionContextService,
     private _nss: NetworkStatusService,
     @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
     @Optional() private _configService: ConfigService | null,
@@ -210,6 +222,21 @@ export class DataService implements IDataService {
         this._resetDataConfig();
       }
     });
+
+    this._authService.logoutEvt
+      .pipe(
+        switchMap(evt => {
+          if (evt) {
+            return this.destroyAllCollections();
+          }
+          return obsOf(false);
+        }),
+      )
+      .subscribe(() => {
+        if (isDevMode()) {
+          console.log('Successfully logged out');
+        }
+      });
   }
 
   /**
@@ -408,17 +435,41 @@ export class DataService implements IDataService {
    * and sets up the GraphQL sync.
    * @param params The create collection request parameters.
    */
-  createCollection(params: DataCreateCollectionRequest): Observable<boolean> {
-    return this._db.pipe(
-      switchMap(db => {
+  createCollection(
+    params: DataCreateCollectionRequest,
+    pullQueryContextChecks?: PullQueryContextChecks,
+  ): Observable<boolean> {
+    return combineLatest([this._db, this._authService.authenticated]).pipe(
+      withLatestFrom(this._contextService.fullContext.pipe(take(1))),
+      skipWhile(([[db, authEvt], _ctx]) => !db || !authEvt.auth),
+      switchMap(([[db, authEvt], ctx]) => {
+        if (!authEvt.auth) {
+          return obsOf(false);
+        }
+        if (pullQueryContextChecks && ctx != null) {
+          if (!params.pullQueryExtraParams) {
+            params.pullQueryExtraParams = {};
+          }
+          params.pullQueryExtraParams!.where = generateSyncPullChecks(ctx, pullQueryContextChecks);
+        }
         const collection = db[params.name] as RxCollection;
         if (!collection) {
+          if (isDevMode()) {
+            console.log(`creating ${params.name}... with context: `, ctx);
+          }
           return from(db.addCollections({[params.name]: params.collection})).pipe(
             tap(coll => {
               if (
                 this._dataConfig.value.syncOptions.live &&
                 this._dataConfig.value.syncOptions.wsUrl
               ) {
+                if (isDevMode()) {
+                  console.log(
+                    `${params.name.toLocaleUpperCase()} created with Where: ${JSON.stringify(
+                      params.pullQueryExtraParams?.where,
+                    )}.`,
+                  );
+                }
                 this._addRegisteredCollection(coll[params.name], params);
               }
             }),
@@ -431,7 +482,7 @@ export class DataService implements IDataService {
             }),
           );
         }
-        return obsOf(true);
+        return obsOf(false);
       }),
     );
   }
@@ -452,6 +503,31 @@ export class DataService implements IDataService {
           tap(() => this._removeRegisteredCollection(collection)),
         );
       }),
+    );
+  }
+
+  /**
+   * Destroys all collections in the current local db.
+   */
+  destroyAllCollections(): Observable<boolean[]> {
+    return this._db.pipe(
+      switchMap(db => {
+        const collectionsDestructions: Observable<boolean>[] = [];
+        for (let coll of this._registeredCollections.value) {
+          const collName = coll.collection.name;
+          const rxCollection = db.collections[collName] as RxCollection;
+          if (rxCollection) {
+            collectionsDestructions.push(
+              from(rxCollection.remove()).pipe(
+                switchMap(() => from(db.removeCollection(collName)).pipe(mapTo(true))),
+                tap(() => this._removeRegisteredCollection(rxCollection)),
+              ),
+            );
+          }
+        }
+        return forkJoin(collectionsDestructions);
+      }),
+      take(1),
     );
   }
 
@@ -514,9 +590,9 @@ export class DataService implements IDataService {
     const collectionChange = this._registeredCollections.pipe(debounceTime(300));
     combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
       .pipe(withLatestFrom(this._authService.authenticated))
-      .subscribe(([[registeredCollections, token, isOnline], auth]) => {
+      .subscribe(([[registeredCollections, token, isOnline], authEvt]) => {
         const activeSyncsKeys = Object.keys(this._activeSyncs.getValue());
-        if (auth && token != null && isOnline) {
+        if (authEvt.auth && token != null && isOnline) {
           const collectionNames: string[] = Object.values(this._activeSyncs.getValue()).map(
             coll => coll.collectionName,
           );
@@ -533,6 +609,9 @@ export class DataService implements IDataService {
           });
           this._currentToken = token;
         } else {
+          if (isDevMode()) {
+            console.log('Stopping sync');
+          }
           activeSyncsKeys.forEach(k => {
             this._stopCollectionSync(k);
           });

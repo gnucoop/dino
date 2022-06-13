@@ -21,11 +21,14 @@
  */
 
 import {DeepReadonlyObject, MangoQuery, RxJsonSchema} from 'rxdb';
-import {combineLatest, from, Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {BehaviorSubject, from, Observable, of as obsOf, throwError} from 'rxjs';
+import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
-import {DataCreateCollectionRequest} from './data-create-collection-request';
+import {
+  DataCreateCollectionRequest,
+  PullQueryContextChecks,
+} from './data-create-collection-request';
 import {IDataModelManager} from './data-model-manager-interface';
 import {DataListOptions, DataQueryOptions, DataQuerySort} from './data-options-interface';
 import {Permission} from './data-permission';
@@ -68,20 +71,22 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
   private _collectionInit: Observable<boolean>;
   private _modelName: string;
   private _collectionSchema: RxJsonSchema<T>;
+  private _collectionCreated: BehaviorSubject<boolean>;
 
   constructor(
     createParams: DataCreateCollectionRequest,
     private _dataService: IDataService,
     private _contextService: PermissionContextService,
     private _permissions: Permission[] = [],
+    private _pullQueryContextChecks?: PullQueryContextChecks,
   ) {
     this._context = _contextService.permissionContext;
     this._modelName = createParams.name;
     this._collectionSchema = createParams.collection.schema;
-    this._collectionInit = _dataService.createCollection(createParams).pipe(
-      filter(created => created),
-      shareReplay(1),
-    );
+    this._collectionCreated = new BehaviorSubject<boolean>(false);
+    this._collectionInit = _dataService
+      .createCollection(createParams, this._pullQueryContextChecks)
+      .pipe(tap(created => this._collectionCreated.next(created)));
   }
 
   /**
@@ -196,17 +201,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
       query: this._optionsToMangoQuery(options),
     };
     return this._getPermissionContext().pipe(
-      switchMap(context =>
-        this._dataService.find<T, R>(params).pipe(
-          map(docs => {
-            if (context['user_permissions'] != null && context['user_metrics'] != null) {
-              return docs.filter(doc => this.canView(doc, context));
-            }
-            return [];
-          }),
-          take(1),
-        ),
-      ),
+      switchMap(_context => this._dataService.find<T, R>(params).pipe(take(1))),
     );
   }
 
@@ -223,17 +218,9 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
       query: this._optionsToMangoQuery(options),
     };
     return this._getPermissionContext().pipe(
-      switchMap(context =>
-        this._dataService.find<T, R>(params).pipe(
-          map(docs => {
-            if (context['user_permissions'] != null && context['user_metrics'] != null) {
-              return docs.filter(doc => this.canView(doc, context));
-            }
-            return docs;
-          }),
-          take(1),
-        ),
-      ),
+      switchMap(_context => {
+        return this._dataService.find<T, R>(params).pipe(take(1));
+      }),
     );
   }
 
@@ -507,8 +494,9 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    * Returns permission context after collection initialization.
    */
   private _getPermissionContext(): Observable<PermissionContext> {
-    return combineLatest([this._collectionInit, this._context]).pipe(
-      map(([_, context]) => context),
+    return this._collectionCreated.pipe(
+      filter(created => created),
+      switchMap(() => this._context),
       take(1),
     );
   }

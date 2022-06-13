@@ -1,5 +1,5 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
@@ -60,8 +60,12 @@ class ContextServiceMock extends PermissionContextService {
   }
   override permissionContext: Observable<PermissionContext> = obsOf({
     user: dummyUser,
-    user_permissions: [],
-    user_metrics: [],
+    user_data: {},
+    user_form_schemas: new Set<string>(['all']),
+    user_report_schemas: new Set<string>(['all']),
+    user_form_statuses: new Set<string>(['all']),
+    user_metrics: {},
+    user_permissions: {},
   }) as Observable<PermissionContext>;
 }
 
@@ -137,10 +141,11 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: obsOf(true),
+  authenticated: obsOf({auth: true, evt: 'init'}),
   authToken: obsOf('test_auth_token'),
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
+  logoutEvt: new EventEmitter<void>(),
   getUserInfo: () => {
     return dummyUser;
   },
@@ -188,6 +193,7 @@ describe('Data Model Manager - CRUD methods', () => {
     dataService = TestBed.inject(DataService);
     dummyManager = new DummyManager(collection, dataService, contextService, [ageAuthPermission]);
     currentDate = new Date().toISOString().split('T')[0];
+    dummyManager.init().pipe(take(1)).subscribe();
   });
 
   afterEach(async () => {

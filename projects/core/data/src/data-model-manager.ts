@@ -24,7 +24,10 @@ import {DeepReadonlyObject, RxDocument} from 'rxdb';
 
 import {BaseDataModelManager} from './base-data-model-manager';
 import {PermissionContextService} from './data-context-service';
-import {DataCreateCollectionRequest} from './data-create-collection-request';
+import {
+  DataCreateCollectionRequest,
+  PullQueryContextChecks,
+} from './data-create-collection-request';
 import {IDataModelManager} from './data-model-manager-interface';
 import {Permission} from './data-permission';
 import {DataService} from './data-service';
@@ -51,8 +54,15 @@ export abstract class DataModelManager<T extends Model = Model>
     dataService: DataService,
     contextService: PermissionContextService,
     permissions: Permission[] = [],
+    pullQueryContextChecks?: PullQueryContextChecks,
   ) {
-    super(createParams, dataService as IDataService, contextService, permissions);
+    super(
+      createParams,
+      dataService as IDataService,
+      contextService,
+      permissions,
+      pullQueryContextChecks,
+    );
   }
 
   protected override _objectToJSON(obj: RxDocument<T, {}>): DeepReadonlyObject<T> {
