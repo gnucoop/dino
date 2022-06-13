@@ -1,3 +1,4 @@
+import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -16,7 +17,7 @@ import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {BehaviorSubject, firstValueFrom, of as obsOf, of} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, of as obsOf, of, take} from 'rxjs';
 
 import {ListDataSource} from './public_api';
 
@@ -79,12 +80,13 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: of(true),
+  authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
   getUserInfo: () => {
     return dummyUser;
   },
   resetEvt: of(false),
+  logoutEvt: new EventEmitter<void>(),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,
 } as unknown as AuthService;
@@ -150,6 +152,7 @@ describe('ListDataSource', () => {
     fts = TestBed.inject(FiltersService);
     dummyManager = new DummyManager(createCollectionParams, dataService, contextService);
     dataSource = new ListDataSource<DummyModel>(dummyManager, fts);
+    dummyManager.init().pipe(take(1)).subscribe();
   });
 
   it('should create a Mango Query from an encoded queryString', async () => {

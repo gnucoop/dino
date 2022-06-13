@@ -30,6 +30,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  isDevMode,
   OnDestroy,
   OnInit,
   ViewEncapsulation,
@@ -205,7 +206,9 @@ export class EditReportSchema implements OnInit, OnDestroy {
           }
           return this._reportSchemaManager.patch({...reportSchema, ...reportPatch}).pipe(
             catchError(err => {
-              console.log(err);
+              if (isDevMode()) {
+                console.log(err);
+              }
               return obsOf(null);
             }),
             take(1),

@@ -217,10 +217,6 @@ export class ListDataSource<
       this.data = results;
     });
 
-    if (this._dataModelManager.detailsManager != null) {
-      this._dataModelManager.detailsManager.init().pipe(take(1)).subscribe();
-    }
-
     // Here we ask the FilterService to generate all the filters based on the model RxJsonSchema
     this._fs.generateModelFilters(this._modelSchema as RxJsonSchema<Model>);
 
@@ -232,7 +228,6 @@ export class ListDataSource<
       if (dataSchema != null) {
         let additionalFilters = [];
         if (this._additionalDataManager) {
-          this._additionalDataManager.init().pipe(take(1)).subscribe();
           additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
         }
         this._fs.setAdditionalFilters(additionalFilters);

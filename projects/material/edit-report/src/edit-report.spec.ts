@@ -11,6 +11,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 
 import {EditReport, EditReportModule} from './public_api';
+import {EventEmitter} from '@angular/core';
 
 let testDbIdx = 0;
 
@@ -37,12 +38,13 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: of(true),
+  authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
   getUserInfo: () => {
     return {};
   },
   resetEvt: of(false),
+  logoutEvt: new EventEmitter<void>(),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,
 } as unknown as AuthService;

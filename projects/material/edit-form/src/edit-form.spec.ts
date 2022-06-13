@@ -1,4 +1,5 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
@@ -35,12 +36,13 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: of(true),
+  authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
   getUserInfo: () => {
     return {};
   },
   resetEvt: of(false),
+  logoutEvt: new EventEmitter<void>(),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,
 } as unknown as AuthService;

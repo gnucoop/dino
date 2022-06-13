@@ -26,6 +26,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  isDevMode,
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
@@ -386,7 +387,9 @@ export class ImportForm {
         } else {
           let errMsg = 'File not imported! ';
           if (bulkRes?.error.length) {
-            console.log('Import form error: ' + bulkRes.error[0].msg);
+            if (isDevMode()) {
+              console.log('Import form error: ' + bulkRes.error[0].msg);
+            }
             if (
               bulkRes?.error[0].msg?.parameters?.errors &&
               bulkRes?.error[0].msg?.parameters?.errors.length
@@ -492,7 +495,9 @@ export class ImportForm {
                 }
               } else {
                 if (metrics && metrics.error.length && metrics.error[0].msg) {
-                  console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
+                  if (isDevMode()) {
+                    console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
+                  }
                   if (
                     metrics.error[0].msg?.parameters?.errors &&
                     metrics.error[0].msg?.parameters?.errors.length

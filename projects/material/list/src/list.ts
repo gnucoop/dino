@@ -32,6 +32,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Output,
@@ -909,7 +910,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         )
         .subscribe((formSchema: {[key: string]: any}) => {
           if (formSchema != null) {
-            console.log('forms imported');
+            if (isDevMode()) {
+              console.log('forms imported');
+            }
             // this._updateImportedFormData(formSchema);
           }
         });

@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Inject,
+  isDevMode,
   OnDestroy,
   OnInit,
   ViewEncapsulation,
@@ -90,7 +91,7 @@ export class FormStatusEditor implements OnDestroy, OnInit {
             if (statuses == null || context == null) {
               return [];
             }
-            const stts = [...context['user_form_statuses']];
+            const stts = [...(context.user_form_statuses ?? [])];
             return statuses.filter(status => stts.includes(status.id) || stts.includes('all'));
           }),
         );
@@ -115,7 +116,9 @@ export class FormStatusEditor implements OnDestroy, OnInit {
           return this._fdm.update(formDataClone as FormData);
         }),
         catchError(err => {
-          console.log(err);
+          if (isDevMode()) {
+            console.log(err);
+          }
           return obsOf(null);
         }),
       )
