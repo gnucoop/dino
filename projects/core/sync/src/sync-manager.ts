@@ -20,7 +20,7 @@
  *
  */
 
-import {Injectable, Optional} from '@angular/core';
+import {Injectable, isDevMode, Optional} from '@angular/core';
 import {
   FormDataManager,
   FormSchemaDepsManager,
@@ -36,8 +36,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {SyncModule} from './sync.module';
 import {combineLatest, Observable} from 'rxjs';
-import {shareReplay, skipWhile, switchMap, take} from 'rxjs/operators';
-import {AuthService} from '@dino/core/auth';
+import {take} from 'rxjs/operators';
 import {LangManager} from '@dino/core/langs';
 import {DataModelManager} from '@dino/core/data';
 
@@ -55,8 +54,12 @@ export class SyncManager {
    */
   private _managersInit: Observable<boolean>[];
 
+  /**
+   * Array of contextual managers initalizations
+   */
+  private _contextualManagersInit: Observable<boolean>[];
+
   constructor(
-    private _auth: AuthService,
     private _fst: FormStatusManager,
     private _fd: FormDataManager,
     private _fs: FormSchemaManager,
@@ -89,41 +92,54 @@ export class SyncManager {
     };
 
     this._managersInit = [
+      this._lm.init(),
       this._fst.init(),
       this._fsdeps.init(),
-      this._fs.init(),
-      this._rs.init(),
-      this._um.init(),
       this._ur.init(),
+      this._um.init(),
       this._ug.init(),
-      this._lm.init(),
     ];
+
+    this._contextualManagersInit = [this._fs.init(), this._rs.init(), this._fd.init()];
+
     if (this._ar != null) {
-      this._managersInit.push(this._ar.init());
+      this._contextualManagersInit.unshift(this._ar.init());
     }
     if (this._cs != null) {
-      this._managersInit.push(this._cs.init());
+      this._contextualManagersInit.unshift(this._cs.init());
     }
     if (this._pj != null) {
-      this._managersInit.push(this._pj.init());
+      this._contextualManagersInit.unshift(this._pj.init());
     }
     if (this._lc != null) {
-      this._managersInit.push(this._lc.init());
+      this._contextualManagersInit.unshift(this._lc.init());
     }
     if (this._og != null) {
-      this._managersInit.push(this._og.init());
+      this._contextualManagersInit.unshift(this._og.init());
     }
   }
 
   /**
-   * Initializes all collections
+   * Initializes all collections without a context
    *
    * @returns An observable of all managers initializations
    */
-  initializeCollections(): Observable<boolean[]> {
-    return combineLatest([this._auth.authenticated, this._auth.authToken]).pipe(
-      skipWhile(([auth, token]) => auth === false || token == null),
-      switchMap(() => combineLatest([...this._managersInit]).pipe(shareReplay(1), take(1))),
-    );
+  initializeMainCollections(): Observable<boolean[]> {
+    if (isDevMode()) {
+      console.log('INITIALIZING COLLECTIONS');
+    }
+    return combineLatest(this._managersInit).pipe(take(1));
+  }
+
+  /**
+   * Initializes all collections that need a full context
+   *
+   * @returns An observable of all managers initializations
+   */
+  initializeContextualCollections(): Observable<boolean[]> {
+    if (isDevMode()) {
+      console.log('INITIALIZING CONTEXTUAL COLLECTIONS');
+    }
+    return combineLatest(this._contextualManagersInit).pipe(take(1));
   }
 }
