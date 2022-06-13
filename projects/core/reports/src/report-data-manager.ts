@@ -21,7 +21,12 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+  PullQueryContextChecks,
+} from '@dino/core/data';
 
 import {indexes, migrationStrategies, ReportData} from './report-data';
 import {schema} from './report-data-json';
@@ -30,8 +35,12 @@ import {ReportsModule} from './reports.module';
 @Injectable({providedIn: ReportsModule})
 export class ReportDataManager extends DataModelManager<ReportData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+    const pullQueryContextChecks: PullQueryContextChecks = [
+      {checkName: 'user_report_schemas', checkKey: 'report_schema_ref_id'},
+      {checkName: 'user_metrics'},
+    ];
     schema.indexes = [...(schema.indexes || []), ...indexes];
     const collection = {name: 'report_data', collection: {schema, migrationStrategies}};
-    super(collection, dataService, permissionContextService);
+    super(collection, dataService, permissionContextService, [], pullQueryContextChecks);
   }
 }

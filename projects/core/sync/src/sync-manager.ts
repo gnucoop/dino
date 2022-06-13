@@ -27,7 +27,7 @@ import {
   FormSchemaManager,
   FormStatusManager,
 } from '@dino/core/forms';
-import {ReportSchemaManager} from '@dino/core/reports';
+import {ReportDataManager, ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -69,6 +69,7 @@ export class SyncManager {
     private _ur: UserRoleManager,
     private _ug: UserGroupManager,
     private _lm: LangManager,
+    private _rd: ReportDataManager,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -100,7 +101,12 @@ export class SyncManager {
       this._ug.init(),
     ];
 
-    this._contextualManagersInit = [this._fs.init(), this._rs.init(), this._fd.init()];
+    this._contextualManagersInit = [
+      this._fs.init(),
+      this._rs.init(),
+      this._fd.init(),
+      this._rd.init(),
+    ];
 
     if (this._ar != null) {
       this._contextualManagersInit.unshift(this._ar.init());
