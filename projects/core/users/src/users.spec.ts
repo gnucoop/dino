@@ -1,9 +1,10 @@
+import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch, RxDocument} from 'rxdb';
-import {BehaviorSubject, firstValueFrom, of as obsOf} from 'rxjs';
+import {firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {UserGroupManager, UserDataManager, UsersModule} from './public_api';
@@ -46,10 +47,11 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: new BehaviorSubject<boolean>(true),
+  authenticated: obsOf({auth: true, evt: 'init'}),
   authToken: obsOf('test_auth_token'),
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
+  logoutEvt: new EventEmitter<void>(),
   getUserInfo: () => dummyUser,
   getNewUser: () => null,
   resetNewUser: () => {},
@@ -117,6 +119,7 @@ describe('User Group Manager', () => {
       ],
     });
     userGroupManager = TestBed.inject(UserGroupManager);
+    userGroupManager.init().pipe(take(1)).subscribe();
   });
 
   it('should retrieve the active user groups', async () => {

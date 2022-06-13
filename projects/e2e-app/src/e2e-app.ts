@@ -20,8 +20,11 @@
  *
  */
 
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, isDevMode, ViewEncapsulation} from '@angular/core';
+import {AuthService} from '@dino/core/auth';
+import {PermissionContextService} from '@dino/core/data';
 import {SyncManager} from '@dino/core/sync';
+import {filter, skipWhile, switchMap, tap} from 'rxjs/operators';
 
 /** Root component for the e2e-app demos. */
 @Component({
@@ -47,7 +50,40 @@ import {SyncManager} from '@dino/core/sync';
   encapsulation: ViewEncapsulation.None,
 })
 export class E2eApp {
-  constructor(private _sync: SyncManager) {
-    this._sync.initializeCollections().subscribe();
+  constructor(
+    private _sync: SyncManager,
+    private _auth: AuthService,
+    private _pcs: PermissionContextService,
+  ) {
+    this._auth.authenticated
+      .pipe(
+        skipWhile(authEvt => !authEvt.auth),
+        filter(authEvt => authEvt.auth === true && authEvt.evt != 'offline'),
+        tap(authEvt => {
+          if (isDevMode()) {
+            console.log(authEvt);
+          }
+        }),
+        switchMap(() => this._sync.initializeMainCollections()),
+      )
+      .subscribe();
+
+    this._auth.authenticated
+      .pipe(
+        skipWhile(authEvt => !authEvt.auth),
+        filter(authEvt => authEvt.auth === true && authEvt.evt != 'offline'),
+        tap(authEvt => {
+          if (isDevMode()) {
+            console.log(authEvt);
+          }
+        }),
+        switchMap(() =>
+          this._pcs.fullContext.pipe(
+            filter(ctx => ctx != null),
+            switchMap(() => this._sync.initializeContextualCollections()),
+          ),
+        ),
+      )
+      .subscribe();
   }
 }

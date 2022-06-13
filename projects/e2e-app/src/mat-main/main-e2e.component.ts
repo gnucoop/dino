@@ -2,7 +2,7 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {PermissionContextService} from '@dino/core/data';
 import {Section} from '@dino/material/main-nav';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-main',
@@ -20,7 +20,8 @@ import {map} from 'rxjs/operators';
 })
 export class MatMainE2E {
   constructor(private _pcs: PermissionContextService) {}
-  sections: Observable<Section[]> = this._pcs.permissionContext.pipe(
+  sections: Observable<Section[]> = this._pcs.fullContext.pipe(
+    filter(ctx => ctx != null && ctx.user_permissions != null),
     map(context => {
       const sections = [
         {
@@ -34,7 +35,7 @@ export class MatMainE2E {
           icon: 'list_alt',
         },
       ];
-      if (context['user_permissions'] != null) {
+      if (context && context.user_permissions != null) {
         sections.push({
           label: 'Aggregation',
           url: 'aggregation',
@@ -46,7 +47,11 @@ export class MatMainE2E {
         url: 'reports',
         icon: 'stacked_bar_chart',
       });
-      if (!this._pcs.isActiveUserGuestOnly(context['user_permissions'])) {
+      if (
+        context &&
+        context.user_permissions != null &&
+        !this._pcs.isActiveUserGuestOnly(context.user_permissions)
+      ) {
         sections.push({label: 'Metrics', icon: 'bookmarks', url: 'metrics'});
       }
 

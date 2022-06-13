@@ -22,7 +22,7 @@ import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditor, MixedEditorItem} from '@dino/material/mixed-editor';
 import {BehaviorSubject, combineLatest, Observable, Subscription} from 'rxjs';
-import {map, shareReplay, switchMap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 
 /**
  * Represents an UserGroup populated with its metrics.
@@ -340,7 +340,6 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
 
         return res;
       }),
-      shareReplay(1),
     );
   }
 

@@ -14,7 +14,7 @@ import {AreasModule} from '@dino/core/areas';
 import {AuthModule, AuthService} from '@dino/core/auth';
 import {CasesModule} from '@dino/core/cases';
 import {ConfigModule} from '@dino/core/config';
-import {DATA_SERVICE_CONFIG, DataService} from '@dino/core/data';
+import {DATA_SERVICE_CONFIG, DataService, PermissionContextService} from '@dino/core/data';
 import {
   FormData,
   FormDataManager,
@@ -32,7 +32,7 @@ import {
   ReportSchemaManager,
   ReportsModule,
 } from '@dino/core/reports';
-import {SyncModule} from '@dino/core/sync';
+import {SyncManager, SyncModule} from '@dino/core/sync';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
 import {CoreModule as DinoCoreModule} from '@dino/material/core';
@@ -40,8 +40,8 @@ import {EditReportSchemaModule} from '@dino/material/edit-report-schema';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {combineLatest, Observable, of as obsOf, zip} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {combineLatest, Observable, of as obsOf, throwError, zip} from 'rxjs';
+import {catchError, switchMap, take, tap} from 'rxjs/operators';
 
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
@@ -87,6 +87,8 @@ import {
   UserGroupManagerMock,
   wsUrl,
   instanceName,
+  PermissionContextServiceMock,
+  SyncManagerMock,
 } from './mocks';
 import {formDatas} from './test-ajf-formdata';
 import {formSchemas} from './test-ajf-formschema';
@@ -113,6 +115,10 @@ export function initializeApp(
 ): () => Observable<any> {
   return () => {
     if (additionalConfig.generateData) {
+      combineLatest([fsm.init(), fdm.init(), pm.init(), rsm.init(), rdm.init()])
+        .pipe(take(1))
+        .subscribe();
+
       return fakeProjectsGenerator.generateData(ds, pm, projects).pipe(
         switchMap(() => {
           return fakeFormSchemaGenerator.generateData(ds, fsm, formSchemas);
@@ -153,6 +159,10 @@ export function initializeApp(
           ]);
         }),
         tap(() => console.log('DATA GENERATED')),
+        catchError(err => {
+          console.log(err);
+          return throwError(() => new Error(err));
+        }),
       );
     }
     return obsOf(null);
@@ -252,6 +262,16 @@ export function provideDataServiceConfig() {
     {
       provide: UserDataManager,
       useClass: additionalConfig.externalAuthentication ? UserDataManager : UserDataManagerMock,
+    },
+    {
+      provide: PermissionContextService,
+      useClass: additionalConfig.externalAuthentication
+        ? PermissionContextService
+        : PermissionContextServiceMock,
+    },
+    {
+      provide: SyncManager,
+      useClass: additionalConfig.externalAuthentication ? SyncManager : SyncManagerMock,
     },
     {
       provide: DATA_SERVICE_CONFIG,

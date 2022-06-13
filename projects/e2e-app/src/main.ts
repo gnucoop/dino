@@ -3,6 +3,6 @@ import {platformBrowser} from '@angular/platform-browser';
 
 import {MainModule} from './main-module';
 
-enableProdMode();
+// enableProdMode();
 
 platformBrowser().bootstrapModule(MainModule);
