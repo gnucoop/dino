@@ -58,7 +58,12 @@ export class E2eApp {
     this._auth.authenticated
       .pipe(
         skipWhile(authEvt => !authEvt.auth),
-        filter(authEvt => authEvt.auth === true && authEvt.evt != 'offline'),
+        filter(
+          authEvt =>
+            authEvt.auth === true &&
+            authEvt.evt != 'offline' &&
+            authEvt.evt != 'refresh successful',
+        ),
         tap(authEvt => {
           if (isDevMode()) {
             console.log(authEvt);
@@ -71,7 +76,12 @@ export class E2eApp {
     this._auth.authenticated
       .pipe(
         skipWhile(authEvt => !authEvt.auth),
-        filter(authEvt => authEvt.auth === true && authEvt.evt != 'offline'),
+        filter(
+          authEvt =>
+            authEvt.auth === true &&
+            authEvt.evt != 'offline' &&
+            authEvt.evt != 'refresh successful',
+        ),
         tap(authEvt => {
           if (isDevMode()) {
             console.log(authEvt);
