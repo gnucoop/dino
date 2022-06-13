@@ -23,7 +23,12 @@ dino-main-nav {
       max-height: 80%;
       margin: auto 10px;
     }
-
+    .dino-logout-button {
+      transition: opacity ease-in-out 0.5s;
+      &.dino-logout-button-off {
+        opacity: 0.3;
+      }
+    }
     .dino-toolbar-actions {
       cursor: pointer;
       margin-left: auto;
@@ -81,6 +86,15 @@ dino-main-nav {
     background-color: inherit;
     transition: all ease-in-out 0.2s;
     -webkit-transition: all ease-in-out 0.2s;
+    .dino-component-load-spinner {
+      margin: auto;
+      height: 90vh !important;
+      width: 18vw !important;
+      svg {
+        height: 100% !important;
+        width: 100% !important;
+      }
+    }
   }
 
   .mat-sidenav.dino-large-sidenav {

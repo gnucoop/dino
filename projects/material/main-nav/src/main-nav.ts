@@ -37,7 +37,7 @@ import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
-import {DataService, MetricsService} from '@dino/core/data';
+import {DataService, MetricsService, PermissionContextService} from '@dino/core/data';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {UserArea} from '@dino/material/user-area';
@@ -68,7 +68,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   onRouterOutletLoading(elementRef: any) {
     if (elementRef.isLoading) {
-      elementRef.isLoading.subscribe({next: (res: boolean) => this.isLoading.next(res)});
+      this._onRouterOutletLoadingSub.unsubscribe();
+      this._onRouterOutletLoadingSub = elementRef.isLoading.subscribe({
+        next: (res: boolean) => {
+          this.isLoading.next(res);
+        },
+      });
     }
   }
 
@@ -83,6 +88,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
     }
     this.logoutDisabled.next(state);
   }
+
+  /**
+   * If true, the logout button temporarily off.
+   */
+  readonly logoutOff: Observable<boolean>;
 
   /**
    * Additional action icons that can redirect to the specified urls
@@ -183,6 +193,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   private _currentSectionSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Subscribes to the loading state of the component loaded by the router outlet.
+   */
+  private _onRouterOutletLoadingSub: Subscription = Subscription.EMPTY;
+
   @Input()
   set sections(sec: Section[]) {
     if (sec == null) {
@@ -237,6 +252,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly userGroupManager: UserGroupManager,
     readonly userDataManager: UserDataManager,
     readonly snackbar: MatSnackBar,
+    readonly pcs: PermissionContextService,
     public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
@@ -257,8 +273,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
     });
 
     this.userDisplayName = this.authService.authenticated.pipe(
-      switchMap(auth => {
-        if (auth) {
+      switchMap(authEvt => {
+        if (authEvt.auth) {
           return this.userDataManager
             .getActiveUserData()
             .pipe(map(userData => userData?.full_name ?? null));
@@ -269,6 +285,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
     this.isAdmin = this._adminRoles.pipe(
       switchMap(roles => this.userGroupManager.isActiveUserAdmin(roles)),
+    );
+    this.logoutOff = combineLatest([this.isSyncing, this.networkStatusService.isOnline$]).pipe(
+      map(([syncing, online]) => syncing || !online),
     );
 
     this.showNav = this._router.events.pipe(
@@ -358,6 +377,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
           if (redirect) {
             this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
           }
+        } else {
+          this.snackbar.open('Offline logout unavailable', 'LOGOUT OFFLINE', {duration: 5000});
         }
       });
   }
@@ -366,5 +387,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._menuClickSub.unsubscribe();
     this._menuToggleSub.unsubscribe();
     this._currentSectionSub.unsubscribe();
+    this._onRouterOutletLoadingSub.unsubscribe();
   }
 }

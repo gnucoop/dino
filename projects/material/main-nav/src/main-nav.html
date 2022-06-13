@@ -46,9 +46,14 @@
       >
       <span class="dino-active-user-text" (click)="openUserArea()">{{userDisplayName}}</span>
     </ng-container>
-    <mat-icon *ngIf="(logoutDisabled|async) !== true" class="dino-logout-button" (click)="logout()"
-      >logout</mat-icon
-    >
+    <ng-container *ngIf="(logoutDisabled|async) !== true">
+      <mat-icon
+        class="dino-logout-button"
+        [ngClass]="(logoutOff|async) ? 'dino-logout-button-off' : ''"
+        (click)="logout()"
+        >logout</mat-icon
+      >
+    </ng-container>
   </div>
 </mat-toolbar>
 
@@ -112,8 +117,11 @@
   </mat-sidenav>
 
   <mat-sidenav-content class="dino-sidenav-content">
-    <ng-container *ngIf="(isLoading|async) === false">
+    <ng-container *ngIf="(isLoading|async) === false; else loading">
       <router-outlet (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>
+    <ng-template #loading
+      ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
+    </ng-template>
   </mat-sidenav-content>
 </mat-sidenav-container>
