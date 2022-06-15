@@ -82,6 +82,11 @@ export function pushQueryBuilder<T extends Model = Model>(
   const ucfCollectionName = ucfirst(collection.name);
   const updateFields = getCollectionUpdateFields(collection);
   return (doc: T) => {
+    extraParams = extraParams || {};
+    const where = {
+      ...(extraParams.where || {}),
+      updated_at: {_lt: `${doc.updated_at}`},
+    };
     if (extraParams && extraParams.docModifier) {
       doc = extraParams.docModifier(doc);
     }
@@ -91,15 +96,17 @@ export function pushQueryBuilder<T extends Model = Model>(
           objects: $doc,
           on_conflict: {
             constraint: ${collection.name}_pkey,
-            update_columns: [${updateFields.join(', ')}]
+            update_columns: [${updateFields.join(', ')}],
+            where: ${JSON.stringify(where)}
         })
         {
           returning {id}
         }
       }
     `;
+    const unquotedQuery = query.replace(/"([^"]+)":/g, '$1:');
     const variables = {'doc': [doc]};
-    return {query, variables};
+    return {query: unquotedQuery, variables};
   };
 }
 

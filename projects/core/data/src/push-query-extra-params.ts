@@ -27,6 +27,11 @@ import {Model} from './model';
  */
 export interface PushQueryExtraParams {
   /**
+   * Where condition to be added to the push query.
+   */
+  where?: any;
+
+  /**
    * Function used to modify the object before pushing it to the remote database.
    */
   docModifier?: <T extends Model = Model>(doc: T) => T;
