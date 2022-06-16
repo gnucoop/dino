@@ -572,17 +572,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
             }
           } else {
-            apiCall.push(obsOf(formObj));
-          }
-          this.isLoading.next(true);
-          return zip(apiCall);
         }),
-        withLatestFrom(this.isDetails),
-        switchMap(([res, isDetails]) => {
+<<<<<<< HEAD
           this.isLoading.next(false);
+=======
           if (res.length) {
-            const formObj = res[0];
-            let formValue = {...formObj.formValue};
             if (res.length > 1) {
               for (let i = 1; i < res.length; i++) {
                 formValue = this.uploadService.replaceUploadedFile(
@@ -591,10 +585,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 );
               }
             }
-            let newItem = {...formObj.doc} as {[key: string]: any};
             newItem['data'].data != null
-              ? (newItem['data'].data = formValue)
-              : (newItem['data'] = formValue);
 
             if (formObj.fmSelector != null) {
               const selectedMetrics = formObj.fmSelector.selectedMetrics;

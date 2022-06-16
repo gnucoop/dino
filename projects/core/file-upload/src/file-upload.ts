@@ -78,7 +78,11 @@ export class FileUploadService {
         return this._httpClient.post<StorageUploadResponse>(url, formData, {headers}).pipe(
           map(res => {
             if (res != null) {
+<<<<<<< HEAD
               const filePublicUrl = url + '/' + res.id;
+=======
+              const filePublicUrl = storageEndpoint + '/' + res.id;
+>>>>>>> feat(core/file-upload): upload formdata files into nhost storage
               return {...res, filePublicUrl} as StorageUploadResponse;
             }
             return {isUploaded: false} as StorageUploadResponse;
@@ -92,6 +96,7 @@ export class FileUploadService {
   }
 
   /**
+<<<<<<< HEAD
    * Delete a file from the nhost storage
    * @param fileToUpload the AjfFile to be uploaded in nhost storage
    * @returns An observable with the response of the delete
@@ -117,6 +122,8 @@ export class FileUploadService {
   }
 
   /**
+=======
+>>>>>>> feat(core/file-upload): upload formdata files into nhost storage
    * Return a list of file to be uploaded
    * @param formValue All the form value fields
    * @returns a list of AjfFile
@@ -135,6 +142,7 @@ export class FileUploadService {
   }
 
   /**
+<<<<<<< HEAD
    * Return a list of file to be deleted
    * @param formValue All the form value fields
    * @returns a list of AjfFile
@@ -153,6 +161,8 @@ export class FileUploadService {
   }
 
   /**
+=======
+>>>>>>> feat(core/file-upload): upload formdata files into nhost storage
    * Remove in the form values all the selected file
    * @param formValue All the form value fields
    * @returns The form value without all the file
@@ -200,11 +210,16 @@ export class FileUploadService {
   }
 
   /**
+<<<<<<< HEAD
    * Check if a value is an AjfFile field with a valid content
+=======
+   * Check if a value is an AjfFile field
+>>>>>>> feat(core/file-upload): upload formdata files into nhost storage
    * @param value the value to be checked
    * @returns true if the input value is an AjfFile field
    */
   isAjfFileField(value: any): boolean {
+<<<<<<< HEAD
     if (typeof value !== 'object') {
       return false;
     }
@@ -224,6 +239,16 @@ export class FileUploadService {
       return false;
     }
     if ('url' in value && value['url'] && value['url'].length && value['deleted']) {
+=======
+    if (
+      value &&
+      typeof value === 'object' &&
+      'name' in value &&
+      'content' in value &&
+      value['content'] &&
+      value['content'].length
+    ) {
+>>>>>>> feat(core/file-upload): upload formdata files into nhost storage
       return true;
     }
     return false;
