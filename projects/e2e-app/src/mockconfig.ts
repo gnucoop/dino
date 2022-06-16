@@ -100,6 +100,12 @@ export const additionalConfig = {
    */
   optionalFormMetrics: true,
   optionalReportMetrics: true,
+
+  /**
+   * If true, files selected in a form are saved into form data,
+   * otherwise are uploaded on cloud and only the online url is saved
+   */
+  offlineFileUpload: false,
 };
 
 /**

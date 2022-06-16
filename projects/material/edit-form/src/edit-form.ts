@@ -57,6 +57,9 @@ import {FormData, FormSchema, FormSchemaDeps, FormSchemaManager} from '@dino/cor
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
+import {NetworkStatusService} from '@dino/core/auth';
+import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
+
 import {
   BehaviorSubject,
   combineLatest,
@@ -66,6 +69,7 @@ import {
   of as obsOf,
   Subject,
   Subscription,
+  zip,
 } from 'rxjs';
 import {
   catchError,
@@ -232,12 +236,14 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   constructor(
+    private _nss: NetworkStatusService,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
+    readonly uploadService: FileUploadService,
   ) {
     this.formId = this._route.params.pipe(
       map(params => params['form_id']),
@@ -529,47 +535,88 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             fmSelector: formMetricsSelector,
           };
         }),
+        withLatestFrom(this._nss.isOnline$),
+        switchMap(([formObj, isOnline]) => {
+          const apiCall: Observable<any>[] = [];
+          const filesToUpload = this.uploadService.getFilesToUpload(formObj.formValue);
+          if (filesToUpload && filesToUpload.length) {
+            if (!isOnline) {
+              if (!additionalConfig.offlineFileUpload) {
+                this.snackbar.open('You are offline. The files will not be uploaded', 'WARNING', {
+                  duration: 10000,
+                });
+                let formValue = {...formObj.formValue};
+                formValue = this.uploadService.removeAllFiles(formValue);
+                formObj.formValue = {...formValue};
+              }
+              apiCall.push(obsOf(formObj));
+            } else {
+              apiCall.push(obsOf(formObj));
+              filesToUpload.forEach(fileToUpload => {
+                const uploadedFileObs = this.uploadService.uploadFile(fileToUpload);
+                apiCall.push(uploadedFileObs);
+              });
+            }
+          } else {
+            apiCall.push(obsOf(formObj));
+          }
+          return zip(apiCall);
+        }),
         withLatestFrom(this.isDetails),
-        switchMap(([formObj, isDetails]) => {
-          let newItem = {...formObj.doc} as {[key: string]: any};
-          newItem['data'].data != null
-            ? (newItem['data'].data = formObj.formValue)
-            : (newItem['data'] = formObj.formValue);
-
-          if (formObj.fmSelector != null) {
-            const selectedMetrics = formObj.fmSelector.selectedMetrics;
-            const creationDate = formObj.fmSelector.formDate.value.created_at;
-            for (let key of Object.keys(selectedMetrics)) {
-              if (selectedMetrics[key].id != null) {
-                const saveKey = `${key}_ref_id`;
-                newItem[saveKey] = selectedMetrics[key].id;
+        switchMap(([res, isDetails]) => {
+          if (res.length) {
+            const formObj = res[0];
+            let formValue = {...formObj.formValue};
+            if (res.length > 1) {
+              for (let i = 1; i < res.length; i++) {
+                formValue = this.uploadService.replaceUploadedFile(
+                  formValue,
+                  res[i] as StorageUploadResponse,
+                );
               }
             }
-            const dateFmt = 'yyyy-MM-dd';
-            const formattedDate = format(creationDate, dateFmt);
-            newItem['created_at'] = formattedDate;
-          }
+            let newItem = {...formObj.doc} as {[key: string]: any};
+            newItem['data'].data != null
+              ? (newItem['data'].data = formValue)
+              : (newItem['data'] = formValue);
 
-          const dmm = this._dataModelManager as DataModelManager<T>;
-          const dm: DataModelManager<T> =
-            isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
-          return dm.update(newItem as T).pipe(
-            tap(fd => {
-              if (fd && fd.collection.name === 'form_data') {
-                const trigData: ActionTriggerData<T> = {
-                  doc: fd,
-                  previousValue: formObj.doc,
-                  newValue: fd,
-                };
-                const trigger: ActionTrigger<T> = {
-                  name: 'Form Data Changed',
-                  triggerType: 'on_form_data_change',
-                  triggerData: trigData,
-                };
-                this.emitActionTrigger.emit(trigger);
+            if (formObj.fmSelector != null) {
+              const selectedMetrics = formObj.fmSelector.selectedMetrics;
+              const creationDate = formObj.fmSelector.formDate.value.created_at;
+              for (let key of Object.keys(selectedMetrics)) {
+                if (selectedMetrics[key].id != null) {
+                  const saveKey = `${key}_ref_id`;
+                  newItem[saveKey] = selectedMetrics[key].id;
+                }
               }
-            }),
-          );
+              const dateFmt = 'yyyy-MM-dd';
+              const formattedDate = format(creationDate, dateFmt);
+              newItem['created_at'] = formattedDate;
+            }
+
+            const dmm = this._dataModelManager as DataModelManager<T>;
+            const dm: DataModelManager<T> =
+              isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
+            return dm.update(newItem as T).pipe(
+              tap(fd => {
+                if (fd && fd.collection.name === 'form_data') {
+                  const trigData: ActionTriggerData<T> = {
+                    doc: fd,
+                    previousValue: formObj.doc,
+                    newValue: fd,
+                  };
+                  const trigger: ActionTrigger<T> = {
+                    name: 'Form Data Changed',
+                    triggerType: 'on_form_data_change',
+                    triggerData: trigData,
+                  };
+                  this.emitActionTrigger.emit(trigger);
+                }
+              }),
+            );
+          } else {
+            return obsOf(null);
+          }
         }),
         catchError(err => {
           this._location.back();
