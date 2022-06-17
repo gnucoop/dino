@@ -69,6 +69,7 @@ import {
   of as obsOf,
   Subject,
   Subscription,
+  throwError,
   zip,
 } from 'rxjs';
 import {
@@ -119,6 +120,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
    */
   @Input()
   hasOptionalMetrics: boolean = false;
+
+  /**
+   * True if the files selected in the form must be saved into local formdata
+   * Defaults to false.
+   */
+  @Input()
+  offlineFileUpload: boolean = false;
 
   /**
    * The Form data id
@@ -190,6 +198,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   get form(): Observable<AjfForm> {
     return this._form;
   }
+
+  /**
+   * The loading state of the upload file
+   */
+  isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * Emitted when a user tries to save a form
@@ -541,9 +554,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           const filesToUpload = this.uploadService.getFilesToUpload(formObj.formValue);
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
-              if (!additionalConfig.offlineFileUpload) {
+              if (!this.offlineFileUpload) {
                 this.snackbar.open('You are offline. The files will not be uploaded', 'WARNING', {
-                  duration: 10000,
+                  duration: 5000,
                 });
                 let formValue = {...formObj.formValue};
                 formValue = this.uploadService.removeAllFiles(formValue);
@@ -556,14 +569,17 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 const uploadedFileObs = this.uploadService.uploadFile(fileToUpload);
                 apiCall.push(uploadedFileObs);
               });
+              this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
             }
           } else {
             apiCall.push(obsOf(formObj));
           }
+          this.isLoading.next(true);
           return zip(apiCall);
         }),
         withLatestFrom(this.isDetails),
         switchMap(([res, isDetails]) => {
+          this.isLoading.next(false);
           if (res.length) {
             const formObj = res[0];
             let formValue = {...formObj.formValue};
@@ -615,16 +631,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               }),
             );
           } else {
-            return obsOf(null);
+            return throwError(() => new Error('No data found'));
           }
         }),
         catchError(err => {
+          this.isLoading.next(false);
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
         }),
       )
       .subscribe(_ => {
+        this.isLoading.next(false);
         this._location.back();
         this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
       });

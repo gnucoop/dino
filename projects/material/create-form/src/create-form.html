@@ -43,4 +43,7 @@
       ></ajf-form>
     </div>
   </ng-container>
+  <ng-container *ngIf="(isLoading|async) === true">
+    <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
+  </ng-container>
 </ng-container>

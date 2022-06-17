@@ -9,6 +9,7 @@ import {additionalConfig} from '../mockconfig';
 export class MatEditFormE2E {
   readonly manager: FormDataManager;
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
+  readonly offlineFileUpload: boolean = additionalConfig.offlineFileUpload;
 
   constructor(private _formDataManager: FormDataManager) {
     this.manager = this._formDataManager;

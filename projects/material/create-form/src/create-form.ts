@@ -42,7 +42,8 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {} from '@dino/core/data';
+import {NetworkStatusService} from '@dino/core/auth';
+import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
 import {
   FormData,
   FormSchema,
@@ -63,6 +64,7 @@ import {
   of as obsOf,
   Subscription,
   throwError,
+  zip,
 } from 'rxjs';
 import {
   catchError,
@@ -122,6 +124,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   hasOptionalMetrics: boolean = false;
 
   /**
+   * True if the files selected in the form must be saved into local formdata
+   * Defaults to false.
+   */
+  @Input()
+  offlineFileUpload: boolean = false;
+
+  /**
    * The Form Metric Selector
    */
   private _formMetricsSelector: Observable<FormMetricSelector | null> = obsOf(null);
@@ -173,6 +182,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   /**
+   * The loading state of the upload file
+   */
+  isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
    * Emitted when a user tries to save a form
    */
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
@@ -218,6 +232,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   constructor(
+    private _nss: NetworkStatusService,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
     private _fst: FormStatusManager,
@@ -226,6 +241,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     private _udm: UserDataManager,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
+    readonly uploadService: FileUploadService,
   ) {}
 
   /**
@@ -441,6 +457,38 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._saveFormSub = this._saveFormEvt
       .pipe(
+        withLatestFrom(this._nss.isOnline$),
+        switchMap(([_, isOnline]) => {
+          const formObj = {
+            formValue: this._rendererService.getFormValue(),
+          };
+          const apiCall: Observable<any>[] = [];
+          const filesToUpload = this.uploadService.getFilesToUpload(formObj.formValue);
+          if (filesToUpload && filesToUpload.length) {
+            if (!isOnline) {
+              if (!this.offlineFileUpload) {
+                this.snackbar.open('You are offline. The files will not be uploaded', 'WARNING', {
+                  duration: 5000,
+                });
+                let formValue = {...formObj.formValue};
+                formValue = this.uploadService.removeAllFiles(formValue);
+                formObj.formValue = {...formValue};
+              }
+              apiCall.push(obsOf(formObj));
+            } else {
+              apiCall.push(obsOf(formObj));
+              filesToUpload.forEach(fileToUpload => {
+                const uploadedFileObs = this.uploadService.uploadFile(fileToUpload);
+                apiCall.push(uploadedFileObs);
+              });
+              this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
+            }
+          } else {
+            apiCall.push(obsOf(formObj));
+          }
+          this.isLoading.next(true);
+          return zip(apiCall);
+        }),
         withLatestFrom(
           this._isFormData,
           this._formSchemaId,
@@ -448,32 +496,18 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           this._udm.getActiveUserData(),
           this._formStatuses,
         ),
-        switchMap(([_, isFormData, formSchemaId, formMetricsSelector, userData, formStatuses]) => {
-          const formValue = this._rendererService.getFormValue();
-          let newItem: {[key: string]: any} = {};
-          if (isFormData) {
-            const defaultFormStatus: string | null =
-              formStatuses && formStatuses.length
-                ? formStatuses.reduce((prev, curr) =>
-                    prev.status_level < curr.status_level ? prev : curr,
-                  ).id
-                : null;
-            newItem['data'] = formValue;
-            newItem['form_schema_ref_id'] = formSchemaId;
-            newItem['user_data_ref_id'] = userData?.id;
-            newItem['form_status_ref_id'] = defaultFormStatus;
-            newItem['area_ref_id'] = null;
-            newItem['case_ref_id'] = null;
-            newItem['location_ref_id'] = null;
-            newItem['organization_ref_id'] = null;
-            newItem['project_ref_id'] = null;
-            if (formMetricsSelector != null) {
-              const selectedMetrics = formMetricsSelector.selectedMetrics;
-              const creationDate = formMetricsSelector.formDate.value.created_at;
-              for (let key of Object.keys(selectedMetrics)) {
-                const saveKey = `${key}_ref_id`;
-                if (selectedMetrics[key].id != null) {
-                  newItem[saveKey] = selectedMetrics[key].id;
+        switchMap(
+          ([res, isFormData, formSchemaId, formMetricsSelector, userData, formStatuses]) => {
+            this.isLoading.next(false);
+            if (res.length) {
+              const formObj = res[0];
+              let formValue = {...formObj.formValue};
+              if (res.length > 1) {
+                for (let i = 1; i < res.length; i++) {
+                  formValue = this.uploadService.replaceUploadedFile(
+                    formValue,
+                    res[i] as StorageUploadResponse,
+                  );
                 }
               }
               const dateFmt = 'yyyy-MM-dd';
@@ -504,12 +538,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           );
         }),
         catchError(err => {
+          this.isLoading.next(false);
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
         }),
       )
       .subscribe(_ => {
+        this.isLoading.next(false);
         this._location.back();
         this.snackbar.open('Document created', 'SAVE', {duration: 5000});
       });

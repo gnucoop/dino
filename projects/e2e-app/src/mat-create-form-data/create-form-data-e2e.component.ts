@@ -10,6 +10,7 @@ import {FormDataManager, FormData} from '@dino/core/forms';
 export class MatCreateFormDataE2E {
   readonly manager: FormDataManager;
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
+  readonly offlineFileUpload: boolean = additionalConfig.offlineFileUpload;
 
   constructor(private _formDataManager: FormDataManager) {
     this.manager = this._formDataManager;
