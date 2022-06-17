@@ -19,6 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
+import {AjfFile} from '@ajf/core/file-input';
 import {
   AjfForm,
   AjfFormActionEvent,
@@ -208,6 +209,12 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
    * Emitted when a user tries to save a form
    */
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
+
+  /**
+   * All the files to be deleted from the storage
+   */
+  private _deleteFilesSub: Subscription = Subscription.EMPTY;
+  private _deleteFiles: BehaviorSubject<AjfFile[]> = new BehaviorSubject<AjfFile[]>([]);
 
   /**
    * Subscribes to the populated form data object with dependencies
@@ -551,7 +558,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         withLatestFrom(this._nss.isOnline$),
         switchMap(([formObj, isOnline]) => {
           const apiCall: Observable<any>[] = [];
-          const filesToUpload = this.uploadService.getFilesToUpload(formObj.formValue);
+          const {filesToUpload, filesToDelete} = this.uploadService.getFilesInForm(
+            formObj.formValue,
+          );
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
               if (!this.offlineFileUpload) {
@@ -565,18 +574,25 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               apiCall.push(obsOf(formObj));
             } else {
               apiCall.push(obsOf(formObj));
-              filesToUpload.forEach(fileToUpload => {
-                const uploadedFileObs = this.uploadService.uploadFile(fileToUpload);
-                apiCall.push(uploadedFileObs);
-              });
+              const uploadedFilesObs = this.uploadService.uploadFiles(filesToUpload);
+              apiCall.push(...uploadedFilesObs);
               this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
             }
           } else {
+            apiCall.push(obsOf(formObj));
+          }
+          if (filesToDelete && filesToDelete.length && isOnline) {
+            this._deleteFiles.next(filesToDelete);
+          }
+          this.isLoading.next(true);
+          return zip(apiCall);
         }),
-<<<<<<< HEAD
+        withLatestFrom(this.isDetails),
+        switchMap(([res, isDetails]) => {
           this.isLoading.next(false);
-=======
           if (res.length) {
+            const formObj = res[0];
+            let formValue = {...formObj.formValue};
             if (res.length > 1) {
               for (let i = 1; i < res.length; i++) {
                 formValue = this.uploadService.replaceUploadedFile(
@@ -585,7 +601,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 );
               }
             }
+            let newItem = {...formObj.doc} as {[key: string]: any};
             newItem['data'].data != null
+              ? (newItem['data'].data = formValue)
+              : (newItem['data'] = formValue);
 
             if (formObj.fmSelector != null) {
               const selectedMetrics = formObj.fmSelector.selectedMetrics;
@@ -637,6 +656,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         this._location.back();
         this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
       });
+
+    this._deleteFilesSub = this._deleteFiles
+      .pipe(switchMap(files => zip(this.uploadService.deleteFiles(files))))
+      .subscribe();
 
     this.isAjfFormValid = this._rendererService.errors
       .pipe(
