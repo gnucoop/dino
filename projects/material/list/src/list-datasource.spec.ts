@@ -109,6 +109,7 @@ function dataServiceConfig(): DataServiceConfig {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
       storage: getRxStoragePouch('memory'),
+      ignoreDuplicate: true,
     },
     syncOptions: {
       url: 'host',
