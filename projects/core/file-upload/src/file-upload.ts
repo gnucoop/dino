@@ -60,7 +60,7 @@ export class FileUploadService {
    * @returns An observable with the response of the upload
    */
   uploadFile(fileToUpload: AjfFile): Observable<StorageUploadResponse | null> {
-    if (fileToUpload == null) {
+    if (fileToUpload == null || fileToUpload.content == null || fileToUpload.content.length === 0) {
       return obsOf(null);
     }
     const blob = this._convertBase64ToBlob(fileToUpload.content);
@@ -78,11 +78,7 @@ export class FileUploadService {
         return this._httpClient.post<StorageUploadResponse>(url, formData, {headers}).pipe(
           map(res => {
             if (res != null) {
-<<<<<<< HEAD
               const filePublicUrl = url + '/' + res.id;
-=======
-              const filePublicUrl = storageEndpoint + '/' + res.id;
->>>>>>> feat(core/file-upload): upload formdata files into nhost storage
               return {...res, filePublicUrl} as StorageUploadResponse;
             }
             return {isUploaded: false} as StorageUploadResponse;
@@ -96,9 +92,26 @@ export class FileUploadService {
   }
 
   /**
-<<<<<<< HEAD
+   * Upload a list of files into the nhost storage
+   * @param filesToUpload the AjfFile list to be uploaded in nhost storage
+   * @returns A list observable with the response of the uploads
+   */
+  uploadFiles(files: AjfFile[]): Observable<StorageUploadResponse | null>[] {
+    const apiCall: Observable<StorageUploadResponse | null>[] = [];
+    if (files) {
+      files.forEach(file => {
+        if (file) {
+          const uploadedFileObs = this.uploadFile(file);
+          apiCall.push(uploadedFileObs);
+        }
+      });
+    }
+    return apiCall;
+  }
+
+  /**
    * Delete a file from the nhost storage
-   * @param fileToUpload the AjfFile to be uploaded in nhost storage
+   * @param url the url to be deleted in nhost storage
    * @returns An observable with the response of the delete
    */
   deleteFile(url: string): Observable<any> {
@@ -112,7 +125,7 @@ export class FileUploadService {
             ? {Authorization: config.apiKey}
             : {Authorization: `Bearer ${this._authService.getAuthToken()}`};
 
-        return this._httpClient.post<any>(url, {headers}).pipe(
+        return this._httpClient.delete<any>(url, {headers}).pipe(
           catchError(err => {
             return obsOf({error: err});
           }),
@@ -122,47 +135,46 @@ export class FileUploadService {
   }
 
   /**
-=======
->>>>>>> feat(core/file-upload): upload formdata files into nhost storage
-   * Return a list of file to be uploaded
-   * @param formValue All the form value fields
-   * @returns a list of AjfFile
+   * Delete a list of files from the nhost storage
+   * @param files the list of AjfFile to be deleted in nhost storage
+   * @returns A list observable with the response of the delete
    */
-  getFilesToUpload(formValue: {[key: string]: any}): AjfFile[] {
+  deleteFiles(files: AjfFile[]): Observable<any>[] {
+    const apiCall: Observable<any>[] = [];
+    if (files) {
+      files.forEach(file => {
+        if (file && file.url) {
+          const deleteFileObs = this.deleteFile(file.url);
+          apiCall.push(deleteFileObs);
+        }
+      });
+    }
+    return apiCall;
+  }
+
+  /**
+   * Return the files in form, to be uploaded or deleted
+   * @param formValue All the form value fields
+   * @returns two lists of AjfFile, one to be uploaded, one to be deleted
+   */
+  getFilesInForm(formValue: {[key: string]: any}): {
+    filesToUpload: AjfFile[];
+    filesToDelete: AjfFile[];
+  } {
     const filesToUpload: AjfFile[] = [];
+    const filesToDelete: AjfFile[] = [];
     Object.keys(formValue).forEach(key => {
       if (this.isAjfFileField(formValue[key])) {
         filesToUpload.push(formValue[key] as AjfFile);
       }
-    });
-    if (filesToUpload.length) {
-      return filesToUpload;
-    }
-    return [];
-  }
-
-  /**
-<<<<<<< HEAD
-   * Return a list of file to be deleted
-   * @param formValue All the form value fields
-   * @returns a list of AjfFile
-   */
-  getFilesToDelete(formValue: {[key: string]: any}): AjfFile[] {
-    const files: AjfFile[] = [];
-    Object.keys(formValue).forEach(key => {
       if (this.isAjfFileFieldToDelete(formValue[key])) {
-        files.push(formValue[key] as AjfFile);
+        filesToDelete.push(formValue[key] as AjfFile);
       }
     });
-    if (files.length) {
-      return files;
-    }
-    return [];
+    return {filesToUpload, filesToDelete};
   }
 
   /**
-=======
->>>>>>> feat(core/file-upload): upload formdata files into nhost storage
    * Remove in the form values all the selected file
    * @param formValue All the form value fields
    * @returns The form value without all the file
@@ -210,17 +222,12 @@ export class FileUploadService {
   }
 
   /**
-<<<<<<< HEAD
    * Check if a value is an AjfFile field with a valid content
-=======
-   * Check if a value is an AjfFile field
->>>>>>> feat(core/file-upload): upload formdata files into nhost storage
    * @param value the value to be checked
    * @returns true if the input value is an AjfFile field
    */
   isAjfFileField(value: any): boolean {
-<<<<<<< HEAD
-    if (typeof value !== 'object') {
+    if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
     if ('name' in value && 'content' in value && value['content'] && value['content'].length) {
@@ -235,20 +242,10 @@ export class FileUploadService {
    * @returns true if the input value is an AjfFile field
    */
   isAjfFileFieldToDelete(value: any): boolean {
-    if (typeof value !== 'object') {
+    if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
-    if ('url' in value && value['url'] && value['url'].length && value['deleted']) {
-=======
-    if (
-      value &&
-      typeof value === 'object' &&
-      'name' in value &&
-      'content' in value &&
-      value['content'] &&
-      value['content'].length
-    ) {
->>>>>>> feat(core/file-upload): upload formdata files into nhost storage
+    if ('url' in value && value['url'] && value['url'].length && value['deleteUrl']) {
       return true;
     }
     return false;
