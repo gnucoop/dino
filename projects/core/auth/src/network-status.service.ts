@@ -32,10 +32,13 @@ export class NetworkStatusService {
   /**
    * The current Network connection status stream.
    */
-  readonly isOnline$: Observable<boolean>;
+  protected _isOnline$: Observable<boolean>;
+  get isOnline$(): Observable<boolean> {
+    return this._isOnline$;
+  }
 
   constructor() {
-    this.isOnline$ = merge(
+    this._isOnline$ = merge(
       fromEvent(window, 'offline').pipe(mapTo(false)),
       fromEvent(window, 'online').pipe(mapTo(true)),
     ).pipe(startWith(navigator.onLine));
