@@ -78,13 +78,38 @@ export class FileUploadService {
         return this._httpClient.post<StorageUploadResponse>(url, formData, {headers}).pipe(
           map(res => {
             if (res != null) {
-              const filePublicUrl = storageEndpoint + '/' + res.id;
+              const filePublicUrl = url + '/' + res.id;
               return {...res, filePublicUrl} as StorageUploadResponse;
             }
             return {isUploaded: false} as StorageUploadResponse;
           }),
           catchError(err => {
             return obsOf({isUploaded: false, error: err.error} as StorageUploadResponse);
+          }),
+        );
+      }),
+    );
+  }
+
+  /**
+   * Delete a file from the nhost storage
+   * @param fileToUpload the AjfFile to be uploaded in nhost storage
+   * @returns An observable with the response of the delete
+   */
+  deleteFile(url: string): Observable<any> {
+    if (url == null) {
+      return obsOf(null);
+    }
+    return this._authConfig.pipe(
+      switchMap(config => {
+        const headers =
+          config.apiKey != null
+            ? {Authorization: config.apiKey}
+            : {Authorization: `Bearer ${this._authService.getAuthToken()}`};
+
+        return this._httpClient.post<any>(url, {headers}).pipe(
+          catchError(err => {
+            return obsOf({error: err});
           }),
         );
       }),
@@ -105,6 +130,24 @@ export class FileUploadService {
     });
     if (filesToUpload.length) {
       return filesToUpload;
+    }
+    return [];
+  }
+
+  /**
+   * Return a list of file to be deleted
+   * @param formValue All the form value fields
+   * @returns a list of AjfFile
+   */
+  getFilesToDelete(formValue: {[key: string]: any}): AjfFile[] {
+    const files: AjfFile[] = [];
+    Object.keys(formValue).forEach(key => {
+      if (this.isAjfFileFieldToDelete(formValue[key])) {
+        files.push(formValue[key] as AjfFile);
+      }
+    });
+    if (files.length) {
+      return files;
     }
     return [];
   }
@@ -157,19 +200,30 @@ export class FileUploadService {
   }
 
   /**
-   * Check if a value is an AjfFile field
+   * Check if a value is an AjfFile field with a valid content
    * @param value the value to be checked
    * @returns true if the input value is an AjfFile field
    */
   isAjfFileField(value: any): boolean {
-    if (
-      value &&
-      typeof value === 'object' &&
-      'name' in value &&
-      'content' in value &&
-      value['content'] &&
-      value['content'].length
-    ) {
+    if (typeof value !== 'object') {
+      return false;
+    }
+    if ('name' in value && 'content' in value && value['content'] && value['content'].length) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check if a value is an AjfFile field with a valid url
+   * @param value the value to be checked
+   * @returns true if the input value is an AjfFile field
+   */
+  isAjfFileFieldToDelete(value: any): boolean {
+    if (typeof value !== 'object') {
+      return false;
+    }
+    if ('url' in value && value['url'] && value['url'].length && value['deleted']) {
       return true;
     }
     return false;
