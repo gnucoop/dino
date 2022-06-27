@@ -105,15 +105,6 @@ export abstract class LoginComponent {
     this._postLogin = fn;
   }
 
-  /**
-   * An optional method to be executed after a successful signup
-   */
-  private _postSignupVerification?: Function;
-  @Input()
-  set postSignupVerification(fn: Function) {
-    this._postSignupVerification = fn;
-  }
-
   constructor(
     private _authService: AuthService,
     private _router: Router,
@@ -209,11 +200,7 @@ export abstract class LoginComponent {
           if (!signupRes) {
             return obsOf(null);
           }
-          if (
-            signupRes.error ||
-            !signupRes.session ||
-            (!signupRes.error && this._postSignupVerification != undefined)
-          ) {
+          if (signupRes.error || !signupRes.session) {
             return obsOf(signupRes);
           } else {
             this._authService.setNewUser(signupRes.session.user);
@@ -231,12 +218,8 @@ export abstract class LoginComponent {
         next: res => {
           if (res && !res.error) {
             this._setSignupError({error: false, message: null});
-            if (this._postSignupVerification != undefined) {
-              this._postSignupVerification(this._snackBar, formValue.email);
-              this.toggleSignupForm(false);
-            } else {
-              this._router.navigateByUrl('/', {replaceUrl: true});
-            }
+            this.toggleSignupForm(false);
+            this._router.navigateByUrl('/', {replaceUrl: true});
           } else if (res && res.error) {
             this._setSignupError({error: true, message: res.message ?? null});
           }
