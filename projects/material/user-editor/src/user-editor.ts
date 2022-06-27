@@ -27,6 +27,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -35,8 +36,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
-import {switchMap, take} from 'rxjs/operators';
+import {switchMap, take, tap} from 'rxjs/operators';
 import {showValidationErrors, PasswordMatch} from '@dino/core/auth';
+import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
 
 /**
  * Represents the data to be passed to a UserEditor dialog.
@@ -92,6 +94,12 @@ export interface UserFormField {
 })
 export class UserEditor implements OnDestroy, OnInit {
   /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<UserData>> = new EventEmitter<
+    ActionTrigger<UserData>
+  >();
+  /**
    * The form group for the User Editor form.
    */
   userForm?: FormGroup;
@@ -142,16 +150,47 @@ export class UserEditor implements OnDestroy, OnInit {
             if (this.data.userItem == null || this.data.userItem.id == null) {
               return obsOf(null);
             }
-            return this._userDataManager.update({...item, id: this.data.userItem.id});
+            return this._userDataManager.update({...item, id: this.data.userItem.id}).pipe(
+              tap(ud => {
+                if (ud) {
+                  const trigData: ActionTriggerData<UserData> = {
+                    previousValue: this.data.userItem,
+                    newValue: ud,
+                  };
+                  const trigger: ActionTrigger<UserData> = {
+                    name: 'User Data Updated',
+                    triggerType: 'on_user_data_change',
+                    triggerData: trigData,
+                  };
+                  this.emitActionTrigger.emit(trigger);
+                }
+              }),
+            );
           } else {
             if (!this._config.nHostAuth) {
-              return this._userDataManager.create({
-                full_name: item.full_name,
-                email: item.email,
-                user_group_ids: item.user_group_ids,
-                user_auth_ref_id: null,
-                created_at: new Date().toISOString(),
-              });
+              return this._userDataManager
+                .create({
+                  full_name: item.full_name,
+                  email: item.email,
+                  user_group_ids: item.user_group_ids,
+                  user_auth_ref_id: null,
+                  created_at: new Date().toISOString(),
+                })
+                .pipe(
+                  tap(ud => {
+                    if (ud) {
+                      const trigData: ActionTriggerData<UserData> = {
+                        doc: ud,
+                      };
+                      const trigger: ActionTrigger<UserData> = {
+                        name: 'User Data Created',
+                        triggerType: 'on_user_data_creation',
+                        triggerData: trigData,
+                      };
+                      this.emitActionTrigger.emit(trigger);
+                    }
+                  }),
+                );
             }
             const nHostItem = item as UserData & {password: string};
             return this._authService
@@ -169,13 +208,29 @@ export class UserEditor implements OnDestroy, OnInit {
                   ) {
                     return obsOf(null);
                   }
-                  return this._userDataManager.create({
-                    full_name: item.full_name,
-                    email: item.email,
-                    user_group_ids: item.user_group_ids,
-                    user_auth_ref_id: nhostRes.session.user.id,
-                    created_at: new Date().toISOString(),
-                  });
+                  return this._userDataManager
+                    .create({
+                      full_name: item.full_name,
+                      email: item.email,
+                      user_group_ids: item.user_group_ids,
+                      user_auth_ref_id: nhostRes.session.user.id,
+                      created_at: new Date().toISOString(),
+                    })
+                    .pipe(
+                      tap(ud => {
+                        if (ud) {
+                          const trigData: ActionTriggerData<UserData> = {
+                            doc: ud,
+                          };
+                          const trigger: ActionTrigger<UserData> = {
+                            name: 'User Data Created',
+                            triggerType: 'on_user_data_creation',
+                            triggerData: trigData,
+                          };
+                          this.emitActionTrigger.emit(trigger);
+                        }
+                      }),
+                    );
                 }),
               );
           }
