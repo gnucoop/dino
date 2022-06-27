@@ -37,6 +37,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -44,7 +45,15 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {DataModelManager, DataQueryOptions, Metric, MetricsService, Model} from '@dino/core/data';
+import {
+  ActionTrigger,
+  ActionTriggerData,
+  DataModelManager,
+  DataQueryOptions,
+  Metric,
+  MetricsService,
+  Model,
+} from '@dino/core/data';
 import {FormData, FormSchema, FormSchemaDeps, FormSchemaManager} from '@dino/core/forms';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {RxDocument} from 'rxdb';
@@ -83,6 +92,13 @@ import {
   encapsulation: ViewEncapsulation.None,
 })
 export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
+  /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
+    ActionTrigger<T>
+  >();
+
   /**
    * True if no validation errors are encountered in the AjfForm
    */
@@ -538,7 +554,23 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           const dmm = this._dataModelManager as DataModelManager<T>;
           const dm: DataModelManager<T> =
             isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
-          return dm.update(newItem as T);
+          return dm.update(newItem as T).pipe(
+            tap(fd => {
+              if (fd && fd.collection.name === 'form_data') {
+                const trigData: ActionTriggerData<T> = {
+                  doc: fd,
+                  previousValue: formObj.doc,
+                  newValue: fd,
+                };
+                const trigger: ActionTrigger<T> = {
+                  name: 'Form Data Changed',
+                  triggerType: 'on_form_data_change',
+                  triggerData: trigData,
+                };
+                this.emitActionTrigger.emit(trigger);
+              }
+            }),
+          );
         }),
         catchError(err => {
           this._location.back();

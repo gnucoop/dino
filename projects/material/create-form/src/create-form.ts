@@ -36,13 +36,14 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {DataModelManager, DataQueryOptions, Metric, MetricsService, Model} from '@dino/core/data';
+import {} from '@dino/core/data';
 import {
   FormData,
   FormSchema,
@@ -71,8 +72,18 @@ import {
   map,
   shareReplay,
   switchMap,
+  tap,
   withLatestFrom,
 } from 'rxjs/operators';
+import {
+  ActionTrigger,
+  ActionTriggerData,
+  DataQueryOptions,
+  DataModelManager,
+  MetricsService,
+  Metric,
+  Model,
+} from '@dino/core/data';
 
 /**
  * The Form Edit component.
@@ -87,6 +98,12 @@ import {
   encapsulation: ViewEncapsulation.None,
 })
 export class CreateForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
+  /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
+    ActionTrigger<T>
+  >();
   /**
    * True if no validation errors are encountered in the AjfForm
    */
@@ -474,7 +491,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           if (this._dataModelManager == null) {
             return throwError(() => new Error('No data model manager'));
           }
-          return this._dataModelManager.create(newItem as T);
+          return this._dataModelManager.create(newItem as T).pipe(
+            tap(fd => {
+              if (fd && fd.collection.name === 'form_data') {
+                const trigData: ActionTriggerData<T> = {doc: fd};
+                const trigger: ActionTrigger<T> = {
+                  name: 'Form Data Created',
+                  triggerType: 'on_form_data_creation',
+                  triggerData: trigData,
+                };
+                this.emitActionTrigger.emit(trigger);
+              }
+            }),
+          );
         }),
         catchError(err => {
           this._location.back();
