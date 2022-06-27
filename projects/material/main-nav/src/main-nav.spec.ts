@@ -10,6 +10,7 @@ import {UsersModule} from '@dino/core/users';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 
 import {MainNav, MainNavModule} from './public_api';
+import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 
 let testDbIdx = 0;
 
@@ -39,6 +40,10 @@ const authServiceConfig: AuthServiceConfig = {
   retryRefreshTime: 5000,
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
+};
+
+export const defaultLanguageConfig: TranslationsConfig = {
+  defaultLanguage: 'ENG',
 };
 
 const authServiceMock = {
@@ -73,6 +78,7 @@ describe('Main', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
+        {provide: TRANSLATIONS_CONFIG, useValue: defaultLanguageConfig},
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);

@@ -6,14 +6,10 @@ import {MatSort} from '@angular/material/sort';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {FilterGroup, FiltersService, SearchFiltersComponent} from '@dino/core/list';
+import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
-import {
-  AdminUserInteractionsService,
-  ListDataSource,
-  ListModule,
-  SelectionList,
-} from './public_api';
+import {ListDataSource, ListModule, SelectionList} from './public_api';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',

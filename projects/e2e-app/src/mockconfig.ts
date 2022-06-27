@@ -51,7 +51,7 @@ dialogConfig.maxWidth = '95vw';
  * Default language config
  */
 export const defaultLanguageConfig: TranslationsConfig = {
-  defaultLanguage: 'ITA',
+  defaultLanguage: 'ENG',
 };
 
 /**
