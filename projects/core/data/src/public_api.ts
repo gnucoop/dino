@@ -20,6 +20,7 @@
  *
  */
 
+export * from './action-trigger';
 export * from './active-sync-interface';
 export * from './check-metric-permission';
 export * from './clone';

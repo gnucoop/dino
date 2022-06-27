@@ -93,7 +93,7 @@ export class PermissionContextService {
     }
     const permissions = context['user_permissions'];
     if (permissions == null) {
-      return false;
+      return true;
     }
     for (let group in permissions) {
       let allowedDocs: string[] = permissions[group][collectionName];
@@ -193,10 +193,8 @@ export class PermissionContextService {
       if (
         docMetric != null &&
         !Array.isArray(docMetric) &&
-        !Object.keys(contextMetrics).find(
-          metType =>
-            contextMetrics[metType].includes(docMetric) || contextMetrics[metType].includes('all'),
-        )
+        !contextMetrics[mt.metricName].includes(docMetric) &&
+        !contextMetrics[mt.metricName].includes('all')
       ) {
         ret = false;
         break;
