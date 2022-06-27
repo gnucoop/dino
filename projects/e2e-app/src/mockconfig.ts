@@ -2,6 +2,7 @@ import {MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dino/core/auth';
 import {ConfigServiceConfig} from '@dino/core/config';
+import {TranslationsConfig} from '@dino/core/translations';
 
 /**
  * Local Backend
@@ -45,6 +46,13 @@ export const paginatorConfig: MatPaginatorDefaultOptions = {
 export const dialogConfig: MatDialogConfig = new MatDialogConfig();
 dialogConfig.minWidth = '95vw';
 dialogConfig.maxWidth = '95vw';
+
+/**
+ * Default language config
+ */
+export const defaultLanguageConfig: TranslationsConfig = {
+  defaultLanguage: 'ITA',
+};
 
 /**
  * Any additional configurable parameters

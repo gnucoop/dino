@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnInit, Optional, ViewChild} from '@angular/core';
 import {MatSelect} from '@angular/material/select';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
+import {UserData, UserDataManager} from '@dino/core/users';
 import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -18,7 +18,17 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
   configurationSets: Observable<ConfigSet[] | null> = obsOf(null);
   @ViewChild('platformselect') platformSelect: MatSelect | undefined;
 
-  constructor(private _router: Router, @Optional() private _configService: ConfigService | null) {}
+  constructor(
+    private _router: Router,
+    private _userDataManager: UserDataManager,
+    @Optional() private _configService: ConfigService | null,
+  ) {
+    this._userDataManager.emitActionTrigger.subscribe(trigger => {
+      if (trigger.triggerData && trigger.triggerData.doc) {
+        this.postSignup(trigger.triggerData.doc);
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (this._configService != null && this.dynamicConfig) {
@@ -94,16 +104,8 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
     this._router.navigate(['dashboard']);
   }
 
-  postSignup(snackBar?: MatSnackBar, emailAddress?: string) {
-    if (snackBar && emailAddress) {
-      snackBar.open(
-        `An Email has been sent to ${emailAddress}. Please verify your Email to access Dino`,
-        'EMAIL VERIFICATION SENT',
-        {
-          duration: 10000,
-        },
-      );
-    }
+  postSignup(userData: UserData | null) {
+    console.log(userData);
   }
 
   changeTheme(changeEvt: MatSlideToggleChange) {

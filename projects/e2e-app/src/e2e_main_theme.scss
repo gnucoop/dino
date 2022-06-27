@@ -4,10 +4,10 @@
 @use '../../material/core/src/dino-theme';
 
 // Define a theme.
-$primary: material.define-palette(material.$light-blue-palette, 900, 700);
-$accent: material.define-palette(material.$blue-grey-palette, 700);
-$warn: material.define-palette(material.$red-palette, 900);
-$alt_accent: material.define-palette(material.$light-blue-palette, 900);
+$primary: material.define-palette(material.$red-palette, 500);
+$alt_accent: material.define-palette(material.$blue-grey-palette, 500, 700);
+$warn: material.define-palette(material.$deep-purple-palette, A200);
+$accent: material.define-palette(material.$red-palette, 500);
 
 $theme: core.light-theme(
     (

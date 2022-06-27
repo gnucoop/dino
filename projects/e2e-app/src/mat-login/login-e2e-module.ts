@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {UsersModule as DinoUsersModule} from '@dino/core/users';
 import {LoginModule} from '@dino/material/login';
 
 import {MatLoginE2E} from './login-e2e';
@@ -19,6 +20,7 @@ import {MatLoginE2E} from './login-e2e';
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
+    DinoUsersModule,
   ],
 })
 export class MaterialLoginE2eModule {}

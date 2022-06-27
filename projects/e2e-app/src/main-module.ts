@@ -74,6 +74,7 @@ import {
   additionalConfig,
   authConfig,
   configurationConfig,
+  defaultLanguageConfig,
   optionalModulesConfig,
   paginatorConfig,
 } from './mockconfig';
@@ -182,7 +183,7 @@ export function provideDataServiceConfig() {
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
     BrowserModule,
-    DinoTranslationsModule.forRoot(),
+    DinoTranslationsModule.forRoot(defaultLanguageConfig),
     E2eAppModule,
     EditReportSchemaModule,
     HttpClientModule,

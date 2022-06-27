@@ -1,3 +1,6 @@
-<dino-create-form [dataModelManager]="manager" [hasOptionalMetrics]="optionalMetrics"
+<dino-create-form
+  [dataModelManager]="manager"
+  [hasOptionalMetrics]="optionalMetrics"
+  (emitActionTrigger)="logTrigger($event)"
   ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
 ></dino-create-form>

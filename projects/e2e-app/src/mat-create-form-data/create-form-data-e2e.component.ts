@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
-import {FormDataManager} from '@dino/core/forms';
 import {additionalConfig} from '../mockconfig';
+import {ActionTrigger} from '@dino/core/data';
+import {FormDataManager, FormData} from '@dino/core/forms';
 
 @Component({
   selector: 'app-create-form-data',
@@ -12,5 +13,9 @@ export class MatCreateFormDataE2E {
 
   constructor(private _formDataManager: FormDataManager) {
     this.manager = this._formDataManager;
+  }
+
+  logTrigger(evt: ActionTrigger<FormData>): void {
+    console.log(evt);
   }
 }

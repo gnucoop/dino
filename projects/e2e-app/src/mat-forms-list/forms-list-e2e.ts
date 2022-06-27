@@ -1,11 +1,10 @@
 import {AjfForm, createFormPdf} from '@ajf/core/forms';
 import {Component, ViewChild} from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
-import {FormStatusEditor, FormStatusEditorData} from '@dino/material/form-status-editor';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
@@ -80,7 +79,7 @@ export class MatFormsListE2E {
             displayed: true,
             isEditable: _ => true,
             editMethod: elem => {
-              this.openStatusEditor(elem as FormData & {form_schema: Observable<FormSchema>});
+              this.list.openStatusEditor(elem as FormData & {form_schema: Observable<FormSchema>});
             },
           });
         }
@@ -183,16 +182,6 @@ export class MatFormsListE2E {
         take(1),
       )
       .subscribe();
-  }
-
-  openStatusEditor(element: FormData & {form_schema: Observable<FormSchema>}): void {
-    if (!element.form_status_ref_id) {
-      return;
-    }
-    const dialogConfig = new MatDialogConfig();
-    const dialogData: FormStatusEditorData = {formData: element};
-    dialogConfig.data = dialogData;
-    this._dialog.open(FormStatusEditor, dialogConfig);
   }
 
   printPdf(formData: FormData): void {
