@@ -9,6 +9,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {TranslocoModule} from '@ngneat/transloco';
 import {FormStatusEditor} from './form-status-editor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {UserInteractionsModule} from '@dino/material/user-interactions';
 
 @NgModule({
   declarations: [FormStatusEditor],
@@ -23,6 +24,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatSnackBarModule,
     ReactiveFormsModule,
     TranslocoModule,
+    UserInteractionsModule,
   ],
 })
 export class FormStatusEditorModule {}

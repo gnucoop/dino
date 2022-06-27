@@ -15,7 +15,7 @@ import {
   FormStatus,
   FormStatusManager,
 } from '@dino/core/forms';
-import {AdminUserInteractionsService} from '@dino/material/list';
+import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {
   catchError,
   combineLatest,
@@ -26,7 +26,8 @@ import {
   switchMap,
 } from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {PermissionContextService} from '@dino/core/data';
+import {ActionTriggerData, PermissionContextService} from '@dino/core/data';
+import {isRxDocument, RxDocument} from 'rxdb';
 
 /**
  * Represents data to be passed to the Form Status editor
@@ -123,6 +124,7 @@ export class FormStatusEditor implements OnDestroy, OnInit {
           if (res === 'close') {
             return;
           }
+          let statusChange: ActionTriggerData<FormData> | null = null;
           if (res == null) {
             this._snackbar.open(
               `Oops! Something went wrong while changing the Status.`,
@@ -133,8 +135,16 @@ export class FormStatusEditor implements OnDestroy, OnInit {
             );
           } else {
             this._snackbar.open(`Status changed successfully`, 'STATUS CHANGED', {duration: 10000});
+            if (isRxDocument(res) && typeof res != 'string') {
+              const resObj = res as {[key: string]: any} & {form_status_ref_id: string};
+              statusChange = {
+                previousValue: this.currentStatusId,
+                newValue: resObj.form_status_ref_id,
+                doc: res as RxDocument<FormData>,
+              };
+            }
           }
-          this.closeDialog();
+          this.closeDialog(statusChange);
         },
         error: err => {
           this._snackbar.open(
@@ -144,7 +154,7 @@ export class FormStatusEditor implements OnDestroy, OnInit {
               duration: 5000,
             },
           );
-          this.closeDialog();
+          this.closeDialog(null);
         },
       });
   }
@@ -152,8 +162,8 @@ export class FormStatusEditor implements OnDestroy, OnInit {
   /**
    * Closes the dialog
    */
-  closeDialog() {
-    this.dialogRef.close(false);
+  closeDialog(statusChange?: ActionTriggerData<FormData> | null) {
+    this.dialogRef.close(statusChange ?? null);
   }
 
   /**
