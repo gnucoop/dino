@@ -26,7 +26,9 @@ import {ListAction} from './list-actions-interface';
 /**
  * The base AdminUserInteractionsService extended by Material services.
  * Provides the core for a dialog/confirmation popup for confirming actions on list items
+ * @param action The list action requiring confirmation
+ * @param customContent The dialog custom text
  */
 export abstract class AdminUserInteractionsService {
-  abstract askConfirm(action: ListAction): Observable<boolean>;
+  abstract askConfirm(action: ListAction, customContent?: string): Observable<boolean>;
 }
