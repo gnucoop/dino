@@ -1,0 +1,26 @@
+<h4 mat-dialog-title>{{'Confirm'|transloco}} {{data.action.actionType|transloco}}</h4>
+<mat-dialog-content>
+  <ng-container *ngIf="!data.customContent; else customContent">
+    {{'Do you want to'|transloco}} {{data.action.actionType|transloco}} {{'the selected items'|transloco}} ?
+  </ng-container>
+  <ng-template #customContent> {{data.customContent}} </ng-template>
+</mat-dialog-content>
+<br />
+<mat-dialog-actions align="center">
+  <button
+    class="dino-confirm-button"
+    mat-raised-button
+    color="primary"
+    (click)="confirmationResponse(true)"
+  >
+    {{'Yes'|transloco}}
+  </button>
+  <button
+    class="dino-cancel-button"
+    mat-raised-button
+    color="basic"
+    (click)="confirmationResponse(false)"
+  >
+    {{'No'|transloco}}
+  </button>
+</mat-dialog-actions>
