@@ -119,6 +119,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
   isAdmin: Observable<boolean>;
 
   /**
+   * Sets the roles that can grant permission to access the Admin sections
+   */
+  @Input()
+  set setAdminRoles(roles: string[]) {
+    if (roles != null) {
+      this._adminRoles.next(roles);
+    }
+  }
+
+  /**
    * The Active user full name, displayed in the top nav bar.
    */
   userDisplayName: Observable<string | null>;
@@ -141,6 +151,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   readonly sections$: BehaviorSubject<Section[]> = new BehaviorSubject<Section[]>([]);
 
+  /**
+   * The roles granting Admin permissions. 'admin' is the default.
+   */
+  private _adminRoles: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(['admin']);
   /**
    * Event emitted when the sidenav menu is toggled
    */
@@ -253,7 +267,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
       }),
     );
 
-    this.isAdmin = this.userGroupManager.isActiveUserAdmin();
+    this.isAdmin = this._adminRoles.pipe(
+      switchMap(roles => this.userGroupManager.isActiveUserAdmin(roles)),
+    );
 
     this.showNav = this._router.events.pipe(
       filter(evt => evt instanceof NavigationEnd),
