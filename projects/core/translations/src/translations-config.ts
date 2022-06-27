@@ -20,6 +20,18 @@
  *
  */
 
-export * from './translations-module';
-export * from './translations';
-export * from './translations-config';
+import {InjectionToken} from '@angular/core';
+
+/**
+ * Translations configuration
+ */
+export interface TranslationsConfig {
+  /**
+   * The default language
+   */
+  defaultLanguage: string;
+}
+
+export const TRANSLATIONS_CONFIG = new InjectionToken<TranslationsConfig>(
+  'dino-translations-config',
+);

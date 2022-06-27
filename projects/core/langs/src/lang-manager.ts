@@ -20,9 +20,9 @@
  *
  */
 
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
-import {dinoTranslations} from '@dino/core/translations';
+import {dinoTranslations, TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {TranslocoService} from '@ngneat/transloco';
 import {
   BehaviorSubject,
@@ -56,7 +56,9 @@ export class LangManager extends DataModelManager<Lang> {
   readonly langRows$: Observable<LangRow[]>;
   readonly allLangsNames$ = new BehaviorSubject<string[]>([]);
 
-  readonly currentLangName$ = new BehaviorSubject<string>('ENG');
+  readonly currentLangName$: BehaviorSubject<string> = new BehaviorSubject<string>(
+    this._config.defaultLanguage,
+  );
   set currentLangName(langName: string) {
     this.currentLangName$.next(langName);
   }
@@ -171,6 +173,7 @@ export class LangManager extends DataModelManager<Lang> {
     dataService: DataService,
     permissionContextService: PermissionContextService,
     private _ts: TranslocoService,
+    @Inject(TRANSLATIONS_CONFIG) private _config: TranslationsConfig,
   ) {
     super(collectionDef, dataService, permissionContextService);
 
@@ -218,7 +221,7 @@ export class LangManager extends DataModelManager<Lang> {
       )
       .subscribe(langs => {
         this.langsStored$.next(langs);
-        const langName: string = localStorage.getItem('lang') || 'ENG';
+        const langName: string = localStorage.getItem('lang') ?? this._config.defaultLanguage;
         this._ts.setActiveLang(langName);
         this.currentLangName$.next(langName);
       });

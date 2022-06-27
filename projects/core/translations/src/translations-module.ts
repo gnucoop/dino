@@ -28,6 +28,7 @@ import itLocale from '@angular/common/locales/it';
 import prLocale from '@angular/common/locales/pt';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {dinoTranslations} from './translations';
+import {TranslationsConfig, TRANSLATIONS_CONFIG} from './translations-config';
 
 const locales = [enLocale, esLocale, frLocale, itLocale, prLocale];
 locales.forEach(locale => registerLocaleData(locale));
@@ -42,7 +43,10 @@ export class DinoTranslationsModule {
       }
     });
   }
-  static forRoot(): ModuleWithProviders<DinoTranslationsModule> {
-    return {ngModule: DinoTranslationsModule};
+  static forRoot(config?: TranslationsConfig): ModuleWithProviders<DinoTranslationsModule> {
+    return {
+      ngModule: DinoTranslationsModule,
+      providers: [{provide: TRANSLATIONS_CONFIG, useValue: config}],
+    };
   }
 }
