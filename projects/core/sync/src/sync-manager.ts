@@ -21,7 +21,12 @@
  */
 
 import {Injectable, Optional} from '@angular/core';
-import {FormSchemaDepsManager, FormSchemaManager, FormStatusManager} from '@dino/core/forms';
+import {
+  FormDataManager,
+  FormSchemaDepsManager,
+  FormSchemaManager,
+  FormStatusManager,
+} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {AreaManager} from '@dino/core/areas';
@@ -34,12 +39,17 @@ import {combineLatest, Observable} from 'rxjs';
 import {shareReplay, skipWhile, switchMap, take} from 'rxjs/operators';
 import {AuthService} from '@dino/core/auth';
 import {LangManager} from '@dino/core/langs';
+import {DataModelManager} from '@dino/core/data';
 
 /**
  * Service that manages the Initialization of rxCollections
  */
 @Injectable({providedIn: SyncModule})
 export class SyncManager {
+  /**
+   * All the data managers
+   */
+  readonly managers: {[key: string]: DataModelManager<any> | null};
   /**
    * Array of manager initalizations
    */
@@ -48,6 +58,7 @@ export class SyncManager {
   constructor(
     private _auth: AuthService,
     private _fst: FormStatusManager,
+    private _fd: FormDataManager,
     private _fs: FormSchemaManager,
     private _fsdeps: FormSchemaDepsManager,
     private _rs: ReportSchemaManager,
@@ -61,6 +72,22 @@ export class SyncManager {
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
   ) {
+    this.managers = {
+      'form_status': this._fst,
+      'form_schema': this._fs,
+      'form_data': this._fd,
+      'report_schema': this._rs,
+      'user_data': this._um,
+      'user_role': this._ur,
+      'user_group': this._ug,
+      'lang': this._lm,
+      'area': this._ar,
+      'case': this._cs,
+      'project': this._pj,
+      'location': this._lc,
+      'organization': this._og,
+    };
+
     this._managersInit = [
       this._fst.init(),
       this._fsdeps.init(),
