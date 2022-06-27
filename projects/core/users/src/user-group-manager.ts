@@ -168,12 +168,13 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
 
   /**
    * Checks if the active user is an Admin
+   * @param roles The roles granting admin permissions
    * @returns true if the active user is an Admin
    */
-  isActiveUserAdmin(): Observable<boolean> {
+  isActiveUserAdmin(roles: string[] = ['admin']): Observable<boolean> {
     return this.getActiveUserPermissions().pipe(
       map(prvs => {
-        return Object.keys(prvs).some(key => key.toLowerCase() === 'admin');
+        return Object.keys(prvs).some(key => roles.includes(key));
       }),
       take(1),
     );

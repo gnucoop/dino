@@ -31,9 +31,7 @@ import {UserGroup} from './user-group';
  */
 export class UserSelfExclude implements Permission<UserData> {
   constructor(private _authService: AuthService) {}
-  canModify(data: CanModifyData<UserData>): boolean {
-    return this._checkSelf(data);
-  }
+
   canDelete(data: CanDeleteData<UserData>): boolean {
     return this._checkSelf(data);
   }

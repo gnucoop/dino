@@ -20,9 +20,15 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  ActionTrigger,
+  ActionTriggerData,
+  DataModelManager,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
 import {delay, map, retryWhen, shareReplay, skipWhile, switchMap, take, tap} from 'rxjs/operators';
 
@@ -32,10 +38,17 @@ import {UsersModule} from './users.module';
 import {UserSelfExclude} from './user-admin-check-permissions';
 
 /**
- * Service that manages User Roles
+ * Service that manages User Data
  */
 @Injectable({providedIn: UsersModule})
 export class UserDataManager extends DataModelManager<UserData> {
+  /**
+   * Event emitted as an Action hook
+   */
+  readonly emitActionTrigger: EventEmitter<ActionTrigger<UserData>> = new EventEmitter<
+    ActionTrigger<UserData>
+  >();
+
   constructor(
     private _authService: AuthService,
     dataService: DataService,
@@ -66,7 +79,19 @@ export class UserDataManager extends DataModelManager<UserData> {
             user_group_ids: [],
             user_auth_ref_id: newUser.id,
             created_at: new Date().toISOString(),
-          });
+          }).pipe(
+            tap(ud => {
+              if (ud) {
+                const trigData: ActionTriggerData<UserData> = {doc: ud};
+                const trigger: ActionTrigger<UserData> = {
+                  name: 'User Signup',
+                  triggerType: 'on_signup',
+                  triggerData: trigData,
+                };
+                this.emitActionTrigger.emit(trigger);
+              }
+            }),
+          );
         } else {
           const userId = this._authService.getUserInfo()?.id;
           if (userId == null) {
