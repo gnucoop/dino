@@ -46,7 +46,7 @@
           </ng-container>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <mat-checkbox
+          <mat-checkbox *ngIf="bulkActions"
             class="dino-row-actions"
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"

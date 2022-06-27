@@ -20,7 +20,8 @@
  *
  */
 import {TranslocoService} from '@ajf/core/transloco';
-import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, ViewEncapsulation} from '@angular/core';
+import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {Observable, of} from 'rxjs';
 
 @Component({
@@ -34,10 +35,13 @@ export class LangSelector {
   currentLang: string;
   readonly langsShowed$: Observable<string[]>;
 
-  constructor(private _ts: TranslocoService) {
+  constructor(
+    private _ts: TranslocoService,
+    @Inject(TRANSLATIONS_CONFIG) private _config: TranslationsConfig,
+  ) {
     this.langsShowed$ = of(['ITA', 'ENG', 'FRA', 'PRT', 'ESP']);
-    this.currentLang = localStorage.getItem('lang') || 'ENG';
-    this._ts.setDefaultLang('ENG');
+    this.currentLang = localStorage.getItem('lang') || this._config.defaultLanguage;
+    this._ts.setDefaultLang(this._config.defaultLanguage);
     this._ts.setActiveLang(this.currentLang);
   }
 

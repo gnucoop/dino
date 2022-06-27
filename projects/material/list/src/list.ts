@@ -49,8 +49,8 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Model} from '@dino/core/data';
-import {FormSchema} from '@dino/core/forms';
+import {ActionTrigger, Model} from '@dino/core/data';
+import {FormSchema, FormData} from '@dino/core/forms';
 import {
   ActionType,
   FilterGroup,
@@ -62,6 +62,7 @@ import {
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportForm} from '@dino/material/export-form';
+import {FormStatusEditor, FormStatusEditorData} from '@dino/material/form-status-editor';
 import {ImportForm} from '@dino/material/import-form';
 import {BehaviorSubject, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
@@ -71,7 +72,8 @@ import {ListCell} from './list-cell';
 import {ListContext} from './list-context';
 import {ListDataSource} from './list-datasource';
 import {PaginatorIntl} from './paginator-intl';
-import {AdminUserInteractionsService} from './user-interactions.service';
+import {AdminUserInteractionsService} from '@dino/material/user-interactions';
+import {RxDocument} from 'rxdb';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -98,6 +100,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   extends List<T, U>
   implements AfterContentInit, OnInit, OnDestroy
 {
+  /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
+    ActionTrigger<T>
+  >();
+
   /**
    * The List selection model. Allows selection of individual or multiple elements
    * of the List, for the purpose of performing bulk actions.
@@ -239,7 +248,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * Determines if the columns selector should be.
+   * Determines if the columns selector should be displayed.
    * Defaults to true.
    */
   private _showColumnsSelector: boolean = true;
@@ -348,7 +357,12 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   /**
    * A reference to the MatDialog that contains the Import component
    */
-  private _dialogRef?: MatDialogRef<ImportForm>;
+  private _importDialogRef?: MatDialogRef<ImportForm>;
+
+  /**
+   * A reference to the MatDialog that contains the Form Status Editor component
+   */
+  private _statusDialogRef?: MatDialogRef<FormStatusEditor>;
 
   /**
    * Subscribes to the value returned by the MatDialog on its closing event
@@ -570,6 +584,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (this._onClickRowActions.some(act => act === 'view')) {
       this.actionOnItems(row, {actionType: 'view'});
     }
+    this.emitActionTrigger.emit({
+      name: 'List Row Click',
+      triggerType: 'on_list_item_selection',
+      triggerData: {doc: row as RxDocument<T>},
+    });
   }
 
   /**
@@ -618,6 +637,28 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         if (this.mainListContext != null) {
           this.mainListContext.headers.next(this.headers);
           this.mainListContext.displayedColumns?.next(this.displayedColumns);
+        }
+      });
+  }
+
+  openStatusEditor(element: FormData & {form_schema: Observable<FormSchema>}): void {
+    if (!element.form_status_ref_id) {
+      return;
+    }
+    const dialogConfig = new MatDialogConfig();
+    const dialogData: FormStatusEditorData = {formData: element};
+    dialogConfig.data = dialogData;
+    this._statusDialogRef = this._dialog.open(FormStatusEditor, dialogConfig);
+    this._statusDialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(statusChange => {
+        if (statusChange != null) {
+          this.emitActionTrigger.emit({
+            name: 'Status Change',
+            triggerType: 'on_status_change',
+            triggerData: statusChange,
+          });
         }
       });
   }
@@ -859,8 +900,8 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       dialogConfig.data = {
         formSchema: schemaId,
       };
-      this._dialogRef = this._dialog.open(ImportForm, dialogConfig);
-      this._dialogSub = this._dialogRef
+      this._importDialogRef = this._dialog.open(ImportForm, dialogConfig);
+      this._dialogSub = this._importDialogRef
         .afterClosed()
         .pipe(
           catchError(err => throwError(() => err) as Observable<boolean>),

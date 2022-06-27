@@ -43,14 +43,14 @@ import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dino/core/list';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ExportFormModule} from '@dino/material/export-form';
+import {FormStatusEditorModule} from '@dino/material/form-status-editor';
 import {ImportFormModule} from '@dino/material/import-form';
+import {UserInteractionsModule} from '@dino/material/user-interactions';
 
 import {ColumnsSelector} from './columns-selector';
-import {ConfirmationDialog} from './confirmation-dialog';
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
 import {ListCellValue} from './list-cell-value';
-import {AdminUserInteractionsService} from './user-interactions.service';
 
 @NgModule({
   imports: [
@@ -60,6 +60,7 @@ import {AdminUserInteractionsService} from './user-interactions.service';
     ExportFormModule,
     CommonModule,
     CoreModule,
+    FormStatusEditorModule,
     ImportFormModule,
     MatButtonModule,
     MatCheckboxModule,
@@ -77,9 +78,9 @@ import {AdminUserInteractionsService} from './user-interactions.service';
     MatToolbarModule,
     ReactiveFormsModule,
     RouterModule,
+    UserInteractionsModule,
   ],
-  declarations: [ColumnsSelector, ConfirmationDialog, ListCell, ListCellValue, SelectionList],
+  declarations: [ColumnsSelector, ListCell, ListCellValue, SelectionList],
   exports: [MatIconModule, SelectionList],
-  providers: [AdminUserInteractionsService],
 })
 export class ListModule {}
