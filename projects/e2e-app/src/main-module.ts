@@ -9,7 +9,6 @@ import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
 import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterModule} from '@angular/router';
 import {AreasModule} from '@dino/core/areas';
 import {AuthModule, AuthService} from '@dino/core/auth';
 import {CasesModule} from '@dino/core/cases';
@@ -45,7 +44,6 @@ import {catchError, switchMap, take, tap} from 'rxjs/operators';
 
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
-import {E2E_APP_ROUTES} from './routes';
 import {FakeDataGenerator} from './fake-data-generator';
 import {MaterialAggregationListE2eModule} from './mat-aggregation/aggregation-list-e2e.module';
 import {MaterialAreasE2eModule} from './mat-areas/areas-e2e.module';
@@ -62,7 +60,7 @@ import {MaterialFormsE2eModule} from './mat-forms/forms-e2e.module';
 import {MaterialGroupsE2eModule} from './mat-groups/groups-e2e.module';
 import {MaterialLangsE2eModule} from './mat-langs/langs-e2e.module';
 import {MaterialLocationsE2eModule} from './mat-locations/locations-e2e.module';
-import {MaterialLoginE2eModule} from './mat-login/login-e2e-module';
+import {MaterialLoginE2eModule} from './mat-login/login-e2e.module';
 import {MaterialMainE2EModule} from './mat-main/main-e2e.module';
 import {MaterialUsersManageE2eModule} from './mat-manage-users/users-manage-e2e.module';
 import {MaterialMetricsE2eModule} from './mat-metrics/metrics-e2e.module';
@@ -95,6 +93,7 @@ import {formSchemas} from './test-ajf-formschema';
 import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
 import {projects} from './test-projects';
+import {DinoRoutingModule} from './main.routing.module';
 
 /**
  * Used to generate fake data for the e2e app
@@ -202,7 +201,7 @@ export function provideDataServiceConfig() {
     MatDatepickerModule,
     MatNativeDateModule,
     OverlayModule,
-    RouterModule.forRoot(E2E_APP_ROUTES),
+    DinoRoutingModule,
     FormsModule,
     ReportsModule,
     SyncModule,

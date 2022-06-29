@@ -9,12 +9,14 @@ import {UsersModule as DinoUsersModule} from '@dino/core/users';
 import {LoginModule} from '@dino/material/login';
 
 import {MatLoginE2E} from './login-e2e';
+import {LoginRoutingModule} from './login-e2e-routing.module';
 
 @NgModule({
   declarations: [MatLoginE2E],
   imports: [
     CommonModule,
     LoginModule,
+    LoginRoutingModule,
     MatIconModule,
     MatSlideToggleModule,
     MatButtonModule,

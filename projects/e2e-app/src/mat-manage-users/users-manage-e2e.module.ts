@@ -13,6 +13,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 
 import {MatUsersEditorE2E} from './users-editor-e2e.component';
 import {MatUsersListE2E} from './users-list-e2e.component';
+import {UsersManageRoutingModule} from './users-manage-e2e-routing.module';
 
 @NgModule({
   declarations: [MatUsersEditorE2E, MatUsersListE2E],
@@ -28,6 +29,7 @@ import {MatUsersListE2E} from './users-list-e2e.component';
     DinoUserEditorModule,
     MatSnackBarModule,
     TranslocoModule,
+    UsersManageRoutingModule,
   ],
 })
 export class MaterialUsersManageE2eModule {}

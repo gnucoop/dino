@@ -9,10 +9,12 @@ import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
 
 import {MockBreakpointObserver} from '../mocks';
 import {MatAggregationListE2E} from './aggregation-list-e2e';
+import {AggregationListRoutingModule} from './aggregation-list-e2e-routing.module';
 
 @NgModule({
   declarations: [MatAggregationListE2E],
   imports: [
+    AggregationListRoutingModule,
     CommonModule,
     BreadcrumbsModule,
     ListModule,

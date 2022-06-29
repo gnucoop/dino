@@ -11,6 +11,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 
 import {MockBreakpointObserver} from '../mocks';
 import {MatFormsListE2E} from './forms-list-e2e';
+import {FormsListRoutingModule} from './forms-list-e2e-routing.module';
 
 @NgModule({
   declarations: [MatFormsListE2E],
@@ -23,6 +24,7 @@ import {MatFormsListE2E} from './forms-list-e2e';
     MatDialogModule,
     SearchFiltersBarModule,
     TranslocoModule,
+    FormsListRoutingModule,
   ],
   providers: [{provide: BreakpointObserverService, useClass: MockBreakpointObserver}],
 })

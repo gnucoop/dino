@@ -9,6 +9,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 
 import {MatGroupsEditorE2E} from './groups-e2e-editor.component';
 import {MatGroupsListE2E} from './groups-e2e-list.component';
+import {GroupsRoutingModule} from './groups-e2e-routing.module';
 
 @NgModule({
   declarations: [MatGroupsListE2E, MatGroupsEditorE2E],
@@ -20,6 +21,7 @@ import {MatGroupsListE2E} from './groups-e2e-list.component';
     DinoMixedEditorModule,
     DinoSearchFiltersBarModule,
     TranslocoModule,
+    GroupsRoutingModule,
   ],
 })
 export class MaterialGroupsE2eModule {}

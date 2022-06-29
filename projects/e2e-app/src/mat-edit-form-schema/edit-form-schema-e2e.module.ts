@@ -3,11 +3,18 @@ import {NgModule} from '@angular/core';
 import {FormsModule as DinoFormsModule} from '@dino/core/forms';
 import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
 import {EditFormSchemaModule as DinoEditFormSchemaModule} from '@dino/material/edit-form-schema';
+import {EditFormSchemaRoutingModule} from './edit-form-schema-e2e-routing.module';
 
 import {MatEditFormSchemaE2E} from './edit-form-schema-e2e.component';
 
 @NgModule({
   declarations: [MatEditFormSchemaE2E],
-  imports: [CommonModule, DinoBreadcrumbsModule, DinoEditFormSchemaModule, DinoFormsModule],
+  imports: [
+    CommonModule,
+    DinoBreadcrumbsModule,
+    DinoEditFormSchemaModule,
+    DinoFormsModule,
+    EditFormSchemaRoutingModule,
+  ],
 })
 export class MaterialEditFormSchemaE2eModule {}

@@ -11,6 +11,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {MockBreakpointObserver} from '../mocks';
 
 import {MatReportsListE2E} from './reports-list-e2e';
+import {ReportsListRoutingModule} from './reports-list-e2e-routing.module';
 
 @NgModule({
   declarations: [MatReportsListE2E],
@@ -22,6 +23,7 @@ import {MatReportsListE2E} from './reports-list-e2e';
     ReportsModule,
     SearchFiltersBarModule,
     TranslocoModule,
+    ReportsListRoutingModule,
   ],
   providers: [{provide: BreakpointObserverService, useClass: MockBreakpointObserver}],
 })
