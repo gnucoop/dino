@@ -67,7 +67,7 @@ export class MatMainE2E {
     },
     {
       label: 'Languages',
-      url: 'langs',
+      url: 'languages',
       icon: 'translate',
     },
   ];

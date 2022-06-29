@@ -29,3 +29,4 @@ export * from './user-role-manager';
 export * from './user-group-manager';
 export * from './user-admin-check-permissions';
 export * from './users.module';
+export * from './admin.guard';

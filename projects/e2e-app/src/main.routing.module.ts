@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 import {AuthGuard} from '@dino/core/auth';
+import {AdminGuard} from '@dino/core/users';
 
 const routes: Routes = [
   {
@@ -39,7 +40,7 @@ const routes: Routes = [
   {
     path: 'languages',
     loadChildren: () => import('./mat-langs/langs-e2e.module').then(m => m.MaterialLangsE2eModule),
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AdminGuard],
     data: {breadcrumbs: [{label: 'Languages', url: 'languages', icon: 'translate'}]},
   },
   {
@@ -52,7 +53,7 @@ const routes: Routes = [
   {
     path: 'users',
     loadChildren: () => import('./mat-users/users-e2e.module').then(m => m.MaterialUsersE2eModule),
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AdminGuard],
     data: {breadcrumbs: [{label: 'Users', url: 'users', icon: 'people'}]},
   },
   {path: '**', redirectTo: '', pathMatch: 'full'},
