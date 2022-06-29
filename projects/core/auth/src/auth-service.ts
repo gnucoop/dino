@@ -68,7 +68,7 @@ export class AuthService {
    * True if a valid JWT access token is available.
    */
   readonly authenticated: BehaviorSubject<AuthenticationEvent> =
-    new BehaviorSubject<AuthenticationEvent>({auth: false, evt: null});
+    new BehaviorSubject<AuthenticationEvent>({auth: false, evt: 'no auth token'});
 
   /**
    * The current JWT auth token
@@ -152,7 +152,7 @@ export class AuthService {
     this.resetEvt.emit(true);
 
     this._currentlyStoredConfig = null;
-    this.authenticated.next({auth: false, evt: null});
+    this.authenticated.next({auth: false, evt: 'no auth token'});
     this._storeAuthToken(null);
     this._storeRefreshToken(null);
     this._storeUserInfo(null);
