@@ -23,7 +23,7 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {AuthService, DinoUserInfo, User} from '@dino/core/auth';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {delay, filter, map, retryWhen} from 'rxjs/operators';
+import {delay, distinctUntilKeyChanged, filter, map, retryWhen} from 'rxjs/operators';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {MetricsService} from './metrics.service';
 
@@ -55,7 +55,12 @@ export class PermissionContextService {
     this.fullContext = new BehaviorSubject<PermissionContext | null>(null);
 
     this._authService.authenticated
-      .pipe(filter(authEvt => authEvt.auth === false))
+      .pipe(
+        distinctUntilKeyChanged('evt'),
+        filter(authEvt => {
+          return authEvt.auth === false;
+        }),
+      )
       .subscribe(() => this.resetContext());
 
     this._basePermissionContext = this._authService.authenticated.pipe(
