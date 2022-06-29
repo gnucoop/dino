@@ -25,12 +25,11 @@ import {DataModelManager, DataService, PermissionContextService} from '@dino/cor
 
 import {migrationStrategies, UserRole} from './user-role';
 import {schema} from './user-role-json';
-import {UsersModule} from './users.module';
 
 /**
  * Service that manages User Roles
  */
-@Injectable({providedIn: UsersModule})
+@Injectable({providedIn: 'root'})
 export class UserRoleManager extends DataModelManager<UserRole> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(

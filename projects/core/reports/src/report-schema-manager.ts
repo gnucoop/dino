@@ -25,9 +25,7 @@ import {DataModelManager, DataService, PermissionContextService} from '@dino/cor
 
 import {migrationStrategies, ReportSchema} from './report-schema';
 import {schema} from './report-schema-json';
-import {ReportsModule} from './reports.module';
-
-@Injectable({providedIn: ReportsModule})
+@Injectable({providedIn: 'root'})
 export class ReportSchemaManager extends DataModelManager<ReportSchema> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(

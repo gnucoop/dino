@@ -34,14 +34,13 @@ import {delay, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/ope
 import {migrationStrategies, UserGroup} from './user-group';
 import {schema} from './user-group-json';
 import {UserDataManager} from './user-data-manager';
-import {UsersModule} from './users.module';
 import {UserRole} from './user-role';
 import {AdminGroupExclude} from './user-admin-check-permissions';
 
 /**
  * Service that manages User Groups
  */
-@Injectable({providedIn: UsersModule})
+@Injectable({providedIn: 'root'})
 export class UserGroupManager extends DataModelManager<UserGroup> {
   constructor(
     private _userModelManager: UserDataManager,

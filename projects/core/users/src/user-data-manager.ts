@@ -34,13 +34,12 @@ import {delay, map, retryWhen, shareReplay, skipWhile, switchMap, take, tap} fro
 
 import {migrationStrategies, UserData} from './user-data';
 import {schema} from './user-data-json';
-import {UsersModule} from './users.module';
 import {UserSelfExclude} from './user-admin-check-permissions';
 
 /**
  * Service that manages User Data
  */
-@Injectable({providedIn: UsersModule})
+@Injectable({providedIn: 'root'})
 export class UserDataManager extends DataModelManager<UserData> {
   /**
    * Event emitted as an Action hook

@@ -30,9 +30,7 @@ import {
 
 import {indexes, migrationStrategies, ReportData} from './report-data';
 import {schema} from './report-data-json';
-import {ReportsModule} from './reports.module';
-
-@Injectable({providedIn: ReportsModule})
+@Injectable({providedIn: 'root'})
 export class ReportDataManager extends DataModelManager<ReportData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     const pullQueryContextChecks: PullQueryContextChecks = [

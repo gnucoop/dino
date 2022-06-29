@@ -31,9 +31,8 @@ import {FilterGroup, ListHeader} from '@dino/core/list';
 
 import * as baseFsm from './base-form-schema-manager';
 import {FormSchema} from './form-schema';
-import {FormsModule} from './forms.module';
 
-@Injectable({providedIn: FormsModule})
+@Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
   constructor(
     dataService: DataService,

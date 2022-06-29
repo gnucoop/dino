@@ -27,9 +27,8 @@ import {FormSchema} from './form-schema';
 
 import {FormStatus, indexes, migrationStrategies} from './form-status';
 import {schema} from './form-status-json';
-import {FormsModule} from './forms.module';
 
-@Injectable({providedIn: FormsModule})
+@Injectable({providedIn: 'root'})
 export class FormStatusManager extends DataModelManager<FormStatus> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     schema.indexes = [...(schema.indexes || []), ...indexes];

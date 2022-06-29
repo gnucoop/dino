@@ -32,9 +32,7 @@ import {delay, map, Observable, of as obsOf, retryWhen} from 'rxjs';
 
 import {FormData, indexes, migrationStrategies} from './form-data';
 import {schema} from './form-data-json';
-import {FormsModule} from './forms.module';
-
-@Injectable({providedIn: FormsModule})
+@Injectable({providedIn: 'root'})
 export class FormDataManager extends DataModelManager<FormData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     const pullQueryContextChecks: PullQueryContextChecks = [
