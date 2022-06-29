@@ -174,7 +174,7 @@ export function provideDataServiceConfig() {
     databaseCreateOptions: {
       name: `${instanceName}_db`,
       storage: getRxStoragePouch('memory'),
-      ignoreDuplicate: true,
+      multiInstance: false,
     },
     syncOptions: {
       url: syncGraphQLUrl,

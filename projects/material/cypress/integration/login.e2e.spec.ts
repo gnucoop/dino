@@ -29,13 +29,4 @@ describe('dino-material-login', () => {
     cy.get('form').find('.mat-fab').click();
     cy.get('.dino-error-message').should('be.visible');
   });
-
-  it('should redirect to the post-login url after a successful login', () => {
-    cy.get('.mat-fab').should('exist');
-    cy.get('form').find('.mat-fab').should('exist');
-    cy.get('form').find('input[name="email"]').should('exist').type('dino');
-    cy.get('form').find('input[name="password"]').should('exist').type('dino');
-    cy.get('form').find('.mat-fab').click();
-    cy.url().should('contain', 'dashboard');
-  });
 });
