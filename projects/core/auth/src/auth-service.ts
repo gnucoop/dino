@@ -24,15 +24,7 @@ import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  mapTo,
-  switchMap,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import {catchError, map, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import {AuthenticationEvent, AuthEvt} from './auth-event';
 
 import {
