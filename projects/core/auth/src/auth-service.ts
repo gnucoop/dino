@@ -24,7 +24,15 @@ import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, map, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  mapTo,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import {AuthenticationEvent, AuthEvt} from './auth-event';
 
 import {
@@ -395,12 +403,15 @@ export class AuthService {
     const tokenCheck = decodedToken.exp != null && decodedToken.exp > new Date().getTime() / 1000;
 
     return this._nss.isOnline$.pipe(
-      map(isOnline => {
+      withLatestFrom(this._nss.statusHistory$),
+      map(([isOnline, statusHistory]) => {
+        let res: {token: boolean; evt: AuthEvt} = {token: tokenCheck, evt: 'init'};
         if (!isOnline) {
-          return {token: true, evt: 'offline'};
-        } else {
-          return {token: tokenCheck, evt: 'init'};
+          res = {token: true, evt: 'offline'};
+        } else if (isOnline && statusHistory.length > 1 && statusHistory[0] && !statusHistory[1]) {
+          res = {token: tokenCheck, evt: 'back online'};
         }
+        return res;
       }),
     );
   }

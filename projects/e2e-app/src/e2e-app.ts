@@ -24,7 +24,7 @@ import {Component, isDevMode, ViewEncapsulation} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
 import {PermissionContextService} from '@dino/core/data';
 import {SyncManager} from '@dino/core/sync';
-import {filter, skipWhile, switchMap, tap} from 'rxjs/operators';
+import {distinctUntilKeyChanged, filter, skipWhile, switchMap, tap} from 'rxjs/operators';
 
 /** Root component for the e2e-app demos. */
 @Component({
@@ -58,9 +58,11 @@ export class E2eApp {
     this._auth.authenticated
       .pipe(
         skipWhile(authEvt => !authEvt.auth),
+        distinctUntilKeyChanged('evt'),
         filter(
           authEvt =>
             authEvt.auth === true &&
+            authEvt.evt != 'back online' &&
             authEvt.evt != 'offline' &&
             authEvt.evt != 'refresh successful',
         ),
@@ -76,9 +78,11 @@ export class E2eApp {
     this._auth.authenticated
       .pipe(
         skipWhile(authEvt => !authEvt.auth),
+        distinctUntilKeyChanged('evt'),
         filter(
           authEvt =>
             authEvt.auth === true &&
+            authEvt.evt != 'back online' &&
             authEvt.evt != 'offline' &&
             authEvt.evt != 'refresh successful',
         ),

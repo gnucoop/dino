@@ -21,8 +21,8 @@
  */
 
 import {Injectable} from '@angular/core';
-import {fromEvent, merge, Observable} from 'rxjs';
-import {mapTo, startWith} from 'rxjs/operators';
+import {BehaviorSubject, fromEvent, merge, Observable} from 'rxjs';
+import {distinctUntilChanged, mapTo, startWith, tap} from 'rxjs/operators';
 
 /**
  * Service that detects the current Network connection status.
@@ -30,17 +30,42 @@ import {mapTo, startWith} from 'rxjs/operators';
 @Injectable({providedIn: 'root'})
 export class NetworkStatusService {
   /**
+   * The Online status history subject
+   */
+  protected _statusHistory$: BehaviorSubject<boolean[]> = new BehaviorSubject<boolean[]>([]);
+  get statusHistory$(): BehaviorSubject<boolean[]> {
+    return this._statusHistory$;
+  }
+
+  /**
    * The current Network connection status stream.
    */
   protected _isOnline$: Observable<boolean>;
   get isOnline$(): Observable<boolean> {
     return this._isOnline$;
   }
-
   constructor() {
     this._isOnline$ = merge(
       fromEvent(window, 'offline').pipe(mapTo(false)),
       fromEvent(window, 'online').pipe(mapTo(true)),
-    ).pipe(startWith(navigator.onLine));
+    ).pipe(
+      startWith(navigator.onLine),
+      distinctUntilChanged(),
+      tap(r => this.updateStatusHistory(r, 2)),
+    );
+  }
+
+  /**
+   * Adds a network status to the status history
+   * @param isOnline The status
+   * @param len The length of the History
+   */
+  private updateStatusHistory(isOnline: boolean, len: number) {
+    const array = this._statusHistory$.value;
+    array.unshift(isOnline);
+    if (array.length > len) {
+      array.pop();
+    }
+    this._statusHistory$.next(array);
   }
 }

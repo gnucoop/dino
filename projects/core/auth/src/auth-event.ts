@@ -30,6 +30,7 @@ export type AuthEvt =
   | 'logout'
   | 'no auth token'
   | 'offline'
+  | 'back online'
   | 'refresh successful'
   | 'refresh failed'
   | null;
