@@ -463,7 +463,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             formValue: this._rendererService.getFormValue(),
           };
           const apiCall: Observable<any>[] = [];
-          const filesToUpload = this.uploadService.getFilesToUpload(formObj.formValue);
+          const {filesToUpload} = this.uploadService.getFilesInForm(formObj.formValue);
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
               if (!this.offlineFileUpload) {
@@ -477,10 +477,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               apiCall.push(obsOf(formObj));
             } else {
               apiCall.push(obsOf(formObj));
-              filesToUpload.forEach(fileToUpload => {
-                const uploadedFileObs = this.uploadService.uploadFile(fileToUpload);
-                apiCall.push(uploadedFileObs);
-              });
+              const uploadedFilesObs = this.uploadService.uploadFiles(filesToUpload);
+              apiCall.push(...uploadedFilesObs);
               this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
             }
           } else {
@@ -604,6 +602,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     return popDoc;
   }
 
+  /**
+   *
+   * @param fschemadeps The Ajf form schema dependencies info
+   * @param metricSel The selected metrics
+   * @returns An array of observable with queries for the external form data
+   */
   private _getExternalFormData(
     fschemadeps: FormSchemaDeps,
     metricSel: {

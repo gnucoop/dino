@@ -1,4 +1,5 @@
 import {AjfTranslocoModule} from '@ajf/core/transloco';
+import {AjfEchartsModule} from '@ajf/core/echarts';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
@@ -179,6 +180,7 @@ export function provideDataServiceConfig() {
 @NgModule({
   imports: [
     AjfTranslocoModule.forRoot({reRenderOnLangChange: true}),
+    AjfEchartsModule.forRoot({echarts: () => import('echarts')}),
     AuthModule.forRoot(authConfig),
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
