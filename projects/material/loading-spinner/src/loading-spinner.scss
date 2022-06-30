@@ -1,0 +1,24 @@
+dino-loading-spinner {
+  .dino-spinner {
+    position: relative;
+    width: 20vw;
+    height: 20vh;
+    margin: auto;
+    margin-top: 20vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    animation: spin 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+}

@@ -78,6 +78,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * The Custom loading spinner image path
+   */
+  @Input() spinnerImagePath: string | undefined;
+
+  /**
    * If true, the logout button is not displayed.
    */
   readonly logoutDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

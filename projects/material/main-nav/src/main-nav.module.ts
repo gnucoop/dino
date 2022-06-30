@@ -36,7 +36,7 @@ import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {LangSelectorModule} from '@dino/material/lang-selector';
 import {UserAreaModule} from '@dino/material/user-area';
-
+import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 import {MainNav} from './main-nav';
 
 @NgModule({
@@ -46,6 +46,7 @@ import {MainNav} from './main-nav';
     AuthModule,
     BreakpointObserverModule,
     CommonModule,
+    DinoLoadingSpinnerModule,
     MatButtonModule,
     MatDialogModule,
     MatIconModule,

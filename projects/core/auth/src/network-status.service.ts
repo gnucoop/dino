@@ -60,7 +60,7 @@ export class NetworkStatusService {
    * @param isOnline The status
    * @param len The length of the History
    */
-  private updateStatusHistory(isOnline: boolean, len: number) {
+  protected updateStatusHistory(isOnline: boolean, len: number) {
     const array = this._statusHistory$.value;
     array.unshift(isOnline);
     if (array.length > len) {

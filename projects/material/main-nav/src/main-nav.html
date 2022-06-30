@@ -120,8 +120,13 @@
     <ng-container *ngIf="(isLoading|async) === false; else loading">
       <router-outlet (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>
-    <ng-template #loading
-      ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
+    <ng-template #loading>
+      <ng-container *ngIf="spinnerImagePath; else defaultspinner"
+        ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+      </ng-container>
+      <ng-template #defaultspinner
+        ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+      ></ng-template>
     </ng-template>
   </mat-sidenav-content>
 </mat-sidenav-container>
