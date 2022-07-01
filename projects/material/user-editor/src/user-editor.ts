@@ -39,6 +39,7 @@ import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {switchMap, take, tap} from 'rxjs/operators';
 import {showValidationErrors, PasswordMatch} from '@dino/core/auth';
 import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
+import {format} from 'date-fns';
 
 /**
  * Represents the data to be passed to a UserEditor dialog.
@@ -174,7 +175,7 @@ export class UserEditor implements OnDestroy, OnInit {
                   email: item.email,
                   user_group_ids: item.user_group_ids,
                   user_auth_ref_id: null,
-                  created_at: new Date().toISOString(),
+                  created_at: format(new Date(), 'yyyy-MM-dd'),
                 })
                 .pipe(
                   tap(ud => {
@@ -214,7 +215,7 @@ export class UserEditor implements OnDestroy, OnInit {
                       email: item.email,
                       user_group_ids: item.user_group_ids,
                       user_auth_ref_id: nhostRes.session.user.id,
-                      created_at: new Date().toISOString(),
+                      created_at: format(new Date(), 'yyyy-MM-dd'),
                     })
                     .pipe(
                       tap(ud => {

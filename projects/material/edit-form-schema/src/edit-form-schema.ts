@@ -44,6 +44,7 @@ import {
 } from '@dino/core/forms';
 import {FormDepsEditor} from '@dino/material/form-deps-editor';
 import {IconsService} from '@dino/material/icons-service';
+import {format} from 'date-fns';
 import {
   BehaviorSubject,
   combineLatest,
@@ -209,7 +210,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             icon: formGroup.get('icon')?.value,
             visibility: formGroup.get('visibility')?.value,
             form_status_ref_id: formGroup.get('status')?.value ?? undefined,
-            created_at: new Date().toISOString(),
+            created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           if (fs == null) {
             return this._formSchemaManager.create(formPatch).pipe(

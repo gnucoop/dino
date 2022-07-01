@@ -39,6 +39,7 @@ import {FormData, FormDataManager} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
+import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, zip} from 'rxjs';
 import {catchError, exhaustMap, switchMap, take} from 'rxjs/operators';
@@ -304,7 +305,7 @@ export class ImportForm {
         }
       } else if (typeof value === 'object') {
         try {
-          value = new Date(value).toISOString().split('T')[0];
+          value = format(new Date(value), 'yyyy-MM-dd');
         } catch (e) {}
       }
     }
@@ -333,7 +334,7 @@ export class ImportForm {
         newItem['form_schema_ref_id'] = this._formSchemaId;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
           try {
-            const rowDate = new Date(row[createdAtKey]).toISOString();
+            const rowDate = format(new Date(row[createdAtKey]), 'yyyy-MM-dd');
             newItem['created_at'] = rowDate;
           } catch (e) {}
         }

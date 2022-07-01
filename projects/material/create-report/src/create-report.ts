@@ -41,6 +41,7 @@ import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
+import {format} from 'date-fns';
 
 /**
  * The Report data creation component.
@@ -178,11 +179,13 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
           newItem['organization_ref_id'] = null;
           newItem['project_ref_id'] = null;
           newItem['metadata'] = {};
+
+          const dateFmt = 'yyyy-MM-dd';
           newItem['date_start'] = dateIntervalValue.date_start
-            ? new Date(dateIntervalValue.date_start).toISOString().split('T')[0]
+            ? format(dateIntervalValue.date_start, dateFmt)
             : null;
           newItem['date_end'] = dateIntervalValue.date_end
-            ? new Date(dateIntervalValue.date_end).toISOString().split('T')[0]
+            ? format(dateIntervalValue.date_end, dateFmt)
             : null;
           if (formMetricsSelector != null) {
             const selectedMetrics = formMetricsSelector.selectedMetrics;
@@ -193,7 +196,8 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
                 newItem[saveKey] = selectedMetrics[key].id;
               }
             }
-            const formattedDate = new Date(creationDate).toISOString().split('T')[0];
+
+            const formattedDate = format(creationDate, dateFmt);
             newItem['created_at'] = formattedDate;
           }
           return this._rd.create(newItem as ReportData);

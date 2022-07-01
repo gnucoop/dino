@@ -32,6 +32,7 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Dic, Lang, LangCreate, LangManager} from '@dino/core/langs';
 import {TranslocoService} from '@ngneat/transloco';
+import {format} from 'date-fns';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {debounceTime, filter, map} from 'rxjs/operators';
 
@@ -146,7 +147,7 @@ export class LangsSettingsDialog implements OnDestroy {
     const newLang: LangCreate = {
       name: this.form.controls['key'].value,
       schema: jsonSchema,
-      created_at: new Date().toISOString(),
+      created_at: format(new Date(), 'yyyy-MM-dd'),
     };
     this._langSvc.newLang = newLang;
   }

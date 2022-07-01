@@ -41,6 +41,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {IconsService} from '@dino/material/icons-service';
+import {format} from 'date-fns';
 import {
   BehaviorSubject,
   combineLatest,
@@ -194,7 +195,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
-            created_at: new Date().toISOString(),
+            created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           if (reportSchema == null) {
             return this._reportSchemaManager.create(reportPatch).pipe(

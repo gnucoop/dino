@@ -225,7 +225,8 @@ export class EditReport implements OnInit, AfterViewInit {
           querySelector['created_at'] = {$gte: rData.date_start};
         }
         if (rData.date_end != null) {
-          querySelector['created_at'] = {$lte: rData.date_end};
+          const createdAt = querySelector['created_at'] || {};
+          querySelector['created_at'] = {...createdAt, $lte: rData.date_end};
         }
         if (activeMetrics != null && activeMetrics.length > 0) {
           for (let metric of activeMetrics) {

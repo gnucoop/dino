@@ -39,6 +39,7 @@ import {ActivatedRoute} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
 import {FormData, OnlineFormDataManager, OnlineFormSchemaManager} from '@dino/core/forms';
 import {TranslocoService} from '@ngneat/transloco';
+import {format} from 'date-fns';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 
@@ -149,7 +150,7 @@ export class EditPublicForm implements OnDestroy {
             organization_ref_id: null,
             form_status_ref_id: null,
             data,
-            created_at: new Date().toISOString(),
+            created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           return fdm.create(form);
         }),

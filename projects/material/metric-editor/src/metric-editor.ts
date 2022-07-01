@@ -37,6 +37,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {DataModelManager, Metric, PermissionContextService} from '@dino/core/data';
 import {UserGroup, UserGroupManager} from '@dino/core/users';
+import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {combineLatest, Observable, of as obsOf, Subscription, zip} from 'rxjs';
 import {filter, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
@@ -211,16 +212,12 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       obj['parent_name'] = formValue.parent.parent_name;
 
       for (let key of Object.keys(obj)) {
-        if (key.includes('date') && obj[key] != null) {
-          if (obj[key]) {
-            const date = new Date(obj[key]);
-            obj[key] = date.toDateString();
-          } else {
-            obj[key] = null;
-          }
+        if (key.includes('date') && obj[key] != null && typeof obj[key] === 'object') {
+          try {
+            obj[key] = format(new Date(obj[key]), 'yyyy-MM-dd');
+          } catch (e) {}
         }
       }
-
       this._saveEvt.emit(obj);
     }
   }

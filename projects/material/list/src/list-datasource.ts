@@ -35,6 +35,7 @@ import {
   PermissionContext,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
+import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
@@ -420,7 +421,7 @@ export class ListDataSource<
             this._addNestedProps(
               selector,
               ['created_at', '$gte'],
-              new Date(item.value).toISOString(),
+              format(new Date(item.value), 'yyyy-MM-dd'),
             );
           }
           break;
@@ -429,7 +430,7 @@ export class ListDataSource<
             this._addNestedProps(
               selector,
               ['created_at', '$lte'],
-              new Date(item.value).toISOString(),
+              format(new Date(item.value), 'yyyy-MM-dd'),
             );
           }
           break;

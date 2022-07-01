@@ -26,9 +26,8 @@ import {
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
-import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
-import {DatePipe, Location} from '@angular/common';
+import {Location} from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -56,6 +55,7 @@ import {
 } from '@dino/core/data';
 import {FormData, FormSchema, FormSchemaDeps, FormSchemaManager} from '@dino/core/forms';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
+import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
@@ -236,7 +236,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     private _fs: FormSchemaManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
-    private _ts: TranslocoService,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
   ) {
@@ -546,8 +545,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 newItem[saveKey] = selectedMetrics[key].id;
               }
             }
-            const datePipe = new DatePipe(this._getCurrentLocale());
-            const formattedDate = datePipe.transform(creationDate, 'short') as string;
+            const dateFmt = 'yyyy-MM-dd';
+            const formattedDate = format(creationDate, dateFmt);
             newItem['created_at'] = formattedDate;
           }
 
@@ -693,21 +692,5 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       });
     }
     return extFormDataObs;
-  }
-
-  private _getCurrentLocale(): string {
-    const lang = this._ts.getActiveLang();
-    switch (lang) {
-      case 'ESP':
-        return 'es';
-      case 'FRA':
-        return 'fr';
-      case 'ITA':
-        return 'it';
-      case 'PRT':
-        return 'pt';
-      default:
-        return 'en';
-    }
   }
 }
