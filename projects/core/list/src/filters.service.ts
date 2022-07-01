@@ -46,7 +46,6 @@ import {
   FilterItem,
   FilterListType,
 } from './list-filters-interfaces';
-import {ListModule} from './list.module';
 
 /**
  * Service that handles all operations related to list Filters.
@@ -57,7 +56,7 @@ import {ListModule} from './list.module';
  * It generates FilterItems from the model RxJsonSchema provided by the ListDataSource.
  * It can load filters presets from the Preset Manager, and initialize filters accordingly.
  */
-@Injectable({providedIn: ListModule})
+@Injectable({providedIn: 'root'})
 export class FiltersService<T extends Model = Model> {
   /**
    * The labels of all available additional basic filters.
