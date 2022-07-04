@@ -230,12 +230,9 @@ export class Collect {
         filterKey = filterKey.trim().toLocaleLowerCase();
         if (filterKey.length > 0) {
           items = items.filter(item => {
-            const keys = Object.keys(item) as (keyof typeof item)[];
-            for (const key of keys) {
-              const v = item[key];
-              if (typeof v === 'string' && v.includes(filterKey)) {
-                return true;
-              }
+            const v = item.label;
+            if (typeof v === 'string' && v.toLocaleLowerCase().includes(filterKey)) {
+              return true;
             }
             return false;
           });
