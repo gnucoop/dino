@@ -50,6 +50,11 @@ import {
 import {catchError, map, shareReplay, skipWhile, switchMap, take, takeUntil} from 'rxjs/operators';
 
 /**
+ * Dictionary of label/values for Schema choices
+ */
+export type ChoicesDicitionary = {[key: string]: {label: string; value: string}[]};
+
+/**
  * This class extends MatTableDataSource, and augments it with additional functionalities.
  * It is associated to a SelectionList component, managing and retrieving data for the list, via
  * the DataModelManager.
@@ -113,6 +118,14 @@ export class ListDataSource<
       return;
     }
     this.customPaginator.next(paginator);
+  }
+
+  /**
+   * The schema Choices dictionary
+   */
+  private _choices: ChoicesDicitionary | null = null;
+  get choices(): ChoicesDicitionary | null {
+    return this._choices;
   }
 
   /**
@@ -226,6 +239,7 @@ export class ListDataSource<
     // are set to an empty array.
     this._additionalDataSchema.pipe(takeUntil(this._mainUnsubscribe)).subscribe(dataSchema => {
       if (dataSchema != null) {
+        this._choices = this._getChoices();
         let additionalFilters = [];
         if (this._additionalDataManager) {
           additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
@@ -378,7 +392,7 @@ export class ListDataSource<
                   let slideIdx = 0;
                   while (slideIdx <= this._maxRepeatingSlidesFiltering) {
                     repeatedFilters.push({
-                      [`data.${header.column}__${slideIdx}`]: {
+                      [`data.${header.column.toString()}__${slideIdx}`]: {
                         '$regex': new RegExp(item.value, 'i'),
                       },
                     });
@@ -389,7 +403,7 @@ export class ListDataSource<
                 // Single Slide Field Filter
                 else {
                   return {
-                    [`data.${header.column}`]: {
+                    [`data.${header.column.toString()}`]: {
                       '$regex': new RegExp(item.value, 'i'),
                     },
                   };
@@ -399,7 +413,7 @@ export class ListDataSource<
               .filter(h => !h.dataColumn)
               .map(header => {
                 return {
-                  [`${header.column}`]: {
+                  [`${header.column.toString()}`]: {
                     '$regex': new RegExp(item.value, 'i'),
                   },
                 };
@@ -621,6 +635,41 @@ export class ListDataSource<
         error: err => this.actionErrorEvt.emit(err),
       });
     return results ? this._rxDocsToJson(results) : [];
+  }
+
+  /**
+   * Retrieves all choices label/values from the schema (if present) for all
+   * the fields, so that the list can show choice Labels instead of raw data values.
+   * @returns The field -> choices dictionary, if available.
+   */
+  private _getChoices(): ChoicesDicitionary | null {
+    if (this._additionalDataSchema.value == null) {
+      return null;
+    }
+    const schema: {[key: string]: any} = this._additionalDataSchema.value as {[key: string]: any};
+    if (
+      schema == null ||
+      schema['schema'] == null ||
+      schema['schema']['nodes'] == null ||
+      schema['schema']['choicesOrigins'] == null
+    ) {
+      return null;
+    }
+    const schemaSlides: {[key: string]: any}[] = schema['schema']['nodes'];
+    const schemaChoicesOrigins: {[key: string]: any} = {};
+    const choicesDicitionary: {[key: string]: any} = {};
+    schema['schema']['choicesOrigins'].forEach((ch: {[key: string]: any}) => {
+      schemaChoicesOrigins[ch['name']] = ch['choices'];
+    });
+    schemaSlides.forEach((slide: {[key: string]: any}) =>
+      slide['nodes'].forEach((field: {[key: string]: any}) => {
+        if (field['choicesOriginRef']) {
+          choicesDicitionary[field['name']] = schemaChoicesOrigins[field['choicesOriginRef']];
+        }
+      }),
+    );
+
+    return choicesDicitionary;
   }
 
   /**

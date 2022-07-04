@@ -71,7 +71,7 @@ import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
 import {ListContext} from './list-context';
-import {ListDataSource} from './list-datasource';
+import {ChoicesDicitionary, ListDataSource} from './list-datasource';
 import {PaginatorIntl} from './paginator-intl';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {RxDocument} from 'rxdb';
@@ -790,11 +790,21 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param header The list cell header
    * @returns The content of the cell
    */
-  getRepeatingSlideCellContent(elementData: {[key: string]: any}, header: ListHeader<T>): string[] {
+  getRepeatingSlideCellContent(
+    elementData: {[key: string]: any},
+    header: ListHeader<T>,
+    choices: ChoicesDicitionary | null | undefined,
+  ): string[] {
     const aggregateData: string[] = [];
     for (let key in elementData) {
-      if (key.includes(header.column.toString())) {
-        aggregateData.push(elementData[key]);
+      const headerName = header.column.toString();
+      if (key.includes(headerName)) {
+        let item = elementData[key];
+        if (choices && choices[headerName]) {
+          let labelItem = choices[headerName].find(ch => ch.value == item);
+          item = labelItem ? labelItem.label : item;
+        }
+        aggregateData.push(item);
       }
     }
     return aggregateData;

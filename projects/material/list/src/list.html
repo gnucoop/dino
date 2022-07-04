@@ -114,7 +114,7 @@
         <ng-template #repeatingCellTemplate>
           <mat-tab-group #tabGroup [attr.tabgroupid]="header.repeatingSlideName + '_' + element.id">
             <mat-tab
-              *ngFor="let item of getRepeatingSlideCellContent(element.data, header); let idx = index;"
+              *ngFor="let item of getRepeatingSlideCellContent(element.data, header, dataSource?.choices); let idx = index;"
             >
               <ng-container *ngIf="breakpointObserver.small|async; else large_template">
                 {{item}}
@@ -151,7 +151,7 @@
             </mat-tab>
           </mat-tab-group>
         </ng-template>
-        <ng-template #defaultCellTemplate>{{ element|dinoListCellValue:header }}</ng-template>
+        <ng-template #defaultCellTemplate>{{ element|dinoListCellValue:header:dataSource?.choices }}</ng-template>
       </mat-cell>
     </ng-container>
 

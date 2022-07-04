@@ -26,16 +26,22 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {Model} from '@dino/core/data';
 import {ListHeader} from '@dino/core/list';
 import {parse, parseISO} from 'date-fns';
+import {ChoicesDicitionary} from './list-datasource';
 
 @Pipe({name: 'dinoListCellValue', pure: false})
 export class ListCellValue implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
 
-  transform<T extends Model = Model>(element: T, header: ListHeader<T>): string {
+  transform<T extends Model = Model>(
+    element: T,
+    header: ListHeader<T>,
+    choices: ChoicesDicitionary | null | undefined,
+  ): string {
     if (header == null || element == null) return '';
+    const headerName = header.column.toString();
     const dataEl = element as Model & {data?: {[key: string]: any}};
     const col = header.column.toString() as keyof typeof dataEl;
-    const val = header.dataColumn ? (dataEl.data || {})[col] : dataEl[col];
+    let val = header.dataColumn ? (dataEl.data || {})[col] : dataEl[col];
     let dt = parseISO(val);
     if (!isNaN(dt.valueOf())) {
       const datePipe = new DatePipe(this._getCurrentLocale());
@@ -45,6 +51,10 @@ export class ListCellValue implements PipeTransform {
     if (!isNaN(dt.valueOf())) {
       const datePipe = new DatePipe(this._getCurrentLocale());
       return datePipe.transform(dt, 'shortDate') as string;
+    }
+    if (header.dataColumn && choices && choices[headerName]) {
+      let labelItem = choices[headerName].find(ch => ch.value == val);
+      val = labelItem ? labelItem.label : val;
     }
     return val;
   }
