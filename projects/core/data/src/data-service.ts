@@ -21,6 +21,7 @@
  */
 
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
+import {Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {ConfigService} from '@dino/core/config';
 import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
@@ -161,10 +162,17 @@ export class DataService implements IDataService {
    */
   private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
+  /**
+   * Emits when a websocket throws an error in its connection callback,
+   * and asks the authService to log out.
+   */
+  private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(
     private _authService: AuthService,
     private _contextService: PermissionContextService,
     private _nss: NetworkStatusService,
+    private _router: Router,
     @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
     @Optional() private _configService: ConfigService | null,
   ) {
@@ -212,6 +220,12 @@ export class DataService implements IDataService {
         switchMap(() => this._authService.refreshToken()),
       )
       .subscribe();
+
+    this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
+      if (res) {
+        this._router.navigate([this._authService.authConfig.failedAuthRedirect]);
+      }
+    });
 
     if (this._configService != null) {
       this._setDynamicConfigSub();
@@ -668,6 +682,8 @@ export class DataService implements IDataService {
                 errMessage === this._dataConfig.value.syncOptions.authErrorMessage
               ) {
                 this._refreshEvt.emit();
+              } else {
+                this._logoutEvt.emit();
               }
             }
           },
