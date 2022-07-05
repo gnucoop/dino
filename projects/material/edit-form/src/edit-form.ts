@@ -79,6 +79,7 @@ import {
   filter,
   map,
   shareReplay,
+  startWith,
   switchMap,
   take,
   tap,
@@ -683,6 +684,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           return obsOf(false);
         }
         return formMetricsSelector.formMetrics.statusChanges.pipe(
+          startWith(true),
           switchMap(() => formMetricsSelector.isFormMetricsValid()),
         );
       }),

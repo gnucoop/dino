@@ -72,6 +72,7 @@ import {
   filter,
   map,
   shareReplay,
+  startWith,
   switchMap,
   tap,
   withLatestFrom,
@@ -601,6 +602,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           return obsOf(false);
         }
         return formMetricsSelector.formMetrics.statusChanges.pipe(
+          startWith(true),
           switchMap(() => formMetricsSelector.isFormMetricsValid()),
         );
       }),
