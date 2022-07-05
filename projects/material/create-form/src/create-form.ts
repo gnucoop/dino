@@ -508,33 +508,69 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   );
                 }
               }
-              const dateFmt = 'yyyy-MM-dd';
-              const formattedDate = format(creationDate, dateFmt);
-              newItem['created_at'] = formattedDate;
-            }
-          } else {
-            newItem['data'].data = formValue;
-            newItem['data'].form_schema_ref_id = formSchemaId;
-            newItem['data'].user_data_ref_id = userData?.id;
-          }
+              let newItem: {[key: string]: any} = {};
+              if (isFormData) {
+                const defaultFormStatus: string | null =
+                  formStatuses && formStatuses.length
+                    ? formStatuses.reduce((prev, curr) =>
+                        prev.status_level < curr.status_level ? prev : curr,
+                      ).id
+                    : null;
+                newItem['data'] = formValue;
+                newItem['form_schema_ref_id'] = formSchemaId;
+                newItem['user_data_ref_id'] = userData?.id;
+                newItem['form_status_ref_id'] = defaultFormStatus;
+                newItem['area_ref_id'] = null;
+                newItem['case_ref_id'] = null;
+                newItem['location_ref_id'] = null;
+                newItem['organization_ref_id'] = null;
+                newItem['project_ref_id'] = null;
+                if (formMetricsSelector != null) {
+                  const selectedMetrics = formMetricsSelector.selectedMetrics;
+                  const creationDate = formMetricsSelector.formDate.value.created_at;
+                  for (let key of Object.keys(selectedMetrics)) {
+                    const saveKey = `${key}_ref_id`;
+                    if (selectedMetrics[key].id != null) {
+                      newItem[saveKey] = selectedMetrics[key].id;
+                    }
+                  }
 
-          if (this._dataModelManager == null) {
-            return throwError(() => new Error('No data model manager'));
-          }
-          return this._dataModelManager.create(newItem as T).pipe(
-            tap(fd => {
-              if (fd && fd.collection.name === 'form_data') {
-                const trigData: ActionTriggerData<T> = {doc: fd};
-                const trigger: ActionTrigger<T> = {
-                  name: 'Form Data Created',
-                  triggerType: 'on_form_data_creation',
-                  triggerData: trigData,
-                };
-                this.emitActionTrigger.emit(trigger);
+                  let formattedDate = creationDate;
+                  if (creationDate && typeof creationDate === 'object') {
+                    const dateFmt = 'yyyy-MM-dd';
+                    try {
+                      formattedDate = format(creationDate, dateFmt);
+                    } catch (e) {}
+                  }
+                  newItem['created_at'] = formattedDate;
+                }
+              } else {
+                newItem['data'].data = formValue;
+                newItem['data'].form_schema_ref_id = formSchemaId;
+                newItem['data'].user_data_ref_id = userData?.id;
               }
-            }),
-          );
-        }),
+
+              if (this._dataModelManager == null) {
+                return throwError(() => new Error('No data model manager'));
+              }
+              return this._dataModelManager.create(newItem as T).pipe(
+                tap(fd => {
+                  if (fd && fd.collection.name === 'form_data') {
+                    const trigData: ActionTriggerData<T> = {doc: fd};
+                    const trigger: ActionTrigger<T> = {
+                      name: 'Form Data Created',
+                      triggerType: 'on_form_data_creation',
+                      triggerData: trigData,
+                    };
+                    this.emitActionTrigger.emit(trigger);
+                  }
+                }),
+              );
+            } else {
+              return throwError(() => new Error('No data found'));
+            }
+          },
+        ),
         catchError(err => {
           this.isLoading.next(false);
           this._location.back();

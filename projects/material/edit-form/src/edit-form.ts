@@ -615,8 +615,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                   newItem[saveKey] = selectedMetrics[key].id;
                 }
               }
-              const dateFmt = 'yyyy-MM-dd';
-              const formattedDate = format(creationDate, dateFmt);
+              let formattedDate = creationDate;
+              if (creationDate && typeof creationDate === 'object') {
+                const dateFmt = 'yyyy-MM-dd';
+                try {
+                  formattedDate = format(creationDate, dateFmt);
+                } catch (e) {}
+              }
               newItem['created_at'] = formattedDate;
             }
 

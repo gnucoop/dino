@@ -197,7 +197,13 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
               }
             }
 
-            const formattedDate = format(creationDate, dateFmt);
+            let formattedDate = creationDate;
+            if (creationDate && typeof creationDate === 'object') {
+              const dateFmt = 'yyyy-MM-dd';
+              try {
+                formattedDate = format(creationDate, dateFmt);
+              } catch (e) {}
+            }
             newItem['created_at'] = formattedDate;
           }
           return this._rd.create(newItem as ReportData);

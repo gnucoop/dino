@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@ajf/core@^13.1.5":
-  version "13.1.5"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-13.1.5.tgz#f8f6d264df2bfb8e8cdcfda2babc76b945fe18e2"
-  integrity sha512-eVHeQ+bngcAYTBVupxDn1oYAzmeDBOmLD+MDzmVN/7cy0kr2NrhievcX9IRqYAzDTh9AUP/DS/YkoICRnV2/xA==
+"@ajf/core@^13.2.0":
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-13.2.0.tgz#737f08bd82bc156aae55982205709baf366066cb"
+  integrity sha512-y4iEcK6UvQhaWXFt4KJpZJWTPjS56lnyluGFXFs0kA/BlMfnPDAgKQYCvh9E9YGDHbLqBQXWLJp+cgaonZkx7w==
   dependencies:
     tslib "^2.3.0"
 
@@ -14,10 +14,10 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^13.1.5":
-  version "13.1.5"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-13.1.5.tgz#50628ea7f244509ad5430e1ff6bf85397cffa01e"
-  integrity sha512-T4BOpB7kSb5nmXQtHa60X7p+GflTq+HNorLKuu0t/W0Whzszg1X8cCZs+O0ZXa2qjKrHQvhGc761+A1n+eQ/yQ==
+"@ajf/material@^13.2.0":
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-13.2.0.tgz#b71d37e0a33e052a57b4f5761c1234dbca07e738"
+  integrity sha512-GAz3aygA2Nccg2Ma/hmyprJ1mN4w5UMXCpDlGij8ls8jZbYPkfnDovkfHW93EwXQvoRwY4HR6jNkQjneSb4ftw==
   dependencies:
     tslib "^2.3.0"
 
@@ -5276,6 +5276,14 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
+
+echarts@^5.3.2:
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.3.3.tgz#df97b09c4c0e2ffcdfb44acf518d50c50e0b838e"
+  integrity sha512-BRw2serInRwO5SIwRviZ6Xgm5Lb7irgz+sLiFMmy/HOaf4SQ+7oYqxKzRHAKp4xHQ05AuHw1xvoQWJjDQq/FGw==
+  dependencies:
+    tslib "2.3.0"
+    zrender "5.3.2"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -12192,6 +12200,11 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
+tslib@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
+
 tslib@2.3.1, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
@@ -13059,3 +13072,10 @@ zone.js@~0.11.3:
   integrity sha512-DDh2Ab+A/B+9mJyajPjHFPWfYU1H+pdun4wnnk0OcQTNjem1XQSZ2CDW+rfZEUDjv5M19SBqAkjZi0x5wuB5Qw==
   dependencies:
     tslib "^2.0.0"
+
+zrender@5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-5.3.2.tgz#f67b11d36d3d020d62411d3bb123eb1c93cccd69"
+  integrity sha512-8IiYdfwHj2rx0UeIGZGGU4WEVSDEdeVCaIg/fomejg1Xu6OifAL1GVzIPHg2D+MyUkbNgPWji90t0a8IDk+39w==
+  dependencies:
+    tslib "2.3.0"
