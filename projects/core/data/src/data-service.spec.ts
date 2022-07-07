@@ -1,5 +1,7 @@
 import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {Server, WebSocket} from 'mock-socket';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
@@ -74,9 +76,11 @@ describe('Data service', () => {
     TestBed.configureTestingModule({
       providers: [
         DataService,
+        RouterTestingModule,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
       ],
     });
     dataService = TestBed.inject(DataService);
@@ -112,9 +116,11 @@ describe('Data service - CRUD methods', () => {
     TestBed.configureTestingModule({
       providers: [
         DataService,
+        RouterTestingModule,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
       ],
     });
     dataService = TestBed.inject(DataService);

@@ -3,7 +3,8 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 
 import {BreadCrumbs, BreadcrumbsModule} from './public_api';

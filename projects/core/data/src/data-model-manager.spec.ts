@@ -1,6 +1,8 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {EventEmitter, Injectable} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
@@ -184,9 +186,11 @@ describe('Data Model Manager - CRUD methods', () => {
       providers: [
         ContextServiceMock,
         DataService,
+        RouterTestingModule,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
       ],
     });
     contextService = TestBed.inject(ContextServiceMock);

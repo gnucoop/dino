@@ -1,6 +1,8 @@
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
@@ -96,9 +98,11 @@ describe('FormSchemaManager', () => {
       imports: [HttpClientTestingModule],
       providers: [
         FormSchemaManager,
+        RouterTestingModule,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: AuthService, useValue: authServiceMock},
+        {provide: Router, useValue: {}},
       ],
     });
     fsm = TestBed.inject(FormSchemaManager);

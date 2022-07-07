@@ -3,12 +3,15 @@ import {TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch, RxDocument} from 'rxdb';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {RxDocument} from 'rxdb';
 import {firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {UserGroupManager, UserDataManager, UsersModule} from './public_api';
 import {UserData} from './user-data';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 
 const dummyUserData: RxDocument<UserData> = {
   id: 'dino_user_id',
@@ -87,11 +90,12 @@ describe('User Data Manager', () => {
   let userDataManager: UserDataManager;
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [UsersModule],
+      imports: [UsersModule, RouterTestingModule],
       providers: [
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
       ],
     });
     userDataManager = TestBed.inject(UserDataManager);
@@ -110,12 +114,13 @@ describe('User Group Manager', () => {
   let userGroupManager: UserGroupManager;
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [UsersModule],
+      imports: [UsersModule, RouterTestingModule],
       providers: [
         {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
       ],
     });
     userGroupManager = TestBed.inject(UserGroupManager);

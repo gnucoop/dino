@@ -1,4 +1,4 @@
-import {RxCollection, RxJsonSchema} from 'rxdb';
+import {RxCollection, RxDocumentData, RxJsonSchema} from 'rxdb';
 
 import {DataServiceSyncOptions, Model} from './public_api';
 import {
@@ -74,7 +74,11 @@ describe('pullQueryBuilder', () => {
       `where: {updated_at:{_gt:"${timestamp}"}}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id model3Id } }`;
-    const doc: Model = {id: 'foo', created_at: timestamp, updated_at: timestamp};
+    const doc: RxDocumentData<Model> = {
+      id: 'foo',
+      created_at: timestamp,
+      updated_at: timestamp,
+    } as RxDocumentData<Model>;
 
     let queryBuilder = pullQueryBuilder(collection, syncOptions);
     let query = queryBuilder(doc);
@@ -97,7 +101,9 @@ describe('pushQueryBuilder', () => {
   it('should create a push sync query for a given collection', async () => {
     const collection = collections[0];
     const timestamp = new Date().toISOString();
-    const doc: Model = {id: 'foo', created_at: timestamp, updated_at: timestamp};
+    const doc: RxDocumentData<Model>[] = [
+      {id: 'foo', created_at: timestamp, updated_at: timestamp} as RxDocumentData<Model>,
+    ];
     const dummyModifier = {modifier: (d: any) => d};
     const modifierSpy = spyOn(dummyModifier, 'modifier').and.callThrough();
     const pushQuery =
@@ -108,7 +114,7 @@ describe('pushQueryBuilder', () => {
     const query = queryBuilder(doc);
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(pushQuery);
-    expect(modifierSpy).toHaveBeenCalledWith(doc);
+    expect(modifierSpy).toHaveBeenCalledWith(doc[0]);
   });
 });
 
