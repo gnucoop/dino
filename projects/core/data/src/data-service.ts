@@ -30,6 +30,8 @@ import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument} fro
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {addPouchPlugin} from 'rxdb/plugins/pouchdb';
 import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
+import {RxDBQueryBuilderPlugin} from 'rxdb/plugins/query-builder';
+import {RxDBUpdatePlugin} from 'rxdb/plugins/update';
 import {
   BehaviorSubject,
   combineLatest,
@@ -46,12 +48,16 @@ import {
   debounce,
   debounceTime,
   delay,
+  distinctUntilChanged,
+  filter,
   map,
   mapTo,
+  retryWhen,
   shareReplay,
   skipWhile,
   switchMap,
   take,
+  takeUntil,
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
@@ -121,6 +127,8 @@ export class DataService implements IDataService {
 
   readonly config: DataServiceConfig;
 
+  readonly dbToken = new BehaviorSubject<string | null>('');
+
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
     new EventEmitter<CollectionChangedEvent>();
 
@@ -128,6 +136,8 @@ export class DataService implements IDataService {
     ._collectionChanged as Observable<CollectionChangedEvent>;
 
   private _db: Observable<RxDatabase>;
+
+  private _refreshDb = new BehaviorSubject<'ready' | 'notReady'>('ready');
 
   private _registeredCollections: BehaviorSubject<RegisteredCollection[]> = new BehaviorSubject<
     RegisteredCollection[]
@@ -180,6 +190,8 @@ export class DataService implements IDataService {
     addPouchPlugin(pouchdbAdapterMemory);
     addRxPlugin(RxDBMigrationPlugin);
     addRxPlugin(RxDBReplicationGraphQLPlugin);
+    addRxPlugin(RxDBQueryBuilderPlugin);
+    addRxPlugin(RxDBUpdatePlugin);
     this.config = fillConfigDefaultValues(config);
     this._dataConfig = new BehaviorSubject<DataServiceConfig>(this.config);
     this._currentlyStoredConfig = this._getDataConfig();
@@ -187,8 +199,28 @@ export class DataService implements IDataService {
       this._dataConfig.next(this._currentlyStoredConfig);
     }
 
-    this._db = this._dataConfig.pipe(
-      switchMap(cfg => from(createRxDatabase(cfg.databaseCreateOptions))),
+    this._authService.authenticated
+      .pipe(filter(authEvt => authEvt.evt === 'login' || authEvt.evt === 'logout'))
+      .subscribe(authEvt => {
+        this._refreshDb.next(authEvt.evt === 'login' ? 'ready' : 'notReady');
+        if (authEvt.evt === 'logout') {
+          this.dbToken.next(null);
+        }
+      });
+
+    this._db = this._refreshDb.pipe(
+      filter(rdy => rdy === 'ready'),
+      switchMap(() => {
+        return this._dataConfig.pipe(
+          switchMap(cfg => from(createRxDatabase(cfg.databaseCreateOptions))),
+        );
+      }),
+      tap(db => {
+        this.dbToken.next(db.token);
+        if (isDevMode()) {
+          console.log(`CREATING DB: ${db.token}`);
+        }
+      }),
       shareReplay(1),
     );
 
@@ -373,21 +405,34 @@ export class DataService implements IDataService {
   }
 
   update<T extends Model = Model, R extends T = RxDocument<T>>(
-    _collectionName: string,
+    collectionName: string,
     doc: R,
     updateData: Partial<T>,
   ): Observable<R | null> {
     if (doc == null || updateData == null || !isRxDocument(doc)) {
       return obsOf(null);
     }
-    return from(doc.update({$set: updateData})).pipe(
-      tap(dc => {
-        if (dc != null) {
-          this._collectionChangedEmit('Document updated', doc.collection);
+    return this._db.pipe(
+      switchMap(db => {
+        const collection = db.collections[collectionName] as RxCollection<T>;
+        if (collection == null) {
+          throwError(() => new Error('Invalid collection'));
         }
+        return from(doc.update({$set: updateData})).pipe(
+          tap(dc => {
+            if (dc != null) {
+              this._collectionChangedEmit('Document updated', doc.collection);
+            }
+          }),
+          map(_ => doc),
+          catchError(err => {
+            if (isDevMode()) {
+              console.log(err);
+            }
+            return throwError(() => new Error(err));
+          }),
+        );
       }),
-      map(_ => doc),
-      catchError(err => throwError(() => new Error(err))),
     ) as Observable<R | null>;
   }
 
@@ -453,50 +498,61 @@ export class DataService implements IDataService {
     params: DataCreateCollectionRequest,
     pullQueryContextChecks?: PullQueryContextChecks,
   ): Observable<boolean> {
-    return combineLatest([this._db, this._authService.authenticated]).pipe(
-      withLatestFrom(this._contextService.fullContext.pipe(take(1))),
-      skipWhile(([[db, authEvt], _ctx]) => !db || !authEvt.auth),
-      switchMap(([[db, authEvt], ctx]) => {
-        if (!authEvt.auth) {
-          return obsOf(false);
-        }
-        if (pullQueryContextChecks && ctx != null) {
-          if (!params.pullQueryExtraParams) {
-            params.pullQueryExtraParams = {};
-          }
-          params.pullQueryExtraParams!.where = generateSyncPullChecks(ctx, pullQueryContextChecks);
-        }
-        const collection = db[params.name] as RxCollection;
-        if (!collection) {
-          if (isDevMode()) {
-            console.log(`creating ${params.name}... with context: `, ctx);
-          }
-          return from(db.addCollections({[params.name]: params.collection})).pipe(
-            tap(coll => {
-              if (
-                this._dataConfig.value.syncOptions.live &&
-                this._dataConfig.value.syncOptions.wsUrl
-              ) {
-                if (isDevMode()) {
-                  console.log(
-                    `${params.name.toLocaleUpperCase()} created with Where: ${JSON.stringify(
-                      params.pullQueryExtraParams?.where,
-                    )}.`,
-                  );
-                }
-                this._addRegisteredCollection(coll[params.name], params);
+    return this.dbToken.pipe(
+      filter(tkn => tkn != null),
+      distinctUntilChanged(),
+      takeUntil(this._logoutEvt),
+      switchMap(tkn => {
+        return combineLatest([this._db, this._authService.authenticated]).pipe(
+          withLatestFrom(this._contextService.fullContext.pipe(take(1))),
+          skipWhile(([[db, authEvt], _ctx]) => !db || !authEvt.auth),
+          switchMap(([[db, authEvt], ctx]) => {
+            if (!authEvt.auth || db.token != tkn) {
+              throw new Error('Db already exists');
+            }
+            if (pullQueryContextChecks && ctx != null) {
+              if (!params.pullQueryExtraParams) {
+                params.pullQueryExtraParams = {};
               }
-            }),
-            mapTo(true),
-            catchError(err => {
+              params.pullQueryExtraParams!.where = generateSyncPullChecks(
+                ctx,
+                pullQueryContextChecks,
+              );
+            }
+            const collection = db[params.name] as RxCollection;
+            if (!collection) {
               if (isDevMode()) {
-                console.error(err);
+                console.log(`creating ${params.name} in db: ${db.token}...`);
               }
-              return obsOf(false);
-            }),
-          );
-        }
-        return obsOf(false);
+              return from(db.addCollections({[params.name]: params.collection})).pipe(
+                tap(coll => {
+                  if (
+                    this._dataConfig.value.syncOptions.live &&
+                    this._dataConfig.value.syncOptions.wsUrl
+                  ) {
+                    if (isDevMode()) {
+                      console.log(
+                        `${params.name.toLocaleUpperCase()} created with Where: ${JSON.stringify(
+                          params.pullQueryExtraParams?.where,
+                        )}.`,
+                      );
+                    }
+                    this._addRegisteredCollection(coll[params.name], params);
+                  }
+                }),
+                mapTo(true),
+                catchError(err => {
+                  if (isDevMode()) {
+                    console.error(err);
+                  }
+                  return obsOf(false);
+                }),
+              );
+            }
+            return obsOf(false);
+          }),
+          retryWhen(err => err.pipe(delay(1000))),
+        );
       }),
     );
   }
@@ -523,7 +579,7 @@ export class DataService implements IDataService {
   /**
    * Destroys all collections in the current local db.
    */
-  destroyAllCollections(): Observable<boolean[]> {
+  destroyAllCollections(): Observable<string[]> {
     return this._db.pipe(
       switchMap(db => {
         const collectionsDestructions: Observable<boolean>[] = [];
@@ -533,14 +589,15 @@ export class DataService implements IDataService {
           if (rxCollection) {
             collectionsDestructions.push(
               from(rxCollection.remove()).pipe(
-                switchMap(() => from(db.removeCollection(collName)).pipe(mapTo(true))),
+                switchMap(() => from(rxCollection.destroy())),
                 tap(() => this._removeRegisteredCollection(rxCollection)),
               ),
             );
           }
         }
-        return forkJoin(collectionsDestructions);
+        return forkJoin(collectionsDestructions).pipe(withLatestFrom(obsOf(db)));
       }),
+      switchMap(([_cd, db]) => from(db.destroy()).pipe(switchMap(() => from(db.remove())))),
       take(1),
     );
   }
@@ -656,6 +713,7 @@ export class DataService implements IDataService {
           this._dataConfig.value.syncOptions,
           params.pullQueryExtraParams,
         ),
+        batchSize: DEFAULT_SYNC_OPTIONS.batchSize,
       },
       push: {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
