@@ -332,7 +332,7 @@ export class AuthService {
    * Stores the new authToken, if issued.
    * @returns True if the token was successfully refreshed.
    */
-  refreshToken(): Observable<boolean> {
+  refreshToken(authEvt: AuthEvt = 'refresh successful'): Observable<boolean> {
     if (!this.getAuthToken()) {
       return obsOf(false);
     }
@@ -354,7 +354,7 @@ export class AuthService {
           .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
             tap(res => {
-              this.authenticated.next({auth: true, evt: 'refresh successful'});
+              this.authenticated.next({auth: true, evt: authEvt});
               this._storeRefreshToken(res.refreshToken);
               this._storeAuthToken(res.accessToken ?? res.token);
             }),

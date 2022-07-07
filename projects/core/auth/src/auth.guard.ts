@@ -42,7 +42,7 @@ export class AuthGuard implements CanActivate {
   constructor(private _router: Router, private _authService: AuthService) {}
 
   canActivate(
-    next: ActivatedRouteSnapshot,
+    _next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this._authService.authenticated.pipe(
@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate {
           return true;
         }
         this._authService
-          .refreshToken()
+          .refreshToken('init refresh')
           .pipe(debounceTime(this._authService.config.retryRefreshTime))
           .subscribe(res => {
             if (res) {

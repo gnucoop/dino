@@ -26,6 +26,7 @@
 export type AuthEvt =
   | 'expired'
   | 'init'
+  | 'init refresh'
   | 'login'
   | 'logout'
   | 'no auth token'
