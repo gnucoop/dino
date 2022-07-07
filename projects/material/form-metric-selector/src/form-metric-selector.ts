@@ -166,7 +166,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this.formCreationDate = this._formData.pipe(
-      map(data => data['created_at']),
+      map(data => new Date(data['created_at'])),
       take(1),
     );
     this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));

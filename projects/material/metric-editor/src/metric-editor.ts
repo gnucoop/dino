@@ -286,10 +286,11 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
 
     this.metricParentValue = group['parent'].valueChanges;
 
-    for (let propKey in schema.properties) {
-      if (this.data.readOnlyFields && this.data.readOnlyFields.includes(propKey)) {
+    for (let propK in schema.properties) {
+      if (this.data.readOnlyFields && this.data.readOnlyFields.includes(propK)) {
         continue;
       }
+      const propKey = propK as Extract<keyof T, string>;
       const propValue = schema.properties[propKey];
       const propRequired =
         schema.required!.indexOf(propKey) >= 0 &&

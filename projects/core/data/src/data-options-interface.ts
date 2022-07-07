@@ -48,12 +48,7 @@ export interface DataQueryOptions {
   distinct?: string[]; // @Todo
 }
 
-export interface DataIndex {
-  name: string;
-  fields: (string | DataIndexField)[];
-  startKey?: string;
-  endKey?: string;
-}
+export type DataIndex = string | string[] | undefined;
 
 export interface DataIndexField {
   [prop: string]: 'asc' | 'desc';

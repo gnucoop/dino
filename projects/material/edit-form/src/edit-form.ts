@@ -35,6 +35,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Output,
@@ -652,6 +653,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }),
         catchError(err => {
           this.isLoading.next(false);
+          if (isDevMode()) {
+            console.log(err);
+          }
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);

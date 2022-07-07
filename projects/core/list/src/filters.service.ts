@@ -274,8 +274,9 @@ export class FiltersService<T extends Model = Model> {
     };
     propertyKeys.forEach(prop => {
       if (prop && DEFAULT_MODEL_KEYS.indexOf(prop) < 0) {
+        const propKey = prop as Extract<keyof T, string>;
         modelFiltersGroup.filterGroupAdditionalFilters?.push(
-          this._propToFilterItem(prop, modelSchema.properties[prop as keyof T]),
+          this._propToFilterItem(prop, modelSchema.properties[propKey]),
         );
       }
     });

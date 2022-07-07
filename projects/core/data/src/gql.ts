@@ -102,22 +102,25 @@ const dataFindRequestToFnParams = <T extends Model = Model>(
     params.push(`order_by: {${sorts.join(', ')}}`);
   }
   const where = [] as string[];
-  Object.keys(query.selector).forEach(key => {
-    const selector = query.selector[key];
-    if (typeof selector === 'object') {
-      const fieldWhere = [] as string[];
-      Object.keys(selector).forEach(op => {
-        if (op.startsWith('$')) {
-          fieldWhere.push(`_${op.slice(1)}: ${JSON.stringify(selector[op])}`);
+  if (query.selector != null) {
+    Object.keys(query.selector).forEach(key => {
+      const selector = query.selector ? query.selector[key] : {};
+      if (typeof selector === 'object') {
+        const fieldWhere = [] as string[];
+        Object.keys(selector).forEach(op => {
+          if (op.startsWith('$')) {
+            fieldWhere.push(`_${op.slice(1)}: ${JSON.stringify(selector[op])}`);
+          }
+        });
+        if (fieldWhere.length > 0) {
+          where.push(`${key}: {${fieldWhere.join(', ')}}`);
         }
-      });
-      if (fieldWhere.length > 0) {
-        where.push(`${key}: {${fieldWhere.join(', ')}}`);
+      } else {
+        where.push(`${key}: {_eq: ${JSON.stringify(selector)}}`);
       }
-    } else {
-      where.push(`${key}: {_eq: ${JSON.stringify(selector)}}`);
-    }
-  });
+    });
+  }
+
   if (where.length > 0) {
     params.push(`where: {${where.join(', ')}}`);
   }

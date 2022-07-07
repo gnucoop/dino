@@ -61,10 +61,7 @@ export class E2eApp {
         distinctUntilKeyChanged('evt'),
         filter(
           authEvt =>
-            authEvt.auth === true &&
-            authEvt.evt != 'back online' &&
-            authEvt.evt != 'offline' &&
-            authEvt.evt != 'refresh successful',
+            authEvt.auth === true && authEvt.evt != 'back online' && authEvt.evt != 'offline',
         ),
         tap(authEvt => {
           if (isDevMode()) {
@@ -81,10 +78,7 @@ export class E2eApp {
         distinctUntilKeyChanged('evt'),
         filter(
           authEvt =>
-            authEvt.auth === true &&
-            authEvt.evt != 'back online' &&
-            authEvt.evt != 'offline' &&
-            authEvt.evt != 'refresh successful',
+            authEvt.auth === true && authEvt.evt != 'back online' && authEvt.evt != 'offline',
         ),
         tap(authEvt => {
           if (isDevMode()) {

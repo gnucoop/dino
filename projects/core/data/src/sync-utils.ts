@@ -20,7 +20,12 @@
  *
  */
 
-import {RxCollection, RxGraphQLReplicationQueryBuilder} from 'rxdb';
+import {
+  RxCollection,
+  RxDocumentData,
+  RxGraphQLReplicationPullQueryBuilder,
+  RxGraphQLReplicationPushQueryBuilder,
+} from 'rxdb';
 import {PullQueryContextChecks} from './data-create-collection-request';
 import {PermissionContext} from './data-permission-interface';
 
@@ -30,7 +35,7 @@ import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
 
 const MAX_ITERATIONS = 100;
-const SYNC_IGNORED_PROPERTIES = ['_rev', '_attachments', '_id'];
+const SYNC_IGNORED_PROPERTIES = ['_rev', '_attachments', '_id', '_meta'];
 const UPDATE_IGNORED_PROPERTIES = [...SYNC_IGNORED_PROPERTIES, 'id'];
 
 /**
@@ -39,18 +44,18 @@ const UPDATE_IGNORED_PROPERTIES = [...SYNC_IGNORED_PROPERTIES, 'id'];
  * @param options The data service sync options.
  * @param params Option extra parameters to be included in the query.
  */
-export function pullQueryBuilder(
+export function pullQueryBuilder<T extends Model = Model>(
   collection: RxCollection,
   options: DataServiceSyncOptions,
   extraParams?: PullQueryExtraParams,
-): RxGraphQLReplicationQueryBuilder {
-  return (doc: Model) => {
+): RxGraphQLReplicationPullQueryBuilder<T> {
+  return (doc: RxDocumentData<T> | null) => {
     if (doc == null) {
       doc = {
         id: '',
         created_at: new Date(0).toUTCString(),
         updated_at: new Date(0).toUTCString(),
-      };
+      } as RxDocumentData<T>;
     }
     extraParams = extraParams || {};
     const where = {
@@ -80,10 +85,15 @@ export function pullQueryBuilder(
 export function pushQueryBuilder<T extends Model = Model>(
   collection: RxCollection,
   extraParams?: PushQueryExtraParams,
-): RxGraphQLReplicationQueryBuilder {
+): RxGraphQLReplicationPushQueryBuilder {
   const ucfCollectionName = ucfirst(collection.name);
   const updateFields = getCollectionUpdateFields(collection);
-  return (doc: T) => {
+  return (docs: T[]) => {
+    if (docs == null || docs.length <= 0 || docs[0] == null) {
+      return {query: '', variables: {}};
+    }
+    let doc: T & {_meta?: any} = docs[0];
+    delete doc['_meta'];
     extraParams = extraParams || {};
     const where = {
       ...(extraParams.where || {}),
