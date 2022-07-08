@@ -28,7 +28,7 @@ import {DataServiceConfig} from './data-service-config';
 export const DEFAULT_SYNC_OPTIONS = {
   live: true,
   liveInterval: 60 * 1000 * 10,
-  batchSize: 1000,
+  batchSize: Math.pow(10, 5),
 };
 
 /**

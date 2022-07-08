@@ -20,6 +20,7 @@
  *
  */
 
+import {isDevMode} from '@angular/core';
 import {
   RxCollection,
   RxDocumentData,
@@ -92,20 +93,27 @@ export function pushQueryBuilder<T extends Model = Model>(
     if (docs == null || docs.length <= 0 || docs[0] == null) {
       return {query: '', variables: {}};
     }
-    let doc: T & {_meta?: any} = docs[0];
-    delete doc['_meta'];
+    if (isDevMode()) {
+      console.log('INSERT:', docs, docs[0].updated_at);
+    }
+    let documents: (T & {_meta?: any})[] = docs;
+    documents.forEach(dc => delete dc['_meta']);
     extraParams = extraParams || {};
     const where = {
       ...(extraParams.where || {}),
-      updated_at: {_lte: `${doc.updated_at}`},
+      updated_at: {_lte: `${docs[0].updated_at}`},
     };
-    if (extraParams && extraParams.docModifier) {
-      doc = extraParams.docModifier(doc);
-    }
+    docs = docs.map(dc => {
+      if (extraParams != null && extraParams.docModifier) {
+        return extraParams.docModifier(dc);
+      }
+      return dc;
+    });
+
     const query = `
-      mutation Insert${ucfCollectionName}($doc: [${collection.name}_insert_input!]!) {
+      mutation Insert${ucfCollectionName}($docs: [${collection.name}_insert_input!]!) {
         insert_${collection.name}(
-          objects: $doc,
+          objects: $docs,
           on_conflict: {
             constraint: ${collection.name}_pkey,
             update_columns: [${updateFields.join(', ')}],
@@ -117,7 +125,7 @@ export function pushQueryBuilder<T extends Model = Model>(
       }
     `;
     const unquotedQuery = query.replace(/"([^"]+)":/g, '$1:');
-    const variables = {'doc': [doc]};
+    const variables = {'docs': docs};
     return {query: unquotedQuery, variables};
   };
 }
