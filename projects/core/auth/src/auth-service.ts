@@ -399,7 +399,11 @@ export class AuthService {
       map(([isOnline, statusHistory]) => {
         let res: {token: boolean; evt: AuthEvt} = {token: tokenCheck, evt: 'init'};
         if (!isOnline) {
-          res = {token: true, evt: 'offline'};
+          if (statusHistory.length > 1 && !statusHistory[0] && statusHistory[1]) {
+            res = {token: true, evt: 'gone offline'};
+          } else {
+            res = {token: true, evt: 'offline'};
+          }
         } else if (isOnline && statusHistory.length > 1 && statusHistory[0] && !statusHistory[1]) {
           res = {token: tokenCheck, evt: 'back online'};
         }

@@ -63,7 +63,7 @@ export class E2eApp {
           authEvt =>
             authEvt.auth === true &&
             authEvt.evt != 'back online' &&
-            authEvt.evt != 'offline' &&
+            authEvt.evt != 'gone offline' &&
             authEvt.evt != 'refresh successful',
         ),
         tap(authEvt => {
@@ -83,7 +83,7 @@ export class E2eApp {
           authEvt =>
             authEvt.auth === true &&
             authEvt.evt != 'back online' &&
-            authEvt.evt != 'offline' &&
+            authEvt.evt != 'gone offline' &&
             authEvt.evt != 'refresh successful',
         ),
         tap(authEvt => {
