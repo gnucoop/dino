@@ -8,7 +8,7 @@ import {
   AuthServiceConfig,
   LoginResponse,
   User,
-} from './public_api';
+} from '@dino/core/auth';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
