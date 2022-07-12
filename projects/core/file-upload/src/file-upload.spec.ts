@@ -1,6 +1,6 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
-import {take} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 
 import {
   AUTH_SERVICE_CONFIG,
@@ -9,6 +9,7 @@ import {
   LoginResponse,
   User,
 } from '@dino/core/auth';
+import {firstValueFrom} from 'rxjs';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -64,7 +65,13 @@ describe('AuthService', () => {
   });
 
   it('should login successfully with correct credentials', async () => {
-    const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
+    const authStatus = () =>
+      firstValueFrom(
+        authService.authenticated.pipe(
+          map(authEvt => authEvt.auth),
+          take(1),
+        ),
+      );
     await expectAsync(authStatus()).toBeResolvedTo(false);
     authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
@@ -185,7 +192,13 @@ describe('logged in', () => {
   });
 
   it('should logout successfully', async () => {
-    const authStatus = () => authService.authenticated.pipe(take(1)).toPromise();
+    const authStatus = () =>
+      firstValueFrom(
+        authService.authenticated.pipe(
+          map(authEvt => authEvt.auth),
+          take(1),
+        ),
+      );
     await expectAsync(authStatus()).toBeResolvedTo(true);
     return authService.logout().subscribe(async res => {
       expect(res).toBeDefined();
