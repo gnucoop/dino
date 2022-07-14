@@ -40,7 +40,7 @@ import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, shareReplay, switchMap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
 import {format} from 'date-fns';
 
 /**
@@ -220,6 +220,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
           return obsOf(false);
         }
         return formMetricsSelector.formMetrics.statusChanges.pipe(
+          startWith(true),
           switchMap(() => formMetricsSelector.isFormMetricsValid()),
         );
       }),
