@@ -143,7 +143,7 @@ export class PermissionContextService {
       return false;
     }
     const permissions = context['user_permissions'];
-    if (permissions == null) {
+    if (permissions == null || !Object.keys(permissions).length) {
       return true;
     }
     for (let group in permissions) {
