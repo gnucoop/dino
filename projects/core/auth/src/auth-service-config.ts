@@ -56,6 +56,16 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
   signUp?: boolean;
 
   /**
+   * If true, users can reset their password from the change-password form in the login view.
+   */
+  resetPassword?: boolean;
+
+  /**
+   * Optional custom User Password reset endpoint
+   */
+  resetPasswordEndpoint?: string;
+
+  /**
    * Custom login credential key to be sent in the login request to the api.
    */
   userCredential?: string;

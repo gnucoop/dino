@@ -414,6 +414,8 @@ export class AuthService {
 
   /**
    * User Change Password method.
+   * @param credentials User Credentials
+   * @param newPass The new Password
    */
   changePassword(
     credentials: Credentials,
@@ -436,6 +438,28 @@ export class AuthService {
         } else {
           return obsOf(logRes);
         }
+      }),
+    );
+  }
+
+  /**
+   * User Reset Password method.
+   * @param email The email address of the user that wishes to reset his/her password
+   */
+  resetPassword(email: string): Observable<boolean | HttpErrorResponse> {
+    if (!email) {
+      return obsOf(false);
+    }
+    return this._authConfig.pipe(
+      switchMap(config => {
+        if (!config.resetPasswordEndpoint) {
+          return obsOf(false);
+        }
+        const resetPwdUrl = this._generateUrl(
+          `v1/user/password/reset`,
+          removeSlashes(config.resetPasswordEndpoint),
+        );
+        return this._httpClient.post<any>(resetPwdUrl, {email: email});
       }),
     );
   }

@@ -21,7 +21,7 @@
  */
 
 import {ChangeDetectorRef, Directive, Input} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
@@ -55,9 +55,19 @@ export abstract class LoginComponent {
   signupForm: FormGroup | undefined;
 
   /**
+   * The reset Password FormGroup.
+   */
+  resetPassForm: FormGroup | undefined;
+
+  /**
    * If true, the signup form is displayed in place of the login form
    */
   readonly showSignupForm: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * If true, the resetPassword form is displayed in place of the login form
+   */
+  readonly showResetPasswordForm: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * The login FormGroup.
@@ -74,6 +84,7 @@ export abstract class LoginComponent {
    */
   readonly loginDisabled: Observable<boolean>;
   readonly signupDisabled: Observable<boolean> | undefined;
+  readonly resetPassDisabled: Observable<boolean> | undefined;
 
   /**
    * True if the Login or Signup forms are currently processing a Login/Signup request.
@@ -97,12 +108,36 @@ export abstract class LoginComponent {
   }
 
   /**
+   * Error is True if reset was not successful.
+   */
+  private _resetPassError: AuthError = {error: false, message: null};
+  get resetPassError(): AuthError {
+    return this._resetPassError;
+  }
+
+  /**
    * An optional method to be executed after a successful login
    */
   private _postLogin?: Function;
   @Input()
   set postLogin(fn: Function) {
     this._postLogin = fn;
+  }
+
+  /**
+   * Optional privacy policy text, to be added to the SignUp form
+   */
+  private _privacyPolicy: string | null = null;
+  get privacyPolicy(): string | null {
+    return this._privacyPolicy;
+  }
+  @Input()
+  set privacyPolicy(pp: string | null) {
+    if (pp == null || this.signupForm == null) {
+      return;
+    }
+    this.signupForm.addControl('policy', new FormControl('', Validators.requiredTrue));
+    this._privacyPolicy = pp;
   }
 
   constructor(
@@ -121,11 +156,24 @@ export abstract class LoginComponent {
         password: [null, [Validators.required, Validators.minLength(8)]],
         confirm_password: [null, [Validators.required, Validators.minLength(8), PasswordMatch]],
       });
-
       this.signupDisabled = this.signupForm.valueChanges.pipe(
         map(_ => !this.signupForm?.valid),
         startWith(!this.signupForm.valid),
       );
+    }
+
+    if (this._authService.config.resetPassword && this._authService.config.resetPasswordEndpoint) {
+      this.resetPassForm = fb.group({
+        email: [null, [Validators.email, Validators.required]],
+      });
+
+      this.resetPassDisabled =
+        this.resetPassForm != null
+          ? this.resetPassForm.valueChanges.pipe(
+              map(_ => !this.resetPassForm!.valid),
+              startWith(!this.resetPassForm.valid),
+            )
+          : obsOf(true);
     }
 
     this.loginForm = fb.group({
@@ -247,11 +295,72 @@ export abstract class LoginComponent {
   }
 
   /**
+   * User Reset Password method.
+   */
+  resetPassword(): void {
+    if (this.resetPassForm == null || !this.resetPassForm.valid || this.processing) {
+      return;
+    }
+    const email = this.resetPassForm.get('email')?.value;
+    this._authService
+      .resetPassword(email)
+      .pipe(take(1))
+      .subscribe({
+        next: res => {
+          if (res) {
+            this._setResetPassError({error: false, message: null});
+            this.passwordReset(email);
+          } else {
+            this._setResetPassError({error: true, message: null});
+          }
+          this.processing = false;
+        },
+        error: err => {
+          if (err.status && err.status === 200) {
+            this._setResetPassError({error: false, message: null});
+            this.passwordReset(email);
+          } else {
+            this._setResetPassError({
+              error: true,
+              message: err.error.message ?? 'Incorrect email',
+            });
+          }
+          this.processing = false;
+        },
+      });
+  }
+  /**
+   * Signals the successful Password reset and closes the User Area dialog
+   */
+  passwordReset(email?: string): void {
+    if (!email) {
+      return;
+    }
+    let msg = `Password reset link sent to ${email}`;
+    this._snackBar.open(msg, 'PASSWORD RESET LINK SENT', {
+      duration: 10000,
+    });
+  }
+
+  /**
    * Toggles the signup form
    * @param toggle If true, the signup form is displayed if available
    */
   toggleSignupForm(toggle: boolean): void {
     this.showSignupForm.next(toggle);
+  }
+
+  /**
+   * Toggles the reset password form
+   * @param toggle If true, the signup form is displayed if available
+   */
+  toggleResetPassForm(toggle: boolean): void {
+    this.showResetPasswordForm.next(toggle);
+  }
+
+  private _setResetPassError(resetPassErr: AuthError): void {
+    this._resetPassError = resetPassErr;
+    this._cdr.markForCheck();
   }
 
   private _setLoginError(loginError: AuthError): void {
