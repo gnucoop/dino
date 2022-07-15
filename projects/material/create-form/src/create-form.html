@@ -7,6 +7,7 @@
 
         <div class="dino-create-form-step-container">
           <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics">
+            <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
         </div>
       </mat-step>

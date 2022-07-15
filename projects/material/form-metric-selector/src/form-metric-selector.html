@@ -1,4 +1,9 @@
 <div class="dino-form-metric-selector-container">
+
+  <div class="dino-form-metric-selector-message">
+    <ng-content select="[metric-selector-message]"></ng-content>
+  </div>
+
   <form [formGroup]="formDate" autocomplete="off">
     <mat-form-field class="dino-form-date-selector-field" appearance="fill">
       <mat-label>Creation Date</mat-label>
@@ -48,7 +53,7 @@
         </mat-error>
 
         <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')">
-          {{ 'Please select a valid'|transloco}} {{field.fieldName}}
+          {{ 'Please select a valid'|transloco}} {{field.fieldName|titlecase|transloco}}
         </mat-error>
 
         <mat-hint>{{field.hint|transloco}}</mat-hint>
