@@ -83,6 +83,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
   @Input() spinnerImagePath: string | undefined;
 
   /**
+   * Determines the initial expanded state of the sidenav
+   */
+  @Input() set initialExtendedSidenav(state: boolean) {
+    if (state == null) {
+      return;
+    }
+    this.extendedSidenav.next(state);
+  }
+
+  /**
    * If true, the logout button is not displayed.
    */
   readonly logoutDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

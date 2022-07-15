@@ -97,7 +97,7 @@
             aria-label="Admin Section"
           >
             <mat-icon>{{adminSection.icon}}</mat-icon>
-            <span *ngIf="extendedSidenav|async">{{adminSection.label}}</span>
+            <span *ngIf="extendedSidenav|async">{{adminSection.label|transloco}}</span>
           </a>
         </ng-container>
       </ng-container>
