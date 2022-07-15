@@ -52,6 +52,11 @@ export class Login extends LoginComponent implements OnDestroy {
   readonly signupAvailable: boolean | undefined;
 
   /**
+   * If true, users can change their password.
+   */
+  readonly resetPassAvailable: boolean | undefined;
+
+  /**
    * The Login page logo image path/url.
    */
   private _logoImagePath: string = '';
@@ -93,6 +98,8 @@ export class Login extends LoginComponent implements OnDestroy {
     super(authService, router, fb, cdr, snackBar);
 
     this.signupAvailable = authService.authConfig.signUp;
+    this.resetPassAvailable =
+      authService.authConfig.resetPassword && authService.authConfig.resetPasswordEndpoint != null;
 
     if (this._route.data) {
       this._expiredSub = this._route.data

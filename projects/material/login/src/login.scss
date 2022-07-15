@@ -74,4 +74,32 @@ dino-login {
       }
     }
   }
+  .dino-login-action-btn {
+    flex: 1 0 auto;
+    margin: auto;
+    width: 100%;
+  }
+  .dino-policy-field {
+    .dino-policy-text {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      overflow-y: scroll;
+      max-height: 100px;
+      max-width: 350px;
+      text-align: start;
+    }
+    .dino-policy-checkbox-group {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+      .dino-policy-checkbox-label,
+      .dino-policy-checkbox-input {
+        flex: 1 0 auto;
+        input {
+          position: relative;
+          top: 5px;
+        }
+      }
+    }
+  }
 }

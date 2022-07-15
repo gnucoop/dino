@@ -643,9 +643,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   openStatusEditor(element: FormData & {form_schema: Observable<FormSchema>}): void {
-    if (!element.form_status_ref_id) {
-      return;
-    }
     const dialogConfig = new MatDialogConfig();
     const dialogData: FormStatusEditorData = {formData: element};
     dialogConfig.data = dialogData;
