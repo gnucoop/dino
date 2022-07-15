@@ -66,6 +66,11 @@ import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selec
 })
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
+   * If true, Metrics can be created directly from the metric fields
+   */
+  @Input() allowMetricCreation: boolean = true;
+
+  /**
    * The Selector metrics form group.
    */
   formMetrics: FormGroup;

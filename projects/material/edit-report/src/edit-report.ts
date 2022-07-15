@@ -64,6 +64,11 @@ export interface ReportContext {
 })
 export class EditReport implements OnInit, AfterViewInit {
   /**
+   * If true, Metrics can be created directly from the metric fields
+   */
+  @Input() allowMetricCreation: boolean = true;
+
+  /**
    * The Report Metrics Selector
    */
   @ViewChildren(FormMetricSelector) reportMetricsSelectorComponent!: QueryList<FormMetricSelector>;

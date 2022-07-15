@@ -28,6 +28,7 @@
         />
         <mat-icon matSuffix>{{field.icon}}</mat-icon>
         <mat-icon
+        *ngIf="(isView|async) !== true && allowMetricCreation"
           matSuffix
           color="primary"
           class="dino-add-metric-button"

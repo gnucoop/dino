@@ -56,6 +56,11 @@ import {format} from 'date-fns';
 })
 export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   /**
+   * If true, Metrics can be created directly from the metric fields
+   */
+  @Input() allowMetricCreation: boolean = true;
+
+  /**
    * True if no validation errors are encountered in the Metrics selector form
    */
   isFormMetricsSelectorValid: Observable<boolean> = obsOf(false);

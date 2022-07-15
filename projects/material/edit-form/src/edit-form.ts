@@ -101,6 +101,11 @@ import {
 })
 export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
   /**
+   * If true, Metrics can be created directly from the metric fields
+   */
+  @Input() allowMetricCreation: boolean = true;
+
+  /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
