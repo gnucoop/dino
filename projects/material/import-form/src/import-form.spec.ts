@@ -1,13 +1,13 @@
-import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormBuilder} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
 import {FormDataManager} from '@dino/core/forms';
+import {UserData, UserDataManager} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {RxDocument} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
 
@@ -47,26 +47,18 @@ const mockDialogRef = {
   backdropClick: () => of(null),
 };
 
-const authServiceConfig: AuthServiceConfig = {
-  host: 'http://test-auth-backend',
-  applicationId: 'applicationId',
-  apiKey: 'apiKey',
-  retryRefreshTime: 5000,
-  retryAttemptsMax: 1,
-  failedAuthRedirect: 'login',
-};
+const dummyUserData: RxDocument<UserData> = {
+  id: 'dino_user_id',
+  email: 'user@dino.gnu',
+  full_name: 'dino_user',
+  user_group_ids: ['1', '2', '3'],
+  created_at: '',
+  updated_at: '',
+} as RxDocument<UserData>;
 
-const authServiceMock = {
-  authenticated: of({auth: true, evt: 'init'}),
-  authToken: of('test_auth_token'),
-  getUserInfo: () => {
-    return {};
-  },
-  resetEvt: of(false),
-  logoutEvt: new EventEmitter<void>(),
-  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
-  authConfig: authServiceConfig,
-} as unknown as AuthService;
+const userDataManagerMock = {
+  getActiveUserData: () => of(dummyUserData),
+} as unknown as UserDataManager;
 
 const formDataManagerMock = {
   bulkCreate: (_: any[]) => {
@@ -88,7 +80,7 @@ describe('Import Forms', () => {
       providers: [
         FormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},
-        {provide: AuthService, useValue: authServiceMock},
+        {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: FormDataManager, useValue: formDataManagerMock},
         {provide: MetricsService, useValue: metricServiceManagerMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
