@@ -27,6 +27,7 @@ import {
   Component,
   Inject,
   isDevMode,
+  OnDestroy,
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
@@ -42,8 +43,8 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
-import {forkJoin, Observable, of as obsOf, zip} from 'rxjs';
-import {catchError, exhaustMap, switchMap, take} from 'rxjs/operators';
+import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
+import {catchError, exhaustMap, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 /**
@@ -58,7 +59,7 @@ import * as XLSX from 'xlsx';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ImportForm {
+export class ImportForm implements OnDestroy {
   /**
    * Current status message of the Import Form
    */
@@ -118,11 +119,16 @@ export class ImportForm {
     organization: this._og,
   };
 
+  /**
+   * Subscribes to the userData
+   */
+  private _userDataSub: Subscription = Subscription.EMPTY;
+
   constructor(
-    private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
     private _formBuilder: FormBuilder,
     private _formDataManager: FormDataManager,
+    private _udm: UserDataManager,
     readonly metricsService: MetricsService,
     public dialogRef: MatDialogRef<ImportForm>,
     @Optional() private _ar: AreaManager | null,
@@ -321,6 +327,7 @@ export class ImportForm {
   private _importFormData(
     rows: {[key: string]: any}[],
     activeMetrics: string[],
+    userDataId: string | null,
     metricsIdByName: {[key: string]: {[key: string]: any}} | null,
   ): void {
     const forms: InsertModel<FormData>[] = [];
@@ -339,7 +346,8 @@ export class ImportForm {
             newItem['created_at'] = rowDate;
           } catch (e) {}
         }
-        newItem['user_data_ref_id'] = this._authService.getUserInfo()?.id;
+
+        newItem['user_data_ref_id'] = userDataId;
         if (row[userDataKey] && row[userDataKey].length) {
           newItem['user_data_ref_id'] = row[userDataKey];
         }
@@ -348,7 +356,11 @@ export class ImportForm {
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
             const value = this._getValueFromRow(row[key]);
-            return {...obj, [key]: value};
+            if (value !== null) {
+              return {...obj, [key]: value};
+            } else {
+              return {...obj};
+            }
           }, {});
 
         Object.keys(this._metricManagers).forEach(metric => {
@@ -473,11 +485,13 @@ export class ImportForm {
           catchError(() => {
             return obsOf([], [], []);
           }),
+          withLatestFrom(this._udm.getActiveUserData()),
         )
-        .subscribe(r => {
+        .subscribe(([r, ud]) => {
           const createdMetrics = r[0];
           const requiredNewMetrics = r[1];
           const existingMetrics = r[2];
+          const userDataId = ud ? ud.id : null;
           let metricsError: string[] = [];
           let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
           if (createdMetrics) {
@@ -512,7 +526,7 @@ export class ImportForm {
 
             if (metricsError.length === 0) {
               this._addExistingMetricsIntoList(metricsIdByName, existingMetrics);
-              this._importFormData(rows, activeMetrics, metricsIdByName);
+              this._importFormData(rows, activeMetrics, userDataId, metricsIdByName);
             } else {
               this._setImportStatus(
                 'File not imported! Error during create new metrics: ' + metricsError,
@@ -521,7 +535,10 @@ export class ImportForm {
           }
         });
     } else {
-      this._importFormData(rows, activeMetrics, null);
+      this._userDataSub = this._udm.getActiveUserData().subscribe(ud => {
+        const userDataId = ud ? ud.id : null;
+        this._importFormData(rows, activeMetrics, userDataId, null);
+      });
     }
   }
 
@@ -541,5 +558,9 @@ export class ImportForm {
       const data: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
       this._importFormDataRows(data);
     };
+  }
+
+  ngOnDestroy() {
+    this._userDataSub.unsubscribe();
   }
 }
