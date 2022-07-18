@@ -34,13 +34,13 @@ import {
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
-import {AuthService} from '@dino/core/auth';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
 import {FormData, FormDataManager} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
+import {UserDataManager} from '@dino/core/users';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
