@@ -10,6 +10,7 @@ dino-login {
 
     > div {
       flex: 1 0 auto;
+      max-width: 90vw;
       align-self: center;
 
       &.dino-logo-container {
@@ -85,16 +86,22 @@ dino-login {
       margin-bottom: 15px;
       overflow-y: scroll;
       max-height: 100px;
-      max-width: 350px;
+      max-width: 35vw;
+      @media only screen and (max-width: 768px) {
+        max-width: 90vw;
+      }
       text-align: start;
     }
     .dino-policy-checkbox-group {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-around;
+      max-width: 35vw;
+      @media only screen and (max-width: 768px) {
+        max-width: 90vw;
+      }
       .dino-policy-checkbox-label,
       .dino-policy-checkbox-input {
-        flex: 1 0 auto;
         input {
           position: relative;
           top: 5px;
