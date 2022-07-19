@@ -16,7 +16,7 @@
 
 <ng-template #keywordfilter>
   <ng-container [formGroup]="textSearchFilters">
-    <mat-form-field floatLabel="always" (click)="$event.stopPropagation()">
+    <mat-form-field floatLabel="always" (click)="$event.stopPropagation()" (keydown.Space)="$event.stopImmediatePropagation();">
       <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco" />
       <mat-icon color="primary" matSuffix>search</mat-icon>
     </mat-form-field>
