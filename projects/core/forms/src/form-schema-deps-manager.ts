@@ -25,9 +25,8 @@ import {DataModelManager, DataService, PermissionContextService} from '@dino/cor
 
 import {schema} from './form-schema-deps-json';
 import {FormSchemaDeps} from './form-schema-deps';
-import {FormsModule} from './forms.module';
 
-@Injectable({providedIn: FormsModule})
+@Injectable({providedIn: 'root'})
 export class FormSchemaDepsManager extends DataModelManager<FormSchemaDeps> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super({name: 'form_schema_deps', collection: {schema}}, dataService, permissionContextService);

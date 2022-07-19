@@ -90,6 +90,7 @@ export class SyncManager {
       'project': this._pj,
       'location': this._lc,
       'organization': this._og,
+      'form_schema_deps': this._fsdeps,
     };
 
     this._managersInit = [
