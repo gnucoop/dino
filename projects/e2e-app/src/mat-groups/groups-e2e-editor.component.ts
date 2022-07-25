@@ -304,7 +304,7 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     allOption: boolean = false,
     uniqueItem: boolean = false,
   ): Observable<MixedEditorItem[]> {
-    return manager.query({selector: {is_deleted: {$eq: false}}}).pipe(
+    return manager.query({selector: {is_deleted: {$ne: true}}}).pipe(
       map(list => {
         const res = list.map(doc => {
           const item: MixedEditorItem = {

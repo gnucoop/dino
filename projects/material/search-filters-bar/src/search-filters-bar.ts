@@ -318,7 +318,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         switchMap(val => {
           if (typeof val === 'string') {
             return metricManager
-              .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$eq: false}}})
+              .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$ne: true}}})
               .pipe(map(results => results.sort((a, b) => this._sortMetricsAlphabetically(a, b))));
           }
           return [];

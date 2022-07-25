@@ -140,7 +140,7 @@ export class UserEditor implements OnDestroy, OnInit {
     readonly snackbar: MatSnackBar,
   ) {
     this._populateForm();
-    this.userGroups = this._userGroupManager.query({selector: {is_deleted: {$eq: false}}});
+    this.userGroups = this._userGroupManager.query({selector: {is_deleted: {$ne: true}}});
   }
 
   ngOnInit(): void {

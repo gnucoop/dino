@@ -402,12 +402,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     this.formMetricsSubs[metricType] = combineLatest([
       this._userGroupManager.getGroupsMetricsByType(metricType).pipe(
         switchMap(metricsIds => {
-          const querySelector = {id: {$in: metricsIds}, is_deleted: {$eq: false}};
+          const querySelector = {id: {$in: metricsIds}, is_deleted: {$ne: true}};
           if (this._metricManagers[metricType] == null) {
             return [];
           }
           if (metricsIds.includes('all')) {
-            return this._metricManagers[metricType]!.query({selector: {is_deleted: {$eq: false}}});
+            return this._metricManagers[metricType]!.query({selector: {is_deleted: {$ne: true}}});
           }
           return this._metricManagers[metricType]!.query({selector: querySelector});
         }),

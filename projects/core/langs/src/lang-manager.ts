@@ -71,7 +71,7 @@ export class LangManager extends DataModelManager<Lang> {
   // le langs storate su django
   readonly langsStored$ = new BehaviorSubject<Lang[]>([]);
   readonly langsShowed$: Observable<Lang[]> = this.query({
-    selector: {is_deleted: {$eq: false}},
+    selector: {is_deleted: {$ne: true}},
   }).pipe(
     map((langsStored: Lang[]) => {
       const langsShowed: Lang[] = [];
