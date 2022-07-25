@@ -1,3 +1,46 @@
+<a name="13.1.0"></a>
+# 13.1.0 "itchy-boar" (2022-07-25)
+### Bug Fixes
+* **core/data:** checkPermission method modified ([80042f0](https://bitbucket.org/gnucoop/dino/commits/80042f0b6431c47737cd1a4f1bd78b0a36bc978c))
+* **core/data:** Collection Subscriptions now log the user out when receiving a JWT token error message different from 'JWT expired' message. ([e7c44dc](https://bitbucket.org/gnucoop/dino/commits/e7c44dcb45ef8adbef0e205f0ecea883b1f729e6))
+* **core/data:** List Datasource 'keyword' filters use '$eq' as operator in the query Selector. ([4320151](https://bitbucket.org/gnucoop/dino/commits/4320151e5f449f3481288058acd9138313b178ba))
+* **core/list:** Filters Service is now provided in 'root' ([f8bc5f0](https://bitbucket.org/gnucoop/dino/commits/f8bc5f08b2f4dd51198bcba0f7dbea72d4897833))
+* **e2e-material:** Fixed a bug causing collections reinitialization on authtoken refresh ([310a752](https://bitbucket.org/gnucoop/dino/commits/310a7528ce6e158b8d6bc74a6185607e42588b9c))
+* finish rebase and update ajf to v13.2.0 ([55a0e18](https://bitbucket.org/gnucoop/dino/commits/55a0e18ad09be11ce449bf0a2ffdb9e6665f8711))
+* **material/collect:** Collect filter now filters by Items Label ([abc0771](https://bitbucket.org/gnucoop/dino/commits/abc07718aa2e8a735905173269232e60714a0b3e))
+* **material/create-report:** Fixed a bug that forbid progressing to step 2 of Report creation when metrics are optional. ([5de4963](https://bitbucket.org/gnucoop/dino/commits/5de4963b34b0a70518f879ed69f603d9f96d3f4c))
+* **material/import-form:** Added missing dino/core/users import for UserDataManager ([94d4131](https://bitbucket.org/gnucoop/dino/commits/94d4131d7fd072cddcc722ab203b17d53a521692))
+* **material/import-form:** added missing mock provider into test ([8740df2](https://bitbucket.org/gnucoop/dino/commits/8740df205d97f4b8d911e12940a9ae2fb94e3abf))
+* **material/import-form:** fix userid and check for null value before import ([f6fcf43](https://bitbucket.org/gnucoop/dino/commits/f6fcf436980bfea2f0c8b2d5c847f05a9c6c3a41))
+* **material/list:** List rows now display Labels instead of values of single/multiple choice fields. ([63debd4](https://bitbucket.org/gnucoop/dino/commits/63debd43b2c96cd7ee802a1e57f926d75a79d4e7))
+* **material/login:** Css fix for login form, both small and large screens ([605de42](https://bitbucket.org/gnucoop/dino/commits/605de4286c1ef6340f0149d6385caab13e1e53fa))
+* **material/search-filters-bar:** Spacebar no longer triggers the advanced filters expansion panel opening. ([4e96f89](https://bitbucket.org/gnucoop/dino/commits/4e96f89b0bc4462f7ebe771bb30f486ad6ebd63a))
+* **multiple:** Fixed a bug that forbid advancing to step 2 of create/edit form, even when metrics were optional ([caecb10](https://bitbucket.org/gnucoop/dino/commits/caecb102a472f89a8c532667dd70ee37b5f2ee68))
+### Features
+* **core/auth:** Added Reset Password process. Added Privacy Policy terms input to signup. ([c1bfca3](https://bitbucket.org/gnucoop/dino/commits/c1bfca3fc0f1585653937e75053909af99185d8a))
+* **core/data:** Action trigger interfaces added. ([33db829](https://bitbucket.org/gnucoop/dino/commits/33db829b00b18c4f66781e403b1863c4d20c0f6d))
+* **core/data:** Sync and collection creation overhaul ([3565a9a](https://bitbucket.org/gnucoop/dino/commits/3565a9ab19c199df5352739f7518fdd293d49a1d))
+* **core/file-upload:** add delete file function ([725a215](https://bitbucket.org/gnucoop/dino/commits/725a215d3139f81f987a0c00b3f6ba9b25996687))
+* **core/file-upload:** add delete file function ([9c370b8](https://bitbucket.org/gnucoop/dino/commits/9c370b8a0a6ece481fe273e5b1f021edf6bd1078))
+* **core/file-upload:** upload formdata files into nhost storage ([6c6dfc9](https://bitbucket.org/gnucoop/dino/commits/6c6dfc9f4c7fe2013d0bca087800fe2d8a88731d))
+* **core/file-upload:** upload formdata files into nhost storage ([cf1f9a0](https://bitbucket.org/gnucoop/dino/commits/cf1f9a07986d41989d12776b0e272ecda6697f42))
+* **core/list:** Added custom text argument to "askConfirm" abstract method ([83d95fc](https://bitbucket.org/gnucoop/dino/commits/83d95fc0392d82f495c423c9507c058984c7b486))
+* **core/users:** Created AdminGuard, to prevent access to admin routes by non-admin users. ([e73869f](https://bitbucket.org/gnucoop/dino/commits/e73869f30e7d9c805f404743abc3a6ab746e9136))
+* **e2e-material:** E2e app initialization overhaul. ([299afa3](https://bitbucket.org/gnucoop/dino/commits/299afa34e1b2425f859f0c57c844f928c6c7de10))
+* **material/create-form:** add upload file on storage ([21acab6](https://bitbucket.org/gnucoop/dino/commits/21acab65c3a23dc898a5200ff1d105873baa35e8))
+* **material/create-form:** add upload file on storage ([e0f4db8](https://bitbucket.org/gnucoop/dino/commits/e0f4db8c14d0b60fd3b17ee6ac307b112881c0a6))
+* **material/edit-form:** delete file on save ([f848029](https://bitbucket.org/gnucoop/dino/commits/f84802980acfa0c1561c71a578692a11bde45e3a))
+* **material/form-metric-selector:** Added ng content projection for a Message that will appear before the Metric Selector fields ([f5b007a](https://bitbucket.org/gnucoop/dino/commits/f5b007a660572294c24a2e817810f116be971b51))
+* **material/loading-spinner:** Added Custom Loading Spinner module and component ([7ed9962](https://bitbucket.org/gnucoop/dino/commits/7ed996223f1bbee3a0433fdb911776470c941db7))
+* **material/main-nav:** Added initialExtendedSidenav input, for displaying the expanded menu from the start. ([c2c4a24](https://bitbucket.org/gnucoop/dino/commits/c2c4a24a47a9e10edf5c6f67e7059071d99f060f))
+* **material/main-nav:** Added Loading spinner and Logout availability observable. ([643854a](https://bitbucket.org/gnucoop/dino/commits/643854a14d850f01bfc6d8fa9a0481ea5c5da497))
+* **material/user-interactions:** Added User Interactions module. ([ae3800c](https://bitbucket.org/gnucoop/dino/commits/ae3800c7b55402fc9f8a5830bb08454757ba1de7))
+* **multiple:** Added Action Trigger emission to edit/create form ([297d71d](https://bitbucket.org/gnucoop/dino/commits/297d71de5f3ab41c97936ff0ce206db0a9d6a9a5))
+* **multiple:** Metric creation in Metric Selector is now allowed or forbidden depending on a dedicated Input ([9f4a3b0](https://bitbucket.org/gnucoop/dino/commits/9f4a3b043f1e125994c4cfaf2a3c4f71ba8210fe))
+* use date-fns for dates ([5f19713](https://bitbucket.org/gnucoop/dino/commits/5f19713c3d31e75b3c75b6e21c05669c59fbf1c0))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.0.8"></a>
 # 13.0.8 "incredible-magpie" (2022-06-28)
 ### Bug Fixes
