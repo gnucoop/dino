@@ -3,7 +3,7 @@ import {FormBuilder} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
-import {FormDataManager} from '@dino/core/forms';
+import {FormDataManager, FormStatusManager} from '@dino/core/forms';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
@@ -66,6 +66,12 @@ const formDataManagerMock = {
   },
 };
 
+const formStatusManagerMock = {
+  query: (_: any) => {
+    return of([]);
+  },
+};
+
 const metricServiceManagerMock = {
   activeMetrics: new BehaviorSubject<{metricName: string}[]>([{metricName: 'project'}]),
 };
@@ -82,6 +88,7 @@ describe('Import Forms', () => {
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: FormDataManager, useValue: formDataManagerMock},
+        {provide: FormStatusManager, useValue: formStatusManagerMock},
         {provide: MetricsService, useValue: metricServiceManagerMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},

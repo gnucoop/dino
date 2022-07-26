@@ -33,7 +33,7 @@ import {
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormDataManager, FormSchemaManager} from '@dino/core/forms';
+import {FormData, FormDataManager, FormSchemaManager, FormStatus} from '@dino/core/forms';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserData} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
@@ -314,12 +314,15 @@ export class EditReport implements OnInit, AfterViewInit {
         const populatedUser: Observable<RxDocument<UserData>> = from(
           formData.populate('user_data_ref_id'),
         );
+        const populatedStatus: Observable<RxDocument<FormStatus>> = from(
+          formData.populate('form_status_ref_id'),
+        );
         metrics.forEach(metricType => {
           populatedMetrics.push(from(formData.populate(`${metricType}_ref_id`)));
         });
-        return zip(forkJoin(populatedMetrics), populatedUser);
+        return zip(forkJoin(populatedMetrics), populatedUser, populatedStatus);
       }),
-      map(([mts, usr]) => {
+      map(([mts, usr, status]) => {
         const addedMetrics = mts.map(mt => {
           if (mt == null) {
             return null;
@@ -339,7 +342,14 @@ export class EditReport implements OnInit, AfterViewInit {
             addedUserData[`dino_user_${key}`] = userJsonDoc[key];
           }
         }
-        return [...addedMetrics, addedUserData];
+        const addedUserStatus: {[key: string]: any} = {};
+        if (status != null) {
+          const statusJsonDoc: {[key: string]: any} = status.toJSON();
+          for (let key in statusJsonDoc) {
+            addedUserData[`dino_form_status_${key}`] = statusJsonDoc[key];
+          }
+        }
+        return [...addedMetrics, addedUserData, addedUserStatus];
       }),
       map(addedDatas => {
         let addData = {};
