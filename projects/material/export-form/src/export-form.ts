@@ -365,6 +365,11 @@ export class ExportForm implements AfterViewInit, OnDestroy {
                   }
                 }
               });
+              if (ctx.dino['form_status']) {
+                exportCtx[`form_status_name`] = ctx.dino['form_status']['name'];
+                exportCtx[`form_status_label`] = ctx.dino['form_status']['label'];
+                exportCtx[`form_status_level`] = ctx.dino['form_status']['status_level'];
+              }
               exportCtxList.push(exportCtx);
             }
           });
