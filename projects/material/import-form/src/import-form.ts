@@ -36,7 +36,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormDataManager} from '@dino/core/forms';
+import {FormData, FormDataManager, FormStatusManager} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -44,7 +44,7 @@ import {UserDataManager} from '@dino/core/users';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
-import {catchError, exhaustMap, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {catchError, exhaustMap, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 /**
@@ -101,6 +101,7 @@ export class ImportForm implements OnDestroy {
     'location_ref_id',
     'organization_ref_id',
     'project_ref_id',
+    'form_status_ref_id',
   ];
 
   /**
@@ -129,6 +130,7 @@ export class ImportForm implements OnDestroy {
     private _formBuilder: FormBuilder,
     private _formDataManager: FormDataManager,
     private _udm: UserDataManager,
+    private _fsm: FormStatusManager,
     readonly metricsService: MetricsService,
     public dialogRef: MatDialogRef<ImportForm>,
     @Optional() private _ar: AreaManager | null,
@@ -329,6 +331,7 @@ export class ImportForm implements OnDestroy {
     activeMetrics: string[],
     userDataId: string | null,
     metricsIdByName: {[key: string]: {[key: string]: any}} | null,
+    statusDictionary: {[key: string]: string | null} | null,
   ): void {
     const forms: InsertModel<FormData>[] = [];
     const createdAtKey = 'created_at';
@@ -351,7 +354,9 @@ export class ImportForm implements OnDestroy {
         if (row[userDataKey] && row[userDataKey].length) {
           newItem['user_data_ref_id'] = row[userDataKey];
         }
-        newItem['form_status_ref_id'] = null;
+        newItem['form_status_ref_id'] = statusDictionary
+          ? statusDictionary[row['form_status_name']]
+          : null;
         newItem['data'] = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
@@ -450,16 +455,42 @@ export class ImportForm implements OnDestroy {
     }
   }
 
+  private _getStatusDictionary(
+    statuses:
+      | {
+          [key: string]: Observable<string | null>;
+        }
+      | undefined,
+  ): Observable<{[key: string]: string | null} | null> {
+    if (!statuses) {
+      return obsOf(null);
+    }
+    const statusKeys: string[] = Object.keys(statuses);
+    const statusIds = forkJoin(statusKeys.map(key => statuses[key]));
+    return statusIds.pipe(
+      map(ids => {
+        const dictionary: {[key: string]: string | null} = {};
+        for (let idx = 0; idx < ids.length; idx++) {
+          dictionary[statusKeys[idx]] = ids[idx];
+        }
+        return dictionary;
+      }),
+    );
+  }
+
   /**
    * Import all the rows and all new metrics into Dino
    * @param rows The rows to be imported
    */
-  private _importFormDataRows(rows: {[key: string]: any}[]): void {
+  private _importFormDataRows(
+    rows: {[key: string]: any}[],
+    statuses?: {[key: string]: Observable<string | null>},
+  ): void {
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
     const newMetricsInRows = this._getMetricsToBeCreated(rows, activeMetrics);
     if (Object.keys(newMetricsInRows).length) {
-      this._checkIfMetricsAlreadyExist(newMetricsInRows)
-        .pipe(
+      forkJoin([
+        this._checkIfMetricsAlreadyExist(newMetricsInRows).pipe(
           exhaustMap(existingMetrics => {
             const newMetrics: {[key: string]: {[key: string]: any}[]} = deepCopy(newMetricsInRows);
             if (existingMetrics.length > 0) {
@@ -486,58 +517,62 @@ export class ImportForm implements OnDestroy {
             return obsOf([], [], []);
           }),
           withLatestFrom(this._udm.getActiveUserData()),
-        )
-        .subscribe(([r, ud]) => {
-          const createdMetrics = r[0];
-          const requiredNewMetrics = r[1];
-          const existingMetrics = r[2];
-          const userDataId = ud ? ud.id : null;
-          let metricsError: string[] = [];
-          let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
-          if (createdMetrics) {
-            createdMetrics.forEach(metrics => {
-              if (metrics && metrics.success.length) {
+        ),
+        this._getStatusDictionary(statuses),
+      ]).subscribe(([[r, ud], stDict]) => {
+        const createdMetrics = r[0];
+        const requiredNewMetrics = r[1];
+        const existingMetrics = r[2];
+        const userDataId = ud ? ud.id : null;
+        let metricsError: string[] = [];
+        let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
+        if (createdMetrics) {
+          createdMetrics.forEach(metrics => {
+            if (metrics && metrics.success.length) {
+              if (
+                metrics.success.length ===
+                requiredNewMetrics[metrics.success[0].collection.name].length
+              ) {
+                metrics.success.forEach(metric => {
+                  this._addMetricDetails(metric, metricsIdByName);
+                });
+              } else {
+                metricsError.push(metrics.success[0].collection.name);
+              }
+            } else {
+              if (metrics && metrics.error.length && metrics.error[0].msg) {
+                if (isDevMode()) {
+                  console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
+                }
                 if (
-                  metrics.success.length ===
-                  requiredNewMetrics[metrics.success[0].collection.name].length
+                  metrics.error[0].msg?.parameters?.errors &&
+                  metrics.error[0].msg?.parameters?.errors.length
                 ) {
-                  metrics.success.forEach(metric => {
-                    this._addMetricDetails(metric, metricsIdByName);
-                  });
-                } else {
-                  metricsError.push(metrics.success[0].collection.name);
+                  metricsError.push(JSON.stringify(metrics.error[0].msg?.parameters?.errors[0]));
                 }
               } else {
-                if (metrics && metrics.error.length && metrics.error[0].msg) {
-                  if (isDevMode()) {
-                    console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
-                  }
-                  if (
-                    metrics.error[0].msg?.parameters?.errors &&
-                    metrics.error[0].msg?.parameters?.errors.length
-                  ) {
-                    metricsError.push(JSON.stringify(metrics.error[0].msg?.parameters?.errors[0]));
-                  }
-                } else {
-                  metricsError.push('-');
-                }
+                metricsError.push('-');
               }
-            });
-
-            if (metricsError.length === 0) {
-              this._addExistingMetricsIntoList(metricsIdByName, existingMetrics);
-              this._importFormData(rows, activeMetrics, userDataId, metricsIdByName);
-            } else {
-              this._setImportStatus(
-                'File not imported! Error during create new metrics: ' + metricsError,
-              );
             }
+          });
+
+          if (metricsError.length === 0) {
+            this._addExistingMetricsIntoList(metricsIdByName, existingMetrics);
+            this._importFormData(rows, activeMetrics, userDataId, metricsIdByName, stDict);
+          } else {
+            this._setImportStatus(
+              'File not imported! Error during create new metrics: ' + metricsError,
+            );
           }
-        });
+        }
+      });
     } else {
-      this._userDataSub = this._udm.getActiveUserData().subscribe(ud => {
+      this._userDataSub = forkJoin([
+        this._udm.getActiveUserData(),
+        this._getStatusDictionary(statuses),
+      ]).subscribe(([ud, stDict]) => {
         const userDataId = ud ? ud.id : null;
-        this._importFormData(rows, activeMetrics, userDataId, null);
+        this._importFormData(rows, activeMetrics, userDataId, null, stDict);
       });
     }
   }
@@ -556,7 +591,24 @@ export class ImportForm implements OnDestroy {
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
-      this._importFormDataRows(data);
+      if (this._fsm) {
+        const statusDictionary: {[key: string]: Observable<string | null>} = {};
+        data.forEach(row => {
+          if (row['form_status_name'] && !statusDictionary[row['form_status_name']]) {
+            statusDictionary[row['form_status_name']] = this._fsm
+              .query({
+                selector: {name: {$eq: row['form_status_name']}, is_deleted: {$ne: true}},
+              })
+              .pipe(
+                map(docs => (docs[0] ? docs[0].id : null)),
+                take(1),
+              );
+          }
+        });
+        this._importFormDataRows(data, statusDictionary);
+      } else {
+        this._importFormDataRows(data);
+      }
     };
   }
 
