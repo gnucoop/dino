@@ -344,6 +344,7 @@ export class DataService implements IDataService {
           }),
         ) as Observable<R | null>;
       }),
+      retryWhen(err => err.pipe(delay(1000), take(10))),
     );
   }
 
