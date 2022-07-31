@@ -462,7 +462,7 @@ export class ImportForm implements OnDestroy {
         }
       | undefined,
   ): Observable<{[key: string]: string | null} | null> {
-    if (!statuses) {
+    if (!statuses || !Object.keys(statuses) || !Object.keys(statuses).length) {
       return obsOf(null);
     }
     const statusKeys: string[] = Object.keys(statuses);
