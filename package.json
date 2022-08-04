@@ -34,12 +34,12 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
-  "version": "13.1.0",
+  "version": "13.2.4",
   "private": true,
   "dependencies": {
-    "@ajf/core": "^13.2.2",
+    "@ajf/core": "^13.2.4",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "^13.2.2",
+    "@ajf/material": "^13.2.4",
     "@angular/animations": "^13.3.4",
     "@angular/cdk": "^13.3.4",
     "@angular/common": "^13.3.4",
