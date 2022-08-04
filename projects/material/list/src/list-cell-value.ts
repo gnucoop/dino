@@ -42,7 +42,8 @@ export class ListCellValue implements PipeTransform {
     const dataEl = element as Model & {data?: {[key: string]: any}};
     const col = header.column.toString() as keyof typeof dataEl;
     let val = header.dataColumn ? (dataEl.data || {})[col] : dataEl[col];
-    let dt = parseISO(val);
+    let isValNaN = Number.isNaN(val);
+    let dt = parseISO(isValNaN ? val : {});
     if (!isNaN(dt.valueOf())) {
       const datePipe = new DatePipe(this._getCurrentLocale());
       return datePipe.transform(dt, 'short') as string;
