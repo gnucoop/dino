@@ -20,9 +20,16 @@
  *
  */
 import {TranslocoService} from '@ajf/core/transloco';
-import {ChangeDetectionStrategy, Component, Inject, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  ViewEncapsulation,
+} from '@angular/core';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
-import {Observable, of} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'dino-lang-selector',
@@ -31,18 +38,28 @@ import {Observable, of} from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LangSelector {
+export class LangSelector implements AfterViewInit {
+  /**
+   * Custom languages to be shown in the Language Selector
+   */
+  @Input() customLanguages: string[] | undefined;
   currentLang: string;
-  readonly langsShowed$: Observable<string[]>;
+  readonly langsShowed$: BehaviorSubject<string[]>;
 
   constructor(
     private _ts: TranslocoService,
     @Inject(TRANSLATIONS_CONFIG) private _config: TranslationsConfig,
   ) {
-    this.langsShowed$ = of(['ITA', 'ENG', 'FRA', 'PRT', 'ESP']);
+    this.langsShowed$ = new BehaviorSubject<string[]>(['ENG']);
     this.currentLang = localStorage.getItem('lang') || this._config.defaultLanguage;
     this._ts.setDefaultLang(this._config.defaultLanguage);
     this._ts.setActiveLang(this.currentLang);
+  }
+
+  ngAfterViewInit(): void {
+    if (this.customLanguages) {
+      this.langsShowed$.next(this.customLanguages);
+    }
   }
 
   setLang(lang: string) {

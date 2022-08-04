@@ -26,6 +26,7 @@ import {ESP} from './esp';
 import {FRA} from './fra';
 import {ITA} from './ita';
 import {PRT} from './prt';
+import {UGA} from './uga';
 
 export const dinoTranslations: {[key: string]: Translation} = {
   ENG,
@@ -33,4 +34,5 @@ export const dinoTranslations: {[key: string]: Translation} = {
   FRA,
   ITA,
   PRT,
+  UGA,
 };
