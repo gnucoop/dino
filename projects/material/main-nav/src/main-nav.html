@@ -39,7 +39,7 @@
       [ngTemplateOutlet]="(networkStatusService.isOnline$|async) ? syncOnline : syncOffline "
     >
     </ng-container>
-    <dino-lang-selector></dino-lang-selector>
+    <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
     <ng-container *ngIf="userDisplayName|async as userDisplayName">
       <mat-icon class="dino-active-user-icon" color="primary" (click)="openUserArea()"
         >person</mat-icon

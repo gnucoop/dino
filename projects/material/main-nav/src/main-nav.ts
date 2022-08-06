@@ -93,6 +93,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Custom languages to be shown in the Language Selector
+   */
+  @Input() customLanguages: string[] | undefined;
+
+  /**
    * If true, the logout button is not displayed.
    */
   readonly logoutDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

@@ -3,6 +3,7 @@ import {PermissionContextService} from '@dino/core/data';
 import {Section} from '@dino/material/main-nav';
 import {Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
+import {availableLanguagesConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-main',
@@ -20,6 +21,7 @@ import {filter, map} from 'rxjs/operators';
 })
 export class MatMainE2E {
   constructor(private _pcs: PermissionContextService) {}
+  customLanguages = availableLanguagesConfig;
   sections: Observable<Section[]> = this._pcs.fullContext.pipe(
     filter(ctx => ctx != null && ctx.user_permissions != null),
     map(context => {
