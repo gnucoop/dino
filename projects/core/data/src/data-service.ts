@@ -59,6 +59,7 @@ import {
   take,
   takeUntil,
   tap,
+  throttleTime,
   withLatestFrom,
 } from 'rxjs/operators';
 import {SubscriptionClient} from 'subscriptions-transport-ws';
@@ -527,19 +528,14 @@ export class DataService implements IDataService {
               }
               return from(db.addCollections({[params.name]: params.collection})).pipe(
                 tap(coll => {
-                  if (
-                    this._dataConfig.value.syncOptions.live &&
-                    this._dataConfig.value.syncOptions.wsUrl
-                  ) {
-                    if (isDevMode()) {
-                      console.log(
-                        `${params.name.toLocaleUpperCase()} created with Where: ${JSON.stringify(
-                          params.pullQueryExtraParams?.where,
-                        )}.`,
-                      );
-                    }
-                    this._addRegisteredCollection(coll[params.name], params);
+                  if (isDevMode()) {
+                    console.log(
+                      `${params.name.toLocaleUpperCase()} created with Where: ${JSON.stringify(
+                        params.pullQueryExtraParams?.where,
+                      )}.`,
+                    );
                   }
+                  this._addRegisteredCollection(coll[params.name], params);
                 }),
                 mapTo(true),
                 catchError(err => {
@@ -601,6 +597,31 @@ export class DataService implements IDataService {
       switchMap(([_cd, db]) => from(db.destroy()).pipe(switchMap(() => from(db.remove())))),
       take(1),
     );
+  }
+
+  /**
+   * Forces the start of a graphql replication run cycle for each state of
+   * each active sync
+   */
+  runSync() {
+    combineLatest([this.isSyncing, this._nss.isOnline$])
+      .pipe(take(1))
+      .subscribe(([isSyncing, isOnline]) => {
+        if (!isSyncing && isOnline) {
+          if (isDevMode()) {
+            console.log('Running the sync!');
+          }
+          const actSyncs = this._activeSyncs.value;
+          for (let key in actSyncs) {
+            const actSync: ActiveSync | undefined = actSyncs[key];
+            if (actSync && actSync.state) {
+              actSync.state.run().then(() => {
+                this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
+              });
+            }
+          }
+        }
+      });
   }
 
   /**
@@ -708,32 +729,39 @@ export class DataService implements IDataService {
       url: this._dataConfig.value.syncOptions.url,
       headers: {'Authorization': `Bearer ${token}`},
       deletedFlag: '_deleted',
+      retryTime: 1000,
       pull: {
         queryBuilder: pullQueryBuilder(
           collection,
           this._dataConfig.value.syncOptions,
           params.pullQueryExtraParams,
         ),
-        batchSize: DEFAULT_SYNC_OPTIONS.batchSize,
+        batchSize: this.config.syncOptions.batchSizePull ?? DEFAULT_SYNC_OPTIONS.batchSizePull,
       },
       push: {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
-        batchSize: DEFAULT_SYNC_OPTIONS.batchSize,
+        batchSize: this.config.syncOptions.batchSizePush ?? DEFAULT_SYNC_OPTIONS.batchSizePush,
       },
     });
+
     let stateActivity: Observable<boolean> = state.active$;
-    let sub: {unsubscribe: () => void} = Subscription.EMPTY;
+
+    let clientRequestSub: {unsubscribe: () => void} = Subscription.EMPTY;
+    let stateReceivedSub: {unsubscribe: () => void} = Subscription.EMPTY;
+    let client: SubscriptionClient | null = null;
     if (
       this._dataConfig.value.syncOptions.live &&
       this._dataConfig.value.syncOptions.wsUrl != null
     ) {
-      const client = new SubscriptionClient(
+      client = new SubscriptionClient(
         this._dataConfig.value.syncOptions.wsUrl,
         {
+          minTimeout: 120 * 1000,
+          timeout: 240 * 1000,
           reconnect: true,
           reconnectionAttempts: 5,
           connectionCallback: (error: Error[]) => {
-            if (error) {
+            if (error && client) {
               client.close(true);
               const errMessage = error.toString();
               if (
@@ -752,26 +780,35 @@ export class DataService implements IDataService {
       );
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = client.request({query});
-      sub = clientRequest.subscribe({
-        next: st => {
-          if (st.data && st.data[collection.name]) {
-            this._collectionChangedEmit(
-              'websocket change received',
-              collection,
-              (st.data[collection.name] as unknown[]).length,
-            );
-          }
-          state.run().then(() => {
-            this._collectionChangedEmit('replication cycle complete', collection);
-            state.received$.pipe(take(1), delay(1000)).subscribe(() => {
-              this._collectionChangedEmit('changed data pulled', collection);
-            });
-          });
+
+      stateReceivedSub = state.received$.pipe(throttleTime(500)).subscribe(_data => {
+        this._collectionChangedEmit('changed data pulled', collection);
+      });
+
+      clientRequestSub = clientRequest.subscribe({
+        next: () => {
+          state.notifyAboutRemoteChange().then(
+            () => {
+              this._collectionChangedEmit('replication cycle complete', collection);
+            },
+            err => {
+              if (isDevMode()) {
+                console.log(err);
+              }
+            },
+          );
         },
       });
     }
     const actSyncs = this._activeSyncs.getValue();
-    actSyncs[collection.name] = {state, sub, stateActivity, collectionName: collection.name};
+    actSyncs[collection.name] = {
+      state,
+      clientRequestSub,
+      stateReceivedSub,
+      client,
+      stateActivity,
+      collectionName: collection.name,
+    };
     this._activeSyncs.next(actSyncs);
   }
 
@@ -784,8 +821,12 @@ export class DataService implements IDataService {
       return;
     }
     const actSyncs = this._activeSyncs.getValue();
-    const {state, sub} = actSyncs[collectionName];
-    sub.unsubscribe();
+    const {state, clientRequestSub, stateReceivedSub, client} = actSyncs[collectionName];
+    if (client) {
+      client.close(true);
+    }
+    clientRequestSub.unsubscribe();
+    stateReceivedSub.unsubscribe();
     state.cancel().then(() => {});
     delete actSyncs[collectionName];
     this._activeSyncs.next(actSyncs);
@@ -802,6 +843,14 @@ export class DataService implements IDataService {
     if (collection == null) {
       return;
     }
+    if (isDevMode()) {
+      console.log({
+        collection: collection.name,
+        action: msg,
+        ...(count != null && {count}),
+      });
+    }
+
     this._collectionChanged.emit({
       timestamp: new Date().getTime(),
       collection: collection.name,
@@ -895,5 +944,5 @@ export class DataService implements IDataService {
 
 const isRxDocument = <T extends Model>(doc: T): doc is RxDocument<T> => {
   const d = doc as any;
-  return d.update != null && d.collection != null;
+  return d && d.update != null && d.collection != null;
 };

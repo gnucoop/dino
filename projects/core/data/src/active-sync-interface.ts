@@ -22,6 +22,7 @@
 
 import {RxGraphQLReplicationState} from 'rxdb/plugins/replication-graphql';
 import {Observable} from 'rxjs';
+import {SubscriptionClient} from 'subscriptions-transport-ws';
 import {Model} from './model';
 
 /**
@@ -39,9 +40,19 @@ export interface ActiveSync<T extends Model = Model> {
   collectionName: string;
 
   /**
-   * The state graphql subscription
+   * The state graphql client subscription
    */
-  sub: {unsubscribe: () => void};
+  clientRequestSub: {unsubscribe: () => void};
+
+  /**
+   * The state received graphql subscription
+   */
+  stateReceivedSub: {unsubscribe: () => void};
+
+  /**
+   * The websocket subscription client
+   */
+  client: SubscriptionClient | null;
 
   /**
    * Observable of the activity state.

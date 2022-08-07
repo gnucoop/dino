@@ -47,7 +47,16 @@ import {
   Subject,
   throwError,
 } from 'rxjs';
-import {catchError, map, shareReplay, skipWhile, switchMap, take, takeUntil} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  skipWhile,
+  switchMap,
+  take,
+  takeUntil,
+  throttleTime,
+} from 'rxjs/operators';
 
 /**
  * Dictionary of label/values for Schema choices
@@ -249,7 +258,7 @@ export class ListDataSource<
     });
 
     this._dataModelManager.collectionChanged
-      .pipe(takeUntil(this._mainUnsubscribe))
+      .pipe(takeUntil(this._mainUnsubscribe), throttleTime(500))
       .subscribe(evt => {
         this.refreshListData.next(evt);
       });

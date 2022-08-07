@@ -29,7 +29,7 @@
     </ng-container>
     <ng-template #syncOnline>
       <mat-icon class="dino-sync-detector" [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
-        >sync</mat-icon
+        (click)="runSync()">sync</mat-icon
       >
     </ng-template>
     <ng-template #syncOffline>

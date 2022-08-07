@@ -403,6 +403,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
       });
   }
 
+  /**
+   * Forces the start of a graphql replication run cycle
+   */
+  runSync(): void {
+    this.dataService.runSync();
+  }
+
   ngOnDestroy() {
     this._menuClickSub.unsubscribe();
     this._menuToggleSub.unsubscribe();

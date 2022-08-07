@@ -31,9 +31,14 @@ import {Model} from './model';
 export interface DataServiceSyncOptions<T extends Model = Model>
   extends Omit<SyncOptionsGraphQL<T>, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
   /**
-   * The number of documents synced in each request.
+   * The number of documents synced in each pull request.
    */
-  batchSize?: number;
+  batchSizePull?: number;
+
+  /**
+   * The number of documents synced in each push request.
+   */
+  batchSizePush?: number;
 
   /**
    * GraphQL WebSocket endpoint used for live sync.
