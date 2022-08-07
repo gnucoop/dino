@@ -15,6 +15,7 @@ import {additionalConfig} from './mockconfig';
 export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
 export const wsUrl = 'ws://localhost:8080/v1/graphql';
 export const instanceName = 'local_dev';
+export const live = true;
 
 /**
  * NHost dev backend

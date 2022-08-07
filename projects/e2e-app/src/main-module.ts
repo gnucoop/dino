@@ -72,6 +72,7 @@ import {MaterialUsersE2eModule} from './mat-users/users-e2e.module';
 import {
   additionalConfig,
   authConfig,
+  availableLanguagesConfig,
   configurationConfig,
   defaultLanguageConfig,
   optionalModulesConfig,
@@ -80,6 +81,7 @@ import {
 import {
   authErrorMessage,
   AuthServiceMock,
+  live,
   syncGraphQLUrl,
   UserDataManagerMock,
   UserGroupManagerMock,
@@ -179,7 +181,7 @@ export function provideDataServiceConfig() {
     syncOptions: {
       url: syncGraphQLUrl,
       wsUrl: additionalConfig.externalAuthentication ? wsUrl : null,
-      live: additionalConfig.externalAuthentication ? true : false,
+      live: live,
       webSocketImpl: WebSocket,
       authErrorMessage: authErrorMessage,
     },
@@ -188,7 +190,10 @@ export function provideDataServiceConfig() {
 
 @NgModule({
   imports: [
-    AjfTranslocoModule.forRoot({reRenderOnLangChange: true}),
+    AjfTranslocoModule.forRoot({
+      reRenderOnLangChange: true,
+      availableLangs: availableLanguagesConfig,
+    }),
     AjfEchartsModule.forRoot({echarts: () => import('echarts')}),
     AuthModule.forRoot(authConfig),
     BrowserAnimationsModule,
