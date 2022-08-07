@@ -29,7 +29,10 @@ import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument} from 'rxdb';
 import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {addPouchPlugin} from 'rxdb/plugins/pouchdb';
-import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
+import {
+  RxDBReplicationGraphQLPlugin,
+  RxGraphQLReplicationState,
+} from 'rxdb/plugins/replication-graphql';
 import {RxDBQueryBuilderPlugin} from 'rxdb/plugins/query-builder';
 import {RxDBUpdatePlugin} from 'rxdb/plugins/update';
 import {
@@ -799,7 +802,9 @@ export class DataService implements IDataService {
           );
         },
       });
+      this._setCollectionLastPushCheckpoint(state, collection);
     }
+
     const actSyncs = this._activeSyncs.getValue();
     actSyncs[collection.name] = {
       state,
@@ -830,6 +835,31 @@ export class DataService implements IDataService {
     state.cancel().then(() => {});
     delete actSyncs[collectionName];
     this._activeSyncs.next(actSyncs);
+  }
+
+  /**
+   * Performs a "fake" update on the last updated document of the collection.
+   * This causes rxDb to set the "last push checkpoint" for the collection.
+   * @param state The rxGraphql replication state of the collection
+   * @param collection The rxCollection
+   */
+  private _setCollectionLastPushCheckpoint(
+    state: RxGraphQLReplicationState<Model>,
+    collection: RxCollection,
+  ) {
+    from(state.awaitInitialReplication())
+      .pipe(
+        switchMap(() => from(collection.findOne({sort: [{'updated_at': 'desc'}]}).exec())),
+        switchMap(doc => {
+          if (doc == null) {
+            return obsOf(null);
+          }
+          const rxDoc = doc as RxDocument<Model>;
+          return this.update(collection.name, rxDoc, {updated_at: rxDoc.updated_at});
+        }),
+        take(1),
+      )
+      .subscribe();
   }
 
   /**
