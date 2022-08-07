@@ -45,7 +45,8 @@ const collections = schemas.map(
 
 const syncOptions: DataServiceSyncOptions = {
   url: 'host',
-  batchSize: 10,
+  batchSizePull: 10,
+  batchSizePush: 10,
 };
 
 async function getQueryString(query: {query: string} | Promise<{query: string}>): Promise<string> {
