@@ -1,3 +1,18 @@
+<a name="13.2.0"></a>
+# 13.2.0 "comparable-fish" (2022-08-08)
+### Bug Fixes
+* **material/import-form:** Fixed a bug causing getStatusDictionary to not emit. ([25c8ff1](https://bitbucket.org/gnucoop/dino/commits/25c8ff11cd051ccf49c699ec9a28430d5d36dfcf))
+* **material/list:** dinoListCellValue check that value isn't a number before trying to transform it with parseISO ([51f3fe9](https://bitbucket.org/gnucoop/dino/commits/51f3fe9295432255347857dac82869b571fa6c28))
+* **material/list:** Removed transloco pipe from bulk delete action icon name ([7233be6](https://bitbucket.org/gnucoop/dino/commits/7233be6634b7dc49b5d25972b784cae1e9f56faf))
+### Features
+* **e2e-material:** Added availableLanguages and live settings for the E2e app ([9fa7ac3](https://bitbucket.org/gnucoop/dino/commits/9fa7ac30e9c0b56f604a6412c135e3cc4d34bb84))
+* **material/edit-report:** Added form status properties to report context ([4aba2c5](https://bitbucket.org/gnucoop/dino/commits/4aba2c5b59a7be18f4594c55217510e25deac330))
+* **material/export-form:** Form Status is now exported ([e9265f7](https://bitbucket.org/gnucoop/dino/commits/e9265f779a84c99b887abddcf700e9a82dfcd729))
+* **material/import-form:** Form Statuses are now imported based on the Status Name. New statuses are currently not created on import. ([231b8f2](https://bitbucket.org/gnucoop/dino/commits/231b8f2cb067f895fdc6f90c72d5cc9b0d296751))
+* **multiple:** Available languages can now be specified in the config/environment ([64878cf](https://bitbucket.org/gnucoop/dino/commits/64878cfb9802f437f83b6bdbb5df213bd5ffb566))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.1.0"></a>
 # 13.1.0 "itchy-boar" (2022-07-25)
 ### Bug Fixes
