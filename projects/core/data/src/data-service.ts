@@ -802,8 +802,8 @@ export class DataService implements IDataService {
           );
         },
       });
-      this._setCollectionLastPushCheckpoint(state, collection);
     }
+    this._setCollectionLastPushCheckpoint(state, collection);
 
     const actSyncs = this._activeSyncs.getValue();
     actSyncs[collection.name] = {
