@@ -1,3 +1,10 @@
+<a name="13.2.1"></a>
+# 13.2.1 "disappointed-nightingale" (2022-08-10)
+### Bug Fixes
+* **core/data:** setCollectionLastPushCheckpoint is now correctly called  even when Live setting is false. ([0ace655](https://bitbucket.org/gnucoop/dino/commits/0ace6555b5f3260856beafc146f3653912f6665e))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.2.0"></a>
 # 13.2.0 "comparable-fish" (2022-08-08)
 ### Bug Fixes
