@@ -55,6 +55,12 @@ export interface DataServiceSyncOptions<T extends Model = Model>
    * the JWT token expiration
    */
   authErrorMessage?: string;
+
+  /**
+   * If true, the App will run locally, detached from its backend.
+   * No auth is required in this mode.
+   */
+  backendless?: boolean;
 }
 
 /**

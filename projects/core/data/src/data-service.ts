@@ -248,7 +248,9 @@ export class DataService implements IDataService {
       }),
     );
 
-    this._initSync();
+    if (!this.config.syncOptions.backendless) {
+      this._initSync();
+    }
 
     this._refreshEvt
       .pipe(
