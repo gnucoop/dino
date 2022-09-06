@@ -113,6 +113,14 @@ export class EditFormSchema implements OnInit, OnDestroy {
   } | null>(null);
 
   /**
+   * Emits when a schema has been updated by the user
+   * via Relationships
+   */
+  private _newSchema: BehaviorSubject<FormSchema | null> = new BehaviorSubject<FormSchema | null>(
+    null,
+  );
+
+  /**
    * Emitted when the Form Schema is saved
    */
   private _saveEvt: EventEmitter<void> = new EventEmitter<void>();
@@ -128,9 +136,19 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _dialogRef?: MatDialogRef<ImportFormSchema>;
 
   /**
-   * Subscribes to the value returned by the MatDialog on its closing event
+   * Subscribes to the value returned by the Import MatDialog on its closing event
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * A reference to the MatDialog that contains the relationships
+   */
+  private _dialogDepsRef?: MatDialogRef<FormDepsEditor>;
+
+  /**
+   * Subscribes to the value returned by the relationships MatDialog on its closing event
+   */
+  private _dialogDepsSub: Subscription = Subscription.EMPTY;
 
   constructor(
     private _router: Router,
@@ -198,8 +216,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
     this._saveSub = this._saveEvt
       .pipe(
-        withLatestFrom(this._formSchema, this._formBuilderService.getCurrentForm(), this.formGroup),
-        switchMap(([_, fs, schema, formGroup]) => {
+        withLatestFrom(
+          this._formSchema,
+          this._formBuilderService.getCurrentForm(),
+          this.formGroup,
+          this._newSchema,
+        ),
+        switchMap(([_, fs, schema, formGroup, schemaWithDeps]) => {
           if (schema == null) {
             return obsOf(null);
           }
@@ -212,6 +235,9 @@ export class EditFormSchema implements OnInit, OnDestroy {
             form_status_ref_id: formGroup.get('status')?.value ?? undefined,
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
+          if (schemaWithDeps) {
+            formPatch.form_schema_deps_ref_id = schemaWithDeps.form_schema_deps_ref_id;
+          }
           if (fs == null) {
             return this._formSchemaManager.create(formPatch).pipe(
               catchError(() => obsOf(null)),
@@ -297,7 +323,18 @@ export class EditFormSchema implements OnInit, OnDestroy {
       },
     } as MatDialogConfig;
 
-    this._dialog.open(FormDepsEditor, dialogConfig);
+    this._dialogDepsRef = this._dialog.open(FormDepsEditor, dialogConfig);
+    this._dialogDepsSub = this._dialogDepsRef
+      .afterClosed()
+      .pipe(
+        catchError(err => throwError(() => err) as Observable<boolean>),
+        take(1),
+      )
+      .subscribe((schema: FormSchema | null) => {
+        if (schema != null) {
+          this._newSchema.next(schema);
+        }
+      });
   }
 
   /**
@@ -322,5 +359,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._saveEvt.complete();
     this._saveSub.unsubscribe();
     this._dialogSub.unsubscribe();
+    this._dialogDepsSub.unsubscribe();
   }
 }

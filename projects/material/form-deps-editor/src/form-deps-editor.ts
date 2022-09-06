@@ -30,7 +30,7 @@ import {
   withLatestFrom,
 } from 'rxjs';
 import {MetricsService} from '@dino/core/data';
-import {RxDocument} from 'rxdb';
+import {isRxDocument, RxDocument} from 'rxdb';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
@@ -234,7 +234,12 @@ export class FormDepsEditor implements OnInit, OnDestroy {
           );
         } else {
           this.snackbar.open('Relationships created', 'SAVE', {duration: 10000});
-          this.closeDialog();
+          if (fschema != null && isRxDocument(fschema)) {
+            const resObj = fschema.toJSON();
+            this.updateAndCloseDialog(resObj);
+          } else {
+            this.closeDialog();
+          }
         }
       });
   }
@@ -292,10 +297,17 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   }
 
   /**
+   * Save and closes the dialog
+   */
+  updateAndCloseDialog(fschema: {[key: string]: any} | null) {
+    this.dialogRef.close(fschema);
+  }
+
+  /**
    * Closes the dialog
    */
   closeDialog() {
-    this.dialogRef.close(false);
+    this.dialogRef.close(null);
   }
 
   /**
