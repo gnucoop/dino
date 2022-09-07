@@ -182,6 +182,21 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     this._cdr.markForCheck();
   }
 
+  /**
+   * The base instance name
+   */
+  protected baseInstanceName: string | null = null;
+
+  get instanceName(): string | null {
+    return this._baseUrl;
+  }
+
+  @Input()
+  set instanceName(instName: string | null) {
+    this.baseInstanceName = instName;
+    this._cdr.markForCheck();
+  }
+
   constructor(
     protected _cdr: ChangeDetectorRef,
     protected _aui: AdminUserInteractionsService,

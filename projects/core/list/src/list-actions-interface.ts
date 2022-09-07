@@ -31,7 +31,9 @@ export type ActionType =
   | 'view'
   | 'select'
   | 'expand'
-  | 'status edit';
+  | 'status edit'
+  | 'addFavorite'
+  | 'removeFavorite';
 
 /**
  * Action performed on a List item
