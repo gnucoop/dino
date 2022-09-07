@@ -20,7 +20,7 @@
  *
  */
 
-export * from './collect';
-export * from './collect.module';
-export * from './collect-item-interface';
-export * from './collect-dashboard-type';
+/**
+ * Represents a single List of Forms with the same Form Schema, or a generic/mixed Item
+ */
+export type DashboardType = 'report' | 'menu';
