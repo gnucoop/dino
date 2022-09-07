@@ -1,11 +1,13 @@
 <dino-list
   [headers]="headers"
   [baseUrl]="baseUrl"
+  [instanceName]="instName"
   [dataSource]="dataSource"
   [additionalBasicFilters]="additionalBasicFilters"
   [additionalDataSchema]="additionalDataSchema|async"
   [listRowActions]="listRowActions|async"
   [onClickRowActions]="onClickRowActions"
+  (emitRowDataEvt)="emitRowId($event)"
 >
   <dino-search-filters-bar
     filters

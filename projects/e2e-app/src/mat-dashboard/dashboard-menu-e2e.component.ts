@@ -4,14 +4,14 @@ import {PermissionContextService} from '@dino/core/data';
 import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {CollectItem} from '@dino/material/collect';
-import {filter, map, shareReplay} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith} from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: 'dashboard-e2e.component.html',
+  selector: 'app-dashboard-menu',
+  templateUrl: 'dashboard-menu-e2e.component.html',
 })
-export class MatDashboardE2E {
+export class MatDashboardMenuE2E {
   @Output() isLoading: Observable<boolean>;
   collectItems: Observable<CollectItem[]>;
 
@@ -21,8 +21,15 @@ export class MatDashboardE2E {
     readonly userGroupManager: UserGroupManager,
     private _pcs: PermissionContextService,
   ) {
-    this.isLoading = this._pcs.permissionContext.pipe(
-      map(ctx => ctx.user_permissions == null && ctx.user != null),
+    this.isLoading = this._pcs.fullContext.pipe(
+      filter(ctx => ctx != null),
+      map(ctx => {
+        if (ctx == null) {
+          return false;
+        }
+        return ctx.user_permissions == null && ctx.user != null;
+      }),
+      startWith(true),
     );
 
     this.collectItems = combineLatest([

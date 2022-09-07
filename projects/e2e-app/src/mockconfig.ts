@@ -111,6 +111,11 @@ export const additionalConfig = {
    * otherwise are uploaded on cloud and only the online url is saved
    */
   offlineFileUpload: false,
+
+  /**
+   * The type of the dashboard component loaded by the app
+   */
+  dashboardType: 'report',
 };
 
 /**

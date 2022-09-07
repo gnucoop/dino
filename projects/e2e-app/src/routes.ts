@@ -6,7 +6,7 @@ import {MatAreasE2E} from './mat-areas/areas-e2e.component';
 import {MatCasesE2E} from './mat-cases/cases-e2e.component';
 import {MatCreateFormDataE2E} from './mat-create-form-data/create-form-data-e2e.component';
 import {MatCreateReportDataE2E} from './mat-create-report-data/create-report-data-e2e.component';
-import {MatDashboardE2E} from './mat-dashboard/dashboard-e2e.component';
+import {MatDashboardMenuE2E} from './mat-dashboard/dashboard-menu-e2e.component';
 import {MatEditFormSchemaE2E} from './mat-edit-form-schema/edit-form-schema-e2e.component';
 import {MatEditFormE2E} from './mat-edit-form/edit-form-e2e.component';
 import {MatEditReportE2E} from './mat-edit-report/edit-report-e2e.component';
@@ -292,7 +292,7 @@ export const E2E_APP_ROUTES: Routes = [
     path: 'dashboard',
     canActivate: authGuard,
     data: {breadcrumbs: [{label: 'Dashboard', url: 'dashboard', icon: 'apps'}]},
-    component: MatDashboardE2E,
+    component: MatDashboardMenuE2E,
   },
   {
     path: 'langs',
