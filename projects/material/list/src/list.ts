@@ -75,6 +75,7 @@ import {ChoicesDicitionary, ListDataSource} from './list-datasource';
 import {PaginatorIntl} from './paginator-intl';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {RxDocument} from 'rxdb';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -380,6 +381,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _router: Router,
     private _snackbar: MatSnackBar,
     private _renderer: Renderer2,
+    private _ts: TranslocoService,
   ) {
     super(cdr, aui, actroute);
 
@@ -951,6 +953,76 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
     path.push(item.id);
     this._router.navigate(path);
+  }
+
+  /**
+   * Adds the row Item to the corresponding localStorage "favorites" slot.
+   * @param item The item to be added to favorites
+   * @param isDetails If true, the form is a sub-form displayed in a sub list. Defaults to false
+   */
+  addFavoriteAction(item: T, _isDetails: boolean = false): void {
+    const genItem = item as {[key: string]: any};
+    if (
+      item == null ||
+      (genItem['form_schema_ref_id'] == null && genItem['report_schema_ref_id'] == null) ||
+      this.baseUrl == null
+    ) {
+      return;
+    }
+    const itemObj = item as {[key: string]: any};
+    let favoriteKey = null;
+    if (itemObj['report_schema_ref_id'] && this.baseInstanceName) {
+      favoriteKey = `dino_favorite_report_${this.baseInstanceName}`;
+    } else if (itemObj['form_schema_ref_id'] && this.baseInstanceName) {
+      favoriteKey = `dino_favorite_form_${this.baseInstanceName}`;
+    }
+
+    if (favoriteKey) {
+      localStorage.setItem(favoriteKey, item.id);
+      this._snackbar.open(
+        this._ts.translate(
+          'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.',
+        ),
+        this._ts.translate('ADDED TO FAVORITES'),
+        {
+          duration: 10000,
+        },
+      );
+    }
+  }
+
+  /**
+   * Removes the row Item from the corresponding localStorage "favorites" slot.
+   * @param item The item to be removed from favorites
+   * @param isDetails If true, the form is a sub-form displayed in a sub list. Defaults to false
+   */
+  removeFavoriteAction(item: T, _isDetails: boolean = false): void {
+    const genItem = item as {[key: string]: any};
+    if (
+      item == null ||
+      (genItem['form_schema_ref_id'] == null && genItem['report_schema_ref_id'] == null) ||
+      this.baseUrl == null
+    ) {
+      return;
+    }
+    const itemObj = item as {[key: string]: any};
+    let favoriteKey = null;
+    if (itemObj['report_schema_ref_id'] && this.baseInstanceName) {
+      favoriteKey = `dino_favorite_report_${this.baseInstanceName}`;
+    } else if (itemObj['form_schema_ref_id'] && this.baseInstanceName) {
+      favoriteKey = `dino_favorite_form_${this.baseInstanceName}`;
+    }
+
+    if (favoriteKey) {
+      localStorage.removeItem(favoriteKey);
+      this._snackbar.open(
+        this._ts.translate('Item successfully removed from your favorites.'),
+        this._ts.translate('REMOVED FROM FAVORITES'),
+        {
+          duration: 10000,
+        },
+      );
+    }
   }
 
   ngOnDestroy() {

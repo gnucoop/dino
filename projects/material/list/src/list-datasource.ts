@@ -550,6 +550,9 @@ export class ListDataSource<
    * @param detailsQuery? The optional query, performed by the dataModelManager detailsManager
    */
   getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void {
+    if (!query.sort) {
+      query.sort = [{created_at: 'desc'}];
+    }
     const dmMainQuery = this._dataModelManager.query(query).pipe(
       take(1),
       catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),

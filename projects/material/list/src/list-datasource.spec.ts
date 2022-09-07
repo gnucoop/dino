@@ -41,6 +41,7 @@ const dummySchema = {
   },
   'additionalProperties': false,
   'title': 'dummymodel',
+  'indexes': ['created_at', 'updated_at'],
   'primaryKey': 'id',
   'version': 0,
 } as RxJsonSchema<any>;
@@ -169,6 +170,7 @@ describe('ListDataSource', () => {
         is_deleted: {$ne: true},
       },
       limit: 10,
+      sort: [Object({created_at: 'desc'})],
     };
 
     expect(spyAddNestedProp).toHaveBeenCalled();
