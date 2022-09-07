@@ -26,7 +26,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit,
+  isDevMode,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
@@ -38,8 +38,18 @@ import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '
 import {UserData} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {RxDocument} from 'rxdb';
-import {combineLatest, forkJoin, from, Observable, of as obsOf, Subject, zip} from 'rxjs';
-import {filter, map, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  from,
+  Observable,
+  of as obsOf,
+  Subject,
+  throwError,
+  zip,
+} from 'rxjs';
+import {delay, filter, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -62,11 +72,32 @@ export interface ReportContext {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class EditReport implements OnInit, AfterViewInit {
+export class EditReport implements AfterViewInit {
+  /**
+   * If true, the report view stepper and its two
+   * steps (Metric Selector and Ajf Report) are displayed.
+   * Otherwise only the Ajf Report is displayed.
+   */
+  @Input() steps: boolean = true;
+
+  /**
+   * The Custom loading spinner image path
+   */
+  @Input() spinnerImagePath: string | undefined;
+
   /**
    * If true, Metrics can be created directly from the metric fields
    */
   @Input() allowMetricCreation: boolean = true;
+
+  /**
+   * Sets the report id with an input
+   */
+  @Input() set setReportId(id: string | null) {
+    if (id != null) {
+      this._inputReportId.next(id);
+    }
+  }
 
   /**
    * The Report Metrics Selector
@@ -90,11 +121,21 @@ export class EditReport implements OnInit, AfterViewInit {
   isReportMetricsSelectorValid: Observable<boolean> = obsOf(false);
 
   /**
+   * The Metrics selected in the Report Metrics Selector
+   */
+  reportMetrics: Observable<string | null> | undefined;
+
+  /**
    * True if the Report can have one or more null Metrics.
    * Defaults to false.
    */
   @Input()
   hasOptionalMetrics: boolean = false;
+
+  /**
+   * Emits when a report id is passed via input
+   */
+  private _inputReportId: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   /**
    * The Report schema id
@@ -104,8 +145,8 @@ export class EditReport implements OnInit, AfterViewInit {
   /**
    * The Report data object
    */
-  private _reportData: Observable<ReportData | null> = obsOf(null);
-  get reportData(): Observable<ReportData | null> {
+  private _reportData: Observable<RxDocument<ReportData> | null> = obsOf(null);
+  get reportData(): Observable<RxDocument<ReportData> | null> {
     return this._reportData;
   }
 
@@ -120,7 +161,11 @@ export class EditReport implements OnInit, AfterViewInit {
   /**
    * The Form Datas that are the source of data for the Report creation.
    */
-  private _sourceFormData: Observable<RxDocument<FormData>[]> = obsOf([]);
+  private _sourceFormData: Observable<RxDocument<FormData>[]>;
+
+  get sourceFormData(): Observable<RxDocument<FormData>[]> {
+    return this._sourceFormData;
+  }
 
   /**
    * The current Report Data object
@@ -133,7 +178,9 @@ export class EditReport implements OnInit, AfterViewInit {
   private _reportMetricsSelector: Observable<FormMetricSelector | null> = obsOf(null);
 
   /**
-   * True if the Report is in readonly mode
+   * True if the Report is in readonly mode.
+   * When a Report id is passed by the input, the report is automatically
+   * displayed in readonly mode.
    */
   readonly isView: Observable<boolean>;
 
@@ -147,8 +194,11 @@ export class EditReport implements OnInit, AfterViewInit {
     private _reportDataManager: ReportDataManager,
     private _reportSchemaManager: ReportSchemaManager,
   ) {
-    this.isView = this._route.data.pipe(
-      map(data => {
+    this.isView = combineLatest([this._route.data, this._inputReportId]).pipe(
+      map(([data, inputId]) => {
+        if (inputId) {
+          return true;
+        }
         if (data != null && data['isView'] != null) {
           return data['isView'];
         }
@@ -156,30 +206,27 @@ export class EditReport implements OnInit, AfterViewInit {
       }),
     );
 
-    this.reportId = this._route.params.pipe(
-      map(params => params['report_id']),
+    this.reportId = combineLatest([this._route.params, this._inputReportId]).pipe(
+      map(([params, inputId]) => (inputId ? inputId : params['report_id'])),
       tap(id => {
         if (id == null) {
           this._router.navigateByUrl('/');
         }
       }),
       filter(id => id != null),
-      shareReplay(1),
     );
-  }
 
-  ngOnInit(): void {
     this._reportData = this.reportId.pipe(
       switchMap(id => {
         return this._reportDataManager.get(id).pipe(
-          map(repData => {
+          switchMap(repData => {
             if (repData == null) {
-              this._router.navigateByUrl('');
-              return null;
+              return throwError(() => new Error('Invalid Report Data collection'));
             }
             this._currentReport.next(repData);
-            return repData;
+            return obsOf(repData);
           }),
+          retryWhen(err => err.pipe(delay(1000), take(10))),
         );
       }),
       shareReplay(1),
@@ -197,13 +244,14 @@ export class EditReport implements OnInit, AfterViewInit {
           return null;
         }
         return this._reportSchemaManager.get(schemaId).pipe(
-          map(doc => {
+          switchMap(doc => {
             if (doc == null) {
-              return null;
+              return throwError(() => new Error('Invalid Report Schema collection'));
             }
             const item = doc.toJSON();
-            return item;
+            return obsOf(item);
           }),
+          retryWhen(err => err.pipe(delay(1000), take(10))),
         );
       }),
       switchMap(schema => schema as Observable<ReportSchema>),
@@ -245,7 +293,6 @@ export class EditReport implements OnInit, AfterViewInit {
         querySelector['is_deleted'] = {$eq: false};
         return this._formDataManager.query({selector: querySelector});
       }),
-      startWith([]),
     );
 
     this.reportInstance = combineLatest([
@@ -258,13 +305,20 @@ export class EditReport implements OnInit, AfterViewInit {
         const formSchemaIds = rSchema.form_schema_ids;
         let populatedData: Observable<{[key: string]: any}>[] = [];
         for (let formSchemaId of formSchemaIds) {
-          const data = sfData
-            .filter(fdata => fdata.form_schema_ref_id === formSchemaId)
-            .map(fd => this._populateData(fd));
-          populatedData.push(...data);
+          if (sfData != null) {
+            const data = sfData
+              .filter(fdata => fdata.form_schema_ref_id === formSchemaId)
+              .map(fd => this._populateData(fd));
+            populatedData.push(...data);
+          }
         }
         const ctxSchemas = this._formSchemaManager.query({selector: {id: {$in: formSchemaIds}}});
-        return zip(forkJoin(populatedData), ctxSchemas, obsOf(rData), obsOf(rSchema));
+        return zip(
+          populatedData.length ? forkJoin(populatedData) : obsOf([]),
+          ctxSchemas,
+          obsOf(rData),
+          obsOf(rSchema),
+        );
       }),
       map(([ctx, ctxSchemas, rData, rSchema]) => {
         const contextForms: ReportContext = {};
@@ -281,6 +335,9 @@ export class EditReport implements OnInit, AfterViewInit {
           }
         });
         const context = {forms: contextForms, schemas: contextSchemas, report_data: rData};
+        if (isDevMode()) {
+          console.log(context);
+        }
         this._currentReportInstance = createReportInstance(
           rSchema.schema,
           context,
@@ -354,46 +411,119 @@ export class EditReport implements OnInit, AfterViewInit {
       map(addedDatas => {
         let addData = {};
         addedDatas.forEach(data => (addData = {...addData, ...data}));
-        return {...formData.data, ...addData, form_schema_ref_id: formData.form_schema_ref_id};
+        return {
+          dino_created_at: formData.created_at,
+          dino_updated_at: formData.updated_at,
+          ...formData.data,
+          ...addData,
+          form_schema_ref_id: formData.form_schema_ref_id,
+        };
       }),
       take(1),
     );
   }
 
   ngAfterViewInit(): void {
-    this._reportMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
-      switchMap(active => {
-        if (!active) {
-          return obsOf(null);
-        }
-        return this.reportMetricsSelectorComponent.changes.pipe(
-          map((comps: QueryList<FormMetricSelector>) => comps.first),
-        );
-      }),
-    );
+    // Here we check if the template is in "steps" mode and contains a metric selector component
+    if (this.steps) {
+      this._reportMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
+        switchMap(active => {
+          if (!active) {
+            return obsOf(null);
+          }
+          return this.reportMetricsSelectorComponent.changes.pipe(
+            map((comps: QueryList<FormMetricSelector>) => comps.first),
+          );
+        }),
+      );
 
-    combineLatest([this._reportMetricsSelector, this._currentReport, this.isView])
-      .pipe(
-        switchMap(([fms, currentDoc, isView]) => {
-          if (fms == null) {
+      this.reportMetrics = this._reportMetricsSelector.pipe(
+        switchMap(rms => {
+          if (rms) {
+            return rms.formMetrics.valueChanges.pipe(
+              map((vc: {[key: string]: RxDocument<Metric>}) => {
+                let metricsString = '';
+                Object.keys(vc).forEach(key => {
+                  if (!vc[key]) {
+                    delete vc[key];
+                  }
+                });
+                const metricKeys = Object.keys(vc);
+                for (let idx = 0; idx < metricKeys.length; idx++) {
+                  const key = metricKeys[idx];
+                  if (key && vc[key]) {
+                    metricsString += `${this._translateService.translate(
+                      key.charAt(0).toUpperCase() + key.slice(1),
+                    )} : ${vc[key]['name']}  `;
+                  }
+                  if (idx < metricKeys.length - 1) {
+                    metricsString += ', ';
+                  }
+                }
+                return metricsString;
+              }),
+            );
+          } else {
+            return obsOf(null);
+          }
+        }),
+      );
+
+      combineLatest([this._reportMetricsSelector, this._currentReport, this.isView])
+        .pipe(
+          switchMap(([fms, currentDoc, isView]) => {
+            if (fms == null) {
+              return obsOf(false);
+            }
+            fms.addFormData(currentDoc, isView);
+            return obsOf(true);
+          }),
+          take(1),
+        )
+        .subscribe();
+
+      this.isReportMetricsSelectorValid = this._reportMetricsSelector.pipe(
+        switchMap(reportMetricsSelector => {
+          if (reportMetricsSelector == null) {
             return obsOf(false);
           }
-          fms.addFormData(currentDoc, isView);
-          return obsOf(true);
+          return reportMetricsSelector.formMetrics.statusChanges.pipe(
+            switchMap(() => reportMetricsSelector.isFormMetricsValid()),
+          );
         }),
-        take(1),
-      )
-      .subscribe();
+      );
+    } else {
+      this.reportMetrics = this.reportData.pipe(
+        switchMap(rd => {
+          if (rd == null) {
+            return obsOf(null);
+          }
+          const activeMetrics = this.metricsService.activeMetrics.value.map(am => am.metricName);
+          const populatedMetrics: Observable<RxDocument<Metric>>[] = [];
+          for (let mkey of activeMetrics) {
+            populatedMetrics.push(from(rd.populate(`${mkey}_ref_id`)).pipe(shareReplay(1)));
+          }
+          return forkJoin(populatedMetrics);
+        }),
+        map(metrics => {
+          if (metrics == null) {
+            return null;
+          }
+          let metricsString = '';
+          const filteredMetrics: RxDocument<Metric>[] = metrics.filter(mt => mt != null);
+          for (let idx = 0; idx < filteredMetrics.length; idx++) {
+            const metric = filteredMetrics[idx];
+            metricsString += `${this._translateService.translate(
+              metric.collection.name.charAt(0).toUpperCase() + metric.collection.name.slice(1),
+            )} : ${metric['name']}  `;
 
-    this.isReportMetricsSelectorValid = this._reportMetricsSelector.pipe(
-      switchMap(reportMetricsSelector => {
-        if (reportMetricsSelector == null) {
-          return obsOf(false);
-        }
-        return reportMetricsSelector.formMetrics.statusChanges.pipe(
-          switchMap(() => reportMetricsSelector.isFormMetricsValid()),
-        );
-      }),
-    );
+            if (idx < filteredMetrics.length - 1) {
+              metricsString += ', ';
+            }
+          }
+          return metricsString;
+        }),
+      );
+    }
   }
 }

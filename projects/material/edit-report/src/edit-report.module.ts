@@ -26,20 +26,26 @@ import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelectModule} from '@angular/material/select';
 import {MatStepperModule} from '@angular/material/stepper';
 import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
+import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {EditReport} from './edit-report';
 
 @NgModule({
   imports: [
     AjfReportsModule,
+    AjfTranslocoModule,
     CommonModule,
+    DinoLoadingSpinnerModule,
     FormMetricSelectorModule,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
     MatStepperModule,
   ],

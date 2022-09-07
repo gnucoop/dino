@@ -10,7 +10,10 @@ describe('dino-edit-report', () => {
     cy.get('mat-row:not(.dino-row-details)')
       .should('have.length', reportDatas.length)
       .first()
-      .invoke('addClass', 'dino-hover');
+      .invoke('addClass', 'dino-hover')
+      .click();
+
+    cy.get('mat-row:not(.dino-row-details)').first().invoke('mouseover');
     cy.get('mat-row .mat-cell.dino-row-actions .mat-icon.mat-list-icon')
       .first()
       .invoke('mouseover')

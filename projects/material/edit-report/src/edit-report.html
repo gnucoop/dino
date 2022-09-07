@@ -1,39 +1,86 @@
 <ng-content select="[breadcrumbs]"></ng-content>
-<ng-container *ngIf="reportInstance|async as repInstance">
-  <div #printContainer class="report print">
-    <ng-container *ngIf="metricsService.hasActiveMetrics|async">
-      <mat-stepper labelPosition="bottom" #stepper linear>
-        <mat-step [completed]="(isReportMetricsSelectorValid|async) || (isView|async)">
-          <ng-template matStepLabel>REPORT METRICS</ng-template>
-          <div class="dino-edit-report-step-container">
-            <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics" [allowMetricCreation]="allowMetricCreation">
-              <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
-            </dino-form-metric-selector>
-          </div>
-        </mat-step>
-        <mat-step>
-          <ng-template matStepLabel>REPORT DATA</ng-template>
-          <div>
-            <button mat-icon-button matStepperPrevious aria-label="Previous step">
-              <mat-icon>arrow_back</mat-icon>
-            </button>
-          </div>
-          <div class="dino-edit-report-print">
-            <button color="primary" mat-icon-button (click)="printReport('portrait')">
-              <mat-icon> printer </mat-icon>
-            </button>
-          </div>
-          <div class="dino-edit-report-step-container">
-            <ajf-report id="report print" [instance]="repInstance"></ajf-report>
-          </div>
-        </mat-step>
-      </mat-stepper>
-    </ng-container>
+<ng-container *ngIf="reportInstance|async as repInstance; else loading">
+  <ng-container *ngIf="(sourceFormData|async)?.length; else nodata">
+    <div #printContainer class="report print">
+      <ng-container *ngIf="(metricsService.hasActiveMetrics|async) && steps === true">
+        <mat-stepper labelPosition="bottom" #stepper linear>
+          <mat-step [completed]="(isReportMetricsSelectorValid|async) || (isView|async)">
+            <ng-template matStepLabel>REPORT METRICS</ng-template>
+            <div class="dino-edit-report-step-container">
+              <dino-form-metric-selector
+                [hasOptionalMetrics]="hasOptionalMetrics"
+                [allowMetricCreation]="allowMetricCreation"
+              >
+                <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
+              </dino-form-metric-selector>
+            </div>
+          </mat-step>
 
-    <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false">
-      <div class="dino-edit-report-step-container">
-        <ajf-report id="report print" [instance]="repInstance"></ajf-report>
-      </div>
-    </ng-container>
-  </div>
+          <mat-step>
+            <ng-template matStepLabel>REPORT DATA</ng-template>
+            <ng-container *ngIf="reportSchema|async as repschema">
+              <ng-container *ngIf="reportData|async as repData">
+                <div>
+                  <button mat-icon-button matStepperPrevious aria-label="Previous step">
+                    <mat-icon>arrow_back</mat-icon>
+                  </button>
+                </div>
+                <div class="dino-edit-report-print">
+                  <button color="primary" mat-icon-button (click)="printReport('portrait')">
+                    <mat-icon> printer </mat-icon>
+                  </button>
+                </div>
+                <div class="dino-edit-report-info">
+                  <h1>{{repschema.name}}</h1>
+                  <h2>
+                    {{repData.date_start ? ('Collected since'|transloco) + ' ' + repData.date_start:
+                    null}}<br />
+                    {{repData.date_end ? ('Collected until'|transloco) + ' ' + repData.date_end:
+                    null}}
+                  </h2>
+                  <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
+                </div>
+                <div class="dino-edit-report-step-container">
+                  <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+                </div>
+              </ng-container>
+            </ng-container>
+          </mat-step>
+        </mat-stepper>
+      </ng-container>
+
+      <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false || steps === false">
+        <ng-container *ngIf="reportSchema|async as repschema">
+          <ng-container *ngIf="reportData|async as repData">
+            <div class="dino-edit-report-info">
+              <h1>{{repschema.name}}</h1>
+              <h2>
+                {{repData.date_start ? ('Collected since'|transloco) + ' ' + repData.date_start:
+                null}}<br />
+                {{repData.date_end ? ('Collected until'|transloco) + ' ' + repData.date_end: null}}
+              </h2>
+              <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
+            </div>
+            <div class="dino-edit-report-step-container">
+              <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+            </div>
+          </ng-container> </ng-container
+      ></ng-container>
+    </div>
+  </ng-container>
 </ng-container>
+
+<ng-template #loading>
+  <ng-container *ngIf="spinnerImagePath; else defaultspinner"
+    ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+  </ng-container>
+  <ng-template #defaultspinner
+    ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+  ></ng-template>
+</ng-template>
+
+<ng-template #nodata>
+  <div class="dino-no-items-message">
+    <h1>{{'No Forms were found for this Report'|transloco}}</h1>
+  </div>
+</ng-template>
