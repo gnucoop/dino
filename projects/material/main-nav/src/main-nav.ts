@@ -67,8 +67,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * @param elementRef A reference to the rendered component
    */
   onRouterOutletLoading(elementRef: any) {
+    this._onRouterOutletLoadingSub.unsubscribe();
     if (elementRef.isLoading) {
-      this._onRouterOutletLoadingSub.unsubscribe();
       this._onRouterOutletLoadingSub = elementRef.isLoading.subscribe({
         next: (res: boolean) => {
           this.isLoading.next(res);
