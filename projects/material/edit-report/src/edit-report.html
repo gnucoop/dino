@@ -31,11 +31,11 @@
                   </button>
                 </div>
                 <div class="dino-edit-report-info">
-                  <h1>{{repschema.name}}</h1>
+                  <h1>{{repschema.label}}</h1>
                   <h2>
-                    {{repData.date_start ? ('Collected since'|transloco) + ' ' + repData.date_start:
+                    {{repData.date_start ? ('Collected Since'|transloco) + ' ' + repData.date_start:
                     null}}<br />
-                    {{repData.date_end ? ('Collected until'|transloco) + ' ' + repData.date_end:
+                    {{repData.date_end ? ('Collected Until'|transloco) + ' ' + repData.date_end:
                     null}}
                   </h2>
                   <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
