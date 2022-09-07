@@ -173,17 +173,22 @@ export class PermissionContextService {
    * @param collectionName The name of the Collection to be checked
    * @param docId? The id of the Document to be checked
    * @param isData? True if the actions refer to list data
+   * @param instanceName? The name identifier of the Dino instance
+   * @param rowId? The id of the item displayed in the currently highlighted row
+   * @param favorites? If true, "favorites" actions are added
    * @returns The actions allowed to the user
    */
   getAllowedActions(
     collectionName: string,
     docId?: string,
     isData?: boolean,
+    instanceName?: string,
+    rowId?: string | null,
+    favorites?: boolean,
   ): Observable<string[]> {
     if (collectionName == null) {
       return obsOf([]);
     }
-
     return this.permissionContext.pipe(
       map(context => {
         const permissions = context['user_permissions'];
@@ -217,6 +222,13 @@ export class PermissionContextService {
         });
         if (uniqueActions.some(act => act === 'all')) {
           uniqueActions = ['create', 'edit', 'delete', 'view', 'export', 'print', 'status edit'];
+        }
+        if (collectionName === 'report_schema' && isData === true && favorites) {
+          uniqueActions.push(
+            localStorage.getItem(`dino_favorite_report_${instanceName}`) != rowId
+              ? 'addFavorite'
+              : 'removeFavorite',
+          );
         }
         return uniqueActions;
       }),

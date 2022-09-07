@@ -317,8 +317,11 @@ export class DataService implements IDataService {
         if (id == null) {
           return throwError(() => new Error('Invalid ID'));
         }
-        return from(collection.findOne().where('id').eq(id).exec());
+        return from(collection.findOne().where('id').eq(id).exec()).pipe(
+          retryWhen(err => err.pipe(delay(2000), take(10))),
+        );
       }),
+      retryWhen(err => err.pipe(delay(2000), take(10))),
     ) as Observable<R | null>;
   }
 
