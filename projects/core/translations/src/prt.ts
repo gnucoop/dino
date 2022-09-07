@@ -161,4 +161,12 @@ export const PRT: Translation = {
   'Visibility': 'Visibilidade',
   'Private': 'Privado',
   'Public': 'Público',
+  'Welcome to DINO': 'Bem-vindo à DINO',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Por favor adicione um Relatório aos seus favoritos para o visualizar no painel de bordo',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.':
+    'Item adicionado com sucesso aos seus favoritos. Os relatórios favoritos serão exibidos no seu Painel de Controlo.',
+  'ADDED TO FAVORITES': 'ADICIONADO AOS FAVORITOS',
+  'Item successfully removed from your favorites.': 'Item removido com sucesso dos seus favoritos.',
+  'REMOVED FROM FAVORITES': 'REMOVIDO DOS FAVORITOS',
 };

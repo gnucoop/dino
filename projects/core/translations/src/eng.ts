@@ -160,4 +160,13 @@ export const ENG: Translation = {
   'Visibility': 'Visibility',
   'Private': 'Private',
   'Public': 'Public',
+  'Welcome to DINO': 'Welcome to DINO',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Please add a Report to your favorites to view it in the dashboard',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.':
+    'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.',
+  'ADDED TO FAVORITES': 'ADDED TO FAVORITES',
+  'Item successfully removed from your favorites.':
+    'Item successfully removed from your favorites.',
+  'REMOVED FROM FAVORITES': 'REMOVED FROM FAVORITES',
 };

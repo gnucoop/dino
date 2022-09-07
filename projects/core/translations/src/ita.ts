@@ -172,4 +172,12 @@ export const ITA: Translation = {
   'Forgot your password?': 'Ti sei dimenticato la tua password?',
   'Already have an account? Login': 'Hai già un account? Accedi',
   'Actually, I do remember my password': 'Credo di ricordare la mia password',
+  'Welcome to DINO': 'Benvenuto in DINO',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Aggiungi un Report ai tuoi preferiti per visualizzarlo nella dashboard',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.':
+    'Documento aggiunto con successo ai tuoi preferiti. I tuoi Report preferiti saranno mostrati nella tua Dashboard',
+  'ADDED TO FAVORITES': 'AGGIUNTO AI PREFERITI',
+  'Item successfully removed from your favorites.': 'Documento rimosso dai tuoi preferiti',
+  'REMOVED FROM FAVORITES': 'RIMOSSO DAI PREFERITI',
 };

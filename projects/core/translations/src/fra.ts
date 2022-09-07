@@ -161,4 +161,11 @@ export const FRA: Translation = {
   'Visibility': 'Visibilité',
   'Private': 'Privé',
   'Public': 'Public',
+  'Welcome to DINO': 'Bienvenue à DINO',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Veuillez ajouter un rapport à vos favoris pour le visualiser dans le tableau de bord.',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.': `L'élément a été ajouté avec succès à vos favoris. Les rapports favoris seront affichés dans votre tableau de bord.`,
+  'ADDED TO FAVORITES': 'AJOUTÉ AUX FAVORIS',
+  'Item successfully removed from your favorites.': 'Document supprimé avec succès de vos favoris.',
+  'REMOVED FROM FAVORITES': 'RETIRÉ DES FAVORIS',
 };
