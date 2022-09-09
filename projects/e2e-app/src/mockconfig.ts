@@ -115,7 +115,7 @@ export const additionalConfig = {
   /**
    * The type of the dashboard component loaded by the app
    */
-  dashboardType: 'report',
+  dashboardType: 'menu',
 };
 
 /**
