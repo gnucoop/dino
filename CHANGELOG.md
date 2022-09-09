@@ -1,3 +1,19 @@
+<a name="13.3.0"></a>
+# 13.3.0 "random-jaguar" (2022-09-09)
+### Bug Fixes
+* **e2e-material:** Restored "menu" dashboard in mockconfig for main nav test ([1e21ce6](https://bitbucket.org/gnucoop/dino/commits/1e21ce6cd1de87f190f3d52e7c1727352a155776))
+* **material/edit-form-schema:** fixed a bug causing the relationship not to be saved ([51fd957](https://bitbucket.org/gnucoop/dino/commits/51fd957adb326491ea8ccaf7867acad7df39a647))
+* **material/edit-report:** Fixed translations and report title in the template ([2b3ad86](https://bitbucket.org/gnucoop/dino/commits/2b3ad86a9f9de0824b5e1230d384ae81a3bb045c))
+* **material/main-nav:** Fixed a bug causing the loading spinner to be always displayed. ([c7e3d7e](https://bitbucket.org/gnucoop/dino/commits/c7e3d7e214c61ad3c3c1459911602e952222c447))
+### Features
+* **core/data:** Added "favorites" actions to getAllowedActions method in context service. ([1a34237](https://bitbucket.org/gnucoop/dino/commits/1a34237d97fb25ce24f1bc382aee83faee569a3b))
+* **core/list:** Added Favorites actions to list action interface. ([2036d5a](https://bitbucket.org/gnucoop/dino/commits/2036d5a11278f4bb4a853fbf5b3205e1cee98652))
+* **e2e-material:** Added Dashboard Report component to e2e-app. ([70204c8](https://bitbucket.org/gnucoop/dino/commits/70204c87ca7df604ac315a42859f311771f83161))
+* **material/edit-report:** Edit report can now display an Ajf Report outside Mat Stepper, without a Metric Selector. ([675ac7d](https://bitbucket.org/gnucoop/dino/commits/675ac7d6a0235d1adcc819b35e79abdc5c04e320))
+* **material/list:** Added "add to favorites" and "remove from favorites" list actions. ([d56884c](https://bitbucket.org/gnucoop/dino/commits/d56884c711ae2fb009911370b1a28a713087d38b))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.2.1"></a>
 # 13.2.1 "disappointed-nightingale" (2022-08-10)
 ### Bug Fixes
