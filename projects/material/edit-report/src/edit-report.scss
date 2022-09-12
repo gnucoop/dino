@@ -1,4 +1,15 @@
 dino-edit-report {
+  canvas {
+    min-height: 300px;
+  }
+  ajf-table {
+    table {
+      width: -webkit-fill-available;
+    }
+    td {
+      padding: 25px;
+    }
+  }
   .dino-edit-report-step-buttons {
     display: flex;
     flex-flow: row wrap;
@@ -54,7 +65,8 @@ dino-edit-report {
   }
   .dino-edit-report-info {
     text-align: center;
-    h1, h2 {
+    h1,
+    h2 {
       flex: 1 0 auto;
     }
   }

@@ -300,6 +300,7 @@ export class EditReport implements AfterViewInit {
       this._reportSchema,
       this._sourceFormData,
     ]).pipe(
+      delay(300),
       filter(([rData, rSchema]) => rData != null && rSchema != null),
       switchMap(([rData, rSchema, sfData]) => {
         const formSchemaIds = rSchema.form_schema_ids;

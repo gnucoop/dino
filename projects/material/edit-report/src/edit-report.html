@@ -53,7 +53,7 @@
         <ng-container *ngIf="reportSchema|async as repschema">
           <ng-container *ngIf="reportData|async as repData">
             <div class="dino-edit-report-info">
-              <h1>{{repschema.name}}</h1>
+              <h1>{{repschema.label}}</h1>
               <h2>
                 {{repData.date_start ? ('Collected since'|transloco) + ' ' + repData.date_start:
                 null}}<br />

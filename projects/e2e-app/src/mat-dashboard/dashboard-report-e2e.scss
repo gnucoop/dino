@@ -1,4 +1,15 @@
 app-dashboard-report {
+  canvas {
+    min-height: 300px;
+  }
+  ajf-table {
+    table {
+      width: -webkit-fill-available;
+    }
+    td {
+      padding: 25px;
+    }
+  }
   .dino-empty-dashboard-message {
     display: flex;
     flex-flow: row wrap;
