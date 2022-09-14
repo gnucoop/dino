@@ -12,6 +12,13 @@ const routes: Routes = [
     data: {breadcrumbs: [{label: 'Dashboard', url: '', icon: 'apps'}]},
   },
   {
+    path: 'reset-password',
+    loadChildren: () =>
+      import('./mat-reset-password/reset-password-e2e.module').then(
+        m => m.MaterialResetPasswordE2eModule,
+      ),
+  },
+  {
     path: 'login',
     loadChildren: () => import('./mat-login/login-e2e.module').then(m => m.MaterialLoginE2eModule),
   },
