@@ -6,6 +6,8 @@ import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable, of as obsOf} from 'rxjs';
+import {TranslocoService} from '@ngneat/transloco';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {AuthService, Credentials, LoginComponent, NHostSignupRequest} from './public_api';
 
@@ -33,8 +35,9 @@ class LoginFeatComp extends LoginComponent {
     fb: FormBuilder,
     cdr: ChangeDetectorRef,
     snackBar: MatSnackBar,
+    ts: TranslocoService,
   ) {
-    super(authService, router, fb, cdr, snackBar);
+    super(authService, router, fb, cdr, snackBar, ts);
   }
 
   setLoginResult = function (this: LoginFeatComp, res: string) {
@@ -48,6 +51,7 @@ describe('LoginComponent', () => {
   let router: Router;
   let fb: FormBuilder;
   let snackBar: MatSnackBar;
+  let ts: TranslocoService;
   let cdr: ChangeDetectorRef;
   let loginFeatComp: LoginFeatComp;
   let spyLogin: jasmine.Spy;
@@ -56,7 +60,12 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), MatSnackBarModule],
+      imports: [
+        AjfTranslocoModule,
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
+        MatSnackBarModule,
+      ],
       providers: [
         FormBuilder,
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
@@ -70,7 +79,8 @@ describe('LoginComponent', () => {
     fb = TestBed.inject(FormBuilder);
     cdr = TestBed.inject(ChangeDetectorRef);
     snackBar = TestBed.inject(MatSnackBar);
-    loginFeatComp = new LoginFeatComp(authService, router, fb, cdr, snackBar);
+    ts = TestBed.inject(TranslocoService);
+    loginFeatComp = new LoginFeatComp(authService, router, fb, cdr, snackBar, ts);
     spyLogin = spyOn(authService, 'login').and.callThrough();
     spyPostLogin = spyOn(loginFeatComp, 'setLoginResult').and.callThrough();
   });
