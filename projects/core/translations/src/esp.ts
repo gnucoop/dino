@@ -170,4 +170,13 @@ export const ESP: Translation = {
   'Item successfully removed from your favorites.':
     'Artículo eliminado con éxito de sus favoritos.',
   'REMOVED FROM FAVORITES': 'ELIMINADO DE LOS FAVORITOS',
+  'Password reset link sent to': 'Enlace para restablecer la contraseña enviado a',
+  'PASSWORD RESET LINK SENT': 'SE HA ENVIADO EL ENLACE PARA RESTABLECER LA CONTRASEÑA',
+  'Incorrect password': 'Contraseña incorrecta',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'Su billete de restablecimiento de contraseña no es válido o ha caducado. Por favor, inténtelo de nuevo.',
+  'Password changed': 'Contraseña cambiada',
+  'PASSWORD CHANGED': 'CONTRASEÑA CAMBIADA',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'La contraseña ha sido cambiada con éxito. Ahora será redirigido a la zona de inicio de sesión.',
 };

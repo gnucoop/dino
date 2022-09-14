@@ -169,4 +169,13 @@ export const ENG: Translation = {
   'Item successfully removed from your favorites.':
     'Item successfully removed from your favorites.',
   'REMOVED FROM FAVORITES': 'REMOVED FROM FAVORITES',
+  'Password reset link sent to': 'Password reset link sent to',
+  'PASSWORD RESET LINK SENT': 'PASSWORD RESET LINK SENT',
+  'Incorrect password': 'Incorrect password',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'Your Reset Password ticket is invalid or expired. Please try again.',
+  'Password changed': 'Password changed',
+  'PASSWORD CHANGED': 'PASSWORD CHANGED',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'Password successfully changed. You will now be redirected to the login area.',
 };

@@ -180,4 +180,13 @@ export const ITA: Translation = {
   'ADDED TO FAVORITES': 'AGGIUNTO AI PREFERITI',
   'Item successfully removed from your favorites.': 'Documento rimosso dai tuoi preferiti',
   'REMOVED FROM FAVORITES': 'RIMOSSO DAI PREFERITI',
+  'Password reset link sent to': 'Ticket per resettare la password inviato a',
+  'PASSWORD RESET LINK SENT': 'RESET TICKET INVIATO',
+  'Incorrect password': 'Password errata',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'Il tuo ticket per il reset della password non è valido o è scaduto. Riprova di nuovo.',
+  'Password changed': 'Password cambiata',
+  'PASSWORD CHANGED': 'PASSWORD CAMBIATA',
+  'Password successfully changed. You will now be redirected to the login area.':
+    "Password cambiata con successo. Sarai rediretto all'area di login.",
 };

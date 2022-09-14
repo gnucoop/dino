@@ -168,4 +168,13 @@ export const FRA: Translation = {
   'ADDED TO FAVORITES': 'AJOUTÉ AUX FAVORIS',
   'Item successfully removed from your favorites.': 'Document supprimé avec succès de vos favoris.',
   'REMOVED FROM FAVORITES': 'RETIRÉ DES FAVORIS',
+  'Password reset link sent to': 'Le lien de réinitialisation du mot de passe est envoyé à',
+  'PASSWORD RESET LINK SENT': 'LIEN DE RÉINITIALISATION DU MOT DE PASSE ENVOYÉ',
+  'Incorrect password': 'Mot de passe incorrect',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'Votre ticket de réinitialisation du mot de passe est invalide ou a expiré. Veuillez réessayer.',
+  'Password changed': 'Mot de passe modifié',
+  'PASSWORD CHANGED': 'MOT DE PASSE MODIFIÉ',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'Le mot de passe a été modifié avec succès. Vous allez maintenant être redirigé vers la zone de connexion.',
 };

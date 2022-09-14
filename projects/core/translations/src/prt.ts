@@ -169,4 +169,13 @@ export const PRT: Translation = {
   'ADDED TO FAVORITES': 'ADICIONADO AOS FAVORITOS',
   'Item successfully removed from your favorites.': 'Item removido com sucesso dos seus favoritos.',
   'REMOVED FROM FAVORITES': 'REMOVIDO DOS FAVORITOS',
+  'Password reset link sent to': 'Ligação para redefinição de senha enviada para',
+  'PASSWORD RESET LINK SENT': 'LINK DE REDEFINIÇÃO DE SENHA ENVIADO',
+  'Incorrect password': 'Palavra-passe incorrecta',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'O seu bilhete de Reset Password é inválido ou expirou. Por favor, tente novamente.',
+  'Password changed': 'Senha alterada',
+  'PASSWORD CHANGED': 'ALTERAÇÃO DE SENHA',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'Senha alterada com sucesso. Será agora redireccionado para a área de login.',
 };
