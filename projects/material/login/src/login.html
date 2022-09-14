@@ -82,8 +82,7 @@
         </div>
 
         <div *ngIf="signupError.error === true" class="dino-error-message">
-          {{signupError.message ? (signupError.message|transloco) : 'Invalid email and/or
-          password'|transloco}}
+          {{signupError.message ? (signupError.message|transloco) : 'Invalid email and/or password'|transloco}}
         </div>
         <button
           mat-fab
@@ -130,8 +129,7 @@
           </mat-form-field>
 
           <div *ngIf="resetPassError.error === true" class="dino-error-message">
-            {{resetPassError.message ? (resetPassError.message|transloco) : 'Incorrect
-            email'|transloco}}
+            {{resetPassError.message ? (resetPassError.message|transloco) : 'Incorrect email'|transloco}}
           </div>
           <button
             mat-fab
@@ -178,8 +176,7 @@
             <mat-error> {{showValErrors(loginForm.get('password'), 'Password')}} </mat-error>
           </mat-form-field>
           <div *ngIf="loginError.error === true" class="dino-error-message">
-            {{loginError.message ? (loginError.message|transloco) : 'Incorrect email and/or
-            password'|transloco}}
+            {{loginError.message ? (loginError.message|transloco) : 'Incorrect email and/or password'|transloco}}
           </div>
           <button
             mat-fab

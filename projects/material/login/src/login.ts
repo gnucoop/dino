@@ -34,6 +34,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, LoginComponent} from '@dino/core/auth';
 import {Observable, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * A basic material Login component.
@@ -93,9 +94,10 @@ export class Login extends LoginComponent implements OnDestroy {
     fb: FormBuilder,
     cdr: ChangeDetectorRef,
     snackBar: MatSnackBar,
+    ts: TranslocoService,
     private _route: ActivatedRoute,
   ) {
-    super(authService, router, fb, cdr, snackBar);
+    super(authService, router, fb, cdr, snackBar, ts);
 
     this.signupAvailable = authService.authConfig.signUp;
     this.resetPassAvailable =

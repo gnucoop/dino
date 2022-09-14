@@ -30,6 +30,7 @@ import {NHostSignupRequest} from './auth-response';
 import {AuthService} from './auth-service';
 import {PasswordMatch} from './user-password-validator';
 import {showValidationErrors} from './validation-errors';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * Represents an Authentication Error
@@ -146,6 +147,7 @@ export abstract class LoginComponent {
     fb: FormBuilder,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
+    private _ts: TranslocoService,
   ) {
     this._authService.resetAuth();
 
@@ -336,8 +338,8 @@ export abstract class LoginComponent {
     if (!email) {
       return;
     }
-    let msg = `Password reset link sent to ${email}`;
-    this._snackBar.open(msg, 'PASSWORD RESET LINK SENT', {
+    let msg = `${this._ts.translate('Password reset link sent to')} ${email}`;
+    this._snackBar.open(msg, this._ts.translate('PASSWORD RESET LINK SENT'), {
       duration: 10000,
     });
   }
