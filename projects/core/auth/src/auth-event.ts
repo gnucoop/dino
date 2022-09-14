@@ -35,6 +35,7 @@ export type AuthEvt =
   | 'back online'
   | 'refresh successful'
   | 'refresh failed'
+  | 'reset password'
   | null;
 
 /**

@@ -303,7 +303,7 @@ export abstract class LoginComponent {
     }
     const email = this.resetPassForm.get('email')?.value;
     this._authService
-      .resetPassword(email)
+      .resetPassword(email, {redirectTo: `${window.location.origin}/reset-password`})
       .pipe(take(1))
       .subscribe({
         next: res => {

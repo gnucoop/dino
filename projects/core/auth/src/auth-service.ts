@@ -330,16 +330,21 @@ export class AuthService {
   /**
    * Refreshes the JWT token by providing a refresh token to FusioAuth refresh api.
    * Stores the new authToken, if issued.
+   * @param authEvt The authentication event string identifier
+   * @param refreshToken? An optional refresh token provided
    * @returns True if the token was successfully refreshed.
    */
-  refreshToken(authEvt: AuthEvt = 'refresh successful'): Observable<boolean> {
-    if (!this.getAuthToken()) {
+  refreshToken(
+    authEvt: AuthEvt = 'refresh successful',
+    refreshToken?: string,
+  ): Observable<boolean> {
+    if (!this.getAuthToken() && refreshToken == null) {
       return obsOf(false);
     }
 
     return this._authConfig.pipe(
       switchMap(config => {
-        const req = {refreshToken: this.getRefreshToken()};
+        const req = {refreshToken: this.getRefreshToken() ?? refreshToken};
         const defaulRefreshUrl = config.nHostAuth ? 'v1/auth/token' : 'api/jwt/refresh';
         const url = this._generateUrl(
           config.refreshEndpoint ?? defaulRefreshUrl,
@@ -354,7 +359,9 @@ export class AuthService {
           .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
             tap(res => {
-              this.authenticated.next({auth: true, evt: authEvt});
+              if (authEvt !== 'reset password') {
+                this.authenticated.next({auth: true, evt: authEvt});
+              }
               this._storeRefreshToken(res.refreshToken);
               this._storeAuthToken(res.accessToken ?? res.token);
             }),
@@ -363,7 +370,9 @@ export class AuthService {
               if (isDevMode()) {
                 console.log(err.error ?? err);
               }
-              this.authenticated.next({auth: false, evt: 'refresh failed'});
+              if (authEvt !== 'reset password') {
+                this.authenticated.next({auth: false, evt: 'refresh failed'});
+              }
               return obsOf(false);
             }),
           );
@@ -443,10 +452,48 @@ export class AuthService {
   }
 
   /**
+   * User Change Password method using a reset token
+   * @param token The Reset password token
+   * @param newPass The new Password
+   */
+  changePasswordWithResetTicket(
+    token: string,
+    newPass: string,
+  ): Observable<boolean | HttpErrorResponse> {
+    if (token == null || newPass == null) {
+      return obsOf(false);
+    }
+    return this.refreshToken('reset password', token).pipe(
+      switchMap(res => {
+        if (!res) {
+          return obsOf(false);
+        }
+        return this._authConfig.pipe(
+          switchMap(config => {
+            const defaultChangePwdUrl = config.nHostAuth ? 'v1/auth/user/password' : 'api/password';
+            const url = this._generateUrl(
+              config.changePasswordEndpoint ?? defaultChangePwdUrl,
+              removeSlashes(config.host),
+            );
+            const headers =
+              config.apiKey != null
+                ? {Authorization: config.apiKey}
+                : {Authorization: `Bearer ${this.getAuthToken()}`};
+            return this._httpClient.post<any>(url, {newPassword: newPass}, {headers});
+          }),
+        );
+      }),
+    );
+  }
+
+  /**
    * User Reset Password method.
    * @param email The email address of the user that wishes to reset his/her password
    */
-  resetPassword(email: string): Observable<boolean | HttpErrorResponse> {
+  resetPassword(
+    email: string,
+    options?: {redirectTo: string},
+  ): Observable<boolean | HttpErrorResponse> {
     if (!email) {
       return obsOf(false);
     }
@@ -459,7 +506,7 @@ export class AuthService {
           `v1/user/password/reset`,
           removeSlashes(config.resetPasswordEndpoint),
         );
-        return this._httpClient.post<any>(resetPwdUrl, {email: email});
+        return this._httpClient.post<any>(resetPwdUrl, {email: email, options: options});
       }),
     );
   }
