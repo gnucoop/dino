@@ -24,35 +24,40 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
+  Input,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
-import {UserData, UserDataManager} from '@dino/core/users';
-import {map, Observable, of as obsOf, startWith, switchMap, take} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
 
 /**
- * Dialog component that shows Additional Filters, grouped and divided in Tabs.
- * It may contain dino-search-filters-chips and multiple dino-search-filters-widget.
- * It is usually associated with a main filters component that displays Basic Filters
- * (eg. dino-search-filters-bar).
+ * Component that allows the user to reset their password
  */
 @Component({
-  selector: 'dino-user-area',
-  styleUrls: ['user-area.scss'],
-  templateUrl: 'user-area.html',
+  selector: 'dino-reset-password',
+  styleUrls: ['reset-password.scss'],
+  templateUrl: 'reset-password.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class UserArea {
+export class ResetPassword {
+  readonly invalidTicket: Observable<boolean>;
   /**
-   * The active User Data
+   * The Login page logo image path/url.
    */
-  readonly userData: Observable<UserData | null>;
+  private _logoImagePath: string = '';
+  get logoImagePath(): string {
+    return this._logoImagePath;
+  }
+  @Input()
+  set logoImagePath(url: string) {
+    this._logoImagePath = url;
+  }
   /**
    * The Change Password FormGroup.
    */
@@ -76,21 +81,27 @@ export class UserArea {
    * True if the submit button for changing the password is disabled.
    */
   readonly changePassDisabled: Observable<boolean>;
+  /**
+   * If true, the password has successfully been changed
+   */
+  readonly passChanged: BehaviorSubject<boolean>;
 
   constructor(
-    private _udm: UserDataManager,
     private _fb: FormBuilder,
     private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
+    private _route: ActivatedRoute,
+    private _router: Router,
     private _ts: TranslocoService,
-    public dialogRef: MatDialogRef<UserArea>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
-    this.userData = this._udm.getActiveUserData();
+    this.passChanged = new BehaviorSubject<boolean>(false);
+
+    this.invalidTicket = this._route.queryParams.pipe(
+      map(params => (params['error'] ? true : false)),
+    );
 
     this.changePassForm = this._fb.group({
-      current_password: [null, [Validators.required, Validators.minLength(8)]],
       password: [null, [Validators.required, Validators.minLength(8)]],
       confirm_password: [null, [Validators.required, Validators.minLength(8), PasswordMatch]],
     });
@@ -108,18 +119,17 @@ export class UserArea {
     if (!this.changePassForm.valid || this.processing) {
       return;
     }
-    this.userData
+
+    const newPassword = this.changePassForm.get('password')?.value;
+    this._route.queryParams
       .pipe(
-        switchMap(ud => {
-          if (!ud) {
-            return obsOf(false);
+        switchMap(params => {
+          if (params['refreshToken'] == null) {
+            return of(null);
           }
-          const credentials = {
-            email: ud.email,
-            password: this.changePassForm.get('current_password')?.value,
-          };
-          const newPassword = this.changePassForm.get('password')?.value;
-          return this._authService.changePassword(credentials, newPassword);
+          return this._authService
+            .changePasswordWithResetTicket(params['refreshToken'], newPassword)
+            .pipe(take(1));
         }),
         take(1),
       )
@@ -140,7 +150,7 @@ export class UserArea {
           } else {
             this._setChangePassError({
               error: true,
-              message: err.error.message ?? this._ts.translate('Incorrect password'),
+              message: err.error.message ?? 'Incorrect password',
             });
           }
           this.processing = false;
@@ -152,19 +162,23 @@ export class UserArea {
    * Signals the successful Password change and closes the User Area dialog
    */
   passwordChanged(): void {
-    this._snackBar.open(
-      this._ts.translate('Password changed'),
-      this._ts.translate('PASSWORD CHANGED'),
-      {duration: 10000},
-    );
-    this.closeDialog();
-  }
-
-  /**
-   * Closes the dialog.
-   */
-  closeDialog() {
-    this.dialogRef.close(false);
+    this.passChanged.next(true);
+    this._snackBar
+      .open(
+        this._ts.translate(
+          'Password successfully changed. You will now be redirected to the login area.',
+        ),
+        this._ts.translate('PASSWORD CHANGED'),
+        {duration: 8000},
+      )
+      .afterDismissed()
+      .pipe(
+        tap(() => {
+          this._router.navigate(['login']);
+        }),
+        take(1),
+      )
+      .subscribe();
   }
 
   private _setChangePassError(changePassErr: AuthError): void {

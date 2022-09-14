@@ -314,7 +314,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
       filter(evt => evt instanceof NavigationEnd),
       map(evt => {
         const navEndEvt = evt as NavigationEnd;
-        if (navEndEvt.url.includes('login')) {
+        if (navEndEvt.url.includes('login') || navEndEvt.url.includes('reset-password')) {
           return false;
         }
         return true;
