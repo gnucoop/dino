@@ -100,8 +100,7 @@ export class Login extends LoginComponent implements OnDestroy {
     super(authService, router, fb, cdr, snackBar, ts);
 
     this.signupAvailable = authService.authConfig.signUp;
-    this.resetPassAvailable =
-      authService.authConfig.resetPassword && authService.authConfig.resetPasswordEndpoint != null;
+    this.resetPassAvailable = authService.authConfig.resetPassword;
 
     if (this._route.data) {
       this._expiredSub = this._route.data

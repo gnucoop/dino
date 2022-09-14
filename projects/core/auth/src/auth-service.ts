@@ -499,12 +499,12 @@ export class AuthService {
     }
     return this._authConfig.pipe(
       switchMap(config => {
-        if (!config.resetPasswordEndpoint) {
+        if (!config.resetPasswordEndpoint && !config.host) {
           return obsOf(false);
         }
         const resetPwdUrl = this._generateUrl(
-          `v1/user/password/reset`,
-          removeSlashes(config.resetPasswordEndpoint),
+          `v1/auth/user/password/reset`,
+          removeSlashes(config.resetPasswordEndpoint ?? config.host),
         );
         return this._httpClient.post<any>(resetPwdUrl, {email: email, options: options});
       }),

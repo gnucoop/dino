@@ -164,7 +164,7 @@ export abstract class LoginComponent {
       );
     }
 
-    if (this._authService.config.resetPassword && this._authService.config.resetPasswordEndpoint) {
+    if (this._authService.config.resetPassword) {
       this.resetPassForm = fb.group({
         email: [null, [Validators.email, Validators.required]],
       });
