@@ -48,6 +48,10 @@ import {TranslocoService} from '@ngneat/transloco';
 })
 export class Login extends LoginComponent implements OnDestroy {
   /**
+   * The label text displayed for the "Full Name" signup form field.
+   */
+  @Input() fullNameLabel: string | undefined;
+  /**
    * If true, users can signup and create a new account.
    */
   readonly signupAvailable: boolean | undefined;

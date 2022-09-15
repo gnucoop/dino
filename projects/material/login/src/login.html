@@ -12,14 +12,16 @@
     <ng-container *ngIf="(showSignupForm|async) && signupForm; else showLogin">
       <form [class.dino-error]="loginError" [formGroup]="signupForm">
         <mat-form-field>
-          <mat-label>{{'Full Name'|transloco}}</mat-label>
+          <mat-label
+            >{{fullNameLabel ? (fullNameLabel|transloco) : ('Full Name'|transloco)}}</mat-label
+          >
           <input
             matInput
             formControlName="full_name"
             name="full_name"
             type="text"
             aria-label="full_name"
-            [placeholder]="'Full Name'|transloco"
+            [placeholder]="fullNameLabel ? (fullNameLabel|transloco) : ('Full Name'|transloco)"
           />
           <mat-error> {{showValErrors(signupForm.get('full_name'), 'Full Name')}} </mat-error>
         </mat-form-field>
@@ -68,7 +70,9 @@
         <div *ngIf="privacyPolicy" class="dino-policy-field">
           <div class="dino-policy-text">{{privacyPolicy}}</div>
           <div class="dino-policy-checkbox-group">
-            <div class="dino-policy-checkbox-label">{{'I accept the terms and conditions'|transloco}}</div>
+            <div class="dino-policy-checkbox-label">
+              {{'I accept the terms and conditions'|transloco}}
+            </div>
             <div class="dino-policy-checkbox-input">
               <input
                 formControlName="policy"
