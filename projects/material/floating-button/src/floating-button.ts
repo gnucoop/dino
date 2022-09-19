@@ -50,4 +50,9 @@ export class FloatingButton {
    * The button icon codename.
    */
   @Input() buttonIcon?: string;
+
+  /**
+   * The button disable condition observable.
+   */
+  @Input() buttonDisabled?: boolean;
 }
