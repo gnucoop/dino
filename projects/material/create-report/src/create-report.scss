@@ -1,5 +1,11 @@
 dino-create-report {
     font-size: 110%;
+
+    dino-floating-button .mat-fab-bottom-right.mat-fab.mat-button-base:not(.mat-button-disabled){
+      color: #32db64;
+      background-color: rgba(50, 219, 100, 0.3);
+    }
+
     .dino-create-report-step-container {
         display: flex;
         align-items: center;
@@ -41,30 +47,6 @@ dino-create-report {
         }
         @media only screen and (max-height: 580px) {
             padding-bottom: 30vh;
-        }
-    }
-    .dino-save-report-data-button {
-        position: absolute;
-        z-index: 10;
-        bottom: 10px;
-        left: 33.5%;
-        font-size: 90%;
-        text-transform: uppercase;
-        color: #32db64;
-        background-color: rgba(50, 219, 100, 0.3);
-        border: 1px solid #32db64;
-        border-radius: 3px;
-        min-width: 33%;
-        padding: 0px;
-        transition: all ease-in-out 0.25s;
-        -webkit-transition: all ease-in-out 0.25s;
-        @media only screen and (max-width: 992px) {
-            left: 0%;
-            min-width: 40%;
-            bottom: 2.5%;
-        }
-        &:hover {
-            background-color: rgba(50, 219, 100, 0.1);
         }
     }
     .ajf-toolbar {

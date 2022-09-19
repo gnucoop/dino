@@ -1,5 +1,11 @@
 dino-edit-form {
     font-size: 110%;
+
+    dino-floating-button .mat-fab-bottom-right.mat-fab.mat-button-base:not(.mat-button-disabled){
+      color: #32db64;
+      background-color: rgba(50, 219, 100, 0.3);
+    }
+
     .dino-edit-form-step-container {
         display: flex;
         align-items: center;
@@ -7,7 +13,7 @@ dino-edit-form {
         position: relative;
         min-height: 85vh;
         @media only screen and (max-width: 992px) {
-            min-height: 75vh;
+            min-height: 80vh;
         }
     }
     .mat-stepper-horizontal {
@@ -89,28 +95,7 @@ dino-edit-form {
                 display: flex;
                 align-content: center;
                 .mat-button {
-                    position: absolute;
-                    z-index: 10;
-                    bottom: 10px;
-                    left: 33.5%;
-                    font-size: 90%;
-                    text-transform: uppercase;
-                    background-color: rgba(50, 219, 100, 0.3);
-                    color: #32db64;
-                    border: 1px solid #32db64;
-                    border-radius: 3px;
-                    min-width: 33%;
-                    padding: 0px;
-                    transition: all ease-in-out 0.25s;
-                    -webkit-transition: all ease-in-out 0.25s;
-                    @media only screen and (max-width: 992px) {
-                        left: 0%;
-                        min-width: 40%;
-                        bottom: 2.5%;
-                    }
-                    &:hover {
-                        background-color: rgba(50, 219, 100, 0.1);
-                    }
+                    display: none;
                 }
             }
         }

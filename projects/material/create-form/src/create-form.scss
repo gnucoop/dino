@@ -4,6 +4,11 @@ dino-create-form {
     font-size: 110%;
     height: 100%;
 
+    dino-floating-button .mat-fab-bottom-right.mat-fab.mat-button-base:not(.mat-button-disabled){
+      color: #32db64;
+      background-color: rgba(50, 219, 100, 0.3);
+    }
+
     dino-breadcrumbs {
         flex: 0 0 auto;
     }
@@ -111,28 +116,7 @@ dino-create-form {
                 display: flex;
                 align-content: center;
                 .mat-button {
-                    position: absolute;
-                    z-index: 10;
-                    bottom: 10px;
-                    left: 33.5%;
-                    font-size: 90%;
-                    text-transform: uppercase;
-                    color: #32db64;
-                    background-color: rgba(50, 219, 100, 0.3);
-                    border: 1px solid #32db64;
-                    border-radius: 3px;
-                    min-width: 33%;
-                    padding: 0px;
-                    transition: all ease-in-out 0.25s;
-                    -webkit-transition: all ease-in-out 0.25s;
-                    @media only screen and (max-width: 992px) {
-                        left: 0%;
-                        min-width: 40%;
-                        bottom: 2.5%;
-                    }
-                    &:hover {
-                        background-color: rgba(50, 219, 100, 0.1);
-                    }
+                   display: none;
                 }
             }
         }

@@ -6,7 +6,10 @@
         <ng-template matStepLabel>{{ 'FORM METRICS'|transloco }}</ng-template>
 
         <div class="dino-create-form-step-container">
-          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics" [allowMetricCreation]="allowMetricCreation">
+          <dino-form-metric-selector
+            [hasOptionalMetrics]="hasOptionalMetrics"
+            [allowMetricCreation]="allowMetricCreation"
+          >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
         </div>
@@ -25,7 +28,7 @@
           <ajf-form
             #formContainer
             [form]="(form|async)!"
-            [saveDisabled]="(isAjfFormValid|async) === false"
+            [saveDisabled]="(isAjfFormValid|async) !== true"
             [topBar]="true"
             (formAction)="onFormAction($event)"
           ></ajf-form>
@@ -38,7 +41,7 @@
       <ajf-form
         #formContainer
         [form]="(form|async)!"
-        [saveDisabled]="(isAjfFormValid|async) === false"
+        [saveDisabled]="(isAjfFormValid|async) !== true"
         [topBar]="true"
         (formAction)="onFormAction($event)"
       ></ajf-form>
@@ -47,4 +50,11 @@
   <ng-container *ngIf="(isLoading|async) === true">
     <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
   </ng-container>
+
+  <dino-floating-button
+    buttonIcon="save"
+    [tooltipMessage]="'Save form'|transloco"
+    [buttonDisabled]="(isAjfFormValid|async) !== true"
+    (click)="saveForm()"
+  ></dino-floating-button>
 </ng-container>

@@ -33,6 +33,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Output,
@@ -74,6 +75,7 @@ import {
   shareReplay,
   startWith,
   switchMap,
+  take,
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
@@ -207,6 +209,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   private _saveFormSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the ajf validation state to save the form
+   */
+  private _saveValidFormSub: Subscription = Subscription.EMPTY;
+
+  /**
    * Subscribes to the update form event
    */
   private _updateFormDataSub: Subscription = Subscription.EMPTY;
@@ -248,6 +255,28 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
   ) {}
+
+  /**
+   * Saves the form
+   */
+  saveForm() {
+    this._saveValidFormSub = this.isAjfFormValid
+      .pipe(
+        tap(valid => {
+          if (valid) {
+            this._saveFormEvt.emit();
+          } else {
+            if (isDevMode()) {
+              console.log('Invalid form');
+            }
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
+
+    this._saveValidFormSub.unsubscribe();
+  }
 
   /**
    * Called whenever the user invokes an action on a row item.
@@ -589,16 +618,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         this.snackbar.open('Document created', 'SAVE', {duration: 5000});
       });
 
-    this.isAjfFormValid = this._rendererService.errors
-      .pipe(
-        map((errors: number) => errors === 0),
-        shareReplay(1),
-      )
-      .pipe(
-        map(ajfFormValid => {
-          return ajfFormValid;
-        }),
-      );
+    this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
+      switchMap(() =>
+        this._rendererService.errors.pipe(
+          map((errors: number) => errors === 0),
+          shareReplay(1),
+        ),
+      ),
+      shareReplay(1),
+    );
 
     this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(
       switchMap(formMetricsSelector => {
@@ -615,6 +643,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
   ngOnDestroy() {
     this._saveFormSub.unsubscribe();
+    this._saveValidFormSub.unsubscribe();
     this._metricChangesSub.unsubscribe();
     this._updateFormDataSub.unsubscribe();
     this._populatedFormDataSub.unsubscribe();

@@ -5,7 +5,10 @@
       <mat-step [completed]="(isFormMetricsSelectorValid|async) || (isView|async)">
         <ng-template matStepLabel>{{ 'FORM METRICS'|transloco }}</ng-template>
         <div class="dino-edit-form-step-container">
-          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics" [allowMetricCreation]="allowMetricCreation">
+          <dino-form-metric-selector
+            [hasOptionalMetrics]="hasOptionalMetrics"
+            [allowMetricCreation]="allowMetricCreation"
+          >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
         </div>
@@ -48,4 +51,11 @@
   <ng-container *ngIf="(isLoading|async) === true">
     <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
   </ng-container>
+
+  <dino-floating-button
+    buttonIcon="save"
+    [tooltipMessage]="'Save form'|transloco"
+    [buttonDisabled]="(isAjfFormValid|async) === false"
+    (click)="saveForm()"
+  ></dino-floating-button>
 </ng-container>

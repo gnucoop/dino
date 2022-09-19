@@ -33,12 +33,15 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
+import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {CreateReport} from './create-report';
 
 @NgModule({
   imports: [
     CommonModule,
+    DinoFloatingButtonModule,
     FormMetricSelectorModule,
     MatButtonModule,
     MatDatepickerModule,
@@ -50,6 +53,7 @@ import {CreateReport} from './create-report';
     MatToolbarModule,
     ReactiveFormsModule,
     RouterModule,
+    TranslocoModule,
   ],
   declarations: [CreateReport],
   exports: [CreateReport],

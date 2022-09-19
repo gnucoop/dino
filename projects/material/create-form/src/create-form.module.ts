@@ -39,6 +39,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
 import {TranslocoModule} from '@ngneat/transloco';
+import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
 
 import {CreateForm} from './create-form';
 
@@ -46,6 +47,7 @@ import {CreateForm} from './create-form';
   imports: [
     AjfFormsModule,
     CommonModule,
+    DinoFloatingButtonModule,
     FormMetricSelectorModule,
     MatButtonModule,
     MatCheckboxModule,

@@ -6,7 +6,10 @@
         <ng-template matStepLabel>REPORT METRICS</ng-template>
 
         <div class="dino-create-report-step-container">
-          <dino-form-metric-selector [hasOptionalMetrics]="hasOptionalMetrics" [allowMetricCreation]="allowMetricCreation">
+          <dino-form-metric-selector
+            [hasOptionalMetrics]="hasOptionalMetrics"
+            [allowMetricCreation]="allowMetricCreation"
+          >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
         </div>
@@ -33,11 +36,6 @@
               <mat-datepicker #pickerTo></mat-datepicker>
             </mat-form-field>
           </form>
-          <div>
-            <button mat-button default class="dino-save-report-data-button" (click)="saveReport()">
-              Save
-            </button>
-          </div>
         </div>
       </mat-step>
     </mat-stepper>
@@ -58,11 +56,12 @@
           <mat-datepicker #pickerTo></mat-datepicker>
         </mat-form-field>
       </form>
-      <div>
-        <button mat-button default class="dino-save-report-data-button" (click)="saveReport()">
-          Save
-        </button>
-      </div>
     </div>
   </ng-container>
+
+  <dino-floating-button
+    buttonIcon="save"
+    [tooltipMessage]="'Save report'|transloco"
+    (click)="saveReport()"
+  ></dino-floating-button>
 </ng-container>

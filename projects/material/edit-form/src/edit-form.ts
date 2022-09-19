@@ -234,6 +234,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   private _saveFormSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the ajf validation state to save the form
+   */
+  private _saveValidFormSub: Subscription = Subscription.EMPTY;
+
+  /**
    * Subscribes to the update form event
    */
   private _updateFormDataSub: Subscription = Subscription.EMPTY;
@@ -300,6 +305,28 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         return false;
       }),
     );
+  }
+
+  /**
+   * Saves the form
+   */
+  saveForm() {
+    this._saveValidFormSub = this.isAjfFormValid
+      .pipe(
+        tap(valid => {
+          if (valid) {
+            this._saveFormEvt.emit();
+          } else {
+            if (isDevMode()) {
+              console.log('Invalid form');
+            }
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
+
+    this._saveValidFormSub.unsubscribe();
   }
 
   /**
@@ -702,6 +729,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
 
   ngOnDestroy() {
     this._saveFormSub.unsubscribe();
+    this._saveValidFormSub.unsubscribe();
     this._metricChangesSub.unsubscribe();
     this._updateFormDataSub.unsubscribe();
     this._populatedFormDataSub.unsubscribe();
