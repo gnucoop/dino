@@ -55,7 +55,7 @@ import {
 } from '@dino/core/forms';
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {RxDocument} from 'rxdb';
+import {isRxDocument, RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
@@ -350,6 +350,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               Object.keys(metricSel).forEach(metricName => {
                 if (
                   metricSel[metricName] &&
+                  isRxDocument(metricSel[metricName]) &&
                   fschemadeps.metric_data_to_show &&
                   fschemadeps.metric_data_to_show.includes(metricName)
                 ) {
@@ -464,6 +465,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   Object.keys(metricSel).forEach(metricName => {
                     if (
                       metricSel[metricName] &&
+                      isRxDocument(metricSel[metricName]) &&
                       fschemadeps.metric_data_to_show &&
                       fschemadeps.metric_data_to_show.includes(metricName)
                     ) {

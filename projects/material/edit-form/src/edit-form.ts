@@ -58,7 +58,7 @@ import {
 import {FormData, FormSchema, FormSchemaDeps, FormSchemaManager} from '@dino/core/forms';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {format} from 'date-fns';
-import {RxDocument} from 'rxdb';
+import {isRxDocument, RxDocument} from 'rxdb';
 import {NetworkStatusService} from '@dino/core/auth';
 import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
 
@@ -426,6 +426,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               Object.keys(metricSel).forEach(metricName => {
                 if (
                   metricSel[metricName] &&
+                  isRxDocument(metricSel[metricName]) &&
                   fschemadeps.metric_data_to_show &&
                   fschemadeps.metric_data_to_show.includes(metricName)
                 ) {
@@ -550,6 +551,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                   Object.keys(metricSel).forEach(metricName => {
                     if (
                       metricSel[metricName] &&
+                      isRxDocument(metricSel[metricName]) &&
                       fschemadeps.metric_data_to_show &&
                       fschemadeps.metric_data_to_show.includes(metricName)
                     ) {
