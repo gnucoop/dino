@@ -33,4 +33,9 @@ dino-export-form {
   .dino-export-toolbar-count {
     margin-right: 10px;
   }
+  mat-selection-list{
+    width: 100%;
+    overflow-y: scroll;
+    max-height: 50vh;
+  }
 }
