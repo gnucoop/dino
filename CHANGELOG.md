@@ -1,3 +1,17 @@
+<a name="13.3.1"></a>
+# 13.3.1 "harsh-vole" (2022-09-20)
+### Bug Fixes
+* **material/edit-report:** Fixed a bug causing the loading spinner to not appear. Ajf tables and chart canvas css fixes. ([a1e8cf9](https://bitbucket.org/gnucoop/dino/commits/a1e8cf931d8e834705982262e5e538f6390abdd0))
+* **material/export-form:** Fixed css of export dialog so that list items can be scrolled vertically. ([fd615b4](https://bitbucket.org/gnucoop/dino/commits/fd615b466b1b8ff0d1bb9fe0d9d8c5b4cf99c0ff))
+### Features
+* **core/auth:** Added "changePasswordWithResetTicket" method to authService. ([c05e613](https://bitbucket.org/gnucoop/dino/commits/c05e6137b027ff6541018264957d7b8107e0e757))
+* **e2e-material:** Added Reset Password module and component to E2e app ([e525ea4](https://bitbucket.org/gnucoop/dino/commits/e525ea4fd6720103ab189cb05a3a76ac72c78ffc))
+* **material/floating-button:** Added input for disabling the floating button ([a46e94f](https://bitbucket.org/gnucoop/dino/commits/a46e94f8f439de23e9ca3dab66e05b646825cf1a))
+* **material/reset-password:** Added material Reset Password module and component ([cf47f7b](https://bitbucket.org/gnucoop/dino/commits/cf47f7bce426080a98e127a287a3b94db64df497))
+* **multiple:** Added new Floating Save Button to create/edit form/report. ([c4414a5](https://bitbucket.org/gnucoop/dino/commits/c4414a5b9adcb0421d02a54ef61632129d073e0b))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.3.0"></a>
 # 13.3.0 "random-jaguar" (2022-09-09)
 ### Bug Fixes
