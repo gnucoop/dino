@@ -31,6 +31,7 @@ import {
 import {FormControl, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ListHeader} from '@dino/core/list';
+import {TranslocoService} from '@ajf/core/transloco';
 import {combineLatest, Observable, of as obsOf} from 'rxjs';
 import {map, startWith, take} from 'rxjs/operators';
 
@@ -66,6 +67,7 @@ export class ColumnsSelector<T> implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ColumnsSelector<T>>,
     @Inject(MAT_DIALOG_DATA) public data: {columns: ListHeader<T>[]},
+    private _ts: TranslocoService,
   ) {
     this.columnSearchFilter = new FormGroup({column_search: new FormControl()});
   }
@@ -89,7 +91,9 @@ export class ColumnsSelector<T> implements OnInit {
         }
         if (filter['column_search'] != null) {
           const filterString = (filter['column_search'] as string).toLowerCase();
-          listHeaders = headers.filter(header => header.label.toLowerCase().includes(filterString));
+          listHeaders = headers.filter(header =>
+            this._ts.translate(header.label).toLowerCase().includes(filterString),
+          );
         }
         return listHeaders;
       }),
