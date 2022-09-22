@@ -397,12 +397,12 @@ export class ListDataSource<
               .map(header => {
                 // Repeating Slide Field Filter
                 if (header.repeatingSlideColumn) {
-                  const repeatedFilters: {[key: string]: {$eq: string}}[] = [];
+                  const repeatedFilters: {[key: string]: {$regex: string | RegExp}}[] = [];
                   let slideIdx = 0;
                   while (slideIdx <= this._maxRepeatingSlidesFiltering) {
                     repeatedFilters.push({
                       [`data.${header.column.toString()}__${slideIdx}`]: {
-                        '$eq': item.value,
+                        '$regex': new RegExp(item.value, 'i'),
                       },
                     });
                     slideIdx++;
@@ -413,7 +413,7 @@ export class ListDataSource<
                 else {
                   return {
                     [`data.${header.column.toString()}`]: {
-                      '$eq': item.value,
+                      '$regex': new RegExp(item.value, 'i'),
                     },
                   };
                 }
@@ -541,6 +541,7 @@ export class ListDataSource<
       selector: detailsQuerySelector,
     };
     this.getQueryResults(query, detailsQuery);
+    console.log(query);
     return query;
   }
 
