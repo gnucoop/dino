@@ -101,7 +101,8 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   @ViewChildren(MatSelectionList) fields!: QueryList<MatSelectionList>;
 
   readonly exportDataList$: BehaviorSubject<ExportData[]> = new BehaviorSubject<ExportData[]>([]);
-  // it is the export data model of the form schema.
+
+  /** The export data model of the form schema */
   readonly exportModel$: BehaviorSubject<ExportModel | null> =
     new BehaviorSubject<ExportModel | null>(null);
   readonly formSchema$: BehaviorSubject<FormSchema | null> = new BehaviorSubject<FormSchema | null>(
@@ -126,16 +127,21 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   ];
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
-  // it is a dictionary with keu the name of the slide and the list of selected field name as value.
+
+  /** A dictionary with keu the name of the slide and the list of selected field name as value */
   private _exportedNamesBySlide: {[index: number]: string[]} = {};
+
   private _loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _selectAllFieldsofCurrentSlideEvt: EventEmitter<boolean> = new EventEmitter<boolean>();
   private _selectAllSub: Subscription = Subscription.EMPTY;
-  // if it is true, it indicates that the export must be by translated labels.
+
+  /** If true, export use translated labels instead values */
   private _translate$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  // it is a dictionary with key the label of the fields or choice origins and the relative label as
-  // value.
-  private _translateCtxValuesDic: {[name: string]: string} = {};
+
+  /** A dictionary with all context values:
+   * {field name: field value}
+   * {choiceOriginName_choiceOriginValue: choiceLabel} */
+  private _ctxValuesDict: {[name: string]: string} = {};
 
   constructor(
     public dialogRef: MatDialogRef<ExportForm>,
@@ -187,7 +193,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
     this.maxNumberOfForm$ = this.exportDataList$.pipe(map(l => l.length));
 
-    const translateCtxValueslSub = (this.formSchema$ as Observable<FormSchema | null>)
+    const ctxValuesSub = (this.formSchema$ as Observable<FormSchema | null>)
       .pipe(
         filter((f: any) => f != null),
         map((fs: FormSchema) => fs.schema),
@@ -197,27 +203,29 @@ export class ExportForm implements AfterViewInit, OnDestroy {
           const res: {[name: string]: string} = {};
           choicesOrigins.forEach((choicesOrigin: AjfChoicesOrigin<string | number>) => {
             choicesOrigin.choices.forEach(choice => {
-              res[choice.value] = `${choice.label}`;
+              res[choicesOrigin.name + '_' + choice.value] = `${this._ts.translate(choice.label)}`;
             });
-            slides.forEach(slide => {
-              res[slide.name] = `${slide.label}`;
-              (slide.nodes as AjfField[]).forEach(field => {
-                res[field.name] = `${field.label}`;
-                if (field.visibility != null && field.visibility.condition != null) {
-                  const rootField = field.visibility.condition.split(' ')[0];
-                  if (res[rootField] != null) {
-                    res[field.name] = `${field.label}(${res[rootField]})`;
-                  }
+          });
+          slides.forEach(slide => {
+            res[slide.name] = `${slide.label}`;
+            (slide.nodes as AjfField[]).forEach(field => {
+              res[field.name] = `${this._ts.translate(field.label)}`;
+              if (field.visibility != null && field.visibility.condition != null) {
+                const rootField = field.visibility.condition.split(' ')[0];
+                if (res[rootField] != null) {
+                  const fieldLabel = this._ts.translate(field.label) || field.label;
+                  const rField = this._ts.translate(res[rootField]) || res[rootField];
+                  res[field.name] = `${fieldLabel}(${rField})`;
                 }
-              });
+              }
             });
           });
           return res;
         }),
       )
       .subscribe(res => {
-        this._translateCtxValuesDic = res;
-        translateCtxValueslSub.unsubscribe();
+        this._ctxValuesDict = res;
+        ctxValuesSub.unsubscribe();
       });
 
     const slideNodes$: Observable<AjfSlide[]> = this.formSchema$.pipe(
@@ -536,9 +544,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       const fieldName = this._getFieldName(name);
       if (this._dinoFields.indexOf(name) === -1) {
         labels[name] =
-          this._translateCtxValuesDic[fieldName] != null
-            ? this._translateCtxValuesDic[fieldName]
-            : name;
+          this._ctxValuesDict[fieldName] != null ? this._ctxValuesDict[fieldName] : name;
       } else {
         labels[name] = fieldName;
       }
@@ -571,14 +577,12 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
   /**
    * It builds a xlxs file and download it from browser.
-   * It creates a xlxs workbook that contains a sheet with all the selected fields and a sheet for
-   * each slide of the form. Each value shown is shown as a label when present and translated when a
-   * translation is present.
-   * The file name follows the following metric
-   * `${schema_name}__${time_level}__${start_period}__${end_period}`
+   * It creates a xlxs workbook that contains a sheet with all the selected fields
+   * and, if splitted is true, a sheet for each slide of the form.
+   * The schema name is used as file name.
    *
    * @param ctxList is the list of ajf contexts.
-   * @param exportModel is the ExportModel of current form schema.
+   * @param splitted if true creates a sheet for each slide of the form
    */
   private _buildXlsx(ctxList: Context[], splitted = false): void {
     const exportModel: ExportModel = this.exportModel$.value!;
@@ -615,8 +619,8 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       Sheets: sheets,
       SheetNames: [schemaName, ...slideNames],
     };
-    XLSX.writeFile(workbook, `${exportModel.schemaName}.xls`, {
-      bookType: 'xls',
+    XLSX.writeFile(workbook, `${exportModel.schemaName}.xlsx`, {
+      bookType: 'xlsx',
       type: 'array',
     });
     this._loading$.next(false);
@@ -660,6 +664,12 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     return count;
   }
 
+  /**
+   * Evaluate the form context with its translations
+   * @param field AjfField to be evaluate
+   * @param exportCtx the evaluated context
+   * @param ctx the AjForm context
+   */
   private _evaluateContext(field: AjfField, exportCtx: Context, ctx: Context): void {
     if (ctx[field.name] != null || field.fieldType === AjfFieldType.Table) {
       switch (field.fieldType) {
@@ -667,7 +677,9 @@ export class ExportForm implements AfterViewInit, OnDestroy {
           exportCtx[field.name] = ctx[field.name];
           break;
         case AjfFieldType.MultipleChoice:
-          exportCtx[field.name] = this._translateCtxValue(ctx[field.name]);
+        case AjfFieldType.SingleChoice:
+          const choicePrefix = (field as any).choicesOriginRef + '_';
+          exportCtx[field.name] = this._translateCtxValue(ctx[field.name], choicePrefix);
           break;
         case AjfFieldType.Table:
           const rowLabels = (field as AjfTableField).rowLabels.map(l => this._translateCtxValue(l));
@@ -678,7 +690,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
             columnLabels.forEach((column, columnIdx) => {
               const tableKey = `${field.name}__${rowIdx}__${columnIdx}`;
               const labelCell = `${row}__${column}`;
-              this._translateCtxValuesDic[tableKey] = labelCell;
+              this._ctxValuesDict[tableKey] = labelCell;
               if (ctx[tableKey] != null) {
                 exportCtx[tableKey] = this._translate(`${ctx[tableKey] || ' '}`);
                 if (field.slideIndex != null) {
@@ -702,7 +714,6 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
   private _getFieldName(name: string): string {
     name = name.replace('data_', '');
-    name = name.replace('django_', '');
     const splittedName = name.split('__');
     if (splittedName.length === 2) {
       return splittedName[0];
@@ -779,9 +790,22 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     return '';
   }
 
-  private _translateCtxValue(value: string | number | string[] | number[]): string | string[] {
+  /**
+   * Evaluate a form value with its translation or with its label
+   * for choices, if required
+   * @param value
+   * @param prefix the prefix to add to the value to access to the translations dict
+   * @returns the evaluated value
+   */
+  private _translateCtxValue(
+    value: string | number | string[] | number[],
+    prefix?: string | null,
+  ): string | string[] {
     if (value == null || this._isObject(value)) {
       return '';
+    }
+    if (prefix == null || prefix == undefined) {
+      prefix = '';
     }
 
     if (this._translate$.value) {
@@ -792,7 +816,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
             if (n === '') {
               return n;
             }
-            const label = this._translateCtxValuesDic[n];
+            const label = this._ctxValuesDict[prefix + n];
             if (label != null && label !== '') {
               return this._translate(label);
             } else {
@@ -803,10 +827,10 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       } else {
         value = `${value}`;
         if (
-          this._translateCtxValuesDic[value] != null &&
-          this._translateCtxValuesDic[value] !== ''
+          this._ctxValuesDict[prefix + value] != null &&
+          this._ctxValuesDict[prefix + value] !== ''
         ) {
-          return this._translate(this._translateCtxValuesDic[value]);
+          return this._translate(this._ctxValuesDict[prefix + value]);
         } else {
           return value !== '' ? this._translate(value) : value;
         }
