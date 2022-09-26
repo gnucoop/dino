@@ -53,6 +53,7 @@
   </ng-container>
 
   <dino-floating-button
+    *ngIf="(isView|async) !== true"
     buttonIcon="save"
     [tooltipMessage]="'Save form'|transloco"
     [buttonDisabled]="(isAjfFormValid|async) === false"
