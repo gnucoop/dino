@@ -1,11 +1,20 @@
-import {Component, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {NetworkStatusService} from '@dino/core/auth';
-import {PermissionContextService} from '@dino/core/data';
+import {DataService, PermissionContextService} from '@dino/core/data';
 import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {CollectItem} from '@dino/material/collect';
-import {filter, map, shareReplay, startWith} from 'rxjs/operators';
-import {combineLatest, Observable} from 'rxjs';
+import {
+  delay,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
+import {combineLatest, Observable, of} from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-menu',
@@ -13,27 +22,46 @@ import {combineLatest, Observable} from 'rxjs';
 })
 export class MatDashboardMenuE2E {
   @Output() isLoading: Observable<boolean>;
+  syncFinished: EventEmitter<void> = new EventEmitter<void>();
   collectItems: Observable<CollectItem[]>;
 
   constructor(
     readonly breakpointObserver: BreakpointObserverService,
     readonly networkStatus: NetworkStatusService,
-    readonly userGroupManager: UserGroupManager,
     private _pcs: PermissionContextService,
+    private _ds: DataService,
+    private _ugm: UserGroupManager,
   ) {
-    this.isLoading = this._pcs.fullContext.pipe(
-      filter(ctx => ctx != null),
-      map(ctx => {
-        if (ctx == null) {
-          return false;
-        }
-        return ctx.user_permissions == null && ctx.user != null;
+    this.isLoading = this._ugm.isActiveUserAdmin().pipe(
+      switchMap(() => {
+        return this._ds.isSyncing.pipe(
+          switchMap(syncing => {
+            if (syncing) {
+              return of(true);
+            }
+            return this._pcs.fullContext.pipe(
+              filter(ctx => ctx != null),
+              map(ctx => {
+                if (ctx == null) {
+                  return false;
+                }
+                return ctx.user_permissions == null && ctx.user != null;
+              }),
+            );
+          }),
+          distinctUntilChanged(),
+        );
       }),
-      startWith(true),
+      takeUntil(this.syncFinished.pipe(delay(100))),
+      tap(c => {
+        if (!c) {
+          this.syncFinished.emit();
+        }
+      }),
     );
 
     this.collectItems = combineLatest([
-      this.userGroupManager.isActiveUserAdmin(),
+      this._ugm.isActiveUserAdmin(),
       this._pcs.fullContext.pipe(filter(ctx => ctx != null && ctx.user_permissions != null)),
     ]).pipe(
       map(([isAdmin, context]) => {
