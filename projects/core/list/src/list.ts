@@ -117,7 +117,18 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   @Input()
   set headers(headers: ListHeader<T>[]) {
-    const setHeaders = this._loadColumnsSelectionPreset() ?? headers;
+    const loadedHeaders = this._loadColumnsSelectionPreset()?.map(loadedHeader => {
+      const defaultHeader = headers.find(h => h.column === loadedHeader.column);
+      if (defaultHeader) {
+        return {
+          ...loadedHeader,
+          isEditable: defaultHeader.isEditable,
+          editMethod: defaultHeader.editMethod,
+        };
+      }
+      return loadedHeader;
+    });
+    const setHeaders = loadedHeaders ?? headers;
     this.setDisplayedColumns(setHeaders);
     this._headers.next(setHeaders);
   }
