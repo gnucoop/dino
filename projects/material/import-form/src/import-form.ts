@@ -44,7 +44,7 @@ import {UserDataManager} from '@dino/core/users';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
-import {catchError, exhaustMap, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {catchError, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 /**
@@ -309,8 +309,12 @@ export class ImportForm implements OnDestroy {
     let value = rowValue === undefined ? null : rowValue;
     if (value !== null) {
       if (typeof value === 'string') {
+        value = value.trim();
         if (value.startsWith('[') && value.endsWith(']')) {
-          value = value.slice(1, -1).split(',');
+          value = value
+            .slice(1, -1)
+            .split(',')
+            .map((v: string) => v.trim());
         }
       } else if (typeof value === 'object') {
         try {
@@ -404,9 +408,7 @@ export class ImportForm implements OnDestroy {
         } else {
           let errMsg = 'File not imported! ';
           if (bulkRes?.error.length) {
-            if (isDevMode()) {
-              console.log('Import form error: ' + bulkRes.error[0].msg);
-            }
+            console.log('Import form error: ' + bulkRes.error[0].msg);
             if (
               bulkRes?.error[0].msg?.parameters?.errors &&
               bulkRes?.error[0].msg?.parameters?.errors.length
@@ -491,7 +493,7 @@ export class ImportForm implements OnDestroy {
     if (Object.keys(newMetricsInRows).length) {
       forkJoin([
         this._checkIfMetricsAlreadyExist(newMetricsInRows).pipe(
-          exhaustMap(existingMetrics => {
+          switchMap(existingMetrics => {
             const newMetrics: {[key: string]: {[key: string]: any}[]} = deepCopy(newMetricsInRows);
             if (existingMetrics.length > 0) {
               existingMetrics.forEach((queryRes: any[]) => {
