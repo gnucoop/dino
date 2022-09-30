@@ -541,7 +541,6 @@ export class ListDataSource<
       selector: detailsQuerySelector,
     };
     this.getQueryResults(query, detailsQuery);
-    console.log(query);
     return query;
   }
 

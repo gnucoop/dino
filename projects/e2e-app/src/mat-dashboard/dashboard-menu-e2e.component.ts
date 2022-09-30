@@ -1,27 +1,17 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter} from '@angular/core';
 import {NetworkStatusService} from '@dino/core/auth';
-import {DataService, PermissionContextService} from '@dino/core/data';
+import {PermissionContextService} from '@dino/core/data';
 import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {CollectItem} from '@dino/material/collect';
-import {
-  delay,
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
-import {combineLatest, Observable, of} from 'rxjs';
+import {filter, map, shareReplay} from 'rxjs/operators';
+import {combineLatest, Observable} from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-menu',
   templateUrl: 'dashboard-menu-e2e.component.html',
 })
 export class MatDashboardMenuE2E {
-  @Output() isLoading: Observable<boolean>;
   syncFinished: EventEmitter<void> = new EventEmitter<void>();
   collectItems: Observable<CollectItem[]>;
 
@@ -29,37 +19,8 @@ export class MatDashboardMenuE2E {
     readonly breakpointObserver: BreakpointObserverService,
     readonly networkStatus: NetworkStatusService,
     private _pcs: PermissionContextService,
-    private _ds: DataService,
     private _ugm: UserGroupManager,
   ) {
-    this.isLoading = this._ugm.isActiveUserAdmin().pipe(
-      switchMap(() => {
-        return this._ds.isSyncing.pipe(
-          switchMap(syncing => {
-            if (syncing) {
-              return of(true);
-            }
-            return this._pcs.fullContext.pipe(
-              filter(ctx => ctx != null),
-              map(ctx => {
-                if (ctx == null) {
-                  return false;
-                }
-                return ctx.user_permissions == null && ctx.user != null;
-              }),
-            );
-          }),
-          distinctUntilChanged(),
-        );
-      }),
-      takeUntil(this.syncFinished.pipe(delay(100))),
-      tap(c => {
-        if (!c) {
-          this.syncFinished.emit();
-        }
-      }),
-    );
-
     this.collectItems = combineLatest([
       this._ugm.isActiveUserAdmin(),
       this._pcs.fullContext.pipe(filter(ctx => ctx != null && ctx.user_permissions != null)),

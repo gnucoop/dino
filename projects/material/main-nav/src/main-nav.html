@@ -28,8 +28,11 @@
       </ng-container>
     </ng-container>
     <ng-template #syncOnline>
-      <mat-icon class="dino-sync-detector" [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
-        (click)="runSync()">sync</mat-icon
+      <mat-icon
+        class="dino-sync-detector"
+        [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
+        (click)="runSync()"
+        >sync</mat-icon
       >
     </ng-template>
     <ng-template #syncOffline>
@@ -67,7 +70,10 @@
     [class.dino-large-sidenav]="breakpointObserver.large|async"
     [class.extended]="extendedSidenav|async"
   >
-    <mat-nav-list>
+    <mat-nav-list
+      *ngIf="(isLoading|async) === false"
+      [@loadComponent]
+    >
       <a
         mat-list-item
         [disableRipple]="true"
@@ -116,16 +122,24 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content class="dino-sidenav-content">
+  <mat-sidenav-content class="dino-sidenav-content" [@loadComponent]>
     <ng-container *ngIf="(isLoading|async) === false; else loading">
-      <router-outlet (activate)="onRouterOutletLoading($event)"></router-outlet>
+      <router-outlet [@loadComponent] (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>
     <ng-template #loading>
-      <ng-container *ngIf="spinnerImagePath; else defaultspinner"
-        ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+      <ng-container *ngIf="spinnerImagePath; else defaultspinner">
+        <dino-loading-spinner
+          [@loadComponent]
+          [spinnerImagePath]="spinnerImagePath"
+        ></dino-loading-spinner>
       </ng-container>
-      <ng-template #defaultspinner
-        ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+      <ng-template #defaultspinner>
+        <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
+        <mat-spinner
+          [@loadComponent]
+          class="dino-component-load-spinner"
+          mode="indeterminate"
+        ></mat-spinner
       ></ng-template>
     </ng-template>
   </mat-sidenav-content>

@@ -84,8 +84,15 @@ dino-main-nav {
   .mat-sidenav-content.dino-sidenav-content {
     padding: 5px;
     background-color: inherit;
-    transition: all ease-in-out 0.2s;
-    -webkit-transition: all ease-in-out 0.2s;
+    transition: all ease-in-out 0.5s;
+    -webkit-transition: all ease-in-out 0.5s;
+    .dino-sync-text{
+      text-align: center;
+      margin: auto;
+      position: relative;
+      top: 20%;
+      color: inherit;
+    }
     .dino-component-load-spinner {
       margin: auto;
       height: 90vh !important;

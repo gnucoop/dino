@@ -20,6 +20,7 @@
  *
  */
 
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -53,6 +54,26 @@ import {Section} from './section-interface';
   selector: 'dino-main-nav',
   templateUrl: 'main-nav.html',
   styleUrls: ['main-nav.scss'],
+  animations: [
+    trigger('loadComponent', [
+      state(
+        'ready',
+        style({
+          opacity: 1,
+        }),
+      ),
+      state(
+        'loading',
+        style({
+          opacity: 0,
+        }),
+      ),
+      transition('ready => loading', [animate('0.3s')]),
+      transition('loading => ready', [animate('2s')]),
+      transition(':enter', [style({opacity: 0}), animate('2000ms', style({opacity: 1}))]),
+      transition(':leave', [animate('300ms', style({opacity: 0}))]),
+    ]),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
@@ -218,6 +239,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   private _onRouterOutletLoadingSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Subscribes to the dataservice syncing until the first sync is completed
+   */
+  private _syncLoadingSub: Subscription = Subscription.EMPTY;
+
   @Input()
   set sections(sec: Section[]) {
     if (sec == null) {
@@ -277,6 +303,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
     private _router: Router,
     private _cdr: ChangeDetectorRef,
   ) {
+    this._syncLoadingSub = this.dataService.firstReplicationComplete.subscribe(repComplete => {
+      this.isLoading.next(!repComplete);
+    });
+
     this._currentSectionSub = combineLatest([
       this._router.events.pipe(
         filter(evt => evt instanceof NavigationEnd || evt instanceof NavigationStart),
@@ -415,5 +445,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._menuToggleSub.unsubscribe();
     this._currentSectionSub.unsubscribe();
     this._onRouterOutletLoadingSub.unsubscribe();
+    this._syncLoadingSub.unsubscribe();
   }
 }
