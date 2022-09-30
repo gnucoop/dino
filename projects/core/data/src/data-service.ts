@@ -116,6 +116,12 @@ interface RegisteredCollection extends CollectionSyncParams {
    * The registered collection.
    */
   collection: RxCollection;
+
+  /**
+   * When true, the first replication cycle for the collection is complete.
+   * Should be initialized as false.
+   */
+  firstSyncCompleted: BehaviorSubject<boolean>;
 }
 
 /**
@@ -128,6 +134,12 @@ export class DataService implements IDataService {
    * (A replication cycle is undergoing)
    */
   readonly isSyncing: Observable<boolean>;
+
+  /**
+   * When true, the first replication cycle for all collections is complete.
+   * Resets to false on logout.
+   */
+  firstReplicationComplete: Observable<boolean>;
 
   readonly config: DataServiceConfig;
 
@@ -246,6 +258,15 @@ export class DataService implements IDataService {
           }),
         );
       }),
+    );
+
+    this.firstReplicationComplete = this._registeredCollections.pipe(
+      switchMap(collections => {
+        const syncs = collections.map(coll => coll.firstSyncCompleted);
+        return combineLatest(syncs);
+      }),
+      map(syncsComplete => syncsComplete.every(syncComplete => syncComplete)),
+      distinctUntilChanged(),
     );
 
     if (!this.config.syncOptions.backendless) {
@@ -554,7 +575,7 @@ export class DataService implements IDataService {
                 }),
               );
             }
-            return obsOf(false);
+            return obsOf(true);
           }),
           retryWhen(err => err.pipe(delay(1000))),
         );
@@ -660,9 +681,15 @@ export class DataService implements IDataService {
       return;
     }
     const {pullQueryExtraParams, pushQueryExtraParams} = params;
+
     this._registeredCollections.next([
       ...collections,
-      {collection, pullQueryExtraParams, pushQueryExtraParams},
+      {
+        collection,
+        pullQueryExtraParams,
+        pushQueryExtraParams,
+        firstSyncCompleted: new BehaviorSubject<boolean>(false),
+      },
     ]);
   }
 
@@ -892,6 +919,15 @@ export class DataService implements IDataService {
       action: msg,
       ...(count != null && {count}),
     });
+
+    if (msg === 'replication cycle complete') {
+      const coll = this._registeredCollections.value.find(
+        coll => coll.collection.name === collection.name,
+      );
+      if (coll && coll.firstSyncCompleted.value === false) {
+        coll.firstSyncCompleted.next(true);
+      }
+    }
   }
 
   /**
