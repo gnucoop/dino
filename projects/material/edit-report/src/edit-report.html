@@ -5,7 +5,7 @@
       <ng-container *ngIf="(metricsService.hasActiveMetrics|async) && steps === true">
         <mat-stepper labelPosition="bottom" #stepper linear>
           <mat-step [completed]="(isReportMetricsSelectorValid|async) || (isView|async)">
-            <ng-template matStepLabel>REPORT METRICS</ng-template>
+            <ng-template matStepLabel>{{'REPORT METRICS'|transloco}}</ng-template>
             <div class="dino-edit-report-step-container">
               <dino-form-metric-selector
                 [hasOptionalMetrics]="hasOptionalMetrics"
@@ -17,7 +17,7 @@
           </mat-step>
 
           <mat-step>
-            <ng-template matStepLabel>REPORT DATA</ng-template>
+            <ng-template matStepLabel>{{'REPORT DATA'|transloco}}</ng-template>
             <ng-container *ngIf="reportSchema|async as repschema">
               <ng-container *ngIf="reportData|async as repData">
                 <div>

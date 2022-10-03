@@ -4,7 +4,7 @@
   >
     <div class="dino-mixed-list-filter">
       <mat-form-field appearance="fill">
-        <mat-label>Search Items</mat-label>
+        <mat-label>{{('Search'|transloco) + ' ' + ('Items'|transloco)}}</mat-label>
         <input #search matInput />
         <mat-icon matSuffix>rule</mat-icon>
       </mat-form-field>
@@ -56,7 +56,7 @@
   <div class="dino-mixed-list-container">
     <div class="dino-mixed-list-savename">
       <mat-form-field appearance="fill">
-        <mat-label>Name</mat-label>
+        <mat-label>{{'Name'|transloco}}</mat-label>
         <input #saveListName matInput [disabled]="viewOnly" />
         <mat-icon matSuffix>badge</mat-icon>
       </mat-form-field>
@@ -100,7 +100,7 @@
       (click)="saveMixedList()"
       [disabled]="!validateSaveList()"
     >
-      Save
+      {{'Save'|transloco}}
     </button>
     <button
       mat-raised-button
@@ -108,7 +108,7 @@
       color="warn"
       (click)="onClose()"
     >
-      Close
+      {{'Close'|transloco}}
     </button>
   </div>
 </div>

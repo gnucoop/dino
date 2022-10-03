@@ -6,7 +6,7 @@
 
   <form [formGroup]="formDate" autocomplete="off">
     <mat-form-field class="dino-form-date-selector-field" appearance="fill">
-      <mat-label>Creation Date</mat-label>
+      <mat-label>{{'Creation Date'|transloco}}</mat-label>
       <input
         matInput
         [matDatepicker]="pickerDate"

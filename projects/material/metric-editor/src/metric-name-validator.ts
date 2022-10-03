@@ -65,13 +65,13 @@ export class NameMatchValidator<T extends Metric = Metric> {
     manager: DataModelManager<T>,
     cdr: ChangeDetectorRef,
     currentName: string,
-    action?: 'view' | 'edit' | 'create',
+    action?: 'View' | 'Edit' | 'Create',
   ): AsyncValidatorFn {
     return (control: AbstractControlWithWarnings): Observable<ValidationErrors | null> => {
       return manager.query({selector: {name: {$eq: control.value}}}).pipe(
         debounceTime(300),
         map(docs => {
-          if (action === 'edit' || action === 'view') {
+          if (action === 'Edit' || action === 'View') {
             docs = docs.filter(doc => doc.name != currentName);
           }
           if (docs.length) {

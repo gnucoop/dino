@@ -12,9 +12,9 @@ export class MatCasesE2E {
   readonly manager: CaseManager;
   readonly headers: ListHeader<Case>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name', sortable: true, displayed: true},
-    {column: 'code', label: 'Code', sortable: true, displayed: true},
-    {column: 'parent_name', label: 'Parent case', sortable: true, displayed: true},
+    {column: 'name', label: 'Name', displayed: true},
+    {column: 'code', label: 'Code', displayed: true},
+    {column: 'parent_name', label: 'Parent Case', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly readOnlyFields: string[] = ['code'];
@@ -23,12 +23,12 @@ export class MatCasesE2E {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: row => this.section.openDialog(row, 'view'),
+      customAction: row => this.section.openDialog(row, 'View'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: row => this.section.openDialog(row, 'edit'),
+      customAction: row => this.section.openDialog(row, 'Edit'),
     },
     {
       actionType: 'delete',

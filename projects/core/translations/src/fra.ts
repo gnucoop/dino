@@ -77,6 +77,7 @@ export const FRA: Translation = {
   'Add New': 'Ajouter un nouveau',
   'Add New form': 'Ajouter un nouveau formulaire',
   'Import forms': 'Importer des formulaires',
+  'Import': 'Importer',
   'Add New User Permissions Group': "Ajouter un nouveau groupe d'autorisations utilisateur",
   'Add New Report': 'Ajouter un nouveau rapport',
   'Add New User': 'Ajouter un nouvel utilisateur',
@@ -101,6 +102,9 @@ export const FRA: Translation = {
   'Organization associated with the form': 'Organisation associée au formulaire',
   'Creation Date': 'Date de création',
   'Create': 'Créer',
+  'Edit': 'Modifier',
+  'REPORT METRICS': 'MÉTRIQUES DU RAPPORT',
+  'REPORT DATA': 'DONNÉES DU RAPPORT',
   'FORM METRICS': 'MÉTRIQUES DU FORMULAIRE',
   'FORM DATA': 'DONNÉES DU FORMULAIRE',
   'Collected Since': 'Collecté depuis',
@@ -177,4 +181,10 @@ export const FRA: Translation = {
   'PASSWORD CHANGED': 'MOT DE PASSE MODIFIÉ',
   'Password successfully changed. You will now be redirected to the login area.':
     'Le mot de passe a été modifié avec succès. Vous allez maintenant être redirigé vers la zone de connexion.',
+  'Initializing data': 'Initialisation des données',
+  'Form Label': 'Étiquette du formulaire',
+  'Form Name': 'Nom du formulaire',
+  'Icon Identifier': 'Icône de formulaire',
+  'Form Statuses': 'Statuts des formulaires',
+  'Relationships': 'Relations',
 };

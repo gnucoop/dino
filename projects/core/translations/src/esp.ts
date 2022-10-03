@@ -77,6 +77,7 @@ export const ESP: Translation = {
   'Add New': 'Agregar nuevo',
   'Add New form': 'Agregar nuevo formulario',
   'Import forms': 'Importar formularios',
+  'Import': 'Importar',
   'Add New User Permissions Group': 'Agregar nuevo grupo de permisos de usuario',
   'Add New Report': 'Agregar nuevo informe',
   'Add New User': 'Agregar nuevo usuario',
@@ -101,6 +102,9 @@ export const ESP: Translation = {
   'Organization associated with the form': 'Organización asociada al formulario',
   'Creation Date': 'Fecha de creación',
   'Create': 'Crear',
+  'Edit': 'Editar',
+  'REPORT METRICS': 'MEDIDAS DEL INFORME',
+  'REPORT DATA': 'DATOS DEL INFORME',
   'FORM METRICS': 'MEDIDAS DEL FORMULARIO',
   'FORM DATA': 'DATOS DEL FORMULARIO',
   'Collected Since': 'Recolectado desde',
@@ -179,4 +183,10 @@ export const ESP: Translation = {
   'PASSWORD CHANGED': 'CONTRASEÑA CAMBIADA',
   'Password successfully changed. You will now be redirected to the login area.':
     'La contraseña ha sido cambiada con éxito. Ahora será redirigido a la zona de inicio de sesión.',
+  'Initializing data': 'Inicialización de datos',
+  'Form Label': 'Etiqueta del formulario',
+  'Form Name': 'Nombre del formulario',
+  'Icon Identifier': 'Icono del formulario',
+  'Form Statuses': 'Estados de los formularios',
+  'Relationships': 'Relaciones',
 };

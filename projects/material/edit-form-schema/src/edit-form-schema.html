@@ -5,16 +5,16 @@
       <ng-container *ngIf="formGroup|async as fgroup">
         <form [formGroup]="fgroup" class="dino-form-attributes">
           <mat-form-field>
-            <b><input matInput formControlName="label" [placeholder]="'Form Label'" /></b>
+            <b><input matInput formControlName="label" [placeholder]="'Form Label'|transloco" /></b>
           </mat-form-field>
           <mat-form-field>
-            <input matInput formControlName="name" [placeholder]="'Form Name'" />
+            <input matInput formControlName="name" [placeholder]="'Form Name'|transloco" />
           </mat-form-field>
           <mat-form-field>
             <input
               matInput
               formControlName="icon"
-              [placeholder]="'Icon Identifier'"
+              [placeholder]="'Icon Identifier'|transloco"
               [matAutocomplete]="autoicons"
             />
             <mat-icon matSuffix>{{fgroup.get('icon')?.value}}</mat-icon>
@@ -47,10 +47,10 @@
 
         <div class="dino-edit-form-schema-actions">
           <button mat-raised-button color="accent" translate (click)="openImportDialog()">
-            Import <mat-icon>file_upload</mat-icon>
+            {{'Import'|transloco}} <mat-icon>file_upload</mat-icon>
           </button>
           <button mat-raised-button color="accent" translate (click)="openRelationshipsDialog()">
-            Relationships <mat-icon>cable</mat-icon>
+            {{'Relationships'|transloco}} <mat-icon>cable</mat-icon>
           </button>
           <button
             mat-raised-button
@@ -59,7 +59,7 @@
             (click)="save()"
             [disabled]="!fgroup.valid"
           >
-            Save <mat-icon>save</mat-icon>
+            {{'Save'|transloco}} <mat-icon>save</mat-icon>
           </button>
         </div>
       </ng-container>

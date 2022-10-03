@@ -115,7 +115,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     }
     this.dataSource.dataHeaders = this.headers;
   }
-  openDialog(metric?: T, action?: 'view' | 'edit' | 'create'): void {
+  openDialog(metric?: T, action?: 'View' | 'Edit' | 'Create'): void {
     this.dialog.open(MetricEditor, {
       data: {
         metricManager: this._metricManager,

@@ -23,12 +23,12 @@ export class MatOrganizationsE2E {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: row => this.section.openDialog(row, 'view'),
+      customAction: row => this.section.openDialog(row, 'View'),
     },
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: row => this.section.openDialog(row, 'edit'),
+      customAction: row => this.section.openDialog(row, 'Edit'),
     },
     {
       actionType: 'delete',

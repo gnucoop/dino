@@ -37,6 +37,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {DataModelManager, Metric, PermissionContextService} from '@dino/core/data';
 import {UserGroup, UserGroupManager} from '@dino/core/users';
+import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {combineLatest, Observable, of as obsOf, Subscription, zip} from 'rxjs';
@@ -67,7 +68,7 @@ export interface MetricDialogData<T extends Metric = Metric> {
   /**
    * The dialog mode.
    */
-  metricAction?: 'view' | 'edit' | 'create';
+  metricAction?: 'View' | 'Edit' | 'Create';
 
   /**
    * List of the names of fields that cannot be edited by the user
@@ -178,10 +179,12 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     @Inject(MAT_DIALOG_DATA) public data: MetricDialogData<T>,
     private _nameMatchValidator: NameMatchValidator<T>,
     private _cdr: ChangeDetectorRef,
+    private _ts: TranslocoService,
   ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
-      this.metricName = this._metricManager.collectionName.toUpperCase();
+      const collName = this._metricManager.collectionName;
+      this.metricName = collName.charAt(0).toUpperCase() + collName.slice(1);
     }
   }
 
@@ -203,7 +206,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     const formValue = this.metricForm.value;
     if (formValue != null && this.isFormValid() && this._metricManager != null) {
       let obj = {...formValue};
-      if (this.data.metricItem != null && this.data.metricAction === 'edit') {
+      if (this.data.metricItem != null && this.data.metricAction === 'Edit') {
         const editedItem: T = this.data.metricItem;
         obj = {...editedItem, ...formValue};
       }
@@ -251,14 +254,14 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     const fields: MetricFormField[] = [
       {
         fieldName: 'name',
-        hint: `The name of the ${this.metricName}`,
-        placeholder: 'Name',
+        hint: this._ts.translate(`Name`) + ' ' + this._ts.translate(this.metricName!),
+        placeholder: this._ts.translate('Name'),
         value: currentMetricItem['name'] ?? '',
       },
       {
         fieldName: 'parent',
-        hint: `The parent ${this.metricName}`,
-        placeholder: 'Parent',
+        hint: this._ts.translate(`Parent ${this.metricName}`),
+        placeholder: this._ts.translate(`Parent ${this.metricName}`),
         value: {
           parent_name: currentMetricItem['parent_name'] ?? null,
           parent_id: currentMetricItem['parent_id'] ?? null,
@@ -360,7 +363,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         switchMap(item => {
           const metricManager = this._metricManager as DataModelManager<T>;
           let metricDoc: Observable<RxDocument<T> | null>;
-          if (this.data.metricAction === 'edit') {
+          if (this.data.metricAction === 'Edit') {
             metricDoc = metricManager.update(item);
           } else {
             metricDoc = metricManager.create(item);

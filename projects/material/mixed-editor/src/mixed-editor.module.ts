@@ -35,6 +35,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {UsersModule} from '@dino/core/users';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {MixedEditor} from './mixed-editor';
 
@@ -53,6 +54,7 @@ import {MixedEditor} from './mixed-editor';
     MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
+    TranslocoModule,
     UsersModule,
   ],
   declarations: [MixedEditor],

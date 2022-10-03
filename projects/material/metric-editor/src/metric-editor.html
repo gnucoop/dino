@@ -1,5 +1,5 @@
 <div class="dino-metric-editor-container">
-  <h1 mat-dialog-title>{{data.metricAction?.toUpperCase()}} {{metricName}}</h1>
+  <h1 mat-dialog-title>{{data.metricAction|transloco}} {{metricName|transloco}}</h1>
   <mat-dialog-content>
     <form *ngIf="metricForm" [formGroup]="metricForm" autocomplete="off">
       <ng-container *ngFor="let field of metricFormFields; let idx = index">
@@ -10,7 +10,7 @@
               [formControlName]="field.fieldName"
               [placeholder]="field.placeholder ?? ''"
               [matAutocomplete]="auto"
-              [readonly]="data.metricAction === 'view'"
+              [readonly]="data.metricAction === 'View'"
               value="{{field.value}}"
             />
             <mat-autocomplete
@@ -28,7 +28,7 @@
               matInput
               [formControlName]="field.fieldName"
               [placeholder]="field.placeholder ?? ''"
-              [readonly]="data.metricAction === 'view'"
+              [readonly]="data.metricAction === 'View'"
               value="{{field.value}}"
             />
           </ng-template>
@@ -37,7 +37,7 @@
               matInput
               [formControlName]="field.fieldName"
               [placeholder]="field.placeholder ?? ''"
-              [readonly]="data.metricAction === 'view'"
+              [readonly]="data.metricAction === 'View'"
               [matDatepicker]="picker"
               value="{{field.value}}"
             />
@@ -65,9 +65,9 @@
     </form>
   </mat-dialog-content>
   <div mat-dialog-actions>
-    <button mat-raised-button color="warn" (click)="closeEditor()">Close</button>
+    <button mat-raised-button color="warn" (click)="closeEditor()">{{'Close'|transloco}}</button>
     <button
-      *ngIf="data.metricAction !== 'view'"
+      *ngIf="data.metricAction !== 'View'"
       mat-raised-button
       color="primary"
       [mat-dialog-close]="data"
@@ -75,7 +75,7 @@
       (click)="saveMetric()"
       [disabled]="!isFormValid()"
     >
-      Save
+      {{'Save'|transloco}}
     </button>
   </div>
 </div>

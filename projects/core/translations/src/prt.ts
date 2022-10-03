@@ -77,6 +77,7 @@ export const PRT: Translation = {
   'Add New': 'Adicionar novo',
   'Add New form': 'Adicionar novo formulário',
   'Import forms': 'Importar formulários',
+  'Import': 'Importar',
   'Add New User Permissions Group': 'Adicionar novo grupo de permissões de usuário',
   'Add New Report': 'Adicionar novo relatório',
   'Add New User': 'Adicionar novo usuário',
@@ -101,6 +102,9 @@ export const PRT: Translation = {
   'Organization associated with the form': 'Organização associada ao formulário',
   'Creation Date': 'Data de criação',
   'Create': 'Criar',
+  'Edit': 'Editar',
+  'REPORT METRICS': 'MÉTRICAS DO RELATORIO',
+  'REPORT DATA': 'DADOS DO RELATORIO',
   'FORM METRICS': 'MÉTRICAS DO FORMULÁRIO',
   'FORM DATA': 'DADOS DO FORMULÁRIO',
   'Collected Since': 'Recolhido desde',
@@ -178,4 +182,10 @@ export const PRT: Translation = {
   'PASSWORD CHANGED': 'ALTERAÇÃO DE SENHA',
   'Password successfully changed. You will now be redirected to the login area.':
     'Senha alterada com sucesso. Será agora redireccionado para a área de login.',
+  'Initializing data': 'Inicialização de dados',
+  'Form Label': 'Etiqueta do formulário',
+  'Form Name': 'Nome do formulário',
+  'Icon Identifier': 'Ícone do formulário',
+  'Form Statuses': 'Estado dos formulários',
+  'Relationships': 'Relacionamentos',
 };

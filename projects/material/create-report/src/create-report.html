@@ -3,7 +3,7 @@
   <ng-container *ngIf="metricsService.hasActiveMetrics|async">
     <mat-stepper labelPosition="bottom" #stepper linear>
       <mat-step [completed]="isFormMetricsSelectorValid|async">
-        <ng-template matStepLabel>REPORT METRICS</ng-template>
+        <ng-template matStepLabel>{{'REPORT METRICS'|transloco}}</ng-template>
 
         <div class="dino-create-report-step-container">
           <dino-form-metric-selector
@@ -15,7 +15,7 @@
         </div>
       </mat-step>
       <mat-step [editable]="(isFormMetricsSelectorValid|async) ">
-        <ng-template matStepLabel>REPORT DATA</ng-template>
+        <ng-template matStepLabel>{{'REPORT DATA'|transloco}}</ng-template>
         <div>
           <button mat-icon-button matStepperPrevious aria-label="Previous step">
             <mat-icon>arrow_back</mat-icon>
@@ -24,13 +24,13 @@
         <div class="dino-create-report-step-container">
           <form [formGroup]="dateIntervalForm" autocomplete="off">
             <mat-form-field appearance="fill">
-              <mat-label>Data collected since</mat-label>
+              <mat-label>{{'Collected Since'|transloco}}</mat-label>
               <input matInput [matDatepicker]="pickerFrom" [formControlName]="'date_start'" />
               <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
               <mat-datepicker #pickerFrom></mat-datepicker>
             </mat-form-field>
             <mat-form-field appearance="fill">
-              <mat-label>Data collected until</mat-label>
+              <mat-label>{{'Collected Until'|transloco}}</mat-label>
               <input matInput [matDatepicker]="pickerTo" [formControlName]="'date_end'" />
               <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
               <mat-datepicker #pickerTo></mat-datepicker>
