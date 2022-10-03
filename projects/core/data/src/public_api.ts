@@ -22,6 +22,7 @@
 
 export * from './action-trigger';
 export * from './active-sync-interface';
+export * from './ajf-custom-functions';
 export * from './check-metric-permission';
 export * from './clone';
 export * from './data-context-service';
