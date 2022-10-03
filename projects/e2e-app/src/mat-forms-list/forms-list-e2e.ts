@@ -1,12 +1,14 @@
 import {AjfForm, createFormPdf} from '@ajf/core/forms';
+import {TranslocoService} from '@ajf/core/transloco';
 import {Component, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
-import {MetricsService, PermissionContextService} from '@dino/core/data';
+import {Metric, MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource, SelectionList} from '@dino/material/list';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
+import {RxDocument} from 'rxdb';
+import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
 @Component({
@@ -48,6 +50,7 @@ export class MatFormsListE2E {
     readonly metricService: MetricsService,
     readonly formDataManager: FormDataManager,
     readonly formSchemaManager: FormSchemaManager,
+    private _translateService: TranslocoService,
     private _pcs: PermissionContextService,
     private _route: ActivatedRoute,
     private _dialog: MatDialog,
@@ -184,24 +187,58 @@ export class MatFormsListE2E {
       .subscribe();
   }
 
-  printPdf(formData: FormData): void {
+  printPdf(formData: {[key: string]: any}): void {
     if (formData == null) {
       return;
     }
-    this.additionalDataSchema.pipe(take(1)).subscribe(schema => {
-      if (schema != null) {
-        const header: any = [
-          {
-            text: schema.label,
-            fontSize: 22,
-            bold: true,
-            alignment: 'center',
-            margin: [0, 0, 0, 10],
-          },
-        ];
-        createFormPdf(schema.schema as AjfForm, undefined, undefined, header, formData.data).open();
-      }
-    });
+
+    const activeMetrics = this.metricService.activeMetrics.getValue();
+    const values: Observable<RxDocument<Metric, {}> | null>[] = [];
+    activeMetrics.forEach(activeMetric => values.push(formData[`${activeMetric.metricName}`]));
+    const metricsData = forkJoin(values).pipe(filter(val => val != null));
+
+    combineLatest([this.additionalDataSchema, metricsData])
+      .pipe(take(1))
+      .subscribe(res => {
+        const schema = res[0];
+        const metrics = res[1];
+
+        if (schema != null) {
+          const header: any = [
+            {
+              text: schema.label,
+              fontSize: 22,
+              bold: true,
+              alignment: 'center',
+              margin: [0, 0, 0, 10],
+            },
+          ];
+
+          metrics.forEach(metric => {
+            if (metric != null) {
+              const metricDetail = `${this._translateService.translate(
+                metric.collection.name.charAt(0).toUpperCase() + metric.collection.name.slice(1),
+              )}: ${metric.name} `;
+
+              header.push({
+                text: metricDetail,
+                fontSize: 18,
+                bold: true,
+                alignment: 'left',
+                margin: [0, 0, 0, 10],
+              });
+            }
+          });
+
+          createFormPdf(
+            schema.schema as AjfForm,
+            undefined,
+            undefined,
+            header,
+            formData['data'],
+          ).open();
+        }
+      });
   }
 
   emitRowData(evt: FormData): void {
