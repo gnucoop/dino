@@ -96,7 +96,7 @@ import {
 /**
  * Parameters needed to set up the collection sync.
  */
-interface CollectionSyncParams {
+export interface CollectionSyncParams {
   /**
    * The collection's pull query extra parameters.
    */
@@ -753,7 +753,7 @@ export class DataService implements IDataService {
    * @param parent The sync parameters.
    * @param token The current JWT authorization token.
    */
-  private _setupCollectionSync(
+  protected _setupCollectionSync(
     collection: RxCollection,
     params: CollectionSyncParams,
     token: string,
