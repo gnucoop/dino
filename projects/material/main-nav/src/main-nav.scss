@@ -86,20 +86,26 @@ dino-main-nav {
     background-color: inherit;
     transition: all ease-in-out 0.5s;
     -webkit-transition: all ease-in-out 0.5s;
-    .dino-sync-text{
-      text-align: center;
-      margin: auto;
-      position: relative;
-      top: 20%;
-      color: inherit;
-    }
-    .dino-component-load-spinner {
-      margin: auto;
-      height: 90vh !important;
-      width: 18vw !important;
-      svg {
-        height: 100% !important;
-        width: 100% !important;
+    .dino-loading {
+      position: fixed;
+      width: 50%;
+      left: 25%;
+      .dino-sync-text {
+        opacity: 0.3;
+        text-align: center;
+        margin: auto;
+        position: relative;
+        top: 10em;
+        color: inherit;
+      }
+      .dino-component-load-spinner {
+        margin: auto;
+        height: 90vh !important;
+        width: 18vw !important;
+        svg {
+          height: 100% !important;
+          width: 100% !important;
+        }
       }
     }
   }

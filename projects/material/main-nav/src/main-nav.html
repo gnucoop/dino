@@ -70,10 +70,7 @@
     [class.dino-large-sidenav]="breakpointObserver.large|async"
     [class.extended]="extendedSidenav|async"
   >
-    <mat-nav-list
-      *ngIf="(isLoading|async) === false"
-      [@loadComponent]
-    >
+    <mat-nav-list *ngIf="(isLoading|async) === false" [@loadComponent]>
       <a
         mat-list-item
         [disableRipple]="true"
@@ -127,21 +124,23 @@
       <router-outlet [@loadComponent] (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>
     <ng-template #loading>
-      <ng-container *ngIf="spinnerImagePath; else defaultspinner">
-        <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
-        <dino-loading-spinner
-          [@loadComponent]
-          [spinnerImagePath]="spinnerImagePath"
-        ></dino-loading-spinner>
-      </ng-container>
-      <ng-template #defaultspinner>
-        <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
-        <mat-spinner
-          [@loadComponent]
-          class="dino-component-load-spinner"
-          mode="indeterminate"
-        ></mat-spinner
-      ></ng-template>
+      <div class="dino-loading" [@loadComponent]>
+        <ng-container *ngIf="spinnerImagePath; else defaultspinner">
+          <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
+          <dino-loading-spinner
+            [@loadComponent]
+            [spinnerImagePath]="spinnerImagePath"
+          ></dino-loading-spinner>
+        </ng-container>
+        <ng-template #defaultspinner>
+          <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
+          <mat-spinner
+            [@loadComponent]
+            class="dino-component-load-spinner"
+            mode="indeterminate"
+          ></mat-spinner
+        ></ng-template>
+      </div>
     </ng-template>
   </mat-sidenav-content>
 </mat-sidenav-container>
