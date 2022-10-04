@@ -128,6 +128,7 @@
     </ng-container>
     <ng-template #loading>
       <ng-container *ngIf="spinnerImagePath; else defaultspinner">
+        <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
         <dino-loading-spinner
           [@loadComponent]
           [spinnerImagePath]="spinnerImagePath"
