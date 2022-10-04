@@ -76,7 +76,11 @@ export const modelSchemaTest = async params => {
     version: VERSION,
   };
   const properties = definition.properties || {};
-  Object.keys(definition.properties || {}).forEach(propertyName => {
+  const propertyKeys = Object.keys(properties);
+  if (propertyKeys.includes('name')) {
+    definition['indexes'].push('name');
+  }
+  propertyKeys.forEach(propertyName => {
     const property = properties[propertyName];
     if (property.$ref != null && property.type === 'object') {
       delete property.$ref;

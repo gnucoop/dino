@@ -26,78 +26,99 @@ import {Project} from './project';
 
 // tslint:disable
 export const schema = {
-  'type': 'object',
-  'properties': {
-    'id': {
-      'type': 'string',
-      'description': 'UUID v4 identifier.',
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "UUID v4 identifier."
     },
-    'created_at': {
-      'type': 'string',
-      'description': 'Creation timestamp.',
+    "created_at": {
+      "type": "string",
+      "description": "Creation timestamp."
     },
-    'updated_at': {
-      'type': 'string',
-      'description': 'Update timestamp.',
+    "updated_at": {
+      "type": "string",
+      "description": "Update timestamp."
     },
-    'is_deleted': {
-      'type': 'boolean',
-      'description': 'Soft delete flag',
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Soft delete flag"
     },
-    '_deleted': {
-      'type': 'boolean',
-      'description': 'Pouchdb delete flag',
+    "_deleted": {
+      "type": "boolean",
+      "description": "Pouchdb delete flag"
     },
-    'name': {
-      'type': 'string',
-      'description': 'The metric name.',
+    "name": {
+      "type": "string",
+      "description": "The metric name."
     },
-    'parent_id': {
-      'type': ['string', 'null'],
-      'description':
-        'The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)',
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
-    'parent_name': {
-      'type': ['string', 'null'],
+    "parent_name": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    'code': {
-      'type': 'string',
-      'description': 'The project Code identifier',
+    "code": {
+      "type": "string",
+      "description": "The project Code identifier"
     },
-    'sectors_of_intervention': {
-      'type': ['string', 'null'],
-      'description': 'The project sectors of intervention',
+    "sectors_of_intervention": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The project sectors of intervention"
     },
-    'donors': {
-      'type': ['string', 'null'],
-      'description': 'The project Donors',
+    "donors": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The project Donors"
     },
-    'start_date': {
-      'type': ['string', 'null'],
-      'description': 'Project start date timestamp.',
+    "start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project start date timestamp."
     },
-    'end_date': {
-      'type': ['string', 'null'],
-      'description': 'Project end date timestamp.',
-    },
+    "end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project end date timestamp."
+    }
   },
-  'required': [
-    'code',
-    'created_at',
-    'donors',
-    'end_date',
-    'id',
-    'name',
-    'parent_id',
-    'parent_name',
-    'sectors_of_intervention',
-    'start_date',
-    'updated_at',
+  "required": [
+    "code",
+    "created_at",
+    "donors",
+    "end_date",
+    "id",
+    "name",
+    "parent_id",
+    "parent_name",
+    "sectors_of_intervention",
+    "start_date",
+    "updated_at"
   ],
-  'additionalProperties': false,
-  'description': 'This model is used to store Projects.',
-  'title': 'Project',
-  'indexes': ['created_at', 'updated_at', 'name'],
-  'primaryKey': 'id',
-  'version': 1,
+  "additionalProperties": false,
+  "description": "This model is used to store Projects.",
+  "title": "Project",
+  "indexes": [
+    "created_at",
+    "updated_at",
+    "name"
+  ],
+  "primaryKey": "id",
+  "version": 1
 } as RxJsonSchema<Project>;

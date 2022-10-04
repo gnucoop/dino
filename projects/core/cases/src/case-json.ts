@@ -26,54 +26,73 @@ import {Case} from './case';
 
 // tslint:disable
 export const schema = {
-  'type': 'object',
-  'properties': {
-    'id': {
-      'type': 'string',
-      'description': 'UUID v4 identifier.',
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "UUID v4 identifier."
     },
-    'created_at': {
-      'type': 'string',
-      'description': 'Creation timestamp.',
+    "created_at": {
+      "type": "string",
+      "description": "Creation timestamp."
     },
-    'updated_at': {
-      'type': 'string',
-      'description': 'Update timestamp.',
+    "updated_at": {
+      "type": "string",
+      "description": "Update timestamp."
     },
-    'is_deleted': {
-      'type': 'boolean',
-      'description': 'Soft delete flag',
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Soft delete flag"
     },
-    '_deleted': {
-      'type': 'boolean',
-      'description': 'Pouchdb delete flag',
+    "_deleted": {
+      "type": "boolean",
+      "description": "Pouchdb delete flag"
     },
-    'name': {
-      'type': 'string',
-      'description': 'The metric name.',
+    "name": {
+      "type": "string",
+      "description": "The metric name."
     },
-    'parent_id': {
-      'type': ['string', 'null'],
-      'description':
-        'The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)',
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
-    'parent_name': {
-      'type': ['string', 'null'],
+    "parent_name": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    'code': {
-      'type': 'number',
-      'description': 'The Case Code identifier',
+    "code": {
+      "type": "number",
+      "description": "The Case Code identifier"
     },
-    'notes': {
-      'type': ['string', 'null'],
-      'description': 'The case notes',
-    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The case notes"
+    }
   },
-  'additionalProperties': false,
-  'required': ['created_at', 'id', 'name', 'parent_id', 'parent_name', 'updated_at'],
-  'description': 'This model is used to store Cases.',
-  'title': 'Case',
-  'indexes': ['created_at', 'updated_at', 'name'],
-  'primaryKey': 'id',
-  'version': 0,
+  "additionalProperties": false,
+  "required": [
+    "created_at",
+    "id",
+    "name",
+    "parent_id",
+    "parent_name",
+    "updated_at"
+  ],
+  "description": "This model is used to store Cases.",
+  "title": "Case",
+  "indexes": [
+    "created_at",
+    "updated_at",
+    "name"
+  ],
+  "primaryKey": "id",
+  "version": 0
 } as RxJsonSchema<Case>;
