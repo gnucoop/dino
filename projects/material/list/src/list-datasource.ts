@@ -423,7 +423,7 @@ export class ListDataSource<
               .map(header => {
                 return {
                   [`${header.column.toString()}`]: {
-                    '$eq': item.value,
+                    '$regex': new RegExp(item.value, 'i'),
                   },
                 };
               });
@@ -458,8 +458,8 @@ export class ListDataSource<
             if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
               this._addNestedProps(
                 selector,
-                [`${item.name.trim().toLowerCase()}_ref_id`, '$regex'],
-                item.value.id,
+                [`${item.name.trim().toLowerCase()}_ref_id`, '$in'],
+                Array.isArray(item.value.id) ? item.value.id : [item.value.id],
               );
             } else {
               this._addNestedProps(
