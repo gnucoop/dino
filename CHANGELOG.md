@@ -1,3 +1,25 @@
+<a name="13.3.2"></a>
+# 13.3.2 "defensive-moose" (2022-10-04)
+### Bug Fixes
+* **core/data:** export ajf custom function ([2dfe218](https://bitbucket.org/gnucoop/dino/commits/2dfe2189b6ed8183de78bd9c2032d49a503f1d7a))
+* **core/list:** Loading columns selectore presets now preserves "isEditable" and "editMethod" functions of the default list headers. ([1336ff0](https://bitbucket.org/gnucoop/dino/commits/1336ff0775b29cb91a1efeb824440348ef563d3a))
+* **material/column-selector:** Fixed a bug causing the column filter to search among untranslated labels ([890025c](https://bitbucket.org/gnucoop/dino/commits/890025c49c653cdef7c00c612a8df076f8f6d279))
+* **material/create-form:** add check on metric selected type when metrics change ([70dede3](https://bitbucket.org/gnucoop/dino/commits/70dede37ba7e948768ec173a4fe886d52548bf33))
+* **material/edit-form:** Save button no longer appears in view form ([534e72c](https://bitbucket.org/gnucoop/dino/commits/534e72c80c45bd3d49d98bb60e357724735517ca))
+* **material/export-form:** fix export for duplicated choice values and change format to xlsx ([3b6e3e4](https://bitbucket.org/gnucoop/dino/commits/3b6e3e4d561519a020b7e7a59bb2230c198330fc))
+* **material/import-form:** add trim to excel string ([bc19c81](https://bitbucket.org/gnucoop/dino/commits/bc19c817b6d61f315d7009729def01d6236c680a))
+* **material/main-nav:** Added "Initializing data" text to custom spinner loading view ([6e9d653](https://bitbucket.org/gnucoop/dino/commits/6e9d6531ef1f1f8f5d8c78758d7c435af6ebf406))
+* **material/main-nav:** Css and template fixes for the Initializing Data loading view. ([3857663](https://bitbucket.org/gnucoop/dino/commits/38576630bdc76cf9b98039baf0dc393fa7742a77))
+* **material/reset-password:** Link expired text is now responsive ([c681031](https://bitbucket.org/gnucoop/dino/commits/c681031d9434c79031e51eb9ca524d542036d434))
+### Features
+* **core/data:** add ajf custom function type ([a2c6ba4](https://bitbucket.org/gnucoop/dino/commits/a2c6ba4c6f703c449a049c88dc17e72806a38409))
+* **core/data:** Added "findDescendants" method to baseModelManager, to find all descendants doc based on parent_id ([fa0525f](https://bitbucket.org/gnucoop/dino/commits/fa0525fc4b431dabccad1a57457f92e96e40aa5c))
+* **mat-forms-list:** add metric info in pdf header ([1d9f409](https://bitbucket.org/gnucoop/dino/commits/1d9f409ed7bb4d48d6ea709c6773dc30cf057b03))
+* **material/main-nav:** Added "Initializing data" screen, linked to first sync replication cycle completion. ([7131b4a](https://bitbucket.org/gnucoop/dino/commits/7131b4a3c9d1162bd2de0f90a37ed3e35237da56))
+* **material/search-filters-bar:** When filtering by metric, all items associated with the metric descendants are now displayed. ([3ee787e](https://bitbucket.org/gnucoop/dino/commits/3ee787e24ff4cf15f04fb7ff8e83c6fd9ded9af7))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.3.1"></a>
 # 13.3.1 "harsh-vole" (2022-09-20)
 ### Bug Fixes
