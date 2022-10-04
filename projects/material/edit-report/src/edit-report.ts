@@ -27,13 +27,19 @@ import {
   Component,
   Input,
   isDevMode,
+  Optional,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
+import {DataModelManager, DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchemaManager, FormStatus} from '@dino/core/forms';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
+import {ProjectManager} from '@dino/core/projects';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserData} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
@@ -151,6 +157,11 @@ export class EditReport implements AfterViewInit {
   }
 
   /**
+   * The Report Data metrics descendants IDs.
+   */
+  private _reportDataMetricsDescendants: Observable<{[key: string]: string[]}>;
+
+  /**
    * The Report schema object
    */
   private _reportSchema: Observable<ReportSchema> = obsOf();
@@ -193,6 +204,11 @@ export class EditReport implements AfterViewInit {
     private _formSchemaManager: FormSchemaManager,
     private _reportDataManager: ReportDataManager,
     private _reportSchemaManager: ReportSchemaManager,
+    @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
+    @Optional() private _projectManager: ProjectManager | null,
+    @Optional() private _locationManager: LocationManager | null,
+    @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this.isView = combineLatest([this._route.data, this._inputReportId]).pipe(
       map(([data, inputId]) => {
@@ -232,6 +248,39 @@ export class EditReport implements AfterViewInit {
       shareReplay(1),
     );
 
+    this._reportDataMetricsDescendants = this._reportData.pipe(
+      switchMap(rd => {
+        const rDataObject = rd as {[key: string]: any};
+        const metricManagers: {[key: string]: DataModelManager<any>} = {};
+        if (this._areaManager != null) {
+          metricManagers['area'] = this._areaManager;
+        }
+        if (this._caseManager != null) {
+          metricManagers['case'] = this._caseManager;
+        }
+        if (this._projectManager != null) {
+          metricManagers['project'] = this._projectManager;
+        }
+        if (this._locationManager != null) {
+          metricManagers['location'] = this._locationManager;
+        }
+        if (this._organizationManager != null) {
+          metricManagers['organization'] = this._organizationManager;
+        }
+        const activeMetrics = this.metricsService.activeMetrics.value.map(mt => mt.metricName);
+
+        const descendants: {[key: string]: Observable<string[]>} = {};
+
+        activeMetrics.forEach(
+          metric =>
+            (descendants[`${metric}_ref_id`] = metricManagers[metric]
+              .findDescendants(rDataObject[`${metric}_ref_id`])
+              .pipe(map(ds => ds.map(d => d.id)))),
+        );
+        return forkJoin(descendants);
+      }),
+    );
+
     this._reportSchemaId = this._reportData.pipe(
       map(reportDataObj => (reportDataObj != null ? reportDataObj.report_schema_ref_id : null)),
       filter(id => id != null),
@@ -262,8 +311,9 @@ export class EditReport implements AfterViewInit {
       this._reportSchema,
       this._reportData,
       this.metricsService.activeMetrics,
+      this._reportDataMetricsDescendants,
     ]).pipe(
-      switchMap(([rSchema, rData, activeMetrics]) => {
+      switchMap(([rSchema, rData, activeMetrics, descendants]) => {
         if (
           rSchema.form_schema_ids == null ||
           rSchema.form_schema_ids.length <= 0 ||
@@ -286,7 +336,9 @@ export class EditReport implements AfterViewInit {
             const metricKey = `${metric.metricName}_ref_id`;
             const rDataObject = rData as {[key: string]: any};
             if (rDataObject[metricKey] != null) {
-              querySelector[metricKey] = {$eq: rDataObject[metricKey]};
+              querySelector[metricKey] = {
+                $in: [rDataObject[metricKey], ...descendants[metricKey].filter(d => d != null)],
+              };
             }
           }
         }
