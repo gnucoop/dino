@@ -407,7 +407,10 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
             return [];
           }
           if (metricsIds.includes('all')) {
-            return this._metricManagers[metricType]!.query({selector: {is_deleted: {$ne: true}}});
+            return this._metricManagers[metricType]!.query({
+              selector: {is_deleted: {$ne: true}},
+              sort: [{'name': 'asc'}],
+            });
           }
           return this._metricManagers[metricType]!.query({selector: querySelector});
         }),
