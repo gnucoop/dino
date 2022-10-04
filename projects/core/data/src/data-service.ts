@@ -141,6 +141,14 @@ export class DataService implements IDataService {
    */
   firstReplicationComplete: Observable<boolean>;
 
+  /**
+   * When emitted as 'started', collection initialization has started and is undergoing.
+   * When emitted as 'completed', all collections have been initialized by the Sync manager.
+   */
+  collectionsInitialized: EventEmitter<'started' | 'completed'> = new EventEmitter<
+    'started' | 'completed'
+  >();
+
   readonly config: DataServiceConfig;
 
   readonly dbToken = new BehaviorSubject<string | null>('');
@@ -260,8 +268,14 @@ export class DataService implements IDataService {
       }),
     );
 
-    this.firstReplicationComplete = this._registeredCollections.pipe(
-      switchMap(collections => {
+    this.firstReplicationComplete = combineLatest([
+      this.collectionsInitialized,
+      this._registeredCollections,
+    ]).pipe(
+      switchMap(([evt, collections]) => {
+        if (evt === 'started') {
+          return obsOf([false]);
+        }
         const syncs = collections.map(coll => coll.firstSyncCompleted);
         return combineLatest(syncs);
       }),

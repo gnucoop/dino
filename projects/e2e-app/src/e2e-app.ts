@@ -22,7 +22,7 @@
 
 import {Component, isDevMode, ViewEncapsulation} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
-import {PermissionContextService} from '@dino/core/data';
+import {DataService, PermissionContextService} from '@dino/core/data';
 import {SyncManager} from '@dino/core/sync';
 import {distinctUntilKeyChanged, filter, skipWhile, switchMap, tap} from 'rxjs/operators';
 
@@ -53,6 +53,7 @@ export class E2eApp {
   constructor(
     private _sync: SyncManager,
     private _auth: AuthService,
+    private _ds: DataService,
     private _pcs: PermissionContextService,
   ) {
     this._auth.authenticated
@@ -73,7 +74,7 @@ export class E2eApp {
         }),
         switchMap(() => this._sync.initializeMainCollections()),
       )
-      .subscribe();
+      .subscribe(() => this._ds.collectionsInitialized.emit('started'));
 
     this._auth.authenticated
       .pipe(
@@ -98,6 +99,6 @@ export class E2eApp {
           ),
         ),
       )
-      .subscribe();
+      .subscribe(() => this._ds.collectionsInitialized.emit('completed'));
   }
 }

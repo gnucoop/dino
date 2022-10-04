@@ -29,7 +29,7 @@ import {
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {forkJoin, from, Observable, of as obsOf} from 'rxjs';
-import {delay, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {delay, filter, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
 import {migrationStrategies, UserGroup} from './user-group';
 import {schema} from './user-group-json';
@@ -54,6 +54,13 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
       permissionContextService,
       [new AdminGroupExclude()],
     );
+
+    dataService.collectionsInitialized
+      .pipe(
+        filter(evt => evt === 'started'),
+        switchMap(() => this.isActiveUserAdmin()),
+      )
+      .subscribe();
   }
 
   /**
