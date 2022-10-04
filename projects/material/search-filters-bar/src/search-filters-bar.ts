@@ -45,9 +45,9 @@ import {ProjectManager} from '@dino/core/projects';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
-import {RxDocument} from 'rxdb';
-import {Observable, Subscription, throwError} from 'rxjs';
-import {catchError, map, switchMap, take} from 'rxjs/operators';
+import {isRxDocument, RxDocument} from 'rxdb';
+import {Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
+import {catchError, map, switchMap, take, takeUntil, withLatestFrom} from 'rxjs/operators';
 
 /**
  * Opt-in component that handles all SelectionList filters.
@@ -138,6 +138,12 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Main unsub subject.
+   * Used for unsubscribing all subscriptions.
+   */
+  private _mainUnsubscribe: Subject<void> = new Subject();
+
   constructor(
     readonly metricsService: MetricsService,
     protected _fts: FiltersService,
@@ -180,18 +186,23 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._initFilters();
     if (this._areaManager != null) {
       this._populateMetricsOptions('area', this._areaManager);
+      this._setupMetricDescendants('area', this._areaManager);
     }
     if (this._caseManager != null) {
       this._populateMetricsOptions('case', this._caseManager);
+      this._setupMetricDescendants('case', this._caseManager);
     }
     if (this._projectManager != null) {
       this._populateMetricsOptions('project', this._projectManager);
+      this._setupMetricDescendants('project', this._projectManager);
     }
     if (this._locationManager != null) {
       this._populateMetricsOptions('location', this._locationManager);
+      this._setupMetricDescendants('location', this._locationManager);
     }
     if (this._organizationManager != null) {
       this._populateMetricsOptions('organization', this._organizationManager);
+      this._setupMetricDescendants('organization', this._organizationManager);
     }
   }
 
@@ -328,6 +339,43 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Sets up the subscription to the Metric Fields inputs valuechanges,
+   * then sets the value of the field as an array of ids of the selected metric
+   * and all of its descendants.
+   * @param metricType The type of metric
+   * @param metricManager The related metric manager
+   */
+  private _setupMetricDescendants(metricType: string, metricManager: DataModelManager<any>): void {
+    if (metricType == null || metricManager == null) {
+      return;
+    }
+    const inputControl = this.additionalBasicFilters.find(group => group.get(metricType) != null);
+    const inputValue = inputControl?.get(metricType)?.valueChanges;
+    if (inputControl != null && inputValue != null) {
+      inputValue
+        .pipe(
+          switchMap(inputVal => {
+            if (typeof inputVal === 'object' && isRxDocument(inputVal)) {
+              return metricManager
+                .findDescendants(inputVal.id)
+                .pipe(map(desc => desc?.map(d => d.id)))
+                .pipe(withLatestFrom(obsOf(inputVal)));
+            }
+            return obsOf([null, null]);
+          }),
+          takeUntil(this._mainUnsubscribe),
+        )
+        .subscribe(([allDescendants, parentMetric]) => {
+          if (allDescendants != null && parentMetric != null) {
+            inputControl
+              ?.get(metricType)
+              ?.setValue({id: [parentMetric.id, ...allDescendants], name: parentMetric.name});
+          }
+        });
+    }
+  }
+
+  /**
    * Asks the FilterService to initialize the filters and load them from the route
    * queryParams
    */
@@ -350,5 +398,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
 
   ngOnDestroy() {
     this._dialogSub.unsubscribe();
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
   }
 }
