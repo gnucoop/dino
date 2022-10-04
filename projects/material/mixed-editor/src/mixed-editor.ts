@@ -133,6 +133,7 @@ export class MixedEditor implements AfterViewInit {
       return;
     }
     const itemAlreadyExists = this.sourceList.value.find(itm => itm.itemId === item.itemId);
+    this._toggleChildrenItems(item, 'remove');
 
     if (!itemAlreadyExists) {
       const idx = this.saveList.findIndex(doc => doc.itemId === item.itemId);
@@ -142,7 +143,6 @@ export class MixedEditor implements AfterViewInit {
       if (item.uniqueItem) {
         this._toggleSameTypeItems(item, false);
       }
-      this._toggleChildrenItems(item, 'remove');
 
       this.sourceList.value.sort((a, b) => this._sortAlphabetically(a, b));
       this.saveList.sort((a, b) => this._sortAlphabetically(a, b));
@@ -297,17 +297,11 @@ export class MixedEditor implements AfterViewInit {
    * @param operation The action performed on the moved Item
    */
   private _toggleChildrenItems(item: MixedEditorItem, operation: 'add' | 'remove'): void {
-    const childrenItems = this._findDescendantItems(item);
+    const childrenItems = this._findDescendantItems(item, operation);
 
-    this.sourceList.value.map(itm => {
-      if (childrenItems.find(childItem => childItem.itemId === itm.itemId)) {
-        return {
-          ...itm,
-          disabled: operation === 'add' ? true : false,
-        };
-      }
-      return itm;
-    });
+    childrenItems.forEach(item =>
+      operation === 'add' ? this.addItem(item) : this.removeItem(item),
+    );
   }
 
   /**
@@ -315,12 +309,16 @@ export class MixedEditor implements AfterViewInit {
    * @param item The ancestor Item
    * @returns All the descendant items
    */
-  private _findDescendantItems(item: MixedEditorItem): MixedEditorItem[] {
+  private _findDescendantItems(
+    item: MixedEditorItem,
+    operation: 'add' | 'remove',
+  ): MixedEditorItem[] {
     let items: MixedEditorItem[] = [];
-    this.sourceList.value.map(itm => {
+    const list = operation === 'add' ? this.sourceList.value : this.saveList;
+    list.map(itm => {
       if (itm.itemParentId === item.itemId) {
         items.push(itm);
-        items.push(...this._findDescendantItems(itm));
+        items.push(...this._findDescendantItems(itm, operation));
       }
     });
     return items;
