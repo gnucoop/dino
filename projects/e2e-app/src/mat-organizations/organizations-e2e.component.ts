@@ -12,7 +12,7 @@ export class MatOrganizationsE2E {
   readonly manager: OrganizationManager;
   readonly headers: ListHeader<Organization>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name', displayed: true},
+    {column: 'name', label: 'Name', displayed: true, sortable: true},
     {column: 'parent_name', label: 'Parent Organization', displayed: true},
     {column: 'logo_path', label: 'Logo Path', displayed: true},
     {column: 'website_url', label: 'Website Url', displayed: true},

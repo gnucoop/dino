@@ -12,7 +12,7 @@ export class MatProjectsE2E {
   readonly manager: ProjectManager;
   readonly headers: ListHeader<Project>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name', displayed: true},
+    {column: 'name', label: 'Name', displayed: true, sortable: true},
     {column: 'parent_name', label: 'Parent Project', displayed: true},
     {column: 'code', label: 'Code', displayed: true},
     {column: 'sectors_of_intervention', label: 'Sectors of Intervention', displayed: true},

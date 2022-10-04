@@ -12,7 +12,7 @@ export class MatCasesE2E {
   readonly manager: CaseManager;
   readonly headers: ListHeader<Case>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name', displayed: true},
+    {column: 'name', label: 'Name', displayed: true, sortable: true},
     {column: 'code', label: 'Code', displayed: true},
     {column: 'parent_name', label: 'Parent Case', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
