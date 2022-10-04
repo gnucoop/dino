@@ -21,7 +21,7 @@
  */
 
 import {DeepReadonlyObject, MangoQuery, RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, from, Observable, of as obsOf, throwError} from 'rxjs';
+import {BehaviorSubject, forkJoin, from, Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
@@ -481,6 +481,27 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
       return false;
     }
     return true;
+  }
+
+  /**
+   * Finds all descendants of the document, based on its "parent_id" attribute.
+   * @param id The ID of the document to be checked.
+   * @returns All of its descendants
+   */
+  findDescendants(id: string): Observable<R[]> {
+    const schemaPropertiesKeys = Object.keys(this._collectionSchema.properties);
+    if (!id || !schemaPropertiesKeys.includes('parent_id')) {
+      return obsOf([]);
+    }
+    const selector = {parent_id: {$eq: id}};
+    return this.query({selector}).pipe(
+      switchMap(docs => {
+        const allDescendants: Observable<R[]>[] = [obsOf(docs)];
+        docs.forEach(desc => allDescendants.push(this.findDescendants(desc.id)));
+        return forkJoin(allDescendants);
+      }),
+      map(descendants => descendants.flat(1)),
+    );
   }
 
   /**
