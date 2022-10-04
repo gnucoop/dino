@@ -36,7 +36,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
 import {Observable, of as obsOf, Subscription} from 'rxjs';
-import {switchMap, take, tap} from 'rxjs/operators';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 import {showValidationErrors, PasswordMatch} from '@dino/core/auth';
 import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
 import {format} from 'date-fns';
@@ -140,7 +140,9 @@ export class UserEditor implements OnDestroy, OnInit {
     readonly snackbar: MatSnackBar,
   ) {
     this._populateForm();
-    this.userGroups = this._userGroupManager.query({selector: {is_deleted: {$ne: true}}});
+    this.userGroups = this._userGroupManager
+      .query({selector: {is_deleted: {$ne: true}}})
+      .pipe(map(groups => groups.sort((a, b) => this._sortGroupsAlphabetically(a, b))));
   }
 
   ngOnInit(): void {
@@ -260,6 +262,26 @@ export class UserEditor implements OnDestroy, OnInit {
           this.closeEditor();
         },
       });
+  }
+
+  /**
+   * Sorts groups alphabetically by their groupName property.
+   * @param a Prev group
+   * @param b Next group
+   * @returns Sort order
+   */
+  private _sortGroupsAlphabetically(a: UserGroup, b: UserGroup): number {
+    let textA = a.groupName.toUpperCase();
+    let textB = b.groupName.toUpperCase();
+    const less = textA < textB;
+    const more = textA > textB;
+    if (less) {
+      return -1;
+    } else if (more) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
   /**
