@@ -1,9 +1,16 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
 import {AuthenticationEvent, AuthEvt, AuthServiceConfig, Credentials, User} from '@dino/core/auth';
-import {PermissionContext, PermissionContextService, PermissionGroup} from '@dino/core/data';
+import {
+  CollectionSyncParams,
+  DataService,
+  PermissionContext,
+  PermissionContextService,
+  PermissionGroup,
+} from '@dino/core/data';
 import {SyncManager} from '@dino/core/sync';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
+import {RxCollection} from 'rxdb';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay, map, shareReplay, tap} from 'rxjs/operators';
 
@@ -132,6 +139,15 @@ export class AuthServiceMock {
   refreshToken(): Observable<boolean> {
     return obsOf(true);
   }
+}
+@Injectable()
+export class DataServiceMock extends DataService {
+  override firstReplicationComplete: Observable<boolean> = obsOf(true);
+  protected override _setupCollectionSync(
+    _collection: RxCollection<any, {}, {}, {}>,
+    _params: CollectionSyncParams,
+    _token: string,
+  ): void {}
 }
 
 @Injectable()

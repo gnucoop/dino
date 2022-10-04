@@ -89,6 +89,7 @@ import {
   instanceName,
   PermissionContextServiceMock,
   SyncManagerMock,
+  DataServiceMock,
 } from './mocks';
 import {formDatas} from './test-ajf-formdata';
 import {formSchemas} from './test-ajf-formschema';
@@ -258,6 +259,10 @@ export function provideDataServiceConfig() {
     {
       provide: AuthService,
       useClass: additionalConfig.externalAuthentication ? AuthService : AuthServiceMock,
+    },
+    {
+      provide: DataService,
+      useClass: additionalConfig.externalAuthentication ? DataService : DataServiceMock,
     },
     {
       provide: UserGroupManager,
