@@ -47,6 +47,11 @@ export const E2E_APP_ROUTES: Routes = [
         data: {isExpired: true},
       },
       {
+        path: 'sync_error',
+        component: MatLoginE2E,
+        data: {syncError: true},
+      },
+      {
         path: '',
         component: MatLoginE2E,
       },

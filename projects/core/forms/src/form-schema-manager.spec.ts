@@ -7,7 +7,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {BehaviorSubject, of} from 'rxjs';
+import {BehaviorSubject, of as obsOf} from 'rxjs';
 
 import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api';
 
@@ -38,13 +38,14 @@ const authServiceConfig: AuthServiceConfig = {
 };
 
 const authServiceMock = {
-  authenticated: of({auth: true, evt: 'init'}),
-  authToken: of('test_auth_token'),
+  authenticated: obsOf({auth: true, evt: 'init'}),
+  authToken: obsOf('test_auth_token'),
   getUserInfo: () => {
     return {};
   },
+  logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
-  resetEvt: of(false),
+  resetEvt: obsOf(false),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,
 } as unknown as AuthService;

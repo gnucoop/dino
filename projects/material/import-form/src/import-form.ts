@@ -405,6 +405,7 @@ export class ImportForm implements OnDestroy {
           this._setImportStatus(
             'File imported successfully: ' + bulkRes.success.length + ' forms created!',
           );
+          setTimeout(() => this.closeDialog(), 3000);
         } else {
           let errMsg = 'File not imported! ';
           if (bulkRes?.error.length) {

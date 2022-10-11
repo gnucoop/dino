@@ -197,7 +197,8 @@ export class DataService implements IDataService {
   private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
-   * Emits when a websocket throws an error in its connection callback,
+   * Emits when a websocket throws an error in its connection callback
+   * or when there is an arror during syncing data
    * and asks the authService to log out.
    */
   private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
@@ -296,7 +297,7 @@ export class DataService implements IDataService {
 
     this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
       if (res) {
-        this._router.navigate([this._authService.authConfig.failedAuthRedirect]);
+        this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'sync_error']);
       }
     });
 
@@ -793,6 +794,23 @@ export class DataService implements IDataService {
       },
     });
 
+    /*
+    ERROR_MESSAGES GraphQL replication
+    https://github.com/pubkey/rxdb/blob/12.6.14/src/plugins/dev-mode/error-messages.ts
+    GQL1: 'GraphQL replication: cannot find sub schema by key',
+    GQL2: 'GraphQL replication: unknown errors occurred in replication pull - see innerErrors for more details',
+    GQL3: 'GraphQL replication: pull returns more documents then batchSize',
+    GQL4: 'GraphQL replication: unknown errors occurred in replication push - see innerErrors for more details',
+    */
+    state.error$.subscribe(err => {
+      console.error('Sync replication error:');
+      console.dir(err);
+      if (err.innerErrors && err.innerErrors.length) {
+        console.dir(err.innerErrors[0]);
+      }
+      this._logoutEvt.emit();
+    });
+
     let stateActivity: Observable<boolean> = state.active$;
 
     let clientRequestSub: {unsubscribe: () => void} = Subscription.EMPTY;
@@ -847,6 +865,7 @@ export class DataService implements IDataService {
             },
           );
         },
+        error: err => console.log('clientRequestSub err: ', err),
       });
     }
     this._setCollectionLastPushCheckpoint(state, collection);

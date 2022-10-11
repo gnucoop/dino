@@ -22,6 +22,7 @@ const authServiceMock = {
   getUserInfo: () => {
     return {};
   },
+  logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,

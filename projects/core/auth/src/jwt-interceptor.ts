@@ -46,6 +46,12 @@ export class JWTInterceptor implements HttpInterceptor {
   >();
 
   /**
+   * Emits when the counter reaches the retry attempts max
+   * and asks user to log in again
+   */
+  private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
    * Counter of the retry attemps for refreshing the token.
    * If the counter reaches the retry attempts max, the user is
    * redirected to the login page, and asked to log in again.
@@ -71,13 +77,19 @@ export class JWTInterceptor implements HttpInterceptor {
           } else {
             this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
             if (this._authService.getAuthToken() != null) {
-              this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
+              this._logoutEvt.emit();
             }
             return obsOf(false);
           }
         }),
       )
       .subscribe();
+
+    this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
+      if (res) {
+        this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
+      }
+    });
 
     this._nss.isOnline$
       .pipe(
@@ -93,10 +105,7 @@ export class JWTInterceptor implements HttpInterceptor {
                 } else {
                   this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
                   if (this._authService.getAuthToken() != null) {
-                    this._router.navigate([
-                      this._authService.authConfig.failedAuthRedirect,
-                      'expired',
-                    ]);
+                    this._logoutEvt.emit();
                   }
                   return obsOf(false);
                 }

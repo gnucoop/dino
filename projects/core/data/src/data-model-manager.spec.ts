@@ -147,6 +147,7 @@ const authServiceMock = {
   authToken: obsOf('test_auth_token'),
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
+  logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
   getUserInfo: () => {
     return dummyUser;

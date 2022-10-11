@@ -19,6 +19,7 @@ const authServiceMock = {
   },
   config: {signUp: true},
   resetAuth: (): void => {},
+  logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
   signupNHost: (_requestData: NHostSignupRequest): Observable<boolean> => obsOf(true),
 };
@@ -56,7 +57,9 @@ describe('LoginComponent', () => {
   let loginFeatComp: LoginFeatComp;
   let spyLogin: jasmine.Spy;
   let spyPostLogin: jasmine.Spy;
-  let routerSpy = {navigateByUrl: jasmine.createSpy('navigateByUrl')};
+  let routerSpy = {
+    navigateByUrl: jasmine.createSpy('navigateByUrl'),
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({

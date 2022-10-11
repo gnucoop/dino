@@ -110,14 +110,24 @@ export class Login extends LoginComponent implements OnDestroy {
       this._expiredSub = this._route.data
         .pipe(
           map(data => {
-            if (data != null && data['isExpired']) {
-              snackBar.open(
-                `There was a problem connecting to the
-                           Authentication server or your token has expired.
-                           Please log in again.`,
-                'AUTHENTICATION ERROR',
-                {duration: 10000},
-              );
+            if (data != null) {
+              if (data['isExpired']) {
+                snackBar.open(
+                  `There was a problem connecting to the
+                             Authentication server or your token has expired.
+                             Please log in again.`,
+                  'AUTHENTICATION ERROR',
+                  {duration: 10000},
+                );
+              }
+              if (data['syncError']) {
+                snackBar.open(
+                  `There was a problem during syncing process. If you are importing
+                        forms, please check them and log in again.`,
+                  'SYNC ERROR',
+                  {duration: 15000},
+                );
+              }
             }
           }),
         )

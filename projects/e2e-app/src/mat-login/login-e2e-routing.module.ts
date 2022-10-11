@@ -10,6 +10,11 @@ const routes: Routes = [
     component: MatLoginE2E,
     data: {isExpired: true},
   },
+  {
+    path: 'sync_error',
+    component: MatLoginE2E,
+    data: {syncError: true},
+  },
 ];
 
 @NgModule({

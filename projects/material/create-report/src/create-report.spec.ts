@@ -29,6 +29,7 @@ const authServiceMock = {
     return {};
   },
   resetEvt: of(false),
+  logout: () => of(false),
   logoutEvt: new EventEmitter<void>(),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,
