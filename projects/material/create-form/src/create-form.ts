@@ -20,6 +20,8 @@
  *
  */
 import {
+  AjfChoice,
+  AjfChoicesOrigin,
   AjfForm,
   AjfFormActionEvent,
   AjfFormRendererService,
@@ -187,6 +189,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   get form(): Observable<AjfForm> {
     return this._form;
   }
+
+  /**
+   * The new AjfForm, with data and choices taken from external relationships
+   */
+  readonly formChanges: BehaviorSubject<AjfForm | null> = new BehaviorSubject<AjfForm | null>(null);
 
   /**
    * The loading state of the upload file
@@ -393,10 +400,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           return data as Observable<{[key: string]: any}>;
         }),
         shareReplay(1),
-        withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps),
+        withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps, this._formSchema),
       )
-      .subscribe(([changes, formGroup, fschemadeps]) => {
+      .subscribe(([changes, formGroup, fschemadeps, fschema]) => {
         if (fschemadeps && fschemadeps.deps_origin && changes) {
+          const newFormSchema = deepCopy(fschema.schema);
+          const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
           let extCtx: {[key: string]: any} = {};
           fschemadeps.deps_origin.forEach(depsOrigin => {
             if (depsOrigin.form_schema_ref_id && depsOrigin.fields_to_update) {
@@ -405,15 +414,34 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                 extFormData = changes[depsOrigin.form_schema_ref_id];
               }
               depsOrigin.fields_to_update.forEach(field => {
-                if (extFormData && field in extFormData) {
-                  extCtx[field] = extFormData[field];
-                } else {
-                  extCtx[field] = null;
+                extCtx[field] = null;
+                if (extFormData) {
+                  if (field in extFormData) {
+                    extCtx[field] = extFormData[field];
+                  } else if (field + '__0' in extFormData) {
+                    const choicesOriginName = field + '_choice';
+                    newFormSchema.choicesOrigins = newFormSchema.choicesOrigins.filter(
+                      (c: any) => c.name !== choicesOriginName,
+                    );
+                    newChoicesOrigins.push({
+                      type: 'fixed',
+                      name: choicesOriginName,
+                      label: choicesOriginName,
+                      choices: this._getChoicesFromFieldReps(field, extFormData),
+                    });
+                  }
                 }
               });
             }
           });
-          if (Object.keys(extCtx).length) {
+          if (newChoicesOrigins.length) {
+            newFormSchema.choicesOrigins = newFormSchema.choicesOrigins.concat(newChoicesOrigins);
+            if (formGroup && formGroup.value) {
+              this.formChanges.next(
+                AjfFormSerializer.fromJson(newFormSchema, {...formGroup.value, ...extCtx}),
+              );
+            }
+          } else if (Object.keys(extCtx).length) {
             formGroup?.patchValue(extCtx);
           }
         }
@@ -423,8 +451,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       switchMap(schema => this._fst.formStatusesOfSchema(schema)),
     );
 
-    this._form = this._formSchema.pipe(
-      map(fschema => {
+    this._form = combineLatest([this._formSchema, this.formChanges]).pipe(
+      map(([fschema, schemaChanges]) => {
+        if (schemaChanges) {
+          return schemaChanges;
+        }
         if (fschema == null) {
           this._location.back();
           this.snackbar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
@@ -730,5 +761,23 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       });
     }
     return extFormDataObs;
+  }
+
+  private _getChoicesFromFieldReps(
+    fieldName: string,
+    ctx: {[key: string]: any},
+  ): AjfChoice<string>[] {
+    const reps: AjfChoice<string>[] = [];
+    Object.keys(ctx).map(key => {
+      if (key.indexOf(fieldName + '__') > -1) {
+        if (ctx[key] != null) {
+          reps.push({
+            label: ctx[key],
+            value: key,
+          });
+        }
+      }
+    });
+    return reps;
   }
 }
