@@ -805,10 +805,12 @@ export class DataService implements IDataService {
     state.error$.subscribe(err => {
       console.error('Sync replication error:');
       console.dir(err);
-      if (err.innerErrors && err.innerErrors.length) {
-        console.dir(err.innerErrors[0]);
+      if (err && err.type && err.type === 'push' && err.message.indexOf('GQL') > -1) {
+        if (err.innerErrors && err.innerErrors.length) {
+          console.log(err.innerErrors[0]);
+        }
+        this._logoutEvt.emit();
       }
-      this._logoutEvt.emit();
     });
 
     let stateActivity: Observable<boolean> = state.active$;
