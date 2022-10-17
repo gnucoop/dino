@@ -1,18 +1,27 @@
 <div class="dino-filters-dialog-menu">
-  <button mat-raised-button (click)="search()" color="accent">
-    {{'Search'|transloco}}
-  </button>
-  <button mat-raised-button (click)="closeDialog()" color="warn">
-    {{'Close'|transloco}}
-  </button>
-</div>
-
-<mat-dialog-content>
+  <button mat-raised-button (click)="search()" color="accent">{{'Search'|transloco}}</button>
+  <mat-button-toggle-group
+    [formControl]="logicAndOrToggle"
+    name="fontStyle"
+    aria-label="Font Style"
+  >
+    <mat-button-toggle
+      value="and"
+      [disabled]="(fts.canSwitchLogic()|async) === false"
+      [checked]="true"
+      >{{'All'|transloco}}</mat-button-toggle
+    >
+    <mat-button-toggle value="or">{{'Any'|transloco}}</mat-button-toggle>
+  </mat-button-toggle-group>
+  <button mat-raised-button (click)="closeDialog()" color="warn">{{'Close'|transloco}}</button>
   <dino-search-filters-chips
     (excludeFilter)="removeFilter($event, 'temporary')"
     [chipsType]="'temporary'"
   >
   </dino-search-filters-chips>
+</div>
+
+<mat-dialog-content>
   <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
     <mat-tab
       *ngFor=" let filterGroup of fts.generatedFilters|async;"
@@ -23,8 +32,7 @@
         <dino-search-filters-widget
           *ngFor="let filterItem of filterItemsData|async;"
           [filterItemData]="filterItem"
-          (includeFilter)="addFilter($event, 'temporary')"
-          (excludeFilter)="removeFilter($event, 'temporary')"
+          (addFilter)="addFilter($event, 'temporary')"
         >
         </dino-search-filters-widget>
       </ng-template>

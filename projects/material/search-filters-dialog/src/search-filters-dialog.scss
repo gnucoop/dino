@@ -19,10 +19,16 @@
     flex: 0 1 auto;
     margin: 5px;
   }
+  .mat-chip-list div.mat-chip-list-wrapper {
+    padding: 5px 0;
+    background-color: transparent;
+  }
 }
 
 .mat-dialog-container {
   overflow-x: hidden;
+  transition: all ease-in-out 0.3;
+  -webkit-transition: all ease-in-out 0.3s;
   .mat-dialog-content {
     position: relative;
     max-height: 80vh;
@@ -40,7 +46,7 @@
       min-width: 100%;
     }
   }
-  @media only screen and (max-width : 992px) {
+  @media only screen and (max-width: 992px) {
     padding: 0px;
   }
 }

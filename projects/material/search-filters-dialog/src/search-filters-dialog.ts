@@ -22,10 +22,8 @@
 
 import {AjfFieldType, AjfNodeType} from '@ajf/core/forms';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Inject,
   OnDestroy,
   OnInit,
@@ -33,6 +31,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
+import {FormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dino/core/list';
 import {SearchFiltersWidget} from '@dino/material/search-filters-widget';
@@ -52,7 +51,7 @@ import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
+export class SearchFiltersDialog implements OnInit, OnDestroy {
   /**
    * Data of all the filters in the Dialog
    */
@@ -64,20 +63,19 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren(SearchFiltersWidget) widgets!: QueryList<SearchFiltersWidget>;
 
   /**
+   * The "And"/"Or" toggle Form Control.
+   */
+  logicAndOrToggle: FormControl;
+
+  /**
+   * Subscribes to the "And"/"Or" toggle Form Control value changes.
+   */
+  private _logicToggleSub: Subscription = Subscription.EMPTY;
+
+  /**
    * The index of the selected tab. Defaults to 0 (first tab)
    */
   private _currentGroupId: BehaviorSubject<number>;
-
-  /**
-   * An event emitted to update the state of a widget in the dialog and
-   * toggle its slideToggle, when its value is set to null
-   */
-  private _updateWidgetsEvent: EventEmitter<boolean>;
-
-  /**
-   * Subscribes to the updateWidgetsEvent and updates the widgets's toggle states
-   */
-  private _updateWidgetsSub: Subscription = Subscription.EMPTY;
 
   /**
    * Subscribes to the backdrop click event of the dialog ref, closing the Dialog when that emits
@@ -90,8 +88,15 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
     public fts: FiltersService,
   ) {
     this._currentGroupId = new BehaviorSubject<number>(0);
-    this._updateWidgetsEvent = new EventEmitter<boolean>();
     this._backdropClickSub = this.dialogRef.backdropClick().subscribe(_ => this.closeDialog());
+    const currentLogic = this.fts.additionalFiltersLogic.value;
+    this.logicAndOrToggle = new FormControl(currentLogic);
+    this._logicToggleSub = this.logicAndOrToggle.valueChanges.subscribe(res => {
+      if (this.fts.canSwitchLogic()) {
+        this.fts.temporaryAdditionalFiltersLogic.next(res);
+      }
+    });
+    this.fts.temporaryAdditionalFiltersLogic.next(currentLogic);
   }
 
   ngOnInit() {
@@ -115,30 +120,12 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  ngAfterViewInit() {
-    if (this.widgets) {
-      this._updateWidgetsSub = this._updateWidgetsEvent.subscribe((res: boolean) => {
-        if (res === false) {
-          return;
-        }
-        let matchingWidgets = this.widgets.toArray().filter(widget => {
-          return this.fts.temporaryFilters.value.some(
-            ft => ft.name === widget.widgetName && ft.value === null && widget.toggleButton.checked,
-          );
-        });
-        matchingWidgets.map(w => {
-          w.toggleButton.toggle();
-        });
-      });
-    }
-  }
-
   /**
    * Closes the dialog without updating the Filters
    *
    */
   closeDialog() {
-    this.dialogRef.close(false);
+    this.dialogRef.close({search: false});
   }
 
   /**
@@ -146,7 +133,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
    *
    */
   search() {
-    this.dialogRef.close(true);
+    this.dialogRef.close({search: true, logic: this.logicAndOrToggle.value});
   }
 
   /**
@@ -181,7 +168,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
         take(1),
         catchError(err => throwError(() => err) as Observable<boolean>),
       )
-      .subscribe(res => this._updateWidgetsEvent.emit(res));
+      .subscribe();
   }
 
   /**
@@ -215,7 +202,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this._backdropClickSub.unsubscribe();
-    this._updateWidgetsSub.unsubscribe();
+    this._logicToggleSub.unsubscribe();
     this._currentGroupId.complete();
   }
 }
