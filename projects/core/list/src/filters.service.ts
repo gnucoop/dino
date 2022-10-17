@@ -26,6 +26,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Model} from '@dino/core/data';
+import {TranslocoService} from '@ngneat/transloco';
 import {RxJsonSchema} from 'rxdb';
 import {TopLevelProperty} from 'rxdb/dist/types/types/rx-schema';
 import {
@@ -58,6 +59,15 @@ import {
  */
 @Injectable({providedIn: 'root'})
 export class FiltersService<T extends Model = Model> {
+  /**
+   * Event emitted whenever a filter cannot be added or the and/or logic cannot be switched.
+   * Should trigger a snackbar in a Material component.
+   */
+  filterErrorEvt: EventEmitter<{text: string; msg: string}> = new EventEmitter<{
+    text: string;
+    msg: string;
+  }>();
+
   /**
    * The labels of all available additional basic filters.
    * Available filters are added by importing the relative modules.
@@ -147,6 +157,26 @@ export class FiltersService<T extends Model = Model> {
   }
 
   /**
+   * Logic operator to be used when concatenating additional filters in the dataSource query.
+   * Defaults to 'and'.
+   */
+  private _additionalFiltersLogic: BehaviorSubject<'and' | 'or'> = new BehaviorSubject<
+    'and' | 'or'
+  >('and');
+
+  get additionalFiltersLogic(): BehaviorSubject<'and' | 'or'> {
+    return this._additionalFiltersLogic;
+  }
+
+  /**
+   * Logic operator dialog "toggle" value in the Advanced Filters dialog.
+   * Defaults to 'and'.
+   */
+  temporaryAdditionalFiltersLogic: BehaviorSubject<'and' | 'or'> = new BehaviorSubject<
+    'and' | 'or'
+  >('and');
+
+  /**
    * List of temporary filters that are not immediately applied and need an action to be included
    * in the activeFilters. (Eg. filters in a Dialog when the "search" button is clicked)
    */
@@ -193,7 +223,11 @@ export class FiltersService<T extends Model = Model> {
     return this._loadPresetEvent;
   }
 
-  constructor(private _route: ActivatedRoute, private _router: Router) {
+  constructor(
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private _ts: TranslocoService,
+  ) {
     this._generatedModelFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._generatedAdditionalFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._basicFilters = new BehaviorSubject<FilterItem[]>([]);
@@ -312,7 +346,11 @@ export class FiltersService<T extends Model = Model> {
       return;
     }
     this._loadingPreset = encodedString;
-    const filterItems: FilterItem[] = JSON.parse(decodeURI(atob(encodedString)));
+    const parsedFilters: {filters: FilterItem[]; additionalFiltersLogic: 'and' | 'or'} = JSON.parse(
+      decodeURI(atob(encodedString)),
+    );
+    const filterItems: FilterItem[] = parsedFilters.filters;
+    const additionalFiltersLogic = parsedFilters.additionalFiltersLogic;
     let basic: FilterItem[] = [];
     let additional: FilterItem[] = [];
     let basicFormGroupsKeys: string[] = [];
@@ -322,6 +360,7 @@ export class FiltersService<T extends Model = Model> {
     filterItems.forEach(item => {
       basicFormGroupsKeys.indexOf(item.name) > -1 ? basic.push(item) : additional.push(item);
     });
+    this._additionalFiltersLogic.next(additionalFiltersLogic);
     this._basicFilters.next(basic);
     this._additionalFilters.next(additional);
     this.resetTemporaryFilters();
@@ -333,15 +372,17 @@ export class FiltersService<T extends Model = Model> {
    * @param filterList The filter list where it will be added
    */
   addFilter(filterItem: FilterItem, filterList: FilterListType): void {
+    if (!this._canAddFilter(filterItem, filterList)) {
+      return;
+    }
     const currentList = this._selectFilterListType(filterList);
-    const currentValue = this._selectFilterListType(filterList).value.map(
-      a => ({...a} as FilterItem),
-    );
+    const currentValue = currentList.getValue().map(a => ({...a} as FilterItem));
     if (filterList === 'basic') {
       this._updateBasicFormValues([filterItem]);
     }
     if (currentValue != null && currentList != null) {
-      currentList.next(this._mergeFilterItems(currentValue, [filterItem]));
+      const newFilters = currentValue.concat([filterItem]);
+      currentList.next(newFilters);
     }
   }
 
@@ -361,9 +402,12 @@ export class FiltersService<T extends Model = Model> {
     filterList.forEach(fl => {
       const currentList = this._selectFilterListType(fl);
       if (currentList != null) {
-        const updatedList = currentList.value.map(ft => {
-          ft.value = ft.name == filterItem.name ? null : ft.value;
-          return ft;
+        const updatedList = currentList.value.filter(ft => {
+          return (
+            ft.name != filterItem.name ||
+            ft.operator != filterItem.operator ||
+            ft.value != filterItem.value
+          );
         });
         currentList.next(updatedList);
         if (filterList.indexOf('basic') > -1) {
@@ -486,10 +530,14 @@ export class FiltersService<T extends Model = Model> {
 
   /**
    * Merges the temporaryFilters into the additional filters, updating the latter
+   * @param logic The logic operator to use when creating the query in the dataSource.
    */
-  updateAdditionalFilters(): void {
+  updateAdditionalFilters(logic?: 'and' | 'or'): void {
+    if (logic && logic !== this._additionalFiltersLogic.value) {
+      this._additionalFiltersLogic.next(logic);
+    }
     const newFilters = this._temporaryFilters.value.map(a => ({...a} as FilterItem));
-    this._additionalFilters.next(this._mergeFilterItems(this._additionalFilters.value, newFilters));
+    this._additionalFilters.next(newFilters);
   }
 
   /**
@@ -588,6 +636,86 @@ export class FiltersService<T extends Model = Model> {
   }
 
   /**
+   * Checks if the "and/or" logic can be switched based on the filters currently present
+   * in the temporary filters list.
+   * @returns True if the logic can be switched
+   */
+  canSwitchLogic(): Observable<boolean> {
+    return this._temporaryFilters.pipe(
+      withLatestFrom(this.temporaryAdditionalFiltersLogic),
+      map(([tFilters, tLogic]) => {
+        if (tLogic === 'and') {
+          return true;
+        }
+
+        let canSwitch = true;
+        for (let idx = 0; idx < tFilters.length; idx++) {
+          const filterItem = tFilters[idx];
+          if (
+            tFilters.some(
+              fi =>
+                fi.name === filterItem.name &&
+                fi.operator?.value == filterItem.operator?.value &&
+                tFilters.indexOf(fi) !== idx,
+            )
+          ) {
+            canSwitch = false;
+            break;
+          }
+        }
+        return canSwitch;
+      }),
+    );
+  }
+
+  /**
+   * Checks if a filter can be added to a filter list.
+   * @param filterItem The filter to be added
+   * @param listType The list of filters
+   * @returns True if the filter can be added to the specified list
+   */
+  private _canAddFilter(filterItem: FilterItem, listType: FilterListType): boolean {
+    if (listType === 'basic') {
+      return true;
+    }
+    const logic = this.temporaryAdditionalFiltersLogic.value;
+    const targetList = this._selectFilterListType(listType);
+    const targetListValue = targetList.getValue().map(a => ({...a} as FilterItem));
+    const hasOperator = filterItem.operator != null;
+    let res = false;
+    let errText = `A filter `;
+    if (hasOperator) {
+      errText += `with operator "{{operator}}" `;
+    }
+    if (logic === 'and') {
+      res = !targetListValue.some(f => {
+        return f.name === filterItem.name && f.operator?.value == filterItem.operator?.value;
+      });
+    } else {
+      res = !targetListValue.some(
+        f =>
+          f.name === filterItem.name &&
+          f.operator?.value == filterItem.operator?.value &&
+          f.value == filterItem.value,
+      );
+      errText += `${hasOperator ? 'and' : 'with'} value "{{value}}" `;
+    }
+    errText += `on field "{{field}}" already exists. Please create a different filter.`;
+
+    if (!res) {
+      this.filterErrorEvt.emit({
+        msg: this._ts.translate('FILTER ALREADY EXISTS'),
+        text: this._ts.translate(errText, {
+          operator: filterItem.operator?.label.toUpperCase(),
+          value: filterItem.value,
+          field: filterItem.label?.toUpperCase(),
+        }),
+      });
+    }
+    return res;
+  }
+
+  /**
    * Merges two arrays of FilterItems while overwriting old Filter values with new ones
    * @param oldFilters The old filters array
    * @param newFilters The new filters array
@@ -613,7 +741,14 @@ export class FiltersService<T extends Model = Model> {
    * @returns The encoded query string
    */
   private _updateQueryString(filterItems: FilterItem[]): string {
-    const queryString = btoa(encodeURI(JSON.stringify(filterItems)));
+    const queryString = btoa(
+      encodeURI(
+        JSON.stringify({
+          filters: filterItems,
+          additionalFiltersLogic: this._additionalFiltersLogic.value,
+        }),
+      ),
+    );
     if (this._loadingPreset == null) {
       this._router.navigate([], {
         relativeTo: this._route,

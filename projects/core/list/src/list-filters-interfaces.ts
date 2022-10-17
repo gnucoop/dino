@@ -226,8 +226,8 @@ export const ALL_CONDITION_OPERATORS: Operator[] = [
  * Mongodb default operators for different field types
  */
 export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
-  [AjfFieldType.String]: {label: 'Like', value: '$regex', options: 'i'},
-  [AjfFieldType.Text]: {label: 'Like', value: '$regex', options: 'i'},
+  [AjfFieldType.String]: {label: 'Includes', value: '$regex', options: 'i'},
+  [AjfFieldType.Text]: {label: 'Includes', value: '$regex', options: 'i'},
   [AjfFieldType.Number]: {label: '==', value: '$eq'},
   [AjfFieldType.DateInput]: {label: '==', value: '$eq'},
   [AjfFieldType.Date]: {label: '==', value: '$eq'},
