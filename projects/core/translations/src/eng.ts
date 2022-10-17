@@ -188,4 +188,14 @@ export const ENG: Translation = {
   'Icon Identifier': 'Icon Identifier',
   'Form Statuses': 'Form Statuses',
   'Relationships': 'Relationships',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
+    'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
+    'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.',
+  'A filter on field "{{field}}" already exists. Please create a different filter.':
+    'A filter on field "{{field}}" already exists. Please create a different filter.',
+  'All': 'All',
+  'Any': 'Any',
+  'FILTER ALREADY EXISTS': 'FILTER ALREADY EXISTS',
+  'Create Filter': 'Create Filter',
 };

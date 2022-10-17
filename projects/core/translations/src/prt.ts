@@ -188,4 +188,14 @@ export const PRT: Translation = {
   'Icon Identifier': 'Ícone do formulário',
   'Form Statuses': 'Estado dos formulários',
   'Relationships': 'Relacionamentos',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Já existe um filtro com o operador "{{{operator}}" no campo "{{{field}}". Por favor, crie um filtro diferente.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Já existe um filtro com operador "{{{operator}}" e valor "{{{value}}" no campo "{{{field}}". Por favor, crie um filtro diferente.',
+  'A filter on field "{{field}}" already exists. Please create a different filter.':
+    'Já existe um filtro no campo "{{{field}}". Por favor, crie um filtro diferente.',
+  'All': 'Todos',
+  'Any': 'Qualquer',
+  'FILTER ALREADY EXISTS': 'O FILTRO JÁ EXISTE',
+  'Create Filter': 'Criar Filtro',
 };

@@ -199,4 +199,14 @@ export const ITA: Translation = {
   'Icon Identifier': 'Icona del Form',
   'Form Statuses': 'Stati del Form',
   'Relationships': 'Relazioni',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Un filtro con operatore "{{operator}}" sul campo "{{field}}" esiste già. Prova a creare un filtro diverso.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Un filtro con operatore "{{operator}}" e valore "{{value}}" sul campo "{{field}}" esiste già. Prova a creare un filtro diverso.',
+  'A filter on field "{{field}}" already exists. Please create a different filter.':
+    'Un filtro sul campo "{{field}}" esiste già. Prova a creare un filtro diverso.',
+  'All': 'Tutti',
+  'Any': 'Qualsiasi',
+  'FILTER ALREADY EXISTS': 'FILTRO GIÀ ESISTENTE',
+  'Create Filter': 'Crea Filtro',
 };

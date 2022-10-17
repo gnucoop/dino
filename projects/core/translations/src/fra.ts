@@ -187,4 +187,12 @@ export const FRA: Translation = {
   'Icon Identifier': 'Icône de formulaire',
   'Form Statuses': 'Statuts des formulaires',
   'Relationships': 'Relations',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.': `Un filtre avec l'opérateur "{{operator}}" sur le champ "{{field}}" existe déjà. Veuillez créer un autre filtre.`,
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.': `Un filtre avec l'opérateur "{{operator}}" et la valeur "{{value}}" sur le champ "{{field}}" existe déjà. Veuillez créer un autre filtre.`,
+  'A filter on field "{{field}}" already exists. Please create a different filter.': `Un filtre sur le champ "{{field}}" existe déjà. Veuillez créer un autre filtre.
+    `,
+  'All': 'Tous',
+  'Any': 'Un ou plus',
+  'FILTER ALREADY EXISTS': 'LE FILTRE EXISTE DÉJÀ',
+  'Create Filter': 'Créer le Filtre',
 };
