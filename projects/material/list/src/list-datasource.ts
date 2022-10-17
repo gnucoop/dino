@@ -437,15 +437,16 @@ export class ListDataSource<
     let querySelector: {[key: string]: any} = {};
     let detailsQuerySelector: {[key: string]: any} = {};
 
-    let filterItems: FilterItem[] = [];
-    if (queryString) {
-      filterItems = JSON.parse(decodeURI(atob(queryString)));
-    }
-
+    const parsedFilters: {filters: FilterItem[]; additionalFiltersLogic: 'and' | 'or'} = JSON.parse(
+      decodeURI(atob(queryString)),
+    );
+    const filterItems: FilterItem[] = parsedFilters.filters;
     if (!filterItems.find(f => f.name === 'keyword')) {
       this.filter = '';
     }
     this._filtersCount = filterItems.length;
+    const additionalFiltersLogic = parsedFilters.additionalFiltersLogic;
+
     filterItems.forEach(item => {
       const selector: {[key: string]: any} = item.isFilterItemDetails
         ? detailsQuerySelector
@@ -553,17 +554,32 @@ export class ListDataSource<
               }
               // Single Slide Field Filter
             } else {
-              this._addNestedProps(
-                selector,
-                [
-                  this._isDataList != null
-                    ? `data.${item.name.trim().toLowerCase()}`
-                    : `data.data.${item.name.trim().toLowerCase()}`,
-                  item.operator ? item.operator.value : '$eq',
-                ],
-                item.value,
-                item.operator?.options,
-              );
+              // AND additional filters logic
+              if (additionalFiltersLogic === 'and') {
+                this._addNestedProps(
+                  selector,
+                  [
+                    this._isDataList != null
+                      ? `data.${item.name.trim().toLowerCase()}`
+                      : `data.data.${item.name.trim().toLowerCase()}`,
+                    item.operator ? item.operator.value : '$eq',
+                  ],
+                  item.value,
+                  item.operator?.options,
+                );
+                // OR additional filters logic
+              } else if (additionalFiltersLogic === 'or') {
+                const flt = {
+                  [this._isDataList != null ? `data.${item.name}` : `data.data.${item.name}`]: {
+                    [item.operator ? item.operator.value : '$eq']: item.value,
+                  },
+                };
+                if (selector['$or'] && selector['$or'].length) {
+                  selector['$or'] = [...selector['$or'], flt];
+                } else {
+                  selector['$or'] = [flt];
+                }
+              }
             }
           }
           break;
@@ -838,7 +854,7 @@ export class ListDataSource<
     if (lastProp) {
       baseObj[lastProp.toString()] = value;
       if (options != null && lastProp === '$regex') {
-        baseObj[lastProp.toString()] = new RegExp(value, options);
+        baseObj[lastProp.toString()] = new RegExp(value, options ? options : 'i');
       }
     }
 

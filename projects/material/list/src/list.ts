@@ -428,6 +428,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (this._dataSource) {
       this._fillDataSource();
     }
+
+    this._fts.filterErrorEvt.pipe(takeUntil(this._mainUnsubscribe)).subscribe(evt =>
+      this._snackbar.open(evt.text, evt.msg.toUpperCase(), {
+        duration: 10000,
+      }),
+    );
+
     this.expandAllRows.pipe(takeUntil(this._mainUnsubscribe)).subscribe(res => {
       const forceExpand = res;
       forceExpand ? this.selectAll() : this.clearSelection();
@@ -1028,17 +1035,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
   }
 
-  ngOnDestroy() {
-    this._mainUnsubscribe.next();
-    this._mainUnsubscribe.complete();
-    this.emitRowDataEvt.complete();
-    if (this._dataSource != null) {
-      this._dataSource.disconnect();
-    }
-    this._fts.clearModelFilters();
-    this._dialogSub.unsubscribe();
-  }
-
   onRowMouseEnter(evt: MouseEvent, row: any): void {
     const {target} = evt;
     if (target != null) {
@@ -1054,5 +1050,16 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (target != null) {
       this._renderer.removeClass(target, 'dino-hover');
     }
+  }
+
+  ngOnDestroy() {
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
+    this.emitRowDataEvt.complete();
+    if (this._dataSource != null) {
+      this._dataSource.disconnect();
+    }
+    this._fts.clearModelFilters();
+    this._dialogSub.unsubscribe();
   }
 }
