@@ -222,9 +222,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._dialogSub = this._dialogRef
       .afterClosed()
       .pipe(catchError(err => throwError(() => err) as Observable<boolean>))
-      .subscribe((search: boolean) => {
-        if (search) {
-          this._fts.updateAdditionalFilters();
+      .subscribe((searchFilters: {search: boolean; logic?: 'and' | 'or'}) => {
+        if (searchFilters && searchFilters.search) {
+          this._fts.updateAdditionalFilters(searchFilters.logic);
         }
       });
   }
