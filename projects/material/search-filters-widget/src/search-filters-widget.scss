@@ -16,6 +16,18 @@ dino-search-filters-widget {
       min-height: 30vh;
       .mat-card-actions {
         margin-left: -16px;
+        .dino-create-filter-button {
+          padding: 0 8px;
+          span {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            justify-content: space-between;
+            .mat-icon{
+              margin-left: 10px;
+            }
+          }
+        }
       }
     }
   }

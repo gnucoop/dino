@@ -2,14 +2,10 @@
   <form novalidate [formGroup]="fg">
     <div class="ajf-form-container">
       <ng-container *ngIf="(slides|async) as curSlides">
-        <ng-container
-          *ngFor="let slideInstance of curSlides; trackBy:trackNodeById"
-        >
+        <ng-container *ngFor="let slideInstance of curSlides; trackBy:trackNodeById">
           <ng-container *ngIf="!(slideInstance|ajfIsRepeatingSlideInstance)">
             <div class="ajf-form-page">
-              <mat-card
-                class="mat-elevation-z4"
-              >
+              <mat-card class="mat-elevation-z4">
                 <div class="elem">
                   <ng-template
                     ngFor
@@ -51,7 +47,7 @@
                             <mat-button-toggle
                               *ngFor="let operator of operators"
                               [value]="operator"
-                              [checked]="operatorValue.getValue().label === operator.label"
+                              [checked]="operatorValue.getValue().value === operator.value"
                             >
                               {{ operator.label|transloco }}
                             </mat-button-toggle>
@@ -62,15 +58,15 @@
                   </ng-template>
                 </div>
                 <mat-card-actions>
-                  {{'Exclude'|transloco}}
-                  <mat-slide-toggle
-                    #toggleFilter
-                    (change)="filterToggle($event)"
-                    [checked]="widgetData?.active"
-                    [disabled]="checkToggleDisabled()"
+                  <button
+                    class="dino-create-filter-button"
+                    [disabled]="(isCreateFilterButtonDisabled|async) !== false"
+                    mat-raised-button
+                    (click)="createFilter()"
+                    color="accent"
                   >
-                  </mat-slide-toggle>
-                  {{'Include'|transloco}}
+                    {{'Create Filter'|transloco}}<mat-icon>add</mat-icon>
+                  </button>
                 </mat-card-actions>
               </mat-card>
             </div>
