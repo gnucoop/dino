@@ -7,13 +7,13 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {TranslocoModule} from '@ngneat/transloco';
-import {FormStatusEditor} from './form-status-editor';
+import {FormStatusChanger} from './form-status-changer';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {UserInteractionsModule} from '@dino/material/user-interactions';
 
 @NgModule({
-  declarations: [FormStatusEditor],
-  exports: [FormStatusEditor],
+  declarations: [FormStatusChanger],
+  exports: [FormStatusChanger],
   imports: [
     CommonModule,
     MatButtonModule,
@@ -27,4 +27,4 @@ import {UserInteractionsModule} from '@dino/material/user-interactions';
     UserInteractionsModule,
   ],
 })
-export class FormStatusEditorModule {}
+export class FormStatusChangerModule {}

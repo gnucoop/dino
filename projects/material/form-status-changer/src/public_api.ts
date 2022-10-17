@@ -20,5 +20,5 @@
  *
  */
 
-export * from './form-status-editor';
-export * from './form-status-editor.module';
+export * from './form-status-changer';
+export * from './form-status-changer.module';

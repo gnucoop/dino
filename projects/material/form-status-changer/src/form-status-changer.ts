@@ -33,7 +33,7 @@ import {isRxDocument, RxDocument} from 'rxdb';
 /**
  * Represents data to be passed to the Form Status editor
  */
-export interface FormStatusEditorData {
+export interface FormStatusChangerData {
   /**
    * The Form Data whose status will be edited
    */
@@ -44,13 +44,13 @@ export interface FormStatusEditorData {
  * Dialog component that allows the editing of a Form Status.
  */
 @Component({
-  selector: 'dino-form-status-editor',
-  templateUrl: 'form-status-editor.html',
-  styleUrls: ['form-status-editor.scss'],
+  selector: 'dino-form-status-changer',
+  templateUrl: 'form-status-changer.html',
+  styleUrls: ['form-status-changer.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class FormStatusEditor implements OnDestroy, OnInit {
+export class FormStatusChanger implements OnDestroy, OnInit {
   /**
    * The list of all the Form Statuses available to the active User
    */
@@ -69,8 +69,8 @@ export class FormStatusEditor implements OnDestroy, OnInit {
   private _saveSub: Subscription = Subscription.EMPTY;
 
   constructor(
-    public dialogRef: MatDialogRef<FormStatusEditorData>,
-    @Inject(MAT_DIALOG_DATA) public data: FormStatusEditorData,
+    public dialogRef: MatDialogRef<FormStatusChangerData>,
+    @Inject(MAT_DIALOG_DATA) public data: FormStatusChangerData,
     private _fstm: FormStatusManager,
     private _fdm: FormDataManager,
     private _aui: AdminUserInteractionsService,
