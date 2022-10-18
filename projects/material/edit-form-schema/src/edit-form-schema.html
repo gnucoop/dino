@@ -26,14 +26,37 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select formControlName="status" [placeholder]="'Form Statuses'|transloco" multiple>
-              <mat-option
+            <mat-select [disableRipple]="true" formControlName="status" [placeholder]="'Form Statuses'|transloco" multiple>
+              <div
+                class="dino-status-option-container"
                 *ngFor="let status of availableFormStatuses | async"
-                [value]="status.id"
-                [ngStyle]="{'color': status.color ?? 'inherit'}"
               >
-                <span>{{status.label}}</span>
-              </mat-option>
+                <mat-option
+                  class="dino-status-option"
+                  [value]="status.id"
+                  [ngStyle]="{'color': status.color ?? 'inherit'}"
+                >
+                  <span>{{status.label}}</span>
+                </mat-option>
+                <button
+                  class="dino-status-edit-button"
+                  mat-icon-button
+                  (click)="openStatusEditor('Edit', status); $event.stopPropagation()"
+                  [ngStyle]="{'color': status.color ?? 'inherit'}"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+
+              <button
+                mat-button
+                color="primary"
+                class="dino-new-status-button"
+                (click)="openStatusEditor('Create'); $event.stopPropagation()"
+              >
+                {{'Create new Status'|transloco}}
+                <mat-icon> add </mat-icon>
+              </button>
             </mat-select>
           </mat-form-field>
 

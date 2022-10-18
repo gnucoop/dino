@@ -43,7 +43,7 @@ import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dino/core/list';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ExportFormModule} from '@dino/material/export-form';
-import {FormStatusEditorModule} from '@dino/material/form-status-editor';
+import {FormStatusChangerModule} from '@dino/material/form-status-changer';
 import {ImportFormModule} from '@dino/material/import-form';
 import {UserInteractionsModule} from '@dino/material/user-interactions';
 
@@ -60,7 +60,7 @@ import {ListCellValue} from './list-cell-value';
     ExportFormModule,
     CommonModule,
     CoreModule,
-    FormStatusEditorModule,
+    FormStatusChangerModule,
     ImportFormModule,
     MatButtonModule,
     MatCheckboxModule,

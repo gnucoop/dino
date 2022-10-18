@@ -1,67 +1,101 @@
 dino-edit-form-schema {
-    > .mat-card:first-child {
-        border-left: none;
-        margin: 0%;
-        padding: 0px;
-        background: transparent;
-        .mat-card-header {
-            display: flex;
-            flex-flow: row wrap;
-            padding-bottom: 10px;
-            align-items: center;
-            justify-content: space-between;
-            .dino-form-attributes {
-                flex: 1 1 auto;
-                display: flex;
-                flex-flow: row wrap;
-                justify-content: space-between;
-                .mat-form-field {
-                    flex: 1 1 auto;
-                    font-size: 125%;
-                }
-            }
-            .dino-edit-form-schema-actions {
-                display: flex;
-                justify-self: flex-end;
-                justify-content: flex-end;
-                .mat-raised-button {
-                    margin-left: 20px;
-                }
-            }
-        }
-        .mat-card-content {
-            padding-bottom: 0%;
-            ajf-form-builder {
-                min-height: 60vh;
-            }
-            .mat-drawer-content {
-                .ajf-fields-list {
-                    background: transparent;
-                }
-                .ajf-designer ajf-fb-node-entry .mat-card-container .mat-card {
-                    background: transparent;
-                    background-color: transparent;
-                }
-                .ajf-fields-list .mat-card-container .mat-card {
-                    margin-left: 50px;
-                }
-            }
-        }
-    }
-}
-
-.mat-autocomplete-panel, .mat-select-panel {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-        display: none;
-    }
-    .mat-option-text {
+  > .mat-card:first-child {
+    border-left: none;
+    margin: 0%;
+    padding: 0px;
+    background: transparent;
+    .mat-card-header {
+      display: flex;
+      flex-flow: row wrap;
+      padding-bottom: 10px;
+      align-items: center;
+      justify-content: space-between;
+      .dino-form-attributes {
+        flex: 1 1 auto;
         display: flex;
+        flex-flow: row wrap;
         justify-content: space-between;
-        align-items: center;
-        align-content: center;
+        .mat-form-field {
+          flex: 1 1 auto;
+          font-size: 125%;
+        }
+      }
+      .dino-edit-form-schema-actions {
+        display: flex;
+        justify-self: flex-end;
+        justify-content: flex-end;
+        .mat-raised-button {
+          margin-left: 20px;
+        }
+      }
     }
+    .mat-card-content {
+      padding-bottom: 0%;
+      ajf-form-builder {
+        min-height: 60vh;
+      }
+      .mat-drawer-content {
+        .ajf-fields-list {
+          background: transparent;
+        }
+        .ajf-designer ajf-fb-node-entry .mat-card-container .mat-card {
+          background: transparent;
+          background-color: transparent;
+        }
+        .ajf-fields-list .mat-card-container .mat-card {
+          margin-left: 50px;
+        }
+      }
+    }
+  }
 }
 
-
+.mat-autocomplete-panel,
+.mat-select-panel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  .mat-option .mat-icon {
+    margin-right: 0;
+  }
+  .dino-status-option-container {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-content: center;
+    .dino-status-option {
+      flex: 1 0 auto;
+    }
+    .dino-status-edit-button {
+      flex: 0 1 auto;
+    }
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  .mat-option-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+  }
+  .mat-option {
+    &:hover,
+    &.mat-active {
+      background-color: transparent;
+      background: transparent;
+    }
+    .mat-pseudo-checkbox::after {
+      color: inherit;
+    }
+  }
+  .dino-new-status-button {
+    width: 100%;
+    text-align: center;
+    opacity: 0.3;
+    transition: all ease-in-out 0.3;
+    -webkit-transition: all ease-in-out 0.3s;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

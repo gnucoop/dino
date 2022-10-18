@@ -63,7 +63,7 @@ import {
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportForm} from '@dino/material/export-form';
-import {FormStatusEditor, FormStatusEditorData} from '@dino/material/form-status-editor';
+import {FormStatusChanger, FormStatusChangerData} from '@dino/material/form-status-changer';
 import {ImportForm} from '@dino/material/import-form';
 import {BehaviorSubject, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
@@ -362,9 +362,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   private _importDialogRef?: MatDialogRef<ImportForm>;
 
   /**
-   * A reference to the MatDialog that contains the Form Status Editor component
+   * A reference to the MatDialog that contains the Form Status Changer component
    */
-  private _statusDialogRef?: MatDialogRef<FormStatusEditor>;
+  private _statusDialogRef?: MatDialogRef<FormStatusChanger>;
 
   /**
    * Subscribes to the value returned by the MatDialog on its closing event
@@ -656,9 +656,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
 
   openStatusEditor(element: FormData & {form_schema: Observable<FormSchema>}): void {
     const dialogConfig = new MatDialogConfig();
-    const dialogData: FormStatusEditorData = {formData: element};
+    const dialogData: FormStatusChangerData = {formData: element};
     dialogConfig.data = dialogData;
-    this._statusDialogRef = this._dialog.open(FormStatusEditor, dialogConfig);
+    this._statusDialogRef = this._dialog.open(FormStatusChanger, dialogConfig);
     this._statusDialogRef
       .afterClosed()
       .pipe(take(1))

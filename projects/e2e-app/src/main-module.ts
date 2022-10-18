@@ -42,6 +42,8 @@ import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {combineLatest, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, switchMap, take, tap} from 'rxjs/operators';
 
+import {ColorPickerModule} from 'ngx-color-picker';
+
 import {E2eApp} from './e2e-app';
 import {E2eAppModule} from './e2e-app/e2e-app-module';
 import {FakeDataGenerator} from './fake-data-generator';
@@ -200,6 +202,7 @@ export function provideDataServiceConfig() {
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
     BrowserModule,
+    ColorPickerModule,
     DinoTranslationsModule.forRoot(defaultLanguageConfig),
     E2eAppModule,
     EditReportSchemaModule,

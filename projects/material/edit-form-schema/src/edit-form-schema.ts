@@ -23,6 +23,7 @@ import {AjfForm, AjfFormSerializer} from '@ajf/core/forms';
 import {AjfFormBuilderService} from '@ajf/material/form-builder';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -45,6 +46,7 @@ import {
 import {FormDepsEditor} from '@dino/material/form-deps-editor';
 import {IconsService} from '@dino/material/icons-service';
 import {format} from 'date-fns';
+import {FormStatusEditor} from '@dino/material/form-status-editor';
 import {
   BehaviorSubject,
   combineLatest,
@@ -53,9 +55,18 @@ import {
   Subscription,
   throwError,
 } from 'rxjs';
-import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 import {ImportFormSchema} from './import-form-schema';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * The Form Schema Editor component.
@@ -126,14 +137,19 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _saveEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
+   * Emitted when the Form Status list has been updated
+   */
+  private _updateStatusListEvt: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
    * The Save subscription
    */
   private _saveSub: Subscription = Subscription.EMPTY;
 
   /**
-   * A reference to the MatDialog that contains the Xlsform Import component
+   * A reference to the MatDialog that contains the Xlsform Import or Form Status Editor component
    */
-  private _dialogRef?: MatDialogRef<ImportFormSchema>;
+  private _dialogRef?: MatDialogRef<ImportFormSchema | FormStatusEditor>;
 
   /**
    * Subscribes to the value returned by the Import MatDialog on its closing event
@@ -151,6 +167,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _dialogDepsSub: Subscription = Subscription.EMPTY;
 
   constructor(
+    protected _cdr: ChangeDetectorRef,
     private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
@@ -161,6 +178,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _formBuilder: FormBuilder,
     private _iconsService: IconsService,
+    private _ts: TranslocoService,
   ) {
     this._formSchemaId = this._route.params.pipe(
       map(params => params['form_schema_id']),
@@ -186,7 +204,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
       shareReplay(1),
     );
 
-    this.availableFormStatuses = this._formStatusManager.list();
+    this.availableFormStatuses = this._updateStatusListEvt.pipe(
+      startWith([]),
+      switchMap(() => this._formStatusManager.list()),
+    );
 
     this.formGroup = this._formSchema.pipe(
       map(fs =>
@@ -306,6 +327,45 @@ export class EditFormSchema implements OnInit, OnDestroy {
         if (formSchema != null) {
           this._updateImportedFormSchema(formSchema);
         }
+      });
+  }
+
+  openStatusEditor(action: 'Edit' | 'Create', status?: FormStatus): void {
+    this._dialogRef = this._dialog.open(FormStatusEditor, {
+      data: {
+        statusItem: status,
+        statusAction: action,
+      },
+    });
+    this._dialogSub = this._dialogRef
+      .afterClosed()
+      .pipe(
+        catchError(err => throwError(() => err) as Observable<boolean>),
+        take(1),
+      )
+      .subscribe(res => {
+        if (res === undefined) {
+          return;
+        }
+        if (res == null) {
+          this._snackbar.open(
+            `Oops! Something went wrong while saving the Form Status.`,
+            'SAVE ERROR',
+            {
+              duration: 10000,
+            },
+          );
+        } else {
+          this._snackbar.open(
+            this._ts.translate(`Form Status "{{status}}" saved`, {status: res.label}),
+            this._ts.translate('FORM STATUS SAVED'),
+            {
+              duration: 10000,
+            },
+          );
+        }
+        this._updateStatusListEvt.emit();
+        this._cdr.detectChanges();
       });
   }
 
