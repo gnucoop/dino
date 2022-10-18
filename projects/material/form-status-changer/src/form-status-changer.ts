@@ -31,7 +31,7 @@ import {ActionTriggerData, PermissionContextService} from '@dino/core/data';
 import {isRxDocument, RxDocument} from 'rxdb';
 
 /**
- * Represents data to be passed to the Form Status editor
+ * Represents data to be passed to the Form Status changer
  */
 export interface FormStatusChangerData {
   /**
@@ -41,7 +41,7 @@ export interface FormStatusChangerData {
 }
 
 /**
- * Dialog component that allows the editing of a Form Status.
+ * Dialog component that allows the editing of a Form Status of a Form Data.
  */
 @Component({
   selector: 'dino-form-status-changer',
