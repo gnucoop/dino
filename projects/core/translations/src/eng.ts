@@ -186,6 +186,7 @@ export const ENG: Translation = {
   'Form Label': 'Form Label',
   'Form Name': 'Form Name',
   'Icon Identifier': 'Icon Identifier',
+  'Form Status': 'Form Status',
   'Form Statuses': 'Form Statuses',
   'Relationships': 'Relationships',
   'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
@@ -198,4 +199,10 @@ export const ENG: Translation = {
   'Any': 'Any',
   'FILTER ALREADY EXISTS': 'FILTER ALREADY EXISTS',
   'Create Filter': 'Create Filter',
+  'Name': 'Name',
+  'Label': 'Label',
+  'Priority': 'Priority',
+  'Color': 'Color',
+  'Form Status "{{status}}" saved': 'Form Status "{{status}}" saved',
+  'FORM STATUS SAVED': 'FORM STATUS SAVED',
 };

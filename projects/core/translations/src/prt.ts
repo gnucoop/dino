@@ -186,6 +186,7 @@ export const PRT: Translation = {
   'Form Label': 'Etiqueta do formulário',
   'Form Name': 'Nome do formulário',
   'Icon Identifier': 'Ícone do formulário',
+  'Form Status': 'Estado do formulário',
   'Form Statuses': 'Estado dos formulários',
   'Relationships': 'Relacionamentos',
   'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
@@ -198,4 +199,10 @@ export const PRT: Translation = {
   'Any': 'Qualquer',
   'FILTER ALREADY EXISTS': 'O FILTRO JÁ EXISTE',
   'Create Filter': 'Criar Filtro',
+  'Name': 'Nome',
+  'Label': 'Etiqueta',
+  'Priority': 'Prioridade',
+  'Color': 'Cor',
+  'Form Status "{{status}}" saved': 'Estado "{{status}}" do formulàrio guardado',
+  'FORM STATUS SAVED': 'ESTADO DO FORMULÁRIO GUARDADO',
 };

@@ -209,4 +209,10 @@ export const ITA: Translation = {
   'Any': 'Qualsiasi',
   'FILTER ALREADY EXISTS': 'FILTRO GIÀ ESISTENTE',
   'Create Filter': 'Crea Filtro',
+  'Name': 'Nome',
+  'Label': 'Etichetta',
+  'Priority': 'Priorità',
+  'Color': 'Colore',
+  'Form Status "{{status}}" saved': 'Stato del form "{{status}}" salvato',
+  'FORM STATUS SAVED': 'STATO DEL FORM SALVATO',
 };
