@@ -109,12 +109,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
    * If true, Metrics can be created directly from the metric fields
    */
   @Input() allowMetricCreation: boolean = true;
+
   /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
     ActionTrigger<T>
   >();
+
   /**
    * True if no validation errors are encountered in the AjfForm
    */
@@ -382,8 +384,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                     map(extDatas => {
                       let extCtx: {[key: string]: any} = {};
                       extDatas.forEach(extData => {
-                        if (extData !== null) {
-                          const item = extData.toJSON() as {[key: string]: any} as FormData;
+                        if (extData !== null && extData.length) {
+                          const item = extData[0].toJSON() as {[key: string]: any} as FormData;
                           extCtx[item.form_schema_ref_id] = item['data'];
                         }
                       });
@@ -403,7 +405,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps, this._formSchema),
       )
       .subscribe(([changes, formGroup, fschemadeps, fschema]) => {
-        if (fschemadeps && fschemadeps.deps_origin && changes) {
+        if (fschemadeps && fschemadeps.deps_origin && changes && Object.keys(changes).length) {
           const newFormSchema = deepCopy(fschema.schema);
           const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
           let extCtx: {[key: string]: any} = {};
@@ -640,6 +642,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         ),
         catchError(err => {
           this.isLoading.next(false);
+          if (isDevMode()) {
+            console.log(err);
+          }
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
@@ -731,14 +736,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           depsOrigin.filter_by_metric.length
         ) {
           const opt: DataQueryOptions = {
-            selector: {form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id}},
+            selector: {
+              form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id},
+              is_deleted: {$ne: true},
+            },
+            limit: 1,
+            sort: [{created_at: 'desc'}],
           };
 
           let missingMetric = false;
           depsOrigin.filter_by_metric.forEach(metric => {
             if (activeMetrics.includes(metric) && metricSel[metric]) {
               const metricProps = metricSel[metric].toJSON();
-              opt['selector'][metric + '_ref_id'] = metricProps.id;
+              opt['selector'][metric + '_ref_id'] = {$eq: metricProps.id};
             } else {
               missingMetric = true;
             }
@@ -747,13 +757,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           if (!missingMetric) {
             extFormDataObs.push(
               dmm.query(opt).pipe(
-                map(docs => {
-                  if (!docs.length || docs[0] == null) {
-                    return null;
-                  }
-                  return docs[0];
-                }),
-                shareReplay(1),
+                take(1),
+                catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
               ),
             );
           }
