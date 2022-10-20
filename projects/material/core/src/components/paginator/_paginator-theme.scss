@@ -7,10 +7,6 @@
     $background: map.get($config, background);
     $accent: map.get($config, accent);
 
-    .mat-paginator {
-        background: mat-theming.get-color-from-palette($background, background);
-    }
-
     .mat-paginator,
     .mat-paginator-page-size .mat-select-trigger {
         color: mat-theming.get-color-from-palette($foreground, secondary-text);

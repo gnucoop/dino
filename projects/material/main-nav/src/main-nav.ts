@@ -41,6 +41,7 @@ import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService, PermissionContextService} from '@dino/core/data';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {ThemeService} from '@dino/material/core';
 import {UserArea} from '@dino/material/user-area';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
@@ -325,6 +326,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
+    private _ts: ThemeService,
   ) {
     this._syncLoadingSub = this.dataService.firstReplicationComplete.subscribe(repComplete => {
       this.isLoading.next(!repComplete);
@@ -411,6 +413,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   menuClick(): void {
     this._menuClickEvt.emit();
+  }
+
+  setDarkTheme(evt: boolean) {
+    this._ts.setDarkMode(evt);
   }
 
   /**

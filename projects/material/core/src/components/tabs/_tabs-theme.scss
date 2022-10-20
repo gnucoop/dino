@@ -13,11 +13,6 @@
   .mat-tab-nav-bar,
   .mat-tab-header {
     border-bottom: $header-border;
-    background-color: mat-theming.get-color-from-palette($background, background);
-  }
-
-  .mat-tab-body {
-    background-color: mat-theming.get-color-from-palette($background, background);
   }
 
   .mat-tab-group-inverted-header {

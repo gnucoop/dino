@@ -39,6 +39,7 @@
     justify-content: space-between;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    flex: 1 0 auto;
     &::-webkit-scrollbar {
       display: none;
     }

@@ -12,14 +12,14 @@
   $foreground: map.get($config, foreground);
 
   .mat-table {
-    background: mat-theming.get-color-from-palette($background, background);
     .mat-row:hover {
-      box-shadow: 0 2px 4px 0 #b9b9b9;
+      box-shadow: 0 2px 4px 0 mat-theming.get-color-from-palette($accent, text);;
     }
 
     .mat-row.dino-highlighted-row {
-      background-color: mat-theming.get-color-from-palette($accent, lighter);
+      background-color: mat-theming.get-color-from-palette($accent, 400);
     }
+
     .dino-inner-table-container .mat-row.dino-details-row.dino-highlighted-row {
       background-color: mat-theming.get-color-from-palette($primary, lighter);
     }

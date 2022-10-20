@@ -72,10 +72,6 @@ $mat-chip-remove-font-size: 18px;
         }
     }
 
-    .mat-chip-list-wrapper {
-        background-color: mat-theming.get-color-from-palette($background, background);
-    }
-
     .mat-chip.mat-standard-chip.mat-chip-selected {
         &.mat-primary {
             @include _mat-chip-theme-color($primary);

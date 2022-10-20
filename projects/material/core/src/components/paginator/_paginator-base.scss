@@ -1,16 +1,17 @@
 @mixin paginator-core($typography-config: null) {
-    .mat-paginator-navigation-previous.mat-icon-button,
-    .mat-paginator-navigation-next.mat-icon-button {
-        border-radius: 0;
-        margin: 0 3px;
-    }
-    .mat-paginator {
-        display: flex;
-        flex: 1 1 auto;
-        flex-flow: row wrap;
-        justify-content: flex-end;
-    }
-    .mat-paginator-container {
-        justify-content: center;
-    }
+  .mat-paginator-navigation-previous.mat-icon-button,
+  .mat-paginator-navigation-next.mat-icon-button {
+    border-radius: 0;
+    margin: 0 3px;
+  }
+  .mat-paginator {
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    background: transparent !important;
+  }
+  .mat-paginator-container {
+    justify-content: center;
+  }
 }

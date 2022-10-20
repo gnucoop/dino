@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnInit, Optional, ViewChild} from '@angular/core';
 import {MatSelect} from '@angular/material/select';
-import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {Router} from '@angular/router';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
 import {UserData, UserDataManager} from '@dino/core/users';
+import {ThemeService} from '@dino/material/core';
 import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -22,6 +22,7 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
   constructor(
     private _router: Router,
     private _userDataManager: UserDataManager,
+    private _ts: ThemeService,
     @Optional() private _configService: ConfigService | null,
   ) {
     this._userDataManager.emitActionTrigger.subscribe(trigger => {
@@ -109,11 +110,7 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
     console.log(userData);
   }
 
-  changeTheme(changeEvt: MatSlideToggleChange) {
-    const themeAsset: HTMLLinkElement = document.getElementById('themeAsset') as HTMLLinkElement;
-
-    if (themeAsset != null) {
-      themeAsset.href = changeEvt.checked ? `e2e_alt_theme.css` : `e2e_main_theme.css`;
-    }
+  setDarkTheme(evt: boolean) {
+    this._ts.setDarkMode(evt);
   }
 }

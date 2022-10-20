@@ -1,38 +1,39 @@
 @mixin table-core($typography-config: null) {
-    .mat-table {
-        border-collapse: separate;
-        width: 100%;
-        border-spacing: 0 16px !important;
-        padding-bottom: 8px;
+  .mat-table {
+    border-collapse: separate;
+    width: 100%;
+    border-spacing: 0 16px !important;
+    padding-bottom: 8px;
+    background: transparent !important;
 
-        .mat-header-cell,
-        .mat-cell,
-        .mat-footer-cell {
-            -moz-background-clip: padding-box;
-            -webkit-background-clip: padding-box;
+    .mat-header-cell,
+    .mat-cell,
+    .mat-footer-cell {
+      -moz-background-clip: padding-box;
+      -webkit-background-clip: padding-box;
 
-            border-bottom-width: 0 !important;
-            border-bottom-style: none !important;
-            border-color: transparent;
-            &:not(.dino-expanded-cell) {
-                padding-top: 12px;
-                padding-bottom: 12px;
-            }
+      border-bottom-width: 0 !important;
+      border-bottom-style: none !important;
+      border-color: transparent;
+      &:not(.dino-expanded-cell) {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
 
-            .mat-icon {
-                padding: 5px;
-                border-radius: 50%;
-                cursor: pointer;
-            }
-        }
-
-        .mat-header-row,
-        .mat-row {
-            margin-bottom: 0px;
-            border-style: none;
-        }
-        &.dino-inner-table {
-            background: inherit;
-        }
+      .mat-icon {
+        padding: 5px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
     }
+
+    .mat-header-row,
+    .mat-row {
+      margin-bottom: 0px;
+      border-style: none;
+    }
+    &.dino-inner-table {
+      background: inherit;
+    }
+  }
 }

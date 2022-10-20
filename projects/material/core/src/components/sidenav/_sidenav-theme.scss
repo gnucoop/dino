@@ -93,7 +93,7 @@
     }
 
     ::-webkit-scrollbar-track {
-        background: mat-theming.get-color-from-palette($background, background);
+        // background: mat-theming.get-color-from-palette($background, background);
         border-radius: 5px;
     }
 

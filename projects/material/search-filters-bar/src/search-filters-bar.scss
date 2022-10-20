@@ -21,7 +21,7 @@
   .dino-filters-dialog-button,
   .dino-export-button {
     flex: 1 1 auto;
-    background-color: transparent;
+    background-color: transparent !important;
   }
 
   .mat-icon-button {
@@ -43,9 +43,9 @@
 }
 
 .mat-expansion-panel,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true'])
-.mat-expansion-panel-header:hover {
+.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
   background: inherit;
+  background: transparent !important;
 }
 .mat-expansion-panel {
   padding: 5px;

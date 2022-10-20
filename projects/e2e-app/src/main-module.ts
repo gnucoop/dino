@@ -34,7 +34,7 @@ import {
 import {SyncManager, SyncModule} from '@dino/core/sync';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
-import {CoreModule as DinoCoreModule} from '@dino/material/core';
+import {CoreModule as DinoMaterialThemingModule} from '@dino/material/core';
 import {EditReportSchemaModule} from '@dino/material/edit-report-schema';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 
@@ -219,12 +219,12 @@ export function provideDataServiceConfig() {
     ReportsModule,
     SyncModule,
     UsersModule,
-    DinoCoreModule.forRoot({
+    DinoMaterialThemingModule.forRoot({
       theme: {
-        // primary: '#0288d1',
-        // accent: '#455a64',
-        // warn: '#f44336',
-        // isDarkTheme: true,
+        // primary: 'red',
+        // accent: 'green',
+        // warn: 'yellow',
+        isDarkTheme: false,
       },
     }),
 

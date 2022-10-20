@@ -20,33 +20,49 @@
   <img class="dino-toolbar-logo" [src]="logoImagePath" alt="logo" />
 
   <div class="dino-toolbar-actions">
-    <ng-container *ngIf="linkIcons|async as actionLinkIcons">
-      <ng-container *ngFor="let linkIcon of actionLinkIcons">
-        <ng-container [ngTemplateOutlet]="linkIcon.url ? linkIconTemplate : infoIconTemplate ">
+    <ng-container *ngIf="(breakpointObserver.small|async) !== true">
+      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5"
+        >light_mode</mat-icon
+      >
+      <mat-slide-toggle
+        (change)="setDarkTheme($event.checked)"
+        style="margin: 10px"
+        aria-label="Toggle Dino Theme"
+      >
+      </mat-slide-toggle>
+      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5; margin-right: 25px;"
+        >dark_mode</mat-icon
+      >
+    </ng-container>
+    <ng-container *ngIf="(breakpointObserver.small|async) !== true">
+      <ng-container *ngIf="(linkIcons|async) as actionLinkIcons">
+        <ng-container *ngFor="let linkIcon of actionLinkIcons">
+          <ng-container [ngTemplateOutlet]="linkIcon.url ? linkIconTemplate : infoIconTemplate ">
+          </ng-container>
+          <ng-template #linkIconTemplate>
+            <a
+              [href]="linkIcon.url"
+              target="_blank"
+              class="dino-link-button"
+              aria-label="Toolbar action"
+              [matTooltip]="linkIcon.tooltip || ''"
+              [matTooltipPosition]="'left'"
+            >
+              <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
+            </a>
+          </ng-template>
+          <ng-template #infoIconTemplate>
+            <span
+              class="dino-link-button"
+              aria-label="Toolbar action"
+              [matTooltip]="linkIcon.tooltip || ''"
+              [matTooltipPosition]="'left'"
+              onclick=""
+            >
+              <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
+            </span>
+          </ng-template>
         </ng-container>
-        <ng-template #linkIconTemplate>
-          <a
-            [href]="linkIcon.url"
-            target="_blank"
-            class="dino-link-button"
-            aria-label="Toolbar action"
-            [matTooltip]="linkIcon.tooltip || ''"
-            [matTooltipPosition]="'left'"
-          >
-            <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
-          </a>
-        </ng-template>
-        <ng-template #infoIconTemplate>
-          <span
-            class="dino-link-button"
-            aria-label="Toolbar action"
-            [matTooltip]="linkIcon.tooltip || ''"
-            [matTooltipPosition]="'left'"
-            onclick=""
-          >
-            <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
-          </span>
-        </ng-template>
       </ng-container>
     </ng-container>
     <ng-template #syncOnline>

@@ -27,7 +27,7 @@ dino-edit-report {
     padding-bottom: 15vh;
   }
   .mat-stepper-horizontal {
-    background-color: transparent;
+    background-color: transparent !important;
     .mat-horizontal-stepper-content .mat-stepper-previous {
       display: none;
     }
