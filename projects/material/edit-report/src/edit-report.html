@@ -71,12 +71,14 @@
 </ng-container>
 
 <ng-template #loading>
-  <ng-container *ngIf="spinnerImagePath; else defaultspinner"
-    ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
-  </ng-container>
-  <ng-template #defaultspinner
-    ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
-  ></ng-template>
+  <div class="dino-loading" >
+    <ng-container *ngIf="spinnerImagePath; else defaultspinner"
+      ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+    </ng-container>
+    <ng-template #defaultspinner
+      ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+    ></ng-template>
+  </div>
 </ng-template>
 
 <ng-template #nodata>
