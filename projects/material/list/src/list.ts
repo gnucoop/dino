@@ -186,6 +186,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       return;
     }
     this._dataSource.setPaginator = mp;
+    mp.page.pipe(takeUntil(this._mainUnsubscribe)).subscribe(() => {
+      this.clearSelection();
+    });
   }
 
   /**
