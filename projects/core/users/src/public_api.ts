@@ -24,6 +24,7 @@ export {UserGroup} from './user-group';
 export {UserData} from './user-data';
 export {UserRole} from './user-role';
 
+export * from './online-user-data-manager';
 export * from './user-data-manager';
 export * from './user-role-manager';
 export * from './user-group-manager';
