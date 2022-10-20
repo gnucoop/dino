@@ -3,7 +3,12 @@
   class="dino-toolbar"
   [class.dino-shadowed]="(!sidenav.opened) || (breakpointObserver.large|async)"
 >
-  <button mat-icon-button (click)="menuToggle()" aria-label="Toggle menu button">
+  <button
+    mat-icon-button
+    (click)="menuToggle()"
+    aria-label="Toggle menu button"
+    *ngIf="(sideMenuDisabled|async) !== true"
+  >
     <mat-icon
       *ngIf="(breakpointObserver.large|async) ? (extendedSidenav|async) : sidenav.opened;else closed_menu"
       >menu_open</mat-icon
@@ -17,18 +22,36 @@
   <div class="dino-toolbar-actions">
     <ng-container *ngIf="linkIcons|async as actionLinkIcons">
       <ng-container *ngFor="let linkIcon of actionLinkIcons">
-        <a
-          [href]="linkIcon.url"
-          target="_blank"
-          class="dino-link-button"
-          aria-label="Toolbar action"
-        >
-          <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
-        </a>
+        <ng-container [ngTemplateOutlet]="linkIcon.url ? linkIconTemplate : infoIconTemplate ">
+        </ng-container>
+        <ng-template #linkIconTemplate>
+          <a
+            [href]="linkIcon.url"
+            target="_blank"
+            class="dino-link-button"
+            aria-label="Toolbar action"
+            [matTooltip]="linkIcon.tooltip || ''"
+            [matTooltipPosition]="'left'"
+          >
+            <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
+          </a>
+        </ng-template>
+        <ng-template #infoIconTemplate>
+          <span
+            class="dino-link-button"
+            aria-label="Toolbar action"
+            [matTooltip]="linkIcon.tooltip || ''"
+            [matTooltipPosition]="'left'"
+            onclick=""
+          >
+            <mat-icon color="primary">{{linkIcon.icon}}</mat-icon>
+          </span>
+        </ng-template>
       </ng-container>
     </ng-container>
     <ng-template #syncOnline>
       <mat-icon
+        *ngIf="(syncSpinnerDisabled|async) !== true"
         class="dino-sync-detector"
         [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
         (click)="runSync()"
@@ -70,7 +93,10 @@
     [class.dino-large-sidenav]="breakpointObserver.large|async"
     [class.extended]="extendedSidenav|async"
   >
-    <mat-nav-list *ngIf="(isLoading|async) === false" [@loadComponent]>
+    <mat-nav-list
+      *ngIf="(isLoading|async) === false && (sideMenuDisabled|async) !== true"
+      [@loadComponent]
+    >
       <a
         mat-list-item
         [disableRipple]="true"

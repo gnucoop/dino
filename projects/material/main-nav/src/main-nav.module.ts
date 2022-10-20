@@ -38,6 +38,7 @@ import {LangSelectorModule} from '@dino/material/lang-selector';
 import {UserAreaModule} from '@dino/material/user-area';
 import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 import {MainNav} from './main-nav';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -55,6 +56,7 @@ import {MainNav} from './main-nav';
     MatSidenavModule,
     MatSnackBarModule,
     MatToolbarModule,
+    MatTooltipModule,
     RouterModule,
     UserAreaModule,
   ],

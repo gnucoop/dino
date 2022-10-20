@@ -131,6 +131,30 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * If true, the sync spinner is not displayed.
+   */
+  readonly syncSpinnerDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @Input()
+  set setSyncSpinnerDisabled(state: boolean) {
+    if (state == null) {
+      return;
+    }
+    this.syncSpinnerDisabled.next(state);
+  }
+
+  /**
+   * If true, the menu button and the side menu are not displayed.
+   */
+  readonly sideMenuDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @Input()
+  set setSideMenuDisabled(state: boolean) {
+    if (state == null) {
+      return;
+    }
+    this.sideMenuDisabled.next(state);
+  }
+
+  /**
    * If true, the logout button temporarily off.
    */
   readonly logoutOff: Observable<boolean>;
@@ -138,11 +162,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
   /**
    * Additional action icons that can redirect to the specified urls
    */
-  readonly linkIcons: BehaviorSubject<{icon: string; url: string}[]> = new BehaviorSubject<
-    {icon: string; url: string}[]
-  >([]);
+  readonly linkIcons: BehaviorSubject<{icon: string; url?: string; tooltip?: string}[]> =
+    new BehaviorSubject<{icon: string; url?: string}[]>([]);
   @Input()
-  set setLinkIcons(icons: {icon: string; url: string}[]) {
+  set setLinkIcons(icons: {icon: string; url?: string; tooltip?: string}[]) {
     if (icons == null) {
       return;
     }
