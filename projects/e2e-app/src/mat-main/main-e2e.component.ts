@@ -1,10 +1,10 @@
 import {Component, ViewEncapsulation} from '@angular/core';
+import {AuthService} from '@dino/core/auth';
 import {PermissionContextService} from '@dino/core/data';
 import {Section} from '@dino/material/main-nav';
 import {Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {availableLanguagesConfig} from '../mockconfig';
-
 @Component({
   selector: 'app-main',
   templateUrl: 'main-e2e.component.html',
@@ -20,8 +20,28 @@ import {availableLanguagesConfig} from '../mockconfig';
   encapsulation: ViewEncapsulation.None,
 })
 export class MatMainE2E {
-  constructor(private _pcs: PermissionContextService) {}
+  pkg = require('../../../../package.json');
+  constructor(private _pcs: PermissionContextService, private _authService: AuthService) {}
   customLanguages = availableLanguagesConfig;
+  barButtonsDisabled: Observable<boolean> = this._authService.authenticated.pipe(
+    map(evt => !evt.auth),
+  );
+  linkIcons = [
+    {
+      icon: 'info',
+      tooltip: `DINO v.${this.pkg.version} -  Angular: ${this.pkg.dependencies[
+        '@angular/core'
+      ].replace('^', '')}, Ajf: ${this.pkg.dependencies['@ajf/core'].replace(
+        '^',
+        '',
+      )}, RxDb: ${this.pkg.dependencies['rxdb'].replace('^', '')}`,
+    },
+    {
+      icon: 'help',
+      url: 'https://www.youtube.com/playlist?list=PLpjIT7_A7bIn5QHdf_URfNZqHDGKPpxQf',
+      tooltip: 'Learn about DINO!',
+    },
+  ];
   sections: Observable<Section[]> = this._pcs.fullContext.pipe(
     filter(ctx => ctx != null && ctx.user_permissions != null),
     map(context => {

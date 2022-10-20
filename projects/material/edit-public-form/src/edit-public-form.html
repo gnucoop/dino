@@ -1,13 +1,24 @@
 <ng-container *ngIf="(submitted|async) === false ; else successMsg">
   <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
     <ajf-form
-      [form]="currentForm"
+      #formContainer
+      [form]="(form|async)!"
       [saveDisabled]="(isValid|async) === false"
       [topBar]="true"
       (formAction)="onFormAction($event)"
     ></ajf-form>
   </div>
+
+  <dino-floating-button
+    buttonIcon="send"
+    [tooltipMessage]="'Save form'|transloco"
+    [buttonDisabled]="(isValid|async) === false"
+    (click)="saveForm()"
+  ></dino-floating-button>
 </ng-container>
+
 <ng-template #successMsg>
-  <ng-content select=".dino-edit-public-form-success"></ng-content>
+  <div class="dino-success-msg">
+    <h1><mat-icon>done</mat-icon></h1>
+  </div>
 </ng-template>

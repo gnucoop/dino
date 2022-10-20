@@ -34,7 +34,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
-  "version": "13.3.2",
+  "version": "13.3.3",
   "private": true,
   "dependencies": {
     "@ajf/core": "^13.2.9",

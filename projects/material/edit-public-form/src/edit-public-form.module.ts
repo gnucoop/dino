@@ -27,15 +27,19 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dino/core/forms';
 import {TranslocoModule} from '@ngneat/transloco';
+import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
 
 import {EditPublicForm} from './edit-public-form';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [EditPublicForm],
   imports: [
     AjfFormsModule,
     CommonModule,
+    DinoFloatingButtonModule,
     FormsModule,
+    MatIconModule,
     MatSnackBarModule,
     RouterModule,
     TranslocoModule,

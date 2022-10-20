@@ -31,6 +31,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  isDevMode,
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
@@ -38,13 +39,15 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
 import {FormData, OnlineFormDataManager, OnlineFormSchemaManager} from '@dino/core/forms';
+import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
-import {filter, map, shareReplay, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
+const successMsg = 'Form submitted successfully!';
 const errorMsg = 'Unable to save form. Please try again later.';
-const okBtn = 'Ok';
+const okBtn = 'OK';
 
 @Component({
   selector: 'dino-edit-public-form',
@@ -79,15 +82,25 @@ export class EditPublicForm implements OnDestroy {
    */
   private _saveFormSub: Subscription;
 
+  /**
+   * Subscribes to the ajf validation state to save the form
+   */
+  private _saveValidFormSub: Subscription = Subscription.EMPTY;
+
   constructor(
     route: ActivatedRoute,
     fsm: OnlineFormSchemaManager,
     fdm: OnlineFormDataManager,
+    udm: OnlineUserDataManager,
     location: Location,
     snackBar: MatSnackBar,
     frs: AjfFormRendererService,
     ts: TranslocoService,
   ) {
+    const formSchemaManagerInit = fsm.init();
+    const formDataManagerInit = fdm.init();
+    const userDataManagerInit = udm.init();
+
     const formSchemaId = route.params.pipe(
       map(params => params['form_schema_id'] as string),
       tap(id => {
@@ -101,22 +114,29 @@ export class EditPublicForm implements OnDestroy {
 
     const formSchema = formSchemaId.pipe(
       switchMap(schemaId =>
-        fsm.get(schemaId).pipe(
-          map(doc => {
-            if (doc == null) {
-              return null;
-            }
-            return doc;
-          }),
+        formSchemaManagerInit.pipe(
+          switchMap(() =>
+            fsm.get(schemaId).pipe(
+              map(doc => {
+                if (doc == null) {
+                  return null;
+                }
+                return doc;
+              }),
+            ),
+          ),
         ),
       ),
       shareReplay(1),
     );
 
+    const anonymousUserData = userDataManagerInit.pipe(
+      switchMap(() => udm.getDefaultAnonymousUser()),
+    );
+
     this.form = formSchema.pipe(
       map(fschema => {
         if (fschema == null) {
-          location.back();
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
             duration: 5000,
           });
@@ -137,11 +157,11 @@ export class EditPublicForm implements OnDestroy {
 
     this._saveFormSub = this._saveFormEvt
       .pipe(
-        withLatestFrom(formSchemaId),
-        switchMap(([_, fsId]) => {
+        switchMap(() => anonymousUserData.pipe(withLatestFrom(formSchemaId))),
+        switchMap(([anonUserData, fsId]) => {
           const data = frs.getFormValue();
           const form: InsertModel<FormData> = {
-            user_data_ref_id: '',
+            user_data_ref_id: anonUserData?.id ?? '',
             form_schema_ref_id: fsId,
             area_ref_id: null,
             case_ref_id: null,
@@ -152,20 +172,62 @@ export class EditPublicForm implements OnDestroy {
             data,
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
-          return fdm.create(form);
+          return formDataManagerInit.pipe(switchMap(() => fdm.create(form)));
         }),
       )
       .subscribe(res => {
         if (res != null) {
+          snackBar
+            .open(ts.translate(successMsg), ts.translate(okBtn), {duration: 10000})
+            .afterDismissed()
+            .pipe(
+              tap(() => {
+                window.location.reload();
+              }),
+              take(1),
+            )
+            .subscribe();
           this.submitted.next(true);
         } else {
-          snackBar.open(ts.translate(errorMsg), ts.translate(okBtn), {duration: 5000});
+          snackBar
+            .open(ts.translate(errorMsg), ts.translate(okBtn), {duration: 10000})
+            .afterDismissed()
+            .pipe(
+              tap(() => {
+                window.location.reload();
+              }),
+              take(1),
+            )
+            .subscribe();
         }
       });
   }
 
+  /**
+   * Saves the form
+   */
+  saveForm() {
+    this._saveValidFormSub = this.isValid
+      .pipe(
+        tap(valid => {
+          if (valid) {
+            this._saveFormEvt.emit();
+          } else {
+            if (isDevMode()) {
+              console.log('Invalid form');
+            }
+          }
+        }),
+        take(1),
+      )
+      .subscribe();
+
+    this._saveValidFormSub.unsubscribe();
+  }
+
   ngOnDestroy(): void {
     this._saveFormSub.unsubscribe();
+    this._saveValidFormSub.unsubscribe();
   }
 
   /**
