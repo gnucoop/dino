@@ -99,6 +99,10 @@ import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
 import {projects} from './test-projects';
 import {DinoRoutingModule} from './main.routing.module';
+import {APOLLO_OPTIONS} from 'apollo-angular';
+import {HttpLink} from 'apollo-angular/http';
+
+import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
 
 /**
  * Used to generate fake data for the e2e app
@@ -288,6 +292,16 @@ export function provideDataServiceConfig() {
     {
       provide: DATA_SERVICE_CONFIG,
       useFactory: provideDataServiceConfig,
+    },
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory: (httpLink: HttpLink): ApolloClientOptions<any> => {
+        return {
+          cache: new InMemoryCache(),
+          link: httpLink.create({uri: syncGraphQLUrl}),
+        };
+      },
+      deps: [HttpLink],
     },
     MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
     {provide: MAT_PAGINATOR_DEFAULT_OPTIONS, useValue: paginatorConfig},

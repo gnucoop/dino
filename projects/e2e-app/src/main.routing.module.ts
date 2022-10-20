@@ -63,6 +63,14 @@ const routes: Routes = [
     canActivate: [AuthGuard, AdminGuard],
     data: {breadcrumbs: [{label: 'Users', url: 'users', icon: 'people'}]},
   },
+  {
+    path: 'f',
+    loadChildren: () =>
+      import('./mat-edit-public-form/edit-public-form-e2e.module').then(
+        m => m.MaterialEditPublicFormE2eModule,
+      ),
+    data: {breadcrumbs: []},
+  },
   {path: '**', redirectTo: '', pathMatch: 'full'},
 ];
 
