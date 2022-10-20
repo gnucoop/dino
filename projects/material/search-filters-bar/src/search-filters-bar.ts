@@ -229,6 +229,16 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       });
   }
 
+  /**
+   * Open export dialog
+   */
+  openExportDialog(): void {
+    this.exportEvt.emit('CSV');
+  }
+
+  /**
+   * Open bottom sheet with export options
+   */
   openExportBottomSheet(): void {
     this._bottomSheet
       .open(ExportBottomSheet)
@@ -239,6 +249,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         }
       });
   }
+
   /**
    * Asks the FilterService to remove a FilterItem from the selected filter lists
    * @param filterItem The filter item to remove

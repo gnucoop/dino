@@ -48,5 +48,6 @@ export interface ExportData extends Context {
 }
 
 export type ExportFormat = 'csv' | 'xlsx' | 'splitted-xlsx';
+export type ExportFilters = 'filtered' | 'not-filtered' | 'displayed' | 'add-filters';
 
 export const MAX_SHEETNAME_LENGTH = 31;

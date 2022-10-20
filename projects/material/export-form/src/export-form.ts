@@ -35,6 +35,7 @@ import {deepCopy} from '@ajf/core/utils';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Inject,
@@ -53,12 +54,13 @@ import * as XLSX from 'xlsx';
 
 import {FormSchema} from '@dino/core/forms';
 
-import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
+import {ToggleButtonComponent} from './toggle-button';
 import {
   AjfField,
   Context,
   Data,
   ExportData,
+  ExportFilters,
   ExportFormat,
   ExportModel,
   MAX_SHEETNAME_LENGTH,
@@ -70,6 +72,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {DataModelManager} from '@dino/core/data';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {RxDocument} from 'rxdb';
 
 /**
  * The export form component dialog data interface
@@ -96,8 +99,9 @@ export interface ExportFormData {
 export class ExportForm implements AfterViewInit, OnDestroy {
   disableExport$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   exportFormat: ExportFormat = 'csv';
-  @ViewChildren(ExportSelectAllButtonComponent)
-  exportSelectAllButton!: QueryList<ExportSelectAllButtonComponent>;
+  exportFilters: ExportFilters = 'displayed';
+  @ViewChildren(ToggleButtonComponent)
+  toggleButtons!: QueryList<ToggleButtonComponent>;
   @ViewChildren(MatSelectionList) fields!: QueryList<MatSelectionList>;
 
   readonly exportDataList$: BehaviorSubject<ExportData[]> = new BehaviorSubject<ExportData[]>([]);
@@ -128,7 +132,10 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
 
-  /** A dictionary with keu the name of the slide and the list of selected field name as value */
+  private _downloadEvt: EventEmitter<void> = new EventEmitter<void>();
+  private _downloadSub: Subscription = Subscription.EMPTY;
+
+  /** A dictionary with the name of the slide and the list of selected field name as value */
   private _exportedNamesBySlide: {[index: number]: string[]} = {};
 
   private _loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -143,10 +150,58 @@ export class ExportForm implements AfterViewInit, OnDestroy {
    * {choiceOriginName_choiceOriginValue: choiceLabel} */
   private _ctxValuesDict: {[name: string]: string} = {};
 
+  /**
+   * The downloading state of the export
+   */
+  isDownloading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  private _displayedData: Data[] | null = null;
+  @Input()
+  set data(data: Data[]) {
+    this._displayedData = data;
+  }
+
+  @Input()
+  set dinoFields(fieldNames: string[]) {
+    this._dinoFields = fieldNames;
+  }
+
+  @Input()
+  set formSchema(formSchema: FormSchema) {
+    this.formSchema$.next(formSchema);
+    this.exportModel$.next(this._buildExportModel(formSchema));
+  }
+
+  private _filteredQueryObs: Observable<RxDocument<any, {}>[]> = obsOf([]);
+  @Input()
+  set filteredQueryObs(filteredQueryObs: Observable<RxDocument<any, {}>[]>) {
+    this._filteredQueryObs = filteredQueryObs;
+  }
+
+  private _allItemsQueryObs: Observable<RxDocument<any, {}>[]> = obsOf([]);
+  @Input()
+  set allItemsQueryObs(allItemsQueryObs: Observable<RxDocument<any, {}>[]>) {
+    this._allItemsQueryObs = allItemsQueryObs;
+  }
+
+  private _filtersCount: number = 0;
+  get filtersCount() {
+    return this._filtersCount;
+  }
+  @Input()
+  set filtersCount(filtersCount: number) {
+    this._filtersCount = filtersCount;
+  }
+
+  get loading$(): Observable<boolean> {
+    return this._loading$ as Observable<boolean>;
+  }
+
   constructor(
     public dialogRef: MatDialogRef<ExportForm>,
     @Inject(MAT_DIALOG_DATA) public dialogData: ExportFormData,
     private _ts: TranslocoService,
+    private _cdr: ChangeDetectorRef,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -185,6 +240,9 @@ export class ExportForm implements AfterViewInit, OnDestroy {
               }
               populatedData.push(exp);
             });
+            /*if (populatedData.length) {
+              this._downloadEvt.emit();
+            }*/
             return populatedData;
           }),
         );
@@ -326,6 +384,49 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
     this._exportSub = this._exportEvt
       .pipe(
+        filter(() => {
+          return this.exportFilters !== 'add-filters';
+        }),
+        switchMap(() => {
+          this.disableExport$.next(true);
+          this.isDownloading.next(true);
+          switch (this.exportFilters) {
+            case 'not-filtered':
+              return this._allItemsQueryObs;
+            case 'filtered':
+              return this._filteredQueryObs;
+            default:
+              return obsOf(this._displayedData);
+          }
+        }),
+        tap((dmExportableData: Data[] | null) => {
+          if (dmExportableData) {
+            this.exportDataList$.next(
+              dmExportableData.map(row => {
+                const ctx: ExportData = {...row.data, dino: {}, externalRefs: {}};
+                const keys = Object.keys(row);
+                keys
+                  .filter(k => k != 'data')
+                  .forEach(key => {
+                    key.includes('ref_id')
+                      ? (ctx.externalRefs[key] = row[key])
+                      : (ctx.dino[key] = row[key]);
+                  });
+                return ctx;
+              }),
+            );
+          }
+        }),
+        switchMap(() => this._exportedDataListPopulated$),
+      )
+      .subscribe(res => {
+        if (res) {
+          this._downloadEvt.emit();
+        }
+      });
+
+    this._downloadSub = this._downloadEvt
+      .pipe(
         switchMap(() => slideNodesWithAllRepeatingInstance$),
         withLatestFrom(this._exportedDataListPopulated$),
         map(([slideNodesWithAllRepeatingInstance, ctxList]) => {
@@ -398,52 +499,21 @@ export class ExportForm implements AfterViewInit, OnDestroy {
             this._buildCsv(res);
             break;
         }
+        this.isDownloading.next(false);
         this.dialogRef.close();
       });
   }
 
   ngAfterViewInit(): void {
     if (this.dialogData) {
-      if (this.dialogData.selectAll && this.exportSelectAllButton.first != null) {
-        this.exportSelectAllButton.first.toggle();
+      if (this.dialogData.selectAll && this.toggleButtons.first != null) {
+        this.toggleButtons.first.toggle();
       }
       if (this.dialogData.exportFormat) {
         this.exportFormat = this.dialogData.exportFormat;
       }
     }
-  }
-
-  @Input()
-  set data(data: Data[]) {
-    this.exportDataList$.next(
-      data.map(row => {
-        const ctx: ExportData = {...row.data, dino: {}, externalRefs: {}};
-        const keys = Object.keys(row);
-        keys
-          .filter(k => k != 'data')
-          .forEach(key => {
-            key.includes('ref_id')
-              ? (ctx.externalRefs[key] = row[key])
-              : (ctx.dino[key] = row[key]);
-          });
-        return ctx;
-      }),
-    );
-  }
-
-  @Input()
-  set dinoFields(fieldNames: string[]) {
-    this._dinoFields = fieldNames;
-  }
-
-  @Input()
-  set formSchema(formSchema: FormSchema) {
-    this.formSchema$.next(formSchema);
-    this.exportModel$.next(this._buildExportModel(formSchema));
-  }
-
-  get loading$(): Observable<boolean> {
-    return this._loading$ as Observable<boolean>;
+    this._cdr.detectChanges();
   }
 
   /**
@@ -473,13 +543,18 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     this._exportEvt.emit();
   }
 
+  closeDialog(): void {
+    this.dialogRef.close();
+  }
+
   ngOnDestroy(): void {
     this._selectAllSub.unsubscribe();
     this._exportSub.unsubscribe();
+    this._downloadSub.unsubscribe();
   }
 
   selectAll(checked: boolean): void {
-    this.exportSelectAllButton
+    this.toggleButtons
       .filter(button => button.group != null && button.group === 'tab')
       .forEach(button => button.setChecked(checked));
     this.fields.forEach(field => (checked ? field.selectAll() : field.deselectAll()));
@@ -507,6 +582,19 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       this.disableExport$.next(true);
     }
   }
+
+  /**
+   * Queries the dataModelManager and updates the dataResults
+   * @param queryObs The query observable
+   */
+  /*private _getQueryResults(queryObs: Observable<RxDocument<any, {}>[]> | null): void {
+    if (queryObs !== null) {
+      queryObs.subscribe(populatedDocs => {
+        console.log(populatedDocs);
+        // this._dataResults.next(populatedDocs);
+      });
+    }
+  }*/
 
   private _buildExportModel(formSchema: FormSchema): ExportModel {
     const schemaName = formSchema.name;

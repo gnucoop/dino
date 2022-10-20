@@ -1,40 +1,45 @@
 <ng-container *ngIf="exportModel$|async as exportModel">
-  <mat-toolbar>
-    <h1>{{exportModel.schemaName|transloco}}</h1>
+  <mat-toolbar class="dino-button-focus-action">
+    <mat-button-toggle-group name="filters" aria-label="export filters" [(ngModel)]="exportFilters">
+      <mat-button-toggle value="displayed">{{'Forms in page'|transloco}}</mat-button-toggle>
+      <mat-button-toggle *ngIf="filtersCount > 0; else noFilter" value="filtered"
+        >{{'All forms'|transloco}} / {{filtersCount}} {{'filters'|transloco}}</mat-button-toggle
+      >
+      <ng-template #noFilter>
+        <mat-button-toggle
+          value="add-filters"
+          (click)="closeDialog()"
+          [matTooltip]="'Close the dialog and apply filters.'|transloco"
+          matTooltipPosition="above"
+          >{{'Add filters'|transloco}}</mat-button-toggle
+        >
+      </ng-template>
+      <mat-button-toggle
+        value="not-filtered"
+        [matTooltip]="'This option exports all forms without filters. The process may slow down your device.'|transloco"
+        matTooltipPosition="right"
+        matTooltipClass="warning-tooltip"
+        >{{'All forms'|transloco}}</mat-button-toggle
+      >
+    </mat-button-toggle-group>
     <span class="dino-spacer"></span>
+    <button mat-flat-button color="accent" (click)="export()" [disabled]="disableExport$|async">
+      {{'Export'|transloco}} <mat-icon matSuffix>cloud_download</mat-icon>
+    </button>
   </mat-toolbar>
   <mat-toolbar>
-    <dino-export-form-select-all-button (change)="selectAll($event.checked)">
+    <dino-toggle-button (change)="selectAll($event.checked)">
       {{'Select all Form fields'| transloco}}
-    </dino-export-form-select-all-button>
-    <dino-export-form-select-all-button
-      class="dino-export-translate-btn"
-      (change)="setTranslation($event.checked)"
-      >{{'Label values'|transloco}}</dino-export-form-select-all-button
+    </dino-toggle-button>
+    <dino-toggle-button class="dino-export-translate-btn" (change)="setTranslation($event.checked)"
+      >{{'Label values'|transloco}}</dino-toggle-button
     >
     <span class="dino-export-toolbar-spacer"></span>
-    <span class="dino-export-toolbar-count"
-      >{{maxNumberOfForm$|async}} {{'forms'|transloco}}</span
-    ><span class="dino-export-toolbar-spacer"></span>
 
-    <mat-button-toggle-group
-      name="format"
-      aria-label="format of export"
-      [(ngModel)]="exportFormat"
-    >
+    <mat-button-toggle-group name="format" aria-label="format of export" [(ngModel)]="exportFormat">
       <mat-button-toggle value="csv">{{'csv'|transloco}}</mat-button-toggle>
       <mat-button-toggle value="xlsx">{{'xlsx'|transloco}}</mat-button-toggle>
-      <mat-button-toggle value="splitted-xlsx"
-        >{{'splitted xlsx'|transloco}}</mat-button-toggle
-      >
-      <button
-        mat-flat-button
-        color="primary"
-        (click)="export()"
-        [disabled]="disableExport$|async"
-      >
-        {{'Export'|transloco}}
-      </button>
+      <mat-button-toggle value="splitted-xlsx">{{'splitted xlsx'|transloco}}</mat-button-toggle>
     </mat-button-toggle-group>
   </mat-toolbar>
   <mat-tab-group selectedIndex="0" (selectedTabChange)="tabChange($event)">
@@ -42,11 +47,9 @@
       *ngFor="let label of exportModel.slideLabels; let idx = index"
       [label]="label|transloco"
     >
-      <dino-export-form-select-all-button
-        [group]="'tab'"
-        (change)="selectAllfieldSlides($event.checked)"
+      <dino-toggle-button [group]="'tab'" (change)="selectAllfieldSlides($event.checked)"
         >{{'Select all fields of'|transloco}} {{label| transloco}}
-      </dino-export-form-select-all-button>
+      </dino-toggle-button>
       <mat-selection-list
         [attr.aria-label]="'slide fields'|transloco"
         (selectionChange)="updateExportDisable()"
@@ -58,4 +61,7 @@
       </mat-selection-list>
     </mat-tab>
   </mat-tab-group>
+  <ng-container *ngIf="(isDownloading|async) === true">
+    <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
+  </ng-container>
 </ng-container>

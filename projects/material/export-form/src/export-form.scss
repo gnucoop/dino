@@ -16,12 +16,15 @@ dino-export-form {
     .dino-spacer {
       flex: 1 1 auto;
     }
-    dino-export-form-select-all-button {
+    dino-toggle-button {
       width: auto;
     }
 
     height: auto !important;
     min-height: 64px;
+    button {
+      min-height: 50px;
+    }
   }
   .dino-checked {
     background-color: red;
@@ -37,5 +40,18 @@ dino-export-form {
     width: 100%;
     overflow-y: scroll;
     max-height: 50vh;
+  }
+
+  mat-icon {
+    margin-left: 10px;
+  }
+
+  .dino-button-focus-action {
+    .mat-button-toggle-checked {
+      background-color: #7f50b8;
+    }
+    .mat-flat-button.mat-accent {
+      background-color: #7f50b8;
+    }
   }
 }

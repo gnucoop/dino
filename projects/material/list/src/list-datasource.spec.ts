@@ -162,7 +162,7 @@ describe('ListDataSource', () => {
     const spyQueryResults = spyOn(dataSource, 'getQueryResults').and.callThrough();
 
     const permissionContext = await firstValueFrom(dummyManager.permissionContext);
-    const query = dataSource.queryDM(fakeFiltersPreset, permissionContext);
+    const query = dataSource.queryDM(fakeFiltersPreset, permissionContext, true);
     const expectedMangoQuery: DataQueryOptions = {
       selector: {
         filter_a: {$regex: 'test'},

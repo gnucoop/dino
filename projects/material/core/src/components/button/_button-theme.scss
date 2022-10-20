@@ -165,6 +165,10 @@ $_mat-button-ripple-opacity: 0.1;
             @include private.private-theme-overridable-elevation(0, $config);
         }
     }
+
+    .mat-button-toggle-checked {
+      background-color: mat-theming.get-color-from-palette($primary);
+    }
 }
 
 @mixin mat-button-typography($config-or-theme) {

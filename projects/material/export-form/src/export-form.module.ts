@@ -30,18 +30,23 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ExportForm} from './export-form';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 
 import {ExportBottomSheet} from './export-form-bottom-sheet';
-import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
+import {ToggleButtonComponent} from './toggle-button';
 
 @NgModule({
   imports: [
     CommonModule,
+    DinoLoadingSpinnerModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -49,14 +54,17 @@ import {ExportSelectAllButtonComponent} from './export-form-select-all-button';
     MatCheckboxModule,
     MatDatepickerModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatListModule,
     MatNativeDateModule,
+    MatProgressSpinnerModule,
     MatTabsModule,
     MatToolbarModule,
+    MatTooltipModule,
     AjfTranslocoModule,
   ],
-  declarations: [ExportForm, ExportSelectAllButtonComponent, ExportBottomSheet],
-  exports: [ExportSelectAllButtonComponent, ExportBottomSheet],
+  declarations: [ExportForm, ToggleButtonComponent, ExportBottomSheet],
+  exports: [ToggleButtonComponent, ExportBottomSheet],
 })
 export class ExportFormModule {}

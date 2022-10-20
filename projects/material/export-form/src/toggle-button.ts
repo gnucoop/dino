@@ -30,22 +30,22 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-/** Change event object emitted by ExportSelectAllButtonComponent. */
+/** Change event object emitted by ToggleButtonComponent. */
 export interface ExportSelectAllChange {
-  /** The source ExportSelectAllButtonComponent of the event. */
-  source: ExportSelectAllButtonComponent;
+  /** The source ToggleButtonComponent of the event. */
+  source: ToggleButtonComponent;
   /** The new `checked` value of the checkbox. */
   checked: boolean;
 }
 
 @Component({
-  selector: 'dino-export-form-select-all-button',
-  templateUrl: 'export-form-select-all-button.html',
-  styleUrls: ['export-form-select-all-button.scss'],
+  selector: 'dino-toggle-button',
+  templateUrl: 'toggle-button.html',
+  styleUrls: ['toggle-button.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ExportSelectAllButtonComponent {
+export class ToggleButtonComponent {
   checked: boolean = false;
 
   private _groupName: string | null = null;

@@ -411,6 +411,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       let dialogRef = this._dialog.open(ExportForm, dialogConfig);
       dialogRef.componentInstance.formSchema = formSchema;
       dialogRef.componentInstance.data = this.dataSource.data as any[];
+      dialogRef.componentInstance.filteredQueryObs = this.dataSource.filteredQueryObs;
+      dialogRef.componentInstance.allItemsQueryObs = this.dataSource.allItemsQueryObs;
+      dialogRef.componentInstance.filtersCount = this.dataSource.filtersCount;
     }
   }
 

@@ -171,6 +171,32 @@ export class ListDataSource<
   }
 
   /**
+   * Query options to retrieve all items using user filters. Without pagination.
+   * Used by the export function.
+   */
+  private _filteredQueryObs: Observable<RxDocument<T, {}>[]> = obsOf([]);
+  get filteredQueryObs(): Observable<RxDocument<T, {}>[]> {
+    return this._filteredQueryObs;
+  }
+
+  /**
+   * Query options to retrieve all items without filters and without pagination.
+   * Used by the export function.
+   */
+  private _allItemsQueryObs: Observable<RxDocument<T, {}>[]> = obsOf([]);
+  get allItemsQueryObs(): Observable<RxDocument<T, {}>[]> {
+    return this._allItemsQueryObs;
+  }
+
+  /**
+   * The number of active filters for the list. Used by the export function.
+   */
+  private _filtersCount: number = 0;
+  get filtersCount(): number {
+    return this._filtersCount;
+  }
+
+  /**
    * The Filters Component associated to this ListDataSource (eg. a SearchFiltersBar)
    */
   private _filtersComponent: BehaviorSubject<SearchFiltersComponent | null> =
@@ -337,16 +363,44 @@ export class ListDataSource<
         ),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(res =>
-        this.queryDM(
+      .subscribe(res => {
+        const emptyQueryStringFilter = '';
+        this._allItemsQueryObs = this._getQueryResultsObs(
+          this.queryDM(
+            emptyQueryStringFilter,
+            res.permissionContext,
+            false,
+            res.addSchema,
+            null,
+            null,
+            res.dataHeaders,
+            true,
+          ),
+        );
+
+        this._filteredQueryObs = this._getQueryResultsObs(
+          this.queryDM(
+            res.queryString,
+            res.permissionContext,
+            false,
+            res.addSchema,
+            null,
+            null,
+            res.dataHeaders,
+            true,
+          ),
+        );
+
+        return this.queryDM(
           res.queryString,
           res.permissionContext,
+          true,
           res.addSchema,
           res.pageEvt,
           res.sortEvt,
           res.dataHeaders,
-        ),
-      );
+        );
+      });
   }
 
   /**
@@ -362,29 +416,36 @@ export class ListDataSource<
    * Queries the DataModelManager and updates the dataResults.
    * @param queryString The encoded query string of parameters
    * @param permissionContext The user permissions context
+   * @param executeQuery if True execute the query
    * @param additionalDataSchema? The additional data schema
    * @param page? The paginator change event
+   * @param sort? The sort change event
+   * @param dataHeaders?
+   * @param noLimit? if True return all items without limit
    * @returns The Mango query with the generated query selector
    */
   queryDM(
     queryString: string,
     permissionContext: PermissionContext,
+    executeQuery: boolean,
     additionalDataSchema?: AD | null,
     page?: PageEvent | null,
     sort?: Sort | null,
     dataHeaders?: ListHeader<T>[],
+    noLimit?: boolean,
   ): DataQueryOptions {
     let querySelector: {[key: string]: any} = {};
     let detailsQuerySelector: {[key: string]: any} = {};
 
-    if (!queryString) {
-      return {selector: querySelector};
+    let filterItems: FilterItem[] = [];
+    if (queryString) {
+      filterItems = JSON.parse(decodeURI(atob(queryString)));
     }
-    const filterItems: FilterItem[] = JSON.parse(decodeURI(atob(queryString)));
 
     if (!filterItems.find(f => f.name === 'keyword')) {
       this.filter = '';
     }
+    this._filtersCount = filterItems.length;
     filterItems.forEach(item => {
       const selector: {[key: string]: any} = item.isFilterItemDetails
         ? detailsQuerySelector
@@ -528,8 +589,10 @@ export class ListDataSource<
 
     const query: DataQueryOptions = {
       selector: querySelector,
-      limit: this.getPaginator?.pageSize ?? 10,
     };
+    if (!noLimit) {
+      query.limit = this.getPaginator?.pageSize ?? 10;
+    }
     if (page) {
       query.limit = page.pageSize;
       query.skip = page.pageSize * page.pageIndex;
@@ -540,7 +603,9 @@ export class ListDataSource<
     const detailsQuery: DataQueryOptions = {
       selector: detailsQuerySelector,
     };
-    this.getQueryResults(query, detailsQuery);
+    if (executeQuery) {
+      this.getQueryResults(query, detailsQuery);
+    }
     return query;
   }
 
@@ -553,6 +618,21 @@ export class ListDataSource<
     if (!query.sort) {
       query.sort = [{created_at: 'desc'}];
     }
+
+    this._getQueryResultsObs(query, detailsQuery).subscribe(populatedDocs => {
+      this._dataResults.next(populatedDocs);
+    });
+  }
+
+  /**
+   * Get the observable for queries the dataModelManager
+   * @param query The query object
+   * @param detailsQuery? The optional query
+   */
+  private _getQueryResultsObs(
+    query: DataQueryOptions,
+    detailsQuery?: DataQueryOptions,
+  ): Observable<RxDocument<T, {}>[]> {
     const dmMainQuery = this._dataModelManager.query(query).pipe(
       take(1),
       catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
@@ -568,8 +648,8 @@ export class ListDataSource<
       );
     }
 
-    forkJoin([dmMainQuery, dmDetailsQuery, this._dataModelManager.permissionContext]).subscribe(
-      ([mainDocs, detailsDocs, context]) => {
+    return forkJoin([dmMainQuery, dmDetailsQuery, this._dataModelManager.permissionContext]).pipe(
+      map(([mainDocs, detailsDocs, context]) => {
         const detailsKey = this._dataModelManager.detailsKey;
         let resultDocs = mainDocs;
         if (detailsKey != null && hasDetailsQuery) {
@@ -596,8 +676,8 @@ export class ListDataSource<
             (this.getPaginator.pageIndex + 1) * populatedDocs.length * this.getPaginator.pageSize,
           );
         }
-        this._dataResults.next(populatedDocs);
-      },
+        return populatedDocs;
+      }),
     );
   }
 

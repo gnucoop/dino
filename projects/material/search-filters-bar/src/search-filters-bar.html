@@ -16,7 +16,11 @@
 
 <ng-template #keywordfilter>
   <ng-container [formGroup]="textSearchFilters">
-    <mat-form-field floatLabel="always" (click)="$event.stopPropagation()" (keydown.Space)="$event.stopImmediatePropagation();">
+    <mat-form-field
+      floatLabel="always"
+      (click)="$event.stopPropagation()"
+      (keydown.Space)="$event.stopImmediatePropagation();"
+    >
       <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco" />
       <mat-icon color="primary" matSuffix>search</mat-icon>
     </mat-form-field>
@@ -114,8 +118,8 @@
           class="dino-export-button"
           mat-flat-button
           color="primary"
-          (click)="openExportBottomSheet()"
-          [attr.aria-label]="'Export items in the list'|transloco"
+          (click)="openExportDialog()"
+          [attr.aria-label]="'Export items'|transloco"
         >
           <mat-icon color="primary" matSuffix>cloud_download</mat-icon>
         </button>
