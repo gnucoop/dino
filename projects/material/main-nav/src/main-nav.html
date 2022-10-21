@@ -25,6 +25,7 @@
         >light_mode</mat-icon
       >
       <mat-slide-toggle
+        [checked]="ts.isDark()"
         (change)="setDarkTheme($event.checked)"
         style="margin: 10px"
         aria-label="Toggle Dino Theme"

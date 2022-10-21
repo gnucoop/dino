@@ -8,7 +8,6 @@ dino-main-nav {
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
-    transition: all ease-in-out 1s;
 
     &.dino-shadowed {
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
@@ -51,7 +50,6 @@ dino-main-nav {
       }
       .dino-sync-detector {
         margin-right: 25px;
-        transition: all 2s ease-in-out;
         &.dino-sync-active {
           -webkit-animation: spin 2s ease-in-out infinite;
           -moz-animation: spin 2s ease-in-out infinite;
@@ -80,7 +78,6 @@ dino-main-nav {
     flex: 1 0 auto;
     height: 100%;
     padding-bottom: 10px;
-    transition: all ease-in-out 1s;
   }
 
   .mat-sidenav-content.dino-sidenav-content {

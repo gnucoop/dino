@@ -326,7 +326,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
-    private _ts: ThemeService,
+    readonly ts: ThemeService,
   ) {
     this._syncLoadingSub = this.dataService.firstReplicationComplete.subscribe(repComplete => {
       this.isLoading.next(!repComplete);
@@ -416,7 +416,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   setDarkTheme(evt: boolean) {
-    this._ts.setDarkMode(evt);
+    this.ts.setDarkMode(evt);
   }
 
   /**
