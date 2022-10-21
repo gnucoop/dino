@@ -10,7 +10,7 @@
 
 @use 'mat-lib-overwrites' as amcvo;
 
-@mixin init-mat-theme($dark-theme-selector, $typography-config: null) {
+@mixin init-mat-theme($dark-theme-selector, $light-theme-selector, $typography-config: null) {
   @include dino-core.mat-core($typography-config);
 
   $primary: mat.define-palette(variables.$mat-css-palette-primary);
@@ -30,6 +30,14 @@
   $tmp1: map-merge($tmp1, background, variables.$mat-css-palette-background);
   $tmp2: map-merge((), color, $tmp1);
   $theme: map-merge($tmp2, $tmp1);
+
+  $light-theme: mat.define-dark-theme((
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn
+    )
+  ));
 
   $dark-theme: mat.define-dark-theme((
     color: (
@@ -51,6 +59,16 @@
   // NOTE: light theme is the default theme
   @include mat.all-component-themes($theme);
   @content;
+
+  @if $light-theme-selector {
+    $mat-css-theme: $theme !global;
+    #{$light-theme-selector} {
+      @include mat.all-component-colors($theme);
+      // add content passed in, which can use the $theme variable to apply the dark theme to
+      // other theme mixins needed by the app
+      @content;
+    }
+  }
 
   @if $dark-theme-selector {
     $mat-css-theme: $dark-theme !global;
@@ -77,11 +95,12 @@
 @mixin init-dino-css-vars(
   $default-theme: variables.$mat-css-default-light-theme,
   $dark-theme-selector: variables.$mat-css-dark-theme-selector,
+  $light-theme-selector: variables.$mat-css-light-theme-selector,
   $default-theme-text: variables.$mat-css-text,
   $typography-config: null
 ) {
   @include amcv.init-css-vars($default-theme, $default-theme-text);
-  @include init-mat-theme($dark-theme-selector, $typography-config) {
+  @include init-mat-theme($dark-theme-selector, $light-theme-selector, $typography-config) {
     @content;
   }
 }

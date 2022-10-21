@@ -13,15 +13,15 @@
 
   .mat-table {
     .mat-row:hover {
-      box-shadow: 0 2px 4px 0 mat-theming.get-color-from-palette($accent, text);;
+      box-shadow: 0 2px 4px 0 rgb(var(--palette-accent-100));
     }
 
     .mat-row.dino-highlighted-row {
-      background-color: mat-theming.get-color-from-palette($accent, 400);
+      background-color: rgb(var(--palette-accent-300));
     }
 
     .dino-inner-table-container .mat-row.dino-details-row.dino-highlighted-row {
-      background-color: mat-theming.get-color-from-palette($primary, lighter);
+      background-color: rgb(var(--palette-accent-200));
     }
 
     .dino-inner-table-container .mat-row.dino-details-row:not(.dino-highlighted-row) {
@@ -29,10 +29,10 @@
     }
 
     .mat-icon {
-      color: mat-theming.get-color-from-palette($alt_accent);
+      color: rgb(var(--palette-accent-700));;
       &:hover {
-        background: mat-theming.get-color-from-palette($accent, lighter);
-        color: mat-theming.get-color-from-palette($accent);
+        background: rgb(var(--palette-accent-100));;
+        color: rgb(var(--palette-accent-700));
       }
     }
   }
@@ -52,7 +52,7 @@
 
   .mat-cell:first-of-type,
   .mat-footer-cell:first-of-type {
-    border-left: 3px solid mat-theming.get-color-from-palette($alt_accent);
+    border-left: 3px solid rgb(var(--palette-accent-700));
   }
 
   .mat-header-cell:first-of-type {

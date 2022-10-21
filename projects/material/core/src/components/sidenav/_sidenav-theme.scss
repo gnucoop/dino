@@ -41,9 +41,9 @@
                 transition: all ease 0.5s;
                 &:hover,
                 &.dino-section-selected {
-                    background-color: mat-theming.get-color-from-palette($accent, lighter);
-                    color: mat-theming.get-color-from-palette($accent);
-                    box-shadow: 3px 0px 0px 0px mat-theming.get-color-from-palette($accent) inset;
+                    background-color: rgb(var(--palette-primary-100));
+                    color: rgb(var(--palette-primary-500));
+                    box-shadow: 3px 0px 0px 0px rgb(var(--palette-primary-500)) inset;
                 }
                 &:hover {
                     opacity: 0.6;
@@ -98,7 +98,7 @@
     }
 
     ::-webkit-scrollbar-thumb {
-        background: mat-theming.get-color-from-palette($accent);
+        background: rgb(var(--palette-accent-500));;
         border-radius: 5px;
         max-width: 20%;
     }

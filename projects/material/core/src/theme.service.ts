@@ -22,6 +22,8 @@
 
 import {EventEmitter, Injectable} from '@angular/core';
 import {MaterialCssVarsService} from 'angular-material-css-vars';
+import {BehaviorSubject} from 'rxjs';
+import {DinoTheme} from './theme-interface';
 
 @Injectable({providedIn: 'root'})
 export class ThemeService {
@@ -29,8 +31,18 @@ export class ThemeService {
   readonly primaryColorChange = new EventEmitter<string>();
   readonly accentColorChange = new EventEmitter<string>();
   readonly warnColorChange = new EventEmitter<string>();
+  readonly currentTheme: BehaviorSubject<DinoTheme | null> = new BehaviorSubject<DinoTheme | null>(
+    null,
+  );
+  get currentThemeVal(): DinoTheme | null {
+    return this.currentTheme.getValue();
+  }
 
-  constructor(private _service: MaterialCssVarsService) {}
+  constructor(private _service: MaterialCssVarsService) {
+    this.setDarkMode(false);
+    this.loadDinoTheme();
+    this.setDefaultTheme();
+  }
 
   isDark(): boolean {
     return this._service.isDarkTheme === true;
@@ -54,5 +66,67 @@ export class ThemeService {
   setWarnColor(color: string): void {
     this._service.setWarnColor(color);
     this.warnColorChange.emit(color);
+  }
+
+  /**
+   * Set all colors of a theme
+   * @param theme The theme to be set
+   */
+  setTheme(theme: DinoTheme): void {
+    if (theme == null) {
+      return;
+    }
+    this.setPrimaryColor(theme.primary);
+    this.setAccentColor(theme.accent);
+    this.setWarnColor(theme.warning);
+  }
+
+  /**
+   * Sets the default (current) theme
+   */
+  setDefaultTheme(): void {
+    const currentTheme: DinoTheme = {
+      primary: this._service.primary,
+      accent: this._service.accent,
+      warning: this._service.warn,
+      presetName: 'Default Theme',
+    };
+    if (currentTheme.primary && currentTheme.accent && currentTheme.warning) {
+      localStorage.setItem('dino_theme_default', btoa(JSON.stringify(currentTheme)));
+      this.currentTheme.next(currentTheme);
+    }
+  }
+
+  /**
+   * Loads a Dino Theme preset from the localStorage. If no preset name is specified,
+   * the default theme (the last saved) will be loaded.
+   * @param themeName The name of the theme preset
+   * @returns The theme preset or null if the loading failed
+   */
+  loadDinoTheme(themeName?: string): DinoTheme | null {
+    const themePresetString: string | null = localStorage.getItem(
+      `dino_theme_${themeName ?? 'default'}`,
+    );
+    if (themePresetString) {
+      const themePreset: DinoTheme = JSON.parse(atob(themePresetString));
+      this.setTheme(themePreset);
+      this.setDefaultTheme();
+      return themePreset;
+    }
+    return null;
+  }
+
+  /**
+   * Saves a Dino Theme preset in the localStorage.
+   * @param themeName The name of the theme preset
+   * @param theme The dino theme object
+   */
+  saveDinoTheme(theme: DinoTheme) {
+    if (theme == null) {
+      return;
+    }
+    const themePresetName = `dino_theme_${theme.presetName}`;
+    localStorage.setItem(themePresetName, btoa(JSON.stringify(theme)));
+    this.setDefaultTheme();
   }
 }

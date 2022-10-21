@@ -20,6 +20,24 @@
  *
  */
 
-export * from './core.module';
-export * from './theme-interface';
-export * from './theme.service';
+/**
+ * Represents a Dino Theme preset object
+ */
+export interface DinoTheme {
+  /**
+   * The primary color hex
+   */
+  primary: string;
+  /**
+   * The accent color hex
+   */
+  accent: string;
+  /**
+   * The warning color hex
+   */
+  warning: string;
+  /**
+   * The preset name
+   */
+  presetName: string;
+}

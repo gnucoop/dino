@@ -4,7 +4,6 @@
     width: 100%;
     border-spacing: 0 16px !important;
     padding-bottom: 8px;
-    background: transparent !important;
 
     .mat-header-cell,
     .mat-cell,
@@ -35,5 +34,9 @@
     &.dino-inner-table {
       background: inherit;
     }
+  }
+
+  .isDarkTheme .mat-table {
+    background: rgb(var(--palette-background-background-dark)) !important;
   }
 }

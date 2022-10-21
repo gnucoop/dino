@@ -14,21 +14,21 @@
 
     .mat-grid-tile.dino-grid-tile {
         border-radius: 5px;
-        border: 1px solid mat-theming.get-color-from-palette($primary);
+        border: 1px solid rgb(var(--palette-primary-500));
         div.dino-grid-icon {
-            fill: mat-theming.get-color-from-palette($primary);
+            fill: rgb(var(--palette-primary-500));
         }
         div.dino-grid-label {
-            color: mat-theming.get-color-from-palette($primary);
+            color: rgb(var(--palette-primary-500));
         }
         &:hover {
-            border-color: mat-theming.get-color-from-palette($accent);
-            background: mat-theming.get-color-from-palette($accent, lighter);
+            border-color: rgb(var(--palette-accent-500));
+            background: rgb(var(--palette-accent-100));
             div.dino-grid-icon .mat-icon.dino-mat-icon {
-                color: mat-theming.get-color-from-palette($accent);
+                color: rgb(var(--palette-accent-500));
             }
             div.dino-grid-label {
-                color: mat-theming.get-color-from-palette($accent);
+                color: rgb(var(--palette-accent-500));
             }
         }
         .dino-grid-action-icons:hover {
