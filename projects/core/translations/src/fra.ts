@@ -202,4 +202,8 @@ export const FRA: Translation = {
   'Color': 'Couleur',
   'Form Status "{{status}}" saved': 'Statut du formulaire "{{status}}" sauvegardé',
   'FORM STATUS SAVED': 'STATUT DU FORMULAIRE SAUVEGARDÉ',
+  'Theme saved and set as default': 'Thème enregistré et défini par défaut',
+  'THEME SAVED': 'THEME SAUVEGARDÉ',
+  'Theme loaded and set as default': 'Thème chargé et défini par défaut',
+  'THEME LOADED': 'THEME CHARGÉ',
 };

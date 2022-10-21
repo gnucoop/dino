@@ -206,4 +206,8 @@ export const ESP: Translation = {
   'Color': 'Color',
   'Form Status "{{status}}" saved': 'Estado del formulario "{{status}}" guardado',
   'FORM STATUS SAVED': 'ESTADO DEL FORMULARIO GUARDADO',
+  'Theme saved and set as default': 'Tema guardado y establecido como predeterminado',
+  'THEME SAVED': 'TEMA GUARDADO',
+  'Theme loaded and set as default': 'Tema cargado y establecido como predeterminado',
+  'THEME LOADED': 'TEMA CARGADO',
 };

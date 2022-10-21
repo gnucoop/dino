@@ -205,4 +205,8 @@ export const ENG: Translation = {
   'Color': 'Color',
   'Form Status "{{status}}" saved': 'Form Status "{{status}}" saved',
   'FORM STATUS SAVED': 'FORM STATUS SAVED',
+  'Theme saved and set as default': 'Theme saved and set as default',
+  'THEME SAVED': 'THEME SAVED',
+  'Theme loaded and set as default': 'Theme loaded and set as default',
+  'THEME LOADED': 'THEME LOADED',
 };

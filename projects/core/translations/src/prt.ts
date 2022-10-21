@@ -205,4 +205,8 @@ export const PRT: Translation = {
   'Color': 'Cor',
   'Form Status "{{status}}" saved': 'Estado "{{status}}" do formulàrio guardado',
   'FORM STATUS SAVED': 'ESTADO DO FORMULÁRIO GUARDADO',
+  'Theme saved and set as default': 'Tema guardado e definido como padrão',
+  'THEME SAVED': 'TEMA SALVADO',
+  'Theme loaded and set as default': 'Tema carregado e definido como padrão',
+  'THEME LOADED': 'TEMA CARREGADO',
 };

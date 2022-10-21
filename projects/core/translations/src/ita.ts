@@ -215,4 +215,8 @@ export const ITA: Translation = {
   'Color': 'Colore',
   'Form Status "{{status}}" saved': 'Stato del form "{{status}}" salvato',
   'FORM STATUS SAVED': 'STATO DEL FORM SALVATO',
+  'Theme saved and set as default': 'Tema salvato e scelto come default',
+  'THEME SAVED': 'TEMA SALVATO',
+  'Theme loaded and set as default': 'Tema caricato e scelto come default',
+  'THEME LOADED': 'TEMA CARICATO',
 };
