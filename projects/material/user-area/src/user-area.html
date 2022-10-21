@@ -8,7 +8,7 @@
           <mat-panel-title> Change Password </mat-panel-title>
         </mat-expansion-panel-header>
         <form
-          class="dino-change-pass-form"
+          class="dino-user-area-form"
           [class.dino-error]="changePassForm"
           [formGroup]="changePassForm"
         >
@@ -70,6 +70,102 @@
             <mat-icon>arrow_forward</mat-icon>
           </button>
         </form>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> DINO Theme </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="dino-save-theme">
+          <form
+            class="dino-user-area-form"
+            [class.dino-error]="changePassForm"
+            [formGroup]="dinoSaveThemeForm"
+          >
+            <mat-form-field appearance="fill" [style.color]="primaryColor">
+              <input
+                matInput
+                readonly
+                [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.primary : primaryColor"
+                (colorPickerChange)="setPrimaryColor($event)"
+                [formControlName]="'primary'"
+                [placeholder]="'Primary Color'|transloco"
+                [value]="primaryColor"
+              />
+              <mat-icon matSuffix>palette</mat-icon>
+              <mat-hint>{{'Primary color' | transloco}}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" [style.color]="accentColor">
+              <input
+                matInput
+                readonly
+                [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.accent : accentColor"
+                (colorPickerChange)="setAccentColor($event)"
+                [formControlName]="'accent'"
+                [placeholder]="'Accent Color'|transloco"
+                [value]="accentColor"
+              />
+              <mat-icon matSuffix>palette</mat-icon>
+              <mat-hint>{{'Accent color' | transloco}}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" [style.color]="warningColor">
+              <input
+                matInput
+                readonly
+                [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.warning : warningColor"
+                (colorPickerChange)="setWarningColor($event)"
+                [formControlName]="'warning'"
+                [placeholder]="'Warning Color'|transloco"
+                [value]="warningColor"
+              />
+              <mat-icon matSuffix>palette</mat-icon>
+              <mat-hint>{{'Warning color' | transloco}}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <input
+                matInput
+                type="text"
+                [formControlName]="'presetName'"
+                [placeholder]="'Pick a preset name'|transloco"
+                [matAutocomplete]="auto"
+              />
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="let option of themePresetOptions | async"
+                  [value]="option"
+                >
+                  {{option|transloco}}
+                </mat-option>
+              </mat-autocomplete>
+              <mat-hint>{{'Pick a preset name' | transloco}}</mat-hint>
+            </mat-form-field>
+
+            <button
+              class="dino-theme-presets-button"
+              mat-raised-button
+              color="accent"
+              (click)="loadDinoTheme()"
+              [disabled]="!dinoSaveThemeForm.get('presetName')?.valid"
+              [attr.aria-label]="'Load the preset'|transloco"
+            >
+              {{'Load'|transloco}}
+            </button>
+
+            <button
+              class="dino-theme-presets-button"
+              mat-raised-button
+              color="primary"
+              (click)="saveDinoTheme()"
+              [disabled]="!dinoSaveThemeForm.valid"
+              [attr.aria-label]="'Save the preset'|transloco"
+            >
+              {{'Save'|transloco}}
+            </button>
+          </form>
+        </div>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-dialog-content>

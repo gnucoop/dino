@@ -24,6 +24,7 @@ import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -35,13 +36,16 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {UsersModule} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
+import {ColorPickerModule} from 'ngx-color-picker';
 
 import {UserArea} from './user-area';
 
 @NgModule({
   imports: [
     AjfTranslocoModule,
+    ColorPickerModule,
     CommonModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatDialogModule,
     MatExpansionModule,

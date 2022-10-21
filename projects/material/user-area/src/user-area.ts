@@ -34,6 +34,7 @@ import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino
 import {UserData, UserDataManager} from '@dino/core/users';
 import {map, Observable, of as obsOf, startWith, switchMap, take} from 'rxjs';
 import {TranslocoService} from '@ngneat/transloco';
+import {DinoTheme, ThemeService} from '@dino/material/core';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -58,6 +59,10 @@ export class UserArea {
    */
   readonly changePassForm: FormGroup;
   /**
+   * The Dino Theme customization FormGroup.
+   */
+  readonly dinoSaveThemeForm: FormGroup;
+  /**
    * True if the Change Password or Email forms are currently processing a request.
    */
   processing = false;
@@ -77,6 +82,26 @@ export class UserArea {
    */
   readonly changePassDisabled: Observable<boolean>;
 
+  /**
+   * The primary color of Dino Theme.
+   */
+  primaryColor: string;
+
+  /**
+   * The accent color of Dino Theme.
+   */
+  accentColor: string;
+
+  /**
+   * The warning color of Dino Theme.
+   */
+  warningColor: string;
+
+  /**
+   * An observable of all names of loadable theme presets
+   */
+  themePresetOptions: Observable<string[]>;
+
   constructor(
     private _udm: UserDataManager,
     private _fb: FormBuilder,
@@ -84,10 +109,15 @@ export class UserArea {
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,
+    public themeService: ThemeService,
     public dialogRef: MatDialogRef<UserArea>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.userData = this._udm.getActiveUserData();
+    const currentTheme = this.themeService.currentThemeVal;
+    this.primaryColor = currentTheme?.primary ?? '#000000';
+    this.accentColor = currentTheme?.accent ?? '#000000';
+    this.warningColor = currentTheme?.warning ?? '#000000';
 
     this.changePassForm = this._fb.group({
       current_password: [null, [Validators.required, Validators.minLength(8)]],
@@ -95,9 +125,94 @@ export class UserArea {
       confirm_password: [null, [Validators.required, Validators.minLength(8), PasswordMatch]],
     });
 
+    this.dinoSaveThemeForm = this._fb.group({
+      primary: [this.primaryColor, Validators.required],
+      accent: [this.accentColor, Validators.required],
+      warning: [this.warningColor, Validators.required],
+      presetName: ['', Validators.required],
+    });
+
     this.changePassDisabled = this.changePassForm.valueChanges.pipe(
       map(_ => !this.changePassForm.valid),
       startWith(!this.changePassForm.valid),
+    );
+
+    this.themePresetOptions = this.dinoSaveThemeForm.get('presetName')!.valueChanges.pipe(
+      startWith(''),
+      map(([value]) => {
+        const options = Object.keys(localStorage).filter(
+          key => key.includes('dino_theme_') && key !== 'dino_theme_default',
+        );
+        const presetNames = options.map(k => k.replace('dino_theme_', ''));
+        if (!value) {
+          return presetNames;
+        }
+        return this._filter(value, presetNames);
+      }),
+    );
+  }
+
+  /**
+   * Sets the theme Primary Color
+   */
+  setPrimaryColor(col: string) {
+    this.primaryColor = col;
+    this.themeService.setPrimaryColor(col);
+  }
+
+  /**
+   * Sets the theme Accent Color
+   */
+  setAccentColor(col: string) {
+    this.accentColor = col;
+    this.themeService.setAccentColor(col);
+  }
+
+  /**
+   * Sets the theme Warning Color
+   */
+  setWarningColor(col: string) {
+    this.warningColor = col;
+    this.themeService.setWarnColor(col);
+  }
+
+  /**
+   * Saves a Dino Theme preset
+   */
+  saveDinoTheme() {
+    const dinoTheme: DinoTheme = {
+      primary: this.primaryColor,
+      accent: this.accentColor,
+      warning: this.warningColor,
+      presetName: this.dinoSaveThemeForm.get('presetName')?.value,
+    };
+    this.themeService.saveDinoTheme(dinoTheme);
+    this.closeDialog();
+    this._snackBar.open(
+      this._ts.translate('Theme saved and set as default'),
+      this._ts.translate('THEME SAVED'),
+      {
+        duration: 10000,
+      },
+    );
+  }
+
+  /**
+   * Loads a Dino Theme preset
+   */
+  loadDinoTheme() {
+    const presetName = this.dinoSaveThemeForm.get('presetName')?.value;
+    const loadedTheme = this.themeService.loadDinoTheme(presetName);
+    this.primaryColor = loadedTheme?.primary ?? '#000000';
+    this.accentColor = loadedTheme?.accent ?? '#000000';
+    this.warningColor = loadedTheme?.warning ?? '#000000';
+    this.closeDialog();
+    this._snackBar.open(
+      this._ts.translate('Theme loaded and set as default'),
+      this._ts.translate('THEME LOADED'),
+      {
+        duration: 10000,
+      },
     );
   }
 
@@ -165,6 +280,11 @@ export class UserArea {
    */
   closeDialog() {
     this.dialogRef.close(false);
+  }
+
+  private _filter(value: string, options: string[]): string[] {
+    const filterValue = value.toLowerCase();
+    return options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   private _setChangePassError(changePassErr: AuthError): void {

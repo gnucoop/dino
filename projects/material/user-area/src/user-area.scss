@@ -2,12 +2,15 @@ dino-user-area {
   .mat-tab-body-content {
     overflow: hidden !important;
   }
+  .mat-expansion-panel-header {
+    background: transparent !important;
+  }
 
   .dino-error-message {
     display: none;
   }
 
-  .dino-change-pass-form {
+  .dino-user-area-form {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -29,5 +32,11 @@ dino-user-area {
         line-height: 2.5em;
       }
     }
+  }
+  .mat-raised-button{
+    align-self: center;
+  }
+  .dino-theme-presets-button{
+    margin: 15px;
   }
 }
