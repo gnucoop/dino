@@ -21,7 +21,7 @@ describe('dino-export-form', () => {
   it('should export filtered data in xlsx', () => {
     cy.get('.mat-expansion-indicator').click();
     cy.get('.dino-export-button').click();
-    cy.get('.mat-list-item:contains("XLSX")').click();
+    // cy.get('.mat-list-item:contains("XLSX")').click();
     cy.get('.mat-flat-button:contains("Export")').click();
     // const downloadsFolder = Cypress.config('downloadsFolder');
     // cy.readFile(join(downloadsFolder, 'cbm.xls'));
