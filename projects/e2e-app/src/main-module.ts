@@ -221,9 +221,7 @@ export function provideDataServiceConfig() {
     UsersModule,
     DinoMaterialThemingModule.forRoot({
       theme: {
-        // primary: 'red',
-        // accent: 'green',
-        // warn: 'yellow',
+        isAutoContrast: true,
         isDarkTheme: false,
       },
     }),

@@ -22,7 +22,7 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
   constructor(
     private _router: Router,
     private _userDataManager: UserDataManager,
-    private _ts: ThemeService,
+    readonly ts: ThemeService,
     @Optional() private _configService: ConfigService | null,
   ) {
     this._userDataManager.emitActionTrigger.subscribe(trigger => {
@@ -111,6 +111,6 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
   }
 
   setDarkTheme(evt: boolean) {
-    this._ts.setDarkMode(evt);
+    this.ts.setDarkMode(evt);
   }
 }

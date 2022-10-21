@@ -5,7 +5,7 @@
 
 // Define a theme.
 // Main
-$primary: material.define-palette(material.$light-blue-palette, 700, 500);
+$primary: material.define-palette(material.$blue-grey-palette, 500);
 $accent: material.define-palette(material.$blue-grey-palette, 700);
 $warn: material.define-palette(material.$red-palette, 500);
 $alt_accent: material.define-palette(material.$light-blue-palette, 900);
@@ -33,4 +33,10 @@ $theme: core.light-theme(
 
 body {
   margin: 0;
+  .mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: rgb(var(--palette-primary-500)) !important;
+  }
+  .mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: rgb(var(--palette-primary-300)) !important;
+  }
 }

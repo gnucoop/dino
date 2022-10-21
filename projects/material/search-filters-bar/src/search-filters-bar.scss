@@ -1,70 +1,72 @@
-.mat-icon {
-  cursor: pointer;
-}
+dino-search-filters-bar {
+  .mat-icon {
+    cursor: pointer;
+  }
 
-.mat-line {
-  cursor: default !important;
-}
+  .mat-line {
+    cursor: default !important;
+  }
 
-.dino-filters-bar {
-  display: flex;
-  flex-flow: row wrap;
-  .mat-form-field {
-    padding: 5px;
-    flex: 0.35 1 auto;
-    @media only screen and (max-width: 992px) {
-      padding: 0px;
+  .dino-filters-bar {
+    display: flex;
+    flex-flow: row wrap;
+    .mat-form-field {
+      padding: 5px;
+      flex: 0.35 1 auto;
+      @media only screen and (max-width: 992px) {
+        padding: 0px;
+        flex: 1 1 auto;
+        margin: auto;
+      }
+    }
+    .dino-filters-dialog-button,
+    .dino-export-button {
       flex: 1 1 auto;
-      margin: auto;
+      background-color: transparent !important;
+    }
+
+    .mat-icon-button {
+      align-self: center;
     }
   }
-  .dino-filters-dialog-button,
-  .dino-export-button {
-    flex: 1 1 auto;
-    background-color: transparent !important;
+
+  .dino-open-aggregation-filters {
+    display: flex;
+    flex: 1 0 auto;
   }
 
-  .mat-icon-button {
-    align-self: center;
-  }
-}
-
-.dino-open-aggregation-filters {
-  display: flex;
-  flex: 1 0 auto;
-}
-
-.mat-autocomplete-panel {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.mat-expansion-panel,
-.mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
-  background: inherit;
-  background: transparent !important;
-}
-.mat-expansion-panel {
-  padding: 5px;
-  @media only screen and (max-width: 1200px) {
-    .mat-expansion-panel-body,
-    .mat-expansion-panel-header {
-      padding: 0px;
-    }
-    .mat-expansion-indicator::after {
-      padding: 6px;
-      margin-right: 10px;
+  .mat-autocomplete-panel {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
-}
 
-@media only screen and (max-width: 768px) {
-  .dino-filters-dialog-button,
-  .dino-export-button {
-    margin-bottom: 15px;
-    width: 100%;
+  .mat-expansion-panel,
+  .mat-expansion-panel:not(.mat-expanded):not([aria-disabled='true']) .mat-expansion-panel-header:hover {
+    background: inherit;
+    background: transparent !important;
+  }
+  .mat-expansion-panel {
+    padding: 5px;
+    @media only screen and (max-width: 1200px) {
+      .mat-expansion-panel-body,
+      .mat-expansion-panel-header {
+        padding: 0px;
+      }
+      .mat-expansion-indicator::after {
+        padding: 6px;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .dino-filters-dialog-button,
+    .dino-export-button {
+      margin-bottom: 15px;
+      width: 100%;
+    }
   }
 }

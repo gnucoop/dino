@@ -25,16 +25,14 @@ dino-list {
 
   .mat-table {
     width: auto !important;
-    transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
     overflow: auto;
   }
 
   .mat-row {
     display: inline-flex;
     min-width: 100%;
-    transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
+    transition: box-shadow ease-in-out 0.25s;
+    -webkit-transition: box-shadow ease-in-out 0.25s;
   }
 
   .mat-column-select {
