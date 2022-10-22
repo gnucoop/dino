@@ -21,9 +21,7 @@
 
   <div class="dino-toolbar-actions">
     <ng-container *ngIf="(breakpointObserver.small|async) !== true">
-      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5"
-        >light_mode</mat-icon
-      >
+      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
       <mat-slide-toggle
         [checked]="ts.isDark()"
         (change)="setDarkTheme($event.checked)"
@@ -32,7 +30,7 @@
       >
       </mat-slide-toggle>
       <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5; margin-right: 25px;"
-        >dark_mode</mat-icon
+        >nights_stay</mat-icon
       >
     </ng-container>
     <ng-container *ngIf="(breakpointObserver.small|async) !== true">
@@ -65,6 +63,9 @@
           </ng-template>
         </ng-container>
       </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(breakpointObserver.small|async) === true">
+      <mat-icon class="dino-user-settings" (click)="openUserArea()">settings</mat-icon>
     </ng-container>
     <ng-template #syncOnline>
       <mat-icon

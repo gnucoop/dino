@@ -1,5 +1,21 @@
 <ng-container *ngIf="userData|async as userInfo">
-  <h1 mat-dialog-title>User Area - {{userInfo.full_name}}</h1>
+  <div class="dino-user-area-header">
+    <h1 class="dino-user-area-title" mat-dialog-title>User Area - {{userInfo.full_name}}</h1>
+
+    <div class="dino-user-area-dark-mode-toggle" *ngIf="(breakpointObserver.small|async) === true">
+      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
+      <mat-slide-toggle
+        [checked]="themeService.isDark()"
+        (change)="setDarkTheme($event.checked)"
+        style="margin: 10px"
+        aria-label="Toggle Dino Theme"
+      >
+      </mat-slide-toggle>
+      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5;"
+        >nights_stay</mat-icon
+      >
+    </div>
+  </div>
 
   <mat-dialog-content>
     <mat-accordion>
@@ -57,7 +73,8 @@
             </mat-error>
           </mat-form-field>
           <div *ngIf="changePassError.error === true" class="dino-error-message">
-            {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect password'|transloco}}
+            {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect
+            password'|transloco}}
           </div>
           <button
             mat-fab
@@ -133,10 +150,7 @@
                 [matAutocomplete]="auto"
               />
               <mat-autocomplete #auto="matAutocomplete">
-                <mat-option
-                  *ngFor="let option of themePresetOptions | async"
-                  [value]="option"
-                >
+                <mat-option *ngFor="let option of themePresetOptions | async" [value]="option">
                   {{option|transloco}}
                 </mat-option>
               </mat-autocomplete>

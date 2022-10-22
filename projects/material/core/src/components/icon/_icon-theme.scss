@@ -11,9 +11,9 @@
     @include mat-theming.icon-color($config-or-theme);
 
     .mat-icon.dino-mat-icon {
-        color: mat-theming.get-color-from-palette($primary);
+        color: rgb(var(--palette-primary-500));
         &:hover {
-            color: mat-theming.get-color-from-palette($accent);
+            color: rgb(var(--palette-accent-500));
         }
     }
 }

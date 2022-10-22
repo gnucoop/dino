@@ -35,6 +35,7 @@ import {UserData, UserDataManager} from '@dino/core/users';
 import {map, Observable, of as obsOf, startWith, switchMap, take} from 'rxjs';
 import {TranslocoService} from '@ngneat/transloco';
 import {DinoTheme, ThemeService} from '@dino/material/core';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -111,6 +112,7 @@ export class UserArea {
     private _ts: TranslocoService,
     public themeService: ThemeService,
     public dialogRef: MatDialogRef<UserArea>,
+    readonly breakpointObserver: BreakpointObserverService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.userData = this._udm.getActiveUserData();
@@ -214,6 +216,13 @@ export class UserArea {
         duration: 10000,
       },
     );
+  }
+  /**
+   * Sets the dark mode on/off
+   * @param evt If true, dark theme is set
+   */
+  setDarkTheme(evt: boolean) {
+    this.themeService.setDarkMode(evt);
   }
 
   /**

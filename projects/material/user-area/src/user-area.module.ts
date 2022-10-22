@@ -33,18 +33,22 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
+
 import {RouterModule} from '@angular/router';
 import {UsersModule} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
 import {ColorPickerModule} from 'ngx-color-picker';
 
 import {UserArea} from './user-area';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   imports: [
     AjfTranslocoModule,
     ColorPickerModule,
     CommonModule,
+    DinoBreakpointObserverModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatDialogModule,
@@ -53,6 +57,7 @@ import {UserArea} from './user-area';
     MatIconModule,
     MatInputModule,
     MatProgressBarModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     ReactiveFormsModule,
     RouterModule,

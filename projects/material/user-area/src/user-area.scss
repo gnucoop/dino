@@ -1,4 +1,19 @@
 dino-user-area {
+  .dino-user-area-header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-content: center;
+    .dino-user-area-title,
+    .dino-user-area-dark-mode-toggle {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 0 20px;
+    }
+  }
   .mat-tab-body-content {
     overflow: hidden !important;
   }
@@ -17,8 +32,8 @@ dino-user-area {
     .mat-form-field,
     .mat-button-ripple-round,
     .dino-error-message {
-      display: inline-flex !important;
       flex: 1 0 auto !important;
+      margin-left: 10px;
     }
     .mat-form-field,
     .mat-fab,
@@ -33,10 +48,10 @@ dino-user-area {
       }
     }
   }
-  .mat-raised-button{
+  .mat-raised-button {
     align-self: center;
   }
-  .dino-theme-presets-button{
+  .dino-theme-presets-button {
     margin: 15px;
   }
 }
