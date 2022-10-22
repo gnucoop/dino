@@ -39,7 +39,7 @@ export class ThemeService {
   }
 
   constructor(private _service: MaterialCssVarsService) {
-    this.setDarkMode(false);
+    this.setDarkMode(this._service.isDarkTheme);
     this.loadDinoTheme();
     this.setDefaultTheme();
   }
