@@ -364,7 +364,14 @@ export class ListDataSource<
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe(res => {
-        const emptyQueryStringFilter = '';
+        const emptyQueryStringFilter = btoa(
+          encodeURI(
+            JSON.stringify({
+              filters: [],
+              additionalFiltersLogic: 'and',
+            }),
+          ),
+        );
         this._allItemsQueryObs = this._getQueryResultsObs(
           this.queryDM(
             emptyQueryStringFilter,
