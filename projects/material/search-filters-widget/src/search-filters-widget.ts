@@ -53,7 +53,6 @@ import {
   TEXT_CONDITION_OPERATORS,
   WidgetData,
 } from '@dino/core/list';
-import {filter} from 'cypress/types/bluebird';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {debounceTime, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 

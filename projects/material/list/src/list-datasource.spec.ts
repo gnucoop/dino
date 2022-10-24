@@ -18,6 +18,7 @@ import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, firstValueFrom, of as obsOf, of, take} from 'rxjs';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {ListDataSource} from './public_api';
 
@@ -99,7 +100,9 @@ const fakeFilters: FilterItem[] = [
   {name: 'filter_c', value: false, operator: {label: '==', value: '$eq'}},
 ];
 
-const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
+const fakeFiltersPreset = btoa(
+  encodeURI(JSON.stringify({filters: fakeFilters, additionalFiltersLogic: 'and'})),
+);
 
 const fakeActivatedRoute = {
   queryParams: obsOf({'filters': fakeFiltersPreset}),
@@ -140,7 +143,7 @@ describe('ListDataSource', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ListModule, RouterTestingModule],
+      imports: [AjfTranslocoModule, ListModule, RouterTestingModule],
       providers: [
         {provide: ActivatedRoute, useValue: fakeActivatedRoute},
         {provide: DummyManager, useValue: dummyManager},

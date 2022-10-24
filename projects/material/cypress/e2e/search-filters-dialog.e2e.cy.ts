@@ -30,6 +30,7 @@ describe('dino-search-filters-dialog', () => {
   it('should close the dialog and change the url with filter params when clicking Search button', () => {
     cy.url().then(initialUrl => {
       cy.get('.mat-card-content .mat-radio-button').first().click();
+      cy.get('.mat-card-actions .dino-create-filter-button').first().click();
       cy.get('mat-chip').should('exist');
       cy.get('.mat-button-wrapper:contains("Search")').parent().click();
       cy.get('dino-search-filters-dialog').should('not.exist');

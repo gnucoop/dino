@@ -8,10 +8,10 @@ import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
 import {UsersModule} from '@dino/core/users';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-
 import {MainNav, MainNavModule} from './public_api';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {EventEmitter} from '@angular/core';
+import {ThemeService} from '@dino/material/core';
 
 let testDbIdx = 0;
 
@@ -60,6 +60,8 @@ const authServiceMock = {
   authConfig: authServiceConfig,
 } as unknown as AuthService;
 
+const themeServiceMock = {} as unknown as ThemeService;
+
 describe('Main', () => {
   let fixtureMain: ComponentFixture<MainNav>;
   let main: MainNav;
@@ -75,6 +77,7 @@ describe('Main', () => {
         UsersModule,
       ],
       providers: [
+        {provide: ThemeService, useValue: themeServiceMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},

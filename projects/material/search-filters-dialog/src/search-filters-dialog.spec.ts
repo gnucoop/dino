@@ -34,7 +34,9 @@ const fakeFilters: FilterItem[] = [
   {name: 'filter_b', value: ''},
 ];
 
-const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
+const fakeFiltersPreset = btoa(
+  encodeURI(JSON.stringify({filters: fakeFilters, additionalFiltersLogic: 'and'})),
+);
 
 const fakeActivatedRoute = {
   queryParams: of({'filters': fakeFiltersPreset}),
@@ -81,10 +83,13 @@ describe('Search filters dialog', () => {
     const spyRefClose = spyOn(dialog.dialogRef, 'close').and.callThrough();
 
     dialog.closeDialog();
-    expect(spyRefClose).toHaveBeenCalledWith(false);
+    expect(spyRefClose).toHaveBeenCalledWith({search: false});
     expect(spyRefClose).not.toHaveBeenCalledWith(true);
     dialog.search();
-    expect(spyRefClose).toHaveBeenCalledWith(true);
+    expect(spyRefClose).toHaveBeenCalledWith({
+      search: true,
+      logic: fts.additionalFiltersLogic.value,
+    });
   });
 
   it('should ask the FilterService to add a FilterItem to the list of the chosen FilterListType', () => {

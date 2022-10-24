@@ -9,6 +9,7 @@ import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {RxJsonSchema} from 'rxdb';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {of as obsOf} from 'rxjs';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {FilterItem, FiltersService} from './public_api';
 
@@ -65,8 +66,12 @@ const fakeFilters_b: FilterItem[] = [
 const fakeFormGroup = new FormGroup({
   filter_a: new FormControl(),
 });
-const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
-const fakeFiltersPreset_b = btoa(encodeURI(JSON.stringify(fakeFilters_b)));
+const fakeFiltersPreset = btoa(
+  encodeURI(JSON.stringify({filters: fakeFilters, additionalFiltersLogic: 'and'})),
+);
+const fakeFiltersPreset_b = btoa(
+  encodeURI(JSON.stringify({filters: fakeFilters_b, additionalFiltersLogic: 'and'})),
+);
 const fakeActivatedRoute = {
   queryParams: obsOf({'filters': fakeFiltersPreset}),
 } as unknown as ActivatedRoute;
@@ -76,7 +81,7 @@ describe('FiltersService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [AjfTranslocoModule, RouterTestingModule.withRoutes([])],
       providers: [
         FiltersService,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
@@ -113,10 +118,9 @@ describe('FiltersService', () => {
     items.forEach(item => {
       fts.addFilter(item, 'additional');
     });
-    fts.removeFilter({name: 'test_filter'}, 'additional');
+    fts.removeFilter(items[0], 'additional');
 
     expect(fts.additionalFilters.value).toEqual([
-      {name: 'test_filter', fieldType: AjfFieldType.String, value: null},
       {name: 'test_filter_2', fieldType: AjfFieldType.Number, value: 5},
     ]);
   });
@@ -185,8 +189,7 @@ describe('FiltersService', () => {
     fts.addFilter(item_b, 'temporary');
     fts.updateAdditionalFilters();
 
-    expect(fts.additionalFilters.value).toEqual([item_a, item_b]);
-    expect(fts.additionalFilters.value).not.toEqual([item_a]);
+    expect(fts.additionalFilters.value).toEqual([item_b]);
   });
 
   it('should reset the temporaryFilters to the current additionalFilters value', () => {

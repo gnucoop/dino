@@ -2,11 +2,18 @@ import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
 
 const url = `/forms/${formSchemas[0].id}`;
 
-const presetValue = btoa(
-  encodeURI(
-    '[{"name":"keyword","value":"t","operator":{"label":"Like","value":"$regex"},"fieldType":0}]',
-  ),
-);
+const filtersPreset = {
+  filters: [
+    {
+      'name': 'keyword',
+      'value': 't',
+      'operator': {'label': 'Like', 'value': '$regex'},
+      'fieldType': 0,
+    },
+  ],
+  additionalFiltersLogic: 'and',
+};
+const presetValue = btoa(encodeURI(JSON.stringify(filtersPreset)));
 
 describe('dino-search-filters-preset-manager', () => {
   beforeEach(() => {
@@ -57,6 +64,6 @@ describe('dino-search-filters-preset-manager', () => {
     cy.get('dino-search-filters-preset-manager input').should('have.value', 'custom_load');
     cy.get('dino-search-filters-preset-manager button').first().should('not.be.disabled').click();
     cy.url().should('contain', '?filters=');
-    cy.get('input[formcontrolname="keyword"]').should('have.value', 't');
+    cy.get('input[formcontrolname="keyword"]').should('be.visible').should('have.value', 't');
   });
 });

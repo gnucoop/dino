@@ -440,7 +440,7 @@ export class ListDataSource<
     const parsedFilters: {filters: FilterItem[]; additionalFiltersLogic: 'and' | 'or'} = JSON.parse(
       decodeURI(atob(queryString)),
     );
-    const filterItems: FilterItem[] = parsedFilters.filters;
+    const filterItems: FilterItem[] = parsedFilters.filters ?? [];
     if (!filterItems.find(f => f.name === 'keyword')) {
       this.filter = '';
     }

@@ -41,6 +41,10 @@ class AUIServiceStub {
 
 class FiltersServiceStub {
   availableBasicFilterLabels: string[] = ['testFilter', 'otherFilter'];
+  filterErrorEvt: EventEmitter<{text: string; msg: string}> = new EventEmitter<{
+    text: string;
+    msg: string;
+  }>();
 
   set setCustomFilters(fg: FilterGroup[]) {}
   loadPreset() {}

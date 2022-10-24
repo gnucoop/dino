@@ -13,8 +13,10 @@ describe('dino-search-filters-widget', () => {
     cy.get('dino-search-filters-widget').should('have.length.gt', 0);
   });
 
-  it('should display a mat-slide-toggle in disabled state', () => {
-    cy.get('mat-slide-toggle').should('be.visible').should('have.class', 'mat-disabled');
+  it('should display a create filter button in disabled state', () => {
+    cy.get('.dino-create-filter-button')
+      .should('be.visible')
+      .should('have.class', 'mat-button-disabled');
   });
 
   it('should display a mat-input', () => {

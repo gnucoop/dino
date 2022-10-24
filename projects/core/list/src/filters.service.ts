@@ -349,7 +349,7 @@ export class FiltersService<T extends Model = Model> {
     const parsedFilters: {filters: FilterItem[]; additionalFiltersLogic: 'and' | 'or'} = JSON.parse(
       decodeURI(atob(encodedString)),
     );
-    const filterItems: FilterItem[] = parsedFilters.filters;
+    const filterItems: FilterItem[] = parsedFilters.filters ?? [];
     const additionalFiltersLogic = parsedFilters.additionalFiltersLogic;
     let basic: FilterItem[] = [];
     let additional: FilterItem[] = [];
@@ -529,7 +529,7 @@ export class FiltersService<T extends Model = Model> {
   }
 
   /**
-   * Merges the temporaryFilters into the additional filters, updating the latter
+   * Overwrites the additional filters with the temporaryFilters.
    * @param logic The logic operator to use when creating the query in the dataSource.
    */
   updateAdditionalFilters(logic?: 'and' | 'or'): void {

@@ -39,7 +39,9 @@ const fakeFilters: FilterItem[] = [
   {name: 'filter_c', value: false},
 ];
 
-const fakeFiltersPreset = btoa(encodeURI(JSON.stringify(fakeFilters)));
+const fakeFiltersPreset = btoa(
+  encodeURI(JSON.stringify({filters: fakeFilters, additionalFiltersLogic: 'and'})),
+);
 
 const fakeActivatedRoute = {
   queryParams: obsOf({'filters': fakeFiltersPreset}),
