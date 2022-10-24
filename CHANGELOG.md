@@ -1,3 +1,31 @@
+<a name="13.3.3"></a>
+# 13.3.3 "increased-gerbil" (2022-10-24)
+### Bug Fixes
+* **e2e-material:** export forms e2e test fixed ([285c388](https://bitbucket.org/gnucoop/dino/commits/285c3884d3db21c595cc272ab2d89879dd13afa7))
+* **material/core:** Theme Service now correctly sets the initial dark/light mode based on the provided theme config. ([3d57d28](https://bitbucket.org/gnucoop/dino/commits/3d57d2884c03dcc2c948a33c8f0afd75df361503))
+* **material/edit-form:** decrease loading time for relationships ([da9d393](https://bitbucket.org/gnucoop/dino/commits/da9d393b5e17f51313a518ace6e8559e96d01717))
+* **material/edit-report:** Fixed loading spinner css ([bf59a02](https://bitbucket.org/gnucoop/dino/commits/bf59a02f07139eec5ef8cea5326a1cfe5bec4d88))
+* **material/list:** Fixed bug that caused list selection not to be reset after changing page or pagesize. ([42bb1b5](https://bitbucket.org/gnucoop/dino/commits/42bb1b592e68a1ec0d90ea3e3f30c41d03335f79))
+* **material/list:** ListDatasource "emptyQueryStringFilter" now formatted and stringified correctly. ([d67eb34](https://bitbucket.org/gnucoop/dino/commits/d67eb34c1aa748c881feacd4e8ea279f94fcec50))
+### Features
+* **core/data:** logout on sync errors only when there is a GraphQL push error ([1bc8ae2](https://bitbucket.org/gnucoop/dino/commits/1bc8ae2f7ecbb5b16cd0774deae8d3bdd816b790))
+* **core/list:** Added AdditionalFilterLogic ('and'/'or') to FilterService. ([561d1ea](https://bitbucket.org/gnucoop/dino/commits/561d1ea762b9be01da999061912f69ebe9151041))
+* **core/online-user-data-manager:** Added Online-only User data manager. Utilized by public forms to get the default anonymous user. ([553e940](https://bitbucket.org/gnucoop/dino/commits/553e94077ebe82c34bd8d5bd0eb200914278e944))
+* **e2e-material:** Added Edit Public Form module and related route to e2e app. Added Apollo options config to main module. ([a62293e](https://bitbucket.org/gnucoop/dino/commits/a62293e2f3073399378e65541d393e5b7871fc2b))
+* **material/core:** Added Theme mgmt functionalities to theme service. Component themes altered. ([a304f23](https://bitbucket.org/gnucoop/dino/commits/a304f23f9a520464fff7391c4a455229b12c5a21))
+* **material/create-form:** populate choices with relationships data if field in repeating slide ([0774ec6](https://bitbucket.org/gnucoop/dino/commits/0774ec651d73f0d0737ed658cbba3116cf84e8de))
+* **material/edit-form-schema:** Changed UI of Form Statuses select. Form Status Editor component integrated. ([269e0f0](https://bitbucket.org/gnucoop/dino/commits/269e0f0e15e12c72a9cf99951e64d38b318b22e1))
+* **material/export-form:** add export forms options for all and filtered forms ([5221894](https://bitbucket.org/gnucoop/dino/commits/5221894c5f4e7dcfa4239e65d3943b7f05fb4648))
+* **material/form-status-editor:** Added Form Status Editor module. ([758fcb8](https://bitbucket.org/gnucoop/dino/commits/758fcb89d864cd967a722427ae2015ddd1090b6f))
+* **material/main-nav:** Added dark/light toggle to main nav. ([1a46aaf](https://bitbucket.org/gnucoop/dino/commits/1a46aafa97bc61a560b727c1c345efdce4a60010))
+* **material/main-nav:** Added inputs for disabling toolbar functions and buttons. Added tooltips to linkIcons. ([e103ea8](https://bitbucket.org/gnucoop/dino/commits/e103ea8d7a3909ef5498e78fab7a1d148f2b7f43))
+* **material/search-filters-dialog:** Added LogicToggle ('all'/'any'). ([87043bd](https://bitbucket.org/gnucoop/dino/commits/87043bdaa297181359965636cd9e950cec68ed9f))
+* **material/user-area:** Added Dino Theme management section to User Area ([5ee4ea2](https://bitbucket.org/gnucoop/dino/commits/5ee4ea209cbb3363c3950425235e4a5f69b56b30))
+* **material/user-area:** Added User Area for small screens (breakpoint small, mobile devices). Css adjustments. ([d1eda3c](https://bitbucket.org/gnucoop/dino/commits/d1eda3ce9524a729719e03c69b75e336db4f0276))
+* **search-filters-widget:** Complete Widget overhaul. ([3643a9c](https://bitbucket.org/gnucoop/dino/commits/3643a9c3aa2edc05420dd1a7b8f49e80f6693951))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.3.2"></a>
 # 13.3.2 "defensive-moose" (2022-10-04)
 ### Bug Fixes
