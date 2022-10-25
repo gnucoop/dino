@@ -88,14 +88,19 @@ dino-edit-form-schema {
       color: inherit;
     }
   }
-  .dino-new-status-button {
-    width: 100%;
-    text-align: center;
-    opacity: 0.3;
-    transition: all ease-in-out 0.3;
-    -webkit-transition: all ease-in-out 0.3s;
-    &:hover {
-      opacity: 1;
+  .dino-new-status-button-option {
+    .mat-pseudo-checkbox {
+      display: none;
+    }
+    .dino-new-status-button {
+      width: 100%;
+      text-align: center;
+      opacity: 0.3;
+      transition: all ease-in-out 0.3;
+      -webkit-transition: all ease-in-out 0.3s;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
