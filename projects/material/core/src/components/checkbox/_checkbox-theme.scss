@@ -93,11 +93,6 @@
             border: 1px solid mat-theming.get-color-from-palette($warn);
         }
     }
-
-    .mat-pseudo-checkbox.mat-pseudo-checkbox-checked {
-        background-color: transparent !important;
-        border-color: inherit !important;
-    }
 }
 
 @mixin mat-checkbox-typography($config-or-theme) {
