@@ -37,9 +37,9 @@
   "version": "13.3.3",
   "private": true,
   "dependencies": {
-    "@ajf/core": "^13.2.9",
+    "@ajf/core": "^13.2.10",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "^13.2.9",
+    "@ajf/material": "^13.2.10",
     "@angular/animations": "^13.3.4",
     "@angular/cdk": "^13.3.4",
     "@angular/common": "^13.3.4",
