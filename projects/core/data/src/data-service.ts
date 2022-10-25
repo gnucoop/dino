@@ -803,12 +803,21 @@ export class DataService implements IDataService {
     GQL4: 'GraphQL replication: unknown errors occurred in replication push - see innerErrors for more details',
     */
     state.error$.subscribe(err => {
-      console.error('Sync replication error:');
-      console.dir(err);
-      if (err && err.type && err.type === 'push' && err.message.indexOf('GQL') > -1) {
-        if (err.innerErrors && err.innerErrors.length) {
-          console.log(err.innerErrors[0]);
-        }
+      if (isDevMode()) {
+        console.dir(err);
+      }
+      const jwtError = this._dataConfig.value.syncOptions.authErrorMessage || 'JWTExpired';
+      if (
+        err &&
+        err.type === 'push' &&
+        err.message.indexOf('GQL') > -1 &&
+        err.innerErrors &&
+        err.innerErrors.length &&
+        err.innerErrors[0].message &&
+        err.innerErrors[0].message.indexOf(jwtError) < 0
+      ) {
+        console.error('Sync replication error:');
+        console.log(err.innerErrors[0]);
         this._logoutEvt.emit();
       }
     });
