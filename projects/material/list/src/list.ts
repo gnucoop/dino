@@ -342,9 +342,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   set dataSource(dataSource: ListDataSource<T, U> | undefined) {
     if (dataSource !== this.dataSource && dataSource != null) {
       this._dataSource = dataSource;
-      this._dataSource.dataResults
-        .pipe(takeUntil(this._mainUnsubscribe))
-        .subscribe(() => this.clearSelection());
+      if (this._dataSource.dataResults != null) {
+        this._dataSource.dataResults
+          .pipe(takeUntil(this._mainUnsubscribe))
+          .subscribe(() => this.clearSelection());
+      }
     }
   }
 
