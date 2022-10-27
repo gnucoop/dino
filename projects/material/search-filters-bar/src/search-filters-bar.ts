@@ -175,18 +175,24 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   ) {
     super();
 
-    this.availableFormStatuses = this._route.params.pipe(
-      switchMap(params => {
+    this.availableFormStatuses = combineLatest([this._route.params, this._route.data]).pipe(
+      switchMap(([params, data]) => {
+        if (data['aggregation']) {
+          return this._fsm
+            .query({selector: {is_deleted: {$ne: true}}})
+            .pipe(map(statuses => statuses.map(st => st.id)));
+        }
         if (!params['form_schema_id']) {
           return obsOf(null);
         }
-        return this._fschm.get(params['form_schema_id']);
-      }),
-      map(schema => {
-        if (schema == null || !schema.form_status_ref_id?.length) {
-          return null;
-        }
-        return schema.form_status_ref_id;
+        return this._fschm.get(params['form_schema_id']).pipe(
+          map(schema => {
+            if (schema == null || !schema.form_status_ref_id?.length) {
+              return null;
+            }
+            return schema.form_status_ref_id;
+          }),
+        );
       }),
     );
 

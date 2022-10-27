@@ -210,4 +210,5 @@ export const ESP: Translation = {
   'THEME SAVED': 'TEMA GUARDADO',
   'Theme loaded and set as default': 'Tema cargado y establecido como predeterminado',
   'THEME LOADED': 'TEMA CARGADO',
+  'Items found': 'Elementos encontrados',
 };

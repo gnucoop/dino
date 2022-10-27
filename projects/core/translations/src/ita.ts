@@ -219,4 +219,5 @@ export const ITA: Translation = {
   'THEME SAVED': 'TEMA SALVATO',
   'Theme loaded and set as default': 'Tema caricato e scelto come default',
   'THEME LOADED': 'TEMA CARICATO',
+  'Items found': 'Elementi trovati',
 };

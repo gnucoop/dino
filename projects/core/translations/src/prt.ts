@@ -209,4 +209,5 @@ export const PRT: Translation = {
   'THEME SAVED': 'TEMA SALVADO',
   'Theme loaded and set as default': 'Tema carregado e definido como padrão',
   'THEME LOADED': 'TEMA CARREGADO',
+  'Items found': 'Itens encontrados',
 };

@@ -78,9 +78,11 @@ export class MatFormsListE2E {
         if (schema.form_status_ref_id != null && schema.form_status_ref_id.length) {
           statusHeaders.push({
             column: 'form_status_ref_id',
+            external_ref: `form_status_ref_id`,
             label: 'Status',
             populateWith: 'label',
             displayed: true,
+            icon: 'account_tree',
             isEditable: _ => true,
             editMethod: elem => {
               this.list.openStatusEditor(elem as FormData & {form_schema: Observable<FormSchema>});

@@ -20,6 +20,7 @@ export class MatAggregationListE2E implements AfterViewInit {
     'area',
     'case',
     'organization',
+    'form_status',
     'unavailableFilter',
   ];
   readonly additionalDataSchema: Observable<FormSchema | null>;
@@ -153,9 +154,11 @@ export class MatAggregationListE2E implements AfterViewInit {
       },
       {
         column: 'form_status_ref_id',
+        external_ref: `form_status_ref_id`,
         label: 'Status',
         populateWith: 'label',
         displayed: true,
+        icon: 'account_tree',
       },
       ...this.formSchemaManager.generateMetricsHeaders(),
     ]);

@@ -209,4 +209,5 @@ export const ENG: Translation = {
   'THEME SAVED': 'THEME SAVED',
   'Theme loaded and set as default': 'Theme loaded and set as default',
   'THEME LOADED': 'THEME LOADED',
+  'Items found': 'Items found',
 };

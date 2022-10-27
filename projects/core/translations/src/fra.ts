@@ -206,4 +206,5 @@ export const FRA: Translation = {
   'THEME SAVED': 'THEME SAUVEGARDÉ',
   'Theme loaded and set as default': 'Thème chargé et défini par défaut',
   'THEME LOADED': 'THEME CHARGÉ',
+  'Items found': 'Éléments trouvés',
 };

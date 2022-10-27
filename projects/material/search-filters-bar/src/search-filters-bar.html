@@ -88,7 +88,11 @@
             </ng-container>
 
             <ng-template #statusOptions>
-              <mat-option *ngFor="let option of formStatusFilterOptions | async" [value]="option">
+              <mat-option
+                [ngStyle]="{'color': option.color ?? 'inherit'}"
+                *ngFor="let option of formStatusFilterOptions | async"
+                [value]="option"
+              >
                 {{option.label}}
               </mat-option>
             </ng-template>
