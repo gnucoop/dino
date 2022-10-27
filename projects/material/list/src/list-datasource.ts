@@ -197,6 +197,13 @@ export class ListDataSource<
   }
 
   /**
+   * The count of the docs resulting by the current query.
+   */
+  private _dataResultsCount: Observable<number | null> = obsOf(null);
+  get dataResultsCount(): Observable<number | null> {
+    return this._dataResultsCount;
+  }
+  /**
    * The Filters Component associated to this ListDataSource (eg. a SearchFiltersBar)
    */
   private _filtersComponent: BehaviorSubject<SearchFiltersComponent | null> =
@@ -372,6 +379,20 @@ export class ListDataSource<
             }),
           ),
         );
+
+        this._dataResultsCount = this._getQueryResultsCount(
+          this.queryDM(
+            res.queryString,
+            res.permissionContext,
+            false,
+            res.addSchema,
+            null,
+            null,
+            res.dataHeaders,
+            true,
+          ),
+        ).pipe(shareReplay(1));
+
         this._allItemsQueryObs = this._getQueryResultsObs(
           this.queryDM(
             emptyQueryStringFilter,
@@ -648,6 +669,19 @@ export class ListDataSource<
   }
 
   /**
+   * Get the result count of the dataModelManager query
+   * @param query The query object
+   * @returns The count of the query result
+   */
+  private _getQueryResultsCount(query: DataQueryOptions): Observable<number> {
+    return this._dataModelManager.query(query).pipe(
+      map(results => {
+        return results.length ?? 0;
+      }),
+    );
+  }
+
+  /**
    * Get the observable for queries the dataModelManager
    * @param query The query object
    * @param detailsQuery? The optional query
@@ -694,11 +728,7 @@ export class ListDataSource<
           });
         }
         const populatedDocs = this._populateDocRefs(resultDocs);
-        if (this.getPaginator != null) {
-          this.customPaginatorLength.emit(
-            (this.getPaginator.pageIndex + 1) * populatedDocs.length * this.getPaginator.pageSize,
-          );
-        }
+
         return populatedDocs;
       }),
     );

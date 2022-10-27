@@ -1,8 +1,19 @@
 <div class="dino-list-toolbar">
   <ng-content select="[breadcrumbs]"></ng-content>
   <ng-container *ngIf="dataSource">
-    <mat-paginator #pag [length]="dataSource.customPaginatorLength|async"></mat-paginator>
-    <div class="dino-list-page"><span>Pag. {{pag.pageIndex + 1}}</span></div>
+    <div class="dino-list-count">
+      <mat-icon color="primary">numbers</mat-icon>
+      <span>{{'Items found'|transloco}}: </span>
+      <ng-container *ngIf="(dataSource.dataResultsCount|async) !== null; else loadingCountTemplate"
+        ><span><b>{{dataSource.dataResultsCount|async}}</b></span></ng-container
+      >
+      <ng-template #loadingCountTemplate><mat-icon class="dino-loading-count-icon">data_usage</mat-icon></ng-template>
+    </div>
+    <mat-paginator
+      #pag
+      [length]="dataSource.dataResultsCount|async"
+      [showFirstLastButtons]="true"
+    ></mat-paginator>
   </ng-container>
 </div>
 <ng-content select="[filters]"></ng-content>
@@ -46,7 +57,8 @@
           </ng-container>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <mat-checkbox *ngIf="bulkActions"
+          <mat-checkbox
+            *ngIf="bulkActions"
             class="dino-row-actions"
             (click)="$event.stopPropagation()"
             (change)="$event ? selection.toggle(row) : null"
@@ -151,7 +163,9 @@
             </mat-tab>
           </mat-tab-group>
         </ng-template>
-        <ng-template #defaultCellTemplate>{{ element|dinoListCellValue:header:dataSource?.choices }}</ng-template>
+        <ng-template #defaultCellTemplate
+          >{{ element|dinoListCellValue:header:dataSource?.choices }}</ng-template
+        >
       </mat-cell>
     </ng-container>
 

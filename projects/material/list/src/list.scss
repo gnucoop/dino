@@ -9,13 +9,30 @@ dino-list {
     flex-flow: row wrap;
     justify-content: space-between;
     align-content: center;
-    .dino-list-page {
-      flex: 0 1 auto;
+    .dino-list-count {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: end;
+      flex: 1 0 auto;
       align-self: center;
       position: relative;
-      bottom: 10px;
+      margin: auto;
+      margin-right: 10px;
+      color: rgba(var(--palette-foreground-secondary-text), var(--palette-foreground-secondary-text-alpha));
+      @media only screen and (min-width: 660px) {
+        bottom: 8px;
+      }
+      .mat-icon {
+        opacity: 30%;
+        &.dino-loading-count-icon {
+          -webkit-animation: spinClockWise 1s ease-in-out infinite;
+          -moz-animation: spinClockWise 1s ease-in-out infinite;
+          animation: spinClockWise 1s ease-in-out infinite;
+        }
+      }
     }
   }
+
   .mat-table__wrapper .mat-table {
     min-width: auto !important;
     width: auto !important;
@@ -171,13 +188,11 @@ dino-list {
       position: relative;
       bottom: 10px;
     }
-    .mat-paginator-range-label {
-      display: none;
-    }
+
     .mat-icon-button {
       background: transparent;
     }
-    @media only screen and (max-width: 992px) {
+    @media only screen and (max-width: 786px) {
       .mat-paginator-page-size {
         margin-right: auto;
       }
@@ -222,4 +237,38 @@ dino-list {
       display: none;
     }
   }
+
+  @-moz-keyframes spinClockWise {
+    0% {
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spinClockWise {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spinClockWise {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.isDarkTheme .dino-list-toolbar .dino-list-count {
+  color: rgba(
+    var(--palette-foreground-secondary-text-dark),
+    var(--palette-foreground-secondary-text-dark-alpha)
+  ) !important;
 }

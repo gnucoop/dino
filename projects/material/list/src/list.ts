@@ -24,6 +24,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {SelectionModel} from '@angular/cdk/collections';
 import {
   AfterContentInit,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -100,7 +101,7 @@ import {TranslocoService} from '@ngneat/transloco';
 })
 export class SelectionList<T extends Model = Model, U extends Model = Model>
   extends List<T, U>
-  implements AfterContentInit, OnInit, OnDestroy
+  implements AfterContentInit, AfterViewInit, OnInit, OnDestroy
 {
   /**
    * Event emitted as an Action hook
@@ -342,11 +343,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   set dataSource(dataSource: ListDataSource<T, U> | undefined) {
     if (dataSource !== this.dataSource && dataSource != null) {
       this._dataSource = dataSource;
-      if (this._dataSource.dataResults != null) {
-        this._dataSource.dataResults
-          .pipe(takeUntil(this._mainUnsubscribe))
-          .subscribe(() => this.clearSelection());
-      }
     }
   }
 
@@ -427,6 +423,15 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       prev[cur.column] = cur.templateRef;
       return prev;
     }, {} as {[column: string]: TemplateRef<any>});
+  }
+
+  ngAfterViewInit(): void {
+    if (this._dataSource && this._dataSource.dataResults != null) {
+      this._dataSource.dataResults.pipe(takeUntil(this._mainUnsubscribe)).subscribe(() => {
+        this.clearSelection();
+        this._cdr.detectChanges();
+      });
+    }
   }
 
   ngOnInit() {
