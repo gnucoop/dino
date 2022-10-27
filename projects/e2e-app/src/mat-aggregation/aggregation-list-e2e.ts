@@ -151,6 +151,12 @@ export class MatAggregationListE2E implements AfterViewInit {
         populateWith: 'label',
         displayed: true,
       },
+      {
+        column: 'form_status_ref_id',
+        label: 'Status',
+        populateWith: 'label',
+        displayed: true,
+      },
       ...this.formSchemaManager.generateMetricsHeaders(),
     ]);
   }

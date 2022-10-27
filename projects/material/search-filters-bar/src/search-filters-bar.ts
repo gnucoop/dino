@@ -35,9 +35,11 @@ import {
 import {FormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import {ActivatedRoute} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
+import {FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
 import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
@@ -46,7 +48,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
 import {isRxDocument, RxDocument} from 'rxdb';
-import {Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
+import {combineLatest, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
 import {catchError, map, switchMap, take, takeUntil, withLatestFrom} from 'rxjs/operators';
 
 /**
@@ -69,6 +71,17 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * All the metrics filters autocomplete options.
    */
   metricFiltersOptions: {[key: string]: Observable<Metric[]>} = {};
+
+  /**
+   * All the form status filter autocomplete options.
+   */
+  formStatusFilterOptions: Observable<FormStatus[]> | null = null;
+
+  /**
+   * If the filters bar is applied to a formData list,
+   * here are the IDs of the form statuses available for the current form schema.
+   */
+  availableFormStatuses: Observable<string[] | null>;
 
   /**
    * Date Picker input filtering methods.
@@ -148,8 +161,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     readonly metricsService: MetricsService,
     protected _fts: FiltersService,
     public dialog: MatDialog,
+    private _fsm: FormStatusManager,
     private _cdr: ChangeDetectorRef,
     private _bottomSheet: MatBottomSheet,
+    private _route: ActivatedRoute,
+    private _fschm: FormSchemaManager,
     readonly breakpointObserver: BreakpointObserverService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
@@ -158,6 +174,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     super();
+
+    this.availableFormStatuses = this._route.params.pipe(
+      switchMap(params => {
+        if (!params['form_schema_id']) {
+          return obsOf(null);
+        }
+        return this._fschm.get(params['form_schema_id']);
+      }),
+      map(schema => {
+        if (schema == null || !schema.form_status_ref_id?.length) {
+          return null;
+        }
+        return schema.form_status_ref_id;
+      }),
+    );
+
     this.minDatePicker = (d: Date | null): boolean => {
       const minDate = this.dateSearchFilters.get('dateStart')?.value
         ? new Date(this.dateSearchFilters.get('dateStart')?.value)
@@ -184,6 +216,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
 
   ngOnInit() {
     this._initFilters();
+
+    this._populateStatusOptions();
+
     if (this._areaManager != null) {
       this._populateMetricsOptions('area', this._areaManager);
       this._setupMetricDescendants('area', this._areaManager);
@@ -277,6 +312,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     return activeMetrics.indexOf(groupControlKey) >= 0;
   }
 
+  /**
+   * Returns true if the Form Group refers to the Form Status
+   *
+   * @param group The FormGroup of the filter
+   */
+  isStatus(group: FormGroup): boolean {
+    if (group == null) {
+      return false;
+    }
+    const groupControlKey = this.getControlKey(group);
+    if (groupControlKey == null) {
+      return false;
+    }
+    return groupControlKey === 'form_status';
+  }
+
   getControlKey(group: FormGroup): string {
     if (group == null) {
       return '';
@@ -286,14 +337,18 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Displays the Metric Name only in the Metric
+   * Displays the Metric or Status Name only in the Metric or Status
    * autocomplete field.
    */
-  displayMetricName(metric: Metric): string {
-    if (metric == null) {
+  displayMetricOrStatusName(item: Metric | FormStatus): string {
+    if (item == null) {
       return '';
     }
-    return metric.name && metric.id ? metric.name : '';
+    const itemObj = item as {[key: string]: any};
+    if (itemObj['label'] && item.name && item.id) {
+      return itemObj['label'];
+    }
+    return item.name && item.id ? item.name : '';
   }
 
   showOptions(group: FormGroup) {
@@ -305,12 +360,15 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Sorts Metric options alphabetically by their name property.
+   * Sorts Metric or Status options alphabetically by their name property.
    * @param a Prev item
    * @param b Next Item
    * @returns Sort order
    */
-  private _sortMetricsAlphabetically(a: RxDocument<Metric>, b: RxDocument<Metric>): number {
+  private _sortItemsAlphabetically(
+    a: RxDocument<Metric> | RxDocument<FormStatus>,
+    b: RxDocument<Metric> | RxDocument<FormStatus>,
+  ): number {
     let textA = a.name.toUpperCase();
     let textB = b.name.toUpperCase();
     const less = textA < textB;
@@ -341,7 +399,35 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           if (typeof val === 'string') {
             return metricManager
               .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$ne: true}}})
-              .pipe(map(results => results.sort((a, b) => this._sortMetricsAlphabetically(a, b))));
+              .pipe(map(results => results.sort((a, b) => this._sortItemsAlphabetically(a, b))));
+          }
+          return [];
+        }),
+      );
+    }
+  }
+
+  /**
+   * Populates the autocomplete panel of the Form Status filter with options
+   */
+  private _populateStatusOptions(): void {
+    const inputControl = this.additionalBasicFilters.find(
+      group => group.get('form_status') != null,
+    );
+    const inputValue = inputControl?.get('form_status')?.valueChanges;
+    if (inputValue != null) {
+      this.formStatusFilterOptions = combineLatest([inputValue, this.availableFormStatuses]).pipe(
+        switchMap(([inputVal, options]) => {
+          if (typeof inputVal === 'string') {
+            return this._fsm
+              .query({
+                selector: {
+                  name: {$regex: new RegExp(inputVal, 'i')},
+                  id: {$in: options ?? []},
+                  is_deleted: {$ne: true},
+                },
+              })
+              .pipe(map(results => results.sort((a, b) => this._sortItemsAlphabetically(a, b))));
           }
           return [];
         }),

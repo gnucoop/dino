@@ -60,30 +60,38 @@
     </ng-container>
 
     <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
-      <ng-template #metricField>
+      <ng-template #metricOrStatusField>
         <mat-form-field
           floatLabel="always"
-          *ngIf="additionalBasicFiltersLabels[idx]"
+          *ngIf="additionalBasicFiltersLabels[idx] && (isMetric(group) || (isStatus(group) && (availableFormStatuses|async)?.length) )"
           (click)="showOptions(group)"
         >
           <input
             matInput
             [formControlName]="additionalBasicFiltersLabels[idx]"
-            placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
+            placeholder="{{'search by'|transloco}} {{(additionalBasicFiltersLabels[idx]|transloco).charAt(0).toUpperCase() + (additionalBasicFiltersLabels[idx]|transloco).slice(1).replace('_', ' ')}}"
             [matAutocomplete]="auto"
           />
           <mat-icon matSuffix color="primary">search</mat-icon>
           <mat-autocomplete
             #auto="matAutocomplete"
             [autoActiveFirstOption]="false"
-            [displayWith]="displayMetricName"
+            [displayWith]="displayMetricOrStatusName"
           >
-            <mat-option
-              *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
-              [value]="option"
-            >
-              {{option.name}}
-            </mat-option>
+            <ng-container *ngIf="isMetric(group); else statusOptions ">
+              <mat-option
+                *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
+                [value]="option"
+              >
+                {{option.name}}
+              </mat-option>
+            </ng-container>
+
+            <ng-template #statusOptions>
+              <mat-option *ngFor="let option of formStatusFilterOptions | async" [value]="option">
+                {{option.label}}
+              </mat-option>
+            </ng-template>
           </mat-autocomplete>
         </mat-form-field>
       </ng-template>
@@ -99,7 +107,9 @@
         </mat-form-field>
       </ng-template>
 
-      <ng-container *ngTemplateOutlet="isMetric(group) ? metricField : default"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="isMetric(group) || isStatus(group) ? metricOrStatusField : default"
+      ></ng-container>
     </ng-container>
 
     <ng-container *ngIf="additionalFilters">
