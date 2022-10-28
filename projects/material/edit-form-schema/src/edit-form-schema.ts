@@ -107,6 +107,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
   readonly form: Observable<AjfForm | null>;
 
   /**
+   * True if you are creating a new form
+   */
+  readonly isCreation: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+  /**
    * The Form schema id
    */
   private _formSchemaId: Observable<string | null>;
@@ -188,6 +193,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._formSchema = this._formSchemaId.pipe(
       map(schemaId => {
         if (schemaId == null) {
+          this.isCreation.next(true);
           return obsOf(null);
         }
         return this._fs.get(schemaId).pipe(
@@ -196,6 +202,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
               return null;
             }
             const item = doc.toJSON();
+            this.isCreation.next(false);
             return item;
           }),
         );
