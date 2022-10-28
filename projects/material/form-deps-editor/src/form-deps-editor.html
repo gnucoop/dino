@@ -55,11 +55,11 @@
             />
             <mat-autocomplete #valueAc="matAutocomplete" (optionSelected)="selected(row, $event)">
               <ng-container *ngIf="row.form_schema_ref_id">
-                <mat-option
-                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field"
-                  >{{field}}</mat-option
-                >
+                <ng-container *ngFor="let field of schemaFields$[row.form_schema_ref_id]">
+                  <mat-option *ngIf="row.fields_to_update.indexOf(field) < 0" [value]="field"
+                    >{{field}}</mat-option
+                  >
+                </ng-container>
               </ng-container>
             </mat-autocomplete>
           </mat-form-field>
@@ -69,7 +69,12 @@
         <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
         <mat-cell *matCellDef="let row; let idx = index">
           <mat-form-field>
-            <mat-select matNativeControl [(ngModel)]="row.filter_by_metric" multiple>
+            <mat-select
+              matNativeControl
+              [(ngModel)]="row.filter_by_metric"
+              multiple
+              (selectionChange)="changeMetrics($event)"
+            >
               <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
                 <span> {{metric|transloco}}</span>
               </mat-option>

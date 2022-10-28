@@ -37,6 +37,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {deepCopy} from '@ajf/core/utils';
+import {MatSelectChange} from '@angular/material/select';
 
 /**
  * Represents data to be passed to the Form Status editor
@@ -179,13 +180,16 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     );
 
     this._depsSub = this._formSchemaDeps.subscribe(fschemadeps => {
-      if (fschemadeps && fschemadeps.deps_origin) {
-        this.dataSource.data = deepCopy(fschemadeps).deps_origin as FormSchemaDepsOrigin[];
-        this.currentMetrics = fschemadeps.metric_data_to_show
-          ? fschemadeps.metric_data_to_show
-          : [];
-      } else {
-        this.dataSource.data = [];
+      if (fschemadeps) {
+        if (fschemadeps.deps_origin) {
+          this.dataSource.data = deepCopy(fschemadeps).deps_origin as FormSchemaDepsOrigin[];
+        } else {
+          this.dataSource.data = [];
+        }
+        this.currentMetrics = this.getRequiredMetrics(
+          this.dataSource.data,
+          fschemadeps.metric_data_to_show,
+        );
       }
     });
   }
@@ -195,15 +199,16 @@ export class FormDepsEditor implements OnInit, OnDestroy {
       .pipe(
         withLatestFrom(this.formSchema, this._formSchemaDeps),
         switchMap(([selMetrics, fschema, fschemadeps]) => {
+          const allRequiredMetrics = this.getRequiredMetrics(this.dataSource.data, selMetrics);
           if (fschema && fschemadeps) {
             const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
             fsdeps.deps_origin = this.dataSource.data;
-            fsdeps.metric_data_to_show = selMetrics;
+            fsdeps.metric_data_to_show = allRequiredMetrics;
             return combineLatest([this._fsd.update(fsdeps), obsOf('edit'), obsOf(fschema)]);
           } else {
             const fsdeps = {
               deps_origin: this.dataSource.data,
-              metric_data_to_show: selMetrics,
+              metric_data_to_show: allRequiredMetrics,
             } as FormSchemaDeps;
             return combineLatest([this._fsd.create(fsdeps), obsOf('create'), obsOf(fschema)]);
           }
@@ -281,6 +286,25 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   selected(row: FormSchemaDepsOrigin, evt: MatAutocompleteSelectedEvent): void {
     row.fields_to_update = [...row.fields_to_update, evt.option.value];
     this._cdr.markForCheck();
+  }
+
+  changeMetrics(evt: MatSelectChange) {
+    if (this.currentMetrics) {
+      this.currentMetrics = [...new Set(this.currentMetrics.concat(evt.value))];
+    }
+  }
+
+  private getRequiredMetrics(
+    depsOrigin: FormSchemaDepsOrigin[] | undefined,
+    selMetrics: string[] | undefined,
+  ): string[] {
+    let requiredMetrics: string[] = [];
+
+    if (depsOrigin) {
+      depsOrigin.forEach(d => (requiredMetrics = requiredMetrics.concat(d.filter_by_metric ?? [])));
+      requiredMetrics = [...new Set(requiredMetrics)];
+    }
+    return selMetrics ? [...new Set(requiredMetrics.concat(selMetrics))] : requiredMetrics;
   }
 
   private _flattenNodes(nodes: AjfNode[]): AjfNode[] {
