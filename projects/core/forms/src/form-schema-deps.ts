@@ -60,10 +60,15 @@ export interface FormSchemaDepsOrigin {
   filter_by_metric: string[];
 
   /**
+   * True if this relationship should create a choices origin
+   */
+  is_choice?: boolean;
+
+  /**
    * The name of the choicesOrigins to be added or replaced in the form schema
    * TODO: not yet implemented
    */
-  choices_origin?: FormSchemaChoiceOrigin;
+  choices_origin?: FormSchemaChoiceOrigin | null;
 
   /**
    * Order by field for the query

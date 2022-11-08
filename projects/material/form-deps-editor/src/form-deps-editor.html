@@ -34,34 +34,20 @@
         <mat-header-cell *matHeaderCellDef>{{'Fields'|transloco}}</mat-header-cell>
         <mat-cell *matCellDef="let row; let idx = index">
           <mat-form-field>
-            <mat-chip-list #chipList>
-              <mat-chip
-                *ngFor="let field of row.fields_to_update"
-                (removed)="removeValue(row, field)"
-              >
-                {{ field }}
-                <mat-icon matChipRemove>cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-            <input
-              #valueInput
-              [ngModel]="row.fields_to_update"
-              [matAutocomplete]="valueAc"
-              [matChipInputFor]="chipList"
-              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              [matChipInputAddOnBlur]="true"
-              (matChipInputTokenEnd)="addValue(row, $event, valueInput)"
-              [placeholder]="'Value'|transloco"
-            />
-            <mat-autocomplete #valueAc="matAutocomplete" (optionSelected)="selected(row, $event)">
+            <mat-select
+              [(ngModel)]="row.fields_to_update"
+              [placeholder]="'Form fields'|transloco"
+              multiple
+              (selectionChange)="checkChoiceOption($event, idx)"
+            >
               <ng-container *ngIf="row.form_schema_ref_id">
-                <ng-container *ngFor="let field of schemaFields$[row.form_schema_ref_id]">
-                  <mat-option *ngIf="row.fields_to_update.indexOf(field) < 0" [value]="field"
-                    >{{field}}</mat-option
-                  >
-                </ng-container>
+                <mat-option
+                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
+                  [value]="field"
+                  >{{field}}</mat-option
+                >
               </ng-container>
-            </mat-autocomplete>
+            </mat-select>
           </mat-form-field>
         </mat-cell>
       </ng-container>
@@ -80,6 +66,19 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="is_choice">
+        <mat-header-cell *matHeaderCellDef
+          >{{'Create choices'|transloco}} {{'(select only one field)'|transloco}}</mat-header-cell
+        >
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-slide-toggle
+            [(ngModel)]="row.is_choice"
+            [disabled]="row.fields_to_update.length > 1"
+            style="margin: 10px"
+            aria-label="Is choice"
+          ></mat-slide-toggle>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="delete">

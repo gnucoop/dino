@@ -32,8 +32,6 @@ import {
 import {MetricsService} from '@dino/core/data';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {MatTableDataSource} from '@angular/material/table';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {deepCopy} from '@ajf/core/utils';
@@ -111,6 +109,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     'form_schema_ref_id',
     'fields_to_update',
     'filter_by_metric',
+    'is_choice',
     'delete',
   ];
 
@@ -252,7 +251,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   addRow(): void {
     this.dataSource.data = [
       ...this.dataSource.data,
-      {form_schema_ref_id: '', fields_to_update: [], filter_by_metric: []},
+      {form_schema_ref_id: '', fields_to_update: [], filter_by_metric: [], is_choice: false},
     ];
   }
 
@@ -263,34 +262,15 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     ];
   }
 
-  addValue(row: FormSchemaDepsOrigin, evt: MatChipInputEvent, valueInput: HTMLInputElement): void {
-    if (evt.value.length === 0) {
-      return;
-    }
-    row.fields_to_update = [...row.fields_to_update, evt.value];
-    valueInput.value = '';
-    this._cdr.markForCheck();
-  }
-
-  removeValue(row: FormSchemaDepsOrigin, value: string): void {
-    const idx = row.fields_to_update.indexOf(value);
-    if (idx > -1) {
-      row.fields_to_update = [
-        ...row.fields_to_update.slice(0, idx),
-        ...row.fields_to_update.slice(idx + 1),
-      ];
-      this._cdr.markForCheck();
-    }
-  }
-
-  selected(row: FormSchemaDepsOrigin, evt: MatAutocompleteSelectedEvent): void {
-    row.fields_to_update = [...row.fields_to_update, evt.option.value];
-    this._cdr.markForCheck();
-  }
-
   changeMetrics(evt: MatSelectChange) {
     if (this.currentMetrics) {
       this.currentMetrics = [...new Set(this.currentMetrics.concat(evt.value))];
+    }
+  }
+
+  checkChoiceOption(evt: MatSelectChange, rowIdx: number) {
+    if (evt.value.length > 1) {
+      this.dataSource.data[rowIdx].is_choice = false;
     }
   }
 

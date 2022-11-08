@@ -171,10 +171,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
    * All the metric changes in the metric selector
    */
   private _metricChangesSub: Subscription = Subscription.EMPTY;
-  readonly metricChanges: BehaviorSubject<{[key: string]: RxDocument<Metric>} | null> =
-    new BehaviorSubject<{
-      [key: string]: RxDocument<Metric>;
-    } | null>(null);
+  readonly metricChanges: BehaviorSubject<{[key: string]: Metric} | null> = new BehaviorSubject<{
+    [key: string]: Metric;
+  } | null>(null);
 
   /**
    * The Form schema statuses
@@ -250,7 +249,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   /**
    * The Form Metrics Selector
    */
-  @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+  @ViewChildren(FormMetricSelector)
+  formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   constructor(
     private _nss: NetworkStatusService,
@@ -351,100 +351,105 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       .pipe(
         withLatestFrom(this._rendererService.formGroup),
         map(([[fschemadeps, metricSel], formGroup]) => {
-          let depsCtx: {[key: string]: any} = {};
-          let extFormDataObs: Observable<any>[] = [];
+          let metricsCtx: {[key: string]: any} = {};
 
           if (fschemadeps) {
             if (metricSel != null) {
               Object.keys(metricSel).forEach(metricName => {
-                if (
-                  metricSel[metricName] &&
-                  isRxDocument(metricSel[metricName]) &&
-                  fschemadeps.metric_data_to_show &&
-                  fschemadeps.metric_data_to_show.includes(metricName)
-                ) {
-                  const metricProps = metricSel[metricName].toJSON();
-                  for (let prop in metricProps) {
+                if (metricSel[metricName]) {
+                  for (let prop in metricSel[metricName]) {
                     if (!this._dinoBaseModelFields.includes(prop)) {
-                      depsCtx[`${metricName}_${prop}`] = (metricProps as {[key: string]: any})[
-                        prop
-                      ];
+                      metricsCtx[`${metricName}_${prop}`] = (
+                        metricSel[metricName] as {[key: string]: any}
+                      )[prop];
                     }
                   }
                 }
               });
-              if (Object.keys(depsCtx).length) {
-                formGroup?.patchValue(depsCtx);
-              }
-
-              if (fschemadeps.deps_origin) {
-                extFormDataObs = this._getExternalFormData(fschemadeps, metricSel);
-                if (extFormDataObs.length) {
-                  return forkJoin(extFormDataObs).pipe(
-                    map(extDatas => {
-                      let extCtx: {[key: string]: any} = {};
-                      extDatas.forEach(extData => {
-                        if (extData !== null && extData.length) {
-                          const item = extData[0].toJSON() as {[key: string]: any} as FormData;
-                          extCtx[item.form_schema_ref_id] = item['data'];
-                        }
-                      });
-                      return extCtx;
-                    }),
-                  );
-                }
+              if (Object.keys(metricsCtx).length) {
+                formGroup?.patchValue(metricsCtx);
               }
             }
+
+            if (fschemadeps.deps_origin) {
+              const extFormDataObs = this._getExternalFormData(fschemadeps, metricSel);
+
+              let extFormDataRes: Observable<RxDocument<FormData>[][] | null> = obsOf(null);
+              if (extFormDataObs.length) {
+                extFormDataRes = forkJoin(extFormDataObs).pipe(
+                  map((extDatas: RxDocument<FormData>[][]) => {
+                    return extDatas;
+                  }),
+                );
+              }
+              return extFormDataRes;
+            }
           }
-          return obsOf({});
+          return obsOf(null);
         }),
         switchMap(data => {
-          return data as Observable<{[key: string]: any}>;
+          return data;
         }),
         shareReplay(1),
         withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps, this._formSchema),
       )
       .subscribe(([changes, formGroup, fschemadeps, fschema]) => {
-        if (fschemadeps && fschemadeps.deps_origin && changes && Object.keys(changes).length) {
-          const newFormSchema = deepCopy(fschema.schema);
+        if (fschemadeps && fschemadeps.deps_origin && changes) {
           const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
+          const newFormSchema: FormSchema = deepCopy(fschema);
           let extCtx: {[key: string]: any} = {};
-          fschemadeps.deps_origin.forEach(depsOrigin => {
-            if (depsOrigin.form_schema_ref_id && depsOrigin.fields_to_update) {
-              let extFormData: {[key: string]: any} = {};
-              if (depsOrigin.form_schema_ref_id in changes) {
-                extFormData = changes[depsOrigin.form_schema_ref_id];
-              }
-              depsOrigin.fields_to_update.forEach(field => {
-                extCtx[field] = null;
-                if (extFormData) {
-                  if (field in extFormData) {
-                    extCtx[field] = extFormData[field];
-                  } else if (field + '__0' in extFormData) {
-                    const choicesOriginName = field + '_choice';
-                    newFormSchema.choicesOrigins = newFormSchema.choicesOrigins.filter(
-                      (c: any) => c.name !== choicesOriginName,
-                    );
-                    newChoicesOrigins.push({
-                      type: 'fixed',
-                      name: choicesOriginName,
-                      label: choicesOriginName,
-                      choices: this._getChoicesFromFieldReps(field, extFormData),
+
+          if (changes.length) {
+            let extDocsIdx = 0;
+            fschemadeps.deps_origin.forEach(depsOrigin => {
+              if (
+                depsOrigin.form_schema_ref_id &&
+                depsOrigin.fields_to_update &&
+                depsOrigin.fields_to_update.length &&
+                changes.length > extDocsIdx
+              ) {
+                if (depsOrigin.is_choice) {
+                  const field = depsOrigin.fields_to_update[0];
+                  const choicesOriginName = field + '_choice';
+                  newChoicesOrigins.push({
+                    type: 'fixed',
+                    name: choicesOriginName,
+                    label: choicesOriginName,
+                    choices: this._getChoicesFromDocs(field, changes[extDocsIdx]),
+                  });
+                } else {
+                  if (changes[extDocsIdx] !== null && changes[extDocsIdx].length) {
+                    const extFormData = changes[extDocsIdx][0].toJSON();
+                    depsOrigin.fields_to_update.forEach(field => {
+                      extCtx[field] = null;
+                      if (field in extFormData.data) {
+                        extCtx[field] = extFormData.data[field];
+                      } else if (field + '__0' in extFormData.data) {
+                        const choicesOriginName = field + '_choice';
+                        newChoicesOrigins.push({
+                          type: 'fixed',
+                          name: choicesOriginName,
+                          label: choicesOriginName,
+                          choices: this._getChoicesFromFieldReps(field, extFormData.data),
+                        });
+                      }
                     });
                   }
                 }
+                extDocsIdx++;
+              }
+            });
+          }
+
+          if (formGroup && formGroup.value) {
+            if (newChoicesOrigins.length) {
+              this._addChoiceOriginToFormSchema(newFormSchema, newChoicesOrigins, {
+                ...formGroup.value,
+                ...extCtx,
               });
+            } else if (Object.keys(extCtx).length) {
+              formGroup.patchValue(extCtx);
             }
-          });
-          if (newChoicesOrigins.length) {
-            newFormSchema.choicesOrigins = newFormSchema.choicesOrigins.concat(newChoicesOrigins);
-            if (formGroup && formGroup.value) {
-              this.formChanges.next(
-                AjfFormSerializer.fromJson(newFormSchema, {...formGroup.value, ...extCtx}),
-              );
-            }
-          } else if (Object.keys(extCtx).length) {
-            formGroup?.patchValue(extCtx);
           }
         }
       });
@@ -495,6 +500,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               map(([metricSel, fschemadeps]) => {
                 if (fschemadeps && fschemadeps.metric_data_to_show) {
                   let setNextMetricValue = false;
+                  const requiredMetrics = this.metricChanges.getValue() || {};
                   Object.keys(metricSel).forEach(metricName => {
                     if (
                       metricSel[metricName] &&
@@ -502,11 +508,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                       fschemadeps.metric_data_to_show &&
                       fschemadeps.metric_data_to_show.includes(metricName)
                     ) {
-                      setNextMetricValue = true;
+                      const metricProps = metricSel[metricName].toJSON();
+                      if (
+                        !(metricName in requiredMetrics) ||
+                        (metricName in requiredMetrics &&
+                          requiredMetrics[metricName].id !== metricProps.id)
+                      ) {
+                        requiredMetrics[metricName] = metricProps;
+                        setNextMetricValue = true;
+                      }
                     }
                   });
                   if (setNextMetricValue) {
-                    this.metricChanges.next(metricSel);
+                    this.metricChanges.next(requiredMetrics);
                   }
                 }
                 return metricSel;
@@ -548,7 +562,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               apiCall.push(obsOf(formObj));
               const uploadedFilesObs = this.uploadService.uploadFiles(filesToUpload);
               apiCall.push(...uploadedFilesObs);
-              this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
+              this.snackbar.open('Wait until uploading documents...', 'WAIT', {
+                duration: 5000,
+              });
             }
           } else {
             apiCall.push(obsOf(formObj));
@@ -700,7 +716,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
         let refProp;
         try {
-          refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+          refProp = {
+            [propKey]: from(doc.populate(prop)).pipe(shareReplay(1)),
+          };
         } catch (e) {
           refProp = {[propKey]: obsOf(null)};
         }
@@ -720,8 +738,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   private _getExternalFormData(
     fschemadeps: FormSchemaDeps,
     metricSel: {
-      [key: string]: RxDocument<Metric>;
-    },
+      [key: string]: Metric;
+    } | null,
   ): Observable<any>[] {
     const extFormDataObs: Observable<any>[] = [];
     if (fschemadeps.deps_origin) {
@@ -732,35 +750,39 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       fschemadeps.deps_origin.forEach(depsOrigin => {
         if (
           depsOrigin.form_schema_ref_id &&
-          depsOrigin.filter_by_metric &&
-          depsOrigin.filter_by_metric.length
+          depsOrigin.fields_to_update &&
+          depsOrigin.fields_to_update.length
         ) {
+          let missingMetric = false;
           const opt: DataQueryOptions = {
             selector: {
               form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id},
               is_deleted: {$ne: true},
             },
-            limit: 1,
             sort: [{created_at: 'desc'}],
           };
+          if (!depsOrigin.is_choice) {
+            opt['limit'] = 1;
+          }
 
-          let missingMetric = false;
-          depsOrigin.filter_by_metric.forEach(metric => {
-            if (activeMetrics.includes(metric) && metricSel[metric]) {
-              const metricProps = metricSel[metric].toJSON();
-              opt['selector'][metric + '_ref_id'] = {$eq: metricProps.id};
-            } else {
-              missingMetric = true;
-            }
-          });
+          if (depsOrigin.filter_by_metric) {
+            depsOrigin.filter_by_metric.forEach(metric => {
+              if (activeMetrics.includes(metric) && metricSel && metricSel[metric]) {
+                opt['selector'][metric + '_ref_id'] = {
+                  $eq: metricSel[metric].id,
+                };
+              } else {
+                missingMetric = true;
+              }
+            });
+          }
 
           if (!missingMetric) {
-            extFormDataObs.push(
-              dmm.query(opt).pipe(
-                take(1),
-                catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
-              ),
+            const query = dmm.query(opt).pipe(
+              take(1),
+              catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
             );
+            extFormDataObs.push(query);
           }
         }
       });
@@ -768,21 +790,63 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     return extFormDataObs;
   }
 
+  /**
+   * Add new dynamic choices origins to form schema
+   * @param formSchema the form schema to update
+   * @param newChoicesOrigins
+   * @param ctx the context for the form
+   */
+  private _addChoiceOriginToFormSchema(
+    formSchema: FormSchema,
+    newChoicesOrigins: AjfChoicesOrigin<string>[],
+    ctx: {[key: string]: any},
+  ): void {
+    formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins ?? [];
+    if (newChoicesOrigins.length) {
+      newChoicesOrigins.forEach(choice => {
+        formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins ?? [];
+        formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins.filter(
+          (c: any) => c.name !== choice.name,
+        );
+      });
+
+      formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins.concat(newChoicesOrigins);
+      this.formChanges.next(AjfFormSerializer.fromJson(formSchema.schema, ctx));
+    }
+  }
+
   private _getChoicesFromFieldReps(
     fieldName: string,
     ctx: {[key: string]: any},
   ): AjfChoice<string>[] {
-    const reps: AjfChoice<string>[] = [];
+    const choices: AjfChoice<string>[] = [];
     Object.keys(ctx).map(key => {
       if (key.indexOf(fieldName + '__') > -1) {
         if (ctx[key] != null) {
-          reps.push({
+          choices.push({
             label: ctx[key],
-            value: key,
+            value: ctx[key],
           });
         }
       }
     });
-    return reps;
+    return choices;
+  }
+
+  private _getChoicesFromDocs(
+    fieldName: string,
+    docs: RxDocument<FormData>[],
+  ): AjfChoice<string>[] {
+    const choices: AjfChoice<string>[] = [];
+    docs.forEach(doc => {
+      const extFormData = doc.toJSON();
+      if (fieldName in extFormData.data && extFormData.data[fieldName] != null) {
+        choices.push({
+          label: extFormData.data[fieldName],
+          value: extFormData.data[fieldName],
+        });
+      }
+    });
+    return choices;
   }
 }
