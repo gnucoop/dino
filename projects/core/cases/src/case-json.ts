@@ -65,6 +65,17 @@ export const schema = {
         "null"
       ]
     },
+    "metric_data": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Generic info json field"
+    },
     "code": {
       "type": "number",
       "description": "The Case Code identifier"
@@ -94,5 +105,5 @@ export const schema = {
     "name"
   ],
   "primaryKey": "id",
-  "version": 0
+  "version": 1
 } as RxJsonSchema<Case>;

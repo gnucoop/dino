@@ -65,6 +65,17 @@ export const schema = {
         "null"
       ]
     },
+    "metric_data": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Generic info json field"
+    },
     "logo_path": {
       "type": [
         "string",
@@ -99,5 +110,5 @@ export const schema = {
     "name"
   ],
   "primaryKey": "id",
-  "version": 0
+  "version": 1
 } as RxJsonSchema<Organization>;

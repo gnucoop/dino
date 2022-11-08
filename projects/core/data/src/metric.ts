@@ -38,4 +38,9 @@ export interface Metric extends Model {
    */
   parent_id: string | null;
   parent_name: string | null;
+
+  /**
+   * Generic info json field
+   */
+  metric_data?: {[key: string]: any} | null;
 }

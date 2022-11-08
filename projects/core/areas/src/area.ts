@@ -20,7 +20,7 @@
  *
  */
 import {Metric} from '@dino/core/data';
-import {MigrationStrategies} from 'rxdb';
+import {MigrationStrategies, RxDocument} from 'rxdb';
 
 /**
  * This model is used to store Areas.
@@ -28,6 +28,10 @@ import {MigrationStrategies} from 'rxdb';
  */
 export interface Area extends Metric {}
 
-export const VERSION = 0;
+export const VERSION = 1;
 
-export const migrationStrategies: MigrationStrategies = {};
+export const migrationStrategies: MigrationStrategies = {
+  1: (doc: RxDocument) => {
+    return {...doc, metric_data: null};
+  },
+};

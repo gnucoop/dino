@@ -65,6 +65,17 @@ export const schema = {
         "string",
         "null"
       ]
+    },
+    "metric_data": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Generic info json field"
     }
   },
   "required": [
@@ -83,5 +94,5 @@ export const schema = {
     "name"
   ],
   "primaryKey": "id",
-  "version": 0
+  "version": 1
 } as RxJsonSchema<Area>;

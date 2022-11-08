@@ -65,6 +65,17 @@ export const schema = {
         "null"
       ]
     },
+    "metric_data": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Generic info json field"
+    },
     "coordinates": {
       "$ref": "#/definitions/Coordinates",
       "description": "The optional location map coordinates"
@@ -87,5 +98,5 @@ export const schema = {
     "name"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<Location>;

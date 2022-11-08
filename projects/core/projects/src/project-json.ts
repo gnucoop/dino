@@ -65,6 +65,17 @@ export const schema = {
         "null"
       ]
     },
+    "metric_data": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Generic info json field"
+    },
     "code": {
       "type": "string",
       "description": "The project Code identifier"
@@ -120,5 +131,5 @@ export const schema = {
     "name"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<Project>;

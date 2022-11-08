@@ -49,8 +49,11 @@ export interface Coordinates {
   longitude: string | null;
 }
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
+  2: (doc: RxDocument) => {
+    return {...doc, metric_data: null};
+  },
 };
