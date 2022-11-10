@@ -16,6 +16,7 @@ export class MatLocationsE2E {
     {column: 'parent_name', label: 'Parent Location', displayed: true},
     {column: 'coordinates', label: 'Coordinates', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'metric_data', label: 'Additional Attributes', displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [

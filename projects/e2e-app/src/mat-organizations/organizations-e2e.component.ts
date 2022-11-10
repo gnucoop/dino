@@ -17,6 +17,7 @@ export class MatOrganizationsE2E {
     {column: 'logo_path', label: 'Logo Path', displayed: true},
     {column: 'website_url', label: 'Website Url', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'metric_data', label: 'Additional Attributes', displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [

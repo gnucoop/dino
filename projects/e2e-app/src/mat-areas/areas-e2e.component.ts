@@ -15,6 +15,7 @@ export class MatAreasE2E {
     {column: 'name', label: 'Name', displayed: true, sortable: true},
     {column: 'parent_name', label: 'Parent Area', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'metric_data', label: 'Additional Attributes', displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [

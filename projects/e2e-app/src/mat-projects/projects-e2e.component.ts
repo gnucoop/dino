@@ -15,11 +15,13 @@ export class MatProjectsE2E {
     {column: 'name', label: 'Name', displayed: true, sortable: true},
     {column: 'parent_name', label: 'Parent Project', displayed: true},
     {column: 'code', label: 'Code', displayed: true},
+    {column: 'code_auto', label: 'Auto Code', displayed: true},
     {column: 'sectors_of_intervention', label: 'Sectors of Intervention', displayed: true},
     {column: 'donors', label: 'Donors', displayed: true},
     {column: 'start_date', label: 'Start Date', displayed: true},
     {column: 'end_date', label: 'End Date', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'metric_data', label: 'Additional Attributes', displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [

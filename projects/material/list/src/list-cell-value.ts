@@ -57,7 +57,10 @@ export class ListCellValue implements PipeTransform {
       let labelItem = choices[headerName].find(ch => ch.value == val);
       val = labelItem ? labelItem.label : val;
     }
-    return val;
+    if (typeof val === 'object' && val != null) {
+      val = JSON.stringify(val, null, 2).replace('{', '').replace('}', '');
+    }
+    return val == null ? '' : val;
   }
 
   private _getCurrentLocale(): string {

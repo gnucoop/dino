@@ -16,6 +16,7 @@ export class MatCasesE2E {
     {column: 'code', label: 'Code', displayed: true},
     {column: 'parent_name', label: 'Parent Case', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'metric_data', label: 'Additional Attributes', displayed: false},
   ];
   readonly readOnlyFields: string[] = ['code'];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
