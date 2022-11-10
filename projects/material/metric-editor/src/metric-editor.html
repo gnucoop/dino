@@ -63,6 +63,58 @@
         </mat-form-field>
       </ng-container>
     </form>
+    <ng-container *ngIf="data.metricAction !== 'View' || (data.metricAction === 'View' && attributes().controls.length)">
+      <mat-divider></mat-divider>
+      <br />
+      <form [formGroup]="metricDataForm" autocomplete="off">
+        <h1 mat-dialog-title class="dino-additional-attributes-title">
+          {{'Additional attributes'|transloco}}
+        </h1>
+        <div formArrayName="attributes" class="dino-additional-attributes-container">
+          <ng-container *ngFor="let dataField of attributes().controls; let idx = index">
+            <div class="dino-additional-attribute-entry" [formGroupName]="idx">
+              <mat-form-field class="dino-metric-editor-field" appearance="fill">
+                <mat-label>{{'Attribute name'|transloco}}</mat-label>
+                <input
+                  matInput
+                  [formControlName]="'attribute_name'"
+                  [placeholder]="('Attribute name'|transloco)"
+                  [readonly]="data.metricAction === 'View'"
+                  [value]="dataField.value['attribute_name']"
+                />
+              </mat-form-field>
+              <mat-form-field class="dino-metric-editor-field" appearance="fill">
+                <mat-label>{{'Attribute value'|transloco}}</mat-label>
+                <input
+                  matInput
+                  [formControlName]="'attribute_value'"
+                  [placeholder]="('Attribute value'|transloco)"
+                  [readonly]="data.metricAction === 'View'"
+                  [value]="dataField.value['attribute_value']"
+              /></mat-form-field>
+              <button
+                *ngIf="data.metricAction !== 'View'"
+                class="dino-attribute-button dino-remove-attribute-button"
+                aria-label="Remove attribute"
+                (click)="removeAttribute(idx)"
+                mat-mini-fab
+              >
+                <mat-icon class="icon">remove</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+          <button
+            *ngIf="data.metricAction !== 'View'"
+            class="dino-attribute-button"
+            aria-label="Add attribute"
+            (click)="addAttribute()"
+            mat-mini-fab
+          >
+            <mat-icon class="icon">add</mat-icon>
+          </button>
+        </div>
+      </form>
+    </ng-container>
   </mat-dialog-content>
   <div mat-dialog-actions>
     <button mat-raised-button color="warn" (click)="closeEditor()">{{'Close'|transloco}}</button>

@@ -28,6 +28,7 @@
 export const METRIC_DEFAULT_PROPERTIES: string[] = [
   'id',
   'name',
+  'metric_data',
   'created_at',
   'updated_at',
   'parent_id',

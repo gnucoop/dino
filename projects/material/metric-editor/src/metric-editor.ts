@@ -31,7 +31,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
@@ -103,6 +103,14 @@ export interface MetricFormField {
 }
 
 /**
+ * Represents a Metric Data Attribute
+ */
+export interface MetricDataAttribute {
+  attribute_name: string;
+  attribute_value: string;
+}
+
+/**
  * Represents a Parent Metric field value object
  */
 export interface ParentMetric {
@@ -138,6 +146,11 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
    * The form group derived from the Metric Schema.
    */
   metricForm?: FormGroupWithWarnings;
+
+  /**
+   * The form group of the metric additional attributes.
+   */
+  metricDataForm: FormGroup;
 
   /**
    * The editor form fields
@@ -180,12 +193,67 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     private _nameMatchValidator: NameMatchValidator<T>,
     private _cdr: ChangeDetectorRef,
     private _ts: TranslocoService,
+    private _fb: FormBuilder,
   ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
       const collName = this._metricManager.collectionName;
       this.metricName = collName.charAt(0).toUpperCase() + collName.slice(1);
     }
+
+    this.metricDataForm = this._fb.group({attributes: this._fb.array([])}, null);
+  }
+
+  /**
+   * Gets the attributes from metricDataForm
+   * @returns The attributes FormArray
+   */
+  attributes(): FormArray {
+    return this.metricDataForm.get('attributes') as FormArray;
+  }
+
+  /**
+   * Creates a new formGroup attribute
+   * @param attribute The new attribute
+   * @returns the attribute group
+   */
+  newAttribute(attribute?: MetricDataAttribute): FormGroup {
+    return this._fb.group({
+      attribute_name: attribute && attribute.attribute_name ? attribute.attribute_name : '',
+      attribute_value: attribute && attribute.attribute_value ? attribute.attribute_value : '',
+    });
+  }
+
+  /**
+   * Adds a new attribute to the attributes formgroup
+   * @param attribute The attribute to be added
+   */
+  addAttribute(attribute?: MetricDataAttribute) {
+    this.attributes().push(this.newAttribute(attribute));
+  }
+
+  /**
+   * Removes an attribute from the attributes formgroup by index
+   * @param i the index of the attribute to be removed
+   */
+  removeAttribute(i: number) {
+    this.attributes().removeAt(i);
+  }
+
+  /**
+   * Generates the metric_data metric field from the attributes formgroup value
+   */
+  generateMetricData(groupValue: {
+    attributes: [{attribute_name: string; attribute_value: string}];
+  }): {[key: string]: string} | null {
+    if (groupValue == null) {
+      return null;
+    }
+    const metric_data: {[key: string]: string} = {};
+    groupValue.attributes.forEach(
+      attr => (metric_data[attr.attribute_name] = attr.attribute_value),
+    );
+    return Object.keys(metric_data).length ? metric_data : null;
   }
 
   /**
@@ -204,11 +272,13 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       return;
     }
     const formValue = this.metricForm.value;
+    const attributesFormValue = this.metricDataForm.value;
+    const metric_data = this.generateMetricData(attributesFormValue);
     if (formValue != null && this.isFormValid() && this._metricManager != null) {
-      let obj = {...formValue};
+      let obj = {...formValue, metric_data};
       if (this.data.metricItem != null && this.data.metricAction === 'Edit') {
         const editedItem: T = this.data.metricItem;
-        obj = {...editedItem, ...formValue};
+        obj = {...editedItem, ...formValue, metric_data};
       }
       delete obj.parent;
       obj['parent_id'] = formValue.parent.parent_id;
@@ -312,6 +382,14 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         fields.push(field);
       }
     }
+
+    if (currentMetricItem['metric_data'] != null) {
+      for (let attribute_name in currentMetricItem['metric_data']) {
+        const attribute_value = currentMetricItem['metric_data'][attribute_name];
+        this.addAttribute({attribute_name, attribute_value});
+      }
+    }
+
     const formGroup = new FormGroup(group) as FormGroupWithWarnings;
 
     this.metricForm = formGroup;
