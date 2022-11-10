@@ -441,7 +441,14 @@ export class EditReport implements AfterViewInit {
           const jsonDoc: {[key: string]: any} = mt.toJSON();
           const dataJsonAdd: {[key: string]: any} = {};
           for (let key in jsonDoc) {
-            dataJsonAdd[`dino_${metricType}_${key}`] = jsonDoc[key];
+            if (key !== 'metric_data') {
+              dataJsonAdd[`dino_${metricType}_${key}`] = jsonDoc[key];
+            } else if (jsonDoc['metric_data'] != null) {
+              for (let dataKey in jsonDoc['metric_data']) {
+                dataJsonAdd[`dino_${metricType}_metric_data_${dataKey}`] =
+                  jsonDoc['metric_data'][dataKey];
+              }
+            }
           }
           return dataJsonAdd;
         });
