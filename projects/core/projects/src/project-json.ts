@@ -107,6 +107,10 @@ export const schema = {
         "null"
       ],
       "description": "Project end date timestamp."
+    },
+    "code_auto": {
+      "type": "number",
+      "description": "The Project auto-generated incremental Code identifier"
     }
   },
   "required": [
@@ -131,5 +135,5 @@ export const schema = {
     "name"
   ],
   "primaryKey": "id",
-  "version": 2
+  "version": 3
 } as RxJsonSchema<Project>;

@@ -51,13 +51,19 @@ export interface Project extends Metric {
    * Project end date timestamp.
    */
   end_date: string | null;
+
+  /**
+   * The Project auto-generated incremental Code identifier
+   */
+  code_auto?: number;
 }
 
-export const VERSION = 2;
+export const VERSION = 3;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
   2: (doc: RxDocument) => {
     return {...doc, metric_data: null};
   },
+  3: (doc: RxDocument) => doc,
 };
