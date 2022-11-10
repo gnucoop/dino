@@ -797,9 +797,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     populateWith: string,
   ): string | null {
     if (refObj == null || populateWith == null) {
-      return null;
+      return '';
     }
-
+    if (refObj[populateWith] == null) {
+      return '';
+    }
+    if (typeof refObj[populateWith] === 'object') {
+      return `${JSON.stringify(refObj[populateWith], null, 2).replace('{', '').replace('}', '')}`;
+    }
     return refObj[populateWith];
   }
 
