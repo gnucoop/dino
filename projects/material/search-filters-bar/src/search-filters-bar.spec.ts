@@ -1,11 +1,34 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
 import {SearchFiltersBar, SearchFiltersBarModule} from '@dino/material/search-filters-bar';
+import {getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 
 const fakeFilters: FilterItem[] = [{name: 'filter_a', value: 'test'}];
+let testDbIdx = 0;
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+function dataServiceConfig(): DataServiceConfig {
+  return {
+    databaseCreateOptions: {
+      name: `dino_datamanager_test_db_${testDbIdx++}`,
+      storage: getRxStoragePouch('memory'),
+    },
+    syncOptions: {
+      url: 'host',
+    },
+  };
+}
 describe('Search filters Bar', () => {
   let fts: FiltersService;
   let fixtureBar: ComponentFixture<SearchFiltersBar>;
@@ -14,6 +37,10 @@ describe('Search filters Bar', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ListModule, NoopAnimationsModule, RouterTestingModule, SearchFiltersBarModule],
+      providers: [
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+      ],
     }).compileComponents();
 
     fts = TestBed.inject(FiltersService);
