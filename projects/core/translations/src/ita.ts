@@ -220,4 +220,7 @@ export const ITA: Translation = {
   'Theme loaded and set as default': 'Tema caricato e scelto come default',
   'THEME LOADED': 'TEMA CARICATO',
   'Items found': 'Elementi trovati',
+  'Additional attributes': 'Attributi aggiuntivi',
+  'Attribute name': `Nome dell'attributo`,
+  'Attribute value': `Valore dell'attributo`,
 };

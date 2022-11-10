@@ -207,4 +207,7 @@ export const FRA: Translation = {
   'Theme loaded and set as default': 'Thème chargé et défini par défaut',
   'THEME LOADED': 'THEME CHARGÉ',
   'Items found': 'Éléments trouvés',
+  'Additional attributes': 'Attributs supplémentaires',
+  'Attribute name': `Nom de l'attribut`,
+  'Attribute value': `Valeur de l'attribut`,
 };

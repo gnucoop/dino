@@ -210,4 +210,7 @@ export const ENG: Translation = {
   'Theme loaded and set as default': 'Theme loaded and set as default',
   'THEME LOADED': 'THEME LOADED',
   'Items found': 'Items found',
+  'Additional attributes': 'Additional attributes',
+  'Attribute name': 'Attribute name',
+  'Attribute value': 'Attribute value',
 };

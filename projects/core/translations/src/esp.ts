@@ -211,4 +211,7 @@ export const ESP: Translation = {
   'Theme loaded and set as default': 'Tema cargado y establecido como predeterminado',
   'THEME LOADED': 'TEMA CARGADO',
   'Items found': 'Elementos encontrados',
+  'Additional attributes': 'Atributos adicionales',
+  'Attribute name': 'Nombre del atributo',
+  'Attribute value': 'Valor del atributo',
 };
