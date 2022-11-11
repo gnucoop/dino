@@ -22,7 +22,7 @@
 
 import {AjfFile} from '@ajf/core/file-input';
 import {HttpClient} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
+import {Inject, Injectable, isDevMode} from '@angular/core';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
@@ -84,7 +84,13 @@ export class FileUploadService {
             return {isUploaded: false} as StorageUploadResponse;
           }),
           catchError(err => {
-            return obsOf({isUploaded: false, error: err.error} as StorageUploadResponse);
+            if (isDevMode()) {
+              console.log(err.error ?? err);
+            }
+            return obsOf({
+              isUploaded: false,
+              error: err.error,
+            } as StorageUploadResponse);
           }),
         );
       }),
@@ -127,6 +133,9 @@ export class FileUploadService {
 
         return this._httpClient.delete<any>(url, {headers}).pipe(
           catchError(err => {
+            if (isDevMode()) {
+              console.log(err.error ?? err);
+            }
             return obsOf({error: err});
           }),
         );
@@ -164,11 +173,13 @@ export class FileUploadService {
     const filesToUpload: AjfFile[] = [];
     const filesToDelete: AjfFile[] = [];
     Object.keys(formValue).forEach(key => {
-      if (this.isAjfFileField(formValue[key])) {
-        filesToUpload.push(formValue[key] as AjfFile);
-      }
-      if (this.isAjfFileFieldToDelete(formValue[key])) {
-        filesToDelete.push(formValue[key] as AjfFile);
+      if (key !== '$value') {
+        if (this.isAjfFileField(formValue[key])) {
+          filesToUpload.push(formValue[key] as AjfFile);
+        }
+        if (this.isAjfFileFieldToDelete(formValue[key])) {
+          filesToDelete.push(formValue[key] as AjfFile);
+        }
       }
     });
     return {filesToUpload, filesToDelete};
@@ -210,6 +221,7 @@ export class FileUploadService {
     ) {
       Object.keys(formValue).forEach(key => {
         if (
+          key !== '$value' &&
           this.isAjfFileField(formValue[key]) &&
           formValue[key]['name'] === storageResponse['name']
         ) {
