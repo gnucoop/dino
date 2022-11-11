@@ -324,7 +324,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         data: {
           metricManager: manager,
           metricAction: 'create',
-          readOnlyFields: metricType === 'case' ? ['code'] : null,
+          readOnlyFields: this._getReadonlyFields(metricType),
         },
       });
       this._metricDialogSub = this._dialogRef
@@ -339,6 +339,22 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
             }
           }
         });
+    }
+  }
+
+  /**
+   * Gets the readonly fields of the metric editor dialog, based on the metric type.
+   * @param metricType The metric type string
+   * @returns The readonly fields or null if none are found
+   */
+  private _getReadonlyFields(metricType: string): string[] | null {
+    switch (metricType) {
+      case 'case':
+        return ['code'];
+      case 'project':
+        return ['code_auto'];
+      default:
+        return null;
     }
   }
 

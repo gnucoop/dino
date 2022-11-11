@@ -23,6 +23,7 @@ export class MatProjectsE2E {
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
     {column: 'metric_data', label: 'Additional Attributes', displayed: false},
   ];
+  readonly readOnlyFields: string[] = ['code_auto'];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [
     {
