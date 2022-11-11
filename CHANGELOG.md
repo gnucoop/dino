@@ -1,3 +1,27 @@
+<a name="13.4.0"></a>
+# 13.4.0 "possible-hookworm" (2022-11-11)
+### Bug Fixes
+* **core/data:** filter JWTExpired sync errors ([974a675](https://bitbucket.org/gnucoop/dino/commits/974a67575d1c8e900c0909417d627de6010f7b5b))
+* **material/core:** Fixed css for checkbox theme background property ([034744a](https://bitbucket.org/gnucoop/dino/commits/034744a5b5c47e544423f4054d66d0d137053813))
+* **material/edit-form-schema:** Create new status button is now displayed in the Form Status UI (autocomplete) even when no statuses exist. ([fb4924c](https://bitbucket.org/gnucoop/dino/commits/fb4924cc8ed80e5ad54e62ca7cf9236e6450d5e1))
+* **material/edit-form-schema:** disable relationship button when the schema is being created ([8cd2c3c](https://bitbucket.org/gnucoop/dino/commits/8cd2c3c5772673c45367048638736ecc79ac2aef))
+* **material/form-metric-selector:** fix creation date in metric selector for different timezone ([1c39f5b](https://bitbucket.org/gnucoop/dino/commits/1c39f5b02edd15d262a3d8b5d7d58fb57066617b))
+* **material/form-metric-selector:** Fixed a bug causing Project 'code_auto' not to be recognized as readonly ([2f2d78a](https://bitbucket.org/gnucoop/dino/commits/2f2d78abf24028198757787e7a03f3ac03c14c9d))
+* **material/list:** Added null check on dataSource.dataResults before subscribing to it. ([9b9baac](https://bitbucket.org/gnucoop/dino/commits/9b9baacb8104c45bfb352d40c1565b8a4741cb69))
+* **material/list:** Selection is now cleared whenever the data in the listDataSource changes. ([327e19e](https://bitbucket.org/gnucoop/dino/commits/327e19ebb56503ab046210bb753d70930625eddf))
+### Features
+* **core/projects:** Added 'code_auto' property to Project model ([9d0a81e](https://bitbucket.org/gnucoop/dino/commits/9d0a81e35d2fd69c75512e30d477f2d54dae2c05))
+* **e2e-material:** Added metric_data column to all metrics and code_auto column to project. ([22c5c52](https://bitbucket.org/gnucoop/dino/commits/22c5c522685694b6f3b5652a11452d35212eaf46))
+* **material/form-deps-editor:** add Create choice option in relationships ([ecc6de7](https://bitbucket.org/gnucoop/dino/commits/ecc6de74109b508909c002f221f0921111386e4f))
+* **material/form-deps-editor:** add required metrics and hide fields already added ([ff9ecc9](https://bitbucket.org/gnucoop/dino/commits/ff9ecc9222ea9a9aa699d243d553aedda4407e31))
+* **material/list:** Added Item Count to list. Pagination now has correct total pages number. ([baf4717](https://bitbucket.org/gnucoop/dino/commits/baf4717a9105922c9973c6a35178fea4aeb25cea))
+* **material/metric-editor:** Added UI for managing Metric Data attributes. ([58225eb](https://bitbucket.org/gnucoop/dino/commits/58225eb010936097031caf74b8fe9d69c9d6494b))
+* **material/search-filters-bar:** Added Status filter to aggregation. Colored options and header icon. ([c3624c4](https://bitbucket.org/gnucoop/dino/commits/c3624c4e3cf612bccf6e80d2403318d11cce1445))
+* **multiple:** Added "metric_data" field to the Metric model. All metrics json schemas updated accordingly. ([738074f](https://bitbucket.org/gnucoop/dino/commits/738074f608f3e6cb73f744c7149223436306c9d7))
+* **multiple:** Form Status filter added to additional basic filters in Filter Bar. Form Status column added to Aggregation. ([d4c2899](https://bitbucket.org/gnucoop/dino/commits/d4c28993a6920cf9f9cf2bd4996a18ee546a6b2e))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.3.3"></a>
 # 13.3.3 "increased-gerbil" (2022-10-24)
 ### Bug Fixes
