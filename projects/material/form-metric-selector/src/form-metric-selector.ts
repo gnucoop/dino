@@ -40,6 +40,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserGroupManager} from '@dino/core/users';
 import {MetricEditor, MetricFormField} from '@dino/material/metric-editor';
+import {parse} from 'date-fns';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
@@ -171,7 +172,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this.formCreationDate = this._formData.pipe(
-      map(data => new Date(data['created_at'])),
+      map(data => {
+        return parse(data['created_at'], 'yyyy-MM-dd', new Date());
+      }),
       take(1),
     );
     this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));
