@@ -233,9 +233,19 @@ export class MatFormsListE2E {
             }
           });
 
+          let translate: (s: string) => string = s => s;
+          if (this._translateService != null) {
+            translate = s => {
+              if (s == null || s.trim() === '') {
+                return ' ';
+              }
+              return this._translateService.translate(s) as string;
+            };
+          }
+
           createFormPdf(
             schema.schema as AjfForm,
-            undefined,
+            translate,
             undefined,
             header,
             formData['data'],
