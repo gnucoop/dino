@@ -20,7 +20,7 @@
  *
  */
 
-import {EventEmitter, Inject, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable, isDevMode} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {dinoTranslations, TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {TranslocoService} from '@ngneat/transloco';
@@ -39,6 +39,7 @@ import {
   debounceTime,
   filter,
   map,
+  startWith,
   switchMap,
   take,
   tap,
@@ -53,6 +54,14 @@ const collectionDef = {name: 'lang', collection: {schema, migrationStrategies}};
 
 @Injectable({providedIn: 'root'})
 export class LangManager extends DataModelManager<Lang> {
+  readonly infoAfterStoredLang$: Observable<any>;
+  readonly saveLangEvt = new EventEmitter<void>();
+  readonly deleteLangEvt = new EventEmitter<void>();
+
+  private _refreshEvt = new EventEmitter<void>();
+  private _reloadLangsStoredEvt = new EventEmitter<void>();
+  private _removeLangEvt = new EventEmitter<Lang | null>();
+
   readonly langRows$: Observable<LangRow[]>;
   readonly allLangsNames$ = new BehaviorSubject<string[]>([]);
 
@@ -70,10 +79,11 @@ export class LangManager extends DataModelManager<Lang> {
 
   // le langs storate su django
   readonly langsStored$ = new BehaviorSubject<Lang[]>([]);
-  readonly langsShowed$: Observable<Lang[]> = this.query({
-    selector: {is_deleted: {$ne: true}},
-  }).pipe(
-    map((langsStored: Lang[]) => {
+  readonly langsShowed$: Observable<Lang[]> = combineLatest([
+    this.list(),
+    this._reloadLangsStoredEvt.pipe(startWith(true)),
+  ]).pipe(
+    map(([langsStored, _]) => {
       const langsShowed: Lang[] = [];
 
       langsStored.forEach(l => {
@@ -160,14 +170,6 @@ export class LangManager extends DataModelManager<Lang> {
         );
       }),
     );
-
-  readonly infoAfterStoredLang$: Observable<any>;
-  readonly saveLangEvt = new EventEmitter<void>();
-  readonly deleteLangEvt = new EventEmitter<void>();
-
-  private _refreshEvt = new EventEmitter<void>();
-  private _reloadLangsStoredEvt = new EventEmitter<void>();
-  private _removeLangEvt = new EventEmitter<Lang | null>();
 
   constructor(
     dataService: DataService,
@@ -277,7 +279,7 @@ export class LangManager extends DataModelManager<Lang> {
       take(1),
       switchMap(lang => this.deleteLang(lang)),
       map(l => {
-        this._reloadLangsStoredEvt.emit();
+        this._reloadList();
         if (l) {
           return this._ts.translate('deleted: custom translations of {{language}}', {
             language: l.name,
@@ -318,7 +320,7 @@ export class LangManager extends DataModelManager<Lang> {
           });
           return msg;
         }),
-        tap(_ => this._reloadLangsStoredEvt.emit()),
+        tap(_ => this._reloadList()),
       );
     } else {
       return obsOf(this._ts.translate('forbidden deleting default key') as string).pipe(
@@ -339,7 +341,7 @@ export class LangManager extends DataModelManager<Lang> {
       catchError(_ =>
         obsOf(this._ts.translate('{{language}} already deleted', {language: lang.name}) as string),
       ),
-      tap(_ => this._reloadLangsStoredEvt.emit()),
+      tap(_ => this._reloadList()),
     );
   }
 
@@ -396,12 +398,11 @@ export class LangManager extends DataModelManager<Lang> {
           }
           updated = true;
         }
-        // se modifico una traduzione di una lingua non presente su dango
-        if (lang === null) {
-          lang = {name: langName, schema: {}, created_at: new Date().toISOString()};
-          lang.schema[currentKey] = updates[langName];
-          updated = true;
-        }
+
+        lang = {name: langName, schema: {}, created_at: new Date().toISOString()};
+        lang.schema[currentKey] = updates[langName];
+        updated = true;
+
         if (updated) {
           apiCall.push(this.saveLang(lang));
         }
@@ -417,8 +418,14 @@ export class LangManager extends DataModelManager<Lang> {
         });
         return msg;
       }),
-      tap(_ => this._reloadLangsStoredEvt.emit()),
+      tap(_ => this._reloadList()),
     );
+  }
+
+  loadDinoLangs() {
+    this.langRows$.pipe(take(1)).subscribe(langs => {
+      if (isDevMode()) console.log(`Loaded Languages: ${langs}`);
+    });
   }
 
   private _modified(current: Dic, update: Dic): Dic {

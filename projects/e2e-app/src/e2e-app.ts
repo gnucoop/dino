@@ -23,6 +23,7 @@
 import {Component, isDevMode, ViewEncapsulation} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
 import {DataService, PermissionContextService} from '@dino/core/data';
+import {LangManager} from '@dino/core/langs';
 import {SyncManager} from '@dino/core/sync';
 import {distinctUntilKeyChanged, filter, skipWhile, switchMap, tap} from 'rxjs/operators';
 
@@ -55,6 +56,7 @@ export class E2eApp {
     private _auth: AuthService,
     private _ds: DataService,
     private _pcs: PermissionContextService,
+    private _lm: LangManager,
   ) {
     this._auth.authenticated
       .pipe(
@@ -99,6 +101,9 @@ export class E2eApp {
           ),
         ),
       )
-      .subscribe(() => this._ds.collectionsInitialized.emit('completed'));
+      .subscribe(() => {
+        this._ds.collectionsInitialized.emit('completed');
+        this._lm.loadDinoLangs();
+      });
   }
 }

@@ -29,6 +29,8 @@ export class LangsFilterPipe implements PipeTransform {
     if (!items || !filter) {
       return items;
     }
-    return items.filter(item => item[lang].toLowerCase().includes(filter.toLowerCase()));
+    return items.filter(
+      item => item[lang] && item[lang].toLowerCase().includes(filter.toLowerCase()),
+    );
   }
 }

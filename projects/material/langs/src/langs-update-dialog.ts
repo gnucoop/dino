@@ -27,7 +27,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {LangManager} from '@dino/core/langs';
@@ -93,14 +93,6 @@ export class LangsUpdateDialog implements OnDestroy {
   }
 
   save(): void {
-    const res = this.form.value;
-
-    Object.keys(this.form.controls).forEach((key: string) => {
-      const currentControl: AbstractControl = this.form.controls[key];
-      if (!currentControl.dirty) {
-        delete res[key];
-      }
-    });
-    this.dialogRef.close(res);
+    this.dialogRef.close(this.form.value);
   }
 }
