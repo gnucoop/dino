@@ -82,6 +82,7 @@
               <mat-option
                 *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
                 [value]="option"
+                [ngClass]="'dino-option-level-' + (option.level ?? '0')"
               >
                 {{option.name}}
               </mat-option>

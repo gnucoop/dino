@@ -70,3 +70,20 @@ dino-search-filters-bar {
     }
   }
 }
+
+.mat-autocomplete-panel {
+  @for $i from 0 through 9 {
+    $margin: 0.6em * $i;
+    .dino-option-level-#{$i} {
+      margin-left: $margin;
+      opacity: calc(1 / ($i + 1)) + 0.3;
+      &:before {
+        @if ($i > 0) {
+          content: '\276F';
+          font-size: 75%;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}

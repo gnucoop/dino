@@ -70,7 +70,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   /**
    * All the metrics filters autocomplete options.
    */
-  metricFiltersOptions: {[key: string]: Observable<Metric[]>} = {};
+  metricFiltersOptions: {[key: string]: Observable<(Metric & {level?: number})[]>} = {};
 
   /**
    * All the form status filter autocomplete options.
@@ -401,11 +401,59 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     const inputValue = inputControl?.get(metricType)?.valueChanges;
     if (inputValue != null) {
       this.metricFiltersOptions[metricType] = inputValue.pipe(
-        switchMap(val => {
-          if (typeof val === 'string') {
-            return metricManager
-              .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$ne: true}}})
-              .pipe(map(results => results.sort((a, b) => this._sortItemsAlphabetically(a, b))));
+        switchMap(metricValue => {
+          if (typeof metricValue === 'string') {
+            return (
+              metricManager
+                // .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$ne: true}}})
+                .query({
+                  selector: {is_deleted: {$ne: true}},
+                  sort: [{'name': 'asc'}],
+                })
+                .pipe(
+                  map((metricOptions: Metric[]) => {
+                    if (
+                      metricOptions != null &&
+                      metricValue != null &&
+                      typeof metricValue === 'string'
+                    ) {
+                      const mtrName = metricValue.toLowerCase();
+                      const metricsMatchingByName = metricOptions.filter(option => {
+                        return option.name.toLowerCase().includes(mtrName);
+                      });
+                      const matchingMetricsParentsIDs = [
+                        ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
+                      ];
+                      const metricsMatchingParents =
+                        metricManager != null
+                          ? metricManager.findMatchingAncestors(
+                              metricOptions,
+                              matchingMetricsParentsIDs,
+                            )
+                          : [];
+                      const metricsWithAncestors = [
+                        ...new Set([...metricsMatchingByName, ...metricsMatchingParents]),
+                      ];
+
+                      let parentIds = metricsWithAncestors
+                        .filter(mo => mo.parent_id != null)
+                        .map(mt => mt.parent_id);
+                      parentIds = [...new Set(parentIds)];
+
+                      let organizedMetricOptions = metricsWithAncestors;
+                      if (parentIds.length && metricManager != null) {
+                        organizedMetricOptions = metricManager.organizeDocsHierarchy(
+                          metricsWithAncestors,
+                          parentIds,
+                        );
+                      }
+
+                      return organizedMetricOptions;
+                    }
+                    return metricOptions;
+                  }),
+                )
+            );
           }
           return [];
         }),
