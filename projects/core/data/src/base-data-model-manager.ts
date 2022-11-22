@@ -505,6 +505,71 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
   }
 
   /**
+   * Finds all ancestors of matching documents by their "parent_id" attribute
+   * @param allDocs The list of all documents
+   * @param selectedDocsParentIDs The parent_ids of all documents whose ancestors must be found
+   * @returns All the ancestors of the selected documents
+   */
+  findMatchingAncestors(
+    allDocs: (R & {parent_id: string | null})[],
+    selectedDocsParentIDs: (string | null)[],
+  ): (R & {parent_id: string | null})[] {
+    const ancestors: (R & {parent_id: string | null})[] = [];
+    const matchingParents = allDocs.filter(option => {
+      return selectedDocsParentIDs.includes(option.id);
+    });
+    ancestors.push(...matchingParents);
+
+    let ancestorsParentIDs = [...new Set(ancestors.map(anc => anc.parent_id))];
+    ancestorsParentIDs = ancestorsParentIDs.filter(id => id != null);
+    if (ancestorsParentIDs.length) {
+      ancestors.push(...this.findMatchingAncestors(allDocs, ancestorsParentIDs));
+    }
+    return ancestors;
+  }
+
+  /**
+   * Organizes documents hyerarchically (parent->children)
+   * @param allDocs All the unorganized documents
+   * @param allParentIDs An array of all the ids of documents that have children
+   * @param parent An object defining the parent id and the current level in the nested list
+   * @returns The organized documents with their new level attribute
+   */
+  organizeDocsHierarchy(
+    allDocs: (R & {parent_id: string | null})[],
+    allParentIDs: (string | null)[],
+    parent: {id: string | null; level: number | null} = {id: null, level: null},
+  ): (R & {parent_id: string | null; level?: number})[] {
+    let result: (R & {parent_id: string | null; level?: number})[] = [];
+
+    // Get every element whose parent_id attribute matches the parent's id.
+    const children: (R & {parent_id: string | null; level?: number})[] = allDocs.filter(
+      item => item.parent_id === parent.id,
+    );
+
+    // Set the level based on the parent level for each element identified,
+    // add them to the result array, then recursively sort the children.
+    children.forEach(child => {
+      if (allParentIDs.includes(child.id)) {
+        child.level = parent.level != null && child.parent_id != null ? parent.level + 1 : 0;
+        result = [
+          ...result,
+          child,
+          ...this.organizeDocsHierarchy(allDocs, allParentIDs, {
+            id: child.id,
+            level: child.level,
+          }),
+        ];
+      } else {
+        child.level = parent.level != null ? parent.level + 1 : 0;
+        result = [...result, child];
+      }
+    });
+
+    return result;
+  }
+
+  /**
    * Transforms a resulting object to a deep readonly version of the base object
    */
   protected _objectToJSON(obj: R): DeepReadonlyObject<T> {
