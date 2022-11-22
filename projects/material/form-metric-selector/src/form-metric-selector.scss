@@ -1,47 +1,64 @@
 dino-form-metric-selector {
-    @media only screen and (max-width: 992px) {
-        height: 75vh;
-        overflow-y: scroll;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-        &::-webkit-scrollbar {
-            display: none;
+  @media only screen and (max-width: 992px) {
+    height: 75vh;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .dino-form-metric-selector-message {
+    margin-bottom: 15px;
+  }
+  .mat-form-field-suffix .mat-icon {
+    display: inline-block !important;
+    margin-left: 15px;
+  }
+  .dino-add-metric-button {
+    opacity: 0.5;
+    transition: all 0.5s ease-in-out;
+    &:hover {
+      opacity: 1;
+    }
+    cursor: pointer;
+  }
+  .dino-form-metric-selector-container {
+    min-width: 80vw;
+    .mat-form-field {
+      font-size: 115%;
+      margin: auto;
+      @media only screen and (max-width: 992px) {
+        font-size: 110%;
+      }
+    }
+    form {
+      .dino-form-metric-selector-field,
+      .dino-form-date-selector-field {
+        min-width: 60vw;
+        display: block;
+        .mat-datepicker-toggle {
+          position: relative;
+          left: 10px;
         }
+      }
     }
-    .dino-form-metric-selector-message {
-      margin-bottom: 15px;
-    }
-    .mat-form-field-suffix .mat-icon {
-        display: inline-block !important;
-        margin-left: 15px;
-    }
-    .dino-add-metric-button {
-        opacity: 0.5;
-        transition: all 0.5s ease-in-out;
-        &:hover {
-            opacity: 1;
+  }
+}
+
+.mat-autocomplete-panel {
+  @for $i from 0 through 9 {
+    $margin: 0.8em * $i;
+    .dino-option-level-#{$i} {
+      margin-left: $margin;
+      opacity: calc(1 / ($i + 1)) + 0.3;
+      &:before {
+        @if ($i > 0) {
+          content: '\276F';
+          font-size: 75%;
+          margin-right: 10px;
         }
-        cursor: pointer;
+      }
     }
-    .dino-form-metric-selector-container {
-        min-width: 80vw;
-        .mat-form-field {
-            font-size: 115%;
-            margin: auto;
-            @media only screen and (max-width: 992px) {
-                font-size: 110%;
-            }
-        }
-        form {
-            .dino-form-metric-selector-field,
-            .dino-form-date-selector-field {
-                min-width: 60vw;
-                display: block;
-                .mat-datepicker-toggle {
-                    position: relative;
-                    left: 10px;
-                }
-            }
-        }
-    }
+  }
 }

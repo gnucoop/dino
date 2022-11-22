@@ -1,5 +1,4 @@
 <div class="dino-form-metric-selector-container">
-
   <div class="dino-form-metric-selector-message">
     <ng-content select="[metric-selector-message]"></ng-content>
   </div>
@@ -28,7 +27,7 @@
         />
         <mat-icon matSuffix>{{field.icon}}</mat-icon>
         <mat-icon
-        *ngIf="(isView|async) !== true && allowMetricCreation"
+          *ngIf="(isView|async) !== true && allowMetricCreation"
           matSuffix
           color="primary"
           class="dino-add-metric-button"
@@ -44,6 +43,7 @@
           <mat-option
             *ngFor="let option of formMetricsOptions[field.fieldName] | async"
             [value]="option"
+            [ngClass]="'dino-option-level-' + (option.level ?? '0')"
           >
             {{option.name}}
           </mat-option>

@@ -114,7 +114,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * All the metrics autocomplete options.
    */
-  formMetricsOptions: {[key: string]: BehaviorSubject<Metric[]>} = {};
+  formMetricsOptions: {
+    [key: string]: BehaviorSubject<RxDocument<Metric & {level?: number}, {}>[]>;
+  } = {};
 
   /**
    * True if the Form is in view mode.
@@ -425,13 +427,21 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           if (this._metricManagers[metricType] == null) {
             return [];
           }
+          let metricsObs: Observable<RxDocument<Metric, {}>[]> = this._metricManagers[
+            metricType
+          ]!.query({
+            selector: querySelector,
+            sort: [{'name': 'asc'}],
+          });
+
           if (metricsIds.includes('all')) {
-            return this._metricManagers[metricType]!.query({
+            metricsObs = this._metricManagers[metricType]!.query({
               selector: {is_deleted: {$ne: true}},
               sort: [{'name': 'asc'}],
             });
           }
-          return this._metricManagers[metricType]!.query({selector: querySelector});
+
+          return metricsObs;
         }),
       ),
       this.formMetricsValues[metricType],
@@ -451,21 +461,48 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           }
           if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
             const mtrName = metricValue.toLowerCase();
-            return metricOptions.filter(option => {
+            const metricsMatchingByName = metricOptions.filter(option => {
               return (
                 option.name.toLowerCase().includes(mtrName) &&
                 option.name != this.formMetrics.get('name')?.value
               );
             });
+            const matchingMetricsParentsIDs = [
+              ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
+            ];
+            const metricsMatchingParents =
+              this._metricManagers[metricType] != null
+                ? this._metricManagers[metricType]!.findMatchingAncestors(
+                    metricOptions,
+                    matchingMetricsParentsIDs,
+                  )
+                : [];
+            return {
+              metricOptions: [...new Set([...metricsMatchingByName, ...metricsMatchingParents])],
+              metricValue,
+            };
           }
-          return [];
+          return {metricOptions: [], metricValue};
         }),
       )
-      .subscribe(metricOptions =>
+      .subscribe(metricObj => {
+        let parentIds = metricObj.metricOptions
+          .filter(mo => mo.parent_id != null)
+          .map(mt => mt.parent_id);
+        parentIds = [...new Set(parentIds)];
+        let organizedMetricOptions = metricObj.metricOptions;
+        if (parentIds.length && this._metricManagers[metricType] != null) {
+          organizedMetricOptions = this._metricManagers[metricType]!.organizeDocsHierarchy(
+            metricObj.metricOptions,
+            parentIds,
+          );
+        }
         this.formMetricsOptions[metricType]
-          ? this.formMetricsOptions[metricType].next(metricOptions)
-          : (this.formMetricsOptions[metricType] = new BehaviorSubject<Metric[]>(metricOptions)),
-      );
+          ? this.formMetricsOptions[metricType].next(organizedMetricOptions)
+          : (this.formMetricsOptions[metricType] = new BehaviorSubject<
+              RxDocument<Metric & {level?: number}, {}>[]
+            >(organizedMetricOptions));
+      });
   }
 
   /**
