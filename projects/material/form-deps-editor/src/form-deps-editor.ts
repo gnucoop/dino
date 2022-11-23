@@ -131,13 +131,13 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     this.activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
 
     this.availableSchemas = this._fs.list().pipe(
-      withLatestFrom(this.formSchema),
+      /*withLatestFrom(this.formSchema),
       switchMap(([avSchemas, schema]) => {
         if (schema !== null) {
           return obsOf(avSchemas.filter(s => s.id !== schema.id));
         }
         return obsOf(avSchemas);
-      }),
+      }),*/
       map(schemas => {
         if (schemas) {
           schemas.forEach(fschema => {
