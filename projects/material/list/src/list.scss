@@ -12,7 +12,7 @@ dino-list {
     .dino-list-count {
       display: flex;
       flex-flow: row wrap;
-      justify-content: end;
+      justify-content: flex-end;
       flex: 1 0 auto;
       align-self: center;
       position: relative;
@@ -67,6 +67,7 @@ dino-list {
   mat-header-cell,
   mat-footer-cell {
     flex: 1 0;
+    position: relative;
   }
 
   mat-header-cell,
@@ -126,6 +127,17 @@ dino-list {
         opacity: 0.2;
       }
     }
+  }
+
+  .dino-status-bar {
+    position: absolute;
+    bottom: 5px;
+    max-width: 75%;
+    flex: 1 0 auto;
+    min-height: 10px;
+    border-radius: 2px;
+    transition: all ease-in-out 0.5;
+    -webkit-transition: all ease-in-out 0.5s;
   }
 
   .mat-row.dino-row-details {

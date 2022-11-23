@@ -1,7 +1,6 @@
 import {AjfForm, createFormPdf} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, ViewChild} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 import {Metric, MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
@@ -10,6 +9,7 @@ import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-forms-list-e2e',
@@ -45,6 +45,7 @@ export class MatFormsListE2E {
   readonly displayExportButton: Observable<boolean>;
   readonly listRowActions: Observable<ListAction[] | null>;
   readonly showStatusEditButton: Observable<boolean>;
+  readonly showStatusProgressBar: boolean = additionalConfig.statusType === 'progress';
 
   constructor(
     readonly filtersService: FiltersService,
@@ -54,7 +55,6 @@ export class MatFormsListE2E {
     private _translateService: TranslocoService,
     private _pcs: PermissionContextService,
     private _route: ActivatedRoute,
-    private _dialog: MatDialog,
   ) {
     this.formRowData = new BehaviorSubject<FormData | null>(null);
     this.formSchemaId = this._route.params.pipe(map(params => params['form_schema_id']));
@@ -83,10 +83,14 @@ export class MatFormsListE2E {
             populateWith: 'label',
             displayed: true,
             icon: 'account_tree',
-            isEditable: _ => true,
-            editMethod: elem => {
-              this.list.openStatusEditor(elem as FormData & {form_schema: Observable<FormSchema>});
-            },
+            isEditable: _ => additionalConfig.statusEditable,
+            editMethod: additionalConfig.statusEditable
+              ? elem => {
+                  this.list.openStatusEditor(
+                    elem as FormData & {form_schema: Observable<FormSchema>},
+                  );
+                }
+              : undefined,
           });
         }
         return [...statusHeaders, ...this.formSchemaManager.generateSchemaListHeaders(schema)];

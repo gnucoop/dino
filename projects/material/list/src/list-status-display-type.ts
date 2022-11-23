@@ -21,6 +21,6 @@
  */
 
 /**
- * Represents the type of dashboard component to be displayed in the app (Menu or Report dashboard)
+ * Represents how Form Status will be displayed in form lists (just status label or progress bar)
  */
-export type DashboardType = 'report' | 'menu';
+export type StatusDisplayType = 'default' | 'progress';

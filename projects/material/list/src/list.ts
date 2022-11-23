@@ -52,7 +52,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActionTrigger, Model} from '@dino/core/data';
-import {FormSchema, FormData} from '@dino/core/forms';
+import {FormSchema, FormData, FormStatus} from '@dino/core/forms';
 import {
   ActionType,
   FilterGroup,
@@ -135,6 +135,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * The Main list template context
    */
   mainListContext?: ListContext<T, U>;
+
+  /**
+   * If true, the status progress bar is displayed along the status label
+   */
+  @Input() showStatusProgressBar?: boolean;
 
   /**
    * The Details list template context
@@ -681,6 +686,23 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           });
         }
       });
+  }
+
+  getStatusProgress(element: Observable<FormStatus>): Observable<number> {
+    return element.pipe(
+      map(status => {
+        if (status == null) {
+          return 0;
+        }
+        const schema = this._dataSource?.additionalDataSchema as {[key: string]: any};
+        if (schema && schema['form_status_ref_id']) {
+          const numOfStatuses = schema['form_status_ref_id'].length;
+          const singleStatusWeigth = 100 / numOfStatuses;
+          return (status.status_level + 1) * singleStatusWeigth;
+        }
+        return 0;
+      }),
+    );
   }
 
   /**

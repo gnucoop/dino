@@ -7,7 +7,9 @@
       <ng-container *ngIf="(dataSource.dataResultsCount|async) !== null; else loadingCountTemplate"
         ><span><b>{{dataSource.dataResultsCount|async}}</b></span></ng-container
       >
-      <ng-template #loadingCountTemplate><mat-icon class="dino-loading-count-icon">data_usage</mat-icon></ng-template>
+      <ng-template #loadingCountTemplate
+        ><mat-icon class="dino-loading-count-icon">data_usage</mat-icon></ng-template
+      >
     </div>
     <mat-paginator
       #pag
@@ -111,7 +113,8 @@
         </ng-container>
         <ng-template #externalRefCellTemplate>
           <ng-container *ngIf="(element[getRef(header)])|async as elemRef">
-            <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
+            <span
+              [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
               >{{ getPopulatedRef( elemRef, header.populateWith) }}</span
             >
           </ng-container>
@@ -122,6 +125,12 @@
             (click)="$event.stopPropagation();header.editMethod(element);"
             >create
           </mat-icon>
+            <mat-progress-bar
+              *ngIf="header.column === 'form_status_ref_id' && element.form_status_ref_id !== null && showStatusProgressBar"
+              class="dino-status-bar"
+              mode="determinate"
+              [value]="getStatusProgress(element.form_status)|async"
+            ></mat-progress-bar>
         </ng-template>
         <ng-template #repeatingCellTemplate>
           <mat-tab-group #tabGroup [attr.tabgroupid]="header.repeatingSlideName + '_' + element.id">

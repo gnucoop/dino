@@ -116,6 +116,16 @@ export const additionalConfig = {
    * The type of the dashboard component loaded by the app
    */
   dashboardType: 'menu',
+
+  /**
+   * How the form status should be displayed in a forms list
+   */
+  statusType: 'progress',
+
+  /**
+   * True if the form status can be edited in the list rows
+   */
+  statusEditable: true,
 };
 
 /**
