@@ -914,7 +914,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     fieldName: string,
     docs: RxDocument<FormData>[],
   ): AjfChoice<string>[] {
-    const choices: AjfChoice<string>[] = [];
+    let choices: AjfChoice<string>[] = [];
     docs.forEach(doc => {
       const extFormData = doc.toJSON();
       if (fieldName in extFormData.data && extFormData.data[fieldName] != null) {
@@ -924,6 +924,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         });
       }
     });
-    return choices;
+    return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
   }
 }

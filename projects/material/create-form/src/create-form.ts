@@ -847,6 +847,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         });
       }
     });
-    return choices;
+    return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
   }
 }
