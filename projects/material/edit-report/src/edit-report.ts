@@ -436,12 +436,7 @@ export class EditReport implements AfterViewInit {
         if (Object.keys(queryDepsSelector['$or']).length) {
           if (Object.keys(queryDepsSelector['$or']).length === 1) {
             const metricKey = queryDepsSelector['$or'][0];
-            // const key = Object.keys(metricKey)[0];
-
             queryDepsSelector = {...queryDepsSelector, ...metricKey};
-
-            // queryDepsSelector[key] = queryDepsSelector['$or'][0];
-
             delete queryDepsSelector['$or'];
           }
           depsQuery = this._formDataManager.query({selector: queryDepsSelector});
