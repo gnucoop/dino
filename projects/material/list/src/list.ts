@@ -52,7 +52,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActionTrigger, Model} from '@dino/core/data';
-import {FormSchema, FormData, FormStatus} from '@dino/core/forms';
+import {FormSchema, FormData, FormStatus, FormStatusManager} from '@dino/core/forms';
 import {
   ActionType,
   FilterGroup,
@@ -66,8 +66,16 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportForm} from '@dino/material/export-form';
 import {FormStatusChanger, FormStatusChangerData} from '@dino/material/form-status-changer';
 import {ImportForm} from '@dino/material/import-form';
-import {BehaviorSubject, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
-import {catchError, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  of as obsOf,
+  Subject,
+  Subscription,
+  throwError,
+} from 'rxjs';
+import {catchError, map, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
 
 import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
@@ -77,6 +85,7 @@ import {PaginatorIntl} from './paginator-intl';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {RxDocument} from 'rxdb';
 import {TranslocoService} from '@ngneat/transloco';
+import {deepCopy} from '@ajf/core/utils';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -352,6 +361,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * The statuses related to the additional data schema (if present)
+   */
+  private _statuses: Observable<FormStatus[]> = obsOf([]);
+
+  /**
    * A reference to the MatDialog that contains the Columns Selector
    */
   private _columnsDialogRef?: MatDialogRef<ColumnsSelector<T>>;
@@ -388,6 +402,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _snackbar: MatSnackBar,
     private _renderer: Renderer2,
     private _ts: TranslocoService,
+    private _fsm: FormStatusManager,
   ) {
     super(cdr, aui, actroute);
 
@@ -688,19 +703,16 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       });
   }
 
-  getStatusProgress(element: Observable<FormStatus>): Observable<number> {
-    return element.pipe(
-      map(status => {
-        if (status == null) {
+  getStatusProgress(element: Observable<FormStatus>): Observable<number | null> {
+    return combineLatest([element, this._statuses]).pipe(
+      map(([status, allStatuses]) => {
+        if (status == null || allStatuses == null || !allStatuses.length) {
           return 0;
         }
-        const schema = this._dataSource?.additionalDataSchema as {[key: string]: any};
-        if (schema && schema['form_status_ref_id']) {
-          const numOfStatuses = schema['form_status_ref_id'].length;
-          const singleStatusWeigth = 100 / numOfStatuses;
-          return (status.status_level + 1) * singleStatusWeigth;
-        }
-        return 0;
+        const numOfStatuses = [...new Set([...allStatuses.map(status => status.status_level)])]
+          .length;
+        const singleStatusWeigth = 100 / numOfStatuses;
+        return (status.status_level + 1) * singleStatusWeigth;
       }),
     );
   }
@@ -731,6 +743,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         this._additionalDataSchema.pipe(take(1)).subscribe(schema => {
           if (schema != null && this.dataSource != null) {
             this.dataSource.additionalDataSchema = schema;
+            const fschema = deepCopy(this._dataSource?.additionalDataSchema) as {
+              [key: string]: any;
+            };
+            if (fschema['form_status_ref_id']?.length) {
+              this._statuses = this._fsm
+                .query({selector: {id: {$in: fschema['form_status_ref_id']}}})
+                .pipe(shareReplay(1));
+            }
           }
         });
       }
