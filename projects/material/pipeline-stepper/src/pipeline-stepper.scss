@@ -1,0 +1,39 @@
+dino-pipeline-stepper {
+  .mat-horizontal-stepper-header-container {
+    border-bottom: none !important;
+  }
+  .mat-stepper-horizontal-line {
+    visibility: visible !important;
+    top: 0px !important;
+    margin: auto 2em !important;
+    border-width: 3px;
+    flex: 1 0 3%;
+  }
+  .mat-step-header {
+    padding: 0px !important;
+    min-width: 10%;
+    &[aria-labelledby='locked'] {
+      pointer-events: none !important;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    &[aria-labelledby='done'] {
+      .mat-step-icon{
+        color: #32db64;
+      }
+    }
+  }
+  .mat-stepper-horizontal {
+    margin: 2em auto;
+    overflow-x: auto;
+  }
+  .mat-step-label {
+    font-size: 10px;
+  }
+  .mat-step-header .mat-step-icon:not(.mat-step-icon-selected) {
+    background-color: transparent !important;
+  }
+  .dino-pipeline-stepper-viewonly {
+    pointer-events: none;
+  }
+}

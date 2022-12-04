@@ -1,0 +1,31 @@
+<mat-horizontal-stepper
+  class="dino-pipeline-stepper"
+  [ngClass]="(isPipeline|async) && (currentFormStatus|async) !== null? '' : 'dino-pipeline-stepper-viewonly'"
+  #stepper
+  [linear]="(isPipeline|async) === false"
+  [disableRipple]="true"
+  [selectedIndex]="(selectedIndex|async) ?? 0"
+>
+  <ng-template matStepperIcon="done">
+    <mat-icon>done</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="edit-writable">
+    <mat-icon>edit</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="locked">
+    <mat-icon>lock</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="edit">
+    <mat-icon>edit</mat-icon>
+  </ng-template>
+
+  <mat-step
+    *ngFor="let step of steps|async; let idx = index;"
+    [label]="step.timeStamp ?  'completed on ' + (step.timeStamp|date:'short') + ' '+ step.label : step.label"
+    [completed]="(getStepState(step)|async) === 'done'"
+    [state]="(getStepState(step)|async) ?? 'edit-readonly'"
+    [editable]="step.editable"
+    [aria-labelledby]="(getStepState(step)|async) ?? ''"
+  >
+  </mat-step>
+</mat-horizontal-stepper>
