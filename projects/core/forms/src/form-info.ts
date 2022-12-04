@@ -20,21 +20,35 @@
  *
  */
 
-export {FormData} from './form-data';
-export {schema as formDataJson} from './form-data-json';
-export {FormSchema} from './form-schema';
-export {schema as formSchemaJson} from './form-schema-json';
-export {FormStatus} from './form-status';
-export {schema as formStatusJson} from './form-status-json';
-export {FormSchemaDeps} from './form-schema-deps';
+import {FormStatus} from './form-status';
+import {UserData, UserGroup} from '@dino/core/users';
 
-export * from './form-info';
-export * from './forms.module';
-export * from './form-schema-manager';
-export * from './form-schema-deps';
-export * from './form-schema-deps-manager';
-export * from './form-schema-visibility';
-export * from './form-data-manager';
-export * from './form-status-manager';
-export * from './online-form-data-manager';
-export * from './online-form-schema-manager';
+/**
+ * Represents all the info related to a Form Data that can be used in an AjfForm context
+ */
+export type FormInfo = {
+  /**
+   * The form data status
+   */
+  status: FormStatus | null;
+  /**
+   * All possible statuses
+   */
+  allStatuses: FormStatus[];
+  /**
+   * The creator of the form
+   */
+  user: UserData | null;
+  /**
+   * The creator permission groups
+   */
+  userGroups: UserGroup[] | null;
+  /**
+   * The currently active user
+   */
+  activeUser: UserData | null;
+  /**
+   * The active user permission groups
+   */
+  activeUserGroups: UserGroup[] | null;
+};

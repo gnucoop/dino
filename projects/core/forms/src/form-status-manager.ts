@@ -23,6 +23,7 @@
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {FormSchema} from './form-schema';
 
 import {FormStatus, indexes, migrationStrategies} from './form-status';
@@ -46,6 +47,8 @@ export class FormStatusManager extends DataModelManager<FormStatus> {
       return obsOf(null);
     }
     const statusIds: string[] = schema.form_status_ref_id;
-    return this.query({selector: {id: {$in: statusIds}}});
+    return this.query({selector: {id: {$in: statusIds}}}).pipe(
+      map(sts => sts.sort((a, b) => (a.status_level > b.status_level ? 1 : -1))),
+    );
   }
 }
