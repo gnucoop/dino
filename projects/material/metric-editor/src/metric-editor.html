@@ -1,5 +1,7 @@
 <div class="dino-metric-editor-container">
-  <h1 mat-dialog-title>{{data.metricAction|transloco}} {{metricName|transloco}}</h1>
+  <p class="dino-metric-editor-title" mat-dialog-title>
+    {{data.metricAction|transloco}} {{metricName|transloco}}
+  </p>
   <mat-dialog-content>
     <form *ngIf="metricForm" [formGroup]="metricForm" autocomplete="off">
       <ng-container *ngFor="let field of metricFormFields; let idx = index">
@@ -63,13 +65,15 @@
         </mat-form-field>
       </ng-container>
     </form>
-    <ng-container *ngIf="data.metricAction !== 'View' || (data.metricAction === 'View' && attributes().controls.length)">
+    <ng-container
+      *ngIf="data.metricAction !== 'View' || (data.metricAction === 'View' && attributes().controls.length)"
+    >
       <mat-divider></mat-divider>
       <br />
       <form [formGroup]="metricDataForm" autocomplete="off">
-        <h1 mat-dialog-title class="dino-additional-attributes-title">
+        <p mat-dialog-title class="dino-additional-attributes-title">
           {{'Additional attributes'|transloco}}
-        </h1>
+        </p>
         <div formArrayName="attributes" class="dino-additional-attributes-container">
           <ng-container *ngFor="let dataField of attributes().controls; let idx = index">
             <div class="dino-additional-attribute-entry" [formGroupName]="idx">
