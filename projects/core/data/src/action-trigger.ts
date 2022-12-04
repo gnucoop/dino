@@ -53,6 +53,11 @@ export interface ActionTriggerData<T = {}> {
    * The Edited or Created RxDocument
    */
   doc?: RxDocument<T>;
+
+  /**
+   * Any additional info provided
+   */
+  additional_info?: {[key: string]: any};
 }
 
 /**
