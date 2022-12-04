@@ -126,6 +126,11 @@ export const additionalConfig = {
    * True if the form status can be edited in the list rows
    */
   statusEditable: true,
+
+  /**
+   * List of Pipeline Form Schemas (by name)
+   */
+  pipelines: ['pipeline_test'],
 };
 
 /**

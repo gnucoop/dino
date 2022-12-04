@@ -20,13 +20,14 @@
  *
  */
 
+import {AjfValidationService} from '@ajf/core/forms';
 import {Component, isDevMode, ViewEncapsulation} from '@angular/core';
 import {AuthService} from '@dino/core/auth';
 import {DataService, PermissionContextService} from '@dino/core/data';
 import {LangManager} from '@dino/core/langs';
 import {SyncManager} from '@dino/core/sync';
 import {distinctUntilKeyChanged, filter, skipWhile, switchMap, tap} from 'rxjs/operators';
-
+import {ajfCustomFunctions} from './ajf-custom-functions';
 /** Root component for the e2e-app demos. */
 @Component({
   selector: 'e2e-app',
@@ -57,6 +58,7 @@ export class E2eApp {
     private _ds: DataService,
     private _pcs: PermissionContextService,
     private _lm: LangManager,
+    private _validationService: AjfValidationService,
   ) {
     this._auth.authenticated
       .pipe(
@@ -105,5 +107,11 @@ export class E2eApp {
         this._ds.collectionsInitialized.emit('completed');
         this._lm.loadDinoLangs();
       });
+
+    if (ajfCustomFunctions) {
+      Object.keys(ajfCustomFunctions).forEach(fnName => {
+        this._validationService.addFunctionHandler(fnName, ajfCustomFunctions[fnName]);
+      });
+    }
   }
 }

@@ -20,7 +20,7 @@
  *
  */
 
-import {EventEmitter, Inject, Injectable, isDevMode} from '@angular/core';
+import {EventEmitter, Inject, Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {dinoTranslations, TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {TranslocoService} from '@ngneat/transloco';
@@ -423,9 +423,7 @@ export class LangManager extends DataModelManager<Lang> {
   }
 
   loadDinoLangs() {
-    this.langRows$.pipe(take(1)).subscribe(langs => {
-      if (isDevMode()) console.log(`Loaded Languages: ${langs}`);
-    });
+    this.langRows$.pipe(take(1)).subscribe();
   }
 
   private _modified(current: Dic, update: Dic): Dic {
