@@ -5,11 +5,29 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FilterGroup, FiltersService, SearchFiltersComponent} from '@dino/core/list';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
+import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
 import {ListDataSource, ListModule, SelectionList} from './public_api';
+
+let testDbIdx = 0;
+
+addPouchPlugin(pouchdbAdapterMemory);
+function dataServiceConfig(): DataServiceConfig {
+  return {
+    databaseCreateOptions: {
+      name: `dino_datamanager_test_db_${testDbIdx++}`,
+      storage: getRxStoragePouch('memory'),
+    },
+    syncOptions: {
+      url: 'host',
+    },
+  };
+}
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -67,6 +85,7 @@ describe('List', () => {
         {provide: AdminUserInteractionsService, useClass: AUIServiceStub},
         {provide: FiltersService, useClass: FiltersServiceStub},
         {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     }).compileComponents();

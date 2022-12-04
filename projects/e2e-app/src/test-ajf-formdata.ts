@@ -178,7 +178,7 @@ const ajfSourceReportFormDatas = [
 export const formDatas = [
   {
     id: '3a627515-bd5f-4599-b0c6-5a5ad4c42bba',
-    user_data_ref_id: 'user_a',
+    user_data_ref_id: null,
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[0],
     created_at: new Date().toISOString(),
@@ -192,7 +192,7 @@ export const formDatas = [
   },
   {
     id: '5c98aa0d-ded0-4cce-a8a1-f5be18c12433',
-    user_data_ref_id: 'user_a',
+    user_data_ref_id: null,
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[1],
     created_at: new Date().toISOString(),
@@ -206,7 +206,7 @@ export const formDatas = [
   },
   {
     id: '1a95052e-8068-4456-8e70-357109970a83',
-    user_data_ref_id: 'user_b',
+    user_data_ref_id: null,
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[2],
     created_at: new Date().toISOString(),
@@ -220,7 +220,7 @@ export const formDatas = [
   },
   {
     id: 'aa6fa67a-a8ad-46bd-92ad-69d8549c03d6',
-    user_data_ref_id: 'user_b',
+    user_data_ref_id: null,
     form_schema_ref_id: 'prova',
     data: ajfSourceReportFormDatas[3],
     created_at: new Date().toISOString(),

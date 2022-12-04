@@ -9,8 +9,8 @@ import {
   PermissionGroup,
 } from '@dino/core/data';
 import {SyncManager} from '@dino/core/sync';
-import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
-import {RxCollection} from 'rxdb';
+import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
+import {RxCollection, RxDocument} from 'rxdb';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay, map, shareReplay, tap} from 'rxjs/operators';
 
@@ -85,6 +85,21 @@ export const userPrivilegesMock: {[key: string]: PermissionGroup} = {
     'form_schema': ['all'],
     'report_schema': ['all'],
   },
+};
+export const userGroupMock: UserGroup = {
+  id: '',
+  created_at: '',
+  updated_at: '',
+  groupName: 'admin',
+  user_role_ref_id: 'admin',
+  area_ref_id: ['all'],
+  case_ref_id: ['all'],
+  location_ref_id: ['all'],
+  organization_ref_id: ['all'],
+  project_ref_id: ['all'],
+  form_status_ref_id: ['all'],
+  groupFormSchemaIds: ['all'],
+  groupReportSchemaIds: ['all'],
 };
 
 @Injectable()
@@ -183,6 +198,9 @@ export class UserGroupManagerMock extends UserGroupManager {
   }
   override getGroupsMetricsByType(_metricType: string): Observable<string[]> {
     return obsOf(['all']);
+  }
+  override getActiveUserGroups() {
+    return obsOf([userGroupMock as RxDocument<UserGroup>]);
   }
 }
 
