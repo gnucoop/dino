@@ -39,4 +39,7 @@
   .isDarkTheme .mat-table {
     background: rgb(var(--palette-background-background-dark)) !important;
   }
+  .isLightTheme .mat-table {
+    background: rgb(var(--palette-background-background)) !important;
+  }
 }

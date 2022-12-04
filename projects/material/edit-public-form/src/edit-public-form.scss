@@ -19,8 +19,12 @@ dino-edit-public-form {
 
   .ajf-form-container {
     .ajf-slider-container ajf-page-slider {
+      max-height: 87.5%;
+      overflow-y: scroll;
+      overflow-x: hidden;
       @media only screen and (max-width: 992px) {
         height: 97.5% !important;
+        max-height: 97.5%;
       }
     }
     .ajf-slider-container .ajf-page-slider-content .ajf-page-slider-body .ajf-page-slider-item-content,

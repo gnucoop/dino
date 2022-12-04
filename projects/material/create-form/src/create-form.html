@@ -24,12 +24,18 @@
             <mat-icon>arrow_back</mat-icon>
           </button>
         </div>
+        <dino-pipeline-stepper
+          *ngIf="(formSchemaStatuses|async)?.length"
+          [setStatuses]="formSchemaStatuses|async"
+          [setCurrentFormStatus]="null"
+          [setIsPipeline]="isPipeline|async"
+        ></dino-pipeline-stepper>
         <div class="dino-create-form-step-container">
           <ajf-form
             #formContainer
             [form]="(form|async)!"
             [saveDisabled]="(isAjfFormValid|async) !== true"
-            [topBar]="true"
+            [topBar]="(isPipeline|async) === false"
             (formAction)="onFormAction($event)"
           ></ajf-form>
         </div>
@@ -37,12 +43,18 @@
     </mat-stepper>
   </ng-container>
   <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false">
+    <dino-pipeline-stepper
+      *ngIf="(formSchemaStatuses|async)?.length"
+      [setStatuses]="formSchemaStatuses|async"
+      [setCurrentFormStatus]="null"
+      [setIsPipeline]="isPipeline|async"
+    ></dino-pipeline-stepper>
     <div class="dino-create-form-step-container">
       <ajf-form
         #formContainer
         [form]="(form|async)!"
         [saveDisabled]="(isAjfFormValid|async) !== true"
-        [topBar]="true"
+        [topBar]="(isPipeline|async) === false"
         (formAction)="onFormAction($event)"
       ></ajf-form>
     </div>

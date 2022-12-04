@@ -160,6 +160,31 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   /**
+   * If true, this Form Schema follows a Pipeline structure
+   */
+  private _isPipeline: Observable<boolean> = obsOf();
+  get isPipeline(): Observable<boolean> {
+    return this._isPipeline;
+  }
+
+  /**
+   * Form Schemas (by name) that follow a Pipeline structure
+   */
+  private _pipelineSchemas: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  @Input()
+  set setPipelines(schemaNames: string[]) {
+    this._pipelineSchemas.next(schemaNames);
+  }
+
+  /**
+   * The Form schema Statuses
+   */
+  private _formSchemaStatuses: Observable<FormStatus[]> = obsOf([]);
+  get formSchemaStatuses(): Observable<FormStatus[]> {
+    return this._formSchemaStatuses;
+  }
+
+  /**
    * The Form Schema Deps object
    */
   private _formSchemaDeps: Observable<FormSchemaDeps> = obsOf();
@@ -330,6 +355,23 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       ),
       switchMap(schema => schema as Observable<FormSchema>),
       shareReplay(1),
+    );
+
+    this._isPipeline = combineLatest([this._formSchema, this._pipelineSchemas]).pipe(
+      map(([schema, pipelines]) => pipelines.includes(schema.name)),
+    );
+
+    this._formSchemaStatuses = this._formSchema.pipe(
+      switchMap(schema => {
+        if (schema == null || !schema['form_status_ref_id']?.length) {
+          return obsOf([]);
+        }
+        return this._fst.query({selector: {id: {$in: schema['form_status_ref_id']}}}).pipe(
+          map(statuses => {
+            return statuses.sort((a, b) => (a.status_level > b.status_level ? 1 : -1));
+          }),
+        );
+      }),
     );
 
     this._formSchemaDeps = this._formSchema.pipe(

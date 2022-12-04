@@ -213,7 +213,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
     this.availableFormStatuses = this._updateStatusListEvt.pipe(
       startWith([]),
-      switchMap(() => this._formStatusManager.list()),
+      switchMap(() =>
+        this._formStatusManager
+          .list()
+          .pipe(map(sts => sts.sort((a, b) => (a.status_level > b.status_level ? 1 : -1)))),
+      ),
     );
 
     this.formGroup = this._formSchema.pipe(

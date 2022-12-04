@@ -42,7 +42,6 @@ import {
   OnInit,
   Output,
   QueryList,
-  ViewChild,
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
@@ -57,7 +56,14 @@ import {
   MetricsService,
   Model,
 } from '@dino/core/data';
-import {FormData, FormSchema, FormSchemaDeps, FormSchemaManager} from '@dino/core/forms';
+import {
+  FormData,
+  FormSchema,
+  FormSchemaDeps,
+  FormSchemaManager,
+  FormStatus,
+  FormStatusManager,
+} from '@dino/core/forms';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {format} from 'date-fns';
 import {isRxDocument, RxDocument} from 'rxdb';
@@ -85,9 +91,12 @@ import {
   startWith,
   switchMap,
   take,
+  takeUntil,
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
+import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
+import {FormControl} from '@angular/forms';
 
 /**
  * The Form Edit component.
@@ -102,6 +111,21 @@ import {
   encapsulation: ViewEncapsulation.None,
 })
 export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
+  /**
+   * The Ajf Form Renderer
+   */
+  @ViewChildren('ajfFormRenderer') formRenderers?: QueryList<AjfFormRenderer>;
+  private _formRenderer: BehaviorSubject<AjfFormRenderer | null> =
+    new BehaviorSubject<AjfFormRenderer | null>(null);
+  get formRenderer(): Observable<AjfFormRenderer | null> {
+    return this._formRenderer.asObservable();
+  }
+
+  /**
+   * The Form Metrics Selector
+   */
+  @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+
   /**
    * If true, Metrics can be created directly from the metric fields
    */
@@ -177,6 +201,63 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
+   * If true, this Form Schema follows a Pipeline structure
+   */
+  private _isPipeline: Observable<boolean> = obsOf();
+  get isPipeline(): Observable<boolean> {
+    return this._isPipeline;
+  }
+
+  /**
+   * The index of the last slide of the Ajf Form Renderer with visible set to true
+   */
+  private _lastVisibleSlide: Observable<number | null> = obsOf(null);
+  get lastVisibleSlide(): Observable<number | null> {
+    return this._lastVisibleSlide;
+  }
+
+  /**
+   * Form Schemas (by name) that follow a Pipeline structure
+   */
+  private _pipelineSchemas: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  @Input()
+  set setPipelines(schemaNames: string[]) {
+    this._pipelineSchemas.next(schemaNames);
+  }
+
+  /**
+   * The Form schema Statuses
+   */
+  private _formSchemaStatuses: Observable<FormStatus[]> = obsOf([]);
+  get formSchemaStatuses(): Observable<FormStatus[]> {
+    return this._formSchemaStatuses;
+  }
+
+  /**
+   * The Form data current status
+   */
+  private _formDataStatus: Observable<FormStatus | null> = obsOf(null);
+  get formDataStatus(): Observable<FormStatus | null> {
+    return this._formDataStatus;
+  }
+
+  /**
+   * The Form data creator userdata
+   */
+  private _formDataUser: Observable<UserData | null> = obsOf(null);
+  get formDataUser(): Observable<UserData | null> {
+    return this._formDataUser;
+  }
+
+  /**
+   * The Form data creator permission groups
+   */
+  private _formDataUserGroups: Observable<UserGroup[] | null> = obsOf(null);
+  get formDataUserGroups(): Observable<UserGroup[] | null> {
+    return this._formDataUserGroups;
+  }
+
+  /**
    * The Form Schema Deps object
    */
   private _formSchemaDeps: Observable<FormSchemaDeps> = obsOf();
@@ -187,7 +268,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * All the metric changes in the metric selector
    */
-  private _metricChangesSub: Subscription = Subscription.EMPTY;
   readonly metricChanges: BehaviorSubject<{[key: string]: Metric} | null> = new BehaviorSubject<{
     [key: string]: Metric;
   } | null>(null);
@@ -195,8 +275,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * The Form data object
    */
-  private _formData: Observable<{data: FormData; schemaId: string}> = obsOf();
-  get formData(): Observable<{data: FormData; schemaId: string}> {
+  private _formData: Observable<{
+    data: FormData;
+    schemaId: string;
+    userId: string;
+    statusId: string | null;
+  }> = obsOf();
+  get formData(): Observable<{
+    data: FormData;
+    schemaId: string;
+    userId: string;
+    statusId: string | null;
+  }> {
     return this._formData;
   }
 
@@ -224,30 +314,16 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
 
   /**
-   * All the files to be deleted from the storage
+   * Emitted when the Pipeline stepper emits its step position
    */
-  private _deleteFilesSub: Subscription = Subscription.EMPTY;
+  private _stepperPositionEvt: EventEmitter<number> = new EventEmitter<number>();
+
   private _deleteFiles: BehaviorSubject<AjfFile[]> = new BehaviorSubject<AjfFile[]>([]);
-
-  /**
-   * Subscribes to the populated form data object with dependencies
-   */
-  private _populatedFormDataSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the save form event
-   */
-  private _saveFormSub: Subscription = Subscription.EMPTY;
 
   /**
    * Subscribes to the ajf validation state to save the form
    */
   private _saveValidFormSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the update form event
-   */
-  private _updateFormDataSub: Subscription = Subscription.EMPTY;
 
   /**
    * The data model manager used to retrieve the data to be edited
@@ -264,21 +340,20 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at', 'created_at'];
 
   /**
-   * The Ajf Form Renderer
+   * Main unsub subject.
+   * Used for unsubscribing all subscriptions.
    */
-  @ViewChild(AjfFormRenderer, {static: true}) formCmp!: AjfFormRenderer;
-
-  /**
-   * The Form Metrics Selector
-   */
-  @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+  private _mainUnsubscribe: Subject<void> = new Subject();
 
   constructor(
     private _nss: NetworkStatusService,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
+    private _fsm: FormStatusManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
+    private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
@@ -311,6 +386,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         return false;
       }),
     );
+
+    this._stepperPositionEvt
+      .pipe(takeUntil(this._mainUnsubscribe))
+      .subscribe(pos => this.scrollToSlide(pos));
   }
 
   /**
@@ -345,6 +424,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     }
   }
 
+  /**
+   * Scrolls the ajfForm to the slide at the provided index
+   * @param index
+   */
+  scrollToSlide(index: number): void {
+    this._formRenderer.pipe(take(1)).subscribe(frenderer => {
+      if (frenderer != null) {
+        frenderer.formSlider.slide({to: index});
+      }
+    });
+  }
+
   ngOnInit() {
     if (this._dataModelManager == null) {
       this._location.back();
@@ -372,6 +463,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               const formDataObj = {
                 data: item['data']['data'] ?? item['data'] ?? null,
                 schemaId: item['data']['form_schema_ref_id'] ?? item['form_schema_ref_id'] ?? null,
+                statusId: item['form_status_ref_id'] ?? null,
+                userId: item['user_data_ref_id'],
               };
               return formDataObj;
             }
@@ -379,7 +472,15 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           }),
         );
       }),
-      switchMap(data => data as Observable<{data: FormData; schemaId: string}>),
+      switchMap(
+        data =>
+          data as Observable<{
+            data: FormData;
+            schemaId: string;
+            statusId: string | null;
+            userId: string;
+          }>,
+      ),
       shareReplay(1),
     );
 
@@ -405,6 +506,59 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       shareReplay(1),
     );
 
+    this._isPipeline = combineLatest([this._formSchema, this._pipelineSchemas]).pipe(
+      map(([schema, pipelines]) => pipelines.includes(schema.name)),
+      shareReplay(1),
+    );
+
+    this._formSchemaStatuses = this._formSchema.pipe(
+      switchMap(schema => {
+        if (schema == null || !schema['form_status_ref_id']?.length) {
+          return obsOf([]);
+        }
+        return this._fsm.query({selector: {id: {$in: schema['form_status_ref_id']}}}).pipe(
+          map(statuses => {
+            return statuses.sort((a, b) => (a.status_level > b.status_level ? 1 : -1));
+          }),
+        );
+      }),
+      shareReplay(1),
+    );
+
+    this._formDataStatus = combineLatest([this._formData, this._formSchemaStatuses]).pipe(
+      map(([formData, statuses]) => {
+        if (formData == null || formData.statusId == null || statuses == null) {
+          return null;
+        }
+        return statuses.find(status => status.id == formData.statusId) ?? null;
+      }),
+      shareReplay(1),
+    );
+
+    this._formDataUser = this._formData.pipe(
+      switchMap(formData => {
+        if (formData == null || formData.userId == null) {
+          return obsOf(null);
+        }
+        return this._udm.get(formData.userId);
+      }),
+      shareReplay(1),
+    );
+
+    this._formDataUserGroups = this._formDataUser.pipe(
+      switchMap(userData => {
+        if (
+          userData == null ||
+          userData.user_group_ids == null ||
+          !userData.user_group_ids.length
+        ) {
+          return obsOf(null);
+        }
+        return this._ugm.query({selector: {id: {$in: userData.user_group_ids}}});
+      }),
+      shareReplay(1),
+    );
+
     this._formSchemaDeps = this._formSchema.pipe(
       map(fschema =>
         (fschema as any)['form_schema_deps'].pipe(
@@ -420,7 +574,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       shareReplay(1),
     );
 
-    this._populatedFormDataSub = combineLatest([this._formSchemaDeps, this.metricChanges])
+    combineLatest([this._formSchemaDeps, this.metricChanges])
       .pipe(
         withLatestFrom(this._rendererService.formGroup),
         map(([[fschemadeps, metricSel], formGroup]) => {
@@ -465,6 +619,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }),
         shareReplay(1),
         withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps, this._formSchema),
+        takeUntil(this._mainUnsubscribe),
       )
       .subscribe(([changes, formGroup, fschemadeps, fschema]) => {
         if (fschemadeps && fschemadeps.deps_origin && changes) {
@@ -527,29 +682,114 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }
       });
 
-    this._form = combineLatest([this._formSchema, this.formChanges]).pipe(
+    this._form = combineLatest([
+      this._formSchema,
+      this.formChanges,
+      this._formDataStatus,
+      this._formSchemaStatuses,
+      this._formDataUser,
+      this._formDataUserGroups,
+      this._udm.getActiveUserData(),
+      this._ugm.getActiveUserGroups(),
+    ]).pipe(
       withLatestFrom(this._formData),
-      map(([[fschema, schemaChanges], fdata]) => {
-        if (schemaChanges) {
-          return schemaChanges;
-        }
-        if (fschema == null) {
-          this._location.back();
-          this.snackbar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
-            duration: 5000,
-          });
-          return AjfFormSerializer.fromJson({});
-        }
-        if (fschema.schema.choicesOrigins == null) {
-          fschema.schema.choicesOrigins = [];
-        }
-        return AjfFormSerializer.fromJson(fschema.schema, fdata.data);
-      }),
+      map(
+        ([
+          [
+            fschema,
+            schemaChanges,
+            status,
+            allStatuses,
+            user,
+            userGroups,
+            activeUser,
+            activeUserGroups,
+          ],
+          fdata,
+        ]) => {
+          if (schemaChanges) {
+            return schemaChanges;
+          }
+          if (fschema == null) {
+            this._location.back();
+            this.snackbar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
+              duration: 5000,
+            });
+            return AjfFormSerializer.fromJson({});
+          }
+          if (fschema.schema.choicesOrigins == null) {
+            fschema.schema.choicesOrigins = [];
+          }
+          const ajfFormData = deepCopy(fdata.data);
+          ajfFormData['dino_form_info'] = {
+            status,
+            allStatuses,
+            user,
+            userGroups,
+            activeUser,
+            activeUserGroups,
+          };
+
+          return AjfFormSerializer.fromJson(fschema.schema, ajfFormData);
+        },
+      ),
       shareReplay(1),
     );
   }
 
   ngAfterViewInit() {
+    combineLatest([
+      this._formRenderer.pipe(switchMap(fr => fr?.formGroup ?? obsOf(null))),
+      this._formDataStatus,
+      this._formSchemaStatuses,
+      this._formDataUser,
+      this._formDataUserGroups,
+      this._udm.getActiveUserData(),
+      this._ugm.getActiveUserGroups(),
+    ])
+      .pipe(takeUntil(this._mainUnsubscribe))
+      .subscribe(
+        ([frGroup, status, allStatuses, user, userGroups, activeUser, activeUserGroups]) => {
+          if (frGroup != null) {
+            const dinoFormInfo = {
+              status,
+              allStatuses,
+              user,
+              userGroups,
+              activeUser,
+              activeUserGroups,
+            };
+            frGroup.addControl('dino_form_info', new FormControl(dinoFormInfo));
+          }
+        },
+      );
+
+    if (this.formRenderers) {
+      this.formRenderers.changes
+        .pipe(
+          map((formRenderers: QueryList<AjfFormRenderer>) => formRenderers.first ?? null),
+          take(1),
+        )
+        .subscribe(fr => {
+          this._formRenderer.next(fr);
+        });
+    }
+
+    this._lastVisibleSlide = this._formRenderer.pipe(
+      switchMap(
+        fr =>
+          fr?.slides.pipe(
+            map(slides => {
+              const lastSlideIndex = slides.length - 1;
+              const slidesVisibility = slides.map(slide => slide.visible);
+              const firstNotVisible = slidesVisibility.indexOf(false);
+              const lastVisibleSlide = firstNotVisible > 0 ? firstNotVisible - 1 : lastSlideIndex;
+              return lastVisibleSlide;
+            }),
+          ) ?? obsOf(null),
+      ),
+    );
+
     this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
       switchMap(active => {
         if (!active) {
@@ -621,7 +861,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       )
       .subscribe();
 
-    this._saveFormSub = combineLatest([
+    combineLatest([
       this._saveFormEvt as Observable<AjfFormActionEvent>,
       this._currentDoc,
       this._formMetricsSelector,
@@ -629,9 +869,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       .pipe(
         filter(() => this._dataModelManager != null),
         map(([_, item, formMetricsSelector]) => {
+          const fValue = this._rendererService.getFormValue();
+          delete fValue['dino_form_info'];
           return {
             doc: item,
-            formValue: this._rendererService.getFormValue(),
+            formValue: fValue,
             fmSelector: formMetricsSelector,
           };
         }),
@@ -709,12 +951,28 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             const dm: DataModelManager<T> =
               isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
             return dm.update(newItem as T).pipe(
-              tap(fd => {
+              withLatestFrom(
+                this._formDataStatus,
+                this._formSchemaStatuses,
+                this._formDataUser,
+                this._formDataUserGroups,
+                this._udm.getActiveUserData(),
+                this._ugm.getActiveUserGroups(),
+              ),
+              tap(([fd, status, allStatuses, user, userGroups, activeUser, activeUserGroups]) => {
                 if (fd && fd.collection.name === 'form_data') {
                   const trigData: ActionTriggerData<T> = {
                     doc: fd,
                     previousValue: formObj.doc,
                     newValue: fd,
+                    additional_info: {
+                      status,
+                      allStatuses,
+                      user,
+                      userGroups,
+                      activeUser,
+                      activeUserGroups,
+                    },
                   };
                   const trigger: ActionTrigger<T> = {
                     name: 'Form Data Changed',
@@ -738,6 +996,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
         }),
+        takeUntil(this._mainUnsubscribe),
       )
       .subscribe(_ => {
         this.isLoading.next(false);
@@ -745,8 +1004,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
       });
 
-    this._deleteFilesSub = this._deleteFiles
-      .pipe(switchMap(files => zip(this.uploadService.deleteFiles(files))))
+    this._deleteFiles
+      .pipe(
+        switchMap(files => zip(this.uploadService.deleteFiles(files))),
+        takeUntil(this._mainUnsubscribe),
+      )
       .subscribe();
 
     this.isAjfFormValid = this._rendererService.errors
@@ -771,16 +1033,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         );
       }),
     );
-  }
-
-  ngOnDestroy() {
-    this._saveFormSub.unsubscribe();
-    this._saveValidFormSub.unsubscribe();
-    this._metricChangesSub.unsubscribe();
-    this._updateFormDataSub.unsubscribe();
-    this._populatedFormDataSub.unsubscribe();
-    this._saveFormEvt.complete();
-    this._currentDoc.complete();
   }
 
   /**
@@ -925,5 +1177,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       }
     });
     return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
+  }
+
+  ngOnDestroy() {
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
+
+    this._saveFormEvt.complete();
+    this._currentDoc.complete();
   }
 }
