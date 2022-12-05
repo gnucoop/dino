@@ -5,7 +5,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FormStatus} from '@dino/core/forms';
 import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
-import {BehaviorSubject, firstValueFrom, Observable, of as obsOf, of} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, of} from 'rxjs';
 import {PipelineStepperModule, StepperComponent} from './public_api';
 
 let testDbIdx = 0;
