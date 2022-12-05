@@ -350,7 +350,7 @@ export class EditReport implements AfterViewInit {
             }
           }
         }
-        querySelector['is_deleted'] = {$eq: false};
+        querySelector['is_deleted'] = {$ne: true};
         return this._formDataManager.query({selector: querySelector});
       }),
     );
@@ -380,7 +380,7 @@ export class EditReport implements AfterViewInit {
         const res = forkJoin(populatedSchema).pipe(
           map(allSchemaProps =>
             allSchemaProps.map(schemaProps => {
-              const deps = schemaProps[1].toJSON() || {};
+              const deps = schemaProps[1]?.toJSON() || {};
               return {...deepCopy(schemaProps[0].toJSON()), form_schema_deps: deps} as {
                 [key: string]: any;
               };

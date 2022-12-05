@@ -537,7 +537,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
 
     this._formDataUser = this._formData.pipe(
       switchMap(formData => {
-        if (formData == null || formData.userId == null) {
+        if (formData == null || !formData.userId) {
           return obsOf(null);
         }
         return this._udm.get(formData.userId);
