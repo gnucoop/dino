@@ -6,102 +6,107 @@
 @use '../../theming/private';
 
 @mixin sidenav-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
-    $primary: map.get($config, primary);
-    $accent: map.get($config, accent);
-    $warn: map.get($config, warn);
-    $background: map.get($config, background);
-    $foreground: map.get($config, foreground);
+  $config: mat-theming.get-color-config($config-or-theme);
+  $primary: map.get($config, primary);
+  $accent: map.get($config, accent);
+  $warn: map.get($config, warn);
+  $background: map.get($config, background);
+  $foreground: map.get($config, foreground);
 
-    $drawer-background-color: mat-theming.get-color-from-palette($background, background);
-    $drawer-container-background-color: mat-theming.get-color-from-palette($background, background);
-    $drawer-push-background-color: mat-theming.get-color-from-palette($background, dialog);
-    $drawer-side-border: solid 1px mat-theming.get-color-from-palette($foreground, divider);
+  $drawer-background-color: mat-theming.get-color-from-palette($background, background);
+  $drawer-container-background-color: mat-theming.get-color-from-palette($background, background);
+  $drawer-push-background-color: mat-theming.get-color-from-palette($background, dialog);
+  $drawer-side-border: solid 1px mat-theming.get-color-from-palette($foreground, divider);
 
-    .mat-drawer-container {
-        background-color: $drawer-container-background-color;
-        color: mat-theming.get-color-from-palette($foreground, text);
+  .mat-drawer-container {
+    background-color: $drawer-container-background-color;
+    color: mat-theming.get-color-from-palette($foreground, text);
+  }
+
+  .mat-drawer {
+    color: mat-theming.get-color-from-palette($foreground, text);
+
+    &.mat-drawer-push {
+      background-color: $drawer-push-background-color;
     }
 
-    .mat-drawer {
-        background-color: $drawer-background-color;
-        color: mat-theming.get-color-from-palette($foreground, text);
-
-        &.mat-drawer-push {
-            background-color: $drawer-push-background-color;
+    &:not(.mat-drawer-side) {
+      @include private.private-theme-elevation(16, $config);
+    }
+    &.mat-drawer-side.mat-sidenav,
+    &.mat-drawer-push.mat-sidenav,
+    &.mat-drawer-over.mat-sidenav {
+      .mat-list-item {
+        transition: all ease 0.5s;
+        &:hover,
+        &.dino-section-selected {
+          background-color: rgb(var(--palette-primary-100));
+          color: rgb(var(--palette-primary-500));
+          box-shadow: 3px 0px 0px 0px rgb(var(--palette-primary-500)) inset;
         }
-
-        &:not(.mat-drawer-side) {
-            @include private.private-theme-elevation(16, $config);
+        &:hover {
+          opacity: 0.6;
         }
-        &.mat-drawer-side.mat-sidenav,
-        &.mat-drawer-push.mat-sidenav,
-        &.mat-drawer-over.mat-sidenav {
-            .mat-list-item {
-                transition: all ease 0.5s;
-                &:hover,
-                &.dino-section-selected {
-                    background-color: rgb(var(--palette-primary-100));
-                    color: rgb(var(--palette-primary-500));
-                    box-shadow: 3px 0px 0px 0px rgb(var(--palette-primary-500)) inset;
-                }
-                &:hover {
-                    opacity: 0.6;
-                }
-                &.dino-section-selected {
-                    opacity: 1;
-                }
-            }
+        &.dino-section-selected {
+          opacity: 1;
         }
+      }
     }
+  }
 
-    .mat-drawer-side {
-        border-right: $drawer-side-border;
+  .isLightTheme .mat-drawer {
+    background-color: rgb(var(--palette-background-card));
+  }
+  .isDarkTheme .mat-drawer {
+    background-color: rgb(var(--palette-background-dialog-dark));
+  }
 
-        &.mat-drawer-end {
-            border-left: $drawer-side-border;
-            border-right: none;
-        }
+  .mat-drawer-side {
+    border-right: $drawer-side-border;
+
+    &.mat-drawer-end {
+      border-left: $drawer-side-border;
+      border-right: none;
     }
+  }
 
-    [dir='rtl'] .mat-drawer-side {
-        border-left: $drawer-side-border;
-        border-right: none;
+  [dir='rtl'] .mat-drawer-side {
+    border-left: $drawer-side-border;
+    border-right: none;
 
-        &.mat-drawer-end {
-            border-left: none;
-            border-right: $drawer-side-border;
-        }
+    &.mat-drawer-end {
+      border-left: none;
+      border-right: $drawer-side-border;
     }
+  }
 
-    .mat-drawer-backdrop.mat-drawer-shown {
-        $opacity: 0.6;
-        $backdrop-color: mat-theming.get-color-from-palette($background, card, $opacity);
+  .mat-drawer-backdrop.mat-drawer-shown {
+    $opacity: 0.6;
+    $backdrop-color: mat-theming.get-color-from-palette($background, card, $opacity);
 
-        @if (meta.type-of($backdrop-color) == color) {
-            background-color: color.invert($backdrop-color);
-        }
-        @else {
-            background-color: $backdrop-color;
-            opacity: $opacity;
-        }
+    @if (meta.type-of($backdrop-color) == color) {
+      background-color: color.invert($backdrop-color);
+    } @else {
+      background-color: $backdrop-color;
+      opacity: $opacity;
     }
+  }
 
-    ::-webkit-scrollbar {
-        max-width: 5px !important;
-        max-height: 5px !important;
-    }
+  ::-webkit-scrollbar {
+    max-width: 5px !important;
+    max-height: 5px !important;
+  }
 
-    ::-webkit-scrollbar-track {
-        // background: mat-theming.get-color-from-palette($background, background);
-        border-radius: 5px;
-    }
+  ::-webkit-scrollbar-track {
+    // background: mat-theming.get-color-from-palette($background, background);
+    border-radius: 5px;
+  }
 
-    ::-webkit-scrollbar-thumb {
-        background: rgb(var(--palette-accent-500));;
-        border-radius: 5px;
-        max-width: 20%;
-    }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--palette-accent-500));
+    border-radius: 5px;
+    max-width: 20%;
+  }
 }
 
 @mixin mat-sidenav-typography($config-or-theme) {
@@ -111,17 +116,17 @@
 }
 
 @mixin sidenav-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+  $color: mat-theming.get-color-config($theme-or-color-config);
+  $density: mat-theming.get-density-config($theme-or-color-config);
+  $typography: mat-theming.get-typography-config($theme-or-color-config);
 
-    @if $color != null {
-        @include sidenav-color($color);
-    }
-    @if $density != null {
-        @include _mat-sidenav-density($density);
-    }
-    @if $typography != null {
-        @include mat-sidenav-typography($typography);
-    }
+  @if $color != null {
+    @include sidenav-color($color);
+  }
+  @if $density != null {
+    @include _mat-sidenav-density($density);
+  }
+  @if $typography != null {
+    @include mat-sidenav-typography($typography);
+  }
 }

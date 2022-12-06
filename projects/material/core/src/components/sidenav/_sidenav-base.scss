@@ -2,11 +2,6 @@
 @use '../../typography/typography';
 
 @mixin sidenav-core($typography-config: null) {
-  .mat-drawer {
-    @media only screen and (min-width: 769px) {
-      background-color: transparent !important;
-    }
-  }
   .mat-drawer-side {
     border-right: none !important;
   }
