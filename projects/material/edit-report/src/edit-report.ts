@@ -377,16 +377,23 @@ export class EditReport implements AfterViewInit {
             });
           populatedSchema.push(...data);
         }
-        const res = forkJoin(populatedSchema).pipe(
-          map(allSchemaProps =>
-            allSchemaProps.map(schemaProps => {
-              const deps = schemaProps[1]?.toJSON() || {};
-              return {...deepCopy(schemaProps[0].toJSON()), form_schema_deps: deps} as {
-                [key: string]: any;
-              };
-            }),
-          ),
-        );
+        let res: Observable<
+          {
+            [key: string]: any;
+          }[]
+        > = obsOf([]);
+        if (populatedSchema.length) {
+          res = forkJoin(populatedSchema).pipe(
+            map(allSchemaProps =>
+              allSchemaProps.map(schemaProps => {
+                const deps = schemaProps[1]?.toJSON() || {};
+                return {...deepCopy(schemaProps[0].toJSON()), form_schema_deps: deps} as {
+                  [key: string]: any;
+                };
+              }),
+            ),
+          );
+        }
         return res;
       }),
     );
