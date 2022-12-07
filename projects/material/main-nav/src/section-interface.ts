@@ -35,6 +35,11 @@ export interface Section {
   icon: string;
 
   /**
+   * The svg icon, if present
+   */
+  svgIcon?: string;
+
+  /**
    * The Section route path.
    */
   url: string;

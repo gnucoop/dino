@@ -37,6 +37,10 @@ export interface Breadcrumb {
    */
   icon?: string;
   /**
+   * The svg icon, if present
+   */
+  svgIcon?: string;
+  /**
    * If true, the Breadcrumb is a parametric one and must
    * be replaced with some data provided from the component
    * the Breacrumbs is projected in.

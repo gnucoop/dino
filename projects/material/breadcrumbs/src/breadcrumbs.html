@@ -9,14 +9,24 @@
           >{{breadcrumb?.label|transloco}}</span
         >
         <ng-container *ngIf="breadcrumb">
-          <ng-container *ngIf="breadcrumb.icon"
-            ><mat-icon
+          <ng-container *ngIf="breadcrumb.icon">
+            <mat-icon
+              *ngIf="!breadcrumb.svgIcon; else svgIconTemplate"
               class="dino-breadcrumb-icon"
               [class.dino-breadcrumb-history-link]="!isLast && breadcrumb?.url"
               (click)="crumbNavigate(breadcrumb.url)"
               >{{breadcrumb.icon}}</mat-icon
-            ></ng-container
-          >
+            >
+            <ng-template #svgIconTemplate>
+              <mat-icon
+                class="dino-breadcrumb-icon"
+                [class.dino-breadcrumb-history-link]="!isLast && breadcrumb?.url"
+                (click)="crumbNavigate(breadcrumb.url)"
+                svgIcon="{{breadcrumb.svgIcon ?? ''}}"
+                >{{breadcrumb.icon}}</mat-icon
+              >
+            </ng-template>
+          </ng-container>
           <ng-container *ngIf="!isLast">
             <mat-icon class="dino-breadcrumb-separator-icon">navigate_next</mat-icon>
           </ng-container>

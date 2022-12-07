@@ -105,6 +105,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
   @Input() spinnerImagePath: string | undefined;
 
   /**
+   * The Custom User Section icon svg name
+   */
+  @Input() userSectionIcon: string | undefined;
+
+  /**
+   * The Custom Sync icon svg name
+   */
+  @Input() syncIcon: string | undefined;
+
+  /**
    * Determines the initial expanded state of the sidenav
    */
   @Input() set initialExtendedSidenav(state: boolean) {

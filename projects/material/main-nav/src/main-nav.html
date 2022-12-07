@@ -68,13 +68,25 @@
       <mat-icon class="dino-user-settings" (click)="openUserArea()">settings</mat-icon>
     </ng-container>
     <ng-template #syncOnline>
-      <mat-icon
-        *ngIf="(syncSpinnerDisabled|async) !== true"
-        class="dino-sync-detector"
-        [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
-        (click)="runSync()"
-        >sync</mat-icon
-      >
+      <ng-container *ngIf="!syncIcon; else svgSyncIconTemplate;">
+        <mat-icon
+          *ngIf="(syncSpinnerDisabled|async) !== true"
+          class="dino-sync-detector"
+          [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
+          (click)="runSync()"
+          >sync</mat-icon
+        >
+      </ng-container>
+      <ng-template #svgSyncIconTemplate>
+        <mat-icon
+          *ngIf="(syncSpinnerDisabled|async) !== true"
+          class="dino-sync-detector"
+          [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
+          (click)="runSync()"
+          svgIcon="{{syncIcon}}"
+          >sync</mat-icon
+        >
+      </ng-template>
     </ng-template>
     <ng-template #syncOffline>
       <mat-icon class="dino-sync-detector">sync_disabled</mat-icon>
@@ -85,9 +97,22 @@
     </ng-container>
     <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
     <ng-container *ngIf="userDisplayName|async as userDisplayName">
-      <mat-icon class="dino-active-user-icon" color="primary" (click)="openUserArea()"
+      <mat-icon
+        class="dino-active-user-icon"
+        color="primary"
+        (click)="openUserArea()"
+        *ngIf="!userSectionIcon; else svgIconTemplate"
         >person</mat-icon
       >
+      <ng-template #svgIconTemplate>
+        <mat-icon
+          class="dino-active-user-icon"
+          color="primary"
+          (click)="openUserArea()"
+          svgIcon="{{userSectionIcon ?? ''}}"
+        ></mat-icon>
+      </ng-template>
+
       <span class="dino-active-user-text" (click)="openUserArea()">{{userDisplayName}}</span>
     </ng-container>
     <ng-container *ngIf="(logoutDisabled|async) !== true">
@@ -125,7 +150,10 @@
         (click)="menuClick()"
         aria-label="Section"
       >
-        <mat-icon>{{section.icon}}</mat-icon>
+        <mat-icon *ngIf="!section.svgIcon; else svgIconTemplate">{{section.icon}}</mat-icon>
+        <ng-template #svgIconTemplate>
+          <mat-icon svgIcon="{{section.svgIcon ?? ''}}"></mat-icon>
+        </ng-template>
         <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
       </a>
 
@@ -143,7 +171,12 @@
             (click)="menuClick()"
             aria-label="Admin Section"
           >
-            <mat-icon>{{adminSection.icon}}</mat-icon>
+            <mat-icon *ngIf="!adminSection.svgIcon; else svgAdminIconTemplate"
+              >{{adminSection.icon}}</mat-icon
+            >
+            <ng-template #svgAdminIconTemplate>
+              <mat-icon svgIcon="{{adminSection.svgIcon ?? ''}}"></mat-icon>
+            </ng-template>
             <span *ngIf="extendedSidenav|async">{{adminSection.label|transloco}}</span>
           </a>
         </ng-container>

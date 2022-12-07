@@ -40,6 +40,11 @@ export interface CollectItem {
   icon?: string;
 
   /**
+   * The svg icon, if present
+   */
+  svgIcon?: string;
+
+  /**
    * The Item custom url
    */
   url?: string;

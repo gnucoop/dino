@@ -2,7 +2,7 @@
 <ng-container *ngIf="filterBar === true">
   <mat-form-field>
     <mat-label>{{ 'Filter' | transloco }}</mat-label>
-    <input matInput [formControl]="filterCtrl">
+    <input matInput [formControl]="filterCtrl" />
     <mat-icon matSuffix>filter_alt</mat-icon>
   </mat-form-field>
 </ng-container>
@@ -20,7 +20,7 @@
       <mat-grid-tile
         class="dino-grid-tile"
         [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
-        >
+      >
         <div>
           <div
             class="dino-grid-action-icons"
@@ -37,10 +37,15 @@
           </div>
           <div class="title"></div>
           <div class="dino-grid-icon">
-            <mat-icon class="dino-mat-icon">{{item.icon ?? 'list'}}</mat-icon>
+            <mat-icon class="dino-mat-icon" *ngIf="!item.svgIcon; else svgIconTemplate">{{item.icon}}</mat-icon>
+            <ng-template #svgIconTemplate>
+              <mat-icon class="dino-mat-icon" svgIcon="{{item.svgIcon ?? ''}}"></mat-icon>
+            </ng-template>
           </div>
           <div class="dino-grid-label">
-            <ng-container *ngIf="item.label ; else itemName">{{ item.label|transloco }}</ng-container>
+            <ng-container *ngIf="item.label ; else itemName"
+              >{{ item.label|transloco }}</ng-container
+            >
             <ng-template #itemName>{{ item.name|transloco }}</ng-template>
           </div>
         </div>
