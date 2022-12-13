@@ -28,6 +28,7 @@ import {
   AjfFormRenderer,
   AjfFormRendererService,
   AjfFormSerializer,
+  AjfSlideInstance,
 } from '@ajf/core/forms';
 import {deepCopy} from '@ajf/core/utils';
 import {Location} from '@angular/common';
@@ -209,11 +210,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
-   * The index of the last slide of the Ajf Form Renderer with visible set to true
+   * The Ajf Form Renderer slide instances
    */
-  private _lastVisibleSlide: Observable<number | null> = obsOf(null);
-  get lastVisibleSlide(): Observable<number | null> {
-    return this._lastVisibleSlide;
+  private _slides: Observable<AjfSlideInstance[] | null> = obsOf(null);
+  get slides(): Observable<AjfSlideInstance[] | null> {
+    return this._slides;
   }
 
   /**
@@ -775,19 +776,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         });
     }
 
-    this._lastVisibleSlide = this._formRenderer.pipe(
-      switchMap(
-        fr =>
-          fr?.slides.pipe(
-            map(slides => {
-              const lastSlideIndex = slides.length - 1;
-              const slidesVisibility = slides.map(slide => slide.visible);
-              const firstNotVisible = slidesVisibility.indexOf(false);
-              const lastVisibleSlide = firstNotVisible > 0 ? firstNotVisible - 1 : lastSlideIndex;
-              return lastVisibleSlide;
-            }),
-          ) ?? obsOf(null),
-      ),
+    this._slides = this._formRenderer.pipe(
+      switchMap(fr => fr?.slides ?? obsOf(null)),
+      shareReplay(1),
     );
 
     this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
