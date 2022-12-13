@@ -1,5 +1,4 @@
-import {AjfFormRenderer} from '@ajf/core/forms';
-import {StepperSelectionEvent} from '@angular/cdk/stepper';
+import {AjfFormRenderer, AjfSlideInstance} from '@ajf/core/forms';
 import {
   AfterViewChecked,
   AfterViewInit,
@@ -68,11 +67,11 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
   private _ajfFormRenderer: Observable<AjfFormRenderer | null> = obsOf(null);
 
   /**
-   * The last visible step on the stepper, corresponding to the last visible slide of the Ajf Form Renderer
+   * The Ajf Form Renderer slide instances
    */
-  private _lastVisibleStep: BehaviorSubject<number | null> = new BehaviorSubject<number | null>(
-    null,
-  );
+  private _slides: BehaviorSubject<AjfSlideInstance[] | null> = new BehaviorSubject<
+    AjfSlideInstance[] | null
+  >(null);
 
   /**
    * The slide index passed by edit form component
@@ -110,20 +109,31 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
   }
 
   @Input()
-  set lastVisibleStep(idx: number | null) {
-    if (idx == null) {
+  set slides(slides: AjfSlideInstance[] | null) {
+    if (slides == null) {
       return;
     }
-    this._lastVisibleStep.next(idx);
+    this._slides.next(slides);
   }
 
   @Input()
   set ajfFormRenderer(renderer: Observable<AjfFormRenderer | null>) {
     this._ajfFormRenderer = renderer;
     this._ajfFormSliderPageChange = this._ajfFormRenderer.pipe(
+      withLatestFrom(this._slides),
       switchMap(
-        fr =>
-          fr?.formSlider.pageScrollFinish.pipe(map(() => fr.formSlider.currentPage)) ?? obsOf(null),
+        ([fr, slides]) =>
+          fr?.formSlider.pageScrollFinish.pipe(
+            map(() => {
+              if (slides == null) {
+                return fr.formSlider.currentPage;
+              }
+              const visibleSlides = slides?.filter(slide => slide.visible);
+              const currentSliderSlide = visibleSlides[fr.formSlider.currentPage];
+              const currentStepIdx = slides.indexOf(currentSliderSlide);
+              return currentStepIdx;
+            }),
+          ) ?? obsOf(null),
       ),
     );
   }
@@ -195,8 +205,8 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
       return obsOf(stepStateLabel);
     }
     return this._currentFormStatus.pipe(
-      withLatestFrom(this._lastVisibleStep),
-      map(([current, lastVisible]) => {
+      withLatestFrom(this._slides),
+      map(([current, slides]) => {
         if (current == null) {
           if (step.level === 0) {
             stepStateLabel = 'edit-writable';
@@ -207,7 +217,8 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
         if (step.level <= current.status_level) {
           stepStateLabel = 'done';
         } else if (step.level > current.status_level) {
-          if (lastVisible == null || step.level <= lastVisible) {
+          const writableStep = slides == null ? true : slides[step.level]?.visible;
+          if (writableStep) {
             stepStateLabel = 'edit-writable';
           }
         }
@@ -220,20 +231,35 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
 
   ngAfterViewInit() {
     if (this.stepper) {
-      this._stepperSelectionSub = this._isPipeline
+      this._stepperSelectionSub = this._slides
         .pipe(
-          switchMap(isPipe => {
+          withLatestFrom(this._isPipeline),
+          switchMap(([slides, isPipe]) => {
             if (!isPipe) {
               return obsOf(null);
             }
-            return this.stepper?.selectionChange ?? obsOf(null);
+            return (
+              this.stepper?.selectionChange.pipe(
+                map(evt => {
+                  if (slides == null) {
+                    return null;
+                  }
+                  const visibleSlides = slides.filter(slide => slide.visible);
+                  const stepperIdx = evt.selectedIndex;
+                  return visibleSlides.indexOf(slides[stepperIdx]);
+                }),
+              ) ?? obsOf(null)
+            );
           }),
         )
-        .subscribe((evt: StepperSelectionEvent | null) => {
+        .subscribe((idx: number | null) => {
           if (!this._startingPositionEmitted) {
             this._startingPositionEmitted = true;
           }
-          this.position.emit(evt?.selectedIndex);
+          if (idx == null) {
+            return;
+          }
+          this.position.emit(idx);
         });
     }
 
@@ -270,15 +296,15 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
    * Emits the starting position (based on the current Status) of the pipeline
    */
   private _emitStartingPosition(): void {
-    combineLatest([this._currentFormStatus, this._isPipeline])
+    combineLatest([this._isPipeline, this._slides])
       .pipe(take(1))
-      .subscribe(([currentStatus, isPipeline]) => {
-        if (this._startingPositionEmitted || isPipeline != true) {
+      .subscribe(([isPipeline, slides]) => {
+        if (this._startingPositionEmitted || isPipeline != true || slides == null) {
           return;
         }
-        if (currentStatus != null && currentStatus.status_level !== null) {
-          this.position.emit(currentStatus.status_level);
-        }
+        const visibleSlides = slides.filter(slide => slide.visible);
+
+        this.position.emit(visibleSlides.length - 1 >= 0 ? visibleSlides.length - 1 : 0);
       });
   }
 
