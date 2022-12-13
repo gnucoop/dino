@@ -286,6 +286,10 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
         );
       }),
     );
+
+    this.stepper?._animationDone.pipe(take(1)).subscribe(() => {
+      this._scrollOnTheRight();
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -306,6 +310,22 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
 
         this.position.emit(visibleSlides.length - 1 >= 0 ? visibleSlides.length - 1 : 0);
       });
+  }
+
+  /**
+   * Scrolls the pipeline stepper to the selected Step position,
+   * so that it becomes the first visible step (when needed).
+   */
+  private _scrollOnTheRight(): void {
+    const stepper = document.getElementsByClassName('dino-pipeline-stepper');
+    const selectedStep = document.querySelector(
+      '.dino-pipeline-stepper .mat-step-header .mat-step-icon-selected',
+    );
+    if (stepper && stepper.length && selectedStep) {
+      const posStepper = stepper[0].getBoundingClientRect();
+      const posStep = selectedStep.getBoundingClientRect();
+      stepper[0].scrollLeft = posStep.x - posStepper.x - 10;
+    }
   }
 
   ngOnDestroy() {
