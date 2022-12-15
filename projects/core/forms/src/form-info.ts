@@ -51,4 +51,9 @@ export type FormInfo = {
    * The active user permission groups
    */
   activeUserGroups: UserGroup[] | null;
+
+  /**
+   * The selected created_at form date
+   */
+  createdAt: Date | null;
 };

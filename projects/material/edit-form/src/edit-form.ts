@@ -581,7 +581,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         map(([[fschemadeps, metricSel], formGroup]) => {
           let metricsCtx: {[key: string]: any} = {};
 
-          if (fschemadeps) {
+          if (fschemadeps && formGroup) {
             if (metricSel != null) {
               Object.keys(metricSel).forEach(metricName => {
                 if (metricSel[metricName]) {
@@ -595,7 +595,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 }
               });
               if (Object.keys(metricsCtx).length) {
-                formGroup?.patchValue(metricsCtx);
+                formGroup.patchValue(metricsCtx);
+                formGroup.setControl('dino_form_metrics', new FormControl(metricsCtx));
               }
             }
 
@@ -739,6 +740,17 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   ngAfterViewInit() {
+    this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
+      switchMap(active => {
+        if (!active) {
+          return obsOf(null);
+        }
+        return this.formMetricsSelectorComponent.changes.pipe(
+          map((comps: QueryList<FormMetricSelector>) => comps.first),
+        );
+      }),
+    );
+
     combineLatest([
       this._formRenderer.pipe(switchMap(fr => fr?.formGroup ?? obsOf(null))),
       this._formDataStatus,
@@ -747,11 +759,25 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       this._formDataUserGroups,
       this._udm.getActiveUserData(),
       this._ugm.getActiveUserGroups(),
+      this._formMetricsSelector.pipe(
+        switchMap(fsm => fsm!.formDate.valueChanges.pipe(startWith(fsm?.formDate.value))),
+      ),
     ])
       .pipe(takeUntil(this._mainUnsubscribe))
       .subscribe(
-        ([frGroup, status, allStatuses, user, userGroups, activeUser, activeUserGroups]) => {
+        ([
+          frGroup,
+          status,
+          allStatuses,
+          user,
+          userGroups,
+          activeUser,
+          activeUserGroups,
+          frDate,
+        ]) => {
           if (frGroup != null) {
+            const createdAt =
+              frDate != null && frDate.created_at != null ? frDate.created_at : null;
             const dinoFormInfo = {
               status,
               allStatuses,
@@ -759,8 +785,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               userGroups,
               activeUser,
               activeUserGroups,
+              createdAt,
             };
-            frGroup.addControl('dino_form_info', new FormControl(dinoFormInfo));
+            frGroup.setControl('dino_form_info', new FormControl(dinoFormInfo));
           }
         },
       );
@@ -779,17 +806,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this._slides = this._formRenderer.pipe(
       switchMap(fr => fr?.slides ?? obsOf(null)),
       shareReplay(1),
-    );
-
-    this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
-      switchMap(active => {
-        if (!active) {
-          return obsOf(null);
-        }
-        return this.formMetricsSelectorComponent.changes.pipe(
-          map((comps: QueryList<FormMetricSelector>) => comps.first),
-        );
-      }),
     );
 
     combineLatest([this._formMetricsSelector, this._currentDoc, this.isView])
@@ -862,6 +878,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         map(([_, item, formMetricsSelector]) => {
           const fValue = this._rendererService.getFormValue();
           delete fValue['dino_form_info'];
+          delete fValue['dino_form_metrics'];
           return {
             doc: item,
             formValue: fValue,

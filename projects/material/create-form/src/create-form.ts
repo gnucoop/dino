@@ -78,6 +78,7 @@ import {
   startWith,
   switchMap,
   take,
+  takeUntil,
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
@@ -91,6 +92,7 @@ import {
   Model,
 } from '@dino/core/data';
 import {format} from 'date-fns';
+import {FormControl} from '@angular/forms';
 
 /**
  * The Form Edit component.
@@ -395,7 +397,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         map(([[fschemadeps, metricSel], formGroup]) => {
           let metricsCtx: {[key: string]: any} = {};
 
-          if (fschemadeps) {
+          if (fschemadeps && formGroup) {
             if (metricSel != null) {
               Object.keys(metricSel).forEach(metricName => {
                 if (metricSel[metricName]) {
@@ -409,7 +411,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                 }
               });
               if (Object.keys(metricsCtx).length) {
-                formGroup?.patchValue(metricsCtx);
+                formGroup.patchValue(metricsCtx);
+                formGroup.setControl('dino_form_metrics', new FormControl(metricsCtx));
               }
             }
 
@@ -535,6 +538,22 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._formMetricsSelector
       .pipe(
+        switchMap(fsm => {
+          return fsm!.formDate.valueChanges.pipe(startWith(fsm?.formDate.value));
+        }),
+        withLatestFrom(this._rendererService.formGroup),
+      )
+      .subscribe(([frDate, frGroup]) => {
+        if (frGroup != null && frDate != null && frDate.created_at != null) {
+          const dinoFormInfo = {
+            createdAt: frDate.created_at,
+          };
+          frGroup.setControl('dino_form_info', new FormControl(dinoFormInfo));
+        }
+      });
+
+    this._formMetricsSelector
+      .pipe(
         map(fmSelector => {
           if (fmSelector != null) {
             return fmSelector.selectedMetricsChanges.pipe(
@@ -584,8 +603,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       .pipe(
         withLatestFrom(this._nss.isOnline$),
         switchMap(([_, isOnline]) => {
+          const fValue = this._rendererService.getFormValue();
+          delete fValue['dino_form_info'];
+          delete fValue['dino_form_metrics'];
           const formObj = {
-            formValue: this._rendererService.getFormValue(),
+            formValue: fValue,
           };
           const apiCall: Observable<any>[] = [];
           const {filesToUpload} = this.uploadService.getFilesInForm(formObj.formValue);
