@@ -65,6 +65,7 @@ import {
   from,
   Observable,
   of as obsOf,
+  Subject,
   Subscription,
   throwError,
   zip,
@@ -197,7 +198,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   /**
    * All the metric changes in the metric selector
    */
-  private _metricChangesSub: Subscription = Subscription.EMPTY;
   readonly metricChanges: BehaviorSubject<{[key: string]: Metric} | null> = new BehaviorSubject<{
     [key: string]: Metric;
   } | null>(null);
@@ -234,24 +234,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
 
   /**
-   * Subscribes to the populated form data object with dependencies
-   */
-  private _populatedFormDataSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the save form event
-   */
-  private _saveFormSub: Subscription = Subscription.EMPTY;
-
-  /**
    * Subscribes to the ajf validation state to save the form
    */
   private _saveValidFormSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the update form event
-   */
-  private _updateFormDataSub: Subscription = Subscription.EMPTY;
 
   /**
    * If true, a form data is being created.
@@ -278,6 +263,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
    */
   @ViewChildren(FormMetricSelector)
   formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+
+  /**
+   * Main unsub subject.
+   * Used for unsubscribing all subscriptions.
+   */
+  private _mainUnsubscribe: Subject<void> = new Subject();
 
   constructor(
     private _nss: NetworkStatusService,
@@ -391,7 +382,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       shareReplay(1),
     );
 
-    this._populatedFormDataSub = combineLatest([this._formSchemaDeps, this.metricChanges])
+    combineLatest([this._formSchemaDeps, this.metricChanges])
       .pipe(
         withLatestFrom(this._rendererService.formGroup),
         map(([[fschemadeps, metricSel], formGroup]) => {
@@ -437,6 +428,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }),
         shareReplay(1),
         withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps, this._formSchema),
+        takeUntil(this._mainUnsubscribe),
       )
       .subscribe(([changes, formGroup, fschemadeps, fschema]) => {
         if (fschemadeps && fschemadeps.deps_origin && changes) {
@@ -599,7 +591,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       )
       .subscribe();
 
-    this._saveFormSub = this._saveFormEvt
+    this._saveFormEvt
       .pipe(
         withLatestFrom(this._nss.isOnline$),
         switchMap(([_, isOnline]) => {
@@ -729,6 +721,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
         }),
+        takeUntil(this._mainUnsubscribe),
       )
       .subscribe(_ => {
         this.isLoading.next(false);
@@ -760,11 +753,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   ngOnDestroy() {
-    this._saveFormSub.unsubscribe();
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
+
     this._saveValidFormSub.unsubscribe();
-    this._metricChangesSub.unsubscribe();
-    this._updateFormDataSub.unsubscribe();
-    this._populatedFormDataSub.unsubscribe();
     this._saveFormEvt.complete();
   }
 
