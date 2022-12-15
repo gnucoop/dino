@@ -213,14 +213,11 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
           }
           return stepStateLabel;
         }
-
-        if (step.level <= current.status_level) {
+        const writableStep = slides == null ? true : slides[step.level]?.visible;
+        if (step.level <= current.status_level && writableStep) {
           stepStateLabel = 'done';
-        } else if (step.level > current.status_level) {
-          const writableStep = slides == null ? true : slides[step.level]?.visible;
-          if (writableStep) {
-            stepStateLabel = 'edit-writable';
-          }
+        } else if (step.level > current.status_level && writableStep) {
+          stepStateLabel = 'edit-writable';
         }
 
         return stepStateLabel;
