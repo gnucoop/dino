@@ -1002,16 +1002,16 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       )
       .subscribe();
 
-    this.isAjfFormValid = this._rendererService.errors
-      .pipe(
-        map((errors: number) => errors === 0),
-        shareReplay(1),
-      )
-      .pipe(
-        map(ajfFormValid => {
-          return ajfFormValid;
-        }),
-      );
+    this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
+      switchMap(() =>
+        this._rendererService.errors.pipe(
+          startWith(0),
+          map((errors: number) => errors === 0),
+          shareReplay(1),
+        ),
+      ),
+      shareReplay(1),
+    );
 
     this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(
       switchMap(formMetricsSelector => {
