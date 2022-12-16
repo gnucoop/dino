@@ -760,7 +760,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       this._udm.getActiveUserData(),
       this._ugm.getActiveUserGroups(),
       this._formMetricsSelector.pipe(
-        switchMap(fsm => fsm!.formDate.valueChanges.pipe(startWith(fsm?.formDate.value))),
+        switchMap(fsm =>
+          fsm != null
+            ? fsm.formDate.valueChanges.pipe(startWith(fsm != null ? fsm.formDate.value : null))
+            : obsOf(null),
+        ),
       ),
     ])
       .pipe(takeUntil(this._mainUnsubscribe))

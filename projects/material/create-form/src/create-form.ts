@@ -530,10 +530,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._formMetricsSelector
       .pipe(
-        switchMap(fsm => {
-          return fsm!.formDate.valueChanges.pipe(startWith(fsm?.formDate.value));
-        }),
+        switchMap(fsm =>
+          fsm != null
+            ? fsm.formDate.valueChanges.pipe(startWith(fsm != null ? fsm.formDate.value : null))
+            : obsOf(null),
+        ),
         withLatestFrom(this._rendererService.formGroup),
+        takeUntil(this._mainUnsubscribe),
       )
       .subscribe(([frDate, frGroup]) => {
         if (frGroup != null && frDate != null && frDate.created_at != null) {
