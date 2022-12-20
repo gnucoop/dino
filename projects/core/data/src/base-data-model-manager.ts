@@ -541,11 +541,28 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
     parent: {id: string | null; level: number | null} = {id: null, level: null},
   ): (R & {parent_id: string | null; level?: number})[] {
     let result: (R & {parent_id: string | null; level?: number})[] = [];
-
     // Get every element whose parent_id attribute matches the parent's id.
     const children: (R & {parent_id: string | null; level?: number})[] = allDocs.filter(
       item => item.parent_id === parent.id,
     );
+    // If all the docs have a parent but the ancestor in the hierarchy, a new ancestor is determined
+    // by finding the doc whose parent_id is the id of the missing ancestor.
+    if (!children.length) {
+      const allDocsIds = allDocs.map(doc => doc.id);
+      const absentAncestorId = allParentIDs.filter(d => d != null && !allDocsIds.includes(d));
+      const newAncestor = allDocs.find(doc => doc.parent_id === absentAncestorId[0]);
+      if (newAncestor != null) {
+        const ancestorIndex = allDocs.findIndex(doc => doc.id === newAncestor.id);
+        allDocs.splice(ancestorIndex, 1);
+        result = [
+          ...result,
+          newAncestor,
+          ...this.organizeDocsHierarchy(allDocs, allParentIDs, {id: newAncestor.id, level: 0}),
+        ];
+      } else {
+        result = [...result, ...allDocs];
+      }
+    }
 
     // Set the level based on the parent level for each element identified,
     // add them to the result array, then recursively sort the children.
