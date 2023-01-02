@@ -2,10 +2,9 @@
 # yarn lockfile v1
 
 
-"@ajf/core@^13.2.14":
-  version "13.2.14"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-13.2.14.tgz#bd72589327f1d0b3000564124834346af62b3bdc"
-  integrity sha512-DqDbdV08n7JnZSpsiGiko0cjFH0mp/kw9fQ0JqgZONApEEtGeXS/fJklBBTc6X+8myUPxqHUhtDd/IeIhWiZCA==
+"@ajf/core@https://drive.google.com/uc?id=1C2orfjQf7LeSOSsbe-vQqLFHjd4j39YL&export=download":
+  version "0.0.0-PLACEHOLDER"
+  resolved "https://drive.google.com/uc?id=1C2orfjQf7LeSOSsbe-vQqLFHjd4j39YL&export=download#a9a96d4ffdad0658bfda2d860c388d30b873b233"
   dependencies:
     tslib "^2.3.0"
 
@@ -14,10 +13,9 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^13.2.14":
-  version "13.2.14"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-13.2.14.tgz#42bc69c0364b4467f93c1aa1b00ba775df42e1a1"
-  integrity sha512-Feeekq5eer58DycGKKGC96ltGqCN5uBL/ZNxZ/72EQBd8h6rE82KIFmQKZhmqoMcKAeygKPNgtyXdNMJsj7UpA==
+"@ajf/material@https://drive.google.com/uc?id=1-2wOXaQrg9xHOO2AizYGbh_-V6VoRGIa&export=download":
+  version "0.0.0-PLACEHOLDER"
+  resolved "https://drive.google.com/uc?id=1-2wOXaQrg9xHOO2AizYGbh_-V6VoRGIa&export=download#f58eb11872a1acf181dd7e2dcfa6f939cfc5f17b"
   dependencies:
     tslib "^2.3.0"
 

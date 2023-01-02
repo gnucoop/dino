@@ -37,9 +37,9 @@
   "version": "13.4.2",
   "private": true,
   "dependencies": {
-    "@ajf/core": "^13.2.14",
+    "@ajf/core": "https://drive.google.com/uc?id=1C2orfjQf7LeSOSsbe-vQqLFHjd4j39YL&export=download",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "^13.2.14",
+    "@ajf/material": "https://drive.google.com/uc?id=1-2wOXaQrg9xHOO2AizYGbh_-V6VoRGIa&export=download",
     "@angular/animations": "^13.3.4",
     "@angular/cdk": "^13.3.4",
     "@angular/common": "^13.3.4",
