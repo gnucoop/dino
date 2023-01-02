@@ -60,7 +60,7 @@
     "core-js-bundle": "^3.8.2",
     "css-element-queries": "^1.2.3",
     "date-fns": "^2.28.0",
-    "echarts": "^5.3.2",
+    "echarts": "^5.4.1",
     "flag-icon-css": "^4.1.7",
     "flat": "^5.0.2",
     "graphql": "^16.3.0",
