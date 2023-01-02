@@ -21,7 +21,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Lang, LangRow, LangManager} from '@dino/core/langs';
@@ -54,9 +54,9 @@ export class LangsComponent implements OnDestroy {
   readonly items$: Observable<LangRow[]>;
   readonly langsShowed$: Observable<Lang[]>;
   readonly loading$: Observable<boolean>;
-  readonly searchField: FormControl = new FormControl();
+  readonly searchField: UntypedFormControl = new UntypedFormControl();
   readonly searchKeyStream$: Observable<string>;
-  readonly searchLangField: FormControl = new FormControl('key');
+  readonly searchLangField: UntypedFormControl = new UntypedFormControl('key');
   readonly searchLangKeyStream$: Observable<string>;
 
   private _dialogAddSub: Subscription = Subscription.EMPTY;

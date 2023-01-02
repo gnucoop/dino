@@ -31,7 +31,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dino/core/list';
 import {SearchFiltersWidget} from '@dino/material/search-filters-widget';
@@ -65,7 +65,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
   /**
    * The "And"/"Or" toggle Form Control.
    */
-  logicAndOrToggle: FormControl;
+  logicAndOrToggle: UntypedFormControl;
 
   /**
    * Subscribes to the "And"/"Or" toggle Form Control value changes.
@@ -90,7 +90,7 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
     this._currentGroupId = new BehaviorSubject<number>(0);
     this._backdropClickSub = this.dialogRef.backdropClick().subscribe(_ => this.closeDialog());
     const currentLogic = this.fts.additionalFiltersLogic.value;
-    this.logicAndOrToggle = new FormControl(currentLogic);
+    this.logicAndOrToggle = new UntypedFormControl(currentLogic);
     this._logicToggleSub = this.logicAndOrToggle.valueChanges.subscribe(res => {
       if (this.fts.canSwitchLogic()) {
         this.fts.temporaryAdditionalFiltersLogic.next(res);

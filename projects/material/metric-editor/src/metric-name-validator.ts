@@ -23,8 +23,8 @@ import {ChangeDetectorRef, Injectable} from '@angular/core';
 import {
   AbstractControl,
   AsyncValidatorFn,
-  FormControl,
-  FormGroup,
+  UntypedFormControl,
+  UntypedFormGroup,
   ValidationErrors,
 } from '@angular/forms';
 import {DataModelManager, Metric} from '@dino/core/data';
@@ -35,11 +35,11 @@ export interface AbstractControlWithWarnings extends AbstractControl {
   warning?: string;
 }
 
-export interface FormControlControlWithWarnings extends FormControl {
+export interface FormControlControlWithWarnings extends UntypedFormControl {
   warning: string;
 }
 
-export interface FormGroupWithWarnings extends FormGroup {
+export interface FormGroupWithWarnings extends UntypedFormGroup {
   controls: {
     [key: string]: AbstractControlWithWarnings;
   };

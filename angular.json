@@ -372,11 +372,12 @@
       }
     }
   },
-  "defaultProject": "core",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics",
-      "cache": {
+    "cache": {
         "enabled": false
-      }
+      },
+      "schematicCollections": [
+        "@angular-eslint/schematics"
+      ]
   }
 }

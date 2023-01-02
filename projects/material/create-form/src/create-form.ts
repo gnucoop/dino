@@ -93,7 +93,7 @@ import {
   Model,
 } from '@dino/core/data';
 import {format} from 'date-fns';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 
 /**
  * The Form Edit component.
@@ -415,7 +415,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               });
               if (Object.keys(metricsCtx).length) {
                 formGroup.patchValue(metricsCtx);
-                formGroup.setControl('dino_form_metrics', new FormControl(metricsCtx));
+                formGroup.setControl('dino_form_metrics', new UntypedFormControl(metricsCtx));
               }
             }
 
@@ -555,7 +555,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           const dinoFormInfo = {
             createdAt: frDate.created_at,
           };
-          frGroup.setControl('dino_form_info', new FormControl(dinoFormInfo));
+          frGroup.setControl('dino_form_info', new UntypedFormControl(dinoFormInfo));
         }
       });
 

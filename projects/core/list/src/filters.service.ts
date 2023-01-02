@@ -23,7 +23,7 @@
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {AjfCondition, evaluateExpression} from '@ajf/core/models';
 import {EventEmitter, Injectable} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Model} from '@dino/core/data';
 import {TranslocoService} from '@ngneat/transloco';
@@ -123,13 +123,13 @@ export class FiltersService<T extends Model = Model> {
   /**
    * The FormGroups of the basic filters (Date and Keyword fields)
    */
-  private _basicFormGroups: FormGroup[] = [];
+  private _basicFormGroups: UntypedFormGroup[] = [];
 
   /**
    * The FormGroups of the Additional filters to be displayed in the main filter component
    * (eg. Location, Project etc.)
    */
-  private _basicAdditionalFormGroups: FormGroup[] = [];
+  private _basicAdditionalFormGroups: UntypedFormGroup[] = [];
 
   /**
    * An array of the valueChanges observables of all the basicFormGroups
@@ -555,7 +555,7 @@ export class FiltersService<T extends Model = Model> {
    * @param formGroups The basic filter form groups
    * @returns All the optional basic filters initalized
    */
-  initializeFilters(basicFormGroups: FormGroup[]): Observable<FormGroup[]> {
+  initializeFilters(basicFormGroups: UntypedFormGroup[]): Observable<UntypedFormGroup[]> {
     this._basicFormGroups = [...basicFormGroups, ...this._basicAdditionalFormGroups];
     this._formValueChanges = this._basicFormGroups.map(group => group.valueChanges);
 
@@ -586,7 +586,7 @@ export class FiltersService<T extends Model = Model> {
 
     this.loadPresetTrigger();
     return obsOf(this._basicAdditionalFormGroups).pipe(
-      catchError(err => throwError(() => err) as Observable<FormGroup[]>),
+      catchError(err => throwError(() => err) as Observable<UntypedFormGroup[]>),
     );
   }
 
@@ -621,8 +621,8 @@ export class FiltersService<T extends Model = Model> {
     }
 
     const formControl = Object.create({});
-    formControl[`${ftName}`] = new FormControl();
-    const basicFilter = new FormGroup(formControl);
+    formControl[`${ftName}`] = new UntypedFormControl();
+    const basicFilter = new UntypedFormGroup(formControl);
     this._basicAdditionalFormGroups.push(basicFilter);
     this._currentBasicFilterLabels.push(ftName);
   }

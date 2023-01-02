@@ -97,7 +97,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 
 /**
  * The Form Edit component.
@@ -621,7 +621,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               });
               if (Object.keys(metricsCtx).length) {
                 formGroup.patchValue(metricsCtx);
-                formGroup.setControl('dino_form_metrics', new FormControl(metricsCtx));
+                formGroup.setControl('dino_form_metrics', new UntypedFormControl(metricsCtx));
               }
             }
 
@@ -817,7 +817,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               activeUserGroups,
               createdAt,
             };
-            frGroup.setControl('dino_form_info', new FormControl(dinoFormInfo));
+            frGroup.setControl('dino_form_info', new UntypedFormControl(dinoFormInfo));
           }
         },
       );

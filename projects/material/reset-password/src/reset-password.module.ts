@@ -37,22 +37,21 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {ResetPassword} from './reset-password';
 
 @NgModule({
-  imports: [
-    AjfTranslocoModule,
-    CommonModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressBarModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    RouterModule,
-    UsersModule,
-    TranslocoModule,
-  ],
-  declarations: [ResetPassword],
-  entryComponents: [ResetPassword],
-  exports: [ResetPassword],
+    imports: [
+        AjfTranslocoModule,
+        CommonModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatProgressBarModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        RouterModule,
+        UsersModule,
+        TranslocoModule,
+    ],
+    declarations: [ResetPassword],
+    exports: [ResetPassword]
 })
 export class ResetPasswordModule {}

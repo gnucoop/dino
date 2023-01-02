@@ -27,7 +27,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {LangManager} from '@dino/core/langs';
@@ -45,7 +45,7 @@ import {LangsConfirmDialog} from './langs-confirm-dialog';
   encapsulation: ViewEncapsulation.None,
 })
 export class LangsUpdateDialog implements OnDestroy {
-  readonly form: FormGroup;
+  readonly form: UntypedFormGroup;
   readonly loading$: Observable<boolean>;
 
   private _deleteSub: Subscription = Subscription.EMPTY;
@@ -57,7 +57,7 @@ export class LangsUpdateDialog implements OnDestroy {
     private _langSvc: LangManager,
     public dialogRef: MatDialogRef<LangsUpdateDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private _ts: TranslocoService,
   ) {
     const initForm: {[key: string]: any[]} = {};

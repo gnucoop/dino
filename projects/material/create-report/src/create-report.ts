@@ -32,7 +32,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {MetricsService} from '@dino/core/data';
@@ -68,7 +68,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   /**
    * The Form Group representing the optional report time interval (from/to)
    */
-  dateIntervalForm: FormGroup;
+  dateIntervalForm: UntypedFormGroup;
 
   /**
    * True if the Report can have one or more null Metrics.
@@ -119,9 +119,9 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
   ) {
-    this.dateIntervalForm = new FormGroup({
-      'date_start': new FormControl(),
-      'date_end': new FormControl(),
+    this.dateIntervalForm = new UntypedFormGroup({
+      'date_start': new UntypedFormControl(),
+      'date_end': new UntypedFormControl(),
     });
   }
   ngOnInit() {

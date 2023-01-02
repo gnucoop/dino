@@ -27,7 +27,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FiltersService} from '@dino/core/list';
 import {BehaviorSubject, Observable, of as obsOf, throwError} from 'rxjs';
@@ -49,7 +49,7 @@ export class SearchFiltersPresetManager implements OnDestroy, OnInit {
   presetName: Observable<string> = obsOf('');
   canLoadPreset: Observable<boolean> = obsOf(false);
   filteredOptions: Observable<string[]> = obsOf([]);
-  presetControl = new FormControl();
+  presetControl = new UntypedFormControl();
   private _presetOptions: Observable<string[]> = obsOf([]);
   private _presets = new BehaviorSubject<string[]>([]);
   private _presetSaveData: Observable<any> = obsOf({});

@@ -21,7 +21,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -44,7 +44,7 @@ export class ImportReportSchema {
   /**
    * The Import dialog form group
    */
-  readonly importReport: FormGroup;
+  readonly importReport: UntypedFormGroup;
 
   /**
    * The converted XlsReportSchema
@@ -52,7 +52,7 @@ export class ImportReportSchema {
   private _xlsReportSchema: Observable<AjfReport | null> = obsOf(null);
 
   constructor(
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _httpClient: HttpClient,
     public dialogRef: MatDialogRef<ImportReportSchema>, // @Inject(MAT_DIALOG_DATA) public data: any,
   ) {

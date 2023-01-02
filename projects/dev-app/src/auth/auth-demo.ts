@@ -21,7 +21,7 @@
  */
 
 import {Component} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {AuthService, Credentials} from '@dino/core/auth';
 
 @Component({
@@ -31,9 +31,9 @@ import {AuthService, Credentials} from '@dino/core/auth';
 })
 export class AuthDemo {
   loginResult = '';
-  readonly loginForm: FormGroup = new FormGroup({
-    email: new FormControl(null, Validators.required),
-    password: new FormControl(null, Validators.required),
+  readonly loginForm: UntypedFormGroup = new UntypedFormGroup({
+    email: new UntypedFormControl(null, Validators.required),
+    password: new UntypedFormControl(null, Validators.required),
   });
 
   constructor(private _authService: AuthService) {}

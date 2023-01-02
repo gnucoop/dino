@@ -27,7 +27,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
@@ -61,7 +61,7 @@ export class ResetPassword {
   /**
    * The Change Password FormGroup.
    */
-  readonly changePassForm: FormGroup;
+  readonly changePassForm: UntypedFormGroup;
   /**
    * True if the Change Password or Email forms are currently processing a request.
    */
@@ -87,7 +87,7 @@ export class ResetPassword {
   readonly passChanged: BehaviorSubject<boolean>;
 
   constructor(
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,

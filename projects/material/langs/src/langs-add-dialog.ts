@@ -22,7 +22,7 @@
 
 import {TranslocoService} from '@ajf/core/transloco';
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
@@ -34,12 +34,12 @@ import {MatDialogRef} from '@angular/material/dialog';
 })
 export class LangsAddDialog {
   readonly data: string[] = [];
-  readonly form: FormGroup;
+  readonly form: UntypedFormGroup;
 
   constructor(
     public dialogRef: MatDialogRef<LangsAddDialog>,
     translateSvc: TranslocoService,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
   ) {
     const initForm: {[key: string]: any[]} = {};
     const langs: string[] = translateSvc.getAvailableLangs() as string[];

@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
@@ -84,7 +84,7 @@ describe('Import Forms', () => {
     TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule, TranslocoModule],
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: FormDataManager, useValue: formDataManagerMock},

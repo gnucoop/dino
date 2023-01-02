@@ -31,7 +31,7 @@ import {
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -68,7 +68,7 @@ export class ImportForm implements OnDestroy {
   /**
    * The Import dialog form group
    */
-  readonly importForm: FormGroup;
+  readonly importForm: UntypedFormGroup;
 
   /**
    * The edited form schema id
@@ -127,7 +127,7 @@ export class ImportForm implements OnDestroy {
 
   constructor(
     private _cdr: ChangeDetectorRef,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _formDataManager: FormDataManager,
     private _udm: UserDataManager,
     private _fsm: FormStatusManager,

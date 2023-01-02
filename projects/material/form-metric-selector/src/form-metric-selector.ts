@@ -29,7 +29,7 @@ import {
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -74,7 +74,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * The Selector metrics form group.
    */
-  formMetrics: FormGroup;
+  formMetrics: UntypedFormGroup;
   get selectedMetrics(): {[key: string]: Metric} {
     return this.formMetrics.value;
   }
@@ -89,7 +89,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * The Selector date form group.
    */
-  formDate: FormGroup;
+  formDate: UntypedFormGroup;
 
   /**
    * The form creation date
@@ -180,8 +180,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       take(1),
     );
     this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));
-    this.formDate = new FormGroup({'created_at': new FormControl(new Date(), Validators.required)});
-    const group: {[key: string]: FormControl} = {};
+    this.formDate = new UntypedFormGroup({'created_at': new UntypedFormControl(new Date(), Validators.required)});
+    const group: {[key: string]: UntypedFormControl} = {};
     const validatorFn: ValidationErrors | null = this._hasOptionalMetrics.getValue()
       ? RequireMetricMatch
       : RequireNotNullMetricMatch;
@@ -202,7 +202,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         icon: 'volunteer_activism',
       };
       this.formMetricsFields.push(field);
-      group['area'] = new FormControl('', validatorFn);
+      group['area'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['area'] = group['area'].valueChanges;
       this._addFormMetricsOptions('area');
     }
@@ -214,7 +214,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         icon: 'people',
       };
       this.formMetricsFields.push(field);
-      group['case'] = new FormControl('', validatorFn);
+      group['case'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['case'] = group['case'].valueChanges;
       this._addFormMetricsOptions('case');
     }
@@ -227,7 +227,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         icon: 'assignment',
       };
       this.formMetricsFields.push(field);
-      group['project'] = new FormControl('', validatorFn);
+      group['project'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['project'] = group['project'].valueChanges;
       this._addFormMetricsOptions('project');
     }
@@ -240,7 +240,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         icon: 'place',
       };
       this.formMetricsFields.push(field);
-      group['location'] = new FormControl('', validatorFn);
+      group['location'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['location'] = group['location'].valueChanges;
       this._addFormMetricsOptions('location');
     }
@@ -253,12 +253,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         icon: 'public',
       };
       this.formMetricsFields.push(field);
-      group['organization'] = new FormControl('', validatorFn);
+      group['organization'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['organization'] = group['organization'].valueChanges;
       this._addFormMetricsOptions('organization');
     }
 
-    const formGroup = new FormGroup(group);
+    const formGroup = new UntypedFormGroup(group);
 
     this.formMetrics = formGroup;
 

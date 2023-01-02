@@ -27,7 +27,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Dic, Lang, LangCreate, LangManager} from '@dino/core/langs';
@@ -52,7 +52,7 @@ export class LangsSettingsDialog implements OnDestroy {
   readonly currentLangName$: Observable<string> = this._langSvc.currentLangName$;
   readonly diff$: Observable<Dic | null> =
     this._langSvc.currentDiffBetweenStoredJsonAndCurrentUpdates$;
-  readonly form: FormGroup;
+  readonly form: UntypedFormGroup;
   readonly langNames$ = this._langSvc.allLangsNames$;
   readonly modified$: Observable<Dic | null> =
     this._langSvc.currentModifiedBetweenStoredJsonAndCurrentUpdates$;
@@ -67,7 +67,7 @@ export class LangsSettingsDialog implements OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<LangsSettingsDialog>,
     @Inject(MAT_DIALOG_DATA) public langs: Observable<Lang[]>,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private _dialog: MatDialog,
     private _langSvc: LangManager,
     private _snackBar: MatSnackBar,

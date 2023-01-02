@@ -27,7 +27,7 @@ import {
   Inject,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
@@ -58,11 +58,11 @@ export class UserArea {
   /**
    * The Change Password FormGroup.
    */
-  readonly changePassForm: FormGroup;
+  readonly changePassForm: UntypedFormGroup;
   /**
    * The Dino Theme customization FormGroup.
    */
-  readonly dinoSaveThemeForm: FormGroup;
+  readonly dinoSaveThemeForm: UntypedFormGroup;
   /**
    * True if the Change Password or Email forms are currently processing a request.
    */
@@ -105,7 +105,7 @@ export class UserArea {
 
   constructor(
     private _udm: UserDataManager,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,

@@ -28,7 +28,7 @@ import {
   Renderer2,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Lang, LangManager} from '@dino/core/langs';
@@ -47,7 +47,7 @@ import {LangsConfirmDialog} from './langs-confirm-dialog';
 })
 export class LangsExportDialog implements OnDestroy {
   readonly currentLang$: Observable<Lang>;
-  readonly form: FormGroup;
+  readonly form: UntypedFormGroup;
 
   private _addLangSub: Subscription = Subscription.EMPTY;
   private _currentLang$: BehaviorSubject<Lang> = new BehaviorSubject<Lang>({} as Lang);
@@ -56,7 +56,7 @@ export class LangsExportDialog implements OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<LangsExportDialog>,
     @Inject(MAT_DIALOG_DATA) public langs: Observable<Lang[]>,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private _dialog: MatDialog,
     private _langSvc: LangManager,
     private _snackBar: MatSnackBar,

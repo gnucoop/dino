@@ -31,7 +31,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
@@ -150,7 +150,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   /**
    * The form group of the metric additional attributes.
    */
-  metricDataForm: FormGroup;
+  metricDataForm: UntypedFormGroup;
 
   /**
    * The editor form fields
@@ -193,7 +193,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     private _nameMatchValidator: NameMatchValidator<T>,
     private _cdr: ChangeDetectorRef,
     private _ts: TranslocoService,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
   ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
@@ -208,8 +208,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
    * Gets the attributes from metricDataForm
    * @returns The attributes FormArray
    */
-  attributes(): FormArray {
-    return this.metricDataForm.get('attributes') as FormArray;
+  attributes(): UntypedFormArray {
+    return this.metricDataForm.get('attributes') as UntypedFormArray;
   }
 
   /**
@@ -217,7 +217,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
    * @param attribute The new attribute
    * @returns the attribute group
    */
-  newAttribute(attribute?: MetricDataAttribute): FormGroup {
+  newAttribute(attribute?: MetricDataAttribute): UntypedFormGroup {
     return this._fb.group({
       attribute_name: attribute && attribute.attribute_name ? attribute.attribute_name : '',
       attribute_value: attribute && attribute.attribute_value ? attribute.attribute_value : '',
@@ -339,7 +339,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       },
     ];
 
-    group['name'] = new FormControl(
+    group['name'] = new UntypedFormControl(
       currentMetricItem['name'] ?? '',
       Validators.required,
       this._nameMatchValidator.nameCheck(
@@ -349,7 +349,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         this.data.metricAction,
       ),
     ) as FormControlControlWithWarnings;
-    group['parent'] = new FormControl(
+    group['parent'] = new UntypedFormControl(
       {
         parent_name: currentMetricItem['parent_name'] ?? null,
         parent_id: currentMetricItem['parent_id'] ?? null,
@@ -369,7 +369,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         schema.required!.indexOf(propKey) >= 0 &&
         !(propValue.type?.length && propValue.type.indexOf('null') > 0);
       if (METRIC_DEFAULT_PROPERTIES.indexOf(propKey) < 0) {
-        group[propKey] = new FormControl(
+        group[propKey] = new UntypedFormControl(
           currentMetricItem != null ? currentMetricItem![propKey] : null,
           propRequired ? Validators.required : null,
         ) as FormControlControlWithWarnings;
@@ -390,7 +390,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       }
     }
 
-    const formGroup = new FormGroup(group) as FormGroupWithWarnings;
+    const formGroup = new UntypedFormGroup(group) as FormGroupWithWarnings;
 
     this.metricForm = formGroup;
     this.metricFormFields = fields;

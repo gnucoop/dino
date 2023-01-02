@@ -40,25 +40,24 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {MixedEditor} from './mixed-editor';
 
 @NgModule({
-  imports: [
-    AuthModule,
-    DragDropModule,
-    CommonModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslocoModule,
-    UsersModule,
-  ],
-  declarations: [MixedEditor],
-  entryComponents: [MixedEditor],
-  exports: [MixedEditor],
+    imports: [
+        AuthModule,
+        DragDropModule,
+        CommonModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatListModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslocoModule,
+        UsersModule,
+    ],
+    declarations: [MixedEditor],
+    exports: [MixedEditor]
 })
 export class MixedEditorModule {}

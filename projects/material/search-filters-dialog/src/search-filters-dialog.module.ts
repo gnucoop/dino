@@ -39,24 +39,23 @@ import {SearchFiltersWidgetModule} from '@dino/material/search-filters-widget';
 import {SearchFiltersDialog} from './search-filters-dialog';
 
 @NgModule({
-  imports: [
-    AjfTranslocoModule,
-    CommonModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatTabsModule,
-    ReactiveFormsModule,
-    RouterModule,
-    SearchFiltersChipsModule,
-    SearchFiltersWidgetModule,
-  ],
-  declarations: [SearchFiltersDialog],
-  entryComponents: [SearchFiltersDialog],
-  exports: [SearchFiltersDialog],
+    imports: [
+        AjfTranslocoModule,
+        CommonModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+        MatCheckboxModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatTabsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        SearchFiltersChipsModule,
+        SearchFiltersWidgetModule,
+    ],
+    declarations: [SearchFiltersDialog],
+    exports: [SearchFiltersDialog]
 })
 export class SearchFiltersDialogModule {}

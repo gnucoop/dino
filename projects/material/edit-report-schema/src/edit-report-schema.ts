@@ -35,7 +35,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -80,7 +80,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
   /**
    * Form group for editing the Report Schema attributes
    */
-  readonly formGroup: Observable<FormGroup>;
+  readonly formGroup: Observable<UntypedFormGroup>;
 
   /**
    * The Report schema id
@@ -124,7 +124,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
     private _reportSchemaManager: ReportSchemaManager,
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _iconsService: IconsService,
     private _translocoService: TranslocoService,
   ) {

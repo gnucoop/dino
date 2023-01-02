@@ -21,7 +21,7 @@
  */
 
 import {Component, EventEmitter} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {clone, DataService, Model} from '@dino/core/data';
 import {Observable} from 'rxjs';
 import {map, shareReplay, startWith, switchMap} from 'rxjs/operators';
@@ -37,8 +37,8 @@ interface Todo extends Model {
 })
 export class DataDemo {
   todos: Observable<Todo[]>;
-  todoForm: FormGroup = new FormGroup({
-    message: new FormControl(null, [Validators.required]),
+  todoForm: UntypedFormGroup = new UntypedFormGroup({
+    message: new UntypedFormControl(null, [Validators.required]),
   });
 
   private _refreshEvent: EventEmitter<void> = new EventEmitter<void>();

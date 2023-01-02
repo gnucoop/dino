@@ -28,7 +28,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ListHeader} from '@dino/core/list';
 import {TranslocoService} from '@ajf/core/transloco';
@@ -54,7 +54,7 @@ export class ColumnsSelector<T> implements OnInit {
   /**
    * Column search filters.
    */
-  readonly columnSearchFilter: FormGroup;
+  readonly columnSearchFilter: UntypedFormGroup;
   /**
    * Event emitted when the user toggles a column in the selector.
    */
@@ -69,7 +69,7 @@ export class ColumnsSelector<T> implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: {columns: ListHeader<T>[]},
     private _ts: TranslocoService,
   ) {
-    this.columnSearchFilter = new FormGroup({column_search: new FormControl()});
+    this.columnSearchFilter = new UntypedFormGroup({column_search: new UntypedFormControl()});
   }
 
   ngOnInit() {

@@ -31,7 +31,7 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -99,7 +99,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
   /**
    * Form group for editing the Form Schema attributes
    */
-  readonly formGroup: Observable<FormGroup>;
+  readonly formGroup: Observable<UntypedFormGroup>;
 
   /**
    * The Ajf Form built from the Form Schema
@@ -181,7 +181,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _formSchemaManager: FormSchemaManager,
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     private _iconsService: IconsService,
     private _ts: TranslocoService,
   ) {

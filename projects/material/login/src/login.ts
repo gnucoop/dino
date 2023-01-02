@@ -28,7 +28,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, LoginComponent} from '@dino/core/auth';
@@ -95,7 +95,7 @@ export class Login extends LoginComponent implements OnDestroy {
   constructor(
     authService: AuthService,
     router: Router,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     cdr: ChangeDetectorRef,
     snackBar: MatSnackBar,
     ts: TranslocoService,

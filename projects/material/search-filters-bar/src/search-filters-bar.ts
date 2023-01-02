@@ -32,7 +32,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
@@ -313,7 +313,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    *
    * @param group The FormGroup of the filter
    */
-  isMetric(group: FormGroup): boolean {
+  isMetric(group: UntypedFormGroup): boolean {
     if (group == null) {
       return false;
     }
@@ -331,7 +331,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    *
    * @param group The FormGroup of the filter
    */
-  isStatus(group: FormGroup): boolean {
+  isStatus(group: UntypedFormGroup): boolean {
     if (group == null) {
       return false;
     }
@@ -342,7 +342,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     return groupControlKey === 'form_status';
   }
 
-  getControlKey(group: FormGroup): string {
+  getControlKey(group: UntypedFormGroup): string {
     if (group == null) {
       return '';
     }
@@ -365,7 +365,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     return item.name && item.id ? item.name : '';
   }
 
-  showOptions(group: FormGroup) {
+  showOptions(group: UntypedFormGroup) {
     const metricType = Object.keys(group.controls)[0];
     const inputControl = this.additionalBasicFilters.find(grp => grp.get(metricType) != null);
     if (inputControl && inputControl.value[metricType] == null) {
@@ -548,7 +548,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       .initializeFilters(this.basicFilters)
       .pipe(
         take(1),
-        catchError(err => throwError(() => err) as Observable<FormGroup[]>),
+        catchError(err => throwError(() => err) as Observable<UntypedFormGroup[]>),
       )
       .subscribe(formGroups => {
         this.basicFilters = [...this.basicFilters, ...formGroups];

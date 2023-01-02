@@ -1,6 +1,6 @@
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
-import {FormControl, FormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
@@ -63,8 +63,8 @@ const fakeFilters_b: FilterItem[] = [
   {name: 'filter_b', value: 70},
   {name: 'filter_c', value: true},
 ];
-const fakeFormGroup = new FormGroup({
-  filter_a: new FormControl(),
+const fakeFormGroup = new UntypedFormGroup({
+  filter_a: new UntypedFormControl(),
 });
 const fakeFiltersPreset = btoa(
   encodeURI(JSON.stringify({filters: fakeFilters, additionalFiltersLogic: 'and'})),

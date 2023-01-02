@@ -1,7 +1,7 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {ChangeDetectorRef, EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -33,7 +33,7 @@ class LoginFeatComp extends LoginComponent {
   constructor(
     authService: AuthService,
     router: Router,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     cdr: ChangeDetectorRef,
     snackBar: MatSnackBar,
     ts: TranslocoService,
@@ -50,7 +50,7 @@ describe('LoginComponent', () => {
   let authService: AuthService;
   let httpMock: HttpTestingController;
   let router: Router;
-  let fb: FormBuilder;
+  let fb: UntypedFormBuilder;
   let snackBar: MatSnackBar;
   let ts: TranslocoService;
   let cdr: ChangeDetectorRef;
@@ -70,7 +70,7 @@ describe('LoginComponent', () => {
         MatSnackBarModule,
       ],
       providers: [
-        FormBuilder,
+        UntypedFormBuilder,
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: Router, useValue: routerSpy},
@@ -79,7 +79,7 @@ describe('LoginComponent', () => {
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
-    fb = TestBed.inject(FormBuilder);
+    fb = TestBed.inject(UntypedFormBuilder);
     cdr = TestBed.inject(ChangeDetectorRef);
     snackBar = TestBed.inject(MatSnackBar);
     ts = TestBed.inject(TranslocoService);

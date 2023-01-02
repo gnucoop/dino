@@ -28,7 +28,7 @@ import {
   Inject,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormSchema} from '@dino/core/forms';
 import {Observable} from 'rxjs';
@@ -55,7 +55,7 @@ export class ImportFormSchema {
   /**
    * The Import dialog form group
    */
-  readonly importForm: Observable<FormGroup>;
+  readonly importForm: Observable<UntypedFormGroup>;
 
   /**
    * The edited form schema
@@ -84,7 +84,7 @@ export class ImportFormSchema {
   constructor(
     private _cdr: ChangeDetectorRef,
     private _http: HttpClient,
-    private _formBuilder: FormBuilder,
+    private _formBuilder: UntypedFormBuilder,
     public dialogRef: MatDialogRef<ImportFormSchema>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {

@@ -41,26 +41,25 @@ import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {UserEditor} from './user-editor';
 
 @NgModule({
-  imports: [
-    AuthModule,
-    BreakpointObserverModule,
-    CommonModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatNativeDateModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    RouterModule,
-  ],
-  declarations: [UserEditor],
-  entryComponents: [UserEditor],
-  exports: [UserEditor],
+    imports: [
+        AuthModule,
+        BreakpointObserverModule,
+        CommonModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatListModule,
+        MatNativeDateModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        RouterModule,
+    ],
+    declarations: [UserEditor],
+    exports: [UserEditor]
 })
 export class UserEditorModule {}

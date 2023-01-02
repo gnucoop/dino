@@ -30,7 +30,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
@@ -103,7 +103,7 @@ export class UserEditor implements OnDestroy, OnInit {
   /**
    * The form group for the User Editor form.
    */
-  userForm?: FormGroup;
+  userForm?: UntypedFormGroup;
 
   /**
    * The editor form fields
@@ -289,7 +289,7 @@ export class UserEditor implements OnDestroy, OnInit {
    */
   private _populateForm(): void {
     const currentUser: UserData | undefined = this.data.userItem;
-    const group: {[key: string]: FormControl} = {};
+    const group: {[key: string]: UntypedFormControl} = {};
     const fields: UserFormField[] = [
       {
         fieldName: 'full_name',
@@ -319,22 +319,22 @@ export class UserEditor implements OnDestroy, OnInit {
         placeholder: 'Confirm Password',
         inputType: 'password',
       });
-      group['password'] = new FormControl(null, [Validators.minLength(8), Validators.required]);
-      group['confirm_password'] = new FormControl(null, [
+      group['password'] = new UntypedFormControl(null, [Validators.minLength(8), Validators.required]);
+      group['confirm_password'] = new UntypedFormControl(null, [
         Validators.minLength(8),
         PasswordMatch,
         Validators.required,
       ]);
     }
 
-    group['full_name'] = new FormControl(currentUser?.full_name ?? '', Validators.required);
-    group['email'] = new FormControl(currentUser?.email ?? '', [
+    group['full_name'] = new UntypedFormControl(currentUser?.full_name ?? '', Validators.required);
+    group['email'] = new UntypedFormControl(currentUser?.email ?? '', [
       Validators.email,
       Validators.required,
     ]);
 
-    group['user_group_ids'] = new FormControl(currentUser?.user_group_ids ?? []);
-    const formGroup = new FormGroup(group);
+    group['user_group_ids'] = new UntypedFormControl(currentUser?.user_group_ids ?? []);
+    const formGroup = new UntypedFormGroup(group);
 
     this.userForm = formGroup;
     this.userFormFields = fields;

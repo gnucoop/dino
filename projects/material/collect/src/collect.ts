@@ -28,7 +28,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {PermissionContextService} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
@@ -164,7 +164,7 @@ export class Collect {
     this._cdr.markForCheck();
   }
 
-  readonly filterCtrl = new FormControl('');
+  readonly filterCtrl = new UntypedFormControl('');
 
   constructor(
     readonly breakpointObserver: BreakpointObserverService,

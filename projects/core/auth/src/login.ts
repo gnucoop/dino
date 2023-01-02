@@ -21,7 +21,7 @@
  */
 
 import {ChangeDetectorRef, Directive, Input} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
@@ -53,12 +53,12 @@ export abstract class LoginComponent {
   /**
    * The signup FormGroup.
    */
-  signupForm: FormGroup | undefined;
+  signupForm: UntypedFormGroup | undefined;
 
   /**
    * The reset Password FormGroup.
    */
-  resetPassForm: FormGroup | undefined;
+  resetPassForm: UntypedFormGroup | undefined;
 
   /**
    * If true, the signup form is displayed in place of the login form
@@ -73,7 +73,7 @@ export abstract class LoginComponent {
   /**
    * The login FormGroup.
    */
-  readonly loginForm: FormGroup;
+  readonly loginForm: UntypedFormGroup;
 
   /**
    * Displays the login/signup validation errors
@@ -137,14 +137,14 @@ export abstract class LoginComponent {
     if (pp == null || this.signupForm == null) {
       return;
     }
-    this.signupForm.addControl('policy', new FormControl('', Validators.requiredTrue));
+    this.signupForm.addControl('policy', new UntypedFormControl('', Validators.requiredTrue));
     this._privacyPolicy = pp;
   }
 
   constructor(
     private _authService: AuthService,
     private _router: Router,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,

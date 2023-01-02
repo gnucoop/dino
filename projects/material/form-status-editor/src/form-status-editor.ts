@@ -6,7 +6,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
 import {RxDocument} from 'rxdb';
@@ -40,7 +40,7 @@ export class FormStatusEditor implements OnDestroy {
   /**
    * The form group of the Form Status item.
    */
-  statusForm: FormGroup;
+  statusForm: UntypedFormGroup;
 
   /**
    * The color of the Form Status item.
@@ -64,15 +64,15 @@ export class FormStatusEditor implements OnDestroy {
   ) {
     this.statusColor = data.statusItem?.color ?? '#ffffff';
 
-    const group: {[key: string]: FormControl} = {};
-    group['name'] = new FormControl(data.statusItem?.name ?? null, Validators.required);
-    group['label'] = new FormControl(data.statusItem?.label ?? null, Validators.required);
-    group['status_level'] = new FormControl(
+    const group: {[key: string]: UntypedFormControl} = {};
+    group['name'] = new UntypedFormControl(data.statusItem?.name ?? null, Validators.required);
+    group['label'] = new UntypedFormControl(data.statusItem?.label ?? null, Validators.required);
+    group['status_level'] = new UntypedFormControl(
       data.statusItem?.status_level ?? null,
       Validators.required,
     );
-    group['color'] = new FormControl(this.statusColor, Validators.required);
-    this.statusForm = new FormGroup(group);
+    group['color'] = new UntypedFormControl(this.statusColor, Validators.required);
+    this.statusForm = new UntypedFormGroup(group);
 
     this._saveSub = this._saveEvt
       .pipe(
