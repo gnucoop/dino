@@ -57,7 +57,7 @@
   $mat-css-theme: $theme !global;
 
   // NOTE: light theme is the default theme
-  @include mat.all-component-themes($theme);
+  // @include mat.all-component-themes($theme);
   @content;
 
   @if $light-theme-selector {
