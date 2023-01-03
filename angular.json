@@ -206,16 +206,25 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
+              "argsarray",
               "chart.js",
               "crypto-js/aes",
               "crypto-js/enc-utf8",
+              "dagre",
               "deep-equal",
+              "detect-node",
+              "flat",
               "immediate",
               "is-my-json-valid",
+              "leaflet",
               "memdown",
               "modifyjs",
+              "numbro",
               "pdfmake/build/pdfmake",
-              "graphql-ws"
+              "graphql-ws",
+              "spark-md5",
+              "svg-pan-zoom",
+              "vuvuzela"
             ]
           },
           "configurations": {
