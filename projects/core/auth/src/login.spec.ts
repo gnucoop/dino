@@ -2,7 +2,7 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {ChangeDetectorRef, EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {UntypedFormBuilder} from '@angular/forms';
-import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar, MatLegacySnackBarModule as MatSnackBarModule} from '@angular/material/legacy-snack-bar';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable, of as obsOf} from 'rxjs';

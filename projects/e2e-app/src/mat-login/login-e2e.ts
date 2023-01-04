@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, Optional, ViewChild} from '@angular/core';
-import {MatSelect} from '@angular/material/select';
+import {MatLegacySelect as MatSelect} from '@angular/material/legacy-select';
 import {Router} from '@angular/router';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
 import {UserData, UserDataManager} from '@dino/core/users';

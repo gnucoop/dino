@@ -46,8 +46,8 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatSelectionList} from '@angular/material/list';
-import {MatTabChangeEvent} from '@angular/material/tabs';
+import {MatLegacySelectionList as MatSelectionList} from '@angular/material/legacy-list';
+import {MatLegacyTabChangeEvent as MatTabChangeEvent} from '@angular/material/legacy-tabs';
 import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
@@ -71,7 +71,7 @@ import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {DataModelManager} from '@dino/core/data';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA} from '@angular/material/legacy-dialog';
 import {RxDocument} from 'rxdb';
 
 /**

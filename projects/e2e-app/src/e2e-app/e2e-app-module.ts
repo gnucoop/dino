@@ -23,7 +23,7 @@
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatListModule} from '@angular/material/list';
+import {MatLegacyListModule as MatListModule} from '@angular/material/legacy-list';
 import {RouterModule} from '@angular/router';
 import {E2eAppLayout, Home} from './e2e-app-layout';
 

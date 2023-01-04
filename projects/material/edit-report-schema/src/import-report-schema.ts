@@ -22,7 +22,7 @@
 
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
-import {MatDialogRef} from '@angular/material/dialog';
+import {MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
 import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AjfReport, AjfReportSerializer, xlsReport} from '@ajf/core/reports';

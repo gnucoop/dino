@@ -22,9 +22,9 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {EventEmitter, Optional} from '@angular/core';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent} from '@angular/material/legacy-paginator';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {
   clone,
   CollectionChangedEvent,

@@ -34,7 +34,7 @@ import {
 } from '@angular/core';
 import {UntypedFormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig, MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
 import {ActivatedRoute} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';

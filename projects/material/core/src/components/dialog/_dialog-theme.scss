@@ -8,7 +8,7 @@
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
 
-    @include mat-theming.dialog-color($config-or-theme);
+    @include mat-theming.legacy-dialog-color($config-or-theme);
 }
 
 @mixin mat-dialog-typography($config-or-theme) {

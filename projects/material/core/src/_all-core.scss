@@ -20,7 +20,16 @@
 @use './components/tabs/tabs-base';
 
 @mixin mat-core($typography-config: typography.$base-typography) {
-    @include mat-core-theming.core($typography-config);
+    // TODO(v15): As of v15 mat-core-theming.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat-core-theming.legacy-typography-hierarchy($typography-config);`
+@include mat-core-theming.all-legacy-component-typographies($typography-config);
+@include mat-core-theming.legacy-core();
 
     @include card-base.card-core($typography-config);
     @include cdk-drop-list-base.cdk-drop-list-core($typography-config);

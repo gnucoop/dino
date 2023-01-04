@@ -35,7 +35,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
 import {FormData, OnlineFormDataManager, OnlineFormSchemaManager} from '@dino/core/forms';

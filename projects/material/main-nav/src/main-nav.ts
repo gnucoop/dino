@@ -33,9 +33,9 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import {MatSidenav} from '@angular/material/sidenav';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService, PermissionContextService} from '@dino/core/data';
