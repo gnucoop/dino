@@ -12,6 +12,7 @@
 
     .mat-icon.dino-mat-icon {
         color: rgb(var(--palette-primary-500));
+        overflow: visible;
         &:hover {
             color: rgb(var(--palette-accent-500));
         }
