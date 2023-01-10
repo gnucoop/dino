@@ -20,6 +20,7 @@
  *
  */
 
+import {RxDocumentData, RxReplicationWriteToMasterRow} from 'rxdb';
 import {Model} from './model';
 
 /**
@@ -34,5 +35,7 @@ export interface PushQueryExtraParams {
   /**
    * Function used to modify the object before pushing it to the remote database.
    */
-  docModifier?: <T extends Model = Model>(doc: T) => T;
+  docModifier?: <T extends Model = Model>(
+    doc: T,
+  ) => RxReplicationWriteToMasterRow<RxDocumentData<T>>;
 }

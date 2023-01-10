@@ -22,10 +22,12 @@
 
 import {isDevMode} from '@angular/core';
 import {
+  lastOfArray,
   RxCollection,
   RxDocumentData,
   RxGraphQLReplicationPullQueryBuilder,
   RxGraphQLReplicationPushQueryBuilder,
+  RxReplicationWriteToMasterRow,
 } from 'rxdb';
 import {PullQueryContextChecks} from './data-create-collection-request';
 import {PermissionContext} from './data-permission-interface';
@@ -49,7 +51,7 @@ export function pullQueryBuilder<T extends Model = Model>(
   collection: RxCollection,
   options: DataServiceSyncOptions,
   extraParams?: PullQueryExtraParams,
-): RxGraphQLReplicationPullQueryBuilder<T> {
+): RxGraphQLReplicationPullQueryBuilder<RxDocumentData<T>> {
   return (doc: RxDocumentData<T> | null) => {
     /**
      * If there's no checkpoint document pulled, we start from the beginning.
@@ -83,6 +85,36 @@ export function pullQueryBuilder<T extends Model = Model>(
 }
 
 /**
+ * Modifies the GraphQl server response before it's processed by rxDb and synced into the client,
+ * by adding a checkpoint from the last updated pulled document.
+ * @param plainResponse The graphql server response
+ * @returns An object with all documents and a checkpoint
+ */
+export function pullResponseModifier<T extends Model = Model>(
+  plainResponse: RxDocumentData<T>[],
+): {
+  documents: RxDocumentData<T>[];
+  checkpoint: {id: string; updated_at: string};
+} {
+  const docs = plainResponse;
+  const lastDoc = lastOfArray(docs);
+  const startingCheckPoint = {
+    id: '',
+    updated_at: new Date(0).toUTCString(),
+  };
+  return {
+    documents: docs,
+    checkpoint:
+      docs.length === 0 || lastDoc == undefined
+        ? startingCheckPoint
+        : {
+            id: lastDoc.id,
+            updated_at: lastDoc.updated_at,
+          },
+  };
+}
+
+/**
  * Builds a GraphQL query used to push documents belonging to a given collection in pull sync.
  * @param collection The collection to be synced.
  * @param extraParams Option extra parameters to be included in the query.
@@ -93,25 +125,25 @@ export function pushQueryBuilder<T extends Model = Model>(
 ): RxGraphQLReplicationPushQueryBuilder {
   const ucfCollectionName = ucfirst(collection.name);
   const updateFields = getCollectionUpdateFields(collection);
-  return (docs: T[]) => {
+  return (docs: RxReplicationWriteToMasterRow<RxDocumentData<T>>[]) => {
     if (docs == null || docs.length <= 0 || docs[0] == null) {
       return {query: '', variables: {}};
     }
     if (isDevMode()) {
-      console.log('INSERT:', docs, docs[0].updated_at);
+      console.log('INSERT:', docs, docs[0].assumedMasterState?.updated_at);
     }
-    let documents: (T & {_meta?: any})[] = docs;
-    documents.forEach(dc => delete dc['_meta']);
+    // let documents: RxReplicationWriteToMasterRow<T>[] = docs;
+    // documents.forEach(dc => delete dc['_meta']);
     extraParams = extraParams || {};
     const where = {
       ...(extraParams.where || {}),
-      updated_at: {_lte: `${docs[0].updated_at}`},
+      updated_at: {_lte: `${docs[0].newDocumentState.updated_at}`},
     };
-    docs = docs.map(dc => {
+    const newDocs = docs.map(dc => {
       if (extraParams != null && extraParams.docModifier) {
-        return extraParams.docModifier(dc);
+        return extraParams.docModifier(dc.newDocumentState);
       }
-      return dc;
+      return dc.newDocumentState;
     });
 
     const query = `
@@ -129,7 +161,7 @@ export function pushQueryBuilder<T extends Model = Model>(
       }
     `;
     const unquotedQuery = query.replace(/"([^"]+)":/g, '$1:');
-    const variables = {'docs': docs};
+    const variables = {'docs': newDocs};
     return {query: unquotedQuery, variables};
   };
 }

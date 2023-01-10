@@ -24,15 +24,18 @@ import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/co
 import {Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {ConfigService} from '@dino/core/config';
-import * as pouchdbAdapterIdb from 'pouchdb-adapter-idb';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addRxPlugin, createRxDatabase, RxCollection, RxDatabase, RxDocument} from 'rxdb';
-import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
-import {addPouchPlugin} from 'rxdb/plugins/pouchdb';
 import {
-  RxDBReplicationGraphQLPlugin,
-  RxGraphQLReplicationState,
-} from 'rxdb/plugins/replication-graphql';
+  addRxPlugin,
+  createRxDatabase,
+  RxCollection,
+  RxDatabase,
+  RxDocument,
+  RxDocumentData,
+  RxError,
+  RxTypeError,
+} from 'rxdb';
+import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
+import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
 import {RxDBQueryBuilderPlugin} from 'rxdb/plugins/query-builder';
 import {RxDBUpdatePlugin} from 'rxdb/plugins/update';
 import {
@@ -88,6 +91,7 @@ import {PushQueryExtraParams} from './push-query-extra-params';
 import {
   generateSyncPullChecks,
   pullQueryBuilder,
+  pullResponseModifier,
   pushQueryBuilder,
   subscriptionQueryBuilder,
 } from './sync-utils';
@@ -222,8 +226,6 @@ export class DataService implements IDataService {
     @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
     @Optional() private _configService: ConfigService | null,
   ) {
-    addPouchPlugin(pouchdbAdapterIdb);
-    addPouchPlugin(pouchdbAdapterMemory);
     addRxPlugin(RxDBMigrationPlugin);
     addRxPlugin(RxDBReplicationGraphQLPlugin);
     addRxPlugin(RxDBQueryBuilderPlugin);
@@ -468,7 +470,7 @@ export class DataService implements IDataService {
   update<T extends Model = Model, R extends T = RxDocument<T>>(
     collectionName: string,
     doc: R,
-    updateData: Partial<T>,
+    updateData: Partial<R>,
   ): Observable<R | null> {
     if (doc == null || updateData == null || !isRxDocument(doc)) {
       return obsOf(null);
@@ -660,9 +662,12 @@ export class DataService implements IDataService {
 
   /**
    * Forces the start of a graphql replication run cycle for each state of
-   * each active sync
+   * each active sync.
+   * If a collection name is provided, the replication cycle runs for
+   * that collection only.
+   * @param collectionName? The name of the collection to be synced
    */
-  runSync() {
+  runSync(collectionName?: string) {
     combineLatest([this.isSyncing, this._nss.isOnline$, this._authService.refreshToken()])
       .pipe(take(1))
       .subscribe(([_isSyncing, isOnline, refresh]) => {
@@ -671,31 +676,29 @@ export class DataService implements IDataService {
         }
         if (isOnline && refresh) {
           if (isDevMode()) {
-            console.log('Running the sync!');
+            console.log(`Running the sync for ${collectionName ? collectionName : 'all'}! `);
           }
           const actSyncs = this._activeSyncs.value;
           const totSyncs = Object.keys(actSyncs).length;
           let currentlyCompleted = 0;
-          for (let key in actSyncs) {
-            const actSync: ActiveSync | undefined = actSyncs[key];
+          if (collectionName) {
+            const actSync: ActiveSync | undefined = actSyncs[collectionName];
             if (actSync && actSync.state) {
-              actSync.state.run(true).then(
-                _resolved => {
-                  currentlyCompleted++;
-                  this._collectionChangedEmit(
-                    'replication cycle complete',
-                    actSync.state.collection,
-                  );
-                  if (currentlyCompleted === totSyncs) {
-                    this.replicationCycleComplete.emit();
-                  }
-                },
-                rejected => {
-                  if (isDevMode()) {
-                    console.log('Something went wrong with the sync.', rejected);
-                  }
-                },
-              );
+              actSync.state.reSync();
+              this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
+              this.replicationCycleComplete.emit();
+            }
+          } else {
+            for (let key in actSyncs) {
+              const actSync: ActiveSync | undefined = actSyncs[key];
+              if (actSync && actSync.state) {
+                actSync.state.reSync();
+                this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
+                currentlyCompleted++;
+                if (currentlyCompleted === totSyncs) {
+                  this.replicationCycleComplete.emit();
+                }
+              }
             }
           }
         }
@@ -829,14 +832,21 @@ export class DataService implements IDataService {
       ...this._dataConfig.value.syncOptions,
       url: this._dataConfig.value.syncOptions.url,
       headers: {'Authorization': `Bearer ${token}`},
-      deletedFlag: '_deleted',
-      retryTime: 1000,
+      deletedField: '_deleted',
+      retryTime: 5000,
       pull: {
         queryBuilder: pullQueryBuilder(
           collection,
           this._dataConfig.value.syncOptions,
           params.pullQueryExtraParams,
         ),
+        responseModifier: async function (
+          plainResponse: RxDocumentData<any>[],
+          _origin: any,
+          _requestCheckpoint: any,
+        ) {
+          return pullResponseModifier(plainResponse);
+        },
         batchSize: this.config.syncOptions.batchSizePull ?? DEFAULT_SYNC_OPTIONS.batchSizePull,
       },
       push: {
@@ -847,28 +857,26 @@ export class DataService implements IDataService {
 
     /*
     ERROR_MESSAGES GraphQL replication
-    https://github.com/pubkey/rxdb/blob/12.6.14/src/plugins/dev-mode/error-messages.ts
+    https://github.com/pubkey/rxdb/blob/master/src/plugins/dev-mode/error-messages.ts
     GQL1: 'GraphQL replication: cannot find sub schema by key',
-    GQL2: 'GraphQL replication: unknown errors occurred in replication pull - see innerErrors for more details',
     GQL3: 'GraphQL replication: pull returns more documents then batchSize',
-    GQL4: 'GraphQL replication: unknown errors occurred in replication push - see innerErrors for more details',
     */
-    state.error$.subscribe(err => {
+    state.error$.subscribe((err: RxError | RxTypeError) => {
       if (isDevMode()) {
         console.dir(err);
       }
       const jwtError = this._dataConfig.value.syncOptions.authErrorMessage || 'JWTExpired';
       if (
         err &&
-        err.type === 'push' &&
+        err.parameters.type === 'push' &&
         err.message.indexOf('GQL') > -1 &&
-        err.innerErrors &&
-        err.innerErrors.length &&
-        err.innerErrors[0].message &&
-        err.innerErrors[0].message.indexOf(jwtError) < 0
+        err.parameters.errors &&
+        err.parameters.errors.length &&
+        err.parameters.errors[0].message &&
+        err.parameters.errors[0].message.indexOf(jwtError) < 0
       ) {
         console.error('Sync replication error:');
-        console.log(err.innerErrors[0]);
+        console.log(err.parameters.errors[0]);
         this._refreshEvt.emit();
       }
     });
@@ -879,7 +887,7 @@ export class DataService implements IDataService {
     let stateReceivedSub: {unsubscribe: () => void} = Subscription.EMPTY;
     if (
       this._dataConfig.value.syncOptions.live &&
-      this._dataConfig.value.syncOptions.wsUrl != null
+      this._dataConfig.value.syncOptions.url.ws != null
     ) {
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = newClientSubscription(this._wsClient, {query});
@@ -890,22 +898,10 @@ export class DataService implements IDataService {
 
       clientRequestSub = clientRequest.subscribe({
         next: () => {
-          state.notifyAboutRemoteChange().then(
-            () => {
-              this._collectionChangedEmit('replication cycle complete', collection);
-            },
-            err => {
-              if (isDevMode()) {
-                console.log(err);
-              }
-            },
-          );
+          this.runSync(collection.name);
         },
         error: err => console.log('clientRequestSub err: ', err),
       });
-    }
-    if (!isCheckpointSet) {
-      this._setCollectionLastPushCheckpoint(state, collection);
     }
 
     actSyncs[collection.name] = {
@@ -933,32 +929,6 @@ export class DataService implements IDataService {
     state.cancel().then(() => {});
     delete actSyncs[collectionName];
     this._activeSyncs.next(actSyncs);
-  }
-
-  /**
-   * Performs a "fake" update on the last updated document of the collection.
-   * This causes rxDb to set the "last push checkpoint" for the collection.
-   * @param state The rxGraphql replication state of the collection
-   * @param collection The rxCollection
-   */
-  private _setCollectionLastPushCheckpoint(
-    state: RxGraphQLReplicationState<Model>,
-    collection: RxCollection,
-  ) {
-    from(state.awaitInitialReplication())
-      .pipe(
-        switchMap(() => from(collection.findOne({sort: [{'updated_at': 'desc'}]}).exec())),
-        switchMap(doc => {
-          if (doc == null) {
-            this._collectionChangedEmit('Document updated', collection);
-            return obsOf(null);
-          }
-          const rxDoc = doc as RxDocument<Model>;
-          return this.update(collection.name, rxDoc, {updated_at: rxDoc.updated_at});
-        }),
-        take(1),
-      )
-      .subscribe();
   }
 
   /**

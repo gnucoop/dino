@@ -42,7 +42,7 @@ export class DataModule {
           useFactory: (httpLink: HttpLink): ApolloClientOptions<any> => {
             return {
               cache: new InMemoryCache(),
-              link: httpLink.create({uri: config.syncOptions.url}),
+              link: httpLink.create({uri: config.syncOptions.url.http}),
             };
           },
           deps: [HttpLink],

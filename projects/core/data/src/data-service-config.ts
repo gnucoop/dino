@@ -29,7 +29,7 @@ import {Model} from './model';
  * Data service GraphQL sync options.
  */
 export interface DataServiceSyncOptions<T extends Model = Model>
-  extends Omit<SyncOptionsGraphQL<T>, 'headers' | 'pull' | 'push' | 'deletedFlag'> {
+  extends Omit<SyncOptionsGraphQL<T, Partial<T>>, 'headers' | 'pull' | 'push'> {
   /**
    * The number of documents synced in each pull request.
    */

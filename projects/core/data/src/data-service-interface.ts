@@ -123,7 +123,7 @@ export interface IDataService {
   update<T extends Model = Model, R extends T = T>(
     collectionName: string,
     doc: R,
-    updateData: Partial<T>,
+    updateData: Partial<R>,
   ): Observable<R | null>;
 
   /**

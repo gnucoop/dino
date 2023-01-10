@@ -245,7 +245,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
             return throwError(() => new Error('Deletion not allowed'));
           } else {
             return this._dataService
-              .update<T, R>(this._modelName, doc, {_deleted: true, is_deleted: true} as Partial<T>)
+              .update<T, R>(this._modelName, doc, {_deleted: true, is_deleted: true} as Partial<R>)
               .pipe(
                 map(_ => doc as R),
                 catchError(err => throwError(() => new Error(err))),

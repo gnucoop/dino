@@ -20,6 +20,7 @@
  *
  */
 
+import {RxDocumentData} from 'rxdb';
 import {RxGraphQLReplicationState} from 'rxdb/plugins/replication-graphql';
 import {Observable} from 'rxjs';
 import {Model} from './model';
@@ -31,7 +32,7 @@ export interface ActiveSync<T extends Model = Model> {
   /**
    * The synchronization state
    */
-  state: RxGraphQLReplicationState<T>;
+  state: RxGraphQLReplicationState<any, RxDocumentData<T>>;
 
   /**
    * The synchronized collection name
