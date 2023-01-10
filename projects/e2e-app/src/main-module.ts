@@ -37,9 +37,9 @@ import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
 import {CoreModule as DinoMaterialThemingModule} from '@dino/material/core';
 import {EditReportSchemaModule} from '@dino/material/edit-report-schema';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {getRxStorageDexie} from 'rxdb/plugins/dexie';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {combineLatest, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, switchMap, take, tap} from 'rxjs/operators';
 
@@ -180,16 +180,18 @@ export function initializeApp(
 }
 
 export function provideDataServiceConfig() {
-  addPouchPlugin(pouchdbAdapterMemory);
   return {
     databaseCreateOptions: {
       name: `${instanceName}_db`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
+      // storage: getRxStorageDexie(),
       multiInstance: false,
     },
     syncOptions: {
-      url: syncGraphQLUrl,
-      wsUrl: additionalConfig.externalAuthentication ? wsUrl : null,
+      url: {
+        http: syncGraphQLUrl,
+        ws: additionalConfig.externalAuthentication ? wsUrl : null,
+      },
       live: live,
       webSocketImpl: WebSocket,
       authErrorMessage: authErrorMessage,
