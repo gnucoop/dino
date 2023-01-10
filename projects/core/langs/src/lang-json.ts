@@ -69,8 +69,7 @@ export const schema = {
   "title": "Lang",
   "indexes": [
     "created_at",
-    "updated_at",
-    "name"
+    "updated_at"
   ],
   "primaryKey": "id",
   "version": 0

@@ -90,8 +90,7 @@ export const schema = {
   "title": "Area",
   "indexes": [
     "created_at",
-    "updated_at",
-    "name"
+    "updated_at"
   ],
   "primaryKey": "id",
   "version": 1

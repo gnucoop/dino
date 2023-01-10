@@ -94,8 +94,7 @@ export const schema = {
   "title": "Location",
   "indexes": [
     "created_at",
-    "updated_at",
-    "name"
+    "updated_at"
   ],
   "primaryKey": "id",
   "version": 2

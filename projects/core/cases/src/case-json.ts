@@ -101,8 +101,7 @@ export const schema = {
   "title": "Case",
   "indexes": [
     "created_at",
-    "updated_at",
-    "name"
+    "updated_at"
   ],
   "primaryKey": "id",
   "version": 1

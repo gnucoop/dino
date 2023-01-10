@@ -78,8 +78,7 @@ export const schema = {
   "title": "FormStatus",
   "indexes": [
     "created_at",
-    "updated_at",
-    "name"
+    "updated_at"
   ],
   "primaryKey": "id",
   "version": 0
