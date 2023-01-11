@@ -198,6 +198,11 @@
               "projects/e2e-app/src/favicon.ico",
               "projects/e2e-app/src/assets"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/"
+              ]
+            },
             "styles": [
               "node_modules/@ajf/icons/css/ajf-icons.css",
               "node_modules/flag-icon-css/css/flag-icons.min.css",
