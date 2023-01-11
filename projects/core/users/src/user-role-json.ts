@@ -30,15 +30,18 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "maxLength": 200
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp."
+      "description": "Creation timestamp.",
+      "maxLength": 200
     },
     "updated_at": {
       "type": "string",
-      "description": "Update timestamp."
+      "description": "Update timestamp.",
+      "maxLength": 200
     },
     "is_deleted": {
       "type": "boolean",
@@ -50,7 +53,8 @@ export const schema = {
     },
     "roleName": {
       "type": "string",
-      "description": "The Name identifier for the User Role"
+      "description": "The Name identifier for the User Role",
+      "maxLength": 200
     },
     "rolePermissions": {
       "$ref": "#/definitions/ModelPermissions",

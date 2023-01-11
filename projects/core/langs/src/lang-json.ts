@@ -30,15 +30,18 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "maxLength": 200
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp."
+      "description": "Creation timestamp.",
+      "maxLength": 200
     },
     "updated_at": {
       "type": "string",
-      "description": "Update timestamp."
+      "description": "Update timestamp.",
+      "maxLength": 200
     },
     "is_deleted": {
       "type": "boolean",
@@ -50,7 +53,8 @@ export const schema = {
     },
     "name": {
       "type": "string",
-      "description": "The language code"
+      "description": "The language code",
+      "maxLength": 200
     },
     "schema": {
       "description": "A dictionary with the strings to be translated as keys and the translations as values.",

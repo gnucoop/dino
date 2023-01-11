@@ -26,93 +26,118 @@ import {Project} from './project';
 
 // tslint:disable
 export const schema = {
-  'type': 'object',
-  'properties': {
-    'id': {
-      'type': 'string',
-      'description': 'UUID v4 identifier.',
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "UUID v4 identifier.",
+      "maxLength": 200
     },
-    'created_at': {
-      'type': 'string',
-      'description': 'Creation timestamp.',
+    "created_at": {
+      "type": "string",
+      "description": "Creation timestamp.",
+      "maxLength": 200
     },
-    'updated_at': {
-      'type': 'string',
-      'description': 'Update timestamp.',
+    "updated_at": {
+      "type": "string",
+      "description": "Update timestamp.",
+      "maxLength": 200
     },
-    'is_deleted': {
-      'type': 'boolean',
-      'description': 'Soft delete flag',
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Soft delete flag"
     },
-    '_deleted': {
-      'type': 'boolean',
-      'description': 'Pouchdb delete flag',
+    "_deleted": {
+      "type": "boolean",
+      "description": "Pouchdb delete flag"
     },
-    'name': {
-      'type': 'string',
-      'description': 'The metric name.',
+    "name": {
+      "type": "string",
+      "description": "The metric name.",
+      "maxLength": 200
     },
-    'parent_id': {
-      'type': ['string', 'null'],
-      'description':
-        'The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)',
-    },
-    'parent_name': {
-      'type': ['string', 'null'],
-    },
-    'metric_data': {
-      'anyOf': [
-        {
-          'type': 'object',
-        },
-        {
-          'type': 'null',
-        },
+    "parent_id": {
+      "type": [
+        "string",
+        "null"
       ],
-      'description': 'Generic info json field',
+      "description": "The optional ID and Name of this metric Parent. (ex. Africa - Tanzania, Project - Sub-project etc.)"
     },
-    'code': {
-      'type': 'string',
-      'description': 'The project Code identifier',
+    "parent_name": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    'sectors_of_intervention': {
-      'type': ['string', 'null'],
-      'description': 'The project sectors of intervention',
+    "metric_data": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Generic info json field"
     },
-    'donors': {
-      'type': ['string', 'null'],
-      'description': 'The project Donors',
+    "code": {
+      "type": "string",
+      "description": "The project Code identifier",
+      "maxLength": 200
     },
-    'start_date': {
-      'type': ['string', 'null'],
-      'description': 'Project start date timestamp.',
+    "sectors_of_intervention": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The project sectors of intervention"
     },
-    'end_date': {
-      'type': ['string', 'null'],
-      'description': 'Project end date timestamp.',
+    "donors": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The project Donors"
     },
-    'code_auto': {
-      'type': 'number',
-      'description': 'The Project auto-generated incremental Code identifier',
+    "start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project start date timestamp."
     },
+    "end_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Project end date timestamp."
+    },
+    "code_auto": {
+      "type": "number",
+      "description": "The Project auto-generated incremental Code identifier"
+    }
   },
-  'required': [
-    'code',
-    'created_at',
-    'donors',
-    'end_date',
-    'id',
-    'name',
-    'parent_id',
-    'parent_name',
-    'sectors_of_intervention',
-    'start_date',
-    'updated_at',
+  "required": [
+    "code",
+    "created_at",
+    "donors",
+    "end_date",
+    "id",
+    "name",
+    "parent_id",
+    "parent_name",
+    "sectors_of_intervention",
+    "start_date",
+    "updated_at"
   ],
-  'additionalProperties': false,
-  'description': 'This model is used to store Projects.',
-  'title': 'Project',
-  'indexes': ['created_at', 'updated_at'],
-  'primaryKey': 'id',
-  'version': 3,
+  "additionalProperties": false,
+  "description": "This model is used to store Projects.",
+  "title": "Project",
+  "indexes": [
+    "created_at",
+    "updated_at"
+  ],
+  "primaryKey": "id",
+  "version": 3
 } as RxJsonSchema<Project>;

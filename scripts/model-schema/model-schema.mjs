@@ -86,6 +86,9 @@ export const modelSchemaTest = async params => {
       const collectionRef = propertyName.replace('_ref_id', '');
       property.ref = collectionRef;
     }
+    if (property['type'] === 'string') {
+      property['maxLength'] = 200;
+    }
   });
 
   const schemaString = JSON.stringify(definition, null, 2);

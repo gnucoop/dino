@@ -31,14 +31,17 @@ export const schema = {
     'id': {
       'type': 'string',
       'description': 'UUID v4 identifier.',
+      'maxLength': 200,
     },
     'created_at': {
       'type': 'string',
       'description': 'Creation timestamp.',
+      'maxLength': 200,
     },
     'updated_at': {
       'type': 'string',
       'description': 'Update timestamp.',
+      'maxLength': 200,
     },
     'is_deleted': {
       'type': 'boolean',
@@ -51,14 +54,17 @@ export const schema = {
     'name': {
       'type': 'string',
       'description': 'The form schema name.',
+      'maxLength': 200,
     },
     'label': {
       'type': 'string',
       'description': 'The form schema displayed label.',
+      'maxLength': 200,
     },
     'icon': {
       'type': 'string',
       'description': 'The form schema icon identifier.',
+      'maxLength': 200,
     },
     'form_status_ref_id': {
       'type': 'array',

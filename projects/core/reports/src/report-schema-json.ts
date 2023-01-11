@@ -26,100 +26,98 @@ import {ReportSchema} from './report-schema';
 
 // tslint:disable
 export const schema = {
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "description": "UUID v4 identifier."
+  'type': 'object',
+  'properties': {
+    'id': {
+      'type': 'string',
+      'description': 'UUID v4 identifier.',
+      'maxLength': 200,
     },
-    "created_at": {
-      "type": "string",
-      "description": "Creation timestamp."
+    'created_at': {
+      'type': 'string',
+      'description': 'Creation timestamp.',
+      'maxLength': 200,
     },
-    "updated_at": {
-      "type": "string",
-      "description": "Update timestamp."
+    'updated_at': {
+      'type': 'string',
+      'description': 'Update timestamp.',
+      'maxLength': 200,
     },
-    "is_deleted": {
-      "type": "boolean",
-      "description": "Soft delete flag"
+    'is_deleted': {
+      'type': 'boolean',
+      'description': 'Soft delete flag',
     },
-    "_deleted": {
-      "type": "boolean",
-      "description": "Pouchdb delete flag"
+    '_deleted': {
+      'type': 'boolean',
+      'description': 'Pouchdb delete flag',
     },
-    "name": {
-      "type": "string",
-      "description": "The report schema name."
+    'name': {
+      'type': 'string',
+      'description': 'The report schema name.',
+      'maxLength': 200,
     },
-    "form_schema_ids": {
-      "type": "array",
-      "items": {
-        "type": "string"
+    'form_schema_ids': {
+      'type': 'array',
+      'items': {
+        'type': 'string',
       },
-      "description": "List of Form Schemas (by id) from where to fetch the necessary data to build and display the report."
+      'description':
+        'List of Form Schemas (by id) from where to fetch the necessary data to build and display the report.',
     },
-    "label": {
-      "type": "string",
-      "description": "The report schema displayed label."
+    'label': {
+      'type': 'string',
+      'description': 'The report schema displayed label.',
+      'maxLength': 200,
     },
-    "icon": {
-      "type": "string",
-      "description": "The report schema icon identifier."
+    'icon': {
+      'type': 'string',
+      'description': 'The report schema icon identifier.',
+      'maxLength': 200,
     },
-    "schema": {
-      "type": "object",
-      "properties": {
-        "header": {
-          "$ref": "#/definitions/AjfReportContainer"
+    'schema': {
+      'type': 'object',
+      'properties': {
+        'header': {
+          '$ref': '#/definitions/AjfReportContainer',
         },
-        "content": {
-          "$ref": "#/definitions/AjfReportContainer"
+        'content': {
+          '$ref': '#/definitions/AjfReportContainer',
         },
-        "footer": {
-          "$ref": "#/definitions/AjfReportContainer"
+        'footer': {
+          '$ref': '#/definitions/AjfReportContainer',
         },
-        "styles": {
-          "$ref": "#/definitions/AjfStyles"
+        'styles': {
+          '$ref': '#/definitions/AjfStyles',
         },
-        "forms": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AjfForm"
-          }
+        'forms': {
+          'type': 'array',
+          'items': {
+            '$ref': '#/definitions/AjfForm',
+          },
         },
-        "variables": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AjfReportVariable"
-          }
+        'variables': {
+          'type': 'array',
+          'items': {
+            '$ref': '#/definitions/AjfReportVariable',
+          },
         },
-        "stringIdentifier": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AjfReportStringIdentifier"
-          }
-        }
+        'stringIdentifier': {
+          'type': 'array',
+          'items': {
+            '$ref': '#/definitions/AjfReportStringIdentifier',
+          },
+        },
       },
-      "additionalProperties": false,
-      "description": "JSON definition of the Ajf report schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-report-schema.json)."
-    }
+      'additionalProperties': false,
+      'description':
+        'JSON definition of the Ajf report schema. It must be valid against the [non-scrict version](https://ajf.rocks/schemas/ajf-report-schema.json).',
+    },
   },
-  "required": [
-    "created_at",
-    "form_schema_ids",
-    "id",
-    "name",
-    "schema",
-    "updated_at"
-  ],
-  "additionalProperties": false,
-  "description": "This model is used to store the Ajf report schemas.",
-  "title": "ReportSchema",
-  "indexes": [
-    "created_at",
-    "updated_at"
-  ],
-  "primaryKey": "id",
-  "version": 0
+  'required': ['created_at', 'form_schema_ids', 'id', 'name', 'schema', 'updated_at'],
+  'additionalProperties': false,
+  'description': 'This model is used to store the Ajf report schemas.',
+  'title': 'ReportSchema',
+  'indexes': ['created_at', 'updated_at'],
+  'primaryKey': 'id',
+  'version': 0,
 } as RxJsonSchema<ReportSchema>;

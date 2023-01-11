@@ -30,15 +30,18 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "maxLength": 200
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp."
+      "description": "Creation timestamp.",
+      "maxLength": 200
     },
     "updated_at": {
       "type": "string",
-      "description": "Update timestamp."
+      "description": "Update timestamp.",
+      "maxLength": 200
     },
     "is_deleted": {
       "type": "boolean",
@@ -51,12 +54,14 @@ export const schema = {
     "user_data_ref_id": {
       "type": "string",
       "description": "The collector user identifier.",
-      "ref": "user_data"
+      "ref": "user_data",
+      "maxLength": 200
     },
     "report_schema_ref_id": {
       "type": "string",
       "description": "The schema identifier.",
-      "ref": "report_schema"
+      "ref": "report_schema",
+      "maxLength": 200
     },
     "metadata": {
       "type": "object",

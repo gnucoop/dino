@@ -30,15 +30,18 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "maxLength": 200
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp."
+      "description": "Creation timestamp.",
+      "maxLength": 200
     },
     "updated_at": {
       "type": "string",
-      "description": "Update timestamp."
+      "description": "Update timestamp.",
+      "maxLength": 200
     },
     "is_deleted": {
       "type": "boolean",
@@ -50,11 +53,13 @@ export const schema = {
     },
     "name": {
       "type": "string",
-      "description": "The logical name of the Status"
+      "description": "The logical name of the Status",
+      "maxLength": 200
     },
     "label": {
       "type": "string",
-      "description": "The displayed label of the Status"
+      "description": "The displayed label of the Status",
+      "maxLength": 200
     },
     "status_level": {
       "type": "number",
@@ -62,7 +67,8 @@ export const schema = {
     },
     "color": {
       "type": "string",
-      "description": "The optional color associated with the Status label"
+      "description": "The optional color associated with the Status label",
+      "maxLength": 200
     }
   },
   "required": [
