@@ -7,8 +7,8 @@
         font-size: typography-utils.font-size(typography.$base-typography, body-1);
         font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
         h4 {
-            font-size: typography-utils.font-size(typography.$base-typography, title);
-            font-weight: typography-utils.font-weight(typography.$base-typography, title);
+            font-size: typography-utils.font-size(typography.$base-typography, subtitle-1);
+            font-weight: typography-utils.font-weight(typography.$base-typography, subtitle-1);
         }
     }
 }
