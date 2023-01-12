@@ -6,9 +6,8 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {ReportsModule} from '@dino/core/reports';
 import {UserData, UserDataManager} from '@dino/core/users';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {RxDocument} from 'rxdb';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {CreateReport, CreateReportModule} from './public_api';
@@ -50,15 +49,14 @@ const userDataManagerMock = {
   getActiveUserData: () => of(dummyUserData),
 } as unknown as UserDataManager;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
-      url: 'host',
+      url: {http: 'host'},
     },
   };
 }

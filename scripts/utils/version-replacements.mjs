@@ -14,8 +14,6 @@ export const versionReplacements = packages => {
     ['angular-material-css-vars', 'AMCV'],
     ['apollo-angular', 'APOLLONG'],
     ['assert', 'ASSERT'],
-    ['pouchdb-adapter-idb', 'PDBAIDB'],
-    ['pouchdb-adapter-memory', 'PDBAM'],
     ['process', 'PROCESS'],
     ['rxdb', 'RXDB'],
     ['rxjs', 'RXJS'],

@@ -5,25 +5,23 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {BehaviorSubject, of as obsOf} from 'rxjs';
 
 import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api';
 
 let testDbIdx = 0;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_data_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
-      url: 'http://dinoServer/v1/graphql',
-      wsUrl: 'ws://dinoServer/v1/graphql',
+      url: {http: 'http://dinoServer/v1/graphql', ws: 'ws://dinoServer/v1/graphql'},
       webSocketImpl: WebSocket,
+      authErrorMessage: 'Could not verify JWT: JWTExpired',
     },
   };
 }

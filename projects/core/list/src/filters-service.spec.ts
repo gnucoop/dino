@@ -5,9 +5,8 @@ import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {RxJsonSchema} from 'rxdb';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {of as obsOf} from 'rxjs';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
@@ -15,16 +14,14 @@ import {FilterItem, FiltersService} from './public_api';
 
 let testDbIdx = 0;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_data_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
-      url: 'http://dinoServer/v1/graphql',
-      wsUrl: 'ws://dinoServer/v1/graphql',
+      url: {http: 'http://dinoServer/v1/graphql', ws: 'ws://dinoServer/v1/graphql'},
       webSocketImpl: WebSocket,
     },
   };

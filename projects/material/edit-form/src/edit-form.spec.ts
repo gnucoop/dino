@@ -5,23 +5,21 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dino/core/data';
 import {FormSchemaManager} from '@dino/core/forms';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {EditForm, EditFormModule} from './public_api';
 
 let testDbIdx = 0;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
-      url: 'host',
+      url: {http: 'host'},
     },
   };
 }

@@ -8,23 +8,21 @@ import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 import {ReportsModule} from '@dino/core/reports';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UsersModule} from '@dino/core/users';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {Collect, CollectModule} from './public_api';
 
 let testDbIdx = 0;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
-      url: 'host',
+      url: {http: 'host'},
     },
   };
 }

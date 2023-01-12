@@ -18,8 +18,6 @@
     "@apollo/client": "0.0.0-APOLLOCLIENT",
     "apollo-angular": "0.0.0-APOLLONG",
     "assert": "0.0.0-ASSERT",
-    "pouchdb-adapter-idb": "0.0.0-PDBAIDB",
-    "pouchdb-adapter-memory": "0.0.0-PDBAM",
     "process": "0.0.0-PROCESS",
     "rxdb": "0.0.0-RXDB",
     "rxjs": "0.0.0-RXJS",

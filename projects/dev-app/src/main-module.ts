@@ -31,8 +31,7 @@ import {AuthModule} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModule} from '@dino/core/data';
 import {CoreModule} from '@dino/material/core';
 import {LangSelectorModule} from '@dino/material/lang-selector';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 
 import {DemoHttpInterceptor} from './demo-http-interceptor';
 import {DevAppComponent} from './dev-app';
@@ -41,14 +40,13 @@ import {DevAppModule} from './dev-app/dev-app-module';
 import {DEV_APP_ROUTES} from './routes';
 
 export function provideDataServiceConfig() {
-  addPouchPlugin(pouchdbAdapterMemory);
   return {
     databaseCreateOptions: {
       name: 'dino_dev_app_db',
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
-      url: 'http://dinoServer/v1/graphql',
+      url: {http: 'http://dinoServer/v1/graphql'},
       live: false,
       liveInterval: 60000,
     },

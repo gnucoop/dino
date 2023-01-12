@@ -4,9 +4,8 @@ import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {RxJsonSchema} from 'rxdb';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {firstValueFrom, Observable, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
@@ -116,17 +115,15 @@ const serverUrl = 'http://dinoServer/v1/graphql';
 const wsServerUrl = 'ws://dinoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
       ignoreDuplicate: true,
     },
     syncOptions: {
-      url: serverUrl,
-      wsUrl,
+      url: {http: serverUrl, ws: wsUrl},
       webSocketImpl: WebSocket,
       authErrorMessage: 'Could not verify JWT: JWTExpired',
     },

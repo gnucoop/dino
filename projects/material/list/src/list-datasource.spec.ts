@@ -14,9 +14,8 @@ import {
   PermissionContextService,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
-import * as pouchdbAdapterMemory from 'pouchdb-adapter-memory';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {RxJsonSchema} from 'rxdb';
-import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
 import {BehaviorSubject, firstValueFrom, of as obsOf, of, take} from 'rxjs';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
@@ -110,16 +109,15 @@ const fakeActivatedRoute = {
 
 let testDbIdx = 0;
 
-addPouchPlugin(pouchdbAdapterMemory);
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
       ignoreDuplicate: true,
     },
     syncOptions: {
-      url: 'host',
+      url: {http: 'host'},
     },
   };
 }
