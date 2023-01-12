@@ -12,11 +12,9 @@ export const buildKarmaPolyfills = async () => {
   };
   const res = await rollup(config);
   await res.write({
-    output: {
-      name: 'karma_polyfills',
-      format: 'iife',
-      file: 'karma-polyfills.js',
-    },
+    name: 'karma_polyfills',
+    format: 'iife',
+    file: 'karma-polyfills.js',
   });
 };
 

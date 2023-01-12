@@ -25,7 +25,7 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStoragePouch('memory'),
     },
     syncOptions: {
-      url: 'host',
+      url: {http: 'host'},
     },
   };
 }
