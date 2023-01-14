@@ -1,5 +1,6 @@
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatLegacyDialogModule} from '@angular/material/legacy-dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
@@ -52,7 +53,12 @@ describe('Edit ReportSchema', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, EditReportSchemaModule, RouterTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        EditReportSchemaModule,
+        RouterTestingModule,
+        MatLegacyDialogModule,
+      ],
       providers: [
         ReportSchemaManager,
         {provide: AuthService, useValue: authServiceMock},

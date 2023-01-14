@@ -14,7 +14,7 @@ const schemas = [
     version: 0,
     type: 'object',
     properties: {
-      id: {type: 'string', primary: true},
+      id: {type: 'string', primary: true, maxLength: 200},
       model3Id: {type: 'string', ref: 'model3'},
       updated_at: {type: 'string'},
     },
@@ -24,7 +24,7 @@ const schemas = [
     version: 0,
     type: 'object',
     properties: {
-      id: {type: 'string', primary: true},
+      id: {type: 'string', primary: true, maxLength: 200},
       model1Id: {type: 'string', ref: 'model1'},
       foo: {type: 'object', bar: {type: 'string'}, model3Id: {type: 'string', ref: 'model3'}},
       updated_at: {type: 'string'},
@@ -37,7 +37,7 @@ const schemas = [
     primaryKey: 'id',
     properties: {
       id: {type: 'string'},
-      updated_at: {type: 'string'},
+      updated_at: {type: 'string', maxLength: 200},
     },
   },
 ] as RxJsonSchema<any>[];
@@ -116,7 +116,7 @@ describe('pushQueryBuilder', () => {
   it('should create a push sync query for a given collection', async () => {
     const collection = collections[0];
     const timestamp = new Date().toISOString();
-    const doc: RxReplicationWriteToMasterRow<RxDocumentData<Model>>[] = [
+    const docs: RxReplicationWriteToMasterRow<RxDocumentData<Model>>[] = [
       {
         assumedMasterState: {},
         newDocumentState: {id: 'foo', created_at: timestamp, updated_at: timestamp},
@@ -131,10 +131,10 @@ describe('pushQueryBuilder', () => {
     const queryBuilder = pushQueryBuilder(collection, {
       docModifier: dummyModifier.modifier,
     }) as pushQueryMock;
-    const query = queryBuilder(doc);
+    const query = queryBuilder(docs);
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(pushQuery);
-    expect(modifierSpy).toHaveBeenCalledWith(doc[0]);
+    expect(modifierSpy).toHaveBeenCalledWith(docs[0].newDocumentState);
   });
 });
 

@@ -158,8 +158,8 @@ const dummySchema: RxJsonSchema<DummyModel> = {
   type: 'object',
   primaryKey: 'id',
   properties: {
-    id: {type: 'string'},
-    name: {type: 'string'},
+    id: {type: 'string', maxLength: 200},
+    name: {type: 'string', maxLength: 200},
     age: {type: 'number'},
     author: {type: 'string'},
     created_at: {type: 'string'},

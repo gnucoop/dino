@@ -31,13 +31,13 @@ interface DummyModel extends Model {
 const dummySchema = {
   'type': 'object',
   'properties': {
-    'id': {'type': 'string', 'description': 'UUID v4 identifier.'},
+    'id': {'type': 'string', 'description': 'UUID v4 identifier.', 'maxLength': 200},
     'name': {'type': 'string', 'description': 'Element name'},
     'filter_a': {'type': 'string', 'description': ''},
     'filter_b': {'type': 'number', 'description': ''},
     'filter_c': {'type': 'boolean', 'description': ''},
-    'created_at': {'type': 'string', 'description': 'Creation timestamp.'},
-    'updated_at': {'type': 'string', 'description': 'Update timestamp.'},
+    'created_at': {'type': 'string', 'description': 'Creation timestamp.', 'maxLength': 200},
+    'updated_at': {'type': 'string', 'description': 'Update timestamp.', 'maxLength': 200},
   },
   'additionalProperties': false,
   'title': 'dummymodel',

@@ -5,7 +5,7 @@ import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
 import {SearchFiltersBar, SearchFiltersBarModule} from '@dino/material/search-filters-bar';
-import {getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 
 const fakeFilters: FilterItem[] = [{name: 'filter_a', value: 'test'}];
 let testDbIdx = 0;
@@ -22,7 +22,7 @@ function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
       name: `dino_datamanager_test_db_${testDbIdx++}`,
-      storage: getRxStoragePouch('memory'),
+      storage: getRxStorageMemory(),
     },
     syncOptions: {
       url: {http: 'host'},

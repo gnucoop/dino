@@ -59,7 +59,7 @@ const dummySchema: RxJsonSchema<any> = {
   type: 'object',
   primaryKey: 'id',
   properties: {
-    id: {type: 'string'},
+    id: {type: 'string', maxLength: 200},
     name: {type: 'string'},
     created_at: {type: 'string'},
     updated_at: {type: ['string', 'null']},
