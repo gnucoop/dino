@@ -5,6 +5,7 @@
   flex-flow: row wrap;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .mat-tab-body-content {
   overflow: hidden !important;
 }
@@ -15,21 +16,22 @@
   flex-flow: row wrap;
   align-content: center;
   justify-content: space-between;
-  .mat-raised-button {
+  .mat-mdc-raised-button {
     flex: 0 1 auto;
     margin: 5px;
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
   .mat-chip-list div.mat-chip-list-wrapper {
     padding: 5px 0;
     background-color: transparent;
   }
 }
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   overflow-x: hidden;
   transition: all ease-in-out 0.3;
   -webkit-transition: all ease-in-out 0.3s;
-  .mat-dialog-content {
+  .mat-mdc-dialog-content {
     position: relative;
     max-height: 80vh;
     margin: 0px;
@@ -43,7 +45,7 @@
     &::-webkit-scrollbar {
       display: none;
     }
-    .mat-tab-group {
+    .mat-mdc-tab-group {
       min-width: 100%;
     }
   }

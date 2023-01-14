@@ -10,45 +10,46 @@
   $foreground: map.get($config, foreground);
   $header-border: 1px solid mat-theming.get-color-from-palette($foreground, divider);
 
-  .mat-tab-nav-bar,
-  .mat-tab-header {
+  .mat-mdc-tab-nav-bar,
+  .mat-mdc-tab-header {
     border-bottom: $header-border;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-group-inverted-header {
-    .mat-tab-nav-bar,
-    .mat-tab-header {
+    .mat-mdc-tab-nav-bar,
+    .mat-mdc-tab-header {
       border-top: $header-border;
       border-bottom: none;
     }
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-label,
-  .mat-tab-link {
+  .mat-mdc-tab-link {
     color: mat-theming.get-color-from-palette($foreground, text);
-
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
     &.mat-tab-disabled {
       color: mat-theming.get-color-from-palette($foreground, disabled-text);
     }
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-header-pagination-chevron {
     border-color: mat-theming.get-color-from-palette($foreground, text);
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {
     border-color: mat-theming.get-color-from-palette($foreground, disabled-text);
   }
 
   // Remove header border when there is a background color
-  .mat-tab-group[class*='mat-background-'] .mat-tab-header,
-  .mat-tab-nav-bar[class*='mat-background-'] {
+  .mat-mdc-tab-group[class*='mat-background-'] .mat-mdc-tab-header,
+  .mat-mdc-tab-nav-bar[class*='mat-background-'] {
     border-bottom: none;
     border-top: none;
   }
 
-  .mat-tab-group,
-  .mat-tab-nav-bar {
+  .mat-mdc-tab-group,
+  .mat-mdc-tab-nav-bar {
     $theme-colors: (
       primary: $primary,
       accent: $accent,
@@ -85,10 +86,12 @@
 }
 
 @mixin _mat-tab-label-focus($tab-focus-color) {
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-label,
-  .mat-tab-link {
+  .mat-mdc-tab-link {
     &.cdk-keyboard-focused,
     &.cdk-program-focused {
+      /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
       &:not(.mat-tab-disabled) {
         background-color: mat-theming.get-color-from-palette($tab-focus-color, lighter, 0.3);
       }
@@ -98,27 +101,30 @@
 
 @mixin _mat-tabs-background($background-color) {
   // Set background color for the tab group
-  .mat-tab-header,
-  .mat-tab-links,
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+  .mat-mdc-tab-header,
+  .mat-mdc-tab-links,
   .mat-tab-header-pagination {
     background-color: mat-theming.get-color-from-palette($background-color);
   }
 
   // Set labels to contrast against background
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-label,
-  .mat-tab-link {
+  .mat-mdc-tab-link {
     color: mat-theming.get-color-from-palette($background-color, default-contrast);
-
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
     &.mat-tab-disabled {
       color: mat-theming.get-color-from-palette($background-color, default-contrast, 0.4);
     }
   }
 
   // Set pagination chevrons to contrast background
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-header-pagination-chevron {
     border-color: mat-theming.get-color-from-palette($background-color, default-contrast);
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {
     border-color: mat-theming.get-color-from-palette($background-color, default-contrast, 0.4);
   }
@@ -132,12 +138,12 @@
 
 @mixin mat-tabs-typography($config-or-theme) {
   $config: mat-get-typography-config($config-or-theme);
-  .mat-tab-group {
+  .mat-mdc-tab-group {
     font-family: mat-font-family($config);
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
   .mat-tab-label,
-  .mat-tab-link {
+  .mat-mdc-tab-link {
     font: {
       family: mat-font-family($config, button);
       size: mat-font-size($config, button);

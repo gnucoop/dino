@@ -159,34 +159,37 @@
 @mixin _mat-checkbox-overwrites {
 
   // -- Primary Color
-  .mat-checkbox.mat-primary,
+  .mat-mdc-checkbox.mat-primary,
   .mat-checkbox.mat-primary {
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-checkmark .mat-checkbox-checkmark-path {
       stroke: mat-css-contrast-color-primary(500) !important;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-mixedmark {
       background-color: mat-css-contrast-color-primary(500) !important;
     }
   }
   // -- Accent Color
-  .mat-checkbox.mat-accent,
+  .mat-mdc-checkbox.mat-accent,
   .mat-checkbox.mat-accent {
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-checkmark .mat-checkbox-checkmark-path {
       stroke: mat-css-contrast-color-accent(500) !important;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-mixedmark {
       background-color: mat-css-contrast-color-accent(500) !important;
     }
   }
   // -- Warning Color
-  .mat-checkbox.mat-warn,
+  .mat-mdc-checkbox.mat-warn,
   .mat-checkbox.mat-warn {
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-checkmark .mat-checkbox-checkmark-path {
       stroke: mat-css-contrast-color-warn(500) !important;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-mixedmark {
       background-color: mat-css-contrast-color-warn(500) !important;
     }
@@ -200,7 +203,7 @@
   $accent: variables.$mat-css-palette-accent;
   $primary: variables.$mat-css-palette-primary;
   $warn: variables.$mat-css-palette-warn;
-  .mat-slide-toggle {
+  .mat-mdc-slide-toggle {
     @include _mat-slide-toggle-checked-color-theme($accent, $thumb-checked-hue);
 
     &.mat-primary {
@@ -227,10 +230,11 @@
 
 @mixin _mat-slide-toggle-checked-color($palette, $thumb-checked-hue) {
   &.mat-checked {
+    /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-thumb {
       background-color: get-color-from-palette($palette, $thumb-checked-hue);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-bar {
       background-color: get-color-from-palette($palette, $thumb-checked-hue, 0.54);
     }

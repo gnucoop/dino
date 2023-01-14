@@ -1,7 +1,7 @@
 dino-edit-public-form {
   font-size: 110%;
 
-  dino-floating-button .mat-fab-bottom-right.mat-fab.mat-button-base:not(.mat-button-disabled) {
+  dino-floating-button .mat-mdc-fab-bottom-right.mat-fab.mat-mdc-button-base:not(.mat-button-disabled) {
     color: #32db64;
     background-color: rgba(50, 219, 100, 0.3);
   }
@@ -44,7 +44,7 @@ dino-edit-public-form {
       }
 
       &.ajf-btn-strip {
-        .mat-button.ajf-topbar-button {
+        .mat-mdc-button.ajf-topbar-button {
           margin-right: 0px;
           background-color: transparent;
           color: rgba(120, 120, 120, 0.63);
@@ -64,7 +64,7 @@ dino-edit-public-form {
       &:not(.ajf-btn-strip, .ajf-toolbar) {
         display: flex;
         align-content: center;
-        .mat-button {
+        .mat-mdc-button {
           display: none;
         }
       }
@@ -74,7 +74,7 @@ dino-edit-public-form {
     }
 
     .ajf-form-page {
-      .mat-card {
+      .mat-mdc-card {
         margin: 0px !important;
         margin-bottom: 10px !important;
         padding: 8px;
@@ -85,6 +85,7 @@ dino-edit-public-form {
           display: flex;
           flex-flow: column wrap;
           justify-content: flex-start;
+          /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
           label,
           span:not(.mat-ripple, .mat-button-focus-overlay) {
             max-width: 80vw;
@@ -99,8 +100,8 @@ dino-edit-public-form {
             display: flex;
             flex-flow: row wrap;
           }
-          .mat-radio-button,
-          ajf-checkbox-group-item .mat-button {
+          .mat-mdc-radio-button,
+          ajf-checkbox-group-item .mat-mdc-button {
             .mat-icon {
               color: inherit;
             }
@@ -117,11 +118,12 @@ dino-edit-public-form {
             label {
               font-weight: normal;
             }
+            /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
             .mat-radio-ripple {
               display: none;
             }
           }
-          .mat-select {
+          .mat-mdc-select {
             width: 25%;
             @media only screen and (max-width: 768px) {
               width: 100%;
@@ -130,6 +132,7 @@ dino-edit-public-form {
           ajf-field {
             margin-top: 5px;
             margin-bottom: 10px;
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
             .mat-select-min-line {
               display: inline-block;
             }

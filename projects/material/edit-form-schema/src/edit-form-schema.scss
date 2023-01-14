@@ -1,10 +1,10 @@
 dino-edit-form-schema {
-  > .mat-card:first-child {
+  > .mat-mdc-card:first-child {
     border-left: none;
     margin: 0%;
     padding: 0px;
     background: transparent;
-    .mat-card-header {
+    .mat-mdc-card-header {
       display: flex;
       flex-flow: row wrap;
       padding-bottom: 10px;
@@ -15,7 +15,7 @@ dino-edit-form-schema {
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
-        .mat-form-field {
+        .mat-mdc-form-field {
           flex: 1 1 auto;
           font-size: 125%;
         }
@@ -24,12 +24,12 @@ dino-edit-form-schema {
         display: flex;
         justify-self: flex-end;
         justify-content: flex-end;
-        .mat-raised-button {
+        .mat-mdc-raised-button {
           margin-left: 20px;
         }
       }
     }
-    .mat-card-content {
+    .mat-mdc-card-content {
       padding-bottom: 0%;
       ajf-form-builder {
         min-height: 60vh;
@@ -38,11 +38,11 @@ dino-edit-form-schema {
         .ajf-fields-list {
           background: transparent;
         }
-        .ajf-designer ajf-fb-node-entry .mat-card-container .mat-card {
+        .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-card {
           background: transparent;
           background-color: transparent;
         }
-        .ajf-fields-list .mat-card-container .mat-card {
+        .ajf-fields-list .mat-mdc-card-container .mat-card {
           margin-left: 50px;
         }
       }
@@ -50,11 +50,13 @@ dino-edit-form-schema {
   }
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 .mat-autocomplete-panel,
 .mat-select-panel {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  .mat-option .mat-icon {
+  .mat-mdc-option .mat-icon {
     margin-right: 0;
   }
   .dino-status-option-container {
@@ -72,13 +74,14 @@ dino-edit-form-schema {
   &::-webkit-scrollbar {
     display: none;
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
   .mat-option-text {
     display: flex;
     justify-content: space-between;
     align-items: center;
     align-content: center;
   }
-  .mat-option {
+  .mat-mdc-option {
     &:hover,
     &.mat-active {
       background-color: transparent;

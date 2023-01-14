@@ -32,6 +32,7 @@ dino-login {
         form {
           mat-form-field {
             display: block;
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
             .mat-form-field-wrapper {
               padding-bottom: 0px;
             }
@@ -62,7 +63,7 @@ dino-login {
               color: rgba(91, 91, 96, 0.87);
             }
           }
-
+          /* TODO(mdc-migration): The following rule targets internal classes of progress-bar that may no longer apply for the MDC version. */
           mat-progress-bar {
             margin-top: 1em;
             opacity: 0;

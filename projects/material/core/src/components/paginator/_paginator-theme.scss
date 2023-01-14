@@ -6,35 +6,36 @@
     $foreground: map.get($config, foreground);
     $background: map.get($config, background);
     $accent: map.get($config, accent);
-
-    .mat-paginator,
-    .mat-paginator-page-size .mat-select-trigger {
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    .mat-mdc-paginator,
+    .mat-mdc-paginator-page-size .mat-select-trigger {
         color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
 
-    .mat-paginator .mat-form-field .mat-form-field-underline,
+    .mat-paginator .mat-mdc-form-field .mat-form-field-underline,
     .mat-paginator .mat-form-field-appearance-legacy .mat-form-field-underline,
     .mat-paginator .mat-form-field-ripple,
     .mat-paginator .mat-form-field.mat-focused .mat-form-field-ripple {
         background-color: mat-theming.get-color-from-palette($accent);
     }
-
-    .mat-paginator .mat-select-arrow {
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    .mat-mdc-paginator .mat-select-arrow {
         color: mat-theming.get-color-from-palette($accent);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of paginator that may no longer apply for the MDC version.*/
     .mat-paginator-decrement,
     .mat-paginator-increment {
         border-top: 2px solid mat-theming.get-color-from-palette($foreground, 'icon');
         border-right: 2px solid mat-theming.get-color-from-palette($foreground, 'icon');
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of paginator that may no longer apply for the MDC version.*/
     .mat-paginator-first,
     .mat-paginator-last {
         border-top: 2px solid mat-theming.get-color-from-palette($foreground, 'icon');
     }
 
-    .mat-icon-button[disabled] {
+    .mat-mdc-icon-button[disabled] {
+        /* TODO(mdc-migration): The following rule targets internal classes of paginator that may no longer apply for the MDC version.*/
         .mat-paginator-decrement,
         .mat-paginator-increment,
         .mat-paginator-first,
@@ -43,7 +44,7 @@
         }
     }
 
-    .mat-paginator-navigation-previous.mat-icon-button,
+    .mat-paginator-navigation-previous.mat-mdc-icon-button,
     .mat-paginator-navigation-next.mat-icon-button {
         background: mat-theming.get-color-from-palette($accent, lighter);
         color: mat-theming.get-color-from-palette($foreground, secondary-text);
@@ -52,8 +53,9 @@
 
 @mixin mat-paginator-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
-    .mat-paginator,
-    .mat-paginator-page-size .mat-select-trigger {
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    .mat-mdc-paginator,
+    .mat-mdc-paginator-page-size .mat-select-trigger {
         font: {
             family: mat-font-family($config, caption);
             size: mat-font-size($config, caption);

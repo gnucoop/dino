@@ -32,7 +32,7 @@
             }
         }
         .dino-grid-action-icons:hover {
-            .mat-mini-fab.mat-button-base {
+            .mat-mdc-mini-fab.mat-mdc-button-base {
                 opacity: 1;
                 color: mat-theming.get-color-from-palette($warn);
                 background-color: mat-theming.get-color-from-palette($accent);

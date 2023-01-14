@@ -1,5 +1,5 @@
-import {MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
-import {MatLegacyPaginatorDefaultOptions as MatPaginatorDefaultOptions} from '@angular/material/legacy-paginator';
+import {MatDialogConfig} from '@angular/material/dialog';
+import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dino/core/auth';
 import {ConfigServiceConfig} from '@dino/core/config';
 import {TranslationsConfig} from '@dino/core/translations';

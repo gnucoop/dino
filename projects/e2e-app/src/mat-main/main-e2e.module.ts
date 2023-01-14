@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
-import {MatLegacyListModule as MatListModule} from '@angular/material/legacy-list';
+import {MatButtonModule} from '@angular/material/button';
+import {MatListModule} from '@angular/material/list';
 import {RouterModule} from '@angular/router';
 import {DataModule as DinoDataModule} from '@dino/core/data';
 import {MainNavModule} from '@dino/material/main-nav';

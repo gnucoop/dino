@@ -28,8 +28,8 @@
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat-core-theming.legacy-typography-hierarchy($typography-config);`
-@include mat-core-theming.all-legacy-component-typographies($typography-config);
-@include mat-core-theming.legacy-core();
+@include mat-core-theming.all-component-typographies($typography-config);
+@include mat-core-theming.core();
 
     @include card-base.card-core($typography-config);
     @include cdk-drop-list-base.cdk-drop-list-core($typography-config);

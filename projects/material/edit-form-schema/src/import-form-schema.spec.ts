@@ -8,9 +8,9 @@ import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {BehaviorSubject, of} from 'rxjs';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material/dialog';
 
 import {ImportFormSchema, EditFormSchemaModule} from './public_api';
 import {EventEmitter} from '@angular/core';

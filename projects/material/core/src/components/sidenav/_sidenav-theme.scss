@@ -36,7 +36,7 @@
     &.mat-drawer-side.mat-sidenav,
     &.mat-drawer-push.mat-sidenav,
     &.mat-drawer-over.mat-sidenav {
-      .mat-list-item {
+      .mat-mdc-list-item {
         transition: all ease 0.5s;
         &:hover,
         &.dino-section-selected {

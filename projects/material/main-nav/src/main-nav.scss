@@ -130,7 +130,7 @@ dino-main-nav {
 
   .mat-nav-list {
     width: auto;
-    .mat-list-item {
+    .mat-mdc-list-item {
       padding: 5px;
       &:focus,
       &:hover {
@@ -140,7 +140,7 @@ dino-main-nav {
         padding-left: 20px;
       }
     }
-    &.mat-list-base {
+    &.mat-mdc-list-base {
       padding-top: 0px;
     }
     .dino-extend-menu-button {

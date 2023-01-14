@@ -28,7 +28,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
 import {BehaviorSubject, Observable, of} from 'rxjs';

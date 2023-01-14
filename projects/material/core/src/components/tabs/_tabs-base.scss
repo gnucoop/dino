@@ -1,10 +1,11 @@
 @mixin tabs-core($typography-config: null) {
-    .mat-tab-group {
+    .mat-mdc-tab-group {
         text-align: justify;
 
-        .mat-tab-body {
+        .mat-mdc-tab-body {
             border-radius: 3px;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+            /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
             .mat-tab-body-content {
                 @media only screen and (max-width: 768px) {
                     display: block;

@@ -23,7 +23,7 @@
 import {TranslocoService} from '@ajf/core/transloco';
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'dino-langs-add-dialog',

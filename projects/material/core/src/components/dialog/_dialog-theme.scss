@@ -8,14 +8,14 @@
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
 
-    @include mat-theming.legacy-dialog-color($config-or-theme);
+    @include mat-theming.dialog-color($config-or-theme);
 }
 
 @mixin mat-dialog-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
 
     @include mat-dialog-theme.typography($config-or-theme);
-    .mat-dialog-container div {
+    .mat-mdc-dialog-container div {
         font-family: mat-font-family($config);
         font-size: mat-font-size($config, body-1);
     }

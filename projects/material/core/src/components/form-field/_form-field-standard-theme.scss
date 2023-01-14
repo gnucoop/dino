@@ -12,6 +12,7 @@
         $foreground, divider, if($is-dark-theme, 0.7, 0.42));
 
     .mat-form-field-appearance-standard {
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         &.mat-form-field-disabled .mat-form-field-underline {
             color: $underline-color;
         }

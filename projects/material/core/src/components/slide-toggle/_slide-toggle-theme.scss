@@ -6,7 +6,7 @@
         // .mat-slide-toggle-thumb {
         //     background-color: material.get-color-from-palette($palette, $thumb-checked-hue);
         // }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
         .mat-slide-toggle-bar {
             // Opacity is determined from the specs for the selection controls.
             // See: https://material.io/design/components/selection-controls.html#specs
@@ -43,7 +43,7 @@
     $bar-unchecked-color: material.get-color-from-palette($accent);
     $ripple-unchecked-color: material.get-color-from-palette($foreground, base);
 
-    .mat-slide-toggle {
+    .mat-mdc-slide-toggle {
         @include _slide-toggle-checked($primary, $thumb-checked-hue);
 
         &.mat-primary {
@@ -61,12 +61,12 @@
             background-color: $ripple-unchecked-color;
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-thumb {
         background-color: material.get-color-from-palette(
             material.$grey-palette, $thumb-unchecked-hue);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-bar {
         background-color: $bar-unchecked-color;
     }
@@ -74,6 +74,7 @@
 
 @mixin mat-slide-toggle-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
+    /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-content {
         font-family: mat-font-family($config);
     }

@@ -1,13 +1,13 @@
 @mixin table-core($typography-config: null) {
-  .mat-table {
+  .mat-mdc-table {
     border-collapse: separate;
     width: 100%;
     border-spacing: 0 16px !important;
     padding-bottom: 8px;
 
-    .mat-header-cell,
-    .mat-cell,
-    .mat-footer-cell {
+    .mat-mdc-header-cell,
+    .mat-mdc-cell,
+    .mat-mdc-footer-cell {
       -moz-background-clip: padding-box;
       -webkit-background-clip: padding-box;
 
@@ -26,8 +26,8 @@
       }
     }
 
-    .mat-header-row,
-    .mat-row {
+    .mat-mdc-header-row,
+    .mat-mdc-row {
       margin-bottom: 0px;
       border-style: none;
     }
@@ -36,10 +36,10 @@
     }
   }
 
-  .isDarkTheme .mat-table {
+  .isDarkTheme .mat-mdc-table {
     background: rgb(var(--palette-background-background-dark)) !important;
   }
-  .isLightTheme .mat-table {
+  .isLightTheme .mat-mdc-table {
     background: rgb(var(--palette-background-background)) !important;
   }
 }

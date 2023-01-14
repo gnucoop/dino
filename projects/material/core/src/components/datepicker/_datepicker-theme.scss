@@ -68,7 +68,7 @@ $mat-calendar-weekday-table-font-size: 11px !default;
         box-shadow: 0 2px 4px 0 mat-theming.get-color-from-palette($foreground, icon);
     }
 
-    .mat-datepicker-toggle .mat-icon-button,
+    .mat-datepicker-toggle .mat-mdc-icon-button,
     .mat-datepicker .mat-icon-button {
         color: mat-theming.get-color-from-palette($primary);
     }

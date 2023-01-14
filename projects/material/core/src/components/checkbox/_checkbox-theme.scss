@@ -20,54 +20,63 @@
     $black-26pct-opacity-on-light: #b0b0b0;
     $disabled-color:
     if($is-dark-theme, $white-30pct-opacity-on-dark, $black-26pct-opacity-on-light);
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-frame {
         border-color: mat-theming.get-color-from-palette($foreground, secondary-text);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-checkmark {
         fill: $checkbox-mark-color;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-checkmark-path {
         // !important is needed here because a stroke must be set as an
         // attribute on the SVG in order for line animation to work properly.
         stroke: $checkbox-mark-color !important;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-mixedmark {
         background-color: $checkbox-mark-color;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-indeterminate,
     .mat-checkbox-checked {
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-primary .mat-checkbox-background {
             background-color: mat-theming.get-color-from-palette($primary);
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-accent .mat-checkbox-background {
             background-color: mat-theming.get-color-from-palette($accent);
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-warn .mat-checkbox-background {
             background-color: mat-theming.get-color-from-palette($warn);
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-disabled {
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-checkbox-checked,
         &.mat-checkbox-indeterminate {
+            /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
             .mat-checkbox-background {
                 background-color: $disabled-color;
             }
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &:not(.mat-checkbox-checked) {
+            /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
             .mat-checkbox-frame {
                 border-color: $disabled-color;
             }
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         .mat-checkbox-label {
             color: mat-theming.get-color-from-palette($foreground, secondary-text);
         }
@@ -75,11 +84,11 @@
 
     // Switch this to a solid color since we're using `opacity`
     // to control how opaque the ripple should be.
-    .mat-checkbox .mat-ripple-element {
+    .mat-mdc-checkbox .mat-ripple-element {
         background-color: map.get(map.get($config, foreground), base);
     }
 
-    .mat-checkbox-checked:not(.mat-checkbox-disabled),
+    .mat-mdc-checkbox-checked:not(.mat-checkbox-disabled),
     .mat-checkbox:active:not(.mat-checkbox-disabled) {
         &.mat-primary .mat-ripple-element {
             border: 1px solid mat-theming.get-color-from-palette($primary);
@@ -97,11 +106,12 @@
 
 @mixin mat-checkbox-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
-    .mat-checkbox {
+    .mat-mdc-checkbox {
         font-family: mat-font-family($config);
     }
 
     // TODO(kara): Remove this style when fixing vertical baseline
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-layout .mat-checkbox-label {
         line-height: mat-line-height($config, body-2);
     }

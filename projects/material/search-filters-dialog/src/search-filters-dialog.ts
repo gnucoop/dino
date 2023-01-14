@@ -32,7 +32,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormControl} from '@angular/forms';
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dino/core/list';
 import {SearchFiltersWidget} from '@dino/material/search-filters-widget';
 import {BehaviorSubject, Observable, of as obsOf, Subscription, throwError} from 'rxjs';

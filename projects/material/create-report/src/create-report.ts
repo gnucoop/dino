@@ -33,7 +33,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {MetricsService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';

@@ -11,6 +11,7 @@ dino-form-metric-selector {
   .dino-form-metric-selector-message {
     margin-bottom: 15px;
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
   .mat-form-field-suffix .mat-icon {
     display: inline-block !important;
     margin-left: 15px;
@@ -25,7 +26,7 @@ dino-form-metric-selector {
   }
   .dino-form-metric-selector-container {
     min-width: 80vw;
-    .mat-form-field {
+    .mat-mdc-form-field {
       font-size: 115%;
       margin: auto;
       @media only screen and (max-width: 992px) {
@@ -46,6 +47,7 @@ dino-form-metric-selector {
   }
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 .mat-autocomplete-panel {
   @for $i from 0 through 9 {
     $margin: 0.8em * $i;

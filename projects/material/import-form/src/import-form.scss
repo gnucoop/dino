@@ -1,9 +1,9 @@
 dino-import-form {
-  .mat-card {
+  .mat-mdc-card {
     display: flex;
     justify-content: center;
     border-left: none;
-    .mat-card-content {
+    .mat-mdc-card-content {
       form {
         display: flex;
         flex-flow: column wrap;
@@ -38,12 +38,12 @@ dino-import-form {
         margin-top: 20px;
       }
     }
-    .mat-card-actions {
+    .mat-mdc-card-actions {
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
       background-color: transparent !important;
-      .mat-raised-button {
+      .mat-mdc-raised-button {
         transition: all ease-in-out 0.3;
         -webkit-transition: all ease-in-out 0.3s;
       }

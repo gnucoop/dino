@@ -11,10 +11,10 @@
     font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
     border-right: none;
     .mat-nav-list,
-    .mat-list-base {
+    .mat-mdc-list-base {
       overflow: hidden;
     }
-    .mat-list-item {
+    .mat-mdc-list-item {
       padding: 6px;
     }
   }

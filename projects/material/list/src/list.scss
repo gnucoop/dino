@@ -33,19 +33,19 @@ dino-list {
     }
   }
 
-  .mat-table__wrapper .mat-table {
+  .mat-mdc-table__wrapper .mat-table {
     min-width: auto !important;
     width: auto !important;
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
   }
 
-  .mat-table {
+  .mat-mdc-table {
     width: auto !important;
     overflow: auto;
   }
 
-  .mat-row {
+  .mat-mdc-row {
     display: inline-flex;
     min-width: 100%;
     transition: box-shadow ease-in-out 0.25s;
@@ -56,7 +56,7 @@ dino-list {
     flex: 0 0 2% !important;
     min-width: 104px;
   }
-  .mat-form-field.dino-details-search {
+  .mat-mdc-form-field.dino-details-search {
     margin-top: 25px !important;
     @media only screen and (max-width: 768px) {
       width: 100%;
@@ -94,7 +94,7 @@ dino-list {
     visibility: hidden;
   }
 
-  .mat-cell.dino-expanded-cell {
+  .mat-mdc-cell.dino-expanded-cell {
     display: flex;
     flex: 1 0 auto;
     flex-flow: column wrap;
@@ -102,7 +102,7 @@ dino-list {
     -webkit-transition: all ease-in-out 0.25s;
   }
 
-  .mat-row:not(.dino-row-details):hover,
+  .mat-mdc-row:not(.dino-row-details):hover,
   .mat-row:not(.dino-row-details).dino-hover {
     .mat-column-actions,
     .dino-edit-status-icon {
@@ -140,7 +140,7 @@ dino-list {
     -webkit-transition: all ease-in-out 0.5s;
   }
 
-  .mat-row.dino-row-details {
+  .mat-mdc-row.dino-row-details {
     min-height: 0px;
     position: sticky;
     left: 0;
@@ -156,7 +156,7 @@ dino-list {
     width: 100%;
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
-    .mat-table {
+    .mat-mdc-table {
       background: transparent !important;
     }
   }
@@ -179,36 +179,37 @@ dino-list {
     opacity: 1;
   }
 
-  .mat-tab-header {
+  .mat-mdc-tab-header {
     display: none;
   }
 
-  .mat-tab-group {
+  .mat-mdc-tab-group {
     flex: 1 0 auto;
   }
-  .mat-tab-body {
+  .mat-mdc-tab-body {
     background-color: inherit;
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
     .mat-tab-body-content {
       align-items: center !important;
     }
   }
 
-  .mat-paginator {
-    .mat-paginator-container {
+  .mat-mdc-paginator {
+    .mat-mdc-paginator-container {
       padding: 0px;
       flex: 1 0 auto;
       position: relative;
       bottom: 10px;
     }
 
-    .mat-icon-button {
+    .mat-mdc-icon-button {
       background: transparent;
     }
     @media only screen and (max-width: 786px) {
-      .mat-paginator-page-size {
+      .mat-mdc-paginator-page-size {
         margin-right: auto;
       }
-      .mat-paginator-page-size-label {
+      .mat-mdc-paginator-page-size-label {
         display: none;
       }
     }
@@ -218,7 +219,7 @@ dino-list {
     .dino-expanded-row-actions {
       display: none;
     }
-    .mat-icon-button.dino-expand-all-button {
+    .mat-mdc-icon-button.dino-expand-all-button {
       margin-left: 17px;
     }
     .dino-row-actions {

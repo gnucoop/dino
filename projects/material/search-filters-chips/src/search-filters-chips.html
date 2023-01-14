@@ -1,5 +1,5 @@
-<mat-chip-list aria-label="Fish selection">
-  <mat-chip *ngFor="let item of chipsFilters|async">
+<mat-chip-listbox aria-label="Fish selection">
+  <mat-chip-option *ngFor="let item of chipsFilters|async">
     <span style="margin-right: 5px">
       {{ (item.label ? item.label : item.name)|transloco|uppercase|slice:0:30 }}
     </span>
@@ -8,5 +8,5 @@
     <mat-icon matChipRemove (click)="removeFilterItem(item)">
       {{'cancel'|transloco}}
     </mat-icon>
-  </mat-chip>
-</mat-chip-list>
+  </mat-chip-option>
+</mat-chip-listbox>

@@ -10,58 +10,59 @@
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
     $warn: map.get($config, warn);
-
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-value {
         color: mat-theming.get-color-from-palette($foreground, text);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-disabled .mat-select-value {
         color: mat-theming.get-color-from-palette($foreground, disabled-text);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-arrow {
         color: mat-theming.get-color-from-palette($primary);
     }
 
-    .mat-select-panel {
+    .mat-mdc-select-panel {
         background: mat-theming.get-color-from-palette($background, card);
         @include private.private-theme-overridable-elevation(4, $config);
 
-        .mat-option.mat-selected:not(.mat-option-multiple) {
+        .mat-mdc-option.mat-mdc-selected:not(.mat-mdc-option-multiple) {
             background: mat-theming.get-color-from-palette($background, hover, 0.12);
         }
-        .mat-option.mat-option-multiple.mat-selected {
+        .mat-mdc-option.mat-mdc-option-multiple.mat-mdc-selected {
             color: mat-theming.get-color-from-palette($accent);
         }
-        .mat-pseudo-checkbox.mat-option-pseudo-checkbox.mat-pseudo-checkbox-checked {
+        .mat-pseudo-checkbox.mat-mdc-option-pseudo-checkbox.mat-pseudo-checkbox-checked {
             background-color: mat-theming.get-color-from-palette($accent);
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
     .dino-default-option .mat-option-text span {
         color: mat-theming.get-color-from-palette($primary);
     }
 
-    .mat-form-field {
+    .mat-mdc-form-field {
         &.mat-focused {
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
             &.mat-primary .mat-select-arrow {
                 color: mat-theming.get-color-from-palette($primary, text);
             }
-
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
             &.mat-accent .mat-select-arrow {
                 color: mat-theming.get-color-from-palette($accent, text);
             }
-
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
             &.mat-warn .mat-select-arrow {
                 color: mat-theming.get-color-from-palette($warn, text);
             }
         }
-
-        .mat-select.mat-select-invalid .mat-select-arrow {
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+        .mat-mdc-select.mat-select-invalid .mat-select-arrow {
             color: mat-theming.get-color-from-palette($warn, text);
         }
-
-        .mat-select.mat-select-disabled .mat-select-arrow {
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+        .mat-mdc-select.mat-select-disabled .mat-select-arrow {
             color: mat-theming.get-color-from-palette($foreground, disabled-text);
         }
     }
@@ -72,15 +73,15 @@
     // The unit-less line-height from the font config.
     $line-height: mat-line-height($config, input);
 
-    .mat-select {
+    .mat-mdc-select {
         font-family: mat-font-family($config);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-trigger {
         height: $line-height * 1em;
     }
 
-    .mat-select-panel .mat-option.dino-default-option {
+    .mat-mdc-select-panel .mat-mdc-option.dino-default-option {
         font-weight: mat-font-weight($config, title);
     }
 }

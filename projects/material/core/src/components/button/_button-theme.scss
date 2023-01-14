@@ -12,19 +12,19 @@ $_mat-button-ripple-opacity: 0.1;
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
     $warn: map.get($config, warn);
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-primary .mat-button-focus-overlay {
         background-color: mat-theming.get-color-from-palette($primary);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-accent .mat-button-focus-overlay {
         background-color: mat-theming.get-color-from-palette($accent);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-warn .mat-button-focus-overlay {
         background-color: mat-theming.get-color-from-palette($warn);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-button-disabled .mat-button-focus-overlay {
         background-color: transparent;
     }
@@ -76,11 +76,13 @@ $_mat-button-ripple-opacity: 0.1;
     &.mat-warn {
         #{$property}: mat-theming.get-color-from-palette($warn, $hue);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-primary,
     &.mat-accent,
     &.mat-warn,
     &.mat-button-disabled {
+        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &.mat-button-disabled {
             $palette: if($property == 'color', $foreground, $background);
             #{$property}: mat-theming.get-color-from-palette($palette, disabled-button);
@@ -96,9 +98,9 @@ $_mat-button-ripple-opacity: 0.1;
     $background: map.get($config, background);
     $foreground: map.get($config, foreground);
 
-    .mat-button,
-    .mat-icon-button,
-    .mat-stroked-button {
+    .mat-mdc-button,
+    .mat-mdc-icon-button,
+    .mat-mdc-outlined-button {
         // Buttons without a background color should inherit the font color. This is necessary to
         // ensure that the button is readable on custom background colors.
         // It's wrong to always assume
@@ -118,15 +120,15 @@ $_mat-button-ripple-opacity: 0.1;
             background-color: currentColor;
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     .mat-button-focus-overlay {
         background: map.get($foreground, base);
     }
 
-    .mat-flat-button,
-    .mat-raised-button,
-    .mat-fab,
-    .mat-mini-fab {
+    .mat-mdc-unelevated-button,
+    .mat-mdc-raised-button,
+    .mat-mdc-fab,
+    .mat-mdc-mini-fab {
         // Default font and background color when not using any color palette.
         color: mat-theming.get-color-from-palette($foreground, text);
         background-color: mat-theming.get-color-from-palette($background, raised-button);
@@ -136,36 +138,36 @@ $_mat-button-ripple-opacity: 0.1;
         @include _mat-button-ripple-color($config, default-contrast);
     }
 
-    .mat-stroked-button,
-    .mat-flat-button {
+    .mat-mdc-outlined-button,
+    .mat-mdc-unelevated-button {
         @include private.private-theme-overridable-elevation(0, $config);
     }
 
-    .mat-raised-button {
+    .mat-mdc-raised-button {
         @include private.private-theme-overridable-elevation(2, $config);
-
+        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &:not(.mat-button-disabled):active {
             @include private.private-theme-overridable-elevation(8, $config);
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &.mat-button-disabled {
             @include private.private-theme-overridable-elevation(0, $config);
         }
     }
 
-    .mat-fab,
-    .mat-mini-fab {
+    .mat-mdc-fab,
+    .mat-mdc-mini-fab {
         @include private.private-theme-overridable-elevation(6, $config);
-
+        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &:not(.mat-button-disabled):active {
             @include private.private-theme-overridable-elevation(12, $config);
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &.mat-button-disabled {
             @include private.private-theme-overridable-elevation(0, $config);
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     .mat-button-toggle-checked {
       background-color: mat-theming.get-color-from-palette($primary);
     }
@@ -173,13 +175,13 @@ $_mat-button-ripple-opacity: 0.1;
 
 @mixin mat-button-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
-    .mat-button,
-    .mat-raised-button,
-    .mat-icon-button,
-    .mat-stroked-button,
-    .mat-flat-button,
-    .mat-fab,
-    .mat-mini-fab {
+    .mat-mdc-button,
+    .mat-mdc-raised-button,
+    .mat-mdc-icon-button,
+    .mat-mdc-outlined-button,
+    .mat-mdc-unelevated-button,
+    .mat-mdc-fab,
+    .mat-mdc-mini-fab {
         font: {
             family: mat-font-family($config, button);
             size: mat-font-size($config, button);

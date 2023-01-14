@@ -2,25 +2,31 @@
 @use '../../typography/typography';
 
 @mixin chips-core($typography-config: null) {
+    /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
+    /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
+    /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
     .mat-chip-list {
         font-size: typography-utils.font-size(typography.$base-typography, body-1);
         font-family: typography-utils.font-family(typography.$base-typography, body-1);
         font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
         border: none;
         outline: none;
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
         div.mat-chip-list-wrapper {
             padding: 15px 0;
             margin: 0px;
             display: flex;
             flex-wrap: nowrap;
             overflow-x: auto;
-            .mat-chip {
+            .mat-mdc-chip {
                 flex: 0 0 auto;
             }
         }
     }
-    .mat-chip.mat-standard-chip {
+    .mat-mdc-chip.mat-mdc-standard-chip {
         border-radius: 15px;
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
         .mat-icon.mat-chip-remove {
             opacity: 0.8;
         }

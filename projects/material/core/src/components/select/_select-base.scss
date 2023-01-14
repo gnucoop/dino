@@ -1,16 +1,17 @@
 @mixin select-core($typography-config: null) {
-    .mat-select-panel {
+    .mat-mdc-select-panel {
         outline: none;
     }
     .dino-default-option {
+        /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
         .mat-option-text span {
             position: absolute;
             right: 0;
         }
 
-        &.mat-option-multiple {
+        &.mat-mdc-option-multiple {
             pointer-events: none;
-            .mat-pseudo-checkbox.mat-option-pseudo-checkbox {
+            .mat-pseudo-checkbox.mat-mdc-option-pseudo-checkbox {
                 display: none;
             }
         }

@@ -7,7 +7,7 @@ $mat-chip-remove-font-size: 18px;
 @mixin _mat-chip-element-color($foreground, $background) {
     background-color: $background;
     color: $foreground;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
     .mat-chip-remove {
         color: $foreground;
         opacity: 0.4;
@@ -48,21 +48,23 @@ $mat-chip-remove-font-size: 18px;
     $unselected-background: mat-theming.get-color-from-palette($background, unselected-chip);
     $unselected-foreground: mat-theming.get-color-from-palette($foreground, text);
 
-    .mat-chip.mat-standard-chip {
+    .mat-mdc-chip.mat-mdc-standard-chip {
         @include _mat-chip-element-color($unselected-foreground, $unselected-background);
 
         background-color: mat-theming.get-color-from-palette($accent, lighter);
-
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
         .mat-icon.mat-chip-remove {
             color: mat-theming.get-color-from-palette($foreground);
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
         &:not(.mat-chip-disabled) {
+            /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
             .mat-chip-remove:hover {
                 opacity: 0.54;
             }
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
         &.mat-chip-disabled {
             opacity: 0.4;
         }
@@ -71,8 +73,8 @@ $mat-chip-remove-font-size: 18px;
             background: map.get($foreground, base);
         }
     }
-
-    .mat-chip.mat-standard-chip.mat-chip-selected {
+    /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
+    .mat-mdc-chip.mat-mdc-standard-chip.mat-chip-selected {
         &.mat-primary {
             @include _mat-chip-theme-color($primary);
         }
@@ -89,11 +91,11 @@ $mat-chip-remove-font-size: 18px;
 
 @mixin mat-chips-typography($config-or-theme) {
     $config: mat-get-typography-config($config-or-theme);
-    .mat-chip {
+    .mat-mdc-chip {
         font-size: mat-font-size($config, title);
         font-weight: mat-font-weight($config, body-1);
         font-family: mat-font-family($config);
-
+        /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
         .mat-chip-trailing-icon.mat-icon,
         .mat-chip-remove.mat-icon {
             font-size: $mat-chip-remove-font-size;

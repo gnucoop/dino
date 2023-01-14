@@ -7,7 +7,7 @@ dino-export-form {
     z-index: 2;
   }
   mat-toolbar {
-    .mat-form-field {
+    .mat-mdc-form-field {
       min-width: 400px;
     }
     .dino-export-toolbar-spacer {
@@ -36,6 +36,7 @@ dino-export-form {
   .dino-export-toolbar-count {
     margin-right: 10px;
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
   mat-selection-list{
     width: 100%;
     overflow-y: scroll;
@@ -47,10 +48,11 @@ dino-export-form {
   }
 
   .dino-button-focus-action {
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
     .mat-button-toggle-checked {
       background-color: #7f50b8;
     }
-    .mat-flat-button.mat-accent {
+    .mat-mdc-unelevated-button.mat-accent {
       background-color: #7f50b8;
     }
   }

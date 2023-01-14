@@ -11,20 +11,20 @@
   $background: map.get($config, background);
   $foreground: map.get($config, foreground);
 
-  .mat-table {
-    .mat-row:hover {
+  .mat-mdc-table {
+    .mat-mdc-row:hover {
       box-shadow: 0 2px 4px 0 rgb(var(--palette-accent-100));
     }
 
-    .mat-row.dino-highlighted-row {
+    .mat-mdc-row.dino-highlighted-row {
       background-color: rgb(var(--palette-accent-300));
     }
 
-    .dino-inner-table-container .mat-row.dino-details-row.dino-highlighted-row {
+    .dino-inner-table-container .mat-mdc-row.dino-details-row.dino-highlighted-row {
       background-color: rgb(var(--palette-accent-200));
     }
 
-    .dino-inner-table-container .mat-row.dino-details-row:not(.dino-highlighted-row) {
+    .dino-inner-table-container .mat-mdc-row.dino-details-row:not(.dino-highlighted-row) {
       background-color: mat-theming.get-color-from-palette($warn, lighter);
     }
 
@@ -37,7 +37,7 @@
     }
   }
 
-  .mat-table thead,
+  .mat-mdc-table thead,
   .mat-table tbody,
   .mat-table tfoot {
     background: inherit;
@@ -50,38 +50,38 @@
     background: mat-theming.get-color-from-palette($background, card);
   }
 
-  .mat-cell:first-of-type,
-  .mat-footer-cell:first-of-type {
+  .mat-mdc-cell:first-of-type,
+  .mat-mdc-footer-cell:first-of-type {
     border-left: 3px solid rgb(var(--palette-accent-700));
   }
 
-  .mat-header-cell:first-of-type {
+  .mat-mdc-header-cell:first-of-type {
     border-left: 3px solid transparent;
   }
 
-  .mat-header-cell {
+  .mat-mdc-header-cell {
     color: mat-theming.get-color-from-palette($foreground, secondary-text);
   }
 
-  .mat-cell,
-  .mat-footer-cell {
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
     color: mat-theming.get-color-from-palette($foreground, text);
   }
 }
 
 @mixin mat-table-typography($config-or-theme) {
   $config: mat-get-typography-config($config-or-theme);
-  .mat-table {
+  .mat-mdc-table {
     font-family: mat-font-family($config);
   }
 
-  .mat-header-cell {
+  .mat-mdc-header-cell {
     font-size: mat-font-size($config, title);
     font-weight: mat-font-weight($config, title);
   }
 
-  .mat-cell,
-  .mat-footer-cell {
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
     font-size: mat-font-size($config, body-1);
   }
 }

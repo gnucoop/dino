@@ -29,7 +29,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormBuilder} from '@angular/forms';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, LoginComponent} from '@dino/core/auth';
 import {Observable, Subscription} from 'rxjs';

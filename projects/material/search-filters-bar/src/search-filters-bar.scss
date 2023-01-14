@@ -10,7 +10,7 @@ dino-search-filters-bar {
   .dino-filters-bar {
     display: flex;
     flex-flow: row wrap;
-    .mat-form-field {
+    .mat-mdc-form-field {
       padding: 5px;
       flex: 0.35 1 auto;
       @media only screen and (max-width: 992px) {
@@ -25,7 +25,7 @@ dino-search-filters-bar {
       background-color: transparent !important;
     }
 
-    .mat-icon-button {
+    .mat-mdc-icon-button {
       align-self: center;
     }
   }
@@ -34,7 +34,7 @@ dino-search-filters-bar {
     display: flex;
     flex: 1 0 auto;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
   .mat-autocomplete-panel {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -71,6 +71,7 @@ dino-search-filters-bar {
   }
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 .mat-autocomplete-panel {
   @for $i from 0 through 9 {
     $margin: 0.6em * $i;

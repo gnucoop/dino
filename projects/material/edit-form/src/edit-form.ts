@@ -46,7 +46,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {
   ActionTrigger,

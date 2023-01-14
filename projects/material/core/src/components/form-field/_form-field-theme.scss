@@ -26,7 +26,7 @@
     $underline-color-warn: mat-theming.get-color-from-palette($warn, text);
     $underline-focused-color: mat-theming.get-color-from-palette($primary, text);
 
-    .mat-form-field .mat-form-field-underline,
+    .mat-mdc-form-field .mat-form-field-underline,
     .mat-form-field.mat-form-field-appearance-legacy .mat-form-field-underline,
     .mat-form-field.mat-form-field-appearance-standard .mat-form-field-underline,
     .mat-form-field.mat-form-field-appearance-standard .mat-form-field-ripple,
@@ -34,16 +34,16 @@
     .mat-form-field.mat-focused .mat-form-field-ripple {
         background-color: mat-theming.get-color-from-palette($primary);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-label {
         color: $label-color;
     }
 
-    .mat-hint {
+    .mat-mdc-form-field-hint {
         color: $label-color;
     }
-
-    .mat-form-field.mat-focused .mat-form-field-label {
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-form-field.mat-focused .mat-form-field-label {
         color: $focused-label-color;
 
         &.mat-accent {
@@ -54,16 +54,17 @@
             color: $underline-color-warn;
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-focused .mat-form-field-required-marker {
         color: $required-label-color;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-ripple {
         background-color: $underline-color-base;
     }
 
-    .mat-form-field.mat-focused {
+    .mat-mdc-form-field.mat-focused {
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         .mat-form-field-ripple {
             background-color: $underline-focused-color;
 
@@ -78,14 +79,15 @@
     }
 
     .mat-form-field-type-mat-native-select.mat-focused:not(.mat-form-field-invalid) {
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         .mat-form-field-infix::after {
             color: $underline-focused-color;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         &.mat-accent .mat-form-field-infix::after {
             color: $underline-color-accent;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         &.mat-warn .mat-form-field-infix::after {
             color: $underline-color-warn;
         }
@@ -94,23 +96,25 @@
     // Styling for the error state of the form field. Note that while the same can be
     // achieved with the ng-* classes, we use this approach in order to ensure that the same
     // logic is used to style the error state and to show the error messages.
-    .mat-form-field.mat-form-field-invalid {
+    .mat-mdc-form-field.mat-form-field-invalid {
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         .mat-form-field-label {
             color: $underline-color-warn;
-
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
             &.mat-accent,
             .mat-form-field-required-marker {
                 color: $underline-color-warn;
             }
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         .mat-form-field-ripple,
         .mat-form-field-ripple.mat-accent {
             background-color: $underline-color-warn;
         }
     }
 
-    .mat-error {
+    .mat-mdc-form-field-error {
         color: $underline-color-warn;
     }
 
@@ -160,14 +164,15 @@ $mat-form-field-dedupe: 0;
     $subscript-margin-top: math.div(0.5em, $sub-font-scale);
     $wrapper-padding-bottom: ($subscript-margin-top + $line-height) * $sub-font-scale;
 
-    .mat-form-field {
+    .mat-mdc-form-field {
         @include mat-typography-level-to-styles($config, input);
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-wrapper {
         padding-bottom: $wrapper-padding-bottom;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-prefix,
     .mat-form-field-suffix {
         // Allow icons in a prefix or suffix to adapt to the correct size.
@@ -177,7 +182,7 @@ $mat-form-field-dedupe: 0;
         }
 
         // Allow icon buttons in a prefix or suffix to adapt to the correct size.
-        .mat-icon-button {
+        .mat-mdc-icon-button {
             height: $pre-icon-scale * 1em;
             width: $pre-icon-scale * 1em;
 
@@ -187,42 +192,47 @@ $mat-form-field-dedupe: 0;
             }
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-infix {
         padding: $infix-padding 0;
         // Throws off the baseline if we do it as a real margin, so we do it as a border instead.
         border-top: $infix-margin-top solid transparent;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-can-float {
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
         &.mat-form-field-should-float .mat-form-field-label,
         .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
             @include mat-private-label-float($sub-font-scale, $infix-padding, $infix-margin-top);
         }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-input-server[label]:not(:label-shown) + .mat-form-field-label-wrapper {
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
             .mat-form-field-label {
                 @include mat-private-label-float(
                     $sub-font-scale, $infix-padding, $infix-margin-top);
             }
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-label-wrapper {
         top: -$infix-margin-top;
         padding-top: $infix-margin-top;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-label {
         top: $infix-margin-top + $infix-padding;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-underline {
         // We want the underline to start at the end of the content box, not the padding box,
         // so we move it up by the padding amount.
         bottom: $wrapper-padding-bottom;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-subscript-wrapper {
         font-size: $sub-font-size;
         margin-top: $subscript-margin-top;

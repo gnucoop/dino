@@ -1,18 +1,22 @@
 @mixin slide-toggle-core($typography-config: null) {
-    .mat-slide-toggle {
+    .mat-mdc-slide-toggle {
         margin: 0 5px;
         display: flex;
         align-content: center;
         align-items: center;
+        /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
         .mat-slide-toggle-bar {
             padding: 2px 0;
             display: flex;
             align-items: center;
             align-content: center;
         }
+        /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
         .mat-slide-toggle-thumb-container {
             top: 1px;
             left: 2px;
+            /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
             .mat-slide-toggle-thumb {
                 height: 15px;
                 width: 15px;

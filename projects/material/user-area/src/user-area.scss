@@ -14,6 +14,7 @@ dino-user-area {
       margin: 0 0 20px;
     }
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
   .mat-tab-body-content {
     overflow: hidden !important;
   }
@@ -29,14 +30,15 @@ dino-user-area {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
+    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
     .mat-form-field,
     .mat-button-ripple-round,
     .dino-error-message {
       flex: 1 0 auto !important;
       margin-left: 10px;
     }
-    .mat-form-field,
-    .mat-fab,
+    .mat-mdc-form-field,
+    .mat-mdc-fab,
     .dino-error-message {
       margin-top: 20px !important;
     }
@@ -48,7 +50,7 @@ dino-user-area {
       }
     }
   }
-  .mat-raised-button {
+  .mat-mdc-raised-button {
     align-self: center;
   }
   .dino-theme-presets-button {

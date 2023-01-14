@@ -11,10 +11,10 @@ dino-search-filters-widget {
     div {
       height: 100%;
     }
-    .mat-card {
+    .mat-mdc-card {
       width: 90%;
       min-height: 30vh;
-      .mat-card-actions {
+      .mat-mdc-card-actions {
         margin-left: -16px;
         .dino-create-filter-button {
           padding: 0 8px;
@@ -31,22 +31,22 @@ dino-search-filters-widget {
       }
     }
   }
-  .mat-card-content {
+  .mat-mdc-card-content {
     .dino-filter-widget-label {
       width: 100%;
       flex: 1 1 auto;
       font-weight: bold;
     }
-    .mat-select {
+    .mat-mdc-select {
       margin: 20px 0px;
     }
   }
   ajf-field {
-    .mat-radio-group {
+    .mat-mdc-radio-group {
       display: flex;
       flex-flow: column wrap;
       justify-content: space-between;
-      .mat-radio-button {
+      .mat-mdc-radio-button {
         flex: 1 1 30%;
         padding: 5px;
       }
@@ -58,8 +58,9 @@ dino-search-filters-widget {
       justify-content: flex-end;
       ajf-checkbox-group-item {
         width: 100%;
-        .mat-button {
+        .mat-mdc-button {
           width: 100%;
+          /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
           span.mat-button-wrapper {
             flex-flow: row wrap;
             display: flex;

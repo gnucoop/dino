@@ -1,5 +1,5 @@
 @mixin card-core($typography-config: null) {
-    .mat-card {
+    .mat-mdc-card {
         display: flex;
         flex-direction: column;
         flex: 1 1 auto;
@@ -7,11 +7,12 @@
         margin-top: 5px;
         border-radius: 0%;
         border-left: 3px solid;
+        /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
         .mat-card-header-text {
             margin: 0;
         }
 
-        .mat-card-content {
+        .mat-mdc-card-content {
             position: relative;
             flex: 1;
             flex-flow: row wrap;
@@ -20,7 +21,7 @@
             padding-bottom: 9%;
         }
 
-        .mat-card-actions {
+        .mat-mdc-card-actions {
             position: absolute;
             bottom: 2.5%;
             width: 94.1%;

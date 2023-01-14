@@ -7,13 +7,13 @@ dino-user-editor {
         }
     }
 
-    .mat-form-field {
+    .mat-mdc-form-field {
         position: relative;
         flex: 1 1 auto;
     }
 
     .mat-datepicker-toggle,
-    .mat-input-element {
+    .mat-mdc-input-element {
         flex: 1 1 auto;
         width: auto !important;
     }
@@ -24,13 +24,13 @@ dino-user-editor {
     }
 
     overflow: hidden;
-    .mat-dialog-title,
-    .mat-dialog-actions .mat-raised-button {
+    .mat-mdc-dialog-title,
+    .mat-mdc-dialog-actions .mat-mdc-raised-button {
         flex: 0.25 0 auto;
         margin: auto;
         text-align: center;
     }
-    .mat-dialog-content {
+    .mat-mdc-dialog-content {
         form {
             position: relative;
             max-height: 80vh;

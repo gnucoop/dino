@@ -63,7 +63,7 @@
   @if $light-theme-selector {
     $mat-css-theme: $theme !global;
     #{$light-theme-selector} {
-      @include mat.all-legacy-component-colors($theme);
+      @include mat.all-component-colors($theme);
       // add content passed in, which can use the $theme variable to apply the dark theme to
       // other theme mixins needed by the app
       @content;
@@ -73,7 +73,7 @@
   @if $dark-theme-selector {
     $mat-css-theme: $dark-theme !global;
     #{$dark-theme-selector} {
-      @include mat.all-legacy-component-colors($dark-theme);
+      @include mat.all-component-colors($dark-theme);
       // add content passed in, which can use the $theme variable to apply the dark theme to
       // other theme mixins needed by the app
       @content;

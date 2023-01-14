@@ -22,7 +22,7 @@
 
 import {ChangeDetectorRef, Directive, Input} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {map, startWith, switchMap, take} from 'rxjs/operators';

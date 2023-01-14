@@ -1,7 +1,7 @@
 import {AjfFieldType} from '@ajf/core/forms';
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
-import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {NetworkStatusService} from '@dino/core/auth';
 import {ActionType, FilterGroup, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {UserData, UserDataManager} from '@dino/core/users';

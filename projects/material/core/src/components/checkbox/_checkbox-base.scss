@@ -1,11 +1,12 @@
 @mixin checkbox-core($typography-config: null) {
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
     .mat-checkbox-inner-container.mat-checkbox-inner-container-no-side-margin,
     .mat-pseudo-checkbox.mat-option-pseudo-checkbox {
         width: 20px;
         height: 20px;
     }
 
-    .mat-pseudo-checkbox.mat-option-pseudo-checkbox::after {
+    .mat-pseudo-checkbox.mat-mdc-option-pseudo-checkbox::after {
         left: 3px;
         top: 4px;
     }
