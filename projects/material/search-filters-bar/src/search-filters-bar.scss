@@ -89,8 +89,7 @@ dino-search-filters-bar {
   }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
-.mat-autocomplete-panel {
+.mat-mdc-autocomplete-panel {
   @for $i from 0 through 9 {
     $margin: 0.6em * $i;
     .dino-option-level-#{$i} {

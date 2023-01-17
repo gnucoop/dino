@@ -37,19 +37,18 @@
     <ng-container matColumnDef="select" sticky>
       <ng-container>
         <mat-header-cell *matHeaderCellDef>
-          <button
+          <mat-icon
+            mat-list-icon
+            color="primary"
             #columns_btn
-            mat-mini-fab
             color="accent"
             aria-label="Customize table columns"
             *ngIf="ctx.showColumnsSelector !== false"
             class="dino-columns-sel-btn"
             (click)="openColumnsSelectorDialog()"
           >
-            <mat-icon mat-list-icon color="primary" aria-label="Select the displayed columns">
-              view_week
-            </mat-icon>
-          </button>
+            view_week
+          </mat-icon>
 
           <ng-container *ngIf="bulkActions">
             <mat-checkbox
