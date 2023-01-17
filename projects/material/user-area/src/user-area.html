@@ -73,8 +73,7 @@
             </mat-error>
           </mat-form-field>
           <div *ngIf="changePassError.error === true" class="dino-error-message">
-            {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect
-            password'|transloco}}
+            {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect password'|transloco}}
           </div>
           <button
             mat-fab
@@ -99,12 +98,15 @@
             [class.dino-error]="changePassForm"
             [formGroup]="dinoSaveThemeForm"
           >
-            <mat-form-field appearance="fill" [style.color]="primaryColor">
+            <mat-form-field
+              appearance="fill"
+              [style.color]="primaryColor"
+              [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.primary : primaryColor"
+              (colorPickerChange)="setPrimaryColor($event)"
+            >
               <input
                 matInput
                 readonly
-                [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.primary : primaryColor"
-                (colorPickerChange)="setPrimaryColor($event)"
                 [formControlName]="'primary'"
                 [placeholder]="'Primary Color'|transloco"
                 [value]="primaryColor"
@@ -113,12 +115,15 @@
               <mat-hint>{{'Primary color' | transloco}}</mat-hint>
             </mat-form-field>
 
-            <mat-form-field appearance="fill" [style.color]="accentColor">
+            <mat-form-field
+              appearance="fill"
+              [style.color]="accentColor"
+              [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.accent : accentColor"
+              (colorPickerChange)="setAccentColor($event)"
+            >
               <input
                 matInput
                 readonly
-                [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.accent : accentColor"
-                (colorPickerChange)="setAccentColor($event)"
                 [formControlName]="'accent'"
                 [placeholder]="'Accent Color'|transloco"
                 [value]="accentColor"
@@ -127,12 +132,15 @@
               <mat-hint>{{'Accent color' | transloco}}</mat-hint>
             </mat-form-field>
 
-            <mat-form-field appearance="fill" [style.color]="warningColor">
+            <mat-form-field
+              appearance="fill"
+              [style.color]="warningColor"
+              [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.warning : warningColor"
+              (colorPickerChange)="setWarningColor($event)"
+            >
               <input
                 matInput
                 readonly
-                [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.warning : warningColor"
-                (colorPickerChange)="setWarningColor($event)"
                 [formControlName]="'warning'"
                 [placeholder]="'Warning Color'|transloco"
                 [value]="warningColor"

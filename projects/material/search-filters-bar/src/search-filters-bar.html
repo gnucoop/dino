@@ -17,6 +17,7 @@
 <ng-template #keywordfilter>
   <ng-container [formGroup]="textSearchFilters">
     <mat-form-field
+      class="dino-filter-keyword"
       floatLabel="always"
       (click)="$event.stopPropagation()"
       (keydown.Space)="$event.stopImmediatePropagation();"
@@ -120,8 +121,7 @@
     <ng-container *ngIf="additionalFilters">
       <button
         class="dino-filters-dialog-button"
-        mat-flat-button
-        color="primary"
+        mat-stroked-button
         (click)="openDialog()"
         [attr.aria-label]="'Open the advanced filters'|transloco"
       >
@@ -131,8 +131,7 @@
       <ng-container *ngIf="exportable">
         <button
           class="dino-export-button"
-          mat-flat-button
-          color="primary"
+          mat-stroked-button
           (click)="openExportDialog()"
           [attr.aria-label]="'Export items'|transloco"
         >

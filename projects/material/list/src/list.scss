@@ -41,15 +41,81 @@ dino-list {
   }
 
   .mat-mdc-table {
+    background: transparent !important;
     width: auto !important;
     overflow: auto;
+
+    .mat-mdc-row.dino-highlighted-row {
+      .mat-mdc-cell:not(.dino-expanded-cell) {
+        background-color: rgb(var(--palette-accent-300));
+      }
+    }
+
+    .dino-inner-table-container .mat-mdc-row.dino-details-row.dino-highlighted-row {
+      background-color: rgb(var(--palette-accent-200));
+    }
+
+    .dino-inner-table-container .mat-mdc-row.dino-details-row:not(.dino-highlighted-row) {
+      background-color: rgb(var(--palette-warn-100));
+    }
+
+    .mat-icon {
+      color: rgb(var(--palette-accent-700));
+      &:hover {
+        background: rgb(var(--palette-accent-100));
+        color: rgb(var(--palette-accent-700));
+      }
+    }
+  }
+
+  .mat-mdc-table thead,
+  .mat-table tbody,
+  .mat-table tfoot {
+    background: inherit;
+  }
+
+  mat-row,
+  mat-footer-row,
+  [mat-row],
+  [mat-footer-row] {
+    background: rgb(var(--palette-background-card));
+  }
+
+  .mat-mdc-cell:first-of-type,
+  .mat-mdc-footer-cell:first-of-type {
+    border-left: 3px solid rgb(var(--palette-accent-700));
+  }
+
+  .mat-mdc-header-cell:first-of-type {
+    border-left: 3px solid transparent;
   }
 
   .mat-mdc-row {
+    min-height: 70px;
     display: inline-flex;
     min-width: 100%;
     transition: box-shadow ease-in-out 0.25s;
     -webkit-transition: box-shadow ease-in-out 0.25s;
+    .mat-mdc-cell {
+      border-bottom-style: none;
+    }
+  }
+
+  .mat-mdc-header-row {
+    .mat-mdc-header-cell {
+      border-bottom-style: none;
+      .mat-icon {
+        border-radius: 100%;
+        padding: 5px;
+      }
+      .dino-bulk-delete-button {
+        position: relative;
+        right: 10px;
+      }
+    }
+    .dino-header-row-actions {
+      display: none;
+    }
   }
 
   .mat-column-select {
@@ -72,17 +138,23 @@ dino-list {
 
   mat-header-cell,
   mat-footer-cell,
-  mat-cell:not(.mat-column-actions):not(.mat-column-select) {
-    min-width: 12vw;
+  mat-cell:not(.mat-column-actions):not(.mat-column-select):not(.dino-expanded-cell) {
+    min-width: 15vw;
     @media only screen and (max-width: 992px) {
-      min-width: 25vw;
+      min-width: 30vw;
+      max-width: 30vw;
     }
   }
 
-  mat-header-cell:last-of-type.mat-column-actions,
   mat-cell:last-of-type.mat-column-actions {
+    background: transparent;
     padding-right: 10px;
     position: absolute !important;
+    .mat-icon {
+      border-radius: 100%;
+      padding: 5px;
+      margin: 5px;
+    }
   }
 
   mat-header-cell:last-of-type.mat-column-actions {
@@ -92,6 +164,9 @@ dino-list {
   mat-cell:last-of-type.mat-column-actions,
   .dino-edit-status-icon {
     visibility: hidden;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
   }
 
   .mat-mdc-cell.dino-expanded-cell {
@@ -163,17 +238,26 @@ dino-list {
 
   .dino-columns-sel-btn {
     position: absolute;
-    right: 10px;
-    bottom: 55px;
+    left: 0px;
+    cursor: pointer;
+    bottom: 18px;
+    box-shadow: none;
+    max-width: 20px;
+    max-height: 20px;
+    .mat-icon {
+      margin: auto;
+      margin-top: 2px;
+      color: rgb(var(--palette-primary-500));
+      padding: 0px !important;
+      font-size: 16px;
+    }
   }
   .dino-columns-sel-btn,
   .dino-header-icon {
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
-    opacity: 0.7;
   }
   .dino-header-icon:hover,
-  .dino-columns-sel-btn:hover,
   .dino-repeating-slide-icon:hover {
     background: transparent !important;
     opacity: 1;
@@ -195,6 +279,8 @@ dino-list {
   }
 
   .mat-mdc-paginator {
+    background: transparent !important;
+    flex: 1 1 auto;
     .mat-mdc-paginator-container {
       padding: 0px;
       flex: 1 0 auto;
@@ -279,9 +365,33 @@ dino-list {
   }
 }
 
+.mat-mdc-select-panel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  padding: 0px 0px !important;
+}
+
 .isDarkTheme .dino-list-toolbar .dino-list-count {
   color: rgba(
     var(--palette-foreground-secondary-text-dark),
     var(--palette-foreground-secondary-text-dark-alpha)
   ) !important;
+}
+
+.isLightTheme .mat-mdc-header-cell:first-of-type,
+.isLightTheme .mat-mdc-cell:first-of-type {
+  background-color: rgb(var(--palette-background-background));
+}
+.isDarkTheme .mat-mdc-header-cell:first-of-type,
+.isDarkTheme .mat-mdc-cell:first-of-type {
+  background-color: rgb(var(--palette-background-background-dark));
+}
+.isDarkTheme .dino-hover .mat-mdc-cell {
+  background-color: rgb(var(--palette-background-card-dark));
+}
+.isLightTheme .dino-hover .mat-mdc-cell {
+  background-color: rgb(var(--palette-accent-50));
 }

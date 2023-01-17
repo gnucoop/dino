@@ -3,11 +3,46 @@ dino-main-nav {
   flex-direction: column;
   overflow: hidden;
 
+  .mat-drawer {
+    &.mat-drawer-side.mat-sidenav,
+    &.mat-drawer-push.mat-sidenav,
+    &.mat-drawer-over.mat-sidenav {
+      .mat-mdc-list-item {
+        justify-content: space-between;
+        align-items: center;
+        transition: all ease 0.5s;
+        &:hover,
+        &.dino-section-selected {
+          background-color: rgb(var(--palette-primary-100));
+          color: rgb(var(--palette-primary-500));
+          box-shadow: 3px 0px 0px 0px rgb(var(--palette-primary-500)) inset;
+        }
+        &:hover {
+          opacity: 0.6;
+        }
+        &.dino-section-selected {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .mat-drawer-side.mat-sidenav {
+    border-right: none;
+    .mat-nav-list,
+    .mat-mdc-list-base {
+      overflow: hidden;
+    }
+    .mat-mdc-list-item {
+      padding: 6px;
+    }
+  }
+
   .dino-toolbar {
     flex: 0 0 auto;
     display: flex;
-    flex-flow: row wrap;
     justify-content: flex-start;
+    font-size: 14px;
 
     &.dino-shadowed {
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
@@ -110,12 +145,7 @@ dino-main-nav {
       }
       .dino-component-load-spinner {
         margin: auto;
-        height: 90vh !important;
-        width: 18vw !important;
-        svg {
-          height: 100% !important;
-          width: 100% !important;
-        }
+        margin-top: 30vh;
       }
     }
   }
@@ -128,16 +158,21 @@ dino-main-nav {
     animation-timing-function: ease-in-out;
   }
 
-  .mat-nav-list {
+  .mat-mdc-nav-list {
+    padding-top: 0px;
     width: auto;
     .mat-mdc-list-item {
-      padding: 5px;
+      min-height: 60px;
       &:focus,
       &:hover {
         background-color: inherit;
       }
       span {
-        padding-left: 20px;
+        padding: 10px;
+      }
+      .mat-mdc-list-item-unscoped-content{
+        display: flex;
+        align-items: center;
       }
     }
     &.mat-mdc-list-base {

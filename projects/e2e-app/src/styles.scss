@@ -1,44 +1,56 @@
-@use '@angular/material';
+@use './typography';
+@import 'angular-material-css-vars/main';
 
-@use '../../material/core/src/core';
-@use '../../material/core/src/dino-theme';
+$mat-css-dark-theme-selector: '.isDarkTheme';
+$mat-css-light-theme-selector: '.isLightTheme';
 
-// Define a theme.
-// Main
-$primary: material.define-palette(material.$blue-grey-palette, 500);
-$accent: material.define-palette(material.$blue-grey-palette, 700);
-$warn: material.define-palette(material.$red-palette, 500);
-$alt_accent: material.define-palette(material.$light-blue-palette, 900);
+// init theme
+@include init-material-css-vars() {
+  // If your app has any theme mixins, call them here.
+  // $mat-css-theme gets set to an appropriate value before this content is called.
+  // @include your-custom-component-theme($mat-css-theme);
+  @include typography.all-components-typography();
+}
 
-// Alternative
-// $primary: material.define-palette(material.$red-palette, 500);
-// $alt_accent: material.define-palette(material.$blue-grey-palette, 500, 700);
-// $warn: material.define-palette(material.$deep-purple-palette, A200);
-// $accent: material.define-palette(material.$red-palette, 500);
-
-$theme: core.light-theme(
-  (
-    color: (
-      primary: $primary,
-      accent: $accent,
-      warn: $warn,
-      alt_accent: $alt_accent,
-    ),
-  )
-);
-
-@include dino-theme.dino-theme($theme);
-
-/* You can add global styles to this file, and also import other style files */
+// /* You can add global styles to this file, and also import other style files */
 
 body {
   margin: 0;
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mat-mdc-form-field.mat-focused .mat-form-field-ripple {
+  .mat-mdc-radio-button {
+    background-color: transparent !important;
+  }
+  .mat-mdc-autocomplete-panel {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  ajf-checkbox-group-item {
+    .mat-mdc-button {
+      background-color: transparent !important;
+    }
+  }
+  .mat-mdc-progress-bar .mdc-linear-progress__buffer-bar {
+    background-color: rgb(var(--palette-primary-50)) !important;
+  }
+  .mdc-linear-progress__bar.mdc-linear-progress__primary-bar {
     background-color: rgb(var(--palette-primary-500)) !important;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mat-form-field-appearance-legacy .mat-form-field-underline {
-    background-color: rgb(var(--palette-primary-300)) !important;
+
+  ::-webkit-scrollbar {
+    max-width: 5px !important;
+    max-height: 5px !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    // background: mat-theming.get-color-from-palette($background, background);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--palette-accent-500));
+    border-radius: 5px;
+    max-width: 20%;
   }
 }

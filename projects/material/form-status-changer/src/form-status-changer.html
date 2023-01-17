@@ -4,12 +4,8 @@
     <mat-form-field>
       <mat-label>{{'Select the Form Status'|transloco}}</mat-label>
       <mat-select [value]="currentStatusId" #statusSelect>
-        <mat-option
-          *ngFor="let status of avStatuses"
-          [value]="status.id"
-          [ngStyle]="{'color': status.color ?? 'inherit'}"
-        >
-          <span> {{status.label|transloco}}</span>
+        <mat-option *ngFor="let status of avStatuses" [value]="status.id">
+          <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
         </mat-option>
       </mat-select>
     </mat-form-field>

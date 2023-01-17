@@ -39,12 +39,12 @@
         class="dino-status-editor-field"
         appearance="fill"
         [style.color]="statusColor"
+        [colorPicker]="statusColor"
+        (colorPickerChange)="statusColor=$event"
       >
         <input
           matInput
           readonly
-          [colorPicker]="statusColor"
-          (colorPickerChange)="statusColor=$event"
           [formControlName]="'color'"
           [placeholder]="'Color'|transloco"
           [value]="statusColor"

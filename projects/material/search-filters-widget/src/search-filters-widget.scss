@@ -12,26 +12,68 @@ dino-search-filters-widget {
       height: 100%;
     }
     .mat-mdc-card {
-      width: 90%;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      margin: 1%;
+      margin-top: 5px;
+      border-radius: 0%;
+      border-left: 3px solid;
+      border-left-color: rgb(var(--palette-primary-300));
+      border-radius: 5px;
       min-height: 30vh;
+      @media only screen and (max-width : 992px) {
+        min-height: 40vh;
+      }
+      box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
       .mat-mdc-card-actions {
-        margin-left: -16px;
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        align-items: center;
+        align-content: center;
+        text-align: right;
+        background-color: rgb(var(--palette-primary-50));
         .dino-create-filter-button {
+          &[disabled="true"]{
+            color: rgba(var(--palette-foreground-secondary-text), 0.4);
+            background-color: rgb(var(--palette-accent-50));
+          }
+          color: rgba(var(--palette-foreground-secondary-text), 0.8);
+          background-color: rgb(var(--palette-accent-300));
           padding: 0 8px;
           span {
             display: flex;
             flex-flow: row wrap;
             align-items: center;
             justify-content: space-between;
-            .mat-icon{
+            .mat-icon {
               margin-left: 10px;
             }
           }
         }
       }
+      .ajf-field-entry .mat-mdc-radio-button,
+      .ajf-field-entry ajf-checkbox-group-item .mat-mdc-button {
+        background-color: inherit !important;
+      }
     }
   }
   .mat-mdc-card-content {
+    position: relative;
+    flex: 1;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-bottom: 9%;
+    max-height: 20vh;
+    @media only screen and (max-width : 992px) {
+      max-height: 30vh;
+    }
+    overflow-y: auto;
     .dino-filter-widget-label {
       width: 100%;
       flex: 1 1 auto;

@@ -91,22 +91,6 @@
       opacity: $opacity;
     }
   }
-
-  ::-webkit-scrollbar {
-    max-width: 5px !important;
-    max-height: 5px !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    // background: mat-theming.get-color-from-palette($background, background);
-    border-radius: 5px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgb(var(--palette-accent-500));
-    border-radius: 5px;
-    max-width: 20%;
-  }
 }
 
 @mixin mat-sidenav-typography($config-or-theme) {

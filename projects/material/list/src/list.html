@@ -37,6 +37,20 @@
     <ng-container matColumnDef="select" sticky>
       <ng-container>
         <mat-header-cell *matHeaderCellDef>
+          <button
+            #columns_btn
+            mat-mini-fab
+            color="accent"
+            aria-label="Customize table columns"
+            *ngIf="ctx.showColumnsSelector !== false"
+            class="dino-columns-sel-btn"
+            (click)="openColumnsSelectorDialog()"
+          >
+            <mat-icon mat-list-icon color="primary" aria-label="Select the displayed columns">
+              view_week
+            </mat-icon>
+          </button>
+
           <ng-container *ngIf="bulkActions">
             <mat-checkbox
               class="dino-row-actions"
@@ -183,19 +197,7 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" class="right" stickyEnd>
-      <mat-header-cell *matHeaderCellDef class="dino-row-actions">
-        <mat-icon
-          *ngIf="ctx.showColumnsSelector !== false"
-          mat-list-icon
-          aria-label="delete icon"
-          class="dino-columns-sel-btn"
-          color="primary"
-          #columns_btn
-          (click)="openColumnsSelectorDialog()"
-          aria-label="Select the displayed columns"
-        >
-          view_week
-        </mat-icon>
+      <mat-header-cell *matHeaderCellDef class="dino-row-actions dino-header-row-actions">
       </mat-header-cell>
       <mat-cell *matCellDef="let row" class="dino-row-actions">
         <ng-container *ngFor="let action of ctx.listRowActions|async">

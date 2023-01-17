@@ -4520,7 +4520,7 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
 
-angular-material-css-vars@^4.0.0:
+angular-material-css-vars@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/angular-material-css-vars/-/angular-material-css-vars-4.0.2.tgz#8286463f2ccbeb91840cb80fb7bbf0fad5dc6dac"
   integrity sha512-pP76VoTYswT7wTJW9EAHUHFFAEXa/cP2kOSkCKs4KfV9sYwANTl3WKaoWlY196sS3Hjq3SjcqaOjypB2vmX/uA==
@@ -10309,10 +10309,10 @@ ng-packagr@^15.0.3:
   optionalDependencies:
     esbuild "^0.16.0"
 
-ngx-color-picker@^12.0.1:
-  version "12.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-color-picker/-/ngx-color-picker-12.0.1.tgz#bb3159fd685dfd23505e5a27300fa32bb42ebce8"
-  integrity sha512-ODLePeqN7dnhTmjHGJrxFHaEXb3o2vH4n8qUzkUAIFmz5vOOxCCEYY4/bg+5VK62PonaK7j0fFf8AjnwrqhFHQ==
+ngx-color-picker@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-color-picker/-/ngx-color-picker-13.0.0.tgz#fe6d3b2def721ebc4f2a1a4ed83e552e0cfe3601"
+  integrity sha512-3mgMbs21KeqnmmY5p1cn71ckTH3q7gBt6Qn0fMfeF/Ql7ddTZsW4Z7Z8ga6LymMP/ugooGuLOFX+V6yx0dDxAw==
   dependencies:
     tslib "^2.3.0"
 
