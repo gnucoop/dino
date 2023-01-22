@@ -272,8 +272,12 @@ export class DataService implements IDataService {
     this.firstReplicationComplete = combineLatest([
       this.collectionsInitialized,
       this._registeredCollections,
+      this._nss.isOnline$,
     ]).pipe(
-      switchMap(([evt, collections]) => {
+      switchMap(([evt, collections, isOnline]) => {
+        if (!isOnline) {
+          return obsOf([true]);
+        }
         if (evt === 'started') {
           return obsOf([false]);
         }
