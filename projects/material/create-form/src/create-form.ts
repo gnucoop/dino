@@ -306,6 +306,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   /**
+   * Saves the form as draft, without validations
+   */
+  saveDraft() {
+    this._saveFormEvt.emit();
+  }
+
+  /**
    * Called whenever the user invokes an action on a row item.
    * @param evt The user action event
    */

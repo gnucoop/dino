@@ -416,6 +416,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
+   * Saves the form as draft, without validations
+   */
+  saveDraft() {
+    const evt: AjfFormActionEvent = {
+      source: null as unknown as AjfFormRenderer,
+      value: {},
+      action: 'draft',
+    };
+    this._saveFormEvt.emit(evt);
+  }
+
+  /**
    * Called whenever the user invokes an action on a row item.
    * @param evt The user action event
    */
@@ -879,7 +891,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     ])
       .pipe(
         filter(() => this._dataModelManager != null),
-        map(([_, item, formMetricsSelector]) => {
+        map(([evt, item, formMetricsSelector]) => {
           const fValue = this._rendererService.getFormValue();
           delete fValue['dino_form_info'];
           delete fValue['dino_form_metrics'];
@@ -887,6 +899,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             doc: item,
             formValue: fValue,
             fmSelector: formMetricsSelector,
+            evt: evt && evt.action ? evt.action : null,
           };
         }),
         withLatestFrom(this._nss.isOnline$),
@@ -972,7 +985,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 this._ugm.getActiveUserGroups(),
               ),
               tap(([fd, status, allStatuses, user, userGroups, activeUser, activeUserGroups]) => {
-                if (fd && fd.collection.name === 'form_data') {
+                if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
                   const trigData: ActionTriggerData<T> = {
                     doc: fd,
                     previousValue: formObj.doc,
