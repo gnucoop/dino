@@ -75,7 +75,15 @@ import {
   Subscription,
   throwError,
 } from 'rxjs';
-import {catchError, map, shareReplay, switchMap, take, takeUntil} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
@@ -86,6 +94,8 @@ import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {RxDocument} from 'rxdb';
 import {TranslocoService} from '@ngneat/transloco';
 import {deepCopy} from '@ajf/core/utils';
+import {format} from 'date-fns';
+import {UserDataManager} from '@dino/core/users';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -403,6 +413,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _renderer: Renderer2,
     private _ts: TranslocoService,
     private _fsm: FormStatusManager,
+    private _udm: UserDataManager,
   ) {
     super(cdr, aui, actroute);
 
@@ -774,7 +785,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * Initializes the list Actions subscription (delete, download, print, edit)
+   * Initializes the list Actions subscription (delete, download, print, duplicate, edit)
    */
   private _initList(): void {
     this._actionEvent
@@ -962,6 +973,60 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
     const path = [this.baseUrl, schemaId, this.baseCreateUrl];
     this._router.navigate(path);
+  }
+
+  /**
+   * Duplicates the item and loads the Edit component for the new item.
+   * @param item The form to be duplicated
+   */
+  duplicateAction(item: T): void {
+    const genItem = item as {[key: string]: any};
+    if (
+      item == null ||
+      genItem['form_schema_ref_id'] == null ||
+      this.baseUrl == null ||
+      this.baseEditUrl == null ||
+      this._udm == null
+    ) {
+      return;
+    }
+
+    this._udm
+      .getActiveUserData()
+      .pipe(withLatestFrom(this._statuses), take(1))
+      .subscribe(data => {
+        const userData = data[0];
+        const formStatuses = data[1];
+        let newItem: {[key: string]: any} = {};
+        const defaultFormStatus: string | null =
+          formStatuses && formStatuses.length
+            ? formStatuses.reduce((prev, curr) =>
+                prev.status_level < curr.status_level ? prev : curr,
+              ).id
+            : null;
+        newItem['data'] = genItem['data'];
+        newItem['form_schema_ref_id'] = genItem['form_schema_ref_id'];
+        newItem['user_data_ref_id'] = userData?.id;
+        newItem['form_status_ref_id'] = defaultFormStatus;
+        newItem['area_ref_id'] = genItem['area_ref_id'];
+        newItem['case_ref_id'] = genItem['case_ref_id'];
+        newItem['location_ref_id'] = genItem['location_ref_id'];
+        newItem['organization_ref_id'] = genItem['organization_ref_id'];
+        newItem['project_ref_id'] = genItem['project_ref_id'];
+        newItem['created_at'] = format(new Date(), 'yyyy-MM-dd');
+
+        if (this._dataSource != null) {
+          this._dataSource.createAction(newItem as T).subscribe(fd => {
+            if (fd) {
+              const path = [this.baseUrl, genItem['form_schema_ref_id'], this.baseEditUrl];
+              path.push(fd.id);
+              this._router.navigate(path);
+            }
+          });
+        } else {
+          return;
+        }
+      });
   }
 
   /**

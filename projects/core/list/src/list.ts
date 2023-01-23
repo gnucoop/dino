@@ -222,6 +222,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   abstract editAction(item: T, isDetails: boolean): void;
   abstract viewAction(item: T, isDetails: boolean): void;
   abstract createAction(schemaId: string, baseUrl: string): void;
+  abstract duplicateAction(item: T): void;
 
   /**
    * Calls a handler function on the current selection based on the action name

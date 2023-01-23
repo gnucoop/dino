@@ -221,7 +221,16 @@ export class PermissionContextService {
           return index === self.indexOf(elem);
         });
         if (uniqueActions.some(act => act === 'all')) {
-          uniqueActions = ['create', 'edit', 'delete', 'view', 'export', 'print', 'status edit'];
+          uniqueActions = [
+            'create',
+            'edit',
+            'delete',
+            'view',
+            'export',
+            'print',
+            'status edit',
+            'duplicate',
+          ];
         }
         if (collectionName === 'report_schema' && isData === true && favorites) {
           uniqueActions.push(

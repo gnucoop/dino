@@ -783,6 +783,22 @@ export class ListDataSource<
   }
 
   /**
+   * Create a new item
+   * @param item The item to be created
+   * @returns The created item
+   */
+  createAction(item: T, isDetails: boolean = false): Observable<T | null> {
+    const dm =
+      isDetails && this._dataModelManager.detailsManager != null
+        ? this._dataModelManager.detailsManager
+        : this._dataModelManager;
+    return dm.create(item).pipe(
+      take(1),
+      catchError(err => throwError(() => new Error(err))),
+    );
+  }
+
+  /**
    * Retrieves all choices label/values from the schema (if present) for all
    * the fields, so that the list can show choice Labels instead of raw data values.
    * @returns The field -> choices dictionary, if available.

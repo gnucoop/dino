@@ -27,6 +27,7 @@ export type ActionType =
   | 'delete'
   | 'print'
   | 'download'
+  | 'duplicate'
   | 'edit'
   | 'view'
   | 'select'

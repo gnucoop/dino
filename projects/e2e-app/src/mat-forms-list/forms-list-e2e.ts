@@ -39,6 +39,7 @@ export class MatFormsListE2E {
     view: 'visibility',
     edit: 'create',
     print: 'printer',
+    duplicate: 'file_copy',
     delete: 'delete',
   };
   readonly displayAddButton: Observable<boolean>;
