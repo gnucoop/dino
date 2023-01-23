@@ -368,13 +368,11 @@ export class EditReport implements AfterViewInit {
           [RxDocument<FormSchema, {}>, RxDocument<FormSchemaDeps, {}>]
         >[] = [];
         if (ctxSchemas != null) {
-          const data = ctxSchemas
-            .filter(fs => fs.form_schema_deps_ref_id !== null)
-            .map(fschema => {
-              let refProp: Observable<RxDocument<FormSchemaDeps>>;
-              refProp = from(fschema.populate('form_schema_deps_ref_id'));
-              return forkJoin([obsOf(fschema), refProp]).pipe(shareReplay(1));
-            });
+          const data = ctxSchemas.map(fschema => {
+            let refProp: Observable<RxDocument<FormSchemaDeps>>;
+            refProp = from(fschema.populate('form_schema_deps_ref_id'));
+            return forkJoin([obsOf(fschema), refProp]).pipe(shareReplay(1));
+          });
           populatedSchema.push(...data);
         }
         let res: Observable<
