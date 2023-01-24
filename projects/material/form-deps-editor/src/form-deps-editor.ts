@@ -140,6 +140,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
               const flatNodes = this._flattenNodes(nodes);
               const fields = <AjfField[]>flatNodes.filter(n => !isContainerNode(n));
               orderedFields = fields
+                .filter(f => f.name != null)
                 .sort((f1, f2) => f1.name.localeCompare(f2.name))
                 .map(f => f.name)
                 .filter(f => f.length > 0);
