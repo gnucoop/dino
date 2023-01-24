@@ -33,6 +33,7 @@ import {delay, filter, map, retryWhen, shareReplay, switchMap, take, tap} from '
 
 import {migrationStrategies, UserGroup} from './user-group';
 import {schema} from './user-group-json';
+import {UserData} from './user-data';
 import {UserDataManager} from './user-data-manager';
 import {UserRole} from './user-role';
 import {AdminGroupExclude} from './user-admin-check-permissions';
@@ -78,6 +79,52 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
         return this.query({selector: querySelector}).pipe(shareReplay(1));
       }),
     );
+  }
+
+  /**
+   * Gets the Users belonging to a list of groups
+   * @param userGroupsIds
+   * @returns The users
+   */
+  getUsersByGroups(userGroupsIds: string[]): Observable<RxDocument<UserData>[]> {
+    return this._userModelManager
+      .query({selector: {user_group_ids: {$all: userGroupsIds}}})
+      .pipe(shareReplay(1));
+  }
+
+  /**
+   * Gets the Users belonging to a list of groups, using group names
+   * @param userGroupNames
+   * @returns The users
+   */
+  getUsersByGroupNames(userGroupNames: string[]): Observable<RxDocument<UserData, {}>[]> {
+    return this.query({selector: {groupName: {$in: userGroupNames}}}).pipe(
+      switchMap(groupsData => {
+        if (groupsData == null || groupsData.length === 0) {
+          return obsOf([]);
+        }
+        const groupIds = groupsData.map(group => group.id);
+        return this.getUsersByGroups(groupIds);
+      }),
+      shareReplay(1),
+    );
+  }
+
+  /**
+   * Gets the User Groups details
+   * @param userDatas the users list
+   * @returns A list of tuple with the user and his groups
+   */
+  getUserGroups(
+    userDatas: RxDocument<UserData, {}>[],
+  ): Observable<[RxDocument<UserGroup, {}>[], RxDocument<UserData, {}>]>[] {
+    const ug: Observable<[RxDocument<UserGroup, {}>[], RxDocument<UserData, {}>]>[] = userDatas.map(
+      ud => {
+        const udgr = this.query({selector: {id: {$in: ud.user_group_ids}}});
+        return forkJoin([udgr, obsOf(ud)]).pipe(shareReplay(1));
+      },
+    );
+    return ug;
   }
 
   /**
