@@ -199,4 +199,21 @@ describe('ListDataSource', () => {
 
     expect(spyDmDelete).toHaveBeenCalledWith(items);
   });
+
+  it('should call the dataModelManager create', () => {
+    const spyDmCreate = spyOn(dummyManager, 'create').and.callThrough();
+    const item = {
+      name: 'item',
+      filter_a: 'hey',
+      filter_b: 3,
+      filter_c: true,
+      id: '',
+      created_at: '',
+      updated_at: '',
+    };
+
+    dataSource.createAction(item);
+
+    expect(spyDmCreate).toHaveBeenCalledWith(item);
+  });
 });

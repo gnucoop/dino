@@ -61,6 +61,7 @@ class ListFeatComp extends List<DummyModel> {
   }
 
   createAction(_schemaId: string, _baseUrl: string) {}
+  duplicateAction(_item: DummyModel) {}
   viewAction(_item: DummyModel, _isDetails: boolean): void {}
   getSelection() {
     return dummySelection;
