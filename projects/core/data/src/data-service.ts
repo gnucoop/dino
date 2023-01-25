@@ -149,6 +149,11 @@ export class DataService implements IDataService {
     'started' | 'completed'
   >();
 
+  /**
+   * Emits when a single replication cycle has been completed
+   */
+  replicationCycleComplete: EventEmitter<void> = new EventEmitter<void>();
+
   readonly config: DataServiceConfig;
 
   readonly dbToken = new BehaviorSubject<string | null>('');
@@ -652,19 +657,28 @@ export class DataService implements IDataService {
    * each active sync
    */
   runSync() {
-    combineLatest([this.isSyncing, this._nss.isOnline$])
+    combineLatest([this.isSyncing, this._nss.isOnline$, this._authService.refreshToken()])
       .pipe(take(1))
-      .subscribe(([isSyncing, isOnline]) => {
-        if (!isSyncing && isOnline) {
+      .subscribe(([_isSyncing, isOnline, refresh]) => {
+        if (!refresh) {
+          this._logoutEvt.emit();
+        }
+        if (isOnline && refresh) {
           if (isDevMode()) {
             console.log('Running the sync!');
           }
           const actSyncs = this._activeSyncs.value;
+          const totSyncs = Object.keys(actSyncs).length;
+          let currentlyCompleted = 0;
           for (let key in actSyncs) {
             const actSync: ActiveSync | undefined = actSyncs[key];
             if (actSync && actSync.state) {
               actSync.state.run().then(() => {
+                currentlyCompleted++;
                 this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
+                if (currentlyCompleted === totSyncs) {
+                  this.replicationCycleComplete.emit();
+                }
               });
             }
           }
