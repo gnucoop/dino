@@ -125,7 +125,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * The Form Metrics Selector
    */
-  @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+  @ViewChildren(FormMetricSelector)
+  formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   /**
    * If true, Metrics can be created directly from the metric fields
@@ -310,6 +311,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
+   * True if form is initialized
+   */
+  isFormInizialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
    * Emitted when a user tries to save a form
    */
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
@@ -359,6 +365,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
   ) {
+    this.isFormInizialized.next(false);
     this.formId = this._route.params.pipe(
       map(params => params['form_id']),
       tap(id => {
@@ -567,7 +574,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         ) {
           return obsOf(null);
         }
-        return this._ugm.query({selector: {id: {$in: userData.user_group_ids}}});
+        return this._ugm.query({
+          selector: {id: {$in: userData.user_group_ids}},
+        });
       }),
       shareReplay(1),
     );
@@ -592,8 +601,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         withLatestFrom(this._rendererService.formGroup),
         map(([[fschemadeps, metricSel], formGroup]) => {
           let metricsCtx: {[key: string]: any} = {};
-
-          if (fschemadeps && formGroup) {
+          if (this.isFormInizialized.value && fschemadeps && formGroup) {
             if (metricSel != null) {
               Object.keys(metricSel).forEach(metricName => {
                 if (metricSel[metricName]) {
@@ -744,6 +752,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             activeUserGroups,
           };
 
+          this.isFormInizialized.next(true);
           return AjfFormSerializer.fromJson(fschema.schema, ajfFormData);
         },
       ),
@@ -923,7 +932,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               apiCall.push(obsOf(formObj));
               const uploadedFilesObs = this.uploadService.uploadFiles(filesToUpload);
               apiCall.push(...uploadedFilesObs);
-              this.snackbar.open('Wait until uploading documents...', 'WAIT', {duration: 5000});
+              this.snackbar.open('Wait until uploading documents...', 'WAIT', {
+                duration: 5000,
+              });
             }
           } else {
             apiCall.push(obsOf(formObj));
@@ -1072,7 +1083,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
         let refProp;
         try {
-          refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+          refProp = {
+            [propKey]: from(doc.populate(prop)).pipe(shareReplay(1)),
+          };
         } catch (e) {
           refProp = {[propKey]: obsOf(null)};
         }
