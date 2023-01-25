@@ -26,8 +26,17 @@ import {AuthService} from '@dino/core/auth';
 import {DataService, PermissionContextService} from '@dino/core/data';
 import {LangManager} from '@dino/core/langs';
 import {SyncManager} from '@dino/core/sync';
-import {distinctUntilKeyChanged, filter, skipWhile, switchMap, tap} from 'rxjs/operators';
+import {of as obsOf} from 'rxjs';
+import {
+  distinctUntilKeyChanged,
+  filter,
+  skipWhile,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import {ajfCustomFunctions} from './ajf-custom-functions';
+import {live, initializationScreenMaxDuration} from './mocks';
 /** Root component for the e2e-app demos. */
 @Component({
   selector: 'e2e-app',
@@ -76,9 +85,15 @@ export class E2eApp {
             console.log(authEvt);
           }
         }),
-        switchMap(() => this._sync.initializeMainCollections()),
+        switchMap(authEvt =>
+          this._sync.initializeMainCollections().pipe(withLatestFrom(obsOf(authEvt))),
+        ),
       )
-      .subscribe(() => this._ds.collectionsInitialized.emit('started'));
+      .subscribe(([_, authEvent]) => {
+        if ((live || initializationScreenMaxDuration) && authEvent.evt === 'login') {
+          this._ds.collectionsInitialized.emit('started');
+        }
+      });
 
     this._auth.authenticated
       .pipe(
@@ -96,15 +111,19 @@ export class E2eApp {
             console.log(authEvt);
           }
         }),
-        switchMap(() =>
+        switchMap(authEvt =>
           this._pcs.fullContext.pipe(
             filter(ctx => ctx != null),
-            switchMap(() => this._sync.initializeContextualCollections()),
+            switchMap(() =>
+              this._sync.initializeContextualCollections().pipe(withLatestFrom(obsOf(authEvt))),
+            ),
           ),
         ),
       )
-      .subscribe(() => {
-        this._ds.collectionsInitialized.emit('completed');
+      .subscribe(([_, authEvent]) => {
+        if ((live || initializationScreenMaxDuration) && authEvent.evt === 'login') {
+          this._ds.collectionsInitialized.emit('completed');
+        }
         this._lm.loadDinoLangs();
       });
 

@@ -5,6 +5,7 @@ import {Section} from '@dino/material/main-nav';
 import {Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {availableLanguagesConfig} from '../mockconfig';
+import {initializationScreenMaxDuration} from '../mocks';
 @Component({
   selector: 'app-main',
   templateUrl: 'main-e2e.component.html',
@@ -23,6 +24,7 @@ export class MatMainE2E {
   pkg = require('../../../../package.json');
   constructor(private _pcs: PermissionContextService, private _authService: AuthService) {}
   customLanguages = availableLanguagesConfig;
+  initScreenDuration = initializationScreenMaxDuration;
   barButtonsDisabled: Observable<boolean> = this._authService.authenticated.pipe(
     map(evt => !evt.auth),
   );
