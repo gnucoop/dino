@@ -43,7 +43,7 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ThemeService} from '@dino/material/core';
 import {UserArea} from '@dino/material/user-area';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription, timer} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
@@ -123,6 +123,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
     }
     this.extendedSidenav.next(state);
   }
+  /**
+   * Determines the amount of time after which the Initialization screen
+   * should disappear, even if the data synchronization is not fully complete.
+   */
+  @Input() initializationScreenMaxDuration?: number;
 
   /**
    * Custom languages to be shown in the Language Selector
@@ -278,6 +283,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   private _syncLoadingSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Subscribes to the Initialization timer
+   */
+  private _initScreenMaxDurationSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the DataService 'replicationCycleComplete' event
+   */
+  private _replicationCycleCompleteSub: Subscription = Subscription.EMPTY;
+
   @Input()
   set sections(sec: Section[]) {
     if (sec == null) {
@@ -357,6 +372,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
       this.currentSection.next(selSection ?? null);
     });
 
+    this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete.subscribe(() =>
+      this.snackbar.open('Synchronization complete', 'SYNC COMPLETE', {duration: 10000}),
+    );
+
     this.userDisplayName = this.authService.authenticated.pipe(
       switchMap(authEvt => {
         if (authEvt.auth) {
@@ -413,6 +432,18 @@ export class MainNav implements AfterViewInit, OnDestroy {
         }),
       )
       .subscribe();
+
+    if (this.initializationScreenMaxDuration) {
+      const timeout = this.initializationScreenMaxDuration;
+      this._initScreenMaxDurationSub = this.authService.authenticated
+        .pipe(
+          filter(auth => auth.auth == true),
+          switchMap(() => timer(timeout)),
+        )
+        .subscribe(() => {
+          this.isLoading.next(false);
+        });
+    }
 
     this._cdr.detectChanges();
   }
@@ -485,5 +516,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._currentSectionSub.unsubscribe();
     this._onRouterOutletLoadingSub.unsubscribe();
     this._syncLoadingSub.unsubscribe();
+    this._initScreenMaxDurationSub.unsubscribe();
+    this._replicationCycleCompleteSub.unsubscribe();
   }
 }
