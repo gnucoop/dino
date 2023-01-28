@@ -184,6 +184,12 @@ export function generateSyncPullChecks(
   let where: {_and: {[key: string]: any}[]} = {_and: []};
   for (let checkObj of checks) {
     switch (checkObj.checkName) {
+      case 'user_data':
+        if (checkObj.checkKey === 'notification') {
+          const ntf = generateSyncPullNotificationsChecks(context[checkObj.checkName].id);
+          where._and.push(...ntf);
+        }
+        break;
       case 'user_metrics':
         const mts = generateSyncPullMetricChecks(context[checkObj.checkName], checkObj.checkKey);
         where._and.push(...mts);
@@ -201,6 +207,24 @@ export function generateSyncPullChecks(
     }
   }
   return where;
+}
+
+/**
+ * Generates 'and' conditions for notifications checks
+ * @param userSchemas The context user schemas
+ * @returns The conditions
+ */
+function generateSyncPullNotificationsChecks(userDataId: string | null): {
+  [key: string]: any;
+}[] {
+  if (userDataId == null) {
+    return [];
+  }
+  let whereAndConditions: {[key: string]: any}[] = [];
+  const wObj: {[key: string]: any} = {'recipients': {_contains: userDataId}};
+  whereAndConditions.push(wObj);
+
+  return whereAndConditions;
 }
 
 /**
