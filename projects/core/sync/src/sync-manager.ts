@@ -39,6 +39,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {LangManager} from '@dino/core/langs';
 import {DataModelManager} from '@dino/core/data';
+import {NotificationManager} from '@dino/core/notifications';
 
 /**
  * Service that manages the Initialization of rxCollections
@@ -69,6 +70,7 @@ export class SyncManager {
     private _ur: UserRoleManager,
     private _ug: UserGroupManager,
     private _lm: LangManager,
+    private _ntm: NotificationManager,
     private _rd: ReportDataManager,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
@@ -85,6 +87,7 @@ export class SyncManager {
       'user_role': this._ur,
       'user_group': this._ug,
       'lang': this._lm,
+      'notification': this._ntm,
       'area': this._ar,
       'case': this._cs,
       'project': this._pj,
@@ -107,6 +110,7 @@ export class SyncManager {
       this._rs.init(),
       this._fd.init(),
       this._rd.init(),
+      this._ntm.init(),
     ];
 
     if (this._ar != null) {
