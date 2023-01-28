@@ -79,6 +79,7 @@
   ></dino-floating-button>
 
   <dino-floating-button
+    *ngIf="allowSaveDraft"
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
     (click)="saveDraft()"

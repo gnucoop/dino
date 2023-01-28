@@ -114,6 +114,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   @Input() allowMetricCreation: boolean = true;
 
   /**
+   * If true, Forms can be saved as drafts, bypassing validation.
+   */
+  @Input() allowSaveDraft: boolean = false;
+
+  /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
