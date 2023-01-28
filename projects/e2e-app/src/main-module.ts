@@ -22,6 +22,7 @@ import {
   FormsModule,
 } from '@dino/core/forms';
 import {LocationModule} from '@dino/core/locations';
+import {NotificationModule} from '@dino/core/notifications';
 import {OrganizationsModule} from '@dino/core/organizations';
 import {Project, ProjectManager, ProjectModule} from '@dino/core/projects';
 import {
@@ -216,6 +217,7 @@ export function provideDataServiceConfig() {
     OverlayModule,
     DinoRoutingModule,
     FormsModule,
+    NotificationModule,
     ReportsModule,
     SyncModule,
     UsersModule,

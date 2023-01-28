@@ -51,6 +51,15 @@ const routes: Routes = [
     data: {breadcrumbs: [{label: 'Languages', url: 'languages', icon: 'translate'}]},
   },
   {
+    path: 'notifications',
+    loadChildren: () =>
+      import('./mat-notifications/notifications-e2e.module').then(
+        m => m.MaterialNotificationsE2eModule,
+      ),
+    canActivate: [AuthGuard],
+    data: {breadcrumbs: [{label: 'Notifications', url: 'notifications', icon: 'notifications'}]},
+  },
+  {
     path: 'metrics',
     loadChildren: () =>
       import('./mat-metrics/metrics-e2e.module').then(m => m.MaterialMetricsE2eModule),

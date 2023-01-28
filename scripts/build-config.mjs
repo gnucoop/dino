@@ -29,6 +29,7 @@ export const models = {
     forms: ['form-data', 'form-status'],
     langs: ['lang'],
     locations: ['location'],
+    notifications: ['notification'],
     organizations: ['organization'],
     projects: ['project'],
     reports: ['report-data'],
