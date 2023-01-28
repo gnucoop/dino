@@ -183,7 +183,7 @@ export class AuthService {
         if (!config.nHostAuth) {
           req['applicationId'] = config.applicationId;
         }
-        const defaulLoginUrl = config.nHostAuth ? 'v1/auth/signin/email-password' : 'api/login';
+        const defaulLoginUrl = config.nHostAuth ? 'signin/email-password' : 'api/login';
         const url = this._generateUrl(
           config.loginEndpoint ?? defaulLoginUrl,
           removeSlashes(config.host),
@@ -232,7 +232,7 @@ export class AuthService {
             ? {Authorization: config.apiKey}
             : {Authorization: buildAuthorizationHeader(this.getAuthToken())};
         let options: {headers: {[key: string]: any}; responseType?: any} = {headers: headers};
-        const defaulLogoutUrl = config.nHostAuth ? 'v1/auth/signout' : 'api/logout';
+        const defaulLogoutUrl = config.nHostAuth ? 'signout' : 'api/logout';
         let url = `${this._generateUrl(
           config.logoutEndpoint ?? defaulLogoutUrl,
           removeSlashes(config.host),
@@ -276,7 +276,7 @@ export class AuthService {
     return this._authConfig.pipe(
       switchMap(config => {
         const url = this._generateUrl(
-          config.signupEndpoint ?? 'v1/auth/signup/email-password',
+          config.signupEndpoint ?? 'signup/email-password',
           removeSlashes(config.host),
         );
         return this._httpClient.post<NHostSignupResponse>(url, requestData).pipe(
@@ -345,7 +345,7 @@ export class AuthService {
     return this._authConfig.pipe(
       switchMap(config => {
         const req = {refreshToken: this.getRefreshToken() ?? refreshToken};
-        const defaulRefreshUrl = config.nHostAuth ? 'v1/auth/token' : 'api/jwt/refresh';
+        const defaulRefreshUrl = config.nHostAuth ? 'token' : 'api/jwt/refresh';
         const url = this._generateUrl(
           config.refreshEndpoint ?? defaulRefreshUrl,
           removeSlashes(config.host),
@@ -434,7 +434,7 @@ export class AuthService {
       withLatestFrom(this._authConfig),
       switchMap(([logRes, config]) => {
         if (logRes === true) {
-          const defaultChangePwdUrl = config.nHostAuth ? 'v1/auth/user/password' : 'api/password';
+          const defaultChangePwdUrl = config.nHostAuth ? 'user/password' : 'api/password';
           const url = this._generateUrl(
             config.changePasswordEndpoint ?? defaultChangePwdUrl,
             removeSlashes(config.host),
@@ -470,7 +470,7 @@ export class AuthService {
         }
         return this._authConfig.pipe(
           switchMap(config => {
-            const defaultChangePwdUrl = config.nHostAuth ? 'v1/auth/user/password' : 'api/password';
+            const defaultChangePwdUrl = config.nHostAuth ? 'user/password' : 'api/password';
             const url = this._generateUrl(
               config.changePasswordEndpoint ?? defaultChangePwdUrl,
               removeSlashes(config.host),
@@ -503,7 +503,7 @@ export class AuthService {
           return obsOf(false);
         }
         const resetPwdUrl = this._generateUrl(
-          `v1/auth/user/password/reset`,
+          `user/password/reset`,
           removeSlashes(config.resetPasswordEndpoint ?? config.host),
         );
         return this._httpClient.post<any>(resetPwdUrl, {email: email, options: options});
