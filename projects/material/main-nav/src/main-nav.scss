@@ -52,7 +52,8 @@ dino-main-nav {
         margin-right: 10px;
         opacity: 0.3;
       }
-      .dino-sync-detector {
+      .dino-sync-detector,
+      .dino-notifications-icon {
         margin-right: 25px;
         @media only screen and (max-width: 768px) {
           margin-right: 10px;
@@ -62,6 +63,11 @@ dino-main-nav {
           -moz-animation: spin 2s ease-in-out infinite;
           animation: spin 2s ease-in-out infinite;
         }
+      }
+      .dino-notifications-icon {
+        -webkit-transform-origin: 50% 4px;
+        -moz-transform-origin: 50% 4px;
+        transform-origin: 50% 4px;
       }
       .dino-active-user-icon {
         color: inherit;
@@ -140,6 +146,67 @@ dino-main-nav {
     .dino-extend-menu-button {
       position: absolute;
       bottom: 50px;
+    }
+  }
+}
+.dino-notifications-menu,
+.mat-menu-content {
+  &:empty {
+    display: none;
+  }
+  &.mat-menu-panel {
+    min-height: unset !important;
+    max-width: 460px;
+    @media only screen and (max-width: 768px) {
+      max-width: 280px;
+    }
+  }
+}
+.dino-notifications-menu .mat-menu-content {
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
+
+  .dino-notifications-menu-container {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 0px;
+    position: relative;
+    .dino-notification-container {
+      display: flex;
+      .dino-notification-gotourl-btn {
+        position: absolute;
+        right: 5px;
+        top: 12px;
+        max-width: 25px;
+        max-height: 25px;
+        .mat-icon {
+          position: relative;
+          bottom: 6px;
+          left: 1px;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
+  .mat-menu-item {
+    .dino-notification-icon {
+      color: rgb(var(--palette-primary-500));
+    }
+    &.dino-unread-notification {
+      background-color: rgba(var(--palette-primary-500), 0.2);
+      font-weight: bold;
+    }
+    &.dino-notification-action-button {
+      text-align: center;
+      border-top: 1px solid rgba(var(--palette-primary-500), 0.4);
+      background-color: rgba(var(--palette-warn-500), 0.2);
+      text-transform: uppercase;
+      -webkit-transition: all ease-in-out 1.3s;
+      transition: all ease-in-out 1.3;
+      &:hover {
+        background-color: rgba(var(--palette-warn-500), 0.4);
+      }
     }
   }
 }

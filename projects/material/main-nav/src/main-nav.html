@@ -95,6 +95,80 @@
       [ngTemplateOutlet]="(networkStatusService.isOnline$|async) ? syncOnline : syncOffline "
     >
     </ng-container>
+
+    <ng-container>
+      <mat-icon
+        *ngIf="unreadNotificationsNumber|async as newNotifications; else noBadgeTemplate"
+        [matMenuTriggerFor]="notificationsmenu"
+        class="dino-notifications-icon"
+        [matBadge]="newNotifications"
+        matBadgeColor="primary"
+        [@.disabled]="newNotifications <= 0"
+        [@notificationRing]="notificationRingState ? 'a' : 'b'"
+      >
+        notifications
+      </mat-icon>
+
+      <ng-template #noBadgeTemplate>
+        <mat-icon [matMenuTriggerFor]="notificationsmenu" class="dino-notifications-icon">
+          notifications
+        </mat-icon>
+      </ng-template>
+
+      <mat-menu #notificationsmenu="matMenu" [class]="'dino-notifications-menu'">
+        <div class="dino-notifications-menu-container">
+          <div
+            class="dino-notification-container"
+            *ngFor="let notification of lastNotifications|async;"
+          >
+            <button
+              [ngClass]="notification.read ? 'dino-read-notification' : 'dino-unread-notification'"
+              (click)="notification.read ? null : markNotificationAsRead($event, notification)"
+              [matTooltip]="notification.text || ''"
+              [matTooltipPosition]="'left'"
+              [matTooltipShowDelay]="1000"
+              mat-menu-item
+            >
+              <mat-icon class="dino-notification-icon"> {{notification.icon}} </mat-icon>
+              {{notification.text}}
+
+              <button
+                *ngIf="notification.redirect_url"
+                class="dino-notification-gotourl-btn"
+                mat-mini-fab
+                color="accent"
+                [matTooltip]="'Go to url'|transloco"
+                [matTooltipPosition]="'left'"
+                [matTooltipShowDelay]="500"
+                (click)="goToNotificationUrl($event, notification)"
+              >
+                <mat-icon>link</mat-icon>
+              </button>
+            </button>
+          </div>
+        </div>
+
+        <ng-container *ngIf="lastUnreadNotifications|async as unreadNotifications">
+          <button
+            *ngIf="unreadNotifications > 0"
+            mat-menu-item
+            class="dino-notification-action-button"
+            (click)="markAllAsRead($event)"
+          >
+            {{'Mark all as read'|transloco}}
+          </button>
+        </ng-container>
+
+        <button
+          mat-menu-item
+          class="dino-notification-action-button"
+          (click)="goToNotifications()"
+        >
+          {{'View all notifications'|transloco}}
+        </button>
+      </mat-menu>
+    </ng-container>
+
     <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
     <ng-container *ngIf="userDisplayName|async as userDisplayName">
       <mat-icon

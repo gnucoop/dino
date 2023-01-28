@@ -20,7 +20,7 @@
  *
  */
 
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -39,11 +39,20 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {DataService, MetricsService, PermissionContextService} from '@dino/core/data';
+import {Notification, NotificationManager} from '@dino/core/notifications';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ThemeService} from '@dino/material/core';
 import {UserArea} from '@dino/material/user-area';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription, timer} from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  Observable,
+  of as obsOf,
+  Subscription,
+  timer,
+} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 import {Section} from './section-interface';
@@ -74,6 +83,39 @@ import {Section} from './section-interface';
       transition(':enter', [style({opacity: 0}), animate('2000ms', style({opacity: 1}))]),
       transition(':leave', [animate('300ms', style({opacity: 0}))]),
     ]),
+    trigger('notificationRing', [
+      transition('a <=> b', [
+        animate(
+          '4s',
+          keyframes([
+            style({transform: 'rotate(0)', offset: 0}),
+            style({transform: 'rotate(20deg)', offset: 0.01}),
+            style({transform: 'rotate(-19deg)', offset: 0.03}),
+            style({transform: 'rotate(18deg)', offset: 0.05}),
+            style({transform: 'rotate(-17deg)', offset: 0.07}),
+            style({transform: 'rotate(16deg)', offset: 0.09}),
+            style({transform: 'rotate(-15deg)', offset: 0.11}),
+            style({transform: 'rotate(14deg)', offset: 0.13}),
+            style({transform: 'rotate(-13deg)', offset: 0.15}),
+            style({transform: 'rotate(12deg)', offset: 0.17}),
+            style({transform: 'rotate(-11deg)', offset: 0.19}),
+            style({transform: 'rotate(10deg)', offset: 0.21}),
+            style({transform: 'rotate(-9deg)', offset: 0.23}),
+            style({transform: 'rotate(8deg)', offset: 0.25}),
+            style({transform: 'rotate(-7deg)', offset: 0.27}),
+            style({transform: 'rotate(6deg)', offset: 0.29}),
+            style({transform: 'rotate(-5deg)', offset: 0.31}),
+            style({transform: 'rotate(4deg)', offset: 0.33}),
+            style({transform: 'rotate(-3deg)', offset: 0.35}),
+            style({transform: 'rotate(2deg)', offset: 0.37}),
+            style({transform: 'rotate(-1deg)', offset: 0.39}),
+            style({transform: 'rotate(1deg)', offset: 0.41}),
+            style({transform: 'rotate(0deg)', offset: 0.43}),
+            style({transform: 'rotate(0deg)', offset: 1}),
+          ]),
+        ),
+      ]),
+    ]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -98,6 +140,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
       });
     }
   }
+
+  /**
+   * When toggled, the notification bell animation is triggered
+   */
+  notificationRingState: boolean = false;
+
+  /**
+   * The last stored number of unread notifications
+   */
+  lastUnreadNotifications: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   /**
    * The Custom loading spinner image path
@@ -224,6 +276,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
   userDisplayName: Observable<string | null>;
 
   /**
+   * The last n notifications received by the active user
+   */
+  lastNotifications: Observable<(Notification & {read: boolean})[]>;
+
+  /**
+   * The unread notifications
+   */
+  unreadNotificationsNumber: Observable<number>;
+
+  /**
    * The current Section
    */
   readonly currentSection: BehaviorSubject<Section | null> = new BehaviorSubject<Section | null>(
@@ -346,6 +408,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly dataService: DataService,
     readonly userGroupManager: UserGroupManager,
     readonly userDataManager: UserDataManager,
+    readonly notificationManager: NotificationManager,
     readonly snackbar: MatSnackBar,
     readonly pcs: PermissionContextService,
     public dialog: MatDialog,
@@ -384,6 +447,48 @@ export class MainNav implements AfterViewInit, OnDestroy {
             .pipe(map(userData => userData?.full_name ?? null));
         }
         return obsOf(null);
+      }),
+    );
+
+    this.unreadNotificationsNumber = this.dataService.firstReplicationComplete.pipe(
+      switchMap(() =>
+        this.notificationManager.collectionChanged.pipe(
+          filter(ccevt => ccevt.action === 'replication cycle complete'),
+        ),
+      ),
+      switchMap(() => {
+        return this.userDataManager.getActiveUserData().pipe(
+          switchMap(userData => {
+            if (userData) {
+              return this.notificationManager.getUnreadNotificationsNumber(userData.id).pipe(
+                tap(num => {
+                  if (num > this.lastUnreadNotifications.value && num > 0) {
+                    this.triggerNotificationBellRing();
+                  }
+                  this.lastUnreadNotifications.next(num);
+                }),
+              );
+            }
+            return obsOf(0);
+          }),
+        );
+      }),
+    );
+    this.lastNotifications = this.dataService.firstReplicationComplete.pipe(
+      switchMap(() =>
+        this.notificationManager.collectionChanged.pipe(
+          filter(ccevt => ccevt.action === 'replication cycle complete'),
+        ),
+      ),
+      switchMap(() => {
+        return this.userDataManager.getActiveUserData().pipe(
+          switchMap(userData => {
+            if (userData) {
+              return this.notificationManager.getLastNotifications(userData.id);
+            }
+            return obsOf([]);
+          }),
+        );
       }),
     );
 
@@ -458,6 +563,89 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   setDarkTheme(evt: boolean) {
     this.ts.setDarkMode(evt);
+  }
+
+  /**
+   * Triggers the notification bell animation by toggling the notification ring state
+   */
+  triggerNotificationBellRing(): void {
+    this.notificationRingState = !this.notificationRingState;
+  }
+
+  /**
+   * Marks a notification as 'read' by the user and updates the notification readers attribute
+   * @param $event The js event
+   * @param notification The notification to update
+   */
+  markNotificationAsRead($event: Event, notification: Notification & {read: boolean}): void {
+    $event.stopPropagation();
+    $event.preventDefault();
+    if (notification == null || notification.read) {
+      return;
+    }
+    this.userDataManager
+      .getActiveUserData()
+      .pipe(
+        switchMap(ud => {
+          if (ud == null) {
+            return obsOf(null);
+          }
+          const updNotification: Partial<Notification> & {id: string} = {
+            readers: [...notification.readers, ud.id],
+            id: notification.id,
+          };
+          return this.notificationManager.patch(updNotification);
+        }),
+        take(1),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Marks all the notification as read by the active user
+   * @param $event The js event
+   */
+  markAllAsRead($event: Event): void {
+    $event.stopPropagation();
+    $event.preventDefault();
+    combineLatest([this.notificationManager.list(), this.userDataManager.getActiveUserData()])
+      .pipe(
+        switchMap(([notifications, ud]) => {
+          if (ud == null || notifications == null) {
+            return obsOf(null);
+          }
+          const patches = notifications.map(notification => {
+            const updNotification: Partial<Notification> & {id: string} = {
+              readers: [...notification.readers, ud.id],
+              id: notification.id,
+            };
+            return this.notificationManager.patch(updNotification);
+          });
+          return forkJoin(patches);
+        }),
+        take(1),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Redirects to an url attached to the notification
+   * @param $event The js event
+   * @param notification The notification to update, providing the redirection url
+   */
+  goToNotificationUrl($event: Event, notification: Notification & {read: boolean}): void {
+    if (notification == null || notification.redirect_url == null) {
+      return;
+    }
+    this.markNotificationAsRead($event, notification);
+    this._router.navigateByUrl(notification.redirect_url);
+  }
+
+  /**
+   * Navigates to the notifications list
+   */
+  goToNotifications(): void {
+    this._router.navigateByUrl('notifications');
   }
 
   /**
