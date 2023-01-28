@@ -12,6 +12,7 @@ import {MainNav, MainNavModule} from './public_api';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {EventEmitter} from '@angular/core';
 import {ThemeService} from '@dino/material/core';
+import {NotificationModule} from '@dino/core/notifications';
 
 let testDbIdx = 0;
 
@@ -72,6 +73,7 @@ describe('Main', () => {
       imports: [
         BrowserAnimationsModule,
         MainNavModule,
+        NotificationModule,
         HttpClientTestingModule,
         RouterTestingModule,
         UsersModule,
