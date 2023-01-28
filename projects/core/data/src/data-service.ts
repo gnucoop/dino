@@ -848,7 +848,7 @@ export class DataService implements IDataService {
       ) {
         console.error('Sync replication error:');
         console.log(err.innerErrors[0]);
-        this._logoutEvt.emit();
+        this._refreshEvt.emit();
       }
     });
 
