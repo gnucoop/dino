@@ -673,13 +673,23 @@ export class DataService implements IDataService {
           for (let key in actSyncs) {
             const actSync: ActiveSync | undefined = actSyncs[key];
             if (actSync && actSync.state) {
-              actSync.state.run().then(() => {
-                currentlyCompleted++;
-                this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
-                if (currentlyCompleted === totSyncs) {
-                  this.replicationCycleComplete.emit();
-                }
-              });
+              actSync.state.run(true).then(
+                _resolved => {
+                  currentlyCompleted++;
+                  this._collectionChangedEmit(
+                    'replication cycle complete',
+                    actSync.state.collection,
+                  );
+                  if (currentlyCompleted === totSyncs) {
+                    this.replicationCycleComplete.emit();
+                  }
+                },
+                rejected => {
+                  if (isDevMode()) {
+                    console.log('Something went wrong with the sync.', rejected);
+                  }
+                },
+              );
             }
           }
         }
@@ -791,6 +801,8 @@ export class DataService implements IDataService {
     params: CollectionSyncParams,
     token: string,
   ): void {
+    const actSyncs = this._activeSyncs.getValue();
+    const isCheckpointSet = actSyncs[collection.name];
     this._stopCollectionSync(collection.name);
     const state = collection.syncGraphQL({
       ...this._dataConfig.value.syncOptions,
@@ -897,9 +909,10 @@ export class DataService implements IDataService {
         error: err => console.log('clientRequestSub err: ', err),
       });
     }
-    this._setCollectionLastPushCheckpoint(state, collection);
+    if (!isCheckpointSet) {
+      this._setCollectionLastPushCheckpoint(state, collection);
+    }
 
-    const actSyncs = this._activeSyncs.getValue();
     actSyncs[collection.name] = {
       state,
       clientRequestSub,

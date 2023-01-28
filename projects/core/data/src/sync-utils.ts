@@ -51,17 +51,22 @@ export function pullQueryBuilder<T extends Model = Model>(
   extraParams?: PullQueryExtraParams,
 ): RxGraphQLReplicationPullQueryBuilder<T> {
   return (doc: RxDocumentData<T> | null) => {
+    /**
+     * If there's no checkpoint document pulled, we start from the beginning.
+     * Otherwise, pull happens for all docs updated during the month before the checkpoint.
+     */
+    let docUpdatedAt: string;
     if (doc == null) {
-      doc = {
-        id: '',
-        created_at: new Date(0).toUTCString(),
-        updated_at: new Date(0).toUTCString(),
-      } as RxDocumentData<T>;
+      docUpdatedAt = new Date(0).toUTCString();
+    } else {
+      const docUpdate: Date = new Date(doc.updated_at);
+      docUpdate.setDate(docUpdate.getDate() - 30);
+      docUpdatedAt = docUpdate.toUTCString();
     }
     extraParams = extraParams || {};
     const where = {
       ...(extraParams.where || {}),
-      updated_at: {_gt: `${doc.updated_at}`},
+      updated_at: {_gte: `${docUpdatedAt}`},
     };
     const fields = extraParams.fields || getCollectionFields(collection);
     const query = `{
@@ -101,7 +106,7 @@ export function pushQueryBuilder<T extends Model = Model>(
     extraParams = extraParams || {};
     const where = {
       ...(extraParams.where || {}),
-      updated_at: {_lte: `${docs[0].updated_at}`},
+      updated_at: {_lt: `${docs[0].updated_at}`},
     };
     docs = docs.map(dc => {
       if (extraParams != null && extraParams.docModifier) {

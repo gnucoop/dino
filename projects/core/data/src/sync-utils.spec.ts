@@ -69,16 +69,19 @@ describe('syncOrderedCollections', () => {
 describe('pullQueryBuilder', () => {
   it('should create a pull sync query for a given collection', async () => {
     const collection = collections[0];
-    const timestamp = new Date().toISOString();
+    const newDate = new Date();
+    const timestampDoc = newDate.toUTCString();
+    newDate.setDate(newDate.getDate() - 30);
+    const timestamp = newDate.toUTCString();
     let pullQuery =
       `{ model1( ` +
-      `where: {updated_at:{_gt:"${timestamp}"}}, ` +
+      `where: {updated_at:{_gte:"${timestamp}"}}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id model3Id } }`;
     const doc: RxDocumentData<Model> = {
       id: 'foo',
-      created_at: timestamp,
-      updated_at: timestamp,
+      created_at: timestampDoc,
+      updated_at: timestampDoc,
     } as RxDocumentData<Model>;
 
     let queryBuilder = pullQueryBuilder(collection, syncOptions);
@@ -88,7 +91,7 @@ describe('pullQueryBuilder', () => {
 
     pullQuery =
       `{ model1( ` +
-      `where: {foo:"bar",updated_at:{_gt:"${timestamp}"}}, ` +
+      `where: {foo:"bar",updated_at:{_gte:"${timestamp}"}}, ` +
       `order_by: [{updated_at: asc}] ` +
       `) { id } }`;
     queryBuilder = pullQueryBuilder(collection, syncOptions, {where: {foo: 'bar'}, fields: ['id']});
@@ -110,7 +113,7 @@ describe('pushQueryBuilder', () => {
     const pushQuery =
       ` mutation InsertModel1($docs: [model1_insert_input!]!) { ` +
       `insert_model1( objects: $docs, on_conflict: ` +
-      `{ constraint: model1_pkey, update_columns: [model3Id], where: {updated_at:{_lte:"${timestamp}"}} }) { returning {id} } } `;
+      `{ constraint: model1_pkey, update_columns: [model3Id], where: {updated_at:{_lt:"${timestamp}"}} }) { returning {id} } } `;
     const queryBuilder = pushQueryBuilder(collection, {docModifier: dummyModifier.modifier});
     const query = queryBuilder(doc);
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
