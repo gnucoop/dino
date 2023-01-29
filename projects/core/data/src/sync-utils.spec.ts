@@ -113,7 +113,7 @@ describe('pushQueryBuilder', () => {
     const pushQuery =
       ` mutation InsertModel1($docs: [model1_insert_input!]!) { ` +
       `insert_model1( objects: $docs, on_conflict: ` +
-      `{ constraint: model1_pkey, update_columns: [model3Id], where: {updated_at:{_lt:"${timestamp}"}} }) { returning {id} } } `;
+      `{ constraint: model1_pkey, update_columns: [model3Id], where: {updated_at:{_lte:"${timestamp}"}} }) { returning {id} } } `;
     const queryBuilder = pushQueryBuilder(collection, {docModifier: dummyModifier.modifier});
     const query = queryBuilder(doc);
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');

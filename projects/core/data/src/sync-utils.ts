@@ -106,7 +106,7 @@ export function pushQueryBuilder<T extends Model = Model>(
     extraParams = extraParams || {};
     const where = {
       ...(extraParams.where || {}),
-      updated_at: {_lt: `${docs[0].updated_at}`},
+      updated_at: {_lte: `${docs[0].updated_at}`},
     };
     docs = docs.map(dc => {
       if (extraParams != null && extraParams.docModifier) {
