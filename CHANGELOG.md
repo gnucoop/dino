@@ -1,3 +1,29 @@
+<a name="13.4.2"></a>
+# 13.4.2 "sporting-sole" (2023-01-29)
+### Bug Fixes
+* **core/data:** 'organizeDocsHierarchy' method in baseDataModelManager now handles missing parent docs correctly ([190e176](https://bitbucket.org/gnucoop/dino/commits/190e1760cbffa0ea05a59d9330273ac4d1c373d1))
+* **core/data:** Dataservice 'firstReplicationComplete' now emits true when loading the app while offline ([441c42a](https://bitbucket.org/gnucoop/dino/commits/441c42a20226d3e375731e7ed013c780b13bd7e0))
+* **material/core:** Sidenav css theme and base background color fix ([80debec](https://bitbucket.org/gnucoop/dino/commits/80debecfa9768229df2f9049b5abb25c787ab574))
+* **material/edit-form:** check if formgroup is initialized before load relationships ([61cf06d](https://bitbucket.org/gnucoop/dino/commits/61cf06d8f860d6452b7901d73149b3b51aa0dad7))
+* **material/edit-form:** Fixed a bug causing the ajfFormValidation state not to emit. ([f5f0f39](https://bitbucket.org/gnucoop/dino/commits/f5f0f39c7a3d8d93bb466793d0a3f77b69c86327))
+* **material/edit-report:** add formschema in report context also when there are no relationships ([0d93c5e](https://bitbucket.org/gnucoop/dino/commits/0d93c5eaa08e3b264ed188b464d7092d63b0eb30))
+* **material/edit-report:** Fixed a bug causing reports not to load correctly when they do not have any form deps. ([225f0b0](https://bitbucket.org/gnucoop/dino/commits/225f0b09c3562cc12bf8d250ae9f00729faaa5df))
+* **material/form-deps-editor:** filter null field names ([6ba52cd](https://bitbucket.org/gnucoop/dino/commits/6ba52cd417af7926b21224db4503e6e9fe5077ba))
+* **multiple:** add null check ([97440c6](https://bitbucket.org/gnucoop/dino/commits/97440c6fff6de9e77c2c495b5fe51bf811de00b3))
+### Features
+* **core/list:** add duplicate form action in list ([d6f9611](https://bitbucket.org/gnucoop/dino/commits/d6f96113683f89b0ad3730659662176bfd29873f))
+* **core/notifications:** Added Notifications model, manager and module. ([9c46de9](https://bitbucket.org/gnucoop/dino/commits/9c46de93c4b5eca16760a4359dbf5a3b48ff4e1a))
+* **core/users:** add function to get users belonging to a list of groups ([0559575](https://bitbucket.org/gnucoop/dino/commits/055957591a223c3cc49d4e8e68c2680d58188eac))
+* **e2e-material:** Added notifications list component to E2e app ([669725e](https://bitbucket.org/gnucoop/dino/commits/669725edc1e562aca7af2395890a91adb2c8d6a6))
+* **material/create-form:** add mainUnsubscribe ([b74b3ee](https://bitbucket.org/gnucoop/dino/commits/b74b3ee979eb2526f31775c7a55b2642167111eb))
+* **material/edit-form:** add metrics info and created_at in form ([a2bdd17](https://bitbucket.org/gnucoop/dino/commits/a2bdd17a59ab5197c83b2b3d80a7d1c429f4ff9f))
+* **material/list:** Added Icons and redirect buttons to list for notifications list ([b1a1f13](https://bitbucket.org/gnucoop/dino/commits/b1a1f13d3bc50826fba5c0a007a014f7db3e5e0e))
+* **material/main-nav:** Added Notifications UI to main nav. ([03a609c](https://bitbucket.org/gnucoop/dino/commits/03a609cc2d78589b466e5867eb7c9d3cd7de4fcb))
+* **multiple:** add save draft in create and edit form ([015e0aa](https://bitbucket.org/gnucoop/dino/commits/015e0aa548f7947849107ba46dc7498e84126af0))
+* **multiple:** Icons in collect/dashboard, side navigation, main navigation toolbar can now be svg icons. ([76c754e](https://bitbucket.org/gnucoop/dino/commits/76c754e43b9675c5a04e9816cad877164d5bc729))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.4.1"></a>
 # 13.4.1 "quintessential-herring" (2022-12-05)
 ### Bug Fixes
