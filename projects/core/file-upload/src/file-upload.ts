@@ -28,7 +28,7 @@ import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {StorageUploadResponse} from './file-upload-response';
 
-export const storageEndpoint = 'v1/storage/files';
+export const storageEndpoint = '/files';
 
 /**
  * Service that can upload files on cloud
@@ -67,7 +67,10 @@ export class FileUploadService {
     const file = new File([blob], fileToUpload.name);
     return this._authConfig.pipe(
       switchMap(config => {
-        const url = this._generateUrl(storageEndpoint, this._removeSlashes(config.host));
+        const url = this._generateUrl(
+          storageEndpoint,
+          this._removeSlashes(config.host.replace('auth', 'storage')),
+        );
         const headers =
           config.apiKey != null
             ? {Authorization: config.apiKey}
