@@ -16,7 +16,7 @@ import {delay, map, shareReplay, tap} from 'rxjs/operators';
 
 import {additionalConfig} from './mockconfig';
 
-export const live = true;
+export const live: boolean = true;
 export const initializationScreenMaxDuration: number | undefined = undefined;
 
 /**

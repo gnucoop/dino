@@ -123,6 +123,8 @@ export class E2eApp {
       .subscribe(([_, authEvent]) => {
         if ((live || initializationScreenMaxDuration) && authEvent.evt === 'login') {
           this._ds.collectionsInitialized.emit('completed');
+        } else if (live == false && !initializationScreenMaxDuration) {
+          this._ds.collectionsInitialized.emit('completed');
         }
         this._lm.loadDinoLangs();
       });
