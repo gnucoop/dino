@@ -48,12 +48,22 @@ import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
+  merge,
   Observable,
   of as obsOf,
   Subscription,
   timer,
 } from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  filter,
+  map,
+  mapTo,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 import {Section} from './section-interface';
 
@@ -346,11 +356,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _syncLoadingSub: Subscription = Subscription.EMPTY;
 
   /**
-   * Subscribes to the Initialization timer
-   */
-  private _initScreenMaxDurationSub: Subscription = Subscription.EMPTY;
-
-  /**
    * Subscribes to the DataService 'replicationCycleComplete' event
    */
   private _replicationCycleCompleteSub: Subscription = Subscription.EMPTY;
@@ -416,10 +421,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     private _cdr: ChangeDetectorRef,
     readonly ts: ThemeService,
   ) {
-    this._syncLoadingSub = this.dataService.firstReplicationComplete.subscribe(repComplete => {
-      this.isLoading.next(!repComplete);
-    });
-
     this._currentSectionSub = combineLatest([
       this._router.events.pipe(
         filter(evt => evt instanceof NavigationEnd || evt instanceof NavigationStart),
@@ -450,10 +451,19 @@ export class MainNav implements AfterViewInit, OnDestroy {
       }),
     );
 
-    this.unreadNotificationsNumber = this.dataService.firstReplicationComplete.pipe(
+    this.unreadNotificationsNumber = merge(
+      this.dataService.firstReplicationComplete,
+      this.authService.authenticated.pipe(filter(authEvt => authEvt.evt === 'init')),
+    ).pipe(
       switchMap(() =>
         this.notificationManager.collectionChanged.pipe(
-          filter(ccevt => ccevt.action === 'replication cycle complete'),
+          filter(ccevt => {
+            const repCompleteMsg = 'replication cycle complete';
+            const docUpdMsg = 'Document updated';
+            return this.dataService.config.syncOptions.live
+              ? ccevt.action === repCompleteMsg
+              : ccevt.action === repCompleteMsg || ccevt.action === docUpdMsg;
+          }),
         ),
       ),
       switchMap(() => {
@@ -474,10 +484,20 @@ export class MainNav implements AfterViewInit, OnDestroy {
         );
       }),
     );
-    this.lastNotifications = this.dataService.firstReplicationComplete.pipe(
+
+    this.lastNotifications = merge(
+      this.dataService.firstReplicationComplete,
+      this.authService.authenticated.pipe(filter(authEvt => authEvt.evt === 'init')),
+    ).pipe(
       switchMap(() =>
         this.notificationManager.collectionChanged.pipe(
-          filter(ccevt => ccevt.action === 'replication cycle complete'),
+          filter(ccevt => {
+            const repCompleteMsg = 'replication cycle complete';
+            const docUpdMsg = 'Document updated';
+            return this.dataService.config.syncOptions.live
+              ? ccevt.action === repCompleteMsg
+              : ccevt.action === repCompleteMsg || ccevt.action === docUpdMsg;
+          }),
         ),
       ),
       switchMap(() => {
@@ -538,16 +558,22 @@ export class MainNav implements AfterViewInit, OnDestroy {
       )
       .subscribe();
 
-    if (this.initializationScreenMaxDuration) {
+    if (!this.initializationScreenMaxDuration) {
+      this._syncLoadingSub = this.dataService.firstReplicationComplete.subscribe(repComplete => {
+        this.isLoading.next(!repComplete);
+      });
+    } else {
       const timeout = this.initializationScreenMaxDuration;
-      this._initScreenMaxDurationSub = this.authService.authenticated
-        .pipe(
+
+      this._syncLoadingSub = merge(
+        this.authService.authenticated.pipe(
           filter(auth => auth.auth == true),
-          switchMap(() => timer(timeout)),
-        )
-        .subscribe(() => {
-          this.isLoading.next(false);
-        });
+          switchMap(() => timer(timeout).pipe(mapTo(true))),
+        ),
+        this.dataService.firstReplicationComplete,
+      ).subscribe(repComplete => {
+        this.isLoading.next(!repComplete);
+      });
     }
 
     this._cdr.detectChanges();
@@ -704,7 +730,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._currentSectionSub.unsubscribe();
     this._onRouterOutletLoadingSub.unsubscribe();
     this._syncLoadingSub.unsubscribe();
-    this._initScreenMaxDurationSub.unsubscribe();
     this._replicationCycleCompleteSub.unsubscribe();
   }
 }
