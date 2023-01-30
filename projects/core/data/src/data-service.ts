@@ -995,7 +995,10 @@ export class DataService implements IDataService {
       ...(count != null && {count}),
     });
 
-    if (msg === 'replication cycle complete') {
+    const firstSyncMsg = this.config.syncOptions.live
+      ? 'replication cycle complete'
+      : 'Document updated';
+    if (msg === firstSyncMsg) {
       const coll = this._registeredCollections.value.find(
         coll => coll.collection.name === collection.name,
       );
