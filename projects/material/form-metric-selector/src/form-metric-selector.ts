@@ -51,7 +51,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import {filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
+import {debounceTime, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
 import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
 
@@ -420,7 +420,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * @param metricType The type identifier of the metric.
    */
   private _addFormMetricsOptions(metricType: string): void {
-    this.formMetricsSubs[metricType] = combineLatest([
+    let mtOptSource = combineLatest([
       this._userGroupManager.getGroupsMetricsByType(metricType).pipe(
         switchMap(metricsIds => {
           const querySelector = {id: {$in: metricsIds}, is_deleted: {$ne: true}};
@@ -444,14 +444,91 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           return metricsObs;
         }),
       ),
-      this.formMetricsValues[metricType],
+      this.formMetricsValues[metricType].pipe(debounceTime(800)),
       this._newMetric,
-    ])
-      .pipe(
-        map(([metricOptions, metricValue, newMetric]) => {
-          if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
-            metricValue = '';
-          }
+    ]).pipe(
+      map(([metricOptions, metricValue, newMetric]) => {
+        if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
+          metricValue = '';
+        }
+        if (
+          newMetric != null &&
+          newMetric.collection.name === metricType &&
+          !metricOptions.includes(newMetric)
+        ) {
+          metricOptions.push(newMetric);
+        }
+        if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
+          const mtrName = metricValue.toLowerCase();
+          const metricsMatchingByName = metricOptions.filter(option => {
+            return (
+              option.name.toLowerCase().includes(mtrName) &&
+              option.name != this.formMetrics.get('name')?.value
+            );
+          });
+          const matchingMetricsParentsIDs = [
+            ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
+          ];
+          const metricsMatchingParents =
+            this._metricManagers[metricType] != null
+              ? this._metricManagers[metricType]!.findMatchingAncestors(
+                  metricOptions,
+                  matchingMetricsParentsIDs,
+                )
+              : [];
+          return {
+            metricOptions: [...new Set([...metricsMatchingByName, ...metricsMatchingParents])],
+            metricValue,
+          };
+        }
+        return {metricOptions: [], metricValue};
+      }),
+    );
+
+    // Cases can be very numerous and their filtering is treated differently
+    if (metricType === 'case') {
+      mtOptSource = combineLatest([
+        combineLatest([
+          this._userGroupManager.getGroupsMetricsByType(metricType),
+          this.formMetricsValues[metricType].pipe(debounceTime(800)),
+        ]).pipe(
+          switchMap(([metricsIds, metricValue]) => {
+            if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
+              metricValue = '';
+            }
+            const querySelector = {
+              id: {$in: metricsIds},
+              name: {$regex: new RegExp(metricValue as string, 'i')},
+              is_deleted: {$ne: true},
+            };
+            if (this._metricManagers[metricType] == null) {
+              return [];
+            }
+            let metricsObs: Observable<RxDocument<Metric, {}>[]> = this._metricManagers[
+              metricType
+            ]!.query({
+              selector: querySelector,
+              sort: [{'name': 'asc'}],
+              limit: 50,
+            });
+
+            if (metricsIds.includes('all')) {
+              metricsObs = this._metricManagers[metricType]!.query({
+                selector: {
+                  is_deleted: {$ne: true},
+                  name: {$regex: new RegExp(metricValue as string, 'i')},
+                },
+                sort: [{'name': 'asc'}],
+                limit: 25,
+              });
+            }
+
+            return metricsObs;
+          }),
+        ),
+        this._newMetric,
+      ]).pipe(
+        map(([metricOptions, newMetric]) => {
           if (
             newMetric != null &&
             newMetric.collection.name === metricType &&
@@ -459,50 +536,30 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           ) {
             metricOptions.push(newMetric);
           }
-          if (metricOptions != null && metricValue != null && typeof metricValue === 'string') {
-            const mtrName = metricValue.toLowerCase();
-            const metricsMatchingByName = metricOptions.filter(option => {
-              return (
-                option.name.toLowerCase().includes(mtrName) &&
-                option.name != this.formMetrics.get('name')?.value
-              );
-            });
-            const matchingMetricsParentsIDs = [
-              ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
-            ];
-            const metricsMatchingParents =
-              this._metricManagers[metricType] != null
-                ? this._metricManagers[metricType]!.findMatchingAncestors(
-                    metricOptions,
-                    matchingMetricsParentsIDs,
-                  )
-                : [];
-            return {
-              metricOptions: [...new Set([...metricsMatchingByName, ...metricsMatchingParents])],
-              metricValue,
-            };
-          }
-          return {metricOptions: [], metricValue};
+
+          return {metricOptions, metricValue: ''};
         }),
-      )
-      .subscribe(metricObj => {
-        let parentIds = metricObj.metricOptions
-          .filter(mo => mo.parent_id != null)
-          .map(mt => mt.parent_id);
-        parentIds = [...new Set(parentIds)];
-        let organizedMetricOptions = metricObj.metricOptions;
-        if (parentIds.length && this._metricManagers[metricType] != null) {
-          organizedMetricOptions = this._metricManagers[metricType]!.organizeDocsHierarchy(
-            metricObj.metricOptions,
-            parentIds,
-          );
-        }
-        this.formMetricsOptions[metricType]
-          ? this.formMetricsOptions[metricType].next(organizedMetricOptions)
-          : (this.formMetricsOptions[metricType] = new BehaviorSubject<
-              RxDocument<Metric & {level?: number}, {}>[]
-            >(organizedMetricOptions));
-      });
+      );
+    }
+
+    this.formMetricsSubs[metricType] = mtOptSource.subscribe(metricObj => {
+      let parentIds = metricObj.metricOptions
+        .filter(mo => mo.parent_id != null)
+        .map(mt => mt.parent_id);
+      parentIds = [...new Set(parentIds)];
+      let organizedMetricOptions = metricObj.metricOptions;
+      if (parentIds.length && this._metricManagers[metricType] != null) {
+        organizedMetricOptions = this._metricManagers[metricType]!.organizeDocsHierarchy(
+          metricObj.metricOptions,
+          parentIds,
+        );
+      }
+      this.formMetricsOptions[metricType]
+        ? this.formMetricsOptions[metricType].next(organizedMetricOptions)
+        : (this.formMetricsOptions[metricType] = new BehaviorSubject<
+            RxDocument<Metric & {level?: number}, {}>[]
+          >(organizedMetricOptions));
+    });
   }
 
   /**

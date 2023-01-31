@@ -38,7 +38,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog
 import {ActivatedRoute} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
-import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
+import {DataModelManager, DataQueryOptions, Metric, MetricsService} from '@dino/core/data';
 import {FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
 import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
@@ -49,7 +49,15 @@ import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {combineLatest, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
-import {catchError, map, switchMap, take, takeUntil, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  map,
+  switchMap,
+  take,
+  takeUntil,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 /**
  * Opt-in component that handles all SelectionList filters.
@@ -401,58 +409,63 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     const inputValue = inputControl?.get(metricType)?.valueChanges;
     if (inputValue != null) {
       this.metricFiltersOptions[metricType] = inputValue.pipe(
+        debounceTime(800),
         switchMap(metricValue => {
           if (typeof metricValue === 'string') {
-            return (
-              metricManager
-                // .query({selector: {name: {$regex: new RegExp(val, 'i')}, is_deleted: {$ne: true}}})
-                .query({
-                  selector: {is_deleted: {$ne: true}},
-                  sort: [{'name': 'asc'}],
-                })
-                .pipe(
-                  map((metricOptions: Metric[]) => {
-                    if (
-                      metricOptions != null &&
-                      metricValue != null &&
-                      typeof metricValue === 'string'
-                    ) {
-                      const mtrName = metricValue.toLowerCase();
-                      const metricsMatchingByName = metricOptions.filter(option => {
-                        return option.name.toLowerCase().includes(mtrName);
-                      });
-                      const matchingMetricsParentsIDs = [
-                        ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
-                      ];
-                      const metricsMatchingParents =
-                        metricManager != null
-                          ? metricManager.findMatchingAncestors(
-                              metricOptions,
-                              matchingMetricsParentsIDs,
-                            )
-                          : [];
-                      const metricsWithAncestors = [
-                        ...new Set([...metricsMatchingByName, ...metricsMatchingParents]),
-                      ];
+            let mtQuery: DataQueryOptions = {
+              selector: {is_deleted: {$ne: true}},
+              sort: [{'name': 'asc'}],
+            };
+            // Cases can be very numerous and their filtering is treated differently
+            if (metricType === 'case') {
+              mtQuery = {
+                selector: {name: {$regex: new RegExp(metricValue, 'i')}, is_deleted: {$ne: true}},
+                sort: [{'name': 'asc'}],
+                limit: 50,
+              };
+            }
+            return metricManager.query(mtQuery).pipe(
+              map((metricOptions: Metric[]) => {
+                if (
+                  metricOptions != null &&
+                  metricValue != null &&
+                  typeof metricValue === 'string'
+                ) {
+                  const mtrName = metricValue.toLowerCase();
+                  const metricsMatchingByName = metricOptions.filter(option => {
+                    return option.name.toLowerCase().includes(mtrName);
+                  });
+                  const matchingMetricsParentsIDs = [
+                    ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
+                  ];
+                  const metricsMatchingParents =
+                    metricManager != null
+                      ? metricManager.findMatchingAncestors(
+                          metricOptions,
+                          matchingMetricsParentsIDs,
+                        )
+                      : [];
+                  const metricsWithAncestors = [
+                    ...new Set([...metricsMatchingByName, ...metricsMatchingParents]),
+                  ];
 
-                      let parentIds = metricsWithAncestors
-                        .filter(mo => mo.parent_id != null)
-                        .map(mt => mt.parent_id);
-                      parentIds = [...new Set(parentIds)];
+                  let parentIds = metricsWithAncestors
+                    .filter(mo => mo.parent_id != null)
+                    .map(mt => mt.parent_id);
+                  parentIds = [...new Set(parentIds)];
 
-                      let organizedMetricOptions = metricsWithAncestors;
-                      if (parentIds.length && metricManager != null) {
-                        organizedMetricOptions = metricManager.organizeDocsHierarchy(
-                          metricsWithAncestors,
-                          parentIds,
-                        );
-                      }
+                  let organizedMetricOptions = metricsWithAncestors;
+                  if (parentIds.length && metricManager != null) {
+                    organizedMetricOptions = metricManager.organizeDocsHierarchy(
+                      metricsWithAncestors,
+                      parentIds,
+                    );
+                  }
 
-                      return organizedMetricOptions;
-                    }
-                    return metricOptions;
-                  }),
-                )
+                  return organizedMetricOptions;
+                }
+                return metricOptions;
+              }),
             );
           }
           return [];
