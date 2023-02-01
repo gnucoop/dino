@@ -959,6 +959,7 @@ export class DataService implements IDataService {
         switchMap(() => from(collection.findOne({sort: [{'updated_at': 'desc'}]}).exec())),
         switchMap(doc => {
           if (doc == null) {
+            this._collectionChangedEmit('Document updated', collection);
             return obsOf(null);
           }
           const rxDoc = doc as RxDocument<Model>;

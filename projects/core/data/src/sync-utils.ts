@@ -221,7 +221,9 @@ function generateSyncPullNotificationsChecks(userDataId: string | null): {
     return [];
   }
   let whereAndConditions: {[key: string]: any}[] = [];
-  const wObj: {[key: string]: any} = {'recipients': {_contains: userDataId}};
+  const wObj: {[key: string]: any} = {
+    _or: [{'recipients': {_contains: userDataId}}, {'recipients': {_contains: 'all'}}],
+  };
   whereAndConditions.push(wObj);
 
   return whereAndConditions;
