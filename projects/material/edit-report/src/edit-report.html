@@ -18,13 +18,13 @@
 
           <mat-step>
             <ng-template matStepLabel>{{'REPORT DATA'|transloco}}</ng-template>
+            <div>
+              <button mat-icon-button matStepperPrevious aria-label="Previous step">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+            </div>
             <ng-container *ngIf="reportSchema|async as repschema">
               <ng-container *ngIf="reportData|async as repData">
-                <div>
-                  <button mat-icon-button matStepperPrevious aria-label="Previous step">
-                    <mat-icon>arrow_back</mat-icon>
-                  </button>
-                </div>
                 <div class="dino-edit-report-print">
                   <button color="primary" mat-icon-button (click)="printReport('portrait')">
                     <mat-icon> printer </mat-icon>
@@ -40,11 +40,11 @@
                   </h2>
                   <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
                 </div>
-                <div class="dino-edit-report-step-container">
-                  <ajf-report id="report print" [instance]="repInstance"></ajf-report>
-                </div>
               </ng-container>
             </ng-container>
+            <div class="dino-edit-report-step-container">
+              <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+            </div>
           </mat-step>
         </mat-stepper>
       </ng-container>
@@ -61,17 +61,18 @@
               </h2>
               <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
             </div>
-            <div class="dino-edit-report-step-container">
-              <ajf-report id="report print" [instance]="repInstance"></ajf-report>
-            </div>
-          </ng-container> </ng-container
-      ></ng-container>
+          </ng-container>
+        </ng-container>
+        <div class="dino-edit-report-step-container">
+          <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+        </div>
+      </ng-container>
     </div>
   </ng-container>
 </ng-container>
 
 <ng-template #loading>
-  <div class="dino-loading" >
+  <div class="dino-loading">
     <ng-container *ngIf="spinnerImagePath; else defaultspinner"
       ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
     </ng-container>
