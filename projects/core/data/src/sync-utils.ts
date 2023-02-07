@@ -60,7 +60,6 @@ export function pullQueryBuilder<T extends Model = Model>(
       docUpdatedAt = new Date(0).toUTCString();
     } else {
       const docUpdate: Date = new Date(doc.updated_at);
-      docUpdate.setDate(docUpdate.getDate() - 30);
       docUpdatedAt = docUpdate.toUTCString();
     }
     extraParams = extraParams || {};

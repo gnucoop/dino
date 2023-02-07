@@ -71,7 +71,6 @@ describe('pullQueryBuilder', () => {
     const collection = collections[0];
     const newDate = new Date();
     const timestampDoc = newDate.toUTCString();
-    newDate.setDate(newDate.getDate() - 30);
     const timestamp = newDate.toUTCString();
     let pullQuery =
       `{ model1( ` +
