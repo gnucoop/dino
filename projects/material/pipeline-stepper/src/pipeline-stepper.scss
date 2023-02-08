@@ -18,7 +18,7 @@ dino-pipeline-stepper {
       opacity: 0.6;
     }
     &[aria-labelledby='done'] {
-      .mat-step-icon{
+      .mat-step-icon {
         color: #32db64;
       }
     }
@@ -33,7 +33,7 @@ dino-pipeline-stepper {
   .mat-step-header .mat-step-icon:not(.mat-step-icon-selected) {
     background-color: transparent !important;
   }
-  .dino-pipeline-stepper-viewonly {
+  .dino-pipeline-stepper-viewonly .mat-horizontal-stepper-header-container {
     pointer-events: none;
   }
 }
