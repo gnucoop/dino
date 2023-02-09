@@ -24,7 +24,7 @@ import {deepCopy} from '@ajf/core/utils';
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {delay, map, switchMap} from 'rxjs/operators';
 
 import {Notification} from './notification';
 import {schema} from './notification-json';
@@ -55,6 +55,7 @@ export class NotificationManager extends DataModelManager<Notification> {
       return obsOf(0);
     }
     return this.init().pipe(
+      delay(3000),
       switchMap(() =>
         this.list().pipe(
           map(notifications => notifications.filter(nt => !nt.readers.includes(userDataId)).length),
@@ -77,6 +78,7 @@ export class NotificationManager extends DataModelManager<Notification> {
       return obsOf([]);
     }
     return this.init().pipe(
+      delay(3000),
       switchMap(() => {
         return this.list({
           sort: [{created_at: 'desc', id: 'desc'}],
