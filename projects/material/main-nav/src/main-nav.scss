@@ -170,7 +170,7 @@ dino-main-nav {
       span {
         padding: 10px;
       }
-      .mat-mdc-list-item-unscoped-content{
+      .mat-mdc-list-item-unscoped-content {
         display: flex;
         align-items: center;
       }
@@ -197,7 +197,7 @@ dino-main-nav {
     }
   }
 }
-.dino-notifications-menu .mat-menu-content {
+.dino-notifications-menu .mat-mdc-menu-content {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
 
@@ -209,22 +209,19 @@ dino-main-nav {
     .dino-notification-container {
       display: flex;
       .dino-notification-gotourl-btn {
-        position: absolute;
-        right: 5px;
-        top: 12px;
-        max-width: 25px;
-        max-height: 25px;
+        top: 2px;
+        max-width: 30px;
+        max-height: 30px;
         .mat-icon {
           position: relative;
-          bottom: 6px;
-          left: 1px;
-          font-size: 20px;
+          min-width: 40px;
+          margin: auto;
         }
       }
     }
   }
 
-  .mat-menu-item {
+  .mat-mdc-menu-item {
     .dino-notification-icon {
       color: rgb(var(--palette-primary-500));
     }
@@ -233,10 +230,13 @@ dino-main-nav {
       font-weight: bold;
     }
     &.dino-notification-action-button {
-      text-align: center;
+      span {
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
+      }
       border-top: 1px solid rgba(var(--palette-primary-500), 0.4);
       background-color: rgba(var(--palette-warn-500), 0.2);
-      text-transform: uppercase;
       -webkit-transition: all ease-in-out 1.3s;
       transition: all ease-in-out 1.3;
       &:hover {
