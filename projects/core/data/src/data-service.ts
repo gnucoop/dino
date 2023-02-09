@@ -665,10 +665,17 @@ export class DataService implements IDataService {
    * each active sync.
    * If a collection name is provided, the replication cycle runs for
    * that collection only.
+   * When the Sync runs for all collections, the auth token gets refreshed before the replication cycle.
    * @param collectionName? The name of the collection to be synced
    */
   runSync(collectionName?: string) {
-    combineLatest([this.isSyncing, this._nss.isOnline$, this._authService.refreshToken()])
+    let refreshStream$: Observable<boolean> = obsOf(true);
+
+    if (!collectionName) {
+      refreshStream$ = this._authService.refreshToken();
+    }
+
+    combineLatest([this.isSyncing, this._nss.isOnline$, refreshStream$])
       .pipe(take(1))
       .subscribe(([_isSyncing, isOnline, refresh]) => {
         if (!refresh) {
@@ -686,7 +693,9 @@ export class DataService implements IDataService {
             if (actSync && actSync.state) {
               actSync.state.reSync();
               this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
-              this.replicationCycleComplete.emit();
+              if (collectionName === 'form_data') {
+                this.replicationCycleComplete.emit();
+              }
             }
           } else {
             for (let key in actSyncs) {
