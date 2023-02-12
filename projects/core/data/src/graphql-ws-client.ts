@@ -38,7 +38,7 @@ export function newClient(
   refreshEvt: EventEmitter<void>,
   socketJwtExpiredCode?: number,
 ): Client | null {
-  if (wsUrl == null || authToken == null || socketJwtExpiredCode) {
+  if (wsUrl == null || authToken == null || socketJwtExpiredCode == null) {
     return null;
   }
   return createClient({
