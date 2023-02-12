@@ -140,11 +140,10 @@ export function pushQueryBuilder<T extends Model = Model>(
  */
 export function subscriptionQueryBuilder(collection: RxCollection): string {
   const ucfCollectionName = ucfirst(collection.name);
-  const fields = getCollectionFields(collection);
   return `
       subscription on${ucfCollectionName}Changed {
         ${collection.name} {
-          ${fields.join(' ')}
+          updated_at
         }
       }
     `;

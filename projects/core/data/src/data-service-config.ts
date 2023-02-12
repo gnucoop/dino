@@ -57,6 +57,11 @@ export interface DataServiceSyncOptions<T extends Model = Model>
   authErrorMessage?: string;
 
   /**
+   * The error code number the websocket server returns when the Jwt token expires
+   */
+  socketJwtExpiredCode?: number;
+
+  /**
    * If true, the App will run locally, detached from its backend.
    * No auth is required in this mode.
    */

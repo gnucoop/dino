@@ -65,7 +65,6 @@ import {
   throttleTime,
   withLatestFrom,
 } from 'rxjs/operators';
-import {SubscriptionClient} from 'subscriptions-transport-ws';
 import {v4 as uuidv4} from 'uuid';
 
 import {ActiveSync} from './active-sync-interface';
@@ -92,6 +91,8 @@ import {
   pushQueryBuilder,
   subscriptionQueryBuilder,
 } from './sync-utils';
+import {Client} from 'graphql-ws';
+import {newClient, newClientSubscription} from './graphql-ws-client';
 
 /**
  * Parameters needed to set up the collection sync.
@@ -167,6 +168,11 @@ export class DataService implements IDataService {
   private _db: Observable<RxDatabase>;
 
   private _refreshDb = new BehaviorSubject<'ready' | 'notReady'>('ready');
+
+  /**
+   * The current Websocket client
+   */
+  private _wsClient: Client | null = null;
 
   private _registeredCollections: BehaviorSubject<RegisteredCollection[]> = new BehaviorSubject<
     RegisteredCollection[]
@@ -757,7 +763,7 @@ export class DataService implements IDataService {
    * When a new collection is registered, the sync will automatically start depending on the
    * current authentication status.
    */
-  private _initSync(): void {
+  protected _initSync(): void {
     const collectionChange = this._registeredCollections.pipe(debounceTime(300));
     combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
       .pipe(withLatestFrom(this._authService.authenticated))
@@ -767,6 +773,21 @@ export class DataService implements IDataService {
           const collectionNames: string[] = Object.values(this._activeSyncs.getValue()).map(
             coll => coll.collectionName,
           );
+          // If the user is authenticated with a new token, a webSocket client is opened.
+          // All collections graphql subscriptions will be sent through this client.
+          if (
+            this._dataConfig.value.syncOptions.live &&
+            this._dataConfig.value.syncOptions.wsUrl != null &&
+            token &&
+            token != this._currentToken
+          ) {
+            this._wsClient = newClient(
+              this._dataConfig.value.syncOptions.wsUrl,
+              token,
+              this._refreshEvt,
+              this._dataConfig.value.syncOptions.socketJwtExpiredCode,
+            );
+          }
           registeredCollections.forEach(registeredCollection => {
             const {collection, ...params} = registeredCollection;
             if (token != this._currentToken || collectionNames.indexOf(collection.name) < 0) {
@@ -856,38 +877,12 @@ export class DataService implements IDataService {
 
     let clientRequestSub: {unsubscribe: () => void} = Subscription.EMPTY;
     let stateReceivedSub: {unsubscribe: () => void} = Subscription.EMPTY;
-    let client: SubscriptionClient | null = null;
     if (
       this._dataConfig.value.syncOptions.live &&
       this._dataConfig.value.syncOptions.wsUrl != null
     ) {
-      client = new SubscriptionClient(
-        this._dataConfig.value.syncOptions.wsUrl,
-        {
-          minTimeout: 120 * 1000,
-          timeout: 240 * 1000,
-          reconnect: true,
-          reconnectionAttempts: 5,
-          connectionCallback: (error: Error[]) => {
-            if (error && client) {
-              client.close(true);
-              const errMessage = error.toString();
-              if (
-                this._dataConfig.value.syncOptions.authErrorMessage &&
-                errMessage === this._dataConfig.value.syncOptions.authErrorMessage
-              ) {
-                this._refreshEvt.emit();
-              } else {
-                this._logoutEvt.emit();
-              }
-            }
-          },
-          connectionParams: {headers: {'Authorization': `Bearer ${token}`}},
-        },
-        this._dataConfig.value.syncOptions.webSocketImpl,
-      );
       const query = subscriptionQueryBuilder(collection);
-      const clientRequest = client.request({query});
+      const clientRequest = newClientSubscription(this._wsClient, {query});
 
       stateReceivedSub = state.received$.pipe(throttleTime(500)).subscribe(_data => {
         this._collectionChangedEmit('changed data pulled', collection);
@@ -917,7 +912,6 @@ export class DataService implements IDataService {
       state,
       clientRequestSub,
       stateReceivedSub,
-      client,
       stateActivity,
       collectionName: collection.name,
     };
@@ -933,10 +927,7 @@ export class DataService implements IDataService {
       return;
     }
     const actSyncs = this._activeSyncs.getValue();
-    const {state, clientRequestSub, stateReceivedSub, client} = actSyncs[collectionName];
-    if (client) {
-      client.close(true);
-    }
+    const {state, clientRequestSub, stateReceivedSub} = actSyncs[collectionName];
     clientRequestSub.unsubscribe();
     stateReceivedSub.unsubscribe();
     state.cancel().then(() => {});

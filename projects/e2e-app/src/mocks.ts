@@ -34,6 +34,7 @@ export const instanceName = 'local_dev';
 // export const instanceName = 'nhost_dev';
 
 export const authErrorMessage = 'Could not verify JWT: JWTExpired';
+export const socketJwtExpiredCode = 4400;
 
 export const authMockConfig: AuthServiceConfig = {
   host: '',
@@ -160,6 +161,7 @@ export class AuthServiceMock {
 @Injectable()
 export class DataServiceMock extends DataService {
   override firstReplicationComplete: Observable<boolean> = obsOf(true);
+  protected override _initSync(): void {}
   protected override _setupCollectionSync(
     _collection: RxCollection<any, {}, {}, {}>,
     _params: CollectionSyncParams,

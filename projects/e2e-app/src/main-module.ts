@@ -85,6 +85,7 @@ import {
   authErrorMessage,
   AuthServiceMock,
   live,
+  socketJwtExpiredCode,
   syncGraphQLUrl,
   UserDataManagerMock,
   UserGroupManagerMock,
@@ -192,6 +193,7 @@ export function provideDataServiceConfig() {
       live: live,
       webSocketImpl: WebSocket,
       authErrorMessage: authErrorMessage,
+      socketJwtExpiredCode: socketJwtExpiredCode,
     },
   };
 }

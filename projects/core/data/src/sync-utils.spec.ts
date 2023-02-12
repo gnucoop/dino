@@ -16,6 +16,7 @@ const schemas = [
     properties: {
       id: {type: 'string', primary: true},
       model3Id: {type: 'string', ref: 'model3'},
+      updated_at: {type: 'string'},
     },
   },
   {
@@ -26,6 +27,7 @@ const schemas = [
       id: {type: 'string', primary: true},
       model1Id: {type: 'string', ref: 'model1'},
       foo: {type: 'object', bar: {type: 'string'}, model3Id: {type: 'string', ref: 'model3'}},
+      updated_at: {type: 'string'},
     },
   },
   {
@@ -35,6 +37,7 @@ const schemas = [
     primaryKey: 'id',
     properties: {
       id: {type: 'string'},
+      updated_at: {type: 'string'},
     },
   },
 ] as RxJsonSchema<any>[];
@@ -76,7 +79,7 @@ describe('pullQueryBuilder', () => {
       `{ model1( ` +
       `where: {updated_at:{_gte:"${timestamp}"}}, ` +
       `order_by: [{updated_at: asc}] ` +
-      `) { id model3Id } }`;
+      `) { id model3Id updated_at } }`;
     const doc: RxDocumentData<Model> = {
       id: 'foo',
       created_at: timestampDoc,
@@ -112,7 +115,7 @@ describe('pushQueryBuilder', () => {
     const pushQuery =
       ` mutation InsertModel1($docs: [model1_insert_input!]!) { ` +
       `insert_model1( objects: $docs, on_conflict: ` +
-      `{ constraint: model1_pkey, update_columns: [model3Id], where: {updated_at:{_lte:"${timestamp}"}} }) { returning {id} } } `;
+      `{ constraint: model1_pkey, update_columns: [model3Id, updated_at], where: {updated_at:{_lte:"${timestamp}"}} }) { returning {id} } } `;
     const queryBuilder = pushQueryBuilder(collection, {docModifier: dummyModifier.modifier});
     const query = queryBuilder(doc);
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
@@ -124,7 +127,7 @@ describe('pushQueryBuilder', () => {
 describe('subscriptionQueryBuilder', () => {
   it('should create a subscription sync query for a given collection', () => {
     const collection = collections[0];
-    const subscriptionQuery = ` subscription onModel1Changed { model1 { id model3Id } } `;
+    const subscriptionQuery = ` subscription onModel1Changed { model1 { updated_at } } `;
     const query = subscriptionQueryBuilder(collection);
     const queryStr = query.replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(subscriptionQuery);
