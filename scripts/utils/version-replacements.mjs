@@ -20,7 +20,7 @@ export const versionReplacements = packages => {
     ['rxdb', 'RXDB'],
     ['rxjs', 'RXJS'],
     ['stream-browserify', 'STREAM'],
-    ['subscriptions-transport-ws', 'STWS'],
+    ['graphql-ws', 'GWS'],
     ['tslib', 'TSLIB'],
     ['uuid', 'UUID'],
     ['xlsx', 'XLSX'],
