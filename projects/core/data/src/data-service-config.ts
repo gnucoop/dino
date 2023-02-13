@@ -41,9 +41,9 @@ export interface DataServiceSyncOptions<T extends Model = Model>
   batchSizePush?: number;
 
   /**
-   * GraphQL WebSocket endpoint used for live sync.
+   * Http and WebSocket endpoints (ws used for live sync).
    */
-  wsUrl?: string;
+  url: {http: string; ws?: string};
 
   /**
    * WebSocket implementation class. Used mainly for testing.

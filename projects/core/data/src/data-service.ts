@@ -789,12 +789,12 @@ export class DataService implements IDataService {
           // All collections graphql subscriptions will be sent through this client.
           if (
             this._dataConfig.value.syncOptions.live &&
-            this._dataConfig.value.syncOptions.wsUrl != null &&
+            this._dataConfig.value.syncOptions.url.ws != null &&
             token &&
             token != this._currentToken
           ) {
             this._wsClient = newClient(
-              this._dataConfig.value.syncOptions.wsUrl,
+              this._dataConfig.value.syncOptions.url.ws,
               token,
               this._refreshEvt,
               this._dataConfig.value.syncOptions.socketJwtExpiredCode,
@@ -835,7 +835,6 @@ export class DataService implements IDataService {
     token: string,
   ): void {
     const actSyncs = this._activeSyncs.getValue();
-    const isCheckpointSet = actSyncs[collection.name];
     this._stopCollectionSync(collection.name);
     const state = collection.syncGraphQL({
       ...this._dataConfig.value.syncOptions,
