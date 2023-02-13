@@ -12,8 +12,11 @@ dino-search-filters-bar {
     flex-flow: row wrap;
     .mat-mdc-form-field {
       padding-right: 5px;
-      padding-top: 5px;
       flex: 1 1 auto;
+      height: 65px;
+      .mat-mdc-form-field-icon-suffix > .mat-icon {
+        padding: 4px;
+      }
       @media only screen and (max-width: 992px) {
         padding: 0px;
         flex: 1 1 auto;
@@ -23,8 +26,7 @@ dino-search-filters-bar {
     .dino-filters-dialog-button,
     .dino-export-button {
       flex: 1 1 auto;
-      height: 52px;
-      margin-top: 5px;
+      height: 44px;
       margin-right: 5px;
     }
 
@@ -52,6 +54,9 @@ dino-search-filters-bar {
     background: transparent !important;
   }
   .mat-expansion-panel {
+    .mat-expansion-panel-content .mat-expansion-panel-body {
+      padding-right: 27px;
+    }
     padding: 5px;
     .mat-mdc-form-field.dino-filter-keyword {
       flex: 1 0 auto;
@@ -59,7 +64,8 @@ dino-search-filters-bar {
       height: 60px;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
-      .mat-mdc-input-element, .mat-icon{
+      .mat-mdc-input-element,
+      .mat-icon {
         position: relative;
         bottom: 8px;
       }
@@ -70,7 +76,7 @@ dino-search-filters-bar {
       left: 3px;
     }
     @media only screen and (max-width: 1200px) {
-      .mat-expansion-indicator{
+      .mat-expansion-indicator {
         left: 10px;
       }
       .mat-expansion-indicator::after {
