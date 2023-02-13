@@ -40,6 +40,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dino/core/list';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
@@ -78,6 +79,7 @@ import {ListCellValue} from './list-cell-value';
     MatTabsModule,
     MatTableModule,
     MatToolbarModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
     UserInteractionsModule,

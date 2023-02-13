@@ -44,6 +44,7 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ThemeService} from '@dino/material/core';
 import {UserArea} from '@dino/material/user-area';
+import {TranslocoService} from '@ngneat/transloco';
 import {
   BehaviorSubject,
   combineLatest,
@@ -420,6 +421,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     private _router: Router,
     private _cdr: ChangeDetectorRef,
     readonly ts: ThemeService,
+    readonly trs: TranslocoService,
   ) {
     this._currentSectionSub = combineLatest([
       this._router.events.pipe(
@@ -437,7 +439,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
     });
 
     this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete.subscribe(() =>
-      this.snackbar.open('Synchronization complete', 'SYNC COMPLETE', {duration: 10000}),
+      this.snackbar.open(this.trs.translate('Synchronization complete'), 'SYNC COMPLETE', {
+        duration: 10000,
+      }),
     );
 
     this.userDisplayName = this.authService.authenticated.pipe(

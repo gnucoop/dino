@@ -214,4 +214,8 @@ export const ESP: Translation = {
   'Additional attributes': 'Atributos adicionales',
   'Attribute name': 'Nombre del atributo',
   'Attribute value': 'Valor del atributo',
+  'Customize the columns': 'Personaliza las columnas',
+  'Mark all as read': 'Marcar todo como leído',
+  'View all notifications': 'Ver todas las notificaciones',
+  'Synchronization complete': 'Sincronización completa',
 };

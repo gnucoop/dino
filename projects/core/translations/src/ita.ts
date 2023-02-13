@@ -223,4 +223,8 @@ export const ITA: Translation = {
   'Additional attributes': 'Attributi aggiuntivi',
   'Attribute name': `Nome dell'attributo`,
   'Attribute value': `Valore dell'attributo`,
+  'Customize the columns': 'Personalizza le colonne',
+  'Mark all as read': 'Segna tutto come letto',
+  'View all notifications': 'Vedi tutte le notifiche',
+  'Synchronization complete': 'Sincronizzazione completata',
 };

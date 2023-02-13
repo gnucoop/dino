@@ -213,4 +213,8 @@ export const ENG: Translation = {
   'Additional attributes': 'Additional attributes',
   'Attribute name': 'Attribute name',
   'Attribute value': 'Attribute value',
+  'Customize the columns': 'Customize the columns',
+  'Mark all as read': 'Mark all as read',
+  'View all notifications': 'View all notifications',
+  'Synchronization complete': 'Synchronization complete',
 };

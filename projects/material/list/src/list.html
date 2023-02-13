@@ -46,6 +46,7 @@
             *ngIf="ctx.showColumnsSelector !== false"
             class="dino-columns-sel-btn"
             (click)="openColumnsSelectorDialog()"
+            [matTooltip]="'Customize the columns'|transloco"
           >
             view_week
           </mat-icon>

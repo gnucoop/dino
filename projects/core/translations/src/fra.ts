@@ -210,4 +210,8 @@ export const FRA: Translation = {
   'Additional attributes': 'Attributs supplémentaires',
   'Attribute name': `Nom de l'attribut`,
   'Attribute value': `Valeur de l'attribut`,
+  'Customize the columns': 'Personnalisez les colonnes',
+  'Mark all as read': 'Marquez tout comme lu',
+  'View all notifications': 'Voir toutes les notifications',
+  'Synchronization complete': 'Synchronisation terminée',
 };

@@ -213,4 +213,8 @@ export const PRT: Translation = {
   'Additional attributes': 'Atributos adicionais',
   'Attribute name': 'Nome do atributo',
   'Attribute value': 'Valor do atributo',
+  'Customize the columns': 'Personalize as colunas',
+  'Mark all as read': 'Marca tudo como lido',
+  'View all notifications': 'Ver todas as notificações',
+  'Synchronization complete': 'Sincronização completa',
 };
