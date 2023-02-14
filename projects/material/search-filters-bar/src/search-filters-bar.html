@@ -22,8 +22,22 @@
       (click)="$event.stopPropagation()"
       (keydown.Space)="$event.stopImmediatePropagation();"
     >
-      <input matInput formControlName="keyword" [placeholder]="'search by keyword'|transloco" />
+      <input
+        matInput
+        #keywordinput
+        formControlName="keyword"
+        [placeholder]="'search by keyword'|transloco"
+      />
       <mat-icon color="primary" matSuffix>search</mat-icon>
+      <mat-icon
+        matSuffix
+        color="primary"
+        *ngIf="keywordinput.value"
+        aria-label="Clear"
+        (click)="clearFilter('keyword', textSearchFilters)"
+        class="dino-clear-filter-button"
+        >close</mat-icon
+      >
     </mat-form-field>
   </ng-container>
 </ng-template>
@@ -37,6 +51,7 @@
     <ng-container [formGroup]="dateSearchFilters">
       <mat-form-field floatLabel="always">
         <input
+          #datestartinput
           matInput
           formControlName="dateStart"
           [matDatepicker]="pickerFrom"
@@ -44,18 +59,37 @@
           [placeholder]="'From date'|transloco"
         />
         <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+        <mat-icon
+          matSuffix
+          color="primary"
+          *ngIf="datestartinput.value"
+          aria-label="Clear"
+          (click)="clearFilter('dateStart', dateSearchFilters)"
+          class="dino-clear-filter-button"
+          >close</mat-icon
+        >
         <mat-datepicker #pickerFrom></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field floatLabel="always">
         <input
+          #dateendinput
           matInput
           formControlName="dateEnd"
           [matDatepicker]="pickerTo"
           [matDatepickerFilter]="minDatePicker"
           [placeholder]="'To date'|transloco"
         />
-        <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+        <mat-datepicker-toggle color="primary" matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+        <mat-icon
+          matSuffix
+          color="primary"
+          *ngIf="dateendinput.value"
+          aria-label="Clear"
+          (click)="clearFilter('dateEnd', dateSearchFilters)"
+          class="dino-clear-filter-button"
+          >close</mat-icon
+        >
         <mat-datepicker #pickerTo></mat-datepicker>
       </mat-form-field>
     </ng-container>
@@ -69,11 +103,23 @@
         >
           <input
             matInput
+            #fltinput
             [formControlName]="additionalBasicFiltersLabels[idx]"
-            placeholder="{{'search by'|transloco}} {{(additionalBasicFiltersLabels[idx]|transloco).charAt(0).toUpperCase() + (additionalBasicFiltersLabels[idx]|transloco).slice(1).replace('_', ' ')}}"
+            placeholder="{{(additionalBasicFiltersLabels[idx]|transloco).charAt(0).toUpperCase() + (additionalBasicFiltersLabels[idx]|transloco).slice(1).replace('_', ' ')}}"
             [matAutocomplete]="auto"
           />
           <mat-icon matSuffix color="primary">search</mat-icon>
+
+          <mat-icon
+            matSuffix
+            color="primary"
+            *ngIf="fltinput.value"
+            aria-label="Clear"
+            (click)="clearFilter(additionalBasicFiltersLabels[idx], group)"
+            class="dino-clear-filter-button"
+            >close</mat-icon
+          >
+
           <mat-autocomplete
             #auto="matAutocomplete"
             [autoActiveFirstOption]="false"

@@ -28,6 +28,11 @@ dino-search-filters-bar {
       flex: 1 1 auto;
       height: 44px;
       margin-right: 5px;
+      .mat-icon{
+        margin-left: 0px;
+        margin-right: 0px;
+        margin: auto;
+      }
     }
 
     .mat-mdc-icon-button {

@@ -223,6 +223,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       return true;
     };
   }
+
   @Output()
   readonly exportEvt: EventEmitter<'XLSX' | 'CSV' | 'dialog'> = new EventEmitter<
     'XLSX' | 'CSV' | 'dialog'
@@ -253,6 +254,17 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       this._populateMetricsOptions('organization', this._organizationManager);
       this._setupMetricDescendants('organization', this._organizationManager);
     }
+  }
+
+  /**
+   * Clears the input and value of a filter.
+   * @param controlname The Form control name
+   * @param fg The form group whose value must be cleared
+   */
+  clearFilter(controlname: string, fg: UntypedFormGroup): void {
+    const formGroupValue = fg.value;
+    const newValue = {[controlname]: ''};
+    fg.setValue({...formGroupValue, ...newValue});
   }
 
   /**
