@@ -276,7 +276,11 @@ export class DataService implements IDataService {
             if (states.some(state => state === true)) {
               return obsOf(true);
             } else {
-              return obsOf(false).pipe(delay(2000), debounceTime(100));
+              return obsOf(false).pipe(
+                delay(2000),
+                debounceTime(100),
+                tap(() => this.replicationCycleComplete.emit()),
+              );
             }
           }),
         );
@@ -687,28 +691,18 @@ export class DataService implements IDataService {
             console.log(`Running the sync for ${collectionName ? collectionName : 'all'}! `);
           }
           const actSyncs = this._activeSyncs.value;
-          const totSyncs = Object.keys(actSyncs).length;
-          let currentlyCompleted = 0;
           if (collectionName) {
             const actSync: ActiveSync | undefined = actSyncs[collectionName];
             if (actSync && actSync.state) {
               actSync.state.reSync();
-              this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
-              if (collectionName === 'form_data') {
-                this.replicationCycleComplete.emit();
-              }
-            }
-          } else {
-            for (let key in actSyncs) {
-              const actSync: ActiveSync | undefined = actSyncs[key];
-              if (actSync && actSync.state) {
-                actSync.state.reSync();
-                this._collectionChangedEmit('replication cycle complete', actSync.state.collection);
-                currentlyCompleted++;
-                if (currentlyCompleted === totSyncs) {
-                  this.replicationCycleComplete.emit();
-                }
-              }
+              actSync.state
+                .awaitInSync()
+                .then(() =>
+                  this._collectionChangedEmit(
+                    'replication cycle complete',
+                    actSync.state.collection,
+                  ),
+                );
             }
           }
         }
@@ -933,6 +927,10 @@ export class DataService implements IDataService {
       collectionName: collection.name,
     };
     this._activeSyncs.next(actSyncs);
+
+    if (!isLive) {
+      this.runSync(collection.name);
+    }
   }
 
   /**
