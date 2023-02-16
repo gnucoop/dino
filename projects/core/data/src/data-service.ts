@@ -61,6 +61,7 @@ import {
   retryWhen,
   shareReplay,
   skipWhile,
+  startWith,
   switchMap,
   take,
   takeUntil,
@@ -834,6 +835,10 @@ export class DataService implements IDataService {
     params: CollectionSyncParams,
     token: string,
   ): void {
+    const isLive: boolean =
+      this._dataConfig.value.syncOptions.live != false &&
+      this._dataConfig.value.syncOptions.url.ws != null;
+
     const actSyncs = this._activeSyncs.getValue();
     this._stopCollectionSync(collection.name);
     const state = collection.syncGraphQL({
@@ -889,14 +894,22 @@ export class DataService implements IDataService {
       }
     });
 
-    let stateActivity: Observable<boolean> = state.active$;
+    let stateActivity: Observable<boolean> = isLive
+      ? combineLatest([
+          from(state.awaitInSync()).pipe(
+            startWith(false),
+            map(act => !act),
+          ),
+          state.active$,
+        ]).pipe(map(([notInSync, active]) => notInSync || active))
+      : from(state.awaitInSync()).pipe(
+          startWith(false),
+          map(act => !act),
+        );
 
     let clientRequestSub: {unsubscribe: () => void} = Subscription.EMPTY;
     let stateReceivedSub: {unsubscribe: () => void} = Subscription.EMPTY;
-    if (
-      this._dataConfig.value.syncOptions.live &&
-      this._dataConfig.value.syncOptions.url.ws != null
-    ) {
+    if (isLive) {
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = newClientSubscription(this._wsClient, {query});
 
