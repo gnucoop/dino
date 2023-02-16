@@ -40,4 +40,12 @@ export interface DinoTheme {
    * The preset name
    */
   presetName: string;
+  /**
+   * True if the contrast color changes are automatic.
+   */
+  isAutoContrast: boolean;
+  /**
+   * True if it's a dark theme
+   */
+  isDarkTheme: boolean;
 }

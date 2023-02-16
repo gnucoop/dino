@@ -79,6 +79,7 @@ export class ThemeService {
     this.setPrimaryColor(theme.primary);
     this.setAccentColor(theme.accent);
     this.setWarnColor(theme.warning);
+    this.setDarkMode(theme.isDarkTheme);
   }
 
   /**
@@ -90,6 +91,8 @@ export class ThemeService {
       accent: this._service.accent,
       warning: this._service.warn,
       presetName: 'Default Theme',
+      isDarkTheme: this._service.isDarkTheme,
+      isAutoContrast: true,
     };
     if (currentTheme.primary && currentTheme.accent && currentTheme.warning) {
       localStorage.setItem('dino_theme_default', btoa(JSON.stringify(currentTheme)));

@@ -187,6 +187,8 @@ export class UserArea {
       accent: this.accentColor,
       warning: this.warningColor,
       presetName: this.dinoSaveThemeForm.get('presetName')?.value,
+      isDarkTheme: this.themeService.isDark(),
+      isAutoContrast: true,
     };
     this.themeService.saveDinoTheme(dinoTheme);
     this.closeDialog();
