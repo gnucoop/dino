@@ -324,7 +324,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     const fields: MetricFormField[] = [
       {
         fieldName: 'name',
-        hint: this._ts.translate(`Name`) + ' ' + this._ts.translate(this.metricName!),
+        hint: this._ts.translate(`${this.metricName} Name`),
         placeholder: this._ts.translate('Name'),
         value: currentMetricItem['name'] ?? '',
       },
@@ -375,7 +375,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         ) as FormControlControlWithWarnings;
         const field: MetricFormField = {
           fieldName: propKey,
-          hint: `${propValue['description']} ${propRequired ? '' : '  (optional)'}`,
+          hint: `${propValue['description']}${propRequired ? '' : ' (optional)'}`,
           placeholder:
             propKey.replace('0', ' ').charAt(0).toUpperCase() + propKey.replace('_', ' ').slice(1),
         };

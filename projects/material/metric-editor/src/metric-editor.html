@@ -60,7 +60,8 @@
 
           <mat-hint [class.dino-warning]="metricForm.controls[field.fieldName].warning"
             >{{ metricForm.controls[field.fieldName].warning ?
-            (metricForm.controls[field.fieldName].warning|transloco) : field.hint}}</mat-hint
+            (metricForm.controls[field.fieldName].warning|transloco) :
+            field.hint|transloco}}</mat-hint
           >
         </mat-form-field>
       </ng-container>
