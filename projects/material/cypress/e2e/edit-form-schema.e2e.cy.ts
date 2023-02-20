@@ -18,11 +18,11 @@ describe('dino-import-form-schema', () => {
   beforeEach(() => cy.visit(url));
 
   it('should show an Import button', () => {
-    cy.get('.mat-button-wrapper:contains("Import")').should('exist');
+    cy.get('.mdc-button').contains('Import').should('exist');
   });
 
   it('should open the Import Form Schema dialog', () => {
-    cy.get('.mat-button-wrapper:contains("Import")').click();
+    cy.get('.mdc-button').contains('Import').click();
     cy.get('dino-import-form-schema').should('exist');
   });
 });

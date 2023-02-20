@@ -9,15 +9,15 @@ describe('dino-edit-form', () => {
 
   it('should enter an edit form page', () => {
     cy.get('dino-list').should('exist');
-    cy.get('mat-row:not(.dino-row-details)')
+    cy.get('.mat-mdc-row:not(.dino-row-details)')
       .should('have.length', formDatas.length)
       .first()
       .invoke('addClass', 'dino-hover')
       .click();
-    cy.get('mat-row .mat-cell.dino-row-actions .mat-icon.mat-list-icon')
+    cy.get('.mat-mdc-cell.dino-row-actions .mat-icon')
+      .contains('create ')
       .first()
-      .invoke('mouseover')
-      .click();
+      .click({force: true});
     cy.get('dino-edit-form').should('exist');
     cy.url().should('contain', 'forms').should('contain', 'edit');
   });

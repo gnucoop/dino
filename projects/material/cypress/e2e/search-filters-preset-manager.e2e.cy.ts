@@ -56,8 +56,8 @@ describe('dino-search-filters-preset-manager', () => {
     cy.url().should('not.contain', '?filters=');
     cy.get('dino-search-filters-preset-manager button').first().should('be.disabled');
     cy.get('dino-search-filters-preset-manager input').should('have.value', '').type('c');
-    cy.get('.mat-autocomplete-panel').should('be.visible');
-    cy.get('.mat-autocomplete-panel mat-option')
+    cy.get('.mat-mdc-autocomplete-panel').should('be.visible');
+    cy.get('.mat-mdc-autocomplete-panel .mat-mdc-option')
       .first()
       .should('contain.text', 'custom_load')
       .click();

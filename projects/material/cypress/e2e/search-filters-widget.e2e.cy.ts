@@ -6,7 +6,8 @@ describe('dino-search-filters-widget', () => {
   beforeEach(() => {
     cy.visit(url);
     cy.get('.mat-expansion-indicator').click();
-    cy.get('mat-icon:contains("filter_list")').click();
+    cy.get('.dino-filters-dialog-button').should('be.visible');
+    cy.get('.dino-filters-dialog-button').click();
   });
 
   it('should display a number of dino-search-filters-widget components', () => {
@@ -14,12 +15,13 @@ describe('dino-search-filters-widget', () => {
   });
 
   it('should display a create filter button in disabled state', () => {
-    cy.get('.dino-create-filter-button')
+    cy.get('.mat-mdc-card-actions .dino-create-filter-button')
+      .first()
       .should('be.visible')
-      .should('have.class', 'mat-button-disabled');
+      .should('be.disabled');
   });
 
   it('should display a mat-input', () => {
-    cy.get('.mat-card-content input').should('be.visible');
+    cy.get('.mat-mdc-card-content input').should('be.visible');
   });
 });

@@ -7,16 +7,16 @@ describe('dino-columns-selector', () => {
   });
 
   it('should display the column selector button', () => {
-    cy.get('.mat-list-icon.dino-columns-sel-btn').should('be.visible');
+    cy.get('.mat-icon.dino-columns-sel-btn').should('be.visible');
   });
 
   it('should open the column selector', () => {
-    cy.get('.mat-list-icon.dino-columns-sel-btn').trigger('mouseover').click();
+    cy.get('.mat-icon.dino-columns-sel-btn').trigger('mouseover').click();
     cy.get('dino-columns-selector').should('be.visible');
   });
 
   it('should filter the available columns in the selector', () => {
-    cy.get('.mat-list-icon.dino-columns-sel-btn').trigger('mouseover').click();
+    cy.get('.mat-icon.dino-columns-sel-btn').trigger('mouseover').click();
     cy.get('dino-columns-selector').should('be.visible');
     cy.get('.dino-column-selector')
       .its('length')
@@ -24,7 +24,7 @@ describe('dino-columns-selector', () => {
         cy.get('dino-columns-selector mat-form-field')
           .first()
           .click()
-          .find('.mat-input-element')
+          .find('.mat-mdc-input-element')
           .type('age');
         cy.get('.dino-column-selector')
           .should('have.length.lessThan', columnToggles)
