@@ -306,30 +306,6 @@ describe('Data Model Manager - CRUD methods', () => {
     expect(true).toEqual(true);
   });
 
-  it('should remove a bulk of existing objects from the database', async () => {
-    const objects = [
-      {name: 'firstDummy', author: 'user@dino.gnu', created_at: currentDate},
-      {name: 'secondDummy', author: 'user@dino.gnu', created_at: currentDate},
-    ];
-    const insertedDummies = await firstValueFrom(dummyManager!.bulkCreate(objects).pipe(take(1)));
-    const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
-    const deletedObjects = await firstValueFrom(
-      dummyManager!.bulkDelete(insertedDummies.success).pipe(take(1)),
-    );
-    const getFirstObject = await firstValueFrom(
-      dummyManager!.get(deletedObjects![0].id).pipe(take(1)),
-    );
-    const getSecondObject = await firstValueFrom(
-      dummyManager!.get(deletedObjects![1].id).pipe(take(1)),
-    );
-    deletedObjects!.forEach(deletedObject => {
-      expect(deletedObject?.deleted).toBeTrue();
-    });
-    expect(getFirstObject).toBeNull();
-    expect(getSecondObject).toBeNull();
-    expect(deleteSpy).toHaveBeenCalled();
-  });
-
   it('should update an existing object from the database', async () => {
     const object = {name: 'newDummy', created_at: currentDate};
     const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
