@@ -172,7 +172,7 @@ describe('ListDataSource', () => {
         is_deleted: {$ne: true},
       },
       limit: 10,
-      sort: [Object({created_at: 'desc'})],
+      sort: [Object({created_at: 'desc'}), Object({updated_at: 'desc'})],
     };
 
     expect(spyAddNestedProp).toHaveBeenCalled();

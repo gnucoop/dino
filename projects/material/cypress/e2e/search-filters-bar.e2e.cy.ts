@@ -2,7 +2,6 @@ import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
 
 const url = `/forms/${formSchemas[0].id}`;
 
-const filterFieldCss = (field: string) => `.mat-input-element[formcontrolname="${field}"]`;
 const filterFieldMdcCss = (field: string) => `.mat-mdc-input-element[formcontrolname="${field}"]`;
 
 describe('dino-search-filters-bar', () => {

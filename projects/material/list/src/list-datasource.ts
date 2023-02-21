@@ -660,7 +660,7 @@ export class ListDataSource<
    */
   getQueryResults(query: DataQueryOptions, detailsQuery?: DataQueryOptions): void {
     if (!query.sort) {
-      query.sort = [{created_at: 'desc'}];
+      query.sort = [{created_at: 'desc'}, {updated_at: 'desc'}];
     }
 
     this._getQueryResultsObs(query, detailsQuery).subscribe(populatedDocs => {

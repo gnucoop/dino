@@ -291,8 +291,6 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
           }),
         ).pipe(
           switchMap(upDocs => {
-            console.log('PROVAAA');
-            console.log(upDocs);
             return upDocs.some(d => d == null) ? obsOf(null) : (obsOf(upDocs) as Observable<R[]>);
           }),
           catchError(err => throwError(() => err)),
