@@ -25,15 +25,17 @@
           [placeholder]="(field.placeholder ?? '')|transloco"
           [matAutocomplete]="auto"
         />
-        <mat-icon matSuffix>{{field.icon}}</mat-icon>
+
         <mat-icon
-          *ngIf="(isView|async) !== true && allowMetricCreation"
+          *ngIf="(isView|async) !== true && isMetricCreationAllowed(field.fieldName)"
           matSuffix
           color="primary"
           class="dino-add-metric-button"
           (click)="openCreateMetricDialog($event, field.fieldName)"
           >add</mat-icon
         >
+
+        <mat-icon matSuffix>{{field.icon}}</mat-icon>
 
         <mat-autocomplete
           #auto="matAutocomplete"

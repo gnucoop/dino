@@ -100,9 +100,9 @@ export class EditReport implements AfterViewInit {
   @Input() spinnerImagePath: string | undefined;
 
   /**
-   * If true, Metrics can be created directly from the metric fields
+   * Metrics of the types specified in the array can be created directly from the metric fields
    */
-  @Input() allowMetricCreation: boolean = true;
+  @Input() allowMetricCreationFor: string[] = ['all'];
 
   /**
    * Sets the report id with an input

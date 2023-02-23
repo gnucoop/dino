@@ -19,6 +19,9 @@ dino-form-metric-selector {
   .dino-add-metric-button {
     opacity: 0.5;
     transition: all 0.5s ease-in-out;
+    font-size: 32px;
+    position: relative;
+    bottom: 2px;
     &:hover {
       opacity: 1;
     }
@@ -26,6 +29,9 @@ dino-form-metric-selector {
   }
   .dino-form-metric-selector-container {
     min-width: 80vw;
+    @media only screen and (max-width : 768px) {
+      min-width: 90vw;
+    }
     .mat-mdc-form-field {
       font-size: 115%;
       margin: auto;
@@ -40,7 +46,6 @@ dino-form-metric-selector {
         display: block;
         .mat-datepicker-toggle {
           position: relative;
-          left: 10px;
         }
       }
     }

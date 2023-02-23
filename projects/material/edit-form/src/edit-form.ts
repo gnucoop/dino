@@ -129,9 +129,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   /**
-   * If true, Metrics can be created directly from the metric fields
+   * Metrics of the types specified in the array can be created directly from the metric fields
    */
-  @Input() allowMetricCreation: boolean = true;
+  @Input() allowMetricCreationFor: string[] = ['all'];
 
   /**
    * If true, Forms can be saved as drafts, bypassing validation.

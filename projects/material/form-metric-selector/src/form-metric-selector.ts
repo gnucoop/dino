@@ -67,9 +67,9 @@ import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selec
 })
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
-   * If true, Metrics can be created directly from the metric fields
+   * Metrics of the types specified in the array can be created directly from the metric fields
    */
-  @Input() allowMetricCreation: boolean = true;
+  @Input() allowMetricCreationFor: string[] = [];
 
   /**
    * The Selector metrics form group.
@@ -180,7 +180,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       take(1),
     );
     this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));
-    this.formDate = new UntypedFormGroup({'created_at': new UntypedFormControl(new Date(), Validators.required)});
+    this.formDate = new UntypedFormGroup({
+      'created_at': new UntypedFormControl(new Date(), Validators.required),
+    });
     const group: {[key: string]: UntypedFormControl} = {};
     const validatorFn: ValidationErrors | null = this._hasOptionalMetrics.getValue()
       ? RequireMetricMatch
@@ -298,6 +300,16 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       return '';
     }
     return metric.name && metric.id ? metric.name : '';
+  }
+
+  /**
+   * If true, this type of Metric can be created directly in the form metric selector
+   */
+  isMetricCreationAllowed(metricType: string): boolean {
+    return (
+      this.allowMetricCreationFor.includes(metricType) ||
+      this.allowMetricCreationFor.includes('all')
+    );
   }
 
   /**
