@@ -291,7 +291,7 @@ export class ListDataSource<
     });
 
     this._dataModelManager.collectionChanged
-      .pipe(takeUntil(this._mainUnsubscribe), throttleTime(10))
+      .pipe(takeUntil(this._mainUnsubscribe), throttleTime(100))
       .subscribe(evt => {
         this.refreshListData.next(evt);
       });

@@ -37,20 +37,6 @@
     <ng-container matColumnDef="select" sticky>
       <ng-container>
         <mat-header-cell *matHeaderCellDef>
-          <mat-icon
-            mat-list-icon
-            color="primary"
-            #columns_btn
-            color="accent"
-            aria-label="Customize table columns"
-            *ngIf="ctx.showColumnsSelector !== false"
-            class="dino-columns-sel-btn"
-            (click)="openColumnsSelectorDialog()"
-            [matTooltip]="'Customize the columns'|transloco"
-          >
-            view_week
-          </mat-icon>
-
           <ng-container *ngIf="bulkActions">
             <mat-checkbox
               class="dino-row-actions"
@@ -198,19 +184,36 @@
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" class="right" stickyEnd>
       <mat-header-cell *matHeaderCellDef class="dino-row-actions dino-header-row-actions">
+        <div class="dino-columns-sel-btn-container">
+          <button
+            class="dino-columns-sel-btn"
+            [matTooltip]="'Customize the columns'|transloco"
+            [matTooltipPosition]="'left'"
+            #columns_btn
+            color="accent"
+            aria-label="Customize table columns"
+            *ngIf="ctx.showColumnsSelector !== false"
+            (click)="openColumnsSelectorDialog()"
+            mat-fab
+          >
+            <mat-icon mat-list-icon> view_week </mat-icon>
+          </button>
+        </div>
       </mat-header-cell>
       <mat-cell *matCellDef="let row" class="dino-row-actions">
-        <ng-container *ngFor="let action of ctx.listRowActions|async">
-          <ng-container
-            *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view'))"
-          >
-            <mat-icon
-              mat-list-icon
-              (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
-              >{{action.matIcon}}
-            </mat-icon>
+        <div class="dino-row-actions-container">
+          <ng-container *ngFor="let action of ctx.listRowActions|async">
+            <ng-container
+              *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view'))"
+            >
+              <mat-icon
+                mat-list-icon
+                (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+                >{{action.matIcon}}
+              </mat-icon>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </mat-cell>
     </ng-container>
 

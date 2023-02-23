@@ -44,9 +44,16 @@ dino-list {
     background: transparent !important;
     width: auto !important;
     overflow: auto;
-
+    max-height: 74vh;
+    @media only screen and (max-width : 768px) {
+      max-height: 70vh;
+    }
     .mat-mdc-row.dino-highlighted-row {
+      background-color: rgb(var(--palette-accent-300)) !important;
       .mat-mdc-cell:not(.dino-expanded-cell) {
+        background-color: rgb(var(--palette-accent-300));
+      }
+      .dino-row-actions-container{
         background-color: rgb(var(--palette-accent-300));
       }
     }
@@ -84,14 +91,21 @@ dino-list {
   .mat-mdc-cell:first-of-type,
   .mat-mdc-footer-cell:first-of-type {
     border-left: 3px solid rgb(var(--palette-accent-700));
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
   }
 
   .mat-mdc-header-cell:first-of-type {
     border-left: 3px solid transparent;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
   }
 
   .mat-mdc-row {
     min-height: 70px;
+    height: 100%;
     display: inline-flex;
     min-width: 100%;
     transition: box-shadow ease-in-out 0.25s;
@@ -100,10 +114,23 @@ dino-list {
       border-bottom-style: none;
     }
   }
+  .mat-mdc-row:not(.dino-hover),
+  .mat-mdc-header-row:not(.dino-hover) {
+    .mat-mdc-cell {
+      &:nth-child(even) {
+        background-color: rgba(var(--palette-accent-300), 0.1);
+      }
+      &:nth-child(odd):not(:first-of-type) {
+        background-color: rgba(var(--palette-accent-100), 0.1);
+      }
+    }
+  }
 
   .mat-mdc-header-row {
+    position: sticky;
+    top: 0px;
+    z-index: 2;
     .mat-mdc-header-cell {
-      border-bottom-style: none;
       .mat-icon {
         border-radius: 100%;
         padding: 5px;
@@ -114,7 +141,9 @@ dino-list {
       }
     }
     .dino-header-row-actions {
-      display: none;
+      max-width: 0px;
+      min-width: unset;
+      border-bottom-style: none;
     }
   }
 
@@ -130,43 +159,54 @@ dino-list {
   }
 
   mat-cell,
-  mat-header-cell,
+  mat-header-cell:not(:last-of-type),
   mat-footer-cell {
     flex: 1 0;
     position: relative;
   }
 
-  mat-header-cell,
+  .mat-mdc-header-cell:not(:first-of-type):not(:last-of-type),
   mat-footer-cell,
   mat-cell:not(.mat-column-actions):not(.mat-column-select):not(.dino-expanded-cell) {
     min-width: 15vw;
     @media only screen and (max-width: 992px) {
-      min-width: 30vw;
-      max-width: 30vw;
+      min-width: 33vw;
     }
   }
 
   mat-cell:last-of-type.mat-column-actions {
-    background: transparent;
     padding-right: 10px;
-    position: absolute !important;
-    .mat-icon {
-      border-radius: 100%;
-      padding: 5px;
-      margin: 5px;
+    position: relative;
+    overflow: visible;
+    max-width: 0px;
+    .dino-row-actions-container{
+      display: flex;
+      justify-content: end;
+      position: absolute;
+      min-width: auto;
+      right: 0px;
+      .mat-icon {
+        border-radius: 100%;
+        padding: 5px;
+        margin: 5px;
+      }
     }
   }
 
   mat-header-cell:last-of-type.mat-column-actions {
     background-color: transparent;
+    overflow: visible;
+    display: contents;
   }
 
   mat-cell:last-of-type.mat-column-actions,
   .dino-edit-status-icon {
     visibility: hidden;
-    border-radius: 50%;
     padding: 5px;
     cursor: pointer;
+  }
+  .dino-edit-status-icon {
+    border-radius: 50%;
   }
 
   .mat-mdc-cell.dino-expanded-cell {
@@ -235,17 +275,31 @@ dino-list {
       background: transparent !important;
     }
   }
-
+  .dino-columns-sel-btn-container{
+    position: sticky;
+    right: 0px;
+    max-width: 0px;
+    overflow: visible;
+    margin-bottom: 35px;
+  }
   .dino-columns-sel-btn {
     position: absolute;
-    left: -7px;
+    right: 1.4vw;
+    z-index: 10;
     cursor: pointer;
-    bottom: 11px;
     box-shadow: none;
-    background-color: transparent !important;
-    opacity: 0.7;
-    &:hover {
+    opacity: 0.8;
+    width: 36px;
+    height: 36px;
+    &:hover,
+    &:focus {
       opacity: 1;
+    }
+    .mat-icon {
+      height: unset;
+      width: unset;
+      font-size: 16px;
+      color: unset;
     }
   }
   .dino-columns-sel-btn,
@@ -296,6 +350,9 @@ dino-list {
       }
       .mat-mdc-paginator-page-size-label {
         display: none;
+      }
+      .mat-mdc-paginator-page-size-select {
+        max-width: 65px;
       }
     }
   }
@@ -388,9 +445,22 @@ dino-list {
 .isDarkTheme .mat-mdc-cell:first-of-type {
   background-color: rgb(var(--palette-background-background-dark));
 }
+
 .isDarkTheme .dino-hover .mat-mdc-cell {
-  background-color: rgb(var(--palette-background-card-dark));
+  background-color: rgb(var(--palette-primary-300));
+  .dino-row-actions-container{
+    background-color: rgb(var(--palette-primary-300));
+  }
 }
 .isLightTheme .dino-hover .mat-mdc-cell {
-  background-color: rgb(var(--palette-accent-50));
+  background-color: rgb(var(--palette-primary-300));
+  .dino-row-actions-container{
+    background-color: rgb(var(--palette-primary-300));
+  }
+}
+.isDarkTheme .mat-mdc-header-row {
+  background: rgb(var(--palette-background-background-dark)) !important;
+}
+.isLightTheme .mat-mdc-header-row {
+  background: rgb(var(--palette-background-background)) !important;
 }
