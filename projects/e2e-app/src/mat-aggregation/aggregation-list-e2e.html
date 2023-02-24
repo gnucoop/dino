@@ -19,3 +19,9 @@
   ></dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
+
+<dino-floating-button
+  buttonIcon="add"
+  [tooltipMessage]="'Add New form'|transloco"
+  (click)="openFormCreatorDialog()"
+></dino-floating-button>

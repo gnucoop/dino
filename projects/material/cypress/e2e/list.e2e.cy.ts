@@ -45,7 +45,7 @@ describe('dino-list', () => {
   });
 
   it('should display the row action icons on mouseover', () => {
-    cy.get('.mat-column-actions')
+    cy.get('.mat-mdc-cell.dino-row-actions')
       .first()
       .should('not.be.visible')
       .invoke('show')
