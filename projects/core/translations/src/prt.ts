@@ -217,4 +217,6 @@ export const PRT: Translation = {
   'Mark all as read': 'Marca tudo como lido',
   'View all notifications': 'Ver todas as notificações',
   'Synchronization complete': 'Sincronização completa',
+  'Create Form': 'Criar formulário',
+  'Choose the type of Form you want to create': 'Escolha o tipo de Formulário que deseja criar',
 };

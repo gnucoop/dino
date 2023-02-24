@@ -214,4 +214,7 @@ export const FRA: Translation = {
   'Mark all as read': 'Marquez tout comme lu',
   'View all notifications': 'Voir toutes les notifications',
   'Synchronization complete': 'Synchronisation terminée',
+  'Create Form': 'Créer le formulaire',
+  'Choose the type of Form you want to create':
+    'Choisissez le type de formulaire que vous voulez créer',
 };

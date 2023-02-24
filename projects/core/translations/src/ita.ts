@@ -227,4 +227,6 @@ export const ITA: Translation = {
   'Mark all as read': 'Segna tutto come letto',
   'View all notifications': 'Vedi tutte le notifiche',
   'Synchronization complete': 'Sincronizzazione completata',
+  'Create Form': 'Crea Form',
+  'Choose the type of Form you want to create': 'Scegli il tipo di form che vuoi creare',
 };

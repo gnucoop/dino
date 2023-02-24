@@ -217,4 +217,6 @@ export const ENG: Translation = {
   'Mark all as read': 'Mark all as read',
   'View all notifications': 'View all notifications',
   'Synchronization complete': 'Synchronization complete',
+  'Create Form': 'Create Form',
+  'Choose the type of Form you want to create': 'Choose the type of Form you want to create',
 };

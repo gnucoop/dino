@@ -218,4 +218,6 @@ export const ESP: Translation = {
   'Mark all as read': 'Marcar todo como leído',
   'View all notifications': 'Ver todas las notificaciones',
   'Synchronization complete': 'Sincronización completa',
+  'Create Form': 'Crear formulario',
+  'Choose the type of Form you want to create': 'Elija el tipo de formulario que desea crear',
 };
