@@ -1,0 +1,50 @@
+.dino-selector-container {
+  display: flex;
+  flex-flow: column wrap;
+  .dino-schema-search {
+    display: flex;
+    flex: 1 0 auto;
+    .mat-mdc-form-field {
+      flex: 1 0 auto;
+    }
+  }
+  .dino-schema-selectors-list {
+    display: flex;
+    max-height: 50vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-top: 20px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .mat-button-toggle-group {
+      flex: 1 0 auto;
+      max-height: 50%;
+      overflow-y: auto;
+      .mat-button-toggle-label-content{
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.dino-schema-selector {
+  display: flex;
+  flex: 1 1;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  .dino-schema-selector-icon {
+    margin-left: auto;
+    margin-right: 5px;
+    opacity: 0.3;
+  }
+}
+
+.mat-mdc-dialog-surface {
+  padding: 24px;
+}

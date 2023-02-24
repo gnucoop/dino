@@ -1,0 +1,20 @@
+<div class="dino-selector-container">
+  <div>
+    <h4>{{'Create Form'|transloco}}</h4>
+    <p>{{'Choose the type of Form you want to create'|transloco}}</p>
+  </div>
+  <br /><br />
+
+  <div class="dino-schema-selectors-list">
+    <mat-button-toggle-group [vertical]="true" (change)="selectSchema($event)">
+      <mat-button-toggle *ngFor="let schema of schemas|async" [value]="schema.id">
+        <span class="dino-schema-selector-label">{{schema.label|transloco}}</span>
+        <mat-icon color="primary" class="dino-schema-selector-icon">{{schema.icon}}</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <br />
+  <button class="dino-apply-btn" mat-raised-button color="primary" (click)="createForm()">
+    {{'Create Form'|transloco}}
+  </button>
+</div>
