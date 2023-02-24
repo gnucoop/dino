@@ -202,7 +202,7 @@ export class PermissionContextService {
         if (permissions == null) {
           return [];
         }
-        const actions = [];
+        const actions: string[] = [];
         for (let group in permissions) {
           let allowedDocs: string[] = permissions[group][collectionName];
           let actionsCollectionName = collectionName;
@@ -272,6 +272,38 @@ export class PermissionContextService {
       }
     }
     return ret;
+  }
+
+  /**
+   * Returns the Form Schema ids on which the active user has
+   * creation permissions.
+   * @returns The ids of the Form Schemas on which the user has creation permission
+   */
+  getWhichFormCanBeCreated(): Observable<string[]> {
+    return this.fullContext.pipe(
+      map(ctx => {
+        if (ctx == null || ctx.user_permissions == null) {
+          return [];
+        }
+        const schemaIds: string[] = [];
+        const userPermissionRoleKeys: string[] = Object.keys(ctx.user_permissions);
+        for (let roleKey of userPermissionRoleKeys) {
+          const formDataActions: string[] | null =
+            ctx.user_permissions[roleKey].actions['form_data'];
+          const formSchemas: string[] = ctx.user_permissions[roleKey].form_schema;
+          const canCreate =
+            formDataActions != null &&
+            (formDataActions.includes('all') || formDataActions.includes('create'));
+          if (canCreate) {
+            schemaIds.push(...formSchemas);
+          }
+        }
+        if (schemaIds.includes('all')) {
+          return ['all'];
+        }
+        return [...new Set(schemaIds)];
+      }),
+    );
   }
 
   /**
