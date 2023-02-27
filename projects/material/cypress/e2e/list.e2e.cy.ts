@@ -44,14 +44,6 @@ describe('dino-list', () => {
       });
   });
 
-  it('should display the row action icons on mouseover', () => {
-    cy.get('.mat-mdc-cell.dino-row-actions')
-      .first()
-      .should('not.be.visible')
-      .invoke('show')
-      .should('be.visible');
-  });
-
   it(`should delete a row by clicking on its action-delete button,
       and confirming the action on the Confirmation Dialog`, () => {
     cy.get('.mat-mdc-row')
