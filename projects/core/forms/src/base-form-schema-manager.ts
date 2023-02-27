@@ -109,6 +109,7 @@ export const generateMetricsHeaders = (metricService: MetricsService): ListHeade
 export const generateSchemaListHeaders = (
   metricService: MetricsService,
   formSchema?: FormSchema,
+  sortAlphabetically?: boolean,
 ): ListHeader<any>[] => {
   if (formSchema == null || formSchema.schema.nodes == null) {
     return [];
@@ -155,9 +156,12 @@ export const generateSchemaListHeaders = (
         } as ListHeader<any>),
     );
 
-  return [
+  const finalHeaders = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
-    ...dataHeaders,
     ...defaultHeaders,
-  ].sort((a, b) => (a.label > b.label ? 1 : -1));
+    ...dataHeaders,
+  ];
+  return sortAlphabetically
+    ? finalHeaders.sort((a, b) => (a.label > b.label ? 1 : -1))
+    : finalHeaders;
 };

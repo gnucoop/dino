@@ -56,7 +56,10 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     return baseFsm.generateMetricsHeaders(this._metricService);
   }
 
-  generateSchemaListHeaders(formSchema?: FormSchema): ListHeader<any>[] {
-    return baseFsm.generateSchemaListHeaders(this._metricService, formSchema);
+  generateSchemaListHeaders(
+    formSchema?: FormSchema,
+    sortAlphabetically?: boolean,
+  ): ListHeader<any>[] {
+    return baseFsm.generateSchemaListHeaders(this._metricService, formSchema, sortAlphabetically);
   }
 }
