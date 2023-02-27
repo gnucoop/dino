@@ -956,6 +956,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (res.length) {
             const formObj = res[0];
             let formValue = {...formObj.formValue};
+            if (formObj.evt && formObj.evt === 'draft') {
+              formValue['$invalid'] = true;
+            } else if (formValue['$invalid']) {
+              delete formValue['$invalid'];
+            }
             if (res.length > 1) {
               for (let i = 1; i < res.length; i++) {
                 formValue = this.uploadService.replaceUploadedFile(

@@ -24,6 +24,7 @@ import {
   AjfChoicesOrigin,
   AjfForm,
   AjfFormActionEvent,
+  AjfFormRenderer,
   AjfFormRendererService,
   AjfFormSerializer,
 } from '@ajf/core/forms';
@@ -314,7 +315,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
    * Saves the form as draft, without validations
    */
   saveDraft() {
-    this._saveFormEvt.emit();
+    const evt: AjfFormActionEvent = {
+      source: null as unknown as AjfFormRenderer,
+      value: {},
+      action: 'draft',
+    };
+    this._saveFormEvt.emit(evt);
   }
 
   /**
@@ -609,12 +615,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     this._saveFormEvt
       .pipe(
         withLatestFrom(this._nss.isOnline$),
-        switchMap(([_, isOnline]) => {
+        switchMap(([evt, isOnline]) => {
           const fValue = this._rendererService.getFormValue();
           delete fValue['dino_form_info'];
           delete fValue['dino_form_metrics'];
           const formObj = {
             formValue: fValue,
+            evt: evt && evt.action ? evt.action : null,
           };
           const apiCall: Observable<any>[] = [];
           const {filesToUpload} = this.uploadService.getFilesInForm(formObj.formValue);
@@ -656,6 +663,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             if (res.length) {
               const formObj = res[0];
               let formValue = {...formObj.formValue};
+              if (formObj.evt && formObj.evt === 'draft') {
+                formValue['$invalid'] = true;
+              }
               if (res.length > 1) {
                 for (let i = 1; i < res.length; i++) {
                   formValue = this.uploadService.replaceUploadedFile(

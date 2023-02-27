@@ -82,6 +82,7 @@
     *ngIf="allowSaveDraft"
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
+    [buttonDisabled]="(isAjfFormValid|async) === true"
     (click)="saveDraft()"
   ></dino-floating-button>
 </ng-container>
