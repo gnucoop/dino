@@ -65,6 +65,11 @@ export const schema = {
     },
     "data": {
       "type": "object",
+      "properties": {
+        "$invalid": {
+          "type": "boolean"
+        }
+      },
       "description": "A plain object containing the data collected."
     },
     "area_ref_id": {

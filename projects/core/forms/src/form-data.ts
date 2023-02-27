@@ -41,7 +41,7 @@ export interface FormData extends Model {
   /**
    * A plain object containing the data collected.
    */
-  data: {[key: string]: any};
+  data: {$invalid?: boolean; [key: string]: any};
 
   /**
    * The Form Data area id.
