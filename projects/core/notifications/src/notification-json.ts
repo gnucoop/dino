@@ -30,15 +30,18 @@ export const schema = {
   "properties": {
     "id": {
       "type": "string",
-      "description": "UUID v4 identifier."
+      "description": "UUID v4 identifier.",
+      "maxLength": 200
     },
     "created_at": {
       "type": "string",
-      "description": "Creation timestamp."
+      "description": "Creation timestamp.",
+      "maxLength": 200
     },
     "updated_at": {
       "type": "string",
-      "description": "Update timestamp."
+      "description": "Update timestamp.",
+      "maxLength": 200
     },
     "is_deleted": {
       "type": "boolean",
@@ -82,11 +85,13 @@ export const schema = {
     },
     "icon": {
       "type": "string",
-      "description": "The notification optional icon identifier"
+      "description": "The notification optional icon identifier",
+      "maxLength": 200
     },
     "redirect_url": {
       "type": "string",
-      "description": "The optional URL where the user is redirected upon clicking"
+      "description": "The optional URL where the user is redirected upon clicking",
+      "maxLength": 200
     }
   },
   "required": [
