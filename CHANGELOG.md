@@ -1,3 +1,31 @@
+<a name="15.0.1"></a>
+# 15.0.1 "eligible-reindeer" (2023-02-28)
+### Bug Fixes
+* **core/data:** BulkDelete method refactor. Fixed a bug causing bulk deletion not to work correctly. ([ca0ee55](https://bitbucket.org/gnucoop/dino/commits/ca0ee55dd3949d021d7d9790d94a4d676820d976))
+* **core/data:** Fixed a bug causing runsync not to end correctly. Added 'all' as an accepted recipient for notifications (readable by all users) ([0341e6c](https://bitbucket.org/gnucoop/dino/commits/0341e6c81ee6f7f9fbfd5476ca0e12c03e965cd3))
+* **core/data:** Fixed check on socketJwtExpiredCode in graphql-ws-client 'newClient' function ([d50a6e9](https://bitbucket.org/gnucoop/dino/commits/d50a6e905da28875e225cf1bbd8ed0bee4e32367))
+* **core/data:** Graphql Client creation in data service is now provided the correct websocket url (syncOptions.url.ws) ([1d7b819](https://bitbucket.org/gnucoop/dino/commits/1d7b819e1978b1203300f608f831f8eb358a285a))
+* **core/data:** Pull query (for sync) no longer looks for docs updated 30 days before the checkpoint. ([c3db709](https://bitbucket.org/gnucoop/dino/commits/c3db70911b80202039421e96f1c392d4afce1cd8))
+* **core/data:** Push query builder 'where' conditions now correctly checks for '_lte' update_at ([5b792a1](https://bitbucket.org/gnucoop/dino/commits/5b792a15a0c1c1ede8583143e4378c601fbbfee5))
+* **core/notifications:** Added a small delay to methods that retrieve changes in notifications. ([ecf8163](https://bitbucket.org/gnucoop/dino/commits/ecf8163f83a5c1203a812c2074e8c700831d0c21))
+* **material/core:** Fixed styles duplication in dino-theme ([3e42693](https://bitbucket.org/gnucoop/dino/commits/3e42693f1ba5858c28c0cdeab0386f10cb0e5477))
+* **material/core:** Icon theme css overflow fix ([6c65f1a](https://bitbucket.org/gnucoop/dino/commits/6c65f1a3f88cb87976387ef89146affff692fb32))
+* **material/edit-report:** move ajf report to prevent graph errors ([75e8af2](https://bitbucket.org/gnucoop/dino/commits/75e8af2741ed19785cae0d45493d0fb1ed477f80))
+* **material/main-nav:** 'unreadNotificationsNumber' and 'lastNotifications' are now emitting on auth event 'init' too. ([e226557](https://bitbucket.org/gnucoop/dino/commits/e2265576981b576255e82b9d08225083f827030e))
+* **material/main-nav:** Notification dropdown menu style fixes. ([606407a](https://bitbucket.org/gnucoop/dino/commits/606407a04d917379403cefd925bd327c8341114c))
+* **material/metric-editor:** add translate to metric notes hint and change metric name label ([fee9412](https://bitbucket.org/gnucoop/dino/commits/fee9412159a92021ddc8d3d8505df571cf0d5b10))
+* **material/pipeline-stepper:** Minor css fix for Stepper (viewonly). Fixed a bug causing the scroll bar not to be interactable with. ([24ae28d](https://bitbucket.org/gnucoop/dino/commits/24ae28d2d4caf46cc6c572e9d7fd945f764ce3b5))
+### Features
+* **core/data:** Added 'getWhichFormCanBeCreated' method to Data Context Service ([2cd40f8](https://bitbucket.org/gnucoop/dino/commits/2cd40f8b26811c0229a2cf1fbc0cc5ec3934ab58))
+* **e2e-material:** Added Form Creator Hub button to Aggregation list in E2e app. ([b7f8a1c](https://bitbucket.org/gnucoop/dino/commits/b7f8a1ce282d5a7b07d0b824269280bca71149c3))
+* **material/form-creator-hub:** Added Form Creator Hub module and component. ([f744850](https://bitbucket.org/gnucoop/dino/commits/f7448502af419ab820e735f4eabff80ff2abc362))
+* **material/form-metric-selector:** Metric creation can now be allowed/disabled for each single metric type. ([ed85b63](https://bitbucket.org/gnucoop/dino/commits/ed85b63918a68ea94380cf1a35016af31a521d7c))
+* **material/list:** Invalid form warning icon is now displayed in the list when needed ([0623a50](https://bitbucket.org/gnucoop/dino/commits/0623a508fa76bbbaa2253b9a00ae6a33539e2d5c))
+* **material/search-filters-bar:** Added 'clear filter' suffix icon to clear filter inputs. ([b3a3760](https://bitbucket.org/gnucoop/dino/commits/b3a376036ee90037109d0eba02543ca3f1835890))
+* **multiple:** Create/edit form Save Draft now writes "$invalid: true" in the Data attribute of the form. ([f407afc](https://bitbucket.org/gnucoop/dino/commits/f407afc4aa55641b623a40257c2955a49e330f37))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="13.4.2"></a>
 # 13.4.2 "sporting-sole" (2023-01-29)
 ### Bug Fixes
