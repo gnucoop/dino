@@ -219,4 +219,6 @@ export const PRT: Translation = {
   'Synchronization complete': 'Sincronização completa',
   'Create Form': 'Criar formulário',
   'Choose the type of Form you want to create': 'Escolha o tipo de Formulário que deseja criar',
+  'This form might not be valid. Please review and fill its data':
+    'Este formulário pode não ser válido. Favor rever e preencher os seus dados',
 };

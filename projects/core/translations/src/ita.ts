@@ -229,4 +229,6 @@ export const ITA: Translation = {
   'Synchronization complete': 'Sincronizzazione completata',
   'Create Form': 'Crea Form',
   'Choose the type of Form you want to create': 'Scegli il tipo di form che vuoi creare',
+  'This form might not be valid. Please review and fill its data':
+    'Questo form potrebbe non essere valido. Per favore, controlla e completane i dati',
 };

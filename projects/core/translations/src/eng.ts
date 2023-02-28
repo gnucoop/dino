@@ -219,4 +219,6 @@ export const ENG: Translation = {
   'Synchronization complete': 'Synchronization complete',
   'Create Form': 'Create Form',
   'Choose the type of Form you want to create': 'Choose the type of Form you want to create',
+  'This form might not be valid. Please review and fill its data':
+    'This form might not be valid. Please review and fill its data',
 };
