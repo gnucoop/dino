@@ -748,6 +748,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             fschema.schema.choicesOrigins = [];
           }
           const ajfFormData = deepCopy(fdata.data);
+          const createdAt =
+            fdata.data != null && fdata.data.created_at != null ? fdata.data.created_at : null;
+          const id =
+            fdata.data != null && fdata.data.id != null ? fdata.data.id : null;
           ajfFormData['dino_form_info'] = {
             status,
             allStatuses,
@@ -755,6 +759,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             userGroups,
             activeUser,
             activeUserGroups,
+            createdAt,
+            id,
           };
 
           this.isFormInizialized.next(true);
@@ -808,6 +814,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (frGroup != null) {
             const createdAt =
               frDate != null && frDate.created_at != null ? frDate.created_at : null;
+            const id =
+              frDate != null && frDate.id != null ? frDate.id : null;
             const dinoFormInfo = {
               status,
               allStatuses,
@@ -816,6 +824,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               activeUser,
               activeUserGroups,
               createdAt,
+              id,
             };
             frGroup.setControl('dino_form_info', new UntypedFormControl(dinoFormInfo));
           }
