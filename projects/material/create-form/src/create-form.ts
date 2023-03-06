@@ -676,12 +676,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               }
               let newItem: {[key: string]: any} = {};
               if (isFormData) {
-                const defaultFormStatus: string | null =
+                let defaultFormStatus: string | null =
                   formStatuses && formStatuses.length
                     ? formStatuses.reduce((prev, curr) =>
                         prev.status_level < curr.status_level ? prev : curr,
                       ).id
                     : null;
+                if (formObj.evt && formObj.evt === 'draft') {
+                  defaultFormStatus = null;
+                }
                 newItem['data'] = formValue;
                 newItem['form_schema_ref_id'] = formSchemaId;
                 newItem['user_data_ref_id'] = userData?.id;
@@ -721,7 +724,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               }
               return this._dataModelManager.create(newItem as T).pipe(
                 tap(fd => {
-                  if (fd && fd.collection.name === 'form_data') {
+                  if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
                     const trigData: ActionTriggerData<T> = {doc: fd};
                     const trigger: ActionTrigger<T> = {
                       name: 'Form Data Created',
