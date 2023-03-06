@@ -87,9 +87,24 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
    * @returns The users
    */
   getUsersByGroups(userGroupsIds: string[]): Observable<RxDocument<UserData>[]> {
-    return this._userModelManager
-      .query({selector: {user_group_ids: {$all: userGroupsIds}}})
-      .pipe(shareReplay(1));
+    if (userGroupsIds && userGroupsIds.length) {
+      if (userGroupsIds.length > 1) {
+        const userGroupsIdsEqArr = userGroupsIds.map(id => {
+          return {
+            user_group_ids: id
+          }
+        });
+        return this._userModelManager
+            .query({selector: {$and: userGroupsIdsEqArr}})
+            .pipe(shareReplay(1));
+      } else {
+        return this._userModelManager
+            .query({selector: {user_group_ids: userGroupsIds[0]}})
+            .pipe(shareReplay(1));
+      }
+    } else {
+      return obsOf([] as RxDocument<UserData>[]);
+    }
   }
 
   /**
