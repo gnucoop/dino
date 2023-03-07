@@ -184,16 +184,6 @@ export class PermissionContextServiceMock extends PermissionContextService {
 }
 
 @Injectable()
-export class SyncManagerMock extends SyncManager {
-  override initializeMainCollections(): Observable<boolean[]> {
-    return obsOf([]);
-  }
-  override initializeContextualCollections(): Observable<boolean[]> {
-    return obsOf([]);
-  }
-}
-
-@Injectable()
 export class UserGroupManagerMock extends UserGroupManager {
   override isActiveUserAdmin() {
     this.addToContext({user_metrics: userMetricsMock});

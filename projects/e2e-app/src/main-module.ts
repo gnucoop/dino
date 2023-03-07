@@ -32,7 +32,7 @@ import {
   ReportSchemaManager,
   ReportsModule,
 } from '@dino/core/reports';
-import {SyncManager, SyncModule} from '@dino/core/sync';
+import {SyncModule} from '@dino/core/sync';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
 import {CoreModule as DinoMaterialThemingModule} from '@dino/material/core';
@@ -92,7 +92,6 @@ import {
   wsUrl,
   instanceName,
   PermissionContextServiceMock,
-  SyncManagerMock,
   DataServiceMock,
 } from './mocks';
 import {formDatas} from './test-ajf-formdata';
@@ -288,10 +287,6 @@ export function provideDataServiceConfig() {
       useClass: additionalConfig.externalAuthentication
         ? PermissionContextService
         : PermissionContextServiceMock,
-    },
-    {
-      provide: SyncManager,
-      useClass: additionalConfig.externalAuthentication ? SyncManager : SyncManagerMock,
     },
     {
       provide: DATA_SERVICE_CONFIG,
