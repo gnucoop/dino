@@ -38,6 +38,7 @@ import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
 import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
 import {RxDBQueryBuilderPlugin} from 'rxdb/plugins/query-builder';
 import {RxDBUpdatePlugin} from 'rxdb/plugins/update';
+import {RxDBJsonDumpPlugin} from 'rxdb/plugins/json-dump';
 import {
   BehaviorSubject,
   combineLatest,
@@ -164,6 +165,16 @@ export class DataService implements IDataService {
 
   readonly dbToken = new BehaviorSubject<string | null>('');
 
+  /**
+   * Emitted on a succesful or failed Db Import
+   */
+  readonly dbImportedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  /**
+   * Emitted on a succesful or failed Db Export
+   */
+  readonly dbExportedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
     new EventEmitter<CollectionChangedEvent>();
 
@@ -231,6 +242,7 @@ export class DataService implements IDataService {
     addRxPlugin(RxDBReplicationGraphQLPlugin);
     addRxPlugin(RxDBQueryBuilderPlugin);
     addRxPlugin(RxDBUpdatePlugin);
+    addRxPlugin(RxDBJsonDumpPlugin);
     this.config = fillConfigDefaultValues(config);
     this._dataConfig = new BehaviorSubject<DataServiceConfig>(this.config);
     this._currentlyStoredConfig = this._getDataConfig();
@@ -663,6 +675,60 @@ export class DataService implements IDataService {
       switchMap(([_cd, db]) => from(db.destroy()).pipe(switchMap(() => from(db.remove())))),
       take(1),
     );
+  }
+
+  /**
+   * Exports the Db instance content to a json file
+   */
+  exportDatabase(): Observable<Blob> {
+    return this._db.pipe(
+      switchMap(db => from(db.exportJSON())),
+      map(json => new Blob([JSON.stringify(json, null, 2)], {type: 'application/json'})),
+      tap(c => {
+        if (c != null) {
+          this.dbExportedEvent.emit(true);
+        }
+      }),
+      catchError(err => {
+        if (isDevMode()) {
+          console.log(err);
+        }
+        this.dbExportedEvent.emit(false);
+        return throwError(() => new Error(err));
+      }),
+      take(1),
+    );
+  }
+
+  /**
+   * Imports a DB dump to the local indexed db
+   * @param dumpfile The blob of the db dump file to import
+   */
+  importDatabase(dumpfile: Blob): void {
+    const fr = new FileReader();
+    fr.onload = evt => {
+      const res = evt.target?.result;
+      if (res != null && typeof res === 'string') {
+        if (!isDevMode) {
+          console.log(JSON.parse(res));
+        }
+        this._db
+          .pipe(
+            switchMap(db => from(db.importJSON(JSON.parse(res)))),
+            mapTo(true),
+            catchError(err => {
+              if (!isDevMode) {
+                console.log(err);
+              }
+
+              return obsOf(false);
+            }),
+            take(1),
+          )
+          .subscribe(res => this.dbImportedEvent.emit(res));
+      }
+    };
+    fr.readAsText(dumpfile);
   }
 
   /**
