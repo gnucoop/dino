@@ -203,6 +203,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   @ViewChild(MatPaginator, {static: false})
   set paginator(mp: MatPaginator) {
+    const currentPageSize = localStorage.getItem('dino_page_size');
+    if (currentPageSize != null) {
+      mp.pageSize = +currentPageSize;
+    }
     if (
       mp == null ||
       this._dataSource == null ||
@@ -211,6 +215,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       return;
     }
     this._dataSource.setPaginator = mp;
+    mp.page.pipe(takeUntil(this._mainUnsubscribe)).subscribe(pageEvt => {
+      if (pageEvt.previousPageIndex === pageEvt.pageIndex) {
+        localStorage.setItem('dino_page_size', pageEvt.pageSize.toString());
+      }
+    });
   }
 
   /**
