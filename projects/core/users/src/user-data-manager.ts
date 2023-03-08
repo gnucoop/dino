@@ -118,6 +118,7 @@ export class UserDataManager extends DataModelManager<UserData> {
         this.addToContext({user_data: userData});
       }),
       take(1),
+      shareReplay(1),
     );
   }
 }
