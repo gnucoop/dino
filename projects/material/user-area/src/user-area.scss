@@ -53,7 +53,21 @@ dino-user-area {
   .mat-mdc-raised-button {
     align-self: center;
   }
-  .dino-theme-presets-button {
+  .dino-theme-presets-button,
+  .dino-backup-restore-button {
+    text-decoration: none;
     margin: 15px;
+  }
+  .dino-backup-restore-buttons-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+    .dino-backup-restore-button {
+      flex: 0.3 0 auto;
+      a {
+        width: 100%;
+      }
+    }
   }
 }

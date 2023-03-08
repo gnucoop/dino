@@ -922,8 +922,8 @@ export const ajfSourceReportFormSchema = {
 export const formSchemas = [
   {
     id: '2268d23a-af59-4410-bc7e-a110badd4cd4',
-    name: 'cbm',
-    label: 'CBM',
+    name: 'test_form',
+    label: 'TEST FORM',
     icon: 'star',
     schema: ajfSourceReportFormSchema,
     visibility: 0,

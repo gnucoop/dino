@@ -80,7 +80,7 @@
             type="submit"
             color="accent"
             aria-label="submit"
-            [disabled]="processing || (changePassDisabled|async) === true"
+            [disabled]="(processing|async) || (changePassDisabled|async) === true"
             (click)="changePassword()"
           >
             <mat-icon>arrow_forward</mat-icon>
@@ -187,6 +187,50 @@
               {{'Save'|transloco}}
             </button>
           </form>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel *ngIf="backupRestore && (isAdmin|async)">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Backup and Restore </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="dino-backup-restore-buttons-container">
+          <ng-container *ngIf="(processing|async) === false; else loading">
+            <label class="dino-backup-restore-button">
+              <a
+                [href]="dbDownloadUrl|async"
+                [download]="'dino_db_export.json'"
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="exportDatabase()"
+              >
+                {{'Backup Data'|transloco}}
+              </a>
+            </label>
+            <input
+              type="file"
+              id="jsonFileInput"
+              accept=".json"
+              (change)="onJsonImportfileSelected($event)"
+              style="visibility: hidden; height: 1px"
+            />
+            <label for="jsonFileInput" class="dino-backup-restore-button">
+              <a color="accent" type="button" mat-raised-button>{{'Restore Data'|transloco}}</a>
+            </label>
+          </ng-container>
+          <ng-template #loading>
+            <div class="dino-loading">
+              <div>{{'Restoring Data...'|transloco}}</div>
+              <br /><br />
+              <ng-container *ngIf="spinnerImagePath; else defaultspinner"
+                ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+              </ng-container>
+              <ng-template #defaultspinner
+                ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+              ></ng-template>
+            </div>
+          </ng-template>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

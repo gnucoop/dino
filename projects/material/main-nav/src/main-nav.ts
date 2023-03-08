@@ -168,6 +168,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   @Input() spinnerImagePath: string | undefined;
 
   /**
+   * If true, Backup/Restore is available to the Admin in the User Area
+   */
+  @Input() backupRestore: boolean | undefined;
+
+  /**
    * The Custom User Section icon svg name
    */
   @Input() userSectionIcon: string | undefined;
@@ -682,7 +687,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * Opens the User Area dialog
    */
   openUserArea(): void {
-    const dialogConfig = new MatDialogConfig();
+    const dialogConfig = new MatDialogConfig<{
+      spinnerImagePath?: string;
+      isAdmin?: Observable<boolean>;
+      backupRestore: boolean | undefined;
+    }>();
+    dialogConfig.data = {
+      spinnerImagePath: this.spinnerImagePath,
+      isAdmin: this.isAdmin.pipe(shareReplay(1)),
+      backupRestore: this.backupRestore,
+    };
     dialogConfig.minWidth = `95vw`;
     dialogConfig.maxWidth = `95vw`;
     this.dialog.open(UserArea, dialogConfig);

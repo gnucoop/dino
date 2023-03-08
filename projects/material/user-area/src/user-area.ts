@@ -25,6 +25,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
@@ -32,10 +33,25 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
 import {UserData, UserDataManager} from '@dino/core/users';
-import {map, Observable, of as obsOf, startWith, switchMap, take} from 'rxjs';
+import {
+  BehaviorSubject,
+  map,
+  Observable,
+  of as obsOf,
+  startWith,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs';
 import {TranslocoService} from '@ngneat/transloco';
 import {DinoTheme, ThemeService} from '@dino/material/core';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {AdminUserInteractionsService} from '@dino/material/user-interactions';
+import {DataService} from '@dino/core/data';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import {ListAction} from '@dino/core/list';
+import {Router} from '@angular/router';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -50,7 +66,19 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class UserArea {
+export class UserArea implements OnDestroy {
+  /**
+   * If true, Backup/Restore is available to the Admin in the User Area
+   */
+  backupRestore: boolean | undefined;
+  /**
+   * True if the active user is an Admin
+   */
+  isAdmin: Observable<boolean>;
+  /**
+   * The Custom loading spinner image path
+   */
+  spinnerImagePath: string | undefined;
   /**
    * The active User Data
    */
@@ -66,7 +94,7 @@ export class UserArea {
   /**
    * True if the Change Password or Email forms are currently processing a request.
    */
-  processing = false;
+  processing: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   /**
    * Error is True if authentication was not successful.
    */
@@ -103,18 +131,47 @@ export class UserArea {
    */
   themePresetOptions: Observable<string[]>;
 
+  /**
+   * Sanitized db export blob
+   */
+  dbDownloadUrl: Observable<SafeUrl | null>;
+
+  /**
+   * The selected file
+   */
+  private _file?: Blob;
+
+  /**
+   * Main unsub subject.
+   * Used for unsubscribing all subscriptions.
+   */
+  private _mainUnsubscribe: Subject<void> = new Subject();
+
   constructor(
     private _udm: UserDataManager,
     private _fb: UntypedFormBuilder,
     private _authService: AuthService,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
+    private _ds: DataService,
     private _ts: TranslocoService,
+    private _sanitizer: DomSanitizer,
+    private _aui: AdminUserInteractionsService,
+    private _router: Router,
     public themeService: ThemeService,
     public dialogRef: MatDialogRef<UserArea>,
     readonly breakpointObserver: BreakpointObserverService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      spinnerImagePath?: string;
+      isAdmin?: Observable<boolean>;
+      backupRestore: boolean | undefined;
+    },
   ) {
+    this.spinnerImagePath = data.spinnerImagePath;
+    this.isAdmin = data.isAdmin ?? obsOf(false);
+    this.backupRestore = data.backupRestore;
+    this.dbDownloadUrl = obsOf(null);
     this.userData = this._udm.getActiveUserData();
     const currentTheme = this.themeService.currentThemeVal;
     this.primaryColor = currentTheme?.primary ?? '#000000';
@@ -152,6 +209,41 @@ export class UserArea {
         return this._filter(value, presetNames);
       }),
     );
+
+    this._ds.dbImportedEvent.pipe(takeUntil(this._mainUnsubscribe)).subscribe(evt => {
+      this._snackBar.open(
+        this._ts.translate(
+          evt
+            ? 'Data importe correctly in your local Database'
+            : 'There was an error importing the Data. Please check the import file.',
+        ),
+        this._ts.translate(evt ? 'DATA IMPORTED' : 'ERROR IMPORTING DATA'),
+        {
+          duration: 10000,
+        },
+      );
+      if (evt) {
+        this._router.navigateByUrl('/', {replaceUrl: true});
+      }
+      this.closeDialog();
+    });
+
+    this._ds.dbExportedEvent.pipe(takeUntil(this._mainUnsubscribe)).subscribe(evt => {
+      this._snackBar.open(
+        this._ts.translate(
+          evt
+            ? 'Backup file generated correctly'
+            : 'There was an error generating the Backup file. Please try again.',
+        ),
+        this._ts.translate(evt ? 'BACKUP GENERATED' : 'ERROR CREATING BACKUP FILE'),
+        {
+          duration: 10000,
+        },
+      );
+      if (evt) {
+        this._router.navigateByUrl('/', {replaceUrl: true});
+      }
+    });
   }
 
   /**
@@ -231,7 +323,7 @@ export class UserArea {
    * User Change Password method.
    */
   changePassword(): void {
-    if (!this.changePassForm.valid || this.processing) {
+    if (!this.changePassForm.valid || this.processing.value) {
       return;
     }
     this.userData
@@ -257,7 +349,7 @@ export class UserArea {
           } else {
             this._setChangePassError({error: true, message: null});
           }
-          this.processing = false;
+          this.processing.next(false);
         },
         error: err => {
           if (err.status && err.status === 200) {
@@ -269,7 +361,7 @@ export class UserArea {
               message: err.error.message ?? this._ts.translate('Incorrect password'),
             });
           }
-          this.processing = false;
+          this.processing.next(false);
         },
       });
   }
@@ -287,6 +379,48 @@ export class UserArea {
   }
 
   /**
+   * Exports the Db instance content to a json file
+   */
+  exportDatabase(): void {
+    this.dbDownloadUrl = this._ds
+      .exportDatabase()
+      .pipe(map(blob => this._sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob))));
+  }
+
+  /**
+   * Called when a JSON file is chosen to restore the db in the input
+   * @param event The input file selection event
+   */
+  onJsonImportfileSelected(event: any): void {
+    if (event.target.files.length === 0) {
+      return;
+    }
+    this._file = event.target.files[0];
+    const action: ListAction = {actionType: 'restore', askConfirm: true};
+
+    this._aui
+      .askConfirm(
+        action,
+        this._ts.translate(
+          `Are you SURE you want to restore this Data file? All of the imported Data will be written into your local Database. \n
+          Any Data with the same ID of an imported one will be OVERWRITTEN.`,
+        ),
+      )
+      .pipe(
+        map(confirmation => {
+          if (!confirmation || this._file == null) {
+            this.closeDialog();
+            return null;
+          }
+          this.processing.next(true);
+          return this._ds.importDatabase(this._file);
+        }),
+        take(1),
+      )
+      .subscribe();
+  }
+
+  /**
    * Closes the dialog.
    */
   closeDialog() {
@@ -301,5 +435,10 @@ export class UserArea {
   private _setChangePassError(changePassErr: AuthError): void {
     this._changePassError = changePassErr;
     this._cdr.markForCheck();
+  }
+
+  ngOnDestroy(): void {
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
   }
 }

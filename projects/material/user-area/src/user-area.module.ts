@@ -35,36 +35,42 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
+import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 import {RouterModule} from '@angular/router';
 import {UsersModule} from '@dino/core/users';
+import {UserInteractionsModule as DinoUserInteractionsModule} from '@dino/material/user-interactions';
 import {TranslocoModule} from '@ngneat/transloco';
 import {ColorPickerModule} from 'ngx-color-picker';
 
 import {UserArea} from './user-area';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
-    imports: [
-        AjfTranslocoModule,
-        ColorPickerModule,
-        CommonModule,
-        DinoBreakpointObserverModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressBarModule,
-        MatSlideToggleModule,
-        MatSnackBarModule,
-        ReactiveFormsModule,
-        RouterModule,
-        UsersModule,
-        TranslocoModule,
-    ],
-    declarations: [UserArea],
-    exports: [UserArea]
+  imports: [
+    AjfTranslocoModule,
+    ColorPickerModule,
+    CommonModule,
+    DinoBreakpointObserverModule,
+    DinoLoadingSpinnerModule,
+    DinoUserInteractionsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    ReactiveFormsModule,
+    RouterModule,
+    UsersModule,
+    TranslocoModule,
+  ],
+  declarations: [UserArea],
+  exports: [UserArea],
 })
 export class UserAreaModule {}
