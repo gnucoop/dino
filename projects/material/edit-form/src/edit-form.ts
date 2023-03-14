@@ -97,7 +97,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
-import {UntypedFormControl} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 
 /**
  * The Form Edit component.
@@ -235,8 +235,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * The Form schema Statuses
    */
-  private _formSchemaStatuses: Observable<FormStatus[]> = obsOf([]);
-  get formSchemaStatuses(): Observable<FormStatus[]> {
+  private _formSchemaStatuses: Observable<FormStatus[] | null> = obsOf([]);
+  get formSchemaStatuses(): Observable<FormStatus[] | null> {
     return this._formSchemaStatuses;
   }
 
@@ -311,6 +311,17 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   readonly formChanges: BehaviorSubject<AjfForm | null> = new BehaviorSubject<AjfForm | null>(null);
 
   /**
+   * Extra form control to add to the form group
+   */
+  private _extraFormControls: {[key: string]: {[key: string]: any}} = {};
+
+  /**
+   * Set the extra form control to add to the form group
+   */
+  readonly setFormControls: BehaviorSubject<{[key: string]: {[key: string]: any}} | null> =
+    new BehaviorSubject<{[key: string]: {[key: string]: any}} | null>(null);
+
+  /**
    * The loading state of the upload file
    */
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -361,7 +372,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     private _nss: NetworkStatusService,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
-    private _fsm: FormStatusManager,
+    private _fst: FormStatusManager,
     private _rendererService: AjfFormRendererService,
     private _location: Location,
     private _udm: UserDataManager,
@@ -536,20 +547,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       shareReplay(1),
     );
 
-    this._formSchemaStatuses = this._formSchema.pipe(
-      switchMap(schema => {
-        if (schema == null || !schema['form_status_ref_id']?.length) {
-          return obsOf([]);
-        }
-        return this._fsm.query({selector: {id: {$in: schema['form_status_ref_id']}}}).pipe(
-          map(statuses => {
-            return statuses.sort((a, b) => (a.status_level > b.status_level ? 1 : -1));
-          }),
-        );
-      }),
-      shareReplay(1),
-    );
-
     this._formDataStatus = combineLatest([this._formData, this._formSchemaStatuses]).pipe(
       map(([formData, statuses]) => {
         if (formData == null || formData.statusId == null || statuses == null) {
@@ -621,7 +618,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               });
               if (Object.keys(metricsCtx).length) {
                 formGroup.patchValue(metricsCtx);
-                formGroup.setControl('dino_form_metrics', new UntypedFormControl(metricsCtx));
+                this._extraFormControls['dino_form_metrics'] = metricsCtx;
+                this._setNewControlsInForm(formGroup, this._extraFormControls);
               }
             }
 
@@ -698,16 +696,28 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
 
           if (formGroup && formGroup.value) {
             if (newChoicesOrigins.length) {
-              this._addChoiceOriginToFormSchema(newFormSchema, newChoicesOrigins, {
-                ...formGroup.value,
-                ...extCtx,
-              });
+              const schemaWithNewChoices = this._addChoiceOriginToFormSchema(
+                newFormSchema,
+                newChoicesOrigins,
+              );
+              if (schemaWithNewChoices) {
+                this._removeControlsInForm(formGroup, this._extraFormControls);
+                const ajfFormSerialized = AjfFormSerializer.fromJson(schemaWithNewChoices.schema, {
+                  ...formGroup.value,
+                  ...extCtx,
+                });
+                this.formChanges.next(ajfFormSerialized);
+              }
             } else if (Object.keys(extCtx).length) {
               formGroup.patchValue(extCtx);
             }
           }
         }
       });
+
+    this._formSchemaStatuses = this._formSchema.pipe(
+      switchMap(schema => this._fst.formStatusesOfSchema(schema)),
+    );
 
     this._form = combineLatest([
       this._formSchema,
@@ -750,8 +760,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           const ajfFormData = deepCopy(fdata.data);
           const createdAt =
             fdata.data != null && fdata.data.created_at != null ? fdata.data.created_at : null;
-          const id =
-            fdata.data != null && fdata.data.id != null ? fdata.data.id : null;
+          const id = fdata.data != null && fdata.data.id != null ? fdata.data.id : null;
           ajfFormData['dino_form_info'] = {
             status,
             allStatuses,
@@ -814,8 +823,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (frGroup != null) {
             const createdAt =
               frDate != null && frDate.created_at != null ? frDate.created_at : null;
-            const id =
-              frDate != null && frDate.id != null ? frDate.id : null;
+            const id = frDate != null && frDate.id != null ? frDate.id : null;
             const dinoFormInfo = {
               status,
               allStatuses,
@@ -826,7 +834,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               createdAt,
               id,
             };
-            frGroup.setControl('dino_form_info', new UntypedFormControl(dinoFormInfo));
+            this._extraFormControls['dino_form_info'] = dinoFormInfo;
+            this._setNewControlsInForm(frGroup, this._extraFormControls);
           }
         },
       );
@@ -904,6 +913,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }),
         switchMap(data => data as Observable<{[key: string]: Metric}>),
         shareReplay(1),
+        takeUntil(this._mainUnsubscribe),
       )
       .subscribe();
 
@@ -1067,13 +1077,17 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       .subscribe();
 
     this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
-      switchMap(() =>
-        this._rendererService.errors.pipe(
+      withLatestFrom(this._rendererService.formGroup),
+      switchMap(([fdStatus, formGroup]) => {
+        if (fdStatus === 1) {
+          this._setNewControlsInForm(formGroup, this._extraFormControls);
+        }
+        return this._rendererService.errors.pipe(
           startWith(0),
           map((errors: number) => errors === 0),
           shareReplay(1),
-        ),
-      ),
+        );
+      }),
       shareReplay(1),
     );
 
@@ -1116,7 +1130,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
-   *
+   * Return the queries for the external form datas
    * @param fschemadeps The Ajf form schema dependencies info
    * @param metricSel The selected metrics
    * @returns An array of observable with queries for the external form data
@@ -1176,17 +1190,53 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     return extFormDataObs;
   }
 
+  private _removeControlsInForm(
+    formGroup: UntypedFormGroup | null,
+    formControls: {[key: string]: {[key: string]: any}},
+  ): void {
+    if (formGroup && formControls && Object.keys(formControls).length) {
+      const patchValEmpty: {[key: string]: any} = {};
+      Object.keys(formControls).forEach(fcName => {
+        patchValEmpty[fcName] = null;
+      });
+      formGroup.patchValue(patchValEmpty);
+    }
+  }
+
+  /**
+   * Set new Controls in Form Group
+   * @param formGroup
+   * @param formControls new form controls to set in form
+   */
+  private _setNewControlsInForm(
+    formGroup: UntypedFormGroup | null,
+    formControls: {[key: string]: {[key: string]: any}},
+  ): void {
+    if (formGroup && formControls && Object.keys(formControls).length) {
+      Object.keys(formControls).forEach(fcName => {
+        const fcCtx = formControls[fcName];
+        if (Object.keys(fcCtx).length) {
+          const patchValEmpty: {[key: string]: any} = {};
+          patchValEmpty[fcName] = null;
+          /*Object.keys(fcCtx).forEach(k => {
+            patchValEmpty[k] = null;
+          });*/
+          formGroup.patchValue(patchValEmpty);
+          formGroup.setControl(fcName, new UntypedFormControl(fcCtx));
+        }
+      });
+    }
+  }
+
   /**
    * Add new dynamic choices origins to form schema
    * @param formSchema the form schema to update
    * @param newChoicesOrigins
-   * @param ctx the context for the form
    */
   private _addChoiceOriginToFormSchema(
     formSchema: FormSchema,
     newChoicesOrigins: AjfChoicesOrigin<string>[],
-    ctx: {[key: string]: any},
-  ): void {
+  ): FormSchema | null {
     formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins ?? [];
     if (newChoicesOrigins.length) {
       newChoicesOrigins.forEach(choice => {
@@ -1195,10 +1245,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           (c: any) => c.name !== choice.name,
         );
       });
-
       formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins.concat(newChoicesOrigins);
-      this.formChanges.next(AjfFormSerializer.fromJson(formSchema.schema, ctx));
+      return formSchema;
     }
+    return null;
   }
 
   private _getChoicesFromFieldReps(
@@ -1223,7 +1273,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     fieldName: string,
     docs: RxDocument<FormData>[],
   ): AjfChoice<string>[] {
-    let choices: AjfChoice<string>[] = [];
+    const choices: AjfChoice<string>[] = [];
     docs.forEach(doc => {
       const extFormData = doc.toJSON();
       if (fieldName in extFormData.data && extFormData.data[fieldName] != null) {
