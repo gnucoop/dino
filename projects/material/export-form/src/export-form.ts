@@ -145,6 +145,9 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   /** If true, export use translated labels instead values */
   private _translate$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  /** If true, export use data analysis format */
+  private _dataAnalysis$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   /** A dictionary with all context values:
    * {field name: field value}
    * {choiceOriginName_choiceOriginValue: choiceLabel} */
@@ -331,19 +334,33 @@ export class ExportForm implements AfterViewInit, OnDestroy {
                 fieldsFromTab as AjfField[],
                 ctxList,
               );
-              for (let i = 0; i <= count; i++) {
+              if (this._dataAnalysis$.value) {
                 slideNode.nodes
                   .filter(n => fieldsFromTabNames.indexOf(n.name) > -1)
                   .forEach((field, idx) => {
-                    if (idx === 0 && i === 0) {
+                    if (idx === 0) {
                       const slideFieldCloned: AjfField = deepCopy(field);
                       slideFieldCloned.name = slideNode.name;
                       fields.push(slideFieldCloned);
                     }
                     const fieldCloned: AjfField = deepCopy(field);
-                    fieldCloned.name = `${field.name}__${i}`;
                     fields.push(fieldCloned);
                   });
+              } else {
+                for (let i = 0; i <= count; i++) {
+                  slideNode.nodes
+                    .filter(n => fieldsFromTabNames.indexOf(n.name) > -1)
+                    .forEach((field, idx) => {
+                      if (idx === 0 && i === 0) {
+                        const slideFieldCloned: AjfField = deepCopy(field);
+                        slideFieldCloned.name = slideNode.name;
+                        fields.push(slideFieldCloned);
+                      }
+                      const fieldCloned: AjfField = deepCopy(field);
+                      fieldCloned.name = `${field.name}__${i}`;
+                      fields.push(fieldCloned);
+                    });
+                }
               }
             } else {
               fields = fields.concat(
@@ -433,34 +450,44 @@ export class ExportForm implements AfterViewInit, OnDestroy {
           const exportCtxList: Context[] = [];
           ctxList.forEach(ctx => {
             const exportCtx: Context = {};
+            let expandedExportCtx: Context[] = [];
 
-            slideNodesWithAllRepeatingInstance
-              .filter(f => f.slideName !== f.name) // remove slide fields
-              .forEach(field => {
-                this._evaluateContext(field, exportCtx, ctx);
-                if (
-                  field.slideNodeType === AjfNodeType.AjfRepeatingSlide &&
-                  field.slideName != null &&
-                  exportCtx[field.slideName] == null
-                ) {
-                  const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
-                  exportCtx[field.slideName] = this._countNumberOfInstanceInContext(
-                    fieldsFromTab,
-                    ctx,
-                  );
-                }
-              });
-            if (Object.keys(exportCtx).length > 0) {
+            if (this._dataAnalysis$.value) {
+              expandedExportCtx = this._expandRowCtxForDataAnalysis(
+                slideNodesWithAllRepeatingInstance,
+                ctx,
+              );
+            } else {
+              slideNodesWithAllRepeatingInstance
+                .filter(f => f.slideName !== f.name) // remove slide fields
+                .forEach(field => {
+                  this._evaluateContext(field, exportCtx, ctx);
+                  if (
+                    field.slideNodeType === AjfNodeType.AjfRepeatingSlide &&
+                    field.slideName != null &&
+                    exportCtx[field.slideName] == null
+                  ) {
+                    const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
+                    exportCtx[field.slideName] = this._countNumberOfInstanceInContext(
+                      fieldsFromTab,
+                      ctx,
+                    );
+                  }
+                });
+            }
+
+            if (Object.keys(exportCtx).length > 0 || expandedExportCtx.length > 0) {
+              const refExportCtx: Context = {};
               this._dinoFields.forEach(field => {
                 const isDinoRefField = field.includes('_ref_id');
                 const dinoField = isDinoRefField ? field.replace('_ref_id', '') : field;
-                exportCtx[field] =
+                refExportCtx[field] =
                   isDinoRefField && ctx.dino[dinoField]
                     ? ctx.dino[dinoField].id
                     : ctx.dino[dinoField];
               });
               if (ctx.dino['user_data'] != null) {
-                exportCtx['user_data_full_name'] = ctx.dino['user_data'].full_name;
+                refExportCtx['user_data_full_name'] = ctx.dino['user_data'].full_name;
               }
               const metricManagers = this._metricManagers.filter(mm => mm != null);
               metricManagers.forEach(manager => {
@@ -469,19 +496,26 @@ export class ExportForm implements AfterViewInit, OnDestroy {
                   const metricProperties = manager.collectionSchema.properties;
                   for (let prop in metricProperties) {
                     if (ctx.dino[metricName] && !this._dinoBaseModelFields.includes(prop)) {
-                      exportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop];
+                      refExportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop];
                     }
                   }
                 }
               });
               if (ctx.dino['form_status']) {
-                exportCtx[`form_status_id`] = ctx.dino['form_status']['id'];
-                exportCtx[`form_status_name`] = ctx.dino['form_status']['name'];
-                exportCtx[`form_status_label`] = ctx.dino['form_status']['label'];
-                exportCtx[`form_status_level`] = ctx.dino['form_status']['status_level'];
-                exportCtx[`form_status_color`] = ctx.dino['form_status']['color'];
+                refExportCtx[`form_status_id`] = ctx.dino['form_status']['id'];
+                refExportCtx[`form_status_name`] = ctx.dino['form_status']['name'];
+                refExportCtx[`form_status_label`] = ctx.dino['form_status']['label'];
+                refExportCtx[`form_status_level`] = ctx.dino['form_status']['status_level'];
+                refExportCtx[`form_status_color`] = ctx.dino['form_status']['color'];
               }
-              exportCtxList.push(exportCtx);
+
+              if (this._dataAnalysis$.value) {
+                expandedExportCtx.forEach(row => {
+                  exportCtxList.push({...row, ...refExportCtx});
+                });
+              } else {
+                exportCtxList.push({...exportCtx, ...refExportCtx});
+              }
             }
           });
           return exportCtxList;
@@ -570,6 +604,10 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     this._translate$.next(checked);
   }
 
+  setDataAnalysisFormat(checked: boolean): void {
+    this._dataAnalysis$.next(checked);
+  }
+
   tabChange(ev: MatTabChangeEvent): void {
     this._currentTabIndex$.next(ev.index);
   }
@@ -584,17 +622,69 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Queries the dataModelManager and updates the dataResults
-   * @param queryObs The query observable
+   * Push into export list the formdata expanded in multiple rows, one for each repeating slide
+   * @param slideNodesWithAllRepeatingInstance
+   * @param ctx
+   * @returns
    */
-  /*private _getQueryResults(queryObs: Observable<RxDocument<any, {}>[]> | null): void {
-    if (queryObs !== null) {
-      queryObs.subscribe(populatedDocs => {
-        console.log(populatedDocs);
-        // this._dataResults.next(populatedDocs);
+  private _expandRowCtxForDataAnalysis(
+    slideNodesWithAllRepeatingInstance: AjfField[],
+    ctx: ExportData,
+  ): Context[] {
+    const repSlidesRows: {[key: string]: Context[]} = {};
+    const baseExportCtx: Context = {};
+    let expandedExportCtx: Context[] = [];
+
+    slideNodesWithAllRepeatingInstance
+      .filter(f => f.slideName !== f.name) // remove slide fields
+      .forEach(field => {
+        if (field.slideNodeType !== AjfNodeType.AjfRepeatingSlide) {
+          this._evaluateContext(field, baseExportCtx, ctx);
+        } else {
+          const baseField = deepCopy(field);
+          const baseFieldName = field.name.split('__')[0];
+          baseField.name = baseFieldName;
+          this._evaluateContext(baseField, baseExportCtx, {});
+          if (field.slideName != null && baseExportCtx[field.slideName] == null) {
+            const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
+            const numberOfInstanceInContext = this._countNumberOfInstanceInContext(
+              fieldsFromTab,
+              ctx,
+            );
+            baseExportCtx[field.slideName] = numberOfInstanceInContext;
+            // New repeating slide: add a row for each instance of the slide
+            let rowsForCurrentSlide: Context[] = [];
+            for (let i = 0; i < numberOfInstanceInContext; i++) {
+              const exportCtx: Context = {};
+              fieldsFromTab
+                .map(repField => repField.name)
+                .forEach(repFieldName => {
+                  const repFieldNameWithCount = `${repFieldName}__${i}`;
+                  const repField = slideNodesWithAllRepeatingInstance.find(
+                    itm => itm.name === repFieldName, // WithCount,
+                  );
+                  if (repField) {
+                    const repFieldWithCount = deepCopy(repField);
+                    repFieldWithCount.name = repFieldNameWithCount;
+                    this._evaluateContext(repFieldWithCount, exportCtx, ctx);
+                    exportCtx[repFieldName] = exportCtx[repFieldNameWithCount];
+                    delete exportCtx[repFieldNameWithCount];
+                  }
+                });
+              rowsForCurrentSlide.push(exportCtx);
+            }
+            repSlidesRows[field.slideName] = rowsForCurrentSlide;
+          }
+        }
       });
-    }
-  }*/
+
+    Object.keys(repSlidesRows).forEach(slide => {
+      repSlidesRows[slide].forEach(row => {
+        expandedExportCtx.push({...baseExportCtx, ...row});
+      });
+    });
+    return expandedExportCtx;
+  }
 
   private _buildExportModel(formSchema: FormSchema): ExportModel {
     const schemaName = formSchema.name;

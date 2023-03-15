@@ -34,6 +34,11 @@
     <dino-toggle-button class="dino-export-translate-btn" (change)="setTranslation($event.checked)"
       >{{'Label values'|transloco}}</dino-toggle-button
     >
+    <dino-toggle-button
+      class="dino-export-translate-btn"
+      (change)="setDataAnalysisFormat($event.checked)"
+      >{{'Data Analysis'|transloco}}</dino-toggle-button
+    >
     <span class="dino-export-toolbar-spacer"></span>
 
     <mat-button-toggle-group name="format" aria-label="format of export" [(ngModel)]="exportFormat">
