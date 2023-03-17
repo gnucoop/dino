@@ -57,7 +57,7 @@ export class NotificationManager extends DataModelManager<Notification> {
     return this.init().pipe(
       delay(3000),
       switchMap(() =>
-        this.list().pipe(
+        this.query({selector: {recipients: {$elemMatch: {$eq: userDataId}}}}).pipe(
           map(notifications => notifications.filter(nt => !nt.readers.includes(userDataId)).length),
         ),
       ),
@@ -80,8 +80,9 @@ export class NotificationManager extends DataModelManager<Notification> {
     return this.init().pipe(
       delay(3000),
       switchMap(() => {
-        return this.list({
-          sort: [{created_at: 'desc', id: 'desc'}],
+        return this.query({
+          selector: {recipients: {$elemMatch: {$eq: userDataId}}},
+          sort: [{updated_at: 'desc', created_at: 'desc', id: 'desc'}],
           limit: num,
         }).pipe(
           map(notifications => {
