@@ -63,6 +63,7 @@ export type DataQuerySelector = {
         $lte?: any;
         $gte?: any;
         $eq?: any;
+        $elemMatch?: any;
         $ne?: any;
         $exists?: any;
         $in?: any;
