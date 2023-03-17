@@ -229,21 +229,30 @@ export class UserArea implements OnDestroy {
     });
 
     this._ds.dbExportedEvent.pipe(takeUntil(this._mainUnsubscribe)).subscribe(evt => {
-      this._snackBar.open(
-        this._ts.translate(
-          evt
-            ? 'Backup file generated correctly'
-            : 'There was an error generating the Backup file. Please try again.',
-        ),
-        this._ts.translate(evt ? 'BACKUP GENERATED' : 'ERROR CREATING BACKUP FILE'),
-        {
-          duration: 10000,
-        },
-      );
       if (evt) {
         this._router.navigateByUrl('/', {replaceUrl: true});
       }
     });
+
+    this._exportDatabase();
+  }
+
+  /**
+   * Exports the Db instance content to a json file
+   */
+  private _exportDatabase(): void {
+    this.dbDownloadUrl = this.isAdmin.pipe(
+      switchMap(isAdmin => {
+        if (!isAdmin) {
+          return obsOf(null);
+        }
+        return this._ds
+          .exportDatabase()
+          .pipe(
+            map(blob => this._sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob))),
+          );
+      }),
+    );
   }
 
   /**
@@ -376,15 +385,6 @@ export class UserArea implements OnDestroy {
       {duration: 10000},
     );
     this.closeDialog();
-  }
-
-  /**
-   * Exports the Db instance content to a json file
-   */
-  exportDatabase(): void {
-    this.dbDownloadUrl = this._ds
-      .exportDatabase()
-      .pipe(map(blob => this._sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob))));
   }
 
   /**
