@@ -1,3 +1,24 @@
+<a name="15.0.2"></a>
+# 15.0.2 "whole-penguin" (2023-03-17)
+### Bug Fixes
+* **core/notifications:** Fixed a bug in NotificationManager causing the active User to see all notifications created locally. ([7285d89](https://bitbucket.org/gnucoop/dino/commits/7285d897c6879d2c0c06a5c8942aa182f84407ef))
+* **core/users:** Fixed a bug in UserDataManager causing the 'on_signup' trigger not to emit. ([1051f53](https://bitbucket.org/gnucoop/dino/commits/1051f53d6d071b10704566bb8bb8b3bc6ac90513))
+* **core/users:** replace  in query, it doesn't work in v15.. ([93bb429](https://bitbucket.org/gnucoop/dino/commits/93bb429d2e6ec0da3c837123cad90a0d1b1ec288))
+* **material/user-area:** Fixed a bug causing the Db json file not to be exported correctly ([3d19027](https://bitbucket.org/gnucoop/dino/commits/3d190270e6fa5239ed10093c368a35dd10b9c740))
+* **multiple:** additional info in dino_form_info ([6e2cf87](https://bitbucket.org/gnucoop/dino/commits/6e2cf87404a95f4e0b81fe18df457dfadb263ce9))
+* **multiple:** set dino controls in ajf form in the correct order ([9b2f677](https://bitbucket.org/gnucoop/dino/commits/9b2f6779b98b047644bd75f0034d7817fd6fd13a))
+### Features
+* **core/data:** Added '$elemMatch' operator to DataQuerySelector type ([92a5305](https://bitbucket.org/gnucoop/dino/commits/92a530507c961e51eb5eb27f27daf921a2eebdde))
+* **core/data:** Added methods for importing/exporting the local db as a json. ([7c311f9](https://bitbucket.org/gnucoop/dino/commits/7c311f94761cce4eb318d45d91891d9881a045f5))
+* **material/create-form:** if draft no default status for the new form ([07935e9](https://bitbucket.org/gnucoop/dino/commits/07935e949ef1252d6f59883fe033016c77f0ee3d))
+* **material/edit-form:** Add formdata id into dino-form-info ([775566f](https://bitbucket.org/gnucoop/dino/commits/775566ff3d1c7998a43d191a943d6008cae94274))
+* **material/export-form:** add export for data analysis for repeating slide ([462e613](https://bitbucket.org/gnucoop/dino/commits/462e613e0818a27014b300f66e07ff17c443b5f7))
+* **material/export:** add export option for data analysis format ([2c4c2d7](https://bitbucket.org/gnucoop/dino/commits/2c4c2d7a14f5dd0f6fa03a217f151e366c8d8d6b))
+* **material/list:** Paginator last selected page size is now stored in Localstorage as 'dino_page_size'. ([5d4132a](https://bitbucket.org/gnucoop/dino/commits/5d4132a290c37afd58e50bc5bb30d50d0271bc08))
+* **material/user-area:** Added UI for DB Backup/Restore. ([a606a08](https://bitbucket.org/gnucoop/dino/commits/a606a08fdafc6025f60194d31aec41b9262e2923))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.0.1"></a>
 # 15.0.1 "eligible-reindeer" (2023-02-28)
 ### Bug Fixes
