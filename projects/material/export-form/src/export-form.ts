@@ -622,7 +622,39 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Push into export list the formdata expanded in multiple rows, one for each repeating slide
+   * Return a row for each value of the multiple choice field
+   * @param baseExportCtx the base export context object
+   * @param fieldName the field name for the multiple choice field
+   * @returns an array of Context with only one multiple choice value
+   * [{attivita: 'PM'}, {attivita: 'Meeting'}, ...]
+   */
+  private _expandMultipleChoiceRow(baseExportCtx: Context, fieldName: string): Context[] {
+    let multipleValues: string[] = [];
+    if (Array.isArray(baseExportCtx[fieldName])) {
+      multipleValues = [...(baseExportCtx[fieldName] as string[])];
+    } else if (baseExportCtx[fieldName] && baseExportCtx[fieldName].length > 0) {
+      if (baseExportCtx[fieldName][0] === '[' && baseExportCtx[fieldName].length > 2) {
+        multipleValues = baseExportCtx[fieldName]
+          .substring(1, baseExportCtx[fieldName].length - 1)
+          .split(',');
+      } else {
+        multipleValues = baseExportCtx[fieldName].split(',');
+      }
+    }
+    baseExportCtx[fieldName] = '';
+    let rowsForMultipleChoice: Context[] = [];
+    // Multiple choice: add a row for each value
+    multipleValues.forEach(mVal => {
+      const exportCtx: Context = {};
+      exportCtx[fieldName] = mVal;
+      rowsForMultipleChoice.push(exportCtx);
+    });
+    return rowsForMultipleChoice;
+  }
+
+  /**
+   * Push into export list the formdata expanded in multiple rows, one for
+   * each repeating slide or multiple values
    * @param slideNodesWithAllRepeatingInstance
    * @param ctx
    * @returns
@@ -631,7 +663,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     slideNodesWithAllRepeatingInstance: AjfField[],
     ctx: ExportData,
   ): Context[] {
-    const repSlidesRows: {[key: string]: Context[]} = {};
+    const expandedRows: {[key: string]: Context[]} = {};
     const baseExportCtx: Context = {};
     let expandedExportCtx: Context[] = [];
 
@@ -640,6 +672,19 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       .forEach(field => {
         if (field.slideNodeType !== AjfNodeType.AjfRepeatingSlide) {
           this._evaluateContext(field, baseExportCtx, ctx);
+          if (
+            field.fieldType === AjfFieldType.MultipleChoice &&
+            baseExportCtx[field.name] &&
+            ctx[field.name] &&
+            Array.isArray(ctx[field.name]) &&
+            ctx[field.name].length > 1
+          ) {
+            // Multiple choice: add a row for each value
+            const rowsForMultipleChoice = this._expandMultipleChoiceRow(baseExportCtx, field.name);
+            expandedRows['main'] = expandedRows['main']
+              ? [...expandedRows['main'], ...rowsForMultipleChoice]
+              : rowsForMultipleChoice;
+          }
         } else {
           const baseField = deepCopy(field);
           const baseFieldName = field.name.split('__')[0];
@@ -652,37 +697,58 @@ export class ExportForm implements AfterViewInit, OnDestroy {
               ctx,
             );
             baseExportCtx[field.slideName] = numberOfInstanceInContext;
-            // New repeating slide: add a row for each instance of the slide
+            // Repeating slide: add a row for each instance of the slide
             let rowsForCurrentSlide: Context[] = [];
             for (let i = 0; i < numberOfInstanceInContext; i++) {
               const exportCtx: Context = {};
+              const rowsForMultipleChoice: Context[] = [];
               fieldsFromTab
-                .map(repField => repField.name)
-                .forEach(repFieldName => {
-                  const repFieldNameWithCount = `${repFieldName}__${i}`;
-                  const repField = slideNodesWithAllRepeatingInstance.find(
-                    itm => itm.name === repFieldName, // WithCount,
-                  );
-                  if (repField) {
-                    const repFieldWithCount = deepCopy(repField);
-                    repFieldWithCount.name = repFieldNameWithCount;
-                    this._evaluateContext(repFieldWithCount, exportCtx, ctx);
-                    exportCtx[repFieldName] = exportCtx[repFieldNameWithCount];
-                    delete exportCtx[repFieldNameWithCount];
+                .filter(rf => rf != null)
+                .forEach(repField => {
+                  const repFieldNameWithCount = `${repField.name}__${i}`;
+                  const repFieldWithCount = deepCopy(repField);
+                  repFieldWithCount.name = repFieldNameWithCount;
+                  this._evaluateContext(repFieldWithCount, exportCtx, ctx);
+                  exportCtx[repField.name] = exportCtx[repFieldNameWithCount];
+                  delete exportCtx[repFieldNameWithCount];
+                  if (
+                    repField.fieldType === AjfFieldType.MultipleChoice &&
+                    exportCtx[repField.name] &&
+                    ctx[repFieldNameWithCount] &&
+                    Array.isArray(ctx[repFieldNameWithCount]) &&
+                    ctx[repFieldNameWithCount].length > 1
+                  ) {
+                    rowsForMultipleChoice.push(
+                      ...this._expandMultipleChoiceRow(exportCtx, repField.name),
+                    );
                   }
                 });
-              rowsForCurrentSlide.push(exportCtx);
+              // Add the row for the slide instance
+              if (rowsForMultipleChoice.length > 0) {
+                rowsForMultipleChoice.forEach(choiceRow => {
+                  rowsForCurrentSlide.push({...exportCtx, ...choiceRow});
+                });
+              } else {
+                rowsForCurrentSlide.push(exportCtx);
+              }
             }
-            repSlidesRows[field.slideName] = rowsForCurrentSlide;
+            expandedRows[field.slideName] = rowsForCurrentSlide;
           }
         }
       });
 
-    Object.keys(repSlidesRows).forEach(slide => {
-      repSlidesRows[slide].forEach(row => {
-        expandedExportCtx.push({...baseExportCtx, ...row});
+    let conta = 1;
+    Object.keys(expandedRows).forEach(slide => {
+      expandedRows[slide].forEach((row, idx) => {
+        if (idx > 0) {
+          conta = 0;
+        }
+        expandedExportCtx.push({...baseExportCtx, ...row, conta});
       });
     });
+    if (expandedExportCtx.length === 0) {
+      expandedExportCtx.push({...baseExportCtx, conta});
+    }
     return expandedExportCtx;
   }
 
@@ -1015,7 +1081,10 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       }
     } else {
       if (Array.isArray(value)) {
-        const values = (value as string[]).map((v: string | number) => `${v}`).toString();
+        const values = (value as string[]).map((v: string | number) => `${v}`);
+        if (values.length === 1 && this._dataAnalysis$.value) {
+          return values[0].toString();
+        }
         return `[${values.toString()}]`;
       } else {
         return `${value}`;
