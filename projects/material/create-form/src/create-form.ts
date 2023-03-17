@@ -375,6 +375,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       map(([schema, pipelines]) => pipelines.includes(schema.name)),
     );
 
+    this._formSchemaStatuses = this._formSchema.pipe(
+      switchMap(schema => this._fst.formStatusesOfSchema(schema)),
+    );
+
     this._formSchemaDeps = this._formSchema.pipe(
       map(fschema =>
         (fschema as any)['form_schema_deps'].pipe(
@@ -507,10 +511,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           }
         }
       });
-
-    this._formSchemaStatuses = this._formSchema.pipe(
-      switchMap(schema => this._fst.formStatusesOfSchema(schema)),
-    );
 
     this._form = combineLatest([this._formSchema, this.formChanges]).pipe(
       map(([fschema, schemaChanges]) => {

@@ -287,12 +287,16 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     schemaId: string;
     userId: string;
     statusId: string | null;
+    id: string;
+    createdAt: string;
   }> = obsOf();
   get formData(): Observable<{
     data: FormData;
     schemaId: string;
     userId: string;
     statusId: string | null;
+    id: string;
+    createdAt: string;
   }> {
     return this._formData;
   }
@@ -501,6 +505,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 schemaId: item['data']['form_schema_ref_id'] ?? item['form_schema_ref_id'] ?? null,
                 statusId: item['form_status_ref_id'] ?? null,
                 userId: item['user_data_ref_id'],
+                id: item['id'],
+                createdAt: item['created_at'],
               };
               return formDataObj;
             }
@@ -515,6 +521,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             schemaId: string;
             statusId: string | null;
             userId: string;
+            id: string;
+            createdAt: string;
           }>,
       ),
       shareReplay(1),
@@ -545,6 +553,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this._isPipeline = combineLatest([this._formSchema, this._pipelineSchemas]).pipe(
       map(([schema, pipelines]) => pipelines.includes(schema.name)),
       shareReplay(1),
+    );
+
+    this._formSchemaStatuses = this._formSchema.pipe(
+      switchMap(schema => this._fst.formStatusesOfSchema(schema)),
     );
 
     this._formDataStatus = combineLatest([this._formData, this._formSchemaStatuses]).pipe(
@@ -715,10 +727,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }
       });
 
-    this._formSchemaStatuses = this._formSchema.pipe(
-      switchMap(schema => this._fst.formStatusesOfSchema(schema)),
-    );
-
     this._form = combineLatest([
       this._formSchema,
       this.formChanges,
@@ -758,9 +766,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             fschema.schema.choicesOrigins = [];
           }
           const ajfFormData = deepCopy(fdata.data);
-          const createdAt =
-            fdata.data != null && fdata.data.created_at != null ? fdata.data.created_at : null;
-          const id = fdata.data != null && fdata.data.id != null ? fdata.data.id : null;
+          const createdAt = fdata != null && fdata.createdAt != null ? fdata.createdAt : null;
+          const id = fdata != null && fdata.id != null ? fdata.id : null;
           ajfFormData['dino_form_info'] = {
             status,
             allStatuses,
@@ -807,6 +814,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             : obsOf(null),
         ),
       ),
+      this.formId,
     ])
       .pipe(takeUntil(this._mainUnsubscribe))
       .subscribe(
@@ -819,11 +827,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           activeUser,
           activeUserGroups,
           frDate,
+          frId,
         ]) => {
           if (frGroup != null) {
             const createdAt =
               frDate != null && frDate.created_at != null ? frDate.created_at : null;
-            const id = frDate != null && frDate.id != null ? frDate.id : null;
             const dinoFormInfo = {
               status,
               allStatuses,
@@ -832,7 +840,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               activeUser,
               activeUserGroups,
               createdAt,
-              id,
+              id: frId,
             };
             this._extraFormControls['dino_form_info'] = dinoFormInfo;
             this._setNewControlsInForm(frGroup, this._extraFormControls);
