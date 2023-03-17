@@ -218,12 +218,16 @@ dino-main-nav {
           margin: auto;
         }
       }
+      .mdc-list-item__primary-text {
+        white-space: nowrap !important;
+      }
     }
   }
 
   .mat-mdc-menu-item {
     .dino-notification-icon {
       color: rgb(var(--palette-primary-500));
+      min-width: 24px;
     }
     &.dino-unread-notification {
       background-color: rgba(var(--palette-primary-500), 0.2);
