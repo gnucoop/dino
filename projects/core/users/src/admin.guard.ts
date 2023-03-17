@@ -42,9 +42,10 @@ export class AdminGuard implements CanActivate {
   constructor(private _router: Router, private _userGroupManager: UserGroupManager) {}
 
   canActivate(
-    _next: ActivatedRouteSnapshot,
+    next: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this._userGroupManager.isActiveUserAdmin().pipe(take(1));
+    const adminroles: string[] | undefined = next.data['adminroles'];
+    return this._userGroupManager.isActiveUserAdmin(adminroles).pipe(take(1));
   }
 }

@@ -48,7 +48,10 @@ const routes: Routes = [
     path: 'languages',
     loadChildren: () => import('./mat-langs/langs-e2e.module').then(m => m.MaterialLangsE2eModule),
     canActivate: [AuthGuard, AdminGuard],
-    data: {breadcrumbs: [{label: 'Languages', url: 'languages', icon: 'translate'}]},
+    data: {
+      breadcrumbs: [{label: 'Languages', url: 'languages', icon: 'translate'}],
+      adminroles: ['admin'],
+    },
   },
   {
     path: 'notifications',
@@ -70,7 +73,7 @@ const routes: Routes = [
     path: 'users',
     loadChildren: () => import('./mat-users/users-e2e.module').then(m => m.MaterialUsersE2eModule),
     canActivate: [AuthGuard, AdminGuard],
-    data: {breadcrumbs: [{label: 'Users', url: 'users', icon: 'people'}]},
+    data: {breadcrumbs: [{label: 'Users', url: 'users', icon: 'people'}], adminroles: ['admin']},
   },
   {
     path: 'f',
