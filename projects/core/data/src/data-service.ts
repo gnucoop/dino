@@ -941,16 +941,15 @@ export class DataService implements IDataService {
       const jwtError = this._dataConfig.value.syncOptions.authErrorMessage || 'JWTExpired';
       if (
         err &&
-        err.parameters.type === 'push' &&
-        err.message.indexOf('GQL') > -1 &&
         err.parameters.errors &&
         err.parameters.errors.length &&
         err.parameters.errors[0].message &&
-        err.parameters.errors[0].message.indexOf(jwtError) < 0
+        err.parameters.errors[0].message.indexOf(jwtError) >= 0
       ) {
-        console.error('Sync replication error:');
-        console.log(err.parameters.errors[0]);
+        console.log(err.parameters.errors[0].message);
         this._refreshEvt.emit();
+      } else {
+        console.error(`Sync replication error: ${err}`);
       }
     });
 
