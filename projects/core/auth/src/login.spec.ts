@@ -136,8 +136,8 @@ describe('LoginComponent', () => {
     const signupFormValue = {
       full_name: 'New User',
       email: 'new@mail.io',
-      password: 'password',
-      confirm_password: 'password',
+      password: 'password9',
+      confirm_password: 'password9',
     };
     const signupCredentials: NHostSignupRequest = {
       email: signupFormValue.email,
