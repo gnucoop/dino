@@ -155,8 +155,8 @@ export abstract class LoginComponent {
       this.signupForm = fb.group({
         full_name: [null, [Validators.required]],
         email: [null, [Validators.email, Validators.required]],
-        password: [null, [Validators.required, Validators.minLength(8)]],
-        confirm_password: [null, [Validators.required, Validators.minLength(8), PasswordMatch]],
+        password: [null, [Validators.required, Validators.minLength(9)]],
+        confirm_password: [null, [Validators.required, Validators.minLength(9), PasswordMatch]],
       });
       this.signupDisabled = this.signupForm.valueChanges.pipe(
         map(_ => !this.signupForm?.valid),

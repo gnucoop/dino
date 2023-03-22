@@ -319,9 +319,12 @@ export class UserEditor implements OnDestroy, OnInit {
         placeholder: 'Confirm Password',
         inputType: 'password',
       });
-      group['password'] = new UntypedFormControl(null, [Validators.minLength(8), Validators.required]);
+      group['password'] = new UntypedFormControl(null, [
+        Validators.minLength(9),
+        Validators.required,
+      ]);
       group['confirm_password'] = new UntypedFormControl(null, [
-        Validators.minLength(8),
+        Validators.minLength(9),
         PasswordMatch,
         Validators.required,
       ]);

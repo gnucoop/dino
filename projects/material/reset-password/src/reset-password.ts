@@ -102,8 +102,8 @@ export class ResetPassword {
     );
 
     this.changePassForm = this._fb.group({
-      password: [null, [Validators.required, Validators.minLength(8)]],
-      confirm_password: [null, [Validators.required, Validators.minLength(8), PasswordMatch]],
+      password: [null, [Validators.required, Validators.minLength(9)]],
+      confirm_password: [null, [Validators.required, Validators.minLength(9), PasswordMatch]],
     });
 
     this.changePassDisabled = this.changePassForm.valueChanges.pipe(

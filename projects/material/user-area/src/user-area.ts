@@ -180,8 +180,8 @@ export class UserArea implements OnDestroy {
 
     this.changePassForm = this._fb.group({
       current_password: [null, [Validators.required, Validators.minLength(8)]],
-      password: [null, [Validators.required, Validators.minLength(8)]],
-      confirm_password: [null, [Validators.required, Validators.minLength(8), PasswordMatch]],
+      password: [null, [Validators.required, Validators.minLength(9)]],
+      confirm_password: [null, [Validators.required, Validators.minLength(9), PasswordMatch]],
     });
 
     this.dinoSaveThemeForm = this._fb.group({
