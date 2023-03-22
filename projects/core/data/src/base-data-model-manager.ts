@@ -492,7 +492,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
   }
 
   /**
-   * Finds all descendants of the document, based on its "parent_id" attribute.
+   * Queries all the descendants of the document, based on its "parent_id" attribute.
    * @param id The ID of the document to be checked.
    * @returns All of its descendants
    */
@@ -541,19 +541,21 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    * @param allDocs All the unorganized documents
    * @param allParentIDs An array of all the ids of documents that have children
    * @param parent An object defining the parent id and the current level in the nested list
+   * @param topCall True if it's the first call for of the method
    * @returns The organized documents with their new level attribute
    */
   organizeDocsHierarchy(
     allDocs: (R & {parent_id: string | null})[],
     allParentIDs: (string | null)[],
     parent: {id: string | null; level: number | null} = {id: null, level: null},
+    firstCall: boolean = true,
   ): (R & {parent_id: string | null; level?: number})[] {
     let result: (R & {parent_id: string | null; level?: number})[] = [];
     // Get every element whose parent_id attribute matches the parent's id.
     const children: (R & {parent_id: string | null; level?: number})[] = allDocs.filter(
       item => item.parent_id === parent.id,
     );
-    // If all the docs have a parent but the ancestor in the hierarchy, a new ancestor is determined
+    // If all the docs have a parent but the ancestor is not in the hierarchy, a new ancestor is determined
     // by finding the doc whose parent_id is the id of the missing ancestor.
     if (!children.length) {
       const allDocsIds = allDocs.map(doc => doc.id);
@@ -565,7 +567,12 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
         result = [
           ...result,
           newAncestor,
-          ...this.organizeDocsHierarchy(allDocs, allParentIDs, {id: newAncestor.id, level: 0}),
+          ...this.organizeDocsHierarchy(
+            allDocs,
+            allParentIDs,
+            {id: newAncestor.id, level: 0},
+            false,
+          ),
         ];
       } else {
         result = [...result, ...allDocs];
@@ -580,10 +587,15 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
         result = [
           ...result,
           child,
-          ...this.organizeDocsHierarchy(allDocs, allParentIDs, {
-            id: child.id,
-            level: child.level,
-          }),
+          ...this.organizeDocsHierarchy(
+            allDocs,
+            allParentIDs,
+            {
+              id: child.id,
+              level: child.level,
+            },
+            false,
+          ),
         ];
       } else {
         child.level = parent.level != null ? parent.level + 1 : 0;
@@ -591,6 +603,30 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
       }
     });
 
+    // If the full cycle is completed, and some docs are left out of the hierarchy (orphans)
+    // they are now brought up to "level 0" and introduced in the hierarchy.
+    if (firstCall && result.length < allDocs.length) {
+      const resultIDs = result.map(r => r.id);
+      const orphans = allDocs.filter(
+        doc =>
+          !resultIDs.includes(doc.id) &&
+          !this.findMatchingAncestors(allDocs, [doc.parent_id]).length,
+      );
+      for (let orphan of orphans) {
+        result = [
+          ...result,
+          ...this.organizeDocsHierarchy(
+            allDocs,
+            allParentIDs,
+            {
+              id: orphan.parent_id,
+              level: null,
+            },
+            false,
+          ),
+        ];
+      }
+    }
     return result;
   }
 
