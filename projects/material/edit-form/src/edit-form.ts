@@ -1023,39 +1023,19 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             const dmm = this._dataModelManager as DataModelManager<T>;
             const dm: DataModelManager<T> =
               isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
-            return dm.update(newItem as T).pipe(
-              withLatestFrom(
-                this._formDataStatus,
-                this._formSchemaStatuses,
-                this._formDataUser,
-                this._formDataUserGroups,
-                this._udm.getActiveUserData(),
-                this._ugm.getActiveUserGroups(),
-              ),
-              tap(([fd, status, allStatuses, user, userGroups, activeUser, activeUserGroups]) => {
-                if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
-                  const trigData: ActionTriggerData<T> = {
-                    doc: fd,
-                    previousValue: formObj.doc,
-                    newValue: fd,
-                    additional_info: {
-                      status,
-                      allStatuses,
-                      user,
-                      userGroups,
-                      activeUser,
-                      activeUserGroups,
-                    },
-                  };
-                  const trigger: ActionTrigger<T> = {
-                    name: 'Form Data Changed',
-                    triggerType: 'on_form_data_change',
-                    triggerData: trigData,
-                  };
-                  this.emitActionTrigger.emit(trigger);
-                }
-              }),
-            );
+            return dm
+              .update(newItem as T)
+              .pipe(
+                withLatestFrom(
+                  this._formDataStatus,
+                  this._formSchemaStatuses,
+                  this._formDataUser,
+                  this._formDataUserGroups,
+                  this._udm.getActiveUserData(),
+                  this._ugm.getActiveUserGroups(),
+                  obsOf(formObj),
+                ),
+              );
           } else {
             return throwError(() => new Error('No data found'));
           }
@@ -1071,11 +1051,34 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(_ => {
-        this.isLoading.next(false);
-        this._location.back();
-        this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
-      });
+      .subscribe(
+        ([fd, status, allStatuses, user, userGroups, activeUser, activeUserGroups, formObj]) => {
+          this.isLoading.next(false);
+          this._location.back();
+          this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
+          if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
+            const trigData: ActionTriggerData<T> = {
+              doc: fd,
+              previousValue: formObj.doc,
+              newValue: fd,
+              additional_info: {
+                status,
+                allStatuses,
+                user,
+                userGroups,
+                activeUser,
+                activeUserGroups,
+              },
+            };
+            const trigger: ActionTrigger<T> = {
+              name: 'Form Data Changed',
+              triggerType: 'on_form_data_change',
+              triggerData: trigData,
+            };
+            this.emitActionTrigger.emit(trigger);
+          }
+        },
+      );
 
     this._deleteFiles
       .pipe(

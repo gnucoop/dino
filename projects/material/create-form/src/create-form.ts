@@ -723,19 +723,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               if (this._dataModelManager == null) {
                 return throwError(() => new Error('No data model manager'));
               }
-              return this._dataModelManager.create(newItem as T).pipe(
-                tap(fd => {
-                  if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
-                    const trigData: ActionTriggerData<T> = {doc: fd};
-                    const trigger: ActionTrigger<T> = {
-                      name: 'Form Data Created',
-                      triggerType: 'on_form_data_creation',
-                      triggerData: trigData,
-                    };
-                    this.emitActionTrigger.emit(trigger);
-                  }
-                }),
-              );
+              return this._dataModelManager
+                .create(newItem as T)
+                .pipe(withLatestFrom(obsOf(formObj)));
             } else {
               return throwError(() => new Error('No data found'));
             }
@@ -752,10 +742,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(_ => {
+      .subscribe(([fd, formObj]) => {
         this.isLoading.next(false);
         this._location.back();
         this.snackbar.open('Document created', 'SAVE', {duration: 5000});
+        if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
+          const trigData: ActionTriggerData<T> = {doc: fd};
+          const trigger: ActionTrigger<T> = {
+            name: 'Form Data Created',
+            triggerType: 'on_form_data_creation',
+            triggerData: trigData,
+          };
+          this.emitActionTrigger.emit(trigger);
+        }
       });
 
     this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
