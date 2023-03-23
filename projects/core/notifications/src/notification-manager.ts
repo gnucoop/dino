@@ -82,7 +82,7 @@ export class NotificationManager extends DataModelManager<Notification> {
       switchMap(() => {
         return this.query({
           selector: {recipients: {$elemMatch: {$eq: userDataId}}},
-          sort: [{updated_at: 'desc', created_at: 'desc', id: 'desc'}],
+          sort: [{created_at: 'desc', updated_at: 'desc', id: 'desc'}],
           limit: num,
         }).pipe(
           map(notifications => {
