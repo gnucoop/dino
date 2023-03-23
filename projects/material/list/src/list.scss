@@ -68,6 +68,7 @@ dino-list {
 
     .mat-icon {
       color: rgb(var(--palette-accent-700));
+      min-width: 24px;
       &:hover {
         background: rgb(var(--palette-accent-100));
         color: rgb(var(--palette-accent-700));
@@ -225,6 +226,7 @@ dino-list {
 
   .mat-mdc-row:not(.dino-row-details):hover,
   .mat-row:not(.dino-row-details).dino-hover {
+    cursor: pointer;
     .mat-column-actions,
     .dino-edit-status-icon {
       @media only screen and (min-width: 768px) {

@@ -15,7 +15,7 @@ export class MatNotificationsE2E implements OnInit {
   readonly headers: ListHeader<Notification & {read?: boolean}>[] = [
     {column: 'id', label: 'ID', displayed: false},
     {column: 'text', label: 'Text', displayed: true},
-    {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'created_at', label: 'Creation Date', sortable: false, displayed: true},
   ];
 
   readonly onClickRowActions: ActionType[] = ['expand'];
