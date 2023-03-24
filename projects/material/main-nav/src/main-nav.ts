@@ -622,14 +622,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
       .getActiveUserData()
       .pipe(
         switchMap(ud => {
-          if (ud == null) {
+          if (ud == null || ud.id == null) {
             return obsOf(null);
           }
-          const updNotification: Partial<Notification> & {id: string} = {
-            readers: [...notification.readers, ud.id],
-            id: notification.id,
-          };
-          return this.notificationManager.patch(updNotification);
+          return this.notificationManager.markNotificationAsRead(notification, ud.id);
         }),
         take(1),
       )

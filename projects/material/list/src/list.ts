@@ -380,6 +380,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * The optional isHighlighted method for rows.
+   */
+  @Input() isHighlightedRowMethod?: (row: T) => boolean;
+
+  /**
    * The statuses related to the additional data schema (if present)
    */
   private _statuses: Observable<FormStatus[]> = obsOf([]);
@@ -585,6 +590,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   isRowExpanded(row: T): boolean {
     return this.expandedRows.indexOf(row) > -1 && this.expandable ? true : false;
+  }
+
+  /**
+   * Returns if the current row is to be highlighted
+   */
+  isHighlightedRow(row: T): boolean {
+    return this.isHighlightedRowMethod ? this.isHighlightedRowMethod(row) : false;
   }
 
   /**

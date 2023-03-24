@@ -58,6 +58,10 @@ dino-list {
       }
     }
 
+    .mat-mdc-row.dino-highlighted-light {
+      background-color: rgba(var(--palette-primary-500), 0.3);
+    }
+
     .dino-inner-table-container .mat-mdc-row.dino-details-row.dino-highlighted-row {
       background-color: rgb(var(--palette-accent-200));
     }

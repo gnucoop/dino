@@ -23,6 +23,7 @@
 import {deepCopy} from '@ajf/core/utils';
 import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {RxDocument} from 'rxdb';
 import {Observable, of as obsOf} from 'rxjs';
 import {delay, map, switchMap} from 'rxjs/operators';
 
@@ -96,5 +97,23 @@ export class NotificationManager extends DataModelManager<Notification> {
         );
       }),
     );
+  }
+
+  /**
+   * Marks a notification as 'read' by the user and updates the notification readers attribute
+   * @param notification The notification to update
+   */
+  markNotificationAsRead(
+    notification: Notification,
+    userDataId: string | null,
+  ): Observable<RxDocument<Notification, {}> | null> {
+    if (notification == null || userDataId == null) {
+      return obsOf(null);
+    }
+    const updNotification: Partial<Notification> & {id: string} = {
+      readers: [...notification.readers, userDataId],
+      id: notification.id,
+    };
+    return this.patch(updNotification);
   }
 }

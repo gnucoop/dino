@@ -283,6 +283,7 @@
     <mat-row
       *matRowDef="let row; columns: (ctx.displayedColumns|async);"
       [class.dino-highlighted-row]="selection.isSelected(row)"
+      [class.dino-highlighted-light]="isHighlightedRow(row)"
       [class.dino-expanded-row]="isRowExpanded(row)"
       [class.dino-details-row]="ctx.isDetails"
       (click)="rowToggle(row)"
