@@ -34,6 +34,11 @@ export interface ExportModel {
   slides: AjfNode[][];
 }
 
+export interface SelOption {
+  value: string;
+  label: string;
+}
+
 export interface Context {
   [name: string]: any;
 }

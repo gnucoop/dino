@@ -1,45 +1,73 @@
 <ng-container *ngIf="exportModel$|async as exportModel">
   <mat-toolbar class="dino-button-focus-action">
-    <mat-button-toggle-group name="filters" aria-label="export filters" [(ngModel)]="exportFilters">
-      <mat-button-toggle value="displayed">{{'Forms in page'|transloco}}</mat-button-toggle>
-      <mat-button-toggle *ngIf="filtersCount > 0; else noFilter" value="filtered"
-        >{{'All forms'|transloco}} / {{filtersCount}} {{'filters'|transloco}}</mat-button-toggle
-      >
-      <ng-template #noFilter>
+    <ng-container *ngIf="(breakpointObserver.small|async) !== true">
+      <mat-button-toggle-group name="filters" aria-label="export filters" [(ngModel)]="exportFilters">
+        <mat-button-toggle value="displayed">{{'Forms in page'|transloco}}</mat-button-toggle>
+        <mat-button-toggle *ngIf="filtersCount > 0; else noFilter" value="filtered">{{'All forms'|transloco}} /
+          {{filtersCount}} {{'filters'|transloco}}</mat-button-toggle>
+        <ng-template #noFilter>
+          <mat-button-toggle
+            value="add-filters"
+            (click)="closeDialog()"
+            [matTooltip]="'Close the dialog and apply filters.'|transloco"
+            matTooltipPosition="above">{{'Add filters'|transloco}}</mat-button-toggle>
+        </ng-template>
         <mat-button-toggle
-          value="add-filters"
-          (click)="closeDialog()"
-          [matTooltip]="'Close the dialog and apply filters.'|transloco"
-          matTooltipPosition="above"
-          >{{'Add filters'|transloco}}</mat-button-toggle
-        >
-      </ng-template>
-      <mat-button-toggle
-        value="not-filtered"
-        [matTooltip]="'This option exports all forms without filters. The process may slow down your device.'|transloco"
-        matTooltipPosition="right"
-        matTooltipClass="warning-tooltip"
-        >{{'All forms'|transloco}}</mat-button-toggle
-      >
-    </mat-button-toggle-group>
+          value="not-filtered"
+          [matTooltip]="'This option exports all forms without filters. The process may slow down your device.'|transloco"
+          matTooltipPosition="right"
+          matTooltipClass="warning-tooltip">{{'All forms'|transloco}}</mat-button-toggle>
+      </mat-button-toggle-group>
+    </ng-container>
+    <ng-container *ngIf="(breakpointObserver.small|async) === true">
+      <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+        <mat-label>{{'Filters'|transloco}}</mat-label>
+        <mat-select
+          (selectionChange)="updateFilters($event)"
+          [(ngModel)]="exportFilters"
+          [value]="'displayed'">
+          <mat-option class="dino-status-option" *ngFor="let choice of availableFilters" [value]="choice.value">
+            <span>{{choice.label| transloco}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </ng-container>
     <span class="dino-spacer"></span>
-    <button mat-flat-button color="accent" (click)="export()" [disabled]="disableExport$|async">
-      {{'Export'|transloco}} <mat-icon matSuffix>cloud_download</mat-icon>
+
+    <button mat-flat-button color="accent" class="dino-export-button" (click)="export()" [disabled]="disableExport$|async">
+      <ng-container *ngIf="(breakpointObserver.small|async) !== true">
+        {{'Export'|transloco}} 
+      </ng-container>
+      <mat-icon matSuffix>cloud_download</mat-icon>
     </button>
   </mat-toolbar>
-  <mat-toolbar>
-    <dino-toggle-button (change)="selectAll($event.checked)">
-      {{'Select all Form fields'| transloco}}
-    </dino-toggle-button>
-    <dino-toggle-button class="dino-export-translate-btn" (change)="setTranslation($event.checked)"
-      >{{'Label values'|transloco}}</dino-toggle-button
-    >
-    <dino-toggle-button
-      class="dino-export-translate-btn"
-      (change)="setDataAnalysisFormat($event.checked)"
-      >{{'Data Analysis'|transloco}}</dino-toggle-button
-    >
-    <span class="dino-export-toolbar-spacer"></span>
+  <mat-toolbar class="dino-export-options">
+    <ng-container *ngIf="(breakpointObserver.small|async) !== true">
+      <dino-toggle-button [group]="'fields'" (change)="selectAll($event.checked)">
+        {{'Select all Form fields'| transloco}}
+      </dino-toggle-button>
+      <dino-toggle-button [group]="'fields'" class="dino-export-translate-btn" (change)="setTranslation($event.checked)">
+        {{'Label values'|transloco}}</dino-toggle-button>
+      <dino-toggle-button
+        [group]="'fields'"
+        (change)="setDataAnalysisFormat($event.checked)">{{'Data Analysis'|transloco}}</dino-toggle-button>
+      <span class="dino-export-toolbar-spacer"></span>
+    </ng-container>
+    <ng-container *ngIf="(breakpointObserver.small|async) === true">
+      <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+        <mat-label>{{'Fields and formats'|transloco}}</mat-label>
+        <mat-select
+          (selectionChange)="updateFieldsAndFormats($event)"
+          [value]="['all_form_fields']"
+          multiple>
+          <mat-option class="dino-status-option" *ngFor="let choice of availableFieldsAndFormats" [value]="choice.value">
+            <span>{{choice.label| transloco}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span class="dino-export-toolbar-spacer"></span>
+    </ng-container>
 
     <mat-button-toggle-group name="format" aria-label="format of export" [(ngModel)]="exportFormat">
       <mat-button-toggle value="csv">{{'csv'|transloco}}</mat-button-toggle>
@@ -50,16 +78,14 @@
   <mat-tab-group selectedIndex="0" (selectedTabChange)="tabChange($event)">
     <mat-tab
       *ngFor="let label of exportModel.slideLabels; let idx = index"
-      [label]="label|transloco"
-    >
-      <dino-toggle-button [group]="'tab'" (change)="selectAllfieldSlides($event.checked)"
-        >{{'Select all fields of'|transloco}} {{label| transloco}}
+      [label]="label|transloco">
+      <dino-toggle-button [group]="'tab'" (change)="selectAllfieldSlides($event.checked)">
+        {{'Select all fields of'|transloco}} {{label| transloco}}
       </dino-toggle-button>
       <mat-selection-list
         [attr.aria-label]="'slide fields'|transloco"
         (selectionChange)="updateExportDisable()"
-        *ngIf="exportModel.slides[idx] as slide"
-      >
+        *ngIf="exportModel.slides[idx] as slide">
         <mat-list-option *ngFor="let field of slide" [value]="field">
           {{field.label| transloco}}
         </mat-list-option>

@@ -64,6 +64,7 @@ import {
   ExportFormat,
   ExportModel,
   MAX_SHEETNAME_LENGTH,
+  SelOption,
 } from './export-interface';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -72,7 +73,9 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {DataModelManager} from '@dino/core/data';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
+import {MatSelectChange} from '@angular/material/select';
 
 /**
  * The export form component dialog data interface
@@ -103,6 +106,9 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   @ViewChildren(ToggleButtonComponent)
   toggleButtons!: QueryList<ToggleButtonComponent>;
   @ViewChildren(MatSelectionList) fields!: QueryList<MatSelectionList>;
+
+  readonly availableFieldsAndFormats: SelOption[] = [];
+  readonly availableFilters: SelOption[] = [];
 
   readonly exportDataList$: BehaviorSubject<ExportData[]> = new BehaviorSubject<ExportData[]>([]);
 
@@ -203,6 +209,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<ExportForm>,
     @Inject(MAT_DIALOG_DATA) public dialogData: ExportFormData,
+    readonly breakpointObserver: BreakpointObserverService,
     private _ts: TranslocoService,
     private _cdr: ChangeDetectorRef,
     @Optional() private _ar: AreaManager | null,
@@ -211,6 +218,14 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
   ) {
+    this.availableFieldsAndFormats = [
+      {value: 'all_form_fields', label: 'Select all Form fields'},
+      {value: 'label_values', label: 'Label values'},
+      {value: 'data_analysis', label: 'Data Analysis format'},
+    ];
+
+    this.availableFilters = [{value: 'displayed', label: 'Forms in page'}];
+
     this._selectAllSub = (this._selectAllFieldsofCurrentSlideEvt as Observable<boolean>)
       .pipe(withLatestFrom(this._currentTabIndex$))
       .subscribe(([checked, tabIndex]) => {
@@ -539,14 +554,28 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    if (this.filtersCount > 0) {
+      const numFilters = `${this._ts.translate('All forms')} / ${
+        this.filtersCount
+      } ${this._ts.translate('filters')}`;
+      this.availableFilters.push({value: 'filtered', label: numFilters});
+    } else {
+      this.availableFilters.push({value: 'filtered', label: 'Add filters'});
+    }
+    this.availableFilters.push({value: 'not-filtered', label: 'All forms'});
+
     if (this.dialogData) {
-      if (this.dialogData.selectAll && this.toggleButtons.first != null) {
-        this.toggleButtons.first.toggle();
+      if (this.dialogData.selectAll) {
+        this.selectAll(true);
+        if (this.toggleButtons.first != null && this.toggleButtons.first.group === 'fields') {
+          this.toggleButtons.first.toggle();
+        }
       }
       if (this.dialogData.exportFormat) {
         this.exportFormat = this.dialogData.exportFormat;
       }
     }
+
     this._cdr.detectChanges();
   }
 
@@ -587,6 +616,50 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     this._downloadSub.unsubscribe();
   }
 
+  /**
+   * Update form filters options
+   * @param evt
+   */
+  updateFilters(evt: MatSelectChange) {
+    if (evt.value) {
+      if (evt.value === 'filtered') {
+        if (this.filtersCount === 0) {
+          this.closeDialog();
+        }
+      }
+    }
+  }
+
+  /**
+   * Update fields and formats options
+   * @param evt
+   */
+  updateFieldsAndFormats(evt: MatSelectChange) {
+    if (evt.value) {
+      if (evt.value.includes('all_form_fields')) {
+        this.selectAll(true);
+      } else {
+        this.selectAll(false);
+      }
+
+      if (evt.value.includes('label_values')) {
+        this.setTranslation(true);
+      } else {
+        this.setTranslation(false);
+      }
+
+      if (evt.value.includes('data_analysis')) {
+        this.setDataAnalysisFormat(true);
+      } else {
+        this.setDataAnalysisFormat(false);
+      }
+    }
+  }
+
+  /**
+   * If checked true, select all fields in all slides
+   * @param checked
+   */
   selectAll(checked: boolean): void {
     this.toggleButtons
       .filter(button => button.group != null && button.group === 'tab')
@@ -595,15 +668,27 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     this.updateExportDisable();
   }
 
+  /**
+   * If checkd true, select all fields in the current slide
+   * @param checked
+   */
   selectAllfieldSlides(checked: boolean): void {
     this._selectAllFieldsofCurrentSlideEvt.next(checked);
     this.updateExportDisable();
   }
 
+  /**
+   * Set if export context real values or their translations/labels
+   * @param checked
+   */
   setTranslation(checked: boolean): void {
     this._translate$.next(checked);
   }
 
+  /**
+   * Set if download data in data analysis format
+   * @param checked
+   */
   setDataAnalysisFormat(checked: boolean): void {
     this._dataAnalysis$.next(checked);
   }
