@@ -43,32 +43,18 @@
     </button>
   </mat-toolbar>
   <mat-toolbar class="dino-export-options">
-    <ng-container *ngIf="(breakpointObserver.small|async) !== true">
-      <dino-toggle-button [group]="'fields'" (change)="selectAll($event.checked)">
-        {{'Select all Form fields'| transloco}}
-      </dino-toggle-button>
-      <dino-toggle-button [group]="'fields'" class="dino-export-translate-btn" (change)="setTranslation($event.checked)">
-        {{'Label values'|transloco}}</dino-toggle-button>
-      <dino-toggle-button
-        [group]="'fields'"
-        (change)="setDataAnalysisFormat($event.checked)">{{'Data Analysis'|transloco}}</dino-toggle-button>
-      <span class="dino-export-toolbar-spacer"></span>
-    </ng-container>
-    <ng-container *ngIf="(breakpointObserver.small|async) === true">
-      <mat-form-field class="dino-platform-dropdown" dropdownSelect>
-        <mat-label>{{'Fields and formats'|transloco}}</mat-label>
-        <mat-select
-          (selectionChange)="updateFieldsAndFormats($event)"
-          [value]="['all_form_fields']"
-          multiple>
-          <mat-option class="dino-status-option" *ngFor="let choice of availableFieldsAndFormats" [value]="choice.value">
-            <span>{{choice.label| transloco}}</span>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <span class="dino-export-toolbar-spacer"></span>
-    </ng-container>
-
+    <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+      <mat-label>{{'Fields and formats'|transloco}}</mat-label>
+      <mat-select
+        (selectionChange)="updateFieldsAndFormats($event)"
+        [value]="['all_form_fields']"
+        multiple>
+        <mat-option class="dino-status-option" *ngFor="let choice of availableFieldsAndFormats" [value]="choice.value">
+          <span>{{choice.label| transloco}}</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span class="dino-export-toolbar-spacer"></span>
     <mat-button-toggle-group name="format" aria-label="format of export" [(ngModel)]="exportFormat">
       <mat-button-toggle value="csv">{{'csv'|transloco}}</mat-button-toggle>
       <mat-button-toggle value="xlsx">{{'xlsx'|transloco}}</mat-button-toggle>
