@@ -86,11 +86,14 @@ dino-main-nav {
       .dino-user-settings {
         margin-right: 10px;
         opacity: 0.3;
+        @media only screen and (min-width: 768px) {
+          display: none;
+        }
       }
       .dino-sync-detector,
       .dino-notifications-icon {
         margin-right: 25px;
-        @media only screen and (max-width: 768px) {
+        @media only screen and (max-width: 767px) {
           margin-right: 10px;
         }
         &.dino-sync-active {
@@ -115,7 +118,7 @@ dino-main-nav {
       .dino-active-user-icon,
       .dino-active-user-text {
         opacity: 0.3;
-        @media only screen and (max-width: 992px) {
+        @media only screen and (max-width : 767px) {
           display: none;
         }
       }
@@ -124,11 +127,14 @@ dino-main-nav {
 
   .mat-sidenav-container.dino-sidenav-container {
     flex: 1 0 auto;
-    height: 100%;
     padding-bottom: 10px;
   }
 
   .mat-sidenav-content.dino-sidenav-content {
+    height: 100vh;
+    @media only screen and (max-width : 992px) {
+      height: 84vh;
+    }
     padding: 5px;
     background-color: inherit;
     .dino-loading {
