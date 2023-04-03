@@ -162,4 +162,9 @@ export const optionalModulesConfig = {
    * Organizations module.
    */
   organizationsModule: true,
+
+  /**
+   * Logs module
+   */
+  logsModule: true,
 };

@@ -25,6 +25,7 @@ import {LocationModule} from '@dino/core/locations';
 import {NotificationModule} from '@dino/core/notifications';
 import {OrganizationsModule} from '@dino/core/organizations';
 import {Project, ProjectManager, ProjectModule} from '@dino/core/projects';
+import {LogModule} from '@dino/core/logs';
 import {
   ReportData,
   ReportDataManager,
@@ -237,6 +238,9 @@ export function provideDataServiceConfig() {
     optionalModulesConfig.locationsModule ? LocationModule : [],
     optionalModulesConfig.organizationsModule ? OrganizationsModule : [],
     optionalModulesConfig.projectsModule ? ProjectModule : [],
+
+    // Optional Modules
+    optionalModulesConfig.logsModule ? LogModule : [],
 
     // E2E demos
     MaterialAggregationListE2eModule,
