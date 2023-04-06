@@ -230,6 +230,7 @@ export class PermissionContextService {
             'print',
             'status edit',
             'duplicate',
+            'viewlog',
           ];
         }
         if (collectionName === 'report_schema' && isData === true && favorites) {
