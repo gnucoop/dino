@@ -30,6 +30,7 @@ export type ActionType =
   | 'duplicate'
   | 'edit'
   | 'view'
+  | 'viewlog'
   | 'select'
   | 'expand'
   | 'status edit'
