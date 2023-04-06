@@ -28,6 +28,7 @@ export const models = {
     cases: ['case'],
     forms: ['form-data', 'form-status'],
     langs: ['lang'],
+    logs: ['log'],
     locations: ['location'],
     notifications: ['notification'],
     organizations: ['organization'],
