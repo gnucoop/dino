@@ -1,0 +1,21 @@
+<div class="dino-log-viewer-container">
+  <div>
+    <h4>{{'Form History'|transloco}}</h4>
+  </div>
+
+  <br />
+  <div class="dino-log-entry-list" *ngIf="logs|async as loglist">
+    <ng-container *ngIf="loglist.length; else noLogsTemplate">
+      <div class="dino-log-entry" *ngFor="let log of loglist">
+        <mat-icon class="dino-log-entry-icon">history</mat-icon>
+        <div class="dino-log-entry-time">{{log.created_at}}</div>
+        <div class="dino-log-entry-text" [innerHTML]="log.text"></div>
+      </div>
+    </ng-container>
+    <ng-template #noLogsTemplate>
+      <div class="dino-log-entry">{{'There are not any logs available for this form'|transloco}}</div>
+    </ng-template>
+  </div>
+  <br />
+  <button mat-raised-button color="primary" (click)="close()">{{'Close'|transloco}}</button>
+</div>

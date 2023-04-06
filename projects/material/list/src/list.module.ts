@@ -53,6 +53,7 @@ import {ColumnsSelector} from './columns-selector';
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
 import {ListCellValue} from './list-cell-value';
+import {LogViewer} from './log-viewer';
 
 @NgModule({
   imports: [
@@ -84,7 +85,7 @@ import {ListCellValue} from './list-cell-value';
     RouterModule,
     UserInteractionsModule,
   ],
-  declarations: [ColumnsSelector, ListCell, ListCellValue, SelectionList],
+  declarations: [ColumnsSelector, ListCell, ListCellValue, LogViewer, SelectionList],
   exports: [MatIconModule, SelectionList],
 })
 export class ListModule {}

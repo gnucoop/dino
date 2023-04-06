@@ -96,6 +96,7 @@ import {TranslocoService} from '@ngneat/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {format} from 'date-fns';
 import {UserDataManager} from '@dino/core/users';
+import {LogViewer} from './log-viewer';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -1106,6 +1107,24 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
     path.push(item.id);
     this._router.navigate(path);
+  }
+
+  /**
+   * Loads the Edit component for the the item in readOnly mode.
+   * @param item The item to be viewed
+   * @param isDetails If true, the form is a sub-form displayed in a sub list. Defaults to false
+   */
+  viewlogAction(item: T): void {
+    const genItem = item as {[key: string]: any};
+    if (item == null || genItem['form_schema_ref_id'] == null) {
+      return;
+    }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = 'log-viewer-dialog';
+    dialogConfig.data = {
+      docId: item.id,
+    };
+    this._dialog.open(LogViewer, dialogConfig);
   }
 
   /**

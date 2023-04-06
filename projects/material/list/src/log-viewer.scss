@@ -1,0 +1,52 @@
+.dino-log-viewer-container {
+  display: flex;
+  flex-flow: column wrap;
+  .dino-column-search {
+    display: flex;
+    flex: 1 0 auto;
+    .mat-mdc-form-field {
+      flex: 1 0 auto;
+    }
+  }
+  .dino-log-entry-list {
+    min-width: 60vw;
+    max-height: 50vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-top: 20px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.dino-log-entry {
+  display: flex;
+  flex: 1 1;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  margin-bottom: 10px;
+  min-width: 25vw;
+  border-bottom: 1px solid rgb(var(--palette-primary-100));
+  padding-bottom: 15px;
+  .dino-log-entry-text {
+    flex: 1 0 45%;
+  }
+  .dino-log-entry-time {
+    flex: 1 0 10%;
+    margin-right: 10px;
+  }
+  .dino-log-entry-icon {
+    margin-right: auto;
+    opacity: 0.3;
+    padding-right: 15px;
+  }
+}
+
+.mat-mdc-dialog-surface {
+  padding: 24px;
+}
