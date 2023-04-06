@@ -221,4 +221,7 @@ export const ENG: Translation = {
   'Choose the type of Form you want to create': 'Choose the type of Form you want to create',
   'This form might not be valid. Please review and fill its data':
     'This form might not be valid. Please review and fill its data',
+  'Form History': 'Form History',
+  'There are not any logs available for this form':
+    'There are not any logs available for this form',
 };

@@ -219,4 +219,7 @@ export const FRA: Translation = {
     'Choisissez le type de formulaire que vous voulez créer',
   'This form might not be valid. Please review and fill its data':
     "Ce formulaire n'est peut-être pas valide. Veuillez revoir et remplir ses données",
+  'Form History': 'Histoire du formulaire',
+  'There are not any logs available for this form':
+    "Aucun journal n'est disponible pour ce formulaire.",
 };

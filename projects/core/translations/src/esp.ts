@@ -222,4 +222,7 @@ export const ESP: Translation = {
   'Choose the type of Form you want to create': 'Elija el tipo de formulario que desea crear',
   'This form might not be valid. Please review and fill its data':
     'Este formulario puede no ser válido. Por favor, revise y rellene sus datos',
+  'Form History': 'Historia del formulario',
+  'There are not any logs available for this form':
+    'No hay registros disponibles para este formulario',
 };
