@@ -28,7 +28,9 @@ import {
   PermissionContextService,
   PullQueryContextChecks,
 } from '@dino/core/data';
-import {delay, map, Observable, of as obsOf, retryWhen} from 'rxjs';
+import {delay, forkJoin, from, isObservable, map, Observable, of as obsOf, retryWhen} from 'rxjs';
+import {shareReplay} from 'rxjs/operators';
+import {RxDocument} from 'rxdb';
 
 import {FormData, indexes, migrationStrategies} from './form-data';
 import {schema} from './form-data-json';
@@ -45,6 +47,33 @@ export class FormDataManager extends DataModelManager<FormData> {
   }
 
   /**
+   * Populates all references to external collections in a FormData
+   * @param doc The unpopulated RxDoc FormData
+   * @returns The populated FormData
+   */
+  populateFormData(doc: RxDocument<FormData>): RxDocument<
+    FormData & {
+      [key: string]: any;
+    }
+  > {
+    let refProps = {};
+    for (let prop in doc) {
+      if (prop.includes('_ref_id')) {
+        const propKey = prop.replace('_ref_id', '') as keyof RxDocument<FormData>;
+        let refProp;
+        try {
+          refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
+        } catch (_) {
+          refProp = {[propKey]: obsOf(null)};
+        }
+        refProps = {...refProps, ...refProp};
+      }
+    }
+    const popDoc = {...deepCopy(doc), ...refProps};
+    return popDoc;
+  }
+
+  /**
    * Removes all population objects from a populated FormData
    * @param formData The Form Data to be depopulated
    * @returns The depopulated form data
@@ -55,6 +84,81 @@ export class FormDataManager extends DataModelManager<FormData> {
     const populationKeys: string[] = refKeys.map(key => key.replace('_ref_id', ''));
     populationKeys.forEach(key => delete formDataClone[key]);
     return formDataClone as FormData;
+  }
+
+  /**
+   * Compares two FormDatas of the same Form Schema and returns the changed attributes keys
+   * @param formData_1 The first formData
+   * @param formData_2 The second formData
+   * @returns The diff attributes keys
+   */
+  compareFormDatas(
+    formData_1: FormData,
+    formData_2: FormData,
+  ): {attributes: string[]; dataAttributes: string[]} {
+    if (
+      formData_1 == null ||
+      formData_2 == null ||
+      formData_1.form_schema_ref_id != formData_2.form_schema_ref_id
+    ) {
+      return {attributes: [], dataAttributes: []};
+    }
+    const changedAttributes: string[] = [];
+    let changedDataAttributes: string[] = [];
+    for (let key in formData_2) {
+      const fdKey = key as keyof FormData;
+      if (fdKey === 'data') {
+        changedDataAttributes = this.compareFormDatasData(formData_2.data, formData_1.data);
+      } else if (
+        formData_1[fdKey] !== undefined &&
+        formData_1[fdKey] != formData_2[fdKey] &&
+        fdKey !== 'updated_at'
+      ) {
+        changedAttributes.push(fdKey);
+      }
+    }
+    return {attributes: changedAttributes, dataAttributes: changedDataAttributes};
+  }
+
+  /**
+   * Compares the Data attribute of two FormDatas of the same Form Schema and returns the changed data attributes keys
+   * @param data_1 The Data of the first form
+   * @param data_2 The Data of the second form
+   * @returns The diff attributes keys
+   */
+  compareFormDatasData(data_1: {[key: string]: any}, data_2: {[key: string]: any}): string[] {
+    const changedAttributes: string[] = [];
+    for (let key in data_2) {
+      if (data_1[key] !== undefined && data_1[key] != data_2[key] && key !== '$value') {
+        changedAttributes.push(key);
+      }
+    }
+    return changedAttributes;
+  }
+
+  /**
+   * Generates an observable of the populated Form Data.
+   * @param formData A populated form data
+   * @returns An observable with all the attributes of the populated Form Data
+   */
+  generatePopulatedFormObservable(
+    formData: FormData & {[key: string]: any},
+  ): Observable<FormData & {[key: string]: any}> {
+    const refsStreams: Observable<{[key: string]: any}>[] = [];
+    for (let key in formData) {
+      if (isObservable(formData[key])) {
+        refsStreams.push(
+          formData[key].pipe(
+            map(val => {
+              return {[key]: val};
+            }),
+          ),
+        );
+      } else {
+        refsStreams.push(obsOf({[key]: formData[key]}));
+      }
+    }
+    return forkJoin(refsStreams).pipe(map(objs => Object.assign({}, ...objs)));
   }
 
   /**

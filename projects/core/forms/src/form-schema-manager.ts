@@ -62,4 +62,24 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   ): ListHeader<any>[] {
     return baseFsm.generateSchemaListHeaders(this._metricService, formSchema, sortAlphabetically);
   }
+
+  /**
+   * Retrieves the Label of a field in the schema by its name
+   * @param fieldName The field name
+   * @param schema The Form Schema
+   * @returns The field label
+   */
+  getLabelFromFieldName(fieldName: string, schema: FormSchema): string | null {
+    if (
+      fieldName == null ||
+      schema == null ||
+      schema.schema == null ||
+      schema.schema.nodes == null
+    ) {
+      return null;
+    }
+    const schemaFields = [...schema.schema.nodes.map(slide => slide.nodes)].flat(1);
+    const matchField = schemaFields.find(field => field.name === fieldName);
+    return matchField ? matchField.label : null;
+  }
 }
