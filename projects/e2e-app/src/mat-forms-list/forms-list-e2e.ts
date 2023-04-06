@@ -1,15 +1,17 @@
 import {AjfForm, createFormPdf} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
-import {Component, ViewChild} from '@angular/core';
+import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Metric, MetricsService, PermissionContextService} from '@dino/core/data';
+import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
+import {LogManager} from '@dino/core/logs';
+import {UserDataManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
-import {additionalConfig} from '../mockconfig';
+import {additionalConfig, optionalModulesConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-forms-list-e2e',
@@ -56,7 +58,12 @@ export class MatFormsListE2E {
     private _translateService: TranslocoService,
     private _pcs: PermissionContextService,
     private _route: ActivatedRoute,
+    private _udm: UserDataManager,
+    @Optional() private _logManager: LogManager,
   ) {
+    if (optionalModulesConfig.logsModule) {
+      this.listRowActionsIcons['viewlog'] = 'history';
+    }
     this.formRowData = new BehaviorSubject<FormData | null>(null);
     this.formSchemaId = this._route.params.pipe(map(params => params['form_schema_id']));
     this.additionalDataSchema = this.formSchemaId.pipe(
@@ -264,5 +271,37 @@ export class MatFormsListE2E {
       return;
     }
     this.formRowData.next(evt);
+  }
+
+  processActionTrigger(trigger: ActionTrigger<FormData>) {
+    if (
+      this._logManager != null &&
+      trigger.triggerType === 'on_status_change' &&
+      trigger.triggerData?.doc
+    ) {
+      const newDoc = trigger.triggerData?.doc;
+      const diff = {attributes: ['form_status_ref_id'], dataAttributes: []};
+      const populatedNewDoc: FormData = this.formDataManager.populateFormData(newDoc);
+      combineLatest([
+        this.formDataManager.generatePopulatedFormObservable(populatedNewDoc),
+        this._udm.getActiveUserData(),
+      ])
+        .pipe(
+          switchMap(([newForm, activeUserData]) => {
+            if (newForm == null || activeUserData == null) {
+              return obsOf(null);
+            }
+            const changesArray = this._logManager.generateChangesArray(newForm, diff);
+            return this._logManager.generateLog(
+              changesArray,
+              newForm.id,
+              newForm.form_schema_ref_id,
+              activeUserData.full_name,
+            );
+          }),
+          take(1),
+        )
+        .subscribe();
+    }
   }
 }

@@ -5,5 +5,6 @@
   [setPipelines]="pipelines"
   [allowSaveDraft]="true"
   [allowMetricCreationFor]="['all']"
+  (emitActionTrigger)="processActionTrigger($event)"
   ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
 ></dino-edit-form>

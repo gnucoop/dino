@@ -10,6 +10,7 @@
   [showStatusProgressBar]="showStatusProgressBar"
   [onClickRowActions]="onClickRowActions"
   (emitRowDataEvt)="emitRowData($event)"
+  (emitActionTrigger)="processActionTrigger($event)"
 >
   <dino-search-filters-bar
     filters
