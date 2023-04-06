@@ -40,6 +40,7 @@ import {take} from 'rxjs/operators';
 import {LangManager} from '@dino/core/langs';
 import {DataModelManager} from '@dino/core/data';
 import {NotificationManager} from '@dino/core/notifications';
+import {LogManager} from '@dino/core/logs';
 
 /**
  * Service that manages the Initialization of rxCollections
@@ -77,6 +78,7 @@ export class SyncManager {
     @Optional() private _pj: ProjectManager | null,
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
+    @Optional() private _logm: LogManager | null,
   ) {
     this.managers = {
       'form_status': this._fst,
@@ -87,6 +89,7 @@ export class SyncManager {
       'user_role': this._ur,
       'user_group': this._ug,
       'lang': this._lm,
+      'log': this._logm,
       'notification': this._ntm,
       'area': this._ar,
       'case': this._cs,
@@ -127,6 +130,9 @@ export class SyncManager {
     }
     if (this._og != null) {
       this._contextualManagersInit.unshift(this._og.init());
+    }
+    if (this._logm != null) {
+      this._contextualManagersInit.unshift(this._logm.init());
     }
   }
 
