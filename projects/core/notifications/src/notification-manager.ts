@@ -22,10 +22,16 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  DataListOptions,
+  DataModelManager,
+  DataQueryOptions,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {Observable, of as obsOf} from 'rxjs';
-import {delay, map, switchMap} from 'rxjs/operators';
+import {delay, map, switchMap, withLatestFrom} from 'rxjs/operators';
 
 import {Notification} from './notification';
 import {schema} from './notification-json';
@@ -47,6 +53,42 @@ export class NotificationManager extends DataModelManager<Notification> {
   }
 
   /**
+   * Overrides the base List method by adding recipients filtering
+   * @param options? a list of DataListOptions options.
+   * @returns The documents selected.
+   */
+  override list(options?: DataListOptions): Observable<RxDocument<Notification, {}>[]> {
+    return super.list(options).pipe(
+      withLatestFrom(this.permissionContext),
+      map(([notifications, context]) =>
+        notifications.filter(
+          notification =>
+            notification.recipients.includes('all') ||
+            notification.recipients.includes(context.user_data['id']),
+        ),
+      ),
+    );
+  }
+
+  /**
+   * Overrides the base Query method by adding recipients filtering
+   * @param options? a list of DataQueryOptions options.
+   * @returns The documents selected.
+   */
+  override query(options: DataQueryOptions): Observable<RxDocument<Notification, {}>[]> {
+    return super.query(options).pipe(
+      withLatestFrom(this.permissionContext),
+      map(([notifications, context]) =>
+        notifications.filter(
+          notification =>
+            notification.recipients.includes('all') ||
+            notification.recipients.includes(context.user_data['id']),
+        ),
+      ),
+    );
+  }
+
+  /**
    * Returns the notifications currently unread by the user
    * @param userDataId The active user data id
    * @returns The amount of unread Notifications
@@ -58,7 +100,14 @@ export class NotificationManager extends DataModelManager<Notification> {
     return this.init().pipe(
       delay(3000),
       switchMap(() =>
-        this.query({selector: {recipients: {$elemMatch: {$eq: userDataId}}}}).pipe(
+        this.query({
+          selector: {
+            $or: [
+              {recipients: {$elemMatch: {$eq: userDataId}}},
+              {recipients: {$elemMatch: {$eq: 'all'}}},
+            ],
+          },
+        }).pipe(
           map(notifications => notifications.filter(nt => !nt.readers.includes(userDataId)).length),
         ),
       ),
@@ -82,7 +131,12 @@ export class NotificationManager extends DataModelManager<Notification> {
       delay(3000),
       switchMap(() => {
         return this.query({
-          selector: {recipients: {$elemMatch: {$eq: userDataId}}},
+          selector: {
+            $or: [
+              {recipients: {$elemMatch: {$eq: userDataId}}},
+              {recipients: {$elemMatch: {$eq: 'all'}}},
+            ],
+          },
           sort: [{created_at: 'desc', updated_at: 'desc', id: 'desc'}],
           limit: num,
         }).pipe(
