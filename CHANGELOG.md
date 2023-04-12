@@ -1,3 +1,22 @@
+<a name="15.1.0"></a>
+# 15.1.0 "glamorous-toucan" (2023-04-12)
+### Bug Fixes
+* **core/data:** Fixed a bug in base-data-model-manager causing "organizeDocsHierarchy" not to include docs without their parent in the hierarchy. ([a4f2fa9](https://bitbucket.org/gnucoop/dino/commits/a4f2fa9639760205838cb90ce9026d3fb37184dc))
+* **core/data:** state.error$ JWT expired error now correctly intercepted. ([b6cb688](https://bitbucket.org/gnucoop/dino/commits/b6cb688e86d505c4f986f443b8a4e73a6ae34580))
+* **core/notifications:** Fixed filtering for locally created notifications. ([3dcdbdf](https://bitbucket.org/gnucoop/dino/commits/3dcdbdffc04921c2e3224ff7ac580761c44e586a))
+* **material/list:** icons min width fixed ([bbfa342](https://bitbucket.org/gnucoop/dino/commits/bbfa342df151e5899f04f6b8ceb801015164be9c))
+* **multiple:** move edit and create trigger after save subscription ([38d5c93](https://bitbucket.org/gnucoop/dino/commits/38d5c93f47c6f9b5c0687a187a3d145f9170cd1f))
+### Features
+* **core/forms:** Added various utility methods to FormData and FormSchema managers. ([7680d4f](https://bitbucket.org/gnucoop/dino/commits/7680d4f60e895c525b3046687f217803ba4567a6))
+* **core/logs:** Added Logs module, model and manager. ([f763e83](https://bitbucket.org/gnucoop/dino/commits/f763e837a96ca2534632e48f45e180f913d5d5b1))
+* **core/notifications:** add isHighlighted function in list for read/unread notifications ([5fd7864](https://bitbucket.org/gnucoop/dino/commits/5fd786449b83c20a4126b92d890ea23d9a06fe8d))
+* **e2e-material:** Added optional LogsModule to e2e-app main module and mockconfig ([7636fac](https://bitbucket.org/gnucoop/dino/commits/7636facbe361be50f8d5669a128bf8e0cae74007))
+* **e2e-material:** Edit Form "on_form_data_change" and List "on_status_change" triggers now generate Logs. ([c5204e3](https://bitbucket.org/gnucoop/dino/commits/c5204e3bbed343196d13e7985d47f8d3778d9f7c))
+* **material/list:** Added LogViewer dialog component. ([2b0fb03](https://bitbucket.org/gnucoop/dino/commits/2b0fb03bdd0b3b650a2dc5d9e3e775740d234db7))
+* **material/list:** File columns cells now display an icon to preview images or open uploaded files. ([f9a5ee1](https://bitbucket.org/gnucoop/dino/commits/f9a5ee1fb0d7bcb1da4f63ee2fab7c68e8b66f57))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.0.2"></a>
 # 15.0.2 "whole-penguin" (2023-03-17)
 ### Bug Fixes
