@@ -116,7 +116,10 @@
       <mat-cell *matCellDef="let element;">
         <ng-container
           *ngTemplateOutlet="header.populateWith ?
-          externalRefCellTemplate : (header.repeatingSlideColumn ? repeatingCellTemplate : defaultCellTemplate) ;"
+          externalRefCellTemplate :
+          (header.repeatingSlideColumn ?
+          repeatingCellTemplate :
+          defaultCellTemplate);"
         >
         </ng-container>
         <ng-template #externalRefCellTemplate>
@@ -144,48 +147,43 @@
             <mat-tab
               *ngFor="let item of getRepeatingSlideCellContent(element.data, header, dataSource?.choices); let idx = index;"
             >
-              <ng-container *ngIf="breakpointObserver.small|async; else large_template">
-                {{item}}
-                <div>
-                  <mat-icon
-                    *ngIf="idx > 0"
-                    class="dino-repeating-slide-icon"
-                    (click)="moveRepeatingSlideTab(tabGroup, idx-1); $event.stopPropagation();"
-                    >navigate_before</mat-icon
-                  >
-                  <mat-icon
-                    *ngIf="idx + 1 < getRepeatingSlideTabCount(tabGroup)"
-                    class="dino-repeating-slide-icon"
-                    (click)="moveRepeatingSlideTab(tabGroup, idx+1); $event.stopPropagation();"
-                    >navigate_next</mat-icon
-                  >
-                </div>
-              </ng-container>
-              <ng-template #large_template>
-                <mat-icon
-                  *ngIf="idx > 0"
-                  class="dino-repeating-slide-icon"
-                  (click)="moveRepeatingSlideTab(tabGroup, idx-1); $event.stopPropagation();"
-                  >navigate_before</mat-icon
-                >
-                {{item}}
-                <mat-icon
-                  *ngIf="idx + 1 < getRepeatingSlideTabCount(tabGroup)"
-                  class="dino-repeating-slide-icon"
-                  (click)="moveRepeatingSlideTab(tabGroup, idx+1); $event.stopPropagation();"
-                  >navigate_next</mat-icon
-                ></ng-template
+              <mat-icon
+                *ngIf="idx > 0"
+                class="dino-repeating-slide-icon"
+                (click)="moveRepeatingSlideTab(tabGroup, idx-1); $event.stopPropagation();"
+                >navigate_before</mat-icon
+              >
+
+              <ng-container
+                *ngTemplateOutlet="fileCellTemplate; context: {item: item}"
+              ></ng-container>
+
+              <mat-icon
+                *ngIf="idx + 1 < getRepeatingSlideTabCount(tabGroup)"
+                class="dino-repeating-slide-icon"
+                (click)="moveRepeatingSlideTab(tabGroup, idx+1); $event.stopPropagation();"
+                >navigate_next</mat-icon
               >
             </mat-tab>
           </mat-tab-group>
         </ng-template>
+
         <ng-template #defaultCellTemplate
           ><mat-icon *ngIf="header.column === 'text' && element.icon !== null"
             >{{element.icon}}</mat-icon
           >
-          <mat-icon *ngIf="header.column === 'text' && element.redirect_url!== null">link</mat-icon
-          >{{ element|dinoListCellValue:header:dataSource?.choices }}</ng-template
-        >
+          <mat-icon *ngIf="header.column === 'text' && element.redirect_url!== null">link</mat-icon>
+          <ng-container
+            *ngIf="element|dinoListCellValue:header:dataSource?.choices|dinoListCellIsFile; else defaultTemplate;"
+          >
+            <ng-container
+              *ngTemplateOutlet="fileCellTemplate; context: {item: element|dinoListCellValue:header:dataSource?.choices}"
+            ></ng-container>
+          </ng-container>
+          <ng-template #defaultTemplate
+            >{{ element|dinoListCellValue:header:dataSource?.choices }}</ng-template
+          >
+        </ng-template>
       </mat-cell>
     </ng-container>
 
@@ -302,6 +300,24 @@
       </mat-row>
     </ng-container>
   </mat-table>
+</ng-template>
+
+<ng-template #fileCellTemplate let-item="item">
+  <ng-container [ngSwitch]="(item|dinoListCellGetFileIcon)">
+    <a *ngSwitchCase="'insert_drive_file'" [href]="(item|dinoListCellGetFile).url" target="_blank"
+      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
+    >
+    <a *ngSwitchCase="'picture_as_pdf'" [href]="(item|dinoListCellGetFile).url" target="_blank"
+      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
+    >
+    <mat-icon
+      *ngSwitchCase="'image'"
+      (click)="previewImage($event, item)"
+      class="dino-file-cell-icon"
+      >{{item|dinoListCellGetFileIcon}}</mat-icon
+    >
+    <ng-container *ngSwitchDefault>{{item}}</ng-container>
+  </ng-container>
 </ng-template>
 
 <div class="dino-table-container">

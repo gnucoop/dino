@@ -1,0 +1,13 @@
+<div mat-dialog-content *ngIf="(data.url || data.content) && data.name">
+  <img [src]="getImageSource()" [alt]="data.name" />
+</div>
+<div mat-dialog-actions>
+  <button
+  mat-raised-button
+  class="dino-action-button"
+  color="warn"
+  (click)="closeDialog()"
+>
+  {{'Close'|transloco}}
+</button>
+</div>

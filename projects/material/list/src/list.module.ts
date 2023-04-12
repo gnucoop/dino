@@ -53,7 +53,9 @@ import {ColumnsSelector} from './columns-selector';
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
 import {ListCellValue} from './list-cell-value';
+import {ListCellIsFile, ListCellGetFile, ListCellGetFileIcon} from './list-cell-file';
 import {LogViewer} from './log-viewer';
+import {ImagePreview} from './image-preview';
 
 @NgModule({
   imports: [
@@ -85,7 +87,17 @@ import {LogViewer} from './log-viewer';
     RouterModule,
     UserInteractionsModule,
   ],
-  declarations: [ColumnsSelector, ListCell, ListCellValue, LogViewer, SelectionList],
+  declarations: [
+    ColumnsSelector,
+    ImagePreview,
+    ListCell,
+    ListCellValue,
+    ListCellIsFile,
+    ListCellGetFile,
+    ListCellGetFileIcon,
+    LogViewer,
+    SelectionList,
+  ],
   exports: [MatIconModule, SelectionList],
 })
 export class ListModule {}

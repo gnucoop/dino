@@ -120,6 +120,10 @@ dino-list {
     -webkit-transition: box-shadow ease-in-out 0.25s;
     .mat-mdc-cell {
       border-bottom-style: none;
+      .mat-mdc-tab-body-content {
+        display: flex;
+        align-items: center;
+      }
     }
     @media only screen and (max-width: 768px) {
       position: relative;
@@ -202,6 +206,12 @@ dino-list {
         margin: 5px;
       }
     }
+  }
+
+  .mat-icon.dino-file-cell-icon {
+    border-radius: 100%;
+    padding: 5px;
+    margin: 5px;
   }
 
   mat-header-cell:last-of-type.mat-column-actions {

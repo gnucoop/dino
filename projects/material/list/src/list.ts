@@ -97,6 +97,7 @@ import {deepCopy} from '@ajf/core/utils';
 import {format} from 'date-fns';
 import {UserDataManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
+import {ImagePreview} from './image-preview';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -856,6 +857,23 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * Opens a dialog with the Image Preview component
+   * @param $event The js event
+   * @param elem The list cell element
+   */
+  previewImage($event: Event, elem: string | {[key: string]: any}) {
+    $event.stopPropagation();
+    $event.preventDefault();
+
+    if (typeof elem === 'string') return;
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = 'image-preview-dialog';
+    dialogConfig.data = elem;
+    this._dialog.open(ImagePreview, dialogConfig);
+  }
+
+  /**
    * Returns the reference string to an external collection
    * @param header A list header
    * @returns The ref string
@@ -893,8 +911,8 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     elementData: {[key: string]: any},
     header: ListHeader<T>,
     choices: ChoicesDicitionary | null | undefined,
-  ): string[] {
-    const aggregateData: string[] = [];
+  ): (string | {[key: string]: any})[] {
+    const aggregateData: (string | {[key: string]: any})[] = [];
     for (let key in elementData) {
       const headerName = header.column.toString();
       if (key.includes(headerName)) {

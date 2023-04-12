@@ -26,6 +26,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 import {Model} from '@dino/core/data';
 import {ListHeader} from '@dino/core/list';
 import {parse, parseISO} from 'date-fns';
+import {isFileColumn} from './list-cell-file';
 import {ChoicesDicitionary} from './list-datasource';
 
 @Pipe({name: 'dinoListCellValue', pure: false})
@@ -57,7 +58,7 @@ export class ListCellValue implements PipeTransform {
       let labelItem = choices[headerName].find(ch => ch.value == val);
       val = labelItem ? labelItem.label : val;
     }
-    if (typeof val === 'object' && val != null) {
+    if (typeof val === 'object' && !isFileColumn(val) && val != null) {
       val = JSON.stringify(val, null, 2).replace('{', '').replace('}', '');
     }
     return val == null ? '' : val;
