@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@ajf/core@^15.1.4":
-  version "15.1.4"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-15.1.4.tgz#e35b8e22e8c99fee05f30c05a71305c944f352aa"
-  integrity sha512-a6umX1yLQwSEKOWyw7Xy/6gfQFLk2MAcC8YzjCC4xeAfJs7ZkpkunPtphb305lR14bHihJDrO5ba0n6M2p3LXg==
+"@ajf/core@^15.1.5":
+  version "15.1.5"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-15.1.5.tgz#b2b08b645c95809015ecdf0beaf300f365b0e040"
+  integrity sha512-GxdxUL8vGxRSASx0bwcYeSEOxHWfeXeP3m/LHsTee3SmiQLd7hsERwKkeUB61Yu/lMm15w4b825IrS8jlVwbTA==
   dependencies:
     tslib "^2.3.0"
 
@@ -14,10 +14,10 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^15.1.4":
-  version "15.1.4"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-15.1.4.tgz#2704bd5cad9682b02f02f725e05b1876ae6fa158"
-  integrity sha512-Fi10zZcL/ejzRqTS/yoKWSsECLYuim2yQOneHYwbySc2c9MPFLWsswEwJv65oJfoA9zuo7IaAsBpxzZZxLKqrw==
+"@ajf/material@^15.1.5":
+  version "15.1.5"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-15.1.5.tgz#15a26b4874279c5785a026e8d9b881c102d05014"
+  integrity sha512-PZPft55K1XMDv6UZ2IQ/jNJoyrNqNxnnACTkenwJqngyKiadJZDK23ZSZ/zBa78HZXvzyWG7ptBRFkwNn5eO4Q==
   dependencies:
     tslib "^2.3.0"
 
