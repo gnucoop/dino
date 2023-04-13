@@ -20,22 +20,14 @@
  *
  */
 
-export * from './auth-event';
-export * from './auth.guard';
-export * from './auth-module';
-export * from './auth-response';
-export * from './auth-service-config';
-export * from './auth-service';
-export * from './auth-utils';
-export * from './b64-conversion-functions';
-export * from './credentials';
-export * from './jwt-interceptor';
-export * from './jwt-token';
-export * from './login';
-export * from './login-response';
-export * from './network-status.service';
-export * from './two-factor-delivery';
-export * from './user';
-export * from './username-status';
-export * from './user-password-validator';
-export * from './validation-errors';
+/**
+ * Conversion methods string <-> base64
+ */
+export function utf8_to_b64(str: string) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+export function b64_to_utf8(str: string) {
+  str = str.replace(/\s/g, '');
+  return decodeURIComponent(escape(atob(str)));
+}
