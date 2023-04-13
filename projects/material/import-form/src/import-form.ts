@@ -105,6 +105,11 @@ export class ImportForm implements OnDestroy {
   ];
 
   /**
+   * The row id key
+   */
+  private _idKey = 'id';
+
+  /**
    * If true, metric name must be unique
    */
   private _metricMustBeUnique: boolean = false;
@@ -247,27 +252,30 @@ export class ImportForm implements OnDestroy {
           const metricIdKey = metric + '_id';
           const metricNameKey = metric + '_name';
           rows.forEach((row: {[key: string]: any}) => {
-            const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
-            if (
-              newMetricName &&
-              newMetricName.length &&
-              !row[metricIdKey] &&
-              !newMetricNames.includes(newMetricName)
-            ) {
-              newMetricNames.push(newMetricName);
-              let newMetric: {[key: string]: any} = {};
-              const props = manager.collectionSchema.required
-                ? manager.collectionSchema.required
-                : ['name'];
-              props.forEach(prop => {
-                newMetric[prop as string] = this._getValueFromRow(
-                  row[metric + '_' + (prop as string)],
-                );
-              });
-              if (!(metric in newMetrics)) {
-                newMetrics[metric] = [];
+            // Check if is not a second header
+            if (row[this._idKey] !== this._idKey) {
+              const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
+              if (
+                newMetricName &&
+                newMetricName.length &&
+                !row[metricIdKey] &&
+                !newMetricNames.includes(newMetricName)
+              ) {
+                newMetricNames.push(newMetricName);
+                let newMetric: {[key: string]: any} = {};
+                const props = manager.collectionSchema.required
+                  ? manager.collectionSchema.required
+                  : ['name'];
+                props.forEach(prop => {
+                  newMetric[prop as string] = this._getValueFromRow(
+                    row[metric + '_' + (prop as string)],
+                  );
+                });
+                if (!(metric in newMetrics)) {
+                  newMetrics[metric] = [];
+                }
+                newMetrics[metric].push(newMetric);
               }
-              newMetrics[metric].push(newMetric);
             }
           });
         }
@@ -340,11 +348,10 @@ export class ImportForm implements OnDestroy {
     const forms: InsertModel<FormData>[] = [];
     const createdAtKey = 'created_at';
     const userDataKey = 'user_data_ref_id';
-    const idKey = 'id';
 
     rows.forEach((row: {[key: string]: any}) => {
       // Check if is not a second header
-      if (row[idKey] !== idKey) {
+      if (row[this._idKey] !== this._idKey) {
         let newItem: {[key: string]: any} = {};
         newItem['form_schema_ref_id'] = this._formSchemaId;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
