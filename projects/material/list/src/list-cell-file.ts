@@ -36,7 +36,7 @@ export class ListCellIsFile implements PipeTransform {
   constructor() {}
 
   transform<T extends Model = Model>(element: T | {[key: string]: any} | string): boolean {
-    if (element == null) return false;
+    if (element == null || element === undefined || typeof element !== 'object') return false;
     if (typeof element === 'string') return false;
     return isFileColumn(element);
   }
@@ -50,7 +50,8 @@ export class ListCellGetFile implements PipeTransform {
   constructor() {}
 
   transform<T extends Model = Model>(element: T | {[key: string]: any} | string): listCellFile {
-    if (element == null) return {type: '', url: '', name: '', content: '', size: ''};
+    if (element == null || element === undefined || typeof element !== 'object')
+      return {type: '', url: '', name: '', content: '', size: ''};
     if (typeof element === 'string') return {type: '', url: '', name: '', content: '', size: ''};
     const elemObj = element as listCellFile;
     return elemObj;
@@ -65,7 +66,7 @@ export class ListCellGetFileIcon implements PipeTransform {
   constructor() {}
 
   transform<T extends Model = Model>(element: T | {[key: string]: any} | string): string {
-    if (element == null) return '';
+    if (element == null || element === undefined || typeof element !== 'object') return '';
     if (typeof element === 'string') return '';
     const elemObj = element as {[key: string]: string};
     const fileType = elemObj['type'];
@@ -82,7 +83,7 @@ export class ListCellGetFileIcon implements PipeTransform {
  * @returns True if the content is an ajf file upload
  */
 export function isFileColumn(element: {[key: string]: any}): boolean {
-  if (element == null) {
+  if (element == null || element === undefined || typeof element !== 'object') {
     return false;
   }
   if ('content' in element && 'size' in element && 'type' in element && 'name' in element)

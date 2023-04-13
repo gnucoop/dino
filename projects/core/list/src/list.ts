@@ -28,6 +28,7 @@ import {BehaviorSubject, Subject} from 'rxjs';
 import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
+import {b64_to_utf8, utf8_to_b64} from '@dino/core/auth';
 
 /**
  * The base List extended by SelectionList component.
@@ -250,7 +251,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     if (this._getColumnsSelectionPresetKey() != null) {
       localStorage.setItem(
         this._getColumnsSelectionPresetKey() as string,
-        btoa(JSON.stringify(columns)),
+        utf8_to_b64(JSON.stringify(columns)),
       );
     }
   }
@@ -266,7 +267,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     if (preset == null) {
       return null;
     }
-    return JSON.parse(atob(preset));
+    return JSON.parse(b64_to_utf8(preset));
   }
 
   /**
