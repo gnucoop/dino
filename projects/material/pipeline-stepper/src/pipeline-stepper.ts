@@ -15,10 +15,12 @@ import {MatStepper} from '@angular/material/stepper';
 import {FormStatus} from '@dino/core/forms';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {
+  delay,
   distinctUntilChanged,
   filter,
   map,
   shareReplay,
+  skipWhile,
   switchMap,
   take,
   withLatestFrom,
@@ -119,10 +121,11 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
   @Input()
   set ajfFormRenderer(renderer: Observable<AjfFormRenderer | null>) {
     this._ajfFormRenderer = renderer;
-    this._ajfFormSliderPageChange = this._ajfFormRenderer.pipe(
-      withLatestFrom(this._slides),
+    this._ajfFormSliderPageChange = this._slides.pipe(
+      skipWhile(slides => slides == null),
+      withLatestFrom(this._ajfFormRenderer),
       switchMap(
-        ([fr, slides]) =>
+        ([slides, fr]) =>
           fr?.formSlider.pageScrollFinish.pipe(
             map(() => {
               if (slides == null) {
@@ -267,6 +270,7 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
             this.currentFormStatus.pipe(filter(st => st != null)),
             this._ajfFormSliderPageChange.pipe(distinctUntilChanged()),
           ]).pipe(
+            delay(100),
             map(([currentStatus, ajfSlideIndex]) => {
               if (ajfSlideIndex != null) {
                 return ajfSlideIndex;
