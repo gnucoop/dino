@@ -913,16 +913,15 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     choices: ChoicesDicitionary | null | undefined,
   ): (string | {[key: string]: any})[] {
     const aggregateData: (string | {[key: string]: any})[] = [];
-    for (let key in elementData) {
+    const allTabKeys: string[] = this._getRepeatingSlideCellAllTabs(elementData, header);
+    for (let key of allTabKeys) {
       const headerName = header.column.toString();
-      if (key.includes(headerName)) {
-        let item = elementData[key];
-        if (choices && choices[headerName]) {
-          let labelItem = choices[headerName].find(ch => ch.value == item);
-          item = labelItem ? labelItem.label : item;
-        }
-        aggregateData.push(item);
+      let item = elementData[key] ?? null;
+      if (choices && choices[headerName]) {
+        let labelItem = choices[headerName].find(ch => ch.value == item);
+        item = labelItem ? labelItem.label : item;
       }
+      aggregateData.push(item);
     }
     return aggregateData;
   }
@@ -1230,6 +1229,62 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (target != null) {
       this._renderer.removeClass(target, 'dino-hover');
     }
+  }
+
+  /**
+   * Gets all tab keys of a cell tab
+   * @param elementData The row element data
+   * @param header The column header
+   * @returns All the tab keys
+   */
+  private _getRepeatingSlideCellAllTabs(
+    elementData: {[key: string]: any},
+    header: ListHeader<T>,
+  ): string[] {
+    const headerName = header.column.toString();
+    const matchingKeys = Object.keys(elementData)
+      .filter(key => key.includes(`${headerName}__`))
+      .sort();
+    if (matchingKeys.length) {
+      const lastKeyIndex = this._getRepeatingSlideLastTabIndex(elementData);
+      for (let idx = 0; idx <= lastKeyIndex; idx++) {
+        if (matchingKeys.indexOf(`${headerName}__${idx}`) < 0) {
+          const lastMatchingIndex = matchingKeys.reduce(
+            (acc, curr) => this._getRepeatingSlideLastTabIndexReducer(acc, curr),
+            0,
+          );
+          idx >= lastMatchingIndex
+            ? matchingKeys.push(`${headerName}__${idx}`)
+            : matchingKeys.unshift(`${headerName}__${idx}`);
+        }
+      }
+    }
+
+    return matchingKeys.sort();
+  }
+
+  /**
+   * Reducer function to find the last tab index
+   * @param acc
+   * @param current
+   */
+  private _getRepeatingSlideLastTabIndexReducer(acc: number, current: string): number {
+    const currentIndex = +current.split('__')[1] ?? 0;
+    return currentIndex > acc ? currentIndex : acc;
+  }
+
+  /**
+   * Gets the last index of a repeating slide's cell tabs
+   * @param elementData The row element data
+   * @returns The last index
+   */
+  private _getRepeatingSlideLastTabIndex(elementData: {[key: string]: any}): number {
+    const lastTabIndex = Object.keys(elementData).reduce(
+      (acc, current) => this._getRepeatingSlideLastTabIndexReducer(acc, current),
+      0,
+    );
+
+    return lastTabIndex;
   }
 
   ngOnDestroy() {

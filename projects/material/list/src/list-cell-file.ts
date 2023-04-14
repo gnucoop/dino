@@ -26,7 +26,14 @@ import {Model} from '@dino/core/data';
 /**
  * Type representing a file field
  */
-export type listCellFile = {type: string; url: string; name: string; size: string; content: string};
+export type listCellFile = {
+  type: string;
+  url: string;
+  name: string;
+  size: string;
+  content: string;
+  deleteUrl?: boolean;
+};
 
 /**
  * Pipe that checks if a list column displays files
@@ -39,6 +46,21 @@ export class ListCellIsFile implements PipeTransform {
     if (element == null || element === undefined || typeof element !== 'object') return false;
     if (typeof element === 'string') return false;
     return isFileColumn(element);
+  }
+}
+
+/**
+ * Pipe that checks if a list cell has a deleted file as value
+ */
+@Pipe({name: 'dinoListCellIsDeletedFile', pure: false})
+export class ListCellIsDeletedFile implements PipeTransform {
+  constructor() {}
+
+  transform(element: {[key: string]: any}): boolean {
+    return (
+      isFileColumn(element) &&
+      (element['size'] <= 0 || element['name'] == null || element['deleteUrl'])
+    );
   }
 }
 

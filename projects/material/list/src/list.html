@@ -155,7 +155,7 @@
               >
 
               <ng-container
-                *ngTemplateOutlet="fileCellTemplate; context: {item: item}"
+                *ngTemplateOutlet="defaultBaseTemplate; context: {item: item}"
               ></ng-container>
 
               <mat-icon
@@ -173,16 +173,10 @@
             >{{element.icon}}</mat-icon
           >
           <mat-icon *ngIf="header.column === 'text' && element.redirect_url!== null">link</mat-icon>
+
           <ng-container
-            *ngIf="element|dinoListCellValue:header:dataSource?.choices|dinoListCellIsFile; else defaultTemplate;"
-          >
-            <ng-container
-              *ngTemplateOutlet="fileCellTemplate; context: {item: element|dinoListCellValue:header:dataSource?.choices}"
-            ></ng-container>
-          </ng-container>
-          <ng-template #defaultTemplate
-            >{{ element|dinoListCellValue:header:dataSource?.choices }}</ng-template
-          >
+            *ngTemplateOutlet="defaultBaseTemplate; context: {item: element|dinoListCellValue:header:dataSource?.choices}"
+          ></ng-container>
         </ng-template>
       </mat-cell>
     </ng-container>
@@ -302,22 +296,32 @@
   </mat-table>
 </ng-template>
 
-<ng-template #fileCellTemplate let-item="item">
-  <ng-container [ngSwitch]="(item|dinoListCellGetFileIcon)">
-    <a *ngSwitchCase="'insert_drive_file'" [href]="(item|dinoListCellGetFile).url" target="_blank"
-      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
-    >
-    <a *ngSwitchCase="'picture_as_pdf'" [href]="(item|dinoListCellGetFile).url" target="_blank"
-      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
-    >
-    <mat-icon
-      *ngSwitchCase="'image'"
-      (click)="previewImage($event, item)"
-      class="dino-file-cell-icon"
-      >{{item|dinoListCellGetFileIcon}}</mat-icon
-    >
-    <ng-container *ngSwitchDefault>{{item}}</ng-container>
+<ng-template #defaultBaseTemplate let-item="item">
+  <ng-container *ngIf="(item|dinoListCellIsFile); else defaultTemplate">
+    <ng-container *ngIf="!(item|dinoListCellIsDeletedFile); else deletedFileTemplate">
+      <ng-container [ngSwitch]="(item|dinoListCellGetFileIcon)">
+        <a
+          *ngSwitchCase="'insert_drive_file'"
+          [href]="(item|dinoListCellGetFile).url"
+          target="_blank"
+          ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
+        >
+        <a *ngSwitchCase="'picture_as_pdf'" [href]="(item|dinoListCellGetFile).url" target="_blank"
+          ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
+        >
+        <mat-icon
+          *ngSwitchCase="'image'"
+          (click)="previewImage($event, item)"
+          class="dino-file-cell-icon"
+          >{{item|dinoListCellGetFileIcon}}</mat-icon
+        >
+        <ng-container *ngSwitchDefault>{{item}}</ng-container>
+      </ng-container>
+    </ng-container>
   </ng-container>
+
+  <ng-template #deletedFileTemplate></ng-template>
+  <ng-template #defaultTemplate>{{item}}</ng-template>
 </ng-template>
 
 <div class="dino-table-container">

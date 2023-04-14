@@ -53,7 +53,12 @@ import {ColumnsSelector} from './columns-selector';
 import {SelectionList} from './list';
 import {ListCell} from './list-cell';
 import {ListCellValue} from './list-cell-value';
-import {ListCellIsFile, ListCellGetFile, ListCellGetFileIcon} from './list-cell-file';
+import {
+  ListCellIsFile,
+  ListCellGetFile,
+  ListCellGetFileIcon,
+  ListCellIsDeletedFile,
+} from './list-cell-file';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 
@@ -93,6 +98,7 @@ import {ImagePreview} from './image-preview';
     ListCell,
     ListCellValue,
     ListCellIsFile,
+    ListCellIsDeletedFile,
     ListCellGetFile,
     ListCellGetFileIcon,
     LogViewer,
