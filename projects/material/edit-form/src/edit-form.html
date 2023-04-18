@@ -79,7 +79,7 @@
   ></dino-floating-button>
 
   <dino-floating-button
-    *ngIf="allowSaveDraft"
+    *ngIf="(isView|async) !== true && allowSaveDraft"
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
     [buttonDisabled]="(isAjfFormValid|async) === true"
