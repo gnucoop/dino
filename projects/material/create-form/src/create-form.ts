@@ -110,6 +110,16 @@ import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 })
 export class CreateForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
   /**
+   * If true, the content of the Ajf Form Fields is centered
+   */
+  @Input() centeredFieldsContent: boolean = false;
+
+  /**
+   * The max number of columns on which the Ajf Form Fields are spread
+   */
+  @Input() maxColumns: 1 | 2 | 3 = 1;
+
+  /**
    * Metrics of the types specified in the array can be created directly from the metric fields
    */
   @Input() allowMetricCreationFor: string[] = ['all'];

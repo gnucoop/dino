@@ -133,20 +133,20 @@ dino-create-form {
     }
 
     .ajf-form-page {
-      .mat-mdc-card {
+      .mat-mdc-card:not(.ajf-field-entry) {
         margin: 0px !important;
         margin-bottom: 10px !important;
         padding: 8px;
         max-width: 100%;
         display: flex;
-        flex-flow: column wrap;
+        background: transparent;
         .ajf-field-entry {
           display: flex;
           flex-flow: column wrap;
           justify-content: flex-start;
           /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
           label,
-          span:not(.mat-ripple, .mat-button-focus-overlay) {
+          span:not(.mat-ripple, .mat-button-focus-overlay, .mat-mdc-select-min-line) {
             max-width: 80vw;
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -162,7 +162,7 @@ dino-create-form {
           .mat-mdc-radio-button,
           ajf-checkbox-group-item .mat-mdc-button {
             .mat-icon {
-              color: inherit;
+              color: rgb(var(--palette-accent-300));
             }
             padding: 10px;
             flex: 1 0 auto;
@@ -182,17 +182,12 @@ dino-create-form {
               display: none;
             }
           }
-          .mat-mdc-select {
-            width: 25%;
-            @media only screen and (max-width: 768px) {
-              width: 100%;
-            }
-          }
           ajf-field {
             margin-top: 5px;
             margin-bottom: 10px;
             /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-            .mat-select-min-line, .mat-mdc-select-min-line {
+            .mat-select-min-line,
+            .mat-mdc-select-min-line {
               display: inline-block;
             }
           }
@@ -219,5 +214,27 @@ dino-create-form {
     position: absolute;
     top: 40%;
     left: 50%;
+  }
+
+  .mat-mdc-card.ajf-field-entry {
+    border-left-color: rgb(var(--palette-accent-300)) !important;
+    .mat-mdc-card-actions {
+      left: 0px;
+    }
+    .mat-mdc-select-arrow {
+      svg {
+        height: 32px;
+        width: 32px;
+      }
+    }
+    .mat-mdc-select {
+      .mat-mdc-select-value {
+        box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.2);
+        .mat-mdc-select-min-line {
+          max-width: 80vw;
+          overflow-x: auto;
+        }
+      }
+    }
   }
 }
