@@ -40,6 +40,8 @@
             [topBar]="(isPipeline|async) === false"
             (formAction)="onFormAction($event)"
             [readonly]="isView|async"
+            [maxColumns]="maxColumns"
+            [centeredFieldsContent]="centeredFieldsContent"
           ></ajf-form>
         </div>
       </mat-step>
@@ -63,6 +65,8 @@
         [topBar]="(isPipeline|async) === false"
         (formAction)="onFormAction($event)"
         [readonly]="isView|async"
+        [maxColumns]="maxColumns"
+        [centeredFieldsContent]="centeredFieldsContent"
       ></ajf-form>
     </div>
   </ng-container>
