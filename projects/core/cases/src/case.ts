@@ -36,6 +36,11 @@ export interface Case extends Metric {
    * The case notes
    */
   notes?: string | null;
+
+  /**
+   * The case image url
+   */
+  image_file?: string | null;
 }
 
 export const VERSION = 1;

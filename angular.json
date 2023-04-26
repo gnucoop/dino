@@ -228,6 +228,7 @@
               "numbro",
               "pdfmake/build/pdfmake",
               "graphql-ws",
+              "jsbarcode",
               "spark-md5",
               "svg-pan-zoom",
               "vuvuzela"
@@ -389,10 +390,10 @@
   },
   "cli": {
     "cache": {
-        "enabled": false
-      },
-      "schematicCollections": [
-        "@angular-eslint/schematics"
-      ]
+      "enabled": false
+    },
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
