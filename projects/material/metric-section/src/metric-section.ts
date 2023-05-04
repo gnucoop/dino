@@ -174,7 +174,8 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
-    const logoImagePath = 'https://gnudino.vercel.app/assets/icons/logos/logodino.png'; //'assets/icons/logos/logodino.png';
+    // TODO .....
+    const logoImagePath = 'assets/icons/logos/logodino.png';
     this.toDataURL(logoImagePath, (dataUrl: any) => {
       this.getCaseImage(metric, dataUrl);
     });
@@ -190,7 +191,8 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
-    let imageUrl = 'https://gnudino.vercel.app/assets/icons/logos/logodino.png';
+    // TODO ....
+    let imageUrl = 'assets/icons/logos/case-placeholder.png';
     if (metric.image_file != null && metric.image_file.length > 0) {
       imageUrl = metric.image_file;
     }

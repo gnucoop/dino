@@ -90,6 +90,13 @@ export const schema = {
         "null"
       ],
       "description": "The case notes"
+    },
+    "image_file": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The case image url"
     }
   },
   "additionalProperties": false,

@@ -7,9 +7,20 @@ dino-metric-editor {
     font-size: 1.2em;
   }
 
+  .dino-metric-image-field {
+    padding: 12px 25px;
+    font-size: 0.7em;
+    min-width: 0;
+  }
+
+  .dino-metric-image {
+    max-height: 80px;
+  }
+
   .mat-mdc-form-field {
     position: relative;
     flex: 1 1 auto;
+    max-height: 80px;
   }
 
   .mat-datepicker-toggle,
