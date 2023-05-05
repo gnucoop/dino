@@ -304,4 +304,15 @@ export class MatFormsListE2E {
         .subscribe();
     }
   }
+
+  processExportTrigger(trigger: ActionTrigger) {
+    if (
+      trigger.triggerType === 'on_form_data_export' &&
+      trigger.triggerData?.newValue &&
+      trigger.triggerData?.additional_info &&
+      trigger.triggerData?.additional_info['bookType']
+    ) {
+      console.log(trigger);
+    }
+  }
 }
