@@ -224,4 +224,5 @@ export const ENG: Translation = {
   'Form History': 'Form History',
   'There are not any logs available for this form':
     'There are not any logs available for this form',
+  'Export file saved in your Documents folder': 'Export file saved in your Documents folder',
 };
