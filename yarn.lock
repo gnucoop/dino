@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@ajf/core@^15.1.6":
+"@ajf/core@^15.2.0":
   version "15.2.0"
   resolved "https://registry.yarnpkg.com/@ajf/core/-/core-15.2.0.tgz#713fb2cad4d3437b7c8e1527e5eee621a41f9702"
   integrity sha512-M6jxroaQ4fxOAIQKVgCv4NtHI3FPRW65wSk+NNnWqvWuqxNVKuzthhM9yOp4D7FIIMlgbY0yt41l7HsrUDQwRw==
@@ -14,7 +14,7 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^15.1.6":
+"@ajf/material@^15.2.0":
   version "15.2.0"
   resolved "https://registry.yarnpkg.com/@ajf/material/-/material-15.2.0.tgz#2f15a8bde71d9b61fda2abe8379f53481c2a2b61"
   integrity sha512-631SdMeJ8lHYn6rNd+jhGG2YBjIFzenWXBu2T+O5LlemAqmLHXBU3+FZ0dIxGordYJJ1M4KNPvMAEuRn6FrYrg==
