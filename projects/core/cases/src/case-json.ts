@@ -115,5 +115,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<Case>;
