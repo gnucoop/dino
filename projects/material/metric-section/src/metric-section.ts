@@ -28,6 +28,7 @@ import {
   TDocumentDefinitions,
 } from '@ajf/core/pdfmake';
 import {TranslocoService} from '@ajf/core/transloco';
+import {HttpClient} from '@angular/common/http';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -112,6 +113,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
 
   constructor(
     private _filtersService: FiltersService,
+    private _httpClient: HttpClient,
     public dialog: MatDialog,
     private _ts: TranslocoService,
   ) {}
@@ -146,17 +148,13 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
    * @param callback callback function
    */
   private toDataURL(url: string, callback: any) {
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function () {
-      var reader = new FileReader();
+    this._httpClient.get(url, {responseType: 'blob'}).subscribe(blob => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
       reader.onloadend = function () {
         callback(reader.result);
       };
-      reader.readAsDataURL(xhr.response);
-    };
-    xhr.open('GET', url);
-    xhr.responseType = 'blob';
-    xhr.send();
+    });
   }
 
   private textToBase64Barcode(text: string) {
