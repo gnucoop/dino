@@ -36,12 +36,20 @@ export interface Case extends Metric {
    * The case notes
    */
   notes?: string | null;
+
+  /**
+   * The case image url
+   */
+  image_file?: string | null;
 }
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => {
     return {...doc, metric_data: null};
+  },
+  2: (doc: RxDocument) => {
+    return {...doc, image_file: null};
   },
 };

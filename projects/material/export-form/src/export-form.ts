@@ -42,6 +42,7 @@ import {
   Input,
   OnDestroy,
   Optional,
+  Output,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
@@ -71,7 +72,7 @@ import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import {DataModelManager} from '@dino/core/data';
+import {ActionTrigger, DataModelManager} from '@dino/core/data';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
@@ -106,6 +107,12 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   @ViewChildren(ToggleButtonComponent)
   toggleButtons!: QueryList<ToggleButtonComponent>;
   @ViewChildren(MatSelectionList) fields!: QueryList<MatSelectionList>;
+
+  /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitExportActionTrigger: EventEmitter<ActionTrigger> =
+    new EventEmitter<ActionTrigger>();
 
   readonly availableFieldsAndFormats: SelOption[] = [];
   readonly availableFilters: SelOption[] = [];
@@ -596,6 +603,20 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     }
     const worksheet: XLSX.WorkSheet = this._buildWorksheet(ctxList, exportedNames);
     const workBook: XLSX.WorkBook = {Sheets: {'': worksheet}, SheetNames: ['']};
+
+    const exportFileBuffer = XLSX.write(workBook, {
+      bookType: 'csv',
+      type: 'array',
+    });
+
+    const trigger: ActionTrigger = {
+      name: 'Form Data Exported',
+      triggerType: 'on_form_data_export',
+      triggerData: {newValue: exportFileBuffer, additional_info: {bookType: 'csv'}},
+    };
+
+    this.emitExportActionTrigger.emit(trigger);
+
     XLSX.writeFile(workBook, `${exportModel.schemaName}.csv`, {
       bookType: 'csv',
     });
@@ -948,6 +969,20 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       Sheets: sheets,
       SheetNames: [schemaName, ...slideNames],
     };
+
+    const exportFileBuffer = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    const trigger: ActionTrigger = {
+      name: 'Form Data Exported',
+      triggerType: 'on_form_data_export',
+      triggerData: {newValue: exportFileBuffer, additional_info: {bookType: 'xlsx'}},
+    };
+
+    this.emitExportActionTrigger.emit(trigger);
+
     XLSX.writeFile(workbook, `${exportModel.schemaName}.xlsx`, {
       bookType: 'xlsx',
       type: 'array',

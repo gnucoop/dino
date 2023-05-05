@@ -90,6 +90,13 @@ export const schema = {
         "null"
       ],
       "description": "The case notes"
+    },
+    "image_file": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The case image url"
     }
   },
   "additionalProperties": false,
@@ -108,5 +115,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<Case>;

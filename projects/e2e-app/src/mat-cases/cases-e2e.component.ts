@@ -32,6 +32,11 @@ export class MatCasesE2E {
       customAction: row => this.section.openDialog(row, 'Edit'),
     },
     {
+      actionType: 'print',
+      matIcon: 'printer',
+      customAction: row => this.section.printCaseCardPdf(row),
+    },
+    {
       actionType: 'delete',
       matIcon: 'delete',
       askConfirm: true,

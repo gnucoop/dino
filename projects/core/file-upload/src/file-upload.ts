@@ -56,15 +56,13 @@ export class FileUploadService {
 
   /**
    * Upload a file into the nhost storage
-   * @param fileToUpload the AjfFile to be uploaded in nhost storage
+   * @param fileToUpload the File to be uploaded in nhost storage
    * @returns An observable with the response of the upload
    */
-  uploadFile(fileToUpload: AjfFile): Observable<StorageUploadResponse | null> {
-    if (fileToUpload == null || fileToUpload.content == null || fileToUpload.content.length === 0) {
+  uploadFileInStorage(file: File): Observable<StorageUploadResponse | null> {
+    if (file == null) {
       return obsOf(null);
     }
-    const blob = this._convertBase64ToBlob(fileToUpload.content);
-    const file = new File([blob], fileToUpload.name);
     return this._authConfig.pipe(
       switchMap(config => {
         const url = this._generateUrl(
@@ -98,6 +96,20 @@ export class FileUploadService {
         );
       }),
     );
+  }
+
+  /**
+   * Upload a file into the nhost storage
+   * @param fileToUpload the AjfFile to be uploaded in nhost storage
+   * @returns An observable with the response of the upload
+   */
+  uploadFile(fileToUpload: AjfFile): Observable<StorageUploadResponse | null> {
+    if (fileToUpload == null || fileToUpload.content == null || fileToUpload.content.length === 0) {
+      return obsOf(null);
+    }
+    const blob = this._convertBase64ToBlob(fileToUpload.content);
+    const file = new File([blob], fileToUpload.name);
+    return this.uploadFileInStorage(file);
   }
 
   /**
@@ -202,6 +214,24 @@ export class FileUploadService {
       });
     }
     return formValue;
+  }
+
+  /**
+   * Return the public url in the storage
+   * @param storageResponse The storage service response for a file upload request
+   * @returns The public url
+   */
+  getUploadedFileUrl(storageResponse: StorageUploadResponse): string | null {
+    if (
+      storageResponse &&
+      'isUploaded' in storageResponse &&
+      storageResponse['isUploaded'] &&
+      'filePublicUrl' in storageResponse &&
+      storageResponse['filePublicUrl']
+    ) {
+      return storageResponse['filePublicUrl'];
+    }
+    return null;
   }
 
   /**

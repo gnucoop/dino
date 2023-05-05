@@ -233,4 +233,6 @@ export const ITA: Translation = {
     'Questo form potrebbe non essere valido. Per favore, controlla e completane i dati',
   'Form History': 'Storico del Form ',
   'There are not any logs available for this form': 'Non sono presenti log per questo form',
+  'Export file saved in your Documents folder':
+    'File di esportazione salvato nella cartella Documenti',
 };

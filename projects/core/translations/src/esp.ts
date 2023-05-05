@@ -225,4 +225,6 @@ export const ESP: Translation = {
   'Form History': 'Historia del formulario',
   'There are not any logs available for this form':
     'No hay registros disponibles para este formulario',
+  'Export file saved in your Documents folder':
+    'Archivo de exportación guardado en la carpeta Documentos',
 };

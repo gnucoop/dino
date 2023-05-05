@@ -224,4 +224,6 @@ export const PRT: Translation = {
   'Form History': 'História do formulário',
   'There are not any logs available for this form':
     'Não há nenhum registo disponível para este formulário',
+  'Export file saved in your Documents folder':
+    'Ficheiro de exportação guardado na sua pasta Documentos',
 };

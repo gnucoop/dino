@@ -31,11 +31,19 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
+import {NetworkStatusService} from '@dino/core/auth';
 import {DataModelManager, Metric, PermissionContextService} from '@dino/core/data';
+import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
 import {UserGroup, UserGroupManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
@@ -183,6 +191,21 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
    */
   private _saveSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * The selected file
+   */
+  private _file?: File;
+
+  /**
+   * The selected file preview
+   */
+  preview?: string;
+
+  /**
+   * The max size for the case image
+   */
+  readonly maxImageFileSize = 1000000;
+
   constructor(
     private _router: Router,
     readonly snackbar: MatSnackBar,
@@ -194,6 +217,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     private _cdr: ChangeDetectorRef,
     private _ts: TranslocoService,
     private _fb: UntypedFormBuilder,
+    private _nss: NetworkStatusService,
+    readonly uploadService: FileUploadService,
   ) {
     if (data != null && data.metricManager != null) {
       this._metricManager = data.metricManager;
@@ -379,6 +404,9 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
           placeholder:
             propKey.replace('0', ' ').charAt(0).toUpperCase() + propKey.replace('_', ' ').slice(1),
         };
+        if (currentMetricItem[propKey]) {
+          field['value'] = currentMetricItem[propKey];
+        }
         fields.push(field);
       }
     }
@@ -422,6 +450,38 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     return groupUpdates;
   }
 
+  /**
+   * Set locally the input file
+   * @param event The input file selection event
+   */
+  onMetricFileSelected(event: any): void {
+    if (
+      event != null &&
+      event.target != null &&
+      event.target.files != null &&
+      event.target.files.length
+    ) {
+      const file = event.target.files[0];
+      if (file && file.size < this.maxImageFileSize) {
+        this._file = event.target.files[0];
+        if (file) {
+          // Read file for preview
+          this.preview = '';
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            this.preview = e.target.result;
+            this._cdr.markForCheck();
+          };
+          reader.readAsDataURL(file);
+        }
+      } else {
+        this.snackbar.open('The maximum file size is 1MB', 'ERROR', {
+          duration: 5000,
+        });
+      }
+    }
+  }
+
   ngOnInit(): void {
     if (this.data != null && this._metricManager != null) {
       this._schemaToForm(this._metricManager.collectionSchema, this.data.metricItem);
@@ -435,12 +495,44 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       throw new Error('No metric manager was provided');
     }
 
-    this._saveSub = this._saveEvt
+    combineLatest([this._saveEvt, this._nss.isOnline$])
       .pipe(
         filter(() => this._metricManager != null),
-        switchMap(item => {
+        switchMap(([item, isOnline]) => {
+          let uploadedFileObs: Observable<StorageUploadResponse | null> = obsOf(null);
+          let deleteFileObs: Observable<any> = obsOf(null);
+          if (this._file != null) {
+            if (!isOnline) {
+              this.snackbar.open('You are offline. The image will not be uploaded', 'WARNING', {
+                duration: 5000,
+              });
+            } else {
+              let itemCopy = item as any;
+              if (itemCopy && itemCopy['image_file'] != null && itemCopy['image_file'].length) {
+                deleteFileObs = this.uploadService.deleteFile(itemCopy['image_file']);
+              }
+              uploadedFileObs = this.uploadService.uploadFileInStorage(this._file);
+              /*this.snackbar.open('Wait until uploading documents...', 'WAIT', {
+                duration: 5000,
+              });*/
+            }
+          }
+          return zip([obsOf(item), uploadedFileObs, deleteFileObs]);
+        }),
+        switchMap(res => {
           const metricManager = this._metricManager as DataModelManager<T>;
-          let metricDoc: Observable<RxDocument<T> | null>;
+          let metricDoc: Observable<RxDocument<T> | null> = obsOf(null);
+          let item = res[0] as any;
+          if (this._file != null && res[1] != null) {
+            const imageUrl = this.uploadService.getUploadedFileUrl(res[1]);
+            if (imageUrl != null) {
+              item['image_file'] = imageUrl;
+            } else {
+              this.snackbar.open('Something went wrong while saving the image.', 'WARNING', {
+                duration: 5000,
+              });
+            }
+          }
           if (this.data.metricAction === 'Edit') {
             metricDoc = metricManager.update(item);
           } else {

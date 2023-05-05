@@ -132,6 +132,12 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   >();
 
   /**
+   * Event emitted as an Action hook for Form Data Exports
+   */
+  @Output() emitExportActionTrigger: EventEmitter<ActionTrigger> =
+    new EventEmitter<ActionTrigger>();
+
+  /**
    * The List selection model. Allows selection of individual or multiple elements
    * of the List, for the purpose of performing bulk actions.
    */
@@ -457,6 +463,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         };
       }
       let dialogRef = this._dialog.open(ExportForm, dialogConfig);
+      dialogRef.componentInstance.emitExportActionTrigger
+        .pipe(take(1))
+        .subscribe(evt => this.emitExportActionTrigger.emit(evt));
       dialogRef.componentInstance.formSchema = formSchema;
       dialogRef.componentInstance.data = this.dataSource.data as any[];
       dialogRef.componentInstance.filteredQueryObs = this.dataSource.filteredQueryObs;

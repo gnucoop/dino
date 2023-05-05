@@ -21,6 +21,14 @@
  */
 
 import {
+  createPdf,
+  Content,
+  PageOrientation,
+  TCreatedPdf,
+  TDocumentDefinitions,
+} from '@ajf/core/pdfmake';
+import {TranslocoService} from '@ajf/core/transloco';
+import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
@@ -29,10 +37,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {Case} from '@dino/core/cases';
 import {DataModelManager, Metric} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource} from '@dino/material/list';
 import {MetricEditor} from '@dino/material/metric-editor';
+import JsBarcode from 'jsbarcode';
 
 /**
  * Dino Metric Section component.
@@ -100,7 +110,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     this._metricManager = mm;
   }
 
-  constructor(private _filtersService: FiltersService, public dialog: MatDialog) {}
+  constructor(
+    private _filtersService: FiltersService,
+    public dialog: MatDialog,
+    private _ts: TranslocoService,
+  ) {}
 
   ngOnInit(): void {
     if (this._metricManager == null) {
@@ -124,5 +138,149 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
         readOnlyFields: this.readOnlyFields,
       },
     });
+  }
+
+  /**
+   * Get an image in base64
+   * @param url image url
+   * @param callback callback function
+   */
+  private toDataURL(url: string, callback: any) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      var reader = new FileReader();
+      reader.onloadend = function () {
+        callback(reader.result);
+      };
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  }
+
+  private textToBase64Barcode(text: string) {
+    var canvas = document.createElement('canvas');
+    JsBarcode(canvas, text, {format: 'CODE39'});
+    return canvas.toDataURL('image/png');
+  }
+
+  /**
+   * Retrieves all elements to print the case card pdf
+   * @param metric the case metric to print
+   */
+  printCaseCardPdf(metric: Case | null): void {
+    if (metric == null) {
+      return;
+    }
+    // TODO .....
+    const logoImagePath = 'assets/icons/logos/logodino.png';
+    this.toDataURL(logoImagePath, (dataUrl: any) => {
+      this.getCaseImage(metric, dataUrl);
+    });
+  }
+
+  /**
+   * Get the case image in base64 format
+   * @param metric the case metric to print
+   * @param logo the logo in base64 format
+   * @returns
+   */
+  private getCaseImage(metric: Case | null, logo: string | null): void {
+    if (metric == null) {
+      return;
+    }
+    // TODO ....
+    let imageUrl = 'assets/icons/logos/case-placeholder.png';
+    if (metric.image_file != null && metric.image_file.length > 0) {
+      imageUrl = metric.image_file;
+    }
+    this.toDataURL(imageUrl, (dataUrl: any) => {
+      this.createCardPdf(metric, logo, dataUrl);
+    });
+  }
+
+  /**
+   * Create the case card pdf
+   * @param metric the case metric to print
+   * @param logo the logo in base64 format
+   * @param caseImage the case image in base64 format
+   */
+  createCardPdf(metric: Case, logo: string | null, caseImage: string | null): void {
+    let translate: (s: string) => string = s => s;
+    if (this._ts != null) {
+      translate = s => {
+        if (s == null || s.trim() === '') {
+          return ' ';
+        }
+        return this._ts.translate(s) as string;
+      };
+    }
+
+    let cardCode: string = ' ';
+    if (metric.metric_data && metric.metric_data['ext_code']) {
+      cardCode = metric.metric_data['ext_code'];
+    } else if (metric?.code != undefined) {
+      cardCode = metric?.code.toString();
+    }
+
+    const codeText = translate('Code number');
+
+    const content: Content[] = [
+      {
+        table: {
+          widths: ['*', '*'],
+          body: [
+            [
+              {image: caseImage, width: 50, border: [false, false, false, false]},
+              {image: logo, width: 50, border: [false, false, false, false]},
+            ],
+          ],
+        },
+      },
+      {
+        text: metric.name,
+        fontSize: 8,
+        bold: true,
+        margin: [0, 4, 0, 0],
+      },
+      {
+        text: codeText + ': ' + cardCode,
+        fontSize: 7,
+        bold: true,
+        margin: [0, 0, 0, 4],
+      },
+      {
+        table: {
+          widths: ['*', '*'],
+          body: [
+            [
+              {
+                image: this.textToBase64Barcode(cardCode),
+                width: 80,
+                border: [false, false, false, false],
+              },
+              {qr: cardCode, fit: 50, border: [false, false, false, false]},
+            ],
+          ],
+        },
+      },
+    ];
+    this.createMetricPdf(content, 'landscape').open();
+  }
+
+  /**
+   * Create and open the pdf card
+   * @param content the odf content
+   * @param orientation
+   */
+  private createMetricPdf(content: Content[], orientation?: PageOrientation): TCreatedPdf {
+    const pdfDef: TDocumentDefinitions = {
+      content,
+      pageOrientation: orientation,
+      pageSize: 'C8',
+      pageMargins: [10, 10, 10, 10],
+    };
+    return createPdf(pdfDef);
   }
 }
