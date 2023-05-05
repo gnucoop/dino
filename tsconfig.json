@@ -46,6 +46,8 @@
       "es2020",
       "dom"
     ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

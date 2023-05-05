@@ -42,8 +42,7 @@ import {DataModelManager, Metric} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ListDataSource} from '@dino/material/list';
 import {MetricEditor} from '@dino/material/metric-editor';
-// import * as QRCode from 'qrcode';
-import * as JsBarcode from 'jsbarcode';
+import JsBarcode from 'jsbarcode';
 
 /**
  * Dino Metric Section component.
