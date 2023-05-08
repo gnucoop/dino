@@ -28,7 +28,7 @@ describe('dino-columns-selector', () => {
           .type('age');
         cy.get('.dino-column-selector')
           .should('have.length.lessThan', columnToggles)
-          .should('have.length', 2);
+          .should('have.length', 3);
       });
   });
 });
