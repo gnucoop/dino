@@ -28,7 +28,7 @@ import {
   TDocumentDefinitions,
 } from '@ajf/core/pdfmake';
 import {TranslocoService} from '@ajf/core/transloco';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -148,6 +148,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
    * @param callback callback function
    */
   private toDataURL(url: string, callback: any) {
+    url = url + '?t=' + new Date().getTime();
     this._httpClient.get(url, {responseType: 'blob'}).subscribe(blob => {
       const reader = new FileReader();
       reader.readAsDataURL(blob);
@@ -171,7 +172,6 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
-    // TODO .....
     const logoImagePath = 'assets/icons/logos/logodino.png';
     this.toDataURL(logoImagePath, (dataUrl: any) => {
       this.getCaseImage(metric, dataUrl);
@@ -188,7 +188,6 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
-    // TODO ....
     let imageUrl = 'assets/icons/logos/case-placeholder.png';
     if (metric.image_file != null && metric.image_file.length > 0) {
       imageUrl = metric.image_file;
