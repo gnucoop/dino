@@ -38,6 +38,7 @@ export class CasesModule {
   };
   constructor(private _filtersService: FiltersService, private _metricsService: MetricsService) {
     this._filtersService.addAvailableFilterLabel('case');
+    this._filtersService.addAvailableFilterLabel('case_code');
     this._metricsService.activateMetric(this.caseMetric);
   }
 }
