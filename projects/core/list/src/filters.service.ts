@@ -25,7 +25,7 @@ import {AjfCondition, evaluateExpression} from '@ajf/core/models';
 import {EventEmitter, Injectable} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Model} from '@dino/core/data';
+import {MetricsService, Model} from '@dino/core/data';
 import {TranslocoService} from '@ngneat/transloco';
 import {RxJsonSchema} from 'rxdb';
 import {TopLevelProperty} from 'rxdb/dist/types/types/rx-schema';
@@ -74,7 +74,7 @@ export class FiltersService<T extends Model = Model> {
    * Used to check if a filter can be added and displayed in the
    * main filters component (eg. SearchFiltersBar)-
    */
-  private _availableBasicFilterLabels: string[] = ['form_status'];
+  private _availableBasicFilterLabels: string[] = ['form_status', 'user_data'];
 
   get availableBasicFilterLabels(): string[] {
     return this._availableBasicFilterLabels;
@@ -227,6 +227,7 @@ export class FiltersService<T extends Model = Model> {
     private _route: ActivatedRoute,
     private _router: Router,
     private _ts: TranslocoService,
+    private _metricsService: MetricsService,
   ) {
     this._generatedModelFilters = new BehaviorSubject<FilterGroup[]>([]);
     this._generatedAdditionalFilters = new BehaviorSubject<FilterGroup[]>([]);
@@ -239,7 +240,7 @@ export class FiltersService<T extends Model = Model> {
     this._loadPresetEvent = new EventEmitter<boolean>();
     this._basicFiltersSub = Subscription.EMPTY;
     this._loadingPresetSub = Subscription.EMPTY;
-    this._availableBasicFilterLabels = ['form_status'];
+    this._availableBasicFilterLabels = ['form_status', 'user_data'];
     this._formValueChanges = [];
 
     this._generatedFilters = combineLatest([
@@ -280,7 +281,8 @@ export class FiltersService<T extends Model = Model> {
           this._updateBasicFormValues(allFilters);
           this._loadingPreset = null;
         }
-        return this._updateQueryString(allFilters);
+        const transformedFilters: FilterItem[] = this._transformMetricSubFilters(allFilters);
+        return this._updateQueryString(transformedFilters);
       }),
       catchError(err => throwError(() => err) as Observable<string>),
     );
@@ -811,5 +813,25 @@ export class FiltersService<T extends Model = Model> {
       default:
         return this._temporaryFilters;
     }
+  }
+
+  /**
+   * Transforms the names of the Filter Items that are related to a metric sub-fitler (eg. case code)
+   * into their main Metric Name (eg. case_code -> case)
+   * @param allFilters
+   * @returns
+   */
+  private _transformMetricSubFilters(allFilters: FilterItem[]): FilterItem[] {
+    const activeMetrics: string[] = this._metricsService.activeMetrics.value.map(
+      metric => metric.metricName,
+    );
+    const transformedFilters = allFilters.map(filter => {
+      const metric = activeMetrics.find(amt => filter.name.includes(`${amt}_`));
+      if (metric) {
+        return {...filter, name: metric};
+      }
+      return filter;
+    });
+    return transformedFilters;
   }
 }
