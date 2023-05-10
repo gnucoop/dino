@@ -1098,13 +1098,16 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       .subscribe();
 
     this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
-      withLatestFrom(this._rendererService.formGroup),
-      switchMap(([fdStatus, formGroup]) => {
+      withLatestFrom(this._rendererService.formGroup, this._formData),
+      switchMap(([fdStatus, formGroup, fd]) => {
         if (fdStatus === 1) {
           this._setNewControlsInForm(formGroup, this._extraFormControls);
         }
+
+        const invalidForm = (fd.data as any)['$invalid'] || false;
+        const startErrors = invalidForm === true ? 1 : 0;
         return this._rendererService.errors.pipe(
-          startWith(0),
+          startWith(startErrors),
           map((errors: number) => errors === 0),
           shareReplay(1),
         );
