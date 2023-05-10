@@ -28,7 +28,7 @@ import {
   TDocumentDefinitions,
 } from '@ajf/core/pdfmake';
 import {TranslocoService} from '@ajf/core/transloco';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
