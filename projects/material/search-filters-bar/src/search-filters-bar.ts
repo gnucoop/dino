@@ -44,6 +44,7 @@ import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
+import {UserData, UserDataManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-form';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
@@ -78,12 +79,19 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   /**
    * All the metrics filters autocomplete options.
    */
-  metricFiltersOptions: {[key: string]: Observable<(Metric & {level?: number})[]>} = {};
+  metricFiltersOptions: {
+    [key: string]: Observable<(Metric & {level?: number} & {[key: string]: any})[]>;
+  } = {};
 
   /**
    * All the form status filter autocomplete options.
    */
   formStatusFilterOptions: Observable<FormStatus[]> | null = null;
+
+  /**
+   * All the form status filter autocomplete options.
+   */
+  usersFilterOptions: Observable<UserData[]> | null = null;
 
   /**
    * If the filters bar is applied to a formData list,
@@ -174,6 +182,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     private _bottomSheet: MatBottomSheet,
     private _route: ActivatedRoute,
     private _fschm: FormSchemaManager,
+    private _udm: UserDataManager,
     readonly breakpointObserver: BreakpointObserverService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
@@ -233,6 +242,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._initFilters();
 
     this._populateStatusOptions();
+    this._populateUserDataOptions();
 
     if (this._areaManager != null) {
       this._populateMetricsOptions('area', this._areaManager);
@@ -240,6 +250,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     }
     if (this._caseManager != null) {
       this._populateMetricsOptions('case', this._caseManager);
+      this._populateMetricsOptions('case_code', this._caseManager, 'code');
       this._setupMetricDescendants('case', this._caseManager);
     }
     if (this._projectManager != null) {
@@ -339,6 +350,41 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Returns true if the Form Group refers to a Metric attribute (eg. "case_code")
+   * Metric subfilters should follow this naming convention: <metricName>_<attributeName>
+   *
+   * @param group The FormGroup of the filter
+   */
+  isMetricSubFilter(group: UntypedFormGroup): boolean {
+    if (group == null) {
+      return false;
+    }
+    const groupControlKey = this.getControlKey(group);
+    if (groupControlKey == null) {
+      return false;
+    }
+    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
+
+    return activeMetrics.some(amt => groupControlKey.includes(`${amt}_`));
+  }
+
+  /**
+   * Returns true if the Form Group refers to the User filter
+   *
+   * @param group The FormGroup of the filter
+   */
+  isUser(group: UntypedFormGroup): boolean {
+    if (group == null) {
+      return false;
+    }
+    const groupControlKey = this.getControlKey(group);
+    if (groupControlKey == null) {
+      return false;
+    }
+    return groupControlKey === 'user_data';
+  }
+
+  /**
    * Returns true if the Form Group refers to the Form Status
    *
    * @param group The FormGroup of the filter
@@ -362,19 +408,51 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     return groupControl;
   }
 
+  getMetricSubFilter(
+    option: Metric & {level?: number} & {[key: string]: any},
+    group: UntypedFormGroup,
+  ): string {
+    if (group == null || option == null) {
+      return '';
+    }
+    const groupControlKey = this.getControlKey(group);
+    if (groupControlKey == null) {
+      return '';
+    }
+    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
+    const filterMetric = activeMetrics.find(amt => groupControlKey.includes(`${amt}_`));
+    if (filterMetric == undefined) {
+      return '';
+    }
+    return groupControlKey.replace(`${filterMetric}_`, '');
+  }
+
   /**
    * Displays the Metric or Status Name only in the Metric or Status
    * autocomplete field.
    */
-  displayMetricOrStatusName(item: Metric | FormStatus): string {
+  displayItemName(item: Metric | FormStatus | UserData): string {
     if (item == null) {
       return '';
     }
     const itemObj = item as {[key: string]: any};
-    if (itemObj['label'] && item.name && item.id) {
+    if (itemObj['label'] && itemObj['name'] && item.id) {
       return itemObj['label'];
     }
-    return item.name && item.id ? item.name : '';
+    if (itemObj['full_name']) {
+      return itemObj['full_name'];
+    }
+    return itemObj['name'] && item.id ? itemObj['name'] : '';
+  }
+
+  /**
+   * Displays the Metric code attribute.
+   */
+  displayCode(item: Metric & {code: number}): string {
+    if (item == null) {
+      return '';
+    }
+    return item.code && item.id ? item.code.toString() : '';
   }
 
   showOptions(group: UntypedFormGroup) {
@@ -386,17 +464,19 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Sorts Metric or Status options alphabetically by their name property.
+   * Sorts Options alphabetically by the chosen property.
    * @param a Prev item
    * @param b Next Item
+   * @param sortKey The property key used to sort the items. Defaults to 'name'
    * @returns Sort order
    */
   private _sortItemsAlphabetically(
-    a: RxDocument<Metric> | RxDocument<FormStatus>,
-    b: RxDocument<Metric> | RxDocument<FormStatus>,
+    a: RxDocument<any>,
+    b: RxDocument<any>,
+    sortKey: string = 'name',
   ): number {
-    let textA = a.name.toUpperCase();
-    let textB = b.name.toUpperCase();
+    let textA = a[sortKey].toUpperCase();
+    let textB = b[sortKey].toUpperCase();
     const less = textA < textB;
     const more = textA > textB;
     if (less) {
@@ -412,8 +492,13 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * Populates the autocomplete panels of metric filters with options
    * @param metricType The type of metric
    * @param metricManager The related metric manager
+   * @param metricAttributeToSearchBy The attribute the metric option is searched by. Defaults to 'name'
    */
-  private _populateMetricsOptions(metricType: string, metricManager: DataModelManager<any>): void {
+  private _populateMetricsOptions(
+    metricType: string,
+    metricManager: DataModelManager<any>,
+    metricAttributeToSearchBy: string = 'name',
+  ): void {
     if (metricType == null || metricManager == null) {
       return;
     }
@@ -426,29 +511,35 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           if (typeof metricValue === 'string') {
             let mtQuery: DataQueryOptions = {
               selector: {is_deleted: {$ne: true}},
-              sort: [{'name': 'asc'}],
+              sort: [{[metricAttributeToSearchBy]: 'asc'}],
             };
             // Cases can be very numerous and their filtering is treated differently
             if (metricType === 'case') {
               mtQuery = {
-                selector: {name: {$regex: new RegExp(metricValue, 'i')}, is_deleted: {$ne: true}},
-                sort: [{'name': 'asc'}],
+                selector: {
+                  [metricAttributeToSearchBy]: {$regex: new RegExp(metricValue, 'i')},
+                  is_deleted: {$ne: true},
+                },
+                sort: [{[metricAttributeToSearchBy]: 'asc'}],
                 limit: 50,
               };
             }
             return metricManager.query(mtQuery).pipe(
-              map((metricOptions: Metric[]) => {
+              map((metricOptions: (Metric & {[key: string]: any})[]) => {
                 if (
                   metricOptions != null &&
                   metricValue != null &&
                   typeof metricValue === 'string'
                 ) {
                   const mtrName = metricValue.toLowerCase();
-                  const metricsMatchingByName = metricOptions.filter(option => {
-                    return option.name.toLowerCase().includes(mtrName);
+                  const metricsMatchingByAttribute = metricOptions.filter(option => {
+                    return option[metricAttributeToSearchBy]
+                      .toString()
+                      .toLowerCase()
+                      .includes(mtrName);
                   });
                   const matchingMetricsParentsIDs = [
-                    ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
+                    ...new Set(metricsMatchingByAttribute.map(mt => mt.parent_id)),
                   ];
                   const metricsMatchingParents =
                     metricManager != null
@@ -458,7 +549,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                         )
                       : [];
                   const metricsWithAncestors = [
-                    ...new Set([...metricsMatchingByName, ...metricsMatchingParents]),
+                    ...new Set([...metricsMatchingByAttribute, ...metricsMatchingParents]),
                   ];
 
                   let parentIds = metricsWithAncestors
@@ -507,6 +598,35 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                 },
               })
               .pipe(map(results => results.sort((a, b) => this._sortItemsAlphabetically(a, b))));
+          }
+          return [];
+        }),
+      );
+    }
+  }
+
+  /**
+   * Populates the autocomplete panel of the User Data filter with options
+   */
+  private _populateUserDataOptions(): void {
+    const inputControl = this.additionalBasicFilters.find(group => group.get('user_data') != null);
+    const inputValue = inputControl?.get('user_data')?.valueChanges;
+    if (inputValue != null) {
+      this.usersFilterOptions = inputValue.pipe(
+        switchMap(inputVal => {
+          if (typeof inputVal === 'string') {
+            return this._udm
+              .query({
+                selector: {
+                  full_name: {$regex: new RegExp(inputVal, 'i')},
+                  is_deleted: {$ne: true},
+                },
+              })
+              .pipe(
+                map(results =>
+                  results.sort((a, b) => this._sortItemsAlphabetically(a, b, 'full_name')),
+                ),
+              );
           }
           return [];
         }),

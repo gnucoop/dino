@@ -98,14 +98,19 @@
       <ng-template #metricOrStatusField>
         <mat-form-field
           floatLabel="always"
-          *ngIf="additionalBasicFiltersLabels[idx] && (isMetric(group) || (isStatus(group) && (availableFormStatuses|async)?.length) )"
+          *ngIf="additionalBasicFiltersLabels[idx] &&
+          (isMetric(group) ||
+          isMetricSubFilter(group) ||
+          isUser(group) ||
+          (isStatus(group) && (availableFormStatuses|async)?.length) )"
           (click)="showOptions(group)"
         >
           <input
             matInput
             #fltinput
             [formControlName]="additionalBasicFiltersLabels[idx]"
-            placeholder="{{(additionalBasicFiltersLabels[idx]|transloco).charAt(0).toUpperCase() + (additionalBasicFiltersLabels[idx]|transloco).slice(1).replace('_', ' ')}}"
+            placeholder="{{(additionalBasicFiltersLabels[idx]|transloco).charAt(0).toUpperCase() +
+              (additionalBasicFiltersLabels[idx]|transloco).slice(1).replace('_', ' ').replace('data', '')}}"
             [matAutocomplete]="auto"
           />
           <mat-icon matSuffix color="primary">search</mat-icon>
@@ -123,7 +128,7 @@
           <mat-autocomplete
             #auto="matAutocomplete"
             [autoActiveFirstOption]="false"
-            [displayWith]="displayMetricOrStatusName"
+            [displayWith]="displayItemName"
           >
             <ng-container *ngIf="isMetric(group); else statusOptions ">
               <mat-option
@@ -136,13 +141,33 @@
             </ng-container>
 
             <ng-template #statusOptions>
-              <mat-option
-                [ngStyle]="{'color': option.color ?? 'inherit'}"
-                *ngFor="let option of formStatusFilterOptions | async"
-                [value]="option"
-              >
-                {{option.label}}
-              </mat-option>
+              <ng-container *ngIf="isStatus(group); else metricSubFilterOptions">
+                <mat-option
+                  [ngStyle]="{'color': option.color ?? 'inherit'}"
+                  *ngFor="let option of formStatusFilterOptions | async"
+                  [value]="option"
+                >
+                  {{option.label}}
+                </mat-option>
+              </ng-container>
+
+              <ng-template #metricSubFilterOptions>
+                <ng-container *ngIf="isMetricSubFilter(group); else userFilterOptions">
+                  <mat-option
+                    *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
+                    [value]="option"
+                    [ngClass]="'dino-option-level-' + (option.level ?? '0')"
+                  >
+                    {{option[getMetricSubFilter(option, group)]}}
+                  </mat-option>
+                </ng-container>
+
+                <ng-template #userFilterOptions>
+                  <mat-option *ngFor="let option of usersFilterOptions | async" [value]="option">
+                    {{option.full_name}}
+                  </mat-option>
+                </ng-template>
+              </ng-template>
             </ng-template>
           </mat-autocomplete>
         </mat-form-field>
@@ -160,7 +185,7 @@
       </ng-template>
 
       <ng-container
-        *ngTemplateOutlet="isMetric(group) || isStatus(group) ? metricOrStatusField : default"
+        *ngTemplateOutlet="isMetric(group) || isStatus(group) || isMetricSubFilter(group) || isUser(group) ? metricOrStatusField : default"
       ></ng-container>
     </ng-container>
 
