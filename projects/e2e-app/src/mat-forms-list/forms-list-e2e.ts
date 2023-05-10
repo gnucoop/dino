@@ -28,6 +28,7 @@ export class MatFormsListE2E {
     'case',
     'organization',
     'form_status',
+    'user_data',
     'unavailableFilter',
   ];
   readonly additionalDataSchema: Observable<FormSchema | null>;

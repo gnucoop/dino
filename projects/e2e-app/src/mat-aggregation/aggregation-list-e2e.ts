@@ -21,8 +21,10 @@ export class MatAggregationListE2E implements AfterViewInit, OnDestroy {
     'location',
     'area',
     'case',
+    'case_code',
     'organization',
     'form_status',
+    'user_data',
     'unavailableFilter',
   ];
   readonly additionalDataSchema: Observable<FormSchema | null>;
