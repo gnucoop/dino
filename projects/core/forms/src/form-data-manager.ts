@@ -108,7 +108,7 @@ export class FormDataManager extends DataModelManager<FormData> {
     for (let key in formData_2) {
       const fdKey = key as keyof FormData;
       if (fdKey === 'data') {
-        changedDataAttributes = this.compareFormDatasData(formData_2.data, formData_1.data);
+        changedDataAttributes = this.compareFormDatasData(formData_1.data, formData_2.data);
       } else if (
         formData_1[fdKey] !== undefined &&
         formData_1[fdKey] != formData_2[fdKey] &&
@@ -129,8 +129,12 @@ export class FormDataManager extends DataModelManager<FormData> {
   compareFormDatasData(data_1: {[key: string]: any}, data_2: {[key: string]: any}): string[] {
     const changedAttributes: string[] = [];
     for (let key in data_2) {
-      if (data_1[key] !== undefined && data_1[key] != data_2[key] && key !== '$value') {
-        changedAttributes.push(key);
+      if (data_1[key] != data_2[key] && !key.startsWith('$')) {
+        if (!Array.isArray(data_2[key]) && !Array.isArray(data_1[key])) {
+          changedAttributes.push(key);
+        } else if (!this._areArraysEquivalent(data_1[key], data_2[key])) {
+          changedAttributes.push(key);
+        }
       }
     }
     return changedAttributes;
@@ -209,5 +213,20 @@ export class FormDataManager extends DataModelManager<FormData> {
         return allowedStatus;
       }),
     );
+  }
+
+  /**
+   * Compares two arrays of primitive values and returns true if they have the same element values.
+   * @param arr_1
+   * @param arr_2
+   * @returns True if the arrays have the same elements
+   */
+  private _areArraysEquivalent(arr_1: any[] | null, arr_2: any[] | null): boolean {
+    if ((arr_1 == null && arr_2 != null) || (arr_1 != null && arr_2 == null)) {
+      return false;
+    } else if (arr_1 != null && arr_2 != null) {
+      return JSON.stringify(arr_1.sort()) === JSON.stringify(arr_2.sort());
+    }
+    return true;
   }
 }
