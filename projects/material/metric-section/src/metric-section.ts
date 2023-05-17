@@ -172,6 +172,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
+    // https://gnudino.vercel.app/assets/icons/logos/logodino.png
     const logoImagePath = 'assets/icons/logos/logodino.png';
     this.toDataURL(logoImagePath, (dataUrl: any) => {
       this.getCaseImage(metric, dataUrl);
@@ -184,10 +185,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
    * @param logo the logo in base64 format
    * @returns
    */
-  private getCaseImage(metric: Case | null, logo: string | null): void {
+  private getCaseImage(metric: Case | null, logo: string): void {
     if (metric == null) {
       return;
     }
+    // https://gnudino.vercel.app/assets/icons/logos/case-placeholder.png
     let imageUrl = 'assets/icons/logos/case-placeholder.png';
     if (metric.image_file != null && metric.image_file.length > 0) {
       imageUrl = metric.image_file;
@@ -203,7 +205,8 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
    * @param logo the logo in base64 format
    * @param caseImage the case image in base64 format
    */
-  createCardPdf(metric: Case, logo: string | null, caseImage: string | null): void {
+  createCardPdf(metric: Case, logo: string, caseImage: string | null): void {
+    const primaryColor = '#1a3e70';
     let translate: (s: string) => string = s => s;
     if (this._ts != null) {
       translate = s => {
@@ -225,49 +228,72 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
 
     const content: Content[] = [
       {
+        layout: 'noBorders',
         table: {
-          widths: ['*', '*'],
+          widths: ['35%', '*'],
+          heights: 68,
           body: [
             [
-              {image: caseImage, width: 50, border: [false, false, false, false]},
-              {image: logo, width: 50, border: [false, false, false, false]},
+              {image: caseImage, fit: [58, 62], margin: [1, 5, 0, 0]},
+              [
+                {
+                  text: metric.name,
+                  fontSize: 10,
+                  color: primaryColor,
+                  bold: true,
+                  margin: [0, 15, 0, 0],
+                },
+                {
+                  text: codeText + ': ' + cardCode,
+                  fontSize: 9,
+                  color: primaryColor,
+                  bold: true,
+                  margin: [0, 5, 0, 0],
+                },
+              ],
             ],
           ],
         },
       },
       {
-        text: metric.name,
-        fontSize: 8,
-        bold: true,
-        margin: [0, 4, 0, 0],
-      },
-      {
-        text: codeText + ': ' + cardCode,
-        fontSize: 7,
-        bold: true,
-        margin: [0, 0, 0, 4],
-      },
-      {
         table: {
-          widths: ['*', '*'],
+          widths: ['50%', '*'],
           body: [
             [
               {
                 image: this.textToBase64Barcode(cardCode),
-                width: 80,
-                border: [false, false, false, false],
+                width: 78,
+                border: [false, true, false, false],
+                borderColor: ['#000', primaryColor, '#000', '#000'],
+                alignment: 'left',
+                margin: [0, 5, 0, 5],
               },
-              {qr: cardCode, fit: 50, border: [false, false, false, false]},
+              {
+                qr: cardCode,
+                fit: 50,
+                alignment: 'right',
+                border: [false, true, false, false],
+                borderColor: ['#000', primaryColor, '#000', '#000'],
+                margin: [0, 5, 1, 0],
+              },
             ],
           ],
         },
+      },
+      {
+        image: logo,
+        fit: [230, 120],
+        margin: [0, 10, 0, 10],
+        pageBreak: 'before',
+        alignment: 'center',
       },
     ];
     this.createMetricPdf(content, 'landscape').open();
   }
 
   /**
-   * Create and open the pdf card
+   * Create and open the pdf card.
+   * Credit card size: 3,375*2.125 inches (in pdf: points = inches * 72)
    * @param content the odf content
    * @param orientation
    */
@@ -275,8 +301,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     const pdfDef: TDocumentDefinitions = {
       content,
       pageOrientation: orientation,
-      pageSize: 'C8',
-      pageMargins: [10, 10, 10, 10],
+      pageSize: {
+        width: 243,
+        height: 153,
+      },
+      pageMargins: [10, 5, 10, 5],
     };
     return createPdf(pdfDef);
   }
