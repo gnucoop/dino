@@ -9,7 +9,18 @@ dino-edit-report {
     td {
       padding: 25px;
     }
+    tr {
+      th {
+        background-color: rgb(var(--palette-primary-500)) !important;
+      }
+    }
   }
+  ajf-widget {
+    ng-component {
+      background-color: transparent !important;
+    }
+  }
+
   .dino-edit-report-step-buttons {
     display: flex;
     flex-flow: row wrap;
@@ -99,5 +110,15 @@ dino-edit-report {
         width: 100% !important;
       }
     }
+  }
+}
+.isDarkTheme {
+  ajf-text {
+    color: rgba(var(--palette-background-secondary-text));
+  }
+}
+.isLightTheme {
+  ajf-text {
+    color: rgba(var(--palette-foreground-secondary-text));
   }
 }
