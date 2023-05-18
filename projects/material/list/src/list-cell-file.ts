@@ -65,6 +65,19 @@ export class ListCellIsDeletedFile implements PipeTransform {
 }
 
 /**
+ * Pipe that checks if a list cell has a storage image url as content.
+ */
+@Pipe({name: 'dinoListCellIsStorageImageUrl', pure: false})
+export class ListCellIsStorageImageUrl implements PipeTransform {
+  constructor() {}
+
+  transform<T extends Model = Model>(element: T | {[key: string]: any} | string | null): boolean {
+    if (element == null || element === undefined || typeof element !== 'string') return false;
+    return element.includes('nhost.run/v1/files/');
+  }
+}
+
+/**
  * Pipe that returns the info of the file in the list cell
  */
 @Pipe({name: 'dinoListCellGetFile', pure: false})

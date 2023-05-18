@@ -124,9 +124,19 @@
         </ng-container>
         <ng-template #externalRefCellTemplate>
           <ng-container *ngIf="(element[getRef(header)])|async as elemRef">
-            <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
-              >{{ getPopulatedRef( elemRef, header.populateWith) }}</span
-            >
+            <ng-container *ngIf="getPopulatedRef( elemRef, header.populateWith) as elem">
+              <ng-container *ngIf="elem|dinoListCellIsStorageImageUrl; else defaultExternalRef">
+                <mat-icon (click)="previewImage($event, elem)" class="dino-file-cell-icon"
+                  >photo_camera</mat-icon
+                ></ng-container
+              >
+
+              <ng-template #defaultExternalRef>
+                <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
+                  >{{ elem }}</span
+                ></ng-template
+              >
+            </ng-container>
           </ng-container>
           <mat-icon
             class="dino-edit-status-icon"

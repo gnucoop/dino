@@ -55,6 +55,7 @@ import {ListCell} from './list-cell';
 import {ListCellValue} from './list-cell-value';
 import {
   ListCellIsFile,
+  ListCellIsStorageImageUrl,
   ListCellGetFile,
   ListCellGetFileIcon,
   ListCellIsDeletedFile,
@@ -99,6 +100,7 @@ import {ImagePreview} from './image-preview';
     ListCellValue,
     ListCellIsFile,
     ListCellIsDeletedFile,
+    ListCellIsStorageImageUrl,
     ListCellGetFile,
     ListCellGetFileIcon,
     LogViewer,

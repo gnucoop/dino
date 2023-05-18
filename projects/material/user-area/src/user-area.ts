@@ -228,12 +228,6 @@ export class UserArea implements OnDestroy {
       this.closeDialog();
     });
 
-    this._ds.dbExportedEvent.pipe(takeUntil(this._mainUnsubscribe)).subscribe(evt => {
-      if (evt) {
-        this._router.navigateByUrl('/', {replaceUrl: true});
-      }
-    });
-
     this._exportDatabase();
   }
 

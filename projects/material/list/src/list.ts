@@ -870,15 +870,18 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param $event The js event
    * @param elem The list cell element
    */
-  previewImage($event: Event, elem: string | {[key: string]: any}) {
+  previewImage($event: Event, elem: string | {[key: string]: any} | null) {
     $event.stopPropagation();
     $event.preventDefault();
 
-    if (typeof elem === 'string') return;
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = 'image-preview-dialog';
-    dialogConfig.data = elem;
+    if (typeof elem === 'string') {
+      dialogConfig.data = {url: elem};
+    } else {
+      dialogConfig.data = elem;
+    }
+
     this._dialog.open(ImagePreview, dialogConfig);
   }
 
