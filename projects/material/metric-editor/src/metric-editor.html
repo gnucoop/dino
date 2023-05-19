@@ -69,23 +69,23 @@
         </ng-container>
         <ng-template #imageField>
           <div class="dino-metric-image-field">
-          <ng-container *ngIf="preview || field.value">
-            <div>
-              <img alt="" class="dino-metric-image" [src]="preview || field.value" />
-            </div>
-          </ng-container>
-          <ng-container *ngIf="data.metricAction !== 'View'">
-            <div>Upload a jpg or png file</div>
-            <input
-              type="file"
-              id="metricFileInput"
-              accept=".jpg,.jpeg,.png"
-              (change)="onMetricFileSelected($event)"
-              style="visibility: hidden; height: 1px" /><br />
-            <label for="metricFileInput">
-              <a color="primary" mat-raised-button>{{'Choose file'|transloco}}</a>
-            </label>
-          </ng-container>
+            <ng-container *ngIf="preview || field.value">
+              <div>
+                <img alt="" class="dino-metric-image" [src]="preview || field.value" />
+              </div>
+            </ng-container>
+            <ng-container *ngIf="data.metricAction !== 'View'">
+              <div>{{'Upload a jpg or png file'|transloco}}</div>
+              <input
+                type="file"
+                id="metricFileInput"
+                accept=".jpg,.jpeg,.png"
+                (change)="onMetricFileSelected($event)"
+                style="visibility: hidden; height: 1px" /><br />
+              <label for="metricFileInput">
+                <a color="primary" mat-raised-button>{{'Choose file'|transloco}}</a>
+              </label>
+            </ng-container>
           </div>
         </ng-template>
       </ng-container>
