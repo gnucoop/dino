@@ -225,4 +225,5 @@ export const ENG: Translation = {
   'There are not any logs available for this form':
     'There are not any logs available for this form',
   'Export file saved in your Documents folder': 'Export file saved in your Documents folder',
+  'Upload a jpg or png file': 'Upload a jpg or png file',
 };

@@ -235,4 +235,5 @@ export const ITA: Translation = {
   'There are not any logs available for this form': 'Non sono presenti log per questo form',
   'Export file saved in your Documents folder':
     'File di esportazione salvato nella cartella Documenti',
+  'Upload a jpg or png file': 'Seleziona un file jpg o png',
 };
