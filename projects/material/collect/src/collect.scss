@@ -57,10 +57,14 @@ dino-collect {
           width: 10vw;
           margin: auto;
         }
-        .dino-mat-icon{
+        .dino-mat-icon {
           font-size: 3em;
           height: auto;
           width: auto;
+          &[data-mat-icon-type='svg'] {
+            height: 36px;
+            width: 36px;
+          }
         }
       }
       .dino-grid-label {

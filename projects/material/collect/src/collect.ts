@@ -201,6 +201,7 @@ export class Collect {
                   name: document.name,
                   label: document.label ?? document.name,
                   icon: document.icon,
+                  svgIcon: document.icon?.includes('icon-') ? document.icon : undefined,
                   schemaId: document.id,
                   editable: this._pcs.checkPermission(
                     document.id,
