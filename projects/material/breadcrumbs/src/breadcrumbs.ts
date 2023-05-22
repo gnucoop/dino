@@ -76,6 +76,8 @@ export class BreadCrumbs {
                       label: schema.label,
                       url: `forms/${routeParams['form_schema_id']}`,
                       icon: schema.icon,
+                      svgIcon:
+                        schema.icon && schema.icon.includes('icon-') ? schema.icon : undefined,
                     },
                   }
                 : null,
