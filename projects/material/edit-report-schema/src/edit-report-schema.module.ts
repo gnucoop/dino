@@ -38,6 +38,7 @@ import {IconsServiceModule} from '@dino/material/icons-service';
 
 import {EditReportSchema} from './edit-report-schema';
 import {ImportReportSchema} from './import-report-schema';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -51,6 +52,7 @@ import {ImportReportSchema} from './import-report-schema';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatSelectModule,
     MatSnackBarModule,
     MatToolbarModule,
     ReactiveFormsModule,

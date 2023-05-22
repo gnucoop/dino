@@ -51,7 +51,15 @@ import {
   Subscription,
   throwError,
 } from 'rxjs';
-import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 import {ImportReportSchema} from './import-report-schema';
 
@@ -171,6 +179,10 @@ export class EditReportSchema implements OnInit, OnDestroy {
           name: [rs ? rs.name : null, Validators.required],
           label: [rs ? rs.label : null, Validators.required],
           icon: [rs ? rs.icon : null],
+          icon_set: [
+            rs && rs.icon && rs.icon.includes('icon-') ? 'humanitarian' : 'default',
+            Validators.required,
+          ],
         }),
       ),
       shareReplay(1),
@@ -248,14 +260,20 @@ export class EditReportSchema implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const iconSetValueChanges = this.formGroup.pipe(
+      switchMap(fg => fg.get('icon_set')!.valueChanges.pipe(startWith(fg.get('icon_set')?.value))),
+    );
     const iconValueChanges = this.formGroup.pipe(switchMap(fg => fg.get('icon')!.valueChanges));
-    this.filteredIcons = iconValueChanges.pipe(
-      withLatestFrom(this._iconsService.getIcons()),
-      map(([iconValue, availableIcons]) => {
-        if (iconValue == null) {
+    this.filteredIcons = combineLatest([iconSetValueChanges, iconValueChanges]).pipe(
+      withLatestFrom(this._iconsService.getIcons(), this._iconsService.getHumanitarianIcons()),
+      map(([[iconSetValue, iconValue], availableIcons, availableHumanitarianIcons]) => {
+        if (iconValue == null || iconSetValue == null) {
           return [];
         }
-        return this._filterIcons(availableIcons, iconValue);
+        return this._filterIcons(
+          iconSetValue === 'default' ? availableIcons : availableHumanitarianIcons,
+          iconValue,
+        );
       }),
     );
   }
@@ -290,7 +308,12 @@ export class EditReportSchema implements OnInit, OnDestroy {
   private _filterIcons(icons: string[], code: string): string[] {
     const filterValue = code.toLowerCase();
     return icons.filter(icon =>
-      icon.toLowerCase().replace('_', ' ').includes(filterValue),
+      icon
+        .toLowerCase()
+        .replace('_', ' ')
+        .replace('icon-', '')
+        .replace('-', ' ')
+        .includes(filterValue),
     ) as string[];
   }
 
