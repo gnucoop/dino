@@ -7,7 +7,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
 import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
-import {BrowserModule} from '@angular/platform-browser';
+import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AreasModule} from '@dino/core/areas';
 import {AuthModule, AuthService} from '@dino/core/auth';
@@ -105,6 +105,7 @@ import {APOLLO_OPTIONS} from 'apollo-angular';
 import {HttpLink} from 'apollo-angular/http';
 
 import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
+import {MatIconRegistry} from '@angular/material/icon';
 
 /**
  * Used to generate fake data for the e2e app
@@ -331,4 +332,10 @@ export function provideDataServiceConfig() {
   ],
   bootstrap: [E2eApp],
 })
-export class MainModule {}
+export class MainModule {
+  constructor(private _iconRegistry: MatIconRegistry, private _domSanitizer: DomSanitizer) {
+    this._iconRegistry.addSvgIconSet(
+      this._domSanitizer.bypassSecurityTrustResourceUrl('./assets/humanitarian-icons-set.svg'),
+    );
+  }
+}
