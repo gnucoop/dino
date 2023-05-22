@@ -11,16 +11,32 @@
             <input matInput formControlName="name" [placeholder]="'Form Name'|transloco" />
           </mat-form-field>
           <mat-form-field>
+            <mat-select
+              #iconSetSelect
+              formControlName="icon_set"
+              [placeholder]="'Icon Set'|transloco"
+            >
+              <mat-option [value]="'default'">{{ 'Default' }}</mat-option>
+              <mat-option [value]="'humanitarian'">{{ 'Humanitarian' }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
             <input
               matInput
               formControlName="icon"
               [placeholder]="'Icon Identifier'|transloco"
               [matAutocomplete]="autoicons"
             />
-            <mat-icon matSuffix>{{fgroup.get('icon')?.value}}</mat-icon>
+
+            <mat-icon matSuffix *ngIf="iconSetSelect.value === 'default'">{{fgroup.get('icon')?.value}}</mat-icon>
+            <mat-icon matSuffix *ngIf="iconSetSelect.value !== 'default'" [svgIcon]="fgroup.get('icon')?.value"></mat-icon>
             <mat-autocomplete #autoicons="matAutocomplete">
               <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
-                <span>{{icon.replace('_', ' ')}}</span> <mat-icon>{{icon}}</mat-icon>
+                <span>{{icon.replace('_', ' ').replace('icon-','').replace('-',' ')}}</span>
+                <ng-container *ngIf="iconSetSelect.value === 'default'; else svgIcon"
+                  ><mat-icon>{{icon}}</mat-icon></ng-container
+                >
+                <ng-template #svgIcon><mat-icon [svgIcon]="icon"></mat-icon></ng-template>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>

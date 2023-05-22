@@ -221,15 +221,21 @@ export class EditFormSchema implements OnInit, OnDestroy {
     );
 
     this.formGroup = this._formSchema.pipe(
-      map(fs =>
-        this._formBuilder.group({
+      map(fs => {
+        const fg = this._formBuilder.group({
           name: [fs ? fs.name : null, Validators.required],
           label: [fs ? fs.label : null, Validators.required],
+          icon_set: [
+            fs && fs.icon && fs.icon.includes('icon-') ? 'humanitarian' : 'default',
+            Validators.required,
+          ],
           icon: [fs ? fs.icon : null],
           status: [fs ? fs.form_status_ref_id : null],
           visibility: [fs ? fs.visibility : FormSchemaVisibility.Private, Validators.required],
-        }),
-      ),
+        });
+        fg.updateValueAndValidity({onlySelf: false, emitEvent: true});
+        return fg;
+      }),
       shareReplay(1),
     );
 
@@ -295,14 +301,20 @@ export class EditFormSchema implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const iconSetValueChanges = this.formGroup.pipe(
+      switchMap(fg => fg.get('icon_set')!.valueChanges.pipe(startWith(fg.get('icon_set')?.value))),
+    );
     const iconValueChanges = this.formGroup.pipe(switchMap(fg => fg.get('icon')!.valueChanges));
-    this.filteredIcons = iconValueChanges.pipe(
-      withLatestFrom(this._iconsService.getIcons()),
-      map(([iconValue, availableIcons]) => {
-        if (iconValue == null) {
+    this.filteredIcons = combineLatest([iconSetValueChanges, iconValueChanges]).pipe(
+      withLatestFrom(this._iconsService.getIcons(), this._iconsService.getHumanitarianIcons()),
+      map(([[iconSetValue, iconValue], availableIcons, availableHumanitarianIcons]) => {
+        if (iconValue == null || iconSetValue == null) {
           return [];
         }
-        return this._filterIcons(availableIcons, iconValue);
+        return this._filterIcons(
+          iconSetValue === 'default' ? availableIcons : availableHumanitarianIcons,
+          iconValue,
+        );
       }),
     );
   }
@@ -315,7 +327,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _filterIcons(icons: string[], code: string): string[] {
     const filterValue = code.toLowerCase();
     return icons.filter(icon =>
-      icon.toLowerCase().replace('_', ' ').includes(filterValue),
+      icon
+        .toLowerCase()
+        .replace('_', ' ')
+        .replace('icon-', '')
+        .replace('-', ' ')
+        .includes(filterValue),
     ) as string[];
   }
   /**
