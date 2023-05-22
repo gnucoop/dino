@@ -22,8 +22,7 @@
 
 import {Injectable} from '@angular/core';
 import {Observable, of as obsOf} from 'rxjs';
-import {iconsList} from './icons-list';
-
+import {humanitarianIconsList, iconsList} from './icons-list';
 import {IconsServiceModule} from './icons-service.module';
 
 /**
@@ -35,5 +34,9 @@ export class IconsService {
 
   getIcons(): Observable<string[]> {
     return obsOf(iconsList);
+  }
+
+  getHumanitarianIcons() {
+    return obsOf(humanitarianIconsList);
   }
 }
