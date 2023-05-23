@@ -1,3 +1,42 @@
+<a name="15.1.2"></a>
+# 15.1.2 "big-planarian" (2023-05-23)
+### Bug Fixes
+* **core/forms:** Refactored 'compareFormDatasData' so that it compares form datas correctly, including multiple choices arrays and undefined values. ([cc247cd](https://bitbucket.org/gnucoop/dino/commits/cc247cde10270ea0238789a40a0e6a055117fa9e))
+* **core/list:** Added missing checks on list cell content in List Cell File pipes. ([fda04d0](https://bitbucket.org/gnucoop/dino/commits/fda04d09a20a2d69031c3808400535f4027a8634))
+* **material/edit-form:** Added "isView" check in edit-form template, to determine whether Save Draft button should be displayed. ([adad091](https://bitbucket.org/gnucoop/dino/commits/adad091672e7ad2edb70e1d4389a3bb6c403452e))
+* **material/edit-form:** check  field to initialise error number ([d09a1c2](https://bitbucket.org/gnucoop/dino/commits/d09a1c246beec8b0eb612e96d47ab299e4a9d9e8))
+* **material/import-form:** check for second header in xls for metrics ([82e2bf5](https://bitbucket.org/gnucoop/dino/commits/82e2bf5f0619c37711d8c11d15c03016dc33c7cf))
+* **material/metric-editor:** add translate for jpg/png message ([57d0442](https://bitbucket.org/gnucoop/dino/commits/57d04423070d186b1b9f65a6267c39009b7ccb4a))
+* **material/metric-section:** add timestamp to request url for storage images ([c598ef0](https://bitbucket.org/gnucoop/dino/commits/c598ef0823d7bae2932ce2a0bd039509facc1261))
+* **material/metric-section:** Added 'esModuleInterop' and 'allowSyntheticDefaultImports' flags to compiler options. JsBarcode default import. ([4d4bc1a](https://bitbucket.org/gnucoop/dino/commits/4d4bc1a36042b1a1f45c116450dbcc4326b3c11b))
+* **material/metric-section:** change get request to httpclient ([aaa5ac0](https://bitbucket.org/gnucoop/dino/commits/aaa5ac074da66a29af0bb163877ca7e696d86c1e))
+* **material/metric-section:** Linting minor fixes (removed unnecessary import). ([0591963](https://bitbucket.org/gnucoop/dino/commits/05919636535a578a808e243cf61d2acee328f9b1))
+* **material/pipeline-stepper:** Fixed a bug causing the stepper not to be aligned with the slides. ([5b2f7f6](https://bitbucket.org/gnucoop/dino/commits/5b2f7f61651efdaa6ba50a812e31ac8f43e3d595))
+### Features
+* **core/auth:** Added and exported b64<->utf8 conversion methods. ([df4a328](https://bitbucket.org/gnucoop/dino/commits/df4a32807f82bbff9e1ca6d6eddf9f88a4737476))
+* **core/cases:** Added filter label 'case_code' on module load. ([2ba6f3c](https://bitbucket.org/gnucoop/dino/commits/2ba6f3c1838c0691d4243c250cd1cdd3f14f3fd8))
+* **core/data:** Added 'on_form_data_export' action trigger type. ([3321cf4](https://bitbucket.org/gnucoop/dino/commits/3321cf4e6960bbac1c9450eb4fdca7a72412be0d))
+* **core/list:** Added 'user_data' default basic filter label to FilterService. Added method to handle Metric Sub Filters (eg. 'case_code'). ([d815f1f](https://bitbucket.org/gnucoop/dino/commits/d815f1f3bd4866829a001978cce154e40761f094))
+* **e2e-material:** Added 'user_data' basic filter to aggregation list and forms list components. Added 'case_code' basic filter to aggregation list. ([275b9b1](https://bitbucket.org/gnucoop/dino/commits/275b9b1aa6c55cac20d66fa8ba7c158b4cf075f7))
+* **e2e-material:** Added a 'processExportTrigger' method to the forms-list component in E2e app. ([c42d2bf](https://bitbucket.org/gnucoop/dino/commits/c42d2bfa5f473b98a6afe89205dc7d53cf803276))
+* **e2e-material:** Added Humanitarian svc icon set. ([538d110](https://bitbucket.org/gnucoop/dino/commits/538d11043caa754ce315ad84158e6cd49b94fe50))
+* **material/breadcrumbs:** Added support for custom svg icons. ([b4762fb](https://bitbucket.org/gnucoop/dino/commits/b4762fb2d3f8918e4de1646809dd322d0746c89d))
+* **material/collect:** Added support for custom svg icons. ([da30f82](https://bitbucket.org/gnucoop/dino/commits/da30f8292423171b3af34c1ddd21eb55d71101c1))
+* **material/create-edit-form:** New "Card" UI for Ajf Forms. ([2ae9cd2](https://bitbucket.org/gnucoop/dino/commits/2ae9cd24b03e41131e2b1fde517925ac0ce3e4a6))
+* **material/create-edit-form:** New "Card" UI for Ajf Forms. ([4384b76](https://bitbucket.org/gnucoop/dino/commits/4384b76da161f83d66508c0bddfc8d9de912b8a7))
+* **material/edit-form-schema:** Added Icon Set selector. Added support for custom svg humanitarian icons. ([2175d9b](https://bitbucket.org/gnucoop/dino/commits/2175d9b27bd8a29f7876002f1b8800653fb4183e))
+* **material/edit-report-schema:** Added Icon Set selector. Added support for custom svg humanitarian icons. ([04cc1ca](https://bitbucket.org/gnucoop/dino/commits/04cc1ca89438937a3dbb4497ae4ed23475a2eba1))
+* **material/export-form:** Added an export trigger that emits with the serialized export file in its triggerData. ([4302324](https://bitbucket.org/gnucoop/dino/commits/4302324917b17364aa7a66f757fe1f8a766169b8))
+* **material/form-creator-hub:** Added support for custom svg icons. ([80a5d47](https://bitbucket.org/gnucoop/dino/commits/80a5d47ebe78cfdaa3dfb6628599a26fe095c895))
+* **material/icons-service:** Added Humanitarian Icons list. ([1ef88b8](https://bitbucket.org/gnucoop/dino/commits/1ef88b869b2c85313ee19543b7af0f48e7ecad06))
+* **material/list:** Case Image is now displayed as an image preview in List. Added "ListCellIsStorageImageUrl" to list-cell-file pipes. ([f17afeb](https://bitbucket.org/gnucoop/dino/commits/f17afebcb9d3fef011ff602993b457483ed3bdf7))
+* **material/metric-editor:** add new image field in case metric and in metric editor ([a516384](https://bitbucket.org/gnucoop/dino/commits/a516384ae6599ea1b29a593ff834dd47a2080722))
+* **material/metric-section:** add print pdf function for case card ([bfa9441](https://bitbucket.org/gnucoop/dino/commits/bfa9441d0b4e8c2beffdb9b2ef899318a20a6b90))
+* **material/metric-section:** change case card template ([ef89da9](https://bitbucket.org/gnucoop/dino/commits/ef89da9d9e109752ca637ba37db3fd14fd445ade))
+* **material/search-filters-bar:** Added methods and refactors to handle Metric Sub Filters (eg. 'case_code') and User Data filter with autocomplete options. ([6766a77](https://bitbucket.org/gnucoop/dino/commits/6766a770bf0916a1cac5baa7b5adbbacf9957d8f))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.1.1"></a>
 # 15.1.1 "historic-ape" (2023-05-08)
 ### Bug Fixes
