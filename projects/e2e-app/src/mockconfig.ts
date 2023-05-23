@@ -57,7 +57,7 @@ export const defaultLanguageConfig: TranslationsConfig = {
 /**
  * The languages available in the app
  */
-export const availableLanguagesConfig = ['ENG', 'ESP', 'FRA', 'ITA', 'PRT'];
+export const availableLanguagesConfig = ['AR', 'ENG', 'ESP', 'FRA', 'ITA', 'PRT', 'UKR'];
 
 /**
  * Any additional configurable parameters

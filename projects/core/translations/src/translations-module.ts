@@ -26,11 +26,13 @@ import esLocale from '@angular/common/locales/es';
 import frLocale from '@angular/common/locales/fr';
 import itLocale from '@angular/common/locales/it';
 import prLocale from '@angular/common/locales/pt';
+import arLocale from '@angular/common/locales/ar';
+import ukLocale from '@angular/common/locales/uk';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {dinoTranslations} from './translations';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from './translations-config';
 
-const locales = [enLocale, esLocale, frLocale, itLocale, prLocale];
+const locales = [arLocale, enLocale, esLocale, frLocale, itLocale, prLocale, ukLocale];
 locales.forEach(locale => registerLocaleData(locale));
 
 @NgModule({})
