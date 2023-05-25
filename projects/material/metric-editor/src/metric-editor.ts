@@ -401,8 +401,9 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         const field: MetricFormField = {
           fieldName: propKey,
           hint: `${propValue['description']}${propRequired ? '' : ' (optional)'}`,
-          placeholder:
+          placeholder: this._ts.translate(
             propKey.replace('0', ' ').charAt(0).toUpperCase() + propKey.replace('_', ' ').slice(1),
+          ),
         };
         if (currentMetricItem[propKey]) {
           field['value'] = currentMetricItem[propKey];
