@@ -40,6 +40,11 @@ export type ActionType =
   | 'restore';
 
 /**
+ * The actions that are supposed to always be visible, when available.
+ */
+export const mainActions: ActionType[] = ['edit', 'view', 'delete'];
+
+/**
  * Action performed on a List item
  */
 export interface ListAction {
