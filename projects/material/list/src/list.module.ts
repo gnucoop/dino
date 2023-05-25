@@ -62,6 +62,7 @@ import {
 } from './list-cell-file';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
+import {AsListCellActionsPipe} from './list-action-pipe';
 
 @NgModule({
   imports: [
@@ -94,6 +95,7 @@ import {ImagePreview} from './image-preview';
     UserInteractionsModule,
   ],
   declarations: [
+    AsListCellActionsPipe,
     ColumnsSelector,
     ImagePreview,
     ListCell,

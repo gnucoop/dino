@@ -60,6 +60,7 @@ import {
   List,
   ListAction,
   ListHeader,
+  mainActions,
   SearchFiltersComponent,
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
@@ -136,6 +137,16 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   @Output() emitExportActionTrigger: EventEmitter<ActionTrigger> =
     new EventEmitter<ActionTrigger>();
+
+  /**
+   * The primary row actions
+   */
+  readonly mainActions: ActionType[] = mainActions;
+
+  /**
+   * If true, the secondary row actions icons are displayed
+   */
+  secondaryRowActionsDisplayed: boolean = false;
 
   /**
    * The List selection model. Allows selection of individual or multiple elements
@@ -594,6 +605,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       return;
     }
     this.isAllSelected() ? this.clearSelection() : this.selectAll();
+  }
+
+  toggleSecondaryIcons(): void {
+    this.secondaryRowActionsDisplayed = !this.secondaryRowActionsDisplayed;
   }
 
   /**

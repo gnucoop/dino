@@ -212,14 +212,31 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let row" class="dino-row-actions">
         <div class="dino-row-actions-container">
-          <ng-container *ngFor="let action of ctx.listRowActions|async">
-            <ng-container
-              *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view'))"
-            >
-              <mat-icon
-                mat-list-icon
-                (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
-                >{{action.matIcon}}
+          <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
+            <ng-container *ngFor="let action of actions">
+              <ng-container
+                *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view')) && mainActions.includes(action.actionType)"
+              >
+                <mat-icon
+                  mat-list-icon
+                  (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+                  >{{action.matIcon}}
+                </mat-icon>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngFor="let action of actions">
+              <ng-container *ngIf="!mainActions.includes(action.actionType)">
+                <mat-icon
+                  [class]="secondaryRowActionsDisplayed ? null: 'dino-secondary-row-action-icon-hidden'"
+                  mat-list-icon
+                  (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+                  >{{action.matIcon}}
+                </mat-icon>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="actions.length > mainActions.length">
+              <mat-icon mat-list-icon (click)="$event.stopPropagation(); toggleSecondaryIcons();"
+                >more_horiz
               </mat-icon>
             </ng-container>
           </ng-container>

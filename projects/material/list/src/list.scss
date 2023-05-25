@@ -93,6 +93,10 @@ dino-list {
     background: rgb(var(--palette-background-card));
   }
 
+  .dino-secondary-row-action-icon-hidden {
+    display: none;
+  }
+
   .mat-mdc-cell:first-of-type,
   .mat-mdc-footer-cell:first-of-type {
     border-left: 3px solid rgb(var(--palette-accent-700));
