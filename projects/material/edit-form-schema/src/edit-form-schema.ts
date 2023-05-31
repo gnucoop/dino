@@ -35,7 +35,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {InsertModel} from '@dino/core/data';
+import {ActiveMetric, InsertModel, MetricsService} from '@dino/core/data';
 import {
   FormSchema,
   FormSchemaManager,
@@ -90,6 +90,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * All the available Form Status objects.
    */
   availableFormStatuses: Observable<FormStatus[]>;
+
+  /**
+   * All the available active metrics.
+   */
+  availableMetrics: BehaviorSubject<ActiveMetric[]>;
 
   /**
    * List of filtered Material Icons identifiers
@@ -183,6 +188,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _formBuilder: UntypedFormBuilder,
     private _iconsService: IconsService,
+    private _metricService: MetricsService,
     private _ts: TranslocoService,
   ) {
     this._formSchemaId = this._route.params.pipe(
@@ -220,6 +226,8 @@ export class EditFormSchema implements OnInit, OnDestroy {
       ),
     );
 
+    this.availableMetrics = this._metricService.activeMetrics;
+
     this.formGroup = this._formSchema.pipe(
       map(fs => {
         const fg = this._formBuilder.group({
@@ -231,6 +239,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
           ],
           icon: [fs ? fs.icon : null],
           status: [fs ? fs.form_status_ref_id : null],
+          form_schema_metrics: [
+            fs && fs.form_schema_metrics && fs.form_schema_metrics.length
+              ? fs.form_schema_metrics
+              : this._metricService.activeMetrics.value.map(m => m.metricName),
+          ],
           visibility: [fs ? fs.visibility : FormSchemaVisibility.Private, Validators.required],
         });
         fg.updateValueAndValidity({onlySelf: false, emitEvent: true});
@@ -269,6 +282,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
+            form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
             visibility: formGroup.get('visibility')?.value,
             form_status_ref_id: formGroup.get('status')?.value ?? undefined,
             created_at: format(new Date(), 'yyyy-MM-dd'),

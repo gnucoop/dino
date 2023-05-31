@@ -5,31 +5,32 @@
       <ng-container *ngIf="formGroup|async as fgroup">
         <form [formGroup]="fgroup" class="dino-form-attributes">
           <mat-form-field>
-            <b><input matInput formControlName="label" [placeholder]="'Form Label'|transloco" /></b>
+            <mat-label>{{'Form Label'|transloco}}</mat-label>
+            <b><input matInput formControlName="label" /></b>
           </mat-form-field>
           <mat-form-field>
-            <input matInput formControlName="name" [placeholder]="'Form Name'|transloco" />
+            <mat-label>{{'Form Name'|transloco}}</mat-label>
+            <input matInput formControlName="name" />
           </mat-form-field>
           <mat-form-field>
-            <mat-select
-              #iconSetSelect
-              formControlName="icon_set"
-              [placeholder]="'Icon Set'|transloco"
-            >
+            <mat-label>{{'Icon Set'|transloco}}</mat-label>
+            <mat-select #iconSetSelect formControlName="icon_set">
               <mat-option [value]="'default'">{{ 'Default' }}</mat-option>
               <mat-option [value]="'humanitarian'">{{ 'Humanitarian' }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <input
-              matInput
-              formControlName="icon"
-              [placeholder]="'Icon Identifier'|transloco"
-              [matAutocomplete]="autoicons"
-            />
+            <mat-label>{{'Icon Identifier'|transloco}}</mat-label>
+            <input matInput formControlName="icon" [matAutocomplete]="autoicons" />
 
-            <mat-icon matSuffix *ngIf="iconSetSelect.value === 'default'">{{fgroup.get('icon')?.value}}</mat-icon>
-            <mat-icon matSuffix *ngIf="iconSetSelect.value !== 'default'" [svgIcon]="fgroup.get('icon')?.value"></mat-icon>
+            <mat-icon matSuffix *ngIf="iconSetSelect.value === 'default'"
+              >{{fgroup.get('icon')?.value}}</mat-icon
+            >
+            <mat-icon
+              matSuffix
+              *ngIf="iconSetSelect.value !== 'default'"
+              [svgIcon]="fgroup.get('icon')?.value"
+            ></mat-icon>
             <mat-autocomplete #autoicons="matAutocomplete">
               <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
                 <span>{{icon.replace('_', ' ').replace('icon-','').replace('-',' ')}}</span>
@@ -42,12 +43,8 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select
-              [disableRipple]="true"
-              formControlName="status"
-              [placeholder]="'Form Statuses'|transloco"
-              multiple
-            >
+            <mat-label>{{'Form Statuses'|transloco}}</mat-label>
+            <mat-select [disableRipple]="true" formControlName="status" multiple>
               <div
                 class="dino-status-option-container"
                 *ngFor="let status of availableFormStatuses | async"
@@ -80,7 +77,23 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select formControlName="visibility" [placeholder]="'Visibility'|transloco">
+            <mat-label>{{'Form Metrics'|transloco}}</mat-label>
+            <mat-select
+              [disableRipple]="true"
+              formControlName="form_schema_metrics"
+              multiple
+            >
+              <mat-option
+                *ngFor="let availableMetric of availableMetrics|async"
+                [value]="availableMetric.metricName"
+                >{{availableMetric.label}}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{'Visibility'|transloco}}</mat-label>
+            <mat-select formControlName="visibility">
               <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
               <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
             </mat-select>
