@@ -223,4 +223,5 @@ export const FRA: Translation = {
   'There are not any logs available for this form':
     "Aucun journal n'est disponible pour ce formulaire.",
   'Export file saved in your Documents folder': `Fichier d'exportation enregistré dans votre dossier Documents`,
+  'Fill the Form': 'Remplir le Formulaire',
 };

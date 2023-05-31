@@ -226,4 +226,5 @@ export const PRT: Translation = {
     'Não há nenhum registo disponível para este formulário',
   'Export file saved in your Documents folder':
     'Ficheiro de exportação guardado na sua pasta Documentos',
+  'Fill the Form': 'Preencher o formulário',
 };

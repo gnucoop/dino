@@ -227,4 +227,5 @@ export const ESP: Translation = {
     'No hay registros disponibles para este formulario',
   'Export file saved in your Documents folder':
     'Archivo de exportación guardado en la carpeta Documentos',
+  'Fill the Form': 'Rellenar el formulario',
 };
