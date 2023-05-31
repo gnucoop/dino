@@ -17,7 +17,7 @@
     </mat-form-field>
   </form>
   <form [formGroup]="formMetrics" autocomplete="off">
-    <ng-container *ngFor="let field of formMetricsFields let idx = index">
+    <ng-container *ngFor="let field of formMetricsFields|async let idx = index">
       <mat-form-field class="dino-form-metric-selector-field" appearance="fill">
         <input
           matInput

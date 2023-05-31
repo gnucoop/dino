@@ -34,7 +34,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
-import {FormData} from '@dino/core/forms';
+import {FormData, FormSchemaManager} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -54,6 +54,7 @@ import {
 import {debounceTime, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
 import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
+import {ActivatedRoute} from '@angular/router';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -99,7 +100,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * The Selector form fields.
    */
-  formMetricsFields: MetricFormField[] = [];
+  formMetricsFields: Observable<MetricFormField[]>;
 
   /**
    * All the metrics fields values
@@ -163,16 +164,39 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    */
   private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
 
+  /**
+   * The form schema available metric types
+   */
+  private _formSchemaAvailableMetrics: Observable<string[] | null>;
+
   constructor(
     private _userGroupManager: UserGroupManager,
     private _metricService: MetricsService,
     private _dialog: MatDialog,
+    private _route: ActivatedRoute,
+    private _fs: FormSchemaManager,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
+    this._formSchemaAvailableMetrics = this._route.params.pipe(
+      map(params => params['form_schema_id']),
+      filter(id => id != null),
+      switchMap(schemaId =>
+        this._fs.get(schemaId).pipe(
+          map(doc => {
+            if (doc == null) {
+              return null;
+            }
+            return doc.form_schema_metrics ?? [];
+          }),
+        ),
+      ),
+      shareReplay(1),
+    );
+
     this.formCreationDate = this._formData.pipe(
       map(data => {
         return parse(data['created_at'], 'yyyy-MM-dd', new Date());
@@ -197,86 +221,118 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     } as {[metricType: string]: DataModelManager<Metric> | null};
 
     if (this._areaManager != null) {
-      const field = {
-        fieldName: 'area',
-        hint: `Thematic Area of the form`,
-        placeholder: 'Thematic Area *',
-        icon: 'volunteer_activism',
-      };
-      this.formMetricsFields.push(field);
       group['area'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['area'] = group['area'].valueChanges;
-      this._addFormMetricsOptions('area');
     }
     if (this._caseManager != null) {
-      const field = {
-        fieldName: 'case',
-        hint: `Case of the form`,
-        placeholder: 'Case management *',
-        icon: 'people',
-      };
-      this.formMetricsFields.push(field);
       group['case'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['case'] = group['case'].valueChanges;
-      this._addFormMetricsOptions('case');
     }
 
     if (this._projectManager != null) {
-      const field = {
-        fieldName: 'project',
-        hint: `Project associated with the form`,
-        placeholder: 'Project *',
-        icon: 'assignment',
-      };
-      this.formMetricsFields.push(field);
       group['project'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['project'] = group['project'].valueChanges;
-      this._addFormMetricsOptions('project');
     }
 
     if (this._locationManager != null) {
-      const field = {
-        fieldName: 'location',
-        hint: `Location of the collected data`,
-        placeholder: 'Location *',
-        icon: 'place',
-      };
-      this.formMetricsFields.push(field);
       group['location'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['location'] = group['location'].valueChanges;
-      this._addFormMetricsOptions('location');
     }
 
     if (this._organizationManager != null) {
-      const field = {
-        fieldName: 'organization',
-        hint: `Organization associated with the form`,
-        placeholder: 'Organization *',
-        icon: 'public',
-      };
-      this.formMetricsFields.push(field);
       group['organization'] = new UntypedFormControl('', validatorFn);
       this.formMetricsValues['organization'] = group['organization'].valueChanges;
-      this._addFormMetricsOptions('organization');
     }
 
     const formGroup = new UntypedFormGroup(group);
 
     this.formMetrics = formGroup;
 
+    this.formMetricsFields = this._formSchemaAvailableMetrics.pipe(
+      map(availableMetrics => {
+        const fmf: MetricFormField[] = [];
+        if (this._areaManager != null && this._isMetricAvailable(availableMetrics, 'area')) {
+          const field = {
+            fieldName: 'area',
+            hint: `Thematic Area of the form`,
+            placeholder: 'Thematic Area *',
+            icon: 'volunteer_activism',
+          };
+          fmf.push(field);
+          this._addFormMetricsOptions('area');
+        }
+        if (this._caseManager != null && this._isMetricAvailable(availableMetrics, 'case')) {
+          const field = {
+            fieldName: 'case',
+            hint: `Case of the form`,
+            placeholder: 'Case management *',
+            icon: 'people',
+          };
+          fmf.push(field);
+          this._addFormMetricsOptions('case');
+        }
+
+        if (this._projectManager != null && this._isMetricAvailable(availableMetrics, 'project')) {
+          const field = {
+            fieldName: 'project',
+            hint: `Project associated with the form`,
+            placeholder: 'Project *',
+            icon: 'assignment',
+          };
+          fmf.push(field);
+          this._addFormMetricsOptions('project');
+        }
+
+        if (
+          this._locationManager != null &&
+          this._isMetricAvailable(availableMetrics, 'location')
+        ) {
+          const field = {
+            fieldName: 'location',
+            hint: `Location of the collected data`,
+            placeholder: 'Location *',
+            icon: 'place',
+          };
+          fmf.push(field);
+          this._addFormMetricsOptions('location');
+        }
+
+        if (
+          this._organizationManager != null &&
+          this._isMetricAvailable(availableMetrics, 'organization')
+        ) {
+          const field = {
+            fieldName: 'organization',
+            hint: `Organization associated with the form`,
+            placeholder: 'Organization *',
+            icon: 'public',
+          };
+          fmf.push(field);
+          this._addFormMetricsOptions('organization');
+        }
+        return fmf;
+      }),
+    );
+
     this._setStartingValues();
     this._setFieldInitialStatus();
   }
 
   ngAfterViewInit(): void {
-    this._hasOptionalMetrics.pipe(take(1)).subscribe(optMetrics => {
-      Object.keys(this.formMetrics.controls).forEach(key => {
-        this.formMetrics.controls[key].setValidators(
-          optMetrics ? RequireMetricMatch : RequireNotNullMetricMatch,
-        );
-        this.formMetrics.controls[key].updateValueAndValidity();
+    combineLatest([this._hasOptionalMetrics, this._formSchemaAvailableMetrics])
+      .pipe(take(1))
+      .subscribe(([optMetrics, availableMetrics]) => {
+        Object.keys(this.formMetrics.controls).forEach(key => {
+          this.formMetrics.controls[key].setValidators(
+            !availableMetrics || !availableMetrics.length || availableMetrics.includes(key)
+              ? optMetrics
+                ? RequireMetricMatch
+                : RequireNotNullMetricMatch
+              : RequireMetricMatch,
+          );
+          this.formMetrics.controls[key].updateValueAndValidity();
+        });
       });
-    });
   }
 
   /**
@@ -584,6 +640,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         this.formDate.get('created_at')?.disable();
       }
     });
+  }
+
+  private _isMetricAvailable(metrics: string[] | null, metricType: string) {
+    if (!metrics || !metrics.length || metrics.includes(metricType)) {
+      return true;
+    }
+    return false;
   }
 
   ngOnDestroy(): void {
