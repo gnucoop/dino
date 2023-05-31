@@ -52,6 +52,11 @@ export interface FormSchema extends Model {
   form_status_ref_id?: string[];
 
   /**
+   * The names of the Metric types available for this schema.
+   */
+  form_schema_metrics?: string[];
+
+  /**
    * The form schema visibility
    * @asType number
    */
@@ -71,10 +76,11 @@ export interface FormSchema extends Model {
   form_schema_deps_ref_id?: string | null;
 }
 
-export const VERSION = 3;
+export const VERSION = 4;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
   2: (doc: RxDocument<FormSchema>) => ({...doc, visibility: FormSchemaVisibility.Private}),
   3: (doc: RxDocument<FormSchema>) => ({...doc, form_status_ref_id: undefined}),
+  4: (doc: RxDocument<FormSchema>) => ({...doc, form_schema_metrics: undefined}),
 };

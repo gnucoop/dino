@@ -72,28 +72,39 @@ export const generateAdditionalFilters = (formSchema?: FormSchema): FilterGroup[
  * Generates List Headers for the active Metrics
  * @returns The generated Metrics List Headers
  */
-export const generateMetricsHeaders = (metricService: MetricsService): ListHeader<any>[] => {
+export const generateMetricsHeaders = (
+  metricService: MetricsService,
+  formSchema?: FormSchema,
+): ListHeader<any>[] => {
   const metricHeaders: ListHeader<any>[] = [];
   metricService.activeMetrics.getValue().forEach(metric => {
-    metricHeaders.push({
-      column: `${metric.metricName}_ref_id`,
-      external_ref: `${metric.metricName}_ref_id`,
-      label: metric.label.slice(0, -1),
-      populateWith: 'name',
-      icon: metric.icon,
-    });
-    if (metric.metricSchema != null && metric.metricSchema.properties != null) {
-      const metricSchemaKeys = Object.keys(metric.metricSchema.properties);
-      for (let key of metricSchemaKeys) {
-        if (!DEFAULT_EXCLUDED_METRIC_KEYS.includes(key)) {
-          metricHeaders.push({
-            column: `${metric.metricName}_${key}`,
-            external_ref: `${metric.metricName}_ref_id`,
-            label: `${metric.label.slice(0, -1)} ${key.replace('_', ' ')}`,
-            displayed: false,
-            populateWith: key,
-            icon: metric.icon,
-          });
+    if (
+      !formSchema ||
+      !formSchema.form_schema_metrics ||
+      !formSchema.form_schema_metrics.length ||
+      formSchema.form_schema_metrics.includes(metric.metricName)
+    ) {
+      metricHeaders.push({
+        column: `${metric.metricName}_ref_id`,
+        external_ref: `${metric.metricName}_ref_id`,
+        label: metric.label.slice(0, -1),
+        populateWith: 'name',
+        icon: metric.icon,
+      });
+
+      if (metric.metricSchema != null && metric.metricSchema.properties != null) {
+        const metricSchemaKeys = Object.keys(metric.metricSchema.properties);
+        for (let key of metricSchemaKeys) {
+          if (!DEFAULT_EXCLUDED_METRIC_KEYS.includes(key)) {
+            metricHeaders.push({
+              column: `${metric.metricName}_${key}`,
+              external_ref: `${metric.metricName}_ref_id`,
+              label: `${metric.label.slice(0, -1)} ${key.replace('_', ' ')}`,
+              displayed: false,
+              populateWith: key,
+              icon: metric.icon,
+            });
+          }
         }
       }
     }
@@ -114,7 +125,7 @@ export const generateSchemaListHeaders = (
   if (formSchema == null || formSchema.schema.nodes == null) {
     return [];
   }
-  const metricHeaders: ListHeader<any>[] = generateMetricsHeaders(metricService);
+  const metricHeaders: ListHeader<any>[] = generateMetricsHeaders(metricService, formSchema);
   const defaultHeaders: ListHeader<any>[] = [
     {
       column: 'user_data_ref_id',

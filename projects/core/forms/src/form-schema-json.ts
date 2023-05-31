@@ -66,6 +66,13 @@ export const schema = {
       'description': 'The form schema icon identifier.',
       'maxLength': 200,
     },
+    'form_schema_metrics': {
+      'type': 'array',
+      'items': {
+        'type': 'string',
+      },
+      'description': 'The names of the Metric types available for this schema.',
+    },
     'form_status_ref_id': {
       'type': 'array',
       'items': {
@@ -95,5 +102,5 @@ export const schema = {
   'title': 'FormSchema',
   'indexes': ['created_at', 'updated_at'],
   'primaryKey': 'id',
-  'version': 3,
+  'version': 4,
 } as RxJsonSchema<FormSchema>;
