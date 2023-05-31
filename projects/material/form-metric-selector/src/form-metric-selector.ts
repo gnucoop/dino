@@ -24,9 +24,11 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
   Optional,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators} from '@angular/forms';
@@ -71,6 +73,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * Metrics of the types specified in the array can be created directly from the metric fields
    */
   @Input() allowMetricCreationFor: string[] = [];
+
+  /**
+   * Emitted when the user wants to move to the Form Data step of the Form Editor.
+   */
+  @Output() goToFormDataEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
    * The Selector metrics form group.
@@ -333,6 +340,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           this.formMetrics.controls[key].updateValueAndValidity();
         });
       });
+  }
+
+  /**
+   * Triggers an event to move forward to the Form Data step of the Form Editor
+   */
+  goToFormData() {
+    this.goToFormDataEvt.emit();
   }
 
   /**
