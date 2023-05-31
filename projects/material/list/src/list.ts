@@ -201,14 +201,17 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
 
   @Input()
-  set additionalBasicFilters(filterNames: string[]) {
-    if (!filterNames.length) {
+  set additionalBasicFilters(filterNames: string[] | null) {
+    if (!filterNames || !filterNames.length) {
       return;
     }
     for (let ftName of filterNames) {
       if (this._fts.availableBasicFilterLabels.indexOf(ftName) > -1) {
         this._fts.addBasicFilter(ftName);
       }
+    }
+    if (this.filtersComponent != null) {
+      this.filtersComponent.initFilters();
     }
   }
 
