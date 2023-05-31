@@ -239,32 +239,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   >();
 
   ngOnInit() {
-    this._initFilters();
-
-    this._populateStatusOptions();
-    this._populateUserDataOptions();
-
-    if (this._areaManager != null) {
-      this._populateMetricsOptions('area', this._areaManager);
-      this._setupMetricDescendants('area', this._areaManager);
-    }
-    if (this._caseManager != null) {
-      this._populateMetricsOptions('case', this._caseManager);
-      this._populateMetricsOptions('case_code', this._caseManager, 'code');
-      this._setupMetricDescendants('case', this._caseManager);
-    }
-    if (this._projectManager != null) {
-      this._populateMetricsOptions('project', this._projectManager);
-      this._setupMetricDescendants('project', this._projectManager);
-    }
-    if (this._locationManager != null) {
-      this._populateMetricsOptions('location', this._locationManager);
-      this._setupMetricDescendants('location', this._locationManager);
-    }
-    if (this._organizationManager != null) {
-      this._populateMetricsOptions('organization', this._organizationManager);
-      this._setupMetricDescendants('organization', this._organizationManager);
-    }
+    this.initFilters();
   }
 
   /**
@@ -675,7 +650,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * Asks the FilterService to initialize the filters and load them from the route
    * queryParams
    */
-  private _initFilters() {
+  initFilters() {
     this._fts
       .initializeFilters(this.basicFilters)
       .pipe(
@@ -688,6 +663,30 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         this.additionalBasicFiltersLabels = this.additionalBasicFilters.map(
           group => Object.keys(group.controls)[0],
         );
+        this._populateStatusOptions();
+        this._populateUserDataOptions();
+
+        if (this._areaManager != null) {
+          this._populateMetricsOptions('area', this._areaManager);
+          this._setupMetricDescendants('area', this._areaManager);
+        }
+        if (this._caseManager != null) {
+          this._populateMetricsOptions('case', this._caseManager);
+          this._populateMetricsOptions('case_code', this._caseManager, 'code');
+          this._setupMetricDescendants('case', this._caseManager);
+        }
+        if (this._projectManager != null) {
+          this._populateMetricsOptions('project', this._projectManager);
+          this._setupMetricDescendants('project', this._projectManager);
+        }
+        if (this._locationManager != null) {
+          this._populateMetricsOptions('location', this._locationManager);
+          this._setupMetricDescendants('location', this._locationManager);
+        }
+        if (this._organizationManager != null) {
+          this._populateMetricsOptions('organization', this._organizationManager);
+          this._setupMetricDescendants('organization', this._organizationManager);
+        }
         this._cdr.detectChanges();
       });
   }

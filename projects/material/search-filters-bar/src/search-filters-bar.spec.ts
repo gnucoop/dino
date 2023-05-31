@@ -56,7 +56,7 @@ describe('Search filters Bar', () => {
   });
 
   it('should initialize the filters onInit', () => {
-    const spyInitFilters = spyOn<any>(bar, '_initFilters').and.callThrough();
+    const spyInitFilters = spyOn(bar, 'initFilters').and.callThrough();
     const spyFtsInit = spyOn(fts, 'initializeFilters').and.callThrough();
     fixtureBar.detectChanges();
 
