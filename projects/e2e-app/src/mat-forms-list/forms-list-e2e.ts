@@ -21,16 +21,7 @@ export class MatFormsListE2E {
   @ViewChild(SelectionList) list!: SelectionList;
 
   readonly isDataList = 'form';
-  readonly additionalBasicFilters = [
-    'project',
-    'location',
-    'area',
-    'case',
-    'organization',
-    'form_status',
-    'user_data',
-    'unavailableFilter',
-  ];
+  readonly additionalBasicFilters: Observable<string[]>;
   readonly additionalDataSchema: Observable<FormSchema | null>;
   readonly formSchemaId: Observable<string | null>;
   readonly formRowData: BehaviorSubject<FormData | null>;
@@ -76,6 +67,20 @@ export class MatFormsListE2E {
       }),
       filter(schema => schema != null),
       shareReplay(1),
+    );
+
+    this.additionalBasicFilters = this.additionalDataSchema.pipe(
+      map(schema => {
+        let addBasFilters = ['form_status', 'user_data', 'unavailableFilter'];
+        if (schema) {
+          if (!schema.form_schema_metrics || !schema.form_schema_metrics.length) {
+            addBasFilters.push('project', 'location', 'area', 'case', 'organization');
+          } else {
+            addBasFilters.push(...schema.form_schema_metrics);
+          }
+        }
+        return addBasFilters;
+      }),
     );
 
     this.headers = this.additionalDataSchema.pipe(
