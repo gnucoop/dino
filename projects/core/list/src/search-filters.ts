@@ -52,6 +52,11 @@ export abstract class SearchFiltersComponent {
    */
   additionalBasicFiltersLabels: string[] = [];
 
+  /**
+   * Initializes all available filters.
+   */
+  abstract initFilters(): void;
+
   constructor() {
     this.textSearchFilters = new UntypedFormGroup({keyword: new UntypedFormControl()});
     this.dateSearchFilters = new UntypedFormGroup({
