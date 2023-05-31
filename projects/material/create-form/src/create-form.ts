@@ -95,6 +95,7 @@ import {
 } from '@dino/core/data';
 import {format} from 'date-fns';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {MatStepper} from '@angular/material/stepper';
 
 /**
  * The Form Edit component.
@@ -301,6 +302,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
   ) {}
+
+  /**
+   * Triggers the Stepper to move forward to the Form Data step.
+   */
+  goToFormDataStep(stepper: MatStepper) {
+    stepper.next();
+  }
 
   /**
    * Saves the form

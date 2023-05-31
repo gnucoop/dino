@@ -9,6 +9,7 @@
           <dino-form-metric-selector
             [hasOptionalMetrics]="hasOptionalMetrics"
             [allowMetricCreationFor]="allowMetricCreationFor"
+            (goToFormDataEvt)="goToFormDataStep(stepper)"
           >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
@@ -16,7 +17,7 @@
       </mat-step>
       <mat-step
         [editable]="(isFormMetricsSelectorValid|async) "
-        [completed]="(isAjfFormValid|async) "
+        [completed]="(isFormMetricsSelectorValid|async) "
       >
         <ng-template matStepLabel>{{ 'FORM DATA'|transloco }}</ng-template>
         <div>
