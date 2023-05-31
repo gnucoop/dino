@@ -23,10 +23,11 @@ dino-edit-form {
     }
   }
   .mat-horizontal-stepper-header-container {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid rgb(var(--palette-primary-100));
     .mat-horizontal-stepper-header {
       padding: 8px;
       flex-direction: row;
+      flex: 1 0 auto;
       &::before,
       &::after {
         visibility: hidden;
@@ -34,10 +35,17 @@ dino-edit-form {
       .mat-step-label {
         padding: 0px;
         padding-left: 5px;
+        text-align: left;
+        .mat-step-text-label {
+          font-size: 16px;
+        }
+      }
+      &[aria-selected='true'] {
+        background-color: rgba(var(--palette-primary-100), 0.3);
       }
     }
     .mat-stepper-horizontal-line {
-      visibility: hidden;
+      display: none;
     }
   }
   .mat-horizontal-content-container {
@@ -107,6 +115,9 @@ dino-edit-form {
     }
 
     .ajf-form-page {
+      .mat-mdc-card.ajf-field-entry {
+        min-width: unset !important;
+      }
       .mat-mdc-card:not(.ajf-field-entry) {
         margin: 0px !important;
         margin-bottom: 10px !important;
@@ -206,7 +217,7 @@ dino-edit-form {
         position: relative;
         box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.2);
         .mat-mdc-select-min-line {
-          white-space:pre-line;
+          white-space: pre-line;
           max-width: 95%;
           overflow: auto;
           text-overflow: ellipsis;

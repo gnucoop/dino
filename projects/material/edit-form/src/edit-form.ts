@@ -98,6 +98,7 @@ import {
 } from 'rxjs/operators';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {MatStepper} from '@angular/material/stepper';
 
 /**
  * The Form Edit component.
@@ -428,6 +429,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this._stepperPositionEvt
       .pipe(takeUntil(this._mainUnsubscribe))
       .subscribe(pos => this.scrollToSlide(pos));
+  }
+
+  /**
+   * Triggers the Stepper to move forward to the Form Data step.
+   */
+  goToFormDataStep(stepper: MatStepper) {
+    stepper.next();
   }
 
   /**
