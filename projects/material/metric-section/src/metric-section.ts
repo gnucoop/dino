@@ -172,7 +172,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
-    // https://gnudino.vercel.app/assets/icons/logos/logodino.png
+    // const logoImagePath = 'https://gnudino.vercel.app/assets/icons/logos/logodino.png';
     const logoImagePath = 'assets/icons/logos/logodino.png';
     this.toDataURL(logoImagePath, (dataUrl: any) => {
       this.getCaseImage(metric, dataUrl);
@@ -262,7 +262,7 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
             [
               {
                 image: this.textToBase64Barcode(cardCode),
-                width: 78,
+                fit: [140, 60],
                 border: [false, true, false, false],
                 borderColor: ['#000', primaryColor, '#000', '#000'],
                 alignment: 'left',
