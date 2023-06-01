@@ -101,6 +101,9 @@ dino-main-nav {
           -moz-animation: spin 2s ease-in-out infinite;
           animation: spin 2s ease-in-out infinite;
         }
+        &.dino-sync-unsynced {
+          color: rgb(var(--palette-accent-500));
+        }
       }
       .dino-notifications-icon {
         -webkit-transform-origin: 50% 4px;
@@ -118,7 +121,7 @@ dino-main-nav {
       .dino-active-user-icon,
       .dino-active-user-text {
         opacity: 0.3;
-        @media only screen and (max-width : 767px) {
+        @media only screen and (max-width: 767px) {
           display: none;
         }
       }
@@ -132,7 +135,7 @@ dino-main-nav {
 
   .mat-sidenav-content.dino-sidenav-content {
     height: 100vh;
-    @media only screen and (max-width : 992px) {
+    @media only screen and (max-width: 992px) {
       height: 84vh;
     }
     padding: 5px;

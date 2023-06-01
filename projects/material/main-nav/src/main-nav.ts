@@ -302,6 +302,17 @@ export class MainNav implements AfterViewInit, OnDestroy {
   unreadNotificationsNumber: Observable<number>;
 
   /**
+   * When true, the "Unsynced data" badge is displayed on the sync icon
+   */
+  isThereUnsyncedData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+  /**
+   * Subscribes to any collection change event and sync event, to determine if there
+   * is any unsynced data and show/hide the "unsynced" badge on the sync icon.
+   */
+  private _isThereUnsyncedDataSub: Subscription = Subscription.EMPTY;
+
+  /**
    * The current Section
    */
   readonly currentSection: BehaviorSubject<Section | null> = new BehaviorSubject<Section | null>(
@@ -428,6 +439,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly ts: ThemeService,
     readonly trs: TranslocoService,
   ) {
+    this._isThereUnsyncedDataSub = this.dataService.collectionChanged
+      .pipe(filter(cc => cc.action !== 'replication cycle complete'))
+      .subscribe(() => this.isThereUnsyncedData.next(true));
+
     this._currentSectionSub = combineLatest([
       this._router.events.pipe(
         filter(evt => evt instanceof NavigationEnd || evt instanceof NavigationStart),
@@ -443,11 +458,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
       this.currentSection.next(selSection ?? null);
     });
 
-    this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete.subscribe(() =>
+    this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete.subscribe(() => {
+      this.isThereUnsyncedData.next(false);
       this.snackbar.open(this.trs.translate('Synchronization complete'), 'SYNC COMPLETE', {
         duration: 10000,
-      }),
-    );
+      });
+    });
 
     this.userDisplayName = this.authService.authenticated.pipe(
       switchMap(authEvt => {
@@ -745,5 +761,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._onRouterOutletLoadingSub.unsubscribe();
     this._syncLoadingSub.unsubscribe();
     this._replicationCycleCompleteSub.unsubscribe();
+    this._isThereUnsyncedDataSub.unsubscribe();
   }
 }
