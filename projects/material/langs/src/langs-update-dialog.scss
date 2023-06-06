@@ -1,4 +1,9 @@
 dino-langs-update-dialog {
+  pre {
+    font-size: 14px;
+    margin: auto;
+    line-height: 24px;
+  }
   mat-form-field {
     width: 100%;
   }
@@ -9,5 +14,17 @@ dino-langs-update-dialog {
     position: absolute;
     left: 0;
     right: 0;
+  }
+  .mat-mdc-dialog-content{
+    max-height: 40vh;
+  }
+  .mat-mdc-dialog-actions{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+  .dino-lang-remove-button{
+    top: 7px;
+    left: 15px;
   }
 }

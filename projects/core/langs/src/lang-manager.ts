@@ -363,6 +363,7 @@ export class LangManager extends DataModelManager<Lang> {
           map(l => l || {...lang, id: '', created_at: '', updated_at: ''}),
         );
       }),
+      take(1),
     );
   }
 

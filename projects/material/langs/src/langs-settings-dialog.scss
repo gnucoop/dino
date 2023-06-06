@@ -14,6 +14,11 @@ dino-langs-settings-dialog {
   .mat-mdc-dialog-content {
     height: 400px;
   }
+  .mat-mdc-dialog-actions {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
   .dino-buttons {
     margin: 10px;
   }
