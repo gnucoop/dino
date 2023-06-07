@@ -40,9 +40,11 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
+import {FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {IconsService} from '@dino/material/icons-service';
 import {format} from 'date-fns';
+import {RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
@@ -135,6 +137,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
     private _formBuilder: UntypedFormBuilder,
     private _iconsService: IconsService,
     private _translocoService: TranslocoService,
+    private _fs: FormSchemaManager,
   ) {
     this._reportSchemaId = this._route.params.pipe(
       map(params => params['report_schema_id']),
@@ -190,15 +193,20 @@ export class EditReportSchema implements OnInit, OnDestroy {
 
     this._saveSub = this._saveEvt
       .pipe(
-        withLatestFrom(this._reportSchema, this._importedReportSchema, this.formGroup),
-        switchMap(([_, reportSchema, importedReportSchema, formGroup]) => {
+        withLatestFrom(
+          this._reportSchema,
+          this._importedReportSchema,
+          this.formGroup,
+          this._fs.list(),
+        ),
+        switchMap(([_, reportSchema, importedReportSchema, formGroup, fsList]) => {
           if (importedReportSchema == null && reportSchema == null) {
             return obsOf(null);
           }
           const schema = importedReportSchema ?? (reportSchema ? reportSchema.schema : {});
           let form_schema_ids: string[] = [];
           if (importedReportSchema) {
-            form_schema_ids = this._extractFormSchemaIds(schema);
+            form_schema_ids = this._extractFormSchemaIds(schema, fsList);
           } else {
             form_schema_ids = reportSchema ? reportSchema.form_schema_ids : [];
           }
@@ -280,21 +288,43 @@ export class EditReportSchema implements OnInit, OnDestroy {
 
   /**
    * Finds and returns an array of form schema UUIds used
-   * by the provided AjfReport as AjfReportVariables
+   * by the provided AjfReport as AjfReportVariables.
+   * If schema names are used instead uuids, they will be replaced with correct uuid.
    * @param reportSchema The AjfReport to be checked
+   * @param formSchemaItems The list of all form schemas
    * @returns An array of the found UUIds
    */
-  private _extractFormSchemaIds(reportSchema: AjfReport): string[] {
+  private _extractFormSchemaIds(
+    reportSchema: AjfReport,
+    formSchemaItems: RxDocument<FormSchema>[],
+  ): string[] {
     const formSchemaIds: string[] = [];
     if (reportSchema == null || reportSchema.variables == null) {
       return formSchemaIds;
     }
     const variables: AjfReportVariable[] = reportSchema.variables;
     const regexForm = /(?<=forms\[\')(.*?)(?=\'\])/gi;
+    const regexSchema = /(?<=schemas\[\')(.*?)(?=\'\])/gi;
     for (let variable of variables) {
       const matches = variable.formula.formula.match(regexForm);
-      if (matches != null) {
-        formSchemaIds.push(...matches.filter(matchString => this._checkIfValidUUID(matchString)));
+      if (matches != null && matches.length === 1) {
+        if (this._checkIfValidUUID(matches[0])) {
+          formSchemaIds.push(matches[0]);
+        } else {
+          const schema = formSchemaItems.find(itm => itm.name === matches[0]);
+          if (schema) {
+            formSchemaIds.push(schema.id);
+            variable.formula.formula = variable.formula.formula.replace(matches[0], schema.id);
+          }
+        }
+      } else {
+        const sMatches = variable.formula.formula.match(regexSchema);
+        if (sMatches != null && sMatches.length === 1 && !this._checkIfValidUUID(sMatches[0])) {
+          const schema = formSchemaItems.find(itm => itm.name === sMatches[0]);
+          if (schema) {
+            variable.formula.formula = variable.formula.formula.replace(sMatches[0], schema.id);
+          }
+        }
       }
     }
     return formSchemaIds;
