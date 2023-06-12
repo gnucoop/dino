@@ -70,7 +70,7 @@
       class="dino-go-to-formdata-button"
       (click)="goToFormData()"
     >
-      {{'Fill the Form'|transloco}}
+      {{((isView|async) !== true) ? ('Fill the Form'|transloco) : ('View the Form'|transloco)}}
       <mat-icon>arrow_forward</mat-icon>
     </button>
   </div>

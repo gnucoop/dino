@@ -227,4 +227,5 @@ export const PRT: Translation = {
   'Export file saved in your Documents folder':
     'Ficheiro de exportação guardado na sua pasta Documentos',
   'Fill the Form': 'Preencher o formulário',
+  'View the Form': 'Ver o formulário',
 };

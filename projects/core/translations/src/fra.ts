@@ -224,4 +224,5 @@ export const FRA: Translation = {
     "Aucun journal n'est disponible pour ce formulaire.",
   'Export file saved in your Documents folder': `Fichier d'exportation enregistré dans votre dossier Documents`,
   'Fill the Form': 'Remplir le Formulaire',
+  'View the Form': 'Visualiser le Formulaire',
 };
