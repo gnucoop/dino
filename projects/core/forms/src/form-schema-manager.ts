@@ -78,8 +78,16 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     ) {
       return null;
     }
+    let fieldNameParts: string[] = [];
+    if (fieldName.includes('__')) {
+      fieldNameParts = fieldName.split('__');
+      fieldName = fieldNameParts[0];
+    }
     const schemaFields = [...schema.schema.nodes.map(slide => slide.nodes)].flat(1);
+
     const matchField = schemaFields.find(field => field.name === fieldName);
-    return matchField ? matchField.label : null;
+    return matchField
+      ? `${matchField.label} ${fieldNameParts[1] ? '(Slide ' + (+fieldNameParts[1] + 1) + ')' : ''}`
+      : null;
   }
 }
