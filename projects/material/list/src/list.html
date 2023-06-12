@@ -348,7 +348,14 @@
   </ng-container>
 
   <ng-template #deletedFileTemplate></ng-template>
-  <ng-template #defaultTemplate>{{item}}</ng-template>
+  <ng-template #defaultTemplate>
+    <ng-container *ngIf="item|dinoListCellIsStorageImageUrl; else defaultStandardTemplate">
+      <mat-icon (click)="previewImage($event, item)" class="dino-file-cell-icon"
+        >photo_camera</mat-icon
+      ></ng-container
+    >
+    <ng-template #defaultStandardTemplate> {{item}} </ng-template>
+  </ng-template>
 </ng-template>
 
 <div class="dino-table-container">

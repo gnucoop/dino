@@ -14,6 +14,7 @@ export class MatCasesE2E {
     {column: 'id', label: 'ID', displayed: false},
     {column: 'name', label: 'Name', displayed: true, sortable: true},
     {column: 'code', label: 'Code', displayed: true},
+    {column: 'image_file', label: 'Case Image', displayed: true},
     {column: 'parent_name', label: 'Parent Case', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
     {column: 'metric_data', label: 'Additional Attributes', displayed: false},
