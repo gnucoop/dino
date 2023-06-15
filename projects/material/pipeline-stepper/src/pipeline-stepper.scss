@@ -1,6 +1,20 @@
 dino-pipeline-stepper {
   .mat-horizontal-stepper-header-container {
     border-bottom: none !important;
+    .mat-horizontal-stepper-header {
+      flex: unset;
+      background-color: transparent !important;
+      .mat-step-label {
+        text-align: center;
+        .mat-step-text-label {
+          font-size: unset;
+        }
+      }
+    }
+    .mat-stepper-horizontal-line {
+      visibility: hidden;
+      display: initial;
+    }
   }
   .mat-stepper-horizontal-line {
     visibility: visible !important;
