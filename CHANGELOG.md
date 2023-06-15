@@ -1,3 +1,24 @@
+<a name="15.2.0"></a>
+# 15.2.0 "doubtful-tahr" (2023-06-15)
+### Bug Fixes
+* **core/forms:** Fixed a bug in FormSchemaManager 'getLabelFromFieldName' method causing logs not to be generated for repeating slides changes. ([cad50a8](https://bitbucket.org/gnucoop/dino/commits/cad50a82c3ca2c31e05fb50728c7e906c386a100))
+* **material/metric-editor:** add translate for placehoder ([720b9c2](https://bitbucket.org/gnucoop/dino/commits/720b9c2e434b5ea446b5a5f6deae7e36a94950bf))
+* **material/metric-section:** fit bar code in print case card ([17a4318](https://bitbucket.org/gnucoop/dino/commits/17a4318d36369f026d2d7e909d79a19ec26414a9))
+### Features
+* **core/data:** Added 'on_custom_trigger' to TriggerType in action-trigger.ts ([24ebf41](https://bitbucket.org/gnucoop/dino/commits/24ebf41f375ff585ba5a519abc9bcff3d2274264))
+* **core/forms:** Added 'form_schema_metrics' attribute to form schema model. Refactored 'generateMetricsHeaders' method in baseFormSchemaManager. ([dde5634](https://bitbucket.org/gnucoop/dino/commits/dde563415d3f6337561458b620009224fdc23abf))
+* **core/list:** Added 'mainActions' array. Those row action icons will always be displayed, if available. ([9c8e665](https://bitbucket.org/gnucoop/dino/commits/9c8e66599f04c9cfcd5944433ea705ed7655f6d8))
+* **core/list:** Added abstract method 'initFilters' to core searchFiltersSearchFiltersComponent class. ([9e62648](https://bitbucket.org/gnucoop/dino/commits/9e62648d8f07f1c1ef3822c2671cac1e739e686a))
+* **e2e-material:** Form List additionalBasicFilters now take the Form Schema available metrics into account. ([7274b9b](https://bitbucket.org/gnucoop/dino/commits/7274b9bd6dcea596fa706bdd2ded36ee252eddcd))
+* **material/edit-form-schema:** Added available Metrics select field in form schema editor. ([b4cdfa1](https://bitbucket.org/gnucoop/dino/commits/b4cdfa10183c0923ae729541bd58485fbe7c1480))
+* **material/edit-report-schema:** replace schema names in xls reports with uuids ([6446eac](https://bitbucket.org/gnucoop/dino/commits/6446eac0a3e49a1e1f96ae6fe15bfbd96da272b1))
+* **material/form-metric-selector:** Added 'fill the form' button. It moves to the Form Data step of the Form editor. ([b8f2d27](https://bitbucket.org/gnucoop/dino/commits/b8f2d271432747860b24d5040db751ab90df0f6f))
+* **material/form-metric-selector:** Form Metric Selector now displays metric fields based on Form Schema available Metrics. ([4d414a9](https://bitbucket.org/gnucoop/dino/commits/4d414a91c316e2fd1f3f72296d4bb5e2b5272614))
+* **material/list:** Actions divided in primary (view, edit, delete) and secondary. Secondary actions are displayed by clicking on 'more' icon. ([bd67dd1](https://bitbucket.org/gnucoop/dino/commits/bd67dd1c0266d5d6a815821fab6f8cd495066222))
+* **material/main-nav:** Added signaling of unsynced data (useful for non-live sync) in the Main Navigation bar. ([cae6f26](https://bitbucket.org/gnucoop/dino/commits/cae6f26270d165117af46be0d9e3742616d7e937))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.1.2"></a>
 # 15.1.2 "big-planarian" (2023-05-23)
 ### Bug Fixes
