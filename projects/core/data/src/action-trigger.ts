@@ -34,7 +34,8 @@ export type TriggerType =
   | 'on_form_data_export'
   | 'on_list_item_selection'
   | 'on_user_data_creation'
-  | 'on_user_data_change';
+  | 'on_user_data_change'
+  | 'on_custom_trigger';
 
 /**
  * Represents optional info relative to an ActionTrigger
