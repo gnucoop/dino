@@ -140,7 +140,7 @@
           </ng-container>
           <mat-icon
             class="dino-edit-status-icon"
-            *ngIf="header.isEditable && header.isEditable(element) && header.editMethod && ctx.showStatusEdit|async"
+            *ngIf="header.isEditable && header.isEditable(element) && header.editMethod && element.data && element.data['$invalid'] !== true && ctx.showStatusEdit|async"
             mat-list-icon
             (click)="$event.stopPropagation();header.editMethod(element);"
             >create
