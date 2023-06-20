@@ -2,6 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {Case, CaseManager} from '@dino/core/cases';
 import {ActionType, ListAction, ListHeader} from '@dino/core/list';
 import {MetricSection} from '@dino/material/metric-section';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-cases',
@@ -21,6 +22,7 @@ export class MatCasesE2E {
   ];
   readonly readOnlyFields: string[] = ['code'];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
+  readonly logoImagePath: string | null = additionalConfig.logoImage;
   readonly listRowActions: ListAction[] = [
     {
       actionType: 'view',

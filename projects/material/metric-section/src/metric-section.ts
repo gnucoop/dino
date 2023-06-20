@@ -89,6 +89,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
   @Input() onClickRowActions: ActionType[] = [];
 
   /**
+   * Path for logo image for the case card
+   */
+  @Input() logoImage: string | null = null;
+
+  /**
    * The Label of the Metric
    */
   metricLabel: string = '';
@@ -172,8 +177,12 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
     if (metric == null) {
       return;
     }
+
     // const logoImagePath = 'https://gnudino.vercel.app/assets/icons/logos/logodino.png';
-    const logoImagePath = 'assets/icons/logos/logodino.png';
+    let logoImagePath = 'assets/icons/logos/logodino.png';
+    if (this.logoImage) {
+      logoImagePath = this.logoImage;
+    }
     this.toDataURL(logoImagePath, (dataUrl: any) => {
       this.getCaseImage(metric, dataUrl);
     });

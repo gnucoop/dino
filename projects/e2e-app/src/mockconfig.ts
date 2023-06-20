@@ -131,6 +131,11 @@ export const additionalConfig = {
    * List of Pipeline Form Schemas (by name)
    */
   pipelines: ['pipeline_test'],
+
+  /**
+   * Logo for case card
+   */
+  logoImage: 'https://gnudino.vercel.app/assets/icons/logos/logodino.png',
 };
 
 /**
