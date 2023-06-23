@@ -49,7 +49,7 @@ import {
   combineLatest,
   forkJoin,
   Observable,
-  of,
+  of as obsOf,
   Subject,
   Subscription,
 } from 'rxjs';
@@ -69,6 +69,11 @@ import {ActivatedRoute} from '@angular/router';
   encapsulation: ViewEncapsulation.None,
 })
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
+  /**
+   * Determines the context in which the Metric Selector is inserted (form / report)
+   */
+  @Input() context: 'form' | 'report' = 'form';
+
   /**
    * Metrics of the types specified in the array can be created directly from the metric fields
    */
@@ -189,18 +194,27 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this._formSchemaAvailableMetrics = this._route.params.pipe(
-      map(params => params['form_schema_id']),
-      filter(id => id != null),
-      switchMap(schemaId =>
-        this._fs.get(schemaId).pipe(
+      map(params => {
+        console.log(params);
+        return {
+          form_schema_id: params['form_schema_id'],
+          report_schema_id: params['report_schema_id'],
+        };
+      }),
+      filter(ids => ids.form_schema_id != null || ids.report_schema_id != null),
+      switchMap(ids => {
+        if (ids.report_schema_id) {
+          return obsOf([]);
+        }
+        return this._fs.get(ids.form_schema_id).pipe(
           map(doc => {
             if (doc == null) {
               return null;
             }
             return doc.form_schema_metrics ?? [];
           }),
-        ),
-      ),
+        );
+      }),
       shareReplay(1),
     );
 
@@ -465,7 +479,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
                 !(allowedMetrics.includes(startingValueId) || allowedMetrics.includes('all')) ||
                 manager == null
               ) {
-                return of(null);
+                return obsOf(null);
               }
               return manager.get(startingValueId);
             },
