@@ -195,7 +195,6 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   ) {
     this._formSchemaAvailableMetrics = this._route.params.pipe(
       map(params => {
-        console.log(params);
         return {
           form_schema_id: params['form_schema_id'],
           report_schema_id: params['report_schema_id'],
