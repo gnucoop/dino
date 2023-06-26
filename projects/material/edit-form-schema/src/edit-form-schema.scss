@@ -32,6 +32,8 @@ dino-edit-form-schema {
     }
     .mat-mdc-card-content {
       padding-bottom: 0%;
+      max-height: 60vh;
+      overflow-y: auto;
       ajf-form-builder {
         min-height: 60vh;
       }
