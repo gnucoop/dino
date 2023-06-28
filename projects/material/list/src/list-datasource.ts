@@ -576,7 +576,22 @@ export class ListDataSource<
                 slideIdx++;
               }
               if (selector['$or'] && selector['$or'].length) {
-                selector['$or'] = [...selector['$or'], ...repeatedFilters];
+                if (additionalFiltersLogic === 'and') {
+                  const newSel = selector['$or'].map((f: {[k: string]: any}) => {
+                    const key = Object.keys(f)[0];
+                    const repFilter = repeatedFilters.find(r => key in r);
+
+                    if (repFilter) {
+                      const idx = repeatedFilters.indexOf(repFilter);
+                      repeatedFilters.splice(idx, 1);
+                      return {[key]: {...f[key], ...repFilter[key]}};
+                    }
+                    return f;
+                  });
+                  selector['$or'] = [...newSel, ...repeatedFilters];
+                } else {
+                  selector['$or'] = [...selector['$or'], ...repeatedFilters];
+                }
               } else {
                 selector['$or'] = repeatedFilters;
               }
