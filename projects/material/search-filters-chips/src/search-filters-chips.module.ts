@@ -28,6 +28,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {RouterModule} from '@angular/router';
+import {LangsModule} from '@dino/material/langs';
 
 import {SearchFiltersChips} from './search-filters-chips';
 
@@ -40,6 +41,7 @@ import {SearchFiltersChips} from './search-filters-chips';
     MatIconModule,
     MatInputModule,
     RouterModule,
+    LangsModule,
   ],
   declarations: [SearchFiltersChips],
   exports: [SearchFiltersChips],

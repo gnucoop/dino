@@ -34,9 +34,9 @@
                 <div class="dino-edit-report-info">
                   <h1>{{repschema.label}}</h1>
                   <h2>
-                    {{repData.date_start ? ('Collected Since'|transloco) + ' ' + repData.date_start:
+                    {{repData.date_start ? ('Collected Since'|transloco) + ' ' + (repData.date_start|dinoDateValue):
                     null}}<br />
-                    {{repData.date_end ? ('Collected Until'|transloco) + ' ' + repData.date_end:
+                    {{repData.date_end ? ('Collected Until'|transloco) + ' ' + (repData.date_end|dinoDateValue):
                     null}}
                   </h2>
                   <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>

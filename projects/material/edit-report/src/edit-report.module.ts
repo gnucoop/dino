@@ -34,6 +34,7 @@ import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/l
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {EditReport} from './edit-report';
+import {LangsModule} from '@dino/material/langs';
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import {EditReport} from './edit-report';
     CommonModule,
     DinoLoadingSpinnerModule,
     FormMetricSelectorModule,
+    LangsModule,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,

@@ -23,52 +23,38 @@
 import {TranslocoService} from '@ajf/core/transloco';
 import {DatePipe} from '@angular/common';
 import {Pipe, PipeTransform} from '@angular/core';
-import {Model} from '@dino/core/data';
-import {ListHeader} from '@dino/core/list';
 import {parse, parseISO} from 'date-fns';
-import {isFileColumn} from './list-cell-file';
-import {ChoicesDicitionary} from './list-datasource';
 
-@Pipe({name: 'dinoListCellValue', pure: false})
-export class ListCellValue implements PipeTransform {
+@Pipe({name: 'dinoDateValue', pure: false})
+export class DateValue implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
 
-  transform<T extends Model = Model>(
-    element: T,
-    header: ListHeader<T>,
-    choices: ChoicesDicitionary | null | undefined,
-  ): string {
-    if (header == null || element == null) return '';
-    const headerName = header.column.toString();
-    const dataEl = element as Model & {data?: {[key: string]: any}};
-    const col = header.column.toString() as keyof typeof dataEl;
-    let val = header.dataColumn ? (dataEl.data || {})[col] : dataEl[col];
+  transform(val: any): string {
+    if (val == null) return '';
     let isValNaN = Number.isNaN(val);
     let dt = parseISO(isValNaN ? val : {});
     if (!isNaN(dt.valueOf())) {
-      const datePipe = new DatePipe(this._getCurrentLocale());
-      return datePipe.transform(dt, 'short') as string;
+      return this._transformDateByLocale(dt);
     }
     dt = parse(val, 'yyyy-MM-dd', new Date());
     if (!isNaN(dt.valueOf())) {
-      const datePipe = new DatePipe(this._getCurrentLocale());
-      return datePipe.transform(dt, 'shortDate') as string;
+      return this._transformDateByLocale(dt);
     }
     if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(val)) {
       dt = new Date(val);
       if (!isNaN(dt.valueOf())) {
-        const datePipe = new DatePipe(this._getCurrentLocale());
-        return datePipe.transform(dt, 'shortDate') as string;
+        return this._transformDateByLocale(dt);
       }
     }
-    if (header.dataColumn && choices && choices[headerName]) {
-      let labelItem = choices[headerName].find(ch => ch.value == val);
-      val = labelItem ? labelItem.label : val;
-    }
-    if (typeof val === 'object' && !isFileColumn(val) && val != null) {
-      val = JSON.stringify(val, null, 2).replace('{', '').replace('}', '');
+    if (typeof val === 'object' && !isNaN(val.valueOf())) {
+      return this._transformDateByLocale(val);
     }
     return val == null ? '' : val;
+  }
+
+  private _transformDateByLocale(dt: Date): string {
+    const datePipe = new DatePipe(this._getCurrentLocale());
+    return datePipe.transform(dt, 'shortDate') as string;
   }
 
   private _getCurrentLocale(): string {

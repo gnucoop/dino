@@ -39,6 +39,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import {AsStringPipe} from './as-string.pipe';
+import {DateValue} from './date-value.pipe';
 import {LangsComponent} from './langs';
 import {LangsAddDialog} from './langs-add-dialog';
 import {LangsConfirmDialog} from './langs-confirm-dialog';
@@ -71,6 +72,7 @@ import {ObjectLengthPipe} from './object-length.pipe';
   ],
   declarations: [
     AsStringPipe,
+    DateValue,
     LangsAddDialog,
     LangsComponent,
     LangsConfirmDialog,
@@ -82,6 +84,6 @@ import {ObjectLengthPipe} from './object-length.pipe';
     LangsUpdateDialog,
     ObjectLengthPipe,
   ],
-  exports: [LangsComponent],
+  exports: [DateValue, LangsComponent],
 })
 export class LangsModule {}
