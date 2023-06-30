@@ -68,8 +68,6 @@ export class DateValue implements PipeTransform {
         return 'it';
       case 'PRT':
         return 'pt';
-      case 'UGA':
-        return 'it';
       default:
         return 'en';
     }

@@ -1,9 +1,9 @@
-import {AjfTranslocoModule} from '@ajf/core/transloco';
+import {AjfTranslocoModule, TranslocoService} from '@ajf/core/transloco';
 import {AjfEchartsModule} from '@ajf/core/echarts';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
-import {MatNativeDateModule} from '@angular/material/core';
+import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
 import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
@@ -201,6 +201,26 @@ export function provideDataServiceConfig() {
   };
 }
 
+export function provideMatDateLocale(ts: TranslocoService) {
+  if (ts) {
+    const lang = ts.getActiveLang();
+    switch (lang) {
+      case 'ESP':
+        return 'es-ES';
+      case 'FRA':
+        return 'fr-FR';
+      case 'ITA':
+        return 'it-IT';
+      case 'PRT':
+        return 'pt-PT';
+      default:
+        return 'en-US';
+    }
+  } else {
+    return 'en-US';
+  }
+}
+
 @NgModule({
   imports: [
     AjfTranslocoModule.forRoot({
@@ -306,6 +326,11 @@ export function provideDataServiceConfig() {
         };
       },
       deps: [HttpLink],
+    },
+    {
+      provide: MAT_DATE_LOCALE,
+      useFactory: (ts: TranslocoService) => provideMatDateLocale(ts),
+      deps: [TranslocoService],
     },
     MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
     {provide: MAT_PAGINATOR_DEFAULT_OPTIONS, useValue: paginatorConfig},

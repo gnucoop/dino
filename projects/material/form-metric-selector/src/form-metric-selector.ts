@@ -57,6 +57,8 @@ import {debounceTime, filter, map, shareReplay, startWith, switchMap, take} from
 
 import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
 import {ActivatedRoute} from '@angular/router';
+import {DateAdapter} from '@angular/material/core';
+import {TranslocoService} from '@ajf/core/transloco';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -187,12 +189,16 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     private _dialog: MatDialog,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
+    private _ts: TranslocoService,
+    private _adapter: DateAdapter<any>,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
+    this._adapter.setLocale(this._getCurrentLocale());
+
     this._formSchemaAvailableMetrics = this._route.params.pipe(
       map(params => {
         return {
@@ -353,6 +359,24 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           this.formMetrics.controls[key].updateValueAndValidity();
         });
       });
+
+    this._adapter.setLocale(this._getCurrentLocale());
+  }
+
+  private _getCurrentLocale(): string {
+    const lang = this._ts.getActiveLang();
+    switch (lang) {
+      case 'ESP':
+        return 'es-ES';
+      case 'FRA':
+        return 'fr-FR';
+      case 'ITA':
+        return 'it-IT';
+      case 'PRT':
+        return 'pt-PT';
+      default:
+        return 'en-US';
+    }
   }
 
   /**
