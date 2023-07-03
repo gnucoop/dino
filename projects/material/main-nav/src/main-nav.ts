@@ -49,6 +49,7 @@ import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
+  interval,
   merge,
   Observable,
   of as obsOf,
@@ -161,6 +162,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * The last stored number of unread notifications
    */
   lastUnreadNotifications: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  /**
+   * If not null, there's a new version of Dinoapp ready to be installed.
+   * A special icon will be displayed in the main nav bar to let the user know.
+   */
+  newVersionReady: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   /**
    * The Custom loading spinner image path
@@ -313,6 +320,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _isThereUnsyncedDataSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to an interval to check if a 'dino_new_version_ready' entry is in the localStorage.
+   */
+  private _newVersionCheckSub: Subscription = Subscription.EMPTY;
+
+  /**
    * The current Section
    */
   readonly currentSection: BehaviorSubject<Section | null> = new BehaviorSubject<Section | null>(
@@ -439,6 +451,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly ts: ThemeService,
     readonly trs: TranslocoService,
   ) {
+    this.newVersionReady.next(localStorage.getItem('dino_new_version_ready'));
+
+    this._newVersionCheckSub = interval(1000 * 60 * 10).subscribe(() => {
+      this.newVersionReady.next(localStorage.getItem('dino_new_version_ready'));
+      this._cdr.detectChanges();
+    });
+
     this._isThereUnsyncedDataSub = this.dataService.collectionChanged
       .pipe(filter(cc => cc.action !== 'replication cycle complete'))
       .subscribe(() => this.isThereUnsyncedData.next(true));
@@ -730,8 +749,15 @@ export class MainNav implements AfterViewInit, OnDestroy {
   /**
    * User logout method.
    * @param redirect If true, redirects to the specified url after logging out
+   * @param refresh If true, the page is refreshed just after logging out
+   * @param clearStorage If true, entries in localStorage for columns presets and new version will be deleted
+   * before loggin out.
    */
-  logout(redirect: boolean = !this.logoutDisabled.value): void {
+  logout(
+    redirect: boolean = !this.logoutDisabled.value,
+    refresh: boolean = false,
+    clearStorage: boolean = false,
+  ): void {
     this.authService
       .logout()
       .pipe(take(1))
@@ -741,10 +767,31 @@ export class MainNav implements AfterViewInit, OnDestroy {
           if (redirect) {
             this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
           }
+          if (clearStorage) {
+            this._clearStorage();
+          }
+          if (refresh) {
+            window.location.reload();
+          }
         } else {
           this.snackbar.open('Offline logout unavailable', 'LOGOUT OFFLINE', {duration: 5000});
         }
       });
+  }
+
+  /**
+   * Clears entries in localStorage for columns presets, filters presets and new version alert.
+   */
+  private _clearStorage(): void {
+    for (let key of Object.keys(localStorage)) {
+      if (
+        key.includes('columns_') ||
+        key.includes('filters_preset_') ||
+        key === 'dino_new_version_ready'
+      ) {
+        localStorage.removeItem(key);
+      }
+    }
   }
 
   /**
@@ -762,5 +809,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._syncLoadingSub.unsubscribe();
     this._replicationCycleCompleteSub.unsubscribe();
     this._isThereUnsyncedDataSub.unsubscribe();
+    this._newVersionCheckSub.unsubscribe();
   }
 }

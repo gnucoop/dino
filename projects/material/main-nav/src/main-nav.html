@@ -20,6 +20,17 @@
   <img class="dino-toolbar-logo" [src]="logoImagePath" alt="logo" />
 
   <div class="dino-toolbar-actions">
+    <span
+      *ngIf="(newVersionReady|async) as newVersion"
+      class="dino-new-version-button"
+      aria-label="Toolbar action"
+      [matTooltip]="'New App version ready! - ' + newVersion"
+      [matTooltipPosition]="'left'"
+      (click)="logout(false, true, true)"
+    >
+      <mat-icon color="accent">download_for_offline</mat-icon>
+    </span>
+
     <ng-container *ngIf="(breakpointObserver.small|async) !== true">
       <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
       <mat-slide-toggle
