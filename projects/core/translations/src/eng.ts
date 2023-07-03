@@ -228,4 +228,5 @@ export const ENG: Translation = {
   'Upload a jpg or png file': 'Upload a jpg or png file',
   'Fill the Form': 'Fill the Form',
   'View the Form': 'View the Form',
+  'New App version ready!': 'New App version ready!',
 };

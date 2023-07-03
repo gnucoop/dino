@@ -24,7 +24,7 @@
       *ngIf="(newVersionReady|async) as newVersion"
       class="dino-new-version-button"
       aria-label="Toolbar action"
-      [matTooltip]="'New App version ready! - ' + newVersion"
+      [matTooltip]="('New App version ready!'|transloco) + ' - ' + newVersion"
       [matTooltipPosition]="'left'"
       (click)="logout(false, true, true)"
     >

@@ -229,4 +229,5 @@ export const ESP: Translation = {
     'Archivo de exportación guardado en la carpeta Documentos',
   'Fill the Form': 'Rellenar el formulario',
   'View the Form': 'Ver el formulario',
+  'New App version ready!': 'Nueva versión de la aplicación!',
 };

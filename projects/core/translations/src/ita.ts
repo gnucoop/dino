@@ -238,4 +238,5 @@ export const ITA: Translation = {
   'Upload a jpg or png file': 'Seleziona un file jpg o png',
   'Fill the Form': 'Compila il Form',
   'View the Form': 'Vedi il Form',
+  'New App version ready!': "Nuova versione dell'App disponibile!",
 };

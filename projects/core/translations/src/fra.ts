@@ -225,4 +225,5 @@ export const FRA: Translation = {
   'Export file saved in your Documents folder': `Fichier d'exportation enregistré dans votre dossier Documents`,
   'Fill the Form': 'Remplir le Formulaire',
   'View the Form': 'Visualiser le Formulaire',
+  'New App version ready!': "Nouvelle version de l'application prête!",
 };

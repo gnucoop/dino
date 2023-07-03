@@ -228,4 +228,5 @@ export const PRT: Translation = {
     'Ficheiro de exportação guardado na sua pasta Documentos',
   'Fill the Form': 'Preencher o formulário',
   'View the Form': 'Ver o formulário',
+  'New App version ready!': 'Nova versão da App pronta!',
 };
