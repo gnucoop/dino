@@ -48,7 +48,7 @@ import {UserGroup, UserGroupManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
-import {combineLatest, Observable, of as obsOf, Subscription, zip} from 'rxjs';
+import {combineLatest, forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
 import {filter, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import {RequireMatch} from './metric-autocomplete-validator';
 
@@ -184,7 +184,10 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   /**
    * Emits when a metric is created or edited.
    */
-  private _saveEvt: EventEmitter<T> = new EventEmitter<T>();
+  private _saveEvt: EventEmitter<{metric: T; nameChanged: boolean}> = new EventEmitter<{
+    metric: T;
+    nameChanged: boolean;
+  }>();
 
   /**
    * Subscribes to the save event.
@@ -299,10 +302,12 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     const formValue = this.metricForm.value;
     const attributesFormValue = this.metricDataForm.value;
     const metric_data = this.generateMetricData(attributesFormValue);
+    let hasMetricNameChanged: boolean = false;
     if (formValue != null && this.isFormValid() && this._metricManager != null) {
       let obj = {...formValue, metric_data};
       if (this.data.metricItem != null && this.data.metricAction === 'Edit') {
         const editedItem: T = this.data.metricItem;
+        hasMetricNameChanged = !(editedItem.name === formValue['name']);
         obj = {...editedItem, ...formValue, metric_data};
       }
       delete obj.parent;
@@ -316,7 +321,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
           } catch (e) {}
         }
       }
-      this._saveEvt.emit(obj);
+      this._saveEvt.emit({metric: obj, nameChanged: hasMetricNameChanged});
     }
   }
 
@@ -499,7 +504,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     combineLatest([this._saveEvt, this._nss.isOnline$])
       .pipe(
         filter(() => this._metricManager != null),
-        switchMap(([item, isOnline]) => {
+        switchMap(([evt, isOnline]) => {
+          const item: T = evt.metric;
           let uploadedFileObs: Observable<StorageUploadResponse | null> = obsOf(null);
           let deleteFileObs: Observable<any> = obsOf(null);
           if (this._file != null) {
@@ -518,7 +524,11 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
               });*/
             }
           }
-          return zip([obsOf(item), uploadedFileObs, deleteFileObs]);
+          const zipArray = [obsOf(item), uploadedFileObs, deleteFileObs];
+          if (evt.nameChanged) {
+            zipArray.push(this._updateChildrenParentName(item));
+          }
+          return zip(zipArray);
         }),
         switchMap(res => {
           const metricManager = this._metricManager as DataModelManager<T>;
@@ -593,6 +603,40 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
           });
         }
         return [];
+      }),
+    );
+  }
+
+  /**
+   * Changes the 'parent_name' attribute of all children metrics when the parent
+   * metric name changes.
+   * @param metric The metric whose name has changed
+   * @returns True if all children were updated
+   */
+  private _updateChildrenParentName(metric: T): Observable<boolean> {
+    if (metric == null || this._metricManager == null) {
+      return obsOf(false);
+    }
+    return this._metricManager.query({selector: {parent_id: {$eq: metric.id}}}).pipe(
+      switchMap(children => {
+        if (!children.length) {
+          return obsOf([]);
+        }
+        const patches: Observable<RxDocument<T> | null>[] = [];
+        for (let child of children) {
+          const updChild = {
+            parent_name: metric.name,
+            id: child.id,
+          } as Partial<T> & {id: string};
+          patches.push(this._metricManager!.patch(updChild).pipe(take(1)));
+        }
+        return forkJoin(patches);
+      }),
+      map(docs => {
+        if (!docs.length || docs.includes(null)) {
+          return false;
+        }
+        return true;
       }),
     );
   }

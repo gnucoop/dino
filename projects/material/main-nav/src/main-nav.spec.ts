@@ -89,7 +89,6 @@ describe('Main', () => {
   });
 
   it('should create the component', async () => {
-    await fixtureMain.whenStable();
     fixtureMain.detectChanges();
 
     expect(main).toBeTruthy();
@@ -99,7 +98,6 @@ describe('Main', () => {
     let logoutSpy = spyOn(authService, 'logout').and.callThrough();
     let snackbarSpy = spyOn(main.snackbar, 'open').and.callThrough();
 
-    await fixtureMain.whenStable();
     fixtureMain.detectChanges();
 
     main.logout(false);
