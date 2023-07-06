@@ -145,9 +145,11 @@ dino-main-nav {
   }
 
   .mat-sidenav-content.dino-sidenav-content {
+    overflow-x: hidden;
     height: 100vh;
     @media only screen and (max-width: 992px) {
-      height: 84vh;
+      height: 85vh;
+      margin-top: 10px;
     }
     padding: 5px;
     background-color: inherit;

@@ -56,7 +56,7 @@ dino-create-form {
     .mat-horizontal-stepper-header {
       padding: 8px;
       flex-direction: row;
-      flex: 1 0 auto;
+      flex: 1 0 50%;
       &::before,
       &::after {
         visibility: hidden;
