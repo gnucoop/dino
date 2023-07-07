@@ -1,3 +1,4 @@
+<h1 class="dino-public-title">{{(formSchema|async)?.label|transloco }}</h1>
 <ng-container *ngIf="(submitted|async) === false ; else successMsg">
   <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
     <ajf-form
@@ -5,6 +6,8 @@
       [form]="(form|async)!"
       [saveDisabled]="(isValid|async) === false"
       [topBar]="true"
+      [maxColumns]="maxColumns"
+      [centeredFieldsContent]="centeredFieldsContent"
       (formAction)="onFormAction($event)"
     ></ajf-form>
   </div>

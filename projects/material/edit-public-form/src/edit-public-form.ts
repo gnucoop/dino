@@ -31,6 +31,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Input,
   isDevMode,
   OnDestroy,
   ViewEncapsulation,
@@ -38,7 +39,12 @@ import {
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {InsertModel} from '@dino/core/data';
-import {FormData, OnlineFormDataManager, OnlineFormSchemaManager} from '@dino/core/forms';
+import {
+  FormData,
+  FormSchema,
+  OnlineFormDataManager,
+  OnlineFormSchemaManager,
+} from '@dino/core/forms';
 import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
@@ -58,9 +64,24 @@ const okBtn = 'OK';
 })
 export class EditPublicForm implements OnDestroy {
   /**
+   * If true, the content of the Ajf Form Fields is centered
+   */
+  @Input() centeredFieldsContent: boolean = false;
+
+  /**
+   * The max number of columns on which the Ajf Form Fields are spread
+   */
+  @Input() maxColumns: 1 | 2 | 3 = 1;
+
+  /**
    * The Ajf Form object
    */
   readonly form: Observable<AjfForm>;
+
+  /**
+   * The Ajf FormSchema object
+   */
+  readonly formSchema: Observable<FormSchema | null>;
 
   /**
    * True if no validation errors are encountered in the AjfForm
@@ -112,7 +133,18 @@ export class EditPublicForm implements OnDestroy {
       shareReplay(1),
     );
 
-    const formSchema = formSchemaId.pipe(
+    const metricParams = route.queryParams.pipe(
+      map(params => {
+        const ids: {[key: string]: string | null} = {};
+        const metricNames = ['project', 'location', 'area', 'case', 'organization'];
+        metricNames.forEach(metric => {
+          ids[metric] = params[metric] ? (params[metric] as string) : null;
+        });
+        return ids;
+      }),
+    );
+
+    this.formSchema = formSchemaId.pipe(
       switchMap(schemaId =>
         formSchemaManagerInit.pipe(
           switchMap(() =>
@@ -134,7 +166,7 @@ export class EditPublicForm implements OnDestroy {
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
 
-    this.form = formSchema.pipe(
+    this.form = this.formSchema.pipe(
       map(fschema => {
         if (fschema == null) {
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
@@ -157,17 +189,17 @@ export class EditPublicForm implements OnDestroy {
 
     this._saveFormSub = this._saveFormEvt
       .pipe(
-        switchMap(() => anonymousUserData.pipe(withLatestFrom(formSchemaId))),
-        switchMap(([anonUserData, fsId]) => {
+        switchMap(() => anonymousUserData.pipe(withLatestFrom(formSchemaId, metricParams))),
+        switchMap(([anonUserData, fsId, metricIds]) => {
           const data = frs.getFormValue();
           const form: InsertModel<FormData> = {
             user_data_ref_id: anonUserData?.id ?? '',
             form_schema_ref_id: fsId,
-            area_ref_id: null,
-            case_ref_id: null,
-            location_ref_id: null,
-            project_ref_id: null,
-            organization_ref_id: null,
+            area_ref_id: metricIds['area'] || null,
+            case_ref_id: metricIds['case'] || null,
+            location_ref_id: metricIds['location'] || null,
+            project_ref_id: metricIds['project'] || null,
+            organization_ref_id: metricIds['organization'] || null,
             form_status_ref_id: null,
             data,
             created_at: format(new Date(), 'yyyy-MM-dd'),
