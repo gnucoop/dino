@@ -20,5 +20,6 @@
  *
  */
 
+export * from './date-value.pipe';
 export * from './langs';
 export * from './langs-module';
