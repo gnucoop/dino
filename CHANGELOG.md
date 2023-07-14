@@ -1,3 +1,19 @@
+<a name="15.2.1"></a>
+# 15.2.1 "live-rodent" (2023-07-14)
+### Bug Fixes
+* **material/form-metric-selector:** add DateAdapter for change runtime date format ([3834b40](https://bitbucket.org/gnucoop/dino/commits/3834b40bb309b8ed73692e46baa3ca87e8be6671))
+* **material/form-metric-selector:** Fixed a bug causing the Report edit/create stepper to behave as the Form one. ([62b7f11](https://bitbucket.org/gnucoop/dino/commits/62b7f115f9b593ffb2feee9ae746c8dc53105710))
+* **material/form-metric-selector:** Removed a console.log -_- ([b224efb](https://bitbucket.org/gnucoop/dino/commits/b224efb207846c6eeec5852c5e49bff75258edd0))
+* **material/list:** Fixed a bug in query creation for Repeating Slides fields, when choosing "All" as a condition in Filters Dialog. ([ee8f286](https://bitbucket.org/gnucoop/dino/commits/ee8f286643b42fcce37f5fb625f4b962b3714ecd))
+* **multiple:** format dates by locale ([a726997](https://bitbucket.org/gnucoop/dino/commits/a726997c5748b00555fe8a22a3b519c1619a74d2))
+### Features
+* **edit-public-form:** add metrics in link and center in the page ([03fbb32](https://bitbucket.org/gnucoop/dino/commits/03fbb322ca2c95f92e4649485722e70ea51a97b1))
+* **material/list:** remove edit status button if invalid form ([895f225](https://bitbucket.org/gnucoop/dino/commits/895f225894d6118b2ceceb7845f44543bfd5c4b5))
+* **material/main-nav:** A subscription now checks for a token in the localStorage that signals a new app version, showing a download icon in the nav bar. ([f5c6bda](https://bitbucket.org/gnucoop/dino/commits/f5c6bda2eaf970ebed75fdb93f9ec8c02cdcc84f))
+* **material/metric-section:** add logo in env for case card ([c01fb7d](https://bitbucket.org/gnucoop/dino/commits/c01fb7d5b450130bbf2577e80786780c69afd1ff))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.0"></a>
 # 15.2.0 "doubtful-tahr" (2023-06-15)
 ### Bug Fixes
