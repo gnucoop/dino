@@ -1,6 +1,6 @@
 <ng-container *ngIf="userData|async as userInfo">
   <div class="dino-user-area-header">
-    <h1 class="dino-user-area-title" mat-dialog-title>User Area - {{userInfo.full_name}}</h1>
+    <h1 class="dino-user-area-title" mat-dialog-title>User Area - {{userInfo.full_name}} - {{userInfo.email}}</h1>
 
     <div class="dino-user-area-dark-mode-toggle" *ngIf="(breakpointObserver.small|async) === true">
       <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
