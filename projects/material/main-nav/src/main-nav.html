@@ -26,7 +26,8 @@
       aria-label="Toolbar action"
       [matTooltip]="('New App version ready!'|transloco) + ' - ' + newVersion"
       [matTooltipPosition]="'left'"
-      (click)="logout(false, true, true)"
+      (click)="refreshVersion()"
+      color="warn"
     >
       <mat-icon color="accent">download_for_offline</mat-icon>
     </span>

@@ -780,6 +780,14 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Just refreshes the page after deleting the 'new version ready' entry from local storage.
+   */
+  refreshVersion(): void {
+    localStorage.removeItem('dino_new_version_ready');
+    window.location.reload();
+  }
+
+  /**
    * Clears entries in localStorage for columns presets, filters presets and new version alert.
    */
   private _clearStorage(): void {
