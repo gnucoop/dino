@@ -63,6 +63,7 @@ import {
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {AsListCellActionsPipe} from './list-action-pipe';
+import {LangsModule} from '@dino/material/langs';
 
 @NgModule({
   imports: [
@@ -74,6 +75,7 @@ import {AsListCellActionsPipe} from './list-action-pipe';
     CoreModule,
     FormStatusChangerModule,
     ImportFormModule,
+    LangsModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,

@@ -25,6 +25,9 @@ import {DatePipe} from '@angular/common';
 import {Pipe, PipeTransform} from '@angular/core';
 import {parse, parseISO} from 'date-fns';
 
+/**
+ * If the value is a date, this pipe formats the date according to the locale, otherwise it returns the initial value.
+ */
 @Pipe({name: 'dinoDateValue', pure: false})
 export class DateValue implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
