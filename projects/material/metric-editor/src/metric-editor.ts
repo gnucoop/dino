@@ -519,9 +519,6 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
                 deleteFileObs = this.uploadService.deleteFile(itemCopy['image_file']);
               }
               uploadedFileObs = this.uploadService.uploadFileInStorage(this._file);
-              /*this.snackbar.open('Wait until uploading documents...', 'WAIT', {
-                duration: 5000,
-              });*/
             }
           }
           const zipArray = [obsOf(item), uploadedFileObs, deleteFileObs];

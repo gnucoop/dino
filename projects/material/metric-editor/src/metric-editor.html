@@ -146,7 +146,6 @@
       *ngIf="data.metricAction !== 'View'"
       mat-raised-button
       color="primary"
-      [mat-dialog-close]="data"
       cdkFocusInitial
       (click)="saveMetric()"
       [disabled]="!isFormValid()">
