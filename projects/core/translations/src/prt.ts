@@ -32,6 +32,7 @@ export const PRT: Translation = {
   'Yes': 'Sim',
   'No': 'Não',
   'Delete all items': 'Excluir todos os itens',
+  'Edit all items': 'Editar todos os itens',
   'delete icon': 'ícone de exclusão',
   'delete': 'deletar',
   'Username / email': 'Nome de usuário / e-mail',
@@ -229,4 +230,6 @@ export const PRT: Translation = {
   'Fill the Form': 'Preencher o formulário',
   'View the Form': 'Ver o formulário',
   'New App version ready!': 'Nova versão da App pronta!',
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Deixar um campo vazio se não pretender alterar o valor relacionado com os formulários seleccionados',
 };

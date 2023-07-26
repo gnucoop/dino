@@ -32,6 +32,7 @@ export const ENG: Translation = {
   'Yes': 'Yes',
   'No': 'No',
   'Delete all items': 'Delete all items',
+  'Edit all items': 'Edit all items',
   'delete icon': 'delete icon',
   'delete': 'delete',
   'Username / email': 'Username / email',
@@ -229,4 +230,6 @@ export const ENG: Translation = {
   'Fill the Form': 'Fill the Form',
   'View the Form': 'View the Form',
   'New App version ready!': 'New App version ready!',
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Leave a field empty if you do not wish to change the related value of the selected forms',
 };

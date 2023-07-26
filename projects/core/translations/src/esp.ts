@@ -32,6 +32,7 @@ export const ESP: Translation = {
   'Yes': 'Sí',
   'No': 'No',
   'Delete all items': 'Eliminar todos los elementos',
+  'Edit all items': 'Editar todos los elementos',
   'delete icon': 'borrar icono',
   'delete': 'eliminar',
   'Username / email': 'Nombre de usuario / correo electrónico',
@@ -230,4 +231,6 @@ export const ESP: Translation = {
   'Fill the Form': 'Rellenar el formulario',
   'View the Form': 'Ver el formulario',
   'New App version ready!': 'Nueva versión de la aplicación!',
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Deje un campo vacío si no desea cambiar el valor relacionado de los formularios seleccionados',
 };

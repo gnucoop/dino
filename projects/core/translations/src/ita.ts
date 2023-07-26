@@ -32,6 +32,7 @@ export const ITA: Translation = {
   'Yes': 'Si',
   'No': 'No',
   'Delete all items': 'Elimina tutti gli elementi',
+  'Edit all items': 'Modifica tutti gli elementi',
   'delete icon': 'elimina icona',
   'delete': 'elimina',
   'Username / email': 'Nome utente/e-mail',
@@ -239,4 +240,6 @@ export const ITA: Translation = {
   'Fill the Form': 'Compila il Form',
   'View the Form': 'Vedi il Form',
   'New App version ready!': "Nuova versione dell'App disponibile!",
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Lascia un campo vuoto se non desideri modificarne il valore nei form selezionati',
 };

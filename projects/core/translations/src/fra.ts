@@ -32,6 +32,7 @@ export const FRA: Translation = {
   'Yes': 'Oui',
   'No': 'Non',
   'Delete all items': 'Supprimer tous les éléments',
+  'Edit all items': 'Modifier tous les éléments',
   'delete icon': "supprimer l'icône",
   'delete': 'supprimer',
   'Username / email': "Nom d'utilisateur / e-mail",
@@ -226,4 +227,6 @@ export const FRA: Translation = {
   'Fill the Form': 'Remplir le Formulaire',
   'View the Form': 'Visualiser le Formulaire',
   'New App version ready!': "Nouvelle version de l'application prête!",
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Laissez un champ vide si vous ne souhaitez pas modifier la valeur associée aux formulaires sélectionnés.',
 };
