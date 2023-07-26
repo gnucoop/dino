@@ -75,6 +75,9 @@ class ListFeatComp extends List<DummyModel> {
   deleteAction(items: DummyModel[]) {
     return items;
   }
+  bulkFormEditAction(items: DummyModel[]) {
+    return items;
+  }
   editAction(_item: DummyModel, _isDetails: boolean = false) {}
 }
 

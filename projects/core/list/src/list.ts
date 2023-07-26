@@ -220,6 +220,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   abstract clearSelection(): void;
   abstract selectAll(): void;
   abstract deleteAction(items: T[], isDetails: boolean): T[];
+  abstract bulkFormEditAction(items: T[]): void;
   abstract editAction(item: T, isDetails: boolean): void;
   abstract viewAction(item: T, isDetails: boolean): void;
   abstract createAction(schemaId: string, baseUrl: string): void;

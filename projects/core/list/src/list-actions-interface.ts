@@ -28,6 +28,7 @@ export type ActionType =
   | 'print'
   | 'download'
   | 'duplicate'
+  | 'bulkFormEdit'
   | 'edit'
   | 'view'
   | 'viewlog'
