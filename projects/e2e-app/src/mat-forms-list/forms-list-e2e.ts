@@ -51,6 +51,7 @@ export class MatFormsListE2E {
     private _pcs: PermissionContextService,
     private _route: ActivatedRoute,
     private _udm: UserDataManager,
+    private _fdm: FormDataManager,
     @Optional() private _logManager: LogManager,
   ) {
     if (optionalModulesConfig.logsModule) {
@@ -282,11 +283,16 @@ export class MatFormsListE2E {
   processActionTrigger(trigger: ActionTrigger<FormData>) {
     if (
       this._logManager != null &&
-      trigger.triggerType === 'on_status_change' &&
+      (trigger.triggerType === 'on_status_change' ||
+        trigger.triggerType === 'on_form_data_change') &&
       trigger.triggerData?.doc
     ) {
+      const oldDoc = trigger.triggerData?.previousValue;
       const newDoc = trigger.triggerData?.doc;
-      const diff = {attributes: ['form_status_ref_id'], dataAttributes: []};
+      const diff =
+        trigger.triggerType === 'on_status_change'
+          ? {attributes: ['form_status_ref_id'], dataAttributes: []}
+          : this._fdm.compareFormDatas(oldDoc, newDoc, ['form_status_ref_id']);
       const populatedNewDoc: FormData = this.formDataManager.populateFormData(newDoc);
       combineLatest([
         this.formDataManager.generatePopulatedFormObservable(populatedNewDoc),
