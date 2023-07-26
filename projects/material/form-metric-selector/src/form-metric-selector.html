@@ -1,4 +1,10 @@
-<div class="dino-form-metric-selector-container">
+<div
+  class="dino-form-metric-selector-container"
+  [class.dino-form-metric-selector-dialog-container]="context === 'bulkFormEdit'"
+>
+  <div class="dino-bulk-edit-selector-message">
+    <ng-content select="[bulk-edit-message]"></ng-content>
+  </div><br><br>
   <div class="dino-form-metric-selector-message">
     <ng-content select="[metric-selector-message]"></ng-content>
   </div>
@@ -14,6 +20,20 @@
       />
       <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
       <mat-datepicker [xPosition]="'end'" #pickerDate></mat-datepicker>
+    </mat-form-field>
+  </form>
+  <form
+    *ngIf="context === 'bulkFormEdit' && availableStatuses && availableStatuses.length;"
+    [formGroup]="formStatus"
+    autocomplete="off"
+  >
+    <mat-form-field class="dino-form-status-selector-field">
+      <mat-label>{{'Select the Form Status'|transloco}}</mat-label>
+      <mat-select #statusSelect [formControlName]="'form_status_ref_id'">
+        <mat-option *ngFor="let status of availableStatuses" [value]="status.id">
+          <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
+        </mat-option>
+      </mat-select>
     </mat-form-field>
   </form>
   <form [formGroup]="formMetrics" autocomplete="off">

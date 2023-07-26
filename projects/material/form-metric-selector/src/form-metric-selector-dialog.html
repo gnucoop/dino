@@ -1,0 +1,16 @@
+<mat-dialog-content>
+  <dino-form-metric-selector
+    [hasOptionalMetrics]="hasOptionalMetrics"
+    [allowMetricCreationFor]="allowMetricCreationFor"
+    [context]="'bulkFormEdit'"
+    [availableStatuses]="availableStatuses|async"
+    [setDialogActRouteParams]="data.routeParams"
+  >
+    <div bulk-edit-message>{{'Leave a field empty if you do not wish to change the related value of the selected forms'|transloco}}</div>
+  </dino-form-metric-selector>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="closeDialog()">{{'Close'|transloco}}</button>
+  <button mat-raised-button color="primary" (click)="save()">{{'Save'|transloco}}</button>
+</mat-dialog-actions>

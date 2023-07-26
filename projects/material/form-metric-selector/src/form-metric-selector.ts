@@ -36,7 +36,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormSchemaManager} from '@dino/core/forms';
+import {FormData, FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -56,7 +56,7 @@ import {
 import {debounceTime, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 
 import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {DateAdapter} from '@angular/material/core';
 import {TranslocoService} from '@ajf/core/transloco';
 
@@ -72,9 +72,23 @@ import {TranslocoService} from '@ajf/core/transloco';
 })
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
-   * Determines the context in which the Metric Selector is inserted (form / report)
+   * Determines the context in which the Metric Selector is inserted (form / report / bulkFormEdit)
    */
-  @Input() context: 'form' | 'report' = 'form';
+  @Input() context: 'form' | 'report' | 'bulkFormEdit' = 'form';
+
+  /**
+   * Activated route params can be passed as an input (when this is inside a Form Metric Selector Dialog)
+   */
+  @Input() set setDialogActRouteParams(actRouteParams: Params) {
+    if (actRouteParams != null) {
+      this._dialogActRouteParams.next(actRouteParams);
+    }
+  }
+
+  /**
+   * The list of all the Form Statuses available to the active User
+   */
+  @Input() availableStatuses: FormStatus[] | null = null;
 
   /**
    * Metrics of the types specified in the array can be created directly from the metric fields
@@ -93,6 +107,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   get selectedMetrics(): {[key: string]: Metric} {
     return this.formMetrics.value;
   }
+
+  /**
+   * The Selector Form Status form group.
+   */
+  formStatus: UntypedFormGroup;
 
   /**
    * The Selector metrics valueChanges
@@ -137,6 +156,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * True if the Form is in view mode.
    */
   isView: Subject<boolean> = new Subject<boolean>();
+
+  /**
+   * The activate route when this component is inside a Form Metric Selector Dialog
+   */
+  private _dialogActRouteParams: BehaviorSubject<Params | null> =
+    new BehaviorSubject<Params | null>(null);
 
   /**
    * True if the Form/Report can have one or more null Metrics.
@@ -189,6 +214,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     private _dialog: MatDialog,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
+    private _fst: FormStatusManager,
     private _ts: TranslocoService,
     private _adapter: DateAdapter<any>,
     @Optional() private _areaManager: AreaManager | null,
@@ -199,11 +225,15 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   ) {
     this._adapter.setLocale(this._getCurrentLocale());
 
-    this._formSchemaAvailableMetrics = this._route.params.pipe(
-      map(params => {
+    this._formSchemaAvailableMetrics = combineLatest([
+      this._route.params,
+      this._dialogActRouteParams,
+    ]).pipe(
+      map(([params, dialogParams]) => {
+        const routeparams = dialogParams ?? params;
         return {
-          form_schema_id: params['form_schema_id'],
-          report_schema_id: params['report_schema_id'],
+          form_schema_id: routeparams['form_schema_id'],
+          report_schema_id: routeparams['report_schema_id'],
         };
       }),
       filter(ids => ids.form_schema_id != null || ids.report_schema_id != null),
@@ -232,6 +262,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));
     this.formDate = new UntypedFormGroup({
       'created_at': new UntypedFormControl(new Date(), Validators.required),
+    });
+    this.formStatus = new UntypedFormGroup({
+      'form_status_ref_id': new UntypedFormControl(null),
     });
     const group: {[key: string]: UntypedFormControl} = {};
     const validatorFn: ValidationErrors | null = this._hasOptionalMetrics.getValue()
@@ -281,7 +314,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'area',
             hint: `Thematic Area of the form`,
-            placeholder: 'Thematic Area *',
+            placeholder: `Thematic Area ${this._hasOptionalMetrics.value ? '' : '*'}`,
             icon: 'volunteer_activism',
           };
           fmf.push(field);
@@ -291,7 +324,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'case',
             hint: `Case of the form`,
-            placeholder: 'Case management *',
+            placeholder: `Case management ${this._hasOptionalMetrics.value ? '' : '*'}`,
             icon: 'people',
           };
           fmf.push(field);
@@ -302,7 +335,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'project',
             hint: `Project associated with the form`,
-            placeholder: 'Project *',
+            placeholder: `Project ${this._hasOptionalMetrics.value ? '' : '*'}`,
             icon: 'assignment',
           };
           fmf.push(field);
@@ -316,7 +349,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'location',
             hint: `Location of the collected data`,
-            placeholder: 'Location *',
+            placeholder: `Location ${this._hasOptionalMetrics.value ? '' : '*'}`,
             icon: 'place',
           };
           fmf.push(field);
@@ -330,7 +363,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'organization',
             hint: `Organization associated with the form`,
-            placeholder: 'Organization *',
+            placeholder: `Organization ${this._hasOptionalMetrics.value ? '' : '*'}`,
             icon: 'public',
           };
           fmf.push(field);
@@ -345,6 +378,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.context === 'bulkFormEdit') {
+      this.formDate = new UntypedFormGroup({
+        'created_at': new UntypedFormControl(null),
+      });
+    }
+
     combineLatest([this._hasOptionalMetrics, this._formSchemaAvailableMetrics])
       .pipe(take(1))
       .subscribe(([optMetrics, availableMetrics]) => {

@@ -8,8 +8,12 @@ dino-form-metric-selector {
       display: none;
     }
   }
-  .dino-form-metric-selector-message {
+  .dino-form-metric-selector-message,
+  .dino-bulk-edit-selector-message {
     margin-bottom: 15px;
+  }
+  .dino-bulk-edit-selector-message {
+    text-align: center;
   }
   /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
   .mat-form-field-suffix .mat-icon {
@@ -32,6 +36,9 @@ dino-form-metric-selector {
     @media only screen and (max-width: 768px) {
       min-width: 90vw;
     }
+    &.dino-form-metric-selector-dialog-container {
+      min-width: unset;
+    }
     .mat-mdc-form-field {
       font-size: 115%;
       margin: auto;
@@ -41,7 +48,8 @@ dino-form-metric-selector {
     }
     form {
       .dino-form-metric-selector-field,
-      .dino-form-date-selector-field {
+      .dino-form-date-selector-field,
+      .dino-form-status-selector-field {
         min-width: 60vw;
         display: block;
         .mat-datepicker-toggle {
@@ -50,8 +58,10 @@ dino-form-metric-selector {
       }
     }
     @media only screen and (min-width: 991px) {
-      position: relative;
-      bottom: 50px;
+      &:not(.dino-form-metric-selector-dialog-container) {
+        position: relative;
+        bottom: 50px;
+      }
     }
   }
   .dino-go-to-formdata-button-container {

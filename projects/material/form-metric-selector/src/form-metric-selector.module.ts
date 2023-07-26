@@ -32,6 +32,10 @@ import {MatInputModule} from '@angular/material/input';
 import {TranslocoModule} from '@ngneat/transloco';
 
 import {FormMetricSelector} from './form-metric-selector';
+import {FormMetricSelectorDialog} from './form-metric-selector-dialog';
+import {MatDialogModule} from '@angular/material/dialog';
+import {RouterModule} from '@angular/router';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -39,13 +43,16 @@ import {FormMetricSelector} from './form-metric-selector';
     MatAutocompleteModule,
     MatButtonModule,
     MatDatepickerModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatSelectModule,
     ReactiveFormsModule,
+    RouterModule,
     TranslocoModule,
   ],
-  declarations: [FormMetricSelector],
-  exports: [FormMetricSelector],
+  declarations: [FormMetricSelector, FormMetricSelectorDialog],
+  exports: [FormMetricSelector, FormMetricSelectorDialog],
 })
 export class FormMetricSelectorModule {}
