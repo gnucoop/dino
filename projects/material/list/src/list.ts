@@ -51,8 +51,14 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActionTrigger, Model} from '@dino/core/data';
-import {FormSchema, FormData, FormStatus, FormStatusManager} from '@dino/core/forms';
+import {ActionTrigger, ActionTriggerData, Model} from '@dino/core/data';
+import {
+  FormData,
+  FormDataManager,
+  FormSchema,
+  FormStatus,
+  FormStatusManager,
+} from '@dino/core/forms';
 import {
   ActionType,
   FilterGroup,
@@ -70,6 +76,7 @@ import {ImportForm} from '@dino/material/import-form';
 import {
   BehaviorSubject,
   combineLatest,
+  forkJoin,
   Observable,
   of as obsOf,
   Subject,
@@ -99,6 +106,7 @@ import {format} from 'date-fns';
 import {UserDataManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
+import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector/src/form-metric-selector-dialog';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -325,6 +333,12 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   bulkActions: boolean = true;
 
   /**
+   * Indicates which bulk actions are available
+   */
+  @Input()
+  bulkActionsAvailable: ('delete' | 'bulkFormEdit')[] = ['delete'];
+
+  /**
    * Non default table cell templates
    */
   private _cellTemplatesMap: {[column: string]: TemplateRef<any>} = {};
@@ -433,6 +447,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   private _statusDialogRef?: MatDialogRef<FormStatusChanger>;
 
   /**
+   * A reference to the MatDialog that contains the Form Metrics Selector Dialog
+   */
+  private _fmDialogRef?: MatDialogRef<FormMetricSelectorDialog>;
+
+  /**
    * Subscribes to the value returned by the MatDialog on its closing event
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
@@ -449,6 +468,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _renderer: Renderer2,
     private _ts: TranslocoService,
     private _fsm: FormStatusManager,
+    private _fdm: FormDataManager,
     private _udm: UserDataManager,
   ) {
     super(cdr, aui, actroute);
@@ -1029,6 +1049,105 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
     path.push(item.id);
     this._router.navigate(path);
+  }
+
+  /**
+   * Opens the bulk edit dialog for the items. (Only available for Form Data lists)
+   * @param items The items to be edited
+   */
+  bulkFormEditAction(items: T[]): void {
+    const genItem = items as {[key: string]: any}[];
+    if (
+      genItem == null ||
+      !genItem.length ||
+      (genItem[0]['form_schema_ref_id'] == null && genItem[0]['report_schema_ref_id'] == null)
+    ) {
+      return;
+    }
+    const statusHeader = this._headers.value.find(header => header.column === 'form_status_ref_id');
+    const isStatusEditable: boolean =
+      statusHeader && statusHeader.isEditable !== undefined
+        ? !genItem.some(item => !statusHeader.isEditable!(item))
+        : false;
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      routeParams: this._route.snapshot.params,
+      formSchema: genItem[0]['form_schema'],
+      formDatas: genItem as FormData[],
+      statusEditable: isStatusEditable,
+    };
+    this._fmDialogRef = this._dialog.open(FormMetricSelectorDialog, dialogConfig);
+    this._fmDialogRef
+      .afterClosed()
+      .pipe(
+        take(1),
+        switchMap((changes: {[key: string]: any} | null) => {
+          if (changes == null || Object.values(changes).every(v => v == null) || !items.length) {
+            return obsOf(null);
+          }
+          changes['created_at'] =
+            changes['created_at'] != null ? format(changes['created_at'], 'yyyy-MM-dd') : null;
+          const formChanges: {[key: string]: any} = {};
+          for (let key in changes) {
+            if (changes[key] != null) {
+              formChanges[key] = changes[key];
+            }
+          }
+          const triggerChanges = items.map(item => {
+            return {
+              id: item.id,
+              hasStatusChanged: formChanges['form_status_ref_id'] != null,
+              previousValue: item,
+            };
+          });
+          const formPatches = items.map(item =>
+            this._fdm.patch({id: item.id, ...formChanges}).pipe(take(1)),
+          );
+          return forkJoin([obsOf(triggerChanges), ...formPatches]);
+        }),
+      )
+      .subscribe(res => {
+        if (res == null) return;
+        const triggers: {
+          id: string;
+          hasStatusChanged: boolean;
+          previousValue: T;
+        }[] = res.shift() as {
+          id: string;
+          hasStatusChanged: boolean;
+          previousValue: T;
+        }[];
+
+        const patchedDocs: (RxDocument<T> | null)[] = res as (RxDocument<T> | null)[];
+
+        triggers.forEach(trigger => {
+          const patchedDoc = patchedDocs.find(doc => doc != null && doc.id === trigger.id);
+
+          if (patchedDoc != null) {
+            const trigData: ActionTriggerData<T> = {
+              doc: patchedDoc,
+              previousValue: trigger.previousValue,
+              newValue: patchedDoc,
+            };
+            this.emitActionTrigger.emit({
+              name: 'Form Data Changed',
+              triggerType: 'on_form_data_change',
+              triggerData: trigData,
+            });
+            if (trigger.hasStatusChanged) {
+              this.emitActionTrigger.emit({
+                name: 'Status Change',
+                triggerType: 'on_status_change',
+                triggerData: trigData,
+              });
+            }
+          }
+        });
+
+        if (res != null && res.length) {
+          this._snackbar.open('Documents successfully modified', 'EDIT', {duration: 5000});
+        }
+      });
   }
 
   /**

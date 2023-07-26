@@ -154,7 +154,7 @@ dino-list {
         border-radius: 100%;
         padding: 5px;
       }
-      .dino-bulk-delete-button {
+      .dino-bulk-delete-button, .dino-bulk-edit-button {
         position: relative;
         right: 10px;
       }
@@ -168,7 +168,7 @@ dino-list {
 
   .mat-column-select {
     flex: 0 0 2% !important;
-    min-width: 104px;
+    min-width: 143px;
   }
   .mat-mdc-form-field.dino-details-search {
     margin-top: 25px !important;
@@ -259,7 +259,8 @@ dino-list {
     }
   }
 
-  .dino-bulk-delete-button {
+  .dino-bulk-delete-button, .dino-bulk-edit-button {
+    cursor: pointer;
     background-color: transparent;
     border: none;
     outline: none;
