@@ -86,7 +86,7 @@
               <mat-option
                 *ngFor="let availableMetric of availableMetrics|async"
                 [value]="availableMetric.metricName"
-                >{{availableMetric.label}}</mat-option
+                >{{availableMetric.label|transloco}}</mat-option
               >
             </mat-select>
           </mat-form-field>
