@@ -90,11 +90,13 @@ export class FormDataManager extends DataModelManager<FormData> {
    * Compares two FormDatas of the same Form Schema and returns the changed attributes keys
    * @param formData_1 The first formData
    * @param formData_2 The second formData
+   * @param exceptions? The field that should be excluded from the comparation
    * @returns The diff attributes keys
    */
   compareFormDatas(
     formData_1: FormData,
     formData_2: FormData,
+    excludedFields?: string[],
   ): {attributes: string[]; dataAttributes: string[]} {
     if (
       formData_1 == null ||
@@ -106,6 +108,9 @@ export class FormDataManager extends DataModelManager<FormData> {
     const changedAttributes: string[] = [];
     let changedDataAttributes: string[] = [];
     for (let key in formData_2) {
+      if (excludedFields && excludedFields.includes(key)) {
+        continue;
+      }
       const fdKey = key as keyof FormData;
       if (fdKey === 'data') {
         changedDataAttributes = this.compareFormDatasData(formData_1.data, formData_2.data);
