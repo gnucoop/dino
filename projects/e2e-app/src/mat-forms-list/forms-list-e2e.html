@@ -6,11 +6,13 @@
   [additionalDataSchema]="additionalDataSchema|async"
   [additionalBasicFilters]="additionalBasicFilters|async"
   [listRowActions]="listRowActions|async"
-  [bulkActionsAvailable]="['delete', 'bulkFormEdit']"
+  [bulkActionsAvailable]="bulkActionsAvailable|async"
   [showStatusEditButton]="showStatusEditButton|async"
   [showStatusProgressBar]="showStatusProgressBar"
+  [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
   [onClickRowActions]="onClickRowActions"
   (emitRowDataEvt)="emitRowData($event)"
+  (emitSelectionChangedEvt)="emitSelectionData($event)"
   (emitActionTrigger)="processActionTrigger($event)"
   (emitExportActionTrigger)="processExportTrigger($event)"
 >
@@ -18,6 +20,7 @@
     filters
     [presetManager]="true"
     [exportable]="(displayExportButton|async) ?? false"
+    [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
     (exportEvt)="dinoList.export($event)"
   ></dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>

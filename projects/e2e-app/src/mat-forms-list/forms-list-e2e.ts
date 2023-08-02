@@ -25,6 +25,7 @@ export class MatFormsListE2E {
   readonly additionalDataSchema: Observable<FormSchema | null>;
   readonly formSchemaId: Observable<string | null>;
   readonly formRowData: BehaviorSubject<FormData | null>;
+  readonly formSelectionData: BehaviorSubject<FormData[] | null>;
   readonly baseUrl = 'forms';
   readonly dataSource: ListDataSource<FormData, FormSchema>;
   readonly headers: Observable<ListHeader<FormData>[]>;
@@ -38,9 +39,15 @@ export class MatFormsListE2E {
   };
   readonly displayAddButton: Observable<boolean>;
   readonly displayExportButton: Observable<boolean>;
+  readonly bulkActionsAvailable: Observable<('delete' | 'bulkFormEdit')[]>;
   readonly listRowActions: Observable<ListAction[] | null>;
+  readonly listSelectionActions: Observable<ListAction[] | null>;
   readonly showStatusEditButton: Observable<boolean>;
+  readonly hasSelectionAllowedStatus: Observable<boolean>;
   readonly showStatusProgressBar: boolean = additionalConfig.statusType === 'progress';
+  readonly secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   constructor(
     readonly filtersService: FiltersService,
@@ -58,6 +65,7 @@ export class MatFormsListE2E {
       this.listRowActionsIcons['viewlog'] = 'history';
     }
     this.formRowData = new BehaviorSubject<FormData | null>(null);
+    this.formSelectionData = new BehaviorSubject<FormData[] | null>(null);
     this.formSchemaId = this._route.params.pipe(map(params => params['form_schema_id']));
     this.additionalDataSchema = this.formSchemaId.pipe(
       switchMap(schemaId => {
@@ -122,6 +130,17 @@ export class MatFormsListE2E {
       }),
     );
 
+    this.hasSelectionAllowedStatus = this.formSelectionData.pipe(
+      switchMap(selectionData => {
+        if (selectionData == null || !selectionData.length) {
+          return obsOf(false);
+        }
+        return forkJoin(
+          selectionData.map(row => this.formDataManager.hasAllowedFormStatus(row)),
+        ).pipe(map(allowedStatusArray => !allowedStatusArray.some(st => st == false)));
+      }),
+    );
+
     this.listRowActions = combineLatest([this.formSchemaId, this.showStatusEditButton]).pipe(
       map(([schemaId, allowedStatus]) => {
         if (schemaId == null) {
@@ -155,6 +174,63 @@ export class MatFormsListE2E {
       }),
       switchMap(actions => actions),
       catchError(_ => obsOf([])),
+    );
+
+    this.listSelectionActions = combineLatest([
+      this.formSchemaId,
+      this.hasSelectionAllowedStatus,
+    ]).pipe(
+      map(([schemaId, allowedStatus]) => {
+        if (schemaId == null) {
+          return [];
+        }
+        return this._pcs.getAllowedActions('form_schema', schemaId, true).pipe(
+          map(actions => {
+            let displayedActions = actions.filter(
+              action => Object.keys(this.listRowActionsIcons).indexOf(action) >= 0,
+            );
+            if (!allowedStatus) {
+              displayedActions = displayedActions.filter(
+                action => action !== 'delete' && action !== 'edit',
+              );
+            }
+            return displayedActions.map(action => ({
+              actionType: action as ActionType,
+              matIcon: this.listRowActionsIcons[action],
+              askConfirm: ['delete', 'print'].includes(action) ? true : false,
+              customAction:
+                action === 'print'
+                  ? (dataRow: FormData | null) => {
+                      if (dataRow != null) {
+                        this.printPdf(dataRow);
+                      }
+                    }
+                  : undefined,
+            }));
+          }),
+        );
+      }),
+      switchMap(actions => actions),
+      catchError(_ => obsOf([])),
+    );
+
+    this.bulkActionsAvailable = this.listSelectionActions.pipe(
+      map(actions => {
+        if (actions == null) {
+          return [];
+        }
+        const bulkActions: ('delete' | 'bulkFormEdit')[] = [];
+        const actionTypes = actions.map(act => act.actionType);
+        for (let actType of actionTypes) {
+          if (actType === 'delete') {
+            bulkActions.push('delete');
+          }
+          if (actType === 'edit') {
+            bulkActions.push('bulkFormEdit');
+          }
+        }
+        return bulkActions;
+      }),
     );
 
     this.displayAddButton = combineLatest([this._pcs.permissionContext, this.formSchemaId]).pipe(
@@ -278,6 +354,13 @@ export class MatFormsListE2E {
       return;
     }
     this.formRowData.next(evt);
+  }
+
+  emitSelectionData(evt: FormData[]): void {
+    if (evt == null) {
+      return;
+    }
+    this.formSelectionData.next(evt);
   }
 
   processActionTrigger(trigger: ActionTrigger<FormData>) {
