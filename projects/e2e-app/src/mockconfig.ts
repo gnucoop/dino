@@ -136,6 +136,14 @@ export const additionalConfig = {
    * Logo for case card
    */
   logoImage: 'https://gnudino.vercel.app/assets/icons/logos/logodino.png',
+  /**
+   * secondaryMetricFieldsDisplayed
+   */
+  secondaryMetricFieldsDisplayed: {
+    case: 'notes',
+    project: 'code',
+    organization: 'metric_data descrizione',
+  },
 };
 
 /**
