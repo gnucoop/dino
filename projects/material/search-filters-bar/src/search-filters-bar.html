@@ -136,7 +136,9 @@
                 [value]="option"
                 [ngClass]="'dino-option-level-' + (option.level ?? '0')"
               >
-                {{option.name}}
+                {{displayItemName({id: [option.id], name: option.name, secondary:
+                getMetricDataSecondaryAttribute(option, secondaryMetricFieldsDisplayed,
+                additionalBasicFiltersLabels[idx])})}}
               </mat-option>
             </ng-container>
 

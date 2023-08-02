@@ -113,6 +113,26 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   @Input() aggregationFilters: boolean = false;
 
   /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    this._secondaryMetricFieldsDisplayed = fields;
+  }
+
+  /**
    * If true, the Preset Manager is available and displayed.
    * Defaults to false.
    */
@@ -406,18 +426,39 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * Displays the Metric or Status Name only in the Metric or Status
    * autocomplete field.
    */
-  displayItemName(item: Metric | FormStatus | UserData): string {
-    if (item == null) {
+  displayItemName(
+    obj:
+      | FormStatus
+      | UserData
+      | {
+          id: string[];
+          name: string;
+          secondary: string | null;
+        },
+  ): string {
+    if (obj == null) {
       return '';
     }
-    const itemObj = item as {[key: string]: any};
-    if (itemObj['label'] && itemObj['name'] && item.id) {
-      return itemObj['label'];
+    const item = obj as {[key: string]: any};
+
+    // Statuses
+    if (item['label'] && item['name'] && item['id']) {
+      return item['label'];
     }
-    if (itemObj['full_name']) {
-      return itemObj['full_name'];
+    // Users
+    if (item['full_name']) {
+      return item['full_name'];
     }
-    return itemObj['name'] && item.id ? itemObj['name'] : '';
+    // Metrics (after finding descendants)
+    if (item['id'] && Array.isArray(item['id']) && item['name']) {
+      let displayed = item['name'];
+      if (item['secondary']) {
+        displayed = `${displayed} - (${item['secondary']})`;
+      }
+      return displayed;
+    }
+
+    return '';
   }
 
   /**
@@ -638,12 +679,42 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         )
         .subscribe(([allDescendants, parentMetric]) => {
           if (allDescendants != null && parentMetric != null) {
-            inputControl
-              ?.get(metricType)
-              ?.setValue({id: [parentMetric.id, ...allDescendants], name: parentMetric.name});
+            inputControl?.get(metricType)?.setValue({
+              id: [parentMetric.id, ...allDescendants],
+              name: parentMetric.name,
+              secondary: this.getMetricDataSecondaryAttribute(
+                parentMetric,
+                this.secondaryMetricFieldsDisplayed,
+                metricType,
+              ),
+            });
           }
         });
     }
+  }
+
+  /**
+   * Retrieves a metric data attribute specific value
+   * @param metric The metric option
+   * @param secondaryFields The metric secondary fields to be displayed
+   * @param metricType The type of the metric ('area', 'location' etc.)
+   * @returns The secondary attribute value if present
+   */
+  getMetricDataSecondaryAttribute(
+    metric: Metric & {[key: string]: any},
+    secondaryFields: {
+      [metricName: string]: string;
+    } | null,
+    metricType: string,
+  ): string | null {
+    if (metric && secondaryFields && metricType) {
+      if (secondaryFields[metricType] && secondaryFields[metricType].includes('metric_data')) {
+        const metricDataKey = secondaryFields[metricType].split('metric_data ')[1];
+        return metric['metric_data'] != null ? metric['metric_data'][metricDataKey] : null;
+      }
+      return metric[secondaryFields[metricType]] ?? null;
+    }
+    return null;
   }
 
   /**
