@@ -61,6 +61,26 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   @Input() allowMetricCreationFor: string[] = ['all'];
 
   /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    this._secondaryMetricFieldsDisplayed = fields;
+  }
+
+  /**
    * True if no validation errors are encountered in the Metrics selector form
    */
   isFormMetricsSelectorValid: Observable<boolean> = obsOf(false);
@@ -197,8 +217,12 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
             const creationDate = formMetricsSelector.formDate.value.created_at;
             for (let key of Object.keys(selectedMetrics)) {
               const saveKey = `${key}_ref_id`;
-              if (selectedMetrics[key].id != null) {
-                newItem[saveKey] = selectedMetrics[key].id;
+              if (
+                selectedMetrics[key] != null &&
+                selectedMetrics[key].option != null &&
+                selectedMetrics[key].option.id != null
+              ) {
+                newItem[saveKey] = selectedMetrics[key].option.id;
               }
             }
 

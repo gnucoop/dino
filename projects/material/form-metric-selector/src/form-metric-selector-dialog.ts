@@ -87,6 +87,9 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
       formSchema: Observable<FormSchema | null>;
       formDatas: FormData[];
       statusEditable: boolean;
+      secondaryMetricFieldsDisplayed: {
+        [metricName: string]: string;
+      } | null;
     },
     private _fstm: FormStatusManager,
     private _fdm: FormDataManager,
@@ -138,7 +141,8 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
     };
     for (let key of metricKeys) {
       formMetricsSelectorValue[`${key}_ref_id`] = this._formMetricsSelector.formMetrics.value[key]
-        ? this._formMetricsSelector.formMetrics.value[key].id
+        .option
+        ? this._formMetricsSelector.formMetrics.value[key].option.id
         : null;
     }
     this.dialogRef.close(formMetricsSelectorValue);

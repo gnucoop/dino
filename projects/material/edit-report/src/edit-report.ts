@@ -105,6 +105,26 @@ export class EditReport implements AfterViewInit {
   @Input() allowMetricCreationFor: string[] = ['all'];
 
   /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    this._secondaryMetricFieldsDisplayed = fields;
+  }
+
+  /**
    * Sets the report id with an input
    */
   @Input() set setReportId(id: string | null) {

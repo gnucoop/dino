@@ -5,6 +5,7 @@
     [context]="'bulkFormEdit'"
     [availableStatuses]="availableStatuses|async"
     [setDialogActRouteParams]="data.routeParams"
+    [secondaryMetricFieldsDisplayed]="data.secondaryMetricFieldsDisplayed"
   >
     <div bulk-edit-message>{{'Leave a field empty if you do not wish to change the related value of the selected forms'|transloco}}</div>
   </dino-form-metric-selector>

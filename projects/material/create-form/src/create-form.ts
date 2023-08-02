@@ -131,6 +131,26 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   @Input() allowSaveDraft: boolean = false;
 
   /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    this._secondaryMetricFieldsDisplayed = fields;
+  }
+
+  /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
@@ -596,11 +616,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   Object.keys(metricSel).forEach(metricName => {
                     if (
                       metricSel[metricName] &&
-                      isRxDocument(metricSel[metricName]) &&
+                      isRxDocument(metricSel[metricName].option) &&
                       fschemadeps.metric_data_to_show &&
                       fschemadeps.metric_data_to_show.includes(metricName)
                     ) {
-                      const metricProps = metricSel[metricName].toJSON();
+                      const metricProps = metricSel[metricName].option.toJSON();
                       if (
                         !(metricName in requiredMetrics) ||
                         (metricName in requiredMetrics &&
@@ -625,7 +645,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             return obsOf(null);
           }
         }),
-        switchMap(data => data as Observable<{[key: string]: Metric}>),
+        switchMap(data => data),
         shareReplay(1),
         takeUntil(this._mainUnsubscribe),
       )
@@ -718,8 +738,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   const creationDate = formMetricsSelector.formDate.value.created_at;
                   for (let key of Object.keys(selectedMetrics)) {
                     const saveKey = `${key}_ref_id`;
-                    if (selectedMetrics[key].id != null) {
-                      newItem[saveKey] = selectedMetrics[key].id;
+                    if (
+                      selectedMetrics[key] != null &&
+                      selectedMetrics[key].option != null &&
+                      selectedMetrics[key].option.id != null
+                    ) {
+                      newItem[saveKey] = selectedMetrics[key].option.id;
                     }
                   }
 
