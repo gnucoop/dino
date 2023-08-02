@@ -86,6 +86,28 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   }
 
   /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    if (fields != null) {
+      this._secondaryMetricFieldsDisplayed = fields;
+    }
+  }
+
+  /**
    * The list of all the Form Statuses available to the active User
    */
   @Input() availableStatuses: FormStatus[] | null = null;
@@ -104,7 +126,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * The Selector metrics form group.
    */
   formMetrics: UntypedFormGroup;
-  get selectedMetrics(): {[key: string]: Metric} {
+  get selectedMetrics(): {
+    [key: string]: {
+      option: Metric;
+      secondaryMetricFieldsDisplayed: {[metricName: string]: string};
+      metricType: string;
+    };
+  } {
     return this.formMetrics.value;
   }
 
@@ -116,7 +144,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * The Selector metrics valueChanges
    */
-  get selectedMetricsChanges(): Observable<{[key: string]: RxDocument<Metric>}> {
+  get selectedMetricsChanges(): Observable<{
+    [key: string]: {
+      option: RxDocument<Metric>;
+      secondaryMetricFieldsDisplayed: {[metricName: string]: any} | null;
+      metricType: string;
+    };
+  }> {
     return this.formMetrics.valueChanges;
   }
 
@@ -149,7 +183,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * All the metrics autocomplete options.
    */
   formMetricsOptions: {
-    [key: string]: BehaviorSubject<RxDocument<Metric & {level?: number}, {}>[]>;
+    [key: string]: BehaviorSubject<
+      RxDocument<Metric & {level?: number} & {[key: string]: any}, {}>[]
+    >;
   } = {};
 
   /**
@@ -281,26 +317,32 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
 
     if (this._areaManager != null) {
       group['area'] = new UntypedFormControl('', validatorFn);
-      this.formMetricsValues['area'] = group['area'].valueChanges;
+      this.formMetricsValues['area'] = group['area'].valueChanges.pipe(map(vc => vc.option ?? vc));
     }
     if (this._caseManager != null) {
       group['case'] = new UntypedFormControl('', validatorFn);
-      this.formMetricsValues['case'] = group['case'].valueChanges;
+      this.formMetricsValues['case'] = group['case'].valueChanges.pipe(map(vc => vc.option ?? vc));
     }
 
     if (this._projectManager != null) {
       group['project'] = new UntypedFormControl('', validatorFn);
-      this.formMetricsValues['project'] = group['project'].valueChanges;
+      this.formMetricsValues['project'] = group['project'].valueChanges.pipe(
+        map(vc => vc.option ?? vc),
+      );
     }
 
     if (this._locationManager != null) {
       group['location'] = new UntypedFormControl('', validatorFn);
-      this.formMetricsValues['location'] = group['location'].valueChanges;
+      this.formMetricsValues['location'] = group['location'].valueChanges.pipe(
+        map(vc => vc.option ?? vc),
+      );
     }
 
     if (this._organizationManager != null) {
       group['organization'] = new UntypedFormControl('', validatorFn);
-      this.formMetricsValues['organization'] = group['organization'].valueChanges;
+      this.formMetricsValues['organization'] = group['organization'].valueChanges.pipe(
+        map(vc => vc.option ?? vc),
+      );
     }
 
     const formGroup = new UntypedFormGroup(group);
@@ -441,11 +483,37 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * Displays the Metric Name only in the Metric
    * autocomplete field.
    */
-  displayMetricName(metric: Metric): string {
-    if (metric == null) {
+  displayMetricName(obj: {
+    option: Metric & {[key: string]: any};
+    secondaryMetricFieldsDisplayed: {[metricName: string]: any} | null;
+    metricType: string;
+  }): string {
+    if (obj == null || obj.option == null || obj.metricType == null) {
       return '';
     }
-    return metric.name && metric.id ? metric.name : '';
+    let displayed = obj.option.name && obj.option.id ? obj.option.name : '';
+    if (
+      obj.secondaryMetricFieldsDisplayed != null &&
+      obj.secondaryMetricFieldsDisplayed[obj.metricType] != null
+    ) {
+      if (obj.secondaryMetricFieldsDisplayed[obj.metricType].includes('metric_data')) {
+        const metricDataKey =
+          obj.secondaryMetricFieldsDisplayed[obj.metricType].split('metric_data ')[1];
+        const metricDataValue =
+          obj.option['metric_data'] != null ? obj.option['metric_data'][metricDataKey] : null;
+        if (metricDataValue != null) {
+          displayed = `${displayed} - (${metricDataValue})`;
+        }
+      } else if (
+        obj.secondaryMetricFieldsDisplayed[obj.metricType] != null &&
+        obj.option[obj.secondaryMetricFieldsDisplayed[obj.metricType]] != null
+      ) {
+        displayed = `${displayed} - (${
+          obj.option[obj.secondaryMetricFieldsDisplayed[obj.metricType]]
+        })`;
+      }
+    }
+    return displayed;
   }
 
   /**
@@ -558,7 +626,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           if (startValue != null) {
             const formControl = this.formMetrics.get(startValue?.collection.name);
             if (formControl != null) {
-              formControl.setValue(startValue);
+              formControl.setValue({
+                option: startValue,
+                secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+                metricType: startValue.collection.name,
+              });
             }
           }
         });
@@ -566,7 +638,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         if (strValue != null) {
           const formControl = this.formMetrics.get(strValue?.collection.name);
           if (formControl != null) {
-            formControl.setValue(strValue);
+            formControl.setValue({
+              option: strValue,
+              secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+              metricType: strValue.collection.name,
+            });
           }
         }
       });

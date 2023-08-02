@@ -4,7 +4,8 @@
 >
   <div class="dino-bulk-edit-selector-message">
     <ng-content select="[bulk-edit-message]"></ng-content>
-  </div><br><br>
+  </div>
+  <br /><br />
   <div class="dino-form-metric-selector-message">
     <ng-content select="[metric-selector-message]"></ng-content>
   </div>
@@ -64,10 +65,11 @@
         >
           <mat-option
             *ngFor="let option of formMetricsOptions[field.fieldName] | async"
-            [value]="option"
+            [value]="{option, secondaryMetricFieldsDisplayed, metricType: field.fieldName}"
             [ngClass]="'dino-option-level-' + (option.level ?? '0')"
           >
-            {{option.name}}
+            {{displayMetricName({option, secondaryMetricFieldsDisplayed, metricType:
+            field.fieldName})}}
           </mat-option>
         </mat-autocomplete>
 
