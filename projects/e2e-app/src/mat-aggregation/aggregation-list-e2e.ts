@@ -8,6 +8,7 @@ import {FormCreatorHub} from '@dino/material/form-creator-hub';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {BehaviorSubject, Observable, of as obsOf, Subject, throwError} from 'rxjs';
 import {catchError, filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-aggregation-list-e2e',
@@ -42,6 +43,9 @@ export class MatAggregationListE2E implements AfterViewInit, OnDestroy {
     delete: 'delete',
   };
   readonly listRowActions: Observable<ListAction[] | null>;
+  readonly secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   /**
    * A reference to the MatDialog that contains the Form Creator Hub

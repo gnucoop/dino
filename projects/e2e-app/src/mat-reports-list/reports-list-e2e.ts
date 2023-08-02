@@ -7,6 +7,7 @@ import {ListDataSource, SelectionList} from '@dino/material/list';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {instanceName} from '../mocks';
+import {additionalConfig} from '../mockconfig';
 
 @Component({
   selector: 'app-reports-list-e2e',
@@ -81,6 +82,9 @@ export class MatReportsListE2E {
   };
   readonly listRowActions: Observable<ListAction[] | null>;
   readonly displayAddButton: Observable<boolean>;
+  readonly secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   constructor(
     readonly filtersService: FiltersService,

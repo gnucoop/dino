@@ -9,6 +9,9 @@ import {additionalConfig} from '../mockconfig';
 export class MatCreateReportDataE2E {
   readonly manager: ReportDataManager;
   readonly optionalMetrics: boolean = additionalConfig.optionalReportMetrics;
+  readonly secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   constructor(private _reportDataManager: ReportDataManager) {
     this.manager = this._reportDataManager;

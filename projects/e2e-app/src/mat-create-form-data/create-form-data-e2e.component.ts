@@ -12,6 +12,9 @@ export class MatCreateFormDataE2E {
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
   readonly offlineFileUpload: boolean = additionalConfig.offlineFileUpload;
   readonly pipelines: string[] = additionalConfig.pipelines;
+  readonly secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   constructor(private _formDataManager: FormDataManager) {
     this.manager = this._formDataManager;

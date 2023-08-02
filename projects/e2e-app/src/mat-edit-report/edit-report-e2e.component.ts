@@ -7,4 +7,7 @@ import {additionalConfig} from '../mockconfig';
 })
 export class MatEditReportE2E {
   readonly optionalMetrics: boolean = additionalConfig.optionalReportMetrics;
+  readonly secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 }
