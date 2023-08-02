@@ -336,7 +336,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * Indicates which bulk actions are available
    */
   @Input()
-  bulkActionsAvailable: ('delete' | 'bulkFormEdit')[] = ['delete'];
+  bulkActionsAvailable: ('delete' | 'bulkFormEdit')[] | null = ['delete'];
 
   /**
    * Non default table cell templates
@@ -376,6 +376,26 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    this._secondaryMetricFieldsDisplayed = fields;
+  }
+
+  /**
    * If True, the list will emit an event with row data when the user hovers or selects a row.
    * Defaults to false.
    */
@@ -384,6 +404,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * Event emitted when row is selected/hovered.
    */
   @Output() readonly emitRowDataEvt: EventEmitter<T> = new EventEmitter<T>();
+  /**
+   * Event emitted when the List Selection changes
+   */
+  @Output() readonly emitSelectionChangedEvt: EventEmitter<T[]> = new EventEmitter<T[]>();
 
   /**
    * The default list actions performed when a list item is clicked.
@@ -456,6 +480,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Subscribes to List Selection change event
+   */
+  private _selectionChangedSub: Subscription = Subscription.EMPTY;
+
   constructor(
     cdr: ChangeDetectorRef,
     aui: AdminUserInteractionsService,
@@ -474,6 +503,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     super(cdr, aui, actroute);
 
     this._fts.clearAdditionalBasicFilters();
+    this._selectionChangedSub = this.selection.changed.subscribe(() =>
+      this.emitSelectionChangedEvt.emit(this.getSelection()),
+    );
   }
 
   export(ev: 'XLSX' | 'CSV' | 'dialog') {
@@ -1075,6 +1107,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       formSchema: genItem[0]['form_schema'],
       formDatas: genItem as FormData[],
       statusEditable: isStatusEditable,
+      secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
     };
     this._fmDialogRef = this._dialog.open(FormMetricSelectorDialog, dialogConfig);
     this._fmDialogRef
@@ -1445,5 +1478,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
     this._fts.clearModelFilters();
     this._dialogSub.unsubscribe();
+    this._selectionChangedSub.unsubscribe();
   }
 }

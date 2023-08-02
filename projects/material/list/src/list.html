@@ -47,7 +47,7 @@
             >
             </mat-checkbox>
             <button
-              *ngIf="bulkActionsAvailable.includes('delete')"
+              *ngIf="bulkActionsAvailable?.includes('delete')"
               class="dino-bulk-delete-button"
               (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
               [disabled]="selection.selected.length <= 0"
@@ -58,7 +58,7 @@
               >
             </button>
             <button
-              *ngIf="bulkActionsAvailable.includes('bulkFormEdit')"
+              *ngIf="bulkActionsAvailable?.includes('bulkFormEdit')"
               class="dino-bulk-edit-button"
               (click)="actionOnItems(selection.selected, {actionType: 'bulkFormEdit', matIcon: 'edit', askConfirm: false}, ctx.isDetails)"
               [disabled]="selection.selected.length <= 0"
