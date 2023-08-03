@@ -29,7 +29,7 @@ import {Metric} from '@dino/core/data';
  * @param control The form control.
  */
 export function RequireNotNullMetricMatch(control: AbstractControl): ValidationErrors | null {
-  const selection: string | Metric = control.value;
+  const selection: string | Metric = control.value.option ?? control.value;
   if (
     (typeof selection === 'string' && selection !== '') ||
     selection === '' ||
@@ -49,7 +49,7 @@ export function RequireNotNullMetricMatch(control: AbstractControl): ValidationE
  * @param control The form control.
  */
 export function RequireMetricMatch(control: AbstractControl): ValidationErrors | null {
-  const selection: string | Metric | null = control.value;
+  const selection: string | Metric | null = control.value.option ?? control.value;
   if (typeof selection === 'string' && selection !== '') {
     return {incorrect: true};
   }
