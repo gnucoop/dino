@@ -106,7 +106,7 @@ import {format} from 'date-fns';
 import {UserDataManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
-import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector/src/form-metric-selector-dialog';
+import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 
 /**
  * The material List component with row selection, extending the core List.

@@ -21,5 +21,6 @@
  */
 
 export * from './form-metric-selector';
+export * from './form-metric-selector-dialog';
 export * from './form-metric-selector-validator';
 export * from './form-metric-selector.module';
