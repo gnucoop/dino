@@ -1,3 +1,24 @@
+<a name="15.2.2"></a>
+# 15.2.2 "extreme-monkey" (2023-08-03)
+### Bug Fixes
+* **material/edit-form-schema:** Added transloco pipe to Form Metrics field options. ([f504178](https://bitbucket.org/gnucoop/dino/commits/f50417890c4c50506cd97c5fd0adff6501a5f5c3))
+* **material/langs:** Added missing Date Value pipe export in public api. ([be9fc96](https://bitbucket.org/gnucoop/dino/commits/be9fc96951be1a41cf668fb13beab9d2409af824))
+* **material/list:** format date by locale in list for repeating slide ([0faaca2](https://bitbucket.org/gnucoop/dino/commits/0faaca2f55bb86c884924ebc5f857c5b81373f6e))
+* **material/metric-editor:** remove close dialog on click ([70b97ef](https://bitbucket.org/gnucoop/dino/commits/70b97efae3034ccd11d2e9299b0ad0e7a103797b))
+### Features
+* **core/list:** Added 'bulkFormEdit' actionType and abstract method to List. ([de35553](https://bitbucket.org/gnucoop/dino/commits/de355535cc5b066f5e5047ced62142aef542b701))
+* **e2e-material/forms-list:** Added bulkActionsAvailable stream, to determine which bulk actions are available based on user permissions. ([b6a3c6a](https://bitbucket.org/gnucoop/dino/commits/b6a3c6ad1a034a70acefce4692a5fc94fd9520ed))
+* **e2e-material/multiple:** Added secondaryMetricFieldsDisplayed to multiple e2e-app components. ([37f564f](https://bitbucket.org/gnucoop/dino/commits/37f564fcaabea514f33c4a6e8c118a8f98d2e51a))
+* **material/form-metric-selector:** Created Form Metric Selector Dialog component. ([e6710d9](https://bitbucket.org/gnucoop/dino/commits/e6710d9adce4e18b14da6cd9de16066fdbb98246))
+* **material/form-metric-selector:** Implemented Metric Secondary fields display. ([b1b3f90](https://bitbucket.org/gnucoop/dino/commits/b1b3f90221f604b26e8b2f9d7eef6c18d2605d62))
+* **material/list:** Added BulkFormEdit action to list. ([555df42](https://bitbucket.org/gnucoop/dino/commits/555df42b7fa506a3e4f7baa6878b61fff0447414))
+* **material/list:** Added selection changed event emitter. Added secondaryMetricFieldsDisplayed and bulkActionsAvailable inputs. ([4647ac4](https://bitbucket.org/gnucoop/dino/commits/4647ac43ab88ba926fdb8329d8a30ca2fd1bcf52))
+* **material/multiple:** Added secondaryMetricFieldsDisplayed input to edit/create form/report components and to form-metric-selector-dialog. ([a78a4b3](https://bitbucket.org/gnucoop/dino/commits/a78a4b36e2d7c48a46d00c16862fce1224f4a8b0))
+* **material/search-filters-bar:** Implemented Metric Secondary fields display in metric filters. ([25e982f](https://bitbucket.org/gnucoop/dino/commits/25e982fc8ff61242e32fca64e2ebbbb3cf414c00))
+* **material/user-area:** add email in user profile dialog ([3200554](https://bitbucket.org/gnucoop/dino/commits/32005548ac4b65ae3bf88995e7ab8dd1a9260580))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.1"></a>
 # 15.2.1 "live-rodent" (2023-07-14)
 ### Bug Fixes
