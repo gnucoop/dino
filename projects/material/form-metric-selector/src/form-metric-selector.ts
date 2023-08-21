@@ -562,7 +562,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           if (res && isRxDocument(res)) {
             const formControl = this.formMetrics.get(metricType);
             if (formControl) {
-              formControl.setValue(res);
+              formControl.setValue({
+                option: res,
+                secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+                metricType,
+              });
               this._newMetric.next(res);
             }
           }
