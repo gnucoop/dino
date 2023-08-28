@@ -35,6 +35,8 @@ import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {FloatingButtonModule} from '@dino/material/floating-button';
 
 import {Collect} from './collect';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   imports: [
@@ -45,10 +47,12 @@ import {Collect} from './collect';
     FormsModule,
     RouterModule,
     MatButtonModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatGridListModule,
     MatIconModule,
     MatInputModule,
+    MatTooltipModule,
     ReactiveFormsModule,
   ],
   declarations: [Collect],

@@ -38,6 +38,8 @@ import {RxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {debounceTime, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 
 /**
  * Type representing the available Collect component types.
@@ -164,6 +166,26 @@ export class Collect {
     this._cdr.markForCheck();
   }
 
+  /**
+   * Secondary metric field to display in the Form Metric Selector and Filters
+   */
+  private _secondaryMetricFieldsDisplayed: {
+    [metricName: string]: string;
+  } | null = null;
+  get secondaryMetricFieldsDisplayed(): {
+    [metricName: string]: string;
+  } | null {
+    return this._secondaryMetricFieldsDisplayed;
+  }
+  @Input()
+  set secondaryMetricFieldsDisplayed(
+    fields: {
+      [metricName: string]: string;
+    } | null,
+  ) {
+    this._secondaryMetricFieldsDisplayed = fields;
+  }
+
   readonly filterCtrl = new UntypedFormControl('');
 
   constructor(
@@ -173,6 +195,7 @@ export class Collect {
     private _pcs: PermissionContextService,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
+    private _dialog: MatDialog,
   ) {
     const res = combineLatest([
       this._collectType,
@@ -209,6 +232,7 @@ export class Collect {
                     'edit',
                     permissionContext,
                   ),
+                  shareUrl: 'visibility' in document && document.visibility === 1,
                 };
                 collectItems.push(collectItem);
               }
@@ -260,6 +284,26 @@ export class Collect {
     if (schemaId != null) {
       this._router.navigate([this._collectType.getValue(), 'schema', schemaId, 'edit']);
     }
+  }
+
+  /**
+   * Opens a dialog to create the Public Url to be shared.
+   * @param formSchemaId? The uuid of the Public Form Schema to share.
+   */
+  openShareUrlDialog(formSchemaId?: string): void {
+    if (!formSchemaId) {
+      return;
+    }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      routeParams: {'form_schema_id': formSchemaId},
+      formSchema: obsOf(null),
+      formDatas: [],
+      statusEditable: false,
+      secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+      context: 'shareUrl',
+    };
+    this._dialog.open(FormMetricSelectorDialog, dialogConfig);
   }
 
   /**

@@ -58,4 +58,9 @@ export interface CollectItem {
    * If true, an Edit Icon will be displayed on the item
    */
   editable?: boolean;
+
+  /**
+   * If true, a Share Url icon will be displayed on the item
+   */
+  shareUrl?: boolean;
 }

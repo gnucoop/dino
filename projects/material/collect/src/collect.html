@@ -22,22 +22,33 @@
         [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
       >
         <div>
-          <div
-            class="dino-grid-action-icons"
-            *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"
-          >
+          <div class="dino-grid-action-icons">
             <button
+              *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"
               mat-mini-fab
               color="primary"
               aria-label="Edit Form Schema"
+              [matTooltip]="'Edit Form Schema'|transloco"
               (click)="editSchema(item.schemaId); $event.stopPropagation();"
             >
               <mat-icon>create</mat-icon>
             </button>
+            <button
+              *ngIf="getCollectType === 'forms' && item.shareUrl"
+              mat-mini-fab
+              color="primary"
+              aria-label="Share Url"
+              [matTooltip]="'Share Public Url'|transloco"
+              (click)="openShareUrlDialog(item.schemaId); $event.stopPropagation();"
+            >
+              <mat-icon>share</mat-icon>
+            </button>
           </div>
           <div class="title"></div>
           <div class="dino-grid-icon">
-            <mat-icon class="dino-mat-icon" *ngIf="!item.svgIcon; else svgIconTemplate">{{item.icon}}</mat-icon>
+            <mat-icon class="dino-mat-icon" *ngIf="!item.svgIcon; else svgIconTemplate"
+              >{{item.icon}}</mat-icon
+            >
             <ng-template #svgIconTemplate>
               <mat-icon class="dino-mat-icon" svgIcon="{{item.svgIcon ?? ''}}"></mat-icon>
             </ng-template>

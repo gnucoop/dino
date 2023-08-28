@@ -19,17 +19,20 @@ dino-collect {
       border-radius: 10px;
       border: 2px solid rgb(var(--palette-primary-500));
       .dino-grid-action-icons {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
         position: absolute;
         top: 10px;
         right: 10px;
         .mat-mdc-mini-fab.mat-mdc-button-base {
+          margin-left: 5px;
+          flex: 1 0 auto;
           opacity: 0.5;
           transition: all ease-in-out 0.3;
           -webkit-transition: all ease-in-out 0.3s;
           cursor: pointer;
-        }
-        &:hover {
-          .mat-mdc-mini-fab.mat-mdc-button-base {
+          &:hover {
             opacity: 1;
             color: rgb(var(--palette-warn-500));
             background-color: rgb(var(--palette-accent-500));
@@ -37,7 +40,7 @@ dino-collect {
         }
       }
       outline: none;
-      .mat-grid-tile-content div {
+      .mat-grid-tile-content div:not(.dino-grid-action-icons) {
         outline: none;
         display: flex;
         flex-flow: column wrap;
