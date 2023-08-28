@@ -2,16 +2,26 @@
   <dino-form-metric-selector
     [hasOptionalMetrics]="hasOptionalMetrics"
     [allowMetricCreationFor]="allowMetricCreationFor"
-    [context]="'bulkFormEdit'"
+    [context]="data.context"
     [availableStatuses]="availableStatuses|async"
     [setDialogActRouteParams]="data.routeParams"
     [secondaryMetricFieldsDisplayed]="data.secondaryMetricFieldsDisplayed"
   >
-    <div bulk-edit-message>{{'Leave a field empty if you do not wish to change the related value of the selected forms'|transloco}}</div>
+    <div bulk-edit-message>
+      {{'Leave a field empty if you do not wish to change the related value of the selected forms'|transloco}}
+    </div>
+    <div share-url-message>
+      {{'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard'|transloco}}
+    </div>
   </dino-form-metric-selector>
 </mat-dialog-content>
 
 <mat-dialog-actions>
   <button mat-raised-button color="warn" (click)="closeDialog()">{{'Close'|transloco}}</button>
-  <button mat-raised-button color="primary" (click)="save()">{{'Save'|transloco}}</button>
+  <button *ngIf="data.context !== 'shareUrl'" mat-raised-button color="primary" (click)="save()">
+    {{'Save'|transloco}}
+  </button>
+  <button *ngIf="data.context === 'shareUrl'" mat-raised-button color="primary" (click)="shareUrl()">
+    {{'Copy to Clipboard'|transloco}} <mat-icon>share</mat-icon>
+    </button>
 </mat-dialog-actions>

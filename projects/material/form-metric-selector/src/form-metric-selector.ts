@@ -36,7 +36,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
+import {FormData, FormSchemaManager, FormStatus} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -74,7 +74,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * Determines the context in which the Metric Selector is inserted (form / report / bulkFormEdit)
    */
-  @Input() context: 'form' | 'report' | 'bulkFormEdit' = 'form';
+  @Input() context: 'form' | 'report' | 'bulkFormEdit' | 'shareUrl' = 'form';
 
   /**
    * Activated route params can be passed as an input (when this is inside a Form Metric Selector Dialog)
@@ -250,7 +250,6 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     private _dialog: MatDialog,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
-    private _fst: FormStatusManager,
     private _ts: TranslocoService,
     private _adapter: DateAdapter<any>,
     @Optional() private _areaManager: AreaManager | null,

@@ -36,9 +36,11 @@ import {FormMetricSelectorDialog} from './form-metric-selector-dialog';
 import {MatDialogModule} from '@angular/material/dialog';
 import {RouterModule} from '@angular/router';
 import {MatSelectModule} from '@angular/material/select';
-
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 @NgModule({
   imports: [
+    ClipboardModule,
     CommonModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -48,6 +50,7 @@ import {MatSelectModule} from '@angular/material/select';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
     RouterModule,
     TranslocoModule,

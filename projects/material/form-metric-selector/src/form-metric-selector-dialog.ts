@@ -43,6 +43,9 @@ import {
   FormStatusManager,
 } from '@dino/core/forms';
 import {PermissionContextService} from '@dino/core/data';
+import {Clipboard} from '@angular/cdk/clipboard';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -90,10 +93,14 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
       secondaryMetricFieldsDisplayed: {
         [metricName: string]: string;
       } | null;
+      context: 'form' | 'report' | 'bulkFormEdit' | 'shareUrl';
     },
     private _fstm: FormStatusManager,
     private _fdm: FormDataManager,
     private _pcs: PermissionContextService,
+    private _clipboard: Clipboard,
+    private _snackbar: MatSnackBar,
+    private _ts: TranslocoService,
   ) {
     this.availableStatuses = combineLatest([
       data.formSchema,
@@ -146,6 +153,44 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
         : null;
     }
     this.dialogRef.close(formMetricsSelectorValue);
+  }
+
+  /**
+   * Generates a Public Form Url to be copied into the user's clipboard
+   */
+  shareUrl(): void {
+    if (this._formMetricsSelector === undefined) {
+      return;
+    }
+    let shareUrl: string = `${window.location.origin}/f/${this.data.routeParams['form_schema_id']}`;
+    const metricKeys: string[] = Object.keys(this._formMetricsSelector.formMetrics.value);
+    const metricValues: string[] = Object.values(this._formMetricsSelector.formMetrics.value);
+    if (metricKeys.length && metricValues.some(v => v != null)) {
+      shareUrl += '?';
+    }
+    const formMetricsSelectorValue: {[key: string]: string | null} = {};
+    for (let key of metricKeys) {
+      formMetricsSelectorValue[key] = this._formMetricsSelector.formMetrics.value[key].option
+        ? this._formMetricsSelector.formMetrics.value[key].option.id
+        : null;
+    }
+    for (let idx = 0; idx < metricKeys.length; idx++) {
+      const key: string = metricKeys[idx];
+      const value: string | null = formMetricsSelectorValue[key];
+      if (value != null) {
+        if (idx > 0 && shareUrl.slice(-1) !== '?') {
+          shareUrl += `&`;
+        }
+        shareUrl += `${key}=${value}`;
+      }
+    }
+    this._clipboard.copy(shareUrl);
+    this._snackbar.open(
+      this._ts.translate(`Public Form Url copied in your clipboard!`),
+      this._ts.translate('URL COPIED'),
+      {duration: 10000},
+    );
+    this.dialogRef.close();
   }
 
   ngOnDestroy(): void {

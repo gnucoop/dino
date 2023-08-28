@@ -1,16 +1,19 @@
 <div
   class="dino-form-metric-selector-container"
-  [class.dino-form-metric-selector-dialog-container]="context === 'bulkFormEdit'"
+  [class.dino-form-metric-selector-dialog-container]="context === 'bulkFormEdit' || context === 'shareUrl' "
 >
-  <div class="dino-bulk-edit-selector-message">
+  <div class="dino-additional-selector-message" *ngIf="context === 'bulkFormEdit'">
     <ng-content select="[bulk-edit-message]"></ng-content>
+  </div>
+  <div class="dino-additional-selector-message" *ngIf="context === 'shareUrl'">
+    <ng-content select="[share-url-message]"></ng-content>
   </div>
   <br /><br />
   <div class="dino-form-metric-selector-message">
     <ng-content select="[metric-selector-message]"></ng-content>
   </div>
 
-  <form [formGroup]="formDate" autocomplete="off">
+  <form [formGroup]="formDate" autocomplete="off" *ngIf="context !== 'shareUrl'">
     <mat-form-field class="dino-form-date-selector-field" appearance="fill">
       <mat-label>{{'Creation Date'|transloco}}</mat-label>
       <input
