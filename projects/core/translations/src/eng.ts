@@ -232,4 +232,9 @@ export const ENG: Translation = {
   'New App version ready!': 'New App version ready!',
   'Leave a field empty if you do not wish to change the related value of the selected forms':
     'Leave a field empty if you do not wish to change the related value of the selected forms',
+  'Edit Form Schema': 'Edit Form Schema',
+  'Share Public Url': 'Share Public Url',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard',
+  'Copy to Clipboard': 'Copy to Clipboard',
 };

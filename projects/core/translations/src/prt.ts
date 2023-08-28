@@ -232,4 +232,9 @@ export const PRT: Translation = {
   'New App version ready!': 'Nova versão da App pronta!',
   'Leave a field empty if you do not wish to change the related value of the selected forms':
     'Deixar um campo vazio se não pretender alterar o valor relacionado com os formulários seleccionados',
+  'Edit Form Schema': 'Editar esquema de formulário',
+  'Share Public Url': 'Partilhar url público',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Escolha as métricas a que o Url do Formulário Público fará referência, se for o caso, e depois copie o Url para a sua memória',
+  'Copy to Clipboard': 'Copiar na memória',
 };

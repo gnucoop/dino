@@ -233,4 +233,9 @@ export const ESP: Translation = {
   'New App version ready!': 'Nueva versión de la aplicación!',
   'Leave a field empty if you do not wish to change the related value of the selected forms':
     'Deje un campo vacío si no desea cambiar el valor relacionado de los formularios seleccionados',
+  'Edit Form Schema': 'Editar esquema de formulario',
+  'Share Public Url': 'Compartir url pública',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Elija las métricas a las que se referirá la Url del formulario público, si las hay, y luego copie la Url en su memoria',
+  'Copy to Clipboard': 'Copia en memoria',
 };

@@ -242,4 +242,9 @@ export const ITA: Translation = {
   'New App version ready!': "Nuova versione dell'App disponibile!",
   'Leave a field empty if you do not wish to change the related value of the selected forms':
     'Lascia un campo vuoto se non desideri modificarne il valore nei form selezionati',
+  'Edit Form Schema': 'Modifica il Form Schema',
+  'Share Public Url': 'Condividi Link Pubblico',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Scegli a quali metriche sarà riferito il Link pubblico del form, poi copia il Link',
+  'Copy to Clipboard': 'Copia in Memoria',
 };

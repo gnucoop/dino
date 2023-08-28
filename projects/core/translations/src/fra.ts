@@ -229,4 +229,9 @@ export const FRA: Translation = {
   'New App version ready!': "Nouvelle version de l'application prête!",
   'Leave a field empty if you do not wish to change the related value of the selected forms':
     'Laissez un champ vide si vous ne souhaitez pas modifier la valeur associée aux formulaires sélectionnés.',
+  'Edit Form Schema': 'Modifier le schéma du formulaire',
+  'Share Public Url': "Partager l'url publique",
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    "Choisissez les métriques auxquelles l'Url du formulaire public fera référence, le cas échéant, puis copiez l'Url dans votre mémoire.",
+  'Copy to Clipboard': 'Copie en mémoire',
 };
