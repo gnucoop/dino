@@ -823,6 +823,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       });
   }
 
+  /**
+   * Opens a dialog with the Status Editor.
+   * Subscribes to Dialog closing event to emit the Status Change trigger.
+   */
   openStatusEditor(element: FormData & {form_schema: Observable<FormSchema>}): void {
     const dialogConfig = new MatDialogConfig();
     const dialogData: FormStatusChangerData = {formData: element};
@@ -1134,6 +1138,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       formDatas: genItem as FormData[],
       statusEditable: isStatusEditable,
       secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+      context: 'bulkFormEdit',
     };
     this._fmDialogRef = this._dialog.open(FormMetricSelectorDialog, dialogConfig);
     this._fmDialogRef
