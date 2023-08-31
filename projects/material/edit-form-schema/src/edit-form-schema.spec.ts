@@ -4,12 +4,13 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
+import {DATA_SERVICE_CONFIG, DataServiceConfig, InsertModel} from '@dino/core/data';
+import {FormSchema, FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {getRxStorageMemory} from 'rxdb/plugins/memory';
-import {BehaviorSubject, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {EditFormSchema, EditFormSchemaModule} from './public_api';
+import {RxDocument} from 'rxdb';
 
 let testDbIdx = 0;
 
@@ -47,9 +48,16 @@ const authServiceMock = {
   authConfig: authServiceConfig,
 } as unknown as AuthService;
 
+class FormSchemaManagerMock extends FormSchemaManager {
+  override create(_obj: InsertModel<FormSchema>): Observable<RxDocument<FormSchema> | null> {
+    return of(null);
+  }
+}
+
 describe('Edit FormSchema', () => {
   let fixtureEditFormSchema: ComponentFixture<EditFormSchema>;
   let editFormSchema: EditFormSchema;
+  let fsm: FormSchemaManager;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -60,13 +68,14 @@ describe('Edit FormSchema', () => {
         MatDialogModule,
       ],
       providers: [
-        FormSchemaManager,
         FormStatusManager,
         {provide: AuthService, useValue: authServiceMock},
+        {provide: FormSchemaManager, useClass: FormSchemaManagerMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
       ],
     }).compileComponents();
 
+    fsm = TestBed.inject(FormSchemaManager);
     fixtureEditFormSchema = TestBed.createComponent(EditFormSchema);
     editFormSchema = fixtureEditFormSchema.componentInstance;
   });
@@ -76,5 +85,15 @@ describe('Edit FormSchema', () => {
     fixtureEditFormSchema.detectChanges();
 
     expect(editFormSchema).toBeTruthy();
+  });
+
+  it('should call the FormSchemaManager create method', async () => {
+    await fixtureEditFormSchema.whenStable();
+    const createFormSchemaSpy = spyOn(fsm, 'create').and.callThrough();
+    fixtureEditFormSchema.detectChanges();
+
+    editFormSchema.save();
+
+    expect(createFormSchemaSpy).toHaveBeenCalledTimes(1);
   });
 });

@@ -2,6 +2,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dino/core/data';
 import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
@@ -68,7 +69,12 @@ describe('Create Form', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [CreateFormModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        CreateFormModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
       providers: [
         FormSchemaManager,
         FormStatusManager,
@@ -91,5 +97,16 @@ describe('Create Form', () => {
 
     expect(createForm).toBeTruthy();
     expect(fsm).toBeTruthy();
+  });
+
+  it('should call the save event and then the "getFilesInForm" method of uploadService with action "draft"', async () => {
+    await fixtureCreateForm.whenStable();
+    createForm.dataModelManager = fsm as unknown as DataModelManager<Model>;
+    const saveDraftUploadSpy = spyOn(createForm.uploadService, 'getFilesInForm').and.callThrough();
+    fixtureCreateForm.detectChanges();
+
+    createForm.saveDraft();
+
+    expect(saveDraftUploadSpy).toHaveBeenCalledTimes(1);
   });
 });

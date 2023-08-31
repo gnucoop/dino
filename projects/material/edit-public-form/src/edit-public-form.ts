@@ -214,7 +214,7 @@ export class EditPublicForm implements OnDestroy {
             .afterDismissed()
             .pipe(
               tap(() => {
-                window.location.reload();
+                this.windowReload();
               }),
               take(1),
             )
@@ -226,13 +226,17 @@ export class EditPublicForm implements OnDestroy {
             .afterDismissed()
             .pipe(
               tap(() => {
-                window.location.reload();
+                this.windowReload();
               }),
               take(1),
             )
             .subscribe();
         }
       });
+  }
+
+  windowReload() {
+    window.location.reload();
   }
 
   /**
