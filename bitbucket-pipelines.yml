@@ -6,7 +6,7 @@ pipelines:
         script:
           - rm -rf dist
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add -g @angular/cli
+          - yarn global add @angular/cli
     - step:
         name: Lint
         script:
