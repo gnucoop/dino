@@ -22,3 +22,5 @@
 
 export * from './metric-section';
 export * from './metric-section.module';
+export * from './metric-delete';
+export * from './metric-delete.module';

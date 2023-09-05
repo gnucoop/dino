@@ -39,7 +39,7 @@ export class MatProjectsE2E {
     {
       actionType: 'delete',
       matIcon: 'delete',
-      askConfirm: true,
+      customAction: row => this.section.openDeleteDialog(row),
     },
   ];
 

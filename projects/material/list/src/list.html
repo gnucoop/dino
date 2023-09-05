@@ -58,6 +58,17 @@
               >
             </button>
             <button
+              *ngIf="bulkActionsAvailable?.includes('deleteWithCheck')"
+              class="dino-bulk-delete-button"
+              (click)="actionOnItemsDeleteWithCheck(selection.selected, ctx.isDetails)"
+              [disabled]="selection.selected.length <= 0"
+              [attr.aria-label]="'Delete all items'|transloco"
+            >
+              <mat-icon aria-hidden="false" [attr.aria-label]="'delete icon'|transloco"
+                >delete</mat-icon
+              >
+            </button>
+            <button
               *ngIf="bulkActionsAvailable?.includes('bulkFormEdit')"
               class="dino-bulk-edit-button"
               (click)="actionOnItems(selection.selected, {actionType: 'bulkFormEdit', matIcon: 'edit', askConfirm: false}, ctx.isDetails)"

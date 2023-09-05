@@ -336,7 +336,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * Indicates which bulk actions are available
    */
   @Input()
-  bulkActionsAvailable: ('delete' | 'bulkFormEdit')[] | null = ['delete'];
+  bulkActionsAvailable: ('delete' | 'bulkFormEdit' | 'deleteWithCheck')[] | null = ['delete'];
+
+  /**
+   * A custom action to be performed on bulk delete
+   */
+  @Input()
+  bulkDeleteAction?: (row: any) => void;
 
   /**
    * Non default table cell templates
@@ -603,9 +609,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * Performs the chosen for the selected row/rows of the table
+   * Performs the chosen action for the selected row/rows of the table
    * @param row The selected row or rows
    * @param action The action to be performed
+   * @param isDetails If true, the items are in the details of a parent
    */
   actionOnItems(row: T | T[], action: ListAction, isDetails: boolean = false): void {
     if (this.dataSource == null) {
@@ -702,6 +709,25 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           const sortsList = this._matSortsList.toArray();
           this.expandedRowsData[row.id].sort = sortsList[sortsList.length - 1];
         });
+    }
+  }
+
+  /**
+   * Performs the delete with check for the selected row/rows of the table
+   * @param row The selected row or rows
+   * @param isDetails If true, the items are in the details of a parent
+   */
+  actionOnItemsDeleteWithCheck(row: T | T[], isDetails: boolean = false): void {
+    if (this.bulkDeleteAction) {
+      return this.actionOnItems(
+        row,
+        {
+          actionType: 'delete',
+          matIcon: 'delete',
+          customAction: this.bulkDeleteAction,
+        },
+        isDetails,
+      );
     }
   }
 

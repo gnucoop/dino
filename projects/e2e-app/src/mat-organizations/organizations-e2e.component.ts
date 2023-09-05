@@ -34,7 +34,7 @@ export class MatOrganizationsE2E {
     {
       actionType: 'delete',
       matIcon: 'delete',
-      askConfirm: true,
+      customAction: row => this.section.openDeleteDialog(row),
     },
   ];
 

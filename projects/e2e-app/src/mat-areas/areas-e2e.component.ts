@@ -32,7 +32,7 @@ export class MatAreasE2E {
     {
       actionType: 'delete',
       matIcon: 'delete',
-      askConfirm: true,
+      customAction: row => this.section.openDeleteDialog(row),
     },
   ];
 

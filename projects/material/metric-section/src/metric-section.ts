@@ -34,6 +34,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnDestroy,
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
@@ -44,6 +45,8 @@ import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/lis
 import {ListDataSource} from '@dino/material/list';
 import {MetricEditor} from '@dino/material/metric-editor';
 import JsBarcode from 'jsbarcode';
+import {catchError, Observable, Subscription, take, throwError} from 'rxjs';
+import {MetricDelete} from './metric-delete';
 
 /**
  * Dino Metric Section component.
@@ -57,7 +60,7 @@ import JsBarcode from 'jsbarcode';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class MetricSection<T extends Metric = Metric> implements OnInit, AfterViewInit {
+export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestroy, AfterViewInit {
   /**
    * If true, the Metrics List is displayed
    */
@@ -94,6 +97,18 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
   @Input() logoImage: string | null = null;
 
   /**
+   * Indicates which bulk actions are available
+   */
+  readonly bulkActionsAvailable: ('delete' | 'bulkFormEdit' | 'deleteWithCheck')[] | null = [
+    'deleteWithCheck',
+  ];
+
+  /**
+   * A custom action to be performed on bulk delete
+   */
+  readonly bulkDeleteAction: (row: any) => void = row => this.openDeleteDialog(row);
+
+  /**
    * The Label of the Metric
    */
   metricLabel: string = '';
@@ -102,6 +117,11 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
    * The Metrics List data sourcev
    */
   dataSource?: ListDataSource<T>;
+
+  /**
+   * Subscribes to the value returned by the Delete MatDialog on its closing event
+   */
+  private _dialogSub: Subscription = Subscription.EMPTY;
 
   /**
    * The Metric manager
@@ -145,6 +165,29 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
         readOnlyFields: this.readOnlyFields,
       },
     });
+  }
+
+  openDeleteDialog(metrics: T | T[]): void {
+    const confirmationDeleteDialogRef = this.dialog.open(MetricDelete, {
+      data: {
+        metricManager: this._metricManager,
+        metricItems: metrics,
+      },
+    });
+    this._dialogSub = confirmationDeleteDialogRef
+      .afterClosed()
+      .pipe(
+        catchError(err => throwError(() => err) as Observable<boolean>),
+        take(1),
+      )
+      .subscribe(confirmation => {
+        if (confirmation && this.dataSource) {
+          if (!Array.isArray(metrics)) {
+            metrics = [metrics];
+          }
+          this.dataSource.deleteAction(metrics);
+        }
+      });
   }
 
   /**
@@ -317,5 +360,9 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, AfterVi
       pageMargins: [10, 5, 10, 5],
     };
     return createPdf(pdfDef);
+  }
+
+  ngOnDestroy() {
+    this._dialogSub.unsubscribe();
   }
 }
