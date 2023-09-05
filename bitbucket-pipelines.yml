@@ -1,0 +1,46 @@
+image: node:16
+pipelines:
+  default:
+    - step:
+        name: Setup
+        script:
+          - rm -rf dist
+          - yarn install --frozen-lockfile --non-interactive
+    - step:
+        name: Lint
+        script:
+          - yarn -s lint
+    - step:
+        name: Build
+        script:
+          - ./scripts/build.mjs
+    - step:
+        name: Model schema tests
+        script:
+          - yarn -s model-schema-test
+    - step:
+        name: Unit tests
+        script:
+          - yarn -s test:ci
+    - step:
+        name: E2E tests
+        script:
+          - ./scripts/e2e-ci.mjs
+    - step:
+        name: Build release
+        script:
+          - ./scripts/release.mjs
+          - ./scripts/jenkins/create-build-artifacts.mjs
+        artifacts:
+          - dist/artifacts/**/*.tgz
+    - step:
+        name: Publish snapshots
+        script:
+          - ./scripts/build-docs.mjs
+    #          - ./scripts/jenkins/publish-snapshots.sh
+        only:
+          - master
+    - step:
+        name: Publish
+        script:
+          - ./scripts/publish.mjs
