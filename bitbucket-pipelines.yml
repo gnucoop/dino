@@ -1,4 +1,4 @@
-image: node:16
+image: node:18
 pipelines:
   default:
     - step:
@@ -6,7 +6,7 @@ pipelines:
         script:
           - rm -rf dist
           - yarn install --frozen-lockfile --non-interactive
-          - export PATH=$HOME/.yarn/bin:$PATH
+          - yarn add -g @angular/cli
     - step:
         name: Lint
         script:
