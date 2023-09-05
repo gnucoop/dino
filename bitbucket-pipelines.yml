@@ -10,37 +10,31 @@ pipelines:
         name: Lint
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - yarn -s lint
     - step:
         name: Build
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - ./scripts/build.mjs
     - step:
         name: Model schema tests
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - yarn -s model-schema-test
     - step:
         name: Unit tests
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - yarn -s test:ci
     - step:
         name: E2E tests
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - ./scripts/e2e-ci.mjs
     - step:
         name: Build release
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - ./scripts/release.mjs
           - ./scripts/jenkins/create-build-artifacts.mjs
         artifacts:
@@ -49,7 +43,6 @@ pipelines:
         name: Publish snapshots
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - ./scripts/build-docs.mjs
     #          - ./scripts/jenkins/publish-snapshots.sh
         only:
@@ -58,5 +51,4 @@ pipelines:
         name: Publish
         script:
           - yarn install --frozen-lockfile --non-interactive
-          - yarn add @angular/cli
           - ./scripts/publish.mjs
