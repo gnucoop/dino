@@ -6,6 +6,7 @@ pipelines:
         script:
           - rm -rf dist
           - yarn install --frozen-lockfile --non-interactive
+          - export PATH=$HOME/.yarn/bin:$PATH
     - step:
         name: Lint
         script:
