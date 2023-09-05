@@ -1,4 +1,4 @@
-image: node:18.12.1
+image: trion/ng-cli
 pipelines:
   default:
     - step:
@@ -6,7 +6,7 @@ pipelines:
         script:
           - rm -rf dist
           - yarn install --frozen-lockfile --non-interactive
-          - yarn global add @angular/cli
+          # - yarn global add @angular/cli
     - step:
         name: Lint
         script:
