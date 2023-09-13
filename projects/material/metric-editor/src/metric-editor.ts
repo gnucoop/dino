@@ -501,7 +501,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       throw new Error('No metric manager was provided');
     }
 
-    combineLatest([this._saveEvt, this._nss.isOnline$])
+    this._saveSub = combineLatest([this._saveEvt, this._nss.isOnline$])
       .pipe(
         filter(() => this._metricManager != null),
         switchMap(([evt, isOnline]) => {
