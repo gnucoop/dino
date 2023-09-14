@@ -110,6 +110,8 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     'fields_to_update',
     'filter_by_metric',
     'is_choice',
+    'choice_label_fields',
+    'choice_extra_value_key',
     'delete',
   ];
 
@@ -176,6 +178,11 @@ export class FormDepsEditor implements OnInit, OnDestroy {
       if (fschemadeps) {
         if (fschemadeps.deps_origin) {
           this.dataSource.data = deepCopy(fschemadeps).deps_origin as FormSchemaDepsOrigin[];
+          this.dataSource.data.forEach(dt => {
+            if (dt.choices_origin == null) {
+              dt.choices_origin = {label_fields: [], extra_value_key: null};
+            }
+          });
         } else {
           this.dataSource.data = [];
         }
@@ -245,7 +252,13 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   addRow(): void {
     this.dataSource.data = [
       ...this.dataSource.data,
-      {form_schema_ref_id: '', fields_to_update: [], filter_by_metric: [], is_choice: false},
+      {
+        form_schema_ref_id: '',
+        fields_to_update: [],
+        filter_by_metric: [],
+        is_choice: false,
+        choices_origin: {label_fields: ['name'], value_key: '', extra_value_key: null},
+      },
     ];
   }
 

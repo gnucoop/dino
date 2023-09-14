@@ -66,7 +66,6 @@ export interface FormSchemaDepsOrigin {
 
   /**
    * The name of the choicesOrigins to be added or replaced in the form schema
-   * TODO: not yet implemented
    */
   choices_origin?: FormSchemaChoiceOrigin | null;
 
@@ -79,23 +78,32 @@ export interface FormSchemaDepsOrigin {
 /**
  * This model is used to store the info for the choicesOrigins
  * to be added or replaced in the form schema
+ * Es.
+ *   labelKey: {formula: '[[last_name]] [[first_name]]'},
+ *   valueKey: 'id_family',
  * @title FormSchemaChoiceOrigin
  */
 export interface FormSchemaChoiceOrigin {
   /**
-   * The name of the choicesOrigins to be added or replaced in the form schema
+   * Fields to be used for the label in the select options
    */
-  choices_origin_name: string;
-
-  /**
-   * The formula for the labels in the select options
-   */
-  label_key: AjfFormula;
+  label_fields?: string[];
 
   /**
    * The value to used in the select options
    */
-  value_key: string;
+  value_key?: string;
+
+  /**
+   * The name of the choicesOrigins to be added or replaced in the form schema
+   * By default is equal to fieldname + '_choice'
+   */
+  choices_origin_name?: string;
+
+  /**
+   * The formula for the labels in the select options
+   */
+  label_key?: AjfFormula;
 
   /**
    * An optional extra value to be added in the Choice object.
@@ -108,5 +116,5 @@ export interface FormSchemaChoiceOrigin {
    *  }
    * ],
    */
-  extra_value_key?: string;
+  extra_value_key?: string | null;
 }

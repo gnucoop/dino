@@ -61,6 +61,7 @@ import {
   FormData,
   FormSchema,
   FormSchemaDeps,
+  FormSchemaDepsOrigin,
   FormSchemaManager,
   FormStatus,
   FormStatusManager,
@@ -718,7 +719,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                     type: 'fixed',
                     name: choicesOriginName,
                     label: choicesOriginName,
-                    choices: this._getChoicesFromDocs(field, changes[extDocsIdx]),
+                    choices: this._getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
                   });
                 } else {
                   if (changes[extDocsIdx] !== null && changes[extDocsIdx].length) {
@@ -1326,20 +1327,61 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   private _getChoicesFromDocs(
-    fieldName: string,
+    depsOrigin: FormSchemaDepsOrigin,
     docs: RxDocument<FormData>[],
   ): AjfChoice<string>[] {
     const choices: AjfChoice<string>[] = [];
+    const fieldName = depsOrigin.fields_to_update[0];
+
     docs.forEach(doc => {
       const extFormData = doc.toJSON();
-      if (fieldName in extFormData.data && extFormData.data[fieldName] != null) {
-        choices.push({
-          label: extFormData.data[fieldName],
+      if (
+        fieldName in extFormData.data &&
+        extFormData.data[fieldName] != null &&
+        extFormData.data[fieldName].length
+      ) {
+        const newChoice = {
+          label: this._getLabelForChoice(depsOrigin, extFormData) || extFormData.data[fieldName],
           value: extFormData.data[fieldName],
-        });
+        };
+
+        if (
+          depsOrigin.choices_origin &&
+          depsOrigin.choices_origin.extra_value_key &&
+          depsOrigin.choices_origin.extra_value_key in extFormData.data &&
+          extFormData.data[depsOrigin.choices_origin.extra_value_key]
+        ) {
+          (newChoice as any)[depsOrigin.choices_origin.extra_value_key] =
+            extFormData.data[depsOrigin.choices_origin.extra_value_key];
+        }
+        choices.push(newChoice);
       }
     });
     return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
+  }
+
+  private _getLabelForChoice(
+    depsOrigin: FormSchemaDepsOrigin,
+    extFormData: FormData,
+  ): string | null {
+    if (
+      depsOrigin.choices_origin &&
+      depsOrigin.choices_origin.label_fields &&
+      depsOrigin.choices_origin.label_fields.length
+    ) {
+      const choiceLabel: string[] = [];
+      depsOrigin.choices_origin.label_fields.forEach(fieldName => {
+        if (
+          fieldName in extFormData.data &&
+          extFormData.data[fieldName] != null &&
+          extFormData.data[fieldName].trim().length
+        ) {
+          choiceLabel.push(extFormData.data[fieldName].trim());
+        }
+      });
+      return choiceLabel && choiceLabel.length ? choiceLabel.join(' ') : null;
+    }
+    return null;
   }
 
   ngOnDestroy() {

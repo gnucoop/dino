@@ -81,6 +81,48 @@
           ></mat-slide-toggle>
         </mat-cell>
       </ng-container>
+
+      <ng-container matColumnDef="choice_label_fields">
+        <mat-header-cell *matHeaderCellDef>{{'Field to use as label'|transloco}}</mat-header-cell>
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-form-field *ngIf="row.is_choice">
+            <mat-select
+              [(ngModel)]="row.choices_origin.label_fields"
+              [placeholder]="'Label fields'|transloco"
+              multiple
+            >
+              <ng-container *ngIf="row.form_schema_ref_id">
+                <mat-option
+                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
+                  [value]="field"
+                  >{{field}}</mat-option
+                >
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="choice_extra_value_key">
+        <mat-header-cell *matHeaderCellDef>{{'Additional field'|transloco}}</mat-header-cell>
+        <mat-cell *matCellDef="let row; let idx = index">
+          <mat-form-field *ngIf="row.is_choice">
+            <mat-select
+              [(ngModel)]="row.choices_origin.extra_value_key"
+              [placeholder]="'Additional field'|transloco"
+            >
+              <ng-container *ngIf="row.form_schema_ref_id">
+                <mat-option
+                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
+                  [value]="field"
+                  >{{field}}</mat-option
+                >
+              </ng-container>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="delete">
         <mat-header-cell *matHeaderCellDef>{{'Delete'|transloco}}</mat-header-cell>
         <mat-cell *matCellDef="let row; let idx = index">
