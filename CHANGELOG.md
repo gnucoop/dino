@@ -1,3 +1,18 @@
+<a name="15.2.3"></a>
+# 15.2.3 "still-crocodile" (2023-09-15)
+### Bug Fixes
+* **material/form-metric-selector:** Fixed a bug in Form Metric Selector causing newly created metrics not to be automatically selected in the form. ([ac3e0d1](https://bitbucket.org/gnucoop/dino/commits/ac3e0d16a3f8f1425e7c3f5ac24261740efd3bf8))
+* **material/form-metric-selector:** Fixed a bug in Form Metric Selector validator functions causing the fms fields values never to be valid. ([38bc673](https://bitbucket.org/gnucoop/dino/commits/38bc6737c902beec93dddc5d2239db88a85dc884))
+* **material/metric-editor:** Fixed a bug in Metric Editor causing the Metric Creation subscription not to be unsubscribed (Duplicating metrics) ([524cbde](https://bitbucket.org/gnucoop/dino/commits/524cbdea1509e080f21034f4d90a06a37d95d449))
+### Features
+* **material/collect:** Added Share Url functionality in collect form items (public forms). ([03c55d0](https://bitbucket.org/gnucoop/dino/commits/03c55d067bc03dd976383a004da9081f5d8ac81f))
+* **material/form-metric-selector:** Added 'shareUrl' context option for form metric selector and dialog. ([dd1976c](https://bitbucket.org/gnucoop/dino/commits/dd1976c47ffbef7be7a0e4c28181dbc05181c13d))
+* **material/image-capture:** Added Image Capture module and component ([a8f9481](https://bitbucket.org/gnucoop/dino/commits/a8f9481c71fb640b506a0a7f6dbdd5cfccb7556b))
+* **material/list:** add check before delete metrics ([9d53a49](https://bitbucket.org/gnucoop/dino/commits/9d53a4923d5a5f52e74152a30beffc975e8012bb))
+* **material/metric-editor:** Added Image Capture tab to Case Editor ([241e124](https://bitbucket.org/gnucoop/dino/commits/241e1243bd2f53c6f3be43e3a4321f7a933f530b))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.2"></a>
 # 15.2.2 "extreme-monkey" (2023-08-03)
 ### Bug Fixes
