@@ -1,0 +1,17 @@
+<div class="dino-image-capture-container">
+  <div class="dino-video-container">
+    <mat-form-field appearance="fill" class="dino-video-device-select">
+      <mat-label>{{'Choose Video source'|transloco}}</mat-label>
+      <mat-select #videoSourceSelect
+        ><mat-option *ngFor="let device of videoDevices|async" [value]="device.deviceId">
+          {{device.label}}
+        </mat-option></mat-select
+      ></mat-form-field
+    >
+    <button class="dino-image-capture-takepic-button" mat-fab color="primary" (click)="capture()">
+      <mat-icon>photo_camera</mat-icon>
+    </button>
+    <video #video id="video" [width]="videoWidth" [height]="videoHeight" autoplay></video>
+    <canvas #canvas id="canvas" [width]="videoWidth" [height]="videoHeight"></canvas>
+  </div>
+</div>

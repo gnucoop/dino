@@ -1,0 +1,40 @@
+dino-image-capture {
+  width: 100%;
+  .dino-image-capture-container {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .dino-video-container {
+      overflow-y: auto;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      display: flex;
+      justify-content: center;
+      flex-flow: column;
+      .dino-video-device-select {
+        display: block;
+      }
+      video {
+        margin: auto;
+        @media only screen and (max-width: 992px) {
+          width: 100%;
+          height: auto;
+        }
+      }
+      .dino-image-capture-takepic-button {
+        flex: 1 0 auto;
+        max-width: 50%;
+        margin: auto;
+        position: relative;
+        top: 15px;
+        padding: 10px;
+      }
+    }
+    canvas {
+      display: none;
+    }
+  }
+}
