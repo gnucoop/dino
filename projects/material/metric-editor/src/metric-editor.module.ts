@@ -37,33 +37,37 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
+import {ImageCaptureModule as DinoImageCaptureModule} from '@dino/material/image-capture';
 import {TranslocoModule} from '@ngneat/transloco';
 
 import {MetricEditor} from './metric-editor';
 import {NameMatchValidator} from './metric-name-validator';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
-    imports: [
-        AuthModule,
-        BreakpointObserverModule,
-        CommonModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatDatepickerModule,
-        MatDialogModule,
-        MatDividerModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatListModule,
-        MatNativeDateModule,
-        MatSnackBarModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslocoModule,
-    ],
-    declarations: [MetricEditor],
-    exports: [MetricEditor],
-    providers: [NameMatchValidator]
+  imports: [
+    AuthModule,
+    BreakpointObserverModule,
+    CommonModule,
+    DinoImageCaptureModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    TranslocoModule,
+  ],
+  declarations: [MetricEditor],
+  exports: [MetricEditor],
+  providers: [NameMatchValidator],
 })
 export class MetricEditorModule {}

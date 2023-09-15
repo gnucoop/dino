@@ -10,12 +10,7 @@ import {Apollo} from 'apollo-angular';
 
 import {EditPublicForm, EditPublicFormModule} from './public_api';
 import {AjfFormRendererService} from '@ajf/core/forms';
-import {
-  FormData,
-  FormSchema,
-  OnlineFormDataManager,
-  OnlineFormSchemaManager,
-} from '@dino/core/forms';
+import {FormSchema, OnlineFormDataManager, OnlineFormSchemaManager} from '@dino/core/forms';
 import {ActivatedRoute} from '@angular/router';
 import {AnimationBuilder, AnimationFactory, AnimationPlayer} from '@angular/animations';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -134,6 +129,7 @@ describe('Edit Public Form', () => {
     expect(ajfFrs).toBeTruthy();
     expect(osm).toBeTruthy();
     expect(odm).toBeTruthy();
+    expect(route).toBeTruthy();
   });
 
   it('should call the Ajf Form Renderer "getFormValue" method, and the OnlineFormDataManager "create" method', async () => {

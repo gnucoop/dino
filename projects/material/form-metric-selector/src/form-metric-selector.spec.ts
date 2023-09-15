@@ -11,7 +11,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute} from '@angular/router';
 import {MatNativeDateModule} from '@angular/material/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {Case, CaseManager} from '@dino/core/cases';
+import {CaseManager} from '@dino/core/cases';
 import {NameMatchValidator} from '@dino/material/metric-editor';
 
 let testDbIdx = 0;

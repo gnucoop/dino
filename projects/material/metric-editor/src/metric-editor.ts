@@ -29,6 +29,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -58,6 +59,7 @@ import {
   FormGroupWithWarnings,
   NameMatchValidator,
 } from './metric-name-validator';
+import {ImageCapture} from '@dino/material/image-capture';
 
 /**
  * Represents the data to be passed to a MetricEditor dialog.
@@ -145,6 +147,11 @@ export interface ParentMetric {
   encapsulation: ViewEncapsulation.None,
 })
 export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestroy {
+  /**
+   * The Image Campture component
+   */
+  @ViewChild('imageCaptureComponent') imageCaptureComponent!: ImageCapture;
+
   /**
    * The name of the Metric
    */
@@ -456,6 +463,28 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     return groupUpdates;
   }
 
+  snapshotPreview(event: any) {
+    if (event == null) return;
+    const snapshotFile = this._dataURLtoFile(event);
+    if (snapshotFile && snapshotFile.size < this.maxImageFileSize) {
+      this._file = snapshotFile;
+      if (snapshotFile) {
+        // Read file for preview
+        this.preview = '';
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.preview = e.target.result;
+          this._cdr.markForCheck();
+        };
+        reader.readAsDataURL(snapshotFile);
+      }
+    } else {
+      this.snackbar.open('The maximum file size is 1MB', 'ERROR', {
+        duration: 5000,
+      });
+    }
+  }
+
   /**
    * Set locally the input file
    * @param event The input file selection event
@@ -636,6 +665,20 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         return true;
       }),
     );
+  }
+
+  private _dataURLtoFile(dataurl: string): File | null {
+    const arr = dataurl.split(',');
+    const arrMatch = arr[0].match(/:(.*?);/);
+    if (arr == null || !arr.length || arr[0] == null || arrMatch == null) return null;
+    let mime = arrMatch[1],
+      bstr = atob(arr[arr.length - 1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], 'snapshot.png', {type: mime});
   }
 
   ngOnDestroy(): void {

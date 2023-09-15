@@ -4,17 +4,50 @@ dino-metric-editor {
   }
   .dino-metric-editor-field {
     padding: 25px;
+    @media only screen and (max-width : 992px) {
+      padding: 15px;
+    }
     font-size: 1.2em;
   }
 
   .dino-metric-image-field {
-    padding: 12px 25px;
+    flex: 1 1 100%;
     font-size: 0.7em;
     min-width: 0;
-  }
-
-  .dino-metric-image {
-    max-height: 80px;
+    .dino-metric-image-preview {
+      display: flex;
+      justify-content: center;
+      flex-flow: column wrap;
+      .dino-metric-image-preview-title {
+        font-size: 16px;
+        text-align: center;
+        width: 100%;
+      }
+      .dino-metric-image {
+        flex: 1 0 auto;
+        max-height: 80px;
+        margin: auto;
+        padding: 15px;
+      }
+    }
+    .dino-metric-image-tab-group {
+      .mat-mdc-tab-body-content {
+        min-height: 250px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-flow: row wrap;
+        overflow: auto;
+        .dino-metric-image-upload {
+          display: flex;
+          justify-content: center;
+          align-content: center;
+          align-items: center;
+          flex-flow: column wrap;
+          text-align: center;
+        }
+      }
+    }
   }
 
   .mat-mdc-form-field {
@@ -42,13 +75,15 @@ dino-metric-editor {
     text-align: center;
   }
   .mat-mdc-dialog-content {
+    max-height: 80vh;
     form {
       position: relative;
-      max-height: 80vh;
+      max-height: 90vh;
       display: flex;
       flex-flow: row wrap;
       justify-content: center;
       overflow: hidden;
+      overflow-y: auto;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
@@ -57,9 +92,7 @@ dino-metric-editor {
     }
     -ms-overflow-style: none;
     scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+
     .dino-additional-attributes-container {
       display: flex;
       width: 100%;
