@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
 import {deepCopy} from '@ajf/core/utils';
 import {
   ChangeDetectionStrategy,
@@ -36,7 +37,13 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormDataManager, FormStatusManager} from '@dino/core/forms';
+import {
+  FormData,
+  FormDataManager,
+  FormSchema,
+  FormSchemaManager,
+  FormStatusManager,
+} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -44,7 +51,7 @@ import {UserDataManager} from '@dino/core/users';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
-import {catchError, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 /**
@@ -73,7 +80,12 @@ export class ImportForm implements OnDestroy {
   /**
    * The edited form schema id
    */
-  private _formSchemaId: number | null;
+  private _formSchemaId: string | null;
+
+  /**
+   * The Form schema object
+   */
+  private _formSchema: Observable<FormSchema | null>;
 
   /**
    * The selected file
@@ -130,10 +142,16 @@ export class ImportForm implements OnDestroy {
    */
   private _userDataSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Subscribes to the validate xlsx data function
+   */
+  private _validateDataSub: Subscription = Subscription.EMPTY;
+
   constructor(
     private _cdr: ChangeDetectorRef,
     private _formBuilder: UntypedFormBuilder,
     private _formDataManager: FormDataManager,
+    private _formSchemaManager: FormSchemaManager,
     private _udm: UserDataManager,
     private _fsm: FormStatusManager,
     readonly metricsService: MetricsService,
@@ -146,6 +164,22 @@ export class ImportForm implements OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this._formSchemaId = this.data.formSchema;
+
+    if (this._formSchemaId) {
+      this._formSchema = this._formSchemaManager.get(this._formSchemaId).pipe(
+        map(doc => {
+          if (doc == null) {
+            return null;
+          }
+          const item = doc.toJSON();
+          return item as FormSchema;
+        }),
+        shareReplay(1),
+      );
+    } else {
+      this._formSchema = obsOf(null);
+    }
+
     this.importForm = this._formBuilder.group({
       reuseMetricName: [false],
     });
@@ -251,9 +285,10 @@ export class ImportForm implements OnDestroy {
           const newMetricNames: string[] = [];
           const metricIdKey = metric + '_id';
           const metricNameKey = metric + '_name';
+
           rows.forEach((row: {[key: string]: any}) => {
             // Check if is not a second header
-            if (row[this._idKey] !== this._idKey) {
+            if (!this._isLabelHeader(row)) {
               const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
               if (
                 newMetricName &&
@@ -263,14 +298,23 @@ export class ImportForm implements OnDestroy {
               ) {
                 newMetricNames.push(newMetricName);
                 let newMetric: {[key: string]: any} = {};
-                const props = manager.collectionSchema.required
+
+                const requiredProps = manager.collectionSchema.required
                   ? manager.collectionSchema.required
                   : ['name'];
-                props.forEach(prop => {
-                  newMetric[prop as string] = this._getValueFromRow(
-                    row[metric + '_' + (prop as string)],
-                  );
-                });
+
+                const props = manager.collectionSchema.properties;
+                for (let prop in props) {
+                  const propKey = metric + '_' + (prop as string);
+                  if (prop in requiredProps || row[propKey]) {
+                    if (prop === 'metric_data') {
+                      newMetric[prop as string] = JSON.parse(row[propKey]);
+                    } else {
+                      newMetric[prop as string] = this._getValueFromRow(row[propKey]);
+                    }
+                  }
+                }
+
                 if (!(metric in newMetrics)) {
                   newMetrics[metric] = [];
                 }
@@ -351,19 +395,19 @@ export class ImportForm implements OnDestroy {
 
     rows.forEach((row: {[key: string]: any}) => {
       // Check if is not a second header
-      if (row[this._idKey] !== this._idKey) {
+      if (!this._isLabelHeader(row)) {
         let newItem: {[key: string]: any} = {};
         newItem['form_schema_ref_id'] = this._formSchemaId;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
           try {
             const rowDate = format(new Date(row[createdAtKey]), 'yyyy-MM-dd');
-            newItem['created_at'] = rowDate;
+            newItem[createdAtKey] = rowDate;
           } catch (e) {}
         }
 
-        newItem['user_data_ref_id'] = userDataId;
+        newItem[userDataKey] = userDataId;
         if (row[userDataKey] && row[userDataKey].length) {
-          newItem['user_data_ref_id'] = row[userDataKey];
+          newItem[userDataKey] = row[userDataKey];
         }
         newItem['form_status_ref_id'] = statusDictionary
           ? statusDictionary[row['form_status_name']]
@@ -499,7 +543,7 @@ export class ImportForm implements OnDestroy {
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
     const newMetricsInRows = this._getMetricsToBeCreated(rows, activeMetrics);
     if (Object.keys(newMetricsInRows).length) {
-      forkJoin([
+      this._userDataSub = forkJoin([
         this._checkIfMetricsAlreadyExist(newMetricsInRows).pipe(
           switchMap(existingMetrics => {
             const newMetrics: {[key: string]: {[key: string]: any}[]} = deepCopy(newMetricsInRows);
@@ -588,6 +632,79 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
+   * Get flatten nodes for an ajf formschema
+   * @param nodes
+   * @returns an ajfNode list for the schema
+   */
+  private _flattenNodes(nodes: AjfNode[]): AjfNode[] {
+    let flatNodes: AjfNode[] = [];
+    nodes.forEach((node: AjfNode) => {
+      if (isContainerNode(node)) {
+        flatNodes = flatNodes.concat(this._flattenNodes((<AjfContainerNode>node).nodes));
+      }
+      flatNodes.push(node);
+    });
+
+    return flatNodes;
+  }
+
+  /**
+   * Get all fields name for an ajf formschema
+   * @param fschema
+   * @returns All field names
+   */
+  private _getFieldsNameFromFormSchema(fschema: FormSchema): string[] {
+    const nodes = fschema.schema.nodes;
+    let schemaFields: string[] = [];
+    if (nodes) {
+      const flatNodes = this._flattenNodes(nodes);
+      const fields = <AjfField[]>flatNodes.filter(n => !isContainerNode(n));
+      schemaFields = fields
+        .filter(f => f.name != null)
+        .map(f => f.name)
+        .filter(f => f.length > 0);
+    }
+    return schemaFields;
+  }
+
+  /**
+   * Check if the first row is the label header with no data
+   * @param data
+   * @returns true if is a label header
+   */
+  private _isLabelHeader(row: {[key: string]: any}): boolean {
+    const rowVals = Object.values(row);
+    return this._containsAtLeastOne(rowVals, this._dinoFields);
+  }
+
+  /**
+   * Check if the row keys contain at least one field
+   * @param rowKeys row keys
+   * @param fields fields to be check
+   * @returns true if exist
+   */
+  private _containsAtLeastOne(rowKeys: string[], fields: string[]): boolean {
+    return fields.some(f => rowKeys.indexOf(f) > -1);
+  }
+
+  /**
+   * Check if imported xls file is valid for dino and for the selected form schema
+   * @param data json data contained into the xlsx file
+   * @param formSchema ajf form schema
+   * @returns true if xls colomns contains at least one field from the schema
+   */
+  private _isValidXlsxData(data: {[key: string]: any}[], formSchema: FormSchema | null): boolean {
+    if (formSchema && data && data.length) {
+      const rowKeys = Object.keys(data[0]);
+      if (this._containsAtLeastOne(rowKeys, this._dinoFields)) {
+        const schemaFields = this._getFieldsNameFromFormSchema(formSchema);
+        return this._containsAtLeastOne(rowKeys, schemaFields);
+      }
+    }
+    return false;
+  }
+
+  /**
    * Convert the xls file into a json and start import all the rows
    * @param file The Xlsx file to be imported
    */
@@ -601,28 +718,40 @@ export class ImportForm implements OnDestroy {
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       const data: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
-      if (this._fsm) {
-        const statusDictionary: {[key: string]: Observable<string | null>} = {};
-        data.forEach(row => {
-          if (row['form_status_name'] && !statusDictionary[row['form_status_name']]) {
-            statusDictionary[row['form_status_name']] = this._fsm
-              .query({
-                selector: {name: {$eq: row['form_status_name']}, is_deleted: {$ne: true}},
-              })
-              .pipe(
-                map(docs => (docs[0] ? docs[0].id : null)),
-                take(1),
-              );
+
+      this._validateDataSub = this._formSchema
+        .pipe(map(formSchema => this._isValidXlsxData(data, formSchema)))
+        .subscribe(isValidXlsData => {
+          if (isValidXlsData) {
+            if (this._fsm) {
+              const statusDictionary: {[key: string]: Observable<string | null>} = {};
+              data.forEach(row => {
+                if (row['form_status_name'] && !statusDictionary[row['form_status_name']]) {
+                  statusDictionary[row['form_status_name']] = this._fsm
+                    .query({
+                      selector: {name: {$eq: row['form_status_name']}, is_deleted: {$ne: true}},
+                    })
+                    .pipe(
+                      map(docs => (docs[0] ? docs[0].id : null)),
+                      take(1),
+                    );
+                }
+              });
+              this._importFormDataRows(data, statusDictionary);
+            } else {
+              this._importFormDataRows(data);
+            }
+          } else {
+            this._setImportStatus(
+              'File not imported! Check if columns match fields of the formschema.',
+            );
           }
         });
-        this._importFormDataRows(data, statusDictionary);
-      } else {
-        this._importFormDataRows(data);
-      }
     };
   }
 
   ngOnDestroy() {
     this._userDataSub.unsubscribe();
+    this._validateDataSub.unsubscribe();
   }
 }

@@ -2,23 +2,19 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UntypedFormBuilder} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
-import {
-  FormDataManager,
-  FormSchema,
-  FormSchemaVisibility,
-  FormStatusManager,
-} from '@dino/core/forms';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {FormDataManager, FormSchema, FormSchemaVisibility} from '@dino/core/forms';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
 import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {RxDocument} from 'rxdb';
-import {BehaviorSubject, of} from 'rxjs';
+import {of} from 'rxjs';
 
 import {ExportForm} from './public_api';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 import {Data} from './export-interface';
+import {AjfField} from '@ajf/core/forms';
 
 let testDbIdx = 0;
 
@@ -60,12 +56,6 @@ const userDataManagerMock = {
 const formDataManagerMock = {
   bulkCreate: (_: any[]) => {
     return of({success: [], error: []});
-  },
-};
-
-const formStatusManagerMock = {
-  query: (_: any) => {
-    return of([]);
   },
 };
 
@@ -157,7 +147,6 @@ describe('Export Forms', () => {
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: UserDataManager, useValue: userDataManagerMock},
         {provide: FormDataManager, useValue: formDataManagerMock},
-        {provide: FormStatusManager, useValue: formStatusManagerMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
       ],
@@ -176,6 +165,10 @@ describe('Export Forms', () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
     const spyExportCsv = spyOn<any>(exportForm, '_buildCsv').and.callThrough();
+
+    spyOn<any>(exportForm, '_getFieldsFromTabs').and.callFake(() => {
+      return testAjfSchema.nodes[0].nodes as unknown[] as AjfField[];
+    });
 
     exportForm.data = formData;
     exportForm.formSchema = formSchema;

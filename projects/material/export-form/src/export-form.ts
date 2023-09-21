@@ -518,7 +518,13 @@ export class ExportForm implements AfterViewInit, OnDestroy {
                   const metricProperties = manager.collectionSchema.properties;
                   for (let prop in metricProperties) {
                     if (ctx.dino[metricName] && !this._dinoBaseModelFields.includes(prop)) {
-                      refExportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop];
+                      if (prop === 'metric_data') {
+                        refExportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop]
+                          ? JSON.stringify(ctx.dino[metricName][prop])
+                          : '';
+                      } else {
+                        refExportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop];
+                      }
                     }
                   }
                 }
@@ -1077,7 +1083,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   }
 
   private _getFieldName(name: string): string {
-    name = name.replace('data_', '');
+    name = name.indexOf('data_') === 0 ? name.replace('data_', '') : name;
     const splittedName = name.split('__');
     if (splittedName.length === 2) {
       return splittedName[0];
