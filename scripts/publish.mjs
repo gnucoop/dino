@@ -15,9 +15,9 @@ const publish = async () => {
     );
     shell.exit(1);
   }
-  const npmReg = `//gnucoop.bytesafe.dev/r/dino/`;
-  const nmpRc = `@dino:registry=https://${npmReg}\r\n//${npmReg}/:_authToken=${npmToken}`;
-  const curTag = shell.exec(`git describe --abbrev=0 --tags --exact-match 2> /dev/null`, {
+  const npmReg = `gnucoop.bytesafe.dev/r/dino`;
+  const nmpRc = `@dino:registry=https://${npmReg}/\r\n//${npmReg}/:_authToken=${npmToken}`;
+  const curTag = shell.exec(`git describe --abbrev=0 --tags 2> /dev/null`, {
     silent: true,
   }).stdout;
   if (curTag == null || curTag.length === 0) {

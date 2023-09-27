@@ -56,7 +56,9 @@
         "cypress-run-ci": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "configFile": "projects/core/cypress.config.ts"
+            "configFile": "projects/core/cypress.config.ts",
+            "browser": "chrome",
+            "headless": true
           },
           "configurations": {
             "production": {
@@ -140,7 +142,9 @@
         "cypress-run-ci": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "configFile": "projects/material/cypress.config.ts"
+            "configFile": "projects/material/cypress.config.ts",
+            "browser": "chrome",
+            "headless": true
           },
           "configurations": {
             "production": {

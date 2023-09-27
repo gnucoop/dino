@@ -1,54 +1,39 @@
-image: node:18.12.1
+image: devgnucoop/dinobitbucketpipeline:18.12.1
+definitions:
+  caches:
+    nodecustom: ./node_modules
+    yarn: /usr/local/share/.cache/yarn
 pipelines:
   default:
-    - step:
-        name: Setup
-        script:
-          - rm -rf dist
-          - yarn install --frozen-lockfile --non-interactive
-    - step:
-        name: Lint
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - yarn -s lint
-    - step:
-        name: Build
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - ./scripts/build.mjs
-    - step:
-        name: Model schema tests
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - yarn -s model-schema-test
-    - step:
-        name: Unit tests
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - yarn -s test:ci
-    - step:
-        name: E2E tests
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - ./scripts/e2e-ci.mjs
-    - step:
-        name: Build release
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - ./scripts/release.mjs
-          - ./scripts/jenkins/create-build-artifacts.mjs
-        artifacts:
-          - dist/artifacts/**/*.tgz
-    - step:
-        name: Publish snapshots
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - ./scripts/build-docs.mjs
-    #          - ./scripts/jenkins/publish-snapshots.sh
-        only:
-          - master
-    - step:
-        name: Publish
-        script:
-          - yarn install --frozen-lockfile --non-interactive
-          - ./scripts/publish.mjs
+  branches:
+    '{master,bitbucket-pipeline-test}':
+      - step:
+          name: Setup Packages, Lint and Build
+          caches:
+            - nodecustom
+            - yarn
+          script:
+            - rm -rf dist
+            - yarn install --frozen-lockfile --non-interactive
+            - yarn -s lint
+            - ./scripts/build.mjs
+      - step:
+          name: Model schema, Unit and E2E tests
+          size: 2x
+          script:
+            - yarn install --frozen-lockfile --non-interactive
+            - ./scripts/e2e-ci.mjs
+            - yarn -s model-schema-test
+            - yarn -s test:ci
+      - step:
+          name: Build release, docs, Create Artifacts and Publish on Bytesafe
+          caches:
+            - nodecustom
+            - yarn
+          script:
+            - ./scripts/release.mjs
+            - ./scripts/build-docs.mjs
+            - ./scripts/jenkins/create-build-artifacts.mjs
+            - ./scripts/publish.mjs
+          artifacts:
+            - dist/artifacts/**/*.tgz
