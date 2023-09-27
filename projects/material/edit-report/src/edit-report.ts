@@ -19,7 +19,12 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-import {AjfReportInstance, createReportInstance, openReportPdf} from '@ajf/core/reports';
+import {
+  AjfReportInstance,
+  createReportInstance,
+  exportReportXlsx,
+  openReportPdf,
+} from '@ajf/core/reports';
 import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {
@@ -33,6 +38,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -225,6 +231,7 @@ export class EditReport implements AfterViewInit {
 
   constructor(
     readonly metricsService: MetricsService,
+    readonly snackbar: MatSnackBar,
     private _translateService: TranslocoService,
     private _route: ActivatedRoute,
     private _router: Router,
@@ -515,6 +522,19 @@ export class EditReport implements AfterViewInit {
   printReport(orientation: 'portrait' | 'landscape') {
     if (this._currentReportInstance != null) {
       openReportPdf(this._currentReportInstance, orientation);
+    }
+  }
+
+  /**
+   * Export the current report Instance to xlsx
+   */
+  exportReport() {
+    if (this._currentReportInstance != null) {
+      const iconsMap: {[html: string]: string} | undefined = {};
+      const fileExported = exportReportXlsx(this._currentReportInstance, iconsMap);
+      if (!fileExported) {
+        this.snackbar.open('No exportable widget found in this report', 'EXPORT', {duration: 5000});
+      }
     }
   }
 
