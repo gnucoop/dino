@@ -861,6 +861,19 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * Returns all Main Actions that are actually available to the user
+   * @param availableActions All list actions available to the current user
+   * @returns All main actions available to the current user
+   */
+  getMainActions(availableActions: ListAction[]): ListAction[] {
+    if (!availableActions || !availableActions.length) return [];
+    const mainActions = availableActions.filter(action =>
+      this.mainActions.includes(action.actionType),
+    );
+    return mainActions;
+  }
+
+  /**
    * Adds a Paginator, a Sort and a SearchFiltersComponent to the ListDataSource, if
    * those are present in the List template.
    */
