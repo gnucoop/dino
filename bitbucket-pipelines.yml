@@ -4,9 +4,8 @@ definitions:
     nodecustom: ./node_modules
     yarn: /usr/local/share/.cache/yarn
 pipelines:
-  default:
   branches:
-    '{master,bitbucket-pipeline-test}':
+    master:
       - step:
           name: Setup Packages, Lint and Build
           caches:
