@@ -417,8 +417,9 @@ export class EditFormSchema implements OnInit, OnDestroy {
   openRelationshipsDialog(): void {
     const dialogConfig = {
       disableClose: true,
-      width: '60%',
+      width: '90%',
       height: '80%',
+      maxWidth: '100%',
       data: {
         formSchemaId: this._formSchemaId,
         formSchema: this._formSchema,
