@@ -73,7 +73,7 @@ export class ListCellIsStorageImageUrl implements PipeTransform {
 
   transform<T extends Model = Model>(element: T | {[key: string]: any} | string | null): boolean {
     if (element == null || element === undefined || typeof element !== 'string') return false;
-    return element.includes('nhost.run/v1/files/');
+    return element.includes('run/v1/files/');
   }
 }
 
