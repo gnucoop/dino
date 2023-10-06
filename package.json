@@ -37,9 +37,9 @@
   "version": "15.2.3",
   "private": true,
   "dependencies": {
-    "@ajf/core": "^15.3.2",
+    "@ajf/core": "^15.3.3",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "^15.3.2",
+    "@ajf/material": "^15.3.3",
     "@angular/animations": "^15.0.4",
     "@angular/cdk": "^15.0.3",
     "@angular/common": "^15.0.4",
