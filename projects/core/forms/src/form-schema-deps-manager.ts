@@ -24,11 +24,15 @@ import {Injectable} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 
 import {schema} from './form-schema-deps-json';
-import {FormSchemaDeps} from './form-schema-deps';
+import {FormSchemaDeps, migrationStrategies} from './form-schema-deps';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaDepsManager extends DataModelManager<FormSchemaDeps> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
-    super({name: 'form_schema_deps', collection: {schema}}, dataService, permissionContextService);
+    super(
+      {name: 'form_schema_deps', collection: {schema, migrationStrategies}},
+      dataService,
+      permissionContextService,
+    );
   }
 }
