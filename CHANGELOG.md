@@ -1,3 +1,16 @@
+<a name="15.2.4"></a>
+# 15.2.4 "liquid-ocelot" (2023-10-11)
+### Bug Fixes
+* **core/form-schema-deps:** Undo rename model to avoid to force logout ([fe46e84](https://bitbucket.org/gnucoop/dino/commits/fe46e844b4e5c3841eec2bc6d24bb6b48612e794))
+* **core/forms:** Changed form-schema-deps model version and migration strategies. Regenerated its rxJsonschema. Added migration strategies to form-schema-deps-manager. ([56becd6](https://bitbucket.org/gnucoop/dino/commits/56becd6ca47e6444b24ecdc905ecb2d16b308fa5))
+* **material/edit-form-schema:** increase relationship dialog width ([5d90db0](https://bitbucket.org/gnucoop/dino/commits/5d90db0a6267c09aa6188cfe134c6c0744806e91))
+### Features
+* **material/edit-report:** export all widgets button ([13ae84f](https://bitbucket.org/gnucoop/dino/commits/13ae84f71c9a7eb52b801ac4e19bd493b9291316))
+* **material:** additional metric attributes added in import/export and improved import controls ([f15b8d2](https://bitbucket.org/gnucoop/dino/commits/f15b8d215995dd31399672363565bb2bfea2d7f7))
+* **multiple:** relationship with choice origin from metrics ([abc97c9](https://bitbucket.org/gnucoop/dino/commits/abc97c9f4482d021d0a779f71bd9daf183f263df))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.3"></a>
 # 15.2.3 "still-crocodile" (2023-09-15)
 ### Bug Fixes
