@@ -54,7 +54,7 @@ export const schema = {
     "deps_origin": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/DepsOrigin"
+        "$ref": "#/definitions/FormSchemaDepsOrigin"
       },
       "description": "A list with external form dependencies info"
     },

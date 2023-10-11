@@ -26,7 +26,7 @@ export const models = {
   core: {
     areas: ['area'],
     cases: ['case'],
-    forms: ['form-data', 'form-status'],
+    forms: ['form-data', 'form-status', 'form-schema-deps'],
     langs: ['lang'],
     logs: ['log'],
     locations: ['location'],

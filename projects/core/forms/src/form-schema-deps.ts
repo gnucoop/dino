@@ -22,6 +22,7 @@
 
 import {AjfFormula} from '@ajf/core/models';
 import {Model} from '@dino/core/data';
+import {MigrationStrategies} from 'rxdb';
 
 /**
  * This model is used to store the Ajf form schema dependencies info.
@@ -31,13 +32,20 @@ export interface FormSchemaDeps extends Model {
   /**
    * A list with external form dependencies info
    */
-  deps_origin?: DepsOrigin[];
+  deps_origin?: FormSchemaDepsOrigin[];
 
   /**
    * The metrics that have data to show in the schema
    */
   metric_data_to_show?: string[];
 }
+
+/**
+ * This model is used to avoid renaming the interface,
+ * otherwise it requires forcing a logout
+ * @title FormSchemaDepsOrigin
+ */
+export interface FormSchemaDepsOrigin extends DepsOrigin {}
 
 /**
  * This model is used to store the external form dependencies info
@@ -123,3 +131,7 @@ export interface FormSchemaChoiceOrigin {
    */
   extra_value_key?: string | null;
 }
+
+export const VERSION = 0;
+
+export const migrationStrategies: MigrationStrategies = {};
