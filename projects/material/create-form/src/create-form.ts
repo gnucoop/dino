@@ -39,6 +39,7 @@ import {
   isDevMode,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   QueryList,
   ViewChildren,
@@ -46,20 +47,30 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {NetworkStatusService} from '@dino/core/auth';
-import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
 import {
+  ActionTrigger,
+  ActionTriggerData,
+  DataModelManager,
+  DataQueryOptions,
+  Metric,
+  MetricsService,
+  Model,
+} from '@dino/core/data';
+import {
+  DepsOrigin,
   FormData,
   FormSchema,
   FormSchemaDeps,
-  FormSchemaDepsOrigin,
   FormSchemaManager,
   FormStatus,
   FormStatusManager,
 } from '@dino/core/forms';
-import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
+import {format} from 'date-fns';
 import {isRxDocument, RxDocument} from 'rxdb';
+import {NetworkStatusService} from '@dino/core/auth';
+import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
+
 import {
   BehaviorSubject,
   combineLatest,
@@ -85,18 +96,14 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
-import {
-  ActionTrigger,
-  ActionTriggerData,
-  DataQueryOptions,
-  DataModelManager,
-  MetricsService,
-  Metric,
-  Model,
-} from '@dino/core/data';
-import {format} from 'date-fns';
+import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
+import {Project, ProjectManager} from '@dino/core/projects';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
 
 /**
  * The Form Edit component.
@@ -306,6 +313,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   /**
+   * A Dictionary of all the optional Metrics managers
+   */
+  private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
+
+  /**
    * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */
@@ -319,10 +331,24 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     private _rendererService: AjfFormRendererService,
     private _location: Location,
     private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
-  ) {}
+    @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
+    @Optional() private _projectManager: ProjectManager | null,
+    @Optional() private _locationManager: LocationManager | null,
+    @Optional() private _organizationManager: OrganizationManager | null,
+  ) {
+    this._metricManagers = {
+      area: this._areaManager,
+      case: this._caseManager,
+      location: this._locationManager,
+      organization: this._organizationManager,
+      project: this._projectManager,
+    } as {[metricType: string]: DataModelManager<Metric> | null};
+  }
 
   /**
    * Triggers the Stepper to move forward to the Form Data step.
@@ -412,6 +438,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._isPipeline = combineLatest([this._formSchema, this._pipelineSchemas]).pipe(
       map(([schema, pipelines]) => pipelines.includes(schema.name)),
+      shareReplay(1),
     );
 
     this._formSchemaStatuses = this._formSchema.pipe(
@@ -470,7 +497,26 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   }),
                 );
               }
-              return extFormDataRes;
+
+              let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
+              let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
+
+              const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
+                deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
+              );
+              if (metricsChoicesOrigin != undefined) {
+                metricOptSourceObs = this._getFormMetricsOptions(
+                  metricsChoicesOrigin.metrics_choices_origin,
+                );
+              }
+              if (metricOptSourceObs.length) {
+                metricOptSource = forkJoin(metricOptSourceObs).pipe(
+                  map((mData: RxDocument<Metric>[][]) => {
+                    return mData;
+                  }),
+                );
+              }
+              return zip(extFormDataRes, metricOptSource);
             }
           }
           return obsOf(null);
@@ -482,13 +528,16 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         withLatestFrom(this._rendererService.formGroup, this._formSchemaDeps, this._formSchema),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(([changes, formGroup, fschemadeps, fschema]) => {
-        if (fschemadeps && fschemadeps.deps_origin && changes) {
+      .subscribe(([originData, formGroup, fschemadeps, fschema]) => {
+        if (fschemadeps && fschemadeps.deps_origin && originData) {
+          const changes = originData[0];
+          const metricsOrigin = originData[1] as RxDocument<Metric, {}>[][];
+
           const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
           const newFormSchema: FormSchema = deepCopy(fschema);
           let extCtx: {[key: string]: any} = {};
 
-          if (changes.length) {
+          if (changes && changes.length) {
             let extDocsIdx = 0;
             fschemadeps.deps_origin.forEach(depsOrigin => {
               if (
@@ -526,6 +575,23 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   }
                 }
                 extDocsIdx++;
+              }
+            });
+          }
+
+          if (metricsOrigin && metricsOrigin.length) {
+            metricsOrigin.forEach(metricOrigin => {
+              if (metricOrigin.length) {
+                const choicesOriginName = metricOrigin[0].collection.name + '_metric_choice';
+                newChoicesOrigins.push({
+                  type: 'fixed',
+                  name: choicesOriginName,
+                  label: choicesOriginName,
+                  choices: this._getChoicesFromMetrics(
+                    metricOrigin,
+                    metricOrigin[0].collection.name,
+                  ),
+                });
               }
             });
           }
@@ -827,12 +893,43 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     );
   }
 
-  ngOnDestroy() {
-    this._mainUnsubscribe.next();
-    this._mainUnsubscribe.complete();
+  /**
+   * Retrieves the available options for all Metrics
+   *
+   * @param metricType The type identifier of the metric.
+   */
+  private _getFormMetricsOptions(
+    metricsType: string[] | null | undefined,
+  ): Observable<RxDocument<Metric, {}>[]>[] {
+    let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
+    if (metricsType) {
+      metricsType.forEach(metricType => {
+        let mtOptSource = this._ugm.getGroupsMetricsByType(metricType).pipe(
+          switchMap(metricsIds => {
+            const querySelector = {id: {$in: metricsIds}, is_deleted: {$ne: true}};
+            if (this._metricManagers[metricType] == null) {
+              return [];
+            }
+            let metricsObs: Observable<RxDocument<Metric, {}>[]> = this._metricManagers[
+              metricType
+            ]!.query({
+              selector: querySelector,
+              sort: [{'name': 'asc'}],
+            });
 
-    this._saveValidFormSub.unsubscribe();
-    this._saveFormEvt.complete();
+            if (metricsIds.includes('all')) {
+              metricsObs = this._metricManagers[metricType]!.query({
+                selector: {is_deleted: {$ne: true}},
+                sort: [{'name': 'asc'}],
+              });
+            }
+            return metricsObs;
+          }),
+        );
+        metricsOptSource.push(mtOptSource);
+      });
+    }
+    return metricsOptSource;
   }
 
   /**
@@ -878,12 +975,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         metric => metric.metricName,
       );
       const dmm = this._dataModelManager as DataModelManager<T>;
-      fschemadeps.deps_origin.forEach(depsOrigin => {
-        if (
-          depsOrigin.form_schema_ref_id &&
-          depsOrigin.fields_to_update &&
-          depsOrigin.fields_to_update.length
-        ) {
+      fschemadeps.deps_origin
+        .filter(
+          deps =>
+            deps.form_schema_ref_id != null &&
+            deps.fields_to_update &&
+            deps.fields_to_update.length,
+        )
+        .forEach(depsOrigin => {
           let missingMetric = false;
           const opt: DataQueryOptions = {
             selector: {
@@ -915,8 +1014,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             );
             extFormDataObs.push(query);
           }
-        }
-      });
+        });
     }
     return extFormDataObs;
   }
@@ -1000,44 +1098,81 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     return choices;
   }
 
+  /**
+   * Return an AjfChoices list to be added into choicesOrigins in the formschema
+   * @param depsOrigin containing info for labels and values to be used in the choice options
+   * @param docs the list of formdata to be used for the choices
+   * @returns a list of ajfChoices with formdata origin
+   */
   private _getChoicesFromDocs(
-    depsOrigin: FormSchemaDepsOrigin,
+    depsOrigin: DepsOrigin,
     docs: RxDocument<FormData>[],
   ): AjfChoice<string>[] {
     const choices: AjfChoice<string>[] = [];
-    const fieldName = depsOrigin.fields_to_update[0];
+    const fieldName = depsOrigin.fields_to_update ? depsOrigin.fields_to_update[0] : null;
 
-    docs.forEach(doc => {
-      const extFormData = doc.toJSON();
-      if (
-        fieldName in extFormData.data &&
-        extFormData.data[fieldName] != null &&
-        extFormData.data[fieldName].length
-      ) {
-        const newChoice = {
-          label: this._getLabelForChoice(depsOrigin, extFormData) || extFormData.data[fieldName],
-          value: extFormData.data[fieldName],
-        };
-
+    if (fieldName) {
+      docs.forEach(doc => {
+        const extFormData = doc.toJSON();
         if (
-          depsOrigin.choices_origin &&
-          depsOrigin.choices_origin.extra_value_key &&
-          depsOrigin.choices_origin.extra_value_key in extFormData.data &&
-          extFormData.data[depsOrigin.choices_origin.extra_value_key]
+          fieldName in extFormData.data &&
+          extFormData.data[fieldName] != null &&
+          extFormData.data[fieldName].length
         ) {
-          (newChoice as any)[depsOrigin.choices_origin.extra_value_key] =
-            extFormData.data[depsOrigin.choices_origin.extra_value_key];
+          const newChoice = {
+            label: this._getLabelForChoice(depsOrigin, extFormData) || extFormData.data[fieldName],
+            value: extFormData.data[fieldName],
+          };
+
+          if (
+            depsOrigin.choices_origin &&
+            depsOrigin.choices_origin.extra_value_key &&
+            depsOrigin.choices_origin.extra_value_key in extFormData.data &&
+            extFormData.data[depsOrigin.choices_origin.extra_value_key]
+          ) {
+            (newChoice as any)[depsOrigin.choices_origin.extra_value_key] =
+              extFormData.data[depsOrigin.choices_origin.extra_value_key];
+          }
+          choices.push(newChoice);
         }
-        choices.push(newChoice);
-      }
-    });
+      });
+    }
     return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
   }
 
-  private _getLabelForChoice(
-    depsOrigin: FormSchemaDepsOrigin,
-    extFormData: FormData,
-  ): string | null {
+  /**
+   * Return an AjfChoices list to be added into choicesOrigins in the formschema
+   * @param docs the list of metrics to be used for the choices
+   * @param metricType metric type
+   * @returns a list of ajfChoices with metric origin
+   */
+  private _getChoicesFromMetrics(
+    docs: RxDocument<Metric>[],
+    metricType: string,
+  ): AjfChoice<string>[] {
+    const choices: AjfChoice<string>[] = [];
+
+    docs.forEach(doc => {
+      const newChoice = {
+        label: doc.name,
+        value: doc.name,
+        parent_id: doc.parent_id,
+        parent_name: doc.parent_name,
+      };
+
+      switch (metricType) {
+        case 'project':
+          const project = doc as Metric as Project;
+          newChoice.label = `${project.name} - (${project.code})`;
+      }
+
+      choices.push(newChoice);
+    });
+
+    return choices;
+  }
+
+  private _getLabelForChoice(depsOrigin: DepsOrigin, extFormData: FormData): string | null {
     if (
       depsOrigin.choices_origin &&
       depsOrigin.choices_origin.label_fields &&
@@ -1056,5 +1191,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       return choiceLabel && choiceLabel.length ? choiceLabel.join(' ') : null;
     }
     return null;
+  }
+
+  ngOnDestroy() {
+    this._mainUnsubscribe.next();
+    this._mainUnsubscribe.complete();
+
+    this._saveValidFormSub.unsubscribe();
+    this._saveFormEvt.complete();
   }
 }

@@ -2,10 +2,22 @@
   <h3 matDialogTitle>{{'Edit Form Relationships'|transloco}} - {{fs.name|transloco}}</h3>
   <mat-dialog-content>
     <div class="subtitle">
-      <h3>{{'Select Metrics to include in the form data'|transloco}}</h3>
+      <h3>{{'Selects metrics for which data should be included in the form'|transloco}}</h3>
       <mat-form-field>
         <mat-label>{{'Select metrics'|transloco}}</mat-label>
-        <mat-select [value]="currentMetrics" #metricSelect multiple>
+        <mat-select [value]="currentMetricsForData" #metricsForData multiple>
+          <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
+            <span> {{metric|transloco}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="subtitle">
+      <h3>{{'Selects metrics to be included as choice options'|transloco}}</h3>
+      <mat-form-field>
+        <mat-label>{{'Select metrics for choices'|transloco}}</mat-label>
+        <mat-select [value]="currentMetricsForChoices" #metricsForChoices multiple>
           <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
             <span> {{metric|transloco}}</span>
           </mat-option>
@@ -38,14 +50,11 @@
               [(ngModel)]="row.fields_to_update"
               [placeholder]="'Form fields'|transloco"
               multiple
-              (selectionChange)="checkChoiceOption($event, idx)"
-            >
+              (selectionChange)="checkChoiceOption($event, idx)">
               <ng-container *ngIf="row.form_schema_ref_id">
                 <mat-option
                   *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field"
-                  >{{field}}</mat-option
-                >
+                  [value]="field">{{field}}</mat-option>
               </ng-container>
             </mat-select>
           </mat-form-field>
@@ -59,8 +68,7 @@
               matNativeControl
               [(ngModel)]="row.filter_by_metric"
               multiple
-              (selectionChange)="changeMetrics($event)"
-            >
+              (selectionChange)="changeMetrics($event)">
               <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
                 <span> {{metric|transloco}}</span>
               </mat-option>
@@ -69,16 +77,14 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="is_choice">
-        <mat-header-cell *matHeaderCellDef
-          >{{'Create choices'|transloco}} {{'(select only one field)'|transloco}}</mat-header-cell
-        >
+        <mat-header-cell *matHeaderCellDef>{{'Create choices'|transloco}} {{'(select only one
+          field)'|transloco}}</mat-header-cell>
         <mat-cell *matCellDef="let row; let idx = index">
           <mat-slide-toggle
             [(ngModel)]="row.is_choice"
             [disabled]="row.fields_to_update.length > 1"
             style="margin: 10px"
-            aria-label="Is choice"
-          ></mat-slide-toggle>
+            aria-label="Is choice"></mat-slide-toggle>
         </mat-cell>
       </ng-container>
 
@@ -89,14 +95,11 @@
             <mat-select
               [(ngModel)]="row.choices_origin.label_fields"
               [placeholder]="'Label fields'|transloco"
-              multiple
-            >
+              multiple>
               <ng-container *ngIf="row.form_schema_ref_id">
                 <mat-option
                   *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field"
-                  >{{field}}</mat-option
-                >
+                  [value]="field">{{field}}</mat-option>
               </ng-container>
             </mat-select>
           </mat-form-field>
@@ -109,14 +112,11 @@
           <mat-form-field *ngIf="row.is_choice">
             <mat-select
               [(ngModel)]="row.choices_origin.extra_value_key"
-              [placeholder]="'Additional field'|transloco"
-            >
+              [placeholder]="'Additional field'|transloco">
               <ng-container *ngIf="row.form_schema_ref_id">
                 <mat-option
                   *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field"
-                  >{{field}}</mat-option
-                >
+                  [value]="field">{{field}}</mat-option>
               </ng-container>
             </mat-select>
           </mat-form-field>
@@ -137,6 +137,7 @@
 
   <div mat-dialog-actions>
     <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
-    <button mat-raised-button color="primary" (click)="saveDeps(metricSelect.value)">Save</button>
+    <button mat-raised-button color="primary"
+      (click)="saveDeps(metricsForData.value, metricsForChoices.value)">Save</button>
   </div>
 </ng-container>

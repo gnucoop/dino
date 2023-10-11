@@ -11,10 +11,10 @@ import {
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {
+  DepsOrigin,
   FormSchema,
   FormSchemaDeps,
   FormSchemaDepsManager,
-  FormSchemaDepsOrigin,
   FormSchemaManager,
 } from '@dino/core/forms';
 import {
@@ -45,6 +45,14 @@ export interface FormDepsEditorData {
    * The Observable Form Schema whose relationships will be edited
    */
   formSchema: Observable<FormSchema>;
+}
+
+/**
+ * Metrics selection for data and for choices
+ */
+export interface SelectedMetrics {
+  metrics_for_data: string[];
+  metrics_for_choices: string[];
 }
 
 /**
@@ -79,9 +87,14 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   readonly activeMetrics: string[];
 
   /**
-   * The edited Form Schema Deps current metrics
+   * The edited Form Schema Deps current required metrics for data
    */
-  currentMetrics: string[] | null;
+  currentMetricsForData: string[] | null;
+
+  /**
+   * The edited Form Schema Deps current required metrics for choices
+   */
+  currentMetricsForChoices: string[] | null;
 
   /**
    * All fields list for each form schema
@@ -91,7 +104,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   /**
    * Emits the Save status event
    */
-  private _saveEvt: EventEmitter<string[]> = new EventEmitter<string[]>();
+  private _saveEvt: EventEmitter<SelectedMetrics> = new EventEmitter<SelectedMetrics>();
 
   /**
    * Subscribes to the save status event.
@@ -115,8 +128,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     'delete',
   ];
 
-  readonly dataSource: MatTableDataSource<FormSchemaDepsOrigin> =
-    new MatTableDataSource<FormSchemaDepsOrigin>();
+  readonly dataSource: MatTableDataSource<DepsOrigin> = new MatTableDataSource<DepsOrigin>();
 
   constructor(
     public dialogRef: MatDialogRef<FormDepsEditorData>,
@@ -128,7 +140,8 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     readonly snackbar: MatSnackBar,
   ) {
     this.formSchema = data.formSchema;
-    this.currentMetrics = [];
+    this.currentMetricsForData = [];
+    this.currentMetricsForChoices = [];
 
     this.activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
 
@@ -177,16 +190,26 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     this._depsSub = this._formSchemaDeps.subscribe(fschemadeps => {
       if (fschemadeps) {
         if (fschemadeps.deps_origin) {
-          this.dataSource.data = deepCopy(fschemadeps).deps_origin as FormSchemaDepsOrigin[];
+          this.dataSource.data = (deepCopy(fschemadeps).deps_origin as DepsOrigin[]).filter(
+            deps => deps.form_schema_ref_id != null,
+          );
           this.dataSource.data.forEach(dt => {
             if (dt.choices_origin == null) {
               dt.choices_origin = {label_fields: [], extra_value_key: null};
             }
           });
+
+          const metricsChoicesOrigin = (deepCopy(fschemadeps).deps_origin as DepsOrigin[]).find(
+            deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
+          );
+          this.currentMetricsForChoices =
+            metricsChoicesOrigin && metricsChoicesOrigin.metrics_choices_origin
+              ? metricsChoicesOrigin.metrics_choices_origin
+              : [];
         } else {
           this.dataSource.data = [];
         }
-        this.currentMetrics = this.getRequiredMetrics(
+        this.currentMetricsForData = this.getRequiredMetrics(
           this.dataSource.data,
           fschemadeps.metric_data_to_show,
         );
@@ -199,16 +222,26 @@ export class FormDepsEditor implements OnInit, OnDestroy {
       .pipe(
         withLatestFrom(this.formSchema, this._formSchemaDeps),
         switchMap(([selMetrics, fschema, fschemadeps]) => {
-          const allRequiredMetrics = this.getRequiredMetrics(this.dataSource.data, selMetrics);
+          const allRequiredMetricsData = this.getRequiredMetrics(
+            this.dataSource.data,
+            selMetrics.metrics_for_data,
+          );
+          const metricDeps = {
+            metrics_choices_origin: selMetrics.metrics_for_choices,
+            is_choice: true,
+            fields_to_update: ['name'],
+          } as DepsOrigin;
+
           if (fschema && fschemadeps) {
             const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
-            fsdeps.deps_origin = this.dataSource.data;
-            fsdeps.metric_data_to_show = allRequiredMetrics;
+            fsdeps.deps_origin = this.dataSource.data as DepsOrigin[] | [];
+            fsdeps.metric_data_to_show = allRequiredMetricsData;
+            fsdeps.deps_origin.push(metricDeps);
             return combineLatest([this._fsd.update(fsdeps), obsOf('edit'), obsOf(fschema)]);
           } else {
             const fsdeps = {
-              deps_origin: this.dataSource.data,
-              metric_data_to_show: allRequiredMetrics,
+              deps_origin: [...this.dataSource.data, metricDeps],
+              metric_data_to_show: allRequiredMetricsData,
             } as FormSchemaDeps;
             return combineLatest([this._fsd.create(fsdeps), obsOf('create'), obsOf(fschema)]);
           }
@@ -269,20 +302,36 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     ];
   }
 
+  /**
+   * Update current required metrics for data when insert a new relationship row
+   * @param evt
+   */
   changeMetrics(evt: MatSelectChange) {
-    if (this.currentMetrics) {
-      this.currentMetrics = [...new Set(this.currentMetrics.concat(evt.value))];
+    if (this.currentMetricsForData) {
+      this.currentMetricsForData = [...new Set(this.currentMetricsForData.concat(evt.value))];
     }
   }
 
+  /**
+   * Set is_choice to false for a row if number of selected fields > 1
+   * @param evt
+   * @param rowIdx
+   */
   checkChoiceOption(evt: MatSelectChange, rowIdx: number) {
     if (evt.value.length > 1) {
       this.dataSource.data[rowIdx].is_choice = false;
     }
   }
 
+  /**
+   * Return metrics required by user ad metric data or required by other
+   * relationship with other form schemas
+   * @param depsOrigin
+   * @param selMetrics
+   * @returns
+   */
   private getRequiredMetrics(
-    depsOrigin: FormSchemaDepsOrigin[] | undefined,
+    depsOrigin: DepsOrigin[] | undefined,
     selMetrics: string[] | undefined,
   ): string[] {
     let requiredMetrics: string[] = [];
@@ -322,10 +371,15 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   }
 
   /**
-   * Emits the save event
+   * Emits the save event with metrics selection for
+   * data and for choices
    */
-  saveDeps(metrics: string[]) {
-    this._saveEvt.emit(metrics);
+  saveDeps(metricsForData: string[], metricsForChoices: string[]) {
+    const metricsSel = {
+      metrics_for_data: metricsForData,
+      metrics_for_choices: metricsForChoices,
+    } as SelectedMetrics;
+    this._saveEvt.emit(metricsSel);
   }
 
   ngOnDestroy(): void {

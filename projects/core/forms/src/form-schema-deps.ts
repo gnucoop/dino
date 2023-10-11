@@ -31,7 +31,7 @@ export interface FormSchemaDeps extends Model {
   /**
    * A list with external form dependencies info
    */
-  deps_origin?: FormSchemaDepsOrigin[];
+  deps_origin?: DepsOrigin[];
 
   /**
    * The metrics that have data to show in the schema
@@ -41,23 +41,23 @@ export interface FormSchemaDeps extends Model {
 
 /**
  * This model is used to store the external form dependencies info
- * @title FormSchemaDepsOrigin
+ * @title DepsOrigin
  */
-export interface FormSchemaDepsOrigin {
+export interface DepsOrigin {
   /**
    * The form schema that have fields that this schema needs to show
    */
-  form_schema_ref_id: string;
+  form_schema_ref_id?: string;
 
   /**
    * All the fields to be updated in the context form
    */
-  fields_to_update: string[];
+  fields_to_update?: string[];
 
   /**
    * The metrics to use to filter the form data
    */
-  filter_by_metric: string[];
+  filter_by_metric?: string[];
 
   /**
    * True if this relationship should create a choices origin
@@ -68,6 +68,11 @@ export interface FormSchemaDepsOrigin {
    * The name of the choicesOrigins to be added or replaced in the form schema
    */
   choices_origin?: FormSchemaChoiceOrigin | null;
+
+  /**
+   * The metrics to be included in the form schema as choice origin
+   */
+  metrics_choices_origin?: string[] | null;
 
   /**
    * Order by field for the query

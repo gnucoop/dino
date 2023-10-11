@@ -450,16 +450,18 @@ export class EditReport implements AfterViewInit {
             if (fs) {
               const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
               if (fsDeps.deps_origin) {
-                fsDeps.deps_origin.forEach(depsOrigin => {
-                  if (!depsOrigin.is_choice) {
-                    queryDepsSelector = this._getRelationshipDataQuery(
-                      depsOrigin.form_schema_ref_id,
-                      depsOrigin.filter_by_metric,
-                      dataBySchema,
-                      queryDepsSelector,
-                    );
-                  }
-                });
+                fsDeps.deps_origin
+                  .filter(deps => deps.form_schema_ref_id != null && deps.filter_by_metric != null)
+                  .forEach(depsOrigin => {
+                    if (!depsOrigin.is_choice) {
+                      queryDepsSelector = this._getRelationshipDataQuery(
+                        depsOrigin.form_schema_ref_id,
+                        depsOrigin.filter_by_metric,
+                        dataBySchema,
+                        queryDepsSelector,
+                      );
+                    }
+                  });
               }
             }
           }
@@ -619,42 +621,47 @@ export class EditReport implements AfterViewInit {
    * @returns a data query selector with schema ref id and required metrics ref id
    */
   private _getRelationshipDataQuery(
-    formSchemaRefId: string,
-    metrics: string[],
+    formSchemaRefId: string | undefined,
+    metrics: string[] | undefined,
     formDatas: RxDocument<FormData>[],
     querySelector: DataQuerySelector,
   ): DataQuerySelector {
-    querySelector['form_schema_ref_id']['$in'].push(formSchemaRefId);
+    if (formSchemaRefId && metrics) {
+      querySelector['form_schema_ref_id']['$in'].push(formSchemaRefId);
 
-    const metricsAllvalues: {[key: string]: string[]} = {};
-    formDatas.forEach(fd => {
-      const jsonFd: {[key: string]: any} = fd.toJSON();
-      metrics.forEach(metric => {
-        if (jsonFd[metric + '_ref_id']) {
-          if (metricsAllvalues[metric] == null) {
-            metricsAllvalues[metric] = [];
+      const metricsAllvalues: {[key: string]: string[]} = {};
+      formDatas.forEach(fd => {
+        const jsonFd: {[key: string]: any} = fd.toJSON();
+        metrics.forEach(metric => {
+          if (jsonFd[metric + '_ref_id']) {
+            if (metricsAllvalues[metric] == null) {
+              metricsAllvalues[metric] = [];
+            }
+            metricsAllvalues[metric].push(jsonFd[metric + '_ref_id']);
           }
-          metricsAllvalues[metric].push(jsonFd[metric + '_ref_id']);
+        });
+      });
+      metrics.forEach(metric => {
+        if (metricsAllvalues[metric] && metricsAllvalues[metric].length) {
+          let metricSelector = this._findMetricInOrSelector(querySelector['$or'], metric);
+          if (metricSelector == null) {
+            let metricSel: {[key: string]: any} = {};
+            metricSel[metric + '_ref_id'] = {$in: []};
+            querySelector['$or'].push(metricSel);
+          }
+
+          metricSelector = this._findMetricInOrSelector(querySelector['$or'], metric);
+          if (metricSelector != null) {
+            metricSelector[metric + '_ref_id']['$in'] = [
+              ...new Set([
+                ...metricSelector[metric + '_ref_id']['$in'],
+                ...metricsAllvalues[metric],
+              ]),
+            ];
+          }
         }
       });
-    });
-    metrics.forEach(metric => {
-      if (metricsAllvalues[metric] && metricsAllvalues[metric].length) {
-        let metricSelector = this._findMetricInOrSelector(querySelector['$or'], metric);
-        if (metricSelector == null) {
-          let metricSel: {[key: string]: any} = {};
-          metricSel[metric + '_ref_id'] = {$in: []};
-          querySelector['$or'].push(metricSel);
-        }
-
-        metricSelector = this._findMetricInOrSelector(querySelector['$or'], metric);
-        if (metricSelector != null) {
-          metricSelector[metric + '_ref_id']['$in'] = [
-            ...new Set([...metricSelector[metric + '_ref_id']['$in'], ...metricsAllvalues[metric]]),
-          ];
-        }
-      }
-    });
+    }
     return querySelector;
   }
 
@@ -698,21 +705,27 @@ export class EditReport implements AfterViewInit {
         const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
         if (fsDeps.deps_origin) {
           fsDeps.deps_origin
-            .filter(depsOrigin => !depsOrigin.is_choice)
+            .filter(
+              depsOrigin =>
+                depsOrigin.form_schema_ref_id &&
+                depsOrigin.filter_by_metric &&
+                depsOrigin.fields_to_update &&
+                !depsOrigin.is_choice,
+            )
             .forEach(depsOrigin => {
               // Take only one element from depsSourceFormData
               let depsFormDataBySchema = depsSourceFormData
                 .map(depsFd => depsFd.toJSON() as {[key: string]: any})
                 .filter(depsd => depsd['form_schema_ref_id'] === depsOrigin.form_schema_ref_id);
 
-              depsOrigin.filter_by_metric.forEach(metric => {
+              depsOrigin.filter_by_metric?.forEach(metric => {
                 depsFormDataBySchema = depsFormDataBySchema.filter(
                   depsFd => depsFd[metric + '_ref_id'] === formData['dino_' + metric + '_id'],
                 );
               });
               if (depsFormDataBySchema.length) {
                 const relationshipData: {[key: string]: any} = {};
-                depsOrigin.fields_to_update.forEach(
+                depsOrigin.fields_to_update?.forEach(
                   field => (relationshipData[field] = depsFormDataBySchema[0]['data'][field]),
                 );
                 extFdata = {...extFdata, ...relationshipData};
