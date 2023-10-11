@@ -1,9 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UntypedFormBuilder} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
 import {FormDataManager, FormStatusManager} from '@dino/core/forms';
@@ -14,6 +11,9 @@ import {RxDocument} from 'rxdb';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {ImportForm} from './public_api';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AuthService, AuthServiceConfig} from '@dino/core/auth';
+import {EventEmitter} from '@angular/core';
 
 let testDbIdx = 0;
 
@@ -77,13 +77,35 @@ const metricServiceManagerMock = {
   activeMetrics: new BehaviorSubject<{metricName: string}[]>([{metricName: 'project'}]),
 };
 
+const authServiceConfig: AuthServiceConfig = {
+  host: 'http://test-auth-backend',
+  applicationId: 'applicationId',
+  apiKey: 'apiKey',
+  retryRefreshTime: 5000,
+  retryAttemptsMax: 1,
+  failedAuthRedirect: 'login',
+};
+
+const authServiceMock = {
+  authenticated: of({auth: true, evt: 'init'}),
+  authToken: of('test_auth_token'),
+  getUserInfo: () => {
+    return {};
+  },
+  resetEvt: of(false),
+  logout: () => of(false),
+  logoutEvt: new EventEmitter<void>(),
+  _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
+  authConfig: authServiceConfig,
+} as unknown as AuthService;
+
 describe('Import Forms', () => {
   let fixtureImportForm: ComponentFixture<ImportForm>;
   let importForm: ImportForm;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, TranslocoModule],
+      imports: [BrowserAnimationsModule, HttpClientTestingModule, TranslocoModule],
       providers: [
         UntypedFormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},
@@ -91,6 +113,7 @@ describe('Import Forms', () => {
         {provide: FormDataManager, useValue: formDataManagerMock},
         {provide: FormStatusManager, useValue: formStatusManagerMock},
         {provide: MetricsService, useValue: metricServiceManagerMock},
+        {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
       ],
