@@ -755,27 +755,35 @@ export class EditReport implements AfterViewInit {
         switchMap(rms => {
           if (rms) {
             return rms.formMetrics.valueChanges.pipe(
-              map((vc: {[key: string]: RxDocument<Metric>}) => {
-                let metricsString = '';
-                Object.keys(vc).forEach(key => {
-                  if (!vc[key]) {
-                    delete vc[key];
+              map(
+                (vc: {
+                  [key: string]: {
+                    option: RxDocument<Metric>;
+                    metricType: string;
+                    secondaryMetricFieldsDisplayed?: {[key: string]: string};
+                  };
+                }) => {
+                  let metricsString = '';
+                  Object.keys(vc).forEach(key => {
+                    if (!vc[key]) {
+                      delete vc[key];
+                    }
+                  });
+                  const metricKeys = Object.keys(vc);
+                  for (let idx = 0; idx < metricKeys.length; idx++) {
+                    const key = metricKeys[idx];
+                    if (key && vc[key]) {
+                      metricsString += `${this._translateService.translate(
+                        key.charAt(0).toUpperCase() + key.slice(1),
+                      )} : ${vc[key].option.name}  `;
+                    }
+                    if (idx < metricKeys.length - 1) {
+                      metricsString += ', ';
+                    }
                   }
-                });
-                const metricKeys = Object.keys(vc);
-                for (let idx = 0; idx < metricKeys.length; idx++) {
-                  const key = metricKeys[idx];
-                  if (key && vc[key]) {
-                    metricsString += `${this._translateService.translate(
-                      key.charAt(0).toUpperCase() + key.slice(1),
-                    )} : ${vc[key]['name']}  `;
-                  }
-                  if (idx < metricKeys.length - 1) {
-                    metricsString += ', ';
-                  }
-                }
-                return metricsString;
-              }),
+                  return metricsString;
+                },
+              ),
             );
           } else {
             return obsOf(null);
