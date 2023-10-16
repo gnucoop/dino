@@ -673,12 +673,12 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       shareReplay(1),
     );
 
-    combineLatest([this._formSchemaDeps, this.metricChanges])
+    combineLatest([this._formSchemaDeps, this.metricChanges, this.isFormInizialized])
       .pipe(
         withLatestFrom(this._rendererService.formGroup),
-        map(([[fschemadeps, metricSel], formGroup]) => {
+        map(([[fschemadeps, metricSel, isFormInizializedVal], formGroup]) => {
           let metricsCtx: {[key: string]: any} = {};
-          if (this.isFormInizialized.value && fschemadeps && formGroup) {
+          if (isFormInizializedVal && fschemadeps && formGroup) {
             if (metricSel != null) {
               Object.keys(metricSel).forEach(metricName => {
                 if (metricSel[metricName]) {
