@@ -269,13 +269,17 @@ export class FileUploadService {
   /**
    * Check if a value is an AjfFile field with a valid content
    * @param value the value to be checked
+   * @param uploadSignature if true, signature pngs are uploaded to the storage. Defaults to false.
    * @returns true if the input value is an AjfFile field
    */
-  isAjfFileField(value: any): boolean {
+  isAjfFileField(value: any, uploadSignature: boolean = false): boolean {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
     if ('name' in value && 'content' in value && value['content'] && value['content'].length) {
+      if (!uploadSignature && 'signature' in value && value['signature']) {
+        return false;
+      }
       return true;
     }
     return false;
