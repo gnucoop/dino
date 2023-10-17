@@ -125,6 +125,10 @@ export interface MetricDataAttribute {
  */
 export interface ParentMetric {
   /**
+   * The Parent metric parent id
+   */
+  parent_parent_id: string | null;
+  /**
    * The Parent metric name
    */
   parent_name: string | null;
@@ -612,7 +616,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         this._metricManager.list().pipe(
           map(docs =>
             docs.map(doc => {
-              return {parent_id: doc.id, parent_name: doc.name};
+              return {parent_parent_id: doc.parent_id, parent_id: doc.id, parent_name: doc.name};
             }),
           ),
         ),
@@ -624,7 +628,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
             return (
               option.parent_name.toLowerCase().includes(parentName) &&
               this.metricForm != null &&
-              option.parent_name != this.metricForm.get('name')?.value
+              option.parent_name != this.data.metricItem?.name &&
+              option.parent_parent_id != this.data.metricItem?.id
             );
           });
         }
