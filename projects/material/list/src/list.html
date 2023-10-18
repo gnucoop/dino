@@ -156,7 +156,7 @@
 
               <ng-template #defaultExternalRef>
                 <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
-                  >{{ elem }}</span
+                  >{{ elem|dinoDateValue }}</span
                 ></ng-template
               >
             </ng-container>
