@@ -237,4 +237,11 @@ export const ENG: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard',
   'Copy to Clipboard': 'Copy to Clipboard',
+  'Unique': 'Unique',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
+    'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics',
+  'UNIQUE FORM ALREADY EXISTS': 'UNIQUE FORM ALREADY EXISTS',
+  'Unique: only one item with a given exact set of metrics can exist':
+    'Unique: only one item with a given exact set of metrics can exist',
+  'Metrics Set Behavior': 'Metrics Set Behavior',
 };

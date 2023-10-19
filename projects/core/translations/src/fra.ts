@@ -234,4 +234,9 @@ export const FRA: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     "Choisissez les métriques auxquelles l'Url du formulaire public fera référence, le cas échéant, puis copiez l'Url dans votre mémoire.",
   'Copy to Clipboard': 'Copie en mémoire',
+  'Unique': 'Unique',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': `Il existe déjà un formulaire {{schema_name}} avec cet ensemble exact de paramètres. Veuillez choisir d'autres paramètres`,
+  'UNIQUE FORM ALREADY EXISTS': 'UN FORMULAIRE UNIQUE EXISTE DÉJÀ',
+  'Unique: only one item with a given exact set of metrics can exist': `Unique : il ne peut exister qu'un seul élément présentant un ensemble exact de paramètres donné.`,
+  'Metrics Set Behavior': 'Comportement du jeu de métriques',
 };

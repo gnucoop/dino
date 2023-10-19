@@ -238,4 +238,11 @@ export const ESP: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'Elija las métricas a las que se referirá la Url del formulario público, si las hay, y luego copie la Url en su memoria',
   'Copy to Clipboard': 'Copia en memoria',
+  'Unique': 'Único',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
+    'Ya existe un formulario {{schema_name}} con este mismo conjunto de métricas. Por favor, elija métricas diferentes',
+  'UNIQUE FORM ALREADY EXISTS': 'YA EXISTE UN FORMULARIO ÚNICO',
+  'Unique: only one item with a given exact set of metrics can exist':
+    'Único: sólo puede existir un artículo con un determinado conjunto exacto de métricas.',
+  'Metrics Set Behavior': 'Comportamiento del conjunto de métricas',
 };
