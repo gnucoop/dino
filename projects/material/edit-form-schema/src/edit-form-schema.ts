@@ -245,6 +245,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
               : this._metricService.activeMetrics.value.map(m => m.metricName),
           ],
           visibility: [fs ? fs.visibility : FormSchemaVisibility.Private, Validators.required],
+          uniqueMetricsSet: [
+            fs && fs.schema.uniqueMetricsSet ? fs.schema.uniqueMetricsSet : false,
+            Validators.required,
+          ],
         });
         fg.updateValueAndValidity({onlySelf: false, emitEvent: true});
         return fg;
@@ -277,8 +281,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
           if (schema == null) {
             return obsOf(null);
           }
+          const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
+          const patchSchema = {
+            ...schema,
+            ...(unique ? {uniqueMetricsSet: unique} : undefined),
+          };
           const formPatch: InsertModel<FormSchema> = {
-            schema: schema,
+            schema: patchSchema,
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,

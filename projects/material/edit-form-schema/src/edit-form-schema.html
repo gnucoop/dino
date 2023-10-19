@@ -12,14 +12,14 @@
             <mat-label>{{'Form Name'|transloco}}</mat-label>
             <input matInput formControlName="name" />
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field class="dino-form-attribute-short-field">
             <mat-label>{{'Icon Set'|transloco}}</mat-label>
             <mat-select #iconSetSelect formControlName="icon_set">
               <mat-option [value]="'default'">{{ 'Default' }}</mat-option>
               <mat-option [value]="'humanitarian'">{{ 'Humanitarian' }}</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field class="dino-form-attribute-short-field">
             <mat-label>{{'Icon Identifier'|transloco}}</mat-label>
             <input matInput formControlName="icon" [matAutocomplete]="autoicons" />
 
@@ -78,11 +78,7 @@
 
           <mat-form-field>
             <mat-label>{{'Form Metrics'|transloco}}</mat-label>
-            <mat-select
-              [disableRipple]="true"
-              formControlName="form_schema_metrics"
-              multiple
-            >
+            <mat-select [disableRipple]="true" formControlName="form_schema_metrics" multiple>
               <mat-option
                 *ngFor="let availableMetric of availableMetrics|async"
                 [value]="availableMetric.metricName"
@@ -91,11 +87,19 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field class="dino-form-attribute-short-field">
             <mat-label>{{'Visibility'|transloco}}</mat-label>
             <mat-select formControlName="visibility">
               <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
               <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="dino-form-attribute-short-field">
+            <mat-label>{{'Metrics Set Behavior'|transloco}}</mat-label>
+            <mat-select formControlName="uniqueMetricsSet">
+              <mat-option [value]="false">{{ 'Default'|transloco }}</mat-option>
+              <mat-option [value]="true">{{ 'Unique'|transloco }}</mat-option>
             </mat-select>
           </mat-form-field>
         </form>
