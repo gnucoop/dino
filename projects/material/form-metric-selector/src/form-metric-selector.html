@@ -92,6 +92,7 @@
     <button
       mat-raised-button
       color="primary"
+      [disabled]="formMetrics.status === 'INVALID'"
       class="dino-go-to-formdata-button"
       (click)="goToFormData()"
     >
