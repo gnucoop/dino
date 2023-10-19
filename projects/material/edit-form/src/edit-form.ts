@@ -72,6 +72,7 @@ import {format} from 'date-fns';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {NetworkStatusService} from '@dino/core/auth';
 import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
+import {TranslocoService} from '@ngneat/transloco';
 
 import {
   BehaviorSubject,
@@ -187,6 +188,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
    * True if no validation errors are encountered in the AjfForm
    */
   isAjfFormValid: Observable<boolean> = obsOf(false);
+
+  /**
+   * True if the Save button should be disabled
+   */
+  isSaveDisabled: Observable<boolean> = obsOf(false);
 
   /**
    * True if no validation errors are encountered in the Form Metrics selector form
@@ -364,6 +370,14 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     new BehaviorSubject<{[key: string]: {[key: string]: any}} | null>(null);
 
   /**
+   * True if a Form Data of this schema, with the same set of metrics already exists.
+   */
+  private _uniqueMetricsSetAlreadyExists: Observable<boolean> = obsOf(false);
+  get uniqueMetricsSetAlreadyExists(): Observable<boolean> {
+    return this._uniqueMetricsSetAlreadyExists;
+  }
+
+  /**
    * The loading state of the upload file
    */
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -424,6 +438,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     private _location: Location,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
+    private _ts: TranslocoService,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
@@ -1027,6 +1042,53 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       )
       .subscribe();
 
+    this._uniqueMetricsSetAlreadyExists = combineLatest([
+      this._formSchema,
+      this._formData,
+      this._formMetricsSelector.pipe(
+        switchMap(fmSelector => fmSelector?.selectedMetricsChanges ?? obsOf(null)),
+      ),
+    ]).pipe(
+      switchMap(([fschema, fdata, fsmChanges]) => {
+        if (!fschema.schema.uniqueMetricsSet || fsmChanges == null) {
+          return obsOf(false);
+        }
+        const querySelectorObj: {[key: string]: {$eq: string}} = {};
+        for (let key in fsmChanges) {
+          querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
+        }
+        if (Object.keys(querySelectorObj).length === 0 || !this._dataModelManager) {
+          return obsOf(false);
+        }
+        const selector = {
+          form_schema_ref_id: {$eq: fschema.id},
+          id: {$ne: fdata.id},
+          ...querySelectorObj,
+        };
+        return this._dataModelManager.query({selector}).pipe(map(docs => docs.length > 0));
+      }),
+    );
+
+    this._uniqueMetricsSetAlreadyExists
+      .pipe(
+        filter(exists => exists),
+        withLatestFrom(this._formMetricsSelector, this._formSchema),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe(([_, fms, schema]) => {
+        if (fms && fms.formMetrics) {
+          fms.formMetrics.setErrors({uniqueMetricsSetAlreadyExists: true});
+        }
+        this.snackbar.open(
+          this._ts.translate(
+            `A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics`,
+            {schema_name: `"${schema.name}"`},
+          ),
+          this._ts.translate('UNIQUE FORM ALREADY EXISTS'),
+          {duration: 10000},
+        );
+      });
+
     combineLatest([
       this._saveFormEvt as Observable<AjfFormActionEvent>,
       this._currentDoc,
@@ -1211,9 +1273,20 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       shareReplay(1),
     );
 
-    this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(
-      switchMap(formMetricsSelector => {
-        if (formMetricsSelector == null) {
+    this.isSaveDisabled = combineLatest([
+      this.isAjfFormValid,
+      this._uniqueMetricsSetAlreadyExists,
+    ]).pipe(
+      map(([ajfValid, uniqueExists]) => ajfValid === false || uniqueExists === true),
+      shareReplay(1),
+    );
+
+    this.isFormMetricsSelectorValid = combineLatest([
+      this._formMetricsSelector,
+      this._uniqueMetricsSetAlreadyExists,
+    ]).pipe(
+      switchMap(([formMetricsSelector, uniqueExists]) => {
+        if (formMetricsSelector == null || uniqueExists) {
           return obsOf(false);
         }
         return formMetricsSelector.formMetrics.statusChanges.pipe(

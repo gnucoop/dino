@@ -36,7 +36,7 @@
           <ajf-form
             #formContainer
             [form]="(form|async)!"
-            [saveDisabled]="(isAjfFormValid|async) !== true"
+            [saveDisabled]="(isSaveDisabled|async) === true"
             [topBar]="(isPipeline|async) === false"
             [maxColumns]="maxColumns"
             [centeredFieldsContent]="centeredFieldsContent"
@@ -57,7 +57,7 @@
       <ajf-form
         #formContainer
         [form]="(form|async)!"
-        [saveDisabled]="(isAjfFormValid|async) !== true"
+        [saveDisabled]="(isSaveDisabled|async) === true"
         [topBar]="(isPipeline|async) === false"
         [maxColumns]="maxColumns"
         [centeredFieldsContent]="centeredFieldsContent"
@@ -72,7 +72,7 @@
   <dino-floating-button
     buttonIcon="save"
     [tooltipMessage]="'Save form'|transloco"
-    [buttonDisabled]="(isAjfFormValid|async) !== true"
+    [buttonDisabled]="(isSaveDisabled|async) === true"
     (click)="saveForm()"
   ></dino-floating-button>
 
@@ -80,7 +80,7 @@
     *ngIf="allowSaveDraft"
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
-    [buttonDisabled]="(isAjfFormValid|async) === true"
+    [buttonDisabled]="((isAjfFormValid|async) === true) || ((uniqueMetricsSetAlreadyExists|async) === true) "
     (click)="saveDraft()"
   ></dino-floating-button>
 </ng-container>

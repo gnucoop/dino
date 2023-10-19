@@ -38,7 +38,7 @@
           <ajf-form
             #ajfFormRenderer
             [form]="(form|async)!"
-            [saveDisabled]="(isView|async) || ((isAjfFormValid|async) === false)"
+            [saveDisabled]="((isView|async) === true) || ((isSaveDisabled|async) === true)"
             [topBar]="(isPipeline|async) === false"
             (formAction)="onFormAction($event)"
             [readonly]="isView|async"
@@ -63,7 +63,7 @@
       <ajf-form
         #ajfFormRenderer
         [form]="(form|async)!"
-        [saveDisabled]="(isView|async) || ((isAjfFormValid|async) === false)"
+        [saveDisabled]="((isView|async) === true) || ((isSaveDisabled|async) === true)"
         [topBar]="(isPipeline|async) === false"
         (formAction)="onFormAction($event)"
         [readonly]="isView|async"
@@ -80,7 +80,7 @@
     *ngIf="(isView|async) !== true"
     buttonIcon="save"
     [tooltipMessage]="'Save form'|transloco"
-    [buttonDisabled]="(isAjfFormValid|async) === false"
+    [buttonDisabled]="(isSaveDisabled|async) === true"
     (click)="saveForm()"
   ></dino-floating-button>
 
@@ -88,7 +88,7 @@
     *ngIf="(isView|async) !== true && allowSaveDraft"
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
-    [buttonDisabled]="(isAjfFormValid|async) === true"
+    [buttonDisabled]="((isAjfFormValid|async) === true) || ((uniqueMetricsSetAlreadyExists|async) === true)"
     (click)="saveDraft()"
   ></dino-floating-button>
 </ng-container>

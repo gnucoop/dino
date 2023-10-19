@@ -104,6 +104,7 @@ import {CaseManager} from '@dino/core/cases';
 import {Project, ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
+import {TranslocoService} from '@ngneat/transloco';
 
 /**
  * The Form Edit component.
@@ -169,6 +170,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
    * True if no validation errors are encountered in the AjfForm
    */
   isAjfFormValid: Observable<boolean> = obsOf(false);
+
+  /**
+   * True if the Save button should be disabled
+   */
+  isSaveDisabled: Observable<boolean> = obsOf(false);
 
   /**
    * True if no validation errors are encountered in the Form Metrics selector form
@@ -266,6 +272,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   private _extraFormControls: {[key: string]: {[key: string]: any}} = {};
 
   /**
+   * True if a Form Data of this schema, with the same set of metrics already exists.
+   */
+  private _uniqueMetricsSetAlreadyExists: Observable<boolean> = obsOf(false);
+  get uniqueMetricsSetAlreadyExists(): Observable<boolean> {
+    return this._uniqueMetricsSetAlreadyExists;
+  }
+
+  /**
    * Set the extra form control to add to the form group
    */
   readonly setFormControls: BehaviorSubject<{[key: string]: {[key: string]: any}} | null> =
@@ -332,6 +346,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     private _location: Location,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
+    private _ts: TranslocoService,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
@@ -670,6 +685,48 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }
       });
 
+    this._uniqueMetricsSetAlreadyExists = combineLatest([
+      this._formSchema,
+      this._formMetricsSelector.pipe(
+        switchMap(fmSelector => fmSelector?.selectedMetricsChanges ?? obsOf(null)),
+      ),
+    ]).pipe(
+      switchMap(([fschema, fsmChanges]) => {
+        if (!fschema.schema.uniqueMetricsSet || fsmChanges == null) {
+          return obsOf(false);
+        }
+        const querySelectorObj: {[key: string]: {$eq: string}} = {};
+        for (let key in fsmChanges) {
+          querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
+        }
+        if (Object.keys(querySelectorObj).length === 0 || !this._dataModelManager) {
+          return obsOf(false);
+        }
+        const selector = {form_schema_ref_id: {$eq: fschema.id}, ...querySelectorObj};
+        return this._dataModelManager.query({selector}).pipe(map(docs => docs.length > 0));
+      }),
+    );
+
+    this._uniqueMetricsSetAlreadyExists
+      .pipe(
+        filter(exists => exists),
+        withLatestFrom(this._formMetricsSelector, this._formSchema),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe(([_, fms, schema]) => {
+        if (fms && fms.formMetrics) {
+          fms.formMetrics.setErrors({uniqueMetricsSetAlreadyExists: true});
+        }
+        this.snackbar.open(
+          this._ts.translate(
+            `A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics`,
+            {schema_name: `"${schema.name}"`},
+          ),
+          this._ts.translate('UNIQUE FORM ALREADY EXISTS'),
+          {duration: 10000},
+        );
+      });
+
     this._formMetricsSelector
       .pipe(
         map(fmSelector => {
@@ -880,9 +937,20 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       shareReplay(1),
     );
 
-    this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(
-      switchMap(formMetricsSelector => {
-        if (formMetricsSelector == null) {
+    this.isSaveDisabled = combineLatest([
+      this.isAjfFormValid,
+      this._uniqueMetricsSetAlreadyExists,
+    ]).pipe(
+      map(([ajfValid, uniqueExists]) => ajfValid === false || uniqueExists === true),
+      shareReplay(1),
+    );
+
+    this.isFormMetricsSelectorValid = combineLatest([
+      this._formMetricsSelector,
+      this._uniqueMetricsSetAlreadyExists,
+    ]).pipe(
+      switchMap(([formMetricsSelector, uniqueExists]) => {
+        if (formMetricsSelector == null || uniqueExists) {
           return obsOf(false);
         }
         return formMetricsSelector.formMetrics.statusChanges.pipe(
