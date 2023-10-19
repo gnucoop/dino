@@ -25,6 +25,7 @@ import {Model} from '@dino/core/data';
 import {MigrationStrategies, RxDocument} from 'rxdb';
 
 import {FormSchemaVisibility} from './form-schema-visibility';
+import {AjfFormSchemaAdditionalProperties} from './form-schema-additional-properties';
 
 /**
  * This model is used to store the Ajf form schemas.
@@ -68,7 +69,7 @@ export interface FormSchema extends Model {
    * version](https://ajf.rocks/schemas/ajf-form-schema.json).
    * @asType object
    */
-  schema: AjfFormCreate;
+  schema: AjfFormCreate & AjfFormSchemaAdditionalProperties;
 
   /**
    * The related form schema deps id.
