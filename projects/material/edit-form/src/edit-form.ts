@@ -1055,7 +1055,12 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         }
         const querySelectorObj: {[key: string]: {$eq: string}} = {};
         for (let key in fsmChanges) {
-          querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
+          if (
+            !fschema.form_schema_metrics?.length ||
+            (fschema.form_schema_metrics && fschema.form_schema_metrics.includes(key))
+          ) {
+            querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
+          }
         }
         if (Object.keys(querySelectorObj).length === 0 || !this._dataModelManager) {
           return obsOf(false);
@@ -1067,6 +1072,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         };
         return this._dataModelManager.query({selector}).pipe(map(docs => docs.length > 0));
       }),
+      shareReplay(1),
     );
 
     this._uniqueMetricsSetAlreadyExists

@@ -697,7 +697,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }
         const querySelectorObj: {[key: string]: {$eq: string}} = {};
         for (let key in fsmChanges) {
-          querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
+          if (
+            !fschema.form_schema_metrics?.length ||
+            (fschema.form_schema_metrics && fschema.form_schema_metrics.includes(key))
+          ) {
+            querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
+          }
         }
         if (Object.keys(querySelectorObj).length === 0 || !this._dataModelManager) {
           return obsOf(false);
@@ -705,6 +710,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         const selector = {form_schema_ref_id: {$eq: fschema.id}, ...querySelectorObj};
         return this._dataModelManager.query({selector}).pipe(map(docs => docs.length > 0));
       }),
+      shareReplay(1),
     );
 
     this._uniqueMetricsSetAlreadyExists
