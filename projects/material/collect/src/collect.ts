@@ -233,6 +233,10 @@ export class Collect {
                     permissionContext,
                   ),
                   shareUrl: 'visibility' in document && document.visibility === 1,
+                  unique:
+                    'uniqueMetricsSet' in document.schema && document.schema.uniqueMetricsSet
+                      ? document.schema.uniqueMetricsSet
+                      : undefined,
                 };
                 collectItems.push(collectItem);
               }

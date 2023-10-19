@@ -22,6 +22,14 @@
         [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
       >
         <div>
+          <div class="dino-grid-feat-icons">
+            <mat-icon
+              color="primary"
+              *ngIf="item.unique"
+              [matTooltip]="'Unique: only one item with a given exact set of metrics can exist'|transloco"
+              >fingerprint</mat-icon
+            >
+          </div>
           <div class="dino-grid-action-icons">
             <button
               *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"

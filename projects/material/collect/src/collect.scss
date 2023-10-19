@@ -39,6 +39,14 @@ dino-collect {
           }
         }
       }
+      .dino-grid-feat-icons{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
       outline: none;
       .mat-grid-tile-content div:not(.dino-grid-action-icons) {
         outline: none;
