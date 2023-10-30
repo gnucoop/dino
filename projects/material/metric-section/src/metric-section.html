@@ -1,4 +1,5 @@
 <dino-list
+  #dinoList
   [title]="metricLabel"
   [headers]="headers"
   [dataSource]="dataSource"
@@ -7,7 +8,12 @@
   [bulkDeleteAction]="bulkDeleteAction"
   [onClickRowActions]="onClickRowActions"
 >
-  <dino-search-filters-bar filters [additionalFilters]="false"></dino-search-filters-bar>
+  <dino-search-filters-bar
+    filters
+    [additionalFilters]="false"
+    [exportable]="true"
+    (exportEvt)="dinoList.export($event, 'metrics')"
+  ></dino-search-filters-bar>
   <ng-content select="[breadcrumbs]" breadcrumbs></ng-content>
 </dino-list>
 
