@@ -44,7 +44,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {ListModule as CoreModule} from '@dino/core/list';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
-import {ExportFormModule} from '@dino/material/export-form';
+import {ExportListModule} from '@dino/material/export-list';
 import {FormStatusChangerModule} from '@dino/material/form-status-changer';
 import {ImportFormModule} from '@dino/material/import-form';
 import {UserInteractionsModule} from '@dino/material/user-interactions';
@@ -70,7 +70,7 @@ import {LangsModule} from '@dino/material/langs';
     AjfFormsModule,
     AjfTranslocoModule,
     BreakpointObserverModule,
-    ExportFormModule,
+    ExportListModule,
     CommonModule,
     CoreModule,
     FormStatusChangerModule,

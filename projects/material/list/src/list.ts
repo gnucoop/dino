@@ -70,7 +70,7 @@ import {
   SearchFiltersComponent,
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ExportForm} from '@dino/material/export-form';
+import {ExportList} from '@dino/material/export-list';
 import {FormStatusChanger, FormStatusChangerData} from '@dino/material/form-status-changer';
 import {ImportForm} from '@dino/material/import-form';
 import {
@@ -107,6 +107,7 @@ import {UserDataManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
+import {ListType} from './list-type';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -514,35 +515,20 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     );
   }
 
-  export(ev: 'XLSX' | 'CSV' | 'dialog') {
-    if (
-      this.dataSource != null &&
-      this.dataSource.additionalDataSchema != null &&
-      (this.dataSource.additionalDataSchema as Model as FormSchema).schema != null &&
-      this.dataSource.dataResults.value != null
-    ) {
-      const formSchema: FormSchema = this.dataSource.additionalDataSchema as Model as FormSchema;
-      const dialogConfig = new MatDialogConfig();
-      if (ev === 'XLSX') {
-        dialogConfig.data = {
-          exportFormat: 'xlsx',
-          selectAll: true,
-        };
-      } else if (ev === 'CSV') {
-        dialogConfig.data = {
-          exportFormat: 'csv',
-          selectAll: true,
-        };
-      }
-      let dialogRef = this._dialog.open(ExportForm, dialogConfig);
-      dialogRef.componentInstance.emitExportActionTrigger
-        .pipe(take(1))
-        .subscribe(evt => this.emitExportActionTrigger.emit(evt));
-      dialogRef.componentInstance.formSchema = formSchema;
-      dialogRef.componentInstance.data = this.dataSource.data as any[];
-      dialogRef.componentInstance.filteredQueryObs = this.dataSource.filteredQueryObs;
-      dialogRef.componentInstance.allItemsQueryObs = this.dataSource.allItemsQueryObs;
-      dialogRef.componentInstance.filtersCount = this.dataSource.filtersCount;
+  /**
+   * Exports the list
+   * @param ev Type of the event (export directly in csv/xlsx or open dialog)
+   * @param listType The type of items in the List
+   */
+  export(ev: 'XLSX' | 'CSV' | 'dialog', listType: ListType = 'forms'): void {
+    switch (listType) {
+      case 'metrics':
+        this._exportMetrics(ev);
+        break;
+      case 'forms':
+      default:
+        this._exportForms(ev);
+        break;
     }
   }
 
@@ -1511,6 +1497,97 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     );
 
     return lastTabIndex;
+  }
+
+  /**
+   * Exports a Forms List
+   * @param ev Type of the event (export directly in csv/xlsx or open dialog)
+   */
+  private _exportForms(ev: 'XLSX' | 'CSV' | 'dialog'): void {
+    if (
+      this.dataSource != null &&
+      this.dataSource.additionalDataSchema != null &&
+      (this.dataSource.additionalDataSchema as Model as FormSchema).schema != null &&
+      this.dataSource.dataResults.value != null
+    ) {
+      const formSchema: FormSchema = this.dataSource.additionalDataSchema as Model as FormSchema;
+      const dialogConfig = new MatDialogConfig();
+      if (ev === 'XLSX') {
+        dialogConfig.data = {
+          exportFormat: 'xlsx',
+          selectAll: true,
+          listType: 'forms',
+        };
+      } else if (ev === 'CSV') {
+        dialogConfig.data = {
+          exportFormat: 'csv',
+          selectAll: true,
+          listType: 'forms',
+        };
+      }
+      this._openExportDialog(formSchema, dialogConfig);
+    }
+  }
+
+  /**
+   * Exports a Metrics List
+   * @param ev Type of the event (export directly in csv/xlsx or open dialog)
+   */
+  private _exportMetrics(ev: 'XLSX' | 'CSV' | 'dialog') {
+    if (this.dataSource != null && this.dataSource.dataResults.value != null) {
+      const formSchema: FormSchema = this._generateExportSchema(
+        this.dataSource.modelSchema.title ?? '',
+      );
+      const dialogConfig = new MatDialogConfig();
+      if (ev === 'XLSX') {
+        dialogConfig.data = {
+          exportFormat: 'xlsx',
+          selectAll: true,
+          listType: 'metrics',
+        };
+      } else if (ev === 'CSV') {
+        dialogConfig.data = {
+          exportFormat: 'csv',
+          selectAll: true,
+          listType: 'metrics',
+        };
+      }
+      this._openExportDialog(formSchema, dialogConfig);
+    }
+  }
+
+  /**
+   * Opens an Export List dialog
+   * @param schema The Schema of a list item
+   * @param dialogConfig The dialog configuration
+   */
+  private _openExportDialog(schema: FormSchema, dialogConfig: MatDialogConfig): void {
+    let dialogRef = this._dialog.open(ExportList, dialogConfig);
+    dialogRef.componentInstance.emitExportActionTrigger
+      .pipe(take(1))
+      .subscribe(evt => this.emitExportActionTrigger.emit(evt));
+    dialogRef.componentInstance.schema = schema;
+    dialogRef.componentInstance.data = this.dataSource!.data as any[];
+    dialogRef.componentInstance.filteredQueryObs = this.dataSource!.filteredQueryObs;
+    dialogRef.componentInstance.allItemsQueryObs = this.dataSource!.allItemsQueryObs;
+    dialogRef.componentInstance.filtersCount = this.dataSource!.filtersCount;
+  }
+
+  /**
+   * Generates an Export-ready schema
+   * @param listName The Name of the List Item Model
+   * @returns A generated schema for the export list component
+   */
+  private _generateExportSchema(listName: string): FormSchema {
+    const exportSchema: FormSchema = {
+      id: '',
+      created_at: '',
+      updated_at: '',
+      name: listName,
+      visibility: 0,
+      schema: {},
+    };
+    return exportSchema;
   }
 
   ngOnDestroy() {

@@ -20,9 +20,7 @@
  *
  */
 
-export * from './list';
-export * from './list-context';
-export * from './list.module';
-export * from './list-datasource';
-export * from './list-status-display-type';
-export * from './list-type';
+/**
+ * Represents the Types of list objects
+ */
+export type ListType = 'forms' | 'reports' | 'metrics' | 'users' | 'groups';
