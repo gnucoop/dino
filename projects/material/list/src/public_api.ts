@@ -25,4 +25,3 @@ export * from './list-context';
 export * from './list.module';
 export * from './list-datasource';
 export * from './list-status-display-type';
-export * from './list-type';

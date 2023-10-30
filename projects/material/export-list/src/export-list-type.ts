@@ -23,4 +23,4 @@
 /**
  * Represents the Types of list objects
  */
-export type ListType = 'forms' | 'reports' | 'metrics' | 'users' | 'groups';
+export type ExportListType = 'forms' | 'reports' | 'metrics' | 'users' | 'groups';

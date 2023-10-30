@@ -70,7 +70,7 @@ import {
   SearchFiltersComponent,
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ExportList} from '@dino/material/export-list';
+import {ExportList, ExportListType} from '@dino/material/export-list';
 import {FormStatusChanger, FormStatusChangerData} from '@dino/material/form-status-changer';
 import {ImportForm} from '@dino/material/import-form';
 import {
@@ -107,7 +107,6 @@ import {UserDataManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
-import {ListType} from './list-type';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -520,7 +519,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param ev Type of the event (export directly in csv/xlsx or open dialog)
    * @param listType The type of items in the List
    */
-  export(ev: 'XLSX' | 'CSV' | 'dialog', listType: ListType = 'forms'): void {
+  export(ev: 'XLSX' | 'CSV' | 'dialog', listType: ExportListType = 'forms'): void {
     switch (listType) {
       case 'metrics':
         this._exportMetrics(ev);

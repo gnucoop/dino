@@ -171,7 +171,7 @@ describe('Export Forms', () => {
     });
 
     exportForm.data = formData;
-    exportForm.formSchema = formSchema;
+    exportForm.schema = formSchema;
     exportForm.export();
     expect(spyExportCsv).toHaveBeenCalledTimes(1);
   });

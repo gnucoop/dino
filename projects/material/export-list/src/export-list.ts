@@ -77,7 +77,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
 import {MatSelectChange} from '@angular/material/select';
-import {ListType} from '@dino/material/list';
+import {ExportListType} from './export-list-type';
 
 /**
  * The export form component dialog data interface
@@ -96,7 +96,7 @@ export interface ExportListData {
   /**
    * The type of the list that is being exported
    */
-  listType?: ListType;
+  listType?: ExportListType;
 }
 
 @Component({
