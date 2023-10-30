@@ -41,7 +41,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {RouterModule} from '@angular/router';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
-import {ExportFormModule} from '@dino/material/export-form';
+import {ExportListModule} from '@dino/material/export-list';
 import {SearchFiltersChipsModule} from '@dino/material/search-filters-chips';
 import {SearchFiltersDialogModule} from '@dino/material/search-filters-dialog';
 import {SearchFiltersPresetManagerModule} from '@dino/material/search-filters-preset-manager';
@@ -54,7 +54,7 @@ import {SearchFiltersBar} from './search-filters-bar';
     AjfTranslocoModule,
     BreakpointObserverModule,
     CommonModule,
-    ExportFormModule,
+    ExportListModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCheckboxModule,

@@ -200,17 +200,17 @@
       >
         <mat-icon color="primary" matSuffix>filter_list</mat-icon>
       </button>
+    </ng-container>
 
-      <ng-container *ngIf="exportable">
-        <button
-          class="dino-export-button"
-          mat-stroked-button
-          (click)="openExportDialog()"
-          [attr.aria-label]="'Export items'|transloco"
-        >
-          <mat-icon color="primary" matSuffix>cloud_download</mat-icon>
-        </button>
-      </ng-container>
+    <ng-container *ngIf="exportable">
+      <button
+        class="dino-export-button"
+        mat-stroked-button
+        (click)="openExportDialog()"
+        [attr.aria-label]="'Export items'|transloco"
+      >
+        <mat-icon color="primary" matSuffix>cloud_download</mat-icon>
+      </button>
     </ng-container>
   </div>
 </ng-template>

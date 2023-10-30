@@ -46,7 +46,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ExportBottomSheet} from '@dino/material/export-form';
+import {ExportBottomSheet} from '@dino/material/export-list';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {combineLatest, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
