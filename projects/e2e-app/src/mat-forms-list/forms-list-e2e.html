@@ -21,7 +21,7 @@
     [presetManager]="true"
     [exportable]="(displayExportButton|async) ?? false"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
-    (exportEvt)="dinoList.export($event)"
+    (exportEvt)="dinoList.export($event, 'forms')"
   ></dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
