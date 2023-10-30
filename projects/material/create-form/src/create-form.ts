@@ -291,6 +291,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
+   * True if form is initialized
+   */
+  isFormInizialized: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
    * Emitted when a user tries to save a form
    */
   private _saveFormEvt: EventEmitter<AjfFormActionEvent> = new EventEmitter<AjfFormActionEvent>();
@@ -356,6 +361,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
+    this.isFormInizialized.next(false);
     this._metricManagers = {
       area: this._areaManager,
       case: this._caseManager,
@@ -475,13 +481,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       shareReplay(1),
     );
 
-    combineLatest([this._formSchemaDeps, this.metricChanges])
+    combineLatest([this._formSchemaDeps, this.metricChanges, this.isFormInizialized])
       .pipe(
         withLatestFrom(this._rendererService.formGroup),
-        map(([[fschemadeps, metricSel], formGroup]) => {
+        map(([[fschemadeps, metricSel, isFormInizializedVal], formGroup]) => {
           let metricsCtx: {[key: string]: any} = {};
-
-          if (fschemadeps && formGroup) {
+          if (isFormInizializedVal && fschemadeps && formGroup) {
             if (metricSel != null) {
               Object.keys(metricSel).forEach(metricName => {
                 if (metricSel[metricName]) {
@@ -934,6 +939,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       switchMap(([fdStatus, formGroup]) => {
         if (fdStatus === 1) {
           this._setNewControlsInForm(formGroup, this._extraFormControls);
+          if (!this.isFormInizialized.value) {
+            this.isFormInizialized.next(true);
+          }
         }
         return this._rendererService.errors.pipe(
           map((errors: number) => errors === 0),

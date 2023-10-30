@@ -895,8 +895,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             createdAt,
             id,
           };
-
-          this.isFormInizialized.next(true);
           return AjfFormSerializer.fromJson(fschema.schema, ajfFormData);
         },
       ),
@@ -1266,6 +1264,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       switchMap(([fdStatus, formGroup, fd]) => {
         if (fdStatus === 1) {
           this._setNewControlsInForm(formGroup, this._extraFormControls);
+          if (!this.isFormInizialized.value) {
+            this.isFormInizialized.next(true);
+          }
         }
 
         const invalidForm = (fd.data as any)['$invalid'] || false;
