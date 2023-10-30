@@ -1,3 +1,21 @@
+<a name="15.2.5"></a>
+# 15.2.5 "shared-bobolink" (2023-10-30)
+### Bug Fixes
+* **material/edit-form:** populate choice-origin from metric even when there are no other relationships ([8818e88](https://bitbucket.org/gnucoop/dino/commits/8818e886a16384c5dc66d4acdea848b3e487e8dd))
+* **material/edit-report:** Fixed a bug causing Metrics to be displayed as Undefined in View Report ([a46cb59](https://bitbucket.org/gnucoop/dino/commits/a46cb59ec42ecc2e1e661d6ed9edf50abdcf5805))
+* **material/list:** format metric date in list ([5b5fcdc](https://bitbucket.org/gnucoop/dino/commits/5b5fcdccf66befdbdabc72d4e7d0dd338eff4406))
+* **material/metric-editor:** Fixed a bug allowing the user to choose the metric itself or a child as its parent in the UI. ([4071e3d](https://bitbucket.org/gnucoop/dino/commits/4071e3dba389956a3ff7800949cbf47f396342f4))
+* **multiple:** fix relationship initialization chain ([29a03f0](https://bitbucket.org/gnucoop/dino/commits/29a03f0ea733912ac147eb8ac6682309c33500af))
+### Features
+* **material/collect:** Collect grid items now show a 'unique' icon for Collect Items with unique metrics set. ([bc93269](https://bitbucket.org/gnucoop/dino/commits/bc932694a2b1f84283e925513e546990a3280f64))
+* **material/edit-form-schema:** Added 'uniqueMetricsSet' form field to Form Builder form attributes. ([51e46dd](https://bitbucket.org/gnucoop/dino/commits/51e46dd221ecac0dcb6499dc203bfa149e04901f))
+* **material/edit-report:** add border spacing in table ([10f78b3](https://bitbucket.org/gnucoop/dino/commits/10f78b38d97f7d258a12a1591f37e520408ed35e))
+* **material/export-list:** Export Forms module renamed to Export List. Metric Lists can now be exported, like Forms List. ([3a458a5](https://bitbucket.org/gnucoop/dino/commits/3a458a5521f97564b8733d677022ae64672ebdf1))
+* **material/list:** Export methods split for different list types (Forms, Metrics). Added list-type type. ([89a2f21](https://bitbucket.org/gnucoop/dino/commits/89a2f215d77bd33d76410dfdd416869b6ebe8ce9))
+* **multiple:** Material Create/Edit Form now check for the schema attribute 'uniqueMetricsSet', and behave accordingly by limiting form creation/editing. ([10ef30d](https://bitbucket.org/gnucoop/dino/commits/10ef30d925c59963d08315c3155108035a71d853))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.4"></a>
 # 15.2.4 "liquid-ocelot" (2023-10-11)
 ### Bug Fixes
