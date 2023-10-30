@@ -38,11 +38,11 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ExportForm} from './export-form';
+import {ExportList} from './export-list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 
-import {ExportBottomSheet} from './export-form-bottom-sheet';
+import {ExportBottomSheet} from './export-list-bottom-sheet';
 import {ToggleButtonComponent} from './toggle-button';
 
 @NgModule({
@@ -68,7 +68,7 @@ import {ToggleButtonComponent} from './toggle-button';
     MatTooltipModule,
     AjfTranslocoModule,
   ],
-  declarations: [ExportForm, ToggleButtonComponent, ExportBottomSheet],
+  declarations: [ExportList, ToggleButtonComponent, ExportBottomSheet],
   exports: [ToggleButtonComponent, ExportBottomSheet],
 })
-export class ExportFormModule {}
+export class ExportListModule {}

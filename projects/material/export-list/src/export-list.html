@@ -1,22 +1,31 @@
 <ng-container *ngIf="exportModel$|async as exportModel">
   <mat-toolbar class="dino-button-focus-action">
     <ng-container *ngIf="(breakpointObserver.small|async) !== true">
-      <mat-button-toggle-group name="filters" aria-label="export filters" [(ngModel)]="exportFilters">
-        <mat-button-toggle value="displayed">{{'Forms in page'|transloco}}</mat-button-toggle>
-        <mat-button-toggle *ngIf="filtersCount > 0; else noFilter" value="filtered">{{'All forms'|transloco}} /
-          {{filtersCount}} {{'filters'|transloco}}</mat-button-toggle>
+      <mat-button-toggle-group
+        name="filters"
+        aria-label="export filters"
+        [(ngModel)]="exportFilters"
+      >
+        <mat-button-toggle value="displayed">{{'Items in page'|transloco}}</mat-button-toggle>
+        <mat-button-toggle *ngIf="filtersCount > 0; else noFilter" value="filtered"
+          >{{'All items'|transloco}} / {{filtersCount}} {{'filters'|transloco}}</mat-button-toggle
+        >
         <ng-template #noFilter>
           <mat-button-toggle
             value="add-filters"
             (click)="closeDialog()"
             [matTooltip]="'Close the dialog and apply filters.'|transloco"
-            matTooltipPosition="above">{{'Add filters'|transloco}}</mat-button-toggle>
+            matTooltipPosition="above"
+            >{{'Add filters'|transloco}}</mat-button-toggle
+          >
         </ng-template>
         <mat-button-toggle
           value="not-filtered"
-          [matTooltip]="'This option exports all forms without filters. The process may slow down your device.'|transloco"
+          [matTooltip]="'This option exports all items without filters. The process may slow down your device.'|transloco"
           matTooltipPosition="right"
-          matTooltipClass="warning-tooltip">{{'All forms'|transloco}}</mat-button-toggle>
+          matTooltipClass="warning-tooltip"
+          >{{'All items'|transloco}}</mat-button-toggle
+        >
       </mat-button-toggle-group>
     </ng-container>
     <ng-container *ngIf="(breakpointObserver.small|async) === true">
@@ -25,36 +34,55 @@
         <mat-select
           (selectionChange)="updateFilters($event)"
           [(ngModel)]="exportFilters"
-          [value]="'displayed'">
-          <mat-option class="dino-status-option" *ngFor="let choice of availableFilters" [value]="choice.value">
+          [value]="'displayed'"
+        >
+          <mat-option
+            class="dino-status-option"
+            *ngFor="let choice of availableFilters"
+            [value]="choice.value"
+          >
             <span>{{choice.label| transloco}}</span>
           </mat-option>
         </mat-select>
       </mat-form-field>
-
     </ng-container>
     <span class="dino-spacer"></span>
 
-    <button mat-flat-button color="accent" class="dino-export-button" (click)="export()" [disabled]="disableExport$|async">
+    <button
+      mat-flat-button
+      color="accent"
+      class="dino-export-button"
+      (click)="export()"
+      [disabled]="disableExport$|async"
+    >
       <ng-container *ngIf="(breakpointObserver.small|async) !== true">
-        {{'Export'|transloco}} 
+        {{'Export'|transloco}}
       </ng-container>
       <mat-icon matSuffix>cloud_download</mat-icon>
     </button>
   </mat-toolbar>
   <mat-toolbar class="dino-export-options">
-    <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+    <mat-form-field
+      class="dino-platform-dropdown"
+      *ngIf="dialogData.listType === 'forms'"
+      dropdownSelect
+    >
       <mat-label>{{'Fields and formats'|transloco}}</mat-label>
       <mat-select
         (selectionChange)="updateFieldsAndFormats($event)"
         [value]="['all_form_fields']"
-        multiple>
-        <mat-option class="dino-status-option" *ngFor="let choice of availableFieldsAndFormats" [value]="choice.value">
+        multiple
+      >
+        <mat-option
+          class="dino-status-option"
+          *ngFor="let choice of availableFieldsAndFormats"
+          [value]="choice.value"
+        >
           <span>{{choice.label| transloco}}</span>
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <span class="dino-export-toolbar-spacer"></span>
+    <span class="dino-export-toolbar-spacer" *ngIf="dialogData.listType === 'forms'"></span>
     <mat-button-toggle-group name="format" aria-label="format of export" [(ngModel)]="exportFormat">
       <mat-button-toggle value="csv">{{'csv'|transloco}}</mat-button-toggle>
       <mat-button-toggle value="xlsx">{{'xlsx'|transloco}}</mat-button-toggle>
@@ -64,14 +92,16 @@
   <mat-tab-group selectedIndex="0" (selectedTabChange)="tabChange($event)">
     <mat-tab
       *ngFor="let label of exportModel.slideLabels; let idx = index"
-      [label]="label|transloco">
+      [label]="label|transloco"
+    >
       <dino-toggle-button [group]="'tab'" (change)="selectAllfieldSlides($event.checked)">
         {{'Select all fields of'|transloco}} {{label| transloco}}
       </dino-toggle-button>
       <mat-selection-list
         [attr.aria-label]="'slide fields'|transloco"
         (selectionChange)="updateExportDisable()"
-        *ngIf="exportModel.slides[idx] as slide">
+        *ngIf="exportModel.slides[idx] as slide"
+      >
         <mat-list-option *ngFor="let field of slide" [value]="field">
           {{field.label| transloco}}
         </mat-list-option>

@@ -10,7 +10,7 @@ import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {RxDocument} from 'rxdb';
 import {of} from 'rxjs';
 
-import {ExportForm} from './public_api';
+import {ExportList} from './public_api';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 import {Data} from './export-interface';
@@ -136,8 +136,8 @@ export const formData: Data[] = [
 ];
 
 describe('Export Forms', () => {
-  let fixtureImportForm: ComponentFixture<ExportForm>;
-  let exportForm: ExportForm;
+  let fixtureImportForm: ComponentFixture<ExportList>;
+  let exportForm: ExportList;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -151,7 +151,7 @@ describe('Export Forms', () => {
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
       ],
     }).compileComponents();
-    fixtureImportForm = TestBed.createComponent(ExportForm);
+    fixtureImportForm = TestBed.createComponent(ExportList);
     exportForm = fixtureImportForm.componentInstance;
   });
 

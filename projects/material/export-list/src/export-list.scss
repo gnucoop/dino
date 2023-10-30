@@ -1,4 +1,4 @@
-dino-export-form {
+dino-export-list {
   mat-spinner {
     display: block !important;
     position: absolute !important;
@@ -34,6 +34,15 @@ dino-export-form {
       min-height: 50px;
     }
 
+    &.dino-export-options {
+      .mat-button-toggle-group {
+        flex: 1 1 auto;
+        .mat-button-toggle {
+          flex: 1 1 auto;
+        }
+      }
+    }
+
     @media only screen and (max-width: 992px) {
       &.dino-export-options {
         flex-wrap: wrap;
@@ -51,7 +60,7 @@ dino-export-form {
     margin-right: 10px;
   }
   /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-  mat-selection-list{
+  mat-selection-list {
     width: 100%;
     overflow-y: scroll;
     max-height: 50vh;
@@ -63,14 +72,15 @@ dino-export-form {
 
   .dino-button-focus-action {
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-    .mat-button-toggle-checked, .dino-toggle-button {
+    .mat-button-toggle-checked,
+    .dino-toggle-button {
       background-color: #7f50b8;
     }
     .dino-export-button {
       background-color: #7f50b8;
-      margin-left: 10px;
+      margin-left: 25px;
       @media only screen and (max-width: 992px) {
-        .mat-icon{
+        .mat-icon {
           margin: auto;
         }
       }
@@ -78,6 +88,6 @@ dino-export-form {
   }
 }
 
-.mat-mdc-dialog-surface{
+.mat-mdc-dialog-surface {
   padding: 24px;
 }

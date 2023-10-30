@@ -77,11 +77,12 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
 import {MatSelectChange} from '@angular/material/select';
+import {ListType} from '@dino/material/list';
 
 /**
  * The export form component dialog data interface
  */
-export interface ExportFormData {
+export interface ExportListData {
   /**
    * The desired export format
    */
@@ -91,16 +92,21 @@ export interface ExportFormData {
    * dialog is opened.
    */
   selectAll?: boolean;
+
+  /**
+   * The type of the list that is being exported
+   */
+  listType?: ListType;
 }
 
 @Component({
-  selector: 'dino-export-form',
-  templateUrl: 'export-form.html',
-  styleUrls: ['export-form.scss'],
+  selector: 'dino-export-list',
+  templateUrl: 'export-list.html',
+  styleUrls: ['export-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ExportForm implements AfterViewInit, OnDestroy {
+export class ExportList implements AfterViewInit, OnDestroy {
   disableExport$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   exportFormat: ExportFormat = 'csv';
   exportFilters: ExportFilters = 'displayed';
@@ -119,10 +125,10 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
   readonly exportDataList$: BehaviorSubject<ExportData[]> = new BehaviorSubject<ExportData[]>([]);
 
-  /** The export data model of the form schema */
+  /** The export data model of the schema */
   readonly exportModel$: BehaviorSubject<ExportModel | null> =
     new BehaviorSubject<ExportModel | null>(null);
-  readonly formSchema$: BehaviorSubject<FormSchema | null> = new BehaviorSubject<FormSchema | null>(
+  readonly schema$: BehaviorSubject<FormSchema | null> = new BehaviorSubject<FormSchema | null>(
     null,
   );
   readonly maxNumberOfForm$: Observable<number>;
@@ -183,9 +189,9 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   }
 
   @Input()
-  set formSchema(formSchema: FormSchema) {
-    this.formSchema$.next(formSchema);
-    this.exportModel$.next(this._buildExportModel(formSchema));
+  set schema(schema: FormSchema) {
+    this.schema$.next(schema);
+    this.exportModel$.next(this._buildExportModel(schema));
   }
 
   private _filteredQueryObs: Observable<RxDocument<any, {}>[]> = obsOf([]);
@@ -214,8 +220,8 @@ export class ExportForm implements AfterViewInit, OnDestroy {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<ExportForm>,
-    @Inject(MAT_DIALOG_DATA) public dialogData: ExportFormData,
+    public dialogRef: MatDialogRef<ExportList>,
+    @Inject(MAT_DIALOG_DATA) public dialogData: ExportListData,
     readonly breakpointObserver: BreakpointObserverService,
     private _ts: TranslocoService,
     private _cdr: ChangeDetectorRef,
@@ -231,7 +237,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
       {value: 'data_analysis', label: 'Data Analysis format'},
     ];
 
-    this.availableFilters = [{value: 'displayed', label: 'Forms in page'}];
+    this.availableFilters = [{value: 'displayed', label: 'Items in page'}];
 
     this._selectAllSub = (this._selectAllFieldsofCurrentSlideEvt as Observable<boolean>)
       .pipe(withLatestFrom(this._currentTabIndex$))
@@ -276,13 +282,13 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
     this.maxNumberOfForm$ = this.exportDataList$.pipe(map(l => l.length));
 
-    const ctxValuesSub = (this.formSchema$ as Observable<FormSchema | null>)
+    const ctxValuesSub = (this.schema$ as Observable<FormSchema | null>)
       .pipe(
         filter((f: any) => f != null),
         map((fs: FormSchema) => fs.schema),
         map(s => {
-          const choicesOrigins: AjfChoicesOrigin<string | number>[] = s.choicesOrigins!;
-          const slides: AjfContainerNode[] = s.nodes as AjfContainerNode[];
+          const choicesOrigins: AjfChoicesOrigin<string | number>[] = s.choicesOrigins ?? [];
+          const slides: AjfContainerNode[] = s.nodes ? (s.nodes as AjfContainerNode[]) : [];
           const res: {[name: string]: string} = {};
           choicesOrigins.forEach((choicesOrigin: AjfChoicesOrigin<string | number>) => {
             choicesOrigin.choices.forEach(choice => {
@@ -311,9 +317,12 @@ export class ExportForm implements AfterViewInit, OnDestroy {
         ctxValuesSub.unsubscribe();
       });
 
-    const slideNodes$: Observable<AjfSlide[]> = this.formSchema$.pipe(
-      filter((fs: any) => fs != null && fs.schema != null && fs.schema.nodes != null),
-      map(fs => fs.schema.nodes as AjfSlide[]),
+    const slideNodes$: Observable<AjfSlide[]> = this.schema$.pipe(
+      map(fs => {
+        const slides =
+          fs != null && fs.schema != null && fs.schema.nodes != null ? fs.schema.nodes : [];
+        return slides as AjfSlide[];
+      }),
       // remove empty or malformed slides.
       map((slides: AjfSlide[]) =>
         slides.filter(slide => slide.nodes != null && slide.nodes.length > 0),
@@ -442,7 +451,8 @@ export class ExportForm implements AfterViewInit, OnDestroy {
           if (dmExportableData) {
             this.exportDataList$.next(
               dmExportableData.map(row => {
-                const ctx: ExportData = {...row.data, dino: {}, externalRefs: {}};
+                const rowData = this.dialogData.listType === 'forms' ? row.data : row;
+                const ctx: ExportData = {...rowData, dino: {}, externalRefs: {}};
                 const keys = Object.keys(row);
                 keys
                   .filter(k => k != 'data')
@@ -498,7 +508,11 @@ export class ExportForm implements AfterViewInit, OnDestroy {
                 });
             }
 
-            if (Object.keys(exportCtx).length > 0 || expandedExportCtx.length > 0) {
+            if (
+              Object.keys(exportCtx).length > 0 ||
+              expandedExportCtx.length > 0 ||
+              this.dialogData.listType !== 'forms'
+            ) {
               const refExportCtx: Context = {};
               this._dinoFields.forEach(field => {
                 const isDinoRefField = field.includes('_ref_id');
@@ -513,17 +527,26 @@ export class ExportForm implements AfterViewInit, OnDestroy {
               }
               const metricManagers = this._metricManagers.filter(mm => mm != null);
               metricManagers.forEach(manager => {
-                if (manager != null) {
+                const isListOfTypeMetrics = this.dialogData.listType === 'metrics';
+                if (
+                  manager != null &&
+                  !(
+                    isListOfTypeMetrics &&
+                    manager.collectionName.toLowerCase() !== this.schema$.value?.name.toLowerCase()
+                  )
+                ) {
                   const metricName = manager.collectionName.toLowerCase();
                   const metricProperties = manager.collectionSchema.properties;
                   for (let prop in metricProperties) {
-                    if (ctx.dino[metricName] && !this._dinoBaseModelFields.includes(prop)) {
+                    const ctxDinoContent = isListOfTypeMetrics ? ctx.dino : ctx.dino[metricName];
+                    if (ctxDinoContent && !this._dinoBaseModelFields.includes(prop)) {
+                      const metricProp = isListOfTypeMetrics ? prop : `${metricName}_${prop}`;
                       if (prop === 'metric_data') {
-                        refExportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop]
-                          ? JSON.stringify(ctx.dino[metricName][prop])
+                        refExportCtx[metricProp] = ctxDinoContent[prop]
+                          ? JSON.stringify(ctxDinoContent[prop])
                           : '';
                       } else {
-                        refExportCtx[`${metricName}_${prop}`] = ctx.dino[metricName][prop];
+                        refExportCtx[metricProp] = ctxDinoContent[prop];
                       }
                     }
                   }
@@ -568,14 +591,14 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (this.filtersCount > 0) {
-      const numFilters = `${this._ts.translate('All forms')} / ${
+      const numFilters = `${this._ts.translate('All items')} / ${
         this.filtersCount
       } ${this._ts.translate('filters')}`;
       this.availableFilters.push({value: 'filtered', label: numFilters});
     } else {
       this.availableFilters.push({value: 'filtered', label: 'Add filters'});
     }
-    this.availableFilters.push({value: 'not-filtered', label: 'All forms'});
+    this.availableFilters.push({value: 'not-filtered', label: 'All items'});
 
     if (this.dialogData) {
       if (this.dialogData.selectAll) {
@@ -726,7 +749,7 @@ export class ExportForm implements AfterViewInit, OnDestroy {
 
   updateExportDisable(): void {
     const countSelectedFields = this._getFieldsFromTabs().length;
-    if (countSelectedFields > 0) {
+    if (countSelectedFields > 0 || !this.schema$.value?.schema.nodes?.length) {
       this.disableExport$.next(false);
     } else {
       this.disableExport$.next(true);
@@ -864,33 +887,34 @@ export class ExportForm implements AfterViewInit, OnDestroy {
     return expandedExportCtx;
   }
 
-  private _buildExportModel(formSchema: FormSchema): ExportModel {
-    const schemaName = formSchema.name;
-    const schema: AjfFormCreate = formSchema.schema;
-    const slideNodes: AjfSlide[] = (schema.nodes! as AjfSlide[]).map((slide, index) => {
-      slide.id = index;
-      slide.nodes = slide.nodes
-        .map(node => ({
-          ...node,
-          ...{
-            slideNodeType: slide.nodeType,
-            slideIndex: slide.id,
-            slideName: slide.name,
-          },
-        }))
-        .filter(
-          // remove unexportable ajf fields.
-          (node: AjfNode) =>
-            node.nodeType === 0 &&
-            (node as AjfField).fieldType !== AjfFieldType.File &&
-            (node as AjfField).fieldType !== AjfFieldType.Empty &&
-            (node as AjfField).fieldType !== AjfFieldType.Image,
-        );
-      return slide;
-    });
+  private _buildExportModel(exportSchema: FormSchema): ExportModel {
+    const schemaName = exportSchema.name;
+    const schema: AjfFormCreate = exportSchema.schema;
+    const slideNodes: AjfSlide[] = schema.nodes
+      ? (schema.nodes! as AjfSlide[]).map((slide, index) => {
+          slide.id = index;
+          slide.nodes = slide.nodes
+            .map(node => ({
+              ...node,
+              ...{
+                slideNodeType: slide.nodeType,
+                slideIndex: slide.id,
+                slideName: slide.name,
+              },
+            }))
+            .filter(
+              // remove unexportable ajf fields.
+              (node: AjfNode) =>
+                node.nodeType === 0 &&
+                (node as AjfField).fieldType !== AjfFieldType.File &&
+                (node as AjfField).fieldType !== AjfFieldType.Empty &&
+                (node as AjfField).fieldType !== AjfFieldType.Image,
+            );
+          return slide;
+        })
+      : [];
     const slideLabels: string[] = slideNodes.map(slide => slide.label);
     const slides = slideNodes.map(slide => slide.nodes);
-
     return {schemaName, slideLabels, slides};
   }
 
