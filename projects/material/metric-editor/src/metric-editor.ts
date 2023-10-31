@@ -629,7 +629,8 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
               option.parent_name.toLowerCase().includes(parentName) &&
               this.metricForm != null &&
               option.parent_name != this.data.metricItem?.name &&
-              option.parent_parent_id != this.data.metricItem?.id
+              (option.parent_parent_id == null ||
+                option.parent_parent_id != this.data.metricItem?.id)
             );
           });
         }
