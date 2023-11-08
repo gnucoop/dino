@@ -160,7 +160,7 @@ export class MetricDelete<T extends Metric = Metric> implements OnInit, OnDestro
     metricIds.forEach(metricId => {
       if (this._metricManager != null) {
         descendants[metricId] = this._metricManager
-          .findDescendants(metricId)
+          .findDescendants([metricId])
           .pipe(map(ds => ds.map(d => d.id)));
       }
     });

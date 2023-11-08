@@ -669,7 +669,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           switchMap(inputVal => {
             if (typeof inputVal === 'object' && isRxDocument(inputVal)) {
               return metricManager
-                .findDescendants(inputVal.id)
+                .findDescendants([inputVal.id])
                 .pipe(map(desc => desc?.map(d => d.id)))
                 .pipe(withLatestFrom(obsOf(inputVal)));
             }

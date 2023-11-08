@@ -309,7 +309,7 @@ export class EditReport implements AfterViewInit {
         activeMetrics.forEach(
           metric =>
             (descendants[`${metric}_ref_id`] = metricManagers[metric]
-              .findDescendants(rDataObject[`${metric}_ref_id`])
+              .findDescendants([rDataObject[`${metric}_ref_id`]])
               .pipe(map(ds => ds.map(d => d.id)))),
         );
         return forkJoin(descendants);

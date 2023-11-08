@@ -493,22 +493,30 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
 
   /**
    * Queries all the descendants of the document, based on its "parent_id" attribute.
-   * @param id The ID of the document to be checked.
+   * @param ids The IDs of the documents to be checked.
+   * @param limit The optional query limit.
    * @returns All of its descendants
    */
-  findDescendants(id: string): Observable<R[]> {
+  findDescendants(ids: string[], limit?: number): Observable<R[]> {
     const schemaPropertiesKeys = Object.keys(this._collectionSchema.properties);
-    if (!id || !schemaPropertiesKeys.includes('parent_id')) {
+    if (!ids || !ids.length || !schemaPropertiesKeys.includes('parent_id')) {
       return obsOf([]);
     }
-    const selector = {parent_id: {$eq: id}};
-    return this.query({selector}).pipe(
+    const selector = {parent_id: {$in: ids}};
+    const queryOptions: DataQueryOptions = {
+      selector,
+    };
+    if (limit) {
+      queryOptions.limit = limit;
+    }
+    return this.query(queryOptions).pipe(
       switchMap(docs => {
-        const allDescendants: Observable<R[]>[] = [obsOf(docs)];
-        docs.forEach(desc => allDescendants.push(this.findDescendants(desc.id)));
-        return forkJoin(allDescendants);
+        if (docs.length) {
+          const docsIds = docs.map(doc => doc.id);
+          return this.findDescendants(docsIds).pipe(map(descendants => [...docs, ...descendants]));
+        }
+        return obsOf([]);
       }),
-      map(descendants => descendants.flat(1)),
     );
   }
 
@@ -612,14 +620,15 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
           !resultIDs.includes(doc.id) &&
           !this.findMatchingAncestors(allDocs, [doc.parent_id]).length,
       );
-      for (let orphan of orphans) {
+      const orphansParentIDs = new Set(orphans.map(orphan => orphan.parent_id));
+      for (let orphanParentId of orphansParentIDs) {
         result = [
           ...result,
           ...this.organizeDocsHierarchy(
             allDocs,
             allParentIDs,
             {
-              id: orphan.parent_id,
+              id: orphanParentId,
               level: null,
             },
             false,
