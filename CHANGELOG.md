@@ -1,3 +1,11 @@
+<a name="15.2.6"></a>
+# 15.2.6 "closed-scorpion" (2023-11-10)
+### Bug Fixes
+* **material/export-list:** ExportListType moved to Export List module to avoid circular dependency with material/list. Spec fixed. ([3c367ac](https://bitbucket.org/gnucoop/dino/commits/3c367ac01abb83df09b767c512b6365098295fbb))
+* **material/metric-editor:** Fixed a bug causing metrics with Parent Id = null not to be selectable as parents for other metrics. ([6173eb3](https://bitbucket.org/gnucoop/dino/commits/6173eb3f1da828ef57300b3b6308de6617d7629b))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.5"></a>
 # 15.2.5 "shared-bobolink" (2023-10-30)
 ### Bug Fixes
