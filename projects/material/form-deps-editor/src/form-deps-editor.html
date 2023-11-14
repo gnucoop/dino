@@ -136,8 +136,8 @@
   </mat-dialog-content>
 
   <div mat-dialog-actions>
-    <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
+    <button mat-raised-button color="warn" (click)="closeDialog()">{{'Close'|transloco}}</button>
     <button mat-raised-button color="primary"
-      (click)="saveDeps(metricsForData.value, metricsForChoices.value)">Save</button>
+      (click)="saveDeps(metricsForData.value, metricsForChoices.value)">{{'Save'|transloco}}</button>
   </div>
 </ng-container>

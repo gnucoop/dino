@@ -245,4 +245,33 @@ export const ESP: Translation = {
   'Unique: only one item with a given exact set of metrics can exist':
     'Único: sólo puede existir un artículo con un determinado conjunto exacto de métricas.',
   'Metrics Set Behavior': 'Comportamiento del conjunto de métricas',
+  'Edit Form Relationships': 'Editar relaciones de formulario',
+  'Selects metrics for which data should be included in the form':
+    'Selecciona las métricas cuyos datos deben incluirse en el formulario',
+  'Select metrics': 'Selecciona las métricas',
+  'Selects metrics to be included as choice options':
+    'Selecciona las métricas que se incluirán como opciones de elección',
+  'Select metrics for choices': 'Seleccionar métricas',
+  'Add relationship with other forms': 'Agregar relación con otros formularios',
+  'Form Schema': 'Formulario',
+  'Fields': 'Campos',
+  'Form fields': 'Campos de formulario',
+  'Metric': 'Métrica',
+  'Create choices': 'Utilizar el campo seleccionado como opción',
+  '(select only one field)': '(seleccione sólo un campo)',
+  'Field to use as label': 'Campo a utilizar como etiqueta',
+  'Label fields': 'Campos de etiqueta',
+  'Additional field': 'Campo adicional',
+  'Delete': 'Eliminar',
+  'Items in page': 'Elementos de la página',
+  'All items': 'Todos los elementos',
+  'filters': 'filtros',
+  'Close the dialog and apply filters.': 'Cierra el cuadro de diálogo y aplica algunos filtros.',
+  'Add filters': 'Agregar filtros',
+  'This option exports all items without filters. The process may slow down your device.':
+    'Esta opción exporta todos los elementos sin filtros. El proceso puede ralentizar tu dispositivo.',
+  'Filters': 'Filtros',
+  'Fields and formats': 'Campos y formatos',
+  'Select all fields of': 'Seleccionar todos los campos de',
+  'slide fields': 'campos de diapositivas',
 };

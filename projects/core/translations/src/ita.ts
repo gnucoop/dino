@@ -254,4 +254,33 @@ export const ITA: Translation = {
   'Unique: only one item with a given exact set of metrics can exist':
     'Unico: può esistere un solo documento con un dato set di metriche',
   'Metrics Set Behavior': 'Modalità Set di Metriche',
+  'Edit Form Relationships': 'Modifica le relazioni del form',
+  'Selects metrics for which data should be included in the form':
+    'Seleziona le metriche i cui dati devono essere inclusi nel form',
+  'Select metrics': 'Seleziona le metriche',
+  'Selects metrics to be included as choice options':
+    'Seleziona le metriche da includere come liste di opzioni',
+  'Select metrics for choices': 'Seleziona le metriche',
+  'Add relationship with other forms': 'Aggiungi una relazione con altri form',
+  'Form Schema': 'Form Schema',
+  'Fields': 'Campi',
+  'Form fields': 'Campi del form',
+  'Metric': 'Metrica',
+  'Create choices': 'Usa il campo selezionato come lista di opzioni',
+  '(select only one field)': '(seleziona solo un campo)',
+  'Field to use as label': 'Campo da usare come etichetta',
+  'Label fields': "Campi per l'etichetta",
+  'Additional field': 'Campi addizionali',
+  'Delete': 'Elimina',
+  'Items in page': 'Elementi nella pagina',
+  'All items': 'Tutti gli elementi',
+  'filters': 'filtri',
+  'Close the dialog and apply filters.': 'Chiudi la finestra e applica dei filtri',
+  'Add filters': 'Aggiungi filtri',
+  'This option exports all items without filters. The process may slow down your device.':
+    'Questa opzione esporta tutti gli elementi senza filtri. Il processo potrebbe rallentare il tuo dispositivo.',
+  'Filters': 'Filtri',
+  'Fields and formats': 'Campi e formati',
+  'Select all fields of': 'Seleziona tutti i campi di',
+  'slide fields': 'campi delle slide',
 };
