@@ -1315,29 +1315,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
     if (metricsType) {
       metricsType.forEach(metricType => {
-        let mtOptSource = this._ugm.getGroupsMetricsByType(metricType).pipe(
-          switchMap(metricsIds => {
-            const querySelector = {id: {$in: metricsIds}, is_deleted: {$ne: true}};
-            if (this._metricManagers[metricType] == null) {
-              return [];
-            }
-            let metricsObs: Observable<RxDocument<Metric, {}>[]> = this._metricManagers[
-              metricType
-            ]!.query({
-              selector: querySelector,
-              sort: [{'name': 'asc'}],
-            });
-
-            if (metricsIds.includes('all')) {
-              metricsObs = this._metricManagers[metricType]!.query({
-                selector: {is_deleted: {$ne: true}},
-                sort: [{'name': 'asc'}],
-              });
-            }
-            return metricsObs;
-          }),
-        );
-        metricsOptSource.push(mtOptSource);
+        if (metricType && this._metricManagers[metricType] != null) {
+          let mtOptSource = this._metricManagers[metricType]!.query({
+            selector: {is_deleted: {$ne: true}},
+            sort: [{'name': 'asc'}],
+          });
+          metricsOptSource.push(mtOptSource);
+        }
       });
     }
     return metricsOptSource;

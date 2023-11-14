@@ -657,30 +657,14 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * @param metricType The type identifier of the metric.
    */
   private _addFormMetricsOptions(metricType: string): void {
+    if (this._metricManagers[metricType] == null) {
+      return;
+    }
     let mtOptSource = combineLatest([
-      this._userGroupManager.getGroupsMetricsByType(metricType).pipe(
-        switchMap(metricsIds => {
-          const querySelector = {id: {$in: metricsIds}, is_deleted: {$ne: true}};
-          if (this._metricManagers[metricType] == null) {
-            return [];
-          }
-          let metricsObs: Observable<RxDocument<Metric, {}>[]> = this._metricManagers[
-            metricType
-          ]!.query({
-            selector: querySelector,
-            sort: [{'name': 'asc'}],
-          });
-
-          if (metricsIds.includes('all')) {
-            metricsObs = this._metricManagers[metricType]!.query({
-              selector: {is_deleted: {$ne: true}},
-              sort: [{'name': 'asc'}],
-            });
-          }
-
-          return metricsObs;
-        }),
-      ),
+      this._metricManagers[metricType]!.query({
+        selector: {is_deleted: {$ne: true}},
+        sort: [{'name': 'asc'}],
+      }),
       this.formMetricsValues[metricType].pipe(debounceTime(800)),
       this._newMetric,
     ]).pipe(
@@ -725,16 +709,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     // Cases can be very numerous and their filtering is treated differently
     if (metricType === 'case') {
       mtOptSource = combineLatest([
-        combineLatest([
-          this._userGroupManager.getGroupsMetricsByType(metricType),
-          this.formMetricsValues[metricType].pipe(debounceTime(800)),
-        ]).pipe(
-          switchMap(([metricsIds, metricValue]) => {
+        this.formMetricsValues[metricType].pipe(debounceTime(800)).pipe(
+          switchMap(metricValue => {
             if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
               metricValue = '';
             }
             const querySelector = {
-              id: {$in: metricsIds},
               name: {$regex: new RegExp(metricValue as string, 'i')},
               is_deleted: {$ne: true},
             };
@@ -748,17 +728,6 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
               sort: [{'name': 'asc'}],
               limit: 50,
             });
-
-            if (metricsIds.includes('all')) {
-              metricsObs = this._metricManagers[metricType]!.query({
-                selector: {
-                  is_deleted: {$ne: true},
-                  name: {$regex: new RegExp(metricValue as string, 'i')},
-                },
-                sort: [{'name': 'asc'}],
-                limit: 25,
-              });
-            }
 
             return metricsObs;
           }),
