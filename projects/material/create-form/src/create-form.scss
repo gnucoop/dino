@@ -83,12 +83,12 @@ dino-create-form {
 
   .ajf-form-container {
     .ajf-slider-container ajf-page-slider {
-      max-height: 87.5%;
+      max-height: 100%;
       overflow-y: scroll;
       overflow-x: hidden;
       @media only screen and (max-width: 992px) {
-        height: 97.5% !important;
-        max-height: 97.5%;
+        height: 100% !important;
+        max-height: 100%;
       }
     }
     .ajf-slider-container .ajf-page-slider-content .ajf-page-slider-body .ajf-page-slider-item-content,
@@ -147,7 +147,6 @@ dino-create-form {
       .mat-mdc-card:not(.ajf-field-entry) {
         margin: 0px !important;
         margin-bottom: 10px !important;
-        padding: 8px;
         max-width: 100%;
         display: flex;
         background: transparent;
