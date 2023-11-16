@@ -62,7 +62,7 @@ export class ColumnsSelector<T> implements OnInit {
   /**
    * The name of the column currently being toggled.
    */
-  private _togglingColumn: string | null = null;
+  private _togglingColumn: {columnName: any; columnLabel: string} | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<ColumnsSelector<T>>,
@@ -81,8 +81,15 @@ export class ColumnsSelector<T> implements OnInit {
       map(([headers, filter, _]) => {
         let listHeaders = headers;
         if (this._togglingColumn != null) {
-          const toggledColumn = listHeaders.find(col => col.column === this._togglingColumn);
-          if (toggledColumn) {
+          const toggledColumn = listHeaders.find(
+            col =>
+              col.column === this._togglingColumn?.columnName &&
+              col.label === this._togglingColumn?.columnLabel,
+          );
+          const atLeastAnotherColumnDisplayed: boolean = listHeaders.some(
+            col => col.displayed && col.column !== this._togglingColumn?.columnName,
+          );
+          if (toggledColumn && atLeastAnotherColumnDisplayed) {
             const idx = listHeaders.indexOf(toggledColumn);
             listHeaders[idx].displayed =
               listHeaders[idx].displayed === undefined ? false : !listHeaders[idx].displayed;
@@ -105,8 +112,8 @@ export class ColumnsSelector<T> implements OnInit {
    * An undefined 'displayed' state defaults to true.
    * @param index
    */
-  toggleColumn(columnName: any): void {
-    this._togglingColumn = columnName;
+  toggleColumn(columnName: any, columnLabel: string): void {
+    this._togglingColumn = {columnName, columnLabel};
     this._columnToggleEvt.emit();
   }
 

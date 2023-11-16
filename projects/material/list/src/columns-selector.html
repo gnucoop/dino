@@ -20,7 +20,7 @@
       {{column.label|transloco}} <mat-icon class="dino-column-selector-icon">{{column.icon}}</mat-icon>
       <mat-slide-toggle
         [checked]="column.displayed || column.displayed === undefined"
-        (change)="toggleColumn(column.column)"
+        (change)="toggleColumn(column.column, column.label)"
       ></mat-slide-toggle>
     </div>
   </div>
