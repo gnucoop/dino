@@ -88,6 +88,7 @@ export const generateMetricsHeaders = (
         column: `${metric.metricName}_ref_id`,
         external_ref: `${metric.metricName}_ref_id`,
         label: metric.label.slice(0, -1),
+        displayed: true,
         populateWith: 'name',
         icon: metric.icon,
       });
@@ -97,7 +98,7 @@ export const generateMetricsHeaders = (
         for (let key of metricSchemaKeys) {
           if (!DEFAULT_EXCLUDED_METRIC_KEYS.includes(key)) {
             metricHeaders.push({
-              column: `${metric.metricName}_${key}`,
+              column: `metric_${metric.metricName}_${key}`,
               external_ref: `${metric.metricName}_ref_id`,
               label: `${metric.label.slice(0, -1)} ${key.replace('_', ' ')}`,
               displayed: false,
