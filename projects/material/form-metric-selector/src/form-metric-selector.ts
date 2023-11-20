@@ -765,6 +765,18 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         : (this.formMetricsOptions[metricType] = new BehaviorSubject<
             RxDocument<Metric & {level?: number}, {}>[]
           >(organizedMetricOptions));
+
+      if (metricObj.metricOptions.length === 1 && !this._hasOptionalMetrics.value) {
+        const firstMetric = metricObj.metricOptions[0];
+        const formControl = this.formMetrics.get(firstMetric.collection.name);
+          if (formControl != null) {
+            formControl.setValue({
+              option: firstMetric,
+              secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+              metricType: firstMetric.collection.name,
+            });
+          }
+      }
     });
   }
 
