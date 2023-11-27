@@ -931,8 +931,6 @@ export class DataService implements IDataService {
     /*
     ERROR_MESSAGES GraphQL replication
     https://github.com/pubkey/rxdb/blob/master/src/plugins/dev-mode/error-messages.ts
-    GQL1: 'GraphQL replication: cannot find sub schema by key',
-    GQL3: 'GraphQL replication: pull returns more documents then batchSize',
     */
     state.error$.subscribe((err: RxError | RxTypeError) => {
       if (isDevMode()) {
@@ -943,13 +941,20 @@ export class DataService implements IDataService {
         err &&
         err.parameters.errors &&
         err.parameters.errors.length &&
-        err.parameters.errors[0].message &&
-        err.parameters.errors[0].message.indexOf(jwtError) >= 0
+        err.parameters.errors[0].message
       ) {
-        console.log(err.parameters.errors[0].message);
-        this._refreshEvt.emit();
-      } else {
-        console.error(`Sync replication error: ${err}`);
+        if (err.parameters.errors[0].message.indexOf(jwtError) >= 0) {
+          console.log(err.parameters.errors[0].message);
+          this._refreshEvt.emit();
+        } else if (
+          err.code === 'RC_PUSH' &&
+          (err.parameters.errors[0] as any).extensions &&
+          (err.parameters.errors[0] as any).extensions.code &&
+          (err.parameters.errors[0] as any).extensions.code.indexOf('constraint-violation') >= 0
+        ) {
+          console.error(`Sync replication error: ${err}`);
+          this._logoutEvt.emit();
+        }
       }
     });
 

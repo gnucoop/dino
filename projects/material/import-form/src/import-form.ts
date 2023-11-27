@@ -20,7 +20,7 @@
  *
  */
 
-import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
+import {AjfContainerNode, AjfField, AjfNode, AjfNodeType, isContainerNode} from '@ajf/core/forms';
 import {deepCopy} from '@ajf/core/utils';
 import {
   ChangeDetectionStrategy,
@@ -48,12 +48,27 @@ import {
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import {UserDataManager} from '@dino/core/users';
+import {UserData, UserDataManager} from '@dino/core/users';
 import {format} from 'date-fns';
-import {RxDocument} from 'rxdb';
+import {JsonSchemaTypes, RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
 import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
+
+/**
+ * All metric details found in rows
+ */
+interface MetricInfoInRows {
+  /**
+   * Metrics to be created by name
+   */
+  newMetrics: {[key: string]: {[key: string]: any}[]};
+
+  /**
+   * Metric ids found in rows, which must exist.
+   */
+  requiredMetricIdsByType: {[key: string]: string[]};
+}
 
 /**
  * The Form Data import component.
@@ -106,6 +121,21 @@ export class ImportForm implements OnDestroy {
    * Dino fields that should not be included in the data field
    */
   private _dinoFields: string[] = [
+    'id',
+    'created_at',
+    'user_data_ref_id',
+    'area_ref_id',
+    'case_ref_id',
+    'location_ref_id',
+    'organization_ref_id',
+    'project_ref_id',
+    'form_status_ref_id',
+  ];
+
+  /**
+   * Not importable fields
+   */
+  private _notImportableMetricFields: string[] = [
     'id',
     'created_at',
     'user_data_ref_id',
@@ -231,7 +261,7 @@ export class ImportForm implements OnDestroy {
    * Check and return, if unique enabled (_metricMustBeUnique must be true),
    * the existing metrics, that have the same name of the new metrics
    * @param newMetrics the new metrics to be created
-   * @returns the list of metrics
+   * @returns the existing list of metrics by name
    */
   private _checkIfMetricsAlreadyExist(newMetrics: {
     [key: string]: {[key: string]: any}[];
@@ -266,8 +296,34 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
-   * Get from rows all new metrics to be created:
-   * {
+   * Return requested metrics by ids
+   * @param metricIdsByType
+   * @returns the existing list of metrics by ids
+   */
+  private _getMetricsIfExist(metricIdsByType: {[key: string]: string[]}): Observable<any[][]> {
+    const metricsObs: Observable<any[]>[] = [];
+    Object.keys(metricIdsByType).forEach(metricType => {
+      const manager = this._metricManagers[metricType];
+      if (manager !== null) {
+        if (metricIdsByType[metricType] && metricIdsByType[metricType].length) {
+          const selector = {
+            selector: {id: {$in: metricIdsByType[metricType]}, is_deleted: {$ne: true}},
+          };
+          metricsObs.push(
+            manager.query(selector).pipe(
+              take(1),
+              catchError(_ => obsOf([])),
+            ),
+          );
+        }
+      }
+    });
+    return metricsObs.length ? forkJoin(metricsObs) : obsOf([]);
+  }
+
+  /**
+   * Get from rows all new metrics to be created and all ids for required metrics:
+   * newMetrics: {
    *  project: [
    *   {name: 'Proj1', code: 'code01'},
    *   {name: 'Proj2', code: 'code02'},
@@ -276,16 +332,21 @@ export class ImportForm implements OnDestroy {
    *   {name: 'Area1'},
    *   {name: 'Area2'},
    *  ], ...
-   * }
+   * },
+   * requiredMetricIdsByType: {
+   *  project: [uuid1, uuid2],
+   *  area: [uuid3, uuid4], ...
+   * },
    * @param rows The new FormData rows
    * @param activeMetrics The list of the currently active metrics
-   * @returns An object with all metrics to be created, otherwise empty object
+   * @returns An object with all metric info to be created and to be check
    */
   private _getMetricsToBeCreated(
     rows: {[key: string]: any}[],
     activeMetrics: string[],
-  ): {[key: string]: {[key: string]: any}[]} {
+  ): MetricInfoInRows {
     const newMetrics: {[key: string]: {[key: string]: any}[]} = {};
+    const requiredMetricIdsByType: {[key: string]: string[]} = {};
     if (activeMetrics.length) {
       activeMetrics.forEach(metric => {
         const manager = this._metricManagers[metric];
@@ -312,13 +373,24 @@ export class ImportForm implements OnDestroy {
                   : ['name'];
 
                 const props = manager.collectionSchema.properties;
+                if (metric === 'case') {
+                  delete props['code'];
+                  delete row['case_code'];
+                }
+                if (metric === 'project') {
+                  delete props['code_auto'];
+                  delete row['project_code_auto'];
+                }
                 for (let prop in props) {
                   const propKey = metric + '_' + (prop as string);
                   if (prop in requiredProps || row[propKey]) {
                     if (prop === 'metric_data') {
                       newMetric[prop as string] = JSON.parse(row[propKey]);
                     } else {
-                      newMetric[prop as string] = this._getValueFromRow(row[propKey]);
+                      newMetric[prop as string] = this._getValueFromRow(
+                        row[propKey],
+                        props[prop].type,
+                      );
                     }
                   }
                 }
@@ -327,13 +399,36 @@ export class ImportForm implements OnDestroy {
                   newMetrics[metric] = [];
                 }
                 newMetrics[metric].push(newMetric);
+              } else if (row[metricIdKey]) {
+                if (!(metric in requiredMetricIdsByType)) {
+                  requiredMetricIdsByType[metric] = [];
+                }
+                if (!requiredMetricIdsByType[metric].includes(row[metricIdKey])) {
+                  requiredMetricIdsByType[metric].push(row[metricIdKey]);
+                }
               }
             }
           });
         }
       });
     }
-    return newMetrics;
+    return {newMetrics, requiredMetricIdsByType};
+  }
+
+  private _getRequiredUsers(rows: {[key: string]: any}[]): string[] {
+    const requiredUserIds: string[] = [];
+    const userIdKey = 'user_data_ref_id';
+    rows.forEach((row: {[key: string]: any}) => {
+      // Check if is not a second header
+      if (!this._isLabelHeader(row)) {
+        if (row[userIdKey]) {
+          if (!requiredUserIds.includes(row[userIdKey])) {
+            requiredUserIds.push(row[userIdKey]);
+          }
+        }
+      }
+    });
+    return requiredUserIds;
   }
 
   /**
@@ -369,9 +464,13 @@ export class ImportForm implements OnDestroy {
   /**
    * Return the input value casted to the correct type (string, list or Date)
    * @param rowValue the initial value found in xls file
+   * @param type required type for this value
    * @returns
    */
-  private _getValueFromRow(rowValue: any): any {
+  private _getValueFromRow(
+    rowValue: any,
+    requiredType?: JsonSchemaTypes | JsonSchemaTypes[] | undefined,
+  ): any {
     let value = rowValue === undefined ? null : rowValue;
     if (value !== null) {
       if (typeof value === 'string') {
@@ -386,6 +485,16 @@ export class ImportForm implements OnDestroy {
         try {
           value = format(new Date(value), 'yyyy-MM-dd');
         } catch (e) {}
+      }
+
+      if (requiredType) {
+        switch (requiredType) {
+          case 'string':
+            value = value.toString();
+            break;
+          case 'number':
+            value = !isNaN(value) ? +value : value;
+        }
       }
     }
     return value;
@@ -555,35 +664,42 @@ export class ImportForm implements OnDestroy {
   /**
    * Import all the rows and all new metrics into Dino
    * @param rows The rows to be imported
+   * @param newMetrics the list of the new metrics required to be created
+   * @param statuses
    */
   private _importFormDataRows(
     rows: {[key: string]: any}[],
+    newMetrics: {
+      [key: string]: {
+        [key: string]: any;
+      }[];
+    },
     statuses?: {[key: string]: Observable<string | null>},
   ): void {
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
-    const newMetricsInRows = this._getMetricsToBeCreated(rows, activeMetrics);
-    if (Object.keys(newMetricsInRows).length) {
+    if (Object.keys(newMetrics).length) {
       this._userDataSub = forkJoin([
-        this._checkIfMetricsAlreadyExist(newMetricsInRows).pipe(
+        this._checkIfMetricsAlreadyExist(newMetrics).pipe(
           switchMap(existingMetrics => {
-            const newMetrics: {[key: string]: {[key: string]: any}[]} = deepCopy(newMetricsInRows);
+            const newMetricsRequested: {[key: string]: {[key: string]: any}[]} =
+              deepCopy(newMetrics);
             if (existingMetrics.length > 0) {
               existingMetrics.forEach((queryRes: any[]) => {
                 if (queryRes.length) {
                   const metricCollection = queryRes[0].collection.name;
                   const metricNames = queryRes.map(metric => metric.name);
-                  newMetrics[metricCollection] = newMetricsInRows[metricCollection].filter(
+                  newMetricsRequested[metricCollection] = newMetrics[metricCollection].filter(
                     m => !metricNames.includes(m['name']),
                   );
                 }
               });
             }
-            return obsOf({newMetrics, existingMetrics});
+            return obsOf({newMetricsRequested, existingMetrics});
           }),
           switchMap(r => {
             return zip(
-              this._importMetrics(r.newMetrics),
-              obsOf(r.newMetrics),
+              this._importMetrics(r.newMetricsRequested),
+              obsOf(r.newMetricsRequested),
               obsOf(r.existingMetrics),
             );
           }),
@@ -657,13 +773,20 @@ export class ImportForm implements OnDestroy {
    * @param nodes
    * @returns an ajfNode list for the schema
    */
-  private _flattenNodes(nodes: AjfNode[]): AjfNode[] {
+  private _flattenNodes(nodes: AjfNode[], isRepSlide: boolean = false): AjfNode[] {
     let flatNodes: AjfNode[] = [];
     nodes.forEach((node: AjfNode) => {
       if (isContainerNode(node)) {
-        flatNodes = flatNodes.concat(this._flattenNodes((<AjfContainerNode>node).nodes));
+        const isRepSlide = node.nodeType === AjfNodeType.AjfRepeatingSlide;
+        flatNodes = flatNodes.concat(
+          this._flattenNodes((<AjfContainerNode>node).nodes, isRepSlide),
+        );
       }
-      flatNodes.push(node);
+      if (isRepSlide) {
+        flatNodes.push({...node, name: node.name + '__[0-9]+'});
+      } else {
+        flatNodes.push(node);
+      }
     });
 
     return flatNodes;
@@ -705,7 +828,14 @@ export class ImportForm implements OnDestroy {
    * @returns true if exist
    */
   private _containsAtLeastOne(rowKeys: string[], fields: string[]): boolean {
-    return fields.some(f => rowKeys.indexOf(f) > -1);
+    return fields.some(f => {
+      if (f.indexOf('__') > -1) {
+        const fieldNameRegex = new RegExp(`^${f}$`, 'g');
+        return rowKeys.some(k => fieldNameRegex.test(k));
+      } else {
+        return rowKeys.indexOf(f) > -1;
+      }
+    });
   }
 
   /**
@@ -726,6 +856,86 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
+   * Check if requested ids in rows exist in the app
+   * @param requiredUserIds
+   * @param existingUsers
+   * @param requiredMetricIdsByType
+   * @param existingMetricsByType
+   * @returns true if not all ids exist
+   */
+  private _checkIfMissingIds(
+    requiredUserIds: string[],
+    existingUsers: RxDocument<UserData>[],
+    requiredMetricIdsByType: {
+      [key: string]: string[];
+    },
+    existingMetricsByType: any[][],
+  ): boolean {
+    let idsNotMatch = false;
+    let idsNotMatchMessage = '';
+    const maxIdsInResponse = 10;
+
+    if (requiredUserIds.length) {
+      if (existingUsers == null || existingUsers.length != requiredUserIds.length) {
+        idsNotMatch = true;
+        const existingUserIds = existingUsers.map(u => u.id);
+        let missingUserIds = requiredUserIds
+          .filter(id => !existingUserIds.includes(id))
+          .map(i => '\n' + i);
+        console.log('File not imported! These user ids not exist:' + missingUserIds);
+        if (missingUserIds.length > maxIdsInResponse) {
+          missingUserIds = missingUserIds.slice(0, maxIdsInResponse);
+          missingUserIds.push('\nand more...');
+        }
+        idsNotMatchMessage = '\nCheck that these user ids exist:' + missingUserIds;
+      }
+    }
+
+    if (Object.keys(requiredMetricIdsByType).length) {
+      Object.keys(requiredMetricIdsByType).forEach(reqMetricType => {
+        if (requiredMetricIdsByType[reqMetricType].length) {
+          const existingMetrics = existingMetricsByType
+            ? existingMetricsByType.find(metricsByType => {
+                if (metricsByType.length) {
+                  return metricsByType[0].collection.name === reqMetricType;
+                }
+                return false;
+              })
+            : [];
+          if (
+            existingMetrics == undefined ||
+            existingMetrics.length != requiredMetricIdsByType[reqMetricType].length
+          ) {
+            idsNotMatch = true;
+            const existingMetricIds = existingMetrics ? existingMetrics.map(u => u.id) : [];
+            let missingMetricIds = requiredMetricIdsByType[reqMetricType]
+              .filter(id => !existingMetricIds.includes(id))
+              .map(i => '\n' + i);
+            console.log(
+              'File not imported! These ' + reqMetricType + ' ids not exist:' + missingMetricIds,
+            );
+            if (missingMetricIds.length > maxIdsInResponse) {
+              missingMetricIds = missingMetricIds.slice(0, maxIdsInResponse);
+              missingMetricIds.push('\nand more...');
+            }
+            idsNotMatchMessage =
+              idsNotMatchMessage +
+              '\nCheck that these ' +
+              reqMetricType +
+              ' ids exist:' +
+              missingMetricIds;
+          }
+        }
+      });
+    }
+
+    if (idsNotMatch) {
+      this._setImportStatus('File not imported! ' + idsNotMatchMessage);
+    }
+    return idsNotMatch;
+  }
+
+  /**
    * Convert the xls file into a json and start import all the rows
    * @param file The Xlsx file to be imported
    */
@@ -740,27 +950,66 @@ export class ImportForm implements OnDestroy {
       const ws = wb.Sheets[wsname];
       const data: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
 
+      const requiredUserIds = this._getRequiredUsers(data);
+      const activeMetrics = this.metricsService.activeMetrics.value.map(
+        metric => metric.metricName,
+      );
+      const {newMetrics, requiredMetricIdsByType} = this._getMetricsToBeCreated(
+        data,
+        activeMetrics,
+      );
+
+      const queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
+        ? this._udm
+            .query({
+              selector: {id: {$in: requiredUserIds}, is_deleted: {$ne: true}},
+            })
+            .pipe(
+              take(1),
+              catchError(_ => obsOf([])),
+            )
+        : obsOf([]);
+
       this._validateDataSub = this._formSchema
-        .pipe(map(formSchema => this._isValidXlsxData(data, formSchema)))
-        .subscribe(isValidXlsData => {
-          if (isValidXlsData) {
-            if (this._fsm) {
-              const statusDictionary: {[key: string]: Observable<string | null>} = {};
-              data.forEach(row => {
-                if (row['form_status_name'] && !statusDictionary[row['form_status_name']]) {
-                  statusDictionary[row['form_status_name']] = this._fsm
-                    .query({
-                      selector: {name: {$eq: row['form_status_name']}, is_deleted: {$ne: true}},
-                    })
-                    .pipe(
-                      map(docs => (docs[0] ? docs[0].id : null)),
-                      take(1),
-                    );
-                }
-              });
-              this._importFormDataRows(data, statusDictionary);
-            } else {
-              this._importFormDataRows(data);
+        .pipe(
+          map(formSchema => this._isValidXlsxData(data, formSchema)),
+          switchMap(isValidXlsData => {
+            if (isValidXlsData) {
+              return zip([queryRequiredUsers, this._getMetricsIfExist(requiredMetricIdsByType)]);
+            }
+            return obsOf(null);
+          }),
+        )
+        .subscribe(res => {
+          if (res && res.length > 1) {
+            const existingUsers = res[0];
+            const existingMetricsByType = res[1];
+            const idsNotMatch = this._checkIfMissingIds(
+              requiredUserIds,
+              existingUsers,
+              requiredMetricIdsByType,
+              existingMetricsByType,
+            );
+
+            if (!idsNotMatch) {
+              if (this._fsm) {
+                const statusDictionary: {[key: string]: Observable<string | null>} = {};
+                data.forEach(row => {
+                  if (row['form_status_name'] && !statusDictionary[row['form_status_name']]) {
+                    statusDictionary[row['form_status_name']] = this._fsm
+                      .query({
+                        selector: {name: {$eq: row['form_status_name']}, is_deleted: {$ne: true}},
+                      })
+                      .pipe(
+                        map(docs => (docs[0] ? docs[0].id : null)),
+                        take(1),
+                      );
+                  }
+                });
+                this._importFormDataRows(data, newMetrics, statusDictionary);
+              } else {
+                this._importFormDataRows(data, newMetrics);
+              }
             }
           } else {
             this._setImportStatus(
