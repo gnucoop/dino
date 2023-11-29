@@ -63,7 +63,18 @@ export class ListCellValue implements PipeTransform {
     }
     if (header.dataColumn && choices && choices[headerName]) {
       let labelItem = choices[headerName].find(ch => ch.value == val);
-      val = labelItem ? labelItem.label : val;
+      if (!labelItem && Array.isArray(val)) {
+        const labelItems = val
+          .map(v => {
+            labelItem = choices[headerName].find(ch => ch.value == v);
+            // TODO Slice the label to 30 chars? .slice(0, 30) ?
+            return labelItem ? labelItem.label : v;
+          })
+          .filter(v => v != undefined);
+        val = labelItems.length ? labelItems.join(', ') : val;
+      } else {
+        val = labelItem ? labelItem.label : val;
+      }
     }
     if (typeof val === 'object' && !isFileColumn(val) && val != null) {
       val = JSON.stringify(val, null, 2).replace('{', '').replace('}', '');

@@ -1029,7 +1029,18 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       let item = elementData[key] ?? null;
       if (choices && choices[headerName]) {
         let labelItem = choices[headerName].find(ch => ch.value == item);
-        item = labelItem ? labelItem.label : item;
+        if (!labelItem && Array.isArray(item)) {
+          const labelItems = item
+            .map(v => {
+              labelItem = choices[headerName].find(ch => ch.value == v);
+              // TODO Slice the label to 30 chars? .slice(0, 30) ?
+              return labelItem ? labelItem.label : v;
+            })
+            .filter(v => v != undefined);
+          item = labelItems.length ? labelItems.join(', ') : item;
+        } else {
+          item = labelItem ? labelItem.label : item;
+        }
       }
       aggregateData.push(item);
     }
