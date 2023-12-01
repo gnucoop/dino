@@ -29,6 +29,7 @@ import {
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActionTriggerData, PermissionContextService} from '@dino/core/data';
 import {isRxDocument, RxDocument} from 'rxdb';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 /**
  * Represents data to be passed to the Form Status changer
@@ -76,6 +77,7 @@ export class FormStatusChanger implements OnDestroy, OnInit {
     private _aui: AdminUserInteractionsService,
     private _snackbar: MatSnackBar,
     private _pcs: PermissionContextService,
+    private _ehms: ErrorHandlerMessageService,
   ) {
     this.currentStatusId = data.formData.form_status_ref_id;
     this.availableStatuses = data.formData.form_schema.pipe(
@@ -119,6 +121,7 @@ export class FormStatusChanger implements OnDestroy, OnInit {
           if (isDevMode()) {
             console.log(err);
           }
+          this._ehms.captureErrorMessage(`Could not update status of form data: ${err}`, 'error');
           return obsOf(null);
         }),
       )

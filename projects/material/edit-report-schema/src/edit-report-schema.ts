@@ -64,6 +64,7 @@ import {
 } from 'rxjs/operators';
 
 import {ImportReportSchema} from './import-report-schema';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 /**
  * The Report Schema Editor component.
@@ -138,6 +139,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
     private _iconsService: IconsService,
     private _translocoService: TranslocoService,
     private _fs: FormSchemaManager,
+    private _ehms: ErrorHandlerMessageService,
   ) {
     this._reportSchemaId = this._route.params.pipe(
       map(params => params['report_schema_id']),
@@ -220,7 +222,10 @@ export class EditReportSchema implements OnInit, OnDestroy {
           };
           if (reportSchema == null) {
             return this._reportSchemaManager.create(reportPatch).pipe(
-              catchError(() => obsOf(null)),
+              catchError(err => {
+                this._ehms.captureErrorMessage(`Could not create report schema: ${err}`, 'error');
+                return obsOf(null);
+              }),
               take(1),
             );
           }
@@ -229,6 +234,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
               if (isDevMode()) {
                 console.log(err);
               }
+              this._ehms.captureErrorMessage(`Could not patch report schema: ${err}`, 'error');
               return obsOf(null);
             }),
             take(1),

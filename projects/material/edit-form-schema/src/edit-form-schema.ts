@@ -69,6 +69,7 @@ import {
 import {ImportFormSchema} from './import-form-schema';
 import {TranslocoService} from '@ngneat/transloco';
 import {Translations} from './form-schema-translation-interface';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 /**
  * The Form Schema Editor component.
@@ -195,6 +196,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _formBuilder: UntypedFormBuilder,
     private _iconsService: IconsService,
     private _metricService: MetricsService,
+    private _ehms: ErrorHandlerMessageService,
     private _ts: TranslocoService,
     private _lm: LangManager,
   ) {
@@ -308,12 +310,18 @@ export class EditFormSchema implements OnInit, OnDestroy {
           }
           if (fs == null) {
             return this._formSchemaManager.create(formPatch).pipe(
-              catchError(() => obsOf(null)),
+              catchError(err => {
+                this._ehms.captureErrorMessage(`Could not create form schema: ${err}`, 'error');
+                return obsOf(null);
+              }),
               take(1),
             );
           }
           return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
-            catchError(() => obsOf(null)),
+            catchError(err => {
+              this._ehms.captureErrorMessage(`Could not patch form schema: ${err}`, 'error');
+              return obsOf(null);
+            }),
             take(1),
           );
         }),

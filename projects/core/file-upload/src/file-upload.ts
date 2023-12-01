@@ -27,6 +27,7 @@ import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/au
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {StorageUploadResponse} from './file-upload-response';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 export const storageEndpoint = '/files';
 
@@ -48,6 +49,7 @@ export class FileUploadService {
   constructor(
     private _httpClient: HttpClient,
     private _authService: AuthService,
+    private _ehms: ErrorHandlerMessageService,
     @Inject(AUTH_SERVICE_CONFIG) readonly config: AuthServiceConfig,
   ) {
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(this.config);
@@ -88,6 +90,10 @@ export class FileUploadService {
             if (isDevMode()) {
               console.log(err.error ?? err);
             }
+            this._ehms.captureErrorMessage(
+              `Could not upload file to the remote storage: ${err}`,
+              'error',
+            );
             return obsOf({
               isUploaded: false,
               error: err.error,
@@ -151,6 +157,10 @@ export class FileUploadService {
             if (isDevMode()) {
               console.log(err.error ?? err);
             }
+            this._ehms.captureErrorMessage(
+              `Could not delete file from the remote storage: ${err}`,
+              'error',
+            );
             return obsOf({error: err});
           }),
         );

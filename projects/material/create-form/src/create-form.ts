@@ -105,6 +105,7 @@ import {Project, ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {TranslocoService} from '@ngneat/transloco';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 /**
  * The Form Edit component.
@@ -351,6 +352,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     private _location: Location,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
+    private _ehms: ErrorHandlerMessageService,
     private _ts: TranslocoService,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
@@ -913,17 +915,18 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           if (isDevMode()) {
             console.log(err);
           }
+          this._ehms.captureErrorMessage(`Could not create form: ${err}`, 'error');
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
-          return obsOf(err);
+          return obsOf([null, null]);
         }),
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe(([fd, formObj]) => {
-        this.isLoading.next(false);
-        this._location.back();
-        this.snackbar.open('Document created', 'SAVE', {duration: 5000});
         if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
+          this.isLoading.next(false);
+          this._location.back();
+          this.snackbar.open('Document created', 'SAVE', {duration: 5000});
           const trigData: ActionTriggerData<T> = {doc: fd};
           const trigger: ActionTrigger<T> = {
             name: 'Form Data Created',

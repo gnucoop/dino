@@ -41,6 +41,7 @@ import {JwtToken} from './jwt-token';
 import {LoginResponse} from './login-response';
 import {NetworkStatusService} from './network-status.service';
 import {User} from './user';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 function removeSlashes(uri: string): string {
   return uri.replace(/^\/+|\/+$/g, '');
@@ -126,6 +127,7 @@ export class AuthService {
   constructor(
     private _nss: NetworkStatusService,
     private _httpClient: HttpClient,
+    private _ehms: ErrorHandlerMessageService,
     @Inject(AUTH_SERVICE_CONFIG) readonly config: AuthServiceConfig,
     @Optional() private _configService: ConfigService | null,
   ) {
@@ -281,6 +283,7 @@ export class AuthService {
         );
         return this._httpClient.post<NHostSignupResponse>(url, requestData).pipe(
           catchError(err => {
+            this._ehms.captureErrorMessage(`Could not signup new user: ${err}`, 'error');
             return obsOf(err.error);
           }),
         );
@@ -370,6 +373,7 @@ export class AuthService {
               if (isDevMode()) {
                 console.log(err.error ?? err);
               }
+              this._ehms.captureErrorMessage(`Could not refresh Auth Token: ${err}`, 'warning');
               if (authEvt !== 'reset password') {
                 this.authenticated.next({auth: false, evt: 'refresh failed'});
               }

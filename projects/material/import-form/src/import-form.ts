@@ -37,6 +37,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   FormData,
   FormDataManager,
@@ -154,6 +155,7 @@ export class ImportForm implements OnDestroy {
     private _formSchemaManager: FormSchemaManager,
     private _udm: UserDataManager,
     private _fsm: FormStatusManager,
+    private _ehms: ErrorHandlerMessageService,
     readonly metricsService: MetricsService,
     public dialogRef: MatDialogRef<ImportForm>,
     @Optional() private _ar: AreaManager | null,
@@ -247,7 +249,13 @@ export class ImportForm implements OnDestroy {
             metricsObs.push(
               manager.query(selector).pipe(
                 take(1),
-                catchError(_ => obsOf([])),
+                catchError(err => {
+                  this._ehms.captureErrorMessage(
+                    `Error while searching for already existing metrics with the same name: ${err}`,
+                    'error',
+                  );
+                  return obsOf([]);
+                }),
               ),
             );
           }
@@ -342,9 +350,15 @@ export class ImportForm implements OnDestroy {
       if (manager !== null) {
         if (newMetrics[metricType] && newMetrics[metricType].length) {
           metricsObs.push(
-            manager
-              .bulkCreate(newMetrics[metricType])
-              .pipe(catchError(_ => obsOf({success: [], error: []}))),
+            manager.bulkCreate(newMetrics[metricType]).pipe(
+              catchError(err => {
+                this._ehms.captureErrorMessage(
+                  `Could not create new imported metrics: ${err}`,
+                  'error',
+                );
+                return obsOf({success: [], error: []});
+              }),
+            ),
           );
         }
       }
@@ -448,7 +462,13 @@ export class ImportForm implements OnDestroy {
     this._formDataManager
       .bulkCreate(forms)
       .pipe(
-        catchError(_ => obsOf(null)),
+        catchError(err => {
+          this._ehms.captureErrorMessage(
+            `Could not bulkCreate new imported form data: ${err}`,
+            'error',
+          );
+          return obsOf(null);
+        }),
         take(1),
       )
       .subscribe(bulkRes => {
@@ -567,7 +587,8 @@ export class ImportForm implements OnDestroy {
               obsOf(r.existingMetrics),
             );
           }),
-          catchError(() => {
+          catchError(err => {
+            this._ehms.captureErrorMessage(`Could not import form data rows: ${err}`, 'error');
             return obsOf([], [], []);
           }),
           withLatestFrom(this._udm.getActiveUserData()),

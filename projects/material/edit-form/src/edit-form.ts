@@ -107,6 +107,7 @@ import {CaseManager} from '@dino/core/cases';
 import {Project, ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 /**
  * The Form Edit component.
@@ -438,6 +439,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     private _location: Location,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
+    private _ehms: ErrorHandlerMessageService,
     private _ts: TranslocoService,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
@@ -1217,6 +1219,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (isDevMode()) {
             console.log(err);
           }
+          this._ehms.captureErrorMessage(`Could not edit form: ${err}`, 'error');
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
