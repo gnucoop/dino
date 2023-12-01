@@ -20,11 +20,18 @@
  *
  */
 
-import {ErrorHandler, NgModule} from '@angular/core';
+import {ErrorSeverityLevel} from './error-severity-level';
 
-import {ErrorHandlerService} from './error-handler.service';
-
-@NgModule({
-  providers: [{provide: ErrorHandler, useClass: ErrorHandlerService}],
-})
-export class ErrorHandlerModule {}
+/**
+ * Represents an error message to be sent to the remote error tracking service.
+ */
+export interface ErrorCapturedMessage {
+  /**
+   * The error message
+   */
+  message: string;
+  /**
+   * The optional severity level of the error
+   */
+  level?: ErrorSeverityLevel;
+}

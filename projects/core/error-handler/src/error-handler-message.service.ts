@@ -20,39 +20,31 @@
  *
  */
 
-import {HttpErrorResponse} from '@angular/common/http';
-import {ErrorHandler, Injectable} from '@angular/core';
-import {Router} from '@angular/router';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
+import {ErrorSeverityLevel} from './error-severity-level';
+import {ErrorCapturedMessage} from './error-message';
 
 /**
  * Service that manages errors, providing custom methods to log and handle them
  * depending on the error type.
  */
-@Injectable()
-export class ErrorHandlerService implements ErrorHandler {
-  constructor(private _router: Router) {}
+@Injectable({providedIn: 'root'})
+export class ErrorHandlerMessageService {
+  private _errorMessageCapturedEvt: EventEmitter<ErrorCapturedMessage> =
+    new EventEmitter<ErrorCapturedMessage>();
+
+  public capturedEvt: Observable<ErrorCapturedMessage> =
+    this._errorMessageCapturedEvt.asObservable();
+
+  constructor() {}
 
   /**
-   * Handle an uncaught exception
-   * @param error The exception
-   * @returns The exception handler stream
+   * Emits the event to send a message to the remote Error service
+   * @param message The message to be sent
+   * @param level? The optional severity level of the message (eg. fatal, error, warning etc.)
    */
-  handleError<T>(error: Error | HttpErrorResponse): Observable<T> {
-    const {url} = this._router;
-
-    if (error instanceof HttpErrorResponse) {
-      if (!navigator.onLine) {
-        console.error('NO CONNECTION AVAILABLE!');
-      }
-      console.error(
-        `DINO HTTP ERROR \n Backend returned status code: ${error.status} \n Response body: ${error.message} \n URL: ${url}`,
-      );
-    } else {
-      console.error(`DINO ERROR: ${error.message} \n URL: ${url}`);
-    }
-
-    const safeValue = new Observable<T>();
-    return safeValue;
+  captureErrorMessage(message: string, level?: ErrorSeverityLevel) {
+    this._errorMessageCapturedEvt.emit({message, level});
   }
 }

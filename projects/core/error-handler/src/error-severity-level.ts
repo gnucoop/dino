@@ -20,6 +20,8 @@
  *
  */
 
-export * from './error-handler-message.service';
-export * from './error-message';
-export * from './error-severity-level';
+/**
+ * Represents the arbitrary severity level of an error message to be sent to the remote error tracking service.
+ * Matches the Sentry severity levels.
+ */
+export type ErrorSeverityLevel = 'error' | 'debug' | 'fatal' | 'warning' | 'log' | 'info';

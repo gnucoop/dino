@@ -1,1 +1,1 @@
-The `@dino/core/error-handler` module provides a custom Error Handler service, that manages uncaught errors and provides custom actions to perform based on the error type. It also returns an appropriate "safe" stream.
+The `@dino/core/error-handler` provides a custom Error Handler Message service, that can be used to send custom notifications to a remote error tracking service and can be injected in any angular Error Handler implementation to gather info.
