@@ -43,6 +43,7 @@ import {
   FormStatus,
   FormStatusManager,
 } from '@dino/core/forms';
+import {Lang, LangManager} from '@dino/core/langs';
 import {FormDepsEditor} from '@dino/material/form-deps-editor';
 import {IconsService} from '@dino/material/icons-service';
 import {format} from 'date-fns';
@@ -176,6 +177,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   private _dialogDepsSub: Subscription = Subscription.EMPTY;
 
+  private _langs: Lang[] | null = null; // as listed by LangManager at construction time
+  private _newLangs: Partial<Lang>[] = [];   // to be created when saving the form
+  private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
+
   constructor(
     protected _cdr: ChangeDetectorRef,
     private _router: Router,
@@ -190,6 +195,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _iconsService: IconsService,
     private _metricService: MetricsService,
     private _ts: TranslocoService,
+    private _lm: LangManager,
   ) {
     this._formSchemaId = this._route.params.pipe(
       map(params => params['form_schema_id']),
@@ -321,6 +327,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
           });
         }
       });
+
+    this._lm.list().pipe(take(1)).subscribe(langs => {
+      this._langs = langs.map(l => l.toJSON());
+    });
   }
 
   ngOnInit() {
@@ -450,7 +460,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the current imported form schema
+   * Updates the current imported form schema and extracts its translations
    * @param schema The form schema
    */
   private _updateImportedFormSchema(schema: {[key: string]: any}): void {
@@ -458,13 +468,45 @@ export class EditFormSchema implements OnInit, OnDestroy {
       return;
     }
     this._importedFormSchema.next(schema);
+
+    this._newLangs = [];
+    this._patchLangs = [];
+    const translations: Translations = schema['translations'];
+    if (this._langs == null || translations == null) {
+      return;
+    }
+    for (const langName in translations) {
+      const lang = this._langs.find(l => l.name === langName);
+      if (lang == null) {
+        this._newLangs.push({
+          name: langName,
+          schema: translations[langName],
+        });
+      } else {
+        this._patchLangs.push({
+          id: lang.id,
+          schema: {...lang.schema, ...translations[langName]},
+        });
+      }
+    }
   }
 
   /**
-   * Saves the Form Schema
+   * Saves the Form Schema and its translations
    */
   save(): void {
     this._saveEvt.emit();
+
+    for (const lang of this._newLangs) {
+      this._lm.create(lang as Lang).pipe(take(1)).subscribe(lang => {
+        console.log(lang!.name + ' translation created successfully');
+      });
+    }
+    for (const lang of this._patchLangs) {
+      this._lm.patch(lang as Lang).pipe(take(1)).subscribe(lang => {
+        console.log(lang!.name + ' translation updated successfully');
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -473,4 +515,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._dialogSub.unsubscribe();
     this._dialogDepsSub.unsubscribe();
   }
+}
+
+interface Translation {
+  [text: string]: string;
+}
+
+interface Translations {
+  [lang: string]: Translation;
 }
