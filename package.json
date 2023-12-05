@@ -34,7 +34,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
-  "version": "15.2.6",
+  "version": "15.2.7",
   "private": true,
   "dependencies": {
     "@ajf/core": "^15.3.8",
@@ -96,7 +96,7 @@
     "@babel/traverse": "^7.17.9",
     "@cypress/schematic": "2.5.1",
     "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-node-resolve":"^15.2.3",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/chart.js": "^2.9.35",
     "@types/dagre": "^0.7.46",
     "@types/jasmine": "~4.3.0",

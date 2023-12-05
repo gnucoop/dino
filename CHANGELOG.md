@@ -1,3 +1,17 @@
+<a name="15.2.7"></a>
+# 15.2.7 "applicable-caterpillar" (2023-12-05)
+### Bug Fixes
+* **core/translations:** add translations for relationships and export ([6761d1e](https://bitbucket.org/gnucoop/dino/commits/6761d1e8838f37e94164054cd4874df33b278075))
+* **material/edit-form:** ajf init event and validation also in view mode ([8926f73](https://bitbucket.org/gnucoop/dino/commits/8926f7321d0efb6be7f4dbf56f73faac401bd050))
+* **material/import-form:** check for invalid ids before import and fix rep slide columns ([4f672b8](https://bitbucket.org/gnucoop/dino/commits/4f672b817ed68f469f961bf1a6d979378a484b11))
+* **material/list:** show label for multiple choice values in list ([8825798](https://bitbucket.org/gnucoop/dino/commits/8825798b436c125c9c7afac5b982590e16768d8f))
+### Features
+* extract and save translations from xls form schema ([87d68d0](https://bitbucket.org/gnucoop/dino/commits/87d68d00ea94d9c27d9a5870102494c5bfc85689))
+* **material/edit-report:** report download in docx ([c721df2](https://bitbucket.org/gnucoop/dino/commits/c721df2266aa427c8c852d72263cfe9737f1fd56))
+* **material/form-metric-selector:** select the metric if it is only one ([815729e](https://bitbucket.org/gnucoop/dino/commits/815729ed295e8e793216c2c7d8d4550125283969))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.6"></a>
 # 15.2.6 "closed-scorpion" (2023-11-10)
 ### Bug Fixes
