@@ -68,6 +68,7 @@ import {
 
 import {ImportFormSchema} from './import-form-schema';
 import {TranslocoService} from '@ngneat/transloco';
+import {Translations} from './form-schema-translation-interface';
 
 /**
  * The Form Schema Editor component.
@@ -178,7 +179,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _dialogDepsSub: Subscription = Subscription.EMPTY;
 
   private _langs: Lang[] | null = null; // as listed by LangManager at construction time
-  private _newLangs: Partial<Lang>[] = [];   // to be created when saving the form
+  private _newLangs: Partial<Lang>[] = []; // to be created when saving the form
   private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
 
   constructor(
@@ -328,9 +329,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
         }
       });
 
-    this._lm.list().pipe(take(1)).subscribe(langs => {
-      this._langs = langs.map(l => l.toJSON());
-    });
+    this._lm
+      .list()
+      .pipe(take(1))
+      .subscribe(langs => {
+        this._langs = langs.map(l => l.toJSON());
+      });
   }
 
   ngOnInit() {
@@ -498,14 +502,20 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._saveEvt.emit();
 
     for (const lang of this._newLangs) {
-      this._lm.create(lang as Lang).pipe(take(1)).subscribe(lang => {
-        console.log(lang!.name + ' translation created successfully');
-      });
+      this._lm
+        .create(lang as Lang)
+        .pipe(take(1))
+        .subscribe(lang => {
+          console.log(lang!.name + ' translation created successfully');
+        });
     }
     for (const lang of this._patchLangs) {
-      this._lm.patch(lang as Lang).pipe(take(1)).subscribe(lang => {
-        console.log(lang!.name + ' translation updated successfully');
-      });
+      this._lm
+        .patch(lang as Lang)
+        .pipe(take(1))
+        .subscribe(lang => {
+          console.log(lang!.name + ' translation updated successfully');
+        });
     }
   }
 
@@ -515,12 +525,4 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._dialogSub.unsubscribe();
     this._dialogDepsSub.unsubscribe();
   }
-}
-
-interface Translation {
-  [text: string]: string;
-}
-
-interface Translations {
-  [lang: string]: Translation;
 }

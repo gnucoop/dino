@@ -19,8 +19,10 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
+export interface Translation {
+  [text: string]: string;
+}
 
-export * from './edit-form-schema';
-export * from './import-form-schema';
-export * from './edit-form-schema.module';
-export * from './form-schema-translation-interface';
+export interface Translations {
+  [lang: string]: Translation;
+}
