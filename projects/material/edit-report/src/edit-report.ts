@@ -22,6 +22,7 @@
 import {
   AjfReportInstance,
   createReportInstance,
+  downloadReportDoc,
   exportReportXlsx,
   openReportPdf,
 } from '@ajf/core/reports';
@@ -519,24 +520,32 @@ export class EditReport implements AfterViewInit {
 
   /**
    * Prints the current report Instance to pdf
-   * @param orientation
    */
-  printReport(orientation: 'portrait' | 'landscape') {
+  printReport() {
     if (this._currentReportInstance != null) {
-      openReportPdf(this._currentReportInstance, orientation);
+      openReportPdf(this._currentReportInstance);
     }
   }
 
   /**
    * Export the current report Instance to xlsx
    */
-  exportReport() {
+  exportXlsx() {
     if (this._currentReportInstance != null) {
       const iconsMap: {[html: string]: string} | undefined = {};
       const fileExported = exportReportXlsx(this._currentReportInstance, iconsMap);
       if (!fileExported) {
         this.snackbar.open('No exportable widget found in this report', 'EXPORT', {duration: 5000});
       }
+    }
+  }
+
+  /**
+   * Export the current report Instance to docx
+   */
+  exportDocx() {
+    if (this._currentReportInstance != null) {
+      downloadReportDoc(this._currentReportInstance);
     }
   }
 

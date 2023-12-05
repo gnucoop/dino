@@ -28,12 +28,10 @@
             <ng-container *ngIf="reportSchema|async as repschema">
               <ng-container *ngIf="reportData|async as repData">
                 <div class="dino-edit-report-print">
-                  <button color="primary" mat-icon-button (click)="exportReport()">
-                    <mat-icon> cloud_download </mat-icon>
-                  </button>
-                  <button color="primary" mat-icon-button (click)="printReport('portrait')">
-                    <mat-icon> printer </mat-icon>
-                  </button>
+                  Export as:
+                  <button color="primary" mat-raised-button (click)="printReport()">pdf</button>
+                  <button color="primary" mat-raised-button (click)="exportXlsx()">xlsx</button>
+                  <button color="primary" mat-raised-button (click)="exportDocx()">docx</button>
                 </div>
                 <div class="dino-edit-report-info">
                   <h1>{{repschema.label}}</h1>
