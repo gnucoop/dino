@@ -988,7 +988,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             return obsOf(false);
           }
           fms.addFormData(currentDoc, isView);
-          return obsOf(true);
+          return isView ? this.isAjfFormValid : obsOf(true);
         }),
         take(1),
       )
