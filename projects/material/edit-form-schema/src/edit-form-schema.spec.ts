@@ -11,6 +11,7 @@ import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {EditFormSchema, EditFormSchemaModule} from './public_api';
 import {RxDocument} from 'rxdb';
+import {TRANSLATIONS_CONFIG} from '@dino/core/translations';
 
 let testDbIdx = 0;
 
@@ -72,6 +73,7 @@ describe('Edit FormSchema', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: FormSchemaManager, useClass: FormSchemaManagerMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: TRANSLATIONS_CONFIG, useValue: {defaultLanguage: 'eng'}},
       ],
     }).compileComponents();
 
