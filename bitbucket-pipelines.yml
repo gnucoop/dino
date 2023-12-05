@@ -26,10 +26,9 @@ pipelines:
             - yarn -s test:ci
       - step:
           name: Build release, docs, Create Artifacts and Publish on Bytesafe
-          caches:
-            - nodecustom
-            - yarn
           script:
+            - rm -rf dist
+            - yarn install --frozen-lockfile --non-interactive
             - ./scripts/release.mjs
             - ./scripts/build-docs.mjs
             - ./scripts/jenkins/create-build-artifacts.mjs
