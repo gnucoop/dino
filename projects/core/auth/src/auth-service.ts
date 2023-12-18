@@ -283,7 +283,10 @@ export class AuthService {
         );
         return this._httpClient.post<NHostSignupResponse>(url, requestData).pipe(
           catchError(err => {
-            this._ehms.captureErrorMessage(`Could not signup new user: ${err}`, 'error');
+            this._ehms.captureErrorMessage(
+              `Could not signup new user: ${JSON.stringify(err)}`,
+              'error',
+            );
             return obsOf(err.error);
           }),
         );
@@ -373,7 +376,10 @@ export class AuthService {
               if (isDevMode()) {
                 console.log(err.error ?? err);
               }
-              this._ehms.captureErrorMessage(`Could not refresh Auth Token: ${err}`, 'warning');
+              this._ehms.captureErrorMessage(
+                `Could not refresh Auth Token: ${JSON.stringify(err)}`,
+                'warning',
+              );
               if (authEvt !== 'reset password') {
                 this.authenticated.next({auth: false, evt: 'refresh failed'});
               }

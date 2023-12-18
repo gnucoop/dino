@@ -915,7 +915,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           if (isDevMode()) {
             console.log(err);
           }
-          this._ehms.captureErrorMessage(`Could not create form: ${err}`, 'error');
+          this._ehms.captureErrorMessage(`Could not create form: ${JSON.stringify(err)}`, 'error');
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf([null, null]);

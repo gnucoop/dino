@@ -121,7 +121,10 @@ export class FormStatusChanger implements OnDestroy, OnInit {
           if (isDevMode()) {
             console.log(err);
           }
-          this._ehms.captureErrorMessage(`Could not update status of form data: ${err}`, 'error');
+          this._ehms.captureErrorMessage(
+            `Could not update status of form data: ${JSON.stringify(err)}`,
+            'error',
+          );
           return obsOf(null);
         }),
       )

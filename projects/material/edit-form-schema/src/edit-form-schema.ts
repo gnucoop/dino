@@ -311,7 +311,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
           if (fs == null) {
             return this._formSchemaManager.create(formPatch).pipe(
               catchError(err => {
-                this._ehms.captureErrorMessage(`Could not create form schema: ${err}`, 'error');
+                this._ehms.captureErrorMessage(
+                  `Could not create form schema: ${JSON.stringify(err)}`,
+                  'error',
+                );
                 return obsOf(null);
               }),
               take(1),
@@ -319,7 +322,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
           }
           return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
             catchError(err => {
-              this._ehms.captureErrorMessage(`Could not patch form schema: ${err}`, 'error');
+              this._ehms.captureErrorMessage(
+                `Could not patch form schema: ${JSON.stringify(err)}`,
+                'error',
+              );
               return obsOf(null);
             }),
             take(1),

@@ -281,7 +281,9 @@ export class ImportForm implements OnDestroy {
                 take(1),
                 catchError(err => {
                   this._ehms.captureErrorMessage(
-                    `Error while searching for already existing metrics with the same name: ${err}`,
+                    `Error while searching for already existing metrics with the same name: ${JSON.stringify(
+                      err,
+                    )}`,
                     'error',
                   );
                   return obsOf([]);
@@ -448,7 +450,7 @@ export class ImportForm implements OnDestroy {
             manager.bulkCreate(newMetrics[metricType]).pipe(
               catchError(err => {
                 this._ehms.captureErrorMessage(
-                  `Could not create new imported metrics: ${err}`,
+                  `Could not create new imported metrics: ${JSON.stringify(err)}`,
                   'error',
                 );
                 return obsOf({success: [], error: []});
@@ -573,7 +575,7 @@ export class ImportForm implements OnDestroy {
       .pipe(
         catchError(err => {
           this._ehms.captureErrorMessage(
-            `Could not bulkCreate new imported form data: ${err}`,
+            `Could not bulkCreate new imported form data: ${JSON.stringify(err)}`,
             'error',
           );
           return obsOf(null);
@@ -704,7 +706,10 @@ export class ImportForm implements OnDestroy {
             );
           }),
           catchError(err => {
-            this._ehms.captureErrorMessage(`Could not import form data rows: ${err}`, 'error');
+            this._ehms.captureErrorMessage(
+              `Could not import form data rows: ${JSON.stringify(err)}`,
+              'error',
+            );
             return obsOf([], [], []);
           }),
           withLatestFrom(this._udm.getActiveUserData()),

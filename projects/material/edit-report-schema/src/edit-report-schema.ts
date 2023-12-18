@@ -223,7 +223,10 @@ export class EditReportSchema implements OnInit, OnDestroy {
           if (reportSchema == null) {
             return this._reportSchemaManager.create(reportPatch).pipe(
               catchError(err => {
-                this._ehms.captureErrorMessage(`Could not create report schema: ${err}`, 'error');
+                this._ehms.captureErrorMessage(
+                  `Could not create report schema: ${JSON.stringify(err)}`,
+                  'error',
+                );
                 return obsOf(null);
               }),
               take(1),
@@ -234,7 +237,10 @@ export class EditReportSchema implements OnInit, OnDestroy {
               if (isDevMode()) {
                 console.log(err);
               }
-              this._ehms.captureErrorMessage(`Could not patch report schema: ${err}`, 'error');
+              this._ehms.captureErrorMessage(
+                `Could not patch report schema: ${JSON.stringify(err)}`,
+                'error',
+              );
               return obsOf(null);
             }),
             take(1),

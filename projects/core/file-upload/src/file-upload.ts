@@ -91,7 +91,7 @@ export class FileUploadService {
               console.log(err.error ?? err);
             }
             this._ehms.captureErrorMessage(
-              `Could not upload file to the remote storage: ${err}`,
+              `Could not upload file to the remote storage: ${JSON.stringify(err)}`,
               'error',
             );
             return obsOf({
@@ -158,7 +158,7 @@ export class FileUploadService {
               console.log(err.error ?? err);
             }
             this._ehms.captureErrorMessage(
-              `Could not delete file from the remote storage: ${err}`,
+              `Could not delete file from the remote storage: ${JSON.stringify(err)}`,
               'error',
             );
             return obsOf({error: err});

@@ -1219,7 +1219,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (isDevMode()) {
             console.log(err);
           }
-          this._ehms.captureErrorMessage(`Could not edit form: ${err}`, 'error');
+          this._ehms.captureErrorMessage(`Could not edit form: ${JSON.stringify(err)}`, 'error');
           this._location.back();
           this.snackbar.open(err, 'ERROR', {duration: 5000});
           return obsOf(err);
