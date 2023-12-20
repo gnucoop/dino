@@ -923,17 +923,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe(([fd, formObj]) => {
-        if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
+        if (fd && fd.collection.name === 'form_data') {
           this.isLoading.next(false);
           this._location.back();
           this.snackbar.open('Document created', 'SAVE', {duration: 5000});
-          const trigData: ActionTriggerData<T> = {doc: fd};
-          const trigger: ActionTrigger<T> = {
-            name: 'Form Data Created',
-            triggerType: 'on_form_data_creation',
-            triggerData: trigData,
-          };
-          this.emitActionTrigger.emit(trigger);
+          if (formObj.evt != 'draft') {
+            const trigData: ActionTriggerData<T> = {doc: fd};
+            const trigger: ActionTrigger<T> = {
+              name: 'Form Data Created',
+              triggerType: 'on_form_data_creation',
+              triggerData: trigData,
+            };
+            this.emitActionTrigger.emit(trigger);
+          }
         }
       });
 
