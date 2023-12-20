@@ -54,6 +54,7 @@ import {
   catchError,
   debounceTime,
   map,
+  startWith,
   switchMap,
   take,
   takeUntil,
@@ -89,7 +90,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   formStatusFilterOptions: Observable<FormStatus[]> | null = null;
 
   /**
-   * All the form status filter autocomplete options.
+   * All the users filter autocomplete options.
    */
   usersFilterOptions: Observable<UserData[]> | null = null;
 
@@ -434,10 +435,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           id: string[];
           name: string;
           secondary: string | null;
-        },
+        }
+      | string,
   ): string {
     if (obj == null) {
       return '';
+    }
+    if (typeof obj === 'string') {
+      return obj;
     }
     const item = obj as {[key: string]: any};
 
@@ -519,7 +524,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       return;
     }
     const inputControl = this.additionalBasicFilters.find(group => group.get(metricType) != null);
-    const inputValue = inputControl?.get(metricType)?.valueChanges;
+    const inputStartingValue = inputControl?.get(metricType)?.value;
+    let inputValue = inputControl?.get(metricType)?.valueChanges;
+    if (typeof inputStartingValue === 'string') {
+      inputValue = inputValue?.pipe(startWith(inputStartingValue));
+    }
     if (inputValue != null) {
       this.metricFiltersOptions[metricType] = inputValue.pipe(
         debounceTime(800),
@@ -590,7 +599,36 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           return [];
         }),
       );
+      this._setInitialMetricOptionFromInputText(metricType, metricManager);
     }
+  }
+
+  /**
+   * When a Metric Filter initial value is a string and not a valid metric option,
+   * this looks for an option with that string as name, and sets it as the value of that Filter input.
+   * @param metricType The type of metric
+   * @param metricManager The related metric manager
+   */
+  private _setInitialMetricOptionFromInputText(
+    metricType: string,
+    metricManager: DataModelManager<any>,
+  ): void {
+    if (metricType == null || metricManager == null) {
+      return;
+    }
+    const inputControl = this.additionalBasicFilters.find(group => group.get(metricType) != null);
+    const inputStartingValue: {[key: string]: any} | string = inputControl?.get(metricType)?.value;
+    if (typeof inputStartingValue !== 'string' || inputControl == null) {
+      return;
+    }
+    this.metricFiltersOptions[metricType].pipe(take(1)).subscribe(options => {
+      if (options == null || !options.length) {
+        return;
+      }
+      const firstMatch = options[0];
+      inputControl?.get(metricType)?.setValue(firstMatch);
+      this._cdr.detectChanges();
+    });
   }
 
   /**
