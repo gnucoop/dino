@@ -639,8 +639,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }
       });
 
-    this._form = combineLatest([this._formSchema, this.formChanges]).pipe(
-      map(([fschema, schemaChanges]) => {
+    this._form = combineLatest([
+      this._formSchema,
+      this.formChanges,
+      this._udm.getActiveUserData(),
+      this._ugm.getActiveUserGroups(),
+    ]).pipe(
+      map(([fschema, schemaChanges, activeUser, activeUserGroups]) => {
         if (schemaChanges) {
           return schemaChanges;
         }
@@ -654,7 +659,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         if (fschema.schema.choicesOrigins == null) {
           fschema.schema.choicesOrigins = [];
         }
-        return AjfFormSerializer.fromJson(fschema.schema);
+        const fdata = {dino_form_info: {activeUser, activeUserGroups}};
+        return AjfFormSerializer.fromJson(fschema.schema, fdata);
       }),
       shareReplay(1),
     );

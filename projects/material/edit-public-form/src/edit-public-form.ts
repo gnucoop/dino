@@ -48,7 +48,7 @@ import {
 import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription, combineLatest} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 const successMsg = 'Form submitted successfully!';
@@ -165,9 +165,12 @@ export class EditPublicForm implements OnDestroy {
     const anonymousUserData = userDataManagerInit.pipe(
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
-
-    this.form = this.formSchema.pipe(
-      map(fschema => {
+    
+    this.form = combineLatest([
+      this.formSchema,
+      anonymousUserData,
+    ]).pipe(
+      map(([fschema, activeUser]) => {
         if (fschema == null) {
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
             duration: 5000,
@@ -177,7 +180,8 @@ export class EditPublicForm implements OnDestroy {
         if (fschema.schema.choicesOrigins == null) {
           fschema.schema.choicesOrigins = [];
         }
-        return AjfFormSerializer.fromJson(fschema.schema, {});
+        const fdata = {dino_form_info: {activeUser, activeUserGroups: []}};
+        return AjfFormSerializer.fromJson(fschema.schema, fdata);
       }),
       shareReplay(1),
     );
