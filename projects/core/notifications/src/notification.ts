@@ -28,6 +28,15 @@ import {MigrationStrategies} from 'rxdb';
 export type NotificationType = 'info' | 'warning' | 'alert';
 
 /**
+ * The icon string identifiers for each notification type
+ */
+export const notificationIcons: {[key in NotificationType]: string} = {
+  info: 'info',
+  warning: 'notifications',
+  alert: 'warning',
+};
+
+/**
  * This model is used to store Notifications.
  * @title Notification
  */
