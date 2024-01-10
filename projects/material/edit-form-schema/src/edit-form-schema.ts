@@ -30,6 +30,7 @@ import {
   OnDestroy,
   OnInit,
   ViewEncapsulation,
+  isDevMode,
 } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
@@ -520,7 +521,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
         .create(lang as Lang)
         .pipe(take(1))
         .subscribe(lang => {
-          console.log(lang!.name + ' translation created successfully');
+          if (lang) {
+            this._ts.setTranslation(lang.schema, lang.name);
+            if (isDevMode()) {
+              console.log(lang!.name + ' translation created successfully');
+            }
+          }
         });
     }
     for (const lang of this._patchLangs) {
@@ -528,7 +534,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
         .patch(lang as Lang)
         .pipe(take(1))
         .subscribe(lang => {
-          console.log(lang!.name + ' translation updated successfully');
+          if (lang) {
+            this._ts.setTranslation(lang.schema, lang.name);
+            if (isDevMode()) {
+              console.log(lang!.name + ' translation updated successfully');
+            }
+          }
         });
     }
   }
