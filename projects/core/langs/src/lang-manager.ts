@@ -32,6 +32,7 @@ import {
   merge,
   Observable,
   of as obsOf,
+  throwError,
   zip,
 } from 'rxjs';
 import {
@@ -68,6 +69,7 @@ export class LangManager extends DataModelManager<Lang> {
   readonly currentLangName$: BehaviorSubject<string> = new BehaviorSubject<string>(
     this._config.defaultLanguage,
   );
+
   set currentLangName(langName: string) {
     this.currentLangName$.next(langName);
   }
@@ -77,7 +79,9 @@ export class LangManager extends DataModelManager<Lang> {
     this.newLang$.next(lang);
   }
 
-  // le langs storate su django
+  /**
+   * Le langs storate sul db dino
+   */
   readonly langsStored$ = new BehaviorSubject<Lang[]>([]);
   readonly langsShowed$: Observable<Lang[]> = combineLatest([
     this.list(),
@@ -102,8 +106,10 @@ export class LangManager extends DataModelManager<Lang> {
     }),
   );
 
-  // osservabile che torna il json visualizzato frutto della composizione del default +
-  // jsonScaricato + modifiche ancora non salvate
+  /**
+   * Osservabile che torna il json visualizzato frutto della composizione
+   * del default + jsonScaricato + modifiche ancora non salvate
+   */
   readonly currentLangShowed$: Observable<Lang> = combineLatest([
     this.langsShowed$,
     this.currentLangName$,
@@ -113,18 +119,24 @@ export class LangManager extends DataModelManager<Lang> {
     }),
   );
 
-  // lo schema caricato nella sezione update json per aggiornare una lang tramite file json
+  /**
+   * Lo schema caricato nella sezione update json per aggiornare una lang tramite file json
+   */
   private _currentLangUpdateSchema$: BehaviorSubject<Dic | null> = new BehaviorSubject<Dic | null>(
     null,
   );
+
   readonly currentLangUpdateSchema$: Observable<Dic> = (
     this._currentLangUpdateSchema$ as Observable<Dic>
   ).pipe(filter(l => l != null));
+
   set currentLangUpdateSchema(updateSchema: Dic) {
     this._currentLangUpdateSchema$.next(updateSchema);
   }
 
-  // lo schema salvato su django della lang corrente
+  /**
+   * Lo schema salvato sul db di dino della lang corrente
+   */
   readonly currentLangStored$: Observable<Lang> = this.currentLangName$.pipe(
     withLatestFrom(this.langsStored$),
     map(([langName, langsStored]) => {
@@ -133,15 +145,19 @@ export class LangManager extends DataModelManager<Lang> {
     }),
   );
 
-  // lo schema di default della lang corrente
+  /**
+   * Lo schema di default della lang corrente nel json della app
+   */
   readonly currentLangDefault$: Observable<Lang> = this.currentLangName$.pipe(
     map(langName => {
       return defaultLangs[langName];
     }),
   );
 
-  // tutti gli attributi presenti nel json di aggiornamento ma non presenti
-  // sullo schema salvato su django
+  /**
+   * Tutti gli attributi presenti nel json di aggiornamento ma non presenti
+   * sullo schema salvato su dino
+   */
   readonly currentDiffBetweenStoredJsonAndCurrentUpdates$: Observable<Dic | null> = combineLatest([
     this.currentLangUpdateSchema$,
     this.currentLangStored$,
@@ -155,8 +171,10 @@ export class LangManager extends DataModelManager<Lang> {
     }),
   );
 
-  // tutti gli attributi presenti nel json dia ggiornamento che modificano attributi
-  // dello schema salvato su django
+  /**
+   * Tutti gli attributi presenti nel json di aggiornamento che modificano attributi
+   * dello schema salvato su dino
+   */
   readonly currentModifiedBetweenStoredJsonAndCurrentUpdates$: Observable<Dic | null> =
     combineLatest([
       this.currentLangUpdateSchema$,
@@ -204,10 +222,12 @@ export class LangManager extends DataModelManager<Lang> {
         const res: {[key: string]: LangRow} = {};
         r.map((lang: Lang) => {
           Object.keys(lang.schema).forEach(key => {
-            if (!res[key]) {
-              res[key] = {key};
+            if (lang.schema[key] !== undefined) {
+              if (!res[key]) {
+                res[key] = {key};
+              }
+              res[key][lang.name] = lang.schema[key];
             }
-            res[key][lang.name] = lang.schema[key];
           });
         });
         return Object.keys(res).map(key => ({...emptyLangRow, ...res[key]} as LangRow));
@@ -252,6 +272,8 @@ export class LangManager extends DataModelManager<Lang> {
         }
       }),
     );
+
+    this._reloadLangsStoredEvt.emit();
 
     const saveLang = this.saveLangEvt.pipe(
       // creo due rami pipe se newLang è valorizzato ritorno newLang altrimenti
@@ -302,20 +324,39 @@ export class LangManager extends DataModelManager<Lang> {
   removeKey(key: string): Observable<string> {
     const apiCall: Observable<any>[] = [];
     this.langsStored$.value.forEach(lang => {
-      // se è presente l'id allora vuol dire che è una lang storata su django
-      if (lang.schema[key] !== 'undefined' && lang.id != null) {
-        delete lang.schema[key];
-        apiCall.push(this.patch(lang));
+      // se è presente l'id allora vuol dire che è una lang storata su dino
+      if (lang.schema[key] !== undefined && lang.id != null) {
+        const langSchema: {[key: string]: any} = {...lang.schema};
+        delete langSchema[key];
+        const delLang: Partial<Lang> & {id: string} = {
+          id: lang.id,
+          schema: langSchema,
+        };
+
+        apiCall.push(
+          this.patch(delLang).pipe(
+            catchError(err => {
+              return obsOf(null);
+            }),
+            take(1),
+          ),
+        );
       }
     });
     if (apiCall.length > 0) {
       return forkJoin(apiCall).pipe(
         map((lngs: Lang[]) => {
+          lngs = lngs.filter(l => l !== null);
           const msg =
             lngs.length > 0
               ? this._ts.translate("key: '{{key}}' removed", {key})
               : this._ts.translate('error try later');
           lngs.forEach(l => {
+            if (dinoTranslations[l.name] != null) {
+              // Reload clean default json translations
+              this._ts.setTranslation(dinoTranslations[l.name], l.name, {merge: false});
+            }
+            // Add clean dino db translations
             this._ts.setTranslation(l.schema, l.name);
           });
           return msg;
@@ -427,29 +468,33 @@ export class LangManager extends DataModelManager<Lang> {
     this.langRows$.pipe(take(1)).subscribe();
   }
 
-  private _modified(current: Dic, update: Dic): Dic {
+  private _modified(current: Dic, update: Dic | null): Dic {
     const res: Dic = {} as Dic;
-    const currentKeys = Object.keys(current);
-    const updateKeys = Object.keys(update);
-    const modifiedKeys = updateKeys.filter(key => currentKeys.indexOf(key) > -1);
+    if (update) {
+      const currentKeys = Object.keys(current);
+      const updateKeys = Object.keys(update);
+      const modifiedKeys = updateKeys.filter(key => currentKeys.indexOf(key) > -1);
 
-    modifiedKeys.forEach((key: string) => {
-      if (current[key] !== update[key]) {
-        res[key] = update[key];
-      }
-    });
+      modifiedKeys.forEach((key: string) => {
+        if (current[key] !== update[key]) {
+          res[key] = update[key];
+        }
+      });
+    }
     return res as Dic;
   }
 
-  private _diff(current: Dic, update: Dic): Dic {
+  private _diff(current: Dic, update: Dic | null): Dic {
     const res: Dic = {} as Dic;
-    const currentKeys = Object.keys(current);
-    const updateKeys = Object.keys(update);
-    const diffKeys = updateKeys.filter(key => currentKeys.indexOf(key) === -1);
+    if (update) {
+      const currentKeys = Object.keys(current);
+      const updateKeys = Object.keys(update);
+      const diffKeys = updateKeys.filter(key => currentKeys.indexOf(key) === -1);
 
-    diffKeys.forEach(key => {
-      res[key] = update[key];
-    });
+      diffKeys.forEach(key => {
+        res[key] = update[key];
+      });
+    }
     return res as Dic;
   }
 
