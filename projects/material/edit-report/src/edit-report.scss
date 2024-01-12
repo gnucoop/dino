@@ -73,9 +73,13 @@ dino-edit-report {
   }
   .dino-edit-report-print {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
     padding: 8px 0;
+    span {
+      flex-grow: 1;
+    }
     button {
       margin-left: 8px;
       min-width: 50px;

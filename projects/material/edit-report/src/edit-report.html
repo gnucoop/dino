@@ -28,7 +28,13 @@
             <ng-container *ngIf="reportSchema|async as repschema">
               <ng-container *ngIf="reportData|async as repData">
                 <div class="dino-edit-report-print">
-                  Export as:
+                  <span *ngIf="(reportSchema|async)?.name === 'Report Bilancio Sociale'">
+                    <button color="primary" mat-raised-button (click)="downloadSocialBalance()">
+                      Scarica il bilancio sociale
+                    </button>
+                    &nbsp;{{gptPromptStatus}}
+                  </span>
+                  {{'Export as:'|transloco}}
                   <button color="primary" mat-raised-button (click)="printReport()">pdf</button>
                   <button color="primary" mat-raised-button (click)="exportXlsx()">xlsx</button>
                   <button color="primary" mat-raised-button (click)="exportDocx()">docx</button>

@@ -20,7 +20,11 @@
  *
  */
 import {
+  AjfColumnWidgetInstance,
   AjfReportInstance,
+  AjfTableWidgetInstance,
+  AjfTextWidgetInstance,
+  AjfWidgetType,
   createReportInstance,
   downloadReportDoc,
   exportReportXlsx,
@@ -31,6 +35,7 @@ import {deepCopy} from '@ajf/core/utils';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   isDevMode,
@@ -41,6 +46,7 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
+import {AuthService} from '@dino/core/auth';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
@@ -224,6 +230,14 @@ export class EditReport implements AfterViewInit {
   private _reportMetricsSelector: Observable<FormMetricSelector | null> = obsOf(null);
 
   /**
+   * Optional inputs from the dinoapp environment that enable downloading the social balance.
+   */
+  @Input() gptCompletionUrl?: string;
+  @Input() graphqlUrl?: string;
+
+  gptPromptStatus = '';
+
+  /**
    * True if the Report is in readonly mode.
    * When a Report id is passed by the input, the report is automatically
    * displayed in readonly mode.
@@ -233,6 +247,8 @@ export class EditReport implements AfterViewInit {
   constructor(
     readonly metricsService: MetricsService,
     readonly snackbar: MatSnackBar,
+    private _auth: AuthService,
+    private _cdr: ChangeDetectorRef,
     private _translateService: TranslocoService,
     private _route: ActivatedRoute,
     private _router: Router,
@@ -547,6 +563,77 @@ export class EditReport implements AfterViewInit {
     if (this._currentReportInstance != null) {
       downloadReportDoc(this._currentReportInstance);
     }
+  }
+
+  /**
+   * Download the editable social balance
+   */
+  async downloadSocialBalance() {
+    if (this._currentReportInstance == null || this.gptPromptStatus !== '') {
+      return;
+    }
+    if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
+      console.warn('gptCompletionUrl or graphqlUrl not provided');
+      return;
+    }
+    const gptPropmtUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+
+    const cols = this._currentReportInstance.content!.content;
+    if (cols.length !== 1 || cols[0].widgetType !== AjfWidgetType.Column) {
+      return;
+    }
+    const widgets = [...(cols[0] as AjfColumnWidgetInstance).content];
+
+    // Replace the prompt table widgets with the AI-generated text
+    let promptNum = 1;
+    for (let i = 0; i < widgets.length; i++) {
+      const w = widgets[i];
+      if (w.widgetType !== AjfWidgetType.DynamicTable) {
+        continue;
+      }
+      const data = (w as AjfTableWidgetInstance).data;
+      if (data.length !== 2 || !(data[0][0].value as string).startsWith('Prompt')) {
+        continue;
+      }
+      const prompt = data[1][0].value as string;
+
+      this._setPromptStatus(`Generazione prompt ${promptNum}...`);
+      promptNum++;
+      const fd = new FormData();
+      fd.append('graphqlUrl', this.graphqlUrl);
+      fd.append('authToken', this._auth.getAuthToken() || '');
+      fd.append('prompt', prompt);
+      let text: string;
+      try {
+        const resp = await fetch(gptPropmtUrl, {method: 'POST', mode: 'cors', body: fd});
+        text = await resp.text();
+        if (!resp.ok) {
+          throw new Error(text);
+        }
+      } catch (err: any) {
+        console.error(err.message);
+        this._setPromptStatus('Gpt error, check the console');
+        setTimeout(() => this._setPromptStatus(''), 4000);
+        return;
+      }
+
+      const textWidget: Partial<AjfTextWidgetInstance> = {
+        widgetType: AjfWidgetType.Text,
+        htmlText: text,
+      }
+      textWidget.widget = textWidget as any;
+      widgets[i] = textWidget as AjfTextWidgetInstance;
+    }
+
+    const report = deepCopy(this._currentReportInstance);
+    report.content.content[0].content = widgets;
+    downloadReportDoc(report);
+    this._setPromptStatus('');
+  }
+
+  private _setPromptStatus(s: string) {
+    this.gptPromptStatus = s;
+    this._cdr.markForCheck();
   }
 
   /**
