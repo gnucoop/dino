@@ -177,14 +177,16 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
           return false;
         }
         let isValid = true;
-        const fid = this.filterItemData;
-        const formKeys = Object.keys(formValue);
-        for (let key of formKeys) {
-          fid.value = formValue[key];
-          fid.operator = operatorValue;
-          if (!this._fs.checkValidation(fid, this.widgetData?.validationConditions)) {
-            isValid = false;
-            break;
+        if (this.widgetData.validationConditions) {
+          const fid = this.filterItemData;
+          const formKeys = Object.keys(formValue);
+          for (let key of formKeys) {
+            fid.value = formValue[key];
+            fid.operator = operatorValue;
+            if (!this._fs.checkValidation(fid, this.widgetData?.validationConditions)) {
+              isValid = false;
+              break;
+            }
           }
         }
         return isValid;
@@ -283,7 +285,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
       form: form,
       operator: filterItem.operator,
       active: false,
-      validationConditions: filterItem.validation,
+      validationConditions: undefined,
     };
   }
 
