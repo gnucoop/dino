@@ -120,7 +120,7 @@ export class JWTInterceptor implements HttpInterceptor {
 
   /**
    * Intercepts http requests from angular http client.
-   * If the response is a status 401 'Unauthorized', and is not a Login request,
+   * If the response is a status 401 'Unauthorized', and is not a Login or Signup request,
    * it handles it by emitting a refreshEvent.
    * @param request the Http request.
    * @param next the request handler.
@@ -155,6 +155,11 @@ export class JWTInterceptor implements HttpInterceptor {
       return true;
     }
     if (request.url.includes('api/login') || request.url.includes('instances')) {
+      return true;
+    }
+    if (request.url.includes('/signup/email-password')) {
+      // Signup error, like:
+      // {"status": 400, "message": "\"email\" must be a valid email", "error": "invalid-request"}
       return true;
     }
     return false;
