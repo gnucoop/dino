@@ -32,7 +32,6 @@ import {
   merge,
   Observable,
   of as obsOf,
-  throwError,
   zip,
 } from 'rxjs';
 import {
@@ -335,7 +334,7 @@ export class LangManager extends DataModelManager<Lang> {
 
         apiCall.push(
           this.patch(delLang).pipe(
-            catchError(err => {
+            catchError(() => {
               return obsOf(null);
             }),
             take(1),
