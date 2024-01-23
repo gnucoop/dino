@@ -678,25 +678,31 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       }),
     );
 
-    this._formMetricsSelector
-      .pipe(
+    combineLatest([
+      this._rendererService.formGroup,
+      this._udm.getActiveUserData(),
+      this._ugm.getActiveUserGroups(),
+      this._formMetricsSelector.pipe(
         switchMap(fsm =>
           fsm != null
             ? fsm.formDate.valueChanges.pipe(startWith(fsm != null ? fsm.formDate.value : null))
             : obsOf(null),
         ),
-        withLatestFrom(this._rendererService.formGroup),
-        takeUntil(this._mainUnsubscribe),
-      )
-      .subscribe(([frDate, frGroup]) => {
+      ),
+    ])
+      .pipe(takeUntil(this._mainUnsubscribe))
+      .subscribe(([frGroup, activeUser, activeUserGroups, frDate]) => {
         if (frGroup != null && frDate != null && frDate.created_at != null) {
           const dinoFormInfo = {
+            activeUser,
+            activeUserGroups,
             createdAt: frDate.created_at,
           };
           this._extraFormControls['dino_form_info'] = dinoFormInfo;
           this._setNewControlsInForm(frGroup, this._extraFormControls);
         }
-      });
+      },
+    );
 
     this._uniqueMetricsSetAlreadyExists = combineLatest([
       this._formSchema,
