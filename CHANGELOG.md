@@ -1,3 +1,18 @@
+<a name="15.2.8"></a>
+# 15.2.8 "golden-bass" (2024-01-23)
+### Bug Fixes
+* **core/auth:** chnage interceptor for signup request ([dacd36b](https://bitbucket.org/gnucoop/dino/commits/dacd36b0c70a9f9e4ebe00b78010ba3622a3bdad))
+* **core/langs:** delete key fixed ([41f2ed4](https://bitbucket.org/gnucoop/dino/commits/41f2ed401731f2edd9784149fd2cbbe9ef24ed6c))
+* **material/create-form:** Fixed a bug causing saveDraft in create form not to close the component and return to forms list. ([e6b0968](https://bitbucket.org/gnucoop/dino/commits/e6b0968c0c1306c999e4ee36e45b04420d4f2b3e))
+* **material/edit-form-schema:** load new translations imported with a schema ([4f68f6f](https://bitbucket.org/gnucoop/dino/commits/4f68f6fca86deb630293c05abec476a3a1d8584b))
+* **material/search-filters-widget:** remove ajf validation in filters widget ([8764637](https://bitbucket.org/gnucoop/dino/commits/8764637f141829f64e48ed152aad2cdf862a36e0))
+* **multiple:** CaptureErrorMessage errors are now stringified. ([012cb85](https://bitbucket.org/gnucoop/dino/commits/012cb85b04734459703b3acf20308260dfc7db0e))
+### Features
+* **core/notifications:** add default material icon names for notifications ([8269c34](https://bitbucket.org/gnucoop/dino/commits/8269c3404e51c62504a08d12007676a95e13f4eb))
+* **material/reports:** social balance download ([3382782](https://bitbucket.org/gnucoop/dino/commits/3382782aa55164b07dca0641477c0cb0157b2ee4))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.7"></a>
 # 15.2.7 "applicable-caterpillar" (2023-12-05)
 ### Bug Fixes
