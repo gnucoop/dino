@@ -52,9 +52,9 @@ export interface ActionTriggerData<T = {}> {
   newValue?: any;
 
   /**
-   * The Edited or Created RxDocument
+   * The Edited or Created RxDocument.
    */
-  doc?: RxDocument<T>;
+  doc?: RxDocument<T> | T;
 
   /**
    * Any additional info provided

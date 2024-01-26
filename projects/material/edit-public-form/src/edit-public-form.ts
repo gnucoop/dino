@@ -34,11 +34,12 @@ import {
   Input,
   isDevMode,
   OnDestroy,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {InsertModel} from '@dino/core/data';
+import {ActionTrigger, ActionTriggerData, InsertModel} from '@dino/core/data';
 import {
   FormData,
   FormSchema,
@@ -108,6 +109,13 @@ export class EditPublicForm implements OnDestroy {
    */
   private _saveValidFormSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<FormData>> = new EventEmitter<
+    ActionTrigger<FormData>
+  >();
+
   constructor(
     route: ActivatedRoute,
     fsm: OnlineFormSchemaManager,
@@ -165,11 +173,8 @@ export class EditPublicForm implements OnDestroy {
     const anonymousUserData = userDataManagerInit.pipe(
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
-    
-    this.form = combineLatest([
-      this.formSchema,
-      anonymousUserData,
-    ]).pipe(
+
+    this.form = combineLatest([this.formSchema, anonymousUserData]).pipe(
       map(([fschema, activeUser]) => {
         if (fschema == null) {
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
@@ -213,6 +218,14 @@ export class EditPublicForm implements OnDestroy {
       )
       .subscribe(res => {
         if (res != null) {
+          const trigData: ActionTriggerData<FormData> = {doc: res};
+          const trigger: ActionTrigger<FormData> = {
+            name: 'Form Data Created',
+            triggerType: 'on_form_data_creation',
+            triggerData: trigData,
+          };
+          this.emitActionTrigger.emit(trigger);
+
           snackBar
             .open(ts.translate(successMsg), ts.translate(okBtn), {duration: 10000})
             .afterDismissed()

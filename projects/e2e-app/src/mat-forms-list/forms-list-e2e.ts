@@ -8,7 +8,7 @@ import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/lis
 import {LogManager} from '@dino/core/logs';
 import {UserDataManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
-import {RxDocument} from 'rxdb';
+import {RxDocument, isRxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 import {additionalConfig, optionalModulesConfig} from '../mockconfig';
@@ -376,7 +376,9 @@ export class MatFormsListE2E {
         trigger.triggerType === 'on_status_change'
           ? {attributes: ['form_status_ref_id'], dataAttributes: []}
           : this._fdm.compareFormDatas(oldDoc, newDoc, ['form_status_ref_id']);
-      const populatedNewDoc: FormData = this.formDataManager.populateFormData(newDoc);
+      const populatedNewDoc: FormData = isRxDocument(newDoc)
+        ? this.formDataManager.populateFormData(newDoc as RxDocument<FormData>)
+        : (newDoc as FormData);
       combineLatest([
         this.formDataManager.generatePopulatedFormObservable(populatedNewDoc),
         this._udm.getActiveUserData(),
