@@ -769,13 +769,17 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       if (metricObj.metricOptions.length === 1 && !this._hasOptionalMetrics.value) {
         const firstMetric = metricObj.metricOptions[0];
         const formControl = this.formMetrics.get(firstMetric.collection.name);
-          if (formControl != null) {
-            formControl.setValue({
-              option: firstMetric,
-              secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
-              metricType: firstMetric.collection.name,
-            });
-          }
+        const selectedMetricId =
+          this.formMetrics && this.formMetrics.value[firstMetric.collection.name]
+            ? this.formMetrics.value[firstMetric.collection.name].option.id
+            : null;
+        if (formControl != null && selectedMetricId != firstMetric.id) {
+          formControl.setValue({
+            option: firstMetric,
+            secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
+            metricType: firstMetric.collection.name,
+          });
+        }
       }
     });
   }
