@@ -366,7 +366,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       {
         fieldName: 'name',
         hint: this._ts.translate(`${this.metricName} Name`),
-        placeholder: this._ts.translate('Name'),
+        placeholder: this._ts.translate(`${this.metricName} Name`),
         value: currentMetricItem['name'] ?? '',
       },
       {

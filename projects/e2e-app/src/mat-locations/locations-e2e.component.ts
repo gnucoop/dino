@@ -12,7 +12,7 @@ export class MatLocationsE2E {
   readonly manager: LocationManager;
   readonly headers: ListHeader<Location>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name', displayed: true, sortable: true},
+    {column: 'name', label: 'Location Name', displayed: true, sortable: true},
     {column: 'parent_name', label: 'Parent Location', displayed: true},
     {column: 'coordinates', label: 'Coordinates', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},

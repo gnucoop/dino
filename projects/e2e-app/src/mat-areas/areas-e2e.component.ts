@@ -12,7 +12,7 @@ export class MatAreasE2E {
   readonly manager: AreaManager;
   readonly headers: ListHeader<Area>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'name', label: 'Name', displayed: true, sortable: true},
+    {column: 'name', label: 'Area Name', displayed: true, sortable: true},
     {column: 'parent_name', label: 'Parent Area', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
     {column: 'metric_data', label: 'Additional Attributes', displayed: false},
