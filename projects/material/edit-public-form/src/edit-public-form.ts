@@ -53,8 +53,9 @@ import {BehaviorSubject, Observable, Subscription, combineLatest} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 const successMsg = 'Form submitted successfully!';
-const errorMsg = 'Unable to save form. Please try again later.';
-const okBtn = 'OK';
+const redoBtn = 'FILL OUT ANOTHER ONE'
+const errorMsg = 'Unable to save form.';
+const retryBtn = 'TRY AGAIN';
 
 @Component({
   selector: 'dino-edit-public-form',
@@ -225,10 +226,11 @@ export class EditPublicForm implements OnDestroy {
             triggerData: trigData,
           };
           this.emitActionTrigger.emit(trigger);
+          this.submitted.next(true);
 
           snackBar
-            .open(ts.translate(successMsg), ts.translate(okBtn), {duration: 10000})
-            .afterDismissed()
+            .open(ts.translate(successMsg), ts.translate(redoBtn), {duration: 15000})
+            .onAction()
             .pipe(
               tap(() => {
                 this.windowReload();
@@ -236,11 +238,10 @@ export class EditPublicForm implements OnDestroy {
               take(1),
             )
             .subscribe();
-          this.submitted.next(true);
         } else {
           snackBar
-            .open(ts.translate(errorMsg), ts.translate(okBtn), {duration: 10000})
-            .afterDismissed()
+            .open(ts.translate(errorMsg), ts.translate(retryBtn), {duration: 15000})
+            .onAction()
             .pipe(
               tap(() => {
                 this.windowReload();
