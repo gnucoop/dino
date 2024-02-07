@@ -38,4 +38,5 @@ export * from './form-data-manager';
 export * from './form-status-manager';
 export * from './online-form-data-manager';
 export * from './online-form-schema-manager';
+export * from './online-form-status-manager';
 export * from './populated-with-status';

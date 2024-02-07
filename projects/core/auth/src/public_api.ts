@@ -29,6 +29,7 @@ export * from './auth-service';
 export * from './auth-utils';
 export * from './b64-conversion-functions';
 export * from './credentials';
+export * from './external-auth-type';
 export * from './jwt-interceptor';
 export * from './jwt-token';
 export * from './login';

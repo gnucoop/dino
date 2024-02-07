@@ -21,8 +21,8 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
+import {ExternalAuthProvider} from '@dino/core/auth';
 import {NhostClient} from '@nhost/nhost-js';
-import {ExternalAuthProvider} from '@dino/core/auth/src/external-auth-type';
 
 /**
  * A basic material Login component.
@@ -48,7 +48,10 @@ export class LoginOauth {
   /**
    * OAuth providers names mapped object
    */
-  oAuthProvidersNames: {[Property in ExternalAuthProvider]: string} = {'azuread': 'Microsoft', 'google': 'Google'};
+  oAuthProvidersNames: {[Property in ExternalAuthProvider]: string} = {
+    'azuread': 'Microsoft',
+    'google': 'Google',
+  };
 
   constructor() {}
 

@@ -33,14 +33,13 @@ import {
 import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService, LoginComponent} from '@dino/core/auth';
+import {AuthService, ExternalAuthProvider, LoginComponent} from '@dino/core/auth';
 import {Observable, Subscription, of as obsOf} from 'rxjs';
 import {map, switchMap, take, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
 import {NhostClient} from '@nhost/nhost-js';
 import {OnlineUserDataManager, UserData} from '@dino/core/users';
 import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
-import {ExternalAuthProvider} from '@dino/core/auth/src/external-auth-type';
 
 /**
  * A basic material Login component.
@@ -107,7 +106,9 @@ export class Login extends LoginComponent implements OnDestroy {
   /**
    * Event emitted as an Action hook
    */
-  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<UserData>> = new EventEmitter<ActionTrigger<UserData>>();
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<UserData>> = new EventEmitter<
+    ActionTrigger<UserData>
+  >();
 
   constructor(
     authService: AuthService,
@@ -171,9 +172,13 @@ export class Login extends LoginComponent implements OnDestroy {
                   },
                   error => {
                     console.log('Promise rejected with ' + JSON.stringify(error));
-                    snackBar.open(`There was a problem during authentication process.`, 'AUTHENTICATION ERROR', {
-                      duration: 15000,
-                    });
+                    snackBar.open(
+                      `There was a problem during authentication process.`,
+                      'AUTHENTICATION ERROR',
+                      {
+                        duration: 15000,
+                      },
+                    );
                   },
                 );
               }
@@ -190,9 +195,21 @@ export class Login extends LoginComponent implements OnDestroy {
    * @param token
    * @param authUser
    */
-  loginExternalUser(session: any, token: string | undefined, authUser: any, authService: AuthService, router: Router) {
+  loginExternalUser(
+    session: any,
+    token: string | undefined,
+    authUser: any,
+    authService: AuthService,
+    router: Router,
+  ) {
     if (authUser && session && token && session.user && session.user.email) {
-      authService.storeAllAuthenticationInfo(session, token, undefined, authUser, this.externalAuthAvailable != undefined);
+      authService.storeAllAuthenticationInfo(
+        session,
+        token,
+        undefined,
+        authUser,
+        this.externalAuthAvailable != undefined,
+      );
       this._oudm
         .init()
         .pipe(

@@ -46,8 +46,8 @@ import {
   FormStatus,
   OnlineFormDataManager,
   OnlineFormSchemaManager,
+  OnlineFormStatusManager,
 } from '@dino/core/forms';
-import {OnlineFormStatusManager} from '@dino/core/forms/src/online-form-status-manager';
 import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
