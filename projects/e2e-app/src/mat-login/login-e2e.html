@@ -1,6 +1,7 @@
 <dino-login
   [postLogin]="postLogin"
   [privacyPolicy]="policy"
+  (emitActionTrigger)="processActionTrigger($event)"
   [logoImagePath]="'https://e-laics.gnucoop.com/wp-content/uploads/2021/01/cropped-logognu-nonprofit-e1613290012970.png'"
 >
   <ng-container additionalContent>

@@ -15,6 +15,11 @@ const routes: Routes = [
     component: MatLoginE2E,
     data: {syncError: true},
   },
+  {
+    path: 'external_auth',
+    component: MatLoginE2E,
+    data: {isExternalAuth: true},
+  },
 ];
 
 @NgModule({

@@ -52,6 +52,11 @@ export const E2E_APP_ROUTES: Routes = [
         data: {syncError: true},
       },
       {
+        path: 'external_auth',
+        component: MatLoginE2E,
+        data: {isExternalAuth: true},
+      },
+      {
         path: '',
         component: MatLoginE2E,
       },

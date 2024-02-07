@@ -8,6 +8,7 @@ import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {additionalConfig} from '../mockconfig';
+import {ActionTrigger} from '@dino/core/data';
 
 @Component({
   selector: 'app-login-e2e',
@@ -106,11 +107,17 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
     this._router.navigate(['dashboard']);
   }
 
-  postSignup(userData: UserData | null) {
-    console.log(userData);
+  postSignup(userData: any) {
+    console.log('postSignup', userData);
   }
 
   setDarkTheme(evt: boolean) {
     this.ts.setDarkMode(evt);
+  }
+
+  processActionTrigger<T>(trigger: ActionTrigger<T>) {
+    if (trigger.triggerData && trigger.triggerData.doc) {
+      this.postSignup(trigger.triggerData.doc);
+    }
   }
 }
