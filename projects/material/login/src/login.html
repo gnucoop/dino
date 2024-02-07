@@ -5,16 +5,11 @@
     </div>
   </div>
   <ng-content select="[dropdownSelect]"></ng-content>
-  <div
-    class="dino-login-form-container"
-    *ngIf="loginFormVisible === undefined || (loginFormVisible|async) === true"
-  >
+  <div class="dino-login-form-container" *ngIf="loginFormVisible === undefined || (loginFormVisible|async) === true">
     <ng-container *ngIf="(showSignupForm|async) && signupForm; else showLogin">
       <form [class.dino-error]="loginError" [formGroup]="signupForm">
         <mat-form-field>
-          <mat-label
-            >{{fullNameLabel ? (fullNameLabel|transloco) : ('Full Name'|transloco)}}</mat-label
-          >
+          <mat-label>{{fullNameLabel ? (fullNameLabel|transloco) : ('Full Name'|transloco)}}</mat-label>
           <input
             matInput
             formControlName="full_name"
@@ -62,17 +57,13 @@
             aria-label="confirm_password"
             [placeholder]="'Confirm Password'|transloco"
           />
-          <mat-error>
-            {{showValErrors(signupForm.get('confirm_password'), 'Confirm Password')}}
-          </mat-error>
+          <mat-error> {{showValErrors(signupForm.get('confirm_password'), 'Confirm Password')}} </mat-error>
         </mat-form-field>
 
         <div *ngIf="privacyPolicy" class="dino-policy-field">
           <div class="dino-policy-text">{{privacyPolicy}}</div>
           <div class="dino-policy-checkbox-group">
-            <div class="dino-policy-checkbox-label">
-              {{'I accept the terms and conditions'|transloco}}
-            </div>
+            <div class="dino-policy-checkbox-label">{{'I accept the terms and conditions'|transloco}}</div>
             <div class="dino-policy-checkbox-input">
               <input
                 formControlName="policy"
@@ -107,18 +98,12 @@
         </mat-progress-bar>
       </form>
 
-      <button mat-button color="primary" (click)="toggleSignupForm(false)">
-        {{'Already have an account? Login'|transloco}}
-      </button>
+      <button mat-button color="primary" (click)="toggleSignupForm(false)">{{'Already have an account? Login'|transloco}}</button>
     </ng-container>
 
     <ng-template #showLogin>
       <div *ngIf="(showResetPasswordForm|async) && resetPassForm">
-        <form
-          class="dino-change-pass-form"
-          [class.dino-error]="resetPassForm"
-          [formGroup]="resetPassForm"
-        >
+        <form class="dino-change-pass-form" [class.dino-error]="resetPassForm" [formGroup]="resetPassForm">
           <mat-form-field>
             <mat-label>Email</mat-label>
             <input
@@ -201,13 +186,11 @@
           </mat-progress-bar>
         </form>
 
-        <button
-          class="dino-login-action-btn"
-          *ngIf="signupAvailable"
-          mat-button
-          color="primary"
-          (click)="toggleSignupForm(true)"
-        >
+        <div *ngIf="externalAuthAvailable">
+          <dino-login-oauth [externalOAuthProviders]="externalAuthAvailable" [nhost]="nhost"></dino-login-oauth>
+        </div>
+
+        <button class="dino-login-action-btn" *ngIf="signupAvailable" mat-button color="primary" (click)="toggleSignupForm(true)">
           {{'New User? Create new account'|transloco}}
         </button>
         <button

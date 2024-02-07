@@ -1,0 +1,38 @@
+dino-login-oauth {
+  .dino-oauth-container {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    .dino-oauth-button {
+      flex: 1 0 auto;
+      margin: 10px;
+      padding: 25px;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      align-items: center;
+      align-content: center;
+      .dino-oauth-logo-container {
+        display: inline-flex;
+        flex: 1 0 auto;
+        justify-self: flex-start;
+        padding: 10px;
+        .dino-oauth-logo {
+          align-self: center;
+        }
+      }
+      .dino-oauth-text-container {
+        display: inline-flex;
+        flex: 1 0 auto;
+        justify-self: flex-end;
+        padding: 10px;
+        .dino-oauth-text {
+          align-self: center;
+          position: relative;
+          bottom: 5px;
+          font-weight: 100;
+        }
+      }
+    }
+  }
+}

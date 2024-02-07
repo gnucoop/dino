@@ -197,9 +197,6 @@ export class AuthService {
               throw new Error(`${res['error']} - ${res['message']}`);
             }
             const session = res['session'];
-            this.authenticated.next({auth: true, evt: 'login'});
-            this._storeAuthToken(session?.accessToken ?? res.token);
-            this._storeRefreshToken(session?.refreshToken ?? res.refreshToken);
             let userInfo =
               session && session[DEFAULT_AUTH_OPTIONS.userAuthInfo]
                 ? session[DEFAULT_AUTH_OPTIONS.userAuthInfo]
@@ -208,12 +205,45 @@ export class AuthService {
               const userAuthInfo = session[config.userAuthInfo] ?? res[config.userAuthInfo];
               userInfo = userAuthInfo;
             }
-            this._storeUserInfo(userInfo);
+            this.storeAllAuthenticationInfo(session, res.token, res.refreshToken, userInfo);
           }),
           mapTo(true),
         );
       }),
     );
+  }
+
+  /**
+   * Store all authentication info: the authentication token and the logged in user info.
+   * @param session
+   * @param token
+   * @param refreshToken
+   * @param userInfo
+   * @param clearNhostTokens If true, all nhost tokens and tokens info are removed from localstorage.
+   */
+  storeAllAuthenticationInfo(
+    session: any,
+    token: string | undefined,
+    refreshToken: string | undefined,
+    userInfo: any | null,
+    clearNhostTokens?: boolean,
+  ): void {
+    this.authenticated.next({auth: true, evt: 'login'});
+    this._storeAuthToken(session?.accessToken ?? token);
+    this._storeRefreshToken(session?.refreshToken ?? refreshToken);
+    this._storeUserInfo(userInfo);
+    if (clearNhostTokens) {
+      this.clearNhostTokens();
+    }
+  }
+
+  /**
+   * Removes all nhost tokens from localstorage.
+   */
+  clearNhostTokens() {
+    localStorage.removeItem('nhostRefreshTokenExpiresAt');
+    localStorage.removeItem('nhostRefreshToken');
+    localStorage.removeItem('nhostRefreshTokenId');
   }
 
   /**

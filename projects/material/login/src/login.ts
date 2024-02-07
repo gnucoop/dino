@@ -24,17 +24,23 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, LoginComponent} from '@dino/core/auth';
-import {Observable, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, Subscription, of as obsOf} from 'rxjs';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
+import {NhostClient} from '@nhost/nhost-js';
+import {OnlineUserDataManager, UserData} from '@dino/core/users';
+import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
+import {ExternalAuthProvider} from '@dino/core/auth/src/external-auth-type';
 
 /**
  * A basic material Login component.
@@ -47,6 +53,7 @@ import {TranslocoService} from '@ngneat/transloco';
   encapsulation: ViewEncapsulation.None,
 })
 export class Login extends LoginComponent implements OnDestroy {
+  nhost: NhostClient | null = null;
   /**
    * The label text displayed for the "Full Name" signup form field.
    */
@@ -60,6 +67,11 @@ export class Login extends LoginComponent implements OnDestroy {
    * If true, users can change their password.
    */
   readonly resetPassAvailable: boolean | undefined;
+
+  /**
+   * If true, users can signin with external authentication (Azure/Google).
+   */
+  readonly externalAuthAvailable: ExternalAuthProvider[] | undefined;
 
   /**
    * The Login page logo image path/url.
@@ -92,6 +104,11 @@ export class Login extends LoginComponent implements OnDestroy {
    */
   private _expiredSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Event emitted as an Action hook
+   */
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<UserData>> = new EventEmitter<ActionTrigger<UserData>>();
+
   constructor(
     authService: AuthService,
     router: Router,
@@ -99,12 +116,23 @@ export class Login extends LoginComponent implements OnDestroy {
     cdr: ChangeDetectorRef,
     snackBar: MatSnackBar,
     ts: TranslocoService,
+    private _oudm: OnlineUserDataManager,
     private _route: ActivatedRoute,
   ) {
     super(authService, router, fb, cdr, snackBar, ts);
 
     this.signupAvailable = authService.authConfig.signUp;
     this.resetPassAvailable = authService.authConfig.resetPassword;
+    this.externalAuthAvailable = authService.authConfig.externalAuthAvailable;
+
+    if (this.externalAuthAvailable) {
+      this.nhost = new NhostClient({
+        authUrl: authService.authConfig.host,
+        graphqlUrl: '_',
+        storageUrl: '_',
+        functionsUrl: '_',
+      });
+    }
 
     if (this._route.data) {
       this._expiredSub = this._route.data
@@ -128,10 +156,90 @@ export class Login extends LoginComponent implements OnDestroy {
                   {duration: 15000},
                 );
               }
+              if (data['isExternalAuth'] && this.externalAuthAvailable && this.nhost != null) {
+                snackBar.open(`Loading external authentication...`, 'AUTHENTICATION', {
+                  duration: 3000,
+                });
+                this.nhost.auth.isAuthenticatedAsync().then(
+                  _ => {
+                    if (this.nhost != null) {
+                      const session = this.nhost.auth.getSession();
+                      const token = this.nhost.auth.getAccessToken();
+                      const authUser = this.nhost.auth.getUser();
+                      this.loginExternalUser(session, token, authUser, authService, router);
+                    }
+                  },
+                  error => {
+                    console.log('Promise rejected with ' + JSON.stringify(error));
+                    snackBar.open(`There was a problem during authentication process.`, 'AUTHENTICATION ERROR', {
+                      duration: 15000,
+                    });
+                  },
+                );
+              }
             }
           }),
         )
         .subscribe();
+    }
+  }
+
+  /**
+   * Login user with external authentication
+   * @param session
+   * @param token
+   * @param authUser
+   */
+  loginExternalUser(session: any, token: string | undefined, authUser: any, authService: AuthService, router: Router) {
+    if (authUser && session && token && session.user && session.user.email) {
+      authService.storeAllAuthenticationInfo(session, token, undefined, authUser, this.externalAuthAvailable != undefined);
+      this._oudm
+        .init()
+        .pipe(
+          switchMap(userDataMngInit => {
+            if (userDataMngInit) {
+              return this._oudm
+                .query({
+                  selector: {user_auth_ref_id: {$eq: session.user.id}, is_deleted: {$neq: true}},
+                })
+                .pipe(take(1));
+            } else {
+              return obsOf(null);
+            }
+          }),
+          switchMap(ud => {
+            if (ud == null || ud.length === 0) {
+              const newUser = session.user;
+              return this._oudm
+                .create({
+                  full_name: newUser.displayName,
+                  email: newUser.email,
+                  user_group_ids: [],
+                  user_auth_ref_id: newUser.id,
+                  created_at: new Date().toISOString(),
+                })
+                .pipe(
+                  tap(usr => {
+                    if (usr) {
+                      const trigData: ActionTriggerData<UserData> = {doc: usr};
+                      const trigger: ActionTrigger<UserData> = {
+                        name: 'User Signup',
+                        triggerType: 'on_signup',
+                        triggerData: trigData,
+                      };
+                      this.emitActionTrigger.emit(trigger);
+                    }
+                  }),
+                );
+            } else {
+              return obsOf(ud[0]);
+            }
+          }),
+          take(1),
+        )
+        .subscribe(_ => {
+          router.navigateByUrl('/', {replaceUrl: true});
+        });
     }
   }
 

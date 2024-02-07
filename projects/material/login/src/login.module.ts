@@ -32,6 +32,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import {Login} from './login';
+import {LoginOauth} from './login-oauth';
 
 @NgModule({
   imports: [
@@ -45,7 +46,7 @@ import {Login} from './login';
     MatSnackBarModule,
     ReactiveFormsModule,
   ],
-  declarations: [Login],
-  exports: [Login],
+  declarations: [Login, LoginOauth],
+  exports: [Login, LoginOauth],
 })
 export class LoginModule {}
