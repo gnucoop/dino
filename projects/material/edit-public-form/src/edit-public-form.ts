@@ -43,13 +43,15 @@ import {ActionTrigger, ActionTriggerData, InsertModel} from '@dino/core/data';
 import {
   FormData,
   FormSchema,
+  FormStatus,
   OnlineFormDataManager,
   OnlineFormSchemaManager,
 } from '@dino/core/forms';
+import {OnlineFormStatusManager} from '@dino/core/forms/src/online-form-status-manager';
 import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
-import {BehaviorSubject, Observable, Subscription, combineLatest} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription, combineLatest, of as obsOf} from 'rxjs';
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 const successMsg = 'Form submitted successfully!';
@@ -86,6 +88,11 @@ export class EditPublicForm implements OnDestroy {
   readonly formSchema: Observable<FormSchema | null>;
 
   /**
+   * The Form schema Statuses for the current Form schema
+   */
+  readonly formSchemaStatuses: Observable<FormStatus[] | null>;
+
+  /**
    * True if no validation errors are encountered in the AjfForm
    */
   readonly isValid: Observable<boolean>;
@@ -120,6 +127,7 @@ export class EditPublicForm implements OnDestroy {
   constructor(
     route: ActivatedRoute,
     fsm: OnlineFormSchemaManager,
+    fstm: OnlineFormStatusManager,
     fdm: OnlineFormDataManager,
     udm: OnlineUserDataManager,
     location: Location,
@@ -130,6 +138,7 @@ export class EditPublicForm implements OnDestroy {
     const formSchemaManagerInit = fsm.init();
     const formDataManagerInit = fdm.init();
     const userDataManagerInit = udm.init();
+    const formStatusManagerInit = fstm.init();
 
     const formSchemaId = route.params.pipe(
       map(params => params['form_schema_id'] as string),
@@ -171,6 +180,22 @@ export class EditPublicForm implements OnDestroy {
       shareReplay(1),
     );
 
+    /**
+     * Ritorna l'elenco degli stati attivi per il formschema corrente
+     */
+    this.formSchemaStatuses = this.formSchema.pipe(
+      switchMap(schema =>
+        formStatusManagerInit.pipe(
+          switchMap(() => {
+            if (schema == null) {
+              return obsOf([]);
+            }
+            return fstm.formStatusesOfSchema(schema);
+          }),
+        ),
+      ),
+    );
+
     const anonymousUserData = userDataManagerInit.pipe(
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
@@ -199,18 +224,35 @@ export class EditPublicForm implements OnDestroy {
 
     this._saveFormSub = this._saveFormEvt
       .pipe(
-        switchMap(() => anonymousUserData.pipe(withLatestFrom(formSchemaId, metricParams))),
-        switchMap(([anonUserData, fsId, metricIds]) => {
+        withLatestFrom(anonymousUserData, this.formSchema, metricParams, this.formSchemaStatuses),
+        switchMap(([_, anonUserData, fschema, metricIds, formStatuses]) => {
+          if (
+            fschema == null ||
+            (fschema &&
+              fschema.form_status_ref_id &&
+              fschema.form_status_ref_id.length &&
+              (!formStatuses || !formStatuses.length))
+          ) {
+            return obsOf(null);
+          }
           const data = frs.getFormValue();
+
+          let defaultFormStatus: string | null =
+            formStatuses && formStatuses.length
+              ? formStatuses.reduce((prev, curr) =>
+                  prev.status_level < curr.status_level ? prev : curr,
+                ).id
+              : null;
+
           const form: InsertModel<FormData> = {
             user_data_ref_id: anonUserData?.id ?? '',
-            form_schema_ref_id: fsId,
+            form_schema_ref_id: fschema?.id,
             area_ref_id: metricIds['area'] || null,
             case_ref_id: metricIds['case'] || null,
             location_ref_id: metricIds['location'] || null,
             project_ref_id: metricIds['project'] || null,
             organization_ref_id: metricIds['organization'] || null,
-            form_status_ref_id: null,
+            form_status_ref_id: defaultFormStatus,
             data,
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
