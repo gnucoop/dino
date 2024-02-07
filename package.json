@@ -52,6 +52,7 @@
     "@angular/router": "^15.0.4",
     "@apollo/client": "^3.7.3",
     "@ngneat/transloco": "^3.1.4",
+    "@nhost/nhost-js": "^2.2.18",
     "@zxing/browser": "^0.1.1",
     "@zxing/library": "^0.19.1",
     "angular-material-css-vars": "^4.0.2",

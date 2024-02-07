@@ -16,6 +16,7 @@ export const authConfig: AuthServiceConfig = {
   retryRefreshTime: 3000,
   retryAttemptsMax: 1,
   failedAuthRedirect: 'login',
+  externalAuthAvailable: ['azuread', 'google'],
 };
 
 /**

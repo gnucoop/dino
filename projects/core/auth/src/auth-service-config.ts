@@ -24,6 +24,8 @@ import {InjectionToken} from '@angular/core';
 
 import {DinoUserInfo, User} from './user';
 
+import {ExternalAuthProvider} from './external-auth-type';
+
 /**
  * Auth service configuration
  */
@@ -54,6 +56,12 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
    * login view
    */
   signUp?: boolean;
+
+  /**
+   * If true, users can signin with external authentication (Azure/Google) in the
+   * login view
+   */
+  externalAuthAvailable?: ExternalAuthProvider[];
 
   /**
    * If true, users can reset their password from the change-password form in the login view.
