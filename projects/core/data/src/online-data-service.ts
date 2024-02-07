@@ -76,8 +76,11 @@ export class OnlineDataService implements IDataService {
       switchMap(({name, fields}) => {
         const {query, queryName} = getQueryGql<T>(name, fields, params.id);
         const context = this._getQueryContext();
-        return this._apollo.query({query, context}).pipe(
+        return this._apollo.query({query, context, errorPolicy: 'all'}).pipe(
           map(res => {
+            if (res.errors) {
+              throw new Error(JSON.stringify(res.errors));
+            }
             const results = res.data[queryName] || [];
             if (results.length === 1) {
               return results[0];
@@ -103,15 +106,20 @@ export class OnlineDataService implements IDataService {
         const objects = [params.object];
         const {mutation, mutationName} = insertQueryGql<T>(name, fields);
         const context = this._getQueryContext();
-        return this._apollo.mutate({mutation, context, variables: {objects}}).pipe(
-          map(res => {
-            const data = (res.data || {})[mutationName];
-            if (data == null || data.affected_rows !== 1) {
-              return null;
-            }
-            return data.returning[0] as R;
-          }),
-        );
+        return this._apollo
+          .mutate({mutation, context, variables: {objects}, errorPolicy: 'all'})
+          .pipe(
+            map(res => {
+              if (res.errors) {
+                throw new Error(JSON.stringify(res.errors));
+              }
+              const data = (res.data || {})[mutationName];
+              if (data == null || data.affected_rows !== 1) {
+                return null;
+              }
+              return data.returning[0] as R;
+            }),
+          );
       }),
       catchError(this._queryErrorHandler(null)),
     );
@@ -130,18 +138,23 @@ export class OnlineDataService implements IDataService {
         const {objects} = params;
         const {mutation, mutationName} = insertQueryGql<T>(name, fields);
         const context = this._getQueryContext();
-        return this._apollo.mutate({mutation, context, variables: {objects}}).pipe(
-          map(res => {
-            const data = (res.data || {})[mutationName];
-            if (data == null || data.affected_rows !== 1) {
-              return {success: [], error: [...(res.errors || [])]};
-            }
-            return {
-              success: data.returning as R[],
-              error: [],
-            };
-          }),
-        );
+        return this._apollo
+          .mutate({mutation, context, variables: {objects}, errorPolicy: 'all'})
+          .pipe(
+            map(res => {
+              if (res.errors) {
+                throw new Error(JSON.stringify(res.errors));
+              }
+              const data = (res.data || {})[mutationName];
+              if (data == null || data.affected_rows !== 1) {
+                return {success: [], error: [...(res.errors || [])]};
+              }
+              return {
+                success: data.returning as R[],
+                error: [],
+              };
+            }),
+          );
       }),
       catchError(this._queryErrorHandler({success: [], error: []})),
     );
@@ -161,12 +174,17 @@ export class OnlineDataService implements IDataService {
       switchMap(({name, fields}) => {
         const {mutation, mutationName} = updateQueryGql<T>(name, fields, params);
         const context = this._getQueryContext();
-        return this._apollo.mutate({mutation, context, variables: {_set: update}}).pipe(
-          map(res => {
-            const data = (res.data || {})[mutationName] || {};
-            return (data.returning || []) as R[];
-          }),
-        );
+        return this._apollo
+          .mutate({mutation, context, variables: {_set: update}, errorPolicy: 'all'})
+          .pipe(
+            map(res => {
+              if (res.errors) {
+                throw new Error(JSON.stringify(res.errors));
+              }
+              const data = (res.data || {})[mutationName] || {};
+              return (data.returning || []) as R[];
+            }),
+          );
       }),
       catchError(this._queryErrorHandler([])),
     );
@@ -182,16 +200,21 @@ export class OnlineDataService implements IDataService {
         const params = {collectionName: name, selector: {id: {$eq: doc.id}}};
         const {mutation, mutationName} = updateQueryGql<T>(name, fields, params);
         const context = this._getQueryContext();
-        return this._apollo.mutate({mutation, context, variables: {_set: updateData}}).pipe(
-          map(res => {
-            const data = (res.data || {})[mutationName] || {};
-            const results = data.returning || [];
-            if (results.length !== 1) {
-              return null;
-            }
-            return results[0] as R;
-          }),
-        );
+        return this._apollo
+          .mutate({mutation, context, variables: {_set: updateData}, errorPolicy: 'all'})
+          .pipe(
+            map(res => {
+              if (res.errors) {
+                throw new Error(JSON.stringify(res.errors));
+              }
+              const data = (res.data || {})[mutationName] || {};
+              const results = data.returning || [];
+              if (results.length !== 1) {
+                return null;
+              }
+              return results[0] as R;
+            }),
+          );
       }),
       catchError(this._queryErrorHandler(null)),
     );
@@ -228,9 +251,14 @@ export class OnlineDataService implements IDataService {
       switchMap(({name, fields}) => {
         const {query, queryName} = findQueryGql<T>(name, fields, params);
         const context = this._getQueryContext();
-        return this._apollo
-          .query({query, context})
-          .pipe(map(res => (res.data[queryName] || []) as R[]));
+        return this._apollo.query({query, context, errorPolicy: 'all'}).pipe(
+          map(res => {
+            if (res.errors) {
+              throw new Error(JSON.stringify(res.errors));
+            }
+            return (res.data[queryName] || []) as R[];
+          }),
+        );
       }),
       catchError(this._queryErrorHandler([])),
     );
