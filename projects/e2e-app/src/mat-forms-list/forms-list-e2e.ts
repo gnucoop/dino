@@ -3,15 +3,27 @@ import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
-import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {
+  FormData,
+  FormDataManager,
+  FormSchema,
+  FormSchemaDeps,
+  FormSchemaManager,
+} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {LogManager} from '@dino/core/logs';
 import {UserDataManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
-import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, from, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 import {additionalConfig, optionalModulesConfig} from '../mockconfig';
+import {deepCopy} from '@ajf/core/utils';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
+import {ProjectManager} from '@dino/core/projects';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
 
 @Component({
   selector: 'app-forms-list-e2e',
@@ -60,6 +72,11 @@ export class MatFormsListE2E {
     private _udm: UserDataManager,
     private _fdm: FormDataManager,
     @Optional() private _logManager: LogManager,
+    @Optional() private _areaManager?: AreaManager | null,
+    @Optional() private _caseManager?: CaseManager | null,
+    @Optional() private _projectManager?: ProjectManager | null,
+    @Optional() private _locationManager?: LocationManager | null,
+    @Optional() private _organizationManager?: OrganizationManager | null,
   ) {
     if (optionalModulesConfig.logsModule) {
       this.listRowActionsIcons['viewlog'] = 'history';
@@ -68,12 +85,21 @@ export class MatFormsListE2E {
     this.formSelectionData = new BehaviorSubject<FormData[] | null>(null);
     this.formSchemaId = this._route.params.pipe(map(params => params['form_schema_id']));
     this.additionalDataSchema = this.formSchemaId.pipe(
-      switchMap(schemaId => {
+      map(schemaId => {
         if (schemaId != null) {
-          return this.formSchemaManager.get(schemaId);
+          return this.formSchemaManager.get(schemaId).pipe(
+            map(doc => {
+              if (doc == null) {
+                return null;
+              }
+              const item = this._populateDocRefs(doc);
+              return item;
+            }),
+          );
         }
         return obsOf(null);
       }),
+      switchMap(schema => schema as Observable<FormSchema>),
       filter(schema => schema != null),
       shareReplay(1),
     );
@@ -256,6 +282,12 @@ export class MatFormsListE2E {
       this.filtersService,
       this.formSchemaManager,
       this.isDataList,
+      null,
+      this._areaManager,
+      this._caseManager,
+      this._projectManager,
+      this._locationManager,
+      this._organizationManager,
     );
   }
 
@@ -411,5 +443,30 @@ export class MatFormsListE2E {
     ) {
       console.log(trigger);
     }
+  }
+
+  /**
+   * Populates all references to external collections in RxDocument
+   * @param doc RxDocument
+   * @returns The document with populated refs
+   */
+  private _populateDocRefs(doc: RxDocument<FormSchema>): RxDocument<FormSchema> {
+    let refProps = {};
+    for (let prop in doc) {
+      if (prop.includes('_ref_id')) {
+        const propKey = prop.replace('_ref_id', '') as keyof RxDocument<FormSchema>;
+        let refProp;
+        try {
+          refProp = {
+            [propKey]: from(doc.populate(prop)).pipe(shareReplay(1)),
+          };
+        } catch (e) {
+          refProp = {[propKey]: obsOf(null)};
+        }
+        refProps = {...refProps, ...refProp};
+      }
+    }
+    const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<FormSchema>;
+    return popDoc;
   }
 }
