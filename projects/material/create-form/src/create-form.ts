@@ -20,7 +20,6 @@
  *
  */
 import {
-  AjfChoice,
   AjfChoicesOrigin,
   AjfForm,
   AjfFormActionEvent,
@@ -101,7 +100,7 @@ import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
-import {Project, ProjectManager} from '@dino/core/projects';
+import {ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {TranslocoService} from '@ngneat/transloco';
@@ -575,7 +574,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                     type: 'fixed',
                     name: choicesOriginName,
                     label: choicesOriginName,
-                    choices: this._getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
+                    choices: this._fs.getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
                   });
                 } else {
                   if (changes[extDocsIdx] !== null && changes[extDocsIdx].length) {
@@ -590,7 +589,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                           type: 'fixed',
                           name: choicesOriginName,
                           label: choicesOriginName,
-                          choices: this._getChoicesFromFieldReps(field, extFormData.data),
+                          choices: this._fs.getChoicesFromFieldReps(field, extFormData.data),
                         });
                       }
                     });
@@ -609,7 +608,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   type: 'fixed',
                   name: choicesOriginName,
                   label: choicesOriginName,
-                  choices: this._getChoicesFromMetrics(
+                  choices: this._fs.getChoicesFromMetrics(
                     metricOrigin,
                     metricOrigin[0].collection.name,
                   ),
@@ -620,7 +619,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
           if (formGroup && formGroup.value) {
             if (newChoicesOrigins.length) {
-              const schemaWithNewChoices = this._addChoiceOriginToFormSchema(
+              const schemaWithNewChoices = this._fs.addChoiceOriginToFormSchema(
                 newFormSchema,
                 newChoicesOrigins,
               );
@@ -701,8 +700,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           this._extraFormControls['dino_form_info'] = dinoFormInfo;
           this._setNewControlsInForm(frGroup, this._extraFormControls);
         }
-      },
-    );
+      });
 
     this._uniqueMetricsSetAlreadyExists = combineLatest([
       this._formSchema,
@@ -1138,142 +1136,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }
       });
     }
-  }
-
-  /**
-   * Add new dynamic choices origins to form schema
-   * @param formSchema the form schema to update
-   * @param newChoicesOrigins
-   */
-  private _addChoiceOriginToFormSchema(
-    formSchema: FormSchema,
-    newChoicesOrigins: AjfChoicesOrigin<string>[],
-  ): FormSchema | null {
-    formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins ?? [];
-    if (newChoicesOrigins.length) {
-      newChoicesOrigins.forEach(choice => {
-        formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins ?? [];
-        formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins.filter(
-          (c: any) => c.name !== choice.name,
-        );
-      });
-      formSchema.schema.choicesOrigins = formSchema.schema.choicesOrigins.concat(newChoicesOrigins);
-      return formSchema;
-    }
-    return null;
-  }
-
-  private _getChoicesFromFieldReps(
-    fieldName: string,
-    ctx: {[key: string]: any},
-  ): AjfChoice<string>[] {
-    const choices: AjfChoice<string>[] = [];
-    Object.keys(ctx).map(key => {
-      if (key.indexOf(fieldName + '__') > -1) {
-        if (ctx[key] != null) {
-          choices.push({
-            label: ctx[key],
-            value: ctx[key],
-          });
-        }
-      }
-    });
-    return choices;
-  }
-
-  /**
-   * Return an AjfChoices list to be added into choicesOrigins in the formschema
-   * @param depsOrigin containing info for labels and values to be used in the choice options
-   * @param docs the list of formdata to be used for the choices
-   * @returns a list of ajfChoices with formdata origin
-   */
-  private _getChoicesFromDocs(
-    depsOrigin: DepsOrigin,
-    docs: RxDocument<FormData>[],
-  ): AjfChoice<string>[] {
-    const choices: AjfChoice<string>[] = [];
-    const fieldName = depsOrigin.fields_to_update ? depsOrigin.fields_to_update[0] : null;
-
-    if (fieldName) {
-      docs.forEach(doc => {
-        const extFormData = doc.toJSON();
-        if (
-          fieldName in extFormData.data &&
-          extFormData.data[fieldName] != null &&
-          extFormData.data[fieldName].length
-        ) {
-          const newChoice = {
-            label: this._getLabelForChoice(depsOrigin, extFormData) || extFormData.data[fieldName],
-            value: extFormData.data[fieldName],
-          };
-
-          if (
-            depsOrigin.choices_origin &&
-            depsOrigin.choices_origin.extra_value_key &&
-            depsOrigin.choices_origin.extra_value_key in extFormData.data &&
-            extFormData.data[depsOrigin.choices_origin.extra_value_key]
-          ) {
-            (newChoice as any)[depsOrigin.choices_origin.extra_value_key] =
-              extFormData.data[depsOrigin.choices_origin.extra_value_key];
-          }
-          choices.push(newChoice);
-        }
-      });
-    }
-    return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
-  }
-
-  /**
-   * Return an AjfChoices list to be added into choicesOrigins in the formschema
-   * @param docs the list of metrics to be used for the choices
-   * @param metricType metric type
-   * @returns a list of ajfChoices with metric origin
-   */
-  private _getChoicesFromMetrics(
-    docs: RxDocument<Metric>[],
-    metricType: string,
-  ): AjfChoice<string>[] {
-    const choices: AjfChoice<string>[] = [];
-
-    docs.forEach(doc => {
-      const newChoice = {
-        label: doc.name,
-        value: doc.name,
-        parent_id: doc.parent_id,
-        parent_name: doc.parent_name,
-      };
-
-      switch (metricType) {
-        case 'project':
-          const project = doc as Metric as Project;
-          newChoice.label = `${project.name} - (${project.code})`;
-      }
-
-      choices.push(newChoice);
-    });
-
-    return choices;
-  }
-
-  private _getLabelForChoice(depsOrigin: DepsOrigin, extFormData: FormData): string | null {
-    if (
-      depsOrigin.choices_origin &&
-      depsOrigin.choices_origin.label_fields &&
-      depsOrigin.choices_origin.label_fields.length
-    ) {
-      const choiceLabel: string[] = [];
-      depsOrigin.choices_origin.label_fields.forEach(fieldName => {
-        if (
-          fieldName in extFormData.data &&
-          extFormData.data[fieldName] != null &&
-          extFormData.data[fieldName].trim().length
-        ) {
-          choiceLabel.push(extFormData.data[fieldName].trim());
-        }
-      });
-      return choiceLabel && choiceLabel.length ? choiceLabel.join(' ') : null;
-    }
-    return null;
   }
 
   ngOnDestroy() {

@@ -25,17 +25,30 @@ import {EventEmitter, Optional} from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
 import {
   clone,
   CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
   DataQuerySortDir,
+  Metric,
   Model,
   PermissionContext,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
+import {ProjectManager} from '@dino/core/projects';
 import {format} from 'date-fns';
+import {
+  DepsOrigin,
+  FormData,
+  FormSchema,
+  FormSchemaDeps,
+  FormSchemaManager,
+} from '@dino/core/forms';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
@@ -46,6 +59,7 @@ import {
   of as obsOf,
   Subject,
   throwError,
+  zip,
 } from 'rxjs';
 import {
   catchError,
@@ -57,6 +71,7 @@ import {
   takeUntil,
   throttleTime,
 } from 'rxjs/operators';
+import {AjfChoicesOrigin} from '@ajf/core/forms';
 
 /**
  * Dictionary of label/values for Schema choices
@@ -245,6 +260,11 @@ export class ListDataSource<
   }
 
   /**
+   * A Dictionary of all the optional Metrics managers
+   */
+  private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
+
+  /**
    * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */
@@ -264,6 +284,11 @@ export class ListDataSource<
     @Optional() private _additionalDataManager?: DataModelManager<AD>,
     private _isDataList: 'form' | 'report' | null = null,
     private _isAggregationList: 'form' | 'report' | null = null,
+    @Optional() private _areaManager?: AreaManager | null,
+    @Optional() private _caseManager?: CaseManager | null,
+    @Optional() private _projectManager?: ProjectManager | null,
+    @Optional() private _locationManager?: LocationManager | null,
+    @Optional() private _organizationManager?: OrganizationManager | null,
   ) {
     super();
     this._modelSchema = this._dataModelManager.collectionSchema;
@@ -272,6 +297,14 @@ export class ListDataSource<
       this.data = results;
     });
 
+    this._metricManagers = {
+      area: this._areaManager,
+      case: this._caseManager,
+      location: this._locationManager,
+      organization: this._organizationManager,
+      project: this._projectManager,
+    } as {[metricType: string]: DataModelManager<Metric> | null};
+
     // Here we ask the FilterService to generate all the filters based on the model RxJsonSchema
     this._fs.generateModelFilters(this._modelSchema as RxJsonSchema<Model>);
 
@@ -279,16 +312,29 @@ export class ListDataSource<
     // (if present) and set the additional filters on the FiltersService.
     // If no additional DataManager or data schema are provided, the additional filters
     // are set to an empty array.
-    this._additionalDataSchema.pipe(takeUntil(this._mainUnsubscribe)).subscribe(dataSchema => {
-      if (dataSchema != null) {
-        this._choices = this._getChoices();
-        let additionalFilters = [];
-        if (this._additionalDataManager) {
-          additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
+    this._additionalDataSchema
+      .pipe(
+        switchMap(dataSchema => {
+          if (dataSchema && this._isDataList != null && this._isDataList === 'form') {
+            if ((dataSchema as any)['form_schema_deps_ref_id']) {
+              return this._addRelationshipsChoicesInSchema(dataSchema);
+            }
+            return obsOf(dataSchema);
+          }
+          return obsOf(dataSchema);
+        }),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe(dataSchema => {
+        if (dataSchema != null) {
+          this._choices = this._getChoices();
+          let additionalFilters = [];
+          if (this._additionalDataManager) {
+            additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
+          }
+          this._fs.setAdditionalFilters(additionalFilters);
         }
-        this._fs.setAdditionalFilters(additionalFilters);
-      }
-    });
+      });
 
     this._dataModelManager.collectionChanged
       .pipe(takeUntil(this._mainUnsubscribe), throttleTime(100))
@@ -747,6 +793,178 @@ export class ListDataSource<
         return populatedDocs;
       }),
     );
+  }
+
+  /**
+   * If is a Form Data List, edit the choice origins in the FormSchema
+   * adding the external values taken via the relationships
+   * @param dataSchema
+   * @returns
+   */
+  private _addRelationshipsChoicesInSchema(dataSchema: AD | null): Observable<AD | null> {
+    const fsm = this._additionalDataManager
+      ? (this._additionalDataManager as unknown as FormSchemaManager)
+      : null;
+    if (dataSchema == null || fsm == null) {
+      return obsOf(dataSchema);
+    }
+
+    const formSchemaDeps: Observable<AD | null> = (dataSchema as any)['form_schema_deps'].pipe(
+      switchMap((doc: RxDocument<FormSchemaDeps>) => {
+        if (doc == null) {
+          return obsOf(null);
+        }
+        return obsOf(doc.toJSON()) as Observable<FormSchemaDeps>;
+      }),
+      switchMap((fschemadeps: FormSchemaDeps) => {
+        if (fschemadeps == null || fschemadeps.deps_origin == null) {
+          return zip(obsOf(null), obsOf(null), obsOf(fschemadeps));
+        }
+
+        const extFormDataObs = this._getExternalFormData(fschemadeps);
+        let extFormDataRes: Observable<RxDocument<FormData>[][] | null> = obsOf(null);
+        if (extFormDataObs.length) {
+          extFormDataRes = forkJoin(extFormDataObs).pipe(
+            map((extDatas: RxDocument<FormData>[][]) => {
+              return extDatas;
+            }),
+          );
+        }
+
+        let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
+        let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
+        const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
+          deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
+        );
+        if (metricsChoicesOrigin != undefined) {
+          metricOptSourceObs = this._getFormMetricsOptions(
+            metricsChoicesOrigin.metrics_choices_origin,
+          );
+        }
+        if (metricOptSourceObs.length) {
+          metricOptSource = forkJoin(metricOptSourceObs).pipe(
+            map((mData: RxDocument<Metric>[][]) => {
+              return mData;
+            }),
+          );
+        }
+        return zip(extFormDataRes, metricOptSource, obsOf(fschemadeps));
+      }),
+      map((originData: any[]) => {
+        if (originData && originData.length > 2) {
+          const changes: RxDocument<FormData>[][] | null = originData[0];
+          const metricsOrigin: RxDocument<Metric>[][] | null = originData[1];
+          const fschemadeps = originData[2] as FormSchemaDeps;
+
+          const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
+          const newFormSchema: FormSchema = deepCopy(dataSchema);
+          if (changes && changes.length && fschemadeps.deps_origin) {
+            let extDocsIdx = 0;
+            fschemadeps.deps_origin.forEach(depsOrigin => {
+              if (
+                depsOrigin.form_schema_ref_id &&
+                depsOrigin.is_choice &&
+                depsOrigin.fields_to_update &&
+                depsOrigin.fields_to_update.length &&
+                changes.length > extDocsIdx
+              ) {
+                const field = depsOrigin.fields_to_update[0];
+                const choicesOriginName = field + '_choice';
+                newChoicesOrigins.push({
+                  type: 'fixed',
+                  name: choicesOriginName,
+                  label: choicesOriginName,
+                  choices: fsm.getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
+                });
+                extDocsIdx++;
+              }
+            });
+          }
+
+          if (metricsOrigin && metricsOrigin.length) {
+            metricsOrigin.forEach(metricOrigin => {
+              if (metricOrigin.length) {
+                const choicesOriginName = metricOrigin[0].collection.name + '_metric_choice';
+                newChoicesOrigins.push({
+                  type: 'fixed',
+                  name: choicesOriginName,
+                  label: choicesOriginName,
+                  choices: fsm.getChoicesFromMetrics(metricOrigin, metricOrigin[0].collection.name),
+                });
+              }
+            });
+          }
+
+          if (newChoicesOrigins.length) {
+            const schemaWithNewChoices = fsm.addChoiceOriginToFormSchema(
+              newFormSchema,
+              newChoicesOrigins,
+            );
+            return schemaWithNewChoices;
+          }
+        }
+        return dataSchema;
+      }),
+    );
+    return formSchemaDeps;
+  }
+
+  /**
+   * Retrieves the available options for all required Metrics
+   *
+   * @param metricType The type identifier of the metric.
+   */
+  private _getFormMetricsOptions(
+    metricsType: string[] | null | undefined,
+  ): Observable<RxDocument<Metric, {}>[]>[] {
+    let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
+    if (metricsType) {
+      metricsType.forEach(metricType => {
+        if (metricType && this._metricManagers[metricType] != null) {
+          let mtOptSource = this._metricManagers[metricType]!.query({
+            selector: {is_deleted: {$ne: true}},
+            sort: [{'name': 'asc'}],
+          });
+          metricsOptSource.push(mtOptSource);
+        }
+      });
+    }
+    return metricsOptSource;
+  }
+
+  /**
+   * Return the queries for the external datas for relationships
+   * @param fschemadeps The form schema dependencies info
+   * @returns An array of observable with queries for the external data
+   */
+  private _getExternalFormData(fschemadeps: FormSchemaDeps): Observable<any>[] {
+    const extFormDataObs: Observable<any>[] = [];
+    if (fschemadeps.deps_origin) {
+      fschemadeps.deps_origin
+        .filter(
+          deps =>
+            deps.form_schema_ref_id != null &&
+            deps.fields_to_update &&
+            deps.fields_to_update.length,
+        )
+        .forEach(depsOrigin => {
+          if (depsOrigin.is_choice) {
+            const opt: DataQueryOptions = {
+              selector: {
+                form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id},
+                is_deleted: {$ne: true},
+              },
+              sort: [{created_at: 'desc'}],
+            };
+            const query = this._dataModelManager.query(opt).pipe(
+              take(1),
+              catchError(err => throwError(() => err) as Observable<RxDocument<FormData>[]>),
+            );
+            extFormDataObs.push(query);
+          }
+        });
+    }
+    return extFormDataObs;
   }
 
   /**
