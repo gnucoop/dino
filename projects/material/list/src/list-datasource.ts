@@ -71,7 +71,17 @@ import {
   takeUntil,
   throttleTime,
 } from 'rxjs/operators';
-import {AjfChoicesOrigin} from '@ajf/core/forms';
+import {
+  AjfChoicesOrigin,
+  AjfField,
+  AjfFieldType,
+  AjfNode,
+  AjfRepeatingSlide,
+  AjfSlide,
+  isField,
+  isFieldWithChoices,
+  isRepeatingContainerNode,
+} from '@ajf/core/forms';
 
 /**
  * Dictionary of label/values for Schema choices
@@ -795,6 +805,27 @@ export class ListDataSource<
     );
   }
 
+  private _replaceTypeForFieldsWithChoicesByChoicesName(
+    nodes: (AjfRepeatingSlide | AjfSlide)[] | undefined,
+    choicesOriginName: string,
+  ) {
+    if (nodes) {
+      nodes.forEach((ctnNode: AjfNode) => {
+        if (isRepeatingContainerNode(ctnNode)) {
+          ctnNode.nodes.forEach((n: AjfNode) => {
+            if (
+              isField(n) &&
+              isFieldWithChoices(n) &&
+              (n as any).choicesOriginRef === choicesOriginName
+            ) {
+              (n as AjfField).fieldType = AjfFieldType.String;
+            }
+          });
+        }
+      });
+    }
+  }
+
   /**
    * If is a Form Data List, edit the choice origins in the FormSchema
    * adding the external values taken via the relationships
@@ -858,25 +889,35 @@ export class ListDataSource<
 
           const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
           const newFormSchema: FormSchema = deepCopy(dataSchema);
-          if (changes && changes.length && fschemadeps.deps_origin) {
+          if (fschemadeps.deps_origin && newFormSchema.schema.nodes) {
             let extDocsIdx = 0;
             fschemadeps.deps_origin.forEach(depsOrigin => {
               if (
                 depsOrigin.form_schema_ref_id &&
-                depsOrigin.is_choice &&
                 depsOrigin.fields_to_update &&
-                depsOrigin.fields_to_update.length &&
-                changes.length > extDocsIdx
+                depsOrigin.fields_to_update.length
               ) {
-                const field = depsOrigin.fields_to_update[0];
-                const choicesOriginName = field + '_choice';
-                newChoicesOrigins.push({
-                  type: 'fixed',
-                  name: choicesOriginName,
-                  label: choicesOriginName,
-                  choices: fsm.getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
-                });
-                extDocsIdx++;
+                if (depsOrigin.is_choice && changes && changes.length > extDocsIdx) {
+                  const field = depsOrigin.fields_to_update[0];
+                  const choicesOriginName = field + '_choice';
+                  newChoicesOrigins.push({
+                    type: 'fixed',
+                    name: choicesOriginName,
+                    label: choicesOriginName,
+                    choices: fsm.getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
+                  });
+                  extDocsIdx++;
+                } else {
+                  depsOrigin.fields_to_update.forEach(field => {
+                    // Replace the field type for all fields that have a
+                    // choice origin based on a One-to-One Relationship
+                    const choicesOriginName = field + '_choice';
+                    this._replaceTypeForFieldsWithChoicesByChoicesName(
+                      newFormSchema.schema.nodes,
+                      choicesOriginName,
+                    );
+                  });
+                }
               }
             });
           }
@@ -902,6 +943,7 @@ export class ListDataSource<
             );
             return schemaWithNewChoices;
           }
+          return newFormSchema;
         }
         return dataSchema;
       }),
