@@ -1,3 +1,21 @@
+<a name="15.2.9"></a>
+# 15.2.9 "bitter-rabbit" (2024-02-14)
+### Bug Fixes
+* **core/forms:** Fixed a bug in Online Form Status Manager causing statuses not to be sorted correctly ([76b34a2](https://bitbucket.org/gnucoop/dino/commits/76b34a23e29129d90b996d9b346b5b5d221750f3))
+* **material/form-metric-selector:** fix automatic selection if metric is mandatory and only one ([2f48de0](https://bitbucket.org/gnucoop/dino/commits/2f48de0837d0fa8778d6a87aad296275cf778883))
+* **multiple:** Added missing public apis exports of new component and types. Fixed the related imports. ([fdf57a4](https://bitbucket.org/gnucoop/dino/commits/fdf57a4fe77d09771383c061cb8c352f65bc5365))
+### Features
+* **e2e-app:** populate formschema with relationships info to pass it into the list ([46bcade](https://bitbucket.org/gnucoop/dino/commits/46bcade328491c66284b35628d2ab4ed57722a16))
+* **e2e-material:** Added processActionTrigger in login. Added external_auth route in login routes. ([757ad5a](https://bitbucket.org/gnucoop/dino/commits/757ad5a2ac52d3bee80de8b6e545939196bddea1))
+* **material/edit-public-form:** add default formstatus and trigger in edit public form ([4fa2884](https://bitbucket.org/gnucoop/dino/commits/4fa288440487281c3761f4c08a35d636b1cffa82))
+* **material/edit-public-form:** add on_form_data_creation trigger for public forms ([0eef785](https://bitbucket.org/gnucoop/dino/commits/0eef785f378fbc9f59a27f83f66cb0d7edf0a0ac))
+* **material/list:** replace one-to-one relationships choices options in repeating slide with field type string in advanced filters ([7bfebeb](https://bitbucket.org/gnucoop/dino/commits/7bfebebd3d2d28c5e16b58acef72f284f7a51857))
+* **material/list:** show all relationships choices options in advanced filters in formdata list ([3337435](https://bitbucket.org/gnucoop/dino/commits/3337435671927b5872236f5ff2ba2c043a9862e3))
+* **material/login:** Added External authentication with OAuth providers. ([0a3599c](https://bitbucket.org/gnucoop/dino/commits/0a3599cdd3503c530bb9bcb28db53edf4a5217eb))
+* **multiple:** Added nhost-js package. Added "externalAuthAvailable" to AuthServiceConfig interface. ([bf3fa18](https://bitbucket.org/gnucoop/dino/commits/bf3fa1832335c6f37739b791245cc86b1f778096))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.8"></a>
 # 15.2.8 "golden-bass" (2024-01-23)
 ### Bug Fixes
