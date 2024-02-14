@@ -62,33 +62,4 @@ export class LoginOauth {
       options: {redirectTo: '/login/external_auth'},
     });
   }
-
-  // testSignInAzure() {
-  //   if (this.nhost == null) return;
-  //   this.nhost.auth.signIn({
-  //     provider: 'azuread',
-  //     options: {redirectTo: 'http://localhost:4200/login/external_auth'},
-  //   });
-  // }
-
-  // testSignInGoogle() {
-  //   if (this.nhost == null) return;
-  //   this.nhost.auth.signIn({
-  //     provider: 'google',
-  //     options: {redirectTo: 'http://localhost:4200/login/external_auth'},
-  //   });
-  // }
-
-  // retrieveAccessToken() {
-  //   if (this.nhost == null) return;
-  //   const rt = this.nhost.auth.getAccessToken();
-  //   console.log(rt);
-  // }
-
-  // retrieveSessionAndUser() {
-  //   if (this.nhost == null) return;
-  //   const session = this.nhost.auth.getSession();
-  //   const user = this.nhost.auth.getUser();
-  //   console.log(session, user);
-  // }
 }
