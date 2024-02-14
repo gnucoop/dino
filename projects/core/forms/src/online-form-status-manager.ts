@@ -27,7 +27,8 @@ import {FormStatus, indexes, migrationStrategies} from './form-status';
 import {schema} from './form-status-json';
 import {FormsModule} from './forms.module';
 import {FormSchema} from './form-schema';
-import {Observable, catchError, map, of as obsOf} from 'rxjs';
+import {Observable, of as obsOf} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 
 @Injectable({providedIn: FormsModule})
 export class OnlineFormStatusManager extends OnlineDataModelManager<FormStatus> {
@@ -48,7 +49,10 @@ export class OnlineFormStatusManager extends OnlineDataModelManager<FormStatus> 
     }
     const statusIds: string[] = schema.form_status_ref_id;
     return this.query({selector: {id: {$in: statusIds}}}).pipe(
-      map(sts => sts.sort((a, b) => (a.status_level > b.status_level ? 1 : -1))),
+      map(sts => {
+        const arrayForSort = [...sts];
+        return arrayForSort.sort((a, b) => (a.status_level > b.status_level ? 1 : -1));
+      }),
       catchError(_ => obsOf(null)),
     );
   }
