@@ -56,6 +56,7 @@ import {
   Metric,
   MetricsService,
   Model,
+  populateDocRefs,
 } from '@dino/core/data';
 import {
   DepsOrigin,
@@ -77,7 +78,6 @@ import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
-  from,
   Observable,
   of as obsOf,
   Subject,
@@ -620,7 +620,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             if (doc == null) {
               return null;
             }
-            const item = this._populateDocRefs(doc);
+            const item = populateDocRefs<FormSchema>(doc);
             return item;
           }),
         ),
@@ -1327,31 +1327,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       });
     }
     return metricsOptSource;
-  }
-
-  /**
-   * Populates all references to external collections in RxDocument
-   * @param doc RxDocument
-   * @returns The document with populated refs
-   */
-  private _populateDocRefs(doc: RxDocument<FormSchema>): RxDocument<FormSchema> {
-    let refProps = {};
-    for (let prop in doc) {
-      if (prop.includes('_ref_id')) {
-        const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
-        let refProp;
-        try {
-          refProp = {
-            [propKey]: from(doc.populate(prop)).pipe(shareReplay(1)),
-          };
-        } catch (e) {
-          refProp = {[propKey]: obsOf(null)};
-        }
-        refProps = {...refProps, ...refProp};
-      }
-    }
-    const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<FormSchema>;
-    return popDoc;
   }
 
   /**

@@ -28,7 +28,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
-  clone,
+  addNestedProps,
   CollectionChangedEvent,
   DataModelManager,
   DataQueryOptions,
@@ -36,6 +36,8 @@ import {
   Metric,
   Model,
   PermissionContext,
+  populateDocRefs,
+  rxDocsToJson,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
@@ -54,7 +56,6 @@ import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
-  from,
   Observable,
   of as obsOf,
   Subject,
@@ -582,7 +583,7 @@ export class ListDataSource<
           break;
         case 'dateStart':
           if (item && item.value) {
-            this._addNestedProps(
+            addNestedProps(
               selector,
               ['created_at', '$gte'],
               format(new Date(item.value), 'yyyy-MM-dd'),
@@ -591,7 +592,7 @@ export class ListDataSource<
           break;
         case 'dateEnd':
           if (item && item.value) {
-            this._addNestedProps(
+            addNestedProps(
               selector,
               ['created_at', '$lte'],
               format(new Date(item.value), 'yyyy-MM-dd'),
@@ -602,13 +603,13 @@ export class ListDataSource<
           // Basic Filter
           if (!item.isAdditionalFilter) {
             if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
-              this._addNestedProps(
+              addNestedProps(
                 selector,
                 [`${item.name.trim().toLowerCase()}_ref_id`, '$in'],
                 Array.isArray(item.value.id) ? item.value.id : [item.value.id],
               );
             } else {
-              this._addNestedProps(
+              addNestedProps(
                 selector,
                 [item.name.trim().toLowerCase(), item.operator ? item.operator.value : '$eq'],
                 item.value,
@@ -655,7 +656,7 @@ export class ListDataSource<
             } else {
               // AND additional filters logic
               if (additionalFiltersLogic === 'and') {
-                this._addNestedProps(
+                addNestedProps(
                   selector,
                   [
                     this._isDataList != null
@@ -686,21 +687,21 @@ export class ListDataSource<
     });
     if (additionalDataSchema != null && this._isDataList != null) {
       const schemaKey = this._isDataList === 'form' ? 'form_schema_ref_id' : 'report_schema_ref_id';
-      this._addNestedProps(querySelector, [schemaKey, '$eq'], additionalDataSchema.id);
+      addNestedProps(querySelector, [schemaKey, '$eq'], additionalDataSchema.id);
     }
     if (
       this._isAggregationList &&
       permissionContext['user_form_schemas'] != null &&
       !permissionContext['user_form_schemas'].has('all')
     ) {
-      this._addNestedProps(
+      addNestedProps(
         querySelector,
         [`${this._isAggregationList}_schema_ref_id`, '$in'],
         [...permissionContext['user_form_schemas']],
       );
     }
 
-    this._addNestedProps(querySelector, ['is_deleted', '$ne'], true);
+    addNestedProps(querySelector, ['is_deleted', '$ne'], true);
 
     const query: DataQueryOptions = {
       selector: querySelector,
@@ -798,7 +799,7 @@ export class ListDataSource<
             return true;
           });
         }
-        const populatedDocs = this._populateDocRefs(resultDocs);
+        const populatedDocs = populateDocRefs<T>(resultDocs);
 
         return populatedDocs;
       }),
@@ -1054,7 +1055,7 @@ export class ListDataSource<
         },
         error: err => this.actionErrorEvt.emit(err),
       });
-    return results ? this._rxDocsToJson(results) : [];
+    return results ? rxDocsToJson<T>(results) : [];
   }
 
   /**
@@ -1120,73 +1121,6 @@ export class ListDataSource<
       this.getPaginator.firstPage();
     }
     return pageEvt;
-  }
-  /**
-   * Converts an array of RxDocuments into an array of T objects
-   * @param docs RxDocument[]
-   * @returns The converted objects
-   */
-  private _rxDocsToJson(docs: RxDocument<T>[]): T[] {
-    let docsJson: T[] = [];
-    docs.forEach(doc => {
-      docsJson.push(clone(doc.toJSON()) as T);
-    });
-    return docsJson;
-  }
-
-  /**
-   * Populates all references to external collections in RxDocuments
-   * @param docs RxDocument array
-   * @returns The documents with populated refs
-   */
-  private _populateDocRefs(docs: RxDocument<T>[]): RxDocument<T>[] {
-    return docs.map(doc => {
-      let refProps = {};
-      for (let prop in doc) {
-        if (prop.includes('_ref_id')) {
-          const propKey = prop.replace('_ref_id', '') as keyof RxDocument<T>;
-          let refProp;
-          try {
-            refProp = {[propKey]: from(doc.populate(prop)).pipe(shareReplay(1))};
-          } catch (_) {
-            refProp = {[propKey]: obsOf(null)};
-          }
-          refProps = {...refProps, ...refProp};
-        }
-      }
-      const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<T>;
-      return popDoc;
-    });
-  }
-
-  /**
-   * Adds a nested object property and an optional value to an object
-   * @param baseObj The object to modify
-   * @param props The property names tree. The last one is the name of nested property to be added
-   * @param value? The optional value to set for the added property.
-   * @param options? The optional regex flags.
-   * @returns The modified object
-   */
-  private _addNestedProps(
-    baseObj: {[key: string]: string | {}},
-    props: string[],
-    value?: any,
-    options?: any,
-  ): {[key: string]: string | {}} {
-    let lastProp = value != undefined ? props.pop() : false;
-
-    for (let i = 0; i < props.length; i++) {
-      baseObj = baseObj[props[i].toString()] = baseObj[props[i].toString()] || {};
-    }
-
-    if (lastProp) {
-      baseObj[lastProp.toString()] = value;
-      if (options != null && lastProp === '$regex') {
-        baseObj[lastProp.toString()] = new RegExp(value, options ? options : 'i');
-      }
-    }
-
-    return baseObj;
   }
 
   /**

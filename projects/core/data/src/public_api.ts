@@ -41,6 +41,7 @@ export * from './data-service';
 export * from './data-service-config';
 export * from './data-service-interface';
 export * from './data-upsert-request';
+export * from './data-utility-functions';
 export * from './insert-model';
 export * from './metric';
 export * from './model';

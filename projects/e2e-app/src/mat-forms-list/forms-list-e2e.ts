@@ -2,23 +2,22 @@ import {AjfForm, createFormPdf} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
 import {
-  FormData,
-  FormDataManager,
-  FormSchema,
-  FormSchemaDeps,
-  FormSchemaManager,
-} from '@dino/core/forms';
+  ActionTrigger,
+  Metric,
+  MetricsService,
+  PermissionContextService,
+  populateDocRefs,
+} from '@dino/core/data';
+import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {LogManager} from '@dino/core/logs';
 import {UserDataManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
-import {BehaviorSubject, combineLatest, forkJoin, from, Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 import {additionalConfig, optionalModulesConfig} from '../mockconfig';
-import {deepCopy} from '@ajf/core/utils';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {ProjectManager} from '@dino/core/projects';
@@ -92,7 +91,7 @@ export class MatFormsListE2E {
               if (doc == null) {
                 return null;
               }
-              const item = this._populateDocRefs(doc);
+              const item = populateDocRefs<FormSchema>(doc);
               return item;
             }),
           );
@@ -443,30 +442,5 @@ export class MatFormsListE2E {
     ) {
       console.log(trigger);
     }
-  }
-
-  /**
-   * Populates all references to external collections in RxDocument
-   * @param doc RxDocument
-   * @returns The document with populated refs
-   */
-  private _populateDocRefs(doc: RxDocument<FormSchema>): RxDocument<FormSchema> {
-    let refProps = {};
-    for (let prop in doc) {
-      if (prop.includes('_ref_id')) {
-        const propKey = prop.replace('_ref_id', '') as keyof RxDocument<FormSchema>;
-        let refProp;
-        try {
-          refProp = {
-            [propKey]: from(doc.populate(prop)).pipe(shareReplay(1)),
-          };
-        } catch (e) {
-          refProp = {[propKey]: obsOf(null)};
-        }
-        refProps = {...refProps, ...refProp};
-      }
-    }
-    const popDoc = {...deepCopy(doc), ...refProps} as RxDocument<FormSchema>;
-    return popDoc;
   }
 }
