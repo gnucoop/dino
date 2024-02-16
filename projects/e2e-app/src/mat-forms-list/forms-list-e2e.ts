@@ -2,13 +2,7 @@ import {AjfForm, createFormPdf} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {
-  ActionTrigger,
-  Metric,
-  MetricsService,
-  PermissionContextService,
-  populateDocRefs,
-} from '@dino/core/data';
+import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {LogManager} from '@dino/core/logs';
@@ -83,23 +77,16 @@ export class MatFormsListE2E {
     this.formRowData = new BehaviorSubject<FormData | null>(null);
     this.formSelectionData = new BehaviorSubject<FormData[] | null>(null);
     this.formSchemaId = this._route.params.pipe(map(params => params['form_schema_id']));
+
     this.additionalDataSchema = this.formSchemaId.pipe(
-      map(schemaId => {
+      switchMap(schemaId => {
         if (schemaId != null) {
-          return this.formSchemaManager.get(schemaId).pipe(
-            map(doc => {
-              if (doc == null) {
-                return null;
-              }
-              const item = populateDocRefs<FormSchema>(doc);
-              return item;
-            }),
-          );
+          return this.formSchemaManager.get(schemaId);
         }
         return obsOf(null);
       }),
-      switchMap(schema => schema as Observable<FormSchema>),
       filter(schema => schema != null),
+      switchMap(schema => this.formSchemaManager.getSchemaWithRelationships(schema, true, null)),
       shareReplay(1),
     );
 
@@ -281,12 +268,6 @@ export class MatFormsListE2E {
       this.filtersService,
       this.formSchemaManager,
       this.isDataList,
-      null,
-      this._areaManager,
-      this._caseManager,
-      this._projectManager,
-      this._locationManager,
-      this._organizationManager,
     );
   }
 

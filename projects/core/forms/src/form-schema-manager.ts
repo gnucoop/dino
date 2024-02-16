@@ -20,30 +20,71 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Injectable, Optional} from '@angular/core';
 import {
   DataModelManager,
+  DataQueryOptions,
   DataService,
   Metric,
   MetricsService,
   PermissionContextService,
+  populateDocRefs,
 } from '@dino/core/data';
 import {FilterGroup, ListHeader} from '@dino/core/list';
 
 import * as baseFsm from './base-form-schema-manager';
-import {FormSchema} from './form-schema';
+import {DepsOrigin, FormSchemaDeps} from './form-schema-deps';
 import {FormData} from './form-data';
-import {AjfChoice, AjfChoicesOrigin} from '@ajf/core/forms';
-import {DepsOrigin} from './form-schema-deps';
+import {FormDataManager} from './form-data-manager';
+import {FormSchema} from './form-schema';
+import {
+  AjfChoice,
+  AjfChoicesOrigin,
+  AjfField,
+  AjfFieldType,
+  AjfNode,
+  AjfRepeatingSlide,
+  AjfSlide,
+  isContainerNode,
+  isField,
+  isFieldWithChoices,
+} from '@ajf/core/forms';
 import {RxDocument} from 'rxdb';
-import {Project} from '@dino/core/projects';
+import {Project, ProjectManager} from '@dino/core/projects';
+import {deepCopy} from '@ajf/core/utils';
+import {
+  Observable,
+  catchError,
+  forkJoin,
+  map,
+  of as obsOf,
+  switchMap,
+  take,
+  throwError,
+  zip,
+} from 'rxjs';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
+  /**
+   * A Dictionary of all the optional Metrics managers
+   */
+  private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
+
   constructor(
     dataService: DataService,
     permissionContextService: PermissionContextService,
     private _metricService: MetricsService,
+    private _fdm: FormDataManager,
+    @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
+    @Optional() private _projectManager: ProjectManager | null,
+    @Optional() private _locationManager: LocationManager | null,
+    @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     super(
       baseFsm.creationParams,
@@ -52,6 +93,14 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       [],
       [{checkName: 'user_form_schemas'}],
     );
+
+    this._metricManagers = {
+      area: this._areaManager,
+      case: this._caseManager,
+      location: this._locationManager,
+      organization: this._organizationManager,
+      project: this._projectManager,
+    } as {[metricType: string]: DataModelManager<Metric> | null};
   }
 
   override generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[] {
@@ -98,6 +147,267 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
+   * Populate the choice origins in the FormSchema
+   * adding the external values taken via the relationships
+   * @param formSchema
+   * @returns the populated form schema
+   */
+  getSchemaWithRelationships(
+    formSchema: RxDocument<FormSchema> | null,
+    isList: boolean,
+    metricSel: {
+      [key: string]: Metric;
+    } | null,
+  ): Observable<FormSchema | null> {
+    if (formSchema) {
+      const populatedFormSchema = populateDocRefs<FormSchema>(formSchema);
+
+      return (populatedFormSchema as any)['form_schema_deps'].pipe(
+        switchMap((doc: RxDocument<FormSchemaDeps>) => {
+          if (doc == null) {
+            return obsOf(null);
+          }
+          return obsOf(doc.toJSON()) as Observable<FormSchemaDeps>;
+        }),
+        switchMap((fschemadeps: FormSchemaDeps) => {
+          if (fschemadeps == null || fschemadeps.deps_origin == null) {
+            return zip(obsOf(null), obsOf(null), obsOf(fschemadeps));
+          }
+
+          const extFormDataObs = this._getExternalFormData(fschemadeps, isList, metricSel);
+          let extFormDataRes: Observable<RxDocument<FormData>[][] | null> = obsOf(null);
+          if (extFormDataObs.length) {
+            extFormDataRes = forkJoin(extFormDataObs).pipe(
+              map((extDatas: RxDocument<FormData>[][]) => {
+                return extDatas;
+              }),
+            );
+          }
+
+          let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
+          let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
+          const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
+            deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
+          );
+          if (metricsChoicesOrigin != undefined) {
+            metricOptSourceObs = this.getAllFormMetricsByTypes(
+              metricsChoicesOrigin.metrics_choices_origin,
+            );
+          }
+          if (metricOptSourceObs.length) {
+            metricOptSource = forkJoin(metricOptSourceObs).pipe(
+              map((mData: RxDocument<Metric>[][]) => {
+                return mData;
+              }),
+            );
+          }
+          return zip(extFormDataRes, metricOptSource, obsOf(fschemadeps));
+        }),
+        map((originData: any[]) => {
+          if (originData && originData.length > 2) {
+            const changes: RxDocument<FormData>[][] | null = originData[0];
+            const metricsOrigin: RxDocument<Metric>[][] | null = originData[1];
+            const fschemadeps = originData[2] as FormSchemaDeps;
+
+            const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
+            const newFormSchema: FormSchema = deepCopy(formSchema);
+            if (fschemadeps && fschemadeps.deps_origin && newFormSchema.schema.nodes) {
+              let extDocsIdx = 0;
+              fschemadeps.deps_origin.forEach(depsOrigin => {
+                if (
+                  depsOrigin.form_schema_ref_id &&
+                  depsOrigin.fields_to_update &&
+                  depsOrigin.fields_to_update.length
+                ) {
+                  if (depsOrigin.is_choice && changes && changes.length > extDocsIdx) {
+                    const field = depsOrigin.fields_to_update[0];
+                    const choicesOriginName = field + '_choice';
+                    const formDataForChoices =
+                      changes && changes.length > extDocsIdx ? changes[extDocsIdx] : null;
+                    newChoicesOrigins.push({
+                      type: 'fixed',
+                      name: choicesOriginName,
+                      label: choicesOriginName,
+                      choices: this.getChoicesFromDocs(depsOrigin, formDataForChoices),
+                    });
+                    extDocsIdx++;
+                  } else {
+                    depsOrigin.fields_to_update.forEach(field => {
+                      // Replace the field type for all fields that have a
+                      // choice origin based on a One-to-One Relationship
+                      const choicesOriginName = field + '_choice';
+                      this.findFieldsWithChoicesByChoicesName(
+                        newFormSchema.schema.nodes,
+                        choicesOriginName,
+                        true,
+                      );
+                    });
+                  }
+                }
+              });
+            }
+
+            if (metricsOrigin && metricsOrigin.length) {
+              metricsOrigin.forEach(metricOrigin => {
+                if (metricOrigin.length) {
+                  const choicesOriginName = metricOrigin[0].collection.name + '_metric_choice';
+                  newChoicesOrigins.push({
+                    type: 'fixed',
+                    name: choicesOriginName,
+                    label: choicesOriginName,
+                    choices: this.getChoicesFromMetrics(
+                      metricOrigin,
+                      metricOrigin[0].collection.name,
+                    ),
+                  });
+                }
+              });
+            }
+
+            if (newChoicesOrigins.length) {
+              const schemaWithNewChoices = this.addChoiceOriginToFormSchema(
+                newFormSchema,
+                newChoicesOrigins,
+              );
+              return schemaWithNewChoices;
+            }
+            return newFormSchema;
+          }
+          return formSchema;
+        }),
+      );
+    }
+    return obsOf(null);
+  }
+
+  /**
+   * Return the queries for the external datas for relationships
+   * @param fschemadeps The form schema dependencies info
+   * @param isList true if is a list datasource, false if is a create/edit single form
+   * @param metricSel The selected metrics for the edited formdata if isList false
+   * @returns An array of observable with queries for the relationships data
+   */
+  private _getExternalFormData(
+    fschemadeps: FormSchemaDeps,
+    isList: boolean,
+    metricSel: {
+      [key: string]: Metric;
+    } | null,
+  ): Observable<any>[] {
+    const extFormDataObs: Observable<any>[] = [];
+    if (fschemadeps.deps_origin) {
+      const activeMetrics = this._metricService.activeMetrics.value.map(
+        metric => metric.metricName,
+      );
+      fschemadeps.deps_origin
+        .filter(
+          deps =>
+            deps.form_schema_ref_id != null &&
+            deps.fields_to_update &&
+            deps.fields_to_update.length,
+        )
+        .forEach(depsOrigin => {
+          let addRelationshipQuery = true;
+          const opt: DataQueryOptions = {
+            selector: {
+              form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id},
+              is_deleted: {$ne: true},
+            },
+            sort: [{created_at: 'desc'}],
+          };
+          if (!isList) {
+            if (!depsOrigin.is_choice) {
+              opt['limit'] = 1;
+            }
+
+            if (depsOrigin.filter_by_metric) {
+              depsOrigin.filter_by_metric.forEach(metric => {
+                if (activeMetrics.includes(metric) && metricSel && metricSel[metric]) {
+                  opt['selector'][metric + '_ref_id'] = {
+                    $eq: metricSel[metric].id,
+                  };
+                } else {
+                  addRelationshipQuery = false;
+                }
+              });
+            }
+          } else {
+            // For relationships in list datasource, add only choices relationships
+            if (!depsOrigin.is_choice) {
+              addRelationshipQuery = false;
+            }
+          }
+
+          if (addRelationshipQuery) {
+            const query = this._fdm.query(opt).pipe(
+              take(1),
+              catchError(err => throwError(() => err) as Observable<RxDocument<FormData>[]>),
+            );
+            extFormDataObs.push(query);
+          }
+        });
+    }
+    return extFormDataObs;
+  }
+
+  /**
+   * Retrieves all values for the requested metric types (old... _getFormMetricsOptions)
+   * @param metricTypes The Metric types
+   * @returns A list of all matrics grouped by metric type
+   */
+  getAllFormMetricsByTypes(
+    metricsTypes: string[] | null | undefined,
+  ): Observable<RxDocument<Metric, {}>[]>[] {
+    let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
+    if (metricsTypes) {
+      metricsTypes.forEach(metricType => {
+        if (metricType && this._metricManagers[metricType] != null) {
+          let mtOptSource = this._metricManagers[metricType]!.query({
+            selector: {is_deleted: {$ne: true}},
+            sort: [{'name': 'asc'}],
+          });
+          metricsOptSource.push(mtOptSource);
+        }
+      });
+    }
+    return metricsOptSource;
+  }
+
+  /**
+   * Find all formschema fields than using the input choice origin name
+   * @param nodes the nodes for the form schema
+   * @param choicesOriginName the choicesOriginRef name to be replaced
+   * @param replaceFieldType if true replace the field type with type String for fields with choicesOriginName equals to choicesOriginName
+   * @returns true if the choicesOriginName is used by some fields
+   */
+  findFieldsWithChoicesByChoicesName(
+    nodes: (AjfRepeatingSlide | AjfSlide)[] | undefined,
+    choicesOriginName: string,
+    replaceFieldType: boolean,
+  ): boolean {
+    let hasChoiceField = false;
+    if (nodes) {
+      nodes.forEach((ctnNode: AjfNode) => {
+        if (isContainerNode(ctnNode)) {
+          ctnNode.nodes.forEach((n: AjfNode) => {
+            if (
+              isField(n) &&
+              isFieldWithChoices(n) &&
+              (n as any).choicesOriginRef === choicesOriginName
+            ) {
+              hasChoiceField = true;
+              if (replaceFieldType) {
+                (n as AjfField).fieldType = AjfFieldType.String;
+              }
+            }
+          });
+        }
+      });
+    }
+    return hasChoiceField;
+  }
+
+  /**
    * Add new dynamic choices origins to form schema
    * @param formSchema the form schema to update
    * @param newChoicesOrigins
@@ -127,18 +437,26 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
    * @param ctx
    * @returns new Choice Origins to add into a Form Schema
    */
-  getChoicesFromFieldReps(fieldName: string, ctx: {[key: string]: any}): AjfChoice<string>[] {
+  getChoicesFromFieldReps(
+    fieldName: string,
+    ctx: {[key: string]: any} | null,
+  ): AjfChoice<string>[] {
     const choices: AjfChoice<string>[] = [];
-    Object.keys(ctx).map(key => {
-      if (key.indexOf(fieldName + '__') > -1) {
-        if (ctx[key] != null) {
-          choices.push({
-            label: ctx[key],
-            value: ctx[key],
-          });
+    if (ctx) {
+      Object.keys(ctx).map(key => {
+        if (key.indexOf(fieldName + '__') > -1) {
+          if (ctx[key] != null) {
+            choices.push({
+              label: ctx[key],
+              value: ctx[key],
+            });
+          }
         }
-      }
-    });
+      });
+    }
+    if (choices.length === 0) {
+      choices.push({label: 'None', value: 'none'});
+    }
     return choices;
   }
 
@@ -149,20 +467,25 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
    * @param docs the list of Form Data to be used for the choices
    * @returns new Choice Origins to add into a Form Schema
    */
-  getChoicesFromDocs(depsOrigin: DepsOrigin, docs: RxDocument<FormData>[]): AjfChoice<string>[] {
+  getChoicesFromDocs(
+    depsOrigin: DepsOrigin,
+    docs: RxDocument<FormData>[] | null,
+  ): AjfChoice<string>[] {
     const choices: AjfChoice<string>[] = [];
     const fieldName = depsOrigin.fields_to_update ? depsOrigin.fields_to_update[0] : null;
 
-    if (fieldName) {
+    if (fieldName && docs) {
       docs.forEach(doc => {
         const extFormData = doc.toJSON();
         if (
           fieldName in extFormData.data &&
           extFormData.data[fieldName] != null &&
-          extFormData.data[fieldName].length
+          extFormData.data[fieldName].toString().length
         ) {
           const newChoice = {
-            label: this.getLabelForChoice(depsOrigin, extFormData) || extFormData.data[fieldName],
+            label:
+              this.getLabelForChoice(depsOrigin, extFormData) ||
+              extFormData.data[fieldName].toString(),
             value: extFormData.data[fieldName],
           };
 
@@ -178,6 +501,9 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
           choices.push(newChoice);
         }
       });
+    }
+    if (choices.length === 0) {
+      choices.push({label: 'None', value: 'none'});
     }
     return choices.sort((c1, c2) => c1.label.localeCompare(c2.label));
   }
@@ -225,9 +551,9 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         if (
           fieldName in extFormData.data &&
           extFormData.data[fieldName] != null &&
-          extFormData.data[fieldName].trim().length
+          extFormData.data[fieldName].toString().trim().length
         ) {
-          choiceLabel.push(extFormData.data[fieldName].trim());
+          choiceLabel.push(extFormData.data[fieldName].toString().trim());
         }
       });
       return choiceLabel && choiceLabel.length ? choiceLabel.join(' ') : null;

@@ -521,12 +521,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
               let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
               let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
-
               const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
                 deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
               );
               if (metricsChoicesOrigin != undefined) {
-                metricOptSourceObs = this._getFormMetricsOptions(
+                metricOptSourceObs = this._fs.getAllFormMetricsByTypes(
                   metricsChoicesOrigin.metrics_choices_origin,
                 );
               }
@@ -558,47 +557,54 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           const newFormSchema: FormSchema = deepCopy(fschema);
           let extCtx: {[key: string]: any} = {};
 
-          if (changes && changes.length) {
-            let extDocsIdx = 0;
-            fschemadeps.deps_origin.forEach(depsOrigin => {
-              if (
-                depsOrigin.form_schema_ref_id &&
-                depsOrigin.fields_to_update &&
-                depsOrigin.fields_to_update.length &&
-                changes.length > extDocsIdx
-              ) {
-                if (depsOrigin.is_choice) {
-                  const field = depsOrigin.fields_to_update[0];
+          let extDocsIdx = 0;
+          fschemadeps.deps_origin.forEach(depsOrigin => {
+            if (
+              depsOrigin.form_schema_ref_id &&
+              depsOrigin.fields_to_update &&
+              depsOrigin.fields_to_update.length
+            ) {
+              if (depsOrigin.is_choice) {
+                const field = depsOrigin.fields_to_update[0];
+                const choicesOriginName = field + '_choice';
+                const formDataForChoices =
+                  changes && changes.length > extDocsIdx ? changes[extDocsIdx] : null;
+                newChoicesOrigins.push({
+                  type: 'fixed',
+                  name: choicesOriginName,
+                  label: choicesOriginName,
+                  choices: this._fs.getChoicesFromDocs(depsOrigin, formDataForChoices),
+                });
+              } else {
+                const extFormData =
+                  changes && changes[extDocsIdx] !== null && changes[extDocsIdx].length
+                    ? changes[extDocsIdx][0].toJSON().data
+                    : null;
+
+                depsOrigin.fields_to_update.forEach(field => {
+                  extCtx[field] = null;
                   const choicesOriginName = field + '_choice';
-                  newChoicesOrigins.push({
-                    type: 'fixed',
-                    name: choicesOriginName,
-                    label: choicesOriginName,
-                    choices: this._fs.getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
-                  });
-                } else {
-                  if (changes[extDocsIdx] !== null && changes[extDocsIdx].length) {
-                    const extFormData = changes[extDocsIdx][0].toJSON();
-                    depsOrigin.fields_to_update.forEach(field => {
-                      extCtx[field] = null;
-                      if (field in extFormData.data) {
-                        extCtx[field] = extFormData.data[field];
-                      } else if (field + '__0' in extFormData.data) {
-                        const choicesOriginName = field + '_choice';
-                        newChoicesOrigins.push({
-                          type: 'fixed',
-                          name: choicesOriginName,
-                          label: choicesOriginName,
-                          choices: this._fs.getChoicesFromFieldReps(field, extFormData.data),
-                        });
-                      }
+                  const hasChoiceField = this._fs.findFieldsWithChoicesByChoicesName(
+                    newFormSchema.schema.nodes,
+                    choicesOriginName,
+                    false,
+                  );
+
+                  if (extFormData && field in extFormData) {
+                    extCtx[field] = extFormData[field];
+                  } else if ((extFormData && field + '__0' in extFormData) || hasChoiceField) {
+                    newChoicesOrigins.push({
+                      type: 'fixed',
+                      name: choicesOriginName,
+                      label: choicesOriginName,
+                      choices: this._fs.getChoicesFromFieldReps(field, extFormData),
                     });
                   }
-                }
-                extDocsIdx++;
+                });
               }
-            });
-          }
+              extDocsIdx++;
+            }
+          });
 
           if (metricsOrigin && metricsOrigin.length) {
             metricsOrigin.forEach(metricOrigin => {
@@ -988,29 +994,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         );
       }),
     );
-  }
-
-  /**
-   * Retrieves the available options for all Metrics
-   *
-   * @param metricType The type identifier of the metric.
-   */
-  private _getFormMetricsOptions(
-    metricsType: string[] | null | undefined,
-  ): Observable<RxDocument<Metric, {}>[]>[] {
-    let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
-    if (metricsType) {
-      metricsType.forEach(metricType => {
-        if (metricType && this._metricManagers[metricType] != null) {
-          let mtOptSource = this._metricManagers[metricType]!.query({
-            selector: {is_deleted: {$ne: true}},
-            sort: [{'name': 'asc'}],
-          });
-          metricsOptSource.push(mtOptSource);
-        }
-      });
-    }
-    return metricsOptSource;
   }
 
   /**

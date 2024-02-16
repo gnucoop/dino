@@ -733,7 +733,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
               );
               if (metricsChoicesOrigin != undefined) {
-                metricOptSourceObs = this._getFormMetricsOptions(
+                metricOptSourceObs = this._fs.getAllFormMetricsByTypes(
                   metricsChoicesOrigin.metrics_choices_origin,
                 );
               }
@@ -1304,29 +1304,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         );
       }),
     );
-  }
-
-  /**
-   * Retrieves the available options for all Metrics
-   *
-   * @param metricType The type identifier of the metric.
-   */
-  private _getFormMetricsOptions(
-    metricsType: string[] | null | undefined,
-  ): Observable<RxDocument<Metric, {}>[]>[] {
-    let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
-    if (metricsType) {
-      metricsType.forEach(metricType => {
-        if (metricType && this._metricManagers[metricType] != null) {
-          let mtOptSource = this._metricManagers[metricType]!.query({
-            selector: {is_deleted: {$ne: true}},
-            sort: [{'name': 'asc'}],
-          });
-          metricsOptSource.push(mtOptSource);
-        }
-      });
-    }
-    return metricsOptSource;
   }
 
   /**
