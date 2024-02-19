@@ -174,33 +174,15 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
             return zip(obsOf(null), obsOf(null), obsOf(fschemadeps));
           }
 
-          const extFormDataObs = this._getExternalFormData(fschemadeps, isList, metricSel);
-          let extFormDataRes: Observable<RxDocument<FormData>[][] | null> = obsOf(null);
-          if (extFormDataObs.length) {
-            extFormDataRes = forkJoin(extFormDataObs).pipe(
-              map((extDatas: RxDocument<FormData>[][]) => {
-                return extDatas;
-              }),
-            );
-          }
+          const extFormDataRes = this.getExternalFormData(fschemadeps, isList, metricSel);
 
-          let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
-          let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
           const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
             deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
           );
-          if (metricsChoicesOrigin != undefined) {
-            metricOptSourceObs = this.getAllFormMetricsByTypes(
-              metricsChoicesOrigin.metrics_choices_origin,
-            );
-          }
-          if (metricOptSourceObs.length) {
-            metricOptSource = forkJoin(metricOptSourceObs).pipe(
-              map((mData: RxDocument<Metric>[][]) => {
-                return mData;
-              }),
-            );
-          }
+          const metricOptSource = this.getAllFormMetricsByTypes(
+            metricsChoicesOrigin?.metrics_choices_origin,
+          );
+
           return zip(extFormDataRes, metricOptSource, obsOf(fschemadeps));
         }),
         map((originData: any[]) => {
@@ -285,15 +267,16 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
    * @param fschemadeps The form schema dependencies info
    * @param isList true if is a list datasource, false if is a create/edit single form
    * @param metricSel The selected metrics for the edited formdata if isList false
-   * @returns An array of observable with queries for the relationships data
+   * @returns A forkJoin for all the queries for the relationships data
    */
-  private _getExternalFormData(
+  getExternalFormData(
     fschemadeps: FormSchemaDeps,
     isList: boolean,
     metricSel: {
       [key: string]: Metric;
     } | null,
-  ): Observable<any>[] {
+  ): Observable<RxDocument<FormData>[][] | null> {
+    let extFormDataRes: Observable<RxDocument<FormData>[][] | null> = obsOf(null);
     const extFormDataObs: Observable<any>[] = [];
     if (fschemadeps.deps_origin) {
       const activeMetrics = this._metricService.activeMetrics.value.map(
@@ -347,18 +330,26 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
           }
         });
     }
-    return extFormDataObs;
+    if (extFormDataObs.length) {
+      extFormDataRes = forkJoin(extFormDataObs).pipe(
+        map((extDatas: RxDocument<FormData>[][]) => {
+          return extDatas;
+        }),
+      );
+    }
+    return extFormDataRes;
   }
 
   /**
-   * Retrieves all values for the requested metric types (old... _getFormMetricsOptions)
+   * Retrieves all values for the requested metric types
    * @param metricTypes The Metric types
-   * @returns A list of all matrics grouped by metric type
+   * @returns A forkJoin for all the queries for all metrics grouped by metric type
    */
   getAllFormMetricsByTypes(
     metricsTypes: string[] | null | undefined,
-  ): Observable<RxDocument<Metric, {}>[]>[] {
-    let metricsOptSource: Observable<RxDocument<Metric, {}>[]>[] = [];
+  ): Observable<RxDocument<Metric>[][] | null> {
+    let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
+    let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
     if (metricsTypes) {
       metricsTypes.forEach(metricType => {
         if (metricType && this._metricManagers[metricType] != null) {
@@ -366,11 +357,18 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
             selector: {is_deleted: {$ne: true}},
             sort: [{'name': 'asc'}],
           });
-          metricsOptSource.push(mtOptSource);
+          metricOptSourceObs.push(mtOptSource);
         }
       });
     }
-    return metricsOptSource;
+    if (metricOptSourceObs.length) {
+      metricOptSource = forkJoin(metricOptSourceObs).pipe(
+        map((mData: RxDocument<Metric>[][]) => {
+          return mData;
+        }),
+      );
+    }
+    return metricOptSource;
   }
 
   /**

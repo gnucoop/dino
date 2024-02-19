@@ -40,7 +40,6 @@ import {
   isDevMode,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   QueryList,
   ViewChildren,
@@ -52,7 +51,6 @@ import {
   ActionTrigger,
   ActionTriggerData,
   DataModelManager,
-  DataQueryOptions,
   Metric,
   MetricsService,
   Model,
@@ -101,11 +99,6 @@ import {
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
-import {AreaManager} from '@dino/core/areas';
-import {CaseManager} from '@dino/core/cases';
-import {ProjectManager} from '@dino/core/projects';
-import {LocationManager} from '@dino/core/locations';
-import {OrganizationManager} from '@dino/core/organizations';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 /**
@@ -419,11 +412,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at', 'created_at'];
 
   /**
-   * A Dictionary of all the optional Metrics managers
-   */
-  private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
-
-  /**
    * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */
@@ -443,11 +431,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
-    @Optional() private _areaManager: AreaManager | null,
-    @Optional() private _caseManager: CaseManager | null,
-    @Optional() private _projectManager: ProjectManager | null,
-    @Optional() private _locationManager: LocationManager | null,
-    @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this.isFormInizialized.next(false);
     this.formId = this._route.params.pipe(
@@ -478,14 +461,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         return false;
       }),
     );
-
-    this._metricManagers = {
-      area: this._areaManager,
-      case: this._caseManager,
-      location: this._locationManager,
-      organization: this._organizationManager,
-      project: this._projectManager,
-    } as {[metricType: string]: DataModelManager<Metric> | null};
 
     this._stepperPositionEvt
       .pipe(takeUntil(this._mainUnsubscribe))
@@ -715,35 +690,14 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             }
 
             if (fschemadeps.deps_origin) {
-              const extFormDataObs = this._getExternalFormData(fschemadeps, metricSel);
-
-              let extFormDataRes: Observable<RxDocument<FormData>[][] | null> = obsOf(null);
-              if (extFormDataObs.length) {
-                extFormDataRes = forkJoin(extFormDataObs).pipe(
-                  map((extDatas: RxDocument<FormData>[][]) => {
-                    return extDatas;
-                  }),
-                );
-              }
-
-              let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
-              let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
+              const extFormDataRes = this._fs.getExternalFormData(fschemadeps, false, metricSel);
 
               const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
                 deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
               );
-              if (metricsChoicesOrigin != undefined) {
-                metricOptSourceObs = this._fs.getAllFormMetricsByTypes(
-                  metricsChoicesOrigin.metrics_choices_origin,
-                );
-              }
-              if (metricOptSourceObs.length) {
-                metricOptSource = forkJoin(metricOptSourceObs).pipe(
-                  map((mData: RxDocument<Metric>[][]) => {
-                    return mData;
-                  }),
-                );
-              }
+              const metricOptSource = this._fs.getAllFormMetricsByTypes(
+                metricsChoicesOrigin?.metrics_choices_origin,
+              );
               return zip(extFormDataRes, metricOptSource);
             }
           }
@@ -1304,68 +1258,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         );
       }),
     );
-  }
-
-  /**
-   * Return the queries for the external form datas
-   * @param fschemadeps The Ajf form schema dependencies info
-   * @param metricSel The selected metrics
-   * @returns An array of observable with queries for the external form data
-   */
-  private _getExternalFormData(
-    fschemadeps: FormSchemaDeps,
-    metricSel: {
-      [key: string]: Metric;
-    } | null,
-  ): Observable<any>[] {
-    const extFormDataObs: Observable<any>[] = [];
-    if (fschemadeps.deps_origin) {
-      const activeMetrics = this.metricsService.activeMetrics.value.map(
-        metric => metric.metricName,
-      );
-      const dmm = this._dataModelManager as DataModelManager<T>;
-      fschemadeps.deps_origin
-        .filter(
-          deps =>
-            deps.form_schema_ref_id != null &&
-            deps.fields_to_update &&
-            deps.fields_to_update.length,
-        )
-        .forEach(depsOrigin => {
-          let missingMetric = false;
-          const opt: DataQueryOptions = {
-            selector: {
-              form_schema_ref_id: {$eq: depsOrigin.form_schema_ref_id},
-              is_deleted: {$ne: true},
-            },
-            sort: [{created_at: 'desc'}],
-          };
-          if (!depsOrigin.is_choice) {
-            opt['limit'] = 1;
-          }
-
-          if (depsOrigin.filter_by_metric) {
-            depsOrigin.filter_by_metric.forEach(metric => {
-              if (activeMetrics.includes(metric) && metricSel && metricSel[metric]) {
-                opt['selector'][metric + '_ref_id'] = {
-                  $eq: metricSel[metric].id,
-                };
-              } else {
-                missingMetric = true;
-              }
-            });
-          }
-
-          if (!missingMetric) {
-            const query = dmm.query(opt).pipe(
-              take(1),
-              catchError(err => throwError(() => err) as Observable<RxDocument<T, {}>[]>),
-            );
-            extFormDataObs.push(query);
-          }
-        });
-    }
-    return extFormDataObs;
   }
 
   private _removeControlsInForm(
