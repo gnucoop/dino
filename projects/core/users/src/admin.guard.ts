@@ -21,13 +21,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import {Observable} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {UserGroupManager} from './user-group-manager';
@@ -38,7 +32,7 @@ import {UserGroupManager} from './user-group-manager';
  * If the user does not, it redirects to the login component.
  */
 @Injectable({providedIn: 'root'})
-export class AdminGuard implements CanActivate {
+export class AdminGuard  {
   constructor(private _router: Router, private _userGroupManager: UserGroupManager) {}
 
   canActivate(
