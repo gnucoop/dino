@@ -143,7 +143,7 @@
     "svg-pan-zoom": "^3.6.1",
     "ts-json-schema-generator": "^1.0.0",
     "ts-node": "^10.7.0",
-    "typescript": "~4.8.2",
+    "typescript": "~4.9.3",
     "unique-names-generator": "^4.7.1"
   }
 }
