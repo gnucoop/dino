@@ -11,12 +11,12 @@ import {initializationScreenMaxDuration} from '../mocks';
   templateUrl: 'main-e2e.component.html',
   styles: [
     `
-        app-main, main, dino-main-nav {
-          display: block;
-          height: 100%;
-          position: relative;
-        }
-      `,
+            app-main, main, dino-main-nav {
+              display: block;
+              height: 100%;
+              position: relative;
+            }
+          `,
   ],
   encapsulation: ViewEncapsulation.None,
 })

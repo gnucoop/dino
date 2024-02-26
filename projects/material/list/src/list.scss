@@ -33,7 +33,7 @@ dino-list {
     }
   }
 
-  .mat-mdc-table__wrapper .mat-table {
+  .mat-mdc-table__wrapper .mat-mdc-table {
     min-width: auto !important;
     width: auto !important;
     transition: all ease-in-out 0.25s;
@@ -81,7 +81,7 @@ dino-list {
   }
 
   .mat-mdc-table thead,
-  .mat-table tbody,
+  .mat-mdc-table tbody,
   .mat-table tfoot {
     background: inherit;
   }
@@ -244,7 +244,7 @@ dino-list {
   }
 
   .mat-mdc-row:not(.dino-row-details):hover,
-  .mat-row:not(.dino-row-details).dino-hover {
+  .mat-mdc-row:not(.dino-row-details).dino-hover {
     cursor: pointer;
     .mat-column-actions,
     .dino-edit-status-icon {
@@ -378,8 +378,8 @@ dino-list {
   }
   .mat-mdc-tab-body {
     background-color: inherit;
-    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-    .mat-tab-body-content {
+    .mat-mdc-tab-body-content {
+      border: 2px solid red;
       align-items: center !important;
     }
   }

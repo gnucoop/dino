@@ -102,7 +102,6 @@ dino-search-filters-widget {
         width: 100%;
         .mat-mdc-button {
           width: 100%;
-          /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
           span.mat-button-wrapper {
             flex-flow: row wrap;
             display: flex;

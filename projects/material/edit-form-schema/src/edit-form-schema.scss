@@ -49,11 +49,11 @@ dino-edit-form-schema {
         .ajf-fields-list {
           background: transparent;
         }
-        .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-card {
+        .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
           background: transparent;
           background-color: transparent;
         }
-        .ajf-fields-list .mat-mdc-card-container .mat-card {
+        .ajf-fields-list .mat-mdc-card-container .mat-mdc-card {
           margin-left: 50px;
         }
       }
@@ -61,7 +61,6 @@ dino-edit-form-schema {
   }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 /* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 .mat-mdc-autocomplete-panel,
 .mat-mdc-select-panel {

@@ -4,7 +4,7 @@ dino-create-form {
   font-size: 110%;
   height: 100%;
 
-  dino-floating-button .mat-mdc-fab-bottom-right.mat-fab.mat-mdc-button-base:not(.mat-button-disabled) {
+  dino-floating-button .mat-fab-bottom-right.mat-mdc-button-base:not([disabled]) {
     color: #32db64;
     background-color: rgba(50, 219, 100, 0.3);
   }

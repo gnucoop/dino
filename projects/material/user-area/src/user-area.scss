@@ -14,8 +14,7 @@ dino-user-area {
       margin: 0 0 20px;
     }
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-content {
+  .mat-mdc-tab-body-content {
     overflow: hidden !important;
   }
   .mat-expansion-panel-header {
@@ -30,8 +29,7 @@ dino-user-area {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
-    /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-    .mat-form-field,
+    .mat-mdc-form-field,
     .mat-button-ripple-round,
     .dino-error-message {
       flex: 1 0 auto !important;

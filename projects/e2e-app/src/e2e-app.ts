@@ -43,20 +43,20 @@ import {live, initializationScreenMaxDuration} from './mocks';
   template: '<app-main><router-outlet></router-outlet></app-main>',
   styles: [
     `
-        body, html {
-          height: 100%;
-          width: 100%;
-          position: relative;
-        }
-        e2e-app {
-          display: block;
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-        }
-      `,
+            body, html {
+              height: 100%;
+              width: 100%;
+              position: relative;
+            }
+            e2e-app {
+              display: block;
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+            }
+          `,
   ],
   encapsulation: ViewEncapsulation.None,
 })

@@ -26,7 +26,6 @@ dino-langs {
       align-self: auto;
     }
     div:nth-child(1) {
-      /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
       mat-button-toggle-group {
         margin-left: 20px;
       }

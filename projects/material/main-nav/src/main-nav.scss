@@ -209,11 +209,11 @@ dino-main-nav {
   }
 }
 .dino-notifications-menu,
-.mat-menu-content {
+.mat-mdc-menu-content {
   &:empty {
     display: none;
   }
-  &.mat-menu-panel {
+  &.mat-mdc-menu-panel {
     min-height: unset !important;
     max-width: 460px;
     @media only screen and (max-width: 768px) {
