@@ -1100,8 +1100,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           this.isLoading.next(true);
           return zip(apiCall);
         }),
-        withLatestFrom(this.isDetails),
-        switchMap(([res, isDetails]) => {
+        withLatestFrom(this.isDetails, this._formSchemaStatuses),
+        switchMap(([res, isDetails, formStatuses]) => {
           this.isLoading.next(false);
           if (res.length) {
             const formObj = res[0];
@@ -1123,6 +1123,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             newItem['data'].data != null
               ? (newItem['data'].data = formValue)
               : (newItem['data'] = formValue);
+
+            if (formObj.evt !== 'draft' && newItem['form_status_ref_id'] == null) {
+              let defaultFormStatus: string | null =
+                formStatuses && formStatuses.length
+                  ? formStatuses.reduce((prev, curr) =>
+                      prev.status_level < curr.status_level ? prev : curr,
+                    ).id
+                  : null;
+              if (defaultFormStatus) {
+                newItem['form_status_ref_id'] = defaultFormStatus;
+              }
+            }
 
             if (formObj.fmSelector != null) {
               const selectedMetrics = formObj.fmSelector.selectedMetrics;
