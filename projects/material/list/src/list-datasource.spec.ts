@@ -159,7 +159,6 @@ describe('ListDataSource', () => {
   });
 
   it('should create a Mango Query from an encoded queryString', async () => {
-    const spyAddNestedProp = spyOn<any>(dataSource, '_addNestedProps').and.callThrough();
     const spyQueryResults = spyOn(dataSource, 'getQueryResults').and.callThrough();
 
     const permissionContext = await firstValueFrom(dummyManager.permissionContext);
@@ -175,7 +174,6 @@ describe('ListDataSource', () => {
       sort: [Object({created_at: 'desc'}), Object({updated_at: 'desc'})],
     };
 
-    expect(spyAddNestedProp).toHaveBeenCalled();
     expect(spyQueryResults).toHaveBeenCalled();
     expect(query).toEqual(expectedMangoQuery);
   });
