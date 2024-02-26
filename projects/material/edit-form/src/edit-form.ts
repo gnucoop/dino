@@ -75,7 +75,6 @@ import {TranslocoService} from '@ngneat/transloco';
 import {
   BehaviorSubject,
   combineLatest,
-  forkJoin,
   Observable,
   of as obsOf,
   Subject,
