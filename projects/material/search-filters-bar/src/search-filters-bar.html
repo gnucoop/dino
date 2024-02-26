@@ -109,8 +109,8 @@
             matInput
             #fltinput
             [formControlName]="additionalBasicFiltersLabels[idx]"
-            placeholder="{{(additionalBasicFiltersLabels[idx]|transloco).charAt(0).toUpperCase() +
-              (additionalBasicFiltersLabels[idx]|transloco).slice(1).replace('_', ' ').replace('data', '')}}"
+            placeholder="{{((additionalBasicFiltersLabels[idx]).charAt(0).toUpperCase() +
+              (additionalBasicFiltersLabels[idx]).slice(1).replace('_', ' ').replace('data', '')).trim()|transloco}}"
             [matAutocomplete]="auto"
           />
           <mat-icon matSuffix color="primary">search</mat-icon>
