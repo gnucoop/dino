@@ -53,6 +53,7 @@ import {
   TEXT_CONDITION_OPERATORS,
   WidgetData,
 } from '@dino/core/list';
+import {format} from 'date-fns';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {debounceTime, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
@@ -225,7 +226,15 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
           return;
         }
         Object.keys(formValue).forEach(key => {
-          filterItemData.value = formValue[key];
+          if (
+            formValue[key] &&
+            typeof formValue[key] === 'object' &&
+            filterItemData.fieldType === AjfFieldType.DateInput
+          ) {
+            filterItemData.value = format(new Date(formValue[key]), 'yyyy-MM-dd');
+          } else {
+            filterItemData.value = formValue[key];
+          }
           filterItemData.operator = this._operatorValue.getValue();
           filterItemData.isValid = true;
         });
