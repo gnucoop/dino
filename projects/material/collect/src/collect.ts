@@ -232,7 +232,16 @@ export class Collect {
                     'edit',
                     permissionContext,
                   ),
-                  shareUrl: 'visibility' in document && document.visibility === 1,
+                  shareUrl:
+                    'visibility' in document &&
+                    document.visibility === 1 &&
+                    this._pcs.checkPermission(
+                      document.id,
+                      'form_schema',
+                      'create',
+                      permissionContext,
+                      true,
+                    ),
                   unique:
                     'uniqueMetricsSet' in document.schema && document.schema.uniqueMetricsSet
                       ? document.schema.uniqueMetricsSet
