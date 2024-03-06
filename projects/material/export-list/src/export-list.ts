@@ -30,8 +30,8 @@ import {
   AjfSlide,
   AjfTableField,
 } from '@ajf/core/forms';
-import {TranslocoService} from '@ajf/core/transloco';
-import {deepCopy} from '@ajf/core/utils';
+import { TranslocoService } from '@ajf/core/transloco';
+import { deepCopy } from '@ajf/core/utils';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -47,15 +47,15 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatSelectionList} from '@angular/material/list';
-import {MatTabChangeEvent} from '@angular/material/tabs';
-import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import { MatSelectionList } from '@angular/material/list';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription } from 'rxjs';
+import { filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
-import {FormSchema} from '@dino/core/forms';
+import { FormSchema } from '@dino/core/forms';
 
-import {ToggleButtonComponent} from './toggle-button';
+import { ToggleButtonComponent } from './toggle-button';
 import {
   AjfField,
   Context,
@@ -67,17 +67,17 @@ import {
   MAX_SHEETNAME_LENGTH,
   SelOption,
 } from './export-interface';
-import {AreaManager} from '@dino/core/areas';
-import {CaseManager} from '@dino/core/cases';
-import {LocationManager} from '@dino/core/locations';
-import {OrganizationManager} from '@dino/core/organizations';
-import {ProjectManager} from '@dino/core/projects';
-import {ActionTrigger, DataModelManager} from '@dino/core/data';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {RxDocument} from 'rxdb';
-import {MatSelectChange} from '@angular/material/select';
-import {ExportListType} from './export-list-type';
+import { AreaManager } from '@dino/core/areas';
+import { CaseManager } from '@dino/core/cases';
+import { LocationManager } from '@dino/core/locations';
+import { OrganizationManager } from '@dino/core/organizations';
+import { ProjectManager } from '@dino/core/projects';
+import { ActionTrigger, DataModelManager } from '@dino/core/data';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BreakpointObserverService } from '@dino/material/breakpoint-observer';
+import { RxDocument } from 'rxdb';
+import { MatSelectChange } from '@angular/material/select';
+import { ExportListType } from './export-list-type';
 
 /**
  * The export form component dialog data interface
@@ -133,6 +133,11 @@ export class ExportList implements AfterViewInit, OnDestroy {
   );
   readonly maxNumberOfForm$: Observable<number>;
 
+  /**
+   * The placeholder for the ',' in multiple choises translated values
+   */
+  private readonly _multipleChoisePlaceholder = '_';
+
   private readonly _exportedFieldNames$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
     [],
   );
@@ -155,7 +160,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
   private _downloadSub: Subscription = Subscription.EMPTY;
 
   /** A dictionary with the name of the slide and the list of selected field name as value */
-  private _exportedNamesBySlide: {[index: number]: string[]} = {};
+  private _exportedNamesBySlide: { [index: number]: string[] } = {};
 
   private _loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _selectAllFieldsofCurrentSlideEvt: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -170,7 +175,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
   /** A dictionary with all context values:
    * {field name: field value}
    * {choiceOriginName_choiceOriginValue: choiceLabel} */
-  private _ctxValuesDict: {[name: string]: string} = {};
+  private _ctxValuesDict: { [name: string]: string } = {};
 
   /**
    * The downloading state of the export
@@ -232,12 +237,12 @@ export class ExportList implements AfterViewInit, OnDestroy {
     @Optional() private _og: OrganizationManager | null,
   ) {
     this.availableFieldsAndFormats = [
-      {value: 'all_form_fields', label: 'Select all Form fields'},
-      {value: 'label_values', label: 'Label values'},
-      {value: 'data_analysis', label: 'Data Analysis format'},
+      { value: 'all_form_fields', label: 'Select all Form fields' },
+      { value: 'label_values', label: 'Label values' },
+      { value: 'data_analysis', label: 'Data Analysis format' },
     ];
 
-    this.availableFilters = [{value: 'displayed', label: 'Items in page'}];
+    this.availableFilters = [{ value: 'displayed', label: 'Items in page' }];
 
     this._selectAllSub = (this._selectAllFieldsofCurrentSlideEvt as Observable<boolean>)
       .pipe(withLatestFrom(this._currentTabIndex$))
@@ -252,10 +257,10 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
     this._exportedDataListPopulated$ = this.exportDataList$.pipe(
       switchMap(expData => {
-        const expObjData: Observable<{[k: string]: any}>[] = [];
+        const expObjData: Observable<{ [k: string]: any }>[] = [];
         for (let data of expData) {
           const dinoData = data.dino;
-          const itemObj: {[k: string]: Observable<any>} = {};
+          const itemObj: { [k: string]: Observable<any> } = {};
           for (let dKey in dinoData) {
             itemObj[dKey] = isObservable(dinoData[dKey]) ? dinoData[dKey] : obsOf(dinoData[dKey]);
           }
@@ -289,7 +294,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
         map(s => {
           const choicesOrigins: AjfChoicesOrigin<string | number>[] = s.choicesOrigins ?? [];
           const slides: AjfContainerNode[] = s.nodes ? (s.nodes as AjfContainerNode[]) : [];
-          const res: {[name: string]: string} = {};
+          const res: { [name: string]: string } = {};
           choicesOrigins.forEach((choicesOrigin: AjfChoicesOrigin<string | number>) => {
             choicesOrigin.choices.forEach(choice => {
               res[choicesOrigin.name + '_' + choice.value] = `${this._ts.translate(choice.label)}`;
@@ -364,6 +369,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
               const count = this._countNumberOfRepeatingSlidesInstance(
                 fieldsFromTab as AjfField[],
                 ctxList,
+                slideNode.name
               );
               if (this._dataAnalysis$.value) {
                 slideNode.nodes
@@ -378,7 +384,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
                     fields.push(fieldCloned);
                   });
               } else {
-                for (let i = 0; i <= count; i++) {
+                for (let i = 0; i < count; i++) {
                   slideNode.nodes
                     .filter(n => fieldsFromTabNames.indexOf(n.name) > -1)
                     .forEach((field, idx) => {
@@ -452,7 +458,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
             this.exportDataList$.next(
               dmExportableData.map(row => {
                 const rowData = this.dialogData.listType === 'forms' ? row.data : row;
-                const ctx: ExportData = {...rowData, dino: {}, externalRefs: {}};
+                const ctx: ExportData = { ...rowData, dino: {}, externalRefs: {} };
                 const keys = Object.keys(row);
                 keys
                   .filter(k => k != 'data')
@@ -485,6 +491,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
             let expandedExportCtx: Context[] = [];
 
             if (this._dataAnalysis$.value) {
+              // Expand rows for data analysis format
               expandedExportCtx = this._expandRowCtxForDataAnalysis(
                 slideNodesWithAllRepeatingInstance,
                 ctx,
@@ -500,7 +507,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
                     exportCtx[field.slideName] == null
                   ) {
                     const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
-                    exportCtx[field.slideName] = this._countNumberOfInstanceInContext(
+                    exportCtx[field.slideName] = ctx[field.slideName] ? ctx[field.slideName] : this._countNumberOfInstanceInContext(
                       fieldsFromTab,
                       ctx,
                     );
@@ -562,10 +569,10 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
               if (this._dataAnalysis$.value) {
                 expandedExportCtx.forEach(row => {
-                  exportCtxList.push({...row, ...refExportCtx});
+                  exportCtxList.push({ ...row, ...refExportCtx });
                 });
               } else {
-                exportCtxList.push({...exportCtx, ...refExportCtx});
+                exportCtxList.push({ ...exportCtx, ...refExportCtx });
               }
             }
           });
@@ -591,14 +598,13 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (this.filtersCount > 0) {
-      const numFilters = `${this._ts.translate('All items')} / ${
-        this.filtersCount
-      } ${this._ts.translate('filters')}`;
-      this.availableFilters.push({value: 'filtered', label: numFilters});
+      const numFilters = `${this._ts.translate('All items')} / ${this.filtersCount
+        } ${this._ts.translate('filters')}`;
+      this.availableFilters.push({ value: 'filtered', label: numFilters });
     } else {
-      this.availableFilters.push({value: 'filtered', label: 'Add filters'});
+      this.availableFilters.push({ value: 'filtered', label: 'Add filters' });
     }
-    this.availableFilters.push({value: 'not-filtered', label: 'All items'});
+    this.availableFilters.push({ value: 'not-filtered', label: 'All items' });
 
     if (this.dialogData) {
       if (this.dialogData.selectAll) {
@@ -631,7 +637,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
       exportedNames = Object.keys(ctxList[0]);
     }
     const worksheet: XLSX.WorkSheet = this._buildWorksheet(ctxList, exportedNames);
-    const workBook: XLSX.WorkBook = {Sheets: {'': worksheet}, SheetNames: ['']};
+    const workBook: XLSX.WorkBook = { Sheets: { '': worksheet }, SheetNames: [''] };
 
     const exportFileBuffer = XLSX.write(workBook, {
       bookType: 'csv',
@@ -641,7 +647,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
     const trigger: ActionTrigger = {
       name: 'Form Data Exported',
       triggerType: 'on_form_data_export',
-      triggerData: {newValue: exportFileBuffer, additional_info: {bookType: 'csv'}},
+      triggerData: { newValue: exportFileBuffer, additional_info: { bookType: 'csv' } },
     };
 
     this.emitExportActionTrigger.emit(trigger);
@@ -781,7 +787,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
     // Multiple choice: add a row for each value
     multipleValues.forEach(mVal => {
       const exportCtx: Context = {};
-      exportCtx[fieldName] = mVal;
+      exportCtx[fieldName] = mVal.replace(this._multipleChoisePlaceholder, ',');
       rowsForMultipleChoice.push(exportCtx);
     });
     return rowsForMultipleChoice;
@@ -798,7 +804,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
     slideNodesWithAllRepeatingInstance: AjfField[],
     ctx: ExportData,
   ): Context[] {
-    const expandedRows: {[key: string]: Context[]} = {};
+    const expandedRows: { [key: string]: Context[] } = {};
     const baseExportCtx: Context = {};
     let expandedExportCtx: Context[] = [];
 
@@ -827,7 +833,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
           this._evaluateContext(baseField, baseExportCtx, {});
           if (field.slideName != null && baseExportCtx[field.slideName] == null) {
             const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
-            const numberOfInstanceInContext = this._countNumberOfInstanceInContext(
+            const numberOfInstanceInContext = ctx[field.slideName] ? ctx[field.slideName] : this._countNumberOfInstanceInContext(
               fieldsFromTab,
               ctx,
             );
@@ -861,7 +867,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
               // Add the row for the slide instance
               if (rowsForMultipleChoice.length > 0) {
                 rowsForMultipleChoice.forEach(choiceRow => {
-                  rowsForCurrentSlide.push({...exportCtx, ...choiceRow});
+                  rowsForCurrentSlide.push({ ...exportCtx, ...choiceRow });
                 });
               } else {
                 rowsForCurrentSlide.push(exportCtx);
@@ -874,15 +880,13 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
     let conta = 1;
     Object.keys(expandedRows).forEach(slide => {
-      expandedRows[slide].forEach((row, idx) => {
-        if (idx > 0) {
-          conta = 0;
-        }
-        expandedExportCtx.push({...baseExportCtx, ...row, conta});
+      expandedRows[slide].forEach(row => {
+        expandedExportCtx.push({ ...baseExportCtx, ...row, conta });
+        conta = 0;
       });
     });
     if (expandedExportCtx.length === 0) {
-      expandedExportCtx.push({...baseExportCtx, conta});
+      expandedExportCtx.push({ ...baseExportCtx, conta });
     }
     return expandedExportCtx;
   }
@@ -892,34 +896,34 @@ export class ExportList implements AfterViewInit, OnDestroy {
     const schema: AjfFormCreate = exportSchema.schema;
     const slideNodes: AjfSlide[] = schema.nodes
       ? (schema.nodes! as AjfSlide[]).map((slide, index) => {
-          slide.id = index;
-          slide.nodes = slide.nodes
-            .map(node => ({
-              ...node,
-              ...{
-                slideNodeType: slide.nodeType,
-                slideIndex: slide.id,
-                slideName: slide.name,
-              },
-            }))
-            .filter(
-              // remove unexportable ajf fields.
-              (node: AjfNode) =>
-                node.nodeType === 0 &&
-                (node as AjfField).fieldType !== AjfFieldType.File &&
-                (node as AjfField).fieldType !== AjfFieldType.Empty &&
-                (node as AjfField).fieldType !== AjfFieldType.Image,
-            );
-          return slide;
-        })
+        slide.id = index;
+        slide.nodes = slide.nodes
+          .map(node => ({
+            ...node,
+            ...{
+              slideNodeType: slide.nodeType,
+              slideIndex: slide.id,
+              slideName: slide.name,
+            },
+          }))
+          .filter(
+            // remove unexportable ajf fields.
+            (node: AjfNode) =>
+              node.nodeType === 0 &&
+              (node as AjfField).fieldType !== AjfFieldType.File &&
+              (node as AjfField).fieldType !== AjfFieldType.Empty &&
+              (node as AjfField).fieldType !== AjfFieldType.Image,
+          );
+        return slide;
+      })
       : [];
     const slideLabels: string[] = slideNodes.map(slide => slide.label);
     const slides = slideNodes.map(slide => slide.nodes);
-    return {schemaName, slideLabels, slides};
+    return { schemaName, slideLabels, slides };
   }
 
-  private _buildLabelsRow(names: string[]): {[name: string]: string} {
-    const labels: {[name: string]: string} = {};
+  private _buildLabelsRow(names: string[]): { [name: string]: string } {
+    const labels: { [name: string]: string } = {};
     names.forEach(name => {
       const fieldName = this._getFieldName(name);
       if (this._dinoFields.indexOf(name) === -1) {
@@ -966,7 +970,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
    */
   private _buildXlsx(ctxList: Context[], splitted = false): void {
     const exportModel: ExportModel = this.exportModel$.value!;
-    const sheets: {[sheet: string]: XLSX.WorkSheet} = {};
+    const sheets: { [sheet: string]: XLSX.WorkSheet } = {};
     if (splitted) {
       Object.keys(this._exportedNamesBySlide).forEach(exportNameKey => {
         const slideContext: Context[] = this._getSlideContex(
@@ -1008,7 +1012,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
     const trigger: ActionTrigger = {
       name: 'Form Data Exported',
       triggerType: 'on_form_data_export',
-      triggerData: {newValue: exportFileBuffer, additional_info: {bookType: 'xlsx'}},
+      triggerData: { newValue: exportFileBuffer, additional_info: { bookType: 'xlsx' } },
     };
 
     this.emitExportActionTrigger.emit(trigger);
@@ -1020,6 +1024,12 @@ export class ExportList implements AfterViewInit, OnDestroy {
     this._loading$.next(false);
   }
 
+  /**
+   * Count the max number of instances in the current context for all the repeating slides
+   * @param fields ajfFields list for the repeating slide
+   * @param ctx context for the form
+   * @returns the max number of instances for all the  repeating slides
+   */
   private _countNumberOfInstanceInContext(fields: AjfField[], ctx: Context): number {
     let count = -1;
     const fieldNames = fields.map(field => field.name);
@@ -1038,31 +1048,29 @@ export class ExportList implements AfterViewInit, OnDestroy {
     return count;
   }
 
+
   /**
-   * It returns tha max counts of the field instances relative to the current context
-   * list.
-   * example field1__0, field1__1, field1__2, field2__0, field2__1, field3__0.
-   * return 3
-   *
-   * @private
-   * @param fields
-   * @param ctxList
-   * @return {*}
+   * It returns tha max count of the field instances for a specific repeating slide relative
+   * to all the form data context list.
+   * @param fields 
+   * @param ctxList 
+   * @param slideName 
+   * @returns 
    */
-  private _countNumberOfRepeatingSlidesInstance(fields: AjfField[], ctxList: Context[]): number {
+  private _countNumberOfRepeatingSlidesInstance(fields: AjfField[], ctxList: Context[], slideName: string): number {
     let count = 0;
     ctxList.map(ctx => {
-      const countInCtx = this._countNumberOfInstanceInContext(fields, ctx) - 1;
+      const countInCtx = ctx[slideName] ? ctx[slideName] : this._countNumberOfInstanceInContext(fields, ctx);
       count = count < countInCtx ? countInCtx : count;
     });
     return count;
   }
 
   /**
-   * Evaluate the form context with its translations
+   * Evaluate the form context with its translations and put the result in exportCtx
    * @param field AjfField to be evaluate
-   * @param exportCtx the evaluated context
-   * @param ctx the AjForm context
+   * @param exportCtx the output evaluated context
+   * @param ctx the input Ajf Form Data context
    */
   private _evaluateContext(field: AjfField, exportCtx: Context, ctx: Context): void {
     if (ctx[field.name] != null || field.fieldType === AjfFieldType.Table) {
@@ -1211,11 +1219,11 @@ export class ExportList implements AfterViewInit, OnDestroy {
               return n;
             }
             const label = this._ctxValuesDict[prefix + n];
+            let transLabel = this._translate(n) as string;
             if (label != null && label !== '') {
-              return this._translate(label);
-            } else {
-              return this._translate(n);
+              transLabel = this._translate(label) as string;
             }
+            return this._dataAnalysis$.value ? transLabel.replace(',', this._multipleChoisePlaceholder) : transLabel;
           })
           .toString();
       } else {
