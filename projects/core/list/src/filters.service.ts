@@ -27,7 +27,7 @@ import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MetricsService, Model} from '@dino/core/data';
 import {TranslocoService} from '@ngneat/transloco';
-import {RxJsonSchema} from 'rxdb';
+import {RxJsonSchema, isRxDocument} from 'rxdb';
 import {TopLevelProperty} from 'rxdb/dist/types/types/rx-schema';
 import {
   BehaviorSubject,
@@ -816,8 +816,10 @@ export class FiltersService<T extends Model = Model> {
   }
 
   /**
-   * Transforms the names of the Filter Items that are related to a metric sub-fitler (eg. case code)
-   * into their main Metric Name (eg. case_code -> case)
+   * Transforms the names of the Filter Items that are related to a metric RxDocument sub-filter
+   * into their main Metric Name
+   * (eg. case_code with RxDocument as value -> case (eg. filter by case code in aggregation section)
+   *      case_name with string as value -> case_name (eg. for relationship metrics fields)
    * @param allFilters
    * @returns
    */
@@ -828,7 +830,9 @@ export class FiltersService<T extends Model = Model> {
     const transformedFilters = allFilters.map(filter => {
       const metric = activeMetrics.find(amt => filter.name.includes(`${amt}_`));
       if (metric) {
-        return {...filter, name: metric};
+        if (filter.value && isRxDocument(filter.value)) {
+          return {...filter, name: metric};
+        }
       }
       return filter;
     });
