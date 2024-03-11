@@ -39,6 +39,8 @@ import {TranslocoModule} from '@ngneat/transloco';
 
 import {EditFormSchema} from './edit-form-schema';
 import {ImportFormSchema} from './import-form-schema';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   imports: [
@@ -48,6 +50,8 @@ import {ImportFormSchema} from './import-form-schema';
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,

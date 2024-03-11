@@ -102,6 +102,17 @@
               <mat-option [value]="true">{{ 'Unique'|transloco }}</mat-option>
             </mat-select>
           </mat-form-field>
+
+          <mat-form-field
+            class="dino-form-attribute-short-field"
+            *ngIf="(autoReport|async) === null"
+          >
+            <mat-label>{{'Generate Report'|transloco}}</mat-label>
+            <mat-select formControlName="generateAutoReport">
+              <mat-option [value]="false">{{ 'No'|transloco }}</mat-option>
+              <mat-option [value]="true">{{ 'Yes'|transloco }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </form>
 
         <div class="dino-edit-form-schema-actions">

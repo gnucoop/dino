@@ -36,7 +36,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActiveMetric, InsertModel, MetricsService} from '@dino/core/data';
+import {ActiveMetric, DataService, InsertModel, MetricsService} from '@dino/core/data';
 import {
   FormSchema,
   FormSchemaManager,
@@ -56,6 +56,7 @@ import {
   of as obsOf,
   Subscription,
   throwError,
+  timer,
 } from 'rxjs';
 import {
   catchError,
@@ -71,6 +72,10 @@ import {ImportFormSchema} from './import-form-schema';
 import {TranslocoService} from '@ngneat/transloco';
 import {Translations} from './form-schema-translation-interface';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
+import {automaticReport} from '@ajf/core/reports';
+import {UserDataManager} from '@dino/core/users';
+import {RxDocument} from 'rxdb';
 
 /**
  * The Form Schema Editor component.
@@ -104,6 +109,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * List of filtered Material Icons identifiers
    */
   filteredIcons: Observable<string[]> = obsOf([]);
+
+  /**
+   * The Auto Report associated with the Form Schema (if it exists)
+   */
+  autoReport: Observable<RxDocument<ReportSchema> | null>;
 
   /**
    * Form group for editing the Form Schema attributes
@@ -151,6 +161,30 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _saveEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
+   * Emits when an Auto Report Schema should be generated
+   */
+  private _autoReportSchemaGenerationEvt: EventEmitter<{
+    fs: FormSchema;
+    autoReport: ReportSchema | null;
+  }> = new EventEmitter<{fs: FormSchema; autoReport: ReportSchema | null}>();
+
+  /**
+   * Emits when an Auto Report Data should be generated
+   */
+  private _autoReportDataGenerationEvt: EventEmitter<ReportSchema> =
+    new EventEmitter<ReportSchema>();
+
+  /**
+   * Auto Report Schema generation subscription
+   */
+  private _autoReportSchemaSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Auto Report Data generation subscription
+   */
+  private _autoReportDataSub: Subscription = Subscription.EMPTY;
+
+  /**
    * Emitted when the Form Status list has been updated
    */
   private _updateStatusListEvt: EventEmitter<void> = new EventEmitter<void>();
@@ -161,7 +195,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _saveSub: Subscription = Subscription.EMPTY;
 
   /**
-   * A reference to the MatDialog that contains the Xlsform Import or Form Status Editor component
+   * A reference to the MatDialog that contains the Xlsform Import, Form Status Editor or AutoReport Dialog component
    */
   private _dialogRef?: MatDialogRef<ImportFormSchema | FormStatusEditor>;
 
@@ -188,10 +222,14 @@ export class EditFormSchema implements OnInit, OnDestroy {
     protected _cdr: ChangeDetectorRef,
     private _router: Router,
     private _route: ActivatedRoute,
+    private _dataService: DataService,
     private _fs: FormSchemaManager,
     private _formBuilderService: AjfFormBuilderService,
     private _formStatusManager: FormStatusManager,
     private _formSchemaManager: FormSchemaManager,
+    private _reportSchemaManager: ReportSchemaManager,
+    private _reportDataManager: ReportDataManager,
+    private _udm: UserDataManager,
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog,
     private _formBuilder: UntypedFormBuilder,
@@ -227,6 +265,15 @@ export class EditFormSchema implements OnInit, OnDestroy {
       shareReplay(1),
     );
 
+    this.autoReport = this._formSchema.pipe(
+      switchMap(fs => {
+        if (fs == null) {
+          return obsOf(null);
+        }
+        return this._reportSchemaManager.checkAutoReportExists(fs.name, fs.id);
+      }),
+    );
+
     this.availableFormStatuses = this._updateStatusListEvt.pipe(
       startWith([]),
       switchMap(() =>
@@ -259,6 +306,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             fs && fs.schema.uniqueMetricsSet ? fs.schema.uniqueMetricsSet : false,
             Validators.required,
           ],
+          generateAutoReport: [false, Validators.required],
         });
         fg.updateValueAndValidity({onlySelf: false, emitEvent: true});
         return fg;
@@ -286,11 +334,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
           this._formBuilderService.getCurrentForm(),
           this.formGroup,
           this._newSchema,
+          this.autoReport,
         ),
-        switchMap(([_, fs, schema, formGroup, schemaWithDeps]) => {
+        switchMap(([_evt, fs, schema, formGroup, schemaWithDeps, autoReport]) => {
           if (schema == null) {
-            return obsOf(null);
+            return obsOf({fs: null, autoReportConfirmation: false, autoReport});
           }
+          const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
           const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
           const patchSchema = {
             ...schema,
@@ -309,39 +359,115 @@ export class EditFormSchema implements OnInit, OnDestroy {
           if (schemaWithDeps) {
             formPatch.form_schema_deps_ref_id = schemaWithDeps.form_schema_deps_ref_id;
           }
+
           if (fs == null) {
             return this._formSchemaManager.create(formPatch).pipe(
+              map(fs => ({fs, autoReportConfirmation, autoReport})),
               catchError(err => {
                 this._ehms.captureErrorMessage(
                   `Could not create form schema: ${JSON.stringify(err)}`,
                   'error',
                 );
-                return obsOf(null);
+                return obsOf({fs: null, autoReportConfirmation: false, autoReport});
               }),
               take(1),
             );
           }
           return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
+            map(fs => ({fs, autoReportConfirmation, autoReport})),
             catchError(err => {
               this._ehms.captureErrorMessage(
                 `Could not patch form schema: ${JSON.stringify(err)}`,
                 'error',
               );
-              return obsOf(null);
+              return obsOf({fs: null, autoReportConfirmation: false, autoReport});
             }),
             take(1),
           );
         }),
       )
-      .subscribe(fs => {
+      .subscribe(({fs, autoReportConfirmation, autoReport}) => {
         if (fs != null) {
           this._snackbar.open(`"${fs.label}" saved`, 'SAVE', {duration: 5000});
-          this._router.navigateByUrl('/forms');
+
+          if ((autoReportConfirmation && autoReport == null) || autoReport != null) {
+            this._autoReportSchemaGenerationEvt.emit({fs, autoReport});
+          } else {
+            this._router.navigateByUrl('/forms');
+          }
         } else {
           this._snackbar.open('Oops! Something went wrong saving the Form', 'ERROR', {
             duration: 5000,
           });
         }
+      });
+
+    this._autoReportSchemaSub = this._autoReportSchemaGenerationEvt
+      .pipe(
+        switchMap(autoReportObj => {
+          const autoReportGen = this._generateAutoReportSchema(autoReportObj.fs);
+          const autoReport = autoReportObj.autoReport;
+          const reportSchemaObs =
+            autoReport != null
+              ? this._reportSchemaManager.patch({...autoReportGen, id: autoReport.id})
+              : this._reportSchemaManager.create(autoReportGen);
+
+          return reportSchemaObs.pipe(
+            catchError(err => {
+              this._ehms.captureErrorMessage(
+                `Could not create report schema: ${JSON.stringify(err)}`,
+                'error',
+              );
+              return obsOf(null);
+            }),
+          );
+        }),
+      )
+      .subscribe(reportSchema => {
+        if (reportSchema != null) {
+          this._autoReportDataGenerationEvt.emit(reportSchema);
+        } else {
+          this._router.navigateByUrl('/forms');
+        }
+      });
+
+    this._autoReportDataSub = this._autoReportDataGenerationEvt
+      .pipe(
+        // delay(3000),
+        switchMap(rs => {
+          if (rs == null) {
+            return obsOf(null);
+          }
+          return combineLatest([
+            this._udm.getActiveUserData(),
+            this._reportDataManager.checkOneReportDataExists(rs.id),
+          ]).pipe(
+            switchMap(([userData, reportDataExists]) => {
+              if (reportDataExists) {
+                return obsOf(null);
+              }
+              let newItem: {[key: string]: any} = {
+                report_schema_ref_id: rs.id,
+                user_data_ref_id: userData?.id,
+                area_ref_id: null,
+                case_ref_id: null,
+                location_ref_id: null,
+                organization_ref_id: null,
+                project_ref_id: null,
+                metadata: {},
+                date_start: null,
+                date_end: null,
+                created_at: format(new Date(), 'yyyy-MM-dd'),
+              };
+              return timer(3000).pipe(
+                switchMap(() => this._reportDataManager.create(newItem as ReportData)),
+              );
+            }),
+          );
+        }),
+      )
+      .subscribe(() => {
+        this._router.navigateByUrl('/forms');
       });
 
     this._lm
@@ -371,6 +497,17 @@ export class EditFormSchema implements OnInit, OnDestroy {
     );
   }
 
+  private _generateAutoReportSchema(fs: FormSchema): InsertModel<ReportSchema> {
+    return {
+      schema: automaticReport(fs),
+      form_schema_ids: [fs.id],
+      name: `${fs.name}_auto_report`,
+      label: `${fs.label} Auto Report`,
+      icon: fs.icon,
+      created_at: format(new Date(), 'yyyy-MM-dd'),
+    };
+  }
+
   /**
    * Filters the list of Material Icons
    * @param code The icon code identifier
@@ -387,6 +524,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
         .includes(filterValue),
     ) as string[];
   }
+
   /**
    * Opens the Import Xlsform dialog
    */
@@ -546,7 +684,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._saveEvt.complete();
+    this._autoReportSchemaGenerationEvt.complete();
     this._saveSub.unsubscribe();
+    this._autoReportSchemaSub.unsubscribe();
+    this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
     this._dialogDepsSub.unsubscribe();
   }
