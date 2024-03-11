@@ -23,6 +23,7 @@
 import {Injectable} from '@angular/core';
 import {
   DataModelManager,
+  DataQueryOptions,
   DataService,
   PermissionContextService,
   PullQueryContextChecks,
@@ -30,6 +31,8 @@ import {
 
 import {indexes, migrationStrategies, ReportData} from './report-data';
 import {schema} from './report-data-json';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 @Injectable({providedIn: 'root'})
 export class ReportDataManager extends DataModelManager<ReportData> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
@@ -40,5 +43,27 @@ export class ReportDataManager extends DataModelManager<ReportData> {
     schema.indexes = [...(schema.indexes || []), ...indexes];
     const collection = {name: 'report_data', collection: {schema, migrationStrategies}};
     super(collection, dataService, permissionContextService, [], pullQueryContextChecks);
+  }
+
+  /**
+   * Checks if one Report Data associated to a given Report Schema already exists
+   * @param rsId The id of the report schema
+   * @returns True if at least one document is found
+   */
+  checkOneReportDataExists(rsId: string): Observable<boolean> {
+    const query: DataQueryOptions = {
+      selector: {
+        report_schema_ref_id: {$eq: rsId},
+      },
+      limit: 1,
+    };
+    return this.query(query).pipe(
+      map(docs => {
+        if (docs.length && docs.length > 0) {
+          return true;
+        }
+        return false;
+      }),
+    );
   }
 }

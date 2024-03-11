@@ -21,10 +21,18 @@
  */
 
 import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  DataModelManager,
+  DataQueryOptions,
+  DataService,
+  PermissionContextService,
+} from '@dino/core/data';
 
 import {migrationStrategies, ReportSchema} from './report-schema';
 import {schema} from './report-schema-json';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {RxDocument} from 'rxdb';
 @Injectable({providedIn: 'root'})
 export class ReportSchemaManager extends DataModelManager<ReportSchema> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
@@ -34,6 +42,29 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
       permissionContextService,
       [],
       [{checkName: 'user_report_schemas'}],
+    );
+  }
+
+  /**
+   * Checks if an Automatic Report associated to a given Form Schema already exists
+   * @param fsName The form schema name
+   * @param fsId The id of the form schema
+   */
+  checkAutoReportExists(fsName: string, fsId: string): Observable<RxDocument<ReportSchema> | null> {
+    const query: DataQueryOptions = {
+      selector: {
+        name: {$eq: `${fsName}_auto_report`},
+        form_schema_ids: {$eq: [fsId]},
+      },
+      limit: 1,
+    };
+    return this.query(query).pipe(
+      map(docs => {
+        if (!docs.length) {
+          return null;
+        }
+        return docs[0];
+      }),
     );
   }
 }
