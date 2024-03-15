@@ -154,7 +154,8 @@ dino-list {
         border-radius: 100%;
         padding: 5px;
       }
-      .dino-bulk-delete-button, .dino-bulk-edit-button {
+      .dino-bulk-delete-button,
+      .dino-bulk-edit-button {
         position: relative;
         right: 10px;
       }
@@ -256,10 +257,19 @@ dino-list {
     }
     &.dino-expanded-row {
       box-shadow: none;
+      .dino-edit-status-icon {
+        @media only screen and (max-width: 767px) {
+          visibility: visible;
+        }
+        .mat-icon {
+          cursor: pointer;
+        }
+      }
     }
   }
 
-  .dino-bulk-delete-button, .dino-bulk-edit-button {
+  .dino-bulk-delete-button,
+  .dino-bulk-edit-button {
     cursor: pointer;
     background-color: transparent;
     border: none;

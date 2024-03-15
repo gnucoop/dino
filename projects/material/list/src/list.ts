@@ -687,6 +687,12 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       this.getDetails(row)
         .pipe(take(1))
         .subscribe(data => {
+          for (let key in this.expandedRowsData) {
+            if (this.expandedRowsData.hasOwnProperty(key)) {
+              delete this.expandedRowsData[key];
+            }
+          }
+          this.expandedRows.length = 0;
           const dds = new MatTableDataSource(data);
           this.expandedRowsData[row.id] = dds;
           this.expandedRows.push(row);

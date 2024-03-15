@@ -166,7 +166,7 @@
             *ngIf="header.isEditable && header.isEditable(element) && header.editMethod && element.data && element.data['$invalid'] !== true && ctx.showStatusEdit|async"
             mat-list-icon
             (click)="$event.stopPropagation();header.editMethod(element);"
-            >create
+            >edit_note
           </mat-icon>
           <mat-progress-bar
             *ngIf="header.column === 'form_status_ref_id' && element.form_status_ref_id !== null && showStatusProgressBar"
@@ -324,7 +324,7 @@
 
     <mat-row
       *matRowDef="let row; columns: (ctx.displayedColumns|async);"
-      [class.dino-highlighted-row]="selection.isSelected(row)"
+      [class.dino-highlighted-row]="(breakpointObserver.small|async) ? isRowExpanded(row) : selection.isSelected(row)"
       [class.dino-highlighted-light]="isHighlightedRow(row)"
       [class.dino-expanded-row]="isRowExpanded(row)"
       [class.dino-details-row]="ctx.isDetails"
