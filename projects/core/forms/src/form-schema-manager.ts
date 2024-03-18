@@ -67,6 +67,7 @@ import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
@@ -557,5 +558,47 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       return choiceLabel && choiceLabel.length ? choiceLabel.join(' ') : null;
     }
     return null;
+  }
+
+  /**
+   * Set new additional Controls in Form Group or uodate value if control exist
+   * @param formGroup
+   * @param additionalFormControls form controls to be set into form
+   */
+  setNewControlsInForm(
+    formGroup: UntypedFormGroup | null,
+    additionalFormControls: {[key: string]: {[key: string]: any}},
+  ): void {
+    if (
+      formGroup &&
+      formGroup.controls &&
+      Object.keys(formGroup.controls).length &&
+      additionalFormControls &&
+      Object.keys(additionalFormControls).length
+    ) {
+      const controlsToAdd: string[] = [];
+      const patchVal: {[key: string]: any} = {};
+      Object.keys(additionalFormControls).forEach(fcName => {
+        const fcCtx = additionalFormControls[fcName];
+        if (fcCtx) {
+          if (fcName in formGroup.controls) {
+            // Update value in formgroup
+            patchVal[fcName] = fcCtx;
+            // formGroup.patchValue(patchVal);
+          } else {
+            // Add control in formgroup
+            patchVal[fcName] = null;
+            //formGroup.patchValue(patchVal);
+            //formGroup.setControl(fcName, new UntypedFormControl(fcCtx));
+            controlsToAdd.push(fcName);
+          }
+        }
+      });
+      formGroup.patchValue(patchVal);
+      controlsToAdd.forEach(fcName => {
+        const fcCtx = additionalFormControls[fcName];
+        formGroup.setControl(fcName, new UntypedFormControl(fcCtx));
+      });
+    }
   }
 }

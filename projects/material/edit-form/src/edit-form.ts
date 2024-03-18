@@ -96,7 +96,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
-import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
@@ -351,7 +351,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   readonly formChanges: BehaviorSubject<AjfForm | null> = new BehaviorSubject<AjfForm | null>(null);
 
   /**
-   * Extra form control to add to the form group
+   * Extra form control (dino_form_info and dino_form_metrics) to be added to the form group
    */
   private _extraFormControls: {[key: string]: {[key: string]: any}} = {};
 
@@ -684,7 +684,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               if (Object.keys(metricsCtx).length) {
                 formGroup.patchValue(metricsCtx);
                 this._extraFormControls['dino_form_metrics'] = metricsCtx;
-                this._setNewControlsInForm(formGroup, this._extraFormControls);
+                this._fs.setNewControlsInForm(formGroup, this._extraFormControls);
               }
             }
 
@@ -718,47 +718,55 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           const newFormSchema: FormSchema = deepCopy(fschema);
           let extCtx: {[key: string]: any} = {};
 
-          if (changes && changes.length) {
-            let extDocsIdx = 0;
-            fschemadeps.deps_origin.forEach(depsOrigin => {
-              if (
-                depsOrigin.form_schema_ref_id &&
-                depsOrigin.fields_to_update &&
-                depsOrigin.fields_to_update.length &&
-                changes.length > extDocsIdx
-              ) {
-                if (depsOrigin.is_choice) {
-                  const field = depsOrigin.fields_to_update[0];
+          let extDocsIdx = 0;
+          fschemadeps.deps_origin.forEach(depsOrigin => {
+            if (
+              depsOrigin.form_schema_ref_id &&
+              depsOrigin.fields_to_update &&
+              depsOrigin.fields_to_update.length
+            ) {
+              if (depsOrigin.is_choice) {
+                const field = depsOrigin.fields_to_update[0];
+                const choicesOriginName = field + '_choice';
+                const formDataForChoices =
+                  changes && changes.length > extDocsIdx ? changes[extDocsIdx] : null;
+                newChoicesOrigins.push({
+                  type: 'fixed',
+                  name: choicesOriginName,
+                  label: choicesOriginName,
+                  choices: this._fs.getChoicesFromDocs(depsOrigin, formDataForChoices),
+                });
+              } else {
+                const extFormData =
+                  changes && changes[extDocsIdx] !== null && changes[extDocsIdx].length
+                    ? changes[extDocsIdx][0].toJSON().data
+                    : null;
+
+                depsOrigin.fields_to_update.forEach(field => {
+                  extCtx[field] = null;
                   const choicesOriginName = field + '_choice';
-                  newChoicesOrigins.push({
-                    type: 'fixed',
-                    name: choicesOriginName,
-                    label: choicesOriginName,
-                    choices: this._fs.getChoicesFromDocs(depsOrigin, changes[extDocsIdx]),
-                  });
-                } else {
-                  if (changes[extDocsIdx] !== null && changes[extDocsIdx].length) {
-                    const extFormData = changes[extDocsIdx][0].toJSON();
-                    depsOrigin.fields_to_update.forEach(field => {
-                      extCtx[field] = null;
-                      if (field in extFormData.data) {
-                        extCtx[field] = extFormData.data[field];
-                      } else if (field + '__0' in extFormData.data) {
-                        const choicesOriginName = field + '_choice';
-                        newChoicesOrigins.push({
-                          type: 'fixed',
-                          name: choicesOriginName,
-                          label: choicesOriginName,
-                          choices: this._fs.getChoicesFromFieldReps(field, extFormData.data),
-                        });
-                      }
+                  // Find all formschema fields than using the input choice origin name
+                  const hasChoiceField = this._fs.findFieldsWithChoicesByChoicesName(
+                    newFormSchema.schema.nodes,
+                    choicesOriginName,
+                    false,
+                  );
+
+                  if (extFormData && field in extFormData) {
+                    extCtx[field] = extFormData[field];
+                  } else if ((extFormData && field + '__0' in extFormData) || hasChoiceField) {
+                    newChoicesOrigins.push({
+                      type: 'fixed',
+                      name: choicesOriginName,
+                      label: choicesOriginName,
+                      choices: this._fs.getChoicesFromFieldReps(field, extFormData),
                     });
                   }
-                }
-                extDocsIdx++;
+                });
               }
-            });
-          }
+              extDocsIdx++;
+            }
+          });
 
           if (metricsOrigin && metricsOrigin.length) {
             metricsOrigin.forEach(metricOrigin => {
@@ -784,7 +792,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 newChoicesOrigins,
               );
               if (schemaWithNewChoices) {
-                this._removeControlsInForm(formGroup, this._extraFormControls);
                 const ajfFormSerialized = AjfFormSerializer.fromJson(schemaWithNewChoices.schema, {
                   ...formGroup.value,
                   ...extCtx,
@@ -839,7 +846,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           const ajfFormData = deepCopy(fdata.data);
           const createdAt = fdata != null && fdata.createdAt != null ? fdata.createdAt : null;
           const id = fdata != null && fdata.id != null ? fdata.id : null;
-          ajfFormData['dino_form_info'] = {
+          const dinoFormInfo = {
             status,
             allStatuses,
             user,
@@ -849,6 +856,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             createdAt,
             id,
           };
+          this._extraFormControls['dino_form_info'] = dinoFormInfo;
+          ajfFormData['dino_form_info'] = dinoFormInfo;
           return AjfFormSerializer.fromJson(fschema.schema, ajfFormData);
         },
       ),
@@ -885,22 +894,26 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       ),
       this.formId,
     ])
-      .pipe(takeUntil(this._mainUnsubscribe))
+      .pipe(withLatestFrom(this.isFormInizialized), takeUntil(this._mainUnsubscribe))
       .subscribe(
         ([
-          frGroup,
-          status,
-          allStatuses,
-          user,
-          userGroups,
-          activeUser,
-          activeUserGroups,
-          frDate,
-          frId,
+          [
+            frGroup,
+            status,
+            allStatuses,
+            user,
+            userGroups,
+            activeUser,
+            activeUserGroups,
+            frDate,
+            frId,
+          ],
+          isFormInizializedVal,
         ]) => {
           if (frGroup != null) {
             const createdAt =
               frDate != null && frDate.created_at != null ? frDate.created_at : null;
+            // User changes the createdAt date in metrics tab
             const dinoFormInfo = {
               status,
               allStatuses,
@@ -912,7 +925,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               id: frId,
             };
             this._extraFormControls['dino_form_info'] = dinoFormInfo;
-            this._setNewControlsInForm(frGroup, this._extraFormControls);
+            if (isFormInizializedVal) {
+              this._fs.setNewControlsInForm(frGroup, this._extraFormControls);
+            }
           }
         },
       );
@@ -975,6 +990,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                     }
                   });
                   if (setNextMetricValue) {
+                    // Set new metrics values required for relationships
                     this.metricChanges.next(requiredMetrics);
                   }
                 }
@@ -1227,15 +1243,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       .subscribe();
 
     this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
-      withLatestFrom(this._rendererService.formGroup, this._formData),
-      switchMap(([fdStatus, formGroup, fd]) => {
-        if (fdStatus === 1) {
-          this._setNewControlsInForm(formGroup, this._extraFormControls);
-          if (!this.isFormInizialized.value) {
-            this.isFormInizialized.next(true);
-          }
-        }
-
+      withLatestFrom(this._formData),
+      switchMap(([_, fd]) => {
         const invalidForm = (fd.data as any)['$invalid'] || false;
         const startErrors = invalidForm === true ? 1 : 0;
         return this._rendererService.errors.pipe(
@@ -1246,6 +1255,22 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       }),
       shareReplay(1),
     );
+
+    this._rendererService.formInitEvent
+      .pipe(
+        withLatestFrom(this._rendererService.formGroup),
+        map(([fdStatus, formGroup]) => {
+          if (fdStatus === 1) {
+            // Re-set dino_form_info and dino_form_metrics each time the renderer service has finished rendering a form
+            this._fs.setNewControlsInForm(formGroup, this._extraFormControls);
+            if (!this.isFormInizialized.value) {
+              this.isFormInizialized.next(true);
+            }
+          }
+        }),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe();
 
     this.isSaveDisabled = combineLatest([
       this.isAjfFormValid,
@@ -1271,6 +1296,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     );
   }
 
+  /**
+   * Reset to null all additional control added in formgroup
+   * @param formGroup
+   * @param formControls
+   */
   private _removeControlsInForm(
     formGroup: UntypedFormGroup | null,
     formControls: {[key: string]: {[key: string]: any}},
@@ -1281,31 +1311,6 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         patchValEmpty[fcName] = null;
       });
       formGroup.patchValue(patchValEmpty);
-    }
-  }
-
-  /**
-   * Set new Controls in Form Group
-   * @param formGroup
-   * @param formControls new form controls to set in form
-   */
-  private _setNewControlsInForm(
-    formGroup: UntypedFormGroup | null,
-    formControls: {[key: string]: {[key: string]: any}},
-  ): void {
-    if (formGroup && formControls && Object.keys(formControls).length) {
-      Object.keys(formControls).forEach(fcName => {
-        const fcCtx = formControls[fcName];
-        if (Object.keys(fcCtx).length) {
-          const patchValEmpty: {[key: string]: any} = {};
-          patchValEmpty[fcName] = null;
-          /*Object.keys(fcCtx).forEach(k => {
-            patchValEmpty[k] = null;
-          });*/
-          formGroup.patchValue(patchValEmpty);
-          formGroup.setControl(fcName, new UntypedFormControl(fcCtx));
-        }
-      });
     }
   }
 
