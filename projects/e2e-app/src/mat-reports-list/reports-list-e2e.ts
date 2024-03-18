@@ -33,44 +33,44 @@ export class MatReportsListE2E {
   readonly dataSource: ListDataSource<ReportData, ReportSchema>;
   readonly headers: ListHeader<ReportData>[] = [
     {column: 'id', label: 'ID', displayed: false},
-    {column: 'user_data_ref_id', label: 'User', populateWith: 'full_name'},
+    {column: 'user_data_ref_id', label: 'User', populateWith: 'full_name', displayed: true},
     {
       column: 'area_ref_id',
       label: 'Area',
-
+      displayed: true,
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('area'),
     },
     {
       column: 'case_ref_id',
       label: 'Case',
-
+      displayed: true,
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('case'),
     },
     {
       column: 'location_ref_id',
       label: 'Location',
-
+      displayed: true,
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('location'),
     },
     {
       column: 'organization_ref_id',
       label: 'Organization',
-
+      displayed: true,
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('organization'),
     },
     {
       column: 'project_ref_id',
       label: 'Project',
-
+      displayed: true,
       populateWith: 'name',
       hidden: !this.metricsService.isActiveMetric('project'),
     },
-    {column: 'date_start', label: 'Collected Since'},
-    {column: 'date_end', label: 'Collected Until'},
+    {column: 'date_start', label: 'Collected Since', displayed: true},
+    {column: 'date_end', label: 'Collected Until', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
