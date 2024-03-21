@@ -1,3 +1,19 @@
+<a name="15.2.10"></a>
+# 15.2.10 "limited-narwhal" (2024-03-21)
+### Bug Fixes
+* **core/list:** fix advanced filter for metric attributes ([d3a56ce](https://bitbucket.org/gnucoop/dino/commits/d3a56cec6cb1090dd4644e0db127a299be605eba))
+* **e2e-app:** add displayed true for report list columns ([f48d79d](https://bitbucket.org/gnucoop/dino/commits/f48d79def57ac12f58a846fe899e687a39970469))
+* **material/edit-form:** add default status when is empty (after save draft) ([9e31806](https://bitbucket.org/gnucoop/dino/commits/9e31806fef89bfea645c7e2e0e652f166f4f7d19))
+* **material/export-list:** fix multiple choices values and 'conta' field for data analysis export ([8f0e26b](https://bitbucket.org/gnucoop/dino/commits/8f0e26b22cd5df4aa71387d50000035cfebfa043))
+* **material/search-filters-bar:** move translate after parsing ([bfc5594](https://bitbucket.org/gnucoop/dino/commits/bfc55947bd220b7cb9597ef3553444756039fe99))
+* **material/search-filters-widget:** advanced filter on date fields in form fixed ([c73ce82](https://bitbucket.org/gnucoop/dino/commits/c73ce826801bc50a6716ecbebdf1067770f9e748))
+### Features
+* **core/reports:** Added checkAutoReportExists and checkOneReportDataExists methods to report schema/data managers ([01027f3](https://bitbucket.org/gnucoop/dino/commits/01027f3b52ff7b76db144cf08ef93d52c89a41fa))
+* **e2e-material:** add common ajf custom functions ([7bba01f](https://bitbucket.org/gnucoop/dino/commits/7bba01f8ece27b55a7629269457cb7b8ee45453e))
+* **material/edit-form-schema:** Auto Report generation integrated with Form Schema creation and editing. ([543288d](https://bitbucket.org/gnucoop/dino/commits/543288dbf2767e63540f057a8ceb9fd7cdc006e2))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.9"></a>
 # 15.2.9 "bitter-rabbit" (2024-02-14)
 ### Bug Fixes
