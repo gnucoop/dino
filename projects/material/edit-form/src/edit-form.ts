@@ -745,16 +745,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 depsOrigin.fields_to_update.forEach(field => {
                   extCtx[field] = null;
                   const choicesOriginName = field + '_choice';
-                  // Find all formschema fields than using the input choice origin name
-                  const hasChoiceField = this._fs.findFieldsWithChoicesByChoicesName(
-                    newFormSchema.schema.nodes,
-                    choicesOriginName,
-                    false,
-                  );
-
                   if (extFormData && field in extFormData) {
                     extCtx[field] = extFormData[field];
-                  } else if ((extFormData && field + '__0' in extFormData) || hasChoiceField) {
+                  } else if (extFormData && field + '__0' in extFormData) {
                     newChoicesOrigins.push({
                       type: 'fixed',
                       name: choicesOriginName,

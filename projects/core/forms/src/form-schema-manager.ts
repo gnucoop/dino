@@ -43,8 +43,6 @@ import {
   AjfField,
   AjfFieldType,
   AjfNode,
-  AjfRepeatingSlide,
-  AjfSlide,
   isContainerNode,
   isField,
   isFieldWithChoices,
@@ -220,7 +218,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
                       // choice origin based on a One-to-One Relationship
                       const choicesOriginName = field + '_choice';
                       this.findFieldsWithChoicesByChoicesName(
-                        newFormSchema.schema.nodes,
+                        newFormSchema,
                         choicesOriginName,
                         true,
                       );
@@ -373,19 +371,26 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
-   * Find all formschema fields than using the input choice origin name
-   * @param nodes the nodes for the form schema
-   * @param choicesOriginName the choicesOriginRef name to be replaced
-   * @param replaceFieldType if true replace the field type with type String for fields with choicesOriginName equals to choicesOriginName
+   * If a choices origin with the input name exists in the schema, with a size of 0 or 1 element, this is a relationship choices orign.
+   * In that case, find and return all form schema fields than using this input choice origin name.
+   * @param nodes the form schema
+   * @param choicesOriginName the choices origin name to be found
+   * @param replaceFieldType if true replaces the type with type String, for the field found.
+   * This is used by the advanced search for relationships repeating slide fields.
    * @returns true if the choicesOriginName is used by some fields
    */
   findFieldsWithChoicesByChoicesName(
-    nodes: (AjfRepeatingSlide | AjfSlide)[] | undefined,
+    formSchema: FormSchema,
     choicesOriginName: string,
     replaceFieldType: boolean,
   ): boolean {
-    let hasChoiceField = false;
-    if (nodes) {
+    let hasRelationshipsChoiceField = false;
+    const choicesOriginSize = formSchema.schema?.choicesOrigins?.find(
+      co => co.name === choicesOriginName,
+    )?.choices.length;
+
+    const nodes = formSchema.schema?.nodes;
+    if (nodes && choicesOriginSize && choicesOriginSize <= 1) {
       nodes.forEach((ctnNode: AjfNode) => {
         if (isContainerNode(ctnNode)) {
           ctnNode.nodes.forEach((n: AjfNode) => {
@@ -394,7 +399,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
               isFieldWithChoices(n) &&
               (n as any).choicesOriginRef === choicesOriginName
             ) {
-              hasChoiceField = true;
+              hasRelationshipsChoiceField = true;
               if (replaceFieldType) {
                 (n as AjfField).fieldType = AjfFieldType.String;
               }
@@ -403,7 +408,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         }
       });
     }
-    return hasChoiceField;
+    return hasRelationshipsChoiceField;
   }
 
   /**
