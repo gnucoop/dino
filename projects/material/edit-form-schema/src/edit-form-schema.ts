@@ -36,7 +36,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActiveMetric, DataService, InsertModel, MetricsService} from '@dino/core/data';
+import {ActiveMetric, InsertModel, MetricsService} from '@dino/core/data';
 import {
   FormSchema,
   FormSchemaManager,
@@ -161,6 +161,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _saveEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
+   * While true, the Form Schema save button is disabled
+   */
+  isSaving: boolean = false;
+
+  /**
    * Emits when an Auto Report Schema should be generated
    */
   private _autoReportSchemaGenerationEvt: EventEmitter<{
@@ -222,7 +227,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
     protected _cdr: ChangeDetectorRef,
     private _router: Router,
     private _route: ActivatedRoute,
-    private _dataService: DataService,
     private _fs: FormSchemaManager,
     private _formBuilderService: AjfFormBuilderService,
     private _formStatusManager: FormStatusManager,
@@ -272,6 +276,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
         }
         return this._reportSchemaManager.checkAutoReportExists(fs.name, fs.id);
       }),
+      shareReplay(1),
     );
 
     this.availableFormStatuses = this._updateStatusListEvt.pipe(
@@ -340,6 +345,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
           if (schema == null) {
             return obsOf({fs: null, autoReportConfirmation: false, autoReport});
           }
+          this.isSaving = true;
           const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
           const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
           const patchSchema = {
@@ -399,6 +405,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
           this._snackbar.open('Oops! Something went wrong saving the Form', 'ERROR', {
             duration: 5000,
           });
+          this.isSaving = false;
         }
       });
 
@@ -418,6 +425,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
                 `Could not create report schema: ${JSON.stringify(err)}`,
                 'error',
               );
+              this.isSaving = false;
               return obsOf(null);
             }),
           );
@@ -427,6 +435,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
         if (reportSchema != null) {
           this._autoReportDataGenerationEvt.emit(reportSchema);
         } else {
+          this.isSaving = false;
           this._router.navigateByUrl('/forms');
         }
       });
@@ -467,6 +476,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
         }),
       )
       .subscribe(() => {
+        this.isSaving = false;
         this._router.navigateByUrl('/forms');
       });
 
@@ -690,5 +700,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
     this._dialogDepsSub.unsubscribe();
+    this.isSaving = false;
   }
 }

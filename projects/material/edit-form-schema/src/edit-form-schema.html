@@ -133,7 +133,7 @@
             color="primary"
             translate
             (click)="save()"
-            [disabled]="!fgroup.valid"
+            [disabled]="!fgroup.valid || isSaving"
           >
             {{'Save'|transloco}} <mat-icon>save</mat-icon>
           </button>
