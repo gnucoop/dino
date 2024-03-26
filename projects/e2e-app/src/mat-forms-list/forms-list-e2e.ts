@@ -1,4 +1,4 @@
-import {AjfForm, createFormPdf} from '@ajf/core/forms';
+import {AjfForm, createFormPdf, downloadFormDoc} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
@@ -17,6 +17,7 @@ import {CaseManager} from '@dino/core/cases';
 import {ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
+import {AlignmentType, BorderStyle, HeadingLevel, Paragraph, Table, TableCell, TableRow} from 'docx';
 
 @Component({
   selector: 'app-forms-list-e2e',
@@ -39,6 +40,7 @@ export class MatFormsListE2E {
     view: 'visibility',
     edit: 'create',
     print: 'printer',
+    docx: 'description',
     duplicate: 'file_copy',
     delete: 'delete',
   };
@@ -173,13 +175,11 @@ export class MatFormsListE2E {
               matIcon: this.listRowActionsIcons[action],
               askConfirm: ['delete', 'print'].includes(action) ? true : false,
               customAction:
-                action === 'print'
-                  ? (dataRow: FormData | null) => {
-                      if (dataRow != null) {
-                        this.printPdf(dataRow);
-                      }
-                    }
-                  : undefined,
+                action === 'print'?
+                  (dataRow: FormData | null) => this.printPdf(dataRow):
+                action === 'docx'?
+                  (dataRow: FormData | null) => this.downloadDocx(dataRow):
+                undefined,
             }));
           }),
         );
@@ -211,13 +211,11 @@ export class MatFormsListE2E {
               matIcon: this.listRowActionsIcons[action],
               askConfirm: ['delete', 'print'].includes(action) ? true : false,
               customAction:
-                action === 'print'
-                  ? (dataRow: FormData | null) => {
-                      if (dataRow != null) {
-                        this.printPdf(dataRow);
-                      }
-                    }
-                  : undefined,
+                action === 'print'?
+                  (dataRow: FormData | null) => this.printPdf(dataRow):
+                action === 'docx'?
+                  (dataRow: FormData | null) => this.downloadDocx(dataRow):
+                undefined,
             }));
           }),
         );
@@ -297,7 +295,7 @@ export class MatFormsListE2E {
       .subscribe();
   }
 
-  printPdf(formData: {[key: string]: any}): void {
+  printPdf(formData: {[key: string]: any} | null): void {
     if (formData == null) {
       return;
     }
@@ -359,6 +357,63 @@ export class MatFormsListE2E {
           ).open();
         }
       });
+  }
+
+  downloadDocx(formData: {[key: string]: any} | null): void {
+    if (formData == null) {
+      return;
+    }
+    const activeMetrics = this.metricService.activeMetrics.getValue();
+    const values: Observable<RxDocument<Metric, {}> | null>[] = [];
+    activeMetrics.forEach(activeMetric => values.push(formData[`${activeMetric.metricName}`]));
+    const metricsData = forkJoin(values).pipe(filter(val => val != null));
+
+    combineLatest([this.additionalDataSchema, metricsData])
+    .pipe(take(1))
+    .subscribe(res => {
+      const schema = res[0];
+      if (schema == null) {
+        return;
+      }
+      const metrics = (res[1] || []).filter(m => m != null);
+
+      let translate: (s: string) => string = s => s;
+      if (this._translateService != null) {
+        translate = s => {
+          if (s == null || s.trim() === '') {
+            return '';
+          }
+          return this._translateService.translate(s) as string;
+        };
+      }
+
+      const title = new Paragraph({
+        text: schema.label,
+        heading: HeadingLevel.HEADING_1,
+        alignment: AlignmentType.CENTER
+      });
+      const header: any[] = [title, new Paragraph('')];
+
+      if (metrics.length > 0) {
+        const tableWidth = 9000;
+        const noBorder = {style: BorderStyle.NONE};
+        const noBorders = {top: noBorder, bottom: noBorder, left: noBorder, right: noBorder};
+
+        const metricsTab = new Table({
+          columnWidths: [tableWidth/2, tableWidth/2],
+          rows: metrics.map(m => new TableRow({children: [
+            new TableCell({borders: noBorders, children: [new Paragraph(
+              translate(m!.collection.name.charAt(0).toUpperCase() + m!.collection.name.slice(1))
+            )]}),
+            new TableCell({children: [new Paragraph(m!.name)]}),
+          ]})),
+        });
+        header.push(metricsTab);
+        header.push(new Paragraph(''));
+      }
+
+      downloadFormDoc(schema.schema as AjfForm, translate, header, formData['data']);
+    });
   }
 
   emitRowData(evt: FormData): void {

@@ -228,6 +228,7 @@ export class PermissionContextService {
             'view',
             'export',
             'print',
+            'docx',
             'status edit',
             'duplicate',
             'viewlog',

@@ -26,6 +26,7 @@
 export type ActionType =
   | 'delete'
   | 'print'
+  | 'docx'
   | 'download'
   | 'duplicate'
   | 'bulkFormEdit'
