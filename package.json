@@ -37,9 +37,9 @@
   "version": "15.2.10",
   "private": true,
   "dependencies": {
-    "@ajf/core": "https://drive.google.com/uc?export=download&id=1bkmZC0yC3Nl1vK0dm8udCitzoqOMMAl0",
+    "@ajf/core": "https://drive.google.com/uc?export=download&id=1XxmfhMTT1oWyRso4X9RI8ja3uNBmu4J4",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "https://drive.google.com/uc?export=download&id=1gRvtskJr2_shCen_7WYb4SBd0JbR6ilk",
+    "@ajf/material": "https://drive.google.com/uc?export=download&id=1Nkx_NDnCZESUqimUaGOQMopBTtodGtYm",
     "@angular/animations": "^16.2.12",
     "@angular/cdk": "^16.2.14",
     "@angular/common": "^16.2.12",
