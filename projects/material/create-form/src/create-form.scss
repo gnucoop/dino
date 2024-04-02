@@ -4,11 +4,6 @@ dino-create-form {
   font-size: 110%;
   height: 100%;
 
-  dino-floating-button .mat-fab-bottom-right.mat-mdc-button-base:not([disabled]) {
-    color: #32db64;
-    background-color: rgba(50, 219, 100, 0.3);
-  }
-
   dino-breadcrumbs {
     flex: 0 0 auto;
   }
