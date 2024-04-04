@@ -901,7 +901,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             frDate,
             frId,
           ],
-          isFormInizializedVal,
+          _,
         ]) => {
           if (frGroup != null) {
             const createdAt =
@@ -918,9 +918,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               id: frId,
             };
             this._extraFormControls['dino_form_info'] = dinoFormInfo;
-            if (isFormInizializedVal) {
-              this._fs.setNewControlsInForm(frGroup, this._extraFormControls);
-            }
+            this._fs.setNewControlsInForm(frGroup, this._extraFormControls);
           }
         },
       );

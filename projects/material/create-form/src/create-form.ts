@@ -648,7 +648,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       ),
     ])
       .pipe(withLatestFrom(this.isFormInizialized), takeUntil(this._mainUnsubscribe))
-      .subscribe(([[frGroup, activeUser, activeUserGroups, frDate], isFormInizializedVal]) => {
+      .subscribe(([[frGroup, activeUser, activeUserGroups, frDate], _]) => {
         if (frGroup != null && frDate != null && frDate.created_at != null) {
           // User changes the createdAt date in metrics tab
           const dinoFormInfo = {
@@ -657,9 +657,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             createdAt: frDate.created_at,
           };
           this._extraFormControls['dino_form_info'] = dinoFormInfo;
-          if (isFormInizializedVal) {
-            this._fs.setNewControlsInForm(frGroup, this._extraFormControls);
-          }
+          this._fs.setNewControlsInForm(frGroup, this._extraFormControls);
         }
       });
 

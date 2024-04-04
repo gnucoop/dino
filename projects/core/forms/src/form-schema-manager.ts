@@ -566,7 +566,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
-   * Set new additional Controls in Form Group or uodate value if control exist
+   * Set new additional Controls in Form Group or update value if control exist
    * @param formGroup
    * @param additionalFormControls form controls to be set into form
    */
@@ -577,7 +577,6 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     if (
       formGroup &&
       formGroup.controls &&
-      Object.keys(formGroup.controls).length &&
       additionalFormControls &&
       Object.keys(additionalFormControls).length
     ) {
@@ -587,20 +586,19 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         const fcCtx = additionalFormControls[fcName];
         if (fcCtx) {
           if (fcName in formGroup.controls) {
-            // Update value in formgroup
             patchVal[fcName] = fcCtx;
-            // formGroup.patchValue(patchVal);
           } else {
-            // Add control in formgroup
             patchVal[fcName] = null;
-            //formGroup.patchValue(patchVal);
-            //formGroup.setControl(fcName, new UntypedFormControl(fcCtx));
             controlsToAdd.push(fcName);
           }
         }
       });
-      formGroup.patchValue(patchVal);
+      if (Object.keys(patchVal).length) {
+        // Update value in formgroup
+        formGroup.patchValue(patchVal);
+      }
       controlsToAdd.forEach(fcName => {
+        // Add control in formgroup
         const fcCtx = additionalFormControls[fcName];
         formGroup.setControl(fcName, new UntypedFormControl(fcCtx));
       });
