@@ -23,6 +23,7 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {
   DataModelManager,
+  DataQueryOptions,
   DataService,
   MetricsService,
   PermissionContextService,
@@ -91,16 +92,16 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
       if (userGroupsIds.length > 1) {
         const userGroupsIdsEqArr = userGroupsIds.map(id => {
           return {
-            user_group_ids: id
-          }
+            user_group_ids: id,
+          };
         });
         return this._userModelManager
-            .query({selector: {$and: userGroupsIdsEqArr}})
-            .pipe(shareReplay(1));
+          .query({selector: {$and: userGroupsIdsEqArr}})
+          .pipe(shareReplay(1));
       } else {
         return this._userModelManager
-            .query({selector: {user_group_ids: userGroupsIds[0]}})
-            .pipe(shareReplay(1));
+          .query({selector: {user_group_ids: userGroupsIds[0]}})
+          .pipe(shareReplay(1));
       }
     } else {
       return obsOf([] as RxDocument<UserData>[]);
@@ -108,18 +109,91 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
   }
 
   /**
+   * Return a list of groups with the specified metric
+   * @param metricType the required metric type (i.e. location)
+   * @param metricId the required metric id
+   * @returns The list of groups with the specified metric
+   */
+  getGroupsByMetric(metricType: string, metricId: string): Observable<RxDocument<UserGroup>[]> {
+    if (metricType && metricId) {
+      const activeMetrics = this._metricService.activeMetrics.value.map(
+        metric => metric.metricName,
+      );
+      if (activeMetrics.indexOf(metricType) < 0) {
+        return obsOf([]);
+      }
+      const refKey = (metricType + '_ref_id') as keyof RxDocument<UserGroup>;
+      const selOpt: DataQueryOptions = {selector: {}};
+      selOpt.selector[refKey] = metricId;
+      return this.query(selOpt).pipe(shareReplay(1));
+    } else {
+      return obsOf([] as RxDocument<UserGroup>[]);
+    }
+  }
+
+  /**
    * Gets the Users belonging to a list of groups, using group names
-   * @param userGroupNames
-   * @returns The users
+   * @param userGroupNames the list of group names to which the user must belong
+   * @returns the list of users
    */
   getUsersByGroupNames(userGroupNames: string[]): Observable<RxDocument<UserData, {}>[]> {
     return this.query({selector: {groupName: {$in: userGroupNames}}}).pipe(
       switchMap(groupsData => {
-        if (groupsData == null || groupsData.length === 0) {
+        if (
+          groupsData == null ||
+          groupsData.length === 0 ||
+          groupsData.length < userGroupNames.length
+        ) {
           return obsOf([]);
         }
         const groupIds = groupsData.map(group => group.id);
         return this.getUsersByGroups(groupIds);
+      }),
+      shareReplay(1),
+    );
+  }
+
+  /**
+   * Gets the users belonging to a list of groups, using group names.
+   * Each group must include the specified metric
+   * @param userGroupNames the list of group names to which the user must belong
+   * @param metricType the required metric type (i.e. location)
+   * @param metricId the required metric id
+   * @returns the list of users
+   */
+  getUsersByGroupNamesAndMetric(
+    userGroupNames: string[],
+    metricType: string,
+    metricId: string,
+  ): Observable<RxDocument<UserData, {}>[]> {
+    return this.query({selector: {groupName: {$in: userGroupNames}}}).pipe(
+      switchMap(groupsData => {
+        if (
+          groupsData == null ||
+          groupsData.length === 0 ||
+          groupsData.length < userGroupNames.length
+        ) {
+          return obsOf([]);
+        }
+        const groupIds = groupsData.map(group => group.id);
+        return forkJoin([
+          this.getUsersByGroups(groupIds),
+          this.getGroupsByMetric(metricType, metricId),
+        ]);
+      }),
+      map(res => {
+        if (res && res.length === 2) {
+          const users = res[0];
+          const groupsByMetric = res[1];
+          if (users && users.length && groupsByMetric && groupsByMetric.length) {
+            const groupsIdsByMetric = groupsByMetric.map(gr => gr.id);
+            const filteredUsers = users.filter(usr => {
+              return usr.user_group_ids.some(userGrp => groupsIdsByMetric.includes(userGrp));
+            });
+            return filteredUsers;
+          }
+        }
+        return [];
       }),
       shareReplay(1),
     );
