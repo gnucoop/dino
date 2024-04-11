@@ -55,7 +55,7 @@ import {BehaviorSubject, Observable, Subscription, combineLatest, of as obsOf} f
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 const successMsg = 'Form submitted successfully!';
-const redoBtn = 'FILL OUT ANOTHER ONE'
+const redoBtn = 'FILL OUT ANOTHER ONE';
 const errorMsg = 'Unable to save form.';
 const retryBtn = 'TRY AGAIN';
 
@@ -258,10 +258,16 @@ export class EditPublicForm implements OnDestroy {
           };
           return formDataManagerInit.pipe(switchMap(() => fdm.create(form)));
         }),
+        withLatestFrom(anonymousUserData),
       )
-      .subscribe(res => {
+      .subscribe(([res, anonUser]) => {
         if (res != null) {
-          const trigData: ActionTriggerData<FormData> = {doc: res};
+          const trigData: ActionTriggerData<FormData> = {
+            doc: res,
+            additional_info: {
+              activeUser: anonUser,
+            },
+          };
           const trigger: ActionTrigger<FormData> = {
             name: 'Form Data Created',
             triggerType: 'on_form_data_creation',

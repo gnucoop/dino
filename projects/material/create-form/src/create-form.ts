@@ -874,7 +874,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               }
               return this._dataModelManager
                 .create(newItem as T)
-                .pipe(withLatestFrom(obsOf(formObj)));
+                .pipe(
+                  withLatestFrom(
+                    this._udm.getActiveUserData(),
+                    this._ugm.getActiveUserGroups(),
+                    obsOf(formObj),
+                  ),
+                );
             } else {
               return throwError(() => new Error('No data found'));
             }
@@ -892,13 +898,19 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(([fd, formObj]) => {
+      .subscribe(([fd, activeUser, activeUserGroups, formObj]) => {
         if (fd && fd.collection.name === 'form_data') {
           this.isLoading.next(false);
           this._location.back();
           this.snackbar.open('Document created', 'SAVE', {duration: 5000});
           if (formObj.evt != 'draft') {
-            const trigData: ActionTriggerData<T> = {doc: fd};
+            const trigData: ActionTriggerData<T> = {
+              doc: fd,
+              additional_info: {
+                activeUser,
+                activeUserGroups,
+              },
+            };
             const trigger: ActionTrigger<T> = {
               name: 'Form Data Created',
               triggerType: 'on_form_data_creation',
