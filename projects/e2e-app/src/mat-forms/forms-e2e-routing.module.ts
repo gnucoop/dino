@@ -21,6 +21,12 @@ const routes: Routes = [
         data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}]},
       },
       {
+        path: 'map',
+        loadChildren: () =>
+          import('../mat-forms-map/forms-map-e2e.module').then(m => m.MaterialFormsMapE2eModule),
+        data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Map'}]},
+      },
+      {
         path: 'view',
         loadChildren: () =>
           import('../mat-edit-form/edit-form-e2e.module').then(m => m.MaterialEditFormE2eModule),

@@ -1,0 +1,18 @@
+#mapContainer {
+  overflow: hidden;
+  width: 100%;
+  min-width: 300px;
+
+  // Leaflet needs the map to have a specified height (not 100%).
+  // We compute it in according to .mat-sidenav-content.dino-sidenav-content
+  // and the header's height
+  height: calc(100vh - 73px);
+  @media only screen and (max-width: 992px) {
+    height: 85vh;
+  }
+  min-height: 300px;
+}
+
+.leaflet-popup-content {
+  margin: 7px 10px;
+}

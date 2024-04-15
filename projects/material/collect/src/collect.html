@@ -51,6 +51,16 @@
             >
               <mat-icon>share</mat-icon>
             </button>
+            <button
+              *ngIf="getCollectType === 'forms' && item.hasLocation"
+              mat-mini-fab
+              color="primary"
+              aria-label="View Map"
+              [matTooltip]="'View Map'|transloco"
+              (click)="viewMap(item.schemaId); $event.stopPropagation();"
+            >
+              <mat-icon>place</mat-icon>
+            </button>
           </div>
           <div class="title"></div>
           <div class="dino-grid-icon">

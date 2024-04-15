@@ -12,6 +12,7 @@ import {MatEditFormE2E} from './mat-edit-form/edit-form-e2e.component';
 import {MatEditReportE2E} from './mat-edit-report/edit-report-e2e.component';
 import {MatEditReportSchemaE2E} from './mat-edit-report-schema/edit-report-schema-e2e.component';
 import {MatFormsListE2E} from './mat-forms-list/forms-list-e2e';
+import {MatFormsMapE2E} from './mat-forms-map/forms-map-e2e';
 import {MatFormsE2E} from './mat-forms/forms-e2e.component';
 import {MatGroupsListE2E} from './mat-groups/groups-e2e-list.component';
 import {MatLangsE2e} from './mat-langs/langs-e2e.component';
@@ -170,6 +171,11 @@ export const E2E_APP_ROUTES: Routes = [
             path: '',
             component: MatFormsListE2E,
             data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}]},
+          },
+          {
+            path: 'map',
+            component: MatFormsMapE2E,
+            data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Map'}]},
           },
           {
             path: 'view',

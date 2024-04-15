@@ -65,6 +65,11 @@ export interface CollectItem {
   shareUrl?: boolean;
 
   /**
+   * If true, a Map icon will be displayed on the item
+   */
+  hasLocation?: boolean;
+
+  /**
    * If true, only one item with a given exact set of metrics can exist
    */
   unique?: boolean;

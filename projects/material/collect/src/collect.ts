@@ -242,6 +242,7 @@ export class Collect {
                       permissionContext,
                       true,
                     ),
+                  hasLocation: ((document as RxDocument<FormSchema>).form_schema_metrics || []).includes('location'),
                   unique:
                     'uniqueMetricsSet' in document.schema && document.schema.uniqueMetricsSet
                       ? document.schema.uniqueMetricsSet
@@ -296,6 +297,16 @@ export class Collect {
   editSchema(schemaId: string | undefined): void {
     if (schemaId != null) {
       this._router.navigate([this._collectType.getValue(), 'schema', schemaId, 'edit']);
+    }
+  }
+
+  /**
+   * Redirects to the forms' View Map component
+   * @param schemaId The clicked item schema id
+   */
+  viewMap(schemaId: string | undefined): void {
+    if (schemaId != null) {
+      this._router.navigate(['forms', schemaId, 'map']);
     }
   }
 

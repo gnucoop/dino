@@ -60,6 +60,7 @@ import {MaterialEditFormE2eModule} from './mat-edit-form/edit-form-e2e.module';
 import {MaterialEditReportE2eModule} from './mat-edit-report/edit-report-e2e.module';
 import {MaterialEditReportSchemaE2eModule} from './mat-edit-report-schema/edit-report-schema-e2e.module';
 import {MaterialFormsListE2eModule} from './mat-forms-list/forms-list-e2e.module';
+import {MaterialFormsMapE2eModule} from './mat-forms-map/forms-map-e2e.module';
 import {MaterialFormsE2eModule} from './mat-forms/forms-e2e.module';
 import {MaterialGroupsE2eModule} from './mat-groups/groups-e2e.module';
 import {MaterialLangsE2eModule} from './mat-langs/langs-e2e.module';
@@ -277,6 +278,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
     MaterialEditReportSchemaE2eModule,
     MaterialGroupsE2eModule,
     MaterialFormsListE2eModule,
+    MaterialFormsMapE2eModule,
     MaterialLangsE2eModule,
     MaterialLocationsE2eModule,
     MaterialLoginE2eModule,
