@@ -1,13 +1,13 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {MatDialogModule} from '@angular/material/dialog';
-import {FormsModule} from '@dino/core/forms';
-import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {FloatingButtonModule} from '@dino/material/floating-button';
-import {ListModule} from '@dino/material/list';
-import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
-import {TranslocoModule} from '@ngneat/transloco';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatNativeDateModule} from '@angular/material/core';
 
 import {MockBreakpointObserver} from '../mocks';
 import {MatFormsMapE2E} from './forms-map-e2e';
@@ -17,14 +17,14 @@ import {FormsMapRoutingModule} from './forms-map-e2e-routing.module';
   declarations: [MatFormsMapE2E],
   imports: [
     CommonModule,
-    DinoBreadcrumbsModule,
-    ListModule,
-    FloatingButtonModule,
-    FormsModule,
-    MatDialogModule,
-    SearchFiltersBarModule,
-    TranslocoModule,
     FormsMapRoutingModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatNativeDateModule,
   ],
   providers: [{provide: BreakpointObserverService, useClass: MockBreakpointObserver}],
 })

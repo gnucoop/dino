@@ -12,6 +12,7 @@ import {Project, ProjectManager} from '@dino/core/projects';
 import {RxDocument} from 'rxdb';
 import {Observable, of} from 'rxjs';
 import {combineLatestWith, filter, map, take} from 'rxjs/operators';
+import {format} from 'date-fns';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -32,15 +33,22 @@ interface FormDataWithMetrics extends FormData {
   project?: Project;
 }
 
-function loadHeaders(schemaId: string): ListHeader<FormData>[] {
+function loadDataHeaders(schemaId: string): ListHeader<FormData>[] {
   const b64 = localStorage.getItem('columns_' + schemaId);
   if (b64 == null) {
     return [];
   }
-  return JSON.parse(b64_to_utf8(b64));
+  let headers: ListHeader<FormData>[];
+  try {
+    headers = JSON.parse(b64_to_utf8(b64));
+  } catch {
+    console.warn("Couldn't parse column headers");
+    return [];
+  }
+  return headers.filter(h => h.dataColumn && h.displayed && !h.repeatingSlideColumn);
 }
 
-function markerPopup(form: FormDataWithMetrics, headers: ListHeader<FormData>[]): string {
+function markerPopup(form: FormDataWithMetrics, dataHeaders: ListHeader<FormData>[]): string {
   let html = 'Location: ' + form.location.name;
   if (form.area != null) {
     html += '<br>Area: ' + form.area.name;
@@ -54,8 +62,7 @@ function markerPopup(form: FormDataWithMetrics, headers: ListHeader<FormData>[])
   if (form.project != null) {
     html += '<br>Project: ' + form.project.name;
   }
-  headers = headers.filter(h => h.dataColumn && h.displayed && !h.repeatingSlideColumn);
-  for (const h of headers) {
+  for (const h of dataHeaders) {
     const val = form.data[h.column];
     html += `<br>${h.label}: ${val === undefined ? null : val}`;
   }
@@ -70,12 +77,20 @@ function markerPopup(form: FormDataWithMetrics, headers: ListHeader<FormData>[])
 })
 export class MatFormsMapE2E implements AfterViewInit {
   private schemaId: Observable<string>;
+  private dataHeaders!: ListHeader<FormData>[];
+
+  private allForms!: FormDataWithMetrics[];
+  private map!: L.Map;
+  private markers!: L.MarkerClusterGroup;
 
   private areaDocs: Observable<RxDocument<Area>[]>;
   private caseDocs: Observable<RxDocument<Case>[]>;
   private locationDocs: Observable<RxDocument<Location>[]>;
   private orgDocs: Observable<RxDocument<Organization>[]>;
   private projectDocs: Observable<RxDocument<Project>[]>;
+
+  private dateStartInput!: HTMLInputElement;
+  private dateEndInput!: HTMLInputElement;
 
   constructor(
     private formDataManager: FormDataManager,
@@ -113,10 +128,15 @@ export class MatFormsMapE2E implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.dateStartInput = document.getElementById("dateStartInput") as HTMLInputElement;
+    this.dateEndInput = document.getElementById("dateEndInput") as HTMLInputElement;
+
     this.schemaId.pipe(
       combineLatestWith(this.areaDocs, this.caseDocs, this.locationDocs, this.orgDocs, this.projectDocs),
       take(1),
     ).subscribe(([schemaId, areas, cases, locations, orgs, projects]) => {
+      this.dataHeaders = loadDataHeaders(schemaId);
+
       const locs = locations.map(doc => {
         const loc = doc.toJSON() as LocationWithLatLon;
         const coord = loc.coordinates as unknown as string;
@@ -144,7 +164,7 @@ export class MatFormsMapE2E implements AfterViewInit {
       this.formDataManager.query({selector:
         {is_deleted: {$eq: false}, form_schema_ref_id: {$eq: schemaId}}
       }).pipe(take(1)).subscribe(formsData => {
-        let forms = formsData.map(f => f.toJSON()) as FormDataWithMetrics[];
+        const forms = formsData.map(f => f.toJSON()) as FormDataWithMetrics[];
         for (const form of forms) {
           const f: any = form;
           for (const key in form) {
@@ -154,31 +174,55 @@ export class MatFormsMapE2E implements AfterViewInit {
             }
           }
         }
-        forms = forms.filter(f => f.location != null);
-
-        const headers = loadHeaders(schemaId);
-        this.createMap(forms, headers);
+        this.allForms = forms.filter(f => f.location != null);
+        this.createMap();
       });
     });
   }
 
-  private createMap(forms: FormDataWithMetrics[], headers: ListHeader<FormData>[]) {
-    const map = L.map('mapContainer', {zoomControl: false});
-    map.setView([51.505, -0.09], 13);
-    L.control.zoom({position: 'bottomright'}).addTo(map);
+  private createMap() {
+    this.map = L.map('mapContainer', {zoomControl: false});
+    this.map.setView([43.726, 10.411], 13);
+    L.control.zoom({position: 'bottomright'}).addTo(this.map);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+    }).addTo(this.map);
 
-    const markers = L.markerClusterGroup();
+    this.markers = L.markerClusterGroup();
+    for (const f of this.allForms) {
+      const m = L.marker(f.location.latLon!);
+      m.bindPopup(markerPopup(f, this.dataHeaders), {closeButton: false});
+      this.markers.addLayer(m);
+    }
+    this.map.addLayer(this.markers);
+    if (this.allForms.length > 0) {
+      this.map.fitBounds(this.markers.getBounds());
+    }
+  }
+
+  applyFilters() {
+    const isoFormat = 'yyyy-MM-dd';
+    const dateStart = new Date(this.dateStartInput.value);
+    const start = isNaN(dateStart.valueOf()) ? '0000-01-01' : format(dateStart, isoFormat);
+    const dateEnd = new Date(this.dateEndInput.value);
+    const end = isNaN(dateEnd.valueOf()) ? '9999-12-31' : format(dateEnd, isoFormat);
+
+    const forms = this.allForms.filter(f => f.created_at >= start && f.created_at <= end);
+
+    const newMarkers = L.markerClusterGroup();
     for (const f of forms) {
       const m = L.marker(f.location.latLon!);
-      m.bindPopup(markerPopup(f, headers), {closeButton: false});
-      markers.addLayer(m);
+      m.bindPopup(markerPopup(f, this.dataHeaders), {closeButton: false});
+      newMarkers.addLayer(m);
     }
-    map.addLayer(markers);
-    map.fitBounds(markers.getBounds());
+    const zoomingIn = forms.length === 0 || this.markers.getBounds().contains(newMarkers.getBounds());
+    this.map.removeLayer(this.markers);
+    this.map.addLayer(newMarkers);
+    this.markers = newMarkers;
+    if (forms.length > 0 && !zoomingIn) {
+      this.map.fitBounds(newMarkers.getBounds());
+    }
   }
 }

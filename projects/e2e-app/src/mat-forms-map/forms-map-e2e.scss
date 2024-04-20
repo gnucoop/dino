@@ -1,18 +1,43 @@
-#mapContainer {
-  overflow: hidden;
-  width: 100%;
-  min-width: 300px;
+app-forms-map-e2e {
+  display: flex;
+  align-items: flex-start;
 
-  // Leaflet needs the map to have a specified height (not 100%).
-  // We compute it in according to .mat-sidenav-content.dino-sidenav-content
-  // and the header's height
-  height: calc(100vh - 73px);
-  @media only screen and (max-width: 992px) {
-    height: 85vh;
+  #mapContainer {
+    overflow: hidden;
+    width: calc(100% - 300px);
+    min-width: 300px;
+  
+    // Leaflet needs the map to have a specified height (not 100%).
+    // We compute it in according to .mat-sidenav-content.dino-sidenav-content
+    // and the header's height
+    height: calc(100vh - 73px);
+    @media only screen and (max-width: 992px) {
+      height: 85vh;
+    }
+    min-height: 300px;
   }
-  min-height: 300px;
-}
+  
+  .leaflet-popup-content {
+    margin: 7px 10px;
+  }
+  
+  #filtersContainer {
+    width: 300px;
+    padding-left: 5px;
+  }
 
-.leaflet-popup-content {
-  margin: 7px 10px;
+  #filtersContainer > button {
+    display: block;
+    margin: 12px auto;
+  }
+
+  #filtersGrid {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: 1fr;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
 }

@@ -1,1 +1,15 @@
 <div id="mapContainer"></div>
+<div id="filtersContainer">
+  <div id="filtersGrid">
+    <mat-form-field>
+      <mat-label>Date range</mat-label>
+      <mat-date-range-input [rangePicker]="rangePicker">
+        <input matStartDate id="dateStartInput" placeholder="From date">
+        <input matEndDate id="dateEndInput" placeholder="To date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+  <button (click)="applyFilters()" color="primary" mat-raised-button>Apply Filters</button>
+</div>
