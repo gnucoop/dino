@@ -24,17 +24,21 @@ app-forms-map-e2e {
   #filtersContainer {
     width: 300px;
     padding-left: 5px;
-  }
-
-  #filtersContainer > button {
-    display: block;
-    margin: 12px auto;
-  }
-
-  #filtersGrid {
     display: grid;
     gap: 5px;
     grid-template-columns: 1fr;
+  }
+
+  #applyFilters {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #applyFilters button {
+    display: block;
+    width: 67%;
   }
 
   .mat-mdc-form-field-subscript-wrapper {
