@@ -145,7 +145,7 @@ describe('Edit Public Form', () => {
       project_ref_id: null,
       organization_ref_id: null,
       form_status_ref_id: null,
-      data: Object({}),
+      data: Object({$nodesInitialised: true}),
       created_at: format(new Date(), 'yyyy-MM-dd'),
     };
     fixtureEditPublicForm.detectChanges();
