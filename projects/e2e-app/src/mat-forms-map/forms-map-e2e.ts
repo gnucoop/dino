@@ -11,7 +11,7 @@ import {Organization, OrganizationManager} from '@dino/core/organizations';
 import {Project, ProjectManager} from '@dino/core/projects';
 import {RxDocument} from 'rxdb';
 import {Observable, of} from 'rxjs';
-import {combineLatestWith, take} from 'rxjs/operators';
+import {combineLatestWith, map, take} from 'rxjs/operators';
 import {format} from 'date-fns';
 
 import * as L from 'leaflet';
@@ -25,43 +25,39 @@ interface LocationWithLatLon extends Location {
   latLon?: [number, number];
 }
 
-interface FormDataWithMetrics extends FormData {
-  location: LocationWithLatLon;
-  area?: Area;
-  case?: Case;
-  organization?: Organization;
-  project?: Project;
+interface FieldValues {
+  [fieldName: string]: string[];
 }
 
-function loadDataHeaders(schemaId: string): ListHeader<FormData>[] {
+const defaultHeaders: ListHeader<FormData>[] = [
+  {displayed: true, column: 'area_ref_id', label: 'Area'},
+  {displayed: true, column: 'case_ref_id', label: 'Case'},
+  {displayed: true, column: 'organization_ref_id', label: 'Organization'},
+  {displayed: true, column: 'project_ref_id', label: 'Project'},
+];
+
+function loadHeaders(schemaId: string): ListHeader<FormData>[] {
   const b64 = localStorage.getItem('columns_' + schemaId);
   if (b64 == null) {
-    return [];
+    console.warn("No column headers");
+    return defaultHeaders;
   }
   let headers: ListHeader<FormData>[];
   try {
     headers = JSON.parse(b64_to_utf8(b64));
   } catch {
     console.warn("Couldn't parse column headers");
-    return [];
+    return defaultHeaders;
   }
-  return headers.filter(h => h.dataColumn && h.displayed && !h.repeatingSlideColumn);
+  return headers.filter(h => h.displayed && (
+    h.dataColumn && !h.repeatingSlideColumn ||
+    h.column === 'area_ref_id' || h.column === 'case_ref_id' ||
+    h.column === 'organization_ref_id' || h.column === 'project_ref_id'
+  ));
 }
 
-function markerPopup(form: FormDataWithMetrics, dataHeaders: ListHeader<FormData>[]): string {
-  let html = 'Location: ' + form.location.name;
-  if (form.area != null) {
-    html += '<br>Area: ' + form.area.name;
-  }
-  if (form.case != null) {
-    html += '<br>Case: ' + form.case.name;
-  }
-  if (form.organization != null) {
-    html += '<br>Organization: ' + form.organization.name;
-  }
-  if (form.project != null) {
-    html += '<br>Project: ' + form.project.name;
-  }
+function markerPopup(form: FormData, dataHeaders: ListHeader<FormData>[]): string {
+  let html = 'Location: ' + form.data['location_ref_id'];
   for (const h of dataHeaders) {
     const val = form.data[h.column];
     html += `<br>${h.label}: ${val === undefined ? null : val}`;
@@ -76,17 +72,18 @@ function markerPopup(form: FormDataWithMetrics, dataHeaders: ListHeader<FormData
   encapsulation: ViewEncapsulation.None,
 })
 export class MatFormsMapE2E implements AfterViewInit {
-  readonly dataHeaders: ListHeader<FormData>[];
-  private filterInputs!: NodeListOf<HTMLInputElement>;
+  readonly headers: ListHeader<FormData>[];
+  private fieldValues: FieldValues;
+  filteredValues: FieldValues;
 
-  private allForms!: FormDataWithMetrics[];
+  private allForms!: FormData[];
   private map!: L.Map;
   private markers!: L.MarkerClusterGroup;
 
   private formData: Observable<RxDocument<FormData>[]>;
   private areaDocs: Observable<RxDocument<Area>[]>;
   private caseDocs: Observable<RxDocument<Case>[]>;
-  private locationDocs: Observable<RxDocument<Location>[]>;
+  private locationDocs: Observable<LocationWithLatLon[]>;
   private orgDocs: Observable<RxDocument<Organization>[]>;
   private projectDocs: Observable<RxDocument<Project>[]>;
 
@@ -100,21 +97,40 @@ export class MatFormsMapE2E implements AfterViewInit {
     @Optional() projectManager: ProjectManager | null,
   ) {
     const schemaId = route.snapshot.params['form_schema_id'];
-    this.dataHeaders = loadDataHeaders(schemaId);
+    this.headers = loadHeaders(schemaId);
+    this.fieldValues = {};
+    this.filteredValues = {};
+    for (const h of this.headers) {
+      this.fieldValues[h.column] = [];
+      this.filteredValues[h.column] = [];
+    }
+
     this.formData = formDataManager.query({selector:
       {is_deleted: {$eq: false}, form_schema_ref_id: {$eq: schemaId}}
     }).pipe(take(1));
     
-    this.areaDocs = areaManager == null ? of([]) : areaManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(take(1));
-    this.caseDocs = caseManager == null ? of([]) : caseManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(take(1));
     if (locationManager == null) {
       throw new Error('the locations module must be enabled to use the map');
     }
     this.locationDocs = locationManager.query({selector:
+      {is_deleted: {$eq: false}}
+    }).pipe(map(locations => {
+      return locations.map(doc => {
+        const loc = doc.toJSON() as LocationWithLatLon;
+        const coord = loc.coordinates as unknown as string;
+        if (typeof coord === 'string' && coord.includes(',')) {
+          const latLon = coord.split(',').slice(0, 2).map(s => Number(s)) as [number, number];
+          if (!isNaN(latLon[0]) && !isNaN(latLon[1])) {
+            loc.latLon = latLon;
+          }
+        }
+        return loc;
+      }).filter(l => l.latLon != null) as LocationWithLatLon[];
+    }), take(1));
+    this.areaDocs = areaManager == null ? of([]) : areaManager.query({selector:
+      {is_deleted: {$eq: false}}
+    }).pipe(take(1));
+    this.caseDocs = caseManager == null ? of([]) : caseManager.query({selector:
       {is_deleted: {$eq: false}}
     }).pipe(take(1));
     this.orgDocs = orgManager == null ? of([]) : orgManager.query({selector:
@@ -126,49 +142,73 @@ export class MatFormsMapE2E implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.filterInputs = document.querySelectorAll('#filtersContainer input');
-
     this.formData.pipe(
       combineLatestWith(this.areaDocs, this.caseDocs, this.locationDocs, this.orgDocs, this.projectDocs),
       take(1),
     ).subscribe(([formsData, areas, cases, locations, orgs, projects]) => {
-      const locs = locations.map(doc => {
-        const loc = doc.toJSON() as LocationWithLatLon;
-        const coord = loc.coordinates as unknown as string;
-        if (typeof coord === 'string' && coord.includes(',')) {
-          const latLon = coord.split(',').slice(0, 2).map(s => Number(s)) as [number, number];
-          if (!isNaN(latLon[0]) && !isNaN(latLon[1])) {
-            loc.latLon = latLon;
-          }
-        }
-        return loc;
-      }).filter(l => l.latLon != null);
-
       const metrics: Metric[] = [
-        ...areas.map(x => x.toJSON()),
-        ...cases.map(x => x.toJSON()),
-        ...locs,
-        ...orgs.map(x => x.toJSON()),
-        ...projects.map(x => x.toJSON()),
+        ...areas,
+        ...cases,
+        ...locations,
+        ...orgs,
+        ...projects,
       ];
       const metricsTab: {[id: string]: Metric} = {};
       for (const m of metrics) {
         metricsTab[m.id] = m;
       }
 
-      const forms = formsData.map(f => f.toJSON()) as FormDataWithMetrics[];
+      const forms = formsData.map(f => f.toJSON());
       for (const form of forms) {
         const f: any = form;
         for (const key in form) {
           if (key.endsWith('_ref_id')) {
-            const k = key.slice(0, -'_ref_id'.length);
-            f[k] = metricsTab[String(f[key])];
+            const metric = metricsTab[String(f[key])];
+            if (metric == null) {
+              continue;
+            }
+            // Store the metric name in the form's data,
+            // so that we can treat it as a regular field for displaying and filtering:
+            f.data[key] = metric.name;
+            if (key === 'location_ref_id') {
+              f.data['latLon'] = (metric as LocationWithLatLon).latLon;
+            }
           }
         }
       }
-      this.allForms = forms.filter(f => f.location != null);
+      this.allForms = forms.filter(f => f.data['latLon'] != null);
+
+      this.extractFieldValues();
       this.createMap();
     });
+  }
+
+  private extractFieldValues() {
+    const sets: {[field: string]: Set<string>} = {};
+    for (const h of this.headers) {
+      const field = h.column;
+      const set = new Set<string>();
+      for (const f of this.allForms) {
+        const val = f.data[field];
+        if (val == null) {
+          set.add('null');
+          continue;
+        }
+        if (Array.isArray(val)) {
+          for (const v of val) {
+            set.add(String(v));
+          }
+          continue;
+        }
+        set.add(String(val));
+      }
+      sets[field] = set;
+    }
+    for (const field in sets) {
+      const vals = [...sets[field]].filter(v => v.trim() !== '').sort();
+      this.fieldValues[field] = vals
+      this.filteredValues[field] = [...vals];
+    }
   }
 
   private createMap() {
@@ -183,8 +223,8 @@ export class MatFormsMapE2E implements AfterViewInit {
 
     this.markers = L.markerClusterGroup();
     for (const f of this.allForms) {
-      const m = L.marker(f.location.latLon!);
-      m.bindPopup(markerPopup(f, this.dataHeaders), {closeButton: false});
+      const m = L.marker(f.data['latLon']);
+      m.bindPopup(markerPopup(f, this.headers), {closeButton: false});
       this.markers.addLayer(m);
     }
     this.map.addLayer(this.markers);
@@ -194,29 +234,30 @@ export class MatFormsMapE2E implements AfterViewInit {
   }
 
   applyFilters() {
-    const dateStartInput = this.filterInputs[0];
-    const dateEndInput = this.filterInputs[1];
+    const filterInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll('#filtersContainer input');
+
+    const dateStartInput = filterInputs[0];
+    const dateEndInput = filterInputs[1];
     const isoFormat = 'yyyy-MM-dd';
     const dateStart = new Date(dateStartInput.value);
     const start = isNaN(dateStart.valueOf()) ? '0000-01-01' : format(dateStart, isoFormat);
     const dateEnd = new Date(dateEndInput.value);
     const end = isNaN(dateEnd.valueOf()) ? '9999-12-31' : format(dateEnd, isoFormat);
     const filterVals: string[] = [];
-    for (let i = 0; i < this.dataHeaders.length; i++) {
-      filterVals.push(this.filterInputs[i + 2].value.toLowerCase());
+    for (let i = 0; i < this.headers.length; i++) {
+      filterVals.push(filterInputs[i + 2].value.toLowerCase());
     }
 
     const forms = this.allForms.filter(f => {
       if (f.created_at < start || f.created_at > end) {
         return false;
       }
-      for (let i = 0; i < this.dataHeaders.length; i++) {
+      for (let i = 0; i < this.headers.length; i++) {
         const filterVal = filterVals[i];
-        // apply filter only if user has typed at least 2 chars:
-        if (filterVal.length < 2) {
+        if (filterVal === '') {
           continue;
         }
-        const col = this.dataHeaders[i].column;
+        const col = this.headers[i].column;
         const val = f.data[col] == null ? 'null' : String(f.data[col]);
         if (!val.toLowerCase().includes(filterVal)) {
           return false;
@@ -227,16 +268,20 @@ export class MatFormsMapE2E implements AfterViewInit {
 
     const newMarkers = L.markerClusterGroup();
     for (const f of forms) {
-      const m = L.marker(f.location.latLon!);
-      m.bindPopup(markerPopup(f, this.dataHeaders), {closeButton: false});
+      const m = L.marker(f.data['latLon']);
+      m.bindPopup(markerPopup(f, this.headers), {closeButton: false});
       newMarkers.addLayer(m);
     }
-    const zoomingIn = forms.length === 0 || this.markers.getBounds().contains(newMarkers.getBounds());
     this.map.removeLayer(this.markers);
     this.map.addLayer(newMarkers);
     this.markers = newMarkers;
-    if (forms.length > 0 && !zoomingIn) {
+    if (forms.length > 0) {
       this.map.fitBounds(newMarkers.getBounds());
     }
+  }
+
+  clearFilter(event: Event, id: string) {
+    event.stopPropagation();
+    (document.getElementById(id) as HTMLInputElement).value = '';
   }
 }
