@@ -147,10 +147,6 @@ dino-main-nav {
   .mat-sidenav-content.dino-sidenav-content {
     overflow-x: hidden;
     height: 100vh;
-    @media only screen and (max-width: 992px) {
-      height: 85vh;
-      margin-top: 10px;
-    }
     padding: 5px;
     background-color: inherit;
     .dino-loading {
@@ -169,6 +165,12 @@ dino-main-nav {
         margin: auto;
         margin-top: 30vh;
       }
+    }
+  }
+  @media only screen and (max-width: 992px) {
+    .mat-sidenav-content.dino-sidenav-content:has(ajf-form) {
+      height: 85vh;
+      margin-top: 10px;
     }
   }
 

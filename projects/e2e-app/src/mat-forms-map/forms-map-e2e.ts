@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Optional, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Optional, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {b64_to_utf8} from '@dino/core/auth';
 import {FormData, FormDataManager} from '@dino/core/forms';
@@ -60,7 +60,7 @@ function markerPopup(form: FormData, dataHeaders: ListHeader<FormData>[]): strin
   let html = 'Location: ' + form.data['location_ref_id'];
   for (const h of dataHeaders) {
     const val = form.data[h.column];
-    html += `<br>${h.label}: ${val === undefined ? null : val}`;
+    html += `<br>${h.label}: ${val == null ? 'null' : val}`;
   }
   return html;
 }
@@ -69,23 +69,23 @@ function markerPopup(form: FormData, dataHeaders: ListHeader<FormData>[]): strin
   selector: 'app-forms-map-e2e',
   templateUrl: 'forms-map-e2e.html',
   styleUrls: ['forms-map-e2e.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
 export class MatFormsMapE2E implements AfterViewInit {
   readonly headers: ListHeader<FormData>[];
-  private fieldValues: FieldValues;
-  filteredValues: FieldValues;
+  fieldValues: FieldValues;
 
   private allForms!: FormData[];
   private map!: L.Map;
   private markers!: L.MarkerClusterGroup;
 
   private formData: Observable<RxDocument<FormData>[]>;
-  private areaDocs: Observable<RxDocument<Area>[]>;
-  private caseDocs: Observable<RxDocument<Case>[]>;
-  private locationDocs: Observable<LocationWithLatLon[]>;
-  private orgDocs: Observable<RxDocument<Organization>[]>;
-  private projectDocs: Observable<RxDocument<Project>[]>;
+  private areas: Observable<RxDocument<Area>[]>;
+  private cases: Observable<RxDocument<Case>[]>;
+  private locations: Observable<LocationWithLatLon[]>;
+  private organizations: Observable<RxDocument<Organization>[]>;
+  private projects: Observable<RxDocument<Project>[]>;
 
   constructor(
     route: ActivatedRoute,
@@ -99,10 +99,8 @@ export class MatFormsMapE2E implements AfterViewInit {
     const schemaId = route.snapshot.params['form_schema_id'];
     this.headers = loadHeaders(schemaId);
     this.fieldValues = {};
-    this.filteredValues = {};
     for (const h of this.headers) {
       this.fieldValues[h.column] = [];
-      this.filteredValues[h.column] = [];
     }
 
     this.formData = formDataManager.query({selector:
@@ -112,7 +110,7 @@ export class MatFormsMapE2E implements AfterViewInit {
     if (locationManager == null) {
       throw new Error('the locations module must be enabled to use the map');
     }
-    this.locationDocs = locationManager.query({selector:
+    this.locations = locationManager.query({selector:
       {is_deleted: {$eq: false}}
     }).pipe(map(locations => {
       return locations.map(doc => {
@@ -127,25 +125,25 @@ export class MatFormsMapE2E implements AfterViewInit {
         return loc;
       }).filter(l => l.latLon != null) as LocationWithLatLon[];
     }), take(1));
-    this.areaDocs = areaManager == null ? of([]) : areaManager.query({selector:
+    this.areas = areaManager == null ? of([]) : areaManager.query({selector:
       {is_deleted: {$eq: false}}
     }).pipe(take(1));
-    this.caseDocs = caseManager == null ? of([]) : caseManager.query({selector:
+    this.cases = caseManager == null ? of([]) : caseManager.query({selector:
       {is_deleted: {$eq: false}}
     }).pipe(take(1));
-    this.orgDocs = orgManager == null ? of([]) : orgManager.query({selector:
+    this.organizations = orgManager == null ? of([]) : orgManager.query({selector:
       {is_deleted: {$eq: false}}
     }).pipe(take(1));
-    this.projectDocs = projectManager == null ? of([]) : projectManager.query({selector:
+    this.projects = projectManager == null ? of([]) : projectManager.query({selector:
       {is_deleted: {$eq: false}}
     }).pipe(take(1));
   }
 
   ngAfterViewInit(): void {
     this.formData.pipe(
-      combineLatestWith(this.areaDocs, this.caseDocs, this.locationDocs, this.orgDocs, this.projectDocs),
+      combineLatestWith(this.areas, this.cases, this.locations, this.organizations, this.projects),
       take(1),
-    ).subscribe(([formsData, areas, cases, locations, orgs, projects]) => {
+    ).subscribe(([formData, areas, cases, locations, orgs, projects]) => {
       const metrics: Metric[] = [
         ...areas,
         ...cases,
@@ -158,20 +156,19 @@ export class MatFormsMapE2E implements AfterViewInit {
         metricsTab[m.id] = m;
       }
 
-      const forms = formsData.map(f => f.toJSON());
+      const forms = formData.map(f => f.toJSON() as FormData);
       for (const form of forms) {
-        const f: any = form;
         for (const key in form) {
           if (key.endsWith('_ref_id')) {
-            const metric = metricsTab[String(f[key])];
+            const metric = metricsTab[String(form[key as keyof FormData])];
             if (metric == null) {
               continue;
             }
             // Store the metric name in the form's data,
             // so that we can treat it as a regular field for displaying and filtering:
-            f.data[key] = metric.name;
+            form.data[key] = metric.name;
             if (key === 'location_ref_id') {
-              f.data['latLon'] = (metric as LocationWithLatLon).latLon;
+              form.data['latLon'] = (metric as LocationWithLatLon).latLon;
             }
           }
         }
@@ -205,9 +202,7 @@ export class MatFormsMapE2E implements AfterViewInit {
       sets[field] = set;
     }
     for (const field in sets) {
-      const vals = [...sets[field]].filter(v => v.trim() !== '').sort();
-      this.fieldValues[field] = vals
-      this.filteredValues[field] = [...vals];
+      this.fieldValues[field] = [...sets[field]].filter(v => v.trim() !== '').sort();
     }
   }
 
@@ -278,10 +273,5 @@ export class MatFormsMapE2E implements AfterViewInit {
     if (forms.length > 0) {
       this.map.fitBounds(newMarkers.getBounds());
     }
-  }
-
-  clearFilter(event: Event, id: string) {
-    event.stopPropagation();
-    (document.getElementById(id) as HTMLInputElement).value = '';
   }
 }

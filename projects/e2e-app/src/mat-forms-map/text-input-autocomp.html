@@ -1,0 +1,10 @@
+<mat-form-field>
+  <mat-label>{{label}}</mat-label>
+  <input #input (input)="onInput()" [matAutocomplete]="auto" matInput>
+  <mat-icon *ngIf="showClearButton" (click)="clear($event)" matSuffix>close</mat-icon>
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option (click)="onSelect()" *ngFor="let val of filteredOptions" [value]="val">
+      {{val}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

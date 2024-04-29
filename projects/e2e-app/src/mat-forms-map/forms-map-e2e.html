@@ -9,16 +9,9 @@
     <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
     <mat-date-range-picker #rangePicker></mat-date-range-picker>
   </mat-form-field>
-  <mat-form-field *ngFor="let h of headers">
-    <mat-label>{{h.label}}</mat-label>
-    <input [id]="'filter_'+h.column" [matAutocomplete]="auto" matInput>
-    <mat-icon (click)="clearFilter($event, 'filter_'+h.column)" matSuffix>close</mat-icon>
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let val of filteredValues[h.column]" [value]="val">
-        {{val}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+  <app-text-input-autocomp *ngFor="let h of headers"
+    [label]="h.label" [options]="fieldValues[h.column]">
+  </app-text-input-autocomp>
   <div id="applyFilters">
     <button (click)="applyFilters()" mat-raised-button>Apply Filters</button>
   </div>

@@ -8,11 +8,10 @@ app-forms-map-e2e {
     min-width: 300px;
   
     // Leaflet needs the map to have a specified height (not 100%).
-    // We compute it in according to .mat-sidenav-content.dino-sidenav-content
-    // and the header's height
+    // We compute it in according to the header's height
     height: calc(100vh - 73px);
-    @media only screen and (max-width: 992px) {
-      height: 85vh;
+    @media only screen and (max-width: 599px) {
+      height: calc(100vh - 65px);
     }
     min-height: 300px;
   }

@@ -11,10 +11,11 @@ import {MatNativeDateModule} from '@angular/material/core';
 
 import {MockBreakpointObserver} from '../mocks';
 import {MatFormsMapE2E} from './forms-map-e2e';
+import {TextInputAutocomp} from './text-input-autocomp';
 import {FormsMapRoutingModule} from './forms-map-e2e-routing.module';
 
 @NgModule({
-  declarations: [MatFormsMapE2E],
+  declarations: [MatFormsMapE2E, TextInputAutocomp],
   imports: [
     CommonModule,
     FormsMapRoutingModule,
