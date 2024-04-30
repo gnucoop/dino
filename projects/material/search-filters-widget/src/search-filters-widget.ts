@@ -174,6 +174,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
           return false;
         }
         delete formValue['$value'];
+        delete formValue['$nodesInitialised'];
         if (this.filterItemData == null || this.widgetData == null) {
           return false;
         }
@@ -221,6 +222,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
           return;
         }
         delete formValue['$value'];
+        delete formValue['$nodesInitialised'];
         const {filterItemData, widgetData} = this;
         if (filterItemData == null || widgetData == null) {
           return;
