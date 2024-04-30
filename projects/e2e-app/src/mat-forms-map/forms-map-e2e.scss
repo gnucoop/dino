@@ -4,15 +4,9 @@ app-forms-map-e2e {
 
   #mapContainer {
     overflow: hidden;
-    width: calc(100% - 300px);
-    min-width: 300px;
-  
-    // Leaflet needs the map to have a specified height (not 100%).
-    // We compute it in according to the header's height
+    flex-grow: 1;
     height: calc(100vh - 73px);
-    @media only screen and (max-width: 599px) {
-      height: calc(100vh - 65px);
-    }
+    min-width: 300px;
     min-height: 300px;
   }
   
@@ -42,5 +36,40 @@ app-forms-map-e2e {
 
   .mat-mdc-form-field-subscript-wrapper {
     display: none;
+  }
+
+  @media only screen and (max-width: 1200px) {
+    flex-direction: column-reverse;
+    height: calc(100vh - 73px);
+
+    #mapContainer {
+      width: 100%;
+      height: unset;
+    }
+
+    #filtersContainer {
+      padding-left: 0;
+      padding-bottom: 5px;
+      width: 100%;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  @media only screen and (max-width: 900px) {
+    #filtersContainer {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media only screen and (max-width: 599px) {
+    height: calc(100vh - 65px);
+
+    #filtersContainer {
+      grid-template-columns: 1fr;
+    }
+
+    #filtersContainer mat-form-field, #applyFilters {
+      height: 50px;
+    }
   }
 }
