@@ -123,7 +123,7 @@ export class MatFormsMapE2E implements AfterViewInit {
           }
         }
         return loc;
-      }).filter(l => l.latLon != null) as LocationWithLatLon[];
+      }).filter(l => l.latLon != null);
     }), take(1));
     this.areas = areaManager == null ? of([]) : areaManager.query({selector:
       {is_deleted: {$eq: false}}
