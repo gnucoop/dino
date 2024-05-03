@@ -30,23 +30,7 @@ export interface Location extends Metric {
   /**
    * The optional location map coordinates
    */
-  coordinates?: Coordinates;
-}
-
-/**
- * Represets a location map coordinates
- * @title Coordinates
- */
-export interface Coordinates {
-  /**
-   * Latitude coordinate
-   */
-  latitude: string | null;
-
-  /**
-   * Longitude coordinate
-   */
-  longitude: string | null;
+  coordinates?: string;
 }
 
 export const VERSION = 2;

@@ -115,7 +115,7 @@ export class MatFormsMapE2E implements AfterViewInit {
     }).pipe(map(locations => {
       return locations.map(doc => {
         const loc = doc.toJSON() as LocationWithLatLon;
-        const coord = loc.coordinates as unknown as string;
+        const coord = loc.coordinates;
         if (typeof coord === 'string' && coord.includes(',')) {
           const latLon = coord.split(',').slice(0, 2).map(s => Number(s)) as [number, number];
           if (!isNaN(latLon[0]) && !isNaN(latLon[1])) {
