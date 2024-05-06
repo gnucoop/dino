@@ -1471,10 +1471,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   ): string[] {
     const headerName = header.column.toString();
     const matchingKeys = Object.keys(elementData)
-      .filter(key => key.includes(`${headerName}__`))
+      .filter(key => key.startsWith(`${headerName}__`))
       .sort();
     if (matchingKeys.length) {
-      const lastKeyIndex = this._getRepeatingSlideLastTabIndex(elementData);
+      const lastKeyIndex = this._getRepeatingSlideLastTabIndex(
+        elementData,
+        header.repeatingSlideName,
+      );
       for (let idx = 0; idx <= lastKeyIndex; idx++) {
         if (matchingKeys.indexOf(`${headerName}__${idx}`) < 0) {
           const lastMatchingIndex = matchingKeys.reduce(
@@ -1504,14 +1507,22 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   /**
    * Gets the last index of a repeating slide's cell tabs
    * @param elementData The row element data
+   * @param repeatingSlideName The repeating slide name. Contains the number of repetitions.
    * @returns The last index
    */
-  private _getRepeatingSlideLastTabIndex(elementData: {[key: string]: any}): number {
-    const lastTabIndex = Object.keys(elementData).reduce(
-      (acc, current) => this._getRepeatingSlideLastTabIndexReducer(acc, current),
-      0,
-    );
-
+  private _getRepeatingSlideLastTabIndex(
+    elementData: {[key: string]: any},
+    repeatingSlideName: string | undefined,
+  ): number {
+    let lastTabIndex = 0;
+    if (repeatingSlideName && elementData[repeatingSlideName]) {
+      lastTabIndex = elementData[repeatingSlideName] - 1;
+    } else {
+      lastTabIndex = Object.keys(elementData).reduce(
+        (acc, current) => this._getRepeatingSlideLastTabIndexReducer(acc, current),
+        0,
+      );
+    }
     return lastTabIndex;
   }
 
