@@ -42,7 +42,7 @@ export const migrationStrategies: MigrationStrategies = {
   },
   3: (doc: RxDocument<any>) => {
     if (!doc.coordinates || !doc.coordinates.latitude || !doc.coordinates.longitude) return doc;
-    const newCoordinates = `${doc.coordinates.latitude},${doc.coordinates.longitude}`;
+    const newCoordinates = `${doc.coordinates.latitude}, ${doc.coordinates.longitude}`;
     return {...doc, coordinates: newCoordinates};
   },
 };
