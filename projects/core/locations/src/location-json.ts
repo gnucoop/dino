@@ -81,8 +81,9 @@ export const schema = {
       "description": "Generic info json field"
     },
     "coordinates": {
-      "$ref": "#/definitions/Coordinates",
-      "description": "The optional location map coordinates"
+      "type": "string",
+      "description": "The optional location map coordinates",
+      "maxLength": 200
     }
   },
   "additionalProperties": false,
@@ -101,5 +102,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 2
+  "version": 3
 } as RxJsonSchema<Location>;

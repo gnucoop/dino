@@ -33,11 +33,16 @@ export interface Location extends Metric {
   coordinates?: string;
 }
 
-export const VERSION = 2;
+export const VERSION = 3;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
   2: (doc: RxDocument) => {
     return {...doc, metric_data: null};
+  },
+  3: (doc: RxDocument<any>) => {
+    if (!doc.coordinates || !doc.coordinates.latitude || !doc.coordinates.longitude) return doc;
+    const newCoordinates = `${doc.coordinates.latitude},${doc.coordinates.longitude}`;
+    return {...doc, coordinates: newCoordinates};
   },
 };
