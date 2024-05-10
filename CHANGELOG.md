@@ -1,3 +1,19 @@
+<a name="16.0.0"></a>
+# 16.0.0 "specified-smelt" (2024-05-10)
+### Bug Fixes
+* **core/forms:** add dino_form_info control also even when the form is not yet fully initialised ([e41c67f](https://bitbucket.org/gnucoop/dino/commits/e41c67f5b87357b5483f12d8b95996203b8552a7))
+* **core/forms:** relationships: replace choice origin only if exists and has num options <= 1 ([0165e73](https://bitbucket.org/gnucoop/dino/commits/0165e731f4d95945421fc1b3832fa2aa27c5f8ff))
+* **core/locations:** Small fix to location rxdb migrations (3) ([b500cfd](https://bitbucket.org/gnucoop/dino/commits/b500cfd479f075e9a304b193b7b688b7c5cce222))
+* **material/edit-public-form:** modify css for select ([bdfbb74](https://bitbucket.org/gnucoop/dino/commits/bdfbb74db5887b724c79c2e3dba8c40f79e5733b))
+* **material/list:** calculate exact number of slide repetitions for each rep slide. Use exact name for rep slide fields instead substring. ([8e9b734](https://bitbucket.org/gnucoop/dino/commits/8e9b734bccdcc5945cff907ec3bcbf82432b1ab8))
+* **material/search-filters-widget:** remove from form the new support ajf field ([a320330](https://bitbucket.org/gnucoop/dino/commits/a320330ee33763edda4338d52e97004c763ad639))
+* **multiple:** check for choiceOrigin by repeating slide using formschema in relationships ([539b931](https://bitbucket.org/gnucoop/dino/commits/539b9314e05434009309a1d0f175e1ae2246157e))
+### Features
+* **core/users:** add function for retrieve users or groups by group metric ([ef349f4](https://bitbucket.org/gnucoop/dino/commits/ef349f4c06bc596d6fecfb2f494a29e6a8c9668f))
+* **multiple:** add users info in trigger on creation and in public form ([08fc6d8](https://bitbucket.org/gnucoop/dino/commits/08fc6d8eccc3faf85f28f6b1dac578bb9a75d9c4))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="15.2.10"></a>
 # 15.2.10 "limited-narwhal" (2024-03-21)
 ### Bug Fixes
