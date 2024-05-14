@@ -162,6 +162,7 @@ export const generateSchemaListHeaders = (
           column: node.name,
           label: node.label,
           dataColumn: true,
+          fieldType: (node as any).fieldType ?? undefined,
           repeatingSlideColumn: node.repeatingSlideColumn,
           repeatingSlideName: node.repeatingSlideColumn ? node.slideName : undefined,
           displayed: dataHeadersDisplayed.includes(node.name),
