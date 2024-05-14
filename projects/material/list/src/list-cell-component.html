@@ -1,0 +1,62 @@
+<!-- Cell Container -->
+<ng-container *ngIf="!(item|dinoListCellIsFile); else fileTemplate">
+  <ng-container *ngIf="!(item|dinoListCellIsStorageImageUrl);else imageTemplate">
+    <ng-container
+      *ngIf="header?.fieldType === 3; then booleanCellTemplate; else standardCellTemplate"
+    />
+  </ng-container>
+</ng-container>
+
+<!-- ---- CELL TEMPLATES ---- -->
+
+<!-- Image Cell template -->
+<ng-template #imageTemplate>
+  <mat-icon (click)="previewMethod ? previewMethod($event, item) : null" class="dino-file-cell-icon"
+    >photo_camera</mat-icon
+  >
+</ng-template>
+
+<!-- File Cell Template -->
+<ng-template #fileTemplate>
+  <ng-container
+    *ngIf="!(item|dinoListCellIsDeletedFile); then validFileTemplate else
+    deletedFileTemplate"
+  />
+</ng-template>
+
+<!-- Valid File Cell template -->
+<ng-template #validFileTemplate>
+  <ng-container [ngSwitch]="(item|dinoListCellGetFileIcon)">
+    <a *ngSwitchCase="'insert_drive_file'" [href]="(item|dinoListCellGetFile).url" target="_blank"
+      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
+    >
+    <a *ngSwitchCase="'picture_as_pdf'" [href]="(item|dinoListCellGetFile).url" target="_blank"
+      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
+    >
+    <mat-icon
+      *ngSwitchCase="'image'"
+      (click)="previewMethod ? previewMethod($event, item) : null"
+      class="dino-file-cell-icon"
+      >{{item|dinoListCellGetFileIcon}}</mat-icon
+    >
+    <ng-container *ngSwitchDefault>{{item}}</ng-container>
+  </ng-container>
+</ng-template>
+
+<!-- Deleted file Cell template -->
+<ng-template #deletedFileTemplate></ng-template>
+
+<!-- Boolean Cell template -->
+<ng-template #booleanCellTemplate>
+  <div (click)="$event.stopPropagation()">
+    <mat-slide-toggle
+      [checked]="item === true"
+      (change)="toggleBoolean($event)"
+      style="margin: 20px"
+      aria-label="Toggle Dino Theme"
+    ></mat-slide-toggle>
+  </div>
+</ng-template>
+
+<!-- Standard Cell template -->
+<ng-template #standardCellTemplate> {{item}} </ng-template>

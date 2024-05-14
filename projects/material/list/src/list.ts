@@ -495,9 +495,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     cdr: ChangeDetectorRef,
     aui: AdminUserInteractionsService,
     actroute: ActivatedRoute,
-    private _dialog: MatDialog,
-    private _fts: FiltersService,
+    readonly dialog: MatDialog,
     readonly breakpointObserver: BreakpointObserverService,
+    private _fts: FiltersService,
     private _router: Router,
     private _snackbar: MatSnackBar,
     private _renderer: Renderer2,
@@ -794,7 +794,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     dialogConfig.data = {
       columns: this.headers,
     };
-    this._columnsDialogRef = this._dialog.open(ColumnsSelector, dialogConfig);
+    this._columnsDialogRef = this.dialog.open(ColumnsSelector, dialogConfig);
     this._columnsDialogRef
       .afterClosed()
       .pipe(
@@ -822,7 +822,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     const dialogConfig = new MatDialogConfig();
     const dialogData: FormStatusChangerData = {formData: element};
     dialogConfig.data = dialogData;
-    this._statusDialogRef = this._dialog.open(FormStatusChanger, dialogConfig);
+    this._statusDialogRef = this.dialog.open(FormStatusChanger, dialogConfig);
     this._statusDialogRef
       .afterClosed()
       .pipe(take(1))
@@ -986,7 +986,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       dialogConfig.data = elem;
     }
 
-    this._dialog.open(ImagePreview, dialogConfig);
+    this.dialog.open(ImagePreview, dialogConfig);
   }
 
   /**
@@ -1155,7 +1155,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
       context: 'bulkFormEdit',
     };
-    this._fmDialogRef = this._dialog.open(FormMetricSelectorDialog, dialogConfig);
+    this._fmDialogRef = this.dialog.open(FormMetricSelectorDialog, dialogConfig);
     this._fmDialogRef
       .afterClosed()
       .pipe(
@@ -1225,6 +1225,32 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
 
         if (res != null && res.length) {
           this._snackbar.open('Documents successfully modified', 'EDIT', {duration: 5000});
+        }
+      });
+  }
+
+  /**
+   * Called when a row is edited inline (eg. a boolean toggle)
+   */
+  editQuickAction(ev: {patchedDoc: Partial<T> & {id: string}; previousDoc: T}) {
+    if (!ev || !ev.patchedDoc || !ev.previousDoc) return;
+    console.log(ev);
+    this._fdm
+      .patch(ev.patchedDoc)
+      .pipe(take(1))
+      .subscribe(res => {
+        if (res != null) {
+          this._snackbar.open('Document successfully modified', 'QUICK EDIT', {duration: 5000});
+          const trigData: ActionTriggerData<T> = {
+            doc: res as unknown as RxDocument<T> | undefined,
+            previousValue: ev.previousDoc,
+            newValue: res,
+          };
+          this.emitActionTrigger.emit({
+            name: 'Form Data Changed',
+            triggerType: 'on_form_data_change',
+            triggerData: trigData,
+          });
         }
       });
   }
@@ -1309,7 +1335,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       dialogConfig.data = {
         formSchema: schemaId,
       };
-      this._importDialogRef = this._dialog.open(ImportForm, dialogConfig);
+      this._importDialogRef = this.dialog.open(ImportForm, dialogConfig);
       this._dialogSub = this._importDialogRef
         .afterClosed()
         .pipe(
@@ -1369,7 +1395,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     dialogConfig.data = {
       docId: item.id,
     };
-    this._dialog.open(LogViewer, dialogConfig);
+    this.dialog.open(LogViewer, dialogConfig);
   }
 
   /**
@@ -1589,7 +1615,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param dialogConfig The dialog configuration
    */
   private _openExportDialog(schema: FormSchema, dialogConfig: MatDialogConfig): void {
-    let dialogRef = this._dialog.open(ExportList, dialogConfig);
+    let dialogRef = this.dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
       .pipe(take(1))
       .subscribe(evt => this.emitExportActionTrigger.emit(evt));

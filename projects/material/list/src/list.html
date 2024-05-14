@@ -142,7 +142,7 @@
           externalRefCellTemplate :
           (header.repeatingSlideColumn ?
           repeatingCellTemplate :
-          defaultCellTemplate);"
+          singleCellTemplate);"
         >
         </ng-container>
         <ng-template #externalRefCellTemplate>
@@ -163,7 +163,12 @@
           </ng-container>
           <mat-icon
             class="dino-edit-status-icon"
-            *ngIf="header.isEditable && header.isEditable(element) && header.editMethod && element.data && element.data['$invalid'] !== true && ctx.showStatusEdit|async"
+            *ngIf="header.column === 'form_status_ref_id' &&
+            header.isEditable &&
+            header.isEditable(element) &&
+            header.editMethod &&
+            element.data &&
+            element.data['$invalid'] !== true && ctx.showStatusEdit|async"
             mat-list-icon
             (click)="$event.stopPropagation();header.editMethod(element);"
             >edit_note
@@ -187,9 +192,13 @@
                 >navigate_before</mat-icon
               >
 
-              <ng-container
-                *ngTemplateOutlet="defaultBaseTemplate; context: {item: item|dinoDateValue}"
-              ></ng-container>
+              <dino-list-cell
+                [item]="item|dinoDateValue"
+                [rowElement]="element"
+                [header]="header"
+                [previewMethod]="previewImage"
+                [dialog]="dialog"
+              />
 
               <mat-icon
                 *ngIf="idx + 1 < getRepeatingSlideTabCount(tabGroup)"
@@ -201,15 +210,20 @@
           </mat-tab-group>
         </ng-template>
 
-        <ng-template #defaultCellTemplate
+        <ng-template #singleCellTemplate
           ><mat-icon *ngIf="header.column === 'text' && element.icon !== null"
             >{{element.icon}}</mat-icon
           >
           <mat-icon *ngIf="header.column === 'text' && element.redirect_url!== null">link</mat-icon>
 
-          <ng-container
-            *ngTemplateOutlet="defaultBaseTemplate; context: {item: element|dinoListCellValue:header:dataSource?.choices}"
-          ></ng-container>
+          <dino-list-cell
+            [item]="element|dinoListCellValue:header:dataSource?.choices"
+            [rowElement]="element"
+            [header]="header"
+            [previewMethod]="previewImage"
+            [dialog]="dialog"
+            (booleanChangedEvt)="editQuickAction($event)"
+          />
         </ng-template>
       </mat-cell>
     </ng-container>
@@ -344,41 +358,6 @@
       </mat-row>
     </ng-container>
   </mat-table>
-</ng-template>
-
-<ng-template #defaultBaseTemplate let-item="item">
-  <ng-container *ngIf="(item|dinoListCellIsFile); else defaultTemplate">
-    <ng-container *ngIf="!(item|dinoListCellIsDeletedFile); else deletedFileTemplate">
-      <ng-container [ngSwitch]="(item|dinoListCellGetFileIcon)">
-        <a
-          *ngSwitchCase="'insert_drive_file'"
-          [href]="(item|dinoListCellGetFile).url"
-          target="_blank"
-          ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
-        >
-        <a *ngSwitchCase="'picture_as_pdf'" [href]="(item|dinoListCellGetFile).url" target="_blank"
-          ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
-        >
-        <mat-icon
-          *ngSwitchCase="'image'"
-          (click)="previewImage($event, item)"
-          class="dino-file-cell-icon"
-          >{{item|dinoListCellGetFileIcon}}</mat-icon
-        >
-        <ng-container *ngSwitchDefault>{{item}}</ng-container>
-      </ng-container>
-    </ng-container>
-  </ng-container>
-
-  <ng-template #deletedFileTemplate></ng-template>
-  <ng-template #defaultTemplate>
-    <ng-container *ngIf="item|dinoListCellIsStorageImageUrl; else defaultStandardTemplate">
-      <mat-icon (click)="previewImage($event, item)" class="dino-file-cell-icon"
-        >photo_camera</mat-icon
-      ></ng-container
-    >
-    <ng-template #defaultStandardTemplate> {{item}} </ng-template>
-  </ng-template>
 </ng-template>
 
 <div class="dino-table-container">

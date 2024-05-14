@@ -64,6 +64,7 @@ import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {AsListCellActionsPipe} from './list-action-pipe';
 import {LangsModule} from '@dino/material/langs';
+import {ListCellComponent} from './list-cell-component';
 
 @NgModule({
   imports: [
@@ -101,6 +102,7 @@ import {LangsModule} from '@dino/material/langs';
     ColumnsSelector,
     ImagePreview,
     ListCell,
+    ListCellComponent,
     ListCellValue,
     ListCellIsFile,
     ListCellIsDeletedFile,
