@@ -20,6 +20,8 @@
  *
  */
 
+import {AjfFieldType} from '@ajf/core/forms';
+
 export interface ListHeader<T> {
   /**
    * The object key corresponding to the header.
@@ -56,6 +58,10 @@ export interface ListHeader<T> {
    * from the Data attribute of the document. (eg. FormData.data)
    */
   dataColumn?: boolean;
+  /**
+   * If header of an Ajf Field column, this matches the Ajf Field Type of the corresponding field
+   */
+  fieldType?: AjfFieldType;
   /**
    * If true, the content of the list cell is retrieved from fields inside
    * a repeating slide.
