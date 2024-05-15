@@ -134,6 +134,11 @@ export const additionalConfig = {
   pipelines: ['pipeline_test'],
 
   /**
+   * List of Form Schemas (by name) that allow boolean field quick edit directly from the Form List
+   */
+  booleanQuickEdit: ['00 Baseline Target 8PERMILLE'],
+
+  /**
    * Logo for case card
    */
   logoImage: 'https://gnudino.vercel.app/assets/icons/logos/logodino.png',
