@@ -1234,7 +1234,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   editQuickAction(ev: {patchedDoc: Partial<T> & {id: string}; previousDoc: T}) {
     if (!ev || !ev.patchedDoc || !ev.previousDoc) return;
-    console.log(ev);
     this._fdm
       .patch(ev.patchedDoc)
       .pipe(take(1))

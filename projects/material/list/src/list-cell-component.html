@@ -2,7 +2,11 @@
 <ng-container *ngIf="!(item|dinoListCellIsFile); else fileTemplate">
   <ng-container *ngIf="!(item|dinoListCellIsStorageImageUrl);else imageTemplate">
     <ng-container
-      *ngIf="header?.fieldType === 3; then booleanCellTemplate; else standardCellTemplate"
+      *ngIf="header?.fieldType === 3 &&
+      header?.isEditable &&
+      rowElement &&
+      header?.isEditable(rowElement);
+      then booleanCellTemplate; else standardCellTemplate"
     />
   </ng-container>
 </ng-container>
@@ -19,8 +23,8 @@
 <!-- File Cell Template -->
 <ng-template #fileTemplate>
   <ng-container
-    *ngIf="!(item|dinoListCellIsDeletedFile); then validFileTemplate else
-    deletedFileTemplate"
+    *ngIf="!(item|dinoListCellIsDeletedFile);
+    then validFileTemplate; else deletedFileTemplate"
   />
 </ng-template>
 
@@ -52,8 +56,7 @@
     <mat-slide-toggle
       [checked]="item === true"
       (change)="toggleBoolean($event)"
-      style="margin: 20px"
-      aria-label="Toggle Dino Theme"
+      aria-label="Edit boolean field"
     ></mat-slide-toggle>
   </div>
 </ng-template>
