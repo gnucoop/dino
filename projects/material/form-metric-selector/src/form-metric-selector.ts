@@ -355,7 +355,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'area',
             hint: `Thematic Area of the form`,
-            placeholder: `Thematic Area ${this._hasOptionalMetrics.value ? '' : '*'}`,
+            placeholder: 'Thematic Area' + this._hasOptionalMetrics.value ? '' : ' *',
             icon: 'volunteer_activism',
           };
           fmf.push(field);
@@ -365,7 +365,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'case',
             hint: `Case of the form`,
-            placeholder: `Case management ${this._hasOptionalMetrics.value ? '' : '*'}`,
+            placeholder: 'Case management' + this._hasOptionalMetrics.value ? '' : ' *',
             icon: 'people',
           };
           fmf.push(field);
@@ -376,7 +376,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'project',
             hint: `Project associated with the form`,
-            placeholder: `Project ${this._hasOptionalMetrics.value ? '' : '*'}`,
+            placeholder: 'Project' + this._hasOptionalMetrics.value ? '' : ' *',
             icon: 'assignment',
           };
           fmf.push(field);
@@ -390,7 +390,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'location',
             hint: `Location of the collected data`,
-            placeholder: `Location ${this._hasOptionalMetrics.value ? '' : '*'}`,
+            placeholder: 'Location' + this._hasOptionalMetrics.value ? '' : ' *',
             icon: 'place',
           };
           fmf.push(field);
@@ -404,7 +404,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'organization',
             hint: `Organization associated with the form`,
-            placeholder: `Organization ${this._hasOptionalMetrics.value ? '' : '*'}`,
+            placeholder: 'Organization' + this._hasOptionalMetrics.value ? '' : ' *',
             icon: 'public',
           };
           fmf.push(field);
