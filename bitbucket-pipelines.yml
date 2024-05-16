@@ -13,14 +13,14 @@ pipelines:
             - yarn
           script:
             - rm -rf dist
-            - yarn install --frozen-lockfile --non-interactive
+            - yarn install --frozen-lockfile --non-interactive --network-timeout 600000
             - yarn -s lint
             - ./scripts/build.mjs
       - step:
           name: Model schema, Unit and E2E tests
           size: 2x
           script:
-            - yarn install --frozen-lockfile --non-interactive
+            - yarn install --frozen-lockfile --non-interactive --network-timeout 600000
             - ./scripts/e2e-ci.mjs
             - yarn -s model-schema-test
             - yarn -s test:ci
@@ -28,7 +28,7 @@ pipelines:
           name: Build release, docs, Create Artifacts and Publish on Bytesafe
           script:
             - rm -rf dist
-            - yarn install --frozen-lockfile --non-interactive
+            - yarn install --frozen-lockfile --non-interactive --network-timeout 600000
             - ./scripts/release.mjs
             - ./scripts/build-docs.mjs
             - ./scripts/jenkins/create-build-artifacts.mjs

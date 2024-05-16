@@ -13,7 +13,6 @@ yarn-error.log
 
 #Yarn
 .yarn
-.yarnrc
 
 # IDEs and editors
 .idea/
@@ -25,7 +24,6 @@ yarn-error.log
 *.sublime-workspace
 
 # Yarn
-.yarnrc
 .yarn/releases
 
 # Visual Studio Code
