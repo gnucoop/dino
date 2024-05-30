@@ -88,6 +88,16 @@ export interface ReportContext {
   [form_schema_id: string]: {[key: string]: any}[];
 }
 
+function reformat(isoDate: string): string {
+  if (isoDate.length !== 10) {
+    return isoDate;
+  }
+  const year = isoDate.slice(0, 4);
+  const month = isoDate.slice(5, 7);
+  const day = isoDate.slice(8, 10);
+  return day + '/' + month + '/' + year;
+}
+
 /**
  * The Report Edit component.
  * Reports' data can be viewed or saved here.
@@ -538,9 +548,50 @@ export class EditReport implements AfterViewInit {
    * Prints the current report Instance to pdf
    */
   printReport() {
-    if (this._currentReportInstance != null) {
-      openReportPdf(this._currentReportInstance);
-    }
+    combineLatest([this.reportSchema, this.reportData, this.reportMetrics!])
+    .pipe(take(1)).subscribe(([schema, data, metricString]) => {
+      if (schema == null || this._currentReportInstance == null) {
+        return;
+      }
+      const header: any = [{
+        text: schema.label,
+        fontSize: 22,
+        bold: true,
+        alignment: 'center',
+        margin: [0, 0, 0, 10],
+      }];
+      if (data?.date_start) {
+        header.push({
+          text: this._translateService.translate('Collected Since') + ' ' + reformat(data.date_start),
+          fontSize: 14,
+          bold: true,
+          alignment: 'left',
+          margin: [0, 0, 0, 10],
+        });
+      }
+      if (data?.date_end) {
+        header.push({
+          text: this._translateService.translate('Collected Until') + ' ' + reformat(data.date_end),
+          fontSize: 14,
+          bold: true,
+          alignment: 'left',
+          margin: [0, 0, 0, 10],
+        });
+      }
+      if (metricString != null && metricString != '') {
+        const metrics = metricString.split(', ');
+        for (const met of metrics) {
+          header.push({
+            text: met,
+            fontSize: 14,
+            bold: true,
+            alignment: 'left',
+            margin: [0, 0, 0, 10],
+          });
+        }
+      }
+      openReportPdf(this._currentReportInstance, undefined, undefined, header);
+    });
   }
 
   /**
@@ -871,7 +922,7 @@ export class EditReport implements AfterViewInit {
                     if (key && vc[key]) {
                       metricsString += `${this._translateService.translate(
                         key.charAt(0).toUpperCase() + key.slice(1),
-                      )} : ${vc[key].option.name}  `;
+                      )}: ${vc[key].option.name}`;
                     }
                     if (idx < metricKeys.length - 1) {
                       metricsString += ', ';
@@ -885,6 +936,7 @@ export class EditReport implements AfterViewInit {
             return obsOf(null);
           }
         }),
+        shareReplay(1),
       );
 
       combineLatest([this._reportMetricsSelector, this._currentReport, this.isView])
