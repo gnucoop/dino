@@ -102,6 +102,7 @@ export const ESP: Translation = {
   'Location of the collected data': 'Ubicación de los datos recopilados',
   'Organization associated with the form': 'Organización asociada al formulario',
   'Creation Date': 'Fecha de creación',
+  'Update Date': 'Fecha de actualización',
   'Create': 'Crear',
   'Edit': 'Editar',
   'REPORT METRICS': 'MEDIDAS DEL INFORME',

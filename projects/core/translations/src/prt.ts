@@ -102,6 +102,7 @@ export const PRT: Translation = {
   'Location of the collected data': 'Localização dos dados coletados',
   'Organization associated with the form': 'Organização associada ao formulário',
   'Creation Date': 'Data de criação',
+  'Update Date': 'Data de atualização',
   'Create': 'Criar',
   'Edit': 'Editar',
   'REPORT METRICS': 'MÉTRICAS DO RELATORIO',

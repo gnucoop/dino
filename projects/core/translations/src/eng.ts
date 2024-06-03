@@ -102,6 +102,7 @@ export const ENG: Translation = {
   'Location of the collected data': 'Location of the collected data',
   'Organization associated with the form': 'Organization associated with the form',
   'Creation Date': 'Creation Date',
+  'Update Date': 'Update Date',
   'Create': 'Create',
   'Edit': 'Edit',
   'REPORT METRICS': 'REPORT METRICS',

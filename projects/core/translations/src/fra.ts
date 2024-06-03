@@ -102,6 +102,7 @@ export const FRA: Translation = {
   'Location of the collected data': 'Localisation des données collectées',
   'Organization associated with the form': 'Organisation associée au formulaire',
   'Creation Date': 'Date de création',
+  'Update Date': 'Date de la mise à jour',
   'Create': 'Créer',
   'Edit': 'Modifier',
   'REPORT METRICS': 'MÉTRIQUES DU RAPPORT',

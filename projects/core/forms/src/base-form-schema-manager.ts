@@ -136,6 +136,7 @@ export const generateSchemaListHeaders = (
     },
     ...metricHeaders,
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {column: 'updated_at', label: 'Update Date', sortable: true, displayed: false},
   ];
   const stringIdentifier: AjfStringIdentifier[] | undefined = formSchema.schema.stringIdentifier;
   const identifierColumns = [];
