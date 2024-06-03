@@ -1,3 +1,15 @@
+<a name="16.0.1"></a>
+# 16.0.1 "personal-damselfly" (2024-06-03)
+### Bug Fixes
+* **material/forms:** remove trailing space in placeholders of metric selector ([a215283](https://bitbucket.org/gnucoop/dino/commits/a21528368c8a20de96014d1911aa1023acc4bbca))
+* **material/list:** clean... ([af62f76](https://bitbucket.org/gnucoop/dino/commits/af62f769bfddd1f1dade33b43e7dd5a1b973ccf1))
+### Features
+* **core/forms:** add updated_at in form list table ([718c9ef](https://bitbucket.org/gnucoop/dino/commits/718c9ef721bfa33d954a830cd9dff697dc2602a7))
+* **material/list:** List Template split and reorganized in list-cell-component. Added boolean field inline editing in list-cell-component ([0a69187](https://bitbucket.org/gnucoop/dino/commits/0a691876cd8c157f00ff2603347fe62b92ee1436))
+* **material/reports:** dates and metrics printing in report pdf ([0e68d86](https://bitbucket.org/gnucoop/dino/commits/0e68d8631d0d9102449603f02154f503e74d246c))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.0.0"></a>
 # 16.0.0 "specified-smelt" (2024-05-10)
 ### Bug Fixes

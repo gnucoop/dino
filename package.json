@@ -34,7 +34,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
-  "version": "16.0.0",
+  "version": "16.0.1",
   "private": true,
   "dependencies": {
     "@ajf/core": "^16.0.1",
