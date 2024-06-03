@@ -54,7 +54,6 @@ export class ListCellValue implements PipeTransform {
       const datePipe = new DatePipe(this._getCurrentLocale());
       return datePipe.transform(dt, 'shortDate') as string;
     }
-    //
     if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,}.*$/.test(val)) {
       dt = new Date(val);
       if (!isNaN(dt.valueOf())) {
