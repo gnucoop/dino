@@ -76,7 +76,7 @@ import {
   throwError,
   zip,
 } from 'rxjs';
-import {delay, filter, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {delay, filter, map, retryWhen, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -902,6 +902,7 @@ export class EditReport implements AfterViewInit {
         switchMap(rms => {
           if (rms) {
             return rms.formMetrics.valueChanges.pipe(
+              startWith({}),
               map(
                 (vc: {
                   [key: string]: {
@@ -985,7 +986,7 @@ export class EditReport implements AfterViewInit {
             const metric = filteredMetrics[idx];
             metricsString += `${this._translateService.translate(
               metric.collection.name.charAt(0).toUpperCase() + metric.collection.name.slice(1),
-            )} : ${metric['name']}  `;
+            )}: ${metric['name']}`;
 
             if (idx < filteredMetrics.length - 1) {
               metricsString += ', ';
@@ -993,6 +994,7 @@ export class EditReport implements AfterViewInit {
           }
           return metricsString;
         }),
+        shareReplay(1),
       );
     }
   }
