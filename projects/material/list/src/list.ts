@@ -103,7 +103,7 @@ import {RxDocument} from 'rxdb';
 import {TranslocoService} from '@ngneat/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {format} from 'date-fns';
-import {UserDataManager} from '@dino/core/users';
+import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
@@ -505,6 +505,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _fsm: FormStatusManager,
     private _fdm: FormDataManager,
     private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
   ) {
     super(cdr, aui, actroute);
 
@@ -1184,8 +1185,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           );
           return forkJoin([obsOf(triggerChanges), ...formPatches]);
         }),
+        withLatestFrom(this._udm.getActiveUserData(), this._ugm.getActiveUserGroups()),
       )
-      .subscribe(res => {
+      .subscribe(allRes => {
+        const res = allRes[0];
         if (res == null) return;
         const triggers: {
           id: string;
@@ -1203,10 +1206,17 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           const patchedDoc = patchedDocs.find(doc => doc != null && doc.id === trigger.id);
 
           if (patchedDoc != null) {
+            const activeUser = res[1] || null;
+            const activeUserGroups = res[2] || [];
+
             const trigData: ActionTriggerData<T> = {
               doc: patchedDoc,
               previousValue: trigger.previousValue,
               newValue: patchedDoc,
+              additional_info: {
+                activeUser,
+                activeUserGroups,
+              },
             };
             this.emitActionTrigger.emit({
               name: 'Form Data Changed',

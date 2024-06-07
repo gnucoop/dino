@@ -25,11 +25,13 @@ import {
   of as obsOf,
   Subscription,
   switchMap,
+  withLatestFrom,
 } from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActionTriggerData, PermissionContextService} from '@dino/core/data';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {UserDataManager, UserGroupManager} from '@dino/core/users';
 
 /**
  * Represents data to be passed to the Form Status changer
@@ -78,6 +80,8 @@ export class FormStatusChanger implements OnDestroy, OnInit {
     private _snackbar: MatSnackBar,
     private _pcs: PermissionContextService,
     private _ehms: ErrorHandlerMessageService,
+    private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
   ) {
     this.currentStatusId = data.formData.form_status_ref_id;
     this.availableStatuses = data.formData.form_schema.pipe(
@@ -127,14 +131,15 @@ export class FormStatusChanger implements OnDestroy, OnInit {
           );
           return obsOf(null);
         }),
+        withLatestFrom(this._udm.getActiveUserData(), this._ugm.getActiveUserGroups()),
       )
       .subscribe({
         next: res => {
-          if (res === 'close') {
+          if (res[0] === 'close') {
             return;
           }
           let statusChange: ActionTriggerData<FormData> | null = null;
-          if (res == null) {
+          if (res[0] == null) {
             this._snackbar.open(
               `Oops! Something went wrong while changing the Status.`,
               'SAVE ERROR',
@@ -144,12 +149,18 @@ export class FormStatusChanger implements OnDestroy, OnInit {
             );
           } else {
             this._snackbar.open(`Status changed successfully`, 'STATUS CHANGED', {duration: 10000});
-            if (isRxDocument(res) && typeof res != 'string') {
-              const resObj = res as {[key: string]: any} & {form_status_ref_id: string};
+            if (isRxDocument(res[0]) && typeof res[0] != 'string') {
+              const resObj = res[0] as {[key: string]: any} & {form_status_ref_id: string};
+              const activeUser = res[1] || null;
+              const activeUserGroups = res[2] || [];
               statusChange = {
                 previousValue: this.currentStatusId,
                 newValue: resObj.form_status_ref_id,
-                doc: res as RxDocument<FormData>,
+                doc: res[0] as RxDocument<FormData>,
+                additional_info: {
+                  activeUser,
+                  activeUserGroups,
+                },
               };
             }
           }
