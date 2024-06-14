@@ -26,12 +26,14 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  Optional,
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormControl} from '@angular/forms';
 import {Router} from '@angular/router';
 import {PermissionContextService} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {LocationManager} from '@dino/core/locations';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
@@ -196,6 +198,7 @@ export class Collect {
     private _router: Router,
     private _cdr: ChangeDetectorRef,
     private _dialog: MatDialog,
+    @Optional() locManager: LocationManager | null,
   ) {
     const res = combineLatest([
       this._collectType,
@@ -220,6 +223,8 @@ export class Collect {
             map(docs => {
               let collectItems: CollectItem[] = [];
               for (let document of docs.filter(dcm => dcm != null)) {
+                const metrics = (document as RxDocument<FormSchema>).form_schema_metrics || [];
+                const hasLocation = metrics.length === 0 ? locManager != null : metrics.includes('location');
                 let collectItem: CollectItem = {
                   name: document.name,
                   label: document.label ?? document.name,
@@ -242,7 +247,7 @@ export class Collect {
                       permissionContext,
                       true,
                     ),
-                  hasLocation: ((document as RxDocument<FormSchema>).form_schema_metrics || []).includes('location'),
+                  hasLocation,
                   unique:
                     'uniqueMetricsSet' in document.schema && document.schema.uniqueMetricsSet
                       ? document.schema.uniqueMetricsSet
