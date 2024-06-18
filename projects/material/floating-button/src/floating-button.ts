@@ -55,4 +55,10 @@ export class FloatingButton {
    * The button disable condition observable.
    */
   @Input() buttonDisabled?: boolean;
+
+  /**
+   * If true, the button is draggable with a handle.
+   * Defaults to false.
+   */
+  @Input() draggable?: boolean;
 }

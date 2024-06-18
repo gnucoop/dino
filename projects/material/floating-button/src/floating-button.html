@@ -1,11 +1,38 @@
-<button
-  aria-label="An action floating button"
-  class="mat-fab-bottom-right"
-  [routerLink]="buttonUrl"
-  [matTooltip]="tooltipMessage || ''"
-  [matTooltipPosition]="'left'"
-  [disabled]="buttonDisabled"
-  mat-fab
+<ng-container *ngIf="draggable; else undraggable"
+  ><button
+    cdkDrag
+    aria-label="An action floating button"
+    class="mat-fab-bottom-right"
+    [routerLink]="buttonUrl"
+    [matTooltip]="tooltipMessage || ''"
+    [matTooltipPosition]="'left'"
+    [disabled]="buttonDisabled"
+    mat-fab
+  >
+    <button
+      mat-mini-fab
+      class="floating-handle"
+      color="primary"
+      aria-label="Drag handle"
+      cdkDragHandle
+      (click)="$event.stopPropagation(); $event.preventDefault();"
+    >
+      <mat-icon>open_with</mat-icon>
+    </button>
+    <mat-icon class="icon">{{buttonIcon}}</mat-icon>
+  </button></ng-container
 >
-  <mat-icon class="icon">{{buttonIcon}}</mat-icon>
-</button>
+
+<ng-template #undraggable
+  ><button
+    aria-label="An action floating button"
+    class="mat-fab-bottom-right"
+    [routerLink]="buttonUrl"
+    [matTooltip]="tooltipMessage || ''"
+    [matTooltipPosition]="'left'"
+    [disabled]="buttonDisabled"
+    mat-fab
+  >
+    <mat-icon class="icon">{{buttonIcon}}</mat-icon>
+  </button></ng-template
+>

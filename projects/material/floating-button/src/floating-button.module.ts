@@ -28,9 +28,17 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 
 import {FloatingButton} from './floating-button';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    RouterModule,
+    DragDropModule,
+  ],
   declarations: [FloatingButton],
   exports: [FloatingButton],
 })
