@@ -36,7 +36,10 @@
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select" sticky>
       <ng-container>
-        <mat-header-cell *matHeaderCellDef>
+        <mat-header-cell
+          *matHeaderCellDef
+          [ngClass]="isAggregationList ? 'dino-aggregation' : null"
+        >
           <ng-container *ngIf="bulkActions">
             <mat-checkbox
               class="dino-row-actions"
@@ -81,7 +84,7 @@
             </button>
           </ng-container>
         </mat-header-cell>
-        <mat-cell *matCellDef="let row">
+        <mat-cell *matCellDef="let row" [ngClass]="isAggregationList ? 'dino-aggregation' : null">
           <mat-checkbox
             *ngIf="bulkActions"
             class="dino-row-actions"
@@ -222,6 +225,7 @@
             [header]="header"
             [previewMethod]="previewImage"
             [dialog]="dialog"
+            (click)="$event.preventDefault(); $event.stopPropagation();"
             (booleanChangedEvt)="editQuickAction($event)"
           />
         </ng-template>
@@ -250,29 +254,24 @@
       <mat-cell *matCellDef="let row" class="dino-row-actions">
         <div class="dino-row-actions-container">
           <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
-            <ng-container *ngFor="let action of actions">
+            <ng-container *ngFor="let action of actions; let idx = index;">
               <ng-container
                 *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view')) && mainActions.includes(action.actionType)"
               >
                 <mat-icon
+                  class="dino-action-icon"
+                  [ngStyle]="{'--position': idx}"
                   mat-list-icon
                   (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
                   >{{action.matIcon}}
                 </mat-icon>
               </ng-container>
             </ng-container>
-            <ng-container *ngFor="let action of actions">
-              <ng-container *ngIf="!mainActions.includes(action.actionType)">
-                <mat-icon
-                  [class]="secondaryRowActionsDisplayed ? null: 'dino-secondary-row-action-icon-hidden'"
-                  mat-list-icon
-                  (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
-                  >{{action.matIcon}}
-                </mat-icon>
-              </ng-container>
-            </ng-container>
-            <ng-container *ngIf="actions.length > getMainActions(actions).length">
-              <mat-icon mat-list-icon (click)="$event.stopPropagation(); toggleSecondaryIcons();"
+
+            <ng-container>
+              <mat-icon
+                mat-list-icon
+                (click)="$event.stopPropagation(); toggleSecondaryIcons(); openActionsDialog(row, actions ,ctx.isDetails);"
                 >more_horiz
               </mat-icon>
             </ng-container>
@@ -289,19 +288,6 @@
         [@detailExpand]="isRowExpanded(row)"
         class="dino-expanded-cell"
       >
-        <div
-          *ngIf="((breakpointObserver.small|async) || (breakpointObserver.medium|async)) && isRowExpanded(row)"
-          class="dino-expanded-row-actions"
-        >
-          <div class="dino-row-action-box" *ngFor="let action of ctx.listRowActions|async">
-            <mat-icon
-              mat-list-icon
-              (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
-              >{{action.matIcon}}
-            </mat-icon>
-          </div>
-        </div>
-
         <div class="dino-inner-table-container" *ngIf="isRowExpanded(row) && !ctx.isDetails">
           <ng-container *ngIf="expandedRowsData[row.id]?.data?.length">
             <mat-form-field
@@ -338,7 +324,7 @@
 
     <mat-row
       *matRowDef="let row; columns: (ctx.displayedColumns|async);"
-      [class.dino-highlighted-row]="(breakpointObserver.small|async) ? isRowExpanded(row) : selection.isSelected(row)"
+      [class.dino-highlighted-row]="(breakpointObserver.extrasmall|async) ? isRowExpanded(row) : selection.isSelected(row)"
       [class.dino-highlighted-light]="isHighlightedRow(row)"
       [class.dino-expanded-row]="isRowExpanded(row)"
       [class.dino-details-row]="ctx.isDetails"
@@ -360,6 +346,6 @@
   </mat-table>
 </ng-template>
 
-<div class="dino-table-container">
+<div class="dino-table-container" [ngClass]="bds.isTouch() ? 'dino-table-container-touch' : null">
   <ng-container *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"></ng-container>
 </div>

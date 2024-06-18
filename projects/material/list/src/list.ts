@@ -107,6 +107,8 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
+import {ActionsModal} from './actions-modal';
+import {BrowserDetectorService} from '@dino/material/browser-detector';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -191,6 +193,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * The Details list template context
    */
   @Input() detailsListContext?: ListContext<any>;
+
+  /**
+   * True if this is an aggregation list
+   */
+  @Input() isAggregationList?: boolean;
 
   /**
    * A set of custom filters passed to the FiltersService,
@@ -461,6 +468,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   private _columnsDialogRef?: MatDialogRef<ColumnsSelector<T>>;
 
   /**
+   * A reference to the MatDialog that contains the Columns Selector
+   */
+  private _actionsDialogRef?: MatDialogRef<ActionsModal<T>>;
+
+  /**
    * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */
@@ -497,6 +509,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     actroute: ActivatedRoute,
     readonly dialog: MatDialog,
     readonly breakpointObserver: BreakpointObserverService,
+    readonly bds: BrowserDetectorService,
     private _fts: FiltersService,
     private _router: Router,
     private _snackbar: MatSnackBar,
@@ -811,6 +824,31 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         if (this.mainListContext != null) {
           this.mainListContext.headers.next(this.headers);
           this.mainListContext.displayedColumns?.next(this.displayedColumns);
+        }
+      });
+  }
+
+  /**
+   * Opens a dialog with the list Actions Modal.
+   */
+  openActionsDialog(row: T, actions: ListAction[], isDetails: boolean) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.panelClass = 'list-actions-dialog';
+    dialogConfig.data = {
+      doc: row,
+      actions: actions,
+      isDetails
+    };
+    this._actionsDialogRef = this.dialog.open(ActionsModal<T>, dialogConfig);
+    this._actionsDialogRef
+      .afterClosed()
+      .pipe(
+        catchError(err => throwError(() => err)),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe((res: {action: ListAction, doc: T, isDetails: boolean}) => {
+        if(res != null){
+          this.actionOnItems(row, res.action, res.isDetails);
         }
       });
   }
@@ -1479,7 +1517,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
 
   onRowMouseEnter(evt: MouseEvent, row: any): void {
     const {target} = evt;
-    if (target != null) {
+    if (target != null && !this.bds.isTouch()) {
       this._renderer.addClass(target, 'dino-hover');
     }
     if (this.emitRowDataOnHover) {
@@ -1489,7 +1527,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
 
   onRowMouseLeave(evt: MouseEvent): void {
     const {target} = evt;
-    if (target != null) {
+    if (target != null && !this.bds.isTouch()) {
       this._renderer.removeClass(target, 'dino-hover');
     }
   }

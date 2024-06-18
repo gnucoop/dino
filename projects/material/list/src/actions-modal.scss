@@ -1,0 +1,53 @@
+.list-actions-dialog {
+  min-width: 250px;
+  .dino-action-selector-container {
+    display: flex;
+    flex-flow: column wrap;
+    .dino-action-search {
+      display: flex;
+      flex: 1 0 auto;
+      .mat-mdc-form-field {
+        flex: 1 0 auto;
+      }
+    }
+    .dino-action-selectors-list {
+      max-height: 50vh;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      padding-top: 20px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  .dino-action-selector {
+    display: flex;
+    flex: 1 1;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    .dino-action-selector-icon {
+      margin-right: 15px;
+    }
+    .dino-action-selector-label {
+      text-transform: capitalize;
+    }
+    &:hover {
+      background-color: rgba(var(--palette-accent-300), 0.3);
+    }
+  }
+
+  .isDarkTheme .dino-action-selector-container {
+    color: rgba(var(--palette-foreground-secondary-text-dark), var(--palette-foreground-secondary-text-dark-alpha));
+  }
+
+  .mat-mdc-dialog-surface {
+    padding: 24px;
+  }
+}

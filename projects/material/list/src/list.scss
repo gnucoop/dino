@@ -2,6 +2,15 @@ dino-list {
   .dino-table-container {
     padding-bottom: 9vh;
     overflow-x: scroll;
+    &.dino-table-container-touch {
+      .mat-mdc-table {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
   }
   .dino-list-toolbar {
     background: transparent;
@@ -53,9 +62,6 @@ dino-list {
       .mat-mdc-cell:not(.dino-expanded-cell) {
         background-color: rgb(var(--palette-accent-300));
       }
-      .dino-row-actions-container {
-        background-color: rgb(var(--palette-accent-300));
-      }
     }
 
     .mat-mdc-row.dino-highlighted-light {
@@ -72,7 +78,6 @@ dino-list {
 
     .mat-icon {
       color: rgb(var(--palette-accent-700));
-      min-width: 24px;
       &:hover {
         background: rgb(var(--palette-accent-100));
         color: rgb(var(--palette-accent-700));
@@ -106,6 +111,11 @@ dino-list {
         display: none;
       }
     }
+  }
+
+  .mat-mdc-cell:first-of-type.dino-aggregation,
+  .mat-mdc-header-cell:first-of-type.dino-aggregation {
+    display: none;
   }
 
   .mat-mdc-header-cell:first-of-type {
@@ -195,20 +205,22 @@ dino-list {
   }
 
   mat-cell:last-of-type.mat-column-actions {
-    padding-right: 10px;
-    position: relative;
     overflow: visible;
     max-width: 0px;
+    background-color: transparent !important;
+    right: 25px !important;
     .dino-row-actions-container {
       display: flex;
-      justify-content: end;
-      position: absolute;
+      justify-content: flex-end;
       min-width: auto;
-      right: 0px;
       .mat-icon {
+        height: 16px;
+        width: 16px;
+        font-size: 16px;
+        background-color: rgb(var(--palette-accent-100));
         border-radius: 100%;
         padding: 5px;
-        margin: 5px;
+        margin: 1px;
       }
     }
   }
@@ -225,7 +237,15 @@ dino-list {
     display: contents;
   }
 
-  mat-cell:last-of-type.mat-column-actions,
+  mat-cell:last-of-type.mat-column-actions {
+    .dino-action-icon {
+      visibility: hidden;
+      position: absolute;
+      right: calc((4 + (var(--position) * 14)) * 1px);
+    }
+    padding: 5px;
+    cursor: pointer;
+  }
   .dino-edit-status-icon {
     visibility: hidden;
     padding: 5px;
@@ -243,10 +263,10 @@ dino-list {
     -webkit-transition: all ease-in-out 0.25s;
   }
 
-  .mat-mdc-row:not(.dino-row-details):hover,
+  // .mat-mdc-row:not(.dino-row-details):hover,
   .mat-mdc-row:not(.dino-row-details).dino-hover {
     cursor: pointer;
-    .mat-column-actions,
+    .mat-column-actions .dino-action-icon,
     .dino-edit-status-icon {
       @media only screen and (min-width: 768px) {
         visibility: visible;
@@ -419,9 +439,6 @@ dino-list {
     .mat-mdc-icon-button.dino-expand-all-button {
       margin-left: 17px;
     }
-    .dino-row-actions {
-      right: 5px !important;
-    }
   }
 
   @media only screen and (max-width: 768px) {
@@ -429,7 +446,6 @@ dino-list {
       min-width: 5px;
     }
     .dino-row-actions {
-      visibility: hidden;
       .dino-columns-sel-btn {
         visibility: visible;
       }
@@ -501,13 +517,13 @@ dino-list {
   background-color: rgb(var(--palette-background-background-dark));
 }
 
-.isDarkTheme .dino-hover .mat-mdc-cell {
+.isDarkTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
   background-color: rgb(var(--palette-primary-300));
   .dino-row-actions-container {
     background-color: rgb(var(--palette-primary-300));
   }
 }
-.isLightTheme .dino-hover .mat-mdc-cell {
+.isLightTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
   background-color: rgb(var(--palette-primary-300));
   .dino-row-actions-container {
     background-color: rgb(var(--palette-primary-300));

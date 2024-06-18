@@ -65,6 +65,7 @@ import {ImagePreview} from './image-preview';
 import {AsListCellActionsPipe} from './list-action-pipe';
 import {LangsModule} from '@dino/material/langs';
 import {ListCellComponent} from './list-cell-component';
+import {ActionsModal} from './actions-modal';
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import {ListCellComponent} from './list-cell-component';
   ],
   declarations: [
     AsListCellActionsPipe,
+    ActionsModal,
     ColumnsSelector,
     ImagePreview,
     ListCell,
