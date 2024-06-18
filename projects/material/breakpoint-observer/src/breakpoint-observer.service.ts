@@ -33,6 +33,10 @@ import {BreakpointObserverModule} from './breakpoint-observer.module';
 @Injectable({providedIn: BreakpointObserverModule})
 export class BreakpointObserverService {
   /**
+   * Extra Small screens
+   */
+  extrasmall: Observable<boolean>;
+  /**
    * Small screens
    */
   small: Observable<boolean>;
@@ -46,6 +50,10 @@ export class BreakpointObserverService {
   large: Observable<boolean>;
 
   constructor(private _breakPointObserver: BreakpointObserver) {
+    this.extrasmall = this._breakPointObserver
+      .observe(['(max-width: 768px)'])
+      .pipe(map(result => result.matches));
+
     this.small = this._breakPointObserver
       .observe([Breakpoints.Handset])
       .pipe(map(result => result.matches));
