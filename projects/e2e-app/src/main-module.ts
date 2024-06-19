@@ -38,6 +38,7 @@ import {DinoTranslationsModule} from '@dino/core/translations';
 import {UserDataManager, UserGroupManager, UsersModule} from '@dino/core/users';
 import {CoreModule as DinoMaterialThemingModule} from '@dino/material/core';
 import {EditReportSchemaModule} from '@dino/material/edit-report-schema';
+import {BrowserDetectorService} from '@dino/material/browser-detector';
 
 import {getRxStorageDexie} from 'rxdb/plugins/dexie';
 import {getRxStorageMemory} from 'rxdb/plugins/memory';
@@ -293,6 +294,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
   ],
   declarations: [E2eApp],
   providers: [
+    BrowserDetectorService,
     {
       provide: AuthService,
       useClass: additionalConfig.externalAuthentication ? AuthService : AuthServiceMock,
