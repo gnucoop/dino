@@ -43,11 +43,11 @@
     }
   }
 
-  .isDarkTheme .dino-action-selector-container {
-    color: rgba(var(--palette-foreground-secondary-text-dark), var(--palette-foreground-secondary-text-dark-alpha));
-  }
-
   .mat-mdc-dialog-surface {
     padding: 24px;
   }
+}
+
+.isDarkTheme .list-actions-dialog .dino-action-selector-container {
+  color: rgba(var(--palette-foreground-secondary-text-dark), var(--palette-foreground-secondary-text-dark-alpha));
 }
