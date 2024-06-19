@@ -250,6 +250,9 @@ dino-list {
     visibility: hidden;
     padding: 5px;
     cursor: pointer;
+    &.dino-edit-status-icon-touch{
+      visibility: visible;
+    }
   }
   .dino-edit-status-icon {
     border-radius: 50%;

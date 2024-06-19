@@ -375,20 +375,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * If true, the Status Edit button is displayed
-   */
-  private _showStatusEditButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  get showStatusEditButton(): boolean {
-    return this._showStatusEditButton.value;
-  }
-  @Input()
-  set showStatusEditButton(show: boolean | null) {
-    if (show != null) {
-      this._showStatusEditButton.next(show);
-    }
-  }
-
-  /**
    * Secondary metric field to display in the Form Metric Selector and Filters
    */
   private _secondaryMetricFieldsDisplayed: {
@@ -890,6 +876,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     );
   }
 
+  hasAllowedStatus(row: T): Observable<boolean>{
+    if(!('form_status_ref_id' in row) || !('form_schema_ref_id' in row)) return obsOf(false);
+    return this._fdm.hasAllowedFormStatus(row as unknown as FormData);
+  }
+
   /**
    * Returns all Main Actions that are actually available to the user
    * @param availableActions All list actions available to the current user
@@ -951,7 +942,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       headers: new BehaviorSubject<ListHeader<T>[]>(this.headers),
       displayedColumns: new BehaviorSubject<string[]>(this.displayedColumns),
       listRowActions: this._listRowActions,
-      showStatusEdit: this._showStatusEditButton,
       showPaginator: this.showPaginator,
       showCheckBox: this.showCheckBox,
     };

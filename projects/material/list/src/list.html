@@ -166,12 +166,15 @@
           </ng-container>
           <mat-icon
             class="dino-edit-status-icon"
-            *ngIf="header.column === 'form_status_ref_id' &&
+            [ngClass]="bds.isTouch()  ? 'dino-edit-status-icon-touch' : null"
+            *ngIf="
+            (hasAllowedStatus(element)|async) === true &&
+            header.column === 'form_status_ref_id' &&
             header.isEditable &&
             header.isEditable(element) &&
             header.editMethod &&
             element.data &&
-            element.data['$invalid'] !== true && ctx.showStatusEdit|async"
+            element.data['$invalid'] !== true"
             mat-list-icon
             (click)="$event.stopPropagation();header.editMethod(element);"
             >edit_note
