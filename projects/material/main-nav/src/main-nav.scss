@@ -39,6 +39,8 @@ dino-main-nav {
   }
 
   .dino-toolbar {
+    position: absolute;
+    z-index: 10;
     flex: 0 0 auto;
     display: flex;
     justify-content: flex-start;
@@ -145,6 +147,7 @@ dino-main-nav {
   }
 
   .mat-sidenav-content.dino-sidenav-content {
+    top: 65px;
     overflow-x: hidden;
     height: 100vh;
     padding: 5px;
