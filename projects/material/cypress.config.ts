@@ -7,6 +7,7 @@ export default defineConfig({
   video: false,
   defaultCommandTimeout: 60000,
   pageLoadTimeout: 180000,
+  scrollBehavior: false,
   e2e: {
     setupNodeEvents(on, config) {
       on('before:browser:launch', (browser = {}, launchOptions) => {

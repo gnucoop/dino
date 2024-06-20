@@ -44,13 +44,20 @@ describe('dino-list', () => {
       });
   });
 
-  it(`should delete a row by clicking on its action-delete button,
+  it(`should delete a row by clicking on its actions dialog button,
+      selecting the Delete action in the dialog
       and confirming the action on the Confirmation Dialog`, () => {
     cy.get('.mat-mdc-row')
       .its('length')
       .then(initialRowCount => {
         cy.get('.mat-mdc-row').first().click();
-        cy.get('.mat-mdc-cell.dino-row-actions .mat-icon').contains('delete').click({force: true});
+        cy.get('.mat-mdc-cell.dino-row-actions .mat-icon')
+          .contains('more_horiz')
+          .click({force: true});
+        cy.get('.list-actions-dialog').should('exist');
+        cy.get('.list-actions-dialog .dino-action-selector .mat-icon')
+          .contains('delete')
+          .click({force: true});
         cy.get('.confirmation-dialog').should('exist');
         cy.get('.dino-confirm-button').click();
         cy.get('.mat-mdc-row').should('have.length.lt', initialRowCount);
