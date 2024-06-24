@@ -84,6 +84,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -1067,8 +1068,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       this._formMetricsSelector,
     ])
       .pipe(
+        debounceTime(1000),
         filter(() => this._dataModelManager != null),
         map(([evt, item, formMetricsSelector]) => {
+          this.isLoading.next(true);
           const fValue = this._rendererService.getFormValue();
           delete fValue['dino_form_info'];
           delete fValue['dino_form_metrics'];
@@ -1110,12 +1113,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (filesToDelete && filesToDelete.length && isOnline) {
             this._deleteFiles.next(filesToDelete);
           }
-          this.isLoading.next(true);
           return zip(apiCall);
         }),
         withLatestFrom(this.isDetails, this._formSchemaStatuses),
         switchMap(([res, isDetails, formStatuses]) => {
-          this.isLoading.next(false);
           if (res.length) {
             const formObj = res[0];
             let formValue = {...formObj.formValue};
@@ -1273,8 +1274,12 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this.isSaveDisabled = combineLatest([
       this.isAjfFormValid,
       this._uniqueMetricsSetAlreadyExists,
+      this.isLoading,
     ]).pipe(
-      map(([ajfValid, uniqueExists]) => ajfValid === false || uniqueExists === true),
+      map(
+        ([ajfValid, uniqueExists, loading]) =>
+          ajfValid === false || uniqueExists === true || loading === true,
+      ),
       shareReplay(1),
     );
 

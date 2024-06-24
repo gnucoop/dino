@@ -80,6 +80,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -767,8 +768,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._saveFormEvt
       .pipe(
+        debounceTime(1000),
         withLatestFrom(this._nss.isOnline$),
         switchMap(([evt, isOnline]) => {
+          this.isLoading.next(true);
           const fValue = this._rendererService.getFormValue();
           delete fValue['dino_form_info'];
           delete fValue['dino_form_metrics'];
@@ -800,7 +803,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           } else {
             apiCall.push(obsOf(formObj));
           }
-          this.isLoading.next(true);
           return zip(apiCall);
         }),
         withLatestFrom(
@@ -812,7 +814,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         ),
         switchMap(
           ([res, isFormData, formSchemaId, formMetricsSelector, userData, formStatuses]) => {
-            this.isLoading.next(false);
             if (res.length) {
               const formObj = res[0];
               let formValue = {...formObj.formValue};
@@ -906,8 +907,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe(([fd, activeUser, activeUserGroups, formObj]) => {
+        this.isLoading.next(false);
         if (fd && fd.collection.name === 'form_data') {
-          this.isLoading.next(false);
           this._location.back();
           this.snackbar.open('Document created', 'SAVE', {duration: 5000});
           if (formObj.evt != 'draft') {
@@ -957,8 +958,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     this.isSaveDisabled = combineLatest([
       this.isAjfFormValid,
       this._uniqueMetricsSetAlreadyExists,
+      this.isLoading,
     ]).pipe(
-      map(([ajfValid, uniqueExists]) => ajfValid === false || uniqueExists === true),
+      map(
+        ([ajfValid, uniqueExists, loading]) =>
+          ajfValid === false || uniqueExists === true || loading === true,
+      ),
       shareReplay(1),
     );
 
