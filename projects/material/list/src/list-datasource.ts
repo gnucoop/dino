@@ -603,8 +603,8 @@ export class ListDataSource<
                   selector,
                   [
                     this._isDataList != null
-                      ? `data.${item.name.trim().toLowerCase()}`
-                      : `data.data.${item.name.trim().toLowerCase()}`,
+                      ? `data.${item.name.trim()}`
+                      : `data.data.${item.name.trim()}`,
                     item.operator ? item.operator.value : '$eq',
                   ],
                   item.value,
