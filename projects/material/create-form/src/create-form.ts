@@ -80,7 +80,6 @@ import {
 } from 'rxjs';
 import {
   catchError,
-  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -90,6 +89,7 @@ import {
   take,
   takeUntil,
   tap,
+  throttleTime,
   withLatestFrom,
 } from 'rxjs/operators';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
@@ -768,7 +768,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this._saveFormEvt
       .pipe(
-        debounceTime(1000),
+        throttleTime(1000),
         withLatestFrom(this._nss.isOnline$),
         switchMap(([evt, isOnline]) => {
           this.isLoading.next(true);

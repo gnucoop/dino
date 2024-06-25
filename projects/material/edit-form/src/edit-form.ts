@@ -84,7 +84,6 @@ import {
 } from 'rxjs';
 import {
   catchError,
-  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -94,6 +93,7 @@ import {
   take,
   takeUntil,
   tap,
+  throttleTime,
   withLatestFrom,
 } from 'rxjs/operators';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
@@ -1068,7 +1068,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       this._formMetricsSelector,
     ])
       .pipe(
-        debounceTime(1000),
+        throttleTime(1000),
         filter(() => this._dataModelManager != null),
         map(([evt, item, formMetricsSelector]) => {
           this.isLoading.next(true);
