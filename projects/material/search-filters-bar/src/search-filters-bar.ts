@@ -35,7 +35,7 @@ import {
 import {UntypedFormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, DataQueryOptions, Metric, MetricsService} from '@dino/core/data';
@@ -99,6 +99,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * here are the IDs of the form statuses available for the current form schema.
    */
   availableFormStatuses: Observable<string[] | null>;
+
+  /**
+   * If true, the Form Map button is displayed
+   */
+  displayFormMapButton: Observable<boolean>;
 
   /**
    * Date Picker input filtering methods.
@@ -204,6 +209,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     private _route: ActivatedRoute,
     private _fschm: FormSchemaManager,
     private _udm: UserDataManager,
+    private _router: Router,
     readonly breakpointObserver: BreakpointObserverService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
@@ -231,6 +237,18 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             return schema.form_status_ref_id;
           }),
         );
+      }),
+    );
+
+    this.displayFormMapButton = this._route.params.pipe(
+      switchMap(params => this._fschm.get(params['form_schema_id'])),
+      map(schema => {
+        if (schema == null) {
+          return false;
+        }
+        return !schema.form_schema_metrics?.length
+          ? this._locationManager != null
+          : schema.form_schema_metrics?.includes('location');
       }),
     );
 
@@ -316,6 +334,17 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
           this.exportEvt.emit(ev);
         }
       });
+  }
+
+  /**
+   * Redirects to the forms' View Map component
+   */
+  viewMap(): void {
+    this._route.params.pipe(take(1)).subscribe(params => {
+      if (params['form_schema_id']) {
+        this._router.navigate(['forms', params['form_schema_id'], 'map']);
+      }
+    });
   }
 
   /**

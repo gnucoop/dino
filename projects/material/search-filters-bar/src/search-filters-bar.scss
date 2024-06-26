@@ -24,11 +24,12 @@ dino-search-filters-bar {
       }
     }
     .dino-filters-dialog-button,
+    .dino-form-map-button,
     .dino-export-button {
       flex: 1 1 auto;
       height: 44px;
       margin-right: 5px;
-      .mat-icon{
+      .mat-icon {
         margin-left: 0px;
         margin-right: 0px;
         margin: auto;
@@ -93,6 +94,7 @@ dino-search-filters-bar {
 
   @media only screen and (max-width: 768px) {
     .dino-filters-dialog-button,
+    .dino-form-map-button,
     .dino-export-button {
       margin-bottom: 15px;
       width: 100%;
