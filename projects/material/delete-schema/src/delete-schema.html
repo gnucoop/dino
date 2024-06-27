@@ -1,0 +1,38 @@
+<h4 mat-dialog-title>{{'Confirm'|transloco}} {{'delete'|transloco}}</h4>
+<mat-dialog-content>
+  <ng-container>
+    {{'Do you want to'|transloco}} {{'delete'|transloco}} {{'the selected schema'|transloco}} ?
+  </ng-container>
+</mat-dialog-content>
+<br />
+<mat-dialog-actions align="center">
+  <ng-container *ngIf="isDeletable|async ; else cancelTemplate">
+    <button
+      class="dino-confirm-button"
+      mat-raised-button
+      color="primary"
+      (click)="confirmationResponse(true)"
+    >
+      {{'Yes'|transloco}}
+    </button>
+    <button
+      class="dino-cancel-button"
+      mat-raised-button
+      color="accent"
+      (click)="confirmationResponse(false)"
+    >
+      {{'No'|transloco}}
+    </button>
+  </ng-container>
+
+  <ng-template #cancelTemplate>
+    <button
+      class="dino-cancel-button"
+      mat-raised-button
+      color="accent"
+      (click)="confirmationResponse(false)"
+    >
+      {{'Close'|transloco}}
+    </button></ng-template
+  >
+</mat-dialog-actions>
