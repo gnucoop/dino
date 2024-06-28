@@ -33,9 +33,14 @@ import {schema} from './report-schema-json';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {RxDocument} from 'rxdb';
+import {ReportDataManager} from './report-data-manager';
 @Injectable({providedIn: 'root'})
 export class ReportSchemaManager extends DataModelManager<ReportSchema> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    dataService: DataService,
+    permissionContextService: PermissionContextService,
+    private _rdm: ReportDataManager,
+  ) {
     super(
       {name: 'report_schema', collection: {schema, migrationStrategies}},
       dataService,
@@ -66,5 +71,35 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
         return docs[0];
       }),
     );
+  }
+
+  /**
+   * Returns true if any Report Data with this Report Schema ID exists
+   * @param reportSchemaId The id of the Report Schema
+   */
+  hasAnyData(reportSchemaId: string): Observable<boolean> {
+    const queryOptions: DataQueryOptions = {
+      selector: {
+        report_schema_ref_id: {$eq: reportSchemaId},
+        is_deleted: {$ne: true},
+      },
+      limit: 1,
+    };
+    return this._rdm.query(queryOptions).pipe(map(res => res.length > 0));
+  }
+
+  /**
+   * Returns true if the Form Schema id is used by any Report Schema
+   * @param formSchemaId The id of the Form Schema
+   */
+  isUsedByAnyReports(formSchemaId: string): Observable<boolean> {
+    const queryOptions: DataQueryOptions = {
+      selector: {
+        form_schema_ids: formSchemaId,
+        is_deleted: {$ne: true},
+      },
+      limit: 1,
+    };
+    return this.query(queryOptions).pipe(map(res => res.length > 0));
   }
 }
