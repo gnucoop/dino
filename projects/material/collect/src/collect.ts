@@ -42,6 +42,7 @@ import {debounceTime, map, shareReplay, startWith, switchMap} from 'rxjs/operato
 import {CollectItem} from './collect-item-interface';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
+import {DeleteSchema} from '@dino/material/delete-schema';
 
 /**
  * Type representing the available Collect component types.
@@ -224,7 +225,8 @@ export class Collect {
               let collectItems: CollectItem[] = [];
               for (let document of docs.filter(dcm => dcm != null)) {
                 const metrics = (document as RxDocument<FormSchema>).form_schema_metrics || [];
-                const hasLocation = metrics.length === 0 ? locManager != null : metrics.includes('location');
+                const hasLocation =
+                  metrics.length === 0 ? locManager != null : metrics.includes('location');
                 let collectItem: CollectItem = {
                   name: document.name,
                   label: document.label ?? document.name,
@@ -313,6 +315,23 @@ export class Collect {
     if (schemaId != null) {
       this._router.navigate(['forms', schemaId, 'map']);
     }
+  }
+
+  /**
+   * Opens the Delete Schema dialog
+   * @param schemaId The clicked item schema id
+   */
+  openDeleteSchemaDialog(schemaId: string | undefined): void {
+    if (!schemaId) {
+      return;
+    }
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {
+      schemaId,
+      schemaType: this._collectType.value === 'custom' ? null : this._collectType.value,
+    };
+    this._dialog.open(DeleteSchema, dialogConfig);
   }
 
   /**

@@ -42,6 +42,16 @@
               <mat-icon>create</mat-icon>
             </button>
             <button
+              *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"
+              mat-mini-fab
+              color="primary"
+              aria-label="Delete Form Schema"
+              [matTooltip]="'Delete Form Schema'|transloco"
+              (click)="openDeleteSchemaDialog(item.schemaId); $event.stopPropagation();"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button
               *ngIf="getCollectType === 'forms' && item.shareUrl"
               mat-mini-fab
               color="primary"
