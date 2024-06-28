@@ -604,4 +604,18 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       });
     }
   }
+
+  /**
+   * Returns true if any Form Data with this Form Schema ID exists
+   */
+  hasAnyData(formSchemaId: string): Observable<boolean> {
+    const queryOptions: DataQueryOptions = {
+      selector: {
+        form_schema_ref_id: {$eq: formSchemaId},
+        is_deleted: {$ne: true},
+      },
+      limit: 1,
+    };
+    return this._fdm.query(queryOptions).pipe(map(res => res.length > 0));
+  }
 }

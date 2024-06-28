@@ -25,6 +25,8 @@ import {DataModelManager, DataService, PermissionContextService} from '@dino/cor
 
 import {schema} from './form-schema-deps-json';
 import {FormSchemaDeps, migrationStrategies} from './form-schema-deps';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaDepsManager extends DataModelManager<FormSchemaDeps> {
@@ -33,6 +35,25 @@ export class FormSchemaDepsManager extends DataModelManager<FormSchemaDeps> {
       {name: 'form_schema_deps', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
+    );
+  }
+
+  /**
+   * Returns true if the Form Schema id is used by any Form Schema Deps (Relationships to other Form Schemas)
+   * @param formSchemaId The id of the Form Schema
+   */
+  isUsedByAnyFormSchemaDeps(formSchemaId: string): Observable<boolean> {
+    return this.list().pipe(
+      map(deps => {
+        for (let dep of deps) {
+          if (!dep.deps_origin || !dep.deps_origin.length) continue;
+          for (let origin of dep.deps_origin) {
+            if (origin.form_schema_ref_id && origin.form_schema_ref_id === formSchemaId)
+              return true;
+          }
+        }
+        return false;
+      }),
     );
   }
 }
