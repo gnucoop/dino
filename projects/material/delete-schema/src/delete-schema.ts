@@ -29,7 +29,7 @@ import {
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {FormSchemaManager} from '@dino/core/forms';
+import {FormSchemaDepsManager, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {TranslocoService} from '@ngneat/transloco';
 import {Observable, combineLatest, of as obsOf} from 'rxjs';
@@ -75,6 +75,11 @@ export class DeleteSchema {
    */
   private _isUsedByAnyReports: Observable<boolean> = obsOf(false);
 
+  /**
+   * True if the schema to be deleted is used by any Form Deps
+   */
+  private _isUsedByAnyFormDeps: Observable<boolean> = obsOf(false);
+
   constructor(
     readonly snackbar: MatSnackBar,
     public dialogRef: MatDialogRef<DeleteSchema>,
@@ -83,6 +88,7 @@ export class DeleteSchema {
     private _cdr: ChangeDetectorRef,
     private _fsm: FormSchemaManager,
     private _rsm: ReportSchemaManager,
+    private _fsdm: FormSchemaDepsManager,
   ) {
     if (this.data.schemaId && this.data.schemaType) {
       const schemaManager = this.data.schemaType === 'forms' ? this._fsm : this._rsm;
@@ -90,7 +96,8 @@ export class DeleteSchema {
       const checksStreams: Observable<Boolean>[] = [this._hasAnyData];
       if (this.data.schemaType === 'forms') {
         this._isUsedByAnyReports = this._rsm.isUsedByAnyReports(this.data.schemaId);
-        checksStreams.push(this._isUsedByAnyReports);
+        this._isUsedByAnyFormDeps = this._fsdm.isUsedByAnyFormSchemaDeps(this.data.schemaId);
+        checksStreams.push(this._isUsedByAnyReports, this._isUsedByAnyFormDeps);
       }
       this.isDeletable = combineLatest(checksStreams).pipe(
         map(checks => {
