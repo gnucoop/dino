@@ -26,6 +26,7 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnDestroy,
   Optional,
   ViewEncapsulation,
 } from '@angular/core';
@@ -37,10 +38,25 @@ import {LocationManager} from '@dino/core/locations';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {debounceTime, map, shareReplay, startWith, switchMap} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  of as obsOf,
+  Subscription,
+  throwError,
+} from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 import {DeleteSchema} from '@dino/material/delete-schema';
 
@@ -60,7 +76,7 @@ export type CollectType = 'reports' | 'forms' | 'custom';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class Collect {
+export class Collect implements OnDestroy {
   /**
    * An array of items to be displayed in the grid.
    * They can represent Forms or any generic Item (eg. a Section of the app)
@@ -190,6 +206,16 @@ export class Collect {
   }
 
   readonly filterCtrl = new UntypedFormControl('');
+
+  /**
+   * Subscribes to the value returned by the Delete Schema MatDialog on its closing event
+   */
+  private _deleteSchemaDialogSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * A reference to the MatDialog that contains the DeleteSchema component
+   */
+  private _dialogRef?: MatDialogRef<DeleteSchema>;
 
   constructor(
     readonly breakpointObserver: BreakpointObserverService,
@@ -331,7 +357,28 @@ export class Collect {
       schemaId,
       schemaType: this._collectType.value === 'custom' ? null : this._collectType.value,
     };
-    this._dialog.open(DeleteSchema, dialogConfig);
+    this._dialogRef = this._dialog.open(DeleteSchema, dialogConfig);
+    this._deleteSchemaDialogSub = this._dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap(schemaId => {
+          if (schemaId != null) {
+            if (this._collectType.value === 'forms') {
+              return this._fs.delete(schemaId);
+            } else if (this._collectType.value === 'reports') {
+              return this._rs.delete(schemaId);
+            }
+            return obsOf(null);
+          }
+          return obsOf(null);
+        }),
+        catchError(err => throwError(() => err) as Observable<null>),
+        take(1),
+      )
+      .subscribe(() => {
+        this._collectType.next(this._collectType.value);
+        this._cdr.detectChanges();
+      });
   }
 
   /**
@@ -362,4 +409,8 @@ export class Collect {
   }
 
   static ngAcceptInputType_filterBar: BooleanInput;
+
+  ngOnDestroy(): void {
+    this._deleteSchemaDialogSub.unsubscribe();
+  }
 }
