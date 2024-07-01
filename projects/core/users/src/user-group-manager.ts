@@ -368,4 +368,19 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
       }),
     );
   }
+
+  /**
+   * Returns true if the Form/Report Schema id is used by any User Group
+   * @param schemaId The id of the Form/Report Schema
+   */
+  isUsedByAnyGroup(schemaId: string): Observable<boolean> {
+    const queryOptions: DataQueryOptions = {
+      selector: {
+        $or: [{groupFormSchemaIds: {$eq: schemaId}}, {groupReportSchemaIds: {$eq: schemaId}}],
+        is_deleted: {$ne: true},
+      },
+      limit: 1,
+    };
+    return this.query(queryOptions).pipe(map(res => res.length > 0));
+  }
 }
