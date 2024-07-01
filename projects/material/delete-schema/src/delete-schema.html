@@ -1,8 +1,6 @@
-<h4 mat-dialog-title>{{'Confirm'|transloco}} {{'delete'|transloco}}</h4>
+<h4 mat-dialog-title>{{dialogTitle|async}}</h4>
 <mat-dialog-content>
-  <ng-container>
-    {{'Do you want to'|transloco}} {{'delete'|transloco}} {{'the selected schema'|transloco}} ?
-  </ng-container>
+  <ng-container> {{dialogMessage|async}} </ng-container>
 </mat-dialog-content>
 <br />
 <mat-dialog-actions align="center">

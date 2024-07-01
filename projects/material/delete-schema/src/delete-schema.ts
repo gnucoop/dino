@@ -25,14 +25,16 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {FormSchemaDepsManager, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
+import {UserGroupManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
-import {Observable, combineLatest, of as obsOf} from 'rxjs';
+import {BehaviorSubject, Observable, combineLatest, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 export interface DeleteSchemaDialogData {
@@ -58,27 +60,25 @@ export interface DeleteSchemaDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class DeleteSchema {
-  dialogMessage: Observable<string> = obsOf('');
+export class DeleteSchema implements OnDestroy {
+  /**
+   * The Dialog title
+   */
+  dialogTitle: BehaviorSubject<string> = new BehaviorSubject<string>(
+    `${this._ts.translate('Confirm')} ${this._ts.translate('delete')}`,
+  );
+  /**
+   * The Dialog message
+   */
+  dialogMessage: BehaviorSubject<string> = new BehaviorSubject<string>(
+    `${this._ts.translate('Do you want to')} ${this._ts.translate('delete')} ${this._ts.translate(
+      'the selected schema',
+    )}?`,
+  );
   /**
    * True if the schema can be deleted
    */
   isDeletable: Observable<boolean> = obsOf(false);
-
-  /**
-   * True if the schema to be deleted has any associated Data
-   */
-  private _hasAnyData: Observable<boolean> = obsOf(false);
-
-  /**
-   * True if the schema to be deleted is used by any Reports
-   */
-  private _isUsedByAnyReports: Observable<boolean> = obsOf(false);
-
-  /**
-   * True if the schema to be deleted is used by any Form Deps
-   */
-  private _isUsedByAnyFormDeps: Observable<boolean> = obsOf(false);
 
   constructor(
     readonly snackbar: MatSnackBar,
@@ -89,19 +89,31 @@ export class DeleteSchema {
     private _fsm: FormSchemaManager,
     private _rsm: ReportSchemaManager,
     private _fsdm: FormSchemaDepsManager,
+    private _ugm: UserGroupManager,
   ) {
     if (this.data.schemaId && this.data.schemaType) {
       const schemaManager = this.data.schemaType === 'forms' ? this._fsm : this._rsm;
-      this._hasAnyData = schemaManager.hasAnyData(this.data.schemaId);
-      const checksStreams: Observable<Boolean>[] = [this._hasAnyData];
+      const hasAnyData = schemaManager
+        .hasAnyData(this.data.schemaId)
+        .pipe(map(res => ({hasAnyData: res})));
+      const checksStreams: Observable<{[key: string]: boolean}>[] = [hasAnyData];
       if (this.data.schemaType === 'forms') {
-        this._isUsedByAnyReports = this._rsm.isUsedByAnyReports(this.data.schemaId);
-        this._isUsedByAnyFormDeps = this._fsdm.isUsedByAnyFormSchemaDeps(this.data.schemaId);
-        checksStreams.push(this._isUsedByAnyReports, this._isUsedByAnyFormDeps);
+        const isUsedByAnyReports = this._rsm
+          .isUsedByAnyReports(this.data.schemaId)
+          .pipe(map(res => ({isUsedByAnyReports: res})));
+        const isUsedByAnyFormDeps = this._fsdm
+          .isUsedByAnyFormSchemaDeps(this.data.schemaId)
+          .pipe(map(res => ({isUsedByAnyFormSchemaDeps: res})));
+        checksStreams.push(isUsedByAnyReports, isUsedByAnyFormDeps);
       }
+      const isUsedByAnyGroup = this._ugm
+        .isUsedByAnyGroup(this.data.schemaId)
+        .pipe(map(res => ({isUsedByAnyGroup: res})));
+      checksStreams.push(isUsedByAnyGroup);
+
       this.isDeletable = combineLatest(checksStreams).pipe(
         map(checks => {
-          return !checks.some(check => check);
+          return this._evaluateChecks(checks);
         }),
       );
     }
@@ -112,6 +124,53 @@ export class DeleteSchema {
    * @param response The user response
    */
   confirmationResponse(response: boolean) {
-    this.dialogRef.close(response);
+    this.dialogRef.close(response ? this.data.schemaId : null);
+  }
+
+  /**
+   * Evaluates all checks, sets the dialogMessage and returns true if the Schema is deletable
+   * @param checks The "deletable" checks
+   */
+  private _evaluateChecks(checks: {[key: string]: boolean}[]): boolean {
+    if (!checks || !checks.length) return true;
+    const checksObj: {[key: string]: boolean} = Object.assign({}, ...checks);
+    if (checksObj['hasAnyData']) {
+      this.dialogTitle.next(this._ts.translate(`Cannot delete Schema`));
+      this.dialogMessage.next(
+        this._ts.translate(
+          `There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.`,
+        ),
+      );
+      return false;
+    }
+    if (checksObj['isUsedByAnyReports']) {
+      this.dialogTitle.next(this._ts.translate(`Cannot delete Schema`));
+      this.dialogMessage.next(
+        this._ts.translate(
+          `One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.`,
+        ),
+      );
+      return false;
+    }
+    if (checksObj['isUsedByAnyFormSchemaDeps']) {
+      this.dialogMessage.next(
+        this._ts.translate(
+          `Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?`,
+        ),
+      );
+    }
+    if (checksObj['isUsedByAnyGroup']) {
+      this.dialogMessage.next(
+        this._ts.translate(
+          `One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?`,
+        ),
+      );
+    }
+    return true;
+  }
+
+  ngOnDestroy(): void {
+    this.dialogMessage.complete();
+    this.dialogTitle.complete();
   }
 }
