@@ -22,11 +22,6 @@ export class MatOrganizationsE2E {
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActions: ListAction[] = [
     {
-      actionType: 'view',
-      matIcon: 'visibility',
-      customAction: row => this.section.openDialog(row, 'View'),
-    },
-    {
       actionType: 'edit',
       matIcon: 'create',
       customAction: row => this.section.openDialog(row, 'Edit'),
@@ -35,6 +30,11 @@ export class MatOrganizationsE2E {
       actionType: 'delete',
       matIcon: 'delete',
       customAction: row => this.section.openDeleteDialog(row),
+    },
+    {
+      actionType: 'view',
+      matIcon: 'visibility',
+      customAction: row => this.section.openDialog(row, 'View'),
     },
   ];
 

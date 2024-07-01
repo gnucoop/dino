@@ -75,8 +75,8 @@ export class MatReportsListE2E {
   ];
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
   readonly listRowActionsIcons: {[key: string]: string} = {
-    view: 'visibility',
     delete: 'delete',
+    view: 'visibility',
     addFavorite: 'bookmark_add',
     removeFavorite: 'bookmark_remove',
   };

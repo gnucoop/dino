@@ -23,11 +23,6 @@ export class MatGroupsListE2E implements OnInit {
 
   readonly listRowActions: ListAction[] = [
     {
-      actionType: 'view',
-      matIcon: 'visibility',
-      customAction: row => this.openDialog(row, 'view'),
-    },
-    {
       actionType: 'edit',
       matIcon: 'create',
       customAction: row => this.openDialog(row, 'edit'),
@@ -36,6 +31,11 @@ export class MatGroupsListE2E implements OnInit {
       actionType: 'delete',
       matIcon: 'delete',
       askConfirm: true,
+    },
+    {
+      actionType: 'view',
+      matIcon: 'visibility',
+      customAction: row => this.openDialog(row, 'view'),
     },
   ];
 

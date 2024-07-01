@@ -25,11 +25,6 @@ export class MatCasesE2E {
   readonly logoImagePath: string | null = additionalConfig.logoImage;
   readonly listRowActions: ListAction[] = [
     {
-      actionType: 'view',
-      matIcon: 'visibility',
-      customAction: row => this.section.openDialog(row, 'View'),
-    },
-    {
       actionType: 'edit',
       matIcon: 'create',
       customAction: row => this.section.openDialog(row, 'Edit'),
@@ -38,6 +33,11 @@ export class MatCasesE2E {
       actionType: 'print',
       matIcon: 'printer',
       customAction: row => this.section.printCaseCardPdf(row),
+    },
+    {
+      actionType: 'view',
+      matIcon: 'visibility',
+      customAction: row => this.section.openDialog(row, 'View'),
     },
     {
       actionType: 'delete',
