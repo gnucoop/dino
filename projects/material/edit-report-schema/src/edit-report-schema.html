@@ -44,6 +44,14 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
+
+        <mat-form-field>
+          <mat-select [placeholder]="'Form Schemas'|transloco">
+            <mat-option *ngFor="let formSchema of formSchemas|async"
+              >{{formSchema.label}}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
       </form>
 
       <div class="dino-edit-report-schema-actions">

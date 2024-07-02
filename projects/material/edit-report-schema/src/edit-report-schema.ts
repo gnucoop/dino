@@ -39,7 +39,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {InsertModel} from '@dino/core/data';
+import {DataQueryOptions, InsertModel} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {IconsService} from '@dino/material/icons-service';
@@ -104,6 +104,14 @@ export class EditReportSchema implements OnInit, OnDestroy {
   private _reportSchema: Observable<ReportSchema | null>;
 
   /**
+   * All the Form Schemas used by the Report
+   */
+  private _formSchemas: Observable<FormSchema[]>;
+  get formSchemas(): Observable<FormSchema[]> {
+    return this._formSchemas;
+  }
+
+  /**
    * The Schema object imported from Xls
    */
   private _importedReportSchema: BehaviorSubject<AjfReport | null> =
@@ -163,6 +171,19 @@ export class EditReportSchema implements OnInit, OnDestroy {
       }),
       switchMap(schema => schema as Observable<ReportSchema>),
       shareReplay(1),
+    );
+
+    this._formSchemas = this._reportSchema.pipe(
+      switchMap(rs => {
+        if (!rs || !rs.form_schema_ids || !rs.form_schema_ids.length) return obsOf([]);
+        const queryOptions: DataQueryOptions = {
+          selector: {
+            id: {$in: rs.form_schema_ids},
+            is_deleted: {$ne: true},
+          },
+        };
+        return this._fs.query(queryOptions);
+      }),
     );
 
     this.reportInstance$ = combineLatest([this._reportSchema, this._importedReportSchema]).pipe(
