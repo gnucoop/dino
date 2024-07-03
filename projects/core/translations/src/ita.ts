@@ -291,4 +291,15 @@ export const ITA: Translation = {
   'Fields and formats': 'Campi e formati',
   'Select all fields of': 'Seleziona tutti i campi di',
   'slide fields': 'campi delle slide',
+  'Delete Form Schema': 'Elimina Form Schema',
+  'the selected schema': 'lo schema selezionato',
+  'Cannot delete Schema': 'Impossibile eliminare lo Schema',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'Ci sono dati associati a questo Schema. Si prega di eliminare tutti i dati associati prima di eliminare questo Schema.',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'Uno o più Report attualmente impiegano questo Form Schema. Si prega di eliminare quei Report prima di eliminare questo Schema.',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    'Altri Form dipendono da questo Form Schema e alcuni dei suoi campi. Sicuro di volerlo eliminare?',
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    'Uno o più Gruppi specificano dei permessi per questo Schema. Sicuro di volerlo eliminare?',
 };

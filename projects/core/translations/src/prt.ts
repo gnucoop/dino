@@ -282,4 +282,15 @@ export const PRT: Translation = {
   'splitted xlsx': 'xlsx dividido',
   'Select all fields of': 'Selecionar todos os campos de',
   'slide fields': 'campos de slides',
+  'Delete Form Schema': 'Eliminar esquema de formulário',
+  'the selected schema': 'o esquema selecionado',
+  'Cannot delete Schema': 'Não é possível eliminar o esquema',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'Existem dados associados a este esquema. Eliminar todos os dados associados antes de eliminar este esquema.',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'Um ou mais relatórios estão atualmente a utilizar este esquema de formulário. Por favor, elimine esses relatórios antes de eliminar este esquema.',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    'Outros formulários dependem deste esquema de formulário e de alguns dos seus campos. Tem a certeza de que pretende eliminá-lo?',
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    'Um ou mais grupos de utilizadores concedem permissões para este esquema. Tem a certeza de que pretende eliminá-lo?',
 };

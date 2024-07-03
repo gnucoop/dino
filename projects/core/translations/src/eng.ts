@@ -282,4 +282,15 @@ export const ENG: Translation = {
   'splitted xlsx': 'splitted xlsx',
   'Select all fields of': 'Select all fields of',
   'slide fields': 'slide fields',
+  'Delete Form Schema': 'Delete Form Schema',
+  'the selected schema': 'the selected schema',
+  'Cannot delete Schema': 'Cannot delete Schema',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?',
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?',
 };

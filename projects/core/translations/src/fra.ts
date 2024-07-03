@@ -276,4 +276,15 @@ export const FRA: Translation = {
   'Fields and formats': 'Champs et formats',
   'Select all fields of': 'Sélectionner tous les champs de',
   'slide fields': 'champs de diapositives',
+  'Delete Form Schema': 'Supprimer le schéma du formulaire',
+  'the selected schema': 'le schéma sélectionné',
+  'Cannot delete Schema': 'Impossible de supprimer le schéma',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'Des données sont associées à ce schéma. Veuillez supprimer toutes les données associées avant de supprimer ce schéma.',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'Un ou plusieurs rapports utilisent actuellement ce schéma de formulaire. Veuillez supprimer ces rapports avant de supprimer ce schéma.',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    "D'autres formulaires dépendent de ce schéma de formulaire et de certains de ses champs. Êtes-vous sûr de vouloir le supprimer ?",
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    "Un ou plusieurs groupes d'utilisateurs sont autorisés à utiliser ce schéma. Êtes-vous sûr de vouloir le supprimer ?",
 };
