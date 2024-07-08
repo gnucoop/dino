@@ -168,7 +168,7 @@ export class MetricDelete<T extends Metric = Metric> implements OnInit, OnDestro
     this._querySub = combineLatest([findForms, findReports, forkJoin(descendants)])
       .pipe(take(1))
       .subscribe(([formsCount, reports, allDescendants]) => {
-        if (formsCount > 0) {
+        if (typeof formsCount === 'number' && formsCount > 0) {
           this.enableDelete = false;
           this.data.customContent =
             this._ts.translate('Some forms use this metrics.') +
