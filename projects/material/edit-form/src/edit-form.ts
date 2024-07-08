@@ -1122,9 +1122,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             const formObj = res[0];
             let formValue = {...formObj.formValue};
             if (formObj.evt && formObj.evt === 'draft') {
-              formValue['$invalid'] = true;
-            } else if (formValue['$invalid']) {
-              delete formValue['$invalid'];
+              formValue['dinoinvalid'] = true;
+            } else if (formValue['dinoinvalid']) {
+              delete formValue['dinoinvalid'];
             }
             if (res.length > 1) {
               for (let i = 1; i < res.length; i++) {
@@ -1245,7 +1245,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
       withLatestFrom(this._formData),
       switchMap(([_, fd]) => {
-        const invalidForm = (fd.data as any)['$invalid'] || false;
+        const invalidForm = (fd.data as any)['dinoinvalid'] || false;
         const startErrors = invalidForm === true ? 1 : 0;
         return this._rendererService.errors.pipe(
           startWith(startErrors),

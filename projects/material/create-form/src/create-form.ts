@@ -819,7 +819,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               const formObj = res[0];
               let formValue = {...formObj.formValue};
               if (formObj.evt && formObj.evt === 'draft') {
-                formValue['$invalid'] = true;
+                formValue['dinoinvalid'] = true;
               }
               if (res.length > 1) {
                 for (let i = 1; i < res.length; i++) {
