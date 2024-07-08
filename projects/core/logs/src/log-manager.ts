@@ -102,7 +102,9 @@ export class LogManager extends DataModelManager<Log> {
     } else {
       for (let key in changeDictionary) {
         const changeContent =
-          typeof changeDictionary[key] === 'object' && 'content' in changeDictionary[key]
+          typeof changeDictionary[key] === 'object' &&
+          changeDictionary[key] != null &&
+          'content' in changeDictionary[key]
             ? `<img style="width: 200px; height: auto;" src=${changeDictionary[key].content}>`
             : changeDictionary[key];
         logText += `<span><i>${(key.charAt(0).toUpperCase() + key.slice(1)).replace(
