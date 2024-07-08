@@ -66,7 +66,7 @@ export const schema = {
     "data": {
       "type": "object",
       "properties": {
-        "$invalid": {
+        "dinoinvalid": {
           "type": "boolean"
         }
       },
@@ -143,5 +143,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<FormData>;

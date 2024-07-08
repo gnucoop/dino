@@ -41,7 +41,7 @@ export interface FormData extends Model {
   /**
    * A plain object containing the data collected.
    */
-  data: {$invalid?: boolean; [key: string]: any};
+  data: {dinoinvalid?: boolean; [key: string]: any};
 
   /**
    * The Form Data area id.
@@ -74,10 +74,15 @@ export interface FormData extends Model {
   form_status_ref_id: string | null;
 }
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 export const migrationStrategies: MigrationStrategies = {
-  1: (doc: RxDocument) => doc,
+  1: (doc: RxDocument<FormData>) => doc,
+  2: (doc: RxDocument<FormData>) => {
+    const dinoinvalid = doc.data['$invalid'];
+    delete doc.data['$invalid'];
+    return {...doc, data: {...doc.data, dinoinvalid}} as RxDocument<FormData>;
+  },
 };
 
 export const indexes = ['form_schema_ref_id'];
