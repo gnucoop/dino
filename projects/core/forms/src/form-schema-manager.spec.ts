@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of as obsOf} from 'rxjs';
 
 import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api';
@@ -23,6 +23,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'http://dinoServer/v1/graphql', ws: 'ws://dinoServer/v1/graphql'},
       webSocketImpl: WebSocket,
       authErrorMessage: 'Could not verify JWT: JWTExpired',

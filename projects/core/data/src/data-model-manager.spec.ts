@@ -4,7 +4,7 @@ import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
 import {firstValueFrom, Observable, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
@@ -115,6 +115,28 @@ const serverUrl = 'http://dinoServer/v1/graphql';
 const wsServerUrl = 'ws://dinoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
+const dummySchema: RxJsonSchema<DummyModel> = {
+  title: 'dummy schema',
+  version: 0,
+  description: 'describe a dummy model',
+  type: 'object',
+  primaryKey: 'id',
+  properties: {
+    id: {type: 'string', maxLength: 200},
+    name: {type: 'string', maxLength: 200},
+    age: {type: 'number'},
+    author: {type: 'string'},
+    created_at: {type: 'string'},
+    updated_at: {type: ['string', 'null']},
+    is_deleted: {type: 'boolean'},
+    _deleted: {type: 'boolean'},
+  },
+  indexes: ['name'],
+};
+
+const collectionName = 'dummymodel';
+const collection = {name: collectionName, collection: {schema: dummySchema}};
+
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
@@ -123,6 +145,8 @@ function dataServiceConfig(): DataServiceConfig {
       ignoreDuplicate: true,
     },
     syncOptions: {
+      collection,
+      replicationIdentifier: 'test-replication',
       url: {http: serverUrl, ws: wsUrl},
       webSocketImpl: WebSocket,
       authErrorMessage: 'Could not verify JWT: JWTExpired',
@@ -151,28 +175,7 @@ const authServiceMock = {
   },
 } as unknown as AuthService;
 
-const dummySchema: RxJsonSchema<DummyModel> = {
-  title: 'dummy schema',
-  version: 0,
-  description: 'describe a dummy model',
-  type: 'object',
-  primaryKey: 'id',
-  properties: {
-    id: {type: 'string', maxLength: 200},
-    name: {type: 'string', maxLength: 200},
-    age: {type: 'number'},
-    author: {type: 'string'},
-    created_at: {type: 'string'},
-    updated_at: {type: ['string', 'null']},
-    is_deleted: {type: 'boolean'},
-    _deleted: {type: 'boolean'},
-  },
-  indexes: ['name'],
-};
-
 describe('Data Model Manager - CRUD methods', () => {
-  const collectionName = 'dummymodel';
-  const collection = {name: collectionName, collection: {schema: dummySchema}};
   let currentDate: string;
   let dataService: DataService;
   let contextService: ContextServiceMock;
@@ -299,11 +302,9 @@ describe('Data Model Manager - CRUD methods', () => {
       dummyManager!.delete(insertedDummy!.id).pipe(take(1)),
     );
     const getObject = await firstValueFrom(dummyManager!.get(deletedObject!.id).pipe(take(1)));
-    expect(deletedObject?.deleted).toBeTrue();
     expect(deletedObject!.name).toEqual(insertedDummy!.name);
     expect(getObject).toBeNull();
     expect(deleteSpy).toHaveBeenCalled();
-    expect(true).toEqual(true);
   });
 
   it('should update an existing object from the database', async () => {

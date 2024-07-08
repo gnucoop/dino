@@ -2,7 +2,7 @@ import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {FormCreatorHub, FormCreatorHubModule} from './public_api';
@@ -19,6 +19,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection:null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

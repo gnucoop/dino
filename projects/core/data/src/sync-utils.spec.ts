@@ -47,6 +47,8 @@ const collections = schemas.map(
 );
 
 const syncOptions: DataServiceSyncOptions = {
+  collection: collections[0],
+  replicationIdentifier: 'test-replication',
   url: {http: 'host'},
   batchSizePull: 10,
   batchSizePush: 10,

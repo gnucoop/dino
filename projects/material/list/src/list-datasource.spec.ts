@@ -14,7 +14,7 @@ import {
   PermissionContextService,
 } from '@dino/core/data';
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
 import {BehaviorSubject, firstValueFrom, of as obsOf, of, take} from 'rxjs';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
@@ -117,6 +117,11 @@ function dataServiceConfig(): DataServiceConfig {
       ignoreDuplicate: true,
     },
     syncOptions: {
+      collection: {
+        name: 'dummymodel',
+        schema: dummySchema,
+      },
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

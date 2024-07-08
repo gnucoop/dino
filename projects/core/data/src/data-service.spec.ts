@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {Server, WebSocket} from 'mock-socket';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
 import {firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
@@ -21,6 +21,23 @@ const serverUrl = 'http://dinoServer/v1/graphql';
 const wsServerUrl = 'ws://dinoServer';
 const wsUrl = `${wsServerUrl}/v1/graphql`;
 
+const dummySchema: RxJsonSchema<any> = {
+  title: 'dummy schema',
+  version: 0,
+  description: 'describe a dummy model',
+  type: 'object',
+  primaryKey: 'id',
+  properties: {
+    id: {type: 'string', maxLength: 200},
+    name: {type: 'string'},
+    created_at: {type: 'string'},
+    updated_at: {type: ['string', 'null']},
+  },
+};
+
+const collectionName = 'dummy';
+const collection = {name: collectionName, collection: {schema: dummySchema}};
+
 const dataServiceConfig: DataServiceConfig = {
   databaseCreateOptions: {
     name: `dino_data_test_db_${testDbIdx++}`,
@@ -28,6 +45,8 @@ const dataServiceConfig: DataServiceConfig = {
     ignoreDuplicate: true,
   },
   syncOptions: {
+    collection,
+    replicationIdentifier: 'test-replication',
     url: {http: serverUrl, ws: wsUrl},
     webSocketImpl: WebSocket,
     authErrorMessage: 'Could not verify JWT: JWTExpired',
@@ -51,20 +70,6 @@ const authServiceMock = {
   logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
 } as unknown as AuthService;
-
-const dummySchema: RxJsonSchema<any> = {
-  title: 'dummy schema',
-  version: 0,
-  description: 'describe a dummy model',
-  type: 'object',
-  primaryKey: 'id',
-  properties: {
-    id: {type: 'string', maxLength: 200},
-    name: {type: 'string'},
-    created_at: {type: 'string'},
-    updated_at: {type: ['string', 'null']},
-  },
-};
 
 describe('Data service', () => {
   let dataService: DataService;
@@ -105,8 +110,6 @@ describe('Data service', () => {
 });
 
 describe('Data service - CRUD methods', () => {
-  const collectionName = 'dummy';
-  const collection = {name: collectionName, collection: {schema: dummySchema}};
   let dataService: DataService;
   let currentDate: string;
 

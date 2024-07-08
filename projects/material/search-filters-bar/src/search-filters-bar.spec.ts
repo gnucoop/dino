@@ -5,7 +5,7 @@ import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
 import {SearchFiltersBar, SearchFiltersBarModule} from '@dino/material/search-filters-bar';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 
 const fakeFilters: FilterItem[] = [{name: 'filter_a', value: 'test'}];
 let testDbIdx = 0;
@@ -25,6 +25,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

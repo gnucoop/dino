@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 import {UsersModule} from '@dino/core/users';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
@@ -26,6 +26,8 @@ const dataServiceConfig: DataServiceConfig = {
     ignoreDuplicate: true,
   },
   syncOptions: {
+    collection: null,
+    replicationIdentifier: 'test-replication',
     url: {http: serverUrl, ws: wsUrl},
     webSocketImpl: WebSocket,
     authErrorMessage: 'Could not verify JWT: JWTExpired',

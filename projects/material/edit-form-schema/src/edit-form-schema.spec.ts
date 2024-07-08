@@ -6,7 +6,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, InsertModel} from '@dino/core/data';
 import {FormSchema, FormSchemaManager, FormStatusManager} from '@dino/core/forms';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {EditFormSchema, EditFormSchemaModule} from './public_api';
@@ -22,6 +22,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

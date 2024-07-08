@@ -8,7 +8,7 @@ import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 import {ReportsModule} from '@dino/core/reports';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UsersModule} from '@dino/core/users';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {Collect, CollectModule} from './public_api';
@@ -22,6 +22,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

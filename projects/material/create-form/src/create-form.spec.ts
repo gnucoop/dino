@@ -7,7 +7,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dino/core/data';
 import {FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {UserData, UserDataManager} from '@dino/core/users';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, of} from 'rxjs';
 
@@ -57,6 +57,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

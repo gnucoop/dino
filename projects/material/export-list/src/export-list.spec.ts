@@ -6,7 +6,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FormDataManager, FormSchema, FormSchemaVisibility} from '@dino/core/forms';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
 import {of} from 'rxjs';
 
@@ -25,6 +25,8 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: 'host'},
     },
   };

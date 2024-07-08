@@ -2,7 +2,7 @@ import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
 import {firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
@@ -77,6 +77,8 @@ function dataServiceConfig(): DataServiceConfig {
       ignoreDuplicate: true,
     },
     syncOptions: {
+      collection: null,
+      replicationIdentifier: 'test-replication',
       url: {http: serverUrl, ws: wsUrl},
       webSocketImpl: WebSocket,
       authErrorMessage: 'Could not verify JWT: JWTExpired',
