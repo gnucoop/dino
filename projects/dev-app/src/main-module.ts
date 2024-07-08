@@ -31,7 +31,7 @@ import {AuthModule} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModule} from '@dino/core/data';
 import {CoreModule} from '@dino/material/core';
 import {LangSelectorModule} from '@dino/material/lang-selector';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 
 import {DemoHttpInterceptor} from './demo-http-interceptor';
 import {DevAppComponent} from './dev-app';

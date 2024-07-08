@@ -40,8 +40,8 @@ import {CoreModule as DinoMaterialThemingModule} from '@dino/material/core';
 import {EditReportSchemaModule} from '@dino/material/edit-report-schema';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
 
-import {getRxStorageDexie} from 'rxdb/plugins/dexie';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {getRxStorageDexie} from 'rxdb/plugins/storage-dexie';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {combineLatest, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, switchMap, take, tap} from 'rxjs/operators';
 
