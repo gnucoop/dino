@@ -76,9 +76,8 @@
     "numbro": "^2.3.6",
     "pdfmake": "^0.2.4",
     "process": "^0.11.10",
-    "rxdb": "^13.17.1",
-    "rxjs": "^7.4.0",
-    "rxjs-tslint-rules": "^4.33.1",
+    "rxdb": "^15.26.0",
+    "rxjs": "^7.8.0",
     "stream-browserify": "^3.0.0",
     "tslib": "^2.3.0",
     "uuid": "^8.3.2",
@@ -109,8 +108,8 @@
     "@types/pdfmake": "^0.1.20",
     "@types/resize-observer-browser": "^0.1.7",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.48.0",
-    "@typescript-eslint/parser": "^5.48.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "assert": "^2.0.0",
     "concurrently": "^7.0.0",
     "conventional-changelog": "^3.1.25",
@@ -144,7 +143,7 @@
     "svg-pan-zoom": "^3.6.1",
     "ts-json-schema-generator": "^1.0.0",
     "ts-node": "^10.7.0",
-    "typescript": "~4.9.3",
+    "typescript": "~5.1.6",
     "unique-names-generator": "^4.7.1"
   }
 }
