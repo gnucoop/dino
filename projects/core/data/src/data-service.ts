@@ -34,8 +34,9 @@ import {
   RxError,
   RxTypeError,
 } from 'rxdb';
-import {RxDBMigrationPlugin} from 'rxdb/plugins/migration';
-import {RxDBReplicationGraphQLPlugin} from 'rxdb/plugins/replication-graphql';
+import {RxDBMigrationSchemaPlugin} from 'rxdb/plugins/migration-schema';
+import {replicateGraphQL} from 'rxdb/plugins/replication-graphql';
+
 import {RxDBQueryBuilderPlugin} from 'rxdb/plugins/query-builder';
 import {RxDBUpdatePlugin} from 'rxdb/plugins/update';
 import {RxDBJsonDumpPlugin} from 'rxdb/plugins/json-dump';
@@ -94,6 +95,7 @@ import {
   generateSyncPullChecks,
   pullQueryBuilder,
   pullResponseModifier,
+  pushResponseModifier,
   pushQueryBuilder,
   subscriptionQueryBuilder,
 } from './sync-utils';
@@ -238,8 +240,7 @@ export class DataService implements IDataService {
     @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
     @Optional() private _configService: ConfigService | null,
   ) {
-    addRxPlugin(RxDBMigrationPlugin);
-    addRxPlugin(RxDBReplicationGraphQLPlugin);
+    addRxPlugin(RxDBMigrationSchemaPlugin);
     addRxPlugin(RxDBQueryBuilderPlugin);
     addRxPlugin(RxDBUpdatePlugin);
     addRxPlugin(RxDBJsonDumpPlugin);
@@ -618,7 +619,7 @@ export class DataService implements IDataService {
                 mapTo(true),
                 catchError(err => {
                   if (isDevMode()) {
-                    console.error(err);
+                    console.error(params.collection.schema.title, err);
                   }
                   return obsOf(false);
                 }),
@@ -901,8 +902,9 @@ export class DataService implements IDataService {
 
     const actSyncs = this._activeSyncs.getValue();
     this._stopCollectionSync(collection.name);
-    const state = collection.syncGraphQL({
+    const state = replicateGraphQL({
       ...this._dataConfig.value.syncOptions,
+      collection,
       url: this._dataConfig.value.syncOptions.url,
       headers: {'Authorization': `Bearer ${token}`},
       deletedField: '_deleted',
@@ -924,6 +926,9 @@ export class DataService implements IDataService {
       },
       push: {
         queryBuilder: pushQueryBuilder(collection, params.pushQueryExtraParams),
+        responseModifier: function (plainResponse: RxDocumentData<any>[]) {
+          return pushResponseModifier(plainResponse);
+        },
         batchSize: this.config.syncOptions.batchSizePush ?? DEFAULT_SYNC_OPTIONS.batchSizePush,
       },
     });

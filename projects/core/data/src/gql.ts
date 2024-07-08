@@ -26,6 +26,7 @@ import {gql} from 'apollo-angular';
 import {DataFindRequest} from './data-find-request';
 import {InsertModel} from './insert-model';
 import {Model} from './model';
+import {MangoQuerySelector} from 'rxdb';
 
 interface GqlQueryGen {
   queryName: string;
@@ -104,7 +105,8 @@ const dataFindRequestToFnParams = <T extends Model = Model>(
   const where = [] as string[];
   if (query.selector != null) {
     Object.keys(query.selector).forEach(key => {
-      const selector = query.selector ? query.selector[key] : {};
+      const selectorKey = key as keyof MangoQuerySelector<T>;
+      const selector = (query.selector ? query.selector[selectorKey] : {}) as {[key: string]: any};
       if (typeof selector === 'object') {
         const fieldWhere = [] as string[];
         Object.keys(selector).forEach(op => {

@@ -21,7 +21,7 @@
  */
 
 import {deepCopy} from '@ajf/core/utils';
-import {DeepReadonlyObject, MangoQuery, RxJsonSchema} from 'rxdb';
+import {DeepReadonlyObject, MangoQuery, MangoQuerySelector, RxJsonSchema} from 'rxdb';
 import {BehaviorSubject, forkJoin, Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
@@ -270,9 +270,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
     const selectorParams = {id: {$in: ids}};
     const params = {
       collectionName: this._modelName,
-      query: {
-        selector: selectorParams,
-      },
+      query: this._optionsToMangoQuery({selector: selectorParams}),
     };
     return this._getPermissionContext().pipe(
       switchMap(context => this._dataService.find<T>(params).pipe(map(docs => ({docs, context})))),
@@ -668,7 +666,9 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    */
   private _optionsToMangoQuery(options?: DataListOptions | DataQueryOptions): MangoQuery<T> {
     options = options || {};
-    const selector = (options as DataQueryOptions).selector || {is_deleted: {$ne: true}};
+    const selector = ((options as DataQueryOptions).selector || {
+      is_deleted: {$ne: true},
+    }) as MangoQuerySelector<T>;
     const sort =
       options.sort != null
         ? (options.sort.map(s => {

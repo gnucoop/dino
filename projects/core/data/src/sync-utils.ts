@@ -52,13 +52,13 @@ export function pullQueryBuilder<T extends Model = Model>(
   options: DataServiceSyncOptions,
   extraParams?: PullQueryExtraParams,
 ): RxGraphQLReplicationPullQueryBuilder<RxDocumentData<T>> {
-  return (doc: RxDocumentData<T> | null) => {
+  return (doc: RxDocumentData<T> | null | undefined) => {
     /**
      * If there's no checkpoint document pulled, we start from the beginning.
      * Otherwise, pull happens for all docs updated during the month before the checkpoint.
      */
     let docUpdatedAt: string;
-    if (doc == null) {
+    if (doc == null || doc == undefined) {
       docUpdatedAt = new Date(0).toUTCString();
     } else {
       const docUpdate: Date = new Date(doc.updated_at);
@@ -164,6 +164,16 @@ export function pushQueryBuilder<T extends Model = Model>(
     const variables = {'docs': newDocs};
     return {query: unquotedQuery, variables};
   };
+}
+
+/**
+ * Modifies the GraphQl server response after push sync has sent data.
+ * @param plainResponse The graphql server response
+ * @returns An array with the IDs of all pushed documents
+ */
+export function pushResponseModifier<T extends Model = Model>(plainResponse: RxDocumentData<T>[]) {
+  const resp = plainResponse as unknown as {returning: RxDocumentData<T>[]};
+  return resp.returning;
 }
 
 /**
