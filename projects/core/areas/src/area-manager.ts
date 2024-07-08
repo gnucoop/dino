@@ -28,7 +28,7 @@ import {
   PermissionContextService,
 } from '@dino/core/data';
 
-import {Area} from './area';
+import {Area, migrationStrategies} from './area';
 import {schema} from './area-json';
 import {AreasModule} from './areas.module';
 
@@ -39,7 +39,7 @@ import {AreasModule} from './areas.module';
 export class AreaManager extends DataModelManager<Area> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-      {name: 'area', collection: {schema}},
+      {name: 'area', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
       [new CheckMetricPermission<Area>()],

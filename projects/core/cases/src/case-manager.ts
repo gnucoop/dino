@@ -28,7 +28,7 @@ import {
   PermissionContextService,
 } from '@dino/core/data';
 
-import {Case} from './case';
+import {Case, migrationStrategies} from './case';
 import {schema} from './case-json';
 import {CasesModule} from './cases.module';
 
@@ -39,7 +39,7 @@ import {CasesModule} from './cases.module';
 export class CaseManager extends DataModelManager<Case> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-      {name: 'case', collection: {schema}},
+      {name: 'case', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
       [new CheckMetricPermission<Case>()],
