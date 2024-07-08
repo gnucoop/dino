@@ -28,7 +28,7 @@ import {
   PermissionContextService,
 } from '@dino/core/data';
 
-import {Organization} from './organization';
+import {Organization, migrationStrategies} from './organization';
 import {schema} from './organization-json';
 import {OrganizationsModule} from './organizations.module';
 
@@ -39,7 +39,7 @@ import {OrganizationsModule} from './organizations.module';
 export class OrganizationManager extends DataModelManager<Organization> {
   constructor(dataService: DataService, permissionContextService: PermissionContextService) {
     super(
-      {name: 'organization', collection: {schema}},
+      {name: 'organization', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
       [new CheckMetricPermission<Organization>()],
