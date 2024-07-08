@@ -475,7 +475,7 @@ export class ImportForm implements OnDestroy {
    */
   private _getValueFromRow(
     rowValue: any,
-    requiredType?: JsonSchemaTypes | JsonSchemaTypes[] | undefined,
+    requiredType?: JsonSchemaTypes | JsonSchemaTypes[] | readonly JsonSchemaTypes[] | undefined,
   ): any {
     let value = rowValue === undefined ? null : rowValue;
     if (value !== null) {
