@@ -1,3 +1,28 @@
+<a name="16.0.2"></a>
+# 16.0.2 "socialist-grouse" (2024-07-09)
+### Bug Fixes
+* **material/collect:** show map button when form_schema_metrics is empty ([35a9331](https://bitbucket.org/gnucoop/dino/commits/35a9331a50d72e399bceaa7ec2981bf7d0ff43a9))
+* **material/create-form, edit-form:** debounceTime replaced with throttleTime in saveFormEvt stream. ([0db26b6](https://bitbucket.org/gnucoop/dino/commits/0db26b67e7ab8d1dde46563947ba12fde3e2a128))
+* **material/list:** remove lowercase on field name in advanced filter ([80c9483](https://bitbucket.org/gnucoop/dino/commits/80c9483f038fcd7ea60cacac45a45a4ee8a7934c))
+* **material/multiple:** add debounceTime and disable on save buttons to prevent multiple click ([c1fc9b7](https://bitbucket.org/gnucoop/dino/commits/c1fc9b7eb2b32496d23dc89a10d2c642c34da389))
+* **material/reports:** fix report pdf printing without metrics ([2e6a9fb](https://bitbucket.org/gnucoop/dino/commits/2e6a9fbed3c7ed3b2c453b473f865f735745b197))
+### Features
+* **core/forms:** Added 'hasAnyData' method to FormSchemaManager. Added 'isUsedByAnyFormSchemaDeps' to FormSchemaDepsManager. ([639c35b](https://bitbucket.org/gnucoop/dino/commits/639c35b495d8f00951ecc0b50d7b4e49ab170d1c))
+* **core/reports:** Added 'hasAnyData' and 'isUsedByAnyReports' methods to ReportSchemaManager. ([0c5627f](https://bitbucket.org/gnucoop/dino/commits/0c5627ff986006f42392e3211651108f5670a75d))
+* **core/users:** Added 'isUsedByAnyGroup' method to UserGroupManager. ([e3753b4](https://bitbucket.org/gnucoop/dino/commits/e3753b481b37fa73227531e92d1b5572606a5228))
+* **e2e-app:** Added BrowserDetectorService to main module. Added webkit tap highlight css fix. ([7e599ab](https://bitbucket.org/gnucoop/dino/commits/7e599ab21c1f387c9f0d2f8dff139435dfb33bf2))
+* **material/browser-detector:** Added BrowserDetector service. ([ae014d3](https://bitbucket.org/gnucoop/dino/commits/ae014d3c0c7d297fddce36cf0b6422f7df72cdbc))
+* **material/collect:** Added Delete Schema dialog for deleting Form/Report Schemas ([6b8b17c](https://bitbucket.org/gnucoop/dino/commits/6b8b17c25b0576d3e4c1e2bbff319dc4878f3fd2))
+* **material/collect:** Added openDeleteSchemaDialog method. ([2024c51](https://bitbucket.org/gnucoop/dino/commits/2024c510ed977c03407bcde7d8ec3bb1cb7823a7))
+* **material/delete-schema:** Added Delete Schema module and component. Provides checks and a dialog for deleting Form/Report Schemas. ([39adc53](https://bitbucket.org/gnucoop/dino/commits/39adc538629f3d4d7ea1736176578bfee1648eed))
+* **material/delete-schema:** Added DeleteSchema dialog component, for deleting Form/Report Schemas. ([5c3533b](https://bitbucket.org/gnucoop/dino/commits/5c3533b54adcbe56f00bd60df48e9aba56e8ea97))
+* **material/edit-report-schema:** Added Form Schemas dropdown valueless field to Edit Report Schema. Shows all FormSchemas used by Report. ([c3ebd86](https://bitbucket.org/gnucoop/dino/commits/c3ebd8612fca7dfb8fc125d87d1437ac9071c9b8))
+* **material/list:** List Actions UI complete rework. Added Actions Modal. Changed behavior for different screens and touch devices. ([89d2b65](https://bitbucket.org/gnucoop/dino/commits/89d2b655edba52c9550cc38f7ce72e8b25a18dbb))
+* **material/multiple:** add additional_info in on_status_change trigger ([c6d98b9](https://bitbucket.org/gnucoop/dino/commits/c6d98b9e559fa2c0e1cf91e4cab38fbe59e698ac))
+* **material/search-filters-bar:** Added ViewMap button to SearchFiltersBar ([9a4ea49](https://bitbucket.org/gnucoop/dino/commits/9a4ea49dd70a2a1a10cc73da8b4a9f67ff86a368))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.0.1"></a>
 # 16.0.1 "personal-damselfly" (2024-06-03)
 ### Bug Fixes
