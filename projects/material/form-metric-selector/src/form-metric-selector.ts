@@ -490,7 +490,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     if (obj == null || obj.option == null || obj.metricType == null) {
       return '';
     }
-    let displayed = obj.option.name && obj.option.id ? obj.option.name : '';
+    let displayed = obj.option && obj.option.name && obj.option.id ? obj.option.name : '';
     if (
       obj.secondaryMetricFieldsDisplayed != null &&
       obj.secondaryMetricFieldsDisplayed[obj.metricType] != null
@@ -770,10 +770,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         const firstMetric = organizedMetricOptions[0];
         const formControl = this.formMetrics.get(firstMetric.collection.name);
         const selectedMetricId =
-          this.formMetrics && this.formMetrics.value[firstMetric.collection.name]
+          this.formMetrics &&
+          this.formMetrics.value[firstMetric.collection.name] &&
+          this.formMetrics.value[firstMetric.collection.name].option != null
             ? this.formMetrics.value[firstMetric.collection.name].option.id
             : null;
-        if (formControl != null && selectedMetricId != firstMetric.id) {
+        if (formControl != null && firstMetric != null && selectedMetricId != firstMetric.id) {
           formControl.setValue({
             option: firstMetric,
             secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,

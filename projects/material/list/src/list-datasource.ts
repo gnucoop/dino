@@ -509,12 +509,15 @@ export class ListDataSource<
               .map(header => {
                 // Repeating Slide Field Filter
                 if (header.repeatingSlideColumn) {
-                  const repeatedFilters: {[key: string]: {$regex: string | RegExp}}[] = [];
+                  const repeatedFilters: {
+                    [key: string]: {$regex: string; $options?: string};
+                  }[] = [];
                   let slideIdx = 0;
                   while (slideIdx <= this._maxRepeatingSlidesFiltering) {
                     repeatedFilters.push({
                       [`data.${header.column.toString()}__${slideIdx}`]: {
-                        '$regex': new RegExp(item.value, 'i'),
+                        $regex: item.value,
+                        $options: 'i',
                       },
                     });
                     slideIdx++;
@@ -525,7 +528,8 @@ export class ListDataSource<
                 else {
                   return {
                     [`data.${header.column.toString()}`]: {
-                      '$regex': new RegExp(item.value, 'i'),
+                      $regex: item.value,
+                      $options: 'i',
                     },
                   };
                 }
@@ -535,7 +539,8 @@ export class ListDataSource<
               .map(header => {
                 return {
                   [`${header.column.toString()}`]: {
-                    '$regex': new RegExp(item.value, 'i'),
+                    $regex: item.value,
+                    $options: 'i',
                   },
                 };
               });
