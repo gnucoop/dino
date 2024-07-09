@@ -715,7 +715,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
               metricValue = '';
             }
             const querySelector = {
-              name: {$regex: new RegExp(metricValue as string, 'i')},
+              name: {$regex: metricValue, $options: 'i'},
               is_deleted: {$ne: true},
             };
             if (this._metricManagers[metricType] == null) {

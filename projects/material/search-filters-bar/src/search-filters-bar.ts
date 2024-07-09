@@ -584,7 +584,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             if (metricType === 'case') {
               mtQuery = {
                 selector: {
-                  [metricAttributeToSearchBy]: {$regex: new RegExp(metricValue, 'i')},
+                  [metricAttributeToSearchBy]: {$regex: metricValue, $options: 'i'},
                   is_deleted: {$ne: true},
                 },
                 sort: [{[metricAttributeToSearchBy]: 'asc'}],
@@ -688,7 +688,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             return this._fsm
               .query({
                 selector: {
-                  name: {$regex: new RegExp(inputVal, 'i')},
+                  name: {$regex: inputVal, $options: 'i'},
                   id: {$in: options ?? []},
                   is_deleted: {$ne: true},
                 },
@@ -714,7 +714,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             return this._udm
               .query({
                 selector: {
-                  full_name: {$regex: new RegExp(inputVal, 'i')},
+                  full_name: {$regex: inputVal, $options: 'i'},
                   is_deleted: {$ne: true},
                 },
               })
