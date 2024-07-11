@@ -30,8 +30,8 @@ import {
 
 import {migrationStrategies, ReportSchema} from './report-schema';
 import {schema} from './report-schema-json';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Observable, of as obsOf} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {RxDocument} from 'rxdb';
 import {ReportDataManager} from './report-data-manager';
 @Injectable({providedIn: 'root'})
@@ -58,7 +58,7 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
   checkAutoReportExists(fsName: string, fsId: string): Observable<RxDocument<ReportSchema> | null> {
     const query: DataQueryOptions = {
       selector: {
-        name: {$eq: `${fsName}_auto_report`},
+        name: {$regex: `${fsName}_auto_report`, $options: 'i'},
         form_schema_ids: {$eq: [fsId]},
       },
       limit: 1,
@@ -101,5 +101,33 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
       limit: 1,
     };
     return this.query(queryOptions).pipe(map(res => res.length > 0));
+  }
+
+  /**
+   * Removes a single Report Schema by id. Updates its name with the current timestamp
+   * before deleting it.
+   * @param schemaId
+   * @returns an observable of the deleted object
+   */
+  override delete(schemaId: string): Observable<RxDocument<ReportSchema> | null> {
+    const now = Date.now().toString();
+    return this.get(schemaId).pipe(
+      switchMap(schema => {
+        if (schema == null) return obsOf(null);
+        const newSchema = {
+          id: schema.id,
+          created_at: schema.created_at,
+          updated_at: schema.updated_at,
+          name: `${schema.name}_${now}`,
+          form_schema_ids: schema.form_schema_ids,
+          label: schema.label,
+          icon: schema.icon,
+          schema: schema.schema,
+          is_deleted: true,
+          _deleted: true,
+        };
+        return this.update(newSchema);
+      }),
+    );
   }
 }

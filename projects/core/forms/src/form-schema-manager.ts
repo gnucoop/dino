@@ -618,4 +618,35 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     };
     return this._fdm.query(queryOptions).pipe(map(res => res.length > 0));
   }
+
+  /**
+   * Removes a single Form Schema by id. Updates its name with the current timestamp
+   * before deleting it.
+   * @param schemaId
+   * @returns an observable of the deleted object
+   */
+  override delete(schemaId: string): Observable<RxDocument<FormSchema> | null> {
+    const now = Date.now().toString();
+    return this.get(schemaId).pipe(
+      switchMap(schema => {
+        if (schema == null) return obsOf(null);
+        const newSchema = {
+          id: schema.id,
+          created_at: schema.created_at,
+          updated_at: schema.updated_at,
+          name: `${schema.name}_${now}`,
+          label: schema.label,
+          icon: schema.icon,
+          form_status_ref_id: schema.form_status_ref_id,
+          form_schema_metrics: schema.form_schema_metrics,
+          visibility: schema.visibility,
+          schema: schema.schema,
+          form_schema_deps_ref_id: schema.form_schema_deps_ref_id,
+          is_deleted: true,
+          _deleted: true,
+        };
+        return this.update(newSchema);
+      }),
+    );
+  }
 }
