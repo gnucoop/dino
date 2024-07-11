@@ -293,4 +293,5 @@ export const ESP: Translation = {
     'Otros formularios dependen de este esquema de formulario y de algunos de sus campos. ¿Está seguro de que desea eliminarlo?',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     'Uno o más grupos de usuarios tienen permisos para este esquema. ¿Está seguro de que desea eliminarlo?',
+  'This name is already being used.': 'Este nombre ya se utiliza.',
 };

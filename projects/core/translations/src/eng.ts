@@ -293,4 +293,5 @@ export const ENG: Translation = {
     'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?',
+  'This name is already being used.': 'This name is already being used.',
 };

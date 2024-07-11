@@ -293,4 +293,5 @@ export const PRT: Translation = {
     'Outros formulários dependem deste esquema de formulário e de alguns dos seus campos. Tem a certeza de que pretende eliminá-lo?',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     'Um ou mais grupos de utilizadores concedem permissões para este esquema. Tem a certeza de que pretende eliminá-lo?',
+  'This name is already being used.': 'Este nome já está a ser utilizado.',
 };
