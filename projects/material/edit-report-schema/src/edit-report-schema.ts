@@ -28,6 +28,7 @@ import {
 import {TranslocoService} from '@ajf/core/transloco';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   isDevMode,
@@ -45,6 +46,7 @@ import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {IconsService} from '@dino/material/icons-service';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
+import {ReportSchemaNameMatchValidator} from './report-schema-name-validator';
 import {
   BehaviorSubject,
   combineLatest,
@@ -138,12 +140,14 @@ export class EditReportSchema implements OnInit, OnDestroy {
   private _dialogSub: Subscription = Subscription.EMPTY;
 
   constructor(
+    protected _cdr: ChangeDetectorRef,
     private _router: Router,
     private _route: ActivatedRoute,
     private _reportSchemaManager: ReportSchemaManager,
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog,
     private _formBuilder: UntypedFormBuilder,
+    private _schemaNameValidator: ReportSchemaNameMatchValidator,
     private _iconsService: IconsService,
     private _translocoService: TranslocoService,
     private _fs: FormSchemaManager,
@@ -202,7 +206,11 @@ export class EditReportSchema implements OnInit, OnDestroy {
     this.formGroup = this._reportSchema.pipe(
       map(rs =>
         this._formBuilder.group({
-          name: [rs ? rs.name : null, Validators.required],
+          name: [
+            rs ? rs.name : null,
+            Validators.required,
+            this._schemaNameValidator.nameCheck(this._reportSchemaManager, this._cdr, rs?.name),
+          ],
           label: [rs ? rs.label : null, Validators.required],
           icon: [rs ? rs.icon : null],
           icon_set: [

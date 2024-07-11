@@ -39,6 +39,7 @@ import {IconsServiceModule} from '@dino/material/icons-service';
 import {EditReportSchema} from './edit-report-schema';
 import {ImportReportSchema} from './import-report-schema';
 import {MatSelectModule} from '@angular/material/select';
+import {ReportSchemaNameMatchValidator} from './report-schema-name-validator';
 
 @NgModule({
   imports: [
@@ -60,5 +61,6 @@ import {MatSelectModule} from '@angular/material/select';
   ],
   declarations: [EditReportSchema, ImportReportSchema],
   exports: [EditReportSchema, ImportReportSchema],
+  providers: [ReportSchemaNameMatchValidator],
 })
 export class EditReportSchemaModule {}
