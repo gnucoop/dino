@@ -11,6 +11,9 @@
           <mat-form-field>
             <mat-label>{{'Form Name'|transloco}}</mat-label>
             <input matInput formControlName="name" />
+            <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
+              {{ 'This name is already being used.'|transloco}}
+            </mat-error>
           </mat-form-field>
           <mat-form-field class="dino-form-attribute-short-field">
             <mat-label>{{'Icon Set'|transloco}}</mat-label>

@@ -41,6 +41,7 @@ import {EditFormSchema} from './edit-form-schema';
 import {ImportFormSchema} from './import-form-schema';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {FormSchemaNameMatchValidator} from './form-schema-name-validator';
 
 @NgModule({
   imports: [
@@ -64,5 +65,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
   ],
   declarations: [EditFormSchema, ImportFormSchema],
   exports: [EditFormSchema, ImportFormSchema],
+  providers: [FormSchemaNameMatchValidator],
 })
 export class EditFormSchemaModule {}

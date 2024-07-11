@@ -76,6 +76,7 @@ import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '
 import {automaticReport} from '@ajf/core/reports';
 import {UserDataManager} from '@dino/core/users';
 import {RxDocument} from 'rxdb';
+import {FormSchemaNameMatchValidator} from './form-schema-name-validator';
 
 /**
  * The Form Schema Editor component.
@@ -237,6 +238,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar,
     private _dialog: MatDialog,
     private _formBuilder: UntypedFormBuilder,
+    private _schemaNameValidator: FormSchemaNameMatchValidator,
     private _iconsService: IconsService,
     private _metricService: MetricsService,
     private _ehms: ErrorHandlerMessageService,
@@ -293,7 +295,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this.formGroup = this._formSchema.pipe(
       map(fs => {
         const fg = this._formBuilder.group({
-          name: [fs ? fs.name : null, Validators.required],
+          name: [
+            fs ? fs.name : null,
+            Validators.required,
+            this._schemaNameValidator.nameCheck(this._fs, this._cdr, fs?.name),
+          ],
           label: [fs ? fs.label : null, Validators.required],
           icon_set: [
             fs && fs.icon && fs.icon.includes('icon-') ? 'humanitarian' : 'default',
