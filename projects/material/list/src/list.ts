@@ -1211,10 +1211,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
               previousValue: item,
             };
           });
-          const formPatches = items.map(item =>
-            this._fdm.patch({id: item.id, ...formChanges}).pipe(take(1)),
-          );
-          return forkJoin([obsOf(triggerChanges), ...formPatches]);
+          return forkJoin([obsOf(triggerChanges), this._fdm.bulkUpdate(genItem as FormData[], formChanges)])
         }),
         withLatestFrom(this._udm.getActiveUserData(), this._ugm.getActiveUserGroups()),
       )
@@ -1231,14 +1228,12 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           previousValue: T;
         }[];
 
-        const patchedDocs: (RxDocument<T> | null)[] = res as (RxDocument<T> | null)[];
-
+        const patchedDocs: (RxDocument<T> | null)[] = res.flat() as unknown as (RxDocument<T> | null)[];
         triggers.forEach(trigger => {
           const patchedDoc = patchedDocs.find(doc => doc != null && doc.id === trigger.id);
-
           if (patchedDoc != null) {
-            const activeUser = res[1] || null;
-            const activeUserGroups = res[2] || [];
+            const activeUser = allRes[1] || null;
+            const activeUserGroups = allRes[2] || [];
 
             const trigData: ActionTriggerData<T> = {
               doc: patchedDoc,
