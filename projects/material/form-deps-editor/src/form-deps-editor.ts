@@ -16,6 +16,7 @@ import {
   FormSchemaDeps,
   FormSchemaDepsManager,
   FormSchemaManager,
+  MetricOrigin,
 } from '@dino/core/forms';
 import {
   catchError,
@@ -119,16 +120,21 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   readonly displayedColumns = [
+    'delete',
     'form_schema_ref_id',
     'fields_to_update',
     'filter_by_metric',
     'is_choice',
     'choice_label_fields',
     'choice_extra_value_key',
-    'delete',
   ];
 
+  readonly displayedMetricsColumns = ['delete', 'metric_name', 'choice_extra_value_key'];
+
   readonly dataSource: MatTableDataSource<DepsOrigin> = new MatTableDataSource<DepsOrigin>();
+
+  readonly metricDataSource: MatTableDataSource<MetricOrigin> =
+    new MatTableDataSource<MetricOrigin>();
 
   constructor(
     public dialogRef: MatDialogRef<FormDepsEditorData>,
@@ -189,6 +195,9 @@ export class FormDepsEditor implements OnInit, OnDestroy {
 
     this._depsSub = this._formSchemaDeps.subscribe(fschemadeps => {
       if (fschemadeps) {
+        this.dataSource.data = [];
+        this.metricDataSource.data = [];
+
         if (fschemadeps.deps_origin) {
           this.dataSource.data = (deepCopy(fschemadeps).deps_origin as DepsOrigin[]).filter(
             deps => deps.form_schema_ref_id != null,
@@ -199,20 +208,39 @@ export class FormDepsEditor implements OnInit, OnDestroy {
             }
           });
 
-          const metricsChoicesOrigin = (deepCopy(fschemadeps).deps_origin as DepsOrigin[]).find(
-            deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
+          this.metricDataSource.data = (deepCopy(fschemadeps).deps_origin as MetricOrigin[]).filter(
+            deps => deps.metric_name != null,
           );
-          this.currentMetricsForChoices =
-            metricsChoicesOrigin && metricsChoicesOrigin.metrics_choices_origin
-              ? metricsChoicesOrigin.metrics_choices_origin
-              : [];
-        } else {
-          this.dataSource.data = [];
+
+          if (!this.metricDataSource.data.length) {
+            // Check if there are old and deprecated metric choices relationships
+            // and convert in new format
+            const metricsChoicesOrigin = (deepCopy(fschemadeps).deps_origin as DepsOrigin[]).find(
+              deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
+            );
+            this.currentMetricsForChoices =
+              metricsChoicesOrigin && metricsChoicesOrigin.metrics_choices_origin
+                ? metricsChoicesOrigin.metrics_choices_origin
+                : [];
+
+            const metricDataSourceData: MetricOrigin[] = [];
+            this.currentMetricsForChoices.forEach(m => {
+              metricDataSourceData.push({
+                metric_name: m,
+                choices_origin: {
+                  value_key: 'name',
+                },
+              } as MetricOrigin);
+            });
+            this.metricDataSource.data.push(...metricDataSourceData);
+          }
         }
         this.currentMetricsForData = this.getRequiredMetrics(
           this.dataSource.data,
           fschemadeps.metric_data_to_show,
         );
+
+        // TODO
       }
     });
   }
@@ -295,10 +323,27 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     ];
   }
 
+  addMetricRow(): void {
+    this.metricDataSource.data = [
+      ...this.metricDataSource.data,
+      {
+        metric_name: '',
+        choices_origin: {extra_value_key: null},
+      },
+    ];
+  }
+
   deleteRow(rowIdx: number): void {
     this.dataSource.data = [
       ...this.dataSource.data.slice(0, rowIdx),
       ...this.dataSource.data.slice(rowIdx + 1),
+    ];
+  }
+
+  deleteMetricRow(rowIdx: number): void {
+    this.metricDataSource.data = [
+      ...this.metricDataSource.data.slice(0, rowIdx),
+      ...this.metricDataSource.data.slice(rowIdx + 1),
     ];
   }
 

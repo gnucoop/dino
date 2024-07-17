@@ -48,7 +48,11 @@ export class FormSchemaDepsManager extends DataModelManager<FormSchemaDeps> {
         for (let dep of deps) {
           if (!dep.deps_origin || !dep.deps_origin.length) continue;
           for (let origin of dep.deps_origin) {
-            if (origin.form_schema_ref_id && origin.form_schema_ref_id === formSchemaId)
+            if (
+              'form_schema_ref_id' in origin &&
+              origin.form_schema_ref_id &&
+              origin.form_schema_ref_id === formSchemaId
+            )
               return true;
           }
         }

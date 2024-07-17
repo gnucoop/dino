@@ -690,13 +690,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             }
 
             if (fschemadeps.deps_origin) {
-              const extFormDataRes = this._fs.getExternalFormData(fschemadeps, false, metricSel);
-
-              const metricsChoicesOrigin = (fschemadeps.deps_origin as DepsOrigin[]).find(
-                deps => deps.metrics_choices_origin != null && deps.metrics_choices_origin.length,
-              );
-              const metricOptSource = this._fs.getAllFormMetricsByTypes(
-                metricsChoicesOrigin?.metrics_choices_origin,
+              const {extFormDataRes, metricOptSource} = this._fs.getExternalData(
+                fschemadeps,
+                false,
+                metricSel,
               );
               return zip(extFormDataRes, metricOptSource);
             }
@@ -713,73 +710,77 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       .subscribe(([originData, formGroup, fschemadeps, fschema]) => {
         if (fschemadeps && fschemadeps.deps_origin && originData) {
           const changes = originData[0];
-          const metricsOrigin = originData[1] as RxDocument<Metric, {}>[][];
+          const metricsDocs = originData[1] as RxDocument<Metric, {}>[][];
 
           const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
           const newFormSchema: FormSchema = deepCopy(fschema);
           let extCtx: {[key: string]: any} = {};
 
           let extDocsIdx = 0;
-          fschemadeps.deps_origin.forEach(depsOrigin => {
-            if (
-              depsOrigin.form_schema_ref_id &&
-              depsOrigin.fields_to_update &&
-              depsOrigin.fields_to_update.length
-            ) {
-              if (depsOrigin.is_choice) {
-                const field = depsOrigin.fields_to_update[0];
-                const choicesOriginName = field + '_choice';
-                const formDataForChoices =
-                  changes && changes.length > extDocsIdx ? changes[extDocsIdx] : null;
-                newChoicesOrigins.push({
-                  type: 'fixed',
-                  name: choicesOriginName,
-                  label: choicesOriginName,
-                  choices: this._fs.getChoicesFromDocs(depsOrigin, formDataForChoices),
-                });
-              } else {
-                const extFormData =
-                  changes && changes[extDocsIdx] !== null && changes[extDocsIdx].length
-                    ? changes[extDocsIdx][0].toJSON().data
-                    : null;
-
-                depsOrigin.fields_to_update.forEach(field => {
-                  extCtx[field] = null;
+          fschemadeps.deps_origin
+            .filter(depsOrigin => 'form_schema_ref_id' in depsOrigin)
+            .map(depsOrigin => depsOrigin as DepsOrigin)
+            .forEach(depsOrigin => {
+              if (
+                depsOrigin.form_schema_ref_id &&
+                depsOrigin.fields_to_update &&
+                depsOrigin.fields_to_update.length
+              ) {
+                if (depsOrigin.is_choice) {
+                  const field = depsOrigin.fields_to_update[0];
                   const choicesOriginName = field + '_choice';
+                  const formDataForChoices =
+                    changes && changes.length > extDocsIdx ? changes[extDocsIdx] : null;
+                  newChoicesOrigins.push({
+                    type: 'fixed',
+                    name: choicesOriginName,
+                    label: choicesOriginName,
+                    choices: this._fs.getChoicesFromDocs(depsOrigin, formDataForChoices),
+                  });
+                } else {
+                  const extFormData =
+                    changes && changes[extDocsIdx] !== null && changes[extDocsIdx].length
+                      ? changes[extDocsIdx][0].toJSON().data
+                      : null;
 
-                  const hasChoiceField = this._fs.findFieldsWithChoicesByChoicesName(
-                    newFormSchema,
-                    choicesOriginName,
-                    false,
-                  );
+                  depsOrigin.fields_to_update.forEach(field => {
+                    extCtx[field] = null;
+                    const choicesOriginName = field + '_choice';
 
-                  if (extFormData && field in extFormData) {
-                    extCtx[field] = extFormData[field];
-                  } else if ((extFormData && field + '__0' in extFormData) || hasChoiceField) {
-                    newChoicesOrigins.push({
-                      type: 'fixed',
-                      name: choicesOriginName,
-                      label: choicesOriginName,
-                      choices: this._fs.getChoicesFromFieldReps(field, extFormData),
-                    });
-                  }
-                });
+                    const hasChoiceField = this._fs.findFieldsWithChoicesByChoicesName(
+                      newFormSchema,
+                      choicesOriginName,
+                      false,
+                    );
+
+                    if (extFormData && field in extFormData) {
+                      extCtx[field] = extFormData[field];
+                    } else if ((extFormData && field + '__0' in extFormData) || hasChoiceField) {
+                      newChoicesOrigins.push({
+                        type: 'fixed',
+                        name: choicesOriginName,
+                        label: choicesOriginName,
+                        choices: this._fs.getChoicesFromFieldReps(field, extFormData),
+                      });
+                    }
+                  });
+                }
+                extDocsIdx++;
               }
-              extDocsIdx++;
-            }
-          });
+            });
 
-          if (metricsOrigin && metricsOrigin.length) {
-            metricsOrigin.forEach(metricOrigin => {
-              if (metricOrigin.length) {
-                const choicesOriginName = metricOrigin[0].collection.name + '_metric_choice';
+          if (metricsDocs && metricsDocs.length) {
+            metricsDocs.forEach(metricDocs => {
+              if (metricDocs.length) {
+                const choicesOriginName = metricDocs[0].collection.name + '_metric_choice';
                 newChoicesOrigins.push({
                   type: 'fixed',
                   name: choicesOriginName,
                   label: choicesOriginName,
                   choices: this._fs.getChoicesFromMetrics(
-                    metricOrigin,
-                    metricOrigin[0].collection.name,
+                    metricDocs,
+                    metricDocs[0].collection.name,
+                    fschemadeps,
                   ),
                 });
               }

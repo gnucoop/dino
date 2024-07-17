@@ -417,11 +417,15 @@ export class ImportForm implements OnDestroy {
     return {newMetrics, requiredMetricIdsByType};
   }
 
+  /**
+   * Return the list of the required user ids for the new forms
+   * @param rows
+   * @returns The user_data_ref_id list (distinct values)
+   */
   private _getRequiredUsers(rows: {[key: string]: any}[]): string[] {
     const requiredUserIds: string[] = [];
     const userIdKey = 'user_data_ref_id';
     rows.forEach((row: {[key: string]: any}) => {
-      // Check if is not a second header
       if (!this._isLabelHeader(row)) {
         if (row[userIdKey]) {
           if (!requiredUserIds.includes(row[userIdKey])) {
@@ -861,11 +865,11 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
-   * Check if requested ids in rows exist in the app
-   * @param requiredUserIds
-   * @param existingUsers
-   * @param requiredMetricIdsByType
-   * @param existingMetricsByType
+   * Check if requested ids in rows exist in the db
+   * @param requiredUserIds the list of the requested user ids
+   * @param existingUsers the list of the existing user ids
+   * @param requiredMetricIdsByType the list of the requested metric ids
+   * @param existingMetricsByType the list of the existing metric ids
    * @returns true if not all ids exist
    */
   private _checkIfMissingIds(
@@ -942,6 +946,7 @@ export class ImportForm implements OnDestroy {
 
   /**
    * Convert the xls file into a json and start import all the rows
+   * No update for form data, all form data will be imported as new
    * @param file The Xlsx file to be imported
    */
   private _importXlsx(file: Blob): void {

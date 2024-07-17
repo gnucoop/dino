@@ -35,9 +35,26 @@ dino-form-deps-editor {
       display: none;
     }
 
+    .mat-column-delete {
+      flex: 0 0 2% !important;
+      min-width: 100px;
+    }
+
     .subtitle {
       padding: 0 16px;
       margin-bottom: 20px;
+      width: 100%;
+      overflow: auto;
+    }
+
+    .deps-table {
+      width: 1200px;
+      overflow: auto;
+    }
+
+    .deps-metrics-table {
+      width: 750px;
+      overflow: auto;
     }
   }
 }

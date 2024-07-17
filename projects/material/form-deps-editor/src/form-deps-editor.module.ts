@@ -14,6 +14,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
 import {TranslocoModule} from '@ngneat/transloco';
 import {FormDepsEditor} from './form-deps-editor';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [FormDepsEditor],
@@ -32,6 +33,7 @@ import {FormDepsEditor} from './form-deps-editor';
     MatSlideToggleModule,
     MatSnackBarModule,
     MatTableModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     TranslocoModule,
   ],

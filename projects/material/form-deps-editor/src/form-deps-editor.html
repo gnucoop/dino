@@ -25,114 +25,139 @@
       </mat-form-field>
     </div>
 
-    <button (click)="addRow()" mat-button>
-      <mat-icon>add</mat-icon>
-      <span>{{'Add relationship with other forms'|transloco}}</span>
-    </button>
-    <mat-table [dataSource]="dataSource">
-      <ng-container matColumnDef="form_schema_ref_id">
-        <mat-header-cell *matHeaderCellDef>{{'Form Schema'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-form-field>
-            <mat-select matNativeControl [(ngModel)]="row.form_schema_ref_id">
-              <mat-option *ngFor="let s of (availableSchemas|async)" [value]="s.id">
-                <span> {{s.name|transloco}}</span>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="fields_to_update">
-        <mat-header-cell *matHeaderCellDef>{{'Fields'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-form-field>
-            <mat-select
-              [(ngModel)]="row.fields_to_update"
-              [placeholder]="'Form fields'|transloco"
-              multiple
-              (selectionChange)="checkChoiceOption($event, idx)">
-              <ng-container *ngIf="row.form_schema_ref_id">
-                <mat-option
-                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field">{{field}}</mat-option>
-              </ng-container>
-            </mat-select>
-          </mat-form-field>
-        </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="filter_by_metric">
-        <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-form-field>
-            <mat-select
-              matNativeControl
-              [(ngModel)]="row.filter_by_metric"
-              multiple
-              (selectionChange)="changeMetrics($event)">
-              <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
-                <span> {{metric|transloco}}</span>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="is_choice">
-        <mat-header-cell *matHeaderCellDef>{{'Create choices'|transloco}} {{'(select only one
-          field)'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-slide-toggle
-            [(ngModel)]="row.is_choice"
-            [disabled]="row.fields_to_update.length > 1"
-            style="margin: 10px"
-            aria-label="Is choice"></mat-slide-toggle>
-        </mat-cell>
-      </ng-container>
+    <div class="subtitle">
+      <button (click)="addMetricRow()" mat-button>
+        <mat-icon>add</mat-icon>
+        <h3>{{'Selects metrics to be included as choice options'|transloco}}</h3>
+      </button>
+      <mat-table class="deps-metrics-table" [dataSource]="metricDataSource">
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef>{{'Delete'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-icon (click)="deleteMetricRow(idx)">delete</mat-icon>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="metric_name">
+          <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <mat-select matNativeControl [(ngModel)]="row.metric_name">
+                <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
+                  <span> {{metric|transloco}}</span>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="choice_extra_value_key">
+          <mat-header-cell *matHeaderCellDef>{{'Additional attribute'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <input matInput [(ngModel)]="row.choices_origin.extra_value_key"
+                [placeholder]="('Attribute name'|transloco)" />
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="choice_label_fields">
-        <mat-header-cell *matHeaderCellDef>{{'Field to use as label'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-form-field *ngIf="row.is_choice">
-            <mat-select
-              [(ngModel)]="row.choices_origin.label_fields"
-              [placeholder]="'Label fields'|transloco"
-              multiple>
-              <ng-container *ngIf="row.form_schema_ref_id">
-                <mat-option
-                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field">{{field}}</mat-option>
-              </ng-container>
-            </mat-select>
-          </mat-form-field>
-        </mat-cell>
-      </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedMetricsColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedMetricsColumns;"></mat-row>
+      </mat-table>
+    </div>
 
-      <ng-container matColumnDef="choice_extra_value_key">
-        <mat-header-cell *matHeaderCellDef>{{'Additional field'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-form-field *ngIf="row.is_choice">
-            <mat-select
-              [(ngModel)]="row.choices_origin.extra_value_key"
-              [placeholder]="'Additional field'|transloco">
-              <ng-container *ngIf="row.form_schema_ref_id">
-                <mat-option
-                  *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                  [value]="field">{{field}}</mat-option>
-              </ng-container>
-            </mat-select>
-          </mat-form-field>
-        </mat-cell>
-      </ng-container>
+    <div class="subtitle">
+      <button (click)="addRow()" mat-button>
+        <mat-icon>add</mat-icon>
+        <h3>{{'Add relationship with other forms'|transloco}}</h3>
+      </button>
+      <mat-table class="deps-table" [dataSource]="dataSource">
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef>{{'Delete'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-icon (click)="deleteRow(idx)">delete</mat-icon>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="form_schema_ref_id">
+          <mat-header-cell *matHeaderCellDef>{{'Form Schema'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <mat-select matNativeControl [(ngModel)]="row.form_schema_ref_id">
+                <mat-option *ngFor="let s of (availableSchemas|async)" [value]="s.id" [matTooltip]="s.name"
+                  [matTooltipPosition]="'right'">
+                  <span> {{s.name|transloco}}</span>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="fields_to_update">
+          <mat-header-cell *matHeaderCellDef>{{'Fields'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <mat-select [(ngModel)]="row.fields_to_update" [placeholder]="'Form fields'|transloco" multiple
+                (selectionChange)="checkChoiceOption($event, idx)">
+                <ng-container *ngIf="row.form_schema_ref_id">
+                  <mat-option *ngFor="let field of schemaFields$[row.form_schema_ref_id]" [value]="field"
+                    [matTooltip]="field" [matTooltipPosition]="'right'">{{field}}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="filter_by_metric">
+          <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <mat-select matNativeControl [(ngModel)]="row.filter_by_metric" multiple
+                (selectionChange)="changeMetrics($event)">
+                <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
+                  <span> {{metric|transloco}}</span>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="is_choice">
+          <mat-header-cell *matHeaderCellDef>{{'Create choices'|transloco}} {{'(select only one
+            field)'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-slide-toggle [(ngModel)]="row.is_choice" [disabled]="row.fields_to_update.length > 1"
+              style="margin: 10px" aria-label="Is choice"></mat-slide-toggle>
+          </mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="delete">
-        <mat-header-cell *matHeaderCellDef>{{'Delete'|transloco}}</mat-header-cell>
-        <mat-cell *matCellDef="let row; let idx = index">
-          <mat-icon (click)="deleteRow(idx)">delete</mat-icon>
-        </mat-cell>
-      </ng-container>
+        <ng-container matColumnDef="choice_label_fields">
+          <mat-header-cell *matHeaderCellDef>{{'Field to use as label'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field *ngIf="row.is_choice">
+              <mat-select [(ngModel)]="row.choices_origin.label_fields" [placeholder]="'Label fields'|transloco"
+                multiple>
+                <ng-container *ngIf="row.form_schema_ref_id">
+                  <mat-option *ngFor="let field of schemaFields$[row.form_schema_ref_id]" [value]="field"
+                    [matTooltip]="field" [matTooltipPosition]="'left'">{{field}}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
+        <ng-container matColumnDef="choice_extra_value_key">
+          <mat-header-cell *matHeaderCellDef>{{'Additional field'|transloco}}</mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field *ngIf="row.is_choice">
+              <mat-select [(ngModel)]="row.choices_origin.extra_value_key" [placeholder]="'Additional field'|transloco">
+                <ng-container *ngIf="row.form_schema_ref_id">
+                  <mat-option *ngFor="let field of schemaFields$[row.form_schema_ref_id]" [value]="field"
+                    [matTooltip]="field" [matTooltipPosition]="'left'">{{field}}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </div>
   </mat-dialog-content>
 
   <div mat-dialog-actions>

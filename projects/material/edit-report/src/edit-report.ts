@@ -51,6 +51,7 @@ import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
 import {
+  DepsOrigin,
   FormData,
   FormDataManager,
   FormSchema,
@@ -76,7 +77,17 @@ import {
   throwError,
   zip,
 } from 'rxjs';
-import {delay, filter, map, retryWhen, shareReplay, startWith, switchMap, take, tap} from 'rxjs/operators';
+import {
+  delay,
+  filter,
+  map,
+  retryWhen,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -478,7 +489,13 @@ export class EditReport implements AfterViewInit {
               const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
               if (fsDeps.deps_origin) {
                 fsDeps.deps_origin
-                  .filter(deps => deps.form_schema_ref_id != null && deps.filter_by_metric != null)
+                  .filter(
+                    deps =>
+                      'form_schema_ref_id' in deps &&
+                      deps.form_schema_ref_id != null &&
+                      deps.filter_by_metric != null,
+                  )
+                  .map(depsOrigin => depsOrigin as DepsOrigin)
                   .forEach(depsOrigin => {
                     if (!depsOrigin.is_choice) {
                       queryDepsSelector = this._getRelationshipDataQuery(
@@ -549,49 +566,54 @@ export class EditReport implements AfterViewInit {
    */
   printReport() {
     combineLatest([this.reportSchema, this.reportData, this.reportMetrics!])
-    .pipe(take(1)).subscribe(([schema, data, metricString]) => {
-      if (schema == null || this._currentReportInstance == null) {
-        return;
-      }
-      const header: any = [{
-        text: schema.label,
-        fontSize: 22,
-        bold: true,
-        alignment: 'center',
-        margin: [0, 0, 0, 10],
-      }];
-      if (data?.date_start) {
-        header.push({
-          text: this._translateService.translate('Collected Since') + ' ' + reformat(data.date_start),
-          fontSize: 14,
-          bold: true,
-          alignment: 'left',
-          margin: [0, 0, 0, 10],
-        });
-      }
-      if (data?.date_end) {
-        header.push({
-          text: this._translateService.translate('Collected Until') + ' ' + reformat(data.date_end),
-          fontSize: 14,
-          bold: true,
-          alignment: 'left',
-          margin: [0, 0, 0, 10],
-        });
-      }
-      if (metricString != null && metricString != '') {
-        const metrics = metricString.split(', ');
-        for (const met of metrics) {
+      .pipe(take(1))
+      .subscribe(([schema, data, metricString]) => {
+        if (schema == null || this._currentReportInstance == null) {
+          return;
+        }
+        const header: any = [
+          {
+            text: schema.label,
+            fontSize: 22,
+            bold: true,
+            alignment: 'center',
+            margin: [0, 0, 0, 10],
+          },
+        ];
+        if (data?.date_start) {
           header.push({
-            text: met,
+            text:
+              this._translateService.translate('Collected Since') + ' ' + reformat(data.date_start),
             fontSize: 14,
             bold: true,
             alignment: 'left',
             margin: [0, 0, 0, 10],
           });
         }
-      }
-      openReportPdf(this._currentReportInstance, undefined, undefined, header);
-    });
+        if (data?.date_end) {
+          header.push({
+            text:
+              this._translateService.translate('Collected Until') + ' ' + reformat(data.date_end),
+            fontSize: 14,
+            bold: true,
+            alignment: 'left',
+            margin: [0, 0, 0, 10],
+          });
+        }
+        if (metricString != null && metricString != '') {
+          const metrics = metricString.split(', ');
+          for (const met of metrics) {
+            header.push({
+              text: met,
+              fontSize: 14,
+              bold: true,
+              alignment: 'left',
+              margin: [0, 0, 0, 10],
+            });
+          }
+        }
+        openReportPdf(this._currentReportInstance, undefined, undefined, header);
+      });
   }
 
   /**
@@ -671,7 +693,7 @@ export class EditReport implements AfterViewInit {
       const textWidget: Partial<AjfTextWidgetInstance> = {
         widgetType: AjfWidgetType.Text,
         htmlText: text,
-      }
+      };
       textWidget.widget = textWidget as any;
       widgets[i] = textWidget as AjfTextWidgetInstance;
     }
@@ -854,11 +876,13 @@ export class EditReport implements AfterViewInit {
           fsDeps.deps_origin
             .filter(
               depsOrigin =>
+                'form_schema_ref_id' in depsOrigin &&
                 depsOrigin.form_schema_ref_id &&
                 depsOrigin.filter_by_metric &&
                 depsOrigin.fields_to_update &&
                 !depsOrigin.is_choice,
             )
+            .map(depsOrigin => depsOrigin as DepsOrigin)
             .forEach(depsOrigin => {
               // Take only one element from depsSourceFormData
               let depsFormDataBySchema = depsSourceFormData

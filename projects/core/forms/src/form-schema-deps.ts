@@ -30,9 +30,9 @@ import {MigrationStrategies, RxDocument} from 'rxdb';
  */
 export interface FormSchemaDeps extends Model {
   /**
-   * A list with external form dependencies info
+   * A list with external form or metrics relationships info
    */
-  deps_origin?: DepsOrigin[];
+  deps_origin?: (DepsOrigin | MetricOrigin)[];
 
   /**
    * The metrics that have data to show in the schema
@@ -41,17 +41,17 @@ export interface FormSchemaDeps extends Model {
 }
 
 /**
- * This model is used to store the external form dependencies info
+ * This model is used to store the external form relationship info
  * @title DepsOrigin
  */
 export interface DepsOrigin {
   /**
    * The form schema that have fields that this schema needs to show
    */
-  form_schema_ref_id?: string;
+  form_schema_ref_id: string;
 
   /**
-   * All the fields to be updated in the context form
+   * All the fields to be added or updated in the context form
    */
   fields_to_update?: string[];
 
@@ -66,11 +66,12 @@ export interface DepsOrigin {
   is_choice?: boolean;
 
   /**
-   * The name of the choicesOrigins to be added or replaced in the form schema
+   * The details of the choicesOrigins to be added or replaced in the form schema
    */
   choices_origin?: FormSchemaChoiceOrigin | null;
 
   /**
+   * @deprecated The field should not be used
    * The metrics to be included in the form schema as choice origin
    */
   metrics_choices_origin?: string[] | null;
@@ -79,6 +80,22 @@ export interface DepsOrigin {
    * Order by field for the query
    */
   order_by?: string;
+}
+
+/**
+ * This model is used to store metrics relationships info
+ * @title MetricOrigin
+ */
+export interface MetricOrigin {
+  /**
+   * The metric name related to this new choice origin
+   */
+  metric_name: string;
+
+  /**
+   * The details of the choicesOrigins to be added or replaced in the form schema, based on metric info
+   */
+  choices_origin: FormSchemaChoiceOrigin;
 }
 
 /**
@@ -102,7 +119,7 @@ export interface FormSchemaChoiceOrigin {
 
   /**
    * The name of the choicesOrigins to be added or replaced in the form schema
-   * By default is equal to fieldname + '_choice'
+   * By default is equal to fieldname + '_choice' or metricName + '_metric_choice'
    */
   choices_origin_name?: string;
 
