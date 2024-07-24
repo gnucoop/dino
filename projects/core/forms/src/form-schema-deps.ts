@@ -96,6 +96,18 @@ export interface MetricOrigin {
    * The details of the choicesOrigins to be added or replaced in the form schema, based on metric info
    */
   choices_origin: FormSchemaChoiceOrigin;
+
+  /**
+   * Filter by condition usign all metric fields and attributes, javascript format
+   */
+  filter_by?: string;
+
+  /**
+   * Filter by condition transformed into query selector
+   */
+  query_selector?: {
+    [key: string]: any;
+  };
 }
 
 /**

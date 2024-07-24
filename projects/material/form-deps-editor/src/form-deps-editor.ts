@@ -6,6 +6,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
+  Optional,
   ViewEncapsulation,
 } from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -30,13 +31,19 @@ import {
   throwError,
   withLatestFrom,
 } from 'rxjs';
-import {MetricsService} from '@dino/core/data';
+import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {MatTableDataSource} from '@angular/material/table';
 import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {deepCopy} from '@ajf/core/utils';
 import {MatSelectChange} from '@angular/material/select';
+import {jsConditionToQuery} from './query-parser';
+import {AreaManager} from '@dino/core/areas';
+import {CaseManager} from '@dino/core/cases';
+import {ProjectManager} from '@dino/core/projects';
+import {LocationManager} from '@dino/core/locations';
+import {OrganizationManager} from '@dino/core/organizations';
 
 /**
  * Represents data to be passed to the Form Status editor
@@ -128,12 +135,23 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     'choice_extra_value_key',
   ];
 
-  readonly displayedMetricsColumns = ['delete', 'metric_name', 'choice_extra_value_key'];
+  readonly displayedMetricsColumns = [
+    'delete',
+    'metric_name',
+    'choice_extra_value_key',
+    'filter_by',
+    'query_selector_str',
+  ];
 
   readonly dataSource: MatTableDataSource<DepsOrigin> = new MatTableDataSource<DepsOrigin>();
 
   readonly metricDataSource: MatTableDataSource<MetricOrigin> =
     new MatTableDataSource<MetricOrigin>();
+
+  /**
+   * A Dictionary of all the optional Metrics managers
+   */
+  private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
 
   constructor(
     public dialogRef: MatDialogRef<FormDepsEditorData>,
@@ -143,6 +161,11 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     private _cdr: ChangeDetectorRef,
     readonly metricsService: MetricsService,
     readonly snackbar: MatSnackBar,
+    @Optional() private _areaManager: AreaManager | null,
+    @Optional() private _caseManager: CaseManager | null,
+    @Optional() private _projectManager: ProjectManager | null,
+    @Optional() private _locationManager: LocationManager | null,
+    @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this.formSchema = data.formSchema;
     this.currentMetricsForData = [];
@@ -152,6 +175,14 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     this.metricDataSource.data = [];
 
     this.activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
+
+    this._metricManagers = {
+      area: this._areaManager,
+      case: this._caseManager,
+      location: this._locationManager,
+      organization: this._organizationManager,
+      project: this._projectManager,
+    } as {[metricType: string]: DataModelManager<Metric> | null};
 
     this.availableSchemas = this._fs.list().pipe(
       map(schemas => {
@@ -229,7 +260,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
                 choices_origin: {
                   value_key: 'name',
                 },
-              } as MetricOrigin);
+              });
             });
             metricDataSourceRows.push(...metricDataSourceData);
           }
@@ -254,8 +285,30 @@ export class FormDepsEditor implements OnInit, OnDestroy {
             selMetrics.metrics_for_data,
           );
 
-          const depsOrigin = this.dataSource.data as DepsOrigin[] | [];
-          const metricChoicesOrigin = this.metricDataSource.data as MetricOrigin[] | [];
+          const depsOrigin = this.dataSource.data.filter(
+            metricDep =>
+              metricDep.form_schema_ref_id != null &&
+              metricDep.form_schema_ref_id.length &&
+              metricDep.fields_to_update &&
+              metricDep.fields_to_update.length,
+          );
+
+          const metricChoicesOrigin = this.metricDataSource.data
+            .filter(metricDep => metricDep.metric_name != null && metricDep.metric_name.length)
+            .map(metricDep => {
+              if (metricDep.filter_by && metricDep.filter_by.length) {
+                this.getQueryForMetric(metricDep);
+                if (
+                  metricDep.query_selector &&
+                  Object.keys(metricDep.query_selector).includes('error')
+                ) {
+                  metricDep.query_selector = undefined;
+                }
+              } else {
+                metricDep.query_selector = undefined;
+              }
+              return metricDep as MetricOrigin;
+            });
 
           if (fschema && fschemadeps) {
             const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
@@ -305,6 +358,25 @@ export class FormDepsEditor implements OnInit, OnDestroy {
           }
         }
       });
+  }
+
+  /**
+   * Parse javascript formula to graphql query
+   * @param row
+   */
+  getQueryForMetric(row: MetricOrigin) {
+    if (row.filter_by && row.filter_by.length) {
+      if (!row.metric_name) {
+        row.query_selector = {error: 'Select a metric'};
+      }
+      const metricManager = this._metricManagers[row.metric_name];
+      if (metricManager !== null) {
+        const props = metricManager.collectionSchema.properties;
+        row.query_selector = jsConditionToQuery(row.filter_by, props);
+      }
+    } else {
+      row.query_selector = undefined;
+    }
   }
 
   addRow(): void {

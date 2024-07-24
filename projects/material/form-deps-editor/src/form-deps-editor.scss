@@ -3,10 +3,6 @@ dino-form-deps-editor {
     position: relative;
     flex: 1 1 auto;
   }
-  .mat-mdc-input-element {
-    flex: 1 1 auto;
-    width: auto !important;
-  }
 
   overflow: hidden;
   .mat-mdc-dialog-title,
@@ -37,7 +33,11 @@ dino-form-deps-editor {
 
     .mat-column-delete {
       flex: 0 0 2% !important;
-      min-width: 100px;
+      min-width: 80px;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
     }
 
     .subtitle {
@@ -53,8 +53,20 @@ dino-form-deps-editor {
     }
 
     .deps-metrics-table {
-      width: 750px;
+      width: 1000px;
       overflow: auto;
+    }
+
+    .mat-icon {
+      overflow: visible;
+    }
+
+    .my-tooltip {
+      white-space: pre-line;
+      color: red;
+    }
+    .mat-tooltip {
+      white-space: pre-line;
     }
   }
 }

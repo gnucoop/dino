@@ -16,7 +16,11 @@
     <div class="subtitle">
       <button (click)="addMetricRow()" mat-button>
         <mat-icon>add</mat-icon>
-        <h3>{{'Selects metrics to be included as choice options'|transloco}}</h3>
+        <h3>{{'Selects metrics to be included as choice options'|transloco}}
+          <mat-icon class="tooltip-icon"
+            [matTooltip]="'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_choice_metric.'|transloco"
+            matTooltipPosition="right">help</mat-icon>
+        </h3>
       </button>
       <mat-table class="deps-metrics-table" [dataSource]="metricDataSource">
         <ng-container matColumnDef="delete">
@@ -29,7 +33,8 @@
           <mat-header-cell *matHeaderCellDef>{{'Metric'|transloco}}</mat-header-cell>
           <mat-cell *matCellDef="let row; let idx = index">
             <mat-form-field>
-              <mat-select matNativeControl [(ngModel)]="row.metric_name">
+              <mat-select matNativeControl [(ngModel)]="row.metric_name" [required]="true"
+                (selectionChange)="getQueryForMetric(row)">
                 <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
                   <span> {{metric|transloco}}</span>
                 </mat-option>
@@ -38,11 +43,44 @@
           </mat-cell>
         </ng-container>
         <ng-container matColumnDef="choice_extra_value_key">
-          <mat-header-cell *matHeaderCellDef>{{'Additional attribute'|transloco}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>{{'Additional attributes in choice'|transloco}}
+            <mat-icon class="tooltip-icon"
+              [matTooltip]="'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.'|transloco"
+              matTooltipPosition="right">help</mat-icon>
+          </mat-header-cell>
           <mat-cell *matCellDef="let row; let idx = index">
             <mat-form-field>
               <input matInput [(ngModel)]="row.choices_origin.extra_value_key"
-                [placeholder]="('Attribute name'|transloco)" />
+                [placeholder]="('Attribute names'|transloco)" />
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="filter_by">
+          <mat-header-cell *matHeaderCellDef>{{'Filter condition'|transloco}}
+            <mat-icon [matTooltip]="'Insert a javascript formula to filter metrics, using metric fields or attributes. Use: 
+            attribute1 === \'value\' or
+            attribute2 !== true or
+            attribute3 === false or
+            date_start >= \'2024-04-2\''|transloco" matTooltipPosition="right"
+              matTooltipClass="my-tooltip">help</mat-icon>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <input matInput [(ngModel)]="row.filter_by" [placeholder]="('Filter condition'|transloco)"
+                (ngModelChange)="getQueryForMetric(row)" />
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="query_selector_str">
+          <mat-header-cell *matHeaderCellDef>{{'Query condition'|transloco}}
+            <mat-icon [matTooltip]="'The corresponding graphql query condition to filter metrics'|transloco"
+              matTooltipPosition="right" matTooltipClass="my-tooltip">help</mat-icon>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row; let idx = index">
+            <mat-form-field>
+              <input matInput readonly value="{{row.query_selector | dinoObjectAsString}}" />
             </mat-form-field>
           </mat-cell>
         </ng-container>
@@ -68,7 +106,7 @@
           <mat-header-cell *matHeaderCellDef>{{'Form Schema'|transloco}}</mat-header-cell>
           <mat-cell *matCellDef="let row; let idx = index">
             <mat-form-field>
-              <mat-select matNativeControl [(ngModel)]="row.form_schema_ref_id">
+              <mat-select matNativeControl [(ngModel)]="row.form_schema_ref_id" [required]="true">
                 <mat-option *ngFor="let s of (availableSchemas|async)" [value]="s.id" [matTooltip]="s.name"
                   [matTooltipPosition]="'right'">
                   <span> {{s.name|transloco}}</span>
@@ -82,7 +120,7 @@
           <mat-cell *matCellDef="let row; let idx = index">
             <mat-form-field>
               <mat-select [(ngModel)]="row.fields_to_update" [placeholder]="'Form fields'|transloco" multiple
-                (selectionChange)="checkChoiceOption($event, idx)">
+                (selectionChange)="checkChoiceOption($event, idx)" [required]="true">
                 <ng-container *ngIf="row.form_schema_ref_id">
                   <mat-option *ngFor="let field of schemaFields$[row.form_schema_ref_id]" [value]="field"
                     [matTooltip]="field" [matTooltipPosition]="'right'">{{field}}</mat-option>
@@ -106,7 +144,11 @@
         </ng-container>
         <ng-container matColumnDef="is_choice">
           <mat-header-cell *matHeaderCellDef>{{'Create choices'|transloco}} {{'(select only one
-            field)'|transloco}}</mat-header-cell>
+            field)'|transloco}}
+            <mat-icon class="tooltip-icon"
+              [matTooltip]="'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.'|transloco"
+              matTooltipPosition="right">help</mat-icon>
+          </mat-header-cell>
           <mat-cell *matCellDef="let row; let idx = index">
             <mat-slide-toggle [(ngModel)]="row.is_choice" [disabled]="row.fields_to_update.length > 1"
               style="margin: 10px" aria-label="Is choice"></mat-slide-toggle>

@@ -24,6 +24,7 @@ import {Injectable, Optional} from '@angular/core';
 import {
   DataModelManager,
   DataQueryOptions,
+  DataQuerySelector,
   DataService,
   Metric,
   MetricsService,
@@ -176,17 +177,20 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         )
         .map(deps => (deps as DepsOrigin).metrics_choices_origin);
 
-      const metricsChoicesOrigin = fschemadeps.deps_origin
+      const metricsChoicesOriginDeps = fschemadeps.deps_origin
         .filter(deps => 'metric_name' in deps && deps.choices_origin != null)
-        .map(deps => (deps as MetricOrigin).metric_name);
+        .map(deps => deps as MetricOrigin);
 
-      const metricsChoicesOriginName = metricsChoicesOrigin.length
-        ? metricsChoicesOrigin
+      const metricsChoicesOriginName = metricsChoicesOriginDeps.length
+        ? metricsChoicesOriginDeps.map(deps => deps.metric_name)
         : metricsChoicesOriginOld.length
         ? metricsChoicesOriginOld[0]
         : [];
 
-      const metricOptSource = this.getAllFormMetricsByTypes(metricsChoicesOriginName);
+      const metricOptSource = this.getAllFormMetrics(
+        metricsChoicesOriginName,
+        metricsChoicesOriginDeps,
+      );
       return {extFormDataRes, metricOptSource};
     }
     return {extFormDataRes: obsOf(null), metricOptSource: obsOf(null)};
@@ -390,20 +394,37 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
-   * Retrieves all values for the requested metric types
-   * @param metricTypes The Metric types
-   * @returns A forkJoin for all the queries for all metrics grouped by metric type
+   * Retrieves all values for the requested metrics
+   * @param metricsNames The Metric names
+   * @param metricsChoicesOriginDeps the metrics deps filters
+   * @returns A forkJoin for all the queries for all metrics grouped by metric name
    */
-  getAllFormMetricsByTypes(
-    metricsTypes: string[] | null | undefined,
+  getAllFormMetrics(
+    metricsNames: string[] | null | undefined,
+    metricsChoicesOriginDeps: MetricOrigin[],
   ): Observable<RxDocument<Metric>[][] | null> {
     let metricOptSourceObs: Observable<RxDocument<Metric, {}>[]>[] = [];
     let metricOptSource: Observable<RxDocument<Metric>[][] | null> = obsOf(null);
-    if (metricsTypes) {
-      metricsTypes.forEach(metricType => {
-        if (metricType && this._metricManagers[metricType] != null) {
-          let mtOptSource = this._metricManagers[metricType]!.query({
-            selector: {is_deleted: {$ne: true}},
+    if (metricsNames) {
+      metricsNames.forEach(metricName => {
+        if (metricName && this._metricManagers[metricName] != null) {
+          const metricChoiceDep = metricsChoicesOriginDeps.find(
+            m => m.metric_name === metricName && m.query_selector != null,
+          );
+
+          let metricSelector: DataQuerySelector = {is_deleted: {$ne: true}};
+
+          const querySelector =
+            metricChoiceDep && metricChoiceDep.query_selector != null
+              ? metricChoiceDep.query_selector
+              : null;
+          if (querySelector && Object.keys(querySelector).length) {
+            // Apply filter on metric query
+            metricSelector = {...metricSelector, ...querySelector};
+          }
+
+          let mtOptSource = this._metricManagers[metricName]!.query({
+            selector: metricSelector,
             sort: [{'name': 'asc'}],
           });
           metricOptSourceObs.push(mtOptSource);
@@ -597,7 +618,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       switch (metricType) {
         case 'project':
           const project = doc as Metric as Project;
-          newChoice.label = `${project.name} - (${project.code})`;
+          newChoice.label = `${project.name} (${project.code})`;
       }
       if (extraValueKey && doc.metric_data && extraValueKey in doc.metric_data) {
         (newChoice as any)[extraValueKey] = doc.metric_data[extraValueKey];

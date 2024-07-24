@@ -15,9 +15,10 @@ import {MatTableModule} from '@angular/material/table';
 import {TranslocoModule} from '@ngneat/transloco';
 import {FormDepsEditor} from './form-deps-editor';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {ObjectAsStringPipe} from './object-as-string.pipe';
 
 @NgModule({
-  declarations: [FormDepsEditor],
+  declarations: [FormDepsEditor, ObjectAsStringPipe],
   exports: [FormDepsEditor],
   imports: [
     CommonModule,
