@@ -208,6 +208,14 @@ function isValidToken(
   return true;
 }
 
+function isMetricDataAttribute(fieldName: string): boolean {
+  const fieldNameSplit = fieldName.split('.');
+  if (fieldNameSplit.length > 1 && fieldNameSplit[0] === 'metric_data') {
+    return true;
+  }
+  return false;
+}
+
 /** parseExpression parses the first js expression in revToks and returns its Query translation.
  * revToks is reversed, the first token of the expression being at index length-1;
  * this way, tokens can be consumed efficiently with revToks.pop().
@@ -235,7 +243,6 @@ function parseExpression(revToks: Token[], expectedEnd: TokenType): {[key: strin
   let gqlFieldCondition: {[key: string]: any} = {};
   let gqlLogicCondition: {[key: string]: {[key: string]: any}[]} = {};
   let fieldName: string = '';
-  // let fieldNameSplit: string[] = [];
   let conditionOp = null;
   let defaultConditionVal: any = null;
   let next: TokenType[] = [];
@@ -245,7 +252,7 @@ function parseExpression(revToks: Token[], expectedEnd: TokenType): {[key: strin
     switch (tok.type) {
       case TokenType.Field:
         gqlFieldCondition = {};
-        fieldName = tok.text; // .replace('$', '');
+        fieldName = tok.text;
         // fieldNameSplit = fieldName.split('.');
         /*if (fieldNameSplit.length > 1) {
           // i.e. {metric_data.metric_attribute1: {$eq: "attribute 1 val"}}
@@ -278,7 +285,7 @@ function parseExpression(revToks: Token[], expectedEnd: TokenType): {[key: strin
           const gqlOp = op ? op.qglOp : '$eq';
           gqlFieldCondition[fieldName][gqlOp] = defaultConditionVal;
           //}
-          next = [TokenType.String, TokenType.Number, TokenType.Boolean];
+          next = [TokenType.String, TokenType.Number, TokenType.Boolean, TokenType.Null];
         } else {
           return {error: 'operator not allowed'};
         }
@@ -286,6 +293,7 @@ function parseExpression(revToks: Token[], expectedEnd: TokenType): {[key: strin
       case TokenType.String:
       case TokenType.Number:
       case TokenType.Boolean:
+      case TokenType.Null:
         if (isValidToken(tok.type, next, gqlFieldCondition)) {
           tokText = tok.text;
           if (
@@ -294,11 +302,14 @@ function parseExpression(revToks: Token[], expectedEnd: TokenType): {[key: strin
           ) {
             tokText = tok.text.slice(1, -1);
           }
-          if (tok.type === TokenType.Number) {
+          if (tok.type === TokenType.Number && !isMetricDataAttribute(fieldName)) {
             tokText = +tok.text;
           }
-          if (tok.type === TokenType.Boolean) {
+          if (tok.type === TokenType.Boolean && !isMetricDataAttribute(fieldName)) {
             tokText = JSON.parse(tok.text);
+          }
+          if (tok.type === TokenType.Null) {
+            tokText = tok.text === 'null' ? null : undefined;
           }
           if (gqlFieldCondition && Object.keys(gqlFieldCondition).length) {
             /*if (fieldNameSplit.length > 1) {
