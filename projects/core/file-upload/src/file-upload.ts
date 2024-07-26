@@ -264,7 +264,6 @@ export class FileUploadService {
     ) {
       Object.keys(formValue).forEach(key => {
         if (
-          key !== '$value' &&
           this.isAjfFileField(formValue[key]) &&
           formValue[key]['name'] === storageResponse['name']
         ) {
