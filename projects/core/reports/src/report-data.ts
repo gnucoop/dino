@@ -80,6 +80,12 @@ export interface ReportData extends Model {
    * The Report Data organization id.
    */
   organization_ref_id: string | null;
+
+  /**
+   * The Form Status of the collected form data used by
+   * the Report.
+   */
+  form_status_ref_id: string | null;
 }
 
 export const VERSION = 0;

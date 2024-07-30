@@ -35,13 +35,14 @@ import {
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
-import {MetricsService} from '@dino/core/data';
+import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {Observable, of as obsOf, Subscription} from 'rxjs';
+import {combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
 import {format} from 'date-fns';
+import {FormStatus, FormStatusManager} from '@dino/core/forms';
 
 /**
  * The Report data creation component.
@@ -126,6 +127,11 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   private _saveReportSub: Subscription = Subscription.EMPTY;
 
   /**
+   * The list of all the Form Statuses available to the active User
+   */
+  readonly availableStatuses: Observable<FormStatus[] | null>;
+
+  /**
    * The Form Metrics Selector
    */
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
@@ -138,11 +144,23 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     private _location: Location,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
+    private _fstm: FormStatusManager,
+    private _pcs: PermissionContextService,
   ) {
     this.dateIntervalForm = new UntypedFormGroup({
       'date_start': new UntypedFormControl(),
       'date_end': new UntypedFormControl(),
     });
+
+    this.availableStatuses = combineLatest([this._fstm.list(), this._pcs.permissionContext]).pipe(
+      map(([statuses, context]) => {
+        if (statuses == null || context == null) {
+          return [];
+        }
+        const stts = [...(context.user_form_statuses ?? [])];
+        return statuses.filter(status => stts.includes(status.id) || stts.includes('all'));
+      }),
+    );
   }
   ngOnInit() {
     if (this._rd == null) {
@@ -215,6 +233,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
           if (formMetricsSelector != null) {
             const selectedMetrics = formMetricsSelector.selectedMetrics;
             const creationDate = formMetricsSelector.formDate.value.created_at;
+            const formStatusRefId = formMetricsSelector.formStatus.value.form_status_ref_id;
             for (let key of Object.keys(selectedMetrics)) {
               const saveKey = `${key}_ref_id`;
               if (
@@ -234,6 +253,10 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
               } catch (e) {}
             }
             newItem['created_at'] = formattedDate;
+
+            if (formStatusRefId != null) {
+              newItem['form_status_ref_id'] = formStatusRefId;
+            }
           }
           return this._rd.create(newItem as ReportData);
         }),

@@ -792,6 +792,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       if (isView) {
         Object.keys(this.formMetrics.controls).forEach(key => this.formMetrics.get(key)?.disable());
         this.formDate.get('created_at')?.disable();
+        this.formStatus.get('form_status_ref_id')?.disable();
       }
     });
   }

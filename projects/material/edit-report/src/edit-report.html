@@ -11,6 +11,7 @@
                 [hasOptionalMetrics]="hasOptionalMetrics"
                 [allowMetricCreationFor]="allowMetricCreationFor"
                 [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+                [availableStatuses]="availableStatuses|async"
                 [context]="'report'"
               >
                 <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>

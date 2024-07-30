@@ -27,13 +27,13 @@
     </mat-form-field>
   </form>
   <form
-    *ngIf="context === 'bulkFormEdit' && availableStatuses && availableStatuses.length;"
+    *ngIf="(context === 'bulkFormEdit' || context === 'report') && availableStatuses && availableStatuses.length;"
     [formGroup]="formStatus"
     autocomplete="off"
   >
     <mat-form-field class="dino-form-status-selector-field">
       <mat-label>{{'Select the Form Status'|transloco}}</mat-label>
-      <mat-select #statusSelect [formControlName]="'form_status_ref_id'">
+      <mat-select #statusSelect [formControlName]="'form_status_ref_id'" [placeholder]="'Form status associated with the form'">
         <mat-option *ngFor="let status of availableStatuses" [value]="status.id">
           <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
         </mat-option>

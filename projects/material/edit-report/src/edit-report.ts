@@ -49,7 +49,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@dino/core/auth';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
-import {DataModelManager, DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
+import {
+  DataModelManager,
+  DataQuerySelector,
+  Metric,
+  MetricsService,
+  PermissionContextService,
+} from '@dino/core/data';
 import {
   DepsOrigin,
   FormData,
@@ -58,6 +64,7 @@ import {
   FormSchemaDeps,
   FormSchemaManager,
   FormStatus,
+  FormStatusManager,
 } from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
@@ -259,6 +266,11 @@ export class EditReport implements AfterViewInit {
   gptPromptStatus = '';
 
   /**
+   * The list of all the Form Statuses available to the active User
+   */
+  readonly availableStatuses: Observable<FormStatus[] | null>;
+
+  /**
    * True if the Report is in readonly mode.
    * When a Report id is passed by the input, the report is automatically
    * displayed in readonly mode.
@@ -277,6 +289,8 @@ export class EditReport implements AfterViewInit {
     private _formSchemaManager: FormSchemaManager,
     private _reportDataManager: ReportDataManager,
     private _reportSchemaManager: ReportSchemaManager,
+    private _fstm: FormStatusManager,
+    private _pcs: PermissionContextService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
@@ -380,6 +394,16 @@ export class EditReport implements AfterViewInit {
       shareReplay(1),
     );
 
+    this.availableStatuses = combineLatest([this._fstm.list(), this._pcs.permissionContext]).pipe(
+      map(([statuses, context]) => {
+        if (statuses == null || context == null) {
+          return [];
+        }
+        const stts = [...(context.user_form_statuses ?? [])];
+        return statuses.filter(status => stts.includes(status.id) || stts.includes('all'));
+      }),
+    );
+
     this._sourceFormData = combineLatest([
       this._reportSchema,
       this._reportData,
@@ -404,6 +428,10 @@ export class EditReport implements AfterViewInit {
           const createdAt = querySelector['created_at'] || {};
           querySelector['created_at'] = {...createdAt, $lte: rData.date_end};
         }
+        if (rData.form_status_ref_id != null) {
+          querySelector['form_status_ref_id'] = {$eq: rData.form_status_ref_id};
+        }
+
         if (activeMetrics != null && activeMetrics.length > 0) {
           for (let metric of activeMetrics) {
             const metricKey = `${metric.metricName}_ref_id`;
