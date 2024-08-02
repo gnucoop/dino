@@ -1252,10 +1252,15 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
               triggerData: trigData,
             });
             if (trigger.hasStatusChanged) {
+              const statusChangeTrigData = {
+                ...trigData,
+                previousValue: (trigger.previousValue as any).form_status_ref_id,
+                newValue: (patchedDoc as any).form_status_ref_id,
+              };
               this.emitActionTrigger.emit({
                 name: 'Status Change',
                 triggerType: 'on_status_change',
-                triggerData: trigData,
+                triggerData: statusChangeTrigData,
               });
             }
           }
