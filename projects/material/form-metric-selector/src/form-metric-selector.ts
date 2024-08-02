@@ -766,8 +766,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
             RxDocument<Metric & {level?: number}, {}>[]
           >(organizedMetricOptions));
 
-      if (metricObj.metricOptions.length === 1 && !this._hasOptionalMetrics.value) {
-        const firstMetric = metricObj.metricOptions[0];
+      if (organizedMetricOptions.length === 1 && !this._hasOptionalMetrics.value) {
+        const firstMetric = organizedMetricOptions[0];
         const formControl = this.formMetrics.get(firstMetric.collection.name);
         const selectedMetricId =
           this.formMetrics && this.formMetrics.value[firstMetric.collection.name]
