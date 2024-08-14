@@ -191,15 +191,17 @@
       ></ng-container>
     </ng-container>
 
-    <ng-container *ngIf="additionalFilters">
-      <button
-        class="dino-filters-dialog-button"
-        mat-stroked-button
-        (click)="openDialog()"
-        [attr.aria-label]="'Open the advanced filters'|transloco"
-      >
-        <mat-icon color="primary" matSuffix>filter_list</mat-icon>
-      </button>
+    <ng-container *ngIf="generatedAdditionalFilters|async as genFilters">
+      <ng-container *ngIf="additionalFilters && genFilters && genFilters.length">
+        <button
+          class="dino-filters-dialog-button"
+          mat-stroked-button
+          (click)="openDialog()"
+          [attr.aria-label]="'Open the advanced filters'|transloco"
+        >
+          <mat-icon color="primary" matSuffix>filter_list</mat-icon>
+        </button>
+      </ng-container>
     </ng-container>
 
     <ng-container *ngIf="exportable">

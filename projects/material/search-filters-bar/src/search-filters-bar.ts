@@ -40,7 +40,13 @@ import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, DataQueryOptions, Metric, MetricsService} from '@dino/core/data';
 import {FormSchemaManager, FormStatus, FormStatusManager} from '@dino/core/forms';
-import {FilterItem, FilterListType, FiltersService, SearchFiltersComponent} from '@dino/core/list';
+import {
+  FilterGroup,
+  FilterItem,
+  FilterListType,
+  FiltersService,
+  SearchFiltersComponent,
+} from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -104,6 +110,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * If true, the Form Map button is displayed
    */
   displayFormMapButton: Observable<boolean>;
+
+  /**
+   * The Filter Service Generated filters
+   */
+  generatedAdditionalFilters: Observable<FilterGroup[]>;
 
   /**
    * Date Picker input filtering methods.
@@ -218,6 +229,8 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     super();
+
+    this.generatedAdditionalFilters = this._fts.generatedAdditionalFilters;
 
     this.availableFormStatuses = combineLatest([this._route.params, this._route.data]).pipe(
       switchMap(([params, data]) => {
