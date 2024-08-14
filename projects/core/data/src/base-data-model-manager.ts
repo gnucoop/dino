@@ -371,7 +371,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    * An optional schema for the filters generation can be provided.
    * @param _dataSchema The schema of the "additionalData" model
    */
-  generateAdditionalFilters(_dataSchema?: any): any[] {
+  generateAdditionalFilters(_dataSchema?: any, _nodesVisibility?: any): any[] {
     return [];
   }
 
