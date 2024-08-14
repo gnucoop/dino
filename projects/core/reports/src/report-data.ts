@@ -21,7 +21,7 @@
  */
 
 import {Model} from '@dino/core/data';
-import {MigrationStrategies} from 'rxdb';
+import {MigrationStrategies, RxDocument} from 'rxdb';
 
 /**
  * This model is used to store the data collected through an Ajf report.
@@ -88,8 +88,12 @@ export interface ReportData extends Model {
   form_status_ref_id: string | null;
 }
 
-export const VERSION = 0;
+export const VERSION = 1;
 
-export const migrationStrategies: MigrationStrategies = {};
+export const migrationStrategies: MigrationStrategies = {
+  1: (doc: RxDocument) => {
+    return {...doc, form_status_ref_id: null};
+  },
+};
 
 export const indexes = ['report_schema_ref_id'];

@@ -120,6 +120,14 @@ export const schema = {
       ],
       "description": "The Report Data organization id.",
       "ref": "organization"
+    },
+    "form_status_ref_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The Form Status of the collected form data used by the Report.",
+      "ref": "form_status"
     }
   },
   "required": [
@@ -128,6 +136,7 @@ export const schema = {
     "created_at",
     "date_end",
     "date_start",
+    "form_status_ref_id",
     "id",
     "location_ref_id",
     "metadata",
@@ -145,5 +154,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 0
+  "version": 1
 } as RxJsonSchema<ReportData>;
