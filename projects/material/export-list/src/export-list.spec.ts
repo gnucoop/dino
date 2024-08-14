@@ -18,10 +18,6 @@ import {AjfField} from '@ajf/core/forms';
 
 let testDbIdx = 0;
 
-const mockDialogData = {
-  formSchema: 'test_schema_id',
-};
-
 function dataServiceConfig(): DataServiceConfig {
   return {
     databaseCreateOptions: {
@@ -116,6 +112,10 @@ export const formSchema: FormSchema = {
   visibility: FormSchemaVisibility.Private,
 };
 
+const mockDialogData = {
+  formSchema,
+};
+
 export const formData: Data[] = [
   {
     data: {dob: '2023-05-24', first_name: 'test1'},
@@ -164,14 +164,13 @@ describe('Export Forms', () => {
   it('should start the export csv forms process', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const spyExportCsv = spyOn<any>(exportForm, '_buildCsv').and.callThrough();
+    const spyExportCsv = spyOn<any>(exportForm, '_buildCsv').and.callFake(() => {});
 
     spyOn<any>(exportForm, '_getFieldsFromTabs').and.callFake(() => {
       return testAjfSchema.nodes[0].nodes as unknown[] as AjfField[];
     });
 
     exportForm.data = formData;
-    exportForm.schema = formSchema;
     exportForm.export();
     expect(spyExportCsv).toHaveBeenCalledTimes(1);
   });
