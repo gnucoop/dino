@@ -9,14 +9,8 @@ import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
-import {
-  FormData,
-  FormDataManager,
-  FormSchema,
-  FormSchemaManager,
-  NodeVisibility,
-} from '@dino/core/forms';
-import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
+import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {ActionType, FiltersService, ListAction, ListHeader, NodeVisibility} from '@dino/core/list';
 import {LogManager} from '@dino/core/logs';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';

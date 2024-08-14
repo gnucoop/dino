@@ -53,8 +53,8 @@ import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscr
 import {filter, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
-import {FormSchema, NodeVisibility} from '@dino/core/forms';
-
+import {FormSchema} from '@dino/core/forms';
+import {NodeVisibility} from '@dino/core/list';
 import {ToggleButtonComponent} from './toggle-button';
 import {
   AjfField,

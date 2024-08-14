@@ -31,7 +31,7 @@ import {
   PermissionContextService,
   populateDocRefs,
 } from '@dino/core/data';
-import {FilterGroup, ListHeader} from '@dino/core/list';
+import {FilterGroup, ListHeader, NodeVisibility} from '@dino/core/list';
 
 import * as baseFsm from './base-form-schema-manager';
 import {DepsOrigin, FormSchemaDeps, MetricOrigin} from './form-schema-deps';
@@ -67,7 +67,6 @@ import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
-import {NodeVisibility} from './node-visibility';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {

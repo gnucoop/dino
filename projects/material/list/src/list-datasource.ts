@@ -35,8 +35,13 @@ import {
   populateDocRefs,
   rxDocsToJson,
 } from '@dino/core/data';
-import {NodeVisibility} from '@dino/core/forms';
-import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
+import {
+  FilterItem,
+  FiltersService,
+  ListHeader,
+  NodeVisibility,
+  SearchFiltersComponent,
+} from '@dino/core/list';
 import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {

@@ -29,7 +29,7 @@ import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
 import {b64_to_utf8, utf8_to_b64} from '@dino/core/auth';
-import {NodeVisibility} from '@dino/core/forms';
+import {NodeVisibility} from './node-visibility';
 
 /**
  * The base List extended by SelectionList component.

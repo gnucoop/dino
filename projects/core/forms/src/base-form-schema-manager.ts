@@ -23,11 +23,10 @@
 import {AjfStringIdentifier} from '@ajf/core/common';
 import {AjfChoicesOrigin, AjfField, AjfNodeType} from '@ajf/core/forms';
 import {DEFAULT_EXCLUDED_METRIC_KEYS, MetricsService} from '@dino/core/data';
-import {FilterGroup, FilterItem, ListHeader} from '@dino/core/list';
+import {FilterGroup, FilterItem, ListHeader, NodeVisibility} from '@dino/core/list';
 
 import {FormSchema, migrationStrategies} from './form-schema';
 import {schema} from './form-schema-json';
-import {NodeVisibility} from './node-visibility';
 
 export const creationParams = {name: 'form_schema', collection: {schema, migrationStrategies}};
 

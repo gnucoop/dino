@@ -26,5 +26,6 @@ export * from './list.module';
 export * from './list-header';
 export * from './list-actions-interface';
 export * from './list-filters-interfaces';
+export * from './node-visibility';
 export * from './search-filters';
 export * from './user-interactions';
