@@ -54,9 +54,9 @@ export const schema = {
     "deps_origin": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/DepsOrigin"
+        "$ref": "#/definitions/Origin"
       },
-      "description": "A list with external form dependencies info"
+      "description": "A list with external form or metrics relationships info"
     },
     "metric_data_to_show": {
       "type": "array",
@@ -79,5 +79,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<FormSchemaDeps>;

@@ -32,7 +32,7 @@ export interface FormSchemaDeps extends Model {
   /**
    * A list with external form or metrics relationships info
    */
-  deps_origin?: (DepsOrigin | MetricOrigin)[];
+  deps_origin?: Origin[];
 
   /**
    * The metrics that have data to show in the schema
@@ -110,6 +110,8 @@ export interface MetricOrigin {
   };
 }
 
+export type Origin = DepsOrigin | MetricOrigin;
+
 /**
  * This model is used to store the info for the choicesOrigins
  * to be added or replaced in the form schema
@@ -154,8 +156,9 @@ export interface FormSchemaChoiceOrigin {
   extra_value_key?: string | null;
 }
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
+  2: (doc: RxDocument) => doc,
 };
