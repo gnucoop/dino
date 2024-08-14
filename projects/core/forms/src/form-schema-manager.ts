@@ -67,6 +67,7 @@ import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {NodeVisibility} from './node-visibility';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
@@ -103,8 +104,11 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     } as {[metricType: string]: DataModelManager<Metric> | null};
   }
 
-  override generateAdditionalFilters(formSchema?: FormSchema): FilterGroup[] {
-    return baseFsm.generateAdditionalFilters(formSchema);
+  override generateAdditionalFilters(
+    formSchema?: FormSchema,
+    nodesVisibility?: NodeVisibility[],
+  ): FilterGroup[] {
+    return baseFsm.generateAdditionalFilters(formSchema, nodesVisibility);
   }
 
   generateMetricsHeaders(): ListHeader<any>[] {

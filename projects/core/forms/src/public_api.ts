@@ -36,6 +36,7 @@ export * from './form-schema-deps-manager';
 export * from './form-schema-visibility';
 export * from './form-data-manager';
 export * from './form-status-manager';
+export * from './node-visibility';
 export * from './online-form-data-manager';
 export * from './online-form-schema-manager';
 export * from './online-form-status-manager';

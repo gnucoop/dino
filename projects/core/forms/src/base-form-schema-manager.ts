@@ -27,6 +27,7 @@ import {FilterGroup, FilterItem, ListHeader} from '@dino/core/list';
 
 import {FormSchema, migrationStrategies} from './form-schema';
 import {schema} from './form-schema-json';
+import {NodeVisibility} from './node-visibility';
 
 export const creationParams = {name: 'form_schema', collection: {schema, migrationStrategies}};
 
@@ -42,16 +43,31 @@ const getChoiceOriginFromRef = (
  * @param formSchema The form schema definition
  * @returns The generated FilterGroup
  */
-export const generateAdditionalFilters = (formSchema?: FormSchema): FilterGroup[] => {
+export const generateAdditionalFilters = (
+  formSchema?: FormSchema,
+  nodesVisibility?: NodeVisibility[],
+): FilterGroup[] => {
   if (!formSchema) {
     return [];
   }
-  const slides = formSchema.schema.nodes;
+  let slides = formSchema.schema.nodes;
   const choicesOrigins = formSchema.schema.choicesOrigins as AjfChoicesOrigin<any>[];
   const nodes: FilterGroup[] = [];
-  if (slides) {
+  if (nodesVisibility && nodesVisibility.length && slides) {
+    slides = slides.filter(slide =>
+      nodesVisibility.find(
+        sl => sl.name === slide.name && sl.type === 'slide' && sl.visible === true,
+      ),
+    );
+  }
+  if (slides && slides.length) {
     for (let i = 0; i < slides.length; i++) {
       let additionalFilters = slides[i].nodes as FilterItem[];
+      if (nodesVisibility && nodesVisibility.length) {
+        additionalFilters = additionalFilters.filter(ft =>
+          nodesVisibility.find(flt => flt.name === ft.name && flt.visible === true),
+        );
+      }
       nodes.push({
         filterGroupName: slides[i].label,
         filterGroupAdditionalFilters: additionalFilters.map(f => {
@@ -59,7 +75,7 @@ export const generateAdditionalFilters = (formSchema?: FormSchema): FilterGroup[
             ? getChoiceOriginFromRef(choicesOrigins, f.choicesOriginRef)
             : undefined;
           f.isAdditionalFilter = true;
-          f.isRepeatingSlideFilter = slides[i].nodeType == 4;
+          f.isRepeatingSlideFilter = slides![i].nodeType == 4;
           return f;
         }),
       } as FilterGroup);
