@@ -50,10 +50,10 @@ import {
 import {MatSelectionList} from '@angular/material/list';
 import {MatTabChangeEvent} from '@angular/material/tabs';
 import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
-import {FormSchema} from '@dino/core/forms';
+import {FormSchema, NodeVisibility} from '@dino/core/forms';
 
 import {ToggleButtonComponent} from './toggle-button';
 import {
@@ -97,6 +97,16 @@ export interface ExportListData {
    * The type of the list that is being exported
    */
   listType?: ExportListType;
+
+  /**
+   * The Ajf Form Nodes Visibility observable.
+   */
+  nodesVisibility: Observable<NodeVisibility[]>;
+
+  /**
+   * The Form Schema
+   */
+  formSchema: FormSchema;
 }
 
 @Component({
@@ -159,6 +169,9 @@ export class ExportList implements AfterViewInit, OnDestroy {
   private _downloadEvt: EventEmitter<void> = new EventEmitter<void>();
   private _downloadSub: Subscription = Subscription.EMPTY;
 
+  private _ctxValuesSub: Subscription = Subscription.EMPTY;
+  private _nvSub: Subscription = Subscription.EMPTY;
+
   /** A dictionary with the name of the slide and the list of selected field name as value */
   private _exportedNamesBySlide: {[index: number]: string[]} = {};
 
@@ -191,12 +204,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
   @Input()
   set dinoFields(fieldNames: string[]) {
     this._dinoFields = fieldNames;
-  }
-
-  @Input()
-  set schema(schema: FormSchema) {
-    this.schema$.next(schema);
-    this.exportModel$.next(this._buildExportModel(schema));
   }
 
   private _filteredQueryObs: Observable<RxDocument<any, {}>[]> = obsOf([]);
@@ -236,6 +243,11 @@ export class ExportList implements AfterViewInit, OnDestroy {
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
   ) {
+    if (this.dialogData && this.dialogData.formSchema) {
+      this.schema$.next(this.dialogData.formSchema);
+      this._buildExportModel(this.dialogData.formSchema);
+    }
+
     this.availableFieldsAndFormats = [
       {value: 'all_form_fields', label: 'Select all Form fields'},
       {value: 'label_values', label: 'Label values'},
@@ -287,7 +299,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
     this.maxNumberOfForm$ = this.exportDataList$.pipe(map(l => l.length));
 
-    const ctxValuesSub = (this.schema$ as Observable<FormSchema | null>)
+    this._ctxValuesSub = (this.schema$ as Observable<FormSchema | null>)
       .pipe(
         filter((f: any) => f != null),
         map((fs: FormSchema) => fs.schema),
@@ -319,7 +331,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
       )
       .subscribe(res => {
         this._ctxValuesDict = res;
-        ctxValuesSub.unsubscribe();
       });
 
     const slideNodes$: Observable<AjfSlide[]> = this.schema$.pipe(
@@ -667,9 +678,13 @@ export class ExportList implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.schema$.complete();
+    this.exportModel$.complete();
     this._selectAllSub.unsubscribe();
     this._exportSub.unsubscribe();
     this._downloadSub.unsubscribe();
+    this._ctxValuesSub.unsubscribe();
+    this._nvSub.unsubscribe();
   }
 
   /**
@@ -890,35 +905,49 @@ export class ExportList implements AfterViewInit, OnDestroy {
     return expandedExportCtx;
   }
 
-  private _buildExportModel(exportSchema: FormSchema): ExportModel {
-    const schemaName = exportSchema.name;
-    const schema: AjfFormCreate = exportSchema.schema;
-    const slideNodes: AjfSlide[] = schema.nodes
-      ? (schema.nodes! as AjfSlide[]).map((slide, index) => {
-          slide.id = index;
-          slide.nodes = slide.nodes
-            .map(node => ({
-              ...node,
-              ...{
-                slideNodeType: slide.nodeType,
-                slideIndex: slide.id,
-                slideName: slide.name,
-              },
-            }))
-            .filter(
-              // remove unexportable ajf fields.
-              (node: AjfNode) =>
-                node.nodeType === 0 &&
-                (node as AjfField).fieldType !== AjfFieldType.File &&
-                (node as AjfField).fieldType !== AjfFieldType.Empty &&
-                (node as AjfField).fieldType !== AjfFieldType.Image,
-            );
-          return slide;
-        })
-      : [];
-    const slideLabels: string[] = slideNodes.map(slide => slide.label);
-    const slides = slideNodes.map(slide => slide.nodes);
-    return {schemaName, slideLabels, slides};
+  private _buildExportModel(exportSchema: FormSchema): void {
+    if (!this.dialogData || !this.dialogData.nodesVisibility) return;
+
+    this._nvSub = this.dialogData.nodesVisibility.pipe(take(1)).subscribe(nodesVisibility => {
+      const schemaName = exportSchema.name;
+      const schema: AjfFormCreate = exportSchema.schema;
+      const slideNodes: AjfSlide[] = schema.nodes
+        ? (schema.nodes! as AjfSlide[])
+            .map((slide, index) => {
+              slide.id = index;
+              slide.nodes = slide.nodes
+                .map(node => ({
+                  ...node,
+                  ...{
+                    slideNodeType: slide.nodeType,
+                    slideIndex: slide.id,
+                    slideName: slide.name,
+                  },
+                }))
+                .filter(
+                  // remove unexportable ajf fields.
+                  (node: AjfNode) =>
+                    node.nodeType === 0 &&
+                    (node as AjfField).fieldType !== AjfFieldType.File &&
+                    (node as AjfField).fieldType !== AjfFieldType.Empty &&
+                    (node as AjfField).fieldType !== AjfFieldType.Image &&
+                    nodesVisibility.find(
+                      field => field.name === node.name && field.visible === true,
+                    ),
+                );
+              return slide;
+            })
+            .filter(node =>
+              nodesVisibility.find(
+                slide =>
+                  slide.name === node.name && slide.type === 'slide' && slide.visible === true,
+              ),
+            )
+        : [];
+      const slideLabels: string[] = slideNodes.map(slide => slide.label);
+      const slides = slideNodes.map(slide => slide.nodes);
+      this.exportModel$.next({schemaName, slideLabels, slides});
+    });
   }
 
   private _buildLabelsRow(names: string[]): {[name: string]: string} {
