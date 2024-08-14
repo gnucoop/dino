@@ -1,12 +1,24 @@
-import {AjfForm, createFormPdf, downloadFormDoc} from '@ajf/core/forms';
+import {
+  AjfForm,
+  AjfFormRendererService,
+  AjfFormSerializer,
+  createFormPdf,
+  downloadFormDoc,
+} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
-import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {
+  FormData,
+  FormDataManager,
+  FormSchema,
+  FormSchemaManager,
+  NodeVisibility,
+} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {LogManager} from '@dino/core/logs';
-import {UserDataManager} from '@dino/core/users';
+import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
@@ -65,6 +77,14 @@ export class MatFormsListE2E {
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
   readonly booleanQuickEdit: string[] = additionalConfig.booleanQuickEdit;
 
+  /**
+   * The Ajf Nodes Visibility observable
+   */
+  private _nodesVisibility: Observable<NodeVisibility[]>;
+  get nodesVisibility(): Observable<NodeVisibility[]> {
+    return this._nodesVisibility;
+  }
+
   constructor(
     readonly filtersService: FiltersService,
     readonly metricService: MetricsService,
@@ -74,7 +94,9 @@ export class MatFormsListE2E {
     private _pcs: PermissionContextService,
     private _route: ActivatedRoute,
     private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
     private _fdm: FormDataManager,
+    private _rendererService: AjfFormRendererService,
     @Optional() private _logManager: LogManager,
     @Optional() private _areaManager?: AreaManager | null,
     @Optional() private _caseManager?: CaseManager | null,
@@ -101,6 +123,38 @@ export class MatFormsListE2E {
       shareReplay(1),
     );
 
+    this._nodesVisibility = combineLatest([
+      this.additionalDataSchema,
+      this._udm.getActiveUserData(),
+      this._ugm.getActiveUserGroups(),
+    ]).pipe(
+      map(([fschema, activeUser, activeUserGroups]) => {
+        let form: AjfForm;
+        if (fschema == null) {
+          form = AjfFormSerializer.fromJson({});
+        }
+        if (fschema!.schema.choicesOrigins == null) {
+          fschema!.schema.choicesOrigins = [];
+        }
+        const ajfFormData: {[key: string]: any} = {};
+        const createdAt = null;
+        const id = null;
+        const dinoFormInfo = {
+          activeUser,
+          activeUserGroups,
+          createdAt,
+          id,
+        };
+        ajfFormData['dino_form_info'] = dinoFormInfo;
+        form = AjfFormSerializer.fromJson(fschema!.schema, ajfFormData);
+        this._rendererService.setForm(form);
+        return form;
+      }),
+      switchMap(() => {
+        return this._rendererService.nodesVisibility;
+      }),
+    );
+
     this.additionalBasicFilters = this.additionalDataSchema.pipe(
       map(schema => {
         let addBasFilters = ['form_status', 'user_data', 'unavailableFilter'];
@@ -115,8 +169,8 @@ export class MatFormsListE2E {
       }),
     );
 
-    this.headers = this.additionalDataSchema.pipe(
-      map(schema => {
+    this.headers = combineLatest([this.additionalDataSchema, this._nodesVisibility]).pipe(
+      map(([schema, nodesVisibility]) => {
         if (schema == null) {
           return [];
         }
@@ -154,6 +208,9 @@ export class MatFormsListE2E {
             }
             return header;
           });
+        }
+        if (nodesVisibility && nodesVisibility.length) {
+          finalHeaders = this._filterHeadersByNodeVisibility(finalHeaders, nodesVisibility);
         }
         return finalHeaders;
       }),
@@ -291,6 +348,29 @@ export class MatFormsListE2E {
       this.filtersService,
       this.formSchemaManager,
       this.isDataList,
+    );
+  }
+
+  /**
+   * Filters ListHeaders by taking Node visibility into account (based on ajf visibility conditions)
+   * @param headers The list headers
+   * @param nodesVisibility The node visibility array
+   * @returns The filtered headers
+   */
+  private _filterHeadersByNodeVisibility(
+    headers: ListHeader<FormData>[],
+    nodesVisibility: {
+      name: string;
+      type: 'slide' | 'field';
+      visible: boolean;
+    }[],
+  ): ListHeader<FormData>[] {
+    if (!nodesVisibility || !nodesVisibility.length) return headers;
+
+    return headers.filter(
+      header =>
+        header.external_ref != null ||
+        nodesVisibility.find(node => node.name === header.column && node.visible),
     );
   }
 
