@@ -23,12 +23,13 @@
 import {ChangeDetectorRef, Directive, EventEmitter, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Model} from '@dino/core/data';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf, shareReplay, Subject} from 'rxjs';
 
 import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
 import {b64_to_utf8, utf8_to_b64} from '@dino/core/auth';
+import {NodeVisibility} from '@dino/core/forms';
 
 /**
  * The base List extended by SelectionList component.
@@ -51,6 +52,17 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   @Input()
   set additionalDataSchema(ds: AD | null) {
     this._additionalDataSchema.next(ds);
+  }
+
+  /**
+   * The Ajf Form Nodes Visibility observable.
+   * Only passed as an input for Form List.
+   */
+  protected _nodesVisibility: Observable<NodeVisibility[]> = obsOf([]);
+
+  @Input()
+  set nodesVisibility(nv: Observable<NodeVisibility[]>) {
+    this._nodesVisibility = nv.pipe(shareReplay(1));
   }
 
   /**

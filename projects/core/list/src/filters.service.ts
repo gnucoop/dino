@@ -102,6 +102,10 @@ export class FiltersService<T extends Model = Model> {
    */
   private _generatedAdditionalFilters: BehaviorSubject<FilterGroup[]>;
 
+  get generatedAdditionalFilters(): Observable<FilterGroup[]> {
+    return this._generatedAdditionalFilters;
+  }
+
   /**
    * List of all generated or custom filters
    */
