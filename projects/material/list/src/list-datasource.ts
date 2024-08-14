@@ -35,6 +35,7 @@ import {
   populateDocRefs,
   rxDocsToJson,
 } from '@dino/core/data';
+import {NodeVisibility} from '@dino/core/forms';
 import {FilterItem, FiltersService, ListHeader, SearchFiltersComponent} from '@dino/core/list';
 import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
@@ -236,6 +237,17 @@ export class ListDataSource<
   }
 
   /**
+   * The Ajf Form Nodes Visibility observable.
+   * Only passed as an input for Form List.
+   */
+  private _nodesVisibility: BehaviorSubject<NodeVisibility[]> = new BehaviorSubject<
+    NodeVisibility[]
+  >([]);
+  set nodesVisibility(nv: NodeVisibility[]) {
+    this._nodesVisibility.next(nv);
+  }
+
+  /**
    * The data resulting from querying the db via the DataModelManager
    */
   private _dataResults: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
@@ -279,16 +291,21 @@ export class ListDataSource<
     // (if present) and set the additional filters on the FiltersService.
     // If no additional DataManager or data schema are provided, the additional filters
     // are set to an empty array.
-    this._additionalDataSchema.pipe(takeUntil(this._mainUnsubscribe)).subscribe(dataSchema => {
-      if (dataSchema != null) {
-        this._choices = this._getChoices();
-        let additionalFilters = [];
-        if (this._additionalDataManager) {
-          additionalFilters = this._additionalDataManager.generateAdditionalFilters(dataSchema);
+    combineLatest([this._additionalDataSchema, this._nodesVisibility])
+      .pipe(takeUntil(this._mainUnsubscribe))
+      .subscribe(([dataSchema, nodesVisibility]) => {
+        if (dataSchema != null) {
+          this._choices = this._getChoices();
+          let additionalFilters = [];
+          if (this._additionalDataManager) {
+            additionalFilters = this._additionalDataManager.generateAdditionalFilters(
+              dataSchema,
+              nodesVisibility,
+            );
+          }
+          this._fs.setAdditionalFilters(additionalFilters);
         }
-        this._fs.setAdditionalFilters(additionalFilters);
-      }
-    });
+      });
 
     this._dataModelManager.collectionChanged
       .pipe(takeUntil(this._mainUnsubscribe), throttleTime(100))

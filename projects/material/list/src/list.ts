@@ -917,7 +917,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
       if (this._additionalDataSchema != null) {
-        this._additionalDataSchema.pipe(take(1)).subscribe(schema => {
+        combineLatest([this._additionalDataSchema, this._nodesVisibility]).pipe(take(1)).subscribe(([schema, nodesVisibility]) => {
+          if(nodesVisibility != null && this.dataSource != null){
+            this.dataSource.nodesVisibility = nodesVisibility;
+          }
           if (schema != null && this.dataSource != null) {
             this.dataSource.additionalDataSchema = schema;
             const fschema = deepCopy(this._dataSource?.additionalDataSchema) as {
@@ -1612,15 +1615,19 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           exportFormat: 'xlsx',
           selectAll: true,
           listType: 'forms',
+          nodesVisibility: this._nodesVisibility,
+          formSchema,
         };
       } else if (ev === 'CSV') {
         dialogConfig.data = {
           exportFormat: 'csv',
           selectAll: true,
           listType: 'forms',
+          nodesVisibility: this._nodesVisibility,
+          formSchema
         };
       }
-      this._openExportDialog(formSchema, dialogConfig);
+      this._openExportDialog(dialogConfig);
     }
   }
 
@@ -1639,15 +1646,17 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           exportFormat: 'xlsx',
           selectAll: true,
           listType: 'metrics',
+          formSchema
         };
       } else if (ev === 'CSV') {
         dialogConfig.data = {
           exportFormat: 'csv',
           selectAll: true,
           listType: 'metrics',
+          formSchema
         };
       }
-      this._openExportDialog(formSchema, dialogConfig);
+      this._openExportDialog(dialogConfig);
     }
   }
 
@@ -1656,12 +1665,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param schema The Schema of a list item
    * @param dialogConfig The dialog configuration
    */
-  private _openExportDialog(schema: FormSchema, dialogConfig: MatDialogConfig): void {
+  private _openExportDialog(dialogConfig: MatDialogConfig): void {
     let dialogRef = this.dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
       .pipe(take(1))
       .subscribe(evt => this.emitExportActionTrigger.emit(evt));
-    dialogRef.componentInstance.schema = schema;
     dialogRef.componentInstance.data = this.dataSource!.data as any[];
     dialogRef.componentInstance.filteredQueryObs = this.dataSource!.filteredQueryObs;
     dialogRef.componentInstance.allItemsQueryObs = this.dataSource!.allItemsQueryObs;
