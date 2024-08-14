@@ -1,3 +1,26 @@
+<a name="16.0.3"></a>
+# 16.0.3 "brainy-skunk" (2024-08-14)
+### Bug Fixes
+* **core/file-upload:** remove encoded file from ajf ([2632dac](https://bitbucket.org/gnucoop/dino/commits/2632dac99eb14f88a8db0c1f775b2efc3705cf8d))
+* **material/form-deps-editor:** change parser for metric query ([b5d735a](https://bitbucket.org/gnucoop/dino/commits/b5d735a0ba18ca354b1ee783d06b0cd5bd8c6d78))
+* **material/form-metric-selector:** fix autocomplete metric when metric has parent ([0ac4012](https://bitbucket.org/gnucoop/dino/commits/0ac40127868f82218333b3794ad10c8634b80066))
+* **material/list:** add status in trigger data on on_status_change event ([22441c3](https://bitbucket.org/gnucoop/dino/commits/22441c346b4a6e6aeced95984615fc39ca5c7f81))
+* **material/search-filters-bar:** change map icon in filters bar ([02bc0c5](https://bitbucket.org/gnucoop/dino/commits/02bc0c5d92c9f42a183352cf36b3de2420bad5c6))
+* **multiple:** Moved 'node-visibility' from core/forms to core/list and updated imports to avoid a circular dependency. ([41d1df8](https://bitbucket.org/gnucoop/dino/commits/41d1df87592ceb66b13bddbe5b3320c0c4f5b27c))
+### Features
+* **core/forms:** Added node-visibility type. Method generateAdditionalFilters in base-form-schema-manager now evaluates nodesVisibility when generating filters. ([6447961](https://bitbucket.org/gnucoop/dino/commits/644796128166ab22cf891b5a6c64241b51e213f9))
+* **core/list:** Added nodesVisibility property and input to list. Added getter for generatedAdditionalFilters in filters service. ([135239a](https://bitbucket.org/gnucoop/dino/commits/135239a6684ae5d9e8af045d584c76679bf0a12d))
+* **e2e-material/forms-list:** nodesVisibility logic added to Forms List. List Headers are now filtered by node visibility. ([0a5fa2c](https://bitbucket.org/gnucoop/dino/commits/0a5fa2c7f2a49f1fad95320b202724185f64cda2))
+* **material/edit-form-schema:** Added Name check async validator in edit-form-schema. Checks if schema name is already being used. ([2c7d794](https://bitbucket.org/gnucoop/dino/commits/2c7d7948c0eebd5ab3b1be0212d9d2b3e1beeeb1))
+* **material/edit-report-schema:** Added Name check async validator in edit-report-schema. Checks if schema name is already being used. ([29855bd](https://bitbucket.org/gnucoop/dino/commits/29855bdef1a8c152584c32a56703b2e27ae0c7d7))
+* **material/edit-report:** Added Forms Filled count in edit report template. ([77b7259](https://bitbucket.org/gnucoop/dino/commits/77b7259ed7f84f3410de1e7d5fbc67079c464659))
+* **material/export-list:** Export list component now takes account of nodesVisibility when building the export model. ([1be5b81](https://bitbucket.org/gnucoop/dino/commits/1be5b81e12645ae01459c8305af36502e91353c1))
+* **material/form-deps-editor:** add filter for metric choice origin query ([0989bdb](https://bitbucket.org/gnucoop/dino/commits/0989bdb5518c2d96da6454bfff746b93f9ba16d9))
+* **material/list:** ListDatasource and List now use nodesVisibility to generate filters and to open the export dialog. ([9f8ea3b](https://bitbucket.org/gnucoop/dino/commits/9f8ea3b99f496b4ee88ba6133ba9fcb0c10ca91a))
+* **material/search-filters-bar:** The advanced filter button is only displayed when generatedAdditionalFilters is not empty. ([4eb8096](https://bitbucket.org/gnucoop/dino/commits/4eb809605b25632657b82f34d216bd4f37b76773))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.0.2"></a>
 # 16.0.2 "socialist-grouse" (2024-07-09)
 ### Bug Fixes
