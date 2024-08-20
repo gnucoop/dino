@@ -39,6 +39,7 @@ export class MatReportsListE2E {
       label: 'Area',
       displayed: true,
       populateWith: 'name',
+      icon: 'volunteer_activism',
       hidden: !this.metricsService.isActiveMetric('area'),
     },
     {
@@ -46,6 +47,7 @@ export class MatReportsListE2E {
       label: 'Case',
       displayed: true,
       populateWith: 'name',
+      icon: 'people',
       hidden: !this.metricsService.isActiveMetric('case'),
     },
     {
@@ -53,6 +55,7 @@ export class MatReportsListE2E {
       label: 'Location',
       displayed: true,
       populateWith: 'name',
+      icon: 'place',
       hidden: !this.metricsService.isActiveMetric('location'),
     },
     {
@@ -60,6 +63,7 @@ export class MatReportsListE2E {
       label: 'Organization',
       displayed: true,
       populateWith: 'name',
+      icon: 'public',
       hidden: !this.metricsService.isActiveMetric('organization'),
     },
     {
@@ -67,7 +71,16 @@ export class MatReportsListE2E {
       label: 'Project',
       displayed: true,
       populateWith: 'name',
+      icon: 'assignment',
       hidden: !this.metricsService.isActiveMetric('project'),
+    },
+    {
+      column: 'form_status_ref_id',
+      external_ref: `form_status_ref_id`,
+      label: 'Status',
+      populateWith: 'label',
+      displayed: true,
+      icon: 'account_tree',
     },
     {column: 'date_start', label: 'Collected Since', displayed: true},
     {column: 'date_end', label: 'Collected Until', displayed: true},
