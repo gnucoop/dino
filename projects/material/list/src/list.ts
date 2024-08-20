@@ -917,7 +917,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (this.filtersComponent) {
       this.dataSource.setFiltersComponent = this.filtersComponent;
       if (this._additionalDataSchema != null) {
-        combineLatest([this._additionalDataSchema, this._nodesVisibility]).pipe(take(1)).subscribe(([schema, nodesVisibility]) => {
+        this._dataSourceSub = combineLatest([this._additionalDataSchema, this._nodesVisibility]).subscribe(([schema, nodesVisibility]) => {
           if(nodesVisibility != null && this.dataSource != null){
             this.dataSource.nodesVisibility = nodesVisibility;
           }
@@ -1703,5 +1703,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     this._fts.clearModelFilters();
     this._dialogSub.unsubscribe();
     this._selectionChangedSub.unsubscribe();
+    this._dataSourceSub.unsubscribe();
   }
 }

@@ -23,7 +23,7 @@
 import {ChangeDetectorRef, Directive, EventEmitter, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Model} from '@dino/core/data';
-import {BehaviorSubject, Observable, of as obsOf, shareReplay, Subject} from 'rxjs';
+import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 
 import {ListAction} from './list-actions-interface';
 import {ListHeader} from './list-header';
@@ -58,11 +58,14 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    * The Ajf Form Nodes Visibility observable.
    * Only passed as an input for Form List.
    */
-  protected _nodesVisibility: Observable<NodeVisibility[]> = obsOf([]);
+  protected _nodesVisibility: BehaviorSubject<NodeVisibility[]> = new BehaviorSubject<
+    NodeVisibility[]
+  >([]);
 
   @Input()
-  set nodesVisibility(nv: Observable<NodeVisibility[]>) {
-    this._nodesVisibility = nv.pipe(shareReplay(1));
+  set nodesVisibility(nv: NodeVisibility[] | null) {
+    if (nv == null) return;
+    this._nodesVisibility.next(nv);
   }
 
   /**
@@ -220,6 +223,11 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
     this.baseInstanceName = instName;
     this._cdr.markForCheck();
   }
+
+  /**
+   * Subscribes to the values of AdditionalDataSchema and NodesVisibility
+   */
+  protected _dataSourceSub: Subscription = Subscription.EMPTY;
 
   constructor(
     protected _cdr: ChangeDetectorRef,
