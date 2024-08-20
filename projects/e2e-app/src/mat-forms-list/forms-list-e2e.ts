@@ -361,9 +361,12 @@ export class MatFormsListE2E {
   ): ListHeader<FormData>[] {
     if (!nodesVisibility || !nodesVisibility.length) return headers;
 
+    const defaultHeaders = ['id', 'user_data_ref_id', 'created_at', 'updated_at'];
+
     return headers.filter(
       header =>
         header.external_ref != null ||
+        defaultHeaders.includes(header.column) ||
         nodesVisibility.find(node => node.name === header.column && node.visible),
     );
   }
