@@ -1,15 +1,9 @@
-import {
-  AjfForm,
-  AjfFormRendererService,
-  AjfFormSerializer,
-  createFormPdf,
-  downloadFormDoc,
-} from '@ajf/core/forms';
+import {AjfForm, createFormPdf, downloadFormDoc} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
-import {FormData, FormDataManager, FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {FormData, FormDataManager, FormInfo, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader, NodeVisibility} from '@dino/core/list';
 import {LogManager} from '@dino/core/logs';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
@@ -32,6 +26,7 @@ import {
   TableCell,
   TableRow,
 } from 'docx';
+import {ajfCustomFunctions} from '../ajf-custom-functions';
 
 @Component({
   selector: 'app-forms-list-e2e',
@@ -90,7 +85,6 @@ export class MatFormsListE2E {
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
     private _fdm: FormDataManager,
-    private _rendererService: AjfFormRendererService,
     @Optional() private _logManager: LogManager,
     @Optional() private _areaManager?: AreaManager | null,
     @Optional() private _caseManager?: CaseManager | null,
@@ -123,29 +117,27 @@ export class MatFormsListE2E {
       this._ugm.getActiveUserGroups(),
     ]).pipe(
       map(([fschema, activeUser, activeUserGroups]) => {
-        let form: AjfForm;
-        if (fschema == null) {
-          form = AjfFormSerializer.fromJson({});
-        }
-        if (fschema!.schema.choicesOrigins == null) {
-          fschema!.schema.choicesOrigins = [];
-        }
-        const ajfFormData: {[key: string]: any} = {};
-        const createdAt = null;
-        const id = null;
-        const dinoFormInfo = {
+        if (fschema == null || activeUser == null || activeUserGroups == null) return [];
+
+        const dinoFormInfo: FormInfo = {
           activeUser,
           activeUserGroups,
-          createdAt,
-          id,
+          createdAt: null,
+          status: null,
+          allStatuses: [],
+          user: null,
+          userGroups: null,
         };
-        ajfFormData['dino_form_info'] = dinoFormInfo;
-        form = AjfFormSerializer.fromJson(fschema!.schema, ajfFormData);
-        this._rendererService.setForm(form);
-        return form;
-      }),
-      switchMap(() => {
-        return this._rendererService.nodesVisibility;
+
+        const nodesVisibility = this.formSchemaManager.getPermissionsRelevant(
+          fschema.schema.nodes,
+          dinoFormInfo,
+          {
+            isUserInGroup: ajfCustomFunctions['isUserInGroup'],
+            isUserInAtLeastOneGroup: ajfCustomFunctions['isUserInAtLeastOneGroup'],
+          },
+        );
+        return nodesVisibility;
       }),
     );
 
