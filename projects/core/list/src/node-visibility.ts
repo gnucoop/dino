@@ -24,3 +24,13 @@
  * Represents Visibility property of an Ajf Node in a NodeTree
  */
 export type NodeVisibility = {name: string; type: 'slide' | 'field'; visible: boolean};
+
+/**
+ * An object with Name, type and visibility string condition of an Ajf Node in a NodeTree
+ */
+export type NodeWithVisibilityCondition = {
+  name: string;
+  type: 'slide' | 'field';
+  visibilityCondition?: string;
+  nodes?: NodeWithVisibilityCondition[];
+};
