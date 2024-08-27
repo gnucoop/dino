@@ -22,6 +22,7 @@
 
 import {Injectable, Optional} from '@angular/core';
 import {
+  AjfCustomFunctions,
   DataModelManager,
   DataQueryOptions,
   DataQuerySelector,
@@ -31,7 +32,12 @@ import {
   PermissionContextService,
   populateDocRefs,
 } from '@dino/core/data';
-import {FilterGroup, ListHeader, NodeVisibility} from '@dino/core/list';
+import {
+  FilterGroup,
+  ListHeader,
+  NodeVisibility,
+  NodeWithVisibilityCondition,
+} from '@dino/core/list';
 
 import * as baseFsm from './base-form-schema-manager';
 import {DepsOrigin, FormSchemaDeps, MetricOrigin} from './form-schema-deps';
@@ -67,6 +73,7 @@ import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {FormInfo} from './form-info';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
@@ -742,5 +749,154 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
         return this.update(newSchema);
       }),
     );
+  }
+
+  /**
+   * Evaluates Relevant Permissions and returns a NodeVisibility array
+   * @param nodes The Form Schema nodes
+   * @param formInfo? The Dino Form Info object
+   * @param customFunctions? The Ajf Custom functions object
+   * @returns A NodeVisibility array
+   */
+  getPermissionsRelevant(
+    nodes: AjfNode[] | undefined,
+    formInfo?: FormInfo,
+    customFunctions?: AjfCustomFunctions,
+  ): NodeVisibility[] {
+    const nvc: NodeWithVisibilityCondition[] = this._generateNodesVisibilityConditions(nodes);
+    const prv: NodeVisibility[] = this._generatePermissionsRelevant(nvc, formInfo, customFunctions);
+    return prv;
+  }
+
+  /**
+   * Recursively extrapolates Node visibility and returns an array
+   * @param nodeVisibilityConditions The nodes with their string visibilty condition
+   * @param formInfo? The Dino Form Info object
+   * @param customFunctions? The Ajf Custom functions object
+   * @param parentVisible If false, children nodes will also be not visible
+   * @returns An array with all nodes evaluated visibility
+   */
+  private _generatePermissionsRelevant(
+    nodeVisibilityConditions: NodeWithVisibilityCondition[],
+    formInfo?: FormInfo,
+    customFunctions?: AjfCustomFunctions,
+    parentVisible: boolean = true,
+  ): NodeVisibility[] {
+    if (nodeVisibilityConditions == null || !nodeVisibilityConditions.length) return [];
+    const nodesVisibility: NodeVisibility[] = [];
+    for (let node of nodeVisibilityConditions) {
+      const name = node.name;
+      const visible = parentVisible
+        ? this._evaluateRelevantNodeVisibility(node, formInfo, customFunctions)
+        : false;
+      if ('nodes' in node && node.nodes && node.nodes.length) {
+        nodesVisibility.push({name, type: 'slide', visible});
+        nodesVisibility.push(
+          ...this._generatePermissionsRelevant(node.nodes, formInfo, customFunctions, visible),
+        );
+      } else {
+        nodesVisibility.push({name, type: 'field', visible});
+      }
+    }
+    return nodesVisibility;
+  }
+
+  /**
+   * Returns a NodeWithVisibilityCondition array from a FormSchema
+   * @param nodes? the source Form Schema nodes
+   * @returns a NodeWithVisibilityCondition array of the schema flattened nodes
+   */
+  private _generateNodesVisibilityConditions(
+    nodes: AjfNode[] | undefined,
+  ): NodeWithVisibilityCondition[] {
+    if (nodes == undefined || !nodes.length) return [];
+    const nvc: NodeWithVisibilityCondition[] = [];
+    for (let node of nodes) {
+      if ('nodes' in node && node.nodes && node.nodes.length) {
+        nvc.push({
+          name: node.name,
+          type: 'slide',
+          visibilityCondition: node.visibility?.condition,
+          nodes: this._generateNodesVisibilityConditions(node.nodes),
+        });
+      } else {
+        nvc.push({name: node.name, type: 'field', visibilityCondition: node.visibility?.condition});
+      }
+    }
+    return nvc;
+  }
+
+  /**
+   * Evaluates the Relevant Permissions of a single node.
+   * Returns true if the node should be visible for the active user.
+   * @param node The Form Schema node
+   * @param formInfo? The Dino Form Info object
+   * @param customFunctions? The Ajf Custom functions object
+   * @returns
+   */
+  private _evaluateRelevantNodeVisibility(
+    node: NodeWithVisibilityCondition,
+    formInfo?: FormInfo,
+    customFunctions?: AjfCustomFunctions,
+  ): boolean {
+    if (
+      !node.visibilityCondition?.includes('dino_permissions_begin') ||
+      customFunctions == null ||
+      formInfo == null
+    )
+      return true;
+
+    const conditionString = node.visibilityCondition;
+
+    const relevantRegexp = new RegExp(
+      this._escapeRegExp('dino_permissions_begin||(') +
+        '(.*)' +
+        this._escapeRegExp(')||dino_permissions_end'),
+    );
+    const relevantResults = conditionString.match(relevantRegexp);
+    const relevantPermissions = relevantResults ? relevantResults[1] : null;
+
+    if (relevantPermissions == null) return false;
+
+    let relevantString: string = relevantPermissions;
+
+    const customFunctionsSignatures = Object.keys(customFunctions);
+
+    for (let functionSignature of customFunctionsSignatures) {
+      const fSignRegexp = new RegExp(`${functionSignature}\\((.*?)\\)`, 'g');
+      const fSignMatches = relevantPermissions.match(fSignRegexp);
+
+      if (fSignMatches == null) continue;
+
+      for (let fSignMatch of fSignMatches) {
+        let arg: string | string[] = fSignMatch
+          .replace(', dino_form_info', ',dino_form_info')
+          .split(',dino_form_info')[0]
+          .replace(`${functionSignature}(`, '')
+          .replace(/'/g, '');
+        if (arg.includes('[') && arg.includes(']')) {
+          arg = arg
+            .replace('[', '')
+            .replace(']', '')
+            .split(',')
+            .map(item => item.trim());
+        }
+        const callResult = customFunctions[functionSignature]?.call(this, arg, formInfo);
+        if (typeof callResult === 'boolean') {
+          relevantString = relevantString.replace(fSignMatch, callResult.toString());
+        }
+      }
+    }
+
+    return eval(relevantString);
+  }
+
+  /**
+   * Escapes special characters in regular expressions
+   * @param text the Regexp text
+   * @returns the escaped regexp text
+   */
+  private _escapeRegExp(text: string) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
   }
 }
