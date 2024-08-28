@@ -9,6 +9,10 @@ import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {BehaviorSubject, of as obsOf} from 'rxjs';
 
 import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api';
+import {UserData, UserGroup} from '@dino/core/users';
+import {FormInfo} from './form-info';
+import {ajfCustomFunctions} from '../../../e2e-app/src/ajf-custom-functions';
+import {NodeVisibility} from '@dino/core/list';
 
 let testDbIdx = 0;
 
@@ -120,5 +124,124 @@ describe('FormSchemaManager', () => {
     expect(additionalFilters[0]).not.toBeNull();
     expect(additionalFilters[0].label).toEqual('Name');
     expect(additionalFilters[0].isAdditionalFilter).toBeTrue();
+  });
+
+  it('should correctly evaluate Relevant Permissions', () => {
+    const mockSchema = {
+      'nodes': [
+        {
+          'id': 1,
+          'name': '_1',
+          'label': 'MOCK SCHEMA',
+          'nodes': [
+            {
+              'id': 101,
+              'name': 'first_field',
+              'size': 'normal',
+              'label': 'First Field',
+              'parent': 1,
+              'editable': true,
+              'nodeType': 0,
+              'fieldType': 0,
+              'parentNode': 0,
+              'validation': {'notEmpty': true, 'conditions': []},
+              'visibility': {'condition': 'true'},
+              'defaultValue': null,
+              'conditionalBranches': [{'condition': 'true'}],
+            },
+            {
+              'id': 102,
+              'name': 'second_field',
+              'size': 'normal',
+              'label': 'Second Field',
+              'parent': 101,
+              'editable': true,
+              'nodeType': 0,
+              'fieldType': 0,
+              'parentNode': 0,
+              'validation': {'notEmpty': true, 'conditions': []},
+              'visibility': {
+                'condition': `(first_field != null) && (dino_permissions_begin||(isUserInGroup('MockGroup',dino_form_info)&&!isUserInGroup('MockNotGroup',dino_form_info))||dino_permissions_end)`,
+              },
+              'defaultValue': null,
+              'conditionalBranches': [{'condition': 'true'}],
+            },
+            {
+              'id': 103,
+              'name': 'third_field',
+              'size': 'normal',
+              'label': 'Third Field',
+              'parent': 102,
+              'editable': true,
+              'nodeType': 0,
+              'fieldType': 0,
+              'parentNode': 0,
+              'validation': {'notEmpty': true, 'conditions': []},
+              'visibility': {
+                'condition': `(dino_permissions_begin||(isUserInGroup('NonExistentGroup',dino_form_info))||dino_permissions_end)`,
+              },
+              'defaultValue': null,
+              'conditionalBranches': [{'condition': 'true'}],
+            },
+          ],
+          'parent': 0,
+          'nodeType': 3,
+          'parentNode': 0,
+          'visibility': {'condition': 'true'},
+          'conditionalBranches': [{'condition': 'true'}],
+        },
+      ],
+    };
+
+    const mockGroup: UserGroup = {
+      groupName: 'MockGroup',
+      user_role_ref_id: '1',
+      area_ref_id: [],
+      case_ref_id: [],
+      location_ref_id: [],
+      organization_ref_id: [],
+      project_ref_id: [],
+      form_status_ref_id: [],
+      groupFormSchemaIds: [],
+      groupReportSchemaIds: [],
+      id: 'mockid',
+      created_at: '',
+      updated_at: '',
+    };
+
+    const mockUser: UserData = {
+      id: 'id',
+      email: 'test@dino.io',
+      full_name: 'Test User',
+      user_group_ids: [],
+      user_auth_ref_id: '',
+      created_at: '',
+      updated_at: '',
+    };
+
+    const mockFormInfo: FormInfo = {
+      status: null,
+      allStatuses: [],
+      user: null,
+      userGroups: null,
+      activeUser: mockUser,
+      activeUserGroups: [mockGroup],
+      createdAt: null,
+    };
+
+    const nodesVisibility = fsm.getPermissionsRelevant(mockSchema.nodes, mockFormInfo, {
+      isUserInGroup: ajfCustomFunctions['isUserInGroup'],
+      isUserInAtLeastOneGroup: ajfCustomFunctions['isUserInAtLeastOneGroup'],
+    });
+
+    const expectedNodeVisibility: NodeVisibility[] = [
+      {name: '_1', type: 'slide', visible: true},
+      {name: 'first_field', type: 'field', visible: true},
+      {name: 'second_field', type: 'field', visible: true},
+      {name: 'third_field', type: 'field', visible: false},
+    ];
+
+    expect(nodesVisibility).not.toBeNull();
+    expect(nodesVisibility).toEqual(expectedNodeVisibility);
   });
 });
