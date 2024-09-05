@@ -27,6 +27,12 @@ const routes: Routes = [
         data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Map'}]},
       },
       {
+        path: 'datachat',
+        loadChildren: () =>
+          import('../mat-datachat/datachat-e2e.module').then(m => m.MaterialDataChatE2eModule),
+        data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'DataChat'}]},
+      },
+      {
         path: 'view',
         loadChildren: () =>
           import('../mat-edit-form/edit-form-e2e.module').then(m => m.MaterialEditFormE2eModule),

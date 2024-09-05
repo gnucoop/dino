@@ -26,6 +26,7 @@ import {MatReportsListE2E} from './mat-reports-list/reports-list-e2e';
 import {MatReportsE2E} from './mat-reports/reports-e2e.component';
 import {MatUsersE2E} from './mat-users/users-e2e.component';
 import {additionalConfig} from './mockconfig';
+import {DataChatE2E} from './mat-datachat/datachat-e2e.component';
 
 const authGuard = additionalConfig.authGuard ? [AuthGuard] : undefined;
 export const E2E_APP_ROUTES: Routes = [
@@ -175,6 +176,11 @@ export const E2E_APP_ROUTES: Routes = [
           {
             path: 'map',
             component: MatFormsMapE2E,
+            data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Map'}]},
+          },
+          {
+            path: 'datachat',
+            component: DataChatE2E,
             data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Map'}]},
           },
           {
