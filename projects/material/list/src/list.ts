@@ -1646,6 +1646,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           exportFormat: 'xlsx',
           selectAll: true,
           listType: 'metrics',
+          nodesVisibility: this._nodesVisibility,
           formSchema
         };
       } else if (ev === 'CSV') {
@@ -1653,6 +1654,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           exportFormat: 'csv',
           selectAll: true,
           listType: 'metrics',
+          nodesVisibility: this._nodesVisibility,
           formSchema
         };
       }
