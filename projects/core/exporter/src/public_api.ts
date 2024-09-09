@@ -22,5 +22,4 @@
 
 export * from './exporter';
 export * from './export-interface';
-export * from './export-list.service';
 export * from './export-model.interface';
