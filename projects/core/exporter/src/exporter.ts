@@ -770,12 +770,17 @@ export class Exporter implements OnDestroy {
   }
 
   private _buildWorksheet(ctxList: Context[], slideFieldNames: string[]): XLSX.WorkSheet {
-    let fieldNames = [];
-
-    fieldNames = [...this._dinoFields, ...slideFieldNames];
+    const singleHeader = this._setupData.value?.singleHeader;
+    let fieldNames: string[] = [];
+    let fieldNamesSet: Set<string>;
+    fieldNamesSet =
+      singleHeader && ctxList && ctxList[0]
+        ? new Set([...this._dinoFields, ...slideFieldNames, ...Object.keys(ctxList[0])])
+        : new Set([...this._dinoFields, ...slideFieldNames]);
+    fieldNames = Array.from(fieldNamesSet);
     const fieldLabels = this._buildLabelsRow(fieldNames);
     const data = [fieldLabels, ...ctxList];
-    return XLSX.utils.json_to_sheet(data);
+    return XLSX.utils.json_to_sheet(data, {skipHeader: singleHeader === true});
   }
 
   /**

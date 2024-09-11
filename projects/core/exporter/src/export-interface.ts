@@ -75,6 +75,10 @@ export interface ExportOptions {
    * If true, the file download window/prompt appears
    */
   downloadFile?: boolean;
+  /**
+   * If true, the file will be exported with a single header
+   */
+  singleHeader?: boolean;
 }
 
 /**
