@@ -428,9 +428,6 @@ export class EditReport implements AfterViewInit {
           const createdAt = querySelector['created_at'] || {};
           querySelector['created_at'] = {...createdAt, $lte: rData.date_end};
         }
-        if (rData.form_status_ref_id != null) {
-          querySelector['form_status_ref_id'] = {$eq: rData.form_status_ref_id};
-        }
 
         if (activeMetrics != null && activeMetrics.length > 0) {
           for (let metric of activeMetrics) {
@@ -508,11 +505,23 @@ export class EditReport implements AfterViewInit {
 
         for (let formSchemaId of formSchemaIds) {
           if (sfData != null) {
-            const dataBySchema = sfData.filter(fdata => fdata.form_schema_ref_id === formSchemaId);
+            let dataBySchema = sfData.filter(fdata => fdata.form_schema_ref_id === formSchemaId);
+
+            const fs = ctxSchemas.filter(s => (s as FormSchema).id === formSchemaId)[0];
+            const schemaFormStatusIds: string[] =
+              fs && fs['form_status_ref_id'] ? fs['form_status_ref_id'] : [];
+            if (
+              rData &&
+              rData.form_status_ref_id != null &&
+              schemaFormStatusIds.includes(rData.form_status_ref_id)
+            ) {
+              dataBySchema = dataBySchema.filter(
+                fdata => fdata.form_status_ref_id === rData.form_status_ref_id,
+              );
+            }
             const data = dataBySchema.map(fd => this._populateData(fd));
             populatedData.push(...data);
 
-            const fs = ctxSchemas.filter(s => (s as FormSchema).id === formSchemaId)[0];
             if (fs) {
               const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
               if (fsDeps.deps_origin) {
