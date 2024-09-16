@@ -53,9 +53,9 @@ import {
   ExportData,
   ExportFormat,
   MAX_SHEETNAME_LENGTH,
-  ExportModel,
   ExportListData,
-} from '@dino/core/exporter';
+} from './export-interface';
+import {ExportModel} from './export-model.interface';
 
 /**
  * Exporter Class that can be instantiated to export documents
