@@ -1,0 +1,24 @@
+dino-table-generator {
+  .mat-mdc-table {
+    margin: auto;
+    width: 100%;
+    max-height: 500px;
+    overflow: auto;
+    color: black;
+    border-radius: 5px;
+    background-color: transparent;
+    .mat-mdc-header-row {
+      background-color: var(--mdc-filled-text-field-container-color);
+      .mat-mdc-header-cell {
+        min-width: 150px;
+      }
+    }
+    .mat-mdc-cell {
+      min-width: 150px;
+    }
+  }
+  .isDarkTheme .mat-mdc-cell:first-of-type,
+  .isLightTheme .mat-mdc-cell:first-of-type {
+    background-color: transparent !important;
+  }
+}
