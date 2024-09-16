@@ -1,2 +1,51 @@
 dino-datachat {
+  .dino-datachat-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    .dino-apikey-field {
+      flex: 1 0 auto;
+      min-width: 300px;
+      position: relative;
+      top: 30vh;
+      .dino-apikey-field-fab {
+        right: 10px;
+        max-width: 32px;
+        max-height: 32px;
+      }
+    }
+    .dino-chat-history-container {
+      display: flex;
+      flex-flow: column;
+      flex: 1 0 auto;
+      width: 80vw;
+      padding: 6px;
+      height: 74vh;
+      max-height: 74vh;
+      overflow-y: auto;
+      border-radius: 4px;
+      scroll-behavior: smooth;
+      background-color: var(--mdc-filled-text-field-container-color);
+    }
+    .dino-chat-input {
+      flex: 1 0 auto;
+      position: absolute;
+      bottom: 80px;
+      width: 75vw;
+    }
+    .dino-communicating-spinner {
+      position: relative;
+      right: 10px;
+    }
+  }
+
+  .dino-no-items-message {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-content: center;
+    height: 85vh;
+    opacity: 0.4;
+  }
 }

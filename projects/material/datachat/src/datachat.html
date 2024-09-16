@@ -1,1 +1,91 @@
-<p>Datachat Works!</p>
+<ng-content select="[breadcrumbs]"></ng-content>
+<ng-container *ngIf="(noData|async) === false; else nodata">
+  <div class="dino-datachat-container">
+    <ng-container *ngIf="(isLoading|async) === false; else loading">
+      <ng-container [formGroup]="apiKeyFormGroup" *ngIf="(apiKey|async) === null">
+        <mat-form-field class="dino-apikey-field">
+          <mat-label>{{'Enter your DataChat API key'|transloco}}</mat-label>
+          <input
+            [readonly]="(apiKey|async) !== null"
+            #apiKeyInput
+            matInput
+            formControlName="apiKeyControl"
+            (keyup.enter)="sendAPIKey(apiKeyInput.value)"
+            type="password"
+          />
+          <button
+            *ngIf="(isCommunicating|async) === false; else communicatingSpinner"
+            mat-mini-fab
+            matSuffix
+            color="accent"
+            aria-label="Send API Key"
+            class="dino-apikey-field-fab"
+            (click)="sendAPIKey(apiKeyInput.value)"
+          >
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+
+          <ng-template #communicatingSpinner>
+            <mat-spinner
+              matSuffix
+              class="dino-communicating-spinner"
+              color="accent"
+              [strokeWidth]="4"
+              [diameter]="32"
+              mode="indeterminate"
+            ></mat-spinner>
+          </ng-template>
+
+          <mat-error *ngIf="apiKeyFormGroup.get('apiKeyControl')?.hasError('required')">
+            API Key is <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="apiKeyFormGroup.get('apiKeyControl')?.hasError('invalid')">
+            Invalid API Key
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="(apiKey|async) !== null">
+        <ng-container>
+          <div #chatHistory class="dino-chat-history-container">
+            <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" />
+          </div>
+        </ng-container>
+
+        <ng-container [formGroup]="chatInputFormGrop">
+          <mat-form-field class="dino-chat-input">
+            <textarea
+              #chatPrompt
+              matInput
+              formControlName="chatInputControl"
+              rows="1"
+              cols="50"
+              placeholder="Ciao!"
+              style="resize: none;"
+              (keyup.enter)="chat(chatPrompt.value); chatPrompt.value = ''"
+            ></textarea>
+          </mat-form-field>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #loading>
+      <div class="dino-loading">
+        <div>{{'Restoring Data...'|transloco}}</div>
+        <br /><br />
+        <ng-container *ngIf="spinnerImagePath; else defaultspinner"
+          ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+        </ng-container>
+        <ng-template #defaultspinner
+          ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+        ></ng-template>
+      </div>
+    </ng-template>
+  </div>
+</ng-container>
+
+<ng-template #nodata>
+    <div class="dino-no-items-message">
+      <h1>{{'No Forms were found'|transloco}}</h1>
+    </div>
+</ng-template>

@@ -20,7 +20,17 @@
  *
  */
 
-export * from './datachat';
-export * from './datachat-entry';
-export * from './datachat.interfaces';
-export * from './datachat.module';
+export interface DataChatQA {
+  question?: string;
+  response?: string;
+  componentData?: ComponentData;
+  imageData?: string;
+  error?: string;
+  explanation?: string;
+  noPrompt?: boolean;
+}
+
+export interface ComponentData {
+  component: any;
+  inputs?: {[key: string]: any};
+}

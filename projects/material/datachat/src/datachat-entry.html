@@ -1,0 +1,33 @@
+<ng-container *ngIf="qa">
+  <ng-container *ngIf="qa.question">
+    <div class="dino-datachat-entry dino-datachat-entry-question">
+      <mat-icon class="dino-datachat-entry-icon" color="accent">face</mat-icon>
+      <span>{{qa.question}}</span>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.explanation">
+    <div class="dino-datachat-entry dino-datachat-entry-response">
+      <mat-icon class="dino-datachat-entry-icon" color="primary">smart_toy</mat-icon>
+      <span><b *ngIf="!qa.noPrompt">Explanation:</b>{{qa.explanation}}</span>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.response">
+    <div class="dino-datachat-entry dino-datachat-entry-response">
+      <mat-icon class="dino-datachat-entry-icon" color="primary">smart_toy</mat-icon>
+      <span><b *ngIf="!qa.noPrompt">Answer:</b><span [innerHTML]="qa.response"></span></span>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.imageData">
+    <div class="dino-datachat-entry dino-datachat-entry-image-response">
+      <mat-icon class="dino-datachat-entry-icon" color="primary">smart_toy</mat-icon>
+      <img [src]="qa.imageData" />
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.componentData">
+    <div class="dino-datachat-entry dino-datachat-entry-component-response">
+      <ng-container
+        *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"
+      ></ng-container>
+    </div>
+  </ng-container>
+</ng-container>

@@ -31,23 +31,32 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {TranslocoModule} from '@ngneat/transloco';
+import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 
 import {DataChat} from './datachat';
+import {ReactiveFormsModule} from '@angular/forms';
+import {TableGeneratorModule as DinoTableGeneratorModule} from '@dino/material/table-generator';
+import {DataChatEntry} from './datachat-entry';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
     CommonModule,
+    DinoLoadingSpinnerModule,
+    DinoTableGeneratorModule,
     MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    ReactiveFormsModule,
     RouterModule,
     TranslocoModule,
   ],
-  declarations: [DataChat],
-  exports: [DataChat],
+  declarations: [DataChat, DataChatEntry],
+  exports: [DataChat, DataChatEntry],
 })
 export class DataChatModule {}
