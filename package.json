@@ -73,6 +73,7 @@
     "leaflet": "^1.7.1",
     "leaflet.markercluster": "^1.5.3",
     "meriyah": "^4.2.0",
+    "ngx-papaparse": "8",
     "numbro": "^2.3.6",
     "pdfmake": "^0.2.4",
     "process": "^0.11.10",
