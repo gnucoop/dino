@@ -13,7 +13,7 @@ import {of} from 'rxjs';
 import {ExportList} from './public_api';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
-import {Data} from './export-interface';
+import {Data} from '@dino/core/exporter';
 import {AjfField} from '@ajf/core/forms';
 
 let testDbIdx = 0;

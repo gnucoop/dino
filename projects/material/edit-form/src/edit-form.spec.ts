@@ -7,6 +7,7 @@ import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@
 import {FormSchemaManager} from '@dino/core/forms';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {EditForm, EditFormModule} from './public_api';
 
@@ -55,7 +56,12 @@ describe('Edit Form', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [EditFormModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        EditFormModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
       providers: [
         FormSchemaManager,
         {provide: AuthService, useValue: authServiceMock},

@@ -1,14 +1,14 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {DataChatModule} from './datachat.module';
+import {DataChat} from './datachat';
 import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {FormSchemaManager} from '@dino/core/forms';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
 import {BehaviorSubject, of} from 'rxjs';
-
-import {DataChat, DataChatModule} from './public_api';
+import {EventEmitter} from '@angular/core';
+import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {getRxStorageMemory} from 'rxdb/plugins/memory';
 
 let testDbIdx = 0;
 
@@ -46,25 +46,33 @@ const authServiceMock = {
   authConfig: authServiceConfig,
 } as unknown as AuthService;
 
-describe('Edit Form', () => {
-  let fsm: FormSchemaManager;
+describe('Data Chat', () => {
   let fixtureDataChat: ComponentFixture<DataChat>;
   let dataChat: DataChat;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [DataChatModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        BrowserAnimationsModule,
+        DataChatModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
       providers: [
-        FormSchemaManager,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
       ],
     }).compileComponents();
 
-    fsm = TestBed.inject(FormSchemaManager);
     fixtureDataChat = TestBed.createComponent(DataChat);
     dataChat = fixtureDataChat.componentInstance;
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
   });
 
   it('should create the component', async () => {
@@ -72,6 +80,32 @@ describe('Edit Form', () => {
     fixtureDataChat.detectChanges();
 
     expect(dataChat).toBeTruthy();
-    expect(fsm).toBeTruthy();
+  });
+
+  it('should send a post request to validate the API key', async () => {
+    await fixtureDataChat.whenStable();
+    fixtureDataChat.detectChanges();
+
+    dataChat.baseDataChatAPIurl = 'http://127.0.0.1:5000';
+
+    dataChat.sendAPIKey('key_code');
+
+    const req = httpTestingController.expectOne('http://127.0.0.1:5000/validateapikey');
+    const reqHeaders = req.request.headers;
+    expect(req.request.method).toEqual('POST');
+    expect(reqHeaders.keys()).toEqual(['X-API-KEY']);
+  });
+
+  it('should add a chat question to the chat history', async () => {
+    await fixtureDataChat.whenStable();
+    fixtureDataChat.detectChanges();
+    let addHistorySpy = spyOn<any>(dataChat, '_addToHistory').and.callThrough();
+
+    dataChat.chat('test_question');
+    await fixtureDataChat.whenStable();
+    fixtureDataChat.detectChanges();
+
+    expect(addHistorySpy).toHaveBeenCalledWith({question: 'test_question'});
+    expect(dataChat.history.length).toEqual(1);
   });
 });
