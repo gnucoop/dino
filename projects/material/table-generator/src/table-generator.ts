@@ -107,10 +107,10 @@ export class TableGenerator implements OnDestroy {
   constructor(private _cdr: ChangeDetectorRef, private _papa: Papa) {
     this._handleCsvDataSub = this._csvFile
       .pipe(filter(file => file != null))
-      .subscribe(f => this._handleData(f, 'file'));
+      .subscribe(f => this._handleData(f));
     this._handleJsonDataSub = this._jsonData
       .pipe(filter(j => j != null))
-      .subscribe(j => this._handleData(j, 'json'));
+      .subscribe(j => this._handleData(j));
   }
 
   /**
@@ -118,10 +118,10 @@ export class TableGenerator implements OnDestroy {
    * @param data
    * @param dataType The type of the data to be parsed (file or json)
    */
-  private _handleData(data: JsonTableData | File | null, dataType: 'file' | 'json'): void {
-    if (!data || !dataType) return;
+  private _handleData(data: JsonTableData | File | null): void {
+    if (!data) return;
 
-    if (dataType === 'file') {
+    if (data instanceof File) {
       const options: ParseConfig = {
         complete: results => this._handleComplete(results),
         error: error => this._handleError(error),
@@ -138,7 +138,7 @@ export class TableGenerator implements OnDestroy {
       };
 
       this._papa.parse(data as File, options);
-    } else if (dataType === 'json') {
+    } else if (!(data instanceof File)) {
       if (Array.isArray(data)) {
         this._handleComplete({data, errors: []});
       } else if (typeof data === 'object') {
@@ -168,7 +168,6 @@ export class TableGenerator implements OnDestroy {
    */
   private _handleComplete(results: Omit<ParseResult<{[key: string]: string}[]>, 'meta'>): void {
     const {data, errors} = results;
-    console.log(data);
     this._cleanData(data);
 
     if (data && data.length > 0) {
