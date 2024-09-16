@@ -250,7 +250,7 @@ dino-list {
     visibility: hidden;
     padding: 5px;
     cursor: pointer;
-    &.dino-edit-status-icon-touch{
+    &.dino-edit-status-icon-touch {
       visibility: visible;
     }
   }
@@ -493,6 +493,14 @@ dino-list {
       transform: rotate(360deg);
     }
   }
+  .isLightTheme .mat-mdc-header-cell:first-of-type,
+  .isLightTheme .mat-mdc-cell:first-of-type {
+    background-color: rgb(var(--palette-background-background));
+  }
+  .isDarkTheme .mat-mdc-header-cell:first-of-type,
+  .isDarkTheme .mat-mdc-cell:first-of-type {
+    background-color: rgb(var(--palette-background-background-dark));
+  }
 }
 
 .mat-mdc-select-panel {
@@ -509,15 +517,6 @@ dino-list {
     var(--palette-foreground-secondary-text-dark),
     var(--palette-foreground-secondary-text-dark-alpha)
   ) !important;
-}
-
-.isLightTheme .mat-mdc-header-cell:first-of-type,
-.isLightTheme .mat-mdc-cell:first-of-type {
-  background-color: rgb(var(--palette-background-background));
-}
-.isDarkTheme .mat-mdc-header-cell:first-of-type,
-.isDarkTheme .mat-mdc-cell:first-of-type {
-  background-color: rgb(var(--palette-background-background-dark));
 }
 
 .isDarkTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {

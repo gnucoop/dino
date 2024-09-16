@@ -70,7 +70,8 @@ import {
   SearchFiltersComponent,
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ExportList, ExportListType} from '@dino/material/export-list';
+import {ExportList} from '@dino/material/export-list';
+import {ExportListData, ExportListType} from '@dino/core/exporter';
 import {FormStatusChanger, FormStatusChangerData} from '@dino/material/form-status-changer';
 import {ImportForm} from '@dino/material/import-form';
 import {
@@ -1604,7 +1605,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       this.dataSource.dataResults.value != null
     ) {
       const formSchema: FormSchema = this.dataSource.additionalDataSchema as Model as FormSchema;
-      const dialogConfig = new MatDialogConfig();
+      const dialogConfig: MatDialogConfig<ExportListData> = new MatDialogConfig<ExportListData>();
       if (ev === 'XLSX') {
         dialogConfig.data = {
           exportFormat: 'xlsx',
@@ -1612,6 +1613,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           listType: 'forms',
           nodesVisibility: this._nodesVisibility,
           formSchema,
+          downloadFile: true,
         };
       } else if (ev === 'CSV') {
         dialogConfig.data = {
@@ -1619,7 +1621,8 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           selectAll: true,
           listType: 'forms',
           nodesVisibility: this._nodesVisibility,
-          formSchema
+          formSchema,
+          downloadFile: true,
         };
       }
       this._openExportDialog(dialogConfig);
@@ -1635,14 +1638,15 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       const formSchema: FormSchema = this._generateExportSchema(
         this.dataSource.modelSchema.title ?? '',
       );
-      const dialogConfig = new MatDialogConfig();
+      const dialogConfig: MatDialogConfig<ExportListData> = new MatDialogConfig<ExportListData>();
       if (ev === 'XLSX') {
         dialogConfig.data = {
           exportFormat: 'xlsx',
           selectAll: true,
           listType: 'metrics',
           nodesVisibility: this._nodesVisibility,
-          formSchema
+          formSchema,
+          downloadFile: true,
         };
       } else if (ev === 'CSV') {
         dialogConfig.data = {
@@ -1650,7 +1654,8 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           selectAll: true,
           listType: 'metrics',
           nodesVisibility: this._nodesVisibility,
-          formSchema
+          formSchema,
+          downloadFile: true
         };
       }
       this._openExportDialog(dialogConfig);
