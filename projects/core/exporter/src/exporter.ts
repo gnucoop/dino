@@ -35,7 +35,7 @@ import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {Directive, EventEmitter, OnDestroy, Optional, Output} from '@angular/core';
 import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 import {FormSchema} from '@dino/core/forms';
@@ -82,7 +82,10 @@ export class Exporter implements OnDestroy {
    */
   private _exportedFile: BehaviorSubject<File | null> = new BehaviorSubject<File | null>(null);
   get exportedFile(): Observable<File | null> {
-    return this._exportedFile.pipe(filter(f => f != null));
+    return this._exportedFile.pipe(
+      filter(f => f != null),
+      shareReplay(1),
+    );
   }
   /**
    * The Export Format
@@ -135,6 +138,9 @@ export class Exporter implements OnDestroy {
    * The Exporting state of the export
    */
   private _isExporting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  get isExporting(): Observable<boolean> {
+    return this._isExporting.asObservable();
+  }
 
   /**
    * Sets up all the Exporter parameters
@@ -752,7 +758,22 @@ export class Exporter implements OnDestroy {
         labels[name] = fieldName;
       }
     });
+    if (this._setupData.value && this._setupData.value.removeCommas) {
+      this._removeCommasFromlabels(labels);
+    }
     return labels;
+  }
+
+  /**
+   * Removes commas from all Labels
+   * @param labels The labels
+   * @returns
+   */
+  private _removeCommasFromlabels(labels: {[name: string]: string}) {
+    if (!labels) return;
+    for (let key in labels) {
+      labels[key] = labels[key].replace(/,/g, '').replace(/ +(?= )/g, '');
+    }
   }
 
   /**

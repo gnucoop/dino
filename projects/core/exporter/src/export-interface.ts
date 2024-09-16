@@ -79,6 +79,11 @@ export interface ExportOptions {
    * If true, the file will be exported with a single header
    */
   singleHeader?: boolean;
+  /**
+   * If true, commas (csv delimiter) will be stripped from field labels
+   * before converting and exporting the file
+   */
+  removeCommas?: boolean;
 }
 
 /**
