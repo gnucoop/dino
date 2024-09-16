@@ -54,19 +54,8 @@ import {filter, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators'
 import * as XLSX from 'xlsx';
 
 import {FormSchema} from '@dino/core/forms';
-import {NodeVisibility} from '@dino/core/list';
 import {ToggleButtonComponent} from './toggle-button';
-import {
-  AjfField,
-  Context,
-  Data,
-  ExportData,
-  ExportFilters,
-  ExportFormat,
-  ExportModel,
-  MAX_SHEETNAME_LENGTH,
-  SelOption,
-} from './export-interface';
+
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {LocationManager} from '@dino/core/locations';
@@ -77,38 +66,20 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
 import {MatSelectChange} from '@angular/material/select';
-import {ExportListType} from './export-list-type';
+import {
+  AjfField,
+  Context,
+  Data,
+  ExportData,
+  ExportFilters,
+  ExportFormat,
+  MAX_SHEETNAME_LENGTH,
+  ExportModel,
+  SelOption,
+  ExportListData,
+} from '@dino/core/exporter';
 
-/**
- * The export form component dialog data interface
- */
-export interface ExportListData {
-  /**
-   * The desired export format
-   */
-  exportFormat?: 'xlsx' | 'csv';
-  /**
-   * If true, all fields are automatically selected when the
-   * dialog is opened.
-   */
-  selectAll?: boolean;
-
-  /**
-   * The type of the list that is being exported
-   */
-  listType?: ExportListType;
-
-  /**
-   * The Ajf Form Nodes Visibility observable.
-   */
-  nodesVisibility: Observable<NodeVisibility[]>;
-
-  /**
-   * The Form Schema
-   */
-  formSchema: FormSchema;
-}
-
+// @TODO: Use Exporter Class and remove all duplicated methods from here
 @Component({
   selector: 'dino-export-list',
   templateUrl: 'export-list.html',
