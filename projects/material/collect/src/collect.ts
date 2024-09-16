@@ -344,6 +344,16 @@ export class Collect implements OnDestroy {
   }
 
   /**
+   * Redirects to the forms' DataChat component
+   * @param schemaId The clicked item schema id
+   */
+  viewDataChat(schemaId: string | undefined): void {
+    if (schemaId != null) {
+      this._router.navigate(['forms', schemaId, 'datachat']);
+    }
+  }
+
+  /**
    * Opens the Delete Schema dialog
    * @param schemaId The clicked item schema id
    */

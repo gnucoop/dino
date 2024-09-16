@@ -71,6 +71,18 @@
             >
               <mat-icon>place</mat-icon>
             </button>
+            <!-- Chat with your data -->
+            <button
+              *ngIf="getCollectType === 'forms'"
+              mat-mini-fab
+              color="primary"
+              aria-label="Chat with your data"
+              [matTooltip]="'Chat with your data'|transloco"
+              (click)="viewDataChat(item.schemaId); $event.stopPropagation();"
+            >
+              <mat-icon>smart_toy</mat-icon>
+            </button>
+            <!-- // -->
           </div>
           <div class="title"></div>
           <div class="dino-grid-icon">
