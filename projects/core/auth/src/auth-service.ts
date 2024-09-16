@@ -281,6 +281,7 @@ export class AuthService {
             this._storeRefreshToken(null);
             this._storeUserInfo(null);
             this._removeAuthConfig();
+            this._clearApiKeys();
             this.logoutEvt.emit(true);
           }),
           mapTo(true),
@@ -651,6 +652,16 @@ export class AuthService {
     } else {
       localStorage.setItem(this._getAuthTokenLocaleStorageKey(), token);
     }
+  }
+
+  /**
+   * Removes all locally stored Dino Api Keys
+   */
+  private _clearApiKeys(): void {
+    const storageKeys = Object.keys(localStorage);
+    storageKeys.forEach(key => {
+      if (key.includes('dino_api_key')) localStorage.removeItem(key);
+    });
   }
 
   /**
