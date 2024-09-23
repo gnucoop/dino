@@ -141,7 +141,7 @@
     "semver": "^7.3.5",
     "shelljs": "^0.8.5",
     "svg-pan-zoom": "^3.6.1",
-    "ts-json-schema-generator": "^1.0.0",
+    "ts-json-schema-generator": "^2.3.0",
     "ts-node": "^10.7.0",
     "typescript": "~5.1.6",
     "unique-names-generator": "^4.7.1"
