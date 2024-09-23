@@ -32,6 +32,7 @@ import {
   RxDocument,
   RxDocumentData,
   RxError,
+  RxGraphQLPullResponseModifier,
   RxTypeError,
 } from 'rxdb';
 import {RxDBMigrationSchemaPlugin} from 'rxdb/plugins/migration-schema';
@@ -921,7 +922,7 @@ export class DataService implements IDataService {
           _requestCheckpoint: any,
         ) {
           return pullResponseModifier(plainResponse);
-        },
+        } as RxGraphQLPullResponseModifier<any, RxDocumentData<Model>>,
         batchSize: this.config.syncOptions.batchSizePull ?? DEFAULT_SYNC_OPTIONS.batchSizePull,
       },
       push: {
