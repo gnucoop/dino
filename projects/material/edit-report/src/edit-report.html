@@ -23,7 +23,7 @@
               </div>
             </mat-step>
 
-            <mat-step>
+            <mat-step [completed]="(isView|async)">
               <ng-template matStepLabel>{{'REPORT DATA'|transloco}}</ng-template>
               <div>
                 <button mat-icon-button matStepperPrevious aria-label="Previous step">
