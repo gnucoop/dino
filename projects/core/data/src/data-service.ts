@@ -506,7 +506,6 @@ export class DataService implements IDataService {
               this._collectionChangedEmit('Document updated', doc.collection);
             }
           }),
-          map(_ => doc),
           catchError(err => {
             if (isDevMode()) {
               console.log(err);
