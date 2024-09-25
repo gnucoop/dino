@@ -96,7 +96,8 @@ export function addNestedProps(
   if (lastProp) {
     baseObj[lastProp.toString()] = value;
     if (options != null && lastProp === '$regex') {
-      baseObj[lastProp.toString()] = new RegExp(value, options ? options : 'i');
+      baseObj[lastProp.toString()] = value;
+      baseObj['$options'] = options ?? 'i';
     }
   }
 
