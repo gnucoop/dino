@@ -27,9 +27,13 @@
           multiple
           [disabled]="data.userAction === 'view'"
         >
-          <mat-option *ngFor="let userGroup of userGroups|async" [value]="userGroup.id"
-            >{{userGroup.groupName}}</mat-option
+          <mat-option
+            *ngFor="let userGroup of userGroups|async"
+            [value]="userGroup.id"
+            [disabled]="data.userAction === 'view'"
           >
+            {{userGroup.groupName}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </form></mat-dialog-content
