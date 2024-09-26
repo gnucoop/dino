@@ -35,7 +35,7 @@ import {UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators} from
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
-import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
+import {DataModelManager, DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
 import {FormData, FormSchemaManager, FormStatus} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
@@ -320,7 +320,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     }
     if (this._caseManager != null) {
       group['case'] = new UntypedFormControl('', validatorFn);
-      this.formMetricsValues['case'] = group['case'].valueChanges.pipe(map(vc => vc.option ?? vc));
+      this.formMetricsValues['case'] = group['case'].valueChanges.pipe(
+        map(vc => {
+          return vc.option ?? vc;
+        }),
+      );
     }
 
     if (this._projectManager != null) {
@@ -687,6 +691,10 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
               option.name != this.formMetrics.get('name')?.value
             );
           });
+
+          const metricsMatchingBySecondaryField: RxDocument<Metric>[] =
+            this._filteredOptionsBySecondaryMetricField(metricOptions, mtrName, metricType);
+
           const matchingMetricsParentsIDs = [
             ...new Set(metricsMatchingByName.map(mt => mt.parent_id)),
           ];
@@ -698,7 +706,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
                 )
               : [];
           return {
-            metricOptions: [...new Set([...metricsMatchingByName, ...metricsMatchingParents])],
+            metricOptions: [
+              ...new Set([
+                ...metricsMatchingByName,
+                ...metricsMatchingParents,
+                ...metricsMatchingBySecondaryField,
+              ]),
+            ],
             metricValue,
           };
         }
@@ -714,13 +728,19 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
             if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
               metricValue = '';
             }
-            const querySelector = {
+            let querySelector: DataQuerySelector = {
               name: {$regex: metricValue, $options: 'i'},
               is_deleted: {$ne: true},
             };
             if (this._metricManagers[metricType] == null) {
               return [];
             }
+            querySelector = this._addSecondaryMetricFieldQuery(
+              querySelector,
+              metricValue as string,
+              metricType,
+            );
+
             let metricsObs: Observable<RxDocument<Metric, {}>[]> = this._metricManagers[
               metricType
             ]!.query({
@@ -784,6 +804,120 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         }
       }
     });
+  }
+
+  /**
+   * Add secondary metric field as filter in case metric query
+   * @param metricNameQuerySelector
+   * @param metricValue
+   * @param metricType
+   * @returns the data query selector with the base metric name filter and the new secondary filter
+   */
+  private _addSecondaryMetricFieldQuery(
+    metricNameQuerySelector: DataQuerySelector,
+    metricValue: string,
+    metricType: string,
+  ): DataQuerySelector {
+    if (
+      metricValue &&
+      metricValue.length &&
+      this.secondaryMetricFieldsDisplayed &&
+      this.secondaryMetricFieldsDisplayed[metricType]
+    ) {
+      const secondaryDisplayedProp: string[] =
+        this.secondaryMetricFieldsDisplayed[metricType].split(' ');
+      const props: {[key: string]: any} =
+        this._metricManagers[metricType]?.collectionSchema.properties || {};
+
+      if (secondaryDisplayedProp[0] && props[secondaryDisplayedProp[0]]) {
+        const secondaryQueryOpt: DataQuerySelector = {};
+        if (props[secondaryDisplayedProp[0]].type === 'number') {
+          if (+metricValue) {
+            secondaryQueryOpt[secondaryDisplayedProp[0]] = {
+              $eq: +metricValue,
+            };
+          }
+        } else {
+          secondaryQueryOpt[secondaryDisplayedProp.join('.')] = {
+            $regex: metricValue,
+            $options: 'i',
+          };
+        }
+
+        if (Object.keys(secondaryQueryOpt).length) {
+          return {
+            $or: [{name: metricNameQuerySelector['name']}, secondaryQueryOpt],
+            is_deleted: {$ne: true},
+          };
+        }
+      }
+    }
+    return metricNameQuerySelector;
+  }
+
+  /**
+   * Return filtered metric options by secondary metric field
+   * @param metricOptions
+   * @param metricValue
+   * @param metricType
+   * @returns
+   */
+  private _filteredOptionsBySecondaryMetricField(
+    metricOptions: RxDocument<Metric>[],
+    metricValue: string,
+    metricType: string,
+  ): RxDocument<Metric>[] {
+    let metricsMatchingBySecondaryField: RxDocument<Metric>[] = [];
+    if (
+      metricValue &&
+      metricValue.length &&
+      this.secondaryMetricFieldsDisplayed &&
+      this.secondaryMetricFieldsDisplayed[metricType]
+    ) {
+      const secondaryDisplayedProp: string[] =
+        this.secondaryMetricFieldsDisplayed[metricType].split(' ');
+      const props: {[key: string]: any} =
+        this._metricManagers[metricType]?.collectionSchema.properties || {};
+
+      if (secondaryDisplayedProp[0] && props[secondaryDisplayedProp[0]]) {
+        if (props[secondaryDisplayedProp[0]].type === 'number') {
+          if (+metricValue) {
+            metricsMatchingBySecondaryField = metricOptions.filter(
+              (option: {[key: string]: any}) => {
+                return (
+                  +option[secondaryDisplayedProp[0]] === +metricValue &&
+                  option['name'] != this.formMetrics.get('name')?.value
+                );
+              },
+            );
+          }
+        } else {
+          metricsMatchingBySecondaryField = metricOptions.filter((option: {[key: string]: any}) => {
+            let propValue =
+              option[secondaryDisplayedProp[0]] &&
+              typeof option[secondaryDisplayedProp[0]] === 'string'
+                ? option[secondaryDisplayedProp[0]].toLowerCase()
+                : '';
+            if (
+              secondaryDisplayedProp[0] === 'metric_data' &&
+              secondaryDisplayedProp[1] &&
+              secondaryDisplayedProp[1].length
+            ) {
+              propValue =
+                option[secondaryDisplayedProp[0]] &&
+                option[secondaryDisplayedProp[0]][secondaryDisplayedProp[1]]
+                  ? option[secondaryDisplayedProp[0]][secondaryDisplayedProp[1]].toLowerCase()
+                  : '';
+            }
+            return (
+              propValue.includes(metricValue) &&
+              option['name'] != this.formMetrics.get('name')?.value
+            );
+          });
+        }
+      }
+    }
+    return metricsMatchingBySecondaryField;
   }
 
   /**
