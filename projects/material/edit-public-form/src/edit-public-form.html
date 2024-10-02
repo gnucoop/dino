@@ -21,7 +21,14 @@
 </ng-container>
 
 <ng-template #successMsg>
-  <div class="dino-success-msg">
-    <mat-icon>done</mat-icon>
+  <div class="dino-edit-form-success-container">
+    <mat-card appearance="outlined" class="form-container">
+      <mat-card-content>
+        <h2>{{ 'The form has been successfully submitted.'|transloco }}</h2>
+      </mat-card-content>
+      <mat-card-actions>
+        <mat-icon class="dino-success-msg">check</mat-icon>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </ng-template>

@@ -18,6 +18,29 @@ dino-edit-public-form {
     }
   }
 
+  .dino-edit-form-success-container {
+    max-width: 1020px;
+    margin: auto;
+    .form-container {
+      min-width: 350px;
+      border-left: 3px solid;
+      border-radius: 5px;
+      box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%),
+        0px 1px 10px 0px rgb(0 0 0 / 12%);
+    }
+    .mat-mdc-card-content {
+      padding: 30px !important;
+      font-weight: bold;
+    }
+    .mat-mdc-card-actions {
+      background-color: rgba($color: #32db64, $alpha: 0.2);
+    }
+    .dino-success-msg {
+      color: #32db64;
+      margin-left: auto;
+    }
+  }
+
   .ajf-form-container {
     max-width: 1020px;
     margin: auto;
@@ -187,14 +210,5 @@ dino-edit-public-form {
         }
       }
     }
-  }
-
-  .dino-success-msg {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-content: center;
-    height: 70vh;
-    color: #32db64;
   }
 }

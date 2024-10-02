@@ -30,6 +30,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
 
 import {EditPublicForm} from './edit-public-form';
+import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
@@ -40,6 +41,7 @@ import {MatIconModule} from '@angular/material/icon';
     DinoFloatingButtonModule,
     FormsModule,
     MatIconModule,
+    MatCardModule,
     MatSnackBarModule,
     RouterModule,
     TranslocoModule,

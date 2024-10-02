@@ -294,4 +294,5 @@ export const ESP: Translation = {
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     'Uno o más grupos de usuarios tienen permisos para este esquema. ¿Está seguro de que desea eliminarlo?',
   'This name is already being used.': 'Este nombre ya se utiliza.',
+  'The form has been successfully submitted.': 'El formulario se ha enviado correctamente.',
 };

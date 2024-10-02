@@ -303,4 +303,5 @@ export const ITA: Translation = {
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     'Uno o più Gruppi specificano dei permessi per questo Schema. Sicuro di volerlo eliminare?',
   'This name is already being used.': 'Questo nome è già usato.',
+  'The form has been successfully submitted.': 'Il form è stato inviato correttamente.',
 };

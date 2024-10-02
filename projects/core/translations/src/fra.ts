@@ -288,4 +288,5 @@ export const FRA: Translation = {
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     "Un ou plusieurs groupes d'utilisateurs sont autorisés à utiliser ce schéma. Êtes-vous sûr de vouloir le supprimer ?",
   'This name is already being used.': 'Ce nom est déjà utilisé.',
+  'The form has been successfully submitted.': 'Le formulaire a été envoyé avec succès.',
 };
