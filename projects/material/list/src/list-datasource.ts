@@ -262,6 +262,13 @@ export class ListDataSource<
   }
 
   /**
+   * The main model DataModelManager.
+   */
+  get manager(): DataModelManager<T> {
+    return this._dataModelManager;
+  }
+
+  /**
    * Main unsub subject.
    * Used for unsubscribing all subscriptions.
    */

@@ -13,6 +13,7 @@ yarn-error.log
 
 #Yarn
 .yarn
+.yarn/releases
 
 # IDEs and editors
 .idea/
@@ -23,8 +24,6 @@ yarn-error.log
 .settings/
 *.sublime-workspace
 
-# Yarn
-.yarn/releases
 
 # Visual Studio Code
 .vscode/*
@@ -52,3 +51,4 @@ Thumbs.db
 
 # Karma polyfills
 karma-polyfills.js
+.aider*

@@ -51,7 +51,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatTabGroup} from '@angular/material/tabs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActionTrigger, ActionTriggerData, Model} from '@dino/core/data';
+import {ActionTrigger, ActionTriggerData, Model, TriggerType} from '@dino/core/data';
 import {
   FormData,
   FormDataManager,
@@ -1275,8 +1275,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * Called when a row is edited inline (eg. a boolean toggle)
    */
   editQuickAction(ev: {patchedDoc: Partial<T> & {id: string}; previousDoc: T}) {
-    if (!ev || !ev.patchedDoc || !ev.previousDoc) return;
-    this._fdm
+    const manager = this._dataSource?.manager;
+    if (!ev || !ev.patchedDoc || !ev.previousDoc || !manager) return;
+    const collectionName =  manager.collectionName
+    manager
       .patch(ev.patchedDoc)
       .pipe(take(1))
       .subscribe(res => {
@@ -1288,8 +1290,8 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
             newValue: res,
           };
           this.emitActionTrigger.emit({
-            name: 'Form Data Changed',
-            triggerType: 'on_form_data_change',
+            name: `${collectionName} Changed`,
+            triggerType: `on_${collectionName}_change` as TriggerType,
             triggerData: trigData,
           });
         }
