@@ -22,6 +22,13 @@ export class MatUsersListE2E implements OnInit {
     {column: 'email', label: 'Email', displayed: true},
     {column: 'full_name', label: 'Full Name', displayed: true},
     {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+    {
+      column: 'disabled',
+      label: 'Disabled',
+      displayed: true,
+      isEditable: _ => true,
+      fieldType: 3,
+    },
   ];
 
   readonly onClickRowActions: ActionType[] = ['select', 'expand'];
@@ -43,11 +50,6 @@ export class MatUsersListE2E implements OnInit {
 
   readonly listRowActions: ListAction[] = [
     {
-      actionType: 'view',
-      matIcon: 'visibility',
-      customAction: row => this.openDialog(row, 'view'),
-    },
-    {
       actionType: 'edit',
       matIcon: 'create',
       customAction: row => this.openDialog(row, 'edit'),
@@ -56,6 +58,11 @@ export class MatUsersListE2E implements OnInit {
       actionType: 'delete',
       matIcon: 'delete',
       askConfirm: true,
+    },
+    {
+      actionType: 'view',
+      matIcon: 'visibility',
+      customAction: row => this.openDialog(row, 'view'),
     },
   ];
 
