@@ -75,6 +75,10 @@ export const schema = {
       ],
       "description": "The UUID of the authenticated user on the authentication server.",
       "ref": "user_auth"
+    },
+    "disabled": {
+      "type": "boolean",
+      "description": "If true, the user authentication is temporarily Disabled"
     }
   },
   "required": [
@@ -94,5 +98,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 0
+  "version": 1
 } as RxJsonSchema<UserData>;

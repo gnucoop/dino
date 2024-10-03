@@ -21,7 +21,7 @@
  */
 import {User} from '@dino/core/auth';
 import {Model} from '@dino/core/data';
-import {MigrationStrategies} from 'rxdb';
+import {MigrationStrategies, RxDocument} from 'rxdb';
 
 /**
  * This model is used to store Users.
@@ -42,8 +42,15 @@ export interface UserData extends Omit<User<{}>, 'id'>, Model {
    * The UUID of the authenticated user on the authentication server.
    */
   user_auth_ref_id: string | null;
+
+  /**
+   * If true, the user authentication is temporarily Disabled
+   */
+  disabled?: boolean;
 }
 
-export const VERSION = 0;
+export const VERSION = 1;
 
-export const migrationStrategies: MigrationStrategies = {};
+export const migrationStrategies: MigrationStrategies = {
+  1: (doc: RxDocument<UserData>) => ({...doc, disabled: false}),
+};
