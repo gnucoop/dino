@@ -46,7 +46,7 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '@dino/core/auth';
+import {AuthService, User} from '@dino/core/auth';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
@@ -679,7 +679,8 @@ export class EditReport implements AfterViewInit {
    * Download the editable social balance
    */
   async downloadSocialBalance() {
-    if (this._currentReportInstance == null || this.gptPromptStatus !== '') {
+    const userInfo: User | null = this._auth.getUserInfo();
+    if (this._currentReportInstance == null || this.gptPromptStatus !== '' || !userInfo) {
       return;
     }
     if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
@@ -713,6 +714,7 @@ export class EditReport implements AfterViewInit {
       fd.append('graphqlUrl', this.graphqlUrl);
       fd.append('authToken', this._auth.getAuthToken() || '');
       fd.append('prompt', prompt);
+      fd.append('username', userInfo.email);
       let text: string;
       try {
         const resp = await fetch(gptPropmtUrl, {method: 'POST', mode: 'cors', body: fd});
