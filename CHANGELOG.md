@@ -1,3 +1,36 @@
+<a name="16.1.0"></a>
+# 16.1.0 "alternative-antlion" (2024-10-11)
+### Bug Fixes
+* **core/data:** Added RxGraphQLPullResponseModifier type to pull responseModifier function in data service, fixing an issue with ts-json-schema-generator typecheck. ([9dfdc53](https://bitbucket.org/gnucoop/dino/commits/9dfdc5333f7851ff07a9eb98a1f5c8c1031b9d2e))
+* **core/data:** Fixed a bug in data service 'update' method that caused it to return the old (not updated) document. Caused by RxDb major version double upgrade. ([2bdd8c8](https://bitbucket.org/gnucoop/dino/commits/2bdd8c8de60a3dedc6983eb5ddca207fe275e903))
+* **core/data:** Fixed a bug in data-utility-functions 'addNestedProps' causing advanced filters regex rxQueries not to work correctly. ([86b8995](https://bitbucket.org/gnucoop/dino/commits/86b8995166679c164e2d71f26f1ac26967941f73))
+* **core/exporter:** Fixed circular imports ([505ead2](https://bitbucket.org/gnucoop/dino/commits/505ead28a5aa71c0754b6face279644c624c95d0))
+* **core/exporter:** Removed old export from public_api.ts ([1c198b1](https://bitbucket.org/gnucoop/dino/commits/1c198b1347c5af9acaf7e8fe3e3940b7bbacab46))
+* **core/logs:** Added missing null check in LogManager. ([fd04ac8](https://bitbucket.org/gnucoop/dino/commits/fd04ac88c861b8415d02901c4570dc1a2dd75aba))
+* **e2e-app/forms-list:** Fixed a bug causing default list headers (ID, created at, etc.) to be incorrectly filtered out. ([2f057ce](https://bitbucket.org/gnucoop/dino/commits/2f057ceb24f0695894641f25d08b7d31fb93fd7d))
+* **material/edit-report:** filter by form status only if status exists in the schema ([e110f11](https://bitbucket.org/gnucoop/dino/commits/e110f11e47bf5af75ea9304d961c4461335ef318))
+* **material/list:** Fixed $regex queries in listDataSource (new $regex format in rxDb v15). ([e8ef5e0](https://bitbucket.org/gnucoop/dino/commits/e8ef5e0875cf3e912539d7f039d0b6b265a6a32e))
+* **material/list:** Fixed a bug causing ExportMetrics not to work. ([7020deb](https://bitbucket.org/gnucoop/dino/commits/7020deb4814ad18be7fcd38043c58f342b986f1c))
+* **material/metric-section:** Added missing formsCount number type check. ([4ea993a](https://bitbucket.org/gnucoop/dino/commits/4ea993aee799077c17f3ab59544009eda4ef9f84))
+* **material/user-editor:** User Editor select options are now disabled (not selectable) in view mode. ([bcd2427](https://bitbucket.org/gnucoop/dino/commits/bcd24276f26dfa5db6215408e5d5b08a0c146caa))
+### Features
+* **core/data:** Added BulkUpdate to base-data-model-manager. It is now used by bulkFormEditAction method in material/list. ([ac0735e](https://bitbucket.org/gnucoop/dino/commits/ac0735e3c78cc8eae421799eda0251ba08995cd3))
+* **core/exporter:** Added "singleHeader" to ExportOptions. If true, only the Labels header is written on the export sheet/file. ([eb033c7](https://bitbucket.org/gnucoop/dino/commits/eb033c704f1da73a46c444c00c26224ef22aecdb))
+* **core/exporter:** Added Exporter class in core. When instantiated, can be used to export/download csv and xlsx files. ([514c417](https://bitbucket.org/gnucoop/dino/commits/514c417ac1b245590b376f91334c821b2574e836))
+* **core/forms:** Added Permission Relevant methods to Form Schema Manager. Relevant Permissions evaluation is now performed in Dino (not Ajf). ([162863d](https://bitbucket.org/gnucoop/dino/commits/162863dd75dd776cab05e8c9d1cb2fa1192f98a8))
+* **e2e-app/datachat:** Created E2E app data chat modules and component. Updated routes. ([a8f6732](https://bitbucket.org/gnucoop/dino/commits/a8f6732ea5cf639269a3c63c3d03effa2a458929))
+* **e2e-app/mat-manage-users:** Added boolean quickEdit column 'disabled' to users list. ([af556b9](https://bitbucket.org/gnucoop/dino/commits/af556b9c5ed2b0a6e0690b1871d2b050b99ba558))
+* **e2e-app/reports-list:** Added Form Status to Reports List headers. Added metric icons to metric headers. ([4a66444](https://bitbucket.org/gnucoop/dino/commits/4a6644460810c16e9bd19d45c21e317347a4057a))
+* **e2e-app:** Added gpt-e2e module and component. App routes modified. ([9196547](https://bitbucket.org/gnucoop/dino/commits/919654768612d8a44289f169fced2c7ae7cdc38a))
+* **material/collect:** Added viewDataChat method and button to collect grid actions ([55e2c78](https://bitbucket.org/gnucoop/dino/commits/55e2c78b96961cf161888969fdfc995e9a54d243))
+* **material/datachat:** Added DataChat module and DataChatEntry, DataChat components. ([b20fcdd](https://bitbucket.org/gnucoop/dino/commits/b20fcdd169381a3d108dfdd345fd807ff5f315a8))
+* **material/datachat:** Created DataChat module and component ([d784def](https://bitbucket.org/gnucoop/dino/commits/d784def8df03b3629426b56020321c008a1921e8))
+* **material/datachat:** Datachat has two modes now: 'datachat' and 'completion'. Added Text Dialog component. ([b35dfa2](https://bitbucket.org/gnucoop/dino/commits/b35dfa29d0092637eba5828e7bb77664d82a5d32))
+* **material/list:** Added getter for manager to ListDatasource. Generalized editQuickAction in List for every dataModelManager. ([51be3e0](https://bitbucket.org/gnucoop/dino/commits/51be3e08655c5ec42b14438d3360ae864707d81d))
+* **material/table-generator:** Added Table Generator component. Creates material tables from csv or json data. ([bd98245](https://bitbucket.org/gnucoop/dino/commits/bd98245b60aec8020e26dd4b1d805fcafa6475ee))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.0.3"></a>
 # 16.0.3 "brainy-skunk" (2024-08-14)
 ### Bug Fixes
