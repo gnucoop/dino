@@ -27,6 +27,7 @@ import {MatReportsE2E} from './mat-reports/reports-e2e.component';
 import {MatUsersE2E} from './mat-users/users-e2e.component';
 import {additionalConfig} from './mockconfig';
 import {DataChatE2E} from './mat-datachat/datachat-e2e.component';
+import {GptE2E} from './mat-gpt/gpt-e2e.component';
 
 const authGuard = additionalConfig.authGuard ? [AuthGuard] : undefined;
 export const E2E_APP_ROUTES: Routes = [
@@ -309,6 +310,12 @@ export const E2E_APP_ROUTES: Routes = [
       {path: '', component: MatReportsE2E, data: {breadcrumbs: null}},
       {path: '**', redirectTo: '/reports', pathMatch: 'full'},
     ],
+  },
+  {
+    path: 'gpt',
+    canActivate: authGuard,
+    data: {breadcrumbs: [{label: 'GPT', url: 'gpt', icon: 'chat'}]},
+    component: GptE2E,
   },
   {
     path: 'dashboard',

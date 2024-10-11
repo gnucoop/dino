@@ -78,6 +78,7 @@ export class MatMainE2E {
       ) {
         sections.push({label: 'Metrics', icon: 'bookmarks', url: 'metrics'});
       }
+      sections.push({label: 'GPT', url: 'gpt', icon: 'chat'});
 
       return sections;
     }),

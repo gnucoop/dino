@@ -76,6 +76,12 @@ const routes: Routes = [
     data: {breadcrumbs: [{label: 'Users', url: 'users', icon: 'people'}], adminroles: ['admin']},
   },
   {
+    path: 'gpt',
+    loadChildren: () => import('./mat-gpt/gpt-e2e.module').then(m => m.GptE2eModule),
+    canActivate: [AuthGuard],
+    data: {breadcrumbs: [{label: 'GPT', url: 'gpt', icon: 'chat'}]},
+  },
+  {
     path: 'f',
     loadChildren: () =>
       import('./mat-edit-public-form/edit-public-form-e2e.module').then(

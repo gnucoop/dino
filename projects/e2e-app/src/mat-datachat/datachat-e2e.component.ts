@@ -10,12 +10,12 @@ export class DataChatE2E {
   validateEndpoint = 'validateapikey';
   startEndpoint = 'startdatachat';
   endEndpoint = 'enddatachat';
-  chatEndpoint = 'datachat';
+  dataChatEndpoint = 'datachat';
   endpointUrls = {
     validateEndpoint: this.validateEndpoint,
     startEndpoint: this.startEndpoint,
     endEndpoint: this.endEndpoint,
-    chatEndpoint: this.chatEndpoint,
+    dataChatEndpoint: this.dataChatEndpoint,
   };
   constructor() {}
 }
