@@ -20,8 +20,16 @@
  *
  */
 
-export * from './datachat';
-export * from './datachat-entry';
-export * from './datachat.interfaces';
-export * from './datachat.module';
-export * from './text-dialog.component';
+import {ChangeDetectionStrategy, Component, Inject, ViewEncapsulation} from '@angular/core';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+
+@Component({
+  selector: 'dino-text-dialog',
+  styleUrls: ['text-dialog.component.scss'],
+  templateUrl: './text-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+})
+export class TextDialogComponent {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {text: string}) {}
+}

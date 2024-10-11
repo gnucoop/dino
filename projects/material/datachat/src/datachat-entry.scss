@@ -13,12 +13,14 @@ dino-datachat-entry {
     }
     &.dino-datachat-entry-response,
     &.dino-datachat-entry-component-response,
-    &.dino-datachat-entry-image-response {
+    &.dino-datachat-entry-image-response,
+    &.dino-datachat-entry-image-error {
       background-color: rgba(var(--palette-primary-100), 0.2);
     }
     &.dino-datachat-entry-question,
     &.dino-datachat-entry-response,
-    &.dino-datachat-entry-image-response {
+    &.dino-datachat-entry-image-response,
+    &.dino-datachat-entry-image-error {
       display: flex;
       flex-flow: row wrap;
       align-items: center;
@@ -30,6 +32,24 @@ dino-datachat-entry {
     }
     &.dino-datachat-entry-image-response img {
       max-width: 90%;
+    }
+    .dino-datachat-sources {
+      margin-top: 15px;
+      span {
+        display: inline-block;
+        margin-right: 12px;
+      }
+
+      span:first-child {
+        padding: 6px 0;
+      }
+
+      span:not(:first-child) {
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px dotted grey;
+      }
     }
   }
   .dino-datachat-entry-icon {

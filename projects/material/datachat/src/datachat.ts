@@ -20,6 +20,7 @@
  *
  */
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -35,7 +36,7 @@ import {
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
-import {DataChatQA} from './datachat.interfaces';
+import {CompletionRequest, CompletionResponse, DataChatQA} from './datachat.interfaces';
 import {HttpClient} from '@angular/common/http';
 import {map, switchMap, take} from 'rxjs/operators';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
@@ -62,6 +63,8 @@ import {RxDocument} from 'rxdb';
 import {TableGenerator} from '@dino/material/table-generator';
 import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {AuthService, User} from '@dino/core/auth';
+import {MatSelectChange} from '@angular/material/select';
 
 /**
  * The DataChat component.
@@ -75,7 +78,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class DataChat implements OnDestroy, OnInit {
+export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   /**
    * The Chat history element
    */
@@ -112,13 +115,31 @@ export class DataChat implements OnDestroy, OnInit {
   @Input() baseDataChatAPIurl?: string;
 
   /**
+   * The base url for the graphql backend (Hasura)
+   */
+  @Input() syncGraphQLUrl?: string;
+
+  /**
+   * Defines the mode of this component.
+   * Datachat allows chatting with PandasAI about csv data files.
+   * Completion allows direct chat with LLM.
+   */
+  @Input() mode: 'datachat' | 'completion' = 'datachat';
+
+  /**
+   * The Completion mode chat namespaces
+   */
+  @Input() namespaces: string[] = [];
+
+  /**
    * The endpoint names in the urls
    */
   @Input() endpointUrls?: {
     validateEndpoint: string;
-    startEndpoint: string;
-    endEndpoint: string;
-    chatEndpoint: string;
+    dataChatEndpoint?: string;
+    completionChatEndpoint?: string;
+    startEndpoint?: string;
+    endEndpoint?: string;
   };
 
   /**
@@ -149,6 +170,12 @@ export class DataChat implements OnDestroy, OnInit {
    * The current chat history
    */
   history: DataChatQA[] = [];
+
+  /**
+   * Currently selected Chat namespace
+   */
+  currentNamespace: string =
+    this.namespaces && this.namespaces.length ? this.namespaces[0] : 'default';
 
   /**
    * Emitted when the Exporter has been successfully created and set up
@@ -188,8 +215,17 @@ export class DataChat implements OnDestroy, OnInit {
    */
   private _nodesVisibility: Observable<NodeVisibility[]>;
 
+  /**
+   * If present, terms of use for GPT have been accepted
+   */
+  private _termsAccepted: string | null = localStorage.getItem('pandas_dino_api_key_accept_terms');
+  get termsAccepted(): string | null {
+    return this._termsAccepted;
+  }
+
   constructor(
-    route: ActivatedRoute,
+    private _route: ActivatedRoute,
+    private _auth: AuthService,
     private _http: HttpClient,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
@@ -205,93 +241,123 @@ export class DataChat implements OnDestroy, OnInit {
     @Optional() private _og: OrganizationManager | null,
     private _cdr: ChangeDetectorRef,
   ) {
-    this._exporter = this._createExporter();
+    this._exporter = null;
+    this._formSchema$ = obsOf(null);
+    this._formDataList$ = obsOf([]);
+    this._nodesVisibility = obsOf([]);
+    this._exportedFile$ = obsOf(null);
+  }
 
-    this._formSchema$ = this._fsm.get(route.snapshot.params['form_schema_id']);
+  ngAfterViewInit(): void {
+    if (this.mode === 'datachat') {
+      this._exporter = this._createExporter();
 
-    this._formDataList$ = this._fdm
-      .query({
-        selector: {
-          form_schema_ref_id: {$eq: route.snapshot.params['form_schema_id']},
-          is_deleted: {$ne: true},
-        },
-      })
-      .pipe(map(docs => populateDocRefs<FormData>(docs)));
+      this._formSchema$ = this._fsm.get(this._route.snapshot.params['form_schema_id']);
 
-    this._nodesVisibility = combineLatest([
-      this._formSchema$,
-      this._udm.getActiveUserData(),
-      this._ugm.getActiveUserGroups(),
-    ]).pipe(
-      map(([fschema, activeUser, activeUserGroups]) => {
-        if (fschema == null || activeUser == null || activeUserGroups == null) return [];
+      this._formDataList$ = this._fdm
+        .query({
+          selector: {
+            form_schema_ref_id: {$eq: this._route.snapshot.params['form_schema_id']},
+            is_deleted: {$ne: true},
+          },
+        })
+        .pipe(map(docs => populateDocRefs<FormData>(docs)));
 
-        const dinoFormInfo: FormInfo = {
-          activeUser,
-          activeUserGroups,
-          createdAt: null,
-          status: null,
-          allStatuses: [],
-          user: null,
-          userGroups: null,
-        };
+      this._nodesVisibility = combineLatest([
+        this._formSchema$,
+        this._udm.getActiveUserData(),
+        this._ugm.getActiveUserGroups(),
+      ]).pipe(
+        map(([fschema, activeUser, activeUserGroups]) => {
+          if (fschema == null || activeUser == null || activeUserGroups == null) return [];
 
-        const nodesVisibility = this._fsm.getPermissionsRelevant(
-          fschema.schema.nodes,
-          dinoFormInfo,
-          this.ajfCustomFunctions
-            ? {
-                isUserInGroup: this.ajfCustomFunctions['isUserInGroup'],
-                isUserInAtLeastOneGroup: this.ajfCustomFunctions['isUserInAtLeastOneGroup'],
-              }
-            : undefined,
-        );
-        return nodesVisibility;
-      }),
-    );
+          const dinoFormInfo: FormInfo = {
+            activeUser,
+            activeUserGroups,
+            createdAt: null,
+            status: null,
+            allStatuses: [],
+            user: null,
+            userGroups: null,
+          };
 
-    this._apiKeyConfirmationSub = combineLatest([
-      this._ExporterReadyEvt,
-      this._formDataList$,
-      this.apiKeyConfirmationEvt,
-    ]).subscribe({
-      next: res => {
-        const data = res[1];
-        const confirmedKey = res[2];
-        this.apiKey.next(confirmedKey);
-        if (this._exporter && data && data.length) {
-          this._exporter.export();
-          this._createAgent(confirmedKey);
-        } else {
-          if (!data || !data.length) {
-            this.noData.next(true);
-          }
-          this.isLoading.next(false);
-        }
-        this._cdr.detectChanges();
-      },
-      error: (err: any) => {
-        if (isDevMode()) {
-          console.log(err);
-        } else {
-          this._ehms.captureErrorMessage(
-            `Could not confirm api key and trigger csv file export and agent creation: ${JSON.stringify(
-              err,
-            )}`,
-            'error',
+          const nodesVisibility = this._fsm.getPermissionsRelevant(
+            fschema.schema.nodes,
+            dinoFormInfo,
+            this.ajfCustomFunctions
+              ? {
+                  isUserInGroup: this.ajfCustomFunctions['isUserInGroup'],
+                  isUserInAtLeastOneGroup: this.ajfCustomFunctions['isUserInAtLeastOneGroup'],
+                }
+              : undefined,
           );
-        }
-      },
-    });
+          return nodesVisibility;
+        }),
+      );
 
-    forkJoin([this._formSchema$, this._formDataList$])
-      .pipe(take(1))
-      .subscribe(([schema, data]) => {
-        if (!schema || !data || !this._exporter) return;
-        this._setupExporter(this._exporter, schema, data);
+      forkJoin([this._formSchema$, this._formDataList$])
+        .pipe(take(1))
+        .subscribe(([schema, data]) => {
+          if (!schema || !data || !this._exporter) return;
+          this._setupExporter(this._exporter, schema, data);
+        });
+
+      this._apiKeyConfirmationSub = combineLatest([
+        this._ExporterReadyEvt,
+        this._formDataList$,
+        this.apiKeyConfirmationEvt,
+      ]).subscribe({
+        next: res => {
+          const data = res[1];
+          const confirmedKey = res[2];
+          this.apiKey.next(confirmedKey);
+          if (this._exporter && data && data.length) {
+            this._exporter.export();
+            this._createAgent(confirmedKey);
+          } else {
+            if (!data || !data.length) {
+              this.noData.next(true);
+            }
+            this.isLoading.next(false);
+          }
+          this._cdr.detectChanges();
+        },
+        error: (err: any) => {
+          if (isDevMode()) {
+            console.log(err);
+          } else {
+            this._ehms.captureErrorMessage(
+              `Could not confirm api key and trigger csv file export and agent creation: ${JSON.stringify(
+                err,
+              )}`,
+              'error',
+            );
+          }
+        },
       });
 
-    this._exportedFile$ = this._exporter.exportedFile;
+      this._exportedFile$ = this._exporter.exportedFile;
+    } else if (this.mode === 'completion') {
+      this._apiKeyConfirmationSub = this.apiKeyConfirmationEvt.subscribe({
+        next: (res: string) => {
+          const confirmedKey = res;
+          this.apiKey.next(confirmedKey);
+          this._addToHistory({response: 'Hello! How can I help you?', noPrompt: true});
+          this.isLoading.next(false);
+          this._cdr.detectChanges();
+        },
+        error: (err: any) => {
+          if (isDevMode()) {
+            console.log(err);
+          } else {
+            this._ehms.captureErrorMessage(
+              `Could not confirm api key: ${JSON.stringify(err)}`,
+              'error',
+            );
+          }
+        },
+      });
+    }
   }
 
   ngOnInit(): void {
@@ -357,12 +423,22 @@ export class DataChat implements OnDestroy, OnInit {
       });
   }
 
+  chat(text: string) {
+    if (this.mode === 'datachat') {
+      this.dataChat(text);
+    } else if (this.mode === 'completion') {
+      this.completionChat(text);
+    } else {
+      return;
+    }
+  }
+
   /**
    * Sends a message to the API 'datachat' endpoint and adds the response
    * to the chat history
    * @param text The chat message sent
    */
-  chat(text: string): void {
+  dataChat(text: string): void {
     this._addToHistory({question: text});
     this._udm
       .getActiveUserData()
@@ -370,7 +446,9 @@ export class DataChat implements OnDestroy, OnInit {
         switchMap(activeUserData => {
           if (!activeUserData || !this.apiKey.value) return obsOf(null);
           const headers = {'X-API-KEY': this.apiKey.value};
-          const url = `${this.baseDataChatAPIurl}/${this.endpointUrls?.chatEndpoint ?? 'datachat'}`;
+          const url = `${this.baseDataChatAPIurl}/${
+            this.endpointUrls?.dataChatEndpoint ?? 'datachat'
+          }`;
           this._addToHistory({
             componentData: {component: MatProgressBar, inputs: {mode: 'indeterminate'}},
           });
@@ -439,6 +517,128 @@ export class DataChat implements OnDestroy, OnInit {
   }
 
   /**
+   * Sends a message to the API 'completion.json' endpoint and adds the response
+   * to the chat history
+   * @param text The chat message sent
+   */
+  completionChat(text: string) {
+    const question = text;
+    const namespace = this.currentNamespace;
+    const userInfo: User | null = this._auth.getUserInfo();
+    if (question === '' || namespace == null || !this.syncGraphQLUrl || !userInfo) {
+      return;
+    }
+
+    const qa: DataChatQA = {question, namespace};
+    this._addToHistory(qa);
+
+    const chat = this._chatFromHistory();
+    chat.push(question);
+    const req: CompletionRequest = {
+      dinoGraphql: this.syncGraphQLUrl,
+      authToken: this._auth.getAuthToken() || '',
+      username: userInfo.email,
+      namespace,
+      info: this._infoFromHistory(),
+      chat,
+    };
+    if (isDevMode()) {
+      console.log('Sending completion request: ', req);
+    }
+    const url = `${this.baseDataChatAPIurl}/${
+      this.endpointUrls?.completionChatEndpoint ?? 'completion.json'
+    }`;
+    this._udm
+      .getActiveUserData()
+      .pipe(
+        switchMap(activeUserData => {
+          if (!activeUserData || !this.apiKey.value) return obsOf(null);
+          const headers = {'X-API-KEY': this.apiKey.value};
+          this._addToHistory({
+            componentData: {component: MatProgressBar, inputs: {mode: 'indeterminate'}},
+          });
+          return this._http.post<CompletionResponse | null>(url, req, {headers});
+        }),
+        take(1),
+      )
+      .subscribe({
+        next: (resp: CompletionResponse | null) => {
+          this._removeLastFromHistory();
+          if (resp == null) {
+            if (isDevMode()) console.log('Could not receive completion response');
+            return;
+          }
+          if (isDevMode()) console.log('Received completion response: ', resp);
+          if (resp.error != null) {
+            if (resp.error.includes('tokens') && resp.error.includes('length')) {
+              resp.error =
+                'Questa chat ha raggiunto la lunghezza massima, ' +
+                'ricarica la pagina per fare altre domande.';
+            }
+            this._addToHistory({
+              response: resp.error,
+            });
+          } else {
+            this._addToHistory({
+              response: resp.answer,
+              paragraphs: resp.paragraphs,
+              similarities: resp.similarities,
+            });
+          }
+          this._cdr.detectChanges();
+        },
+        error: err => {
+          if (isDevMode()) console.log(err);
+          qa.error = err.message;
+          this._removeLastFromHistory();
+          this._cdr.detectChanges();
+        },
+      });
+  }
+
+  /**
+   * Accepts terms of use for GPT
+   */
+  acceptTerms() {
+    this._termsAccepted = 'true';
+    this._cdr.markForCheck();
+    localStorage.setItem('pandas_dino_api_key_accept_terms', 'true');
+  }
+
+  selectNamespace(ev: MatSelectChange): void {
+    this.currentNamespace = ev.value ?? null;
+  }
+
+  /**
+   * Retrieves all Chat History's questions and responses.
+   * @returns Questions and responses of all chat history.
+   */
+  private _chatFromHistory(): string[] {
+    const chat: string[] = [];
+    for (const qa of this.history) {
+      if (qa.response) chat.push(qa.response);
+      if (qa.question) chat.push(qa.question);
+    }
+    return chat;
+  }
+
+  /**
+   * Gets all quoted paragraphs from chat history's responses.
+   * @returns The set of paragraphs
+   */
+  private _infoFromHistory(): string[] {
+    const info = new Set<string>();
+    for (const qa of this.history) {
+      if (qa.response && qa.paragraphs) {
+        for (const par of qa.paragraphs) {
+          info.add(par);
+        }
+      }
+    }
+    return [...info];
+  }
+
+  /**
    * Sends an agent creation request to the API 'startdatachat' endpoint
    * and adds to chat history the default table, generated by TableGenerator with
    * the exported csv file
@@ -455,6 +655,8 @@ export class DataChat implements OnDestroy, OnInit {
           }`;
           const formData = new FormData();
           formData.append('file', exportedFile);
+          const currentLang = this._ts.getActiveLang();
+          formData.append('lang', currentLang);
           return this._http.post<any>(url, formData, {headers}).pipe(
             map(response => {
               return {

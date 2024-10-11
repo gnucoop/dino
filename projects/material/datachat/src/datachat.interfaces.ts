@@ -22,15 +22,41 @@
 
 export interface DataChatQA {
   question?: string;
-  response?: string;
+  response?: string; // answer
   componentData?: ComponentData;
   imageData?: string;
   error?: string;
   explanation?: string;
   noPrompt?: boolean;
+  namespace?: string;
+  paragraphs?: string[];
+  similarities?: number[];
+  userIsHappy?: boolean;
 }
 
 export interface ComponentData {
   component: any;
   inputs?: {[key: string]: any};
+}
+
+export interface CompletionRequest {
+  dinoGraphql: string;
+  authToken: string;
+  username: string;
+  namespace: string;
+  info: string[];
+  chat: string[];
+}
+
+export interface CompletionResponse {
+  error?: string;
+  paragraphs?: string[];
+  similarities?: number[];
+  answer?: string;
+}
+
+export interface QA extends CompletionResponse {
+  question: string;
+  namespace: string;
+  userIsHappy?: boolean;
 }

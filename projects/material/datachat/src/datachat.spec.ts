@@ -7,10 +7,37 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {BehaviorSubject, of} from 'rxjs';
 import {EventEmitter} from '@angular/core';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
-import {getRxStorageMemory} from 'rxdb/plugins/memory';
+import {DATA_SERVICE_CONFIG, DataServiceConfig, Model} from '@dino/core/data';
+import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
+import {RxJsonSchema} from 'rxdb';
 
 let testDbIdx = 0;
+
+const collectionName = 'dummymodel';
+interface DummyModel extends Model {
+  name: string;
+  age?: number;
+  author?: string;
+}
+const dummySchema: RxJsonSchema<DummyModel> = {
+  title: 'dummy schema',
+  version: 0,
+  description: 'describe a dummy model',
+  type: 'object',
+  primaryKey: 'id',
+  properties: {
+    id: {type: 'string', maxLength: 200},
+    name: {type: 'string', maxLength: 200},
+    age: {type: 'number'},
+    author: {type: 'string'},
+    created_at: {type: 'string'},
+    updated_at: {type: ['string', 'null']},
+    is_deleted: {type: 'boolean'},
+    _deleted: {type: 'boolean'},
+  },
+  indexes: ['name'],
+};
+const collection = {name: collectionName, collection: {schema: dummySchema}};
 
 function dataServiceConfig(): DataServiceConfig {
   return {
@@ -19,7 +46,9 @@ function dataServiceConfig(): DataServiceConfig {
       storage: getRxStorageMemory(),
     },
     syncOptions: {
+      collection,
       url: {http: 'host'},
+      replicationIdentifier: 'test-replication',
     },
   };
 }

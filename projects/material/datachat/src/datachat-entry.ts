@@ -28,6 +28,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {DataChatQA} from './datachat.interfaces';
+import {MatDialog} from '@angular/material/dialog';
+import {TextDialogComponent} from './text-dialog.component';
 
 /**
  * The ChatEntry component.
@@ -42,7 +44,27 @@ import {DataChatQA} from './datachat.interfaces';
 })
 export class DataChatEntry implements OnDestroy {
   @Input() qa?: DataChatQA;
-  constructor(private _cdr: ChangeDetectorRef) {}
+  constructor(private _dialog: MatDialog, private _cdr: ChangeDetectorRef) {}
+
+  /**
+   * Gets Paragraphs used as sources for the answer
+   * @param qa The datachat QA entry
+   * @returns the paragraphs
+   */
+  getRelevantParagraphs(qa: DataChatQA): string[] {
+    if (qa.paragraphs == null || qa.similarities == null) {
+      return [];
+    }
+    return qa.paragraphs.filter((_, i) => qa.similarities![i] >= 0.8);
+  }
+
+  /**
+   * Opens a simple MatDialog with some text in it
+   * @param text The text displayed in the dialog
+   */
+  openTextDialog(text: string) {
+    this._dialog.open(TextDialogComponent, {data: {text}});
+  }
 
   ngOnDestroy(): void {
     return;
