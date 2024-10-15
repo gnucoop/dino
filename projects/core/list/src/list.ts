@@ -30,6 +30,7 @@ import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
 import {b64_to_utf8, utf8_to_b64} from '@dino/core/auth';
 import {NodeVisibility} from './node-visibility';
+import {deepCopy} from '@ajf/core/utils';
 
 /**
  * The base List extended by SelectionList component.
@@ -133,7 +134,8 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   @Input()
   set headers(headers: ListHeader<T>[]) {
-    const loadedHeaders = this._loadColumnsSelectionPreset()?.map(loadedHeader => {
+    const loadedPreset = this._loadColumnsSelectionPreset();
+    const loadedHeaders = loadedPreset?.columns.map(loadedHeader => {
       const defaultHeader = headers.find(h => h.column === loadedHeader.column);
       if (defaultHeader) {
         return {
@@ -145,7 +147,18 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
       return loadedHeader;
     });
     const setHeaders = loadedHeaders ?? headers;
-    this.setDisplayedColumns(setHeaders);
+    if (loadedPreset?.displayedColumns.length) {
+      const headersCopy: ListHeader<T>[] = deepCopy(setHeaders);
+      const sortedHeaders = headersCopy.sort(
+        (a, b) =>
+          loadedPreset.displayedColumns.indexOf(a.column.toString()) -
+          loadedPreset.displayedColumns.indexOf(b.column.toString()),
+      );
+      this.setDisplayedColumns(sortedHeaders);
+    } else {
+      this.setDisplayedColumns(setHeaders);
+    }
+
     this._headers.next(setHeaders);
   }
 
@@ -265,14 +278,16 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    * Saves a columns preset into the localstorage
    * @param columns The columns selection to be stored in the preset
    */
-  protected _saveColumnsSelectionPreset(columns: ListHeader<T>[] | null): void {
-    if (columns == null) {
+  protected _saveColumnsSelectionPreset(
+    preset: {columns: ListHeader<T>[]; displayedColumns: string[]} | null,
+  ): void {
+    if (preset == null || preset.columns == null) {
       return;
     }
     if (this._getColumnsSelectionPresetKey() != null) {
       localStorage.setItem(
         this._getColumnsSelectionPresetKey() as string,
-        utf8_to_b64(JSON.stringify(columns)),
+        utf8_to_b64(JSON.stringify(preset)),
       );
     }
   }
@@ -280,7 +295,10 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
   /**
    * Loads a columns preset from the localstorage
    */
-  protected _loadColumnsSelectionPreset(): ListHeader<T>[] | null {
+  protected _loadColumnsSelectionPreset(): {
+    columns: ListHeader<T>[];
+    displayedColumns: string[];
+  } | null {
     let preset: string | null = null;
     if (this._getColumnsSelectionPresetKey() != null) {
       preset = localStorage.getItem(this._getColumnsSelectionPresetKey() as string);

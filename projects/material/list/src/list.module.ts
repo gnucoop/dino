@@ -48,6 +48,7 @@ import {ExportListModule} from '@dino/material/export-list';
 import {FormStatusChangerModule} from '@dino/material/form-status-changer';
 import {ImportFormModule} from '@dino/material/import-form';
 import {UserInteractionsModule} from '@dino/material/user-interactions';
+import {CdkDrag, CdkDropList} from '@angular/cdk/drag-drop';
 
 import {ColumnsSelector} from './columns-selector';
 import {SelectionList} from './list';
@@ -73,6 +74,8 @@ import {ActionsModal} from './actions-modal';
     AjfTranslocoModule,
     BreakpointObserverModule,
     ExportListModule,
+    CdkDrag,
+    CdkDropList,
     CommonModule,
     CoreModule,
     FormStatusChangerModule,

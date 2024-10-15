@@ -193,6 +193,7 @@ dino-list {
   mat-footer-cell {
     flex: 1 0;
     position: relative;
+    cursor: pointer;
   }
 
   .mat-mdc-header-cell:not(:first-of-type):not(:last-of-type),

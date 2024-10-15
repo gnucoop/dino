@@ -110,6 +110,7 @@ import {ImagePreview} from './image-preview';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 import {ActionsModal} from './actions-modal';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -806,7 +807,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         if (!columns) {
           return;
         }
-        this._saveColumnsSelectionPreset(columns);
+        this._saveColumnsSelectionPreset({columns, displayedColumns: this._displayedColumns});
         this.headers = columns;
         if (this.mainListContext != null) {
           this.mainListContext.headers.next(this.headers);
@@ -893,6 +894,15 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       this.mainActions.includes(action.actionType),
     );
     return mainActions;
+  }
+
+  /**
+   * Drops a draggable column (mat-header-cell)
+   * @param event the Cdk DragDrop event
+   */
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this._displayedColumns, event.previousIndex, event.currentIndex);
+    this._saveColumnsSelectionPreset({columns: this._headers.value, displayedColumns: this._displayedColumns});
   }
 
   /**

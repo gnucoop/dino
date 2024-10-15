@@ -32,7 +32,15 @@
 </ng-container>
 
 <ng-template #tableTemplate let-ctx="ctx">
-  <mat-table [dataSource]="ctx.dataSource" class="dino-main-table" matSort multiTemplateDataRows>
+  <mat-table
+    [dataSource]="ctx.dataSource"
+    class="dino-main-table"
+    matSort
+    multiTemplateDataRows
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="drop($event)"
+  >
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select" sticky>
       <ng-container>
@@ -112,7 +120,7 @@
       [matColumnDef]="header.column.toString()"
     >
       <ng-container *ngIf="header.sortable; else notSortable">
-        <mat-header-cell *matHeaderCellDef [mat-sort-header]="header.column">
+        <mat-header-cell cdkDrag *matHeaderCellDef [mat-sort-header]="header.column">
           <ng-container
             *ngTemplateOutlet="cellTemplatesMap[header.label] ?
         cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
@@ -123,7 +131,7 @@
       </ng-container>
 
       <ng-template #notSortable>
-        <mat-header-cell *matHeaderCellDef>
+        <mat-header-cell cdkDrag *matHeaderCellDef>
           <ng-container
             *ngTemplateOutlet="cellTemplatesMap[header.label] ?
         cellTemplatesMap[header.label] : defaultHeaderCellTemplate;"
@@ -237,7 +245,7 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions" class="right" stickyEnd>
-      <mat-header-cell *matHeaderCellDef class="dino-row-actions dino-header-row-actions">
+      <mat-header-cell cdkDrag *matHeaderCellDef class="dino-row-actions dino-header-row-actions">
         <div class="dino-columns-sel-btn-container">
           <button
             class="dino-columns-sel-btn"
