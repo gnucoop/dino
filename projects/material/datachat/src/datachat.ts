@@ -533,7 +533,6 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     this._addToHistory(qa);
 
     const chat = this._chatFromHistory();
-    chat.push(question);
     const req: CompletionRequest = {
       dinoGraphql: this.syncGraphQLUrl,
       authToken: this._auth.getAuthToken() || '',
@@ -576,7 +575,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                 'ricarica la pagina per fare altre domande.';
             }
             this._addToHistory({
-              response: resp.error,
+              error: resp.error,
             });
           } else {
             this._addToHistory({

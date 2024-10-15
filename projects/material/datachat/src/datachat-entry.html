@@ -25,8 +25,8 @@
   </ng-container>
   <ng-container *ngIf="qa.error">
     <div class="dino-datachat-entry dino-datachat-entry-error">
-      <mat-icon class="dino-datachat-entry-icon" color="warning">smart_toy</mat-icon>
-      <span><b *ngIf="!qa.noPrompt">Answer:</b><span [innerHTML]="qa.error"></span></span>
+      <mat-icon class="dino-datachat-entry-icon" color="warn">error</mat-icon>
+      <span><b *ngIf="!qa.noPrompt">Error:</b><span [innerHTML]="qa.error"></span></span>
     </div>
   </ng-container>
   <ng-container *ngIf="qa.imageData">
