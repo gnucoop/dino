@@ -236,7 +236,7 @@
             [header]="header"
             [previewMethod]="previewImage"
             [dialog]="dialog"
-            (click)="$event.preventDefault(); $event.stopPropagation();"
+            (click)="$event.stopPropagation();"
             (booleanChangedEvt)="editQuickAction($event)"
           />
         </ng-template>
