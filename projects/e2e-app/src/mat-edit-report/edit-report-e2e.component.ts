@@ -7,7 +7,7 @@ import {syncGraphQLUrl} from '../mocks';
   templateUrl: './edit-report-e2e.component.html',
 })
 export class MatEditReportE2E {
-  readonly gptCompletionUrl = 'https://gptserv.herokuapp.com/completion.json';
+  readonly gptCompletionUrl = 'https://pandino.gnucoop.io/'; // additionalConfig.gptPostUrl;
   readonly graphqlUrl = syncGraphQLUrl;
   readonly optionalMetrics: boolean = additionalConfig.optionalReportMetrics;
   readonly secondaryMetricFieldsDisplayed: {

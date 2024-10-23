@@ -22,11 +22,13 @@
 import {
   AjfColumnWidgetInstance,
   AjfReportInstance,
+  AjfReportVariable,
   AjfTableWidgetInstance,
   AjfTextWidgetInstance,
   AjfWidgetType,
   createReportInstance,
   downloadReportDoc,
+  evaluateReportVariables,
   exportReportXlsx,
   openReportPdf,
 } from '@ajf/core/reports';
@@ -95,6 +97,7 @@ import {
   take,
   tap,
 } from 'rxjs/operators';
+import {AjfContext} from '@ajf/core/models';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -258,9 +261,13 @@ export class EditReport implements AfterViewInit {
   private _reportMetricsSelector: Observable<FormMetricSelector | null> = obsOf(null);
 
   /**
-   * Optional inputs from the dinoapp environment that enable downloading the social balance.
+   * The base url of the DataChat (Pandino) API
    */
   @Input() gptCompletionUrl?: string;
+
+  /**
+   * The base url for the graphql backend (Hasura)
+   */
   @Input() graphqlUrl?: string;
 
   gptPromptStatus = '';
@@ -565,7 +572,7 @@ export class EditReport implements AfterViewInit {
           depsQuery,
         );
       }),
-      map(([ctx, ctxSchemas, rData, rSchema, depsSourceFormData]) => {
+      switchMap(([ctx, ctxSchemas, rData, rSchema, depsSourceFormData]) => {
         const contextForms: ReportContext = {};
         const contextSchemas: {[schema_ref_id: string]: any} = {};
         ctx.forEach(fdata => {
@@ -587,6 +594,36 @@ export class EditReport implements AfterViewInit {
         const context = {forms: contextForms, schemas: contextSchemas, report_data: rData};
         if (isDevMode()) {
           console.log(context);
+        }
+
+        const promptsVariable = (rSchema.schema.variables || []).filter(
+          variable => variable.isAIPrompt,
+        );
+
+        let reportDataCtxObs: Observable<{[key: string]: string} | null> = obsOf(null);
+        const rDataAIData = {}; // rData?.aiData;
+        if (promptsVariable.length && !Object.keys(rDataAIData).length) {
+          const variablesContext = evaluateReportVariables(rSchema.schema, {...context});
+          reportDataCtxObs = from(this.generateAITextFromPrompt(promptsVariable, variablesContext));
+        }
+        return zip(obsOf(rSchema), obsOf(context), obsOf(rData), reportDataCtxObs);
+      }),
+      switchMap(([rSchema, context, rData, reportDataCtx]) => {
+        let patchRData: Observable<RxDocument<ReportData> | null> = obsOf(null);
+        if (reportDataCtx && Object.keys(reportDataCtx).length && rData) {
+          // TODO patch report data: add new field in db
+          const rDataDoc: Partial<ReportData> & {id: string} & {aiData: any} = {
+            id: rData.id,
+            aiData: reportDataCtx,
+          };
+          patchRData = this._reportDataManager.patch(rDataDoc);
+        }
+
+        return zip(obsOf(rSchema), obsOf(context), patchRData);
+      }),
+      map(([rSchema, context, rData]) => {
+        if (rData != null) {
+          context.report_data = rData;
         }
         this._currentReportInstance = createReportInstance(
           rSchema.schema,
@@ -684,10 +721,14 @@ export class EditReport implements AfterViewInit {
       return;
     }
     if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
-      console.warn('gptCompletionUrl or graphqlUrl not provided');
+      console.warn('gptPostUrl or graphqlUrl not provided');
       return;
     }
-    const gptPropmtUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+
+    let gptPromptUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+    if (gptPromptUrl.indexOf('prompt.txt') < 0) {
+      gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
+    }
 
     const cols = this._currentReportInstance.content!.content;
     if (cols.length !== 1 || cols[0].widgetType !== AjfWidgetType.Column) {
@@ -717,7 +758,7 @@ export class EditReport implements AfterViewInit {
       fd.append('username', userInfo.email);
       let text: string;
       try {
-        const resp = await fetch(gptPropmtUrl, {method: 'POST', mode: 'cors', body: fd});
+        const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
         text = await resp.text();
         if (!resp.ok) {
           throw new Error(text);
@@ -741,6 +782,71 @@ export class EditReport implements AfterViewInit {
     report.content.content[0].content = widgets;
     downloadReportDoc(report);
     this._setPromptStatus('');
+  }
+
+  /**
+   * Generate AI text from prompt
+   */
+  async generateAITextFromPrompt(
+    promptsVariable: AjfReportVariable[],
+    variablesContext: AjfContext,
+  ): Promise<{[key: string]: string}> {
+    const aiContext: {[key: string]: string} = {};
+    const userInfo: User | null = this._auth.getUserInfo();
+    if (this.gptPromptStatus !== '' || !userInfo) {
+      return aiContext;
+    }
+    if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
+      console.warn('gptCompletionUrl or graphqlUrl not provided');
+      return aiContext;
+    }
+
+    let gptPromptUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+    if (gptPromptUrl.indexOf('prompt.txt') < 0) {
+      gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
+    }
+
+    // this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+
+    // Replace the prompt table widgets with the AI-generated text
+    // const generatedAIText: string[] = [];
+    let promptNum = 1;
+    for (let i = 0; i < promptsVariable.length; i++) {
+      const promptVariable = promptsVariable[i];
+      const prompt = variablesContext[promptVariable.name];
+      if (prompt && prompt.length) {
+        if (isDevMode()) {
+          console.log('Call AI...');
+        }
+
+        this._setPromptStatus(`Generazione prompt ${promptNum}...`);
+        promptNum++;
+        const fd = new FormData();
+        fd.append('graphqlUrl', this.graphqlUrl);
+        fd.append('authToken', this._auth.getAuthToken() || '');
+        fd.append('prompt', prompt);
+        fd.append('username', userInfo.email);
+        let text: string = '';
+        // TODO
+        try {
+          const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
+          text = await resp.text();
+          if (!resp.ok) {
+            throw new Error(text);
+          }
+        } catch (err: any) {
+          console.error(err.message);
+          this._setPromptStatus('Gpt error, check the console');
+          setTimeout(() => this._setPromptStatus(''), 4000);
+          return aiContext;
+        }
+        if (text && text.length) {
+          aiContext[promptVariable.name] = text;
+        }
+      }
+    }
+    this._setPromptStatus('');
+    return aiContext;
   }
 
   private _setPromptStatus(s: string) {
