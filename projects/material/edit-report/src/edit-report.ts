@@ -48,7 +48,7 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService, User} from '@dino/core/auth';
+import {AuthService, NetworkStatusService, User} from '@dino/core/auth';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
@@ -96,8 +96,11 @@ import {
   switchMap,
   take,
   tap,
+  withLatestFrom,
 } from 'rxjs/operators';
 import {AjfContext} from '@ajf/core/models';
+import {HttpClient} from '@angular/common/http';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -264,6 +267,18 @@ export class EditReport implements AfterViewInit {
    * The base url of the DataChat (Pandino) API
    */
   @Input() gptCompletionUrl?: string;
+  // @Input() baseDataChatAPIurl?: string;
+
+  /**
+   * The endpoint names in the urls
+   */
+  @Input() endpointUrls?: {
+    validateEndpoint: string;
+    dataChatEndpoint?: string;
+    completionChatEndpoint?: string;
+    startEndpoint?: string;
+    endEndpoint?: string;
+  };
 
   /**
    * The base url for the graphql backend (Hasura)
@@ -298,6 +313,9 @@ export class EditReport implements AfterViewInit {
     private _reportSchemaManager: ReportSchemaManager,
     private _fstm: FormStatusManager,
     private _pcs: PermissionContextService,
+    private _nss: NetworkStatusService,
+    private _http: HttpClient,
+    private _ehms: ErrorHandlerMessageService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
@@ -498,10 +516,11 @@ export class EditReport implements AfterViewInit {
       this._reportSchema,
       this._sourceFormData,
       formSchemas,
+      this._nss.isOnline$,
     ]).pipe(
       delay(300),
       filter(([rData, rSchema]) => rData != null && rSchema != null),
-      switchMap(([rData, rSchema, sfData, ctxSchemas]) => {
+      switchMap(([rData, rSchema, sfData, ctxSchemas, isOnline]) => {
         const formSchemaIds = rSchema.form_schema_ids;
         let populatedData: Observable<{[key: string]: any}>[] = [];
         let queryDepsSelector: DataQuerySelector = {
@@ -572,7 +591,8 @@ export class EditReport implements AfterViewInit {
           depsQuery,
         );
       }),
-      switchMap(([ctx, ctxSchemas, rData, rSchema, depsSourceFormData]) => {
+      withLatestFrom(this._nss.isOnline$),
+      switchMap(([[ctx, ctxSchemas, rData, rSchema, depsSourceFormData], isOnline]) => {
         const contextForms: ReportContext = {};
         const contextSchemas: {[schema_ref_id: string]: any} = {};
         ctx.forEach(fdata => {
@@ -601,8 +621,8 @@ export class EditReport implements AfterViewInit {
         );
 
         let reportDataCtxObs: Observable<{[key: string]: string} | null> = obsOf(null);
-        const rDataAIData = {}; // rData?.aiData;
-        if (promptsVariable.length && !Object.keys(rDataAIData).length) {
+        const rDataAIData = rData?.data || {};
+        if (promptsVariable.length && !Object.keys(rDataAIData).length && isOnline) {
           const variablesContext = evaluateReportVariables(rSchema.schema, {...context});
           reportDataCtxObs = from(this.generateAITextFromPrompt(promptsVariable, variablesContext));
         }
@@ -611,10 +631,9 @@ export class EditReport implements AfterViewInit {
       switchMap(([rSchema, context, rData, reportDataCtx]) => {
         let patchRData: Observable<RxDocument<ReportData> | null> = obsOf(null);
         if (reportDataCtx && Object.keys(reportDataCtx).length && rData) {
-          // TODO patch report data: add new field in db
-          const rDataDoc: Partial<ReportData> & {id: string} & {aiData: any} = {
+          const rDataDoc: Partial<ReportData> & {id: string} = {
             id: rData.id,
-            aiData: reportDataCtx,
+            data: reportDataCtx,
           };
           patchRData = this._reportDataManager.patch(rDataDoc);
         }
@@ -632,7 +651,54 @@ export class EditReport implements AfterViewInit {
         );
         return this._currentReportInstance;
       }),
+      take(1),
     );
+  }
+
+  /**
+   * Sends the API Key to the 'validateapikey' endpoint
+   * @param key
+   * @returns
+   */
+  async sendAPIKey(key: string) {
+    if (!this.gptCompletionUrl) return;
+    const headers = {'X-API-KEY': key};
+    this._http
+      .post(
+        `${this.gptCompletionUrl}/${this.endpointUrls?.validateEndpoint ?? 'validateapikey'}`,
+        null,
+        {headers},
+      )
+      .pipe(take(1))
+      .subscribe({
+        next: res => {
+          localStorage.setItem('pandas_dino_api_key', key);
+          if (isDevMode()) {
+            console.log(res);
+          }
+        },
+        error: err => {
+          if (err.error.error && err.error.error === 'Invalid API key') {
+            this.snackbar.open('Invalid API key for PANDINO', 'Invalid API key', {
+              duration: 5000,
+            });
+          } else {
+            this.snackbar.open(
+              'PANDINO is not responding at the moment. Please try later',
+              'PANDINO NOT RESPONDING',
+              {
+                duration: 5000,
+              },
+            );
+            if (!isDevMode()) {
+              this._ehms.captureErrorMessage(
+                `PANDINO is not responding: ${JSON.stringify(err)}`,
+                'warning',
+              );
+            }
+          }
+        },
+      });
   }
 
   /**
@@ -806,10 +872,9 @@ export class EditReport implements AfterViewInit {
       gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
     }
 
-    // this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+    // TODO
+    // await sendAPIKey(key);
 
-    // Replace the prompt table widgets with the AI-generated text
-    // const generatedAIText: string[] = [];
     let promptNum = 1;
     for (let i = 0; i < promptsVariable.length; i++) {
       const promptVariable = promptsVariable[i];
@@ -827,11 +892,23 @@ export class EditReport implements AfterViewInit {
         fd.append('prompt', prompt);
         fd.append('username', userInfo.email);
         let text: string = '';
-        // TODO
         try {
           const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
           text = await resp.text();
           if (!resp.ok) {
+            this.snackbar.open(
+              'PANDINO is not responding at the moment. Please try later',
+              'PANDINO NOT RESPONDING',
+              {
+                duration: 5000,
+              },
+            );
+            if (!isDevMode()) {
+              this._ehms.captureErrorMessage(
+                `PANDINO is not responding: ${JSON.stringify(text)}`,
+                'warning',
+              );
+            }
             throw new Error(text);
           }
         } catch (err: any) {

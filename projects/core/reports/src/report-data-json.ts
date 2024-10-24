@@ -128,12 +128,17 @@ export const schema = {
       ],
       "description": "The Form Status of the collected form data used by the Report.",
       "ref": "form_status"
+    },
+    "data": {
+      "type": "object",
+      "description": "A plain object containing additional data for the report. Text generated with AI is stored here."
     }
   },
   "required": [
     "area_ref_id",
     "case_ref_id",
     "created_at",
+    "data",
     "date_end",
     "date_start",
     "form_status_ref_id",

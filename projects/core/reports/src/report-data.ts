@@ -86,6 +86,12 @@ export interface ReportData extends Model {
    * the Report.
    */
   form_status_ref_id: string | null;
+
+  /**
+   * A plain object containing additional data for the report.
+   * Text generated with AI is stored here.
+   */
+  data: {[key: string]: any};
 }
 
 export const VERSION = 1;
