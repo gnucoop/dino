@@ -811,7 +811,7 @@ export class EditReport implements AfterViewInit {
         return {
           dino_created_at: formData.created_at,
           dino_updated_at: formData.updated_at,
-          ...formData.data,
+          ...formData.toJSON().data,
           ...addData,
           form_schema_ref_id: formData.form_schema_ref_id,
         };

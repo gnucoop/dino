@@ -81,7 +81,7 @@ export const migrationStrategies: MigrationStrategies = {
   2: (doc: RxDocument<FormData>) => {
     const dinoinvalid = doc.data['$invalid'];
     delete doc.data['$invalid'];
-    return {...doc, data: {...doc.data, dinoinvalid}} as RxDocument<FormData>;
+    return {...doc, data: {...doc.toJSON().data, dinoinvalid}} as RxDocument<FormData>;
   },
 };
 
