@@ -622,9 +622,13 @@ export class EditReport implements AfterViewInit {
 
         let reportDataCtxObs: Observable<{[key: string]: string} | null> = obsOf(null);
         const rDataAIData = rData?.data || {};
-        if (promptsVariable.length && !Object.keys(rDataAIData).length && isOnline) {
-          const variablesContext = evaluateReportVariables(rSchema.schema, {...context});
-          reportDataCtxObs = from(this.generateAITextFromPrompt(promptsVariable, variablesContext));
+        if (promptsVariable.length && isOnline) {
+          if (promptsVariable.length > Object.keys(rDataAIData).length) {
+            const variablesContext = evaluateReportVariables(rSchema.schema, {...context});
+            reportDataCtxObs = from(
+              this.generateAITextFromPrompt(promptsVariable, variablesContext, rDataAIData),
+            );
+          }
         }
         return zip(obsOf(rSchema), obsOf(context), obsOf(rData), reportDataCtxObs);
       }),
@@ -856,74 +860,95 @@ export class EditReport implements AfterViewInit {
   async generateAITextFromPrompt(
     promptsVariable: AjfReportVariable[],
     variablesContext: AjfContext,
+    reportDataAIData: {[key: string]: any},
   ): Promise<{[key: string]: string}> {
     const aiContext: {[key: string]: string} = {};
-    const userInfo: User | null = this._auth.getUserInfo();
-    if (this.gptPromptStatus !== '' || !userInfo) {
-      return aiContext;
-    }
-    if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
-      console.warn('gptCompletionUrl or graphqlUrl not provided');
-      return aiContext;
-    }
-
-    let gptPromptUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
-    if (gptPromptUrl.indexOf('prompt.txt') < 0) {
-      gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
-    }
-
-    // TODO
-    // await sendAPIKey(key);
-
-    let promptNum = 1;
+    const validPrompts: AjfReportVariable[] = [];
     for (let i = 0; i < promptsVariable.length; i++) {
       const promptVariable = promptsVariable[i];
-      const prompt = variablesContext[promptVariable.name];
-      if (prompt && prompt.length) {
-        if (isDevMode()) {
-          console.log('Call AI...');
-        }
-
-        this._setPromptStatus(`Generazione prompt ${promptNum}...`);
-        promptNum++;
-        const fd = new FormData();
-        fd.append('graphqlUrl', this.graphqlUrl);
-        fd.append('authToken', this._auth.getAuthToken() || '');
-        fd.append('prompt', prompt);
-        fd.append('username', userInfo.email);
-        let text: string = '';
-        try {
-          const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
-          text = await resp.text();
-          if (!resp.ok) {
-            this.snackbar.open(
-              'PANDINO is not responding at the moment. Please try later',
-              'PANDINO NOT RESPONDING',
-              {
-                duration: 5000,
-              },
-            );
-            if (!isDevMode()) {
-              this._ehms.captureErrorMessage(
-                `PANDINO is not responding: ${JSON.stringify(text)}`,
-                'warning',
-              );
-            }
-            throw new Error(text);
-          }
-        } catch (err: any) {
-          console.error(err.message);
-          this._setPromptStatus('Gpt error, check the console');
-          setTimeout(() => this._setPromptStatus(''), 4000);
-          return aiContext;
-        }
-        if (text && text.length) {
-          aiContext[promptVariable.name] = text;
-        }
+      const prompt = variablesContext[promptVariable.name]
+        ? variablesContext[promptVariable.name].toString()
+        : null;
+      if (!prompt || prompt.length === 0) {
+        continue;
+      }
+      if (
+        !reportDataAIData[promptVariable.name] ||
+        reportDataAIData[promptVariable.name].length === 0
+      ) {
+        validPrompts.push(promptVariable);
       }
     }
-    this._setPromptStatus('');
-    return aiContext;
+
+    if (validPrompts.length > 0) {
+      const userInfo: User | null = this._auth.getUserInfo();
+      if (this.gptPromptStatus !== '' || !userInfo) {
+        return aiContext;
+      }
+      if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
+        console.warn('gptCompletionUrl or graphqlUrl not provided');
+        return aiContext;
+      }
+
+      let gptPromptUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+      if (gptPromptUrl.indexOf('prompt.txt') < 0) {
+        gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
+      }
+
+      // TODO
+      // await sendAPIKey(key);
+
+      let promptNum = 1;
+      for (let i = 0; i < validPrompts.length; i++) {
+        const promptVariable = validPrompts[i];
+        const prompt = variablesContext[promptVariable.name]
+          ? variablesContext[promptVariable.name].toString()
+          : null;
+        if (prompt && prompt.length > 0) {
+          if (isDevMode()) {
+            console.log(`Generazione prompt ${promptNum}...`);
+          }
+          this._setPromptStatus(`Generazione prompt ${promptNum}...`);
+          promptNum++;
+          const fd = new FormData();
+          fd.append('graphqlUrl', this.graphqlUrl);
+          fd.append('authToken', this._auth.getAuthToken() || '');
+          fd.append('prompt', prompt);
+          fd.append('username', userInfo.email);
+          let text: string = '';
+          try {
+            const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
+            text = await resp.text();
+            if (!resp.ok) {
+              this.snackbar.open(
+                'PANDINO is not responding at the moment. Please try later',
+                'PANDINO NOT RESPONDING',
+                {
+                  duration: 5000,
+                },
+              );
+              if (!isDevMode()) {
+                this._ehms.captureErrorMessage(
+                  `PANDINO is not responding: ${JSON.stringify(text)}`,
+                  'warning',
+                );
+              }
+              throw new Error(text);
+            }
+          } catch (err: any) {
+            console.error(err.message);
+            this._setPromptStatus('Gpt error, check the console');
+            setTimeout(() => this._setPromptStatus(''), 4000);
+            return aiContext;
+          }
+          if (text && text.length > 0) {
+            aiContext[promptVariable.name] = text;
+          }
+        }
+      }
+      this._setPromptStatus('');
+    }
+    return {...reportDataAIData, ...aiContext};
   }
 
   private _setPromptStatus(s: string) {
