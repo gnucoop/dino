@@ -120,6 +120,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   @Input() syncGraphQLUrl?: string;
 
   /**
+   * The base url for documentation files bucket
+   */
+  @Input() bucketUrl?: string;
+
+  /**
    * Defines the mode of this component.
    * Datachat allows chatting with PandasAI about csv data files.
    * Completion allows direct chat with LLM.
@@ -580,8 +585,13 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           } else {
             this._addToHistory({
               response: resp.answer,
+              mimetypes: resp.mimetypes,
+              pages: resp.pages,
               paragraphs: resp.paragraphs,
               similarities: resp.similarities,
+              sources: resp.sources,
+              urls: resp.urls,
+              noPrompt: true,
             });
           }
           this._cdr.detectChanges();

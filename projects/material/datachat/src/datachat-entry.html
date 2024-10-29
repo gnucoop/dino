@@ -15,11 +15,15 @@
     <div class="dino-datachat-entry dino-datachat-entry-response">
       <mat-icon class="dino-datachat-entry-icon" color="primary">smart_toy</mat-icon>
       <span><b *ngIf="!qa.noPrompt">Answer:</b><span [innerHTML]="qa.response"></span></span>
-      <div class="dino-datachat-sources" *ngIf="getRelevantParagraphs(qa).length > 0">
-        <span>{{'Sources'|transloco}}</span>
-        <span *ngFor="let p of getRelevantParagraphs(qa)" (click)="openTextDialog(p)">
-          {{p.slice(0, 18) + '...'}}
-        </span>
+      <div class="dino-datachat-sources-chips" *ngIf="getRelevantParagraphs(qa).length > 0">
+        <span class="dino-datachat-sources-chips-span">{{'Sources'|transloco}}</span>
+        <mat-chip
+          color="primary"
+          *ngFor="let p of getRelevantParagraphs(qa); let idx = index"
+          (click)="openParagraphDialog(qa, idx)"
+        >
+          <span [innerHTML]="p"></span>
+        </mat-chip>
       </div>
     </div>
   </ng-container>

@@ -29,8 +29,12 @@ export interface DataChatQA {
   explanation?: string;
   noPrompt?: boolean;
   namespace?: string;
+  mimetypes?: (Mimetype[] | Mimetype)[];
+  pages?: number[];
   paragraphs?: string[];
   similarities?: number[];
+  sources?: string[];
+  urls?: string[];
   userIsHappy?: boolean;
 }
 
@@ -50,8 +54,12 @@ export interface CompletionRequest {
 
 export interface CompletionResponse {
   error?: string;
+  mimetypes?: (Mimetype[] | Mimetype)[];
+  pages?: number[];
   paragraphs?: string[];
   similarities?: number[];
+  sources?: string[];
+  urls?: string[];
   answer?: string;
 }
 
@@ -60,3 +68,14 @@ export interface QA extends CompletionResponse {
   namespace: string;
   userIsHappy?: boolean;
 }
+
+export interface RelevantParagraph {
+  mimetype?: Mimetype[] | Mimetype;
+  page?: number;
+  paragraph?: string;
+  similarity?: number;
+  source?: string;
+  url?: string;
+}
+
+export type Mimetype = 'image/jpeg' | 'text' | 'table' | null;

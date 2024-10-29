@@ -41,22 +41,19 @@ dino-datachat-entry {
     &.dino-datachat-entry-image-response img {
       max-width: 90%;
     }
-    .dino-datachat-sources {
-      margin-top: 15px;
-      span {
-        display: inline-block;
-        margin-right: 12px;
+    .dino-datachat-sources-chips {
+      margin-top: 10px;
+      .dino-datachat-sources-chips-span {
+        margin-right: 10px;
       }
-
-      span:first-child {
-        padding: 6px 0;
-      }
-
-      span:not(:first-child) {
+      .mat-mdc-chip {
+        background-color: rgba(var(--palette-primary-100), 0.4);
+        margin-right: 5px;
         cursor: pointer;
-        padding: 6px;
-        border-radius: 6px;
-        border: 1px dotted grey;
+        span {
+          font-size: 12px;
+          cursor: pointer;
+        }
       }
     }
   }

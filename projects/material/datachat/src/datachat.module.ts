@@ -38,9 +38,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TableGeneratorModule as DinoTableGeneratorModule} from '@dino/material/table-generator';
 import {DataChatEntry} from './datachat-entry';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {TextDialogComponent} from './text-dialog.component';
+import {ParagraphDialogComponent} from './paragraph-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSelectModule} from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   imports: [
@@ -49,7 +51,9 @@ import {MatSelectModule} from '@angular/material/select';
     DinoTableGeneratorModule,
     FormsModule,
     MatButtonModule,
+    MatCardModule,
     MatCheckboxModule,
+    MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
@@ -62,7 +66,7 @@ import {MatSelectModule} from '@angular/material/select';
     RouterModule,
     TranslocoModule,
   ],
-  declarations: [DataChat, DataChatEntry, TextDialogComponent],
-  exports: [DataChat, DataChatEntry, TextDialogComponent],
+  declarations: [DataChat, DataChatEntry, ParagraphDialogComponent],
+  exports: [DataChat, DataChatEntry, ParagraphDialogComponent],
 })
 export class DataChatModule {}

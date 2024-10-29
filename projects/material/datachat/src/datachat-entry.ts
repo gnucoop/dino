@@ -29,7 +29,7 @@ import {
 } from '@angular/core';
 import {DataChatQA} from './datachat.interfaces';
 import {MatDialog} from '@angular/material/dialog';
-import {TextDialogComponent} from './text-dialog.component';
+import {ParagraphDialogComponent} from './paragraph-dialog.component';
 
 /**
  * The ChatEntry component.
@@ -43,27 +43,48 @@ import {TextDialogComponent} from './text-dialog.component';
   encapsulation: ViewEncapsulation.None,
 })
 export class DataChatEntry implements OnDestroy {
+  /**
+   * The question/answer history entry
+   */
   @Input() qa?: DataChatQA;
+  /**
+   * The base url for documentation files bucket
+   */
+  @Input() bucketUrl?: string;
+
   constructor(private _dialog: MatDialog, private _cdr: ChangeDetectorRef) {}
 
   /**
    * Gets Paragraphs used as sources for the answer
    * @param qa The datachat QA entry
-   * @returns the paragraphs
+   * @returns The sources mat-chips
    */
   getRelevantParagraphs(qa: DataChatQA): string[] {
-    if (qa.paragraphs == null || qa.similarities == null) {
+    if (qa.paragraphs == null || qa.similarities == null || qa.sources == null) {
       return [];
     }
-    return qa.paragraphs.filter((_, i) => qa.similarities![i] >= 0.8);
+    const chips: string[] = [];
+    for (let x = 0; x < qa.sources.length; x++) {
+      if (qa.sources[x] && qa.pages && qa.pages[x]) {
+        chips.push(`<b>${qa.sources[x]}</b> (pag.${qa.pages[x]})`);
+      }
+    }
+    return chips;
   }
 
   /**
    * Opens a simple MatDialog with some text in it
    * @param text The text displayed in the dialog
    */
-  openTextDialog(text: string) {
-    this._dialog.open(TextDialogComponent, {data: {text}});
+  openParagraphDialog(qa: DataChatQA, paragraphIndex: number) {
+    this._dialog.open(ParagraphDialogComponent, {
+      data: {
+        qa,
+        paragraphIndex,
+        bucketUrl: this.bucketUrl,
+      },
+      panelClass: 'dino-paragraph-dialog',
+    });
   }
 
   ngOnDestroy(): void {
