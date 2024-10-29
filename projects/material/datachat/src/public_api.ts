@@ -24,4 +24,4 @@ export * from './datachat';
 export * from './datachat-entry';
 export * from './datachat.interfaces';
 export * from './datachat.module';
-export * from './text-dialog.component';
+export * from './paragraph-dialog.component';

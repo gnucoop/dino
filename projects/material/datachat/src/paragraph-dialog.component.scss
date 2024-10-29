@@ -1,0 +1,22 @@
+.dino-paragraph-dialog {
+  min-width: 350px;
+  max-width: 750px !important;
+  padding: 10px;
+  .mat-mdc-card.dino-paragraph-card {
+    .mat-mdc-card-header {
+      margin-bottom: 10px;
+    }
+    .dino-paragraph-card-image {
+      margin: auto;
+      margin-top: 10px;
+      width: 100%;
+      height: auto;
+    }
+    .mat-mdc-card-actions {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
