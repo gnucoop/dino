@@ -38,7 +38,7 @@ import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscr
 import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
-import {FormSchema} from '@dino/core/forms';
+import {FormData, FormSchema} from '@dino/core/forms';
 
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -56,6 +56,7 @@ import {
   ExportListData,
 } from './export-interface';
 import {ExportModel} from './export-model.interface';
+import {isRxDocument, RxDocument} from 'rxdb';
 
 /**
  * Exporter Class that can be instantiated to export documents
@@ -154,14 +155,15 @@ export class Exporter implements OnDestroy {
   setup(
     setupData: ExportListData | null,
     fields: AjfField[] | 'all',
-    docs: Data[] | null,
+    docs: Data[] | RxDocument<FormData>[] | null,
     format: ExportFormat,
     analysis: boolean,
     translation: boolean,
   ): void {
+    const docsData: Data[] | null = docs ? docs.map(d => (isRxDocument(d) ? d.toJSON() : d)) : docs;
     this.setSetupData(setupData);
     this.setFields(fields);
-    this.setDocsToExport(docs);
+    this.setDocsToExport(docsData);
     this.setExportFormat(format);
     this.setDataAnalysisFormat(analysis);
     this.setTranslation(translation);
