@@ -270,7 +270,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         ? new Date(this.dateSearchFilters.get('dateStart')?.value)
         : null;
       if (minDate != null && d != null) {
-        return d > minDate;
+        return d >= minDate;
       }
       return true;
     };
@@ -279,7 +279,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         ? new Date(this.dateSearchFilters.get('dateEnd')?.value)
         : null;
       if (maxDate != null && d != null) {
-        return d < maxDate;
+        return d <= maxDate;
       }
       return true;
     };
