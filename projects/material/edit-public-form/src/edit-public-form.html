@@ -15,7 +15,7 @@
   <dino-floating-button
     buttonIcon="send"
     [tooltipMessage]="'Save form'|transloco"
-    [buttonDisabled]="(isValid|async) === false"
+    [buttonDisabled]="(isValid|async) === false || isSaving"
     (click)="saveForm()"
   ></dino-floating-button>
 </ng-container>

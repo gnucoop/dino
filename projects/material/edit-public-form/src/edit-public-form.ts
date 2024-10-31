@@ -118,6 +118,11 @@ export class EditPublicForm implements OnDestroy {
   private _saveValidFormSub: Subscription = Subscription.EMPTY;
 
   /**
+   * While true, the save button is disabled
+   */
+  isSaving: boolean = false;
+
+  /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<FormData>> = new EventEmitter<
@@ -226,6 +231,7 @@ export class EditPublicForm implements OnDestroy {
       .pipe(
         withLatestFrom(anonymousUserData, this.formSchema, metricParams, this.formSchemaStatuses),
         switchMap(([_, anonUserData, fschema, metricIds, formStatuses]) => {
+          this.isSaving = true;
           if (
             fschema == null ||
             (fschema &&
@@ -297,6 +303,7 @@ export class EditPublicForm implements OnDestroy {
               take(1),
             )
             .subscribe();
+          this.isSaving = false;
         }
       });
   }
