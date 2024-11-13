@@ -43,12 +43,13 @@ import {
   FormDataManager,
   FormSchema,
   FormSchemaManager,
+  FormStatus,
   FormStatusManager,
 } from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import {UserData, UserDataManager} from '@dino/core/users';
+import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
 import {format} from 'date-fns';
 import {JsonSchemaTypes, RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
@@ -122,6 +123,7 @@ export class ImportForm implements OnDestroy {
    */
   private _dinoFields: string[] = [
     'id',
+    'form_schema_ref_id',
     'created_at',
     'user_data_ref_id',
     'area_ref_id',
@@ -146,6 +148,11 @@ export class ImportForm implements OnDestroy {
     'project_ref_id',
     'form_status_ref_id',
   ];
+
+  /**
+   * The roles granting Admin permissions
+   */
+  private adminRoles = ['admin'];
 
   /**
    * The row id key
@@ -184,6 +191,7 @@ export class ImportForm implements OnDestroy {
     private _formDataManager: FormDataManager,
     private _formSchemaManager: FormSchemaManager,
     private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
     private _fsm: FormStatusManager,
     private _ehms: ErrorHandlerMessageService,
     readonly metricsService: MetricsService,
@@ -418,23 +426,23 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
-   * Return the list of the required user ids for the new forms
-   * @param rows
-   * @returns The user_data_ref_id list (distinct values)
+   * Return the list of all possible values for the specified key (distinct values)
+   * @param rows all file rows to be imported
+   * @param key the key to be find in rows
+   * @returns All values list
    */
-  private _getRequiredUsers(rows: {[key: string]: any}[]): string[] {
-    const requiredUserIds: string[] = [];
-    const userIdKey = 'user_data_ref_id';
+  private _allValuesForKey(rows: {[key: string]: any}[], key: string): string[] {
+    const requiredValues: string[] = [];
     rows.forEach((row: {[key: string]: any}) => {
       if (!this._isLabelHeader(row)) {
-        if (row[userIdKey]) {
-          if (!requiredUserIds.includes(row[userIdKey])) {
-            requiredUserIds.push(row[userIdKey]);
+        if (row[key]) {
+          if (!requiredValues.includes(row[key])) {
+            requiredValues.push(row[key]);
           }
         }
       }
     });
-    return requiredUserIds;
+    return requiredValues;
   }
 
   /**
@@ -509,18 +517,24 @@ export class ImportForm implements OnDestroy {
   /**
    * Insert all the rows into Dino
    * @param rows The rows to be imported
-   * @param activeMetrics The list of the currently active metrics
+   * @param activeMetrics The list of the currently active metric type
+   * @param userDataId the logged user data id
+   * @param metricsIdByName
+   * @param statusDictionary all available status for the schema
    */
   private _importFormData(
     rows: {[key: string]: any}[],
     activeMetrics: string[],
     userDataId: string | null,
+    isAdmin: boolean,
     metricsIdByName: {[key: string]: {[key: string]: any}} | null,
-    statusDictionary: {[key: string]: string | null} | null,
+    statuses: FormStatus[],
   ): void {
     const forms: InsertModel<FormData>[] = [];
     const createdAtKey = 'created_at';
     const userDataKey = 'user_data_ref_id';
+
+    const defaultFormStatus = statuses.length ? statuses[0].id : null;
 
     rows.forEach((row: {[key: string]: any}) => {
       // Check if is not a second header
@@ -535,12 +549,15 @@ export class ImportForm implements OnDestroy {
         }
 
         newItem[userDataKey] = userDataId;
-        if (row[userDataKey] && row[userDataKey].length) {
+        if (isAdmin && row[userDataKey] && row[userDataKey].length) {
           newItem[userDataKey] = row[userDataKey];
         }
-        newItem['form_status_ref_id'] = statusDictionary
-          ? statusDictionary[row['form_status_name']]
+
+        const rowFormStatus = row['form_status_name']
+          ? statuses.find(st => st.name === row['form_status_name'])
           : null;
+        newItem['form_status_ref_id'] = rowFormStatus ? rowFormStatus.id : defaultFormStatus;
+
         newItem['data'] = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
@@ -671,7 +688,8 @@ export class ImportForm implements OnDestroy {
    * Import all the rows and all new metrics into Dino
    * @param rows The rows to be imported
    * @param newMetrics the list of the new metrics required to be created
-   * @param statuses
+   * @param isAdminUser true if active user has admin role
+   * @param statuses all available Form Statuses associated with the Form Schema
    */
   private _importFormDataRows(
     rows: {[key: string]: any}[],
@@ -680,12 +698,13 @@ export class ImportForm implements OnDestroy {
         [key: string]: any;
       }[];
     },
-    statuses?: {[key: string]: Observable<string | null>},
+    isAdminUser: boolean,
+    statuses: FormStatus[],
   ): void {
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
     if (Object.keys(newMetrics).length) {
-      this._userDataSub = forkJoin([
-        this._checkIfMetricsAlreadyExist(newMetrics).pipe(
+      this._userDataSub = this._checkIfMetricsAlreadyExist(newMetrics)
+        .pipe(
           switchMap(existingMetrics => {
             const newMetricsRequested: {[key: string]: {[key: string]: any}[]} =
               deepCopy(newMetrics);
@@ -717,62 +736,65 @@ export class ImportForm implements OnDestroy {
             return obsOf([], [], []);
           }),
           withLatestFrom(this._udm.getActiveUserData()),
-        ),
-        this._getStatusDictionary(statuses),
-      ]).subscribe(([[r, ud], stDict]) => {
-        const createdMetrics = r[0];
-        const requiredNewMetrics = r[1];
-        const existingMetrics = r[2];
-        const userDataId = ud ? ud.id : null;
-        let metricsError: string[] = [];
-        let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
-        if (createdMetrics) {
-          createdMetrics.forEach(metrics => {
-            if (metrics && metrics.success.length) {
-              if (
-                metrics.success.length ===
-                requiredNewMetrics[metrics.success[0].collection.name].length
-              ) {
-                metrics.success.forEach(metric => {
-                  this._addMetricDetails(metric, metricsIdByName);
-                });
-              } else {
-                metricsError.push(metrics.success[0].collection.name);
-              }
-            } else {
-              if (metrics && metrics.error.length && metrics.error[0].msg) {
-                if (isDevMode()) {
-                  console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
-                }
+        )
+        .subscribe(([r, ud]) => {
+          const createdMetrics = r[0];
+          const requiredNewMetrics = r[1];
+          const existingMetrics = r[2];
+          const userDataId = ud ? ud.id : null;
+          let metricsError: string[] = [];
+          let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
+          if (createdMetrics) {
+            createdMetrics.forEach(metrics => {
+              if (metrics && metrics.success.length) {
                 if (
-                  metrics.error[0].msg?.parameters?.errors &&
-                  metrics.error[0].msg?.parameters?.errors.length
+                  metrics.success.length ===
+                  requiredNewMetrics[metrics.success[0].collection.name].length
                 ) {
-                  metricsError.push(JSON.stringify(metrics.error[0].msg?.parameters?.errors[0]));
+                  metrics.success.forEach(metric => {
+                    this._addMetricDetails(metric, metricsIdByName);
+                  });
+                } else {
+                  metricsError.push(metrics.success[0].collection.name);
                 }
               } else {
-                metricsError.push('-');
+                if (metrics && metrics.error.length && metrics.error[0].msg) {
+                  if (isDevMode()) {
+                    console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
+                  }
+                  if (
+                    metrics.error[0].msg?.parameters?.errors &&
+                    metrics.error[0].msg?.parameters?.errors.length
+                  ) {
+                    metricsError.push(JSON.stringify(metrics.error[0].msg?.parameters?.errors[0]));
+                  }
+                } else {
+                  metricsError.push('-');
+                }
               }
-            }
-          });
+            });
 
-          if (metricsError.length === 0) {
-            this._addExistingMetricsIntoList(metricsIdByName, existingMetrics);
-            this._importFormData(rows, activeMetrics, userDataId, metricsIdByName, stDict);
-          } else {
-            this._setImportStatus(
-              'File not imported! Error during create new metrics: ' + metricsError,
-            );
+            if (metricsError.length === 0) {
+              this._addExistingMetricsIntoList(metricsIdByName, existingMetrics);
+              this._importFormData(
+                rows,
+                activeMetrics,
+                userDataId,
+                isAdminUser,
+                metricsIdByName,
+                statuses,
+              );
+            } else {
+              this._setImportStatus(
+                'File not imported! Error during create new metrics: ' + metricsError,
+              );
+            }
           }
-        }
-      });
+        });
     } else {
-      this._userDataSub = forkJoin([
-        this._udm.getActiveUserData(),
-        this._getStatusDictionary(statuses),
-      ]).subscribe(([ud, stDict]) => {
+      this._userDataSub = this._udm.getActiveUserData().subscribe(ud => {
         const userDataId = ud ? ud.id : null;
-        this._importFormData(rows, activeMetrics, userDataId, null, stDict);
+        this._importFormData(rows, activeMetrics, userDataId, isAdminUser, null, statuses);
       });
     }
   }
@@ -848,7 +870,48 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
-   * Check if imported xls file is valid for dino and for the selected form schema
+   * Check if the row keys contain all repeating slide fields with correct ordered index
+   * i.e. ["string__0", "string__1", "string__2", "string__3", "string__4"]
+   * @param rowKeys row keys
+   * @param fschema ajf form schema
+   * @returns true if exist
+   */
+  private _containsAllRepFieldsIdx(rowKeys: string[], fschema: FormSchema): boolean {
+    let containsOrderedRepFields = true;
+    const nodes = fschema.schema.nodes;
+    if (nodes) {
+      nodes.forEach((node: AjfNode) => {
+        if (isContainerNode(node) && node.nodeType === AjfNodeType.AjfRepeatingSlide) {
+          if (rowKeys.includes(node.name)) {
+            let orderedRepSlideColsIdx: string[] = [];
+            (<AjfContainerNode>node).nodes.forEach((repField: AjfNode) => {
+              orderedRepSlideColsIdx = rowKeys
+                .filter(key => key.startsWith(repField.name + '__'))
+                .sort()
+                .map(key => key.split('__').pop() || '-1');
+              if (orderedRepSlideColsIdx[0] !== '0') {
+                containsOrderedRepFields = false;
+              } else {
+                for (let i = 0; i < orderedRepSlideColsIdx.length - 1; i++) {
+                  const currentNum = +orderedRepSlideColsIdx[i];
+                  const nextNum = +orderedRepSlideColsIdx[i + 1];
+                  if (currentNum === -1 || nextNum === -1 || nextNum !== currentNum + 1) {
+                    containsOrderedRepFields = false;
+                    break;
+                  }
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+    return containsOrderedRepFields;
+  }
+
+  /**
+   * Check if imported xls file is valid for dino and for the selected form schema.
+   * The form_schema_ref_id column is mandatory.
    * @param data json data contained into the xlsx file
    * @param formSchema ajf form schema
    * @returns true if xls colomns contains at least one field from the schema
@@ -856,9 +919,13 @@ export class ImportForm implements OnDestroy {
   private _isValidXlsxData(data: {[key: string]: any}[], formSchema: FormSchema | null): boolean {
     if (formSchema && data && data.length) {
       const rowKeys = Object.keys(data[0]);
-      if (this._containsAtLeastOne(rowKeys, this._dinoFields)) {
+      if (rowKeys.includes('form_schema_ref_id')) {
         const schemaFields = this._getFieldsNameFromFormSchema(formSchema);
-        return this._containsAtLeastOne(rowKeys, schemaFields);
+        if (this._containsAtLeastOne(rowKeys, schemaFields)) {
+          return data.every(
+            row => this._isLabelHeader(row) || row['form_schema_ref_id'] === formSchema.id,
+          );
+        }
       }
     }
     return false;
@@ -879,6 +946,8 @@ export class ImportForm implements OnDestroy {
       [key: string]: string[];
     },
     existingMetricsByType: any[][],
+    requiredFormStatusNames: string[],
+    allSchemaStatus: FormStatus[],
   ): boolean {
     let idsNotMatch = false;
     let idsNotMatchMessage = '';
@@ -938,6 +1007,19 @@ export class ImportForm implements OnDestroy {
       });
     }
 
+    if (requiredFormStatusNames.length) {
+      const existingFormStatusNames = allSchemaStatus.map(fst => fst.name);
+      const missingStatus = requiredFormStatusNames.filter(
+        st => !existingFormStatusNames.includes(st),
+      );
+      if (missingStatus.length) {
+        idsNotMatch = true;
+        let missingStatusNames = missingStatus.map(i => '\n' + i);
+        console.log('File not imported! These form status names not exist:' + missingStatusNames);
+        idsNotMatchMessage = '\nCheck that these form status names exist:' + missingStatusNames;
+      }
+    }
+
     if (idsNotMatch) {
       this._setImportStatus('File not imported! ' + idsNotMatchMessage);
     }
@@ -960,7 +1042,8 @@ export class ImportForm implements OnDestroy {
       const ws = wb.Sheets[wsname];
       const data: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
 
-      const requiredUserIds = this._getRequiredUsers(data);
+      let requiredFormStatusNames = this._allValuesForKey(data, 'form_status_name');
+      let requiredUserIds = this._allValuesForKey(data, 'user_data_ref_id');
       const activeMetrics = this.metricsService.activeMetrics.value.map(
         metric => metric.metricName,
       );
@@ -969,7 +1052,7 @@ export class ImportForm implements OnDestroy {
         activeMetrics,
       );
 
-      const queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
+      let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
         ? this._udm
             .query({
               selector: {id: {$in: requiredUserIds}, is_deleted: {$ne: true}},
@@ -982,10 +1065,25 @@ export class ImportForm implements OnDestroy {
 
       this._validateDataSub = this._formSchema
         .pipe(
-          map(formSchema => this._isValidXlsxData(data, formSchema)),
-          switchMap(isValidXlsData => {
-            if (isValidXlsData) {
-              return zip([queryRequiredUsers, this._getMetricsIfExist(requiredMetricIdsByType)]);
+          switchMap(formSchema => {
+            return zip([
+              obsOf(formSchema),
+              obsOf(this._isValidXlsxData(data, formSchema)),
+              this._ugm.isActiveUserAdmin(this.adminRoles),
+            ]);
+          }),
+          switchMap(([fmSchema, isValidXlsData, isAdminUser]) => {
+            if (fmSchema && isValidXlsData) {
+              if (!isAdminUser) {
+                queryRequiredUsers = obsOf([]);
+                requiredUserIds = [];
+              }
+              return zip([
+                queryRequiredUsers,
+                this._getMetricsIfExist(requiredMetricIdsByType),
+                obsOf(isAdminUser),
+                this._fsm.formStatusesOfSchema(fmSchema),
+              ]);
             }
             return obsOf(null);
           }),
@@ -994,36 +1092,23 @@ export class ImportForm implements OnDestroy {
           if (res && res.length > 1) {
             const existingUsers = res[0];
             const existingMetricsByType = res[1];
+            const isAdminUser = res[2];
+            const allSchemaStatus = res[3] || [];
             const idsNotMatch = this._checkIfMissingIds(
               requiredUserIds,
               existingUsers,
               requiredMetricIdsByType,
               existingMetricsByType,
+              requiredFormStatusNames,
+              allSchemaStatus,
             );
 
             if (!idsNotMatch) {
-              if (this._fsm) {
-                const statusDictionary: {[key: string]: Observable<string | null>} = {};
-                data.forEach(row => {
-                  if (row['form_status_name'] && !statusDictionary[row['form_status_name']]) {
-                    statusDictionary[row['form_status_name']] = this._fsm
-                      .query({
-                        selector: {name: {$eq: row['form_status_name']}, is_deleted: {$ne: true}},
-                      })
-                      .pipe(
-                        map(docs => (docs[0] ? docs[0].id : null)),
-                        take(1),
-                      );
-                  }
-                });
-                this._importFormDataRows(data, newMetrics, statusDictionary);
-              } else {
-                this._importFormDataRows(data, newMetrics);
-              }
+              this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
             }
           } else {
             this._setImportStatus(
-              'File not imported! Check if columns match fields of the formschema.',
+              'File not imported! form_schema_ref_id column is mandatory and columns must match formschema fields.',
             );
           }
         });

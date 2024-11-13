@@ -38,7 +38,8 @@ export class FormStatusManager extends DataModelManager<FormStatus> {
   }
 
   /**
-   * Finds all available Form Statuses associated with a Form Schema
+   * Finds all available Form Statuses associated with a Form Schema, ordered by status level.
+   * The default status is the first.
    * @param schema The Form Schema object
    * @returns The associated Form Statuses or null if no status is associated
    */
