@@ -65,6 +65,7 @@ export class MatFormsListE2E {
     [metricName: string]: string;
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
   readonly booleanQuickEdit: string[] = additionalConfig.booleanQuickEdit;
+  readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
 
   /**
    * The Ajf Nodes Visibility observable
