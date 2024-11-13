@@ -69,6 +69,11 @@ interface MetricInfoInRows {
    * Metric ids found in rows, which must exist.
    */
   requiredMetricIdsByType: {[key: string]: string[]};
+
+  /**
+   * True if missing mandatory metrics in some rows
+   */
+  missingMandatoryMetrics: boolean;
 }
 
 /**
@@ -98,6 +103,12 @@ export class ImportForm implements OnDestroy {
    * The edited form schema id
    */
   private _formSchemaId: string | null;
+
+  /**
+   * True if the Form can have one or more null Metrics.
+   * Defaults to false.
+   */
+  private _hasOptionalMetrics: boolean = false;
 
   /**
    * The Form schema object
@@ -204,6 +215,7 @@ export class ImportForm implements OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this._formSchemaId = this.data.formSchema;
+    this._hasOptionalMetrics = this.data.hasOptionalMetrics;
 
     if (this._formSchemaId) {
       this._formSchema = this._formSchemaManager.get(this._formSchemaId).pipe(
@@ -357,6 +369,8 @@ export class ImportForm implements OnDestroy {
   ): MetricInfoInRows {
     const newMetrics: {[key: string]: {[key: string]: any}[]} = {};
     const requiredMetricIdsByType: {[key: string]: string[]} = {};
+    let missingMandatoryMetrics = false;
+
     if (activeMetrics.length) {
       activeMetrics.forEach(metric => {
         const manager = this._metricManagers[metric];
@@ -365,9 +379,14 @@ export class ImportForm implements OnDestroy {
           const metricIdKey = metric + '_id';
           const metricNameKey = metric + '_name';
 
+          const requiredProps = manager.collectionSchema.required
+            ? manager.collectionSchema.required
+            : ['name'];
+          const props = manager.collectionSchema.properties;
+
           rows.forEach((row: {[key: string]: any}) => {
             // Check if is not a second header
-            if (!this._isLabelHeader(row)) {
+            if (!missingMandatoryMetrics && !this._isLabelHeader(row)) {
               const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
               if (
                 newMetricName &&
@@ -378,11 +397,6 @@ export class ImportForm implements OnDestroy {
                 newMetricNames.push(newMetricName);
                 let newMetric: {[key: string]: any} = {};
 
-                const requiredProps = manager.collectionSchema.required
-                  ? manager.collectionSchema.required
-                  : ['name'];
-
-                const props = manager.collectionSchema.properties;
                 if (metric === 'case') {
                   delete props['code'];
                   delete row['case_code'];
@@ -416,13 +430,15 @@ export class ImportForm implements OnDestroy {
                 if (!requiredMetricIdsByType[metric].includes(row[metricIdKey])) {
                   requiredMetricIdsByType[metric].push(row[metricIdKey]);
                 }
+              } else if (!this._hasOptionalMetrics) {
+                missingMandatoryMetrics = true;
               }
             }
           });
         }
       });
     }
-    return {newMetrics, requiredMetricIdsByType};
+    return {newMetrics, requiredMetricIdsByType, missingMandatoryMetrics};
   }
 
   /**
@@ -1047,71 +1063,73 @@ export class ImportForm implements OnDestroy {
       const activeMetrics = this.metricsService.activeMetrics.value.map(
         metric => metric.metricName,
       );
-      const {newMetrics, requiredMetricIdsByType} = this._getMetricsToBeCreated(
-        data,
-        activeMetrics,
-      );
+      const {newMetrics, requiredMetricIdsByType, missingMandatoryMetrics} =
+        this._getMetricsToBeCreated(data, activeMetrics);
 
-      let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
-        ? this._udm
-            .query({
-              selector: {id: {$in: requiredUserIds}, is_deleted: {$ne: true}},
-            })
-            .pipe(
-              take(1),
-              catchError(_ => obsOf([])),
-            )
-        : obsOf([]);
+      if (!missingMandatoryMetrics) {
+        let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
+          ? this._udm
+              .query({
+                selector: {id: {$in: requiredUserIds}, is_deleted: {$ne: true}},
+              })
+              .pipe(
+                take(1),
+                catchError(_ => obsOf([])),
+              )
+          : obsOf([]);
 
-      this._validateDataSub = this._formSchema
-        .pipe(
-          switchMap(formSchema => {
-            return zip([
-              obsOf(formSchema),
-              obsOf(this._isValidXlsxData(data, formSchema)),
-              this._ugm.isActiveUserAdmin(this.adminRoles),
-            ]);
-          }),
-          switchMap(([fmSchema, isValidXlsData, isAdminUser]) => {
-            if (fmSchema && isValidXlsData) {
-              if (!isAdminUser) {
-                queryRequiredUsers = obsOf([]);
-                requiredUserIds = [];
-              }
+        this._validateDataSub = this._formSchema
+          .pipe(
+            switchMap(formSchema => {
               return zip([
-                queryRequiredUsers,
-                this._getMetricsIfExist(requiredMetricIdsByType),
-                obsOf(isAdminUser),
-                this._fsm.formStatusesOfSchema(fmSchema),
+                obsOf(formSchema),
+                obsOf(this._isValidXlsxData(data, formSchema)),
+                this._ugm.isActiveUserAdmin(this.adminRoles),
               ]);
-            }
-            return obsOf(null);
-          }),
-        )
-        .subscribe(res => {
-          if (res && res.length > 1) {
-            const existingUsers = res[0];
-            const existingMetricsByType = res[1];
-            const isAdminUser = res[2];
-            const allSchemaStatus = res[3] || [];
-            const idsNotMatch = this._checkIfMissingIds(
-              requiredUserIds,
-              existingUsers,
-              requiredMetricIdsByType,
-              existingMetricsByType,
-              requiredFormStatusNames,
-              allSchemaStatus,
-            );
+            }),
+            switchMap(([fmSchema, isValidXlsData, isAdminUser]) => {
+              if (fmSchema && isValidXlsData) {
+                if (!isAdminUser) {
+                  queryRequiredUsers = obsOf([]);
+                  requiredUserIds = [];
+                }
+                return zip([
+                  queryRequiredUsers,
+                  this._getMetricsIfExist(requiredMetricIdsByType),
+                  obsOf(isAdminUser),
+                  this._fsm.formStatusesOfSchema(fmSchema),
+                ]);
+              }
+              return obsOf(null);
+            }),
+          )
+          .subscribe(res => {
+            if (res && res.length > 1) {
+              const existingUsers = res[0];
+              const existingMetricsByType = res[1];
+              const isAdminUser = res[2];
+              const allSchemaStatus = res[3] || [];
+              const idsNotMatch = this._checkIfMissingIds(
+                requiredUserIds,
+                existingUsers,
+                requiredMetricIdsByType,
+                existingMetricsByType,
+                requiredFormStatusNames,
+                allSchemaStatus,
+              );
 
-            if (!idsNotMatch) {
-              this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
+              if (!idsNotMatch) {
+                this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
+              }
+            } else {
+              this._setImportStatus(
+                'File not imported! form_schema_ref_id column is mandatory and columns must match formschema fields.',
+              );
             }
-          } else {
-            this._setImportStatus(
-              'File not imported! form_schema_ref_id column is mandatory and columns must match formschema fields.',
-            );
-          }
-        });
+          });
+      } else {
+        this._setImportStatus('File not imported! Metrics are mandatory.');
+      }
     };
   }
 

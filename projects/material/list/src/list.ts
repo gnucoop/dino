@@ -160,6 +160,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   secondaryRowActionsDisplayed: boolean = false;
 
+
+  /**
+   * True if the Form can have one or more null Metrics.
+   * Defaults to false.
+   */
+  @Input()
+  hasOptionalMetrics: boolean = false;
+
   /**
    * The List selection model. Allows selection of individual or multiple elements
    * of the List, for the purpose of performing bulk actions.
@@ -1387,6 +1395,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
         formSchema: schemaId,
+        hasOptionalMetrics: this.hasOptionalMetrics,
       };
       this._importDialogRef = this.dialog.open(ImportForm, dialogConfig);
       this._dialogSub = this._importDialogRef
