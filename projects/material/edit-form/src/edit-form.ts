@@ -1123,9 +1123,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             let formValue = {...formObj.formValue};
             if (formObj.evt && formObj.evt === 'draft') {
               formValue['dinoinvalid'] = true;
-            } else if (formValue['dinoinvalid']) {
+            } else if (formValue['dinoinvalid'] || formValue['$invalid']) {
               delete formValue['dinoinvalid'];
             }
+            delete formValue['$invalid'];
             if (res.length > 1) {
               for (let i = 1; i < res.length; i++) {
                 formValue = this.uploadService.replaceUploadedFile(
@@ -1245,7 +1246,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     this.isAjfFormValid = this._rendererService.formInitEvent.pipe(
       withLatestFrom(this._formData),
       switchMap(([_, fd]) => {
-        const invalidForm = (fd.data as any)['dinoinvalid'] || false;
+        const invalidForm = (fd.data as any)['dinoinvalid'] || (fd.data as any)['$invalid'];
         const startErrors = invalidForm === true ? 1 : 0;
         return this._rendererService.errors.pipe(
           startWith(startErrors),

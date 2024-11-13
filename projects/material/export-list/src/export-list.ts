@@ -125,7 +125,13 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
   private _exportedDataListPopulated$: Observable<ExportData[]>;
   private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at', 'dinoinvalid'];
+  private _dinoFields: string[] = [
+    'id',
+    'user_data_ref_id',
+    'created_at',
+    'dinoinvalid',
+    '$invalid',
+  ];
   private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at'];
   private _metricManagers: (DataModelManager<any> | null)[] = [
     this._ar,
@@ -510,7 +516,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
                     ? ctx.dino[dinoField].id
                     : ctx.dino[dinoField];
               });
-              refExportCtx['dinoinvalid'] = ctx['dinoinvalid'];
+              refExportCtx['dinoinvalid'] = ctx['dinoinvalid'] || ctx['$invalid'];
               if (ctx.dino['user_data'] != null) {
                 refExportCtx['user_data_full_name'] = ctx.dino['user_data'].full_name;
               }
