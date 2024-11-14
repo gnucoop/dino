@@ -57,6 +57,11 @@ export const schema = {
       "ref": "user_data",
       "maxLength": 200
     },
+    "name": {
+      "type": "string",
+      "description": "The report data name.",
+      "maxLength": 200
+    },
     "report_schema_ref_id": {
       "type": "string",
       "description": "The schema identifier.",
@@ -145,6 +150,7 @@ export const schema = {
     "id",
     "location_ref_id",
     "metadata",
+    "name",
     "organization_ref_id",
     "project_ref_id",
     "report_schema_ref_id",

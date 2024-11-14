@@ -34,6 +34,11 @@ export interface ReportData extends Model {
   user_data_ref_id: string;
 
   /**
+   * The report data name.
+   */
+  name: string;
+
+  /**
    * The schema identifier.
    */
   report_schema_ref_id: string;

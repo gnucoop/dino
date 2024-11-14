@@ -26,13 +26,17 @@
         </div>
         <div class="dino-create-report-step-container">
           <form [formGroup]="dateIntervalForm" autocomplete="off">
-            <mat-form-field appearance="fill">
+            <mat-form-field class="dino-report-name-field" appearance="fill">
+              <mat-label>{{'Report Name'|transloco}}</mat-label>
+              <input matInput formControlName="name" />
+            </mat-form-field>
+            <mat-form-field class="dino-report-date-field" appearance="fill">
               <mat-label>{{'Collected Since'|transloco}}</mat-label>
               <input matInput [matDatepicker]="pickerFrom" [formControlName]="'date_start'" />
               <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
               <mat-datepicker #pickerFrom></mat-datepicker>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field class="dino-report-date-field" appearance="fill">
               <mat-label>{{'Collected Until'|transloco}}</mat-label>
               <input matInput [matDatepicker]="pickerTo" [formControlName]="'date_end'" />
               <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
@@ -65,6 +69,7 @@
   <dino-floating-button
     buttonIcon="save"
     [tooltipMessage]="'Save report'|transloco"
+    [buttonDisabled]="(isFormMetricsSelectorValid|async) === false || !dateIntervalForm.valid"
     (click)="saveReport()"
   ></dino-floating-button>
 </ng-container>

@@ -32,7 +32,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute} from '@angular/router';
 import {MetricsService, PermissionContextService} from '@dino/core/data';
@@ -148,6 +148,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     private _pcs: PermissionContextService,
   ) {
     this.dateIntervalForm = new UntypedFormGroup({
+      'name': new UntypedFormControl('', Validators.required),
       'date_start': new UntypedFormControl(),
       'date_end': new UntypedFormControl(),
     });
@@ -230,6 +231,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
           newItem['date_end'] = dateIntervalValue.date_end
             ? format(dateIntervalValue.date_end, dateFmt)
             : null;
+          newItem['name'] = dateIntervalValue.name;
           if (formMetricsSelector != null) {
             const selectedMetrics = formMetricsSelector.selectedMetrics;
             const creationDate = formMetricsSelector.formDate.value.created_at;

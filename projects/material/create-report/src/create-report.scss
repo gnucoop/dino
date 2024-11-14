@@ -11,6 +11,14 @@ dino-create-report {
       min-height: 75vh;
     }
   }
+
+  form {
+    .dino-report-name-field,
+    .dino-report-date-field {
+      margin-right: 10px;
+    }
+  }
+
   .mat-stepper-horizontal {
     background-color: transparent !important;
     .mat-horizontal-stepper-content .mat-stepper-previous {
