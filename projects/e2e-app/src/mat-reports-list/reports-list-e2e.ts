@@ -34,6 +34,7 @@ export class MatReportsListE2E {
   readonly headers: ListHeader<ReportData>[] = [
     {column: 'id', label: 'ID', displayed: false},
     {column: 'user_data_ref_id', label: 'User', populateWith: 'full_name', displayed: true},
+    {column: 'name', label: 'Name', displayed: true},
     {
       column: 'area_ref_id',
       label: 'Area',
