@@ -106,7 +106,7 @@ export const migrationStrategies: MigrationStrategies = {
     return {...doc, form_status_ref_id: null};
   },
   2: (doc: RxDocument) => {
-    return {...doc, name: null};
+    return {...doc, name: null, data: {}};
   },
 };
 
