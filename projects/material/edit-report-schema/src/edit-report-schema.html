@@ -49,6 +49,17 @@
         </mat-form-field>
 
         <mat-form-field>
+          <mat-label>{{'Required Metrics'|transloco}}</mat-label>
+          <mat-select [disableRipple]="true" formControlName="required_metrics" multiple>
+            <mat-option
+              *ngFor="let availableMetric of availableMetrics|async"
+              [value]="availableMetric.metricName"
+              >{{availableMetric.label|transloco}}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
           <mat-select [placeholder]="'Form Schemas'|transloco">
             <mat-option *ngFor="let formSchema of formSchemas|async"
               >{{formSchema.label}}</mat-option

@@ -56,6 +56,14 @@ export const schema = {
       'description': 'The report schema name.',
       'maxLength': 200,
     },
+    'required_metrics': {
+      'type': 'array',
+      'items': {
+        'type': 'string',
+      },
+      'description':
+        'The names of the Metric types required for this schema.',
+    },
     'form_schema_ids': {
       'type': 'array',
       'items': {
@@ -119,5 +127,5 @@ export const schema = {
   'title': 'ReportSchema',
   'indexes': ['created_at', 'updated_at'],
   'primaryKey': 'id',
-  'version': 0,
+  'version': 1,
 } as RxJsonSchema<ReportSchema>;

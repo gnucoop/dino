@@ -10,6 +10,7 @@
               <div class="dino-edit-report-step-container">
                 <dino-form-metric-selector
                   [hasOptionalMetrics]="hasOptionalMetrics"
+                  [requiredMetrics]="requiredMetrics|async"
                   [allowMetricCreationFor]="allowMetricCreationFor"
                   [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
                   [availableStatuses]="availableStatuses|async"

@@ -293,6 +293,11 @@ export class EditReport implements AfterViewInit {
   readonly availableStatuses: Observable<FormStatus[] | null>;
 
   /**
+   *The names of the Metric types required.
+   */
+  readonly requiredMetrics: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
+  /**
    * True if the Report is in readonly mode.
    * When a Report id is passed by the input, the report is automatically
    * displayed in readonly mode.
@@ -410,6 +415,7 @@ export class EditReport implements AfterViewInit {
               return throwError(() => new Error('Invalid Report Schema collection'));
             }
             const item = doc.toJSON();
+            this.requiredMetrics.next((item.required_metrics as string[]) || []);
             return obsOf(item);
           }),
           retryWhen(err => err.pipe(delay(1000), take(10))),

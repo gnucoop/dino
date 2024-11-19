@@ -40,7 +40,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataQueryOptions, InsertModel} from '@dino/core/data';
+import {ActiveMetric, DataQueryOptions, InsertModel, MetricsService} from '@dino/core/data';
 import {FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {IconsService} from '@dino/material/icons-service';
@@ -89,6 +89,11 @@ export class EditReportSchema implements OnInit, OnDestroy {
    * The Ajf Report instance
    */
   reportInstance$: Observable<AjfReportInstance | null>;
+
+  /**
+   * All the available active metrics.
+   */
+  availableMetrics: BehaviorSubject<ActiveMetric[]>;
 
   /**
    * Form group for editing the Report Schema attributes
@@ -149,6 +154,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
     private _formBuilder: UntypedFormBuilder,
     private _schemaNameValidator: ReportSchemaNameMatchValidator,
     private _iconsService: IconsService,
+    private _metricService: MetricsService,
     private _translocoService: TranslocoService,
     private _fs: FormSchemaManager,
     private _ehms: ErrorHandlerMessageService,
@@ -176,6 +182,8 @@ export class EditReportSchema implements OnInit, OnDestroy {
       switchMap(schema => schema as Observable<ReportSchema>),
       shareReplay(1),
     );
+
+    this.availableMetrics = this._metricService.activeMetrics;
 
     this._formSchemas = this._reportSchema.pipe(
       switchMap(rs => {
@@ -217,6 +225,9 @@ export class EditReportSchema implements OnInit, OnDestroy {
             rs && rs.icon && rs.icon.includes('icon-') ? 'humanitarian' : 'default',
             Validators.required,
           ],
+          required_metrics: [
+            rs && rs.required_metrics && rs.required_metrics.length ? rs.required_metrics : [],
+          ],
         }),
       ),
       shareReplay(1),
@@ -247,6 +258,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
+            required_metrics: formGroup.get('required_metrics')?.value,
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           if (reportSchema == null) {

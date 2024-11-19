@@ -58,9 +58,11 @@ export const schema = {
       "maxLength": 200
     },
     "name": {
-      "type": "string",
-      "description": "The report data name.",
-      "maxLength": 200
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The report data name."
     },
     "report_schema_ref_id": {
       "type": "string",
@@ -165,5 +167,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 1
+  "version": 2
 } as RxJsonSchema<ReportData>;

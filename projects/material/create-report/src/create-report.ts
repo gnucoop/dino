@@ -39,7 +39,7 @@ import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {filter, map, shareReplay, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
 import {format} from 'date-fns';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
@@ -132,6 +132,11 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   readonly availableStatuses: Observable<FormStatus[] | null>;
 
   /**
+   *The names of the Metric types required.
+   */
+  readonly requiredMetrics: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
+  /**
    * The Form Metrics Selector
    */
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
@@ -184,6 +189,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
               return null;
             }
             const item = doc.toJSON();
+            this.requiredMetrics.next((item.required_metrics as string[]) || []);
             return item;
           }),
         ),

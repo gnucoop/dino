@@ -36,7 +36,7 @@ export interface ReportData extends Model {
   /**
    * The report data name.
    */
-  name: string;
+  name: string | null;
 
   /**
    * The schema identifier.
@@ -99,11 +99,14 @@ export interface ReportData extends Model {
   data: {[key: string]: any};
 }
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => {
     return {...doc, form_status_ref_id: null};
+  },
+  2: (doc: RxDocument) => {
+    return {...doc, name: null};
   },
 };
 

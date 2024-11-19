@@ -31,7 +31,13 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {
+  UntypedFormControl,
+  UntypedFormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -206,6 +212,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   private _hasOptionalMetrics: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
+   * The names of the Metric types required.
+   */
+  private _requiredMetrics: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
+  /**
    * Emits when a new metric has been created by the user
    * via Form Metric Selector
    */
@@ -218,6 +229,15 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       return;
     }
     this._hasOptionalMetrics.next(allowed);
+  }
+
+  @Input()
+  set requiredMetrics(metrics: string[] | null) {
+    if (metrics != null) {
+      this._requiredMetrics.next(metrics);
+    } else {
+      this._requiredMetrics.next([]);
+    }
   }
 
   /**
@@ -315,11 +335,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     } as {[metricType: string]: DataModelManager<Metric> | null};
 
     if (this._areaManager != null) {
-      group['area'] = new UntypedFormControl('', validatorFn);
+      group['area'] = new UntypedFormControl('', this._getMetricValidator('area', validatorFn));
       this.formMetricsValues['area'] = group['area'].valueChanges.pipe(map(vc => vc.option ?? vc));
     }
     if (this._caseManager != null) {
-      group['case'] = new UntypedFormControl('', validatorFn);
+      group['case'] = new UntypedFormControl('', this._getMetricValidator('case', validatorFn));
       this.formMetricsValues['case'] = group['case'].valueChanges.pipe(
         map(vc => {
           return vc.option ?? vc;
@@ -328,21 +348,30 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     }
 
     if (this._projectManager != null) {
-      group['project'] = new UntypedFormControl('', validatorFn);
+      group['project'] = new UntypedFormControl(
+        '',
+        this._getMetricValidator('project', validatorFn),
+      );
       this.formMetricsValues['project'] = group['project'].valueChanges.pipe(
         map(vc => vc.option ?? vc),
       );
     }
 
     if (this._locationManager != null) {
-      group['location'] = new UntypedFormControl('', validatorFn);
+      group['location'] = new UntypedFormControl(
+        '',
+        this._getMetricValidator('location', validatorFn),
+      );
       this.formMetricsValues['location'] = group['location'].valueChanges.pipe(
         map(vc => vc.option ?? vc),
       );
     }
 
     if (this._organizationManager != null) {
-      group['organization'] = new UntypedFormControl('', validatorFn);
+      group['organization'] = new UntypedFormControl(
+        '',
+        this._getMetricValidator('organization', validatorFn),
+      );
       this.formMetricsValues['organization'] = group['organization'].valueChanges.pipe(
         map(vc => vc.option ?? vc),
       );
@@ -352,14 +381,19 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
 
     this.formMetrics = formGroup;
 
-    this.formMetricsFields = this._formSchemaAvailableMetrics.pipe(
-      map(availableMetrics => {
+    this.formMetricsFields = combineLatest([
+      this._hasOptionalMetrics,
+      this._formSchemaAvailableMetrics,
+      this._requiredMetrics,
+    ]).pipe(
+      //this._formSchemaAvailableMetrics.pipe(
+      map(([optMetrics, availableMetrics, reqMetrics]) => {
         const fmf: MetricFormField[] = [];
         if (this._areaManager != null && this._isMetricAvailable(availableMetrics, 'area')) {
           const field = {
             fieldName: 'area',
             hint: `Thematic Area of the form`,
-            placeholder: 'Thematic Area' + (this._hasOptionalMetrics.value ? '' : ' *'),
+            placeholder: 'Thematic Area' + (optMetrics && !reqMetrics.includes('area') ? '' : ' *'),
             icon: 'volunteer_activism',
           };
           fmf.push(field);
@@ -369,7 +403,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'case',
             hint: `Case of the form`,
-            placeholder: 'Case management' + (this._hasOptionalMetrics.value ? '' : ' *'),
+            placeholder:
+              'Case management' + (optMetrics && !reqMetrics.includes('case') ? '' : ' *'),
             icon: 'people',
           };
           fmf.push(field);
@@ -380,7 +415,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'project',
             hint: `Project associated with the form`,
-            placeholder: 'Project' + (this._hasOptionalMetrics.value ? '' : ' *'),
+            placeholder: 'Project' + (optMetrics && !reqMetrics.includes('project') ? '' : ' *'),
             icon: 'assignment',
           };
           fmf.push(field);
@@ -394,7 +429,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'location',
             hint: `Location of the collected data`,
-            placeholder: 'Location' + (this._hasOptionalMetrics.value ? '' : ' *'),
+            placeholder: 'Location' + (optMetrics && !reqMetrics.includes('location') ? '' : ' *'),
             icon: 'place',
           };
           fmf.push(field);
@@ -408,7 +443,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'organization',
             hint: `Organization associated with the form`,
-            placeholder: 'Organization' + (this._hasOptionalMetrics.value ? '' : ' *'),
+            placeholder:
+              'Organization' + (optMetrics && !reqMetrics.includes('organization') ? '' : ' *'),
             icon: 'public',
           };
           fmf.push(field);
@@ -432,19 +468,35 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     combineLatest([this._hasOptionalMetrics, this._formSchemaAvailableMetrics])
       .pipe(take(1))
       .subscribe(([optMetrics, availableMetrics]) => {
+        const defaultValidatorFn: ValidationErrors | null = optMetrics
+          ? RequireMetricMatch
+          : RequireNotNullMetricMatch;
+
         Object.keys(this.formMetrics.controls).forEach(key => {
           this.formMetrics.controls[key].setValidators(
             !availableMetrics || !availableMetrics.length || availableMetrics.includes(key)
-              ? optMetrics
-                ? RequireMetricMatch
-                : RequireNotNullMetricMatch
+              ? (this._getMetricValidator(key, defaultValidatorFn) as ValidatorFn)
               : RequireMetricMatch,
           );
           this.formMetrics.controls[key].updateValueAndValidity();
         });
       });
-
     this._adapter.setLocale(this._getCurrentLocale());
+  }
+
+  /**
+   * Return the metric validator: required if metric is in _requiredMetrics list, default otherwise
+   * @param metricName
+   * @param defaultValidatorFn
+   * @returns Validator for the metric
+   */
+  private _getMetricValidator(
+    metricName: string,
+    defaultValidatorFn: ValidationErrors | null,
+  ): ValidationErrors | null {
+    return this._requiredMetrics.getValue().includes(metricName)
+      ? RequireNotNullMetricMatch
+      : defaultValidatorFn;
   }
 
   private _getCurrentLocale(): string {
