@@ -20,12 +20,8 @@
  *
  */
 import {
-  AjfColumnWidgetInstance,
   AjfReportInstance,
   AjfReportVariable,
-  AjfTableWidgetInstance,
-  AjfTextWidgetInstance,
-  AjfWidgetType,
   createReportInstance,
   downloadReportDoc,
   evaluateReportVariables,
@@ -99,7 +95,6 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {AjfContext} from '@ajf/core/models';
-import {HttpClient} from '@angular/common/http';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 export type PrintLayout = 'landscape' | 'portrait';
@@ -266,8 +261,7 @@ export class EditReport implements AfterViewInit {
   /**
    * The base url of the DataChat (Pandino) API
    */
-  @Input() gptCompletionUrl?: string;
-  // @Input() baseDataChatAPIurl?: string;
+  @Input() baseDataChatAPIurl?: string;
 
   /**
    * The endpoint names in the urls
@@ -319,7 +313,6 @@ export class EditReport implements AfterViewInit {
     private _fstm: FormStatusManager,
     private _pcs: PermissionContextService,
     private _nss: NetworkStatusService,
-    private _http: HttpClient,
     private _ehms: ErrorHandlerMessageService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
@@ -666,52 +659,6 @@ export class EditReport implements AfterViewInit {
   }
 
   /**
-   * Sends the API Key to the 'validateapikey' endpoint
-   * @param key
-   * @returns
-   */
-  async sendAPIKey(key: string) {
-    if (!this.gptCompletionUrl) return;
-    const headers = {'X-API-KEY': key};
-    this._http
-      .post(
-        `${this.gptCompletionUrl}/${this.endpointUrls?.validateEndpoint ?? 'validateapikey'}`,
-        null,
-        {headers},
-      )
-      .pipe(take(1))
-      .subscribe({
-        next: res => {
-          localStorage.setItem('pandas_dino_api_key', key);
-          if (isDevMode()) {
-            console.log(res);
-          }
-        },
-        error: err => {
-          if (err.error.error && err.error.error === 'Invalid API key') {
-            this.snackbar.open('Invalid API key for PANDINO', 'Invalid API key', {
-              duration: 5000,
-            });
-          } else {
-            this.snackbar.open(
-              'PANDINO is not responding at the moment. Please try later',
-              'PANDINO NOT RESPONDING',
-              {
-                duration: 5000,
-              },
-            );
-            if (!isDevMode()) {
-              this._ehms.captureErrorMessage(
-                `PANDINO is not responding: ${JSON.stringify(err)}`,
-                'warning',
-              );
-            }
-          }
-        },
-      });
-  }
-
-  /**
    * Prints the current report Instance to pdf
    */
   printReport() {
@@ -789,78 +736,6 @@ export class EditReport implements AfterViewInit {
   }
 
   /**
-   * Download the editable social balance
-   */
-  async downloadSocialBalance() {
-    const userInfo: User | null = this._auth.getUserInfo();
-    if (this._currentReportInstance == null || this.gptPromptStatus !== '' || !userInfo) {
-      return;
-    }
-    if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
-      console.warn('gptPostUrl or graphqlUrl not provided');
-      return;
-    }
-
-    let gptPromptUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
-    if (gptPromptUrl.indexOf('prompt.txt') < 0) {
-      gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
-    }
-
-    const cols = this._currentReportInstance.content!.content;
-    if (cols.length !== 1 || cols[0].widgetType !== AjfWidgetType.Column) {
-      return;
-    }
-    const widgets = [...(cols[0] as AjfColumnWidgetInstance).content];
-
-    // Replace the prompt table widgets with the AI-generated text
-    let promptNum = 1;
-    for (let i = 0; i < widgets.length; i++) {
-      const w = widgets[i];
-      if (w.widgetType !== AjfWidgetType.DynamicTable) {
-        continue;
-      }
-      const data = (w as AjfTableWidgetInstance).data;
-      if (data.length !== 2 || !(data[0][0].value as string).startsWith('Prompt')) {
-        continue;
-      }
-      const prompt = data[1][0].value as string;
-
-      this._setPromptStatus(`Generazione prompt ${promptNum}...`);
-      promptNum++;
-      const fd = new FormData();
-      fd.append('graphqlUrl', this.graphqlUrl);
-      fd.append('authToken', this._auth.getAuthToken() || '');
-      fd.append('prompt', prompt);
-      fd.append('username', userInfo.email);
-      let text: string;
-      try {
-        const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
-        text = await resp.text();
-        if (!resp.ok) {
-          throw new Error(text);
-        }
-      } catch (err: any) {
-        console.error(err.message);
-        this._setPromptStatus('Gpt error, check the console');
-        setTimeout(() => this._setPromptStatus(''), 4000);
-        return;
-      }
-
-      const textWidget: Partial<AjfTextWidgetInstance> = {
-        widgetType: AjfWidgetType.Text,
-        htmlText: text,
-      };
-      textWidget.widget = textWidget as any;
-      widgets[i] = textWidget as AjfTextWidgetInstance;
-    }
-
-    const report = deepCopy(this._currentReportInstance);
-    report.content.content[0].content = widgets;
-    downloadReportDoc(report);
-    this._setPromptStatus('');
-  }
-
-  /**
    * Generate AI text from prompt
    */
   async generateAITextFromPrompt(
@@ -891,18 +766,18 @@ export class EditReport implements AfterViewInit {
       if (this.gptPromptStatus !== '' || !userInfo) {
         return aiContext;
       }
-      if (this.gptCompletionUrl == null || this.graphqlUrl == null) {
-        console.warn('gptCompletionUrl or graphqlUrl not provided');
+      if (this.baseDataChatAPIurl == null || this.graphqlUrl == null) {
+        console.warn('baseDataChatAPIurl or graphqlUrl not provided');
         return aiContext;
       }
 
-      let gptPromptUrl = this.gptCompletionUrl.replace('completion.json', 'prompt.txt');
+      let gptPromptUrl = this.baseDataChatAPIurl.replace('completion.json', 'prompt.txt');
       if (gptPromptUrl.indexOf('prompt.txt') < 0) {
-        gptPromptUrl = `${this.gptCompletionUrl}/prompt.txt`;
+        gptPromptUrl = `${this.baseDataChatAPIurl}/prompt.txt`;
       }
 
       // TODO
-      // await sendAPIKey(key);
+      // await sendAPIKey(key) ...
 
       let promptNum = 1;
       for (let i = 0; i < validPrompts.length; i++) {
