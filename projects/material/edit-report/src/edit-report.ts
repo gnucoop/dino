@@ -515,11 +515,10 @@ export class EditReport implements AfterViewInit {
       this._reportSchema,
       this._sourceFormData,
       formSchemas,
-      this._nss.isOnline$,
     ]).pipe(
       delay(300),
       filter(([rData, rSchema]) => rData != null && rSchema != null),
-      switchMap(([rData, rSchema, sfData, ctxSchemas, isOnline]) => {
+      switchMap(([rData, rSchema, sfData, ctxSchemas]) => {
         const formSchemaIds = rSchema.form_schema_ids;
         let populatedData: Observable<{[key: string]: any}>[] = [];
         let queryDepsSelector: DataQuerySelector = {
