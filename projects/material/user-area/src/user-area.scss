@@ -29,6 +29,7 @@ dino-user-area {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
+    align-items: center;
     .mat-mdc-form-field,
     .mat-button-ripple-round,
     .dino-error-message {
@@ -46,6 +47,40 @@ dino-user-area {
         font-size: 1.1em;
         line-height: 2.5em;
       }
+    }
+    .dino-matched-pandino-api-key-button {
+      color: #32db64;
+    }
+    .mat-icon {
+      cursor: pointer;
+    }
+    .dino-tokens-counter-container {
+      flex: 1 0 auto;
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      .dino-tokens-icon{
+        font-size: 24px;
+      }
+      .dino-tokens-counter {
+        margin-left: 15px;
+        color: rgba(var(--palette-foreground-secondary-text-dark));
+        background: rgb(var(--palette-primary-500));
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        padding: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+    }
+    .dino-add-more-text {
+      cursor: pointer;
+      color: rgb(var(--palette-accent-500));
     }
   }
   .mat-mdc-raised-button {

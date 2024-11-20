@@ -45,10 +45,12 @@ import {ColorPickerModule} from 'ngx-color-picker';
 import {UserArea} from './user-area';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {ClipboardModule} from '@angular/cdk/clipboard';
 
 @NgModule({
   imports: [
     AjfTranslocoModule,
+    ClipboardModule,
     ColorPickerModule,
     CommonModule,
     DinoBreakpointObserverModule,

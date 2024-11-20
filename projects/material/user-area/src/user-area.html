@@ -1,6 +1,8 @@
 <ng-container *ngIf="userData|async as userInfo">
   <div class="dino-user-area-header">
-    <h1 class="dino-user-area-title" mat-dialog-title>User Area - {{userInfo.full_name}} - {{userInfo.email}}</h1>
+    <h1 class="dino-user-area-title" mat-dialog-title>
+      User Area - {{userInfo.full_name}} - {{userInfo.email}}
+    </h1>
 
     <div class="dino-user-area-dark-mode-toggle" *ngIf="(breakpointObserver.small|async) === true">
       <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
@@ -19,6 +21,7 @@
 
   <mat-dialog-content>
     <mat-accordion>
+      <!-- PASSWORD section -->
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title> Change Password </mat-panel-title>
@@ -76,7 +79,7 @@
             {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect password'|transloco}}
           </div>
           <button
-            mat-fab
+            mat-icon-button
             type="submit"
             color="accent"
             aria-label="submit"
@@ -88,6 +91,83 @@
         </form>
       </mat-expansion-panel>
 
+      <!-- API KEY section -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> API Keys </mat-panel-title>
+        </mat-expansion-panel-header>
+        <form
+          class="dino-user-area-form"
+          [class.dino-error]="apiKeysForm"
+          [formGroup]="apiKeysForm"
+        >
+          <mat-form-field>
+            <mat-label>Pandino API Key</mat-label>
+            <input
+              matInput
+              formControlName="pandino_api_key"
+              name="pandino_api_key"
+              [type]="hide_api_key ? 'password' : 'text'"
+              aria-label="Pandino API Key"
+              [placeholder]="'Pandino API Key'"
+              [readonly]="(storedPandinoAPIKey|async) !== null"
+            />
+            <mat-icon matSuffix (click)="hide_api_key = !hide_api_key"
+              >{{hide_api_key ? 'visibility' : 'visibility_off'}}</mat-icon
+            >
+            <mat-icon matSuffix [cdkCopyToClipboard]="apiKeysForm.get('pandino_api_key')!.value" (click)="copyToClipboard()"
+              >content_copy</mat-icon
+            >
+            <mat-error *ngIf="apiKeysForm.get('pandino_api_key')?.hasError('required')">
+              API Key is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="apiKeysForm.get('pandino_api_key')?.hasError('invalid')">
+              Invalid API Key
+            </mat-error>
+          </mat-form-field>
+
+          <ng-container *ngIf="(storedPandinoAPIKey|async) === null; else keymatched">
+            <button
+              mat-icon-button
+              type="submit"
+              color="accent"
+              aria-label="submit"
+              [disabled]="(processing|async)"
+              (click)="validateAPIKey(apiKeysForm.get('pandino_api_key')?.value)"
+            >
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </ng-container>
+
+          <ng-template #keymatched>
+            <button
+              class="dino-matched-pandino-api-key-button"
+              mat-icon-button
+              aria-label="matched"
+            >
+              <mat-icon>check</mat-icon>
+            </button></ng-template
+          >
+        </form>
+      </mat-expansion-panel>
+
+      <!-- TOKENS and CREDITS section -->
+      <mat-expansion-panel *ngIf="(availablePandinoTokens|async) !== null">
+        <mat-expansion-panel-header>
+          <mat-panel-title> Tokens </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div
+          class="dino-user-area-form"
+        >
+          <p>Pandino Tokens</p>
+          <div class="dino-tokens-counter-container">
+            <mat-icon color="primary" class="dino-tokens-icon">smart_toy</mat-icon> <span class="dino-tokens-counter">{{(availablePandinoTokens|async)}}</span>
+          </div>
+          <button mat-raised-button color="accent" (click)="openPayment()">{{'Add more'|transloco}}<mat-icon matSuffix>add</mat-icon></button>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- THEME section -->
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title> DINO Theme </mat-panel-title>
@@ -190,6 +270,7 @@
         </div>
       </mat-expansion-panel>
 
+      <!-- BACKUP section -->
       <mat-expansion-panel *ngIf="backupRestore && (isAdmin|async)">
         <mat-expansion-panel-header>
           <mat-panel-title> Backup and Restore </mat-panel-title>

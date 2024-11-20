@@ -25,25 +25,23 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  isDevMode,
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
 import {UserData, UserDataManager} from '@dino/core/users';
-import {
-  BehaviorSubject,
-  map,
-  Observable,
-  of as obsOf,
-  startWith,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf, Subject} from 'rxjs';
+import {map, startWith, switchMap, take, takeUntil} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
 import {DinoTheme, ThemeService} from '@dino/material/core';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
@@ -52,6 +50,10 @@ import {DataService} from '@dino/core/data';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {ListAction} from '@dino/core/list';
 import {Router} from '@angular/router';
+import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
+import {HttpClient} from '@angular/common/http';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {StripeService} from '@dino/material/stripe-payment/src/stripe.service';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -88,6 +90,10 @@ export class UserArea implements OnDestroy {
    */
   readonly changePassForm: UntypedFormGroup;
   /**
+   * The API Keys FormGroup.
+   */
+  readonly apiKeysForm: FormGroup<{pandino_api_key: FormControl<string>}>;
+  /**
    * The Dino Theme customization FormGroup.
    */
   readonly dinoSaveThemeForm: UntypedFormGroup;
@@ -103,6 +109,13 @@ export class UserArea implements OnDestroy {
     return this._changePassError;
   }
   /**
+   * Error is True if API Key authentication was not successful.
+   */
+  private _apiKeyError: AuthError = {error: false, message: null};
+  get apiKeyError(): AuthError {
+    return this._apiKeyError;
+  }
+  /**
    * Displays the login/signup validation errors
    */
   readonly showValErrors = showValidationErrors;
@@ -110,6 +123,21 @@ export class UserArea implements OnDestroy {
    * True if the submit button for changing the password is disabled.
    */
   readonly changePassDisabled: Observable<boolean>;
+
+  /**
+   * True if the api key visibility toggle is on "hide" mode
+   */
+  hide_api_key: boolean = true;
+
+  /**
+   * The stored Pandino API Key
+   */
+  storedPandinoAPIKey: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
+  /**
+   * Available Pandino Tokens
+   */
+  availablePandinoTokens: Observable<string | null>;
 
   /**
    * The primary color of Dino Theme.
@@ -157,7 +185,10 @@ export class UserArea implements OnDestroy {
     private _ts: TranslocoService,
     private _sanitizer: DomSanitizer,
     private _aui: AdminUserInteractionsService,
+    private _stripeService: StripeService,
     private _router: Router,
+    private _http: HttpClient,
+    private _ehms: ErrorHandlerMessageService,
     public themeService: ThemeService,
     public dialogRef: MatDialogRef<UserArea>,
     readonly breakpointObserver: BreakpointObserverService,
@@ -167,6 +198,7 @@ export class UserArea implements OnDestroy {
       isAdmin?: Observable<boolean>;
       backupRestore: boolean | undefined;
     },
+    @Inject(STRIPE_PAYMENT_CONFIG) readonly stripeConfig: StripePaymentConfig,
   ) {
     this.spinnerImagePath = data.spinnerImagePath;
     this.isAdmin = data.isAdmin ?? obsOf(false);
@@ -183,6 +215,13 @@ export class UserArea implements OnDestroy {
       password: [null, [Validators.required, Validators.minLength(9)]],
       confirm_password: [null, [Validators.required, Validators.minLength(9), PasswordMatch]],
     });
+
+    this.storedPandinoAPIKey.next(localStorage.getItem('pandas_dino_api_key'));
+    this.apiKeysForm = this._fb.group({
+      pandino_api_key: [this.storedPandinoAPIKey.value, [Validators.required]],
+    });
+
+    this.availablePandinoTokens = this._stripeService.availableTokens;
 
     this.dinoSaveThemeForm = this._fb.group({
       primary: [this.primaryColor, Validators.required],
@@ -323,6 +362,75 @@ export class UserArea implements OnDestroy {
   }
 
   /**
+   * Opens a snackbar message "copied to clipboard"
+   */
+  copyToClipboard() {
+    this._snackBar.open(this._ts.translate('Copied to clipboard'), this._ts.translate('COPIED'), {
+      duration: 10000,
+    });
+  }
+
+  /**
+   * Validates API Key
+   */
+  validateAPIKey(key: string | undefined): void {
+    if (
+      !key ||
+      !this.apiKeysForm.valid ||
+      this.processing.value ||
+      !this.stripeConfig ||
+      !this.stripeConfig.pandinoUrl
+    ) {
+      return;
+    }
+    this.processing.next(true);
+    const userInfo = this._authService.getUserInfo();
+    if (!userInfo || !userInfo.email) return;
+    const headers = {'X-API-KEY': key, 'X-USER-EMAIL': userInfo.email};
+    this._http
+      .post(`${this.stripeConfig.pandinoUrl}/validateapikey`, null, {headers})
+      .pipe(take(1))
+      .subscribe({
+        next: res => {
+          setTimeout(() => {
+            this.processing.next(false);
+          }, 1000);
+          localStorage.setItem('pandas_dino_api_key', key);
+          this._snackBar.open(
+            this._ts.translate(
+              'Your API Key was successfully authenticated. You can check it any time in your User Area',
+            ),
+            this._ts.translate('PANDINO: AUTHENTICATION SUCCESSFUL!'),
+            {duration: 10000},
+          );
+          this.storedPandinoAPIKey.next(key);
+          this._stripeService.refreshPandinoTokensEvt.emit();
+          this._cdr.detectChanges();
+          if (isDevMode()) {
+            console.log(res);
+          }
+        },
+        error: err => {
+          setTimeout(() => {
+            this.processing.next(false);
+          }, 1000);
+          if (err.error.error && err.error.error === 'Invalid API key') {
+            this.apiKeysForm.get('pandino_api_key')?.setErrors({'invalid': true});
+            this._cdr.detectChanges();
+          } else {
+            this._snackBar.open(
+              this._ts.translate('PANDINO is not responding at the moment. Please try later'),
+              this._ts.translate('PANDINO NOT RESPONDING'),
+              {
+                duration: 5000,
+              },
+            );
+          }
+        },
+      });
+  }
+
+  /**
    * User Change Password method.
    */
   changePassword(): void {
@@ -412,6 +520,13 @@ export class UserArea implements OnDestroy {
         take(1),
       )
       .subscribe();
+  }
+
+  /**
+   * Opens a Stripe Payment dialog
+   */
+  openPayment() {
+    this._stripeService.openPayment('stripe-checkout', 25);
   }
 
   /**
