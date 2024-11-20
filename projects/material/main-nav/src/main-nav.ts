@@ -69,7 +69,7 @@ import {
 } from 'rxjs/operators';
 
 import {Section} from './section-interface';
-import {StripeService} from '@dino/material/stripe-payment/src/stripe.service';
+import {StripeService} from '@dino/material/stripe-payment';
 
 /**
  * Dino Main component, containing the toolbar and the sidebar navigation.

@@ -53,7 +53,7 @@ import {Router} from '@angular/router';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 import {HttpClient} from '@angular/common/http';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
-import {StripeService} from '@dino/material/stripe-payment/src/stripe.service';
+import {StripeService} from '@dino/material/stripe-payment';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.

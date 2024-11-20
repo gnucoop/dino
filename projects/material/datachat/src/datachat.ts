@@ -65,7 +65,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, User} from '@dino/core/auth';
 import {MatSelectChange} from '@angular/material/select';
-import {StripeService} from '@dino/material/stripe-payment/src/stripe.service';
+import {StripeService} from '@dino/material/stripe-payment';
 
 /**
  * The DataChat component.

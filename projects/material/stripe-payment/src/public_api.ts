@@ -24,3 +24,4 @@ export * from './stripe-checkout';
 export * from './stripe-payment-config';
 export * from './stripe-payment-data-interface';
 export * from './stripe-payment.module';
+export * from './stripe.service';
