@@ -318,6 +318,12 @@ export const E2E_APP_ROUTES: Routes = [
     component: GptE2E,
   },
   {
+    path: 'checkout',
+    canActivate: authGuard,
+    data: {breadcrumbs: [{label: 'Checkout', url: 'checkout', icon: 'smart_toy'}]},
+    component: GptE2E,
+  },
+  {
     path: 'dashboard',
     canActivate: authGuard,
     data: {breadcrumbs: [{label: 'Dashboard', url: 'dashboard', icon: 'apps'}]},

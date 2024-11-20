@@ -82,6 +82,13 @@ const routes: Routes = [
     data: {breadcrumbs: [{label: 'GPT', url: 'gpt', icon: 'chat'}]},
   },
   {
+    path: 'checkout',
+    loadChildren: () =>
+      import('./mat-checkout/checkout-e2e.module').then(m => m.MaterialCheckoutE2eModule),
+    canActivate: [AuthGuard],
+    data: {breadcrumbs: [{label: 'Checkout ', url: 'checkout', icon: 'smart_toy'}]},
+  },
+  {
     path: 'f',
     loadChildren: () =>
       import('./mat-edit-public-form/edit-public-form-e2e.module').then(

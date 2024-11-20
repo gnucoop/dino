@@ -1,4 +1,10 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, Optional, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {b64_to_utf8} from '@dino/core/auth';
 import {FormData, FormDataManager} from '@dino/core/forms';
@@ -39,21 +45,28 @@ const defaultHeaders: ListHeader<FormData>[] = [
 function loadHeaders(schemaId: string): ListHeader<FormData>[] {
   const b64 = localStorage.getItem('columns_' + schemaId);
   if (b64 == null) {
-    console.warn("No column headers");
+    console.warn('No column headers');
     return defaultHeaders;
   }
   let headers: ListHeader<FormData>[];
   try {
-    headers = JSON.parse(b64_to_utf8(b64));
+    const preset: {columns: ListHeader<FormData>[]; displayedColumns: string[]} = JSON.parse(
+      b64_to_utf8(b64),
+    );
+    headers = preset.columns;
   } catch {
     console.warn("Couldn't parse column headers");
     return defaultHeaders;
   }
-  return headers.filter(h => h.displayed && (
-    h.dataColumn && !h.repeatingSlideColumn ||
-    h.column === 'area_ref_id' || h.column === 'case_ref_id' ||
-    h.column === 'organization_ref_id' || h.column === 'project_ref_id'
-  ));
+  return headers.filter(
+    h =>
+      h.displayed &&
+      ((h.dataColumn && !h.repeatingSlideColumn) ||
+        h.column === 'area_ref_id' ||
+        h.column === 'case_ref_id' ||
+        h.column === 'organization_ref_id' ||
+        h.column === 'project_ref_id'),
+  );
 }
 
 function markerPopup(form: FormData, dataHeaders: ListHeader<FormData>[]): string {
@@ -103,81 +116,93 @@ export class MatFormsMapE2E implements AfterViewInit {
       this.fieldValues[h.column] = [];
     }
 
-    this.formData = formDataManager.query({selector:
-      {is_deleted: {$eq: false}, form_schema_ref_id: {$eq: schemaId}}
-    }).pipe(take(1));
-    
+    this.formData = formDataManager
+      .query({selector: {is_deleted: {$eq: false}, form_schema_ref_id: {$eq: schemaId}}})
+      .pipe(take(1));
+
     if (locationManager == null) {
       throw new Error('the locations module must be enabled to use the map');
     }
-    this.locations = locationManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(map(locations => {
-      return locations.map(doc => {
-        const loc = doc.toJSON() as LocationWithLatLon;
-        const coord = loc.coordinates;
-        if (typeof coord === 'string' && coord.includes(',')) {
-          const latLon = coord.split(',').slice(0, 2).map(s => Number(s)) as [number, number];
-          if (!isNaN(latLon[0]) && !isNaN(latLon[1])) {
-            loc.latLon = latLon;
-          }
-        }
-        return loc;
-      }).filter(l => l.latLon != null);
-    }), take(1));
-    this.areas = areaManager == null ? of([]) : areaManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(take(1));
-    this.cases = caseManager == null ? of([]) : caseManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(take(1));
-    this.organizations = orgManager == null ? of([]) : orgManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(take(1));
-    this.projects = projectManager == null ? of([]) : projectManager.query({selector:
-      {is_deleted: {$eq: false}}
-    }).pipe(take(1));
+    this.locations = locationManager.query({selector: {is_deleted: {$eq: false}}}).pipe(
+      map(locations => {
+        return locations
+          .map(doc => {
+            const loc = doc.toJSON() as LocationWithLatLon;
+            const coord = loc.coordinates;
+            if (typeof coord === 'string' && coord.includes(',')) {
+              const latLon = coord
+                .split(',')
+                .slice(0, 2)
+                .map(s => Number(s)) as [number, number];
+              if (!isNaN(latLon[0]) && !isNaN(latLon[1])) {
+                loc.latLon = latLon;
+              }
+            }
+            return loc;
+          })
+          .filter(l => l.latLon != null);
+      }),
+      take(1),
+    );
+    this.areas =
+      areaManager == null
+        ? of([])
+        : areaManager.query({selector: {is_deleted: {$eq: false}}}).pipe(take(1));
+    this.cases =
+      caseManager == null
+        ? of([])
+        : caseManager.query({selector: {is_deleted: {$eq: false}}}).pipe(take(1));
+    this.organizations =
+      orgManager == null
+        ? of([])
+        : orgManager.query({selector: {is_deleted: {$eq: false}}}).pipe(take(1));
+    this.projects =
+      projectManager == null
+        ? of([])
+        : projectManager.query({selector: {is_deleted: {$eq: false}}}).pipe(take(1));
   }
 
   ngAfterViewInit(): void {
-    this.formData.pipe(
-      combineLatestWith(this.areas, this.cases, this.locations, this.organizations, this.projects),
-      take(1),
-    ).subscribe(([formData, areas, cases, locations, orgs, projects]) => {
-      const metrics: Metric[] = [
-        ...areas,
-        ...cases,
-        ...locations,
-        ...orgs,
-        ...projects,
-      ];
-      const metricsTab: {[id: string]: Metric} = {};
-      for (const m of metrics) {
-        metricsTab[m.id] = m;
-      }
+    this.formData
+      .pipe(
+        combineLatestWith(
+          this.areas,
+          this.cases,
+          this.locations,
+          this.organizations,
+          this.projects,
+        ),
+        take(1),
+      )
+      .subscribe(([formData, areas, cases, locations, orgs, projects]) => {
+        const metrics: Metric[] = [...areas, ...cases, ...locations, ...orgs, ...projects];
+        const metricsTab: {[id: string]: Metric} = {};
+        for (const m of metrics) {
+          metricsTab[m.id] = m;
+        }
 
-      const forms = formData.map(f => f.toJSON() as FormData);
-      for (const form of forms) {
-        for (const key in form) {
-          if (key.endsWith('_ref_id')) {
-            const metric = metricsTab[String(form[key as keyof FormData])];
-            if (metric == null) {
-              continue;
-            }
-            // Store the metric name in the form's data,
-            // so that we can treat it as a regular field for displaying and filtering:
-            form.data[key] = metric.name;
-            if (key === 'location_ref_id') {
-              form.data['latLon'] = (metric as LocationWithLatLon).latLon;
+        const forms = formData.map(f => f.toJSON() as FormData);
+        for (const form of forms) {
+          for (const key in form) {
+            if (key.endsWith('_ref_id')) {
+              const metric = metricsTab[String(form[key as keyof FormData])];
+              if (metric == null) {
+                continue;
+              }
+              // Store the metric name in the form's data,
+              // so that we can treat it as a regular field for displaying and filtering:
+              form.data[key] = metric.name;
+              if (key === 'location_ref_id') {
+                form.data['latLon'] = (metric as LocationWithLatLon).latLon;
+              }
             }
           }
         }
-      }
-      this.allForms = forms.filter(f => f.data['latLon'] != null);
+        this.allForms = forms.filter(f => f.data['latLon'] != null);
 
-      this.extractFieldValues();
-      this.createMap();
-    });
+        this.extractFieldValues();
+        this.createMap();
+      });
   }
 
   private extractFieldValues() {
@@ -229,7 +254,8 @@ export class MatFormsMapE2E implements AfterViewInit {
   }
 
   applyFilters() {
-    const filterInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll('#filtersContainer input');
+    const filterInputs: NodeListOf<HTMLInputElement> =
+      document.querySelectorAll('#filtersContainer input');
 
     const dateStartInput = filterInputs[0];
     const dateEndInput = filterInputs[1];

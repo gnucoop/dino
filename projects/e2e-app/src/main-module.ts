@@ -108,6 +108,7 @@ import {HttpLink} from 'apollo-angular/http';
 
 import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
 import {MatIconRegistry} from '@angular/material/icon';
+import {StripePaymentModule} from '@dino/material/stripe-payment';
 
 /**
  * Used to generate fake data for the e2e app
@@ -231,6 +232,13 @@ export function provideMatDateLocale(ts: TranslocoService) {
     }),
     AjfEchartsModule.forRoot({echarts: () => import('echarts')}),
     AuthModule.forRoot(authConfig),
+    StripePaymentModule.forRoot({
+      stripeKey:
+        'pk_test_51NlTETLMj7kkP2jxxzBYrrpLH6XzivAWBGkvmCt3NltGFVg29530Bo0Ld1JqXqmkNx4cwz9o6F5owTqHcJyDMvDB00lTH85e1O',
+      gnuPayUrl: 'http://localhost:4242',
+      pandinoUrl: 'http://localhost:5000',
+      pandinoTokenID: 'prod_R5u9pKgodWUPYD',
+    }),
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
     BrowserModule,
