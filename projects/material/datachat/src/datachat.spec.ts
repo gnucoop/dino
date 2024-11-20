@@ -10,6 +10,7 @@ import {EventEmitter} from '@angular/core';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, Model} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
+import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 
 let testDbIdx = 0;
 
@@ -53,6 +54,13 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
+const stripePaymentConfig: StripePaymentConfig = {
+  stripeKey: '',
+  gnuPayUrl: '',
+  pandinoUrl: '',
+  pandinoTokenID: '',
+};
+
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
   applicationId: 'applicationId',
@@ -66,7 +74,7 @@ const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
   getUserInfo: () => {
-    return {};
+    return {id: '1', email: 'test@test.com'};
   },
   resetEvt: of(false),
   logout: () => of(false),
@@ -92,6 +100,7 @@ describe('Data Chat', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
       ],
     }).compileComponents();
 
@@ -122,7 +131,7 @@ describe('Data Chat', () => {
     const req = httpTestingController.expectOne('http://127.0.0.1:5000/validateapikey');
     const reqHeaders = req.request.headers;
     expect(req.request.method).toEqual('POST');
-    expect(reqHeaders.keys()).toEqual(['X-API-KEY']);
+    expect(reqHeaders.keys()).toEqual(['X-API-KEY', 'X-USER-EMAIL']);
   });
 
   it('should add a chat question to the chat history', async () => {

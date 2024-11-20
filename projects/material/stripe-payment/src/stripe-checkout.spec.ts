@@ -10,6 +10,9 @@ import {EventEmitter} from '@angular/core';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, Model} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
+import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-config';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {StripePaymentData} from './stripe-payment-data-interface';
 
 let testDbIdx = 0;
 
@@ -53,6 +56,24 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
+const stripePaymentConfig: StripePaymentConfig = {
+  stripeKey: '',
+  gnuPayUrl: '',
+  pandinoUrl: '',
+  pandinoTokenID: '',
+};
+
+const mockDialogRef = {
+  close: (_: any) => of(null),
+  open: () => of(null),
+  backdropClick: () => of(null),
+};
+
+const mockDialogData: StripePaymentData = {
+  mode: 'stripe-checkout',
+  info: {},
+};
+
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
   applicationId: 'applicationId',
@@ -89,9 +110,12 @@ describe('Stripe Checkout', () => {
         RouterTestingModule,
       ],
       providers: [
+        {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
+        {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
       ],
     }).compileComponents();
 
@@ -101,7 +125,7 @@ describe('Stripe Checkout', () => {
   });
 
   afterEach(() => {
-    httpTestingController.verify();
+    httpTestingController.expectOne('/create-checkout-session');
   });
 
   it('should create the component', async () => {

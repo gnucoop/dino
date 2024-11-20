@@ -12,6 +12,7 @@ import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {EventEmitter} from '@angular/core';
 import {ThemeService} from '@dino/material/core';
 import {NotificationModule} from '@dino/core/notifications';
+import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 
 let testDbIdx = 0;
 
@@ -32,6 +33,13 @@ const dataServiceConfig: DataServiceConfig = {
     webSocketImpl: WebSocket,
     authErrorMessage: 'Could not verify JWT: JWTExpired',
   },
+};
+
+const stripePaymentConfig: StripePaymentConfig = {
+  stripeKey: '',
+  gnuPayUrl: '',
+  pandinoUrl: '',
+  pandinoTokenID: '',
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -83,6 +91,7 @@ describe('Main', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
         {provide: TRANSLATIONS_CONFIG, useValue: defaultLanguageConfig},
+        {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);
