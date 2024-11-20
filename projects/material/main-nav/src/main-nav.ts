@@ -57,6 +57,7 @@ import {
   timer,
 } from 'rxjs';
 import {
+  distinctUntilChanged,
   filter,
   map,
   mapTo,
@@ -68,6 +69,7 @@ import {
 } from 'rxjs/operators';
 
 import {Section} from './section-interface';
+import {StripeService} from '@dino/material/stripe-payment/src/stripe.service';
 
 /**
  * Dino Main component, containing the toolbar and the sidebar navigation.
@@ -168,6 +170,15 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * A special icon will be displayed in the main nav bar to let the user know.
    */
   newVersionReady: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
+  /**
+   * The Amount of Pandino Tokens available to the user.
+   * Displayed only if a valid API Key is found in localstorage.
+   */
+  availableTokens: Observable<string | null>;
+  tokensCounterActive: BehaviorSubject<'add' | 'remove' | null> = new BehaviorSubject<
+    'add' | 'remove' | null
+  >(null);
 
   /**
    * The Custom loading spinner image path
@@ -320,6 +331,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _isThereUnsyncedDataSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the Available Tokens
+   */
+  private _availableTokensSub: Subscription = Subscription.EMPTY;
+
+  /**
    * Subscribes to an interval to check if a 'dino_new_version_ready' entry is in the localStorage.
    */
   private _newVersionCheckSub: Subscription = Subscription.EMPTY;
@@ -448,6 +464,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
+    private _stripeService: StripeService,
     readonly ts: ThemeService,
     readonly trs: TranslocoService,
   ) {
@@ -494,6 +511,15 @@ export class MainNav implements AfterViewInit, OnDestroy {
         return obsOf(null);
       }),
     );
+
+    this.availableTokens = this._stripeService.availableTokens;
+
+    this._availableTokensSub = this.availableTokens.pipe(distinctUntilChanged()).subscribe(() => {
+      this.tokensCounterActive.next('add');
+      setTimeout(() => {
+        this.tokensCounterActive.next(null);
+      }, 3000);
+    });
 
     this.unreadNotificationsNumber = merge(
       this.dataService.firstReplicationComplete,
@@ -780,6 +806,14 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Opens a Stripe Payment dialog
+   * @param quantity The quantity of item to buy
+   */
+  openPayment(quantity: number) {
+    this._stripeService.openPayment('stripe-checkout', quantity);
+  }
+
+  /**
    * Just refreshes the page after deleting the 'new version ready' entry from local storage.
    */
   refreshVersion(): void {
@@ -820,5 +854,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._replicationCycleCompleteSub.unsubscribe();
     this._isThereUnsyncedDataSub.unsubscribe();
     this._newVersionCheckSub.unsubscribe();
+    this._availableTokensSub.unsubscribe();
   }
 }

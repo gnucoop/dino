@@ -33,6 +33,25 @@
     </span>
 
     <ng-container *ngIf="(breakpointObserver.small|async) !== true">
+      <ng-container *ngIf="(availableTokens|async) as pandTokens">
+        <div
+          class="dino-tokens-counter"
+          [matTooltip]="'Your Pandino Tokens. Click to add more!'|transloco"
+          [matTooltipPosition]="'left'"
+          (click)="openPayment(25)"
+        >
+          <mat-icon
+            aria-hidden="false"
+            aria-label="Pandino Tokens"
+            color="primary"
+            class="dino-tokens-counter-icon"
+            >smart_toy</mat-icon
+          >
+          <div class="dino-tokens-counter-amount" [ngClass]="(tokensCounterActive|async)">
+            {{pandTokens}}
+          </div>
+        </div>
+      </ng-container>
       <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
       <mat-slide-toggle
         [checked]="ts.isDark()"

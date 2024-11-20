@@ -38,7 +38,7 @@ dino-main-nav {
     }
   }
 
-  .mat-sidenav.dino-sidenav{
+  .mat-sidenav.dino-sidenav {
     top: 56px;
   }
 
@@ -81,6 +81,39 @@ dino-main-nav {
       align-items: center;
       .mat-icon {
         flex: 1 0 auto;
+      }
+      .dino-tokens-counter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1 0 auto;
+        min-width: 50px;
+        margin-right: 20px;
+        .dino-tokens-counter-icon {
+          margin-right: 4px;
+        }
+        .dino-tokens-counter-amount {
+          color: rgba(var(--palette-foreground-secondary-text-dark));
+          background: rgb(var(--palette-primary-500));
+          border-radius: 50%;
+          width: 22px;
+          height: 22px;
+          padding: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          &.add {
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+            transform: scale(1);
+            animation: pulse_primary 4s ease-in-out;
+          }
+          &.remove {
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+            transform: scale(1);
+            animation: pulse_accent 4s ease-in-out;
+          }
+        }
       }
       .dino-link-button {
         margin-right: 25px;
@@ -139,7 +172,7 @@ dino-main-nav {
       justify-content: center;
       align-content: center;
       text-decoration: none;
-      animation: pulse 5s infinite;
+      animation: pulse_accent 5s infinite;
       border-radius: 50%;
       cursor: pointer;
     }
@@ -325,7 +358,7 @@ dino-main-nav {
     transform: rotate(0deg);
   }
 }
-@keyframes pulse {
+@keyframes pulse_accent {
   0% {
     box-shadow: 0 0 0 0 rgba(var(--palette-accent-500), 0.5);
   }
@@ -336,5 +369,18 @@ dino-main-nav {
 
   100% {
     box-shadow: 0 0 0 0 rgba(var(--palette-accent-500), 0);
+  }
+}
+@keyframes pulse_primary {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--palette-primary-500), 0.9);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--palette-primary-500), 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--palette-primary-500), 0);
   }
 }
