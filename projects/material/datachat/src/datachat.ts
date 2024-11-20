@@ -65,6 +65,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, User} from '@dino/core/auth';
 import {MatSelectChange} from '@angular/material/select';
+import {StripeService} from '@dino/material/stripe-payment/src/stripe.service';
 
 /**
  * The DataChat component.
@@ -88,6 +89,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * True if the API is currently creating an Agent and Dino is waiting for a response.
    */
   isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * True if the User has not enough Pandino tokens to perform the operation.
+   */
+  noTokens: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * True if the API is currently sending a request and Dino is waiting for a response.
@@ -239,6 +245,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     private _fdm: FormDataManager,
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,
+    private _stripeService: StripeService,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -373,6 +380,13 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   /**
+   * Opens a Stripe Payment dialog
+   */
+  openPayment() {
+    this._stripeService.openPayment('stripe-checkout', 25);
+  }
+
+  /**
    * Sends the API Key to the 'validateapikey' endpoint and triggers
    * the PandasAi agent creation
    * @param key
@@ -381,8 +395,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   sendAPIKey(key: string): void {
     if (!this.baseDataChatAPIurl || this.isCommunicating.value) return;
     this.isCommunicating.next(true);
-
-    const headers = {'X-API-KEY': key};
+    const userInfo = this._auth.getUserInfo();
+    if (!userInfo || !userInfo.email) return;
+    const headers = {'X-API-KEY': key, 'X-USER-EMAIL': userInfo.email};
     this._http
       .post(
         `${this.baseDataChatAPIurl}/${this.endpointUrls?.validateEndpoint ?? 'validateapikey'}`,
@@ -396,8 +411,19 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isCommunicating.next(false);
           }, 1000);
           this.isLoading.next(true);
-          localStorage.setItem('pandas_dino_api_key', key);
+          const storedApiKey = localStorage.getItem('pandas_dino_api_key');
+          if (!storedApiKey) {
+            localStorage.setItem('pandas_dino_api_key', key);
+            this._snackBar.open(
+              this._ts.translate(
+                'Your API Key was successfully authenticated. You can check it any time in your User Area',
+              ),
+              this._ts.translate('PANDINO: AUTHENTICATION SUCCESSFUL!'),
+              {duration: 10000},
+            );
+          }
           this.apiKeyConfirmationEvt.emit(key);
+          this._refreshAvailableTokens();
           if (isDevMode()) {
             console.log(res);
           }
@@ -411,8 +437,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this._cdr.detectChanges();
           } else {
             this._snackBar.open(
-              'PANDINO is not responding at the moment. Please try later',
-              'PANDINO NOT RESPONDING',
+              this._ts.translate('PANDINO is not responding at the moment. Please try later'),
+              this._ts.translate('PANDINO NOT RESPONDING'),
               {
                 duration: 5000,
               },
@@ -450,7 +476,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       .pipe(
         switchMap(activeUserData => {
           if (!activeUserData || !this.apiKey.value) return obsOf(null);
-          const headers = {'X-API-KEY': this.apiKey.value};
+          const headers = {'X-API-KEY': this.apiKey.value, 'X-USER-EMAIL': activeUserData.email};
           const url = `${this.baseDataChatAPIurl}/${
             this.endpointUrls?.dataChatEndpoint ?? 'datachat'
           }`;
@@ -480,6 +506,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                 this._addToHistory({
                   explanation: res.explanation,
                   imageData: base64imageData,
+                  noPrompt: true,
                 });
                 break;
               case 'dataframe':
@@ -489,6 +516,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                     component: TableGenerator,
                     inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
                   },
+                  noPrompt: true,
                 });
                 break;
               default:
@@ -502,20 +530,35 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                           inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
                         }
                       : undefined,
+                  noPrompt: true,
                 });
                 break;
             }
+            this._refreshAvailableTokens();
           }
         },
         error: err => {
-          if (isDevMode()) {
-            console.log(err);
-          } else {
-            this._ehms.captureErrorMessage(
-              `Pandino chat response error: ${JSON.stringify(err)}`,
-              'warning',
+          if (err && err.error && err.error.error === 'Not enough tokens') {
+            this.noTokens.next(true);
+            this.isLoading.next(false);
+            this._snackBar.open(
+              this._ts.translate(
+                'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+              ),
+              'OOPS!',
+              {duration: 10000},
             );
+          } else {
+            if (isDevMode()) {
+              console.log(err);
+            } else {
+              this._ehms.captureErrorMessage(
+                `Pandino chat response error: ${JSON.stringify(err)}`,
+                'warning',
+              );
+            }
           }
+
           this._removeLastFromHistory();
         },
       });
@@ -594,11 +637,24 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               noPrompt: true,
             });
           }
+          this._refreshAvailableTokens();
           this._cdr.detectChanges();
         },
         error: err => {
-          if (isDevMode()) console.log(err);
-          qa.error = err.message;
+          if (err && err.error && err.error.error === 'Not enough tokens') {
+            this.noTokens.next(true);
+            this.isLoading.next(false);
+            this._snackBar.open(
+              this._ts.translate(
+                'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+              ),
+              'OOPS!',
+              {duration: 10000},
+            );
+          } else {
+            if (isDevMode()) console.log(err);
+            qa.error = err.message;
+          }
           this._removeLastFromHistory();
           this._cdr.detectChanges();
         },
@@ -616,6 +672,13 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
 
   selectNamespace(ev: MatSelectChange): void {
     this.currentNamespace = ev.value ?? null;
+  }
+
+  /**
+   * Triggers the Stripeservice refresh pandino tokens event emission
+   */
+  private _refreshAvailableTokens() {
+    this._stripeService.refreshPandinoTokensEvt.emit();
   }
 
   /**
@@ -658,7 +721,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       .pipe(
         switchMap(([activeUserData, exportedFile]) => {
           if (!activeUserData || !exportedFile) return obsOf(null);
-          const headers = {'X-API-KEY': apiKey, 'X-USER-NAME': activeUserData.full_name};
+          const headers = {
+            'X-API-KEY': apiKey,
+            'X-USER-NAME': activeUserData.full_name,
+            'X-USER-EMAIL': activeUserData.email,
+          };
           const url = `${this.baseDataChatAPIurl}/${
             this.endpointUrls?.startEndpoint ?? 'startdatachat'
           }`;
@@ -695,6 +762,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                 noPrompt: true,
               });
             }
+            this._refreshAvailableTokens();
           }
 
           if (isDevMode()) {
@@ -703,13 +771,26 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           this.isLoading.next(false);
         },
         error: err => {
-          if (isDevMode()) {
-            console.log(err);
-          } else {
-            this._ehms.captureErrorMessage(
-              `Pandino agent creation error: ${JSON.stringify(err)}`,
-              'warning',
+          // Not enough tokens response from Pandino
+          if (err && err.error && err.error.error === 'Not enough tokens') {
+            this.noTokens.next(true);
+            this.isLoading.next(false);
+            this._snackBar.open(
+              this._ts.translate(
+                'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+              ),
+              'OOPS!',
+              {duration: 10000},
             );
+          } else {
+            if (isDevMode()) {
+              console.log(err);
+            } else {
+              this._ehms.captureErrorMessage(
+                `Pandino agent creation error: ${JSON.stringify(err)}`,
+                'warning',
+              );
+            }
           }
         },
       });
@@ -725,7 +806,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       .pipe(
         switchMap(activeUserData => {
           if (!activeUserData) return obsOf(null);
-          const headers = {'X-API-KEY': apiKey, 'X-USER-NAME': activeUserData.full_name};
+          const headers = {
+            'X-API-KEY': apiKey,
+            'X-USER-NAME': activeUserData.full_name,
+            'X-USER-EMAIL': activeUserData.email,
+          };
           const url = `${this.baseDataChatAPIurl}/${
             this.endpointUrls?.endEndpoint ?? 'enddatachat'
           }`;

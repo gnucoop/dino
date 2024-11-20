@@ -35,7 +35,16 @@ import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {Directive, EventEmitter, OnDestroy, Optional, Output} from '@angular/core';
 import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  delay,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 import {FormData, FormSchema} from '@dino/core/forms';
@@ -526,6 +535,7 @@ export class Exporter implements OnDestroy {
           });
           return exportCtxList;
         }),
+        delay(500),
       )
       .subscribe((res: Context[]) => {
         switch (this._exportFormat) {

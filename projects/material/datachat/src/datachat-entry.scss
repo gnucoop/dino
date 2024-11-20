@@ -2,8 +2,8 @@ dino-datachat-entry {
   margin-right: auto;
   margin-left: auto;
   margin-bottom: 20px;
-  max-width: 80%;
-  width: 80%;
+  max-width: 95%;
+  width: 95%;
   .dino-datachat-entry {
     border-radius: 5px;
     padding: 10px;
@@ -11,6 +11,7 @@ dino-datachat-entry {
     &:not(.dino-datachat-entry.dino-datachat-entry-component-response) {
       display: flex;
       align-items: center;
+      flex-flow: row wrap;
     }
 
     &.dino-datachat-entry-question {

@@ -19,7 +19,10 @@ dino-datachat {
       display: flex;
       flex-flow: column;
       flex: 1 0 auto;
-      width: 80vw;
+      width: 95vw;
+      @media only screen and (max-width: 768px) {
+        width: 100vw;
+      }
       padding: 6px;
       height: 74vh;
       max-height: 74vh;
@@ -34,13 +37,18 @@ dino-datachat {
       justify-content: space-between;
       position: absolute;
       bottom: 80px;
-      width: 80vw;
+      width: 90vw;
+      @media only screen and (max-width: 768px) {
+        width: 100vw;
+      }
       .dino-chat-text-input {
-        flex: 1 0 auto;
+        flex: 1 0 85%;
+        @media only screen and (max-width: 768px) {
+          flex: 1 0 auto;
+        }
       }
       .dino-chat-namespace-select {
-        flex: 0 1 auto;
-        margin-right: 10px;
+        flex: 1 0 15%;
       }
     }
     .dino-communicating-spinner {
@@ -48,7 +56,6 @@ dino-datachat {
       right: 10px;
     }
   }
-
   .dino-no-items-message {
     display: flex;
     flex-flow: row wrap;
@@ -56,6 +63,25 @@ dino-datachat {
     align-content: center;
     height: 85vh;
     opacity: 0.4;
+  }
+  .dino-no-tokens-message {
+    position: relative;
+    top: 30%;
+    text-align: center;
+    margin: auto;
+    opacity: 0.6;
+    .dino-no-tokens-message-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .dino-no-tokens-icon {
+        margin-left: 10px;
+      }
+      &.dino-no-tokens-message-row-buy {
+        cursor: pointer;
+        color: rgb(var(--palette-primary-500));
+      }
+    }
   }
 
   .dino-gpt-accept-box {
