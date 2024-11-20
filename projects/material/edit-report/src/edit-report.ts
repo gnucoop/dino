@@ -741,7 +741,16 @@ export class EditReport implements AfterViewInit {
     promptsVariable: AjfReportVariable[],
     variablesContext: AjfContext,
     reportDataAIData: {[key: string]: any},
-  ): Promise<{[key: string]: string}> {
+  ): Promise<{[key: string]: string} | null> {
+    const storedApiKey = localStorage.getItem('pandas_dino_api_key');
+    if (!storedApiKey) {
+      this.snackbar.open(
+        this._translateService.translate('Pandino API Key not found.'),
+        this._translateService.translate('API KEY MISSING'),
+        {duration: 10000},
+      );
+      return null;
+    }
     const aiContext: {[key: string]: string} = {};
     const validPrompts: AjfReportVariable[] = [];
     for (let i = 0; i < promptsVariable.length; i++) {
@@ -796,8 +805,14 @@ export class EditReport implements AfterViewInit {
           fd.append('prompt', prompt);
           fd.append('username', userInfo.email);
           let text: string = '';
+          const headers = {'X-API-KEY': storedApiKey};
           try {
-            const resp = await fetch(gptPromptUrl, {method: 'POST', mode: 'cors', body: fd});
+            const resp = await fetch(gptPromptUrl, {
+              method: 'POST',
+              mode: 'cors',
+              body: fd,
+              headers,
+            });
             text = await resp.text();
             if (!resp.ok) {
               this.snackbar.open(
