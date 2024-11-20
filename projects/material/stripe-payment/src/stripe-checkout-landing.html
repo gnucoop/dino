@@ -1,0 +1,33 @@
+<ng-container *ngIf="(sessionStatus|async) as status">
+  <div class="dino-no-items-message" *ngIf="status.error">
+    <h1>{{'Oops! We could not retrieve your checkout session. Please try again'|transloco}}</h1>
+  </div>
+
+  <div class="dino-checkout-landing-container">
+    <mat-card
+      appearance="outlined"
+      class="dino-checkout-landing-card mat-elevation-z3"
+      *ngIf="!status.error && status.status === 'complete'"
+    >
+      <mat-card-header>
+        <mat-card-title class="dino-checkout-landing-title"
+          >{{'Purchase complete!'|transloco}}<mat-icon
+            class="dino-checkout-landing-icon dino-checkout-landing-icon-success"
+            >check</mat-icon
+          ></mat-card-title
+        >
+        <mat-card-subtitle class="dino-checkout-landing-title"
+          >{{status.metadata?.product_name}} : {{status.metadata?.quantity}}</mat-card-subtitle
+        >
+        <mat-card-subtitle class="dino-checkout-landing-title"
+          >{{'Total paid'|transloco}} : {{parseTotal(status.total)}}</mat-card-subtitle
+        >
+      </mat-card-header>
+      <ng-container *ngIf="(availableTokens|async) !== null">
+        <mat-card-content>
+          {{'You now have'|transloco}}: <span class="dino-tokens-amount">{{availableTokens|async}}</span> tokens
+        </mat-card-content>
+      </ng-container>
+    </mat-card>
+  </div>
+</ng-container>

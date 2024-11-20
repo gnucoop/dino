@@ -1,0 +1,49 @@
+dino-stripe-checkout-landing {
+  .dino-no-items-message {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-content: center;
+    height: 85vh;
+    opacity: 0.4;
+  }
+
+  .dino-checkout-landing-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .dino-checkout-landing-card {
+      max-width: 400px;
+      min-width: 350px;
+      margin: auto;
+      .mat-mdc-card-header {
+        margin-bottom: 20px;
+      }
+      .mat-mdc-card-header-text {
+        width: 100%;
+      }
+      .dino-checkout-landing-title {
+        font-size: 130%;
+        width: 100%;
+        margin-bottom: 15px;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-items: center;
+        .dino-checkout-landing-icon {
+          height: 36px;
+          width: 36px;
+          font-size: 36px;
+          &.dino-checkout-landing-icon-success {
+            color: #32db64;
+          }
+        }
+      }
+      .dino-tokens-amount {
+        font-weight: bold;
+        font-size: 150%;
+      }
+    }
+  }
+}
