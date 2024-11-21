@@ -11,6 +11,7 @@ import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 
 import {EditReport, EditReportModule} from './public_api';
 import {EventEmitter} from '@angular/core';
+import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 
 let testDbIdx = 0;
 
@@ -27,6 +28,13 @@ function dataServiceConfig(): DataServiceConfig {
     },
   };
 }
+
+const stripePaymentConfig: StripePaymentConfig = {
+  stripeKey: '',
+  gnuPayUrl: '',
+  pandinoUrl: '',
+  pandinoTokenID: '',
+};
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -68,6 +76,7 @@ describe('Edit Report', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
       ],
     }).compileComponents();
 
