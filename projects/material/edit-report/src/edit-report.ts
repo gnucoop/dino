@@ -35,6 +35,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   isDevMode,
   Optional,
@@ -48,8 +49,10 @@ import {AuthService, NetworkStatusService, User} from '@dino/core/auth';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
+  DATA_SERVICE_CONFIG,
   DataModelManager,
   DataQuerySelector,
+  DataServiceConfig,
   Metric,
   MetricsService,
   PermissionContextService,
@@ -96,6 +99,7 @@ import {
 } from 'rxjs/operators';
 import {AjfContext} from '@ajf/core/models';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {StripeService} from '@dino/material/stripe-payment';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -277,7 +281,7 @@ export class EditReport implements AfterViewInit {
   /**
    * The base url for the graphql backend (Hasura)
    */
-  @Input() graphqlUrl?: string;
+  private _graphqlUrl: string;
 
   gptPromptStatus = '';
 
@@ -299,6 +303,7 @@ export class EditReport implements AfterViewInit {
   readonly isView: Observable<boolean>;
 
   constructor(
+    @Inject(DATA_SERVICE_CONFIG) private _dataConfig: DataServiceConfig,
     readonly metricsService: MetricsService,
     readonly snackbar: MatSnackBar,
     private _auth: AuthService,
@@ -314,12 +319,14 @@ export class EditReport implements AfterViewInit {
     private _pcs: PermissionContextService,
     private _nss: NetworkStatusService,
     private _ehms: ErrorHandlerMessageService,
+    private _stripeService: StripeService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
+    this._graphqlUrl = this._dataConfig.syncOptions.url.http;
     this.isView = combineLatest([this._route.data, this._inputReportId]).pipe(
       map(([data, inputId]) => {
         if (inputId) {
@@ -774,7 +781,7 @@ export class EditReport implements AfterViewInit {
       if (this.gptPromptStatus !== '' || !userInfo) {
         return aiContext;
       }
-      if (this.baseDataChatAPIurl == null || this.graphqlUrl == null) {
+      if (this.baseDataChatAPIurl == null || this._graphqlUrl == null) {
         console.warn('baseDataChatAPIurl or graphqlUrl not provided');
         return aiContext;
       }
@@ -800,7 +807,7 @@ export class EditReport implements AfterViewInit {
           this._setPromptStatus(`Generazione prompt ${promptNum}...`);
           promptNum++;
           const fd = new FormData();
-          fd.append('graphqlUrl', this.graphqlUrl);
+          fd.append('graphqlUrl', this._graphqlUrl);
           fd.append('authToken', this._auth.getAuthToken() || '');
           fd.append('prompt', prompt);
           fd.append('username', userInfo.email);
@@ -842,6 +849,8 @@ export class EditReport implements AfterViewInit {
         }
       }
       this._setPromptStatus('');
+      this._stripeService.refreshPandinoTokensEvt.emit();
+      this._cdr.detectChanges();
     }
     return {...reportDataAIData, ...aiContext};
   }
