@@ -726,7 +726,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     ]).pipe(
       map(([metricOptions, metricValue, newMetric]) => {
         if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
-          metricValue = '';
+          metricValue = metricValue.name || '';
         }
         if (
           newMetric != null &&
@@ -778,7 +778,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         this.formMetricsValues[metricType].pipe(debounceTime(800)).pipe(
           switchMap(metricValue => {
             if (typeof metricValue !== 'string' && isRxDocument(metricValue)) {
-              metricValue = '';
+              metricValue = metricValue.name || '';
             }
             let querySelector: DataQuerySelector = {
               name: {$regex: metricValue, $options: 'i'},
