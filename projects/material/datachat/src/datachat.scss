@@ -19,9 +19,9 @@ dino-datachat {
       display: flex;
       flex-flow: column;
       flex: 1 0 auto;
-      width: 95vw;
+      width: 85vw;
       @media only screen and (max-width: 768px) {
-        width: 100vw;
+        width: 95vw;
       }
       padding: 6px;
       height: 74vh;
@@ -37,7 +37,7 @@ dino-datachat {
       justify-content: space-between;
       position: absolute;
       bottom: 80px;
-      width: 90vw;
+      width: 86vw;
       @media only screen and (max-width: 768px) {
         width: 100vw;
       }
