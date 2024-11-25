@@ -58,7 +58,7 @@
           >
           <ng-container *ngIf="termsAccepted">
             <div #chatHistory class="dino-chat-history-container">
-              <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" />
+              <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl" />
             </div>
           </ng-container>
 
