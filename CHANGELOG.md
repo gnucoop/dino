@@ -1,3 +1,41 @@
+<a name="16.1.1"></a>
+# 16.1.1 "homeless-meerkat" (2024-11-25)
+### Bug Fixes
+* **core/exporter:** add toJSON for RxDocuments ([060b397](https://bitbucket.org/gnucoop/dino/commits/060b3974fcdf0676fae8e78da55fd16e03205e70))
+* **material/datachat:** Added bucketUrl to dino-datachat-entries in datachat template ([7839ae4](https://bitbucket.org/gnucoop/dino/commits/7839ae4c4ad45075e46657073e288cc6c55e052e))
+* **material/edit-public-form:** fix duplicated public form when saving ([cdb25d6](https://bitbucket.org/gnucoop/dino/commits/cdb25d635b0303955406c5aa74f402c3d795ddb3))
+* **material/edit-report:** Removed unused "isOnline$" observable from reportInstance combinelatest pipe. ([5035991](https://bitbucket.org/gnucoop/dino/commits/5035991886da10daf28cb6fb2022d391376ed64d))
+* **material/form-metric-selector:** show only filtered item in list when metric is selected ([694e20c](https://bitbucket.org/gnucoop/dino/commits/694e20ca4c6ab9d10bbc1b22a1303e015ec23db5))
+* **material/list:** remove preventDefault from list cell to enable click for attachments ([fea6a35](https://bitbucket.org/gnucoop/dino/commits/fea6a35be38dc43b47d5958d3514c609829906e0))
+* **material/stripe-payment:** Added correct stripe service export in public api. Fixed various wrong imports. ([a638797](https://bitbucket.org/gnucoop/dino/commits/a638797bea216ef8e3ebdd72becb852374b73018))
+* **material/stripe-payment:** Added missing export for 'stripe-checkout-landing' in public_api ([ae9ec6c](https://bitbucket.org/gnucoop/dino/commits/ae9ec6cc7895eb25626a83b9bcf10e132a36cc5b))
+* **multiple:** add toJSON to form data for zone_symbol error ([9a27248](https://bitbucket.org/gnucoop/dino/commits/9a2724889215b908385d6cb222d5cec6305c8396))
+* **multiple:** Edit form, export list and list template consider 'dinoinvalid' and legacy '$invalid' flags for draft saves. ([2e72572](https://bitbucket.org/gnucoop/dino/commits/2e725720fd9a1af38933dd2ffebc4f8cdf567c48))
+### Features
+* **core/reports:** add data field in migrationStrategies ([a52c8a2](https://bitbucket.org/gnucoop/dino/commits/a52c8a26019ea7023fe4304adcb1116073aa999d))
+* **core/reports:** add new json field for ai data ([a694e30](https://bitbucket.org/gnucoop/dino/commits/a694e30a13a2854945cf2070eee6da9b4d2570ce))
+* **e2e-app/mat-checkout:** Added Checkout module, component and route. Added StripePaymentModule and its root config in Main Module (test urls and keys) ([eb20f96](https://bitbucket.org/gnucoop/dino/commits/eb20f96f92eaeb0a7eecf8b86e4809d4d4fa5276))
+* **e2e-app:** add name field in report data list ([a9561dd](https://bitbucket.org/gnucoop/dino/commits/a9561ddb82cf0d17dff298638b8060b38b234523))
+* **e2e-app:** add optionalFormMetrics prop as input in form list for import-form ([7743920](https://bitbucket.org/gnucoop/dino/commits/774392034cc2817e3beac2d1bc10c70ace8eacad))
+* **material/create-report:** add name field in report data ([9fccd90](https://bitbucket.org/gnucoop/dino/commits/9fccd90ed67c2ba8e8c1ee6433aab484c3b683ff))
+* **material/datachat:** Added StripeService and tokens handling in DataChat. ([be1f315](https://bitbucket.org/gnucoop/dino/commits/be1f315eab69d10b5810bf80e0f31776c6f82f22))
+* **material/datachat:** Created Paragraph Dialog component (shows relevant paragraphs in card format, based on the source mimetype and content). ([13df696](https://bitbucket.org/gnucoop/dino/commits/13df69694da0105f44008ca68344455fe7d42609))
+* **material/edit-public-form:** add success message card ([73c780f](https://bitbucket.org/gnucoop/dino/commits/73c780f53b2f9d8e5c3597e758315864adf1ae09))
+* **material/edit-report:** ai report using prompt variables ([4884cce](https://bitbucket.org/gnucoop/dino/commits/4884cce89ac581f83727b22cf5b7f814d3f71a8a))
+* **material/edit-report:** enable Report Data Tab on edit ([4caccb6](https://bitbucket.org/gnucoop/dino/commits/4caccb6f9cc7dbff3d86d86dfb0f2be27874c351))
+* **material/edit-report:** populate new prompt variables if not exist in report_data ([5be197f](https://bitbucket.org/gnucoop/dino/commits/5be197f548af5688a62f426ca9069244b061d45a))
+* **material/export-list:** add dinoinvalid field in exported csv/xlsx ([848c0b2](https://bitbucket.org/gnucoop/dino/commits/848c0b2ebcc31aa1c4702ef6d47fd7efb9307c76))
+* **material/form-metric-selector:** filter metric options also by displayed secondary fields ([c4c741b](https://bitbucket.org/gnucoop/dino/commits/c4c741bef9efc13229210182336fb9a212204833))
+* **material/import-form:** add mandatory form schema id, add checks for user_data if not admin, add default form_status if empty ([fddcddc](https://bitbucket.org/gnucoop/dino/commits/fddcddca5e06526be40ed42345ce7e86c9c3af62))
+* **material/import-form:** Import fails if mandatory metrics are missing in some rows ([2ace831](https://bitbucket.org/gnucoop/dino/commits/2ace831925076d10f4df8bdac9ebe6fd868771a9))
+* **material/list, core/list:** Draggable and reorderable columns. Columns presets are now saved along with columns order info. ([b7a8682](https://bitbucket.org/gnucoop/dino/commits/b7a8682ab0e4c333e1fa3e2b046bba29cf630258))
+* **material/main-nav:** Added StripeService and tokens handling and counter to Main Nav ([e4a1d12](https://bitbucket.org/gnucoop/dino/commits/e4a1d12976b820f86daab55e2764a7fe2d3c61ad))
+* **material/search-filters-bar:** start date can be the same as end date in search filter bar ([531c7ff](https://bitbucket.org/gnucoop/dino/commits/531c7ff146eb330e7b465b8d730b9b1f0e2985cd))
+* **material/user-area:** Added API Keys and Tokens expansion panels. ([b8767f7](https://bitbucket.org/gnucoop/dino/commits/b8767f7334f86494e5599a0af0732a9016890190))
+* **reports:** report schema with custom required metrics ([27332fb](https://bitbucket.org/gnucoop/dino/commits/27332fb91b2dd3185fa7d8edc42b3604d724ebc0))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.1.0"></a>
 # 16.1.0 "alternative-antlion" (2024-10-11)
 ### Bug Fixes
