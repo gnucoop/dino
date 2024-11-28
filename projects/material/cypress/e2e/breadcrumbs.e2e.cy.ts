@@ -1,10 +1,14 @@
-import {formDatas} from '../../../e2e-app/src/test-ajf-formdata';
-import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
-
-const url = `/forms/${formSchemas[0].id}/edit/${formDatas[0].id}`;
-
 describe('dino-breadcrumb', () => {
-  beforeEach(() => cy.visit(url));
+  beforeEach(() => {
+    cy.visit('/forms');
+    cy.get('dino-collect').should('exist');
+    cy.get('mat-grid-tile').should('exist').first().click();
+    cy.get('.mat-mdc-row:not(.dino-row-details)').first().invoke('addClass', 'dino-hover').click();
+    cy.get('.mat-mdc-cell.dino-row-actions .mat-icon')
+      .contains('create ')
+      .first()
+      .click({force: true});
+  });
 
   it('should display the correct elements in Breadcrumbs', () => {
     cy.get('dino-breadcrumbs').should('exist').should('be.visible');

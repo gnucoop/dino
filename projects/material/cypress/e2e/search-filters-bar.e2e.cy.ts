@@ -1,11 +1,11 @@
-import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
-
-const url = `/forms/${formSchemas[0].id}`;
-
 const filterFieldMdcCss = (field: string) => `.mat-mdc-input-element[formcontrolname="${field}"]`;
 
 describe('dino-search-filters-bar', () => {
-  beforeEach(() => cy.visit(url));
+  beforeEach(() => {
+    cy.visit('/forms');
+    cy.get('dino-collect').should('exist');
+    cy.get('mat-grid-tile').should('exist').first().click();
+  });
 
   it('should display a Filter Bar component and its filters', () => {
     cy.get('dino-search-filters-bar').should('be.visible');

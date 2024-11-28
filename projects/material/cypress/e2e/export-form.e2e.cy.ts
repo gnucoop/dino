@@ -1,21 +1,8 @@
-// import {join} from 'path';
-
-import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
-
-const projectFilterJson = [
-  {
-    name: 'project',
-    value: 'PRO',
-    operator: {label: 'Like', value: '$regex'},
-    fieldType: 0,
-  },
-];
-const projectFilter = btoa(encodeURI(JSON.stringify(projectFilterJson)));
-const baseUrl = `/forms/${formSchemas[0].id}?filters=${projectFilter}`;
-
 describe('dino-export-form', () => {
   beforeEach(() => {
-    cy.visit(baseUrl);
+    cy.visit('/forms');
+    cy.get('dino-collect').should('exist');
+    cy.get('mat-grid-tile').should('exist').first().click();
   });
 
   it('should export filtered data in xlsx', () => {

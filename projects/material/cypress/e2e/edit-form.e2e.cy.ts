@@ -1,5 +1,3 @@
-import {formDatas} from '../../../e2e-app/src/test-ajf-formdata';
-
 describe('dino-edit-form', () => {
   beforeEach(() => {
     cy.visit('/forms');
@@ -9,11 +7,7 @@ describe('dino-edit-form', () => {
 
   it('should enter an edit form page', () => {
     cy.get('dino-list').should('exist');
-    cy.get('.mat-mdc-row:not(.dino-row-details)')
-      .should('have.length', formDatas.length)
-      .first()
-      .invoke('addClass', 'dino-hover')
-      .click();
+    cy.get('.mat-mdc-row:not(.dino-row-details)').first().invoke('addClass', 'dino-hover').click();
     cy.get('.mat-mdc-cell.dino-row-actions .mat-icon')
       .contains('create ')
       .first()

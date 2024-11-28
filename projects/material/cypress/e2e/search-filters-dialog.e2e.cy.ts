@@ -1,10 +1,9 @@
-import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
-
-const url = `/forms/${formSchemas[0].id}`;
-
 describe('dino-search-filters-dialog', () => {
   beforeEach(() => {
-    cy.visit(url);
+    cy.visit('/forms');
+    cy.get('dino-collect').should('exist');
+    cy.get('mat-grid-tile').should('exist').first().click();
+
     cy.get('.mat-expansion-indicator').click();
     cy.get('.dino-filters-dialog-button').should('be.visible');
     cy.get('.dino-filters-dialog-button').click();
