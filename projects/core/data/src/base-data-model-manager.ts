@@ -22,7 +22,7 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {DeepReadonlyObject, MangoQuery, MangoQuerySelector, RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, forkJoin, Observable, of as obsOf, throwError} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
@@ -301,7 +301,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
             return throwError(() => new Error('Deletion not allowed'));
           }
         }
-        return forkJoin(
+        return zip(
           docs.map(doc => {
             const newDoc = deepCopy(doc);
             newDoc._deleted = true;
