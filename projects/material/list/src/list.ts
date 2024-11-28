@@ -714,7 +714,8 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * Performs the delete with check for the selected row/rows of the table
+   * Performs the delete with check (a check is performed before the delete operation)
+   * on the selected row/rows of the table
    * @param row The selected row or rows
    * @param isDetails If true, the items are in the details of a parent
    */

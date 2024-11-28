@@ -1,4 +1,4 @@
-import {DataModelManager, DataService, Model} from '@dino/core/data';
+import {DataModelManager, DataService, InsertModel, Model} from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {concat, Observable, of as obsOf} from 'rxjs';
 import {map, switchMap, take, toArray} from 'rxjs/operators';
@@ -11,11 +11,13 @@ export class FakeDataGenerator<T extends Model = Model> {
    * Generates dummy docs.
    * @param manager The data model manager
    * @param docs The docs to generate
+   * @param loops? How many times the Generator should re-insert the provided forms
    */
   generateData(
     dataService: DataService,
     manager: DataModelManager<T>,
-    docs: T[],
+    docs: InsertModel<T>[],
+    loops?: number,
   ): Observable<{success: RxDocument<T, {}>[]; error: any[]}> {
     if (manager == null || docs.length == 0) {
       return obsOf({success: [], error: []});
@@ -24,14 +26,13 @@ export class FakeDataGenerator<T extends Model = Model> {
       switchMap(doclist => {
         const {collectionName} = manager;
         if (doclist.length === 0) {
-          return concat(
-            ...docs.map(object =>
-              dataService.upsert<T, RxDocument<T>>({collectionName, object}).pipe(take(1)),
-            ),
-          ).pipe(
-            toArray(),
-            map(success => ({success: success as RxDocument<T, {}>[], error: []})),
-          );
+          const docsToInsert = [...docs];
+          if (loops) {
+            for (let i = 0; i < loops; i++) {
+              docsToInsert.push(...docs);
+            }
+          }
+          return dataService.bulkInsert<T, RxDocument<T>>({collectionName, objects: docsToInsert});
         }
         return obsOf({success: [], error: []});
       }),

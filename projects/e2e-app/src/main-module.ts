@@ -168,7 +168,7 @@ export function initializeApp(
             reportDatas[idx].report_schema_ref_id = genReportSchemaId;
           }
           return combineLatest([
-            fakeFormDataGenerator.generateData(ds, fdm, formDatas),
+            fakeFormDataGenerator.generateData(ds, fdm, formDatas, 2),
             fakeReportDataGenerator.generateData(ds, rdm, reportDatas),
           ]);
         }),

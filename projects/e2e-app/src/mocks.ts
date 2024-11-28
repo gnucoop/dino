@@ -1,6 +1,13 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
-import {AuthenticationEvent, AuthEvt, AuthServiceConfig, Credentials, User} from '@dino/core/auth';
+import {
+  AuthenticationEvent,
+  AuthEvt,
+  AuthServiceConfig,
+  Credentials,
+  DEFAULT_AUTH_OPTIONS,
+  User,
+} from '@dino/core/auth';
 import {
   CollectionSyncParams,
   DataService,
@@ -156,6 +163,12 @@ export class AuthServiceMock {
   }
   refreshToken(): Observable<boolean> {
     return obsOf(true);
+  }
+  getAuthToken(): string | null {
+    return localStorage.getItem(this._getAuthTokenLocaleStorageKey());
+  }
+  private _getAuthTokenLocaleStorageKey(): string {
+    return this._authConfig.value.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;
   }
 }
 @Injectable()
