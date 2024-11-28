@@ -42,7 +42,7 @@
             [topBar]="(isPipeline|async) === false"
             (formAction)="onFormAction($event)"
             [readonly]="isView|async"
-            [maxColumns]="maxColumns"
+            [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
             [centeredFieldsContent]="centeredFieldsContent"
           ></ajf-form>
         </div>
@@ -67,7 +67,7 @@
         [topBar]="(isPipeline|async) === false"
         (formAction)="onFormAction($event)"
         [readonly]="isView|async"
-        [maxColumns]="maxColumns"
+        [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
         [centeredFieldsContent]="centeredFieldsContent"
       ></ajf-form>
     </div>

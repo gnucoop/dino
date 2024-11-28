@@ -41,6 +41,7 @@ import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
 import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
 import {PipelineStepperModule as DinoPipelineStepperModule} from '@dino/material/pipeline-stepper';
 import {TranslocoModule} from '@ngneat/transloco';
+import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 import {EditForm} from './edit-form';
 
@@ -48,6 +49,7 @@ import {EditForm} from './edit-form';
   imports: [
     AjfFormsModule,
     CommonModule,
+    DinoBreakpointObserverModule,
     DinoFloatingButtonModule,
     DinoPipelineStepperModule,
     FormMetricSelectorModule,

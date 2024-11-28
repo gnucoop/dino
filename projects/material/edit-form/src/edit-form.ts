@@ -100,6 +100,7 @@ import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core
 import {UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 
 /**
  * The Form Edit component.
@@ -431,6 +432,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
+    readonly breakpointObserver: BreakpointObserverService,
   ) {
     this.isFormInizialized.next(false);
     this.formId = this._route.params.pipe(

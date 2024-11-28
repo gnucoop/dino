@@ -97,6 +97,7 @@ import {UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
 import {TranslocoService} from '@ngneat/transloco';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 
 /**
  * The Form Edit component.
@@ -343,6 +344,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     readonly snackbar: MatSnackBar,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
+    readonly breakpointObserver: BreakpointObserverService,
   ) {
     this.isFormInizialized.next(false);
   }

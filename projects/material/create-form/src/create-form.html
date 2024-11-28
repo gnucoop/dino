@@ -38,7 +38,7 @@
             [form]="(form|async)!"
             [saveDisabled]="(isSaveDisabled|async) === true"
             [topBar]="(isPipeline|async) === false"
-            [maxColumns]="maxColumns"
+            [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
             [centeredFieldsContent]="centeredFieldsContent"
             (formAction)="onFormAction($event)"
           ></ajf-form>
@@ -59,7 +59,7 @@
         [form]="(form|async)!"
         [saveDisabled]="(isSaveDisabled|async) === true"
         [topBar]="(isPipeline|async) === false"
-        [maxColumns]="maxColumns"
+        [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
         [centeredFieldsContent]="centeredFieldsContent"
         (formAction)="onFormAction($event)"
       ></ajf-form>
