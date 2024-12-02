@@ -373,10 +373,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
           } else {
             return this._dataService
               .update(this._modelName, doc, this._prepareUpdateQuery(data))
-              .pipe(
-                map(_ => doc as R),
-                catchError(err => throwError(() => err)),
-              );
+              .pipe(catchError(err => throwError(() => err)));
           }
         }
       }),
