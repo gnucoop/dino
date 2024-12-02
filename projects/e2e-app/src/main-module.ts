@@ -238,6 +238,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
       gnuPayUrl: 'http://localhost:4242',
       pandinoUrl: 'http://localhost:5000',
       pandinoTokenID: 'prod_R5u9pKgodWUPYD',
+      return_url: location.origin,
     }),
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],

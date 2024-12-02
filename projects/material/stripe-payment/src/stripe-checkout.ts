@@ -77,7 +77,11 @@ export class StripeCheckout implements OnDestroy {
     const checkoutUrl = `${this.config.gnuPayUrl}/create-checkout-session`;
 
     this.checkoutRequest = this._httpClient
-      .post<any>(checkoutUrl, {...this.data.info, product_id: this.config.pandinoTokenID})
+      .post<any>(checkoutUrl, {
+        ...this.data.info,
+        product_id: this.config.pandinoTokenID,
+        return_url: this.config.return_url,
+      })
       .pipe(
         catchError(err => {
           if (isDevMode()) {
