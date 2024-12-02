@@ -43,7 +43,7 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, NetworkStatusService, User} from '@dino/core/auth';
 import {AreaManager} from '@dino/core/areas';
@@ -301,6 +301,8 @@ export class EditReport implements AfterViewInit {
    * displayed in readonly mode.
    */
   readonly isView: Observable<boolean>;
+
+  private _aiSnackBar!: MatSnackBarRef<TextOnlySnackBar>;
 
   constructor(
     @Inject(DATA_SERVICE_CONFIG) private _dataConfig: DataServiceConfig,
@@ -633,21 +635,24 @@ export class EditReport implements AfterViewInit {
             reportDataCtxObs = from(
               this.generateAITextFromPrompt(promptsVariable, variablesContext, rDataAIData),
             );
+            this._aiSnackBar = this.snackbar.open(
+              'PANDINO is generating the report. Please wait...',
+              'WAIT',
+            );
           }
         }
         return zip(obsOf(rSchema), obsOf(context), obsOf(rData), reportDataCtxObs);
       }),
       switchMap(([rSchema, context, rData, reportDataCtx]) => {
-        let patchRData: Observable<RxDocument<ReportData> | null> = obsOf(null);
+        let updatedRData: Observable<RxDocument<ReportData> | null> = obsOf(null);
         if (reportDataCtx && Object.keys(reportDataCtx).length && rData) {
           const rDataDoc: Partial<ReportData> & {id: string} = {
             id: rData.id,
             data: reportDataCtx,
           };
-          patchRData = this._reportDataManager.patch(rDataDoc);
+          updatedRData = this._reportDataManager.patch(rDataDoc);
         }
-
-        return zip(obsOf(rSchema), obsOf(context), patchRData);
+        return zip(obsOf(rSchema), obsOf(context), updatedRData);
       }),
       map(([rSchema, context, rData]) => {
         if (rData != null) {
@@ -658,6 +663,9 @@ export class EditReport implements AfterViewInit {
           context,
           this._translateService,
         );
+        if (this._aiSnackBar) {
+          this._aiSnackBar.dismiss();
+        }
         return this._currentReportInstance;
       }),
       take(1),
@@ -743,6 +751,10 @@ export class EditReport implements AfterViewInit {
 
   /**
    * Generate AI text from prompt
+   * @param promptsVariable All isAIPrompt variables with formula
+   * @param variablesContext All report variables evaluated by ajf with current formdata context
+   * @param reportDataAIData Current reportData data field with ai variables with pandino generated values
+   * @returns
    */
   async generateAITextFromPrompt(
     promptsVariable: AjfReportVariable[],
@@ -802,9 +814,9 @@ export class EditReport implements AfterViewInit {
           : null;
         if (prompt && prompt.length > 0) {
           if (isDevMode()) {
-            console.log(`Generazione prompt ${promptNum}...`);
+            console.log(`Generazione prompt ${promptNum} di ${validPrompts.length}...`);
           }
-          this._setPromptStatus(`Generazione prompt ${promptNum}...`);
+          this._setPromptStatus(`Generazione prompt ${promptNum} di ${validPrompts.length}...`);
           promptNum++;
           const fd = new FormData();
           fd.append('graphqlUrl', this._graphqlUrl);
@@ -852,7 +864,11 @@ export class EditReport implements AfterViewInit {
       this._stripeService.refreshPandinoTokensEvt.emit();
       this._cdr.detectChanges();
     }
-    return {...reportDataAIData, ...aiContext};
+    if (Object.keys(aiContext).length) {
+      // Return current and new ai variables with pandino generated values
+      return {...reportDataAIData, ...aiContext};
+    }
+    return {};
   }
 
   private _setPromptStatus(s: string) {
