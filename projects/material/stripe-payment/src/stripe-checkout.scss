@@ -1,2 +1,9 @@
 dino-stripe-checkout {
+  .mat-mdc-dialog-content{
+    .mat-mdc-progress-spinner{
+      width: 100px!important;
+      height: 100px!important;
+    }
+  }
+
 }
