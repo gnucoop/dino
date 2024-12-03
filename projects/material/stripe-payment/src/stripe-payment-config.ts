@@ -35,10 +35,6 @@ export interface StripePaymentConfig {
    */
   gnuPayUrl: string;
   /**
-   * The Pandino API url
-   */
-  pandinoUrl: string;
-  /**
    * The Pandino Token stripe product ID
    */
   pandinoTokenID: string;

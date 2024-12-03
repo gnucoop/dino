@@ -20,7 +20,7 @@
  *
  */
 
-import {EventEmitter, Inject, Injectable, isDevMode} from '@angular/core';
+import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-config';
 import {HttpClient} from '@angular/common/http';
 import {
@@ -30,7 +30,13 @@ import {
   StripePayMode,
   StripeSessionStatus,
 } from './stripe-payment-data-interface';
-import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig} from '@dino/core/data';
+import {
+  DATA_SERVICE_CONFIG,
+  DataService,
+  DataServiceConfig,
+  PANDINO_SERVICE_CONFIG,
+  PandinoConfig,
+} from '@dino/core/data';
 import {AuthService} from '@dino/core/auth';
 import {MatDialog} from '@angular/material/dialog';
 import {StripeCheckout} from './stripe-checkout';
@@ -53,8 +59,9 @@ export class StripeService {
   readonly availableTokens: Observable<string | null>;
 
   constructor(
-    @Inject(STRIPE_PAYMENT_CONFIG) private _stripeConfig: StripePaymentConfig,
+    @Optional() @Inject(STRIPE_PAYMENT_CONFIG) private _stripeConfig: StripePaymentConfig | null,
     @Inject(DATA_SERVICE_CONFIG) private _dataConfig: DataServiceConfig,
+    @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
     private _http: HttpClient,
     private _authService: AuthService,
     private _dataService: DataService,
@@ -132,12 +139,13 @@ export class StripeService {
    * @returns the number of tokens
    */
   getUserPandinoTokens(): Observable<GetUserTokensResponse | null> {
+    if (!this._pandinoConfig) return obsOf(null);
     const storedApiKey = localStorage.getItem('pandas_dino_api_key');
     const userInfo = this._authService.getUserInfo();
     if (storedApiKey && userInfo && userInfo.email) {
       const headers = {'X-API-KEY': storedApiKey, 'X-USER-EMAIL': userInfo.email};
       return this._http.post<GetUserTokensResponse | null>(
-        `${this._stripeConfig.pandinoUrl}/getusertokens`,
+        `${this._pandinoConfig.pandinoUrl}/getusertokens`,
         null,
         {headers},
       );
@@ -156,6 +164,7 @@ export class StripeService {
    * @returns The Pandino User Response
    */
   checkPandinoUser(): Observable<CheckPandinoUserResponse | null> {
+    if (!this._pandinoConfig) return obsOf(null);
     const userInfo = this._authService.getUserInfo();
     const authToken = this._authService.getAuthToken();
     const graphqlUrl = this._dataConfig.syncOptions.url.http;
@@ -166,7 +175,7 @@ export class StripeService {
         'X-GRAPHQL-URL': graphqlUrl,
       };
       return this._http.post<CheckPandinoUserResponse | null>(
-        `${this._stripeConfig.pandinoUrl}/checkpandinouser`,
+        `${this._pandinoConfig.pandinoUrl}/checkpandinouser`,
         null,
         {
           headers,
@@ -186,7 +195,7 @@ export class StripeService {
    * @returns the status object
    */
   getCheckoutSessionStatus(session_id: string): Observable<StripeSessionStatus | null> {
-    if (!session_id) return obsOf(null);
+    if (!session_id || !this._stripeConfig) return obsOf(null);
     const getSessionStatusUrl = `${this._stripeConfig.gnuPayUrl}/get-session-status`;
     return this._http.post<StripeSessionStatus>(getSessionStatusUrl, {session_id});
   }
