@@ -374,7 +374,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
 
   ngOnInit(): void {
     const storedApiKey = localStorage.getItem('pandas_dino_api_key');
-    if (storedApiKey) {
+    const storedAcceptTerms = localStorage.getItem('pandas_dino_api_key_accept_terms');
+    if (storedApiKey && storedAcceptTerms) {
       this.sendAPIKey(storedApiKey);
     }
   }
@@ -666,8 +667,12 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    */
   acceptTerms() {
     this._termsAccepted = 'true';
-    this._cdr.markForCheck();
     localStorage.setItem('pandas_dino_api_key_accept_terms', 'true');
+    const storedApiKey = localStorage.getItem('pandas_dino_api_key');
+    if (storedApiKey) {
+      this.sendAPIKey(storedApiKey);
+    }
+    this._cdr.markForCheck();
   }
 
   selectNamespace(ev: MatSelectChange): void {

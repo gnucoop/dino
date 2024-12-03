@@ -4,7 +4,22 @@
   <ng-container *ngIf="(noData|async) === false; else nodata">
     <div class="dino-datachat-container">
       <ng-container *ngIf="(isLoading|async) === false; else loading">
-        <ng-container [formGroup]="apiKeyFormGroup" *ngIf="(apiKey|async) === null">
+        <ng-container *ngIf="!termsAccepted"
+          ><div class="dino-gpt-terms-container">
+            <ng-content select="[gptTerms]"></ng-content>
+          </div>
+
+          <div class="dino-gpt-accept-box">
+            <button mat-button color="primary" (click)="acceptTerms()" mat-raised-button>
+              {{'Accept'|transloco}}
+            </button>
+          </div></ng-container
+        >
+
+        <ng-container
+          [formGroup]="apiKeyFormGroup"
+          *ngIf="(apiKey|async) === null && termsAccepted"
+        >
           <mat-form-field class="dino-apikey-field">
             <mat-label>{{'Enter your DataChat API key'|transloco}}</mat-label>
             <input
@@ -47,15 +62,7 @@
           </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="(apiKey|async) !== null">
-          <ng-container *ngIf="!termsAccepted"
-            ><ng-content select="[gptTerms]"></ng-content>
-            <div class="dino-gpt-accept-box">
-              <button mat-button color="primary" (click)="acceptTerms()" mat-raised-button>
-                {{'Accept'|transloco}}
-              </button>
-            </div></ng-container
-          >
+        <ng-container *ngIf="(apiKey|async) !== null && termsAccepted">
           <ng-container *ngIf="termsAccepted">
             <div #chatHistory class="dino-chat-history-container">
               <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl" />

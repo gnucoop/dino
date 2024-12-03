@@ -15,6 +15,7 @@ dino-datachat {
         max-height: 32px;
       }
     }
+
     .dino-chat-history-container {
       display: flex;
       flex-flow: column;
@@ -84,7 +85,12 @@ dino-datachat {
     }
   }
 
+  .dino-gpt-terms-container {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
   .dino-gpt-accept-box {
+    margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
