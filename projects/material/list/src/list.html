@@ -268,7 +268,7 @@
           <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
             <ng-container *ngFor="let action of actions; let idx = index;">
               <ng-container
-                *ngIf="!((row.data === null && row.data?.data === null) && (action.actionType === 'edit' || action.actionType === 'view')) && mainActions.includes(action.actionType)"
+                *ngIf="mainActions.includes(action.actionType)"
               >
                 <mat-icon
                   class="dino-action-icon"
