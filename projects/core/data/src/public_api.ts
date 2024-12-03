@@ -35,6 +35,7 @@ export * from './data-model-manager';
 export * from './data-model-manager-interface';
 export * from './data-module';
 export * from './data-options-interface';
+export * from './data-pandino-config';
 export * from './data-permission';
 export * from './data-permission-interface';
 export * from './data-service';
