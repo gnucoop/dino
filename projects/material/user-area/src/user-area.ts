@@ -46,11 +46,10 @@ import {TranslocoService} from '@ngneat/transloco';
 import {DinoTheme, ThemeService} from '@dino/material/core';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
-import {DataService} from '@dino/core/data';
+import {DataService, PANDINO_SERVICE_CONFIG, PandinoConfig} from '@dino/core/data';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {ListAction} from '@dino/core/list';
 import {Router} from '@angular/router';
-import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 import {HttpClient} from '@angular/common/http';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {StripeService} from '@dino/material/stripe-payment';
@@ -176,6 +175,7 @@ export class UserArea implements OnDestroy {
   private _mainUnsubscribe: Subject<void> = new Subject();
 
   constructor(
+    @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
     private _udm: UserDataManager,
     private _fb: UntypedFormBuilder,
     private _authService: AuthService,
@@ -198,7 +198,6 @@ export class UserArea implements OnDestroy {
       isAdmin?: Observable<boolean>;
       backupRestore: boolean | undefined;
     },
-    @Inject(STRIPE_PAYMENT_CONFIG) readonly stripeConfig: StripePaymentConfig,
   ) {
     this.spinnerImagePath = data.spinnerImagePath;
     this.isAdmin = data.isAdmin ?? obsOf(false);
@@ -378,8 +377,8 @@ export class UserArea implements OnDestroy {
       !key ||
       !this.apiKeysForm.valid ||
       this.processing.value ||
-      !this.stripeConfig ||
-      !this.stripeConfig.pandinoUrl
+      !this._pandinoConfig ||
+      !this._pandinoConfig.pandinoUrl
     ) {
       return;
     }
@@ -388,7 +387,7 @@ export class UserArea implements OnDestroy {
     if (!userInfo || !userInfo.email) return;
     const headers = {'X-API-KEY': key, 'X-USER-EMAIL': userInfo.email};
     this._http
-      .post(`${this.stripeConfig.pandinoUrl}/validateapikey`, null, {headers})
+      .post(`${this._pandinoConfig.pandinoUrl}/validateapikey`, null, {headers})
       .pipe(take(1))
       .subscribe({
         next: res => {
