@@ -126,28 +126,30 @@
             </mat-error>
           </mat-form-field>
 
-          <ng-container *ngIf="(storedPandinoAPIKey|async) === null; else keymatched">
-            <button
-              mat-icon-button
-              type="submit"
-              color="accent"
-              aria-label="submit"
-              [disabled]="(processing|async)"
-              (click)="validateAPIKey(apiKeysForm.get('pandino_api_key')?.value)"
-            >
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </ng-container>
+          <div class="dino-api-key-button-container">
+            <ng-container *ngIf="(storedPandinoAPIKey|async) === null; else keymatched">
+              <button
+                mat-icon-button
+                type="submit"
+                color="accent"
+                aria-label="submit"
+                [disabled]="(processing|async)"
+                (click)="validateAPIKey(apiKeysForm.get('pandino_api_key')?.value)"
+              >
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </ng-container>
 
-          <ng-template #keymatched>
-            <button
-              class="dino-matched-pandino-api-key-button"
-              mat-icon-button
-              aria-label="matched"
+            <ng-template #keymatched>
+              <button
+                class="dino-matched-pandino-api-key-button"
+                mat-icon-button
+                aria-label="matched"
+              >
+                <mat-icon>check</mat-icon>
+              </button></ng-template
             >
-              <mat-icon>check</mat-icon>
-            </button></ng-template
-          >
+          </div>
         </form>
       </mat-expansion-panel>
 
@@ -245,27 +247,29 @@
               <mat-hint>{{'Pick a preset name' | transloco}}</mat-hint>
             </mat-form-field>
 
-            <button
-              class="dino-theme-presets-button"
-              mat-raised-button
-              color="accent"
-              (click)="loadDinoTheme()"
-              [disabled]="!dinoSaveThemeForm.get('presetName')?.valid"
-              [attr.aria-label]="'Load the preset'|transloco"
-            >
-              {{'Load'|transloco}}
-            </button>
+            <div class="dino-theme-presets-button-container">
+              <button
+                class="dino-theme-presets-button"
+                mat-raised-button
+                color="accent"
+                (click)="loadDinoTheme()"
+                [disabled]="!dinoSaveThemeForm.get('presetName')?.valid"
+                [attr.aria-label]="'Load the preset'|transloco"
+              >
+                {{'Load'|transloco}}
+              </button>
 
-            <button
-              class="dino-theme-presets-button"
-              mat-raised-button
-              color="primary"
-              (click)="saveDinoTheme()"
-              [disabled]="!dinoSaveThemeForm.valid"
-              [attr.aria-label]="'Save the preset'|transloco"
-            >
-              {{'Save'|transloco}}
-            </button>
+              <button
+                class="dino-theme-presets-button"
+                mat-raised-button
+                color="primary"
+                (click)="saveDinoTheme()"
+                [disabled]="!dinoSaveThemeForm.valid"
+                [attr.aria-label]="'Save the preset'|transloco"
+              >
+                {{'Save'|transloco}}
+              </button>
+            </div>
           </form>
         </div>
       </mat-expansion-panel>

@@ -1,4 +1,10 @@
 dino-user-area {
+  .mdc-dialog__content {
+    padding: 20px 12px 20px 12px !important;
+    .mat-expansion-panel-body {
+      padding: 5px;
+    }
+  }
   .dino-user-area-header {
     display: flex;
     flex-flow: row wrap;
@@ -12,6 +18,9 @@ dino-user-area {
       text-align: center;
       vertical-align: middle;
       margin: 0 0 20px;
+      max-width: 100%;
+      width: 100%;
+      justify-content: center;
     }
   }
   .mat-mdc-tab-body-content {
@@ -34,7 +43,9 @@ dino-user-area {
     .mat-button-ripple-round,
     .dino-error-message {
       flex: 1 0 auto !important;
-      margin-left: 10px;
+      @media only screen and (min-width: 481px) {
+        margin-left: 5px;
+      }
     }
     .mat-mdc-form-field,
     .mat-mdc-fab,
@@ -48,9 +59,19 @@ dino-user-area {
         line-height: 2.5em;
       }
     }
-    .dino-matched-pandino-api-key-button {
-      color: #32db64;
+    .dino-api-key-button-container {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+      align-items: center;
+      @media only screen and (max-width: 480px) {
+        flex: 1 0 auto;
+      }
+      .dino-matched-pandino-api-key-button {
+        color: #32db64;
+      }
     }
+
     .mat-icon {
       cursor: pointer;
     }
@@ -61,7 +82,7 @@ dino-user-area {
       align-items: center;
       justify-content: center;
       font-size: 24px;
-      .dino-tokens-icon{
+      .dino-tokens-icon {
         font-size: 24px;
       }
       .dino-tokens-counter {
@@ -85,6 +106,13 @@ dino-user-area {
   }
   .mat-mdc-raised-button {
     align-self: center;
+  }
+  .dino-theme-presets-button-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+    flex: 1 0 auto;
   }
   .dino-theme-presets-button,
   .dino-backup-restore-button {
