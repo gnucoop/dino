@@ -2,7 +2,9 @@ import {MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginatorDefaultOptions} from '@angular/material/paginator';
 import {AuthServiceConfig} from '@dino/core/auth';
 import {ConfigServiceConfig} from '@dino/core/config';
+import {PandinoConfig} from '@dino/core/data';
 import {TranslationsConfig} from '@dino/core/translations';
+import {StripePaymentConfig} from '@dino/material/stripe-payment';
 
 /**
  * Local Backend
@@ -35,6 +37,24 @@ export const authConfig: AuthServiceConfig = {
 
 export const configurationConfig: ConfigServiceConfig = {
   apiUrl: 'https://dev.cpainitiative.org/instances',
+};
+
+/**
+ * Stripe Payment module configuration
+ */
+export const stripePaymentConfig: StripePaymentConfig = {
+  stripeKey:
+    'pk_test_51NlTETLMj7kkP2jxxzBYrrpLH6XzivAWBGkvmCt3NltGFVg29530Bo0Ld1JqXqmkNx4cwz9o6F5owTqHcJyDMvDB00lTH85e1O',
+  gnuPayUrl: 'http://localhost:4242',
+  pandinoTokenID: 'prod_R5u9pKgodWUPYD',
+};
+
+/**
+ * Pandino configuration
+ */
+export const pandinoConfig: PandinoConfig = {
+  pandinoUrl: 'http://localhost:5000',
+  pandinoGptNamespaces: ['Gnucoop', 'Dino', 'Xlsform', 'PRAG', 'CC'],
 };
 
 // Paginator default config
@@ -186,4 +206,9 @@ export const optionalModulesConfig = {
    * Logs module
    */
   logsModule: true,
+
+  /**
+   * Stripe Payments module
+   */
+  stripeModule: false,
 };

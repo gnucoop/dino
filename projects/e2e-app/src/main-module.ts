@@ -13,7 +13,13 @@ import {AreasModule} from '@dino/core/areas';
 import {AuthModule, AuthService} from '@dino/core/auth';
 import {CasesModule} from '@dino/core/cases';
 import {ConfigModule} from '@dino/core/config';
-import {DATA_SERVICE_CONFIG, DataService, PermissionContextService} from '@dino/core/data';
+import {
+  DATA_SERVICE_CONFIG,
+  DataService,
+  PANDINO_SERVICE_CONFIG,
+  PandinoConfig,
+  PermissionContextService,
+} from '@dino/core/data';
 import {
   FormData,
   FormDataManager,
@@ -83,6 +89,8 @@ import {
   defaultLanguageConfig,
   optionalModulesConfig,
   paginatorConfig,
+  pandinoConfig,
+  stripePaymentConfig,
 } from './mockconfig';
 import {
   authErrorMessage,
@@ -204,6 +212,13 @@ export function provideDataServiceConfig() {
   };
 }
 
+export function providePandinoConfig(): PandinoConfig {
+  return {
+    pandinoUrl: pandinoConfig.pandinoUrl,
+    pandinoGptNamespaces: pandinoConfig.pandinoGptNamespaces,
+  };
+}
+
 export function provideMatDateLocale(ts: TranslocoService) {
   if (ts) {
     const lang = ts.getActiveLang();
@@ -232,14 +247,6 @@ export function provideMatDateLocale(ts: TranslocoService) {
     }),
     AjfEchartsModule.forRoot({echarts: () => import('echarts')}),
     AuthModule.forRoot(authConfig),
-    StripePaymentModule.forRoot({
-      stripeKey:
-        'pk_test_51NlTETLMj7kkP2jxxzBYrrpLH6XzivAWBGkvmCt3NltGFVg29530Bo0Ld1JqXqmkNx4cwz9o6F5owTqHcJyDMvDB00lTH85e1O',
-      gnuPayUrl: 'http://localhost:4242',
-      pandinoUrl: 'http://localhost:5000',
-      pandinoTokenID: 'prod_R5u9pKgodWUPYD',
-      return_url: location.origin,
-    }),
     BrowserAnimationsModule,
     additionalConfig.dynamicConfiguration ? ConfigModule.forRoot(configurationConfig) : [],
     BrowserModule,
@@ -273,6 +280,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
 
     // Optional Modules
     optionalModulesConfig.logsModule ? LogModule : [],
+    optionalModulesConfig.stripeModule ? StripePaymentModule.forRoot(stripePaymentConfig) : [],
 
     // E2E demos
     MaterialAggregationListE2eModule,
@@ -325,6 +333,10 @@ export function provideMatDateLocale(ts: TranslocoService) {
       useClass: additionalConfig.externalAuthentication
         ? PermissionContextService
         : PermissionContextServiceMock,
+    },
+    {
+      provide: PANDINO_SERVICE_CONFIG,
+      useFactory: providePandinoConfig,
     },
     {
       provide: DATA_SERVICE_CONFIG,
