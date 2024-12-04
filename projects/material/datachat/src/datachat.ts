@@ -26,6 +26,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   isDevMode,
   OnDestroy,
@@ -65,7 +66,11 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, User} from '@dino/core/auth';
 import {MatSelectChange} from '@angular/material/select';
-import {StripeService} from '@dino/material/stripe-payment';
+import {
+  STRIPE_PAYMENT_CONFIG,
+  StripePaymentConfig,
+  StripeService,
+} from '@dino/material/stripe-payment';
 
 /**
  * The DataChat component.
@@ -235,6 +240,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   constructor(
+    @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig | null,
     private _route: ActivatedRoute,
     private _auth: AuthService,
     private _http: HttpClient,
