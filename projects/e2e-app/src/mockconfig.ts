@@ -210,5 +210,5 @@ export const optionalModulesConfig = {
   /**
    * Stripe Payments module
    */
-  stripeModule: false,
+  stripeModule: true,
 };
