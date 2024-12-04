@@ -20,7 +20,13 @@
  *
  */
 
-import {ChangeDetectionStrategy, Component, Inject, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-config';
 import {TranslocoService} from '@ajf/core/transloco';
 import {ActivatedRoute} from '@angular/router';
@@ -50,7 +56,7 @@ export class StripeCheckoutLanding {
   availableTokens: Observable<string | null>;
 
   constructor(
-    @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig,
+    @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig | null,
     private _trs: TranslocoService,
     private _route: ActivatedRoute,
     private _stripeService: StripeService,

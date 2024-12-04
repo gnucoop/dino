@@ -1,4 +1,4 @@
-<mat-dialog-content>
+<mat-dialog-content *ngIf="config">
   <ng-container *ngIf="(checkoutElement|async) === null">
     <ng-container *ngIf="config.spinnerImagePath; else defaultspinner">
       <dino-loading-spinner [spinnerImagePath]="config.spinnerImagePath"></dino-loading-spinner>

@@ -27,6 +27,7 @@ import {
   Inject,
   isDevMode,
   OnDestroy,
+  Optional,
   ViewEncapsulation,
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -65,13 +66,27 @@ export class StripeCheckout implements OnDestroy {
   checkoutSub: Subscription = Subscription.EMPTY;
 
   constructor(
-    @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig,
+    @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig | null,
     @Inject(MAT_DIALOG_DATA) readonly data: StripePaymentData,
     public dialogRef: MatDialogRef<StripeCheckout>,
     private _snackbar: MatSnackBar,
     private _trs: TranslocoService,
     private _httpClient: HttpClient,
   ) {
+    // If StripePaymentModule is switched off
+    if (!this.config) {
+      this.stripe = obsOf(null);
+      this.checkoutRequest = obsOf(null);
+      this._snackbar.open(
+        this._trs.translate('Could not connect with Payment service or Stripe'),
+        'OOPS!',
+        {
+          duration: 10000,
+        },
+      );
+      this.closeDialog();
+      return;
+    }
     this.stripe = this.config.stripeKey ? from(loadStripe(this.config.stripeKey)) : obsOf(null);
 
     const checkoutUrl = `${this.config.gnuPayUrl}/create-checkout-session`;
