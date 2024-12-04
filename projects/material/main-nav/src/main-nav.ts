@@ -70,6 +70,7 @@ import {
 
 import {Section} from './section-interface';
 import {StripeService} from '@dino/material/stripe-payment';
+import {UserAreaPanelType} from '@dino/material/user-area';
 
 /**
  * Dino Main component, containing the toolbar and the sidebar navigation.
@@ -742,16 +743,19 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   /**
    * Opens the User Area dialog
+   * @param expandedPanel the panel that should be expanded by default
    */
-  openUserArea(): void {
+  openUserArea(expandedPanel?: UserAreaPanelType): void {
     const dialogConfig = new MatDialogConfig<{
       spinnerImagePath?: string;
       isAdmin?: Observable<boolean>;
+      expandedPanel?: UserAreaPanelType;
       backupRestore: boolean | undefined;
     }>();
     dialogConfig.data = {
       spinnerImagePath: this.spinnerImagePath,
       isAdmin: this.isAdmin.pipe(shareReplay(1)),
+      expandedPanel,
       backupRestore: this.backupRestore,
     };
     dialogConfig.minWidth = `95vw`;
@@ -803,14 +807,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
           this.snackbar.open('Offline logout unavailable', 'LOGOUT OFFLINE', {duration: 5000});
         }
       });
-  }
-
-  /**
-   * Opens a Stripe Payment dialog
-   * @param quantity The quantity of item to buy
-   */
-  openPayment(quantity: number) {
-    this._stripeService.openPayment('stripe-checkout', quantity);
   }
 
   /**

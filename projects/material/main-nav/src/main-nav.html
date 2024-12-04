@@ -36,9 +36,9 @@
       <ng-container *ngIf="(availableTokens|async) as pandTokens">
         <div
           class="dino-tokens-counter"
-          [matTooltip]="'Your Pandino Tokens. Click to add more!'|transloco"
+          [matTooltip]="'Your Pandino Tokens'|transloco"
           [matTooltipPosition]="'left'"
-          (click)="openPayment(25)"
+          (click)="openUserArea('tokens')"
         >
           <mat-icon
             aria-hidden="false"
@@ -52,7 +52,13 @@
           </div>
         </div>
       </ng-container>
-      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Light mode"
+        style="opacity: 0.5"
+        (click)="openUserArea('theme')"
+        >wb_sunny</mat-icon
+      >
       <mat-slide-toggle
         [checked]="ts.isDark()"
         (change)="setDarkTheme($event.checked)"
@@ -60,7 +66,11 @@
         aria-label="Toggle Dino Theme"
       >
       </mat-slide-toggle>
-      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5; margin-right: 25px;"
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Dark mode"
+        style="opacity: 0.5; margin-right: 25px;"
+        (click)="openUserArea('theme')"
         >nights_stay</mat-icon
       >
     </ng-container>
