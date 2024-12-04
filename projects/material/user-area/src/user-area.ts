@@ -27,6 +27,7 @@ import {
   Inject,
   isDevMode,
   OnDestroy,
+  Optional,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -52,7 +53,12 @@ import {ListAction} from '@dino/core/list';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
-import {StripeService} from '@dino/material/stripe-payment';
+import {
+  STRIPE_PAYMENT_CONFIG,
+  StripePaymentConfig,
+  StripeService,
+} from '@dino/material/stripe-payment';
+import {UserAreaPanelType} from '@dino/material/main-nav';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -96,6 +102,10 @@ export class UserArea implements OnDestroy {
    * The Dino Theme customization FormGroup.
    */
   readonly dinoSaveThemeForm: UntypedFormGroup;
+  /**
+   * Expansion panel open by default
+   */
+  expandedPanel: UserAreaPanelType | undefined;
   /**
    * True if the Change Password or Email forms are currently processing a request.
    */
@@ -175,6 +185,7 @@ export class UserArea implements OnDestroy {
   private _mainUnsubscribe: Subject<void> = new Subject();
 
   constructor(
+    @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly stripeConfig: StripePaymentConfig | null,
     @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
     private _udm: UserDataManager,
     private _fb: UntypedFormBuilder,
@@ -196,9 +207,11 @@ export class UserArea implements OnDestroy {
     public data: {
       spinnerImagePath?: string;
       isAdmin?: Observable<boolean>;
+      expandedPanel?: UserAreaPanelType;
       backupRestore: boolean | undefined;
     },
   ) {
+    this.expandedPanel = data.expandedPanel;
     this.spinnerImagePath = data.spinnerImagePath;
     this.isAdmin = data.isAdmin ?? obsOf(false);
     this.backupRestore = data.backupRestore;

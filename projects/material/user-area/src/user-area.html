@@ -22,7 +22,7 @@
   <mat-dialog-content>
     <mat-accordion>
       <!-- PASSWORD section -->
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="expandedPanel === 'password'">
         <mat-expansion-panel-header>
           <mat-panel-title> Change Password </mat-panel-title>
         </mat-expansion-panel-header>
@@ -92,7 +92,7 @@
       </mat-expansion-panel>
 
       <!-- API KEY section -->
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="expandedPanel === 'apikeys'">
         <mat-expansion-panel-header>
           <mat-panel-title> API Keys </mat-panel-title>
         </mat-expansion-panel-header>
@@ -154,7 +154,7 @@
       </mat-expansion-panel>
 
       <!-- TOKENS and CREDITS section -->
-      <mat-expansion-panel *ngIf="(availablePandinoTokens|async) !== null">
+      <mat-expansion-panel *ngIf="(availablePandinoTokens|async) !== null" [expanded]="expandedPanel === 'tokens'">
         <mat-expansion-panel-header>
           <mat-panel-title> Tokens </mat-panel-title>
         </mat-expansion-panel-header>
@@ -165,12 +165,12 @@
           <div class="dino-tokens-counter-container">
             <mat-icon color="primary" class="dino-tokens-icon">smart_toy</mat-icon> <span class="dino-tokens-counter">{{(availablePandinoTokens|async)}}</span>
           </div>
-          <button mat-raised-button color="accent" (click)="openPayment()">{{'Add more'|transloco}}<mat-icon matSuffix>add</mat-icon></button>
+          <button *ngIf="stripeConfig" mat-raised-button color="accent" (click)="openPayment()">{{'Add more'|transloco}}<mat-icon matSuffix>add</mat-icon></button>
         </div>
       </mat-expansion-panel>
 
       <!-- THEME section -->
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="expandedPanel === 'theme'">
         <mat-expansion-panel-header>
           <mat-panel-title> DINO Theme </mat-panel-title>
         </mat-expansion-panel-header>
@@ -275,7 +275,7 @@
       </mat-expansion-panel>
 
       <!-- BACKUP section -->
-      <mat-expansion-panel *ngIf="backupRestore && (isAdmin|async)">
+      <mat-expansion-panel *ngIf="backupRestore && (isAdmin|async)" [expanded]="expandedPanel === 'backup'">
         <mat-expansion-panel-header>
           <mat-panel-title> Backup and Restore </mat-panel-title>
         </mat-expansion-panel-header>

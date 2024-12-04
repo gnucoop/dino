@@ -1,8 +1,10 @@
 dino-user-area {
   .mdc-dialog__content {
-    padding: 20px 12px 20px 12px !important;
-    .mat-expansion-panel-body {
-      padding: 5px;
+    @media only screen and (max-width: 768px) {
+      padding: 20px 12px 20px 12px !important;
+      .mat-expansion-panel-body {
+        padding: 5px;
+      }
     }
   }
   .dino-user-area-header {
