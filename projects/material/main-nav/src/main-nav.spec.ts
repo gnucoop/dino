@@ -2,7 +2,12 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {
+  DATA_SERVICE_CONFIG,
+  DataServiceConfig,
+  PANDINO_SERVICE_CONFIG,
+  PandinoConfig,
+} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 import {UsersModule} from '@dino/core/users';
@@ -38,8 +43,12 @@ const dataServiceConfig: DataServiceConfig = {
 const stripePaymentConfig: StripePaymentConfig = {
   stripeKey: '',
   gnuPayUrl: '',
-  pandinoUrl: '',
   pandinoTokenID: '',
+};
+
+const pandinoConfig: PandinoConfig = {
+  pandinoUrl: '',
+  pandinoGptNamespaces: [],
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -92,6 +101,7 @@ describe('Main', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
         {provide: TRANSLATIONS_CONFIG, useValue: defaultLanguageConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
+        {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);

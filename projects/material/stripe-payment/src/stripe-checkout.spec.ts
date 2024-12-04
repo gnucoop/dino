@@ -59,7 +59,6 @@ function dataServiceConfig(): DataServiceConfig {
 const stripePaymentConfig: StripePaymentConfig = {
   stripeKey: '',
   gnuPayUrl: '',
-  pandinoUrl: '',
   pandinoTokenID: '',
 };
 

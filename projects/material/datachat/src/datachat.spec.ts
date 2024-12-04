@@ -7,7 +7,13 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {BehaviorSubject, of} from 'rxjs';
 import {EventEmitter} from '@angular/core';
-import {DATA_SERVICE_CONFIG, DataServiceConfig, Model} from '@dino/core/data';
+import {
+  DATA_SERVICE_CONFIG,
+  DataServiceConfig,
+  Model,
+  PANDINO_SERVICE_CONFIG,
+  PandinoConfig,
+} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
@@ -57,8 +63,12 @@ function dataServiceConfig(): DataServiceConfig {
 const stripePaymentConfig: StripePaymentConfig = {
   stripeKey: '',
   gnuPayUrl: '',
-  pandinoUrl: '',
   pandinoTokenID: '',
+};
+
+const pandinoConfig: PandinoConfig = {
+  pandinoUrl: '',
+  pandinoGptNamespaces: [],
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -101,6 +111,7 @@ describe('Data Chat', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
+        {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
       ],
     }).compileComponents();
 

@@ -6,7 +6,12 @@ import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {
+  DATA_SERVICE_CONFIG,
+  DataServiceConfig,
+  PANDINO_SERVICE_CONFIG,
+  PandinoConfig,
+} from '@dino/core/data';
 import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 
 import {EditReport, EditReportModule} from './public_api';
@@ -32,8 +37,12 @@ function dataServiceConfig(): DataServiceConfig {
 const stripePaymentConfig: StripePaymentConfig = {
   stripeKey: '',
   gnuPayUrl: '',
-  pandinoUrl: '',
   pandinoTokenID: '',
+};
+
+const pandinoConfig: PandinoConfig = {
+  pandinoUrl: '',
+  pandinoGptNamespaces: [],
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -77,6 +86,7 @@ describe('Edit Report', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
+        {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
       ],
     }).compileComponents();
 
