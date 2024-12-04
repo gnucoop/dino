@@ -58,7 +58,7 @@ import {
   StripePaymentConfig,
   StripeService,
 } from '@dino/material/stripe-payment';
-import {UserAreaPanelType} from '@dino/material/main-nav';
+import {UserAreaPanelType} from './user-area-panel-type';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.

@@ -20,6 +20,7 @@
  *
  */
 
-export * from './user-area';
-export * from './user-area.module';
-export * from './user-area-panel-type';
+/**
+ * Type representing expansion panels in User Area
+ */
+export type UserAreaPanelType = 'password' | 'apikeys' | 'tokens' | 'theme' | 'backup';
