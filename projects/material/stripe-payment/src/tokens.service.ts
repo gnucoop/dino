@@ -44,10 +44,10 @@ import {combineLatest, Observable, of as obsOf, startWith} from 'rxjs';
 import {filter, map, shareReplay, switchMap} from 'rxjs/operators';
 
 /**
- * Service that manages Stripe Operations and Pandino Tokens
+ * Service that manages Pandino Tokens and Stripe Operations
  */
 @Injectable({providedIn: 'root'})
-export class StripeService {
+export class TokensService {
   /**
    * Event emitted when the Pandino tokens amount is updated
    */
@@ -56,7 +56,7 @@ export class StripeService {
    * The Amount of Pandino Tokens available to the user.
    * Displayed only if a valid API Key is found in localstorage.
    */
-  readonly availableTokens: Observable<string | null>;
+  readonly availableTokens: Observable<number | null>;
 
   constructor(
     @Optional() @Inject(STRIPE_PAYMENT_CONFIG) private _stripeConfig: StripePaymentConfig | null,
@@ -108,7 +108,7 @@ export class StripeService {
           !storedApiKey
         )
           return null;
-        return userTokensResp.response.tokens.toString();
+        return userTokensResp.response.tokens;
       }),
       shareReplay(1),
     );
