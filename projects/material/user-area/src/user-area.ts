@@ -56,7 +56,7 @@ import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   STRIPE_PAYMENT_CONFIG,
   StripePaymentConfig,
-  StripeService,
+  TokensService,
 } from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from './user-area-panel-type';
 
@@ -146,7 +146,7 @@ export class UserArea implements OnDestroy {
   /**
    * Available Pandino Tokens
    */
-  availablePandinoTokens: Observable<string | null>;
+  availablePandinoTokens: Observable<number | null>;
 
   /**
    * The primary color of Dino Theme.
@@ -196,7 +196,7 @@ export class UserArea implements OnDestroy {
     private _ts: TranslocoService,
     private _sanitizer: DomSanitizer,
     private _aui: AdminUserInteractionsService,
-    private _stripeService: StripeService,
+    private _tokensService: TokensService,
     private _router: Router,
     private _http: HttpClient,
     private _ehms: ErrorHandlerMessageService,
@@ -233,7 +233,7 @@ export class UserArea implements OnDestroy {
       pandino_api_key: [this.storedPandinoAPIKey.value, [Validators.required]],
     });
 
-    this.availablePandinoTokens = this._stripeService.availableTokens;
+    this.availablePandinoTokens = this._tokensService.availableTokens;
 
     this.dinoSaveThemeForm = this._fb.group({
       primary: [this.primaryColor, Validators.required],
@@ -416,7 +416,7 @@ export class UserArea implements OnDestroy {
             {duration: 10000},
           );
           this.storedPandinoAPIKey.next(key);
-          this._stripeService.refreshPandinoTokensEvt.emit();
+          this._tokensService.refreshPandinoTokensEvt.emit();
           this._cdr.detectChanges();
           if (isDevMode()) {
             console.log(res);
@@ -538,7 +538,7 @@ export class UserArea implements OnDestroy {
    * Opens a Stripe Payment dialog
    */
   openPayment() {
-    this._stripeService.openPayment('stripe-checkout', 25);
+    this._tokensService.openPayment('stripe-checkout', 25);
   }
 
   /**

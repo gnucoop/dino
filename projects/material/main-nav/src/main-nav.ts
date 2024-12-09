@@ -69,7 +69,7 @@ import {
 } from 'rxjs/operators';
 
 import {Section} from './section-interface';
-import {StripeService} from '@dino/material/stripe-payment';
+import {TokensService} from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from '@dino/material/user-area';
 
 /**
@@ -176,7 +176,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * The Amount of Pandino Tokens available to the user.
    * Displayed only if a valid API Key is found in localstorage.
    */
-  availableTokens: Observable<string | null>;
+  availableTokens: Observable<number | null>;
   tokensCounterActive: BehaviorSubject<'add' | 'remove' | null> = new BehaviorSubject<
     'add' | 'remove' | null
   >(null);
@@ -465,7 +465,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
-    private _stripeService: StripeService,
+    private _tokensService: TokensService,
     readonly ts: ThemeService,
     readonly trs: TranslocoService,
   ) {
@@ -513,7 +513,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
       }),
     );
 
-    this.availableTokens = this._stripeService.availableTokens;
+    this.availableTokens = this._tokensService.availableTokens;
 
     this._availableTokensSub = this.availableTokens.pipe(distinctUntilChanged()).subscribe(() => {
       this.tokensCounterActive.next('add');

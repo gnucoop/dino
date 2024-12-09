@@ -33,7 +33,7 @@
     </span>
 
     <ng-container *ngIf="(breakpointObserver.small|async) !== true">
-      <ng-container *ngIf="(availableTokens|async) as pandTokens">
+      <ng-container *ngIf="(availableTokens|async) !== null">
         <div
           class="dino-tokens-counter"
           [matTooltip]="'Your Pandino Tokens'|transloco"
@@ -48,7 +48,7 @@
             >smart_toy</mat-icon
           >
           <div class="dino-tokens-counter-amount" [ngClass]="(tokensCounterActive|async)">
-            {{pandTokens}}
+            {{(availableTokens|async)}}
           </div>
         </div>
       </ng-container>

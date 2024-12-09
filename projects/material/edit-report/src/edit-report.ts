@@ -99,7 +99,7 @@ import {
 } from 'rxjs/operators';
 import {AjfContext} from '@ajf/core/models';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
-import {StripeService} from '@dino/material/stripe-payment';
+import {TokensService} from '@dino/material/stripe-payment';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -321,7 +321,7 @@ export class EditReport implements AfterViewInit {
     private _pcs: PermissionContextService,
     private _nss: NetworkStatusService,
     private _ehms: ErrorHandlerMessageService,
-    private _stripeService: StripeService,
+    private _tokensService: TokensService,
     @Optional() private _areaManager: AreaManager | null,
     @Optional() private _caseManager: CaseManager | null,
     @Optional() private _projectManager: ProjectManager | null,
@@ -861,7 +861,7 @@ export class EditReport implements AfterViewInit {
         }
       }
       this._setPromptStatus('');
-      this._stripeService.refreshPandinoTokensEvt.emit();
+      this._tokensService.refreshPandinoTokensEvt.emit();
       this._cdr.detectChanges();
     }
     if (Object.keys(aiContext).length) {

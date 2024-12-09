@@ -32,7 +32,7 @@ import {TranslocoService} from '@ajf/core/transloco';
 import {ActivatedRoute} from '@angular/router';
 import {StripeSessionStatus} from './stripe-payment-data-interface';
 import {Observable} from 'rxjs';
-import {StripeService} from './stripe.service';
+import {TokensService} from './tokens.service';
 
 /**
  * The Stripe Checkout Landing component.
@@ -53,17 +53,17 @@ export class StripeCheckoutLanding {
   /**
    * The remaining amount of user Pandino Tokens
    */
-  availableTokens: Observable<string | null>;
+  availableTokens: Observable<number | null>;
 
   constructor(
     @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig | null,
     private _trs: TranslocoService,
     private _route: ActivatedRoute,
-    private _stripeService: StripeService,
+    private _tokensService: TokensService,
   ) {
     const session_id = this._route.snapshot.params['session_id'];
-    this.sessionStatus = this._stripeService.getCheckoutSessionStatus(session_id);
-    this.availableTokens = this._stripeService.availableTokens;
+    this.sessionStatus = this._tokensService.getCheckoutSessionStatus(session_id);
+    this.availableTokens = this._tokensService.availableTokens;
   }
 
   /**

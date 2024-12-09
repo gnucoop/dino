@@ -69,7 +69,7 @@ import {MatSelectChange} from '@angular/material/select';
 import {
   STRIPE_PAYMENT_CONFIG,
   StripePaymentConfig,
-  StripeService,
+  TokensService,
 } from '@dino/material/stripe-payment';
 
 /**
@@ -251,7 +251,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     private _fdm: FormDataManager,
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,
-    private _stripeService: StripeService,
+    private _tokensService: TokensService,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -390,7 +390,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * Opens a Stripe Payment dialog
    */
   openPayment() {
-    this._stripeService.openPayment('stripe-checkout', 25);
+    this._tokensService.openPayment('stripe-checkout', 25);
   }
 
   /**
@@ -684,7 +684,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * Triggers the Stripeservice refresh pandino tokens event emission
    */
   private _refreshAvailableTokens() {
-    this._stripeService.refreshPandinoTokensEvt.emit();
+    this._tokensService.refreshPandinoTokensEvt.emit();
   }
 
   /**
