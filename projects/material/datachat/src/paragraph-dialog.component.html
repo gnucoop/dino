@@ -1,19 +1,19 @@
-<ng-container *ngIf="relevantParagraph">
+<ng-container *ngIf="metadata">
   <mat-card class="dino-paragraph-card">
     <mat-card-header>
-      <mat-card-subtitle>Pag. {{relevantParagraph.page}}</mat-card-subtitle>
-      <mat-card-title>{{relevantParagraph.source}}</mat-card-title>
+      <mat-card-subtitle>Pag. {{metadata.page}}</mat-card-subtitle>
+      <mat-card-title>{{metadata.source}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <div [innerHTML]="relevantParagraph.paragraph"></div>
+      <div [innerHTML]="metadata.text"></div>
       <img
         class="dino-paragraph-card-image"
         *ngIf="mimetype === 'image/jpeg'"
-        [src]="relevantParagraph.url"
+        [src]="metadata.url"
       />
     </mat-card-content>
     <mat-card-actions>
-      <a *ngIf="bucketUrl" [href]="bucketUrl + relevantParagraph.source" target="_blank"
+      <a *ngIf="bucketUrl" [href]="bucketUrl + metadata.source" target="_blank"
         ><button mat-mini-fab color="primary">
           <mat-icon>download</mat-icon>
         </button></a

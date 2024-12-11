@@ -22,7 +22,7 @@
 
 import {ChangeDetectionStrategy, Component, Inject, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {DataChatQA, Mimetype, RelevantParagraph} from './datachat.interfaces';
+import {CompletionVector, DataChatQA, Mimetype, VectorMetadata} from './datachat.interfaces';
 
 @Component({
   selector: 'dino-paragraph-dialog',
@@ -33,9 +33,9 @@ import {DataChatQA, Mimetype, RelevantParagraph} from './datachat.interfaces';
 })
 export class ParagraphDialogComponent {
   /**
-   * The paragraph displayed in the dialog
+   * Metadata of the paragraph displayed in the dialog
    */
-  relevantParagraph: RelevantParagraph | null = null;
+  metadata: VectorMetadata | null = null;
   /**
    * The base url for documentation files bucket
    */
@@ -47,28 +47,20 @@ export class ParagraphDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: {qa: DataChatQA; paragraphIndex: number; bucketUrl: string},
+    public data: {qa: DataChatQA; vector: CompletionVector; bucketUrl: string},
     public dialogRef: MatDialogRef<ParagraphDialogComponent>,
   ) {
-    if (!data || !data.qa || data.paragraphIndex == null) {
+    if (!data || !data.qa || data.vector == null) {
       return;
     }
     if (data.bucketUrl) {
       this.bucketUrl = `${data.bucketUrl}/files/`;
     }
-    if (data.qa.mimetypes && data.qa.mimetypes[data.paragraphIndex]) {
-      const qaMimetype: Mimetype | Mimetype[] = data.qa.mimetypes[data.paragraphIndex];
-      const mimetype = Array.isArray(qaMimetype) ? qaMimetype[0] : qaMimetype;
-      this.mimetype = mimetype;
+    const mimetype = data.vector.metadata.mimetype;
+    if (mimetype) {
+      this.mimetype = Array.isArray(mimetype) ? mimetype[0] : mimetype;
     }
-    this.relevantParagraph = {
-      mimetype: this.mimetype ? this.mimetype : undefined,
-      page: data.qa.pages ? data.qa.pages[data.paragraphIndex] : undefined,
-      paragraph: data.qa.paragraphs ? data.qa.paragraphs[data.paragraphIndex] : undefined,
-      similarity: data.qa.similarities ? data.qa.similarities[data.paragraphIndex] : undefined,
-      source: data.qa.sources ? data.qa.sources[data.paragraphIndex] : undefined,
-      url: data.qa.urls ? data.qa.urls[data.paragraphIndex] : undefined,
-    };
+    this.metadata = data.vector.metadata;
   }
 
   /**

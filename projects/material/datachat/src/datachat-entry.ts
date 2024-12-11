@@ -27,7 +27,7 @@ import {
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {DataChatQA} from './datachat.interfaces';
+import {CompletionVector, DataChatQA} from './datachat.interfaces';
 import {MatDialog} from '@angular/material/dialog';
 import {ParagraphDialogComponent} from './paragraph-dialog.component';
 
@@ -59,28 +59,22 @@ export class DataChatEntry implements OnDestroy {
    * @param qa The datachat QA entry
    * @returns The sources mat-chips
    */
-  getRelevantParagraphs(qa: DataChatQA): string[] {
-    if (qa.paragraphs == null || qa.similarities == null || qa.sources == null) {
+  getRelevantVectors(qa: DataChatQA): CompletionVector[] {
+    if (qa.vectors == null) {
       return [];
     }
-    const chips: string[] = [];
-    for (let x = 0; x < qa.sources.length; x++) {
-      if (qa.sources[x] && qa.pages && qa.pages[x]) {
-        chips.push(`<b>${qa.sources[x]}</b> (pag.${qa.pages[x]})`);
-      }
-    }
-    return chips;
+    return qa.vectors.filter(vec => vec.metadata.source && vec.metadata.page);
   }
 
   /**
    * Opens a simple MatDialog with some text in it
    * @param text The text displayed in the dialog
    */
-  openParagraphDialog(qa: DataChatQA, paragraphIndex: number) {
+  openParagraphDialog(qa: DataChatQA, vector: CompletionVector) {
     this._dialog.open(ParagraphDialogComponent, {
       data: {
         qa,
-        paragraphIndex,
+        vector,
         bucketUrl: this.bucketUrl,
       },
       panelClass: 'dino-paragraph-dialog',

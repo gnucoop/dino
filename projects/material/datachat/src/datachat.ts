@@ -635,12 +635,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           } else {
             this._addToHistory({
               response: resp.answer,
-              mimetypes: resp.mimetypes,
-              pages: resp.pages,
-              paragraphs: resp.paragraphs,
-              similarities: resp.similarities,
-              sources: resp.sources,
-              urls: resp.urls,
+              vectors: resp.vectors,
               noPrompt: true,
             });
           }
@@ -712,9 +707,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _infoFromHistory(): string[] {
     const info = new Set<string>();
     for (const qa of this.history) {
-      if (qa.response && qa.paragraphs) {
-        for (const par of qa.paragraphs) {
-          info.add(par);
+      if (qa.response && qa.vectors) {
+        for (const vec of qa.vectors) {
+          info.add(vec.metadata.text);
         }
       }
     }

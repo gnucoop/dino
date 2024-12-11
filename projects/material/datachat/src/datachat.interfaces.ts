@@ -29,12 +29,7 @@ export interface DataChatQA {
   explanation?: string;
   noPrompt?: boolean;
   namespace?: string;
-  mimetypes?: (Mimetype[] | Mimetype)[];
-  pages?: number[];
-  paragraphs?: string[];
-  similarities?: number[];
-  sources?: string[];
-  urls?: string[];
+  vectors?: CompletionVector[];
   userIsHappy?: boolean;
 }
 
@@ -54,13 +49,8 @@ export interface CompletionRequest {
 
 export interface CompletionResponse {
   error?: string;
-  mimetypes?: (Mimetype[] | Mimetype)[];
-  pages?: number[];
-  paragraphs?: string[];
-  similarities?: number[];
-  sources?: string[];
-  urls?: string[];
   answer?: string;
+  vectors?: CompletionVector[];
 }
 
 export interface QA extends CompletionResponse {
@@ -69,13 +59,20 @@ export interface QA extends CompletionResponse {
   userIsHappy?: boolean;
 }
 
-export interface RelevantParagraph {
+export interface CompletionVector {
+  similarity: number;
+  metadata: VectorMetadata;
+}
+
+export interface VectorMetadata {
+  text: string;
   mimetype?: Mimetype[] | Mimetype;
   page?: number;
-  paragraph?: string;
-  similarity?: number;
   source?: string;
   url?: string;
+  image_url?: string;
+  start_time?: number;
+  token_count?: number;
 }
 
 export type Mimetype = 'image/jpeg' | 'text' | 'table' | null;
