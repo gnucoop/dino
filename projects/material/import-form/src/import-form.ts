@@ -388,42 +388,42 @@ export class ImportForm implements OnDestroy {
             // Check if is not a second header
             if (!missingMandatoryMetrics && !this._isLabelHeader(row)) {
               const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
-              if (
-                newMetricName &&
-                newMetricName.length &&
-                !row[metricIdKey] &&
-                !newMetricNames.includes(newMetricName)
-              ) {
-                newMetricNames.push(newMetricName);
-                let newMetric: {[key: string]: any} = {};
+              if (newMetricName && newMetricName.length && !row[metricIdKey]) {
+                // Metric by name
+                if (!newMetricNames.includes(newMetricName)) {
+                  // Metric already in the new metric list to be created
+                  newMetricNames.push(newMetricName);
+                  let newMetric: {[key: string]: any} = {};
 
-                if (metric === 'case') {
-                  delete props['code'];
-                  delete row['case_code'];
-                }
-                if (metric === 'project') {
-                  delete props['code_auto'];
-                  delete row['project_code_auto'];
-                }
-                for (let prop in props) {
-                  const propKey = metric + '_' + (prop as string);
-                  if (prop in requiredProps || row[propKey]) {
-                    if (prop === 'metric_data') {
-                      newMetric[prop as string] = JSON.parse(row[propKey]);
-                    } else {
-                      newMetric[prop as string] = this._getValueFromRow(
-                        row[propKey],
-                        props[prop].type,
-                      );
+                  if (metric === 'case') {
+                    delete props['code'];
+                    delete row['case_code'];
+                  }
+                  if (metric === 'project') {
+                    delete props['code_auto'];
+                    delete row['project_code_auto'];
+                  }
+                  for (let prop in props) {
+                    const propKey = metric + '_' + (prop as string);
+                    if (prop in requiredProps || row[propKey]) {
+                      if (prop === 'metric_data') {
+                        newMetric[prop as string] = JSON.parse(row[propKey]);
+                      } else {
+                        newMetric[prop as string] = this._getValueFromRow(
+                          row[propKey],
+                          props[prop].type,
+                        );
+                      }
                     }
                   }
-                }
 
-                if (!(metric in newMetrics)) {
-                  newMetrics[metric] = [];
+                  if (!(metric in newMetrics)) {
+                    newMetrics[metric] = [];
+                  }
+                  newMetrics[metric].push(newMetric);
                 }
-                newMetrics[metric].push(newMetric);
               } else if (row[metricIdKey]) {
+                // Metric by id
                 if (!(metric in requiredMetricIdsByType)) {
                   requiredMetricIdsByType[metric] = [];
                 }
@@ -431,6 +431,7 @@ export class ImportForm implements OnDestroy {
                   requiredMetricIdsByType[metric].push(row[metricIdKey]);
                 }
               } else if (!this._hasOptionalMetrics) {
+                // No metric for this row but is mandatory
                 missingMandatoryMetrics = true;
               }
             }
