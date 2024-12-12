@@ -34,7 +34,7 @@ import {
 } from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager} from '@dino/core/users';
@@ -43,6 +43,7 @@ import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} f
 import {filter, map, shareReplay, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
 import {format} from 'date-fns';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
+import {TokensService} from '@dino/material/stripe-payment';
 
 /**
  * The Report data creation component.
@@ -142,6 +143,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   constructor(
+    private _router: Router,
     private _route: ActivatedRoute,
     private _rs: ReportSchemaManager,
     private _rd: ReportDataManager,
@@ -151,6 +153,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     readonly metricsService: MetricsService,
     private _fstm: FormStatusManager,
     private _pcs: PermissionContextService,
+    private _tokensService: TokensService,
   ) {
     this.dateIntervalForm = new UntypedFormGroup({
       'name': new UntypedFormControl('', Validators.required),
@@ -215,10 +218,12 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
       .pipe(
         withLatestFrom(
           this._reportSchemaId,
+          this._reportSchema,
           this._formMetricsSelector,
           this._udm.getActiveUserData(),
         ),
-        switchMap(([_, reportSchemaId, formMetricsSelector, userData]) => {
+        switchMap(([_, reportSchemaId, reportSchema, formMetricsSelector, userData]) => {
+          const promptVariables = this._rs.getAIPromptVariablesFromSchema(reportSchema);
           const dateIntervalValue = this.dateIntervalForm.value;
           let newItem: {[key: string]: any} = {};
           newItem['report_schema_ref_id'] = reportSchemaId;
@@ -266,12 +271,31 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
               newItem['form_status_ref_id'] = formStatusRefId;
             }
           }
-          return this._rd.create(newItem as ReportData);
+          if (promptVariables && promptVariables.length) {
+            return this._tokensService.buyPandinoAIPromptReport(promptVariables).pipe(
+              switchMap(pandinoResponse => {
+                if (!pandinoResponse) return obsOf(null);
+                if (pandinoResponse.error && !pandinoResponse.response) {
+                  return obsOf(pandinoResponse.error);
+                }
+                if (pandinoResponse.response && pandinoResponse.message) {
+                  this._tokensService.refreshPandinoTokensEvt.emit();
+                  this.snackbar.open('AI Report created successfully', 'AI REPORT CREATED', {
+                    duration: 5000,
+                  });
+                  return this._rd.create(newItem as ReportData);
+                }
+                return obsOf(null);
+              }),
+            );
+          } else {
+            this.snackbar.open('Document created', 'SAVE', {duration: 5000});
+            return this._rd.create(newItem as ReportData);
+          }
         }),
       )
       .subscribe(_ => {
         this._location.back();
-        this.snackbar.open('Document created', 'SAVE', {duration: 5000});
       });
 
     this.isFormMetricsSelectorValid = this._formMetricsSelector.pipe(

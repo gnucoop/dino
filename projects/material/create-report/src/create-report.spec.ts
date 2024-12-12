@@ -3,7 +3,12 @@ import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
+import {
+  DATA_SERVICE_CONFIG,
+  DataServiceConfig,
+  PANDINO_SERVICE_CONFIG,
+  PandinoConfig,
+} from '@dino/core/data';
 import {ReportsModule} from '@dino/core/reports';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
@@ -63,6 +68,11 @@ function dataServiceConfig(): DataServiceConfig {
   };
 }
 
+const pandinoConfig: PandinoConfig = {
+  pandinoUrl: '',
+  pandinoGptNamespaces: [],
+};
+
 describe('Create Report', () => {
   let fixtureCreateReport: ComponentFixture<CreateReport>;
   let createReport: CreateReport;
@@ -75,6 +85,7 @@ describe('Create Report', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
       ],
     }).compileComponents();
 
