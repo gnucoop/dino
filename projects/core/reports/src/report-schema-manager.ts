@@ -34,6 +34,7 @@ import {Observable, of as obsOf} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {RxDocument} from 'rxdb';
 import {ReportDataManager} from './report-data-manager';
+import {AjfReportVariable} from '@ajf/core/reports';
 @Injectable({providedIn: 'root'})
 export class ReportSchemaManager extends DataModelManager<ReportSchema> {
   constructor(
@@ -101,6 +102,30 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
       limit: 1,
     };
     return this.query(queryOptions).pipe(map(res => res.length > 0));
+  }
+
+  /**
+   * Indicates if the Report Schema has any AIPrompt Variables and returns them.
+   * @param schemaId the Report Schema uuid
+   * @returns an observable of the AI Prompt Variables or of an empty array
+   */
+  getAIPromptVariablesFromSchemaID(schemaId: string): Observable<AjfReportVariable[]> {
+    return this.get(schemaId).pipe(
+      map(rSchema => {
+        if (!rSchema) return [];
+        return this.getAIPromptVariablesFromSchema(rSchema);
+      }),
+    );
+  }
+
+  /**
+   * Retrieves all Report Schema AIPrompt variables.
+   * @param schema the Report Schema
+   * @returns AI Prompt Variables array
+   */
+  getAIPromptVariablesFromSchema(schema: ReportSchema): AjfReportVariable[] {
+    if (!schema) return [];
+    return (schema.schema.variables || []).filter(variable => variable.isAIPrompt);
   }
 
   /**
