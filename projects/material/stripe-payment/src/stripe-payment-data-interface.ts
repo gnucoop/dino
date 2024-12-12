@@ -102,6 +102,24 @@ export interface GetUserTokensResponse {
 }
 
 /**
+ * Represents a response object from the "/getusertokens" endpoint
+ */
+export interface BuyPandinoReportResponse {
+  /**
+   * Response error message
+   */
+  error?: string;
+  /**
+   * The response (true if the Report transaction was successfully completed)
+   */
+  response?: boolean;
+  /**
+   * The response message
+   */
+  message?: string;
+}
+
+/**
  * Represents a response object from the "/checkpandinouser" endpoint
  */
 export interface CheckPandinoUserResponse {

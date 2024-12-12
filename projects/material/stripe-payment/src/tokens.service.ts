@@ -24,6 +24,7 @@ import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/co
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-config';
 import {HttpClient} from '@angular/common/http';
 import {
+  BuyPandinoReportResponse,
   CheckPandinoUserResponse,
   GetUserTokensResponse,
   StripePaymentData,
@@ -42,6 +43,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {StripeCheckout} from './stripe-checkout';
 import {combineLatest, Observable, of as obsOf, startWith} from 'rxjs';
 import {filter, map, shareReplay, switchMap} from 'rxjs/operators';
+import {AjfReportVariable} from '@ajf/core/reports';
 
 /**
  * Service that manages Pandino Tokens and Stripe Operations
@@ -158,6 +160,30 @@ export class TokensService {
   }
 
   /**
+   * Call to Pandino to buy an AIPrompt report and authorize its creation.
+   */
+  buyPandinoAIPromptReport(
+    prompts: AjfReportVariable[],
+  ): Observable<BuyPandinoReportResponse | null> {
+    if (!this._pandinoConfig || !prompts || !prompts.length) return obsOf(null);
+    const storedApiKey = localStorage.getItem('pandas_dino_api_key');
+    const userInfo = this._authService.getUserInfo();
+    if (storedApiKey && userInfo && userInfo.email) {
+      const headers = {'X-API-KEY': storedApiKey, 'X-USER-EMAIL': userInfo.email};
+      return this._http.post<BuyPandinoReportResponse | null>(
+        `${this._pandinoConfig.pandinoUrl}/buyreport`,
+        {'prompts': prompts.length},
+        {headers},
+      );
+    } else {
+      if (isDevMode()) {
+        console.log('No Pandino API key found');
+      }
+      return obsOf(null);
+    }
+  }
+
+  /**
    * Attempts to add an authenticated User to the Pandino database.
    * Pandino will generate and provide an API key for the user.
    * If the user already exists, returns their username and apiKey
@@ -166,7 +192,7 @@ export class TokensService {
   checkPandinoUser(): Observable<CheckPandinoUserResponse | null> {
     if (!this._pandinoConfig) return obsOf(null);
     const userInfo = this._authService.getUserInfo();
-    const authToken = this._authService.getAuthToken();
+    const authToken = this._authService.authToken.value;
     const graphqlUrl = this._dataConfig.syncOptions.url.http;
     if (userInfo && userInfo.email && authToken) {
       const headers = {
