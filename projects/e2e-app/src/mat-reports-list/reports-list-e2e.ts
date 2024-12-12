@@ -8,6 +8,9 @@ import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {instanceName} from '../mocks';
 import {additionalConfig} from '../mockconfig';
+import {TokensService} from '@dino/material/stripe-payment';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {TranslocoService} from '@ajf/core/transloco';
 
 @Component({
   selector: 'app-reports-list-e2e',
@@ -15,6 +18,16 @@ import {additionalConfig} from '../mockconfig';
 })
 export class MatReportsListE2E {
   @ViewChild(SelectionList) list!: SelectionList;
+
+  /**
+   * The Pandino Tokens cost of creating the report.
+   */
+  readonly reportCost: Observable<number | null>;
+
+  /**
+   * The Tooltip message for the Add Report floating button
+   */
+  readonly tooltipMessage: Observable<string>;
 
   readonly isDataList = 'report';
   readonly additionalBasicFilters = [
@@ -107,6 +120,9 @@ export class MatReportsListE2E {
     readonly reportSchemaManager: ReportSchemaManager,
     private _route: ActivatedRoute,
     private _pcs: PermissionContextService,
+    private _tokensService: TokensService,
+    private _snackBar: MatSnackBar,
+    private _ts: TranslocoService,
   ) {
     this.currentRowId = new BehaviorSubject<string | null>(null);
     this.reportSchemaId = this._route.params.pipe(map(params => params['report_schema_id']));
@@ -119,6 +135,23 @@ export class MatReportsListE2E {
       }),
       filter(id => id != null),
       shareReplay(1),
+    );
+
+    this.reportCost = this.additionalDataSchema.pipe(
+      map(schema => {
+        if (!schema) return null;
+        return this.reportSchemaManager.getAIPromptVariablesFromSchema(schema).length;
+      }),
+      shareReplay(1),
+    );
+
+    this.tooltipMessage = this.reportCost.pipe(
+      map(cost => {
+        if (!cost) return this._ts.translate('Add New Report');
+        return `${this._ts.translate('Add New Report')}. ${this._ts.translate(
+          'Once the Report is created, you will use',
+        )} ${cost} ${this._ts.translate('tokens')}`;
+      }),
     );
 
     this.listRowActions = combineLatest([this.reportSchemaId, this.currentRowId]).pipe(
@@ -170,12 +203,25 @@ export class MatReportsListE2E {
   }
 
   addReport(): void {
-    this.reportSchemaId
+    this._tokensService.refreshPandinoTokensEvt.emit();
+    combineLatest([this.additionalDataSchema, this._tokensService.availableTokens])
       .pipe(
-        map(schemaId => {
-          if (schemaId != null) {
-            return this.list.createAction(schemaId);
+        map(([schema, tokens]) => {
+          if (schema == null) return;
+          const promptVariables = this.reportSchemaManager.getAIPromptVariablesFromSchema(schema);
+          if (promptVariables.length) {
+            if ((tokens !== null && promptVariables.length > tokens) || tokens == null) {
+              this._snackBar.open(
+                this._ts.translate(
+                  'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+                ),
+                'OOPS!',
+                {duration: 10000},
+              );
+              return;
+            }
           }
+          return this.list.createAction(schema.id);
         }),
         take(1),
       )

@@ -20,6 +20,7 @@
 <dino-floating-button
   *ngIf="displayAddButton|async"
   buttonIcon="add"
-  [tooltipMessage]="'Add New Report'|transloco"
+  [tooltipMessage]="(tooltipMessage|async)!"
   (click)="addReport()"
+  [cost]="reportCost|async"
 ></dino-floating-button>
