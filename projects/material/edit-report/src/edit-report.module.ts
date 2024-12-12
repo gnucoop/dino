@@ -36,6 +36,7 @@ import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {EditReport} from './edit-report';
 import {LangsModule} from '@dino/material/langs';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import {LangsModule} from '@dino/material/langs';
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSnackBarModule,

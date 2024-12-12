@@ -134,6 +134,20 @@ function reformat(isoDate: string): string {
 })
 export class EditReport implements AfterViewInit {
   /**
+   * The loading state of the AI Report Prompts generation
+   */
+  isAILoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  /**
+   * The Progress Bar value during the AI Report Prompts generation
+   */
+  AILoadingBarValues: BehaviorSubject<{current: number; total: number; percent: number}> =
+    new BehaviorSubject<{current: number; total: number; percent: number}>({
+      current: 1,
+      total: 0,
+      percent: 0,
+    });
+
+  /**
    * If true, the report view stepper and its two
    * steps (Metric Selector and Ajf Report) are displayed.
    * Otherwise only the Ajf Report is displayed.
@@ -638,6 +652,7 @@ export class EditReport implements AfterViewInit {
             this._aiSnackBar = this.snackbar.open(
               'PANDINO is generating the report. Please wait...',
               'WAIT',
+              {duration: 5000},
             );
           }
         }
@@ -803,9 +818,8 @@ export class EditReport implements AfterViewInit {
         gptPromptUrl = `${this.baseDataChatAPIurl}/prompt.txt`;
       }
 
-      // TODO
-      // await sendAPIKey(key) ...
-
+      const singlePromptProgressBarValue = 100 / validPrompts.length;
+      this.isAILoading.next(true);
       let promptNum = 1;
       for (let i = 0; i < validPrompts.length; i++) {
         const promptVariable = validPrompts[i];
@@ -813,6 +827,11 @@ export class EditReport implements AfterViewInit {
           ? variablesContext[promptVariable.name].toString()
           : null;
         if (prompt && prompt.length > 0) {
+          this.AILoadingBarValues.next({
+            ...this.AILoadingBarValues.value,
+            current: promptNum,
+            total: validPrompts.length,
+          });
           if (isDevMode()) {
             console.log(`Generazione prompt ${promptNum} di ${validPrompts.length}...`);
           }
@@ -820,7 +839,7 @@ export class EditReport implements AfterViewInit {
           promptNum++;
           const fd = new FormData();
           fd.append('graphqlUrl', this._graphqlUrl);
-          fd.append('authToken', this._auth.getAuthToken() || '');
+          fd.append('authToken', this._auth.authToken.value || '');
           fd.append('prompt', prompt);
           fd.append('username', userInfo.email);
           let text: string = '';
@@ -857,11 +876,15 @@ export class EditReport implements AfterViewInit {
           }
           if (text && text.length > 0) {
             aiContext[promptVariable.name] = text;
+            this.AILoadingBarValues.next({
+              ...this.AILoadingBarValues.value,
+              percent: (promptNum - 1) * singlePromptProgressBarValue,
+            });
           }
         }
       }
+      this.isAILoading.next(false);
       this._setPromptStatus('');
-      this._tokensService.refreshPandinoTokensEvt.emit();
       this._cdr.detectChanges();
     }
     if (Object.keys(aiContext).length) {

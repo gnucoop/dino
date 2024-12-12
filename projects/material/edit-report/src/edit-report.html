@@ -85,11 +85,30 @@
 
 <ng-template #loading>
   <div class="dino-loading">
-    <ng-container *ngIf="spinnerImagePath; else defaultspinner"
-      ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+    <ng-container *ngIf="(isAILoading|async) === true; else spinnerloading">
+      <ng-container *ngIf="AILoadingBarValues|async as barValues">
+        <div class="dino-aireport-progress-bar-message">
+          <h2>
+            {{'Generating report prompt'|transloco}} {{barValues.current}} {{'of'|transloco}}
+            {{barValues.total}}
+          </h2>
+        </div>
+        <mat-progress-bar
+          class="dino-aireport-progress-bar"
+          [value]="barValues.percent"
+          mode="buffer"
+        ></mat-progress-bar>
+      </ng-container>
     </ng-container>
-    <ng-template #defaultspinner
-      ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
+    <ng-template #spinnerloading
+      ><ng-container *ngIf="spinnerImagePath; else defaultspinner"
+        ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+      </ng-container>
+      <ng-template #defaultspinner
+        ><mat-spinner
+          class="dino-component-load-spinner"
+          mode="indeterminate"
+        ></mat-spinner></ng-template
     ></ng-template>
   </div>
 </ng-template>

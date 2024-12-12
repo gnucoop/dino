@@ -102,10 +102,19 @@ dino-edit-report {
     height: 85vh;
     opacity: 0.4;
   }
+  .dino-aireport-progress-bar-message {
+    position: relative;
+    top: 30%;
+    text-align: center;
+    margin: auto;
+    opacity: 0.6;
+    color: rgb(var(--palette-primary-500));
+    margin-top: 30vh;
+  }
   .dino-loading {
-    position: fixed;
-    width: 50%;
-    left: 25%;
+    position: unset !important;
+    width: unset !important;
+    left: unset !important;
     .dino-sync-text {
       opacity: 0.3;
       text-align: center;
@@ -115,13 +124,15 @@ dino-edit-report {
       color: inherit;
     }
     .dino-component-load-spinner {
-      margin: auto;
-      height: 90vh !important;
+      height: 18vh !important;
       width: 18vw !important;
-      svg {
-        height: 100% !important;
-        width: 100% !important;
-      }
+    }
+    .dino-aireport-progress-bar {
+      width: 50vw !important;
+      margin: auto;
+      margin-top: 20px;
+      transition: all ease-in-out 0.3;
+      -webkit-transition: all ease-in-out 0.3s;
     }
   }
 }
