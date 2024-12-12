@@ -289,9 +289,16 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       return null;
     }
     const metric_data: {[key: string]: string} = {};
-    groupValue.attributes.forEach(
-      attr => (metric_data[attr.attribute_name] = attr.attribute_value),
-    );
+    groupValue.attributes.forEach(attr => {
+      if (
+        attr.attribute_name != null &&
+        attr.attribute_value != null &&
+        attr.attribute_name.length &&
+        attr.attribute_value.length
+      ) {
+        metric_data[attr.attribute_name] = attr.attribute_value;
+      }
+    });
     return Object.keys(metric_data).length ? metric_data : null;
   }
 
