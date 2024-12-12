@@ -190,8 +190,12 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   /**
    * Currently selected Chat namespace
    */
-  currentNamespace: string =
-    this.namespaces && this.namespaces.length ? this.namespaces[0] : 'default';
+  currentNamespace: string = 'default';
+
+  /**
+   * Current Chat Prompt text value
+   */
+  chatPromptText: string = '';
 
   /**
    * Emitted when the Exporter has been successfully created and set up
@@ -356,6 +360,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
 
       this._exportedFile$ = this._exporter.exportedFile;
     } else if (this.mode === 'completion') {
+      this.currentNamespace =
+        this.namespaces && this.namespaces.length ? this.namespaces[0] : 'default';
+
       this._apiKeyConfirmationSub = this.apiKeyConfirmationEvt.subscribe({
         next: (res: string) => {
           const confirmedKey = res;
@@ -462,10 +469,12 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   chat(text: string) {
+    const chatText = text.trim();
+    if (!chatText || !chatText.length) return;
     if (this.mode === 'datachat') {
-      this.dataChat(text);
+      this.dataChat(chatText);
     } else if (this.mode === 'completion') {
-      this.completionChat(text);
+      this.completionChat(chatText);
     } else {
       return;
     }

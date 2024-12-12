@@ -95,7 +95,8 @@
                   cols="50"
                   placeholder="Ciao!"
                   style="resize: none;"
-                  (keyup.enter)="chat(chatPrompt.value); chatPrompt.value = ''"
+                  (keydown)="chatPromptText = chatPrompt.value"
+                  (keyup.enter)="chat(chatPromptText); chatPrompt.value = ''; chatPromptText = '';"
                 ></textarea>
               </mat-form-field>
             </div>
@@ -129,7 +130,11 @@
       {{'Sorry, you don\'t have enough Tokens!'|transloco}}
     </h1>
     <br />
-    <h1 *ngIf="config" class="dino-no-tokens-message-row dino-no-tokens-message-row-buy" (click)="openPayment()">
+    <h1
+      *ngIf="config"
+      class="dino-no-tokens-message-row dino-no-tokens-message-row-buy"
+      (click)="openPayment()"
+    >
       {{'You can purchase more Tokens here'|transloco}}
       <mat-icon class="dino-no-tokens-icon" color="primary">smart_toy</mat-icon>
     </h1>
