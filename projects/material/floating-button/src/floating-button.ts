@@ -61,4 +61,9 @@ export class FloatingButton {
    * Defaults to false.
    */
   @Input() draggable?: boolean;
+
+  /**
+   * If specified, the button is extendend and displays the operation cost
+   */
+  @Input() cost?: number | null;
 }

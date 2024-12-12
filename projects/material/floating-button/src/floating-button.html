@@ -32,7 +32,12 @@
     [matTooltipPosition]="'left'"
     [disabled]="buttonDisabled"
     mat-fab
+    [extended]="cost !== undefined"
   >
     <mat-icon class="icon">{{buttonIcon}}</mat-icon>
+    <div *ngIf="cost" class="dino-floating-button-cost-container">
+      <mat-icon color="primary">smart_toy</mat-icon>
+      <div class="dino-tokens-counter-amount">{{cost}}</div>
+    </div>
   </button></ng-template
 >
