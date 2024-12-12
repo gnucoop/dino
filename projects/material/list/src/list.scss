@@ -138,6 +138,17 @@ dino-list {
         display: flex;
         align-items: center;
       }
+      dino-list-cell {
+        .dino-text-cell-long {
+          max-width: 100px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .dino-link-cell {
+          color: rgb(var(--palette-accent-700));
+        }
+      }
     }
     @media only screen and (max-width: 768px) {
       position: relative;

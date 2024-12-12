@@ -62,4 +62,25 @@
 </ng-template>
 
 <!-- Standard Cell template -->
-<ng-template #standardCellTemplate> {{item}} </ng-template>
+<ng-template #standardCellTemplate>
+  <ng-container *ngIf="isUrl(item); then urlTemplate; else standardTextCellTemplate"></ng-container>
+</ng-template>
+
+<!-- Link Cell temlate -->
+<ng-template #urlTemplate><a class="dino-link-cell" [matTooltip]="item" [href]="item" target="_blank">Link</a></ng-template>
+
+<!-- Standard Text Cell template -->
+<ng-template #standardTextCellTemplate>
+  <ng-container
+    *ngIf="isSingleWordLongString(item, 25);then longStandardCellTemplate;  else regularStandardCellTemplate"
+    ><div class="dino-text-cell-long" [matTooltip]="item">{{item}}</div></ng-container
+  >
+</ng-template>
+
+<!-- Long Standard Text Cell template -->
+<ng-template #longStandardCellTemplate
+  ><div class="dino-text-cell-long" [matTooltip]="item">{{item}}</div></ng-template
+>
+
+<!-- Regular Standard Text Cell template -->
+<ng-template #regularStandardCellTemplate>{{item}}</ng-template>

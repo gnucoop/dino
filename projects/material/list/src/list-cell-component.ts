@@ -95,4 +95,29 @@ export class ListCellComponent<T extends Model = Model> {
       previousDoc: this.rowElement,
     });
   }
+
+  /**
+   * Returns true if the string contains a single word longer than the set threshold
+   * @param str the string to be checked
+   * @param threshold the max char length
+   * @returns true if both conditions are met
+   */
+  isSingleWordLongString(str: string, threshold: number): boolean {
+    if (!str || !threshold || typeof str !== 'string') return false;
+    const isSingleWord = str.trim().indexOf(' ') === -1;
+    const isOverThreshold = str.trim().length > threshold;
+    const isID = this.header && this.header.column === 'id';
+    return isSingleWord && isOverThreshold && !isID;
+  }
+
+  /**
+   * Returns true if the string is a valid url
+   * @param str
+   * @returns true if url
+   */
+  isUrl(str: string): boolean {
+    if (!str || typeof str !== 'string') return false;
+    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    return urlRegex.test(str);
+  }
 }
