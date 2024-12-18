@@ -285,7 +285,13 @@ export class FileUploadService {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
-    if ('name' in value && 'content' in value && value['content'] && value['content'].length) {
+    if (
+      'name' in value &&
+      'content' in value &&
+      value['content'] &&
+      value['content'].length &&
+      value['content'].startsWith('data:')
+    ) {
       if (!uploadSignature && 'signature' in value && value['signature']) {
         return false;
       }
