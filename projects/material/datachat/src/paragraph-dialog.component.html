@@ -1,23 +1,32 @@
 <ng-container *ngIf="metadata">
   <mat-card class="dino-paragraph-card">
     <mat-card-header>
-      <mat-card-subtitle>Pag. {{metadata.page}}</mat-card-subtitle>
-      <mat-card-title>{{metadata.source}}</mat-card-title>
+      <mat-card-subtitle *ngIf="metadata.page">Pag. {{metadata.page}}</mat-card-subtitle>
+      <mat-card-title>{{metadata.source ?? 'file'}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <div *ngIf="mimetype.startsWith('audio')">
+        <audio (loadedmetadata)="onPlayerLoaded($event)" controls>
+          <source [src]="metadata.url" [type]="mimetype"/>
+        </audio>
+      </div>
+      <div *ngIf="mimetype.startsWith('video')">
+        <video (loadedmetadata)="onPlayerLoaded($event)" controls>
+          <source [src]="metadata.url" [type]="mimetype"/>
+        </video>
+      </div>
       <div [innerHTML]="metadata.text"></div>
-      <img
-        class="dino-paragraph-card-image"
-        *ngIf="mimetype === 'image/jpeg'"
-        [src]="metadata.url"
+      <img class="dino-paragraph-card-image"
+        *ngIf="metadata.image_url"
+        [src]="metadata.image_url"
       />
     </mat-card-content>
     <mat-card-actions>
-      <a *ngIf="bucketUrl" [href]="bucketUrl + metadata.source" target="_blank"
-        ><button mat-mini-fab color="primary">
+      <a *ngIf="metadata.url" [href]="metadata.url" target="_blank">
+        <button mat-mini-fab color="primary">
           <mat-icon>download</mat-icon>
-        </button></a
-      >
+        </button>
+      </a>
       <button mat-mini-fab (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>

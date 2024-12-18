@@ -19,4 +19,13 @@
       align-items: center;
     }
   }
+
+  audio, video {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  video {
+    aspect-ratio: 16 / 9;
+  }
 }

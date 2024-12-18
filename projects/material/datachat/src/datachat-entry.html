@@ -19,7 +19,10 @@
         <span class="dino-datachat-sources-chips-span">{{'Sources'|transloco}}</span>
         <mat-chip color="primary"
         *ngFor="let vec of getRelevantVectors(qa)" (click)="openParagraphDialog(qa, vec)">
-          <span><b>{{vec.metadata.source}}</b> (pag.{{vec.metadata.page}})</span>
+          <span>
+            <b>{{vec.metadata.source ?? 'file'}}</b>
+            <ng-container *ngIf="vec.metadata.page"> (pag.{{vec.metadata.page}})</ng-container>
+          </span>
         </mat-chip>
       </div>
     </div>

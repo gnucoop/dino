@@ -68,11 +68,12 @@ export interface VectorMetadata {
   text: string;
   mimetype?: Mimetype[] | Mimetype;
   page?: number;
-  source?: string;
+  source?: string; // name of the file
   url?: string;
-  image_url?: string;
+  image_url?: string; // a pdf (with a given url) might also contain an image
   start_time?: number;
   token_count?: number;
 }
 
-export type Mimetype = 'image/jpeg' | 'text' | 'table' | null;
+export type Mimetype =
+  'image/jpeg' | 'image/png' | 'video/mp4' | 'audio/mp3' | 'application/pdf' | 'text' | 'table' | 'null';

@@ -43,7 +43,7 @@ export class ParagraphDialogComponent {
   /**
    * The source mimetype returned from Pandino
    */
-  mimetype: Mimetype = null;
+  mimetype: Mimetype = 'null';
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -61,6 +61,16 @@ export class ParagraphDialogComponent {
       this.mimetype = Array.isArray(mimetype) ? mimetype[0] : mimetype;
     }
     this.metadata = data.vector.metadata;
+    if (this.mimetype.startsWith('image') && this.metadata.image_url == null) {
+      this.metadata.image_url = this.metadata.url;
+    }
+  }
+
+  onPlayerLoaded(event: Event) {
+    if (this.metadata && this.metadata.start_time) {
+      const player = event.target as (HTMLAudioElement | HTMLVideoElement);
+      player.currentTime = this.metadata.start_time;
+    }
   }
 
   /**

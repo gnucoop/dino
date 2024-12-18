@@ -63,7 +63,7 @@ export class DataChatEntry implements OnDestroy {
     if (qa.vectors == null) {
       return [];
     }
-    return qa.vectors.filter(vec => vec.metadata.source && vec.metadata.page);
+    return qa.vectors;
   }
 
   /**
