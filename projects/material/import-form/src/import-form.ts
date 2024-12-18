@@ -71,9 +71,9 @@ interface MetricInfoInRows {
   requiredMetricIdsByType: {[key: string]: string[]};
 
   /**
-   * True if missing mandatory metrics in some rows
+   * Type of missing metrics in rows
    */
-  missingMandatoryMetrics: boolean;
+  missingMetrics: string[];
 }
 
 /**
@@ -134,7 +134,6 @@ export class ImportForm implements OnDestroy {
    */
   private _dinoFields: string[] = [
     'id',
-    'form_schema_ref_id',
     'created_at',
     'user_data_ref_id',
     'area_ref_id',
@@ -369,7 +368,7 @@ export class ImportForm implements OnDestroy {
   ): MetricInfoInRows {
     const newMetrics: {[key: string]: {[key: string]: any}[]} = {};
     const requiredMetricIdsByType: {[key: string]: string[]} = {};
-    let missingMandatoryMetrics = false;
+    let missingMetrics: string[] = [];
 
     if (activeMetrics.length) {
       activeMetrics.forEach(metric => {
@@ -386,7 +385,7 @@ export class ImportForm implements OnDestroy {
 
           rows.forEach((row: {[key: string]: any}) => {
             // Check if is not a second header
-            if (!missingMandatoryMetrics && !this._isLabelHeader(row)) {
+            if (!this._isLabelHeader(row)) {
               const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
               if (newMetricName && newMetricName.length && !row[metricIdKey]) {
                 // Metric by name
@@ -430,16 +429,16 @@ export class ImportForm implements OnDestroy {
                 if (!requiredMetricIdsByType[metric].includes(row[metricIdKey])) {
                   requiredMetricIdsByType[metric].push(row[metricIdKey]);
                 }
-              } else if (!this._hasOptionalMetrics) {
-                // No metric for this row but is mandatory
-                missingMandatoryMetrics = true;
+              } else {
+                // No metric for this row
+                missingMetrics.push(metric);
               }
             }
           });
         }
       });
     }
-    return {newMetrics, requiredMetricIdsByType, missingMandatoryMetrics};
+    return {newMetrics, requiredMetricIdsByType, missingMetrics: [...new Set(missingMetrics)]};
   }
 
   /**
@@ -806,6 +805,8 @@ export class ImportForm implements OnDestroy {
                 'File not imported! Error during create new metrics: ' + metricsError,
               );
             }
+          } else {
+            this._setImportStatus('File not imported! Error on import metrics.');
           }
         });
     } else {
@@ -928,7 +929,6 @@ export class ImportForm implements OnDestroy {
 
   /**
    * Check if imported xls file is valid for dino and for the selected form schema.
-   * The form_schema_ref_id column is mandatory.
    * @param data json data contained into the xlsx file
    * @param formSchema ajf form schema
    * @returns true if xls colomns contains at least one field from the schema
@@ -936,13 +936,9 @@ export class ImportForm implements OnDestroy {
   private _isValidXlsxData(data: {[key: string]: any}[], formSchema: FormSchema | null): boolean {
     if (formSchema && data && data.length) {
       const rowKeys = Object.keys(data[0]);
-      if (rowKeys.includes('form_schema_ref_id')) {
+      if (this._containsAtLeastOne(rowKeys, this._dinoFields)) {
         const schemaFields = this._getFieldsNameFromFormSchema(formSchema);
-        if (this._containsAtLeastOne(rowKeys, schemaFields)) {
-          return data.every(
-            row => this._isLabelHeader(row) || row['form_schema_ref_id'] === formSchema.id,
-          );
-        }
+        return this._containsAtLeastOne(rowKeys, schemaFields);
       }
     }
     return false;
@@ -1064,73 +1060,88 @@ export class ImportForm implements OnDestroy {
       const activeMetrics = this.metricsService.activeMetrics.value.map(
         metric => metric.metricName,
       );
-      const {newMetrics, requiredMetricIdsByType, missingMandatoryMetrics} =
-        this._getMetricsToBeCreated(data, activeMetrics);
+      const {newMetrics, requiredMetricIdsByType, missingMetrics} = this._getMetricsToBeCreated(
+        data,
+        activeMetrics,
+      );
+      let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
+        ? this._udm
+            .query({
+              selector: {id: {$in: requiredUserIds}, is_deleted: {$ne: true}},
+            })
+            .pipe(
+              take(1),
+              catchError(_ => obsOf([])),
+            )
+        : obsOf([]);
 
-      if (!missingMandatoryMetrics) {
-        let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
-          ? this._udm
-              .query({
-                selector: {id: {$in: requiredUserIds}, is_deleted: {$ne: true}},
-              })
-              .pipe(
-                take(1),
-                catchError(_ => obsOf([])),
-              )
-          : obsOf([]);
+      this._validateDataSub = this._formSchema
+        .pipe(
+          switchMap(formSchema => {
+            let missingRequiredMetrics = false;
+            if (!this._hasOptionalMetrics) {
+              const requiredMetrics =
+                formSchema?.form_schema_metrics && formSchema.form_schema_metrics.length
+                  ? formSchema.form_schema_metrics
+                  : activeMetrics;
 
-        this._validateDataSub = this._formSchema
-          .pipe(
-            switchMap(formSchema => {
-              return zip([
-                obsOf(formSchema),
-                obsOf(this._isValidXlsxData(data, formSchema)),
-                this._ugm.isActiveUserAdmin(this.adminRoles),
-              ]);
-            }),
-            switchMap(([fmSchema, isValidXlsData, isAdminUser]) => {
-              if (fmSchema && isValidXlsData) {
-                if (!isAdminUser) {
-                  queryRequiredUsers = obsOf([]);
-                  requiredUserIds = [];
+              if (requiredMetrics && requiredMetrics.length && missingMetrics.length) {
+                missingRequiredMetrics = requiredMetrics.some(reqMetric =>
+                  missingMetrics.includes(reqMetric),
+                );
+                if (missingRequiredMetrics) {
+                  this._setImportStatus(
+                    `File not imported! This metrics are mandatory: ${requiredMetrics.join(',')}.`,
+                  );
+                  return obsOf([]);
                 }
-                return zip([
-                  queryRequiredUsers,
-                  this._getMetricsIfExist(requiredMetricIdsByType),
-                  obsOf(isAdminUser),
-                  this._fsm.formStatusesOfSchema(fmSchema),
-                ]);
               }
-              return obsOf(null);
-            }),
-          )
-          .subscribe(res => {
-            if (res && res.length > 1) {
-              const existingUsers = res[0];
-              const existingMetricsByType = res[1];
-              const isAdminUser = res[2];
-              const allSchemaStatus = res[3] || [];
-              const idsNotMatch = this._checkIfMissingIds(
-                requiredUserIds,
-                existingUsers,
-                requiredMetricIdsByType,
-                existingMetricsByType,
-                requiredFormStatusNames,
-                allSchemaStatus,
-              );
-
-              if (!idsNotMatch) {
-                this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
-              }
-            } else {
-              this._setImportStatus(
-                'File not imported! form_schema_ref_id column is mandatory and columns must match formschema fields.',
-              );
             }
-          });
-      } else {
-        this._setImportStatus('File not imported! Metrics are mandatory.');
-      }
+            if (!this._isValidXlsxData(data, formSchema)) {
+              this._setImportStatus('File not imported! Columns must match formschema fields.');
+            }
+            return zip([obsOf(formSchema), this._ugm.isActiveUserAdmin(this.adminRoles)]);
+          }),
+          switchMap(([fmSchema, isAdminUser]) => {
+            if (fmSchema) {
+              if (!isAdminUser) {
+                queryRequiredUsers = obsOf([]);
+                requiredUserIds = [];
+              }
+              return zip([
+                queryRequiredUsers,
+                this._getMetricsIfExist(requiredMetricIdsByType),
+                obsOf(isAdminUser),
+                this._fsm.formStatusesOfSchema(fmSchema),
+              ]);
+            }
+            return obsOf(null);
+          }),
+        )
+        .subscribe(res => {
+          if (res && res.length > 1) {
+            const existingUsers = res[0];
+            const existingMetricsByType = res[1];
+            const isAdminUser = res[2];
+            const allSchemaStatus = res[3] || [];
+            const idsNotMatch = this._checkIfMissingIds(
+              requiredUserIds,
+              existingUsers,
+              requiredMetricIdsByType,
+              existingMetricsByType,
+              requiredFormStatusNames,
+              allSchemaStatus,
+            );
+
+            if (!idsNotMatch) {
+              this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
+            }
+          } else {
+            if (!this.importStatus || !this.importStatus.length) {
+              this._setImportStatus('File not imported!');
+            }
+          }
+        });
     };
   }
 
