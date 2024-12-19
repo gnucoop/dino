@@ -1088,9 +1088,12 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         withLatestFrom(this._nss.isOnline$),
         switchMap(([formObj, isOnline]) => {
           const apiCall: Observable<any>[] = [];
-          const {filesToUpload, filesToDelete} = this.uploadService.getFilesInForm(
+          const {filesToUpload, filesToDelete, invalidFileKeys} = this.uploadService.getFilesInForm(
             formObj.formValue,
           );
+          invalidFileKeys.forEach(k => {
+            formObj.formValue[k] = null;
+          });
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
               if (!this.offlineFileUpload) {

@@ -783,7 +783,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             evt: evt && evt.action ? evt.action : null,
           };
           const apiCall: Observable<any>[] = [];
-          const {filesToUpload} = this.uploadService.getFilesInForm(formObj.formValue);
+          const {filesToUpload, invalidFileKeys} = this.uploadService.getFilesInForm(
+            formObj.formValue,
+          );
+          invalidFileKeys.forEach(k => {
+            formObj.formValue[k] = null;
+          });
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
               if (!this.offlineFileUpload) {

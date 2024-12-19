@@ -189,25 +189,30 @@ export class FileUploadService {
   /**
    * Return the files in form, to be uploaded or deleted
    * @param formValue All the form value fields
-   * @returns two lists of AjfFile, one to be uploaded, one to be deleted
+   * @returns two lists of AjfFile: one to be uploaded on strorage, one to be deleted from storage
+   * and a list of field name of files to be removed from context
    */
   getFilesInForm(formValue: {[key: string]: any}): {
     filesToUpload: AjfFile[];
     filesToDelete: AjfFile[];
+    invalidFileKeys: string[];
   } {
     const filesToUpload: AjfFile[] = [];
     const filesToDelete: AjfFile[] = [];
+    const invalidFileKeys: string[] = [];
     Object.keys(formValue).forEach(key => {
       if (key !== '$value') {
         if (this.isAjfFileField(formValue[key])) {
           filesToUpload.push(formValue[key] as AjfFile);
-        }
-        if (this.isAjfFileFieldToDelete(formValue[key])) {
+        } else if (this.isAjfFileFieldToDelete(formValue[key])) {
           filesToDelete.push(formValue[key] as AjfFile);
+        }
+        if (this.isAjfInvalidFileField(formValue[key])) {
+          invalidFileKeys.push(key);
         }
       }
     });
-    return {filesToUpload, filesToDelete};
+    return {filesToUpload, filesToDelete, invalidFileKeys};
   }
 
   /**
@@ -295,6 +300,27 @@ export class FileUploadService {
       if (!uploadSignature && 'signature' in value && value['signature']) {
         return false;
       }
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check if a value is an AjfFile field but with an invalid content.
+   * @param value the value to be checked
+   * @returns true if the input value is an invalid AjfFile field to remove from context
+   */
+  isAjfInvalidFileField(value: any): boolean {
+    if (value === null || value === undefined || typeof value !== 'object') {
+      return false;
+    }
+    if (
+      'name' in value &&
+      'content' in value &&
+      value['content'] &&
+      value['content'].length &&
+      !value['content'].startsWith('data:')
+    ) {
       return true;
     }
     return false;
