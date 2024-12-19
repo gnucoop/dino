@@ -6,6 +6,7 @@ dino-edit-report {
     table {
       width: -webkit-fill-available;
       border-spacing: 1px;
+      margin-bottom: 15px;
     }
     td {
       padding: 25px;
@@ -13,9 +14,11 @@ dino-edit-report {
     tr {
       th {
         background-color: rgb(var(--palette-primary-500)) !important;
+        border-bottom: none !important;
       }
     }
   }
+
   ajf-widget {
     ng-component {
       background-color: transparent !important;
@@ -139,6 +142,21 @@ dino-edit-report {
 .isDarkTheme {
   ajf-text {
     color: rgba(var(--palette-background-secondary-text));
+  }
+
+  ajf-table {
+    tr:nth-child(even) {
+      td {
+        background-color: rgb(var(--palette-background-dialog-dark)) !important;
+        color: white !important;
+      }
+    }
+    tr:nth-child(odd) {
+      td {
+        background-color: rgb(var(--palette-background-tooltip-dark)) !important;
+        color: white !important;
+      }
+    }
   }
 }
 .isLightTheme {
