@@ -129,7 +129,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
     'id',
     'user_data_ref_id',
     'created_at',
-    'form_schema_ref_id',
     'dinoinvalid',
     '$invalid',
   ];
