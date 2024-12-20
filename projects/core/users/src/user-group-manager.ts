@@ -109,7 +109,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
   }
 
   /**
-   * Return a list of groups with the specified metric
+   * Return a list of groups with the specified metric or 'all' value
    * @param metricType the required metric type (i.e. location)
    * @param metricId the required metric id
    * @returns The list of groups with the specified metric
@@ -123,8 +123,18 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
         return obsOf([]);
       }
       const refKey = (metricType + '_ref_id') as keyof RxDocument<UserGroup>;
-      const selOpt: DataQueryOptions = {selector: {}};
-      selOpt.selector[refKey] = metricId;
+
+      const selOpt: DataQueryOptions = {
+        selector: {
+          $or: [],
+        },
+      };
+      [metricId, 'all'].forEach(value => {
+        const metricSel: {[key: string]: any} = {};
+        metricSel[refKey] = {$elemMatch: {$eq: value}};
+        selOpt.selector['$or'].push(metricSel);
+      });
+
       return this.query(selOpt).pipe(shareReplay(1));
     } else {
       return obsOf([] as RxDocument<UserGroup>[]);
