@@ -85,6 +85,7 @@ export class SyncManager {
       'form_schema': this._fs,
       'form_data': this._fd,
       'report_schema': this._rs,
+      'report_data': this._rd,
       'user_data': this._um,
       'user_role': this._ur,
       'user_group': this._ug,
