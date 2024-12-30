@@ -59,7 +59,16 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import {debounceTime, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+} from 'rxjs/operators';
 
 import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
 import {ActivatedRoute, Params} from '@angular/router';
@@ -799,8 +808,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
               selector: querySelector,
               sort: [{'name': 'asc'}],
               limit: 50,
-            });
-
+            }).pipe(catchError(_ => obsOf([] as RxDocument<Metric, {}>[])));
             return metricsObs;
           }),
         ),
