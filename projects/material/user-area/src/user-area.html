@@ -102,14 +102,14 @@
           [formGroup]="apiKeysForm"
         >
           <mat-form-field>
-            <mat-label>Pandino API Key</mat-label>
+            <mat-label>DINO-AI API Key</mat-label>
             <input
               matInput
               formControlName="pandino_api_key"
               name="pandino_api_key"
               [type]="hide_api_key ? 'password' : 'text'"
-              aria-label="Pandino API Key"
-              [placeholder]="'Pandino API Key'"
+              aria-label="DINO-AI API Key"
+              [placeholder]="'DINO-AI API Key'"
               [readonly]="(storedPandinoAPIKey|async) !== null"
             />
             <mat-icon matSuffix (click)="hide_api_key = !hide_api_key"
@@ -161,7 +161,7 @@
         <div
           class="dino-user-area-form"
         >
-          <p>Pandino Tokens</p>
+          <p>DINO-AI Tokens</p>
           <div class="dino-tokens-counter-container">
             <mat-icon color="primary" class="dino-tokens-icon">smart_toy</mat-icon> <span class="dino-tokens-counter">{{(availablePandinoTokens|async)}}</span>
           </div>

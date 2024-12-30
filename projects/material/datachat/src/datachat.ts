@@ -432,7 +432,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               this._ts.translate(
                 'Your API Key was successfully authenticated. You can check it any time in your User Area',
               ),
-              this._ts.translate('PANDINO: AUTHENTICATION SUCCESSFUL!'),
+              this._ts.translate('DINO-AI: AUTHENTICATION SUCCESSFUL!'),
               {duration: 10000},
             );
           }
@@ -451,15 +451,15 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this._cdr.detectChanges();
           } else {
             this._snackBar.open(
-              this._ts.translate('PANDINO is not responding at the moment. Please try later'),
-              this._ts.translate('PANDINO NOT RESPONDING'),
+              this._ts.translate('DINO-AI is not responding at the moment. Please try later'),
+              this._ts.translate('DINO-AI NOT RESPONDING'),
               {
                 duration: 5000,
               },
             );
             if (!isDevMode()) {
               this._ehms.captureErrorMessage(
-                `PANDINO is not responding: ${JSON.stringify(err)}`,
+                `DINO-AI is not responding: ${JSON.stringify(err)}`,
                 'warning',
               );
             }
@@ -559,7 +559,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isLoading.next(false);
             this._snackBar.open(
               this._ts.translate(
-                'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+                'Not enough tokens! Please add more DINO-AI Tokens to your account to use this feature',
               ),
               'OOPS!',
               {duration: 10000},
@@ -569,7 +569,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               console.log(err);
             } else {
               this._ehms.captureErrorMessage(
-                `Pandino chat response error: ${JSON.stringify(err)}`,
+                `DINO-AI chat response error: ${JSON.stringify(err)}`,
                 'warning',
               );
             }
@@ -657,7 +657,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isLoading.next(false);
             this._snackBar.open(
               this._ts.translate(
-                'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+                'Not enough tokens! Please add more DINO-AI Tokens to your account to use this feature',
               ),
               'OOPS!',
               {duration: 10000},
@@ -792,7 +792,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isLoading.next(false);
             this._snackBar.open(
               this._ts.translate(
-                'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+                'Not enough tokens! Please add more DINO-AI Tokens to your account to use this feature',
               ),
               'OOPS!',
               {duration: 10000},
@@ -802,7 +802,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               console.log(err);
             } else {
               this._ehms.captureErrorMessage(
-                `Pandino agent creation error: ${JSON.stringify(err)}`,
+                `DINO-AI agent creation error: ${JSON.stringify(err)}`,
                 'warning',
               );
             }

@@ -153,7 +153,7 @@ export class TokensService {
       );
     } else {
       if (isDevMode()) {
-        console.log('No Pandino API key found');
+        console.log('No DINO-AI API key found');
       }
       return obsOf(null);
     }
@@ -177,7 +177,7 @@ export class TokensService {
       );
     } else {
       if (isDevMode()) {
-        console.log('No Pandino API key found');
+        console.log('No DINO-AI API key found');
       }
       return obsOf(null);
     }

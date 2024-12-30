@@ -650,7 +650,7 @@ export class EditReport implements AfterViewInit {
               this.generateAITextFromPrompt(promptsVariable, variablesContext, rDataAIData),
             );
             this._aiSnackBar = this.snackbar.open(
-              'PANDINO is generating the report. Please wait...',
+              'DINO-AI is generating the report. Please wait...',
               'WAIT',
               {duration: 5000},
             );
@@ -779,7 +779,7 @@ export class EditReport implements AfterViewInit {
     const storedApiKey = localStorage.getItem('pandas_dino_api_key');
     if (!storedApiKey) {
       this.snackbar.open(
-        this._translateService.translate('Pandino API Key not found.'),
+        this._translateService.translate('DINO-AI API Key not found.'),
         this._translateService.translate('API KEY MISSING'),
         {duration: 10000},
       );
@@ -854,15 +854,15 @@ export class EditReport implements AfterViewInit {
             text = await resp.text();
             if (!resp.ok) {
               this.snackbar.open(
-                'PANDINO is not responding at the moment. Please try later',
-                'PANDINO NOT RESPONDING',
+                'DINO-AI is not responding at the moment. Please try later',
+                'DINO-AI NOT RESPONDING',
                 {
                   duration: 5000,
                 },
               );
               if (!isDevMode()) {
                 this._ehms.captureErrorMessage(
-                  `PANDINO is not responding: ${JSON.stringify(text)}`,
+                  `DINO-AI is not responding: ${JSON.stringify(text)}`,
                   'warning',
                 );
               }

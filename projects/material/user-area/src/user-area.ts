@@ -412,7 +412,7 @@ export class UserArea implements OnDestroy {
             this._ts.translate(
               'Your API Key was successfully authenticated. You can check it any time in your User Area',
             ),
-            this._ts.translate('PANDINO: AUTHENTICATION SUCCESSFUL!'),
+            this._ts.translate('DINO-AI: AUTHENTICATION SUCCESSFUL!'),
             {duration: 10000},
           );
           this.storedPandinoAPIKey.next(key);
@@ -431,8 +431,8 @@ export class UserArea implements OnDestroy {
             this._cdr.detectChanges();
           } else {
             this._snackBar.open(
-              this._ts.translate('PANDINO is not responding at the moment. Please try later'),
-              this._ts.translate('PANDINO NOT RESPONDING'),
+              this._ts.translate('DINO-AI is not responding at the moment. Please try later'),
+              this._ts.translate('DINO-AI NOT RESPONDING'),
               {
                 duration: 5000,
               },
