@@ -304,4 +304,6 @@ export const ITA: Translation = {
     'Uno o più Gruppi specificano dei permessi per questo Schema. Sicuro di volerlo eliminare?',
   'This name is already being used.': 'Questo nome è già usato.',
   'The form has been successfully submitted.': 'Il form è stato inviato correttamente.',
+  'Credits': 'Crediti',
+  'credits': 'crediti',
 };

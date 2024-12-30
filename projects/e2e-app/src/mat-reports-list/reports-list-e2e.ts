@@ -150,7 +150,7 @@ export class MatReportsListE2E {
         if (!cost) return this._ts.translate('Add New Report');
         return `${this._ts.translate('Add New Report')}. ${this._ts.translate(
           'Once the Report is created, you will use',
-        )} ${cost} ${this._ts.translate('tokens')}`;
+        )} ${cost} ${this._ts.translate('credits')}`;
       }),
     );
 
@@ -213,7 +213,7 @@ export class MatReportsListE2E {
             if ((tokens !== null && promptVariables.length > tokens) || tokens == null) {
               this._snackBar.open(
                 this._ts.translate(
-                  'Not enough tokens! Please add more Pandino Tokens to your account to use this feature',
+                  'Not enough credits! Please add more DINO-AI Credits to your account to use this feature',
                 ),
                 'OOPS!',
                 {duration: 10000},

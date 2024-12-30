@@ -156,12 +156,12 @@
       <!-- TOKENS and CREDITS section -->
       <mat-expansion-panel *ngIf="(availablePandinoTokens|async) !== null" [expanded]="expandedPanel === 'tokens'">
         <mat-expansion-panel-header>
-          <mat-panel-title> Tokens </mat-panel-title>
+          <mat-panel-title> Credits </mat-panel-title>
         </mat-expansion-panel-header>
         <div
           class="dino-user-area-form"
         >
-          <p>DINO-AI Tokens</p>
+          <p>DINO-AI Credits</p>
           <div class="dino-tokens-counter-container">
             <mat-icon color="primary" class="dino-tokens-icon">smart_toy</mat-icon> <span class="dino-tokens-counter">{{(availablePandinoTokens|async)}}</span>
           </div>

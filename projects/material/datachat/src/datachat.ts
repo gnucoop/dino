@@ -559,7 +559,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isLoading.next(false);
             this._snackBar.open(
               this._ts.translate(
-                'Not enough tokens! Please add more DINO-AI Tokens to your account to use this feature',
+                'Not enough credits! Please add more DINO-AI Credits to your account to use this feature',
               ),
               'OOPS!',
               {duration: 10000},
@@ -657,7 +657,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isLoading.next(false);
             this._snackBar.open(
               this._ts.translate(
-                'Not enough tokens! Please add more DINO-AI Tokens to your account to use this feature',
+                'Not enough credits! Please add more DINO-AI Credits to your account to use this feature',
               ),
               'OOPS!',
               {duration: 10000},
@@ -792,7 +792,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             this.isLoading.next(false);
             this._snackBar.open(
               this._ts.translate(
-                'Not enough tokens! Please add more DINO-AI Tokens to your account to use this feature',
+                'Not enough credits! Please add more DINO-AI Credits to your account to use this feature',
               ),
               'OOPS!',
               {duration: 10000},

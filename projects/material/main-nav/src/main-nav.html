@@ -36,13 +36,13 @@
       <ng-container *ngIf="(availableTokens|async) !== null">
         <div
           class="dino-tokens-counter"
-          [matTooltip]="'Your DINO-AI Tokens'|transloco"
+          [matTooltip]="'Your DINO-AI Credits'|transloco"
           [matTooltipPosition]="'left'"
           (click)="openUserArea('tokens')"
         >
           <mat-icon
             aria-hidden="false"
-            aria-label="DINO-AI Tokens"
+            aria-label="DINO-AI Credits"
             color="primary"
             class="dino-tokens-counter-icon"
             >smart_toy</mat-icon

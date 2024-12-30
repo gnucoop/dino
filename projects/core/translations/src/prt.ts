@@ -295,4 +295,6 @@ export const PRT: Translation = {
     'Um ou mais grupos de utilizadores concedem permissões para este esquema. Tem a certeza de que pretende eliminá-lo?',
   'This name is already being used.': 'Este nome já está a ser utilizado.',
   'The form has been successfully submitted.': 'O formulário foi enviado com sucesso.',
+  'Credits': 'Créditos',
+  'credits': 'créditos',
 };

@@ -295,4 +295,6 @@ export const ESP: Translation = {
     'Uno o más grupos de usuarios tienen permisos para este esquema. ¿Está seguro de que desea eliminarlo?',
   'This name is already being used.': 'Este nombre ya se utiliza.',
   'The form has been successfully submitted.': 'El formulario se ha enviado correctamente.',
+  'Credits': 'Créditos',
+  'credits': 'créditos',
 };

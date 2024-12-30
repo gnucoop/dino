@@ -289,4 +289,6 @@ export const FRA: Translation = {
     "Un ou plusieurs groupes d'utilisateurs sont autorisés à utiliser ce schéma. Êtes-vous sûr de vouloir le supprimer ?",
   'This name is already being used.': 'Ce nom est déjà utilisé.',
   'The form has been successfully submitted.': 'Le formulaire a été envoyé avec succès.',
+  'Credits': 'Crédits',
+  'credits': 'crédits',
 };
