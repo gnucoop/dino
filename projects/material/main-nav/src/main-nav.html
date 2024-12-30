@@ -43,13 +43,11 @@
           <mat-icon
             aria-hidden="false"
             aria-label="DINO-AI Credits"
-            color="primary"
             class="dino-tokens-counter-icon"
+            [matBadge]="availableTokens|async"
+            matBadgeColor="primary"
             >smart_toy</mat-icon
-          >
-          <div class="dino-tokens-counter-amount" [ngClass]="(tokensCounterActive|async)">
-            {{(availableTokens|async)}}
-          </div>
+          > 
         </div>
       </ng-container>
       <mat-icon
