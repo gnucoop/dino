@@ -221,7 +221,6 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestr
       return;
     }
 
-    // const logoImagePath = 'https://gnudino.vercel.app/assets/icons/logos/logodino.png';
     let logoImagePath = 'assets/icons/logos/logodino.png';
     if (this.logoImage) {
       logoImagePath = this.logoImage;
@@ -241,7 +240,6 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestr
     if (metric == null) {
       return;
     }
-    // https://gnudino.vercel.app/assets/icons/logos/case-placeholder.png
     let imageUrl = 'assets/icons/logos/case-placeholder.png';
     if (metric.image_file != null && metric.image_file.length > 0) {
       imageUrl = metric.image_file;
@@ -308,6 +306,9 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestr
         },
       },
       {
+        layout: {
+          defaultBorder: false,
+        },
         table: {
           widths: ['50%', '*'],
           body: [
