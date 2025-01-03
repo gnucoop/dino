@@ -111,13 +111,21 @@ export class MatLoginE2E implements OnInit, AfterViewInit {
     console.log('postSignup', userData);
   }
 
+  postSignin(userData: any) {
+    console.log('postSignin', userData);
+  }
+
   setDarkTheme(evt: boolean) {
     this.ts.setDarkMode(evt);
   }
 
   processActionTrigger<T>(trigger: ActionTrigger<T>) {
     if (trigger.triggerData && trigger.triggerData.doc) {
-      this.postSignup(trigger.triggerData.doc);
+      if (trigger.triggerType === 'on_signup') {
+        this.postSignup(trigger.triggerData.doc);
+      } else if (trigger.triggerType === 'on_signin') {
+        this.postSignin(trigger.triggerData.doc);
+      }
     }
   }
 }

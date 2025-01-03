@@ -88,6 +88,11 @@ export class AuthService {
   readonly logoutEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   /**
+   * Emits when a User logs in
+   */
+  readonly loginEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  /**
    * When not null it holds the newly signed up User basic info.
    * The User Data Manager should create a new User Data based
    * on this, then set this to null.
@@ -206,6 +211,7 @@ export class AuthService {
               userInfo = userAuthInfo;
             }
             this.storeAllAuthenticationInfo(session, res.token, res.refreshToken, userInfo);
+            this.loginEvt.emit(true);
           }),
           mapTo(true),
         );

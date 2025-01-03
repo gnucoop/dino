@@ -29,6 +29,7 @@ import {DataModelManager} from './data-model-manager';
 export type TriggerType =
   | 'on_status_change'
   | 'on_signup'
+  | 'on_signin'
   | 'on_form_data_creation'
   | 'on_form_data_change'
   | 'on_form_data_export'

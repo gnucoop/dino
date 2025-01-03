@@ -26,6 +26,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  isDevMode,
   OnDestroy,
   Output,
   ViewEncapsulation,
@@ -33,7 +34,7 @@ import {
 import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService, ExternalAuthProvider, LoginComponent} from '@dino/core/auth';
+import {AuthService, ExternalAuthProvider, LoginComponent, User} from '@dino/core/auth';
 import {Observable, Subscription, of as obsOf} from 'rxjs';
 import {map, switchMap, take, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
@@ -106,9 +107,8 @@ export class Login extends LoginComponent implements OnDestroy {
   /**
    * Event emitted as an Action hook
    */
-  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<UserData>> = new EventEmitter<
-    ActionTrigger<UserData>
-  >();
+  @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<User | UserData>> =
+    new EventEmitter<ActionTrigger<User | UserData>>();
 
   constructor(
     authService: AuthService,
@@ -187,6 +187,30 @@ export class Login extends LoginComponent implements OnDestroy {
         )
         .subscribe();
     }
+
+    authService.loginEvt
+      .pipe(
+        switchMap(evt => {
+          if (evt) {
+            const trigData: ActionTriggerData<User> = {
+              doc: authService.getUserInfo() as User,
+            };
+            const trigger: ActionTrigger<User> = {
+              name: 'User Signin',
+              triggerType: 'on_signin',
+              triggerData: trigData,
+            };
+            this.emitActionTrigger.emit(trigger);
+          }
+          return obsOf(false);
+        }),
+        take(1),
+      )
+      .subscribe(() => {
+        if (isDevMode()) {
+          console.log('Successfully logged in');
+        }
+      });
   }
 
   /**
