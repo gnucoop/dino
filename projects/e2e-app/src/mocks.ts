@@ -123,6 +123,7 @@ export class AuthServiceMock {
   }
   resetEvt: Observable<boolean> = obsOf(false);
   logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+  loginEvt: EventEmitter<void> = new EventEmitter<void>();
   constructor(private _router: Router) {
     this._router.events
       .pipe(
