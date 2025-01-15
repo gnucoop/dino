@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {UITourService} from '@dino/material/ui-tour-service';
 import {additionalConfig} from '../mockconfig';
 import {instanceName} from '../mocks';
 
@@ -9,11 +10,15 @@ import {instanceName} from '../mocks';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class MatDashboardReportE2E {
+export class MatDashboardReportE2E implements OnInit {
   favoriteReportId: string | null;
   readonly optionalMetrics: boolean = additionalConfig.optionalReportMetrics;
 
-  constructor() {
+  constructor(private _tourService: UITourService) {
     this.favoriteReportId = localStorage.getItem(`dino_favorite_report_${instanceName}`);
+  }
+
+  ngOnInit(): void {
+    this._tourService.start();
   }
 }

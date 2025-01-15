@@ -10,6 +10,7 @@ import {EditReportModule as DinoEditReportModule} from '@dino/material/edit-repo
 import {MatDashboardMenuE2E} from './dashboard-menu-e2e.component';
 import {MatDashboardReportE2E} from './dashboard-report-e2e.component';
 import {MatIconModule} from '@angular/material/icon';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   declarations: [MatDashboardMenuE2E, MatDashboardReportE2E],
@@ -22,6 +23,7 @@ import {MatIconModule} from '@angular/material/icon';
     DinoCollectModule,
     DinoEditReportModule,
     MatIconModule,
+    TourMatMenuModule,
   ],
 })
 export class MaterialDashboardE2eModule {}

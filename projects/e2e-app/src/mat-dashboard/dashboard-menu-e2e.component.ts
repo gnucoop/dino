@@ -1,17 +1,26 @@
-import {Component, EventEmitter} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import {NetworkStatusService} from '@dino/core/auth';
 import {PermissionContextService} from '@dino/core/data';
 import {UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {CollectItem} from '@dino/material/collect';
+import {UITourService} from '@dino/material/ui-tour-service';
 import {filter, map, shareReplay} from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-menu',
   templateUrl: 'dashboard-menu-e2e.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
-export class MatDashboardMenuE2E {
+export class MatDashboardMenuE2E implements OnInit {
   syncFinished: EventEmitter<void> = new EventEmitter<void>();
   collectItems: Observable<CollectItem[]>;
 
@@ -20,6 +29,7 @@ export class MatDashboardMenuE2E {
     readonly networkStatus: NetworkStatusService,
     private _pcs: PermissionContextService,
     private _ugm: UserGroupManager,
+    private _tourService: UITourService,
   ) {
     this.collectItems = combineLatest([
       this._ugm.isActiveUserAdmin(),
@@ -64,5 +74,9 @@ export class MatDashboardMenuE2E {
       }),
       shareReplay(1),
     );
+  }
+
+  ngOnInit(): void {
+    this._tourService.start();
   }
 }

@@ -56,4 +56,14 @@ body {
 
   -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+
+  // The first anchor element of the UI Tour
+  .start-tour-element {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    height: 0px;
+    width: 0px;
+    transform: translate(-140px, -78px);
+  }
 }
