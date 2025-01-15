@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@an
 import {UITourService} from '@dino/material/ui-tour-service';
 import {additionalConfig} from '../mockconfig';
 import {instanceName} from '../mocks';
+import {AjfReportInstance} from '@ajf/core/reports';
 
 @Component({
   selector: 'app-dashboard-report',
@@ -19,6 +20,10 @@ export class MatDashboardReportE2E implements OnInit {
   }
 
   ngOnInit(): void {
-    this._tourService.start();
+    if (!this.favoriteReportId) this._tourService.start();
+  }
+
+  startTourOnReportInstanceReady($event: AjfReportInstance) {
+    if ($event) this._tourService.start();
   }
 }

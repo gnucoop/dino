@@ -4,6 +4,7 @@
   [hasOptionalMetrics]="optionalMetrics"
   [setReportId]="favoriteReportId"
   [steps]="false"
+  (reportInstanceCreatedEvt)="startTourOnReportInstanceReady($event)"
   ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
 ></dino-edit-report>
 
