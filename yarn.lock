@@ -11006,6 +11006,21 @@ ngx-papaparse@8:
     papaparse "^5.4.1"
     tslib "^2.6.1"
 
+ngx-ui-tour-core@11.0.6:
+  version "11.0.6"
+  resolved "https://registry.yarnpkg.com/ngx-ui-tour-core/-/ngx-ui-tour-core-11.0.6.tgz#b3efd613709a0d92fdefee57b96feee459c4e6be"
+  integrity sha512-fJvnZTqZ15PL+NrU3I/4Fqg0rSCO90ZGFJbsjN6b79tfibEcurRW6ARLPJkyOWPJehpmJFO5zDuXLHzDcQHoQw==
+  dependencies:
+    tslib "^2.0.0"
+
+ngx-ui-tour-md-menu@11:
+  version "11.0.6"
+  resolved "https://registry.yarnpkg.com/ngx-ui-tour-md-menu/-/ngx-ui-tour-md-menu-11.0.6.tgz#f824aca165f832cf3291872e32f68e371d1bdac1"
+  integrity sha512-POjqMWB0j6sdhTugFrQmTKiluiPoXQ1w4ScmafiqEsiDPq+xDkXs20eImOVUw+TaLt0f5rBL43aiKTokT9EI7w==
+  dependencies:
+    ngx-ui-tour-core "11.0.6"
+    tslib "^2.0.0"
+
 nice-napi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nice-napi/-/nice-napi-1.0.2.tgz#dc0ab5a1eac20ce548802fc5686eaa6bc654927b"

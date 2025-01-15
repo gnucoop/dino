@@ -75,6 +75,7 @@
     "leaflet.markercluster": "^1.5.3",
     "meriyah": "^4.2.0",
     "ngx-papaparse": "8",
+    "ngx-ui-tour-md-menu": "11",
     "numbro": "^2.3.6",
     "pdfmake": "0.2.12",
     "process": "^0.11.10",
