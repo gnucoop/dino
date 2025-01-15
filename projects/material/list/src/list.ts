@@ -1231,7 +1231,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
               previousValue: item,
             };
           });
-          return forkJoin([obsOf(triggerChanges), this._fdm.bulkUpdate(genItem as FormData[], formChanges)])
+          return forkJoin([obsOf(triggerChanges), this._fdm.bulkUpdate(genItem as FormData[], formChanges).pipe(take(1))])
         }),
         withLatestFrom(this._udm.getActiveUserData(), this._ugm.getActiveUserGroups()),
       )
@@ -1589,7 +1589,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param current
    */
   private _getRepeatingSlideLastTabIndexReducer(acc: number, current: string): number {
-    const currentIndex = +current.split('__')[1] ?? 0;
+    const currentIndex = +(current.split('__')[1] ?? 0);
     return currentIndex > acc ? currentIndex : acc;
   }
 
