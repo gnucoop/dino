@@ -35,10 +35,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Input,
   isDevMode,
   Optional,
+  Output,
   QueryList,
   ViewChildren,
   ViewEncapsulation,
@@ -208,6 +210,12 @@ export class EditReport implements AfterViewInit {
    */
   reportInstance: Observable<AjfReportInstance | null> = obsOf(null);
   private _currentReportInstance: AjfReportInstance | null = null;
+
+  /**
+   * Emits when the reportInstance is created
+   */
+  @Output() readonly reportInstanceCreatedEvt: EventEmitter<AjfReportInstance> =
+    new EventEmitter<AjfReportInstance>();
 
   /**
    * True if no validation errors are encountered in the Report Metrics selector form
@@ -681,6 +689,7 @@ export class EditReport implements AfterViewInit {
         if (this._aiSnackBar) {
           this._aiSnackBar.dismiss();
         }
+        this.reportInstanceCreatedEvt.emit(this._currentReportInstance);
         return this._currentReportInstance;
       }),
       take(1),
