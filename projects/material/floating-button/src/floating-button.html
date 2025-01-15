@@ -32,7 +32,7 @@
     [matTooltipPosition]="'left'"
     [disabled]="buttonDisabled"
     mat-fab
-    [extended]="cost !== undefined"
+    [extended]="cost !== undefined && cost !== null && cost > 0"
   >
     <mat-icon class="icon">{{buttonIcon}}</mat-icon>
     <div *ngIf="cost" class="dino-floating-button-cost-container">
