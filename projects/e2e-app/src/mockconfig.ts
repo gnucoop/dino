@@ -5,6 +5,7 @@ import {ConfigServiceConfig} from '@dino/core/config';
 import {PandinoConfig} from '@dino/core/data';
 import {TranslationsConfig} from '@dino/core/translations';
 import {StripePaymentConfig} from '@dino/material/stripe-payment';
+import {UITourConfig} from '@dino/material/ui-tour-service';
 
 /**
  * Local Backend
@@ -55,6 +56,39 @@ export const stripePaymentConfig: StripePaymentConfig = {
 export const pandinoConfig: PandinoConfig = {
   pandinoUrl: 'http://localhost:5000',
   pandinoGptNamespaces: ['Gnucoop', 'Dino', 'Xlsform', 'PRAG', 'CC'],
+};
+
+/**
+ * UI Tour configuration
+ */
+export const uiTourConfig: UITourConfig = {
+  tourActive: true,
+  tourSteps: [
+    {
+      anchorId: 'start-tour',
+      title: 'Welcome',
+      content: 'Welcome to the demo tour!',
+      route: '/dashboard',
+    },
+    {
+      anchorId: 'forms-filter',
+      title: 'Forms filter',
+      content: 'This is the Forms filter',
+      route: '/forms',
+    },
+    {
+      anchorId: 'grid-list',
+      title: 'Collect Grid',
+      content: 'This is the Form grid list',
+    },
+  ],
+  defaultStepOptions: {
+    // placement: {horizontal: true, xPosition: 'before'},
+    // enableBackdrop: true,
+    // backdropConfig: {
+    //   offset: 10,
+    // },
+  },
 };
 
 // Paginator default config

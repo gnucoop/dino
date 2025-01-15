@@ -40,7 +40,7 @@ import {live, initializationScreenMaxDuration} from './mocks';
 /** Root component for the e2e-app demos. */
 @Component({
   selector: 'e2e-app',
-  template: '<app-main><router-outlet></router-outlet></app-main>',
+  template: `<app-main><router-outlet></router-outlet></app-main><tour-step-template></tour-step-template>`,
   styles: [
     `
             body, html {

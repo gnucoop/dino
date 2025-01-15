@@ -91,6 +91,7 @@ import {
   paginatorConfig,
   pandinoConfig,
   stripePaymentConfig,
+  uiTourConfig,
 } from './mockconfig';
 import {
   authErrorMessage,
@@ -117,6 +118,8 @@ import {HttpLink} from 'apollo-angular/http';
 import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
 import {MatIconRegistry} from '@angular/material/icon';
 import {StripePaymentModule} from '@dino/material/stripe-payment';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
 
 /**
  * Used to generate fake data for the e2e app
@@ -219,6 +222,10 @@ export function providePandinoConfig(): PandinoConfig {
   };
 }
 
+export function provideUITourConfig(): UITourConfig {
+  return uiTourConfig;
+}
+
 export function provideMatDateLocale(ts: TranslocoService) {
   if (ts) {
     const lang = ts.getActiveLang();
@@ -263,6 +270,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
     NotificationModule,
     ReportsModule,
     SyncModule,
+    TourMatMenuModule,
     UsersModule,
     DinoMaterialThemingModule.forRoot({
       theme: {
@@ -337,6 +345,10 @@ export function provideMatDateLocale(ts: TranslocoService) {
     {
       provide: PANDINO_SERVICE_CONFIG,
       useFactory: providePandinoConfig,
+    },
+    {
+      provide: UI_TOUR_SERVICE_CONFIG,
+      useFactory: provideUITourConfig,
     },
     {
       provide: DATA_SERVICE_CONFIG,
