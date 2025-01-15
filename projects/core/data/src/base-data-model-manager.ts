@@ -174,25 +174,64 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
       take(1),
     );
   }
+  // TODO(marco) - delete the commented method if tests are successful
+  // /**
+  //  * Updates multiple objects with a unique uuidv4 Id in the model collection
+  //  * @param data
+  //  * @returns an observable of the array of the created objects
+  //  */
+  // bulkUpdate(data: T[], update: Partial<T>): Observable<R[]> {
+  //   return this._getPermissionContext().pipe(
+  //     switchMap(context => {
+  //       for (let obj of data) {
+  //         if (!this.canModify({...update, id: obj.id}, obj, context)) {
+  //           return throwError(() => new Error('Modification not allowed'));
+  //         }
+  //       }
+  //       const selector = {id: {$in: data.map(doc => doc.id)}};
+  //       const query = {selector} as MangoQuery<T>;
+  //       return this._dataService.bulkUpdate<T, R>({collectionName: this._modelName, query}, update);
+  //     }),
+  //     take(1),
+  //   );
+  // }
 
   /**
    * Updates multiple objects with a unique uuidv4 Id in the model collection
    * @param data
    * @returns an observable of the array of the created objects
    */
-  bulkUpdate(data: T[], update: Partial<T>): Observable<R[]> {
+  bulkUpdate(data: T[], update: Partial<T>): Observable<R[] | null> {
+    if (data == null || data.length == 0 || !update) {
+      return obsOf(null);
+    }
+    const ids = data.map(d => d.id);
+    const selectorParams = {id: {$in: ids}};
+    const params = {
+      collectionName: this._modelName,
+      query: this._optionsToMangoQuery({selector: selectorParams}),
+    };
     return this._getPermissionContext().pipe(
-      switchMap(context => {
-        for (let obj of data) {
-          if (!this.canModify({...update, id: obj.id}, obj, context)) {
+      switchMap(context => this._dataService.find<T>(params).pipe(map(docs => ({docs, context})))),
+      switchMap(({docs, context}) => {
+        for (let obj of docs) {
+          if (!this.canModify({id: obj.id, ...update}, obj, context)) {
             return throwError(() => new Error('Modification not allowed'));
           }
         }
-        const selector = {id: {$in: data.map(doc => doc.id)}};
-        const query = {selector} as MangoQuery<T>;
-        return this._dataService.bulkUpdate<T, R>({collectionName: this._modelName, query}, update);
+        return zip(
+          docs.map(doc => {
+            let newDoc = deepCopy(doc);
+            newDoc = {...newDoc, ...update};
+            return this.update(newDoc);
+          }),
+        ).pipe(
+          switchMap(upDocs => {
+            return upDocs.some(d => d == null) ? obsOf(null) : (obsOf(upDocs) as Observable<R[]>);
+          }),
+          catchError(err => throwError(() => err)),
+        );
       }),
-      take(1),
     );
   }
 

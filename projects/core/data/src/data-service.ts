@@ -503,7 +503,7 @@ export class DataService implements IDataService {
         return from(doc.update({$set: updateData})).pipe(
           tap(dc => {
             if (dc != null) {
-              this._collectionChangedEmit('Document updated', doc.collection);
+              this._collectionChangedEmit('Document updated', collection);
             }
           }),
           catchError(err => {
