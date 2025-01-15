@@ -162,7 +162,7 @@ export const ENG: Translation = {
   'lang: {{language}} created': 'lang: {{language}} created',
   'forbidden: delete default translations': 'forbidden: delete default translations',
   'deleted: custom translations of {{language}}': 'deleted: custom translations of {{language}}',
-  "key: '{{key}}' removed": "key: '{{key}}' removed",
+  'key: "{{key}}" removed': 'key: "{{key}}" removed',
   'forbidden deleting default key': 'forbidden deleting default key',
   'update:': 'update:',
   'Reuse metrics if name exists': 'Reuse metrics if name exists',

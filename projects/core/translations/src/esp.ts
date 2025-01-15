@@ -163,7 +163,7 @@ export const ESP: Translation = {
   'forbidden: delete default translations': 'prohibido: eliminar las traducciones predeterminadas',
   'deleted: custom translations of {{language}}':
     'eliminado: traducciones personalizadas de {{language}}',
-  "key: '{{key}}' removed": "llave: '{{key}}' removida",
+  'key: "{{key}}" removed': 'llave: "{{key}}" removida',
   'forbidden deleting default key': 'prohibido borrar clave por defecto',
   'update:': 'actualizado:',
   'Reuse metrics if name exists': 'Reutilizar métricas si existe el nombre',

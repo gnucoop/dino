@@ -163,7 +163,7 @@ export const ITA: Translation = {
   'forbidden: delete default translations': 'proibito: eliminare traduzioni di default',
   'deleted: custom translations of {{language}}':
     'eliminate: traduzioni personalizzate per la lingua {{language}}',
-  "key: '{{key}}' removed": "chiave: '{{key}}' eliminata",
+  'key: "{{key}}" removed': 'chiave: "{{key}}" eliminata',
   'forbidden deleting default key': 'impossibile eliminare una chiave di default',
   'update:': 'aggiornato:',
   'Reuse metrics if name exists': 'Riutilizza le metriche esistenti con lo stesso nome',

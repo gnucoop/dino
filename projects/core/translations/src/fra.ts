@@ -163,7 +163,7 @@ export const FRA: Translation = {
   'forbidden: delete default translations': 'interdit: supprimer les traductions par défaut',
   'deleted: custom translations of {{language}}':
     'supprimé: traductions personnalisées de {{language}}',
-  "key: '{{key}}' removed": "clé: '{{key}}' retirée",
+  'key: "{{key}}" removed': 'clé: "{{key}}" retirée',
   'forbidden deleting default key': 'interdit de supprimer la clé par défaut',
   'update:': 'mise à jour:',
   'Reuse metrics if name exists': 'Réutiliser les métriques si le nom existe',

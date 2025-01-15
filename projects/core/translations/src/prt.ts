@@ -163,7 +163,7 @@ export const PRT: Translation = {
   'forbidden: delete default translations': 'proibido: excluir traduções padrão',
   'deleted: custom translations of {{language}}':
     'excluído: traduções personalizadas de {{language}}',
-  "key: '{{key}}' removed": "chave: '{{key}}' removida",
+  'key: "{{key}}" removed': 'chave: "{{key}}" removida',
   'forbidden deleting default key': 'proibido excluir chave padrão',
   'update:': 'atualizado:',
   'Reuse metrics if name exists': 'Reutilizar métricas se o nome existir',
