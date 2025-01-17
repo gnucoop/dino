@@ -37,6 +37,7 @@ import {FloatingButtonModule} from '@dino/material/floating-button';
 import {Collect} from './collect';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatInputModule,
     MatTooltipModule,
     ReactiveFormsModule,
+    TourMatMenuModule,
   ],
   declarations: [Collect],
   exports: [Collect],

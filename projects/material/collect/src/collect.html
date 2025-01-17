@@ -1,3 +1,4 @@
+<div class="centered-tour-element" tourAnchor="collect"></div>
 <ng-content select="[breadcrumbs]"></ng-content>
 <ng-container *ngIf="filterBar === true">
   <mat-form-field>
@@ -20,6 +21,7 @@
       <mat-grid-tile
         class="dino-grid-tile"
         [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
+        [tourAnchor]="item.name"
       >
         <div>
           <div class="dino-grid-feat-icons">
