@@ -66,4 +66,14 @@ export class FloatingButton {
    * If specified, the button is extendend and displays the operation cost
    */
   @Input() cost?: number | null;
+
+  /**
+   * The optional UI Tour tourAnchor
+   */
+  @Input() tourAnchor?: string;
+
+  /**
+   * If true, the button is interactive during the UI Tour
+   */
+  @Input() tourInteractive?: boolean;
 }

@@ -29,6 +29,7 @@ import {RouterModule} from '@angular/router';
 
 import {FloatingButton} from './floating-button';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatTooltipModule,
     RouterModule,
     DragDropModule,
+    TourMatMenuModule,
   ],
   declarations: [FloatingButton],
   exports: [FloatingButton],
