@@ -12,6 +12,7 @@ import {MockBreakpointObserver} from '../mocks';
 
 import {MatReportsListE2E} from './reports-list-e2e';
 import {ReportsListRoutingModule} from './reports-list-e2e-routing.module';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   declarations: [MatReportsListE2E],
@@ -22,6 +23,7 @@ import {ReportsListRoutingModule} from './reports-list-e2e-routing.module';
     FloatingButtonModule,
     ReportsModule,
     SearchFiltersBarModule,
+    TourMatMenuModule,
     TranslocoModule,
     ReportsListRoutingModule,
   ],

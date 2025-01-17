@@ -21,6 +21,8 @@
   *ngIf="displayAddButton|async"
   buttonIcon="add"
   [tooltipMessage]="(tooltipMessage|async)!"
+  [tourAnchor]="'add-report-floating-button'"
+  [tourInteractive]="true"
   (click)="addReport()"
   [cost]="reportCost|async"
 ></dino-floating-button>

@@ -57,13 +57,60 @@ body {
   -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 
+  // UI TOUR STYLES
+
   // The first anchor element of the UI Tour
-  .start-tour-element {
+  .centered-tour-element {
     position: fixed;
     left: 50%;
     top: 50%;
     height: 0px;
     width: 0px;
     transform: translate(-140px, -78px);
+  }
+
+  // UI Tour card popup styles
+  .dino-tour-step-popover {
+    .mat-mdc-card {
+      .mat-mdc-card-title {
+        white-space: unset !important;
+      }
+    }
+    &.dino-tour-step-active-popover {
+      .mat-mdc-card {
+        background-color: rgba(var(--palette-primary-100), 0.8);
+        animation: pulse 3s infinite;
+      }
+    }
+  }
+
+  // UI Tour Active anchors
+  .touranchor--is-active:not(.dino-tour-interactive-anchor) {
+    pointer-events: none !important;
+    a,
+    a .mdc-list-item__content,
+    div,
+    button,
+    form,
+    .mat-mdc-form-field div,
+    .mat-mdc-form-field input,
+    .mat-mdc-form-field label,
+    .mat-icon {
+      pointer-events: none !important;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      background-color: rgba(var(--palette-primary-100), 0.8);
+    }
+
+    50% {
+      background-color: rgba(var(--palette-primary-100), 0);
+    }
+
+    100% {
+      background-color: rgba(var(--palette-primary-100), 0.8);
+    }
   }
 }
