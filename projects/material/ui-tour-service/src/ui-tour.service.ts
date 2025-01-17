@@ -23,7 +23,7 @@
 import {Inject, Injectable, isDevMode} from '@angular/core';
 import {IStepOption, TourService} from 'ngx-ui-tour-md-menu';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from './ui-tour-config';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 
 /**
  * Service that provides a list of all available Material Icons code identifiers
@@ -41,10 +41,12 @@ export class UITourService {
   /**
    * True if the UI Tour is currently ongoing
    */
-  private _isTourOngoing: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  get isTourOngoing(): Observable<boolean> {
-    return this._isTourOngoing.asObservable();
-  }
+  readonly isTourOngoing: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * Subscribes to all UI Tour events
+   */
+  private _tourEventsSubscription: Subscription = Subscription.EMPTY;
 
   constructor(
     @Inject(UI_TOUR_SERVICE_CONFIG) private _uiTourConfig: UITourConfig,
@@ -52,24 +54,7 @@ export class UITourService {
   ) {
     this._tourSteps = this._uiTourConfig.tourSteps;
     this._defaultTourStepOptions = this._uiTourConfig.defaultStepOptions;
-    if (this._uiTourConfig.tourActive) {
-      this._tourService.events$.subscribe(event => {
-        if (!event) return;
-        if (isDevMode()) {
-          console.log('UI-TOUR', event);
-        }
-        switch (event.name) {
-          case 'start':
-            this._isTourOngoing.next(true);
-            break;
-          case 'end':
-            this._setTourDoneToken();
-            this._isTourOngoing.next(false);
-            break;
-          default:
-            break;
-        }
-      });
+    if (this._uiTourConfig.tourActive && !this._skipTour()) {
       this._initialize();
     }
   }
@@ -78,6 +63,24 @@ export class UITourService {
    * Initializes the UI Tour
    */
   private _initialize() {
+    this._tourEventsSubscription = this._tourService.events$.subscribe(event => {
+      if (!event) return;
+      if (isDevMode()) {
+        console.log('UI-TOUR', event);
+      }
+      switch (event.name) {
+        case 'start':
+          this.isTourOngoing.next(true);
+          break;
+        case 'end':
+          this.isTourOngoing.next(false);
+          this._setTourDoneToken();
+          this._tourEventsSubscription.unsubscribe();
+          break;
+        default:
+          break;
+      }
+    });
     const tourStepOptions: IStepOption = {
       enableBackdrop: true,
       ...this._defaultTourStepOptions,
@@ -87,9 +90,13 @@ export class UITourService {
 
   /**
    * Starts the tour
+   * @param force If true, the tour is started regardless of the tour done token's presence
    */
-  start() {
-    if (this._skipTour() || !this._uiTourConfig.tourActive) return;
+  start(force: boolean = false) {
+    if ((this._skipTour() && !force) || !this._uiTourConfig.tourActive) return;
+    if (force) {
+      this._initialize();
+    }
     this._tourService.start();
   }
 
