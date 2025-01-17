@@ -14,7 +14,11 @@
   </div>
 
   <form [formGroup]="formDate" autocomplete="off" *ngIf="context !== 'shareUrl'">
-    <mat-form-field class="dino-form-date-selector-field" appearance="fill">
+    <mat-form-field
+      class="dino-form-date-selector-field"
+      appearance="fill"
+      tourAnchor="metric-selector-creation-date"
+    >
       <mat-label>{{'Creation Date'|transloco}}</mat-label>
       <input
         matInput
@@ -31,9 +35,13 @@
     [formGroup]="formStatus"
     autocomplete="off"
   >
-    <mat-form-field class="dino-form-status-selector-field">
+    <mat-form-field class="dino-form-status-selector-field" tourAnchor="metric-selector-status">
       <mat-label>{{'Select the Form Status'|transloco}}</mat-label>
-      <mat-select #statusSelect [formControlName]="'form_status_ref_id'" [placeholder]="'Form status associated with the form'">
+      <mat-select
+        #statusSelect
+        [formControlName]="'form_status_ref_id'"
+        [placeholder]="'Form status associated with the form'"
+      >
         <mat-option *ngFor="let status of availableStatuses" [value]="status.id">
           <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
         </mat-option>
@@ -88,15 +96,29 @@
       </mat-form-field>
     </ng-container>
   </form>
-  <div class="dino-go-to-formdata-button-container" *ngIf="context === 'form'">
+  <div class="dino-go-to-data-button-container" *ngIf="context === 'form'">
     <button
       mat-raised-button
       color="primary"
       [disabled]="formMetrics.status === 'INVALID'"
-      class="dino-go-to-formdata-button"
-      (click)="goToFormData()"
+      class="dino-go-to-data-button dino-tour-interactive-anchor"
+      (click)="goToData()"
+      tourAnchor="go-to-data-button"
     >
       {{((isView|async) !== true) ? ('Fill the Form'|transloco) : ('View the Form'|transloco)}}
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+  <div class="dino-go-to-data-button-container" *ngIf="context === 'report'">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="formMetrics.status === 'INVALID'"
+      class="dino-go-to-data-button dino-tour-interactive-anchor"
+      (click)="goToData()"
+      tourAnchor="go-to-data-button"
+    >
+      {{((isView|async) !== true) ? ('Fill the Report'|transloco) : ('View the Report'|transloco)}}
       <mat-icon>arrow_forward</mat-icon>
     </button>
   </div>

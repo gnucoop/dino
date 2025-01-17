@@ -133,9 +133,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   @Input() allowMetricCreationFor: string[] = [];
 
   /**
-   * Emitted when the user wants to move to the Form Data step of the Form Editor.
+   * Emitted when the user wants to move to the Data step of the Form Editor.
    */
-  @Output() goToFormDataEvt: EventEmitter<void> = new EventEmitter<void>();
+  @Output() goToDataEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
    * The Selector metrics form group.
@@ -525,10 +525,10 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   }
 
   /**
-   * Triggers an event to move forward to the Form Data step of the Form Editor
+   * Triggers an event to move forward to the Data step of the Form Editor
    */
-  goToFormData() {
-    this.goToFormDataEvt.emit();
+  goToData() {
+    this.goToDataEvt.emit();
   }
 
   /**

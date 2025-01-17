@@ -38,6 +38,7 @@ import {RouterModule} from '@angular/router';
 import {MatSelectModule} from '@angular/material/select';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 @NgModule({
   imports: [
     ClipboardModule,
@@ -54,6 +55,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     ReactiveFormsModule,
     RouterModule,
     TranslocoModule,
+    TourMatMenuModule,
   ],
   declarations: [FormMetricSelector, FormMetricSelectorDialog],
   exports: [FormMetricSelector, FormMetricSelectorDialog],
