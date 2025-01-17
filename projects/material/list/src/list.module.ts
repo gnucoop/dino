@@ -67,6 +67,7 @@ import {AsListCellActionsPipe} from './list-action-pipe';
 import {LangsModule} from '@dino/material/langs';
 import {ListCellComponent} from './list-cell-component';
 import {ActionsModal} from './actions-modal';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import {ActionsModal} from './actions-modal';
     MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
+    TourMatMenuModule,
     UserInteractionsModule,
   ],
   declarations: [

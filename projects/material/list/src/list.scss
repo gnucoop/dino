@@ -262,7 +262,7 @@ dino-list {
     visibility: hidden;
     padding: 5px;
     cursor: pointer;
-    &.dino-edit-status-icon-touch {
+    &.dino-edit-status-icon-touch, &.touranchor--is-active {
       visibility: visible;
     }
   }

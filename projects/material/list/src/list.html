@@ -175,6 +175,7 @@
           <mat-icon
             class="dino-edit-status-icon"
             [ngClass]="bds.isTouch()  ? 'dino-edit-status-icon-touch' : null"
+            [tourAnchor]="'edit-status-icon'"
             *ngIf="
             (hasAllowedStatus(element)|async) === true &&
             header.column === 'form_status_ref_id' &&
