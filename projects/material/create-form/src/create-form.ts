@@ -352,7 +352,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   /**
    * Triggers the Stepper to move forward to the Form Data step.
    */
-  goToFormDataStep(stepper: MatStepper) {
+  goToDataStep(stepper: MatStepper) {
     stepper.next();
   }
 

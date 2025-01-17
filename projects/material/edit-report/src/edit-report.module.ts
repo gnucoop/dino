@@ -37,6 +37,7 @@ import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {EditReport} from './edit-report';
 import {LangsModule} from '@dino/material/langs';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatSelectModule,
     MatSnackBarModule,
     MatStepperModule,
+    TourMatMenuModule,
   ],
   declarations: [EditReport],
   exports: [EditReport],

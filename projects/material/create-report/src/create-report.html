@@ -13,6 +13,7 @@
             [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
             [availableStatuses]="availableStatuses|async"
             [context]="'report'"
+            (goToDataEvt)="goToDataStep(stepper)"
           >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
@@ -25,7 +26,7 @@
             <mat-icon>arrow_back</mat-icon>
           </button>
         </div>
-        <div class="dino-create-report-step-container">
+        <div class="dino-create-report-step-container" tourAnchor="create-report">
           <form [formGroup]="dateIntervalForm" autocomplete="off">
             <mat-form-field class="dino-report-name-field" appearance="fill">
               <mat-label>{{'Report Name'|transloco}}</mat-label>
@@ -70,6 +71,7 @@
   <dino-floating-button
     buttonIcon="save"
     [tooltipMessage]="'Save report'|transloco"
+    [tourAnchor]="'save-report-floating-button'"
     [buttonDisabled]="(isFormMetricsSelectorValid|async) === false || !dateIntervalForm.valid"
     (click)="saveReport()"
   ></dino-floating-button>

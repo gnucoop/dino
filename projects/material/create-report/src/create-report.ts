@@ -44,6 +44,7 @@ import {filter, map, shareReplay, startWith, switchMap, withLatestFrom} from 'rx
 import {format} from 'date-fns';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
 import {TokensService} from '@dino/material/stripe-payment';
+import {MatStepper} from '@angular/material/stepper';
 
 /**
  * The Report data creation component.
@@ -309,6 +310,13 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
         );
       }),
     );
+  }
+
+  /**
+   * Triggers the Stepper to move forward to the Form Data step.
+   */
+  goToDataStep(stepper: MatStepper) {
+    stepper.next();
   }
 
   /**

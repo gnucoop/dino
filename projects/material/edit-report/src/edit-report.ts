@@ -102,6 +102,7 @@ import {
 import {AjfContext} from '@ajf/core/models';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {TokensService} from '@dino/material/stripe-payment';
+import {MatStepper} from '@angular/material/stepper';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -694,6 +695,13 @@ export class EditReport implements AfterViewInit {
       }),
       take(1),
     );
+  }
+
+  /**
+   * Triggers the Stepper to move forward to the Form Data step.
+   */
+  goToDataStep(stepper: MatStepper) {
+    stepper.next();
   }
 
   /**

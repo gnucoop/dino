@@ -44,6 +44,7 @@ import {PipelineStepperModule as DinoPipelineStepperModule} from '@dino/material
 import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 import {CreateForm} from './create-form';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -67,6 +68,7 @@ import {CreateForm} from './create-form';
     MatTableModule,
     MatToolbarModule,
     RouterModule,
+    TourMatMenuModule,
     TranslocoModule,
   ],
   declarations: [CreateForm],

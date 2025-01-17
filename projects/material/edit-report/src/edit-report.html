@@ -13,6 +13,7 @@
                   [requiredMetrics]="requiredMetrics|async"
                   [allowMetricCreationFor]="allowMetricCreationFor"
                   [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+                  (goToDataEvt)="goToDataStep(stepper)"
                   [availableStatuses]="availableStatuses|async"
                   [context]="'report'"
                 >
@@ -48,7 +49,7 @@
                       (repData.date_end|dinoDateValue): null}}
                     </h2>
                     <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
-                    <h2>{{('Forms Filled'|transloco)}}: {{formDatas.length}}</h2>
+                    <!-- <h2>{{('Forms Filled'|transloco)}}: {{formDatas.length}}</h2> -->
                   </div>
                 </ng-container>
               </ng-container>
@@ -74,7 +75,7 @@
               </div>
             </ng-container>
           </ng-container>
-          <div class="dino-edit-report-step-container">
+          <div class="dino-edit-report-step-container" tourAnchor="edit-report">
             <ajf-report id="report print" [instance]="repInstance"></ajf-report>
           </div>
         </ng-container>

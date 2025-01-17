@@ -37,6 +37,7 @@ import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/f
 import {TranslocoModule} from '@ngneat/transloco';
 
 import {CreateReport} from './create-report';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
   imports: [
@@ -53,6 +54,7 @@ import {CreateReport} from './create-report';
     MatToolbarModule,
     ReactiveFormsModule,
     RouterModule,
+    TourMatMenuModule,
     TranslocoModule,
   ],
   declarations: [CreateReport],

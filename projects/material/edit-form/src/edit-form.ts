@@ -472,7 +472,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   /**
    * Triggers the Stepper to move forward to the Form Data step.
    */
-  goToFormDataStep(stepper: MatStepper) {
+  goToDataStep(stepper: MatStepper) {
     stepper.next();
   }
 
