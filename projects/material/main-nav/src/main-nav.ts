@@ -71,6 +71,7 @@ import {
 import {Section} from './section-interface';
 import {TokensService} from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from '@dino/material/user-area';
+import {UITourService} from '@dino/material/ui-tour-service';
 
 /**
  * Dino Main component, containing the toolbar and the sidebar navigation.
@@ -468,6 +469,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     private _tokensService: TokensService,
     readonly ts: ThemeService,
     readonly trs: TranslocoService,
+    readonly tourService: UITourService,
   ) {
     this.newVersionReady.next(localStorage.getItem('dino_new_version_ready'));
 

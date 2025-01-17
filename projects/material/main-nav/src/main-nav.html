@@ -47,7 +47,7 @@
             [matBadge]="availableTokens|async"
             matBadgeColor="primary"
             >smart_toy</mat-icon
-          > 
+          >
         </div>
       </ng-container>
       <mat-icon
@@ -248,24 +248,23 @@
     <mat-nav-list
       *ngIf="(isLoading|async) === false && (sideMenuDisabled|async) !== true"
       [@loadComponent]
-    >
-      <a
-        mat-list-item
-        [disableRipple]="true"
-        *ngFor="let section of sections$|async"
-        [attr.aria-label]="section.label|transloco"
-        [class.dino-section-selected]="isSectionSelected(section)"
-        [routerLink]="[section.url]"
-        (click)="menuClick()"
-        aria-label="Section"
-      >
-        <mat-icon *ngIf="!section.svgIcon; else svgIconTemplate">{{section.icon}}</mat-icon>
-        <ng-template #svgIconTemplate>
-          <mat-icon svgIcon="{{section.svgIcon ?? ''}}"></mat-icon>
-        </ng-template>
-        <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
-      </a>
-
+      ><div *ngFor="let section of sections$|async" [tourAnchor]="section.url+'-nav'">
+        <a
+          mat-list-item
+          [disableRipple]="true"
+          [attr.aria-label]="section.label|transloco"
+          [class.dino-section-selected]="isSectionSelected(section)"
+          [routerLink]="[section.url]"
+          (click)="menuClick()"
+          aria-label="Section"
+        >
+          <mat-icon *ngIf="!section.svgIcon; else svgIconTemplate">{{section.icon}}</mat-icon>
+          <ng-template #svgIconTemplate>
+            <mat-icon svgIcon="{{section.svgIcon ?? ''}}"></mat-icon>
+          </ng-template>
+          <span *ngIf="extendedSidenav|async">{{section.label|transloco}}</span>
+        </a>
+      </div>
       <ng-container *ngIf="adminSections$|async as adminSections">
         <ng-container *ngIf="adminSections.length > 0 && (isAdmin|async)">
           <mat-divider></mat-divider>
@@ -305,7 +304,10 @@
     </mat-nav-list>
   </mat-sidenav>
 
-  <mat-sidenav-content class="dino-sidenav-content" [@loadComponent]>
+  <mat-sidenav-content
+    [ngClass]="'dino-sidenav-content '+(tourService.isTourOngoing.value ? 'dino-sidenav-content-not-scrollable' : '')"
+    [@loadComponent]
+  >
     <ng-container *ngIf="(isLoading|async) === false; else loading">
       <router-outlet [@loadComponent] (activate)="onRouterOutletLoading($event)"></router-outlet>
     </ng-container>

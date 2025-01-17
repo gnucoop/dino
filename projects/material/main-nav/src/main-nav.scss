@@ -205,6 +205,10 @@ dino-main-nav {
         margin-top: 30vh;
       }
     }
+    &.dino-sidenav-content-not-scrollable {
+      overflow-y: hidden;
+      height: 100% !important;
+    }
   }
   @media only screen and (max-width: 992px) {
     .mat-sidenav-content.dino-sidenav-content:has(ajf-form) {
