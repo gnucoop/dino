@@ -18,6 +18,7 @@ import {EventEmitter} from '@angular/core';
 import {ThemeService} from '@dino/material/core';
 import {NotificationModule} from '@dino/core/notifications';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
 
 let testDbIdx = 0;
 
@@ -49,6 +50,11 @@ const stripePaymentConfig: StripePaymentConfig = {
 const pandinoConfig: PandinoConfig = {
   pandinoUrl: '',
   pandinoGptNamespaces: [],
+};
+
+const uiTourConfig: UITourConfig = {
+  tourActive: false,
+  tourSteps: [],
 };
 
 const authServiceConfig: AuthServiceConfig = {
@@ -102,6 +108,7 @@ describe('Main', () => {
         {provide: TRANSLATIONS_CONFIG, useValue: defaultLanguageConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
+        {provide: UI_TOUR_SERVICE_CONFIG, useValue: uiTourConfig},
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);
