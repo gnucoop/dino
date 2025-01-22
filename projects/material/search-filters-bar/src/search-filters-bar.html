@@ -102,6 +102,7 @@
           (isMetric(group) ||
           isMetricSubFilter(group) ||
           isUser(group) ||
+          isUserGroup(group) ||
           (isStatus(group) && (availableFormStatuses|async)?.length) )"
           (click)="showOptions(group)"
         >
@@ -165,9 +166,19 @@
                 </ng-container>
 
                 <ng-template #userFilterOptions>
-                  <mat-option *ngFor="let option of usersFilterOptions | async" [value]="option">
-                    {{option.full_name}}
-                  </mat-option>
+                  <ng-container *ngIf="isUser(group); else userGroupFilterOptions">
+                    <mat-option *ngFor="let option of usersFilterOptions | async" [value]="option">
+                      {{option.full_name}}
+                    </mat-option>
+                  </ng-container>
+
+                  <ng-template #userGroupFilterOptions>
+                    <ng-container *ngIf="isUserGroup(group)">
+                      <mat-option *ngFor="let option of userGroupsFilterOptions | async" [value]="option">
+                        {{option.groupName}}
+                      </mat-option>
+                    </ng-container>
+                  </ng-template>
                 </ng-template>
               </ng-template>
             </ng-template>
@@ -187,7 +198,7 @@
       </ng-template>
 
       <ng-container
-        *ngTemplateOutlet="isMetric(group) || isStatus(group) || isMetricSubFilter(group) || isUser(group) ? metricOrStatusField : default"
+        *ngTemplateOutlet="isMetric(group) || isStatus(group) || isMetricSubFilter(group) || isUser(group) || isUserGroup(group) ? metricOrStatusField : default"
       ></ng-container>
     </ng-container>
 

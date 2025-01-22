@@ -1728,6 +1728,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       this._dataSource.disconnect();
     }
     this._fts.clearModelFilters();
+    this._fts.clearCustomFilters();
     this._dialogSub.unsubscribe();
     this._selectionChangedSub.unsubscribe();
     this._dataSourceSub.unsubscribe();

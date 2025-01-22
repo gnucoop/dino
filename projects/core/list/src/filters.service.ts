@@ -74,7 +74,7 @@ export class FiltersService<T extends Model = Model> {
    * Used to check if a filter can be added and displayed in the
    * main filters component (eg. SearchFiltersBar)-
    */
-  private _availableBasicFilterLabels: string[] = ['form_status', 'user_data'];
+  private _availableBasicFilterLabels: string[] = ['form_status', 'user_data', 'user_group'];
 
   get availableBasicFilterLabels(): string[] {
     return this._availableBasicFilterLabels;
@@ -244,7 +244,7 @@ export class FiltersService<T extends Model = Model> {
     this._loadPresetEvent = new EventEmitter<boolean>();
     this._basicFiltersSub = Subscription.EMPTY;
     this._loadingPresetSub = Subscription.EMPTY;
-    this._availableBasicFilterLabels = ['form_status', 'user_data'];
+    this._availableBasicFilterLabels = ['form_status', 'user_data', 'user_group'];
     this._formValueChanges = [];
 
     this._generatedFilters = combineLatest([
@@ -329,6 +329,13 @@ export class FiltersService<T extends Model = Model> {
    */
   clearModelFilters(): void {
     this._generatedModelFilters.next([]);
+  }
+
+  /**
+   * Clears all custom filters
+   */
+  clearCustomFilters(): void {
+    this._customFilters.next([]);
   }
 
   /**

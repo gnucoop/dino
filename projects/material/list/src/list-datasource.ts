@@ -544,6 +544,13 @@ export class ListDataSource<
             const headersSearchExpressions = dataHeaders
               .filter(h => !h.dataColumn)
               .map(header => {
+                if (header.column.toString().indexOf('_ref_id')) {
+                  return {
+                    [`${header.column.toString()}`]: {
+                      $eq: item.value,
+                    },
+                  };
+                }
                 return {
                   [`${header.column.toString()}`]: {
                     $regex: item.value,
@@ -580,11 +587,19 @@ export class ListDataSource<
           // Basic Filter
           if (!item.isAdditionalFilter) {
             if (this._fs.availableBasicFilterLabels.indexOf(item.name) > -1 && item.value) {
-              addNestedProps(
-                selector,
-                [`${item.name.trim().toLowerCase()}_ref_id`, '$in'],
-                Array.isArray(item.value.id) ? item.value.id : [item.value.id],
-              );
+              if (item.name === 'user_group') {
+                addNestedProps(
+                  selector,
+                  [`${item.name.trim().toLowerCase()}_ids`, '$in'],
+                  Array.isArray(item.value.id) ? item.value.id : [item.value.id],
+                );
+              } else {
+                addNestedProps(
+                  selector,
+                  [`${item.name.trim().toLowerCase()}_ref_id`, '$in'],
+                  Array.isArray(item.value.id) ? item.value.id : [item.value.id],
+                );
+              }
             } else {
               addNestedProps(
                 selector,

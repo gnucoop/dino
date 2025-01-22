@@ -50,7 +50,7 @@ import {
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import {UserData, UserDataManager} from '@dino/core/users';
+import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-list';
 import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
@@ -99,6 +99,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * All the users filter autocomplete options.
    */
   usersFilterOptions: Observable<UserData[]> | null = null;
+
+  /**
+   * All the user groups filter autocomplete options.
+   */
+  userGroupsFilterOptions: Observable<UserGroup[]> | null = null;
 
   /**
    * If the filters bar is applied to a formData list,
@@ -220,6 +225,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     private _route: ActivatedRoute,
     private _fschm: FormSchemaManager,
     private _udm: UserDataManager,
+    private _ugm: UserGroupManager,
     private _router: Router,
     readonly breakpointObserver: BreakpointObserverService,
     @Optional() private _areaManager: AreaManager | null,
@@ -423,6 +429,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Returns true if the Form Group refers to the User Group filter
+   *
+   * @param group The FormGroup of the filter
+   */
+  isUserGroup(group: UntypedFormGroup): boolean {
+    if (group == null) {
+      return false;
+    }
+    const groupControlKey = this.getControlKey(group);
+    if (groupControlKey == null) {
+      return false;
+    }
+    return groupControlKey === 'user_group';
+  }
+
+  /**
    * Returns true if the Form Group refers to the Form Status
    *
    * @param group The FormGroup of the filter
@@ -466,7 +488,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Displays the Metric or Status Name only in the Metric or Status
+   * Displays the Metric/Status/User/User group name in the
    * autocomplete field.
    */
   displayItemName(
@@ -495,6 +517,10 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     // Users
     if (item['full_name']) {
       return item['full_name'];
+    }
+    // User groups
+    if (item['groupName']) {
+      return item['groupName'];
     }
     // Metrics (after finding descendants)
     if (item['id'] && Array.isArray(item['id']) && item['name']) {
@@ -731,6 +757,35 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Populates the autocomplete panel of the User Group filter with options
+   */
+  private _populateUserGroupOptions(): void {
+    const inputControl = this.additionalBasicFilters.find(group => group.get('user_group') != null);
+    const inputValue = inputControl?.get('user_group')?.valueChanges;
+    if (inputValue != null) {
+      this.userGroupsFilterOptions = inputValue.pipe(
+        switchMap(inputVal => {
+          if (typeof inputVal === 'string') {
+            return this._ugm
+              .query({
+                selector: {
+                  groupName: {$regex: inputVal, $options: 'i'},
+                  is_deleted: {$ne: true},
+                },
+              })
+              .pipe(
+                map(results =>
+                  results.sort((a, b) => this._sortItemsAlphabetically(a, b, 'groupName')),
+                ),
+              );
+          }
+          return [];
+        }),
+      );
+    }
+  }
+
+  /**
    * Sets up the subscription to the Metric Fields inputs valuechanges,
    * then sets the value of the field as an array of ids of the selected metric
    * and all of its descendants.
@@ -816,6 +871,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         );
         this._populateStatusOptions();
         this._populateUserDataOptions();
+        this._populateUserGroupOptions();
 
         if (this._areaManager != null) {
           this._populateMetricsOptions('area', this._areaManager);
