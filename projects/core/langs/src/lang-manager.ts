@@ -20,7 +20,7 @@
  *
  */
 
-import {EventEmitter, Inject, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable, isDevMode} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {dinoTranslations, TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {TranslocoService} from '@ngneat/transloco';
@@ -49,6 +49,7 @@ import {
 import {Lang, migrationStrategies} from './lang';
 import {schema} from './lang-json';
 import {defaultLangs, Dic, LangCreate, LangRow} from './utils';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 const collectionDef = {name: 'lang', collection: {schema, migrationStrategies}};
 
@@ -90,7 +91,17 @@ export class LangManager extends DataModelManager<Lang> {
       const langsShowed: Lang[] = [];
 
       langsStored.forEach(l => {
-        this._ts.setTranslation(l.schema, l.name);
+        try {
+          this._ts.setTranslation(l.schema, l.name);
+        } catch (err) {
+          if (isDevMode()) {
+            console.log(`Could not set Translations for lang ${l.name}: ${err}`);
+          }
+          this._ehms.captureErrorMessage(
+            `Could not set Translations for lang ${l.name}: ${err}`,
+            'error',
+          );
+        }
       });
       const allLangs = this._ts.getAvailableLangs() as string[];
       this.allLangsNames$.next(allLangs);
@@ -192,6 +203,7 @@ export class LangManager extends DataModelManager<Lang> {
     dataService: DataService,
     permissionContextService: PermissionContextService,
     private _ts: TranslocoService,
+    private _ehms: ErrorHandlerMessageService,
     @Inject(TRANSLATIONS_CONFIG) private _config: TranslationsConfig,
   ) {
     super(collectionDef, dataService, permissionContextService);
