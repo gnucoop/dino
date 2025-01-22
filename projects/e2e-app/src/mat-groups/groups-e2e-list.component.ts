@@ -39,6 +39,15 @@ export class MatGroupsListE2E implements OnInit {
     },
   ];
 
+  readonly additionalBasicFilters = [
+    'project',
+    'location',
+    'area',
+    'case',
+    'organization',
+    'unavailableFilter',
+  ];
+
   constructor(
     private _userGroupManager: UserGroupManager,
     private _filtersService: FiltersService,

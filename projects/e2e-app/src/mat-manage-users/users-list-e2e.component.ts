@@ -66,6 +66,8 @@ export class MatUsersListE2E implements OnInit {
     },
   ];
 
+  readonly additionalBasicFilters = ['user_group', 'unavailableFilter'];
+
   constructor(
     private _UserDataManager: UserDataManager,
     private _filtersService: FiltersService,
