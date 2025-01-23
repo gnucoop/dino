@@ -594,10 +594,14 @@ export class ListDataSource<
                   Array.isArray(item.value.id) ? item.value.id : [item.value.id],
                 );
               } else {
+                const itemVals = Array.isArray(item.value.id) ? item.value.id : [item.value.id];
+                if (!itemVals.includes('all')) {
+                  itemVals.push('all');
+                }
                 addNestedProps(
                   selector,
                   [`${item.name.trim().toLowerCase()}_ref_id`, '$in'],
-                  Array.isArray(item.value.id) ? item.value.id : [item.value.id],
+                  itemVals,
                 );
               }
             } else {
