@@ -762,14 +762,21 @@ export class DataService implements IDataService {
             const actSync: ActiveSync | undefined = actSyncs[collectionName];
             if (actSync && actSync.state) {
               actSync.state.reSync();
-              actSync.state
-                .awaitInSync()
-                .then(() =>
+              actSync.state.awaitInSync().then(() => {
+                if (this.config.syncOptions.live) {
                   this._collectionChangedEmit(
                     'replication cycle complete',
                     actSync.state.collection,
-                  ),
-                );
+                  );
+                } else {
+                  setTimeout(() => {
+                    this._collectionChangedEmit(
+                      'replication cycle complete',
+                      actSync.state.collection,
+                    );
+                  }, 5000);
+                }
+              });
             }
           }
         }

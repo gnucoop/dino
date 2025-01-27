@@ -65,6 +65,7 @@ import {
   switchMap,
   take,
   tap,
+  throttleTime,
   withLatestFrom,
 } from 'rxjs/operators';
 
@@ -407,6 +408,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   private _replicationCycleCompleteSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * If true, the RunSync has run a second time.
+   * Used only for live=false instances
+   */
+  private _hasSyncRerun: boolean = false;
+
   @Input()
   set sections(sec: Section[]) {
     if (sec == null) {
@@ -497,12 +504,20 @@ export class MainNav implements AfterViewInit, OnDestroy {
       this.currentSection.next(selSection ?? null);
     });
 
-    this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete.subscribe(() => {
-      this.isThereUnsyncedData.next(false);
-      this.snackbar.open(this.trs.translate('Synchronization complete'), 'SYNC COMPLETE', {
-        duration: 10000,
+    this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete
+      .pipe(throttleTime(2000))
+      .subscribe(() => {
+        this.isThereUnsyncedData.next(false);
+        if (this._hasSyncRerun || this.dataService.config.syncOptions.live) {
+          this._hasSyncRerun = false;
+          this.snackbar.open(this.trs.translate('Synchronization complete'), 'SYNC COMPLETE', {
+            duration: 10000,
+          });
+        } else {
+          this._hasSyncRerun = true;
+          this.runSync();
+        }
       });
-    });
 
     this.userDisplayName = this.authService.authenticated.pipe(
       switchMap(authEvt => {
