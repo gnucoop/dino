@@ -112,7 +112,7 @@ import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 import {ActionsModal} from './actions-modal';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import { UI_TOUR_SERVICE_CONFIG, UITourConfig } from '@dino/material/ui-tour-service';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
 
 /**
  * The material List component with row selection, extending the core List.
