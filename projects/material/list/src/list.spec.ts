@@ -12,6 +12,7 @@ import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
 import {ListDataSource, ListModule, SelectionList} from './public_api';
+import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
 
 let testDbIdx = 0;
 
@@ -87,6 +88,7 @@ describe('List', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
       ],
     }).compileComponents();
     filterService = TestBed.inject(FiltersService);

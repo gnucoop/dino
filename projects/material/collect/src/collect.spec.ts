@@ -12,6 +12,7 @@ import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {Collect, CollectModule} from './public_api';
+import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
 
 let testDbIdx = 0;
 
@@ -107,6 +108,7 @@ describe('Collect', () => {
         {provide: PermissionContextService, useValue: pcsMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
       ],
     }).compileComponents();
 

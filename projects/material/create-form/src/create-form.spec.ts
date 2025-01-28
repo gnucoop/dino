@@ -12,6 +12,7 @@ import {RxDocument} from 'rxdb';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {CreateForm, CreateFormModule} from './public_api';
+import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -84,6 +85,7 @@ describe('Create Form', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
       ],
     }).compileComponents();
 
