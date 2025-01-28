@@ -24,7 +24,7 @@
       <!-- PASSWORD section -->
       <mat-expansion-panel [expanded]="expandedPanel === 'password'">
         <mat-expansion-panel-header>
-          <mat-panel-title> Change Password </mat-panel-title>
+          <mat-panel-title> {{'Change Password'|transloco}} </mat-panel-title>
         </mat-expansion-panel-header>
         <form
           class="dino-user-area-form"
@@ -32,7 +32,7 @@
           [formGroup]="changePassForm"
         >
           <mat-form-field>
-            <mat-label>Current Password</mat-label>
+            <mat-label>{{'Current Password'|transloco}}</mat-label>
             <input
               matInput
               formControlName="current_password"
@@ -47,7 +47,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>New Password</mat-label>
+            <mat-label>{{'New Password'|transloco}}</mat-label>
             <input
               matInput
               formControlName="password"
@@ -62,7 +62,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Confirm New Password</mat-label>
+            <mat-label>{{'Confirm New Password'|transloco}}</mat-label>
             <input
               matInput
               formControlName="confirm_password"
@@ -119,10 +119,10 @@
               >content_copy</mat-icon
             >
             <mat-error *ngIf="apiKeysForm.get('pandino_api_key')?.hasError('required')">
-              API Key is <strong>required</strong>
+              {{'API Key is'|transloco}} <strong>{{'required'|transloco}}</strong>
             </mat-error>
             <mat-error *ngIf="apiKeysForm.get('pandino_api_key')?.hasError('invalid')">
-              Invalid API Key
+              {{'Invalid API Key'|transloco}}
             </mat-error>
           </mat-form-field>
 
@@ -156,12 +156,12 @@
       <!-- TOKENS and CREDITS section -->
       <mat-expansion-panel *ngIf="(availablePandinoTokens|async) !== null" [expanded]="expandedPanel === 'tokens'">
         <mat-expansion-panel-header>
-          <mat-panel-title> Credits </mat-panel-title>
+          <mat-panel-title> {{'Credits'|transloco}} </mat-panel-title>
         </mat-expansion-panel-header>
         <div
           class="dino-user-area-form"
         >
-          <p>DINO-AI Credits</p>
+          <p>{{'DINO-AI Credits'|transloco}}</p>
           <div class="dino-tokens-counter-container">
             <mat-icon color="primary" class="dino-tokens-icon">smart_toy</mat-icon> <span class="dino-tokens-counter">{{(availablePandinoTokens|async)}}</span>
           </div>
@@ -271,6 +271,18 @@
               </button>
             </div>
           </form>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- TOUR AND TUTORIAL section -->
+      <mat-expansion-panel *ngIf="uiServiceConfig" [expanded]="expandedPanel === 'tutorial'">
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{'Tutorials'|transloco}} </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div
+          class="dino-user-area-form dino-user-area-form-centered"
+        >
+          <button mat-raised-button color="accent" (click)="startTutorial()">{{'Start Dino Tour'|transloco}}</button>
         </div>
       </mat-expansion-panel>
 

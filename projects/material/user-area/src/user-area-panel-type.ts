@@ -23,4 +23,4 @@
 /**
  * Type representing expansion panels in User Area
  */
-export type UserAreaPanelType = 'password' | 'apikeys' | 'tokens' | 'theme' | 'backup';
+export type UserAreaPanelType = 'password' | 'apikeys' | 'tokens' | 'theme' | 'tutorial' | 'backup';

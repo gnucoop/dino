@@ -105,6 +105,9 @@ dino-user-area {
       cursor: pointer;
       color: rgb(var(--palette-accent-500));
     }
+    &.dino-user-area-form-centered{
+      justify-content: center;
+    }
   }
   .mat-mdc-raised-button {
     align-self: center;

@@ -59,6 +59,7 @@ import {
   TokensService,
 } from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from './user-area-panel-type';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig, UITourService} from '@dino/material/ui-tour-service';
 
 /**
  * Dialog component that shows Additional Filters, grouped and divided in Tabs.
@@ -187,6 +188,7 @@ export class UserArea implements OnDestroy {
   constructor(
     @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly stripeConfig: StripePaymentConfig | null,
     @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
+    @Inject(UI_TOUR_SERVICE_CONFIG) readonly uiServiceConfig: UITourConfig,
     private _udm: UserDataManager,
     private _fb: UntypedFormBuilder,
     private _authService: AuthService,
@@ -199,6 +201,7 @@ export class UserArea implements OnDestroy {
     private _tokensService: TokensService,
     private _router: Router,
     private _http: HttpClient,
+    private _tourService: UITourService,
     private _ehms: ErrorHandlerMessageService,
     public themeService: ThemeService,
     public dialogRef: MatDialogRef<UserArea>,
@@ -380,6 +383,14 @@ export class UserArea implements OnDestroy {
     this._snackBar.open(this._ts.translate('Copied to clipboard'), this._ts.translate('COPIED'), {
       duration: 10000,
     });
+  }
+
+  /**
+   * Starts the UI Tour tutorial
+   */
+  startTutorial() {
+    if (this.uiServiceConfig) this._tourService.start(true);
+    this.closeDialog();
   }
 
   /**
