@@ -50,28 +50,29 @@ export class MixedEditor implements AfterViewInit {
   /**
    * The list to be saved.
    */
-  saveList: MixedEditorItem[] = [];
+  saveList: {[key: string]: MixedEditorItem[]} = {};
 
   /**
-   * The list of all items available to the editor.
+   * The list of all items available to the editor, grouped by type.
    */
-  @Input() sourceList = new BehaviorSubject<MixedEditorItem[]>([]);
+  @Input() sourceList = new BehaviorSubject<{[key: string]: MixedEditorItem[]}>({});
 
   /**
    * A list of all mixedItems types currently present in the
    * sourceList
    */
-  mixedItemTypes: Observable<{type: string; icon: string}[]> = obsOf([]);
+  mixedItemTypes: Observable<{type: string; icon: string; label: string}[]> = obsOf([]);
 
   /**
    * The list saving method.
    */
-  @Input() saveListMethod: (list: MixedEditorItem[], listName: string) => void = () => {};
+  @Input() saveListMethod: (list: {[key: string]: MixedEditorItem[]}, listName: string) => void =
+    () => {};
 
   /**
    * The optional list validation method.
    */
-  @Input() validateListMethod?: (list: MixedEditorItem[]) => boolean;
+  @Input() validateListMethod?: (list: {[key: string]: MixedEditorItem[]}) => boolean;
 
   /**
    * The optional close method.
@@ -103,22 +104,25 @@ export class MixedEditor implements AfterViewInit {
     if (item == null) {
       return;
     }
-    const itemAlreadyExists = this.saveList.find(itm => itm.itemId === item.itemId);
-    const typeAlreadyExists =
-      item.uniqueItem && this.saveList.find(itm => itm.itemType === item.itemType);
+    if (!this.saveList[item.itemType]) {
+      this.saveList[item.itemType] = [];
+    }
+    const itemAlreadyExists = this.saveList[item.itemType].find(itm => itm.itemId === item.itemId);
+    const typeAlreadyExists = item.uniqueItem && this.saveList[item.itemType].length > 0;
 
     if (!itemAlreadyExists && !typeAlreadyExists) {
-      const idx = this.sourceList.value.findIndex(doc => doc.itemId === item.itemId);
-      this.sourceList.value.splice(idx, 1);
-      this.saveList.push(item);
+      const idx = this.sourceList.value[item.itemType].findIndex(doc => doc.itemId === item.itemId);
+
+      this.sourceList.value[item.itemType].splice(idx, 1);
+      this.saveList[item.itemType].push(item);
 
       if (item.uniqueItem) {
         this._toggleSameTypeItems(item, true);
       }
       this._toggleChildrenItems(item, 'add');
 
-      this.sourceList.value.sort((a, b) => this._sortAlphabetically(a, b));
-      this.saveList.sort((a, b) => this._sortAlphabetically(a, b));
+      this.sourceList.value[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
+      this.saveList[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
     }
 
     this._cdr.detectChanges();
@@ -132,34 +136,44 @@ export class MixedEditor implements AfterViewInit {
     if (item == null) {
       return;
     }
-    const itemAlreadyExists = this.sourceList.value.find(itm => itm.itemId === item.itemId);
+    const itemAlreadyExists = this.sourceList.value[item.itemType].find(
+      itm => itm.itemId === item.itemId,
+    );
+
     this._toggleChildrenItems(item, 'remove');
 
     if (!itemAlreadyExists) {
-      const idx = this.saveList.findIndex(doc => doc.itemId === item.itemId);
-      this.saveList.splice(idx, 1);
-      this.sourceList.value.unshift(item);
+      const idx = this.saveList[item.itemType].findIndex(doc => doc.itemId === item.itemId);
+      this.saveList[item.itemType].splice(idx, 1);
+      this.sourceList.value[item.itemType].unshift(item);
 
       if (item.uniqueItem) {
         this._toggleSameTypeItems(item, false);
       }
 
-      this.sourceList.value.sort((a, b) => this._sortAlphabetically(a, b));
-      this.saveList.sort((a, b) => this._sortAlphabetically(a, b));
+      this.sourceList.value[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
+      this.saveList[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
     }
 
     this._cdr.detectChanges();
   }
 
   /**
-   * Finds an Item by id in the desired mixed list.
+   * Finds an item by id in the desired mixed list if the lists are initialised,
+   * otherwise finds in the initial source complete list.
    * @param itemId The id of the searched item
    * @param list The list string identifier. Defaults to the source list.
    * @returns The found Item, or undefined
    */
   findItem(itemId: string, list: 'source' | 'save' = 'source'): MixedEditorItem | undefined {
     const searchInList = list == 'source' ? this.sourceList.value : this.saveList;
-    return searchInList.find(itm => itm.itemId === itemId);
+    let item: MixedEditorItem | undefined = undefined;
+    Object.keys(searchInList).forEach(itemType => {
+      if (!item) {
+        item = searchInList[itemType].find(itm => itm.itemId === itemId);
+      }
+    });
+    return item;
   }
 
   /**
@@ -203,31 +217,39 @@ export class MixedEditor implements AfterViewInit {
    * @param evt The input event of the "Search" input
    */
   updateFilter(evt: any) {
-    this.sourceList.next(
-      this.sourceList.value.map(item => {
-        if (evt.target == null) {
-          return item;
+    Object.keys(this.sourceList.value).forEach(itemsType => {
+      this.sourceList.value[itemsType].forEach(item => {
+        if (evt.target != null) {
+          if (
+            item.itemName
+              .toLocaleLowerCase()
+              .trim()
+              .match(evt.target.value.toLocaleLowerCase().trim())
+          ) {
+            item.displayed = true;
+          } else {
+            item.displayed = false;
+          }
         }
-        return item.itemName
-          .toLocaleLowerCase()
-          .trim()
-          .match(evt.target.value.toLocaleLowerCase().trim())
-          ? {...item, displayed: true}
-          : {...item, displayed: false};
-      }),
-    );
-
-    this.sourceList.value.sort((a, b) => this._sortAlphabetically(a, b));
+      });
+    });
     this._cdr.detectChanges();
   }
 
   ngAfterViewInit(): void {
     this.mixedItemTypes = this.sourceList.pipe(
-      map(items => {
-        const allTypes: {type: string; icon: string}[] = [];
-        items.forEach(item => {
-          if (!allTypes.find(t => t.type === item.itemType)) {
-            allTypes.push({type: item.itemType, icon: item.itemIcon});
+      map(mixedItemsByType => {
+        const allTypes: {type: string; icon: string; label: string}[] = [];
+        Object.keys(mixedItemsByType).forEach(itemsType => {
+          if (mixedItemsByType[itemsType] && mixedItemsByType[itemsType].length) {
+            const item = mixedItemsByType[itemsType][0];
+            if (!allTypes.find(t => t.type === item.itemType)) {
+              allTypes.push({
+                type: item.itemType,
+                icon: item.itemIcon,
+                label: this._capitalize(item.itemType.replace(/_/g, ' ')),
+              });
+            }
           }
         });
         return allTypes;
@@ -281,14 +303,10 @@ export class MixedEditor implements AfterViewInit {
    * @param disable The disabled state of the toggled items
    */
   private _toggleSameTypeItems(item: MixedEditorItem, disable: boolean): void {
-    this.sourceList.next(
-      this.sourceList.value.map(itm => {
-        if (itm.itemType === item.itemType) {
-          return {...itm, disabled: disable};
-        }
-        return itm;
-      }),
-    );
+    this.sourceList.value[item.itemType].forEach(itm => {
+      itm.disabled = disable;
+    });
+    this._cdr.detectChanges();
   }
 
   /**
@@ -314,7 +332,9 @@ export class MixedEditor implements AfterViewInit {
     operation: 'add' | 'remove',
   ): MixedEditorItem[] {
     let items: MixedEditorItem[] = [];
-    const list = operation === 'add' ? this.sourceList.value : this.saveList;
+    const list =
+      operation === 'add' ? this.sourceList.value[item.itemType] : this.saveList[item.itemType];
+
     list.map(itm => {
       if (itm.itemParentId === item.itemId) {
         items.push(itm);
@@ -322,5 +342,14 @@ export class MixedEditor implements AfterViewInit {
       }
     });
     return items;
+  }
+
+  /**
+   * Capitalizes strings
+   * @param str
+   * @returns
+   */
+  private _capitalize(str: string) {
+    return str[0].toUpperCase() + str.slice(1);
   }
 }

@@ -31,6 +31,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatTabsModule} from '@angular/material/tabs';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
@@ -40,24 +41,25 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {MixedEditor} from './mixed-editor';
 
 @NgModule({
-    imports: [
-        AuthModule,
-        DragDropModule,
-        CommonModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatListModule,
-        MatSnackBarModule,
-        MatTooltipModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslocoModule,
-        UsersModule,
-    ],
-    declarations: [MixedEditor],
-    exports: [MixedEditor]
+  imports: [
+    AuthModule,
+    DragDropModule,
+    CommonModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MatTooltipModule,
+    ReactiveFormsModule,
+    RouterModule,
+    TranslocoModule,
+    UsersModule,
+  ],
+  declarations: [MixedEditor],
+  exports: [MixedEditor],
 })
 export class MixedEditorModule {}
