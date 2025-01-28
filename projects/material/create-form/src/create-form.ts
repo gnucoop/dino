@@ -34,6 +34,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Inject,
   Input,
   isDevMode,
   OnDestroy,
@@ -98,6 +99,7 @@ import {MatStepper} from '@angular/material/stepper';
 import {TranslocoService} from '@ngneat/transloco';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
 
 /**
  * The Form Edit component.
@@ -331,6 +333,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   private _mainUnsubscribe: Subject<void> = new Subject();
 
   constructor(
+    @Inject(UI_TOUR_SERVICE_CONFIG) readonly uiServiceConfig: UITourConfig,
     private _nss: NetworkStatusService,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,

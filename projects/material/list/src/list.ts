@@ -32,6 +32,7 @@ import {
   ContentChildren,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   isDevMode,
   OnDestroy,
@@ -111,6 +112,7 @@ import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 import {ActionsModal} from './actions-modal';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { UI_TOUR_SERVICE_CONFIG, UITourConfig } from '@dino/material/ui-tour-service';
 
 /**
  * The material List component with row selection, extending the core List.
@@ -500,6 +502,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   private _selectionChangedSub: Subscription = Subscription.EMPTY;
 
   constructor(
+    @Inject(UI_TOUR_SERVICE_CONFIG) readonly uiServiceConfig: UITourConfig,
     cdr: ChangeDetectorRef,
     aui: AdminUserInteractionsService,
     actroute: ActivatedRoute,

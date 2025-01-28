@@ -49,12 +49,12 @@ export class UITourService {
   private _tourEventsSubscription: Subscription = Subscription.EMPTY;
 
   constructor(
-    @Inject(UI_TOUR_SERVICE_CONFIG) private _uiTourConfig: UITourConfig,
+    @Inject(UI_TOUR_SERVICE_CONFIG) private _uiTourConfig: UITourConfig | undefined,
     private _tourService: TourService,
   ) {
-    this._tourSteps = this._uiTourConfig.tourSteps;
-    this._defaultTourStepOptions = this._uiTourConfig.defaultStepOptions;
-    if (this._uiTourConfig.tourActive && !this._skipTour()) {
+    this._tourSteps = this._uiTourConfig?.tourSteps ?? [];
+    this._defaultTourStepOptions = this._uiTourConfig?.defaultStepOptions;
+    if (this._uiTourConfig?.tourActive && !this._skipTour()) {
       this._initialize();
     }
   }
@@ -93,7 +93,7 @@ export class UITourService {
    * @param force If true, the tour is started regardless of the tour done token's presence
    */
   start(force: boolean = false) {
-    if ((this._skipTour() && !force) || !this._uiTourConfig.tourActive) return;
+    if ((this._skipTour() && !force) || !this._uiTourConfig?.tourActive) return;
     if (force) {
       this._initialize();
     }

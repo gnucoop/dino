@@ -25,6 +25,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnDestroy,
   Optional,
@@ -59,6 +60,7 @@ import {CollectItem} from './collect-item-interface';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {FormMetricSelectorDialog} from '@dino/material/form-metric-selector';
 import {DeleteSchema} from '@dino/material/delete-schema';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
 
 /**
  * Type representing the available Collect component types.
@@ -218,6 +220,7 @@ export class Collect implements OnDestroy {
   private _dialogRef?: MatDialogRef<DeleteSchema>;
 
   constructor(
+    @Inject(UI_TOUR_SERVICE_CONFIG) readonly uiServiceConfig: UITourConfig,
     readonly breakpointObserver: BreakpointObserverService,
     private _fs: FormSchemaManager,
     private _rs: ReportSchemaManager,

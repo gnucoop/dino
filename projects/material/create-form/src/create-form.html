@@ -72,7 +72,7 @@
   <dino-floating-button
     buttonIcon="save"
     [tooltipMessage]="'Save form'|transloco"
-    [tourAnchor]="'save-form-floating-button'"
+    [tourAnchor]="uiServiceConfig ? 'save-form-floating-button' : ''"
     [buttonDisabled]="(isSaveDisabled|async) === true"
     (click)="saveForm()"
   ></dino-floating-button>
@@ -81,7 +81,7 @@
     *ngIf="allowSaveDraft"
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
-    [tourAnchor]="'save-draft-floating-button'"
+    [tourAnchor]="uiServiceConfig ? 'save-draft-floating-button' : ''"
     [buttonDisabled]="((isAjfFormValid|async) === true) || ((uniqueMetricsSetAlreadyExists|async) === true) || ((isLoading|async) === true) "
     (click)="saveDraft()"
   ></dino-floating-button>

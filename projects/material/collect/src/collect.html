@@ -21,7 +21,7 @@
       <mat-grid-tile
         class="dino-grid-tile"
         [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
-        [tourAnchor]="item.name"
+        [tourAnchor]="uiServiceConfig ? item.name : ''"
       >
         <div>
           <div class="dino-grid-feat-icons">

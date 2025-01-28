@@ -71,7 +71,7 @@
   <dino-floating-button
     buttonIcon="save"
     [tooltipMessage]="'Save report'|transloco"
-    [tourAnchor]="'save-report-floating-button'"
+    [tourAnchor]="uiServiceConfig ? 'save-report-floating-button' : ''"
     [buttonDisabled]="(isFormMetricsSelectorValid|async) === false || !dateIntervalForm.valid"
     (click)="saveReport()"
   ></dino-floating-button>

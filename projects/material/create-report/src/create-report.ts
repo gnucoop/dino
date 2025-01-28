@@ -25,6 +25,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -45,6 +46,7 @@ import {format} from 'date-fns';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
 import {TokensService} from '@dino/material/stripe-payment';
 import {MatStepper} from '@angular/material/stepper';
+import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
 
 /**
  * The Report data creation component.
@@ -144,6 +146,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   @ViewChildren(FormMetricSelector) formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   constructor(
+    @Inject(UI_TOUR_SERVICE_CONFIG) readonly uiServiceConfig: UITourConfig,
     private _router: Router,
     private _route: ActivatedRoute,
     private _rs: ReportSchemaManager,
