@@ -59,7 +59,12 @@ export interface UserGroupDialogData {
 export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
   @ViewChild(MixedEditor) mixedEditor!: MixedEditor;
 
-  mixedEditorItems: BehaviorSubject<MixedEditorItem[]> = new BehaviorSubject<MixedEditorItem[]>([]);
+  /**
+   * The list of all items available to the editor, grouped by type.
+   */
+  mixedEditorItems: BehaviorSubject<{[key: string]: MixedEditorItem[]}> = new BehaviorSubject<{
+    [key: string]: MixedEditorItem[];
+  }>({});
 
   metricTypes: string[] = [];
 
@@ -136,22 +141,21 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
 
     this._populationScheduleSub = combineLatest([...this._populateListSchedule]).subscribe(
       items => {
-        const allItems: MixedEditorItem[] = [];
-        this.mixedEditorItems.next(
-          allItems.concat(...items).sort((a, b) => {
-            let textA = a.itemName.toUpperCase();
-            let textB = b.itemName.toUpperCase();
-            const less = textA < textB;
-            const more = textA > textB;
-            if (less) {
-              return -1;
-            } else if (more) {
-              return 1;
-            } else {
-              return 0;
+        const sortedSourceList: {[key: string]: MixedEditorItem[]} = {};
+        items.forEach(itemsByType => {
+          itemsByType.forEach(item => {
+            if (!sortedSourceList[item.itemType]) {
+              sortedSourceList[item.itemType] = [];
             }
-          }),
-        );
+            sortedSourceList[item.itemType].push(item);
+          });
+          if (itemsByType.length) {
+            sortedSourceList[itemsByType[0].itemType].sort((a, b) =>
+              this._sortAlphabetically(a, b),
+            );
+          }
+        });
+        this.mixedEditorItems.next(sortedSourceList);
         this.loadGroup();
       },
     );
@@ -244,31 +248,58 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
     }
   }
 
-  validateGroup(list: MixedEditorItem[]): boolean {
-    return list.some(item => item.itemType === 'user_role');
+  validateGroup(list: {[key: string]: MixedEditorItem[]}): boolean {
+    return list['user_role'] && list['user_role'].length > 0;
   }
 
   loadGroup() {
     this._populatedSourceListEvt.emit();
   }
 
-  saveGroup(): (list: MixedEditorItem[], listName: string) => void {
-    return (list: MixedEditorItem[], listName: string) => {
-      if (list == null || list.length < 1) {
+  /**
+   * Sorts list items alphabetically by their itemName property.
+   * @param a Prev item
+   * @param b Next Item
+   * @returns Sort order
+   */
+  private _sortAlphabetically(a: MixedEditorItem, b: MixedEditorItem): number {
+    let textA = a.itemName.toUpperCase();
+    let textB = b.itemName.toUpperCase();
+    const less = textA < textB;
+    const more = textA > textB;
+    if (less) {
+      return -1;
+    } else if (more) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  saveGroup(): (list: {[key: string]: MixedEditorItem[]}, listName: string) => void {
+    return (list: {[key: string]: MixedEditorItem[]}, listName: string) => {
+      if (list == null || Object.keys(list).length < 1) {
         return;
       }
       const groupName = listName;
       const newUserGroupData: {[key: string]: any} = {};
-      list.forEach(item => {
-        if (item.allOptionItem) {
-          item.itemId = 'all';
+
+      Object.keys(list).forEach(itemsType => {
+        if (list[itemsType] == null || list[itemsType].length < 1) {
+          return;
         }
-        if (newUserGroupData[item.itemType] == null) {
-          newUserGroupData[item.itemType] = [];
-        }
-        if (Array.isArray(newUserGroupData[item.itemType])) {
-          newUserGroupData[item.itemType].push(item.itemId);
-        }
+
+        list[itemsType].forEach(item => {
+          if (item.allOptionItem) {
+            item.itemId = 'all';
+          }
+          if (newUserGroupData[item.itemType] == null) {
+            newUserGroupData[item.itemType] = [];
+          }
+          if (Array.isArray(newUserGroupData[item.itemType])) {
+            newUserGroupData[item.itemType].push(item.itemId);
+          }
+        });
       });
       const user_role_ref_id = newUserGroupData['user_role'][0];
 
