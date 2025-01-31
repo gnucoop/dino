@@ -580,13 +580,16 @@ export class FiltersService<T extends Model = Model> {
         map(([changes, basicFilters]) => {
           let filterItems: FilterItem[] = [];
           for (const fName of Object.keys(changes)) {
-            const ftItem: FilterItem = {
-              name: fName,
-              value: changes[fName],
-              operator: {label: 'Like', value: '$regex'},
-              fieldType: AjfFieldType.String,
-            };
-            filterItems.push(ftItem);
+            // TODO sara multiple
+            if (fName.indexOf('_multiple') < 0) {
+              const ftItem: FilterItem = {
+                name: fName,
+                value: changes[fName],
+                operator: {label: 'Like', value: '$regex'},
+                fieldType: AjfFieldType.String,
+              };
+              filterItems.push(ftItem);
+            }
           }
           return [filterItems, basicFilters];
         }),
@@ -635,6 +638,8 @@ export class FiltersService<T extends Model = Model> {
 
     const formControl = Object.create({});
     formControl[`${ftName}`] = new UntypedFormControl();
+    // TODO sara multiple
+    formControl[`${ftName}_multiple`] = new UntypedFormControl();
     const basicFilter = new UntypedFormGroup(formControl);
     this._basicAdditionalFormGroups.push(basicFilter);
     this._currentBasicFilterLabels.push(ftName);
@@ -780,8 +785,10 @@ export class FiltersService<T extends Model = Model> {
       return;
     }
     const formValue = Object.create({});
+    // TODO sara multiple
     filterItems.forEach(ft => {
       formValue[ft.name] = ft.value;
+      formValue[`${ft.name}_multiple`] = ft.value;
     });
     this._basicFormGroups.forEach(fg => {
       fg.patchValue(formValue, {emitEvent: false});

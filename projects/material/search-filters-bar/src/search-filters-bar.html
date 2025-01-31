@@ -130,6 +130,7 @@
             #auto="matAutocomplete"
             [autoActiveFirstOption]="false"
             [displayWith]="displayItemName"
+            (optionSelected)="optionClicked($event.option.value, additionalBasicFiltersLabels[idx], group)"
           >
             <ng-container *ngIf="isMetric(group); else statusOptions ">
               <mat-option
@@ -137,9 +138,13 @@
                 [value]="option"
                 [ngClass]="'dino-option-level-' + (option.level ?? '0')"
               >
-                {{displayItemName({id: [option.id], name: option.name, secondary:
-                getMetricDataSecondaryAttribute(option, secondaryMetricFieldsDisplayed,
-                additionalBasicFiltersLabels[idx])})}}
+                <mat-checkbox [checked]="option.selected" 
+                  (change)="toggleSelection(option, additionalBasicFiltersLabels[idx], group)" 
+                  (click)="$event.stopPropagation()">
+                  {{displayItemName({id: [option.id], name: option.name, secondary:
+                    getMetricDataSecondaryAttribute(option, secondaryMetricFieldsDisplayed,
+                    additionalBasicFiltersLabels[idx])})}}
+                </mat-checkbox>
               </mat-option>
             </ng-container>
 

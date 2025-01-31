@@ -87,7 +87,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * All the metrics filters autocomplete options.
    */
   metricFiltersOptions: {
-    [key: string]: Observable<(Metric & {level?: number} & {[key: string]: any})[]>;
+    [key: string]: Observable<
+      (Metric & {level?: number} & {[key: string]: any} & {selected?: boolean})[]
+    >;
   } = {};
 
   /**
@@ -307,7 +309,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    */
   clearFilter(controlname: string, fg: UntypedFormGroup): void {
     const formGroupValue = fg.value;
-    const newValue = {[controlname]: ''};
+    const newValue = {[controlname]: '', [`${controlname}_multiple`]: []};
     fg.setValue({...formGroupValue, ...newValue});
   }
 
@@ -548,7 +550,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     const metricType = Object.keys(group.controls)[0];
     const inputControl = this.additionalBasicFilters.find(grp => grp.get(metricType) != null);
     if (inputControl && inputControl.value[metricType] == null) {
-      inputControl.setValue({[metricType]: ''});
+      let metricMultiple =
+        inputControl.value[`${metricType}_multiple`] == null
+          ? []
+          : inputControl.value[`${metricType}_multiple`];
+      inputControl.setValue({[metricType]: '', [`${metricType}_multiple`]: metricMultiple});
     }
   }
 
@@ -814,15 +820,44 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         )
         .subscribe(([allDescendants, parentMetric]) => {
           if (allDescendants != null && parentMetric != null) {
-            inputControl?.get(metricType)?.setValue({
-              id: [parentMetric.id, ...allDescendants],
-              name: parentMetric.name,
-              secondary: this.getMetricDataSecondaryAttribute(
-                parentMetric,
-                this.secondaryMetricFieldsDisplayed,
-                metricType,
-              ),
-            });
+            const multiple: any[] =
+              inputControl.value[`${metricType}_multiple`] == null
+                ? []
+                : inputControl.value[`${metricType}_multiple`];
+            let multipleIds = multiple.map((m: any) => (m && m.id ? m.id : m));
+
+            if (inputControl?.get(metricType)) {
+              const i = multiple.findIndex((value: any) => value.id === parentMetric.id);
+              if (i > -1) {
+                // Add new option for the metric input
+                inputControl.setValue({
+                  [metricType]: {
+                    id: [...new Set([parentMetric.id, ...allDescendants, ...multipleIds])],
+                    name: '', // parentMetric.name,
+                    secondary: this.getMetricDataSecondaryAttribute(
+                      parentMetric,
+                      this.secondaryMetricFieldsDisplayed,
+                      metricType,
+                    ),
+                  },
+                  [`${metricType}_multiple`]: [...multiple, ...allDescendants],
+                });
+              } else {
+                // Remove an option from the metric input. Remove all descendants.
+                const filteredMultiple = multiple.filter((m: any) =>
+                  typeof m === 'string' ? !allDescendants.includes(m) : true,
+                );
+                multipleIds = filteredMultiple.map((m: any) => (m && m.id ? m.id : m));
+                inputControl.setValue({
+                  [metricType]: {
+                    id: [...multipleIds],
+                    name: '',
+                    secondary: null,
+                  },
+                  [`${metricType}_multiple`]: [...filteredMultiple],
+                });
+              }
+            }
           }
         });
     }
@@ -897,6 +932,55 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         this._cdr.detectChanges();
       });
   }
+
+  optionClicked = (
+    option: Metric & {level?: number | undefined} & {[key: string]: any} & {
+      selected?: boolean | undefined;
+    },
+    controlname: string,
+    fg: UntypedFormGroup,
+  ): void => {
+    if (this.isMetric(fg)) {
+      this.toggleSelection(option, controlname, fg);
+    }
+  };
+
+  /**
+   * Toggle an option from metric selector
+   * @param option
+   * @param controlname
+   * @param fg
+   */
+  toggleSelection = (
+    option: Metric & {level?: number | undefined} & {[key: string]: any} & {
+      selected?: boolean | undefined;
+    },
+    controlname: string,
+    fg: UntypedFormGroup,
+  ): void => {
+    const formGroupValue = fg.value;
+    option.selected = !option.selected;
+    let newValue = {};
+    let multiple =
+      fg.value[`${controlname}_multiple`] == null ? [] : fg.value[`${controlname}_multiple`];
+
+    if (option.selected === true) {
+      multiple.push(option);
+      newValue = {[controlname]: option, [`${controlname}_multiple`]: multiple};
+      fg.setValue({...formGroupValue, ...newValue});
+    } else {
+      const i = multiple.findIndex((value: any) => value.id === option.id);
+      if (i > -1) {
+        multiple.splice(i, 1);
+        if (multiple.length) {
+          newValue = {[controlname]: option, [`${controlname}_multiple`]: multiple};
+          fg.setValue({...formGroupValue, ...newValue});
+        } else {
+          this.clearFilter(controlname, fg);
+        }
+      }
+    }
+  };
 
   ngOnDestroy() {
     this._dialogSub.unsubscribe();
