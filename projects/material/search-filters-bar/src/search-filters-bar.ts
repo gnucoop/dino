@@ -664,8 +664,10 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                     );
                   }
 
+                  this._setupMetricsCheckboxes(inputControl, metricType, organizedMetricOptions);
                   return organizedMetricOptions;
                 }
+                this._setupMetricsCheckboxes(inputControl, metricType, metricOptions);
                 return metricOptions;
               }),
             );
@@ -827,13 +829,16 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             let multipleIds = multiple.map((m: any) => (m && m.id ? m.id : m));
 
             if (inputControl?.get(metricType)) {
+              const multipleName = multiple
+                .filter((m: any) => m && m.id && m.name)
+                .map(m => m.name);
               const i = multiple.findIndex((value: any) => value.id === parentMetric.id);
               if (i > -1) {
                 // Add new option for the metric input
                 inputControl.setValue({
                   [metricType]: {
                     id: [...new Set([parentMetric.id, ...allDescendants, ...multipleIds])],
-                    name: '', // parentMetric.name,
+                    name: multipleName.join(),
                     secondary: this.getMetricDataSecondaryAttribute(
                       parentMetric,
                       this.secondaryMetricFieldsDisplayed,
@@ -851,7 +856,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                 inputControl.setValue({
                   [metricType]: {
                     id: [...multipleIds],
-                    name: '',
+                    name: multipleName.join(),
                     secondary: null,
                   },
                   [`${metricType}_multiple`]: [...filteredMultiple],
@@ -933,6 +938,33 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       });
   }
 
+  private _setupMetricsCheckboxes(
+    inputControl: UntypedFormGroup | undefined,
+    metricType: string,
+    metricOptions: (Metric & {
+      [key: string]: any;
+    })[],
+  ) {
+    const inputMultipleStartingValue = inputControl?.get(`${metricType}_multiple`)?.value;
+    let multipleIds = inputMultipleStartingValue
+      ? inputMultipleStartingValue.map((m: any) => (m && m.id ? m.id : m))
+      : [];
+
+    metricOptions.forEach(metricOpt => {
+      if (multipleIds.includes(metricOpt.id)) {
+        metricOpt['selected'] = true;
+      } else {
+        metricOpt['selected'] = false;
+      }
+    });
+  }
+
+  /**
+   * Click an option in metric selector (not the checkbox)
+   * @param option
+   * @param controlname
+   * @param fg
+   */
   optionClicked = (
     option: Metric & {level?: number | undefined} & {[key: string]: any} & {
       selected?: boolean | undefined;
@@ -946,7 +978,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   };
 
   /**
-   * Toggle an option from metric selector
+   * Toggle a checkbox option from metric selector
    * @param option
    * @param controlname
    * @param fg

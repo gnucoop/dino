@@ -785,10 +785,12 @@ export class FiltersService<T extends Model = Model> {
       return;
     }
     const formValue = Object.create({});
-    // TODO sara multiple
     filterItems.forEach(ft => {
       formValue[ft.name] = ft.value;
-      formValue[`${ft.name}_multiple`] = ft.value;
+
+      if (ft.value && ft.value.id && Array.isArray(ft.value.id)) {
+        formValue[`${ft.name}_multiple`] = ft.value.id;
+      }
     });
     this._basicFormGroups.forEach(fg => {
       fg.patchValue(formValue, {emitEvent: false});
