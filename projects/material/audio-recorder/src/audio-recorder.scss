@@ -1,0 +1,49 @@
+dino-audio-recorder {
+  .dino-audio-recorder-card {
+    display: flex;
+    flex-flow: column wrap;
+    min-width: 300px;
+    max-width: 450px;
+    .mat-mdc-card-content {
+      min-height: 100px;
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+      align-items: center;
+      .dino-recording-time {
+        .mat-mdc-extended-fab {
+          font-size: 26px;
+          background-color: transparent;
+        }
+        opacity: 0.6;
+      }
+      .dino-audio-element {
+        flex: 1 0 auto;
+        width: 100%;
+      }
+      .mat-mdc-form-field {
+        width: 100%;
+        margin-top: 10px;
+      }
+      .dino-form-fields-summary {
+        width: 100%;
+        max-height: 200px;
+        overflow-y: scroll;
+      }
+    }
+    .mat-mdc-card-actions {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+      .mat-mdc-fab {
+        flex: 1 0 auto;
+        margin: 2px;
+        .dino-communicating-spinner {
+          margin-right: 4px;
+          height: 24px;
+          width: 24px;
+        }
+      }
+    }
+  }
+}
