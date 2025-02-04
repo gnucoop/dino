@@ -721,6 +721,24 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
+   * Generates a JSON object of an empty formdata "data" using all the Form Schema fields
+   */
+  generateEmptyExampleData(schema: FormSchema) {
+    if (!schema) return null;
+    const data: {[key: string]: any} = {};
+    const schemaNodes = schema.schema.nodes;
+    if (!schemaNodes) return null;
+    for (let slide of schemaNodes) {
+      for (let node of slide.nodes) {
+        if (node.nodeType === 0) {
+          data[node.name] = node.label;
+        }
+      }
+    }
+    return data;
+  }
+
+  /**
    * Removes a single Form Schema by id. Updates its name with the current timestamp
    * before deleting it.
    * @param schemaId
