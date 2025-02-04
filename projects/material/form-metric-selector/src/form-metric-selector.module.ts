@@ -39,10 +39,12 @@ import {MatSelectModule} from '@angular/material/select';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
+import {AudioRecorderModule as DinoAudioRecorderModule} from '@dino/material/audio-recorder';
 @NgModule({
   imports: [
     ClipboardModule,
     CommonModule,
+    DinoAudioRecorderModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatDatepickerModule,

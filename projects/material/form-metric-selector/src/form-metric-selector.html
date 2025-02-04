@@ -108,6 +108,18 @@
       {{((isView|async) !== true) ? ('Fill the Form'|transloco) : ('View the Form'|transloco)}}
       <mat-icon>arrow_forward</mat-icon>
     </button>
+
+    <button
+      *ngIf="(isCreate|async) === true"
+      mat-raised-button
+      color="primary"
+      [disabled]="formMetrics.status === 'INVALID'"
+      class="dino-go-to-data-button"
+      (click)="openRecordAudioDialog()"
+    >
+      {{('Record the Form'|transloco)}}
+      <mat-icon>mic</mat-icon>
+    </button>
   </div>
   <div class="dino-go-to-data-button-container" *ngIf="context === 'report'">
     <button

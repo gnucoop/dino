@@ -68,11 +68,14 @@ dino-form-metric-selector {
     display: flex;
     flex-flow: row wrap;
     width: 100%;
-    justify-content: center;
+    justify-content: space-around;
     .dino-go-to-data-button {
       margin-top: 50px;
+      @media only screen and (max-width : 768px) {
+        margin-top: 20px;
+      }
       padding: 30px;
-      min-width: 200px;
+      min-width: 300px;
       text-transform: uppercase;
       font-size: 16px;
     }

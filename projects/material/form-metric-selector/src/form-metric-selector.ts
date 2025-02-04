@@ -42,7 +42,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, DataQuerySelector, Metric, MetricsService} from '@dino/core/data';
-import {FormData, FormSchemaManager, FormStatus} from '@dino/core/forms';
+import {FormData, FormSchema, FormSchemaManager, FormStatus} from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
@@ -58,6 +58,7 @@ import {
   of as obsOf,
   Subject,
   Subscription,
+  throwError,
 } from 'rxjs';
 import {
   catchError,
@@ -74,6 +75,7 @@ import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selec
 import {ActivatedRoute, Params} from '@angular/router';
 import {DateAdapter} from '@angular/material/core';
 import {TranslocoService} from '@ajf/core/transloco';
+import {AudioRecorder} from '@dino/material/audio-recorder';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -136,6 +138,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
    * Emitted when the user wants to move to the Data step of the Form Editor.
    */
   @Output() goToDataEvt: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
+   * Emitted when AudioData is returned by the AudioRecorder.
+   */
+  @Output() audioFormDataEvt: EventEmitter<{[key: string]: any}> = new EventEmitter<{
+    [key: string]: any;
+  }>();
 
   /**
    * The Selector metrics form group.
@@ -204,9 +213,14 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   } = {};
 
   /**
-   * True if the Form is in view mode.
+   * True if the Form/Report is in View mode.
    */
   isView: Subject<boolean> = new Subject<boolean>();
+
+  /**
+   * True if the Form/Report is in Create mode.
+   */
+  isCreate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   /**
    * The activate route when this component is inside a Form Metric Selector Dialog
@@ -269,6 +283,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
 
   /**
+   * The form schema
+   */
+  private _formSchema: Observable<FormSchema | null>;
+
+  /**
    * The form schema available metric types
    */
   private _formSchemaAvailableMetrics: Observable<string[] | null>;
@@ -288,11 +307,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
     this._adapter.setLocale(this._getCurrentLocale());
-
-    this._formSchemaAvailableMetrics = combineLatest([
-      this._route.params,
-      this._dialogActRouteParams,
-    ]).pipe(
+    this._formSchema = combineLatest([this._route.params, this._dialogActRouteParams]).pipe(
       map(([params, dialogParams]) => {
         const routeparams = dialogParams ?? params;
         return {
@@ -303,18 +318,27 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       filter(ids => ids.form_schema_id != null || ids.report_schema_id != null),
       switchMap(ids => {
         if (ids.report_schema_id) {
-          return obsOf([]);
+          return obsOf(null);
         }
         return this._fs.get(ids.form_schema_id).pipe(
           map(doc => {
             if (doc == null) {
               return null;
             }
-            return doc.form_schema_metrics ?? [];
+            return doc;
           }),
         );
       }),
       shareReplay(1),
+    );
+
+    this._formSchemaAvailableMetrics = this._formSchema.pipe(
+      map(doc => {
+        if (doc == null) {
+          return null;
+        }
+        return doc.form_schema_metrics ?? [];
+      }),
     );
 
     this.formCreationDate = this._formData.pipe(
@@ -599,6 +623,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
       return;
     }
     this._formData.next(formData as FormData);
+    this.isCreate.next(false);
     this.isView.next(isView);
   }
 
@@ -636,6 +661,36 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           }
         });
     }
+  }
+
+  /**
+   * Opens a dialog with the AudioRecorder component
+   * @param text The text displayed in the dialog
+   */
+  openRecordAudioDialog() {
+    this._formSchema.pipe(take(1)).subscribe(schema => {
+      if (schema == null) return;
+
+      const audioRecorderRef = this._dialog.open(AudioRecorder, {
+        data: {
+          formSchema: schema,
+          exampleData: this._fs.generateEmptyExampleData(schema),
+        },
+        panelClass: 'dino-audio-recorder-dialog',
+      });
+
+      audioRecorderRef
+        .afterClosed()
+        .pipe(
+          catchError(err => throwError(() => err) as Observable<string>),
+          take(1),
+        )
+        .subscribe((audioData: {[key: string]: any} | null) => {
+          if (!audioData) return;
+          this.audioFormDataEvt.emit(audioData);
+          this.goToData();
+        });
+    });
   }
 
   /**
