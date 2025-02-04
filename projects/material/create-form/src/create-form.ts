@@ -262,6 +262,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   readonly formChanges: BehaviorSubject<AjfForm | null> = new BehaviorSubject<AjfForm | null>(null);
 
   /**
+   * The AudioData emitted by FormMetricSelector when AudioRecorder returns transcribed audio data
+   */
+  readonly formAudioData: BehaviorSubject<{[key: string]: any} | null> = new BehaviorSubject<{
+    [key: string]: any;
+  } | null>(null);
+
+  /**
    * Extra form control (dino_form_info and dino_form_metrics) to be added to the form group
    */
   private _extraFormControls: {[key: string]: {[key: string]: any}} = {};
@@ -608,10 +615,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     this._form = combineLatest([
       this._formSchema,
       this.formChanges,
+      this.formAudioData,
       this._udm.getActiveUserData(),
       this._ugm.getActiveUserGroups(),
     ]).pipe(
-      map(([fschema, schemaChanges, activeUser, activeUserGroups]) => {
+      map(([fschema, schemaChanges, fAudioData, activeUser, activeUserGroups]) => {
         if (schemaChanges) {
           return schemaChanges;
         }
@@ -630,7 +638,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           activeUserGroups,
         };
         this._extraFormControls['dino_form_info'] = dinoFormInfo;
-        const fdata = {dino_form_info: dinoFormInfo};
+        let fdata = {dino_form_info: dinoFormInfo};
+        if (fAudioData) {
+          fdata = {...fdata, ...fAudioData};
+        }
         return AjfFormSerializer.fromJson(fschema.schema, fdata);
       }),
       shareReplay(1),
@@ -982,7 +993,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
 
     this.isFormMetricsSelectorValid = combineLatest([
       this._formMetricsSelector,
-      this._uniqueMetricsSetAlreadyExists,
+      this._uniqueMetricsSetAlreadyExists.pipe(startWith(false)),
     ]).pipe(
       switchMap(([formMetricsSelector, uniqueExists]) => {
         if (formMetricsSelector == null || uniqueExists) {
@@ -994,6 +1005,11 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         );
       }),
     );
+  }
+
+  updateFormData(audioData: {[key: string]: any}) {
+    if (!audioData) return;
+    this.formAudioData.next(audioData);
   }
 
   /**

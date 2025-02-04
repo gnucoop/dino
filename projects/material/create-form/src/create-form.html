@@ -11,6 +11,7 @@
             [allowMetricCreationFor]="allowMetricCreationFor"
             [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
             (goToDataEvt)="goToDataStep(stepper)"
+            (audioFormDataEvt)="updateFormData($event)"
           >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
           </dino-form-metric-selector>
