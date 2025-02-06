@@ -113,7 +113,7 @@
       *ngIf="(isCreate|async) === true"
       mat-raised-button
       color="primary"
-      [disabled]="formMetrics.status === 'INVALID'"
+      [disabled]="(formMetrics.status === 'INVALID') || (nss.isOnline$|async) === false"
       class="dino-go-to-data-button"
       (click)="openRecordAudioDialog()"
     >

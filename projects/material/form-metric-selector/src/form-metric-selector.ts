@@ -76,6 +76,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {DateAdapter} from '@angular/material/core';
 import {TranslocoService} from '@ajf/core/transloco';
 import {AudioRecorder} from '@dino/material/audio-recorder';
+import {NetworkStatusService} from '@dino/core/auth';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -293,6 +294,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   private _formSchemaAvailableMetrics: Observable<string[] | null>;
 
   constructor(
+    readonly nss: NetworkStatusService,
     private _userGroupManager: UserGroupManager,
     private _metricService: MetricsService,
     private _dialog: MatDialog,
