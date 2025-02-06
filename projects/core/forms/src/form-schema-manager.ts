@@ -721,9 +721,13 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   }
 
   /**
-   * Generates a JSON object of an empty formdata "data" using all the Form Schema fields
+   * Generates a JSON object of an empty formdata "data" using all the Form Schema fields.
+   * Keys are fields' names, values are fields' labels.
+   * Does NOT take slides into account.
+   * @param schema the Form Schema
+   * @returns the example data
    */
-  generateEmptyExampleData(schema: FormSchema) {
+  generateEmptyExampleData(schema: FormSchema): {[key: string]: any} | null {
     if (!schema) return null;
     const data: {[key: string]: any} = {};
     const schemaNodes = schema.schema.nodes;
