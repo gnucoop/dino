@@ -13,7 +13,7 @@
  *
  */
 
-import {Injectable, isDevMode} from '@angular/core';
+import {Inject, Injectable, isDevMode} from '@angular/core';
 import {Subject, Observable, of as obsOf, BehaviorSubject} from 'rxjs';
 import {switchMap, take} from 'rxjs/operators';
 import {RecordedAudioOutput, TranscribeResponse} from './audio-interfaces';
@@ -22,21 +22,45 @@ import {UserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ajf/core/transloco';
 import {HttpClient} from '@angular/common/http';
 import {FormSchema} from '@dino/core/forms';
+import {PANDINO_SERVICE_CONFIG, PandinoConfig} from '@dino/core/data';
 /**
- * Service that provides methods to record, reproduce and save audio from user mic input
+ * Service that provides methods to record, reproduce and save audio from user mic input.
+ * Audio can also be sent to Pandino API to be transcribed or to compile a Form.
  */
 @Injectable({providedIn: 'root'})
 export class AudioRecorderService {
+  /**
+   * The MediaStream
+   */
   private stream: MediaStream | null = null;
+  /**
+   * MediaRecorder instance
+   */
   private recorder: MediaRecorder | null = null;
+  /**
+   * Interval used to tick recording time
+   */
   private interval: any;
+  /**
+   * Recorded audio starting time
+   */
   private _startTime: Date | null = null;
+  /**
+   * The recorded Audio Blob
+   */
   private _recorded: BehaviorSubject<RecordedAudioOutput | null> =
     new BehaviorSubject<RecordedAudioOutput | null>(null);
+  /**
+   * The recorded Audio time length
+   */
   private _recordingTime = new Subject<string>();
+  /**
+   * Emits when recording fails
+   */
   private _recordingFailed = new Subject<string>();
 
   constructor(
+    @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
     private _http: HttpClient,
     private _ts: TranslocoService,
     private _udm: UserDataManager,
@@ -54,7 +78,10 @@ export class AudioRecorderService {
     return this._recordingFailed.asObservable();
   }
 
-  startRecording() {
+  /**
+   * Starts the Audio recording after checking user mediaDevices.
+   */
+  startRecording(): void {
     if (this.recorder) {
       return;
     }
@@ -72,7 +99,10 @@ export class AudioRecorderService {
       });
   }
 
-  abortRecording() {
+  /**
+   * Aborts the Audio recording and clear the already recorded blob
+   */
+  abortRecording(): void {
     this._recorded.next(null);
     this.stopMedia();
   }
@@ -84,6 +114,7 @@ export class AudioRecorderService {
    * @returns The Pandino API Response
    */
   sendToTrascribe(recordedAudio: Blob | null): Observable<TranscribeResponse | null> {
+    if (!this._pandinoConfig || !this._pandinoConfig.pandinoUrl) return obsOf(null);
     return this._udm.getActiveUserData().pipe(
       switchMap(activeUserData => {
         const storedApiKey = localStorage.getItem('pandas_dino_api_key');
@@ -93,7 +124,7 @@ export class AudioRecorderService {
           'X-USER-NAME': activeUserData.full_name,
           'X-USER-EMAIL': activeUserData.email,
         };
-        const url = `http://127.0.0.1:5000/transcribe`;
+        const url = `${this._pandinoConfig.pandinoUrl}/transcribe`;
         const formData = new FormData();
         formData.append('file', recordedAudio);
         const currentLang = this._ts.getActiveLang();
@@ -129,7 +160,7 @@ export class AudioRecorderService {
           'X-API-KEY': storedApiKey,
           'X-USER-EMAIL': activeUserData.email,
         };
-        const url = `http://127.0.0.1:5000/audioformcompilation`;
+        const url = `${this._pandinoConfig.pandinoUrl}/audioformcompilation`;
         const body = {
           name: audioFormData.formSchema.name,
           schema: audioFormData.formSchema.schema.nodes,
@@ -143,7 +174,10 @@ export class AudioRecorderService {
     );
   }
 
-  private _record() {
+  /**
+   * Sets the recorder uo and starts it, keeping track of the recording time
+   */
+  private _record(): void {
     if (!this.stream) return;
     this._setupRecorder();
     if (!this.recorder) return;
@@ -157,7 +191,10 @@ export class AudioRecorderService {
     }, 1000);
   }
 
-  private _setupRecorder() {
+  /**
+   * Sets the recorder up and adds event listeners
+   */
+  private _setupRecorder(): void {
     if (!this.stream) return;
     let data: BlobPart[] = [];
     this.recorder = new MediaRecorder(this.stream);
@@ -182,13 +219,19 @@ export class AudioRecorderService {
     });
   }
 
-  stopRecording() {
+  /**
+   * Stops the recorder
+   */
+  stopRecording(): void {
     if (this.recorder) {
       this.recorder.stop();
     }
   }
 
-  private stopMedia() {
+  /**
+   * De-allocates the recorder, resets recording time and startTime, stops the stream audio tracks
+   */
+  private stopMedia(): void {
     if (this.recorder) {
       this.recorder = null;
       clearInterval(this.interval);

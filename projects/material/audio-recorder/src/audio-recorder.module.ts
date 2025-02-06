@@ -32,6 +32,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import {MatListModule} from '@angular/material/list';
     MatInputModule,
     MatListModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
   ],
   declarations: [AudioRecorder],
   exports: [AudioRecorder],

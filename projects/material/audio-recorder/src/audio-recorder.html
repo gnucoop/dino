@@ -82,7 +82,7 @@
       mat-fab
       extended
       color="primary"
-      [disabled]="(isCommunicating|async) === true"
+      [disabled]="(isCommunicating|async) === true || (nss.isOnline$|async) === false"
       *ngIf="!isRecording && (blobUrl|async) !== null && (audioTranscription|async) === null"
       (click)="transcribe()"
     >
@@ -96,7 +96,7 @@
       mat-fab
       extended
       color="primary"
-      [disabled]="(isCommunicating|async) === true"
+      [disabled]="(isCommunicating|async) === true || (nss.isOnline$|async) === false"
       *ngIf="(audioTranscription|async) !== null"
       (click)="audioFormCompile()"
     >

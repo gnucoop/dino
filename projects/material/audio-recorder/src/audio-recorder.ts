@@ -35,6 +35,9 @@ import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, take} from 'rxjs/operators';
 import {RecordedAudioOutput} from './audio-interfaces';
 import {FormSchema} from '@dino/core/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {TranslocoService} from '@ajf/core/transloco';
+import {NetworkStatusService} from '@dino/core/auth';
 
 /**
  * Shows a list of active filters and allows their deletion.
@@ -80,15 +83,25 @@ export class AudioRecorder implements OnDestroy {
   private _recordingFailedSub: Subscription = Subscription.EMPTY;
 
   constructor(
+    readonly nss: NetworkStatusService,
     @Inject(MAT_DIALOG_DATA)
     private _data: {formSchema: FormSchema; exampleData: {[key: string]: any} | null},
     private _dialogRef: MatDialogRef<AudioRecorder>,
     private _audioRecorderService: AudioRecorderService,
-    private sanitizer: DomSanitizer,
+    private _sanitizer: DomSanitizer,
+    private _snackBar: MatSnackBar,
+    private _ts: TranslocoService,
   ) {
-    this._recordingFailedSub = this._audioRecorderService
-      .recordingFailed()
-      .subscribe(() => (this.isRecording = false));
+    this._recordingFailedSub = this._audioRecorderService.recordingFailed().subscribe(failedMsg => {
+      this.isRecording = false;
+      this._snackBar.open(
+        this._ts.translate('Something went wrong while recording audio'),
+        this._ts.translate('RECORDING ERROR'),
+        {duration: 10000},
+      );
+      if (isDevMode()) console.log(failedMsg);
+    });
+
     this.recordedTime = this._audioRecorderService.getRecordedTime();
 
     this._blobSub = this._audioRecorderService
@@ -97,7 +110,7 @@ export class AudioRecorder implements OnDestroy {
       .subscribe(data => {
         if (data == null) return;
         this.blob.next(data);
-        this.blobUrl.next(this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data.blob)));
+        this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data.blob)));
       });
 
     if (this._data.exampleData) {
@@ -106,18 +119,26 @@ export class AudioRecorder implements OnDestroy {
     }
   }
 
+  /**
+   * Starts the audio recording.
+   */
   startRecording() {
     if (!this.isRecording) {
       this.isRecording = true;
       this._audioRecorderService.startRecording();
     }
   }
-
+  /**
+   * Aborts the recording and clears recorded audio.
+   */
   abortRecording() {
     this.isRecording = false;
     this._audioRecorderService.abortRecording();
   }
 
+  /**
+   * Stops the recording and stores the recorded audio blob.
+   */
   stopRecording() {
     if (this.isRecording) {
       this._audioRecorderService.stopRecording();
@@ -125,11 +146,17 @@ export class AudioRecorder implements OnDestroy {
     }
   }
 
+  /**
+   * Clears the recorded audio blob
+   */
   clearRecordedData() {
     this.blobUrl.next(null);
     this.audioTranscription.next(null);
   }
 
+  /**
+   * Downloads the recorded audio blob as an mp3 file.
+   */
   download(): void {
     this.blob.pipe(take(1)).subscribe(blob => {
       if (blob == null) return;
@@ -141,18 +168,32 @@ export class AudioRecorder implements OnDestroy {
     });
   }
 
-  transcribe() {
+  /**
+   * Sends the Audio to the Pandino API /transcribe endpoint
+   * and stores the returned text.
+   */
+  transcribe(): void {
     if (!this.blob.value) return;
     this.isCommunicating.next(true);
     this._audioRecorderService.sendToTrascribe(this.blob.value.blob).subscribe(res => {
       if (res && !res.error && res.text) {
         this.audioTranscription.next(res.text);
+      } else {
+        this._snackBar.open(
+          this._ts.translate('Something went wrong while transcribing audio'),
+          this._ts.translate('TRANSCRIPTION ERROR'),
+          {duration: 10000},
+        );
       }
       this.isCommunicating.next(false);
     });
   }
 
-  audioFormCompile() {
+  /**
+   * Sends the Audio to the Pandino API /audioformcompilation endpoint
+   * and closes this dialog, returning the compiled FormData
+   */
+  audioFormCompile(): void {
     if (this.audioTranscription.value == null) return;
     this.isCommunicating.next(true);
     this._audioRecorderService
@@ -164,6 +205,12 @@ export class AudioRecorder implements OnDestroy {
       });
   }
 
+  /**
+   * Parses the /audioformcompilation response string
+   * and creates an object from it
+   * @param audioData the string returned from /audioformcompilation
+   * @returns the data object
+   */
   private _audioFormResponseToJSON(audioData: string): {[key: string]: any} | null {
     if (!audioData) return null;
     let jsonData = {};
@@ -178,7 +225,7 @@ export class AudioRecorder implements OnDestroy {
   }
 
   /**
-   * Closes the dialog
+   * Closes the dialog and returns the data
    */
   closeDialog(dialogData: {[key: string]: any} | null = null) {
     this._dialogRef.close(dialogData);

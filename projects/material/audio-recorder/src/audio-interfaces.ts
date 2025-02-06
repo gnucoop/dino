@@ -20,11 +20,23 @@
  *
  */
 
+/**
+ * Represents a recorded Audio Blob and its title
+ */
 export interface RecordedAudioOutput {
+  /**
+   * The audio blob
+   */
   blob: Blob;
+  /**
+   * Audio blob title
+   */
   title: string;
 }
 
+/**
+ * Represents a response whisper object received from Pandino API "transcribe" endpoint
+ */
 export interface TranscribeResponse {
   input_length_ms?: number;
   language?: string;
