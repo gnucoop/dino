@@ -818,23 +818,25 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
             }
             return obsOf([null, null]);
           }),
+          withLatestFrom(this.metricFiltersOptions[metricType].pipe(startWith([]))),
           takeUntil(this._mainUnsubscribe),
         )
-        .subscribe(([allDescendants, parentMetric]) => {
+        .subscribe(([[allDescendants, parentMetric], metricFiltersOptionsValues]) => {
           if (allDescendants != null && parentMetric != null) {
             const multiple: any[] =
               inputControl.value[`${metricType}_multiple`] == null
                 ? []
                 : inputControl.value[`${metricType}_multiple`];
-            let multipleIds = multiple.map((m: any) => (m && m.id ? m.id : m));
+            let multipleIds = multiple.map((m: any) => m?.id ?? m).map(m => (m == null ? '' : m));
 
             if (inputControl?.get(metricType)) {
               const multipleName = multiple
                 .filter((m: any) => m && m.id && m.name)
                 .map(m => m.name);
-              const i = multiple.findIndex((value: any) => value.id === parentMetric.id);
-              if (i > -1) {
-                // Add new option for the metric input
+
+              const selectedTrue = multiple.findIndex((value: any) => value.id === parentMetric.id);
+              if (selectedTrue > -1) {
+                // User added a new object for the metric input. Add all descendants.
                 inputControl.setValue({
                   [metricType]: {
                     id: [...new Set([parentMetric.id, ...allDescendants, ...multipleIds])],
@@ -848,10 +850,11 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                   [`${metricType}_multiple`]: [...multiple, ...allDescendants],
                 });
               } else {
-                // Remove an option from the metric input. Remove all descendants.
-                const filteredMultiple = multiple.filter((m: any) =>
-                  typeof m === 'string' ? !allDescendants.includes(m) : true,
-                );
+                // User removed an abject from the metric input. Remove all descendants.
+                const filteredMultiple = multiple.filter((m: any) => {
+                  const mId = m?.id ?? m;
+                  return !allDescendants.includes(mId);
+                });
                 multipleIds = filteredMultiple.map((m: any) => (m && m.id ? m.id : m));
                 inputControl.setValue({
                   [metricType]: {
@@ -860,6 +863,15 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                     secondary: null,
                   },
                   [`${metricType}_multiple`]: [...filteredMultiple],
+                });
+              }
+
+              // Clean also checkbox in list
+              if (allDescendants.length) {
+                metricFiltersOptionsValues.forEach(metricOpt => {
+                  if (allDescendants.includes(metricOpt.id)) {
+                    metricOpt['selected'] = selectedTrue > -1 ? true : false;
+                  }
                 });
               }
             }
@@ -938,6 +950,12 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       });
   }
 
+  /**
+   * Select the correct checkbox in the list, for each option found in the multi-select form input
+   * @param inputControl
+   * @param metricType
+   * @param metricOptions
+   */
   private _setupMetricsCheckboxes(
     inputControl: UntypedFormGroup | undefined,
     metricType: string,
@@ -945,18 +963,37 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       [key: string]: any;
     })[],
   ) {
-    const inputMultipleStartingValue = inputControl?.get(`${metricType}_multiple`)?.value;
-    let multipleIds = inputMultipleStartingValue
-      ? inputMultipleStartingValue.map((m: any) => (m && m.id ? m.id : m))
-      : [];
+    let inputMultipleStartingValue = inputControl?.get(`${metricType}_multiple`)?.value;
+    if (inputMultipleStartingValue) {
+      let multipleIds = inputMultipleStartingValue.map((m: any) => m?.id ?? m);
 
-    metricOptions.forEach(metricOpt => {
-      if (multipleIds.includes(metricOpt.id)) {
-        metricOpt['selected'] = true;
-      } else {
-        metricOpt['selected'] = false;
+      metricOptions.forEach(metricOpt => {
+        if (multipleIds.includes(metricOpt.id)) {
+          metricOpt['selected'] = true;
+        } else {
+          metricOpt['selected'] = false;
+        }
+      });
+
+      // Replace ids in input multiple values with corresponding object, if found
+      let changes = false;
+      const inputMultipleCleanValue = inputMultipleStartingValue
+        .map((val: any) => {
+          if (val && typeof val === 'string') {
+            const objOption = metricOptions.find(metricOpt => metricOpt.id === val);
+            if (objOption) {
+              changes = true;
+              return objOption;
+            }
+          }
+          return val;
+        })
+        .filter((val: any) => val);
+      if (changes || inputMultipleStartingValue.length !== inputMultipleCleanValue.length) {
+        inputControl?.patchValue({[`${metricType}_multiple`]: inputMultipleCleanValue});
       }
-    });
+      //}
+    }
   }
 
   /**
@@ -997,22 +1034,34 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       fg.value[`${controlname}_multiple`] == null ? [] : fg.value[`${controlname}_multiple`];
 
     if (option.selected === true) {
-      multiple.push(option);
+      multiple = this._addOptionObjectToMultipleSelect(multiple, option, option.selected);
       newValue = {[controlname]: option, [`${controlname}_multiple`]: multiple};
       fg.setValue({...formGroupValue, ...newValue});
     } else {
-      const i = multiple.findIndex((value: any) => value.id === option.id);
-      if (i > -1) {
-        multiple.splice(i, 1);
-        if (multiple.length) {
-          newValue = {[controlname]: option, [`${controlname}_multiple`]: multiple};
-          fg.setValue({...formGroupValue, ...newValue});
-        } else {
-          this.clearFilter(controlname, fg);
-        }
+      multiple = this._addOptionObjectToMultipleSelect(multiple, option, option.selected);
+      if (multiple.length) {
+        newValue = {[controlname]: option, [`${controlname}_multiple`]: multiple};
+        fg.setValue({...formGroupValue, ...newValue});
+      } else {
+        this.clearFilter(controlname, fg);
       }
     }
   };
+
+  /**
+   * Add or remove an option from the multiple select.
+   * If an option is in the list with only an id value, replace it with the corresponding selected object.
+   * @param multiple
+   * @param option
+   * @param toRemove
+   */
+  private _addOptionObjectToMultipleSelect(multiple: any[], option: any, optionSelected: boolean) {
+    multiple = multiple.filter((value: any) => value.id !== option.id && value !== option.id);
+    if (optionSelected === true) {
+      multiple.push(option);
+    }
+    return multiple;
+  }
 
   ngOnDestroy() {
     this._dialogSub.unsubscribe();

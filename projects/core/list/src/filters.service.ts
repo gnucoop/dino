@@ -353,8 +353,8 @@ export class FiltersService<T extends Model = Model> {
    * @param encodedString? The optional encoded string
    */
   loadPreset(encodedString?: string): void {
+    this._basicFilters.next([]);
     if (encodedString == null) {
-      this._basicFilters.next([]);
       this._additionalFilters.next([]);
       return;
     }
@@ -580,11 +580,12 @@ export class FiltersService<T extends Model = Model> {
         map(([changes, basicFilters]) => {
           let filterItems: FilterItem[] = [];
           for (const fName of Object.keys(changes)) {
-            // TODO sara multiple
             if (fName.indexOf('_multiple') < 0) {
+              const changesValue =
+                this._getIdsFromMultipleMetricSelection(changes, fName) ?? changes[fName];
               const ftItem: FilterItem = {
                 name: fName,
-                value: changes[fName],
+                value: changesValue,
                 operator: {label: 'Like', value: '$regex'},
                 fieldType: AjfFieldType.String,
               };
@@ -751,6 +752,24 @@ export class FiltersService<T extends Model = Model> {
     const diff = newFilters.filter(item => !oldFilters.some(ft => ft.name === item.name));
     oldFilters = oldFilters.concat(diff);
     return oldFilters;
+  }
+
+  /**
+   * If the field value in the form changes is a string instead of an object, it return,
+   * if exists an '<fname>_multiple' field, the new value for the filter with all the selected ids.
+   * @param changes form value changes
+   * @param fName form field name
+   * @returns the new value for the form field or null
+   */
+  private _getIdsFromMultipleMetricSelection(changes: any, fName: string): any {
+    if (typeof changes[fName] === 'string') {
+      const multipleValue: any[] = changes[`${fName}_multiple`] ? changes[`${fName}_multiple`] : [];
+      if (multipleValue.length) {
+        let multipleIds = multipleValue.map((m: any) => m?.id ?? m).map(m => (m == null ? '' : m));
+        return {id: multipleIds, name: changes[fName], secondary: null};
+      }
+    }
+    return null;
   }
 
   /**
