@@ -21,6 +21,7 @@
  */
 
 import {AjfContainerNode, AjfField, AjfNode, AjfNodeType, isContainerNode} from '@ajf/core/forms';
+import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {
   ChangeDetectionStrategy,
@@ -36,7 +37,13 @@ import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
-import {DataModelManager, InsertModel, Metric, MetricsService} from '@dino/core/data';
+import {
+  DataModelManager,
+  getValueFromRow,
+  InsertModel,
+  Metric,
+  MetricsService,
+} from '@dino/core/data';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   FormData,
@@ -51,7 +58,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
 import {format} from 'date-fns';
-import {JsonSchemaTypes, RxDocument} from 'rxdb';
+import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
 import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
@@ -202,6 +209,7 @@ export class ImportForm implements OnDestroy {
     private _formSchemaManager: FormSchemaManager,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
+    private _ts: TranslocoService,
     private _fsm: FormStatusManager,
     private _ehms: ErrorHandlerMessageService,
     readonly metricsService: MetricsService,
@@ -382,34 +390,33 @@ export class ImportForm implements OnDestroy {
             ? manager.collectionSchema.required
             : ['name'];
           const props = manager.collectionSchema.properties;
+          if (metric === 'case') {
+            delete props['code'];
+          }
+          if (metric === 'project') {
+            delete props['code_auto'];
+          }
 
           rows.forEach((row: {[key: string]: any}) => {
             // Check if is not a second header
             if (!this._isLabelHeader(row)) {
               const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
-              if (newMetricName && newMetricName.length && !row[metricIdKey]) {
+              if (newMetricName && !row[metricIdKey]) {
                 // Metric by name
                 if (!newMetricNames.includes(newMetricName)) {
                   // Metric already in the new metric list to be created
                   newMetricNames.push(newMetricName);
                   let newMetric: {[key: string]: any} = {};
 
-                  if (metric === 'case') {
-                    delete props['code'];
-                    delete row['case_code'];
-                  }
-                  if (metric === 'project') {
-                    delete props['code_auto'];
-                    delete row['project_code_auto'];
-                  }
                   for (let prop in props) {
-                    const propKey = metric + '_' + (prop as string);
-                    if (prop in requiredProps || row[propKey]) {
+                    const propKey = `${metric}_${prop}`;
+                    if (requiredProps.includes(prop) || row[propKey]) {
                       if (prop === 'metric_data') {
                         newMetric[prop as string] = JSON.parse(row[propKey]);
                       } else {
-                        newMetric[prop as string] = this._getValueFromRow(
+                        newMetric[prop as string] = getValueFromRow(
                           row[propKey],
+                          propKey,
                           props[prop].type,
                         );
                       }
@@ -492,45 +499,6 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
-   * Return the input value casted to the correct type (string, list or Date)
-   * @param rowValue the initial value found in xls file
-   * @param type required type for this value
-   * @returns
-   */
-  private _getValueFromRow(
-    rowValue: any,
-    requiredType?: JsonSchemaTypes | JsonSchemaTypes[] | readonly JsonSchemaTypes[] | undefined,
-  ): any {
-    let value = rowValue === undefined ? null : rowValue;
-    if (value !== null) {
-      if (typeof value === 'string') {
-        value = value.trim();
-        if (value.startsWith('[') && value.endsWith(']')) {
-          value = value
-            .slice(1, -1)
-            .split(',')
-            .map((v: string) => v.trim());
-        }
-      } else if (typeof value === 'object') {
-        try {
-          value = format(new Date(value), 'yyyy-MM-dd');
-        } catch (e) {}
-      }
-
-      if (requiredType) {
-        switch (requiredType) {
-          case 'string':
-            value = value.toString();
-            break;
-          case 'number':
-            value = !isNaN(value) ? +value : value;
-        }
-      }
-    }
-    return value;
-  }
-
-  /**
    * Insert all the rows into Dino
    * @param rows The rows to be imported
    * @param activeMetrics The list of the currently active metric type
@@ -577,7 +545,7 @@ export class ImportForm implements OnDestroy {
         newItem['data'] = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
-            const value = this._getValueFromRow(row[key]);
+            const value = getValueFromRow(row[key], key);
             if (value !== null) {
               return {...obj, [key]: value};
             } else {
@@ -622,7 +590,9 @@ export class ImportForm implements OnDestroy {
       .subscribe(bulkRes => {
         if (bulkRes && bulkRes.success.length) {
           this._setImportStatus(
-            'File imported successfully: ' + bulkRes.success.length + ' forms created!',
+            `${this._ts.translate('File imported successfully')}: ${
+              bulkRes.success.length
+            } ${this._ts.translate('forms created')}!`,
           );
           setTimeout(() => this.closeDialog(), 3000);
         } else {
@@ -802,11 +772,15 @@ export class ImportForm implements OnDestroy {
               );
             } else {
               this._setImportStatus(
-                'File not imported! Error during create new metrics: ' + metricsError,
+                `${this._ts.translate(
+                  'File not imported! Error during create new metrics',
+                )}: ${metricsError}`,
               );
             }
           } else {
-            this._setImportStatus('File not imported! Error on import metrics.');
+            this._setImportStatus(
+              this._ts.translate('File not imported! Error on import metrics.'),
+            );
           }
         });
     } else {
@@ -976,9 +950,11 @@ export class ImportForm implements OnDestroy {
         console.log('File not imported! These user ids not exist:' + missingUserIds);
         if (missingUserIds.length > maxIdsInResponse) {
           missingUserIds = missingUserIds.slice(0, maxIdsInResponse);
-          missingUserIds.push('\nand more...');
+          missingUserIds.push(`\n${this._ts.translate('and more')}...`);
         }
-        idsNotMatchMessage = '\nCheck that these user ids exist:' + missingUserIds;
+        idsNotMatchMessage = `\n${this._ts.translate(
+          'Check that these user ids exist',
+        )}: ${missingUserIds}`;
       }
     }
 
@@ -1007,14 +983,12 @@ export class ImportForm implements OnDestroy {
             );
             if (missingMetricIds.length > maxIdsInResponse) {
               missingMetricIds = missingMetricIds.slice(0, maxIdsInResponse);
-              missingMetricIds.push('\nand more...');
+              missingMetricIds.push(`\n${this._ts.translate('and more')}...`);
             }
-            idsNotMatchMessage =
-              idsNotMatchMessage +
-              '\nCheck that these ' +
-              reqMetricType +
-              ' ids exist:' +
-              missingMetricIds;
+            idsNotMatchMessage = `
+              ${idsNotMatchMessage} \n${this._ts.translate(
+              'Check that these metric ids exist for',
+            )} ${reqMetricType}: ${missingMetricIds}`;
           }
         }
       });
@@ -1029,12 +1003,15 @@ export class ImportForm implements OnDestroy {
         idsNotMatch = true;
         let missingStatusNames = missingStatus.map(i => '\n' + i);
         console.log('File not imported! These form status names not exist:' + missingStatusNames);
-        idsNotMatchMessage = '\nCheck that these form status names exist:' + missingStatusNames;
+
+        idsNotMatchMessage = `\n${this._ts.translate(
+          'Check that these form status names exist',
+        )}: ${missingStatusNames}`;
       }
     }
 
     if (idsNotMatch) {
-      this._setImportStatus('File not imported! ' + idsNotMatchMessage);
+      this._setImportStatus(`${this._ts.translate('File not imported')}! ${idsNotMatchMessage}`);
     }
     return idsNotMatch;
   }
@@ -1045,7 +1022,8 @@ export class ImportForm implements OnDestroy {
    * @param file The Xlsx file to be imported
    */
   private _importXlsx(file: Blob): void {
-    this._setImportStatus('Importing file...');
+    const startMessage = this._ts.translate('Importing file...');
+    this._setImportStatus(startMessage);
     const fileReader = new FileReader();
     fileReader.readAsArrayBuffer(file);
     fileReader.onload = (e: any) => {
@@ -1091,14 +1069,18 @@ export class ImportForm implements OnDestroy {
                 );
                 if (missingRequiredMetrics) {
                   this._setImportStatus(
-                    `File not imported! This metrics are mandatory: ${requiredMetrics.join(',')}.`,
+                    `${this._ts.translate(
+                      'File not imported! This metrics are mandatory',
+                    )}: ${requiredMetrics.join(',')}.`,
                   );
                   return obsOf([]);
                 }
               }
             }
             if (!this._isValidXlsxData(data, formSchema)) {
-              this._setImportStatus('File not imported! Columns must match formschema fields.');
+              this._setImportStatus(
+                this._ts.translate('File not imported! Columns must match formschema fields.'),
+              );
             }
             return zip([obsOf(formSchema), this._ugm.isActiveUserAdmin(this.adminRoles)]);
           }),
@@ -1137,8 +1119,12 @@ export class ImportForm implements OnDestroy {
               this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
             }
           } else {
-            if (!this.importStatus || !this.importStatus.length) {
-              this._setImportStatus('File not imported!');
+            if (
+              !this.importStatus ||
+              !this.importStatus.length ||
+              this.importStatus === startMessage
+            ) {
+              this._setImportStatus(this._ts.translate('File not imported!'));
             }
           }
         });
