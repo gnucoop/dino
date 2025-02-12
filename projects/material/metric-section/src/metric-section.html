@@ -22,3 +22,9 @@
   [tooltipMessage]="('Add New'|transloco) + ' ' + metricLabel"
   (click)="openDialog(undefined, 'Create')"
 ></dino-floating-button>
+
+<dino-floating-button
+  [buttonIcon]="'cloud_upload'"
+  [tooltipMessage]="('Import'|transloco) + ' ' + metricLabel"
+  (click)="openImportMetrics()"
+></dino-floating-button>
