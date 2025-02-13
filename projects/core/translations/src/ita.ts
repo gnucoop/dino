@@ -22,6 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ITA: Translation = {
+  ' ' + ('available items': '' + (' articoli disponibili',
   '{{language}} already deleted': '{{language}} già eliminata',
   '(select only one field)': '(seleziona solo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Un Form {{schema_name}} con questo preciso set di Metriche esiste già. Per favore, seleziona Metriche diverse',
@@ -111,6 +112,7 @@ export const ITA: Translation = {
   'Dino AI will fill it for you': 'Dino Ai lo riempirà per te',
   'Do you want to': 'Vuoi',
   'Docx': 'Esporta Docx',
+  'Don\'t import metrics if name exists': 'Non importa metriche se esiste il nome',
   'Donors': 'Donatori',
   'Download': 'Scarica',
   'Duplicate': 'Duplica',
@@ -167,6 +169,7 @@ export const ITA: Translation = {
   'Image preview': 'Anteprima dell\'immagine',
   'Import': 'Importa',
   'Import forms': 'Importa form',
+  'Import metrics': 'Metriche di importazione',
   'Include': 'Includi',
   'Incorrect email': 'Email errata',
   'Incorrect email and/or password': 'Email e/o password errati',
@@ -208,6 +211,7 @@ export const ITA: Translation = {
   'No': 'No',
   'No Forms were found': 'Non sono stati trovati form',
   'No Forms were found for this Report': 'Non sono state trovate form per questo report',
+  'No file uploaded yet.': 'Nessun file Caricato ancora.',
   'No translation': 'Nessuna traduzione',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?': 'Uno o più Gruppi specificano dei permessi per questo Schema. Sicuro di volerlo eliminare?',
   'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.': 'Uno o più Report attualmente impiegano questo Form Schema. Si prega di eliminare quei Report prima di eliminare questo Schema.',
@@ -321,6 +325,7 @@ export const ITA: Translation = {
   'Update Date': 'Data di modifica',
   'Update translation': 'Aggiorna traduzione',
   'Upload a jpg or png file': 'Seleziona un file jpg o png',
+  'Upload an xls or csv file to import metrics:': 'Carica un file XLS o CSV per importare le metriche:',
   'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.': 'Utilizzare il campo selezionato (solo uno consentito) come opzione di scelta. Il nome della nuova choice aggiunta allo schema del modulo sarà $fieldname_choice.',
   'User': 'Utente',
   'Username / email': 'Nome utente/e-mail',

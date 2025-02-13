@@ -29,11 +29,11 @@ export const PRT: Translation = {
   'A Metric with this name already exists. Maybe you should choose another':
     'Já existe uma métrica com este nome. Talvez você devesse escolher outro',
   'A filter on field "{{field}}" already exists. Please create a different filter.':
-    'Já existe um filtro no campo "{{{field}}". Por favor, crie um filtro diferente.',
+    'Já existe um filtro no campo "{{field}}". Por favor, crie um filtro diferente.',
   'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
-    'Já existe um filtro com operador "{{{operator}}" e valor "{{{value}}" no campo "{{{field}}". Por favor, crie um filtro diferente.',
+    'Já existe um filtro com operador "{{operator}}" e valor "{{value}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
   'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
-    'Já existe um filtro com o operador "{{{operator}}" no campo "{{{field}}". Por favor, crie um filtro diferente.',
+    'Já existe um filtro com o operador "{{operator}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
   'ADDED TO FAVORITES': 'ADICIONADO AOS FAVORITOS',
   'API Key is': 'A chave da API é',
   'Accent Color': 'Cor de destaque',
@@ -66,6 +66,7 @@ export const PRT: Translation = {
   'Attribute name': 'Nome do atributo',
   'Attribute names': 'Nomes de atributos',
   'Attribute value': 'Valor do atributo',
+  'Available items': 'Itens disponíveis',
   'Backup Data': 'Dados de backup',
   'CSV': 'CSV',
   'Cannot delete Schema': 'Não é possível eliminar o esquema',
@@ -117,6 +118,7 @@ export const PRT: Translation = {
   'Dino AI will fill it for you': 'Dino ai vai preencher para você',
   'Do you want to': 'Você deseja',
   'Docx': 'Exportar Docx',
+  "Don't import metrics if name exists": 'Não importe métricas de importação se houver nome',
   'Donors': 'Doadores',
   'Download': 'Download',
   'Duplicate': 'Duplicar',
@@ -167,12 +169,15 @@ export const PRT: Translation = {
   'Generate Report': 'Gerar relatório',
   'Generating report prompt': 'Gerando prompt de relatório',
   'Go to url': 'Vá para URL',
+  'Group items': 'Itens do grupo',
+  'Group name': 'Nome do grupo',
   'I accept the terms and conditions': 'Eu aceito os termos e condições',
   'Icon Identifier': 'Ícone do formulário',
   'Icon Set': 'Conjunto de ícones',
   'Image preview': 'Visualização de imagem',
   'Import': 'Importar',
   'Import forms': 'Importar formulários',
+  'Import metrics': 'Métricas de importação',
   'Include': 'Incluir',
   'Incorrect email': 'Email incorreto',
   'Incorrect email and/or password': 'Email e/ou senha incorretos',
@@ -215,6 +220,7 @@ export const PRT: Translation = {
   'No': 'Não',
   'No Forms were found': 'Nenhuma forma foi encontrada',
   'No Forms were found for this Report': 'Nenhuma forma foi encontrada para este relatório',
+  'No file uploaded yet.': 'Nenhum arquivo enviado ainda.',
   'No translation': 'Sem tradução',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
     'Um ou mais grupos de utilizadores concedem permissões para este esquema. Tem a certeza de que pretende eliminá-lo?',
@@ -341,6 +347,8 @@ export const PRT: Translation = {
   'Update Date': 'Data de atualização',
   'Update translation': 'Atualizar tradução',
   'Upload a jpg or png file': 'Carregue um arquivo jpg ou png',
+  'Upload an xls or csv file to import metrics:':
+    'Carregue um arquivo XLS ou CSV para importar métricas:',
   'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.':
     'Use o campo selecionado (apenas um permitido) como opção de escolha. O nome da nova origem da escolha adicionada ao esquema do formulário será $ fieldname_choice.',
   'User': 'Utilizador',

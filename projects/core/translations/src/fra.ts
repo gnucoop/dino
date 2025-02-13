@@ -22,6 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
+  ' ' + ('available items': ''+ (' Articles disponibles',
   '{{language}} already deleted': '{{language}} déjà supprimé',
   '(select only one field)': '(ne sélectionner qu\'un seul champ)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Il existe déjà un formulaire {{schema_name}} avec cet ensemble exact de paramètres. Veuillez choisir d\'autres paramètres',
@@ -110,6 +111,7 @@ export const FRA: Translation = {
   'Dino AI will fill it for you': 'Dino Ai le remplira pour vous',
   'Do you want to': 'Voulez-vous',
   'Docx': 'Exporter Docx',
+  'Don\'t import metrics if name exists': 'N'importez pas de mesures si le nom existe',
   'Donors': 'Donateurs',
   'Download': 'Télécharger',
   'Duplicate': 'Dupliquer',
@@ -166,6 +168,7 @@ export const FRA: Translation = {
   'Image preview': 'Aperçu de l\'image',
   'Import': 'Importer',
   'Import forms': 'Importer des formulaires',
+  'Import metrics': 'Importer des mesures',
   'Include': 'Inclure',
   'Incorrect email': 'E-mail incorrect',
   'Incorrect email and/or password': 'E-mail et / ou mot de passe incorrects',
@@ -206,6 +209,7 @@ export const FRA: Translation = {
   'No': 'Non',
   'No Forms were found': 'Aucune forme n\'a été trouvée',
   'No Forms were found for this Report': 'Aucune forme n\'a été trouvée pour ce rapport',
+  'No file uploaded yet.': 'Pas encore de fichier téléchargé.',
   'No translation': 'Pas de traduction',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?': 'Un ou plusieurs groupes d\'utilisateurs sont autorisés à utiliser ce schéma. Êtes-vous sûr de vouloir le supprimer ?',
   'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.': 'Un ou plusieurs rapports utilisent actuellement ce schéma de formulaire. Veuillez supprimer ces rapports avant de supprimer ce schéma.',
@@ -317,6 +321,7 @@ export const FRA: Translation = {
   'Update Date': 'Date de la mise à jour',
   'Update translation': 'Mettre à jour la traduction',
   'Upload a jpg or png file': 'Télécharger un fichier JPG ou PNG',
+  'Upload an xls or csv file to import metrics:': 'Téléchargez un fichier XLS ou CSV pour importer des mesures:',
   'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.': 'Utilisez le champ sélectionné (un seul autorisé) comme option de choix. Le nom de l\'origine du nouvel choix ajouté au schéma de formulaire sera $ fieldname_choice.',
   'User': 'Utilisateur',
   'Username / email': 'Nom d\'utilisateur / e-mail',
