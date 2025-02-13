@@ -291,6 +291,7 @@ export const ESP: Translation = {
   'Save report': 'Guardar informe',
   'Save the preset': 'Guardar el preajuste',
   'Search': 'Buscar',
+  'Search available items': 'Buscar artículos disponibles',
   'Sectors of Intervention': 'Sectores de Intervención',
   'Select all fields of': 'Seleccionar todos los campos de',
   'Select fields': 'Seleccionar campos',

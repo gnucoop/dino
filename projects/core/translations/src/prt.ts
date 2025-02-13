@@ -290,6 +290,7 @@ export const PRT: Translation = {
   'Save report': 'Salvar relatório',
   'Save the preset': 'Salvar a predefinição',
   'Search': 'Pesquisar',
+  'Search available items': 'Pesquisar itens disponíveis',
   'Sectors of Intervention': 'Setores de Intervenção',
   'Select all fields of': 'Selecionar todos os campos de',
   'Select fields': 'Selecionar campos',

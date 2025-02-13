@@ -22,7 +22,6 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
-  ' ' + ('available items': ''+ (' Articles disponibles',
   '{{language}} already deleted': '{{language}} déjà supprimé',
   '(select only one field)': '(ne sélectionner qu\'un seul champ)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Il existe déjà un formulaire {{schema_name}} avec cet ensemble exact de paramètres. Veuillez choisir d\'autres paramètres',
@@ -61,7 +60,7 @@ export const FRA: Translation = {
   'Attribute name': 'Nom de l\'attribut',
   'Attribute names': 'Noms d\'attribut',
   'Attribute value': 'Valeur de l\'attribut',
-  'Available items': 'Articles disponibles',
+  'Available items': 'Éléments disponibles',
   'Backup Data': 'Données de sauvegarde',
   'CSV': 'CSV',
   'Cannot delete Schema': 'Impossible de supprimer le schéma',
@@ -111,7 +110,7 @@ export const FRA: Translation = {
   'Dino AI will fill it for you': 'Dino Ai le remplira pour vous',
   'Do you want to': 'Voulez-vous',
   'Docx': 'Exporter Docx',
-  'Don\'t import metrics if name exists': 'N'importez pas de mesures si le nom existe',
+  'Don\'t import metrics if name exists': 'N\'importez pas de mesures si le nom existe',
   'Donors': 'Donateurs',
   'Download': 'Télécharger',
   'Duplicate': 'Dupliquer',
@@ -273,6 +272,7 @@ export const FRA: Translation = {
   'Save report': 'Sauver le rapport',
   'Save the preset': 'Enregistrer le préréglage',
   'Search': 'Chercher',
+  'Search available items': 'Rechercher les éléments disponibles',
   'Sectors of Intervention': 'Secteurs d\'intervention',
   'Select all fields of': 'Sélectionner tous les champs de',
   'Select fields': 'Sélectionnez les champs',
@@ -346,7 +346,7 @@ export const FRA: Translation = {
   'Your Reset Password ticket is invalid or expired. Please try again.': 'Votre ticket de réinitialisation du mot de passe est invalide ou a expiré. Veuillez réessayer.',
   'added': 'ajouté',
   'area': 'domaine',
-  'available items': 'articles disponibles',
+  'available items': 'éléments disponibles',
   'cancel': 'annuler',
   'case': 'cas',
   'credits': 'crédits',
