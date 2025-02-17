@@ -1882,10 +1882,10 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@ctrl/tinycolor@^3.4.0":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz#75b4c27948c81e88ccd3a8902047bcd797f38d32"
-  integrity sha512-ej5oVy6lykXsvieQtqZxCOaLT+xD4+QNarq78cIYISHmZXshCvROLudpQN3lfL8G0NL7plMSSK+zlyvCaIJ4Iw==
+"@ctrl/tinycolor@^4.0.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-4.1.0.tgz#91a8f8120ffc9da2feb2a38f7862b300d5e9691a"
+  integrity sha512-WyOx8cJQ+FQus4Mm4uPIZA64gbk3Wxh0so5Lcii0aJifqwoVOlfFtorjLE0Hen4OYyHZMXDWqMmaQemBhgxFRQ==
 
 "@cypress/request@^3.0.0":
   version "3.0.1"
@@ -5211,12 +5211,12 @@ ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-angular-material-css-vars@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/angular-material-css-vars/-/angular-material-css-vars-4.0.2.tgz#8286463f2ccbeb91840cb80fb7bbf0fad5dc6dac"
-  integrity sha512-pP76VoTYswT7wTJW9EAHUHFFAEXa/cP2kOSkCKs4KfV9sYwANTl3WKaoWlY196sS3Hjq3SjcqaOjypB2vmX/uA==
+angular-material-css-vars@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/angular-material-css-vars/-/angular-material-css-vars-6.1.2.tgz#b90dae532ff4f34449e7cbddfdbb425bbd473619"
+  integrity sha512-joBVVM6M1FL+jfpGfTiyYM9WlrgsSxsdsKnFRjkk1OBx/beuO32iVCTi5tcXhSanaIS1UzpTICfrndtEdZD7/Q==
   dependencies:
-    "@ctrl/tinycolor" "^3.4.0"
+    "@ctrl/tinycolor" "^4.0.0"
     tslib "^2.3.0"
 
 ansi-colors@4.1.3, ansi-colors@^4.1.3:
