@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-collect {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -17,7 +19,7 @@ dino-collect {
     }
     .mat-grid-tile.dino-grid-tile {
       border-radius: 10px;
-      border: 2px solid rgb(var(--palette-primary-500));
+      border: 2px solid mat-css-vars.mat-css-color-primary(500);
       .dino-grid-action-icons {
         display: flex;
         flex-flow: row wrap;
@@ -34,7 +36,7 @@ dino-collect {
           @media only screen and (max-width: 992px) {
             max-width: 24px;
             max-height: 24px;
-            .mat-icon{
+            .mat-icon {
               font-size: 16px;
               position: relative;
               top: 4px;
@@ -43,7 +45,7 @@ dino-collect {
           cursor: pointer;
           &:hover {
             opacity: 1;
-            background-color: rgb(var(--palette-accent-500));
+            background-color: mat-css-vars.mat-css-color-accent(500);
           }
         }
       }
@@ -66,8 +68,8 @@ dino-collect {
       -webkit-transition: all ease-in-out 0.3s;
       cursor: pointer;
       .dino-grid-icon {
-        color: rgb(var(--palette-primary-500));
-        fill: rgb(var(--palette-primary-500));
+        color: mat-css-vars.mat-css-color-primary(500);
+        fill: mat-css-vars.mat-css-color-primary(500);
         max-width: 100%;
         max-height: 100%;
         margin: auto;
@@ -87,19 +89,19 @@ dino-collect {
         }
       }
       .dino-grid-label {
-        color: rgb(var(--palette-primary-500));
+        color: mat-css-vars.mat-css-color-primary(500);
         text-align: center;
         margin: auto;
         margin-top: 5vh;
       }
       &:hover {
-        border-color: rgb(var(--palette-accent-500));
-        background: rgb(var(--palette-primary-100));
+        border-color: mat-css-vars.mat-css-color-accent(500);
+        background: mat-css-vars.mat-css-color-primary(100);
         div.dino-grid-icon .mat-icon.dino-mat-icon {
-          color: rgb(var(--palette-accent-500));
+          color: mat-css-vars.mat-css-color-accent(500);
         }
         div.dino-grid-label {
-          color: rgb(var(--palette-accent-500));
+          color: mat-css-vars.mat-css-color-accent(500);
         }
       }
     }

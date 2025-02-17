@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 .mat-fab-bottom-right {
   position: fixed !important;
   right: 2vw;
@@ -32,7 +34,7 @@
     align-items: center;
     .dino-tokens-counter-amount {
       color: rgba(var(--palette-foreground-secondary-text-dark));
-      background: rgb(var(--palette-primary-500));
+      background: mat-css-vars.mat-css-color-primary(500);
       border-radius: 50%;
       width: 22px;
       height: 22px;

@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 .dino-log-viewer-container {
   display: flex;
   flex-flow: column wrap;
@@ -31,7 +33,7 @@
   align-content: center;
   margin-bottom: 10px;
   min-width: 25vw;
-  border-bottom: 1px solid rgb(var(--palette-primary-100));
+  border-bottom: 1px solid mat-css-vars.mat-css-color-primary(100);
   padding-bottom: 15px;
   .dino-log-entry-text {
     flex: 1 0 45%;

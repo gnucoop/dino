@@ -1,16 +1,13 @@
-@use './typography';
-@import 'angular-material-css-vars/main';
+@use './typography' as typography;
+@use 'angular-material-css-vars' as mat-css-vars with (
+  $dark-theme-selector: '.isDarkTheme',
+  $light-theme-selector: '.isLightTheme'
+);
 
+@include mat-css-vars.init-material-css-vars();
+@include typography.all-components-typography();
 $mat-css-dark-theme-selector: '.isDarkTheme';
 $mat-css-light-theme-selector: '.isLightTheme';
-
-// init theme
-@include init-material-css-vars() {
-  // If your app has any theme mixins, call them here.
-  // $mat-css-theme gets set to an appropriate value before this content is called.
-  // @include your-custom-component-theme($mat-css-theme);
-  @include typography.all-components-typography();
-}
 
 // /* You can add global styles to this file, and also import other style files */
 
@@ -32,10 +29,10 @@ body {
     }
   }
   .mat-mdc-progress-bar .mdc-linear-progress__buffer-bar {
-    background-color: rgb(var(--palette-primary-50)) !important;
+    background-color: mat-css-vars.mat-css-color-primary(50) !important;
   }
   .mdc-linear-progress__bar.mdc-linear-progress__primary-bar {
-    background-color: rgb(var(--palette-primary-500)) !important;
+    background-color: mat-css-vars.mat-css-color-primary(500) !important;
   }
 
   ::-webkit-scrollbar {
@@ -49,7 +46,7 @@ body {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgb(var(--palette-accent-500));
+    background: mat-css-vars.mat-css-color-accent(500);
     border-radius: 5px;
     max-width: 20%;
   }
@@ -78,7 +75,7 @@ body {
     }
     &.dino-tour-step-active-popover {
       .mat-mdc-card {
-        background-color: rgba(var(--palette-primary-100), 0.8);
+        background-color: mat-css-vars.mat-css-color-primary(100, 0.8);
         animation: pulse 3s infinite;
       }
     }
@@ -102,15 +99,15 @@ body {
 
   @keyframes pulse {
     0% {
-      background-color: rgba(var(--palette-primary-100), 0.8);
+      background-color: mat-css-vars.mat-css-color-primary(100, 0.8);
     }
 
     50% {
-      background-color: rgba(var(--palette-primary-100), 0);
+      background-color: mat-css-vars.mat-css-color-primary(100, 0);
     }
 
     100% {
-      background-color: rgba(var(--palette-primary-100), 0.8);
+      background-color: mat-css-vars.mat-css-color-primary(100, 0.8);
     }
   }
 }

@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-edit-report {
   canvas {
     min-height: 300px;
@@ -13,7 +15,7 @@ dino-edit-report {
     }
     tr {
       th {
-        background-color: rgb(var(--palette-primary-500)) !important;
+        background-color: mat-css-vars.mat-css-color-primary(500) !important;
         border-bottom: none !important;
       }
     }
@@ -111,7 +113,7 @@ dino-edit-report {
     text-align: center;
     margin: auto;
     opacity: 0.6;
-    color: rgb(var(--palette-primary-500));
+    color: mat-css-vars.mat-css-color-primary(500);
     margin-top: 30vh;
   }
   .dino-loading {

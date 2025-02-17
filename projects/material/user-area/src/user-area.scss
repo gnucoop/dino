@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-user-area {
   .mdc-dialog__content {
     @media only screen and (max-width: 768px) {
@@ -90,7 +92,7 @@ dino-user-area {
       .dino-tokens-counter {
         margin-left: 15px;
         color: rgba(var(--palette-foreground-secondary-text-dark));
-        background: rgb(var(--palette-primary-500));
+        background: mat-css-vars.mat-css-color-primary(500);
         border-radius: 50%;
         width: 32px;
         height: 32px;
@@ -103,7 +105,7 @@ dino-user-area {
     }
     .dino-add-more-text {
       cursor: pointer;
-      color: rgb(var(--palette-accent-500));
+      color: mat-css-vars.mat-css-color-accent(500);
     }
     &.dino-user-area-form-centered{
       justify-content: center;

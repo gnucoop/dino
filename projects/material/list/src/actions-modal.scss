@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 .list-actions-dialog {
   min-width: 250px;
   .dino-action-selector-container {
@@ -39,7 +41,7 @@
       text-transform: capitalize;
     }
     &:hover {
-      background-color: rgba(var(--palette-accent-300), 0.3);
+      background-color: mat-css-vars.mat-css-color-accent(300, 0.3);
     }
   }
 

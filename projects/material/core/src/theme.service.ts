@@ -39,7 +39,7 @@ export class ThemeService {
   }
 
   constructor(private _service: MaterialCssVarsService) {
-    this.setDarkMode(this._service.isDarkTheme);
+    this.setDarkMode(this._service.isDarkTheme ?? false);
     this.loadDinoTheme();
     this.setDefaultTheme();
   }
@@ -91,7 +91,7 @@ export class ThemeService {
       accent: this._service.accent,
       warning: this._service.warn,
       presetName: 'Default Theme',
-      isDarkTheme: this._service.isDarkTheme,
+      isDarkTheme: this._service.isDarkTheme ?? false,
       isAutoContrast: true,
     };
     if (currentTheme.primary && currentTheme.accent && currentTheme.warning) {

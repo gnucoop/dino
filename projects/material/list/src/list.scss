@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-list {
   .dino-table-container {
     padding-bottom: 9vh;
@@ -58,29 +60,29 @@ dino-list {
       max-height: 70vh;
     }
     .mat-mdc-row.dino-highlighted-row {
-      background-color: rgb(var(--palette-accent-300)) !important;
+      background-color: mat-css-vars.mat-css-color-accent(300) !important;
       .mat-mdc-cell:not(.dino-expanded-cell) {
-        background-color: rgb(var(--palette-accent-300));
+        background-color: mat-css-vars.mat-css-color-accent(300);
       }
     }
 
     .mat-mdc-row.dino-highlighted-light {
-      background-color: rgba(var(--palette-primary-500), 0.3);
+      background-color: mat-css-vars.mat-css-color-primary(500, 0.3);
     }
 
     .dino-inner-table-container .mat-mdc-row.dino-details-row.dino-highlighted-row {
-      background-color: rgb(var(--palette-accent-200));
+      background-color: mat-css-vars.mat-css-color-accent(200);
     }
 
     .dino-inner-table-container .mat-mdc-row.dino-details-row:not(.dino-highlighted-row) {
-      background-color: rgb(var(--palette-warn-100));
+      background-color: mat-css-vars.mat-css-color-warn(100);
     }
 
     .mat-icon {
-      color: rgb(var(--palette-accent-700));
+      color: mat-css-vars.mat-css-color-accent(700);
       &:hover {
-        background: rgb(var(--palette-accent-100));
-        color: rgb(var(--palette-accent-700));
+        background: mat-css-vars.mat-css-color-accent(100);
+        color: mat-css-vars.mat-css-color-accent(700);
       }
     }
   }
@@ -104,7 +106,7 @@ dino-list {
 
   .mat-mdc-cell:first-of-type,
   .mat-mdc-footer-cell:first-of-type {
-    border-left: 3px solid rgb(var(--palette-accent-700));
+    border-left: 3px solid mat-css-vars.mat-css-color-accent(700);
     @media only screen and (max-width: 768px) {
       display: contents;
       .mat-mdc-checkbox.dino-row-actions {
@@ -146,7 +148,7 @@ dino-list {
           text-overflow: ellipsis;
         }
         .dino-link-cell {
-          color: rgb(var(--palette-accent-700));
+          color: mat-css-vars.mat-css-color-accent(700);
         }
       }
     }
@@ -158,10 +160,10 @@ dino-list {
   .mat-mdc-header-row:not(.dino-hover) {
     .mat-mdc-cell {
       &:nth-child(even) {
-        background-color: rgba(var(--palette-accent-300), 0.1);
+        background-color: mat-css-vars.mat-css-color-accent(300, 0.1);
       }
       &:nth-child(odd):not(:first-of-type) {
-        background-color: rgba(var(--palette-accent-100), 0.1);
+        background-color: mat-css-vars.mat-css-color-accent(100, 0.1);
       }
     }
   }
@@ -229,7 +231,7 @@ dino-list {
         height: 16px;
         width: 16px;
         font-size: 16px;
-        background-color: rgb(var(--palette-accent-100));
+        background-color: mat-css-vars.mat-css-color-accent(100);
         border-radius: 100%;
         padding: 5px;
         margin: 1px;
@@ -532,15 +534,15 @@ dino-list {
 }
 
 .isDarkTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
-  background-color: rgb(var(--palette-primary-300));
+  background-color: mat-css-vars.mat-css-color-primary(300);
   .dino-row-actions-container {
-    background-color: rgb(var(--palette-primary-300));
+    background-color: mat-css-vars.mat-css-color-primary(300);
   }
 }
 .isLightTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
-  background-color: rgb(var(--palette-primary-300));
+  background-color: mat-css-vars.mat-css-color-primary(300);
   .dino-row-actions-container {
-    background-color: rgb(var(--palette-primary-300));
+    background-color: mat-css-vars.mat-css-color-primary(300);
   }
 }
 .isDarkTheme .mat-mdc-header-row {

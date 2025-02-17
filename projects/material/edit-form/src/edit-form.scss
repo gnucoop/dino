@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-edit-form {
   font-size: 110%;
 
@@ -18,7 +20,7 @@ dino-edit-form {
     }
   }
   .mat-horizontal-stepper-header-container {
-    border-bottom: 1px solid rgb(var(--palette-primary-100));
+    border-bottom: 1px solid mat-css-vars.mat-css-color-primary(100);
     .mat-horizontal-stepper-header {
       padding: 8px;
       flex-direction: row;
@@ -36,7 +38,7 @@ dino-edit-form {
         }
       }
       &[aria-selected='true'] {
-        background-color: rgba(var(--palette-primary-100), 0.3);
+        background-color: mat-css-vars.mat-css-color-primary(100, 0.3);
       }
     }
     .mat-stepper-horizontal-line {
@@ -141,7 +143,7 @@ dino-edit-form {
           .mat-mdc-radio-button,
           ajf-checkbox-group-item .mat-mdc-button {
             .mat-icon {
-              color: rgb(var(--palette-accent-300));
+              color: mat-css-vars.mat-css-color-accent(300);
             }
             padding: 10px;
             flex: 1 0 auto;
@@ -195,7 +197,7 @@ dino-edit-form {
   }
 
   .mat-mdc-card.ajf-field-entry {
-    border-left-color: rgb(var(--palette-accent-300)) !important;
+    border-left-color: mat-css-vars.mat-css-color-accent(300) !important;
     .mat-mdc-card-actions {
       left: 0px;
     }

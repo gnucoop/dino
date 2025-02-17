@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-search-filters-widget {
   display: flex;
   flex: 0 1 30% !important;
@@ -19,7 +21,7 @@ dino-search-filters-widget {
       margin-top: 5px;
       border-radius: 0%;
       border-left: 3px solid;
-      border-left-color: rgb(var(--palette-primary-300));
+      border-left-color: mat-css-vars.mat-css-color-primary(300);
       border-radius: 5px;
       min-height: 30vh;
       @media only screen and (max-width : 992px) {
@@ -36,14 +38,14 @@ dino-search-filters-widget {
         align-items: center;
         align-content: center;
         text-align: right;
-        background-color: rgb(var(--palette-primary-50));
+        background-color: mat-css-vars.mat-css-color-primary(50);
         .dino-create-filter-button {
           &[disabled="true"]{
             color: rgba(var(--palette-foreground-secondary-text), 0.4);
-            background-color: rgb(var(--palette-accent-50));
+            background-color: mat-css-vars.mat-css-color-accent(50);
           }
           color: rgba(var(--palette-foreground-secondary-text), 0.8);
-          background-color: rgb(var(--palette-accent-300));
+          background-color: mat-css-vars.mat-css-color-accent(300);
           padding: 0 8px;
           span {
             display: flex;
