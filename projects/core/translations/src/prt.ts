@@ -398,6 +398,7 @@ export const PRT: Translation = {
   'modified': 'modificado',
   'of': 'de',
   'organization': 'organização',
+  'print badge': 'imprimir o cartão',
   'project': 'projeto',
   'remove: {{language}}': 'remover: {{language}}',
   'required': 'obrigatório',

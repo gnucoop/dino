@@ -366,6 +366,7 @@ export const ENG: Translation = {
   'modified': 'modified',
   'of': 'of',
   'organization': 'organization',
+  'print badge': 'print badge',
   'project': 'project',
   'remove: {{language}}': 'remove: {{language}}',
   'required': 'required',

@@ -45,7 +45,10 @@ export class ActionsModal<T> {
     public dialogRef: MatDialogRef<ActionsModal<T>>,
     @Inject(MAT_DIALOG_DATA) public data: {actions: ListAction[]; doc: T; isDetails: boolean},
   ) {
-    this.actions = this.data.actions;
+    this.actions =
+      this.data.doc && (this.data.doc as any).case_ref_id == null
+        ? this.data.actions.filter(action => action.actionType !== 'print badge')
+        : this.data.actions;
   }
 
   performListAction(action: ListAction): void {

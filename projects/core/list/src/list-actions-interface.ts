@@ -39,7 +39,8 @@ export type ActionType =
   | 'addFavorite'
   | 'removeFavorite'
   | 'backup'
-  | 'restore';
+  | 'restore'
+  | 'print badge';
 
 /**
  * The actions that are supposed to always be visible, when available.

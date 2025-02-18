@@ -371,6 +371,7 @@ export const ITA: Translation = {
   'modified': 'modificato',
   'of': 'di',
   'organization': 'organizzazione',
+  'print badge': 'stampa badge',
   'project': 'progetto',
   'remove: {{language}}': 'rimosso: {{language}}',
   'required': 'necessario',

@@ -367,6 +367,7 @@ export const FRA: Translation = {
   'modified': 'modifié',
   'of': 'de',
   'organization': 'organisation',
+  'print badge': 'imprimer badge',
   'project': 'projet',
   'remove: {{language}}': 'retirer: {{language}}',
   'required': 'requis',

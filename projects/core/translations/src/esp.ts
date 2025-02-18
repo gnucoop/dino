@@ -399,6 +399,7 @@ export const ESP: Translation = {
   'modified': 'adicionado',
   'of': 'de',
   'organization': 'organización',
+  'print badge': 'imprimir la tarjeta',
   'project': 'proyecto',
   'remove: {{language}}': 'eliminar: {{language}}',
   'required': 'requerido',
