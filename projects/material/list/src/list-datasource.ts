@@ -544,7 +544,7 @@ export class ListDataSource<
             const headersSearchExpressions = dataHeaders
               .filter(h => !h.dataColumn)
               .map(header => {
-                if (header.column.toString().indexOf('_ref_id')) {
+                if (header.column.toString().indexOf('_ref_id') > 0) {
                   return {
                     [`${header.column.toString()}`]: {
                       $eq: item.value,
