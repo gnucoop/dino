@@ -10,10 +10,19 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
-import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 import {additionalConfig, optionalModulesConfig} from '../mockconfig';
 import {AreaManager} from '@dino/core/areas';
-import {CaseManager} from '@dino/core/cases';
+import {Case, CaseManager} from '@dino/core/cases';
 import {ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
@@ -52,6 +61,7 @@ export class MatFormsListE2E {
     docx: 'description',
     duplicate: 'file_copy',
     delete: 'delete',
+    'print badge': 'badge',
   };
   readonly displayAddButton: Observable<boolean>;
   readonly displayExportButton: Observable<boolean>;
@@ -66,6 +76,7 @@ export class MatFormsListE2E {
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
   readonly booleanQuickEdit: string[] = additionalConfig.booleanQuickEdit;
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
+  readonly logoImage: string | null = additionalConfig.logoImage;
 
   /**
    * The Ajf Nodes Visibility observable
@@ -224,12 +235,15 @@ export class MatFormsListE2E {
       }),
     );
 
-    this.listRowActions = combineLatest([this.formSchemaId, this.showStatusEditButton]).pipe(
-      map(([schemaId, allowedStatus]) => {
-        if (schemaId == null) {
+    this.listRowActions = combineLatest([
+      this.additionalDataSchema,
+      this.showStatusEditButton,
+    ]).pipe(
+      map(([schema, allowedStatus]) => {
+        if (schema == null) {
           return [];
         }
-        return this._pcs.getAllowedActions('form_schema', schemaId, true).pipe(
+        return this._pcs.getAllowedActions('form_schema', schema.id, true).pipe(
           map(actions => {
             let displayedActions = actions.filter(
               action => Object.keys(this.listRowActionsIcons).indexOf(action) >= 0,
@@ -239,6 +253,16 @@ export class MatFormsListE2E {
                 action => action !== 'delete' && action !== 'edit',
               );
             }
+
+            if (
+              !this.metricService.isActiveMetric('case') ||
+              (schema.form_schema_metrics &&
+                schema.form_schema_metrics.length &&
+                schema.form_schema_metrics.indexOf('case') < 0)
+            ) {
+              displayedActions = displayedActions.filter(action => action !== 'print badge');
+            }
+
             return displayedActions.map(action => ({
               actionType: action as ActionType,
               matIcon: this.listRowActionsIcons[action],
@@ -248,6 +272,8 @@ export class MatFormsListE2E {
                   ? (dataRow: FormData | null) => this.printPdf(dataRow)
                   : action === 'docx'
                   ? (dataRow: FormData | null) => this.downloadDocx(dataRow)
+                  : action === 'print badge'
+                  ? (dataRow: FormData | null) => this.printBadge(dataRow)
                   : undefined,
             }));
           }),
@@ -452,6 +478,22 @@ export class MatFormsListE2E {
           ).open();
         }
       });
+  }
+
+  /**
+   * Print badge with case image
+   */
+  printBadge(formData: {[key: string]: any} | null): void {
+    if (formData == null || !this.metricService.isActiveMetric('case')) {
+      return;
+    }
+
+    const caseObs: Observable<RxDocument<Case, {}> | null> = formData['case'];
+    caseObs.pipe(take(1)).subscribe(caseVal => {
+      if (this._caseManager) {
+        this._caseManager.printCaseCardPdf(caseVal, this.logoImage);
+      }
+    });
   }
 
   downloadDocx(formData: {[key: string]: any} | null): void {
