@@ -25,7 +25,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   Inject,
-  Input,
   OnDestroy,
   ViewChild,
   ViewEncapsulation,
@@ -59,19 +58,13 @@ import {TranslocoService} from '@ngneat/transloco';
 })
 export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
   /**
-   * True if the Form can have one or more null Metrics.
-   * Defaults to false.
-   */
-  @Input()
-  hasOptionalMetrics: boolean = true;
-  /**
    * The list of all the Form Statuses available to the active User
    */
   readonly availableStatuses: Observable<FormStatus[] | null>;
   /**
    * Metrics of the types specified in the array can be created directly from the metric fields
    */
-  @Input() allowMetricCreationFor: string[] = [];
+  allowMetricCreationFor: string[] = [];
   /**
    * The Form Metrics Selector
    */
@@ -90,6 +83,7 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
       formSchema: Observable<FormSchema | null>;
       formDatas: FormData[];
       statusEditable: boolean;
+      hasOptionalMetrics: boolean;
       secondaryMetricFieldsDisplayed: {
         [metricName: string]: string;
       } | null;

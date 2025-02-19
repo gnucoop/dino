@@ -105,6 +105,19 @@ export class Collect implements OnDestroy {
   }
 
   /**
+   * True if the Form/Report can have one or more null Metrics.
+   * Defaults to false.
+   */
+  private _hasOptionalMetrics: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @Input()
+  set hasOptionalMetrics(allowed: boolean) {
+    if (allowed == null) {
+      return;
+    }
+    this._hasOptionalMetrics.next(allowed);
+  }
+
+  /**
    * An array of items to be displayed in the Dashboard menu grid.
    * They represent generic Items (eg. a Section of the app)
    */
@@ -408,6 +421,7 @@ export class Collect implements OnDestroy {
       formSchema: obsOf(null),
       formDatas: [],
       statusEditable: false,
+      hasOptionalMetrics: this._hasOptionalMetrics.value,
       secondaryMetricFieldsDisplayed: this._secondaryMetricFieldsDisplayed,
       context: 'shareUrl',
     };
