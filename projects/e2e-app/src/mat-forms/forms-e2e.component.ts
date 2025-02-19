@@ -12,6 +12,8 @@ export class MatFormsE2E {
     [metricName: string]: string;
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
+  readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
+
   constructor(
     readonly breakpointObserver: BreakpointObserverService,
     readonly networkStatus: NetworkStatusService,
