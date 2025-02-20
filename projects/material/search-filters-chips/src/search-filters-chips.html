@@ -5,8 +5,6 @@
     </span>
     {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}} {{
     item.value|dinoDateValue|json }}
-    <mat-icon matChipRemove (click)="removeFilterItem(item)">
-      {{'cancel'|transloco}}
-    </mat-icon>
+    <mat-icon matChipRemove (click)="removeFilterItem(item)">cancel</mat-icon>
   </mat-chip-option>
 </mat-chip-listbox>
