@@ -58,7 +58,7 @@
     "@zxing/browser": "^0.1.1",
     "@zxing/library": "^0.19.1",
     "angular-material-css-vars": "^6.1.2",
-    "apollo-angular": "^5.0.2",
+    "apollo-angular": "^7.0.2",
     "chart.js": "^2.9.3",
     "core-js-bundle": "^3.8.2",
     "css-element-queries": "^1.2.3",
