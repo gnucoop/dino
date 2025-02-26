@@ -35,10 +35,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/core/**/*.ts",
-              "projects/core/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/core/**/*.ts", "projects/core/**/*.html"]
           }
         },
         "cypress-run": {
@@ -121,10 +118,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/material/**/*.ts",
-              "projects/material/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/material/**/*.ts", "projects/material/**/*.html"]
           }
         },
         "cypress-run": {
@@ -198,15 +192,9 @@
             "polyfills": "projects/e2e-app/src/polyfills.ts",
             "tsConfig": "projects/e2e-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/e2e-app/src/favicon.ico",
-              "projects/e2e-app/src/assets"
-            ],
+            "assets": ["projects/e2e-app/src/favicon.ico", "projects/e2e-app/src/assets"],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "node_modules/",
-                "node_modules/angular-material-css-vars"
-              ]
+              "includePaths": ["node_modules/", "node_modules/angular-material-css-vars"]
             },
             "styles": [
               "node_modules/@ajf/icons/css/ajf-icons.css",
@@ -304,10 +292,7 @@
             "polyfills": "projects/dev-app/src/polyfills.ts",
             "tsConfig": "projects/dev-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/dev-app/src/favicon.ico",
-              "projects/dev-app/src/assets"
-            ],
+            "assets": ["projects/dev-app/src/favicon.ico", "projects/dev-app/src/assets"],
             "styles": [
               "node_modules/@ajf/icons/css/ajf-icons.css",
               "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
@@ -398,9 +383,7 @@
     "cache": {
       "enabled": false
     },
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ],
+    "schematicCollections": ["angular-eslint"],
     "analytics": false
   }
 }
