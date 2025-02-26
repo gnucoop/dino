@@ -1215,9 +1215,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       .subscribe(
         ([fd, status, allStatuses, user, userGroups, activeUser, activeUserGroups, formObj]) => {
           this.isLoading.next(false);
-          this._location.back();
-          this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
-          if (fd && fd.collection.name === 'form_data' && formObj.evt != 'draft') {
+          if (fd && fd.collection.name === 'form_data') {
+            this._location.back();
+            this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
             const trigData: ActionTriggerData<T> = {
               doc: fd,
               previousValue: formObj.doc,
@@ -1231,11 +1231,16 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 activeUserGroups,
               },
             };
-            const trigger: ActionTrigger<T> = {
+
+            let trigger: ActionTrigger<T> = {
               name: 'Form Data Changed',
               triggerType: 'on_form_data_change',
               triggerData: trigData,
             };
+            if (formObj.evt === 'draft') {
+              trigger.name = 'Form Data Draft Changed';
+              trigger.triggerType = 'on_form_data_save_draft';
+            }
             this.emitActionTrigger.emit(trigger);
           }
         },

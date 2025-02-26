@@ -32,6 +32,7 @@ export type TriggerType =
   | 'on_signin'
   | 'on_form_data_creation'
   | 'on_form_data_change'
+  | 'on_form_data_save_draft'
   | 'on_form_data_export'
   | 'on_list_item_selection'
   | 'on_user_data_creation'

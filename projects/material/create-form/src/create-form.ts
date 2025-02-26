@@ -922,21 +922,23 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         if (fd && fd.collection.name === 'form_data') {
           this._location.back();
           this.snackbar.open('Document created', 'SAVE', {duration: 5000});
-          if (formObj.evt != 'draft') {
-            const trigData: ActionTriggerData<T> = {
-              doc: fd,
-              additional_info: {
-                activeUser,
-                activeUserGroups,
-              },
-            };
-            const trigger: ActionTrigger<T> = {
-              name: 'Form Data Created',
-              triggerType: 'on_form_data_creation',
-              triggerData: trigData,
-            };
-            this.emitActionTrigger.emit(trigger);
+          const trigData: ActionTriggerData<T> = {
+            doc: fd,
+            additional_info: {
+              activeUser,
+              activeUserGroups,
+            },
+          };
+          const trigger: ActionTrigger<T> = {
+            name: 'Form Data Created',
+            triggerType: 'on_form_data_creation',
+            triggerData: trigData,
+          };
+          if (formObj.evt === 'draft') {
+            trigger.name = 'Form Data Draft Created';
+            trigger.triggerType = 'on_form_data_save_draft';
           }
+          this.emitActionTrigger.emit(trigger);
         }
       });
 
