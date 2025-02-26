@@ -8,7 +8,7 @@
   },
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": "^18.13.0 || ^20.9.0",
+    "node": "^18.19.1 || ^20.11.1 || ^22.0.0",
     "yarn": ">= 1.0.0",
     "npm": "Please use Yarn instead of NPM to install dependencies. See: https://yarnpkg.com/lang/en/docs/install/"
   },
@@ -147,7 +147,7 @@
     "svg-pan-zoom": "^3.6.1",
     "ts-json-schema-generator": "^2.3.0",
     "ts-node": "^10.7.0",
-    "typescript": "~5.2.0",
+    "typescript": "~5.5.4",
     "unique-names-generator": "^4.7.1"
   }
 }
