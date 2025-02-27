@@ -12,12 +12,12 @@ describe('dino-columns-selector', () => {
 
   it('should open the column selector', () => {
     cy.get('.mat-mdc-fab.dino-columns-sel-btn').trigger('mouseover').click();
-    cy.get('dino-columns-selector').should('be.visible');
+    cy.get('dino-columns-selector .dino-selector-container').should('be.visible');
   });
 
   it('should filter the available columns in the selector', () => {
     cy.get('.mat-mdc-fab.dino-columns-sel-btn').trigger('mouseover').click();
-    cy.get('dino-columns-selector').should('be.visible');
+    cy.get('dino-columns-selector .dino-selector-container').should('be.visible');
     cy.get('.dino-column-selector')
       .its('length')
       .then(columnToggles => {

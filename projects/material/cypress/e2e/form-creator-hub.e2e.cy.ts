@@ -6,7 +6,7 @@ describe('dino-form-creator-hub', () => {
   });
 
   it('should open the Form Creator hub', () => {
-    cy.get('dino-form-creator-hub').should('be.visible');
+    cy.get('dino-form-creator-hub .dino-selector-container').should('be.visible');
   });
 
   it('should display a toggle group', () => {
