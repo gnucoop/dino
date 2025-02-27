@@ -11165,10 +11165,10 @@ ngx-device-detector@^7.0.0:
   dependencies:
     tslib "^2.0.0"
 
-ngx-mat-select-search@^7.0.5:
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/ngx-mat-select-search/-/ngx-mat-select-search-7.0.5.tgz#0468cdaeb5ea203061737edc9a3ce0efab79fa91"
-  integrity sha512-FRGkXhCkQ+c2B0bZnS9C1XAOukhq6QbJLsevbV3rFiV21cVgaGQ1calf6dUfEHyQdJ1CCaf+ViccY1i3WJTPdA==
+ngx-mat-select-search@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-mat-select-search/-/ngx-mat-select-search-8.0.0.tgz#076fee296cf52e89383944c8a65387e69f61af72"
+  integrity sha512-iLs0fnH0zmLDrIpxEiVB8IXJPah8aP8sK1BcDtLYcbXmWcZkVQZI3t4sgsvdhXbjp6w8hsGtrlFJQ0NtCy/L+Q==
   dependencies:
     tslib "^2.4.0"
 
@@ -11180,19 +11180,19 @@ ngx-papaparse@8:
     papaparse "^5.4.1"
     tslib "^2.6.1"
 
-ngx-ui-tour-core@12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/ngx-ui-tour-core/-/ngx-ui-tour-core-12.1.0.tgz#57b76601e1812a1190314a91e22d1919655222ca"
-  integrity sha512-5MXao2oMGsoRg69bGStFyO0TaleIcfcWlGwaRxDFlkysmnGnok6itBNtVgIRemEHA/F8x18hv3tLSIH222/ZwQ==
+ngx-ui-tour-core@13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-ui-tour-core/-/ngx-ui-tour-core-13.0.0.tgz#11195fdaa0d9e74703ef8017a6f17f1732567293"
+  integrity sha512-svtp3zMoOnkGPL6eBKtJX3gsIir8aJzVg5KfSKNVO4ZMHGgh+MK55WfvmX8juv3gSJMBCMZta5b/7gjEn2g/Iw==
   dependencies:
     tslib "^2.0.0"
 
-ngx-ui-tour-md-menu@12:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/ngx-ui-tour-md-menu/-/ngx-ui-tour-md-menu-12.1.0.tgz#a251283402f3f22322aeeca7c6fdb3a825c0b8d7"
-  integrity sha512-sx8LILx6C/9dAaO2ap20PSG/BFA/qmu+HzuB8AeVNstnr1UNX87LdLixQevE0MHZk/uoCB52s7rkWcPuqvX9ng==
+ngx-ui-tour-md-menu@13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-ui-tour-md-menu/-/ngx-ui-tour-md-menu-13.0.0.tgz#21780906688eac59df38852cb0548f59844ed31b"
+  integrity sha512-y1TcPTEHkmqRTgHDKRHty++Sqxag8QRH0BvIsU3LLucZryx48TpzskW8URsARC7MdgGmskg6Ep3cqAgtJysa/A==
   dependencies:
-    ngx-ui-tour-core "12.1.0"
+    ngx-ui-tour-core "13.0.0"
     tslib "^2.0.0"
 
 nice-napi@^1.0.2:
