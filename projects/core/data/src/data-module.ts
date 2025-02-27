@@ -20,16 +20,16 @@
  *
  */
 
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
-import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
+import {APOLLO_OPTIONS} from 'apollo-angular';
 import {HttpLink} from 'apollo-angular/http';
 
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 
 @NgModule({
-  imports: [ApolloModule, HttpClientModule],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class DataModule {
   static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule> {
