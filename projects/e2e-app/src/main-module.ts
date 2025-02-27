@@ -2,7 +2,7 @@ import {AjfTranslocoModule, TranslocoService} from '@ajf/core/transloco';
 import {AjfEchartsModule} from '@ajf/core/echarts';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {APP_INITIALIZER, inject, NgModule} from '@angular/core';
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
@@ -112,10 +112,10 @@ import {reportDatas} from './test-ajf-reportdata';
 import {reportSchemas} from './test-ajf-reportschema';
 import {projects} from './test-projects';
 import {DinoRoutingModule} from './main.routing.module';
-import {APOLLO_OPTIONS} from 'apollo-angular';
+import {provideApollo} from 'apollo-angular';
 import {HttpLink} from 'apollo-angular/http';
 
-import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
+import {InMemoryCache} from '@apollo/client/core';
 import {MatIconRegistry} from '@angular/material/icon';
 import {StripePaymentModule} from '@dino/material/stripe-payment';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
@@ -352,16 +352,13 @@ export function provideMatDateLocale(ts: TranslocoService) {
       provide: DATA_SERVICE_CONFIG,
       useFactory: provideDataServiceConfig,
     },
-    {
-      provide: APOLLO_OPTIONS,
-      useFactory: (httpLink: HttpLink): ApolloClientOptions<any> => {
-        return {
-          cache: new InMemoryCache(),
-          link: httpLink.create({uri: syncGraphQLUrl}),
-        };
-      },
-      deps: [HttpLink],
-    },
+    provideApollo(() => {
+      const httpLink = inject(HttpLink);
+      return {
+        link: httpLink.create({uri: syncGraphQLUrl}),
+        cache: new InMemoryCache(),
+      };
+    }),
     {
       provide: MAT_DATE_LOCALE,
       useFactory: (ts: TranslocoService) => provideMatDateLocale(ts),
