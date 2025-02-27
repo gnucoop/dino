@@ -4,7 +4,7 @@
 @use '../../theming/private';
 
 @mixin select-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $foreground: map.get($config, foreground);
     $background: map.get($config, background);
     $primary: map.get($config, primary);
@@ -12,58 +12,58 @@
     $warn: map.get($config, warn);
     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-value {
-        color: mat-theming.get-color-from-palette($foreground, text);
+        color: mat-theming.m2-get-color-from-palette($foreground, text);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-disabled .mat-select-value {
-        color: mat-theming.get-color-from-palette($foreground, disabled-text);
+        color: mat-theming.m2-get-color-from-palette($foreground, disabled-text);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-arrow {
-        color: mat-theming.get-color-from-palette($primary);
+        color: mat-theming.m2-get-color-from-palette($primary);
     }
 
     .mat-mdc-select-panel {
-        background: mat-theming.get-color-from-palette($background, card);
+        background: mat-theming.m2-get-color-from-palette($background, card);
         @include private.private-theme-overridable-elevation(4, $config);
 
         .mat-mdc-option.mat-mdc-selected:not(.mat-mdc-option-multiple) {
-            background: mat-theming.get-color-from-palette($background, hover, 0.12);
+            background: mat-theming.m2-get-color-from-palette($background, hover, 0.12);
         }
         .mat-mdc-option.mat-mdc-option-multiple.mat-mdc-selected {
-            color: mat-theming.get-color-from-palette($accent);
+            color: mat-theming.m2-get-color-from-palette($accent);
         }
         .mat-pseudo-checkbox.mat-mdc-option-pseudo-checkbox.mat-pseudo-checkbox-checked {
-            background-color: mat-theming.get-color-from-palette($accent);
+            background-color: mat-theming.m2-get-color-from-palette($accent);
         }
     }
     /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
     .dino-default-option .mat-option-text span {
-        color: mat-theming.get-color-from-palette($primary);
+        color: mat-theming.m2-get-color-from-palette($primary);
     }
 
     .mat-mdc-form-field {
         &.mat-focused {
             /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
             &.mat-primary .mat-select-arrow {
-                color: mat-theming.get-color-from-palette($primary, text);
+                color: mat-theming.m2-get-color-from-palette($primary, text);
             }
             /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
             &.mat-accent .mat-select-arrow {
-                color: mat-theming.get-color-from-palette($accent, text);
+                color: mat-theming.m2-get-color-from-palette($accent, text);
             }
             /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
             &.mat-warn .mat-select-arrow {
-                color: mat-theming.get-color-from-palette($warn, text);
+                color: mat-theming.m2-get-color-from-palette($warn, text);
             }
         }
         /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
         .mat-mdc-select.mat-select-invalid .mat-select-arrow {
-            color: mat-theming.get-color-from-palette($warn, text);
+            color: mat-theming.m2-get-color-from-palette($warn, text);
         }
         /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
         .mat-mdc-select.mat-select-disabled .mat-select-arrow {
-            color: mat-theming.get-color-from-palette($foreground, disabled-text);
+            color: mat-theming.m2-get-color-from-palette($foreground, disabled-text);
         }
     }
 }
@@ -90,9 +90,9 @@
 }
 
 @mixin select-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+    $color: mat-theming.m2-get-color-config($theme-or-color-config);
+    $density: mat-theming.m2-get-density-config($theme-or-color-config);
+    $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include select-color($color);

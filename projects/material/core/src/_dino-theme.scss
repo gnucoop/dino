@@ -13,11 +13,11 @@
 @mixin init-mat-theme($dark-theme-selector, $light-theme-selector, $typography-config: null) {
   @include dino-core.mat-core($typography-config);
 
-  $primary: mat.define-palette(variables.$mat-css-palette-primary);
-  $accent: mat.define-palette(variables.$mat-css-palette-accent);
-  $warn: mat.define-palette(variables.$mat-css-palette-warn);
+  $primary: mat.m2-define-palette(variables.$mat-css-palette-primary);
+  $accent: mat.m2-define-palette(variables.$mat-css-palette-accent);
+  $warn: mat.m2-define-palette(variables.$mat-css-palette-warn);
 
-  $theme: mat.define-light-theme((
+  $theme: mat.m2-define-light-theme((
     color: (
       primary: $primary,
       accent: $accent,
@@ -31,7 +31,7 @@
   $tmp2: map-merge((), color, $tmp1);
   $theme: map-merge($tmp2, $tmp1);
 
-  $light-theme: mat.define-dark-theme((
+  $light-theme: mat.m2-define-dark-theme((
     color: (
       primary: $primary,
       accent: $accent,
@@ -39,7 +39,7 @@
     )
   ));
 
-  $dark-theme: mat.define-dark-theme((
+  $dark-theme: mat.m2-define-dark-theme((
     color: (
       primary: $primary,
       accent: $accent,

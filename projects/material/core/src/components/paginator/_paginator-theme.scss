@@ -2,36 +2,36 @@
 @use '@angular/material' as mat-theming;
 
 @mixin paginator-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $foreground: map.get($config, foreground);
     $background: map.get($config, background);
     $accent: map.get($config, accent);
     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-mdc-paginator,
     .mat-mdc-paginator-page-size .mat-select-trigger {
-        color: mat-theming.get-color-from-palette($foreground, secondary-text);
+        color: mat-theming.m2-get-color-from-palette($foreground, secondary-text);
     }
 
     .mat-paginator .mat-mdc-form-field .mat-form-field-underline,
     .mat-paginator .mat-form-field-appearance-legacy .mat-form-field-underline,
     .mat-paginator .mat-form-field-ripple,
     .mat-paginator .mat-form-field.mat-focused .mat-form-field-ripple {
-        background-color: mat-theming.get-color-from-palette($accent);
+        background-color: mat-theming.m2-get-color-from-palette($accent);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-mdc-paginator .mat-select-arrow {
-        color: mat-theming.get-color-from-palette($accent);
+        color: mat-theming.m2-get-color-from-palette($accent);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of paginator that may no longer apply for the MDC version.*/
     .mat-paginator-decrement,
     .mat-paginator-increment {
-        border-top: 2px solid mat-theming.get-color-from-palette($foreground, 'icon');
-        border-right: 2px solid mat-theming.get-color-from-palette($foreground, 'icon');
+        border-top: 2px solid mat-theming.m2-get-color-from-palette($foreground, 'icon');
+        border-right: 2px solid mat-theming.m2-get-color-from-palette($foreground, 'icon');
     }
     /* TODO(mdc-migration): The following rule targets internal classes of paginator that may no longer apply for the MDC version.*/
     .mat-paginator-first,
     .mat-paginator-last {
-        border-top: 2px solid mat-theming.get-color-from-palette($foreground, 'icon');
+        border-top: 2px solid mat-theming.m2-get-color-from-palette($foreground, 'icon');
     }
 
     .mat-mdc-icon-button[disabled] {
@@ -40,14 +40,14 @@
         .mat-paginator-increment,
         .mat-paginator-first,
         .mat-paginator-last {
-            border-color: mat-theming.get-color-from-palette($foreground, 'disabled');
+            border-color: mat-theming.m2-get-color-from-palette($foreground, 'disabled');
         }
     }
 
     .mat-paginator-navigation-previous.mat-mdc-icon-button,
     .mat-paginator-navigation-next.mat-icon-button {
-        background: mat-theming.get-color-from-palette($accent, lighter);
-        color: mat-theming.get-color-from-palette($foreground, secondary-text);
+        background: mat-theming.m2-get-color-from-palette($accent, lighter);
+        color: mat-theming.m2-get-color-from-palette($foreground, secondary-text);
     }
 }
 
@@ -64,9 +64,9 @@
 }
 
 @mixin paginator-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+    $color: mat-theming.m2-get-color-config($theme-or-color-config);
+    $density: mat-theming.m2-get-density-config($theme-or-color-config);
+    $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include paginator-color($color);

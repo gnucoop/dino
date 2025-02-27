@@ -3,14 +3,14 @@
 // Dino default typography
 $base-font-family: "'Roboto', monospace";
 
-$base-typography: material.define-typography-config(
+$base-typography: material.m2-define-typography-config(
   $font-family: $base-font-family,
-  $headline-5: material.define-typography-level(32px, 48px, 700, $base-font-family),
-  $headline-6: material.define-typography-level(16px, 24px, 700, $base-font-family),
-  $body-1: material.define-typography-level(13px, 22px, 400, $base-font-family),
-  $body-2: material.define-typography-level(13px, 22px, 200, $base-font-family),
-  $subtitle-1: material.define-typography-level(14px, 22px, 700, $base-font-family),
-  $subtitle-2: material.define-typography-level(14px, 22px, 700, $base-font-family),
+  $headline-5: material.m2-define-typography-level(32px, 48px, 700, $base-font-family),
+  $headline-6: material.m2-define-typography-level(16px, 24px, 700, $base-font-family),
+  $body-1: material.m2-define-typography-level(13px, 22px, 400, $base-font-family),
+  $body-2: material.m2-define-typography-level(13px, 22px, 200, $base-font-family),
+  $subtitle-1: material.m2-define-typography-level(14px, 22px, 700, $base-font-family),
+  $subtitle-2: material.m2-define-typography-level(14px, 22px, 700, $base-font-family),
 );
 
 // Components mixins
@@ -19,9 +19,9 @@ $base-typography: material.define-typography-config(
 @mixin grid-typography($typography-config: null) {
   .mat-grid-tile.dino-grid-tile {
     div.dino-grid-label {
-      font-size: material.font-size($base-typography, subtitle-1);
-      font-family: material.font-family($base-typography, subtitle-1);
-      font-weight: material.font-weight($base-typography, subtitle-1);
+      font-size: material.m2-font-size($base-typography, subtitle-1);
+      font-family: material.m2-font-family($base-typography, subtitle-1);
+      font-weight: material.m2-font-weight($base-typography, subtitle-1);
     }
   }
 }
@@ -29,14 +29,14 @@ $base-typography: material.define-typography-config(
 // Sidenav
 @mixin sidenav-typography($typography-config: null) {
   .mat-drawer-side.mat-sidenav {
-    font-family: material.font-family($base-typography, body-1);
-    font-size: material.font-size($base-typography, body-1);
-    font-weight: material.font-weight($base-typography, body-1);
+    font-family: material.m2-font-family($base-typography, body-1);
+    font-size: material.m2-font-size($base-typography, body-1);
+    font-weight: material.m2-font-weight($base-typography, body-1);
   }
   .mat-drawer-container.mat-sidenav-container {
-    font-family: material.font-family($base-typography, body-1);
-    font-size: material.font-size($base-typography, body-1);
-    font-weight: material.font-weight($base-typography, body-1);
+    font-family: material.m2-font-family($base-typography, body-1);
+    font-size: material.m2-font-size($base-typography, body-1);
+    font-weight: material.m2-font-weight($base-typography, body-1);
   }
 }
 
@@ -44,30 +44,30 @@ $base-typography: material.define-typography-config(
 @mixin text-field-typography($typography-config: null) {
   .mdc-text-field,
   .mdc-floating-label {
-    font-family: material.font-family($base-typography, body-1);
-    font-size: material.font-size($base-typography, body-1);
-    font-weight: material.font-weight($base-typography, body-1);
+    font-family: material.m2-font-family($base-typography, body-1);
+    font-size: material.m2-font-size($base-typography, body-1);
+    font-weight: material.m2-font-weight($base-typography, body-1);
   }
 }
 
 // Table
 @mixin table-typography($typography-config: null) {
   .mat-mdc-table {
-    font-family: material.font-family($base-typography, body-2);
-    font-size: material.font-size($base-typography, body-2);
-    font-weight: material.font-weight($base-typography, body-2);
+    font-family: material.m2-font-family($base-typography, body-2);
+    font-size: material.m2-font-size($base-typography, body-2);
+    font-weight: material.m2-font-weight($base-typography, body-2);
   }
 }
 
 // Dialog
 @mixin dialog-typography($typography-config: null) {
   .mat-mdc-dialog-container {
-      font-family: material.font-family($base-typography, body-1);
-      font-size: material.font-size($base-typography, body-1);
-      font-weight: material.font-weight($base-typography, body-1);
+      font-family: material.m2-font-family($base-typography, body-1);
+      font-size: material.m2-font-size($base-typography, body-1);
+      font-weight: material.m2-font-weight($base-typography, body-1);
       h4 {
-          font-size: material.font-size($base-typography, subtitle-1);
-          font-weight: material.font-weight($base-typography, subtitle-1);
+          font-size: material.m2-font-size($base-typography, subtitle-1);
+          font-weight: material.m2-font-weight($base-typography, subtitle-1);
       }
   }
 }

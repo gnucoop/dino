@@ -2,7 +2,7 @@
 @use '@angular/material' as mat-theming;
 
 @mixin checkbox-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $is-dark-theme: map.get($config, is-dark);
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
@@ -11,7 +11,7 @@
     $foreground: map.get($config, foreground);
 
     // The color of the checkbox's checkmark / mixedmark.
-    $checkbox-mark-color: mat-theming.get-color-from-palette($background, background);
+    $checkbox-mark-color: mat-theming.m2-get-color-from-palette($background, background);
 
     // NOTE(traviskaufman): While the spec calls for translucent blacks/whites for disabled colors,
     // this does not work well with elements layered on top of one another. To get around this we
@@ -22,7 +22,7 @@
     if($is-dark-theme, $white-30pct-opacity-on-dark, $black-26pct-opacity-on-light);
     /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-frame {
-        border-color: mat-theming.get-color-from-palette($foreground, secondary-text);
+        border-color: mat-theming.m2-get-color-from-palette($foreground, secondary-text);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
     .mat-checkbox-checkmark {
@@ -44,15 +44,15 @@
     .mat-checkbox-checked {
         /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-primary .mat-checkbox-background {
-            background-color: mat-theming.get-color-from-palette($primary);
+            background-color: mat-theming.m2-get-color-from-palette($primary);
         }
         /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-accent .mat-checkbox-background {
-            background-color: mat-theming.get-color-from-palette($accent);
+            background-color: mat-theming.m2-get-color-from-palette($accent);
         }
         /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         &.mat-warn .mat-checkbox-background {
-            background-color: mat-theming.get-color-from-palette($warn);
+            background-color: mat-theming.m2-get-color-from-palette($warn);
         }
     }
     /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
@@ -78,7 +78,7 @@
         }
         /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
         .mat-checkbox-label {
-            color: mat-theming.get-color-from-palette($foreground, secondary-text);
+            color: mat-theming.m2-get-color-from-palette($foreground, secondary-text);
         }
     }
 
@@ -91,15 +91,15 @@
     .mat-mdc-checkbox-checked:not(.mat-checkbox-disabled),
     .mat-checkbox:active:not(.mat-checkbox-disabled) {
         &.mat-primary .mat-ripple-element {
-            border: 1px solid mat-theming.get-color-from-palette($primary);
+            border: 1px solid mat-theming.m2-get-color-from-palette($primary);
         }
 
         &.mat-accent .mat-ripple-element {
-            border: 1px solid mat-theming.get-color-from-palette($accent);
+            border: 1px solid mat-theming.m2-get-color-from-palette($accent);
         }
 
         &.mat-warn .mat-ripple-element {
-            border: 1px solid mat-theming.get-color-from-palette($warn);
+            border: 1px solid mat-theming.m2-get-color-from-palette($warn);
         }
     }
 }
@@ -121,9 +121,9 @@
 }
 
 @mixin checkbox-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+    $color: mat-theming.m2-get-color-config($theme-or-color-config);
+    $density: mat-theming.m2-get-density-config($theme-or-color-config);
+    $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include checkbox-color($color);

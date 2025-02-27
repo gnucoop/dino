@@ -2,7 +2,7 @@
 @use '@angular/material' as mat-theming;
 
 @mixin table-color($config-or-theme) {
-  $config: mat-theming.get-color-config($config-or-theme);
+  $config: mat-theming.m2-get-color-config($config-or-theme);
   $primary: map.get($config, primary);
   $accent: map.get($config, accent);
   $warn: map.get($config, warn);
@@ -25,7 +25,7 @@
     }
 
     .dino-inner-table-container .mat-mdc-row.dino-details-row:not(.dino-highlighted-row) {
-      background-color: mat-theming.get-color-from-palette($warn, lighter);
+      background-color: mat-theming.m2-get-color-from-palette($warn, lighter);
     }
 
     .mat-icon {
@@ -47,7 +47,7 @@
   mat-footer-row,
   [mat-row],
   [mat-footer-row] {
-    background: mat-theming.get-color-from-palette($background, card);
+    background: mat-theming.m2-get-color-from-palette($background, card);
   }
 
   .mat-mdc-cell:first-of-type,
@@ -60,12 +60,12 @@
   }
 
   .mat-mdc-header-cell {
-    color: mat-theming.get-color-from-palette($foreground, secondary-text);
+    color: mat-theming.m2-get-color-from-palette($foreground, secondary-text);
   }
 
   .mat-mdc-cell,
   .mat-mdc-footer-cell {
-    color: mat-theming.get-color-from-palette($foreground, text);
+    color: mat-theming.m2-get-color-from-palette($foreground, text);
   }
 }
 
@@ -90,9 +90,9 @@
 }
 
 @mixin table-theme($theme-or-color-config) {
-  $color: mat-theming.get-color-config($theme-or-color-config);
-  $density: mat-theming.get-density-config($theme-or-color-config);
-  $typography: mat-theming.get-typography-config($theme-or-color-config);
+  $color: mat-theming.m2-get-color-config($theme-or-color-config);
+  $density: mat-theming.m2-get-density-config($theme-or-color-config);
+  $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
   @if $color != null {
     @include table-color($color);

@@ -2,7 +2,7 @@
 @use '@angular/material' as mat-theming;
 
 @mixin grid-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $background: map.get($config, background);
     $foreground: map.get($config, foreground);
     $primary: map.get($config, primary);
@@ -34,8 +34,8 @@
         .dino-grid-action-icons:hover {
             .mat-mdc-mini-fab.mat-mdc-button-base {
                 opacity: 1;
-                color: mat-theming.get-color-from-palette($warn);
-                background-color: mat-theming.get-color-from-palette($accent);
+                color: mat-theming.m2-get-color-from-palette($warn);
+                background-color: mat-theming.m2-get-color-from-palette($accent);
             }
         }
     }
@@ -50,9 +50,9 @@
 }
 
 @mixin grid-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+    $color: mat-theming.m2-get-color-config($theme-or-color-config);
+    $density: mat-theming.m2-get-density-config($theme-or-color-config);
+    $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include grid-color($color);

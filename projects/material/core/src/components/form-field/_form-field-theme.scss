@@ -5,7 +5,7 @@
 
 // Color styles that apply to all appearances of the form-field.
 @mixin form-field-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
     $warn: map.get($config, warn);
@@ -14,17 +14,17 @@
     $is-dark-theme: map.get($config, is-dark);
 
     // Label colors. Required is used for the `*` star shown in the label.
-    $label-color: mat-theming.get-color-from-palette(
+    $label-color: mat-theming.m2-get-color-from-palette(
         $foreground, secondary-text, if($is-dark-theme, 0.7, 0.6));
-    $focused-label-color: mat-theming.get-color-from-palette($primary, text);
-    $required-label-color: mat-theming.get-color-from-palette($accent, text);
+    $focused-label-color: mat-theming.m2-get-color-from-palette($primary, text);
+    $required-label-color: mat-theming.m2-get-color-from-palette($accent, text);
 
     // Underline colors.
-    $underline-color-base: mat-theming.get-color-from-palette(
+    $underline-color-base: mat-theming.m2-get-color-from-palette(
         $foreground, divider, if($is-dark-theme, 1, 0.87));
-    $underline-color-accent: mat-theming.get-color-from-palette($accent, text);
-    $underline-color-warn: mat-theming.get-color-from-palette($warn, text);
-    $underline-focused-color: mat-theming.get-color-from-palette($primary, text);
+    $underline-color-accent: mat-theming.m2-get-color-from-palette($accent, text);
+    $underline-color-warn: mat-theming.m2-get-color-from-palette($warn, text);
+    $underline-focused-color: mat-theming.m2-get-color-from-palette($primary, text);
 
     .mat-mdc-form-field .mat-form-field-underline,
     .mat-form-field.mat-form-field-appearance-legacy .mat-form-field-underline,
@@ -32,7 +32,7 @@
     .mat-form-field.mat-form-field-appearance-standard .mat-form-field-ripple,
     .mat-form-field-ripple,
     .mat-form-field.mat-focused .mat-form-field-ripple {
-        background-color: mat-theming.get-color-from-palette($primary);
+        background-color: mat-theming.m2-get-color-from-palette($primary);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-label {
@@ -249,7 +249,7 @@ $mat-form-field-dedupe: 0;
 }
 
 @mixin mat-private-form-field-density($config-or-theme) {
-    $density-scale: mat-theming.get-density-config($config-or-theme);
+    $density-scale: mat-theming.m2-get-density-config($config-or-theme);
     // @include mat-form-field-legacy-theme.private-form-field-legacy-density($density-scale);
     // @include mat-form-field-standard-theme.private-form-field-standard-density($density-scale);
     // @include mat-form-field-fill-theme.private-form-field-fill-density($density-scale);
@@ -257,9 +257,9 @@ $mat-form-field-dedupe: 0;
 }
 
 @mixin form-field-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+    $color: mat-theming.m2-get-color-config($theme-or-color-config);
+    $density: mat-theming.m2-get-density-config($theme-or-color-config);
+    $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include form-field-color($color);

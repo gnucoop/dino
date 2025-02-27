@@ -6,9 +6,9 @@
     border-right: none !important;
   }
   .mat-drawer-side.mat-sidenav {
-    font-family: typography-utils.font-family(typography.$base-typography, body-1);
-    font-size: typography-utils.font-size(typography.$base-typography, body-1);
-    font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
+    font-family: typography-utils.m2-font-family(typography.$base-typography, body-1);
+    font-size: typography-utils.m2-font-size(typography.$base-typography, body-1);
+    font-weight: typography-utils.m2-font-weight(typography.$base-typography, body-1);
     border-right: none;
     .mat-nav-list,
     .mat-mdc-list-base {
@@ -19,8 +19,8 @@
     }
   }
   .mat-drawer-container.mat-sidenav-container {
-    font-family: typography-utils.font-family(typography.$base-typography, body-1);
-    font-size: typography-utils.font-size(typography.$base-typography, body-1);
-    font-weight: typography-utils.font-weight(typography.$base-typography, body-1);
+    font-family: typography-utils.m2-font-family(typography.$base-typography, body-1);
+    font-size: typography-utils.m2-font-size(typography.$base-typography, body-1);
+    font-weight: typography-utils.m2-font-weight(typography.$base-typography, body-1);
   }
 }

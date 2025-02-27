@@ -8,21 +8,21 @@ $_mat-button-ripple-opacity: 0.1;
 
 // Applies a focus style to an mat-button element for each of the supported palettes.
 @mixin _mat-button-focus-overlay-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
     $warn: map.get($config, warn);
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-primary .mat-button-focus-overlay {
-        background-color: mat-theming.get-color-from-palette($primary);
+        background-color: mat-theming.m2-get-color-from-palette($primary);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-accent .mat-button-focus-overlay {
-        background-color: mat-theming.get-color-from-palette($accent);
+        background-color: mat-theming.m2-get-color-from-palette($accent);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-warn .mat-button-focus-overlay {
-        background-color: mat-theming.get-color-from-palette($warn);
+        background-color: mat-theming.m2-get-color-from-palette($warn);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     &.mat-button-disabled .mat-button-focus-overlay {
@@ -34,7 +34,7 @@ $_mat-button-ripple-opacity: 0.1;
 // we assume that we've been given a CSS variable. Since we can't perform alpha-blending
 // on a CSS variable, we instead add the opacity directly to the ripple element.
 @mixin _mat-button-ripple-background($palette, $hue, $opacity) {
-    $background-color: mat-theming.get-color-from-palette($palette, $hue, $opacity);
+    $background-color: mat-theming.m2-get-color-from-palette($palette, $hue, $opacity);
     background-color: $background-color;
     @if (meta.type-of($background-color) != color) {
         opacity: $opacity;
@@ -68,13 +68,13 @@ $_mat-button-ripple-opacity: 0.1;
     $foreground: map.get($theme, foreground);
 
     &.mat-primary {
-        #{$property}: mat-theming.get-color-from-palette($primary, $hue);
+        #{$property}: mat-theming.m2-get-color-from-palette($primary, $hue);
     }
     &.mat-accent {
-        #{$property}: mat-theming.get-color-from-palette($accent, $hue);
+        #{$property}: mat-theming.m2-get-color-from-palette($accent, $hue);
     }
     &.mat-warn {
-        #{$property}: mat-theming.get-color-from-palette($warn, $hue);
+        #{$property}: mat-theming.m2-get-color-from-palette($warn, $hue);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
@@ -85,13 +85,13 @@ $_mat-button-ripple-opacity: 0.1;
         /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &.mat-button-disabled {
             $palette: if($property == 'color', $foreground, $background);
-            #{$property}: mat-theming.get-color-from-palette($palette, disabled-button);
+            #{$property}: mat-theming.m2-get-color-from-palette($palette, disabled-button);
         }
     }
 }
 
 @mixin button-color($config-or-theme) {
-    $config: mat-theming.get-color-config($config-or-theme);
+    $config: mat-theming.m2-get-color-config($config-or-theme);
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
     $warn: map.get($config, warn);
@@ -130,8 +130,8 @@ $_mat-button-ripple-opacity: 0.1;
     .mat-mdc-fab,
     .mat-mdc-mini-fab {
         // Default font and background color when not using any color palette.
-        color: mat-theming.get-color-from-palette($foreground, text);
-        background-color: mat-theming.get-color-from-palette($background, raised-button);
+        color: mat-theming.m2-get-color-from-palette($foreground, text);
+        background-color: mat-theming.m2-get-color-from-palette($background, raised-button);
 
         @include _mat-button-theme-property($config, 'color', default-contrast);
         @include _mat-button-theme-property($config, 'background-color', default);
@@ -169,7 +169,7 @@ $_mat-button-ripple-opacity: 0.1;
     }
     /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
     .mat-button-toggle-checked {
-      background-color: mat-theming.get-color-from-palette($primary);
+      background-color: mat-theming.m2-get-color-from-palette($primary);
     }
 }
 
@@ -194,9 +194,9 @@ $_mat-button-ripple-opacity: 0.1;
 }
 
 @mixin button-theme($theme-or-color-config) {
-    $color: mat-theming.get-color-config($theme-or-color-config);
-    $density: mat-theming.get-density-config($theme-or-color-config);
-    $typography: mat-theming.get-typography-config($theme-or-color-config);
+    $color: mat-theming.m2-get-color-config($theme-or-color-config);
+    $density: mat-theming.m2-get-density-config($theme-or-color-config);
+    $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
     @if $color != null {
         @include button-color($color);

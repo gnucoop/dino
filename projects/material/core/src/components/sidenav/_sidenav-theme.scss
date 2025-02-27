@@ -6,25 +6,25 @@
 @use '../../theming/private';
 
 @mixin sidenav-color($config-or-theme) {
-  $config: mat-theming.get-color-config($config-or-theme);
+  $config: mat-theming.m2-get-color-config($config-or-theme);
   $primary: map.get($config, primary);
   $accent: map.get($config, accent);
   $warn: map.get($config, warn);
   $background: map.get($config, background);
   $foreground: map.get($config, foreground);
 
-  $drawer-background-color: mat-theming.get-color-from-palette($background, background);
-  $drawer-container-background-color: mat-theming.get-color-from-palette($background, background);
-  $drawer-push-background-color: mat-theming.get-color-from-palette($background, dialog);
-  $drawer-side-border: solid 1px mat-theming.get-color-from-palette($foreground, divider);
+  $drawer-background-color: mat-theming.m2-get-color-from-palette($background, background);
+  $drawer-container-background-color: mat-theming.m2-get-color-from-palette($background, background);
+  $drawer-push-background-color: mat-theming.m2-get-color-from-palette($background, dialog);
+  $drawer-side-border: solid 1px mat-theming.m2-get-color-from-palette($foreground, divider);
 
   .mat-drawer-container {
     background-color: $drawer-container-background-color;
-    color: mat-theming.get-color-from-palette($foreground, text);
+    color: mat-theming.m2-get-color-from-palette($foreground, text);
   }
 
   .mat-drawer {
-    color: mat-theming.get-color-from-palette($foreground, text);
+    color: mat-theming.m2-get-color-from-palette($foreground, text);
 
     &.mat-drawer-push {
       background-color: $drawer-push-background-color;
@@ -82,7 +82,7 @@
 
   .mat-drawer-backdrop.mat-drawer-shown {
     $opacity: 0.6;
-    $backdrop-color: mat-theming.get-color-from-palette($background, card, $opacity);
+    $backdrop-color: mat-theming.m2-get-color-from-palette($background, card, $opacity);
 
     @if (meta.type-of($backdrop-color) == color) {
       background-color: color.invert($backdrop-color);
@@ -100,9 +100,9 @@
 }
 
 @mixin sidenav-theme($theme-or-color-config) {
-  $color: mat-theming.get-color-config($theme-or-color-config);
-  $density: mat-theming.get-density-config($theme-or-color-config);
-  $typography: mat-theming.get-typography-config($theme-or-color-config);
+  $color: mat-theming.m2-get-color-config($theme-or-color-config);
+  $density: mat-theming.m2-get-density-config($theme-or-color-config);
+  $typography: mat-theming.m2-get-typography-config($theme-or-color-config);
 
   @if $color != null {
     @include sidenav-color($color);

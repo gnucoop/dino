@@ -2,11 +2,11 @@
 
 // Dino default typography
 
-$base-typography: material.define-typography-config(
+$base-typography: material.m2-define-typography-config(
     $font-family: "'Roboto', monospace",
-    $headline-5: material.define-typography-level(32px, 48px, 700),
-    $headline-6: material.define-typography-level(16px, 24px, 700),
-    $body-1: material.define-typography-level(13px, 22px, 400),
-    $body-2: material.define-typography-level(13px, 22px, 500),
-    $subtitle-1: material.define-typography-level(14px, 22px, 700),
+    $headline-5: material.m2-define-typography-level(32px, 48px, 700),
+    $headline-6: material.m2-define-typography-level(16px, 24px, 700),
+    $body-1: material.m2-define-typography-level(13px, 22px, 400),
+    $body-2: material.m2-define-typography-level(13px, 22px, 500),
+    $subtitle-1: material.m2-define-typography-level(14px, 22px, 700),
 );

@@ -10,20 +10,20 @@
         .mat-slide-toggle-bar {
             // Opacity is determined from the specs for the selection controls.
             // See: https://material.io/design/components/selection-controls.html#specs
-            background-color: material.get-color-from-palette($palette, $thumb-checked-hue, 0.8);
+            background-color: material.m2-get-color-from-palette($palette, $thumb-checked-hue, 0.8);
         }
 
         .mat-ripple-element {
             // Set no opacity for the ripples because
             // the ripple opacity will be adjusted dynamically
             // based on the type of interaction with the slide-toggle (e.g. for hover, focus)
-            background-color: material.get-color-from-palette($palette, $thumb-checked-hue);
+            background-color: material.m2-get-color-from-palette($palette, $thumb-checked-hue);
         }
     }
 }
 
 @mixin slide-toggle-color($config-or-theme) {
-    $config: material.get-color-config($config-or-theme);
+    $config: material.m2-get-color-config($config-or-theme);
     $is-dark: map.get($config, is-dark);
     $primary: map.get($config, primary);
     $accent: map.get($config, accent);
@@ -40,8 +40,8 @@
     $thumb-unchecked-hue: if($is-dark, 400, 50);
     $thumb-checked-hue: default;
 
-    $bar-unchecked-color: material.get-color-from-palette($accent);
-    $ripple-unchecked-color: material.get-color-from-palette($foreground, base);
+    $bar-unchecked-color: material.m2-get-color-from-palette($accent);
+    $ripple-unchecked-color: material.m2-get-color-from-palette($foreground, base);
 
     .mat-mdc-slide-toggle {
         @include _slide-toggle-checked($primary, $thumb-checked-hue);
@@ -63,8 +63,8 @@
     }
     /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-thumb {
-        background-color: material.get-color-from-palette(
-            material.$grey-palette, $thumb-unchecked-hue);
+        background-color: material.m2-get-color-from-palette(
+            material.$m2-grey-palette, $thumb-unchecked-hue);
     }
     /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
     .mat-slide-toggle-bar {
@@ -84,9 +84,9 @@
 }
 
 @mixin slide-toggle-theme($theme-or-color-config) {
-        $color: material.get-color-config($theme-or-color-config);
-        $density: material.get-density-config($theme-or-color-config);
-        $typography: material.get-typography-config($theme-or-color-config);
+        $color: material.m2-get-color-config($theme-or-color-config);
+        $density: material.m2-get-density-config($theme-or-color-config);
+        $typography: material.m2-get-typography-config($theme-or-color-config);
 
         @if $color != null {
             @include slide-toggle-color($color);

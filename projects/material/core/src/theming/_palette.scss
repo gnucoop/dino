@@ -69,7 +69,7 @@ $blue: (
 
 // Background palette for light themes.
 $light-theme-background: (
-    status-bar: map.get(mat-palette.$grey-palette, 300),
+    status-bar: map.get(mat-palette.$m2-grey-palette, 300),
     app-bar: white,
     background: map.get($grey, 200),
     hover: rgba(black, 0.04),
@@ -78,31 +78,31 @@ $light-theme-background: (
     disabled-button: rgba(black, 0.12),
     raised-button: white,
     focused-button: $dark-focused,
-    selected-button: map.get(mat-palette.$grey-palette, 300),
-    selected-disabled-button: map.get(mat-palette.$grey-palette, 400),
-    disabled-button-toggle: map.get(mat-palette.$grey-palette, 200),
-    unselected-chip: map.get(mat-palette.$grey-palette, 300),
-    disabled-list-option: map.get(mat-palette.$grey-palette, 200),
-    tooltip: map.get(mat-palette.$grey-palette, 700),
+    selected-button: map.get(mat-palette.$m2-grey-palette, 300),
+    selected-disabled-button: map.get(mat-palette.$m2-grey-palette, 400),
+    disabled-button-toggle: map.get(mat-palette.$m2-grey-palette, 200),
+    unselected-chip: map.get(mat-palette.$m2-grey-palette, 300),
+    disabled-list-option: map.get(mat-palette.$m2-grey-palette, 200),
+    tooltip: map.get(mat-palette.$m2-grey-palette, 700),
 );
 
 // Background palette for dark themes.
 $dark-theme-background: (
     status-bar: black,
-    app-bar: map.get(mat-palette.$grey-palette, 900),
+    app-bar: map.get(mat-palette.$m2-grey-palette, 900),
     background: #303030,
     hover: rgba(white, 0.04),
-    card: map.get(mat-palette.$grey-palette, 800),
-    dialog: map.get(mat-palette.$grey-palette, 800),
+    card: map.get(mat-palette.$m2-grey-palette, 800),
+    dialog: map.get(mat-palette.$m2-grey-palette, 800),
     disabled-button: rgba(white, 0.12),
-    raised-button: map.get(mat-palette.$grey-palette, 800),
+    raised-button: map.get(mat-palette.$m2-grey-palette, 800),
     focused-button: $light-focused,
-    selected-button: map.get(mat-palette.$grey-palette, 900),
-    selected-disabled-button: map.get(mat-palette.$grey-palette, 800),
+    selected-button: map.get(mat-palette.$m2-grey-palette, 900),
+    selected-disabled-button: map.get(mat-palette.$m2-grey-palette, 800),
     disabled-button-toggle: black,
-    unselected-chip: map.get(mat-palette.$grey-palette, 700),
+    unselected-chip: map.get(mat-palette.$m2-grey-palette, 700),
     disabled-list-option: black,
-    tooltip: map.get(mat-palette.$grey-palette, 700),
+    tooltip: map.get(mat-palette.$m2-grey-palette, 700),
 );
 
 // Foreground palette for light themes.

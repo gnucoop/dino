@@ -9,10 +9,10 @@
 @include all-core.mat-core();
 
 // Define a theme.
-$primary: material.define-palette(material.$light-blue-palette, 900, 700);
-$accent: material.define-palette(material.$blue-grey-palette, 700);
-$warn: material.define-palette(material.$red-palette, 900);
-$alt_accent: material.define-palette(material.$light-blue-palette, 900);
+$primary: material.m2-define-palette(material.$m2-light-blue-palette, 900, 700);
+$accent: material.m2-define-palette(material.$m2-blue-grey-palette, 700);
+$warn: material.m2-define-palette(material.$m2-red-palette, 900);
+$alt_accent: material.m2-define-palette(material.$m2-light-blue-palette, 900);
 
 $theme: core.light-theme(
     (
