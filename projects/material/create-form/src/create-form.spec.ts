@@ -1,7 +1,6 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataModelManager, DataServiceConfig, Model} from '@dino/core/data';
@@ -13,6 +12,8 @@ import {BehaviorSubject, of} from 'rxjs';
 
 import {CreateForm, CreateFormModule} from './public_api';
 import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideRouter} from '@angular/router';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -72,12 +73,7 @@ describe('Create Form', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        CreateFormModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
+      imports: [BrowserAnimationsModule, CreateFormModule],
       providers: [
         FormSchemaManager,
         FormStatusManager,
@@ -86,6 +82,9 @@ describe('Create Form', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([]),
       ],
     }).compileComponents();
 

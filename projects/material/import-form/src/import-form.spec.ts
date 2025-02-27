@@ -11,9 +11,10 @@ import {RxDocument} from 'rxdb';
 import {BehaviorSubject, of} from 'rxjs';
 
 import {ImportForm} from './public_api';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {EventEmitter} from '@angular/core';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -107,7 +108,7 @@ describe('Import Forms', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, HttpClientTestingModule, TranslocoModule],
+      imports: [BrowserAnimationsModule, TranslocoModule],
       providers: [
         UntypedFormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},
@@ -118,6 +119,8 @@ describe('Import Forms', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
     fixtureImportForm = TestBed.createComponent(ImportForm);

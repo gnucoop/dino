@@ -2,8 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StripePaymentModule} from './stripe-payment.module';
 import {StripeCheckout} from './stripe-checkout';
-import {RouterTestingModule} from '@angular/router/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {BehaviorSubject, of} from 'rxjs';
 import {EventEmitter} from '@angular/core';
@@ -13,6 +12,7 @@ import {RxJsonSchema} from 'rxdb';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-config';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {StripePaymentData} from './stripe-payment-data-interface';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -102,12 +102,7 @@ describe('Stripe Checkout', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        StripePaymentModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
+      imports: [BrowserAnimationsModule, StripePaymentModule],
       providers: [
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: AuthService, useValue: authServiceMock},
@@ -115,6 +110,8 @@ describe('Stripe Checkout', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

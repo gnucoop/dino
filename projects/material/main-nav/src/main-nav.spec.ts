@@ -1,7 +1,6 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterTestingModule} from '@angular/router/testing';
 import {
   DATA_SERVICE_CONFIG,
   DataServiceConfig,
@@ -19,6 +18,7 @@ import {ThemeService} from '@dino/material/core';
 import {NotificationModule} from '@dino/core/notifications';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -92,14 +92,7 @@ describe('Main', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
-        MainNavModule,
-        NotificationModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        UsersModule,
-      ],
+      imports: [BrowserAnimationsModule, MainNavModule, NotificationModule, UsersModule],
       providers: [
         {provide: ThemeService, useValue: themeServiceMock},
         {provide: AuthService, useValue: authServiceMock},
@@ -109,6 +102,8 @@ describe('Main', () => {
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: uiTourConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);

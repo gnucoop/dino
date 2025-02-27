@@ -1,9 +1,10 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {take} from 'rxjs/operators';
 
 import {ConfigServiceConfig} from './config.token';
 import {CONFIG_SERVICE_CONFIG, ConfigResponse, ConfigSet, ConfigService} from './public_api';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 const configServiceConfig: ConfigServiceConfig = {
   apiUrl: 'https://test-config-url',
@@ -80,8 +81,13 @@ describe('Config service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ConfigService, {provide: CONFIG_SERVICE_CONFIG, useValue: configServiceConfig}],
+      imports: [],
+      providers: [
+        ConfigService,
+        {provide: CONFIG_SERVICE_CONFIG, useValue: configServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     configService = TestBed.inject(ConfigService);
     httpMock = TestBed.inject(HttpTestingController);

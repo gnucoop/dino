@@ -1,8 +1,7 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AreaManager} from '@dino/core/areas';
 import {AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {DataService, Metric, PermissionContextService} from '@dino/core/data';
@@ -11,6 +10,7 @@ import {RxDocument} from 'rxdb';
 import {Observable, of} from 'rxjs';
 
 import {MetricEditor, MetricEditorModule} from './public_api';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -55,13 +55,7 @@ describe('Metric Editor', () => {
   let httpMock: HttpTestingController;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        MetricEditorModule,
-        RouterTestingModule,
-        MatDialogModule,
-        BrowserAnimationsModule,
-      ],
+      imports: [MetricEditorModule, MatDialogModule, BrowserAnimationsModule],
       providers: [
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: UserGroupManager, useValue: userGroupManagerMock},
@@ -74,6 +68,8 @@ describe('Metric Editor', () => {
             metricAction: 'edit',
           },
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
     httpMock = TestBed.inject(HttpTestingController);

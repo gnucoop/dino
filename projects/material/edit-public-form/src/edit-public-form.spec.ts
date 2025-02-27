@@ -1,7 +1,6 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
@@ -15,6 +14,7 @@ import {ActivatedRoute} from '@angular/router';
 import {AnimationBuilder, AnimationFactory, AnimationPlayer} from '@angular/animations';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {format} from 'date-fns';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -97,12 +97,7 @@ describe('Edit Public Form', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NoopAnimationsModule,
-        EditPublicFormModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
+      imports: [NoopAnimationsModule, EditPublicFormModule],
       providers: [
         Apollo,
         OnlineFormDataManager,
@@ -112,6 +107,8 @@ describe('Edit Public Form', () => {
         {provide: ActivatedRoute, useValue: {params: paramsSubject, queryParams: of([])}},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
     osm = TestBed.inject(OnlineFormSchemaManager);

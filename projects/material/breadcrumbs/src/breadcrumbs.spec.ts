@@ -1,12 +1,13 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 
 import {BreadCrumbs, BreadcrumbsModule} from './public_api';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
 
@@ -44,10 +45,13 @@ describe('BreadCrumbs', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BreadcrumbsModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [BreadcrumbsModule],
       providers: [
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([]),
       ],
     }).compileComponents();
     fixtureBreadcrumbs = TestBed.createComponent(BreadCrumbs);

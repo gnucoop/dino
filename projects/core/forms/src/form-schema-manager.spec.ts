@@ -1,8 +1,7 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
@@ -13,6 +12,7 @@ import {UserData, UserGroup} from '@dino/core/users';
 import {FormInfo} from './form-info';
 import {ajfCustomFunctions} from '../../../e2e-app/src/ajf-custom-functions';
 import {NodeVisibility} from '@dino/core/list';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -100,14 +100,15 @@ describe('FormSchemaManager', () => {
   let fsm: FormSchemaManager;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         FormSchemaManager,
-        RouterTestingModule,
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: AuthService, useValue: authServiceMock},
         {provide: Router, useValue: {}},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     fsm = TestBed.inject(FormSchemaManager);

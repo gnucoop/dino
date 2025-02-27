@@ -1,4 +1,4 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {map, take} from 'rxjs/operators';
 
@@ -10,6 +10,7 @@ import {
   User,
 } from '@dino/core/auth';
 import {firstValueFrom} from 'rxjs';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -50,8 +51,13 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AuthService, {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig}],
+      imports: [],
+      providers: [
+        AuthService,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -140,8 +146,13 @@ describe('refresh token', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AuthService, {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig}],
+      imports: [],
+      providers: [
+        AuthService,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
     authService = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -173,8 +184,13 @@ describe('logged in', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AuthService, {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig}],
+      imports: [],
+      providers: [
+        AuthService,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
 
     localStorage.setItem('dino_auth_token', loginResponse.token);
@@ -261,7 +277,7 @@ describe('custom local storage keys', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         AuthService,
         {
@@ -273,6 +289,8 @@ describe('custom local storage keys', () => {
             userInfoLocalStorageKey: 'user_info_ls_key',
           },
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     authService = TestBed.inject(AuthService);
@@ -346,7 +364,7 @@ describe('custom local storage keys - logged in', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         AuthService,
         {
@@ -358,6 +376,8 @@ describe('custom local storage keys - logged in', () => {
             userInfoLocalStorageKey: 'user_info_ls_key',
           },
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
 
@@ -457,7 +477,7 @@ describe('custom storage functions', () => {
     retrieveUserInfoSpy = spyOn(userDefinedStore, 'retrieveUserInfo');
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         AuthService,
         {
@@ -472,6 +492,8 @@ describe('custom storage functions', () => {
             retrieveUserInfo: userDefinedStore.retrieveUserInfo,
           },
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     authService = TestBed.inject(AuthService);
@@ -536,7 +558,7 @@ describe('custom storage functions - logged in', () => {
     storeUserInfoSpy = spyOn(userDefinedStore, 'storeUserInfo');
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         AuthService,
         {
@@ -548,6 +570,8 @@ describe('custom storage functions - logged in', () => {
             storeUserInfo: userDefinedStore.storeUserInfo,
           },
         },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     authService = TestBed.inject(AuthService);

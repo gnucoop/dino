@@ -7,12 +7,13 @@ import {BehaviorSubject, of} from 'rxjs';
 
 import {FormMetricSelector, FormMetricSelectorModule} from './public_api';
 import {MatDialogRef} from '@angular/material/dialog';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ActivatedRoute} from '@angular/router';
 import {MatNativeDateModule} from '@angular/material/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CaseManager} from '@dino/core/cases';
 import {NameMatchValidator} from '@dino/material/metric-editor';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -86,22 +87,21 @@ describe('Form Metric Selector', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        BrowserAnimationsModule,
+    imports: [BrowserAnimationsModule,
         FormMetricSelectorModule,
-        HttpClientTestingModule,
-        MatNativeDateModule,
-      ],
-      providers: [
+        MatNativeDateModule],
+    providers: [
         CaseManager,
         NameMatchValidator,
         {provide: MatDialogRef, useValue: mockDialogRef},
-        {provide: ActivatedRoute, useValue: {params: paramsSubject, queryParams: of([])}},
+        {provide: ActivatedRoute, useValue: { params: paramsSubject, queryParams: of([])}},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig}
-      ],
-    }).compileComponents();
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
     dialogRef = TestBed.inject(MatDialogRef<FormMetricSelector>);
     route = TestBed.inject(ActivatedRoute);
     fixtureFormMetricSelector = TestBed.createComponent(FormMetricSelector);

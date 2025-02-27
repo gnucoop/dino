@@ -1,6 +1,5 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {ReportsModule} from '@dino/core/reports';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
@@ -17,6 +16,8 @@ import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 import {EditReport, EditReportModule} from './public_api';
 import {EventEmitter} from '@angular/core';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
 
@@ -73,13 +74,7 @@ describe('Edit Report', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReportsModule,
-        EditReportModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ],
+      imports: [FormsModule, ReportsModule, EditReportModule],
       providers: [
         FormSchemaManager,
         {provide: AuthService, useValue: authServiceMock},
@@ -87,6 +82,9 @@ describe('Edit Report', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([]),
       ],
     }).compileComponents();
 

@@ -1,15 +1,15 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {ChangeDetectorRef, EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
 import {Observable, of as obsOf} from 'rxjs';
 import {TranslocoService} from '@ngneat/transloco';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {AuthService, Credentials, LoginComponent, NHostSignupRequest} from './public_api';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 const authServiceMock = {
   authenticated: obsOf({auth: true, evt: 'init'}),
@@ -63,17 +63,14 @@ describe('LoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        AjfTranslocoModule,
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([]),
-        MatSnackBarModule,
-      ],
+      imports: [AjfTranslocoModule, MatSnackBarModule],
       providers: [
         UntypedFormBuilder,
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: Router, useValue: routerSpy},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     authService = TestBed.inject(AuthService);

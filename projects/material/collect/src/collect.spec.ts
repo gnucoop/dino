@@ -1,7 +1,6 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, PermissionContextService} from '@dino/core/data';
 import {FormSchemaManager, FormsModule} from '@dino/core/forms';
@@ -13,6 +12,8 @@ import {BehaviorSubject, of} from 'rxjs';
 
 import {Collect, CollectModule} from './public_api';
 import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
 
@@ -93,15 +94,7 @@ describe('Collect', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CollectModule,
-        DinoTranslationsModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ReportsModule,
-        FormsModule,
-        UsersModule,
-      ],
+      imports: [CollectModule, DinoTranslationsModule, ReportsModule, FormsModule, UsersModule],
       providers: [
         {provide: AuthService, useValue: authServiceMock},
         {provide: FormSchemaManager, useValue: formSchemaManagerMock},
@@ -109,6 +102,9 @@ describe('Collect', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+        provideRouter([]),
       ],
     }).compileComponents();
 

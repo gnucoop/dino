@@ -7,8 +7,9 @@ import {BehaviorSubject, of} from 'rxjs';
 
 import {FormCreatorHub, FormCreatorHubModule} from './public_api';
 import {MatDialogRef} from '@angular/material/dialog';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -61,13 +62,15 @@ describe('Form Creator Hub', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormCreatorHubModule, HttpClientTestingModule],
-      providers: [
+    imports: [FormCreatorHubModule],
+    providers: [
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-      ],
-    }).compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+}).compileComponents();
     dialogRef = TestBed.inject(MatDialogRef<FormCreatorHub>);
     fixtureFormCreatorHub = TestBed.createComponent(FormCreatorHub);
     formCreatorHub = fixtureFormCreatorHub.componentInstance;

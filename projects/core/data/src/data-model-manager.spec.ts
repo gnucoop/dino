@@ -1,8 +1,7 @@
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {EventEmitter, Injectable} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
@@ -26,6 +25,7 @@ import {
   Permission,
   PermissionContextService,
 } from './public_api';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 interface DummyModel extends Model {
   name: string;
@@ -183,15 +183,16 @@ describe('Data Model Manager - CRUD methods', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         ContextServiceMock,
         DataService,
-        RouterTestingModule,
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: Router, useValue: {}},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
       ],
     });
     contextService = TestBed.inject(ContextServiceMock);
