@@ -22,7 +22,7 @@
 
 import {Directionality} from '@angular/cdk/bidi';
 import {FullscreenOverlayContainer, OverlayContainer} from '@angular/cdk/overlay';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -54,6 +54,8 @@ export function provideDataServiceConfig() {
 }
 
 @NgModule({
+  declarations: [DevAppComponent],
+  bootstrap: [DevAppComponent],
   imports: [
     AuthModule.forRoot({
       host: 'http://auth-backend',
@@ -68,17 +70,15 @@ export function provideDataServiceConfig() {
     CoreModule.forRoot(),
     DataModule,
     DevAppModule,
-    HttpClientModule,
     LangSelectorModule,
     RouterModule.forRoot(DEV_APP_ROUTES),
   ],
-  declarations: [DevAppComponent],
   providers: [
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
     {provide: Directionality, useClass: DevAppDirectionality},
     {provide: HTTP_INTERCEPTORS, useClass: DemoHttpInterceptor, multi: true},
     {provide: DATA_SERVICE_CONFIG, useFactory: provideDataServiceConfig},
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [DevAppComponent],
 })
 export class MainModule {}

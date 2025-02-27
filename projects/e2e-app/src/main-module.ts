@@ -1,7 +1,7 @@
 import {AjfTranslocoModule, TranslocoService} from '@ajf/core/transloco';
 import {AjfEchartsModule} from '@ajf/core/echarts';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -248,6 +248,8 @@ export function provideMatDateLocale(ts: TranslocoService) {
 }
 
 @NgModule({
+  declarations: [E2eApp],
+  bootstrap: [E2eApp],
   imports: [
     AjfTranslocoModule.forRoot({
       reRenderOnLangChange: true,
@@ -262,7 +264,6 @@ export function provideMatDateLocale(ts: TranslocoService) {
     DinoTranslationsModule.forRoot(defaultLanguageConfig),
     E2eAppModule,
     EditReportSchemaModule,
-    HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,
     OverlayModule,
@@ -279,18 +280,15 @@ export function provideMatDateLocale(ts: TranslocoService) {
         isDarkTheme: false,
       },
     }),
-
     // Optional Metrics
     optionalModulesConfig.areasModule ? AreasModule : [],
     optionalModulesConfig.casesModule ? CasesModule : [],
     optionalModulesConfig.locationsModule ? LocationModule : [],
     optionalModulesConfig.organizationsModule ? OrganizationsModule : [],
     optionalModulesConfig.projectsModule ? ProjectModule : [],
-
     // Optional Modules
     optionalModulesConfig.logsModule ? LogModule : [],
     optionalModulesConfig.stripeModule ? StripePaymentModule.forRoot(stripePaymentConfig) : [],
-
     // E2E demos
     MaterialAggregationListE2eModule,
     MaterialAreasE2eModule,
@@ -318,7 +316,6 @@ export function provideMatDateLocale(ts: TranslocoService) {
     MaterialUsersE2eModule,
     MaterialUsersManageE2eModule,
   ],
-  declarations: [E2eApp],
   providers: [
     BrowserDetectorService,
     {
@@ -392,8 +389,8 @@ export function provideMatDateLocale(ts: TranslocoService) {
         ReportDataManager,
       ],
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [E2eApp],
 })
 export class MainModule {
   constructor(private _iconRegistry: MatIconRegistry, private _domSanitizer: DomSanitizer) {
