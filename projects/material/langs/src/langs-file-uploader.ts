@@ -26,6 +26,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  isDevMode,
   Output,
   ViewEncapsulation,
 } from '@angular/core';
@@ -80,6 +81,7 @@ export class LangsFileUploader {
     try {
       JSON.parse(str);
     } catch (e) {
+      if (isDevMode()) console.log(e);
       return false;
     }
     return true;

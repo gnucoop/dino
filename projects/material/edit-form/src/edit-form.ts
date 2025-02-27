@@ -1175,7 +1175,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 const dateFmt = 'yyyy-MM-dd';
                 try {
                   formattedDate = format(creationDate, dateFmt);
-                } catch (e) {}
+                } catch (e) {
+                  if (isDevMode()) console.log(e);
+                }
               }
               newItem['created_at'] = formattedDate;
             }

@@ -932,7 +932,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                     const dateFmt = 'yyyy-MM-dd';
                     try {
                       formattedDate = format(creationDate, dateFmt);
-                    } catch (e) {}
+                    } catch (e) {
+                      if (isDevMode()) console.log(e);
+                    }
                   }
                   newItem['created_at'] = formattedDate;
                 }

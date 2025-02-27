@@ -27,6 +27,7 @@ import {
   Component,
   EventEmitter,
   Inject,
+  isDevMode,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -336,7 +337,9 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
         if (key.includes('date') && obj[key] != null && typeof obj[key] === 'object') {
           try {
             obj[key] = format(new Date(obj[key]), 'yyyy-MM-dd');
-          } catch (e) {}
+          } catch (e) {
+            if (isDevMode()) console.log(e);
+          }
         }
       }
       this._saveEvt.emit({metric: obj, nameChanged: hasMetricNameChanged});

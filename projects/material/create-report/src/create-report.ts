@@ -27,6 +27,7 @@ import {
   EventEmitter,
   Inject,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   QueryList,
@@ -267,7 +268,9 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
               const dateFmt = 'yyyy-MM-dd';
               try {
                 formattedDate = format(creationDate, dateFmt);
-              } catch (e) {}
+              } catch (e) {
+                if (isDevMode()) console.log(e);
+              }
             }
             newItem['created_at'] = formattedDate;
 
