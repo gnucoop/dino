@@ -977,6 +977,7 @@ export class EditReport implements AfterViewInit {
         let addData = {};
         addedDatas.forEach(data => (addData = {...addData, ...data}));
         return {
+          dino_id: formData.id,
           dino_created_at: formData.created_at,
           dino_updated_at: formData.updated_at,
           ...formData.toJSON().data,
