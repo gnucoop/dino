@@ -628,26 +628,49 @@ export class ListDataSource<
                 });
                 slideIdx++;
               }
-              if (selector['$or'] && selector['$or'].length) {
-                if (additionalFiltersLogic === 'and') {
-                  const newSel = selector['$or'].map((f: {[k: string]: any}) => {
-                    const key = Object.keys(f)[0];
-                    const repFilter = repeatedFilters.find(r => key in r);
 
-                    if (repFilter) {
-                      const idx = repeatedFilters.indexOf(repFilter);
-                      repeatedFilters.splice(idx, 1);
-                      return {[key]: {...f[key], ...repFilter[key]}};
+              if (
+                (selector['$or'] && selector['$or'].length) ||
+                (selector['$and'] && selector['$and'].length)
+              ) {
+                if (additionalFiltersLogic === 'and') {
+                  /*
+                   {
+                      "$and": [
+                        {
+                          "$or": [
+                            { "field1__0": cond1 },
+                            { "field1__1": cond1 }
+                          ]
+                        },
+                        {
+                          "$or": [
+                            { "field2__0": cond2 },
+                            { "field2__1": cond2 }
+                          ]
+                        }
+                      ]
                     }
-                    return f;
-                  });
-                  selector['$or'] = [...newSel, ...repeatedFilters];
+                   */
+
+                  if (!selector['$and'] || !selector['$and'].length) {
+                    selector['$and'] = [];
+                    selector['$and'].push({'$or': [...selector['$or']]});
+
+                    selector['$or'] = [];
+                    delete selector['$or'];
+                  }
+                  selector['$and'].push({'$or': [...repeatedFilters]});
                 } else {
+                  if (!selector['$or'] || !selector['$or'].length) {
+                    selector['$or'] = [];
+                  }
                   selector['$or'] = [...selector['$or'], ...repeatedFilters];
                 }
               } else {
                 selector['$or'] = repeatedFilters;
               }
+
               // Single Slide Field Filter
             } else {
               // AND additional filters logic
