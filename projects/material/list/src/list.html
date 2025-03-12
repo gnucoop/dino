@@ -267,10 +267,7 @@
       <mat-cell *matCellDef="let row" class="dino-row-actions">
         <div class="dino-row-actions-container">
           <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
-            <ng-container *ngFor="let action of actions; let idx = index;">
-              <ng-container
-                *ngIf="mainActions.includes(action.actionType)"
-              >
+            <ng-container *ngFor="let action of getMainActions(actions); let idx = index;">
                 <mat-icon
                   class="dino-action-icon"
                   [ngStyle]="{'--position': idx}"
@@ -278,7 +275,6 @@
                   (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
                   >{{action.matIcon}}
                 </mat-icon>
-              </ng-container>
             </ng-container>
 
             <ng-container>

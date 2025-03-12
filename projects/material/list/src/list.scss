@@ -253,7 +253,7 @@ dino-list {
     .dino-action-icon {
       visibility: hidden;
       position: absolute;
-      right: calc((4 + (var(--position) * 14)) * 1px);
+      right: calc((4 + (var(--position) * 28)) * 1px);
     }
     padding: 5px;
     cursor: pointer;
