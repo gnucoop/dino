@@ -147,6 +147,7 @@ export class MatFormsListE2E {
           {
             isUserInGroup: ajfCustomFunctions['isUserInGroup'],
             isUserInAtLeastOneGroup: ajfCustomFunctions['isUserInAtLeastOneGroup'],
+            isAnonymousUser: ajfCustomFunctions['isAnonymousUser'],
           },
         );
         return nodesVisibility;

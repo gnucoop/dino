@@ -25,6 +25,13 @@ export function isUserInGroup(groupName: string, info: FormInfo | null): boolean
   return allUserGroups.includes(groupName);
 }
 
+/**
+ * Return true if the user is anonymous (on a public form)
+ */
+export function isAnonymousUser(info: FormInfo | null): boolean {
+  return info?.activeUser == null || info.activeUser.full_name == 'dino_anonymous_user';
+}
+
 // Is a user in at least one group of the list
 export function isUserInAtLeastOneGroup(groupNames: string[], info: FormInfo | null): boolean {
   let allUserGroups: string[] = [];
@@ -39,4 +46,5 @@ export const ajfCustomFunctions: AjfCustomFunctions = {
   visibility,
   isUserInGroup,
   isUserInAtLeastOneGroup,
+  isAnonymousUser,
 };
