@@ -121,6 +121,10 @@ export interface WidgetData {
    * WidgetFilter validation conditions
    */
   validationConditions?: AjfValidationGroup;
+  /**
+   * If true the ajf field is of type Formula
+   */
+  isFormula: boolean;
 }
 
 /**
@@ -232,6 +236,7 @@ export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
   [AjfFieldType.DateInput]: {label: '==', value: '$eq'},
   [AjfFieldType.Date]: {label: '==', value: '$eq'},
   [AjfFieldType.MultipleChoice]: {label: 'Is', value: '$in'},
+  [AjfFieldType.Formula]: {label: '==', value: '$eq'},
 };
 
 /**

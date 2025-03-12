@@ -264,8 +264,10 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
    */
   private _setupWidget(filterItem: FilterItem): WidgetData {
     filterItem.editable = true;
+    let isFormulaField = false;
     if (filterItem.fieldType == AjfFieldType.Formula) {
-      filterItem.fieldType = AjfFieldType.String;
+      filterItem.fieldType = AjfFieldType.Number;
+      isFormulaField = true;
     }
     const fieldChoices: AjfChoicesOrigin<any>[] = filterItem.choicesOrigin
       ? [filterItem.choicesOrigin]
@@ -297,6 +299,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
       operator: filterItem.operator,
       active: false,
       validationConditions: undefined,
+      isFormula: isFormulaField,
     };
   }
 
