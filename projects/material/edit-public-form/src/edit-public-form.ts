@@ -205,8 +205,8 @@ export class EditPublicForm implements OnDestroy {
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
 
-    this.form = combineLatest([this.formSchema, anonymousUserData]).pipe(
-      map(([fschema, activeUser]) => {
+    this.form = combineLatest([this.formSchema, anonymousUserData, metricParams]).pipe(
+      map(([fschema, activeUser, metricIds]) => {
         if (fschema == null) {
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
             duration: 5000,
@@ -216,7 +216,7 @@ export class EditPublicForm implements OnDestroy {
         if (fschema.schema.choicesOrigins == null) {
           fschema.schema.choicesOrigins = [];
         }
-        const fdata = {dino_form_info: {activeUser, activeUserGroups: []}};
+        const fdata = {dino_form_info: {activeUser, activeUserGroups: [], metrics: metricIds}};
         return AjfFormSerializer.fromJson(fschema.schema, fdata);
       }),
       shareReplay(1),
