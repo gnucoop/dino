@@ -42,6 +42,7 @@
         [formControlName]="'form_status_ref_id'"
         [placeholder]="'Form status associated with the form'"
       >
+        <mat-option [value]="null"></mat-option>
         <mat-option *ngFor="let status of availableStatuses" [value]="status.id">
           <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
         </mat-option>
