@@ -100,7 +100,7 @@ export class MixedEditor implements AfterViewInit {
    * Moves an item from the source list to the target list.
    * @param item  A list item
    */
-  addItem(item: MixedEditorItem | undefined): void {
+  addItem(item: MixedEditorItem | undefined, withChildren: boolean = false): void {
     if (item == null) {
       return;
     }
@@ -119,7 +119,9 @@ export class MixedEditor implements AfterViewInit {
       if (item.uniqueItem) {
         this._toggleSameTypeItems(item, true);
       }
-      this._toggleChildrenItems(item, 'add');
+      if (withChildren) {
+        this._toggleChildrenItems(item, 'add');
+      }
 
       this.sourceList.value[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
       this.saveList[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
