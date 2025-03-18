@@ -454,7 +454,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   /**
    * If a choices origin with the input name exists in the schema, with a size of 0 or 1 element, this is a relationship choices orign.
    * In that case, find and return all form schema fields than using this input choice origin name.
-   * @param nodes the form schema
+   * @param formSchema the form schema
    * @param choicesOriginName the choices origin name to be found
    * @param replaceFieldType if true replaces the type with type String, for the field found.
    * This is used by the advanced search for relationships repeating slide fields.
@@ -471,7 +471,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     )?.choices.length;
 
     const nodes = formSchema.schema?.nodes;
-    if (nodes && choicesOriginSize && choicesOriginSize <= 1) {
+    if (nodes && (!choicesOriginSize || choicesOriginSize <= 1)) {
       nodes.forEach((ctnNode: AjfNode) => {
         if (isContainerNode(ctnNode)) {
           ctnNode.nodes.forEach((n: AjfNode) => {
