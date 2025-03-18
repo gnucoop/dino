@@ -29,7 +29,6 @@ import {
   openReportPdf,
 } from '@ajf/core/reports';
 import {TranslocoService} from '@ajf/core/transloco';
-import {deepCopy} from '@ajf/core/utils';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -103,6 +102,7 @@ import {AjfContext} from '@ajf/core/models';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {TokensService} from '@dino/material/stripe-payment';
 import {MatStepper} from '@angular/material/stepper';
+import {format} from 'date-fns';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -143,12 +143,15 @@ export class EditReport implements AfterViewInit {
   /**
    * The Progress Bar value during the AI Report Prompts generation
    */
-  AILoadingBarValues: BehaviorSubject<{current: number; total: number; percent: number}> =
-    new BehaviorSubject<{current: number; total: number; percent: number}>({
-      current: 1,
-      total: 0,
-      percent: 0,
-    });
+  AILoadingBarValues: BehaviorSubject<{
+    current: number;
+    total: number;
+    percent: number;
+  }> = new BehaviorSubject<{current: number; total: number; percent: number}>({
+    current: 1,
+    total: 0,
+    percent: 0,
+  });
 
   /**
    * If true, the report view stepper and its two
@@ -199,7 +202,8 @@ export class EditReport implements AfterViewInit {
   /**
    * The Report Metrics Selector
    */
-  @ViewChildren(FormMetricSelector) reportMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+  @ViewChildren(FormMetricSelector)
+  reportMetricsSelectorComponent!: QueryList<FormMetricSelector>;
 
   /**
    * The Report data id
@@ -256,7 +260,9 @@ export class EditReport implements AfterViewInit {
   /**
    * The Report Data metrics descendants IDs.
    */
-  private _reportDataMetricsDescendants: Observable<{[key: string]: string[]}>;
+  private _reportDataMetricsDescendants: Observable<{
+    [key: string]: string[];
+  }>;
 
   /**
    * The Report schema object
@@ -413,12 +419,14 @@ export class EditReport implements AfterViewInit {
 
         const descendants: {[key: string]: Observable<string[]>} = {};
 
-        activeMetrics.forEach(
-          metric =>
-            (descendants[`${metric}_ref_id`] = metricManagers[metric]
-              .findDescendants([rDataObject[`${metric}_ref_id`]])
-              .pipe(map(ds => ds.map(d => d.id)))),
-        );
+        activeMetrics.forEach(metric => {
+          const rDataMetricId = rDataObject[`${metric}_ref_id`]
+            ? [rDataObject[`${metric}_ref_id`]]
+            : [];
+          return (descendants[`${metric}_ref_id`] = metricManagers[metric]
+            .findDescendants(rDataMetricId)
+            .pipe(map(ds => ds.map(d => d.id))));
+        });
         return forkJoin(descendants);
       }),
     );
@@ -467,6 +475,7 @@ export class EditReport implements AfterViewInit {
       this._reportDataMetricsDescendants,
     ]).pipe(
       switchMap(([rSchema, rData, activeMetrics, descendants]) => {
+        // console.log(format(new Date(), 'HH:mm:ss') + '*** _sourceFormData ');
         if (
           rSchema.form_schema_ids == null ||
           rSchema.form_schema_ids.length <= 0 ||
@@ -504,7 +513,9 @@ export class EditReport implements AfterViewInit {
     const sourceSchemas = this._reportSchema.pipe(
       filter(rSchema => rSchema != null),
       switchMap(rSchema =>
-        this._formSchemaManager.query({selector: {id: {$in: rSchema.form_schema_ids}}}),
+        this._formSchemaManager.query({
+          selector: {id: {$in: rSchema.form_schema_ids}},
+        }),
       ),
     );
 
@@ -530,10 +541,12 @@ export class EditReport implements AfterViewInit {
           res = forkJoin(populatedSchema).pipe(
             map(allSchemaProps =>
               allSchemaProps.map(schemaProps => {
-                const deps = schemaProps[1]?.toJSON() || {};
-                return {...deepCopy(schemaProps[0].toJSON()), form_schema_deps: deps} as {
-                  [key: string]: any;
+                const deps = (schemaProps[1]?.toJSON() as FormSchemaDeps) || {};
+                const formSchema = schemaProps[0].toJSON() as FormSchema as Partial<FormSchema> & {
+                  form_schema_deps: FormSchemaDeps;
                 };
+                formSchema['form_schema_deps'] = deps;
+                return formSchema;
               }),
             ),
           );
@@ -610,8 +623,12 @@ export class EditReport implements AfterViewInit {
             queryDepsSelector = {...queryDepsSelector, ...metricKey};
             delete queryDepsSelector['$or'];
           }
-          depsQuery = this._formDataManager.query({selector: queryDepsSelector});
+          depsQuery = this._formDataManager.query({
+            selector: queryDepsSelector,
+          });
         }
+
+        // console.log(format(new Date(), 'HH:mm:ss') + '*** start populate.... ');
 
         return zip(
           populatedData.length ? forkJoin(populatedData) : obsOf([]),
@@ -623,25 +640,29 @@ export class EditReport implements AfterViewInit {
       }),
       withLatestFrom(this._nss.isOnline$),
       switchMap(([[ctx, ctxSchemas, rData, rSchema, depsSourceFormData], isOnline]) => {
-        const contextForms: ReportContext = {};
+        // console.log(format(new Date(), 'HH:mm:ss') + '*** reportInstance 2 ');
+
+        const formDataBySchema: ReportContext = this._groupFormDataBySchema(ctx);
+        const depsSourceFormDataBySchema: ReportContext =
+          this._groupFormDataBySchema(depsSourceFormData);
+
+        const contextForms: ReportContext = this._populateDataWithRelationships(
+          formDataBySchema,
+          depsSourceFormDataBySchema,
+          ctxSchemas,
+        );
+
         const contextSchemas: {[schema_ref_id: string]: any} = {};
-        ctx.forEach(fdata => {
-          if (contextForms[fdata['form_schema_ref_id']] == null) {
-            contextForms[fdata['form_schema_ref_id']] = [];
-          }
-          const extFdata = this._populateDataWithRelationships(
-            fdata,
-            depsSourceFormData,
-            ctxSchemas,
-          );
-          contextForms[fdata['form_schema_ref_id']].push(extFdata);
-        });
         ctxSchemas.forEach(fschema => {
           if (fschema != null) {
             contextSchemas[(fschema as FormSchema).id] = (fschema as FormSchema).schema;
           }
         });
-        const context = {forms: contextForms, schemas: contextSchemas, report_data: rData};
+        const context = {
+          forms: contextForms,
+          schemas: contextSchemas,
+          report_data: rData,
+        };
         if (isDevMode()) {
           console.log(context);
         }
@@ -654,7 +675,9 @@ export class EditReport implements AfterViewInit {
         const rDataAIData = rData?.data || {};
         if (promptsVariable.length && isOnline) {
           if (promptsVariable.length > Object.keys(rDataAIData).length) {
-            const variablesContext = evaluateReportVariables(rSchema.schema, {...context});
+            const variablesContext = evaluateReportVariables(rSchema.schema, {
+              ...context,
+            });
             reportDataCtxObs = from(
               this.generateAITextFromPrompt(promptsVariable, variablesContext, rDataAIData),
             );
@@ -679,6 +702,8 @@ export class EditReport implements AfterViewInit {
         return zip(obsOf(rSchema), obsOf(context), updatedRData);
       }),
       map(([rSchema, context, rData]) => {
+        // console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance ');
+
         if (rData != null) {
           context.report_data = rData;
         }
@@ -691,6 +716,8 @@ export class EditReport implements AfterViewInit {
           this._aiSnackBar.dismiss();
         }
         this.reportInstanceCreatedEvt.emit(this._currentReportInstance);
+
+        // console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance end ');
         return this._currentReportInstance;
       }),
       take(1),
@@ -1062,61 +1089,118 @@ export class EditReport implements AfterViewInit {
   }
 
   /**
-   * Return a plain data object of a FormData populated
+   * Group all form data by schema id
+   * @param allReportFomData
+   * @returns
+   */
+  private _groupFormDataBySchema(
+    allFomData:
+      | {
+          [key: string]: any;
+        }[]
+      | null,
+  ): ReportContext {
+    const formDataBySchema: ReportContext = {};
+    if (allFomData) {
+      allFomData.forEach(fdata => {
+        if (formDataBySchema[fdata['form_schema_ref_id']] == null) {
+          formDataBySchema[fdata['form_schema_ref_id']] = [];
+        }
+        formDataBySchema[fdata['form_schema_ref_id']].push(fdata);
+      });
+    }
+    return formDataBySchema;
+  }
+
+  /**
+   * Return a plain data object of a list of FormData populated
    * with external data taken from relationships
-   * @param formData The form data to be populated
-   * @param depsSourceFormData All the external form datas, they must be filtered.
-   *        Only one for each deps_origin.
-   * @param ctxSchema the FormSchema details, with relationships info, for the formData
-   * @returns an object with all the form data populated with external data
+   * @param formDataBySchema The form data to be populated, grouped by schema
+   * @param depsSourceFormDataBySchema All the external form datas, grouped by schema
+   * @param ctxSchemas the FormSchema, with relationships info
+   * @returns  an object with all the form data populated with external data
    */
   private _populateDataWithRelationships(
-    formData: {[key: string]: any},
-    depsSourceFormData: RxDocument<FormData>[] | null,
+    formDataBySchema: ReportContext,
+    depsSourceFormDataBySchema: ReportContext,
     ctxSchemas: {[key: string]: any}[],
-  ): {[key: string]: any} {
-    let extFdata: {[key: string]: any} = {...formData};
-    if (depsSourceFormData != null && ctxSchemas != null) {
-      const fs = ctxSchemas.filter(s => (s as FormSchema).id === formData['form_schema_ref_id'])[0];
-      if (fs) {
-        const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
-        if (fsDeps.deps_origin) {
-          fsDeps.deps_origin
-            .filter(
-              depsOrigin =>
-                'form_schema_ref_id' in depsOrigin &&
-                depsOrigin.form_schema_ref_id &&
-                depsOrigin.filter_by_metric &&
-                depsOrigin.fields_to_update &&
-                !depsOrigin.is_choice,
-            )
-            .map(depsOrigin => depsOrigin as DepsOrigin)
-            .forEach(depsOrigin => {
-              // Take only one element from depsSourceFormData
-              let depsFormDataBySchema = depsSourceFormData
-                .map(depsFd => depsFd.toJSON() as {[key: string]: any})
-                .filter(depsd => depsd['form_schema_ref_id'] === depsOrigin.form_schema_ref_id);
+  ): ReportContext {
+    if (
+      depsSourceFormDataBySchema != null &&
+      Object.keys(depsSourceFormDataBySchema).length &&
+      ctxSchemas != null
+    ) {
+      Object.keys(formDataBySchema).forEach(fschemaId => {
+        const fdataForSchema = formDataBySchema[fschemaId];
+        const fs = ctxSchemas.filter(s => (s as FormSchema).id === fschemaId)[0];
+        if (fs) {
+          const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
+          if (fsDeps.deps_origin != null) {
+            const fsDepsOrigins = fsDeps.deps_origin
+              .filter(depsOrigin => {
+                if (
+                  'form_schema_ref_id' in depsOrigin &&
+                  depsOrigin.form_schema_ref_id &&
+                  depsOrigin.filter_by_metric &&
+                  depsOrigin.fields_to_update &&
+                  !depsOrigin.is_choice
+                ) {
+                  const fieldsToUpdate: string[] = [];
+                  depsOrigin.fields_to_update.forEach(fieldToUpdate => {
+                    const choicesOriginName = fieldToUpdate + '_choice';
+                    const hasChoiceField =
+                      this._formSchemaManager.findFieldsWithChoicesByChoicesName(
+                        fs as FormSchema,
+                        choicesOriginName,
+                        false,
+                      );
+                    if (!hasChoiceField) {
+                      fieldsToUpdate.push(fieldToUpdate);
+                    }
+                  });
+                  if (fieldsToUpdate.length) {
+                    depsOrigin.fields_to_update = fieldsToUpdate;
+                    return true;
+                  }
+                  return true;
+                }
+                return false;
+              })
+              .map(depsOrigin => depsOrigin as DepsOrigin);
 
-              depsOrigin.filter_by_metric?.forEach(metric => {
-                depsFormDataBySchema = depsFormDataBySchema.filter(
-                  depsFd => depsFd[metric + '_ref_id'] === formData['dino_' + metric + '_id'],
-                );
+            if (fsDepsOrigins && fsDepsOrigins.length) {
+              fdataForSchema.forEach(formData => {
+                // For each report form data
+                fsDepsOrigins.forEach(depsOrigin => {
+                  let depsFormDataBySchema = depsSourceFormDataBySchema[
+                    depsOrigin.form_schema_ref_id
+                  ].filter(depsFd =>
+                    depsOrigin.filter_by_metric?.every(
+                      metric => depsFd[metric + '_ref_id'] === formData['dino_' + metric + '_id'],
+                    ),
+                  );
+
+                  if (depsFormDataBySchema.length) {
+                    // Take only the first result form data from the relationship,
+                    // relationship for fields to update must be one-to-one.
+                    depsOrigin.fields_to_update?.forEach(field => {
+                      if (field in depsFormDataBySchema[0]['data']) {
+                        formData[field] = depsFormDataBySchema[0]['data'][field];
+                      }
+                    });
+                  }
+                });
               });
-              if (depsFormDataBySchema.length) {
-                const relationshipData: {[key: string]: any} = {};
-                depsOrigin.fields_to_update?.forEach(
-                  field => (relationshipData[field] = depsFormDataBySchema[0]['data'][field]),
-                );
-                extFdata = {...extFdata, ...relationshipData};
-              }
-            });
+            }
+          }
         }
-      }
+      });
     }
-    return extFdata;
+    return formDataBySchema;
   }
 
   ngAfterViewInit(): void {
+    // console.log(format(new Date(), 'HH:mm:ss') + '*** ngAfterViewInit ');
     // Here we check if the template is in "steps" mode and contains a metric selector component
     if (this.steps) {
       this._reportMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
