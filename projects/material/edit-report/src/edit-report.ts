@@ -67,6 +67,7 @@ import {
   FormSchemaManager,
   FormStatus,
   FormStatusManager,
+  Origin,
 } from '@dino/core/forms';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
@@ -475,7 +476,6 @@ export class EditReport implements AfterViewInit {
       this._reportDataMetricsDescendants,
     ]).pipe(
       switchMap(([rSchema, rData, activeMetrics, descendants]) => {
-        // console.log(format(new Date(), 'HH:mm:ss') + '*** _sourceFormData ');
         if (
           rSchema.form_schema_ids == null ||
           rSchema.form_schema_ids.length <= 0 ||
@@ -595,29 +595,26 @@ export class EditReport implements AfterViewInit {
               const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
               if (fsDeps.deps_origin) {
                 fsDeps.deps_origin
-                  .filter(
-                    deps =>
-                      'form_schema_ref_id' in deps &&
-                      deps.form_schema_ref_id != null &&
-                      deps.filter_by_metric != null,
-                  )
+                  .filter(deps => this._isFieldsToUpdateRelationship(deps, fs))
                   .map(depsOrigin => depsOrigin as DepsOrigin)
                   .forEach(depsOrigin => {
-                    if (!depsOrigin.is_choice) {
-                      queryDepsSelector = this._getRelationshipDataQuery(
-                        depsOrigin.form_schema_ref_id,
-                        depsOrigin.filter_by_metric,
-                        dataBySchema,
-                        queryDepsSelector,
-                      );
-                    }
+                    queryDepsSelector = this._getRelationshipDataQuery(
+                      depsOrigin.form_schema_ref_id,
+                      depsOrigin.filter_by_metric,
+                      dataBySchema,
+                      queryDepsSelector,
+                    );
                   });
               }
             }
           }
         }
         let depsQuery: Observable<RxDocument<FormData>[] | null> = obsOf(null);
-        if (Object.keys(queryDepsSelector['$or']).length) {
+
+        if (
+          queryDepsSelector['form_schema_ref_id']['$in'].length &&
+          Object.keys(queryDepsSelector['$or']).length
+        ) {
           if (Object.keys(queryDepsSelector['$or']).length === 1) {
             const metricKey = queryDepsSelector['$or'][0];
             queryDepsSelector = {...queryDepsSelector, ...metricKey};
@@ -628,7 +625,9 @@ export class EditReport implements AfterViewInit {
           });
         }
 
-        // console.log(format(new Date(), 'HH:mm:ss') + '*** start populate.... ');
+        if (isDevMode()) {
+          console.log(format(new Date(), 'HH:mm:ss') + '*** start populate...');
+        }
 
         return zip(
           populatedData.length ? forkJoin(populatedData) : obsOf([]),
@@ -640,7 +639,11 @@ export class EditReport implements AfterViewInit {
       }),
       withLatestFrom(this._nss.isOnline$),
       switchMap(([[ctx, ctxSchemas, rData, rSchema, depsSourceFormData], isOnline]) => {
-        // console.log(format(new Date(), 'HH:mm:ss') + '*** reportInstance 2 ');
+        if (isDevMode()) {
+          console.log(
+            format(new Date(), 'HH:mm:ss') + '*** start populateDataWithRelationships...',
+          );
+        }
 
         const formDataBySchema: ReportContext = this._groupFormDataBySchema(ctx);
         const depsSourceFormDataBySchema: ReportContext =
@@ -702,7 +705,9 @@ export class EditReport implements AfterViewInit {
         return zip(obsOf(rSchema), obsOf(context), updatedRData);
       }),
       map(([rSchema, context, rData]) => {
-        // console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance ');
+        if (isDevMode()) {
+          console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance ');
+        }
 
         if (rData != null) {
           context.report_data = rData;
@@ -717,7 +722,9 @@ export class EditReport implements AfterViewInit {
         }
         this.reportInstanceCreatedEvt.emit(this._currentReportInstance);
 
-        // console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance end ');
+        if (isDevMode()) {
+          console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance end ');
+        }
         return this._currentReportInstance;
       }),
       take(1),
@@ -1017,6 +1024,41 @@ export class EditReport implements AfterViewInit {
   }
 
   /**
+   * Return true if deps origin input is a relationship for a fields to update operation and
+   * not a choice origin (also from repeating slide). These are the only relationships that we need for report.
+   * @param depsOrigin the relationship
+   * @returns true if is a fields to update relationship
+   */
+  private _isFieldsToUpdateRelationship(depsOrigin: Origin, fs: {[key: string]: any}): boolean {
+    if (
+      'form_schema_ref_id' in depsOrigin &&
+      depsOrigin.form_schema_ref_id &&
+      depsOrigin.filter_by_metric &&
+      depsOrigin.fields_to_update &&
+      !depsOrigin.is_choice
+    ) {
+      const fieldsToUpdate: string[] = [];
+      depsOrigin.fields_to_update.forEach(fieldToUpdate => {
+        const choicesOriginName = fieldToUpdate + '_choice';
+        const hasChoiceField = this._formSchemaManager.findFieldsWithChoicesByChoicesName(
+          fs as FormSchema,
+          choicesOriginName,
+          false,
+        );
+        if (!hasChoiceField) {
+          fieldsToUpdate.push(fieldToUpdate);
+        }
+      });
+      if (fieldsToUpdate.length) {
+        depsOrigin.fields_to_update = fieldsToUpdate;
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  /**
    * Return a new query selector with data to retrieve related forms.
    * @param formSchemaRefId the form schema ref id of the relationship
    * @param metrics the metric names to be used for the join with the relationship
@@ -1137,35 +1179,7 @@ export class EditReport implements AfterViewInit {
           const fsDeps: FormSchemaDeps = fs['form_schema_deps'] || {};
           if (fsDeps.deps_origin != null) {
             const fsDepsOrigins = fsDeps.deps_origin
-              .filter(depsOrigin => {
-                if (
-                  'form_schema_ref_id' in depsOrigin &&
-                  depsOrigin.form_schema_ref_id &&
-                  depsOrigin.filter_by_metric &&
-                  depsOrigin.fields_to_update &&
-                  !depsOrigin.is_choice
-                ) {
-                  const fieldsToUpdate: string[] = [];
-                  depsOrigin.fields_to_update.forEach(fieldToUpdate => {
-                    const choicesOriginName = fieldToUpdate + '_choice';
-                    const hasChoiceField =
-                      this._formSchemaManager.findFieldsWithChoicesByChoicesName(
-                        fs as FormSchema,
-                        choicesOriginName,
-                        false,
-                      );
-                    if (!hasChoiceField) {
-                      fieldsToUpdate.push(fieldToUpdate);
-                    }
-                  });
-                  if (fieldsToUpdate.length) {
-                    depsOrigin.fields_to_update = fieldsToUpdate;
-                    return true;
-                  }
-                  return true;
-                }
-                return false;
-              })
+              .filter(deps => this._isFieldsToUpdateRelationship(deps, fs))
               .map(depsOrigin => depsOrigin as DepsOrigin);
 
             if (fsDepsOrigins && fsDepsOrigins.length) {
@@ -1200,7 +1214,9 @@ export class EditReport implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // console.log(format(new Date(), 'HH:mm:ss') + '*** ngAfterViewInit ');
+    if (isDevMode()) {
+      console.log(format(new Date(), 'HH:mm:ss') + '*** ngAfterViewInit ');
+    }
     // Here we check if the template is in "steps" mode and contains a metric selector component
     if (this.steps) {
       this._reportMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
