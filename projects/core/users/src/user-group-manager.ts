@@ -96,11 +96,23 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
           };
         });
         return this._userModelManager
-          .query({selector: {$and: userGroupsIdsEqArr}})
+          .query({
+            selector: {
+              is_deleted: {$ne: true},
+              disabled: {$ne: true},
+              $and: userGroupsIdsEqArr,
+            },
+          })
           .pipe(shareReplay(1));
       } else {
         return this._userModelManager
-          .query({selector: {user_group_ids: userGroupsIds[0]}})
+          .query({
+            selector: {
+              is_deleted: {$ne: true},
+              disabled: {$ne: true},
+              user_group_ids: userGroupsIds[0],
+            },
+          })
           .pipe(shareReplay(1));
       }
     } else {
