@@ -451,6 +451,7 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
   /**
    * Updates the current user permission groups by adding the just created metric
    * to those groups.
+   * Should not be added if a user has 'all' as permission to at least one group for that metric type
    * @param metricDoc The created Metric
    * @param groups The currente active user permission Groups
    */
@@ -463,12 +464,19 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
     }
     const metricKey = `${metricDoc.collection.name}_ref_id` as keyof UserGroup;
     const groupUpdates: Observable<RxDocument<UserGroup> | null>[] = [];
+    let foundAllPermission = false;
     groups.forEach(group => {
-      const groupClone = deepCopy(group);
-      const groupMetricIds: string[] = groupClone[metricKey] as string[];
-      if (groupMetricIds && !groupMetricIds.includes('all')) {
-        groupMetricIds.push(metricDoc.id);
-        groupUpdates.push(this._userGroupManager.update(groupClone));
+      if (!foundAllPermission) {
+        const groupClone = deepCopy(group);
+        const groupMetricIds: string[] = (groupClone[metricKey] as string[]) || [];
+        if (!groupMetricIds.includes('all')) {
+          groupMetricIds.push(metricDoc.id);
+          groupUpdates.push(this._userGroupManager.update(groupClone));
+        } else {
+          // no need to add the permission
+          foundAllPermission = true;
+          groupUpdates.splice(0, groupUpdates.length);
+        }
       }
     });
     return groupUpdates;
