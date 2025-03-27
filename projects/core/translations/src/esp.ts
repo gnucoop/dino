@@ -24,11 +24,16 @@ import {Translation} from '@ajf/core/transloco';
 export const ESP: Translation = {
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
-  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Ya existe un formulario {{schema_name}} con este mismo conjunto de métricas. Por favor, elija métricas diferentes',
-  'A Metric with this name already exists. Maybe you should choose another': 'Ya existe una métrica con este nombre. Tal vez deberías elegir otro',
-  'A filter on field "{{field}}" already exists. Please create a different filter.': 'Ya existe un filtro en el campo "{{field}}". Por favor, cree un filtro diferente.',
-  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.': 'Ya existe un filtro con el operador "{{operator}}" y el valor "{{value}}" en el campo "{{field}}". Por favor, cree un filtro diferente.',
-  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.': 'Ya existe un filtro con el operador "{{operator}}" en el campo "{{field}}". Por favor, cree un filtro diferente.',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
+    'Ya existe un formulario {{schema_name}} con este mismo conjunto de métricas. Por favor, elija métricas diferentes',
+  'A Metric with this name already exists. Maybe you should choose another':
+    'Ya existe una métrica con este nombre. Tal vez deberías elegir otro',
+  'A filter on field "{{field}}" already exists. Please create a different filter.':
+    'Ya existe un filtro en el campo "{{field}}". Por favor, cree un filtro diferente.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Ya existe un filtro con el operador "{{operator}}" y el valor "{{value}}" en el campo "{{field}}". Por favor, cree un filtro diferente.',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Ya existe un filtro con el operador "{{operator}}" en el campo "{{field}}". Por favor, cree un filtro diferente.',
   'ADDED TO FAVORITES': 'AÑADIDO A LOS FAVORITOS',
   'API Key is': 'La tecla API es',
   'Accent Color': 'Color acento',
@@ -52,7 +57,8 @@ export const ESP: Translation = {
   'All': 'Todos',
   'All items': 'Todos los elementos',
   'Already have an account? Login': '¿Ya tienes una cuenta? Acceso',
-  'Alter the display of the table by selecting up to 7 columns': 'Modifique la visualización de la tabla seleccionando hasta 7 columnas',
+  'Alter the display of the table by selecting up to 7 columns':
+    'Modifique la visualización de la tabla seleccionando hasta 7 columnas',
   'Any': 'Cualquier',
   'Apply': 'Aplicar',
   'Are you sure?': 'Estas seguro?',
@@ -73,8 +79,10 @@ export const ESP: Translation = {
   'Choose file': 'Escoge un archivo',
   'Choose the Action you want to perform': 'Elija la Acción que desea realizar',
   'Choose the type of Form you want to create': 'Elija el tipo de formulario que desea crear',
-  'Choose which columns should be displayed in the table': 'Elija qué columnas deben mostrarse en la tabla',
-  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard': 'Elija las métricas a las que se referirá la Url del formulario público, si las hay, y luego copie la Url en su memoria',
+  'Choose which columns should be displayed in the table':
+    'Elija qué columnas deben mostrarse en la tabla',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Elija las métricas a las que se referirá la Url del formulario público, si las hay, y luego copie la Url en su memoria',
   'Choose your Action': 'Elija su acción',
   'Close': 'Cerrar',
   'Close the dialog and apply filters.': 'Cierra el cuadro de diálogo y aplica algunos filtros.',
@@ -118,12 +126,14 @@ export const ESP: Translation = {
   'Edit all items': 'Editar todos los elementos',
   'Email': 'Email',
   'End Date': 'Fecha final',
-  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.': 'Ingrese el nombre de los atributos de métricas que se agregarán dentro de la elección, separados por comas. Se utilizarán en Choice_Filter.',
+  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
+    'Ingrese el nombre de los atributos de métricas que se agregarán dentro de la elección, separados por comas. Se utilizarán en Choice_Filter.',
   'Enter your DataChat API key': 'Ingrese su clave API de Datachat',
   'Exclude': 'Excluir',
   'Export': 'Exportar',
   'Export as:': 'Exportar como:',
-  'Export file saved in your Documents folder': 'Archivo de exportación guardado en la carpeta Documentos',
+  'Export file saved in your Documents folder':
+    'Archivo de exportación guardado en la carpeta Documentos',
   'Export items': 'Exportar artículos',
   'FILTER ALREADY EXISTS': 'EL FILTRO YA EXISTE',
   'FORM DATA': 'DATOS DEL FORMULARIO',
@@ -139,13 +149,13 @@ export const ESP: Translation = {
   'Filters': 'Filtros',
   'First page': 'Primera página',
   'Forgot your password?': '¿Olvidaste tu contraseña?',
-  'Form Fields': 'Formulario de campos',
+  'Form Fields': 'Campos de formulario',
   'Form History': 'Historia del formulario',
   'Form Label': 'Etiqueta del formulario',
   'Form Metrics': 'Métricas de formulario',
   'Form Name': 'Nombre del formulario',
   'Form Schema': 'Formulario',
-  'Form Schemas': 'Formulario de esquemas',
+  'Form Schemas': 'Esquemas de formularios',
   'Form Status': 'Estado del formulario',
   'Form Status "{{status}}" saved': 'Estado del formulario "{{status}}" guardado',
   'Form Statuses': 'Estados de los formularios',
@@ -171,8 +181,10 @@ export const ESP: Translation = {
   'Invalid API Key': 'Clave de API no válida',
   'Invalid email and/or password': 'Correo electrónico y/o contraseña no válidos',
   'Invalid username and/or password': 'Nombre de usuario y / o contraseña no válidos',
-  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.': 'Elemento añadido con éxito a sus favoritos. Los informes favoritos se mostrarán en su panel de control.',
-  'Item successfully removed from your favorites.': 'Artículo eliminado con éxito de sus favoritos.',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.':
+    'Elemento añadido con éxito a sus favoritos. Los informes favoritos se mostrarán en su panel de control.',
+  'Item successfully removed from your favorites.':
+    'Artículo eliminado con éxito de sus favoritos.',
   'Items': 'Elementos',
   'Items found': 'Elementos encontrados',
   'Items in page': 'Elementos de la página',
@@ -181,7 +193,8 @@ export const ESP: Translation = {
   'Label fields': 'Campos de etiqueta',
   'Language': 'Idioma',
   'Last page': 'Última página',
-  'Leave a field empty if you do not wish to change the related value of the selected forms': 'Deje un campo vacío si no desea cambiar el valor relacionado de los formularios seleccionados',
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Deje un campo vacío si no desea cambiar el valor relacionado de los formularios seleccionados',
   'Load': 'Carga',
   'Load the preset': 'Cargar el preset',
   'Location': 'Ubicación',
@@ -204,15 +217,19 @@ export const ESP: Translation = {
   'No Forms were found': 'No se encontraron formas',
   'No Forms were found for this Report': 'No se encontraron formularios para este informe',
   'No translation': 'Sin traducción',
-  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?': 'Uno o más grupos de usuarios tienen permisos para este esquema. ¿Está seguro de que desea eliminarlo?',
-  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.': 'Uno o más informes utilizan actualmente este esquema de formulario. Elimine estos informes antes de eliminar este esquema',
-  'Oops! We could not retrieve your checkout session. Please try again': '¡Ups! No pudimos recuperar su sesión de pago. Por favor intente de nuevo',
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    'Uno o más grupos de usuarios tienen permisos para este esquema. ¿Está seguro de que desea eliminarlo?',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'Uno o más informes utilizan actualmente este esquema de formulario. Elimine estos informes antes de eliminar este esquema',
+  'Oops! We could not retrieve your checkout session. Please try again':
+    '¡Ups! No pudimos recuperar su sesión de pago. Por favor intente de nuevo',
   'Open the advanced filters': 'Abrir los filtros avanzados',
   'Organization': 'Organización',
   'Organization *': 'Organización *',
   'Organization associated with the form': 'Organización asociada al formulario',
   'Organizations': 'Organizaciones',
-  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?': 'Otros formularios dependen de este esquema de formulario y de algunos de sus campos. ¿Está seguro de que desea eliminarlo?',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    'Otros formularios dependen de este esquema de formulario y de algunos de sus campos. ¿Está seguro de que desea eliminarlo?',
   'PASSWORD CHANGED': 'CONTRASEÑA CAMBIADA',
   'PASSWORD RESET LINK SENT': 'SE HA ENVIADO EL ENLACE PARA RESTABLECER LA CONTRASEÑA',
   'Page {{page}} of {{pages}}': 'Página {{page}} de {{pages}}',
@@ -224,10 +241,12 @@ export const ESP: Translation = {
   'Password': 'Contraseña',
   'Password changed': 'Contraseña cambiada',
   'Password reset link sent to': 'Enlace para restablecer la contraseña enviado a',
-  'Password successfully changed. You will now be redirected to the login area.': 'La contraseña ha sido cambiada con éxito. Ahora será redirigido a la zona de inicio de sesión.',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'La contraseña ha sido cambiada con éxito. Ahora será redirigido a la zona de inicio de sesión.',
   'Pick a preset': 'Elija un ajuste preestablecido',
   'Pick a preset name': 'Elija un nombre preestablecido',
-  'Please add a Report to your favorites to view it in the dashboard': 'Por favor, añada un informe a sus favoritos para verlo en el panel de control',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Por favor, añada un informe a sus favoritos para verlo en el panel de control',
   'Please enter a': 'Por favor ingrese un',
   'Please select a valid': 'Por favor seleccione un válido',
   'Previous page': 'Página anterior',
@@ -249,8 +268,8 @@ export const ESP: Translation = {
   'REPORT DATA': 'DATOS DEL INFORME',
   'REPORT METRICS': 'MEDIDAS DEL INFORME',
   'Record': 'Registro',
-  'Record the Form': 'Registre el formulario',
-  'Record your Form': 'Grabe su forma',
+  'Record the Form': 'Registrar el formulario',
+  'Record your Form': 'Registrar el formulario',
   'Relationships': 'Relaciones',
   'Remove': 'Eliminar',
   'Remove custom translation': 'Eliminar traducción personalizada',
@@ -272,14 +291,17 @@ export const ESP: Translation = {
   'Select metrics': 'Selecciona las métricas',
   'Select metrics for choices': 'Seleccionar métricas',
   'Select the Form Status': 'Seleccione el estado del formulario',
-  'Selects metrics for which data should be included in the form': 'Selecciona las métricas cuyos datos deben incluirse en el formulario',
-  'Selects metrics to be included as choice options': 'Selecciona las métricas que se incluirán como opciones de elección',
-  'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_choice_metric.': 'Selecciona las métricas que se incluirán como opciones de elección en el esquema de formulario. El nombre del nuevo origen de elección será $ metricname_choice_metric.',
+  'Selects metrics for which data should be included in the form':
+    'Selecciona las métricas cuyos datos deben incluirse en el formulario',
+  'Selects metrics to be included as choice options':
+    'Selecciona las métricas que se incluirán como opciones de elección',
+  'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_choice_metric.':
+    'Selecciona las métricas que se incluirán como opciones de elección en el esquema de formulario. El nombre del nuevo origen de elección será $ metricname_choice_metric.',
   'Share Public Url': 'Compartir url pública',
   'Show Map': 'Mostrar mapa',
   'Something went wrong while recording audio': 'Algo salió mal mientras grababa audio',
   'Something went wrong while transcribing audio': 'Algo salió mal mientras transcribía audio',
-  'Sorry, you don\'t have enough Credits!': 'Lo siento, ¡no tienes suficientes créditos!',
+  "Sorry, you don't have enough Credits!": 'Lo siento, ¡no tienes suficientes créditos!',
   'Sources': 'Fuentes',
   'Start Date': 'Fecha de inicio',
   'Start Dino Tour': 'Comienza Dino Tour',
@@ -289,7 +311,8 @@ export const ESP: Translation = {
   'THEME LOADED': 'TEMA CARGADO',
   'THEME SAVED': 'TEMA GUARDADO',
   'TRANSCRIPTION ERROR': 'Error de transcripción',
-  'The corresponding graphql query condition to filter metrics': 'La condición de consulta GraphQL correspondiente a las métricas de filtro',
+  'The corresponding graphql query condition to filter metrics':
+    'La condición de consulta GraphQL correspondiente a las métricas de filtro',
   'The form has been successfully submitted.': 'El formulario se ha enviado correctamente.',
   'Thematic Area': 'Área temática',
   'Thematic Area *': 'Área temática *',
@@ -297,11 +320,15 @@ export const ESP: Translation = {
   'Thematic Areas': 'Áreas temáticas',
   'Theme loaded and set as default': 'Tema cargado y establecido como predeterminado',
   'Theme saved and set as default': 'Tema guardado y establecido como predeterminado',
-  'There are not any logs available for this form': 'No hay registros disponibles para este formulario',
-  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.': 'Hay datos asociados a este esquema. Elimine todos los datos asociados antes de eliminar este esquema.',
-  'This form might not be valid. Please review and fill its data': 'Este formulario puede no ser válido. Por favor, revise y rellene sus datos',
+  'There are not any logs available for this form':
+    'No hay registros disponibles para este formulario',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'Hay datos asociados a este esquema. Elimine todos los datos asociados antes de eliminar este esquema.',
+  'This form might not be valid. Please review and fill its data':
+    'Este formulario puede no ser válido. Por favor, revise y rellene sus datos',
   'This name is already being used.': 'Este nombre ya se utiliza.',
-  'This option exports all items without filters. The process may slow down your device.': 'Esta opción exporta todos los elementos sin filtros. El proceso puede ralentizar tu dispositivo.',
+  'This option exports all items without filters. The process may slow down your device.':
+    'Esta opción exporta todos los elementos sin filtros. El proceso puede ralentizar tu dispositivo.',
   'To date': 'Hasta la fecha',
   'Total paid': 'Total pagado',
   'Transcribe': 'Transcribir',
@@ -310,11 +337,13 @@ export const ESP: Translation = {
   'UNIQUE FORM ALREADY EXISTS': 'YA EXISTE UN FORMULARIO ÚNICO',
   'Undo': 'Deshacer',
   'Unique': 'Único',
-  'Unique: only one item with a given exact set of metrics can exist': 'Único: sólo puede existir un artículo con un determinado conjunto exacto de métricas.',
+  'Unique: only one item with a given exact set of metrics can exist':
+    'Único: sólo puede existir un artículo con un determinado conjunto exacto de métricas.',
   'Update Date': 'Fecha de actualización',
   'Update translation': 'Actualizar traducción',
   'Upload a jpg or png file': 'Cargar un archivo jpg o png',
-  'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.': 'Use el campo seleccionado (solo uno permitido) como opción de elección. El nombre del nuevo origen de elección agregado al esquema de formulario será $ FieldName_Choice.',
+  'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.':
+    'Use el campo seleccionado (solo uno permitido) como opción de elección. El nombre del nuevo origen de elección agregado al esquema de formulario será $ FieldName_Choice.',
   'User': 'Usuario',
   'Username / email': 'Nombre de usuario / correo electrónico',
   'Users': 'Usuarios',
@@ -332,10 +361,12 @@ export const ESP: Translation = {
   'XLSX': 'XLSX',
   'Yes': 'Sí',
   'You can purchase more Credits here': 'Puede comprar más créditos aquí',
-  'You have unsynced data. Please click the Sync icon.': 'Tienes datos no singiosos. Haga clic en el icono de sincronización.',
+  'You have unsynced data. Please click the Sync icon.':
+    'Tienes datos no singiosos. Haga clic en el icono de sincronización.',
   'You now have': 'Ahora tienes',
   'Your DINO-AI Credits': 'Tus créditos Dino-AI',
-  'Your Reset Password ticket is invalid or expired. Please try again.': 'Su billete de restablecimiento de contraseña no es válido o ha caducado. Por favor, inténtelo de nuevo.',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'Su billete de restablecimiento de contraseña no es válido o ha caducado. Por favor, inténtelo de nuevo.',
   'added': 'agregado',
   'area': 'área',
   'cancel': 'cancelar',
@@ -344,7 +375,8 @@ export const ESP: Translation = {
   'csv': 'csv',
   'delete': 'eliminar',
   'delete icon': 'borrar icono',
-  'deleted: custom translations of {{language}}': 'eliminado: traducciones personalizadas de {{language}}',
+  'deleted: custom translations of {{language}}':
+    'eliminado: traducciones personalizadas de {{language}}',
   'edit icon': 'editar icono',
   'error try later': 'error intente mas tarde',
   'filters': 'filtros',
@@ -369,5 +401,5 @@ export const ESP: Translation = {
   'the selected items': 'los elementos seleccionados',
   'the selected schema': 'el esquema seleccionado',
   'update:': 'actualizado:',
-  'xlsx': 'xlsx'
+  'xlsx': 'xlsx',
 };
