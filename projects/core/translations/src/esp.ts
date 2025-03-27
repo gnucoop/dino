@@ -22,6 +22,8 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
+  ' ': '',
+  ' ' + ('available items': '' + (' artículos disponibles',
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

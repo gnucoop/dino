@@ -22,6 +22,8 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  ' ': '',
+  ' ' + ('available items': '' + (' itens disponíveis',
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
