@@ -85,7 +85,7 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
       statusEditable: boolean;
       hasOptionalMetrics: boolean;
       secondaryMetricFieldsDisplayed: {
-        [metricName: string]: string;
+        [metricName: string]: string | string[];
       } | null;
       context: 'form' | 'report' | 'bulkFormEdit' | 'shareUrl';
     },

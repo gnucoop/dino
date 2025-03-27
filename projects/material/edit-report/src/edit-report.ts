@@ -175,17 +175,17 @@ export class EditReport implements AfterViewInit {
    * Secondary metric field to display in the Form Metric Selector and Filters
    */
   private _secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = null;
   get secondaryMetricFieldsDisplayed(): {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null {
     return this._secondaryMetricFieldsDisplayed;
   }
   @Input()
   set secondaryMetricFieldsDisplayed(
     fields: {
-      [metricName: string]: string;
+      [metricName: string]: string | string[];
     } | null,
   ) {
     this._secondaryMetricFieldsDisplayed = fields;
@@ -1240,7 +1240,7 @@ export class EditReport implements AfterViewInit {
                   [key: string]: {
                     option: RxDocument<Metric>;
                     metricType: string;
-                    secondaryMetricFieldsDisplayed?: {[key: string]: string};
+                    secondaryMetricFieldsDisplayed?: {[key: string]: string | string[]};
                   };
                 }) => {
                   let metricsString = '';

@@ -140,17 +140,17 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * Secondary metric field to display in the Form Metric Selector and Filters
    */
   private _secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = null;
   get secondaryMetricFieldsDisplayed(): {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null {
     return this._secondaryMetricFieldsDisplayed;
   }
   @Input()
   set secondaryMetricFieldsDisplayed(
     fields: {
-      [metricName: string]: string;
+      [metricName: string]: string | string[];
     } | null,
   ) {
     this._secondaryMetricFieldsDisplayed = fields;
@@ -890,18 +890,29 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   getMetricDataSecondaryAttribute(
     metric: Metric & {[key: string]: any},
     secondaryFields: {
-      [metricName: string]: string;
+      [metricName: string]: string | string[];
     } | null,
     metricType: string,
   ): string | null {
+    let secondaryAttributeVal: string[] = [];
     if (metric && secondaryFields && metricType) {
-      if (secondaryFields[metricType] && secondaryFields[metricType].includes('metric_data')) {
-        const metricDataKey = secondaryFields[metricType].split('metric_data ')[1];
-        return metric['metric_data'] != null ? metric['metric_data'][metricDataKey] : null;
-      }
-      return metric[secondaryFields[metricType]] ?? null;
+      const secondaryFieldsList: string[] = Array.isArray(secondaryFields[metricType])
+        ? (secondaryFields[metricType] as string[])
+        : [secondaryFields[metricType] as string];
+
+      secondaryFieldsList.forEach(secondaryField => {
+        if (secondaryField && secondaryField.includes('metric_data')) {
+          const metricDataKey = secondaryField.split('metric_data ')[1];
+          secondaryAttributeVal.push(
+            metric['metric_data'] != null ? metric['metric_data'][metricDataKey] : null,
+          );
+        } else {
+          secondaryAttributeVal.push(metric[secondaryField] ?? null);
+        }
+      });
     }
-    return null;
+    secondaryAttributeVal = secondaryAttributeVal.filter(v => v != null);
+    return secondaryAttributeVal.length ? secondaryAttributeVal.join(' - ') : null;
   }
 
   /**
