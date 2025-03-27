@@ -9,6 +9,6 @@ export class MatEditReportE2E {
   readonly baseDataChatAPIurl = 'http://localhost:5000'; // additionalConfig.gptPostUrl;
   readonly optionalMetrics: boolean = additionalConfig.optionalReportMetrics;
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 }

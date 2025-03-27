@@ -350,7 +350,7 @@ export const additionalConfig = {
   secondaryMetricFieldsDisplayed: {
     case: 'notes',
     project: 'code',
-    organization: 'metric_data descrizione',
+    organization: ['metric_data descrizione', 'website_url'],
   },
 };
 

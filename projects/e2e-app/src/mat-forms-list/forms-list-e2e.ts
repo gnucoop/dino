@@ -72,7 +72,7 @@ export class MatFormsListE2E {
   readonly hasSelectionAllowedStatus: Observable<boolean>;
   readonly showStatusProgressBar: boolean = additionalConfig.statusType === 'progress';
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
   readonly booleanQuickEdit: string[] = additionalConfig.booleanQuickEdit;
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;

@@ -44,7 +44,7 @@ export class MatAggregationListE2E implements AfterViewInit, OnDestroy {
   };
   readonly listRowActions: Observable<ListAction[] | null>;
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   /**

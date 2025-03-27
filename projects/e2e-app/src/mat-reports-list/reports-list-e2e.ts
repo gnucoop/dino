@@ -110,7 +110,7 @@ export class MatReportsListE2E {
   readonly listRowActions: Observable<ListAction[] | null>;
   readonly displayAddButton: Observable<boolean>;
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   constructor(

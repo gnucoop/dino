@@ -17,7 +17,7 @@ export class MatEditFormE2E {
   readonly offlineFileUpload: boolean = additionalConfig.offlineFileUpload;
   readonly pipelines: string[] = additionalConfig.pipelines;
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   constructor(private _fdm: FormDataManager, @Optional() private _logManager: LogManager) {

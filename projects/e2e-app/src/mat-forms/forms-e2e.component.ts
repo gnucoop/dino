@@ -9,7 +9,7 @@ import {additionalConfig} from '../mockconfig';
 })
 export class MatFormsE2E {
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string;
+    [metricName: string]: string | string[];
   } | null = additionalConfig.secondaryMetricFieldsDisplayed;
 
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
