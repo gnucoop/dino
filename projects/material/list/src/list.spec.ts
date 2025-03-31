@@ -70,6 +70,7 @@ class FiltersServiceStub {
   addBasicFilter(): void {}
   clearModelFilters() {}
   clearAdditionalBasicFilters() {}
+  clearCustomFilters() {}
 }
 
 class SearchFiltersComponentStub {}

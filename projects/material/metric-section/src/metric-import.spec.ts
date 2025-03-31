@@ -30,6 +30,9 @@ const userGroupManagerMock = {
   getActiveUserGroups: () => of([]),
   addToContext: (_: {[key: string]: any}): void => {},
   update: (_: UserGroup): Observable<RxDocument<UserGroup, {}> | null> => of(null),
+  isActiveUserAdmin(_roles: string[] = ['admin']): Observable<boolean> {
+    return of(true);
+  },
 } as unknown as UserGroupManager;
 
 const permissionContextServiceMock = {} as PermissionContextService;
@@ -91,7 +94,8 @@ describe('Metric Import', () => {
     fixtureImport.detectChanges();
     const spyImportXlsx = spyOn<any>(importMetrics, '_importXlsx').and.callThrough();
     const file = new Blob([metricsCsv], {type: 'text/csv'});
-    const excelEvt = {target: {files: [file]}};
+    const metricsFile: File = new File([file], 'metrics_import_test.csv');
+    const excelEvt = {target: {files: [metricsFile]}};
     importMetrics.onExcelfileSelected(excelEvt);
     importMetrics.apply();
     expect(spyImportXlsx).toHaveBeenCalledTimes(1);
