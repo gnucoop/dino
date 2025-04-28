@@ -499,47 +499,6 @@ export class ImportForm implements OnDestroy {
   }
 
   /**
-   * Return the input value casted to the correct type (string, list or Date)
-   * @param rowValue the initial value found in xls file
-   * @param type required type for this value
-   * @returns
-   */
-  private _getValueFromRow(
-    rowValue: any,
-    requiredType?: JsonSchemaTypes | JsonSchemaTypes[] | readonly JsonSchemaTypes[] | undefined,
-  ): any {
-    let value = rowValue === undefined ? null : rowValue;
-    if (value !== null) {
-      if (typeof value === 'string') {
-        value = value.trim();
-        if (value.startsWith('[') && value.endsWith(']')) {
-          value = value
-            .slice(1, -1)
-            .split(',')
-            .map((v: string) => v.trim());
-        }
-      } else if (typeof value === 'object') {
-        try {
-          value = format(new Date(value), 'yyyy-MM-dd');
-        } catch (e) {
-          if (isDevMode()) console.log(e);
-        }
-      }
-
-      if (requiredType) {
-        switch (requiredType) {
-          case 'string':
-            value = value.toString();
-            break;
-          case 'number':
-            value = !isNaN(value) ? +value : value;
-        }
-      }
-    }
-    return value;
-  }
-
-  /**
    * Insert all the rows into Dino
    * @param rows The rows to be imported
    * @param activeMetrics The list of the currently active metric type
