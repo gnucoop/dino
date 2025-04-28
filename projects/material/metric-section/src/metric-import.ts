@@ -355,7 +355,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
                   if (prop === 'metric_data') {
                     try {
                       newMetric[prop] = JSON.parse(row[propKey]);
-                    } catch (e) {
+                    } catch (_e) {
                       invalid = true;
                       missingFields.push(prop);
                     }
@@ -578,7 +578,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
           let errMsg = '';
           if (firstBulkRes?.success.length) {
             errMsg = `${this._ts.translate('File partially imported')}:
-              ${firstBulkRes?.success.length} 
+              ${firstBulkRes?.success.length}
               ${this._ts.translate('\nOnly metrics without parents were created.')}`;
           } else {
             errMsg = this._ts.translate('File not imported! Errors in metrics with parents.');

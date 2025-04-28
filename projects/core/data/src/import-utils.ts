@@ -50,7 +50,7 @@ export function getValueFromRow(
       try {
         // Try if the object is a date
         value = format(new Date(value), 'yyyy-MM-dd');
-      } catch (e) {}
+      } catch (_e) {}
     } else if (
       typeof value === 'number' &&
       (rowColumn.indexOf('_date') > 0 ||
@@ -91,7 +91,7 @@ export function excelDateToJSDate(serial: number): string | number {
         const dateStr = date.toISOString().split('T')[0];
         return dateStr;
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
   return serial;
 }
