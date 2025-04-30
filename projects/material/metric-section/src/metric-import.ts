@@ -175,7 +175,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
   private _dinoFields: string[] = ['created_at', 'name', 'parent_id', 'parent_name'];
 
   /**
-   * Mandatory but not importable metric fields
+   * Not mandatory common fields for import. Id and updated_at are not importable.
    */
   private _notMandatoryFields: string[] = ['id', 'created_at', 'updated_at'];
 
@@ -319,12 +319,18 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
       const newMetricNames: string[] = [];
       const requiredProps = this._getRequiredMetricProps(this._metricManager.collectionSchema);
       const props: {[key: string]: any} = this._metricManager.collectionSchema.properties;
+
       delete props['id'];
+      delete props[`${this.metricName}_id`];
+
+      delete props['updated_at'];
+      delete props[`${this.metricName}_updated_at`];
+
       if (this.metricName === 'case') {
-        delete props['code'];
+        delete props['case_code'];
       }
       if (this.metricName === 'project') {
-        delete props['code_auto'];
+        delete props['project_code_auto'];
       }
 
       rows.forEach((row: {[key: string]: any}) => {
@@ -370,7 +376,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
               } else {
                 const parentId = row[`${this.metricName}_parent_id`];
                 const parentName = row[`${this.metricName}_parent_name`];
-                if (parentId || row[`${this.metricName}_parent_name`]) {
+                if (parentId || parentName) {
                   if (parentId) {
                     // Required Metric parent id
                     if (!metricsInfo.requiredMetricParentIds.includes(parentId)) {
@@ -626,7 +632,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
 
   /**
    * Convert the xls file into a json and start import all the rows
-   * No update for form data, all form data will be imported as new
+   * No update, all data will be imported as new
    * @param file The Xlsx file to be imported
    */
   private _importXlsx(file: Blob): void {
