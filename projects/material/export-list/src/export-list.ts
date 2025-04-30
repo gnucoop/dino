@@ -77,6 +77,7 @@ import {
   ExportModel,
   SelOption,
   ExportListData,
+  Exporter,
 } from '@dino/core/exporter';
 
 // @TODO: Use Exporter Class and remove all duplicated methods from here
@@ -89,7 +90,6 @@ import {
 })
 export class ExportList implements AfterViewInit, OnDestroy {
   disableExport$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  exportFormat: ExportFormat = 'csv';
   exportFilters: ExportFilters = 'displayed';
   @ViewChildren(ToggleButtonComponent)
   toggleButtons!: QueryList<ToggleButtonComponent>;
@@ -115,6 +115,29 @@ export class ExportList implements AfterViewInit, OnDestroy {
   readonly maxNumberOfForm$: Observable<number>;
 
   /**
+   * Emitted when the Exporter has been successfully created and set up
+   */
+  private _ExporterReadyEvt: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
+   * The Exporter instance
+   */
+  private _exporter: Exporter | null;
+
+  /**
+   * The file generated from the Exporter
+   */
+  private _exportedFile$: Observable<File | null>;
+  get exportedFile$(): Observable<File | null> {
+    return this._exportedFile$;
+  }
+
+  /**
+   * The Export Format
+   */
+  exportFormat: ExportFormat = 'csv';
+
+  /**
    * The placeholder for the ',' in multiple choises translated values
    */
   private readonly _multipleChoisePlaceholder = '_';
@@ -125,14 +148,22 @@ export class ExportList implements AfterViewInit, OnDestroy {
 
   private _exportedDataListPopulated$: Observable<ExportData[]>;
   private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  private _dinoFields: string[] = [
-    'id',
-    'user_data_ref_id',
-    'created_at',
-    'dinoinvalid',
-    '$invalid',
-  ];
-  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at'];
+
+  /**
+   * Additional properties to be added to the export, external to the form schema
+   * fields or, for form metrics, external to the metrics properties.
+   * These properties are exported with this name, without any prefix.
+   */
+  private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at', 'updated_at'];
+
+  /**
+   * The properties of the Dino base model to be excluded from export
+   */
+  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted'];
+
+  /**
+   * Metric managers
+   */
   private _metricManagers: (DataModelManager<any> | null)[] = [
     this._ar,
     this._cs,
@@ -140,6 +171,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
     this._lc,
     this._og,
   ];
+
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
 
@@ -220,9 +252,22 @@ export class ExportList implements AfterViewInit, OnDestroy {
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
   ) {
+    this._exporter = null;
+    this._exportedFile$ = obsOf(null);
+
+    // TODO... dove li metto?
+    // this._exporter = this._createExporter();
+    // --------------------------
+    // if (!schema || !data || !this._exporter) return;
+    // this._setupExporter(this._exporter, schema, data);
+
     if (this.dialogData && this.dialogData.formSchema) {
       this.schema$.next(this.dialogData.formSchema);
       this._buildExportModel(this.dialogData.formSchema);
+    }
+
+    if (this.dialogData.listType === 'metrics') {
+      this._dinoFields = [];
     }
 
     this.availableFieldsAndFormats = [
@@ -516,7 +561,9 @@ export class ExportList implements AfterViewInit, OnDestroy {
                     ? ctx.dino[dinoField].id
                     : ctx.dino[dinoField];
               });
-              refExportCtx['dinoinvalid'] = ctx['dinoinvalid'] || ctx['$invalid'];
+              if (this.dialogData.listType === 'forms') {
+                refExportCtx['dinoinvalid'] = ctx['dinoinvalid'] || ctx['$invalid'];
+              }
               if (ctx.dino['user_data'] != null) {
                 refExportCtx['user_data_full_name'] = ctx.dino['user_data'].full_name;
               }
@@ -535,7 +582,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
                   for (let prop in metricProperties) {
                     const ctxDinoContent = isListOfTypeMetrics ? ctx.dino : ctx.dino[metricName];
                     if (ctxDinoContent && !this._dinoBaseModelFields.includes(prop)) {
-                      const metricProp = isListOfTypeMetrics ? prop : `${metricName}_${prop}`;
+                      const metricProp = `${metricName}_${prop}`;
                       if (prop === 'metric_data') {
                         refExportCtx[metricProp] = ctxDinoContent[prop]
                           ? JSON.stringify(ctxDinoContent[prop])
@@ -583,6 +630,39 @@ export class ExportList implements AfterViewInit, OnDestroy {
         this.dialogRef.close();
       });
   }
+
+  /**
+   * Creates an Exporter instance
+   * @returns The exporter instance
+   */
+  // private _createExporter(): Exporter {
+  //   return new Exporter(this._ts, this._ar, this._cs, this._pj, this._lc, this._og);
+  // }
+
+  /**
+   * Performs the Exporter instance setup and emits the ExporterReady event
+   * @param exporter The exporter instance
+   * @param schema The form schema
+   * @param data All form datas
+   */
+  // private _setupExporter(exporter: Exporter, schema: FormSchema, data: RxDocument<FormData>[]) {
+  //   exporter.setup(
+  //     {
+  //       exportFormat: 'csv',
+  //       formSchema: schema,
+  //       listType: 'forms',
+  //       nodesVisibility: this._nodesVisibility,
+  //       singleHeader: true,
+  //       removeCommas: true,
+  //     },
+  //     'all',
+  //     data,
+  //     'csv',
+  //     true,
+  //     true,
+  //   );
+  //   this._ExporterReadyEvt.emit();
+  // }
 
   ngAfterViewInit(): void {
     if (this.filtersCount > 0) {
@@ -663,6 +743,9 @@ export class ExportList implements AfterViewInit, OnDestroy {
     this._downloadSub.unsubscribe();
     this._ctxValuesSub.unsubscribe();
     this._nvSub.unsubscribe();
+    if (this._exporter) {
+      this._exporter.ngOnDestroy();
+    }
   }
 
   /**
@@ -956,12 +1039,22 @@ export class ExportList implements AfterViewInit, OnDestroy {
     return label;
   }
 
+  /**
+   * Return the XLSX.WorkSheet with label row and all data to be exported
+   * @param ctxList the list of data to be exported
+   * @param slideFieldNames
+   * @returns an XLSX.WorkSheet
+   */
   private _buildWorksheet(ctxList: Context[], slideFieldNames: string[]): XLSX.WorkSheet {
-    let fieldNames = [];
-
+    let fieldNames: string[] = [];
     fieldNames = [...this._dinoFields, ...slideFieldNames];
-    const fieldLabels = this._buildLabelsRow(fieldNames);
-    const data = [fieldLabels, ...ctxList];
+
+    const data: Context[] = [];
+    if (fieldNames.length) {
+      const fieldLabels = this._buildLabelsRow(fieldNames);
+      data.push(fieldLabels);
+    }
+    data.push(...ctxList);
     return XLSX.utils.json_to_sheet(data);
   }
 
