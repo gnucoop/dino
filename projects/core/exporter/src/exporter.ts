@@ -112,8 +112,22 @@ export class Exporter implements OnDestroy {
   );
 
   private _exportedDataListPopulated$: Observable<ExportData[]>;
-  private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at'];
-  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted', 'updated_at'];
+
+  /**
+   * Additional properties to be added to the export, external to the form schema
+   * fields or, for form metrics, external to the metrics properties.
+   * These properties are exported with this name, without any prefix.
+   */
+  private _dinoFields: string[] = ['id', 'user_data_ref_id', 'created_at', 'updated_at'];
+
+  /**
+   * The properties of the Dino base model to be excluded from export
+   */
+  private _dinoBaseModelFields: string[] = ['_deleted', 'is_deleted'];
+
+  /**
+   * Metric managers
+   */
   private _metricManagers: (DataModelManager<any> | null)[] = [
     this._ar,
     this._cs,
@@ -121,6 +135,7 @@ export class Exporter implements OnDestroy {
     this._lc,
     this._og,
   ];
+
   private _exportEvt: EventEmitter<void> = new EventEmitter<void>();
   private _exportSub: Subscription = Subscription.EMPTY;
 
@@ -217,9 +232,15 @@ export class Exporter implements OnDestroy {
     @Optional() private _og: OrganizationManager | null,
   ) {
     this._setupDataSub = this._setupData.subscribe(std => {
-      if (std && std.formSchema) {
-        this._schema$.next(std.formSchema);
-        this._buildExportModel(std.formSchema);
+      if (std) {
+        if (std.formSchema) {
+          this._schema$.next(std.formSchema);
+          this._buildExportModel(std.formSchema);
+        }
+
+        if (std.listType === 'metrics') {
+          this._dinoFields = [];
+        }
       }
     });
 
@@ -504,7 +525,7 @@ export class Exporter implements OnDestroy {
                   for (let prop in metricProperties) {
                     const ctxDinoContent = isListOfTypeMetrics ? ctx.dino : ctx.dino[metricName];
                     if (ctxDinoContent && !this._dinoBaseModelFields.includes(prop)) {
-                      const metricProp = isListOfTypeMetrics ? prop : `${metricName}_${prop}`;
+                      const metricProp = `${metricName}_${prop}`;
                       if (prop === 'metric_data') {
                         refExportCtx[metricProp] = ctxDinoContent[prop]
                           ? JSON.stringify(ctxDinoContent[prop])
@@ -802,6 +823,12 @@ export class Exporter implements OnDestroy {
     return label;
   }
 
+  /**
+   * Return the XLSX.WorkSheet with label row and all data to be exported
+   * @param ctxList the list of data to be exported
+   * @param slideFieldNames
+   * @returns an XLSX.WorkSheet
+   */
   private _buildWorksheet(ctxList: Context[], slideFieldNames: string[]): XLSX.WorkSheet {
     const singleHeader = this._setupData.value?.singleHeader;
     let fieldNames: string[] = [];
@@ -811,8 +838,13 @@ export class Exporter implements OnDestroy {
         ? new Set([...this._dinoFields, ...slideFieldNames, ...Object.keys(ctxList[0])])
         : new Set([...this._dinoFields, ...slideFieldNames]);
     fieldNames = Array.from(fieldNamesSet);
-    const fieldLabels = this._buildLabelsRow(fieldNames);
-    const data = [fieldLabels, ...ctxList];
+
+    const data: Context[] = [];
+    if (fieldNames.length) {
+      const fieldLabels = this._buildLabelsRow(fieldNames);
+      data.push(fieldLabels);
+    }
+    data.push(...ctxList);
     return XLSX.utils.json_to_sheet(data, {skipHeader: singleHeader === true});
   }
 
