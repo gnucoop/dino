@@ -352,6 +352,11 @@ export const additionalConfig = {
     project: 'code',
     organization: ['metric_data descrizione', 'website_url'],
   },
+
+  /**
+   * Object with Form Schemas (by name) as key with the value for record audio enables (default: false)
+   */
+  recordAudioEnabled: {'sol-monitoraggio': true},
 };
 
 /**

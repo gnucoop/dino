@@ -11,6 +11,8 @@ export class MatCreateFormDataE2E {
   readonly manager: FormDataManager;
   readonly optionalMetrics: boolean = additionalConfig.optionalFormMetrics;
   readonly offlineFileUpload: boolean = additionalConfig.offlineFileUpload;
+  readonly recordAudioEnabled: {[key: string]: boolean} | null =
+    additionalConfig.recordAudioEnabled || null;
   readonly pipelines: string[] = additionalConfig.pipelines;
   readonly secondaryMetricFieldsDisplayed: {
     [metricName: string]: string | string[];
