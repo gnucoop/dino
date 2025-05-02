@@ -136,6 +136,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   @Input() allowMetricCreationFor: string[] = [];
 
   /**
+   * If true, this Form Schema has record audio enabled
+   */
+  @Input() isRecordAudioEnabled: boolean = false;
+
+  /**
    * Emitted when the user wants to move to the Data step of the Form Editor.
    */
   @Output() goToDataEvt: EventEmitter<void> = new EventEmitter<void>();

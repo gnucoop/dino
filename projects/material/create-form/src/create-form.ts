@@ -155,6 +155,26 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   /**
+   * Object with Form Schemas (by name) as key with the value for record audio enables. Default to false.
+   */
+  private _recordAudioEnabled: BehaviorSubject<{[key: string]: boolean} | null> =
+    new BehaviorSubject<{[key: string]: boolean} | null>(null);
+  @Input()
+  set recordAudioEnabled(values: {[key: string]: boolean} | null) {
+    if (values != null) {
+      this._recordAudioEnabled.next(values);
+    }
+  }
+
+  /**
+   * If true, this Form Schema has record audio enabled
+   */
+  private _isRecordAudioEnabled: Observable<boolean> = obsOf(false);
+  get isRecordAudioEnabled(): Observable<boolean> {
+    return this._isRecordAudioEnabled;
+  }
+
+  /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<T>> = new EventEmitter<
@@ -442,6 +462,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         ),
       ),
       switchMap(schema => schema as Observable<FormSchema>),
+      shareReplay(1),
+    );
+
+    this._isRecordAudioEnabled = combineLatest([this._formSchema, this._recordAudioEnabled]).pipe(
+      map(([schema, recordAudioEnabled]) =>
+        recordAudioEnabled && recordAudioEnabled[schema.name]
+          ? recordAudioEnabled[schema.name]
+          : false,
+      ),
       shareReplay(1),
     );
 

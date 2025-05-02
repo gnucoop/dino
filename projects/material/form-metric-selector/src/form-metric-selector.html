@@ -110,8 +110,7 @@
       <mat-icon>arrow_forward</mat-icon>
     </button>
 
-    <button
-      *ngIf="(isCreate|async) === true"
+    <button *ngIf="(isCreate|async) === true && isRecordAudioEnabled"
       mat-raised-button
       color="primary"
       [disabled]="(formMetrics.status === 'INVALID') || (nss.isOnline$|async) === false"
