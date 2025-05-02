@@ -43,6 +43,7 @@ export function getValueFromRow(
         value = value
           .slice(1, -1)
           .split(',')
+          .filter((v: string) => v.length)
           .map((v: string) => v.trim());
       }
     } else if (typeof value === 'object') {
