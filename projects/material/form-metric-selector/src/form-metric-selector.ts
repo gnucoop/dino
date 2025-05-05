@@ -954,7 +954,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         ? (this.secondaryMetricFieldsDisplayed[metricType] as string[])
         : [this.secondaryMetricFieldsDisplayed[metricType] as string];
 
-      const secondaryQueryOpt: DataQuerySelector = {};
+      const secondaryQueryOpt: DataQuerySelector[] = [];
 
       secondaryMetricFields.forEach(fieldDisplayed => {
         const secondaryDisplayedProp: string[] = fieldDisplayed.split(' ');
@@ -964,22 +964,26 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
         if (secondaryDisplayedProp[0] && props[secondaryDisplayedProp[0]]) {
           if (props[secondaryDisplayedProp[0]].type === 'number') {
             if (+metricValue) {
-              secondaryQueryOpt[secondaryDisplayedProp[0]] = {
-                $eq: +metricValue,
-              };
+              secondaryQueryOpt.push({
+                [secondaryDisplayedProp[0]]: {
+                  $eq: +metricValue,
+                },
+              });
             }
           } else {
-            secondaryQueryOpt[secondaryDisplayedProp.join('.')] = {
-              $regex: metricValue,
-              $options: 'i',
-            };
+            secondaryQueryOpt.push({
+              [secondaryDisplayedProp.join('.')]: {
+                $regex: metricValue,
+                $options: 'i',
+              },
+            });
           }
         }
       });
 
       if (Object.keys(secondaryQueryOpt).length) {
         return {
-          $or: [{name: metricNameQuerySelector['name']}, secondaryQueryOpt],
+          $or: [{name: metricNameQuerySelector['name']}, ...secondaryQueryOpt],
           is_deleted: {$ne: true},
         };
       }
