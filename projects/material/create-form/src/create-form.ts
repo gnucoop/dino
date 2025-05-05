@@ -498,6 +498,16 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       shareReplay(1),
     );
 
+    combineLatest([this.isFormInizialized, this.formAudioData])
+      .pipe(withLatestFrom(this._rendererService.formGroup))
+      .subscribe(([[isFormInizializedVal, fAudioData], formGroup]) => {
+        if (isFormInizializedVal && formGroup && fAudioData) {
+          if (Object.keys(fAudioData).length) {
+            formGroup.patchValue(fAudioData);
+          }
+        }
+      });
+
     combineLatest([this._formSchemaDeps, this.metricChanges, this.isFormInizialized])
       .pipe(
         withLatestFrom(this._rendererService.formGroup),
@@ -549,6 +559,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           const newChoicesOrigins: AjfChoicesOrigin<string>[] = [];
           const newFormSchema: FormSchema = deepCopy(fschema);
           let extCtx: {[key: string]: any} = {};
+          if (
+            formGroup &&
+            formGroup.value &&
+            this.formAudioData.value &&
+            Object.keys(this.formAudioData.value).length
+          ) {
+            extCtx = {...this.formAudioData.value, ...formGroup.value};
+          }
 
           let extDocsIdx = 0;
           fschemadeps.deps_origin
@@ -644,11 +662,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     this._form = combineLatest([
       this._formSchema,
       this.formChanges,
-      this.formAudioData,
       this._udm.getActiveUserData(),
       this._ugm.getActiveUserGroups(),
     ]).pipe(
-      map(([fschema, schemaChanges, fAudioData, activeUser, activeUserGroups]) => {
+      map(([fschema, schemaChanges, activeUser, activeUserGroups]) => {
         if (schemaChanges) {
           return schemaChanges;
         }
@@ -668,9 +685,6 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         };
         this._extraFormControls['dino_form_info'] = dinoFormInfo;
         let fdata = {dino_form_info: dinoFormInfo};
-        if (fAudioData) {
-          fdata = {...fdata, ...fAudioData};
-        }
         return AjfFormSerializer.fromJson(fschema.schema, fdata);
       }),
       shareReplay(1),
