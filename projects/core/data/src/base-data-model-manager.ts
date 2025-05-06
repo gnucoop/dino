@@ -22,7 +22,7 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {DeepReadonlyObject, MangoQuery, MangoQuerySelector, RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, Observable, of as obsOf, throwError, zip} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
@@ -201,9 +201,9 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    * @param data
    * @returns an observable of the array of the created objects
    */
-  bulkUpdate(data: T[], update: Partial<T>): Observable<R[] | null> {
+  bulkUpdate(data: T[], update: Partial<T>): Observable<(R | null)[]> {
     if (data == null || data.length == 0 || !update) {
-      return obsOf(null);
+      return obsOf([]);
     }
     const ids = data.map(d => d.id);
     const selectorParams = {id: {$in: ids}};
@@ -219,19 +219,15 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
             return throwError(() => new Error('Modification not allowed'));
           }
         }
-        return zip(
+        return forkJoin(
           docs.map(doc => {
             let newDoc = deepCopy(doc);
             newDoc = {...newDoc, ...update};
             return this.update(newDoc);
           }),
-        ).pipe(
-          switchMap(upDocs => {
-            return upDocs.some(d => d == null) ? obsOf(null) : (obsOf(upDocs) as Observable<R[]>);
-          }),
-          catchError(err => throwError(() => err)),
         );
       }),
+      catchError(err => throwError(() => err)),
     );
   }
 
