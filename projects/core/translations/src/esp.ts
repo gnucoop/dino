@@ -22,8 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
-  '
-Only metrics without parents were created.': '\ Métricas no litros sin padres fueron creadas.',
+  'Only metrics without parents were created.': 'Métricas no litros sin padres fueron creadas.',
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
@@ -141,6 +140,7 @@ Only metrics without parents were created.': '\ Métricas no litros sin padres f
     'Ingrese el nombre de los atributos de métricas que se agregarán dentro de la elección, separados por comas. Se utilizarán en Choice_Filter.',
   'Enter your DataChat API key': 'Ingrese su clave API de Datachat',
   'Exclude': 'Excluir',
+  'Expires on': 'Expira el',
   'Export': 'Exportar',
   'Export as:': 'Exportar como:',
   'Export file saved in your Documents folder':

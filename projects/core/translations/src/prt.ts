@@ -22,8 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
-  '
-Only metrics without parents were created.': '\ Métricas não -não -que foram criadas os pais.',
+  'Only metrics without parents were created.': 'Métricas não -não -que foram criadas os pais.',
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Já existe um formulário {{schema_name}} com este conjunto exato de métricas. Por favor, escolha uma métrica diferente',
@@ -91,6 +90,7 @@ Only metrics without parents were created.': '\ Métricas não -não -que foram 
   'Close': 'Fechar',
   'Close the dialog and apply filters.': 'Feche a caixa de diálogo e aplique alguns filtros.',
   'Code': 'Código',
+  'Code number': 'Código',
   'Collected Since': 'Recolhido desde',
   'Collected Until': 'Recolhido até',
   'Collected since': 'Coletado desde então',
@@ -137,6 +137,7 @@ Only metrics without parents were created.': '\ Métricas não -não -que foram 
   'Enter your DataChat API key': 'Digite sua chave de API de datachat',
   'Exclude': 'Excluir',
   'Export': 'Exportar',
+  'Expires on': 'Expira em',
   'Export as:': 'Exportar como:',
   'Export file saved in your Documents folder':
     'Ficheiro de exportação guardado na sua pasta Documentos',
@@ -199,10 +200,10 @@ Only metrics without parents were created.': '\ Métricas não -não -que foram 
   'Icon Set': 'Conjunto de ícones',
   'Image preview': 'Visualização de imagem',
   'Import': 'Importar',
-  'Import errors for metrics with parent.': 'Importar erros para métricas com os pais.',
-  'Import errors for metrics without parent.': 'Importar erros para métricas sem pai.',
+  'Import errors for metrics with parent.': 'Erros de importação para métricas com pai.',
+  'Import errors for metrics without parent.': 'Erros de importação para métricas sem pai.',
   'Import forms': 'Importar formulários',
-  'Import metrics': 'Métricas de importação',
+  'Import metrics': 'Importar métricas',
   'Imported metrics': 'Métricas importadas',
   'Importing file...': 'Importando arquivo ...',
   'Include': 'Incluir',

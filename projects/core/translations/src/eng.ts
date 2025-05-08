@@ -22,9 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ENG: Translation = {
-  '
-Only metrics without parents were created.': '
-Only metrics without parents were created.',
+  'Only metrics without parents were created.': 'Only metrics without parents were created.',
   '{{language}} already deleted': '{{language}} already deleted',
   '(select only one field)': '(select only one field)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
@@ -96,6 +94,7 @@ Only metrics without parents were created.',
   'Close': 'Close',
   'Close the dialog and apply filters.': 'Close the dialog and apply filters.',
   'Code': 'Code',
+  'Code number': 'Code number',
   'Collected Since': 'Collected since',
   'Collected Until': 'Collected until',
   'Collected since': 'Collected since',
@@ -141,6 +140,7 @@ Only metrics without parents were created.',
     'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.',
   'Enter your DataChat API key': 'Enter your DataChat API key',
   'Exclude': 'Exclude',
+  'Expires on': 'Expires on',
   'Export': 'Export',
   'Export as:': 'Export as:',
   'Export file saved in your Documents folder': 'Export file saved in your Documents folder',

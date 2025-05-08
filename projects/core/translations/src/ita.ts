@@ -22,8 +22,8 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ITA: Translation = {
-  '
-Only metrics without parents were created.': '\ Nonly metriche senza genitori sono state create.',
+  'Only metrics without parents were created.':
+    'Solo le metriche senza genitori sono state create.',
   '{{language}} already deleted': '{{language}} già eliminata',
   '(select only one field)': '(seleziona solo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
@@ -97,6 +97,7 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
   'Close': 'Chiudi',
   'Close the dialog and apply filters.': 'Chiudi la finestra e applica dei filtri',
   'Code': 'Codice',
+  'Code number': 'Codice',
   'Collected Since': 'Raccolto da',
   'Collected Until': 'Raccolto fino a',
   'Collected since': 'Raccolto da allora',
@@ -142,6 +143,7 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
     "Immettere il nome degli attributi delle metriche da aggiungere all'interno della scelta, separati da virgole. Saranno usati nella scelta_filter.",
   'Enter your DataChat API key': 'Inserisci la chiave API Datachat',
   'Exclude': 'Escludi',
+  'Expires on': 'Data scadenza',
   'Export': 'Esporta',
   'Export as:': 'Esporta come:',
   'Export file saved in your Documents folder':
@@ -163,9 +165,9 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
   'File not imported! Error during create new metrics':
     'File non importato! Errore durante la creazione di nuove metriche',
   'File not imported! Error on import metrics.':
-    'File non importato! Errore sulle metriche di importazione.',
+    "File non importato! Errore nell'import delle metriche.",
   'File not imported! Errors in metrics with parents.':
-    'File non importato! Errori in metriche con i genitori.',
+    'File non importato! Errori nelle metriche con il genitore.',
   'File not imported! This metrics are mandatory':
     'File non importato! Queste metriche sono obbligatorie',
   'File not imported: no valid metrics to import found in the file.':
@@ -174,7 +176,7 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
     'File non importato: solo gli utenti con il ruolo amministratore possono importare metriche.',
   'File partially imported': 'File parzialmente importato',
   'Fill the Form': 'Compila il Form',
-  'Fill the Report': 'Riempire il report',
+  'Fill the Report': 'Compila il report',
   'Filter': 'Filtra',
   'Filter condition': 'Condizione di filtro',
   'Filters': 'Filtri',
@@ -196,22 +198,24 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
   'From date': 'Data di partenza',
   'Full Name': 'Nome completo',
   'Generate Report': 'Generare report',
-  'Generating report prompt': 'Generazione dei report prompt',
+  'Generating report prompt': 'Generazione dei prompt per il report',
   'Go to url': "Vai all'URL",
   'Group items': 'Elementi del gruppo',
   'Group name': 'Nome del gruppo',
   'I accept the terms and conditions':
     'Dichiaro di aver preso visione e di condividere i contenuti della privacy policy',
   'Icon Identifier': 'Icona del Form',
-  'Icon Set': 'Icona set',
+  'Icon Set': 'Set di icone',
   'Image preview': "Anteprima dell'immagine",
   'Import': 'Importa',
-  'Import errors for metrics with parent.': 'Importa errori per le metriche con il genitore.',
-  'Import errors for metrics without parent.': 'Importa errori per le metriche senza genitore.',
+  'Import errors for metrics with parent.':
+    'Errori di importazione per le metriche con il genitore.',
+  'Import errors for metrics without parent.':
+    'Errori di importazione per le metriche senza genitore.',
   'Import forms': 'Importa form',
-  'Import metrics': 'Metriche di importazione',
+  'Import metrics': 'Importa metriche',
   'Imported metrics': 'Metriche importate',
-  'Importing file...': 'Importazione di file ...',
+  'Importing file...': 'Importazione del file ...',
   'Include': 'Includi',
   'Incorrect email': 'Email errata',
   'Incorrect email and/or password': 'Email e/o password errati',
@@ -256,16 +260,16 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
   'Next page': 'Pagina successiva',
   'No': 'No',
   'No Forms were found': 'Non sono stati trovati form',
-  'No Forms were found for this Report': 'Non sono state trovate form per questo report',
-  'No file uploaded yet.': 'Nessun file Caricato ancora.',
+  'No Forms were found for this Report': 'Non sono stati trovati form per questo report',
+  'No file uploaded yet.': 'Nessun file caricato ancora.',
   'No metric manager or metric name was provided':
-    'Non è stato fornito alcun manager metrico o nome metrico',
+    'Non è stato fornito alcun manager per le metriche o nome metrica',
   'No translation': 'Nessuna traduzione',
   'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
-    'Uno o più Gruppi specificano dei permessi per questo Schema. Sicuro di volerlo eliminare?',
+    'Uno o più gruppi specificano dei permessi per questo Schema. Sicuro di volerlo eliminare?',
   'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
     'Uno o più Report attualmente impiegano questo Form Schema. Si prega di eliminare quei Report prima di eliminare questo Schema.',
-  'Oops! Something went wrong checking': 'Oops! Qualcosa è andato storto controllando',
+  'Oops! Something went wrong checking': 'Oops! Qualcosa è andato storto dutante le verifiche',
   'Oops! We could not retrieve your checkout session. Please try again':
     'Oops! Non abbiamo potuto recuperare la tua sessione di checkout. Per favore riprova',
   'Open the advanced filters': 'Apri i filtri avanzati',
@@ -306,7 +310,7 @@ Only metrics without parents were created.': '\ Nonly metriche senza genitori so
   'Project associated with the form': 'Progetto associato al form',
   'Projects': 'Progetti',
   'Public': 'Pubblico',
-  'Purchase complete!': 'Acquista completo!',
+  'Purchase complete!': 'Acquisto completo!',
   'Query condition': 'Condizione per la query',
   'RECORDING ERROR': 'Errore di registrazione',
   'REMOVED FROM FAVORITES': 'RIMOSSO DAI PREFERITI',

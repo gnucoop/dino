@@ -22,8 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
-  '
-Only metrics without parents were created.': '\ Des mesures non lycées sans parents ont été créées.',
+  'Only metrics without parents were created.': 'Des mesures non lycées sans parents ont été créées.',
   '{{language}} already deleted': '{{language}} déjà supprimé',
   '(select only one field)': "(ne sélectionner qu'un seul champ)",
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
@@ -96,6 +95,7 @@ Only metrics without parents were created.': '\ Des mesures non lycées sans par
   'Close': 'Fermer',
   'Close the dialog and apply filters.': 'Fermez la boîte de dialogue et appliquez les filtres.',
   'Code': 'Code',
+  'Code number': 'Code',
   'Collected Since': 'Collecté depuis',
   'Collected Until': "Collecté jusqu'au",
   'Collected since': 'Collecté depuis',
@@ -141,6 +141,7 @@ Only metrics without parents were created.': '\ Des mesures non lycées sans par
     "Entrez le nom des attributs de métriques à ajouter à l'intérieur du choix, séparés par des virgules. Ils seront utilisés dans le choix_filter.",
   'Enter your DataChat API key': 'Entrez la clé de votre API DataChat',
   'Exclude': 'Exclure',
+  'Expires on': 'Date d\'expiration',
   'Export': 'Exportation',
   'Export as:': 'Exporter comme:',
   'Export file saved in your Documents folder':
@@ -204,8 +205,8 @@ Only metrics without parents were created.': '\ Des mesures non lycées sans par
   'Icon Set': "Ensemble d'icônes",
   'Image preview': "Aperçu de l'image",
   'Import': 'Importer',
-  'Import errors for metrics with parent.': 'Importez des erreurs pour les métriques avec le parent.',
-  'Import errors for metrics without parent.': 'Importez des erreurs pour les mesures sans parent.',
+  'Import errors for metrics with parent.': 'Erreurs d\'importation pour les métriques avec le parent.',
+  'Import errors for metrics without parent.': 'Erreurs d\'importation pour les métriques sans parent.',
   'Import forms': 'Importer des formulaires',
   'Import metrics': 'Importer des mesures',
   'Imported metrics': 'Métriques importées',
