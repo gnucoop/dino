@@ -35,12 +35,15 @@ import {
   Content,
   createPdf,
   PageOrientation,
+  TableCell,
   TCreatedPdf,
   TDocumentDefinitions,
 } from '@ajf/core/pdfmake';
 import JsBarcode from 'jsbarcode';
 import {HttpClient} from '@angular/common/http';
 import {TranslocoService} from '@ajf/core/transloco';
+import {addMonths} from 'date-fns';
+import {transformDateByLocale} from '@dino/core/langs';
 
 /**
  * Service that manages FormData Locations
@@ -139,6 +142,7 @@ export class CaseManager extends DataModelManager<Case> {
       };
     }
 
+    // Card code
     let cardCode: string = ' ';
     if (metric.metric_data && metric.metric_data['ext_code']) {
       cardCode = metric.metric_data['ext_code'];
@@ -146,7 +150,35 @@ export class CaseManager extends DataModelManager<Case> {
       cardCode = metric?.code.toString();
     }
 
-    const codeText = translate('Code number');
+    const columnWithInfo: TableCell[] = [
+      {
+        text: metric.name,
+        fontSize: 10,
+        color: primaryColor,
+        bold: true,
+        margin: [0, 10, 0, 0],
+      },
+      {
+        text: `${translate('Code number')}: ${cardCode}`,
+        fontSize: 9,
+        color: primaryColor,
+        bold: true,
+        margin: [0, 5, 0, 0],
+      },
+    ];
+
+    // Expire date
+    let expiresOn: string | null = this._getExpiresOnDate(metric);
+    if (expiresOn) {
+      const expiresOnRow = {
+        text: `${translate('Expires on')}: ${expiresOn}`,
+        fontSize: 8,
+        color: primaryColor,
+        bold: true,
+        margin: [0, 5, 0, 0],
+      };
+      columnWithInfo.push(expiresOnRow);
+    }
 
     const content: Content[] = [
       {
@@ -154,27 +186,7 @@ export class CaseManager extends DataModelManager<Case> {
         table: {
           widths: ['35%', '*'],
           heights: 68,
-          body: [
-            [
-              {image: caseImage, fit: [58, 62], margin: [1, 5, 0, 0]},
-              [
-                {
-                  text: metric.name,
-                  fontSize: 10,
-                  color: primaryColor,
-                  bold: true,
-                  margin: [0, 15, 0, 0],
-                },
-                {
-                  text: codeText + ': ' + cardCode,
-                  fontSize: 9,
-                  color: primaryColor,
-                  bold: true,
-                  margin: [0, 5, 0, 0],
-                },
-              ],
-            ],
-          ],
+          body: [[{image: caseImage, fit: [58, 62], margin: [1, 5, 0, 0]}, columnWithInfo]],
         },
       },
       {
@@ -214,6 +226,27 @@ export class CaseManager extends DataModelManager<Case> {
       },
     ];
     this.createMetricPdf(content, 'landscape').open();
+  }
+
+  /**
+   * Retrieves the 'expire_in_months' value from the metric_data attributes.
+   * If it exists and is a valid number,
+   * returns a formatted "expires on" date calculated as today + <expire_in_months> months.
+   *
+   * @param metric - The metric object containing metric_data.
+   * @returns A formatted expiration date string or null.
+   */
+  private _getExpiresOnDate(metric: Case): string | null {
+    let expiresOn: string | null = null;
+    if (metric.metric_data && metric.metric_data['expire_in_months'] != null) {
+      const expireInMonths = metric.metric_data['expire_in_months'];
+      const months = Number(expireInMonths);
+      const expiresOnDate = !isNaN(months) && months >= 0 ? addMonths(new Date(), months) : null;
+      expiresOn = expiresOnDate
+        ? transformDateByLocale(expiresOnDate, this._ts.getActiveLang(), 'shortDate')
+        : null;
+    }
+    return expiresOn;
   }
 
   /**
