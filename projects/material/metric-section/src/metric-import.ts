@@ -45,6 +45,8 @@ import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   catchError,
   combineLatest,
+  concatMap,
+  map,
   Observable,
   of as obsOf,
   Subscription,
@@ -139,6 +141,11 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
    * Selected file name for import
    */
   fileName = '';
+
+  /**
+   * Total imported metrics
+   */
+  private _totalImportedMetrics: number = 0;
 
   /**
    * The Import dialog form group
@@ -357,13 +364,13 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
                       newMetric[prop] = JSON.parse(row[propKey]);
                     } catch (_e) {
                       invalid = true;
-                      missingFields.push(prop);
+                      missingFields.push(propKey);
                     }
                   } else {
                     newMetric[prop] = getValueFromRow(row[propKey], propKey, props[prop].type);
                     if (requiredProps.includes(prop) && !newMetric[prop]) {
                       invalid = true;
-                      missingFields.push(prop);
+                      missingFields.push(propKey);
                     }
                   }
                 }
@@ -371,7 +378,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
 
               if (invalid) {
                 newMetric['name'] = `${newMetricName} (${this._ts.translate(
-                  'missing or invalid fields',
+                  'missing or invalid columns',
                 )}: ${missingFields.join(', ')})`;
               } else {
                 const parentId = row[`${this.metricName}_parent_id`];
@@ -421,48 +428,48 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
   }
 
   /**
-   * Fill in missing parent values in new metrics to be created. Return the invalid metrics.
+   * Fill in missing parent values in new metrics to be created. Split metrics by parent existence.
    * @param newMetricsToFill
    * @param existingMetrics
-   * @returns the invalid metrics.
+   * @returns the ready-to-insert metrics and the deferred metrics with not-existing parent.
    */
-  private _fillInMissingParentValues(newMetricsToFill: T[], existingMetrics: T[]): T[] {
-    const invalidParentMetrics: T[] = [];
+  private _fillInMissingParentValues(
+    newMetricsToFill: T[],
+    existingMetrics: T[],
+  ): {readyToInsert: T[]; deferred: T[]} {
+    const readyToInsert: T[] = [];
+    const deferred: T[] = [];
 
     for (let idx = 0; idx < newMetricsToFill.length; idx++) {
-      if (newMetricsToFill[idx].parent_id && !newMetricsToFill[idx].parent_name) {
-        // Found the parent name
+      if (newMetricsToFill[idx].parent_id) {
+        // Found the parent metric by id and set the parent name
         const parentMetric = existingMetrics.find(
           doc => doc.id === newMetricsToFill[idx].parent_id,
         );
         if (parentMetric && parentMetric.name) {
           newMetricsToFill[idx].parent_name = parentMetric.name;
+          readyToInsert.push(newMetricsToFill[idx]);
         } else {
-          invalidParentMetrics.push(newMetricsToFill[idx]);
-          newMetricsToFill.splice(idx, 1);
-          idx--;
+          deferred.push(newMetricsToFill[idx]);
         }
-      }
-
-      if (newMetricsToFill[idx].parent_name && !newMetricsToFill[idx].parent_id) {
-        // Found the parent id
+      } else if (newMetricsToFill[idx].parent_name) {
+        // Found the parent metric by name and set the parent id
         const parentMetric = existingMetrics.find(
           doc => doc.name === newMetricsToFill[idx].parent_name,
         );
         if (parentMetric && parentMetric.id) {
           newMetricsToFill[idx].parent_id = parentMetric.id;
+          readyToInsert.push(newMetricsToFill[idx]);
         } else {
-          invalidParentMetrics.push(newMetricsToFill[idx]);
-          newMetricsToFill.splice(idx, 1);
-          idx--;
+          deferred.push(newMetricsToFill[idx]);
         }
       }
     }
-    return invalidParentMetrics;
+    return {readyToInsert, deferred};
   }
 
   /**
-   * Import all new metrics
+   * Bulk create for all input metrics
    * @param newMetrics The list of the new metrics to be created
    * @returns
    */
@@ -485,7 +492,60 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
   }
 
   /**
-   * Import all the rows into Dino
+   * Recursively imports a tree of metrics, with parent-child relationships.
+   * For each metric in input, it checks whether its parent already exists.
+   * If not, the parent will be created first.
+   *
+   * @param newMetricsWithParent
+   * @param existingMetrics
+   * @returns an object with:
+   *   success: Metrics successfully imported and linked.
+   *   error: Errors returned from the DB bulk insert operation.
+   *   deferred: Metrics that are waiting for their parent to be created first.
+   */
+  private _processTree(
+    newMetricsWithParent: T[],
+    existingMetrics: T[],
+  ): Observable<{success: RxDocument<T>[]; error: any[]; deferred: T[]}> {
+    if (newMetricsWithParent.length === 0) {
+      return obsOf({success: [], error: [], deferred: []});
+    }
+
+    const {readyToInsert, deferred} = this._fillInMissingParentValues(
+      newMetricsWithParent,
+      existingMetrics,
+    );
+
+    if (readyToInsert.length === 0) {
+      // Nothing to insert, return deferred as unresolved
+      return obsOf({success: [], error: [], deferred});
+    }
+
+    return this._importMetrics(readyToInsert).pipe(
+      concatMap(bulkRes => {
+        const success = bulkRes?.success || [];
+        const error = bulkRes?.error || [];
+
+        if (error.length === 0 && success.length > 0) {
+          existingMetrics = existingMetrics.concat(success);
+          this._totalImportedMetrics += success.length;
+
+          return this._processTree(deferred, existingMetrics).pipe(
+            map(nextRes => ({
+              success: success.concat(nextRes.success),
+              error: error.concat(nextRes.error),
+              deferred: nextRes.deferred,
+            })),
+          );
+        } else {
+          return obsOf({success, error, deferred}); // propagate failed and unresolved
+        }
+      }),
+    );
+  }
+
+  /**
+   * Import all the rows into Dino, recursively
    * @param rows The rows to be imported
    * @param newMetrics the list of the new metrics required to be created
    */
@@ -499,8 +559,6 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
       error: any[];
     } | null> = obsOf({success: [], error: []});
 
-    let invalidParentMetrics: T[] = [];
-
     if (newMetrics && newMetrics.length) {
       firstBulkNoParent = this._importMetrics(newMetrics);
     }
@@ -510,19 +568,18 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
           let bulkWithParent: Observable<{
             success: RxDocument<T>[];
             error: any[];
-          } | null> = obsOf({success: [], error: []});
+            deferred: T[];
+          } | null> = obsOf({success: [], error: [], deferred: []});
 
-          if (newMetricsWithParent && newMetricsWithParent.length) {
-            if (existingMetrics.length || firstBulkRes.success.length) {
-              existingMetrics = existingMetrics.concat(firstBulkRes.success);
-              invalidParentMetrics = this._fillInMissingParentValues(
-                newMetricsWithParent,
-                existingMetrics,
-              );
-            }
-            bulkWithParent = this._importMetrics(newMetricsWithParent);
+          if (firstBulkRes.success.length) {
+            this._totalImportedMetrics = firstBulkRes.success.length;
+            existingMetrics = existingMetrics.concat(firstBulkRes.success);
           }
 
+          if (newMetricsWithParent && newMetricsWithParent.length) {
+            // Recursive import
+            bulkWithParent = this._processTree(newMetricsWithParent, existingMetrics);
+          }
           return zip(obsOf(firstBulkRes), bulkWithParent);
         } else {
           let errMsg = this._ts.translate('File not imported! ');
@@ -541,19 +598,21 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
       }),
       switchMap(([firstBulkRes, bulkRes]) => {
         if (!firstBulkRes && !bulkRes) {
-          return obsOf([firstBulkRes, bulkRes]);
+          return obsOf([null, null]);
         }
-        if (
-          bulkRes &&
-          bulkRes.error.length === 0 &&
-          firstBulkRes &&
-          firstBulkRes.error.length === 0
-        ) {
+
+        const firstSuccess = firstBulkRes?.success ?? [];
+        const bulkSuccess = bulkRes?.success ?? [];
+        const firstError = firstBulkRes?.error ?? [];
+        const bulkError = bulkRes?.error ?? [];
+        const invalidParentMetrics = bulkRes?.deferred ?? [];
+
+        if (firstError.length === 0 && bulkError.length === 0) {
           let resMsg = '';
-          const totalImported = bulkRes.success.length + firstBulkRes.success.length;
+          const totalImported = firstSuccess.length + bulkSuccess.length;
           if (totalImported) {
             resMsg = this._getFormattedMessage(
-              firstBulkRes.success.concat(bulkRes.success),
+              firstSuccess.concat(bulkSuccess),
               this._ts.translate('Imported metrics'),
             );
           } else {
@@ -562,7 +621,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
                 'File not imported: no valid metrics to import found in the file.',
               ) + '\n';
           }
-          if (invalidParentMetrics) {
+          if (invalidParentMetrics.length > 0) {
             resMsg =
               resMsg +
               this._getFormattedMessage(
@@ -570,29 +629,40 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
                 this._ts.translate('Metrics with invalid parent'),
               );
           }
-
           this._setImportStatus(resMsg);
-
           return obsOf([firstBulkRes, bulkRes]);
         } else {
+          // Errors from db
           let errMsg = '';
-          if (firstBulkRes?.success.length) {
-            errMsg = `${this._ts.translate('File partially imported')}:
-              ${firstBulkRes?.success.length}
-              ${this._ts.translate('\nOnly metrics without parents were created.')}`;
-          } else {
-            errMsg = this._ts.translate('File not imported! Errors in metrics with parents.');
+
+          const partiallyImported = firstSuccess.length + bulkSuccess.length;
+          if (partiallyImported) {
+            errMsg = this._getFormattedMessage(
+              firstSuccess.concat(bulkSuccess),
+              `${this._ts.translate('File partially imported')}. ${this._ts.translate(
+                'Imported metrics',
+              )}`,
+            );
           }
 
-          if (bulkRes?.error.length) {
-            console.log('Errors in metrics with parents: ' + bulkRes.error[0].msg);
-            if (
-              bulkRes?.error[0].msg?.parameters?.errors &&
-              bulkRes?.error[0].msg?.parameters?.errors.length
-            ) {
-              errMsg = errMsg + '\n' + JSON.stringify(bulkRes?.error[0].msg?.parameters?.errors[0]);
+          if (firstError.length > 0) {
+            errMsg = errMsg + this._ts.translate('Import errors for metrics without parent.');
+
+            const detailedErrors = firstError[0].msg?.parameters?.errors ?? [];
+            if (detailedErrors.length > 0) {
+              errMsg += '\n' + JSON.stringify(detailedErrors[0]);
+            }
+          } else {
+            // case bulkError.length > 0
+            console.log('Import errors for metrics with parent: ' + bulkError[0].msg);
+            errMsg = errMsg + this._ts.translate('Import errors for metrics with parent.');
+
+            const detailedErrors = bulkError[0].msg?.parameters?.errors ?? [];
+            if (detailedErrors.length > 0) {
+              errMsg += '\n' + JSON.stringify(detailedErrors[0]);
             }
           }
+
           this._setImportStatus(errMsg);
           return obsOf([firstBulkRes, bulkRes]);
         }
@@ -617,7 +687,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
    * @returns the formatted message string
    */
   private _getFormattedMessage(metrics: T[], message: string): string {
-    let notImportedMetricsMessage = '';
+    let importResMessage = '';
     const maxIdsInResponse = 15;
     let metricsNames = metrics.map(m => '\n' + m.name);
     if (metricsNames.length) {
@@ -625,9 +695,9 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
         metricsNames = metricsNames.slice(0, maxIdsInResponse);
         metricsNames.push('\nand more...');
       }
-      notImportedMetricsMessage = `\n${message} (${metrics.length}):${metricsNames}\n`;
+      importResMessage = `\n${message} (${metrics.length}):${metricsNames}\n`;
     }
-    return notImportedMetricsMessage;
+    return importResMessage;
   }
 
   /**
