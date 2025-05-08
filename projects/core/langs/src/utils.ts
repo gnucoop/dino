@@ -22,6 +22,7 @@
 
 import {InsertModel} from '@dino/core/data';
 import {Lang} from './lang';
+import {DatePipe} from '@angular/common';
 
 /**
  * key is the string used by translator.
@@ -45,3 +46,25 @@ export interface Dic {
 export const defaultLangs: {[lang: string]: Lang} = {};
 
 export type LangCreate = InsertModel<Lang>;
+
+export function getCurrentLocale(lang: string): string {
+  switch (lang) {
+    case 'ESP':
+      return 'es';
+    case 'FRA':
+      return 'fr';
+    case 'ITA':
+      return 'it';
+    case 'PRT':
+      return 'pt';
+    case 'UGA':
+      return 'it';
+    default:
+      return 'en';
+  }
+}
+
+export function transformDateByLocale(dt: Date, lang: string, format: string): string {
+  const datePipe = new DatePipe(getCurrentLocale(lang));
+  return datePipe.transform(dt, format) as string;
+}

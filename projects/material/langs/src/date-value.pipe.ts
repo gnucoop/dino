@@ -21,8 +21,8 @@
  */
 
 import {TranslocoService} from '@ajf/core/transloco';
-import {DatePipe} from '@angular/common';
 import {Pipe, PipeTransform} from '@angular/core';
+import {transformDateByLocale} from '@dino/core/langs';
 import {parse, parseISO} from 'date-fns';
 
 /**
@@ -37,42 +37,21 @@ export class DateValue implements PipeTransform {
     let isValNaN = Number.isNaN(val);
     let dt = parseISO(isValNaN ? val : {});
     if (!isNaN(dt.valueOf())) {
-      return this._transformDateByLocale(dt);
+      return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
     }
     dt = parse(val, 'yyyy-MM-dd', new Date());
     if (!isNaN(dt.valueOf())) {
-      return this._transformDateByLocale(dt);
+      return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
     }
     if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,}.*$/.test(val)) {
       dt = new Date(val);
       if (!isNaN(dt.valueOf())) {
-        return this._transformDateByLocale(dt);
+        return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
       }
     }
     if (typeof val === 'object' && !isNaN(val.valueOf())) {
-      return this._transformDateByLocale(val);
+      return transformDateByLocale(val, this._ts.getActiveLang(), 'shortDate');
     }
     return val == null ? '' : val;
-  }
-
-  private _transformDateByLocale(dt: Date): string {
-    const datePipe = new DatePipe(this._getCurrentLocale());
-    return datePipe.transform(dt, 'shortDate') as string;
-  }
-
-  private _getCurrentLocale(): string {
-    const lang = this._ts.getActiveLang();
-    switch (lang) {
-      case 'ESP':
-        return 'es';
-      case 'FRA':
-        return 'fr';
-      case 'ITA':
-        return 'it';
-      case 'PRT':
-        return 'pt';
-      default:
-        return 'en';
-    }
   }
 }

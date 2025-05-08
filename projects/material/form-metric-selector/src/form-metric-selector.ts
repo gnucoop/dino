@@ -82,6 +82,7 @@ import {DateAdapter} from '@angular/material/core';
 import {TranslocoService} from '@ajf/core/transloco';
 import {AudioRecorder} from '@dino/material/audio-recorder';
 import {NetworkStatusService} from '@dino/core/auth';
+import {getCurrentLocale} from '@dino/core/langs';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -318,7 +319,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
-    this._adapter.setLocale(this._getCurrentLocale());
+    this._adapter.setLocale(getCurrentLocale(this._ts.getActiveLang()));
     this._formSchema = combineLatest([this._route.params, this._dialogActRouteParams]).pipe(
       map(([params, dialogParams]) => {
         const routeparams = dialogParams ?? params;
@@ -528,7 +529,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           this.formMetrics.controls[key].updateValueAndValidity();
         });
       });
-    this._adapter.setLocale(this._getCurrentLocale());
+    this._adapter.setLocale(getCurrentLocale(this._ts.getActiveLang()));
   }
 
   /**
@@ -544,22 +545,6 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     return this._requiredMetrics.getValue().includes(metricName)
       ? RequireNotNullMetricMatch
       : defaultValidatorFn;
-  }
-
-  private _getCurrentLocale(): string {
-    const lang = this._ts.getActiveLang();
-    switch (lang) {
-      case 'ESP':
-        return 'es-ES';
-      case 'FRA':
-        return 'fr-FR';
-      case 'ITA':
-        return 'it-IT';
-      case 'PRT':
-        return 'pt-PT';
-      default:
-        return 'en-US';
-    }
   }
 
   /**
