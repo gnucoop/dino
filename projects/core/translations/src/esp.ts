@@ -22,6 +22,8 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
+  '
+Only metrics without parents were created.': '\ Métricas no litros sin padres fueron creadas.',
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
@@ -202,6 +204,8 @@ export const ESP: Translation = {
   'Icon Set': 'Conjunto de iconos',
   'Image preview': 'Vista previa de imagen',
   'Import': 'Importar',
+  'Import errors for metrics with parent.': 'Errores de importación para métricas con los padres.',
+  'Import errors for metrics without parent.': 'Errores de importación para métricas sin padres.',
   'Import forms': 'Importar formularios',
   'Import metrics': 'Métricas de importación',
   'Imported metrics': 'Métricas importadas',
@@ -343,7 +347,7 @@ export const ESP: Translation = {
   'Show Map': 'Mostrar mapa',
   'Something went wrong while recording audio': 'Algo salió mal mientras grababa audio',
   'Something went wrong while transcribing audio': 'Algo salió mal mientras transcribía audio',
-  "Sorry, you don't have enough Credits!": 'Lo siento, ¡no tienes suficientes créditos!',
+  'Sorry, you don\'t have enough Credits!': 'Lo siento, ¡no tienes suficientes créditos!',
   'Sources': 'Fuentes',
   'Start Date': 'Fecha de inicio',
   'Start Dino Tour': 'Comienza Dino Tour',
@@ -355,8 +359,7 @@ export const ESP: Translation = {
   'THEME LOADED': 'TEMA CARGADO',
   'THEME SAVED': 'TEMA GUARDADO',
   'TRANSCRIPTION ERROR': 'Error de transcripción',
-  'The corresponding graphql query condition to filter metrics':
-    'La condición de consulta GraphQL correspondiente a las métricas de filtro',
+  'The corresponding graphql query condition to filter metrics': 'La condición de consulta GraphQL correspondiente a las métricas de filtro',
   'The form has been successfully submitted.': 'El formulario se ha enviado correctamente.',
   'Thematic Area': 'Área temática',
   'Thematic Area *': 'Área temática *',
@@ -438,6 +441,7 @@ export const ESP: Translation = {
   'lang: {{language}} updated': 'idioma: {{language}} actualizado',
   'language': 'idioma',
   'location': 'ubicación',
+  'missing or invalid columns': 'columnas faltantes o inválidas',
   'missing or invalid fields': 'Campos faltantes o no válidos',
   'modified': 'adicionado',
   'of': 'de',

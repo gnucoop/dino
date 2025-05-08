@@ -22,18 +22,15 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  '
+Only metrics without parents were created.': '\ Métricas não -não -que foram criadas os pais.',
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
-  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
-    'Já existe um formulário {{schema_name}} com este conjunto exato de métricas. Por favor, escolha uma métrica diferente',
-  'A Metric with this name already exists. Maybe you should choose another':
-    'Já existe uma métrica com este nome. Talvez você devesse escolher outro',
-  'A filter on field "{{field}}" already exists. Please create a different filter.':
-    'Já existe um filtro no campo "{{field}}". Por favor, crie um filtro diferente.',
-  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
-    'Já existe um filtro com operador "{{operator}}" e valor "{{value}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
-  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
-    'Já existe um filtro com o operador "{{operator}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Já existe um formulário {{schema_name}} com este conjunto exato de métricas. Por favor, escolha uma métrica diferente',
+  'A Metric with this name already exists. Maybe you should choose another': 'Já existe uma métrica com este nome. Talvez você devesse escolher outro',
+  'A filter on field "{{field}}" already exists. Please create a different filter.': 'Já existe um filtro no campo "{{field}}". Por favor, crie um filtro diferente.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.': 'Já existe um filtro com operador "{{operator}}" e valor "{{value}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.': 'Já existe um filtro com o operador "{{operator}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
   'ADDED TO FAVORITES': 'ADICIONADO AOS FAVORITOS',
   'API KEY MISSING': 'Chave da API ausente',
   'API Key is': 'A chave da API é',
@@ -202,6 +199,8 @@ export const PRT: Translation = {
   'Icon Set': 'Conjunto de ícones',
   'Image preview': 'Visualização de imagem',
   'Import': 'Importar',
+  'Import errors for metrics with parent.': 'Importar erros para métricas com os pais.',
+  'Import errors for metrics without parent.': 'Importar erros para métricas sem pai.',
   'Import forms': 'Importar formulários',
   'Import metrics': 'Métricas de importação',
   'Imported metrics': 'Métricas importadas',
@@ -342,7 +341,7 @@ export const PRT: Translation = {
   'Show Map': 'Mostrar mapa',
   'Something went wrong while recording audio': 'Algo deu errado ao gravar áudio',
   'Something went wrong while transcribing audio': 'Algo deu errado enquanto transcia áudio',
-  "Sorry, you don't have enough Credits!": 'Desculpe, você não tem créditos suficientes!',
+  'Sorry, you don\'t have enough Credits!': 'Desculpe, você não tem créditos suficientes!',
   'Sources': 'Fontes',
   'Start Date': 'Data de início',
   'Start Dino Tour': 'Start Dino Tour',
@@ -354,8 +353,7 @@ export const PRT: Translation = {
   'THEME LOADED': 'TEMA CARREGADO',
   'THEME SAVED': 'TEMA SALVADO',
   'TRANSCRIPTION ERROR': 'Erro de transcrição',
-  'The corresponding graphql query condition to filter metrics':
-    'A condição de consulta grafql correspondente para filtrar métricas',
+  'The corresponding graphql query condition to filter metrics': 'A condição de consulta grafql correspondente para filtrar métricas',
   'The form has been successfully submitted.': 'O formulário foi enviado com sucesso.',
   'Thematic Area': 'Área temática',
   'Thematic Area *': 'Área temática *',
@@ -437,6 +435,7 @@ export const PRT: Translation = {
   'lang: {{language}} updated': 'linguagem: {{language}} atualizado',
   'language': 'linguagem',
   'location': 'localização',
+  'missing or invalid columns': 'colunas ausentes ou inválidas',
   'missing or invalid fields': 'Campos ausentes ou inválidos',
   'modified': 'modificado',
   'of': 'de',

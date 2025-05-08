@@ -22,6 +22,8 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
+  '
+Only metrics without parents were created.': '\ Des mesures non lycées sans parents ont été créées.',
   '{{language}} already deleted': '{{language}} déjà supprimé',
   '(select only one field)': "(ne sélectionner qu'un seul champ)",
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
@@ -202,6 +204,8 @@ export const FRA: Translation = {
   'Icon Set': "Ensemble d'icônes",
   'Image preview': "Aperçu de l'image",
   'Import': 'Importer',
+  'Import errors for metrics with parent.': 'Importez des erreurs pour les métriques avec le parent.',
+  'Import errors for metrics without parent.': 'Importez des erreurs pour les mesures sans parent.',
   'Import forms': 'Importer des formulaires',
   'Import metrics': 'Importer des mesures',
   'Imported metrics': 'Métriques importées',
@@ -441,6 +445,7 @@ export const FRA: Translation = {
   'lang: {{language}} updated': 'langue: {{language}} mise à jour',
   'language': 'langue',
   'location': 'emplacement',
+  'missing or invalid columns': 'colonnes manquantes ou non valides',
   'missing or invalid fields': 'champs manquants ou non valides',
   'modified': 'modifié',
   'of': 'de',
