@@ -32,6 +32,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {
+  FormControl,
   UntypedFormControl,
   UntypedFormGroup,
   ValidationErrors,
@@ -48,7 +49,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserGroupManager} from '@dino/core/users';
 import {MetricEditor, MetricFormField} from '@dino/material/metric-editor';
-import {parse} from 'date-fns';
+import {format} from 'date-fns';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
@@ -71,7 +72,11 @@ import {
   take,
 } from 'rxjs/operators';
 
-import {RequireMetricMatch, RequireNotNullMetricMatch} from './form-metric-selector-validator';
+import {
+  NotNull,
+  RequireMetricMatch,
+  RequireNotNullMetricMatch,
+} from './form-metric-selector-validator';
 import {ActivatedRoute, Params} from '@angular/router';
 import {DateAdapter} from '@angular/material/core';
 import {TranslocoService} from '@ajf/core/transloco';
@@ -349,14 +354,16 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     );
 
     this.formCreationDate = this._formData.pipe(
-      map(data => {
-        return parse(data['created_at'], 'yyyy-MM-dd', new Date());
-      }),
+      map(data =>
+        data['created_at']
+          ? new Date(format(new Date(data['created_at']), 'yyyy-MM-dd'))
+          : new Date(),
+      ),
       take(1),
     );
     this.formCreationDate.subscribe(date => this.formDate.get('created_at')?.setValue(date));
     this.formDate = new UntypedFormGroup({
-      'created_at': new UntypedFormControl(new Date(), Validators.required),
+      'created_at': new FormControl<Date>(new Date(), [Validators.required, NotNull]),
     });
     this.formStatus = new UntypedFormGroup({
       'form_status_ref_id': new UntypedFormControl(null),

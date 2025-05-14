@@ -22,6 +22,7 @@
       <mat-label>{{'Creation Date'|transloco}}</mat-label>
       <input
         matInput
+        readonly
         [matDatepicker]="pickerDate"
         [formControlName]="'created_at'"
         [placeholder]="'mm/dd/yyyy'"

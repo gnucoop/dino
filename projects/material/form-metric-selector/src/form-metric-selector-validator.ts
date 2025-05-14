@@ -55,3 +55,15 @@ export function RequireMetricMatch(control: AbstractControl): ValidationErrors |
   }
   return null;
 }
+
+/**
+ * Custom non-null validator
+ * @param control The form control.
+ */
+export function NotNull(control: AbstractControl): ValidationErrors | null {
+  const selection: Date | null = control.value;
+  if (selection == null) {
+    return {incorrect: true};
+  }
+  return null;
+}
