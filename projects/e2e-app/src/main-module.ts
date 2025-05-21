@@ -211,6 +211,7 @@ export function provideDataServiceConfig() {
       webSocketImpl: WebSocket,
       authErrorMessage: authErrorMessage,
       socketJwtExpiredCode: socketJwtExpiredCode,
+      retrySyncMaxAttempts: 3,
     },
   };
 }
