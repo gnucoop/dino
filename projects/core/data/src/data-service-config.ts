@@ -66,6 +66,11 @@ export interface DataServiceSyncOptions<T extends Model = Model>
    * No auth is required in this mode.
    */
   backendless?: boolean;
+
+  /**
+   * Maximum number of resync retry attempts after a sync error
+   */
+  retrySyncMaxAttempts?: number;
 }
 
 /**

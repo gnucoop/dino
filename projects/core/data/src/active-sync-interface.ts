@@ -54,4 +54,9 @@ export interface ActiveSync<T extends Model = Model> {
    * If true, the sync is currenctly active.
    */
   stateActivity: Observable<boolean>;
+
+  /**
+   * Number of resync attempts after a sync failure.
+   */
+  retrySyncAttempts?: number;
 }

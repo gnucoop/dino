@@ -85,7 +85,12 @@ import {DataFindRequest} from './data-find-request';
 import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
-import {BulkInsertResult, CollectionChangedEvent, IDataService} from './data-service-interface';
+import {
+  BulkInsertResult,
+  CollectionChangedEvent,
+  IDataService,
+  SyncErrorEvent,
+} from './data-service-interface';
 import {DEFAULT_SYNC_OPTIONS, fillConfigDefaultValues} from './data-service-utils';
 import {DataUpsertRequest} from './data-upsert-request';
 import {InsertModel} from './insert-model';
@@ -146,6 +151,13 @@ export class DataService implements IDataService {
   readonly isSyncing: Observable<boolean>;
 
   /**
+   * When the Syncing process encounteres a problem even after
+   * all the resyncAttempts, the name of the collection causing the sync error
+   * is added here.
+   */
+  readonly problemSyncing: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
+  /**
    * When true, the first replication cycle for all collections is complete.
    * Resets to false on logout.
    */
@@ -177,6 +189,18 @@ export class DataService implements IDataService {
    * Emitted on a succesful or failed Db Export
    */
   readonly dbExportedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  /**
+   * Emits when a replication state raises an exception, usually because of
+   * a constraint violation or a inconsistent db state.
+   * The event triggers a resync attempt for the collection.
+   */
+  readonly syncErrorEvt: EventEmitter<SyncErrorEvent> = new EventEmitter<SyncErrorEvent>();
+
+  /**
+   * Emits when a collection could not be synced even after the retry attemps.
+   */
+  readonly couldNotSyncEvt: EventEmitter<SyncErrorEvent> = new EventEmitter<SyncErrorEvent>();
 
   private _collectionChanged: EventEmitter<CollectionChangedEvent> =
     new EventEmitter<CollectionChangedEvent>();
@@ -335,6 +359,26 @@ export class DataService implements IDataService {
       if (res) {
         this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'sync_error']);
       }
+    });
+
+    this.syncErrorEvt.subscribe(evt => {
+      const {collection, retrySyncAttempts} = evt;
+      if (isDevMode()) {
+        console.log(`RESYNCING AFTER FAILURE OF ${collection}: attempt ${retrySyncAttempts}`);
+      }
+      this.runSync(collection, retrySyncAttempts);
+    });
+
+    this.couldNotSyncEvt.subscribe(evt => {
+      const collection = evt.collection;
+      const actSyncs = this._activeSyncs.getValue();
+      actSyncs[collection].retrySyncAttempts = -1;
+      this._stopCollectionSync(collection);
+      if (collection === 'form_data' || collection === 'form_schema') {
+        this._stopCollectionSync('log');
+      }
+      if (isDevMode()) console.log(`COULD NOT SYNC ${collection}`);
+      this._toggleActiveSyncProblem(collection, 'add');
     });
 
     if (this._configService != null) {
@@ -739,8 +783,9 @@ export class DataService implements IDataService {
    * that collection only.
    * When the Sync runs for all collections, the auth token gets refreshed before the replication cycle.
    * @param collectionName? The name of the collection to be synced
+   * @param retrySyncAttempt? Number of the retry attempt, if the previos sync failed
    */
-  runSync(collectionName?: string) {
+  runSync(collectionName?: string, retrySyncAttempt?: number) {
     let refreshStream$: Observable<boolean> = obsOf(true);
 
     if (!collectionName) {
@@ -761,8 +806,12 @@ export class DataService implements IDataService {
           if (collectionName) {
             const actSync: ActiveSync | undefined = actSyncs[collectionName];
             if (actSync && actSync.state) {
+              if (retrySyncAttempt) {
+                actSync.retrySyncAttempts = retrySyncAttempt;
+              }
               actSync.state.reSync();
               actSync.state.awaitInSync().then(() => {
+                actSync.retrySyncAttempts = 0;
                 if (this.config.syncOptions.live) {
                   this._collectionChangedEmit(
                     'replication cycle complete',
@@ -781,6 +830,22 @@ export class DataService implements IDataService {
           }
         }
       });
+  }
+
+  /**
+   * Adds or removes a collection from the problemSyncing collections list.
+   * @param collection The collection name to be added or removed
+   * @param operation Add or remove
+   */
+  private _toggleActiveSyncProblem(collection: string, operation: 'add' | 'remove'): void {
+    const currentSyncsWithProblems = this.problemSyncing.getValue();
+    const index = currentSyncsWithProblems.indexOf(collection, 0);
+    if (index > -1 && operation === 'remove') {
+      currentSyncsWithProblems.splice(index, 1);
+    } else if (index < 0 && operation === 'add') {
+      currentSyncsWithProblems.push(collection);
+    }
+    this.problemSyncing.next(currentSyncsWithProblems);
   }
 
   /**
@@ -944,28 +1009,43 @@ export class DataService implements IDataService {
     ERROR_MESSAGES GraphQL replication
     https://github.com/pubkey/rxdb/blob/master/src/plugins/dev-mode/error-messages.ts
     */
-    state.error$.subscribe((err: RxError | RxTypeError) => {
+    state.error$.subscribe((error: RxError | RxTypeError) => {
       if (isDevMode()) {
-        console.dir(err);
+        console.dir(error);
       }
       const jwtError = this._dataConfig.value.syncOptions.authErrorMessage || 'JWTExpired';
       if (
-        err &&
-        err.parameters.errors &&
-        err.parameters.errors.length &&
-        err.parameters.errors[0].message
+        error &&
+        error.parameters.errors &&
+        error.parameters.errors.length &&
+        error.parameters.errors[0].message
       ) {
-        if (err.parameters.errors[0].message.indexOf(jwtError) >= 0) {
-          console.log(err.parameters.errors[0].message);
+        if (error.parameters.errors[0].message.indexOf(jwtError) >= 0) {
+          console.log(error.parameters.errors[0].message);
           this._refreshEvt.emit();
         } else if (
-          err.code === 'RC_PUSH' &&
-          (err.parameters.errors[0] as any).extensions &&
-          (err.parameters.errors[0] as any).extensions.code &&
-          (err.parameters.errors[0] as any).extensions.code.indexOf('constraint-violation') >= 0
+          error.code === 'RC_PUSH' &&
+          (error.parameters.errors[0] as any).extensions &&
+          (error.parameters.errors[0] as any).extensions.code &&
+          (error.parameters.errors[0] as any).extensions.code.indexOf('constraint-violation') >= 0
         ) {
-          console.error(`Sync replication error: ${err}`);
-          this._logoutEvt.emit();
+          if (actSyncs[collection.name].retrySyncAttempts !== -1) {
+            console.error(`Sync replication error: ${error}`);
+            const retrySyncAttempts =
+              actSyncs[collection.name].retrySyncAttempts !== undefined
+                ? 1 + actSyncs[collection.name].retrySyncAttempts!
+                : 1;
+            const maxAttempts: number = this.config.syncOptions.retrySyncMaxAttempts ?? 3;
+            if (retrySyncAttempts <= maxAttempts) {
+              this.syncErrorEvt.emit({collection: collection.name, retrySyncAttempts, error});
+            } else {
+              this.couldNotSyncEvt.emit({
+                collection: collection.name,
+                retrySyncAttempts: -1,
+                error,
+              });
+            }
+          }
         }
       }
     });
@@ -1008,6 +1088,7 @@ export class DataService implements IDataService {
       stateActivity,
       collectionName: collection.name,
     };
+    this._toggleActiveSyncProblem(collection.name, 'remove');
     this._activeSyncs.next(actSyncs);
 
     if (!isLive) {

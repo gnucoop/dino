@@ -32,6 +32,7 @@ import {DataInsertRequest} from './data-insert-request';
 import {DataServiceConfig} from './data-service-config';
 import {DataUpsertRequest} from './data-upsert-request';
 import {Model} from './model';
+import {RxError, RxTypeError} from 'rxdb';
 
 /**
  * Event fired when collection data changes.
@@ -56,6 +57,28 @@ export interface CollectionChangedEvent {
    * The total docs of the changed collection
    */
   count?: number;
+}
+
+/**
+ * Event fired when a replication state throws an error.
+ */
+export interface SyncErrorEvent {
+  /**
+   * Collection name.
+   */
+  collection: string;
+
+  /**
+   * Number of attempts to resync the collection.
+   * It's set to 0 when the collection is synced successfully.
+   * It's set to -1 when the collection keeps raising exceptions after the max number of sync retries.
+   */
+  retrySyncAttempts: number;
+
+  /**
+   * The replication state error message
+   */
+  error?: RxError | RxTypeError;
 }
 
 /**
