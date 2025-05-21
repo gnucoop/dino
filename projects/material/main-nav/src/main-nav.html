@@ -111,6 +111,9 @@
           class="dino-sync-detector"
           [matTooltip]="(isThereUnsyncedData|async) === true && (isSyncing|async) === false ? ('You have unsynced data. Please click the Sync icon.'|transloco) : ''"
           [ngClass]="[(isSyncing|async) ? 'dino-sync-active' : '', (isThereUnsyncedData|async) === true && (isSyncing|async) === false ? 'dino-sync-unsynced':'']"
+          [matBadge]="'!'"
+          matBadgeColor="warn"
+          [matBadgeHidden]="(problemSyncing|async) !== true || (isSyncing|async) === true"
           (click)="runSync()"
           >{{(isThereUnsyncedData|async) === true && (isSyncing|async) === false ?
           'sync_problem':'sync'}}</mat-icon

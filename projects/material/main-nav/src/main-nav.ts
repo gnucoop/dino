@@ -38,7 +38,7 @@ import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
-import {DataService, MetricsService, PermissionContextService} from '@dino/core/data';
+import {DataService, InsertModel, MetricsService, PermissionContextService} from '@dino/core/data';
 import {Notification, NotificationManager} from '@dino/core/notifications';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
@@ -288,6 +288,14 @@ export class MainNav implements AfterViewInit, OnDestroy {
   isSyncing: Observable<boolean> = this.dataService.isSyncing;
 
   /**
+   * True when the Syncing process has encountered a problem even after
+   * all the resyncAttempts
+   */
+  problemSyncing: Observable<boolean> = this.dataService.problemSyncing
+    .asObservable()
+    .pipe(map(collections => collections.length > 0));
+
+  /**
    * Determines the extended state of the sidenav on large screens
    */
   extendedSidenav: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -409,6 +417,16 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _replicationCycleCompleteSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the DataService 'syncErrorEvt' event
+   */
+  private _retrySyncSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the DataService 'couldNotSyncEvt' event
+   */
+  private _couldNotSyncSub: Subscription = Subscription.EMPTY;
+
+  /**
    * If true, the RunSync has run a second time.
    * Used only for live=false instances
    */
@@ -505,12 +523,27 @@ export class MainNav implements AfterViewInit, OnDestroy {
     });
 
     this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete
-      .pipe(throttleTime(2000))
-      .subscribe(() => {
+      .pipe(withLatestFrom(this.dataService.problemSyncing), throttleTime(2000))
+      .subscribe(([_, collectionsWithProblems]) => {
         this.isThereUnsyncedData.next(false);
         if (this._hasSyncRerun || this.dataService.config.syncOptions.live) {
           this._hasSyncRerun = false;
-          this.snackbar.open(this.trs.translate('Synchronization complete'), 'SYNC COMPLETE', {
+          const formattedCollectionsWithProblems = collectionsWithProblems
+            .map(coll => coll.replace('_', ' '))
+            .join(', ');
+
+          const snackbarMessage = collectionsWithProblems.length
+            ? this.trs.translate(
+                'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.',
+                {formattedCollectionsWithProblems},
+              )
+            : this.trs.translate('Synchronization complete');
+
+          const snackbarTitle = collectionsWithProblems.length
+            ? 'SYNC COMPLETE WITH ERRORS'
+            : 'SYNC COMPLETE';
+
+          this.snackbar.open(snackbarMessage, snackbarTitle, {
             duration: 10000,
           });
         } else {
@@ -518,6 +551,42 @@ export class MainNav implements AfterViewInit, OnDestroy {
           this.runSync();
         }
       });
+
+    this._retrySyncSub = this.dataService.syncErrorEvt.subscribe(evt => {
+      let {collection, retrySyncAttempts} = evt;
+      collection = collection.replace('_', ' ');
+      this.snackbar.open(
+        this.trs.translate(`Resyncing {{collection}} attempt {{retrySyncAttempts}}`, {
+          collection,
+          retrySyncAttempts,
+        }),
+        'SYNC ERROR',
+        {
+          duration: 10000,
+        },
+      );
+    });
+
+    this._couldNotSyncSub = this.dataService.couldNotSyncEvt
+      .pipe(
+        withLatestFrom(this.userDataManager.getActiveUserData()),
+        switchMap(([evt, userData]) => {
+          if (!userData) return obsOf(null);
+          const {collection, error} = evt;
+          const msg = JSON.stringify(error);
+          const notification: InsertModel<Notification> = {
+            readers: [],
+            type: 'warning',
+            icon: 'sync_problem',
+            recipients: [userData.id],
+            created_at: new Date().toISOString(),
+            text: `Collection: ${collection} \n. Error: ${msg}`,
+          };
+
+          return this.notificationManager.create(notification).pipe(take(1));
+        }),
+      )
+      .subscribe();
 
     this.userDisplayName = this.authService.authenticated.pipe(
       switchMap(authEvt => {
@@ -865,6 +934,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._onRouterOutletLoadingSub.unsubscribe();
     this._syncLoadingSub.unsubscribe();
     this._replicationCycleCompleteSub.unsubscribe();
+    this._retrySyncSub.unsubscribe();
+    this._couldNotSyncSub.unsubscribe();
     this._isThereUnsyncedDataSub.unsubscribe();
     this._newVersionCheckSub.unsubscribe();
     this._availableTokensSub.unsubscribe();
