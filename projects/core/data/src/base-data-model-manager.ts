@@ -22,7 +22,7 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {DeepReadonlyObject, MangoQuery, MangoQuerySelector, RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, forkJoin, Observable, of as obsOf, throwError, zip} from 'rxjs';
+import {BehaviorSubject, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
