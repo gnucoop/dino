@@ -134,6 +134,7 @@
       <mat-icon class="dino-sync-detector">sync_disabled</mat-icon>
     </ng-template>
     <ng-container
+      *ngIf="!isBackendless"
       [ngTemplateOutlet]="(networkStatusService.isOnline$|async) ? syncOnline : syncOffline "
     >
     </ng-container>

@@ -175,6 +175,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
   newVersionReady: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   /**
+   * If true, the app is backendless
+   */
+  isBackendless?: boolean;
+
+  /**
    * The Amount of Pandino Tokens available to the user.
    * Displayed only if a valid API Key is found in localstorage.
    */
@@ -497,7 +502,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly tourService: UITourService,
   ) {
     this.newVersionReady.next(localStorage.getItem('dino_new_version_ready'));
-
+    this.isBackendless = this.dataService.config.syncOptions.backendless;
     this._newVersionCheckSub = interval(1000 * 60 * 10).subscribe(() => {
       this.newVersionReady.next(localStorage.getItem('dino_new_version_ready'));
       this._cdr.detectChanges();
