@@ -219,7 +219,7 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
             return throwError(() => new Error('Modification not allowed'));
           }
         }
-        return forkJoin(
+        return zip(
           docs.map(doc => {
             let newDoc = deepCopy(doc);
             newDoc = {...newDoc, ...update};
