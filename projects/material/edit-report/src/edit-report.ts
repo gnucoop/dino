@@ -1186,9 +1186,9 @@ export class EditReport implements AfterViewInit {
               fdataForSchema.forEach(formData => {
                 // For each report form data
                 fsDepsOrigins.forEach(depsOrigin => {
-                  let depsFormDataBySchema = depsSourceFormDataBySchema[
-                    depsOrigin.form_schema_ref_id
-                  ].filter(depsFd =>
+                  let depsFormDataBySchema = (
+                    depsSourceFormDataBySchema[depsOrigin.form_schema_ref_id] || []
+                  ).filter(depsFd =>
                     depsOrigin.filter_by_metric?.every(
                       metric => depsFd[metric + '_ref_id'] === formData['dino_' + metric + '_id'],
                     ),
