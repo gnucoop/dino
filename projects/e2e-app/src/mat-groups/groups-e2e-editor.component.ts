@@ -100,9 +100,9 @@ export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
   ) {
     this._populateListSchedule.push(
       this._populateList(this._userRoleManager, 'roleName', 'school', false, true),
-      this._populateList(this._formSchemaManager, 'name', 'list_alt', true),
+      this._populateList(this._formSchemaManager, 'label', 'list_alt', true),
       this._populateList(this._formStatusManager, 'label', 'account_tree', true),
-      this._populateList(this._reportSchemaManager, 'name', 'stacked_bar_chart', true),
+      this._populateList(this._reportSchemaManager, 'label', 'stacked_bar_chart', true),
     );
 
     if (this._areaManager != null) {
