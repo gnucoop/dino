@@ -1,4 +1,4 @@
-image: devgnucoop/dinobitbucketpipeline:18.12.1
+image: devgnucoop/dinobitbucketpipeline:20.11.1
 definitions:
   caches:
     nodecustom: ./node_modules
