@@ -1,3 +1,21 @@
+<a name="18.0.0"></a>
+# 18.0.0 "resulting-mule" (2025-06-19)
+### Bug Fixes
+* **core/data:** fix import when value is an empty array, for select multiple ([af1e00a](https://bitbucket.org/gnucoop/dino/commits/af1e00a809cdd30e4406b3ecdc623baee152f657))
+* **core/data:** Fixed a bug causing base-data-model-manager bulkUpdate method not to work correctly in backendless envs ([7bfb065](https://bitbucket.org/gnucoop/dino/commits/7bfb065124a8ee98110e64d3562284b09bac81aa))
+* **core/data:** Small fix for bulkUpdate in base-data-model-manager causing actiontriggers not to be emitted correctly ([18ed265](https://bitbucket.org/gnucoop/dino/commits/18ed26537f685eeebe89894c1f786ee9e96bc3be))
+* **core/exporter:** add prefix for metric export ([cc2cfd4](https://bitbucket.org/gnucoop/dino/commits/cc2cfd40d39da61bb77b909916a381b94b99a6f1))
+* **material/create-form:** fix record audio when schema has relationships ([2b96480](https://bitbucket.org/gnucoop/dino/commits/2b96480de395fc61f2ecd94b457b27148d7ecfd8))
+* **material/export-list:** add prefix for metric export ([03147b7](https://bitbucket.org/gnucoop/dino/commits/03147b78c95cbc8c2dfb4ef680e53af842a6797d))
+* **material/form-metric-selector:** Fixed a bug causing queries on secondary metric fields not to be executed correctly. ([8811768](https://bitbucket.org/gnucoop/dino/commits/8811768068cb9f3970e2f149e19c27ede7c74d68))
+* **material/metric-section:** fix column names to be removed from metric import file ([104105e](https://bitbucket.org/gnucoop/dino/commits/104105efa55f4bb1fea067f35af2510a63b05b94))
+* **pipeline:** Fixed incorrect pipeline step format (indentation) ([e05b9c8](https://bitbucket.org/gnucoop/dino/commits/e05b9c8253b8d68ce1edb55b3317411cdbd3434a))
+### Features
+* **e2e-app:** add recordAudioEnabled flag in env, default to false for all schemas ([6067f57](https://bitbucket.org/gnucoop/dino/commits/6067f57a7d0c58f304cb884b2291a9fe37a5f925))
+* **material/main-nav:** Added UI elements (badge and snackbar messages) for new Resync feature. ([785fd11](https://bitbucket.org/gnucoop/dino/commits/785fd115f8242ee58233901385364458afa3d90f))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="16.2.0"></a>
 # 16.2.0 "worthwhile-wolverine" (2025-04-01)
 ### Bug Fixes
