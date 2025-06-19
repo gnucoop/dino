@@ -20,6 +20,7 @@ pipelines:
           name: Model schema, Unit and E2E tests
           size: 2x
           script:
+            - export NODE_OPTIONS=--max_old_space_size=6144
             - yarn install --frozen-lockfile --non-interactive --network-timeout 600000
             - ./scripts/e2e-ci.mjs
             - yarn -s model-schema-test
