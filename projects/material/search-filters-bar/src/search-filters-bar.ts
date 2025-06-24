@@ -309,7 +309,10 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    */
   clearFilter(controlname: string, fg: UntypedFormGroup): void {
     const formGroupValue = fg.value;
-    const newValue = {[controlname]: '', [`${controlname}_multiple`]: []};
+    const newValue: {[key: string]: any} = {[controlname]: ''};
+    if (`${controlname}_multiple` in formGroupValue) {
+      newValue[`${controlname}_multiple`] = [];
+    }
     fg.setValue({...formGroupValue, ...newValue});
   }
 
@@ -546,6 +549,10 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     return item.code && item.id ? item.code.toString() : '';
   }
 
+  /**
+   * Show options for filter with options (metrics, form_status, user, user_group)
+   * @param group
+   */
   showOptions(group: UntypedFormGroup) {
     const metricType = Object.keys(group.controls)[0];
     const inputControl = this.additionalBasicFilters.find(grp => grp.get(metricType) != null);
