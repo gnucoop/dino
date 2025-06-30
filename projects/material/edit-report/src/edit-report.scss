@@ -143,19 +143,19 @@ dino-edit-report {
 }
 .isDarkTheme {
   ajf-text {
-    color: rgba(var(--palette-background-secondary-text));
+    color: rgba(var(--mat-sidenav-content-text-color));
   }
 
   ajf-table {
     tr:nth-child(even) {
       td {
-        background-color: rgb(var(--palette-background-dialog-dark)) !important;
+        background-color: var(--mat-sidenav-container-background-color) !important;
         color: white !important;
       }
     }
     tr:nth-child(odd) {
       td {
-        background-color: rgb(var(--palette-background-tooltip-dark)) !important;
+        background-color: #616161 !important;
         color: white !important;
       }
     }
@@ -163,6 +163,6 @@ dino-edit-report {
 }
 .isLightTheme {
   ajf-text {
-    color: rgba(var(--palette-foreground-secondary-text));
+    color: rgba(var(--mat-sidenav-content-text-color));
   }
 }

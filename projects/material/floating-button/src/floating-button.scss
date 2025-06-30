@@ -33,7 +33,7 @@
     justify-content: space-around;
     align-items: center;
     .dino-tokens-counter-amount {
-      color: rgba(var(--palette-foreground-secondary-text-dark));
+      color: var(--mat-badge-text-color);
       background: mat-css-vars.mat-css-color-primary(500);
       border-radius: 50%;
       width: 22px;

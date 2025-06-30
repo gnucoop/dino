@@ -29,7 +29,7 @@ dino-list {
       position: relative;
       margin: auto;
       margin-right: 10px;
-      color: rgba(var(--palette-foreground-secondary-text), var(--palette-foreground-secondary-text-alpha));
+      color: rgba(var(--mat-sidenav-content-text-color));
       @media only screen and (min-width: 660px) {
         bottom: 8px;
       }
@@ -509,11 +509,11 @@ dino-list {
   }
   .isLightTheme .mat-mdc-header-cell:first-of-type,
   .isLightTheme .mat-mdc-cell:first-of-type {
-    background-color: rgb(var(--palette-background-background));
+    background-color: var(--mat-sidenav-content-background-color);
   }
   .isDarkTheme .mat-mdc-header-cell:first-of-type,
   .isDarkTheme .mat-mdc-cell:first-of-type {
-    background-color: rgb(var(--palette-background-background-dark));
+    background-color: var(--mat-sidenav-content-background-color);
   }
 }
 
@@ -527,10 +527,7 @@ dino-list {
 }
 
 .isDarkTheme .dino-list-toolbar .dino-list-count {
-  color: rgba(
-    var(--palette-foreground-secondary-text-dark),
-    var(--palette-foreground-secondary-text-dark-alpha)
-  ) !important;
+  color: rgba(var(--mat-sidenav-content-text-color)) !important;
 }
 
 .isDarkTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
@@ -546,8 +543,8 @@ dino-list {
   }
 }
 .isDarkTheme .mat-mdc-header-row {
-  background: rgb(var(--palette-background-background-dark)) !important;
+  background: var(--mat-sidenav-content-background-color) !important;
 }
 .isLightTheme .mat-mdc-header-row {
-  background: rgb(var(--palette-background-background)) !important;
+  background: var(--mat-sidenav-content-background-color) !important;
 }

@@ -91,7 +91,7 @@ dino-user-area {
       }
       .dino-tokens-counter {
         margin-left: 15px;
-        color: rgba(var(--palette-foreground-secondary-text-dark));
+        color: var(--mat-badge-text-color);
         background: mat-css-vars.mat-css-color-primary(500);
         border-radius: 50%;
         width: 32px;

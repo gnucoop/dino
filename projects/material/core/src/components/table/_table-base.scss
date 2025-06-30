@@ -37,9 +37,9 @@
   }
 
   .isDarkTheme .mat-mdc-table {
-    background: rgb(var(--palette-background-background-dark)) !important;
+    background: var(--mat-sidenav-content-background-color) !important;
   }
   .isLightTheme .mat-mdc-table {
-    background: rgb(var(--palette-background-background)) !important;
+    background: var(--mat-sidenav-content-background-color) !important;
   }
 }

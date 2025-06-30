@@ -51,5 +51,5 @@
 }
 
 .isDarkTheme .list-actions-dialog .dino-action-selector-container {
-  color: rgba(var(--palette-foreground-secondary-text-dark), var(--palette-foreground-secondary-text-dark-alpha));
+  color: var(--mat-sidenav-content-text-color);
 }

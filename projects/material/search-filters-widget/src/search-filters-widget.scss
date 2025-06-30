@@ -41,10 +41,8 @@ dino-search-filters-widget {
         background-color: mat-css-vars.mat-css-color-primary(50);
         .dino-create-filter-button {
           &[disabled="true"]{
-            color: rgba(var(--palette-foreground-secondary-text), 0.4);
             background-color: mat-css-vars.mat-css-color-accent(50);
           }
-          color: rgba(var(--palette-foreground-secondary-text), 0.8);
           background-color: mat-css-vars.mat-css-color-accent(300);
           padding: 0 8px;
           span {
