@@ -165,4 +165,17 @@ dino-edit-report {
   ajf-text {
     color: rgba(var(--mat-sidenav-content-text-color));
   }
+
+  ajf-table {
+    tr:nth-child(even) {
+      td {
+        background-color: white !important;
+      }
+    }
+    tr:nth-child(odd) {
+      td {
+        background-color: rgb(221, 221, 221) !important;
+      }
+    }
+  }
 }
