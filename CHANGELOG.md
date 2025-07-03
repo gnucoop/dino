@@ -1,3 +1,19 @@
+<a name="18.0.1"></a>
+# 18.0.1 "naval-hyena" (2025-07-03)
+### Bug Fixes
+* **core/translations:** fix ita translations ([6f4b5e7](https://bitbucket.org/gnucoop/dino/commits/6f4b5e77261d9348235feab07b8412627f220d76))
+* **e2e-app:** groups-list - show labels for schema and report names in group editor dialog ([ef80a8e](https://bitbucket.org/gnucoop/dino/commits/ef80a8e86b9f0fe983d51721ee45e43fb68bc9b9))
+* fix auto-translations ([a38816a](https://bitbucket.org/gnucoop/dino/commits/a38816a21783f45b28ddcd936231730d09d06c8c))
+* **material/edit-report:** add null check on filter ([572bdc1](https://bitbucket.org/gnucoop/dino/commits/572bdc1730d5713cda2ba98a237cfed33afb4215))
+* **material/edit-report:** alternate colors for dark table rows ([768ec30](https://bitbucket.org/gnucoop/dino/commits/768ec30c39bb6160f32b686962d4e83f954250f1))
+* **material/metric-section:** import metrics recursively ([68f8f77](https://bitbucket.org/gnucoop/dino/commits/68f8f77b2e26fa72d6e8b67e9ce3d1634f421f31))
+* **material/multiple:** replace deprecated background and foreground colors ([51ed1c4](https://bitbucket.org/gnucoop/dino/commits/51ed1c47d20a72338c65587e20883688a79c21a7))
+* **material/search-filters-bar:** reset multiple in clearFilter only if exist ([e423e98](https://bitbucket.org/gnucoop/dino/commits/e423e988d6b8420def7682a980e2de7f540a623d))
+### Features
+* **core/cases:** add expires on date in badge if valid attribute found ([5b18f0d](https://bitbucket.org/gnucoop/dino/commits/5b18f0de7aff8d12b512d9b99a6e99ab27dbcaeb))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.0"></a>
 # 18.0.0 "resulting-mule" (2025-06-19)
 ### Bug Fixes
