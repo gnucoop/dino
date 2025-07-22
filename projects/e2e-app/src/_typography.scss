@@ -65,6 +65,7 @@ $base-typography: material.m2-define-typography-config(
       font-family: material.m2-font-family($base-typography, body-1);
       font-size: material.m2-font-size($base-typography, body-1);
       font-weight: material.m2-font-weight($base-typography, body-1);
+      color: var(--mat-table-row-item-label-text-color, var(--mat-app-on-surface, rgba(0, 0, 0, 0.87)));
       h4 {
           font-size: material.m2-font-size($base-typography, subtitle-1);
           font-weight: material.m2-font-weight($base-typography, subtitle-1);
