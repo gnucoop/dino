@@ -632,7 +632,7 @@ export class Exporter implements OnDestroy {
     // Multiple choice: add a row for each value
     multipleValues.forEach(mVal => {
       const exportCtx: Context = {};
-      exportCtx[fieldName] = mVal.replace(this._multipleChoisePlaceholder, ',');
+      exportCtx[fieldName] = mVal.replace(new RegExp(this._multipleChoisePlaceholder, 'g'), ',');
       rowsForMultipleChoice.push(exportCtx);
     });
     return rowsForMultipleChoice;
@@ -1183,7 +1183,7 @@ export class Exporter implements OnDestroy {
               transLabel = this._translate(label) as string;
             }
             return this._dataAnalysis$.value
-              ? transLabel.replace(',', this._multipleChoisePlaceholder)
+              ? transLabel.replace(/,/g, this._multipleChoisePlaceholder)
               : transLabel;
           })
           .toString();
