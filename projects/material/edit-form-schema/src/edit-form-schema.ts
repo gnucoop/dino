@@ -20,7 +20,7 @@
  *
  */
 import {AjfForm, AjfFormSerializer} from '@ajf/core/forms';
-import {AjfFormBuilderService} from '@ajf/material/form-builder';
+import {AjfFormBuilderService, AjfFormBuilderValidation} from '@ajf/material/form-builder';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -165,6 +165,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * While true, the Form Schema save button is disabled
    */
   isSaving: boolean = false;
+
+  /**
+   * True if no validation errors are encountered in the AjfFormBuilder
+   */
+  isAjfFormSchemaValid: boolean = true;
 
   /**
    * Emits when an Auto Report Schema should be generated
@@ -695,6 +700,29 @@ export class EditFormSchema implements OnInit, OnDestroy {
             }
           }
         });
+    }
+  }
+
+  /**
+   * Called whenever there is an error in form builder
+   * @param evt The AjfFormBuilderValidation event
+   */
+  onFormBuilderValidation(evt: AjfFormBuilderValidation): void {
+    let errors: string[] = [];
+    let isValid = true;
+    if (!evt) {
+      this.isAjfFormSchemaValid = true;
+    } else {
+      Object.keys(evt).forEach(fbEntry => {
+        if (evt && evt[fbEntry]) {
+          if (evt[fbEntry].errors) {
+            errors.push(JSON.stringify(evt[fbEntry].errors));
+          }
+          isValid = isValid && evt[fbEntry].isValid;
+        }
+      });
+
+      this.isAjfFormSchemaValid = isValid;
     }
   }
 

@@ -136,7 +136,7 @@
             color="primary"
             translate
             (click)="save()"
-            [disabled]="!fgroup.valid || isSaving"
+            [disabled]="!fgroup.valid || isSaving || !isAjfFormSchemaValid"
           >
             {{'Save'|transloco}} <mat-icon>save</mat-icon>
           </button>
@@ -144,7 +144,7 @@
       </ng-container>
     </mat-card-header>
     <mat-card-content>
-      <ajf-form-builder [form]="form"></ajf-form-builder>
+      <ajf-form-builder [form]="form" (formBuilderValidation)="onFormBuilderValidation($event)"></ajf-form-builder>
     </mat-card-content>
   </mat-card>
 </ng-container>
