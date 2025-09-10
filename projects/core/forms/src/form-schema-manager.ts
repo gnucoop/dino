@@ -74,6 +74,7 @@ import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {FormInfo} from './form-info';
+import {FormSchemaExampleData} from './form-schema-example-data';
 
 @Injectable({providedIn: 'root'})
 export class FormSchemaManager extends DataModelManager<FormSchema> {
@@ -722,24 +723,26 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
 
   /**
    * Generates a JSON object of an empty formdata "data" using all the Form Schema fields.
-   * Keys are fields' names, values are fields' labels.
+   * Keys are fields' names, values are fields' types converted to string.
    * Does NOT take slides into account.
    * @param schema the Form Schema
    * @returns the example data
    */
-  generateEmptyExampleData(schema: FormSchema): {[key: string]: any} | null {
+  generateEmptyExampleData(schema: FormSchema): FormSchemaExampleData | null {
     if (!schema) return null;
-    const data: {[key: string]: any} = {};
+    const fieldTypes: {[key: string]: any} = {};
+    const fieldDescriptions: {[key: string]: any} = {};
     const schemaNodes = schema.schema.nodes;
     if (!schemaNodes) return null;
     for (let slide of schemaNodes) {
       for (let node of slide.nodes) {
-        if (node.nodeType === 0) {
-          data[node.name] = node.label;
+        if (node.nodeType === 0 && 'fieldType' in node) {
+          fieldTypes[node.name] = this._fieldTypeToString(node.fieldType);
+          fieldDescriptions[node.name] = node.description;
         }
       }
     }
-    return data;
+    return {fieldTypes, fieldDescriptions};
   }
 
   /**
@@ -911,6 +914,15 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     }
 
     return eval(relevantString);
+  }
+
+  /**
+   * Converts the AjfFieldType of a field node to string
+   * @param type the AjfFieldType of the field
+   * @returns the string value of the field type
+   */
+  private _fieldTypeToString(type: AjfFieldType) {
+    return AjfFieldType[type].toLowerCase();
   }
 
   /**
