@@ -122,6 +122,9 @@ dino-edit-form {
         display: flex;
         background: transparent;
         .ajf-field-entry {
+          > p {
+            display: none;
+          }
           display: flex;
           flex-flow: column wrap;
           justify-content: flex-start;
