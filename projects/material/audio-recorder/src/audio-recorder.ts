@@ -34,7 +34,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, take} from 'rxjs/operators';
 import {RecordedAudioOutput} from './audio-interfaces';
-import {FormSchema} from '@dino/core/forms';
+import {FormSchema, FormSchemaExampleData} from '@dino/core/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslocoService} from '@ajf/core/transloco';
 import {NetworkStatusService} from '@dino/core/auth';
@@ -85,7 +85,7 @@ export class AudioRecorder implements OnDestroy {
   constructor(
     readonly nss: NetworkStatusService,
     @Inject(MAT_DIALOG_DATA)
-    private _data: {formSchema: FormSchema; exampleData: {[key: string]: any} | null},
+    private _data: {formSchema: FormSchema; exampleData: FormSchemaExampleData},
     private _dialogRef: MatDialogRef<AudioRecorder>,
     private _audioRecorderService: AudioRecorderService,
     private _sanitizer: DomSanitizer,
@@ -114,7 +114,7 @@ export class AudioRecorder implements OnDestroy {
       });
 
     if (this._data.exampleData) {
-      const exampleFields = Object.values(this._data.exampleData);
+      const exampleFields = Object.keys(this._data.exampleData.fieldTypes);
       this.formFields = exampleFields;
     }
   }

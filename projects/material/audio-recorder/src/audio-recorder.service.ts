@@ -163,7 +163,6 @@ export class AudioRecorderService {
         const url = `${this._pandinoConfig.pandinoUrl}/audioformcompilation`;
         const body = {
           name: audioFormData.formSchema.name,
-          schema: audioFormData.formSchema.schema.nodes,
           exampledata: audioFormData.exampleData,
           choices: audioFormData.formSchema.schema.choicesOrigins ?? {},
           transcribedAudio,
