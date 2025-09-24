@@ -22,9 +22,6 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ENG: Translation = {
-  '
-Only metrics without parents were created.': '
-Only metrics without parents were created.',
   '{{language}} already deleted': '{{language}} already deleted',
   '(select only one field)': '(select only one field)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics',

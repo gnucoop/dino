@@ -22,8 +22,6 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
-  '
-Only metrics without parents were created.': ' Métricas no litros sin padres fueron creadas.',
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Ya existe un formulario {{schema_name}} con este mismo conjunto de métricas. Por favor, elija métricas diferentes',
