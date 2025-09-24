@@ -248,6 +248,7 @@ export const ENG: Translation = {
   'New App version ready!': 'New App version ready!',
   'New Password': 'New Password',
   'New User? Create new account': 'New User? Create new account',
+  'Next': 'Next',
   'Next page': 'Next page',
   'No': 'No',
   'No Forms were found': 'No Forms were found',
@@ -454,4 +455,8 @@ export const ENG: Translation = {
   'the selected schema': 'the selected schema',
   'update:': 'update:',
   'xlsx': 'xlsx',
+  'Specify a date range to filter the data (optional).': 'Specify a date range to filter the data (optional).',
+  'If specified, only forms completed with a creation date within the range will be included in the report.': 'If specified, only forms completed with a creation date within the range will be included in the report.',
+  'You can specify only one of the two extremes of the range, or neither.': 'You can specify only one of the two extremes of the range, or neither.',
+  'In the latter case, no filter will be applied to the completed forms based on the creation date.': 'In the latter case, no filter will be applied to the completed forms based on the creation date.'
 };

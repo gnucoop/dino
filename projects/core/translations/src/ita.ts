@@ -257,6 +257,7 @@ export const ITA: Translation = {
   'New App version ready!': "Nuova versione dell'App disponibile!",
   'New Password': 'Nuova password',
   'New User? Create new account': 'Nuovo Utente? Crea un nuovo account',
+  'Next': 'Continua',
   'Next page': 'Pagina successiva',
   'No': 'No',
   'No Forms were found': 'Non sono stati trovati form',
@@ -474,4 +475,8 @@ export const ITA: Translation = {
   'the selected schema': 'lo schema selezionato',
   'update:': 'aggiorna:',
   'xlsx': 'xlsx',
+  'Specify a date range to filter the data (optional).': 'Specificare un intervallo di date per filtrare i dati (opzionale).',
+  'If specified, only forms completed with a creation date within the range will be included in the report.': 'Se specificato, verranno inclusi nel report solamente i formulari compilati con una data di creazione all\'interno dell\'intervallo.',
+  'You can specify only one of the two extremes of the range, or neither.': 'E\' possibile specificare solo uno dei due estremi dell\'intervallo, oppure nessuno.',
+  'In the latter case, no filter will be applied to the completed forms based on the creation date.': 'In quest\'ultimo caso non verrà applicato nessun filtro ai formulari compilati, sulla base della data di creazione.'
 };

@@ -7,6 +7,7 @@ dino-create-report {
     justify-content: center;
     position: relative;
     min-height: 85vh;
+    flex-direction: column;
     @media only screen and (max-width: 992px) {
       min-height: 75vh;
     }
@@ -54,5 +55,14 @@ dino-create-report {
   }
   .ajf-toolbar {
     margin-bottom: 12px;
+  }
+
+  .report-help {
+    margin-bottom: 50px;
+    max-width: 70%;
+    @media only screen and (max-width: 768px) {
+      margin-top: 30px;
+      max-width: 95%;
+    }
   }
 }

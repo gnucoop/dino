@@ -251,6 +251,7 @@ export const ESP: Translation = {
   'New App version ready!': 'Nueva versión de la aplicación!',
   'New Password': 'Nueva contraseña',
   'New User? Create new account': 'Nuevo usuario? Crear una cuenta nueva',
+  'Next': 'Siguiente',
   'Next page': 'Página siguiente',
   'No': 'No',
   'No Forms were found': 'No se encontraron formas',

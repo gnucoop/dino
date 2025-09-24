@@ -2,6 +2,9 @@
 <ng-container *ngIf="(reportSchema|async)">
   <ng-container *ngIf="metricsService.hasActiveMetrics|async">
     <mat-stepper labelPosition="bottom" #stepper linear>
+      <ng-template matStepperIcon="done">
+        <mat-icon>article</mat-icon>
+      </ng-template>
       <mat-step [completed]="isFormMetricsSelectorValid|async">
         <ng-template matStepLabel>{{'REPORT METRICS'|transloco}}</ng-template>
 
@@ -19,7 +22,11 @@
           </dino-form-metric-selector>
         </div>
       </mat-step>
-      <mat-step [editable]="(isFormMetricsSelectorValid|async) ">
+      <mat-step
+        [stepControl]="dateIntervalForm"
+        [editable]="(isFormMetricsSelectorValid|async)"
+        [completed]="isFormMetricsSelectorValid|async"
+      >
         <ng-template matStepLabel>{{'REPORT DATA'|transloco}}</ng-template>
         <div>
           <button mat-icon-button matStepperPrevious aria-label="Previous step">
@@ -27,6 +34,12 @@
           </button>
         </div>
         <div class="dino-create-report-step-container" tourAnchor="create-report">
+          <p class="report-help">
+            {{ 'Specify a date range to filter the data (optional).' | transloco }}
+            {{ 'If specified, only forms completed with a creation date within the range will be included in the report.' | transloco }}<br/>
+            {{ 'You can specify only one of the two extremes of the range, or neither.' | transloco }}
+            {{ 'In the latter case, no filter will be applied to the completed forms based on the creation date.' | transloco }}
+          </p>
           <form [formGroup]="dateIntervalForm" autocomplete="off">
             <mat-form-field class="dino-report-name-field" appearance="fill">
               <mat-label>{{'Report Name'|transloco}}</mat-label>

@@ -251,6 +251,7 @@ export const FRA: Translation = {
   'New App version ready!': "Nouvelle version de l'application prête!",
   'New Password': 'Nouveau mot de passe',
   'New User? Create new account': 'Nouvel utilisateur? Créer un nouveau compte',
+  'Next': 'Suivant',
   'Next page': 'Page suivante',
   'No': 'Non',
   'No Forms were found': "Aucune forme n'a été trouvée",

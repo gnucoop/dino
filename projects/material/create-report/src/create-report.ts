@@ -48,6 +48,7 @@ import {FormStatus, FormStatusManager} from '@dino/core/forms';
 import {TokensService} from '@dino/material/stripe-payment';
 import {MatStepper} from '@angular/material/stepper';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
+import {TranslocoService} from '@ajf/core/transloco';
 
 /**
  * The Report data creation component.
@@ -159,6 +160,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
     private _fstm: FormStatusManager,
     private _pcs: PermissionContextService,
     private _tokensService: TokensService,
+    private _ts: TranslocoService,
   ) {
     this.dateIntervalForm = new UntypedFormGroup({
       'name': new UntypedFormControl('', Validators.required),
