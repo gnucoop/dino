@@ -24,11 +24,16 @@ import {Translation} from '@ajf/core/transloco';
 export const PRT: Translation = {
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
-  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Já existe um formulário {{schema_name}} com este conjunto exato de métricas. Por favor, escolha uma métrica diferente',
-  'A Metric with this name already exists. Maybe you should choose another': 'Já existe uma métrica com este nome. Talvez você devesse escolher outro',
-  'A filter on field "{{field}}" already exists. Please create a different filter.': 'Já existe um filtro no campo "{{field}}". Por favor, crie um filtro diferente.',
-  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.': 'Já existe um filtro com operador "{{operator}}" e valor "{{value}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
-  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.': 'Já existe um filtro com o operador "{{operator}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
+    'Já existe um formulário {{schema_name}} com este conjunto exato de métricas. Por favor, escolha uma métrica diferente',
+  'A Metric with this name already exists. Maybe you should choose another':
+    'Já existe uma métrica com este nome. Talvez você devesse escolher outro',
+  'A filter on field "{{field}}" already exists. Please create a different filter.':
+    'Já existe um filtro no campo "{{field}}". Por favor, crie um filtro diferente.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Já existe um filtro com operador "{{operator}}" e valor "{{value}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
+    'Já existe um filtro com o operador "{{operator}}" no campo "{{field}}". Por favor, crie um filtro diferente.',
   'ADDED TO FAVORITES': 'ADICIONADO AOS FAVORITOS',
   'API KEY MISSING': 'Chave da API ausente',
   'API Key is': 'A chave da API é',
@@ -54,7 +59,8 @@ export const PRT: Translation = {
   'All items': 'Todos os itens',
   'Already existing metrics': 'Métricas já existentes',
   'Already have an account? Login': 'Já tem uma conta? Conecte-se',
-  'Alter the display of the table by selecting up to 7 columns': 'Altere a exibição da tabela selecionando até 7 colunas',
+  'Alter the display of the table by selecting up to 7 columns':
+    'Altere a exibição da tabela selecionando até 7 colunas',
   'Any': 'Qualquer',
   'Apply': 'Aplicar',
   'Are you sure?': 'Tem certeza?',
@@ -72,15 +78,18 @@ export const PRT: Translation = {
   'Cases': 'Casos',
   'Change Password': 'Alterar a senha',
   'Chat with your data': 'Converse com seus dados',
-  'Check that these form status names exist': 'Verifique se esses nomes de status do formulário existem',
+  'Check that these form status names exist':
+    'Verifique se esses nomes de status do formulário existem',
   'Check that these metric ids exist for': 'Verifique se esses IDs métricos existem para',
   'Check that these user ids exist': 'Verifique se esses IDs de usuário existem',
   'Choose Video source': 'Escolha fonte de vídeo',
   'Choose file': 'Escolha um arquivo',
   'Choose the Action you want to perform': 'Escolha a ação que pretende executar',
   'Choose the type of Form you want to create': 'Escolha o tipo de Formulário que deseja criar',
-  'Choose which columns should be displayed in the table': 'Escolha quais colunas devem ser exibidas na tabela',
-  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard': 'Escolha as métricas a que o Url do Formulário Público fará referência, se for o caso, e depois copie o Url para a sua memória',
+  'Choose which columns should be displayed in the table':
+    'Escolha quais colunas devem ser exibidas na tabela',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Escolha as métricas a que o Url do Formulário Público fará referência, se for o caso, e depois copie o Url para a sua memória',
   'Choose your Action': 'Escolha a sua ação',
   'Close': 'Fechar',
   'Close the dialog and apply filters.': 'Feche a caixa de diálogo e aplique alguns filtros.',
@@ -117,7 +126,7 @@ export const PRT: Translation = {
   'Dino AI will fill it for you': 'Dino ai vai preencher para você',
   'Do you want to': 'Você deseja',
   'Docx': 'Exportar Docx',
-  'Don\'t import metrics if name exists': 'Não importe métricas de importação se houver nome',
+  "Don't import metrics if name exists": 'Não importe métricas de importação se houver nome',
   'Donors': 'Doadores',
   'Download': 'Download',
   'Duplicate': 'Duplicar',
@@ -127,13 +136,15 @@ export const PRT: Translation = {
   'Edit all items': 'Editar todos os itens',
   'Email': 'Email',
   'End Date': 'Data final',
-  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.': 'Digite o nome dos atributos de métricas a serem adicionados dentro da escolha, separados por vírgulas. Eles serão usados ​​no Choice_Filter.',
+  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
+    'Digite o nome dos atributos de métricas a serem adicionados dentro da escolha, separados por vírgulas. Eles serão usados ​​no Choice_Filter.',
   'Enter your DataChat API key': 'Digite sua chave de API de datachat',
   'Exclude': 'Excluir',
   'Expires on': 'Expira em',
   'Export': 'Exportar',
   'Export as:': 'Exportar como:',
-  'Export file saved in your Documents folder': 'Ficheiro de exportação guardado na sua pasta Documentos',
+  'Export file saved in your Documents folder':
+    'Ficheiro de exportação guardado na sua pasta Documentos',
   'Export items': 'Exportar itens',
   'FILTER ALREADY EXISTS': 'O FILTRO JÁ EXISTE',
   'FORM DATA': 'DADOS DO FORMULÁRIO',
@@ -146,13 +157,20 @@ export const PRT: Translation = {
   'File not imported': 'Arquivo não importado',
   'File not imported!': 'Arquivo não importado!',
   'File not imported! ': 'Arquivo não importado!',
-  'File not imported! Columns must match formschema fields.': 'Arquivo não importado! As colunas devem corresponder aos campos formschema.',
-  'File not imported! Error during create new metrics': 'Arquivo não importado! Erro durante Criar novas métricas',
-  'File not imported! Error on import metrics.': 'Arquivo não importado! Erro nas métricas de importação.',
-  'File not imported! Errors in metrics with parents.': 'Arquivo não importado! Erros em métricas com os pais.',
-  'File not imported! This metrics are mandatory': 'Arquivo não importado! Essas métricas são obrigatórias',
-  'File not imported: no valid metrics to import found in the file.': 'Arquivo não importado: nenhuma métrica válida a ser importada encontrada no arquivo.',
-  'File not imported: only users with the admin role can import metrics.': 'Arquivo não importado: apenas os usuários com a função de administrador podem importar métricas.',
+  'File not imported! Columns must match formschema fields.':
+    'Arquivo não importado! As colunas devem corresponder aos campos formschema.',
+  'File not imported! Error during create new metrics':
+    'Arquivo não importado! Erro durante Criar novas métricas',
+  'File not imported! Error on import metrics.':
+    'Arquivo não importado! Erro nas métricas de importação.',
+  'File not imported! Errors in metrics with parents.':
+    'Arquivo não importado! Erros em métricas com os pais.',
+  'File not imported! This metrics are mandatory':
+    'Arquivo não importado! Essas métricas são obrigatórias',
+  'File not imported: no valid metrics to import found in the file.':
+    'Arquivo não importado: nenhuma métrica válida a ser importada encontrada no arquivo.',
+  'File not imported: only users with the admin role can import metrics.':
+    'Arquivo não importado: apenas os usuários com a função de administrador podem importar métricas.',
   'File partially imported': 'Arquivo parcialmente importado',
   'Fill the Form': 'Preencher o formulário',
   'Fill the Report': 'Preencha o relatório',
@@ -184,7 +202,8 @@ export const PRT: Translation = {
   'I accept the terms and conditions': 'Eu aceito os termos e condições',
   'Icon Identifier': 'Ícone do formulário',
   'Icon Set': 'Conjunto de ícones',
-  'If specified, only forms completed with a creation date within the range will be included in the report.': 'Se especificado, apenas os formulários concluídos com uma data de criação dentro do intervalo serão incluídos no relatório.',
+  'If specified, only forms completed with a creation date within the range will be included in the report.':
+    'Se especificado, apenas os formulários concluídos com uma data de criação dentro do intervalo serão incluídos no relatório.',
   'Image preview': 'Visualização de imagem',
   'Import': 'Importar',
   'Import errors for metrics with parent.': 'Erros de importação para métricas com pai.',
@@ -193,7 +212,8 @@ export const PRT: Translation = {
   'Import metrics': 'Importar métricas',
   'Imported metrics': 'Métricas importadas',
   'Importing file...': 'Importando arquivo ...',
-  'In the latter case, no filter will be applied to the completed forms based on the creation date.': 'Neste último caso, nenhum filtro será aplicado aos formulários preenchidos com base na data da criação.',
+  'In the latter case, no filter will be applied to the completed forms based on the creation date.':
+    'Neste último caso, nenhum filtro será aplicado aos formulários preenchidos com base na data da criação.',
   'Include': 'Incluir',
   'Incorrect email': 'Email incorreto',
   'Incorrect email and/or password': 'Email e/ou senha incorretos',
@@ -203,7 +223,8 @@ export const PRT: Translation = {
   'Invalid email and/or password': 'Email inválido e/ou senha',
   'Invalid metrics': 'Métricas inválidas',
   'Invalid username and/or password': 'Nome de usuário e / ou senha inválidos',
-  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.': 'Item adicionado com sucesso aos seus favoritos. Os relatórios favoritos serão exibidos no seu Painel de Controlo.',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.':
+    'Item adicionado com sucesso aos seus favoritos. Os relatórios favoritos serão exibidos no seu Painel de Controlo.',
   'Item successfully removed from your favorites.': 'Item removido com sucesso dos seus favoritos.',
   'Items': 'Items',
   'Items found': 'Itens encontrados',
@@ -213,7 +234,8 @@ export const PRT: Translation = {
   'Label fields': 'Campos de etiquetas',
   'Language': 'Linguagem',
   'Last page': 'Última página',
-  'Leave a field empty if you do not wish to change the related value of the selected forms': 'Deixar um campo vazio se não pretender alterar o valor relacionado com os formulários seleccionados',
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Deixar um campo vazio se não pretender alterar o valor relacionado com os formulários seleccionados',
   'Load': 'Carregar',
   'Load the preset': 'Carregar a predefinição',
   'Location': 'Localização',
@@ -238,19 +260,24 @@ export const PRT: Translation = {
   'No Forms were found': 'Nenhuma forma foi encontrada',
   'No Forms were found for this Report': 'Nenhuma forma foi encontrada para este relatório',
   'No file uploaded yet.': 'Nenhum arquivo enviado ainda.',
-  'No metric manager or metric name was provided': 'Nenhum gerente métrico ou nome métrico foi fornecido',
+  'No metric manager or metric name was provided':
+    'Nenhum gerente métrico ou nome métrico foi fornecido',
   'No translation': 'Sem tradução',
-  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?': 'Um ou mais grupos de utilizadores concedem permissões para este esquema. Tem a certeza de que pretende eliminá-lo?',
-  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.': 'Um ou mais relatórios estão atualmente a utilizar este esquema de formulário. Por favor, elimine esses relatórios antes de eliminar este esquema.',
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    'Um ou mais grupos de utilizadores concedem permissões para este esquema. Tem a certeza de que pretende eliminá-lo?',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'Um ou mais relatórios estão atualmente a utilizar este esquema de formulário. Por favor, elimine esses relatórios antes de eliminar este esquema.',
   'Only metrics without parents were created.': 'Métricas não -não -que foram criadas os pais.',
   'Oops! Something went wrong checking': 'Opa! Algo deu errado verificando',
-  'Oops! We could not retrieve your checkout session. Please try again': 'Opa! Não foi possível recuperar sua sessão de checkout. Por favor, tente novamente',
+  'Oops! We could not retrieve your checkout session. Please try again':
+    'Opa! Não foi possível recuperar sua sessão de checkout. Por favor, tente novamente',
   'Open the advanced filters': 'Abra os filtros avançados',
   'Organization': 'Organização',
   'Organization *': 'Organização *',
   'Organization associated with the form': 'Organização associada ao formulário',
   'Organizations': 'Organizações',
-  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?': 'Outros formulários dependem deste esquema de formulário e de alguns dos seus campos. Tem a certeza de que pretende eliminá-lo?',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    'Outros formulários dependem deste esquema de formulário e de alguns dos seus campos. Tem a certeza de que pretende eliminá-lo?',
   'PASSWORD CHANGED': 'ALTERAÇÃO DE SENHA',
   'PASSWORD RESET LINK SENT': 'LINK DE REDEFINIÇÃO DE SENHA ENVIADO',
   'Page {{page}} of {{pages}}': 'Página {{page}} de {{pages}}',
@@ -262,10 +289,12 @@ export const PRT: Translation = {
   'Password': 'Senha',
   'Password changed': 'Senha alterada',
   'Password reset link sent to': 'Ligação para redefinição de senha enviada para',
-  'Password successfully changed. You will now be redirected to the login area.': 'Senha alterada com sucesso. Será agora redireccionado para a área de login.',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'Senha alterada com sucesso. Será agora redireccionado para a área de login.',
   'Pick a preset': 'Escolha uma predefinição',
   'Pick a preset name': 'Escolha um nome de predefinição',
-  'Please add a Report to your favorites to view it in the dashboard': 'Por favor adicione um Relatório aos seus favoritos para o visualizar no painel de bordo',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Por favor adicione um Relatório aos seus favoritos para o visualizar no painel de bordo',
   'Please enter a': 'Por favor, insira um',
   'Please select a valid': 'Por favor, selecione um válido',
   'Previous page': 'Página anterior',
@@ -297,7 +326,8 @@ export const PRT: Translation = {
   'Required Metrics': 'Métricas necessárias',
   'Restore Data': 'Restaurar dados',
   'Restoring Data...': 'Restaurando dados ...',
-  'Resyncing {{collection}} attempt {{retrySyncAttempts}}': 'Sincronização de {{collection}} tentativa {{retrySyncAttempts}}',
+  'Resyncing {{collection}} attempt {{retrySyncAttempts}}':
+    'Sincronização de {{collection}} tentativa {{retrySyncAttempts}}',
   'Reuse metrics if name exists': 'Reutilizar métricas se o nome existir',
   'Save': 'Salvar',
   'Save draft': 'Salve o rascunho',
@@ -312,26 +342,32 @@ export const PRT: Translation = {
   'Select metrics': 'Selecciona métricas',
   'Select metrics for choices': 'Selecciona métricas',
   'Select the Form Status': 'Selecione o status do formulário',
-  'Selects metrics for which data should be included in the form': 'Selecciona métricas para as quais os dados devem ser incluídos no formulário',
-  'Selects metrics to be included as choice options': 'Selecciona métricas a serem incluídas como opções de escolha',
-  'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_choice_metric.': 'Seleciona as métricas a serem incluídas como opções de escolha no esquema do formulário. O nome da nova origem da escolha será $ metricname_choice_metric.',
+  'Selects metrics for which data should be included in the form':
+    'Selecciona métricas para as quais os dados devem ser incluídos no formulário',
+  'Selects metrics to be included as choice options':
+    'Selecciona métricas a serem incluídas como opções de escolha',
+  'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_metric_choice.':
+    'Seleciona as métricas a serem incluídas como opções de escolha no esquema do formulário. O nome da nova origem da escolha será $ metricname_choice_metric. (e.g project_metric_choice ou case_metric_choice)',
   'Share Public Url': 'Partilhar url público',
   'Show Map': 'Mostrar mapa',
   'Something went wrong while recording audio': 'Algo deu errado ao gravar áudio',
   'Something went wrong while transcribing audio': 'Algo deu errado enquanto transcia áudio',
-  'Sorry, you don\'t have enough Credits!': 'Desculpe, você não tem créditos suficientes!',
+  "Sorry, you don't have enough Credits!": 'Desculpe, você não tem créditos suficientes!',
   'Sources': 'Fontes',
-  'Specify a date range to filter the data (optional).': 'Especifique um intervalo de datas para filtrar os dados (opcional).',
+  'Specify a date range to filter the data (optional).':
+    'Especifique um intervalo de datas para filtrar os dados (opcional).',
   'Start Date': 'Data de início',
   'Start Dino Tour': 'Start Dino Tour',
   'Status Level': 'Nível de status',
   'Stop Recording': 'Parar a gravação',
   'Synchronization complete': 'Sincronização completa',
-  'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.': 'Sincronização concluída com erros. Não foi possível sincronizar: {{formattedCollectionsWithProblems}}. Verifique as suas notificações.',
+  'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.':
+    'Sincronização concluída com erros. Não foi possível sincronizar: {{formattedCollectionsWithProblems}}. Verifique as suas notificações.',
   'THEME LOADED': 'TEMA CARREGADO',
   'THEME SAVED': 'TEMA SALVADO',
   'TRANSCRIPTION ERROR': 'Erro de transcrição',
-  'The corresponding graphql query condition to filter metrics': 'A condição de consulta grafql correspondente para filtrar métricas',
+  'The corresponding graphql query condition to filter metrics':
+    'A condição de consulta grafql correspondente para filtrar métricas',
   'The form has been successfully submitted.': 'O formulário foi enviado com sucesso.',
   'Thematic Area': 'Área temática',
   'Thematic Area *': 'Área temática *',
@@ -339,11 +375,15 @@ export const PRT: Translation = {
   'Thematic Areas': 'Áreas temáticas',
   'Theme loaded and set as default': 'Tema carregado e definido como padrão',
   'Theme saved and set as default': 'Tema guardado e definido como padrão',
-  'There are not any logs available for this form': 'Não há nenhum registo disponível para este formulário',
-  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.': 'Existem dados associados a este esquema. Eliminar todos os dados associados antes de eliminar este esquema.',
-  'This form might not be valid. Please review and fill its data': 'Este formulário pode não ser válido. Favor rever e preencher os seus dados',
+  'There are not any logs available for this form':
+    'Não há nenhum registo disponível para este formulário',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'Existem dados associados a este esquema. Eliminar todos os dados associados antes de eliminar este esquema.',
+  'This form might not be valid. Please review and fill its data':
+    'Este formulário pode não ser válido. Favor rever e preencher os seus dados',
   'This name is already being used.': 'Este nome já está a ser utilizado.',
-  'This option exports all items without filters. The process may slow down your device.': 'Esta opção exporta todos os itens sem filtros. O processo pode tornar o seu dispositivo mais lento.',
+  'This option exports all items without filters. The process may slow down your device.':
+    'Esta opção exporta todos os itens sem filtros. O processo pode tornar o seu dispositivo mais lento.',
   'To date': 'Até à data',
   'Total paid': 'Total pago',
   'Transcribe': 'Transcrever',
@@ -353,12 +393,15 @@ export const PRT: Translation = {
   'URL COPIED': 'URL copiado',
   'Undo': 'Desfazer',
   'Unique': 'Único',
-  'Unique: only one item with a given exact set of metrics can exist': 'Único: só pode existir um item com um determinado conjunto exato de métricas',
+  'Unique: only one item with a given exact set of metrics can exist':
+    'Único: só pode existir um item com um determinado conjunto exato de métricas',
   'Update Date': 'Data de atualização',
   'Update translation': 'Atualizar tradução',
   'Upload a jpg or png file': 'Carregue um arquivo jpg ou png',
-  'Upload an xls or csv file to import metrics:': 'Carregue um arquivo XLS ou CSV para importar métricas:',
-  'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.': 'Use o campo selecionado (apenas um permitido) como opção de escolha. O nome da nova origem da escolha adicionada ao esquema do formulário será $ fieldname_choice.',
+  'Upload an xls or csv file to import metrics:':
+    'Carregue um arquivo XLS ou CSV para importar métricas:',
+  'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.':
+    'Use o campo selecionado (apenas um permitido) como opção de escolha. O nome da nova origem da escolha adicionada ao esquema do formulário será $ fieldname_choice.',
   'User': 'Utilizador',
   'Username / email': 'Nome de usuário / e-mail',
   'Users': 'Usuários',
@@ -376,11 +419,14 @@ export const PRT: Translation = {
   'XLSX': 'XLSX',
   'Yes': 'Sim',
   'You can purchase more Credits here': 'Você pode comprar mais créditos aqui',
-  'You can specify only one of the two extremes of the range, or neither.': 'Pode especificar apenas um dos dois extremos do intervalo, ou nenhum.',
-  'You have unsynced data. Please click the Sync icon.': 'Você tem dados não sincronizados. Clique no ícone de sincronização.',
+  'You can specify only one of the two extremes of the range, or neither.':
+    'Pode especificar apenas um dos dois extremos do intervalo, ou nenhum.',
+  'You have unsynced data. Please click the Sync icon.':
+    'Você tem dados não sincronizados. Clique no ícone de sincronização.',
   'You now have': 'Você agora tem',
   'Your DINO-AI Credits': 'Seus créditos de DINO-AI',
-  'Your Reset Password ticket is invalid or expired. Please try again.': 'O seu bilhete de Reset Password é inválido ou expirou. Por favor, tente novamente.',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'O seu bilhete de Reset Password é inválido ou expirou. Por favor, tente novamente.',
   'added': 'adicionado',
   'and more': 'e mais',
   'area': 'área',
@@ -390,7 +436,8 @@ export const PRT: Translation = {
   'csv': 'csv',
   'delete': 'deletar',
   'delete icon': 'ícone de exclusão',
-  'deleted: custom translations of {{language}}': 'excluído: traduções personalizadas de {{language}}',
+  'deleted: custom translations of {{language}}':
+    'excluído: traduções personalizadas de {{language}}',
   'duplicated in the file': 'duplicado no arquivo',
   'edit icon': 'Editar ícone',
   'error try later': 'erro tente mais tarde',
@@ -420,5 +467,5 @@ export const PRT: Translation = {
   'the selected items': 'os itens selecionados',
   'the selected schema': 'o esquema selecionado',
   'update:': 'atualizado:',
-  'xlsx': 'xlsx'
+  'xlsx': 'xlsx',
 };

@@ -24,11 +24,16 @@ import {Translation} from '@ajf/core/transloco';
 export const ENG: Translation = {
   '{{language}} already deleted': '{{language}} already deleted',
   '(select only one field)': '(select only one field)',
-  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics',
-  'A Metric with this name already exists. Maybe you should choose another': 'A Metric with this name already exists. Maybe you should choose another',
-  'A filter on field "{{field}}" already exists. Please create a different filter.': 'A filter on field "{{field}}" already exists. Please create a different filter.',
-  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.': 'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.',
-  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.': 'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.',
+  'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
+    'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics',
+  'A Metric with this name already exists. Maybe you should choose another':
+    'A Metric with this name already exists. Maybe you should choose another',
+  'A filter on field "{{field}}" already exists. Please create a different filter.':
+    'A filter on field "{{field}}" already exists. Please create a different filter.',
+  'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.':
+    'A filter with operator "{{operator}}" and value "{{value}}" on field "{{field}}" already exists. Please create a different filter.',
+  'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.':
+    'A filter with operator "{{operator}}" on field "{{field}}" already exists. Please create a different filter.',
   'ADDED TO FAVORITES': 'ADDED TO FAVORITES',
   'API KEY MISSING': 'API KEY MISSING',
   'API Key is': 'API Key is',
@@ -54,7 +59,8 @@ export const ENG: Translation = {
   'All items': 'All items',
   'Already existing metrics': 'Already existing metrics',
   'Already have an account? Login': 'Already have an account? Login',
-  'Alter the display of the table by selecting up to 7 columns': 'Alter the display of the table by selecting up to 7 columns',
+  'Alter the display of the table by selecting up to 7 columns':
+    'Alter the display of the table by selecting up to 7 columns',
   'Any': 'Any',
   'Apply': 'Apply',
   'Are you sure?': 'Are you sure?',
@@ -79,8 +85,10 @@ export const ENG: Translation = {
   'Choose file': 'Choose file',
   'Choose the Action you want to perform': 'Choose the Action you want to perform',
   'Choose the type of Form you want to create': 'Choose the type of Form you want to create',
-  'Choose which columns should be displayed in the table': 'Choose which columns should be displayed in the table',
-  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard': 'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard',
+  'Choose which columns should be displayed in the table':
+    'Choose which columns should be displayed in the table',
+  'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
+    'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard',
   'Choose your Action': 'Choose your Action',
   'Close': 'Close',
   'Close the dialog and apply filters.': 'Close the dialog and apply filters.',
@@ -117,7 +125,7 @@ export const ENG: Translation = {
   'Dino AI will fill it for you': 'Dino AI will fill it for you',
   'Do you want to': 'Do you want to',
   'Docx': 'Export Docx',
-  'Don\'t import metrics if name exists': 'Don\'t import metrics if name exists',
+  "Don't import metrics if name exists": "Don't import metrics if name exists",
   'Donors': 'Donors',
   'Download': 'Download',
   'Duplicate': 'Duplicate',
@@ -127,7 +135,8 @@ export const ENG: Translation = {
   'Edit all items': 'Edit all items',
   'Email': 'Email',
   'End Date': 'End date',
-  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.': 'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.',
+  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
+    'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.',
   'Enter your DataChat API key': 'Enter your DataChat API key',
   'Exclude': 'Exclude',
   'Expires on': 'Expires on',
@@ -146,13 +155,18 @@ export const ENG: Translation = {
   'File not imported': 'File not imported',
   'File not imported!': 'File not imported!',
   'File not imported! ': 'File not imported!',
-  'File not imported! Columns must match formschema fields.': 'File not imported! Columns must match formschema fields.',
-  'File not imported! Error during create new metrics': 'File not imported! Error during create new metrics',
+  'File not imported! Columns must match formschema fields.':
+    'File not imported! Columns must match formschema fields.',
+  'File not imported! Error during create new metrics':
+    'File not imported! Error during create new metrics',
   'File not imported! Error on import metrics.': 'File not imported! Error on import metrics.',
-  'File not imported! Errors in metrics with parents.': 'File not imported! Errors in metrics with parents.',
+  'File not imported! Errors in metrics with parents.':
+    'File not imported! Errors in metrics with parents.',
   'File not imported! This metrics are mandatory': 'File not imported! This metrics are mandatory',
-  'File not imported: no valid metrics to import found in the file.': 'File not imported: no valid metrics to import found in the file.',
-  'File not imported: only users with the admin role can import metrics.': 'File not imported: only users with the admin role can import metrics.',
+  'File not imported: no valid metrics to import found in the file.':
+    'File not imported: no valid metrics to import found in the file.',
+  'File not imported: only users with the admin role can import metrics.':
+    'File not imported: only users with the admin role can import metrics.',
   'File partially imported': 'File partially imported',
   'Fill the Form': 'Fill the Form',
   'Fill the Report': 'Fill the Report',
@@ -184,7 +198,8 @@ export const ENG: Translation = {
   'I accept the terms and conditions': 'I accept the terms and conditions',
   'Icon Identifier': 'Icon Identifier',
   'Icon Set': 'Icon Set',
-  'If specified, only forms completed with a creation date within the range will be included in the report.': 'If specified, only forms completed with a creation date within the range will be included in the report.',
+  'If specified, only forms completed with a creation date within the range will be included in the report.':
+    'If specified, only forms completed with a creation date within the range will be included in the report.',
   'Image preview': 'Image preview',
   'Import': 'Import',
   'Import errors for metrics with parent.': 'Import errors for metrics with parent.',
@@ -193,7 +208,8 @@ export const ENG: Translation = {
   'Import metrics': 'Import metrics',
   'Imported metrics': 'Imported metrics',
   'Importing file...': 'Importing file...',
-  'In the latter case, no filter will be applied to the completed forms based on the creation date.': 'In the latter case, no filter will be applied to the completed forms based on the creation date.',
+  'In the latter case, no filter will be applied to the completed forms based on the creation date.':
+    'In the latter case, no filter will be applied to the completed forms based on the creation date.',
   'Include': 'Include',
   'Incorrect email': 'Incorrect email',
   'Incorrect email and/or password': 'Incorrect email and/or password',
@@ -203,8 +219,10 @@ export const ENG: Translation = {
   'Invalid email and/or password': 'Invalid email and/or password',
   'Invalid metrics': 'Invalid metrics',
   'Invalid username and/or password': 'Invalid username and/or password',
-  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.': 'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.',
-  'Item successfully removed from your favorites.': 'Item successfully removed from your favorites.',
+  'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.':
+    'Item successfully added to your favorites. Favorite Reports will be displayed in your Dashboard.',
+  'Item successfully removed from your favorites.':
+    'Item successfully removed from your favorites.',
   'Items': 'Items',
   'Items found': 'Items found',
   'Items in page': 'Items in page',
@@ -213,7 +231,8 @@ export const ENG: Translation = {
   'Label fields': 'Label fields',
   'Language': 'Language',
   'Last page': 'Last page',
-  'Leave a field empty if you do not wish to change the related value of the selected forms': 'Leave a field empty if you do not wish to change the related value of the selected forms',
+  'Leave a field empty if you do not wish to change the related value of the selected forms':
+    'Leave a field empty if you do not wish to change the related value of the selected forms',
   'Load': 'Load',
   'Load the preset': 'Load the preset',
   'Location': 'Location',
@@ -240,17 +259,21 @@ export const ENG: Translation = {
   'No file uploaded yet.': 'No file uploaded yet.',
   'No metric manager or metric name was provided': 'No metric manager or metric name was provided',
   'No translation': 'No translation',
-  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?': 'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?',
-  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.': 'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.',
+  'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?':
+    'One or more User Groups grant permissions for this Schema. Are you sure you want to delete it?',
+  'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
+    'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.',
   'Only metrics without parents were created.': 'Only metrics without parents were created.',
   'Oops! Something went wrong checking': 'Oops! Something went wrong checking',
-  'Oops! We could not retrieve your checkout session. Please try again': 'Oops! We could not retrieve your checkout session. Please try again',
+  'Oops! We could not retrieve your checkout session. Please try again':
+    'Oops! We could not retrieve your checkout session. Please try again',
   'Open the advanced filters': 'Open the advanced filters',
   'Organization': 'Organization',
   'Organization *': 'Organization *',
   'Organization associated with the form': 'Organization associated with the form',
   'Organizations': 'Organizations',
-  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?': 'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?',
+  'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?':
+    'Other Forms depend on this Form Schema and some of its fields. Are you sure you want to delete it?',
   'PASSWORD CHANGED': 'PASSWORD CHANGED',
   'PASSWORD RESET LINK SENT': 'PASSWORD RESET LINK SENT',
   'Page {{page}} of {{pages}}': 'Page {{page}} of {{pages}}',
@@ -262,10 +285,12 @@ export const ENG: Translation = {
   'Password': 'Password',
   'Password changed': 'Password changed',
   'Password reset link sent to': 'Password reset link sent to',
-  'Password successfully changed. You will now be redirected to the login area.': 'Password successfully changed. You will now be redirected to the login area.',
+  'Password successfully changed. You will now be redirected to the login area.':
+    'Password successfully changed. You will now be redirected to the login area.',
   'Pick a preset': 'Pick a preset',
   'Pick a preset name': 'Pick a preset name',
-  'Please add a Report to your favorites to view it in the dashboard': 'Please add a Report to your favorites to view it in the dashboard',
+  'Please add a Report to your favorites to view it in the dashboard':
+    'Please add a Report to your favorites to view it in the dashboard',
   'Please enter a': 'Please enter a',
   'Please select a valid': 'Please select a valid',
   'Previous page': 'Previous page',
@@ -297,7 +322,8 @@ export const ENG: Translation = {
   'Required Metrics': 'Required Metrics',
   'Restore Data': 'Restore Data',
   'Restoring Data...': 'Restoring Data...',
-  'Resyncing {{collection}} attempt {{retrySyncAttempts}}': 'Resyncing {{collection}} attempt {{retrySyncAttempts}}',
+  'Resyncing {{collection}} attempt {{retrySyncAttempts}}':
+    'Resyncing {{collection}} attempt {{retrySyncAttempts}}',
   'Reuse metrics if name exists': 'Reuse metrics if name exists',
   'Save': 'Save',
   'Save draft': 'Save draft',
@@ -312,26 +338,32 @@ export const ENG: Translation = {
   'Select metrics': 'Select metrics',
   'Select metrics for choices': 'Select metrics',
   'Select the Form Status': 'Select the Form Status',
-  'Selects metrics for which data should be included in the form': 'Selects metrics for which data should be included in the form',
-  'Selects metrics to be included as choice options': 'Selects metrics to be included as choice options',
-  'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_choice_metric.': 'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_choice_metric.',
+  'Selects metrics for which data should be included in the form':
+    'Selects metrics for which data should be included in the form',
+  'Selects metrics to be included as choice options':
+    'Selects metrics to be included as choice options',
+  'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_metric_choice.':
+    'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_metric_choice. (e.g project_metric_choice or case_metric_choice)',
   'Share Public Url': 'Share Public Url',
   'Show Map': 'Show Map',
   'Something went wrong while recording audio': 'Something went wrong while recording audio',
   'Something went wrong while transcribing audio': 'Something went wrong while transcribing audio',
-  'Sorry, you don\'t have enough Credits!': 'Sorry, you don\'t have enough Credits!',
+  "Sorry, you don't have enough Credits!": "Sorry, you don't have enough Credits!",
   'Sources': 'Sources',
-  'Specify a date range to filter the data (optional).': 'Specify a date range to filter the data (optional).',
+  'Specify a date range to filter the data (optional).':
+    'Specify a date range to filter the data (optional).',
   'Start Date': 'Start date',
   'Start Dino Tour': 'Start Dino Tour',
   'Status Level': 'Status Level',
   'Stop Recording': 'Stop Recording',
   'Synchronization complete': 'Synchronization complete',
-  'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.': 'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.',
+  'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.':
+    'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.',
   'THEME LOADED': 'THEME LOADED',
   'THEME SAVED': 'THEME SAVED',
   'TRANSCRIPTION ERROR': 'TRANSCRIPTION ERROR',
-  'The corresponding graphql query condition to filter metrics': 'The corresponding graphql query condition to filter metrics',
+  'The corresponding graphql query condition to filter metrics':
+    'The corresponding graphql query condition to filter metrics',
   'The form has been successfully submitted.': 'The form has been successfully submitted.',
   'Thematic Area': 'Thematic area',
   'Thematic Area *': 'Thematic area *',
@@ -339,11 +371,15 @@ export const ENG: Translation = {
   'Thematic Areas': 'Thematic areas',
   'Theme loaded and set as default': 'Theme loaded and set as default',
   'Theme saved and set as default': 'Theme saved and set as default',
-  'There are not any logs available for this form': 'There are not any logs available for this form',
-  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.': 'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.',
-  'This form might not be valid. Please review and fill its data': 'This form might not be valid. Please review and fill its data',
+  'There are not any logs available for this form':
+    'There are not any logs available for this form',
+  'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
+    'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.',
+  'This form might not be valid. Please review and fill its data':
+    'This form might not be valid. Please review and fill its data',
   'This name is already being used.': 'This name is already being used.',
-  'This option exports all items without filters. The process may slow down your device.': 'This option exports all items without filters. The process may slow down your device.',
+  'This option exports all items without filters. The process may slow down your device.':
+    'This option exports all items without filters. The process may slow down your device.',
   'To date': 'To date',
   'Total paid': 'Total paid',
   'Transcribe': 'Transcribe',
@@ -353,12 +389,14 @@ export const ENG: Translation = {
   'URL COPIED': 'URL COPIED',
   'Undo': 'Undo',
   'Unique': 'Unique',
-  'Unique: only one item with a given exact set of metrics can exist': 'Unique: only one item with a given exact set of metrics can exist',
+  'Unique: only one item with a given exact set of metrics can exist':
+    'Unique: only one item with a given exact set of metrics can exist',
   'Update Date': 'Update Date',
   'Update translation': 'Update translation',
   'Upload a jpg or png file': 'Upload a jpg or png file',
   'Upload an xls or csv file to import metrics:': 'Upload an xls or csv file to import metrics:',
-  'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.': 'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.',
+  'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.':
+    'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.',
   'User': 'User',
   'Username / email': 'Username / email',
   'Users': 'Users',
@@ -376,11 +414,14 @@ export const ENG: Translation = {
   'XLSX': 'XLSX',
   'Yes': 'Yes',
   'You can purchase more Credits here': 'You can purchase more Credits here',
-  'You can specify only one of the two extremes of the range, or neither.': 'You can specify only one of the two extremes of the range, or neither.',
-  'You have unsynced data. Please click the Sync icon.': 'You have unsynced data. Please click the Sync icon.',
+  'You can specify only one of the two extremes of the range, or neither.':
+    'You can specify only one of the two extremes of the range, or neither.',
+  'You have unsynced data. Please click the Sync icon.':
+    'You have unsynced data. Please click the Sync icon.',
   'You now have': 'You now have',
   'Your DINO-AI Credits': 'Your DINO-AI Credits',
-  'Your Reset Password ticket is invalid or expired. Please try again.': 'Your Reset Password ticket is invalid or expired. Please try again.',
+  'Your Reset Password ticket is invalid or expired. Please try again.':
+    'Your Reset Password ticket is invalid or expired. Please try again.',
   'added': 'added',
   'and more': 'and more',
   'area': 'area',
@@ -420,5 +461,5 @@ export const ENG: Translation = {
   'the selected items': 'the selected items',
   'the selected schema': 'the selected schema',
   'update:': 'update:',
-  'xlsx': 'xlsx'
+  'xlsx': 'xlsx',
 };
