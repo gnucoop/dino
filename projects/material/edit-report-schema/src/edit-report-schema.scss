@@ -1,53 +1,58 @@
 dino-edit-report-schema {
-    > .mat-mdc-card:first-child {
-        border-left: none;
-        margin: 0%;
-        padding: 0px;
-        background: transparent;
-        .mat-mdc-card-header {
-            display: flex;
-            flex-flow: row wrap;
-            padding-bottom: 10px;
-            align-items: center;
-            justify-content: space-between;
-            .dino-report-attributes {
-                flex: 1 1 auto;
-                display: flex;
-                flex-flow: row wrap;
-                justify-content: space-between;
-                .mat-mdc-form-field {
-                    flex: 1 1 auto;
-                    font-size: 125%;
-                }
-            }
-            .dino-edit-report-schema-actions {
-                display: flex;
-                justify-self: flex-end;
-                justify-content: flex-end;
-                .mat-mdc-raised-button {
-                    margin-left: 20px;
-                }
-            }
+  > .mat-mdc-card:first-child {
+    border-left: none;
+    margin: 0%;
+    padding: 0px;
+    background: transparent;
+    .mat-mdc-card-header {
+      display: flex;
+      flex-flow: row wrap;
+      padding-bottom: 10px;
+      align-items: center;
+      justify-content: space-between;
+      .dino-report-attributes {
+        flex: 1 1 auto;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        gap: 10px;
+        .mat-mdc-form-field {
+          flex: 1 1 auto;
+          font-size: 125%;
         }
-        .mat-mdc-card-content {
-            padding-bottom: 0%;
+      }
+      .dino-edit-report-schema-actions {
+        display: flex;
+        justify-self: flex-end;
+        justify-content: flex-end;
+        .mat-mdc-raised-button {
+          margin-left: 20px;
         }
+      }
     }
+    .mat-mdc-card-content {
+      padding-bottom: 0%;
+    }
+  }
+}
+
+h2.subtitle {
+  margin-top: 20px;
 }
 
 /* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 /* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 .mat-autocomplete-panel {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-        display: none;
-    }
-    /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
-    .mat-option-text {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-content: center;
-    }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version. */
+  .mat-option-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+  }
 }

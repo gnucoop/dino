@@ -4,15 +4,18 @@
     <ng-container *ngIf="formGroup|async as fgroup">
       <form [formGroup]="fgroup" class="dino-report-attributes">
         <mat-form-field>
+          <mat-label>{{'Report Label'|transloco}}</mat-label>
           <b><input matInput formControlName="label" [placeholder]="'Report Label'" /></b>
         </mat-form-field>
         <mat-form-field>
+          <mat-label>{{'Report Name'|transloco}}</mat-label>
           <input matInput formControlName="name" [placeholder]="'Report Name'" />
           <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
             {{ 'This name is already being used.'|transloco}}
           </mat-error>
         </mat-form-field>
         <mat-form-field>
+          <mat-label>{{'Icon Set'|transloco}}</mat-label>
           <mat-select
             #iconSetSelect
             formControlName="icon_set"
@@ -23,6 +26,7 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
+          <mat-label>{{'Icon Identifier'|transloco}}</mat-label>
           <input
             matInput
             formControlName="icon"
@@ -59,13 +63,14 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field>
+        <!-- <mat-form-field>
+          <mat-label>{{'Form Schemas'|transloco}}</mat-label>
           <mat-select [placeholder]="'Form Schemas'|transloco">
             <mat-option *ngFor="let formSchema of formSchemas|async"
               >{{formSchema.label}}</mat-option
             >
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
       </form>
 
       <div class="dino-edit-report-schema-actions">
@@ -84,8 +89,14 @@
       </div>
     </ng-container>
   </mat-card-header>
-  <mat-card-content
-    ><ng-container *ngIf="reportInstance$|async as reportInstance">
+  <mat-card-content>
+    <h2 class="subtitle">{{'Associated Form Schemas'|transloco}}</h2>
+    <mat-chip-set aria-label="Used Form Schemas">
+      <mat-chip disabled *ngFor="let formSchema of formSchemas|async">{{formSchema.label}}</mat-chip>
+    </mat-chip-set>
+  
+    <h2 class="subtitle">{{'Report Preview'|transloco}}</h2>
+    <ng-container *ngIf="reportInstance$|async as reportInstance">
       <ajf-report [instance]="reportInstance"></ajf-report>
     </ng-container>
   </mat-card-content>
