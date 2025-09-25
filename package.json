@@ -37,8 +37,8 @@
   "version": "18.0.1",
   "private": true,
   "dependencies": {
-    "@ajf/core": "^18.0.2",
-    "@ajf/material": "^18.0.2",
+    "@ajf/core": "^18.0.3",
+    "@ajf/material": "^18.0.3",
     "@ajf/icons": "1.0.0",
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
