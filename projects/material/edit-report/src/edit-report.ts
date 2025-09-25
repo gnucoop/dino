@@ -469,17 +469,29 @@ export class EditReport implements AfterViewInit {
       }),
     );
 
+    const sourceSchemas = this._reportSchema.pipe(
+      filter(rSchema => rSchema != null),
+      switchMap(rSchema =>
+        this._formSchemaManager.query({
+          selector: {id: {$in: rSchema.form_schema_ids}},
+        }),
+      ),
+    );
+
     this._sourceFormData = combineLatest([
       this._reportSchema,
       this._reportData,
       this.metricsService.activeMetrics,
       this._reportDataMetricsDescendants,
+      sourceSchemas,
     ]).pipe(
-      switchMap(([rSchema, rData, activeMetrics, descendants]) => {
+      switchMap(([rSchema, rData, activeMetrics, descendants, fmSchemas]) => {
         if (
           rSchema.form_schema_ids == null ||
           rSchema.form_schema_ids.length <= 0 ||
-          rData == null
+          rData == null ||
+          !fmSchemas ||
+          !fmSchemas.length
         ) {
           return obsOf([]);
         }
@@ -495,28 +507,50 @@ export class EditReport implements AfterViewInit {
         }
 
         if (activeMetrics != null && activeMetrics.length > 0) {
+          const rDataObject = rData as {[key: string]: any};
+          const metricsQuerySelector: {[key: string]: any} = {};
+
           for (let metric of activeMetrics) {
             const metricKey = `${metric.metricName}_ref_id`;
-            const rDataObject = rData as {[key: string]: any};
             if (rDataObject[metricKey] != null) {
-              querySelector[metricKey] = {
+              metricsQuerySelector[metricKey] = {
                 $in: [rDataObject[metricKey], ...descendants[metricKey].filter(d => d != null)],
               };
             }
+          }
+
+          const switchToOrQuery = this.switchToOrQuery(metricsQuerySelector, fmSchemas);
+          if (!switchToOrQuery) {
+            Object.keys(metricsQuerySelector).forEach(metricKey => {
+              querySelector[metricKey] = {
+                $in: [rDataObject[metricKey], ...descendants[metricKey].filter(d => d != null)],
+              };
+            });
+          } else {
+            delete querySelector['form_schema_ref_id'];
+            querySelector['$or'] = [];
+            fmSchemas.forEach(fmSchema => {
+              const querySelSchema: DataQuerySelector = {
+                form_schema_ref_id: {$eq: fmSchema.id},
+              };
+              Object.keys(metricsQuerySelector).forEach(metricKey => {
+                const metricName = metricKey.replace('_ref_id', '');
+                if (
+                  fmSchema.form_schema_metrics &&
+                  fmSchema.form_schema_metrics.includes(metricName)
+                ) {
+                  querySelSchema[metricKey] = {
+                    $in: [rDataObject[metricKey], ...descendants[metricKey].filter(d => d != null)],
+                  };
+                }
+              });
+              querySelector['$or'].push(querySelSchema);
+            });
           }
         }
         querySelector['is_deleted'] = {$ne: true};
         return this._formDataManager.query({selector: querySelector});
       }),
-    );
-
-    const sourceSchemas = this._reportSchema.pipe(
-      filter(rSchema => rSchema != null),
-      switchMap(rSchema =>
-        this._formSchemaManager.query({
-          selector: {id: {$in: rSchema.form_schema_ids}},
-        }),
-      ),
     );
 
     const formSchemas = sourceSchemas.pipe(
@@ -729,6 +763,25 @@ export class EditReport implements AfterViewInit {
       }),
       take(1),
     );
+  }
+
+  /**
+   * Return true if we need an OR query, when not all requested metrics are enables for the report form schemas
+   * @param metricsQuerySelector
+   * @param fmSchemas
+   * @returns
+   */
+  switchToOrQuery(metricsQuerySelector: {[key: string]: any}, fmSchemas: FormSchema[]): boolean {
+    let switchToOrQuery = false;
+    fmSchemas.forEach(fmSchema => {
+      Object.keys(metricsQuerySelector).forEach(metricKey => {
+        const metricName = metricKey.replace('_ref_id', '');
+        if (!fmSchema.form_schema_metrics || !fmSchema.form_schema_metrics.includes(metricName)) {
+          switchToOrQuery = true;
+        }
+      });
+    });
+    return switchToOrQuery;
   }
 
   /**
