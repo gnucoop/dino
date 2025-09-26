@@ -1,3 +1,20 @@
+<a name="18.0.2"></a>
+# 18.0.2 "practical-butterfly" (2025-09-26)
+### Bug Fixes
+* **core/translations:** fix auto translations ([417fcb4](https://bitbucket.org/gnucoop/dino/commits/417fcb4dd09f7b7bec77be58dbb8d3c1b903fc25))
+* **exporter:** replace all occurence of , in multiple choice labels ([759e507](https://bitbucket.org/gnucoop/dino/commits/759e507cbb116bfe9796e950d1ceb1f59c9d52e6))
+* **material/audio-recorder:** color background timer ([5dd6884](https://bitbucket.org/gnucoop/dino/commits/5dd68846cf0adecb032d0325417743156f799e40))
+* **material/create-report:** fix stepper and labels ([b314ca6](https://bitbucket.org/gnucoop/dino/commits/b314ca6d2a67c8681551b06af5d8404965fd37b2))
+* **material/edit-report:** filter by metric only if metric are available for the schema ([18be8f6](https://bitbucket.org/gnucoop/dino/commits/18be8f6b4f0878c813bee0d1629fd0fa73c5c586))
+* **material/edit-report:** fix border spacing for big tables ([564712a](https://bitbucket.org/gnucoop/dino/commits/564712a6f9ddc8ade0f729a51496bbaca7a8d31a))
+* **material/form-deps-editor:** change hint ([6eeb74e](https://bitbucket.org/gnucoop/dino/commits/6eeb74e6f6ccfc0b26474a52c50a130c1d3ca189))
+### Features
+* **core/forms:** Added FormSchemaExampleData interface. generateEmptyExampleData method now provides field types and descriptions. ([6084576](https://bitbucket.org/gnucoop/dino/commits/60845763f4a66e49b33a3ebf0fad1df5b6e9276e))
+* **material/edit-form-schema:** Handle form builder validation @Output to enable/disable Save ([f631fef](https://bitbucket.org/gnucoop/dino/commits/f631fef225c90c570640ba383739771d344347db))
+* **material/edit-report-schema:** move report Associated Form Schemas out from input row ([6f00f43](https://bitbucket.org/gnucoop/dino/commits/6f00f43ff61f6f91d6c80047f557062a77a4a820))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.1"></a>
 # 18.0.1 "naval-hyena" (2025-07-03)
 ### Bug Fixes
