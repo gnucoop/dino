@@ -234,8 +234,9 @@ export class Exporter implements OnDestroy {
     this._setupDataSub = this._setupData.subscribe(std => {
       if (std) {
         if (std.formSchema) {
-          this._schema$.next(std.formSchema);
-          this._buildExportModel(std.formSchema);
+          const schema = deepCopy(std.formSchema);
+          this._schema$.next(schema);
+          this._buildExportModel(schema);
         }
 
         if (std.listType === 'metrics') {
