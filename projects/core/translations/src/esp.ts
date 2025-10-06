@@ -122,6 +122,7 @@ export const ESP: Translation = {
   'Delete': 'Eliminar',
   'Delete Form Schema': 'Borrar esquema de formulario',
   'Delete all items': 'Eliminar todos los elementos',
+  'Delete Report Schema': 'Borrar esquema del informe',
   'Dino AI will fill it for you': 'Dino Ai lo llenará para ti',
   'Do you want to': 'Quieres',
   'Docx': 'Exportar Docx',
@@ -133,6 +134,7 @@ export const ESP: Translation = {
   'Edit Form Relationships': 'Editar relaciones de formulario',
   'Edit Form Schema': 'Editar esquema de formulario',
   'Edit all items': 'Editar todos los elementos',
+  'Edit Report Schema': 'Editar esquema del informe',
   'Email': 'Email',
   'End Date': 'Fecha final',
   'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':

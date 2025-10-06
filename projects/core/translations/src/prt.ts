@@ -123,6 +123,7 @@ export const PRT: Translation = {
   'Delete': 'Deletar',
   'Delete Form Schema': 'Eliminar esquema de formulário',
   'Delete all items': 'Excluir todos os itens',
+  'Delete Report Schema': 'Eliminar esquema de relatório',
   'Dino AI will fill it for you': 'Dino ai vai preencher para você',
   'Do you want to': 'Você deseja',
   'Docx': 'Exportar Docx',
@@ -134,6 +135,7 @@ export const PRT: Translation = {
   'Edit Form Relationships': 'Editar relações de formulários',
   'Edit Form Schema': 'Editar esquema de formulário',
   'Edit all items': 'Editar todos os itens',
+  'Edit Report Schema': 'Editar esquema de relatório',
   'Email': 'Email',
   'End Date': 'Data final',
   'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
