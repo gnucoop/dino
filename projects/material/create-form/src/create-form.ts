@@ -772,7 +772,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             `A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics`,
             {schema_name: `"${schema.name}"`},
           ),
-          this._ts.translate('UNIQUE FORM ALREADY EXISTS'),
+          this._ts.translate('CLOSE'),
           {duration: 10000},
         );
       });
