@@ -318,7 +318,7 @@ export const PRT: Translation = {
   'REPORT DATA': 'DADOS DO RELATORIO',
   'REPORT METRICS': 'MÉTRICAS DO RELATORIO',
   'Record': 'Registre',
-  'Record the Form': 'Registre o formulário',
+  'Transcribe the Form': 'Transcreva o formulário',
   'Record your Form': 'Registre seu formulário',
   'Relationships': 'Relacionamentos',
   'Remove': 'Remover',
@@ -399,6 +399,7 @@ export const PRT: Translation = {
     'Único: só pode existir um item com um determinado conjunto exato de métricas',
   'Update Date': 'Data de atualização',
   'Update translation': 'Atualizar tradução',
+  'Upload a file': 'Carregue um arquivo',
   'Upload a jpg or png file': 'Carregue um arquivo jpg ou png',
   'Upload an xls or csv file to import metrics:':
     'Carregue um arquivo XLS ou CSV para importar métricas:',

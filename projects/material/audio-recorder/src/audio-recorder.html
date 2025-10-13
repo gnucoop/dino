@@ -19,8 +19,9 @@
         <mat-icon>timer</mat-icon>
       </button>
     </div>
+
     <audio
-      *ngIf="!isRecording && (blobUrl|async) as sourceUrl"
+      *ngIf="!isRecording && mimetype().startsWith('audio') && (blobUrl|async) as sourceUrl"
       controls
       preload="metadata"
       autoplay
@@ -28,6 +29,14 @@
     >
       <source [src]="sourceUrl" type="audio/mp3" />
     </audio>
+
+    <mat-icon class="pdf-icon" *ngIf="!isRecording && mimetype() === 'application/pdf'">
+      picture_as_pdf
+    </mat-icon>
+
+    <img *ngIf="!isRecording && mimetype().startsWith('image')"
+      class="preview-image" [src]="(blobUrl|async)"
+    />
 
     <mat-form-field *ngIf="audioTranscription|async as transcription">
       <textarea rows="3" disabled="true" matInput [value]="transcription"></textarea>
@@ -37,11 +46,27 @@
     <button
       mat-fab
       extended
+      color="primary"
       *ngIf="!isRecording && (blobUrl|async) === null"
       (click)="startRecording()"
     >
       {{'Record'|transloco}}
       <mat-icon>mic</mat-icon>
+    </button>
+
+    <span *ngIf="!isRecording && (blobUrl|async) === null">
+      &nbsp; {{'or'|transloco}} &nbsp;
+    </span>
+
+    <button
+      mat-fab
+      extended
+      color="primary"
+      *ngIf="!isRecording && (blobUrl|async) === null"
+      (click)="loadFile()"
+    >
+      {{'Upload a file'|transloco}}
+      <mat-icon>upload</mat-icon>
     </button>
 
     <button

@@ -21,18 +21,9 @@
  */
 
 /**
- * Represents a recorded Audio Blob and its title
+ * Represents a File to be transcribed
  */
-export interface RecordedAudioOutput {
-  /**
-   * The audio blob
-   */
-  blob: Blob;
-  /**
-   * Audio blob title
-   */
-  title: string;
-}
+export type TranscriptionFile = File;
 
 /**
  * Represents a response whisper object received from Pandino API "transcribe" endpoint

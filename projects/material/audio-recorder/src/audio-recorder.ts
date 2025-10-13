@@ -33,11 +33,35 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, take} from 'rxjs/operators';
-import {RecordedAudioOutput} from './audio-interfaces';
+import {TranscriptionFile} from './audio-interfaces';
 import {FormSchema, FormSchemaExampleData} from '@dino/core/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslocoService} from '@ajf/core/transloco';
 import {NetworkStatusService} from '@dino/core/auth';
+
+/**
+ * Prompts the user to select a file from the filesystem.
+ */
+function selectFile(accept: string): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = accept;
+    input.style.display = "none";
+
+    input.onchange = () => {
+      if (input.files && input.files.length > 0) {
+        resolve(input.files[0]);
+      } else {
+        reject(new Error("Nessun file selezionato."));
+      }
+      input.remove();
+    };
+
+    document.body.appendChild(input);
+    input.click();
+  });
+}
 
 /**
  * Shows a list of active filters and allows their deletion.
@@ -52,11 +76,12 @@ import {NetworkStatusService} from '@dino/core/auth';
   encapsulation: ViewEncapsulation.None,
 })
 export class AudioRecorder implements OnDestroy {
+  isLoadingFile = false;
   isRecording = false;
   recordedTime: Observable<string | null>;
   blobUrl: BehaviorSubject<SafeUrl | null> = new BehaviorSubject<SafeUrl | null>(null);
-  blob: BehaviorSubject<RecordedAudioOutput | null> =
-    new BehaviorSubject<RecordedAudioOutput | null>(null);
+  blob: BehaviorSubject<TranscriptionFile | null> =
+    new BehaviorSubject<TranscriptionFile | null>(null);
 
   /**
    * The current Transcription of the recorded Audio
@@ -110,13 +135,41 @@ export class AudioRecorder implements OnDestroy {
       .subscribe(data => {
         if (data == null) return;
         this.blob.next(data);
-        this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data.blob)));
+        this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data)));
       });
 
     if (this._data.exampleData) {
       const exampleFields = Object.keys(this._data.exampleData.fieldTypes);
       this.formFields = exampleFields;
     }
+  }
+
+  /**
+   * Load file from filesystem.
+   */
+  async loadFile() {
+    if (this.isLoadingFile) {
+      return;
+    }
+    this.isLoadingFile = true;
+    try {
+      const file = await selectFile(".mp3,.pdf,.jpeg,.jpg,.png,.webp");
+      this.blob.next(file);
+      this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
+    } finally {
+      this.isLoadingFile = false;
+    }
+  }
+
+  /**
+   * Returns the mimetype of the currently loaded file.
+   */
+  mimetype() {
+    const file = this.blob.value;
+    if (file == null) {
+      return '';
+    }
+    return file.type;
   }
 
   /**
@@ -160,10 +213,10 @@ export class AudioRecorder implements OnDestroy {
   download(): void {
     this.blob.pipe(take(1)).subscribe(blob => {
       if (blob == null) return;
-      const url = window.URL.createObjectURL(blob.blob);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = blob.title;
+      link.download = blob.name;
       link.click();
     });
   }
@@ -175,7 +228,7 @@ export class AudioRecorder implements OnDestroy {
   transcribe(): void {
     if (!this.blob.value) return;
     this.isCommunicating.next(true);
-    this._audioRecorderService.sendToTrascribe(this.blob.value.blob).subscribe(res => {
+    this._audioRecorderService.sendToTrascribe(this.blob.value).subscribe(res => {
       if (res && !res.error && res.text) {
         this.audioTranscription.next(res.text);
       } else {

@@ -314,7 +314,7 @@ export const ENG: Translation = {
   'REPORT DATA': 'REPORT DATA',
   'REPORT METRICS': 'REPORT METRICS',
   'Record': 'Record',
-  'Record the Form': 'Record the Form',
+  'Transcribe the Form': 'Transcribe the Form',
   'Record your Form': 'Record your Form',
   'Relationships': 'Relationships',
   'Remove': 'Remove',
@@ -395,6 +395,7 @@ export const ENG: Translation = {
     'Unique: only one item with a given exact set of metrics can exist',
   'Update Date': 'Update Date',
   'Update translation': 'Update translation',
+  'Upload a file': 'Upload a file',
   'Upload a jpg or png file': 'Upload a jpg or png file',
   'Upload an xls or csv file to import metrics:': 'Upload an xls or csv file to import metrics:',
   'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.':

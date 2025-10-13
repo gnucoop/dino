@@ -318,7 +318,7 @@ export const ESP: Translation = {
   'REPORT DATA': 'DATOS DEL INFORME',
   'REPORT METRICS': 'MEDIDAS DEL INFORME',
   'Record': 'Registro',
-  'Record the Form': 'Registrar el formulario',
+  'Transcribe the Form': 'Transcribe el formulario',
   'Record your Form': 'Registrar el formulario',
   'Relationships': 'Relaciones',
   'Remove': 'Eliminar',
@@ -399,6 +399,7 @@ export const ESP: Translation = {
     'Único: sólo puede existir un artículo con un determinado conjunto exacto de métricas.',
   'Update Date': 'Fecha de actualización',
   'Update translation': 'Actualizar traducción',
+  'Upload a file': 'Cargar un archivo',
   'Upload a jpg or png file': 'Cargar un archivo jpg o png',
   'Upload an xls or csv file to import metrics:':
     'Cargar un archivo XLS o CSV para importar métricas:',

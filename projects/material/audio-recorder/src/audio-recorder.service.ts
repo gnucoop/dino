@@ -16,7 +16,7 @@
 import {Inject, Injectable, isDevMode} from '@angular/core';
 import {Subject, Observable, of as obsOf, BehaviorSubject} from 'rxjs';
 import {switchMap, take} from 'rxjs/operators';
-import {RecordedAudioOutput, TranscribeResponse} from './audio-interfaces';
+import {TranscriptionFile, TranscribeResponse} from './audio-interfaces';
 import {intervalToDuration} from 'date-fns';
 import {UserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ajf/core/transloco';
@@ -48,8 +48,8 @@ export class AudioRecorderService {
   /**
    * The recorded Audio Blob
    */
-  private _recorded: BehaviorSubject<RecordedAudioOutput | null> =
-    new BehaviorSubject<RecordedAudioOutput | null>(null);
+  private _recorded: BehaviorSubject<TranscriptionFile | null> =
+    new BehaviorSubject<TranscriptionFile | null>(null);
   /**
    * The recorded Audio time length
    */
@@ -66,7 +66,7 @@ export class AudioRecorderService {
     private _udm: UserDataManager,
   ) {}
 
-  getRecordedBlob(): Observable<RecordedAudioOutput | null> {
+  getRecordedBlob(): Observable<TranscriptionFile | null> {
     return this._recorded;
   }
 
@@ -213,7 +213,7 @@ export class AudioRecorderService {
       if (this._startTime) {
         const mp3Name = encodeURIComponent('audio_' + new Date().getTime() + '.mp3');
         this.stopMedia();
-        this._recorded.next({blob: blob, title: mp3Name});
+        this._recorded.next(new File([blob], mp3Name));
       }
     });
   }
