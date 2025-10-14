@@ -325,6 +325,8 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
         : null;
     } else if (this._title) {
       return `columns_${this._title}`;
+    } else if (snapshot.data['aggregation']) {
+      return `columns_aggregation`;
     }
     return null;
   }
