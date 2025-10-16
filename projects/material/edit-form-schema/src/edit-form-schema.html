@@ -52,7 +52,7 @@
                 class="dino-status-option-container"
                 *ngFor="let status of availableFormStatuses | async"
               >
-                <mat-option class="dino-status-option" [value]="status.id">
+                <mat-option class="dino-status-option" [value]="status.id" [matTooltip]="status.label">
                   <span [ngStyle]="{'color': status.color ?? 'inherit'}">{{status.label}}</span>
                 </mat-option>
                 <button

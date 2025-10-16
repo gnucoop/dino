@@ -76,6 +76,10 @@ dino-edit-form-schema {
     align-content: center;
     .dino-status-option {
       flex: 1 0 auto;
+      max-width: 66%;
+      span {
+        white-space: nowrap;
+      }
     }
     .dino-status-edit-button {
       flex: 0 1 auto;

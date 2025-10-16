@@ -12,11 +12,14 @@ dino-user-editor {
         flex: 1 1 auto;
     }
 
-    .mat-datepicker-toggle,
-    .mat-mdc-input-element {
+    .mat-datepicker-toggle {
         flex: 1 1 auto;
         width: auto !important;
-    }
+      }
+      .mat-mdc-input-element {
+        flex: 1 1 auto;
+        width: 100%;
+      }
     .mat-datepicker-toggle {
         position: absolute;
         right: 0px;
