@@ -250,6 +250,7 @@ export const ITA: Translation = {
   'Oops! Something went wrong checking': 'Oops! Qualcosa è andato storto dutante le verifiche',
   'Oops! We could not retrieve your checkout session. Please try again': 'Oops! Non abbiamo potuto recuperare la tua sessione di checkout. Per favore riprova',
   'Open the advanced filters': 'Apri i filtri avanzati',
+  'or': 'oppure',
   'Organization': 'Organizzazione',
   'Organization *': 'Organizzazione *',
   'Organization associated with the form': 'Organizzazione associata al form',

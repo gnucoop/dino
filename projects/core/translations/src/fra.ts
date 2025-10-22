@@ -248,6 +248,7 @@ export const FRA: Translation = {
   'Oops! Something went wrong checking': 'Oups! Quelque chose s\'est mal passé',
   'Oops! We could not retrieve your checkout session. Please try again': 'Oups! Nous n\'avons pas pu récupérer votre session de paiement. Veuillez réessayer',
   'Open the advanced filters': 'Ouvrir les filtres avancés',
+  'or': 'ou',
   'Organization': 'Organisation',
   'Organization *': 'Organisation *',
   'Organization associated with the form': 'Organisation associée au formulaire',

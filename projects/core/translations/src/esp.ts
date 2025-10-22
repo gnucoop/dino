@@ -274,6 +274,7 @@ export const ESP: Translation = {
   'Oops! We could not retrieve your checkout session. Please try again':
     '¡Ups! No pudimos recuperar su sesión de pago. Por favor intente de nuevo',
   'Open the advanced filters': 'Abrir los filtros avanzados',
+  'or': 'o',
   'Organization': 'Organización',
   'Organization *': 'Organización *',
   'Organization associated with the form': 'Organización asociada al formulario',

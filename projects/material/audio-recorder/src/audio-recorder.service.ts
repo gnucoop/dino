@@ -207,13 +207,10 @@ export class AudioRecorderService {
     });
 
     this.recorder.addEventListener('stop', () => {
-      const blob = new Blob(data, {
-        'type': 'audio/mp3',
-      });
       if (this._startTime) {
         const mp3Name = encodeURIComponent('audio_' + new Date().getTime() + '.mp3');
         this.stopMedia();
-        this._recorded.next(new File([blob], mp3Name));
+        this._recorded.next(new File(data, mp3Name, {type: 'audio/mp3'}));
       }
     });
   }

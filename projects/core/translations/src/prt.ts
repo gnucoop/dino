@@ -274,6 +274,7 @@ export const PRT: Translation = {
   'Oops! We could not retrieve your checkout session. Please try again':
     'Opa! Não foi possível recuperar sua sessão de checkout. Por favor, tente novamente',
   'Open the advanced filters': 'Abra os filtros avançados',
+  'or': 'ou',
   'Organization': 'Organização',
   'Organization *': 'Organização *',
   'Organization associated with the form': 'Organização associada ao formulário',

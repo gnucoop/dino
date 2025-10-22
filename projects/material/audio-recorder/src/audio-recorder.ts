@@ -153,7 +153,7 @@ export class AudioRecorder implements OnDestroy {
     }
     this.isLoadingFile = true;
     try {
-      const file = await selectFile(".mp3,.pdf,.jpeg,.jpg,.png,.webp");
+      const file = await selectFile(".mp3,.wav,.ogg,.pdf,.jpeg,.jpg,.png,.webp");
       this.blob.next(file);
       this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
     } finally {

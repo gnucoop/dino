@@ -270,6 +270,7 @@ export const ENG: Translation = {
   'Oops! We could not retrieve your checkout session. Please try again':
     'Oops! We could not retrieve your checkout session. Please try again',
   'Open the advanced filters': 'Open the advanced filters',
+  'or': 'or',
   'Organization': 'Organization',
   'Organization *': 'Organization *',
   'Organization associated with the form': 'Organization associated with the form',
