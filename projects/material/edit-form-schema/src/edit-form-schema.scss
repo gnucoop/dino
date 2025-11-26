@@ -1,5 +1,11 @@
 dino-edit-form-schema {
   > .mat-mdc-card:first-child {
+    overflow-y: auto;
+    height: calc(100vh - 73px);
+    @media only screen and (max-width: 599px) {
+      height: calc(100vh - 65px);
+    }
+
     border-left: none;
     margin: 0%;
     padding: 0px;
@@ -38,24 +44,16 @@ dino-edit-form-schema {
         }
       }
     }
-    .mat-mdc-card-content {
-      padding-bottom: 0%;
-      max-height: 60vh;
-      overflow-y: auto;
-      ajf-form-builder {
-        min-height: 60vh;
+    ajf-form-builder {
+      .ajf-fields-list {
+        background: transparent;
       }
-      .mat-drawer-content {
-        .ajf-fields-list {
-          background: transparent;
-        }
-        .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
-          background: transparent;
-          background-color: transparent;
-        }
-        .ajf-fields-list .mat-mdc-card-container .mat-mdc-card {
-          margin-left: 50px;
-        }
+      .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
+        background: transparent;
+        background-color: transparent;
+      }
+      .ajf-fields-list .mat-mdc-card-container .mat-mdc-card {
+        margin-left: 50px;
       }
     }
   }
