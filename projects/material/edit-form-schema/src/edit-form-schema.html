@@ -2,18 +2,18 @@
   <mat-card appearance="outlined" class="form-container">
     <ng-content select="[breadcrumbs]"></ng-content>
     <mat-card-content>
-      <ng-container *ngIf="formGroup|async as fgroup">
+      <div class="card-header" *ngIf="formGroup|async as fgroup">
         <form [formGroup]="fgroup" class="dino-form-attributes">
-          <mat-form-field>
-            <mat-label>{{'Form Label'|transloco}}</mat-label>
-            <b><input matInput formControlName="label" /></b>
-          </mat-form-field>
           <mat-form-field>
             <mat-label>{{'Form Name'|transloco}}</mat-label>
             <input matInput formControlName="name" />
             <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
               {{ 'This name is already being used.'|transloco}}
             </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{'Form Label'|transloco}}</mat-label>
+            <b><input matInput formControlName="label" /></b>
           </mat-form-field>
           <mat-form-field class="dino-form-attribute-short-field">
             <mat-label>{{'Icon Set'|transloco}}</mat-label>
@@ -141,7 +141,7 @@
             {{'Save'|transloco}} <mat-icon>save</mat-icon>
           </button>
         </div>
-      </ng-container>
+      </div>
       <ajf-form-builder [form]="form" (formBuilderValidation)="onFormBuilderValidation($event)"></ajf-form-builder>
     </mat-card-content>
   </mat-card>

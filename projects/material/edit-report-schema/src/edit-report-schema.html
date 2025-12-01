@@ -4,15 +4,15 @@
     <ng-container *ngIf="formGroup|async as fgroup">
       <form [formGroup]="fgroup" class="dino-report-attributes">
         <mat-form-field>
-          <mat-label>{{'Report Label'|transloco}}</mat-label>
-          <b><input matInput formControlName="label" [placeholder]="'Report Label'" /></b>
-        </mat-form-field>
-        <mat-form-field>
           <mat-label>{{'Report Name'|transloco}}</mat-label>
           <input matInput formControlName="name" [placeholder]="'Report Name'" />
           <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
             {{ 'This name is already being used.'|transloco}}
           </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{'Report Label'|transloco}}</mat-label>
+          <b><input matInput formControlName="label" [placeholder]="'Report Label'" /></b>
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{'Icon Set'|transloco}}</mat-label>
@@ -62,15 +62,6 @@
             >
           </mat-select>
         </mat-form-field>
-
-        <!-- <mat-form-field>
-          <mat-label>{{'Form Schemas'|transloco}}</mat-label>
-          <mat-select [placeholder]="'Form Schemas'|transloco">
-            <mat-option *ngFor="let formSchema of formSchemas|async"
-              >{{formSchema.label}}</mat-option
-            >
-          </mat-select>
-        </mat-form-field> -->
       </form>
 
       <div class="dino-edit-report-schema-actions">

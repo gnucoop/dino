@@ -10,7 +10,7 @@ dino-edit-form-schema {
     margin: 0%;
     padding: 0px;
     background: transparent;
-    .mat-mdc-card-header {
+    .card-header {
       display: flex;
       flex-flow: row wrap;
       padding-bottom: 10px;
@@ -25,7 +25,7 @@ dino-edit-form-schema {
           flex: 1 1 auto;
           font-size: 125%;
           margin: 5px;
-          &.dino-form-attribute-short-field{
+          &.dino-form-attribute-short-field {
             max-width: 150px;
           }
         }
