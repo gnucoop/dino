@@ -1,3 +1,20 @@
+<a name="18.0.3"></a>
+# 18.0.3 "favourite-mouse" (2025-12-02)
+### Bug Fixes
+* audio recording in form transcription ([e8c088c](https://bitbucket.org/gnucoop/dino/commits/e8c088c40a8b81415db5edf7b59c8b4d5a8b97a6))
+* **core/exporter:** fix datachat exporter with deepcopy of the schema ([89690d4](https://bitbucket.org/gnucoop/dino/commits/89690d470a12ec15870dedc64c43f2986d700c35))
+* **core/list:** add aggregation in ColumnsSelectionPresetKey ([69ecb62](https://bitbucket.org/gnucoop/dino/commits/69ecb62e2fbc246b75badf98d65bc767f1794eae))
+* **core/translations:** add label for edit/delete report schema ([f6d71d9](https://bitbucket.org/gnucoop/dino/commits/f6d71d99d5b571a3862e0d264cb0ab04dba60c06))
+* **material/collect:** change label for edit/delete report schema ([092c330](https://bitbucket.org/gnucoop/dino/commits/092c330be11a8290f24a2f21f8e7b14582b679b7))
+* **material/edit-form-schema:** fix form builder scrolling (taiga [#4484](https://bitbucket.org/gnucoop/dino/issues/4484)) ([c6bafa8](https://bitbucket.org/gnucoop/dino/commits/c6bafa855584c4a9b59dd9efbd542157eb623d01))
+* **material/multiple:** fix input fields width and form-status selector width ([3187d07](https://bitbucket.org/gnucoop/dino/commits/3187d07c85c8e787666f2d89c21ed9cee2a28e74))
+* **material/multiple:** ordered name and label input. fix fb css. ([5073850](https://bitbucket.org/gnucoop/dino/commits/5073850ddb1b52ff85cad2fbab918a2164e34475))
+* **multiple:** change label for close the snackbar ([eae8af6](https://bitbucket.org/gnucoop/dino/commits/eae8af6ca76fef847356573aef0ffcbb11b0b1c4))
+### Features
+* file upload for forms transcription ([2d17449](https://bitbucket.org/gnucoop/dino/commits/2d17449f5475e7e227db08c3f0ff0bd7209c91f2))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.2"></a>
 # 18.0.2 "practical-butterfly" (2025-09-26)
 ### Bug Fixes
