@@ -104,6 +104,14 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
         if (fschema == null || !data.statusEditable || statusChangesAllowed.includes(false)) {
           return obsOf([]);
         }
+
+        const invalidElem = data.formDatas.some(
+          data => !data.data || data.data['dinoinvalid'] === true || data.data['$invalid'] === true,
+        );
+        if (invalidElem) {
+          return obsOf([]);
+        }
+
         return combineLatest([
           this._fstm.formStatusesOfSchema(fschema),
           this._pcs.permissionContext,
