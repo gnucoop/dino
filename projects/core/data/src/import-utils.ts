@@ -24,7 +24,7 @@ import {format} from 'date-fns';
 import {JsonSchemaTypes} from 'rxdb';
 
 /**
- * Return the input value casted to the correct type (string, list or Date)
+ * Return the input value casted to the correct type (string, list, boolean or Date)
  * @param rowValue the initial value found in xls/csv file
  * @param rowColumn the xls/csv column name
  * @param type required type/types for this value
@@ -35,43 +35,46 @@ export function getValueFromRow(
   rowColumn: string,
   requiredType?: JsonSchemaTypes | JsonSchemaTypes[] | readonly JsonSchemaTypes[] | undefined,
 ): any {
-  let value = rowValue === undefined ? null : rowValue;
-  if (value !== null) {
-    if (typeof value === 'string') {
-      value = value.trim();
-      if (value.startsWith('[') && value.endsWith(']')) {
-        value = value
-          .slice(1, -1)
-          .split(',')
-          .filter((v: string) => v.length)
-          .map((v: string) => v.trim());
-      }
-    } else if (typeof value === 'object') {
-      try {
-        // Try if the object is a date
-        value = format(new Date(value), 'yyyy-MM-dd');
-      } catch (_e) {}
-    } else if (
-      typeof value === 'number' &&
-      (rowColumn.indexOf('_date') > 0 ||
-        rowColumn.indexOf('date_') > -1 ||
-        rowColumn.indexOf('created_at') > -1 ||
-        rowColumn.indexOf('updated_at') > -1 ||
-        rowColumn.indexOf('data_') > -1)
-    ) {
-      // Try if the number is a valid date
-      value = excelDateToJSDate(value);
-    }
+  let value = rowValue ?? null;
+  if (value === null) return value;
 
-    if (requiredType) {
-      const requiredTypes = Array.isArray(requiredType) ? requiredType : [requiredType];
-      if (requiredTypes.includes('string')) {
-        value = value.toString();
-      } else if (requiredTypes.includes('number')) {
-        value = !isNaN(value) ? +value : value;
-      }
+  if (typeof value === 'string') {
+    value = value.trim();
+    if (value.startsWith('[') && value.endsWith(']')) {
+      value = value
+        .slice(1, -1)
+        .split(',')
+        .filter((v: string) => v.length)
+        .map((v: string) => v.trim());
+    } else if (value === 'true' || value === 'false') {
+      value = value === 'true';
+    }
+  } else if (typeof value === 'object') {
+    try {
+      // Try if the object is a date
+      value = format(new Date(value), 'yyyy-MM-dd');
+    } catch (_e) {}
+  } else if (
+    typeof value === 'number' &&
+    (rowColumn.indexOf('_date') > 0 ||
+      rowColumn.indexOf('date_') > -1 ||
+      rowColumn.indexOf('created_at') > -1 ||
+      rowColumn.indexOf('updated_at') > -1 ||
+      rowColumn.indexOf('data_') > -1)
+  ) {
+    // Try if the number is a valid date
+    value = excelDateToJSDate(value);
+  }
+
+  if (requiredType) {
+    const requiredTypes = Array.isArray(requiredType) ? requiredType : [requiredType];
+    if (requiredTypes.includes('string')) {
+      value = value.toString();
+    } else if (requiredTypes.includes('number')) {
+      value = !isNaN(value) ? +value : value;
     }
   }
+
   return value;
 }
 
