@@ -1,5 +1,5 @@
 <ng-container *ngIf="qa">
-  <ng-container *ngIf="qa.question">
+  <ng-container *ngIf="qa.question && !qa.noPrompt">
     <div class="dino-datachat-entry dino-datachat-entry-question">
       <mat-icon class="dino-datachat-entry-icon" color="accent">face</mat-icon>
       <span>{{qa.question}}</span>
@@ -12,18 +12,37 @@
     </div>
   </ng-container>
   <ng-container *ngIf="qa.response">
-    <div class="dino-datachat-entry dino-datachat-entry-response">
-      <mat-icon class="dino-datachat-entry-icon" color="primary">smart_toy</mat-icon>
-      <span><b *ngIf="!qa.noPrompt">Answer:</b><span [innerHTML]="qa.response"></span></span>
-      <div class="dino-datachat-sources-chips" *ngIf="getRelevantVectors(qa).length > 0">
-        <span class="dino-datachat-sources-chips-span">{{'Sources'|transloco}}</span>
-        <mat-chip color="primary"
-        *ngFor="let vec of getRelevantVectors(qa)" (click)="openParagraphDialog(qa, vec)">
-          <span>
-            <b>{{vec.metadata.source ?? 'file'}}</b>
-            <ng-container *ngIf="vec.metadata.page"> (pag.{{vec.metadata.page}})</ng-container>
-          </span>
-        </mat-chip>
+    <div class="dino-datachat-response-container">
+      <div class="dino-datachat-entry dino-datachat-entry-response">
+        <mat-icon class="dino-datachat-entry-icon" color="primary">smart_toy</mat-icon>
+        <span><b *ngIf="!qa.noPrompt">Answer:</b><span [innerHTML]="getFormattedResponse(qa)"></span></span>
+        <div class="dino-datachat-sources-chips" *ngIf="getRelevantVectors(qa).length > 0">
+          <span class="dino-datachat-sources-chips-span">{{'Sources'|transloco}}</span>
+          <mat-chip color="primary" *ngFor="let vec of getRelevantVectors(qa)" (click)="openParagraphDialog(qa, vec)">
+            <span>
+              <b>{{vec.metadata.source ?? 'file'}}</b>
+              <ng-container *ngIf="vec.metadata.page"> (pag.{{vec.metadata.page}})</ng-container>
+            </span>
+          </mat-chip>
+        </div>
+        <div class="dino-datachat-entry-follow-up" *ngIf="qa.followUpQuestions && qa.followUpQuestions.length > 0">
+          <div class="dino-datachat-sources-chips">
+            <span class="dino-datachat-sources-chips-span">{{'Suggested questions'|transloco}}</span>
+            <mat-chip *ngFor="let question of qa.followUpQuestions" (click)="onFollowUpClick(question)">
+              {{question}}
+            </mat-chip>
+          </div>
+        </div>
+      </div>
+      <div class="dino-datachat-feedback" *ngIf="qa.log_id">
+        <button mat-icon-button (click)="onFeedbackClick(true)" matTooltip="Good response"
+          [disabled]="qa.userIsHappy === true">
+          <mat-icon [class.active-feedback]="qa.userIsHappy === true">thumb_up</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onFeedbackClick(false)" matTooltip="Bad response"
+          [disabled]="qa.userIsHappy === false">
+          <mat-icon [class.active-feedback]="qa.userIsHappy === false">thumb_down</mat-icon>
+        </button>
       </div>
     </div>
   </ng-container>
@@ -41,9 +60,7 @@
   </ng-container>
   <ng-container *ngIf="qa.componentData">
     <div class="dino-datachat-entry dino-datachat-entry-component-response">
-      <ng-container
-        *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"
-      ></ng-container>
+      <ng-container *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"></ng-container>
     </div>
   </ng-container>
 </ng-container>

@@ -23,13 +23,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import {CompletionVector, DataChatQA} from './datachat.interfaces';
 import {MatDialog} from '@angular/material/dialog';
 import {ParagraphDialogComponent} from './paragraph-dialog.component';
+import marked from 'marked';
 
 /**
  * The ChatEntry component.
@@ -51,6 +54,15 @@ export class DataChatEntry implements OnDestroy {
    * The base url for documentation files bucket
    */
   @Input() bucketUrl?: string;
+  /**
+   * Emitted when a follow up question is clicked
+   */
+  @Output() followUpClick: EventEmitter<string> = new EventEmitter<string>();
+
+  /**
+   * Emitted when feedback is clicked
+   */
+  @Output() feedbackClick: EventEmitter<{logId: string, isPositive: boolean, question: string, answer: string}> = new EventEmitter<{logId: string, isPositive: boolean, question: string, answer: string}>();
 
   constructor(private _dialog: MatDialog, private _cdr: ChangeDetectorRef) {}
 
@@ -79,6 +91,30 @@ export class DataChatEntry implements OnDestroy {
       },
       panelClass: 'dino-paragraph-dialog',
     });
+  }
+
+  onFollowUpClick(question: string) {
+    this.followUpClick.emit(question);
+  }
+
+  onFeedbackClick(isPositive: boolean) {
+    if (this.qa && this.qa.log_id) {
+      if (this.qa.userIsHappy === isPositive) {
+        return;
+      }
+      this.qa.userIsHappy = isPositive;
+      this.feedbackClick.emit({
+        logId: this.qa.log_id,
+        isPositive,
+        question: this.qa.question ?? '',
+        answer: this.qa.response ?? ''
+      });
+    }
+  }
+
+  getFormattedResponse(qa: DataChatQA): string {
+    if (!qa.response) return '';
+    return marked(qa.response);
   }
 
   ngOnDestroy(): void {

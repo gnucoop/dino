@@ -643,8 +643,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             });
           } else {
             this._addToHistory({
+              question: question,
               response: resp.answer,
               vectors: resp.vectors,
+              followUpQuestions: resp.follow_ups,
+              log_id: resp.log_id,
               noPrompt: true,
             });
           }
@@ -670,6 +673,31 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           this._cdr.detectChanges();
         },
       });
+  }
+
+  sendFeedback(logId: string, feedback: boolean, question: string, answer: string) {
+    if (!this.apiKey.value) return;
+    const url = `${this.baseDataChatAPIurl}/feedback`;
+    const headers = {'X-API-KEY': this.apiKey.value};
+    const userInfo = this._auth.getUserInfo();
+    const body = {
+      username: userInfo?.email,
+      userEmail: userInfo?.email,
+      question,
+      answer,
+      feedback: feedback ? 'positive' : 'negative',
+      log_id: logId,
+      source: "dinoapp"
+    };
+    this._http.post(url, body, {headers}).subscribe({
+      next: (res) => {
+        if(isDevMode()) console.log('Feedback sent', res);
+        this._snackBar.open(this._ts.translate('Feedback sent!'), 'OK', {duration: 3000});
+      },
+      error: (err) => {
+        if(isDevMode()) console.error('Error sending feedback', err);
+      }
+    });
   }
 
   /**

@@ -31,6 +31,8 @@ export interface DataChatQA {
   namespace?: string;
   vectors?: CompletionVector[];
   userIsHappy?: boolean;
+  followUpQuestions?: string[];
+  log_id?: string;
 }
 
 export interface ComponentData {
@@ -51,6 +53,8 @@ export interface CompletionResponse {
   error?: string;
   answer?: string;
   vectors?: CompletionVector[];
+  follow_ups?: string[];
+  log_id?: string;
 }
 
 export interface QA extends CompletionResponse {

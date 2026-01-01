@@ -4,8 +4,8 @@
   <ng-container *ngIf="(noData|async) === false; else nodata">
     <div class="dino-datachat-container">
       <ng-container *ngIf="(isLoading|async) === false; else loading">
-        <ng-container *ngIf="!termsAccepted"
-          ><div class="dino-gpt-terms-container">
+        <ng-container *ngIf="!termsAccepted">
+          <div class="dino-gpt-terms-container">
             <ng-content select="[gptTerms]"></ng-content>
           </div>
 
@@ -13,44 +13,23 @@
             <button mat-button color="primary" (click)="acceptTerms()" mat-raised-button>
               {{'Accept'|transloco}}
             </button>
-          </div></ng-container
-        >
+          </div>
+        </ng-container>
 
-        <ng-container
-          [formGroup]="apiKeyFormGroup"
-          *ngIf="(apiKey|async) === null && termsAccepted"
-        >
+        <ng-container [formGroup]="apiKeyFormGroup" *ngIf="(apiKey|async) === null && termsAccepted">
           <mat-form-field class="dino-apikey-field">
             <mat-label>{{'Enter your DataChat API key'|transloco}}</mat-label>
-            <input
-              [readonly]="(apiKey|async) !== null"
-              #apiKeyInput
-              matInput
-              formControlName="apiKeyControl"
-              (keyup.enter)="sendAPIKey(apiKeyInput.value)"
-              type="password"
-            />
-            <button
-              *ngIf="(isCommunicating|async) === false; else communicatingSpinner"
-              mat-mini-fab
-              matSuffix
-              color="accent"
-              aria-label="Send API Key"
-              class="dino-apikey-field-fab"
-              (click)="sendAPIKey(apiKeyInput.value)"
-            >
+            <input [readonly]="(apiKey|async) !== null" #apiKeyInput matInput formControlName="apiKeyControl"
+              (keyup.enter)="sendAPIKey(apiKeyInput.value)" type="password" />
+            <button *ngIf="(isCommunicating|async) === false; else communicatingSpinner" mat-mini-fab matSuffix
+              color="accent" aria-label="Send API Key" class="dino-apikey-field-fab"
+              (click)="sendAPIKey(apiKeyInput.value)">
               <mat-icon>arrow_forward</mat-icon>
             </button>
 
             <ng-template #communicatingSpinner>
-              <mat-spinner
-                matSuffix
-                class="dino-communicating-spinner"
-                color="accent"
-                [strokeWidth]="4"
-                [diameter]="32"
-                mode="indeterminate"
-              ></mat-spinner>
+              <mat-spinner matSuffix class="dino-communicating-spinner" color="accent" [strokeWidth]="4" [diameter]="32"
+                mode="indeterminate"></mat-spinner>
             </ng-template>
 
             <mat-error *ngIf="apiKeyFormGroup.get('apiKeyControl')?.hasError('required')">
@@ -65,39 +44,24 @@
         <ng-container *ngIf="(apiKey|async) !== null && termsAccepted">
           <ng-container *ngIf="termsAccepted">
             <div #chatHistory class="dino-chat-history-container">
-              <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl" />
+              <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl"
+                (followUpClick)="chat($event)"
+                (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
             </div>
           </ng-container>
 
           <ng-container [formGroup]="chatInputFormGrop" *ngIf="termsAccepted">
             <div class="dino-chat-input-container">
-              <mat-form-field
-                appearance="fill"
-                class="dino-chat-namespace-select"
-                *ngIf="mode === 'completion'"
-              >
+              <mat-form-field appearance="fill" class="dino-chat-namespace-select" *ngIf="mode === 'completion'">
                 <mat-label>{{'Namespace'|transloco}}</mat-label>
-                <mat-select
-                  #namespace
-                  (selectionChange)="selectNamespace($event)"
-                  [(value)]="currentNamespace"
-                  ><mat-option *ngFor="let namespace of namespaces" [value]="namespace">
+                <mat-select #namespace (selectionChange)="selectNamespace($event)"
+                  [(value)]="currentNamespace"><mat-option *ngFor="let namespace of namespaces" [value]="namespace">
                     {{namespace || 'default'}}
-                  </mat-option></mat-select
-                ></mat-form-field
-              >
+                  </mat-option></mat-select></mat-form-field>
               <mat-form-field class="dino-chat-text-input">
-                <textarea
-                  #chatPrompt
-                  matInput
-                  formControlName="chatInputControl"
-                  rows="1"
-                  cols="50"
-                  placeholder="Ciao!"
-                  style="resize: none;"
-                  (keydown)="chatPromptText = chatPrompt.value"
-                  (keyup.enter)="chat(chatPromptText); chatPrompt.value = ''; chatPromptText = '';"
-                ></textarea>
+                <textarea #chatPrompt matInput formControlName="chatInputControl" rows="1" cols="50" placeholder="Ciao!"
+                  style="resize: none;" (keydown)="chatPromptText = chatPrompt.value"
+                  (keyup.enter)="chat(chatPromptText); chatPrompt.value = ''; chatPromptText = '';"></textarea>
               </mat-form-field>
             </div>
           </ng-container>
@@ -106,12 +70,11 @@
 
       <ng-template #loading>
         <div class="dino-loading">
-          <ng-container *ngIf="spinnerImagePath; else defaultspinner"
-            ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+          <ng-container *ngIf="spinnerImagePath; else defaultspinner"><dino-loading-spinner
+              [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
           </ng-container>
-          <ng-template #defaultspinner
-            ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
-          ></ng-template>
+          <ng-template #defaultspinner><mat-spinner class="dino-component-load-spinner"
+              mode="indeterminate"></mat-spinner></ng-template>
         </div>
       </ng-template>
     </div>
@@ -130,11 +93,7 @@
       {{'Sorry, you don\'t have enough Credits!'|transloco}}
     </h1>
     <br />
-    <h1
-      *ngIf="config"
-      class="dino-no-tokens-message-row dino-no-tokens-message-row-buy"
-      (click)="openPayment()"
-    >
+    <h1 *ngIf="config" class="dino-no-tokens-message-row dino-no-tokens-message-row-buy" (click)="openPayment()">
       {{'You can purchase more Credits here'|transloco}}
       <mat-icon class="dino-no-tokens-icon" color="primary">smart_toy</mat-icon>
     </h1>
