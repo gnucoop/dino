@@ -10,16 +10,7 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
-import {
-  catchError,
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  withLatestFrom,
-} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 import {additionalConfig, optionalModulesConfig} from '../mockconfig';
 import {AreaManager} from '@dino/core/areas';
 import {Case, CaseManager} from '@dino/core/cases';
@@ -196,18 +187,15 @@ export class MatFormsListE2E {
           ...statusHeaders,
           ...this.formSchemaManager.generateSchemaListHeaders(schema),
         ];
-        if (
-          this.booleanQuickEdit &&
-          this.booleanQuickEdit.length &&
-          this.booleanQuickEdit.includes(schema.name)
-        ) {
-          finalHeaders = finalHeaders.map(header => {
-            if (header.fieldType === 3) {
-              header.isEditable = _ => true;
-            }
-            return header;
-          });
-        }
+        // Warning: if booleanQuickEdit should determine wether booleans are quick-editable,
+        // add a check here (booleanQuickEdit should include schema.name)
+        finalHeaders = finalHeaders.map(header => {
+          if (header.fieldType === 3) {
+            header.isEditable = _ => true;
+          }
+          return header;
+        });
+
         if (nodesVisibility && nodesVisibility.length) {
           finalHeaders = this._filterHeadersByNodeVisibility(finalHeaders, nodesVisibility);
         }
