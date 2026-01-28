@@ -169,7 +169,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   /**
    * If true, this Form Schema has record audio enabled
    */
-  private _isRecordAudioEnabled: Observable<boolean> = obsOf(false);
+  private _isRecordAudioEnabled: Observable<boolean> = obsOf(true);
   get isRecordAudioEnabled(): Observable<boolean> {
     return this._isRecordAudioEnabled;
   }
@@ -465,14 +465,15 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       shareReplay(1),
     );
 
-    this._isRecordAudioEnabled = combineLatest([this._formSchema, this._recordAudioEnabled]).pipe(
-      map(([schema, recordAudioEnabled]) =>
-        recordAudioEnabled && recordAudioEnabled[schema.name]
-          ? recordAudioEnabled[schema.name]
-          : false,
-      ),
-      shareReplay(1),
-    );
+    // @TODO: De-comment this if you wish to determine wether audio record is available for this form schema
+    // this._isRecordAudioEnabled = combineLatest([this._formSchema, this._recordAudioEnabled]).pipe(
+    //   map(([schema, recordAudioEnabled]) =>
+    //     recordAudioEnabled && recordAudioEnabled[schema.name]
+    //       ? recordAudioEnabled[schema.name]
+    //       : false,
+    //   ),
+    //   shareReplay(1),
+    // );
 
     this._isPipeline = combineLatest([this._formSchema, this._pipelineSchemas]).pipe(
       map(([schema, pipelines]) => pipelines.includes(schema.name)),
