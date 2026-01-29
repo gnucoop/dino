@@ -8,7 +8,7 @@ import {PANDINO_SERVICE_CONFIG, PandinoConfig} from '@dino/core/data';
 export class GptE2E {
   baseDataChatAPIurl = 'http://127.0.0.1:5000';
   validateEndpoint = 'validateapikey';
-  completionChatEndpoint = 'completion.json';
+  completionChatEndpoint = 'agentchat';
   namespaces = this._pandinoConfig.pandinoGptNamespaces ?? [];
   syncGraphQLUrl = syncGraphQLUrl;
   bucketUrl = 'https://dinorag.s3.eu-south-1.amazonaws.com';

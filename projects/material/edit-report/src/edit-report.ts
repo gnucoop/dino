@@ -917,10 +917,7 @@ export class EditReport implements AfterViewInit {
         return aiContext;
       }
 
-      let gptPromptUrl = this.baseDataChatAPIurl.replace('completion.json', 'prompt.txt');
-      if (gptPromptUrl.indexOf('prompt.txt') < 0) {
-        gptPromptUrl = `${this.baseDataChatAPIurl}/prompt.txt`;
-      }
+      const gptPromptUrl = `${this.baseDataChatAPIurl}/prompt.txt`;
 
       const singlePromptProgressBarValue = 100 / validPrompts.length;
       this.isAILoading.next(true);

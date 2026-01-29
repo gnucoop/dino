@@ -581,7 +581,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   /**
-   * Sends a message to the API 'completion.json' endpoint and adds the response
+   * Sends a message to the API 'agentchat' endpoint and adds the response
    * to the chat history
    * @param text The chat message sent
    */
@@ -609,7 +609,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       console.log('Sending completion request: ', req);
     }
     const url = `${this.baseDataChatAPIurl}/${
-      this.endpointUrls?.completionChatEndpoint ?? 'completion.json'
+      this.endpointUrls?.completionChatEndpoint ?? 'agentchat'
     }`;
     this._udm
       .getActiveUserData()
@@ -675,6 +675,15 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       });
   }
 
+  /**
+   * Sends the user feedback to maui's feedback endpoint
+   *
+   * @param logId The ID of the log in the mauidb log table
+   * @param feedback User feedback
+   * @param question qa question
+   * @param answer qa answer
+   * @returns
+   */
   sendFeedback(logId: string, feedback: boolean, question: string, answer: string) {
     if (!this.apiKey.value) return;
     const url = `${this.baseDataChatAPIurl}/feedback`;
@@ -687,17 +696,20 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       answer,
       feedback: feedback ? 'positive' : 'negative',
       log_id: logId,
-      source: "dinoapp"
+      source: 'dinoapp',
     };
-    this._http.post(url, body, {headers}).subscribe({
-      next: (res) => {
-        if(isDevMode()) console.log('Feedback sent', res);
-        this._snackBar.open(this._ts.translate('Feedback sent!'), 'OK', {duration: 3000});
-      },
-      error: (err) => {
-        if(isDevMode()) console.error('Error sending feedback', err);
-      }
-    });
+    this._http
+      .post(url, body, {headers})
+      .pipe(take(1))
+      .subscribe({
+        next: res => {
+          if (isDevMode()) console.log('Feedback sent', res);
+          this._snackBar.open(this._ts.translate('Feedback sent!'), 'OK', {duration: 3000});
+        },
+        error: err => {
+          if (isDevMode()) console.error('Error sending feedback', err);
+        },
+      });
   }
 
   /**
