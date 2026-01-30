@@ -567,7 +567,7 @@ export const AR: Translation = {
     'سيتم بناء التقييم على معيارين: شرح السلوك وذكر التكرار',
   "Les camarades d'Ilyass se moquent constamment de son apparence et sont violents envers lui. Il a également découvert qu'ils avaient créé un groupe WhatsApp et y partageaient ses photos personnelles. Il se sent impuissant et incapable de se défendre. Comment qualifier le comportement des camarades d'Ilyass ? Développez votre réponse.":
     'زملاء إلياس يسخرون دائمًا من مظهره ويعاملونه بعنف. كما اكتشف أنهم أنشؤوا مجموعة على واتساب ويتشاركون فيها صوره الشخصية. يشعر بالعجز ولا يستطيع الدفاع عن نفسه. كيف يمكن أن نسمي سلوك زملاء إلياس؟ طوّر إجابتك',
-  "Les camarades d'Ilyass se moquent constamment de son apparence et sont violents envers lui":
+  "Les camarades d'Ilyass se moquent constamment de son apparence et sont violents envers lui. Il a également découvert qu'ils avaient créé un groupe WhatsApp et y partageaient ses photos personnelles. Il se sent impuissant et incapable de se défendre. Comment qualifier le comportement des camarades d'Ilyass? Développez votre réponse.":
     'زملاء إلياس يسخرون دائمًا من مظهره ويعاملونه بعنف',
   'Mouhcine consomme des drogues tous les jours.': 'محسن يتعاطى المخدرات يوميا',
   'Mouhcine joue à Free Fire le week-end après sa séance de sport pour se détendre pendant 30 minutes.':
@@ -578,7 +578,7 @@ export const AR: Translation = {
     'محسن يقضي عدة ساعات يوميًا على وسائل التواصل الاجتماعي إنستغرام / تيك توك / فيسبوك ...) بشكل قهري أثناء الحصة الدراسية',
   "Nada souffre d'anxiété et envisage de consulter un psychologue. Son amie s'est moquée d'elle en disant : « Les psychologues, c'est pour les fous. » L'amie de Nada a-t-elle raison ? Justifiez votre réponse.":
     'ندى تعاني من القلق وتفكر في زيارة أخصائي نفسي. صديقتها سخرت منها وقالت: "الأخصائيون النفسيون للمجانين فقط." هل صديقة ندى على حق؟ برر إجابتك',
-  "Nada souffre d'anxiété et envisage de consulter un psychologue":
+  "Nada souffre d'anxiété et envisage de consulter un psychologue. Son amie s'est moquée d'elle en disant: Les psychologues, c'est pour les fous. L'amie de Nada a-t-elle raison ? Justifiez votre réponse.":
     'ندى تعاني من القلق وتفكر في زيارة أخصائي نفسي',
   'Ne pas montrer nos faiblesses aux autres.': 'عدم إظهار ضعفنا للآخرين',
   'Pour ne pas montrer nos faiblesses aux autres.': 'عدم إظهار ضعفنا للآخرين',
@@ -602,7 +602,7 @@ export const AR: Translation = {
     'سارة ومريم ويانيس يسخرون من مظهر زميلتهم فرح خلال حصة الرياضة',
   'Sara, Meryem, Yanis et Farah jouent à un jeu en ligne et se disputent au sujet des règles.':
     'سارة ومريم ويانيس وفرح يلعبون لعبة عبر الإنترنت ويتجادلون حول القواعد',
-  'Savoir comment réagir dans les situations difficiles': 'معرفة كيفية التصرف في المواقف الصعبة',
+  'Savoir comment réagir dans les situations difficiles.': 'معرفة كيفية التصرف في المواقف الصعبة',
   'Score': 'نقطة / نقاط',
   'Score final': 'النقطة النهائية',
   'Se remettre en question.': 'التساؤل حول الذات',
