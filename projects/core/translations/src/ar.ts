@@ -536,7 +536,7 @@ export const AR: Translation = {
     'أمين وياسين يتشاجران مرة واحدة فقط ثم يتصالحان',
   "Amine fait preuve de violence, d'agressivité et de mauvais traitements répétés envers Yassine. Malheureusement, Yassine est incapable de se défendre correctamente.":
     'أمين عنيف، عدواني، ويهين ياسين بشكل متكرر. وياسين للأسف لا يستطيع الدفاع عن نفسه جيدا',
-  'Attribuer des points': 'نقاط الجائزة',
+  'Attribuer des points': 'تنقيط / منح النقاط',
   'Avoir des values et des principes.': 'امتلاك قيم ومبادئ',
   "Choisissez ce qui n'est pas considéré comme une dépendance.": 'اختر ما لا يعتبر إدمانا',
   "Choisissez le faux stade du développement de l'identité":
@@ -571,16 +571,17 @@ export const AR: Translation = {
     'زملاء إلياس يسخرون دائمًا من مظهره ويعاملونه بعنف',
   'Mouhcine consomme des drogues tous les jours.': 'محسن يتعاطى المخدرات يوميا',
   'Mouhcine joue à Free Fire le week-end après sa séance de sport pour se détendre pendant 30 minutes.':
-    'في عطلة نهاية الأسبوع بعد ممارسة الرياضة، محسن يلعب لعبة Free Fire لمدة 30 دقيقة للاسترخاء',
+    'في عطلة نهاية الأسبوع بعد Free Fire محسن يلعب لعبة ممارسة الرياضة لمدة 30 دقيقة للاسترخاء',
   'Mouhcine joue à la loterie tous les week-ends et vend ses biens personnels pour pouvoir jouer.':
     'محسن يلعب اليانصيب كل عطلة نهاية أسبوع ويبيع أغراضه الشخصية من أجل اللعب',
   'Mouhcine passe plusieurs heures par jour sur tous les réseaux sociaux (Instagram / TikTok / Facebook...) de manière compulsive pendant ses cours.':
-    'محسن يقضي عدة ساعات يوميًا على وسائل التواصل الاجتماعي (إنستغرام / تيك توك / فيسبوك ...) بشكل قهري أثناء الحصة الدراسية',
+    'محسن يقضي عدة ساعات يوميًا على وسائل التواصل الاجتماعي إنستغرام / تيك توك / فيسبوك ...) بشكل قهري أثناء الحصة الدراسية',
   "Nada souffre d'anxiété et envisage de consulter un psychologue. Son amie s'est moquée d'elle en disant : « Les psychologues, c'est pour les fous. » L'amie de Nada a-t-elle raison ? Justifiez votre réponse.":
     'ندى تعاني من القلق وتفكر في زيارة أخصائي نفسي. صديقتها سخرت منها وقالت: "الأخصائيون النفسيون للمجانين فقط." هل صديقة ندى على حق؟ برر إجابتك',
   "Nada souffre d'anxiété et envisage de consulter un psychologue":
     'ندى تعاني من القلق وتفكر في زيارة أخصائي نفسي',
-  'Ne pas montrer nos faiblesses aux autres.': 'عدم إظهار نقاط ضعفنا للآخرين',
+  'Ne pas montrer nos faiblesses aux autres.': 'عدم إظهار ضعفنا للآخرين',
+  'Pour ne pas montrer nos faiblesses aux autres.': 'عدم إظهار ضعفنا للآخرين',
   'Nom et prénom': 'الاسم واللقب',
   'Perdre le contrôle de soi et se mettre en colère.': 'عدم التحكم في النفس والغضب',
   "Pour la première fois, Sara envoie un message méchant à Yanis sur WhatsApp, mais Yanis l'ignore.":
@@ -589,7 +590,8 @@ export const AR: Translation = {
   'Pour être en bonne santé.': 'تحقيق رفاه نفسي جيد',
   'Quand pourrons-nous parler de cyberharcèlement ?': 'متى يمكننا الحديث عن التنمر الإلكتروني؟',
   'Quand pourrons-nous parler de harcèlement scolaire ?': 'متى يمكننا الحديث عن التنمر؟',
-  'Quand une persona peut-elle être considérée comme dépendante ?': 'متى يمكن اعتبار شخص ما مدمنا؟',
+  'Quand une persona peut-elle être considérée comme dépendante ?':
+    'متى يمكن اعتبار شخص ما مدمنًا؟',
   'Quelle affirmation est correcte ?': 'أي من هذه العبارات صحيحة؟',
   'Quelle affirmation à propos de la régulation émotionnelle n’est pas correcte ?':
     'أي عبارة عن تنظيم المشاعر غير صحيحة؟',
@@ -601,8 +603,8 @@ export const AR: Translation = {
   'Sara, Meryem, Yanis et Farah jouent à un jeu en ligne et se disputent au sujet des règles.':
     'سارة ومريم ويانيس وفرح يلعبون لعبة عبر الإنترنت ويتجادلون حول القواعد',
   'Savoir comment réagir dans les situations difficiles': 'معرفة كيفية التصرف في المواقف الصعبة',
-  Score: 'نقطة',
-  'Score final': 'النتيجة النهائية',
+  'Score': 'نقطة / نقاط',
+  'Score final': 'النقطة النهائية',
   'Se remettre en question.': 'التساؤل حول الذات',
   'Thème 1 : Harcèlement et cyberharcèlement': 'التنمر والتنمر الإلكتروني',
   'Thème 2 : Les dépendances': 'الإدمان',
@@ -627,5 +629,5 @@ export const AR: Translation = {
   'La notation sera basée sur deux critères :\n\n<ul><li>1 point : Explication du caractère harceleur du comportement.\n\n<li>1 point : Mention du caractère répétitif du harcèlement et de l’incapacité d’Ilyass à se défendre.\n\n</ul>':
     'سيتم احتساب الدرجات بناءً على معيارين:\n\n<ul><li>نقطة واحدة: شرح السلوك.\n\n<li>نقطة واحدة: الإشارة إلى أن الأمر كان متكررًا وأن إلياس لم يستطع الدفاع عن نفسه.\n\n</ul>',
   'Quand une personne peut-elle être considérée comme dépendante ?':
-    'كيف يمكنك اعتبار شخص ما معتمداً على غيره؟',
+    'متى يمكن اعتبار شخص ما مدمنًا؟',
 };
