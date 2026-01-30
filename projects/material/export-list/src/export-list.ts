@@ -140,7 +140,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
   /**
    * The placeholder for the ',' in multiple choises translated values
    */
-  private readonly _multipleChoisePlaceholder = '_';
+  private readonly _multipleChoisePlaceholder = '__COMMA__';
 
   private readonly _exportedFieldNames$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
     [],
@@ -847,23 +847,27 @@ export class ExportList implements AfterViewInit, OnDestroy {
    */
   private _expandMultipleChoiceRow(baseExportCtx: Context, fieldName: string): Context[] {
     let multipleValues: string[] = [];
-    if (Array.isArray(baseExportCtx[fieldName])) {
-      multipleValues = [...(baseExportCtx[fieldName] as string[])];
-    } else if (baseExportCtx[fieldName] && baseExportCtx[fieldName].length > 0) {
-      if (baseExportCtx[fieldName][0] === '[' && baseExportCtx[fieldName].length > 2) {
-        multipleValues = baseExportCtx[fieldName]
-          .substring(1, baseExportCtx[fieldName].length - 1)
-          .split(',');
+    const value = baseExportCtx[fieldName];
+
+    if (Array.isArray(value)) {
+      multipleValues = [...(value as string[])];
+    } else if (typeof value === 'string' && value.trim().length > 0) {
+      const raw = value.trim();
+
+      if (raw.startsWith('[') && raw.endsWith(']') && raw.length > 2) {
+        multipleValues = raw.slice(1, -1).split(',');
       } else {
-        multipleValues = baseExportCtx[fieldName].split(',');
+        multipleValues = raw.split(',');
       }
     }
     baseExportCtx[fieldName] = '';
-    let rowsForMultipleChoice: Context[] = [];
+    const rowsForMultipleChoice: Context[] = [];
     // Multiple choice: add a row for each value
     multipleValues.forEach(mVal => {
       const exportCtx: Context = {};
-      exportCtx[fieldName] = mVal.replace(new RegExp(this._multipleChoisePlaceholder, 'g'), ',');
+      exportCtx[fieldName] = mVal
+        .trim()
+        .replace(new RegExp(this._multipleChoisePlaceholder, 'g'), ',');
       rowsForMultipleChoice.push(exportCtx);
     });
     return rowsForMultipleChoice;
@@ -893,8 +897,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
             field.fieldType === AjfFieldType.MultipleChoice &&
             baseExportCtx[field.name] &&
             ctx[field.name] &&
-            Array.isArray(ctx[field.name]) &&
-            ctx[field.name].length > 1
+            Array.isArray(ctx[field.name])
           ) {
             // Multiple choice: add a row for each value
             const rowsForMultipleChoice = this._expandMultipleChoiceRow(baseExportCtx, field.name);
@@ -931,8 +934,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
                     repField.fieldType === AjfFieldType.MultipleChoice &&
                     exportCtx[repField.name] &&
                     ctx[repFieldNameWithCount] &&
-                    Array.isArray(ctx[repFieldNameWithCount]) &&
-                    ctx[repFieldNameWithCount].length > 1
+                    Array.isArray(ctx[repFieldNameWithCount])
                   ) {
                     rowsForMultipleChoice.push(
                       ...this._expandMultipleChoiceRow(exportCtx, repField.name),
