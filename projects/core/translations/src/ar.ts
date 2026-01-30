@@ -531,104 +531,101 @@ export const AR: Translation = {
   'Hide empty rows': 'إخفاء الصفوف الفارغة',
   'Table definition': 'تعريف الجدول',
   'Value must not be empty': 'القيمة يجب أن لا تكون فارغة',
-  'Amine a un avis différent de celui de Yassine.': 'يختلف رأي أمين عن رأي ياسين.',
+  'Amine a un avis différent de celui de Yassine.': 'لدى أمين رأي مختلف عن رأي ياسين',
   'Amine et Yassine se disputent une seule fois, puis ils se réconcilient.':
-    'لم يتجادل أمين وياسين إلا مرة واحدة ثم تصالحا.',
-  "Amine fait preuve de violence, d'agressivité et de mauvais traitements répétés envers Yassine. Malheureusement, Yassine est incapable de se défendre correctement.":
-    'أمين عنيف وعدواني ومسيء باستمرار تجاه ياسين. وللأسف، لا يستطيع ياسين الدفاع عن نفسه بشكل كافٍ.',
+    'أمين وياسين يتشاجران مرة واحدة فقط ثم يتصالحان',
+  "Amine fait preuve de violence, d'agressivité et de mauvais traitements répétés envers Yassine. Malheureusement, Yassine est incapable de se défendre correctamente.":
+    'أمين عنيف، عدواني، ويهين ياسين بشكل متكرر. وياسين للأسف لا يستطيع الدفاع عن نفسه جيدا',
   'Attribuer des points': 'نقاط الجائزة',
-  'Avoir des valeurs et des principes.': 'امتلاك القيم والمبادئ.',
-  "Choisissez ce qui n'est pas considéré comme une dépendance.": 'حدد ما لا يُعتبر إضافة',
+  'Avoir des values et des principes.': 'امتلاك قيم ومبادئ',
+  "Choisissez ce qui n'est pas considéré comme une dépendance.": 'اختر ما لا يعتبر إدمانا',
   "Choisissez le faux stade du développement de l'identité":
-    'اختر المرحلة الخاطئة من مراحل تطور الهوية',
+    'اختر المرحلة الخاطئة من مراحل بناء الهوية',
   'Comprendre, reconnaître et gérer ses émotions de manière appropriée.':
-    'افهم مشاعرك، وتعرف عليها، وقم بإدارتها بشكل مناسب.',
+    'فهم المشاعر، والتعرف عليها، وإدارتها بطريقة مناسبة',
   "Copier la personnalité d'une autre personne pour être accepté et ne pas être jugé.":
-    'قلّد شخصية شخص آخر لتُقبل ولا تُرفض.',
-  'Copier les autres pour être accepté.': 'انسخ الآخرين ليتم قبولهم.',
+    'تقليد شخصية شخص آخر من أجل القبول وعدم التعرض للحكم أو الانتقاد',
+  'Copier les autres pour être accepté.': 'تقليد الآخرين من أجل أن يتم قبول الشخص',
   'Date de naissance': 'تاريخ الميلاد',
-  'Faire comme si tout allait bien.': 'تظاهر بأن كل شيء على ما يرام.',
-  'Garder ses émotions pour soi.': 'انظر إلى مشاعرك من أجلي.',
-  "Hamza a déjà utilisé une cigarette électronique à trois reprises avec son ami, mais a décidé de ne plus l'utiliser.":
-    'استخدم حمزة السيجارة الإلكترونية ثلاث مرات مع صديقه، لكنه قرر عدم استخدامها بعد الآن.',
+  'Faire comme si tout allait bien.': 'التظاهر بأن كل شيء على ما يرام',
+  'Garder ses émotions pour soi.': 'كبت المشاعر وعدم التعبير عنها',
+  "Hamza a déjà utilisé une cigarette électronique à trois reprises avec son ami, ma a décidé de ne plus l'utiliser.":
+    'حمزة استخدم السيجارة الإلكترونية ثلاث مرات مع صديقه . ثم قرر عدم استخدامها مرة أخرى',
   "Hamza buvait de l'alcool avant, mais il a arrêté et vit maintenant normalement.":
-    'حمزة لا يشرب إلا الكحول، لكنني تركته وأعيش الآن حياة طبيعية.',
+    'حمزة كان يشرب الكحول لكنه توقف وأصبح يعيش بشكل طبيعي',
   "Hamza consomme du haschisch depuis neuf mois, a du mal à se motiver pour aller à l'école sans en consommer et éprouve une envie irrésistible.":
-    'يقضي حمزة الأشهر الجديدة في استهلاك الحشيش، ويجد صعوبة في إيجاد الدافع للذهاب إلى المدرسة دون استهلاكه، ويواجه العديد من الأشياء الخارجة عن سيطرته.',
+    'حمزة يستهلك الحشيش منذ تسعة أشهر، ويجد صعوبة في الذهاب إلى المدرسة دون استهلاكه، ويعاني من رغبة قهرية لا يمكن السيطرة عليها',
   "L'adolescence est une période importante où les individus s'interrogent sur leur identité.":
-    'تُعدّ فترة المراهقة مرحلة مهمة يتساءل فيها الأفراد عن هويتهم.',
+    'مرحلة المراهقة فترة مهمة حيث يتساءل الأفراد حول هويتهم',
   'La notation sera basée sur deux critères :\n\n<ul><li>1 point : Déstigmatisation des problèmes de santé mentale / Reconnaissance que chacun peut se sentir mal à un moment donné de sa vie\n\n<li>1 point : Souligner l’importance de demander de l’aide et de consulter un psychologue lorsqu’on en ressent le besoin.\n\n</ul>':
-    'سيتم احتساب النقاط بناءً على معيارين:\n\n<ul><li>نقطة واحدة: إزالة وصمة العار عن الصحة النفسية / الاعتراف بأن أي شخص قد يشعر بالسوء في مرحلة ما من حياته.\n\n<li>نقطة واحدة: التأكيد على أهمية طلب المساعدة واستشارة أخصائي نفسي عند الضرورة.\n\n</ul>',
-  'La notation sera basée sur deux critères :\n\n<ul><li>1 point : Explication du caractère harceleur du comportement.\n\n<li>1 point : Mention du caractère répétitif du harcèlement et de l’incapacité d’Ilyass à se défendre.\n\n</ul>':
-    'سيتم احتساب الدرجات بناءً على معيارين:\n\n<ul><li>نقطة واحدة: شرح السلوك.\n\n<li>نقطة واحدة: الإشارة إلى أن الأمر كان متكررًا وأن إلياس لم يستطع الدفاع عن نفسه.\n\n</ul>',
+    'سيتم بناء التقييم على معيارين:\n\n<ul><li>نقطة واحدة: إزالة وصمة العار عن الصحة النفسية / الاعتراف بأن أي شخص قد يشعر بالسوء في مرحلة ما من حياته\n\n<li>نقطة واحدة: التأكيد على أهمية طلب المساعدة واستشارة أخصائي نفسي عند الحاجة\n\n</ul>',
+  'La notation sera basée sur duex critères :\n\n<ul><li>1 point : Explication du caractère harceleur du comportement.\n\n<li>1 point : Mention du caractère répétitif du harcèlement et de l’incapacité d’Ilyass à se défendre.\n\n</ul>':
+    'سيتم بناء التقييم على معيارين:\n\n<ul><li>نقطة واحدة: شرح أن السلوك هو تنمر\n\n<li>نقطة واحدة: الإشارة إلى أن التنمر كان متكررًا وأن إلياس لم يستطع الدفاع عن نفسه\n\n</ul>',
   'La notation sera basée sur deux critères : Déstigmatisation Souligner':
-    'سيتم احتساب النقاط بناءً على معيارين:\n\n<ul><li>نقطة واحدة: إزالة وصمة العار عن الصحة النفسية / الاعتراف بأن أي شخص قد يشعر بالسوء في مرحلة ما من حياته.\n\n<li>نقطة واحدة: التأكيد على أهمية طلب المساعدة واستشارة أخصائي نفسي عند الضرورة.\n\n</ul>',
+    'سيتم بناء التقييم على معيارين: إزالة وصمة العار والتأكيد على طلب المساعدة',
   'La notation sera basée sur deux critères : Explication Mention du caractère':
-    'سيتم احتساب الدرجات بناءً على معيارين:\n\n<ul><li>نقطة واحدة: شرح السلوك.\n\n<li>نقطة واحدة: الإشارة إلى أن الأمر كان متكررًا وأن إلياس لم يستطع الدفاع عن نفسه.\n\n</ul>',
+    'سيتم بناء التقييم على معيارين: شرح السلوك وذكر التكرار',
   "Les camarades d'Ilyass se moquent constamment de son apparence et sont violents envers lui. Il a également découvert qu'ils avaient créé un groupe WhatsApp et y partageaient ses photos personnelles. Il se sent impuissant et incapable de se défendre. Comment qualifier le comportement des camarades d'Ilyass ? Développez votre réponse.":
-    'يسخر رفاق إلياس منه باستمرار بسبب مظهره ويتعاملون معه بعنف. اكتشفنا أيضًا أنهم أنشأوا مجموعة على واتساب لمشاركة صورهم الشخصية. إذا شعرت بالعجز وعدم القدرة على الدفاع عن نفسك، فكيف يمكننا وصف سلوك رفاق إلياس؟ طوّر الإجابة:',
+    'زملاء إلياس يسخرون دائمًا من مظهره ويعاملونه بعنف. كما اكتشف أنهم أنشؤوا مجموعة على واتساب ويتشاركون فيها صوره الشخصية. يشعر بالعجز ولا يستطيع الدفاع عن نفسه. كيف يمكن أن نسمي سلوك زملاء إلياس؟ طوّر إجابتك',
   "Les camarades d'Ilyass se moquent constamment de son apparence et sont violents envers lui":
-    'يسخر رفاق إلياس منه باستمرار بسبب مظهره ويتعاملون معه بعنف. اكتشفنا أيضًا أنهم أنشأوا مجموعة على واتساب لمشاركة صورهم الشخصية. إذا شعرت بالعجز وعدم القدرة على الدفاع عن نفسك، فكيف يمكننا وصف سلوك رفاق إلياس؟ طوّر الإجابة:',
-  'Mouhcine consomme des drogues tous les jours.': 'محسن يستهلك المخدرات طوال اليوم.',
+    'زملاء إلياس يسخرون دائمًا من مظهره ويعاملونه بعنف',
+  'Mouhcine consomme des drogues tous les jours.': 'محسن يتعاطى المخدرات يوميا',
   'Mouhcine joue à Free Fire le week-end après sa séance de sport pour se détendre pendant 30 minutes.':
-    'يلعب محسن لعبة فري فاير في نهاية الأسبوع بعد الحصة الرياضية لمدة 30 دقيقة.',
+    'في عطلة نهاية الأسبوع بعد ممارسة الرياضة، محسن يلعب لعبة Free Fire لمدة 30 دقيقة للاسترخاء',
   'Mouhcine joue à la loterie tous les week-ends et vend ses biens personnels pour pouvoir jouer.':
-    'يلعب محسن في اليانصيب كل نهاية أسبوع ويبيع منتجاته الخاصة ليتمكن من المشاركة.',
+    'محسن يلعب اليانصيب كل عطلة نهاية أسبوع ويبيع أغراضه الشخصية من أجل اللعب',
   'Mouhcine passe plusieurs heures par jour sur tous les réseaux sociaux (Instagram / TikTok / Facebook...) de manière compulsive pendant ses cours.':
-    'يقضي محسن ساعات طويلة يومياً على جميع الشبكات الاجتماعية (إنستغرام / تيك توك / فيسبوك ...) بطريقة قهرية طوال فترة وجوده.',
+    'محسن يقضي عدة ساعات يوميًا على وسائل التواصل الاجتماعي (إنستغرام / تيك توك / فيسبوك ...) بشكل قهري أثناء الحصة الدراسية',
   "Nada souffre d'anxiété et envisage de consulter un psychologue. Son amie s'est moquée d'elle en disant : « Les psychologues, c'est pour les fous. » L'amie de Nada a-t-elle raison ? Justifiez votre réponse.":
-    'أنتِ لا تعانين من القلق وتفكرين في زيارة طبيب نفسي. سخرت صديقتي منها، فقلت لها: «الأطباء النفسيون عاجزون عن فعل أي شيء». هل صديقة ندى محقة؟ برر إجابتك.',
+    'ندى تعاني من القلق وتفكر في زيارة أخصائي نفسي. صديقتها سخرت منها وقالت: "الأخصائيون النفسيون للمجانين فقط." هل صديقة ندى على حق؟ برر إجابتك',
   "Nada souffre d'anxiété et envisage de consulter un psychologue":
-    'أنتِ لا تعانين من القلق وتفكرين في زيارة طبيب نفسي. سخرت صديقتي منها، فقلت لها: «الأطباء النفسيون عاجزون عن فعل أي شيء». هل صديقة ندى محقة؟ برر إجابتك.',
-  'Ne pas montrer nos faiblesses aux autres.': 'ألا نظهر نقاط ضعفنا للآخرين.',
+    'ندى تعاني من القلق وتفكر في زيارة أخصائي نفسي',
+  'Ne pas montrer nos faiblesses aux autres.': 'عدم إظهار نقاط ضعفنا للآخرين',
   'Nom et prénom': 'الاسم واللقب',
-  'Perdre le contrôle de soi et se mettre en colère.': 'فقدان السيطرة على الذات والغضب.',
+  'Perdre le contrôle de soi et se mettre en colère.': 'عدم التحكم في النفس والغضب',
   "Pour la première fois, Sara envoie un message méchant à Yanis sur WhatsApp, mais Yanis l'ignore.":
-    'أولاً وقبل كل شيء، أرسلت سارة رسالة قاسية إلى يانيس عبر تطبيق واتساب، لكن يانيس تجاهلها.',
-  "Pour la première fois, Sara envoie un message méchant à Yanis sur WhatsApp, mais Yanis l'ignore":
-    'أولاً وقبل كل شيء، أرسلت سارة رسالة قاسية إلى يانيس عبر تطبيق واتساب، لكن يانيس تجاهلها.',
-  'Pour mieux communiquer avec les autres': 'لتحسين التواصل مع الآخرين.',
-  'Pour mieux communiquer avec les autres.': 'لتحسين التواصل مع الآخرين.',
-  'Pour être en bonne santé.': 'لتكون بصحة جيدة',
-  'Pour être en bonne santé': 'لتكون بصحة جيدة',
-  'Quand pourrons-nous parler de cyberharcèlement ?': 'كيف يمكننا التحدث عن التنمر الإلكتروني؟',
-  'Quand pourrons-nous parler de harcèlement scolaire ?': 'كيف يمكننا التحدث عن التنمر؟',
-  'Quand une personne peut-elle être considérée comme dépendante ?':
-    'كيف يمكنك اعتبار شخص ما معتمداً على غيره؟',
-  'Quelle affirmation est correcte ?': 'أيّ من العبارات التالية صحيحة؟',
+    'سارة ترسل رسالة جارحة إلى يانيس على واتساب لأول مرة، ويانيس يتجاهلها',
+  'Pour mieux communiquer avec les autres.': 'تحسين التواصل مع الآخرين',
+  'Pour être en bonne santé.': 'تحقيق رفاه نفسي جيد',
+  'Quand pourrons-nous parler de cyberharcèlement ?': 'متى يمكننا الحديث عن التنمر الإلكتروني؟',
+  'Quand pourrons-nous parler de harcèlement scolaire ?': 'متى يمكننا الحديث عن التنمر؟',
+  'Quand une persona peut-elle être considérée comme dépendante ?': 'متى يمكن اعتبار شخص ما مدمنا؟',
+  'Quelle affirmation est correcte ?': 'أي من هذه العبارات صحيحة؟',
   'Quelle affirmation à propos de la régulation émotionnelle n’est pas correcte ?':
-    'هل هذه العبارة المتعلقة بالتنظيم العاطفي غير صحيحة؟',
-  'Qu’est-ce que la régulation émotionnelle ?': 'ما هو التنظيم العاطفي؟',
+    'أي عبارة عن تنظيم المشاعر غير صحيحة؟',
+  'Qu’est-ce que la régulation émotionnelle ?': 'ما هو تنظيم المشاعر؟',
   "Sara, Meryem et Yanis ont créé un groupe WhatsApp pour se moquer de l'apparence de leur camarade de classe Farah en partageant des photos d'elle.":
-    'أنشأت سارة ومريم ويانيس مجموعة على تطبيق واتساب للسخرية من مظهر زميلتهم فرح من خلال مشاركة صورها.',
+    'سارة ومريم ويانيس ينشؤون مجموعة على واتساب للسخرية من مظهر زميلتهم فرح من خلال مشاركة صورها',
   "Sara, Meryem et Yanis se moquent de l'apparence de leur camarade de classe Farah pendant le cours d'EPS.":
-    'سارة ومريم ويانيس يسخرون من مظهر زميلتهم فرح خلال حصة التربية البدنية.',
+    'سارة ومريم ويانيس يسخرون من مظهر زميلتهم فرح خلال حصة الرياضة',
   'Sara, Meryem, Yanis et Farah jouent à un jeu en ligne et se disputent au sujet des règles.':
-    'سارة ومريم ويانيس وفرح يلعبون لعبة عبر الإنترنت ويناقشون القواعد.',
-  'Savoir comment réagir dans les situations difficiles.': 'معرفة كيفية التصرف في المواقف الصعبة.',
-  "Sara, Meryem et Yanis ont créé un groupe WhatsApp pour se moquer de l'apparence de leur camarade de classe Farah en partageant des photos d'elle":
-    'أنشأت سارة ومريم ويانيس مجموعة على تطبيق واتساب للسخرية من مظهر زميلتهم فرح من خلال مشاركة صورها.',
-  "Sara, Meryem et Yanis se moquent de l'apparence de leur camarade de classe Farah pendant le cours d'EPS":
-    'سارة ومريم ويانيس يسخرون من مظهر زميلتهم فرح خلال حصة التربية البدنية.',
-  'Sara, Meryem, Yanis et Farah jouent à un jeu en ligne et se disputent au sujet des règles':
-    'سارة ومريم ويانيس وفرح يلعبون لعبة عبر الإنترنت ويناقشون القواعد.',
-  'Savoir comment réagir dans les situations difficiles': 'معرفة كيفية التصرف في المواقف الصعبة.',
+    'سارة ومريم ويانيس وفرح يلعبون لعبة عبر الإنترنت ويتجادلون حول القواعد',
+  'Savoir comment réagir dans les situations difficiles': 'معرفة كيفية التصرف في المواقف الصعبة',
   Score: 'نقطة',
   'Score final': 'النتيجة النهائية',
-  'Se remettre en question.': 'إعادة النظر في الذات.',
-  'Thème 1 : Harcèlement et cyberharcèlement': 'الموضوع الأول: التنمر والتنمر الإلكتروني',
-  'Thème 2 : Les dépendances': 'الموضوع الثاني: الإدمان',
-  "Thème 3 : Développement de l'identité": 'الموضوع 3: تطوير الهوية',
-  'Thème 4 : Régulation émotionnelle': 'الموضوع 4: التنظيم العاطفي',
+  'Se remettre en question.': 'التساؤل حول الذات',
+  'Thème 1 : Harcèlement et cyberharcèlement': 'التنمر والتنمر الإلكتروني',
+  'Thème 2 : Les dépendances': 'الإدمان',
+  "Thème 3 : Développement de l'identité": 'بناء الهوية',
+  'Thème 4 : Régulation émotionnelle': 'تنظيم المشاعر',
   'Un jour, Amine taquine son ami Yassine pour plaisanter.':
-    'ذات مرة سخر أمين من صديقه ياسين كما لو كان يمزح.',
+    'أمين يمازح صديقه ياسين مرة واحدة على سبيل المزاح',
   'Veuillez répondre aux questions suivantes': 'يرجى الإجابة على الأسئلة التالية',
   'Veuillez sélectionner la bonne réponse parmi celles proposées ci-dessous.':
-    'يرجى اختيار الإجابة الصحيحة من بين الإجابات المعروضة أدناه.',
+    'يرجى اختيار الإجابة الصحيحة من بين الإجابات المعروضة أدناه',
   'Veuillez sélectionner la bonne réponse parmi celles proposées ci-dessous':
-    'يرجى اختيار الإجابة الصحيحة من بين الإجابات المعروضة أدناه.',
+    'يرجى اختيار الإجابة الصحيحة من بين الإجابات المعروضة أدناه',
   'informations générales': 'معلومات عامة',
   'À 18 ans, l’identité d’une personne est pleinement formée.':
-    'عند بلوغ سن الثامنة عشرة، تتشكل هوية الشخص بشكل كامل.',
+    'في سن 18 عامًا تكون هوية الشخص مكتملة تماما',
   'École de référence': 'مدرسة مرجعية',
+  "Amine fait preuve de violence, d'agressivité et de mauvais traitements répétés envers Yassine. Malheureusement, Yassine est incapable de se défendre correctement.":
+    'أمين عنيف وعدواني ومسيء باستمرار تجاه ياسين. وللأسف، لا يستطيع ياسين الدفاع عن نفسه بشكل كافٍ.',
+  'Avoir des valeurs et des principes.': 'امتلاك القيم والمبادئ.',
+  "Hamza a déjà utilisé une cigarette électronique à trois reprises avec son ami, mais a décidé de ne plus l'utiliser.":
+    'استخدم حمزة السيجارة الإلكترونية ثلاث مرات مع صديقه، لكنه قرر عدم استخدامها بعد الآن.',
+  'La notation sera basée sur deux critères :\n\n<ul><li>1 point : Explication du caractère harceleur du comportement.\n\n<li>1 point : Mention du caractère répétitif du harcèlement et de l’incapacité d’Ilyass à se défendre.\n\n</ul>':
+    'سيتم احتساب الدرجات بناءً على معيارين:\n\n<ul><li>نقطة واحدة: شرح السلوك.\n\n<li>نقطة واحدة: الإشارة إلى أن الأمر كان متكررًا وأن إلياس لم يستطع الدفاع عن نفسه.\n\n</ul>',
+  'Quand une personne peut-elle être considérée comme dépendante ?':
+    'كيف يمكنك اعتبار شخص ما معتمداً على غيره؟',
 };
