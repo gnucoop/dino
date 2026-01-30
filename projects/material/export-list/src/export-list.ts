@@ -140,7 +140,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
   /**
    * The placeholder for the ',' in multiple choises translated values
    */
-  private readonly _multipleChoisePlaceholder = '__COMMA__';
+  private readonly _multipleChoisePlaceholder = '_COMMA_';
 
   private readonly _exportedFieldNames$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
     [],
