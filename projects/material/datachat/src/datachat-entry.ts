@@ -32,7 +32,7 @@ import {
 import {CompletionVector, DataChatQA} from './datachat.interfaces';
 import {MatDialog} from '@angular/material/dialog';
 import {ParagraphDialogComponent} from './paragraph-dialog.component';
-import marked from 'marked';
+import {marked} from 'marked';
 
 /**
  * The ChatEntry component.
@@ -62,7 +62,12 @@ export class DataChatEntry implements OnDestroy {
   /**
    * Emitted when feedback is clicked
    */
-  @Output() feedbackClick: EventEmitter<{logId: string, isPositive: boolean, question: string, answer: string}> = new EventEmitter<{logId: string, isPositive: boolean, question: string, answer: string}>();
+  @Output() feedbackClick: EventEmitter<{
+    logId: string;
+    isPositive: boolean;
+    question: string;
+    answer: string;
+  }> = new EventEmitter<{logId: string; isPositive: boolean; question: string; answer: string}>();
 
   constructor(private _dialog: MatDialog, private _cdr: ChangeDetectorRef) {}
 
@@ -107,14 +112,14 @@ export class DataChatEntry implements OnDestroy {
         logId: this.qa.log_id,
         isPositive,
         question: this.qa.question ?? '',
-        answer: this.qa.response ?? ''
+        answer: this.qa.response ?? '',
       });
     }
   }
 
   getFormattedResponse(qa: DataChatQA): string {
     if (!qa.response) return '';
-    return marked(qa.response);
+    return marked.parse(qa.response) as string;
   }
 
   ngOnDestroy(): void {
