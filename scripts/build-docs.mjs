@@ -6,7 +6,7 @@ import {packages} from './build-config.mjs';
 import {
   buildDgeniDocs,
   buildExamples,
-  buildOverviews,
+  // buildOverviews,
   copyExamplesSource,
   highlightExamplesSource,
 } from './docs/index.mjs';
@@ -16,7 +16,7 @@ const buildDocs = async () => {
   await buildExamples(packages);
   versionReplacements(['dino-examples']);
   await buildDgeniDocs(packages);
-  await buildOverviews(packages);
+  // await buildOverviews(packages);
   copyExamplesSource(packages);
   highlightExamplesSource(packages);
 };
