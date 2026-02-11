@@ -32,7 +32,7 @@ import {
 import {CompletionVector, DataChatQA} from './datachat.interfaces';
 import {MatDialog} from '@angular/material/dialog';
 import {ParagraphDialogComponent} from './paragraph-dialog.component';
-import {marked} from 'marked';
+import * as mrkd from 'marked';
 
 /**
  * The ChatEntry component.
@@ -119,7 +119,7 @@ export class DataChatEntry implements OnDestroy {
 
   getFormattedResponse(qa: DataChatQA): string {
     if (!qa.response) return '';
-    return marked.parse(qa.response) as string;
+    return mrkd.parse(qa.response) as string;
   }
 
   ngOnDestroy(): void {

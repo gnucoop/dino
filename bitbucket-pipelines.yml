@@ -37,7 +37,7 @@ pipelines:
             - rm -rf dist
             - yarn install --frozen-lockfile --non-interactive --network-timeout 600000
             - ./scripts/release.mjs
-            # - ./scripts/build-docs.mjs
+            - ./scripts/build-docs.mjs
             - ./scripts/jenkins/create-build-artifacts.mjs
             - ./scripts/publish.mjs
           artifacts:
