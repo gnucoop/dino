@@ -38,8 +38,8 @@
   "private": true,
   "dependencies": {
     "@ajf/core": "^18.0.7",
-    "@ajf/icons": "1.0.0",
     "@ajf/material": "^18.0.7",
+    "@ajf/icons": "1.0.0",
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
     "@angular/common": "^18.2.13",
@@ -92,7 +92,6 @@
     "@angular-devkit/build-angular": "^18.2.14",
     "@angular/cli": "^18.2.14",
     "@angular/compiler-cli": "^18.2.13",
-    "@anthropic-ai/sdk": "^0.78.0",
     "@babel/core": "^7.17.9",
     "@babel/preset-typescript": "^7.16.7",
     "@babel/traverse": "^7.17.9",
