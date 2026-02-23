@@ -1,0 +1,45 @@
+name: Generate Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'projects/e2e-app/src/**/*.ts'
+      - 'projects/e2e-app/src/**/*.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Generate docs
+        run: node scripts/docs-generate.mjs
+        env:
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
+
+      - name: Commit and push
+        run: |
+          git config user.email "docs-bot@dinoapp.io"
+          git config user.name "Docs Bot"
+          git add docs/ mkdocs.yml config/en/mkdocs.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: auto-update from source [skip ci]"
+            git push
+          fi

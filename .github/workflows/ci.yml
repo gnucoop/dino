@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  NODE_OPTIONS: --max_old_space_size=8192
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    container:
+      image: devgnucoop/dinobitbucketpipeline:20.11.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: node-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+
+      - name: Lint
+        run: yarn -s lint
+
+      - name: Build
+        run: |
+          rm -rf dist
+          ./scripts/build.mjs
+
+  unit-tests:
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    container:
+      image: devgnucoop/dinobitbucketpipeline:20.11.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: node-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+
+      - name: Model schema tests
+        run: yarn -s model-schema-test
+
+      - name: Unit tests
+        run: yarn -s test:ci
+
+  e2e-tests:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    container:
+      image: devgnucoop/dinobitbucketpipeline:20.11.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: node-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+
+      - name: E2E tests
+        run: ./scripts/e2e-ci.mjs
+
+  release-and-publish:
+    needs: e2e-tests
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    container:
+      image: devgnucoop/dinobitbucketpipeline:20.11.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: node-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-
+
+      - name: Install dependencies
+        run: |
+          rm -rf dist
+          yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+
+      - name: Release
+        run: ./scripts/release.mjs
+
+      - name: Build docs
+        run: ./scripts/build-docs.mjs
+
+      - name: Create build artifacts
+        run: ./scripts/jenkins/create-build-artifacts.mjs
+
+      - name: Publish
+        run: ./scripts/publish.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/artifacts/**/*.tgz

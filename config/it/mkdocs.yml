@@ -1,0 +1,38 @@
+INHERIT: ../../mkdocs.yml
+site_name: Documentazione Dinoapp
+site_url: https://gnucoop.github.io/docs.dinoapp.io/it/
+docs_dir: ../../docs/it
+site_dir: ../../site/it
+theme:
+  name: material
+  language: it
+nav:
+  - Home: index.md
+  - Per Iniziare:
+    - Accesso: getting-started/login.md
+    - Reimpostare la Password: getting-started/reset-password.md
+  - Interfaccia e Navigazione: interface/index.md
+  - Dashboard: dashboard/index.md
+  - Moduli:
+    - Panoramica: forms/index.md
+    - Compilare un Modulo: forms/filling-in-a-form.md
+    - Visualizzare e Gestire le Risposte: forms/viewing-submissions.md
+    - Esplorare i Dati sulla Mappa: forms/map-view.md
+    - Chattare con i Tuoi Dati (AI): forms/data-chat.md
+    - Gestire gli Schemi dei Moduli: forms/managing-templates.md
+  - Report:
+    - Panoramica: reports/index.md
+    - Creare un Report: reports/creating-a-report.md
+    - Visualizzare e Gestire i Report: reports/viewing-reports.md
+    - Gestire gli Schemi dei Report: reports/managing-templates.md
+  - Aggregazione: aggregation/index.md
+  - Metriche:
+    - Panoramica: metrics/index.md
+    - Gestire le Metriche: metrics/managing-metrics.md
+  - DinoGPT: gpt/index.md
+  - Notifiche: notifications/index.md
+  - Moduli Pubblici: public-forms/index.md
+  - Amministrazione:
+    - Gestire Utenti e Gruppi: administration/users.md
+    - Gestire le Lingue: administration/languages.md
+  - Checkout: checkout/index.md

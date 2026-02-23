@@ -1,0 +1,39 @@
+INHERIT: ../../mkdocs.yml
+site_name: توثيق Dinoapp
+site_url: https://gnucoop.github.io/docs.dinoapp.io/ar/
+docs_dir: ../../docs/ar
+site_dir: ../../site/ar
+theme:
+  name: material
+  language: ar
+  direction: rtl
+nav:
+  - الرئيسية: index.md
+  - البدء:
+    - تسجيل الدخول: getting-started/login.md
+    - إعادة تعيين كلمة المرور: getting-started/reset-password.md
+  - الواجهة والتنقل: interface/index.md
+  - لوحة المعلومات: dashboard/index.md
+  - النماذج:
+    - نظرة عامة: forms/index.md
+    - ملء نموذج: forms/filling-in-a-form.md
+    - عرض وإدارة الإرسالات: forms/viewing-submissions.md
+    - استكشاف البيانات على الخريطة: forms/map-view.md
+    - الدردشة مع بياناتك (ذكاء اصطناعي): forms/data-chat.md
+    - إدارة مخططات النماذج: forms/managing-templates.md
+  - التقارير:
+    - نظرة عامة: reports/index.md
+    - إنشاء تقرير: reports/creating-a-report.md
+    - عرض وإدارة التقارير: reports/viewing-reports.md
+    - إدارة مخططات التقارير: reports/managing-templates.md
+  - التجميع: aggregation/index.md
+  - المقاييس:
+    - نظرة عامة: metrics/index.md
+    - إدارة المقاييس: metrics/managing-metrics.md
+  - DinoGPT: gpt/index.md
+  - الإشعارات: notifications/index.md
+  - النماذج العامة: public-forms/index.md
+  - الإدارة:
+    - إدارة المستخدمين والمجموعات: administration/users.md
+    - إدارة اللغات: administration/languages.md
+  - Checkout: checkout/index.md

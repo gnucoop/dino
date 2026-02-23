@@ -1,0 +1,38 @@
+INHERIT: ../../mkdocs.yml
+site_name: Документація Dinoapp
+site_url: https://gnucoop.github.io/docs.dinoapp.io/uk/
+docs_dir: ../../docs/uk
+site_dir: ../../site/uk
+theme:
+  name: material
+  language: uk
+nav:
+  - Головна: index.md
+  - Початок Роботи:
+    - Вхід: getting-started/login.md
+    - Скидання Пароля: getting-started/reset-password.md
+  - Інтерфейс та Навігація: interface/index.md
+  - Панель: dashboard/index.md
+  - Форми:
+    - Огляд: forms/index.md
+    - Заповнення Форми: forms/filling-in-a-form.md
+    - Перегляд та Керування Відповідями: forms/viewing-submissions.md
+    - Дослідження Даних на Карті: forms/map-view.md
+    - Чат з Вашими Даними (ШІ): forms/data-chat.md
+    - Керування Схемами Форм: forms/managing-templates.md
+  - Звіти:
+    - Огляд: reports/index.md
+    - Створення Звіту: reports/creating-a-report.md
+    - Перегляд та Керування Звітами: reports/viewing-reports.md
+    - Керування Схемами Звітів: reports/managing-templates.md
+  - Агрегація: aggregation/index.md
+  - Метрики:
+    - Огляд: metrics/index.md
+    - Керування Метриками: metrics/managing-metrics.md
+  - DinoGPT: gpt/index.md
+  - Сповіщення: notifications/index.md
+  - Публічні Форми: public-forms/index.md
+  - Адміністрування:
+    - Керування Користувачами та Групами: administration/users.md
+    - Керування Мовами: administration/languages.md
+  - Checkout: checkout/index.md
