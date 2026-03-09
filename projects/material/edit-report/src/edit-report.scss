@@ -83,11 +83,12 @@ dino-edit-report {
     align-items: center;
     justify-content: flex-end;
     padding: 8px 0;
+    gap: 8px;
+    margin-bottom: 10px;
     span {
       flex-grow: 1;
     }
     button {
-      margin-left: 8px;
       min-width: 50px;
       padding: 0 5px;
       height: 30px !important;

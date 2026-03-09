@@ -215,7 +215,11 @@ export class EditReport implements AfterViewInit {
    * The Report instance used for rendering the Report
    */
   reportInstance: Observable<AjfReportInstance | null> = obsOf(null);
-  private _currentReportInstance: AjfReportInstance | null = null;
+
+  /**
+   * Copy of the current report instance, used for printing
+   */
+  private _printableReport: AjfReportInstance | null = null;
 
   /**
    * Emits when the reportInstance is created
@@ -746,7 +750,7 @@ export class EditReport implements AfterViewInit {
         if (rData != null) {
           context.report_data = rData;
         }
-        this._currentReportInstance = createReportInstance(
+        const report = createReportInstance(
           rSchema.schema,
           context,
           this._translateService,
@@ -754,12 +758,13 @@ export class EditReport implements AfterViewInit {
         if (this._aiSnackBar) {
           this._aiSnackBar.dismiss();
         }
-        this.reportInstanceCreatedEvt.emit(this._currentReportInstance);
+        this.reportInstanceCreatedEvt.emit(report);
+        this._printableReport = report;
 
         if (isDevMode()) {
           console.log(format(new Date(), 'HH:mm:ss') + '*** createReportInstance end ');
         }
-        return this._currentReportInstance;
+        return report;
       }),
       take(1),
     );
@@ -792,13 +797,22 @@ export class EditReport implements AfterViewInit {
   }
 
   /**
+   * Update printableReport when the filter widget changes.
+   */
+  filterWidgetChanged(changes: {context: AjfContext, report?: AjfReportInstance}) {
+    if (changes.report) {
+      this._printableReport = changes.report;
+    }
+  }
+
+  /**
    * Prints the current report Instance to pdf
    */
-  printReport() {
+  printReport(orientation: 'portrait' | 'landscape') {
     combineLatest([this.reportSchema, this.reportData, this.reportMetrics!])
       .pipe(take(1))
       .subscribe(([schema, data, metricString]) => {
-        if (schema == null || this._currentReportInstance == null) {
+        if (schema == null || this._printableReport == null) {
           return;
         }
         const header: any = [
@@ -842,7 +856,7 @@ export class EditReport implements AfterViewInit {
             });
           }
         }
-        openReportPdf(this._currentReportInstance, undefined, undefined, header);
+        openReportPdf(this._printableReport, orientation, undefined, header);
       });
   }
 
@@ -850,9 +864,9 @@ export class EditReport implements AfterViewInit {
    * Export the current report Instance to xlsx
    */
   exportXlsx() {
-    if (this._currentReportInstance != null) {
+    if (this._printableReport != null) {
       const iconsMap: {[html: string]: string} | undefined = {};
-      const fileExported = exportReportXlsx(this._currentReportInstance, iconsMap);
+      const fileExported = exportReportXlsx(this._printableReport, iconsMap);
       if (!fileExported) {
         this.snackbar.open('No exportable widget found in this report', 'EXPORT', {duration: 5000});
       }
@@ -862,9 +876,9 @@ export class EditReport implements AfterViewInit {
   /**
    * Export the current report Instance to docx
    */
-  exportDocx() {
-    if (this._currentReportInstance != null) {
-      downloadReportDoc(this._currentReportInstance);
+  exportDocx(orientation: 'portrait' | 'landscape') {
+    if (this._printableReport != null) {
+      downloadReportDoc(this._printableReport, undefined, orientation as any);
     }
   }
 

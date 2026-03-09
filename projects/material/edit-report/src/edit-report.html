@@ -36,9 +36,19 @@
                 <ng-container *ngIf="reportData|async as repData">
                   <div class="dino-edit-report-print">
                     {{'Export as:'|transloco}}
-                    <button color="primary" mat-raised-button (click)="printReport()">pdf</button>
+                    <button color="primary" mat-raised-button (click)="printReport('portrait')">
+                      pdf portrait
+                    </button>
+                    <button color="primary" mat-raised-button (click)="printReport('landscape')">
+                      pdf landscape
+                    </button>
+                    <button color="primary" mat-raised-button (click)="exportDocx('portrait')">
+                      docx portrait
+                    </button>
+                    <button color="primary" mat-raised-button (click)="exportDocx('landscape')">
+                      docx landscape
+                    </button>
                     <button color="primary" mat-raised-button (click)="exportXlsx()">xlsx</button>
-                    <button color="primary" mat-raised-button (click)="exportDocx()">docx</button>
                   </div>
                   <div class="dino-edit-report-info">
                     <h1>{{repschema.label}}</h1>
@@ -54,7 +64,9 @@
                 </ng-container>
               </ng-container>
               <div class="dino-edit-report-step-container">
-                <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+                <ajf-report id="report print" [instance]="repInstance"
+                  (filterWidgetChange)="filterWidgetChanged($event)">
+                </ajf-report>
               </div>
             </mat-step>
           </mat-stepper>
@@ -76,7 +88,9 @@
             </ng-container>
           </ng-container>
           <div class="dino-edit-report-step-container" tourAnchor="edit-report">
-            <ajf-report id="report print" [instance]="repInstance"></ajf-report>
+            <ajf-report id="report print" [instance]="repInstance"
+              (filterWidgetChange)="filterWidgetChanged($event)">
+            </ajf-report>
           </div>
         </ng-container>
       </div>
