@@ -1,3 +1,27 @@
+<a name="18.0.4"></a>
+# 18.0.4 "managing-swift" (2026-03-09)
+### Bug Fixes
+* **core/data:** import form: force cast to boolean for true/false values ([b6e0d2b](https://bitbucket.org/gnucoop/dino/commits/b6e0d2bf75db79577db7e3c17a7cb220ae3c2c10))
+* **core/translations:** Correct MHL Questionnaire long keys ([94b2c5d](https://bitbucket.org/gnucoop/dino/commits/94b2c5d7a332eaedabe193a339de0f8dd95ab987))
+* **material/datachat:** Fixed a non compliant 'marked' import and call in datachat-enty 'getFormattedResponse'. ([b2f15c5](https://bitbucket.org/gnucoop/dino/commits/b2f15c52a94e0d0822c10f1491e4071605860262))
+* **material/export-list:** data analysis export: change placeholder ([df6119b](https://bitbucket.org/gnucoop/dino/commits/df6119b3b788ca2e93cb790d9efda8c2af1d34ee))
+* **material/export-list:** data analysis export: change placeholder and fix one size multiple choice ([96fdaf5](https://bitbucket.org/gnucoop/dino/commits/96fdaf5cb97a7c878e4502ca81ddcade5450c4a5))
+* **material/form-metric-selector:** when form invalid disable bulkedit on status (as in single form) ([15a9b19](https://bitbucket.org/gnucoop/dino/commits/15a9b194940a9aa118aae8bafde3fef8ca6baaba))
+### Features
+* added feedback and follow_ups questions in rag chat, using agentchat. Using markdown to html to format answers ([a941a64](https://bitbucket.org/gnucoop/dino/commits/a941a649acfb0288312be79efc825eca4a34cf43))
+* **core/translations:** Add basic ^Cabic translations ([f8d90f4](https://bitbucket.org/gnucoop/dino/commits/f8d90f4fb2922a81b1fa7cb6d0c80ca0b6cd4848))
+* **core/translations:** Add basic ajf arabic translations ([e1677f6](https://bitbucket.org/gnucoop/dino/commits/e1677f660477e827e9143f52017c1c030789774a))
+* **core/translations:** Add docx requested translations for MHL Questionnaire ([e4fc669](https://bitbucket.org/gnucoop/dino/commits/e4fc669210436735952fd6184e508204f3070c04))
+* **core/translations:** Add Ukrain translations ([d0b6f3d](https://bitbucket.org/gnucoop/dino/commits/d0b6f3df49c5076f1c15bc8e9dfe4017e94eec32))
+* **core/translations:** Add xlsform translation for MHL Questionnaire ([38aafe1](https://bitbucket.org/gnucoop/dino/commits/38aafe178bdf0e348fa1026dda358f8c665c0848))
+* **core/translations:** Change docx requested translations for MHL Questionnaire ([4edc7a4](https://bitbucket.org/gnucoop/dino/commits/4edc7a44e25cbc7a4d187b19030ed2872fb69442))
+* **core/translations:** Change MHL Questionnaire long keys ([78b0cb0](https://bitbucket.org/gnucoop/dino/commits/78b0cb0fc3110597b4cb1e5445f0927e9247ca5a))
+* **material/reports:** printing in landscape and with filter widget ([f392e26](https://bitbucket.org/gnucoop/dino/commits/f392e264728fb98ce27a380e603c3bc0ab3e1862))
+### Reverts
+* Revert "add doc scripts" ([84a7172](https://bitbucket.org/gnucoop/dino/commits/84a717286f37317b20b2f049d3d18b10be8ef782))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.3"></a>
 # 18.0.3 "favourite-mouse" (2025-12-02)
 ### Bug Fixes
