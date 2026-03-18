@@ -15,9 +15,10 @@
 
 <!-- Image Cell template -->
 <ng-template #imageTemplate>
-  <mat-icon (click)="previewMethod ? previewMethod($event, item) : null" class="dino-file-cell-icon"
-    >photo_camera</mat-icon
-  >
+  <ng-container
+    *ngIf="!(item|dinoListCellIsDeletedFile);
+    then validImageTemplate; else deletedFileTemplate"
+  />
 </ng-template>
 
 <!-- File Cell Template -->
@@ -27,6 +28,13 @@
     then validFileTemplate; else deletedFileTemplate"
   />
 </ng-template>
+
+<!-- Valid Image Cell template -->
+<ng-template #validImageTemplate>
+  <mat-icon (click)="previewMethod ? previewMethod($event, item) : null" class="dino-file-cell-icon"
+    >photo_camera</mat-icon
+  ></ng-template
+>
 
 <!-- Valid File Cell template -->
 <ng-template #validFileTemplate>
@@ -67,7 +75,9 @@
 </ng-template>
 
 <!-- Link Cell temlate -->
-<ng-template #urlTemplate><a class="dino-link-cell" [matTooltip]="item" [href]="item" target="_blank">Link</a></ng-template>
+<ng-template #urlTemplate
+  ><a class="dino-link-cell" [matTooltip]="item" [href]="item" target="_blank">Link</a></ng-template
+>
 
 <!-- Standard Text Cell template -->
 <ng-template #standardTextCellTemplate>
