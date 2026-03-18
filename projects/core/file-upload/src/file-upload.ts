@@ -204,7 +204,8 @@ export class FileUploadService {
       if (key !== '$value') {
         if (this.isAjfFileField(formValue[key])) {
           filesToUpload.push(formValue[key] as AjfFile);
-        } else if (this.isAjfFileFieldToDelete(formValue[key])) {
+        }
+        if (this.isAjfFileFieldToDelete(formValue[key])) {
           filesToDelete.push(formValue[key] as AjfFile);
         }
         if (this.isAjfInvalidFileField(formValue[key])) {
@@ -286,7 +287,7 @@ export class FileUploadService {
    * @param uploadSignature if true, signature pngs are uploaded to the storage. Defaults to false.
    * @returns true if the input value is an AjfFile field
    */
-  isAjfFileField(value: any, uploadSignature: boolean = false): boolean {
+  isAjfFileField(value: any, uploadSignature: boolean = true): boolean {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
@@ -335,7 +336,12 @@ export class FileUploadService {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
-    if ('url' in value && value['url'] && value['url'].length && value['deleteUrl']) {
+    if (
+      'url' in value &&
+      value['url'] &&
+      value['url'].length &&
+      (value['deleteUrl'] || ('content' in value && value['content'] && value['content'].length))
+    ) {
       return true;
     }
     return false;
