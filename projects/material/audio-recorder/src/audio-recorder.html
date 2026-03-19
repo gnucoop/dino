@@ -8,7 +8,13 @@
       <h3>{{'Form Fields'|transloco}}</h3>
       <mat-list class="dino-form-fields-summary">
         <mat-list-item *ngFor="let item of formFields">
-          <span matListItemTitle>{{item}}</span>
+          <span
+            matListItemTitle
+            [matTooltip]="item.description"
+            [ngClass]="item.description ? 'dino-with-description' : null"
+            >{{item.label}}
+            <mat-icon color="primary" *ngIf="item.description">info</mat-icon>
+          </span>
         </mat-list-item>
       </mat-list>
     </ng-container>
@@ -34,8 +40,10 @@
       picture_as_pdf
     </mat-icon>
 
-    <img *ngIf="!isRecording && mimetype().startsWith('image')"
-      class="preview-image" [src]="(blobUrl|async)"
+    <img
+      *ngIf="!isRecording && mimetype().startsWith('image')"
+      class="preview-image"
+      [src]="(blobUrl|async)"
     />
 
     <mat-form-field *ngIf="audioTranscription|async as transcription">
@@ -54,9 +62,7 @@
       <mat-icon>mic</mat-icon>
     </button>
 
-    <span *ngIf="!isRecording && (blobUrl|async) === null">
-      &nbsp; {{'or'|transloco}} &nbsp;
-    </span>
+    <span *ngIf="!isRecording && (blobUrl|async) === null"> &nbsp; {{'or'|transloco}} &nbsp; </span>
 
     <button
       mat-fab

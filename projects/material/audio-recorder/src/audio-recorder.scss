@@ -1,9 +1,16 @@
 dino-audio-recorder {
   .dino-audio-recorder-card {
+    text-align: center;
     display: flex;
     flex-flow: column wrap;
     min-width: 300px;
     max-width: 450px;
+    .mat-mdc-card-header-text {
+      display: flex;
+      flex: 1 0 auto;
+      flex-flow: column;
+    }
+
     .mat-mdc-card-content {
       min-height: 100px;
       display: flex;
@@ -31,7 +38,24 @@ dino-audio-recorder {
         max-height: 200px;
         overflow-y: scroll;
       }
+      .mat-mdc-list-item-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        &.dino-with-description {
+          cursor: pointer;
+        }
+        .mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          align-self: center;
+          position: relative;
+          bottom: 1px;
+        }
+      }
     }
+
     .mat-mdc-card-actions {
       display: flex;
       flex-flow: row wrap;

@@ -44,16 +44,16 @@ import {NetworkStatusService} from '@dino/core/auth';
  */
 function selectFile(accept: string): Promise<File> {
   return new Promise((resolve, reject) => {
-    const input = document.createElement("input");
-    input.type = "file";
+    const input = document.createElement('input');
+    input.type = 'file';
     input.accept = accept;
-    input.style.display = "none";
+    input.style.display = 'none';
 
     input.onchange = () => {
       if (input.files && input.files.length > 0) {
         resolve(input.files[0]);
       } else {
-        reject(new Error("Nessun file selezionato."));
+        reject(new Error('Nessun file selezionato.'));
       }
       input.remove();
     };
@@ -80,8 +80,9 @@ export class AudioRecorder implements OnDestroy {
   isRecording = false;
   recordedTime: Observable<string | null>;
   blobUrl: BehaviorSubject<SafeUrl | null> = new BehaviorSubject<SafeUrl | null>(null);
-  blob: BehaviorSubject<TranscriptionFile | null> =
-    new BehaviorSubject<TranscriptionFile | null>(null);
+  blob: BehaviorSubject<TranscriptionFile | null> = new BehaviorSubject<TranscriptionFile | null>(
+    null,
+  );
 
   /**
    * The current Transcription of the recorded Audio
@@ -94,9 +95,9 @@ export class AudioRecorder implements OnDestroy {
   isCommunicating: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
-   * List of form fields
+   * List of form fields (label and description)
    */
-  formFields: string[] = [];
+  formFields: {label: string; description?: string | null}[] = [];
 
   /**
    * Subscribes to the AudioRecorderService recorded blob
@@ -139,7 +140,13 @@ export class AudioRecorder implements OnDestroy {
       });
 
     if (this._data.exampleData) {
-      const exampleFields = Object.keys(this._data.exampleData.fieldTypes);
+      const exampleFieldKeys = Object.keys(this._data.exampleData.fieldLabels);
+      const exampleFields: {label: string; description?: string | null}[] = [];
+      for (let key of exampleFieldKeys) {
+        const label = this._data.exampleData.fieldLabels[key];
+        const description = this._data.exampleData.fieldDescriptions[key];
+        exampleFields.push({label, description});
+      }
       this.formFields = exampleFields;
     }
   }
@@ -153,7 +160,7 @@ export class AudioRecorder implements OnDestroy {
     }
     this.isLoadingFile = true;
     try {
-      const file = await selectFile(".mp3,.wav,.ogg,.pdf,.jpeg,.jpg,.png,.webp");
+      const file = await selectFile('.mp3,.wav,.ogg,.pdf,.jpeg,.jpg,.png,.webp');
       this.blob.next(file);
       this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
     } finally {
