@@ -8,6 +8,10 @@ export type FormSchemaExampleData = {
    */
   fieldTypes: {[key: string]: string};
   /**
+   * The fields Labels
+   */
+  fieldLabels: {[key: string]: string};
+  /**
    * The field description, with field name and field description
    */
   fieldDescriptions: {[key: string]: string | null | undefined};

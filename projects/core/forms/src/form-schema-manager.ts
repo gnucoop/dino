@@ -731,6 +731,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   generateEmptyExampleData(schema: FormSchema): FormSchemaExampleData | null {
     if (!schema) return null;
     const fieldTypes: {[key: string]: any} = {};
+    const fieldLabels: {[key: string]: any} = {};
     const fieldDescriptions: {[key: string]: any} = {};
     const schemaNodes = schema.schema.nodes;
     if (!schemaNodes) return null;
@@ -738,11 +739,12 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
       for (let node of slide.nodes) {
         if (node.nodeType === 0 && 'fieldType' in node) {
           fieldTypes[node.name] = this._fieldTypeToString(node.fieldType);
+          fieldLabels[node.name] = node.label;
           fieldDescriptions[node.name] = node.description;
         }
       }
     }
-    return {fieldTypes, fieldDescriptions};
+    return {fieldTypes, fieldLabels, fieldDescriptions};
   }
 
   /**
