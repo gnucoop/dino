@@ -3,7 +3,7 @@
     <div class="dino-mixed-list-savename">
       <mat-form-field appearance="fill">
         <mat-label>{{'Group name'|transloco}}</mat-label>
-        <input #saveListName matInput [disabled]="viewOnly" />
+        <input #saveListName matInput [disabled]="viewOnly" (input)="onSaveNameInput()" />
         <mat-icon matSuffix>badge</mat-icon>
       </mat-form-field>
     </div>
@@ -19,73 +19,71 @@
   <ng-container *ngIf="sourceList | async as sourceListByType">
 
     <mat-tab-group>
-      <mat-tab *ngFor="let itemsType of mixedItemTypes | async; let idx = index" [label]="itemsType.label|transloco">
+      <mat-tab *ngFor="let itemsType of mixedItemTypes | async; trackBy: trackByType"
+        [label]="itemsType.label|transloco">
 
-        <div class="dino-mixed-list-container-both">
-          <div class="dino-mixed-list-container">
-            <p class="dino-mixed-editor-side-title">{{'Group items'|transloco}}</p>
-            <div id="groupTargetList" cdkDropList [cdkDropListDisabled]="true"
-              [cdkDropListData]="saveList[itemsType.type]" class="dino-mixed-list">
-              <div class="dino-mixed-list-item dino-mixed-list-item-savelist"
-                *ngFor="let item of saveList[itemsType.type]">
-                <mat-icon class="dino-mixed-list-icon-identifier" [matTooltip]="getTooltip(item)"
-                  [matTooltipPosition]="'after'">{{item.itemIcon}}</mat-icon>
-                <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
-                <button *ngIf="!viewOnly" mat-icon-button color="primary" aria-label="Remove item"
-                  (click)="removeItem(item)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
+        <!-- Lazy-render tab content only when the tab is active -->
+        <ng-template matTabContent>
+          <div class="dino-mixed-list-container-both">
+            <div class="dino-mixed-list-container">
+              <p class="dino-mixed-editor-side-title">{{'Group items'|transloco}}</p>
+              <cdk-virtual-scroll-viewport itemSize="68" class="dino-mixed-list">
+                <div class="dino-mixed-list-item dino-mixed-list-item-savelist"
+                  *cdkVirtualFor="let item of saveList[itemsType.type]; trackBy: trackById">
+                  <mat-icon class="dino-mixed-list-icon-identifier" [matTooltip]="tooltipCache.get(item.itemId) ?? ''"
+                    [matTooltipPosition]="'after'">{{item.itemIcon}}</mat-icon>
+                  <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
+                  <button *ngIf="!viewOnly" mat-icon-button color="primary" aria-label="Remove item"
+                    (click)="removeItem(item)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </cdk-virtual-scroll-viewport>
+            </div>
+
+            <div [class]="'dino-mixed-list-container' + (viewOnly ? ' dino-mixed-list-container-hidden' : '')">
+              <p class="dino-mixed-editor-side-title">{{'Available items'|transloco}}</p>
+              <cdk-virtual-scroll-viewport itemSize="68" class="dino-mixed-list">
+                <div class="dino-mixed-list-item"
+                  *cdkVirtualFor="let item of (filteredSourceList$ | async)?.[itemsType.type]; trackBy: trackById"
+                  [class.dino-mixed-list-item-disabled]="item.disabled"
+                  [class.dino-mixed-list-item-alloption]="item.allOptionItem">
+                  <mat-icon class="dino-mixed-list-icon-identifier" [matTooltip]="tooltipCache.get(item.itemId) ?? ''"
+                    [matTooltipPosition]="'after'">{{item.itemIcon}}</mat-icon>
+                  <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
+
+                  <ng-template #boxBtn>
+                    <button mat-icon-button color="primary" aria-label="Add item" (click)="addItem(item, true)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </ng-template>
+
+                  <ng-template #boxDisabledBtn>
+                    <button mat-icon-button color="primary" aria-label="Disabled item">
+                      <mat-icon>not_interested</mat-icon>
+                    </button>
+                  </ng-template>
+
+                  <ng-container *ngTemplateOutlet="item.disabled ? boxDisabledBtn : boxBtn"></ng-container>
+                </div>
+              </cdk-virtual-scroll-viewport>
             </div>
           </div>
-
-          <div [class]="'dino-mixed-list-container' + (viewOnly ? ' dino-mixed-list-container-hidden' : '')">
-            <p class="dino-mixed-editor-side-title">{{'Available items'|transloco}}</p>
-            <div id="targetsList" cdkDropList [cdkDropListDisabled]="true"
-              [cdkDropListData]="(sourceListByType[itemsType.type])!" class="dino-mixed-list">
-              <ng-container *ngFor="let item of sourceListByType[itemsType.type]">
-                <ng-container *ngIf="item.displayed">
-                  <div class="dino-mixed-list-item" [class.dino-mixed-list-item-disabled]="item.disabled"
-                    [class.dino-mixed-list-item-alloption]="item.allOptionItem">
-                    <mat-icon class="dino-mixed-list-icon-identifier" [matTooltip]="getTooltip(item)"
-                      [matTooltipPosition]="'after'">{{item.itemIcon}}</mat-icon>
-                    <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
-
-                    <ng-template #boxBtn>
-                      <button mat-icon-button color="primary" aria-label="Add item" (click)="addItem(item, true)">
-                        <mat-icon>add</mat-icon>
-                      </button>
-                    </ng-template>
-
-                    <ng-template #boxDisabledBtn>
-                      <button mat-icon-button color="primary" aria-label="Disabled item">
-                        <mat-icon>not_interested</mat-icon>
-                      </button>
-                    </ng-template>
-
-                    <ng-container *ngTemplateOutlet="item.disabled ? boxDisabledBtn : boxBtn"></ng-container>
-                  </div>
-                </ng-container>
-              </ng-container>
-            </div>
-          </div>
-        </div>
+        </ng-template>
 
       </mat-tab>
-
-
-
     </mat-tab-group>
 
   </ng-container>
 
   <div class="dino-mixed-list-action-buttons-container">
     <button *ngIf="!viewOnly" mat-raised-button class="dino-mixed-list-action-button" color="primary" cdkFocusInitial
-      (click)="saveMixedList()" [disabled]="!validateSaveList()">
+      (click)="saveMixedList()" [disabled]="!isSaveValid">
       {{'Save'|transloco}}
     </button>
     <button mat-raised-button class="dino-mixed-list-action-button" color="warn" (click)="onClose()">
       {{'Close'|transloco}}
     </button>
   </div>
+
 </div>

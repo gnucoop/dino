@@ -95,17 +95,21 @@
   flex: 1 0 auto;
   justify-content: center;
   height: 22.4vh;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
+  overflow: hidden;
+
+  cdk-virtual-scroll-viewport {
+    height: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
 .dino-mixed-list-item,
 .dino-mixed-list-item-disabled {
-  padding: 20px 10px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
   justify-content: center;

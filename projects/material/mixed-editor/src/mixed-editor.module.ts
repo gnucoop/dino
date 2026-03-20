@@ -21,6 +21,7 @@
  */
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -44,6 +45,7 @@ import {MixedEditor} from './mixed-editor';
   imports: [
     AuthModule,
     DragDropModule,
+    ScrollingModule,
     CommonModule,
     MatButtonModule,
     MatDialogModule,

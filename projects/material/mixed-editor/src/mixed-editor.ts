@@ -58,10 +58,31 @@ export class MixedEditor implements AfterViewInit {
   @Input() sourceList = new BehaviorSubject<{[key: string]: MixedEditorItem[]}>({});
 
   /**
-   * A list of all mixedItems types currently present in the
-   * sourceList
+   * A list of all mixedItems types currently present in the sourceList.
    */
   mixedItemTypes: Observable<{type: string; icon: string; label: string}[]> = obsOf([]);
+
+  // BehaviorSubject for the public filteredSourceList$ observable
+  private readonly _filteredSubject = new BehaviorSubject<{[key: string]: MixedEditorItem[]}>({});
+
+  /**
+   * Filtered source list emitting only items with displayed===true per type.
+   * Updated by updateFilter() (avoids *ngIf inside *ngFor in the template)
+   */
+  readonly filteredSourceList$: Observable<{[key: string]: MixedEditorItem[]}> =
+    this._filteredSubject.asObservable();
+
+  /**
+   * Whether the current saveList passes validation (bound in template instead
+   * of calling validateSaveList() on every change-detection cycle).
+   */
+  isSaveValid = false;
+
+  /**
+   * Pre-computed tooltip strings keyed by itemId, to avoid calling getTooltip()
+   * on every change-detection cycle.
+   */
+  readonly tooltipCache = new Map<string, string>();
 
   /**
    * The list saving method.
@@ -97,6 +118,20 @@ export class MixedEditor implements AfterViewInit {
   constructor(private _cdr: ChangeDetectorRef) {}
 
   /**
+   * TrackBy function for item lists
+   */
+  trackById(_index: number, item: MixedEditorItem): string {
+    return item.itemId;
+  }
+
+  /**
+   * TrackBy function for type tab list.
+   */
+  trackByType(_index: number, t: {type: string}): string {
+    return t.type;
+  }
+
+  /**
    * Moves an item from the source list to the target list.
    * @param item  A list item
    */
@@ -113,8 +148,16 @@ export class MixedEditor implements AfterViewInit {
     if (!itemAlreadyExists && !typeAlreadyExists) {
       const idx = this.sourceList.value[item.itemType].findIndex(doc => doc.itemId === item.itemId);
 
-      this.sourceList.value[item.itemType].splice(idx, 1);
-      this.saveList[item.itemType].push(item);
+      // Create new array references so cdkVirtualFor detects the change
+      const newSource = [...this.sourceList.value[item.itemType]];
+      newSource.splice(idx, 1);
+      this.sourceList.value[item.itemType] = newSource.sort((a, b) =>
+        this._sortAlphabetically(a, b),
+      );
+
+      this.saveList[item.itemType] = [...this.saveList[item.itemType], item].sort((a, b) =>
+        this._sortAlphabetically(a, b),
+      );
 
       if (item.uniqueItem) {
         this._toggleSameTypeItems(item, true);
@@ -123,8 +166,8 @@ export class MixedEditor implements AfterViewInit {
         this._toggleChildrenItems(item, 'add');
       }
 
-      this.sourceList.value[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
-      this.saveList[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
+      this._refreshFilteredList();
+      this._refreshSaveValid();
     }
 
     this._cdr.detectChanges();
@@ -146,15 +189,22 @@ export class MixedEditor implements AfterViewInit {
 
     if (!itemAlreadyExists) {
       const idx = this.saveList[item.itemType].findIndex(doc => doc.itemId === item.itemId);
-      this.saveList[item.itemType].splice(idx, 1);
-      this.sourceList.value[item.itemType].unshift(item);
+
+      // Create new array references so cdkVirtualFor detects the change
+      this.saveList[item.itemType] = this.saveList[item.itemType]
+        .filter((_, i) => i !== idx)
+        .sort((a, b) => this._sortAlphabetically(a, b));
+
+      this.sourceList.value[item.itemType] = [item, ...this.sourceList.value[item.itemType]].sort(
+        (a, b) => this._sortAlphabetically(a, b),
+      );
 
       if (item.uniqueItem) {
         this._toggleSameTypeItems(item, false);
       }
 
-      this.sourceList.value[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
-      this.saveList[item.itemType].sort((a, b) => this._sortAlphabetically(a, b));
+      this._refreshFilteredList();
+      this._refreshSaveValid();
     }
 
     this._cdr.detectChanges();
@@ -235,6 +285,15 @@ export class MixedEditor implements AfterViewInit {
         }
       });
     });
+    this._refreshFilteredList();
+    this._cdr.detectChanges();
+  }
+
+  /**
+   * Called when the save-name input changes to keep isSaveValid in sync.
+   */
+  onSaveNameInput(): void {
+    this._refreshSaveValid();
     this._cdr.detectChanges();
   }
 
@@ -258,6 +317,12 @@ export class MixedEditor implements AfterViewInit {
       }),
     );
 
+    // Build the tooltip cache once from the initial source list.
+    this._rebuildTooltipCache();
+
+    // Build the initial filtered list.
+    this._refreshFilteredList();
+
     fromEvent(this.search.nativeElement, 'keydown')
       .pipe(debounceTime(300))
       .subscribe(event => {
@@ -266,7 +331,7 @@ export class MixedEditor implements AfterViewInit {
   }
 
   /**
-   * Generates the Mixed Item tooltip label
+   * Generates the Mixed Item tooltip label.
    * @param item MixedEditorItem
    * @returns The tooltip label
    */
@@ -353,5 +418,38 @@ export class MixedEditor implements AfterViewInit {
    */
   private _capitalize(str: string) {
     return str[0].toUpperCase() + str.slice(1);
+  }
+
+  /**
+   * Rebuilds the tooltip cache from all items currently in both
+   * sourceList and saveList.
+   */
+  private _rebuildTooltipCache(): void {
+    const addToCache = (item: MixedEditorItem) => {
+      if (!this.tooltipCache.has(item.itemId)) {
+        this.tooltipCache.set(item.itemId, this.getTooltip(item));
+      }
+    };
+    Object.values(this.sourceList.value).forEach(list => list.forEach(addToCache));
+    Object.values(this.saveList).forEach(list => list.forEach(addToCache));
+  }
+
+  /**
+   * Rebuilds the filteredSourceList$ by filtering items with displayed===true.
+   * Called after every filter/add/remove operation.
+   */
+  private _refreshFilteredList(): void {
+    const filtered: {[key: string]: MixedEditorItem[]} = {};
+    Object.keys(this.sourceList.value).forEach(type => {
+      filtered[type] = this.sourceList.value[type].filter(item => item.displayed);
+    });
+    this._filteredSubject.next(filtered);
+  }
+
+  /**
+   * Updates isSaveValid
+   */
+  private _refreshSaveValid(): void {
+    this.isSaveValid = this.validateSaveList();
   }
 }
