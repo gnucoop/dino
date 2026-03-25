@@ -688,11 +688,20 @@ export class ListDataSource<
                 );
                 // OR additional filters logic
               } else if (additionalFiltersLogic === 'or') {
-                const flt = {
-                  [this._isDataList != null ? `data.${item.name}` : `data.data.${item.name}`]: {
-                    [item.operator ? item.operator.value : '$eq']: item.value,
-                  },
-                };
+                const flt = {};
+
+                addNestedProps(
+                  flt,
+                  [
+                    this._isDataList != null
+                      ? `data.${item.name.trim()}`
+                      : `data.data.${item.name.trim()}`,
+                    item.operator ? item.operator.value : '$eq',
+                  ],
+                  item.value,
+                  item.operator?.options,
+                );
+
                 if (selector['$or'] && selector['$or'].length) {
                   selector['$or'] = [...selector['$or'], flt];
                 } else {
