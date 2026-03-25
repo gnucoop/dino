@@ -139,8 +139,8 @@ export const UKR: Translation = {
   'Edit Report Schema': 'Редагувати схему звіту',
   'Email': 'Електронна пошта',
   'End Date': 'Дата завершення',
-  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
-    'Введіть назви атрибутів метрик, які потрібно додати до вибору, розділені комами. Вони будуть використані в choice_filter.',
+  'Enter the name of the metric field or attributes to add to the choice, separated by commas. They can be used later in the choice_filter.':
+    'Введіть назви полів або атрибутів метрики, які потрібно додати до вибору (розділені комою). Вони можуть бути використані пізніше в choice_filter.',
   'Enter your DataChat API key': 'Введіть ваш ключ API DataChat',
   'Exclude': 'Виключити',
   'Expires on': 'Термін дії до',
@@ -222,6 +222,7 @@ export const UKR: Translation = {
   'Incorrect email and/or password': 'Невірна електронна пошта та/або пароль',
   'Incorrect password': 'Невірний пароль',
   'Initializing data': 'Ініціалізація даних',
+  'Insert a formula to filter metrics, using metric fields or attributes': 'Вставте формулу для фільтрації метрик, використовуючи поля або атрибути метрик. Використовуйте: attribute = \'val\' або attribute != true або attribute = false або date_start >= \'2024-04-2\'',
   'Invalid API Key': 'Недійсний ключ API',
   'Invalid email and/or password': 'Недійсні електронна пошта та/або пароль',
   'Invalid metrics': 'Недійсні метрики',

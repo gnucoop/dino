@@ -136,8 +136,8 @@ export const AR: Translation = {
   'Edit Report Schema': 'تحرير مخطط التقرير',
   'Email': 'البريد الإلكتروني',
   'End Date': 'تاريخ الانتهاء',
-  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
-    'أدخل اسم سمات المقاييس التي ستتم إضافتها داخل الاختيار، مفصولة بفواصل. سيتم استخدامها في choice_filter.',
+  'Enter the name of the metric field or attributes to add to the choice, separated by commas. They can be used later in the choice_filter.':
+    'أدخل أسماء الحقول أو السمات للمقياس المراد إضافتها إلى الاختيار (مفصولة بفواصل). يمكن استخدامها لاحقًا في choice_filter.',
   'Enter your DataChat API key': 'أدخل مفتاح DataChat API الخاص بك',
   'Exclude': 'استبعاد',
   'Expires on': 'ينتهي في',

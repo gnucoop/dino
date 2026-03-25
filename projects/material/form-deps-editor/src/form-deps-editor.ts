@@ -140,7 +140,6 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     'metric_name',
     'choice_extra_value_key',
     'filter_by',
-    'query_selector_str',
   ];
 
   readonly dataSource: MatTableDataSource<DepsOrigin> = new MatTableDataSource<DepsOrigin>();
@@ -377,6 +376,8 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     } else {
       row.query_selector = undefined;
     }
+
+    // row.hasError = row.query_selector && Object.keys(row.query_selector).includes('error');
   }
 
   addRow(): void {

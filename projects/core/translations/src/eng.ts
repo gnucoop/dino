@@ -137,8 +137,8 @@ export const ENG: Translation = {
   'Edit Report Schema': 'Edit Report Schema',
   'Email': 'Email',
   'End Date': 'End date',
-  'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.':
-    'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.',
+  'Enter the name of the metric field or attributes to add to the choice, separated by commas. They can be used later in the choice_filter.':
+    'Enter the name of the metric field or attributes to add to the choice, separated by commas. They can be used later in the choice_filter.',
   'Enter your DataChat API key': 'Enter your DataChat API key',
   'Exclude': 'Exclude',
   'Expires on': 'Expires on',
@@ -217,6 +217,7 @@ export const ENG: Translation = {
   'Incorrect email and/or password': 'Incorrect email and/or password',
   'Incorrect password': 'Incorrect password',
   'Initializing data': 'Initializing data',
+  'Insert a formula to filter metrics, using metric fields or attributes': 'Insert a formula to filter metrics, using metric fields or attributes. Use: attribute = \'val\' or attribute != true or attribute = false or date_start >= \'2024-04-2\'',
   'Invalid API Key': 'Invalid API Key',
   'Invalid email and/or password': 'Invalid email and/or password',
   'Invalid metrics': 'Invalid metrics',

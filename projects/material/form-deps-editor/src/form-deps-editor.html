@@ -45,7 +45,7 @@
         <ng-container matColumnDef="choice_extra_value_key">
           <mat-header-cell *matHeaderCellDef>{{'Additional attributes in choice'|transloco}}
             <mat-icon class="tooltip-icon"
-              [matTooltip]="'Enter the name of the metrics attributes to be added inside the choice, separated by commas. They will be used in the choice_filter.'|transloco"
+              [matTooltip]="'Enter the name of the metric field or attributes to add to the choice, separated by commas. They can be used later in the choice_filter.'|transloco"
               matTooltipPosition="right">help</mat-icon>
           </mat-header-cell>
           <mat-cell *matCellDef="let row; let idx = index">
@@ -58,30 +58,17 @@
 
         <ng-container matColumnDef="filter_by">
           <mat-header-cell *matHeaderCellDef>{{'Filter condition'|transloco}}
-            <mat-icon [matTooltip]="'Insert a javascript formula to filter metrics, using metric fields or attributes. Use: 
-            attribute1 === \'value\' or
-            attribute2 !== true or
-            attribute3 === false or
-            date_start >= \'2024-04-2\''|transloco" matTooltipPosition="right"
-              matTooltipClass="my-tooltip">help</mat-icon>
+            <mat-icon [matTooltip]="'Insert a formula to filter metrics, using metric fields or attributes'|transloco"
+              matTooltipPosition="right" matTooltipClass="my-tooltip">help</mat-icon>
           </mat-header-cell>
           <mat-cell *matCellDef="let row; let idx = index">
             <mat-form-field>
               <input matInput [(ngModel)]="row.filter_by" [placeholder]="('Filter condition'|transloco)"
                 (ngModelChange)="getQueryForMetric(row)" />
             </mat-form-field>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="query_selector_str">
-          <mat-header-cell *matHeaderCellDef>{{'Query condition'|transloco}}
-            <mat-icon [matTooltip]="'The corresponding graphql query condition to filter metrics'|transloco"
-              matTooltipPosition="right" matTooltipClass="my-tooltip">help</mat-icon>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let row; let idx = index">
-            <mat-form-field>
-              <input matInput readonly value="{{row.query_selector | dinoObjectAsString}}" />
-            </mat-form-field>
+            <div class="dino-error" *ngIf="row.query_selector && row.query_selector.error">
+              {{row.query_selector.error}}
+            </div>
           </mat-cell>
         </ng-container>
 

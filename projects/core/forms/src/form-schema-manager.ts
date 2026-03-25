@@ -631,8 +631,12 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
           const project = doc as Metric as Project;
           newChoice.label = `${project.name} (${project.code})`;
       }
-      if (extraValueKey && doc.metric_data && extraValueKey in doc.metric_data) {
-        (newChoice as any)[extraValueKey] = doc.metric_data[extraValueKey];
+      if (extraValueKey) {
+        if (extraValueKey in doc) {
+          (newChoice as any)[extraValueKey] = (doc as any)[extraValueKey];
+        } else if (doc.metric_data && extraValueKey in doc.metric_data) {
+          (newChoice as any)[extraValueKey] = doc.metric_data[extraValueKey];
+        }
       }
       choices.push(newChoice);
     });

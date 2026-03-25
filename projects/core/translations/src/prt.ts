@@ -221,6 +221,7 @@ export const PRT: Translation = {
   'Incorrect email and/or password': 'Email e/ou senha incorretos',
   'Incorrect password': 'Palavra-passe incorrecta',
   'Initializing data': 'Inicialização de dados',
+  'Insert a formula to filter metrics, using metric fields or attributes': 'Insira uma fórmula para filtrar métricas, utilizando campos ou atributos de métricas. Use: attribute = \'val\' ou attribute != true ou attribute = false ou date_start >= \'2024-04-2\'',
   'Invalid API Key': 'Chave inválida da API',
   'Invalid email and/or password': 'Email inválido e/ou senha',
   'Invalid metrics': 'Métricas inválidas',
