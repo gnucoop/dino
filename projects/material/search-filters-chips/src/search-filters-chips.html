@@ -4,7 +4,7 @@
       {{ (item.label ? item.label : item.name)|transloco|uppercase|slice:0:30 }}
     </span>
     {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}} {{
-    item.value|dinoDateValue|json }}
+    item.value|dinoDateValue }}
     <mat-icon matChipRemove (click)="removeFilterItem(item)">cancel</mat-icon>
   </mat-chip-option>
 </mat-chip-listbox>

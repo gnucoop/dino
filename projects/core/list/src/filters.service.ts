@@ -278,9 +278,10 @@ export class FiltersService<T extends Model = Model> {
       this._additionalFilters.pipe(skip(1)),
     ]).pipe(
       map(([basicFilters, additionalFilters]) => {
-        const allFilters = [...basicFilters, ...additionalFilters].filter(
-          ft => ft.value || ft.value === false || ft.value === 0,
-        );
+        const allFilters = [...basicFilters, ...additionalFilters];
+        // .filter(
+        //   ft => ft.value || ft.value === false || ft.value === 0,
+        // );
         if (this._loadingPreset != null) {
           this._updateBasicFormValues(allFilters);
           this._loadingPreset = null;

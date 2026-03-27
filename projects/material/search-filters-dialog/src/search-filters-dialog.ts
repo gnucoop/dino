@@ -33,7 +33,14 @@ import {
 } from '@angular/core';
 import {UntypedFormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {FilterGroup, FilterItem, FilterListType, FiltersService} from '@dino/core/list';
+import {
+  FilterGroup,
+  FilterItem,
+  FilterListType,
+  FiltersService,
+  NULL_OPERATORS,
+  Operator,
+} from '@dino/core/list';
 import {SearchFiltersWidget} from '@dino/material/search-filters-widget';
 import {BehaviorSubject, Observable, of as obsOf, Subscription, throwError} from 'rxjs';
 import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
@@ -150,7 +157,15 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
    * @param filterList The filter list type
    */
   addFilter(filterItem: FilterItem, listType: FilterListType): void {
-    if (filterItem.value !== null && filterItem.value !== '') {
+    const operatorValue = filterItem.operator?.value;
+    const isNullOperator = operatorValue && operatorValue in NULL_OPERATORS;
+
+    const hasValue = filterItem.value !== null && filterItem.value !== '';
+
+    if (hasValue || isNullOperator) {
+      if (isNullOperator) {
+        filterItem.operator!.value = NULL_OPERATORS[operatorValue];
+      }
       this.fts.addFilter(filterItem, listType);
     }
   }

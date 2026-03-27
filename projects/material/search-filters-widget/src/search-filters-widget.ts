@@ -31,6 +31,7 @@ import {
   AjfNodeType,
   AjfSlide,
 } from '@ajf/core/forms';
+import {deepCopy} from '@ajf/core/utils';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -48,6 +49,7 @@ import {
   DEFAULT_OPERATORS,
   FilterItem,
   FiltersService,
+  NULL_OPERATORS,
   NUMBER_CONDITION_OPERATORS,
   Operator,
   TEXT_CONDITION_OPERATORS,
@@ -170,14 +172,20 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
 
     this._validation = combineLatest([this._formValueChanges, this.operatorValue]).pipe(
       map(([formValue, operatorValue]) => {
-        if (!formValue) {
+        if (!formValue && !this.isNoValueOperator()) {
           return false;
         }
+        formValue = formValue || {};
         delete formValue['$value'];
         delete formValue['$nodesInitialised'];
         if (this.filterItemData == null || this.widgetData == null) {
           return false;
         }
+        if (this.isNoValueOperator()) {
+          this._setNullValue();
+          return true;
+        }
+
         let isValid = true;
         if (this.widgetData.validationConditions) {
           const fid = this.filterItemData;
@@ -206,6 +214,10 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
           return isDisabled;
         }
         for (let key in formValue) {
+          if (this.isNoValueOperator()) {
+            isDisabled = false;
+            break;
+          }
           if (formValue[key] !== null && formValue[key] !== '') {
             isDisabled = false;
             break;
@@ -216,19 +228,25 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
     );
 
     this._createFilterSub = this._createFilter
-      .pipe(debounceTime(300), withLatestFrom(this._formValueChanges))
-      .subscribe(([_, formValue]) => {
-        if (!formValue) {
+      .pipe(debounceTime(300), withLatestFrom(this._formValueChanges, this.operatorValue))
+      .subscribe(([_, formValue, operatorValue]) => {
+        if (!formValue && !this.isNoValueOperator()) {
           return;
         }
+        formValue = formValue || {};
         delete formValue['$value'];
         delete formValue['$nodesInitialised'];
         const {filterItemData, widgetData} = this;
         if (filterItemData == null || widgetData == null) {
           return;
         }
+
         Object.keys(formValue).forEach(key => {
-          if (
+          if (this.isNoValueOperator()) {
+            filterItemData.value = null;
+            filterItemData.isValid = true;
+            filterItemData.operator = operatorValue;
+          } else if (
             formValue[key] &&
             typeof formValue[key] === 'object' &&
             filterItemData.fieldType === AjfFieldType.DateInput
@@ -237,15 +255,29 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
           } else {
             filterItemData.value = formValue[key];
           }
-          filterItemData.operator = this._operatorValue.getValue();
+          filterItemData.operator = operatorValue;
           filterItemData.isValid = true;
         });
-        if (filterItemData.value != null) {
+
+        if (filterItemData.value != null || this.isNoValueOperator()) {
           widgetData.active = true;
-          this.addFilter.emit({...filterItemData});
+          this.addFilter.emit(deepCopy(filterItemData));
           this._resetWidgetValue();
         }
       });
+  }
+
+  /**
+   * Returns true if the operator doesn't require a value input
+   * @param operator The operator to check
+   * @returns True if no value is required
+   */
+  isNoValueOperator(): boolean {
+    const operator = this._operatorValue.getValue();
+    if (!operator || !operator.value) {
+      return false;
+    }
+    return operator.value in NULL_OPERATORS;
   }
 
   /**
@@ -269,9 +301,14 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
       filterItem.fieldType = AjfFieldType.Number;
       isFormulaField = true;
     }
-    const fieldChoices: AjfChoicesOrigin<any>[] = filterItem.choicesOrigin
-      ? [filterItem.choicesOrigin]
-      : [];
+
+    const fieldChoices: AjfChoicesOrigin<any>[] = [];
+    if (filterItem.choicesOrigin) {
+      const itemChoices = deepCopy(filterItem.choicesOrigin);
+      itemChoices.choices = [{label: 'Empty', value: null}, ...itemChoices.choices];
+      fieldChoices.push(itemChoices);
+    }
+
     filterItem.operator = DEFAULT_OPERATORS[filterItem.fieldType ?? AjfFieldType.String];
     const formSchema: Partial<AjfForm> = {
       choicesOrigins: fieldChoices,
@@ -317,15 +354,18 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
    * @returns The operators
    */
   conditionOperatorByFieldType(type: AjfFieldType): Operator[] {
+    console.log(JSON.stringify(TEXT_CONDITION_OPERATORS));
     switch (type) {
       case AjfFieldType.Number:
       case AjfFieldType.Date:
       case AjfFieldType.DateInput:
+      case AjfFieldType.Range:
         return NUMBER_CONDITION_OPERATORS;
       case AjfFieldType.MultipleChoice:
         return CHOICES_CONDITION_OPERATORS;
       case AjfFieldType.String:
       case AjfFieldType.Text:
+      case AjfFieldType.SingleChoice:
         return TEXT_CONDITION_OPERATORS;
       default:
         return [];
@@ -359,6 +399,24 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
         take(1),
       )
       .subscribe();
+  }
+
+  /**
+   * Sets the widget value to null
+   */
+  private _setNullValue(): void {
+    // this.formGroup
+    //   .pipe(
+    //     tap(fg => {
+    //       if (fg) {
+    //         for (let key in fg.controls) {
+    //           fg.controls[key].setValue(null);
+    //         }
+    //       }
+    //     }),
+    //     take(1),
+    //   )
+    //   .subscribe();
   }
 
   override ngOnDestroy() {

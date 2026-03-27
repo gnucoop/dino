@@ -170,7 +170,9 @@ export interface Operator {
     | 'Is'
     | 'Not'
     | 'Like'
-    | 'Not like';
+    | 'Not like'
+    | 'Not empty'
+    | 'Empty';
   /**
    * Operator value
    */
@@ -185,12 +187,19 @@ export interface Operator {
     | '$in'
     | '$nin'
     | '$in'
-    | '$regex';
+    | '$regex'
+    | '$ne_null'
+    | '$eq_null';
   /**
    * Operator options
    */
   options?: string;
 }
+
+export const NULL_OPERATORS: {[key: string]: Operator['value']} = {
+  '$ne_null': '$ne',
+  '$eq_null': '$eq',
+};
 
 /**
  * Mongodb operators for numerical conditions
@@ -202,6 +211,8 @@ export const NUMBER_CONDITION_OPERATORS: Operator[] = [
   {label: '>=', value: '$gte'},
   {label: '==', value: '$eq'},
   {label: '!=', value: '$ne'},
+  {label: 'Not empty', value: '$ne_null'},
+  {label: 'Empty', value: '$eq_null'},
 ];
 
 /**
@@ -210,6 +221,8 @@ export const NUMBER_CONDITION_OPERATORS: Operator[] = [
 export const CHOICES_CONDITION_OPERATORS: Operator[] = [
   {label: 'Is', value: '$in'},
   {label: 'Not', value: '$nin'},
+  {label: 'Not empty', value: '$ne_null'},
+  {label: 'Empty', value: '$eq_null'},
 ];
 
 /**
@@ -219,6 +232,8 @@ export const TEXT_CONDITION_OPERATORS: Operator[] = [
   {label: 'Includes', value: '$regex', options: 'i'},
   {label: 'Is', value: '$eq'},
   {label: 'Not', value: '$ne'},
+  {label: 'Not empty', value: '$ne_null'},
+  {label: 'Empty', value: '$eq_null'},
 ];
 
 export const ALL_CONDITION_OPERATORS: Operator[] = [
@@ -237,6 +252,8 @@ export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
   [AjfFieldType.Date]: {label: '==', value: '$eq'},
   [AjfFieldType.MultipleChoice]: {label: 'Is', value: '$in'},
   [AjfFieldType.Formula]: {label: '==', value: '$eq'},
+  [AjfFieldType.SingleChoice]: {label: 'Includes', value: '$regex', options: 'i'},
+  [AjfFieldType.Range]: {label: '==', value: '$eq'},
 };
 
 /**

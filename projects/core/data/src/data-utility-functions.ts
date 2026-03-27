@@ -82,21 +82,23 @@ export function rxDocsToJson<T extends Model = Model>(docs: RxDocument<T>[]): T[
  * @returns The modified object
  */
 export function addNestedProps(
-  baseObj: {[key: string]: string | {}},
+  baseObj: {[key: string]: any},
   props: string[],
   value?: any,
   options?: any,
 ): {[key: string]: string | {}} {
-  let lastProp = value != undefined ? props.pop() : false;
+  let lastProp = value !== undefined ? props.pop() : false;
 
-  for (let i = 0; i < props.length; i++) {
-    baseObj = baseObj[props[i].toString()] = baseObj[props[i].toString()] || {};
+  for (const key of props) {
+    if (!baseObj[key] || typeof baseObj[key] !== 'object') {
+      baseObj[key] = {};
+    }
+    baseObj = baseObj[key];
   }
 
   if (lastProp) {
-    baseObj[lastProp.toString()] = value;
+    baseObj[lastProp] = value;
     if (options != null && lastProp === '$regex') {
-      baseObj[lastProp.toString()] = value;
       baseObj['$options'] = options ?? 'i';
     }
   }

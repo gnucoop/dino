@@ -90,7 +90,7 @@ export class SearchFiltersChips implements OnInit {
     // Here we make sure that invalid filters or filters with null / empty values
     // are not displayed as chips
     this.chipsFilters = this.chipsFilters.pipe(
-      map(filters => filters.filter(cf => cf.value !== null && cf.value !== '' && cf.isValid)),
+      map(filters => filters.filter(cf => cf.isValid)),
       catchError(err => throwError(() => err) as Observable<FilterItem[]>),
     );
   }
