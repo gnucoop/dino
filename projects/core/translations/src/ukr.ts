@@ -149,7 +149,6 @@ export const UKR: Translation = {
   'Export file saved in your Documents folder': 'Файл експорту збережено у вашій папці Документи',
   'Export items': 'Експортувати елементи',
   'Empty': 'Порожній',
-  'Not empty': 'Не порожній',
   'FILTER ALREADY EXISTS': 'ФІЛЬТР ВЖЕ ІСНУЄ',
   'FORM DATA': 'ДАНІ ФОРМИ',
   'FORM METRICS': 'МЕТРИКИ ФОРМИ',

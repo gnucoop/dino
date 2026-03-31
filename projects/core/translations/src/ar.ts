@@ -493,7 +493,6 @@ export const AR: Translation = {
   'Description': 'الوصف',
   'Default value': 'القيمة الافتراضية',
   'Formula': 'صيغة',
-  'Not empty': 'ليس فارغاً',
   'Min value': 'الحد الأدنى للقيمة',
   'Max value': 'الحد الأقصى للقيمة',
   'Min digits': 'الحد الأدنى للأرقام',
