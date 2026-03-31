@@ -148,6 +148,8 @@ export const PRT: Translation = {
   'Export file saved in your Documents folder':
     'Ficheiro de exportação guardado na sua pasta Documentos',
   'Export items': 'Exportar itens',
+  'Empty': 'Vazio',
+  'Not empty': 'Não vazio',
   'FILTER ALREADY EXISTS': 'O FILTRO JÁ EXISTE',
   'FORM DATA': 'DADOS DO FORMULÁRIO',
   'FORM METRICS': 'MÉTRICAS DO FORMULÁRIO',

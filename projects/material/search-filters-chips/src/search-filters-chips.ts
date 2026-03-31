@@ -96,6 +96,15 @@ export class SearchFiltersChips implements OnInit {
   }
 
   /**
+   * Checks if the value is an array with null
+   * @param value The value to check
+   * @returns True if the value is an array with null, false otherwise
+   */
+  isArrayWithNull(value: any): boolean {
+    return Array.isArray(value) && value.includes(null);
+  }
+
+  /**
    * Removes a filterItem from the filter list, deleting the chip
    * @param filterItem The filter item to remove
    */

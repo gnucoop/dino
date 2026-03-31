@@ -137,6 +137,8 @@ export const FRA: Translation = {
   'Export as:': 'Exporter comme:',
   'Export file saved in your Documents folder': 'Fichier d\'exportation enregistré dans votre dossier Documents',
   'Export items': 'Exportation des éléments',
+  'Empty': 'Vide',
+  'Not empty': 'Non vide',
   'FILTER ALREADY EXISTS': 'LE FILTRE EXISTE DÉJÀ',
   'FORM DATA': 'DONNÉES DU FORMULAIRE',
   'FORM METRICS': 'MÉTRIQUES DU FORMULAIRE',

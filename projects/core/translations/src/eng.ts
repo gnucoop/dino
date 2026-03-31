@@ -146,6 +146,7 @@ export const ENG: Translation = {
   'Export as:': 'Export as:',
   'Export file saved in your Documents folder': 'Export file saved in your Documents folder',
   'Export items': 'Export items',
+  'Empty': 'Empty',
   'FILTER ALREADY EXISTS': 'FILTER ALREADY EXISTS',
   'FORM DATA': 'FORM DATA',
   'FORM METRICS': 'FORM METRICS',
@@ -271,6 +272,7 @@ export const ENG: Translation = {
   'Oops! We could not retrieve your checkout session. Please try again':
     'Oops! We could not retrieve your checkout session. Please try again',
   'Open the advanced filters': 'Open the advanced filters',
+  'Not empty': 'Not empty',
   'or': 'or',
   'Organization': 'Organization',
   'Organization *': 'Organization *',

@@ -37,20 +37,20 @@ export class DateValue implements PipeTransform {
     let isValNaN = Number.isNaN(val);
     let dt = parseISO(isValNaN ? val : {});
     if (!isNaN(dt.valueOf())) {
-      return JSON.stringify(transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate'));
+      return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
     }
     dt = parse(val, 'yyyy-MM-dd', new Date());
     if (!isNaN(dt.valueOf())) {
-      return JSON.stringify(transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate'));
+      return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
     }
     if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,}.*$/.test(val)) {
       dt = new Date(val);
       if (!isNaN(dt.valueOf())) {
-        return JSON.stringify(transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate'));
+        return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
       }
     }
     if (typeof val === 'object' && !isNaN(val.valueOf())) {
-      return JSON.stringify(transformDateByLocale(val, this._ts.getActiveLang(), 'shortDate'));
+      return transformDateByLocale(val, this._ts.getActiveLang(), 'shortDate');
     }
     return val == null ? '' : JSON.stringify(val);
   }

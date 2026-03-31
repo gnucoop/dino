@@ -163,9 +163,9 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
     const hasValue = filterItem.value !== null && filterItem.value !== '';
 
     if (hasValue || isNullOperator) {
-      if (isNullOperator) {
-        filterItem.operator!.value = NULL_OPERATORS[operatorValue];
-      }
+      // if (isNullOperator) {
+      //   filterItem.operator!.value = NULL_OPERATORS[operatorValue];
+      // }
       this.fts.addFilter(filterItem, listType);
     }
   }

@@ -147,6 +147,8 @@ export const ESP: Translation = {
   'Export file saved in your Documents folder':
     'Archivo de exportación guardado en la carpeta Documentos',
   'Export items': 'Exportar artículos',
+  'Empty': 'Vacío',
+  'Not empty': 'No vacío',
   'FILTER ALREADY EXISTS': 'EL FILTRO YA EXISTE',
   'FORM DATA': 'DATOS DEL FORMULARIO',
   'FORM METRICS': 'MEDIDAS DEL FORMULARIO',

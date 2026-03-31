@@ -60,7 +60,7 @@
                 <mat-card-actions>
                   <button
                     class="dino-create-filter-button"
-                    [disabled]="(isCreateFilterButtonDisabled|async) !== false || !isNoValueOperator()"
+                    [disabled]="(isCreateFilterButtonDisabled|async) !== false && !isNoValueOperator()"
                     mat-raised-button
                     (click)="createFilter()"
                     color="accent"

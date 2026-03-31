@@ -46,7 +46,9 @@ import {
   FilterGroup,
   FilterItem,
   FilterListType,
+  NULL_OPERATORS,
 } from './list-filters-interfaces';
+import {deepCopy} from '@ajf/core/utils';
 
 /**
  * Service that handles all operations related to list Filters.
@@ -279,9 +281,6 @@ export class FiltersService<T extends Model = Model> {
     ]).pipe(
       map(([basicFilters, additionalFilters]) => {
         const allFilters = [...basicFilters, ...additionalFilters];
-        // .filter(
-        //   ft => ft.value || ft.value === false || ft.value === 0,
-        // );
         if (this._loadingPreset != null) {
           this._updateBasicFormValues(allFilters);
           this._loadingPreset = null;
@@ -395,9 +394,27 @@ export class FiltersService<T extends Model = Model> {
       this._updateBasicFormValues([filterItem]);
     }
     if (currentValue != null && currentList != null) {
-      const newFilters = currentValue.concat([filterItem]);
+      const newFilterItem = this._getFilterItem(filterItem);
+      const newFilters = currentValue.concat([newFilterItem]);
       currentList.next(newFilters);
     }
+  }
+
+  /**
+   * Returns a new FilterItem with the operator value and value updated for null operators.
+   * Return same FilterItem if no changes are needed.
+   * @param filterItem The filter item
+   * @returns The new filter item
+   */
+  private _getFilterItem(filterItem: FilterItem): FilterItem {
+    const newFilterItem = deepCopy(filterItem);
+    const operatorValue = filterItem.operator?.value;
+    const isNullOperator = operatorValue && operatorValue in NULL_OPERATORS;
+    if (isNullOperator) {
+      newFilterItem.operator!.value = NULL_OPERATORS[operatorValue];
+      newFilterItem.value = [null, ''];
+    }
+    return newFilterItem;
   }
 
   /**
@@ -640,7 +657,7 @@ export class FiltersService<T extends Model = Model> {
 
     const formControl = Object.create({});
     formControl[`${ftName}`] = new UntypedFormControl();
-    // TODO sara multiple
+    // TODO multiple
     formControl[`${ftName}_multiple`] = new UntypedFormControl();
     const basicFilter = new UntypedFormGroup(formControl);
     this._basicAdditionalFormGroups.push(basicFilter);
@@ -698,31 +715,45 @@ export class FiltersService<T extends Model = Model> {
     if (listType === 'basic') {
       return true;
     }
+
     const logic = this.temporaryAdditionalFiltersLogic.value;
     const targetList = this._selectFilterListType(listType);
-    const targetListValue = targetList.getValue().map(a => ({...a} as FilterItem));
+    const targetListValue = targetList.getValue();
     const hasOperator = filterItem.operator != null;
     let res = false;
     let errText = `A filter `;
     if (hasOperator) {
       errText += `with operator "{{operator}}" `;
     }
+
+    const isEmptyValue = (val: any) => val === null || (Array.isArray(val) && val.includes(null));
+
+    const isNewEmpty = filterItem.operator?.value === '$eq_null';
     if (logic === 'and') {
       res = !targetListValue.some(f => {
-        return f.name === filterItem.name && f.operator?.value == filterItem.operator?.value;
+        if (f.name !== filterItem.name) return false;
+        const isExistingEmpty =
+          f.operator?.value === NULL_OPERATORS['$eq_null'] && isEmptyValue(f.value);
+
+        if (isNewEmpty || isExistingEmpty) return true;
+        return f.operator?.value === filterItem.operator?.value;
       });
     } else {
       res = !targetListValue.some(
         f =>
           f.name === filterItem.name &&
-          f.operator?.value == filterItem.operator?.value &&
-          f.value == filterItem.value,
+          f.operator?.value === filterItem.operator?.value &&
+          f.value === filterItem.value,
       );
       errText += `${hasOperator ? 'and' : 'with'} value "{{value}}" `;
     }
+
     errText += `on field "{{field}}" already exists. Please create a different filter.`;
 
     if (!res) {
+      if (isNewEmpty) {
+        errText = `A filter on field "{{field}}" already exists. Please create a different filter.`;
+      }
       this.filterErrorEvt.emit({
         msg: this._ts.translate('FILTER ALREADY EXISTS'),
         text: this._ts.translate(errText, {
@@ -732,6 +763,7 @@ export class FiltersService<T extends Model = Model> {
         }),
       });
     }
+
     return res;
   }
 

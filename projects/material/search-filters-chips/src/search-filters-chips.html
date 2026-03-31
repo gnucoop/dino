@@ -3,8 +3,12 @@
     <span style="margin-right: 5px">
       {{ (item.label ? item.label : item.name)|transloco|uppercase|slice:0:30 }}
     </span>
-    {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}} {{
-    item.value|dinoDateValue }}
+    {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}}
+
+    <ng-container *ngIf="!isArrayWithNull(item.value)">
+      {{ item.value | dinoDateValue }}
+    </ng-container>
+
     <mat-icon matChipRemove (click)="removeFilterItem(item)">cancel</mat-icon>
   </mat-chip-option>
 </mat-chip-listbox>

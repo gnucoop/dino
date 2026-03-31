@@ -197,8 +197,8 @@ export interface Operator {
 }
 
 export const NULL_OPERATORS: {[key: string]: Operator['value']} = {
-  '$ne_null': '$ne',
-  '$eq_null': '$eq',
+  '$ne_null': '$nin',
+  '$eq_null': '$in',
 };
 
 /**

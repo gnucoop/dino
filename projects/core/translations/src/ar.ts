@@ -145,6 +145,8 @@ export const AR: Translation = {
   'Export as:': 'تصدير كـ:',
   'Export file saved in your Documents folder': 'تم حفظ ملف التصدير في مجلد المستندات الخاص بك',
   'Export items': 'تصدير العناصر',
+  'Empty': 'فارغ',
+  'Not empty': 'غير فارغ',
   'FILTER ALREADY EXISTS': 'عامل التصفية موجود بالفعل',
   'FORM DATA': 'بيانات النموذج',
   'FORM METRICS': 'مقاييس النموذج',
