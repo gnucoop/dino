@@ -26,8 +26,11 @@ import {LangRow} from '@dino/core/langs';
 @Pipe({name: 'dinoLangsFilter', pure: false})
 export class LangsFilterPipe implements PipeTransform {
   transform(items: LangRow[], filter: string, lang: string): any {
-    if (!items || !filter) {
+    if (!items) {
       return items;
+    }
+    if (!filter) {
+      return items.slice(0, 50);
     }
     return items.filter(
       item => item[lang] && item[lang].toLowerCase().includes(filter.toLowerCase()),
