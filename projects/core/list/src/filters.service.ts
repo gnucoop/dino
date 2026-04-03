@@ -46,6 +46,7 @@ import {
   FilterGroup,
   FilterItem,
   FilterListType,
+  NOT_TRUE_CONDITION_OPERATOR,
   NULL_OPERATORS,
 } from './list-filters-interfaces';
 import {deepCopy} from '@ajf/core/utils';
@@ -402,6 +403,7 @@ export class FiltersService<T extends Model = Model> {
 
   /**
    * Returns a new FilterItem with the operator value and value updated for null operators.
+   * Return $ne=true for boolean fields if value is false (also null values are treated as false).
    * Return same FilterItem if no changes are needed.
    * @param filterItem The filter item
    * @returns The new filter item
@@ -413,6 +415,9 @@ export class FiltersService<T extends Model = Model> {
     if (isNullOperator) {
       newFilterItem.operator!.value = NULL_OPERATORS[operatorValue];
       newFilterItem.value = [null, ''];
+    } else if (!operatorValue && filterItem.value === false) {
+      newFilterItem.operator = NOT_TRUE_CONDITION_OPERATOR;
+      newFilterItem.value = true;
     }
     return newFilterItem;
   }

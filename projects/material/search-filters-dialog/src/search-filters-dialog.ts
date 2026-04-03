@@ -39,7 +39,6 @@ import {
   FilterListType,
   FiltersService,
   NULL_OPERATORS,
-  Operator,
 } from '@dino/core/list';
 import {SearchFiltersWidget} from '@dino/material/search-filters-widget';
 import {BehaviorSubject, Observable, of as obsOf, Subscription, throwError} from 'rxjs';
@@ -163,9 +162,6 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
     const hasValue = filterItem.value !== null && filterItem.value !== '';
 
     if (hasValue || isNullOperator) {
-      // if (isNullOperator) {
-      //   filterItem.operator!.value = NULL_OPERATORS[operatorValue];
-      // }
       this.fts.addFilter(filterItem, listType);
     }
   }

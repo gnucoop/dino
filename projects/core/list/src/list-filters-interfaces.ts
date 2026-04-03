@@ -236,6 +236,14 @@ export const TEXT_CONDITION_OPERATORS: Operator[] = [
   {label: 'Empty', value: '$eq_null'},
 ];
 
+/**
+ * Operator for boolean fields that are not true (false or null)
+ */
+export const NOT_TRUE_CONDITION_OPERATOR: Operator = {label: 'Not', value: '$ne'};
+
+/**
+ * All operators for conditions
+ */
 export const ALL_CONDITION_OPERATORS: Operator[] = [
   ...NUMBER_CONDITION_OPERATORS,
   ...CHOICES_CONDITION_OPERATORS,
