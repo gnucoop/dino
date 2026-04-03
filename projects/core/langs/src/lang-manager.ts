@@ -84,7 +84,7 @@ export class LangManager extends DataModelManager<Lang> {
    */
   readonly langsStored$ = new BehaviorSubject<Lang[]>([]);
   readonly langsShowed$: Observable<Lang[]> = combineLatest([
-    this.list(),
+    this.langsStored$,
     this._reloadLangsStoredEvt.pipe(startWith(true)),
   ]).pipe(
     map(([langsStored, _]) => {
@@ -243,7 +243,7 @@ export class LangManager extends DataModelManager<Lang> {
         });
         return Object.keys(res).map(key => ({...emptyLangRow, ...res[key]} as LangRow));
       }),
-      debounceTime(100),
+      debounceTime(200),
     );
 
     this._reloadLangsStoredEvt
@@ -253,7 +253,21 @@ export class LangManager extends DataModelManager<Lang> {
         map(r => r.filter(l => !l.is_deleted)),
       )
       .subscribe(langs => {
-        this.langsStored$.next(langs);
+        langs.forEach(l => {
+          try {
+            this._ts.setTranslation(l.schema, l.name);
+          } catch (err) {
+            if (isDevMode()) {
+              console.log(`Could not set Translations for lang ${l.name}: ${err}`);
+            }
+            this._ehms.captureErrorMessage(
+              `Could not set Translations for lang ${l.name}: ${err}`,
+              'error',
+            );
+          }
+        });
+        const plainLangs = langs.map(l => (l as any).toJSON()) as Lang[];
+        this.langsStored$.next(plainLangs);
         const langName: string = localStorage.getItem('lang') ?? this._config.defaultLanguage;
         this._ts.setActiveLang(langName);
         this.currentLangName$.next(langName);
@@ -333,52 +347,65 @@ export class LangManager extends DataModelManager<Lang> {
   }
 
   removeKey(key: string): Observable<string> {
-    const apiCall: Observable<any>[] = [];
-    this.langsStored$.value.forEach(lang => {
-      // se è presente l'id allora vuol dire che è una lang storata su dino
-      if (lang.schema[key] !== undefined && lang.id != null) {
-        const langSchema: {[key: string]: any} = {...lang.schema};
-        delete langSchema[key];
-        const delLang: Partial<Lang> & {id: string} = {
+    const apiCall: Observable<Lang | null>[] = [];
+    const langs = this.langsStored$.value;
+
+    langs.forEach(lang => {
+      // If the key exists in this language doc, remove it
+      if (lang.schema && lang.schema[key] !== undefined) {
+        const updatedSchema = {...lang.schema};
+        delete updatedSchema[key];
+
+        const updatedDoc = {
           id: lang.id,
-          schema: langSchema,
+          schema: updatedSchema,
         };
 
         apiCall.push(
-          this.patch(delLang).pipe(
-            catchError(() => {
-              return obsOf(null);
-            }),
+          this.patch(updatedDoc).pipe(
+            catchError(() => obsOf(null)),
             take(1),
           ),
         );
       }
     });
-    if (apiCall.length > 0) {
-      return forkJoin(apiCall).pipe(
-        map((lngs: Lang[]) => {
-          lngs = lngs.filter(l => l !== null);
-          const msg =
-            lngs.length > 0
-              ? this._ts.translate("key: '{{key}}' removed", {key})
-              : this._ts.translate('error try later');
-          lngs.forEach(l => {
-            if (dinoTranslations[l.name] != null) {
-              // Reload clean default json translations
-              this._ts.setTranslation(dinoTranslations[l.name], l.name, {merge: false});
-            }
-            // Add clean dino db translations
-            this._ts.setTranslation(l.schema, l.name);
-          });
-          return msg;
-        }),
-        tap(_ => this._reloadList()),
-      );
-    } else {
+
+    if (apiCall.length === 0) {
+      // No custom translations found for this key, but it might be in defaults.
+      // We can't delete from defaults, so we warn the user.
       return obsOf(this._ts.translate('forbidden deleting default key') as string).pipe(
         tap(_ => this._refreshEvt.emit()),
       );
     }
+
+    return forkJoin(apiCall).pipe(
+      map((results: (Lang | null)[]) => {
+        const updatedLangs = results.filter((l): l is Lang => l !== null);
+        if (updatedLangs.length === 0) {
+          return this._ts.translate('error try later');
+        }
+
+        updatedLangs.forEach(l => {
+          const currentFullTranslation = this._ts.getTranslation(l.name) ?? {};
+          // rimuovi la key dalla cache locale prima di riscrivere
+          const {[key]: _removed, ...rest} = currentFullTranslation;
+          this._ts.setTranslation({...rest, ...l.schema}, l.name, {merge: false});
+        });
+
+        const currentStored = this.langsStored$.value;
+        const optimisticStored = currentStored.map(lang => {
+          const updated = updatedLangs.find(l => l.name === lang.name);
+          if (updated) {
+            return (updated as any).toJSON();
+          }
+          return lang;
+        });
+        this.langsStored$.next(optimisticStored as Lang[]);
+
+        return this._ts.translate('key: "{{key}}" removed', {key});
+      }),
+      tap(_ => this._reloadList()),
+    );
   }
 
   removeLang(lang: Lang): Observable<string> {
@@ -420,55 +447,99 @@ export class LangManager extends DataModelManager<Lang> {
   }
 
   updateLang(updates: {[key: string]: string}, key: string): Observable<string> {
-    const apiCall: Observable<any>[] = [];
-    const langs = this.langsStored$.value;
-    const langNames = langs.map(l => l.name);
-    const defaultLangNames = Object.keys(defaultLangs);
-    const allLangsNames = defaultLangNames.concat(
-      langNames.filter(item => defaultLangNames.indexOf(item) < 0),
-    );
+    const apiCall: Observable<Lang | null>[] = [];
+    const langsStored = this.langsStored$.value;
+    const allLangsNames = langsStored.map(l => l.name);
 
-    if (Object.keys(updates).length > 0) {
-      allLangsNames.forEach(langName => {
-        let updated = false;
-        let currentKey = key;
-        let lang: LangCreate | null = langs.filter(l => l.name === langName)[0] || null;
-        // se modifico la chiave rispetto a quella salvata su django
-        if (updates['key'] && updates['key'] !== currentKey) {
-          const updatedKey: string = updates['key'];
-          lang.schema[updatedKey] = lang.schema[currentKey];
-          delete lang.schema[currentKey];
-          currentKey = updatedKey;
+    const isRename = updates['key'] ? updates['key'] !== key : false;
+    const newKey = updates['key'] || key;
+
+    allLangsNames.forEach(langName => {
+      const langDoc = langsStored.find(l => l.name === langName);
+      let schema: {[key: string]: string} = langDoc ? {...langDoc.schema} : {};
+      let updated = false;
+
+      // Handle key renaming
+      if (isRename) {
+        if (schema[key] !== undefined) {
+          const val = schema[key];
+          delete schema[key];
+          schema[newKey] = val;
           updated = true;
-        }
-        // se modifico una traduzione di una lingua presente su django
-        if (lang != null && updates[lang.name] != null) {
-          if (updates[lang.name] === '') {
-            // se l'utente ha cancellato la traduzione
-            delete lang.schema[currentKey];
-          } else {
-            lang.schema[currentKey] = updates[lang.name];
+        } else if (dinoTranslations[langName] && dinoTranslations[langName][key] !== undefined) {
+          // If it was only in defaults, and no new value provided, copy to newKey in DB
+          if (updates[langName] === undefined) {
+            schema[newKey] = dinoTranslations[langName][key];
+            updated = true;
           }
+        }
+      }
+
+      // Handle value update/addition/deletion
+      if (updates[langName] !== undefined) {
+        const newValue = updates[langName];
+        if (newValue === '') {
+          if (schema[newKey] !== undefined) {
+            delete schema[newKey];
+            updated = true;
+          }
+        } else if (schema[newKey] !== newValue) {
+          schema[newKey] = newValue;
           updated = true;
         }
+      }
 
-        lang = {name: langName, schema: {}, created_at: new Date().toISOString()};
-        lang.schema[currentKey] = updates[langName];
-        updated = true;
-
-        if (updated) {
-          apiCall.push(this.saveLang(lang));
+      if (updated) {
+        if (langDoc) {
+          apiCall.push(
+            this.patch({id: langDoc.id, schema}).pipe(
+              catchError(() => obsOf(null)),
+              take(1),
+            ),
+          );
+        } else {
+          apiCall.push(
+            this.create({
+              name: langName,
+              schema,
+              created_at: new Date().toISOString(),
+            }).pipe(
+              catchError(() => obsOf(null)),
+              take(1),
+            ),
+          );
         }
-      });
+      }
+    });
+
+    if (apiCall.length === 0) {
+      return obsOf(this._ts.translate('no changes') as string);
     }
 
     return forkJoin(apiCall).pipe(
-      map((lngs: Lang[]) => {
-        let msg = this._ts.translate(lngs.length > 0 ? 'update:' : 'error try later');
-        lngs.forEach(l => {
+      map((results: (Lang | null)[]) => {
+        const updatedLangs = results.filter((l): l is Lang => l !== null);
+        if (updatedLangs.length === 0) {
+          return this._ts.translate('error try later') as string;
+        }
+
+        let msg = this._ts.translate(isRename ? 'key updated:' : 'update:') as string;
+        updatedLangs.forEach(l => {
           msg += ` ${l.name}`;
-          this._ts.setTranslation(l.schema, l.name);
+          const currentFullTranslation = this._ts.getTranslation(l.name) ?? {};
+          const dinoBase = dinoTranslations[l.name] ?? {};
+
+          this._ts.setTranslation(
+            {
+              ...currentFullTranslation,
+              ...dinoBase,
+              ...l.schema,
+            },
+            l.name,
+            {merge: false},
+          );
         });
+
         return msg;
       }),
       tap(_ => this._reloadList()),
