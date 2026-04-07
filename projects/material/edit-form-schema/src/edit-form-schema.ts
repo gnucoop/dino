@@ -363,7 +363,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
             ...schema,
             ...(unique ? {uniqueMetricsSet: unique} : undefined),
           };
-          const formPatch: InsertModel<FormSchema> = {
+          const formPatch: Partial<InsertModel<FormSchema>> = {
             schema: patchSchema,
             name: formGroup.get('name')?.value,
             label: formGroup.get('label')?.value,
@@ -371,14 +371,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
             form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
             visibility: formGroup.get('visibility')?.value,
             form_status_ref_id: formGroup.get('status')?.value ?? undefined,
-            created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           if (schemaWithDeps) {
             formPatch.form_schema_deps_ref_id = schemaWithDeps.form_schema_deps_ref_id;
           }
 
           if (fs == null) {
-            return this._formSchemaManager.create(formPatch).pipe(
+            return this._formSchemaManager.create(formPatch as InsertModel<FormSchema>).pipe(
               map(fs => ({fs, autoReportConfirmation, autoReport})),
               catchError(err => {
                 this._ehms.captureErrorMessage(
