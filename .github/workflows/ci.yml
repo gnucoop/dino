@@ -61,7 +61,7 @@ jobs:
         run: yarn -s model-schema-test
 
       - name: Unit tests
-        run: yarn -s test:ci
+        run: yarn -s test:ci:core && yarn -s test:ci:material
 
   e2e-tests:
     name: E2E tests
