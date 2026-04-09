@@ -8,6 +8,8 @@ export default defineConfig({
   defaultCommandTimeout: 60000,
   pageLoadTimeout: 180000,
   scrollBehavior: false,
+  viewportWidth: 1920,
+  viewportHeight: 1080,
   e2e: {
     setupNodeEvents(on, config) {
       on('before:browser:launch', (browser = {}, launchOptions) => {

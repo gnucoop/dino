@@ -1,4 +1,4 @@
-FROM node:20.11.1
+FROM node:22.16.0
 
 WORKDIR /app
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \

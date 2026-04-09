@@ -6,7 +6,7 @@ import {default as shell} from 'shelljs';
 import {packages} from './build-config.mjs';
 
 const runE2eApp = async () => {
-  const res = shell.exec(`yarn -s e2e-app`, {async: true, silent: true});
+  const res = shell.exec(`yarn -s dinoapp:e2e`, {async: true, silent: true});
   res.stdout.setEncoding('utf8');
   return new Promise((resolve, reject) => {
     res.stdout.on('data', data => {
