@@ -1,7 +1,7 @@
 import {DataModelManager, DataService, InsertModel, Model} from '@dino/core/data';
 import {RxDocument} from 'rxdb';
-import {Observable, of as obsOf} from 'rxjs';
-import {switchMap, take} from 'rxjs/operators';
+import {concat, Observable, of as obsOf} from 'rxjs';
+import {map, switchMap, take, toArray} from 'rxjs/operators';
 
 /**
  * Class that generates formdata/schemas for the e2e app

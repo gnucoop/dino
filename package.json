@@ -39,14 +39,9 @@
   "version": "18.0.4",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
-    "@ajf/core": "^18.1.2",
-    "@ajf/material": "^18.1.2",
-=======
     "@ajf/calendars": "^18.1.1",
     "@ajf/core": "^18.1.1",
     "@ajf/material": "^18.1.1",
->>>>>>> d4700aa2 (build: Monorepo unification. Joined Dinoapp with Dino core/material. Adjusted angular.json, package.json, tsconfig.json. Added vercel.json)
     "@ajf/icons": "1.0.0",
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
