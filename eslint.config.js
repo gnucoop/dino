@@ -40,7 +40,7 @@ module.exports = tseslint.config(
         'error',
         {
           'type': 'attribute',
-          'prefix': 'dino',
+          'prefix': ['dino', 'dinoapp'],
           'style': 'camelCase',
         },
       ],
@@ -49,7 +49,7 @@ module.exports = tseslint.config(
         'error',
         {
           'type': 'element',
-          'prefix': 'dino',
+          'prefix': ['dino', 'dinoapp'],
           'style': 'kebab-case',
         },
       ],

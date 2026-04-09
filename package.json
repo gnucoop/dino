@@ -22,6 +22,8 @@
     "test:ci": "CI_TEST=1 ng test --no-watch",
     "dinoapp": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve dinoapp",
     "dinoapp:e2e": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve dinoapp --configuration e2e",
+    "build:dinoapp": "ng build dinoapp",
+    "loadenv": "node projects/dinoapp/scripts/loadenv.mjs",
     "e2e:core": "ng run core:cypress-open",
     "e2e:material": "ng run material:cypress-open",
     "e2e": "concurrently \"yarn dinoapp:e2e\" \"yarn e2e:core\" \"yarn e2e:material\"",
