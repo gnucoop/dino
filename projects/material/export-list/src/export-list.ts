@@ -102,6 +102,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
     new EventEmitter<ActionTrigger>();
 
   readonly availableFieldsAndFormats: SelOption[] = [];
+  public selectedFieldsAndFormats: string[] = ['all_form_fields'];
   readonly availableFilters: SelOption[] = [];
 
   readonly exportDataList$: BehaviorSubject<ExportData[]> = new BehaviorSubject<ExportData[]>([]);
@@ -194,6 +195,9 @@ export class ExportList implements AfterViewInit, OnDestroy {
   /** If true, export use data analysis format */
   private _dataAnalysis$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  /** If true, export use separate columns format */
+  private _separateColumns$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   /** A dictionary with all context values:
    * {field name: field value}
    * {choiceOriginName_choiceOriginValue: choiceLabel} */
@@ -274,6 +278,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
       {value: 'all_form_fields', label: 'Select all Form fields'},
       {value: 'label_values', label: 'Label values'},
       {value: 'data_analysis', label: 'Data Analysis format'},
+      {value: 'separate_columns', label: 'Separate columns'},
     ];
 
     this.availableFilters = [{value: 'displayed', label: 'Items in page'}];
@@ -519,6 +524,54 @@ export class ExportList implements AfterViewInit, OnDestroy {
         withLatestFrom(this._exportedDataListPopulated$),
         map(([slideNodesWithAllRepeatingInstance, ctxList]) => {
           const exportCtxList: Context[] = [];
+
+          // Expand multiple choice fields in separate columns
+          const mcFields = slideNodesWithAllRepeatingInstance.filter(
+            f => f.fieldType === AjfFieldType.MultipleChoice,
+          );
+          const mcValuesByField = new Map<string, Set<any>>();
+          if (this._separateColumns$.value && mcFields.length > 0) {
+            ctxList.forEach(ctx => {
+              mcFields.forEach(field => {
+                const val = ctx[field.name];
+                if (val != null) {
+                  if (!mcValuesByField.has(field.name)) mcValuesByField.set(field.name, new Set());
+                  if (Array.isArray(val)) {
+                    val.forEach(v => mcValuesByField.get(field.name)!.add(v));
+                  } else if (val !== '') {
+                    mcValuesByField.get(field.name)!.add(val);
+                  }
+                }
+              });
+            });
+
+            const mcExpandedFieldNames: string[] = [];
+            mcValuesByField.forEach((values, fieldName) => {
+              const field = mcFields.find(f => f.name === fieldName);
+              const choicePrefix = (field as any).choicesOriginRef + '_';
+              const baseFieldName = fieldName.split('__')[0];
+              const fieldLabel = this._ctxValuesDict[baseFieldName] || baseFieldName;
+
+              values.forEach(v => {
+                const expandedName = `${fieldName}/${v}`;
+                mcExpandedFieldNames.push(expandedName);
+                const valueLabel = this._ctxValuesDict[choicePrefix + v] || v;
+                const baseExpandedName = `${baseFieldName}/${v}`;
+                this._ctxValuesDict[baseExpandedName] = `${fieldLabel}/${valueLabel}`;
+              });
+            });
+
+            const mcFieldsName = mcFields.map(f => f.name);
+            const filteredExportedFieldNames = this._exportedFieldNames$.value.filter(
+              field => !mcFieldsName.includes(field),
+            );
+
+            this._exportedFieldNames$.next([
+              ...filteredExportedFieldNames,
+              ...mcExpandedFieldNames,
+            ]);
+          }
+
           ctxList.forEach(ctx => {
             const exportCtx: Context = {};
             let expandedExportCtx: Context[] = [];
@@ -533,16 +586,36 @@ export class ExportList implements AfterViewInit, OnDestroy {
               slideNodesWithAllRepeatingInstance
                 .filter(f => f.slideName !== f.name) // remove slide fields
                 .forEach(field => {
-                  this._evaluateContext(field, exportCtx, ctx);
                   if (
-                    field.slideNodeType === AjfNodeType.AjfRepeatingSlide &&
-                    field.slideName != null &&
-                    exportCtx[field.slideName] == null
+                    this._separateColumns$.value &&
+                    field.fieldType === AjfFieldType.MultipleChoice
                   ) {
-                    const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
-                    exportCtx[field.slideName] = ctx[field.slideName]
-                      ? ctx[field.slideName]
-                      : this._countNumberOfInstanceInContext(fieldsFromTab, ctx);
+                    const values = mcValuesByField.get(field.name);
+                    if (values) {
+                      const selectedValues = ctx[field.name];
+                      const selectedSet = new Set(
+                        Array.isArray(selectedValues)
+                          ? selectedValues
+                          : selectedValues != null && selectedValues !== ''
+                          ? [selectedValues]
+                          : [],
+                      );
+                      values.forEach(v => {
+                        exportCtx[`${field.name}/${v}`] = selectedSet.has(v) ? 1 : 0;
+                      });
+                    }
+                  } else {
+                    this._evaluateContext(field, exportCtx, ctx);
+                    if (
+                      field.slideNodeType === AjfNodeType.AjfRepeatingSlide &&
+                      field.slideName != null &&
+                      exportCtx[field.slideName] == null
+                    ) {
+                      const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
+                      exportCtx[field.slideName] = ctx[field.slideName]
+                        ? ctx[field.slideName]
+                        : this._countNumberOfInstanceInContext(fieldsFromTab, ctx);
+                    }
                   }
                 });
             }
@@ -768,6 +841,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
    */
   updateFieldsAndFormats(evt: MatSelectChange) {
     if (evt.value) {
+      this.selectedFieldsAndFormats = evt.value;
       if (evt.value.includes('all_form_fields')) {
         this.selectAll(true);
       } else {
@@ -784,6 +858,12 @@ export class ExportList implements AfterViewInit, OnDestroy {
         this.setDataAnalysisFormat(true);
       } else {
         this.setDataAnalysisFormat(false);
+      }
+
+      if (evt.value.includes('separate_columns')) {
+        this.setSeparateColumns(true);
+      } else {
+        this.setSeparateColumns(false);
       }
     }
   }
@@ -823,6 +903,20 @@ export class ExportList implements AfterViewInit, OnDestroy {
    */
   setDataAnalysisFormat(checked: boolean): void {
     this._dataAnalysis$.next(checked);
+    if (checked && this._separateColumns$.value) {
+      this.setSeparateColumns(false);
+    }
+  }
+
+  /**
+   * Set if download data in separate columns format
+   * @param checked
+   */
+  setSeparateColumns(checked: boolean): void {
+    this._separateColumns$.next(checked);
+    if (checked && this._dataAnalysis$.value) {
+      this.setDataAnalysisFormat(false);
+    }
   }
 
   tabChange(ev: MatTabChangeEvent): void {
@@ -1220,11 +1314,26 @@ export class ExportList implements AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * Get the field name without the data_ prefix and without the repeating slide index
+   * @param name
+   * @returns
+   */
   private _getFieldName(name: string): string {
-    name = name.indexOf('data_') === 0 ? name.replace('data_', '') : name;
+    name = name.startsWith('data_') ? name.substring(5) : name;
+    if (!name.includes('__')) {
+      return name;
+    }
+
     const splittedName = name.split('__');
     if (splittedName.length === 2) {
-      return splittedName[0];
+      const [before, after] = splittedName;
+
+      const slashIndex = after.indexOf('/');
+      if (slashIndex !== -1) {
+        return before + after.substring(slashIndex);
+      }
+      return before;
     }
     return name;
   }

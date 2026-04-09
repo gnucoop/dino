@@ -70,13 +70,14 @@
       <mat-label>{{'Fields and formats'|transloco}}</mat-label>
       <mat-select
         (selectionChange)="updateFieldsAndFormats($event)"
-        [value]="['all_form_fields']"
+        [(ngModel)]="selectedFieldsAndFormats"
         multiple
       >
         <mat-option
           class="dino-status-option"
           *ngFor="let choice of availableFieldsAndFormats"
           [value]="choice.value"
+          [disabled]="(choice.value === 'separate_columns' && selectedFieldsAndFormats.includes('data_analysis')) || (choice.value === 'data_analysis' && selectedFieldsAndFormats.includes('separate_columns'))"
         >
           <span>{{choice.label| transloco}}</span>
         </mat-option>
