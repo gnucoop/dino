@@ -144,8 +144,8 @@ jobs:
       - name: Create build artifacts
         run: ./scripts/jenkins/create-build-artifacts.mjs
 
-      - name: Publish
-        run: ./scripts/publish.mjs
+      # - name: Publish
+      #   run: ./scripts/publish.mjs
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
