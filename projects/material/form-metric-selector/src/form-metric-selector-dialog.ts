@@ -33,7 +33,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Params} from '@angular/router';
 import {FormMetricSelector} from './form-metric-selector';
 import {combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {filter, map, switchMap} from 'rxjs/operators';
 import {
   FormData,
   FormDataManager,
@@ -45,6 +45,8 @@ import {PermissionContextService} from '@dino/core/data';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslocoService} from '@ngneat/transloco';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 /**
  * This component allows the selection and association of Metrics to the created or edited Form.
@@ -74,6 +76,17 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
    * The Form Metric Selector
    */
   private _formMetricsSelector: FormMetricSelector | undefined = undefined;
+
+  /**
+   * True if the selected metrics combination already exists in the database.
+   */
+  readonly uniqueMetricsSetAlreadyExists$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false,
+  );
+
+  readonly numMetrics$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  private readonly _unsubscribe = new Subject<void>();
 
   constructor(
     public dialogRef: MatDialogRef<FormMetricSelectorDialog>,
@@ -130,6 +143,141 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this._formMetricsSelector = this.formMetricsSelectorComponent;
+
+    if (this._formMetricsSelector) {
+      this.data.formSchema
+        .pipe(
+          switchMap(fschema => {
+            if (fschema == null || !fschema.schema.uniqueMetricsSet) {
+              return obsOf(null);
+            }
+            return this._formMetricsSelector!.selectedMetricsChanges.pipe(
+              map(fsmChanges => ({fschema, fsmChanges})),
+              filter(({fsmChanges}) => {
+                const values = Object.values(fsmChanges);
+                const hasValidSelection = values.some(
+                  v => v != null && typeof v === 'object' && v.option != null,
+                );
+                const hasTypingState = values.some(
+                  v => typeof v === 'string' && (v as string).length > 0,
+                );
+                return hasValidSelection && !hasTypingState;
+              }),
+            );
+          }),
+          switchMap(res => {
+            if (res == null) {
+              this.uniqueMetricsSetAlreadyExists$.next(false);
+              return obsOf(false);
+            }
+            const {fschema, fsmChanges} = res;
+            const numMetrics = fschema.form_schema_metrics?.length || 0;
+            this.numMetrics$.next(numMetrics);
+
+            const querySelectorObj: {[key: string]: {$eq: any}} = {};
+            for (let key in fsmChanges) {
+              if (
+                !fschema.form_schema_metrics?.length ||
+                (fschema.form_schema_metrics && fschema.form_schema_metrics.includes(key))
+              ) {
+                if (fsmChanges[key].option?.id != null) {
+                  querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id};
+                }
+              }
+            }
+
+            if (Object.keys(querySelectorObj).length === 0) {
+              this.uniqueMetricsSetAlreadyExists$.next(false);
+              return obsOf(false);
+            }
+
+            // Project the target metrics for each selected record
+            const targetSets = this.data.formDatas.map(formData =>
+              this._getTargetMetrics(formData, fsmChanges, fschema),
+            );
+
+            // Check for internal duplicates within the selection
+            if (this.data.formDatas.length > 1) {
+              const seen = new Set<string>();
+              const hasInternalDuplicate = targetSets.some(set => {
+                const s = this._buildMetricsKey(set, fschema);
+                if (seen.has(s)) return true;
+                seen.add(s);
+                return false;
+              });
+
+              if (hasInternalDuplicate) {
+                this.uniqueMetricsSetAlreadyExists$.next(true);
+                return obsOf(true);
+              }
+            }
+
+            if (this.data.formDatas.length === 1 && numMetrics > 1) {
+              // Only one formdata selected, query only for that one
+              fschema.form_schema_metrics?.forEach(key => {
+                if (!querySelectorObj[`${key}_ref_id`]) {
+                  querySelectorObj[`${key}_ref_id`] = {
+                    $eq: (this.data.formDatas[0] as any)[`${key}_ref_id`],
+                  };
+                }
+              });
+            }
+
+            const selector = {
+              form_schema_ref_id: {$eq: fschema.id},
+              id: {$nin: this.data.formDatas.map(d => d.id)},
+              ...querySelectorObj,
+            };
+            return this._fdm.query({selector}).pipe(
+              map(docs => {
+                const targetKeys = new Set(
+                  targetSets.map(set => this._buildMetricsKey(set, fschema)),
+                );
+
+                const exists = docs.some(doc => {
+                  const docKey = this._buildMetricsKey(doc, fschema);
+                  return targetKeys.has(docKey);
+                });
+
+                this.uniqueMetricsSetAlreadyExists$.next(exists);
+                return exists;
+              }),
+            );
+          }),
+          takeUntil(this._unsubscribe),
+        )
+        .subscribe();
+    }
+  }
+
+  /**
+   * Calculates the target metrics for a record after applying dialog changes
+   * @param formData The original form data
+   * @param fsmChanges The changes from the metric selector
+   * @param fschema The form schema
+   * @returns An object containing the final metrics (including _ref_id suffix)
+   */
+  private _getTargetMetrics(
+    formData: FormData,
+    fsmChanges: any,
+    fschema: FormSchema,
+  ): {[key: string]: string | null} {
+    const target: {[key: string]: string | null} = {};
+    fschema.form_schema_metrics?.forEach(key => {
+      const changeId = fsmChanges[key]?.option?.id;
+      target[`${key}_ref_id`] = changeId != null ? changeId : (formData as any)[`${key}_ref_id`];
+    });
+    return target;
+  }
+
+  /**
+   * Builds a unique key for a set of metrics
+   * @param doc The object containing the metrics
+   * @param fschema The form schema
+   * @returns A unique key for the set of metrics
+   */
+  private _buildMetricsKey(doc: Record<string, any>, fschema: FormSchema): string {
+    return (fschema.form_schema_metrics ?? []).map(key => doc[`${key}_ref_id`] ?? 'null').join('|');
   }
 
   /**
@@ -196,6 +344,7 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    return;
+    this._unsubscribe.next();
+    this._unsubscribe.complete();
   }
 }

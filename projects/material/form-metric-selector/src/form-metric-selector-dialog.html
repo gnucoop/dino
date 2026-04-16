@@ -14,14 +14,28 @@
       {{'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard'|transloco}}
     </div>
   </dino-form-metric-selector>
+  <div
+    class="dino-bulk-edit-error"
+    *ngIf="(uniqueMetricsSetAlreadyExists$ | async) === true"
+  >
+    <mat-error *ngIf="data.formDatas.length > 1 && (numMetrics$ | async) === 1">
+      {{ "Cannot bulk-edit the only metric of this schema because it must be unique for each record." | transloco }}
+    </mat-error>
+    <mat-error *ngIf="data.formDatas.length > 1 && (numMetrics$ | async) !== 1">
+      {{ "This combination of metrics already exists for another record. Please choose a different combination." | transloco }}
+    </mat-error>
+    <mat-error *ngIf="data.formDatas.length === 1">
+      {{ "A record with this exact set of Metrics already exists. Please choose different Metrics." | transloco }}
+    </mat-error>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
   <button mat-raised-button color="warn" (click)="closeDialog()">{{'Close'|transloco}}</button>
-  <button *ngIf="data.context !== 'shareUrl'" mat-raised-button color="primary" (click)="save()">
+  <button *ngIf="data.context !== 'shareUrl'" mat-raised-button color="primary" (click)="save()" [disabled]="(uniqueMetricsSetAlreadyExists$ | async) === true">
     {{'Save'|transloco}}
   </button>
   <button *ngIf="data.context === 'shareUrl'" mat-raised-button color="primary" (click)="shareUrl()">
     {{'Copy to Clipboard'|transloco}} <mat-icon>share</mat-icon>
-    </button>
+  </button>
 </mat-dialog-actions>
