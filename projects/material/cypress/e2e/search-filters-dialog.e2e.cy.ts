@@ -29,8 +29,8 @@ describe('dino-search-filters-dialog', () => {
 
   it('should close the dialog and change the url with filter params when clicking Search button', () => {
     cy.url().then(initialUrl => {
-      cy.get('.mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field').first().should('exist');
-      cy.get('.mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field').first().click();
+      cy.get('.mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field').eq(1).should('exist');
+      cy.get('.mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field').eq(1).click();
       cy.get('.mat-mdc-card-actions .dino-create-filter-button').first().should('exist');
       cy.get('.mat-mdc-card-actions .dino-create-filter-button').first().should('not.be.disabled');
       cy.get('.mat-mdc-card-actions .dino-create-filter-button').first().click();
