@@ -52,6 +52,12 @@ export class DateValue implements PipeTransform {
     if (typeof val === 'object' && !isNaN(val.valueOf())) {
       return transformDateByLocale(val, this._ts.getActiveLang(), 'shortDate');
     }
-    return val == null ? '' : JSON.stringify(val);
+    if (typeof val === 'string') {
+      return val;
+    }
+    if (typeof val === 'number' || typeof val === 'boolean' || typeof val === 'bigint') {
+      return String(val);
+    }
+    return JSON.stringify(val);
   }
 }
