@@ -41,12 +41,12 @@
         "cypress-run": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "e2e-app:serve",
+            "devServerTarget": "dinoapp:serve:e2e",
             "configFile": "projects/core/cypress.config.ts"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "e2e-app:serve:production"
+              "devServerTarget": "dinoapp:serve:production"
             }
           }
         },
@@ -59,7 +59,7 @@
           },
           "configurations": {
             "production": {
-              "devServerTarget": "e2e-app:serve:production"
+              "devServerTarget": "dinoapp:serve:production"
             }
           }
         },
@@ -74,13 +74,13 @@
         "e2e": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "e2e-app:serve",
+            "devServerTarget": "dinoapp:serve:e2e",
             "watch": true,
             "headless": false
           },
           "configurations": {
             "production": {
-              "devServerTarget": "e2e-app:serve:production"
+              "devServerTarget": "dinoapp:serve:production"
             }
           }
         }
@@ -124,12 +124,12 @@
         "cypress-run": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "e2e-app:serve",
+            "devServerTarget": "dinoapp:serve:e2e",
             "configFile": "projects/material/cypress.config.ts"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "e2e-app:serve:production"
+              "devServerTarget": "dinoapp:serve:production"
             }
           }
         },
@@ -142,7 +142,7 @@
           },
           "configurations": {
             "production": {
-              "devServerTarget": "e2e-app:serve:production"
+              "devServerTarget": "dinoapp:serve:production"
             }
           }
         },
@@ -157,13 +157,13 @@
         "e2e": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "devServerTarget": "e2e-app:serve",
+            "devServerTarget": "dinoapp:serve:e2e",
             "watch": true,
             "headless": false
           },
           "configurations": {
             "production": {
-              "devServerTarget": "e2e-app:serve:production"
+              "devServerTarget": "dinoapp:serve:production"
             }
           }
         }
@@ -356,6 +356,228 @@
             }
           },
           "defaultConfiguration": "development"
+        }
+      }
+    },
+    "dinoapp": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/dinoapp",
+      "sourceRoot": "projects/dinoapp/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "serviceWorker": true,
+            "allowedCommonJsDependencies": [
+              "crypto-js/aes",
+              "crypto-js/enc-utf8",
+              "deep-equal",
+              "immediate",
+              "is-my-json-valid",
+              "modifyjs",
+              "pdfmake/build/pdfmake",
+              "graphql-ws",
+              "jsbarcode",
+              "uuid",
+              "xlsx"
+            ],
+            "outputPath": "dist/dinoapp",
+            "index": "projects/dinoapp/src/index.html",
+            "main": "projects/dinoapp/src/main.ts",
+            "polyfills": "projects/dinoapp/src/polyfills.ts",
+            "tsConfig": "projects/dinoapp/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/dinoapp/src/favicon.ico",
+              "projects/dinoapp/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/leaflet/dist/images",
+                "output": "leaflet/"
+              },
+              "projects/dinoapp/src/manifest.webmanifest"
+            ],
+            "styles": [
+              "node_modules/@ajf/icons/css/ajf-icons.css",
+              "node_modules/flag-icon-css/css/flag-icons.min.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "projects/dinoapp/src/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules/"]
+            },
+            "scripts": [],
+            "ngswConfigPath": "projects/dinoapp/ngsw-config.json"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "digitalroadmap_prod": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "styles": ["projects/dinoapp/src/custom-themes/styles.pico.scss"],
+              "outputHashing": "all"
+            },
+            "mimit-dev": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "styles": [
+                "node_modules/flag-icon-css/css/flag-icons.min.css",
+                "node_modules/leaflet/dist/leaflet.css",
+                "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+                "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+                "projects/dinoapp/src/custom-themes/styles.pico.scss"
+              ],
+              "outputHashing": "all"
+            },
+            "mimit-prod": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "5mb",
+                  "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "styles": [
+                "node_modules/flag-icon-css/css/flag-icons.min.css",
+                "node_modules/leaflet/dist/leaflet.css",
+                "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+                "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+                "projects/dinoapp/src/custom-themes/styles.pico.scss"
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "e2e": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "serviceWorker": false,
+              "fileReplacements": [
+                {
+                  "replace": "projects/dinoapp/src/environments/environment.ts",
+                  "with": "projects/dinoapp/src/environments/environment.e2e.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "dinoapp:build:production"
+            },
+            "development": {
+              "buildTarget": "dinoapp:build:development"
+            },
+            "e2e": {
+              "buildTarget": "dinoapp:build:e2e"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "dinoapp:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dinoapp/src/test.ts",
+            "polyfills": "projects/dinoapp/src/polyfills.ts",
+            "tsConfig": "projects/dinoapp/tsconfig.spec.json",
+            "karmaConfig": "projects/dinoapp/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/dinoapp/src/favicon.ico",
+              "projects/dinoapp/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/leaflet/dist/images",
+                "output": "leaflet/"
+              },
+              "projects/dinoapp/src/manifest.webmanifest"
+            ],
+            "styles": [
+              "node_modules/@ajf/icons/css/ajf-icons.css",
+              "node_modules/flag-icon-css/css/flag-icons.min.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "projects/dinoapp/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/dinoapp/src/**/*.ts",
+              "projects/dinoapp/src/**/*.html"
+            ]
+          }
         }
       }
     },

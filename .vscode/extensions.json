@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "angular.ng-template",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "Webnative.webnative"
   ]
 }

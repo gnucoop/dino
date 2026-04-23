@@ -1,0 +1,6 @@
+{
+  "buildCommand": "ng build dinoapp --configuration production",
+  "outputDirectory": "dist/dinoapp",
+  "installCommand": "yarn install",
+  "ignoreCommand": "projects/dinoapp/vercel-build-step.sh"
+}
