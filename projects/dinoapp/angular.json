@@ -56,6 +56,8 @@
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/quill/dist/quill.core.css",
+              "node_modules/quill/dist/quill.snow.css",
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
@@ -114,6 +116,8 @@
                 "./node_modules/leaflet/dist/leaflet.css",
                 "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
                 "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+                "./node_modules/quill/dist/quill.core.css",
+                "./node_modules/quill/dist/quill.snow.css",
                 "src/custom-themes/styles.pico.scss"
               ],
               "outputHashing": "all"
@@ -136,6 +140,8 @@
                 "./node_modules/leaflet/dist/leaflet.css",
                 "./node_modules/leaflet.markercluster/dist/MarkerCluster.css",
                 "./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+                "./node_modules/quill/dist/quill.core.css",
+                "./node_modules/quill/dist/quill.snow.css",
                 "src/custom-themes/styles.pico.scss"
               ],
               "outputHashing": "all"
