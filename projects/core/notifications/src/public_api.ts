@@ -20,7 +20,7 @@
  *
  */
 
-export {Notification} from './notification';
+export {Notification, NotificationType} from './notification';
 
 export * from './notification-manager';
 export * from './notification.module';
