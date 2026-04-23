@@ -430,6 +430,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * Subscribes to the DataService 'couldNotSyncEvt' event
    */
   private _couldNotSyncSub: Subscription = Subscription.EMPTY;
+  private readonly _maxSyncErrorNotificationLength: number = 500;
 
   /**
    * If true, the RunSync has run a second time.
@@ -578,7 +579,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
         switchMap(([evt, userData]) => {
           if (!userData) return obsOf(null);
           const {collection, error} = evt;
-          const msg = JSON.stringify(error);
+          const msg = this._sanitizeAndTruncateNotificationText(
+            JSON.stringify(error),
+            this._maxSyncErrorNotificationLength,
+          );
           const notification: InsertModel<Notification> = {
             readers: [],
             type: 'warning',
@@ -923,6 +927,25 @@ export class MainNav implements AfterViewInit, OnDestroy {
         localStorage.removeItem(key);
       }
     }
+  }
+
+  private _sanitizeAndTruncateNotificationText(value: string, maxLength: number): string {
+    const sanitizedChars = Array.from(value).filter(char => {
+      const codePoint = char.codePointAt(0);
+      if (codePoint == null) {
+        return false;
+      }
+      // Drop invalid surrogate code points and hidden control chars, keep new lines and tabs.
+      if (codePoint >= 0xd800 && codePoint <= 0xdfff) {
+        return false;
+      }
+      return codePoint >= 0x20 || char === '\n' || char === '\t';
+    });
+
+    if (sanitizedChars.length <= maxLength) {
+      return sanitizedChars.join('');
+    }
+    return `${sanitizedChars.slice(0, maxLength).join('')}...`;
   }
 
   /**
