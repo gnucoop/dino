@@ -1,0 +1,44 @@
+<dino-list
+  #dinoList
+  [headers]="(headers|async)!"
+  [baseUrl]="baseUrl"
+  [dataSource]="dataSource"
+  [additionalBasicFilters]="additionalBasicFilters|async"
+  [additionalDataSchema]="additionalDataSchema | async"
+  [nodesVisibility]="nodesVisibility|async"
+  [listRowActions]="listRowActions|async"
+  [bulkActionsAvailable]="bulkActionsAvailable|async"
+  [showStatusProgressBar]="showStatusProgressBar"
+  [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+  [bulkActions]="bulkActions"
+  [onClickRowActions]="onClickRowActions"
+  [hasOptionalMetrics]="optionalMetrics"
+  (emitRowDataEvt)="emitRowData($event)"
+  (emitSelectionChangedEvt)="emitSelectionData($event)"
+  (emitActionTrigger)="processActionTrigger($event)"
+  (emitExportActionTrigger)="processExportTrigger($event)"
+>
+  <dino-search-filters-bar
+    filters
+    [presetManager]="true"
+    [exportable]="(displayExportButton|async) ?? false"
+    [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+    (exportEvt)="dinoList.export($event, 'forms')"
+  ></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+</dino-list>
+
+<dino-floating-button
+  *ngIf="displayAddButton|async"
+  buttonIcon="add"
+  [tooltipMessage]="'Add New form' | transloco"
+  [tourAnchor]="'add-form-floating-button'"
+  (click)="addForm()"
+></dino-floating-button>
+
+<dino-floating-button
+  *ngIf="(displayAddButton|async) && displayImportButton"
+  [buttonIcon]="'cloud_upload'"
+  [tooltipMessage]="'Import forms'|transloco"
+  (click)="openImportForms()"
+></dino-floating-button>

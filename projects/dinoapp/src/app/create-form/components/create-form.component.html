@@ -1,0 +1,14 @@
+<dino-create-form
+  [dataModelManager]="manager"
+  [hasOptionalMetrics]="optionalMetrics"
+  [allowMetricCreationFor]="allowMetricCreationFor ?? ['all']"
+  (emitActionTrigger)="processActionTrigger($event)"
+  [setPipelines]="pipelines ?? []"
+  [allowSaveDraft]="saveDraft"
+  [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+  [centeredFieldsContent]="centeredFieldsContent"
+  [maxColumns]="maxAjfFormColumns"
+  [recordAudioEnabled]="recordAudioEnabled"
+  ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+  <div metric-selector-message [innerHTML]="formInfoMessage"></div>
+</dino-create-form>

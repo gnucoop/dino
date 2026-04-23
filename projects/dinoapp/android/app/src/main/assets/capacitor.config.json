@@ -1,0 +1,9 @@
+{
+	"appId": "io.gnucoop.dino.app",
+	"appName": "DINO",
+	"webDir": "dist/dinoapp",
+	"bundledWebRuntime": false,
+	"android": {
+		"webContentsDebuggingEnabled": true
+	}
+}

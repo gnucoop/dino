@@ -1,0 +1,30 @@
+<dino-list
+  #dinoList
+  [isAggregationList]="true"
+  [headers]="(headers|async)!"
+  [baseUrl]="baseUrl"
+  [dataSource]="dataSource"
+  [bulkActions]="false"
+  [additionalBasicFilters]="additionalBasicFilters"
+  [emitRowDataOnHover]="true"
+  [listRowActions]="listRowActions|async"
+  [onClickRowActions]="onClickRowActions"
+  (emitRowDataEvt)="emitSchemaId($event)"
+>
+  <dino-search-filters-bar
+    filters
+    [presetManager]="false"
+    [exportable]="false"
+    [additionalFilters]="false"
+    [aggregationFilters]="true"
+    [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+  ></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+</dino-list>
+
+<dino-floating-button
+  *ngIf="aggregationFormCreator"
+  buttonIcon="add"
+  [tooltipMessage]="'Add New form'|transloco"
+  (click)="openFormCreatorDialog()"
+></dino-floating-button>

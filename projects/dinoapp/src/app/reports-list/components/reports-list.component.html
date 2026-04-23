@@ -1,0 +1,28 @@
+<dino-list
+  [headers]="headers"
+  [baseUrl]="baseUrl"
+  [instanceName]="instName"
+  [dataSource]="dataSource"
+  [additionalBasicFilters]="additionalBasicFilters"
+  [additionalDataSchema]="additionalDataSchema|async"
+  [listRowActions]="listRowActions|async"
+  [onClickRowActions]="onClickRowActions"
+  (emitRowDataEvt)="emitRowId($event)"
+>
+  <dino-search-filters-bar
+    filters
+    [presetManager]="true"
+    [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+  ></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+</dino-list>
+
+<dino-floating-button
+  *ngIf="displayAddButton|async"
+  buttonIcon="add"
+  [tooltipMessage]="(tooltipMessage|async)!"
+  [tourAnchor]="'add-report-floating-button'"
+  [tourInteractive]="true"
+  [cost]="reportCost|async"
+  (click)="addReport()"
+></dino-floating-button>

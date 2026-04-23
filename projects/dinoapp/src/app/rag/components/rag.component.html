@@ -1,0 +1,42 @@
+<div>
+  <h1>RAG Document Parser</h1>
+
+  <select (change)="onNamespaceChange($event)">
+    <option *ngFor="let n of namespaces" [value]="n">
+      {{n === '' ? 'Default' : n}}
+    </option>
+  </select>
+  namespace
+  <br>
+  <input type="file" accept=".txt,.mp3,.jpg,.jpeg,.png,.pdf,.md" (change)="onFileChange($event)">
+
+  <div class="status-bar">{{statusMessage}}</div>
+  <a *ngIf="fileUrl" [href]="fileUrl" target="_blank">{{fileUrl}}</a>
+  <span *ngIf="!fileUrl">&nbsp;</span>
+
+  <hr>
+
+  <h2>Supported File Types:</h2>
+  <ul>
+    <li>TXT documents</li>
+    <li>Audio files (MP3)</li>
+    <li>Images (JPG, JPEG, PNG)</li>
+    <li>PDF documents</li>
+    <li>Markdown documents</li>
+    <!--<li>Video files (MP4)</li>-->
+  </ul>
+</div>
+
+<div>
+  <h1 *ngIf="files.length > 0">Imported Files</h1>
+
+  <table>
+    <tr *ngFor="let file of files">
+      <td>
+        <a [href]="filesUrl+'/'+file.id" target="_blank">{{file.name}}</a>
+      </td>
+    </tr>
+  </table>
+
+  <br><br><br><br>
+</div>

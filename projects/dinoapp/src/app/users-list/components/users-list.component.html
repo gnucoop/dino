@@ -1,0 +1,17 @@
+<dino-list
+  [title]="'USERS'"
+  [headers]="headers"
+  [dataSource]="dataSource"
+  [listRowActions]="listRowActions"
+  [additionalBasicFilters]="additionalBasicFilters"
+  [onClickRowActions]="onClickRowActions"
+>
+  <dino-search-filters-bar filters [additionalFilters]="false"></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+</dino-list>
+
+<dino-floating-button
+  buttonIcon="add"
+  [tooltipMessage]="'Add New User' | transloco"
+  (click)="openDialog(undefined, 'create')"
+></dino-floating-button>

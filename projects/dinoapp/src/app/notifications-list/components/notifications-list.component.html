@@ -1,0 +1,12 @@
+<dino-list
+  [title]="'NOTIFICATIONS'"
+  [headers]="headers"
+  [dataSource]="dataSource"
+  [bulkActions]="false"
+  [listRowActions]="listRowActions"
+  [onClickRowActions]="onClickRowActions"
+  (emitActionTrigger)="markAsReadAndGoToUrl($event)"
+>
+  <dino-search-filters-bar filters [additionalFilters]="false"></dino-search-filters-bar>
+  <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+</dino-list>

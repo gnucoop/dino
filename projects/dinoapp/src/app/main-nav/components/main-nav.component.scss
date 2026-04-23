@@ -1,0 +1,25 @@
+dinoapp-main-nav {
+  .dino-sync-text {
+    top: 8em !important;
+  }
+  display: block;
+
+  main {
+    height: 100%;
+
+    dino-main-nav {
+      height: 100%;
+    }
+  }
+
+  .dino-spinner {
+    background-size: contain !important;
+    animation: spin 1.2s ease-in-out infinite !important;
+  }
+}
+
+.dino-user-area-header {
+  .dino-user-area-title {
+    font-size: inherit;
+  }
+}

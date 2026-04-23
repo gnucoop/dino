@@ -1,0 +1,25 @@
+dinoapp-dashboard-report {
+  canvas {
+    min-height: 300px;
+  }
+  ajf-table {
+    table {
+      width: -webkit-fill-available;
+    }
+    td {
+      padding: 25px;
+    }
+  }
+  
+  .dino-empty-dashboard-message {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-content: center;
+    height: 85vh;
+    opacity: 0.4;
+    h1 {
+      text-align: center;
+    }
+  }
+}

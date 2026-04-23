@@ -1,0 +1,32 @@
+<dino-login
+  [postLogin]="postLogin"
+  [logoImagePath]="(logoImagePath|async) ?? lightLogoPath"
+  [privacyPolicy]="privacyPolicy"
+  [fullNameLabel]="fullNameLabel"
+  (emitActionTrigger)="processActionTrigger($event)"
+>
+  <ng-container additionalContent>
+    <div class="theme-toggle">
+      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
+      <mat-slide-toggle
+        [checked]="ts.isDark()"
+        (change)="setDarkTheme($event.checked)"
+        style="margin: 20px"
+        aria-label="Toggle Dino Theme"
+      >
+      </mat-slide-toggle>
+      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5"
+        >nights_stay</mat-icon
+      >
+    </div>
+  </ng-container>
+
+  <mat-form-field *ngIf="dynamicConfig" class="dino-platform-dropdown" dropdownSelect>
+    <mat-label>{{ 'Choose your platform' | transloco }}</mat-label>
+    <mat-select #platformselect>
+      <mat-option *ngFor="let set of configurationSets | async" [value]="set">
+        {{ set.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</dino-login>

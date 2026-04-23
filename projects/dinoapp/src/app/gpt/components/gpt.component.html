@@ -1,0 +1,21 @@
+<dino-datachat
+  [mode]="'completion'"
+  [baseDataChatAPIurl]="baseDataChatAPIurl"
+  [endpointUrls]="endpointUrls"
+  [syncGraphQLUrl]="syncGraphQLUrl"
+  [namespaces]="namespaces"
+  [bucketUrl]="bucketUrl"
+  ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+  <div [innerHTML]="acceptTermsContent" gptTerms></div
+></dino-datachat>
+
+<!-- <div class="feedback">
+  <i *ngIf="qa.answer" class="material-icons" (click)="saveFeedback(qa, true)"
+    [style.opacity]="qa.userIsHappy === true ? 1 : 0.5"
+    [style.cursor]="qa.userIsHappy == null ? 'pointer' : 'default'"
+    >thumb_up</i>
+  <i *ngIf="qa.answer" class="material-icons" (click)="saveFeedback(qa, false)"
+    [style.opacity]="qa.userIsHappy === false ? 1 : 0.5"
+    [style.cursor]="qa.userIsHappy == null ? 'pointer' : 'default'"
+    >thumb_down</i>
+</div> -->

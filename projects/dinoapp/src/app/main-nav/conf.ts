@@ -1,0 +1,147 @@
+import {PermissionContextService} from '@dino/core/data';
+import {Section} from '@dino/material/main-nav';
+import {Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
+import {environment} from 'src/environments/environment';
+
+const pkg = require('../../../package.json');
+const ngsw = require('../../../ngsw-config.json');
+
+export function getSections(pcs: PermissionContextService): Observable<Section[]> {
+  return pcs.fullContext.pipe(
+    filter(ctx => ctx != null && ctx.user_permissions != null),
+    map(context => {
+      const sections = [
+        {
+          label: 'Dashboard',
+          url: 'dashboard',
+          icon: 'apps',
+          svgIcon: environment.customSvgIcons?.dashboard,
+        },
+        {
+          label: 'Forms',
+          url: 'forms',
+          icon: 'list_alt',
+          svgIcon: environment.customSvgIcons?.forms,
+        },
+        {
+          label: 'Reports',
+          url: 'reports',
+          icon: 'stacked_bar_chart',
+          svgIcon: environment.customSvgIcons?.reports,
+        },
+      ];
+      if (context && context.user_permissions != null) {
+        sections.push({
+          label: 'Aggregation',
+          url: 'aggregation',
+          icon: 'zoom_in',
+          svgIcon: environment.customSvgIcons?.aggregation,
+        });
+      }
+      if (environment.optionalModulesConfig.gptModule) {
+        sections.push({label: 'GPT', url: 'gpt', icon: 'chat', svgIcon: undefined});
+      }
+      if (
+        context &&
+        context.user_permissions != null &&
+        !pcs.isActiveUserGuestOnly(context.user_permissions)
+      ) {
+        sections.push({
+          label: 'Metrics',
+          icon: 'bookmarks',
+          url: 'metrics',
+          svgIcon: environment.customSvgIcons?.metrics,
+        });
+      }
+
+      return sections.filter(section => {
+        if (!environment.usersConfig.userSections) {
+          return true;
+        }
+        const findSection = environment.usersConfig.userSections.find(
+          userSect => userSect === section.label.toLowerCase(),
+        );
+        return findSection;
+      });
+    }),
+  );
+}
+
+export const adSections: Section[] = [
+  {
+    label: 'Users',
+    url: 'users',
+    icon: 'people',
+    svgIcon: environment.customSvgIcons?.users,
+  },
+  {
+    label: 'Languages',
+    url: 'languages',
+    icon: 'translate',
+    svgIcon: environment.customSvgIcons?.translations,
+  },
+];
+
+if (environment.usersConfig.adminSections) {
+  if (environment.usersConfig.adminSections.includes('metrics')) {
+    adSections.push({
+      label: 'Metrics',
+      icon: 'bookmarks',
+      url: 'metrics',
+      svgIcon: environment.customSvgIcons?.metrics,
+    });
+  }
+  if (environment.usersConfig.adminSections.includes('reports')) {
+    adSections.push({
+      label: 'Reports',
+      url: 'reports',
+      icon: 'stacked_bar_chart',
+      svgIcon: environment.customSvgIcons?.reports,
+    });
+  }
+  if (environment.usersConfig.adminSections.includes('aggregation')) {
+    adSections.push({
+      label: 'Aggregation',
+      url: 'aggregation',
+      icon: 'zoom_in',
+      svgIcon: environment.customSvgIcons?.aggregation,
+    });
+  }
+  if (environment.usersConfig.adminSections.includes('rag')) {
+    adSections.push({
+      label: 'RAG',
+      url: 'rag',
+      icon: 'document_scanner',
+    });
+  }
+}
+
+export const adminSections = adSections;
+
+export const linkIcons = [
+  {
+    icon: 'info',
+    tooltip: `DINO v.${pkg.version} (${ngsw.appData.sw_version}) -  Angular: ${pkg.dependencies[
+      '@angular/core'
+    ].replace('^', '')}, Ajf: ${pkg.dependencies['@ajf/core'].replace(
+      '^',
+      '',
+    )}, RxDb: ${pkg.dependencies['rxdb'].replace('^', '')}`,
+  },
+  {
+    icon: 'help',
+    url: environment.layoutConfig.helpUrl
+      ? environment.layoutConfig.helpUrl
+      : 'https://www.youtube.com/playlist?list=PLpjIT7_A7bIn5QHdf_URfNZqHDGKPpxQf',
+    tooltip: environment.layoutConfig.helpTooltip
+      ? environment.layoutConfig.helpTooltip
+      : 'Learn about DINO!',
+  },
+];
+
+export const defaultAvailableLangs = ['ITA', 'ENG', 'FRA', 'PRT', 'ESP'];
+export const availableLangs =
+  environment.languageConfig.availableLanguages ?? defaultAvailableLangs;
+export const initialExtendedSidenav = environment.layoutConfig.initialExtendedSidenav ?? false;
+export const customSvgIcons = environment.customSvgIcons;

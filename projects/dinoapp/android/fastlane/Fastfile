@@ -1,0 +1,36 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Build release AAB"
+  lane :build do
+    gradle(
+      task: "clean bundle",
+      build_type: 'Release',
+      properties: {
+        "android.injected.signing.store.file" => Dir.pwd + "/../stc-dev-keystore.jks",
+        "android.injected.signing.store.password" => "7yVuWFy9djBgX25n",
+        "android.injected.signing.key.alias" => "stc-dev",
+        "android.injected.signing.key.password" => "7yVuWFy9djBgX25n",
+      }
+    )
+  end
+
+  desc "Build release APK"
+  lane :buildapk do
+    gradle(
+      task: "clean assembleRelease",
+      properties: {
+        "android.injected.signing.store.file" => Dir.pwd + "/../stc-dev-keystore.jks",
+        "android.injected.signing.store.password" => "7yVuWFy9djBgX25n",
+        "android.injected.signing.key.alias" => "stc-dev",
+        "android.injected.signing.key.password" => "7yVuWFy9djBgX25n",
+      }
+    )
+  end
+  
+end

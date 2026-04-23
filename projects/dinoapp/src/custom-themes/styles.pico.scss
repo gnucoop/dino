@@ -1,0 +1,152 @@
+@use '../typography';
+@use './pico';
+@use 'angular-material-css-vars' as mat-css-vars with (
+  $dark-theme-selector: '.isDarkTheme',
+  $light-theme-selector: '.isLightTheme'
+);
+
+@include mat-css-vars.init-material-css-vars();
+@include typography.all-components-typography();
+$mat-css-dark-theme-selector: '.isDarkTheme';
+$mat-css-light-theme-selector: '.isLightTheme';
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  .mat-mdc-radio-button {
+    background-color: transparent !important;
+  }
+  .mat-mdc-autocomplete-panel {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  ajf-checkbox-group-item {
+    .mat-mdc-button {
+      background-color: transparent !important;
+    }
+  }
+  .mat-mdc-progress-bar .mdc-linear-progress__buffer-bar {
+    background-color: mat-css-vars.mat-css-color-primary(50) !important;
+  }
+  .mdc-linear-progress__bar.mdc-linear-progress__primary-bar {
+    background-color: mat-css-vars.mat-css-color-primary(500) !important;
+  }
+
+  ::-webkit-scrollbar {
+    max-width: 5px !important;
+    max-height: 5px !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: mat-css-vars.mat-css-color-accent(500);
+    border-radius: 5px;
+    max-width: 20%;
+  }
+}
+
+.mat-calendar {
+  .mat-calendar-body-cell-content {
+    cursor: pointer;
+  }
+
+  .mat-calendar-body-cell::before,
+  .mat-calendar-body-cell::after,
+  .mat-calendar-body-cell-preview {
+    border: none;
+  }
+
+  .mat-calendar-table tr td:last-child span,
+  .mat-calendar-table tr td:last-child input {
+    border-right: none;
+  }
+
+  .mat-calendar-table tr:last-of-type td span,
+  .mat-calendar-table tr:last-of-type td input {
+    border-bottom: none;
+  }
+}
+
+/* roboto-300 - vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local(''),
+    url('../assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-300.woff2')
+      format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url('../assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-300.woff')
+      format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* roboto-regular - vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+    url('../assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-regular.woff2')
+      format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url('../assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-regular.woff')
+      format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* roboto-500 - vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local(''),
+    url('../assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-500.woff2')
+      format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url('../assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-500.woff')
+      format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* Material Icons */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'),
+    url(../assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}

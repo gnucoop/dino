@@ -1,0 +1,96 @@
+*:not(.mat-icon) {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+$pico-purple: rgb(98, 91, 171);
+$pico-orange: rgb(229, 51, 33);
+$pico-hover-background-white: rgba(255, 255, 255, 0.2);
+$pico-hover-background-grey: rgba(100, 100, 100, 0.3);
+$pico-hover-background-purple: rgba(98, 91, 171, 0.2);
+$pico-hover-background-purple-light: rgba(98, 91, 171, 0.1);
+$pico-hover-background-orange: rgba(229, 51, 33, 0.2);
+$pico-white: white;
+
+html,
+body {
+    .dino-toolbar.dino-shadowed {
+        .dino-active-user-icon,
+        .dino-active-user-text {
+            opacity: 1 !important;
+        }
+        .dino-active-user-text {
+            font-weight: 400 !important;
+        }
+        .dino-active-user-icon {
+            max-width: 18px !important;
+            max-height: 18px !important;
+        }
+    }
+    .mat-sidenav.dino-sidenav {
+        border-top-right-radius: 15px !important;
+        background-color: $pico-purple !important;
+        .mat-mdc-list-item-interactive::before {
+            background: transparent !important;
+        }
+        .mat-mdc-nav-list .mat-mdc-list-item {
+            font-weight: 400 !important;
+            span {
+                padding: unset;
+            }
+            .mat-mdc-list-item-unscoped-content {
+                margin-right: 15px !important;
+                color: $pico-white !important;
+                padding: 0px 16px;
+                min-height: 50px;
+                .mat-icon{
+                    margin-right: 20px;
+                }
+            }
+            &.dino-section-selected,
+            &:hover {
+                box-shadow: none !important;
+                color: $pico-white !important;
+                background-color: transparent !important;
+                .mat-mdc-list-item-unscoped-content {
+                    border-radius: 15px !important;
+                    background-color: $pico-hover-background-white !important;
+                }
+            }
+        }
+    }
+    .dino-grid-list {
+        .dino-grid-tile {
+            border-radius: 15px !important;
+            transition: all ease-in-out 0.5s !important;
+            border: none !important;
+            font-weight: 600 !important;
+            background-color: $pico-hover-background-purple-light !important;
+            .dino-grid-icon .dino-mat-icon {
+                height: 35px !important;
+                width: 35px !important;
+                margin: auto !important;
+                padding: 20px !important;
+                border-radius: 15px !important;
+                background-color: $pico-white !important;
+            }
+            .dino-grid-icon .dino-mat-icon,
+            .dino-grid-label {
+                transition: all ease-in-out 0.5s !important;
+                color: $pico-purple !important;
+            }
+            &:hover {
+                transition: all ease-in-out 0.5s !important;
+                box-shadow: 0px 0px 15px 10px $pico-hover-background-grey !important;
+                background-color: $pico-orange !important;
+                .dino-grid-icon .dino-mat-icon {
+                    background-color: $pico-hover-background-white !important;
+                }
+                .dino-grid-icon .dino-mat-icon,
+                .dino-grid-label {
+                    transition: all ease-in-out 0.5s !important;
+                    color: $pico-white !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,121 @@
+// dinoapp-gpt {
+//     box-sizing: border-box;
+//     display: block;
+//     padding: 0 15px;
+
+//     * {
+//         box-sizing: border-box;
+//     }
+
+//     #history {
+//         height: calc(100vh - 235px);
+//         overflow: auto;
+//         border-bottom: 1px dotted grey;
+//     }
+
+//     #history, #inputBox, #acceptBox {
+//         width: 700px;
+//         max-width: 100%;
+//         margin: 0 auto;
+//     }
+
+//     #history h2 {
+//         margin-top: 20px;
+//     }
+
+//     #history p {
+//         padding-right: 10px;
+//     }
+
+//     .question, .answer-box {
+//         border-radius: 7px;
+//         margin-bottom: 10px;
+//         padding: 10px;
+//         box-shadow: 0 2px 2px #0003;
+//     }
+
+//     .question {
+//         margin-left: 20%;
+//         margin-right: 4px;
+//         background-color: #d9fdd3;
+//     }
+
+//     .sources {
+//         margin-top: 15px;
+//     }
+
+//     .sources span {
+//         display: inline-block;
+//         margin-right: 12px;
+//     }
+
+//     .sources span:first-child {
+//         padding: 6px 0;
+//     }
+
+//     .sources span:not(:first-child) {
+//         cursor: pointer;
+//         padding: 6px;
+//         border-radius: 6px;
+//         border: 1px dotted grey;
+//     }
+
+//     .answer-flex {
+//         display: flex;
+//         margin: 0 4px;
+//     }
+
+//     .answer-box {
+//         flex-grow: 1;
+//         background-color: white;
+//     }
+
+//     .feedback {
+//         min-width: 20%;
+//         padding: 10px;
+//         display: flex;
+//         justify-content: left;
+//         align-items: center;
+//         gap: 8px;
+//     }
+
+//     #inputBox {
+//         padding-top: 10px;
+//     }
+
+//     #acceptBox {
+//         padding-top: 25px;
+//     }
+
+//     #acceptBox button {
+//         display: block;
+//         margin: 0 auto;
+//     }
+
+//     textarea {
+//         border: 1px dotted gray;
+//         outline: none;
+//         resize: none;
+//         width: 100%;
+//         padding: 7px;
+//         border-radius: 5px;
+//     }
+
+//     #inputBar span {
+//         line-height: 30px;
+//         padding: 5px;
+//     }
+
+//     #inputBar select {
+//         border: none;
+//         outline: none;
+//         height: 30px;
+//         padding: 3px;
+//         border-radius: 3px;
+//     }
+
+//     #inputBar button {
+//         float: right;
+//         height: 30px !important;
+//     }
+// }

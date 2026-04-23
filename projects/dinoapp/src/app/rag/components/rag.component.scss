@@ -1,0 +1,58 @@
+dinoapp-rag {
+    display: flex;
+    gap: 30px;
+    padding: 17px;
+    padding-bottom: 40px;
+
+    @media only screen and (max-width: 900px) {
+        flex-direction: column;
+    }
+
+    div:first-child {
+        flex-grow: 1;
+    }
+
+    h1 {
+        margin-bottom: 20px !important;
+    }
+
+    h2 {
+        margin-bottom: 13px !important;
+    }
+
+    select, select option, input[type=file], input::file-selector-button {
+        font-family: inherit;
+    }
+
+    select, input::file-selector-button {
+        display: inline-block;
+        min-width: 120px;
+        height: 24px;
+        border: 1px solid #444;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    select {
+        padding-left: 2px;
+        margin-right: 1px;
+    }
+
+    input::file-selector-button {
+        text-align: left;
+    }
+
+    .status-bar {
+        font-size: 17px;
+        margin: 10px 0;
+    }
+
+    hr {
+        margin-top: 40px;
+        margin-bottom: 15px;
+    }
+
+    td:first-child {
+        max-width: 400px;
+    }
+}

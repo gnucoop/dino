@@ -1,0 +1,19 @@
+<main>
+  <dino-main-nav
+    [sections]="(sections|async)!"
+    [adminSections]="adminSections"
+    [setAdminRoles]="adminRoles"
+    [setLogoutDisabled]="(barButtonsDisabled|async) === true || logoutDisabled === true"
+    [setSyncSpinnerDisabled]="(barButtonsDisabled|async) === true"
+    [setSideMenuDisabled]="(barButtonsDisabled|async) === true"
+    [setLinkIcons]="linkIcons"
+    [logoImagePath]="(logoImagePath|async) ?? lightLogoPath"
+    [spinnerImagePath]="(spinnerImagePath|async) ?? lightSpinnerPath"
+    [userSectionIcon]="customSvgIcons?.userSection"
+    [syncIcon]="customSvgIcons?.sync"
+    [customLanguages]="customLanguages"
+    [initialExtendedSidenav]="initialExtendedSidenav"
+    [initializationScreenMaxDuration]="initializationScreenMaxDuration"
+    [backupRestore]="backupRestore"
+  ></dino-main-nav>
+</main>
