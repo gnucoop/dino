@@ -57,6 +57,7 @@ export class ListCellIsDeletedFile implements PipeTransform {
   constructor() {}
 
   transform(element: {[key: string]: any}): boolean {
+    if (typeof element === 'string') return false;
     return element['size'] <= 0 || element['name'] == null || element['deleteUrl'];
   }
 }
