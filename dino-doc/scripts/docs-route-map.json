@@ -1,0 +1,280 @@
+[
+  {
+    "url": "/",
+    "dir": "interface",
+    "screenshots": [
+      {
+        "name": "interface/index",
+        "setup": null,
+        "description": "Main view of the Main Nav page"
+      },
+      {
+        "name": "interface/index-user-area",
+        "setup": "cy.get('.dino-active-user-icon').first().click(); cy.wait(1000);",
+        "selector": ".dino-active-user-icon",
+        "description": "User area dialog open"
+      },
+      {
+        "name": "interface/index-notifications",
+        "setup": "cy.get('.dino-notifications-icon').first().click(); cy.wait(500);",
+        "selector": ".dino-notifications-icon",
+        "description": "Notifications dropdown open"
+      },
+      {
+        "name": "interface/index-sidenav-expanded",
+        "setup": "cy.get('button[aria-label=\"Toggle menu button\"]').first().click(); cy.wait(500); cy.get('.dino-extend-menu-button').first().click(); cy.wait(500);",
+        "selector": ".dino-extend-menu-button",
+        "description": "Sidenav with labels expanded (tablet viewport)",
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        }
+      }
+    ]
+  },
+  {
+    "url": "/",
+    "dir": "dashboard",
+    "screenshots": [
+      {
+        "name": "dashboard/index",
+        "setup": null,
+        "description": "Main view of the Dashboard page"
+      }
+    ]
+  },
+  {
+    "url": "/login",
+    "dir": "getting-started",
+    "screenshots": [
+      {
+        "name": "getting-started/login",
+        "setup": null,
+        "description": "Main view of the Login page"
+      }
+    ]
+  },
+  {
+    "url": "/reset-password",
+    "dir": "getting-started",
+    "screenshots": [
+      {
+        "name": "getting-started/reset-password",
+        "setup": null,
+        "description": "Main view of the Reset Password page"
+      }
+    ]
+  },
+  {
+    "url": "/forms",
+    "dir": "forms",
+    "screenshots": [
+      {
+        "name": "forms/index",
+        "setup": null,
+        "description": "Main view of the Forms page"
+      }
+    ]
+  },
+  {
+    "url": "/forms/schema/{schemaId}/edit",
+    "dir": "forms",
+    "screenshots": [
+      {
+        "name": "forms/edit-form-schema",
+        "setup": null,
+        "description": "Main view of the Edit Form Schema page"
+      }
+    ],
+    "resolveFrom": "/forms"
+  },
+  {
+    "url": "/forms/{schemaId}/map",
+    "dir": "forms",
+    "screenshots": [
+      {
+        "name": "forms/forms-map",
+        "setup": null,
+        "description": "Main view of the Forms Map page"
+      }
+    ],
+    "resolveFrom": "/forms"
+  },
+  {
+    "url": "/forms/{schemaId}/view/{dataId}",
+    "dir": "forms",
+    "screenshots": [
+      {
+        "name": "forms/edit-form",
+        "setup": null,
+        "description": "Main view of the Edit Form page"
+      }
+    ],
+    "resolveFrom": "/forms",
+    "resolveAction": "visibility"
+  },
+  {
+    "url": "/reports",
+    "dir": "reports",
+    "screenshots": [
+      {
+        "name": "reports/index",
+        "setup": null,
+        "description": "Main view of the Reports page"
+      }
+    ]
+  },
+  {
+    "url": "/reports/schema/{schemaId}/edit",
+    "dir": "reports",
+    "screenshots": [
+      {
+        "name": "reports/edit-report-schema",
+        "setup": null,
+        "description": "Main view of the Edit Report Schema page"
+      }
+    ],
+    "resolveFrom": "/reports"
+  },
+  {
+    "url": "/reports/{schemaId}/view/{dataId}",
+    "dir": "reports",
+    "screenshots": [
+      {
+        "name": "reports/edit-report",
+        "setup": null,
+        "description": "Main view of the Edit Report page"
+      }
+    ],
+    "resolveFrom": "/reports",
+    "resolveAction": "visibility"
+  },
+  {
+    "url": "/aggregation",
+    "dir": "aggregation",
+    "screenshots": [
+      {
+        "name": "aggregation/index",
+        "setup": null,
+        "description": "Main view of the Aggregation page"
+      }
+    ]
+  },
+  {
+    "url": "/languages",
+    "dir": "administration",
+    "screenshots": [
+      {
+        "name": "administration/languages",
+        "setup": null,
+        "description": "Main view of the Languages page"
+      }
+    ]
+  },
+  {
+    "url": "/notifications",
+    "dir": "notifications",
+    "screenshots": [
+      {
+        "name": "notifications/index",
+        "setup": null,
+        "description": "Main view of the Notifications page"
+      }
+    ]
+  },
+  {
+    "url": "/metrics",
+    "dir": "metrics",
+    "screenshots": [
+      {
+        "name": "metrics/index",
+        "setup": null,
+        "description": "Main view of the Metrics page"
+      }
+    ]
+  },
+  {
+    "url": "/metrics/thematic_areas",
+    "dir": "metrics",
+    "screenshots": [
+      {
+        "name": "metrics/areas",
+        "setup": null,
+        "description": "Main view of the Areas page"
+      }
+    ]
+  },
+  {
+    "url": "/users",
+    "dir": "administration",
+    "screenshots": [
+      {
+        "name": "administration/users",
+        "setup": null,
+        "description": "Main view of the Users page"
+      }
+    ]
+  },
+  {
+    "url": "/users/list",
+    "dir": "administration",
+    "screenshots": [
+      {
+        "name": "administration/users-list",
+        "setup": null,
+        "description": "Main view of the Users List page"
+      }
+    ]
+  },
+  {
+    "url": "/users/groups",
+    "dir": "administration",
+    "screenshots": [
+      {
+        "name": "administration/groups-list",
+        "setup": null,
+        "description": "Main view of the Groups List page"
+      }
+    ]
+  },
+  {
+    "url": "/forms/{schemaId}",
+    "dir": "forms",
+    "resolveFrom": "/forms",
+    "screenshots": [
+      {
+        "name": "forms/index-export",
+        "description": "Export dialog for downloading form submissions",
+        "setup": "cy.get('.mat-expansion-indicator').first().click(); cy.wait(500); cy.get('.dino-export-button', { timeout: 8000 }).should('be.visible').first().click(); cy.wait(1000);"
+      }
+    ]
+  },
+  {
+    "url": "/forms/{schemaId}/view/{dataId}",
+    "dir": "forms",
+    "resolveFrom": "/forms",
+    "resolveAction": "visibility",
+    "screenshots": [
+      {
+        "name": "forms/edit-form-view",
+        "description": "Compiled form view after clicking View the Form",
+        "setup": "cy.get('.dino-go-to-data-button').first().click(); cy.wait(2000);",
+        "selector": ".dino-go-to-data-button"
+      }
+    ]
+  },
+  {
+    "url": "/reports/{schemaId}/view/{dataId}",
+    "dir": "reports",
+    "resolveFrom": "/reports",
+    "resolveAction": "visibility",
+    "screenshots": [
+      {
+        "name": "reports/edit-report-view",
+        "description": "Rendered report view after clicking View the Report",
+        "setup": "cy.get('.dino-go-to-data-button').first().click(); cy.wait(2000);",
+        "selector": ".dino-go-to-data-button"
+      }
+    ]
+  }
+]

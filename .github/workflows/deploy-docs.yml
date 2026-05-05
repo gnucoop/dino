@@ -1,0 +1,109 @@
+name: Deploy Docs
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
+
+jobs:
+  docs:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      # ------------------------
+      # Checkout repo
+      # ------------------------
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ------------------------
+      # Node setup
+      # ------------------------
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # ------------------------
+      # Build dinoapp (e2e mode) and serve for Cypress
+      # ------------------------
+      - name: Build dinoapp (e2e)
+        run: npx ng build dinoapp --configuration=e2e
+
+      - name: Serve dinoapp
+        run: npx -y serve dist/dinoapp -s -l 4200 &
+
+      - name: Wait for dinoapp on port 4200
+        run: |
+          echo "Waiting for http://localhost:4200..."
+          for i in $(seq 1 90); do
+            curl -sf http://localhost:4200 > /dev/null && echo "Ready after ${i}s" && exit 0
+            sleep 2
+          done
+          echo "Timed out waiting for dinoapp" && exit 1
+
+      # ------------------------
+      # Run Cypress screenshots
+      # ------------------------
+      - name: Run Cypress screenshots
+        run: |
+          yarn cypress run \
+            --project dino-doc \
+            --spec cypress/e2e/docs-screenshots.cy.js \
+            --browser chrome \
+            --headless
+
+      # ------------------------
+      # Generate Markdown docs (Claude)
+      # ------------------------
+      - name: Generate docs
+        run: node dino-doc/scripts/docs-generate.mjs
+        env:
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+
+      # ------------------------
+      # Python + MkDocs
+      # ------------------------
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs
+        run: pip install mkdocs mkdocs-material
+
+      # ------------------------
+      # Build MkDocs (all languages)
+      # ------------------------
+      - name: Build MkDocs site
+        working-directory: dino-doc
+        run: |
+          rm -rf site
+          for lang in en it es fr pt uk ar; do
+            echo "Building docs for $lang"
+            mkdocs build --config-file "config/$lang/mkdocs.yml"
+          done
+
+      # ------------------------
+      # Root redirect (optional landing page)
+      # ------------------------
+      - name: Copy root index
+        run: cp dino-doc/site-root/index.html dino-doc/site/index.html
+
+      # ------------------------
+      # Deploy to GitHub Pages
+      # ------------------------
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dino-doc/site
+          publish_branch: gh-pages
+          force_orphan: true
