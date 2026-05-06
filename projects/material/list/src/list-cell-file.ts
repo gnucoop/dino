@@ -21,6 +21,7 @@
  */
 
 import {Pipe, PipeTransform} from '@angular/core';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Model} from '@dino/core/data';
 
 /**
@@ -35,6 +36,13 @@ export type listCellFile = {
   deleteUrl?: boolean;
 };
 
+export interface ListCellFileView {
+  href: string | SafeUrl;
+  download: boolean;
+  targetBlank: boolean;
+  isImage: boolean;
+}
+
 /**
  * Pipe that checks if a list column displays files
  */
@@ -46,6 +54,37 @@ export class ListCellIsFile implements PipeTransform {
     if (element == null || element === undefined || typeof element !== 'object') return false;
     if (typeof element === 'string') return false;
     return isFileColumn(element);
+  }
+}
+
+/**
+ * Builds the file view configuration (href, download, target and type) based on whether the file is an image, URL or base64 content.
+ */
+@Pipe({name: 'dinoFileView', pure: true})
+export class ListCellFileViewPipe implements PipeTransform {
+  constructor(private sanitizer: DomSanitizer) {}
+
+  transform<T extends Model = Model>(element: T | {[key: string]: any} | string): ListCellFileView {
+    if (!element || typeof element !== 'object') {
+      return {href: '', download: false, targetBlank: false, isImage: false};
+    }
+
+    const elemObj = element as {[key: string]: string};
+    const isImage = elemObj['type']?.includes('image') ?? false;
+    const isUrl = !!elemObj['url'];
+
+    let href: string | SafeUrl = '';
+    if (isUrl) {
+      href = elemObj['url']!;
+    } else if (elemObj['content']) {
+      href = this.sanitizer.bypassSecurityTrustUrl(elemObj['content']);
+    }
+    return {
+      href,
+      download: !isUrl,
+      targetBlank: isUrl && !isImage,
+      isImage,
+    };
   }
 }
 

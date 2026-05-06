@@ -38,20 +38,31 @@
 
 <!-- Valid File Cell template -->
 <ng-template #validFileTemplate>
-  <ng-container [ngSwitch]="(item|dinoListCellGetFileIcon)">
-    <a *ngSwitchCase="'insert_drive_file'" [href]="(item|dinoListCellGetFile).url" target="_blank"
-      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
-    >
-    <a *ngSwitchCase="'picture_as_pdf'" [href]="(item|dinoListCellGetFile).url" target="_blank"
-      ><mat-icon class="dino-file-cell-icon">{{item|dinoListCellGetFileIcon}}</mat-icon></a
-    >
-    <mat-icon
-      *ngSwitchCase="'image'"
-      (click)="previewMethod ? previewMethod($event, item) : null"
-      class="dino-file-cell-icon"
-      >{{item|dinoListCellGetFileIcon}}</mat-icon
-    >
-    <ng-container *ngSwitchDefault>{{item}}</ng-container>
+  <ng-container *ngIf="(item|dinoListCellGetFile) as fileItem">
+    <ng-container *ngIf="item|dinoListCellGetFileIcon as fileIcon">
+      <ng-container *ngIf="fileItem | dinoFileView as fileView">
+
+        <!-- DOWNLOAD / URL -->
+        <a *ngIf="!fileView.isImage && fileView.href" [href]="fileView.href"
+          [attr.target]="fileView.targetBlank ? '_blank' : null" [attr.download]="fileView.download ? '' : null">
+
+          <mat-icon class="dino-file-cell-icon">
+            {{ fileIcon }}
+          </mat-icon>
+        </a>
+
+        <!-- IMAGE -->
+        <mat-icon *ngIf="fileView.isImage" (click)="previewMethod?.($event, item)" class="dino-file-cell-icon">
+          {{ fileIcon }}
+        </mat-icon>
+
+        <!-- FALLBACK -->
+        <ng-container *ngIf="!fileView.isImage && !fileView.href">
+          {{ item }}
+        </ng-container>
+
+      </ng-container>
+    </ng-container>
   </ng-container>
 </ng-template>
 

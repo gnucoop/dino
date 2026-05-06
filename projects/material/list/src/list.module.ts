@@ -60,6 +60,7 @@ import {
   ListCellGetFile,
   ListCellGetFileIcon,
   ListCellIsDeletedFile,
+  ListCellFileViewPipe,
 } from './list-cell-file';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
@@ -116,6 +117,7 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     ListCellIsStorageImageUrl,
     ListCellGetFile,
     ListCellGetFileIcon,
+    ListCellFileViewPipe,
     LogViewer,
     SelectionList,
   ],
