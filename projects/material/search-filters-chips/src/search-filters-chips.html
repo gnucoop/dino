@@ -6,7 +6,7 @@
     {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}}
 
     <ng-container *ngIf="!isArrayWithNull(item.value)">
-      {{ item.value | dinoDateValue }}
+      {{ item.value|dinoDateValue|json }}
     </ng-container>
 
     <mat-icon matChipRemove (click)="removeFilterItem(item)">cancel</mat-icon>
