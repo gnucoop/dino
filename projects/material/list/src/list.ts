@@ -105,6 +105,7 @@ import {RxDocument} from 'rxdb';
 import {TranslocoService} from '@ngneat/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {format} from 'date-fns';
+import {FileUploadService} from '@dino/core/file-upload';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
@@ -516,6 +517,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _ts: TranslocoService,
     private _fsm: FormStatusManager,
     private _fdm: FormDataManager,
+    private _uploadService: FileUploadService,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
   ) {
@@ -1362,7 +1364,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
                 prev.status_level < curr.status_level ? prev : curr,
               ).id
             : null;
-        newItem['data'] = genItem['data'];
+        const srcData: {[key: string]: any} = genItem['data'] ?? {};
+        const filteredData: {[key: string]: any} = {};
+        for (const key of Object.keys(srcData)) {
+          if (!this._uploadService.isAnyAjfFileField(srcData[key]) && !(typeof srcData[key] === 'string' && srcData[key].startsWith('data:audio/'))) {
+            filteredData[key] = srcData[key];
+          }
+        }
+        newItem['data'] = filteredData;
         newItem['form_schema_ref_id'] = genItem['form_schema_ref_id'];
         newItem['user_data_ref_id'] = userData?.id;
         newItem['form_status_ref_id'] = defaultFormStatus;

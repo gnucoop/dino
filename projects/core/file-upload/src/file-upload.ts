@@ -202,10 +202,10 @@ export class FileUploadService {
     const invalidFileKeys: string[] = [];
     Object.keys(formValue).forEach(key => {
       if (key !== '$value') {
-        if (this.isAjfFileField(formValue[key])) {
+        if (this.isAjfBase64FileField(formValue[key])) {
           filesToUpload.push(formValue[key] as AjfFile);
         }
-        if (this.isAjfFileFieldToDelete(formValue[key])) {
+        if (this.isAjfBase64FileFieldToDelete(formValue[key])) {
           filesToDelete.push(formValue[key] as AjfFile);
         }
         if (this.isAjfInvalidFileField(formValue[key])) {
@@ -224,7 +224,7 @@ export class FileUploadService {
   removeAllFiles(formValue: {[key: string]: any}): {[key: string]: any} {
     if (formValue) {
       Object.keys(formValue).forEach(key => {
-        if (this.isAjfFileField(formValue[key])) {
+        if (this.isAjfBase64FileField(formValue[key])) {
           formValue[key] = null;
         }
       });
@@ -270,7 +270,7 @@ export class FileUploadService {
     ) {
       Object.keys(formValue).forEach(key => {
         if (
-          this.isAjfFileField(formValue[key]) &&
+          this.isAjfBase64FileField(formValue[key]) &&
           formValue[key]['name'] === storageResponse['name']
         ) {
           formValue[key]['url'] = storageResponse['filePublicUrl'];
@@ -282,12 +282,12 @@ export class FileUploadService {
   }
 
   /**
-   * Check if a value is an AjfFile field with a valid content
+   * Check if a value is an AjfFile field with a valid base64 content
    * @param value the value to be checked
    * @param uploadSignature if true, signature pngs are uploaded to the storage. Defaults to false.
    * @returns true if the input value is an AjfFile field
    */
-  isAjfFileField(value: any, uploadSignature: boolean = true): boolean {
+  isAjfBase64FileField(value: any, uploadSignature: boolean = true): boolean {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
@@ -301,6 +301,28 @@ export class FileUploadService {
       if (!uploadSignature && 'signature' in value && value['signature']) {
         return false;
       }
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check if a value is an AjfFile field with url or a valid base64 content
+   * @param value the value to be checked
+   * @returns true if the input value is an AjfFile field
+   */
+  isAnyAjfFileField(value: any): boolean {
+    if (value === null || value === undefined || typeof value !== 'object') {
+      return false;
+    }
+    if (
+      'name' in value &&
+      (('content' in value &&
+        value['content'] &&
+        value['content'].length &&
+        value['content'].startsWith('data:')) ||
+        (value['url'] && value['url'].length))
+    ) {
       return true;
     }
     return false;
@@ -332,7 +354,7 @@ export class FileUploadService {
    * @param value the value to be checked
    * @returns true if the input value is an AjfFile field
    */
-  isAjfFileFieldToDelete(value: any): boolean {
+  isAjfBase64FileFieldToDelete(value: any): boolean {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
