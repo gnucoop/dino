@@ -75,11 +75,11 @@ import {TranslocoService} from '@ngneat/transloco';
 import {
   BehaviorSubject,
   combineLatest,
+  EMPTY,
   Observable,
   of as obsOf,
   Subject,
   Subscription,
-  throwError,
   zip,
 } from 'rxjs';
 import {
@@ -1125,6 +1125,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         switchMap(([res, isDetails, formStatuses]) => {
           if (res.length) {
             const formObj = res[0];
+            const hasUploadError = res
+              .slice(1)
+              .some(r => r != null && (r as StorageUploadResponse).isUploaded === false);
             let formValue = {...formObj.formValue};
             if (formObj.evt && formObj.evt === 'draft') {
               formValue['dinoinvalid'] = true;
@@ -1185,41 +1188,79 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             const dmm = this._dataModelManager as DataModelManager<T>;
             const dm: DataModelManager<T> =
               isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
-            return dm
-              .update(newItem as T)
-              .pipe(
-                withLatestFrom(
-                  this._formDataStatus,
-                  this._formSchemaStatuses,
-                  this._formDataUser,
-                  this._formDataUserGroups,
-                  this._udm.getActiveUserData(),
-                  this._ugm.getActiveUserGroups(),
-                  obsOf(formObj),
-                ),
-              );
+            return dm.update(newItem as T).pipe(
+              withLatestFrom(
+                this._formDataStatus,
+                this._formSchemaStatuses,
+                this._formDataUser,
+                this._formDataUserGroups,
+                this._udm.getActiveUserData(),
+                this._ugm.getActiveUserGroups(),
+                obsOf(formObj),
+                obsOf(hasUploadError),
+              ),
+              catchError(err => {
+                this.isLoading.next(false);
+                if (isDevMode()) {
+                  console.log(err);
+                }
+                this._ehms.captureErrorMessage(
+                  `Could not edit form: ${JSON.stringify(err)}`,
+                  'error',
+                );
+                this.snackbar.open(
+                  err?.message ?? this._ts.translate('Could not save the form. Please retry.'),
+                  this._ts.translate('ERROR'),
+                  {duration: 5000},
+                );
+                return EMPTY;
+              }),
+            );
           } else {
-            return throwError(() => new Error('No data found'));
+            this.isLoading.next(false);
+            this._ehms.captureErrorMessage('Could not edit form: no form data found', 'error');
+            this.snackbar.open(
+              this._ts.translate('Could not save the form. Please retry.'),
+              this._ts.translate('ERROR'),
+              {duration: 5000},
+            );
+            return EMPTY;
           }
-        }),
-        catchError(err => {
-          this.isLoading.next(false);
-          if (isDevMode()) {
-            console.log(err);
-          }
-          this._ehms.captureErrorMessage(`Could not edit form: ${JSON.stringify(err)}`, 'error');
-          this._location.back();
-          this.snackbar.open(err, 'ERROR', {duration: 5000});
-          return obsOf(err);
         }),
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe(
-        ([fd, status, allStatuses, user, userGroups, activeUser, activeUserGroups, formObj]) => {
+        ([
+          fd,
+          status,
+          allStatuses,
+          user,
+          userGroups,
+          activeUser,
+          activeUserGroups,
+          formObj,
+          uploadFailed,
+        ]) => {
           this.isLoading.next(false);
           if (fd && fd.collection.name === 'form_data') {
             this._location.back();
-            this.snackbar.open('Document saved', 'SAVE', {duration: 5000});
+            if (uploadFailed) {
+              this.snackbar.open(
+                this._ts.translate(
+                  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
+                ),
+                this._ts.translate('CLOSE'),
+                {duration: 10000},
+              );
+            } else {
+              this.snackbar.open(
+                this._ts.translate('Document saved'),
+                this._ts.translate('CLOSE'),
+                {
+                  duration: 5000,
+                },
+              );
+            }
             const trigData: ActionTriggerData<T> = {
               doc: fd,
               previousValue: formObj.doc,

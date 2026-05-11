@@ -21,11 +21,11 @@
  */
 
 import {AjfFile} from '@ajf/core/file-input';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Inject, Injectable, isDevMode} from '@angular/core';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
-import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of as obsOf, timer} from 'rxjs';
+import {catchError, map, retry, switchMap} from 'rxjs/operators';
 import {StorageUploadResponse} from './file-upload-response';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
@@ -79,6 +79,15 @@ export class FileUploadService {
         const formData = new FormData();
         formData.append('file', file);
         return this._httpClient.post<StorageUploadResponse>(url, formData, {headers}).pipe(
+          retry({
+            count: 3,
+            delay: (error, retryCount) => {
+              if (this._isRetryableUploadError(error)) {
+                return timer(1000 * retryCount);
+              }
+              throw error;
+            },
+          }),
           map(res => {
             if (res != null) {
               const filePublicUrl = url + '/' + res.id;
@@ -205,7 +214,7 @@ export class FileUploadService {
         if (this.isAjfBase64FileField(formValue[key])) {
           filesToUpload.push(formValue[key] as AjfFile);
         }
-        if (this.isAjfBase64FileFieldToDelete(formValue[key])) {
+        if (this.isAjfFileFieldToDelete(formValue[key])) {
           filesToDelete.push(formValue[key] as AjfFile);
         }
         if (this.isAjfInvalidFileField(formValue[key])) {
@@ -238,14 +247,8 @@ export class FileUploadService {
    * @returns The public url
    */
   getUploadedFileUrl(storageResponse: StorageUploadResponse): string | null {
-    if (
-      storageResponse &&
-      'isUploaded' in storageResponse &&
-      storageResponse['isUploaded'] &&
-      'filePublicUrl' in storageResponse &&
-      storageResponse['filePublicUrl']
-    ) {
-      return storageResponse['filePublicUrl'];
+    if (storageResponse?.isUploaded && storageResponse.filePublicUrl) {
+      return storageResponse.filePublicUrl;
     }
     return null;
   }
@@ -260,25 +263,25 @@ export class FileUploadService {
     formValue: {[key: string]: any},
     storageResponse: StorageUploadResponse,
   ): {[key: string]: any} {
-    if (
-      formValue &&
-      storageResponse &&
-      'isUploaded' in storageResponse &&
-      storageResponse['isUploaded'] &&
-      'filePublicUrl' in storageResponse &&
-      storageResponse['filePublicUrl']
-    ) {
-      Object.keys(formValue).forEach(key => {
-        if (
-          this.isAjfBase64FileField(formValue[key]) &&
-          formValue[key]['name'] === storageResponse['name']
-        ) {
-          formValue[key]['url'] = storageResponse['filePublicUrl'];
-          formValue[key]['content'] = '';
+    if (!formValue) return formValue;
+
+    const url = this.getUploadedFileUrl(storageResponse);
+
+    return Object.fromEntries(
+      Object.entries(formValue).map(([key, value]) => {
+        if (!this.isAjfBase64FileField(value)) {
+          return [key, value];
         }
-      });
-    }
-    return formValue;
+        if (url && value.name === storageResponse.name) {
+          return [key, {...value, url, content: ''}];
+        }
+        // Upload failed: clear stale URL from fields still holding base64 content.
+        if (!url && value.url) {
+          return [key, {...value, url: null}];
+        }
+        return [key, value];
+      }),
+    );
   }
 
   /**
@@ -354,7 +357,7 @@ export class FileUploadService {
    * @param value the value to be checked
    * @returns true if the input value is an AjfFile field
    */
-  isAjfBase64FileFieldToDelete(value: any): boolean {
+  isAjfFileFieldToDelete(value: any): boolean {
     if (value === null || value === undefined || typeof value !== 'object') {
       return false;
     }
@@ -367,6 +370,14 @@ export class FileUploadService {
       return true;
     }
     return false;
+  }
+
+  // Returns true for transient network/server errors that are worth retrying.
+  private _isRetryableUploadError(err: any): boolean {
+    if (err instanceof HttpErrorResponse) {
+      return err.status === 0 || err.status === 502 || err.status === 503 || err.status === 504;
+    }
+    return true;
   }
 
   /**
