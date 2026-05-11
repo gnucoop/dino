@@ -264,7 +264,8 @@ dino-list {
     visibility: hidden;
     padding: 5px;
     cursor: pointer;
-    &.dino-edit-status-icon-touch, &.touranchor--is-active {
+    &.dino-edit-status-icon-touch,
+    &.touranchor--is-active {
       visibility: visible;
     }
   }
@@ -386,13 +387,13 @@ dino-list {
     background: transparent !important;
     opacity: 1;
   }
-  .dino-invalid-form-icon {
+  .dino-invalid-form-icon,
+  .dino-upload-files-icon {
     transition: all ease-in-out 0.25s;
     -webkit-transition: all ease-in-out 0.25s;
     font-size: 22px;
     position: relative;
     top: 2px;
-    cursor: pointer;
     &:hover {
       background: transparent !important;
       opacity: 1;
@@ -403,6 +404,28 @@ dino-list {
       font-size: 18px;
       left: 4px;
       top: 2px;
+    }
+  }
+
+  .dino-invalid-form-icon ~ .dino-upload-files-icon,
+  .dino-invalid-form-icon ~ .dino-upload-files-spinner {
+    @media only screen and (max-width: 768px) {
+      left: 26px;
+    }
+  }
+
+  .dino-invalid-form-icon {
+    cursor: default;
+  }
+
+  .dino-upload-files-icon {
+    cursor: pointer;
+    &.dino-upload-files-icon--offline {
+      cursor: default;
+      opacity: 0.4;
+      &:hover {
+        opacity: 0.4;
+      }
     }
   }
 

@@ -110,6 +110,25 @@
             [matTooltipPosition]="'right'"
             >warning</mat-icon
           >
+
+          <ng-container *ngIf="row.data && row.data['dino_filestoupload'] === true">
+            <mat-spinner
+              *ngIf="isUploadingFilesRow(row); else uploadFilesIcon"
+              diameter="20"
+              class="dino-upload-files-spinner"
+            ></mat-spinner>
+            <ng-template #uploadFilesIcon>
+              <mat-icon
+                color="accent"
+                class="dino-upload-files-icon"
+                [class.dino-upload-files-icon--offline]="!isOnline"
+                [matTooltip]="'Some files were stored locally due to a temporary network problem. Click to sync these files.'|transloco"
+                [matTooltipPosition]="'right'"
+                (click)="isOnline && $event.stopPropagation(); isOnline && uploadFilesRow(row)"
+                >cloud_upload</mat-icon
+              >
+            </ng-template>
+          </ng-container>
         </mat-cell>
       </ng-container>
     </ng-container>

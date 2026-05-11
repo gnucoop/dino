@@ -41,7 +41,7 @@ export interface FormData extends Model {
   /**
    * A plain object containing the data collected.
    */
-  data: {dinoinvalid?: boolean; [key: string]: any};
+  data: {dinoinvalid?: boolean; dino_filestoupload?: boolean; [key: string]: any};
 
   /**
    * The Form Data area id.

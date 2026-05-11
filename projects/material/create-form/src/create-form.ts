@@ -856,6 +856,8 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                 let formValue = {...formObj.formValue};
                 formValue = this.uploadService.removeAllFiles(formValue);
                 formObj.formValue = {...formValue};
+              } else {
+                formObj.formValue['dino_filestoupload'] = true;
               }
               apiCall.push(obsOf(formObj));
             } else {
@@ -882,6 +884,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           ([res, isFormData, formSchemaId, formMetricsSelector, userData, formStatuses]) => {
             if (res.length) {
               const formObj = res[0];
+              const hasUploadError = res
+                .slice(1)
+                .some(r => r != null && (r as StorageUploadResponse).isUploaded === false);
               let formValue = {...formObj.formValue};
               if (formObj.evt && formObj.evt === 'draft') {
                 formValue['dinoinvalid'] = true;
@@ -893,6 +898,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                     res[i] as StorageUploadResponse,
                   );
                 }
+              }
+              if (hasUploadError) {
+                formValue['dino_filestoupload'] = true;
+              } else {
+                delete formValue['dino_filestoupload'];
+              }
+              if (formValue['$value']?.content?.length) {
+                formValue['$value'].content = '';
               }
               let newItem: {[key: string]: any} = {};
               if (isFormData) {
@@ -955,6 +968,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                     this._udm.getActiveUserData(),
                     this._ugm.getActiveUserGroups(),
                     obsOf(formObj),
+                    obsOf(hasUploadError),
                   ),
                 );
             } else {
@@ -974,11 +988,23 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(([fd, activeUser, activeUserGroups, formObj]) => {
+      .subscribe(([fd, activeUser, activeUserGroups, formObj, uploadFailed]) => {
         this.isLoading.next(false);
         if (fd && fd.collection.name === 'form_data') {
           this._location.back();
-          this.snackbar.open('Document created', 'SAVE', {duration: 5000});
+          if (uploadFailed) {
+            this.snackbar.open(
+              this._ts.translate(
+                'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
+              ),
+              this._ts.translate('CLOSE'),
+              {duration: 8000},
+            );
+          } else {
+            this.snackbar.open(this._ts.translate('Document saved'), this._ts.translate('CLOSE'), {
+              duration: 5000,
+            });
+          }
           const trigData: ActionTriggerData<T> = {
             doc: fd,
             additional_info: {

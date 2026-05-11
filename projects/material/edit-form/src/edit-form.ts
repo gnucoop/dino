@@ -1103,6 +1103,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 let formValue = {...formObj.formValue};
                 formValue = this.uploadService.removeAllFiles(formValue);
                 formObj.formValue = {...formValue};
+              } else {
+                formObj.formValue['dino_filestoupload'] = true;
               }
               apiCall.push(obsOf(formObj));
             } else {
@@ -1142,6 +1144,14 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                   res[i] as StorageUploadResponse,
                 );
               }
+            }
+            if (hasUploadError) {
+              formValue['dino_filestoupload'] = true;
+            } else {
+              delete formValue['dino_filestoupload'];
+            }
+            if (formValue['$value']?.content?.length) {
+              formValue['$value'].content = '';
             }
             let newItem = {...formObj.doc} as {[key: string]: any};
             newItem['data'].data != null

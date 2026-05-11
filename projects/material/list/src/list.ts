@@ -84,6 +84,7 @@ import {
   Subject,
   Subscription,
   throwError,
+  zip,
 } from 'rxjs';
 import {
   catchError,
@@ -105,7 +106,8 @@ import {RxDocument} from 'rxdb';
 import {TranslocoService} from '@ngneat/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {format} from 'date-fns';
-import {FileUploadService} from '@dino/core/file-upload';
+import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
+import {NetworkStatusService} from '@dino/core/auth';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
@@ -497,6 +499,10 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
+  private _uploadingFilesRows = new Set<string>();
+
+  isOnline = true;
+
   /**
    * Subscribes to List Selection change event
    */
@@ -520,8 +526,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     private _uploadService: FileUploadService,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
+    private _nss: NetworkStatusService,
   ) {
     super(cdr, aui, actroute);
+
+    this._nss.isOnline$.pipe(takeUntil(this._mainUnsubscribe)).subscribe(online => {
+      this.isOnline = online;
+      this._cdr.markForCheck();
+    });
 
     this._fts.clearAdditionalBasicFilters();
     this._selectionChangedSub = this.selection.changed.subscribe(() =>
@@ -1293,6 +1305,66 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
           this._snackbar.open('Documents successfully modified', 'EDIT', {duration: 5000});
         }
       });
+  }
+
+  /**
+   * Uploads any base64-encoded files still pending in a row and replaces them with storage URLs.
+   */
+  uploadFilesRow(row: T) {
+    const manager = this._dataSource?.manager;
+    if (!manager) return;
+    const rowId: string = (row as {[key: string]: any})['id'];
+    if (this._uploadingFilesRows.has(rowId)) return;
+    const rowData = (row as {[key: string]: any})['data'] as {[key: string]: any};
+    if (!rowData) return;
+    const {filesToUpload} = this._uploadService.getFilesInForm(rowData);
+    if (!filesToUpload.length) return;
+    this._uploadingFilesRows.add(rowId);
+    this._snackbar.open(this._ts.translate('Uploading files...'), this._ts.translate('WAIT'), {
+      duration: 5000,
+    });
+    zip(this._uploadService.uploadFiles(filesToUpload))
+      .pipe(take(1))
+      .subscribe(results => {
+        let newData = {...rowData};
+        let allUploaded = true;
+        for (const result of results as (StorageUploadResponse | null)[]) {
+          if (result != null && result.isUploaded) {
+            newData = this._uploadService.replaceUploadedFile(newData, result);
+          } else {
+            allUploaded = false;
+          }
+        }
+        if (allUploaded) {
+          delete newData['dino_filestoupload'];
+        }
+        const patchedDoc = {id: rowId, data: newData} as unknown as Partial<T> & {id: string};
+        manager
+          .patch(patchedDoc)
+          .pipe(take(1))
+          .subscribe(res => {
+            this._uploadingFilesRows.delete(rowId);
+            if (res != null) {
+              if (allUploaded) {
+                this._snackbar.open(
+                  this._ts.translate('Files successfully uploaded'),
+                  this._ts.translate('CLOSE'),
+                  {duration: 5000},
+                );
+              } else {
+                this._snackbar.open(
+                  this._ts.translate('Some files could not be uploaded. Please retry.'),
+                  this._ts.translate('CLOSE'),
+                  {duration: 10000},
+                );
+              }
+            }
+          });
+      });
+  }
+
+  isUploadingFilesRow(row: T): boolean {
+    return this._uploadingFilesRows.has((row as {[key: string]: any})['id']);
   }
 
   /**
