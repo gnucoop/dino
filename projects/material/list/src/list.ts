@@ -1367,7 +1367,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         const srcData: {[key: string]: any} = genItem['data'] ?? {};
         const filteredData: {[key: string]: any} = {};
         for (const key of Object.keys(srcData)) {
-          if (!this._uploadService.isAnyAjfFileField(srcData[key]) && !(typeof srcData[key] === 'string' && srcData[key].startsWith('data:audio/'))) {
+          if (!this._uploadService.isAnyAjfFileField(srcData[key]) && !this._uploadService.isBase64Audio(srcData[key])) {
             filteredData[key] = srcData[key];
           }
         }

@@ -397,4 +397,16 @@ export class FileUploadService {
   private _generateUrl(endpoint: string, baseUrl?: string): string {
     return `${baseUrl ?? this._baseUrl}/${this._removeSlashes(endpoint)}`;
   }
+
+  /**
+   * Check if a value is a base64-encoded audio string (e.g. data:audio/ogg;base64,...)
+   * @param val the value to be checked
+   * @returns true if the input value is a base64 audio string
+   */
+  isBase64Audio(val: any): boolean {
+    if (val === null || val === undefined || typeof val !== 'string') {
+      return false;
+    }
+    return /^data:audio\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=]+$/.test(val);
+  }
 }
