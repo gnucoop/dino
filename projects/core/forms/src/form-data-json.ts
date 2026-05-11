@@ -68,6 +68,9 @@ export const schema = {
       "properties": {
         "dinoinvalid": {
           "type": "boolean"
+        },
+        "dino_filestoupload": {
+          "type": "boolean"
         }
       },
       "description": "A plain object containing the data collected."
@@ -143,5 +146,5 @@ export const schema = {
     "updated_at"
   ],
   "primaryKey": "id",
-  "version": 2
+  "version": 3
 } as RxJsonSchema<FormData>;

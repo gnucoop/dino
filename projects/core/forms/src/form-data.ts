@@ -74,7 +74,7 @@ export interface FormData extends Model {
   form_status_ref_id: string | null;
 }
 
-export const VERSION = 2;
+export const VERSION = 3;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument<FormData>) => doc,
@@ -83,6 +83,7 @@ export const migrationStrategies: MigrationStrategies = {
     delete doc.data['$invalid'];
     return {...doc, data: {...doc.toJSON().data, dinoinvalid}} as RxDocument<FormData>;
   },
+  3: (doc: RxDocument<FormData>) => doc,
 };
 
 export const indexes = ['form_schema_ref_id'];
