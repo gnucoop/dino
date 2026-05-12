@@ -60,6 +60,3 @@ Thumbs.db
 # Karma polyfills
 karma-polyfills.js
 .aider*
-
-# Claude
-.claude
