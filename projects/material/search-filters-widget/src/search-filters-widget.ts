@@ -305,6 +305,10 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
       isFormulaField = true;
     }
 
+    if (filterItem.fieldType == AjfFieldType.Text) {
+      filterItem.fieldType = AjfFieldType.String;
+    }
+
     const fieldChoices: AjfChoicesOrigin<any>[] = [];
     if (filterItem.choicesOrigin) {
       const itemChoices = deepCopy(filterItem.choicesOrigin);
