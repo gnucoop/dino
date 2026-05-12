@@ -38,6 +38,7 @@ import {
   TableRow,
 } from 'docx';
 import {Case, CaseManager} from '@dino/core/cases';
+import {FileUploadService} from '@dino/core/file-upload';
 
 @Component({
   selector: 'dinoapp-forms-list',
@@ -102,6 +103,7 @@ export class FormsListComponent {
     private _ugm: UserGroupManager,
     private _fdm: FormDataManager,
     private _snackbar: MatSnackBar,
+    private _fileUploadService: FileUploadService,
     @Optional() private _logManager: LogManager | null,
     @Optional() private _caseManager?: CaseManager | null,
   ) {
@@ -274,10 +276,10 @@ export class FormsListComponent {
                 action === 'print'
                   ? (dataRow: FormData | null) => this.printPdf(dataRow)
                   : action === 'docx'
-                    ? (dataRow: FormData | null) => this.downloadDocx(dataRow)
-                    : action === 'print badge'
-                      ? (dataRow: FormData | null) => this.printBadge(dataRow)
-                      : undefined,
+                  ? (dataRow: FormData | null) => this.downloadDocx(dataRow)
+                  : action === 'print badge'
+                  ? (dataRow: FormData | null) => this.printBadge(dataRow)
+                  : undefined,
             }));
           }),
         );
@@ -312,8 +314,8 @@ export class FormsListComponent {
                 action === 'print'
                   ? (dataRow: FormData | null) => this.printPdf(dataRow)
                   : action === 'docx'
-                    ? (dataRow: FormData | null) => this.downloadDocx(dataRow)
-                    : undefined,
+                  ? (dataRow: FormData | null) => this.downloadDocx(dataRow)
+                  : undefined,
             }));
           }),
         );
@@ -542,63 +544,99 @@ export class FormsListComponent {
     const metricsData = forkJoin(values).pipe(filter(val => val != null));
 
     combineLatest([this.additionalDataSchema, metricsData])
-      .pipe(take(1))
-      .subscribe(res => {
-        const schema = res[0];
-        if (schema == null) {
-          return;
-        }
-        const metrics = (res[1] || []).filter(m => m != null);
+      .pipe(
+        take(1),
+        switchMap(res => {
+          const schema = res[0];
+          if (schema == null) {
+            return obsOf(null);
+          }
+          const metrics = (res[1] || []).filter(m => m != null);
 
-        let translate: (s: string) => string = s => s;
-        if (this._translateService != null) {
-          translate = s => {
-            if (s == null || s.trim() === '') {
-              return '';
-            }
-            return this._translateService.translate(s) as string;
-          };
-        }
+          let translate: (s: string) => string = s => s;
+          if (this._translateService != null) {
+            translate = s => {
+              if (s == null || s.trim() === '') {
+                return '';
+              }
+              return this._translateService.translate(s) as string;
+            };
+          }
 
-        const title = new Paragraph({
-          text: schema.label,
-          heading: HeadingLevel.HEADING_1,
-          alignment: AlignmentType.CENTER,
-        });
-        const header: any[] = [title, new Paragraph('')];
-
-        if (metrics.length > 0) {
-          const tableWidth = 9000;
-          const noBorder = {style: BorderStyle.NONE};
-          const noBorders = {top: noBorder, bottom: noBorder, left: noBorder, right: noBorder};
-
-          const metricsTab = new Table({
-            columnWidths: [tableWidth / 2, tableWidth / 2],
-            rows: metrics.map(
-              m =>
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      borders: noBorders,
-                      children: [
-                        new Paragraph(
-                          translate(
-                            m!.collection.name.charAt(0).toUpperCase() +
-                              m!.collection.name.slice(1),
-                          ),
-                        ),
-                      ],
-                    }),
-                    new TableCell({children: [new Paragraph(m!.name)]}),
-                  ],
-                }),
-            ),
+          const title = new Paragraph({
+            text: schema.label,
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
           });
-          header.push(metricsTab);
-          header.push(new Paragraph(''));
-        }
+          const header: any[] = [title, new Paragraph('')];
 
-        downloadFormDoc(schema.schema as AjfForm, translate, header, formData['data']);
+          if (metrics.length > 0) {
+            const tableWidth = 9000;
+            const noBorder = {style: BorderStyle.NONE};
+            const noBorders = {top: noBorder, bottom: noBorder, left: noBorder, right: noBorder};
+
+            const metricsTab = new Table({
+              columnWidths: [tableWidth / 2, tableWidth / 2],
+              rows: metrics.map(
+                m =>
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        borders: noBorders,
+                        children: [
+                          new Paragraph(
+                            translate(
+                              m!.collection.name.charAt(0).toUpperCase() +
+                                m!.collection.name.slice(1),
+                            ),
+                          ),
+                        ],
+                      }),
+                      new TableCell({children: [new Paragraph(m!.name)]}),
+                    ],
+                  }),
+              ),
+            });
+            header.push(metricsTab);
+            header.push(new Paragraph(''));
+          }
+
+          const data = {...(formData['data'] as {[key: string]: any})};
+          const keysToFetch: string[] = [];
+          const fetchObs: Observable<string | null>[] = [];
+          Object.keys(data).forEach(key => {
+            const val = data[key];
+            if (
+              this._fileUploadService.isAnyAjfFileField(val) &&
+              val.url?.length &&
+              !val.content?.length &&
+              val.signature
+            ) {
+              keysToFetch.push(key);
+              fetchObs.push(this._fileUploadService.fetchFileAsBase64(val.url));
+            }
+          });
+
+          if (keysToFetch.length === 0) {
+            return obsOf({schema, translate, header, data});
+          }
+
+          return forkJoin(fetchObs).pipe(
+            map(results => {
+              results.forEach((base64, i) => {
+                if (base64) {
+                  data[keysToFetch[i]] = {...data[keysToFetch[i]], content: base64};
+                }
+              });
+              return {schema, translate, header, data};
+            }),
+          );
+        }),
+      )
+      .subscribe(result => {
+        if (result == null) return;
+        const {schema, translate, header, data} = result;
+        downloadFormDoc(schema.schema as AjfForm, translate, header, data);
       });
   }
 
