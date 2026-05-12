@@ -1317,7 +1317,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     if (this._uploadingFilesRows.has(rowId)) return;
     const rowData = (row as {[key: string]: any})['data'] as {[key: string]: any};
     if (!rowData) return;
-    const {filesToUpload} = this._uploadService.getFilesInForm(rowData);
+    const {filesToUpload, fileFieldKeys} = this._uploadService.getFilesInForm(rowData);
     if (!filesToUpload.length) return;
     this._uploadingFilesRows.add(rowId);
     this._snackbar.open(this._ts.translate('Uploading files...'), this._ts.translate('WAIT'), {
@@ -1328,13 +1328,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       .subscribe(results => {
         let newData = {...rowData};
         let allUploaded = true;
-        for (const result of results as (StorageUploadResponse | null)[]) {
+        (results as (StorageUploadResponse | null)[]).forEach((result, index) => {
           if (result != null && result.isUploaded) {
-            newData = this._uploadService.replaceUploadedFile(newData, result);
+            newData = this._uploadService.replaceUploadedFile(newData, result, fileFieldKeys[index]);
           } else {
             allUploaded = false;
           }
-        }
+        });
         if (allUploaded) {
           delete newData['dino_filestoupload'];
         }

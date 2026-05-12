@@ -203,16 +203,19 @@ export class FileUploadService {
    */
   getFilesInForm(formValue: {[key: string]: any}): {
     filesToUpload: AjfFile[];
+    fileFieldKeys: string[];
     filesToDelete: AjfFile[];
     invalidFileKeys: string[];
   } {
     const filesToUpload: AjfFile[] = [];
+    const fileFieldKeys: string[] = [];
     const filesToDelete: AjfFile[] = [];
     const invalidFileKeys: string[] = [];
     Object.keys(formValue).forEach(key => {
       if (key !== '$value') {
         if (this.isAjfBase64FileField(formValue[key])) {
           filesToUpload.push(formValue[key] as AjfFile);
+          fileFieldKeys.push(key);
         }
         if (this.isAjfFileFieldToDelete(formValue[key])) {
           filesToDelete.push(formValue[key] as AjfFile);
@@ -222,7 +225,7 @@ export class FileUploadService {
         }
       }
     });
-    return {filesToUpload, filesToDelete, invalidFileKeys};
+    return {filesToUpload, fileFieldKeys, filesToDelete, invalidFileKeys};
   }
 
   /**
@@ -262,6 +265,7 @@ export class FileUploadService {
   replaceUploadedFile(
     formValue: {[key: string]: any},
     storageResponse: StorageUploadResponse,
+    fieldKey?: string,
   ): {[key: string]: any} {
     if (!formValue) return formValue;
 
@@ -272,12 +276,15 @@ export class FileUploadService {
         if (!this.isAjfBase64FileField(value)) {
           return [key, value];
         }
-        if (url && value.name === storageResponse.name) {
-          return [key, {...value, url, content: ''}];
-        }
-        // Upload failed: clear stale URL from fields still holding base64 content.
-        if (!url && value.url) {
-          return [key, {...value, url: null}];
+        const isMatch = fieldKey != null ? key === fieldKey : value.name === storageResponse.name;
+        if (isMatch) {
+          if (url) {
+            return [key, {...value, url, content: ''}];
+          }
+          // Upload failed: clear stale URL from this field.
+          if (value.url) {
+            return [key, {...value, url: null}];
+          }
         }
         return [key, value];
       }),

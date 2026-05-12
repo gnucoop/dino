@@ -841,9 +841,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             evt: evt && evt.action ? evt.action : null,
           };
           const apiCall: Observable<any>[] = [];
-          const {filesToUpload, invalidFileKeys} = this.uploadService.getFilesInForm(
+          const {filesToUpload, fileFieldKeys, invalidFileKeys} = this.uploadService.getFilesInForm(
             formObj.formValue,
           );
+          (formObj as any).fileFieldKeys = fileFieldKeys;
           invalidFileKeys.forEach(k => {
             formObj.formValue[k] = null;
           });
@@ -884,6 +885,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           ([res, isFormData, formSchemaId, formMetricsSelector, userData, formStatuses]) => {
             if (res.length) {
               const formObj = res[0];
+              const fileFieldKeys: string[] = formObj.fileFieldKeys ?? [];
               const hasUploadError = res
                 .slice(1)
                 .some(r => r != null && (r as StorageUploadResponse).isUploaded === false);
@@ -896,6 +898,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
                   formValue = this.uploadService.replaceUploadedFile(
                     formValue,
                     res[i] as StorageUploadResponse,
+                    fileFieldKeys[i - 1],
                   );
                 }
               }

@@ -1088,9 +1088,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         withLatestFrom(this._nss.isOnline$),
         switchMap(([formObj, isOnline]) => {
           const apiCall: Observable<any>[] = [];
-          const {filesToUpload, filesToDelete, invalidFileKeys} = this.uploadService.getFilesInForm(
-            formObj.formValue,
-          );
+          const {filesToUpload, fileFieldKeys, filesToDelete, invalidFileKeys} =
+            this.uploadService.getFilesInForm(formObj.formValue);
+          (formObj as any).fileFieldKeys = fileFieldKeys;
           invalidFileKeys.forEach(k => {
             formObj.formValue[k] = null;
           });
@@ -1127,6 +1127,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         switchMap(([res, isDetails, formStatuses]) => {
           if (res.length) {
             const formObj = res[0];
+            const fileFieldKeys: string[] = formObj.fileFieldKeys ?? [];
             const hasUploadError = res
               .slice(1)
               .some(r => r != null && (r as StorageUploadResponse).isUploaded === false);
@@ -1142,6 +1143,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 formValue = this.uploadService.replaceUploadedFile(
                   formValue,
                   res[i] as StorageUploadResponse,
+                  fileFieldKeys[i - 1],
                 );
               }
             }
