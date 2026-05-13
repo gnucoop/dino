@@ -465,12 +465,16 @@ export class FormsListComponent {
     const metricsData = forkJoin(values).pipe(filter(val => val != null));
 
     combineLatest([this.additionalDataSchema, metricsData])
-      .pipe(take(1))
-      .subscribe(res => {
-        const schema = res[0];
-        const metrics = res[1];
+      .pipe(
+        take(1),
+        switchMap(res => {
+          const schema = res[0];
+          const metrics = res[1];
 
-        if (schema != null) {
+          if (schema == null) {
+            return obsOf(null);
+          }
+
           const header: any = [
             {
               text: schema.label,
@@ -507,14 +511,42 @@ export class FormsListComponent {
             };
           }
 
-          this.createFormPdf(
-            schema.schema as AjfForm,
-            translate,
-            undefined,
-            header,
-            formData['data'],
-          ).open();
-        }
+          const data = {...(formData['data'] as {[key: string]: any})};
+          const keysToFetch: string[] = [];
+          const fetchObs: Observable<string | null>[] = [];
+          Object.keys(data).forEach(key => {
+            const val = data[key];
+            if (
+              this._fileUploadService.isAnyAjfFileField(val) &&
+              val.url?.length &&
+              !val.content?.length &&
+              val.signature
+            ) {
+              keysToFetch.push(key);
+              fetchObs.push(this._fileUploadService.fetchFileAsBase64(val.url));
+            }
+          });
+
+          if (keysToFetch.length === 0) {
+            return obsOf({schema, translate, header, data});
+          }
+
+          return forkJoin(fetchObs).pipe(
+            map(results => {
+              results.forEach((base64, i) => {
+                if (base64) {
+                  data[keysToFetch[i]] = {...data[keysToFetch[i]], content: base64};
+                }
+              });
+              return {schema, translate, header, data};
+            }),
+          );
+        }),
+      )
+      .subscribe(result => {
+        if (result == null) return;
+        const {schema, translate, header, data} = result;
+        this.createFormPdf(schema.schema as AjfForm, translate, undefined, header, data).open();
       });
   }
 
