@@ -33,6 +33,12 @@ jobs:
         run: yarn install --frozen-lockfile
 
       # ------------------------
+      # Regenerate route map
+      # ------------------------
+      - name: Regenerate route map
+        run: node dino-doc/scripts/docs-route-scanner.mjs
+
+      # ------------------------
       # Build dinoapp (e2e mode) and serve for Cypress
       # ------------------------
       - name: Build dinoapp (e2e)
@@ -53,6 +59,17 @@ jobs:
       # ------------------------
       # Run Cypress screenshots
       # ------------------------
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
+      - name: Install Cypress binary
+        run: yarn cypress install
+
       - name: Run Cypress screenshots
         run: |
           yarn cypress run \
