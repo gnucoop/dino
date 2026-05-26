@@ -27,7 +27,6 @@ import {
   TableCell,
   TableRow,
 } from 'docx';
-import {ajfCustomFunctions} from '../ajf-custom-functions';
 
 @Component({
   selector: 'app-forms-list-e2e',
@@ -137,11 +136,6 @@ export class MatFormsListE2E {
         const nodesVisibility = this.formSchemaManager.getPermissionsRelevant(
           fschema.schema.nodes,
           dinoFormInfo,
-          {
-            isUserInGroup: ajfCustomFunctions['isUserInGroup'],
-            isUserInAtLeastOneGroup: ajfCustomFunctions['isUserInAtLeastOneGroup'],
-            isAnonymousUser: ajfCustomFunctions['isAnonymousUser'],
-          },
         );
         return nodesVisibility;
       }),

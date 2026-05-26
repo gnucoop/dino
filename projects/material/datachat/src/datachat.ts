@@ -164,7 +164,10 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   @Input() spinnerImagePath: string | undefined;
 
   /**
-   * The Ajf functions used to evaluate relevant permissions
+   * The Ajf functions used to evaluate relevant permissions.
+   * This input is unnecessary and should be removed, as dino custom
+   * functions are registered through AjfValidationService and are available
+   * to ajf to be used inside expressions evaluated by evaluateExpression
    */
   @Input() ajfCustomFunctions: AjfCustomFunctions | undefined;
 
@@ -306,12 +309,6 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           const nodesVisibility = this._fsm.getPermissionsRelevant(
             fschema.schema.nodes,
             dinoFormInfo,
-            this.ajfCustomFunctions
-              ? {
-                  isUserInGroup: this.ajfCustomFunctions['isUserInGroup'],
-                  isUserInAtLeastOneGroup: this.ajfCustomFunctions['isUserInAtLeastOneGroup'],
-                }
-              : undefined,
           );
           return nodesVisibility;
         }),

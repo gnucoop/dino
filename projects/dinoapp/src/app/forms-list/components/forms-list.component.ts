@@ -22,7 +22,6 @@ import {Directory} from '@capacitor/filesystem';
 import write_blob from 'capacitor-blob-writer';
 import {ActionsService} from 'src/app/actions.service';
 import {environment} from 'src/environments/environment';
-import {ajfCommonFunctions} from 'src/ajf-functions/ajf-functions.common';
 
 import * as conf from '../conf';
 import {Capacitor} from '@capacitor/core';
@@ -143,11 +142,6 @@ export class FormsListComponent {
         const nodesVisibility = this.formSchemaManager.getPermissionsRelevant(
           fschema.schema.nodes,
           dinoFormInfo,
-          {
-            isUserInGroup: ajfCommonFunctions['isUserInGroup'],
-            isUserInAtLeastOneGroup: ajfCommonFunctions['isUserInAtLeastOneGroup'],
-            isAnonymousUser: ajfCommonFunctions['isAnonymousUser'],
-          },
         );
         return nodesVisibility;
       }),

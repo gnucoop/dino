@@ -56,6 +56,7 @@ import {
 } from '@ajf/core/forms';
 import {RxDocument} from 'rxdb';
 import {Project, ProjectManager} from '@dino/core/projects';
+import {AjfContext, evaluateExpression} from '@ajf/core/models';
 import {deepCopy} from '@ajf/core/utils';
 import {
   Observable,
@@ -870,56 +871,29 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
     formInfo?: FormInfo,
     customFunctions?: AjfCustomFunctions,
   ): boolean {
-    if (
-      !node.visibilityCondition?.includes('dino_permissions_begin') ||
-      customFunctions == null ||
-      formInfo == null
-    )
+    if (formInfo == null || !node.visibilityCondition?.includes('dino_permissions_begin')) {
       return true;
-
+    }
     const conditionString = node.visibilityCondition;
 
     const relevantRegexp = new RegExp(
       this._escapeRegExp('dino_permissions_begin||(') +
-        '(.*)' +
-        this._escapeRegExp(')||dino_permissions_end'),
+      '(.*)' +
+      this._escapeRegExp(')||dino_permissions_end'),
     );
     const relevantResults = conditionString.match(relevantRegexp);
-    const relevantPermissions = relevantResults ? relevantResults[1] : null;
+    const relevant = relevantResults ? relevantResults[1] : null;
 
-    if (relevantPermissions == null) return false;
-
-    let relevantString: string = relevantPermissions;
-
-    const customFunctionsSignatures = Object.keys(customFunctions);
-
-    for (let functionSignature of customFunctionsSignatures) {
-      const fSignRegexp = new RegExp(`${functionSignature}\\((.*?)\\)`, 'g');
-      const fSignMatches = relevantPermissions.match(fSignRegexp);
-
-      if (fSignMatches == null) continue;
-
-      for (let fSignMatch of fSignMatches) {
-        let arg: string | string[] = fSignMatch
-          .replace(', dino_form_info', ',dino_form_info')
-          .split(',dino_form_info')[0]
-          .replace(`${functionSignature}(`, '')
-          .replace(/'/g, '');
-        if (arg.includes('[') && arg.includes(']')) {
-          arg = arg
-            .replace('[', '')
-            .replace(']', '')
-            .split(',')
-            .map(item => item.trim());
-        }
-        const callResult = customFunctions[functionSignature]?.call(this, arg, formInfo);
-        if (typeof callResult === 'boolean') {
-          relevantString = relevantString.replace(fSignMatch, callResult.toString());
-        }
+    if (relevant == null) {
+      return false;
+    }
+    const context: AjfContext = {dino_form_info: formInfo};
+    if (customFunctions) {
+      for (const [name, func] of Object.entries(customFunctions)) {
+        context[name] = func;
       }
     }
-
-    return eval(relevantString);
+    return evaluateExpression(relevant, context);
   }
 
   /**
