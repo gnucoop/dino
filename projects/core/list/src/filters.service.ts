@@ -21,7 +21,7 @@
  */
 
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
-import {AjfCondition, evaluateExpression} from '@ajf/core/models';
+import {AjfCondition, AjfContext, evaluateExpression} from '@ajf/core/models';
 import {EventEmitter, Injectable} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -490,34 +490,33 @@ export class FiltersService<T extends Model = Model> {
     if (!ajfValidation) {
       return true;
     }
-    let valid = true;
     if (ajfValidation.maxValue != null) {
-      valid = filterItem.value <= ajfValidation.maxValue;
+      const valid = filterItem.value <= ajfValidation.maxValue;
       if (!valid) {
-        return valid;
+        return false;
       }
     }
     if (ajfValidation.minValue != null) {
-      valid = filterItem.value >= ajfValidation.minValue;
+      const valid = filterItem.value >= ajfValidation.minValue;
       if (!valid) {
-        return valid;
+        return false;
       }
     }
     if (ajfValidation.notEmpty) {
-      valid = filterItem.value !== null && filterItem.value !== '';
+      const valid = filterItem.value !== null && filterItem.value !== '';
       if (!valid) {
-        return valid;
+        return false;
       }
     }
     if (ajfValidation.conditions && ajfValidation.conditions.length > 0) {
       for (let cnd of ajfValidation.conditions) {
-        valid = this.checkCondition(cnd, filterItem);
+        const valid = this.checkCondition(cnd, filterItem);
         if (!valid) {
-          break;
+          return false;
         }
       }
     }
-    return valid;
+    return true;
   }
 
   /**
@@ -526,46 +525,18 @@ export class FiltersService<T extends Model = Model> {
    * @param filterItem Optional filterItem to check
    * @returns True if the condition is met
    */
-  checkCondition(ajfCondition: AjfCondition, filterItem?: FilterItem): boolean {
-    if (ajfCondition.condition == null) {
+  checkCondition(c: AjfCondition, filterItem?: FilterItem): boolean {
+    if (c.condition == null) {
       return false;
     }
-    const condition = ajfCondition.condition;
-    let valid: boolean = true;
-    if (condition.includes('valueInChoice')) {
-      const str = condition.replace('valueInChoice', '').replace(/[()]/g, '').split(' ');
-      const nameToCheck = str[0].replace(',', '');
-      const valueToCheck = str[1].replace(/[\"\']/g, '');
-      this.findFilterByName(nameToCheck).subscribe(filterToCheck => {
-        filterToCheck = filterItem ?? filterToCheck;
-        if (
-          !filterToCheck ||
-          filterToCheck.value == null ||
-          filterToCheck.value.indexOf(valueToCheck) < 0 ||
-          filterToCheck.operator?.value == '$nin'
-        ) {
-          valid = false;
-        }
-      });
-    } else {
-      const strConditions = condition.split('&&');
-      strConditions.forEach(cnd => {
-        const str = cnd.split(' ');
-        const nameToCheck = str[0];
-        this.findFilterByName(nameToCheck).subscribe(filterToCheck => {
-          filterToCheck = filterItem ?? filterToCheck;
-          const conditionNoQuotes = cnd.replace(nameToCheck, filterToCheck?.value);
-          const conditionQuotes = cnd.replace(nameToCheck, `'${filterToCheck?.value}'`);
-          const evaluateConditions =
-            evaluateExpression(conditionNoQuotes) || evaluateExpression(conditionQuotes);
-          if (!filterToCheck || filterToCheck.value == null || !evaluateConditions) {
-            valid = false;
-          }
-        });
-      });
+    const context: AjfContext = {};
+    for (const filter of this._temporaryFilters.value) {
+      context[filter.name] = filter.value;
     }
-
-    return valid;
+    if (filterItem) {
+      context[filterItem.name] = filterItem.value;
+    }
+    return evaluateExpression(c.condition, context);
   }
 
   /**
