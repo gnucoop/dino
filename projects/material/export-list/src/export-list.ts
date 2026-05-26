@@ -414,11 +414,11 @@ export class ExportList implements AfterViewInit, OnDestroy {
                   .filter(n => fieldsFromTabNames.indexOf(n.name) > -1)
                   .forEach((field, idx) => {
                     if (idx === 0) {
-                      const slideFieldCloned: AjfField = deepCopy(field);
+                      const slideFieldCloned = deepCopy(field) as AjfField;
                       slideFieldCloned.name = slideNode.name;
                       fields.push(slideFieldCloned);
                     }
-                    const fieldCloned: AjfField = deepCopy(field);
+                    const fieldCloned = deepCopy(field) as AjfField;
                     fields.push(fieldCloned);
                   });
               } else {
@@ -427,11 +427,11 @@ export class ExportList implements AfterViewInit, OnDestroy {
                     .filter(n => fieldsFromTabNames.indexOf(n.name) > -1)
                     .forEach((field, idx) => {
                       if (idx === 0 && i === 0) {
-                        const slideFieldCloned: AjfField = deepCopy(field);
+                        const slideFieldCloned = deepCopy(field) as AjfField;
                         slideFieldCloned.name = slideNode.name;
                         fields.push(slideFieldCloned);
                       }
-                      const fieldCloned: AjfField = deepCopy(field);
+                      const fieldCloned = deepCopy(field) as AjfField;
                       fieldCloned.name = `${field.name}__${i}`;
                       fields.push(fieldCloned);
                     });

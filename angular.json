@@ -221,7 +221,6 @@
               "leaflet",
               "memdown",
               "modifyjs",
-              "numbro",
               "pdfmake/build/pdfmake",
               "graphql-ws",
               "jsbarcode",
@@ -573,7 +572,6 @@
               "projects/dinoapp/src/manifest.webmanifest"
             ],
             "styles": [
-              "node_modules/@ajf/icons/css/ajf-icons.css",
               "node_modules/flag-icon-css/css/flag-icons.min.css",
               "node_modules/leaflet/dist/leaflet.css",
               "projects/dinoapp/src/styles.scss"

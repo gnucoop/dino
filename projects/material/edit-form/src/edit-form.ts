@@ -19,6 +19,7 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
+import {AjfContext} from '@ajf/core/models';
 import {AjfFile} from '@ajf/core/file-input';
 import {
   AjfChoicesOrigin,
@@ -847,7 +848,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (fschema.schema.choicesOrigins == null) {
             fschema.schema.choicesOrigins = [];
           }
-          const ajfFormData = deepCopy(fdata.data);
+          const ajfFormData = deepCopy(fdata.data) as AjfContext;
           const createdAt = fdata != null && fdata.createdAt != null ? fdata.createdAt : null;
           const id = fdata != null && fdata.id != null ? fdata.id : null;
           const dinoFormInfo = {

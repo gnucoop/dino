@@ -69,8 +69,7 @@ export class FormDataManager extends DataModelManager<FormData> {
         refProps = {...refProps, ...refProp};
       }
     }
-    const popDoc = {...deepCopy(doc), ...refProps};
-    return popDoc;
+    return {...deepCopy(doc), ...refProps} as RxDocument<FormData & {[key: string]: any}>;
   }
 
   /**
