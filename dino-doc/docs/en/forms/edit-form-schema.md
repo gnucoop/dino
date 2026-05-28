@@ -1,65 +1,54 @@
 ---
 title: Edit Form Schema
-description: Create or modify form schemas in Dino to define the structure of your data collection forms.
+description: Learn how to create and edit form schemas in Dino to define the structure of your data collection forms.
 ---
 
 # Edit Form Schema
 
-The Edit Form Schema screen is where you create new form schemas or modify existing ones. A form schema defines the structure, fields, and validation rules for the forms used to collect data in Dino.
+The **Edit Form Schema** page lets you design or modify the structure of a form — the fields, their types, validation rules, and how they relate to one another. You can create a brand-new schema or update an existing one.
 
 ![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
 
-On this screen, you can add, remove, and configure the fields that will appear in your data collection form.
+## Create a New Form Schema
 
-## Creating a New Form Schema
+1. From the **Forms** section, click **Create Form Schema**.
+2. Enter a **Name** and optionally a **Description** for the schema.
+3. Add fields using the **Add Field** button. For each field you can set:
+   - **Field Label** – the question or prompt shown to data collectors.
+   - **Field Type** – e.g., text, number, date, select, geolocation.
+   - **Required** toggle – makes the field mandatory.
+   - **Validation** rules – like min/max values, allowed file extensions, etc.
+4. Rearrange fields by dragging them into the desired order.
+5. Click **Save** to create the schema.
 
-1.  Navigate to the **Forms** section in the main menu.
-2.  Click the **Create Form Schema** button.
-3.  You will be taken to the Edit Form Schema screen with a blank canvas.
+## Edit an Existing Form Schema
 
-## Editing an Existing Form Schema
+1. Navigate to the **Forms** page and click on the schema you want to modify.
+2. Click the **Edit** button (or open the schema’s actions menu and select **Edit**).
+3. The editor opens with all existing fields loaded. You can:
+   - Add new fields.
+   - Edit existing field settings by clicking on the field.
+   - Delete a field using its trash icon.
+   - Reorder fields by drag-and-drop.
+4. Click **Save** to apply your changes.
 
-1.  From the **Forms** list, find the schema you want to edit.
-2.  Click the **Edit** button (often represented by a pencil icon) next to the schema's name.
-3.  You will be taken to the Edit Form Schema screen with the current schema loaded.
+!!! warning "Editing a schema that already has submissions"
+    Changing field types or removing fields may affect existing submissions. Dino will warn you before saving if any incompatibilities are detected.
 
-## Working with Fields
+## Defining Field Relationships (Dependencies)
 
-The main area of the screen is the form builder, where you construct your schema.
+You can set up conditional logic so that certain fields only appear when a specific value is selected in another field.
 
-### Adding a Field
+1. While editing a schema, select a field that you want to be conditional.
+2. Click the **Relationships** tab or button.
+3. In the dialog that opens, choose the **parent field** and the **value** that must be selected for this field to be shown. You can also add multiple conditions (AND/OR logic).
+4. Click **Apply** to save the relationship.
 
-1.  In the sidebar or toolbar, locate the list of available field types (e.g., Text, Number, Date, Dropdown).
-2.  Click on a field type or drag and drop it into the form preview area on the right.
+![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
 
-### Configuring a Field
+!!! tip "Testing dependencies"
+    After saving the schema, you can test your conditional logic by opening the form in the [Edit Form](edit-form.md) view and verifying that dependent fields appear or hide correctly.
 
-Once a field is added to your form, you can configure its properties.
+## Next Steps
 
-1.  Click on the field in the preview area. Its properties panel will open, typically on the left side of the screen.
-2.  Configure the field's details:
-    *   **Label:** The text users will see next to the field.
-    *   **Key/Name:** The internal identifier for the field in the data.
-    *   **Required:** Toggle whether users must fill in this field.
-    *   **Default Value:** Set a value that appears automatically.
-    *   **Help Text:** Add instructions or clarifications for users.
-    *   **Validation:** Set rules like minimum/maximum length or value ranges.
-
-### Reordering or Removing Fields
-
-*   To change the order of fields, drag and drop them within the preview area.
-*   To remove a field, select it and click the delete (trash can) icon, usually found in the field's properties panel or a toolbar above it.
-
-## Saving Your Schema
-
-After building your form, you must save it.
-
-1.  Click the **Save** or **Update** button at the top of the screen.
-2.  You will be prompted to enter a **Name** and optionally a **Description** for your schema if you are creating a new one.
-3.  Click **Confirm**. You will be redirected back to the Forms list, where your new or updated schema will appear.
-
-!!! tip "Preview Your Form"
-    Use the preview area on the right to see how your form will look to users as you build it. This helps ensure the layout and flow are correct.
-
-!!! warning "Test Before Use"
-    After saving a schema, it's a good practice to create a test submission using the [Edit Form](edit-form.md) feature to verify all fields work as expected before using it for live data collection.
+Once your form schema is ready, you can [create a form instance](edit-form.md) based on it, or use the schema in a [Forms Map](forms-map.md) to assign it to specific areas and collectors.
