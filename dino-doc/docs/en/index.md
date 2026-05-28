@@ -17,11 +17,13 @@ Design form schemas and use them to record information. View and manage all your
 *   [Design a Form Schema](forms/edit-form-schema.md)
 *   [Fill In a Form](forms/edit-form.md)
 *   [Explore Data on a Map](forms/forms-map.md)
+*   [Check Out Forms](checkout/index.md)
 
 ### Analyze and Report
 Turn your collected data into insights. Create custom reports and use AI to ask questions about your data in plain language.
 *   [View and Manage Reports](reports/index.md)
 *   [Design a Report Schema](reports/edit-report-schema.md)
+*   [Fill In a Report](reports/edit-report.md)
 *   [Chat with Your Data](forms/datachat.md)
 *   [Aggregate Data](aggregation/index.md)
 
@@ -34,6 +36,8 @@ Track key performance indicators and monitor specific geographic areas.
 Receive in-app notifications and manage platform access for your team.
 *   [View Notifications](notifications/index.md)
 *   [Manage Users & Groups](administration/users.md)
+*   [View Users List](administration/users-list.md)
+*   [View Groups List](administration/groups-list.md)
 *   [Manage Languages](administration/languages.md)
 
 ### Share and Extend
