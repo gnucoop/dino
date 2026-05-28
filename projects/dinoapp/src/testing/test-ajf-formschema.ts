@@ -919,6 +919,41 @@ export const ajfSourceReportFormSchema = {
   ],
 };
 
+// Secondary form referenced by test_form through a relationship (form dependency),
+// so the documentation can show a populated Relationships dialog.
+export const registryFormSchema = {
+  'nodes': [
+    {
+      'id': 1,
+      'name': 'family',
+      'label': 'Family',
+      'nodes': [
+        {
+          'id': 1001,
+          'name': 'family_name',
+          'label': 'Family name',
+          'parent': 1,
+          'nodeType': 0,
+          'fieldType': 0,
+        },
+        {
+          'id': 1002,
+          'name': 'head_of_family',
+          'label': 'Head of family',
+          'parent': 1001,
+          'nodeType': 0,
+          'fieldType': 0,
+        },
+      ],
+      'parent': 0,
+      'nodeType': 3,
+      'parentNode': 0,
+      'visibility': {'condition': 'true'},
+      'conditionalBranches': [{'condition': 'true'}],
+    },
+  ],
+};
+
 export const formSchemas = [
   {
     id: '2268d23a-af59-4410-bc7e-a110badd4cd4',
@@ -926,6 +961,18 @@ export const formSchemas = [
     label: 'TEST FORM',
     icon: 'star',
     schema: ajfSourceReportFormSchema,
+    visibility: 0,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    // Label sorts after 'TEST FORM' so test_form stays the first grid tile
+    // (the docs screenshot flow always opens the first tile).
+    id: 'a1f5c0de-0000-4000-8000-000000000002',
+    name: 'village_registry',
+    label: 'Village Registry',
+    icon: 'groups',
+    schema: registryFormSchema,
     visibility: 0,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),

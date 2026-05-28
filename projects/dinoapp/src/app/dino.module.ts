@@ -21,7 +21,12 @@ import {
   PandinoConfig,
   PermissionContextService,
 } from '@dino/core/data';
-import {FormDataManager, FormSchemaManager, FormsModule as DinoFormsModule} from '@dino/core/forms';
+import {
+  FormDataManager,
+  FormSchemaDepsManager,
+  FormSchemaManager,
+  FormsModule as DinoFormsModule,
+} from '@dino/core/forms';
 import {LangManager} from '@dino/core/langs';
 import {FiltersService} from '@dino/core/list';
 import {LocationModule as DinoLocationModule} from '@dino/core/locations';
@@ -253,7 +258,8 @@ export function provideMatDateLocale(ts: TranslocoService) {
               pm: ProjectManager,
               rsm: ReportSchemaManager,
               rdm: ReportDataManager,
-            ) => initializeE2eApp(ds, fsm, fdm, pm, rsm, rdm),
+              fsdm: FormSchemaDepsManager,
+            ) => initializeE2eApp(ds, fsm, fdm, pm, rsm, rdm, fsdm),
             deps: [
               DataService,
               FormSchemaManager,
@@ -261,6 +267,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
               ProjectManager,
               ReportSchemaManager,
               ReportDataManager,
+              FormSchemaDepsManager,
             ],
             multi: true,
           },

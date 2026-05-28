@@ -276,5 +276,18 @@
         "selector": ".dino-go-to-data-button"
       }
     ]
+  },
+  {
+    "url": "/forms/schema/{schemaId}/edit",
+    "dir": "forms",
+    "resolveFrom": "/forms",
+    "screenshots": [
+      {
+        "name": "forms/edit-form-schema-relationships",
+        "description": "Form relationships (dependencies) editor dialog",
+        "setup": "cy.get('.dino-edit-form-schema-actions button').eq(1).click(); cy.wait(1000);",
+        "selector": ".dino-edit-form-schema-actions"
+      }
+    ]
   }
 ]

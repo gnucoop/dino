@@ -176,6 +176,24 @@ const EXTRA_ROUTE_ENTRIES = [
       },
     ],
   },
+  {
+    url: '/forms/schema/{schemaId}/edit',
+    dir: 'forms',
+    resolveFrom: '/forms',
+    screenshots: [
+      {
+        name: 'forms/edit-form-schema-relationships',
+        description: 'Form relationships (dependencies) editor dialog',
+        // Actions bar has three buttons in DOM order: Import(0), Relationships(1), Save(2).
+        // eq(1) avoids depending on the translated button label. The Relationships button is
+        // enabled only on an existing schema (isCreation === false), which resolveFrom guarantees.
+        setup: "cy.get('.dino-edit-form-schema-actions button').eq(1).click(); cy.wait(1000);",
+        // The guard selector is checked BEFORE setup runs (docs-screenshots.cy.js), so it must
+        // be an element present before the click — the actions bar, not the dialog.
+        selector: '.dino-edit-form-schema-actions',
+      },
+    ],
+  },
 ];
 
 /**
