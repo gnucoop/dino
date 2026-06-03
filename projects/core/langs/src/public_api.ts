@@ -23,5 +23,6 @@
 export {Lang} from './lang';
 
 export * from './lang-manager';
+export * from './online-lang-manager';
 export * from './lang-json';
 export * from './utils';

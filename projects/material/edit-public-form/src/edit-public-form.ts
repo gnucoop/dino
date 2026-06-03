@@ -48,6 +48,7 @@ import {
   OnlineFormSchemaManager,
   OnlineFormStatusManager,
 } from '@dino/core/forms';
+import {OnlineLangManager} from '@dino/core/langs';
 import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
@@ -112,6 +113,8 @@ export class EditPublicForm implements OnDestroy {
    */
   private _saveFormSub: Subscription;
 
+  private _loadLangsSub: Subscription = Subscription.EMPTY;
+
   /**
    * Subscribes to the ajf validation state to save the form
    */
@@ -135,11 +138,14 @@ export class EditPublicForm implements OnDestroy {
     fstm: OnlineFormStatusManager,
     fdm: OnlineFormDataManager,
     udm: OnlineUserDataManager,
+    lm: OnlineLangManager,
     location: Location,
     snackBar: MatSnackBar,
     frs: AjfFormRendererService,
     ts: TranslocoService,
   ) {
+    this._loadLangsSub = lm.loadLangs().subscribe();
+
     const formSchemaManagerInit = fsm.init();
     const formDataManagerInit = fdm.init();
     const userDataManagerInit = udm.init();
@@ -205,19 +211,20 @@ export class EditPublicForm implements OnDestroy {
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
 
-    this.form = combineLatest([this.formSchema, anonymousUserData, metricParams]).pipe(
-      map(([fschema, activeUser, metricIds]) => {
+    this.form = combineLatest([this.formSchema, anonymousUserData, metricParams, ts.langChanges$]).pipe(
+      map(([fschema, activeUser, metricIds, _lang]) => {
         if (fschema == null) {
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
             duration: 5000,
           });
           return AjfFormSerializer.fromJson({});
         }
-        if (fschema.schema.choicesOrigins == null) {
-          fschema.schema.choicesOrigins = [];
+        const schema = JSON.parse(JSON.stringify(fschema.schema));
+        if (schema.choicesOrigins == null) {
+          schema.choicesOrigins = [];
         }
         const fdata = {dino_form_info: {activeUser, activeUserGroups: [], metrics: metricIds}};
-        return AjfFormSerializer.fromJson(fschema.schema, fdata);
+        return AjfFormSerializer.fromJson(schema, fdata);
       }),
       shareReplay(1),
     );
@@ -337,6 +344,7 @@ export class EditPublicForm implements OnDestroy {
   ngOnDestroy(): void {
     this._saveFormSub.unsubscribe();
     this._saveValidFormSub.unsubscribe();
+    this._loadLangsSub.unsubscribe();
   }
 
   /**
