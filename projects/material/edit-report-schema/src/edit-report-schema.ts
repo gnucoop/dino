@@ -356,8 +356,8 @@ export class EditReportSchema implements OnInit, OnDestroy {
       return formSchemaIds;
     }
     const variables: AjfReportVariable[] = reportSchema.variables;
-    const regexForm = /(?<=forms\[\')(.*?)(?=\'\])/gi;
-    const regexSchema = /(?<=schemas\[\')(.*?)(?=\'\])/gi;
+    const regexForm = /(?<=forms\[['"])(.*?)(?=['"]\])/gi;
+    const regexSchema = /(?<=schemas\[['"])(.*?)(?=['"]\])/gi;
     for (let variable of variables) {
       const matches = variable.formula.formula.match(regexForm);
       if (matches != null && matches.length === 1) {
