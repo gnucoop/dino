@@ -54,7 +54,7 @@ export class EmailService {
       if (authToken) {
         data.append('authToken', authToken);
       }
-      const sendUrl = environment.dataConfig.emailSendUrl || 'https://gnumail.herokuapp.com/send';
+      const sendUrl = environment.dataConfig.emailSendUrl || 'https://gnumail-u2056.vm.elestio.app/send';
       return fetch(sendUrl, {
         method: 'POST',
         body: data,
