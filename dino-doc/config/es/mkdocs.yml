@@ -28,11 +28,10 @@ nav:
     - Areas: metrics/areas.md
   - Agregación: aggregation/index.md
   - Notificaciones: notifications/index.md
-  - DinoGPT: gpt/index.md
   - Formularios Públicos: public-forms/index.md
   - Administración:
     - Gestionar Usuarios y Grupos: administration/users.md
-    - Lista de Usuarios: administration/users-list.md
-    - Grupos: administration/groups.md
     - Gestionar Idiomas: administration/languages.md
+    - Lista de Usuarios: administration/users-list.md
+    - Groups List: administration/groups-list.md
   - Checkout: checkout/index.md

@@ -1,40 +1,38 @@
 ---
-title: Checkout
-description: Conclua sua compra de serviços Dino e gerencie sua assinatura.
+title: Finalizar Compra
+description: Complete sua compra de serviços Dino e gerencie sua assinatura.
 ---
 
-# Checkout
+# Finalizar Compra
 
-A página de Checkout no Dino é onde você finaliza seu pagamento por serviços, como fazer upgrade do seu plano de assinatura ou comprar recursos adicionais. Esta página usa um sistema de pagamento integrado e seguro para processar sua transação.
-
-![Checkout](../imgs/checkout/index.png)
+A página de finalização de compra é onde você finaliza o pagamento dos serviços Dino, como atualizar seu plano de assinatura ou adquirir recursos adicionais. Esta página utiliza um sistema de pagamento integrado e seguro para processar sua transação.
 
 ## O que você vê
 
-Ao navegar até a página de Checkout, você verá um formulário de pagamento seguro. Este formulário é gerenciado pelo parceiro de pagamento do Dino e foi projetado para coletar seus dados de pagamento com segurança.
+Ao navegar para a página de finalização de compra, você verá um formulário de pagamento seguro gerenciado pelo parceiro de pagamento do Dino. A página normalmente inclui:
 
-A página normalmente inclui:
-*   Um resumo do item ou plano de assinatura que você está adquirindo.
-*   Campos para inserir suas informações de pagamento (por exemplo, número do cartão, data de validade, CVC).
-*   Um botão para concluir a compra.
-
-## Como concluir uma compra
-
-Siga estas etapas para finalizar seu pagamento.
-
-1.  **Revise os detalhes da sua compra** na parte superior do formulário de checkout.
-2.  **Insira suas informações de pagamento** nos campos seguros fornecidos.
-3.  **Clique no botão "Pagar" ou "Assinar"** para autorizar a transação.
+- Um resumo do item ou plano de assinatura que você está comprando.
+- Campos para inserir suas informações de pagamento (por exemplo, número do cartão, data de validade, CVC).
+- Um botão **Pagar** ou **Assinar** para concluir a compra.
+- Um widget de **data chat** (no canto inferior) — você pode usá-lo para fazer perguntas ou obter ajuda em tempo real durante a finalização da compra.
 
 !!! tip "Pagamento Seguro"
     Seus dados de pagamento são processados com segurança pelo nosso parceiro de pagamento e não são armazenados diretamente no Dino. Você receberá um e-mail de confirmação assim que a transação for concluída.
 
-## Após o Checkout
+## Como concluir uma compra
 
-Após o processamento bem-sucedido do seu pagamento:
-*   Sua conta será atualizada imediatamente com o novo serviço ou nível de assinatura.
-*   Você pode retornar ao aplicativo principal para começar a usar os novos recursos.
-*   Você pode visualizar e gerenciar sua assinatura nas configurações da sua conta.
+1. **Revise os detalhes da sua compra** no topo do formulário de finalização.
+2. **Insira suas informações de pagamento** nos campos seguros.
+3. (Opcional) **Use o data chat** se precisar de assistência ou tiver uma dúvida sobre seu pedido.
+4. **Clique no botão "Pagar" ou "Assinar"** para autorizar a transação.
 
-!!! warning "Pagamentos com Falha"
-    Se o seu pagamento falhar, verifique os dados do seu cartão e certifique-se de que há fundos suficientes disponíveis. O acesso à sua conta não será alterado até que um pagamento seja concluído com sucesso.
+## Após a finalização da compra
+
+Assim que seu pagamento for processado com sucesso:
+
+- Sua conta é atualizada imediatamente com o novo serviço ou nível de assinatura.
+- Você pode retornar ao [Painel de Controle](../dashboard/index.md) principal para começar a usar os novos recursos.
+- Você pode visualizar e gerenciar sua assinatura nas configurações da sua conta.
+
+!!! warning "Pagamentos com falha"
+    Se o seu pagamento falhar, verifique os detalhes do cartão e certifique-se de que há fundos suficientes disponíveis. O acesso à sua conta não será alterado até que um pagamento bem-sucedido seja concluído. Se os problemas persistirem, use o data chat para entrar em contato com o suporte.

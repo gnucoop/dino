@@ -1,54 +1,81 @@
 ---
-title: Collecte de données
-description: Un aperçu de la zone de Collecte de données dans Dino, où vous pouvez accéder et gérer les soumissions et les schémas de formulaires.
+title: Formulaires
+description: Accédez à tous vos schémas de formulaires et soumissions dans Dino et gérez-les. C'est le point de départ pour saisir, consulter et analyser les données collectées.
 ---
 
-# Collecte de données
+# Formulaires
 
-La zone de Collecte de données est le centre névralgique pour toute saisie de données basée sur des formulaires dans Dino. De là, vous pouvez accéder à chaque schéma de formulaire utilisé par votre équipe, soumettre de nouvelles entrées, examiner les soumissions existantes et explorer les données collectées sur une carte ou via une analyse assistée par IA.
+La page Formulaires est votre espace de travail central pour toutes les données structurées dans Dino. Vous pouvez y accéder à chaque schéma de formulaire, soumettre de nouvelles données, examiner les soumissions passées, et explorer vos données sur une carte ou via une analyse conversationnelle.
 
-![Collecte de données](../imgs/forms/index.png)
+![Vue principale de la page Formulaires](../imgs/forms/index.png)
 
-Lorsque vous ouvrez la zone de Collecte de données, vous verrez une liste de tous les schémas de formulaires disponibles. Chaque élément de la liste affiche le nom et l'icône du formulaire.
+Lorsque vous ouvrez cette page, vous voyez une liste de tous les schémas de formulaires disponibles. Chaque élément affiche le nom et l'icône du formulaire.
 
 ---
 
-## Naviguer dans la zone
+## Naviguer dans la page
 
-La page principale affiche tous les schémas de formulaires auxquels vous avez accès. Vous pouvez interagir avec cette liste de plusieurs façons :
+La page principale liste tous les schémas de formulaires auxquels vous avez accès. Vous pouvez interagir avec cette liste de plusieurs manières :
 
-1.  **Ouvrir un formulaire** : Cliquez sur n'importe quel schéma de formulaire dans la liste pour ouvrir sa liste de soumissions. C'est là que vous pouvez parcourir, ajouter ou gérer des entrées individuelles de formulaire.
-2.  **Rechercher et filtrer** : Utilisez la barre de recherche en haut pour trouver rapidement un formulaire spécifique par son nom.
-3.  **Trier** : Cliquez sur les en-têtes de colonnes (comme "Nom") pour trier la liste.
+1.  **Ouvrir un schéma de formulaire** : Cliquez sur n'importe quel formulaire de la liste pour accéder à sa page dédiée, où vous pouvez voir toutes ses soumissions.
+2.  **Rechercher** : Utilisez la barre de recherche en haut pour trouver un formulaire spécifique par son nom.
+3.  **Filtrer et trier** : Utilisez les commandes disponibles pour filtrer la liste ou la trier selon différentes colonnes.
 
-!!! tip "Accès rapide"
-    La liste des formulaires est votre point de départ pour toutes les activités de collecte de données. Considérez chaque schéma de formulaire comme un type différent de rapport ou d'enquête que vous devez remplir.
+!!! tip "Point de départ"
+    Cette liste est votre rampe de lancement. Chaque schéma de formulaire représente un type différent de rapport, d'enquête ou de tâche de collecte de données pour votre projet.
 
 ---
 
 ## Travailler avec un schéma de formulaire
 
-Après avoir sélectionné un schéma de formulaire, vous êtes dirigé vers sa page dédiée. Ici, vous pouvez effectuer plusieurs actions clés :
+Après avoir cliqué sur un schéma de formulaire, vous êtes redirigé vers sa page principale. À partir de là, vous pouvez :
 
-1.  **Voir les soumissions** : Consultez un tableau de toutes les données précédemment soumises pour ce formulaire.
-2.  **Créer une nouvelle soumission** : Cliquez sur le bouton **Créer** pour remplir et soumettre un nouveau formulaire.
-3.  **Explorer les données** :
-    *   Cliquez sur l'onglet **Carte** pour voir toutes les soumissions positionnées géographiquement.
-    *   Cliquez sur l'onglet **DataChat** pour poser des questions sur vos données collectées en utilisant l'IA.
+1.  **Consulter les soumissions** : Voir un tableau de toutes les données déjà soumises pour ce formulaire.
+2.  **Créer une nouvelle soumission** : Cliquez sur le bouton d'action flottant **Créer** (icône « + ») pour ouvrir un formulaire vierge et soumettre de nouvelles données.
+3.  **Importer des soumissions** : Cliquez sur le bouton **Importer** (icône de téléchargement vers le cloud) pour importer plusieurs soumissions à partir d'un fichier.
+4.  **Explorer les données** :
+    *   Allez dans l'onglet [Carte](forms-map.md) pour voir toutes les soumissions placées sur une carte.
+    *   Allez dans l'onglet [DataChat](datachat.md) pour poser des questions sur vos données collectées à l'aide de l'IA.
+
+Sur la liste des soumissions d'un formulaire, vous pouvez effectuer des actions sur des entrées individuelles :
+*   **Consulter** : Voir tous les détails d'une soumission.
+*   **Modifier** : Modifier une soumission existante (si autorisé).
+*   **Imprimer/Exporter** : Générer un rapport PDF ou DOCX de la soumission.
+*   **Dupliquer** : Créer une copie d'une soumission pour l'utiliser comme base d'une nouvelle.
+*   **Supprimer** : Supprimer une soumission (si autorisé).
+
+Vous pouvez également sélectionner plusieurs soumissions pour effectuer des actions groupées comme la suppression ou la modification.
+
+![Boîte de dialogue d'exportation pour télécharger les soumissions de formulaires](../imgs/forms/index-export.png)
 
 ---
 
-## Flux de travail clés
+## Flux de travail principaux
 
 ### Pour soumettre de nouvelles données :
-1.  À partir de la page principale de Collecte de données, cliquez sur le schéma de formulaire souhaité.
-2.  Sur la page de liste des soumissions du formulaire, cliquez sur le bouton **Créer**.
+1.  Depuis la page principale Formulaires, cliquez sur le schéma de formulaire souhaité.
+2.  Sur la page du formulaire, cliquez sur le bouton d'action flottant **Créer**.
 3.  Remplissez tous les champs obligatoires dans le formulaire qui s'ouvre.
-4.  Cliquez sur **Soumettre** pour enregistrer votre entrée.
+4.  Cliquez sur **Soumettre** pour enregistrer votre saisie.
 
-### Pour examiner les données existantes :
-1.  À partir de la page principale de Collecte de données, cliquez sur le schéma de formulaire concerné.
-2.  Parcourez la liste des soumissions. Vous pouvez cliquer sur n'importe quelle entrée individuelle pour **Voir** ses détails ou la **Modifier** si vous avez l'autorisation.
+### Pour consulter ou modifier des données existantes :
+1.  Depuis la page principale Formulaires, cliquez sur le schéma de formulaire concerné.
+2.  Parcourez la liste des soumissions. Cliquez sur une entrée individuelle pour **Consulter** tous ses détails.
+3.  Si vous avez les autorisations nécessaires, vous pouvez cliquer sur **Modifier** pour modifier une soumission.
 
-!!! note "Gérer les schémas de formulaires"
-    La création et la modification de la structure des schémas de formulaires (ajout de champs, modification des questions) nécessitent des autorisations supplémentaires. Si vous avez besoin de configurer un nouveau formulaire ou de modifier un existant, consultez [Gérer les schémas de formulaires](edit-form-schema.md) ou contactez votre administrateur.
+### Pour importer des données :
+1.  Accédez à la page du schéma de formulaire souhaité.
+2.  Cliquez sur le bouton **Importer** (icône de téléchargement vers le cloud).
+3.  Suivez les instructions à l'écran pour sélectionner et télécharger votre fichier de données.
+
+### Pour exporter des données :
+1.  Accédez à la page du schéma de formulaire souhaité.
+2.  Utilisez les filtres pour réduire la liste des soumissions à exporter.
+3.  Cliquez sur le bouton **Exporter** dans la barre de filtres.
+4.  Choisissez votre format d'exportation préféré.
+
+!!! note "Gestion des schémas de formulaires"
+    La création de nouveaux schémas de formulaires ou la modification de leur structure (ajout/suppression de champs) nécessite des autorisations d'administrateur. Si vous devez configurer un nouveau type de formulaire, contactez votre administrateur de projet. Vous pouvez en apprendre davantage sur la modification de la structure d'un formulaire dans le guide [Modifier le schéma de formulaire](edit-form-schema.md).
+
+!!! warning "Autorisations"
+    Les actions que vous voyez (Créer, Modifier, Supprimer, Importer, Exporter) dépendent de vos autorisations utilisateur. Si un bouton ou une action est manquant, vous n'avez peut-être pas les accès nécessaires.

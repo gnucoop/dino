@@ -20,7 +20,6 @@ When you open the page, you see a list of existing areas. The main columns displ
 
 ### Creating a New Area
 1.  Click the **+** (plus) floating action button in the bottom-right corner of the screen.
-    ![Floating action button dialog](../imgs/metrics/areas-fab.png)
 2.  A form will appear. Enter the required information, such as the **Area Name**.
 3.  If this area should be a sub-category, select an existing area as the **Parent Area**.
 4.  Click **Save** to create the new area.

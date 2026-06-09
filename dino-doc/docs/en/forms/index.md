@@ -31,13 +31,11 @@ The main page lists all form schemas you have permission to use. You can interac
 After you click on a form schema, you are taken to its main page. From here, you can:
 
 1.  **View Submissions**: See a table of all data previously submitted for this form.
-2.  **Create a New Submission**: Click the **Create** button (floating "+" icon) to open a blank form and submit new data.
+2.  **Create a New Submission**: Click the **Create** floating action button (the "+" icon) to open a blank form and submit new data.
 3.  **Import Submissions**: Click the **Import** button (cloud upload icon) to import multiple submissions from a file.
 4.  **Explore Data**:
     *   Go to the [Map](forms-map.md) tab to see all submissions plotted on a map.
     *   Go to the [DataChat](datachat.md) tab to ask questions about your collected data using AI.
-
-![Floating action button dialog](../imgs/forms/index-fab.png)
 
 On a form's submission list, you can perform actions on individual entries:
 *   **View**: See the full details of a submission.
@@ -56,7 +54,7 @@ You can also select multiple submissions to perform bulk actions like delete or 
 
 ### To submit new data:
 1.  From the main Forms page, click on the desired form schema.
-2.  On the form's page, click the **Create** button (floating "+" icon).
+2.  On the form's page, click the **Create** floating action button.
 3.  Fill out all required fields in the form that opens.
 4.  Click **Submit** to save your entry.
 

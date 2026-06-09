@@ -1,11 +1,11 @@
 ---
 title: Lista de Grupos
-description: Visualize e gerencie grupos de usuários na página Lista de Grupos no Dino. Saiba mais sobre filtros, a tabela de dados e como criar ou editar grupos.
+description: Visualize e gerencie grupos de usuários na página Lista de Grupos no Dino. Saiba sobre filtros, a tabela de dados e como criar ou editar grupos.
 ---
 
 # Lista de Grupos
 
-A página Lista de Grupos exibe todos os grupos de usuários da sua instância do Dino. A partir daqui você pode visualizar, filtrar e criar novos grupos, ou editar grupos existentes.
+A página Lista de Grupos exibe todos os grupos de usuários na sua instância do Dino. A partir daqui, você pode visualizar, filtrar e criar novos grupos, ou editar grupos existentes.
 
 ![Visão principal da página Lista de Grupos](../imgs/administration/groups-list.png)
 
@@ -13,10 +13,10 @@ A página Lista de Grupos exibe todos os grupos de usuários da sua instância d
 
 A página contém:
 
-- **Barra de pesquisa e filtros** – Use os filtros disponíveis para reduzir a lista de grupos. Os filtros incluem Projeto, Localização, Área, Caso e Organização. Você também pode usar a caixa de pesquisa geral para encontrar grupos pelo nome.
+- **Barra de pesquisa e filtros** – Use os filtros disponíveis para restringir a lista de grupos. Os filtros incluem Projeto, Local, Área, Caso e Organização. Você também pode usar a caixa de pesquisa geral para encontrar grupos pelo nome.
 - **Tabela de dados** – Mostra informações principais sobre cada grupo, incluindo o nome do grupo. Colunas adicionais (ID, data de criação) ficam ocultas por padrão, mas podem ser exibidas através do seletor de colunas.
 - **Botão de ação flutuante** – Um botão "+" no canto inferior direito abre o editor para criar um novo grupo.
-- **Ações nas linhas** – Clique em uma linha para revelar opções embutidas de seleção ou expansão de mais detalhes sobre aquele grupo.
+- **Ações na linha** – Clique em uma linha para revelar opções em linha para selecionar ou expandir mais detalhes sobre aquele grupo.
 
 ## Usando filtros
 
@@ -25,16 +25,16 @@ A página contém:
 3. Selecione ou digite o valor pelo qual deseja filtrar.
 4. A lista é atualizada automaticamente para mostrar apenas os grupos correspondentes.
 
-!!! tip "Múltiplos filtros"
-    Você pode aplicar vários filtros ao mesmo tempo para refinar ainda mais os resultados.
+!!! tip "Vários filtros"
+    Você pode aplicar vários filtros de uma só vez para refinar ainda mais os resultados.
 
 ## Criando um novo grupo
 
 1. Clique no botão flutuante **+** no canto inferior direito da página.
-2. O editor de grupos é aberto. Insira as informações necessárias:
-   - **Nome do grupo** – Um nome único para o grupo.
+2. O editor de grupo é aberto. Insira as informações necessárias:
+   - **Nome do Grupo** – Um nome único para o grupo.
 3. Opcionalmente, atribua usuários ao grupo (consulte [Lista de Usuários](users-list.md) para gerenciar usuários individuais).
-4. Clique em **Salvar** para criar o grupo. Ele aparece na lista imediatamente.
+4. Clique em **Salvar** para criar o grupo. Ele aparece imediatamente na lista.
 
 ## Editando ou visualizando um grupo
 
@@ -43,7 +43,7 @@ A página contém:
 - Você pode alterar o nome do grupo e seus membros.
 
 !!! warning "Excluindo grupos"
-    Excluir um grupo remove todos os seus membros do grupo. Esta ação não pode ser desfeita. Exclua através do ícone de exclusão (lixeira) da linha após expandir ou selecionar a linha.
+    Excluir um grupo remove todos os seus membros do grupo. Esta ação não pode ser desfeita. Exclua através do ícone de exclusão (lixeira) na linha após expandir ou selecionar a linha.
 
 ## Páginas relacionadas
 

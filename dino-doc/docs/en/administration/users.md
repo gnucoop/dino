@@ -12,7 +12,12 @@ The **Users** area is the central hub for managing who can access Dino and what 
 When you open the Users page, you will see a menu with the following options:
 
 *   **Users**: Opens the [Manage Users](users-list.md) page to create, edit, and manage individual user accounts.
-*   **Groups**: Opens the [Groups](groups.md) page to create and manage permission groups that control access to forms, reports, and data.
+
+    Clicking this option takes you to the user list, where you can view all accounts, add new users, edit details, and deactivate accounts.
+
+    ![Main view of the Users List page](../imgs/administration/users-list.png)
+
+*   **Groups**: Opens the [Groups](groups-list.md) page to create and manage permission groups that control access to forms, reports, and data.
 
 Simply click on either menu item to navigate to the corresponding section.
 
@@ -24,4 +29,4 @@ Simply click on either menu item to navigate to the corresponding section.
 ## Related Pages
 
 *   [Manage Users](users-list.md): Detailed guide on creating, editing, and managing user accounts.
-*   [Groups](groups.md): Detailed guide on creating and managing permission groups.
+*   [Groups](groups-list.md): Detailed guide on creating and managing permission groups.

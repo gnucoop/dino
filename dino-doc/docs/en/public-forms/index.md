@@ -7,16 +7,18 @@ description: How to access, fill out, and submit a public form in Dino without n
 
 Public forms allow anyone with a link to submit data to Dino without needing to log in or have an account. This is commonly used for surveys, registrations, or feedback collection. If you have received a public link to a form, you can use this page to complete it.
 
+Public form addresses follow the pattern `/f/` followed by a unique identifier (e.g., `https://your-dino-instance.com/f/abc123def`).
+
 ---
 
 ## Accessing a Public Form
 
-1.  Click the public form link you received (e.g., via email or a shared message).
+1.  Click the public form link you received (e.g., via email or a shared message). The link will direct you to `/f/...` on your Dino instance.
 2.  The form will open directly in your web browser. You do not need to sign in.
 3.  Review the form title and any introductory text to confirm it's the correct form.
 
 !!! tip
-    Public form links are unique and often contain a long identifier (like `/f/abc123def`). If the page doesn't load, ensure the entire link was copied correctly.
+    Public form links contain a long identifier (like `/f/abc123def`). If the page doesn't load, ensure the entire link was copied correctly.
 
 ---
 

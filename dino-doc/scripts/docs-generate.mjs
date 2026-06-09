@@ -531,7 +531,7 @@ Source files for this feature:
 
   if (screenshots.length > 0) {
     prompt += `\n--- AVAILABLE SCREENSHOTS ---\n`;
-    prompt += `The following screenshots are available for this page. You MUST include them in the documentation using the exact markdown references provided. Each screenshot has a description of what it shows — use this to place it in the right context.\n\n`;
+    prompt += `The following screenshots are available for this page. These are the ONLY screenshot files that exist — do NOT reference any other image. You MUST include the ones below using the exact markdown references provided. Each screenshot has a description of what it shows — use this to place it in the right context.\n\n`;
     for (const img of screenshots) {
       prompt += `- ![${img.description}](${img.markdownRef}) — ${img.description}\n`;
     }
@@ -549,8 +549,9 @@ Instructions:
 - Write numbered steps for key workflows.
 - Use admonitions (!!! tip, !!! warning) for important notes.${
     screenshots.length > 0
-      ? '\n- Include ALL available screenshots listed above using the exact markdown references provided.'
-      : '\n- Do not invent screenshot references.'
+      ? '\n- Include ALL available screenshots listed above using the exact markdown references provided.' +
+        '\n- Do NOT reference any other screenshot. The AVAILABLE SCREENSHOTS list is exhaustive: never invent additional image files (e.g. "-fab", "-dialog", "-toggle", "-list" variants) — they do not exist and would render as broken links.'
+      : '\n- Do NOT include or invent any screenshot references — no screenshot files exist for this page.'
   }
 - When linking to other pages, ONLY use paths from the AVAILABLE PAGES list above. Do not guess or invent filenames.
 - Output ONLY the Markdown content, no code fences or explanations.`;

@@ -10,6 +10,7 @@ The Forms Map page displays your form submissions on an interactive map, allowin
 ![Main view of the Forms Map page](../imgs/forms/forms-map.png)
 
 The page consists of two main areas:
+
 *   **The Map**: An interactive map showing clustered markers for each submission. Each marker is placed based on the location data in the submission.
 *   **The Filters Panel**: A set of controls on the side to filter the data shown on the map.
 

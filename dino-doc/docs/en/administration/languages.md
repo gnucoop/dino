@@ -62,8 +62,10 @@ Use this to add a new language, update an existing language's translations, or r
 
 1. Click the **Language** button in the toolbar.
 2. The **Language Settings** dialog will open. It shows a list of available languages and provides the following actions:
-
-![Button toggle active](../imgs/administration/languages-toggle.png)
+   - **+ button** to add a new language.
+   - Click a language name in the list to select it and view a preview of its translations.
+   - **Update translation** (with a language selected) to upload a new JSON file.
+   - **Remove custom translation** to delete the custom translation data for the selected language.
 
 ### Adding a New Language
 

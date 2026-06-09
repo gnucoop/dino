@@ -39,17 +39,16 @@ A filter bar is located above the list. Use it to narrow down the submissions sh
 
 When you hover over a row, a set of action icons appears on the right. The actions available for a specific submission depend on your permissions for its form schema.
 
-*   **View** (![eye icon]()): Open the submission in a read-only view.
-*   **Edit** (![pencil icon]()): Open the submission for editing.
-*   **Print** (![printer icon]()): Generate and open a PDF version of the submission. You will be asked to confirm before the PDF is created.
-*   **Delete** (![delete icon]()): Permanently delete the submission. You will be asked to confirm this action.
+*   **View**: Open the submission in a read-only view.
+*   **Edit**: Open the submission for editing.
+*   **Print**: Generate and open a PDF version of the submission. You will be asked to confirm before the PDF is created.
+*   **Delete**: Permanently delete the submission. You will be asked to confirm this action.
 
 ## Creating a New Submission
 
 You can start a new form submission directly from the Aggregation page.
 
 1.  Click the **+** (Add) button in the bottom-right corner of the screen.
-    ![Floating action button dialog](../imgs/aggregation/index-fab.png)
 2.  A dialog opens, showing a list of form schemas you have permission to create submissions for.
 3.  Select the desired form schema from the list.
 4.  Click **Create Form**. You will be taken to the form to begin filling it out.
