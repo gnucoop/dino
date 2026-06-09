@@ -15,7 +15,7 @@ export class FakeDataGenerator<T extends Model = Model> {
    */
   generateData(
     dataService: DataService,
-    manager: DataModelManager<T>,
+    manager: DataModelManager<T> | null,
     docs: InsertModel<T>[],
     loops?: number,
   ): Observable<{success: RxDocument<T, {}>[]; error: any[]}> {

@@ -1,15 +1,15 @@
 import {OverlayModule} from '@angular/cdk/overlay';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {APP_INITIALIZER, ErrorHandler, inject, isDevMode, NgModule} from '@angular/core';
+import {APP_INITIALIZER, ErrorHandler, inject, isDevMode, NgModule, Optional} from '@angular/core';
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
 import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AreasModule as DinoAreasModule} from '@dino/core/areas';
-import {CasesModule as DinoCasesModule} from '@dino/core/cases';
+import {AreaManager, AreasModule as DinoAreasModule} from '@dino/core/areas';
+import {CaseManager, CasesModule as DinoCasesModule} from '@dino/core/cases';
 import {AuthModule as DinoAuthModule, AuthService, JWTInterceptor} from '@dino/core/auth';
 import {ConfigModule as DinoConfigModule} from '@dino/core/config';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
@@ -29,10 +29,10 @@ import {
 } from '@dino/core/forms';
 import {LangManager} from '@dino/core/langs';
 import {FiltersService} from '@dino/core/list';
-import {LocationModule as DinoLocationModule} from '@dino/core/locations';
+import {LocationManager, LocationModule as DinoLocationModule} from '@dino/core/locations';
 import {LogModule as DinoLogModule} from '@dino/core/logs';
-import {NotificationModule as DinoNotificationModule} from '@dino/core/notifications';
-import {OrganizationsModule as DinoOrganizationsModule} from '@dino/core/organizations';
+import {NotificationManager, NotificationModule as DinoNotificationModule} from '@dino/core/notifications';
+import {OrganizationManager, OrganizationsModule as DinoOrganizationsModule} from '@dino/core/organizations';
 import {ProjectManager, ProjectModule as DinoProjectModule} from '@dino/core/projects';
 import {
   ReportDataManager,
@@ -259,7 +259,14 @@ export function provideMatDateLocale(ts: TranslocoService) {
               rsm: ReportSchemaManager,
               rdm: ReportDataManager,
               fsdm: FormSchemaDepsManager,
-            ) => initializeE2eApp(ds, fsm, fdm, pm, rsm, rdm, fsdm),
+              ugm: UserGroupManager,
+              udm: UserDataManager,
+              nm: NotificationManager,
+              am: AreaManager | null,
+              cm: CaseManager | null,
+              lm: LocationManager | null,
+              om: OrganizationManager | null,
+            ) => initializeE2eApp(ds, fsm, fdm, pm, rsm, rdm, fsdm, ugm, udm, nm, am, cm, lm, om),
             deps: [
               DataService,
               FormSchemaManager,
@@ -268,6 +275,14 @@ export function provideMatDateLocale(ts: TranslocoService) {
               ReportSchemaManager,
               ReportDataManager,
               FormSchemaDepsManager,
+              UserGroupManager,
+              UserDataManager,
+              NotificationManager,
+              // Managers of optional modules: null when the module is disabled
+              [new Optional(), AreaManager],
+              [new Optional(), CaseManager],
+              [new Optional(), LocationManager],
+              [new Optional(), OrganizationManager],
             ],
             multi: true,
           },

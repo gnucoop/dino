@@ -29,11 +29,10 @@ nav:
     - Areas: metrics/areas.md
   - التجميع: aggregation/index.md
   - الإشعارات: notifications/index.md
-  - DinoGPT: gpt/index.md
   - النماذج العامة: public-forms/index.md
   - الإدارة:
     - إدارة المستخدمين والمجموعات: administration/users.md
-    - قائمة المستخدمين: administration/users-list.md
-    - المجموعات: administration/groups.md
     - إدارة اللغات: administration/languages.md
+    - قائمة المستخدمين: administration/users-list.md
+    - Groups List: administration/groups-list.md
   - Checkout: checkout/index.md

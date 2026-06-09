@@ -1,13 +1,13 @@
 ---
-title: Manage Users
+title: Users List
 description: View, edit, and manage user accounts in your Dino organization.
 ---
 
-# Manage Users
+# Users List
 
-The Manage Users page provides a complete list of all user accounts in your Dino organization. From here, you can view user details, edit accounts, and create new users.
+The Users List page provides a complete list of all user accounts in your Dino organization. From here, you can view user details, edit accounts, and create new users.
 
-![Main view of the Manage Users page](../imgs/administration/users-list.png)
+![Main view of the Users List page](../imgs/administration/users-list.png)
 
 ## Understanding the Users List
 
@@ -43,8 +43,7 @@ You can also click anywhere on a user's row to select it, or click the expand ic
 To add a new user to your organization:
 
 1.  Click the blue **+** floating button in the bottom-right corner of the screen.
-    ![Floating action button dialog](../imgs/administration/users-list-fab.png)
-2.  A form will open. Enter the new user's details, including email, name, and assign them to the appropriate user groups. For more information on groups, see [Groups](groups.md).
+2.  A form will open. Enter the new user's details, including email, name, and assign them to the appropriate user groups. For more information on groups, see [Groups List](groups-list.md).
 3.  Click **Save** to create the account. The new user will receive an email with instructions to set their password.
 
 !!! warning "Offline Restriction"

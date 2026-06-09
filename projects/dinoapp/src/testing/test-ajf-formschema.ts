@@ -957,23 +957,22 @@ export const registryFormSchema = {
 export const formSchemas = [
   {
     id: '2268d23a-af59-4410-bc7e-a110badd4cd4',
-    name: 'test_form',
-    label: 'TEST FORM',
-    icon: 'star',
+    name: 'ophthalmic_visits',
+    label: 'Ophthalmic Visits',
+    icon: 'remove_red_eye',
     schema: ajfSourceReportFormSchema,
-    visibility: 0,
+    form_schema_metrics: ['location', 'project'],
+    visibility: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },
   {
-    // Label sorts after 'TEST FORM' so test_form stays the first grid tile
-    // (the docs screenshot flow always opens the first tile).
     id: 'a1f5c0de-0000-4000-8000-000000000002',
     name: 'village_registry',
-    label: 'Village Registry',
+    label: 'Registry',
     icon: 'groups',
     schema: registryFormSchema,
-    visibility: 0,
+    visibility: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   },

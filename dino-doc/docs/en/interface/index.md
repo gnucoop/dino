@@ -7,7 +7,7 @@ description: An overview of the Dino application shell — the toolbar, side nav
 
 The Dino interface consists of a top toolbar and a side navigation menu that are present on every page after you log in.
 
-![Main view of the Main page](../imgs/interface/index.png)
+![Main view of the Main Nav page](../imgs/interface/index.png)
 
 ---
 

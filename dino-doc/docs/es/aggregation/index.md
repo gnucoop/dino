@@ -1,54 +1,54 @@
 ---
 title: Agregación
-description: Cómo usar la vista de Agregación en Dino para explorar y gestionar envíos de formularios de múltiples esquemas en una sola lista.
+description: Utilice la vista de Agregación en Dino para navegar, filtrar y gestionar los envíos de formularios de todos sus esquemas de formulario en una única lista unificada.
 ---
 
 # Agregación
 
-La página de Agregación proporciona una vista unificada de todos los envíos de formularios en su organización. En lugar de ver los envíos de un esquema de formulario a la vez, puede ver entradas de múltiples esquemas juntas en una sola lista filtrable.
+La página de Agregación ofrece una vista unificada de todos los envíos de formularios de su organización. En lugar de ver los envíos de un solo esquema de formulario a la vez, puede ver entradas de múltiples esquemas juntos en una única lista filtrable.
 
-![Agregación](../imgs/aggregation/index.png)
+![Vista principal de la página de Agregación](../imgs/aggregation/index.png)
 
-## Explorando la Lista
+## Navegar por la lista
 
-La lista muestra todos los envíos que tiene permiso para ver. Cada fila representa un único envío. Las siguientes columnas se muestran por defecto:
+La lista muestra todos los envíos a los que tiene permiso de acceso. Cada fila representa un único envío. Las siguientes columnas se muestran por defecto:
 
-*   **Esquema del Formulario**: El nombre del esquema de formulario al que pertenece este envío.
+*   **Esquema de formulario**: El nombre del esquema de formulario al que pertenece este envío.
 *   **Estado**: El estado actual del flujo de trabajo del envío.
-*   También pueden aparecer columnas adicionales para métricas como **Proyecto**, **Ubicación** u **Organización**, dependiendo de la configuración de su sistema.
+*   Pueden aparecer columnas adicionales con métricas como **Proyecto**, **Ubicación** u **Organización**, dependiendo de la configuración de su sistema.
 
-Puede hacer clic en cualquier fila para seleccionarla o expandirla para ver más detalles.
+Puede hacer clic en cualquier fila para seleccionarla o expandirla y ver más detalles.
 
-## Filtrando la Lista
+## Filtrar la lista
 
-Una barra de filtros se encuentra encima de la lista. Úsela para reducir los envíos mostrados. Puede filtrar por:
+Sobre la lista hay una barra de filtros. Utilícela para reducir los envíos mostrados. Puede filtrar por:
 
 *   Proyecto
 *   Ubicación
 *   Área
 *   Caso
-*   Código de Caso
+*   Código de caso
 *   Organización
-*   Estado del Formulario
+*   Estado del formulario
 *   Usuario
 
-!!! tip "Consejos de Filtrado"
-    La barra de filtros de Agregación está diseñada para un filtrado rápido y entre esquemas. Para funciones avanzadas como presets de filtros guardados o exportación de datos, navegue a la lista de envíos para un esquema de formulario específico.
+!!! tip "Consejos de filtrado"
+    La barra de filtros de Agregación está diseñada para un filtrado rápido entre esquemas. Para funciones avanzadas como presets de filtros guardados o exportación de datos, diríjase a la [lista de envíos para un esquema de formulario específico](../forms/index.md).
 
-## Acciones de Fila
+## Acciones por fila
 
-Al pasar el cursor sobre una fila, aparece un conjunto de iconos de acción a la derecha. Las acciones disponibles para un envío específico dependen de sus permisos para su esquema de formulario.
+Al pasar el ratón sobre una fila, aparece un conjunto de iconos de acción a la derecha. Las acciones disponibles para un envío concreto dependen de sus permisos sobre su esquema de formulario.
 
-*   **Ver** (![icono de ojo]()): Abre el envío en una vista de solo lectura.
-*   **Editar** (![icono de lápiz]()): Abre el envío para editarlo.
-*   **Imprimir** (![icono de impresora]()): Genera y abre una versión en PDF del envío. Se le pedirá confirmación antes de crear el PDF.
-*   **Eliminar** (![icono de eliminar]()): Elimina el envío permanentemente. Se le pedirá confirmar esta acción.
+*   **Ver**: Abre el envío en una vista de solo lectura.
+*   **Editar**: Abre el envío para editarlo.
+*   **Imprimir**: Genera y abre una versión PDF del envío. Se le pedirá confirmación antes de crear el PDF.
+*   **Eliminar**: Elimina permanentemente el envío. Se le pedirá confirmación para esta acción.
 
-## Creando un Nuevo Envío
+## Crear un nuevo envío
 
 Puede iniciar un nuevo envío de formulario directamente desde la página de Agregación.
 
 1.  Haga clic en el botón **+** (Agregar) en la esquina inferior derecha de la pantalla.
-2.  Se abre un cuadro de diálogo que muestra una lista de esquemas de formulario para los que tiene permiso para crear envíos.
+2.  Se abre un cuadro de diálogo que muestra una lista de los esquemas de formulario para los que tiene permiso de crear envíos.
 3.  Seleccione el esquema de formulario deseado de la lista.
-4.  Haga clic en **Crear Formulario**. Será llevado al formulario para comenzar a completarlo.
+4.  Haga clic en **Crear formulario**. Será redirigido al formulario para comenzar a llenarlo.

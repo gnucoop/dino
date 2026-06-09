@@ -1,40 +1,38 @@
 ---
 title: Paiement
-description: Finalisez votre achat de services Dino et gérez votre abonnement.
+description: Finalisez votre achat pour les services Dino et gérez votre abonnement.
 ---
 
 # Paiement
 
-La page de paiement dans Dino est l'endroit où vous finalisez votre règlement pour des services, comme la mise à niveau de votre forfait d'abonnement ou l'achat de fonctionnalités supplémentaires. Cette page utilise un système de paiement intégré et sécurisé pour traiter votre transaction.
-
-![Paiement](../imgs/checkout/index.png)
+La page de paiement est l'endroit où vous finalisez votre paiement pour les services Dino, comme la mise à niveau de votre formule d'abonnement ou l'achat de fonctionnalités supplémentaires. Cette page utilise un système de paiement intégré et sécurisé pour traiter votre transaction.
 
 ## Ce que vous voyez
 
-Lorsque vous accédez à la page de paiement, vous voyez un formulaire de paiement sécurisé. Ce formulaire est géré par le partenaire de paiement de Dino et est conçu pour collecter vos informations de paiement en toute sécurité.
+Lorsque vous accédez à la page de paiement, vous voyez un formulaire de paiement sécurisé géré par le partenaire de paiement de Dino. La page comprend généralement :
 
-La page comprend généralement :
-*   Un récapitulatif de l'article ou du forfait d'abonnement que vous achetez.
-*   Des champs pour saisir vos informations de paiement (par exemple, numéro de carte, date d'expiration, cryptogramme visuel).
-*   Un bouton pour finaliser l'achat.
-
-## Comment finaliser un achat
-
-Suivez ces étapes pour finaliser votre paiement.
-
-1.  **Vérifiez les détails de votre achat** en haut du formulaire de paiement.
-2.  **Saisissez vos informations de paiement** dans les champs sécurisés fournis.
-3.  **Cliquez sur le bouton "Payer" ou "S'abonner"** pour autoriser la transaction.
+- Un récapitulatif de l'article ou de la formule d'abonnement que vous achetez.
+- Des champs pour saisir vos informations de paiement (p. ex., numéro de carte, date d'expiration, CVC).
+- Un bouton **Payer** ou **S'abonner** pour finaliser l'achat.
+- Un widget **chat de données** (dans le coin inférieur) — vous pouvez l'utiliser pour poser des questions ou obtenir de l'aide en temps réel lors du paiement.
 
 !!! tip "Paiement sécurisé"
-    Vos informations de paiement sont traitées de manière sécurisée par notre partenaire de paiement et ne sont pas stockées directement dans Dino. Vous recevrez un e-mail de confirmation une fois la transaction terminée.
+    Vos informations de paiement sont traitées en toute sécurité par notre partenaire de paiement et ne sont pas stockées directement dans Dino. Vous recevrez un e-mail de confirmation une fois la transaction terminée.
+
+## Comment effectuer un achat
+
+1. **Vérifiez les détails de votre achat** en haut du formulaire de paiement.
+2. **Saisissez vos informations de paiement** dans les champs sécurisés.
+3. (Facultatif) **Utilisez le chat de données** si vous avez besoin d'aide ou si vous avez une question sur votre commande.
+4. **Cliquez sur le bouton « Payer » ou « S'abonner »** pour autoriser la transaction.
 
 ## Après le paiement
 
 Une fois votre paiement traité avec succès :
-*   Votre compte sera immédiatement mis à jour avec le nouveau service ou niveau d'abonnement.
-*   Vous pouvez retourner à l'application principale pour commencer à utiliser les nouvelles fonctionnalités.
-*   Vous pouvez consulter et gérer votre abonnement depuis les paramètres de votre compte.
+
+- Votre compte est immédiatement mis à jour avec le nouveau service ou niveau d'abonnement.
+- Vous pouvez revenir au [Tableau de bord](../dashboard/index.md) principal pour commencer à utiliser les nouvelles fonctionnalités.
+- Vous pouvez consulter et gérer votre abonnement depuis les paramètres de votre compte.
 
 !!! warning "Paiements échoués"
-    Si votre paiement échoue, veuillez vérifier les détails de votre carte et vous assurer que des fonds suffisants sont disponibles. L'accès à votre compte ne sera pas modifié tant qu'un paiement n'aura pas été effectué avec succès.
+    Si votre paiement échoue, vérifiez les informations de votre carte et assurez-vous que les fonds sont suffisants. L'accès à votre compte ne changera pas tant qu'un paiement réussi n'aura pas été effectué. Si les problèmes persistent, utilisez le chat de données pour contacter le support.

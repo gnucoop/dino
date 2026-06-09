@@ -34,9 +34,12 @@ The AI assistant will process your question and provide an answer based on the a
 
 ## During a Chat
 
-*   You can ask follow-up questions in the same session; DinoGPT will maintain the context of your conversation.
-*   The chat history is visible, allowing you to review previous questions and answers.
+- You can ask follow-up questions in the same session; DinoGPT will maintain the context of your conversation.
+- The chat history is visible, allowing you to review previous questions and answers.
 
 ## Ending a Chat Session
 
-Your chat session will typically end automatically when you navigate away from the Datachat page.
+Your chat session ends automatically when you navigate away from the Datachat page. You can switch to other pages, such as the [Forms list](index.md), and return later to start a new session.
+
+!!! warning "Data Privacy"
+    DinoGPT only accesses the data from the current form schema. It cannot see data from other forms or external sources.

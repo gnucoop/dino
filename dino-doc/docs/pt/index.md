@@ -5,55 +5,56 @@ description: Uma introdução ao Dino — o que é, para quem é e como navegar 
 
 # Bem-vindo ao Dino
 
-Dino é uma plataforma web para recolha estruturada de dados, monitorização e análise. Oferece às equipas um único local para desenhar formulários, recolher informações do terreno, acompanhar o progresso e explorar resultados — quer esteja online ou em ambientes com conectividade limitada.
+Dino é uma plataforma baseada na web para coleta, monitoramento e análise de dados estruturados. Ela oferece às equipes um local único para projetar formulários, coletar informações de campo, acompanhar o progresso e explorar resultados — esteja você online ou trabalhando em ambientes com baixa conectividade.
 
 ---
 
-## O Que Pode Fazer com o Dino
+## O que você pode fazer com o Dino
 
-### Recolher Dados
+### Coletar e gerenciar dados
+Projete esquemas de formulários e use-os para registrar informações. Visualize e gerencie todos os seus dados no [Dashboard](dashboard/index.md) principal. Você pode criar, editar e organizar suas ferramentas de coleta de dados.
+*   [Visualizar e gerenciar formulários](forms/index.md)
+*   [Projetar um esquema de formulário](forms/edit-form-schema.md)
+*   [Preencher um formulário](forms/edit-form.md)
+*   [Explorar dados em um mapa](forms/forms-map.md)
+*   [Fazer checkout de formulários](checkout/index.md)
 
-Desenhe esquemas de formulários e utilize-os para registar informações do terreno. Os formulários podem ter múltiplas secções, suportar anexos de ficheiros e áudio, e seguir etapas de fluxo de trabalho (estados) à medida que as entradas avançam num processo. As submissões podem ser filtradas, exportadas e visualizadas num mapa.
+### Analisar e relatar
+Transforme seus dados coletados em insights. Crie relatórios personalizados e use IA para fazer perguntas sobre seus dados em linguagem natural.
+*   [Visualizar e gerenciar relatórios](reports/index.md)
+*   [Projetar um esquema de relatório](reports/edit-report-schema.md)
+*   [Preencher um relatório](reports/edit-report.md)
+*   [Conversar com seus dados](forms/datachat.md)
+*   [Agregar dados](aggregation/index.md)
 
-- [Preencher um Formulário](forms/edit-form.md)
-- [Explorar Dados no Mapa](forms/forms-map.md)
+### Monitorar e medir
+Acompanhe indicadores-chave de desempenho e monitore áreas geográficas específicas.
+*   [Visualizar métricas](metrics/index.md)
+*   [Gerenciar áreas](metrics/areas.md)
 
-### Analisar com IA
+### Manter-se informado e colaborar
+Receba notificações no aplicativo e gerencie o acesso à plataforma para sua equipe.
+*   [Visualizar notificações](notifications/index.md)
+*   [Gerenciar usuários e grupos](administration/users.md)
+*   [Visualizar lista de usuários](administration/users-list.md)
+*   [Visualizar lista de grupos](administration/groups-list.md)
+*   [Gerenciar idiomas](administration/languages.md)
 
-Faça perguntas em linguagem natural sobre os seus dados recolhidos utilizando o assistente de IA integrado. Obtenha respostas em forma de texto, tabelas ou gráficos — sem necessidade de conhecimentos técnicos.
-
-- [Conversar com os Seus Dados](forms/datachat.md)
-
-### Manter-se Informado
-
-Receba notificações na aplicação do sistema ou do seu administrador. Clique numa notificação para ser direcionado diretamente para a área relevante da aplicação.
-
-- [Notificações](notifications/index.md)
-
-### Partilhar Formulários Publicamente
-
-Partilhe um formulário com qualquer pessoa através de um link direto — não é necessária conta. Útil para recolher respostas de pessoas externas à sua organização.
-
-- [Preencher um Formulário Público](public-forms/index.md)
-
-### Administrar a Plataforma
-
-Os administradores podem gerir contas de utilizador e grupos de permissões, e controlar as traduções apresentadas na interface.
-
-- [Gerir Utilizadores e Grupos](administration/users.md)
-- [Gerir Idiomas](administration/languages.md)
-
----
-
-## Primeiros Passos
-
-Se é a primeira vez que utiliza o Dino, comece aqui:
-
-1. [Entrar](getting-started/login.md) — aceda à sua conta ou solicite acesso ao seu administrador.
-2. [Redefinir a Senha](getting-started/reset-password.md) — defina uma nova senha se foi bloqueado.
+### Compartilhar e estender
+Compartilhe formulários publicamente ou use recursos avançados de IA para tarefas de dados.
+*   [Preencher um formulário público](public-forms/index.md)
 
 ---
 
-## Acesso e Permissões
+## Primeiros passos
 
-O que pode ver e fazer no Dino depende dos grupos de permissões atribuídos à sua conta. Algumas áreas — como a administração e a gestão de esquemas de formulários — são visíveis apenas para utilizadores com o papel apropriado. Se não encontrar uma funcionalidade descrita nesta documentação, contacte o seu administrador de sistema.
+Se esta é a sua primeira vez usando o Dino, comece aqui:
+
+1.  [Fazer login](getting-started/login.md) — entre na sua conta.
+2.  [Redefinir sua senha](getting-started/reset-password.md) — defina uma nova senha, se necessário.
+
+---
+
+## Acesso e permissões
+
+O que você pode ver e fazer no Dino depende dos grupos de permissão atribuídos à sua conta. Algumas áreas — como administração e gerenciamento de esquemas de formulários — são visíveis apenas para usuários com a função apropriada. Se você não encontrar um recurso descrito nesta documentação, entre em contato com o administrador do sistema.
