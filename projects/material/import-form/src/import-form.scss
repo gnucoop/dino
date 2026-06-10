@@ -1,9 +1,19 @@
 dino-import-form {
   .mat-mdc-card {
     display: flex;
-    justify-content: center;
+    flex-flow: column nowrap;
     border-left: none;
+    box-sizing: border-box;
+    width: 600px;
+    max-width: 90vw;
+    height: 600px;
+    max-height: 90vh;
+    .mat-toolbar {
+      flex: 0 0 auto;
+    }
     .mat-mdc-card-content {
+      flex: 1 1 auto;
+      overflow-y: auto;
       form {
         display: flex;
         flex-flow: column wrap;
@@ -31,16 +41,54 @@ dino-import-form {
           }
         }
       }
-      .dino-upload-respose {
+      .dino-column-mapping {
         margin-top: 20px;
-        white-space: pre-line;
+        .dino-column-mapping-header {
+          margin-bottom: 10px;
+          font-weight: 500;
+        }
+        .dino-column-mapping-row {
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 16px;
+          .dino-column-name {
+            flex: 1 1 50%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            &.dino-column-name-unmapped {
+              color: var(--palette-warn-500);
+              font-weight: 700;
+            }
+          }
+          .dino-column-field {
+            flex: 1 1 50%;
+          }
+        }
+      }
+      .dino-component-load-spinner {
+        margin: 30px auto;
       }
     }
     .mat-mdc-card-actions {
+      flex: 0 0 auto;
       display: flex;
       flex-flow: row wrap;
       justify-content: space-between;
       background-color: transparent !important;
+      .dino-upload-respose {
+        flex: 1 0 100%;
+        margin-bottom: 10px;
+        color: var(--palette-warn-500);
+        white-space: pre-line;
+      }
+      .dino-column-mapping-error {
+        flex: 1 0 100%;
+        margin-bottom: 10px;
+        color: var(--palette-warn-500);
+      }
       .mat-mdc-raised-button {
         transition: all ease-in-out 0.3;
         -webkit-transition: all ease-in-out 0.3s;

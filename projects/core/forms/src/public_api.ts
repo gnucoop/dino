@@ -29,6 +29,7 @@ export {schema as formStatusJson} from './form-status-json';
 export {FormSchemaDeps} from './form-schema-deps';
 
 export * from './form-info';
+export * from './form-data-import.service';
 export * from './forms.module';
 export * from './form-schema-manager';
 export * from './form-schema-deps';
