@@ -3,9 +3,13 @@
     <mat-toolbar color="primary"> {{'Import forms'|transloco}}</mat-toolbar>
     <mat-card-content>
       <form [formGroup]="importForm">
-        <div class="dino-upload-container">
+        <div
+          *ngIf="!columnMappings.length && !isLoading"
+          class="dino-upload-container"
+        >
           <div>Upload an xls or csv file to import form data:<br /></div>
           <input
+            #fileInput
             type="file"
             id="excelFileInput"
             accept=".xls,.xlsx,.csv"
@@ -20,16 +24,81 @@
           >
         </div>
       </form>
+      <mat-spinner
+        *ngIf="isLoading"
+        class="dino-component-load-spinner"
+        mode="indeterminate"
+      ></mat-spinner>
+      <div *ngIf="columnMappings.length" class="dino-column-mapping">
+        <div class="dino-column-mapping-header">
+          {{'Map the file columns to the form fields'|transloco}}
+        </div>
+        <div *ngFor="let mapping of columnMappings" class="dino-column-mapping-row">
+          <span
+            class="dino-column-name"
+            [class.dino-column-name-unmapped]="mapping.field === null"
+            [title]="mapping.column"
+            >{{mapping.column}}</span
+          >
+          <mat-form-field class="dino-column-field">
+            <mat-label>{{'Field'|transloco}}</mat-label>
+            <mat-select
+              [formControl]="mapping.control!"
+              [errorStateMatcher]="this"
+              (selectionChange)="onMappingChange(mapping, $event.value)"
+              (openedChange)="onFieldSelectOpenedChange($event, mapping)"
+            >
+              <mat-select-trigger>
+                {{ mapping.field || ('Ignore column'|transloco) }}
+              </mat-select-trigger>
+              <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
+                <mat-option>
+                  <ngx-mat-select-search
+                    [formControl]="fieldFilterCtrl"
+                    [placeholderLabel]="'Search'|transloco"
+                    [noEntriesFoundLabel]="'No fields found'|transloco"
+                  ></ngx-mat-select-search>
+                </mat-option>
+                <mat-option [value]="null">{{'Ignore column'|transloco}}</mat-option>
+                <mat-option
+                  *ngFor="let field of availableFields; trackBy: trackByField"
+                  [value]="field"
+                  [style.display]="isFieldVisible(field) ? null : 'none'"
+                >
+                  {{field}}
+                </mat-option>
+              </ng-container>
+              <ng-template #selectedFieldOption>
+                <mat-option [value]="mapping.field">
+                  {{ mapping.field || ('Ignore column'|transloco) }}
+                </mat-option>
+              </ng-template>
+            </mat-select>
+            <mat-error>{{'Field mapped to more than one column'|transloco}}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
       <div *ngIf="importStatus" class="dino-upload-respose">
         <b>{{importStatus}}</b>
       </div>
-      <br />
-    </mat-card-content>
-    <mat-card-actions>
+      <div *ngIf="duplicateFields.length" class="dino-column-mapping-error">
+        {{'Each field can be mapped to only one column'|transloco}}: {{duplicateFields.join(', ')}}
+      </div>
       <button (click)="closeDialog()" color="warn" mat-raised-button>
         {{ 'Close'|transloco }}
       </button>
-      <button [disabled]="processing" (click)="apply()" color="primary" mat-raised-button>
+      <button *ngIf="columnMappings.length" (click)="back()" mat-raised-button>
+        {{ 'Back'|transloco }}
+      </button>
+      <button
+        *ngIf="columnMappings.length"
+        [disabled]="processing || duplicateFields.length > 0"
+        (click)="apply()"
+        color="primary"
+        mat-raised-button
+      >
         {{ 'Apply'|transloco }}
       </button>
     </mat-card-actions>

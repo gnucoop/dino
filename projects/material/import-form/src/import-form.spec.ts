@@ -133,14 +133,58 @@ describe('Import Forms', () => {
     expect(importForm).toBeTruthy();
   });
 
-  it('should start the import forms process from csv file', async () => {
+  it('should read the csv file and build the column mappings on file selection', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const spyImportXlsx = spyOn<any>(importForm, '_importXlsx').and.callThrough();
+    const spyReadFile = spyOn<any>(importForm, '_readFile').and.callThrough();
     const file = new Blob([formDatasCsv], {type: 'text/csv'});
     const excelEvt = {target: {files: [file]}};
     importForm.onExcelfileSelected(excelEvt);
+    expect(spyReadFile).toHaveBeenCalledTimes(1);
+  });
+
+  it('should start the import forms process with the mapped columns', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const spyProcessData = spyOn<any>(importForm, '_processData').and.callThrough();
+    (importForm as any)._file = new Blob([formDatasCsv], {type: 'text/csv'});
+    (importForm as any)._rows = [{district: 'lamwo', project_id: 'b4f2598e'}];
+    importForm.columnMappings = [
+      {column: 'district', field: 'district'},
+      {column: 'project_id', field: 'project_id'},
+    ];
     importForm.apply();
-    expect(spyImportXlsx).toHaveBeenCalledTimes(1);
+    expect(spyProcessData).toHaveBeenCalledTimes(1);
+    const mappedRows = spyProcessData.calls.mostRecent().args[0];
+    expect(mappedRows).toEqual([{district: 'lamwo', project_id: 'b4f2598e'}]);
+  });
+
+  it('should not start the import if a field is mapped by more than one column', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const spyProcessData = spyOn<any>(importForm, '_processData').and.callThrough();
+    (importForm as any)._file = new Blob([formDatasCsv], {type: 'text/csv'});
+    (importForm as any)._rows = [{district: 'lamwo', sub_county: 'padibe'}];
+    importForm.columnMappings = [
+      {column: 'district', field: 'district'},
+      {column: 'sub_county', field: 'district'},
+    ];
+    importForm.onMappingChange(importForm.columnMappings[1], 'district');
+    expect(importForm.duplicateFields).toEqual(['district']);
+    importForm.apply();
+    expect(spyProcessData).not.toHaveBeenCalled();
+  });
+
+  it('should drop the unmapped columns from the imported rows', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    importForm.columnMappings = [
+      {column: 'District', field: 'district'},
+      {column: 'notes', field: null},
+    ];
+    const mappedRows = (importForm as any)._applyColumnMappings([
+      {District: 'lamwo', notes: 'to be ignored'},
+    ]);
+    expect(mappedRows).toEqual([{district: 'lamwo'}]);
   });
 });
