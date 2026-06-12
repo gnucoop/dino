@@ -163,6 +163,14 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   availableFields: string[] = [];
 
   /**
+   * Sentinel value used as the "Ignore column" select option. A non-null value
+   * is required so the mat-select shows the selected option (Angular Material
+   * treats a null value as no selection, leaving the trigger blank). It is
+   * mapped back to "no field" when the rows are imported.
+   */
+  readonly ignoreFieldValue = '__dino_ignore_column__';
+
+  /**
    * Control bound to the search input used to filter the available fields
    */
   readonly fieldFilterCtrl = new UntypedFormControl('');
@@ -412,7 +420,10 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
    * @param control The select form control
    * @returns true if the control's field is a duplicate
    */
-  isErrorState(control: AbstractControl | null, _form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(
+    control: AbstractControl | null,
+    _form: FormGroupDirective | NgForm | null,
+  ): boolean {
     return control != null && control.value != null && this.duplicateFields.includes(control.value);
   }
 
@@ -831,6 +842,98 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   }
 
   /**
+   * Properties managed by Dino itself, never provided by the user.
+   */
+  private _autoMetricProps: string[] = [
+    'id',
+    'created_at',
+    'updated_at',
+    'is_deleted',
+    '_deleted',
+  ];
+
+  /**
+   * Whether the property schema accepts a null value. The collection schema
+   * lists nullable props (e.g. `["string", "null"]`) among the `required` ones
+   * only to force the key to be present: an empty value is still valid, so such
+   * props must not be treated as user-mandatory.
+   * @param propSchema The json schema of a single property
+   * @returns true if a null value is allowed
+   */
+  private _propAllowsNull(propSchema: any): boolean {
+    if (propSchema == null) {
+      return true;
+    }
+    if (Array.isArray(propSchema.type)) {
+      return propSchema.type.includes('null');
+    }
+    if (propSchema.type === 'null') {
+      return true;
+    }
+    if (Array.isArray(propSchema.anyOf)) {
+      return propSchema.anyOf.some(
+        (s: any) =>
+          s?.type === 'null' || (Array.isArray(s?.type) && s.type.includes('null')),
+      );
+    }
+    return false;
+  }
+
+  /**
+   * Check that every new metric to be created has a value for its mandatory
+   * fields. A field is mandatory only when it is in the schema `required` list,
+   * does not accept a null value, and is not auto-generated (id/created_at/...,
+   * case `code`, project `code_auto`). Nullable "required" props only need the
+   * key to exist, so they are not enforced here.
+   * @param newMetricsByType the metrics that will actually be created, by type
+   * @returns one error entry per metric missing mandatory fields, empty if valid
+   */
+  private _getMissingRequiredMetricFields(newMetricsByType: {
+    [key: string]: {[key: string]: any}[];
+  }): string[] {
+    const errors: string[] = [];
+    Object.keys(newMetricsByType).forEach(metricType => {
+      const manager = this._metricManagers[metricType];
+      const metrics = newMetricsByType[metricType];
+      if (manager == null || !metrics || !metrics.length) {
+        return;
+      }
+      const props = manager.collectionSchema.properties;
+      const requiredProps = (
+        manager.collectionSchema.required && manager.collectionSchema.required.length
+          ? manager.collectionSchema.required
+          : ['name']
+      ).filter(prop => {
+        if (this._autoMetricProps.includes(prop)) {
+          return false;
+        }
+        if (metricType === 'case' && prop === 'code') {
+          return false;
+        }
+        if (metricType === 'project' && prop === 'code_auto') {
+          return false;
+        }
+        return prop in props && !this._propAllowsNull(props[prop]);
+      });
+      metrics.forEach(metric => {
+        const missing = requiredProps.filter(prop => {
+          const value = metric[prop];
+          return (
+            value === undefined ||
+            value === null ||
+            (typeof value === 'string' && value.trim().length === 0)
+          );
+        });
+        if (missing.length) {
+          const label = metric['name'] != null && `${metric['name']}`.length ? metric['name'] : '?';
+          errors.push(`${metricType} "${label}" (${missing.join(', ')})`);
+        }
+      });
+    });
+    return errors;
+  }
+
+  /**
    * Import all the rows and all new metrics into Dino
    * @param rows The rows to be imported
    * @param newMetrics the list of the new metrics required to be created
@@ -865,9 +968,24 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
                 }
               });
             }
+            // Only the metrics that will actually be created must carry all
+            // their required fields: an already existing metric reused by name
+            // is filtered out above, so the user does not have to re-enter them.
+            const missingRequired = this._getMissingRequiredMetricFields(newMetricsRequested);
+            if (missingRequired.length) {
+              this._setImportStatus(
+                `${this._ts.translate(
+                  'File not imported! Missing required fields for new metrics',
+                )}: ${missingRequired.join('; ')}`,
+              );
+              return obsOf(null);
+            }
             return obsOf({newMetricsRequested, existingMetrics});
           }),
           switchMap(r => {
+            if (r == null) {
+              return obsOf(null);
+            }
             return zip(
               this._importMetrics(r.newMetricsRequested),
               obsOf(r.newMetricsRequested),
@@ -884,6 +1002,10 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
           withLatestFrom(this._udm.getActiveUserData()),
         )
         .subscribe(([r, ud]) => {
+          if (r == null) {
+            // Missing required fields: the status message is already set
+            return;
+          }
           const createdMetrics = r[0];
           const requiredNewMetrics = r[1];
           const existingMetrics = r[2];
@@ -1081,7 +1203,19 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     };
     fileReader.onload = (e: any) => {
       const bufferArray = e?.target.result;
-      const {rows, columns} = this._importService.parseWorkbook(bufferArray);
+      let rows: {[key: string]: any}[];
+      let columns: string[];
+      try {
+        ({rows, columns} = this._importService.parseWorkbook(bufferArray));
+      } catch (err) {
+        if (isDevMode()) {
+          console.log('Could not read the import file:', err);
+        }
+        this.isLoading = false;
+        this._processing = false;
+        this._setImportStatus(this._ts.translate('File not imported! Could not read the file.'));
+        return;
+      }
       this._rows = rows;
       this._columnMappingsSub.unsubscribe();
       this._columnMappingsSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
@@ -1109,7 +1243,11 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     return rows.map(row => {
       const mappedRow: {[key: string]: any} = {};
       this.columnMappings.forEach(mapping => {
-        if (mapping.field != null && row[mapping.column] !== undefined) {
+        if (
+          mapping.field != null &&
+          mapping.field !== this.ignoreFieldValue &&
+          row[mapping.column] !== undefined
+        ) {
           mappedRow[mapping.field] = row[mapping.column];
         }
       });
@@ -1123,7 +1261,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   private _updateDuplicateFields(): void {
     const mappedFields = this.columnMappings
       .map(mapping => mapping.field)
-      .filter(field => field != null) as string[];
+      .filter(field => field != null && field !== this.ignoreFieldValue) as string[];
     this.duplicateFields = [
       ...new Set(mappedFields.filter((field, idx) => mappedFields.indexOf(field) !== idx)),
     ];
@@ -1179,11 +1317,12 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
               }
             }
           }
-          if (!this._importService.isValidXlsxData(data, formSchema)) {
-            this._setImportStatus(
-              this._ts.translate('File not imported! Columns must match formschema fields.'),
-            );
-          }
+          // TODO We don't need this anymore.. the xlsx file is free
+          // if (!this._importService.isValidXlsxData(data, formSchema)) {
+          //   this._setImportStatus(
+          //     this._ts.translate('File not imported! Columns must match formschema fields.'),
+          //   );
+          // }
           return zip([obsOf(formSchema), this._ugm.isActiveUserAdmin(this.adminRoles)]);
         }),
         switchMap(([fmSchema, isAdminUser]) => {

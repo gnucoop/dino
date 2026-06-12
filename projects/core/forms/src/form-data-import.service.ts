@@ -99,12 +99,50 @@ export class FormDataImportService {
     const wb = XLSX.read(bufferArray, {type: 'buffer'});
     const wsname = wb.SheetNames[0];
     const ws = wb.Sheets[wsname];
+    // Some files declare a huge used range (e.g. A1:XFD1048576) caused by stray
+    // formatting on empty cells. sheet_to_json iterates the whole declared range,
+    // which would freeze the UI, so clamp it to the actually populated cells.
+    this._trimSheetRange(ws);
     const rows: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
     const headerRows: any[][] = XLSX.utils.sheet_to_json(ws, {header: 1});
     const columns = (headerRows.length ? headerRows[0] : [])
       .map(column => `${column}`)
       .filter(column => column.length > 0);
     return {rows, columns};
+  }
+
+  /**
+   * Shrink the worksheet declared range (`!ref`) to the bounding box of the
+   * cells that actually hold a value, so a bloated range does not make
+   * sheet_to_json walk millions of empty cells.
+   * @param ws The worksheet to clamp in place
+   */
+  private _trimSheetRange(ws: XLSX.WorkSheet): void {
+    if (!ws || !ws['!ref']) {
+      return;
+    }
+    const declared = XLSX.utils.decode_range(ws['!ref']);
+    let maxRow = -1;
+    let maxCol = -1;
+    Object.keys(ws).forEach(key => {
+      if (key.charAt(0) === '!') {
+        return;
+      }
+      const cell = XLSX.utils.decode_cell(key);
+      if (cell.r > maxRow) {
+        maxRow = cell.r;
+      }
+      if (cell.c > maxCol) {
+        maxCol = cell.c;
+      }
+    });
+    if (maxRow < 0 || maxCol < 0) {
+      // No data cells: nothing to import
+      return;
+    }
+    if (maxRow < declared.e.r || maxCol < declared.e.c) {
+      ws['!ref'] = XLSX.utils.encode_range({s: declared.s, e: {r: maxRow, c: maxCol}});
+    }
   }
 
   /**

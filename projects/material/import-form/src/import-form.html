@@ -49,7 +49,7 @@
               (openedChange)="onFieldSelectOpenedChange($event, mapping)"
             >
               <mat-select-trigger>
-                {{ mapping.field || ('Ignore column'|transloco) }}
+                {{ mapping.field === ignoreFieldValue ? ('Ignore column'|transloco) : mapping.field }}
               </mat-select-trigger>
               <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
                 <mat-option>
@@ -59,7 +59,7 @@
                     [noEntriesFoundLabel]="'No fields found'|transloco"
                   ></ngx-mat-select-search>
                 </mat-option>
-                <mat-option [value]="null">{{'Ignore column'|transloco}}</mat-option>
+                <mat-option [value]="ignoreFieldValue">{{'Ignore column'|transloco}}</mat-option>
                 <mat-option
                   *ngFor="let field of availableFields; trackBy: trackByField"
                   [value]="field"
@@ -70,7 +70,7 @@
               </ng-container>
               <ng-template #selectedFieldOption>
                 <mat-option [value]="mapping.field">
-                  {{ mapping.field || ('Ignore column'|transloco) }}
+                  {{ mapping.field === ignoreFieldValue ? ('Ignore column'|transloco) : mapping.field }}
                 </mat-option>
               </ng-template>
             </mat-select>
