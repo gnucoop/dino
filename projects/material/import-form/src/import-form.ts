@@ -91,6 +91,14 @@ export interface ColumnMapping {
    * state when the field is mapped by more than one column.
    */
   control?: UntypedFormControl;
+
+  /**
+   * For a column mapped to a repeating-slide field, the repetition order chosen
+   * by the user. Columns of the same repeating field are sorted by this value
+   * and then compacted into contiguous indices (`field__0`, `field__1`, ...).
+   * Undefined for non-repeating fields.
+   */
+  repetition?: number;
 }
 
 /**
@@ -161,6 +169,13 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
    * All the available target fields for the column mapping
    */
   availableFields: string[] = [];
+
+  /**
+   * Maps each repeating-slide field (offered in the select as a single base
+   * entry) to the name of its repeating slide, used to assign the repetition
+   * indices and to store the repetition count at import time.
+   */
+  private _repeatingFields: {[fieldName: string]: string} = {};
 
   /**
    * Sentinel value used as the "Ignore column" select option. A non-null value
@@ -362,6 +377,44 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   }
 
   /**
+   * Whether the given field is a repeating-slide field (offered as a single
+   * base entry that can be mapped by more than one column).
+   * @param field The field name
+   * @returns true if the field belongs to a repeating slide
+   */
+  isRepeatingField(field: string | null): boolean {
+    return field != null && this._repeatingFields[field] !== undefined;
+  }
+
+  /**
+   * The label shown for a field option / select trigger.
+   * @param field The field name (or the ignore sentinel / null)
+   * @returns The localized, user facing label
+   */
+  fieldLabel(field: string | null): string {
+    if (field === this.ignoreFieldValue) {
+      return this._ts.translate('Ignore column');
+    }
+    if (field == null) {
+      return '';
+    }
+    return this.isRepeatingField(field)
+      ? `${field} (${this._ts.translate('repeating')})`
+      : field;
+  }
+
+  /**
+   * Update the repetition order of a column mapped to a repeating field.
+   * @param mapping The column mapping
+   * @param event The number input change event
+   */
+  onRepetitionChange(mapping: ColumnMapping, event: Event): void {
+    const value = parseInt((event.target as HTMLInputElement).value, 10);
+    mapping.repetition = isNaN(value) ? 0 : Math.max(0, value);
+    this._cdr.markForCheck();
+  }
+
+  /**
    * Render the full field list for the opened select only, and reset the field
    * search when it is closed, so its trigger keeps showing the selected value
    * and the next dropdown opens with the full list.
@@ -410,6 +463,13 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
    */
   onMappingChange(mapping: ColumnMapping, field: string | null): void {
     mapping.field = field;
+    if (this.isRepeatingField(field)) {
+      // Default the repetition order to the next free slot for this field, so
+      // mapping several columns to the same repeating field auto-numbers them
+      mapping.repetition = this.columnMappings.filter(m => m.field === field).length - 1;
+    } else {
+      mapping.repetition = undefined;
+    }
     this._updateDuplicateFields();
     this._cdr.markForCheck();
   }
@@ -450,6 +510,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     this._rows = [];
     this.columnMappings = [];
     this.availableFields = [];
+    this._repeatingFields = {};
     this.fieldFilterCtrl.setValue('');
     this.duplicateFields = [];
     this.openedMapping = null;
@@ -1219,12 +1280,10 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
       this._rows = rows;
       this._columnMappingsSub.unsubscribe();
       this._columnMappingsSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
-        this.availableFields = this._importService.getAvailableFields(formSchema, columns);
+        this.availableFields = this._importService.getAvailableFields(formSchema);
+        this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
         this.fieldFilterCtrl.setValue('');
-        this.columnMappings = columns.map(column => {
-          const field = this.availableFields.includes(column) ? column : null;
-          return {column, field, control: new UntypedFormControl(field)};
-        });
+        this.columnMappings = columns.map(column => this._buildColumnMapping(column));
         this._updateDuplicateFields();
         this._processing = false;
         this.isLoading = false;
@@ -1234,34 +1293,116 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   }
 
   /**
+   * Build the column mapping for a file column, pre-filling the target field
+   * when the column name matches an available field, or a repeating-slide field
+   * written as `base__<index>` (in which case the repetition order is taken
+   * from the index found in the column name).
+   * @param column The file column name
+   * @returns The column mapping
+   */
+  private _buildColumnMapping(column: string): ColumnMapping {
+    let field: string | null = null;
+    let repetition: number | undefined;
+    if (this.availableFields.includes(column)) {
+      field = column;
+    } else {
+      const repMatch = column.match(/^(.+)__(\d+)$/);
+      if (repMatch && this.isRepeatingField(repMatch[1])) {
+        field = repMatch[1];
+        repetition = +repMatch[2];
+      }
+    }
+    return {column, field, repetition, control: new UntypedFormControl(field)};
+  }
+
+  /**
    * Rename the row keys with the mapped field names, dropping the unmapped
-   * columns
+   * columns. Columns mapped to a repeating-slide field are grouped by their
+   * slide, ordered by the chosen repetition, and turned into contiguous
+   * `field__<index>` keys; per row, repetitions with no value at all are
+   * dropped (no gaps) and the slide name key gets the repetition count.
    * @param rows The rows parsed from the file
    * @returns The rows with the mapped field names as keys
    */
   private _applyColumnMappings(rows: {[key: string]: any}[]): {[key: string]: any}[] {
+    const directMappings = this.columnMappings.filter(
+      mapping =>
+        mapping.field != null &&
+        mapping.field !== this.ignoreFieldValue &&
+        !this.isRepeatingField(mapping.field),
+    );
+    // slide name -> field base -> the columns mapped to it, ordered by repetition
+    const slides: {[slide: string]: {[base: string]: ColumnMapping[]}} = {};
+    this.columnMappings.forEach(mapping => {
+      if (!this.isRepeatingField(mapping.field)) {
+        return;
+      }
+      const base = mapping.field as string;
+      const slide = this._repeatingFields[base];
+      const slideBases = slides[slide] || (slides[slide] = {});
+      (slideBases[base] || (slideBases[base] = [])).push(mapping);
+    });
+    Object.keys(slides).forEach(slide => {
+      Object.keys(slides[slide]).forEach(base => {
+        slides[slide][base].sort(
+          (a, b) =>
+            (a.repetition ?? 0) - (b.repetition ?? 0) ||
+            this.columnMappings.indexOf(a) - this.columnMappings.indexOf(b),
+        );
+      });
+    });
+
     return rows.map(row => {
       const mappedRow: {[key: string]: any} = {};
-      this.columnMappings.forEach(mapping => {
-        if (
-          mapping.field != null &&
-          mapping.field !== this.ignoreFieldValue &&
-          row[mapping.column] !== undefined
-        ) {
-          mappedRow[mapping.field] = row[mapping.column];
+      directMappings.forEach(mapping => {
+        if (row[mapping.column] !== undefined) {
+          mappedRow[mapping.field as string] = row[mapping.column];
         }
+      });
+      Object.keys(slides).forEach(slide => {
+        const bases = slides[slide];
+        const slots = Math.max(...Object.keys(bases).map(base => bases[base].length));
+        let keptIndex = 0;
+        for (let slot = 0; slot < slots; slot++) {
+          const slotValues: {[base: string]: any} = {};
+          let hasValue = false;
+          Object.keys(bases).forEach(base => {
+            const mapping = bases[base][slot];
+            const value = mapping ? row[mapping.column] : undefined;
+            if (
+              value !== undefined &&
+              value !== null &&
+              !(typeof value === 'string' && value.trim().length === 0)
+            ) {
+              slotValues[base] = value;
+              hasValue = true;
+            }
+          });
+          if (hasValue) {
+            Object.keys(slotValues).forEach(base => {
+              mappedRow[`${base}__${keptIndex}`] = slotValues[base];
+            });
+            keptIndex++;
+          }
+        }
+        // The slide name key holds the number of repetitions for this row
+        mappedRow[slide] = keptIndex;
       });
       return mappedRow;
     });
   }
 
   /**
-   * Update the list of the fields mapped by more than one column
+   * Update the list of the fields mapped by more than one column. Repeating
+   * fields are excluded: they are meant to be mapped by several columns.
    */
   private _updateDuplicateFields(): void {
     const mappedFields = this.columnMappings
       .map(mapping => mapping.field)
-      .filter(field => field != null && field !== this.ignoreFieldValue) as string[];
+      .filter(
+        field =>
+          field != null && field !== this.ignoreFieldValue && !this.isRepeatingField(field),
+      ) as string[];
     this.duplicateFields = [
       ...new Set(mappedFields.filter((field, idx) => mappedFields.indexOf(field) !== idx)),
     ];

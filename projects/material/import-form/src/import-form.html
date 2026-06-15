@@ -49,7 +49,7 @@
               (openedChange)="onFieldSelectOpenedChange($event, mapping)"
             >
               <mat-select-trigger>
-                {{ mapping.field === ignoreFieldValue ? ('Ignore column'|transloco) : mapping.field }}
+                {{ fieldLabel(mapping.field) }}
               </mat-select-trigger>
               <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
                 <mat-option>
@@ -65,16 +65,29 @@
                   [value]="field"
                   [style.display]="isFieldVisible(field) ? null : 'none'"
                 >
-                  {{field}}
+                  {{ fieldLabel(field) }}
                 </mat-option>
               </ng-container>
               <ng-template #selectedFieldOption>
                 <mat-option [value]="mapping.field">
-                  {{ mapping.field === ignoreFieldValue ? ('Ignore column'|transloco) : mapping.field }}
+                  {{ fieldLabel(mapping.field) }}
                 </mat-option>
               </ng-template>
             </mat-select>
             <mat-error>{{'Field mapped to more than one column'|transloco}}</mat-error>
+          </mat-form-field>
+          <mat-form-field
+            *ngIf="isRepeatingField(mapping.field)"
+            class="dino-column-repetition"
+          >
+            <mat-label>{{'Repetition'|transloco}}</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              [value]="mapping.repetition ?? 0"
+              (change)="onRepetitionChange(mapping, $event)"
+            />
           </mat-form-field>
         </div>
       </div>
