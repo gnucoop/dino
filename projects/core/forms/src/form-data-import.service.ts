@@ -150,21 +150,18 @@ export class FormDataImportService {
    * the form schema fields and the special Dino fields
    * (created_at, user_data_ref_id, form_status_name and the metric columns)
    * @param formSchema The form schema
-   * @param columns The columns found in the file
    * @returns All the available fields
    */
-  getAvailableFields(formSchema: FormSchema | null, columns: string[]): string[] {
+  getAvailableFields(formSchema: FormSchema | null): string[] {
     const fields: string[] = [];
     if (formSchema) {
       this.getFieldsNameFromFormSchema(formSchema).forEach(field => {
-        if (field.indexOf('__') > -1) {
-          // Repeating slide field: add an entry for every matching file column
-          columns.forEach(column => {
-            const fieldNameRegex = new RegExp(`^${field}$`, 'g');
-            if (fieldNameRegex.test(column)) {
-              fields.push(column);
-            }
-          });
+        // Repeating slide fields come from the schema as `name__[0-9]+`: expose
+        // a single base entry (`name`); the repetition index of each mapped
+        // column is chosen by the user and applied at import time.
+        const repSuffixIdx = field.indexOf('__[0-9]+');
+        if (repSuffixIdx > -1) {
+          fields.push(field.substring(0, repSuffixIdx));
         } else {
           fields.push(field);
         }
@@ -205,6 +202,38 @@ export class FormDataImportService {
         .filter(f => f.length > 0);
     }
     return schemaFields;
+  }
+
+  /**
+   * Map every repeating-slide inner field (by its base name) to the name of its
+   * repeating slide. The slide name is the key that, in the form data, holds the
+   * number of repetitions (e.g. `data[slideName] = 3`).
+   * @param formSchema The form schema
+   * @returns base field name -> containing repeating slide name
+   */
+  getRepeatingSlideFields(formSchema: FormSchema | null): {[fieldName: string]: string} {
+    const result: {[fieldName: string]: string} = {};
+    if (!formSchema) {
+      return result;
+    }
+    const visit = (nodes: AjfNode[]): void => {
+      nodes.forEach(node => {
+        if (!isContainerNode(node)) {
+          return;
+        }
+        if (node.nodeType === AjfNodeType.AjfRepeatingSlide) {
+          this.flattenNodes((node as AjfContainerNode).nodes)
+            .filter(inner => !isContainerNode(inner) && inner.name != null && inner.name.length > 0)
+            .forEach(inner => {
+              result[inner.name] = node.name;
+            });
+        } else {
+          visit((node as AjfContainerNode).nodes);
+        }
+      });
+    };
+    visit(formSchema.schema.nodes || []);
+    return result;
   }
 
   /**
