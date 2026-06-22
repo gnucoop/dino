@@ -312,9 +312,9 @@ export const E2E_APP_ROUTES: Routes = [
     ],
   },
   {
-    path: 'gpt',
+    path: 'ai',
     canActivate: authGuard,
-    data: {breadcrumbs: [{label: 'GPT', url: 'gpt', icon: 'chat'}]},
+    data: {breadcrumbs: [{label: 'AI', url: 'ai', icon: 'chat'}]},
     component: GptE2E,
   },
   {
