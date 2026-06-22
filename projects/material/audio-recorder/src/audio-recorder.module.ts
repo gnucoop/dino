@@ -24,6 +24,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 
 import {AudioRecorder} from './audio-recorder';
+import {StringTruncatePipe} from './string-truncate.pipe';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatCardModule} from '@angular/material/card';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
@@ -49,7 +50,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatSnackBarModule,
     MatTooltipModule,
   ],
-  declarations: [AudioRecorder],
+  declarations: [AudioRecorder, StringTruncatePipe],
   exports: [AudioRecorder],
 })
 export class AudioRecorderModule {}
