@@ -751,11 +751,7 @@ export class EditReport implements AfterViewInit {
         if (rData != null) {
           context.report_data = rData;
         }
-        const report = createReportInstance(
-          rSchema.schema,
-          context,
-          this._translateService,
-        );
+        const report = createReportInstance(rSchema.schema, context, this._translateService);
         if (this._aiSnackBar) {
           this._aiSnackBar.dismiss();
         }
@@ -800,7 +796,7 @@ export class EditReport implements AfterViewInit {
   /**
    * Update printableReport when the filter widget changes.
    */
-  filterWidgetChanged(changes: {context: AjfContext, report?: AjfReportInstance}) {
+  filterWidgetChanged(changes: {context: AjfContext; report?: AjfReportInstance}) {
     if (changes.report) {
       this._printableReport = changes.report;
     }
@@ -1014,7 +1010,7 @@ export class EditReport implements AfterViewInit {
             }
           } catch (err: any) {
             console.error(err.message);
-            this._setPromptStatus('Gpt error, check the console');
+            this._setPromptStatus('AI error, check the console');
             setTimeout(() => this._setPromptStatus(''), 4000);
             return aiContext;
           }

@@ -40,7 +40,7 @@ export function getSections(pcs: PermissionContextService): Observable<Section[]
         });
       }
       if (environment.optionalModulesConfig.gptModule) {
-        sections.push({label: 'GPT', url: 'gpt', icon: 'chat', svgIcon: undefined});
+        sections.push({label: 'AI', url: 'ai', icon: 'chat', svgIcon: undefined});
       }
       if (
         context &&
