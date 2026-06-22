@@ -12,7 +12,7 @@
             matListItemTitle
             [matTooltip]="item.description"
             [ngClass]="item.description ? 'dino-with-description' : null"
-            >{{item.label}}
+            >{{item.label|transloco|truncate:40}}
             <mat-icon color="primary" *ngIf="item.description">info</mat-icon>
           </span>
         </mat-list-item>
