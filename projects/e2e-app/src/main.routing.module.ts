@@ -76,10 +76,10 @@ const routes: Routes = [
     data: {breadcrumbs: [{label: 'Users', url: 'users', icon: 'people'}], adminroles: ['admin']},
   },
   {
-    path: 'gpt',
+    path: 'ai',
     loadChildren: () => import('./mat-gpt/gpt-e2e.module').then(m => m.GptE2eModule),
     canActivate: [AuthGuard],
-    data: {breadcrumbs: [{label: 'GPT', url: 'gpt', icon: 'chat'}]},
+    data: {breadcrumbs: [{label: 'AI', url: 'ai', icon: 'chat'}]},
   },
   {
     path: 'checkout',

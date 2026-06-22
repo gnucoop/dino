@@ -51,8 +51,8 @@ const routes: Routes = [
     loadChildren: () =>
       import('./reports-collect/reports-collect.module').then(m => m.ReportsCollectModule),
     canActivate: environment.usersConfig.adminSections?.includes('reports')
-    ? [AuthGuard, AdminGuard]
-    : [AuthGuard],
+      ? [AuthGuard, AdminGuard]
+      : [AuthGuard],
     data: {
       breadcrumbs: [
         {
@@ -69,8 +69,8 @@ const routes: Routes = [
     loadChildren: () =>
       import('./aggregation-list/aggregation-list.module').then(m => m.AggregationListModule),
     canActivate: environment.usersConfig.adminSections?.includes('aggregation')
-    ? [AuthGuard, AdminGuard]
-    : [AuthGuard],
+      ? [AuthGuard, AdminGuard]
+      : [AuthGuard],
     data: {
       breadcrumbs: [
         {
@@ -103,16 +103,16 @@ const routes: Routes = [
     loadChildren: () =>
       import('./notifications-list/notifications-list.module').then(m => m.NotificationsListModule),
     canActivate: environment.usersConfig.adminSections?.includes('notifications')
-    ? [AuthGuard, AdminGuard]
-    : [AuthGuard],
+      ? [AuthGuard, AdminGuard]
+      : [AuthGuard],
     data: {breadcrumbs: [{label: 'Notifications', url: 'notifications', icon: 'notifications'}]},
   },
   {
     path: 'metrics',
     loadChildren: () => import('./metrics/metrics.module').then(m => m.MetricsModule),
     canActivate: environment.usersConfig.adminSections?.includes('metrics')
-    ? [AuthGuard, AdminGuard]
-    : [AuthGuard],
+      ? [AuthGuard, AdminGuard]
+      : [AuthGuard],
     data: {
       breadcrumbs: [
         {
@@ -151,22 +151,25 @@ const routes: Routes = [
 ];
 
 if (environment.optionalModulesConfig.gptModule) {
-  routes.unshift({
-    path: 'gpt',
-    loadChildren: () => import('./gpt/gpt.module').then(m => m.GptModule),
-    canActivate: environment.usersConfig.adminSections?.includes('gpt')
-    ? [AuthGuard, AdminGuard]
-    : [AuthGuard],
-    data: {breadcrumbs: [{label: 'GPT', url: 'gpt', icon: 'chat'}]},
-  }, {
-    path: 'rag',
-    loadChildren: () => import('./rag/rag.module').then(m => m.RagModule),
-    canActivate: [AuthGuard, AdminGuard],
-    data: {
-      breadcrumbs: [{label: 'RAG', url: 'rag', icon: 'document_scanner'}],
-      adminroles: environment.usersConfig.adminRoles,
+  routes.unshift(
+    {
+      path: 'ai',
+      loadChildren: () => import('./gpt/gpt.module').then(m => m.GptModule),
+      canActivate: environment.usersConfig.adminSections?.includes('ai')
+        ? [AuthGuard, AdminGuard]
+        : [AuthGuard],
+      data: {breadcrumbs: [{label: 'AI', url: 'ai', icon: 'chat'}]},
     },
-  });
+    {
+      path: 'rag',
+      loadChildren: () => import('./rag/rag.module').then(m => m.RagModule),
+      canActivate: [AuthGuard, AdminGuard],
+      data: {
+        breadcrumbs: [{label: 'RAG', url: 'rag', icon: 'document_scanner'}],
+        adminroles: environment.usersConfig.adminRoles,
+      },
+    },
+  );
 }
 
 @NgModule({
