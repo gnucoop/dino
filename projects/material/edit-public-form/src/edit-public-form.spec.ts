@@ -10,6 +10,7 @@ import {Apollo} from 'apollo-angular';
 import {EditPublicForm, EditPublicFormModule} from './public_api';
 import {AjfFormRendererService} from '@ajf/core/forms';
 import {FormSchema, OnlineFormDataManager, OnlineFormSchemaManager} from '@dino/core/forms';
+import {TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {ActivatedRoute} from '@angular/router';
 import {AnimationBuilder, AnimationFactory, AnimationPlayer} from '@angular/animations';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -107,6 +108,7 @@ describe('Edit Public Form', () => {
         {provide: ActivatedRoute, useValue: {params: paramsSubject, queryParams: of([])}},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: TRANSLATIONS_CONFIG, useValue: {defaultLanguage: 'eng'}},
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
