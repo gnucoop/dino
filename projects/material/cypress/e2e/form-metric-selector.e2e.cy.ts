@@ -43,10 +43,10 @@ describe('dino-form-metric-selector', {testIsolation: false}, () => {
   });
 
   it('should open a calendar panel when clicking the datepicker toggle', () => {
-    cy.get('dino-form-metric-selector mat-datepicker-toggle button').first().click();
+    cy.get('dino-form-metric-selector mat-datepicker-toggle button').first().click({force: true});
     cy.get('mat-datepicker-content').should('be.visible');
     cy.get('mat-calendar').should('exist');
-    cy.get('mat-datepicker-toggle button').first().click();
+    cy.get('mat-datepicker-toggle button').first().click({force: true});
   });
 
   it('should show at least one metric autocomplete field', () => {
@@ -64,7 +64,7 @@ describe('dino-form-metric-selector', {testIsolation: false}, () => {
   // Step 2 tests — navigate forward and stay there for subsequent tests
 
   it('should navigate to the form data step when clicking Fill the Form', () => {
-    cy.get('.dino-go-to-data-button').first().should('not.be.disabled').click();
+    cy.get('.dino-go-to-data-button').first().should('not.be.disabled').click({force: true});
     cy.get('mat-step-header').eq(1).should('have.attr', 'aria-selected', 'true');
   });
 

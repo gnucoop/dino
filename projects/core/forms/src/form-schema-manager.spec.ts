@@ -10,9 +10,29 @@ import {BehaviorSubject, of as obsOf} from 'rxjs';
 import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api';
 import {UserData, UserGroup} from '@dino/core/users';
 import {FormInfo} from './form-info';
-import {ajfCustomFunctions} from '../../../e2e-app/src/ajf-custom-functions';
 import {NodeVisibility} from '@dino/core/list';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+
+// Custom Ajf functions used by the visibility tests below. Kept local to the spec
+// so it does not depend on the e2e-app project.
+function isUserInGroup(groupName: string, info: FormInfo | null): boolean {
+  let allUserGroups: string[] = [];
+  if (groupName && info && info.activeUserGroups) {
+    allUserGroups = info.activeUserGroups.map(g => g.groupName);
+  }
+  return allUserGroups.includes(groupName);
+}
+function isUserInAtLeastOneGroup(groupNames: string[], info: FormInfo | null): boolean {
+  let allUserGroups: string[] = [];
+  if (groupNames && info && info.activeUserGroups) {
+    allUserGroups = info.activeUserGroups.map(g => g.groupName);
+  }
+  return allUserGroups.some(ug => groupNames.includes(ug));
+}
+const ajfCustomFunctions: {[key: string]: (...args: any[]) => any} = {
+  isUserInGroup,
+  isUserInAtLeastOneGroup,
+};
 
 let testDbIdx = 0;
 

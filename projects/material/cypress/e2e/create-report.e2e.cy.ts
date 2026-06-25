@@ -1,4 +1,4 @@
-import {reportSchemas} from '../../../e2e-app/src/test-ajf-reportschema';
+import {reportSchemas} from '../../../dinoapp/src/testing/test-ajf-reportschema';
 
 const url = `/reports/${reportSchemas[0].id}/create`;
 
