@@ -1,4 +1,4 @@
-import {formSchemas} from '../../../e2e-app/src/test-ajf-formschema';
+import {formSchemas} from '../../../dinoapp/src/testing/test-ajf-formschema';
 
 const url = `/forms/${formSchemas[0].id}`;
 

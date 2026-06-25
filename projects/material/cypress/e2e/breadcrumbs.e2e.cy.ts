@@ -13,7 +13,7 @@ describe('dino-breadcrumb', () => {
   it('should display the correct elements in Breadcrumbs', () => {
     cy.get('dino-breadcrumbs').should('exist').should('be.visible');
     cy.get('dino-breadcrumbs .mat-icon:contains("list_alt")').should('be.visible');
-    cy.get('dino-breadcrumbs .mat-icon:contains("star")').should('be.visible');
+    cy.get('dino-breadcrumbs .mat-icon:contains("remove_red_eye")').should('be.visible');
     cy.get('dino-breadcrumbs .mat-icon:contains("navigate_next")')
       .should('be.visible')
       .should('have.length', 2);
