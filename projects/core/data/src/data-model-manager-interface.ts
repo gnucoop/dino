@@ -83,9 +83,13 @@ export interface IDataModelManager<T extends Model = Model, R extends T = T> {
   /**
    * Creates an object with a unique uuidv4 Id in the model collection
    * @param obj
+   * @param returningFields The fields to request back from the database. When
+   *   omitted, all the collection fields are returned. Pass a restricted set
+   *   (e.g. `['id']`) for roles that can insert but cannot select all columns,
+   *   such as anonymous/public users.
    * @returns an observable of the created object
    */
-  create(obj: InsertModel<T>): Observable<R | null>;
+  create(obj: InsertModel<T>, returningFields?: string[]): Observable<R | null>;
 
   /**
    * Creates multiple objects with a unique uuidv4 Id in the model collection

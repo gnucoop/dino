@@ -32,4 +32,12 @@ export interface DataInsertRequest<T extends Model> extends DataRequest {
    * The object to insert.
    */
   object: InsertModel<T>;
+
+  /**
+   * The fields to request in the mutation `returning` clause.
+   * When omitted, all the collection fields are returned.
+   * Useful for restricted roles (e.g. anonymous/public users) that can
+   * insert but have `select` permission only on a subset of columns.
+   */
+  returningFields?: string[];
 }

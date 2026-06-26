@@ -104,7 +104,8 @@ export class OnlineDataService implements IDataService {
     return this._getCollection(params).pipe(
       switchMap(({name, fields}) => {
         const objects = [params.object];
-        const {mutation, mutationName} = insertQueryGql<T>(name, fields);
+        const returningFields = params.returningFields ?? fields;
+        const {mutation, mutationName} = insertQueryGql<T>(name, returningFields);
         const context = this._getQueryContext();
         return this._apollo
           .mutate({mutation, context, variables: {objects}, errorPolicy: 'all'})

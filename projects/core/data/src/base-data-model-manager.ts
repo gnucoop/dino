@@ -134,12 +134,17 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
   /**
    * Creates an object with a unique uuidv4 Id in the model collection
    * @param obj
+   * @param returningFields The fields to request back from the database. When
+   *   omitted, all the collection fields are returned. Pass a restricted set
+   *   (e.g. `['id']`) for roles that can insert but cannot select all columns,
+   *   such as anonymous/public users.
    * @returns an observable of the created object
    */
-  create(obj: InsertModel<T>): Observable<R | null> {
+  create(obj: InsertModel<T>, returningFields?: string[]): Observable<R | null> {
     const params = {
       collectionName: this._modelName,
       object: obj,
+      returningFields,
     };
     return this._getPermissionContext().pipe(
       switchMap(context => {
