@@ -155,6 +155,6 @@ describe('Edit Public Form', () => {
 
     expect(ajfFrsGetFormValueSpy).toHaveBeenCalledTimes(1);
     expect(odmCreateSpy).toHaveBeenCalledTimes(1);
-    expect(odmCreateSpy).toHaveBeenCalledWith(mockFormValue);
+    expect(odmCreateSpy).toHaveBeenCalledWith(mockFormValue, ['id']);
   });
 });
