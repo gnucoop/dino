@@ -211,7 +211,12 @@ export class EditPublicForm implements OnDestroy {
       switchMap(() => udm.getDefaultAnonymousUser()),
     );
 
-    this.form = combineLatest([this.formSchema, anonymousUserData, metricParams, ts.langChanges$]).pipe(
+    this.form = combineLatest([
+      this.formSchema,
+      anonymousUserData,
+      metricParams,
+      ts.langChanges$,
+    ]).pipe(
       map(([fschema, activeUser, metricIds, _lang]) => {
         if (fschema == null) {
           snackBar.open('Oops! We could not find this Form Schema', 'FORM NOT FOUND', {
@@ -269,7 +274,14 @@ export class EditPublicForm implements OnDestroy {
             data,
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
-          return formDataManagerInit.pipe(switchMap(() => fdm.create(form)));
+          // Anonymous/public users can insert form_data but only have `select` permission on `id`.
+          return formDataManagerInit.pipe(
+            switchMap(() =>
+              fdm
+                .create(form, ['id'])
+                .pipe(map(res => (res != null ? ({...form, ...res} as FormData) : null))),
+            ),
+          );
         }),
         withLatestFrom(anonymousUserData),
       )
