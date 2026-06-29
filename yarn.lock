@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@ajf/calendars@^18.2.3":
-  version "18.2.3"
-  resolved "https://registry.yarnpkg.com/@ajf/calendars/-/calendars-18.2.3.tgz#2deb596ded9861c57c07b8d98121cc207e65dfa1"
-  integrity sha512-B4TephVhan0VwbmTrJ3ZOqo9hO5YOu6/PiRPFqyFAqBbEmW4OnDO39LBft5xdxoqYE9CjaIdmxLhRiO5wynZkg==
+"@ajf/calendars@^18.2.4":
+  version "18.2.4"
+  resolved "https://registry.yarnpkg.com/@ajf/calendars/-/calendars-18.2.4.tgz#965272658585b50481c89bcd2762febefbca4a11"
+  integrity sha512-CezYxokbLUH0iHpQlXaWZrt62M7TOv4hVIfNMWa3u9EQwvE+9it3hFBMquQQpFlbunkgNKIXVdjNp8WhU5+ENg==
   dependencies:
     tslib "^2.3.0"
 
-"@ajf/core@^18.2.3":
-  version "18.2.3"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-18.2.3.tgz#342676e91b9354e501b1eafed46891a37373646c"
-  integrity sha512-xofn3SmNdlFyN1rCTQLGhlfWdd3V7tAE9R8CwbLkgSV7T/uflF7N4KhrHKrUimstaDi+RiUjepRCDlZR5yxKGA==
+"@ajf/core@^18.2.4":
+  version "18.2.4"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-18.2.4.tgz#5aef69f91d4840ae60435d4fcb17294cc012bcaa"
+  integrity sha512-u9iKUDEqErBbwhBAdKLxq0QtnefQRYKeJqLWbys+aw3CRC5VSx/+gjdZZBUXSbbjLX3gmO1dLnr/enxslmwygg==
   dependencies:
     tslib "^2.3.0"
 
@@ -21,10 +21,10 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^18.2.3":
-  version "18.2.3"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-18.2.3.tgz#6fb970dab1b4edb0972d6d411259bd73b2043952"
-  integrity sha512-TWDZVLX22HPfp65FIlxUiJ+azTXXjle+WVMpXe2afDxYhMNL2nvUXkokZXYBj3rBAbb3q66ThHNcZNJeer0QLA==
+"@ajf/material@^18.2.4":
+  version "18.2.4"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-18.2.4.tgz#7b4845754da80129c2bd54413974f801a270b1f2"
+  integrity sha512-g17i//qsezEEeRneS89dowjWiYDu+yQJzolkttwz9Ktb3Zk6rGUCcYQwZzTHjmBfLS4RtEUh2x0mm2vg9TtvVg==
   dependencies:
     tslib "^2.3.0"
 
