@@ -104,6 +104,7 @@ import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {TokensService} from '@dino/material/stripe-payment';
 import {MatStepper} from '@angular/material/stepper';
 import {format} from 'date-fns';
+import {AlignmentType, HeadingLevel, Paragraph} from 'docx';
 
 export type PrintLayout = 'landscape' | 'portrait';
 
@@ -877,9 +878,37 @@ export class EditReport implements AfterViewInit {
    * Export the current report Instance to docx
    */
   exportDocx(orientation: 'portrait' | 'landscape') {
-    if (this._printableReport != null) {
-      downloadReportDoc(this._printableReport, undefined, orientation as any);
-    }
+    combineLatest([this.reportSchema, this.reportData, this.reportMetrics!])
+      .pipe(take(1))
+      .subscribe(([schema, data, metricString]) => {
+        if (schema == null || this._printableReport == null) {
+          return;
+        }
+        const header: Paragraph[] = [
+          new Paragraph({
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+            text: schema.label,
+          }),
+        ];
+        if (data?.date_start) {
+          header.push(new Paragraph({text:
+            this._translateService.translate('Collected Since') + ' ' + reformat(data.date_start),
+          }));
+        }
+        if (data?.date_end) {
+          header.push(new Paragraph({text:
+            this._translateService.translate('Collected Until') + ' ' + reformat(data.date_end),
+          }));
+        }
+        if (metricString != null && metricString != '') {
+          const metrics = metricString.split(', ');
+          for (const met of metrics) {
+            header.push(new Paragraph({text: met}));
+          }
+        }
+        downloadReportDoc(this._printableReport, header, orientation as any);
+      });
   }
 
   /**
