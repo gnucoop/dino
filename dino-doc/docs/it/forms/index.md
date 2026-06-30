@@ -1,81 +1,80 @@
 ---
 title: Moduli
-description: Accedi e gestisci tutti i tuoi schemi di moduli e le relative risposte in Dino. Questo è il punto di partenza per inserire, visualizzare e analizzare i dati raccolti.
+description: Gestisci la raccolta di dati strutturati con moduli, visualizza e modifica le risposte, filtra, esporta e importa i dati.
 ---
-
 # Moduli
 
-La pagina Moduli è il tuo spazio di lavoro centrale per tutti i dati strutturati in Dino. Qui puoi accedere a ogni schema di modulo, inviare nuovi dati, rivedere le risposte passate ed esplorare i tuoi dati su una mappa o tramite analisi conversazionali.
+La pagina **Moduli** è il tuo centro di controllo per tutta la raccolta di dati strutturati in Dino. Qui puoi gestire gli schemi dei moduli, visualizzare e modificare le risposte, ed eseguire azioni di massa sui tuoi dati.
 
-![Vista principale della pagina Moduli](../imgs/forms/index.png)
+![Main view of the Forms page](../imgs/forms/index.png)
 
-Quando apri questa pagina, vedi un elenco di tutti gli schemi di modulo disponibili. Ogni elemento mostra il nome e l'icona del modulo.
+## Griglia degli schemi dei moduli
 
----
+Quando apri per la prima volta la pagina Moduli, vedi una griglia di tutti gli schemi dei moduli disponibili. Ogni riquadro mostra il nome e l'icona dello schema. Passa il mouse su un riquadro per visualizzare i pulsanti delle azioni:
 
-## Navigazione nella pagina
+- **Modifica schema** — Apre l'editor dello schema per modificare la struttura del modulo.
+- **Elimina schema** — Rimuove lo schema e tutte le sue risposte.
+- **Condividi URL pubblico** — Genera un link pubblico allo schema per la raccolta dati esterna.
+- **Visualizza mappa** — Apre la [Mappa dei moduli](forms-map.md) che mostra le risposte geolocalizzate.
+- **Chatta con i tuoi dati** — Avvia [DataChat](datachat.md) per fare domande sulle risposte.
 
-La pagina principale elenca tutti gli schemi di modulo per cui hai il permesso di utilizzo. Puoi interagire con questo elenco in diversi modi:
+Clicca su un riquadro per aprire l'elenco delle risposte per quello schema.
 
-1.  **Aprire uno Schema di Modulo**: Clicca su un modulo nell'elenco per accedere alla sua pagina dedicata, dove puoi vedere tutte le sue risposte.
-2.  **Cercare**: Usa la barra di ricerca in alto per trovare un modulo specifico per nome.
-3.  **Filtrare e Ordinare**: Usa i controlli disponibili per filtrare l'elenco o ordinarlo per diverse colonne.
+!!! tip "Usa la barra dei filtri"
+    Nella parte superiore della pagina puoi filtrare gli schemi per parola chiave. La griglia si aggiorna automaticamente.
 
-!!! tip "Punto di Partenza"
-    Questo elenco è il tuo trampolino di lancio. Ogni schema di modulo rappresenta un diverso tipo di report, sondaggio o attività di raccolta dati per il tuo progetto.
+## Elenco delle risposte
 
----
+Dopo aver selezionato uno schema di modulo, vieni portato a una vista elenco dettagliata. Questa tabella mostra tutte le risposte (voci) per quello schema. Ogni riga mostra i campi chiave, inclusi lo stato (se definito) e eventuali metriche personalizzate.
 
-## Lavorare con uno Schema di Modulo
+![Elenco degli invii per uno schema modulo](../imgs/forms/index-list.png)
 
-Dopo aver cliccato su uno schema di modulo, vieni portato alla sua pagina principale. Da qui puoi:
+Da questo elenco puoi:
 
-1.  **Visualizzare le Risposte**: Vedere una tabella con tutti i dati precedentemente inviati per questo modulo.
-2.  **Creare una Nuova Risposta**: Clicca sul pulsante di azione flottante **Crea** (icona "+") per aprire un modulo vuoto e inviare nuovi dati.
-3.  **Importare Risposte**: Clicca sul pulsante **Importa** (icona di caricamento cloud) per importare più risposte da un file.
-4.  **Esplorare i Dati**:
-    *   Vai alla scheda [Mappa](forms-map.md) per vedere tutte le risposte tracciate su una mappa.
-    *   Vai alla scheda [DataChat](datachat.md) per fare domande sui tuoi dati raccolti usando l'IA.
+- **Aggiungi una nuova risposta** — Clicca sul pulsante **+** fluttuante (in basso a destra) per aprire un modulo vuoto.
+- **Modifica una risposta esistente** — Clicca sull'icona **modifica** della riga.
+- **Visualizza i dettagli della risposta** — Clicca sull'icona **visualizza**.
+- **Elimina una risposta** — Clicca sull'icona **elimina**.
+- **Stampa o scarica** un PDF o DOCX della risposta.
+- **Stampa un badge** (se la metrica del caso è attiva).
+- **Espandi una riga** per vedere i dettagli annidati (se configurati).
 
-Nell'elenco delle risposte di un modulo, puoi eseguire azioni sui singoli elementi:
-*   **Visualizza**: Vedi i dettagli completi di una risposta.
-*   **Modifica**: Modifica una risposta esistente (se consentito).
-*   **Stampa/Esporta**: Genera un report PDF o DOCX della risposta.
-*   **Duplica**: Crea una copia di una risposta da usare come base per una nuova.
-*   **Elimina**: Rimuovi una risposta (se consentito).
+### Filtraggio e ricerca
 
-Puoi anche selezionare più risposte per eseguire azioni in blocco come eliminare o modificare.
+Usa il pannello dei filtri espandibile nella parte superiore dell'elenco:
 
-![Finestra di dialogo di esportazione per scaricare le risposte del modulo](../imgs/forms/index-export.png)
+- **Ricerca per parola chiave** — Trova risposte per qualsiasi testo.
+- **Intervallo di date** — Filtra per data di creazione.
+- **Filtri metrici** — Restringi per località, progetto, area, caso, organizzazione o altre metriche personalizzate.
+- **Filtro stato** — Filtra per stato del modulo (es. Approvato, In attesa).
+- **Filtro utente** — Mostra solo le risposte create da un utente specifico.
 
----
+Puoi salvare e ricaricare i preset dei filtri usando il **gestore dei preset**.
 
-## Flussi di Lavoro Principali
+### Azioni di massa
 
-### Per inviare nuovi dati:
-1.  Dalla pagina principale Moduli, clicca sullo schema di modulo desiderato.
-2.  Nella pagina del modulo, clicca sul pulsante di azione flottante **Crea**.
-3.  Compila tutti i campi obbligatori nel modulo che si apre.
-4.  Clicca **Invia** per salvare la tua inserzione.
+Seleziona più righe usando le caselle di spunta. Quindi esegui operazioni di massa:
 
-### Per rivedere o modificare dati esistenti:
-1.  Dalla pagina principale Moduli, clicca sullo schema di modulo pertinente.
-2.  Sfoglia l'elenco delle risposte. Clicca su un singolo elemento per **Visualizzarne** i dettagli completi.
-3.  Se hai il permesso, puoi cliccare **Modifica** per modificare una risposta.
+- **Elimina** — Rimuovi le risposte selezionate.
+- **Modifica di massa** — Modifica un campo in tutte le risposte selezionate.
 
-### Per importare dati:
-1.  Naviga fino alla pagina dello schema di modulo desiderato.
-2.  Clicca sul pulsante **Importa** (icona di caricamento cloud).
-3.  Segui le istruzioni a schermo per selezionare e caricare il file di dati.
+### Esportazione e importazione
 
-### Per esportare dati:
-1.  Naviga fino alla pagina dello schema di modulo desiderato.
-2.  Usa i filtri per restringere l'elenco delle risposte che vuoi esportare.
-3.  Clicca sul pulsante **Esporta** nella barra dei filtri.
-4.  Scegli il formato di esportazione che preferisci.
+![Export dialog for downloading form submissions](../imgs/forms/index-export.png)
 
-!!! note "Gestione degli Schemi di Modulo"
-    La creazione di nuovi schemi di modulo o la modifica della loro struttura (aggiunta/rimozione di campi) richiede permessi di amministratore. Se devi configurare un nuovo tipo di modulo, contatta l'amministratore del progetto. Puoi saperne di più sulla modifica della struttura di un modulo nella guida [Modifica Schema di Modulo](edit-form-schema.md).
+Clicca sul pulsante **esporta** (icona di download cloud) per aprire la finestra di esportazione. Scegli tra formato CSV o XLSX e scarica tutte le risposte filtrate.
 
-!!! warning "Permessi"
-    Le azioni che vedi (Crea, Modifica, Elimina, Importa, Esporta) dipendono dai tuoi permessi utente. Se un pulsante o un'azione è assente, potresti non avere l'accesso richiesto.
+![Import dialog for uploading multiple submissions from a file](../imgs/forms/index-import.png)
+
+Se appare un pulsante **importa** (icona di upload cloud), puoi caricare un file (CSV o XLSX) per aggiungere più risposte in una volta.
+
+!!! warning "Autorizzazioni"
+    Alcune azioni (modifica schema, elimina, esporta, importa) sono disponibili solo se hai le autorizzazioni necessarie. Contatta il tuo amministratore per richiedere l'accesso.
+
+## Pagine correlate
+
+- [Modifica schema del modulo](edit-form-schema.md) — Personalizza la struttura di un modulo.
+- [Mappa dei moduli](forms-map.md) — Visualizza le risposte geolocalizzate su una mappa.
+- [DataChat](datachat.md) — Fai domande sui dati del tuo modulo.
+- [Modifica modulo](edit-form.md) — Compila o modifica una singola risposta.
+- [Report](../reports/index.md) — Crea riepiloghi e visualizzazioni dai tuoi dati.

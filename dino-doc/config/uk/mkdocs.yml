@@ -15,17 +15,17 @@ nav:
   - Панель: dashboard/index.md
   - Форми:
     - Огляд: forms/index.md
-    - Edit Form Schema: forms/edit-form-schema.md
-    - Edit Form: forms/edit-form.md
-    - Forms Map: forms/forms-map.md
-    - Datachat: forms/datachat.md
+    - Редагування схеми форми: forms/edit-form-schema.md
+    - Редагувати подання форми: forms/edit-form.md
+    - Карта форм: forms/forms-map.md
+    - Чат даних: forms/datachat.md
   - Звіти:
     - Огляд: reports/index.md
-    - Edit Report Schema: reports/edit-report-schema.md
-    - Edit Report: reports/edit-report.md
+    - Редагувати схему звіту: reports/edit-report-schema.md
+    - Редагувати звіт: reports/edit-report.md
   - Метрики:
     - Огляд: metrics/index.md
-    - Areas: metrics/areas.md
+    - тематичні області: metrics/areas.md
   - Агрегація: aggregation/index.md
   - Сповіщення: notifications/index.md
   - Публічні Форми: public-forms/index.md
@@ -33,5 +33,4 @@ nav:
     - Керування Користувачами та Групами: administration/users.md
     - Керування Мовами: administration/languages.md
     - Список Користувачів: administration/users-list.md
-    - Groups List: administration/groups-list.md
-  - Checkout: checkout/index.md
+    - Список груп: administration/groups-list.md

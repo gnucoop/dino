@@ -1,54 +1,64 @@
 ---
-title: Modifica Schema del Modulo
-description: Scopri come creare e modificare gli schemi dei moduli in Dino per definire la struttura dei tuoi moduli di raccolta dati.
+title: Modifica schema modulo
+description: Crea e modifica schemi di modulo — imposta nome, icona, stati, metriche, visibilità e definisci relazioni.
 ---
 
-# Modifica Schema del Modulo
+# Modifica schema modulo
 
-La pagina **Modifica Schema del Modulo** ti consente di progettare o modificare la struttura di un modulo — i campi, i loro tipi, le regole di validazione e le relazioni tra di essi. Puoi creare un nuovo schema o aggiornarne uno esistente.
+La pagina Modifica schema modulo ti consente di creare un nuovo schema di modulo o modificarne uno esistente. Qui definisci gli attributi base del modulo, gestisci i suoi stati e le metriche, controlli la visibilità e colleghi lo schema ad altri moduli tramite relazioni.
+
+Puoi raggiungere questa pagina:
+
+- Cliccando su **Crea** nella [Panoramica moduli](index.md) per creare un nuovo schema.
+- Selezionando **Modifica** sulla scheda di uno schema esistente o dalla sua vista dettagli.
+
+I breadcrumb in alto mostrano la tua posizione corrente (es. **Moduli > Mio Sondaggio > Modifica**).
 
 ![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
 
-## Creare un Nuovo Schema del Modulo
+## Attributi del modulo
 
-1. Dalla sezione **Moduli**, fai clic su **Crea Schema del Modulo**.
-2. Inserisci un **Nome** e opzionalmente una **Descrizione** per lo schema.
-3. Aggiungi campi usando il pulsante **Aggiungi Campo**. Per ogni campo puoi impostare:
-   - **Etichetta Campo** – la domanda o il prompt mostrato ai raccoglitori di dati.
-   - **Tipo di Campo** – ad esempio testo, numero, data, selezione, geolocalizzazione.
-   - Interruttore **Obbligatorio** – rende il campo obbligatorio.
-   - Regole di **Validazione** – come valori minimi/massimi, estensioni file consentite, ecc.
-4. Riorganizza i campi trascinandoli nell'ordine desiderato.
-5. Fai clic su **Salva** per creare lo schema.
+Compila o modifica i seguenti campi:
 
-## Modificare uno Schema del Modulo Esistente
+| Campo | Descrizione |
+|-------|-------------|
+| **Nome modulo** | Un identificatore univoco di sistema (es. `survey_2025`). Dino avvisa se il nome è già in uso. |
+| **Etichetta modulo** | Il nome leggibile visualizzato negli elenchi e nei report. |
+| **Set icone** | Scegli **Default** (icone material) o **Humanitarian** (icone SVG personalizzate). |
+| **Identificatore icona** | Scegli un'icona dall'elenco di completamento automatico. L'anteprima si aggiorna in tempo reale. |
+| **Stati del modulo** | Una o più etichette che descrivono lo stato di un invio (es. Bozza, Approvato, Rifiutato). Seleziona stati esistenti o **Crea nuovo stato** per aggiungerne al volo. |
+| **Metriche del modulo** | Metriche da raccogliere per ogni invio. Seleziona una o più dall'elenco. |
+| **Visibilità** | **Privato** – solo i membri dei gruppi assegnati possono vedere il modulo. **Pubblico** – chiunque abbia il link può visualizzare e inviare. |
+| **Comportamento insieme metriche** | **Default** – ogni valore metrico può apparire più volte tra gli invii. **Univoco** – un valore metrico (es. nome del distretto) può essere usato una sola volta per modulo. |
+| **Genera report** | Quando **Sì**, Dino genera automaticamente un report dopo ogni invio. Questa opzione è nascosta se un report automatico è già configurato. |
 
-1. Vai alla pagina **Moduli** e fai clic sullo schema che desideri modificare.
-2. Fai clic sul pulsante **Modifica** (oppure apri il menu delle azioni dello schema e seleziona **Modifica**).
-3. L'editor si apre con tutti i campi esistenti caricati. Puoi:
-   - Aggiungere nuovi campi.
-   - Modificare le impostazioni dei campi esistenti facendo clic sul campo.
-   - Eliminare un campo usando l'icona del cestino.
-   - Riorganizzare i campi tramite trascinamento.
-4. Fai clic su **Salva** per applicare le modifiche.
+!!! warning "Comportamento insieme metriche univoco"
+    Usa **Univoco** con cautela — una volta che un valore è stato utilizzato per una metrica, non può essere riutilizzato in un altro invio dello stesso modulo.
 
-!!! warning "Modifica di uno schema che ha già invii"
-    La modifica dei tipi di campo o la rimozione di campi potrebbe influenzare gli invii esistenti. Dino ti avviserà prima di salvare se vengono rilevate incompatibilità.
+## Gestione degli stati del modulo
 
-## Definire le Relazioni tra Campi (Dipendenze)
+1. Clicca sul campo **Stati del modulo** per espandere l'elenco.
+2. Per aggiungere uno stato esistente, seleziona la sua casella di spunta.
+3. Per creare un nuovo stato, clicca su **Crea nuovo stato**. Si apre una finestra di dialogo in cui puoi inserire un'etichetta, scegliere un colore e salvare.
+4. Per modificare uno stato esistente, clicca sull'icona **modifica** (matita) accanto ad esso.
+5. Clicca all'esterno del menu a discesa per chiuderlo.
 
-Puoi impostare una logica condizionale in modo che determinati campi appaiano solo quando viene selezionato un valore specifico in un altro campo.
+## Definizione delle relazioni
 
-1. Durante la modifica di uno schema, seleziona un campo che desideri rendere condizionale.
-2. Fai clic sulla scheda o sul pulsante **Relazioni**.
-3. Nella finestra di dialogo che si apre, scegli il **campo padre** e il **valore** che deve essere selezionato affinché questo campo venga mostrato. Puoi anche aggiungere più condizioni (logica AND/OR).
-4. Fai clic su **Applica** per salvare la relazione.
+Le relazioni consentono di collegare campi tra diversi schemi di modulo (es. un sotto‑modulo che dipende da una scelta nel modulo principale).
+
+1. Clicca sul pulsante **Relazioni**.
+2. Nella finestra di dialogo, aggiungi, modifica o rimuovi connessioni tra schemi.
 
 ![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
 
-!!! tip "Testare le dipendenze"
-    Dopo aver salvato lo schema, puoi testare la tua logica condizionale aprendo il modulo nella vista [Modifica Modulo](edit-form.md) e verificando che i campi dipendenti appaiano o scompaiano correttamente.
+!!! tip "Le relazioni sono disponibili solo quando si modifica uno schema esistente, non durante la creazione iniziale."
 
-## Passaggi Successivi
+## Salvataggio e importazione
 
-Una volta che lo schema del modulo è pronto, puoi [creare un'istanza del modulo](edit-form.md) basata su di esso, oppure utilizzare lo schema in una [Mappa dei Moduli](forms-map.md) per assegnarlo ad aree e raccoglitori specifici.
+- **Salva** – memorizza tutte le modifiche. Il pulsante è disabilitato se il modulo non è valido o è ancora in fase di salvataggio.
+- **Importa** – apre un selettore di file per caricare uno schema di modulo da un file JSON o CSV. Usalo per riutilizzare una struttura di schema da un altro progetto.
+
+## Il costruttore di moduli
+
+Sotto gli attributi, l'area **Costruttore di moduli** ti consente di trascinare, rilasciare e configurare singoli campi (domande, sezioni, ecc.). Le modifiche si riflettono immediatamente nell'anteprima sul lato destro del costruttore.

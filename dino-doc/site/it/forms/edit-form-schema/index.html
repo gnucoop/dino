@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Scopri come creare e modificare gli schemi dei moduli in Dino per definire la struttura dei tuoi moduli di raccolta dati.">
+        <meta name="description" content="Crea e modifica schemi di modulo — imposta nome, icona, stati, metriche, visibilità e definisci relazioni.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>Modifica Schema del Modulo - Documentazione Dinoapp</title>
+        <title>Modifica schema modulo - Documentazione Dinoapp</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#modifica-schema-del-modulo" class="md-skip">
+        <a href="#modifica-schema-modulo" class="md-skip">
           Vai al contenuto
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Modifica Schema del Modulo
+              Modifica schema modulo
             
           </span>
         </div>
@@ -481,7 +481,7 @@
   <span class="md-ellipsis">
     
   
-    Moduli
+    Form
   
 
     
@@ -497,7 +497,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Moduli
+    Form
   
 
           </label>
@@ -554,7 +554,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form Schema
+    Modifica Form Schema
   
 
     
@@ -572,7 +572,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form Schema
+    Modifica Form Schema
   
 
     
@@ -598,10 +598,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creare-un-nuovo-schema-del-modulo" class="md-nav__link">
+  <a href="#attributi-del-modulo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare un Nuovo Schema del Modulo
+        Attributi del modulo
       
     </span>
   </a>
@@ -609,10 +609,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#modificare-uno-schema-del-modulo-esistente" class="md-nav__link">
+  <a href="#gestione-degli-stati-del-modulo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modificare uno Schema del Modulo Esistente
+        Gestione degli stati del modulo
       
     </span>
   </a>
@@ -620,10 +620,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#definire-le-relazioni-tra-campi-dipendenze" class="md-nav__link">
+  <a href="#definizione-delle-relazioni" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definire le Relazioni tra Campi (Dipendenze)
+        Definizione delle relazioni
       
     </span>
   </a>
@@ -631,10 +631,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#passaggi-successivi" class="md-nav__link">
+  <a href="#salvataggio-e-importazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Passaggi Successivi
+        Salvataggio e importazione
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#il-costruttore-di-moduli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Il costruttore di moduli
       
     </span>
   </a>
@@ -664,7 +675,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form
+    Modifica Form
   
 
     
@@ -692,7 +703,7 @@
   <span class="md-ellipsis">
     
   
-    Forms Map
+    Mappa dei Form
   
 
     
@@ -830,7 +841,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Report Schema
+    Modifica Report Schema
   
 
     
@@ -858,7 +869,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Report
+    Modifica Report
   
 
     
@@ -968,7 +979,7 @@
   <span class="md-ellipsis">
     
   
-    Areas
+    Aree Tematiche
   
 
     
@@ -1215,7 +1226,7 @@
   <span class="md-ellipsis">
     
   
-    Groups List
+    Elenco Gruppi
   
 
     
@@ -1232,33 +1243,6 @@
           </ul>
         </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../checkout/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checkout
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1290,10 +1274,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creare-un-nuovo-schema-del-modulo" class="md-nav__link">
+  <a href="#attributi-del-modulo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare un Nuovo Schema del Modulo
+        Attributi del modulo
       
     </span>
   </a>
@@ -1301,10 +1285,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#modificare-uno-schema-del-modulo-esistente" class="md-nav__link">
+  <a href="#gestione-degli-stati-del-modulo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modificare uno Schema del Modulo Esistente
+        Gestione degli stati del modulo
       
     </span>
   </a>
@@ -1312,10 +1296,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#definire-le-relazioni-tra-campi-dipendenze" class="md-nav__link">
+  <a href="#definizione-delle-relazioni" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definire le Relazioni tra Campi (Dipendenze)
+        Definizione delle relazioni
       
     </span>
   </a>
@@ -1323,10 +1307,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#passaggi-successivi" class="md-nav__link">
+  <a href="#salvataggio-e-importazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Passaggi Successivi
+        Salvataggio e importazione
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#il-costruttore-di-moduli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Il costruttore di moduli
       
     </span>
   </a>
@@ -1350,51 +1345,92 @@
 
 
 
-<h1 id="modifica-schema-del-modulo">Modifica Schema del Modulo</h1>
-<p>La pagina <strong>Modifica Schema del Modulo</strong> ti consente di progettare o modificare la struttura di un modulo — i campi, i loro tipi, le regole di validazione e le relazioni tra di essi. Puoi creare un nuovo schema o aggiornarne uno esistente.</p>
+<h1 id="modifica-schema-modulo">Modifica schema modulo</h1>
+<p>La pagina Modifica schema modulo ti consente di creare un nuovo schema di modulo o modificarne uno esistente. Qui definisci gli attributi base del modulo, gestisci i suoi stati e le metriche, controlli la visibilità e colleghi lo schema ad altri moduli tramite relazioni.</p>
+<p>Puoi raggiungere questa pagina:</p>
+<ul>
+<li>Cliccando su <strong>Crea</strong> nella <a href="../">Panoramica moduli</a> per creare un nuovo schema.</li>
+<li>Selezionando <strong>Modifica</strong> sulla scheda di uno schema esistente o dalla sua vista dettagli.</li>
+</ul>
+<p>I breadcrumb in alto mostrano la tua posizione corrente (es. <strong>Moduli &gt; Mio Sondaggio &gt; Modifica</strong>).</p>
 <p><img alt="Main view of the Edit Form Schema page" src="../../imgs/forms/edit-form-schema.png" /></p>
-<h2 id="creare-un-nuovo-schema-del-modulo">Creare un Nuovo Schema del Modulo</h2>
-<ol>
-<li>Dalla sezione <strong>Moduli</strong>, fai clic su <strong>Crea Schema del Modulo</strong>.</li>
-<li>Inserisci un <strong>Nome</strong> e opzionalmente una <strong>Descrizione</strong> per lo schema.</li>
-<li>Aggiungi campi usando il pulsante <strong>Aggiungi Campo</strong>. Per ogni campo puoi impostare:</li>
-<li><strong>Etichetta Campo</strong> – la domanda o il prompt mostrato ai raccoglitori di dati.</li>
-<li><strong>Tipo di Campo</strong> – ad esempio testo, numero, data, selezione, geolocalizzazione.</li>
-<li>Interruttore <strong>Obbligatorio</strong> – rende il campo obbligatorio.</li>
-<li>Regole di <strong>Validazione</strong> – come valori minimi/massimi, estensioni file consentite, ecc.</li>
-<li>Riorganizza i campi trascinandoli nell'ordine desiderato.</li>
-<li>Fai clic su <strong>Salva</strong> per creare lo schema.</li>
-</ol>
-<h2 id="modificare-uno-schema-del-modulo-esistente">Modificare uno Schema del Modulo Esistente</h2>
-<ol>
-<li>Vai alla pagina <strong>Moduli</strong> e fai clic sullo schema che desideri modificare.</li>
-<li>Fai clic sul pulsante <strong>Modifica</strong> (oppure apri il menu delle azioni dello schema e seleziona <strong>Modifica</strong>).</li>
-<li>L'editor si apre con tutti i campi esistenti caricati. Puoi:</li>
-<li>Aggiungere nuovi campi.</li>
-<li>Modificare le impostazioni dei campi esistenti facendo clic sul campo.</li>
-<li>Eliminare un campo usando l'icona del cestino.</li>
-<li>Riorganizzare i campi tramite trascinamento.</li>
-<li>Fai clic su <strong>Salva</strong> per applicare le modifiche.</li>
-</ol>
+<h2 id="attributi-del-modulo">Attributi del modulo</h2>
+<p>Compila o modifica i seguenti campi:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Descrizione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nome modulo</strong></td>
+<td>Un identificatore univoco di sistema (es. <code>survey_2025</code>). Dino avvisa se il nome è già in uso.</td>
+</tr>
+<tr>
+<td><strong>Etichetta modulo</strong></td>
+<td>Il nome leggibile visualizzato negli elenchi e nei report.</td>
+</tr>
+<tr>
+<td><strong>Set icone</strong></td>
+<td>Scegli <strong>Default</strong> (icone material) o <strong>Humanitarian</strong> (icone SVG personalizzate).</td>
+</tr>
+<tr>
+<td><strong>Identificatore icona</strong></td>
+<td>Scegli un'icona dall'elenco di completamento automatico. L'anteprima si aggiorna in tempo reale.</td>
+</tr>
+<tr>
+<td><strong>Stati del modulo</strong></td>
+<td>Una o più etichette che descrivono lo stato di un invio (es. Bozza, Approvato, Rifiutato). Seleziona stati esistenti o <strong>Crea nuovo stato</strong> per aggiungerne al volo.</td>
+</tr>
+<tr>
+<td><strong>Metriche del modulo</strong></td>
+<td>Metriche da raccogliere per ogni invio. Seleziona una o più dall'elenco.</td>
+</tr>
+<tr>
+<td><strong>Visibilità</strong></td>
+<td><strong>Privato</strong> – solo i membri dei gruppi assegnati possono vedere il modulo. <strong>Pubblico</strong> – chiunque abbia il link può visualizzare e inviare.</td>
+</tr>
+<tr>
+<td><strong>Comportamento insieme metriche</strong></td>
+<td><strong>Default</strong> – ogni valore metrico può apparire più volte tra gli invii. <strong>Univoco</strong> – un valore metrico (es. nome del distretto) può essere usato una sola volta per modulo.</td>
+</tr>
+<tr>
+<td><strong>Genera report</strong></td>
+<td>Quando <strong>Sì</strong>, Dino genera automaticamente un report dopo ogni invio. Questa opzione è nascosta se un report automatico è già configurato.</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition warning">
-<p class="admonition-title">Modifica di uno schema che ha già invii</p>
-<p>La modifica dei tipi di campo o la rimozione di campi potrebbe influenzare gli invii esistenti. Dino ti avviserà prima di salvare se vengono rilevate incompatibilità.</p>
+<p class="admonition-title">Comportamento insieme metriche univoco</p>
+<p>Usa <strong>Univoco</strong> con cautela — una volta che un valore è stato utilizzato per una metrica, non può essere riutilizzato in un altro invio dello stesso modulo.</p>
 </div>
-<h2 id="definire-le-relazioni-tra-campi-dipendenze">Definire le Relazioni tra Campi (Dipendenze)</h2>
-<p>Puoi impostare una logica condizionale in modo che determinati campi appaiano solo quando viene selezionato un valore specifico in un altro campo.</p>
+<h2 id="gestione-degli-stati-del-modulo">Gestione degli stati del modulo</h2>
 <ol>
-<li>Durante la modifica di uno schema, seleziona un campo che desideri rendere condizionale.</li>
-<li>Fai clic sulla scheda o sul pulsante <strong>Relazioni</strong>.</li>
-<li>Nella finestra di dialogo che si apre, scegli il <strong>campo padre</strong> e il <strong>valore</strong> che deve essere selezionato affinché questo campo venga mostrato. Puoi anche aggiungere più condizioni (logica AND/OR).</li>
-<li>Fai clic su <strong>Applica</strong> per salvare la relazione.</li>
+<li>Clicca sul campo <strong>Stati del modulo</strong> per espandere l'elenco.</li>
+<li>Per aggiungere uno stato esistente, seleziona la sua casella di spunta.</li>
+<li>Per creare un nuovo stato, clicca su <strong>Crea nuovo stato</strong>. Si apre una finestra di dialogo in cui puoi inserire un'etichetta, scegliere un colore e salvare.</li>
+<li>Per modificare uno stato esistente, clicca sull'icona <strong>modifica</strong> (matita) accanto ad esso.</li>
+<li>Clicca all'esterno del menu a discesa per chiuderlo.</li>
+</ol>
+<h2 id="definizione-delle-relazioni">Definizione delle relazioni</h2>
+<p>Le relazioni consentono di collegare campi tra diversi schemi di modulo (es. un sotto‑modulo che dipende da una scelta nel modulo principale).</p>
+<ol>
+<li>Clicca sul pulsante <strong>Relazioni</strong>.</li>
+<li>Nella finestra di dialogo, aggiungi, modifica o rimuovi connessioni tra schemi.</li>
 </ol>
 <p><img alt="Form relationships (dependencies) editor dialog" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
 <div class="admonition tip">
-<p class="admonition-title">Testare le dipendenze</p>
-<p>Dopo aver salvato lo schema, puoi testare la tua logica condizionale aprendo il modulo nella vista <a href="../edit-form/">Modifica Modulo</a> e verificando che i campi dipendenti appaiano o scompaiano correttamente.</p>
+<p class="admonition-title">Le relazioni sono disponibili solo quando si modifica uno schema esistente, non durante la creazione iniziale.</p>
 </div>
-<h2 id="passaggi-successivi">Passaggi Successivi</h2>
-<p>Una volta che lo schema del modulo è pronto, puoi <a href="../edit-form/">creare un'istanza del modulo</a> basata su di esso, oppure utilizzare lo schema in una <a href="../forms-map/">Mappa dei Moduli</a> per assegnarlo ad aree e raccoglitori specifici.</p>
+<h2 id="salvataggio-e-importazione">Salvataggio e importazione</h2>
+<ul>
+<li><strong>Salva</strong> – memorizza tutte le modifiche. Il pulsante è disabilitato se il modulo non è valido o è ancora in fase di salvataggio.</li>
+<li><strong>Importa</strong> – apre un selettore di file per caricare uno schema di modulo da un file JSON o CSV. Usalo per riutilizzare una struttura di schema da un altro progetto.</li>
+</ul>
+<h2 id="il-costruttore-di-moduli">Il costruttore di moduli</h2>
+<p>Sotto gli attributi, l'area <strong>Costruttore di moduli</strong> ti consente di trascinare, rilasciare e configurare singoli campi (domande, sezioni, ecc.). Le modifiche si riflettono immediatamente nell'anteprima sul lato destro del costruttore.</p>
 
 
 

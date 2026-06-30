@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visualizza e gestisci i gruppi di utenti nella pagina Elenco dei gruppi in Dino. Scopri i filtri, la tabella dati e come creare o modificare gruppi.">
+        <meta name="description" content="Gestisci i gruppi di utenti in Dino — visualizza, crea, modifica ed elimina gruppi di autorizzazioni con ruoli, moduli, report e metriche assegnati.">
       
       
       
@@ -15,8 +15,6 @@
       
         <link rel="prev" href="../users-list/">
       
-      
-        <link rel="next" href="../../checkout/">
       
       
         
@@ -479,7 +477,7 @@
   <span class="md-ellipsis">
     
   
-    Moduli
+    Form
   
 
     
@@ -495,7 +493,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Moduli
+    Form
   
 
           </label>
@@ -543,7 +541,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form Schema
+    Modifica Form Schema
   
 
     
@@ -571,7 +569,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form
+    Modifica Form
   
 
     
@@ -599,7 +597,7 @@
   <span class="md-ellipsis">
     
   
-    Forms Map
+    Mappa dei Form
   
 
     
@@ -737,7 +735,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Report Schema
+    Modifica Report Schema
   
 
     
@@ -765,7 +763,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Report
+    Modifica Report
   
 
     
@@ -875,7 +873,7 @@
   <span class="md-ellipsis">
     
   
-    Areas
+    Aree Tematiche
   
 
     
@@ -1133,7 +1131,7 @@
   <span class="md-ellipsis">
     
   
-    Groups List
+    Elenco Gruppi
   
 
     
@@ -1151,7 +1149,7 @@
   <span class="md-ellipsis">
     
   
-    Groups List
+    Elenco Gruppi
   
 
     
@@ -1177,10 +1175,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#cosa-vedi" class="md-nav__link">
+  <a href="#panoramica-dellelenco" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cosa vedi
+        Panoramica dell'elenco
       
     </span>
   </a>
@@ -1188,10 +1186,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usare-i-filtri" class="md-nav__link">
+  <a href="#ricerca-e-filtro" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usare i filtri
+        Ricerca e filtro
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azioni-sui-gruppi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azioni sui gruppi
       
     </span>
   </a>
@@ -1214,6 +1223,17 @@
     <span class="md-ellipsis">
       
         Modificare o visualizzare un gruppo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eliminare-un-gruppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eliminare un gruppo
       
     </span>
   </a>
@@ -1247,33 +1267,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../checkout/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checkout
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1301,10 +1294,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#cosa-vedi" class="md-nav__link">
+  <a href="#panoramica-dellelenco" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cosa vedi
+        Panoramica dell'elenco
       
     </span>
   </a>
@@ -1312,10 +1305,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usare-i-filtri" class="md-nav__link">
+  <a href="#ricerca-e-filtro" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usare i filtri
+        Ricerca e filtro
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azioni-sui-gruppi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azioni sui gruppi
       
     </span>
   </a>
@@ -1338,6 +1342,17 @@
     <span class="md-ellipsis">
       
         Modificare o visualizzare un gruppo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eliminare-un-gruppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eliminare un gruppo
       
     </span>
   </a>
@@ -1373,50 +1388,77 @@
 
 
 <h1 id="elenco-dei-gruppi">Elenco dei gruppi</h1>
-<p>La pagina Elenco dei gruppi mostra tutti i gruppi di utenti nella tua istanza di Dino. Da qui puoi visualizzare, filtrare e creare nuovi gruppi, oppure modificarli.</p>
-<p><img alt="Vista principale della pagina Elenco dei gruppi" src="../../imgs/administration/groups-list.png" /></p>
-<h2 id="cosa-vedi">Cosa vedi</h2>
-<p>La pagina contiene:</p>
+<p>La pagina <strong>Elenco gruppi</strong> mostra tutti i gruppi di utenti in Dino. Da qui è possibile visualizzare, modificare, eliminare e creare gruppi. Ogni gruppo definisce un insieme di permessi e regole di accesso collegando un ruolo utente a specifici schemi di moduli, schemi di report, stati dei moduli e tipi di metrica (come aree, casi, progetti, località o organizzazioni).</p>
+<p><img alt="Vista principale della pagina Elenco gruppi" src="../../imgs/administration/groups-list.png" /></p>
+<h2 id="panoramica-dellelenco">Panoramica dell'elenco</h2>
+<p>La tabella mostra le seguenti colonne:</p>
 <ul>
-<li><strong>Barra di ricerca e filtri</strong> – Usa i filtri disponibili per restringere l'elenco dei gruppi. I filtri includono Progetto, Luogo, Area, Caso e Organizzazione. Puoi anche utilizzare la casella di ricerca generale per trovare i gruppi per nome.</li>
-<li><strong>Tabella dati</strong> – Mostra le informazioni principali di ogni gruppo, incluso il nome. Colonne aggiuntive (ID, data di creazione) sono nascoste per impostazione predefinita, ma possono essere rese visibili tramite il selettore di colonne.</li>
-<li><strong>Pulsante di azione flottante</strong> – Un pulsante "+" nell'angolo in basso a destra apre l'editor per creare un nuovo gruppo.</li>
-<li><strong>Azioni sulle righe</strong> – Clicca su una riga per visualizzare le opzioni inline per selezionare o espandere maggiori dettagli su quel gruppo.</li>
+<li><strong>Nome gruppo</strong> – il nome del gruppo di utenti (visibile per impostazione predefinita).</li>
+<li><strong>ID</strong> – identificatore interno (nascosto per impostazione predefinita).</li>
+<li><strong>Data di creazione</strong> – quando il gruppo è stato creato (nascosto per impostazione predefinita).</li>
 </ul>
-<h2 id="usare-i-filtri">Usare i filtri</h2>
-<ol>
-<li>Fai clic sull'icona del filtro per aprire la barra dei filtri.</li>
-<li>Scegli un tipo di filtro dal menu a discesa (ad es. <strong>Progetto</strong>).</li>
-<li>Seleziona o digita il valore per cui filtrare.</li>
-<li>L'elenco si aggiorna automaticamente mostrando solo i gruppi corrispondenti.</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">Filtri multipli</p>
-<p>Puoi applicare più filtri contemporaneamente per restringere ulteriormente i risultati.</p>
-</div>
+<p>È possibile personalizzare le colonne visualizzate cliccando l'icona <strong>view_week</strong> nell'intestazione della tabella.</p>
+<h2 id="ricerca-e-filtro">Ricerca e filtro</h2>
+<p>Utilizza la <strong>barra di ricerca</strong> nella parte superiore della pagina per filtrare i gruppi per parola chiave. Il pannello <strong>Filtri</strong> (espandibile) consente di restringere l'elenco per:</p>
+<ul>
+<li>Intervallo di date (da/a)</li>
+<li>Progetto, località, area, caso, organizzazione e altri filtri disponibili</li>
+</ul>
+<p>Puoi anche salvare e caricare preset di filtro utilizzando il gestore dei preset.</p>
+<h2 id="azioni-sui-gruppi">Azioni sui gruppi</h2>
+<p>Ogni riga ha tre icone di azione a destra:</p>
+<ul>
+<li><strong>visibility</strong> – Visualizza i dettagli del gruppo (apre l'editor in modalità sola lettura)</li>
+<li><strong>create</strong> – Modifica le proprietà del gruppo</li>
+<li><strong>delete</strong> – Elimina il gruppo (richiede conferma)</li>
+</ul>
+<p>Cliccando su una riga si espande una sezione di dettaglio che mostra informazioni aggiuntive o elementi annidati (se presenti).</p>
 <h2 id="creare-un-nuovo-gruppo">Creare un nuovo gruppo</h2>
 <ol>
-<li>Fai clic sul pulsante flottante <strong>+</strong> in basso a destra della pagina.</li>
-<li>Si apre l'editor del gruppo. Inserisci le informazioni richieste:</li>
-<li><strong>Nome gruppo</strong> – Un nome univoco per il gruppo.</li>
-<li>Opzionalmente, assegna utenti al gruppo (vedi <a href="../users-list/">Elenco utenti</a> per la gestione dei singoli utenti).</li>
-<li>Fai clic su <strong>Salva</strong> per creare il gruppo. Apparirà immediatamente nell'elenco.</li>
-</ol>
-<h2 id="modificare-o-visualizzare-un-gruppo">Modificare o visualizzare un gruppo</h2>
-<ul>
-<li><strong>Fai clic in un punto qualsiasi di una riga</strong> per espandere o selezionare il gruppo. Le azioni disponibili dipendono dai tuoi permessi.</li>
-<li>Per aprire l'editor completo di un gruppo, fai clic sull'icona di modifica (matita) che appare sulla riga.</li>
-<li>Puoi modificare il nome del gruppo e i suoi membri.</li>
+<li>Fai clic sul pulsante fluttuante <strong>+</strong> in basso a destra dello schermo.</li>
+<li>Nella finestra di dialogo dell'editor che si apre, inserisci un <strong>Nome gruppo</strong>.</li>
+<li>Nel pannello <strong>Elementi disponibili</strong>, naviga tra le schede per selezionare:<ul>
+<li><strong>Ruolo utente</strong> (obbligatorio – devi selezionare esattamente un ruolo)</li>
+<li><strong>Schemi modulo</strong></li>
+<li><strong>Schemi report</strong></li>
+<li><strong>Stati modulo</strong></li>
+<li>Tipi di metrica (Area, Caso, Progetto, Località, Organizzazione) – se attivi</li>
 </ul>
+</li>
+<li>Fai clic sull'icona <strong>add</strong> accanto a ciascun elemento per spostarlo nel pannello <strong>Elementi del gruppo</strong>.</li>
+<li>Fai clic su <strong>Salva</strong>.</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Opzione Tutti</p>
+<p>Per i tipi di metrica e altre categorie, potresti vedere un'opzione “Tutti …”. Selezionando questa opzione si applica la restrizione a ogni elemento di quel tipo.</p>
+</div>
+<h2 id="modificare-o-visualizzare-un-gruppo">Modificare o visualizzare un gruppo</h2>
+<ol>
+<li>Nella tabella, fai clic sull'icona <strong>create</strong> (modifica) o <strong>visibility</strong> (visualizza) per il gruppo che desideri modificare.</li>
+<li>Nella finestra di dialogo dell'editor, puoi:<ul>
+<li>Modificare il <strong>Nome gruppo</strong>.</li>
+<li>Aggiungere o rimuovere elementi da qualsiasi scheda (solo in modalità modifica).</li>
+<li>Rimuovere elementi cliccando l'icona <strong>delete</strong> accanto a essi.</li>
+</ul>
+</li>
+<li>Fai clic su <strong>Salva</strong> per applicare le modifiche (la modalità visualizzazione mostra solo un pulsante <strong>Chiudi</strong>).</li>
+</ol>
+<h2 id="eliminare-un-gruppo">Eliminare un gruppo</h2>
+<ol>
+<li>Fai clic sull'icona <strong>delete</strong> per il gruppo.</li>
+<li>Conferma l'eliminazione nella finestra di dialogo che appare.</li>
+</ol>
 <div class="admonition warning">
-<p class="admonition-title">Eliminare i gruppi</p>
-<p>L'eliminazione di un gruppo rimuove tutti i suoi membri dal gruppo. Questa azione non può essere annullata. Elimina tramite l'icona del cestino sulla riga, dopo aver espanso o selezionato la riga.</p>
+<p class="admonition-title">Azione irreversibile</p>
+<p>L'eliminazione di un gruppo non può essere annullata. Assicurati che nessun utente dipenda dal gruppo prima di rimuoverlo.</p>
 </div>
 <h2 id="pagine-correlate">Pagine correlate</h2>
 <ul>
-<li><a href="../users-list/">Elenco utenti</a> – Gestisci i singoli account utente</li>
-<li><a href="../users/">Utenti</a> – Panoramica dell'amministrazione degli utenti</li>
-<li><a href="../../notifications/">Notifiche</a> – Configura le notifiche per i gruppi</li>
+<li><a href="../users-list/">Elenco utenti</a> – gestisci account utente singoli e le loro assegnazioni ai gruppi.</li>
+<li><a href="../../metrics/">Metriche</a> – configura i tipi di metrica che possono essere assegnati ai gruppi (aree, casi, progetti, ecc.).</li>
+<li><a href="../../forms/edit-form-schema/">Schemi modulo</a> – crea e modifica schemi di modulo che possono essere collegati ai gruppi.</li>
+<li><a href="../../reports/edit-report-schema/">Schemi report</a> – gestisci gli schemi di report disponibili per i gruppi.</li>
+<li><a href="../../interface/">Panoramica dell'interfaccia</a> – scopri la navigazione e il layout generale.</li>
 </ul>
 
 

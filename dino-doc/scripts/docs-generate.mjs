@@ -20,6 +20,7 @@ import {execSync} from 'child_process';
 import {fileURLToPath} from 'url';
 import {scanRoutes, exportRouteMapForCypress} from './docs-route-scanner.mjs';
 import {syncNav} from './docs-nav-sync.mjs';
+import {sanitizeGenerated, stripBrokenImageRefs} from './docs-sanitize.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -91,7 +92,10 @@ async function anthropicMessage({system, user}) {
   const json = await res.json();
   const parts = Array.isArray(json.content) ? json.content : [];
   const text = parts.map(p => (p && p.type === 'text' ? p.text : '')).join('');
-  return text;
+  // The model is told not to wrap output in code fences, but sometimes does
+  // (most often a ```yaml fence around the frontmatter, which breaks MkDocs).
+  // Normalize it here so every generated/translated page is safe to write.
+  return sanitizeGenerated(text);
 }
 
 /**
@@ -280,8 +284,10 @@ if (modulesToProcess.length > 0) {
     } else {
       console.log(`\nGenerating (en): ${route.docFile}`);
 
-      // Read all component source files
-      const sources = route.componentFiles
+      // Read all source files for this page. Prefer docSourceFiles (recursive +
+      // resolved <dino-*> library templates) so the AI sees the actual UI markup;
+      // fall back to componentFiles for older route maps.
+      const sources = (route.docSourceFiles || route.componentFiles)
         .filter(f => fs.existsSync(f))
         .map(f => ({
           name: path.basename(f),
@@ -301,6 +307,9 @@ if (modulesToProcess.length > 0) {
 
       try {
         englishContent = await anthropicMessage({system: SYSTEM_PROMPT, user: userPrompt});
+        // Strip invented image refs before writing AND before translating, so
+        // translations inherit the cleaned source.
+        englishContent = dropBrokenImages(englishContent, docPath);
 
         // Write the English doc
         fs.mkdirSync(path.dirname(docPath), {recursive: true});
@@ -337,10 +346,11 @@ Keep all image references (![...](../imgs/...)) exactly as-is — they are share
 ${englishContent}`;
 
         try {
-          const translatedContent = await anthropicMessage({
+          let translatedContent = await anthropicMessage({
             system: TRANSLATION_SYSTEM_PROMPT,
             user: translationPrompt,
           });
+          translatedContent = dropBrokenImages(translatedContent, langDocPath);
           fs.mkdirSync(path.dirname(langDocPath), {recursive: true});
           fs.writeFileSync(langDocPath, translatedContent);
           console.log(`  Written: ${langDocFile} (${translatedContent.length} chars)`);
@@ -426,6 +436,7 @@ Instructions:
 
     try {
       englishContent = await anthropicMessage({system: SYSTEM_PROMPT, user: indexPrompt});
+      englishContent = dropBrokenImages(englishContent, indexDocPath);
       fs.mkdirSync(path.dirname(indexDocPath), {recursive: true});
       fs.writeFileSync(indexDocPath, englishContent);
       console.log(`  Written: ${INDEX_DOC_FILE} (${englishContent.length} chars)`);
@@ -458,10 +469,11 @@ For cross-page links, keep the same relative filenames (e.g. getting-started/log
 ${englishContent}`;
 
       try {
-        const translatedContent = await anthropicMessage({
+        let translatedContent = await anthropicMessage({
           system: TRANSLATION_SYSTEM_PROMPT,
           user: translationPrompt,
         });
+        translatedContent = dropBrokenImages(translatedContent, langDocPath);
         fs.mkdirSync(path.dirname(langDocPath), {recursive: true});
         fs.writeFileSync(langDocPath, translatedContent);
         console.log(`  Written: ${langDocFile} (${translatedContent.length} chars)`);
@@ -561,4 +573,19 @@ Instructions:
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Strip image references that point to files which don't exist on disk
+ * (resolved relative to the target page), logging what was removed. Guards
+ * against the model inventing screenshot/icon paths that would render broken.
+ */
+function dropBrokenImages(content, targetPath) {
+  const {content: clean, removed} = stripBrokenImageRefs(content, path.dirname(targetPath));
+  if (removed.length) {
+    console.log(
+      `  Removed ${removed.length} broken image ref(s): ${[...new Set(removed)].join(', ')}`,
+    );
+  }
+  return clean;
 }

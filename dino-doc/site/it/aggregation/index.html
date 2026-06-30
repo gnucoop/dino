@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Usa la vista Aggregazione in Dino per sfogliare, filtrare e gestire le sottomissioni dei moduli di tutti i tuoi schemi in un unico elenco unificato.">
+        <meta name="description" content="Visualizza e gestisci le submission aggregate dei moduli in Dino.">
       
       
       
@@ -479,7 +479,7 @@
   <span class="md-ellipsis">
     
   
-    Moduli
+    Form
   
 
     
@@ -495,7 +495,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Moduli
+    Form
   
 
           </label>
@@ -543,7 +543,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form Schema
+    Modifica Form Schema
   
 
     
@@ -571,7 +571,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Form
+    Modifica Form
   
 
     
@@ -599,7 +599,7 @@
   <span class="md-ellipsis">
     
   
-    Forms Map
+    Mappa dei Form
   
 
     
@@ -737,7 +737,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Report Schema
+    Modifica Report Schema
   
 
     
@@ -765,7 +765,7 @@
   <span class="md-ellipsis">
     
   
-    Edit Report
+    Modifica Report
   
 
     
@@ -875,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Areas
+    Aree Tematiche
   
 
     
@@ -963,10 +963,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sfogliare-lelenco" class="md-nav__link">
+  <a href="#visualizzazione-dellelenco-di-aggregazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sfogliare l'elenco
+        Visualizzazione dell'elenco di aggregazione
       
     </span>
   </a>
@@ -974,10 +974,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtrare-lelenco" class="md-nav__link">
+  <a href="#filtraggio-e-ricerca" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtrare l'elenco
+        Filtraggio e ricerca
       
     </span>
   </a>
@@ -996,10 +996,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creare-una-nuova-sottomissione" class="md-nav__link">
+  <a href="#creare-una-nuova-submission" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare una nuova sottomissione
+        Creare una nuova submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stampare-un-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stampare un PDF
       
     </span>
   </a>
@@ -1213,7 +1224,7 @@
   <span class="md-ellipsis">
     
   
-    Groups List
+    Elenco Gruppi
   
 
     
@@ -1230,33 +1241,6 @@
           </ul>
         </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../checkout/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checkout
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1288,10 +1272,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sfogliare-lelenco" class="md-nav__link">
+  <a href="#visualizzazione-dellelenco-di-aggregazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sfogliare l'elenco
+        Visualizzazione dell'elenco di aggregazione
       
     </span>
   </a>
@@ -1299,10 +1283,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtrare-lelenco" class="md-nav__link">
+  <a href="#filtraggio-e-ricerca" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtrare l'elenco
+        Filtraggio e ricerca
       
     </span>
   </a>
@@ -1321,10 +1305,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creare-una-nuova-sottomissione" class="md-nav__link">
+  <a href="#creare-una-nuova-submission" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare una nuova sottomissione
+        Creare una nuova submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stampare-un-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stampare un PDF
       
     </span>
   </a>
@@ -1349,48 +1344,82 @@
 
 
 <h1 id="aggregazione">Aggregazione</h1>
-<p>La pagina Aggregazione offre una vista unificata di tutte le sottomissioni dei moduli della tua organizzazione. Invece di visualizzare le sottomissioni per un singolo schema di modulo alla volta, puoi vedere le voci di più schemi insieme in un unico elenco filtrabile.</p>
-<p><img alt="Vista principale della pagina Aggregazione" src="../imgs/aggregation/index.png" /></p>
-<h2 id="sfogliare-lelenco">Sfogliare l'elenco</h2>
-<p>L'elenco mostra tutte le sottomissioni che hai il permesso di visualizzare. Ogni riga rappresenta una singola sottomissione. Le seguenti colonne sono visualizzate per impostazione predefinita:</p>
+<p>La pagina di Aggregazione offre una visualizzazione centralizzata di tutte le submission dei moduli nei tuoi progetti. Puoi sfogliare, filtrare ed eseguire azioni sulle submission senza dover aprire ogni singolo modulo.</p>
+<p><img alt="Main view of the Aggregation page" src="../imgs/aggregation/index.png" /></p>
+<h2 id="visualizzazione-dellelenco-di-aggregazione">Visualizzazione dell'elenco di aggregazione</h2>
+<p>La tabella principale mostra una riga per submission. Per impostazione predefinita vedi le colonne <strong>Schema modulo</strong> e <strong>Stato</strong>, ma puoi personalizzare quali colonne appaiono usando l'icona <strong>Vista settimana</strong> nell'intestazione della tabella.</p>
 <ul>
-<li><strong>Schema del modulo</strong>: Il nome dello schema di modulo a cui appartiene questa sottomissione.</li>
-<li><strong>Stato</strong>: Lo stato corrente del flusso di lavoro della sottomissione.</li>
-<li>Potrebbero apparire anche colonne aggiuntive per metriche come <strong>Progetto</strong>, <strong>Sede</strong> o <strong>Organizzazione</strong>, a seconda della configurazione del tuo sistema.</li>
+<li>Ogni riga mostra un'icona di stato e, se il modulo ha problemi di validazione, un'icona di avviso.</li>
+<li>Passa il mouse su una riga per vedere un'evidenziazione; clicca su una riga per selezionarla e visualizzare le azioni disponibili.</li>
 </ul>
-<p>Puoi cliccare su qualsiasi riga per selezionarla o espanderla per vedere maggiori dettagli.</p>
-<h2 id="filtrare-lelenco">Filtrare l'elenco</h2>
-<p>Una barra di filtro si trova sopra l'elenco. Usala per restringere le sottomissioni mostrate. Puoi filtrare per:</p>
-<ul>
-<li>Progetto</li>
-<li>Sede</li>
-<li>Area</li>
-<li>Caso</li>
-<li>Codice caso</li>
-<li>Organizzazione</li>
-<li>Stato del modulo</li>
-<li>Utente</li>
-</ul>
+<p>In cima all'elenco, il contatore <strong>Elementi trovati</strong> e il paginatore ti informano su quante submission esistono e ti permettono di navigare tra le pagine.</p>
+<h2 id="filtraggio-e-ricerca">Filtraggio e ricerca</h2>
+<p>Una barra di ricerca e un pannello filtri sono disponibili per restringere l'elenco.</p>
+<ol>
+<li>Clicca l'<strong>icona di ricerca</strong> nella barra superiore per espandere il pannello filtri.</li>
+<li>Usa il campo <strong>parola chiave</strong> per cercare in tutti i campi.</li>
+<li>Usa i selettori <strong>intervallo di date</strong> per filtrare per data di creazione.</li>
+<li>Filtri aggiuntivi appaiono per <strong>Area</strong>, <strong>Caso</strong>, <strong>Località</strong>, <strong>Organizzazione</strong>, <strong>Progetto</strong>, <strong>Stato del modulo</strong> e <strong>Utente</strong>. Sono dinamici e rispettano le definizioni delle metriche del tuo modulo.</li>
+<li>I filtri attivi vengono mostrati come chips sotto la barra dei filtri – clicca l'icona <strong>annulla</strong> su un chip per rimuoverlo.</li>
+</ol>
 <div class="admonition tip">
-<p class="admonition-title">Suggerimenti per il filtraggio</p>
-<p>La barra di filtro dell'Aggregazione è progettata per un filtraggio rapido tra più schemi. Per funzionalità avanzate come preset di filtro salvati o esportazione dati, vai all'<a href="../forms/">elenco delle sottomissioni per uno schema di modulo specifico</a>.</p>
+<p class="admonition-title">Filtri preimpostati</p>
+<p>La pagina di Aggregazione non supporta filtri preimpostati salvati. Puoi combinare i filtri ogni volta che hai bisogno di una vista personalizzata.</p>
 </div>
 <h2 id="azioni-sulle-righe">Azioni sulle righe</h2>
-<p>Quando passi il mouse su una riga, appare un insieme di icone di azione a destra. Le azioni disponibili per una specifica sottomissione dipendono dai tuoi permessi per il suo schema di modulo.</p>
-<ul>
-<li><strong>Visualizza</strong>: Apre la sottomissione in una vista di sola lettura.</li>
-<li><strong>Modifica</strong>: Apre la sottomissione per la modifica.</li>
-<li><strong>Stampa</strong>: Genera e apre una versione PDF della sottomissione. Ti verrà chiesto di confermare prima della creazione del PDF.</li>
-<li><strong>Elimina</strong>: Elimina permanentemente la sottomissione. Ti verrà chiesto di confermare questa azione.</li>
-</ul>
-<h2 id="creare-una-nuova-sottomissione">Creare una nuova sottomissione</h2>
-<p>Puoi avviare una nuova sottomissione direttamente dalla pagina Aggregazione.</p>
+<p>Dopo aver selezionato una riga, le icone delle azioni appaiono nella colonna <strong>Azioni</strong> sul lato destro della tabella.</p>
+<table>
+<thead>
+<tr>
+<th>Icona</th>
+<th>Azione</th>
+<th>Descrizione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>visibility</code></td>
+<td>Visualizza</td>
+<td>Apri la submission in modalità sola lettura.</td>
+</tr>
+<tr>
+<td><code>create</code></td>
+<td>Modifica</td>
+<td>Modifica i dati della submission.</td>
+</tr>
+<tr>
+<td><code>printer</code></td>
+<td>Stampa</td>
+<td>Genera un PDF della submission.</td>
+</tr>
+<tr>
+<td><code>delete</code></td>
+<td>Elimina</td>
+<td>Rimuovi la submission dopo conferma.</td>
+</tr>
+</tbody>
+</table>
+<p>Clicca <strong>Più opzioni</strong> (tre puntini) per vedere azioni aggiuntive per quella riga. Le azioni <strong>Stampa</strong> e <strong>Elimina</strong> richiedono conferma prima di essere eseguite.</p>
+<h2 id="creare-una-nuova-submission">Creare una nuova submission</h2>
+<p>Il pulsante <strong>+</strong> mobile nell'angolo in basso a destra dello schermo ti permette di iniziare una nuova submission.</p>
+<p><img alt="Dialog to choose a form schema and start a new submission" src="../imgs/aggregation/index-new.png" /></p>
 <ol>
-<li>Clicca sul pulsante <strong>+</strong> (Aggiungi) nell'angolo in basso a destra dello schermo.</li>
-<li>Si apre una finestra di dialogo che mostra un elenco degli schemi di modulo per cui hai il permesso di creare sottomissioni.</li>
-<li>Seleziona lo schema di modulo desiderato dall'elenco.</li>
-<li>Clicca su <strong>Crea modulo</strong>. Verrai portato al modulo per iniziare a compilarlo.</li>
+<li>Clicca il pulsante <strong>+</strong>. Si apre un dialogo che mostra gli schemi modulo disponibili.</li>
+<li>Seleziona o cerca lo schema modulo che desideri utilizzare.</li>
+<li>Dopo la selezione, vieni portato direttamente alla pagina <a href="../forms/edit-form/">Modifica modulo</a> per compilare i dati.</li>
 </ol>
+<h2 id="stampare-un-pdf">Stampare un PDF</h2>
+<p>Puoi generare un PDF di qualsiasi submission che includa l'etichetta dello schema modulo, i nomi delle metriche attive e i dati compilati.</p>
+<ol>
+<li>Sulla riga che vuoi stampare, clicca l'icona <strong>Stampante</strong> (o usa il menu <strong>Più opzioni</strong> se disponibile).</li>
+<li>Conferma l'azione quando richiesto.</li>
+<li>Il PDF si apre in una nuova scheda del browser o si scarica automaticamente.</li>
+</ol>
+<p>L'intestazione del PDF include il titolo dello schema modulo e tutti i nomi delle metriche attualmente attive nel sistema.</p>
+<div class="admonition warning">
+<p class="admonition-title">Disponibilità delle metriche</p>
+<p>Il PDF stampato include solo le metriche attive nel momento in cui avvii la stampa. Se una metrica è stata aggiunta dopo la creazione della submission, non apparirà.</p>
+</div>
 
 
 

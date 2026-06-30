@@ -17,7 +17,6 @@ Projete esquemas de formulários e use-os para registrar informações. Visualiz
 *   [Projetar um esquema de formulário](forms/edit-form-schema.md)
 *   [Preencher um formulário](forms/edit-form.md)
 *   [Explorar dados em um mapa](forms/forms-map.md)
-*   [Fazer checkout de formulários](checkout/index.md)
 
 ### Analisar e relatar
 Transforme seus dados coletados em insights. Crie relatórios personalizados e use IA para fazer perguntas sobre seus dados em linguagem natural.

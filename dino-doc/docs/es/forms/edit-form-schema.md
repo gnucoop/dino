@@ -1,54 +1,64 @@
 ---
-title: Editar Esquema de Formulario
-description: Aprende a crear y editar esquemas de formularios en Dino para definir la estructura de tus formularios de recolección de datos.
+title: Editar esquema de formulario
+description: Cree y modifique esquemas de formulario: establezca nombre, icono, estados, métricas, visibilidad y defina relaciones.
 ---
 
-# Editar Esquema de Formulario
+# Editar esquema de formulario
 
-La página **Editar Esquema de Formulario** te permite diseñar o modificar la estructura de un formulario: los campos, sus tipos, reglas de validación y cómo se relacionan entre sí. Puedes crear un esquema completamente nuevo o actualizar uno existente.
+La página **Editar esquema de formulario** le permite crear un nuevo esquema de formulario o modificar uno existente. Aquí define los atributos básicos del formulario, gestiona sus estados y métricas, controla la visibilidad y vincula el esquema con otros formularios mediante relaciones.
 
-![Vista principal de la página Editar Esquema de Formulario](../imgs/forms/edit-form-schema.png)
+Puede acceder a esta página de las siguientes maneras:
 
-## Crear un Nuevo Esquema de Formulario
+- Haciendo clic en **Crear** en la [Vista general de formularios](index.md) para crear un nuevo esquema.
+- Seleccionando **Editar** en la tarjeta de un esquema existente o desde su vista de detalle.
 
-1. Desde la sección **Formularios**, haz clic en **Crear Esquema de Formulario**.
-2. Ingresa un **Nombre** y, opcionalmente, una **Descripción** para el esquema.
-3. Añade campos usando el botón **Añadir Campo**. Para cada campo puedes configurar:
-   - **Etiqueta del Campo** – la pregunta o indicación que verán los recolectores de datos.
-   - **Tipo de Campo** – p. ej., texto, número, fecha, selección, geolocalización.
-   - **Obligatorio** – activa esta opción para que el campo sea obligatorio.
-   - **Reglas de Validación** – como valores mín./máx., extensiones de archivo permitidas, etc.
-4. Reordena los campos arrastrándolos al orden deseado.
-5. Haz clic en **Guardar** para crear el esquema.
+Las migas de pan en la parte superior muestran su ubicación actual (p. ej., **Formularios > Mi Encuesta > Editar**).
 
-## Editar un Esquema de Formulario Existente
+![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
 
-1. Ve a la página **Formularios** y haz clic en el esquema que deseas modificar.
-2. Haz clic en el botón **Editar** (o abre el menú de acciones del esquema y selecciona **Editar**).
-3. El editor se abre con todos los campos existentes cargados. Puedes:
-   - Añadir nuevos campos.
-   - Editar la configuración de un campo existente haciendo clic sobre él.
-   - Eliminar un campo usando su icono de papelera.
-   - Reordenar campos mediante arrastrar y soltar.
-4. Haz clic en **Guardar** para aplicar los cambios.
+## Atributos del formulario
 
-!!! warning "Editar un esquema que ya tiene envíos"
-    Cambiar tipos de campo o eliminar campos puede afectar a los envíos existentes. Dino te advertirá antes de guardar si detecta alguna incompatibilidad.
+Complete o ajuste los siguientes campos:
 
-## Definir Relaciones entre Campos (Dependencias)
+| Campo | Descripción |
+|-------|-------------|
+| **Nombre del formulario** | Un identificador único del sistema (p. ej., `survey_2025`). Dino advierte si el nombre ya está en uso. |
+| **Etiqueta del formulario** | El nombre legible para humanos que se muestra en listas e informes. |
+| **Conjunto de iconos** | Elija **Predeterminado** (iconos de material) o **Humanitario** (iconos SVG personalizados). |
+| **Identificador de icono** | Seleccione un icono de la lista de autocompletado. La vista previa se actualiza en vivo. |
+| **Estados del formulario** | Una o más etiquetas que describen el estado de un envío (p. ej., Borrador, Aprobado, Rechazado). Seleccione estados existentes o **Crear nuevo estado** para agregar uno sobre la marcha. |
+| **Métricas del formulario** | Métricas que se recopilan para cada envío. Seleccione una o más de la lista. |
+| **Visibilidad** | **Privado** – solo los miembros de los grupos asignados pueden ver el formulario. **Público** – cualquier persona con el enlace puede ver y enviar. |
+| **Comportamiento del conjunto de métricas** | **Predeterminado** – cada valor de métrica puede aparecer varias veces en los envíos. **Único** – un valor de métrica (p. ej., un nombre de distrito) solo se puede usar una vez por formulario. |
+| **Generar informe** | Cuando es **Sí**, Dino genera automáticamente un informe después de cada envío. Esta opción está oculta si ya está configurado un informe automático. |
 
-Puedes configurar lógica condicional para que ciertos campos solo aparezcan cuando se seleccione un valor específico en otro campo.
+!!! warning "Comportamiento único del conjunto de métricas"
+    Utilice **Único** con cuidado: una vez que un valor se ha usado para una métrica, no se puede reutilizar en otro envío del mismo formulario.
 
-1. Mientras editas un esquema, selecciona el campo que deseas que sea condicional.
-2. Haz clic en la pestaña o botón **Relaciones**.
-3. En el cuadro de diálogo que se abre, elige el **campo padre** y el **valor** que debe seleccionarse para que este campo se muestre. También puedes añadir múltiples condiciones (lógica Y/O).
-4. Haz clic en **Aplicar** para guardar la relación.
+## Gestión de estados del formulario
 
-![Cuadro de diálogo del editor de relaciones (dependencias) del formulario](../imgs/forms/edit-form-schema-relationships.png)
+1. Haga clic en el campo **Estados del formulario** para expandir la lista.
+2. Para agregar un estado existente, marque su casilla de verificación.
+3. Para crear un nuevo estado, haga clic en **Crear nuevo estado**. Se abre un cuadro de diálogo donde puede ingresar una etiqueta, elegir un color y guardar.
+4. Para editar un estado existente, haga clic en el icono de **editar** (lápiz) junto a él.
+5. Haga clic fuera del menú desplegable para cerrarlo.
 
-!!! tip "Probar dependencias"
-    Después de guardar el esquema, puedes probar tu lógica condicional abriendo el formulario en la vista [Editar Formulario](edit-form.md) y verificando que los campos dependientes aparezcan o se oculten correctamente.
+## Definición de relaciones
 
-## Próximos Pasos
+Las relaciones le permiten vincular campos entre diferentes esquemas de formulario (p. ej., un subformulario que depende de una opción en el formulario principal).
 
-Una vez que tu esquema de formulario esté listo, puedes [crear una instancia de formulario](edit-form.md) basada en él, o usar el esquema en un [Mapa de Formularios](forms-map.md) para asignarlo a áreas y recolectores específicos.
+1. Haga clic en el botón **Relaciones**.
+2. En el cuadro de diálogo, agregue, edite o elimine conexiones entre esquemas.
+
+![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
+
+!!! tip "Relaciones disponibles solo al editar un esquema existente, no durante la creación inicial."
+
+## Guardar e importar
+
+- **Guardar** – almacena todos los cambios. El botón está deshabilitado si el formulario no es válido o aún se está guardando.
+- **Importar** – abre un selector de archivos para cargar un esquema de formulario desde un archivo JSON o CSV. Úselo para reutilizar una estructura de esquema de otro proyecto.
+
+## El Constructor de formularios
+
+Debajo de los atributos, el área **Constructor de formularios** le permite arrastrar, soltar y configurar campos individuales (preguntas, secciones, etc.). Los cambios se reflejan inmediatamente en la vista previa en el lado derecho del constructor.
