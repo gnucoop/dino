@@ -13,19 +13,19 @@ nav:
     - Reimpostare la Password: getting-started/reset-password.md
   - Interfaccia e Navigazione: interface/index.md
   - Dashboard: dashboard/index.md
-  - Moduli:
+  - Form:
     - Panoramica: forms/index.md
-    - Edit Form Schema: forms/edit-form-schema.md
-    - Edit Form: forms/edit-form.md
-    - Forms Map: forms/forms-map.md
+    - Modifica Form Schema: forms/edit-form-schema.md
+    - Modifica Form: forms/edit-form.md
+    - Mappa dei Form: forms/forms-map.md
     - Datachat: forms/datachat.md
   - Report:
     - Panoramica: reports/index.md
-    - Edit Report Schema: reports/edit-report-schema.md
-    - Edit Report: reports/edit-report.md
+    - Modifica Report Schema: reports/edit-report-schema.md
+    - Modifica Report: reports/edit-report.md
   - Metriche:
     - Panoramica: metrics/index.md
-    - Areas: metrics/areas.md
+    - Aree Tematiche: metrics/areas.md
   - Aggregazione: aggregation/index.md
   - Notifiche: notifications/index.md
   - Moduli Pubblici: public-forms/index.md
@@ -33,5 +33,4 @@ nav:
     - Gestire Utenti e Gruppi: administration/users.md
     - Gestire le Lingue: administration/languages.md
     - Elenco Utenti: administration/users-list.md
-    - Groups List: administration/groups-list.md
-  - Checkout: checkout/index.md
+    - Elenco Gruppi: administration/groups-list.md

@@ -1,81 +1,80 @@
 ---
 title: Formulários
-description: Acesse e gerencie todos os seus esquemas de formulário e submissões no Dino. Este é o ponto de partida para inserir, visualizar e analisar dados coletados.
+description: Gerencie a coleta de dados estruturados com formulários, visualize e edite submissões, filtre, exporte e importe dados.
 ---
-
 # Formulários
 
-A página de Formulários é seu espaço de trabalho central para todos os dados estruturados no Dino. Aqui, você pode acessar cada esquema de formulário, enviar novos dados, revisar submissões anteriores e explorar seus dados em um mapa ou por meio de análise conversacional.
+A página **Formulários** é o seu hub central para toda a coleta de dados estruturados no Dino. Aqui você pode gerenciar esquemas de formulários, visualizar e editar submissões e realizar ações em massa nos seus dados.
 
 ![Visão principal da página de Formulários](../imgs/forms/index.png)
 
-Ao abrir esta página, você vê uma lista de todos os esquemas de formulário disponíveis. Cada item mostra o nome e o ícone do formulário.
+## Grade de Esquemas de Formulários
 
----
+Ao abrir a página de Formulários, você verá uma grade com todos os esquemas de formulários disponíveis. Cada bloco exibe o nome do esquema e seu ícone. Passe o mouse sobre um bloco para revelar os botões de ação:
 
-## Navegando pela página
+- **Editar Esquema** — Abre o editor de esquemas para modificar a estrutura do formulário.
+- **Excluir Esquema** — Remove o esquema e todas as suas submissões.
+- **Compartilhar URL Público** — Gera um link público para o esquema, permitindo coleta externa de dados.
+- **Ver Mapa** — Abre o [Mapa de Formulários](forms-map.md) exibindo submissões geolocalizadas.
+- **Converse com seus dados** — Inicia o [DataChat](datachat.md) para fazer perguntas sobre as submissões.
 
-A página principal lista todos os esquemas de formulário que você tem permissão para usar. Você pode interagir com esta lista de várias maneiras:
+Clique em um bloco para abrir a lista de submissões daquele esquema.
 
-1.  **Abrir um esquema de formulário**: Clique em qualquer formulário na lista para ir até sua página dedicada, onde você pode ver todas as suas submissões.
-2.  **Pesquisar**: Use a barra de pesquisa no topo para encontrar um formulário específico pelo nome.
-3.  **Filtrar e ordenar**: Use os controles disponíveis para filtrar a lista ou ordená-la por diferentes colunas.
+!!! tip "Use a barra de filtros"
+    No topo da página você pode filtrar esquemas por palavra-chave. A grade é atualizada automaticamente.
 
-!!! tip "Ponto de partida"
-    Esta lista é sua plataforma de lançamento. Cada esquema de formulário representa um tipo diferente de relatório, pesquisa ou tarefa de coleta de dados para seu projeto.
+## Lista de Submissões
 
----
+Após selecionar um esquema de formulário, você é levado a uma visão detalhada em lista. Esta tabela mostra todas as submissões (entradas) para aquele esquema. Cada linha exibe campos chave, incluindo o status (se definido) e quaisquer métricas personalizadas.
 
-## Trabalhando com um esquema de formulário
+![Lista de envios de um esquema de formulário](../imgs/forms/index-list.png)
 
-Depois de clicar em um esquema de formulário, você é levado à sua página principal. A partir daqui, você pode:
+A partir desta lista, você pode:
 
-1.  **Ver submissões**: Veja uma tabela com todos os dados enviados anteriormente para este formulário.
-2.  **Criar uma nova submissão**: Clique no botão de ação flutuante **Criar** (ícone "+") para abrir um formulário em branco e enviar novos dados.
-3.  **Importar submissões**: Clique no botão **Importar** (ícone de upload para nuvem) para importar várias submissões de um arquivo.
-4.  **Explorar dados**:
-    *   Vá para a aba [Mapa](forms-map.md) para ver todas as submissões plotadas em um mapa.
-    *   Vá para a aba [DataChat](datachat.md) para fazer perguntas sobre seus dados coletados usando IA.
+- **Adicionar uma nova submissão** — Clique no botão flutuante **+** (canto inferior direito) para abrir um formulário em branco.
+- **Editar uma submissão existente** — Clique no ícone de **editar** da linha.
+- **Visualizar detalhes da submissão** — Clique no ícone de **visualizar**.
+- **Excluir uma submissão** — Clique no ícone de **excluir**.
+- **Imprimir ou baixar** um PDF ou DOCX da submissão.
+- **Imprimir um crachá** (se a métrica de caso estiver ativa).
+- **Expandir uma linha** para ver detalhes aninhados (se configurado).
 
-Na lista de submissões de um formulário, você pode realizar ações em entradas individuais:
-*   **Visualizar**: Veja os detalhes completos de uma submissão.
-*   **Editar**: Modifique uma submissão existente (se permitido).
-*   **Imprimir/Exportar**: Gere um relatório PDF ou DOCX da submissão.
-*   **Duplicar**: Crie uma cópia de uma submissão para usar como base para uma nova.
-*   **Excluir**: Remova uma submissão (se permitido).
+### Filtragem e Pesquisa
 
-Você também pode selecionar várias submissões para realizar ações em massa, como excluir ou editar.
+Use o painel de filtro expansível no topo da lista:
 
-![Caixa de diálogo de exportação para baixar submissões de formulários](../imgs/forms/index-export.png)
+- **Pesquisa por palavra-chave** — Encontre submissões por qualquer texto.
+- **Intervalo de datas** — Filtrar por data de criação.
+- **Filtros de métricas** — Reduza por localização, projeto, área, caso, organização ou outras métricas personalizadas.
+- **Filtro de status** — Filtrar por status do formulário (ex.: Aprovado, Pendente).
+- **Filtro de usuário** — Mostrar apenas submissões criadas por um usuário específico.
 
----
+Você pode salvar e recarregar predefinições de filtro usando o **gerenciador de predefinições**.
 
-## Fluxos de trabalho principais
+### Ações em Massa
 
-### Para enviar novos dados:
-1.  Na página principal de Formulários, clique no esquema de formulário desejado.
-2.  Na página do formulário, clique no botão de ação flutuante **Criar**.
-3.  Preencha todos os campos obrigatórios no formulário que se abrir.
-4.  Clique em **Enviar** para salvar sua entrada.
+Selecione várias linhas usando as caixas de seleção. Em seguida, realize operações em massa:
 
-### Para revisar ou editar dados existentes:
-1.  Na página principal de Formulários, clique no esquema de formulário relevante.
-2.  Navegue pela lista de submissões. Clique em qualquer entrada individual para **Visualizar** seus detalhes completos.
-3.  Se você tiver permissão, pode clicar em **Editar** para modificar uma submissão.
+- **Excluir** — Remove submissões selecionadas.
+- **Edição em massa** — Modifica um campo em todas as submissões selecionadas.
 
-### Para importar dados:
-1.  Navegue até a página do esquema de formulário desejado.
-2.  Clique no botão **Importar** (ícone de upload para nuvem).
-3.  Siga as instruções na tela para selecionar e enviar seu arquivo de dados.
+### Exportação e Importação
 
-### Para exportar dados:
-1.  Navegue até a página do esquema de formulário desejado.
-2.  Use os filtros para restringir a lista de submissões que deseja exportar.
-3.  Clique no botão **Exportar** na barra de filtros.
-4.  Escolha o formato de exportação preferido.
+![Caixa de diálogo de exportação para baixar submissões do formulário](../imgs/forms/index-export.png)
 
-!!! note "Gerenciando esquemas de formulário"
-    Criar novos esquemas de formulário ou editar sua estrutura (adicionar/remover campos) requer permissões de administrador. Se você precisar configurar um novo tipo de formulário, entre em contato com o administrador do seu projeto. Você pode aprender mais sobre como editar a estrutura de um formulário no guia [Editar Esquema de Formulário](edit-form-schema.md).
+Clique no botão **exportar** (ícone de download na nuvem) para abrir a caixa de diálogo de exportação. Escolha entre os formatos CSV ou XLSX e baixe todas as submissões filtradas.
+
+![Caixa de diálogo de importação para enviar várias submissões a partir de um arquivo](../imgs/forms/index-import.png)
+
+Se um botão **importar** (ícone de upload na nuvem) aparecer, você pode enviar um arquivo (CSV ou XLSX) para adicionar várias submissões de uma vez.
 
 !!! warning "Permissões"
-    As ações que você vê (Criar, Editar, Excluir, Importar, Exportar) dependem das suas permissões de usuário. Se um botão ou ação estiver faltando, talvez você não tenha o acesso necessário.
+    Algumas ações (editar esquema, excluir, exportar, importar) estão disponíveis apenas se você tiver as permissões necessárias. Entre em contato com seu administrador para solicitar acesso.
+
+## Páginas Relacionadas
+
+- [Editar Esquema de Formulário](edit-form-schema.md) — Personalize a estrutura de um formulário.
+- [Mapa de Formulários](forms-map.md) — Visualize submissões geolocalizadas em um mapa.
+- [DataChat](datachat.md) — Faça perguntas sobre os dados do seu formulário.
+- [Editar Formulário](edit-form.md) — Preencher ou modificar uma única submissão.
+- [Relatórios](../reports/index.md) — Crie resumos e visualizações a partir dos seus dados.

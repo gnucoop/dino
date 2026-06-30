@@ -1,4 +1,3 @@
-```
 ---
 title: Modificare un Invio del Modulo
 description: Impara come modificare un invio esistente del modulo in Dino.
@@ -54,4 +53,3 @@ Lo schema stesso può essere modificato separatamente. Se hai bisogno di cambiar
 *   Per comprendere la struttura del modulo stesso, consulta [Modificare lo Schema del Modulo](edit-form-schema.md).
 *   Per creare un invio completamente nuovo, di solito si parte dalla pagina principale [Moduli](index.md).
 *   Per sfogliare i tuoi moduli e invii su una mappa, consulta [Mappa dei Moduli](forms-map.md).
-```

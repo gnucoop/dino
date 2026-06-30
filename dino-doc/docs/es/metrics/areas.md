@@ -1,46 +1,78 @@
 ---
-title: Áreas Temáticas
-description: Cree y administre una lista jerárquica de categorías para organizar sus datos en Dino.
+title: Gestión de valores métricos – Áreas temáticas
+description: Aprenda a ver, agregar, editar, eliminar y buscar áreas temáticas en la sección de gestión de métricas de Dino.
 ---
 
-# Áreas Temáticas
+# Gestión de valores métricos – Áreas temáticas
 
-La página de Áreas Temáticas le permite crear y administrar una lista jerárquica de categorías para sus datos. Esto ayuda a organizar y filtrar la información en toda la plataforma.
+La página **Áreas temáticas** (accesible desde la sección Métricas) le permite organizar sus datos de métricas por categorías jerárquicas. Aquí puede ver, crear, editar y eliminar áreas temáticas, así como filtrar y exportar la lista.
 
-![Main view of the Areas page](../imgs/metrics/areas.png)
+![Vista principal de la página de gestión de valores métricos](../imgs/metrics/areas.png)
 
-Al abrir la página, verá una lista de áreas existentes. Las columnas principales que se muestran son **Nombre del área** y **Área padre**. Puede hacer clic en una fila para seleccionarla o expandirla para ver más detalles.
+## Lo que ve
 
-## Administración de Áreas
+- Las **migas de pan** en la parte superior muestran su ubicación actual en la aplicación.
+- La tabla principal enumera todas las áreas temáticas, mostrando columnas como **Nombre del área**, **Área principal** y (si está configurado) otros atributos. Puede personalizar las columnas visibles haciendo clic en el icono **view_week** en el encabezado.
+- Una **barra de búsqueda** y un **panel de filtros** le permiten encontrar áreas por palabra clave, rango de fechas u otros metadatos.
+- El botón **Exportar** (cloud_download) le permite descargar la lista actual como archivo.
+- Hay dos botones de acción flotantes disponibles:
+    - **+ (Agregar nuevo)** – crea una nueva área temática.
+    - **cloud_upload** – importa áreas desde un archivo externo.
 
-### Visualizar un Área
-1.  En la lista, localice el área que desea visualizar.
-2.  Haga clic en el icono **ojo** (visibilidad) en el menú de acciones de la fila.
-3.  Se abrirá un diálogo mostrando todos los detalles de esa área.
+## Trabajar con áreas temáticas
 
-### Crear un Nuevo Área
-1.  Haga clic en el botón de acción flotante **+** (más) en la esquina inferior derecha de la pantalla.
-2.  Aparecerá un formulario. Ingrese la información requerida, como el **Nombre del área**.
-3.  Si esta área debe ser una subcategoría, seleccione un área existente como **Área padre**.
-4.  Haga clic en **Guardar** para crear la nueva área.
+### Agregar una nueva área temática
 
-### Editar un Área
-1.  En la lista, busque el área que desea editar.
-2.  Haga clic en el icono **lápiz** (editar) en el menú de acciones de esa fila.
-3.  Modifique la información en el formulario que aparece.
-4.  Haga clic en **Guardar** para aplicar los cambios.
+1. Haga clic en el botón flotante **+**.
+2. En el cuadro de diálogo que se abre, complete los campos obligatorios (por ejemplo, **Nombre del área**, **Área principal**).
+3. Haga clic en **Crear** para guardar la nueva área.
 
-### Eliminar un Área
-1.  En la lista, busque el área que desea eliminar.
-2.  Haga clic en el icono **papelera** (eliminar) en el menú de acciones de esa fila.
-3.  Aparecerá un diálogo de confirmación. Confirme la eliminación.
+!!! tip "Área principal"
+    Para crear una subárea, seleccione un **Área principal** en el menú desplegable. Si se deja en blanco, la nueva área se convierte en una entrada de nivel superior.
 
-!!! warning "Eliminación de Áreas"
-    Eliminar un área puede afectar la forma en que se categorizan los datos. Asegúrese de que no haya envíos de datos activos ni otras métricas que dependan del área antes de eliminarla.
+### Editar un área existente
 
-## Ordenar y Organizar
+1. Encuentre el área que desea cambiar en la tabla.
+2. Haga clic en el icono **edit** (lápiz) en la columna de acciones de la fila.
+3. Modifique los campos en el cuadro de diálogo y haga clic en **Guardar**.
 
-Puede ordenar la lista alfabéticamente por la columna **Nombre del área**. Haga clic en el encabezado de la columna para alternar entre orden ascendente y descendente.
+### Ver detalles
 
-!!! tip "Estructura Jerárquica"
-    Utilice el campo **Área padre** para crear una estructura anidada o en árbol para sus categorías. Esto es útil para crear grandes temas con subtemas específicos.
+- Haga clic en el icono **visibility** para abrir un cuadro de diálogo de solo lectura que muestra todos los campos del área.
+- También puede **hacer clic en una fila** para expandirla y revelar las áreas secundarias (si la jerarquía está configurada).
+
+### Eliminar un área
+
+1. Haga clic en el icono **delete** (papelera) en la columna de acciones de la fila.
+2. Confirme la eliminación en el cuadro de diálogo que aparece.
+
+!!! warning "Consideraciones sobre eliminación"
+    Eliminar un área principal puede afectar a las áreas secundarias. Dino le advertirá si hay elementos asociados. Proceda con precaución.
+
+## Búsqueda y filtrado
+
+- Use el campo de **búsqueda por palabra clave** en la parte superior de la lista para filtrar áreas por nombre.
+- Abra el panel de filtros haciendo clic en la flecha **expand**. Puede configurar:
+    - **Fecha desde / Fecha hasta** – filtrar por fecha de creación.
+    - **Filtros adicionales** (por ejemplo, campos específicos de métricas) – si su instancia tiene atributos personalizados.
+- Aplique un **preajuste de filtro** (si está disponible) para cargar rápidamente combinaciones de filtros guardadas.
+
+## Exportar la lista
+
+1. Haga clic en el botón **cloud_download** en la barra de herramientas.
+2. Elija el formato de exportación (por ejemplo, CSV, Excel).
+3. El archivo se generará con el conjunto de áreas actualmente visible (filtrado).
+
+## Acciones masivas
+
+Para realizar acciones en varias áreas a la vez (por ejemplo, eliminar varias), seleccione las casillas de verificación junto a las filas. Los botones de acciones masivas aparecerán en el encabezado de la columna. Actualmente, la pantalla de Áreas temáticas admite **eliminación masiva**.
+
+## Navegación con migas de pan
+
+Las migas de pan muestran su ubicación actual (por ejemplo, **Métricas > Áreas temáticas**). Haga clic en cualquier enlace de las migas de pan para saltar a un nivel superior.
+
+## Páginas relacionadas
+
+- [Resumen de Métricas](index.md)
+- [Gestión de valores métricos – Casos, ubicaciones, organizaciones y proyectos](areas.md) (esta página)
+- [Usuarios y grupos](../administration/users.md)

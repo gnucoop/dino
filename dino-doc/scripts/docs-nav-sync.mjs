@@ -40,7 +40,6 @@ const SECTION_ORDER = [
   'DinoGPT',
   'Public Forms',
   'Administration',
-  'Checkout',
 ];
 
 /**
@@ -58,7 +57,6 @@ const SECTION_DISPLAY = {
   'notifications':    'Notifications',
   'public-forms':     'Public Forms',
   'administration':   'Administration',
-  'checkout':         'Checkout',
 };
 
 /**

@@ -17,7 +17,6 @@ Design form schemas and use them to record information. View and manage all your
 *   [Design a Form Schema](forms/edit-form-schema.md)
 *   [Fill In a Form](forms/edit-form.md)
 *   [Explore Data on a Map](forms/forms-map.md)
-*   [Check Out Forms](checkout/index.md)
 
 ### Analyze and Report
 Turn your collected data into insights. Create custom reports and use AI to ask questions about your data in plain language.

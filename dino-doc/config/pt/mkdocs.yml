@@ -15,17 +15,17 @@ nav:
   - Painel: dashboard/index.md
   - Formulários:
     - Visão Geral: forms/index.md
-    - Edit Form Schema: forms/edit-form-schema.md
-    - Edit Form: forms/edit-form.md
-    - Forms Map: forms/forms-map.md
+    - Editar Esquema de Formulário: forms/edit-form-schema.md
+    - Editar um Formulário: forms/edit-form.md
+    - Mapa de Formulários: forms/forms-map.md
     - Datachat: forms/datachat.md
   - Relatórios:
     - Visão Geral: reports/index.md
-    - Edit Report Schema: reports/edit-report-schema.md
-    - Edit Report: reports/edit-report.md
+    - Editar Esquema de Relatório: reports/edit-report-schema.md
+    - Editar Relatório: reports/edit-report.md
   - Métricas:
     - Visão Geral: metrics/index.md
-    - Areas: metrics/areas.md
+    - Áreas Temáticas: metrics/areas.md
   - Agregação: aggregation/index.md
   - Notificações: notifications/index.md
   - Formulários Públicos: public-forms/index.md
@@ -33,5 +33,4 @@ nav:
     - Gerir Utilizadores e Grupos: administration/users.md
     - Gerir Idiomas: administration/languages.md
     - Lista de Utilizadores: administration/users-list.md
-    - Groups List: administration/groups-list.md
-  - Checkout: checkout/index.md
+    - Lista de Grupos: administration/groups-list.md

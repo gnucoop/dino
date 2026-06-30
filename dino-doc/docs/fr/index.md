@@ -17,7 +17,6 @@ Concevez des schémas de formulaires et utilisez-les pour enregistrer des inform
 *   [Concevoir un schéma de formulaire](forms/edit-form-schema.md)
 *   [Remplir un formulaire](forms/edit-form.md)
 *   [Explorer les données sur une carte](forms/forms-map.md)
-*   [Extraire des formulaires](checkout/index.md)
 
 ### Analyser et générer des rapports
 Transformez les données collectées en informations exploitables. Créez des rapports personnalisés et utilisez l'IA pour poser des questions sur vos données en langage naturel.

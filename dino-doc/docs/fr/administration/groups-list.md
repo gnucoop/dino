@@ -1,52 +1,80 @@
 ---
 title: Liste des groupes
-description: Consultez et gérez les groupes d'utilisateurs sur la page Liste des groupes dans Dino. Découvrez les filtres, le tableau de données et comment créer ou modifier des groupes.
+description: Gérez les groupes d'utilisateurs dans Dino — visualisez, créez, modifiez et supprimez des groupes d'autorisations avec des rôles, formulaires, rapports et métriques attribués.
 ---
 
 # Liste des groupes
 
-La page Liste des groupes affiche tous les groupes d'utilisateurs de votre instance Dino. Depuis cette page, vous pouvez visualiser, filtrer et créer de nouveaux groupes, ou modifier des groupes existants.
+La page **Liste des groupes** affiche tous les groupes d'utilisateurs dans Dino. Depuis cette page, vous pouvez visualiser, modifier, supprimer et créer des groupes. Chaque groupe définit un ensemble d'autorisations et de règles d'accès en associant un rôle utilisateur à des schémas de formulaire, schémas de rapport, statuts de formulaire et types de métriques spécifiques (tels que les zones, cas, projets, lieux ou organisations).
 
-![Vue principale de la page Liste des groupes](../imgs/administration/groups-list.png)
+![Main view of the Groups List page](../imgs/administration/groups-list.png)
 
-## Ce que vous voyez
+## Aperçu de la liste
 
-La page contient :
+Le tableau affiche les colonnes suivantes :
 
-- **Barre de recherche et de filtres** – Utilisez les filtres disponibles pour affiner la liste des groupes. Les filtres incluent Projet, Lieu, Zone, Cas et Organisation. Vous pouvez également utiliser la zone de recherche générale pour trouver des groupes par nom.
-- **Tableau de données** – Affiche les informations principales de chaque groupe, notamment le nom du groupe. Des colonnes supplémentaires (ID, date de création) sont masquées par défaut mais peuvent être affichées via le sélecteur de colonnes.
-- **Bouton d'action flottant** – Un bouton « + » dans le coin inférieur droit ouvre l'éditeur pour créer un nouveau groupe.
-- **Actions sur les lignes** – Cliquez sur une ligne pour faire apparaître des options intégrées permettant de sélectionner ou de développer plus de détails sur ce groupe.
+- **Nom du groupe** – le nom du groupe d'utilisateurs (visible par défaut).
+- **ID** – identifiant interne (masqué par défaut).
+- **Date de création** – date de création du groupe (masquée par défaut).
 
-## Utilisation des filtres
+Vous pouvez personnaliser les colonnes affichées en cliquant sur l'icône **view_week** dans l'en-tête du tableau.
 
-1. Cliquez sur l'icône de filtre pour ouvrir la barre de filtres.
-2. Choisissez un type de filtre dans la liste déroulante (par exemple, **Projet**).
-3. Sélectionnez ou saisissez la valeur par laquelle vous souhaitez filtrer.
-4. La liste se met automatiquement à jour pour afficher uniquement les groupes correspondants.
+## Recherche et filtrage
 
-!!! tip "Filtres multiples"
-    Vous pouvez appliquer plusieurs filtres à la fois pour affiner davantage les résultats.
+Utilisez la **barre de recherche** en haut de la page pour filtrer les groupes par mot-clé. Le panneau **Filtres** (extensible) permet d'affiner la liste par :
 
-## Créer un nouveau groupe
+- Plage de dates (de/à)
+- Projet, lieu, zone, cas, organisation et autres filtres disponibles
 
-1. Cliquez sur le bouton flottant **+** en bas à droite de la page.
-2. L'éditeur de groupe s'ouvre. Saisissez les informations requises :
-   - **Nom du groupe** – Un nom unique pour le groupe.
-3. Facultativement, affectez des utilisateurs au groupe (voir [Liste des utilisateurs](users-list.md) pour gérer les utilisateurs individuels).
-4. Cliquez sur **Enregistrer** pour créer le groupe. Il apparaît immédiatement dans la liste.
+Vous pouvez également enregistrer et charger des préréglages de filtre à l'aide du gestionnaire de préréglages.
 
-## Modifier ou consulter un groupe
+## Actions sur les groupes
 
-- **Cliquez n'importe où sur une ligne** pour développer ou sélectionner le groupe. Les actions disponibles dépendent de vos autorisations.
-- Pour ouvrir l'éditeur complet d'un groupe, cliquez sur l'icône de modification (crayon) qui apparaît sur la ligne.
-- Vous pouvez modifier le nom du groupe et ses membres.
+Chaque ligne comporte trois icônes d'action sur la droite :
 
-!!! warning "Suppression de groupes"
-    La suppression d'un groupe retire tous ses membres du groupe. Cette action est irréversible. Supprimez via l'icône de suppression (poubelle) de la ligne après avoir développé ou sélectionné la ligne.
+- **visibility** – Afficher les détails du groupe (ouvre l'éditeur en mode lecture seule)
+- **create** – Modifier les propriétés du groupe
+- **delete** – Supprimer le groupe (confirmation requise)
+
+En cliquant sur une ligne, une section de détails se déploie affichant des informations supplémentaires ou des éléments imbriqués (le cas échéant).
+
+## Création d'un nouveau groupe
+
+1. Cliquez sur le bouton flottant **+** en bas à droite de l'écran.
+2. Dans la boîte de dialogue de l'éditeur qui s'ouvre, saisissez un **Nom de groupe**.
+3. Dans le panneau **Éléments disponibles**, parcourez les onglets pour sélectionner :
+    - **Rôle utilisateur** (obligatoire – vous devez choisir exactement un rôle)
+    - **Schémas de formulaire**
+    - **Schémas de rapport**
+    - **Statuts de formulaire**
+    - Types de métriques (Zone, Cas, Projet, Lieu, Organisation) – si actifs
+4. Cliquez sur l'icône **add** à côté de chaque élément pour le déplacer vers le panneau **Éléments du groupe**.
+5. Cliquez sur **Enregistrer**.
+
+!!! tip "Option Tout"
+    Pour les types de métriques et autres catégories, vous pouvez voir une option « Tout … ». La sélectionner applique la restriction à tous les éléments de ce type.
+
+## Modification ou consultation d'un groupe
+
+1. Dans le tableau, cliquez sur l'icône **create** (modifier) ou **visibility** (afficher) pour le groupe que vous souhaitez modifier.
+2. Dans la boîte de dialogue de l'éditeur, vous pouvez :
+    - Modifier le **Nom du groupe**.
+    - Ajouter ou supprimer des éléments de n'importe quel onglet (uniquement en mode édition).
+    - Supprimer des éléments en cliquant sur l'icône **delete** à côté d'eux.
+3. Cliquez sur **Enregistrer** pour appliquer les modifications (le mode visualisation affiche seulement un bouton **Fermer**).
+
+## Suppression d'un groupe
+
+1. Cliquez sur l'icône **delete** pour le groupe.
+2. Confirmez la suppression dans la boîte de dialogue qui apparaît.
+
+!!! warning "Action irréversible"
+    La suppression d'un groupe est définitive. Assurez-vous qu'aucun utilisateur ne dépend de ce groupe avant de le supprimer.
 
 ## Pages connexes
 
-- [Liste des utilisateurs](users-list.md) – Gérer les comptes d'utilisateurs individuels
-- [Utilisateurs](users.md) – Aperçu de l'administration des utilisateurs
-- [Notifications](../notifications/index.md) – Configurer les notifications pour les groupes
+- [Liste des utilisateurs](users-list.md) – gérez les comptes utilisateurs individuels et leurs affectations de groupe.
+- [Métriques](../metrics/index.md) – configurez les types de métriques pouvant être attribués aux groupes (zones, cas, projets, etc.).
+- [Schémas de formulaire](../forms/edit-form-schema.md) – créez et modifiez des schémas de formulaire pouvant être liés à des groupes.
+- [Schémas de rapport](../reports/edit-report-schema.md) – gérez les schémas de rapport disponibles pour les groupes.
+- [Aperçu de l'interface](../interface/index.md) – apprenez-en davantage sur la navigation et la disposition générale.

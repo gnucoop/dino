@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Use the Aggregation view in Dino to browse, filter, and manage form submissions from all your form schemas in a single, unified list.">
+        <meta name="description" content="View and manage aggregated form submissions in Dino.">
       
       
       
@@ -963,10 +963,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#browsing-the-list" class="md-nav__link">
+  <a href="#viewing-the-aggregation-list" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Browsing the List
+        Viewing the Aggregation List
       
     </span>
   </a>
@@ -974,10 +974,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtering-the-list" class="md-nav__link">
+  <a href="#filtering-and-searching" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtering the List
+        Filtering and Searching
       
     </span>
   </a>
@@ -1000,6 +1000,17 @@
     <span class="md-ellipsis">
       
         Creating a New Submission
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#printing-a-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Printing a PDF
       
     </span>
   </a>
@@ -1234,33 +1245,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../checkout/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checkout
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1288,10 +1272,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#browsing-the-list" class="md-nav__link">
+  <a href="#viewing-the-aggregation-list" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Browsing the List
+        Viewing the Aggregation List
       
     </span>
   </a>
@@ -1299,10 +1283,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtering-the-list" class="md-nav__link">
+  <a href="#filtering-and-searching" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtering the List
+        Filtering and Searching
       
     </span>
   </a>
@@ -1331,6 +1315,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#printing-a-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Printing a PDF
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1349,48 +1344,82 @@
 
 
 <h1 id="aggregation">Aggregation</h1>
-<p>The Aggregation page provides a unified view of all form submissions across your organization. Instead of viewing submissions for one form schema at a time, you can see entries from multiple schemas together in a single, filterable list.</p>
+<p>The Aggregation page gives you a centralized view of all form submissions across your projects. You can browse, filter, and take actions on submissions without having to open each form individually.</p>
 <p><img alt="Main view of the Aggregation page" src="../imgs/aggregation/index.png" /></p>
-<h2 id="browsing-the-list">Browsing the List</h2>
-<p>The list displays all submissions you have permission to view. Each row represents a single submission. The following columns are shown by default:</p>
+<h2 id="viewing-the-aggregation-list">Viewing the Aggregation List</h2>
+<p>The main table displays one row per submission. By default you see the <strong>Form Schema</strong> and <strong>Status</strong> columns, but you can customize which columns appear using the <strong>View Week</strong> icon in the table header.</p>
 <ul>
-<li><strong>Form Schema</strong>: The name of the form schema this submission belongs to.</li>
-<li><strong>Status</strong>: The current workflow status of the submission.</li>
-<li>Additional columns for metrics like <strong>Project</strong>, <strong>Location</strong>, or <strong>Organization</strong> may also appear, depending on your system's configuration.</li>
+<li>Each row shows a status icon and, if the form has validation issues, a warning icon.</li>
+<li>Hover over a row to see a highlight; click anywhere on a row to select it and reveal available actions.</li>
 </ul>
-<p>You can click on any row to select it or expand it to see more details.</p>
-<h2 id="filtering-the-list">Filtering the List</h2>
-<p>A filter bar is located above the list. Use it to narrow down the submissions shown. You can filter by:</p>
-<ul>
-<li>Project</li>
-<li>Location</li>
-<li>Area</li>
-<li>Case</li>
-<li>Case Code</li>
-<li>Organization</li>
-<li>Form Status</li>
-<li>User</li>
-</ul>
+<p>At the top of the list, the <strong>Items found</strong> counter and paginator let you know how many submissions exist and navigate through pages.</p>
+<h2 id="filtering-and-searching">Filtering and Searching</h2>
+<p>A search bar and filter panel are available to narrow down the list.</p>
+<ol>
+<li>Click the <strong>search icon</strong> in the top bar to expand the filter panel.</li>
+<li>Use the <strong>keyword</strong> field to search across all fields.</li>
+<li>Use the <strong>date range</strong> pickers to filter by creation date.</li>
+<li>Additional filters appear for <strong>Area</strong>, <strong>Case</strong>, <strong>Location</strong>, <strong>Organization</strong>, <strong>Project</strong>, <strong>Form Status</strong>, and <strong>User</strong>. These are dynamic and respect your form’s metric definitions.</li>
+<li>Active filters are shown as chips below the filter bar – click the <strong>cancel</strong> icon on a chip to remove it.</li>
+</ol>
 <div class="admonition tip">
-<p class="admonition-title">Filtering Tips</p>
-<p>The Aggregation filter bar is designed for quick, cross-schema filtering. For advanced features like saved filter presets or data export, navigate to the <a href="../forms/">submissions list for a specific form schema</a>.</p>
+<p class="admonition-title">Preset filters</p>
+<p>The Aggregation page does not support saved filter presets. You can combine filters each time you need a custom view.</p>
 </div>
 <h2 id="row-actions">Row Actions</h2>
-<p>When you hover over a row, a set of action icons appears on the right. The actions available for a specific submission depend on your permissions for its form schema.</p>
-<ul>
-<li><strong>View</strong>: Open the submission in a read-only view.</li>
-<li><strong>Edit</strong>: Open the submission for editing.</li>
-<li><strong>Print</strong>: Generate and open a PDF version of the submission. You will be asked to confirm before the PDF is created.</li>
-<li><strong>Delete</strong>: Permanently delete the submission. You will be asked to confirm this action.</li>
-</ul>
+<p>After selecting a row, the action icons appear in the <strong>Actions</strong> column on the right side of the table.</p>
+<table>
+<thead>
+<tr>
+<th>Icon</th>
+<th>Action</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>visibility</code></td>
+<td>View</td>
+<td>Open the submission in read-only mode.</td>
+</tr>
+<tr>
+<td><code>create</code></td>
+<td>Edit</td>
+<td>Modify the submission data.</td>
+</tr>
+<tr>
+<td><code>printer</code></td>
+<td>Print</td>
+<td>Generate a PDF of the submission.</td>
+</tr>
+<tr>
+<td><code>delete</code></td>
+<td>Delete</td>
+<td>Remove the submission after confirmation.</td>
+</tr>
+</tbody>
+</table>
+<p>Click <strong>More Horiz</strong> (three dots) to see additional actions for that row. The <strong>Print</strong> and <strong>Delete</strong> actions ask for confirmation before executing.</p>
 <h2 id="creating-a-new-submission">Creating a New Submission</h2>
-<p>You can start a new form submission directly from the Aggregation page.</p>
+<p>The floating <strong>+</strong> button at the bottom right of the screen lets you start a new submission.</p>
+<p><img alt="Dialog to choose a form schema and start a new submission" src="../imgs/aggregation/index-new.png" /></p>
 <ol>
-<li>Click the <strong>+</strong> (Add) button in the bottom-right corner of the screen.</li>
-<li>A dialog opens, showing a list of form schemas you have permission to create submissions for.</li>
-<li>Select the desired form schema from the list.</li>
-<li>Click <strong>Create Form</strong>. You will be taken to the form to begin filling it out.</li>
+<li>Click the <strong>+</strong> button. A dialog opens showing available form schemas.</li>
+<li>Select or search for the form schema you want to use.</li>
+<li>After selection, you are taken directly to the <a href="../forms/edit-form/">Edit Form</a> page to fill in the data.</li>
 </ol>
+<h2 id="printing-a-pdf">Printing a PDF</h2>
+<p>You can generate a PDF of any submission that includes the form schema label, active metric names, and the filled‑in data.</p>
+<ol>
+<li>On the row you want to print, click the <strong>Printer</strong> icon (or use the <strong>More Horiz</strong> menu if available).</li>
+<li>Confirm the action when prompted.</li>
+<li>The PDF opens in a new browser tab or downloads automatically.</li>
+</ol>
+<p>The PDF header includes the form schema title and all metric names currently active in the system.</p>
+<div class="admonition warning">
+<p class="admonition-title">Metric availability</p>
+<p>The printed PDF includes only the metrics that are active at the moment you trigger the print. If a metric was added after the submission was created, it won’t appear.</p>
+</div>
 
 
 
