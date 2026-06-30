@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Learn how to create and edit form schemas in Dino to define the structure of your data collection forms.">
+        <meta name="description" content="Build and modify form schemas — set name, icon, statuses, metrics, visibility, and define relationships.">
       
       
       
@@ -598,10 +598,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-a-new-form-schema" class="md-nav__link">
+  <a href="#form-attributes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create a New Form Schema
+        Form Attributes
       
     </span>
   </a>
@@ -609,10 +609,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#edit-an-existing-form-schema" class="md-nav__link">
+  <a href="#managing-form-statuses" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Edit an Existing Form Schema
+        Managing Form Statuses
       
     </span>
   </a>
@@ -620,10 +620,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#defining-field-relationships-dependencies" class="md-nav__link">
+  <a href="#defining-relationships" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Defining Field Relationships (Dependencies)
+        Defining Relationships
       
     </span>
   </a>
@@ -631,10 +631,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
+  <a href="#saving-and-importing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next Steps
+        Saving and Importing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-form-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Form Builder
       
     </span>
   </a>
@@ -1236,33 +1247,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../checkout/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checkout
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1290,10 +1274,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-a-new-form-schema" class="md-nav__link">
+  <a href="#form-attributes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create a New Form Schema
+        Form Attributes
       
     </span>
   </a>
@@ -1301,10 +1285,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#edit-an-existing-form-schema" class="md-nav__link">
+  <a href="#managing-form-statuses" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Edit an Existing Form Schema
+        Managing Form Statuses
       
     </span>
   </a>
@@ -1312,10 +1296,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#defining-field-relationships-dependencies" class="md-nav__link">
+  <a href="#defining-relationships" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Defining Field Relationships (Dependencies)
+        Defining Relationships
       
     </span>
   </a>
@@ -1323,10 +1307,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
+  <a href="#saving-and-importing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next Steps
+        Saving and Importing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-form-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Form Builder
       
     </span>
   </a>
@@ -1351,50 +1346,91 @@
 
 
 <h1 id="edit-form-schema">Edit Form Schema</h1>
-<p>The <strong>Edit Form Schema</strong> page lets you design or modify the structure of a form — the fields, their types, validation rules, and how they relate to one another. You can create a brand-new schema or update an existing one.</p>
+<p>The Edit Form Schema page lets you create a new form schema or modify an existing one. Here you define the form’s basic attributes, manage its statuses and metrics, control visibility, and link the schema to other forms through relationships.</p>
+<p>You can reach this page by:</p>
+<ul>
+<li>Clicking <strong>Create</strong> on the <a href="../">Forms overview</a> to build a new schema.</li>
+<li>Selecting <strong>Edit</strong> on an existing schema’s card or from its detail view.</li>
+</ul>
+<p>Breadcrumbs at the top show your current position (e.g., <strong>Forms &gt; My Survey &gt; Edit</strong>).</p>
 <p><img alt="Main view of the Edit Form Schema page" src="../../imgs/forms/edit-form-schema.png" /></p>
-<h2 id="create-a-new-form-schema">Create a New Form Schema</h2>
-<ol>
-<li>From the <strong>Forms</strong> section, click <strong>Create Form Schema</strong>.</li>
-<li>Enter a <strong>Name</strong> and optionally a <strong>Description</strong> for the schema.</li>
-<li>Add fields using the <strong>Add Field</strong> button. For each field you can set:</li>
-<li><strong>Field Label</strong> – the question or prompt shown to data collectors.</li>
-<li><strong>Field Type</strong> – e.g., text, number, date, select, geolocation.</li>
-<li><strong>Required</strong> toggle – makes the field mandatory.</li>
-<li><strong>Validation</strong> rules – like min/max values, allowed file extensions, etc.</li>
-<li>Rearrange fields by dragging them into the desired order.</li>
-<li>Click <strong>Save</strong> to create the schema.</li>
-</ol>
-<h2 id="edit-an-existing-form-schema">Edit an Existing Form Schema</h2>
-<ol>
-<li>Navigate to the <strong>Forms</strong> page and click on the schema you want to modify.</li>
-<li>Click the <strong>Edit</strong> button (or open the schema’s actions menu and select <strong>Edit</strong>).</li>
-<li>The editor opens with all existing fields loaded. You can:</li>
-<li>Add new fields.</li>
-<li>Edit existing field settings by clicking on the field.</li>
-<li>Delete a field using its trash icon.</li>
-<li>Reorder fields by drag-and-drop.</li>
-<li>Click <strong>Save</strong> to apply your changes.</li>
-</ol>
+<h2 id="form-attributes">Form Attributes</h2>
+<p>Fill in or adjust the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Form Name</strong></td>
+<td>A unique system identifier (e.g., <code>survey_2025</code>). Dino warns if the name is already taken.</td>
+</tr>
+<tr>
+<td><strong>Form Label</strong></td>
+<td>The human‑readable name displayed in lists and reports.</td>
+</tr>
+<tr>
+<td><strong>Icon Set</strong></td>
+<td>Choose <strong>Default</strong> (material icons) or <strong>Humanitarian</strong> (custom SVG icons).</td>
+</tr>
+<tr>
+<td><strong>Icon Identifier</strong></td>
+<td>Pick an icon from the autocomplete list. The preview updates live.</td>
+</tr>
+<tr>
+<td><strong>Form Statuses</strong></td>
+<td>One or more labels that describe the state of a submission (e.g., Draft, Approved, Rejected). Select existing statuses or <strong>Create new Status</strong> to add one on the fly.</td>
+</tr>
+<tr>
+<td><strong>Form Metrics</strong></td>
+<td>Metrics to collect for every submission. Select one or more from the list.</td>
+</tr>
+<tr>
+<td><strong>Visibility</strong></td>
+<td><strong>Private</strong> – only members of assigned groups can see the form. <strong>Public</strong> – anyone with the link can view and submit.</td>
+</tr>
+<tr>
+<td><strong>Metrics Set Behavior</strong></td>
+<td><strong>Default</strong> – each metric value can appear multiple times across submissions. <strong>Unique</strong> – a metric value (e.g., a district name) can be used only once per form.</td>
+</tr>
+<tr>
+<td><strong>Generate Report</strong></td>
+<td>When <strong>Yes</strong>, Dino automatically generates a report after each submission. This option is hidden if an auto‑report is already configured.</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition warning">
-<p class="admonition-title">Editing a schema that already has submissions</p>
-<p>Changing field types or removing fields may affect existing submissions. Dino will warn you before saving if any incompatibilities are detected.</p>
+<p class="admonition-title">Unique Metrics Set Behavior</p>
+<p>Use <strong>Unique</strong> carefully — once a value is used for a metric, it cannot be reused in another submission of the same form.</p>
 </div>
-<h2 id="defining-field-relationships-dependencies">Defining Field Relationships (Dependencies)</h2>
-<p>You can set up conditional logic so that certain fields only appear when a specific value is selected in another field.</p>
+<h2 id="managing-form-statuses">Managing Form Statuses</h2>
 <ol>
-<li>While editing a schema, select a field that you want to be conditional.</li>
-<li>Click the <strong>Relationships</strong> tab or button.</li>
-<li>In the dialog that opens, choose the <strong>parent field</strong> and the <strong>value</strong> that must be selected for this field to be shown. You can also add multiple conditions (AND/OR logic).</li>
-<li>Click <strong>Apply</strong> to save the relationship.</li>
+<li>Click the <strong>Form Statuses</strong> field to expand the list.</li>
+<li>To add an existing status, check its checkbox.</li>
+<li>To create a new status, click <strong>Create new Status</strong>. A dialog opens where you can enter a label, choose a color, and save.</li>
+<li>To edit an existing status, click the <strong>edit</strong> icon (pencil) next to it.</li>
+<li>Click outside the dropdown to close it.</li>
+</ol>
+<h2 id="defining-relationships">Defining Relationships</h2>
+<p>Relationships let you link fields across different form schemas (e.g., a sub‑form that depends on a choice in the main form).</p>
+<ol>
+<li>Click the <strong>Relationships</strong> button.</li>
+<li>In the dialog, add, edit, or remove connections between schemas.</li>
 </ol>
 <p><img alt="Form relationships (dependencies) editor dialog" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
 <div class="admonition tip">
-<p class="admonition-title">Testing dependencies</p>
-<p>After saving the schema, you can test your conditional logic by opening the form in the <a href="../edit-form/">Edit Form</a> view and verifying that dependent fields appear or hide correctly.</p>
+<p class="admonition-title">Relationships are available only when editing an existing schema, not during initial creation.</p>
 </div>
-<h2 id="next-steps">Next Steps</h2>
-<p>Once your form schema is ready, you can <a href="../edit-form/">create a form instance</a> based on it, or use the schema in a <a href="../forms-map/">Forms Map</a> to assign it to specific areas and collectors.</p>
+<h2 id="saving-and-importing">Saving and Importing</h2>
+<ul>
+<li><strong>Save</strong> – stores all changes. The button is disabled if the form is invalid or still being saved.</li>
+<li><strong>Import</strong> – opens a file picker to load a form schema from a JSON or CSV file. Use this to reuse a schema structure from another project.</li>
+</ul>
+<h2 id="the-form-builder">The Form Builder</h2>
+<p>Below the attributes, the <strong>Form Builder</strong> area lets you drag, drop, and configure individual fields (questions, sections, etc.). Changes are reflected immediately in the preview on the right side of the builder.</p>
 
 
 

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="View and manage user groups on the Groups List page in Dino. Learn about filters, the data table, and how to create or edit groups.">
+        <meta name="description" content="Manage user groups in Dino — view, create, edit, and delete permission groups with assigned roles, forms, reports, and metrics.">
       
       
       
@@ -15,8 +15,6 @@
       
         <link rel="prev" href="../users-list/">
       
-      
-        <link rel="next" href="../../checkout/">
       
       
         
@@ -1177,10 +1175,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-you-see" class="md-nav__link">
+  <a href="#list-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What You See
+        List overview
       
     </span>
   </a>
@@ -1188,10 +1186,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-filters" class="md-nav__link">
+  <a href="#searching-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Filters
+        Searching and filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actions-on-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions on groups
       
     </span>
   </a>
@@ -1202,7 +1211,7 @@
   <a href="#creating-a-new-group" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a New Group
+        Creating a new group
       
     </span>
   </a>
@@ -1213,7 +1222,18 @@
   <a href="#editing-or-viewing-a-group" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Editing or Viewing a Group
+        Editing or viewing a group
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deleting-a-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deleting a group
       
     </span>
   </a>
@@ -1224,7 +1244,7 @@
   <a href="#related-pages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Pages
+        Related pages
       
     </span>
   </a>
@@ -1243,33 +1263,6 @@
           </ul>
         </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../checkout/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Checkout
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1301,10 +1294,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-you-see" class="md-nav__link">
+  <a href="#list-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What You See
+        List overview
       
     </span>
   </a>
@@ -1312,10 +1305,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-filters" class="md-nav__link">
+  <a href="#searching-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Filters
+        Searching and filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actions-on-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions on groups
       
     </span>
   </a>
@@ -1326,7 +1330,7 @@
   <a href="#creating-a-new-group" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a New Group
+        Creating a new group
       
     </span>
   </a>
@@ -1337,7 +1341,18 @@
   <a href="#editing-or-viewing-a-group" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Editing or Viewing a Group
+        Editing or viewing a group
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deleting-a-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deleting a group
       
     </span>
   </a>
@@ -1348,7 +1363,7 @@
   <a href="#related-pages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Pages
+        Related pages
       
     </span>
   </a>
@@ -1373,50 +1388,77 @@
 
 
 <h1 id="groups-list">Groups List</h1>
-<p>The Groups List page displays all user groups in your Dino instance. From here you can view, filter, and create new groups, or edit existing ones.</p>
+<p>The <strong>Groups List</strong> page shows all user groups in Dino. From here you can view, edit, delete, and create groups. Each group defines a set of permissions and access rules by linking a user role to specific form schemas, report schemas, form statuses, and metric types (such as areas, cases, projects, locations, or organizations).</p>
 <p><img alt="Main view of the Groups List page" src="../../imgs/administration/groups-list.png" /></p>
-<h2 id="what-you-see">What You See</h2>
-<p>The page contains:</p>
+<h2 id="list-overview">List overview</h2>
+<p>The table displays the following columns:</p>
 <ul>
-<li><strong>Search and filter bar</strong> – Use the available filters to narrow down the list of groups. Filters include Project, Location, Area, Case, and Organization. You can also use the general search box to find groups by name.</li>
-<li><strong>Data table</strong> – Shows key information about each group, including the group name. Additional columns (ID, creation date) are hidden by default but can be made visible through the column picker.</li>
-<li><strong>Floating action button</strong> – A "+" button in the bottom right corner opens the editor to create a new group.</li>
-<li><strong>Row actions</strong> – Click on a row to reveal inline options for selecting or expanding more details about that group.</li>
+<li><strong>Group Name</strong> – the name of the user group (visible by default).</li>
+<li><strong>ID</strong> – internal identifier (hidden by default).</li>
+<li><strong>Creation Date</strong> – when the group was created (hidden by default).</li>
 </ul>
-<h2 id="using-filters">Using Filters</h2>
+<p>You can customize which columns appear by clicking the <strong>view_week</strong> icon in the table header.</p>
+<h2 id="searching-and-filtering">Searching and filtering</h2>
+<p>Use the <strong>search bar</strong> at the top of the page to filter groups by keyword. The <strong>Filters</strong> panel (expandable) lets you narrow the list by:</p>
+<ul>
+<li>Date range (from/to)</li>
+<li>Project, location, area, case, organization, and other available filters</li>
+</ul>
+<p>You can also save and load filter presets using the preset manager.</p>
+<h2 id="actions-on-groups">Actions on groups</h2>
+<p>Each row has three action icons on the right:</p>
+<ul>
+<li><strong>visibility</strong> – View group details (opens the editor in read‑only mode)</li>
+<li><strong>create</strong> – Edit group properties</li>
+<li><strong>delete</strong> – Remove the group (confirmation required)</li>
+</ul>
+<p>Clicking a row expands a detail section that shows additional information or nested items (if any).</p>
+<h2 id="creating-a-new-group">Creating a new group</h2>
 <ol>
-<li>Click the filter icon to open the filter bar.</li>
-<li>Choose a filter type from the dropdown (e.g., <strong>Project</strong>).</li>
-<li>Select or type the value you want to filter by.</li>
-<li>The list updates automatically to show only matching groups.</li>
+<li>Click the <strong>+</strong> floating button at the bottom right of the screen.</li>
+<li>In the editor dialog that opens, enter a <strong>Group name</strong>.</li>
+<li>In the <strong>Available items</strong> panel, navigate through the tabs to select:<ul>
+<li><strong>User role</strong> (required – you must pick exactly one role)</li>
+<li><strong>Form schemas</strong></li>
+<li><strong>Report schemas</strong></li>
+<li><strong>Form statuses</strong></li>
+<li>Metric types (Area, Case, Project, Location, Organization) – if active</li>
+</ul>
+</li>
+<li>Click the <strong>add</strong> icon next to each item to move it to the <strong>Group items</strong> panel.</li>
+<li>Click <strong>Save</strong>.</li>
 </ol>
 <div class="admonition tip">
-<p class="admonition-title">Multiple filters</p>
-<p>You can apply several filters at once to narrow the results further.</p>
+<p class="admonition-title">All option</p>
+<p>For metric types and other categories, you may see an “All …” option. Selecting this applies the restriction to every item of that type.</p>
 </div>
-<h2 id="creating-a-new-group">Creating a New Group</h2>
+<h2 id="editing-or-viewing-a-group">Editing or viewing a group</h2>
 <ol>
-<li>Click the <strong>+</strong> floating button at the bottom right of the page.</li>
-<li>The group editor opens. Enter the required information:</li>
-<li><strong>Group Name</strong> – A unique name for the group.</li>
-<li>Optionally assign users to the group (see <a href="../users-list/">Users List</a> for managing individual users).</li>
-<li>Click <strong>Save</strong> to create the group. It appears in the list immediately.</li>
-</ol>
-<h2 id="editing-or-viewing-a-group">Editing or Viewing a Group</h2>
-<ul>
-<li><strong>Click anywhere on a row</strong> to expand or select the group. The available actions depend on your permissions.</li>
-<li>To open the full editor for a group, click the edit icon (pencil) that appears on the row.</li>
-<li>You can change the group name and its members.</li>
+<li>In the table, click the <strong>create</strong> (edit) or <strong>visibility</strong> (view) icon for the group you want to modify.</li>
+<li>In the editor dialog, you can:<ul>
+<li>Change the <strong>Group name</strong>.</li>
+<li>Add or remove items from any tab (only in edit mode).</li>
+<li>Remove items by clicking the <strong>delete</strong> icon next to them.</li>
 </ul>
+</li>
+<li>Click <strong>Save</strong> to apply changes (view mode shows a <strong>Close</strong> button only).</li>
+</ol>
+<h2 id="deleting-a-group">Deleting a group</h2>
+<ol>
+<li>Click the <strong>delete</strong> icon for the group.</li>
+<li>Confirm the deletion in the dialog that appears.</li>
+</ol>
 <div class="admonition warning">
-<p class="admonition-title">Deleting groups</p>
-<p>Deleting a group removes all its members from the group. This action cannot be undone. Delete via the row’s delete icon (trash can) after expanding or selecting the row.</p>
+<p class="admonition-title">Irreversible action</p>
+<p>Deleting a group cannot be undone. Make sure no users rely on the group before removing it.</p>
 </div>
-<h2 id="related-pages">Related Pages</h2>
+<h2 id="related-pages">Related pages</h2>
 <ul>
-<li><a href="../users-list/">Users List</a> – Manage individual user accounts</li>
-<li><a href="../users/">Users</a> – Overview of user administration</li>
-<li><a href="../../notifications/">Notifications</a> – Configure notifications for groups</li>
+<li><a href="../users-list/">Users List</a> – manage individual user accounts and their group assignments.</li>
+<li><a href="../../metrics/">Metrics</a> – configure metric types that can be assigned to groups (areas, cases, projects, etc.).</li>
+<li><a href="../../forms/edit-form-schema/">Form Schemas</a> – create and edit form schemas that can be linked to groups.</li>
+<li><a href="../../reports/edit-report-schema/">Report Schemas</a> – manage report schemas available to groups.</li>
+<li><a href="../../interface/">Interface overview</a> – learn about navigation and general layout.</li>
 </ul>
 
 

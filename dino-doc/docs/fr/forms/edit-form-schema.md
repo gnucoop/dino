@@ -1,54 +1,64 @@
 ---
-title: Modifier le schéma de formulaire
-description: Apprenez à créer et modifier les schémas de formulaire dans Dino pour définir la structure de vos formulaires de collecte de données.
+title: Modifier le schéma du formulaire
+description: Créez et modifiez des schémas de formulaire — définissez le nom, l'icône, les statuts, les métriques, la visibilité et les relations.
 ---
 
-# Modifier le schéma de formulaire
+# Modifier le schéma du formulaire
 
-La page **Modifier le schéma de formulaire** vous permet de concevoir ou de modifier la structure d’un formulaire : les champs, leurs types, les règles de validation et la manière dont ils s’articulent entre eux. Vous pouvez créer un tout nouveau schéma ou mettre à jour un schéma existant.
+La page Modifier le schéma du formulaire vous permet de créer un nouveau schéma de formulaire ou d'en modifier un existant. Vous y définissez les attributs de base du formulaire, gérez ses statuts et métriques, contrôlez la visibilité et liez le schéma à d'autres formulaires via des relations.
 
-![Vue principale de la page Modifier le schéma de formulaire](../imgs/forms/edit-form-schema.png)
+Vous pouvez accéder à cette page en :
 
-## Créer un nouveau schéma de formulaire
+- Cliquant sur **Créer** dans la [Vue d'ensemble des formulaires](index.md) pour créer un nouveau schéma.
+- En sélectionnant **Modifier** sur la carte d'un schéma existant ou depuis sa vue détaillée.
 
-1. Dans la section **Formulaires**, cliquez sur **Créer un schéma de formulaire**.
-2. Saisissez un **Nom** et éventuellement une **Description** pour le schéma.
-3. Ajoutez des champs à l’aide du bouton **Ajouter un champ**. Pour chaque champ, vous pouvez définir :
-   - **Libellé du champ** – la question ou l’invite affichée aux collecteurs de données.
-   - **Type de champ** – p. ex. texte, nombre, date, liste déroulante, géolocalisation.
-   - **Interrupteur Obligatoire** – rend le champ obligatoire.
-   - **Règles de validation** – valeurs min/max, extensions de fichiers autorisées, etc.
-4. Réorganisez les champs en les faisant glisser dans l’ordre souhaité.
-5. Cliquez sur **Enregistrer** pour créer le schéma.
+Le fil d'Ariane en haut indique votre position actuelle (ex. **Formulaires > Mon enquête > Modifier**).
 
-## Modifier un schéma existant
+![Vue principale de la page Modifier le schéma du formulaire](../imgs/forms/edit-form-schema.png)
 
-1. Accédez à la page **Formulaires** et cliquez sur le schéma que vous voulez modifier.
-2. Cliquez sur le bouton **Modifier** (ou ouvrez le menu d’actions du schéma et sélectionnez **Modifier**).
-3. L’éditeur s’ouvre avec tous les champs existants chargés. Vous pouvez :
-   - Ajouter de nouveaux champs.
-   - Modifier les paramètres d’un champ existant en cliquant dessus.
-   - Supprimer un champ à l’aide de son icône de corbeille.
-   - Réorganiser les champs par glisser-déposer.
-4. Cliquez sur **Enregistrer** pour appliquer vos modifications.
+## Attributs du formulaire
 
-!!! warning "Modification d’un schéma ayant déjà des soumissions"
-    Changer le type des champs ou supprimer des champs peut affecter les soumissions existantes. Dino vous avertira avant l’enregistrement si des incompatibilités sont détectées.
+Remplissez ou ajustez les champs suivants :
 
-## Définir des relations entre champs (dépendances)
+| Champ | Description |
+|-------|-------------|
+| **Nom du formulaire** | Un identifiant système unique (ex. `survey_2025`). Dino vous avertit si le nom est déjà pris. |
+| **Libellé du formulaire** | Le nom lisible affiché dans les listes et les rapports. |
+| **Jeu d'icônes** | Choisissez **Par défaut** (icônes Material) ou **Humanitaire** (icônes SVG personnalisées). |
+| **Identifiant d'icône** | Choisissez une icône dans la liste de saisie semi-automatique. L'aperçu se met à jour en direct. |
+| **Statuts du formulaire** | Un ou plusieurs libellés décrivant l'état d'une soumission (ex. Brouillon, Approuvé, Rejeté). Sélectionnez des statuts existants ou **Créez un nouveau statut** pour en ajouter un à la volée. |
+| **Métriques du formulaire** | Métriques à collecter pour chaque soumission. Sélectionnez-en une ou plusieurs dans la liste. |
+| **Visibilité** | **Privé** – seuls les membres des groupes assignés peuvent voir le formulaire. **Public** – toute personne possédant le lien peut le consulter et soumettre. |
+| **Comportement du jeu de métriques** | **Par défaut** – chaque valeur de métrique peut apparaître plusieurs fois dans les soumissions. **Unique** – une valeur de métrique (par exemple, un nom de district) ne peut être utilisée qu'une seule fois par formulaire. |
+| **Générer un rapport** | Lorsque **Oui**, Dino génère automatiquement un rapport après chaque soumission. Cette option est masquée si un rapport automatique est déjà configuré. |
 
-Vous pouvez configurer une logique conditionnelle pour que certains champs n’apparaissent que lorsqu’une valeur spécifique est sélectionnée dans un autre champ.
+!!! warning "Comportement unique du jeu de métriques"
+    Utilisez **Unique** avec précaution — une fois qu'une valeur est utilisée pour une métrique, elle ne peut pas être réutilisée dans une autre soumission du même formulaire.
 
-1. Lors de la modification d’un schéma, sélectionnez le champ que vous souhaitez rendre conditionnel.
-2. Cliquez sur l’onglet ou le bouton **Relations**.
-3. Dans la boîte de dialogue qui s’ouvre, choisissez le **champ parent** et la **valeur** qui doit être sélectionnée pour que ce champ soit affiché. Vous pouvez également ajouter plusieurs conditions (logique ET/OU).
-4. Cliquez sur **Appliquer** pour enregistrer la relation.
+## Gestion des statuts du formulaire
 
-![Boîte de dialogue de l’éditeur de relations (dépendances) de formulaire](../imgs/forms/edit-form-schema-relationships.png)
+1. Cliquez sur le champ **Statuts du formulaire** pour dérouler la liste.
+2. Pour ajouter un statut existant, cochez sa case.
+3. Pour créer un nouveau statut, cliquez sur **Créer un nouveau statut**. Une boîte de dialogue s'ouvre pour saisir un libellé, choisir une couleur et enregistrer.
+4. Pour modifier un statut existant, cliquez sur l'icône **modifier** (crayon) à côté.
+5. Cliquez en dehors de la liste déroulante pour la fermer.
 
-!!! tip "Test des dépendances"
-    Après avoir enregistré le schéma, vous pouvez tester votre logique conditionnelle en ouvrant le formulaire dans la vue [Modifier le formulaire](edit-form.md) et en vérifiant que les champs dépendants apparaissent ou se masquent correctement.
+## Définition des relations
 
-## Prochaines étapes
+Les relations permettent de lier des champs entre différents schémas de formulaires (par exemple, un sous-formulaire qui dépend d'un choix dans le formulaire principal).
 
-Une fois votre schéma de formulaire prêt, vous pouvez [créer une instance de formulaire](edit-form.md) basée sur celui-ci, ou utiliser le schéma dans une [Carte de formulaires](forms-map.md) pour l’assigner à des zones et des collecteurs spécifiques.
+1. Cliquez sur le bouton **Relations**.
+2. Dans la boîte de dialogue, ajoutez, modifiez ou supprimez des connexions entre les schémas.
+
+![Éditeur de relations (dépendances) entre formulaires](../imgs/forms/edit-form-schema-relationships.png)
+
+!!! tip "Les relations ne sont disponibles que lors de la modification d'un schéma existant, pas lors de la création initiale."
+
+## Sauvegarde et importation
+
+- **Enregistrer** – sauvegarde toutes les modifications. Le bouton est désactivé si le formulaire est invalide ou en cours d'enregistrement.
+- **Importer** – ouvre un sélecteur de fichiers pour charger un schéma de formulaire depuis un fichier JSON ou CSV. Utilisez cette option pour réutiliser une structure de schéma d'un autre projet.
+
+## Le concepteur de formulaire
+
+Sous les attributs, la zone **Concepteur de formulaire** vous permet de glisser-déposer et de configurer des champs individuels (questions, sections, etc.). Les modifications sont immédiatement reflétées dans l'aperçu sur le côté droit du concepteur.

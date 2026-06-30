@@ -1,81 +1,80 @@
 ---
 title: Forms
-description: Access and manage all your form schemas and submissions in Dino. This is the starting point for entering, viewing, and analyzing collected data.
+description: Manage structured data collection with forms, view and edit submissions, filter, export, and import data.
 ---
-
 # Forms
 
-The Forms page is your central workspace for all structured data in Dino. Here, you can access every form schema, submit new data, review past submissions, and explore your data on a map or through conversational analysis.
+The **Forms** page is your central hub for all structured data collection in Dino. Here you can manage form schemas, view and edit submissions, and perform bulk actions on your data.
 
 ![Main view of the Forms page](../imgs/forms/index.png)
 
-When you open this page, you see a list of all available form schemas. Each item shows the form's name and icon.
+## Form Schema Grid
 
----
+When you first open the Forms page, you see a grid of all available form schemas. Each tile displays the schema name and icon. Hover over a tile to reveal action buttons:
 
-## Navigating the Page
+- **Edit Schema** — Opens the schema editor to modify the form’s structure.
+- **Delete Schema** — Removes the schema and all its submissions.
+- **Share Public Url** — Generates a public link to the schema for external data collection.
+- **View Map** — Opens the [Forms Map](forms-map.md) showing geolocated submissions.
+- **Chat with your data** — Launches [DataChat](datachat.md) to ask questions about submissions.
 
-The main page lists all form schemas you have permission to use. You can interact with this list in several ways:
+Click a tile to open the list of submissions for that schema.
 
-1.  **Open a Form Schema**: Click on any form in the list to go to its dedicated page, where you can see all its submissions.
-2.  **Search**: Use the search bar at the top to find a specific form by name.
-3.  **Filter and Sort**: Use the available controls to filter the list or sort it by different columns.
+!!! tip "Use the filter bar"
+    At the top of the page you can filter schemas by keyword. The grid updates automatically.
 
-!!! tip "Starting Point"
-    This list is your launchpad. Each form schema represents a different type of report, survey, or data collection task for your project.
+## Submission List
 
----
+After selecting a form schema, you are taken to a detailed list view. This table shows all submissions (entries) for that schema. Each row displays key fields, including the status (if defined) and any custom metrics.
 
-## Working with a Form Schema
+![Submission list for a form schema](../imgs/forms/index-list.png)
 
-After you click on a form schema, you are taken to its main page. From here, you can:
+From this list you can:
 
-1.  **View Submissions**: See a table of all data previously submitted for this form.
-2.  **Create a New Submission**: Click the **Create** floating action button (the "+" icon) to open a blank form and submit new data.
-3.  **Import Submissions**: Click the **Import** button (cloud upload icon) to import multiple submissions from a file.
-4.  **Explore Data**:
-    *   Go to the [Map](forms-map.md) tab to see all submissions plotted on a map.
-    *   Go to the [DataChat](datachat.md) tab to ask questions about your collected data using AI.
+- **Add a new submission** — Click the floating **+** button (bottom right) to open a blank form.
+- **Edit an existing submission** — Click the row’s **edit** icon.
+- **View submission details** — Click the **view** icon.
+- **Delete a submission** — Click the **delete** icon.
+- **Print or download** a PDF or DOCX of the submission.
+- **Print a badge** (if the case metric is active).
+- **Expand a row** to see nested details (if configured).
 
-On a form's submission list, you can perform actions on individual entries:
-*   **View**: See the full details of a submission.
-*   **Edit**: Modify an existing submission (if permitted).
-*   **Print/Export**: Generate a PDF or DOCX report of the submission.
-*   **Duplicate**: Create a copy of a submission to use as a base for a new one.
-*   **Delete**: Remove a submission (if permitted).
+### Filtering and Searching
 
-You can also select multiple submissions to perform bulk actions like delete or edit.
+Use the expandable filter panel at the top of the list:
+
+- **Keyword search** — Find submissions by any text.
+- **Date range** — Filter by creation date.
+- **Metric filters** — Narrow down by location, project, area, case, organization, or other custom metrics.
+- **Status filter** — Filter by form status (e.g., Approved, Pending).
+- **User filter** — Show only submissions created by a specific user.
+
+You can save and reload filter presets using the **preset manager**.
+
+### Bulk Actions
+
+Select multiple rows using the checkboxes. Then perform bulk operations:
+
+- **Delete** — Remove selected submissions.
+- **Bulk edit** — Modify a field across all selected submissions.
+
+### Export and Import
 
 ![Export dialog for downloading form submissions](../imgs/forms/index-export.png)
 
----
+Click the **export** button (cloud download icon) to open the export dialog. Choose between CSV or XLSX format and download all filtered submissions.
 
-## Key Workflows
+![Import dialog for uploading multiple submissions from a file](../imgs/forms/index-import.png)
 
-### To submit new data:
-1.  From the main Forms page, click on the desired form schema.
-2.  On the form's page, click the **Create** floating action button.
-3.  Fill out all required fields in the form that opens.
-4.  Click **Submit** to save your entry.
-
-### To review or edit existing data:
-1.  From the main Forms page, click on the relevant form schema.
-2.  Browse the list of submissions. Click on any individual entry to **View** its full details.
-3.  If you have permission, you can click **Edit** to modify a submission.
-
-### To import data:
-1.  Navigate to the desired form schema's page.
-2.  Click the **Import** button (cloud upload icon).
-3.  Follow the on-screen instructions to select and upload your data file.
-
-### To export data:
-1.  Navigate to the desired form schema's page.
-2.  Use the filters to narrow down the list of submissions you want to export.
-3.  Click the **Export** button in the filter bar.
-4.  Choose your preferred export format.
-
-!!! note "Managing Form Schemas"
-    Creating new form schemas or editing their structure (adding/removing fields) requires administrator permissions. If you need to set up a new form type, contact your project administrator. You can learn more about editing a form's structure in the [Edit Form Schema](edit-form-schema.md) guide.
+If an **import** button (cloud upload icon) appears, you can upload a file (CSV or XLSX) to add multiple submissions at once.
 
 !!! warning "Permissions"
-    The actions you see (Create, Edit, Delete, Import, Export) depend on your user permissions. If a button or action is missing, you may not have the required access.
+    Some actions (edit schema, delete, export, import) are only available if you have the required permissions. Contact your administrator to request access.
+
+## Related Pages
+
+- [Edit Form Schema](edit-form-schema.md) — Customize a form’s structure.
+- [Forms Map](forms-map.md) — View geolocated submissions on a map.
+- [DataChat](datachat.md) — Ask questions about your form data.
+- [Edit Form](edit-form.md) — Fill out or modify a single submission.
+- [Reports](../reports/index.md) — Create summaries and visualizations from your data.

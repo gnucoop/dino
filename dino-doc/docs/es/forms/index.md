@@ -1,81 +1,80 @@
 ---
 title: Formularios
-description: Accede y gestiona todos tus esquemas de formulario y envíos en Dino. Este es el punto de partida para ingresar, visualizar y analizar los datos recopilados.
+description: Gestione la recopilación de datos estructurados con formularios, vea y edite envíos, filtre, exporte e importe datos.
 ---
-
 # Formularios
 
-La página de Formularios es tu espacio de trabajo central para todos los datos estructurados en Dino. Aquí puedes acceder a cada esquema de formulario, enviar nuevos datos, revisar envíos anteriores y explorar tus datos en un mapa o mediante análisis conversacional.
+La página **Formularios** es su centro neurálgico para toda la recopilación de datos estructurados en Dino. Aquí puede gestionar esquemas de formularios, ver y editar envíos, y realizar acciones masivas sobre sus datos.
 
 ![Vista principal de la página de Formularios](../imgs/forms/index.png)
 
-Al abrir esta página, ves una lista de todos los esquemas de formulario disponibles. Cada elemento muestra el nombre del formulario y su icono.
+## Cuadrícula de esquemas de formularios
 
----
+Cuando abre la página de Formularios por primera vez, ve una cuadrícula con todos los esquemas de formularios disponibles. Cada mosaico muestra el nombre del esquema y su icono. Pase el ratón sobre un mosaico para ver los botones de acción:
 
-## Navegando por la página
+- **Editar esquema** — Abre el editor de esquemas para modificar la estructura del formulario.
+- **Eliminar esquema** — Elimina el esquema y todos sus envíos.
+- **Compartir URL pública** — Genera un enlace público al esquema para la recopilación externa de datos.
+- **Ver mapa** — Abre el [Mapa de formularios](forms-map.md) mostrando los envíos geolocalizados.
+- **Chatear con sus datos** — Inicia [DataChat](datachat.md) para hacer preguntas sobre los envíos.
 
-La página principal enumera todos los esquemas de formulario a los que tienes permiso de acceso. Puedes interactuar con esta lista de varias maneras:
+Haga clic en un mosaico para abrir la lista de envíos de ese esquema.
 
-1.  **Abrir un esquema de formulario**: Haz clic en cualquier formulario de la lista para ir a su página dedicada, donde puedes ver todos sus envíos.
-2.  **Buscar**: Usa la barra de búsqueda en la parte superior para encontrar un formulario específico por nombre.
-3.  **Filtrar y ordenar**: Usa los controles disponibles para filtrar la lista u ordenarla por diferentes columnas.
+!!! tip "Utilice la barra de filtros"
+    En la parte superior de la página puede filtrar esquemas por palabra clave. La cuadrícula se actualiza automáticamente.
 
-!!! tip "Punto de partida"
-    Esta lista es tu plataforma de lanzamiento. Cada esquema de formulario representa un tipo diferente de informe, encuesta o tarea de recolección de datos para tu proyecto.
+## Lista de envíos
 
----
+Después de seleccionar un esquema de formulario, accederá a una vista de lista detallada. Esta tabla muestra todos los envíos (entradas) para ese esquema. Cada fila muestra los campos clave, incluyendo el estado (si está definido) y cualquier métrica personalizada.
 
-## Trabajando con un esquema de formulario
+![Lista de envíos de un esquema de formulario](../imgs/forms/index-list.png)
 
-Después de hacer clic en un esquema de formulario, accedes a su página principal. Desde aquí puedes:
+Desde esta lista puede:
 
-1.  **Ver envíos**: Consulta una tabla con todos los datos enviados anteriormente para este formulario.
-2.  **Crear un nuevo envío**: Haz clic en el botón de acción flotante **Crear** (icono "+") para abrir un formulario en blanco y enviar nuevos datos.
-3.  **Importar envíos**: Haz clic en el botón **Importar** (icono de carga en la nube) para importar múltiples envíos desde un archivo.
-4.  **Explorar datos**:
-    *   Ve a la pestaña [Mapa](forms-map.md) para ver todos los envíos representados en un mapa.
-    *   Ve a la pestaña [DataChat](datachat.md) para hacer preguntas sobre tus datos recopilados mediante IA.
+- **Añadir un nuevo envío** — Haga clic en el botón flotante **+** (abajo a la derecha) para abrir un formulario en blanco.
+- **Editar un envío existente** — Haga clic en el icono de **editar** de la fila.
+- **Ver detalles del envío** — Haga clic en el icono de **ver**.
+- **Eliminar un envío** — Haga clic en el icono de **eliminar**.
+- **Imprimir o descargar** un PDF o DOCX del envío.
+- **Imprimir una credencial** (si la métrica de caso está activa).
+- **Expandir una fila** para ver detalles anidados (si está configurado).
 
-En la lista de envíos de un formulario, puedes realizar acciones sobre entradas individuales:
-*   **Ver**: Consulta los detalles completos de un envío.
-*   **Editar**: Modifica un envío existente (si tienes permiso).
-*   **Imprimir/Exportar**: Genera un informe en PDF o DOCX del envío.
-*   **Duplicar**: Crea una copia de un envío para usarla como base para uno nuevo.
-*   **Eliminar**: Elimina un envío (si tienes permiso).
+### Filtrado y búsqueda
 
-También puedes seleccionar varios envíos para realizar acciones masivas como eliminar o editar.
+Utilice el panel de filtros expandible en la parte superior de la lista:
+
+- **Búsqueda por palabra clave** — Encuentre envíos por cualquier texto.
+- **Rango de fechas** — Filtre por fecha de creación.
+- **Filtros de métricas** — Reduzca por ubicación, proyecto, área, caso, organización u otras métricas personalizadas.
+- **Filtro de estado** — Filtre por estado del formulario (ej. Aprobado, Pendiente).
+- **Filtro de usuario** — Muestre solo envíos creados por un usuario específico.
+
+Puede guardar y recargar ajustes predefinidos de filtros usando el **gestor de preajustes**.
+
+### Acciones masivas
+
+Seleccione varias filas usando las casillas de verificación. Luego realice operaciones masivas:
+
+- **Eliminar** — Elimine los envíos seleccionados.
+- **Edición masiva** — Modifique un campo en todos los envíos seleccionados.
+
+### Exportar e importar
 
 ![Diálogo de exportación para descargar envíos de formularios](../imgs/forms/index-export.png)
 
----
+Haga clic en el botón **exportar** (icono de descarga en la nube) para abrir el diálogo de exportación. Elija entre formato CSV o XLSX y descargue todos los envíos filtrados.
 
-## Flujos de trabajo clave
+![Diálogo de importación para subir múltiples envíos desde un archivo](../imgs/forms/index-import.png)
 
-### Para enviar nuevos datos:
-1.  Desde la página principal de Formularios, haz clic en el esquema de formulario deseado.
-2.  En la página del formulario, haz clic en el botón de acción flotante **Crear**.
-3.  Completa todos los campos obligatorios en el formulario que se abre.
-4.  Haz clic en **Enviar** para guardar tu entrada.
-
-### Para revisar o editar datos existentes:
-1.  Desde la página principal de Formularios, haz clic en el esquema de formulario correspondiente.
-2.  Navega por la lista de envíos. Haz clic en cualquier entrada individual para **Ver** sus detalles completos.
-3.  Si tienes permiso, puedes hacer clic en **Editar** para modificar un envío.
-
-### Para importar datos:
-1.  Ve a la página del esquema de formulario deseado.
-2.  Haz clic en el botón **Importar** (icono de carga en la nube).
-3.  Sigue las instrucciones en pantalla para seleccionar y cargar tu archivo de datos.
-
-### Para exportar datos:
-1.  Ve a la página del esquema de formulario deseado.
-2.  Usa los filtros para reducir la lista de envíos que deseas exportar.
-3.  Haz clic en el botón **Exportar** en la barra de filtros.
-4.  Elige el formato de exportación que prefieras.
-
-!!! note "Gestión de esquemas de formulario"
-    La creación de nuevos esquemas de formulario o la edición de su estructura (agregar/eliminar campos) requiere permisos de administrador. Si necesitas configurar un nuevo tipo de formulario, contacta al administrador de tu proyecto. Puedes obtener más información sobre cómo editar la estructura de un formulario en la guía [Editar esquema de formulario](edit-form-schema.md).
+Si aparece un botón de **importar** (icono de subida en la nube), puede subir un archivo (CSV o XLSX) para añadir varios envíos de una sola vez.
 
 !!! warning "Permisos"
-    Las acciones que ves (Crear, Editar, Eliminar, Importar, Exportar) dependen de tus permisos de usuario. Si un botón o acción no aparece, es posible que no tengas el acceso requerido.
+    Algunas acciones (editar esquema, eliminar, exportar, importar) solo están disponibles si tiene los permisos necesarios. Contacte a su administrador para solicitar acceso.
+
+## Páginas relacionadas
+
+- [Editar esquema de formulario](edit-form-schema.md) — Personalice la estructura de un formulario.
+- [Mapa de formularios](forms-map.md) — Vea los envíos geolocalizados en un mapa.
+- [DataChat](datachat.md) — Haga preguntas sobre los datos de su formulario.
+- [Editar formulario](edit-form.md) — Rellene o modifique un envío individual.
+- [Informes](../reports/index.md) — Cree resúmenes y visualizaciones a partir de sus datos.

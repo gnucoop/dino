@@ -1,54 +1,68 @@
 ---
 title: Agregación
-description: Utilice la vista de Agregación en Dino para navegar, filtrar y gestionar los envíos de formularios de todos sus esquemas de formulario en una única lista unificada.
+description: Ver y gestionar los envíos de formularios agregados en Dino.
 ---
 
 # Agregación
 
-La página de Agregación ofrece una vista unificada de todos los envíos de formularios de su organización. En lugar de ver los envíos de un solo esquema de formulario a la vez, puede ver entradas de múltiples esquemas juntos en una única lista filtrable.
+La página de Agregación te ofrece una vista centralizada de todos los envíos de formularios en tus proyectos. Puedes explorar, filtrar y realizar acciones sobre los envíos sin tener que abrir cada formulario individualmente.
 
-![Vista principal de la página de Agregación](../imgs/aggregation/index.png)
+![Main view of the Aggregation page](../imgs/aggregation/index.png)
 
-## Navegar por la lista
+## Visualización de la lista de agregación
 
-La lista muestra todos los envíos a los que tiene permiso de acceso. Cada fila representa un único envío. Las siguientes columnas se muestran por defecto:
+La tabla principal muestra una fila por cada envío. Por defecto, ves las columnas **Esquema del formulario** y **Estado**, pero puedes personalizar las columnas que aparecen usando el icono **View Week** en el encabezado de la tabla.
 
-*   **Esquema de formulario**: El nombre del esquema de formulario al que pertenece este envío.
-*   **Estado**: El estado actual del flujo de trabajo del envío.
-*   Pueden aparecer columnas adicionales con métricas como **Proyecto**, **Ubicación** u **Organización**, dependiendo de la configuración de su sistema.
+- Cada fila muestra un icono de estado y, si el formulario tiene problemas de validación, un icono de advertencia.
+- Pasa el cursor sobre una fila para ver un resaltado; haz clic en cualquier lugar de una fila para seleccionarla y mostrar las acciones disponibles.
 
-Puede hacer clic en cualquier fila para seleccionarla o expandirla y ver más detalles.
+En la parte superior de la lista, el contador **Elementos encontrados** y el paginador te permiten saber cuántos envíos existen y navegar por las páginas.
 
-## Filtrar la lista
+## Filtrado y búsqueda
 
-Sobre la lista hay una barra de filtros. Utilícela para reducir los envíos mostrados. Puede filtrar por:
+Hay una barra de búsqueda y un panel de filtros disponibles para reducir la lista.
 
-*   Proyecto
-*   Ubicación
-*   Área
-*   Caso
-*   Código de caso
-*   Organización
-*   Estado del formulario
-*   Usuario
+1. Haz clic en el **icono de búsqueda** en la barra superior para expandir el panel de filtros.
+2. Usa el campo **palabra clave** para buscar en todos los campos.
+3. Usa los selectores de **rango de fechas** para filtrar por fecha de creación.
+4. Aparecen filtros adicionales para **Área**, **Caso**, **Ubicación**, **Organización**, **Proyecto**, **Estado del formulario** y **Usuario**. Estos son dinámicos y respetan las definiciones de métricas de tu formulario.
+5. Los filtros activos se muestran como chips debajo de la barra de filtros: haz clic en el icono **cancelar** en un chip para eliminarlo.
 
-!!! tip "Consejos de filtrado"
-    La barra de filtros de Agregación está diseñada para un filtrado rápido entre esquemas. Para funciones avanzadas como presets de filtros guardados o exportación de datos, diríjase a la [lista de envíos para un esquema de formulario específico](../forms/index.md).
+!!! tip "Filtros predefinidos"
+    La página de Agregación no admite filtros predefinidos guardados. Puedes combinar filtros cada vez que necesites una vista personalizada.
 
-## Acciones por fila
+## Acciones de fila
 
-Al pasar el ratón sobre una fila, aparece un conjunto de iconos de acción a la derecha. Las acciones disponibles para un envío concreto dependen de sus permisos sobre su esquema de formulario.
+Después de seleccionar una fila, los iconos de acción aparecen en la columna **Acciones** en el lado derecho de la tabla.
 
-*   **Ver**: Abre el envío en una vista de solo lectura.
-*   **Editar**: Abre el envío para editarlo.
-*   **Imprimir**: Genera y abre una versión PDF del envío. Se le pedirá confirmación antes de crear el PDF.
-*   **Eliminar**: Elimina permanentemente el envío. Se le pedirá confirmación para esta acción.
+| Icono | Acción | Descripción |
+|------|--------|-------------|
+| `visibility` | Ver | Abre el envío en modo solo lectura. |
+| `create` | Editar | Modifica los datos del envío. |
+| `printer` | Imprimir | Genera un PDF del envío. |
+| `delete` | Eliminar | Elimina el envío tras la confirmación. |
+
+Haz clic en **More Horiz** (tres puntos) para ver acciones adicionales para esa fila. Las acciones **Imprimir** y **Eliminar** solicitan confirmación antes de ejecutarse.
 
 ## Crear un nuevo envío
 
-Puede iniciar un nuevo envío de formulario directamente desde la página de Agregación.
+El botón flotante **+** en la parte inferior derecha de la pantalla te permite iniciar un nuevo envío.
 
-1.  Haga clic en el botón **+** (Agregar) en la esquina inferior derecha de la pantalla.
-2.  Se abre un cuadro de diálogo que muestra una lista de los esquemas de formulario para los que tiene permiso de crear envíos.
-3.  Seleccione el esquema de formulario deseado de la lista.
-4.  Haga clic en **Crear formulario**. Será redirigido al formulario para comenzar a llenarlo.
+![Diálogo para elegir un esquema de formulario e iniciar un nuevo envío](../imgs/aggregation/index-new.png)
+
+1. Haz clic en el botón **+**. Se abre un diálogo que muestra los esquemas de formulario disponibles.
+2. Selecciona o busca el esquema de formulario que deseas usar.
+3. Después de la selección, serás llevado directamente a la página [Editar formulario](../forms/edit-form.md) para completar los datos.
+
+## Imprimir un PDF
+
+Puedes generar un PDF de cualquier envío que incluya la etiqueta del esquema del formulario, los nombres de las métricas activas y los datos ingresados.
+
+1. En la fila que deseas imprimir, haz clic en el icono **Impresora** (o usa el menú **More Horiz** si está disponible).
+2. Confirma la acción cuando se te solicite.
+3. El PDF se abre en una nueva pestaña del navegador o se descarga automáticamente.
+
+El encabezado del PDF incluye el título del esquema del formulario y todos los nombres de métricas actualmente activos en el sistema.
+
+!!! warning "Disponibilidad de métricas"
+    El PDF impreso incluye solo las métricas que están activas en el momento en que inicias la impresión. Si se agregó una métrica después de crear el envío, no aparecerá.

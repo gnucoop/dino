@@ -17,7 +17,6 @@ Diseña esquemas de formularios y úsalos para registrar información. Visualiza
 *   [Diseñar un esquema de formulario](forms/edit-form-schema.md)
 *   [Llenar un formulario](forms/edit-form.md)
 *   [Explorar datos en un mapa](forms/forms-map.md)
-*   [Finalizar formularios](checkout/index.md)
 
 ### Analizar y reportar
 Convierte tus datos recopilados en información útil. Crea informes personalizados y usa IA para hacer preguntas sobre tus datos en lenguaje natural.

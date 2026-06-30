@@ -1,46 +1,78 @@
 ---
-title: Aree Tematiche
-description: Crea e gestisci un elenco gerarchico di categorie per organizzare i tuoi dati in Dino.
+title: Gestione dei Valori delle Metriche – Aree Tematiche
+description: Scopri come visualizzare, aggiungere, modificare, eliminare e cercare aree tematiche nella sezione di gestione delle metriche di Dino.
 ---
 
-# Aree Tematiche
+# Gestione dei Valori delle Metriche – Aree Tematiche
 
-La pagina Aree Tematiche consente di creare e gestire un elenco gerarchico di categorie per i tuoi dati. Questo aiuta a organizzare e filtrare le informazioni all'interno della piattaforma.
+La pagina **Aree Tematiche** (raggiungibile dalla sezione Metriche) ti consente di organizzare i dati delle tue metriche in categorie gerarchiche. Qui puoi visualizzare, creare, modificare ed eliminare aree tematiche, oltre a filtrare ed esportare l’elenco.
 
-![Vista principale della pagina Aree](../imgs/metrics/areas.png)
+![Vista principale della pagina di gestione dei valori delle metriche](../imgs/metrics/areas.png)
 
-Quando si apre la pagina, viene visualizzato un elenco delle aree esistenti. Le colonne principali sono **Nome Area** e **Area Genitore**. Puoi cliccare su una riga per selezionarla o espanderla per visualizzare maggiori dettagli.
+## Cosa Vedi
 
-## Gestione delle Aree
+- Il **percorso di navigazione** (breadcrumb) in alto mostra la tua posizione corrente nell’applicazione.
+- La tabella principale elenca tutte le aree tematiche, mostrando colonne come **Nome Area**, **Area Genitore** e (se configurati) altri attributi. Puoi personalizzare le colonne visibili cliccando sull’icona **view_week** nell’intestazione.
+- Una **barra di ricerca** e un **pannello dei filtri** ti permettono di trovare aree per parola chiave, intervallo di date o altri metadati.
+- Il pulsante **Esporta** (cloud_download) consente di scaricare l’elenco corrente come file.
+- Sono disponibili due pulsanti di azione fluttuanti:
+    - **+ (Aggiungi Nuovo)** – crea una nuova area tematica.
+    - **cloud_upload** – importa aree da un file esterno.
 
-### Visualizzare un'Area
-1.  Nell'elenco, individua l'area che desideri visualizzare.
-2.  Fai clic sull'icona **occhio** (visibilità) nel menu azioni della riga.
-3.  Si apre una finestra di dialogo che mostra tutti i dettagli di quell'area.
+## Lavorare con le Aree Tematiche
 
-### Creare una Nuova Area
-1.  Fai clic sul pulsante di azione fluttuante **+** (più) nell'angolo in basso a destra dello schermo.
-2.  Apparirà un modulo. Inserisci le informazioni richieste, come il **Nome Area**.
-3.  Se quest'area deve essere una sottocategoria, seleziona un'area esistente come **Area Genitore**.
-4.  Fai clic su **Salva** per creare la nuova area.
+### Aggiungere una Nuova Area Tematica
 
-### Modificare un'Area
-1.  Nell'elenco, trova l'area che desideri modificare.
-2.  Fai clic sull'icona **matita** (modifica) nel menu azioni di quella riga.
-3.  Modifica le informazioni nel modulo che appare.
-4.  Fai clic su **Salva** per applicare le modifiche.
+1. Clicca sul pulsante fluttuante **+** .
+2. Nella finestra di dialogo che si apre, compila i campi obbligatori (ad es. **Nome Area**, **Area Genitore**).
+3. Clicca su **Crea** per salvare la nuova area.
 
-### Eliminare un'Area
-1.  Nell'elenco, trova l'area che desideri eliminare.
-2.  Fai clic sull'icona **cestino** (elimina) nel menu azioni di quella riga.
-3.  Apparirà una finestra di dialogo di conferma. Conferma l'eliminazione.
+!!! tip "Area Genitore"
+    Per creare una sotto‑area, seleziona un'**Area Genitore** dal menu a discesa. Se lasciato vuoto, la nuova area diventa un elemento di primo livello.
 
-!!! warning "Eliminazione delle Aree"
-    Eliminare un'area potrebbe influenzare il modo in cui i dati sono categorizzati. Assicurati che non ci siano invii di dati attivi o altre metriche che dipendano dall'area prima di eliminarla.
+### Modificare un’Area Esistente
 
-## Ordinamento e Organizzazione
+1. Trova nella tabella l’area che vuoi modificare.
+2. Clicca sull’icona **edit** (matita) nella colonna delle azioni della riga.
+3. Modifica i campi nella finestra di dialogo e clicca su **Salva**.
 
-Puoi ordinare l'elenco alfabeticamente per la colonna **Nome Area**. Fai clic sull'intestazione della colonna per alternare tra ordine crescente e decrescente.
+### Visualizzare i Dettagli
 
-!!! tip "Struttura Gerarchica"
-    Utilizza il campo **Area Genitore** per creare una struttura annidata, simile a un albero, per le tue categorie. Questo è utile per creare temi ampi con sotto-argomenti specifici.
+- Clicca sull’icona **visibility** per aprire una finestra di dialogo in sola lettura che mostra tutti i campi dell’area.
+- Puoi anche **cliccare su una riga** per espanderla e rivelare eventuali aree figlie (se la gerarchia è configurata).
+
+### Eliminare un’Area
+
+1. Clicca sull’icona **delete** (cestino) nella colonna delle azioni della riga.
+2. Conferma l’eliminazione nella finestra di dialogo che appare.
+
+!!! warning "Considerazioni sull’Eliminazione"
+    Eliminare un’area genitore potrebbe influenzare le aree figlie. Dino ti avviserà se sono presenti elementi associati. Procedi con cautela.
+
+## Ricerca e Filtri
+
+- Usa il campo di **ricerca per parola chiave** nella parte superiore dell’elenco per filtrare le aree per nome.
+- Apri il pannello dei filtri cliccando sulla freccia **expand**. Puoi impostare:
+    - **Da data / A data** – filtra per data di creazione.
+    - **Filtri aggiuntivi** (ad es. campi specifici delle metriche) – se la tua istanza ha attributi personalizzati.
+- Applica un **preset di filtro** (se disponibile) per caricare rapidamente combinazioni di filtri salvate.
+
+## Esportare l’Elenco
+
+1. Clicca sul pulsante **cloud_download** nella barra degli strumenti.
+2. Scegli il formato di esportazione (ad es. CSV, Excel).
+3. Il file verrà generato con l’insieme di aree attualmente visibili (filtrate).
+
+## Azioni in Blocco
+
+Per eseguire azioni su più aree contemporaneamente (ad es. eliminarne diverse), seleziona le caselle di controllo accanto alle righe. I pulsanti per le azioni in blocco appariranno nell’intestazione della colonna. Attualmente, la schermata Aree Tematiche supporta l’**eliminazione in blocco**.
+
+## Navigare con il Percorso di Navigazione
+
+Il percorso di navigazione mostra la tua posizione corrente (ad es. **Metriche > Aree Tematiche**). Clicca su qualsiasi collegamento del percorso per saltare a un livello superiore.
+
+## Pagine Correlate
+
+- [Panoramica delle Metriche](index.md)
+- [Gestione dei Valori delle Metriche – Casi, Luoghi, Organizzazioni e Progetti](areas.md) (questa pagina)
+- [Utenti e Gruppi](../administration/users.md)

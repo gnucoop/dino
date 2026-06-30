@@ -17,7 +17,6 @@ Progetta schemi di moduli e usali per registrare informazioni. Visualizza e gest
 *   [Progettare uno schema modulo](forms/edit-form-schema.md)
 *   [Compilare un modulo](forms/edit-form.md)
 *   [Esplorare i dati su una mappa](forms/forms-map.md)
-*   [Estrarre i moduli](checkout/index.md)
 
 ### Analizzare e creare report
 Trasforma i dati raccolti in informazioni utili. Crea report personalizzati e usa l'IA per porre domande sui tuoi dati in linguaggio naturale.

@@ -1,54 +1,68 @@
 ---
 title: Agregação
-description: Use a visualização de Agregação no Dino para navegar, filtrar e gerenciar submissões de formulários de todos os seus esquemas de formulário em uma única lista unificada.
+description: Visualize e gerencie submissões de formulários agregadas no Dino.
 ---
 
 # Agregação
 
-A página de Agregação oferece uma visão unificada de todas as submissões de formulários da sua organização. Em vez de visualizar submissões de um esquema de formulário por vez, você pode ver entradas de vários esquemas juntas em uma única lista filtrável.
+A página de Agregação oferece uma visão centralizada de todas as submissões de formulários em seus projetos. Você pode navegar, filtrar e realizar ações nas submissões sem precisar abrir cada formulário individualmente.
 
 ![Visão principal da página de Agregação](../imgs/aggregation/index.png)
 
-## Navegando na Lista
+## Visualizando a Lista de Agregação
 
-A lista exibe todas as submissões às quais você tem permissão de visualizar. Cada linha representa uma única submissão. As seguintes colunas são mostradas por padrão:
+A tabela principal exibe uma linha por submissão. Por padrão, você vê as colunas **Esquema do Formulário** e **Status**, mas pode personalizar quais colunas aparecem usando o ícone **Ver Semana** no cabeçalho da tabela.
 
-*   **Esquema do Formulário**: O nome do esquema de formulário ao qual esta submissão pertence.
-*   **Status**: O status atual do fluxo de trabalho da submissão.
-*   Colunas adicionais para métricas como **Projeto**, **Localização** ou **Organização** também podem aparecer, dependendo da configuração do seu sistema.
+- Cada linha mostra um ícone de status e, se o formulário tiver problemas de validação, um ícone de aviso.
+- Passe o mouse sobre uma linha para destacá-la; clique em qualquer lugar da linha para selecioná-la e revelar as ações disponíveis.
 
-Você pode clicar em qualquer linha para selecioná-la ou expandi-la para ver mais detalhes.
+No topo da lista, o contador **Itens encontrados** e o paginador informam quantas submissões existem e permitem navegar pelas páginas.
 
-## Filtrando a Lista
+## Filtrando e Pesquisando
 
-Uma barra de filtros está localizada acima da lista. Use-a para restringir as submissões exibidas. Você pode filtrar por:
+Uma barra de pesquisa e um painel de filtros estão disponíveis para restringir a lista.
 
-*   Projeto
-*   Localização
-*   Área
-*   Caso
-*   Código do Caso
-*   Organização
-*   Status do Formulário
-*   Usuário
+1. Clique no **ícone de pesquisa** na barra superior para expandir o painel de filtros.
+2. Use o campo **palavra-chave** para pesquisar em todos os campos.
+3. Use os seletores de **intervalo de datas** para filtrar por data de criação.
+4. Filtros adicionais aparecem para **Área**, **Caso**, **Localização**, **Organização**, **Projeto**, **Status do Formulário** e **Usuário**. Eles são dinâmicos e respeitam as definições de métricas do seu formulário.
+5. Os filtros ativos são exibidos como chips abaixo da barra de filtros – clique no **ícone de cancelar** em um chip para removê-lo.
 
-!!! tip "Dicas de Filtragem"
-    A barra de filtros da Agregação foi projetada para filtragem rápida entre esquemas. Para funcionalidades avançadas, como predefinições de filtro salvas ou exportação de dados, navegue até a [lista de submissões de um esquema de formulário específico](../forms/index.md).
+!!! tip "Filtros predefinidos"
+    A página de Agregação não oferece suporte a predefinições de filtros salvos. Você pode combinar filtros sempre que precisar de uma visualização personalizada.
 
-## Ações na Linha
+## Ações nas Linhas
 
-Ao passar o mouse sobre uma linha, um conjunto de ícones de ação aparece à direita. As ações disponíveis para uma submissão específica dependem das suas permissões para o esquema de formulário dela.
+Após selecionar uma linha, os ícones de ação aparecem na coluna **Ações** no lado direito da tabela.
 
-*   **Visualizar**: Abre a submissão em uma visualização somente leitura.
-*   **Editar**: Abre a submissão para edição.
-*   **Imprimir**: Gera e abre uma versão em PDF da submissão. Você será solicitado a confirmar antes da criação do PDF.
-*   **Excluir**: Exclui permanentemente a submissão. Você será solicitado a confirmar esta ação.
+| Ícone | Ação | Descrição |
+|------|------|-----------|
+| `visibility` | Visualizar | Abre a submissão no modo somente leitura. |
+| `create` | Editar | Modifica os dados da submissão. |
+| `printer` | Imprimir | Gera um PDF da submissão. |
+| `delete` | Excluir | Remove a submissão após confirmação. |
+
+Clique em **Mais Vertical** (três pontos) para ver ações adicionais para essa linha. As ações **Imprimir** e **Excluir** pedem confirmação antes de executar.
 
 ## Criando uma Nova Submissão
 
-Você pode iniciar uma nova submissão de formulário diretamente da página de Agregação.
+O botão flutuante **+** no canto inferior direito da tela permite iniciar uma nova submissão.
 
-1.  Clique no botão **+** (Adicionar) no canto inferior direito da tela.
-2.  Uma caixa de diálogo é aberta, mostrando uma lista de esquemas de formulário para os quais você tem permissão de criar submissões.
-3.  Selecione o esquema de formulário desejado na lista.
-4.  Clique em **Criar Formulário**. Você será levado ao formulário para começar a preenchê-lo.
+![Diálogo para escolher um esquema de formulário e iniciar uma nova submissão](../imgs/aggregation/index-new.png)
+
+1. Clique no botão **+**. Um diálogo é aberto mostrando os esquemas de formulário disponíveis.
+2. Selecione ou pesquise o esquema de formulário que deseja usar.
+3. Após a seleção, você é levado diretamente para a página [Editar Formulário](../forms/edit-form.md) para preencher os dados.
+
+## Imprimindo um PDF
+
+Você pode gerar um PDF de qualquer submissão que inclua o rótulo do esquema do formulário, os nomes das métricas ativas e os dados preenchidos.
+
+1. Na linha que deseja imprimir, clique no ícone **Impressora** (ou use o menu **Mais Vertical**, se disponível).
+2. Confirme a ação quando solicitado.
+3. O PDF é aberto em uma nova aba do navegador ou baixado automaticamente.
+
+O cabeçalho do PDF inclui o título do esquema do formulário e todos os nomes das métricas atualmente ativas no sistema.
+
+!!! warning "Disponibilidade das métricas"
+    O PDF impresso inclui apenas as métricas que estão ativas no momento em que você aciona a impressão. Se uma métrica foi adicionada após a criação da submissão, ela não aparecerá.

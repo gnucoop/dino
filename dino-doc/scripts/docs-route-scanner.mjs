@@ -68,11 +68,15 @@ const DOC_OVERRIDES = {
   'create-form':            { slug: 'edit-form' },
   'create-report':          { slug: 'edit-report' },
 
-  // Thematic area tabs: all render inside the same page
-  'cases':                  { slug: 'areas' },
-  'locations':              { slug: 'areas' },
-  'organizations':          { slug: 'areas' },
-  'projects':               { slug: 'areas' },
+  // Metric value tabs: all render inside the same page with an identical
+  // list + CRUD UI, so they share ONE generic "metric values" doc page
+  // (title kept generic on purpose — the page describes how to manage the
+  // values of ANY metric type, using Thematic Areas as the example).
+  'areas':                  { slug: 'areas', title: 'Managing Metric Values' },
+  'cases':                  { slug: 'areas', title: 'Managing Metric Values' },
+  'locations':              { slug: 'areas', title: 'Managing Metric Values' },
+  'organizations':          { slug: 'areas', title: 'Managing Metric Values' },
+  'projects':               { slug: 'areas', title: 'Managing Metric Values' },
 
   // List views: merge into the section index page
   'forms-list':             { slug: 'index' },
@@ -194,6 +198,98 @@ const EXTRA_ROUTE_ENTRIES = [
       },
     ],
   },
+  // --- Forms submission list (the data table for one schema) ---
+  // The /forms main view (index.png) is the SCHEMA GRID; this captures the
+  // actual submission LIST reached by opening a schema. No setup: just the
+  // table as it loads.
+  {
+    url: '/forms/{schemaId}',
+    dir: 'forms',
+    resolveFrom: '/forms',
+    screenshots: [
+      {
+        name: 'forms/index-list',
+        description: 'Submission list (data table) for a form schema',
+      },
+    ],
+  },
+  // --- Forms key workflows: submit new data + import (export already covered above) ---
+  // Both live on the submission list page (/forms/{schemaId}), reached via resolveFrom.
+  // That page stacks two floating buttons in DOM order: Add(0) and Import(1).
+  {
+    url: '/forms/{schemaId}',
+    dir: 'forms',
+    resolveFrom: '/forms',
+    screenshots: [
+      {
+        name: 'forms/index-create',
+        description: 'Blank form opened to submit a new data entry',
+        // Add(0) FAB navigates to a new, empty submission form.
+        setup: "cy.get('.mat-fab-bottom-right').eq(0).click(); cy.wait(2000);",
+        selector: '.mat-fab-bottom-right',
+      },
+    ],
+  },
+  {
+    url: '/forms/{schemaId}',
+    dir: 'forms',
+    resolveFrom: '/forms',
+    screenshots: [
+      {
+        name: 'forms/index-import',
+        description: 'Import dialog for uploading multiple submissions from a file',
+        // The import FAB renders a 'cloud_upload' mat-icon (its textContent is the
+        // ligature name). It only exists when displayImportButton is true, so the
+        // guard targets it specifically: if import is disabled, the screenshot is
+        // SKIPPED rather than failing the whole Cypress run (which would block the
+        // docs deploy). Same icon-name-as-text convention used by resolveAction.
+        setup: "cy.contains('.mat-fab-bottom-right', 'cloud_upload').click(); cy.wait(1500);",
+        selector: ".mat-fab-bottom-right:contains('cloud_upload')",
+      },
+    ],
+  },
+  // --- Metric value edit dialog (Thematic Areas page is the example) ---
+  // The first row action icon is the pencil/edit (matIcon 'create') → opens the edit dialog.
+  {
+    url: '/metrics/thematic_areas',
+    dir: 'metrics',
+    screenshots: [
+      {
+        name: 'metrics/areas-edit',
+        description: 'Edit dialog for modifying a metric value',
+        setup: "cy.get('.dino-action-icon', {timeout: 8000}).first().scrollIntoView().click({force: true}); cy.wait(1000);",
+        selector: '.dino-action-icon',
+      },
+    ],
+  },
+  // --- Aggregation: start a new submission (form-schema picker dialog) ---
+  {
+    url: '/aggregation',
+    dir: 'aggregation',
+    screenshots: [
+      {
+        name: 'aggregation/index-new',
+        description: 'Dialog to choose a form schema and start a new submission',
+        // The single floating button opens the form-creator (schema picker) dialog.
+        setup: "cy.get('.mat-fab-bottom-right').first().click(); cy.wait(1000);",
+        selector: '.mat-fab-bottom-right',
+      },
+    ],
+  },
+  // --- Administration: edit a user permissions group ---
+  // First row action icon is the pencil/edit (matIcon 'create') → opens the group editor dialog.
+  {
+    url: '/users/groups',
+    dir: 'administration',
+    screenshots: [
+      {
+        name: 'administration/groups-list-edit',
+        description: 'Editor dialog for modifying a user permissions group',
+        setup: "cy.get('.dino-action-icon', {timeout: 8000}).first().scrollIntoView().click({force: true}); cy.wait(1000);",
+        selector: '.dino-action-icon',
+      },
+    ],
+  },
 ];
 
 /**
@@ -201,10 +297,19 @@ const EXTRA_ROUTE_ENTRIES = [
  * These pages still get doc files — they just won't have auto-captured screenshots.
  */
 const SCREENSHOT_EXCLUDES = new Set([
-  'checkout/index',
   'public-forms/index',
   'gpt/index',
   'forms/datachat',
+]);
+
+/**
+ * Routes excluded from documentation ENTIRELY: no doc page, no nav entry, no
+ * screenshot. Use for app areas that are not part of the user-facing docs.
+ * (Checked by key in processModule, so the route never enters the route map —
+ * docs-generate won't generate it and docs-nav-sync won't re-add it.)
+ */
+const DOC_EXCLUDES = new Set([
+  'checkout/index', // Checkout flow is not part of the user-facing documentation
 ]);
 
 const SCHEMA_EDITOR_FIXUPS = {
@@ -526,6 +631,73 @@ function findComponentFiles(moduleDir) {
 }
 
 /**
+ * Recursively list .ts/.html source files under a directory, excluding specs.
+ */
+function walkSourceFiles(dirPath) {
+  if (!fs.existsSync(dirPath)) return [];
+  const out = [];
+  for (const entry of fs.readdirSync(dirPath, {withFileTypes: true})) {
+    const full = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...walkSourceFiles(full));
+    } else if (
+      (entry.name.endsWith('.ts') || entry.name.endsWith('.html')) &&
+      !entry.name.endsWith('.spec.ts')
+    ) {
+      out.push(full);
+    }
+  }
+  return out;
+}
+
+/**
+ * Resolve <dino-*> tags found in HTML to their library component template PATHS.
+ * Convention: <dino-{name}> → projects/material/{name}/src/{name}.html
+ * Recurses up to maxDepth to follow tags nested inside library templates.
+ *
+ * Sibling of resolveLibraryTemplates (which returns CONTENTS for screenshot
+ * scanning); this returns PATHS so they can be fed to the doc generator.
+ */
+function resolveLibraryComponentFiles(htmlContent, depth = 0, visited = new Set(), maxDepth = 3) {
+  const out = [];
+  if (depth >= maxDepth) return out;
+  for (const [, name] of htmlContent.matchAll(/<dino-([\w-]+)/g)) {
+    const libPath = path.join(REPO_ROOT, 'projects', 'material', name, 'src', `${name}.html`);
+    if (visited.has(libPath) || !fs.existsSync(libPath)) continue;
+    visited.add(libPath);
+    out.push(libPath);
+    out.push(...resolveLibraryComponentFiles(fs.readFileSync(libPath, 'utf8'), depth + 1, visited, maxDepth));
+  }
+  return out;
+}
+
+/**
+ * Augment a list of source files with the HTML templates of any <dino-*>
+ * library components they reference.  The dinoapp module files are thin
+ * wrappers (module/routing/conf + a container template that just embeds
+ * <dino-...>); the ACTUAL user-facing UI — field labels, action buttons,
+ * dialogs — lives in those library templates, so the doc generator needs them.
+ */
+function withLibrarySources(files) {
+  const visited = new Set();
+  const libs = [];
+  for (const f of files.filter(f => f.endsWith('.html') && fs.existsSync(f))) {
+    libs.push(...resolveLibraryComponentFiles(fs.readFileSync(f, 'utf8'), 0, visited));
+  }
+  return [...files, ...libs];
+}
+
+/**
+ * Collect the source files used to GENERATE documentation for a module.
+ * Unlike findComponentFiles (shallow, feeds the screenshot scanner), this
+ * walks the module recursively (to reach components/*.component.html) and
+ * resolves referenced <dino-*> library templates.
+ */
+function findDocSourceFiles(moduleDir) {
+  return withLibrarySources(walkSourceFiles(path.join(APP_APP_DIR, moduleDir)));
+}
+
+/**
  * Scan all routing files and build the complete route map.
  */
 export function scanRoutes() {
@@ -594,12 +766,23 @@ function processModule(routePath, moduleDir, routeMap, extraFiles = []) {
 
   const key = `${docMapping.section}/${docMapping.slug}`;
 
+  if (DOC_EXCLUDES.has(key)) {
+    console.log(`  [excluded] ${moduleDir} → ${key} (not documented)`);
+    return;
+  }
+
   // If the key already exists, merge component files (multiple modules can map to the same doc)
   if (routeMap[key]) {
     const newFiles = [...findComponentFiles(moduleDir), ...extraFiles];
     for (const f of newFiles) {
       if (!routeMap[key].componentFiles.includes(f)) {
         routeMap[key].componentFiles.push(f);
+      }
+    }
+    const newDocFiles = [...findDocSourceFiles(moduleDir), ...withLibrarySources(extraFiles)];
+    for (const f of newDocFiles) {
+      if (!routeMap[key].docSourceFiles.includes(f)) {
+        routeMap[key].docSourceFiles.push(f);
       }
     }
     // Also track additional module dirs
@@ -617,6 +800,7 @@ function processModule(routePath, moduleDir, routeMap, extraFiles = []) {
     moduleDir,
     moduleDirs: [moduleDir],
     componentFiles: [...findComponentFiles(moduleDir), ...extraFiles],
+    docSourceFiles: [...new Set([...findDocSourceFiles(moduleDir), ...withLibrarySources(extraFiles)])],
   };
 }
 

@@ -1,46 +1,78 @@
 ---
-title: Áreas Temáticas
-description: Crie e gerencie uma lista hierárquica de categorias para organizar seus dados no Dino.
+title: Gerenciando Valores de Métricas – Áreas Temáticas
+description: Aprenda a visualizar, adicionar, editar, excluir e pesquisar áreas temáticas na seção de gerenciamento de métricas do Dino.
 ---
 
-# Áreas Temáticas
+# Gerenciando Valores de Métricas – Áreas Temáticas
 
-A página de Áreas Temáticas permite que você crie e gerencie uma lista hierárquica de categorias para seus dados. Isso ajuda a organizar e filtrar informações em toda a plataforma.
+A página **Áreas Temáticas** (acessível a partir da seção Métricas) permite organizar seus dados de métricas em categorias hierárquicas. Aqui você pode visualizar, criar, editar e excluir áreas temáticas, além de filtrar e exportar a lista.
 
-![Main view of the Areas page](../imgs/metrics/areas.png)
+![Visão principal da página Gerenciando Valores de Métricas](../imgs/metrics/areas.png)
 
-Ao abrir a página, você verá uma lista das áreas existentes. As colunas principais exibidas são **Nome da Área** e **Área Pai**. Você pode clicar em uma linha para selecioná-la ou expandi-la para ver mais detalhes.
+## O que você vê
 
-## Gerenciando Áreas
+- **Breadcrumbs** no topo mostram sua localização atual no aplicativo.
+- A tabela principal lista todas as áreas temáticas, exibindo colunas como **Nome da Área**, **Área Pai** e (se configurado) outros atributos. Você pode personalizar as colunas visíveis clicando no ícone **view_week** no cabeçalho.
+- Uma **barra de pesquisa** e **painel de filtro** permitem encontrar áreas por palavra-chave, intervalo de datas ou outros metadados.
+- O botão **Exportar** (cloud_download) permite baixar a lista atual como um arquivo.
+- Dois botões de ação flutuante estão disponíveis:
+    - **+ (Adicionar Novo)** – cria uma nova área temática.
+    - **cloud_upload** – importa áreas de um arquivo externo.
 
-### Visualizando uma Área
-1.  Na lista, localize a área que deseja visualizar.
-2.  Clique no ícone **olho** (visibilidade) no menu de ações da linha.
-3.  Uma caixa de diálogo será aberta mostrando todos os detalhes da área.
+## Trabalhando com Áreas Temáticas
 
-### Criando uma Nova Área
-1.  Clique no botão de ação flutuante **+** (mais) no canto inferior direito da tela.
-2.  Um formulário aparecerá. Insira as informações necessárias, como o **Nome da Área**.
-3.  Se esta área deve ser uma subcategoria, selecione uma área existente como **Área Pai**.
-4.  Clique em **Salvar** para criar a nova área.
+### Adicionando uma Nova Área Temática
 
-### Editando uma Área
-1.  Na lista, encontre a área que deseja editar.
-2.  Clique no ícone **lápis** (editar) no menu de ações da linha.
-3.  Modifique as informações no formulário que aparece.
-4.  Clique em **Salvar** para aplicar as alterações.
+1. Clique no botão flutuante **+**.
+2. No diálogo que se abre, preencha os campos obrigatórios (ex.: **Nome da Área**, **Área Pai**).
+3. Clique em **Criar** para salvar a nova área.
+
+!!! tip "Área Pai"
+    Para criar uma subárea, selecione uma **Área Pai** no menu suspenso. Se deixado em branco, a nova área se torna um item de nível superior.
+
+### Editando uma Área Existente
+
+1. Localize a área que deseja alterar na tabela.
+2. Clique no ícone **edit** (lápis) na coluna de ações da linha.
+3. Modifique os campos no diálogo e clique em **Salvar**.
+
+### Visualizando Detalhes
+
+- Clique no ícone **visibility** para abrir um diálogo somente leitura mostrando todos os campos da área.
+- Você também pode **clicar em uma linha** para expandi-la e revelar áreas filhas (se a hierarquia estiver configurada).
 
 ### Excluindo uma Área
-1.  Na lista, encontre a área que deseja excluir.
-2.  Clique no ícone **lixeira** (excluir) no menu de ações da linha.
-3.  Uma caixa de diálogo de confirmação aparecerá. Confirme a exclusão.
 
-!!! warning "Exclusão de Áreas"
-    Excluir uma área pode afetar a forma como os dados são categorizados. Certifique-se de que não haja envios de dados ativos ou outras métricas que dependam da área antes de excluí-la.
+1. Clique no ícone **delete** (lixeira) na coluna de ações da linha.
+2. Confirme a exclusão no diálogo que aparece.
 
-## Classificação e Organização
+!!! warning "Considerações sobre Exclusão"
+    Excluir uma área pai pode afetar áreas filhas. O Dino avisará se houver itens associados. Prossiga com cuidado.
 
-Você pode classificar a lista em ordem alfabética pela coluna **Nome da Área**. Clique no cabeçalho da coluna para alternar entre ordem crescente e decrescente.
+## Pesquisa e Filtragem
 
-!!! tip "Estrutura Hierárquica"
-    Use o campo **Área Pai** para criar uma estrutura aninhada, em forma de árvore, para suas categorias. Isso é útil para criar temas amplos com subtópicos específicos.
+- Use o campo de **pesquisa por palavra-chave** no topo da lista para filtrar áreas pelo nome.
+- Abra o painel de filtro clicando na seta **expand**. Você pode definir:
+    - **Data de / Data até** – filtrar pela data de criação.
+    - **Filtros adicionais** (ex.: campos específicos de métricas) – se sua instância tiver atributos personalizados.
+- Aplique um **preset de filtro** (se disponível) para carregar rapidamente combinações de filtro salvas.
+
+## Exportando a Lista
+
+1. Clique no botão **cloud_download** na barra de ferramentas.
+2. Escolha o formato de exportação (ex.: CSV, Excel).
+3. O arquivo será gerado com o conjunto atual (filtrado) de áreas.
+
+## Ações em Lote
+
+Para realizar ações em várias áreas ao mesmo tempo (ex.: excluir várias), selecione as caixas de seleção ao lado das linhas. Os botões de ação em lote aparecerão no cabeçalho da coluna. Atualmente, a tela de Áreas Temáticas suporta **exclusão em lote**.
+
+## Navegando com Breadcrumbs
+
+Os breadcrumbs mostram sua localização atual (ex.: **Métricas > Áreas Temáticas**). Clique em qualquer link do breadcrumb para pular para um nível superior.
+
+## Páginas Relacionadas
+
+- [Visão Geral de Métricas](index.md)
+- [Gerenciando Valores de Métricas – Casos, Locais, Organizações e Projetos](areas.md) (esta página)
+- [Usuários e Grupos](../administration/users.md)
