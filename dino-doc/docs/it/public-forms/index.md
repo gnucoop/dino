@@ -40,6 +40,7 @@ Gli indirizzi dei moduli pubblici seguono il pattern `/f/` seguito da un identif
 Dopo un invio riuscito, vedrai una schermata di conferma con un segno di spunta e il messaggio: **"Il modulo è stato inviato con successo."**
 
 Apparirà anche una notifica nella parte inferiore dello schermo. Da questa notifica puoi:
+
 *   **Compilane un altro**: Fai clic per ricaricare la pagina con una copia vuota dello stesso modulo, permettendoti di effettuare un altro invio.
 *   **Chiudi**: Ignora la notifica.
 
@@ -49,21 +50,25 @@ Apparirà anche una notifica nella parte inferiore dello schermo. Da questa noti
 
 ### Il pulsante di invio è disabilitato.
 Questo significa che il modulo non è ancora valido. Controlla:
+
 *   **Campi obbligatori vuoti**: Assicurati che tutti i campi contrassegnati con un asterisco (*) siano compilati.
 *   **Dati non validi**: Cerca i campi evidenziati in rosso e correggi le informazioni (ad esempio, un formato email non valido).
 
 ### "Impossibile salvare il modulo."
 L'invio ha riscontrato un errore temporaneo, spesso legato alla connessione internet.
+
 1.  Fai clic su **"Riprova"** nella notifica in fondo allo schermo.
 2.  Se l'errore persiste, controlla la connessione internet e prova ad aggiornare la pagina.
 3.  Se continua a non funzionare, contatta la persona che ti ha inviato il link del modulo.
 
 ### "Ops! Impossibile trovare questo schema del modulo."
 Il link che stai utilizzando non è corretto oppure il modulo è stato rimosso.
+
 *   Verifica di avere l'URL completo e corretto.
 *   Contatta la persona che ti ha condiviso il link per ottenerne uno aggiornato.
 
 ### Il modulo non si carica (pagina vuota).
+
 *   Aggiorna la pagina del browser.
 *   Assicurati che la connessione internet sia stabile.
 *   Conferma che il link sia completo e non sia stato troncato.

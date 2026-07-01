@@ -26,12 +26,14 @@ The total number of notifications matching your current search is shown at the t
 Use the filter bar above the list to narrow down what is shown.
 
 ### Search by keyword
+
 1. Click inside the **search by keyword** field at the top of the list.
 2. Start typing any word or phrase from the notification text.
 3. The list updates automatically as you type.
 4. To clear the search, click the **×** icon that appears inside the field.
 
 ### Filter by date
+
 1. Click the **From date** field and select a start date from the calendar.
 2. Click the **To date** field and select an end date.
 3. The list will show only notifications created within that date range.

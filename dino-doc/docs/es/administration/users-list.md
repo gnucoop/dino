@@ -12,6 +12,7 @@ La página Lista de Usuarios muestra una lista completa de todas las cuentas de 
 ## Comprender la Lista de Usuarios
 
 La lista principal muestra información clave de cada usuario:
+
 *   **Correo electrónico:** La dirección de correo electrónico de inicio de sesión del usuario.
 *   **Nombre completo:** El nombre asociado a la cuenta.
 *   **Deshabilitado:** Un interruptor que indica si la cuenta está activa o deshabilitada. Puede hacer clic en este interruptor directamente en la lista para cambiar el estado.
@@ -25,6 +26,7 @@ Puede ordenar la lista por la columna **Fecha de creación**. La columna **ID** 
 Use la barra de búsqueda en la parte superior de la página para encontrar usuarios por su correo electrónico o nombre completo.
 
 Para aplicar filtros más específicos:
+
 1.  Haga clic en el icono de filtro en la barra de búsqueda.
 2.  En la sección **Grupos de permisos de usuario**, puede seleccionar uno o más grupos de usuarios para filtrar la lista y mostrar solo los miembros de esos grupos.
 

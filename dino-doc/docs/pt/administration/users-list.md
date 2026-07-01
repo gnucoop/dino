@@ -12,6 +12,7 @@ A página Lista de Usuários exibe uma lista completa de todas as contas de usu�
 ## Entendendo a Lista de Usuários
 
 A lista principal mostra as principais informações de cada usuário:
+
 *   **E-mail:** O endereço de e-mail de login do usuário.
 *   **Nome Completo:** O nome associado à conta.
 *   **Desabilitado:** Um botão de alternância que indica se a conta está ativa ou desativada. Você pode clicar nesse botão diretamente na lista para alterar o status.
@@ -25,6 +26,7 @@ Você pode ordenar a lista pela coluna **Data de Criação**. A coluna **ID** fi
 Use a barra de pesquisa no topo da página para encontrar usuários pelo e-mail ou nome completo.
 
 Para aplicar filtros mais específicos:
+
 1.  Clique no ícone de filtro na barra de pesquisa.
 2.  Na seção **Grupos de Permissão de Usuário**, você pode selecionar um ou mais grupos de usuários para filtrar a lista e exibir apenas os membros desses grupos.
 

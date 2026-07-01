@@ -40,6 +40,7 @@ Las direcciones de los formularios públicos siguen el patrón `/f/` seguido de 
 Tras un envío exitoso, verás una pantalla de confirmación con una marca de verificación y el mensaje: **"El formulario se ha enviado correctamente."**
 
 También aparecerá una notificación en la parte inferior de la pantalla. Desde esta notificación, puedes:
+
 *   **Rellenar otro**: Haz clic para recargar la página con una copia nueva y vacía del mismo formulario, lo que te permite realizar otro envío.
 *   **Cerrar**: Descartar la notificación.
 
@@ -49,21 +50,25 @@ También aparecerá una notificación en la parte inferior de la pantalla. Desde
 
 ### El botón de envío está desactivado.
 Esto significa que el formulario aún no es válido. Verifica:
+
 *   **Campos obligatorios vacíos**: Asegúrate de que todos los campos marcados con un asterisco (*) estén completos.
 *   **Datos no válidos**: Busca campos resaltados en rojo y corrige la información (por ejemplo, un formato de correo electrónico inválido).
 
 ### "No se puede guardar el formulario."
 Tu envío encontró un error temporal, a menudo relacionado con tu conexión a internet.
+
 1.  Haz clic en **"Intentar de nuevo"** en la notificación en la parte inferior de la pantalla.
 2.  Si el error persiste, verifica tu conexión a internet e intenta actualizar la página.
 3.  Si sigue fallando, contacta a la persona que te envió el enlace del formulario.
 
 ### "¡Vaya! No pudimos encontrar este Esquema de Formulario."
 El enlace que estás usando es incorrecto o el formulario ha sido eliminado.
+
 *   Verifica que tienes la URL completa y correcta.
 *   Contacta a la persona que compartió el enlace contigo para obtener uno actualizado.
 
 ### El formulario no carga (página en blanco).
+
 *   Actualiza la página del navegador.
 *   Asegúrate de que tu conexión a internet sea estable.
 *   Confirma que el enlace esté completo y no haya sido truncado.
