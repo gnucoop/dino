@@ -134,6 +134,10 @@ written, to clean up two recurring model quirks:
   disk (e.g. hallucinated `imgs/icons/*.png`) are removed: a whole-line image is
   dropped, an inline image is replaced by its alt text. Removed paths are
   logged (`Removed N broken image ref(s): …`).
+- **List spacing** — the model sometimes writes a bullet/numbered list directly
+  under a paragraph or heading with no blank line between them. Python-Markdown
+  (MkDocs) then parses the whole block as one paragraph and renders the markers
+  as literal `*`/`-` text inline. A blank line is inserted before such lists.
 
 This runs inline during generation (and in CI), so no manual step is needed. To
 repair existing files on demand, run the sanitizer as a CLI:
@@ -170,8 +174,13 @@ the Git history and the files on disk:
 2. Then:
    - if a **routing module** changed (`*-routing.module.ts`) → **full
      regeneration** of all pages;
-   - otherwise it regenerates only the pages whose **source module changed**,
-     plus any page whose **`.md` file is missing**;
+   - otherwise it regenerates every page whose **source files changed**, plus
+     any page whose **`.md` file is missing**. A page's source files are its
+     `docSourceFiles` from the route map, which include the resolved `<dino-*>`
+     **library templates** under `projects/material/`. So a change isolated to a
+     shared library component (with no edit to the dinoapp module) still
+     regenerates **every page that embeds it**, not just pages under
+     `projects/dinoapp/src/app/`;
    - if nothing relevant changed → it regenerates no content pages.
 3. The landing page `docs/en/index.md` is **always** rebuilt from the route map
    (its translations only if missing).
@@ -218,6 +227,28 @@ Generates/updates the English pages and skips all translations entirely.
 
 ```bash
 node dino-doc/scripts/docs-generate.mjs --no-translate
+```
+
+### Target specific pages manually
+
+Force regeneration of specific pages regardless of what the Git diff detects.
+Useful to refresh a page without deleting its `.md` files, or when the change
+lives somewhere the auto-detection doesn't reach. Two comma-separated flags:
+
+- `--modules=` — by dinoapp **module directory** (e.g. `mat-forms`); every page
+  fed by that module is regenerated.
+- `--pages=` — by **route key** (`section/slug`, e.g. `forms/index`).
+
+An unknown module or page is skipped with a `WARN`. These combine with the
+normal Git-diff detection (they add to it, they don't replace it), and honor
+`--no-translate`.
+
+```bash
+# by module directory
+node dino-doc/scripts/docs-generate.mjs --modules=mat-forms,mat-reports
+
+# by route key
+node dino-doc/scripts/docs-generate.mjs --pages=forms/index,reports/index
 ```
 
 ## Customizing routes, screenshots and exclusions
