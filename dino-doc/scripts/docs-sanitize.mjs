@@ -13,7 +13,10 @@
  *     ("markdown instead of HTML").
  *
  * sanitizeGenerated() normalizes the observed failure modes back to proper
- * `---` frontmatter. It is idempotent: a well-formed page is returned unchanged.
+ * `---` frontmatter, and inserts the blank line Python-Markdown (MkDocs) requires
+ * before a list that directly follows a paragraph or heading — without it the
+ * list renders as one inline paragraph with literal `*` markers. It is
+ * idempotent: a well-formed page is returned unchanged.
  *
  * Run as a CLI to repair existing files in place:
  *   node dino-doc/scripts/docs-sanitize.mjs                # all Markdown under docs/
@@ -25,9 +28,75 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 
 const isFence = line => /^```[\w-]*\s*$/.test(line.trim());
+const isListItem = line => /^\s*([-*+]|\d+\.)\s+/.test(line);
 
 /**
- * Strip code-fence wrappers the model may have added around generated Markdown.
+ * Insert the blank line Python-Markdown (MkDocs) requires before a list that
+ * immediately follows a paragraph or heading. Without it the whole block is
+ * parsed as one paragraph and the markers render as literal `*` / `-` text.
+ *
+ * Conservative and non-destructive: it ONLY adds blank lines, and only when a
+ * list marker starts a new list right after a non-blank, non-list line. Lines
+ * inside fenced code blocks, list continuation lines, and lists that are
+ * already spaced correctly are left untouched \u2014 so it is idempotent and returns
+ * a well-formed document unchanged.
+ *
+ * @param {string} content
+ * @returns {string}
+ */
+export function fixListSpacing(content) {
+  if (!content) return content;
+
+  const lines = content.split('\n');
+  const out = [];
+  let inList = false;
+  let inCode = false;
+
+  for (const line of lines) {
+    // Track fenced code blocks \u2014 never touch their contents.
+    if (isFence(line)) {
+      inCode = !inCode;
+      inList = false;
+      out.push(line);
+      continue;
+    }
+    if (inCode) {
+      out.push(line);
+      continue;
+    }
+
+    if (isListItem(line)) {
+      const prev = out.length ? out[out.length - 1] : '';
+      // A new list (not already inside one) right after a non-blank line needs
+      // a separating blank line.
+      if (!inList && prev.trim() !== '') out.push('');
+      inList = true;
+      out.push(line);
+      continue;
+    }
+
+    if (line.trim() === '') {
+      // Blank lines don't end a list on their own (loose lists / trailing blanks).
+      out.push(line);
+      continue;
+    }
+
+    // Non-blank, non-list line: an indented line continues the current list
+    // item; anything else (paragraph/heading) ends the list.
+    if (inList && /^\s+\S/.test(line)) {
+      out.push(line);
+      continue;
+    }
+    inList = false;
+    out.push(line);
+  }
+
+  return out.join('\n');
+}
+
+/**
+ * Strip code-fence wrappers the model may have added around generated Markdown,
+ * then normalize list spacing (see fixListSpacing).
  * @param {string} raw - raw model output
  * @returns {string} sanitized Markdown (always ends with a single trailing newline)
  */
@@ -37,10 +106,11 @@ export function sanitizeGenerated(raw) {
   const stripped = raw.replace(/^\uFEFF/, '');
   const lines = stripped.trimStart().split('\n');
 
-  // Nothing to do unless the document opens with a code fence. Return the input
-  // UNCHANGED in that case (don't normalize whitespace on already-good files).
+  // No bogus opening fence: don't normalize whitespace, but still fix list
+  // spacing (a rendering defect even on otherwise well-formed files). A file
+  // that needs no list fix is returned byte-for-byte unchanged.
   if (lines.length === 0 || !isFence(lines[0])) {
-    return raw;
+    return fixListSpacing(raw);
   }
 
   // Drop the bogus opening fence.
@@ -62,7 +132,7 @@ export function sanitizeGenerated(raw) {
     }
   }
 
-  return lines.join('\n').trim() + '\n';
+  return fixListSpacing(lines.join('\n').trim() + '\n');
 }
 
 /**
