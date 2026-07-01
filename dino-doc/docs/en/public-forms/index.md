@@ -40,6 +40,7 @@ Public form addresses follow the pattern `/f/` followed by a unique identifier (
 Upon a successful submission, you will see a confirmation screen with a checkmark and the message: **"The form has been successfully submitted."**
 
 A notification will also appear at the bottom of your screen. From this notification, you can:
+
 *   **Fill out another one**: Click this to reload the page with a fresh, empty copy of the same form, allowing you to make another submission.
 *   **Close**: Dismiss the notification.
 
@@ -49,21 +50,25 @@ A notification will also appear at the bottom of your screen. From this notifica
 
 ### The submit button is disabled.
 This means the form is not yet valid. Check for:
+
 *   **Empty required fields**: Ensure all fields marked with an asterisk (*) are filled.
 *   **Invalid data**: Look for fields highlighted in red and correct the information (e.g., an invalid email format).
 
 ### "Unable to save form."
 Your submission encountered a temporary error, often related to your internet connection.
+
 1.  Click **"Try again"** in the notification at the bottom of the screen.
 2.  If the error persists, check your internet connection and try refreshing the page.
 3.  If it continues to fail, contact the person who sent you the form link.
 
 ### "Oops! We could not find this Form Schema."
 The link you are using is incorrect or the form has been removed.
+
 *   Verify you have the complete, correct URL.
 *   Contact the person who shared the link with you for an updated one.
 
 ### The form does not load (blank page).
+
 *   Refresh your browser page.
 *   Ensure your internet connection is stable.
 *   Confirm the link is complete and has not been truncated.

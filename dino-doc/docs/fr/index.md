@@ -13,6 +13,7 @@ Dino est une plateforme web de collecte, de suivi et d'analyse structurés de do
 
 ### Collecter et gérer des données
 Concevez des schémas de formulaires et utilisez-les pour enregistrer des informations. Visualisez et gérez toutes vos données depuis le [Tableau de bord](dashboard/index.md) principal. Vous pouvez créer, modifier et organiser vos outils de collecte de données.
+
 *   [Voir et gérer les formulaires](forms/index.md)
 *   [Concevoir un schéma de formulaire](forms/edit-form-schema.md)
 *   [Remplir un formulaire](forms/edit-form.md)
@@ -20,6 +21,7 @@ Concevez des schémas de formulaires et utilisez-les pour enregistrer des inform
 
 ### Analyser et générer des rapports
 Transformez les données collectées en informations exploitables. Créez des rapports personnalisés et utilisez l'IA pour poser des questions sur vos données en langage naturel.
+
 *   [Voir et gérer les rapports](reports/index.md)
 *   [Concevoir un schéma de rapport](reports/edit-report-schema.md)
 *   [Remplir un rapport](reports/edit-report.md)
@@ -28,11 +30,13 @@ Transformez les données collectées en informations exploitables. Créez des ra
 
 ### Surveiller et mesurer
 Suivez les indicateurs clés de performance et surveillez des zones géographiques spécifiques.
+
 *   [Voir les indicateurs](metrics/index.md)
 *   [Gérer les zones](metrics/areas.md)
 
 ### Rester informé et collaborer
 Recevez des notifications dans l'application et gérez l'accès à la plateforme pour votre équipe.
+
 *   [Voir les notifications](notifications/index.md)
 *   [Gérer les utilisateurs et les groupes](administration/users.md)
 *   [Voir la liste des utilisateurs](administration/users-list.md)
@@ -41,6 +45,7 @@ Recevez des notifications dans l'application et gérez l'accès à la plateforme
 
 ### Partager et étendre
 Partagez des formulaires publiquement ou utilisez des fonctionnalités avancées d'IA pour les tâches de données.
+
 *   [Remplir un formulaire public](public-forms/index.md)
 
 ---

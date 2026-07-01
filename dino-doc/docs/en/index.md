@@ -13,6 +13,7 @@ Dino is a web-based platform for structured data collection, monitoring, and ana
 
 ### Collect and Manage Data
 Design form schemas and use them to record information. View and manage all your data from the main [Dashboard](dashboard/index.md). You can create, edit, and organize your data collection tools.
+
 *   [View and Manage Forms](forms/index.md)
 *   [Design a Form Schema](forms/edit-form-schema.md)
 *   [Fill In a Form](forms/edit-form.md)
@@ -20,6 +21,7 @@ Design form schemas and use them to record information. View and manage all your
 
 ### Analyze and Report
 Turn your collected data into insights. Create custom reports and use AI to ask questions about your data in plain language.
+
 *   [View and Manage Reports](reports/index.md)
 *   [Design a Report Schema](reports/edit-report-schema.md)
 *   [Fill In a Report](reports/edit-report.md)
@@ -28,11 +30,13 @@ Turn your collected data into insights. Create custom reports and use AI to ask 
 
 ### Monitor and Measure
 Track key performance indicators and monitor specific geographic areas.
+
 *   [View Metrics](metrics/index.md)
 *   [Manage Areas](metrics/areas.md)
 
 ### Stay Informed and Collaborate
 Receive in-app notifications and manage platform access for your team.
+
 *   [View Notifications](notifications/index.md)
 *   [Manage Users & Groups](administration/users.md)
 *   [View Users List](administration/users-list.md)
@@ -41,6 +45,7 @@ Receive in-app notifications and manage platform access for your team.
 
 ### Share and Extend
 Share forms publicly or use advanced AI features for data tasks.
+
 *   [Fill In a Public Form](public-forms/index.md)
 
 ---

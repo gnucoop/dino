@@ -40,6 +40,7 @@ Os endereços dos formulários públicos seguem o padrão `/f/` seguido por um i
 Após um envio bem-sucedido, você verá uma tela de confirmação com uma marca de verificação e a mensagem: **"O formulário foi enviado com sucesso."**
 
 Uma notificação também aparecerá na parte inferior da tela. A partir dessa notificação, você pode:
+
 *   **Preencher outro**: Clique nisso para recarregar a página com uma cópia nova e vazia do mesmo formulário, permitindo que você faça outro envio.
 *   **Fechar**: Dispensar a notificação.
 
@@ -49,21 +50,25 @@ Uma notificação também aparecerá na parte inferior da tela. A partir dessa n
 
 ### O botão de envio está desabilitado.
 Isso significa que o formulário ainda não é válido. Verifique:
+
 *   **Campos obrigatórios vazios**: Certifique-se de que todos os campos marcados com asterisco (*) estão preenchidos.
 *   **Dados inválidos**: Procure por campos destacados em vermelho e corrija as informações (ex.: formato de e-mail inválido).
 
 ### "Não foi possível salvar o formulário."
 Seu envio encontrou um erro temporário, geralmente relacionado à sua conexão com a internet.
+
 1.  Clique em **"Tentar novamente"** na notificação na parte inferior da tela.
 2.  Se o erro persistir, verifique sua conexão com a internet e tente atualizar a página.
 3.  Se continuar falhando, entre em contato com a pessoa que lhe enviou o link do formulário.
 
 ### "Ops! Não foi possível encontrar este Esquema de Formulário."
 O link que você está usando está incorreto ou o formulário foi removido.
+
 *   Verifique se você tem a URL completa e correta.
 *   Entre em contato com a pessoa que compartilhou o link com você para obter um atualizado.
 
 ### O formulário não carrega (página em branco).
+
 *   Atualize a página do seu navegador.
 *   Certifique-se de que sua conexão com a internet está estável.
 *   Confirme se o link está completo e não foi truncado.

@@ -13,6 +13,7 @@ Dino es una plataforma web para la recopilación, monitoreo y análisis de datos
 
 ### Recopilar y gestionar datos
 Diseña esquemas de formularios y úsalos para registrar información. Visualiza y gestiona todos tus datos desde el [Panel principal](dashboard/index.md). Puedes crear, editar y organizar tus herramientas de recopilación de datos.
+
 *   [Ver y gestionar formularios](forms/index.md)
 *   [Diseñar un esquema de formulario](forms/edit-form-schema.md)
 *   [Llenar un formulario](forms/edit-form.md)
@@ -20,6 +21,7 @@ Diseña esquemas de formularios y úsalos para registrar información. Visualiza
 
 ### Analizar y reportar
 Convierte tus datos recopilados en información útil. Crea informes personalizados y usa IA para hacer preguntas sobre tus datos en lenguaje natural.
+
 *   [Ver y gestionar informes](reports/index.md)
 *   [Diseñar un esquema de informe](reports/edit-report-schema.md)
 *   [Llenar un informe](reports/edit-report.md)
@@ -28,11 +30,13 @@ Convierte tus datos recopilados en información útil. Crea informes personaliza
 
 ### Monitorear y medir
 Realiza seguimiento de indicadores clave de rendimiento y monitorea áreas geográficas específicas.
+
 *   [Ver métricas](metrics/index.md)
 *   [Gestionar áreas](metrics/areas.md)
 
 ### Mantente informado y colabora
 Recibe notificaciones dentro de la aplicación y gestiona el acceso a la plataforma para tu equipo.
+
 *   [Ver notificaciones](notifications/index.md)
 *   [Gestionar usuarios y grupos](administration/users.md)
 *   [Ver lista de usuarios](administration/users-list.md)
@@ -41,6 +45,7 @@ Recibe notificaciones dentro de la aplicación y gestiona el acceso a la platafo
 
 ### Compartir y extender
 Comparte formularios públicamente o usa funciones avanzadas de IA para tareas con datos.
+
 *   [Llenar un formulario público](public-forms/index.md)
 
 ---
