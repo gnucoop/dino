@@ -26,12 +26,14 @@ Le nombre total de notifications correspondant à votre recherche actuelle est a
 Utilisez la barre de filtrage au-dessus de la liste pour réduire ce qui est affiché.
 
 ### Recherche par mot-clé
+
 1. Cliquez dans le champ **recherche par mot-clé** en haut de la liste.
 2. Commencez à taper un mot ou une phrase du texte de la notification.
 3. La liste se met à jour automatiquement au fur et à mesure que vous tapez.
 4. Pour effacer la recherche, cliquez sur l'icône **×** qui apparaît dans le champ.
 
 ### Filtrage par date
+
 1. Cliquez sur le champ **Date de début** et sélectionnez une date de début dans le calendrier.
 2. Cliquez sur le champ **Date de fin** et sélectionnez une date de fin.
 3. La liste n'affichera que les notifications créées dans cette plage de dates.

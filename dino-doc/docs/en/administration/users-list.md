@@ -12,6 +12,7 @@ The Users List page provides a complete list of all user accounts in your Dino o
 ## Understanding the Users List
 
 The main list displays key information for each user:
+
 *   **Email:** The user's login email address.
 *   **Full Name:** The name associated with the account.
 *   **Disabled:** A toggle indicating if the account is active or disabled. You can click this toggle directly in the list to change the status.
@@ -25,6 +26,7 @@ You can sort the list by the **Creation Date** column. The **ID** column is hidd
 Use the search bar at the top of the page to find users by their email or full name.
 
 To apply more specific filters:
+
 1.  Click the filter icon in the search bar.
 2.  In the **User Permission Groups** section, you can select one or more user groups to filter the list to show only members of those groups.
 

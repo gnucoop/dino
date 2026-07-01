@@ -26,12 +26,14 @@ Il numero totale di notifiche corrispondenti alla ricerca corrente viene mostrat
 Usa la barra dei filtri sopra l'elenco per restringere i risultati.
 
 ### Ricerca per parola chiave
+
 1. Clicca all'interno del campo **cerca per parola chiave** in cima all'elenco.
 2. Inizia a digitare una parola o frase presente nel testo della notifica.
 3. L'elenco si aggiorna automaticamente mentre scrivi.
 4. Per cancellare la ricerca, clicca sull'icona **×** che appare all'interno del campo.
 
 ### Filtra per data
+
 1. Clicca sul campo **Da data** e seleziona una data di inizio dal calendario.
 2. Clicca sul campo **A data** e seleziona una data di fine.
 3. L'elenco mostrerà solo le notifiche create nell'intervallo di date specificato.

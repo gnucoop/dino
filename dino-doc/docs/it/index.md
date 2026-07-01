@@ -13,6 +13,7 @@ Dino è una piattaforma web per la raccolta strutturata di dati, il monitoraggio
 
 ### Raccogliere e gestire i dati
 Progetta schemi di moduli e usali per registrare informazioni. Visualizza e gestisci tutti i tuoi dati dalla [Dashboard](dashboard/index.md) principale. Puoi creare, modificare e organizzare i tuoi strumenti di raccolta dati.
+
 *   [Visualizzare e gestire i moduli](forms/index.md)
 *   [Progettare uno schema modulo](forms/edit-form-schema.md)
 *   [Compilare un modulo](forms/edit-form.md)
@@ -20,6 +21,7 @@ Progetta schemi di moduli e usali per registrare informazioni. Visualizza e gest
 
 ### Analizzare e creare report
 Trasforma i dati raccolti in informazioni utili. Crea report personalizzati e usa l'IA per porre domande sui tuoi dati in linguaggio naturale.
+
 *   [Visualizzare e gestire i report](reports/index.md)
 *   [Progettare uno schema report](reports/edit-report-schema.md)
 *   [Compilare un report](reports/edit-report.md)
@@ -28,11 +30,13 @@ Trasforma i dati raccolti in informazioni utili. Crea report personalizzati e us
 
 ### Monitorare e misurare
 Tieni traccia degli indicatori chiave di performance e monitora aree geografiche specifiche.
+
 *   [Visualizzare le metriche](metrics/index.md)
 *   [Gestire le aree](metrics/areas.md)
 
 ### Rimanere informati e collaborare
 Ricevi notifiche in-app e gestisci l'accesso alla piattaforma per il tuo team.
+
 *   [Visualizzare le notifiche](notifications/index.md)
 *   [Gestire utenti e gruppi](administration/users.md)
 *   [Visualizzare l'elenco utenti](administration/users-list.md)
@@ -41,6 +45,7 @@ Ricevi notifiche in-app e gestisci l'accesso alla piattaforma per il tuo team.
 
 ### Condividere ed estendere
 Condividi moduli pubblicamente o usa funzionalità IA avanzate per attività sui dati.
+
 *   [Compilare un modulo pubblico](public-forms/index.md)
 
 ---

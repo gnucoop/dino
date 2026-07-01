@@ -12,6 +12,7 @@ La pagina Elenco utenti fornisce un elenco completo di tutti gli account utente 
 ## Comprendere l'elenco utenti
 
 L'elenco principale mostra le informazioni chiave per ogni utente:
+
 *   **Email:** L'indirizzo email di accesso dell'utente.
 *   **Nome completo:** Il nome associato all'account.
 *   **Disabilitato:** Un interruttore che indica se l'account è attivo o disabilitato. Puoi cliccare direttamente su questo interruttore nell'elenco per cambiarne lo stato.
@@ -25,6 +26,7 @@ Puoi ordinare l'elenco per la colonna **Data di creazione**. La colonna **ID** �
 Usa la barra di ricerca nella parte superiore della pagina per trovare utenti tramite email o nome completo.
 
 Per applicare filtri più specifici:
+
 1.  Fai clic sull'icona del filtro nella barra di ricerca.
 2.  Nella sezione **Gruppi di permessi utente**, puoi selezionare uno o più gruppi di utenti per filtrare l'elenco e mostrare solo i membri di quei gruppi.
 

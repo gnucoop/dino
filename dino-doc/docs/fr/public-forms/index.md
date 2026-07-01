@@ -40,6 +40,7 @@ Les adresses des formulaires publics suivent le modèle `/f/` suivi d’un ident
 En cas de soumission réussie, un écran de confirmation avec une coche et le message **« Le formulaire a été soumis avec succès. »** s’affiche.
 
 Une notification apparaît également en bas de votre écran. Depuis cette notification, vous pouvez :
+
 *   **Remplir un autre formulaire** : cliquez ici pour recharger la page avec une copie vierge du même formulaire, vous permettant d’effectuer une nouvelle soumission.
 *   **Fermer** : ignorer la notification.
 
@@ -49,21 +50,25 @@ Une notification apparaît également en bas de votre écran. Depuis cette notif
 
 ### Le bouton de soumission est désactivé.
 Cela signifie que le formulaire n’est pas encore valide. Vérifiez les points suivants :
+
 *   **Champs obligatoires vides** : assurez-vous que tous les champs marqués d’un astérisque (*) sont remplis.
 *   **Données invalides** : repérez les champs surlignés en rouge et corrigez les informations (par exemple, un format d’e-mail invalide).
 
 ### « Impossible d’enregistrer le formulaire. »
 Votre soumission a rencontré une erreur temporaire, souvent liée à votre connexion internet.
+
 1.  Cliquez sur **« Réessayer »** dans la notification en bas de l’écran.
 2.  Si l’erreur persiste, vérifiez votre connexion internet et essayez d’actualiser la page.
 3.  Si le problème continue, contactez la personne qui vous a envoyé le lien du formulaire.
 
 ### « Oups ! Impossible de trouver ce schéma de formulaire. »
 Le lien que vous utilisez est incorrect ou le formulaire a été supprimé.
+
 *   Vérifiez que vous avez l’URL complète et correcte.
 *   Contactez la personne qui a partagé le lien avec vous pour obtenir un lien mis à jour.
 
 ### Le formulaire ne se charge pas (page blanche).
+
 *   Actualisez votre page navigateur.
 *   Assurez-vous que votre connexion internet est stable.
 *   Vérifiez que le lien est complet et n’a pas été tronqué.

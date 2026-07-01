@@ -12,6 +12,7 @@ La page Liste des utilisateurs fournit une liste complète de tous les comptes u
 ## Comprendre la liste des utilisateurs
 
 La liste principale affiche les informations clés pour chaque utilisateur :
+
 *   **Email :** L'adresse email de connexion de l'utilisateur.
 *   **Nom complet :** Le nom associé au compte.
 *   **Désactivé :** Un interrupteur indiquant si le compte est actif ou désactivé. Vous pouvez cliquer sur cet interrupteur directement dans la liste pour modifier l'état.
@@ -25,6 +26,7 @@ Vous pouvez trier la liste par la colonne **Date de création**. La colonne **ID
 Utilisez la barre de recherche en haut de la page pour trouver des utilisateurs par leur email ou leur nom complet.
 
 Pour appliquer des filtres plus spécifiques :
+
 1.  Cliquez sur l'icône de filtre dans la barre de recherche.
 2.  Dans la section **Groupes de permissions utilisateur**, vous pouvez sélectionner un ou plusieurs groupes d'utilisateurs pour filtrer la liste et n'afficher que les membres de ces groupes.
 

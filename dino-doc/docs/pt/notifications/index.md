@@ -26,12 +26,14 @@ O número total de notificações correspondentes à sua pesquisa atual é exibi
 Use a barra de filtros acima da lista para restringir o que é exibido.
 
 ### Pesquisar por palavra-chave
+
 1. Clique dentro do campo **pesquisar por palavra-chave** no topo da lista.
 2. Comece a digitar qualquer palavra ou frase do texto da notificação.
 3. A lista é atualizada automaticamente enquanto você digita.
 4. Para limpar a pesquisa, clique no ícone **×** que aparece dentro do campo.
 
 ### Filtrar por data
+
 1. Clique no campo **Data de início** e selecione uma data inicial no calendário.
 2. Clique no campo **Data de fim** e selecione uma data final.
 3. A lista exibirá apenas notificações criadas dentro desse intervalo de datas.

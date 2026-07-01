@@ -26,12 +26,14 @@ El número total de notificaciones que coinciden con su búsqueda actual se mues
 Utilice la barra de filtros situada sobre la lista para reducir lo que se muestra.
 
 ### Buscar por palabra clave
+
 1. Haga clic dentro del campo **buscar por palabra clave** en la parte superior de la lista.
 2. Empiece a escribir cualquier palabra o frase del texto de la notificación.
 3. La lista se actualiza automáticamente mientras escribe.
 4. Para borrar la búsqueda, haga clic en el icono **×** que aparece dentro del campo.
 
 ### Filtrar por fecha
+
 1. Haga clic en el campo **Desde** y seleccione una fecha de inicio en el calendario.
 2. Haga clic en el campo **Hasta** y seleccione una fecha de finalización.
 3. La lista mostrará solo las notificaciones creadas dentro de ese rango de fechas.
