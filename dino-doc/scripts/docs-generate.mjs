@@ -6,10 +6,14 @@
  * Main orchestrator for automated documentation generation.
  *
  * Workflow:
- * 1. Detect changed files via git diff
+ * 1. Detect changed files via git diff (or via --modules/--pages overrides)
  * 2. Classify changes (routing vs component)
  * 3. If routing changed → full re-scan → sync mkdocs.yml nav → create/delete .md files
- * 4. If only components changed → targeted re-generation of affected modules
+ * 4. If only components changed → targeted re-generation of affected pages.
+ *    A page is affected when any of its docSourceFiles (which include resolved
+ *    <dino-*> library templates under projects/material/) is in the git diff,
+ *    so changes isolated to a shared library component still update every page
+ *    that embeds it. --modules / --pages force specific pages regardless of diff.
  * 5. Call Claude API for each affected doc page (English)
  * 6. Translate each generated page into all configured languages
  */
@@ -25,6 +29,7 @@ import {sanitizeGenerated, stripBrokenImageRefs} from './docs-sanitize.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DOC_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = path.resolve(DOC_ROOT, '..');
 
 function absFromDocRoot(p) {
   return path.isAbsolute(p) ? p : path.join(DOC_ROOT, p);
@@ -147,6 +152,22 @@ const forceFullScan = args.includes('--full');
 const skipTranslations = args.includes('--no-translate');
 const onlyTranslate = args.includes('--translate-only');
 
+/**
+ * Parse a comma-separated list flag, e.g. `--modules=mat-forms,mat-reports`.
+ * Returns [] when the flag is absent.
+ */
+function parseListFlag(name) {
+  const prefix = `--${name}=`;
+  const arg = args.find(a => a.startsWith(prefix));
+  if (!arg) return [];
+  return arg.slice(prefix.length).split(',').map(s => s.trim()).filter(Boolean);
+}
+
+// Manual overrides: force regeneration of specific modules (dinoapp module dir,
+// e.g. mat-forms) or pages (route key, e.g. forms/index) regardless of git diff.
+const manualModules = parseListFlag('modules');
+const manualPages = parseListFlag('pages');
+
 // ---------------------------------------------------------------------------
 // Step 1: Detect changed files
 // ---------------------------------------------------------------------------
@@ -236,30 +257,66 @@ if (routingChanged && !onlyTranslate) {
 // Step 4: Determine which modules to regenerate
 // ---------------------------------------------------------------------------
 
+// Changed files as absolute paths, for reverse-lookup against each route's
+// docSourceFiles. This catches changes to <dino-*> library templates under
+// projects/material/ that the dinoapp-only changedModuleDirs regex misses.
+const changedAbs = new Set(changedFiles.map(f => path.resolve(REPO_ROOT, f)));
+
+// Validate manual overrides against the route map and warn on unknown values.
+if (manualModules.length) {
+  const knownModules = new Set(Object.values(routeMap).flatMap(r => r.moduleDirs));
+  for (const m of manualModules) {
+    if (!knownModules.has(m)) console.warn(`  WARN: --modules "${m}" matches no route in the map`);
+  }
+  console.log(`Manual modules: ${manualModules.join(', ')}`);
+}
+if (manualPages.length) {
+  for (const p of manualPages) {
+    if (!routeMap[p]) console.warn(`  WARN: --pages "${p}" matches no route key in the map`);
+  }
+  console.log(`Manual pages: ${manualPages.join(', ')}`);
+}
+
+/**
+ * Decide whether a route needs targeted regeneration. Combines:
+ *  - manual overrides (--modules / --pages)
+ *  - changed dinoapp module dirs (git diff, regex-based)
+ *  - reverse-lookup: any of the route's docSourceFiles is in the git diff
+ *    (covers shared library templates under projects/material/)
+ */
+function routeChanged(key, r) {
+  if (manualModules.length && r.moduleDirs.some(d => manualModules.includes(d))) return true;
+  if (manualPages.includes(key)) return true;
+  if (r.moduleDirs.some(dir => changedModuleDirs.includes(dir))) return true;
+  return (r.docSourceFiles || []).some(src => changedAbs.has(path.resolve(src)));
+}
+
 let modulesToProcess;
 
 if (routingChanged) {
   // Full regeneration on routing changes
   modulesToProcess = Object.values(routeMap);
   console.log(`Full regeneration: ${modulesToProcess.length} pages`);
-} else if (changedModuleDirs.length > 0 || missingDocs.length > 0) {
-  // Targeted regeneration: changed modules + any routes with missing doc files
-  const changedRoutes = Object.values(routeMap).filter(r =>
-    r.moduleDirs.some(dir => changedModuleDirs.includes(dir)),
-  );
-  // Merge changed + missing, deduplicate by docFile
-  const seen = new Set();
-  modulesToProcess = [...changedRoutes, ...missingDocs].filter(r => {
-    if (seen.has(r.docFile)) return false;
-    seen.add(r.docFile);
-    return true;
-  });
-  if (changedRoutes.length) console.log(`Changed modules: ${changedRoutes.length} pages`);
-  if (missingDocs.length) console.log(`Missing doc files: ${missingDocs.length} pages`);
-  console.log(`Total to regenerate: ${modulesToProcess.length} pages`);
 } else {
-  console.log('No relevant source changes detected. Nothing to regenerate.');
-  modulesToProcess = [];
+  const changedRoutes = Object.entries(routeMap)
+    .filter(([key, r]) => routeChanged(key, r))
+    .map(([, r]) => r);
+
+  if (changedRoutes.length || missingDocs.length) {
+    // Merge changed + missing, deduplicate by docFile
+    const seen = new Set();
+    modulesToProcess = [...changedRoutes, ...missingDocs].filter(r => {
+      if (seen.has(r.docFile)) return false;
+      seen.add(r.docFile);
+      return true;
+    });
+    if (changedRoutes.length) console.log(`Changed routes: ${changedRoutes.length} pages`);
+    if (missingDocs.length) console.log(`Missing doc files: ${missingDocs.length} pages`);
+    console.log(`Total to regenerate: ${modulesToProcess.length} pages`);
+  } else {
+    console.log('No relevant source changes detected. Nothing to regenerate.');
+    modulesToProcess = [];
+  }
 }
 
 // ---------------------------------------------------------------------------
