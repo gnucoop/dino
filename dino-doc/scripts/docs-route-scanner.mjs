@@ -68,15 +68,13 @@ const DOC_OVERRIDES = {
   'create-form':            { slug: 'edit-form' },
   'create-report':          { slug: 'edit-report' },
 
-  // Metric value tabs: all render inside the same page with an identical
-  // list + CRUD UI, so they share ONE generic "metric values" doc page
-  // (title kept generic on purpose — the page describes how to manage the
-  // values of ANY metric type, using Thematic Areas as the example).
-  'areas':                  { slug: 'areas', title: 'Managing Metric Values' },
-  'cases':                  { slug: 'areas', title: 'Managing Metric Values' },
-  'locations':              { slug: 'areas', title: 'Managing Metric Values' },
-  'organizations':          { slug: 'areas', title: 'Managing Metric Values' },
-  'projects':               { slug: 'areas', title: 'Managing Metric Values' },
+  // Metric value types: each is its own page under the Metrics section so all
+  // metric types are documented individually. cases/locations/organizations/
+  // projects are auto-derived correctly from their module dir (→ metrics/cases,
+  // metrics/locations, …); only Thematic Areas needs an override, to keep the
+  // existing 'areas' slug (preserves its screenshots and the metrics/areas-edit
+  // EXTRA_ROUTE_ENTRIES) while giving it a friendly title.
+  'areas':                  { slug: 'areas', title: 'Thematic Areas' },
 
   // List views: merge into the section index page
   'forms-list':             { slug: 'index' },

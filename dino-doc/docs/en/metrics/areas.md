@@ -7,11 +7,11 @@ description: Learn how to view, add, edit, delete, and search thematic areas in 
 
 The **Thematic Areas** page (accessible from the Metrics section) lets you organize your metric data by hierarchical categories. Here you can view, create, edit, and delete thematic areas, as well as filter and export the list.
 
-![Main view of the Managing Metric Values page](../imgs/metrics/areas.png)
+![Main view of the Thematic Areas page](../imgs/metrics/areas.png)
 
 ## What You See
 
-- **Breadcrumbs** at the top show your current location in the application.
+- **Breadcrumbs** at the top show your current location in the application (e.g., **Metrics > Thematic Areas**).
 - The main table lists all thematic areas, displaying columns such as **Area Name**, **Parent Area**, and (if configured) other attributes. You can customize visible columns by clicking the **view_week** icon in the header.
 - A **search bar** and **filter panel** let you find areas by keyword, date range, or other metadata.
 - The **Export** button (cloud_download) allows you to download the current list as a file.
@@ -74,5 +74,8 @@ The breadcrumbs show your current location (e.g., **Metrics > Thematic Areas**).
 ## Related Pages
 
 - [Metrics Overview](index.md)
-- [Managing Metric Values – Cases, Locations, Organizations, and Projects](areas.md) (this page)
+- [Managing Metric Values – Cases](cases.md)
+- [Managing Metric Values – Locations](locations.md)
+- [Managing Metric Values – Organizations](organizations.md)
+- [Managing Metric Values – Projects](projects.md)
 - [Users and Groups](../administration/users.md)

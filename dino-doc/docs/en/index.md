@@ -29,10 +29,14 @@ Turn your collected data into insights. Create custom reports and use AI to ask 
 *   [Aggregate Data](aggregation/index.md)
 
 ### Monitor and Measure
-Track key performance indicators and monitor specific geographic areas.
+Track key performance indicators and monitor specific entities such as areas, cases, locations, organizations, and projects.
 
 *   [View Metrics](metrics/index.md)
-*   [Manage Areas](metrics/areas.md)
+*   [Manage Thematic Areas](metrics/areas.md)
+*   [Manage Cases](metrics/cases.md)
+*   [Manage Locations](metrics/locations.md)
+*   [Manage Organizations](metrics/organizations.md)
+*   [Manage Projects](metrics/projects.md)
 
 ### Stay Informed and Collaborate
 Receive in-app notifications and manage platform access for your team.
