@@ -200,7 +200,51 @@
       {
         "name": "metrics/areas",
         "setup": null,
-        "description": "Main view of the Managing Metric Values page"
+        "description": "Main view of the Thematic Areas page"
+      }
+    ]
+  },
+  {
+    "url": "/metrics/cases",
+    "dir": "metrics",
+    "screenshots": [
+      {
+        "name": "metrics/cases",
+        "setup": null,
+        "description": "Main view of the Cases page"
+      }
+    ]
+  },
+  {
+    "url": "/metrics/locations",
+    "dir": "metrics",
+    "screenshots": [
+      {
+        "name": "metrics/locations",
+        "setup": null,
+        "description": "Main view of the Locations page"
+      }
+    ]
+  },
+  {
+    "url": "/metrics/organizations",
+    "dir": "metrics",
+    "screenshots": [
+      {
+        "name": "metrics/organizations",
+        "setup": null,
+        "description": "Main view of the Organizations page"
+      }
+    ]
+  },
+  {
+    "url": "/metrics/projects",
+    "dir": "metrics",
+    "screenshots": [
+      {
+        "name": "metrics/projects",
+        "setup": null,
+        "description": "Main view of the Projects page"
       }
     ]
   },

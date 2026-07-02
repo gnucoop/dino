@@ -26,6 +26,10 @@ nav:
   - Metriche:
     - Panoramica: metrics/index.md
     - Aree Tematiche: metrics/areas.md
+    - Cases: metrics/cases.md
+    - Locations: metrics/locations.md
+    - Organizations: metrics/organizations.md
+    - Projects: metrics/projects.md
   - Aggregazione: aggregation/index.md
   - Notifiche: notifications/index.md
   - Moduli Pubblici: public-forms/index.md

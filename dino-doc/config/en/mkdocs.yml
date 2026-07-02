@@ -25,7 +25,11 @@ nav:
     - Edit Report: reports/edit-report.md
   - Metrics:
     - Overview: metrics/index.md
-    - Areas: metrics/areas.md
+    - Thematic Areas: metrics/areas.md
+    - Cases: metrics/cases.md
+    - Locations: metrics/locations.md
+    - Organizations: metrics/organizations.md
+    - Projects: metrics/projects.md
   - Aggregation: aggregation/index.md
   - Notifications: notifications/index.md
   - Public Forms: public-forms/index.md

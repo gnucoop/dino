@@ -26,6 +26,10 @@ nav:
   - Метрики:
     - Огляд: metrics/index.md
     - тематичні області: metrics/areas.md
+    - Cases: metrics/cases.md
+    - Locations: metrics/locations.md
+    - Organizations: metrics/organizations.md
+    - Projects: metrics/projects.md
   - Агрегація: aggregation/index.md
   - Сповіщення: notifications/index.md
   - Публічні Форми: public-forms/index.md
