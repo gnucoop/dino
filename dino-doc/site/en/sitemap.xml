@@ -2,90 +2,106 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/administration/groups-list/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/administration/languages/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/administration/users-list/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/administration/users/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/aggregation/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/dashboard/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/forms/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/forms/datachat/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/forms/edit-form-schema/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/forms/edit-form/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/forms/forms-map/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/getting-started/login/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/getting-started/reset-password/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/interface/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/metrics/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/metrics/areas/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
+    </url>
+    <url>
+         <loc>https://gnucoop.github.io/docs.dinoapp.io/en/metrics/cases/</loc>
+         <lastmod>2026-07-02</lastmod>
+    </url>
+    <url>
+         <loc>https://gnucoop.github.io/docs.dinoapp.io/en/metrics/locations/</loc>
+         <lastmod>2026-07-02</lastmod>
+    </url>
+    <url>
+         <loc>https://gnucoop.github.io/docs.dinoapp.io/en/metrics/organizations/</loc>
+         <lastmod>2026-07-02</lastmod>
+    </url>
+    <url>
+         <loc>https://gnucoop.github.io/docs.dinoapp.io/en/metrics/projects/</loc>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/notifications/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/public-forms/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/reports/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/reports/edit-report-schema/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
     <url>
          <loc>https://gnucoop.github.io/docs.dinoapp.io/en/reports/edit-report/</loc>
-         <lastmod>2026-06-30</lastmod>
+         <lastmod>2026-07-02</lastmod>
     </url>
 </urlset>
