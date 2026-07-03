@@ -39,6 +39,7 @@ import {
   debounceTime,
   filter,
   map,
+  shareReplay,
   startWith,
   switchMap,
   take,
@@ -62,6 +63,11 @@ export class LangManager extends DataModelManager<Lang> {
   private _refreshEvt = new EventEmitter<void>();
   private _reloadLangsStoredEvt = new EventEmitter<void>();
   private _removeLangEvt = new EventEmitter<Lang | null>();
+
+  /**
+   * Emit `true` one time when replication completed.
+   */
+  private _replicated$!: Observable<boolean>;
 
   readonly langRows$: Observable<LangRow[]>;
   readonly allLangsNames$ = new BehaviorSubject<string[]>([]);
@@ -145,6 +151,13 @@ export class LangManager extends DataModelManager<Lang> {
   }
 
   /**
+   * Resets the schema loaded from file
+   */
+  resetCurrentLangUpdateSchema(): void {
+    this._currentLangUpdateSchema$.next(null);
+  }
+
+  /**
    * Lo schema salvato sul db di dino della lang corrente
    */
   readonly currentLangStored$: Observable<Lang> = this.currentLangName$.pipe(
@@ -200,13 +213,13 @@ export class LangManager extends DataModelManager<Lang> {
     );
 
   constructor(
-    dataService: DataService,
+    private _ds: DataService,
     permissionContextService: PermissionContextService,
     private _ts: TranslocoService,
     private _ehms: ErrorHandlerMessageService,
     @Inject(TRANSLATIONS_CONFIG) private _config: TranslationsConfig,
   ) {
-    super(collectionDef, dataService, permissionContextService);
+    super(collectionDef, _ds, permissionContextService);
 
     (this._ts.getAvailableLangs() as string[]).map((lang: string) => {
       defaultLangs[lang] = {
@@ -299,6 +312,15 @@ export class LangManager extends DataModelManager<Lang> {
     );
 
     this._reloadLangsStoredEvt.emit();
+
+    this._replicated$ = this._ds.firstReplicationComplete.pipe(
+      filter(complete => complete),
+      take(1),
+      shareReplay(1),
+    );
+
+    // Reload langs when first replication completed.
+    this._replicated$.subscribe(() => this._reloadLangsStoredEvt.emit());
 
     const saveLang = this.saveLangEvt.pipe(
       // creo due rami pipe se newLang è valorizzato ritorno newLang altrimenti
@@ -428,7 +450,9 @@ export class LangManager extends DataModelManager<Lang> {
     if (lang == null) {
       return obsOf(null);
     }
-    return this.query({selector: {name: {$eq: lang.name}}}).pipe(
+
+    return this._replicated$.pipe(
+      switchMap(() => this.query({selector: {name: {$eq: lang.name}}})),
       switchMap(queryRes => {
         if (!queryRes.length || queryRes[0] == null) {
           return this.create(lang);
