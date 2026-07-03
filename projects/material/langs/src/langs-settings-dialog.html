@@ -14,9 +14,6 @@
     </button>
   </div>
   <div class="dino-buttons" *ngIf="(currentLang$|async) as currentLang">
-    <button mat-button color="warn" (click)="remove()">
-      {{'Remove custom translation'|transloco}}
-    </button>
     <dino-langs-file-uploader
       fileType="json"
       (uploaded)="setUploaded($event)"
