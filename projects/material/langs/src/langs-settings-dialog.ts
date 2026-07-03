@@ -106,6 +106,7 @@ export class LangsSettingsDialog implements OnDestroy {
 
   ngOnDestroy(): void {
     this._langSvc.newLang = null;
+    this._langSvc.resetCurrentLangUpdateSchema();
     this._addLangSub.unsubscribe();
     this._updateLangSub.unsubscribe();
     this._formChangeSub.unsubscribe();
