@@ -266,7 +266,8 @@ export class LangManager extends DataModelManager<Lang> {
         map(r => r.filter(l => !l.is_deleted)),
       )
       .subscribe(langs => {
-        langs.forEach(l => {
+        const plainLangs = langs.map(l => (l as any).toJSON()) as Lang[];
+        plainLangs.forEach(l => {
           try {
             this._ts.setTranslation(l.schema, l.name);
           } catch (err) {
@@ -279,7 +280,6 @@ export class LangManager extends DataModelManager<Lang> {
             );
           }
         });
-        const plainLangs = langs.map(l => (l as any).toJSON()) as Lang[];
         this.langsStored$.next(plainLangs);
         const langName: string = localStorage.getItem('lang') ?? this._config.defaultLanguage;
         this._ts.setActiveLang(langName);
