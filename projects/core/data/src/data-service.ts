@@ -836,6 +836,24 @@ export class DataService implements IDataService {
   }
 
   /**
+   * Emits the "first replication cycle completed" state for a single collection.
+   * Both the registered-collections list and the per-collection flag are
+   * BehaviorSubjects, so late subscribers receive the current value instead of
+   * missing a one-shot event (unlike `firstReplicationComplete`, which depends on
+   * the non-replaying `collectionsInitialized` emitter).
+   * @param name The collection name
+   * @returns An observable emitting true once the collection's first sync completed
+   */
+  collectionFirstSyncCompleted(name: string): Observable<boolean> {
+    return this._registeredCollections.pipe(
+      map(colls => colls.find(coll => coll.collection.name === name)),
+      filter((coll): coll is RegisteredCollection => coll != null),
+      switchMap(coll => coll.firstSyncCompleted),
+      distinctUntilChanged(),
+    );
+  }
+
+  /**
    * Adds or removes a collection from the problemSyncing collections list.
    * @param collection The collection name to be added or removed
    * @param operation Add or remove
