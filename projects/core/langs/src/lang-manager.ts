@@ -32,6 +32,7 @@ import {
   merge,
   Observable,
   of as obsOf,
+  timer,
   zip,
 } from 'rxjs';
 import {
@@ -53,6 +54,12 @@ import {defaultLangs, Dic, LangCreate, LangRow} from './utils';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 const collectionDef = {name: 'lang', collection: {schema, migrationStrategies}};
+
+/**
+ * Safety timeout (ms) for waiting on a running sync to settle before creating a new
+ * language, so an absent or stalled sync signal can never hang the save indefinitely.
+ */
+const SYNC_SETTLE_TIMEOUT_MS = 10000;
 
 @Injectable({providedIn: 'root'})
 export class LangManager extends DataModelManager<Lang> {
@@ -309,24 +316,27 @@ export class LangManager extends DataModelManager<Lang> {
           });
         }
       }),
+      take(1),
     );
 
     this._reloadLangsStoredEvt.emit();
 
-    this._replicated$ = this._ds.firstReplicationComplete.pipe(
+    // Gate on the lang collection's own first-sync flag
+    this._replicated$ = this._ds.collectionFirstSyncCompleted('lang').pipe(
       filter(complete => complete),
       take(1),
       shareReplay(1),
     );
 
-    // Reload langs when first replication completed.
+    // Reload langs when the lang collection completed its first sync.
     this._replicated$.subscribe(() => this._reloadLangsStoredEvt.emit());
 
     const saveLang = this.saveLangEvt.pipe(
       // creo due rami pipe se newLang è valorizzato ritorno newLang altrimenti
-      // seguo il ramo savePipe
-      switchMap(() => iif(() => this.newLang != null, obsOf(this.newLang as Lang), savePipe)),
-      take(1),
+      // seguo il ramo savePipe.
+      switchMap(() =>
+        iif(() => this.newLang != null, obsOf(this.newLang as Lang).pipe(take(1)), savePipe),
+      ),
       switchMap(l => this.saveLang(l)),
       map((l: Lang | null) => {
         if (l == null) {
@@ -344,8 +354,7 @@ export class LangManager extends DataModelManager<Lang> {
     );
 
     const deleteLang = this.deleteLangEvt.pipe(
-      switchMap(() => this.currentLangStored$),
-      take(1),
+      switchMap(() => this.currentLangStored$.pipe(take(1))),
       switchMap(lang => this.deleteLang(lang)),
       map(l => {
         this._reloadList();
@@ -451,19 +460,37 @@ export class LangManager extends DataModelManager<Lang> {
       return obsOf(null);
     }
 
-    return this._replicated$.pipe(
-      switchMap(() => this.query({selector: {name: {$eq: lang.name}}})),
+    const patchExisting = (existing: Lang): Observable<Lang | null> => {
+      const upDoc: Partial<Lang> & {id: string} = {
+        schema: {...existing.schema, ...lang.schema},
+        id: existing.id,
+      };
+      return this.patch(upDoc).pipe(
+        catchError(_ => this.create(lang)),
+        map(l => l || {...lang, id: '', created_at: '', updated_at: ''}),
+      );
+    };
+
+    return this.query({selector: {name: {$eq: lang.name}}}).pipe(
       switchMap(queryRes => {
-        if (!queryRes.length || queryRes[0] == null) {
+        // Found locally: safe to patch, no race with the sync.
+        if (queryRes.length && queryRes[0] != null) {
+          return patchExisting(queryRes[0]);
+        }
+        // Empty result: the language may simply not have been pulled from the backend yet.
+        if (this._ds.config.syncOptions.backendless) {
           return this.create(lang);
         }
-        const upDoc: Partial<Lang> & {id: string} = {
-          schema: {...queryRes[0].schema, ...lang.schema},
-          id: queryRes[0].id,
-        };
-        return this.patch(upDoc).pipe(
-          catchError(_ => this.create(lang)),
-          map(l => l || {...lang, id: '', created_at: '', updated_at: ''}),
+        // Wait for any running sync to settle
+        const syncSettled$ = merge(
+          this._ds.isSyncing.pipe(filter(syncing => !syncing)),
+          timer(SYNC_SETTLE_TIMEOUT_MS),
+        ).pipe(take(1));
+        return syncSettled$.pipe(
+          switchMap(() => this.query({selector: {name: {$eq: lang.name}}})),
+          switchMap(reQuery =>
+            reQuery.length && reQuery[0] != null ? patchExisting(reQuery[0]) : this.create(lang),
+          ),
         );
       }),
       take(1),
