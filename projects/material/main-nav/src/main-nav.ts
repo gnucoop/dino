@@ -45,6 +45,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ThemeService} from '@dino/material/core';
 import {UserArea} from '@dino/material/user-area';
 import {TranslocoService} from '@ngneat/transloco';
+import {RxError, RxTypeError} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
@@ -580,7 +581,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
           if (!userData) return obsOf(null);
           const {collection, error} = evt;
           const msg = this._sanitizeAndTruncateNotificationText(
-            JSON.stringify(error),
+            this._formatSyncError(error),
             this._maxSyncErrorNotificationLength,
           );
           const notification: InsertModel<Notification> = {
@@ -927,6 +928,29 @@ export class MainNav implements AfterViewInit, OnDestroy {
         localStorage.removeItem(key);
       }
     }
+  }
+
+  /**
+   * Builds a concise, human-readable message from a sync error.
+   * @param error The sync error, if any
+   * @returns A single-line message such as `[RC_PUSH] constraint-violation: <message>`
+   */
+  private _formatSyncError(error?: RxError | RxTypeError): string {
+    if (error == null) {
+      return 'Unknown sync error';
+    }
+    const gqlErrors = (
+      (error.parameters?.errors ?? []) as {
+        message?: string;
+        extensions?: {code?: string};
+      }[]
+    )
+      .map(gqlError => [gqlError.extensions?.code, gqlError.message].filter(Boolean).join(': '))
+      .filter(Boolean);
+    const details = gqlErrors.length
+      ? gqlErrors.join(' | ')
+      : error.message || 'Unknown sync error';
+    return error.code ? `[${error.code}] ${details}` : details;
   }
 
   private _sanitizeAndTruncateNotificationText(value: string, maxLength: number): string {
