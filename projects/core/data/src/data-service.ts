@@ -24,6 +24,7 @@ import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/co
 import {Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {ConfigService} from '@dino/core/config';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   addRxPlugin,
   createRxDatabase,
@@ -264,6 +265,7 @@ export class DataService implements IDataService {
     private _router: Router,
     @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
     @Optional() private _configService: ConfigService | null,
+    @Optional() private _ehms: ErrorHandlerMessageService | null,
   ) {
     addRxPlugin(RxDBMigrationSchemaPlugin);
     addRxPlugin(RxDBQueryBuilderPlugin);
@@ -379,6 +381,7 @@ export class DataService implements IDataService {
       }
       if (isDevMode()) console.log(`COULD NOT SYNC ${collection}`);
       this._toggleActiveSyncProblem(collection, 'add');
+      this._reportSyncError(collection, evt.error);
     });
 
     if (this._configService != null) {
@@ -846,6 +849,33 @@ export class DataService implements IDataService {
       currentSyncsWithProblems.push(collection);
     }
     this.problemSyncing.next(currentSyncsWithProblems);
+  }
+
+  /**
+   * Reports a sync failure to Sentry so that sync errors are tracked
+   * @param collection The collection that could not be synced
+   * @param error The sync error that caused the failure
+   */
+  private _reportSyncError(collection: string, error?: RxError | RxTypeError): void {
+    if (this._ehms == null) {
+      return;
+    }
+    const gqlErrors = (
+      (error?.parameters?.errors ?? []) as {
+        message?: string;
+        extensions?: {code?: string};
+      }[]
+    )
+      .map(gqlError => [gqlError.extensions?.code, gqlError.message].filter(Boolean).join(': '))
+      .filter(Boolean);
+    const details = gqlErrors.length
+      ? gqlErrors.join(' | ')
+      : error?.message || 'Unknown sync error';
+    const summary = error?.code ? `[${error.code}] ${details}` : details;
+    this._ehms.captureErrorMessage(
+      `Could not sync collection "${collection}": ${summary}`,
+      'error',
+    );
   }
 
   /**
