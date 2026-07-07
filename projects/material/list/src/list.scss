@@ -146,6 +146,10 @@ dino-list {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          // Wider truncation width on non-mobile viewports.
+          @media only screen and (min-width: 769px) {
+            max-width: 200px;
+          }
         }
         .dino-link-cell {
           color: mat-css-vars.mat-css-color-accent(700);

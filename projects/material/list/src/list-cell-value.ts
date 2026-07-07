@@ -29,6 +29,19 @@ import {isFileColumn} from './list-cell-file';
 import {ChoicesDicitionary} from './list-datasource';
 import {transformDateByLocale} from '@dino/core/langs';
 
+/**
+ * Resolves the display value of a list cell for a given element and header.
+ *
+ * Reads the raw value from the element (either a top-level property or a nested
+ * `data` field, depending on `header.dataColumn`), then formats it:
+ * - ISO or `yyyy-MM-dd` date strings are localized via `transformDateByLocale`.
+ * - Choice columns are mapped to their labels, joining arrays
+ *   of values with commas.
+ * - HTML strings are reduced to plain text.
+ * - Remaining objects are stringified.
+ *
+ * Returns an empty string when the element, header, or value is missing.
+ */
 @Pipe({name: 'dinoListCellValue', pure: false})
 export class ListCellValue implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
@@ -76,6 +89,18 @@ export class ListCellValue implements PipeTransform {
     if (typeof val === 'object' && !isFileColumn(val) && val != null) {
       val = JSON.stringify(val, null, 2).replace('{', '').replace('}', '');
     }
+    if (typeof val === 'string' && this._looksLikeHtml(val)) {
+      val = this._stripHtml(val);
+    }
     return val == null ? '' : val;
+  }
+
+  private _looksLikeHtml(val: string): boolean {
+    return /<[a-z][\s\S]*>/i.test(val);
+  }
+
+  private _stripHtml(val: string): string {
+    const doc = new DOMParser().parseFromString(val, 'text/html');
+    return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
   }
 }

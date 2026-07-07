@@ -93,7 +93,7 @@
 <!-- Standard Text Cell template -->
 <ng-template #standardTextCellTemplate>
   <ng-container
-    *ngIf="isSingleWordLongString(item, 25);then longStandardCellTemplate;  else regularStandardCellTemplate"
+    *ngIf="isSingleWordLongString(item, 25) || isLongString(item, 90);then longStandardCellTemplate;  else regularStandardCellTemplate"
     ><div class="dino-text-cell-long" [matTooltip]="item">{{item}}</div></ng-container
   >
 </ng-template>
