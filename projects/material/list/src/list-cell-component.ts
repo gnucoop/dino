@@ -111,6 +111,18 @@ export class ListCellComponent<T extends Model = Model> {
   }
 
   /**
+   * Returns true if the string is longer than the set threshold
+   * @param str the string to be checked
+   * @param threshold the max char length
+   * @returns true if the string exceeds the threshold
+   */
+  isLongString(str: string, threshold: number): boolean {
+    if (!str || !threshold || typeof str !== 'string') return false;
+    const isID = this.header && this.header.column === 'id';
+    return str.trim().length > threshold && !isID;
+  }
+
+  /**
    * Returns true if the string is a valid url
    * @param str
    * @returns true if url
