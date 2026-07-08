@@ -24,7 +24,7 @@ El menú lateral permite desplazarse entre las áreas principales de la aplicaci
 | Informes | Informes generados. |
 | Agregación | Vista unificada de los envíos de múltiples formularios. |
 | Métricas | Datos de referencia (proyectos, ubicaciones, organizaciones, etc.). *(Oculto para usuarios solo invitados.)* |
-| GPT | Asistente de IA (DinoGPT). |
+| IA | Asistente de IA (DinoGPT). |
 
 **Secciones de administración** (visibles solo para administradores, mostradas debajo de un separador):
 
