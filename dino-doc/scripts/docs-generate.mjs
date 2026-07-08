@@ -69,8 +69,16 @@ if (!ANTHROPIC_AUTH_TOKEN) {
 const ANTHROPIC_BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined;
 const CLAUDE_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
 const MAX_TOKENS = 4096;
+// A single response can hit the MAX_TOKENS cap and stop mid-document. We resume
+// via continuation turns; this bounds how many times, so a page that keeps
+// truncating fails loudly instead of looping forever.
+const MAX_CONTINUATIONS = 5;
 
-async function anthropicMessage({system, user}) {
+/**
+ * Single raw call to the Anthropic Messages API. Throws on a non-OK response.
+ * Returns the parsed JSON so the caller can inspect `stop_reason`.
+ */
+async function anthropicRaw({system, messages}) {
   const baseUrl = ANTHROPIC_BASE_URL || 'https://api.anthropic.com';
   const url = `${baseUrl.replace(/\/$/, '')}/v1/messages`;
 
@@ -85,7 +93,7 @@ async function anthropicMessage({system, user}) {
       model: CLAUDE_MODEL,
       max_tokens: MAX_TOKENS,
       system,
-      messages: [{role: 'user', content: user}],
+      messages,
     }),
   });
 
@@ -94,13 +102,50 @@ async function anthropicMessage({system, user}) {
     throw new Error(`Anthropic API error (${res.status}): ${text || res.statusText}`);
   }
 
-  const json = await res.json();
-  const parts = Array.isArray(json.content) ? json.content : [];
-  const text = parts.map(p => (p && p.type === 'text' ? p.text : '')).join('');
+  return res.json();
+}
+
+/**
+ * Call the model and return its full text output.
+ *
+ * Guards against silent truncation: if a response stops with
+ * `stop_reason === 'max_tokens'`, the partial output is fed back as an assistant
+ * prefill so the model resumes exactly where it left off (no repetition, no
+ * preamble). Chunks are concatenated and sanitized once at the end, since a cap
+ * can fall mid-line. Throws if the output is still truncated after
+ * MAX_CONTINUATIONS attempts, so callers never write an incomplete page.
+ */
+async function anthropicMessage({system, user}) {
+  const messages = [{role: 'user', content: user}];
+  let full = '';
+
+  for (let attempt = 0; ; attempt++) {
+    const json = await anthropicRaw({system, messages});
+    const parts = Array.isArray(json.content) ? json.content : [];
+    full += parts.map(p => (p && p.type === 'text' ? p.text : '')).join('');
+
+    if (json.stop_reason !== 'max_tokens') break;
+
+    if (attempt >= MAX_CONTINUATIONS) {
+      throw new Error(
+        `Output still truncated after ${MAX_CONTINUATIONS} continuation(s) (stop_reason=max_tokens)`,
+      );
+    }
+
+    // Hit the token cap. Resume via assistant prefill: resend the partial output
+    // as the final assistant turn so the model continues that same turn. The API
+    // rejects a prefill ending in whitespace, so trim it and keep our accumulator
+    // in sync with what we actually sent.
+    console.log('    stop_reason=max_tokens — requesting continuation...');
+    full = full.replace(/\s+$/, '');
+    messages.length = 1; // keep only the original user turn
+    messages.push({role: 'assistant', content: full});
+  }
+
   // The model is told not to wrap output in code fences, but sometimes does
   // (most often a ```yaml fence around the frontmatter, which breaks MkDocs).
   // Normalize it here so every generated/translated page is safe to write.
-  return sanitizeGenerated(text);
+  return sanitizeGenerated(full);
 }
 
 /**

@@ -46,6 +46,7 @@ Receive in-app notifications and manage platform access for your team.
 *   [View Users List](administration/users-list.md)
 *   [View Groups List](administration/groups-list.md)
 *   [Manage Languages](administration/languages.md)
+*   [Explore the Interface](interface/index.md)
 
 ### Share and Extend
 Share forms publicly or use advanced AI features for data tasks.
