@@ -1,14 +1,28 @@
 name: Deploy Docs
 
+# TODO(temporary): trigger on push to `dev` to deploy the docs from the dev branch.
+# One-off change: runs in parallel with CI and does NOT wait for CI to pass.
+# To restore: switch back to the `workflow_run` trigger on ['CI'] (which only runs
+# after a successful CI) and move this file back to `main`, since `workflow_run`
+# only uses the workflow version present on the default branch.
+
+#on:
+#  workflow_run:
+#    workflows: ['CI']
+#    types:
+#      - completed
+#jobs:
+#  docs:
+#    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+#    runs-on: ubuntu-latest
+
 on:
-  workflow_run:
-    workflows: ['CI']
-    types:
-      - completed
+  push:
+    branches:
+      - dev
 
 jobs:
   docs:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     permissions:
