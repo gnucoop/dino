@@ -24,7 +24,7 @@ The side menu lets you move between the main areas of the application.
 | Reports | Generated reports. |
 | Aggregation | Unified view of submissions across multiple forms. |
 | Metrics | Reference data (projects, locations, organisations, etc.). *(Hidden for guest-only users.)* |
-| GPT | AI assistant (DinoGPT). |
+| AI | AI assistant (DinoGPT). |
 
 **Admin sections** (visible to administrators only, shown below a divider):
 
