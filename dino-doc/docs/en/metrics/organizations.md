@@ -31,7 +31,7 @@ Each row has three actions accessible by clicking the **More** button (three dot
 
 You can also click directly on a row to **select** it (for bulk actions) or **expand** it to see additional details inline.
 
-## BulkBulk Actions and Filters
+## Bulk Actions and Filters
 
 Select multiple rows using the checkboxes in the first column, then use the bulk delete or bulk edit buttons that appear in the toolbar.
 
