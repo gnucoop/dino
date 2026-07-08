@@ -1,7 +1,7 @@
 name: Deploy Docs
 
-# TODO(temporary): trigger on push to `dev` to deploy the docs from the dev branch.
-# One-off change: runs in parallel with CI and does NOT wait for CI to pass.
+# TODO(temporary): one-off trigger on push to the `with-mkdocs` branch to deploy
+# the docs from that branch. Runs in parallel with CI and does NOT wait for CI to pass.
 # To restore: switch back to the `workflow_run` trigger on ['CI'] (which only runs
 # after a successful CI) and move this file back to `main`, since `workflow_run`
 # only uses the workflow version present on the default branch.
@@ -19,7 +19,7 @@ name: Deploy Docs
 on:
   push:
     branches:
-      - dev
+      - with-mkdocs
 
 jobs:
   docs:
@@ -88,7 +88,7 @@ jobs:
         run: |
           yarn cypress run \
             --project dino-doc \
-            --spec cypress/e2e/docs-screenshots.cy.js \
+            --spec dino-doc/cypress/e2e/docs-screenshots.cy.js \
             --browser chrome \
             --headless
 
