@@ -1,6 +1,6 @@
 INHERIT: ../../mkdocs.base.yml
 site_name: توثيق Dinoapp
-site_url: https://gnucoop.github.io/docs.dinoapp.io/ar/
+site_url: https://gnucoop.github.io/dino/ar/
 docs_dir: ../../docs/ar
 site_dir: ../../site/ar
 theme:

@@ -1,6 +1,6 @@
 INHERIT: ../../mkdocs.base.yml
 site_name: Документація Dinoapp
-site_url: https://gnucoop.github.io/docs.dinoapp.io/uk/
+site_url: https://gnucoop.github.io/dino/uk/
 docs_dir: ../../docs/uk
 site_dir: ../../site/uk
 theme:
