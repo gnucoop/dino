@@ -1,5 +1,5 @@
 site_name: Dino Documentation
-site_url: https://gnucoop.github.io/docs.dinoapp.io/
+site_url: https://gnucoop.github.io/dino/
 docs_dir: docs/en
 theme:
   name: material
@@ -7,25 +7,25 @@ theme:
 extra:
   alternate:
     - name: English
-      link: /docs.dinoapp.io/en/
+      link: /dino/en/
       lang: en
     - name: Italiano
-      link: /docs.dinoapp.io/it/
+      link: /dino/it/
       lang: it
     - name: Español
-      link: /docs.dinoapp.io/es/
+      link: /dino/es/
       lang: es
     - name: Français
-      link: /docs.dinoapp.io/fr/
+      link: /dino/fr/
       lang: fr
     - name: Português
-      link: /docs.dinoapp.io/pt/
+      link: /dino/pt/
       lang: pt
     - name: Українська
-      link: /docs.dinoapp.io/uk/
+      link: /dino/uk/
       lang: uk
     - name: العربية
-      link: /docs.dinoapp.io/ar/
+      link: /dino/ar/
       lang: ar
 markdown_extensions:
   - admonition
