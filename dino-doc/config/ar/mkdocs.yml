@@ -27,10 +27,10 @@ nav:
   - المقاييس:
     - نظرة عامة: metrics/index.md
     - المجالات الموضوعية: metrics/areas.md
-    - Cases: metrics/cases.md
-    - Locations: metrics/locations.md
-    - Organizations: metrics/organizations.md
-    - Projects: metrics/projects.md
+    - الحالات: metrics/cases.md
+    - المواقع: metrics/locations.md
+    - المنظمات: metrics/organizations.md
+    - المشاريع: metrics/projects.md
   - التجميع: aggregation/index.md
   - الإشعارات: notifications/index.md
   - النماذج العامة: public-forms/index.md

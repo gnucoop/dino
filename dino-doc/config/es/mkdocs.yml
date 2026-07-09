@@ -12,7 +12,7 @@ nav:
     - Iniciar Sesión: getting-started/login.md
     - Restablecer la Contraseña: getting-started/reset-password.md
   - Interfaz y Navegación: interface/index.md
-  - Panel de Control: dashboard/index.md
+  - Panel: dashboard/index.md
   - Formularios:
     - Descripción General: forms/index.md
     - Editar esquema de formulario: forms/edit-form-schema.md
@@ -26,10 +26,10 @@ nav:
   - Métricas:
     - Descripción General: metrics/index.md
     - Áreas temáticas: metrics/areas.md
-    - Cases: metrics/cases.md
-    - Locations: metrics/locations.md
-    - Organizations: metrics/organizations.md
-    - Projects: metrics/projects.md
+    - Casos: metrics/cases.md
+    - Ubicaciones: metrics/locations.md
+    - Organizaciones: metrics/organizations.md
+    - Proyectos: metrics/projects.md
   - Agregación: aggregation/index.md
   - Notificaciones: notifications/index.md
   - Formularios Públicos: public-forms/index.md
