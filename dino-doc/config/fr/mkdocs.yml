@@ -26,10 +26,10 @@ nav:
   - Métriques:
     - Aperçu: metrics/index.md
     - Domaines thématiques: metrics/areas.md
-    - Cases: metrics/cases.md
-    - Locations: metrics/locations.md
-    - Organizations: metrics/organizations.md
-    - Projects: metrics/projects.md
+    - Cas: metrics/cases.md
+    - Emplacements: metrics/locations.md
+    - Organisations: metrics/organizations.md
+    - Projets: metrics/projects.md
   - Agrégation: aggregation/index.md
   - Notifications: notifications/index.md
   - Formulaires Publics: public-forms/index.md
