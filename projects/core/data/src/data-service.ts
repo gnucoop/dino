@@ -749,34 +749,127 @@ export class DataService implements IDataService {
   }
 
   /**
-   * Imports a DB dump to the local indexed db
+   * Imports a DB dump to the local indexed db.
+   *
+   * Unlike RxDB's built-in `db.importJSON`, this performs a tolerant,
+   * per-collection restore so that a backup taken from a different app
+   * version can still be restored after schemas have evolved:
+   * - it does NOT require the dump's per-collection `schemaHash` to match
+   *   the current schema (RxDB `importJSON` throws JD2 otherwise);
+   * - it does NOT abort the whole restore when a collection in the dump
+   *   is missing locally (RxDB `importJSON` throws JD1 otherwise) — such
+   *   collections are skipped and logged instead.
+   *
    * @param dumpfile The blob of the db dump file to import
    */
   importDatabase(dumpfile: Blob): void {
     const fr = new FileReader();
     fr.onload = evt => {
       const res = evt.target?.result;
-      if (res != null && typeof res === 'string') {
-        if (!isDevMode) {
-          console.log(JSON.parse(res));
-        }
-        this._db
-          .pipe(
-            switchMap(db => from(db.importJSON(JSON.parse(res)))),
-            mapTo(true),
-            catchError(err => {
-              if (!isDevMode) {
-                console.log(err);
-              }
-
-              return obsOf(false);
-            }),
-            take(1),
-          )
-          .subscribe(res => this.dbImportedEvent.emit(res));
+      if (res == null || typeof res !== 'string') {
+        this.dbImportedEvent.emit(false);
+        return;
       }
+
+      let dump: {collections?: {name: string; docs?: any[]}[]};
+      try {
+        dump = JSON.parse(res);
+      } catch (err) {
+        if (isDevMode()) {
+          console.error('Restore: the selected file is not valid JSON.', err);
+        }
+        this.dbImportedEvent.emit(false);
+        return;
+      }
+
+      if (dump == null || !Array.isArray(dump.collections)) {
+        if (isDevMode()) {
+          console.error('Restore: unrecognized backup format (no "collections" array).', dump);
+        }
+        this.dbImportedEvent.emit(false);
+        return;
+      }
+
+      this._db
+        .pipe(
+          take(1),
+          switchMap(db => from(this._restoreCollections(db, dump.collections!))),
+          catchError(err => {
+            if (isDevMode()) {
+              console.error('Restore: a fatal error occurred.', err);
+            }
+            return obsOf(false);
+          }),
+          take(1),
+        )
+        .subscribe(ok => this.dbImportedEvent.emit(ok));
     };
     fr.readAsText(dumpfile);
+  }
+
+  /**
+   * Restores the documents contained in a database dump into the local
+   * database, one collection at a time, using `bulkUpsert`.
+   *
+   * Documents are upserted, so existing documents sharing the same id are
+   * overwritten — matching the confirmation shown to the user before the
+   * restore. Collections present in the dump but not registered locally are
+   * skipped. Schema hashes are intentionally ignored, so documents produced
+   * by an older schema version are still written (they are validated against
+   * the current schema on write).
+   *
+   * @param db The current RxDatabase instance
+   * @param collections The `collections` array from the parsed dump
+   * @returns True if at least one document was written and none failed
+   */
+  private async _restoreCollections(
+    db: RxDatabase,
+    collections: {name: string; docs?: any[]}[],
+  ): Promise<boolean> {
+    // Fields managed internally by RxDB that must not be written back
+    // verbatim; RxDB re-generates them on insert.
+    const managedFields = ['_meta', '_rev', '_attachments', '_deleted'];
+    const skipped: string[] = [];
+    let totalWritten = 0;
+    let totalFailed = 0;
+
+    for (const coll of collections) {
+      const collection = db.collections[coll.name] as RxCollection | undefined;
+      if (collection == null) {
+        skipped.push(coll.name);
+        continue;
+      }
+
+      const docs = (coll.docs || []).map(doc => {
+        const clean: {[key: string]: any} = {...doc};
+        managedFields.forEach(field => delete clean[field]);
+        return clean;
+      });
+      if (docs.length === 0) {
+        continue;
+      }
+
+      const {success, error} = await collection.bulkUpsert(docs);
+      totalWritten += success.length;
+      totalFailed += error.length;
+      if (error.length > 0 && isDevMode()) {
+        console.error(`Restore: ${error.length} document(s) failed in "${coll.name}".`, error);
+      }
+      if (success.length > 0) {
+        this._collectionChangedEmit('Documents restored', collection, success.length);
+      }
+    }
+
+    if (isDevMode()) {
+      console.log(
+        `Restore complete: ${totalWritten} document(s) written, ${totalFailed} failed, ` +
+          `skipped collection(s): ${skipped.length ? skipped.join(', ') : 'none'}.`,
+      );
+    }
+
+    // The restore is considered successful when at least one document was
+    // written and no document failed to import.
+    return totalWritten > 0 && totalFailed === 0;
   }
 
   /**
