@@ -20,7 +20,15 @@
  *
  */
 
-import {AjfContainerNode, AjfField, AjfNode, AjfNodeType, isContainerNode} from '@ajf/core/forms';
+import {
+  AjfContainerNode,
+  AjfField,
+  AjfFieldType,
+  AjfNode,
+  AjfNodeType,
+  AjfTableField,
+  isContainerNode,
+} from '@ajf/core/forms';
 import {Injectable, Optional} from '@angular/core';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -154,19 +162,25 @@ export class FormDataImportService {
    */
   getAvailableFields(formSchema: FormSchema | null): string[] {
     const fields: string[] = [];
+    const tableCells = this.getTableFields(formSchema);
+    const tableNames = new Set(Object.values(tableCells).map(cell => cell.tableName));
     if (formSchema) {
       this.getFieldsNameFromFormSchema(formSchema).forEach(field => {
         // Repeating slide fields come from the schema as `name__[0-9]+`: expose
         // a single base entry (`name`); the repetition index of each mapped
         // column is chosen by the user and applied at import time.
         const repSuffixIdx = field.indexOf('__[0-9]+');
-        if (repSuffixIdx > -1) {
-          fields.push(field.substring(0, repSuffixIdx));
-        } else {
-          fields.push(field);
+        const baseName = repSuffixIdx > -1 ? field.substring(0, repSuffixIdx) : field;
+        // A table field carries no data under its own name: its cells are stored
+        // as `name__<row>__<column>`. Skip the bare table name here and expose
+        // one mapping target per cell (added below).
+        if (tableNames.has(baseName)) {
+          return;
         }
+        fields.push(baseName);
       });
     }
+    Object.keys(tableCells).forEach(cell => fields.push(cell));
     fields.push('created_at', 'user_data_ref_id', 'form_status_name');
     const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
     activeMetrics.forEach(metric => {
@@ -229,6 +243,50 @@ export class FormDataImportService {
             });
         } else {
           visit((node as AjfContainerNode).nodes);
+        }
+      });
+    };
+    visit(formSchema.schema.nodes || []);
+    return result;
+  }
+
+  /**
+   * Map every table cell (by its data key `name__<row>__<column>`) to the table
+   * it belongs to, together with its row and column labels. Unlike a repeating
+   * slide, a table has a fixed, known number of rows and columns, so every cell
+   * can be offered as its own mapping target and matched by name against a dino
+   * exported file (whose header already uses these keys).
+   * @param formSchema The form schema
+   * @returns cell data key -> {tableName, rowLabel, columnLabel}
+   */
+  getTableFields(formSchema: FormSchema | null): {
+    [cellKey: string]: {tableName: string; rowLabel: string; columnLabel: string};
+  } {
+    const result: {[cellKey: string]: {tableName: string; rowLabel: string; columnLabel: string}} =
+      {};
+    if (!formSchema) {
+      return result;
+    }
+    const visit = (nodes: AjfNode[]): void => {
+      nodes.forEach(node => {
+        if (isContainerNode(node)) {
+          visit((node as AjfContainerNode).nodes);
+          return;
+        }
+        const field = node as AjfField;
+        if (field.fieldType === AjfFieldType.Table && field.name != null && field.name.length > 0) {
+          const table = field as AjfTableField;
+          const rowLabels = table.rowLabels || [];
+          const columnLabels = table.columnLabels || [];
+          rowLabels.forEach((rowLabel, rowIdx) => {
+            columnLabels.forEach((columnLabel, columnIdx) => {
+              result[`${field.name}__${rowIdx}__${columnIdx}`] = {
+                tableName: field.name,
+                rowLabel,
+                columnLabel,
+              };
+            });
+          });
         }
       });
     };
