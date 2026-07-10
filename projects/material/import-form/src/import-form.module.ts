@@ -35,6 +35,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {TranslocoModule} from '@ngneat/transloco';
 import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
@@ -56,6 +57,7 @@ import {ImportForm} from './import-form';
     MatSelectModule,
     MatSnackBarModule,
     MatToolbarModule,
+    MatTooltipModule,
     NgxMatSelectSearchModule,
     ReactiveFormsModule,
     RouterModule,

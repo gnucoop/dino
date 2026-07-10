@@ -64,6 +64,8 @@
                   *ngFor="let field of availableFields; trackBy: trackByField"
                   [value]="field"
                   [style.display]="isFieldVisible(field) ? null : 'none'"
+                  [matTooltip]="fieldLabel(field)"
+                  matTooltipPosition="right"
                 >
                   {{ fieldLabel(field) }}
                 </mat-option>

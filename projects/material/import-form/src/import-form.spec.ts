@@ -187,4 +187,20 @@ describe('Import Forms', () => {
     ]);
     expect(mappedRows).toEqual([{district: 'lamwo'}]);
   });
+
+  it('should map table cell columns to their name__row__column data keys', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    importForm.columnMappings = [
+      {column: 'q1', field: 'myTable__0__0'},
+      {column: 'q2', field: 'myTable__0__1'},
+      {column: 'q3', field: 'myTable__1__0'},
+    ];
+    const mappedRows = (importForm as any)._applyColumnMappings([
+      {q1: 'a', q2: 'b', q3: 'c'},
+    ]);
+    expect(mappedRows).toEqual([
+      {myTable__0__0: 'a', myTable__0__1: 'b', myTable__1__0: 'c'},
+    ]);
+  });
 });
