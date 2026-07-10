@@ -178,6 +178,15 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   private _repeatingFields: {[fieldName: string]: string} = {};
 
   /**
+   * Maps each table cell (offered in the select by its data key
+   * `name__<row>__<column>`) to its table name and row/column labels, used to
+   * show a readable label for the cell in the field select.
+   */
+  private _tableFields: {
+    [cellKey: string]: {tableName: string; rowLabel: string; columnLabel: string};
+  } = {};
+
+  /**
    * Sentinel value used as the "Ignore column" select option. A non-null value
    * is required so the mat-select shows the selected option (Angular Material
    * treats a null value as no selection, leaving the trigger blank). It is
@@ -387,6 +396,16 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   }
 
   /**
+   * Whether the given field is a table cell (offered as a single entry per cell,
+   * identified by its `name__<row>__<column>` data key).
+   * @param field The field name
+   * @returns true if the field is a table cell
+   */
+  isTableField(field: string | null): boolean {
+    return field != null && this._tableFields[field] !== undefined;
+  }
+
+  /**
    * The label shown for a field option / select trigger.
    * @param field The field name (or the ignore sentinel / null)
    * @returns The localized, user facing label
@@ -397,6 +416,12 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     }
     if (field == null) {
       return '';
+    }
+    if (this.isTableField(field)) {
+      const cell = this._tableFields[field];
+      const rowLabel = this._ts.translate(cell.rowLabel);
+      const columnLabel = this._ts.translate(cell.columnLabel);
+      return `${cell.tableName} [${rowLabel} / ${columnLabel}]`;
     }
     return this.isRepeatingField(field)
       ? `${field} (${this._ts.translate('repeating')})`
@@ -511,6 +536,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     this.columnMappings = [];
     this.availableFields = [];
     this._repeatingFields = {};
+    this._tableFields = {};
     this.fieldFilterCtrl.setValue('');
     this.duplicateFields = [];
     this.openedMapping = null;
@@ -1282,6 +1308,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
       this._columnMappingsSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
         this.availableFields = this._importService.getAvailableFields(formSchema);
         this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
+        this._tableFields = this._importService.getTableFields(formSchema);
         this.fieldFilterCtrl.setValue('');
         this.columnMappings = columns.map(column => this._buildColumnMapping(column));
         this._updateDuplicateFields();
