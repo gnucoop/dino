@@ -6,17 +6,28 @@
 </h1>
 <ng-container *ngIf="(submitted|async) === false ; else successMsg">
   <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
-    <ajf-form
-      #formContainer
-      [form]="(form|async)!"
-      [saveDisabled]="(isValid|async) === false"
-      [topBar]="false"
-      [hideTopToolbar]="true"
-      [hideNavigationButtons]="true"
-      [maxColumns]="maxColumns"
-      [centeredFieldsContent]="centeredFieldsContent"
-      (formAction)="onFormAction($event)"
-    ></ajf-form>
+    <div class="dino-survey-slider-wrap">
+      <ajf-form
+        #formContainer
+        [form]="(form|async)!"
+        [saveDisabled]="(isValid|async) === false"
+        [topBar]="false"
+        [hideTopToolbar]="true"
+        [hideNavigationButtons]="true"
+        [maxColumns]="maxColumns"
+        [centeredFieldsContent]="centeredFieldsContent"
+        (formAction)="onFormAction($event)"
+      ></ajf-form>
+
+      <div
+        class="dino-survey-scroll-hint"
+        [class.is-visible]="showScrollHint$ | async"
+        (click)="scrollDown()"
+        aria-hidden="true"
+      >
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </div>
+    </div>
 
     <div class="dino-survey-footer">
       <button

@@ -129,6 +129,16 @@ dino-edit-public-form {
     }
   }
 
+  // Wraps <ajf-form> and hosts the "scroll for more" hint, filling the space
+  // above the footer.
+  .dino-survey-slider-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
   // The <ajf-form> host must fill the column and be the positioning context for
   // AJF's absolutely-positioned `.ajf-form-container`; otherwise it collapses to
   // height 0 and the footer rides up to the top.
@@ -137,6 +147,53 @@ dino-edit-public-form {
     flex: 1 1 auto;
     min-height: 0;
     position: relative;
+  }
+
+  // ---- "Scroll for more" hint: bottom fade + animated chevron ----
+  // Shown only when the active section can still scroll down (see component).
+  .dino-survey-scroll-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 56px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    background: linear-gradient(
+      to top,
+      var(--dino-survey-card-bg) 15%,
+      color-mix(in srgb, var(--dino-survey-card-bg) 0%, transparent)
+    );
+
+    &.is-visible {
+      opacity: 1;
+    }
+
+    .mat-icon {
+      pointer-events: auto;
+      cursor: pointer;
+      color: var(--dino-survey-accent);
+      width: 32px;
+      height: 32px;
+      font-size: 32px;
+      line-height: 32px;
+      animation: dino-survey-bounce 1.6s ease-in-out infinite;
+    }
+  }
+
+  @keyframes dino-survey-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(4px);
+    }
   }
 
   // ---- Survey surface (the AJF form container) — full-bleed, flat ----
