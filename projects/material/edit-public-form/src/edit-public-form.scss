@@ -129,6 +129,25 @@ dino-edit-public-form {
     }
   }
 
+  // ---- "Powered by" footer branding ----
+  .dino-survey-brand {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px 12px;
+    color: var(--dino-survey-muted-fg);
+    font-size: 0.8rem;
+
+    img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+  }
+
   // Wraps <ajf-form> and hosts the "scroll for more" hint, filling the space
   // above the footer.
   .dino-survey-slider-wrap {
@@ -294,16 +313,13 @@ dino-edit-public-form {
       min-height: auto !important;
       min-width: 0 !important;
       margin: 0 !important;
-      padding: 16px 4px !important;
+      // Spacing between questions (no divider — the next question's bold label
+      // separates them).
+      padding: 18px 4px !important;
       border: none !important;
-      border-bottom: 1px solid var(--dino-survey-field-border) !important;
       border-radius: 0 !important;
       box-shadow: none !important;
       background: transparent !important;
-
-      &:last-child {
-        border-bottom: none !important;
-      }
 
       // Don't let the inner content flex-grow to fill removed empty space.
       > .mat-mdc-card-content {
@@ -452,9 +468,13 @@ dino-edit-public-form {
       &:hover:not([disabled]) {
         filter: brightness(0.95);
       }
-    }
-    .dino-survey-submit[disabled] {
-      opacity: 0.5;
+      // Disabled (form / current section not yet valid): clearly greyed out.
+      &[disabled] {
+        background-color: rgba(0, 0, 0, 0.12) !important;
+        color: rgba(0, 0, 0, 0.38) !important;
+        box-shadow: none;
+        cursor: default;
+      }
     }
   }
 
