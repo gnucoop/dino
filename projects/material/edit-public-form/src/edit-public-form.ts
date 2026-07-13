@@ -26,15 +26,18 @@ import {
   AjfFormSerializer,
   AjfFormRendererService,
 } from '@ajf/core/forms';
+import {AjfFormRenderer} from '@ajf/material/forms';
 import {Location} from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   isDevMode,
   OnDestroy,
   Output,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -79,6 +82,12 @@ export class EditPublicForm implements OnDestroy {
   @Input() maxColumns: 1 | 2 | 3 = 1;
 
   /**
+   * Custom languages to be shown in the survey Language Selector.
+   * When undefined, the selector falls back to the Transloco configured languages.
+   */
+  @Input() customLanguages: string[] | undefined;
+
+  /**
    * The Ajf Form object
    */
   readonly form: Observable<AjfForm>;
@@ -102,6 +111,38 @@ export class EditPublicForm implements OnDestroy {
    * True if the form has been submitted.
    */
   readonly submitted = new BehaviorSubject<boolean>(false);
+
+  /**
+   * The index of the slide (section) currently shown by the Ajf page slider.
+   */
+  readonly currentSlide$ = new BehaviorSubject<number>(0);
+
+  /**
+   * The total number of slides (sections) in the current form.
+   */
+  readonly slidesNum$: Observable<number>;
+
+  /**
+   * The Ajf form renderer instance, used to drive the custom prev/next footer.
+   */
+  private _formRenderer?: AjfFormRenderer;
+
+  /**
+   * Subscription to the page slider scroll events.
+   */
+  private _sliderSub: Subscription = Subscription.EMPTY;
+
+  @ViewChild('formContainer') set formRenderer(fr: AjfFormRenderer | undefined) {
+    this._formRenderer = fr;
+    this._sliderSub.unsubscribe();
+    if (fr && fr.formSlider) {
+      this.currentSlide$.next(fr.formSlider.currentPage ?? 0);
+      this._sliderSub = fr.formSlider.pageScrollFinish.subscribe(() => {
+        this.currentSlide$.next(fr.formSlider.currentPage ?? 0);
+        this._cdr.markForCheck();
+      });
+    }
+  }
 
   /**
    * Emitted when a user tries to save a form
@@ -143,8 +184,19 @@ export class EditPublicForm implements OnDestroy {
     snackBar: MatSnackBar,
     frs: AjfFormRendererService,
     ts: TranslocoService,
+    private _cdr: ChangeDetectorRef,
   ) {
     this._loadLangsSub = lm.loadLangs().subscribe();
+    this.slidesNum$ = frs.slidesNum;
+
+    // Populate the survey language selector with the app's configured languages.
+    // Without this the selector falls back to a single default language and the
+    // user cannot switch back once they change it.
+    if (this.customLanguages == null) {
+      this.customLanguages = (ts.getAvailableLangs() as (string | {id: string})[]).map(lang =>
+        typeof lang === 'string' ? lang : lang.id,
+      );
+    }
 
     const formSchemaManagerInit = fsm.init();
     const formDataManagerInit = fdm.init();
@@ -353,10 +405,25 @@ export class EditPublicForm implements OnDestroy {
     this._saveValidFormSub.unsubscribe();
   }
 
+  /**
+   * Navigates to the next slide (section) of the form.
+   */
+  nextSlide(): void {
+    this._formRenderer?.formSlider.slide({dir: 'forward'});
+  }
+
+  /**
+   * Navigates to the previous slide (section) of the form.
+   */
+  prevSlide(): void {
+    this._formRenderer?.formSlider.slide({dir: 'back'});
+  }
+
   ngOnDestroy(): void {
     this._saveFormSub.unsubscribe();
     this._saveValidFormSub.unsubscribe();
     this._loadLangsSub.unsubscribe();
+    this._sliderSub.unsubscribe();
   }
 
   /**

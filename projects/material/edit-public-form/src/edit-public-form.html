@@ -1,34 +1,62 @@
-<h1 class="dino-public-title">{{(formSchema|async)?.label|transloco }}</h1>
+<div class="dino-survey-topbar">
+  <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
+</div>
+<h1 *ngIf="(submitted|async) === false" class="dino-public-title">
+  {{(formSchema|async)?.label|transloco }}
+</h1>
 <ng-container *ngIf="(submitted|async) === false ; else successMsg">
   <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
     <ajf-form
       #formContainer
       [form]="(form|async)!"
       [saveDisabled]="(isValid|async) === false"
-      [topBar]="true"
+      [topBar]="false"
+      [hideTopToolbar]="true"
+      [hideNavigationButtons]="true"
       [maxColumns]="maxColumns"
       [centeredFieldsContent]="centeredFieldsContent"
       (formAction)="onFormAction($event)"
     ></ajf-form>
-  </div>
 
-  <dino-floating-button
-    buttonIcon="send"
-    [tooltipMessage]="'Save form'|transloco"
-    [buttonDisabled]="(isValid|async) === false || isSaving"
-    (click)="saveForm()"
-  ></dino-floating-button>
+    <div class="dino-survey-footer">
+      <button
+        mat-button
+        class="dino-survey-back"
+        *ngIf="(currentSlide$|async)! > 0"
+        (click)="prevSlide()"
+      >
+        ‹ {{'Back'|transloco}}
+      </button>
+      <span class="dino-survey-footer-spacer"></span>
+      <button
+        mat-raised-button
+        color="primary"
+        class="dino-survey-next"
+        *ngIf="(currentSlide$|async)! < (slidesNum$|async)! - 1"
+        (click)="nextSlide()"
+      >
+        {{'Forward'|transloco}} ›
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="dino-survey-submit"
+        [disabled]="(isValid|async) === false || isSaving"
+        (click)="saveForm()"
+      >
+        {{'Send'|transloco}}
+      </button>
+    </div>
+  </div>
 </ng-container>
 
 <ng-template #successMsg>
   <div class="dino-edit-form-success-container">
-    <mat-card appearance="outlined" class="form-container">
-      <mat-card-content>
-        <h2>{{ 'The form has been successfully submitted.'|transloco }}</h2>
-      </mat-card-content>
-      <mat-card-actions>
-        <mat-icon class="dino-success-msg">check</mat-icon>
-      </mat-card-actions>
-    </mat-card>
+    <div class="dino-survey-success-box">
+      <mat-icon class="dino-survey-success-icon">check_circle</mat-icon>
+      <h2 class="dino-survey-success-title">
+        {{ 'The form has been successfully submitted.'|transloco }}
+      </h2>
+    </div>
   </div>
 </ng-template>
