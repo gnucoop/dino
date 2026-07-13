@@ -22,6 +22,11 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ENG: Translation = {
+  // Public survey footer navigation ('Forward' maps to "Next" but is a distinct
+  // key so the shared 'Next' translation is left untouched).
+  'Back': 'Back',
+  'Forward': 'Next',
+  'Send': 'Send',
   '{{language}} already deleted': '{{language}} already deleted',
   '(select only one field)': '(select only one field)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

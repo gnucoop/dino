@@ -212,6 +212,14 @@ dino-main-nav {
       height: 100% !important;
     }
   }
+  // When the top toolbar is hidden (e.g. public survey routes), reclaim the
+  // space that was reserved for it so the content is not pushed down / cut off.
+  .mat-sidenav-content.dino-sidenav-content.dino-no-topbar {
+    top: 0;
+    margin-top: 0;
+    height: 100vh;
+    padding: 0;
+  }
   @media only screen and (max-width: 992px) {
     .mat-sidenav-content.dino-sidenav-content:has(ajf-form) {
       height: 85vh;

@@ -690,7 +690,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
       filter(evt => evt instanceof NavigationEnd),
       map(evt => {
         const navEndEvt = evt as NavigationEnd;
-        if (navEndEvt.url.includes('login') || navEndEvt.url.includes('reset-password')) {
+        const path = navEndEvt.url.split('?')[0];
+        if (
+          path.includes('login') ||
+          path.includes('reset-password') ||
+          path.startsWith('/f/')
+        ) {
           return false;
         }
         return true;
