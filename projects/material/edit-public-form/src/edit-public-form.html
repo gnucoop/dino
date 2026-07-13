@@ -44,6 +44,7 @@
         color="primary"
         class="dino-survey-next"
         *ngIf="(currentSlide$|async)! < (slidesNum$|async)! - 1"
+        [disabled]="(currentSlideValid$|async) === false"
         (click)="nextSlide()"
       >
         {{'Forward'|transloco}} ›
@@ -60,6 +61,11 @@
     </div>
   </div>
 </ng-container>
+
+<div class="dino-survey-brand" *ngIf="logoUrl">
+  <span>{{ 'Powered by'|transloco }} {{ poweredByName }}</span>
+  <img [src]="logoUrl" [alt]="poweredByName" />
+</div>
 
 <ng-template #successMsg>
   <div class="dino-edit-form-success-container">

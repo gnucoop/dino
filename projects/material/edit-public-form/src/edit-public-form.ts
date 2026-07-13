@@ -57,7 +57,7 @@ import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
 import {BehaviorSubject, Observable, Subscription, combineLatest, of as obsOf} from 'rxjs';
-import {filter, map, shareReplay, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, shareReplay, startWith, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 
 const successMsg = 'Form submitted successfully!';
 const redoBtn = 'FILL OUT ANOTHER ONE';
@@ -87,6 +87,17 @@ export class EditPublicForm implements OnDestroy {
    * When undefined, the selector falls back to the Transloco configured languages.
    */
   @Input() customLanguages: string[] | undefined;
+
+  /**
+   * Platform logo shown in the "Powered by" footer branding. When unset, the
+   * branding line is hidden. Provided by the host app (from environment config).
+   */
+  @Input() logoUrl?: string;
+
+  /**
+   * Platform/product name shown next to the logo ("Powered by <name>").
+   */
+  @Input() poweredByName = 'Dino';
 
   /**
    * The Ajf Form object
@@ -122,6 +133,12 @@ export class EditPublicForm implements OnDestroy {
    * The total number of slides (sections) in the current form.
    */
   readonly slidesNum$: Observable<number>;
+
+  /**
+   * True when the currently shown slide has no validation errors (all its
+   * mandatory questions are filled). Used to gate the "Avanti" button.
+   */
+  readonly currentSlideValid$: Observable<boolean>;
 
   /**
    * True when the current section can still be scrolled down (there is more
@@ -222,6 +239,17 @@ export class EditPublicForm implements OnDestroy {
   ) {
     this._loadLangsSub = lm.loadLangs().subscribe();
     this.slidesNum$ = frs.slidesNum;
+
+    // The current slide is invalid when its 1-based position is in the list of
+    // slide positions with errors (AjfFormRendererService.errorPositions).
+    // `currentSlide$` is the 0-based page index, hence the +1.
+    this.currentSlideValid$ = combineLatest([
+      this.currentSlide$,
+      frs.errorPositions.pipe(startWith([] as number[])),
+    ]).pipe(
+      map(([current, positions]) => !(positions || []).includes(current + 1)),
+      shareReplay(1),
+    );
 
     // Populate the survey language selector with the app's configured languages.
     // Without this the selector falls back to a single default language and the
