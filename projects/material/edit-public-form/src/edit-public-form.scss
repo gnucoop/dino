@@ -1,215 +1,447 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
-dino-edit-public-form {
-  font-size: 110%;
+/**
+ * Public survey theme.
+ *
+ * The whole survey is themable through the `--dino-survey-*` CSS custom properties
+ * declared below. A deployment re-skins the survey by overriding any of them, e.g.:
+ *
+ *   dino-edit-public-form {
+ *     --dino-survey-accent: #009e7f;
+ *     --dino-survey-card-fg: #10233a;
+ *     --dino-survey-control-radius: 12px;
+ *   }
+ *
+ * Overrides can live in any global stylesheet: a per-deployment file added to the
+ * `styles` array in projects/dinoapp/angular.json (like custom-themes/styles.pico.scss),
+ * or injected at runtime — custom properties cascade with no rebuild needed.
+ *
+ * The component uses ViewEncapsulation.None, so these rules are global but scoped
+ * under `dino-edit-public-form`.
+ */
 
+dino-edit-public-form {
+  // ---- Themable API (override any of these in a deployment stylesheet) ----
+  --dino-survey-accent: #{mat-css-vars.mat-css-color-primary(500)}; // follows app theme by default
+  --dino-survey-accent-contrast: #ffffff;
+  --dino-survey-page-bg: #f4f6f9;
+  --dino-survey-card-bg: #ffffff;
+  --dino-survey-card-fg: #1f2733;
+  --dino-survey-muted-fg: #6b7280;
+  --dino-survey-field-border: rgba(200, 199, 204, 0.7);
+  --dino-survey-field-bg: #ffffff;
+  --dino-survey-radius: 12px;
+  --dino-survey-control-radius: 8px;
+  // Readable column width for the survey content on a full-bleed surface.
+  --dino-survey-content-width: 900px;
+  --dino-survey-font: Roboto, 'Helvetica Neue', sans-serif;
+  --dino-survey-success: #16a34a;
+
+  // Full-bleed, flat: the survey is a full-height white surface (no floating card).
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--dino-survey-card-bg);
+  color: var(--dino-survey-card-fg);
+  font-family: var(--dino-survey-font);
+  font-size: 105%;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  // ---- Top bar: language selector only ----
+  .dino-survey-topbar {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px 24px 0;
+
+    dino-lang-selector {
+      .mat-mdc-form-field {
+        width: 84px;
+      }
+      // Compact, chromeless selector.
+      .mat-mdc-text-field-wrapper {
+        background: transparent;
+      }
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+    }
+  }
+
+  // ---- Page title ----
   .dino-public-title {
-    max-width: 1020px;
-    margin: 20px auto;
-    font-weight: bold;
+    flex: 0 0 auto;
+    max-width: var(--dino-survey-content-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 4px 24px 12px;
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 1.3;
+    color: var(--dino-survey-card-fg);
   }
 
   .dino-edit-form-step-container {
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+    position: relative;
+  }
+
+  // ---- Success state (flat, centered — matches the full-bleed survey) ----
+  .dino-edit-form-success-container {
+    flex: 1 1 auto;
+    display: flex;
     align-items: center;
     justify-content: center;
+    padding: 24px;
+    text-align: center;
+
+    .dino-survey-success-box {
+      max-width: var(--dino-survey-content-width);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .dino-survey-success-icon {
+      color: var(--dino-survey-success);
+      width: 88px;
+      height: 88px;
+      font-size: 88px;
+      line-height: 88px;
+    }
+    .dino-survey-success-title {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.5rem;
+      line-height: 1.35;
+      color: var(--dino-survey-card-fg);
+    }
+  }
+
+  // The <ajf-form> host must fill the column and be the positioning context for
+  // AJF's absolutely-positioned `.ajf-form-container`; otherwise it collapses to
+  // height 0 and the footer rides up to the top.
+  ajf-form {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
     position: relative;
-    min-height: 90vh;
-    @media only screen and (max-width: 992px) {
-      min-height: 80vh;
-    }
   }
 
-  .dino-edit-form-success-container {
-    max-width: 1020px;
-    margin: auto;
-    .form-container {
-      min-width: 350px;
-      border-left: 3px solid;
-      border-radius: 5px;
-      box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%),
-        0px 1px 10px 0px rgb(0 0 0 / 12%);
-    }
-    .mat-mdc-card-content {
-      padding: 30px !important;
-      font-weight: bold;
-    }
-    .mat-mdc-card-actions {
-      background-color: rgba($color: #32db64, $alpha: 0.2);
-    }
-    .dino-success-msg {
-      color: #32db64;
-      margin-left: auto;
-    }
-  }
-
+  // ---- Survey surface (the AJF form container) — full-bleed, flat ----
   .ajf-form-container {
-    max-width: 1020px;
-    margin: auto;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    background: transparent;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column nowrap;
 
-    .ajf-slider-container ajf-page-slider {
-      max-height: 87.5%;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      @media only screen and (max-width: 992px) {
-        height: 97.5% !important;
-        max-height: 97.5%;
+    .ajf-slider-container {
+      flex: 1 1 auto;
+      min-height: 0;
+
+      ajf-page-slider {
+        max-height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
-    }
-    .ajf-slider-container
       .ajf-page-slider-content
-      .ajf-page-slider-body
-      .ajf-page-slider-item-content,
-    .mat-toolbar-single-row {
-      padding: 0px;
-      height: auto;
-    }
-    .ajf-page-slider-content {
-      overflow-x: hidden;
-    }
-    .mat-toolbar {
-      background: transparent;
-      &:not(.ajf-toolbar) {
-        .ajf-spacer {
-          display: none;
-        }
+        .ajf-page-slider-body
+        .ajf-page-slider-item-content,
+      .mat-toolbar-single-row {
+        padding: 0;
+        height: auto;
       }
-
-      &.ajf-btn-strip {
-        .mat-mdc-button.ajf-topbar-button {
-          margin-right: 0px;
-          background-color: transparent;
-          color: rgba(120, 120, 120, 0.63);
-          flex: 1 0 auto;
-          transition: all ease-in-out 0.25s;
-          -webkit-transition: all ease-in-out 0.25s;
-          &:hover {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-          }
-        }
+      .ajf-page-slider-content {
+        overflow-x: hidden;
       }
-      span {
-        flex: 1 1 auto;
-        text-align: center;
-      }
-      &:not(.ajf-btn-strip, .ajf-toolbar) {
-        display: flex;
-        align-content: center;
-        .mat-mdc-button {
-          display: none;
-        }
-      }
-    }
-    .ajf-field-entry label {
-      font-weight: bold;
     }
 
+    // ---- Slide / section ----
     .ajf-form-page {
-      .mat-mdc-card {
-        margin: 0px !important;
-        margin-bottom: 10px !important;
-        padding: 8px 8px 8px 0;
-        max-width: 100%;
+      padding: 26px 30px 8px;
+      @media only screen and (max-width: 768px) {
+        padding: 20px 16px 8px;
+      }
+
+      // Flatten the outer slide card and keep content in a readable centered column.
+      > .mat-mdc-card {
+        margin: 0 auto !important;
+        padding: 0;
+        width: 100%;
+        max-width: var(--dino-survey-content-width);
+        border: none;
+        box-shadow: none;
+        background: transparent;
         display: flex;
         flex-flow: column wrap;
-        .ajf-field-entry {
+      }
+
+      // Section heading.
+      .ajf-page-slider-item-header {
+        h2 {
+          font-size: 1.35rem;
+          font-weight: 700;
+          color: var(--dino-survey-card-fg);
           display: flex;
-          flex-flow: column wrap;
-          justify-content: flex-start;
-          /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-          label,
-          span:not(.mat-ripple, .mat-button-focus-overlay) {
-            max-width: 80vw;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            &::-webkit-scrollbar {
-              display: none;
-            }
-          }
-          ajf-checkbox-group-item {
-            flex: 1 0 auto;
-            display: flex;
-            flex-flow: row wrap;
-          }
-          .mat-mdc-radio-button,
-          ajf-checkbox-group-item .mat-mdc-button {
-            .mat-icon {
-              color: inherit;
-            }
-            padding: 10px;
-            flex: 1 0 auto;
-            min-height: auto;
-            align-items: stretch;
-            background-color: #fff;
-            border: 1px solid rgba(200, 199, 204, 0.7);
-            border-radius: 2px;
-            margin-top: 10px;
-            margin-right: 10px;
-            line-height: 1.6em;
-            label {
-              font-weight: normal;
-            }
-            /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
-            .mat-radio-ripple {
-              display: none;
-            }
-          }
-          .mat-mdc-select {
-            width: 25%;
-            @media only screen and (max-width: 768px) {
-              width: 100%;
-            }
-          }
-          ajf-field {
-            margin-top: 5px;
-            margin-bottom: 10px;
-            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-            .mat-select-min-line,
-            .mat-mdc-select-min-line {
-              display: inline-block;
-            }
-          }
+          align-items: center;
+          gap: 10px;
+        }
+        // Slide number → accent pill badge.
+        .ajf-form-header-number {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 1.9em;
+          height: 1.9em;
+          padding: 0 0.6em;
+          margin-right: 2px;
+          border-radius: 999px;
+          font-size: 0.8em;
+          font-weight: 700;
+          background-color: color-mix(in srgb, var(--dino-survey-accent) 15%, transparent);
+          color: var(--dino-survey-accent);
+        }
+        .ajf-success {
+          color: var(--dino-survey-accent);
+        }
+        .ajf-warning {
+          color: #f5a623;
         }
       }
     }
+
+    // ---- Field entries ----
+    // AJF forces field cards to a fixed 30vh height with an outlined border;
+    // flatten them into compact, separated form rows.
+    .ajf-field-entry {
+      height: auto !important;
+      min-height: auto !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 16px 4px !important;
+      border: none !important;
+      border-bottom: 1px solid var(--dino-survey-field-border) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: transparent !important;
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      // Don't let the inner content flex-grow to fill removed empty space.
+      > .mat-mdc-card-content {
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+      }
+      > .mat-mdc-card-header {
+        padding: 0 !important;
+      }
+
+      // Field label.
+      label {
+        font-weight: 600;
+        color: var(--dino-survey-card-fg);
+      }
+      // Field description.
+      > p {
+        margin: 2px 0 8px;
+        color: var(--dino-survey-muted-fg);
+        font-size: 0.92rem;
+      }
+
+      // Per-field validity indicator: hide the "valid" green bar, keep errors subtle.
+      .mat-mdc-card-actions {
+        background: transparent !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+        &.ajf-valid-field {
+          display: none !important;
+        }
+        &.ajf-invalid-field {
+          color: #b91c1c;
+        }
+      }
+
+      label,
+      span:not(.mat-ripple, .mat-button-focus-overlay) {
+        max-width: 100%;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      ajf-checkbox-group-item {
+        flex: 1 0 auto;
+        display: flex;
+        flex-flow: row wrap;
+      }
+
+      // Radio / checkbox options as bordered chips.
+      .mat-mdc-radio-button,
+      ajf-checkbox-group-item .mat-mdc-button {
+        .mat-icon {
+          color: inherit;
+        }
+        padding: 10px 14px;
+        flex: 1 0 auto;
+        min-height: auto;
+        align-items: stretch;
+        background-color: var(--dino-survey-field-bg);
+        border: 1px solid var(--dino-survey-field-border);
+        border-radius: var(--dino-survey-control-radius);
+        margin-top: 10px;
+        margin-right: 10px;
+        line-height: 1.6em;
+        transition: border-color ease-in-out 0.15s, background-color ease-in-out 0.15s;
+
+        &:hover {
+          border-color: var(--dino-survey-accent);
+        }
+        label {
+          font-weight: 400;
+        }
+        /* TODO(mdc-migration): internal radio class */
+        .mat-radio-ripple {
+          display: none;
+        }
+      }
+      // Selected option → accent outline.
+      .mat-mdc-radio-button.mat-mdc-radio-checked,
+      ajf-checkbox-group-item .mat-mdc-button.dino-checked {
+        border-color: var(--dino-survey-accent);
+        background-color: color-mix(in srgb, var(--dino-survey-accent) 8%, var(--dino-survey-field-bg));
+      }
+
+      .mat-mdc-select {
+        width: 100%;
+        max-width: 360px;
+        @media only screen and (max-width: 768px) {
+          max-width: 100%;
+        }
+      }
+      ajf-field {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        /* TODO(mdc-migration): internal select class */
+        .mat-select-min-line,
+        .mat-mdc-select-min-line {
+          display: inline-block;
+        }
+      }
+    }
+
   }
 
+  // ---- Custom footer navigation (Indietro / Avanti / Invia) ----
+  .dino-survey-footer {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: var(--dino-survey-content-width);
+    margin: 0 auto;
+    padding: 14px 24px;
+    border-top: 1px solid var(--dino-survey-field-border);
+
+    .dino-survey-footer-spacer {
+      flex: 1 1 auto;
+    }
+
+    .mat-mdc-button,
+    .mat-mdc-raised-button {
+      border-radius: 999px;
+      min-height: 44px;
+      padding: 0 22px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    // Ghost "Indietro".
+    .dino-survey-back {
+      color: var(--dino-survey-muted-fg);
+      background: transparent;
+    }
+
+    // Accent "Avanti" / "Invia".
+    .dino-survey-next,
+    .dino-survey-submit {
+      background-color: var(--dino-survey-accent) !important;
+      color: var(--dino-survey-accent-contrast) !important;
+      box-shadow: none;
+      transition: filter ease-in-out 0.15s;
+      &:hover:not([disabled]) {
+        filter: brightness(0.95);
+      }
+    }
+    .dino-survey-submit[disabled] {
+      opacity: 0.5;
+    }
+  }
+
+  // Hide the AJF error/info side bar (not used in the public survey).
   .ajf-left-bar {
     display: none !important;
   }
-
   .ajf-slider-container {
     .ajf-info-box.ajf-error {
       visibility: hidden;
     }
   }
 
-  .ajf-toolbar {
-    margin-bottom: 12px;
+  // Subtle scrollbars inside the survey (the app-wide default paints them with
+  // the accent color, which reads as a solid bar on barely-scrolling slides).
+  ::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+    max-width: 8px !important;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.35) !important;
+    border-radius: 8px !important;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+  .ajf-slider-container ajf-page-slider {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120, 120, 120, 0.35) transparent;
   }
 
+  // Field-entry select refinements (accent + readable value).
   .mat-mdc-card.ajf-field-entry {
-    border-left-color: mat-css-vars.mat-css-color-accent(300) !important;
     .mat-mdc-card-actions {
-      left: 0px;
+      left: 0;
     }
-    .mat-mdc-select-arrow {
-      svg {
-        height: 32px;
-        width: 32px;
-      }
+    .mat-mdc-select-arrow svg {
+      height: 28px;
+      width: 28px;
     }
-    .mat-mdc-select {
-      .mat-mdc-select-value {
-        position: relative;
-        box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.2);
-        .mat-mdc-select-min-line {
-          white-space: pre-line;
-          max-width: 95%;
-          overflow: auto;
-          text-overflow: ellipsis;
-        }
+    .mat-mdc-select .mat-mdc-select-value {
+      position: relative;
+      box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
+      .mat-mdc-select-min-line {
+        white-space: pre-line;
+        max-width: 95%;
+        overflow: auto;
+        text-overflow: ellipsis;
       }
     }
   }
