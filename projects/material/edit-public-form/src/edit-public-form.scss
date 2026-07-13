@@ -198,7 +198,8 @@ dino-edit-public-form {
           font-weight: 700;
           color: var(--dino-survey-card-fg);
           display: flex;
-          align-items: center;
+          // Top-align the badge with the first line of a wrapping title (mobile).
+          align-items: flex-start;
           gap: 10px;
         }
         // Slide number → accent pill badge.
@@ -206,6 +207,8 @@ dino-edit-public-form {
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          flex: 0 0 auto; // never shrink/stretch the pill
+          white-space: nowrap; // keep "1 →" on one line
           min-width: 1.9em;
           height: 1.9em;
           padding: 0 0.6em;
@@ -213,6 +216,7 @@ dino-edit-public-form {
           border-radius: 999px;
           font-size: 0.8em;
           font-weight: 700;
+          line-height: 1;
           background-color: color-mix(in srgb, var(--dino-survey-accent) 15%, transparent);
           color: var(--dino-survey-accent);
         }
