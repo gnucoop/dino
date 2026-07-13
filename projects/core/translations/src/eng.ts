@@ -27,6 +27,7 @@ export const ENG: Translation = {
   'Back': 'Back',
   'Forward': 'Next',
   'Send': 'Send',
+  'Powered by': 'Powered by',
   '{{language}} already deleted': '{{language}} already deleted',
   '(select only one field)': '(select only one field)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
