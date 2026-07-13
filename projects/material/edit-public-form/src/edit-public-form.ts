@@ -32,6 +32,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   isDevMode,
@@ -123,14 +124,30 @@ export class EditPublicForm implements OnDestroy {
   readonly slidesNum$: Observable<number>;
 
   /**
+   * True when the current section can still be scrolled down (there is more
+   * content below the fold). Drives the "scroll for more" hint.
+   */
+  readonly showScrollHint$ = new BehaviorSubject<boolean>(false);
+
+  /**
    * The Ajf form renderer instance, used to drive the custom prev/next footer.
    */
   private _formRenderer?: AjfFormRenderer;
 
   /**
+   * The host element of the <ajf-form>, used to observe intra-slide scrolling.
+   */
+  private _formHost?: HTMLElement;
+
+  /**
    * Subscription to the page slider scroll events.
    */
   private _sliderSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Teardown for the scroll-hint listeners (scroll + resize observers).
+   */
+  private _scrollHintTeardown: () => void = () => {};
 
   @ViewChild('formContainer') set formRenderer(fr: AjfFormRenderer | undefined) {
     this._formRenderer = fr;
@@ -140,7 +157,24 @@ export class EditPublicForm implements OnDestroy {
       this._sliderSub = fr.formSlider.pageScrollFinish.subscribe(() => {
         this.currentSlide$.next(fr.formSlider.currentPage ?? 0);
         this._cdr.markForCheck();
+        // Content and scroll extent change when the section changes.
+        this._recomputeScrollHint();
       });
+    }
+  }
+
+  @ViewChild('formContainer', {read: ElementRef}) set formContainerEl(
+    ref: ElementRef<HTMLElement> | undefined,
+  ) {
+    // Re-created whenever the form rebuilds (e.g. language change): tear down
+    // the previous listeners and wire up the new DOM.
+    this._scrollHintTeardown();
+    this._scrollHintTeardown = () => {};
+    this._formHost = ref?.nativeElement;
+    if (this._formHost) {
+      this._setupScrollHint(this._formHost);
+    } else {
+      this.showScrollHint$.next(false);
     }
   }
 
@@ -419,11 +453,90 @@ export class EditPublicForm implements OnDestroy {
     this._formRenderer?.formSlider.slide({dir: 'back'});
   }
 
+  /**
+   * Scrolls the current section down by roughly one viewport when the user
+   * clicks the "scroll for more" hint.
+   */
+  scrollDown(): void {
+    const el = this._activeScroller();
+    if (el) {
+      el.scrollBy({top: Math.round(el.clientHeight * 0.8), behavior: 'smooth'});
+    }
+  }
+
+  /**
+   * Wires up the scroll-hint detection on the given <ajf-form> host element:
+   * a capture-phase scroll listener (catches whichever descendant scrolls) and
+   * a ResizeObserver (content height changes as the form is filled).
+   */
+  private _setupScrollHint(host: HTMLElement): void {
+    const onScroll = () => this._recomputeScrollHint();
+    host.addEventListener('scroll', onScroll, true);
+
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => this._recomputeScrollHint());
+      ro.observe(host);
+    }
+
+    this._scrollHintTeardown = () => {
+      host.removeEventListener('scroll', onScroll, true);
+      ro?.disconnect();
+    };
+
+    // Initial evaluation once the slide content has laid out.
+    setTimeout(() => this._recomputeScrollHint(), 0);
+  }
+
+  /**
+   * Returns the DOM element that natively scrolls the current section, or null.
+   * Prefers the visible page-slider-item; falls back to the descendant with the
+   * largest vertical overflow.
+   */
+  private _activeScroller(): HTMLElement | null {
+    const host = this._formHost;
+    if (!host) {
+      return null;
+    }
+    const items = Array.from(
+      host.querySelectorAll<HTMLElement>('ajf-page-slider-item'),
+    );
+    const current = this._formRenderer?.formSlider?.currentPage ?? 0;
+    const candidate = items[current];
+    if (candidate && candidate.scrollHeight - candidate.clientHeight > 4) {
+      return candidate;
+    }
+    // Fallback: pick the visible element with the largest scroll overflow.
+    let best: HTMLElement | null = null;
+    let bestOverflow = 4;
+    items.forEach(el => {
+      const overflow = el.scrollHeight - el.clientHeight;
+      if (overflow > bestOverflow && el.offsetParent !== null) {
+        bestOverflow = overflow;
+        best = el;
+      }
+    });
+    return best;
+  }
+
+  /**
+   * Shows the hint when the active section can still be scrolled down.
+   */
+  private _recomputeScrollHint(): void {
+    const el = this._activeScroller();
+    const more =
+      el != null && el.scrollHeight - el.scrollTop - el.clientHeight > 24;
+    if (more !== this.showScrollHint$.value) {
+      this.showScrollHint$.next(more);
+    }
+  }
+
   ngOnDestroy(): void {
     this._saveFormSub.unsubscribe();
     this._saveValidFormSub.unsubscribe();
     this._loadLangsSub.unsubscribe();
     this._sliderSub.unsubscribe();
+    this._scrollHintTeardown();
   }
 
   /**
