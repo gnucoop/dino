@@ -217,7 +217,8 @@ dino-main-nav {
   .mat-sidenav-content.dino-sidenav-content.dino-no-topbar {
     top: 0;
     margin-top: 0;
-    height: 100vh;
+    height: 100vh; // fallback
+    height: 100dvh; // account for mobile browser chrome so the footer stays visible
     padding: 0;
   }
   @media only screen and (max-width: 992px) {

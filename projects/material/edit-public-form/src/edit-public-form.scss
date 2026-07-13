@@ -41,7 +41,8 @@ dino-edit-public-form {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: 100vh;
+  height: 100vh; // fallback
+  height: 100dvh; // account for mobile browser chrome so the footer stays visible
   overflow: hidden;
   background-color: var(--dino-survey-card-bg);
   color: var(--dino-survey-card-fg);
