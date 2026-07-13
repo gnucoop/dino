@@ -310,6 +310,7 @@
 
   <mat-sidenav-content
     [ngClass]="'dino-sidenav-content '+(tourService.isTourOngoing.value ? 'dino-sidenav-content-not-scrollable' : '')"
+    [class.dino-no-topbar]="(showNav|async) === false"
     [@loadComponent]
   >
     <ng-container *ngIf="(isLoading|async) === false; else loading">

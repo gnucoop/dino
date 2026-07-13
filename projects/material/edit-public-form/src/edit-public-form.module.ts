@@ -27,9 +27,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dino/core/forms';
 import {TranslocoModule} from '@ngneat/transloco';
-import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
+import {LangSelectorModule} from '@dino/material/lang-selector';
 
 import {EditPublicForm} from './edit-public-form';
+import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 
@@ -38,8 +39,9 @@ import {MatIconModule} from '@angular/material/icon';
   imports: [
     AjfFormsModule,
     CommonModule,
-    DinoFloatingButtonModule,
     FormsModule,
+    LangSelectorModule,
+    MatButtonModule,
     MatIconModule,
     MatCardModule,
     MatSnackBarModule,
