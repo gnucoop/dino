@@ -42,8 +42,12 @@
     <ng-container *ngIf="item|dinoListCellGetFileIcon as fileIcon">
       <ng-container *ngIf="fileItem | dinoFileView as fileView">
 
+        <!-- AUDIO -->
+        <audio *ngIf="fileView.isAudio && fileView.href" class="dino-file-cell-audio" controls
+          [src]="fileView.href"></audio>
+
         <!-- DOWNLOAD / URL -->
-        <a *ngIf="!fileView.isImage && fileView.href" [href]="fileView.href"
+        <a *ngIf="!fileView.isImage && !fileView.isAudio && fileView.href" [href]="fileView.href"
           [attr.target]="fileView.targetBlank ? '_blank' : null" [attr.download]="fileView.download ? '' : null">
 
           <mat-icon class="dino-file-cell-icon">
@@ -57,7 +61,7 @@
         </mat-icon>
 
         <!-- FALLBACK -->
-        <ng-container *ngIf="!fileView.isImage && !fileView.href">
+        <ng-container *ngIf="!fileView.isImage && !fileView.isAudio && !fileView.href">
           {{ item }}
         </ng-container>
 

@@ -249,6 +249,11 @@ dino-list {
     margin: 5px;
   }
 
+  .dino-file-cell-audio {
+    height: 32px;
+    max-width: 100%;
+  }
+
   mat-header-cell:last-of-type.mat-column-actions {
     background-color: transparent;
     overflow: visible;
