@@ -8517,13 +8517,6 @@ private _removeSlashes(uri: string): string
    * @returns The full URL
    */
 private _generateUrl(endpoint: string, baseUrl?: string): string
-⋮----
-/**
-   * Check if a value is a base64-encoded audio string (e.g. data:audio/ogg;base64,...)
-   * @param val the value to be checked
-   * @returns true if the input value is a base64 audio string
-   */
-isBase64Audio(val: any): boolean
 ```
 
 ## File: file-upload/src/public_api.ts
