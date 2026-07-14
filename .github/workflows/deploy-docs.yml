@@ -6,25 +6,23 @@ name: Deploy Docs
 # after a successful CI) and move this file back to `main`, since `workflow_run`
 # only uses the workflow version present on the default branch.
 
-#on:
-#  workflow_run:
-#    workflows: ['CI']
-#    types:
-#      - completed
-#jobs:
-#  docs:
-#    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-#    runs-on: ubuntu-latest
+# on:
+#   push:
+#     branches:
+#       - with-mkdocs
+# jobs:
+#   docs:
+#     runs-on: ubuntu-latest
 
 on:
-  push:
-    branches:
-      - with-mkdocs
-
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
 jobs:
   docs:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
