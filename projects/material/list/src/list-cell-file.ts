@@ -41,6 +41,7 @@ export interface ListCellFileView {
   download: boolean;
   targetBlank: boolean;
   isImage: boolean;
+  isAudio: boolean;
 }
 
 /**
@@ -66,11 +67,12 @@ export class ListCellFileViewPipe implements PipeTransform {
 
   transform<T extends Model = Model>(element: T | {[key: string]: any} | string): ListCellFileView {
     if (!element || typeof element !== 'object') {
-      return {href: '', download: false, targetBlank: false, isImage: false};
+      return {href: '', download: false, targetBlank: false, isImage: false, isAudio: false};
     }
 
     const elemObj = element as {[key: string]: string};
     const isImage = elemObj['type']?.includes('image') ?? false;
+    const isAudio = elemObj['type']?.includes('audio') ?? false;
     const isUrl = !!elemObj['url'];
 
     let href: string | SafeUrl = '';
@@ -84,6 +86,7 @@ export class ListCellFileViewPipe implements PipeTransform {
       download: !isUrl,
       targetBlank: isUrl && !isImage,
       isImage,
+      isAudio,
     };
   }
 }
@@ -144,6 +147,7 @@ export class ListCellGetFileIcon implements PipeTransform {
     const fileType = elemObj['type'];
 
     if (fileType.includes('image')) return 'image';
+    if (fileType.includes('audio')) return 'audiotrack';
     if (fileType.includes('pdf')) return 'picture_as_pdf';
     return 'insert_drive_file';
   }
