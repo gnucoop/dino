@@ -11,6 +11,9 @@ RUN apt-get update -qqy \
 
 RUN export CHROME_BIN=/usr/bin/google-chrome
 
+# Build context must be the repo root, e.g.:
+#   docker build -f dino-pipeline/Dockerfile -t devgnucoop/dinopipeline .
+# The path below is relative to the build context, so it copies the whole project.
 COPY ["./", "/app"]
 
 EXPOSE 4200
