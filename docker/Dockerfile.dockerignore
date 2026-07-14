@@ -1,0 +1,6 @@
+node_modules
+dist
+.git
+dino-doc
+dinoenv
+cypress
