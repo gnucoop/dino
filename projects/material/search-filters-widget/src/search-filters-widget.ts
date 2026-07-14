@@ -364,7 +364,7 @@ export class SearchFiltersWidget extends AjfCoreFormRenderer implements OnInit, 
     console.log(JSON.stringify(TEXT_CONDITION_OPERATORS));
     switch (type) {
       case AjfFieldType.Number:
-      case AjfFieldType.Date:
+      case AjfFieldType.DateRange:
       case AjfFieldType.DateInput:
       case AjfFieldType.Range:
         return NUMBER_CONDITION_OPERATORS;

@@ -257,7 +257,7 @@ export const DEFAULT_OPERATORS: {[key: number]: Operator} = {
   [AjfFieldType.Text]: {label: 'Includes', value: '$regex', options: 'i'},
   [AjfFieldType.Number]: {label: '==', value: '$eq'},
   [AjfFieldType.DateInput]: {label: '==', value: '$eq'},
-  [AjfFieldType.Date]: {label: '==', value: '$eq'},
+  [AjfFieldType.DateRange]: {label: '==', value: '$eq'},
   [AjfFieldType.MultipleChoice]: {label: 'Is', value: '$in'},
   [AjfFieldType.Formula]: {label: '==', value: '$eq'},
   [AjfFieldType.SingleChoice]: {label: 'Includes', value: '$regex', options: 'i'},
