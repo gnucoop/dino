@@ -132,6 +132,10 @@ dino-edit-public-form {
   // ---- "Powered by" footer branding ----
   .dino-survey-brand {
     flex: 0 0 auto;
+    // Pin to the bottom of the flex column. Absorbs the free space above it so
+    // the brand stays at the bottom even before the (async) form content renders
+    // — without this it briefly stacks near the top on load, then jumps down.
+    margin-top: auto;
     display: flex;
     align-items: center;
     justify-content: center;
