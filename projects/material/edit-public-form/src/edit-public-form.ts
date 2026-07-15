@@ -28,6 +28,7 @@ import {
 } from '@ajf/core/forms';
 import {AjfFormRenderer} from '@ajf/material/forms';
 import {Location} from '@angular/common';
+import {UntypedFormGroup} from '@angular/forms';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -177,6 +178,7 @@ export class EditPublicForm implements OnDestroy {
         // Content and scroll extent change when the section changes.
         this._recomputeScrollHint();
       });
+      this._triggerInitialValidation();
     }
   }
 
@@ -233,7 +235,7 @@ export class EditPublicForm implements OnDestroy {
     lm: OnlineLangManager,
     location: Location,
     snackBar: MatSnackBar,
-    frs: AjfFormRendererService,
+    private frs: AjfFormRendererService,
     ts: TranslocoService,
     private _cdr: ChangeDetectorRef,
   ) {
@@ -465,6 +467,28 @@ export class EditPublicForm implements OnDestroy {
       .subscribe();
 
     this._saveValidFormSub.unsubscribe();
+  }
+
+  /**
+   * Forces one validation pass on the form as soon as it is rendered.
+   *
+   * AjfFormRendererService only emits validation state (`errors` /
+   * `errorPositions`) after the first form value change, so on a fresh load the
+   * "Forward"/"Send" buttons would stay enabled even with empty mandatory fields
+   * — the gating would only start working after the user edits a field. Once the
+   * form view exists we re-run the form group's validity (deferred so our async
+   * pipes are already subscribed and don't miss the emission), which makes empty
+   * mandatory fields disable the buttons from the very start.
+   */
+  private _triggerInitialValidation(): void {
+    setTimeout(() => {
+      this.frs.formGroup
+        .pipe(
+          filter((fg): fg is UntypedFormGroup => fg != null),
+          take(1),
+        )
+        .subscribe(fg => fg.updateValueAndValidity());
+    });
   }
 
   /**
