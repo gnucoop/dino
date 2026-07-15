@@ -63,6 +63,7 @@ import {
   map,
   mapTo,
   shareReplay,
+  startWith,
   switchMap,
   take,
   tap,
@@ -686,20 +687,25 @@ export class MainNav implements AfterViewInit, OnDestroy {
       map(([syncing, online]) => syncing || !online),
     );
 
+    const hideChromeFor = (url: string): boolean => {
+      const path = url.split('?')[0];
+      return !(
+        path.includes('login') ||
+        path.includes('reset-password') ||
+        path.startsWith('/f/')
+      );
+    };
     this.showNav = this._router.events.pipe(
       filter(evt => evt instanceof NavigationEnd),
-      map(evt => {
-        const navEndEvt = evt as NavigationEnd;
-        const path = navEndEvt.url.split('?')[0];
-        if (
-          path.includes('login') ||
-          path.includes('reset-password') ||
-          path.startsWith('/f/')
-        ) {
-          return false;
-        }
-        return true;
-      }),
+      map(evt => hideChromeFor((evt as NavigationEnd).url)),
+      // Seed a synchronous value from the current browser URL so a cold/direct
+      // load of /f/... is recognised as "no chrome" on first paint. Without this
+      // the async pipe yields null until NavigationEnd fires (after the lazy form
+      // module loads, ~1s), and the template treats null as "show old toolbar",
+      // causing the old header to flash. Use window.location.pathname (not
+      // this._router.url) because MainNav is constructed before the initial
+      // navigation resolves, when this._router.url is still '/'.
+      startWith(hideChromeFor(window.location.pathname)),
       shareReplay(1),
     );
   }
