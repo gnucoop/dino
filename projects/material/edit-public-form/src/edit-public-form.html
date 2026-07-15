@@ -1,6 +1,18 @@
 <div class="dino-survey-topbar">
   <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
 </div>
+<div
+  class="dino-survey-progress"
+  *ngIf="(submitted|async) === false && (slidesNum$|async)! > 1"
+  role="progressbar"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="progress$ | async"
+>
+  <div class="dino-survey-progress-track">
+    <div class="dino-survey-progress-fill" [style.width.%]="progress$ | async"></div>
+  </div>
+</div>
 <h1 *ngIf="(submitted|async) === false" class="dino-public-title">
   {{(formSchema|async)?.label|transloco }}
 </h1>

@@ -142,6 +142,13 @@ export class EditPublicForm implements OnDestroy {
   readonly currentSlideValid$: Observable<boolean>;
 
   /**
+   * Fill percentage (0–100) of the section progress bar: on section n of N the
+   * bar fills to n/N, so the first section shows a partial fill and the last
+   * section reads 100%.
+   */
+  readonly progress$: Observable<number>;
+
+  /**
    * True when the current section can still be scrolled down (there is more
    * content below the fold). Drives the "scroll for more" hint.
    */
@@ -250,6 +257,13 @@ export class EditPublicForm implements OnDestroy {
       frs.errorPositions.pipe(startWith([] as number[])),
     ]).pipe(
       map(([current, positions]) => !(positions || []).includes(current + 1)),
+      shareReplay(1),
+    );
+
+    this.progress$ = combineLatest([this.currentSlide$, this.slidesNum$]).pipe(
+      map(([current, total]) =>
+        total > 0 ? Math.min(100, Math.round(((current + 1) / total) * 100)) : 0,
+      ),
       shareReplay(1),
     );
 

@@ -88,6 +88,30 @@ dino-edit-public-form {
     color: var(--dino-survey-card-fg);
   }
 
+  // ---- Section progress bar (below the language selector, above the title) ----
+  .dino-survey-progress {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: var(--dino-survey-content-width);
+    // 10px gap above the title so the bar sits a bit higher, not glued to it.
+    margin: 8px auto 10px;
+    // Align with the title column's horizontal inset.
+    padding: 0 24px;
+
+    .dino-survey-progress-track {
+      height: 6px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--dino-survey-accent) 15%, transparent);
+    }
+    .dino-survey-progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--dino-survey-accent);
+      transition: width 0.3s ease;
+    }
+  }
+
   .dino-edit-form-step-container {
     display: flex;
     flex-direction: column;
