@@ -9781,10 +9781,10 @@ Thumbs.db
   },
   "private": true,
   "dependencies": {
-    "@ajf/calendars": "^18.3.0",
-    "@ajf/core": "^18.3.0",
+    "@ajf/calendars": "^18.3.2",
+    "@ajf/core": "^18.3.2",
     "@ajf/icons": "1.0.0",
-    "@ajf/material": "^18.3.0",
+    "@ajf/material": "^18.3.2",
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
     "@angular/common": "^18.2.13",
