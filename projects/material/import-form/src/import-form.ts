@@ -424,8 +424,8 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
       return `${cell.tableName} [${rowLabel} / ${columnLabel}]`;
     }
     return this.isRepeatingField(field)
-      ? `${field} (${this._ts.translate('repeating')})`
-      : field;
+    ? `${field} (${this._ts.translate('repeating')})`
+    : field;
   }
 
   /**
@@ -678,7 +678,8 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
           rows.forEach((row: {[key: string]: any}) => {
             // Check if is not a second header
             if (!this._isLabelHeader(row)) {
-              const newMetricName = row[metricNameKey] ? (row[metricNameKey] as string) : null;
+              const rawNewMetricName = row[metricNameKey];
+              const newMetricName = rawNewMetricName ? (rawNewMetricName as string).trim() : null;
               if (newMetricName && !row[metricIdKey]) {
                 // Metric by name
                 if (!newMetricNames.includes(newMetricName)) {
@@ -837,7 +838,8 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
         Object.keys(this._metricManagers).forEach(metric => {
           if (activeMetrics.length && activeMetrics.includes(metric)) {
             newItem[metric + '_ref_id'] = row[metric + '_id'] ? row[metric + '_id'] : null;
-            const metricName = row[metric + '_name'] ? (row[metric + '_name'] as string) : null;
+            const rawMetricName = row[metric + '_name'];
+            const metricName = rawMetricName != null ? (rawMetricName as string).trim() : null;
             if (
               newItem[metric + '_ref_id'] === null &&
               metricName !== null &&
@@ -931,7 +933,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   /**
    * Properties managed by Dino itself, never provided by the user.
    */
-  private _autoMetricProps: string[] = [
+    private _autoMetricProps: string[] = [
     'id',
     'created_at',
     'updated_at',
