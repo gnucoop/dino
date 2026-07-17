@@ -14,6 +14,7 @@ export const aggregationFormCreator: boolean =
 export const headers: ListHeader<FormData>[] = [
   {column: 'id', label: 'ID', displayed: false},
   {column: 'created_at', label: 'Creation Date', sortable: true, displayed: false},
+  {column: 'updated_at', label: 'Update Date', sortable: true, displayed: false},
   {
     column: 'user_data_ref_id',
     label: 'User',
