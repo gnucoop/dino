@@ -20,15 +20,21 @@
  *
  */
 import {AjfForm, AjfFormSerializer} from '@ajf/core/forms';
-import {AjfFormBuilderService, AjfFormBuilderValidation} from '@ajf/material/form-builder';
+import {
+  AjfFormBuilder,
+  AjfFormBuilderService,
+  AjfFormBuilderValidation,
+} from '@ajf/material/form-builder';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  ViewChild,
   ViewEncapsulation,
   isDevMode,
 } from '@angular/core';
@@ -132,6 +138,71 @@ export class EditFormSchema implements OnInit, OnDestroy {
   readonly isCreation: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   /**
+   * The currently selected editor tab.
+   * 0 = Settings (form metadata), 1 = Build (the Ajf form builder canvas).
+   * Set on init: Settings when creating a new Form Schema, Build when editing.
+   */
+  selectedTabIndex: number = 1;
+
+  /**
+   * True while creating a brand new Form Schema (create route, no id).
+   */
+  private _creating: boolean = false;
+
+  /**
+   * The builder instance the default expansion has already been applied to.
+   * Tracked per-instance (not a one-time boolean) so the default is re-applied
+   * whenever the builder is re-created, e.g. when the Build tab body is
+   * destroyed and rebuilt on tab switch.
+   */
+  private _expandAppliedFor: AjfFormBuilder | null = null;
+
+  /**
+   * Reference to the embedded Ajf form builder.
+   * For a NEW schema only, expand the slides by default and turn the toolbar
+   * "expand slides" toggle ON so it matches. `expandAll()` also sets the
+   * builder's default expanded state, so slides added later stay expanded.
+   * Editing keeps the default (collapsed, toggle off).
+   */
+  @ViewChild(AjfFormBuilder)
+  set formBuilderCmp(cmp: AjfFormBuilder | undefined) {
+    if (cmp == null) {
+      this._expandAppliedFor = null;
+      return;
+    }
+    if (!this._creating || this._expandAppliedFor === cmp) {
+      return;
+    }
+    this._expandAppliedFor = cmp;
+    // Expand slides by default (and for slides added later). This is the source
+    // of truth and does not depend on the DOM being rendered yet.
+    cmp.expandAll();
+    // Reflect the expanded state on the toolbar toggle, which is uncontrolled
+    // (the Ajf builder exposes no "checked" input for it). The toolbar renders a
+    // tick after the builder mounts, so retry until the toggle button exists.
+    this._syncExpandToggle();
+  }
+
+  /**
+   * Turns the Ajf builder toolbar "expand slides" toggle ON to match the
+   * default-expanded state, retrying until the (async-rendered) toggle exists.
+   */
+  private _syncExpandToggle(attempt: number = 0): void {
+    const toggle = this._el.nativeElement.querySelector(
+      'ajf-form-builder mat-slide-toggle button',
+    ) as HTMLElement | null;
+    if (toggle != null) {
+      if (toggle.getAttribute('aria-checked') !== 'true') {
+        toggle.click();
+      }
+      return;
+    }
+    if (attempt < 20) {
+      setTimeout(() => this._syncExpandToggle(attempt + 1), 50);
+    }
+  }
+
+  /**
    * The Form schema id
    */
   private _formSchemaId: Observable<string | null>;
@@ -231,6 +302,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
   constructor(
     protected _cdr: ChangeDetectorRef,
+    private _el: ElementRef<HTMLElement>,
     private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
@@ -254,6 +326,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
       map(params => params['form_schema_id']),
       shareReplay(1),
     );
+
+    // Default tab: Settings when creating a new Form Schema, Build when editing.
+    this._formSchemaId.pipe(take(1)).subscribe(id => {
+      this._creating = id == null;
+      this.selectedTabIndex = this._creating ? 0 : 1;
+      this._cdr.markForCheck();
+    });
 
     this._formSchema = this._formSchemaId.pipe(
       map(schemaId => {
@@ -330,13 +409,20 @@ export class EditFormSchema implements OnInit, OnDestroy {
       shareReplay(1),
     );
 
-    this.form = combineLatest([this._formSchema, this._importedFormSchema]).pipe(
-      map(([fs, ifs]) => {
+    this.form = combineLatest([
+      this._formSchema,
+      this._importedFormSchema,
+      this._formSchemaId,
+    ]).pipe(
+      map(([fs, ifs, id]) => {
         let schema = {} as any;
         if (ifs != null) {
           schema = ifs;
         } else if (fs != null) {
           schema = fs.schema;
+        } else if (id == null) {
+          // Creating a new Form Schema: start with a first slide already present.
+          schema = this._defaultCreationSchema();
         }
         return AjfFormSerializer.fromJson(JSON.parse(JSON.stringify(schema)));
       }),
@@ -543,6 +629,35 @@ export class EditFormSchema implements OnInit, OnDestroy {
         .replace('-', ' ')
         .includes(filterValue),
     ) as string[];
+  }
+
+  /**
+   * Switches the editor to the Build tab.
+   */
+  goToBuild(): void {
+    this.selectedTabIndex = 1;
+  }
+
+  /**
+   * The schema used when creating a brand new Form Schema:
+   * an empty form that already contains a first slide, ready to be filled.
+   */
+  private _defaultCreationSchema(): {[key: string]: any} {
+    return {
+      nodes: [
+        {
+          id: 1,
+          name: 'slide_1',
+          label: 'Slide 1',
+          nodes: [],
+          parent: 0,
+          nodeType: 3, // AjfNodeType.AjfSlide
+          parentNode: 0,
+          visibility: {condition: 'true'},
+          conditionalBranches: [{condition: 'true'}],
+        },
+      ],
+    };
   }
 
   /**

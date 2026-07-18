@@ -35,6 +35,12 @@ import {Observable} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
 
 /**
+ * The path chosen in the "Create or import a form" dialog.
+ * '' = no choice yet, 'xls' = import an XLSForm file, 'builder' = AI Builder.
+ */
+export type ImportFormSchemaMode = '' | 'xls' | 'builder';
+
+/**
  * The Form Schema Xlsform import component.
  * Allows importing of Xlsform docs, which will be processed and saved
  * as Form Schemas.
@@ -51,6 +57,16 @@ export class ImportFormSchema {
    * Current status message of the Form Conv
    */
   convStatus = '';
+
+  /**
+   * The currently selected creation path in the dialog.
+   */
+  mode: ImportFormSchemaMode = '';
+
+  /**
+   * The natural-language prompt for the AI Builder (UI only for now).
+   */
+  aiPrompt = '';
 
   /**
    * The Import dialog form group
@@ -96,6 +112,15 @@ export class ImportFormSchema {
       map(() => this._formBuilder.group({})),
       shareReplay(1),
     );
+  }
+
+  /**
+   * Selects a creation path in the dialog.
+   * @param mode The chosen path
+   */
+  chooseMode(mode: ImportFormSchemaMode): void {
+    this.mode = mode;
+    this._cdr.markForCheck();
   }
 
   /**

@@ -59,6 +59,27 @@ export const ITA: Translation = {
   'Forward': 'Avanti',
   'Send': 'Invia',
   'Powered by': 'Powered by',
+  'Settings': 'Impostazioni',
+  'Build': 'Costruisci',
+  'Form Settings': 'Impostazioni del Form',
+  'Metadata and general configuration of the questionnaire.':
+    'Metadati e configurazione generale del questionario.',
+  'Go to build': 'Vai alla costruzione',
+  'Create or import a form': 'Crea o importa un form',
+  'AI Builder': 'AI Builder',
+  'Build the schema by passing a prompt to our AI.':
+    'Costruisci lo schema passando un prompt alla nostra AI.',
+  'Import XLSForm': 'Importa XLSForm',
+  'Upload a .xlsx file in standard XLSForm format.':
+    'Carica un file .xlsx in formato standard XLSForm.',
+  'Drag your .xlsx file here or': 'Trascina qui il tuo file .xlsx oppure',
+  'Required sheets: survey, choices, settings': 'Fogli richiesti: survey, choices, settings',
+  'Describe the form to create': 'Descrivi il form da creare',
+  'New feature coming soon': 'Nuova funzionalità in arrivo',
+  'Generate form': 'Genera form',
+  'Cancel': 'Annulla',
+  'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...':
+    'Es. Questionario di valutazione di un corso: dati anagrafici del partecipante, valutazione dei docenti da 1 a 5, commenti liberi...',
   '{{language}} already deleted': '{{language}} già eliminata',
   '(select only one field)': '(seleziona solo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Un Form {{schema_name}} con questo preciso set di Metriche esiste già. Per favore, seleziona Metriche diverse',

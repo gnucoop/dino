@@ -53,6 +53,27 @@ export const FRA: Translation = {
   'No fields found': 'Aucun champ trouvé',
   'Repetition': 'Répétition',
   'DISMISS': 'FERMER',
+  'Settings': 'Paramètres',
+  'Build': 'Construire',
+  'Form Settings': 'Paramètres du formulaire',
+  'Metadata and general configuration of the questionnaire.':
+    'Métadonnées et configuration générale du questionnaire.',
+  'Go to build': 'Aller à la construction',
+  'Create or import a form': 'Créer ou importer un formulaire',
+  'AI Builder': 'AI Builder',
+  'Build the schema by passing a prompt to our AI.':
+    'Construisez le schéma en envoyant une invite à notre IA.',
+  'Import XLSForm': 'Importer XLSForm',
+  'Upload a .xlsx file in standard XLSForm format.':
+    'Téléversez un fichier .xlsx au format standard XLSForm.',
+  'Drag your .xlsx file here or': 'Glissez votre fichier .xlsx ici ou',
+  'Required sheets: survey, choices, settings': 'Feuilles requises : survey, choices, settings',
+  'Describe the form to create': 'Décrivez le formulaire à créer',
+  'New feature coming soon': 'Nouvelle fonctionnalité bientôt disponible',
+  'Generate form': 'Générer le formulaire',
+  'Cancel': 'Annuler',
+  'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...':
+    'Ex. Questionnaire d\'évaluation d\'un cours : informations sur le participant, évaluation des enseignants de 1 à 5, commentaires libres...',
   '{{language}} already deleted': '{{language}} déjà supprimé',
   '(select only one field)': '(ne sélectionner qu\'un seul champ)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Il existe déjà un formulaire {{schema_name}} avec cet ensemble exact de paramètres. Veuillez choisir d\'autres paramètres',
