@@ -1,38 +1,65 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
 // ===== Design tokens (neutrals). Primary blue maps to the themed primary. =====
-$efs-border: #e4e7ea;
-$efs-border-inner: #eef0f2;
-$efs-border-input: #d5dae0;
-$efs-text: #2a2f36;
-$efs-text-2: #4a5158;
-$efs-muted: #71787f;
-$efs-muted-2: #8a9198;
-$efs-muted-3: #9aa1a8;
-$efs-surface: #ffffff;
-$efs-app-bg: #eceef0;
-$efs-hover: #f2f4f6;
-$efs-slide-head: #fafbfc;
-$efs-badge: #3a4149;
-$efs-field-badge-bg: #f0f4f8;
-$efs-field-badge-ic: #5a636b;
-$efs-chip-bg: #eef0f2;
-$efs-error: #c0392b;
-$efs-error-bg: #fdecef;
+// Themeable neutrals are exposed as CSS custom properties so they can be
+// overridden for the dark theme (see the `.isDarkTheme` block below). The
+// values here are the light-theme defaults.
+$efs-light: (
+  border: #e4e7ea,
+  border-inner: #eef0f2,
+  text: #2a2f36,
+  muted-2: #8a9198,
+  surface: #ffffff,
+  app-bg: #eceef0,
+  slide-head: #fafbfc,
+  badge: #3a4149,
+  on-badge: #ffffff,
+  card-shadow: (0 1px 3px rgba(20, 30, 40, 0.05)),
+  card-shadow-sm: (0 1px 2px rgba(20, 30, 40, 0.05)),
+);
+
+// Dark-theme overrides for the same tokens.
+$efs-dark: (
+  border: #363c44,
+  border-inner: #2f353c,
+  text: #e6e9ec,
+  muted-2: #99a0a7,
+  surface: #23272d,
+  app-bg: #14171b,
+  slide-head: #2a2f36,
+  badge: #4b535c,
+  on-badge: #ffffff,
+  card-shadow: (0 1px 3px rgba(0, 0, 0, 0.4)),
+  card-shadow-sm: (0 1px 2px rgba(0, 0, 0, 0.4)),
+);
+
+@mixin efs-tokens($map) {
+  @each $name, $value in $map {
+    --efs-#{$name}: #{$value};
+  }
+}
 
 @function efs-primary($shade: 500, $alpha: 1) {
   @return mat-css-vars.mat-css-color-primary($shade, $alpha);
 }
 
+// Dark-theme token values. `.isDarkTheme` is set on an ancestor by the app.
+.isDarkTheme dino-edit-form-schema {
+  @include efs-tokens($efs-dark);
+}
+
 dino-edit-form-schema {
   display: block;
+
+  // Light-theme token defaults.
+  @include efs-tokens($efs-light);
 
   .dino-efs {
     height: calc(100vh - 73px);
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background: $efs-app-bg;
+    background: var(--efs-app-bg);
 
     @media only screen and (max-width: 599px) {
       height: calc(100vh - 65px);
@@ -47,8 +74,8 @@ dino-edit-form-schema {
     align-items: center;
     gap: 8px;
     padding: 0 18px;
-    background: $efs-surface;
-    border-bottom: 1px solid $efs-border;
+    background: var(--efs-surface);
+    border-bottom: 1px solid var(--efs-border);
 
     .dino-efs-breadcrumbs {
       min-width: 0;
@@ -90,8 +117,8 @@ dino-edit-form-schema {
 
     .mat-mdc-tab-header {
       flex: none;
-      background: $efs-surface;
-      border-bottom: 1px solid $efs-border;
+      background: var(--efs-surface);
+      border-bottom: 1px solid var(--efs-border);
       padding: 0 10px;
     }
 
@@ -137,11 +164,11 @@ dino-edit-form-schema {
   .dino-efs-settings-card {
     max-width: 1000px;
     margin: 0 auto;
-    background: $efs-surface;
-    border: 1px solid $efs-border;
+    background: var(--efs-surface);
+    border: 1px solid var(--efs-border);
     border-radius: 12px;
     padding: 24px 26px;
-    box-shadow: 0 1px 3px rgba(20, 30, 40, 0.05);
+    box-shadow: var(--efs-card-shadow);
 
     .dino-efs-settings-head {
       display: flex;
@@ -157,13 +184,13 @@ dino-edit-form-schema {
         margin: 0;
         font-size: 17px;
         font-weight: 700;
-        color: $efs-text;
+        color: var(--efs-text);
       }
     }
 
     .dino-efs-settings-sub {
       margin: 0 0 22px;
-      color: $efs-muted-2;
+      color: var(--efs-muted-2);
       font-size: 13px;
     }
   }
@@ -212,7 +239,7 @@ dino-edit-form-schema {
     flex: 1 1 auto;
     min-height: 0;
     overflow: hidden;
-    background: $efs-app-bg;
+    background: var(--efs-app-bg);
     display: flex;
     flex-direction: column;
   }
@@ -229,8 +256,8 @@ dino-edit-form-schema {
     // Toolbar
     .ajf-formbuilder-toolbar {
       flex: none;
-      background: $efs-surface;
-      border-bottom: 1px solid $efs-border;
+      background: var(--efs-surface);
+      border-bottom: 1px solid var(--efs-border);
       min-height: 48px;
       height: 48px;
       box-shadow: none;
@@ -256,13 +283,13 @@ dino-edit-form-schema {
       mat-drawer.ajf-sidenav-modern {
         min-width: 250px;
         max-width: 250px;
-        background: $efs-surface;
-        border-right: 1px solid $efs-border;
+        background: var(--efs-surface);
+        border-right: 1px solid var(--efs-border);
         border-radius: 10px 0 0 10px;
       }
 
       .ajf-drawer-header {
-        border-bottom: 1px solid $efs-border-inner;
+        border-bottom: 1px solid var(--efs-border-inner);
       }
 
       .ajf-search-field {
@@ -279,7 +306,7 @@ dino-edit-form-schema {
       margin-bottom: 2px;
       border-radius: 8px;
       font-size: 13.5px;
-      color: $efs-badge;
+      color: var(--efs-text);
       cursor: pointer;
 
       &:hover {
@@ -291,8 +318,8 @@ dino-edit-form-schema {
         width: 30px;
         height: 30px;
         border-radius: 7px;
-        background: $efs-badge;
-        color: #fff;
+        background: var(--efs-badge);
+        color: var(--efs-on-badge);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -302,7 +329,7 @@ dino-edit-form-schema {
           font-size: 18px;
           width: 18px;
           height: 18px;
-          color: #fff;
+          color: var(--efs-on-badge);
         }
       }
     }
@@ -313,10 +340,16 @@ dino-edit-form-schema {
 
       .mat-card-container .mat-mdc-card,
       ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
-        background: $efs-surface;
-        border: 1px solid $efs-border;
+        background: var(--efs-surface);
+        border: 1px solid var(--efs-border);
         border-radius: 10px;
-        box-shadow: 0 1px 2px rgba(20, 30, 40, 0.05);
+        box-shadow: var(--efs-card-shadow-sm);
+      }
+
+      // The fields-list wrapper ships a hardcoded white background in the Ajf
+      // library; make it follow the theme so it isn't a white strip in dark mode.
+      ajf-fb-node-entry.ajf-fields-list {
+        background: var(--efs-surface);
       }
 
       .ajf-highlighted-formbuilder-node > .mat-mdc-card,
@@ -325,7 +358,7 @@ dino-edit-form-schema {
       }
 
       .mat-expansion-panel-header {
-        background: $efs-slide-head;
+        background: var(--efs-slide-head);
 
         &:hover {
           background: efs-primary(500, 0.06);
@@ -335,7 +368,7 @@ dino-edit-form-schema {
       .mat-expansion-panel-header-title {
         font-size: 14.5px;
         font-weight: 600;
-        color: $efs-text;
+        color: var(--efs-text);
       }
 
       ajf-node-icon,
@@ -348,8 +381,8 @@ dino-edit-form-schema {
     .ajf-formtree-properties {
       min-width: 312px;
       max-width: 312px;
-      background: $efs-surface;
-      border: 1px solid $efs-border;
+      background: var(--efs-surface);
+      border: 1px solid var(--efs-border);
       border-radius: 10px;
       // Fill the row height (was sticky + max-height: 70vh) and scroll inside.
       position: static;
