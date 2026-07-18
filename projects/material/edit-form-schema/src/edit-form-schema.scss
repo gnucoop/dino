@@ -1,59 +1,365 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+// ===== Design tokens (neutrals). Primary blue maps to the themed primary. =====
+$efs-border: #e4e7ea;
+$efs-border-inner: #eef0f2;
+$efs-border-input: #d5dae0;
+$efs-text: #2a2f36;
+$efs-text-2: #4a5158;
+$efs-muted: #71787f;
+$efs-muted-2: #8a9198;
+$efs-muted-3: #9aa1a8;
+$efs-surface: #ffffff;
+$efs-app-bg: #eceef0;
+$efs-hover: #f2f4f6;
+$efs-slide-head: #fafbfc;
+$efs-badge: #3a4149;
+$efs-field-badge-bg: #f0f4f8;
+$efs-field-badge-ic: #5a636b;
+$efs-chip-bg: #eef0f2;
+$efs-error: #c0392b;
+$efs-error-bg: #fdecef;
+
+@function efs-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
 dino-edit-form-schema {
-  > .mat-mdc-card:first-child {
-    overflow-y: auto;
+  display: block;
+
+  .dino-efs {
     height: calc(100vh - 73px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: $efs-app-bg;
+
     @media only screen and (max-width: 599px) {
       height: calc(100vh - 65px);
     }
+  }
 
-    border-left: none;
-    margin: 0%;
-    padding: 0px;
-    background: transparent;
-    .card-header {
+  // ===== Compact action bar =====
+  .dino-efs-actionbar {
+    flex: none;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 18px;
+    background: $efs-surface;
+    border-bottom: 1px solid $efs-border;
+
+    .dino-efs-breadcrumbs {
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: hidden;
+    }
+
+    .dino-efs-actions {
+      margin-left: auto;
       display: flex;
-      flex-flow: row wrap;
-      padding-bottom: 10px;
       align-items: center;
-      justify-content: space-between;
-      .dino-form-attributes {
-        flex: 1 1 auto;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        .mat-mdc-form-field {
-          flex: 1 1 auto;
-          font-size: 125%;
-          margin: 5px;
-          &.dino-form-attribute-short-field {
-            max-width: 150px;
-          }
-        }
-        .mat-mdc-checkbox {
-          .mdc-form-field {
-            margin-top: 20px;
-          }
-        }
-      }
-      .dino-edit-form-schema-actions {
-        display: flex;
-        justify-self: flex-end;
-        justify-content: flex-end;
-        .mat-mdc-raised-button {
-          margin-left: 20px;
+      gap: 8px;
+      flex: none;
+
+      .mat-mdc-outlined-button,
+      .mat-mdc-raised-button {
+        height: 36px;
+        line-height: 36px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+
+        .mat-icon {
+          font-size: 19px;
+          width: 19px;
+          height: 19px;
+          margin-right: 4px;
         }
       }
     }
-    ajf-form-builder {
-      .ajf-fields-list {
-        background: transparent;
+  }
+
+  // ===== Tabs =====
+  .dino-efs-tabs {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    .mat-mdc-tab-header {
+      flex: none;
+      background: $efs-surface;
+      border-bottom: 1px solid $efs-border;
+      padding: 0 10px;
+    }
+
+    .mat-mdc-tab .mdc-tab__text-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+
+      .mat-icon {
+        font-size: 19px;
+        width: 19px;
+        height: 19px;
       }
-      .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
-        background: transparent;
-        background-color: transparent;
+    }
+
+    .mat-mdc-tab-body-wrapper {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .mat-mdc-tab-body,
+    .mat-mdc-tab-body-content {
+      min-height: 0;
+    }
+
+    .mat-mdc-tab-body-content {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  // ===== Settings tab =====
+  .dino-efs-settings {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 22px;
+  }
+
+  .dino-efs-settings-card {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: $efs-surface;
+    border: 1px solid $efs-border;
+    border-radius: 12px;
+    padding: 24px 26px;
+    box-shadow: 0 1px 3px rgba(20, 30, 40, 0.05);
+
+    .dino-efs-settings-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+
+      .mat-icon {
+        color: efs-primary();
       }
-      .ajf-fields-list .mat-mdc-card-container .mat-mdc-card {
-        margin-left: 50px;
+
+      h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        color: $efs-text;
+      }
+    }
+
+    .dino-efs-settings-sub {
+      margin: 0 0 22px;
+      color: $efs-muted-2;
+      font-size: 13px;
+    }
+  }
+
+  .dino-form-attributes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 20px;
+
+    @media only screen and (max-width: 899px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media only screen and (max-width: 599px) {
+      grid-template-columns: 1fr;
+    }
+
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+
+    .dino-efs-span-2 {
+      grid-column: span 2;
+
+      @media only screen and (max-width: 599px) {
+        grid-column: span 1;
+      }
+    }
+  }
+
+  .dino-efs-settings-footer {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+
+    .mat-mdc-raised-button {
+      border-radius: 8px;
+
+      .mat-icon {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  // ===== Build tab (Ajf form builder canvas) =====
+  .dino-efs-build {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    background: $efs-app-bg;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // ---- Ajf form builder re-skin ----
+  ajf-form-builder {
+    // Fill the whole Build area so the panels use the full height available,
+    // regardless of how much content the form has.
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    // Toolbar
+    .ajf-formbuilder-toolbar {
+      flex: none;
+      background: $efs-surface;
+      border-bottom: 1px solid $efs-border;
+      min-height: 48px;
+      height: 48px;
+      box-shadow: none;
+    }
+
+    .ajf-formtree-container {
+      flex: 1 1 auto;
+      min-height: 0;
+      align-items: stretch; // stretch palette/designer/properties to full height
+      padding: 18px 22px;
+      gap: 18px;
+    }
+
+    // Palette + designer container
+    mat-drawer-container.ajf-formtree-drawer-container {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      // Drop Ajf's content-based 47vh floor: fill the row height instead so the
+      // palette (left field-type sidebar) is as tall as the screen allows.
+      min-height: 0;
+
+      mat-drawer.ajf-sidenav-modern {
+        min-width: 250px;
+        max-width: 250px;
+        background: $efs-surface;
+        border-right: 1px solid $efs-border;
+        border-radius: 10px 0 0 10px;
+      }
+
+      .ajf-drawer-header {
+        border-bottom: 1px solid $efs-border-inner;
+      }
+
+      .ajf-search-field {
+        width: 100%;
+      }
+    }
+
+    // Palette items
+    ajf-fb-node-type-entry {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 7px 8px;
+      margin-bottom: 2px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      color: $efs-badge;
+      cursor: pointer;
+
+      &:hover {
+        background: efs-primary(500, 0.08);
+      }
+
+      ajf-node-icon,
+      .ajf-node-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        background: $efs-badge;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+
+        .mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #fff;
+        }
+      }
+    }
+
+    // Designer (structure) area
+    .ajf-designer {
+      padding: 4px 2px;
+
+      .mat-card-container .mat-mdc-card,
+      ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
+        background: $efs-surface;
+        border: 1px solid $efs-border;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(20, 30, 40, 0.05);
+      }
+
+      .ajf-highlighted-formbuilder-node > .mat-mdc-card,
+      .ajf-highlighted-formbuilder-node .mat-mdc-card {
+        border-color: efs-primary();
+      }
+
+      .mat-expansion-panel-header {
+        background: $efs-slide-head;
+
+        &:hover {
+          background: efs-primary(500, 0.06);
+        }
+      }
+
+      .mat-expansion-panel-header-title {
+        font-size: 14.5px;
+        font-weight: 600;
+        color: $efs-text;
+      }
+
+      ajf-node-icon,
+      .ajf-node-icon {
+        color: efs-primary();
+      }
+    }
+
+    // Properties panel
+    .ajf-formtree-properties {
+      min-width: 312px;
+      max-width: 312px;
+      background: $efs-surface;
+      border: 1px solid $efs-border;
+      border-radius: 10px;
+      // Fill the row height (was sticky + max-height: 70vh) and scroll inside.
+      position: static;
+      max-height: none;
+      overflow-y: auto;
+
+      ajf-fb-node-properties {
+        .mat-icon {
+          color: efs-primary();
+        }
       }
     }
   }
