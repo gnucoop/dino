@@ -22,6 +22,27 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  'Settings': 'Configurações',
+  'Build': 'Construir',
+  'Form Settings': 'Configurações do formulário',
+  'Metadata and general configuration of the questionnaire.':
+    'Metadados e configuração geral do questionário.',
+  'Go to build': 'Ir para a construção',
+  'Create or import a form': 'Criar ou importar um formulário',
+  'AI Builder': 'AI Builder',
+  'Build the schema by passing a prompt to our AI.':
+    'Construa o esquema enviando um prompt para a nossa IA.',
+  'Import XLSForm': 'Importar XLSForm',
+  'Upload a .xlsx file in standard XLSForm format.':
+    'Carregue um ficheiro .xlsx no formato padrão XLSForm.',
+  'Drag your .xlsx file here or': 'Arraste o seu ficheiro .xlsx para aqui ou',
+  'Required sheets: survey, choices, settings': 'Folhas necessárias: survey, choices, settings',
+  'Describe the form to create': 'Descreva o formulário a criar',
+  'New feature coming soon': 'Nova funcionalidade em breve',
+  'Generate form': 'Gerar formulário',
+  'Cancel': 'Cancelar',
+  'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...':
+    'Ex. Questionário de avaliação de um curso: dados do participante, avaliação dos docentes de 1 a 5, comentários livres...',
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
