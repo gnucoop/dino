@@ -53,6 +53,27 @@ export const ESP: Translation = {
   'No fields found': 'No se encontraron campos',
   'Repetition': 'Repetición',
   'DISMISS': 'CERRAR',
+  'Settings': 'Configuración',
+  'Build': 'Construir',
+  'Form Settings': 'Configuración del formulario',
+  'Metadata and general configuration of the questionnaire.':
+    'Metadatos y configuración general del cuestionario.',
+  'Go to build': 'Ir a la construcción',
+  'Create or import a form': 'Crear o importar un formulario',
+  'AI Builder': 'AI Builder',
+  'Build the schema by passing a prompt to our AI.':
+    'Construye el esquema enviando un prompt a nuestra IA.',
+  'Import XLSForm': 'Importar XLSForm',
+  'Upload a .xlsx file in standard XLSForm format.':
+    'Sube un archivo .xlsx en formato estándar XLSForm.',
+  'Drag your .xlsx file here or': 'Arrastra tu archivo .xlsx aquí o',
+  'Required sheets: survey, choices, settings': 'Hojas requeridas: survey, choices, settings',
+  'Describe the form to create': 'Describe el formulario a crear',
+  'New feature coming soon': 'Nueva funcionalidad muy pronto',
+  'Generate form': 'Generar formulario',
+  'Cancel': 'Cancelar',
+  'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...':
+    'Ej. Cuestionario de evaluación de un curso: datos del participante, valoración de los docentes de 1 a 5, comentarios libres...',
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
