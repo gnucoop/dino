@@ -73,6 +73,17 @@ export const ESP: Translation = {
   'Add lang label': 'Agregar etiqueta de idioma',
   'Add more': 'Agregar más',
   'Add relationship with other forms': 'Agregar relación con otros formularios',
+  'Metrics to include in the form': 'Métricas para incluir en el formulario',
+  'Metrics included as choice options': 'Métricas incluidas como opciones de elección',
+  'Add metric': 'Agregar métrica',
+  'Relationships with other forms': 'Relaciones con otros formularios',
+  'Field as option': 'Campo como opción',
+  'Label field': 'Campo de etiqueta',
+  'Action': 'Acción',
+  'Enable "Field as option" for a single field to use it as a choice option':
+    'Activa "Campo como opción" para un solo campo para usarlo como opción de elección',
+  'Relationships pull field values or choices from other forms into this form':
+    'Las relaciones incorporan valores u opciones de campos de otros formularios a este formulario',
   'Additional attributes': 'Atributos adicionales',
   'Additional attributes in choice': 'Atributos adicionales en la elección',
   'Additional field': 'Campo adicional',

@@ -73,6 +73,17 @@ export const PRT: Translation = {
   'Add lang label': 'Adicionar rótulo de idioma',
   'Add more': 'Adicione mais',
   'Add relationship with other forms': 'Adicionar relação com outros formulários',
+  'Metrics to include in the form': 'Métricas a incluir no formulário',
+  'Metrics included as choice options': 'Métricas incluídas como opções de escolha',
+  'Add metric': 'Adicionar métrica',
+  'Relationships with other forms': 'Relações com outros formulários',
+  'Field as option': 'Campo como opção',
+  'Label field': 'Campo de rótulo',
+  'Action': 'Ação',
+  'Enable "Field as option" for a single field to use it as a choice option':
+    'Ative "Campo como opção" para um único campo para usá-lo como opção de escolha',
+  'Relationships pull field values or choices from other forms into this form':
+    'As relações trazem valores ou opções de campos de outros formulários para este formulário',
   'Additional attributes': 'Atributos adicionais',
   'Additional attributes in choice': 'Atributos adicionais na escolha',
   'Additional field': 'Campo adicional',
