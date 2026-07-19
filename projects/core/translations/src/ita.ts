@@ -105,6 +105,17 @@ export const ITA: Translation = {
   'Add lang label': 'Aggiungi etichetta per la lingua',
   'Add more': 'Aggiungi altro',
   'Add relationship with other forms': 'Aggiungi una relazione con altri form',
+  'Metrics to include in the form': 'Metriche da includere nel form',
+  'Metrics included as choice options': 'Metriche incluse come opzioni di scelta',
+  'Add metric': 'Aggiungi metrica',
+  'Relationships with other forms': 'Relazioni con altri form',
+  'Field as option': 'Campo come opzione',
+  'Label field': 'Campo etichetta',
+  'Action': 'Azione',
+  'Enable "Field as option" for a single field to use it as a choice option':
+    'Attiva "Campo come opzione" per un solo campo per usarlo come opzione di scelta',
+  'Relationships pull field values or choices from other forms into this form':
+    'Le relazioni recuperano valori o opzioni di campo da altri form in questo form',
   'Additional attributes': 'Attributi aggiuntivi',
   'Additional attributes in choice': 'Attributi aggiuntivi nella scelta',
   'Additional field': 'Campi addizionali',
