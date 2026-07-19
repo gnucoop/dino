@@ -166,13 +166,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _importRelocatedFor: AjfFormBuilder | null = null;
 
   /**
-   * The "Import" button, rendered parked (hidden) in the template and moved into
-   * the Ajf toolbar (before "Download as XLSForm") once the builder mounts.
-   */
-  @ViewChild('importBtn', {read: ElementRef})
-  importBtn?: ElementRef<HTMLElement>;
-
-  /**
    * The embedded relationships editor (Relationships tab). Present only once that
    * tab has been opened (kept alive via the tab group's preserveContent). The top
    * Save uses it to persist relationships as part of the form save.
@@ -238,26 +231,31 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * async-rendered toolbar and the button are both available.
    */
   private _relocateImportButton(attempt: number = 0): void {
-    const toolbar = this._el.nativeElement.querySelector(
+    const root = this._el.nativeElement;
+    const toolbar = root.querySelector(
       'ajf-form-builder .ajf-formbuilder-toolbar',
     ) as HTMLElement | null;
-    const importEl = this.importBtn?.nativeElement;
-    if (toolbar != null && importEl != null) {
-      const downloadBtn = toolbar.querySelector(
-        ':scope > .ajf-spacer + button',
-      ) as HTMLElement | null;
-      if (downloadBtn != null) {
-        // Tag the Download button so it can be restyled with a border to match
-        // Import (adjacency-based selectors break once Import is inserted here).
-        this._renderer.addClass(downloadBtn, 'dino-efs-download-btn');
-        this._renderer.insertBefore(toolbar, importEl, downloadBtn);
-      } else {
-        this._renderer.appendChild(toolbar, importEl);
-      }
+    // Query the parked button straight from the DOM (not via @ViewChild) so this
+    // does not depend on query-resolution timing when the Build tab mounts lazily
+    // (e.g. when creating a new schema, where Build is not the initial tab).
+    const importEl = root.querySelector('.dino-efs-import-btn') as HTMLElement | null;
+    const downloadBtn =
+      (toolbar?.querySelector(':scope > .ajf-spacer + button') as HTMLElement | null) ?? null;
+
+    if (toolbar != null && importEl != null && downloadBtn != null) {
+      // Tag the Download button so it can be restyled with a border to match
+      // Import (adjacency-based selectors break once Import is inserted here).
+      this._renderer.addClass(downloadBtn, 'dino-efs-download-btn');
+      this._renderer.insertBefore(toolbar, importEl, downloadBtn);
       return;
     }
-    if (attempt < 20) {
+    if (attempt < 40) {
       setTimeout(() => this._relocateImportButton(attempt + 1), 50);
+      return;
+    }
+    // Last resort: at least show the Import button in the toolbar.
+    if (toolbar != null && importEl != null) {
+      this._renderer.appendChild(toolbar, importEl);
     }
   }
 
