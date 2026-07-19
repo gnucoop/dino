@@ -109,6 +109,17 @@ export const ENG: Translation = {
   'Add lang label': 'Add lang label',
   'Add more': 'Add more',
   'Add relationship with other forms': 'Add relationship with other forms',
+  'Metrics to include in the form': 'Metrics to include in the form',
+  'Metrics included as choice options': 'Metrics included as choice options',
+  'Add metric': 'Add metric',
+  'Relationships with other forms': 'Relationships with other forms',
+  'Field as option': 'Field as option',
+  'Label field': 'Label field',
+  'Action': 'Action',
+  'Enable "Field as option" for a single field to use it as a choice option':
+    'Enable "Field as option" for a single field to use it as a choice option',
+  'Relationships pull field values or choices from other forms into this form':
+    'Relationships pull field values or choices from other forms into this form',
   'Additional attributes': 'Additional attributes',
   'Additional attributes in choice': 'Additional attributes in choice',
   'Additional field': 'Additional field',

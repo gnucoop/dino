@@ -34,6 +34,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
   ViewEncapsulation,
   isDevMode,
@@ -158,29 +159,56 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _expandAppliedFor: AjfFormBuilder | null = null;
 
   /**
+   * The builder instance the Import button has already been relocated into.
+   * Tracked per-instance so the button is re-inserted when the Build tab body
+   * is destroyed and rebuilt.
+   */
+  private _importRelocatedFor: AjfFormBuilder | null = null;
+
+  /**
+   * The "Import" button, rendered parked (hidden) in the template and moved into
+   * the Ajf toolbar (before "Download as XLSForm") once the builder mounts.
+   */
+  @ViewChild('importBtn', {read: ElementRef})
+  importBtn?: ElementRef<HTMLElement>;
+
+  /**
+   * The embedded relationships editor (Relationships tab). Present only once that
+   * tab has been opened (kept alive via the tab group's preserveContent). The top
+   * Save uses it to persist relationships as part of the form save.
+   */
+  @ViewChild(FormDepsEditor)
+  depsEditor?: FormDepsEditor;
+
+  /**
    * Reference to the embedded Ajf form builder.
-   * For a NEW schema only, expand the slides by default and turn the toolbar
-   * "expand slides" toggle ON so it matches. `expandAll()` also sets the
-   * builder's default expanded state, so slides added later stay expanded.
-   * Editing keeps the default (collapsed, toggle off).
+   * - Always: relocate the "Import" button into the toolbar before "Download".
+   * - For a NEW schema only: expand the slides by default and turn the toolbar
+   *   "expand slides" toggle ON so it matches. `expandAll()` also sets the
+   *   builder's default expanded state, so slides added later stay expanded.
+   *   Editing keeps the default (collapsed, toggle off).
    */
   @ViewChild(AjfFormBuilder)
   set formBuilderCmp(cmp: AjfFormBuilder | undefined) {
     if (cmp == null) {
       this._expandAppliedFor = null;
+      this._importRelocatedFor = null;
       return;
     }
-    if (!this._creating || this._expandAppliedFor === cmp) {
-      return;
+    if (this._importRelocatedFor !== cmp) {
+      this._importRelocatedFor = cmp;
+      this._relocateImportButton();
     }
-    this._expandAppliedFor = cmp;
-    // Expand slides by default (and for slides added later). This is the source
-    // of truth and does not depend on the DOM being rendered yet.
-    cmp.expandAll();
-    // Reflect the expanded state on the toolbar toggle, which is uncontrolled
-    // (the Ajf builder exposes no "checked" input for it). The toolbar renders a
-    // tick after the builder mounts, so retry until the toggle button exists.
-    this._syncExpandToggle();
+    if (this._creating && this._expandAppliedFor !== cmp) {
+      this._expandAppliedFor = cmp;
+      // Expand slides by default (and for slides added later). This is the source
+      // of truth and does not depend on the DOM being rendered yet.
+      cmp.expandAll();
+      // Reflect the expanded state on the toolbar toggle, which is uncontrolled
+      // (the Ajf builder exposes no "checked" input for it). The toolbar renders a
+      // tick after the builder mounts, so retry until the toggle button exists.
+      this._syncExpandToggle();
+    }
   }
 
   /**
@@ -203,14 +231,46 @@ export class EditFormSchema implements OnInit, OnDestroy {
   }
 
   /**
+   * Moves the parked "Import" button into the Ajf toolbar, just before the
+   * "Download as XLSForm" button (the element right after the toolbar spacer).
+   * The Ajf toolbar has no projection slot, so we relocate our own real Angular
+   * button (its click binding is preserved by the move). Retries until the
+   * async-rendered toolbar and the button are both available.
+   */
+  private _relocateImportButton(attempt: number = 0): void {
+    const toolbar = this._el.nativeElement.querySelector(
+      'ajf-form-builder .ajf-formbuilder-toolbar',
+    ) as HTMLElement | null;
+    const importEl = this.importBtn?.nativeElement;
+    if (toolbar != null && importEl != null) {
+      const downloadBtn = toolbar.querySelector(
+        ':scope > .ajf-spacer + button',
+      ) as HTMLElement | null;
+      if (downloadBtn != null) {
+        // Tag the Download button so it can be restyled with a border to match
+        // Import (adjacency-based selectors break once Import is inserted here).
+        this._renderer.addClass(downloadBtn, 'dino-efs-download-btn');
+        this._renderer.insertBefore(toolbar, importEl, downloadBtn);
+      } else {
+        this._renderer.appendChild(toolbar, importEl);
+      }
+      return;
+    }
+    if (attempt < 20) {
+      setTimeout(() => this._relocateImportButton(attempt + 1), 50);
+    }
+  }
+
+  /**
    * The Form schema id
    */
   private _formSchemaId: Observable<string | null>;
 
   /**
-   * The Form schema object
+   * The Form schema object.
+   * `protected` so the template can bind it to the embedded relationships editor.
    */
-  private _formSchema: Observable<FormSchema | null>;
+  protected _formSchema: Observable<FormSchema | null>;
 
   /**
    * The Schema object imported from Form Conv
@@ -218,14 +278,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _importedFormSchema: BehaviorSubject<{[key: string]: any} | null> = new BehaviorSubject<{
     [key: string]: any;
   } | null>(null);
-
-  /**
-   * Emits when a schema has been updated by the user
-   * via Relationships
-   */
-  private _newSchema: BehaviorSubject<FormSchema | null> = new BehaviorSubject<FormSchema | null>(
-    null,
-  );
 
   /**
    * Emitted when the Form Schema is saved
@@ -286,16 +338,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
-  /**
-   * A reference to the MatDialog that contains the relationships
-   */
-  private _dialogDepsRef?: MatDialogRef<FormDepsEditor>;
-
-  /**
-   * Subscribes to the value returned by the relationships MatDialog on its closing event
-   */
-  private _dialogDepsSub: Subscription = Subscription.EMPTY;
-
   private _langs: Lang[] | null = null; // as listed by LangManager at construction time
   private _newLangs: Partial<Lang>[] = []; // to be created when saving the form
   private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
@@ -303,6 +345,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
   constructor(
     protected _cdr: ChangeDetectorRef,
     private _el: ElementRef<HTMLElement>,
+    private _renderer: Renderer2,
     private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
@@ -435,56 +478,71 @@ export class EditFormSchema implements OnInit, OnDestroy {
           this._formSchema,
           this._formBuilderService.getCurrentForm(),
           this.formGroup,
-          this._newSchema,
           this.autoReport,
         ),
-        switchMap(([_evt, fs, schema, formGroup, schemaWithDeps, autoReport]) => {
+        switchMap(([_evt, fs, schema, formGroup, autoReport]) => {
           if (schema == null) {
             return obsOf({fs: null, autoReportConfirmation: false, autoReport});
           }
           this.isSaving = true;
-          const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
-          const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
-          const patchSchema = {
-            ...schema,
-            ...(unique ? {uniqueMetricsSet: unique} : undefined),
-          };
-          const formPatch: Partial<InsertModel<FormSchema>> = {
-            schema: patchSchema,
-            name: formGroup.get('name')?.value,
-            label: formGroup.get('label')?.value,
-            icon: formGroup.get('icon')?.value,
-            form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
-            visibility: formGroup.get('visibility')?.value,
-            form_status_ref_id: formGroup.get('status')?.value ?? undefined,
-          };
-          if (schemaWithDeps) {
-            formPatch.form_schema_deps_ref_id = schemaWithDeps.form_schema_deps_ref_id;
-          }
-
-          if (fs == null) {
-            return this._formSchemaManager.create(formPatch as InsertModel<FormSchema>).pipe(
-              map(fs => ({fs, autoReportConfirmation, autoReport})),
-              catchError(err => {
-                this._ehms.captureErrorMessage(
-                  `Could not create form schema: ${JSON.stringify(err)}`,
-                  'error',
-                );
+          // Persist relationships first (only if the Relationships tab was opened).
+          // Returns the deps ref id (string), undefined (nothing to persist) or
+          // null (failure).
+          const depsRefId$: Observable<string | null | undefined> = this.depsEditor
+            ? this.depsEditor.persistRelationships()
+            : obsOf(undefined);
+          return depsRefId$.pipe(
+            switchMap(depsRefId => {
+              if (depsRefId === null) {
+                // Relationship persistence failed: abort the whole save.
                 return obsOf({fs: null, autoReportConfirmation: false, autoReport});
-              }),
-              take(1),
-            );
-          }
-          return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
-            map(fs => ({fs, autoReportConfirmation, autoReport})),
-            catchError(err => {
-              this._ehms.captureErrorMessage(
-                `Could not patch form schema: ${JSON.stringify(err)}`,
-                'error',
+              }
+              const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
+              const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
+              const patchSchema = {
+                ...schema,
+                ...(unique ? {uniqueMetricsSet: unique} : undefined),
+              };
+              const formPatch: Partial<InsertModel<FormSchema>> = {
+                schema: patchSchema,
+                name: formGroup.get('name')?.value,
+                label: formGroup.get('label')?.value,
+                icon: formGroup.get('icon')?.value,
+                form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
+                visibility: formGroup.get('visibility')?.value,
+                form_status_ref_id: formGroup.get('status')?.value ?? undefined,
+              };
+              // Fold in the relationships ref id when it was (re)created; when
+              // undefined, leave the schema's existing value untouched.
+              if (depsRefId != null) {
+                formPatch.form_schema_deps_ref_id = depsRefId;
+              }
+
+              if (fs == null) {
+                return this._formSchemaManager.create(formPatch as InsertModel<FormSchema>).pipe(
+                  map(fs => ({fs, autoReportConfirmation, autoReport})),
+                  catchError(err => {
+                    this._ehms.captureErrorMessage(
+                      `Could not create form schema: ${JSON.stringify(err)}`,
+                      'error',
+                    );
+                    return obsOf({fs: null, autoReportConfirmation: false, autoReport});
+                  }),
+                  take(1),
+                );
+              }
+              return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
+                map(fs => ({fs, autoReportConfirmation, autoReport})),
+                catchError(err => {
+                  this._ehms.captureErrorMessage(
+                    `Could not patch form schema: ${JSON.stringify(err)}`,
+                    'error',
+                  );
+                  return obsOf({fs: null, autoReportConfirmation: false, autoReport});
+                }),
+                take(1),
               );
-              return obsOf({fs: null, autoReportConfirmation: false, autoReport});
             }),
-            take(1),
           );
         }),
       )
@@ -723,35 +781,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
   }
 
   /**
-   * Opens the Form Relationships dialog
-   */
-  openRelationshipsDialog(): void {
-    const dialogConfig = {
-      disableClose: true,
-      width: '90%',
-      height: '80%',
-      maxWidth: '100%',
-      data: {
-        formSchemaId: this._formSchemaId,
-        formSchema: this._formSchema,
-      },
-    } as MatDialogConfig;
-
-    this._dialogDepsRef = this._dialog.open(FormDepsEditor, dialogConfig);
-    this._dialogDepsSub = this._dialogDepsRef
-      .afterClosed()
-      .pipe(
-        catchError(err => throwError(() => err) as Observable<boolean>),
-        take(1),
-      )
-      .subscribe((schema: FormSchema | null) => {
-        if (schema != null) {
-          this._newSchema.next(schema);
-        }
-      });
-  }
-
-  /**
    * Updates the current imported form schema and extracts its translations
    * @param schema The form schema
    */
@@ -847,7 +876,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._autoReportSchemaSub.unsubscribe();
     this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
-    this._dialogDepsSub.unsubscribe();
     this.isSaving = false;
   }
 }

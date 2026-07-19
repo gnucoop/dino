@@ -66,7 +66,7 @@ dino-edit-form-schema {
     }
   }
 
-  // ===== Compact action bar =====
+  // ===== Breadcrumb bar =====
   .dino-efs-actionbar {
     flex: none;
     height: 52px;
@@ -82,29 +82,34 @@ dino-edit-form-schema {
       flex: 1 1 auto;
       overflow: hidden;
     }
+  }
 
-    .dino-efs-actions {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: none;
+  // ===== Tabs + Save (same row) =====
+  .dino-efs-tabs-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
 
-      .mat-mdc-outlined-button,
-      .mat-mdc-raised-button {
-        height: 36px;
-        line-height: 36px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 500;
+  // Save button overlaid on the tab-header row, right-aligned.
+  .dino-efs-save {
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    z-index: 2;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
 
-        .mat-icon {
-          font-size: 19px;
-          width: 19px;
-          height: 19px;
-          margin-right: 4px;
-        }
-      }
+    .mat-icon {
+      font-size: 19px;
+      width: 19px;
+      height: 19px;
+      margin-right: 4px;
     }
   }
 
@@ -134,6 +139,14 @@ dino-edit-form-schema {
         width: 19px;
         height: 19px;
       }
+    }
+
+    // The Relationships tab wraps its icon + label in a span (for the tooltip);
+    // align it like the direct-child labels of the other tabs.
+    .dino-efs-tab-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .mat-mdc-tab-body-wrapper {
@@ -218,6 +231,19 @@ dino-edit-form-schema {
         grid-column: span 1;
       }
     }
+
+    // Full-width field: occupies its own row (used by Form Statuses and Form
+    // Metrics), so the smaller selects (Visibility / Metrics Set Behavior /
+    // Generate Report) group together on the following row.
+    .dino-efs-span-full {
+      grid-column: 1 / -1;
+    }
+
+    // Forces the field onto a new grid row (keeps Name + Label alone on row 1
+    // and Icon Set + Icon together on row 2).
+    .dino-efs-newrow {
+      grid-column-start: 1;
+    }
   }
 
   .dino-efs-settings-footer {
@@ -244,6 +270,21 @@ dino-edit-form-schema {
     flex-direction: column;
   }
 
+  // Parking holder for the Import button before it is relocated into the toolbar.
+  // Hidden here; becomes visible once moved out into the (visible) toolbar.
+  .dino-efs-parked {
+    display: none;
+  }
+
+  // ===== Relationships tab =====
+  .dino-efs-relations {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 18px 22px;
+    background: var(--efs-app-bg);
+  }
+
   // ---- Ajf form builder re-skin ----
   ajf-form-builder {
     // Fill the whole Build area so the panels use the full height available,
@@ -261,6 +302,19 @@ dino-edit-form-schema {
       min-height: 48px;
       height: 48px;
       box-shadow: none;
+
+      // The "Import" button we relocate here, and the library "Download as
+      // XLSForm" button (tagged during relocation), share one bordered look so
+      // they read as the same button style.
+      .dino-efs-import-btn,
+      .dino-efs-download-btn {
+        border: 1px solid var(--efs-border);
+        border-radius: 8px;
+        height: 34px;
+        line-height: 34px;
+        font-size: 13px;
+        font-weight: 500;
+      }
     }
 
     .ajf-formtree-container {

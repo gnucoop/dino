@@ -99,6 +99,17 @@ export const FRA: Translation = {
   'Add lang label': 'Ajouter une étiquette de langue',
   'Add more': 'Ajouter plus',
   'Add relationship with other forms': 'Ajouter une relation avec d\'autres formulaires',
+  'Metrics to include in the form': 'Métriques à inclure dans le formulaire',
+  'Metrics included as choice options': 'Métriques incluses comme options de choix',
+  'Add metric': 'Ajouter une métrique',
+  'Relationships with other forms': 'Relations avec d\'autres formulaires',
+  'Field as option': 'Champ comme option',
+  'Label field': 'Champ libellé',
+  'Action': 'Action',
+  'Enable "Field as option" for a single field to use it as a choice option':
+    'Activez « Champ comme option » pour un seul champ afin de l\'utiliser comme option de choix',
+  'Relationships pull field values or choices from other forms into this form':
+    'Les relations récupèrent des valeurs ou des options de champs d\'autres formulaires dans ce formulaire',
   'Additional attributes': 'Attributs supplémentaires',
   'Additional attributes in choice': 'Attributs supplémentaires dans le choix',
   'Additional field': 'Champ supplémentaire',

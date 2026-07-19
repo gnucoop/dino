@@ -1,85 +1,190 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+// Themeable neutrals (light defaults) exposed as CSS custom properties, with a
+// `.isDarkTheme` override — matching the rest of the form-builder editor.
+$deps-light: (
+  surface: #ffffff,
+  border: #e4e7ea,
+  border-inner: #eef0f2,
+  text: #2a2f36,
+  muted: #8a9198,
+  card-shadow: (0 1px 3px rgba(20, 30, 40, 0.05)),
+);
+
+$deps-dark: (
+  surface: #23272d,
+  border: #363c44,
+  border-inner: #2f353c,
+  text: #e6e9ec,
+  muted: #99a0a7,
+  card-shadow: (0 1px 3px rgba(0, 0, 0, 0.4)),
+);
+
+@mixin deps-tokens($map) {
+  @each $name, $value in $map {
+    --deps-#{$name}: #{$value};
+  }
+}
+
+@function deps-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
+.isDarkTheme dino-form-deps-editor {
+  @include deps-tokens($deps-dark);
+}
+
 dino-form-deps-editor {
-  .mat-mdc-form-field {
-    position: relative;
-    flex: 1 1 auto;
-    max-height: 58px;
+  display: block;
+  @include deps-tokens($deps-light);
+
+  .dino-deps {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
 
-  overflow: hidden;
-  .mat-mdc-dialog-title,
-  .mat-mdc-dialog-actions .mat-mdc-raised-button {
-    flex: 0.25 0 auto;
-    margin: auto;
-    text-align: center;
+  // ===== Card =====
+  .dino-deps-card {
+    background: var(--deps-surface);
+    border: 1px solid var(--deps-border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: var(--deps-card-shadow);
   }
-  .mat-mdc-dialog-content {
-    form {
-      position: relative;
-      max-height: 80vh;
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: center;
-      overflow: hidden;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
+
+  .dino-deps-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .dino-deps-card-icon {
+      color: deps-primary();
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
     }
 
-    .mat-column-delete {
-      flex: 0 0 2% !important;
-      min-width: 80px;
+    h2 {
+      margin: 0;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--deps-text);
     }
+  }
 
-    .mat-mdc-form-field-subscript-wrapper {
-      display: none;
-    }
-    .dino-error {
-      color: var(--mdc-filled-text-field-error-label-text-color, var(--mat-app-error));
-      font-size: 11px;
-      padding: 0 16px;
-      margin-bottom: 5px;
-    }
+  .dino-deps-card-sub {
+    margin: 4px 0 16px;
+    color: var(--deps-muted);
+    font-size: 13px;
+  }
 
-    .subtitle {
-      padding: 0 16px;
-      margin-bottom: 20px;
-      width: 100%;
-      overflow: auto;
-    }
+  // Small muted help icon (in card heads and column headers)
+  .dino-deps-help {
+    color: var(--deps-muted);
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    cursor: help;
+  }
 
-    .deps-table {
-      width: 1200px;
-      overflow: auto;
-    }
+  .dino-deps-metrics-select {
+    width: 360px;
+    max-width: 100%;
+  }
 
-    .deps-metrics-table {
-      width: 1000px;
-      overflow: auto;
-    }
+  // ===== Tables =====
+  .dino-deps-table-wrap {
+    overflow-x: auto;
+    margin-top: 6px;
+  }
 
-    .mat-mdc-cell {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
+  .mat-mdc-table {
+    background: transparent;
+    width: 100%;
+  }
+
+  .deps-metrics-table {
+    min-width: 720px;
+  }
+
+  .deps-table {
+    min-width: 1040px;
+  }
+
+  .mat-mdc-header-row {
+    min-height: 40px;
+    border-bottom: 1px solid var(--deps-border-inner);
+  }
+
+  .mat-mdc-header-cell {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+    color: var(--deps-muted);
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mat-mdc-row {
+    min-height: 64px;
+    border-bottom: 1px solid var(--deps-border-inner);
+
+    &:last-of-type {
+      border-bottom: none;
     }
+  }
+
+  .mat-mdc-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  // Narrow action (delete) column
+  .mat-column-delete {
+    flex: 0 0 84px;
+    min-width: 84px;
+
+    .mat-mdc-icon-button .mat-icon {
+      color: var(--deps-muted);
+    }
+  }
+
+  // Form fields inside cells: compact, no subscript line.
+  .mat-mdc-cell .mat-mdc-form-field {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  .dino-error {
+    color: var(--mdc-filled-text-field-error-label-text-color, var(--mat-app-error));
+    font-size: 11px;
+    padding: 0 4px 4px;
+  }
+
+  // ===== "Add …" buttons =====
+  .dino-deps-add {
+    margin-top: 14px;
+    border-radius: 8px;
+    font-weight: 500;
+
     .mat-icon {
-      overflow: visible;
+      margin-right: 4px;
     }
+  }
 
-    .my-tooltip {
-      white-space: pre-line;
-      color: red;
-    }
-    .mat-tooltip {
-      white-space: pre-line;
-    }
+  .dino-deps-hint {
+    margin: 10px 0 0;
+    color: var(--deps-muted);
+    font-size: 12px;
   }
 }

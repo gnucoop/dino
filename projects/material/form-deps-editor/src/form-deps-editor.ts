@@ -2,8 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Inject,
+  Input,
   OnDestroy,
   OnInit,
   Optional,
@@ -28,11 +28,11 @@ import {
   shareReplay,
   Subscription,
   switchMap,
+  take,
   throwError,
-  withLatestFrom,
 } from 'rxjs';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
-import {isRxDocument, RxDocument} from 'rxdb';
+import {RxDocument} from 'rxdb';
 import {MatTableDataSource} from '@angular/material/table';
 import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -56,14 +56,7 @@ export interface FormDepsEditorData {
 }
 
 /**
- * Metrics selection for data and for choices
- */
-export interface SelectedMetrics {
-  metrics_for_data: string[];
-}
-
-/**
- * Dialog component that allows the editing of a Form Status.
+ * Component that allows the editing of a Form Schema's relationships.
  */
 @Component({
   selector: 'dino-form-deps-editor',
@@ -74,14 +67,16 @@ export interface SelectedMetrics {
 })
 export class FormDepsEditor implements OnInit, OnDestroy {
   /**
-   * The Form schema object
+   * The Form schema object whose relationships are edited.
+   * Provided either via this @Input (when embedded inline, e.g. as a tab) or via
+   * the MAT_DIALOG_DATA when opened as a dialog.
    */
-  readonly formSchema: Observable<FormSchema | null>;
+  @Input() formSchema!: Observable<FormSchema | null>;
 
   /**
    * The Form schema deps object
    */
-  private _formSchemaDeps: Observable<FormSchemaDeps | null>;
+  private _formSchemaDeps!: Observable<FormSchemaDeps | null>;
 
   /**
    * The list of all the Form Schemas available
@@ -109,16 +104,6 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   readonly schemaFields$: {[key: string]: string[]} = {};
 
   /**
-   * Emits the Save status event
-   */
-  private _saveEvt: EventEmitter<SelectedMetrics> = new EventEmitter<SelectedMetrics>();
-
-  /**
-   * Subscribes to the save status event.
-   */
-  private _saveSub: Subscription = Subscription.EMPTY;
-
-  /**
    * Subscribes to the form schema
    */
   private _depsSub: Subscription = Subscription.EMPTY;
@@ -126,21 +111,16 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   readonly displayedColumns = [
-    'delete',
     'form_schema_ref_id',
     'fields_to_update',
     'filter_by_metric',
     'is_choice',
     'choice_label_fields',
     'choice_extra_value_key',
+    'delete',
   ];
 
-  readonly displayedMetricsColumns = [
-    'delete',
-    'metric_name',
-    'choice_extra_value_key',
-    'filter_by',
-  ];
+  readonly displayedMetricsColumns = ['metric_name', 'choice_extra_value_key', 'filter_by', 'delete'];
 
   readonly dataSource: MatTableDataSource<DepsOrigin> = new MatTableDataSource<DepsOrigin>();
 
@@ -153,8 +133,8 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
 
   constructor(
-    public dialogRef: MatDialogRef<FormDepsEditorData>,
-    @Inject(MAT_DIALOG_DATA) public data: FormDepsEditorData,
+    @Optional() public dialogRef: MatDialogRef<FormDepsEditorData> | null,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: FormDepsEditorData | null,
     private _fs: FormSchemaManager,
     private _fsd: FormSchemaDepsManager,
     private _cdr: ChangeDetectorRef,
@@ -166,7 +146,6 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     @Optional() private _locationManager: LocationManager | null,
     @Optional() private _organizationManager: OrganizationManager | null,
   ) {
-    this.formSchema = data.formSchema;
     this.currentMetricsForData = [];
     this.currentMetricsForChoices = [];
 
@@ -205,10 +184,17 @@ export class FormDepsEditor implements OnInit, OnDestroy {
       }),
       catchError(err => throwError(() => err) as Observable<RxDocument<FormSchema, {}>[]>),
     );
+  }
 
-    this._formSchemaDeps = data.formSchema.pipe(
+  ngOnInit(): void {
+    // The source schema comes from the @Input (inline) or the dialog data.
+    // Assigning here (not in the constructor) is required because @Input values
+    // are only available after construction.
+    this.formSchema = this.formSchema ?? (this.data ? this.data.formSchema : obsOf(null));
+
+    this._formSchemaDeps = this.formSchema.pipe(
       map(fschema => {
-        if (fschema.form_schema_deps_ref_id) {
+        if (fschema && fschema.form_schema_deps_ref_id) {
           return this._fsd.get(fschema.form_schema_deps_ref_id).pipe(
             map(doc => {
               if (doc == null) {
@@ -270,93 +256,83 @@ export class FormDepsEditor implements OnInit, OnDestroy {
           this.dataSource.data,
           fschemadeps.metric_data_to_show,
         );
+        this._cdr.markForCheck();
       }
     });
+
   }
 
-  ngOnInit(): void {
-    this._saveSub = this._saveEvt
-      .pipe(
-        withLatestFrom(this.formSchema, this._formSchemaDeps),
-        switchMap(([selMetrics, fschema, fschemadeps]) => {
-          const allRequiredMetricsData = this.getRequiredMetrics(
-            this.dataSource.data,
-            selMetrics.metrics_for_data,
-          );
+  /**
+   * Persists the relationships (the FormSchemaDeps document) from the current
+   * table state and selected metrics, and returns the deps document id.
+   * - Returns the existing id when updating, the new id when creating.
+   * - Returns `undefined` when there is nothing to persist and no deps document
+   *   exists yet (so the caller leaves the schema's ref id untouched).
+   * - Returns `null` on failure.
+   * It intentionally does NOT write the FormSchema itself: the caller (the form
+   * editor's Save) performs the single schema write, folding in the returned id.
+   */
+  persistRelationships(): Observable<string | null | undefined> {
+    return combineLatest([this.formSchema, this._formSchemaDeps]).pipe(
+      take(1),
+      switchMap(([_fschema, fschemadeps]) => {
+        const allRequiredMetricsData = this.getRequiredMetrics(
+          this.dataSource.data,
+          this.currentMetricsForData ?? [],
+        );
 
-          const depsOrigin = this.dataSource.data.filter(
-            metricDep =>
-              metricDep.form_schema_ref_id != null &&
-              metricDep.form_schema_ref_id.length &&
-              metricDep.fields_to_update &&
-              metricDep.fields_to_update.length,
-          );
+        const depsOrigin = this.dataSource.data.filter(
+          metricDep =>
+            metricDep.form_schema_ref_id != null &&
+            metricDep.form_schema_ref_id.length &&
+            metricDep.fields_to_update &&
+            metricDep.fields_to_update.length,
+        );
 
-          const metricChoicesOrigin = this.metricDataSource.data
-            .filter(metricDep => metricDep.metric_name != null && metricDep.metric_name.length)
-            .map(metricDep => {
-              if (metricDep.filter_by && metricDep.filter_by.length) {
-                this.getQueryForMetric(metricDep);
-                if (
-                  metricDep.query_selector &&
-                  Object.keys(metricDep.query_selector).includes('error')
-                ) {
-                  metricDep.query_selector = undefined;
-                }
-              } else {
+        const metricChoicesOrigin = this.metricDataSource.data
+          .filter(metricDep => metricDep.metric_name != null && metricDep.metric_name.length)
+          .map(metricDep => {
+            if (metricDep.filter_by && metricDep.filter_by.length) {
+              this.getQueryForMetric(metricDep);
+              if (
+                metricDep.query_selector &&
+                Object.keys(metricDep.query_selector).includes('error')
+              ) {
                 metricDep.query_selector = undefined;
               }
-              return metricDep as MetricOrigin;
-            });
-
-          if (fschema && fschemadeps) {
-            const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
-            fsdeps.metric_data_to_show = allRequiredMetricsData;
-            fsdeps.deps_origin = depsOrigin;
-            fsdeps.deps_origin.push(...metricChoicesOrigin);
-            return combineLatest([this._fsd.update(fsdeps), obsOf('edit'), obsOf(fschema)]);
-          } else {
-            const fsdeps = {
-              deps_origin: [...depsOrigin, ...metricChoicesOrigin],
-              metric_data_to_show: allRequiredMetricsData,
-            } as FormSchemaDeps;
-            return combineLatest([this._fsd.create(fsdeps), obsOf('create'), obsOf(fschema)]);
-          }
-        }),
-        switchMap(res => {
-          let fschemaUpdate: Observable<RxDocument<FormSchema, {}> | null> = obsOf(null);
-          if (res[0] != null && res[1] === 'create') {
-            if (res[2] != null) {
-              const fschema = deepCopy(res[2]) as FormSchema;
-              fschema.form_schema_deps_ref_id = res[0].toJSON().id;
-              fschemaUpdate = this._fs.update(fschema);
+            } else {
+              metricDep.query_selector = undefined;
             }
-          }
-          return combineLatest([obsOf(res[0]), obsOf(res[1]), fschemaUpdate]);
-        }),
-      )
-      .subscribe(res => {
-        const fschemadeps = res[0];
-        const action = res[1];
-        const fschema = res[2];
-        if (fschemadeps == null || (action === 'create' && fschema == null)) {
-          this.snackbar.open(
-            `Oops! Something went wrong while saving relationships.`,
-            'SAVE ERROR',
-            {
-              duration: 10000,
-            },
-          );
-        } else {
-          this.snackbar.open('Relationships created', 'SAVE', {duration: 10000});
-          if (fschema != null && isRxDocument(fschema)) {
-            const resObj = fschema.toJSON();
-            this.updateAndCloseDialog(resObj);
-          } else {
-            this.closeDialog();
-          }
+            return metricDep as MetricOrigin;
+          });
+
+        if (fschemadeps) {
+          const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
+          fsdeps.metric_data_to_show = allRequiredMetricsData;
+          fsdeps.deps_origin = depsOrigin;
+          fsdeps.deps_origin.push(...metricChoicesOrigin);
+          return this._fsd
+            .update(fsdeps)
+            .pipe(map(res => (res != null ? (fschemadeps as any).id : null)));
         }
-      });
+
+        // Nothing to persist and no existing deps document: leave the schema as is.
+        if (
+          depsOrigin.length === 0 &&
+          metricChoicesOrigin.length === 0 &&
+          allRequiredMetricsData.length === 0
+        ) {
+          return obsOf(undefined);
+        }
+
+        const fsdeps = {
+          deps_origin: [...depsOrigin, ...metricChoicesOrigin],
+          metric_data_to_show: allRequiredMetricsData,
+        } as FormSchemaDeps;
+        return this._fsd.create(fsdeps).pipe(map(res => (res != null ? res.toJSON().id : null)));
+      }),
+      catchError(() => obsOf(null)),
+    );
   }
 
   /**
@@ -471,34 +447,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     return flatNodes;
   }
 
-  /**
-   * Save and closes the dialog
-   */
-  updateAndCloseDialog(fschema: {[key: string]: any} | null) {
-    this.dialogRef.close(fschema);
-  }
-
-  /**
-   * Closes the dialog
-   */
-  closeDialog() {
-    this.dialogRef.close(null);
-  }
-
-  /**
-   * Emits the save event with metrics selection for
-   * data and for choices
-   */
-  saveDeps(metricsForData: string[]) {
-    const metricsSel = {
-      metrics_for_data: metricsForData,
-    } as SelectedMetrics;
-    this._saveEvt.emit(metricsSel);
-  }
-
   ngOnDestroy(): void {
     this._depsSub.unsubscribe();
-    this._saveSub.unsubscribe();
-    this._saveEvt.complete();
   }
 }
