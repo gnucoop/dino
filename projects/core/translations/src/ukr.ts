@@ -23,6 +23,36 @@
 import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
+  'Import form data': 'Імпорт даних форми',
+  'Match the columns in your file to the fields of the form.':
+    'Зіставте стовпці вашого файлу з полями форми.',
+  'Upload file': 'Завантажити файл',
+  'Map fields': 'Зіставити поля',
+  'Drag & drop your file here': 'Перетягніть свій файл сюди',
+  'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
+    'Прийнятні формати: .xls, .xlsx, .csv — до 20 МБ',
+  'Choose a file': 'Вибрати файл',
+  'columns detected': 'виявлено стовпців',
+  'columns': 'стовпців',
+  'mapped': 'зіставлено',
+  'ignored': 'проігноровано',
+  'Search columns…': 'Пошук стовпців…',
+  'Auto-match': 'Автозіставлення',
+  'File column': 'Стовпець файлу',
+  'Form field': 'Поле форми',
+  'Select field…': 'Виберіть поле…',
+  '— Ignore this column —': '— Ігнорувати цей стовпець —',
+  'Mapped': 'Зіставлено',
+  'Not mapped': 'Не зіставлено',
+  'Ignored': 'Проігноровано',
+  'Ignore': 'Ігнорувати',
+  'Restore': 'Відновити',
+  'Apply import': 'Застосувати імпорт',
+  'Reuse existing metrics with the same name':
+    'Повторно використовувати наявні метрики з тією самою назвою',
+  'No fields found': 'Полів не знайдено',
+  'Repetition': 'Повторення',
+  'DISMISS': 'ЗАКРИТИ',
   '{{language}} already deleted': '{{language}} вже видалено',
   '(select only one field)': '(виберіть лише одне поле)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

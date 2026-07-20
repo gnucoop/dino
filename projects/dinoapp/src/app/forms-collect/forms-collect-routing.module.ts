@@ -50,6 +50,16 @@ const routes: Routes = [
           breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Create'}],
         },
       },
+      {
+        path: 'import',
+        loadChildren: () =>
+          import('../import-form-page/import-form-page.module').then(
+            m => m.ImportFormPageModule,
+          ),
+        data: {
+          breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Import'}],
+        },
+      },
     ],
   },
   {path: '', component: FormsCollectComponent, data: {breadcrumbs: null}},

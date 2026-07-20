@@ -22,6 +22,36 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
+  'Import form data': 'استيراد بيانات النموذج',
+  'Match the columns in your file to the fields of the form.':
+    'طابق أعمدة ملفك مع حقول النموذج.',
+  'Upload file': 'رفع ملف',
+  'Map fields': 'ربط الحقول',
+  'Drag & drop your file here': 'اسحب ملفك وأفلته هنا',
+  'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
+    'الصيغ المقبولة: .xls و .xlsx و .csv — حتى 20 ميغابايت',
+  'Choose a file': 'اختر ملفاً',
+  'columns detected': 'أعمدة تم اكتشافها',
+  'columns': 'أعمدة',
+  'mapped': 'مرتبطة',
+  'ignored': 'متجاهَلة',
+  'Search columns…': 'ابحث في الأعمدة…',
+  'Auto-match': 'ربط تلقائي',
+  'File column': 'عمود الملف',
+  'Form field': 'حقل النموذج',
+  'Status': 'الحالة',
+  'Select field…': 'اختر حقلاً…',
+  '— Ignore this column —': '— تجاهل هذا العمود —',
+  'Mapped': 'مرتبط',
+  'Not mapped': 'غير مرتبط',
+  'Ignored': 'متجاهَل',
+  'Ignore': 'تجاهل',
+  'Restore': 'استعادة',
+  'Apply import': 'تطبيق الاستيراد',
+  'Reuse existing metrics with the same name': 'إعادة استخدام المقاييس الموجودة بنفس الاسم',
+  'No fields found': 'لم يتم العثور على حقول',
+  'Repetition': 'التكرار',
+  'DISMISS': 'إغلاق',
   '{{language}} already deleted': 'تم حذف {{language}} بالفعل',
   '(select only one field)': '(حدد حقلاً واحداً فقط)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
