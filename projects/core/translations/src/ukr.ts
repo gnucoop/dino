@@ -263,6 +263,10 @@ export const UKR: Translation = {
   'Next': 'Далі',
   'Next page': 'Наступна сторінка',
   'No': 'Ні',
+  '{{count}} sections need attention': '{{count}} розділів потребують уваги',
+  'Cannot save, some sections need attention':
+    'Неможливо зберегти, деякі розділи потребують уваги',
+  'Number of {{name}}': 'Кількість {{name}}',
   'No Forms were found': 'Форми не знайдено',
   'No Forms were found for this Report': 'Для цього звіту форми не знайдено',
   'No file uploaded yet.': 'Файл ще не завантажено.',
