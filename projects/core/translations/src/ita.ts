@@ -22,6 +22,12 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ITA: Translation = {
+  'Structure': 'Struttura',
+  'Text': 'Testo',
+  'Numeric': 'Numerici',
+  'Choices': 'Scelte',
+  'Date & time': 'Data e ora',
+  'Advanced': 'Avanzati',
   'Settings': 'Impostazioni',
   'Build': 'Costruisci',
   'Form Settings': 'Impostazioni del Form',
