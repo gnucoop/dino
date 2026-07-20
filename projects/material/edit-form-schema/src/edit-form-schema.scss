@@ -388,6 +388,24 @@ dino-edit-form-schema {
       }
     }
 
+    // Field-type category headers (injected by the component to group the
+    // palette items: Structure / Text / Numeric / Choices / Date & time /
+    // Advanced).
+    .ajf-drawer-content .dino-fb-cat-header {
+      padding: 14px 8px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--efs-muted-2);
+      user-select: none;
+      pointer-events: none;
+
+      &:first-child {
+        padding-top: 4px;
+      }
+    }
+
     // Designer (structure) area
     .ajf-designer {
       padding: 4px 2px;
