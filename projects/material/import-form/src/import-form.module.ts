@@ -23,7 +23,7 @@
 import {AjfFormBuilderModule} from '@ajf/material/form-builder';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -59,6 +59,7 @@ import {ImportForm} from './import-form';
     MatToolbarModule,
     MatTooltipModule,
     NgxMatSelectSearchModule,
+    FormsModule,
     ReactiveFormsModule,
     RouterModule,
     TranslocoModule,

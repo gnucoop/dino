@@ -1,101 +1,482 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+@function imp-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
+// Dark-theme neutral overrides (`.isDarkTheme` is set on an ancestor by the app).
+.isDarkTheme dino-import-form {
+  --imp-page: #14171b;
+  --imp-surface: #23272d;
+  --imp-subtle: #1b1f24;
+  --imp-border: #363c44;
+  --imp-border-inner: #2f353c;
+  --imp-input-border: #3a424b;
+  --imp-heading: #e6e9ec;
+  --imp-text: #d4d9dd;
+  --imp-muted: #99a0a7;
+  --imp-faint: #7c848c;
+}
+
 dino-import-form {
-  .mat-mdc-card {
-    display: flex;
-    flex-flow: column nowrap;
-    border-left: none;
+  // Light-theme neutral defaults.
+  --imp-page: #eef1f4;
+  --imp-surface: #ffffff;
+  --imp-subtle: #f7f9fb;
+  --imp-border: #e2e8ee;
+  --imp-border-inner: #eef1f4;
+  --imp-input-border: #d7dee5;
+  --imp-heading: #12303f;
+  --imp-text: #2a3a45;
+  --imp-muted: #64798a;
+  --imp-faint: #8395a1;
+
+  display: block;
+  height: 100%;
+
+  * {
     box-sizing: border-box;
-    width: 600px;
-    max-width: 90vw;
-    height: 600px;
-    max-height: 90vh;
-    .mat-toolbar {
-      flex: 0 0 auto;
+  }
+
+  .dino-imp {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px);
+    min-height: 0;
+    background: var(--imp-page);
+    color: var(--imp-text);
+
+    @media only screen and (max-width: 599px) {
+      height: calc(100vh - 56px);
     }
-    .mat-mdc-card-content {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      form {
-        display: flex;
-        flex-flow: column wrap;
-        justify-content: center;
-        .dino-upload-container {
-          margin-top: 50px;
-          flex: 1 0 auto;
-          display: flex;
-          flex-flow: row wrap;
-          justify-content: space-between;
-          align-items: center;
-          input {
-            flex: 0 1 10%;
-          }
-          label {
-            flex: 0 1 35%;
-            display: flex;
-            justify-content: flex-end;
-            a {
-              flex: 1 0 auto;
-            }
-          }
-          @media only screen and (max-width: 992px) {
-            justify-content: center;
-          }
-        }
-      }
-      .dino-column-mapping {
-        margin-top: 20px;
-        .dino-column-mapping-header {
-          margin-bottom: 10px;
-          font-weight: 500;
-        }
-        .dino-column-mapping-row {
-          display: flex;
-          flex-flow: row nowrap;
-          justify-content: space-between;
-          align-items: baseline;
-          gap: 16px;
-          .dino-column-name {
-            flex: 1 1 50%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            &.dino-column-name-unmapped {
-              color: var(--palette-warn-500);
-              font-weight: 700;
-            }
-          }
-          .dino-column-field {
-            flex: 1 1 50%;
-          }
-          .dino-column-repetition {
-            flex: 0 0 72px;
-          }
-        }
-      }
-      .dino-component-load-spinner {
-        margin: 30px auto;
-      }
+  }
+
+  // ---- Breadcrumb strip -----------------------------------------------------
+  .dino-imp-crumbs {
+    flex: none;
+    background: var(--imp-subtle);
+    border-bottom: 1px solid var(--imp-border);
+    padding: 0 26px;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+  }
+
+  // ---- Scroll area ----------------------------------------------------------
+  .dino-imp-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 26px 30px 0;
+  }
+
+  .dino-imp-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  // ---- Step header + stepper ------------------------------------------------
+  .dino-imp-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .dino-imp-title {
+    margin: 0 0 4px;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--imp-heading);
+  }
+
+  .dino-imp-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: var(--imp-muted);
+  }
+
+  .dino-imp-stepper {
+    display: flex;
+    gap: 16px;
+    width: 420px;
+    max-width: 100%;
+    flex-shrink: 0;
+  }
+
+  .dino-imp-step {
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .dino-imp-step-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--imp-input-border);
+  }
+  .dino-imp-step-bar-done {
+    background: imp-primary(500);
+  }
+
+  .dino-imp-step-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--imp-muted);
+  }
+  .dino-imp-step-label-active {
+    font-weight: 700;
+    color: var(--imp-heading);
+  }
+  .dino-imp-step-check {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: imp-primary(500);
+  }
+
+  .dino-imp-spinner {
+    margin: 60px auto;
+  }
+
+  // ---- Step 1: upload card --------------------------------------------------
+  .dino-imp-card {
+    background: var(--imp-surface);
+    border: 1px solid var(--imp-border);
+    border-radius: 12px;
+    padding: 36px;
+    margin-bottom: 26px;
+  }
+
+  .dino-imp-dropzone {
+    border: 2px dashed var(--imp-input-border);
+    border-radius: 12px;
+    background: var(--imp-subtle);
+    padding: 44px;
+    text-align: center;
+  }
+
+  .dino-imp-drop-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: imp-primary(500, 0.12);
+    color: imp-primary(500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
     }
-    .mat-mdc-card-actions {
-      flex: 0 0 auto;
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-between;
-      background-color: transparent !important;
-      .dino-upload-respose {
-        flex: 1 0 100%;
-        margin-bottom: 10px;
-        color: var(--palette-warn-500);
-        white-space: pre-line;
-      }
-      .dino-column-mapping-error {
-        flex: 1 0 100%;
-        margin-bottom: 10px;
-        color: var(--palette-warn-500);
-      }
-      .mat-mdc-raised-button {
-        transition: all ease-in-out 0.3;
-        -webkit-transition: all ease-in-out 0.3s;
+  }
+
+  .dino-imp-drop-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--imp-text);
+  }
+
+  .dino-imp-drop-hint {
+    font-size: 14px;
+    color: var(--imp-faint);
+    margin: 6px 0 18px;
+  }
+
+  .dino-imp-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .dino-imp-choose.mat-mdc-unelevated-button {
+    border-radius: 8px;
+    // Fixed green "Choose a file" button (independent of the theme primary).
+    background-color: #1e9e51 !important;
+    --mdc-filled-button-container-color: #1e9e51;
+    --mdc-filled-button-label-text-color: #ffffff;
+    color: #ffffff !important;
+
+    &:hover {
+      background-color: #17843f !important;
+      --mdc-filled-button-container-color: #17843f;
+    }
+    .mat-icon {
+      margin-right: 6px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #ffffff;
+    }
+  }
+
+  .dino-imp-file-chip {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ecfdf3;
+    border: 1px solid #b7e4c7;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: #067647;
+
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .dino-imp-reuse {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 22px;
+    font-size: 14px;
+    color: var(--imp-text);
+    cursor: pointer;
+  }
+
+  // ---- Step 2: toolbar ------------------------------------------------------
+  .dino-imp-toolbar {
+    background: var(--imp-surface);
+    border: 1px solid var(--imp-border);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .dino-imp-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .dino-imp-chip {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  .dino-imp-chip-total {
+    background: #eef1f4;
+    color: #3a4a55;
+  }
+  .dino-imp-chip-mapped {
+    background: #ecfdf3;
+    color: #067647;
+  }
+  .dino-imp-chip-ignored {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+
+  .dino-imp-toolbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .dino-imp-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .mat-icon {
+      position: absolute;
+      left: 9px;
+      color: var(--imp-faint);
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+    input {
+      border: 1px solid var(--imp-input-border);
+      border-radius: 8px;
+      padding: 9px 12px 9px 32px;
+      font-size: 14px;
+      width: 220px;
+      max-width: 100%;
+      outline: none;
+      color: var(--imp-text);
+      background: var(--imp-surface);
+      font-family: inherit;
+
+      &:focus {
+        border-color: imp-primary(500);
       }
     }
   }
+
+  .dino-imp-automatch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: imp-primary(500, 0.1);
+    color: imp-primary(700);
+    border: 1px solid imp-primary(500, 0.35);
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background: imp-primary(500, 0.18);
+    }
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // ---- Step 2: mapping table ------------------------------------------------
+  .dino-imp-table {
+    background: var(--imp-surface);
+    border: 1px solid var(--imp-border);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    margin-bottom: 26px;
+  }
+
+  .dino-imp-table-head,
+  .dino-imp-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.6fr 1fr;
+    align-items: center;
+  }
+
+  .dino-imp-table-head {
+    background: var(--imp-subtle);
+    border-bottom: 1px solid var(--imp-border);
+    padding: 12px 22px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--imp-faint);
+  }
+
+  .dino-imp-row {
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--imp-border-inner);
+
+    &.dino-imp-row-ignored {
+      opacity: 0.55;
+    }
+  }
+
+  .dino-imp-col-name {
+    font-family: 'Roboto Mono', 'SFMono-Regular', Menlo, monospace;
+    font-size: 14px;
+    color: var(--imp-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dino-imp-col-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 14px;
+
+    .dino-imp-field {
+      flex: 1;
+      min-width: 0;
+    }
+    .dino-imp-repetition {
+      width: 90px;
+      flex: none;
+    }
+  }
+
+  .dino-imp-col-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .dino-imp-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+  .dino-imp-status-mapped {
+    color: #067647;
+    background: #ecfdf3;
+  }
+  .dino-imp-status-unmapped {
+    color: #b54708;
+    background: #fffaeb;
+  }
+  .dino-imp-status-ignored {
+    color: #64748b;
+    background: #f1f5f9;
+  }
+
+  .dino-imp-ignore-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--imp-muted);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 4px 6px;
+    white-space: nowrap;
+
+    &:hover {
+      color: imp-primary(500);
+    }
+  }
+
+  // ---- Footer ---------------------------------------------------------------
+  .dino-imp-footer {
+    flex: none;
+    height: 70px;
+    background: var(--imp-surface);
+    border-top: 1px solid var(--imp-border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: 0 30px;
+  }
+
+  .dino-imp-back.mat-mdc-outlined-button,
+  .dino-imp-apply.mat-mdc-unelevated-button {
+    border-radius: 8px;
+  }
+}
+
+// Snackbar colors (global panels, rendered in an overlay outside the component).
+.dino-import-snack-success .mdc-snackbar__surface {
+  background-color: #067647 !important;
+}
+.dino-import-snack-error .mdc-snackbar__surface {
+  background-color: #b42318 !important;
 }

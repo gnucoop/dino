@@ -22,6 +22,37 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  'Import form data': 'Importar dados do formulário',
+  'Match the columns in your file to the fields of the form.':
+    'Associe as colunas do seu arquivo aos campos do formulário.',
+  'Upload file': 'Carregar arquivo',
+  'Map fields': 'Mapear campos',
+  'Drag & drop your file here': 'Arraste e solte seu arquivo aqui',
+  'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
+    'Formatos aceitos: .xls, .xlsx, .csv — até 20 MB',
+  'Choose a file': 'Escolher um arquivo',
+  'columns detected': 'colunas detectadas',
+  'columns': 'colunas',
+  'mapped': 'mapeadas',
+  'ignored': 'ignoradas',
+  'Search columns…': 'Pesquisar colunas…',
+  'Auto-match': 'Correspondência automática',
+  'File column': 'Coluna do arquivo',
+  'Form field': 'Campo do formulário',
+  'Status': 'Status',
+  'Select field…': 'Selecionar campo…',
+  '— Ignore this column —': '— Ignorar esta coluna —',
+  'Mapped': 'Mapeado',
+  'Not mapped': 'Não mapeado',
+  'Ignored': 'Ignorado',
+  'Ignore': 'Ignorar',
+  'Restore': 'Restaurar',
+  'Apply import': 'Aplicar importação',
+  'Reuse existing metrics with the same name':
+    'Reutilizar métricas existentes com o mesmo nome',
+  'No fields found': 'Nenhum campo encontrado',
+  'Repetition': 'Repetição',
+  'DISMISS': 'FECHAR',
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
