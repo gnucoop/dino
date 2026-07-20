@@ -100,6 +100,20 @@ export const UKR: Translation = {
   'Metrics associated with this questionnaire.': "Метрики, пов'язані з цим опитуванням.",
   'Statuses a submission of this questionnaire can have.':
     'Статуси, які може мати надіслана форма цього опитування.',
+  'Add': 'Додати',
+  'Add all shown': 'Додати всі показані',
+  'Added': 'Додано',
+  'Clear': 'Очистити',
+  'In group': 'У групі',
+  'results': 'результатів',
+  'Filter assigned…': 'Фільтрувати призначені…',
+  'Nothing added for this category yet.': 'Для цієї категорії ще нічого не додано.',
+  'Create group': 'Створити групу',
+  'Edit group': 'Редагувати групу',
+  'View group': 'Переглянути групу',
+  'saved': 'збережено',
+  'Oops! Something went wrong while performing the requested action.':
+    'Ой! Під час виконання запитаної дії сталася помилка.',
   '{{language}} already deleted': '{{language}} вже видалено',
   '(select only one field)': '(виберіть лише одне поле)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
