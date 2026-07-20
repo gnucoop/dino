@@ -34,7 +34,6 @@ import {
   EventEmitter,
   Inject,
   Input,
-  isDevMode,
   OnDestroy,
   OnInit,
   Output,
@@ -74,7 +73,6 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportList} from '@dino/material/export-list';
 import {ExportListData, ExportListType} from '@dino/core/exporter';
 import {FormStatusChanger, FormStatusChangerData} from '@dino/material/form-status-changer';
-import {ImportForm} from '@dino/material/import-form';
 import {
   BehaviorSubject,
   combineLatest,
@@ -479,10 +477,6 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   private _mainUnsubscribe: Subject<void> = new Subject();
 
-  /**
-   * A reference to the MatDialog that contains the Import component
-   */
-  private _importDialogRef?: MatDialogRef<ImportForm>;
 
   /**
    * A reference to the MatDialog that contains the Form Status Changer component
@@ -1469,35 +1463,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * Loads the component to import new items.
+   * Navigates to the full-page Import Data wizard for the given schema.
    * @param schemaId The schema Id of the documents
    */
   openImportForms(schemaId: string): void {
-    if (schemaId == null || this.baseUrl == null || this.baseCreateUrl == null) {
+    if (schemaId == null || this.baseUrl == null) {
       return;
     }
-    if (schemaId != null) {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.data = {
-        formSchema: schemaId,
-        hasOptionalMetrics: this.hasOptionalMetrics,
-      };
-      this._importDialogRef = this.dialog.open(ImportForm, dialogConfig);
-      this._dialogSub = this._importDialogRef
-        .afterClosed()
-        .pipe(
-          catchError(err => throwError(() => err) as Observable<boolean>),
-          take(1),
-        )
-        .subscribe((formSchema: {[key: string]: any}) => {
-          if (formSchema != null) {
-            if (isDevMode()) {
-              console.log('forms imported');
-            }
-            // this._updateImportedFormData(formSchema);
-          }
-        });
-    }
+    this._router.navigate([this.baseUrl, schemaId, 'import']);
   }
 
   /**
