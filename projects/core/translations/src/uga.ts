@@ -99,6 +99,20 @@ export const UGA: Translation = {
   'Metrics associated with this questionnaire.': 'Metrics associated with this questionnaire.',
   'Statuses a submission of this questionnaire can have.':
     'Statuses a submission of this questionnaire can have.',
+  'Add': 'Add',
+  'Add all shown': 'Add all shown',
+  'Added': 'Added',
+  'Clear': 'Clear',
+  'In group': 'In group',
+  'results': 'results',
+  'Filter assigned…': 'Filter assigned…',
+  'Nothing added for this category yet.': 'Nothing added for this category yet.',
+  'Create group': 'Create group',
+  'Edit group': 'Edit group',
+  'View group': 'View group',
+  'saved': 'saved',
+  'Oops! Something went wrong while performing the requested action.':
+    'Oops! Something went wrong while performing the requested action.',
   'Customize display': 'Customize display',
   'Alter the display of the table by selecting up to 7 columns':
     'Alter the display of the table by selecting up to 7 columns',
