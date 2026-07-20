@@ -279,6 +279,10 @@ export const FRA: Translation = {
   'Next': 'Suivant',
   'Next page': 'Page suivante',
   'No': 'Non',
+  '{{count}} sections need attention': '{{count}} sections nécessitent une attention',
+  'Cannot save, some sections need attention':
+    'Impossible d’enregistrer, certaines sections nécessitent une attention',
+  'Number of {{name}}': 'Nombre de {{name}}',
   'No Forms were found': 'Aucune forme n\'a été trouvée',
   'No Forms were found for this Report': 'Aucune forme n\'a été trouvée pour ce rapport',
   'No file uploaded yet.': 'Pas encore de fichier téléchargé.',

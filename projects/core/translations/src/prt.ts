@@ -299,6 +299,10 @@ export const PRT: Translation = {
   'Next': 'Próximo',
   'Next page': 'Próxima página',
   'No': 'Não',
+  '{{count}} sections need attention': '{{count}} seções precisam de atenção',
+  'Cannot save, some sections need attention':
+    'Não é possível salvar, algumas seções precisam de atenção',
+  'Number of {{name}}': 'Número de {{name}}',
   'No Forms were found': 'Nenhuma forma foi encontrada',
   'No Forms were found for this Report': 'Nenhuma forma foi encontrada para este relatório',
   'No file uploaded yet.': 'Nenhum arquivo enviado ainda.',

@@ -1,0 +1,175 @@
+<!-- Control row: section select (left) + errors pill + save actions (right) -->
+<div class="dino-fdc-control-row">
+  <div class="dino-fdc-section-select-wrapper" *ngIf="(sections$ | async) as sections">
+    <span class="dino-fdc-caption">{{ 'Section' | transloco }}</span>
+    <button
+      *ngIf="(currentSection$ | async) as section"
+      type="button"
+      class="dino-fdc-section-select"
+      (click)="openPicker()"
+    >
+      <span class="dino-fdc-num-badge">{{ section.number }}</span>
+      <span class="dino-fdc-section-name">{{ section.label | transloco }}</span>
+      <mat-icon class="dino-fdc-icon-valid" *ngIf="section.valid">check</mat-icon>
+      <mat-icon class="dino-fdc-icon-invalid" *ngIf="!section.valid">warning</mat-icon>
+      <span class="dino-fdc-counter">{{ section.number }} / {{ sections.length }}</span>
+      <mat-icon class="dino-fdc-arrow">arrow_drop_down</mat-icon>
+    </button>
+  </div>
+
+  <span class="dino-fdc-spacer"></span>
+
+  <button
+    *ngIf="hasErrors$ | async"
+    type="button"
+    class="dino-fdc-errors-pill"
+    (click)="jumpToFirstError()"
+  >
+    <mat-icon>error</mat-icon>
+    <span>{{ '{{count}} sections need attention' | transloco: {count: (errorCount$ | async) ?? 0} }}</span>
+    <mat-icon>arrow_forward</mat-icon>
+  </button>
+
+  <button
+    *ngIf="!isReadonly && allowSaveDraft"
+    mat-stroked-button
+    class="dino-fdc-save-draft"
+    tourAnchor="save-draft-floating-button"
+    [disabled]="saveDraftDisabled"
+    (click)="saveDraft.emit()"
+  >
+    <mat-icon>save_as</mat-icon>{{ 'Save draft' | transloco }}
+  </button>
+
+  <button
+    *ngIf="!isReadonly"
+    mat-flat-button
+    color="primary"
+    class="dino-fdc-save-form"
+    tourAnchor="save-form-floating-button"
+    (click)="onSaveForm()"
+  >
+    <mat-icon>save</mat-icon>{{ 'Save form' | transloco }}
+  </button>
+</div>
+
+<!-- Repeating-record pager row (only for repeating sections) -->
+<ng-container *ngIf="(currentSection$ | async) as section">
+  <div class="dino-fdc-record-row" *ngIf="section.isRepeating">
+    <span class="dino-fdc-record-caption">
+      {{ 'Number of {{name}}' | transloco: {name: section.label | transloco} }}
+    </span>
+    <button type="button" class="dino-fdc-record-nav" (click)="repeatPrev()" aria-label="Previous record">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <div class="dino-fdc-record-pills">
+      <button
+        *ngFor="let r of range(section.reps); let i = index; trackBy: trackByIndex"
+        type="button"
+        class="dino-fdc-record-pill"
+        [class.dino-fdc-record-pill--active]="i === ((currentRep$ | async) ?? 0)"
+        (click)="jumpToRep(i)"
+      >
+        {{ i + 1 }}
+      </button>
+    </div>
+    <button type="button" class="dino-fdc-record-nav" (click)="repeatNext()" aria-label="Next record">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    <button
+      *ngIf="!isReadonly"
+      type="button"
+      class="dino-fdc-record-add"
+      [disabled]="!section.canAdd"
+      (click)="repeatAdd()"
+      aria-label="Add record"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      *ngIf="!isReadonly"
+      type="button"
+      class="dino-fdc-record-remove"
+      [disabled]="section.reps <= 1 || section.disableRemoval || !section.canRemove"
+      (click)="repeatRemove()"
+      aria-label="Remove record"
+    >
+      <mat-icon>remove</mat-icon>
+    </button>
+  </div>
+</ng-container>
+
+<!-- Scrollable form area (wraps the projected <ajf-form>) -->
+<div class="dino-fdc-scroll-area">
+  <ng-content></ng-content>
+
+  <!-- Scroll hint -->
+  <div class="dino-fdc-scroll-hint" *ngIf="scrollHint" (click)="nudgeScroll()">
+    <span class="dino-fdc-scroll-hint-pill">{{ 'More below' | transloco }}</span>
+    <mat-icon>keyboard_arrow_down</mat-icon>
+  </div>
+
+  <!-- Bottom-right section navigation FABs -->
+  <div class="dino-fdc-section-fabs" *ngIf="(sections$ | async) as sections">
+    <button
+      type="button"
+      mat-mini-fab
+      class="dino-fdc-fab-prev"
+      [disabled]="((currentSectionIndex$ | async) ?? 0) <= 0"
+      (click)="prevSection()"
+      aria-label="Previous section"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button
+      type="button"
+      mat-fab
+      color="primary"
+      class="dino-fdc-fab-next"
+      [disabled]="((currentSectionIndex$ | async) ?? 0) >= sections.length - 1"
+      (click)="nextSection()"
+      aria-label="Next section"
+    >
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Section picker overlay -->
+<ng-template #pickerTpl>
+  <div class="dino-fdc-picker" cdkTrapFocus>
+    <div class="dino-fdc-picker-header">
+      <mat-icon>search</mat-icon>
+      <input
+        class="dino-fdc-picker-search"
+        cdkFocusInitial
+        [formControl]="searchCtrl"
+        [placeholder]="'Search section' | transloco"
+      />
+      <span class="dino-fdc-picker-count">
+        {{ (filteredSections$ | async)?.length }}/{{ (sections$ | async)?.length }}
+      </span>
+      <button type="button" class="dino-fdc-picker-close" (click)="closePicker()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="dino-fdc-picker-list">
+      <button
+        *ngFor="let s of (filteredSections$ | async); trackBy: trackBySection"
+        type="button"
+        class="dino-fdc-picker-row"
+        [class.dino-fdc-picker-row--active]="s.index === ((currentSectionIndex$ | async) ?? -1)"
+        (click)="jumpToSection(s.index)"
+      >
+        <span class="dino-fdc-picker-num">{{ s.number }}</span>
+        <span class="dino-fdc-picker-name">{{ s.label | transloco }}</span>
+        <span class="dino-fdc-picker-badge" *ngIf="s.isRepeating">{{ s.reps }}</span>
+        <mat-icon class="dino-fdc-icon-valid" *ngIf="s.valid">check</mat-icon>
+        <mat-icon class="dino-fdc-icon-invalid" *ngIf="!s.valid">warning</mat-icon>
+      </button>
+      <div class="dino-fdc-picker-empty" *ngIf="(filteredSections$ | async)?.length === 0">
+        {{ 'No section matches' | transloco }} “{{ searchCtrl.value }}”.
+      </div>
+    </div>
+  </div>
+</ng-template>
