@@ -186,12 +186,15 @@ export class EditFormSchema implements OnInit, OnDestroy {
     if (cmp == null) {
       this._expandAppliedFor = null;
       this._importRelocatedFor = null;
+      this._nodeTypeObserver?.disconnect();
+      this._nodeTypeObserver = undefined;
       return;
     }
     if (this._importRelocatedFor !== cmp) {
       this._importRelocatedFor = cmp;
       this._relocateImportButton();
     }
+    this._setupNodeTypeGrouping();
     if (this._creating && this._expandAppliedFor !== cmp) {
       this._expandAppliedFor = cmp;
       // Expand slides by default (and for slides added later). This is the source
@@ -257,6 +260,100 @@ export class EditFormSchema implements OnInit, OnDestroy {
     if (toolbar != null && importEl != null) {
       this._renderer.appendChild(toolbar, importEl);
     }
+  }
+
+  /**
+   * Reorders the shared Ajf builder field-type list to match
+   * {@link _nodeTypeCategories}. Sorts the live array in place (the builder
+   * holds the same reference), so the source list renders grouped and ordered.
+   */
+  private _reorderNodeTypes(): void {
+    const order: string[] = this._nodeTypeCategories.flatMap(c => c.types);
+    const rank = (label: string): number => {
+      const i = order.indexOf(label);
+      return i < 0 ? order.length : i;
+    };
+    const list = this._formBuilderService.availableNodeTypes as {label: string}[];
+    if (Array.isArray(list)) {
+      list.sort((a, b) => rank(a.label) - rank(b.label));
+    }
+  }
+
+  /**
+   * Sets up a MutationObserver on the field-type source list to keep the
+   * category headers in place across the builder's search-driven re-renders.
+   * Retries until the (async-rendered) list container exists.
+   */
+  private _setupNodeTypeGrouping(attempt: number = 0): void {
+    const container = this._el.nativeElement.querySelector(
+      'ajf-form-builder .ajf-drawer-content',
+    ) as HTMLElement | null;
+    if (container == null) {
+      if (attempt < 40) {
+        setTimeout(() => this._setupNodeTypeGrouping(attempt + 1), 50);
+      }
+      return;
+    }
+    this._nodeTypeObserver?.disconnect();
+    this._nodeTypeObserver = new MutationObserver(() => this._applyNodeTypeGrouping(container));
+    this._nodeTypeObserver.observe(container, {childList: true});
+    this._applyNodeTypeGrouping(container);
+  }
+
+  /**
+   * Inserts a translated category header before the first field-type entry of
+   * each category. The entries are already grouped/ordered (see
+   * {@link _reorderNodeTypes}); a header is emitted whenever the category
+   * changes, so filtered-out (searched) categories get no header.
+   */
+  private _applyNodeTypeGrouping(container: HTMLElement): void {
+    if (this._applyingGrouping) {
+      return;
+    }
+    this._applyingGrouping = true;
+    this._nodeTypeObserver?.disconnect();
+
+    container
+      .querySelectorAll(':scope > .dino-fb-cat-header')
+      .forEach(header => header.remove());
+
+    const labelToCat = new Map<string, number>();
+    this._nodeTypeCategories.forEach((cat, i) => cat.types.forEach(t => labelToCat.set(t, i)));
+
+    const entries = Array.from(
+      container.querySelectorAll(':scope > ajf-fb-node-type-entry'),
+    ) as HTMLElement[];
+
+    let lastCat = -1;
+    entries.forEach(entry => {
+      const cat = labelToCat.get(this._entryLabel(entry)) ?? this._nodeTypeCategories.length - 1;
+      if (cat !== lastCat) {
+        const header = this._renderer.createElement('div') as HTMLElement;
+        this._renderer.addClass(header, 'dino-fb-cat-header');
+        const text = this._ts.translate(this._nodeTypeCategories[cat].label);
+        this._renderer.appendChild(header, this._renderer.createText(text));
+        this._renderer.insertBefore(container, header, entry);
+        lastCat = cat;
+      }
+    });
+
+    this._nodeTypeObserver?.observe(container, {childList: true});
+    this._applyingGrouping = false;
+  }
+
+  /**
+   * Extracts the field-type label from a node-type entry element. The entry
+   * renders "<ajf-node-icon/>&nbsp;{{label}}", so the label is the element's
+   * own text node(s), excluding the icon element's ligature text.
+   */
+  private _entryLabel(entry: HTMLElement): string {
+    let label = '';
+    entry.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        label += node.textContent ?? '';
+      }
+    });
+    return label.replace(/\u00a0/g, ' ').trim();
   }
 
   /**
@@ -339,6 +436,33 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _langs: Lang[] | null = null; // as listed by LangManager at construction time
   private _newLangs: Partial<Lang>[] = []; // to be created when saving the form
   private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
+
+  /**
+   * Category grouping for the form builder's field-type sidebar, in display
+   * order. The `types` are the (English) Ajf node-type labels; the `label` is a
+   * translation key rendered as the group header. Any Ajf node type not listed
+   * here falls into the last category so nothing is ever hidden.
+   */
+  private readonly _nodeTypeCategories: {label: string; types: string[]}[] = [
+    {label: 'Structure', types: ['Slide', 'Repeating slide']},
+    {label: 'Text', types: ['String', 'Text', 'Note']},
+    {label: 'Numeric', types: ['Number']},
+    {label: 'Choices', types: ['Boolean', 'Single choice', 'Multiple choice', 'Range']},
+    {label: 'Date & time', types: ['Date', 'Date input', 'Time']},
+    {
+      label: 'Advanced',
+      types: ['Geolocation', 'Image', 'Barcode', 'Formula', 'Table', 'File', 'Signature', 'Audio'],
+    },
+  ];
+
+  /**
+   * Watches the field-type source list and (re)inserts the category headers.
+   * Needed because the Ajf builder re-renders the list on every search keystroke.
+   */
+  private _nodeTypeObserver?: MutationObserver;
+
+  /** Guards {@link _applyNodeTypeGrouping} against its own DOM mutations. */
+  private _applyingGrouping = false;
 
   constructor(
     protected _cdr: ChangeDetectorRef,
@@ -638,6 +762,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
       .subscribe(langs => {
         this._langs = langs.map(l => l.toJSON());
       });
+
+    // Reorder the (shared) builder field-type list so items of the same category
+    // are contiguous and appear in the intended order. Done before the builder
+    // renders, so the native *ngFor picks up the new order.
+    this._reorderNodeTypes();
   }
 
   ngOnInit() {
@@ -874,6 +1003,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._autoReportSchemaSub.unsubscribe();
     this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
+    this._nodeTypeObserver?.disconnect();
     this.isSaving = false;
   }
 }
