@@ -22,6 +22,36 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const UGA: Translation = {
+  'Import form data': 'Import form data',
+  'Match the columns in your file to the fields of the form.':
+    'Match the columns in your file to the fields of the form.',
+  'Upload file': 'Upload file',
+  'Map fields': 'Map fields',
+  'Drag & drop your file here': 'Drag & drop your file here',
+  'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
+    'Accepted formats: .xls, .xlsx, .csv — up to 20 MB',
+  'Choose a file': 'Choose a file',
+  'columns detected': 'columns detected',
+  'columns': 'columns',
+  'mapped': 'mapped',
+  'ignored': 'ignored',
+  'Search columns…': 'Search columns…',
+  'Auto-match': 'Auto-match',
+  'File column': 'File column',
+  'Form field': 'Form field',
+  'Status': 'Status',
+  'Select field…': 'Select field…',
+  '— Ignore this column —': '— Ignore this column —',
+  'Mapped': 'Mapped',
+  'Not mapped': 'Not mapped',
+  'Ignored': 'Ignored',
+  'Ignore': 'Ignore',
+  'Restore': 'Restore',
+  'Apply import': 'Apply import',
+  'Reuse existing metrics with the same name': 'Reuse existing metrics with the same name',
+  'No fields found': 'No fields found',
+  'Repetition': 'Repetition',
+  'DISMISS': 'DISMISS',
   'Customize display': 'Customize display',
   'Alter the display of the table by selecting up to 7 columns':
     'Alter the display of the table by selecting up to 7 columns',

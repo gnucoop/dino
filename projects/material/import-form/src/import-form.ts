@@ -27,10 +27,13 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
+  EventEmitter,
+  Input,
   isDevMode,
   OnDestroy,
+  OnInit,
   Optional,
+  Output,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -43,7 +46,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
@@ -148,7 +151,45 @@ interface MetricInfoInRows {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ImportForm implements OnDestroy, ErrorStateMatcher {
+export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
+  /**
+   * The id of the form schema the data will be imported into.
+   */
+  @Input() formSchemaId: string | null = null;
+
+  /**
+   * Whether the form schema can have one or more null metrics.
+   */
+  @Input() hasOptionalMetrics: boolean = false;
+
+  /**
+   * Emitted when the user leaves the wizard without importing (Close / Back on
+   * the first step). The host navigates back to the form-data list.
+   */
+  @Output() cancelled = new EventEmitter<void>();
+
+  /**
+   * Emitted once the import has completed successfully. The host navigates back
+   * to the form-data list.
+   */
+  @Output() imported = new EventEmitter<void>();
+
+  /**
+   * The current wizard step: 1 = upload file, 2 = map fields.
+   */
+  step: 1 | 2 = 1;
+
+  /**
+   * The name of the selected file, shown in the upload success chip.
+   */
+  fileName = '';
+
+  /**
+   * Live search filter applied to the mapping rows (by file column name or
+   * mapped field label).
+   */
+  search = '';
+
   /**
    * Current status message of the Import Form
    */
@@ -223,17 +264,6 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
    * when going back to the file selection step.
    */
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
-
-  /**
-   * The edited form schema id
-   */
-  private _formSchemaId: string | null;
-
-  /**
-   * True if the Form can have one or more null Metrics.
-   * Defaults to false.
-   */
-  private _hasOptionalMetrics: boolean = false;
 
   /**
    * The Form schema object
@@ -327,31 +357,14 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     private _ehms: ErrorHandlerMessageService,
     readonly metricsService: MetricsService,
     private _importService: FormDataImportService,
-    public dialogRef: MatDialogRef<ImportForm>,
+    private _snackbar: MatSnackBar,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
-    @Inject(MAT_DIALOG_DATA) public data: ImportFormDialogData,
   ) {
-    this._formSchemaId = this.data.formSchema;
-    this._hasOptionalMetrics = this.data.hasOptionalMetrics;
-
-    if (this._formSchemaId) {
-      this._formSchema = this._formSchemaManager.get(this._formSchemaId).pipe(
-        map(doc => {
-          if (doc == null) {
-            return null;
-          }
-          const item = doc.toJSON();
-          return item as FormSchema;
-        }),
-        shareReplay(1),
-      );
-    } else {
-      this._formSchema = obsOf(null);
-    }
+    this._formSchema = obsOf(null);
 
     this.importForm = this._formBuilder.group({
       reuseMetricName: [true],
@@ -360,6 +373,153 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     this._fieldFilterSub = this.fieldFilterCtrl.valueChanges.subscribe(() =>
       this._cdr.markForCheck(),
     );
+  }
+
+  ngOnInit(): void {
+    if (this.formSchemaId) {
+      this._formSchema = this._formSchemaManager.get(this.formSchemaId).pipe(
+        map(doc => (doc == null ? null : (doc.toJSON() as FormSchema))),
+        shareReplay(1),
+      );
+    } else {
+      this._formSchema = obsOf(null);
+    }
+  }
+
+  // ---- Wizard navigation & derived view data --------------------------------
+
+  /**
+   * Navigates to a wizard step. Step 2 is reachable only once a file has been
+   * parsed (there are column mappings to show).
+   * @param step The target step
+   */
+  goToStep(step: 1 | 2): void {
+    if (step === 2 && !this.columnMappings.length) {
+      return;
+    }
+    this.step = step;
+    this._cdr.markForCheck();
+  }
+
+  /**
+   * The mapping rows matching the current search filter (by file column name or
+   * mapped field label). Used to render the mapping table.
+   */
+  get filteredMappings(): ColumnMapping[] {
+    const q = this.search.trim().toLowerCase();
+    if (!q) {
+      return this.columnMappings;
+    }
+    return this.columnMappings.filter(
+      m =>
+        m.column.toLowerCase().includes(q) ||
+        this.fieldLabel(m.field).toLowerCase().includes(q),
+    );
+  }
+
+  /**
+   * Whether a mapping is ignored (explicitly skipped or mapped to the ignore
+   * sentinel).
+   * @param mapping The column mapping
+   */
+  isIgnored(mapping: ColumnMapping): boolean {
+    return mapping.field === this.ignoreFieldValue;
+  }
+
+  /**
+   * Whether a mapping targets a real field (mapped, not ignored).
+   * @param mapping The column mapping
+   */
+  isMapped(mapping: ColumnMapping): boolean {
+    return mapping.field != null && mapping.field !== this.ignoreFieldValue;
+  }
+
+  /**
+   * Summary counts shown as chips in the mapping toolbar.
+   */
+  get summary(): {total: number; mapped: number; ignored: number} {
+    let mapped = 0;
+    let ignored = 0;
+    this.columnMappings.forEach(m => {
+      if (this.isIgnored(m)) {
+        ignored++;
+      } else if (this.isMapped(m)) {
+        mapped++;
+      }
+    });
+    return {total: this.columnMappings.length, mapped, ignored};
+  }
+
+  /**
+   * The status pill descriptor for a mapping row.
+   * @param mapping The column mapping
+   */
+  statusOf(mapping: ColumnMapping): {label: string; kind: 'mapped' | 'unmapped' | 'ignored'} {
+    if (this.isIgnored(mapping)) {
+      return {label: this._ts.translate('Ignored'), kind: 'ignored'};
+    }
+    if (this.isMapped(mapping)) {
+      return {label: this._ts.translate('Mapped'), kind: 'mapped'};
+    }
+    return {label: this._ts.translate('Not mapped'), kind: 'unmapped'};
+  }
+
+  /**
+   * Toggles a column between ignored and unmapped.
+   * @param mapping The column mapping
+   */
+  toggleIgnore(mapping: ColumnMapping): void {
+    const nowIgnored = !this.isIgnored(mapping);
+    this.onMappingChange(mapping, nowIgnored ? this.ignoreFieldValue : null);
+    if (mapping.control) {
+      mapping.control.setValue(mapping.field);
+    }
+  }
+
+  /**
+   * Guesses a target field for every still-unmapped, non-ignored column by a
+   * case-insensitive substring match between the file column name and each
+   * field name or its label, then assigns it.
+   */
+  autoMatch(): void {
+    this.columnMappings.forEach(mapping => {
+      if (mapping.field != null) {
+        return;
+      }
+      const src = mapping.column.toLowerCase();
+      const match = this.availableFields.find(
+        f => src.includes(f.toLowerCase()) || src.includes(this.fieldLabel(f).toLowerCase()),
+      );
+      if (match) {
+        this.onMappingChange(mapping, match);
+        if (mapping.control) {
+          mapping.control.setValue(match);
+        }
+      }
+    });
+    this._cdr.markForCheck();
+  }
+
+  /**
+   * Handles a file dropped onto the upload drop zone.
+   * @param event The drag drop event
+   */
+  onFileDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file) {
+      this._file = file;
+      this.fileName = file.name;
+      this._readFile(file);
+    }
+  }
+
+  /**
+   * Allows dropping by preventing the browser's default (open file) behavior.
+   * @param event The drag over event
+   */
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
   }
 
   /**
@@ -465,6 +625,13 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     // message keep the spinner visible.
     if (msg !== '' && msg !== this._ts.translate('Importing file...')) {
       this.isLoading = false;
+      // Surface the terminal outcome as a snackbar (per the redesign), colored
+      // green for a successful import and red otherwise.
+      const success = msg.startsWith(this._ts.translate('File imported successfully'));
+      this._snackbar.open(msg, this._ts.translate('DISMISS'), {
+        duration: success ? 5000 : 10000,
+        panelClass: success ? 'dino-import-snack-success' : 'dino-import-snack-error',
+      });
     }
     this._cdr.markForCheck();
   }
@@ -478,6 +645,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
       return;
     }
     this._file = event.target.files[0];
+    this.fileName = (this._file as File).name ?? '';
     this._readFile(this._file as Blob);
   }
 
@@ -532,16 +700,19 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
    */
   back(): void {
     this._file = undefined;
+    this.fileName = '';
     this._rows = [];
     this.columnMappings = [];
     this.availableFields = [];
     this._repeatingFields = {};
     this._tableFields = {};
     this.fieldFilterCtrl.setValue('');
+    this.search = '';
     this.duplicateFields = [];
     this.openedMapping = null;
     this.isLoading = false;
     this._processing = true;
+    this.step = 1;
     this._setImportStatus('');
     if (this.fileInput) {
       // Clear the input value so re-selecting the same file fires the change event
@@ -551,10 +722,22 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Closes the Import form data dialog
+   * Footer "Back" action: from the mapping step return to the upload step;
+   * from the upload step leave the wizard.
    */
-  closeDialog(): void {
-    this.dialogRef.close();
+  onBack(): void {
+    if (this.step === 2) {
+      this.back();
+    } else {
+      this.cancel();
+    }
+  }
+
+  /**
+   * Leaves the wizard without importing (host navigates back to the list).
+   */
+  cancel(): void {
+    this.cancelled.emit();
   }
 
   /**
@@ -804,7 +987,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
       // Check if is not a second header
       if (!this._isLabelHeader(row)) {
         let newItem: {[key: string]: any} = {};
-        newItem['form_schema_ref_id'] = this._formSchemaId;
+        newItem['form_schema_ref_id'] = this.formSchemaId;
         if (row[createdAtKey] && row[createdAtKey].length && row[createdAtKey] !== createdAtKey) {
           try {
             const rowDate = format(new Date(row[createdAtKey]), 'yyyy-MM-dd');
@@ -877,7 +1060,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
               bulkRes.success.length
             } ${this._ts.translate('forms created')}!`,
           );
-          setTimeout(() => this.closeDialog(), 3000);
+          this.imported.emit();
         } else {
           let errMsg = 'File not imported! ';
           if (bulkRes?.error.length) {
@@ -1316,6 +1499,8 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
         this._updateDuplicateFields();
         this._processing = false;
         this.isLoading = false;
+        // Advance to the mapping step now that the file has been parsed.
+        this.step = 2;
         this._cdr.markForCheck();
       });
     };
@@ -1467,7 +1652,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
       .pipe(
         switchMap(formSchema => {
           let missingRequiredMetrics = false;
-          if (!this._hasOptionalMetrics) {
+          if (!this.hasOptionalMetrics) {
             const requiredMetrics =
               formSchema?.form_schema_metrics && formSchema.form_schema_metrics.length
                 ? formSchema.form_schema_metrics
@@ -1546,5 +1731,7 @@ export class ImportForm implements OnDestroy, ErrorStateMatcher {
     this._validateDataSub.unsubscribe();
     this._columnMappingsSub.unsubscribe();
     this._fieldFilterSub.unsubscribe();
+    this.cancelled.complete();
+    this.imported.complete();
   }
 }

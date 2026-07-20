@@ -22,6 +22,37 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ITA: Translation = {
+  'Import form data': 'Importa dati del modulo',
+  'Match the columns in your file to the fields of the form.':
+    'Associa le colonne del file ai campi del modulo.',
+  'Upload file': 'Carica file',
+  'Map fields': 'Associa campi',
+  'Drag & drop your file here': 'Trascina qui il tuo file',
+  'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
+    'Formati accettati: .xls, .xlsx, .csv — fino a 20 MB',
+  'Choose a file': 'Scegli un file',
+  'columns detected': 'colonne rilevate',
+  'columns': 'colonne',
+  'mapped': 'associate',
+  'ignored': 'ignorate',
+  'Search columns…': 'Cerca colonne…',
+  'Auto-match': 'Associa automaticamente',
+  'File column': 'Colonna del file',
+  'Form field': 'Campo del modulo',
+  'Status': 'Stato',
+  'Select field…': 'Seleziona campo…',
+  '— Ignore this column —': '— Ignora questa colonna —',
+  'Mapped': 'Associato',
+  'Not mapped': 'Non associato',
+  'Ignored': 'Ignorato',
+  'Ignore': 'Ignora',
+  'Restore': 'Ripristina',
+  'Apply import': 'Applica importazione',
+  'Reuse existing metrics with the same name':
+    'Riutilizza le metriche esistenti con lo stesso nome',
+  'No fields found': 'Nessun campo trovato',
+  'Repetition': 'Ripetizione',
+  'DISMISS': 'CHIUDI',
   // Public survey footer navigation ('Forward' is a survey-specific key to avoid
   // overriding the shared 'Next' → 'Continua').
   'Back': 'Indietro',

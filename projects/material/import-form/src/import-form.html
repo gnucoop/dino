@@ -1,121 +1,215 @@
-<ng-container *ngIf="importForm">
-  <mat-card appearance="outlined" class="form-container">
-    <mat-toolbar color="primary"> {{'Import forms'|transloco}}</mat-toolbar>
-    <mat-card-content>
-      <form [formGroup]="importForm">
-        <div
-          *ngIf="!columnMappings.length && !isLoading"
-          class="dino-upload-container"
-        >
-          <div>Upload an xls or csv file to import form data:<br /></div>
-          <input
-            #fileInput
-            type="file"
-            id="excelFileInput"
-            accept=".xls,.xlsx,.csv"
-            (change)="onExcelfileSelected($event)"
-            style="visibility: hidden; height: 1px"
-          /><br />
-          <label for="excelFileInput">
-            <a color="primary" mat-raised-button>{{'Choose file'|transloco}}</a>
-          </label>
-          <mat-checkbox formControlName="reuseMetricName"
-            >{{'Reuse metrics if name exists'|transloco}}</mat-checkbox
-          >
+<div class="dino-imp">
+  <!-- breadcrumb strip (projected by the host page) -->
+  <div class="dino-imp-crumbs">
+    <ng-content select="[breadcrumbs]"></ng-content>
+  </div>
+
+  <!-- scrollable content -->
+  <div class="dino-imp-scroll">
+    <div class="dino-imp-inner">
+      <!-- step header + progress stepper -->
+      <div class="dino-imp-head">
+        <div class="dino-imp-head-text">
+          <h1 class="dino-imp-title">{{ 'Import form data' | transloco }}</h1>
+          <p class="dino-imp-subtitle">
+            {{ 'Match the columns in your file to the fields of the form.' | transloco }}
+          </p>
         </div>
-      </form>
+        <div class="dino-imp-stepper">
+          <div class="dino-imp-step" (click)="back()">
+            <div class="dino-imp-step-bar dino-imp-step-bar-done"></div>
+            <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 1">
+              1 · {{ 'Upload file' | transloco }}
+              <mat-icon *ngIf="step === 2" class="dino-imp-step-check">check</mat-icon>
+            </div>
+          </div>
+          <div class="dino-imp-step" (click)="goToStep(2)">
+            <div
+              class="dino-imp-step-bar"
+              [class.dino-imp-step-bar-done]="step === 2"
+            ></div>
+            <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 2">
+              2 · {{ 'Map fields' | transloco }}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <mat-spinner
         *ngIf="isLoading"
-        class="dino-component-load-spinner"
+        class="dino-imp-spinner"
         mode="indeterminate"
+        diameter="48"
       ></mat-spinner>
-      <div *ngIf="columnMappings.length" class="dino-column-mapping">
-        <div class="dino-column-mapping-header">
-          {{'Map the file columns to the form fields'|transloco}}
-        </div>
-        <div *ngFor="let mapping of columnMappings" class="dino-column-mapping-row">
-          <span
-            class="dino-column-name"
-            [class.dino-column-name-unmapped]="mapping.field === null"
-            [title]="mapping.column"
-            >{{mapping.column}}</span
+
+      <!-- ===================== STEP 1 — upload file ===================== -->
+      <ng-container *ngIf="step === 1 && !isLoading">
+        <form [formGroup]="importForm" class="dino-imp-card">
+          <div
+            class="dino-imp-dropzone"
+            (drop)="onFileDrop($event)"
+            (dragover)="onDragOver($event)"
           >
-          <mat-form-field class="dino-column-field">
-            <mat-label>{{'Field'|transloco}}</mat-label>
-            <mat-select
-              [formControl]="mapping.control!"
-              [errorStateMatcher]="this"
-              (selectionChange)="onMappingChange(mapping, $event.value)"
-              (openedChange)="onFieldSelectOpenedChange($event, mapping)"
-            >
-              <mat-select-trigger>
-                {{ fieldLabel(mapping.field) }}
-              </mat-select-trigger>
-              <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
-                <mat-option>
-                  <ngx-mat-select-search
-                    [formControl]="fieldFilterCtrl"
-                    [placeholderLabel]="'Search'|transloco"
-                    [noEntriesFoundLabel]="'No fields found'|transloco"
-                  ></ngx-mat-select-search>
-                </mat-option>
-                <mat-option [value]="ignoreFieldValue">{{'Ignore column'|transloco}}</mat-option>
-                <mat-option
-                  *ngFor="let field of availableFields; trackBy: trackByField"
-                  [value]="field"
-                  [style.display]="isFieldVisible(field) ? null : 'none'"
-                  [matTooltip]="fieldLabel(field)"
-                  matTooltipPosition="right"
-                >
-                  {{ fieldLabel(field) }}
-                </mat-option>
-              </ng-container>
-              <ng-template #selectedFieldOption>
-                <mat-option [value]="mapping.field">
-                  {{ fieldLabel(mapping.field) }}
-                </mat-option>
-              </ng-template>
-            </mat-select>
-            <mat-error>{{'Field mapped to more than one column'|transloco}}</mat-error>
-          </mat-form-field>
-          <mat-form-field
-            *ngIf="isRepeatingField(mapping.field)"
-            class="dino-column-repetition"
-          >
-            <mat-label>{{'Repetition'|transloco}}</mat-label>
+            <div class="dino-imp-drop-icon"><mat-icon>upload</mat-icon></div>
+            <div class="dino-imp-drop-title">{{ 'Drag & drop your file here' | transloco }}</div>
+            <div class="dino-imp-drop-hint">
+              {{ 'Accepted formats: .xls, .xlsx, .csv — up to 20 MB' | transloco }}
+            </div>
             <input
-              matInput
-              type="number"
-              min="0"
-              [value]="mapping.repetition ?? 0"
-              (change)="onRepetitionChange(mapping, $event)"
+              #fileInput
+              type="file"
+              id="excelFileInput"
+              accept=".xls,.xlsx,.csv"
+              (change)="onExcelfileSelected($event)"
+              class="dino-imp-file-input"
             />
-          </mat-form-field>
+            <label for="excelFileInput">
+              <a class="dino-imp-choose" mat-flat-button>
+                <mat-icon>description</mat-icon>{{ 'Choose a file' | transloco }}
+              </a>
+            </label>
+            <div *ngIf="fileName" class="dino-imp-file-chip">
+              <mat-icon>check_circle</mat-icon>
+              {{ fileName }} · {{ summary.total }} {{ 'columns detected' | transloco }}
+            </div>
+          </div>
+
+          <label class="dino-imp-reuse">
+            <mat-checkbox formControlName="reuseMetricName" color="primary"></mat-checkbox>
+            {{ 'Reuse existing metrics with the same name' | transloco }}
+          </label>
+        </form>
+      </ng-container>
+
+      <!-- ===================== STEP 2 — map fields ===================== -->
+      <ng-container *ngIf="step === 2 && !isLoading">
+        <!-- toolbar -->
+        <div class="dino-imp-toolbar">
+          <div class="dino-imp-chips">
+            <span class="dino-imp-chip dino-imp-chip-total"
+              >{{ summary.total }} {{ 'columns' | transloco }}</span
+            >
+            <span class="dino-imp-chip dino-imp-chip-mapped"
+              >{{ summary.mapped }} {{ 'mapped' | transloco }}</span
+            >
+            <span class="dino-imp-chip dino-imp-chip-ignored"
+              >{{ summary.ignored }} {{ 'ignored' | transloco }}</span
+            >
+          </div>
+          <div class="dino-imp-toolbar-right">
+            <div class="dino-imp-search">
+              <mat-icon>search</mat-icon>
+              <input
+                [(ngModel)]="search"
+                [placeholder]="'Search columns…' | transloco"
+              />
+            </div>
+            <button type="button" class="dino-imp-automatch" (click)="autoMatch()">
+              <mat-icon>auto_fix_high</mat-icon>{{ 'Auto-match' | transloco }}
+            </button>
+          </div>
         </div>
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-      <div *ngIf="importStatus" class="dino-upload-respose">
-        <b>{{importStatus}}</b>
-      </div>
-      <div *ngIf="duplicateFields.length" class="dino-column-mapping-error">
-        {{'Each field can be mapped to only one column'|transloco}}: {{duplicateFields.join(', ')}}
-      </div>
-      <button (click)="closeDialog()" color="warn" mat-raised-button>
-        {{ 'Close'|transloco }}
-      </button>
-      <button *ngIf="columnMappings.length" (click)="back()" mat-raised-button>
-        {{ 'Back'|transloco }}
-      </button>
-      <button
-        *ngIf="columnMappings.length"
-        [disabled]="processing || duplicateFields.length > 0"
-        (click)="apply()"
-        color="primary"
-        mat-raised-button
-      >
-        {{ 'Apply'|transloco }}
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</ng-container>
+
+        <!-- mapping table -->
+        <div class="dino-imp-table">
+          <div class="dino-imp-table-head">
+            <div>{{ 'File column' | transloco }}</div>
+            <div>{{ 'Form field' | transloco }}</div>
+            <div>{{ 'Status' | transloco }}</div>
+          </div>
+
+          <div
+            *ngFor="let mapping of filteredMappings"
+            class="dino-imp-row"
+            [class.dino-imp-row-ignored]="isIgnored(mapping)"
+          >
+            <!-- file column -->
+            <div class="dino-imp-col-name" [title]="mapping.column">{{ mapping.column }}</div>
+
+            <!-- form field select (+ repetition for repeating fields) -->
+            <div class="dino-imp-col-field">
+              <mat-form-field class="dino-imp-field" subscriptSizing="dynamic">
+                <mat-select
+                  [formControl]="mapping.control!"
+                  [errorStateMatcher]="this"
+                  [placeholder]="'Select field…' | transloco"
+                  (selectionChange)="onMappingChange(mapping, $event.value)"
+                  (openedChange)="onFieldSelectOpenedChange($event, mapping)"
+                >
+                  <mat-select-trigger>{{ fieldLabel(mapping.field) }}</mat-select-trigger>
+                  <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
+                    <mat-option>
+                      <ngx-mat-select-search
+                        [formControl]="fieldFilterCtrl"
+                        [placeholderLabel]="'Search' | transloco"
+                        [noEntriesFoundLabel]="'No fields found' | transloco"
+                      ></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let field of availableFields; trackBy: trackByField"
+                      [value]="field"
+                      [style.display]="isFieldVisible(field) ? null : 'none'"
+                      [matTooltip]="fieldLabel(field)"
+                      matTooltipPosition="right"
+                    >
+                      {{ fieldLabel(field) }}
+                    </mat-option>
+                    <mat-option [value]="ignoreFieldValue"
+                      >{{ '— Ignore this column —' | transloco }}</mat-option
+                    >
+                  </ng-container>
+                  <ng-template #selectedFieldOption>
+                    <mat-option [value]="mapping.field">{{ fieldLabel(mapping.field) }}</mat-option>
+                  </ng-template>
+                </mat-select>
+                <mat-error>{{ 'Field mapped to more than one column' | transloco }}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                *ngIf="isRepeatingField(mapping.field)"
+                class="dino-imp-repetition"
+                subscriptSizing="dynamic"
+              >
+                <mat-label>{{ 'Repetition' | transloco }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  [value]="mapping.repetition ?? 0"
+                  (change)="onRepetitionChange(mapping, $event)"
+                />
+              </mat-form-field>
+            </div>
+
+            <!-- status -->
+            <div class="dino-imp-col-status">
+              <span class="dino-imp-status dino-imp-status-{{ statusOf(mapping).kind }}">{{
+                statusOf(mapping).label
+              }}</span>
+              <button type="button" class="dino-imp-ignore-btn" (click)="toggleIgnore(mapping)">
+                {{ (isIgnored(mapping) ? 'Restore' : 'Ignore') | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- footer action bar -->
+  <div class="dino-imp-footer">
+    <button type="button" class="dino-imp-back" mat-stroked-button (click)="onBack()">
+      {{ 'Back' | transloco }}
+    </button>
+    <button
+      type="button"
+      class="dino-imp-apply"
+      mat-flat-button
+      color="primary"
+      [disabled]="step !== 2 || processing || duplicateFields.length > 0"
+      (click)="apply()"
+    >
+      {{ 'Apply import' | transloco }}
+    </button>
+  </div>
+</div>
