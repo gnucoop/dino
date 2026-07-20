@@ -22,6 +22,20 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
+  'Add': 'Ajouter',
+  'Add all shown': 'Ajouter tous les affichés',
+  'Added': 'Ajouté',
+  'Clear': 'Vider',
+  'In group': 'Dans le groupe',
+  'results': 'résultats',
+  'Filter assigned…': 'Filtrer les éléments assignés…',
+  'Nothing added for this category yet.': 'Aucun élément ajouté pour cette catégorie.',
+  'Create group': 'Créer un groupe',
+  'Edit group': 'Modifier le groupe',
+  'View group': 'Voir le groupe',
+  'saved': 'enregistré',
+  'Oops! Something went wrong while performing the requested action.':
+    'Oups ! Une erreur s\'est produite lors de l\'exécution de l\'action demandée.',
   '{{language}} already deleted': '{{language}} déjà supprimé',
   '(select only one field)': '(ne sélectionner qu\'un seul champ)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Il existe déjà un formulaire {{schema_name}} avec cet ensemble exact de paramètres. Veuillez choisir d\'autres paramètres',

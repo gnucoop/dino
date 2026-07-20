@@ -22,6 +22,20 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
+  'Add': 'إضافة',
+  'Add all shown': 'إضافة كل المعروض',
+  'Added': 'تمت الإضافة',
+  'Clear': 'مسح',
+  'In group': 'في المجموعة',
+  'results': 'نتائج',
+  'Filter assigned…': 'تصفية المعيَّنة…',
+  'Nothing added for this category yet.': 'لم تتم إضافة أي عنصر لهذه الفئة بعد.',
+  'Create group': 'إنشاء مجموعة',
+  'Edit group': 'تعديل المجموعة',
+  'View group': 'عرض المجموعة',
+  'saved': 'تم الحفظ',
+  'Oops! Something went wrong while performing the requested action.':
+    'عذرًا! حدث خطأ أثناء تنفيذ الإجراء المطلوب.',
   '{{language}} already deleted': 'تم حذف {{language}} بالفعل',
   '(select only one field)': '(حدد حقلاً واحداً فقط)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

@@ -1,0 +1,148 @@
+<div class="dino-group-editor">
+  <!-- ============ Page header ============ -->
+  <div class="dino-ge-header">
+    <dino-breadcrumbs></dino-breadcrumbs>
+
+    <div class="dino-ge-namebar">
+      <input
+        class="dino-ge-name"
+        [value]="name"
+        [disabled]="viewOnly"
+        [placeholder]="'Group name' | transloco"
+        (input)="onName($any($event.target).value)"
+      />
+
+      <div class="dino-ge-actions" *ngIf="!viewOnly">
+        <button
+          type="button"
+          class="dino-ge-save"
+          mat-flat-button
+          color="primary"
+          [disabled]="!canSave()"
+          (click)="save()"
+        >
+          {{ 'Save' | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Category tabs ============ -->
+  <div class="dino-ge-tabs">
+    <button
+      type="button"
+      class="dino-ge-tab"
+      [class.dino-ge-tab-active]="tab.active"
+      *ngFor="let tab of tabs; trackBy: trackByTab"
+      (click)="selectTab(tab.type)"
+    >
+      <span>{{ tab.label | transloco }}</span>
+      <span
+        class="dino-ge-badge"
+        [class.dino-ge-badge-active]="tab.active"
+        [class.dino-ge-badge-empty]="tab.count === 0"
+        >{{ tab.count }}</span
+      >
+    </button>
+  </div>
+
+  <!-- ============ Editor body ============ -->
+  <div class="dino-ge-body">
+    <!-- Results (available items) -->
+    <div class="dino-ge-results">
+      <div class="dino-ge-results-head">
+        <div class="dino-ge-search">
+          <mat-icon>search</mat-icon>
+          <input
+            [value]="qAvail"
+            [placeholder]="('Search' | transloco) + ' ' + activeLabel + '…'"
+            (input)="onQAvail($any($event.target).value)"
+          />
+        </div>
+        <div class="dino-ge-meta">
+          <div class="dino-ge-count">
+            <b>{{ availTotal | number }}</b> {{ 'results' | transloco }}
+          </div>
+          <button
+            *ngIf="!viewOnly"
+            type="button"
+            class="dino-ge-link"
+            (click)="addAllShown()"
+          >
+            {{ 'Add all shown' | transloco }}
+          </button>
+        </div>
+      </div>
+
+      <cdk-virtual-scroll-viewport itemSize="59" class="dino-ge-scroll">
+        <div
+          class="dino-ge-row"
+          [class.dino-ge-row-all]="item.allOptionItem"
+          *cdkVirtualFor="let item of visibleAvailable; trackBy: trackById"
+        >
+          <div class="dino-ge-avatar">{{ initial(item) }}</div>
+          <div class="dino-ge-label">{{ item.itemName }}</div>
+          <span class="dino-ge-added" *ngIf="isAdded(item)">
+            <mat-icon>check</mat-icon>{{ 'Added' | transloco }}
+          </span>
+          <button
+            *ngIf="!isAdded(item) && !viewOnly"
+            type="button"
+            class="dino-ge-add"
+            (click)="add(item)"
+          >
+            {{ 'Add' | transloco }}
+          </button>
+        </div>
+      </cdk-virtual-scroll-viewport>
+    </div>
+
+    <!-- In group (assigned) rail -->
+    <div class="dino-ge-rail">
+      <div class="dino-ge-rail-head">
+        <div class="dino-ge-rail-title">
+          {{ 'In group' | transloco }} · {{ activeLabel }}
+          <span class="dino-ge-rail-count">({{ assignedCount }})</span>
+        </div>
+        <button
+          *ngIf="!viewOnly && assignedCount > 0"
+          type="button"
+          class="dino-ge-clear"
+          (click)="clear()"
+        >
+          {{ 'Clear' | transloco }}
+        </button>
+      </div>
+
+      <div class="dino-ge-rail-filter">
+        <input
+          [value]="qAssigned"
+          [placeholder]="'Filter assigned…' | transloco"
+          (input)="onQAssigned($any($event.target).value)"
+        />
+      </div>
+
+      <div class="dino-ge-rail-list">
+        <div class="dino-ge-empty" *ngIf="assignedCount === 0">
+          {{ 'Nothing added for this category yet.' | transloco }}
+        </div>
+        <div
+          class="dino-ge-chip"
+          *ngFor="let item of visibleAssigned; trackBy: trackById"
+        >
+          <div class="dino-ge-avatar dino-ge-avatar-assigned">{{ initial(item) }}</div>
+          <div class="dino-ge-label">{{ item.itemName }}</div>
+          <button
+            *ngIf="!viewOnly"
+            type="button"
+            class="dino-ge-remove"
+            [attr.aria-label]="'Remove' | transloco"
+            (click)="remove(item)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

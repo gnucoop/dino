@@ -22,6 +22,20 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
+  'Add': 'Añadir',
+  'Add all shown': 'Añadir todos los mostrados',
+  'Added': 'Añadido',
+  'Clear': 'Vaciar',
+  'In group': 'En el grupo',
+  'results': 'resultados',
+  'Filter assigned…': 'Filtrar asignados…',
+  'Nothing added for this category yet.': 'Aún no se ha añadido nada a esta categoría.',
+  'Create group': 'Crear grupo',
+  'Edit group': 'Editar grupo',
+  'View group': 'Ver grupo',
+  'saved': 'guardado',
+  'Oops! Something went wrong while performing the requested action.':
+    '¡Vaya! Algo salió mal al realizar la acción solicitada.',
   '{{language}} already deleted': '{{language}} ya eliminado',
   '(select only one field)': '(seleccione sólo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
