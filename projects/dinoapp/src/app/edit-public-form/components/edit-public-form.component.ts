@@ -18,6 +18,12 @@ export class EditPublicFormComponent {
   readonly logoUrl: string =
     environment.customImagesConfig?.logoLight ?? 'assets/icons/logos/dino-bar-logo-light.svg';
 
+  /**
+   * True if Form Metrics are optional. When false, all the Form Schema Metrics
+   * must be present in the public Url for the form to open.
+   */
+  readonly optionalMetrics: boolean = environment.metricsConfig.optionalFormMetrics;
+
   constructor(private _actionService: ActionsService) {}
   processActionTrigger<T>(trigger: ActionTrigger<T>) {
     this._actionService.processTrigger(trigger);

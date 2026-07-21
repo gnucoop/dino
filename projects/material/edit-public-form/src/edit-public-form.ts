@@ -101,6 +101,13 @@ export class EditPublicForm implements OnDestroy {
   @Input() poweredByName = 'Dino';
 
   /**
+   * True if the Form can have one or more null Metrics. When false, every Metric
+   * type associated with the Form Schema must be provided in the public Url query
+   * params, otherwise the form is not opened. Defaults to false.
+   */
+  @Input() hasOptionalMetrics: boolean = false;
+
+  /**
    * The Ajf Form object
    */
   readonly form: Observable<AjfForm>;
@@ -119,6 +126,12 @@ export class EditPublicForm implements OnDestroy {
    * True if no validation errors are encountered in the AjfForm
    */
   readonly isValid: Observable<boolean>;
+
+  /**
+   * True when a required Metric of the Form Schema is missing from the public
+   * Url query params. When true the form is not rendered and an error is shown.
+   */
+  readonly requiredMetricsMissing$: Observable<boolean>;
 
   /**
    * True if the form has been submitted.
@@ -366,6 +379,19 @@ export class EditPublicForm implements OnDestroy {
 
     this.isValid = frs.errors.pipe(
       map(errors => errors === 0),
+      shareReplay(1),
+    );
+
+    // The public form must open only if every required Metric is present in the
+    // Url. When Metrics are optional (hasOptionalMetrics) none are required.
+    this.requiredMetricsMissing$ = combineLatest([this.formSchema, metricParams]).pipe(
+      map(([fschema, metricIds]) => {
+        if (fschema == null || this.hasOptionalMetrics) {
+          return false;
+        }
+        const requiredMetrics = fschema.form_schema_metrics ?? [];
+        return requiredMetrics.some(metric => metricIds[metric] == null);
+      }),
       shareReplay(1),
     );
 
