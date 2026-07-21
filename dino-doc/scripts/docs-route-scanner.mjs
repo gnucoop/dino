@@ -80,6 +80,10 @@ const DOC_OVERRIDES = {
   'forms-list':             { slug: 'index' },
   'reports-list':           { slug: 'index' },
 
+  // Import data wizard: its own page under Forms (route forms/:id/import).
+  // Without this it would auto-derive the ugly slug 'import-form-page'.
+  'import-form-page':       { slug: 'import', title: 'Import Data' },
+
   // Friendlier slug for the users management list
   'users-list':             { slug: 'users-list' },
 
@@ -211,9 +215,9 @@ const EXTRA_ROUTE_ENTRIES = [
       },
     ],
   },
-  // --- Forms key workflows: submit new data + import (export already covered above) ---
-  // Both live on the submission list page (/forms/{schemaId}), reached via resolveFrom.
-  // That page stacks two floating buttons in DOM order: Add(0) and Import(1).
+  // --- Forms key workflow: submit new data (export already covered above) ---
+  // Lives on the submission list page (/forms/{schemaId}), reached via resolveFrom.
+  // The Add FAB is the first floating button in DOM order.
   {
     url: '/forms/{schemaId}',
     dir: 'forms',
@@ -228,24 +232,9 @@ const EXTRA_ROUTE_ENTRIES = [
       },
     ],
   },
-  {
-    url: '/forms/{schemaId}',
-    dir: 'forms',
-    resolveFrom: '/forms',
-    screenshots: [
-      {
-        name: 'forms/index-import',
-        description: 'Import dialog for uploading multiple submissions from a file',
-        // The import FAB renders a 'cloud_upload' mat-icon (its textContent is the
-        // ligature name). It only exists when displayImportButton is true, so the
-        // guard targets it specifically: if import is disabled, the screenshot is
-        // SKIPPED rather than failing the whole Cypress run (which would block the
-        // docs deploy). Same icon-name-as-text convention used by resolveAction.
-        setup: "cy.contains('.mat-fab-bottom-right', 'cloud_upload').click(); cy.wait(1500);",
-        selector: ".mat-fab-bottom-right:contains('cloud_upload')",
-      },
-    ],
-  },
+  // NOTE: import is no longer a dialog here — it is a full page documented on its
+  // own route (forms/:id/import → doc page 'forms/import'), auto-discovered by the
+  // scanner. Its main-view screenshot is generated automatically; no EXTRA entry.
   // --- Metric value edit dialog (Thematic Areas page is the example) ---
   // The first row action icon is the pencil/edit (matIcon 'create') → opens the edit dialog.
   {

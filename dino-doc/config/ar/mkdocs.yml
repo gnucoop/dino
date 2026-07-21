@@ -20,6 +20,7 @@ nav:
     - تحرير إرسال نموذج: forms/edit-form.md
     - خريطة النماذج: forms/forms-map.md
     - Datachat: forms/datachat.md
+    - Import Data: forms/import.md
   - التقارير:
     - نظرة عامة: reports/index.md
     - تحرير مخطط التقرير: reports/edit-report-schema.md

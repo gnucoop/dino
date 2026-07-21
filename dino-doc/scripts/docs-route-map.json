@@ -114,6 +114,18 @@
     "resolveAction": "visibility"
   },
   {
+    "url": "/forms/{schemaId}/import",
+    "dir": "forms",
+    "screenshots": [
+      {
+        "name": "forms/import",
+        "setup": null,
+        "description": "Main view of the Import Data page"
+      }
+    ],
+    "resolveFrom": "/forms"
+  },
+  {
     "url": "/reports",
     "dir": "reports",
     "screenshots": [
@@ -355,19 +367,6 @@
         "description": "Blank form opened to submit a new data entry",
         "setup": "cy.get('.mat-fab-bottom-right').eq(0).click(); cy.wait(2000);",
         "selector": ".mat-fab-bottom-right"
-      }
-    ]
-  },
-  {
-    "url": "/forms/{schemaId}",
-    "dir": "forms",
-    "resolveFrom": "/forms",
-    "screenshots": [
-      {
-        "name": "forms/index-import",
-        "description": "Import dialog for uploading multiple submissions from a file",
-        "setup": "cy.contains('.mat-fab-bottom-right', 'cloud_upload').click(); cy.wait(1500);",
-        "selector": ".mat-fab-bottom-right:contains('cloud_upload')"
       }
     ]
   },
