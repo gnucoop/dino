@@ -6,7 +6,9 @@ const routes: Routes = [
   {
     path: '',
     component: ImportFormPageComponent,
-    data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'Import'}]},
+    // Breadcrumbs are declared on the parent `forms/:form_schema_id/import`
+    // route (forms-collect); redeclaring them here would duplicate the trail.
+    data: {breadcrumbs: null},
   },
 ];
 
