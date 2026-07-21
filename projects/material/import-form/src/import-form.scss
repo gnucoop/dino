@@ -199,24 +199,15 @@ dino-import-form {
     pointer-events: none;
   }
 
-  .dino-imp-choose.mat-mdc-unelevated-button {
+  // "Choose a file" button — uses the Dino theme primary (see footer buttons).
+  .dino-imp-choose.mat-mdc-raised-button {
     border-radius: 8px;
-    // Fixed green "Choose a file" button (independent of the theme primary).
-    background-color: #1e9e51 !important;
-    --mdc-filled-button-container-color: #1e9e51;
-    --mdc-filled-button-label-text-color: #ffffff;
-    color: #ffffff !important;
 
-    &:hover {
-      background-color: #17843f !important;
-      --mdc-filled-button-container-color: #17843f;
-    }
     .mat-icon {
       margin-right: 6px;
       font-size: 18px;
       width: 18px;
       height: 18px;
-      color: #ffffff;
     }
   }
 
@@ -467,8 +458,8 @@ dino-import-form {
     padding: 0 30px;
   }
 
-  .dino-imp-back.mat-mdc-outlined-button,
-  .dino-imp-apply.mat-mdc-unelevated-button {
+  .dino-imp-back.mat-mdc-raised-button,
+  .dino-imp-apply.mat-mdc-raised-button {
     border-radius: 8px;
   }
 }
