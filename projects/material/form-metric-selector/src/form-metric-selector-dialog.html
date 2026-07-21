@@ -35,7 +35,7 @@
   <button *ngIf="data.context !== 'shareUrl'" mat-raised-button color="primary" (click)="save()" [disabled]="(uniqueMetricsSetAlreadyExists$ | async) === true">
     {{'Save'|transloco}}
   </button>
-  <button *ngIf="data.context === 'shareUrl'" mat-raised-button color="primary" (click)="shareUrl()">
+  <button *ngIf="data.context === 'shareUrl'" mat-raised-button color="primary" (click)="shareUrl()" [disabled]="(formMetricsValid$ | async) === false">
     {{'Copy to Clipboard'|transloco}} <mat-icon>share</mat-icon>
   </button>
 </mat-dialog-actions>

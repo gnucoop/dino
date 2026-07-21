@@ -36,6 +36,7 @@ dino-edit-public-form {
   --dino-survey-content-width: 900px;
   --dino-survey-font: Roboto, 'Helvetica Neue', sans-serif;
   --dino-survey-success: #16a34a;
+  --dino-survey-error: #dc2626;
 
   // Full-bleed, flat: the survey is a full-height white surface (no floating card).
   display: flex;
@@ -145,6 +146,37 @@ dino-edit-public-form {
       line-height: 88px;
     }
     .dino-survey-success-title {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.5rem;
+      line-height: 1.35;
+      color: var(--dino-survey-card-fg);
+    }
+  }
+
+  .dino-edit-form-error-container {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+
+    .dino-survey-error-box {
+      max-width: var(--dino-survey-content-width);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+    .dino-survey-error-icon {
+      color: var(--dino-survey-error);
+      width: 88px;
+      height: 88px;
+      font-size: 88px;
+      line-height: 88px;
+    }
+    .dino-survey-error-title {
       margin: 0;
       font-weight: 700;
       font-size: 1.5rem;
