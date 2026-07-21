@@ -19,6 +19,7 @@ nav:
     - Редагувати подання форми: forms/edit-form.md
     - Карта форм: forms/forms-map.md
     - Чат даних: forms/datachat.md
+    - Import Data: forms/import.md
   - Звіти:
     - Огляд: reports/index.md
     - Редагувати схему звіту: reports/edit-report-schema.md
