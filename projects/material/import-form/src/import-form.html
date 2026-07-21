@@ -64,7 +64,7 @@
               class="dino-imp-file-input"
             />
             <label for="excelFileInput">
-              <a class="dino-imp-choose" mat-flat-button>
+              <a class="dino-imp-choose" mat-raised-button color="primary">
                 <mat-icon>description</mat-icon>{{ 'Choose a file' | transloco }}
               </a>
             </label>
@@ -198,13 +198,13 @@
 
   <!-- footer action bar -->
   <div class="dino-imp-footer">
-    <button type="button" class="dino-imp-back" mat-stroked-button (click)="onBack()">
+    <button type="button" class="dino-imp-back" mat-raised-button color="accent" (click)="onBack()">
       {{ 'Back' | transloco }}
     </button>
     <button
       type="button"
       class="dino-imp-apply"
-      mat-flat-button
+      mat-raised-button
       color="primary"
       [disabled]="step !== 2 || processing || duplicateFields.length > 0"
       (click)="apply()"

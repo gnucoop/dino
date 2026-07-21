@@ -411,9 +411,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
       return this.columnMappings;
     }
     return this.columnMappings.filter(
-      m =>
-        m.column.toLowerCase().includes(q) ||
-        this.fieldLabel(m.field).toLowerCase().includes(q),
+      m => m.column.toLowerCase().includes(q) || this.fieldLabel(m.field).toLowerCase().includes(q),
     );
   }
 
@@ -583,9 +581,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
       const columnLabel = this._ts.translate(cell.columnLabel);
       return `${cell.tableName} [${rowLabel} / ${columnLabel}]`;
     }
-    return this.isRepeatingField(field)
-    ? `${field} (${this._ts.translate('repeating')})`
-    : field;
+    return this.isRepeatingField(field) ? `${field} (${this._ts.translate('repeating')})` : field;
   }
 
   /**
@@ -1116,13 +1112,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   /**
    * Properties managed by Dino itself, never provided by the user.
    */
-    private _autoMetricProps: string[] = [
-    'id',
-    'created_at',
-    'updated_at',
-    'is_deleted',
-    '_deleted',
-  ];
+  private _autoMetricProps: string[] = ['id', 'created_at', 'updated_at', 'is_deleted', '_deleted'];
 
   /**
    * Whether the property schema accepts a null value. The collection schema
@@ -1144,8 +1134,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     }
     if (Array.isArray(propSchema.anyOf)) {
       return propSchema.anyOf.some(
-        (s: any) =>
-          s?.type === 'null' || (Array.isArray(s?.type) && s.type.includes('null')),
+        (s: any) => s?.type === 'null' || (Array.isArray(s?.type) && s.type.includes('null')),
       );
     }
     return false;
@@ -1375,7 +1364,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   ): boolean {
     let idsNotMatch = false;
     let idsNotMatchMessage = '';
-    const maxIdsInResponse = 10;
+    const maxIdsInResponse = 5;
 
     if (requiredUserIds.length) {
       if (existingUsers == null || existingUsers.length != requiredUserIds.length) {
@@ -1614,8 +1603,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     const mappedFields = this.columnMappings
       .map(mapping => mapping.field)
       .filter(
-        field =>
-          field != null && field !== this.ignoreFieldValue && !this.isRepeatingField(field),
+        field => field != null && field !== this.ignoreFieldValue && !this.isRepeatingField(field),
       ) as string[];
     this.duplicateFields = [
       ...new Set(mappedFields.filter((field, idx) => mappedFields.indexOf(field) !== idx)),
