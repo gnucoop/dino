@@ -19,6 +19,7 @@ nav:
     - Modifier une formulaire: forms/edit-form.md
     - Carte des formulaires: forms/forms-map.md
     - Datachat: forms/datachat.md
+    - Import Data: forms/import.md
   - Rapports:
     - Aperçu: reports/index.md
     - Modifier le schéma de rapport: reports/edit-report-schema.md
