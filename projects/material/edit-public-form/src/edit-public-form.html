@@ -1,6 +1,7 @@
 <div class="dino-survey-topbar">
   <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
 </div>
+<ng-container *ngIf="(requiredMetricsMissing$|async) === false; else missingMetrics">
 <div
   class="dino-survey-progress"
   *ngIf="(submitted|async) === false && (slidesNum$|async)! > 1"
@@ -73,6 +74,7 @@
     </div>
   </div>
 </ng-container>
+</ng-container>
 
 <div class="dino-survey-brand" *ngIf="logoUrl">
   <span>{{ 'Powered by'|transloco }} {{ poweredByName }}</span>
@@ -85,6 +87,17 @@
       <mat-icon class="dino-survey-success-icon">check_circle</mat-icon>
       <h2 class="dino-survey-success-title">
         {{ 'The form has been successfully submitted.'|transloco }}
+      </h2>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #missingMetrics>
+  <div class="dino-edit-form-error-container">
+    <div class="dino-survey-error-box">
+      <mat-icon class="dino-survey-error-icon">error_outline</mat-icon>
+      <h2 class="dino-survey-error-title">
+        {{ 'This form cannot be opened because some required information is missing from the link.'|transloco }}
       </h2>
     </div>
   </div>

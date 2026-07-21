@@ -33,7 +33,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Params} from '@angular/router';
 import {FormMetricSelector} from './form-metric-selector';
 import {combineLatest, forkJoin, Observable, of as obsOf} from 'rxjs';
-import {filter, map, switchMap} from 'rxjs/operators';
+import {filter, map, startWith, switchMap} from 'rxjs/operators';
 import {
   FormData,
   FormDataManager,
@@ -85,6 +85,12 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
   );
 
   readonly numMetrics$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  /**
+   * True when all the required Metric fields of the selector are filled in.
+   * Used to enable/disable the "Copy to Clipboard" action.
+   */
+  readonly formMetricsValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private readonly _unsubscribe = new Subject<void>();
 
@@ -145,6 +151,15 @@ export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
     this._formMetricsSelector = this.formMetricsSelectorComponent;
 
     if (this._formMetricsSelector) {
+      const formMetrics = this._formMetricsSelector.formMetrics;
+      formMetrics.statusChanges
+        .pipe(
+          startWith(formMetrics.status),
+          map(status => status === 'VALID'),
+          takeUntil(this._unsubscribe),
+        )
+        .subscribe(valid => this.formMetricsValid$.next(valid));
+
       this.data.formSchema
         .pipe(
           switchMap(fschema => {
