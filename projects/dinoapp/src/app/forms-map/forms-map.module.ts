@@ -1,31 +1,26 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatButtonModule} from '@angular/material/button';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatNativeDateModule} from '@angular/material/core';
+import {BreadcrumbsModule} from '@dino/material/breadcrumbs';
+import {ExportListModule} from '@dino/material/export-list';
+import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
 
 import {FormsMapComponent} from './components/forms-map';
-import {TextInputAutocomp} from './components/text-input-autocomp';
 import {FormsMapRoutingModule} from './forms-map-routing.module';
 
 @NgModule({
-  declarations: [FormsMapComponent, TextInputAutocomp],
+  declarations: [FormsMapComponent],
   imports: [
+    AjfTranslocoModule,
+    BreadcrumbsModule,
     CommonModule,
+    ExportListModule,
     FormsMapRoutingModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
+    MatDialogModule,
     MatIconModule,
-    MatInputModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
+    SearchFiltersBarModule,
   ],
   providers: [],
 })

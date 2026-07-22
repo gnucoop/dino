@@ -35,7 +35,7 @@ import {
 import {UntypedFormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {DataModelManager, DataQueryOptions, Metric, MetricsService} from '@dino/core/data';
@@ -59,6 +59,7 @@ import {combineLatest, Observable, of as obsOf, Subject, Subscription, throwErro
 import {
   catchError,
   debounceTime,
+  filter,
   map,
   startWith,
   switchMap,
@@ -117,6 +118,12 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * If true, the Form Map button is displayed
    */
   displayFormMapButton: Observable<boolean>;
+
+  /**
+   * Emits true when the current route is the form Map view, false for the Table view.
+   * Drives the active state of the Tabella/Mappa switcher.
+   */
+  isMapView$: Observable<boolean>;
 
   /**
    * The Filter Service Generated filters
@@ -273,6 +280,12 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       }),
     );
 
+    this.isMapView$ = this._router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      startWith(null),
+      map(() => this._router.url.split('?')[0].endsWith('/map')),
+    );
+
     this.minDatePicker = (d: Date | null): boolean => {
       const minDate = this.dateSearchFilters.get('dateStart')?.value
         ? new Date(this.dateSearchFilters.get('dateStart')?.value)
@@ -361,12 +374,41 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Redirects to the forms' View Map component
+   * Switches between the Table and Map views of the current form schema,
+   * preserving the active filters (carried in the `?filters=` query param).
+   */
+  switchView(view: 'table' | 'map'): void {
+    if (view === 'map') {
+      this.viewMap();
+    } else {
+      this.viewList();
+    }
+  }
+
+  /**
+   * Redirects to the forms' View Map component.
+   * Preserves the `?filters=` query param so the current filter transfers.
    */
   viewMap(): void {
     this._route.params.pipe(take(1)).subscribe(params => {
       if (params['form_schema_id']) {
-        this._router.navigate(['forms', params['form_schema_id'], 'map']);
+        this._router.navigate(['forms', params['form_schema_id'], 'map'], {
+          queryParamsHandling: 'preserve',
+        });
+      }
+    });
+  }
+
+  /**
+   * Redirects to the forms' Table (list) component.
+   * Preserves the `?filters=` query param so the current filter transfers.
+   */
+  viewList(): void {
+    this._route.params.pipe(take(1)).subscribe(params => {
+      if (params['form_schema_id']) {
+        this._router.navigate(['forms', params['form_schema_id']], {
+          queryParamsHandling: 'preserve',
+        });
       }
     });
   }
