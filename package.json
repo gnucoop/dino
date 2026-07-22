@@ -4,7 +4,7 @@
   "homepage": "https://bitbucket.org/gnucoop/dino",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/gnucoop/dino.git"
+    "url": "https://github.com/gnucoop/dino.git"
   },
   "license": "AGPL-3.0-or-later",
   "engines": {
