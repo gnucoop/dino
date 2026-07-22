@@ -21,14 +21,14 @@ RUN yarn ng build dinoapp --configuration docker
 FROM nginx:alpine
 
 # 1. Copiamo la configurazione personalizzata per gestire il routing Angular
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # 2. Copiamo i file statici generati dal Builder.
 # Il builder ":browser" produce l'output direttamente in dist/dinoapp (senza sottocartella browser/).
 COPY --from=builder /app/dist/dinoapp /usr/share/nginx/html
 
 # 3. Copiamo lo script di iniezione nella cartella speciale di esecuzione automatica di Nginx
-COPY entrypoint.sh /docker-entrypoint.d/99-inject-env.sh
+COPY docker/entrypoint.sh /docker-entrypoint.d/99-inject-env.sh
 
 # 4. Assicuriamoci che lo script abbia i permessi di esecuzione
 RUN chmod +x /docker-entrypoint.d/99-inject-env.sh
