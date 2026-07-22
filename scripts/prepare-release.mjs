@@ -8,85 +8,165 @@ import {default as shell} from 'shelljs';
 
 import {changelog} from './release/index.mjs';
 
-const prepareRelease = async () => {
-  const packageFile = 'package.json';
-  const content = JSON.parse(readFileSync(packageFile, 'utf8'));
-  const currentVersion = content.version;
-  shell.echo(`Current version: ${currentVersion}`);
-  const choices = [];
-  let newVersion;
-  if (semver.prerelease(currentVersion) != null) {
-    newVersion = semver.inc(currentVersion, 'prerelease');
-    choices.push({name: `Next pre-release: ${newVersion}`, value: newVersion});
-    newVersion = semver.inc(currentVersion, 'patch');
-    choices.push({name: `Next stable: ${newVersion}`, value: newVersion});
-  } else {
-    newVersion = semver.inc(currentVersion, 'patch');
-    choices.push({name: `Next patch: ${newVersion}`, value: newVersion});
-    newVersion = semver.inc(currentVersion, 'minor');
-    choices.push({name: `Next minor: ${newVersion}`, value: newVersion});
-    newVersion = semver.inc(currentVersion, 'major');
-    choices.push({name: `Next major: ${newVersion}`, value: newVersion});
+// The release branch. A deploy is cut from here.
+const RELEASE_BRANCH = 'dev';
+
+// Files that carry the app "version". package.json (root) is the source of truth.
+const VERSION_FILES = [
+  'package.json',
+  'projects/dinoapp/package.json',
+  'projects/dinoapp/ngsw-config.json',
+  'projects/dinoapp/src/manifest.webmanifest',
+  'projects/dinoapp/src/app/base-webmanifest.ts',
+];
+
+// Files that carry the service-worker "sw_version" (a monotonic deploy counter).
+const SW_VERSION_FILES = [
+  'projects/dinoapp/ngsw-config.json',
+  'projects/dinoapp/src/manifest.webmanifest',
+  'projects/dinoapp/src/app/base-webmanifest.ts',
+];
+
+// TypeScript sources quote keys/values with single quotes; JSON with double.
+const quoteFor = file => (file.endsWith('.ts') ? "'" : '"');
+
+// Read the value of `<q>key<q>: <q>value<q>` from a file.
+const readField = (file, key) => {
+  const q = quoteFor(file);
+  const match = new RegExp(`${q}${key}${q}:\\s*${q}([^${q}]+)${q}`).exec(readFileSync(file, 'utf8'));
+  return match != null ? match[1] : null;
+};
+
+// Replace the value of `<q>key<q>: <q>oldValue<q>` with newValue across files.
+const replaceField = (files, key, oldValue, newValue) => {
+  if (oldValue === newValue) {
+    return;
   }
-  choices.push({name: `Custom`, value: 'custom'});
-  newVersion = (
-    await inquirer.prompt([
+  for (const file of files) {
+    const q = quoteFor(file);
+    const search = `${q}${key}${q}: ${q}${oldValue}${q}`;
+    const replacement = `${q}${key}${q}: ${q}${newValue}${q}`;
+    const content = readFileSync(file, 'utf8');
+    if (!content.includes(search)) {
+      shell.echo(`  WARN: "${key}" (${oldValue}) not found in ${file}`);
+      continue;
+    }
+    writeFileSync(file, content.split(search).join(replacement));
+    shell.echo(`  updated ${key} -> ${newValue} in ${file}`);
+  }
+};
+
+const prepareRelease = async () => {
+  // --- Branch guard ---
+  const branch = shell.exec('git rev-parse --abbrev-ref HEAD', {silent: true}).stdout.trim();
+  if (branch !== RELEASE_BRANCH) {
+    const {proceed} = await inquirer.prompt([
       {
-        type: 'list',
-        name: 'newVersion',
-        message: 'What version do you want to cut?',
-        choices,
+        type: 'confirm',
+        name: 'proceed',
+        default: false,
+        message: `You are on "${branch}", not "${RELEASE_BRANCH}". Continue anyway?`,
       },
-    ])
-  ).newVersion;
+    ]);
+    if (!proceed) {
+      shell.echo('Aborted.');
+      shell.exit(0);
+    }
+  }
+
+  // --- Current version + sw_version ---
+  const currentVersion = JSON.parse(readFileSync('package.json', 'utf8')).version;
+  const currentSw = readField('projects/dinoapp/src/app/base-webmanifest.ts', 'sw_version');
+  if (currentSw == null) {
+    shell.echo('Could not read the current sw_version.');
+    shell.exit(1);
+  }
+  shell.echo(`Current version: ${currentVersion}  |  sw_version: ${currentSw}`);
+
+  // --- Pick the new version (default: keep — most deploys only bump sw_version) ---
+  const choices = [{name: `Keep ${currentVersion}`, value: currentVersion}];
+  if (semver.prerelease(currentVersion) != null) {
+    choices.push({name: `Pre-release: ${semver.inc(currentVersion, 'prerelease')}`, value: semver.inc(currentVersion, 'prerelease')});
+    choices.push({name: `Stable: ${semver.inc(currentVersion, 'patch')}`, value: semver.inc(currentVersion, 'patch')});
+  } else {
+    choices.push({name: `Patch: ${semver.inc(currentVersion, 'patch')}`, value: semver.inc(currentVersion, 'patch')});
+    choices.push({name: `Minor: ${semver.inc(currentVersion, 'minor')}`, value: semver.inc(currentVersion, 'minor')});
+    choices.push({name: `Major: ${semver.inc(currentVersion, 'major')}`, value: semver.inc(currentVersion, 'major')});
+  }
+  choices.push({name: 'Custom', value: 'custom'});
+  let {newVersion} = await inquirer.prompt([
+    {type: 'list', name: 'newVersion', message: 'Version to release:', choices},
+  ]);
   if (newVersion === 'custom') {
-    newVersion = (
-      await inquirer.prompt([
-        {
-          type: 'input',
-          name: 'newVersion',
-          message: 'Please enter a new version:',
-        },
-      ])
-    ).newVersion;
+    ({newVersion} = await inquirer.prompt([
+      {type: 'input', name: 'newVersion', message: 'Enter a new version:'},
+    ]));
     if (semver.parse(newVersion) == null) {
       shell.echo('Invalid version');
       shell.exit(1);
     }
   }
-  content.version = newVersion;
-  writeFileSync(packageFile, JSON.stringify(content, null, 2));
-  changelog();
-  let confirm = (
-    await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'confirm',
-        message: 'Please review the staged changelog. Do you want to commit changes? (Y/N)',
-      },
-    ])
-  ).confirm;
-  if (confirm === false) {
+
+  // --- Pick the new sw_version (default: +1) ---
+  const {newSw} = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'newSw',
+      message: 'sw_version:',
+      default: String(Number(currentSw) + 1),
+      validate: value => (/^[0-9]+$/.test(value) ? true : 'sw_version must be an integer'),
+    },
+  ]);
+
+  const releaseId = `${newVersion}-sw.${newSw}`;
+  const tag = `v${releaseId}`;
+  shell.echo(`\nReleasing: ${releaseId}  (tag ${tag})\n`);
+
+  // --- Write the version files ---
+  replaceField(VERSION_FILES, 'version', currentVersion, newVersion);
+  replaceField(SW_VERSION_FILES, 'sw_version', currentSw, newSw);
+
+  // --- Changelog (built from commits since the previous tag) ---
+  const result = await changelog(releaseId);
+  if (result == null) {
+    shell.echo('No conventional commits since the last tag — CHANGELOG.md not updated.');
+  }
+
+  // --- Review + commit ---
+  const {commit} = await inquirer.prompt([
+    {type: 'confirm', name: 'commit', message: 'Review the staged changes. Commit? (Y/N)'},
+  ]);
+  if (!commit) {
+    shell.echo('Nothing committed — changes left in the working tree for review.');
     shell.exit(0);
   }
-  shell.exec(`git add package.json CHANGELOG.md`);
-  shell.exec(`git commit -m "release: cut the v${newVersion} release"`, {silent: true});
-  shell.exec(`git tag v${newVersion}`, {silent: true});
-  confirm = (
-    await inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'confirm',
-        message: 'Do you want to push this version? (Y/N)',
-      },
-    ])
-  ).confirm;
-  if (confirm === false) {
-    shell.exec(`Please push with "git push --tags" when ready.`);
+
+  const filesToAdd = [...new Set([...VERSION_FILES, ...SW_VERSION_FILES, 'CHANGELOG.md'])].join(' ');
+  shell.exec(`git add ${filesToAdd}`);
+  const message =
+    newVersion === currentVersion
+      ? `build: Manifest and worker sw_version upgraded to ${newSw}`
+      : `release: cut the v${newVersion} release`;
+  shell.exec(`git commit -m "${message}"`);
+  shell.exec(`git tag -a ${tag} -m "Release deploy: v${newVersion} sw_version ${newSw}"`);
+
+  // --- Push (this triggers the real deploy) ---
+  const {push} = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'push',
+      default: false,
+      message: `Push "${branch}" and tag ${tag}? This triggers the deploy.`,
+    },
+  ]);
+  if (!push) {
+    shell.echo(`Not pushed. When ready:\n  git push --atomic origin ${branch} ${tag}`);
     shell.exit(0);
   }
-  shell.exec(`git push --tags`);
-  shell.exec(`git push`);
+  // Push branch + tag together so Vercel never sees the release commit before
+  // its tag (they either both land or neither does).
+  shell.exec(`git push --atomic origin ${branch} ${tag}`);
+  shell.echo('Done.');
 };
 
 if (esMain(import.meta)) {
