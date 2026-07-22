@@ -40,12 +40,14 @@ import {MatListModule} from '@angular/material/list';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
 import {RouterModule} from '@angular/router';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ExportListModule} from '@dino/material/export-list';
 import {SearchFiltersChipsModule} from '@dino/material/search-filters-chips';
 import {SearchFiltersDialogModule} from '@dino/material/search-filters-dialog';
 import {SearchFiltersPresetManagerModule} from '@dino/material/search-filters-preset-manager';
+import {SearchFiltersWidgetModule} from '@dino/material/search-filters-widget';
 
 import {IsFalseOrNullPipe} from './is-false-or-null.pipe';
 import {SearchFiltersBar} from './search-filters-bar';
@@ -72,11 +74,13 @@ import {SearchFiltersBar} from './search-filters-bar';
     MatBottomSheetModule,
     MatSortModule,
     MatTableModule,
+    MatTabsModule,
     ReactiveFormsModule,
     RouterModule,
     SearchFiltersChipsModule,
     SearchFiltersDialogModule,
     SearchFiltersPresetManagerModule,
+    SearchFiltersWidgetModule,
   ],
   declarations: [IsFalseOrNullPipe, SearchFiltersBar],
   exports: [SearchFiltersBar],

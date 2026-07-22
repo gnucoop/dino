@@ -78,6 +78,17 @@ export const UGA: Translation = {
   'The data cannot be saved': 'The data cannot be saved',
   'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
     'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.',
+  'Advanced filters': 'Advanced filters',
+  'Simple': 'Simple',
+  'Advanced': 'Advanced',
+  'Table': 'Table',
+  'Map': 'Map',
+  'pin': 'pin',
+  'selected': 'selected',
+  'Columns': 'Columns',
+  'Clear selection': 'Clear selection',
+  'Select one or more rows to see the available actions':
+    'Select one or more rows to see the available actions',
   'Import form data': 'Import form data',
   'Match the columns in your file to the fields of the form.':
     'Match the columns in your file to the fields of the form.',

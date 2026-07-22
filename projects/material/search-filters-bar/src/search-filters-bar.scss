@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-search-filters-bar {
   .mat-icon {
     cursor: pointer;
@@ -45,11 +47,27 @@ dino-search-filters-bar {
     gap: 8px;
   }
 
+  // Uniform 40px height for every toolbar button (Table/Map toggle, Add, Import,
+  // Filtri, Esporta), matching the Filtri button.
+  .dino-filters-toolbar {
+    .mat-mdc-button-base {
+      height: 40px;
+    }
+  }
+
   .dino-view-switcher {
+    height: 40px;
+    .mat-button-toggle {
+      height: 40px;
+    }
+    .mat-button-toggle-button {
+      height: 40px;
+    }
     .mat-button-toggle-label-content {
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      line-height: 40px;
     }
     .mat-icon {
       margin: 0;
@@ -58,13 +76,36 @@ dino-search-filters-bar {
   }
 
   .dino-filters-toolbar-right {
-    .dino-filters-dialog-button,
-    .dino-export-button {
-      height: 40px;
-      .mat-icon {
-        margin: 0 4px 0 0;
+    .dino-filters-dialog-button .mat-icon,
+    .dino-export-button .mat-icon {
+      margin: 0 4px 0 0;
+    }
+
+    // Pill-shaped (rounded) buttons on the right (Add, Import, Filtri, Esporta).
+    .mat-mdc-button-base {
+      border-radius: 20px;
+      .mat-mdc-button-persistent-ripple,
+      .mat-mdc-button-persistent-ripple::before,
+      .mdc-button__ripple {
+        border-radius: 20px;
       }
     }
+  }
+
+  .dino-filters-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    background: mat-css-vars.mat-css-color-primary(500);
+    color: #fff;
   }
 
   .dino-filters-panel-header .dino-filters-panel-title {
@@ -139,5 +180,98 @@ dino-search-filters-bar {
 
   mat-option .mat-pseudo-checkbox {
     display: none !important;
+  }
+}
+
+// The unified Filters modal is rendered in a CDK overlay (outside the component),
+// so its styles must live at the global level, not nested under the host selector.
+.dino-filters-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 20px 20px;
+
+  .mat-icon {
+    cursor: pointer;
+  }
+
+  .dino-filters-modal-header {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 12px;
+  }
+
+  .dino-filters-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dino-filters-modal-heading {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  .dino-filters-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .mat-icon {
+      margin-right: 4px;
+    }
+  }
+
+  .dino-filters-modal-body {
+    max-height: 72vh;
+    overflow: auto;
+    padding: 4px;
+  }
+
+  // Simple tab: fixed 3-column grid (matching the reference mockup), collapsing
+  // to 2 then 1 column on narrower viewports.
+  .dino-filters-bar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 16px;
+    align-items: start;
+
+    dino-search-filters-preset-manager {
+      grid-column: 1 / -1;
+    }
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+
+    @media only screen and (max-width: 992px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media only screen and (max-width: 599px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .dino-filters-advanced-logic {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  // Advanced tab: the SearchFiltersWidgets set their own `flex: 0 1 30%`, so the
+  // container must be a wrapping flex row for the 3-column layout to apply.
+  .dino-filters-advanced .mat-mdc-tab-body-content {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    align-items: stretch;
+    overflow: hidden !important;
+
+    @media only screen and (max-width: 768px) {
+      display: block;
+    }
   }
 }

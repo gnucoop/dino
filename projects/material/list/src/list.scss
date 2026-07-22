@@ -1,6 +1,95 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
 dino-list {
+  .dino-selection-actions {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    min-height: 48px;
+
+    .dino-selection-actions-left {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .dino-selection-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.55;
+      font-size: 13px;
+      font-style: italic;
+      .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .dino-selection-actions-right {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .dino-selection-clear .mat-icon,
+    .dino-selection-bulk .mat-icon,
+    .dino-columns-btn .mat-icon {
+      margin-right: 4px;
+    }
+
+    // Pill-shaped (rounded) buttons, matching the filter toolbar.
+    .dino-selection-clear,
+    .dino-selection-bulk,
+    .dino-columns-btn,
+    .dino-selection-action {
+      border-radius: 20px;
+      .mat-mdc-button-persistent-ripple,
+      .mat-mdc-button-persistent-ripple::before,
+      .mdc-button__ripple {
+        border-radius: 20px;
+      }
+    }
+
+    // Single-selection actions: icon only, expanding to a labelled icon on hover.
+    .dino-selection-action {
+      min-width: 0;
+      padding: 0 10px;
+
+      // MDC text buttons shrink leading icons to 18px; keep the original 24px.
+      .mat-icon {
+        margin: 0;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+      }
+
+      .dino-action-label {
+        display: inline-block;
+        max-width: 0;
+        margin-left: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        vertical-align: middle;
+        opacity: 0;
+        transition: max-width 0.2s ease, opacity 0.2s ease, margin-left 0.2s ease;
+      }
+
+      &:hover .dino-action-label,
+      &:focus-visible .dino-action-label {
+        max-width: 160px;
+        margin-left: 6px;
+        opacity: 1;
+      }
+    }
+  }
+
   .dino-table-container {
     padding-bottom: 9vh;
     overflow-x: scroll;
