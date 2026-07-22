@@ -347,6 +347,21 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * "shown/total" label for the Columns selector button (e.g. "10/12").
+   */
+  get columnsSelectedLabel(): string {
+    const headers = this.headers;
+    if (!headers || !headers.length) {
+      return '';
+    }
+    const total = headers.length;
+    const shown = headers.filter(
+      h => (h.displayed || h.displayed === undefined) && !h.hidden,
+    ).length;
+    return `${shown}/${total}`;
+  }
+
+  /**
    * If true, the bulk action checkbox is available
    */
   @Input()
