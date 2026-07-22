@@ -1,18 +1,18 @@
-<div id="mapContainer"></div>
-<div id="filtersContainer">
-  <mat-form-field>
-    <mat-label>Creation date range</mat-label>
-    <mat-date-range-input [rangePicker]="rangePicker">
-      <input matStartDate placeholder="From date" [formControl]="dateStartControl">
-      <input matEndDate placeholder="To date" [formControl]="dateEndControl">
-    </mat-date-range-input>
-    <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
-    <mat-date-range-picker #rangePicker></mat-date-range-picker>
-  </mat-form-field>
-  <dinoapp-text-input-autocomp *ngFor="let h of headers"
-    [label]="h.label" [options]="fieldValues[h.column] || []">
-  </dinoapp-text-input-autocomp>
-  <div id="applyFilters">
-    <button (click)="applyFilters()" mat-raised-button>Apply Filters</button>
+<div class="dino-map-toolbar">
+  <dino-breadcrumbs></dino-breadcrumbs>
+  <div class="dino-map-count">
+    <mat-icon color="primary">place</mat-icon>
+    <span>
+      <b>{{pinCount}}</b> {{'pin'|transloco}} ·
+      <b>{{dataSource.dataResultsCount|async}}</b> {{'Items found'|transloco}}
+    </span>
   </div>
 </div>
+<dino-search-filters-bar
+  [presetManager]="true"
+  [exportable]="true"
+  [aggregationFilters]="false"
+  [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
+  (exportEvt)="export($event)"
+></dino-search-filters-bar>
+<div id="mapContainer"></div>
