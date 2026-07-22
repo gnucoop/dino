@@ -3,6 +3,9 @@ dinoapp-forms-map {
   flex-direction: column;
   height: calc(100vh - 73px);
 
+  // Mirror the Table's .dino-list-toolbar exactly (same flex props + height) so
+  // both the breadcrumb and the Tabella/Mappa switcher stay in the same place
+  // when toggling views. The Table toolbar height is driven by its mat-paginator.
   .dino-map-toolbar {
     flex: 0 0 auto;
     background: transparent;
@@ -10,19 +13,26 @@ dinoapp-forms-map {
     flex-flow: row wrap;
     justify-content: space-between;
     align-content: center;
+    min-height: 56px;
   }
 
+  // Mirror the Table's .dino-list-count so the count sits in the same position.
   .dino-map-count {
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-end;
-    align-items: center;
     flex: 1 0 auto;
+    align-self: center;
+    position: relative;
     margin: auto;
     margin-right: 10px;
-    font-size: 13px;
+
+    @media only screen and (min-width: 660px) {
+      bottom: 8px;
+    }
 
     .mat-icon {
+      opacity: 30%;
       margin-right: 4px;
     }
   }

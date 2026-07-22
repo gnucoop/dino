@@ -20,6 +20,7 @@
  *
  */
 
+import {AjfFieldType, AjfNodeType} from '@ajf/core/forms';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -30,9 +31,11 @@ import {
   OnInit,
   Optional,
   Output,
+  TemplateRef,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -45,6 +48,7 @@ import {
   FilterItem,
   FilterListType,
   FiltersService,
+  NULL_OPERATORS,
   SearchFiltersComponent,
 } from '@dino/core/list';
 import {LocationManager} from '@dino/core/locations';
@@ -53,9 +57,16 @@ import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportBottomSheet} from '@dino/material/export-list';
-import {SearchFiltersDialog} from '@dino/material/search-filters-dialog';
 import {isRxDocument, RxDocument} from 'rxdb';
-import {combineLatest, Observable, of as obsOf, Subject, Subscription, throwError} from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  of as obsOf,
+  Subject,
+  Subscription,
+  throwError,
+} from 'rxjs';
 import {
   catchError,
   debounceTime,
@@ -115,9 +126,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   availableFormStatuses: Observable<string[] | null>;
 
   /**
-   * If true, the Form Map button is displayed
+   * If true, the Map view is available for the current form schema (its location
+   * metric is active). When false, the Map toggle is shown but disabled.
    */
   displayFormMapButton: Observable<boolean>;
+
+  /**
+   * If true, the Table/Map view switcher is shown. It appears on any form-data
+   * list (a form schema is loaded), regardless of location support.
+   */
+  displayViewSwitcher: Observable<boolean>;
+
+  /**
+   * Number of currently applied filters (basic + additional), shown as a badge
+   * on the Filtri button.
+   */
+  appliedFiltersCount$: Observable<number>;
 
   /**
    * Emits true when the current route is the form Map view, false for the Table view.
@@ -129,6 +153,49 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    * The Filter Service Generated filters
    */
   generatedAdditionalFilters: Observable<FilterGroup[]>;
+
+  /**
+   * Template of the unified Filters modal (Simple + Advanced tabs).
+   */
+  @ViewChild('filtersDialogTpl') filtersDialogTpl!: TemplateRef<unknown>;
+
+  /**
+   * The active tab of the Filters modal: 'simple' (basic filters) or
+   * 'advanced' (additional field-name filters).
+   */
+  activeFilterTab: 'simple' | 'advanced' = 'simple';
+
+  /**
+   * Data of the additional filters shown in the Advanced tab of the modal.
+   */
+  filterItemsData: Observable<FilterItem[]> = obsOf([]);
+
+  /**
+   * The And/Any logic toggle Form Control for the Advanced tab.
+   */
+  logicAndOrToggle: UntypedFormControl = new UntypedFormControl('and');
+
+  /**
+   * The index of the currently displayed additional-filter group (Advanced tab).
+   */
+  private _currentGroupId: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  /**
+   * Reference to the currently open Filters modal.
+   */
+  private _filtersDialogRef?: MatDialogRef<unknown>;
+
+  /**
+   * Subscribes to the And/Any logic toggle value changes while the modal is open.
+   */
+  private _logicToggleSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Public accessor to the FiltersService for the modal template.
+   */
+  get fts(): FiltersService {
+    return this._fts;
+  }
 
   /**
    * Date Picker input filtering methods.
@@ -209,11 +276,6 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     }
   }
   /**
-   * A reference to the MatDialog that contains the additionalFilters
-   */
-  private _dialogRef?: MatDialogRef<SearchFiltersDialog>;
-
-  /**
    * Subscribes to the value returned by the MatDialog on its closing event
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
@@ -280,10 +342,33 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       }),
     );
 
+    // The view switcher is shown on any form-data list (a form schema loads),
+    // even when the schema has no location — in that case the Map toggle is disabled.
+    this.displayViewSwitcher = this._route.params.pipe(
+      switchMap(params =>
+        params['form_schema_id'] ? this._fschm.get(params['form_schema_id']) : obsOf(null),
+      ),
+      map(schema => schema != null),
+    );
+
     this.isMapView$ = this._router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       startWith(null),
       map(() => this._router.url.split('?')[0].endsWith('/map')),
+    );
+
+    // Count of applied filters (basic-with-value + additional), decoded from the
+    // FiltersService queryString which encodes exactly those active filter items.
+    this.appliedFiltersCount$ = this._fts.queryString.pipe(
+      map(qs => {
+        try {
+          const parsed: {filters?: FilterItem[]} = JSON.parse(decodeURI(atob(qs)));
+          return parsed.filters?.length ?? 0;
+        } catch {
+          return 0;
+        }
+      }),
+      startWith(0),
     );
 
     this.minDatePicker = (d: Date | null): boolean => {
@@ -330,26 +415,142 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Opens a dialog with dino-search-filters-dialog component.
-   * Aligns the temporary filters list to the additional filters list.
-   * Subscribes to Dialog closing event, updating the Additional Filters when
-   * the Dialog closing event value is true.
+   * Opens the unified Filters modal, with a Simple tab (basic filters, applied
+   * live) and an Advanced tab (additional field-name filters, staged in the
+   * temporary list). Pressing "Cerca" commits the Advanced filters; "Chiudi"
+   * discards uncommitted Advanced changes.
    */
-  openDialog() {
+  openFiltersDialog(): void {
     this._fts.resetTemporaryFilters();
+    this.activeFilterTab = 'simple';
+    const currentLogic = this._fts.additionalFiltersLogic.value;
+    this.logicAndOrToggle = new UntypedFormControl(currentLogic);
+    this._fts.temporaryAdditionalFiltersLogic.next(currentLogic);
+    this._currentGroupId.next(0);
+    this._setupFilterItemsData();
+
+    this._logicToggleSub.unsubscribe();
+    this._logicToggleSub = this.logicAndOrToggle.valueChanges.subscribe(res =>
+      this._fts.temporaryAdditionalFiltersLogic.next(res),
+    );
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = 'dino-search-filters-dialog';
     dialogConfig.minWidth = `${this._filtersDialogWidth}vw`;
     dialogConfig.maxWidth = `${this._filtersDialogWidth}vw`;
-    this._dialogRef = this.dialog.open(SearchFiltersDialog, dialogConfig);
-    this._dialogSub = this._dialogRef
+    dialogConfig.autoFocus = false;
+    this._filtersDialogRef = this.dialog.open(this.filtersDialogTpl, dialogConfig);
+
+    this._dialogSub.unsubscribe();
+    this._dialogSub = this._filtersDialogRef
       .afterClosed()
-      .pipe(catchError(err => throwError(() => err) as Observable<boolean>))
-      .subscribe((searchFilters: {search: boolean; logic?: 'and' | 'or'}) => {
-        if (searchFilters && searchFilters.search) {
-          this._fts.updateAdditionalFilters(searchFilters.logic);
+      .pipe(catchError(err => throwError(() => err) as Observable<{search?: boolean}>))
+      .subscribe((res?: {search?: boolean}) => {
+        this._logicToggleSub.unsubscribe();
+        if (res && res.search) {
+          this._fts.updateAdditionalFilters(this.logicAndOrToggle.value);
         }
       });
+  }
+
+  /**
+   * Closes the Filters modal and commits the staged Advanced filters.
+   */
+  search(): void {
+    this._filtersDialogRef?.close({search: true});
+  }
+
+  /**
+   * Closes the Filters modal without committing the staged Advanced filters.
+   */
+  closeFiltersDialog(): void {
+    this._filtersDialogRef?.close({search: false});
+  }
+
+  /**
+   * Sets the currently displayed additional-filter group (Advanced tab), and
+   * refreshes the widgets data for that group.
+   * @param id The group id (mat-tab index)
+   */
+  setCurrentGroupId(id: number): void {
+    this._currentGroupId.next(id);
+    this._setupFilterItemsData();
+  }
+
+  /**
+   * Asks the FiltersService to add a FilterItem to the given filter list,
+   * skipping empty values (unless the operator is a NULL operator).
+   */
+  addFilter(filterItem: FilterItem, listType: FilterListType): void {
+    const operatorValue = filterItem.operator?.value;
+    const isNullOperator = operatorValue && operatorValue in NULL_OPERATORS;
+    const hasValue = filterItem.value !== null && filterItem.value !== '';
+    if (hasValue || isNullOperator) {
+      this._fts.addFilter(filterItem, listType);
+    }
+  }
+
+  /**
+   * Removes a staged (temporary) additional filter, used by the Advanced tab chips.
+   */
+  removeTemporaryFilter(filterItem: FilterItem, listType: FilterListType[] | FilterListType): void {
+    this._fts
+      .removeFilter(filterItem, listType)
+      .pipe(
+        take(1),
+        catchError(err => throwError(() => err) as Observable<boolean>),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Builds the additional-filter items observable for the current Advanced group.
+   * Mirrors SearchFiltersDialog's setup.
+   */
+  private _setupFilterItemsData(): void {
+    this.filterItemsData = this._fts.generatedFilters.pipe(
+      withLatestFrom(this._currentGroupId),
+      map(([groups, id]) => groups[id] as FilterGroup),
+      map(group =>
+        group && group.filterGroupAdditionalFilters
+          ? group.filterGroupAdditionalFilters
+              .filter(ft => ft.fieldType !== AjfFieldType.Empty)
+              .map(flt => {
+                flt.isFilterItemDetails = group.isFilterGroupDetails;
+                return flt;
+              })
+          : [],
+      ),
+      map(filters => filters.map(f => this._setupFilterItem(f))),
+      catchError(err => throwError(() => err) as Observable<FilterItem[]>),
+      take(1),
+    );
+  }
+
+  /**
+   * Sets up a FilterItem, assigning default fallback values where necessary.
+   * Mirrors SearchFiltersDialog's setup.
+   */
+  private _setupFilterItem(item: FilterItem): FilterItem {
+    return {
+      id: item.id ?? 10,
+      parent: 1,
+      parentNode: item.parentNode ?? 1,
+      choicesOrigin: item.choicesOrigin,
+      choicesOriginRef: item.choicesOrigin?.name,
+      name: item.name,
+      label: item.label ?? item.name.charAt(0).toUpperCase() + item.name.slice(1),
+      nodeType: AjfNodeType.AjfField,
+      fieldType: item.fieldType ? item.fieldType : AjfFieldType.String,
+      isAdditionalFilter: item.isAdditionalFilter,
+      editable: item.editable ?? true,
+      defaultValue: item.defaultValue ?? null,
+      size: item.size ?? 'normal',
+      validation: item.validation,
+      visibility: item.visibility != null ? item.visibility : {condition: 'true'},
+      isFilterItemDetails: item.isFilterItemDetails,
+      isRepeatingSlideFilter: item.isRepeatingSlideFilter,
+    };
   }
 
   /**
@@ -1125,6 +1326,8 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
 
   ngOnDestroy() {
     this._dialogSub.unsubscribe();
+    this._logicToggleSub.unsubscribe();
+    this._currentGroupId.complete();
     this._mainUnsubscribe.next();
     this._mainUnsubscribe.complete();
   }
