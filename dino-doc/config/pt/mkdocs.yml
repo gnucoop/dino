@@ -17,9 +17,9 @@ nav:
     - Visão Geral: forms/index.md
     - Editar Esquema de Formulário: forms/edit-form-schema.md
     - Editar um Formulário: forms/edit-form.md
+    - Importar dados: forms/import.md
     - Mapa de Formulários: forms/forms-map.md
     - Datachat: forms/datachat.md
-    - Import Data: forms/import.md
   - Relatórios:
     - Visão Geral: reports/index.md
     - Editar Esquema de Relatório: reports/edit-report-schema.md

@@ -18,9 +18,9 @@ nav:
     - نظرة عامة: forms/index.md
     - تحرير مخطط النموذج: forms/edit-form-schema.md
     - تحرير إرسال نموذج: forms/edit-form.md
+    - استيراد البيانات: forms/import.md
     - خريطة النماذج: forms/forms-map.md
     - Datachat: forms/datachat.md
-    - Import Data: forms/import.md
   - التقارير:
     - نظرة عامة: reports/index.md
     - تحرير مخطط التقرير: reports/edit-report-schema.md
