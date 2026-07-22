@@ -23,7 +23,7 @@ Il menu laterale consente di spostarsi tra le aree principali dell'applicazione.
 | Moduli | Moduli di raccolta dati e invii. |
 | Report | Report generati. |
 | Aggregazione | Vista unificata degli invii da più moduli. |
-| Metriche | Dati di riferimento (progetti, sedi, organizzazioni, ecc.). *(Nascosto per utenti solo ospiti.)* |
+| Metriche | Dati di riferimento (progetti, posizioni, organizzazioni, ecc.). *(Nascosto per utenti solo ospiti.)* |
 | AI | Assistente AI (DinoGPT). |
 
 **Sezioni amministrative** (visibili solo agli amministratori, mostrate sotto un divisore):

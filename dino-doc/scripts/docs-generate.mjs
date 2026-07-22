@@ -185,6 +185,8 @@ Rules:
 - Do NOT translate: file paths, URLs, image references (![...](path)), code snippets, the word "Dino".
 - Keep admonition keywords in English (!!! tip, !!! warning, !!! note) but translate the admonition title text and body.
 - Keep relative markdown link paths unchanged but translate the link display text.
+- Terminology glossary (translate these terms consistently, including in headings, titles and frontmatter values):
+  - Italian: always translate "location" / "locations" as "posizione" / "posizioni" — never "sede" / "sedi".
 - Output ONLY the translated Markdown content, no code fences or explanations.
 - The translation must read naturally — do not produce word-by-word literal translations.`;
 

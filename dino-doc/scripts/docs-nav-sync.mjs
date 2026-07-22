@@ -69,6 +69,7 @@ const ENTRY_ORDER = {
     'forms/index.md',
     'forms/edit-form-schema.md',
     'forms/edit-form.md',
+    'forms/import.md',
     'forms/forms-list.md',
     'forms/forms-map.md',
     'forms/datachat.md',
