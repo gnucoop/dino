@@ -1,8 +1,55 @@
+<div class="dino-filters-toolbar">
+  <div class="dino-filters-toolbar-left">
+    <mat-button-toggle-group
+      class="dino-view-switcher"
+      *ngIf="displayFormMapButton|async"
+      [value]="(isMapView$|async) ? 'map' : 'table'"
+      (change)="switchView($event.value)"
+    >
+      <mat-button-toggle value="table">
+        <mat-icon>table_chart</mat-icon>
+        <span>{{'Table'|transloco}}</span>
+      </mat-button-toggle>
+      <mat-button-toggle value="map">
+        <mat-icon>place</mat-icon>
+        <span>{{'Map'|transloco}}</span>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="dino-filters-toolbar-right">
+    <ng-container *ngIf="generatedAdditionalFilters|async as genFilters">
+      <button
+        *ngIf="additionalFilters && genFilters && genFilters.length"
+        class="dino-filters-dialog-button"
+        mat-stroked-button
+        (click)="openDialog()"
+        [attr.aria-label]="'Open the advanced filters'|transloco"
+      >
+        <mat-icon color="primary">filter_list</mat-icon>
+        <span>{{'Advanced filters'|transloco}}</span>
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="exportable">
+      <button
+        class="dino-export-button"
+        mat-stroked-button
+        (click)="openExportDialog()"
+        [attr.aria-label]="'Export items'|transloco"
+      >
+        <mat-icon color="primary">cloud_download</mat-icon>
+        <span>{{'Export'|transloco}}</span>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
 <mat-accordion>
-  <mat-expansion-panel class="mat-elevation-z">
-    <mat-expansion-panel-header>
+  <mat-expansion-panel class="mat-elevation-z" togglePosition="before">
+    <mat-expansion-panel-header class="dino-filters-panel-header">
       <ng-container *ngIf="!aggregationFilters; else openFilterPanel">
-        <ng-container *ngTemplateOutlet="keywordfilter"></ng-container>
+        <mat-panel-title class="dino-filters-panel-title">{{'Filters'|transloco}}</mat-panel-title>
       </ng-container>
       <ng-template #openFilterPanel
         ><div class="dino-open-aggregation-filters">
@@ -13,34 +60,6 @@
     <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
   </mat-expansion-panel>
 </mat-accordion>
-
-<ng-template #keywordfilter>
-  <ng-container [formGroup]="textSearchFilters">
-    <mat-form-field
-      class="dino-filter-keyword"
-      floatLabel="always"
-      (click)="$event.stopPropagation()"
-      (keydown.Space)="$event.stopImmediatePropagation();"
-    >
-      <input
-        matInput
-        #keywordinput
-        formControlName="keyword"
-        [placeholder]="'search by keyword'|transloco"
-      />
-      <mat-icon color="primary" matSuffix>search</mat-icon>
-      <mat-icon
-        matSuffix
-        color="primary"
-        *ngIf="keywordinput.value"
-        aria-label="Clear"
-        (click)="clearFilter('keyword', textSearchFilters)"
-        class="dino-clear-filter-button"
-        >close</mat-icon
-      >
-    </mat-form-field>
-  </ng-container>
-</ng-template>
 
 <ng-template #filtersbar>
   <div class="dino-filters-bar">
@@ -207,40 +226,6 @@
       ></ng-container>
     </ng-container>
 
-    <ng-container *ngIf="generatedAdditionalFilters|async as genFilters">
-      <ng-container *ngIf="additionalFilters && genFilters && genFilters.length">
-        <button
-          class="dino-filters-dialog-button"
-          mat-stroked-button
-          (click)="openDialog()"
-          [attr.aria-label]="'Open the advanced filters'|transloco"
-        >
-          <mat-icon color="primary" matSuffix>filter_list</mat-icon>
-        </button>
-      </ng-container>
-    </ng-container>
-
-    <ng-container *ngIf="exportable">
-      <button
-        class="dino-export-button"
-        mat-stroked-button
-        (click)="openExportDialog()"
-        [attr.aria-label]="'Export items'|transloco"
-      >
-        <mat-icon color="primary" matSuffix>cloud_download</mat-icon>
-      </button>
-    </ng-container>
-
-    <ng-container *ngIf="displayFormMapButton|async">
-      <button
-        class="dino-form-map-button"
-        mat-stroked-button
-        (click)="viewMap(); $event.stopPropagation();"
-        [attr.aria-label]="'Show Map'|transloco"
-      >
-        <mat-icon color="primary" matSuffix>place</mat-icon>
-      </button>
-    </ng-container>
   </div>
 </ng-template>
 
