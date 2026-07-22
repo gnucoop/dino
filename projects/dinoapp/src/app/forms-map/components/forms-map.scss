@@ -1,80 +1,43 @@
 dinoapp-forms-map {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  height: calc(100vh - 73px);
+
+  .dino-map-toolbar {
+    flex: 0 0 auto;
+    background: transparent;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-content: center;
+  }
+
+  .dino-map-count {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    align-items: center;
+    flex: 1 0 auto;
+    margin: auto;
+    margin-right: 10px;
+    font-size: 13px;
+
+    .mat-icon {
+      margin-right: 4px;
+    }
+  }
 
   #mapContainer {
     overflow: hidden;
-    flex-grow: 1;
-    height: calc(100vh - 73px);
-    min-width: 300px;
+    flex: 1 1 auto;
     min-height: 300px;
   }
-  
+
   .leaflet-popup-content {
     margin: 7px 10px;
-  }
-  
-  #filtersContainer {
-    width: 330px;
-    padding-left: 5px;
-    display: grid;
-    gap: 5px;
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-
-    mat-form-field {
-      height: 50px;
-    }
-
-    mat-label {
-      font-size: 13px;
-    }
-  }
-
-  #applyFilters {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #applyFilters button {
-    display: block;
-    width: 67%;
-  }
-
-  .mat-mdc-form-field-subscript-wrapper {
-    display: none;
-  }
-
-  @media only screen and (max-width: 1200px) {
-    flex-direction: column-reverse;
-    height: calc(100vh - 73px);
-
-    #mapContainer {
-      width: 100%;
-      height: unset;
-    }
-
-    #filtersContainer {
-      padding-left: 0;
-      padding-bottom: 5px;
-      width: 100%;
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-  }
-
-  @media only screen and (max-width: 900px) {
-    #filtersContainer {
-      grid-template-columns: 1fr 1fr;
-    }
   }
 
   @media only screen and (max-width: 599px) {
     height: calc(100vh - 65px);
-
-    #filtersContainer {
-      grid-template-columns: 1fr;
-    }
   }
 }

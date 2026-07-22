@@ -27,6 +27,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -57,6 +58,7 @@ import {SearchFiltersBar} from './search-filters-bar';
     ExportListModule,
     MatAutocompleteModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatCheckboxModule,
     MatDatepickerModule,
     MatDialogModule,
