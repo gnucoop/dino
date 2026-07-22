@@ -22,6 +22,17 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const UGA: Translation = {
+  'Advanced filters': 'Advanced filters',
+  'Simple': 'Simple',
+  'Advanced': 'Advanced',
+  'Table': 'Table',
+  'Map': 'Map',
+  'pin': 'pin',
+  'selected': 'selected',
+  'Columns': 'Columns',
+  'Clear selection': 'Clear selection',
+  'Select one or more rows to see the available actions':
+    'Select one or more rows to see the available actions',
   'Import form data': 'Import form data',
   'Match the columns in your file to the fields of the form.':
     'Match the columns in your file to the fields of the form.',

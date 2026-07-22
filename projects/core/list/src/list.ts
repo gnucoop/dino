@@ -98,7 +98,6 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
       ...headers
         .filter(header => (header.displayed || header.displayed === undefined) && !header.hidden)
         .map(header => header.column.toString()),
-      'actions',
     ];
     if (this._showCheckbox) {
       this._displayedColumns.unshift('select');

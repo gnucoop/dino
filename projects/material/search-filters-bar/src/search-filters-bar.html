@@ -2,7 +2,7 @@
   <div class="dino-filters-toolbar-left">
     <mat-button-toggle-group
       class="dino-view-switcher"
-      *ngIf="displayFormMapButton|async"
+      *ngIf="displayViewSwitcher|async"
       [value]="(isMapView$|async) ? 'map' : 'table'"
       (change)="switchView($event.value)"
     >
@@ -10,7 +10,7 @@
         <mat-icon>table_chart</mat-icon>
         <span>{{'Table'|transloco}}</span>
       </mat-button-toggle>
-      <mat-button-toggle value="map">
+      <mat-button-toggle value="map" [disabled]="(displayFormMapButton|async) === false">
         <mat-icon>place</mat-icon>
         <span>{{'Map'|transloco}}</span>
       </mat-button-toggle>
@@ -18,18 +18,18 @@
   </div>
 
   <div class="dino-filters-toolbar-right">
-    <ng-container *ngIf="generatedAdditionalFilters|async as genFilters">
-      <button
-        *ngIf="additionalFilters && genFilters && genFilters.length"
-        class="dino-filters-dialog-button"
-        mat-stroked-button
-        (click)="openDialog()"
-        [attr.aria-label]="'Open the advanced filters'|transloco"
-      >
-        <mat-icon color="primary">filter_list</mat-icon>
-        <span>{{'Advanced filters'|transloco}}</span>
-      </button>
-    </ng-container>
+    <ng-content select="[toolbarActions]"></ng-content>
+
+    <button
+      class="dino-filters-dialog-button"
+      mat-stroked-button
+      (click)="openFiltersDialog()"
+      [attr.aria-label]="'Filters'|transloco"
+    >
+      <mat-icon color="primary">tune</mat-icon>
+      <span>{{'Filters'|transloco}}</span>
+      <span class="dino-filters-count" *ngIf="(appliedFiltersCount$|async) as count">{{count}}</span>
+    </button>
 
     <ng-container *ngIf="exportable">
       <button
@@ -45,21 +45,73 @@
   </div>
 </div>
 
-<mat-accordion>
-  <mat-expansion-panel class="mat-elevation-z" togglePosition="before">
-    <mat-expansion-panel-header class="dino-filters-panel-header">
-      <ng-container *ngIf="!aggregationFilters; else openFilterPanel">
-        <mat-panel-title class="dino-filters-panel-title">{{'Filters'|transloco}}</mat-panel-title>
-      </ng-container>
-      <ng-template #openFilterPanel
-        ><div class="dino-open-aggregation-filters">
-          <mat-icon color="primary" matSuffix>search</mat-icon>
-        </div></ng-template
-      >
-    </mat-expansion-panel-header>
-    <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
-  </mat-expansion-panel>
-</mat-accordion>
+<ng-template #filtersDialogTpl>
+  <div class="dino-filters-modal">
+    <div class="dino-filters-modal-header">
+      <div class="dino-filters-modal-title">
+        <mat-icon color="primary">tune</mat-icon>
+        <span class="dino-filters-modal-heading">{{'Filters'|transloco}}</span>
+        <mat-button-toggle-group
+          class="dino-filters-modal-tabs"
+          [value]="activeFilterTab"
+          (change)="activeFilterTab = $event.value"
+        >
+          <mat-button-toggle value="simple">{{'Simple'|transloco}}</mat-button-toggle>
+          <mat-button-toggle
+            value="advanced"
+            *ngIf="additionalFilters && (generatedAdditionalFilters|async)?.length"
+            >{{'Advanced'|transloco}}</mat-button-toggle
+          >
+        </mat-button-toggle-group>
+      </div>
+      <div class="dino-filters-modal-actions">
+        <button mat-flat-button color="primary" (click)="search()">
+          <mat-icon>search</mat-icon>
+          <span>{{'Search'|transloco}}</span>
+        </button>
+        <button mat-stroked-button (click)="closeFiltersDialog()">
+          <mat-icon>close</mat-icon>
+          <span>{{'Close'|transloco}}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dino-filters-modal-body">
+      <div [hidden]="activeFilterTab !== 'simple'">
+        <ng-container *ngTemplateOutlet="filtersbar"></ng-container>
+      </div>
+
+      <div [hidden]="activeFilterTab !== 'advanced'" class="dino-filters-advanced">
+        <div class="dino-filters-advanced-logic">
+          <mat-button-toggle-group [formControl]="logicAndOrToggle" aria-label="Filters logic">
+            <mat-button-toggle value="and" [disabled]="(fts.canSwitchLogic()|async) === false"
+              >{{'All'|transloco}}</mat-button-toggle
+            >
+            <mat-button-toggle value="or">{{'Any'|transloco}}</mat-button-toggle>
+          </mat-button-toggle-group>
+          <dino-search-filters-chips
+            (excludeFilter)="removeTemporaryFilter($event, 'temporary')"
+            [chipsType]="'temporary'"
+          ></dino-search-filters-chips>
+        </div>
+        <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
+          <mat-tab
+            *ngFor="let filterGroup of fts.generatedFilters|async"
+            [label]="filterGroup.filterGroupName|transloco"
+          >
+            <ng-template matTabContent>
+              <dino-search-filters-widget
+                *ngFor="let filterItem of filterItemsData|async"
+                [filterItemData]="filterItem"
+                (addFilter)="addFilter($event, 'temporary')"
+              ></dino-search-filters-widget>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </div>
+</ng-template>
 
 <ng-template #filtersbar>
   <div class="dino-filters-bar">
