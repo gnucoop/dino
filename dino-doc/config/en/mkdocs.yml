@@ -17,9 +17,9 @@ nav:
     - Overview: forms/index.md
     - Edit Form Schema: forms/edit-form-schema.md
     - Edit Form: forms/edit-form.md
+    - Import Data: forms/import.md
     - Forms Map: forms/forms-map.md
     - Datachat: forms/datachat.md
-    - Import Data: forms/import.md
   - Reports:
     - Overview: reports/index.md
     - Edit Report Schema: reports/edit-report-schema.md

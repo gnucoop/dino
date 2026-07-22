@@ -17,6 +17,7 @@ Design form schemas and use them to record information. View and manage all your
 *   [View and Manage Forms](forms/index.md)
 *   [Design a Form Schema](forms/edit-form-schema.md)
 *   [Fill In a Form](forms/edit-form.md)
+*   [Import Data from External Sources](forms/import.md)
 *   [Explore Data on a Map](forms/forms-map.md)
 
 ### Analyze and Report
