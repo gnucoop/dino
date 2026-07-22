@@ -24,21 +24,28 @@
     [exportable]="(displayExportButton|async) ?? false"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
     (exportEvt)="dinoList.export($event, 'forms')"
-  ></dino-search-filters-bar>
+  >
+    <button
+      toolbarActions
+      mat-stroked-button
+      color="primary"
+      *ngIf="displayAddButton|async"
+      [tourAnchor]="'add-form-floating-button'"
+      (click)="addForm()"
+    >
+      <mat-icon>add</mat-icon>
+      <span>{{'Add New form' | transloco}}</span>
+    </button>
+    <button
+      toolbarActions
+      mat-stroked-button
+      color="primary"
+      *ngIf="(displayAddButton|async) && displayImportButton"
+      (click)="openImportForms()"
+    >
+      <mat-icon>cloud_upload</mat-icon>
+      <span>{{'Import forms' | transloco}}</span>
+    </button>
+  </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
-
-<dino-floating-button
-  *ngIf="displayAddButton|async"
-  buttonIcon="add"
-  [tooltipMessage]="'Add New form' | transloco"
-  [tourAnchor]="'add-form-floating-button'"
-  (click)="addForm()"
-></dino-floating-button>
-
-<dino-floating-button
-  *ngIf="(displayAddButton|async) && displayImportButton"
-  [buttonIcon]="'cloud_upload'"
-  [tooltipMessage]="'Import forms'|transloco"
-  (click)="openImportForms()"
-></dino-floating-button>

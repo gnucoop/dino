@@ -57,39 +57,6 @@
               [aria-label]="checkboxLabel()"
             >
             </mat-checkbox>
-            <button
-              *ngIf="bulkActionsAvailable?.includes('delete')"
-              class="dino-bulk-delete-button"
-              (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, ctx.isDetails)"
-              [disabled]="selection.selected.length <= 0"
-              [attr.aria-label]="'Delete all items'|transloco"
-            >
-              <mat-icon aria-hidden="false" [attr.aria-label]="'delete icon'|transloco"
-                >delete</mat-icon
-              >
-            </button>
-            <button
-              *ngIf="bulkActionsAvailable?.includes('deleteWithCheck')"
-              class="dino-bulk-delete-button"
-              (click)="actionOnItemsDeleteWithCheck(selection.selected, ctx.isDetails)"
-              [disabled]="selection.selected.length <= 0"
-              [attr.aria-label]="'Delete all items'|transloco"
-            >
-              <mat-icon aria-hidden="false" [attr.aria-label]="'delete icon'|transloco"
-                >delete</mat-icon
-              >
-            </button>
-            <button
-              *ngIf="bulkActionsAvailable?.includes('bulkFormEdit')"
-              class="dino-bulk-edit-button"
-              (click)="actionOnItems(selection.selected, {actionType: 'bulkFormEdit', matIcon: 'edit', askConfirm: false}, ctx.isDetails)"
-              [disabled]="selection.selected.length <= 0"
-              [attr.aria-label]="'Edit all items'|transloco"
-            >
-              <mat-icon aria-hidden="false" [attr.aria-label]="'edit icon'|transloco"
-                >edit_note</mat-icon
-              >
-            </button>
           </ng-container>
         </mat-header-cell>
         <mat-cell *matCellDef="let row" [ngClass]="isAggregationList ? 'dino-aggregation' : null">
@@ -264,50 +231,6 @@
       </mat-cell>
     </ng-container>
 
-    <!-- Actions Column -->
-    <ng-container matColumnDef="actions" class="right" stickyEnd>
-      <mat-header-cell cdkDrag *matHeaderCellDef class="dino-row-actions dino-header-row-actions">
-        <div class="dino-columns-sel-btn-container">
-          <button
-            class="dino-columns-sel-btn"
-            [matTooltip]="'Customize the columns'|transloco"
-            [matTooltipPosition]="'left'"
-            #columns_btn
-            color="accent"
-            aria-label="Customize table columns"
-            *ngIf="ctx.showColumnsSelector !== false"
-            (click)="openColumnsSelectorDialog()"
-            mat-fab
-          >
-            <mat-icon mat-list-icon> view_week </mat-icon>
-          </button>
-        </div>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row" class="dino-row-actions">
-        <div class="dino-row-actions-container">
-          <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
-            <ng-container *ngFor="let action of getMainActions(actions); let idx = index;">
-                <mat-icon
-                  class="dino-action-icon"
-                  [ngStyle]="{'--position': idx}"
-                  mat-list-icon
-                  (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
-                  >{{action.matIcon}}
-                </mat-icon>
-            </ng-container>
-
-            <ng-container>
-              <mat-icon
-                mat-list-icon
-                (click)="$event.stopPropagation(); toggleSecondaryIcons(); openActionsDialog(row, actions ,ctx.isDetails);"
-                >more_horiz
-              </mat-icon>
-            </ng-container>
-          </ng-container>
-        </div>
-      </mat-cell>
-    </ng-container>
-
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
       <mat-cell
@@ -373,6 +296,89 @@
     </ng-container>
   </mat-table>
 </ng-template>
+
+<div class="dino-selection-actions" *ngIf="dataSource">
+  <div class="dino-selection-actions-left" *ngIf="bulkActions">
+    <span class="dino-selection-hint" *ngIf="!selection.hasValue()">
+      <mat-icon>check_box_outline_blank</mat-icon>
+      {{'Select one or more rows to see the available actions'|transloco}}
+    </span>
+
+    <ng-container *ngIf="selection.hasValue()">
+    <button
+      mat-button
+      class="dino-selection-clear"
+      (click)="clearSelection()"
+      [attr.aria-label]="'Clear selection'|transloco"
+    >
+      <mat-icon>close</mat-icon>
+      <span><b>{{selection.selected.length}}</b>&nbsp;{{'selected'|transloco}}</span>
+    </button>
+
+    <ng-container *ngIf="selection.selected.length === 1; else bulkActionsTpl">
+      <button
+        *ngFor="let action of listRowActions"
+        mat-button
+        class="dino-selection-action"
+        [color]="action.actionType === 'delete' ? 'warn' : 'primary'"
+        [attr.aria-label]="(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco"
+        (click)="actionOnItems(selection.selected[0], action, false)"
+      >
+        <mat-icon>{{action.matIcon}}</mat-icon>
+        <span class="dino-action-label">{{(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco}}</span>
+      </button>
+    </ng-container>
+
+    <ng-template #bulkActionsTpl>
+      <button
+        *ngIf="bulkActionsAvailable?.includes('delete')"
+        mat-stroked-button
+        color="warn"
+        class="dino-selection-bulk"
+        (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, false)"
+      >
+        <mat-icon>delete</mat-icon>
+        <span>{{'Delete'|transloco}}</span>
+      </button>
+      <button
+        *ngIf="bulkActionsAvailable?.includes('deleteWithCheck')"
+        mat-stroked-button
+        color="warn"
+        class="dino-selection-bulk"
+        (click)="actionOnItemsDeleteWithCheck(selection.selected, false)"
+      >
+        <mat-icon>delete</mat-icon>
+        <span>{{'Delete'|transloco}}</span>
+      </button>
+      <button
+        *ngIf="bulkActionsAvailable?.includes('bulkFormEdit')"
+        mat-stroked-button
+        color="primary"
+        class="dino-selection-bulk"
+        (click)="actionOnItems(selection.selected, {actionType: 'bulkFormEdit', matIcon: 'edit_note', askConfirm: false}, false)"
+      >
+        <mat-icon>edit_note</mat-icon>
+        <span>{{'Edit'|transloco}}</span>
+      </button>
+    </ng-template>
+    </ng-container>
+  </div>
+
+  <div class="dino-selection-actions-right">
+    <button
+      #columns_btn
+      mat-stroked-button
+      class="dino-columns-btn"
+      [matTooltip]="'Customize the columns'|transloco"
+      aria-label="Customize table columns"
+      *ngIf="showColumnsSelector !== false"
+      (click)="openColumnsSelectorDialog()"
+    >
+      <mat-icon>view_week</mat-icon>
+      <span>{{'Columns'|transloco}} {{columnsSelectedLabel}}</span>
+    </button>
+  </div>
+</div>
 
 <div class="dino-table-container" [ngClass]="bds.isTouch() ? 'dino-table-container-touch' : null">
   <ng-container *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"></ng-container>

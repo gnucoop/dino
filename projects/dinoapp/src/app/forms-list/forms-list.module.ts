@@ -1,15 +1,18 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
 import {FormsModule as DinoFormsModule} from '@dino/core/forms';
 import {FloatingButtonModule} from '@dino/material/floating-button';
 import {ListModule as DinoListModule} from '@dino/material/list';
 import {SearchFiltersBarModule as DinoFiltersBarModule} from '@dino/material/search-filters-bar';
 import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
 import {TranslocoModule} from '@ngneat/transloco';
+import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 import {FormsListComponent} from './components/forms-list.component';
 import {FormsListRoutingModule} from './forms-list-routing.module';
-import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [FormsListComponent],
@@ -21,7 +24,10 @@ import {MatDialogModule} from '@angular/material/dialog';
     DinoListModule,
     FloatingButtonModule,
     FormsListRoutingModule,
+    MatButtonModule,
     MatDialogModule,
+    MatIconModule,
+    TourMatMenuModule,
     TranslocoModule,
   ],
   providers: [],
