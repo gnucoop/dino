@@ -340,4 +340,40 @@ describe('Data service - backup/restore', () => {
     );
     expect(d3!._data.user_data_ref_id).toBe('keep-me');
   });
+
+  it('should skip restoring collections not in the backup whitelist, even if registered locally', async () => {
+    const dump = {
+      collections: [
+        {
+          name: 'form_data',
+          schemaHash: 'ignored',
+          docs: [
+            {id: 'd4', user_data_ref_id: 'someone', created_at: currentDate, updated_at: null},
+          ],
+        },
+        {
+          // "user_data" is registered locally (see beforeEach) but is not a
+          // BACKUP_DATA_COLLECTIONS entry, and must never be restored: it is
+          // managed by the backend and kept in sync via push replication.
+          name: 'user_data',
+          schemaHash: 'ignored',
+          docs: [{id: 'foreign-user', name: 'attacker-controlled'}],
+        },
+      ],
+    };
+    const blob = new Blob([JSON.stringify(dump)], {type: 'application/json'});
+
+    const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
+    dataService.importDatabase(blob);
+    expect(await imported).toBe(true);
+
+    const d4 = await firstValueFrom(
+      dataService.get<any>({collectionName: 'form_data', id: 'd4'}).pipe(take(1)),
+    );
+    const foreignUser = await firstValueFrom(
+      dataService.get<any>({collectionName: 'user_data', id: 'foreign-user'}).pipe(take(1)),
+    );
+    expect(d4).not.toBeNull();
+    expect(foreignUser).toBeNull();
+  });
 });
