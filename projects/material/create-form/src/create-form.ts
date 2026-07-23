@@ -26,6 +26,7 @@ import {
   AjfFormRenderer,
   AjfFormRendererService,
   AjfFormSerializer,
+  AjfSlideInstance,
 } from '@ajf/core/forms';
 import {deepCopy} from '@ajf/core/utils';
 import {Location} from '@angular/common';
@@ -352,6 +353,24 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
    */
   @ViewChildren(FormMetricSelector)
   formMetricsSelectorComponent!: QueryList<FormMetricSelector>;
+
+  /**
+   * The Ajf Form Renderer instance(s), used to feed the form-data chrome.
+   */
+  @ViewChildren('ajfFormRenderer') formRenderers?: QueryList<AjfFormRenderer>;
+  private _formRenderer: BehaviorSubject<AjfFormRenderer | null> =
+    new BehaviorSubject<AjfFormRenderer | null>(null);
+  get formRenderer(): Observable<AjfFormRenderer | null> {
+    return this._formRenderer.asObservable();
+  }
+
+  /**
+   * The renderer's slide instances, consumed by the form-data chrome.
+   */
+  private _slides: Observable<AjfSlideInstance[] | null> = obsOf(null);
+  get slides(): Observable<AjfSlideInstance[] | null> {
+    return this._slides;
+  }
 
   /**
    * Main unsub subject.
@@ -693,6 +712,22 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   }
 
   ngAfterViewInit() {
+    if (this.formRenderers) {
+      this.formRenderers.changes
+        .pipe(
+          map((formRenderers: QueryList<AjfFormRenderer>) => formRenderers.first ?? null),
+          takeUntil(this._mainUnsubscribe),
+        )
+        .subscribe(fr => {
+          this._formRenderer.next(fr);
+        });
+    }
+
+    this._slides = this._formRenderer.pipe(
+      switchMap(fr => fr?.slides ?? obsOf(null)),
+      shareReplay(1),
+    );
+
     this._formMetricsSelector = this.metricsService.hasActiveMetrics.pipe(
       switchMap(active => {
         if (!active) {

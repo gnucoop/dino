@@ -35,16 +35,31 @@
           (position)="scrollToSlide($event)"
         ></dino-pipeline-stepper>
         <div class="dino-edit-form-step-container">
-          <ajf-form
-            #ajfFormRenderer
-            [form]="(form|async)!"
-            [saveDisabled]="((isView|async) === true) || ((isSaveDisabled|async) === true)"
-            [topBar]="(isPipeline|async) === false"
-            (formAction)="onFormAction($event)"
-            [readonly]="isView|async"
-            [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
-            [centeredFieldsContent]="centeredFieldsContent"
-          ></ajf-form>
+          <dino-form-data-chrome
+            [slides]="slides|async"
+            [isReadonly]="isView|async"
+            [allowSaveDraft]="allowSaveDraft"
+            [saveDraftDisabled]="
+              ((isAjfFormValid|async) === true) ||
+              ((uniqueMetricsSetAlreadyExists|async) === true) ||
+              ((isLoading|async) === true)
+            "
+            (saveForm)="saveForm()"
+            (saveDraft)="saveDraft()"
+          >
+            <ajf-form
+              #ajfFormRenderer
+              [form]="(form|async)!"
+              [saveDisabled]="((isView|async) === true) || ((isSaveDisabled|async) === true)"
+              [hideTopToolbar]="true"
+              [hideNavigationButtons]="true"
+              [hideBottomToolbar]="true"
+              (formAction)="onFormAction($event)"
+              [readonly]="isView|async"
+              [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
+              [centeredFieldsContent]="centeredFieldsContent"
+            ></ajf-form>
+          </dino-form-data-chrome>
         </div>
       </mat-step>
     </mat-stepper>
@@ -60,35 +75,34 @@
       (position)="scrollToSlide($event)"
     ></dino-pipeline-stepper>
     <div class="dino-edit-form-step-container">
-      <ajf-form
-        #ajfFormRenderer
-        [form]="(form|async)!"
-        [saveDisabled]="((isView|async) === true) || ((isSaveDisabled|async) === true)"
-        [topBar]="(isPipeline|async) === false"
-        (formAction)="onFormAction($event)"
-        [readonly]="isView|async"
-        [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
-        [centeredFieldsContent]="centeredFieldsContent"
-      ></ajf-form>
+      <dino-form-data-chrome
+        [slides]="slides|async"
+        [isReadonly]="isView|async"
+        [allowSaveDraft]="allowSaveDraft"
+        [saveDraftDisabled]="
+          ((isAjfFormValid|async) === true) ||
+          ((uniqueMetricsSetAlreadyExists|async) === true) ||
+          ((isLoading|async) === true)
+        "
+        (saveForm)="saveForm()"
+        (saveDraft)="saveDraft()"
+      >
+        <ajf-form
+          #ajfFormRenderer
+          [form]="(form|async)!"
+          [saveDisabled]="((isView|async) === true) || ((isSaveDisabled|async) === true)"
+          [hideTopToolbar]="true"
+          [hideNavigationButtons]="true"
+          [hideBottomToolbar]="true"
+          (formAction)="onFormAction($event)"
+          [readonly]="isView|async"
+          [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
+          [centeredFieldsContent]="centeredFieldsContent"
+        ></ajf-form>
+      </dino-form-data-chrome>
     </div>
   </ng-container>
   <ng-container *ngIf="(isLoading|async) === true">
     <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
   </ng-container>
-
-  <dino-floating-button
-    *ngIf="(isView|async) !== true"
-    buttonIcon="save"
-    [tooltipMessage]="'Save form'|transloco"
-    [buttonDisabled]="(isSaveDisabled|async) === true"
-    (click)="saveForm()"
-  ></dino-floating-button>
-
-  <dino-floating-button
-    *ngIf="(isView|async) !== true && allowSaveDraft"
-    buttonIcon="save_as"
-    [tooltipMessage]="'Save draft'|transloco"
-    [buttonDisabled]="((isAjfFormValid|async) === true) || ((uniqueMetricsSetAlreadyExists|async) === true) || ((isLoading|async) === true)"
-    (click)="saveDraft()"
-  ></dino-floating-button>
 </ng-container>

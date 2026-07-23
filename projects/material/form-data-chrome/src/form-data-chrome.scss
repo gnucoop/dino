@@ -1,0 +1,514 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+// Neutral surface/text tokens. M2 palettes expose no dark-reactive surface
+// colour, so these are defined here and flipped under `.isDarkTheme`. Brand
+// (primary), success and error colours go through the theme functions/vars so
+// they follow the configured theme.
+dino-form-data-chrome,
+.dino-fdc-picker {
+  --dino-fdc-surface: #ffffff;
+  --dino-fdc-surface-2: #f5f6f8;
+  --dino-fdc-surface-3: #eef1f4;
+  --dino-fdc-surface-4: #fbfcfd;
+  --dino-fdc-border: rgba(0, 0, 0, 0.12);
+  --dino-fdc-border-strong: rgba(0, 0, 0, 0.32);
+  --dino-fdc-text: rgba(0, 0, 0, 0.87);
+  --dino-fdc-text-2: rgba(0, 0, 0, 0.54);
+  --dino-fdc-valid: #3a9d4a;
+  --dino-fdc-valid-bg: rgba(58, 157, 74, 0.12);
+}
+
+.isDarkTheme {
+  dino-form-data-chrome,
+  .dino-fdc-picker {
+    --dino-fdc-surface: #2b2b2b;
+    --dino-fdc-surface-2: #333333;
+    --dino-fdc-surface-3: #3d3d3d;
+    --dino-fdc-surface-4: #303030;
+    --dino-fdc-border: rgba(255, 255, 255, 0.14);
+    --dino-fdc-border-strong: rgba(255, 255, 255, 0.42);
+    --dino-fdc-text: rgba(255, 255, 255, 0.92);
+    --dino-fdc-text-2: rgba(255, 255, 255, 0.6);
+    --dino-fdc-valid: #5cc46b;
+    --dino-fdc-valid-bg: rgba(92, 196, 107, 0.18);
+  }
+}
+
+@keyframes dino-fdc-bob {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 7px);
+  }
+}
+
+@keyframes dino-fdc-pulse {
+  0% {
+    box-shadow: 0 0 0 0 mat-css-vars.mat-css-color-warn(500, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 10px mat-css-vars.mat-css-color-warn(500, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 mat-css-vars.mat-css-color-warn(500, 0);
+  }
+}
+
+dino-form-data-chrome {
+  // Fills the step container as a flex column. `align-self: stretch` + `flex`
+  // override the container's centering so the chrome takes the full box, and
+  // the scroll-area below becomes the positioned, definite-height offset parent
+  // that Ajf's `position:absolute; inset:0` `.ajf-form-container` needs.
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
+  min-height: 0;
+  position: relative;
+  color: var(--dino-fdc-text);
+
+  mat-icon {
+    font-family: 'Material Icons';
+  }
+
+  // The slide title/number is shown in the section select, so hide Ajf's own
+  // per-slide title header inside the form body (it also repeats once per
+  // repetition on repeating slides).
+  .ajf-form-page > mat-card > .mat-mdc-card-header,
+  .ajf-page-slider-item-header {
+    display: none;
+  }
+
+  // Ajf's built-in repeating add/remove control — replaced by our record pager.
+  .ajf-group-actions {
+    display: none !important;
+  }
+
+  // ---- control row -------------------------------------------------------
+  .dino-fdc-control-row {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 24px;
+    background: var(--dino-fdc-surface);
+    border-bottom: 1px solid var(--dino-fdc-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    z-index: 5;
+    flex-wrap: wrap;
+  }
+
+  .dino-fdc-spacer {
+    flex: 1 1 auto;
+  }
+
+  .dino-fdc-section-select-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 340px;
+    max-width: 100%;
+
+    @media only screen and (max-width: 600px) {
+      min-width: 0;
+      flex: 1 1 100%;
+    }
+  }
+
+  .dino-fdc-caption {
+    font-size: 11px;
+    letter-spacing: 0.3px;
+    color: var(--dino-fdc-text-2);
+  }
+
+  .dino-fdc-section-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--dino-fdc-surface-2);
+    border: none;
+    border-bottom: 1px solid var(--dino-fdc-border-strong);
+    border-radius: 2px 2px 0 0;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--dino-fdc-text);
+    font: inherit;
+    text-align: left;
+    width: 100%;
+    transition: background ease-in-out 0.2s;
+
+    &:hover {
+      background: var(--dino-fdc-surface-3);
+    }
+  }
+
+  .dino-fdc-num-badge {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    background: mat-css-vars.mat-css-color-primary(500);
+    color: mat-css-vars.mat-css-contrast-color-primary(500);
+  }
+
+  .dino-fdc-section-name {
+    flex: 1 1 auto;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dino-fdc-counter {
+    font-size: 12px;
+    color: var(--dino-fdc-text-2);
+    white-space: nowrap;
+  }
+
+  .dino-fdc-arrow {
+    color: var(--dino-fdc-text-2);
+  }
+
+  .dino-fdc-icon-valid {
+    color: var(--dino-fdc-valid);
+  }
+
+  .dino-fdc-icon-invalid {
+    color: mat-css-vars.mat-css-color-warn(500);
+  }
+
+  // ---- errors pill -------------------------------------------------------
+  .dino-fdc-errors-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid mat-css-vars.mat-css-color-warn(500, 0.4);
+    background: mat-css-vars.mat-css-color-warn(500, 0.12);
+    color: mat-css-vars.mat-css-color-warn(500);
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    animation: dino-fdc-pulse 2s infinite;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // ---- save actions ------------------------------------------------------
+  .dino-fdc-save-draft,
+  .dino-fdc-save-form {
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+
+  // ---- repeating-record pager row ----------------------------------------
+  .dino-fdc-record-row {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 24px;
+    background: var(--dino-fdc-surface-4);
+    border-bottom: 1px solid var(--dino-fdc-border);
+    flex-wrap: wrap;
+  }
+
+  .dino-fdc-record-caption {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dino-fdc-text-2);
+  }
+
+  .dino-fdc-record-pills {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .dino-fdc-record-nav,
+  .dino-fdc-record-add,
+  .dino-fdc-record-remove {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--dino-fdc-text-2);
+    background: transparent;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover:not([disabled]) {
+      background: var(--dino-fdc-surface-3);
+    }
+
+    &[disabled] {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+
+  .dino-fdc-record-add {
+    margin-left: 6px;
+    background: mat-css-vars.mat-css-color-primary(500);
+    color: mat-css-vars.mat-css-contrast-color-primary(500);
+
+    &:hover:not([disabled]) {
+      background: mat-css-vars.mat-css-color-primary(700);
+    }
+  }
+
+  .dino-fdc-record-remove {
+    background: var(--dino-fdc-surface-3);
+
+    &:hover:not([disabled]) {
+      background: var(--dino-fdc-border);
+    }
+  }
+
+  .dino-fdc-record-pill {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--dino-fdc-surface-3);
+    color: var(--dino-fdc-text-2);
+
+    &--active {
+      background: mat-css-vars.mat-css-color-primary(500);
+      color: mat-css-vars.mat-css-contrast-color-primary(500);
+    }
+  }
+
+  // ---- scroll area -------------------------------------------------------
+  // Fills the remaining height and is the positioned offset parent for Ajf's
+  // absolutely-positioned `.ajf-form-container` (so the form gets a real box
+  // to fill), and the positioning context for the scroll hint + FABs. It does
+  // NOT override the page-slider's own height/scroll behaviour.
+  .dino-fdc-scroll-area {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 0;
+  }
+
+  // ---- scroll hint -------------------------------------------------------
+  .dino-fdc-scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    z-index: 6;
+    animation: dino-fdc-bob 1.4s ease-in-out infinite;
+
+    .dino-fdc-scroll-hint-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: mat-css-vars.mat-css-color-primary(500);
+      background: var(--dino-fdc-surface);
+      padding: 3px 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+    }
+
+    mat-icon {
+      font-size: 30px;
+      width: 30px;
+      height: 30px;
+      color: mat-css-vars.mat-css-color-primary(500);
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+    }
+  }
+
+  // ---- bottom-right section FABs -----------------------------------------
+  .dino-fdc-section-fabs {
+    position: absolute;
+    right: 26px;
+    bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 7;
+  }
+}
+
+// ==========================================================================
+// Section picker overlay (rendered in the CDK overlay container, outside the
+// component host — styles are global thanks to ViewEncapsulation.None).
+// ==========================================================================
+.dino-fdc-picker-backdrop {
+  background: rgba(20, 30, 40, 0.28);
+}
+
+.isDarkTheme .dino-fdc-picker-backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dino-fdc-picker {
+  width: min(560px, 92vw);
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--dino-fdc-surface);
+  color: var(--dino-fdc-text);
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+
+  mat-icon {
+    font-family: 'Material Icons';
+  }
+
+  .dino-fdc-picker-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--dino-fdc-border);
+
+    > mat-icon {
+      color: var(--dino-fdc-text-2);
+    }
+  }
+
+  .dino-fdc-picker-search {
+    flex: 1 1 auto;
+    border: none;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    font-size: 15px;
+    color: var(--dino-fdc-text);
+
+    &::placeholder {
+      color: var(--dino-fdc-text-2);
+    }
+  }
+
+  .dino-fdc-picker-count {
+    font-size: 12px;
+    color: var(--dino-fdc-text-2);
+    background: var(--dino-fdc-surface-3);
+    border-radius: 4px;
+    padding: 3px 6px;
+  }
+
+  .dino-fdc-picker-close {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--dino-fdc-text-2);
+    display: flex;
+    align-items: center;
+    padding: 0;
+  }
+
+  .dino-fdc-picker-list {
+    overflow-y: auto;
+    max-height: 60vh;
+  }
+
+  .dino-fdc-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 18px;
+    border: none;
+    border-bottom: 1px solid var(--dino-fdc-border);
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    color: var(--dino-fdc-text);
+    text-align: left;
+
+    &:hover {
+      background: mat-css-vars.mat-css-color-primary(500, 0.06);
+    }
+
+    &--active {
+      background: mat-css-vars.mat-css-color-primary(500, 0.1);
+    }
+  }
+
+  .dino-fdc-picker-num {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--dino-fdc-surface-3);
+    color: var(--dino-fdc-text-2);
+  }
+
+  .dino-fdc-picker-name {
+    flex: 1 1 auto;
+    font-size: 14.5px;
+  }
+
+  .dino-fdc-picker-badge {
+    font-size: 12px;
+    color: var(--dino-fdc-text-2);
+  }
+
+  .dino-fdc-icon-valid {
+    color: var(--dino-fdc-valid);
+  }
+
+  .dino-fdc-icon-invalid {
+    color: mat-css-vars.mat-css-color-warn(500);
+  }
+
+  .dino-fdc-picker-empty {
+    padding: 26px;
+    text-align: center;
+    color: var(--dino-fdc-text-2);
+    font-size: 14px;
+  }
+}
+
+// Error save toast variant.
+.dino-fdc-toast-error {
+  --mdc-snackbar-container-color: #{mat-css-vars.mat-css-color-warn(500)};
+  --mdc-snackbar-supporting-text-color: #{mat-css-vars.mat-css-contrast-color-warn(500)};
+}

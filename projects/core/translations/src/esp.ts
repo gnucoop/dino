@@ -312,6 +312,10 @@ export const ESP: Translation = {
   'Next': 'Siguiente',
   'Next page': 'Página siguiente',
   'No': 'No',
+  '{{count}} sections need attention': '{{count}} secciones requieren atención',
+  'Cannot save, some sections need attention':
+    'No se puede guardar, algunas secciones requieren atención',
+  'Number of {{name}}': 'Número de {{name}}',
   'No Forms were found': 'No se encontraron formas',
   'No Forms were found for this Report': 'No se encontraron formularios para este informe',
   'No file uploaded yet.': 'No hay archivo cargado todavía.',
