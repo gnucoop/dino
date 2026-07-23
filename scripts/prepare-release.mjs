@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 
 import {default as esMain} from 'es-main';
-import {readFileSync, writeFileSync} from 'fs';
+import {readFileSync, unlinkSync, writeFileSync} from 'fs';
+import {tmpdir} from 'os';
+import {join} from 'path';
 import {default as inquirer} from 'inquirer';
 import {default as semver} from 'semver';
 import {default as shell} from 'shelljs';
 
 import {changelog} from './release/index.mjs';
+import {releaseNotes} from './release/release-notes.mjs';
 
 // The release branch. A deploy is cut from here.
 const RELEASE_BRANCH = 'dev';
@@ -54,6 +57,50 @@ const replaceField = (files, key, oldValue, newValue) => {
     writeFileSync(file, content.split(search).join(replacement));
     shell.echo(`  updated ${key} -> ${newValue} in ${file}`);
   }
+};
+
+// After the push, optionally create a GitHub Release for the new tag, with
+// user-facing notes generated from the commits (via release-notes.mjs). Failures
+// here are non-fatal: the tag and push already succeeded.
+const maybeCreateGitHubRelease = async (tag, releaseId) => {
+  if (!shell.which('gh')) {
+    shell.echo('gh CLI not found — skipping GitHub Release. Create it later with:');
+    shell.echo(`  node scripts/release/release-notes.mjs --from=<prev-tag> --to=${tag} > notes.md`);
+    shell.echo(`  gh release create ${tag} --title "${releaseId}" --notes-file notes.md`);
+    return;
+  }
+  const {create} = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'create',
+      default: true,
+      message: `Create a GitHub Release for ${tag} with AI-generated user-facing notes?`,
+    },
+  ]);
+  if (!create) {
+    return;
+  }
+  const {lang} = await inquirer.prompt([
+    {type: 'list', name: 'lang', message: 'Release notes language:', choices: ['English', 'Italian'], default: 'English'},
+  ]);
+  // Previous release tag (HEAD^ excludes the tag we just created on HEAD).
+  const prevTag = shell.exec('git describe --tags --abbrev=0 HEAD^', {silent: true}).stdout.trim() || undefined;
+  let notes;
+  try {
+    notes = await releaseNotes({from: prevTag, to: tag, lang});
+  } catch (err) {
+    shell.echo(`  Could not generate notes (${err.message}). Skipping Release — create it manually.`);
+    return;
+  }
+  if (!notes) {
+    shell.echo('  No user-facing commits since the previous tag — skipping GitHub Release.');
+    return;
+  }
+  const notesFile = join(tmpdir(), `dino-relnotes-${tag.replace(/[^\w.-]/g, '_')}.md`);
+  writeFileSync(notesFile, notes);
+  const res = shell.exec(`gh release create ${tag} --title "${releaseId}" --notes-file "${notesFile}"`);
+  unlinkSync(notesFile);
+  shell.echo(res.code === 0 ? 'GitHub Release created.' : 'gh release create failed — see output above.');
 };
 
 const prepareRelease = async () => {
@@ -166,6 +213,10 @@ const prepareRelease = async () => {
   // Push branch + tag together so Vercel never sees the release commit before
   // its tag (they either both land or neither does).
   shell.exec(`git push --atomic origin ${branch} ${tag}`);
+
+  // --- GitHub Release with user-facing notes (optional, non-fatal) ---
+  await maybeCreateGitHubRelease(tag, releaseId);
+
   shell.echo('Done.');
 };
 
