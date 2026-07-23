@@ -1,148 +1,220 @@
 <ng-container *ngIf="form|async as form">
-  <mat-card appearance="outlined" class="form-container">
-    <ng-content select="[breadcrumbs]"></ng-content>
-    <mat-card-content>
-      <div class="card-header" *ngIf="formGroup|async as fgroup">
-        <form [formGroup]="fgroup" class="dino-form-attributes">
-          <mat-form-field>
-            <mat-label>{{'Form Name'|transloco}}</mat-label>
-            <input matInput formControlName="name" />
-            <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
-              {{ 'This name is already being used.'|transloco}}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{'Form Label'|transloco}}</mat-label>
-            <b><input matInput formControlName="label" /></b>
-          </mat-form-field>
-          <mat-form-field class="dino-form-attribute-short-field">
-            <mat-label>{{'Icon Set'|transloco}}</mat-label>
-            <mat-select #iconSetSelect formControlName="icon_set">
-              <mat-option [value]="'default'">{{ 'Default' }}</mat-option>
-              <mat-option [value]="'humanitarian'">{{ 'Humanitarian' }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="dino-form-attribute-short-field">
-            <mat-label>{{'Icon Identifier'|transloco}}</mat-label>
-            <input matInput formControlName="icon" [matAutocomplete]="autoicons" />
-
-            <mat-icon matSuffix *ngIf="iconSetSelect.value === 'default'"
-              >{{fgroup.get('icon')?.value}}</mat-icon
-            >
-            <mat-icon
-              matSuffix
-              *ngIf="iconSetSelect.value !== 'default'"
-              [svgIcon]="fgroup.get('icon')?.value"
-            ></mat-icon>
-            <mat-autocomplete #autoicons="matAutocomplete">
-              <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
-                <span>{{icon.replace('_', ' ').replace('icon-','').replace('-',' ')}}</span>
-                <ng-container *ngIf="iconSetSelect.value === 'default'; else svgIcon"
-                  ><mat-icon>{{icon}}</mat-icon></ng-container
-                >
-                <ng-template #svgIcon><mat-icon [svgIcon]="icon"></mat-icon></ng-template>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>{{'Form Statuses'|transloco}}</mat-label>
-            <mat-select [disableRipple]="true" formControlName="status" multiple>
-              <div
-                class="dino-status-option-container"
-                *ngFor="let status of availableFormStatuses | async"
-              >
-                <mat-option class="dino-status-option" [value]="status.id" [matTooltip]="status.label">
-                  <span [ngStyle]="{'color': status.color ?? 'inherit'}">{{status.label}}</span>
-                </mat-option>
-                <button
-                  class="dino-status-edit-button"
-                  mat-icon-button
-                  (click)="openStatusEditor('Edit', status); $event.stopPropagation()"
-                  [ngStyle]="{'color': status.color ?? 'inherit'}"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-              </div>
-
-              <mat-option class="dino-new-status-button-option">
-                <button
-                  mat-button
-                  color="primary"
-                  class="dino-new-status-button"
-                  (click)="openStatusEditor('Create'); $event.stopPropagation()"
-                >
-                  {{'Create new Status'|transloco}}
-                  <mat-icon> add </mat-icon>
-                </button>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>{{'Form Metrics'|transloco}}</mat-label>
-            <mat-select [disableRipple]="true" formControlName="form_schema_metrics" multiple>
-              <mat-option
-                *ngFor="let availableMetric of availableMetrics|async"
-                [value]="availableMetric.metricName"
-                >{{availableMetric.label|transloco}}</mat-option
-              >
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="dino-form-attribute-short-field">
-            <mat-label>{{'Visibility'|transloco}}</mat-label>
-            <mat-select formControlName="visibility">
-              <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
-              <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="dino-form-attribute-short-field">
-            <mat-label>{{'Metrics Set Behavior'|transloco}}</mat-label>
-            <mat-select formControlName="uniqueMetricsSet">
-              <mat-option [value]="false">{{ 'Default'|transloco }}</mat-option>
-              <mat-option [value]="true">{{ 'Unique'|transloco }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field
-            class="dino-form-attribute-short-field"
-            *ngIf="(autoReport|async) === null"
-          >
-            <mat-label>{{'Generate Report'|transloco}}</mat-label>
-            <mat-select formControlName="generateAutoReport">
-              <mat-option [value]="false">{{ 'No'|transloco }}</mat-option>
-              <mat-option [value]="true">{{ 'Yes'|transloco }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </form>
-
-        <div class="dino-edit-form-schema-actions">
-          <button mat-raised-button color="accent" translate (click)="openImportDialog()">
-            {{'Import'|transloco}} <mat-icon>file_upload</mat-icon>
-          </button>
-          <button
-            mat-raised-button
-            color="accent"
-            translate
-            (click)="openRelationshipsDialog()"
-            [disabled]="(isCreation|async) === true"
-          >
-            {{'Relationships'|transloco}} <mat-icon>cable</mat-icon>
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            translate
-            (click)="save()"
-            [disabled]="!fgroup.valid || isSaving || !isAjfFormSchemaValid"
-          >
-            {{'Save'|transloco}} <mat-icon>save</mat-icon>
-          </button>
+  <ng-container *ngIf="formGroup|async as fgroup">
+    <div class="dino-efs">
+      <!-- ===== Breadcrumb bar ===== -->
+      <div class="dino-efs-actionbar">
+        <div class="dino-efs-breadcrumbs">
+          <ng-content select="[breadcrumbs]"></ng-content>
         </div>
       </div>
-      <ajf-form-builder [form]="form" (formBuilderValidation)="onFormBuilderValidation($event)"></ajf-form-builder>
-    </mat-card-content>
-  </mat-card>
+
+      <!-- ===== Settings / Build / Relationships tabs, with Save on the tab row ===== -->
+      <div class="dino-efs-tabs-wrap">
+        <button
+          class="dino-efs-save"
+          mat-raised-button
+          color="primary"
+          (click)="save()"
+          [disabled]="!fgroup.valid || isSaving || !isAjfFormSchemaValid"
+        >
+          <mat-icon>save</mat-icon>{{'Save'|transloco}}
+        </button>
+
+        <mat-tab-group
+          class="dino-efs-tabs"
+          mat-stretch-tabs="false"
+          [animationDuration]="'0ms'"
+          [preserveContent]="true"
+          [(selectedIndex)]="selectedTabIndex"
+        >
+        <!-- ========== Settings tab ========== -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>tune</mat-icon>{{'Settings'|transloco}}
+          </ng-template>
+
+          <div class="dino-efs-settings">
+            <div class="dino-efs-settings-card">
+              <div class="dino-efs-settings-head">
+                <mat-icon>tune</mat-icon>
+                <h2>{{'Form Settings'|transloco}}</h2>
+              </div>
+              <p class="dino-efs-settings-sub">
+                {{'Metadata and general configuration of the questionnaire.'|transloco}}
+              </p>
+
+              <form [formGroup]="fgroup" class="dino-form-attributes">
+                <mat-form-field appearance="outline" floatLabel="always">
+                  <mat-label>{{'Form Name'|transloco}}</mat-label>
+                  <input matInput formControlName="name" />
+                  <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
+                    {{ 'This name is already being used.'|transloco}}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always">
+                  <mat-label>{{'Form Label'|transloco}}</mat-label>
+                  <input matInput formControlName="label" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-newrow">
+                  <mat-label>{{'Icon Set'|transloco}}</mat-label>
+                  <mat-select #iconSetSelect formControlName="icon_set">
+                    <mat-option [value]="'default'">{{ 'Default' }}</mat-option>
+                    <mat-option [value]="'humanitarian'">{{ 'Humanitarian' }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always">
+                  <mat-label>{{'Icon Identifier'|transloco}}</mat-label>
+                  <input matInput formControlName="icon" [matAutocomplete]="autoicons" />
+
+                  <mat-icon matSuffix *ngIf="iconSetSelect.value === 'default'"
+                    >{{fgroup.get('icon')?.value}}</mat-icon
+                  >
+                  <mat-icon
+                    matSuffix
+                    *ngIf="iconSetSelect.value !== 'default'"
+                    [svgIcon]="fgroup.get('icon')?.value"
+                  ></mat-icon>
+                  <mat-autocomplete #autoicons="matAutocomplete">
+                    <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
+                      <span>{{icon.replace('_', ' ').replace('icon-','').replace('-',' ')}}</span>
+                      <ng-container *ngIf="iconSetSelect.value === 'default'; else svgIcon"
+                        ><mat-icon>{{icon}}</mat-icon></ng-container
+                      >
+                      <ng-template #svgIcon><mat-icon [svgIcon]="icon"></mat-icon></ng-template>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
+                  <mat-label>{{'Form Statuses'|transloco}}</mat-label>
+                  <mat-select [disableRipple]="true" formControlName="status" multiple>
+                    <div
+                      class="dino-status-option-container"
+                      *ngFor="let status of availableFormStatuses | async"
+                    >
+                      <mat-option
+                        class="dino-status-option"
+                        [value]="status.id"
+                        [matTooltip]="status.label"
+                      >
+                        <span [ngStyle]="{'color': status.color ?? 'inherit'}">{{status.label}}</span>
+                      </mat-option>
+                      <button
+                        class="dino-status-edit-button"
+                        mat-icon-button
+                        (click)="openStatusEditor('Edit', status); $event.stopPropagation()"
+                        [ngStyle]="{'color': status.color ?? 'inherit'}"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </div>
+
+                    <mat-option class="dino-new-status-button-option">
+                      <button
+                        mat-button
+                        color="primary"
+                        class="dino-new-status-button"
+                        (click)="openStatusEditor('Create'); $event.stopPropagation()"
+                      >
+                        {{'Create new Status'|transloco}}
+                        <mat-icon> add </mat-icon>
+                      </button>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
+                  <mat-label>{{'Form Metrics'|transloco}}</mat-label>
+                  <mat-select [disableRipple]="true" formControlName="form_schema_metrics" multiple>
+                    <mat-option
+                      *ngFor="let availableMetric of availableMetrics|async"
+                      [value]="availableMetric.metricName"
+                      >{{availableMetric.label|transloco}}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always">
+                  <mat-label>{{'Visibility'|transloco}}</mat-label>
+                  <mat-select formControlName="visibility">
+                    <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
+                    <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always">
+                  <mat-label>{{'Metrics Set Behavior'|transloco}}</mat-label>
+                  <mat-select formControlName="uniqueMetricsSet">
+                    <mat-option [value]="false">{{ 'Default'|transloco }}</mat-option>
+                    <mat-option [value]="true">{{ 'Unique'|transloco }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" *ngIf="(autoReport|async) === null">
+                  <mat-label>{{'Generate Report'|transloco}}</mat-label>
+                  <mat-select formControlName="generateAutoReport">
+                    <mat-option [value]="false">{{ 'No'|transloco }}</mat-option>
+                    <mat-option [value]="true">{{ 'Yes'|transloco }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+
+              <div class="dino-efs-settings-footer">
+                <button mat-raised-button color="primary" (click)="goToBuild()">
+                  {{'Go to build'|transloco}}<mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- ========== Build tab (Ajf form builder canvas) ========== -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>dashboard_customize</mat-icon>{{'Build'|transloco}}
+          </ng-template>
+
+          <div class="dino-efs-build">
+            <!-- Parked (hidden) until relocated into the Ajf toolbar before "Download". -->
+            <span class="dino-efs-parked">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="dino-efs-import-btn"
+                (click)="openImportDialog()"
+              >
+                <mat-icon>upload</mat-icon>{{'Import'|transloco}}
+              </button>
+            </span>
+
+            <ajf-form-builder
+              [form]="form"
+              (formBuilderValidation)="onFormBuilderValidation($event)"
+            ></ajf-form-builder>
+          </div>
+        </mat-tab>
+
+        <!-- ========== Relationships tab ========== -->
+        <mat-tab [disabled]="(isCreation|async) === true">
+          <ng-template mat-tab-label>
+            <span
+              class="dino-efs-tab-label"
+              [matTooltip]="'Save the form first to add relationships'|transloco"
+              [matTooltipDisabled]="(isCreation|async) !== true"
+            >
+              <mat-icon>cable</mat-icon>{{'Relationships'|transloco}}
+            </span>
+          </ng-template>
+
+          <div class="dino-efs-relations">
+            <dino-form-deps-editor [formSchema]="_formSchema"></dino-form-deps-editor>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      </div>
+    </div>
+  </ng-container>
 </ng-container>

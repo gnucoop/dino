@@ -23,7 +23,7 @@
 import {AjfFormBuilderModule} from '@ajf/material/form-builder';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -32,10 +32,12 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {IconsServiceModule} from '@dino/material/icons-service';
+import {FormDepsEditorModule} from '@dino/material/form-deps-editor';
 import {TranslocoModule} from '@ngneat/transloco';
 
 import {EditFormSchema} from './edit-form-schema';
@@ -48,6 +50,8 @@ import {FormSchemaNameMatchValidator} from './form-schema-name-validator';
   imports: [
     AjfFormBuilderModule,
     CommonModule,
+    FormDepsEditorModule,
+    FormsModule,
     IconsServiceModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -59,6 +63,7 @@ import {FormSchemaNameMatchValidator} from './form-schema-name-validator';
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
     ReactiveFormsModule,

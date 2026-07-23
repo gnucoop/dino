@@ -20,15 +20,22 @@
  *
  */
 import {AjfForm, AjfFormSerializer} from '@ajf/core/forms';
-import {AjfFormBuilderService, AjfFormBuilderValidation} from '@ajf/material/form-builder';
+import {
+  AjfFormBuilder,
+  AjfFormBuilderService,
+  AjfFormBuilderValidation,
+} from '@ajf/material/form-builder';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Renderer2,
+  ViewChild,
   ViewEncapsulation,
   isDevMode,
 } from '@angular/core';
@@ -132,14 +139,233 @@ export class EditFormSchema implements OnInit, OnDestroy {
   readonly isCreation: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   /**
+   * The currently selected editor tab.
+   * 0 = Settings (form metadata), 1 = Build (the Ajf form builder canvas).
+   * Set on init: Settings when creating a new Form Schema, Build when editing.
+   */
+  selectedTabIndex: number = 1;
+
+  /**
+   * True while creating a brand new Form Schema (create route, no id).
+   */
+  private _creating: boolean = false;
+
+  /**
+   * The builder instance the default expansion has already been applied to.
+   * Tracked per-instance (not a one-time boolean) so the default is re-applied
+   * whenever the builder is re-created, e.g. when the Build tab body is
+   * destroyed and rebuilt on tab switch.
+   */
+  private _expandAppliedFor: AjfFormBuilder | null = null;
+
+  /**
+   * The builder instance the Import button has already been relocated into.
+   * Tracked per-instance so the button is re-inserted when the Build tab body
+   * is destroyed and rebuilt.
+   */
+  private _importRelocatedFor: AjfFormBuilder | null = null;
+
+  /**
+   * The embedded relationships editor (Relationships tab). Present only once that
+   * tab has been opened (kept alive via the tab group's preserveContent). The top
+   * Save uses it to persist relationships as part of the form save.
+   */
+  @ViewChild(FormDepsEditor)
+  depsEditor?: FormDepsEditor;
+
+  /**
+   * Reference to the embedded Ajf form builder.
+   * - Always: relocate the "Import" button into the toolbar before "Download".
+   * - For a NEW schema only: expand the slides by default and turn the toolbar
+   *   "expand slides" toggle ON so it matches. `expandAll()` also sets the
+   *   builder's default expanded state, so slides added later stay expanded.
+   *   Editing keeps the default (collapsed, toggle off).
+   */
+  @ViewChild(AjfFormBuilder)
+  set formBuilderCmp(cmp: AjfFormBuilder | undefined) {
+    if (cmp == null) {
+      this._expandAppliedFor = null;
+      this._importRelocatedFor = null;
+      this._nodeTypeObserver?.disconnect();
+      this._nodeTypeObserver = undefined;
+      return;
+    }
+    if (this._importRelocatedFor !== cmp) {
+      this._importRelocatedFor = cmp;
+      this._relocateImportButton();
+    }
+    this._setupNodeTypeGrouping();
+    if (this._creating && this._expandAppliedFor !== cmp) {
+      this._expandAppliedFor = cmp;
+      // Expand slides by default (and for slides added later). This is the source
+      // of truth and does not depend on the DOM being rendered yet.
+      cmp.expandAll();
+      // Reflect the expanded state on the toolbar toggle, which is uncontrolled
+      // (the Ajf builder exposes no "checked" input for it). The toolbar renders a
+      // tick after the builder mounts, so retry until the toggle button exists.
+      this._syncExpandToggle();
+    }
+  }
+
+  /**
+   * Turns the Ajf builder toolbar "expand slides" toggle ON to match the
+   * default-expanded state, retrying until the (async-rendered) toggle exists.
+   */
+  private _syncExpandToggle(attempt: number = 0): void {
+    const toggle = this._el.nativeElement.querySelector(
+      'ajf-form-builder mat-slide-toggle button',
+    ) as HTMLElement | null;
+    if (toggle != null) {
+      if (toggle.getAttribute('aria-checked') !== 'true') {
+        toggle.click();
+      }
+      return;
+    }
+    if (attempt < 20) {
+      setTimeout(() => this._syncExpandToggle(attempt + 1), 50);
+    }
+  }
+
+  /**
+   * Moves the parked "Import" button into the Ajf toolbar, just before the
+   * "Download as XLSForm" button (the element right after the toolbar spacer).
+   * The Ajf toolbar has no projection slot, so we relocate our own real Angular
+   * button (its click binding is preserved by the move). Retries until the
+   * async-rendered toolbar and the button are both available.
+   */
+  private _relocateImportButton(attempt: number = 0): void {
+    const root = this._el.nativeElement;
+    const toolbar = root.querySelector(
+      'ajf-form-builder .ajf-formbuilder-toolbar',
+    ) as HTMLElement | null;
+    // Query the parked button straight from the DOM (not via @ViewChild) so this
+    // does not depend on query-resolution timing when the Build tab mounts lazily
+    // (e.g. when creating a new schema, where Build is not the initial tab).
+    const importEl = root.querySelector('.dino-efs-import-btn') as HTMLElement | null;
+    const downloadBtn =
+      (toolbar?.querySelector(':scope > .ajf-spacer + button') as HTMLElement | null) ?? null;
+
+    if (toolbar != null && importEl != null && downloadBtn != null) {
+      // Tag the Download button so it can be restyled with a border to match
+      // Import (adjacency-based selectors break once Import is inserted here).
+      this._renderer.addClass(downloadBtn, 'dino-efs-download-btn');
+      this._renderer.insertBefore(toolbar, importEl, downloadBtn);
+      return;
+    }
+    if (attempt < 40) {
+      setTimeout(() => this._relocateImportButton(attempt + 1), 50);
+      return;
+    }
+    // Last resort: at least show the Import button in the toolbar.
+    if (toolbar != null && importEl != null) {
+      this._renderer.appendChild(toolbar, importEl);
+    }
+  }
+
+  /**
+   * Reorders the shared Ajf builder field-type list to match
+   * {@link _nodeTypeCategories}. Sorts the live array in place (the builder
+   * holds the same reference), so the source list renders grouped and ordered.
+   */
+  private _reorderNodeTypes(): void {
+    const order: string[] = this._nodeTypeCategories.flatMap(c => c.types);
+    const rank = (label: string): number => {
+      const i = order.indexOf(label);
+      return i < 0 ? order.length : i;
+    };
+    const list = this._formBuilderService.availableNodeTypes as {label: string}[];
+    if (Array.isArray(list)) {
+      list.sort((a, b) => rank(a.label) - rank(b.label));
+    }
+  }
+
+  /**
+   * Sets up a MutationObserver on the field-type source list to keep the
+   * category headers in place across the builder's search-driven re-renders.
+   * Retries until the (async-rendered) list container exists.
+   */
+  private _setupNodeTypeGrouping(attempt: number = 0): void {
+    const container = this._el.nativeElement.querySelector(
+      'ajf-form-builder .ajf-drawer-content',
+    ) as HTMLElement | null;
+    if (container == null) {
+      if (attempt < 40) {
+        setTimeout(() => this._setupNodeTypeGrouping(attempt + 1), 50);
+      }
+      return;
+    }
+    this._nodeTypeObserver?.disconnect();
+    this._nodeTypeObserver = new MutationObserver(() => this._applyNodeTypeGrouping(container));
+    this._nodeTypeObserver.observe(container, {childList: true});
+    this._applyNodeTypeGrouping(container);
+  }
+
+  /**
+   * Inserts a translated category header before the first field-type entry of
+   * each category. The entries are already grouped/ordered (see
+   * {@link _reorderNodeTypes}); a header is emitted whenever the category
+   * changes, so filtered-out (searched) categories get no header.
+   */
+  private _applyNodeTypeGrouping(container: HTMLElement): void {
+    if (this._applyingGrouping) {
+      return;
+    }
+    this._applyingGrouping = true;
+    this._nodeTypeObserver?.disconnect();
+
+    container
+      .querySelectorAll(':scope > .dino-fb-cat-header')
+      .forEach(header => header.remove());
+
+    const labelToCat = new Map<string, number>();
+    this._nodeTypeCategories.forEach((cat, i) => cat.types.forEach(t => labelToCat.set(t, i)));
+
+    const entries = Array.from(
+      container.querySelectorAll(':scope > ajf-fb-node-type-entry'),
+    ) as HTMLElement[];
+
+    let lastCat = -1;
+    entries.forEach(entry => {
+      const cat = labelToCat.get(this._entryLabel(entry)) ?? this._nodeTypeCategories.length - 1;
+      if (cat !== lastCat) {
+        const header = this._renderer.createElement('div') as HTMLElement;
+        this._renderer.addClass(header, 'dino-fb-cat-header');
+        const text = this._ts.translate(this._nodeTypeCategories[cat].label);
+        this._renderer.appendChild(header, this._renderer.createText(text));
+        this._renderer.insertBefore(container, header, entry);
+        lastCat = cat;
+      }
+    });
+
+    this._nodeTypeObserver?.observe(container, {childList: true});
+    this._applyingGrouping = false;
+  }
+
+  /**
+   * Extracts the field-type label from a node-type entry element. The entry
+   * renders "<ajf-node-icon/>&nbsp;{{label}}", so the label is the element's
+   * own text node(s), excluding the icon element's ligature text.
+   */
+  private _entryLabel(entry: HTMLElement): string {
+    let label = '';
+    entry.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        label += node.textContent ?? '';
+      }
+    });
+    return label.replace(/\u00a0/g, ' ').trim();
+  }
+
+  /**
    * The Form schema id
    */
   private _formSchemaId: Observable<string | null>;
 
   /**
-   * The Form schema object
+   * The Form schema object.
+   * `protected` so the template can bind it to the embedded relationships editor.
    */
-  private _formSchema: Observable<FormSchema | null>;
+  protected _formSchema: Observable<FormSchema | null>;
 
   /**
    * The Schema object imported from Form Conv
@@ -147,14 +373,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _importedFormSchema: BehaviorSubject<{[key: string]: any} | null> = new BehaviorSubject<{
     [key: string]: any;
   } | null>(null);
-
-  /**
-   * Emits when a schema has been updated by the user
-   * via Relationships
-   */
-  private _newSchema: BehaviorSubject<FormSchema | null> = new BehaviorSubject<FormSchema | null>(
-    null,
-  );
 
   /**
    * Emitted when the Form Schema is saved
@@ -215,22 +433,41 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
-  /**
-   * A reference to the MatDialog that contains the relationships
-   */
-  private _dialogDepsRef?: MatDialogRef<FormDepsEditor>;
-
-  /**
-   * Subscribes to the value returned by the relationships MatDialog on its closing event
-   */
-  private _dialogDepsSub: Subscription = Subscription.EMPTY;
-
   private _langs: Lang[] | null = null; // as listed by LangManager at construction time
   private _newLangs: Partial<Lang>[] = []; // to be created when saving the form
   private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
 
+  /**
+   * Category grouping for the form builder's field-type sidebar, in display
+   * order. The `types` are the (English) Ajf node-type labels; the `label` is a
+   * translation key rendered as the group header. Any Ajf node type not listed
+   * here falls into the last category so nothing is ever hidden.
+   */
+  private readonly _nodeTypeCategories: {label: string; types: string[]}[] = [
+    {label: 'Structure', types: ['Slide', 'Repeating slide']},
+    {label: 'Text', types: ['String', 'Text', 'Note']},
+    {label: 'Numeric', types: ['Number']},
+    {label: 'Choices', types: ['Boolean', 'Single choice', 'Multiple choice', 'Range']},
+    {label: 'Date & time', types: ['Date', 'Date input', 'Time']},
+    {
+      label: 'Advanced',
+      types: ['Geolocation', 'Image', 'Barcode', 'Formula', 'Table', 'File', 'Signature', 'Audio'],
+    },
+  ];
+
+  /**
+   * Watches the field-type source list and (re)inserts the category headers.
+   * Needed because the Ajf builder re-renders the list on every search keystroke.
+   */
+  private _nodeTypeObserver?: MutationObserver;
+
+  /** Guards {@link _applyNodeTypeGrouping} against its own DOM mutations. */
+  private _applyingGrouping = false;
+
   constructor(
     protected _cdr: ChangeDetectorRef,
+    private _el: ElementRef<HTMLElement>,
+    private _renderer: Renderer2,
     private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
@@ -254,6 +491,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
       map(params => params['form_schema_id']),
       shareReplay(1),
     );
+
+    // Default tab: Settings when creating a new Form Schema, Build when editing.
+    this._formSchemaId.pipe(take(1)).subscribe(id => {
+      this._creating = id == null;
+      this.selectedTabIndex = this._creating ? 0 : 1;
+      this._cdr.markForCheck();
+    });
 
     this._formSchema = this._formSchemaId.pipe(
       map(schemaId => {
@@ -330,13 +574,20 @@ export class EditFormSchema implements OnInit, OnDestroy {
       shareReplay(1),
     );
 
-    this.form = combineLatest([this._formSchema, this._importedFormSchema]).pipe(
-      map(([fs, ifs]) => {
+    this.form = combineLatest([
+      this._formSchema,
+      this._importedFormSchema,
+      this._formSchemaId,
+    ]).pipe(
+      map(([fs, ifs, id]) => {
         let schema = {} as any;
         if (ifs != null) {
           schema = ifs;
         } else if (fs != null) {
           schema = fs.schema;
+        } else if (id == null) {
+          // Creating a new Form Schema: start with a first slide already present.
+          schema = this._defaultCreationSchema();
         }
         return AjfFormSerializer.fromJson(JSON.parse(JSON.stringify(schema)));
       }),
@@ -349,56 +600,71 @@ export class EditFormSchema implements OnInit, OnDestroy {
           this._formSchema,
           this._formBuilderService.getCurrentForm(),
           this.formGroup,
-          this._newSchema,
           this.autoReport,
         ),
-        switchMap(([_evt, fs, schema, formGroup, schemaWithDeps, autoReport]) => {
+        switchMap(([_evt, fs, schema, formGroup, autoReport]) => {
           if (schema == null) {
             return obsOf({fs: null, autoReportConfirmation: false, autoReport});
           }
           this.isSaving = true;
-          const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
-          const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
-          const patchSchema = {
-            ...schema,
-            ...(unique ? {uniqueMetricsSet: unique} : undefined),
-          };
-          const formPatch: Partial<InsertModel<FormSchema>> = {
-            schema: patchSchema,
-            name: formGroup.get('name')?.value,
-            label: formGroup.get('label')?.value,
-            icon: formGroup.get('icon')?.value,
-            form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
-            visibility: formGroup.get('visibility')?.value,
-            form_status_ref_id: formGroup.get('status')?.value ?? undefined,
-          };
-          if (schemaWithDeps) {
-            formPatch.form_schema_deps_ref_id = schemaWithDeps.form_schema_deps_ref_id;
-          }
-
-          if (fs == null) {
-            return this._formSchemaManager.create(formPatch as InsertModel<FormSchema>).pipe(
-              map(fs => ({fs, autoReportConfirmation, autoReport})),
-              catchError(err => {
-                this._ehms.captureErrorMessage(
-                  `Could not create form schema: ${JSON.stringify(err)}`,
-                  'error',
-                );
+          // Persist relationships first (only if the Relationships tab was opened).
+          // Returns the deps ref id (string), undefined (nothing to persist) or
+          // null (failure).
+          const depsRefId$: Observable<string | null | undefined> = this.depsEditor
+            ? this.depsEditor.persistRelationships()
+            : obsOf(undefined);
+          return depsRefId$.pipe(
+            switchMap(depsRefId => {
+              if (depsRefId === null) {
+                // Relationship persistence failed: abort the whole save.
                 return obsOf({fs: null, autoReportConfirmation: false, autoReport});
-              }),
-              take(1),
-            );
-          }
-          return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
-            map(fs => ({fs, autoReportConfirmation, autoReport})),
-            catchError(err => {
-              this._ehms.captureErrorMessage(
-                `Could not patch form schema: ${JSON.stringify(err)}`,
-                'error',
+              }
+              const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
+              const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
+              const patchSchema = {
+                ...schema,
+                ...(unique ? {uniqueMetricsSet: unique} : undefined),
+              };
+              const formPatch: Partial<InsertModel<FormSchema>> = {
+                schema: patchSchema,
+                name: formGroup.get('name')?.value,
+                label: formGroup.get('label')?.value,
+                icon: formGroup.get('icon')?.value,
+                form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
+                visibility: formGroup.get('visibility')?.value,
+                form_status_ref_id: formGroup.get('status')?.value ?? undefined,
+              };
+              // Fold in the relationships ref id when it was (re)created; when
+              // undefined, leave the schema's existing value untouched.
+              if (depsRefId != null) {
+                formPatch.form_schema_deps_ref_id = depsRefId;
+              }
+
+              if (fs == null) {
+                return this._formSchemaManager.create(formPatch as InsertModel<FormSchema>).pipe(
+                  map(fs => ({fs, autoReportConfirmation, autoReport})),
+                  catchError(err => {
+                    this._ehms.captureErrorMessage(
+                      `Could not create form schema: ${JSON.stringify(err)}`,
+                      'error',
+                    );
+                    return obsOf({fs: null, autoReportConfirmation: false, autoReport});
+                  }),
+                  take(1),
+                );
+              }
+              return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
+                map(fs => ({fs, autoReportConfirmation, autoReport})),
+                catchError(err => {
+                  this._ehms.captureErrorMessage(
+                    `Could not patch form schema: ${JSON.stringify(err)}`,
+                    'error',
+                  );
+                  return obsOf({fs: null, autoReportConfirmation: false, autoReport});
+                }),
+                take(1),
               );
-              return obsOf({fs: null, autoReportConfirmation: false, autoReport});
             }),
-            take(1),
           );
         }),
       )
@@ -496,6 +762,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
       .subscribe(langs => {
         this._langs = langs.map(l => l.toJSON());
       });
+
+    // Reorder the (shared) builder field-type list so items of the same category
+    // are contiguous and appear in the intended order. Done before the builder
+    // renders, so the native *ngFor picks up the new order.
+    this._reorderNodeTypes();
   }
 
   ngOnInit() {
@@ -543,6 +814,35 @@ export class EditFormSchema implements OnInit, OnDestroy {
         .replace('-', ' ')
         .includes(filterValue),
     ) as string[];
+  }
+
+  /**
+   * Switches the editor to the Build tab.
+   */
+  goToBuild(): void {
+    this.selectedTabIndex = 1;
+  }
+
+  /**
+   * The schema used when creating a brand new Form Schema:
+   * an empty form that already contains a first slide, ready to be filled.
+   */
+  private _defaultCreationSchema(): {[key: string]: any} {
+    return {
+      nodes: [
+        {
+          id: 1,
+          name: 'slide_1',
+          label: 'Slide 1',
+          nodes: [],
+          parent: 0,
+          nodeType: 3, // AjfNodeType.AjfSlide
+          parentNode: 0,
+          visibility: {condition: 'true'},
+          conditionalBranches: [{condition: 'true'}],
+        },
+      ],
+    };
   }
 
   /**
@@ -604,35 +904,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
         }
         this._updateStatusListEvt.emit();
         this._cdr.detectChanges();
-      });
-  }
-
-  /**
-   * Opens the Form Relationships dialog
-   */
-  openRelationshipsDialog(): void {
-    const dialogConfig = {
-      disableClose: true,
-      width: '90%',
-      height: '80%',
-      maxWidth: '100%',
-      data: {
-        formSchemaId: this._formSchemaId,
-        formSchema: this._formSchema,
-      },
-    } as MatDialogConfig;
-
-    this._dialogDepsRef = this._dialog.open(FormDepsEditor, dialogConfig);
-    this._dialogDepsSub = this._dialogDepsRef
-      .afterClosed()
-      .pipe(
-        catchError(err => throwError(() => err) as Observable<boolean>),
-        take(1),
-      )
-      .subscribe((schema: FormSchema | null) => {
-        if (schema != null) {
-          this._newSchema.next(schema);
-        }
       });
   }
 
@@ -732,7 +1003,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._autoReportSchemaSub.unsubscribe();
     this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
-    this._dialogDepsSub.unsubscribe();
+    this._nodeTypeObserver?.disconnect();
     this.isSaving = false;
   }
 }

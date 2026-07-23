@@ -1,49 +1,296 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+// Accent colours for the two creation paths (per design). These brand accents
+// are intentionally identical in light and dark themes.
+$imp-ai: #7a4fd6;
+$imp-ai-hover: #6740bb;
+$imp-xls: #1e8e5a;
+$imp-xls-hover: #187048;
+
+// Themeable neutrals / tints exposed as CSS custom properties. The values here
+// are the light-theme defaults; the `.isDarkTheme` block overrides them.
+$imp-light: (
+  border: #e4e7ea,
+  border-inner: #eef0f2,
+  border-dashed: #cdd4da,
+  text: #2a2f36,
+  text-2: #4a5158,
+  muted: #8a9198,
+  muted-2: #adb4ba,
+  surface: #ffffff,
+  subtle-bg: #fafbfc,
+  ai-surface: #f7f4fd,
+  ai-border: #e3daf7,
+  ai-hint: #a99bcd,
+  ai-head: #3a4149,
+  ai-input-border: #d5cdeb,
+  ai-disabled-bg: #e7e3f0,
+  ai-disabled-text: #a99bcd,
+);
+
+$imp-dark: (
+  border: #363c44,
+  border-inner: #2f353c,
+  border-dashed: #454c55,
+  text: #e6e9ec,
+  text-2: #c3c9cf,
+  muted: #99a0a7,
+  muted-2: #7e858c,
+  surface: #23272d,
+  subtle-bg: #2a2f36,
+  ai-surface: rgba(122, 79, 214, 0.14),
+  ai-border: rgba(122, 79, 214, 0.4),
+  ai-hint: #9a8ec2,
+  ai-head: #e6e9ec,
+  ai-input-border: rgba(122, 79, 214, 0.45),
+  ai-disabled-bg: rgba(122, 79, 214, 0.18),
+  ai-disabled-text: #9a8ec2,
+);
+
+@mixin imp-tokens($map) {
+  @each $name, $value in $map {
+    --imp-#{$name}: #{$value};
+  }
+}
+
+// Dark-theme token values. `.isDarkTheme` is set on the document root by the app,
+// so it also covers this dialog rendered in the CDK overlay.
+.isDarkTheme dino-import-form-schema {
+  @include imp-tokens($imp-dark);
+}
+
 dino-import-form-schema {
-    .mat-mdc-card {
-        display: flex;
-        justify-content: center;
-        border-left: none;
-        .mat-mdc-card-content {
-            form {
-                display: flex;
-                flex-flow: column wrap;
-                justify-content: center;
-                .dino-upload-container {
-                    margin-top: 50px;
-                    flex: 1 0 auto;
-                    display: flex;
-                    flex-flow: row wrap;
-                    justify-content: space-between;
-                    align-items: center;
-                    div {
-                        flex: 1 1 50%;
-                    }
-                    input {
-                        flex: 0 1 10%;
-                    }
-                    label {
-                        flex: 0 1 35%;
-                        display: flex;
-                        justify-content: flex-end;
-                        a {
-                            flex: 1 0 auto;
-                        }
-                    }
-                    @media only screen and (max-width: 992px) {
-                        justify-content: center;
-                    }
-                }
-            }
-        }
-        .mat-mdc-card-actions {
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: space-between;
-            background-color: transparent !important;
-            .mat-mdc-raised-button {
-                transition: all ease-in-out 0.3;
-                -webkit-transition: all ease-in-out 0.3s;
-            }
-        }
+  display: block;
+
+  // Light-theme token defaults.
+  @include imp-tokens($imp-light);
+
+  .dino-import {
+    width: 620px;
+    max-width: 86vw;
+  }
+
+  .dino-import-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--imp-border-inner);
+
+    > .mat-icon {
+      color: mat-css-vars.mat-css-color-primary(500);
     }
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--imp-text);
+    }
+
+    .dino-import-close {
+      margin-left: auto;
+      color: var(--imp-muted);
+    }
+  }
+
+  .dino-import-body {
+    padding: 22px;
+  }
+
+  // ===== Choice cards =====
+  .dino-import-cards {
+    display: flex;
+    gap: 16px;
+  }
+
+  .dino-import-card {
+    flex: 1;
+    border: 2px solid var(--imp-border);
+    background: var(--imp-surface);
+    border-radius: 12px;
+    padding: 22px 18px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.12s ease-in-out;
+    font-family: inherit;
+
+    .mat-icon {
+      font-size: 38px;
+      width: 38px;
+      height: 38px;
+    }
+
+    &--ai .mat-icon {
+      color: $imp-ai;
+    }
+    &--xls .mat-icon {
+      color: $imp-xls;
+    }
+
+    .dino-import-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--imp-text);
+      margin-top: 10px;
+    }
+
+    .dino-import-card-desc {
+      font-size: 12.5px;
+      color: var(--imp-muted);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
+    &:hover {
+      border-color: mat-css-vars.mat-css-color-primary(500, 0.4);
+    }
+
+    &.selected {
+      border-color: mat-css-vars.mat-css-color-primary(500);
+      background: mat-css-vars.mat-css-color-primary(500, 0.08);
+    }
+  }
+
+  // ===== XLSForm path =====
+  .dino-import-xls {
+    form {
+      margin-top: 18px;
+      border: 2px dashed var(--imp-border-dashed);
+      border-radius: 12px;
+      padding: 26px;
+      text-align: center;
+      background: var(--imp-subtle-bg);
+    }
+
+    .dino-import-xls-icon {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+      color: var(--imp-muted-2);
+    }
+
+    .dino-import-xls-text {
+      font-size: 14px;
+      color: var(--imp-text-2);
+      margin-top: 8px;
+    }
+
+    label {
+      display: inline-block;
+      margin-top: 12px;
+    }
+
+    .dino-import-xls-btn {
+      background: $imp-xls;
+      color: #fff;
+      border-radius: 8px;
+
+      &:hover {
+        background: $imp-xls-hover;
+      }
+
+      .mat-icon {
+        margin-right: 4px;
+      }
+    }
+
+    .dino-import-xls-status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--imp-text-2);
+    }
+
+    .dino-import-xls-note {
+      font-size: 11.5px;
+      color: var(--imp-muted-2);
+      margin-top: 10px;
+    }
+  }
+
+  .dino-import-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  // ===== AI Builder path =====
+  .dino-import-ai {
+    margin-top: 18px;
+    background: var(--imp-ai-surface);
+    border: 1px solid var(--imp-ai-border);
+    border-radius: 12px;
+    padding: 16px;
+
+    .dino-import-ai-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--imp-ai-head);
+
+      .mat-icon {
+        color: $imp-ai;
+      }
+    }
+
+    .dino-import-ai-input {
+      width: 100%;
+      min-height: 88px;
+      padding: 11px 13px;
+      border: 1px solid var(--imp-ai-input-border);
+      border-radius: 9px;
+      font-size: 13.5px;
+      color: var(--imp-text);
+      background: transparent;
+      outline: none;
+      resize: vertical;
+      line-height: 1.45;
+      font-family: inherit;
+      box-sizing: border-box;
+
+      &:focus {
+        border-color: $imp-ai;
+      }
+    }
+
+    .dino-import-ai-foot {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+      gap: 12px;
+    }
+
+    .dino-import-ai-hint {
+      font-size: 11.5px;
+      color: var(--imp-ai-hint);
+    }
+
+    .dino-import-ai-btn {
+      margin-left: auto;
+      background: $imp-ai;
+      color: #fff;
+      border-radius: 8px;
+
+      &:hover {
+        background: $imp-ai-hover;
+      }
+
+      .mat-icon {
+        margin-right: 4px;
+      }
+
+      // "Coming soon" — disabled and greyed out.
+      &[disabled],
+      &.mat-mdc-button-disabled {
+        background: var(--imp-ai-disabled-bg);
+        color: var(--imp-ai-disabled-text);
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+    }
+  }
 }

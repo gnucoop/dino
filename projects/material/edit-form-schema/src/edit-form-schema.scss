@@ -1,59 +1,470 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+// ===== Design tokens (neutrals). Primary blue maps to the themed primary. =====
+// Themeable neutrals are exposed as CSS custom properties so they can be
+// overridden for the dark theme (see the `.isDarkTheme` block below). The
+// values here are the light-theme defaults.
+$efs-light: (
+  border: #e4e7ea,
+  border-inner: #eef0f2,
+  text: #2a2f36,
+  muted-2: #8a9198,
+  surface: #ffffff,
+  app-bg: #eceef0,
+  slide-head: #fafbfc,
+  badge: #3a4149,
+  on-badge: #ffffff,
+  card-shadow: (0 1px 3px rgba(20, 30, 40, 0.05)),
+  card-shadow-sm: (0 1px 2px rgba(20, 30, 40, 0.05)),
+);
+
+// Dark-theme overrides for the same tokens.
+$efs-dark: (
+  border: #363c44,
+  border-inner: #2f353c,
+  text: #e6e9ec,
+  muted-2: #99a0a7,
+  surface: #23272d,
+  app-bg: #14171b,
+  slide-head: #2a2f36,
+  badge: #4b535c,
+  on-badge: #ffffff,
+  card-shadow: (0 1px 3px rgba(0, 0, 0, 0.4)),
+  card-shadow-sm: (0 1px 2px rgba(0, 0, 0, 0.4)),
+);
+
+@mixin efs-tokens($map) {
+  @each $name, $value in $map {
+    --efs-#{$name}: #{$value};
+  }
+}
+
+@function efs-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
+// Dark-theme token values. `.isDarkTheme` is set on an ancestor by the app.
+.isDarkTheme dino-edit-form-schema {
+  @include efs-tokens($efs-dark);
+}
+
 dino-edit-form-schema {
-  > .mat-mdc-card:first-child {
-    overflow-y: auto;
+  display: block;
+
+  // Light-theme token defaults.
+  @include efs-tokens($efs-light);
+
+  .dino-efs {
     height: calc(100vh - 73px);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--efs-app-bg);
+
     @media only screen and (max-width: 599px) {
       height: calc(100vh - 65px);
     }
+  }
 
-    border-left: none;
-    margin: 0%;
-    padding: 0px;
-    background: transparent;
-    .card-header {
-      display: flex;
-      flex-flow: row wrap;
-      padding-bottom: 10px;
+  // ===== Breadcrumb bar =====
+  .dino-efs-actionbar {
+    flex: none;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 18px;
+    background: var(--efs-surface);
+    border-bottom: 1px solid var(--efs-border);
+
+    .dino-efs-breadcrumbs {
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: hidden;
+    }
+  }
+
+  // ===== Tabs + Save (same row) =====
+  .dino-efs-tabs-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Save button overlaid on the tab-header row, right-aligned.
+  .dino-efs-save {
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    z-index: 2;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+
+    .mat-icon {
+      font-size: 19px;
+      width: 19px;
+      height: 19px;
+      margin-right: 4px;
+    }
+  }
+
+  // ===== Tabs =====
+  .dino-efs-tabs {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    .mat-mdc-tab-header {
+      flex: none;
+      background: var(--efs-surface);
+      border-bottom: 1px solid var(--efs-border);
+      padding: 0 10px;
+    }
+
+    .mat-mdc-tab .mdc-tab__text-label {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      .dino-form-attributes {
-        flex: 1 1 auto;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        .mat-mdc-form-field {
-          flex: 1 1 auto;
-          font-size: 125%;
-          margin: 5px;
-          &.dino-form-attribute-short-field {
-            max-width: 150px;
-          }
-        }
-        .mat-mdc-checkbox {
-          .mdc-form-field {
-            margin-top: 20px;
-          }
-        }
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+
+      .mat-icon {
+        font-size: 19px;
+        width: 19px;
+        height: 19px;
       }
-      .dino-edit-form-schema-actions {
-        display: flex;
-        justify-self: flex-end;
-        justify-content: flex-end;
-        .mat-mdc-raised-button {
-          margin-left: 20px;
+    }
+
+    // The Relationships tab wraps its icon + label in a span (for the tooltip);
+    // align it like the direct-child labels of the other tabs.
+    .dino-efs-tab-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mat-mdc-tab-body-wrapper {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .mat-mdc-tab-body,
+    .mat-mdc-tab-body-content {
+      min-height: 0;
+    }
+
+    .mat-mdc-tab-body-content {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  // ===== Settings tab =====
+  .dino-efs-settings {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 22px;
+  }
+
+  .dino-efs-settings-card {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--efs-surface);
+    border: 1px solid var(--efs-border);
+    border-radius: 12px;
+    padding: 24px 26px;
+    box-shadow: var(--efs-card-shadow);
+
+    .dino-efs-settings-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+
+      .mat-icon {
+        color: efs-primary();
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--efs-text);
+      }
+    }
+
+    .dino-efs-settings-sub {
+      margin: 0 0 22px;
+      color: var(--efs-muted-2);
+      font-size: 13px;
+    }
+  }
+
+  .dino-form-attributes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 20px;
+
+    @media only screen and (max-width: 899px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media only screen and (max-width: 599px) {
+      grid-template-columns: 1fr;
+    }
+
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+
+    .dino-efs-span-2 {
+      grid-column: span 2;
+
+      @media only screen and (max-width: 599px) {
+        grid-column: span 1;
+      }
+    }
+
+    // Full-width field: occupies its own row (used by Form Statuses and Form
+    // Metrics), so the smaller selects (Visibility / Metrics Set Behavior /
+    // Generate Report) group together on the following row.
+    .dino-efs-span-full {
+      grid-column: 1 / -1;
+    }
+
+    // Forces the field onto a new grid row (keeps Name + Label alone on row 1
+    // and Icon Set + Icon together on row 2).
+    .dino-efs-newrow {
+      grid-column-start: 1;
+    }
+  }
+
+  .dino-efs-settings-footer {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+
+    .mat-mdc-raised-button {
+      border-radius: 8px;
+
+      .mat-icon {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  // ===== Build tab (Ajf form builder canvas) =====
+  .dino-efs-build {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--efs-app-bg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Parking holder for the Import button before it is relocated into the toolbar.
+  // Hidden here; becomes visible once moved out into the (visible) toolbar.
+  .dino-efs-parked {
+    display: none;
+  }
+
+  // ===== Relationships tab =====
+  .dino-efs-relations {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    padding: 18px 22px;
+    background: var(--efs-app-bg);
+  }
+
+  // ---- Ajf form builder re-skin ----
+  ajf-form-builder {
+    // Fill the whole Build area so the panels use the full height available,
+    // regardless of how much content the form has.
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    // Toolbar
+    .ajf-formbuilder-toolbar {
+      flex: none;
+      background: var(--efs-surface);
+      border-bottom: 1px solid var(--efs-border);
+      min-height: 48px;
+      height: 48px;
+      box-shadow: none;
+
+      // The "Import" button we relocate here, and the library "Download as
+      // XLSForm" button (tagged during relocation), share one bordered look so
+      // they read as the same button style.
+      .dino-efs-import-btn,
+      .dino-efs-download-btn {
+        border: 1px solid var(--efs-border);
+        border-radius: 8px;
+        height: 34px;
+        line-height: 34px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+    }
+
+    .ajf-formtree-container {
+      flex: 1 1 auto;
+      min-height: 0;
+      align-items: stretch; // stretch palette/designer/properties to full height
+      padding: 18px 22px;
+      gap: 18px;
+    }
+
+    // Palette + designer container
+    mat-drawer-container.ajf-formtree-drawer-container {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      // Drop Ajf's content-based 47vh floor: fill the row height instead so the
+      // palette (left field-type sidebar) is as tall as the screen allows.
+      min-height: 0;
+
+      mat-drawer.ajf-sidenav-modern {
+        min-width: 250px;
+        max-width: 250px;
+        background: var(--efs-surface);
+        border-right: 1px solid var(--efs-border);
+        border-radius: 10px 0 0 10px;
+      }
+
+      .ajf-drawer-header {
+        border-bottom: 1px solid var(--efs-border-inner);
+      }
+
+      .ajf-search-field {
+        width: 100%;
+      }
+    }
+
+    // Palette items
+    ajf-fb-node-type-entry {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 7px 8px;
+      margin-bottom: 2px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      color: var(--efs-text);
+      cursor: pointer;
+
+      &:hover {
+        background: efs-primary(500, 0.08);
+      }
+
+      ajf-node-icon,
+      .ajf-node-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        background: var(--efs-badge);
+        color: var(--efs-on-badge);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+
+        .mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: var(--efs-on-badge);
         }
       }
     }
-    ajf-form-builder {
-      .ajf-fields-list {
-        background: transparent;
+
+    // Field-type category headers (injected by the component to group the
+    // palette items: Structure / Text / Numeric / Choices / Date & time /
+    // Advanced).
+    .ajf-drawer-content .dino-fb-cat-header {
+      padding: 14px 8px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--efs-muted-2);
+      user-select: none;
+      pointer-events: none;
+
+      &:first-child {
+        padding-top: 4px;
       }
-      .ajf-designer ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
-        background: transparent;
-        background-color: transparent;
+    }
+
+    // Designer (structure) area
+    .ajf-designer {
+      padding: 4px 2px;
+
+      .mat-card-container .mat-mdc-card,
+      ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
+        background: var(--efs-surface);
+        border: 1px solid var(--efs-border);
+        border-radius: 10px;
+        box-shadow: var(--efs-card-shadow-sm);
       }
-      .ajf-fields-list .mat-mdc-card-container .mat-mdc-card {
-        margin-left: 50px;
+
+      // The fields-list wrapper ships a hardcoded white background in the Ajf
+      // library; make it follow the theme so it isn't a white strip in dark mode.
+      ajf-fb-node-entry.ajf-fields-list {
+        background: var(--efs-surface);
+      }
+
+      .ajf-highlighted-formbuilder-node > .mat-mdc-card,
+      .ajf-highlighted-formbuilder-node .mat-mdc-card {
+        border-color: efs-primary();
+      }
+
+      .mat-expansion-panel-header {
+        background: var(--efs-slide-head);
+
+        &:hover {
+          background: efs-primary(500, 0.06);
+        }
+      }
+
+      .mat-expansion-panel-header-title {
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--efs-text);
+      }
+
+      ajf-node-icon,
+      .ajf-node-icon {
+        color: efs-primary();
+      }
+    }
+
+    // Properties panel
+    .ajf-formtree-properties {
+      min-width: 312px;
+      max-width: 312px;
+      background: var(--efs-surface);
+      border: 1px solid var(--efs-border);
+      border-radius: 10px;
+      // Fill the row height (was sticky + max-height: 70vh) and scroll inside.
+      position: static;
+      max-height: none;
+      overflow-y: auto;
+
+      ajf-fb-node-properties {
+        .mat-icon {
+          color: efs-primary();
+        }
       }
     }
   }
