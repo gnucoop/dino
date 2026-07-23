@@ -79,6 +79,20 @@ export const PRT: Translation = {
   'Cancel': 'Cancelar',
   'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...':
     'Ex. Questionário de avaliação de um curso: dados do participante, avaliação dos docentes de 1 a 5, comentários livres...',
+  'Add': 'Adicionar',
+  'Add all shown': 'Adicionar todos os exibidos',
+  'Added': 'Adicionado',
+  'Clear': 'Limpar',
+  'In group': 'No grupo',
+  'results': 'resultados',
+  'Filter assigned…': 'Filtrar atribuídos…',
+  'Nothing added for this category yet.': 'Nada adicionado para esta categoria ainda.',
+  'Create group': 'Criar grupo',
+  'Edit group': 'Editar grupo',
+  'View group': 'Ver grupo',
+  'saved': 'salvo',
+  'Oops! Something went wrong while performing the requested action.':
+    'Ops! Algo deu errado ao executar a ação solicitada.',
   '{{language}} already deleted': '{{language}} já deletado',
   '(select only one field)': '(selecionar apenas um campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

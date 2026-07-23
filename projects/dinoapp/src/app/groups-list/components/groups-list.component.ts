@@ -1,12 +1,10 @@
 import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
+import {Router} from '@angular/router';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {UserGroup, UserGroupManager} from '@dino/core/users';
 import {ListDataSource} from '@dino/material/list';
 
 import * as conf from '../conf';
-
-import {GroupsEditor} from './groups-editor.component';
 
 @Component({
   selector: 'dinoapp-groups-list',
@@ -24,7 +22,7 @@ export class GroupsList {
     {
       actionType: 'edit',
       matIcon: 'create',
-      customAction: row => this.openDialog(row, 'edit'),
+      customAction: row => this.openEditor(row, 'edit'),
     },
     {
       actionType: 'delete',
@@ -34,7 +32,7 @@ export class GroupsList {
     {
       actionType: 'view',
       matIcon: 'visibility',
-      customAction: row => this.openDialog(row, 'view'),
+      customAction: row => this.openEditor(row, 'view'),
     },
   ];
 
@@ -43,17 +41,21 @@ export class GroupsList {
   constructor(
     private _userGroupManager: UserGroupManager,
     private _filtersService: FiltersService,
-    public dialog: MatDialog,
+    private _router: Router,
   ) {
     this.dataSource = new ListDataSource(this._userGroupManager, this._filtersService);
   }
 
-  openDialog(group?: UserGroup, action?: 'view' | 'edit' | 'create'): void {
-    this.dialog.open(GroupsEditor, {
-      data: {
-        userGroupItem: group,
-        userGroupAction: action,
-      },
-    });
+  /**
+   * Navigates to the full-page group editor.
+   * @param group The group to edit/view, or undefined to create a new one.
+   * @param action The editor mode.
+   */
+  openEditor(group?: UserGroup, action: 'view' | 'edit' | 'create' = 'create'): void {
+    if (action === 'create' || group == null) {
+      this._router.navigate(['users/groups/create']);
+      return;
+    }
+    this._router.navigate(['users/groups', group.id, action]);
   }
 }
