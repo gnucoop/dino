@@ -1,3 +1,31 @@
+<a name="18.0.4-sw.146"></a>
+# 18.0.4-sw.146 "varied-mole" (2026-07-21)
+### Bug Fixes
+* **aggregation-list:** add updated_at in available headers ([9f381b3](https://github.com/gnucoop/dino/commit/9f381b3451bfcde7acf13ff840f10531e8833b15))
+* **data-service:** tolerant db restore across schema versions ([5f9d31b](https://github.com/gnucoop/dino/commit/5f9d31b059699f92f8f75feccc666710d008de67))
+* **dino-doc:** change link for gh-pages change lang button ([fc2ce77](https://github.com/gnucoop/dino/commit/fc2ce777cf419f8213dbbea3c799fc3e9284783e))
+* **dino-doc:** continue on max_tokens truncation and regenerate interface translations ([2f5cb20](https://github.com/gnucoop/dino/commit/2f5cb20e1b654077a0003b58f093246119705991))
+* **dino-doc:** regenerate truncated pages ([bd42088](https://github.com/gnucoop/dino/commit/bd42088ca398332afaeec496c74ae664e9af9b6b))
+* **dino-doc:** translate eng labels in navbar ([53b43d8](https://github.com/gnucoop/dino/commit/53b43d8fc2e39a6692ca805e73b7c90edbdb385a))
+* **edit-public-form:** enable share button only if all metrics selected. open public form only if all required metrics are in the url. ([3f982ad](https://github.com/gnucoop/dino/commit/3f982ad70baa0fc77b4899b134dd6c4737d449f2))
+* **material/import-form:** add table fields mapping ([8164b3e](https://github.com/gnucoop/dino/commit/8164b3e84f058c4acde2189cb1dafbdde9078fd1))
+* **material/import-form:** button theming and duplicate removal from breadcrumb ([08e809a](https://github.com/gnucoop/dino/commit/08e809acca36637221fce97790e7b1d70329d86a))
+* **material/import-form:** trim metric names ([d125689](https://github.com/gnucoop/dino/commit/d125689d9aab6881eb466024895d102c74281188))
+* **public-form:** align section number badge on mobile ([3917c27](https://github.com/gnucoop/dino/commit/3917c27bdea91b6c815c63f92ff64dad9049c855))
+* **public-form:** gate Next/Send from load, not after first field edit ([7d2373c](https://github.com/gnucoop/dino/commit/7d2373ca86607231f223c8d52ef8124c2acf891e))
+* **public-form:** remove old-header flash and brand footer jump on load ([0f27c8c](https://github.com/gnucoop/dino/commit/0f27c8ce35ac24ee65d6bc81bc6e1b2b3496532d))
+* **public-form:** use dvh height so the mobile footer stays visible ([7b32bde](https://github.com/gnucoop/dino/commit/7b32bded0f4c42f8183b3741f70e3e0fe17a4d75))
+### Features
+* **docker:** add Dinoapp production image and CI publish job ([68e4f71](https://github.com/gnucoop/dino/commit/68e4f713157e2615fa6048b13de6b35307330b63))
+* **import-form:** full-page import data wizard ([bfa00f5](https://github.com/gnucoop/dino/commit/bfa00f5818c8fb90e49ef27ca462f5a19e82ed9a))
+* **material/list:** player for audio fields in form list ([1ab2aff](https://github.com/gnucoop/dino/commit/1ab2aff4e6d0f74b467e8fd277018b446d472c22))
+* **public-form:** add "scroll for more" hint on long sections ([b2ad751](https://github.com/gnucoop/dino/commit/b2ad75140ebab440a697e427801b5d31299019dc))
+* **public-form:** add section progress bar above the survey title ([f6ffe52](https://github.com/gnucoop/dino/commit/f6ffe52556f8054a4a100d2588ad281179e4c484))
+* **public-form:** footer branding, cleaner spacing, per-section Next gating ([fef3c4e](https://github.com/gnucoop/dino/commit/fef3c4e10b829d7b23035fd33489966b269639e7))
+* **public-form:** redesign anonymous survey UI, themable + language-only chrome ([89434e4](https://github.com/gnucoop/dino/commit/89434e4278687f43046a04fd25ac7ff6116197ae))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.4"></a>
 # 18.0.4 "managing-swift" (2026-03-09)
 ### Bug Fixes
