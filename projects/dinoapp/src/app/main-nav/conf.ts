@@ -119,6 +119,19 @@ if (environment.usersConfig.adminSections) {
 
 export const adminSections = adSections;
 
+const DOC_LANG_BY_APP_LANG: {[appLang: string]: string} = {
+  ENG: 'en',
+  ITA: 'it',
+  ESP: 'es',
+  FRA: 'fr',
+  PRT: 'pt',
+  UKR: 'uk',
+  AR: 'ar',
+};
+const defaultDocLang =
+  DOC_LANG_BY_APP_LANG[environment.languageConfig.defaultLanguage ?? 'ENG'] ?? 'en';
+const defaultHelpUrl = `https://gnucoop.github.io/dino/${defaultDocLang}/`;
+
 export const linkIcons = [
   {
     icon: 'info',
@@ -131,9 +144,7 @@ export const linkIcons = [
   },
   {
     icon: 'help',
-    url: environment.layoutConfig.helpUrl
-      ? environment.layoutConfig.helpUrl
-      : 'https://www.youtube.com/playlist?list=PLpjIT7_A7bIn5QHdf_URfNZqHDGKPpxQf',
+    url: environment.layoutConfig.helpUrl ? environment.layoutConfig.helpUrl : defaultHelpUrl,
     tooltip: environment.layoutConfig.helpTooltip
       ? environment.layoutConfig.helpTooltip
       : 'Learn about DINO!',
