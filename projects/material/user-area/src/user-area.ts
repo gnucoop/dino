@@ -42,7 +42,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {BehaviorSubject, Observable, of as obsOf, Subject} from 'rxjs';
-import {map, startWith, switchMap, take, takeUntil} from 'rxjs/operators';
+import {map, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
 import {DinoTheme, ThemeService} from '@dino/material/core';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
@@ -532,13 +532,18 @@ export class UserArea implements OnDestroy {
         ),
       )
       .pipe(
-        map(confirmation => {
+        switchMap(confirmation => {
           if (!confirmation || this._file == null) {
             this.closeDialog();
-            return null;
+            return obsOf(null);
           }
           this.processing.next(true);
-          return this._ds.importDatabase(this._file);
+          // Restore reassigns ownership of imported form/report data to the current
+          // user, so resolve the active user's id and pass it to the import.
+          return this._udm.getActiveUserData().pipe(
+            take(1),
+            tap(userData => this._ds.importDatabase(this._file!, userData?.id)),
+          );
         }),
         take(1),
       )

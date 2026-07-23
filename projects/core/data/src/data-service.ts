@@ -141,6 +141,33 @@ interface RegisteredCollection extends CollectionSyncParams {
 }
 
 /**
+ * Collections included in a data backup produced by {@link DataService.exportDatabase}.
+ * Only "data" collections are exported; user/config collections managed by the backend
+ * (`user_data`, `user_role`, `user_group`, `notification`, `log`) are intentionally
+ * excluded so a backup can be safely restored on a backend deployment.
+ */
+export const BACKUP_DATA_COLLECTIONS: readonly string[] = [
+  'form_schema',
+  'form_data',
+  'report_schema',
+  'report_data',
+  'form_schema_deps',
+  'form_status',
+  'lang',
+  'area',
+  'case',
+  'project',
+  'location',
+  'organization',
+];
+
+/**
+ * Collections whose documents carry a `user_data_ref_id` that must be reassigned to the
+ * importing user on restore.
+ */
+const OWNED_DATA_COLLECTIONS: readonly string[] = ['form_data', 'report_data'];
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -726,11 +753,21 @@ export class DataService implements IDataService {
   }
 
   /**
-   * Exports the Db instance content to a json file
+   * Exports the Db instance content to a json file.
+   *
+   * Only the "data" collections listed in {@link BACKUP_DATA_COLLECTIONS} are included;
+   * user/config collections managed by the backend are stripped from the dump so the
+   * resulting file can be safely restored on a backend deployment.
    */
   exportDatabase(): Observable<Blob> {
     return this._db.pipe(
       switchMap(db => from(db.exportJSON())),
+      map(json => ({
+        ...json,
+        collections: (json.collections ?? []).filter(c =>
+          BACKUP_DATA_COLLECTIONS.includes(c.name),
+        ),
+      })),
       map(json => new Blob([JSON.stringify(json, null, 2)], {type: 'application/json'})),
       tap(c => {
         if (c != null) {
@@ -760,9 +797,16 @@ export class DataService implements IDataService {
    *   is missing locally (RxDB `importJSON` throws JD1 otherwise) — such
    *   collections are skipped and logged instead.
    *
+   * When `ownerUserDataId` is provided, every restored `form_data` / `report_data`
+   * document has its `user_data_ref_id` rewritten to that id, so restored records become
+   * owned by the importing user instead of the (possibly foreign) collector referenced in
+   * the dump.
+   *
    * @param dumpfile The blob of the db dump file to import
+   * @param ownerUserDataId The `user_data` id of the importing user, used to reassign
+   *   ownership of restored data records. When omitted, existing values are kept.
    */
-  importDatabase(dumpfile: Blob): void {
+  importDatabase(dumpfile: Blob, ownerUserDataId?: string): void {
     const fr = new FileReader();
     fr.onload = evt => {
       const res = evt.target?.result;
@@ -793,7 +837,9 @@ export class DataService implements IDataService {
       this._db
         .pipe(
           take(1),
-          switchMap(db => from(this._restoreCollections(db, dump.collections!))),
+          switchMap(db =>
+            from(this._restoreCollections(db, dump.collections!, ownerUserDataId)),
+          ),
           catchError(err => {
             if (isDevMode()) {
               console.error('Restore: a fatal error occurred.', err);
@@ -818,13 +864,21 @@ export class DataService implements IDataService {
    * by an older schema version are still written (they are validated against
    * the current schema on write).
    *
+   * When `ownerUserDataId` is a non-empty string, the `user_data_ref_id` of every
+   * document belonging to an owned data collection ({@link OWNED_DATA_COLLECTIONS}) is
+   * overwritten with it, reassigning the record to the importing user. The non-empty
+   * check guards a required schema field from being clobbered with `undefined` when no
+   * active user can be resolved.
+   *
    * @param db The current RxDatabase instance
    * @param collections The `collections` array from the parsed dump
+   * @param ownerUserDataId The `user_data` id to reassign restored data records to
    * @returns True if at least one document was written and none failed
    */
   private async _restoreCollections(
     db: RxDatabase,
     collections: {name: string; docs?: any[]}[],
+    ownerUserDataId?: string,
   ): Promise<boolean> {
     // Fields managed internally by RxDB that must not be written back
     // verbatim; RxDB re-generates them on insert.
@@ -840,9 +894,17 @@ export class DataService implements IDataService {
         continue;
       }
 
+      const reassignOwner =
+        ownerUserDataId != null &&
+        ownerUserDataId.length > 0 &&
+        OWNED_DATA_COLLECTIONS.includes(coll.name);
+
       const docs = (coll.docs || []).map(doc => {
         const clean: {[key: string]: any} = {...doc};
         managedFields.forEach(field => delete clean[field]);
+        if (reassignOwner) {
+          clean['user_data_ref_id'] = ownerUserDataId;
+        }
         return clean;
       });
       if (docs.length === 0) {
