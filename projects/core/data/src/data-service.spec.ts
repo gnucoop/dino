@@ -9,7 +9,13 @@ import {RxJsonSchema} from 'rxdb';
 import {firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
-import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from './public_api';
+import {
+  BACKUP_DATA_COLLECTIONS,
+  DATA_SERVICE_CONFIG,
+  DataService,
+  DataServiceConfig,
+  Model,
+} from './public_api';
 
 interface DummyModel extends Model {
   name: string;
@@ -198,5 +204,140 @@ describe('Data service - CRUD methods', () => {
     const findParams = {collectionName};
     const result = await firstValueFrom(dataService.find<DummyModel>(findParams).pipe(take(1)));
     expect(result).not.toBeNull();
+  });
+});
+
+describe('Data service - backup/restore', () => {
+  let dataService: DataService;
+  let currentDate: string;
+
+  // A whitelisted "data" collection that carries the owner field.
+  const formDataTestSchema: RxJsonSchema<any> = {
+    title: 'form data test schema',
+    version: 0,
+    description: 'minimal form_data schema for backup/restore tests',
+    type: 'object',
+    primaryKey: 'id',
+    properties: {
+      id: {type: 'string', maxLength: 200},
+      user_data_ref_id: {type: 'string', maxLength: 200},
+      created_at: {type: 'string'},
+      updated_at: {type: ['string', 'null']},
+    },
+  };
+  // A user/config collection that must be excluded from backups.
+  const userDataTestSchema: RxJsonSchema<any> = {
+    title: 'user data test schema',
+    version: 0,
+    description: 'minimal user_data schema for backup/restore tests',
+    type: 'object',
+    primaryKey: 'id',
+    properties: {
+      id: {type: 'string', maxLength: 200},
+      name: {type: 'string'},
+    },
+  };
+
+  const formDataColl = {name: 'form_data', collection: {schema: formDataTestSchema}};
+  const userDataColl = {name: 'user_data', collection: {schema: userDataTestSchema}};
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        RouterTestingModule,
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+    currentDate = new Date().toISOString().split('T')[0];
+    await firstValueFrom(dataService.createCollection(formDataColl).pipe(take(1)));
+    await firstValueFrom(dataService.createCollection(userDataColl).pipe(take(1)));
+  });
+
+  afterEach(async () => {
+    await firstValueFrom(dataService.destroyCollection('form_data').pipe(take(1)));
+    await firstValueFrom(dataService.destroyCollection('user_data').pipe(take(1)));
+  });
+
+  it('should export only whitelisted data collections', async () => {
+    await firstValueFrom(
+      dataService
+        .insert<any>({
+          collectionName: 'form_data',
+          object: {user_data_ref_id: 'other-user', created_at: currentDate},
+        })
+        .pipe(take(1)),
+    );
+    await firstValueFrom(
+      dataService
+        .insert<any>({collectionName: 'user_data', object: {name: 'someone'}})
+        .pipe(take(1)),
+    );
+
+    const blob = await firstValueFrom(dataService.exportDatabase().pipe(take(1)));
+    const dump = JSON.parse(await blob.text());
+    const names: string[] = dump.collections.map((c: {name: string}) => c.name);
+
+    expect(names).toContain('form_data');
+    expect(names).not.toContain('user_data');
+    // Every exported collection must belong to the whitelist.
+    names.forEach(name => expect(BACKUP_DATA_COLLECTIONS).toContain(name));
+  });
+
+  it('should reassign user_data_ref_id to the importing user on restore', async () => {
+    const dump = {
+      collections: [
+        {
+          name: 'form_data',
+          schemaHash: 'ignored',
+          docs: [
+            {id: 'd1', user_data_ref_id: 'other-user', created_at: currentDate, updated_at: null},
+            {id: 'd2', user_data_ref_id: '', created_at: currentDate, updated_at: null},
+          ],
+        },
+      ],
+    };
+    const blob = new Blob([JSON.stringify(dump)], {type: 'application/json'});
+
+    const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
+    dataService.importDatabase(blob, 'importer-id');
+    expect(await imported).toBe(true);
+
+    const d1 = await firstValueFrom(
+      dataService.get<any>({collectionName: 'form_data', id: 'd1'}).pipe(take(1)),
+    );
+    const d2 = await firstValueFrom(
+      dataService.get<any>({collectionName: 'form_data', id: 'd2'}).pipe(take(1)),
+    );
+    expect(d1!._data.user_data_ref_id).toBe('importer-id');
+    expect(d2!._data.user_data_ref_id).toBe('importer-id');
+  });
+
+  it('should keep the original user_data_ref_id when no owner id is given', async () => {
+    const dump = {
+      collections: [
+        {
+          name: 'form_data',
+          schemaHash: 'ignored',
+          docs: [
+            {id: 'd3', user_data_ref_id: 'keep-me', created_at: currentDate, updated_at: null},
+          ],
+        },
+      ],
+    };
+    const blob = new Blob([JSON.stringify(dump)], {type: 'application/json'});
+
+    const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
+    dataService.importDatabase(blob);
+    expect(await imported).toBe(true);
+
+    const d3 = await firstValueFrom(
+      dataService.get<any>({collectionName: 'form_data', id: 'd3'}).pipe(take(1)),
+    );
+    expect(d3!._data.user_data_ref_id).toBe('keep-me');
   });
 });
