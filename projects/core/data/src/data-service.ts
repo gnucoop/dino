@@ -859,10 +859,13 @@ export class DataService implements IDataService {
    *
    * Documents are upserted, so existing documents sharing the same id are
    * overwritten — matching the confirmation shown to the user before the
-   * restore. Collections present in the dump but not registered locally are
-   * skipped. Schema hashes are intentionally ignored, so documents produced
-   * by an older schema version are still written (they are validated against
-   * the current schema on write).
+   * restore. Collections present in the dump but not registered locally, or
+   * not listed in {@link BACKUP_DATA_COLLECTIONS}, are skipped — the latter
+   * guards against dumps produced before this whitelist existed (or hand-edited
+   * files) from writing into backend-managed collections, which would then be
+   * pushed to the backend through their active sync replication. Schema hashes
+   * are intentionally ignored, so documents produced by an older schema version
+   * are still written (they are validated against the current schema on write).
    *
    * When `ownerUserDataId` is a non-empty string, the `user_data_ref_id` of every
    * document belonging to an owned data collection ({@link OWNED_DATA_COLLECTIONS}) is
@@ -888,6 +891,11 @@ export class DataService implements IDataService {
     let totalFailed = 0;
 
     for (const coll of collections) {
+      if (!BACKUP_DATA_COLLECTIONS.includes(coll.name)) {
+        skipped.push(coll.name);
+        continue;
+      }
+
       const collection = db.collections[coll.name] as RxCollection | undefined;
       if (collection == null) {
         skipped.push(coll.name);
