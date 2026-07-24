@@ -975,6 +975,17 @@ export class DataService implements IDataService {
       }
     }
 
+    // Which prerequisite collections were written, and with how many docs each.
+    if (isDevMode()) {
+      console.log(
+        'Restore: prerequisites written:',
+        writtenPrereqCollections.map(coll => ({
+          name: coll.name,
+          docsInDump: dumpByName.get(coll.name)?.docs?.length ?? 0,
+        })),
+      );
+    }
+
     // 2. The owned data collections (form_data / report_data) reference documents in
     //    the collections above. When a live replication is actively pushing to a backend
     //    that enforces referential integrity (Hasura), writing the owned data now would
@@ -990,16 +1001,37 @@ export class DataService implements IDataService {
     const hasActivePrereqSync = writtenPrereqCollections.some(
       coll => this._activeSyncs.getValue()[coll.name] != null,
     );
+    // Gating decision + which prerequisites actually have an active sync.
+    if (isDevMode()) {
+      console.log('Restore: gating decision:', {
+        isLive,
+        isOnline,
+        hasActivePrereqSync,
+        willWait: isLive && isOnline && hasActivePrereqSync,
+        prereqsWithActiveSync: writtenPrereqCollections
+          .map(coll => coll.name)
+          .filter(name => this._activeSyncs.getValue()[name] != null),
+      });
+    }
     if (isLive && isOnline && hasActivePrereqSync) {
+      if (isDevMode()) {
+        console.log('Restore: waiting for prerequisites to be in sync…');
+      }
       await this._awaitCollectionsInSync(
         writtenPrereqCollections.map(coll => coll.name),
         RESTORE_PRESYNC_MAX_WAIT_MS,
       );
+      if (isDevMode()) {
+        console.log('Restore: finished waiting; now writing owned data.');
+      }
     }
 
     // 3. Restore the owned data collections, in the declared order.
     for (const name of BACKUP_DATA_COLLECTIONS) {
       if (OWNED_DATA_COLLECTIONS.includes(name)) {
+        if (isDevMode()) {
+          console.log(`Restore: writing owned data collection "${name}"`);
+        }
         await writeCollection(name);
       }
     }
@@ -1030,10 +1062,27 @@ export class DataService implements IDataService {
     maxWaitMs: number,
   ): Promise<void> {
     const actSyncs = this._activeSyncs.getValue();
+    const started = Date.now();
+    // Track each collection's in-sync resolution individually.
     const waits = collectionNames
-      .map(name => actSyncs[name]?.state)
-      .filter((state): state is NonNullable<typeof state> => state != null)
-      .map(state => state.awaitInSync());
+      .map(name => ({name, state: actSyncs[name]?.state}))
+      .filter(entry => entry.state != null)
+      .map(entry =>
+        entry.state!.awaitInSync().then(() => {
+          if (isDevMode()) {
+            console.log(`Restore: "${entry.name}" reached in-sync after ${Date.now() - started}ms`);
+          }
+        }),
+      );
+    if (isDevMode()) {
+      console.log(
+        'Restore: awaiting in-sync for:',
+        collectionNames.filter(name => actSyncs[name]?.state != null),
+        '(collections without an active sync are ignored:',
+        collectionNames.filter(name => actSyncs[name]?.state == null),
+        ')',
+      );
+    }
     if (waits.length === 0) {
       return;
     }
@@ -1043,7 +1092,7 @@ export class DataService implements IDataService {
       timer = setTimeout(() => {
         if (isDevMode()) {
           console.warn(
-            `Restore: prerequisite collections did not reach in-sync within ${maxWaitMs}ms; ` +
+            `Restore: prerequisites did not reach in-sync within ${maxWaitMs}ms; ` +
               `writing owned data anyway.`,
           );
         }
