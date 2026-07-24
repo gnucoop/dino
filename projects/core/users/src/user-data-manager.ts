@@ -20,14 +20,13 @@
  *
  */
 
-import {Injectable, EventEmitter} from '@angular/core';
+import {Inject, Injectable, EventEmitter} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {AuthService} from '@dino/core/auth';
 import {
   ActionTrigger,
   ActionTriggerData,
-  DataModelManager,
-  DataService,
-  PermissionContextService,
+  DataModelManager,  PermissionContextService,
 } from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
 import {delay, map, retryWhen, shareReplay, skipWhile, switchMap, take, tap} from 'rxjs/operators';
@@ -50,7 +49,7 @@ export class UserDataManager extends DataModelManager<UserData> {
 
   constructor(
     private _authService: AuthService,
-    dataService: DataService,
+    @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
   ) {
     super(

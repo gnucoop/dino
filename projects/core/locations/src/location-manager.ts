@@ -20,12 +20,11 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   CheckMetricPermission,
-  DataModelManager,
-  DataService,
-  PermissionContextService,
+  DataModelManager,  PermissionContextService,
 } from '@dino/core/data';
 
 import {Location, migrationStrategies} from './location';
@@ -37,7 +36,10 @@ import {LocationModule} from './locations.module';
  */
 @Injectable({providedIn: LocationModule})
 export class LocationManager extends DataModelManager<Location> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     super(
       {name: 'location', collection: {schema, migrationStrategies}},
       dataService,

@@ -20,12 +20,11 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   CheckMetricPermission,
-  DataModelManager,
-  DataService,
-  PermissionContextService,
+  DataModelManager,  PermissionContextService,
 } from '@dino/core/data';
 
 import {Area, migrationStrategies} from './area';
@@ -37,7 +36,10 @@ import {AreasModule} from './areas.module';
  */
 @Injectable({providedIn: AreasModule})
 export class AreaManager extends DataModelManager<Area> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     super(
       {name: 'area', collection: {schema, migrationStrategies}},
       dataService,

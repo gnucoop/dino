@@ -21,6 +21,7 @@ export const environment: DinoEnvironment = {
     'syncGraphQLUrl': '__SYNC_GRAPHQL_URL__',
     'wsUrl': '__WS_URL__',
     'instanceName': '__INSTANCE_NAME__',
+    'dataMode': 'offline',
     'authErrorMessage': 'Could not verify JWT: JWTExpired',
     'socketJwtExpiredCode': 4403,
     'formconv_post_url': 'https://formconv.herokuapp.com/result.json',
@@ -81,9 +82,9 @@ export const environment: DinoEnvironment = {
     'logsModule': true,
     'stripePaymentModule': false,
   },
-  pandinoConfig: {
-    pandinoUrl: 'http://localhost:5000',
-    pandinoGptNamespaces: ['Dino'],
+  'pandinoConfig': {
+    'pandinoUrl': 'http://localhost:5000',
+    'pandinoGptNamespaces': ['Dino'],
   },
   'stripePaymentConfig': {
     'stripeKey': '',

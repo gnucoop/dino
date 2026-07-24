@@ -20,12 +20,11 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   CheckMetricPermission,
-  DataModelManager,
-  DataService,
-  PermissionContextService,
+  DataModelManager,  PermissionContextService,
 } from '@dino/core/data';
 
 import {Organization, migrationStrategies} from './organization';
@@ -37,7 +36,10 @@ import {OrganizationsModule} from './organizations.module';
  */
 @Injectable({providedIn: OrganizationsModule})
 export class OrganizationManager extends DataModelManager<Organization> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     super(
       {name: 'organization', collection: {schema, migrationStrategies}},
       dataService,

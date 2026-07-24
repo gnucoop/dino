@@ -18,26 +18,43 @@ const collectionName = name;
 const fields = ['bar', 'baz'];
 
 describe('getQueryGql', () => {
-  it('should create a get query', () => {
-    const expected = `query GetFoo { foo(where: {id: {_eq: "test_id"}}) { bar, baz } }`;
-    const {query, queryName} = getQueryGql(name, fields, 'test_id');
+  it('should create a get query with the id passed as a variable', () => {
+    const expected = `query GetFoo($where: foo_bool_exp!) { foo(where: $where) { bar, baz } }`;
+    const {query, queryName, variables} = getQueryGql(name, fields, 'test_id');
     const queryStr = getGqlString(query);
     expect(queryName).toBe('foo');
     expect(queryStr).toBe(expected);
+    expect(variables).toEqual({where: {id: {_eq: 'test_id'}}});
   });
 });
 
 describe('findQueryGql', () => {
-  it('should create a find query', () => {
-    const expected = `query FindFoo { foo(limit: 10, offset: 2, order_by: {key: desc}, where: {bar: {_eq: "test_bar"}}) { bar, baz } }`;
+  it('should create a find query with dynamic values passed as variables', () => {
+    const expected =
+      `query FindFoo($limit: Int, $offset: Int, $order_by: [foo_order_by!], $where: foo_bool_exp)` +
+      ` { foo(limit: $limit, offset: $offset, order_by: $order_by, where: $where) { bar, baz } }`;
     const request: DataFindRequest<Foo> = {
       collectionName,
       query: {selector: {bar: 'test_bar'}, limit: 10, skip: 2, sort: [{baz: 'desc'}]},
     };
-    const {query, queryName} = findQueryGql(name, fields, request);
+    const {query, queryName, variables} = findQueryGql(name, fields, request);
     const queryStr = getGqlString(query);
     expect(queryName).toBe('foo');
     expect(queryStr).toBe(expected);
+    expect(variables).toEqual({
+      limit: 10,
+      offset: 2,
+      order_by: [{baz: 'desc'}],
+      where: {bar: {_eq: 'test_bar'}},
+    });
+  });
+
+  it('should create a find query with no arguments when the request is empty', () => {
+    const expected = `query FindFoo { foo { bar, baz } }`;
+    const request: DataFindRequest<Foo> = {collectionName};
+    const {query, variables} = findQueryGql(name, fields, request);
+    expect(getGqlString(query)).toBe(expected);
+    expect(variables).toEqual({});
   });
 });
 
@@ -52,15 +69,16 @@ describe('insertQueryGql', () => {
 });
 
 describe('updateQueryGql', () => {
-  it('should create an update query', () => {
-    const expected = `mutation UpdateFoo($_set: foo_set_input!) { update_foo(where: {id: {_eq: "test_id"}}, _set: $_set) { affected_rows, returning { bar, baz } } }`;
+  it('should create an update query with the selector passed as a variable', () => {
+    const expected = `mutation UpdateFoo($where: foo_bool_exp!, $_set: foo_set_input!) { update_foo(where: $where, _set: $_set) { affected_rows, returning { bar, baz } } }`;
     const request: DataFindRequest<Foo> = {
       collectionName,
       query: {selector: {id: 'test_id'}},
     };
-    const {mutation, mutationName} = updateQueryGql<Foo>(name, fields, request);
+    const {mutation, mutationName, variables} = updateQueryGql<Foo>(name, fields, request);
     const mutationStr = getGqlString(mutation);
     expect(mutationName).toBe('update_foo');
     expect(mutationStr).toBe(expected);
+    expect(variables).toEqual({where: {id: {_eq: 'test_id'}}});
   });
 });

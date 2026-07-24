@@ -21,7 +21,8 @@
  */
 
 import {EventEmitter, Inject, Injectable, isDevMode} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
+import {DataModelManager, PermissionContextService} from '@dino/core/data';
 import {dinoTranslations, TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {TranslocoService} from '@ngneat/transloco';
 import {
@@ -220,7 +221,7 @@ export class LangManager extends DataModelManager<Lang> {
     );
 
   constructor(
-    private _ds: DataService,
+    @Inject(DATA_SERVICE) private _ds: IDataService,
     permissionContextService: PermissionContextService,
     private _ts: TranslocoService,
     private _ehms: ErrorHandlerMessageService,
@@ -273,7 +274,11 @@ export class LangManager extends DataModelManager<Lang> {
         map(r => r.filter(l => !l.is_deleted)),
       )
       .subscribe(langs => {
-        const plainLangs = langs.map(l => (l as any).toJSON()) as Lang[];
+        // Offline list items are RxDocuments (have `.toJSON()`); online items
+        // are already plain objects.
+        const plainLangs = langs.map(l =>
+          typeof (l as any)?.toJSON === 'function' ? (l as any).toJSON() : l,
+        ) as Lang[];
         plainLangs.forEach(l => {
           try {
             this._ts.setTranslation(l.schema, l.name);
@@ -427,7 +432,7 @@ export class LangManager extends DataModelManager<Lang> {
         const optimisticStored = currentStored.map(lang => {
           const updated = updatedLangs.find(l => l.name === lang.name);
           if (updated) {
-            return (updated as any).toJSON();
+            return typeof (updated as any)?.toJSON === 'function' ? (updated as any).toJSON() : updated;
           }
           return lang;
         });

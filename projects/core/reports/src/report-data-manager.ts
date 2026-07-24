@@ -20,12 +20,11 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   DataModelManager,
-  DataQueryOptions,
-  DataService,
-  PermissionContextService,
+  DataQueryOptions,  PermissionContextService,
   PullQueryContextChecks,
 } from '@dino/core/data';
 
@@ -35,7 +34,10 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 @Injectable({providedIn: 'root'})
 export class ReportDataManager extends DataModelManager<ReportData> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     const pullQueryContextChecks: PullQueryContextChecks = [
       {checkName: 'user_report_schemas', checkKey: 'report_schema_ref_id'},
       {checkName: 'user_metrics'},

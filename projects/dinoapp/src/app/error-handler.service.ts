@@ -114,6 +114,8 @@ export class ErrorHandlerService implements ErrorHandler {
     } else {
       if (isDevMode()) {
         console.error(`DINO ERROR: ${error.message} \n URL: ${url}`);
+        // Log the full error object so the originating stack frames are visible.
+        console.error(error);
       }
       if (environment.remoteTrackingConfig.errors) {
         Sentry.captureException(error);

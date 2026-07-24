@@ -21,13 +21,12 @@
  */
 
 import {deepCopy} from '@ajf/core/utils';
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   DataListOptions,
   DataModelManager,
-  DataQueryOptions,
-  DataService,
-  PermissionContextService,
+  DataQueryOptions,  PermissionContextService,
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {Observable, of as obsOf} from 'rxjs';
@@ -42,7 +41,10 @@ import {NotificationModule} from './notification.module';
  */
 @Injectable({providedIn: NotificationModule})
 export class NotificationManager extends DataModelManager<Notification> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     super(
       {name: 'notification', collection: {schema}},
       dataService,

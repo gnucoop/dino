@@ -20,12 +20,11 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   DataModelManager,
-  DataQueryOptions,
-  DataService,
-  PermissionContextService,
+  DataQueryOptions,  PermissionContextService,
 } from '@dino/core/data';
 
 import {migrationStrategies, ReportSchema} from './report-schema';
@@ -38,7 +37,7 @@ import {AjfReportVariable} from '@ajf/core/reports';
 @Injectable({providedIn: 'root'})
 export class ReportSchemaManager extends DataModelManager<ReportSchema> {
   constructor(
-    dataService: DataService,
+    @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
     private _rdm: ReportDataManager,
   ) {

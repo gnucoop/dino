@@ -20,8 +20,9 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
+import {DataModelManager, PermissionContextService} from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {FormSchema} from './form-schema';
@@ -31,7 +32,10 @@ import {schema} from './form-status-json';
 
 @Injectable({providedIn: 'root'})
 export class FormStatusManager extends DataModelManager<FormStatus> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     schema.indexes = [...(schema.indexes || []), ...indexes];
     const collection = {name: 'form_status', collection: {schema, migrationStrategies}};
     super(collection, dataService, permissionContextService);

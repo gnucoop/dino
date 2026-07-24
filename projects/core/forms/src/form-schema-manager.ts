@@ -20,14 +20,13 @@
  *
  */
 
-import {Injectable, Optional} from '@angular/core';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   AjfCustomFunctions,
   DataModelManager,
   DataQueryOptions,
-  DataQuerySelector,
-  DataService,
-  Metric,
+  DataQuerySelector,  Metric,
   MetricsService,
   PermissionContextService,
   populateDocRefs,
@@ -85,7 +84,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
   private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
 
   constructor(
-    dataService: DataService,
+    @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
     private _metricService: MetricsService,
     private _fdm: FormDataManager,

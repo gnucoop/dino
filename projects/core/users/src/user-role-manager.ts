@@ -20,8 +20,9 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
+import {DataModelManager, PermissionContextService} from '@dino/core/data';
 
 import {migrationStrategies, UserRole} from './user-role';
 import {schema} from './user-role-json';
@@ -31,7 +32,10 @@ import {schema} from './user-role-json';
  */
 @Injectable({providedIn: 'root'})
 export class UserRoleManager extends DataModelManager<UserRole> {
-  constructor(dataService: DataService, permissionContextService: PermissionContextService) {
+  constructor(
+    @Inject(DATA_SERVICE) dataService: IDataService,
+    permissionContextService: PermissionContextService,
+  ) {
     super(
       {name: 'user_role', collection: {schema, migrationStrategies}},
       dataService,

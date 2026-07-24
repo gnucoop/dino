@@ -251,6 +251,10 @@ export class Collect implements OnDestroy {
       switchMap(([isCollect, menuItems, permissionContext]) => {
         if (isCollect !== 'custom') {
           let result: Observable<(RxDocument<FormSchema> | RxDocument<ReportSchema>)[]>;
+          // Collection name for permission checks. Offline results are RxDocuments
+          // exposing `.collection.name`, but online results are plain objects, so
+          // derive it from the collect type instead.
+          const collectionName = isCollect === 'reports' ? 'report_schema' : 'form_schema';
           if (isCollect === 'reports') {
             result = this._rs.list();
             this.displayAddButton = this._pcs
@@ -277,7 +281,7 @@ export class Collect implements OnDestroy {
                   schemaId: document.id,
                   editable: this._pcs.checkPermission(
                     document.id,
-                    document.collection.name,
+                    collectionName,
                     'edit',
                     permissionContext,
                   ),

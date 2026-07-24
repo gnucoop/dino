@@ -44,6 +44,15 @@ export interface DataConfig {
    */
   instanceName: string;
   /**
+   * Selects the data access strategy for the whole app:
+   * - 'offline' (default): offline-first, RxDB local database with GraphQL
+   *   replication/sync (DataService).
+   * - 'online': online-first, every operation goes straight to the GraphQL
+   *   backend via Apollo, with no local persistence or sync (OnlineDataService).
+   * If omitted, 'offline' is assumed.
+   */
+  dataMode?: 'online' | 'offline';
+  /**
    * When true, graphql replication happens.
    * Defaults to true.
    */
@@ -387,6 +396,7 @@ export type availableSection =
   | 'languages'
   | 'notifications'
   | 'ai'
+  | 'gpt'
   | 'rag';
 
 /**

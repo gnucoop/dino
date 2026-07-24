@@ -20,12 +20,11 @@
  *
  */
 
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   CheckMetricPermission,
-  DataModelManager,
-  DataService,
-  PermissionContextService,
+  DataModelManager,  PermissionContextService,
 } from '@dino/core/data';
 
 import {Case, migrationStrategies} from './case';
@@ -51,7 +50,7 @@ import {transformDateByLocale} from '@dino/core/langs';
 @Injectable({providedIn: CasesModule})
 export class CaseManager extends DataModelManager<Case> {
   constructor(
-    dataService: DataService,
+    @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
     private _httpClient: HttpClient,
     private _ts: TranslocoService,

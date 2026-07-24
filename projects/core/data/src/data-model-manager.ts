@@ -30,7 +30,6 @@ import {
 } from './data-create-collection-request';
 import {IDataModelManager} from './data-model-manager-interface';
 import {Permission} from './data-permission';
-import {DataService} from './data-service';
 import {IDataService} from './data-service-interface';
 import {Model} from './model';
 
@@ -51,21 +50,19 @@ export abstract class DataModelManager<T extends Model = Model>
 
   constructor(
     createParams: DataCreateCollectionRequest,
-    dataService: DataService,
+    dataService: IDataService,
     contextService: PermissionContextService,
     permissions: Permission[] = [],
     pullQueryContextChecks?: PullQueryContextChecks,
   ) {
-    super(
-      createParams,
-      dataService as IDataService,
-      contextService,
-      permissions,
-      pullQueryContextChecks,
-    );
+    super(createParams, dataService, contextService, permissions, pullQueryContextChecks);
   }
 
   protected override _objectToJSON(obj: RxDocument<T, {}>): DeepReadonlyObject<T> {
-    return obj.toJSON() as DeepReadonlyObject<T>;
+    // Offline results are RxDocuments (with `.toJSON()`); online results are
+    // already plain objects. Handle both so a single manager works in both modes.
+    return typeof (obj as unknown as {toJSON?: unknown})?.toJSON === 'function'
+      ? (obj.toJSON() as DeepReadonlyObject<T>)
+      : (JSON.parse(JSON.stringify(obj)) as DeepReadonlyObject<T>);
   }
 }

@@ -20,16 +20,15 @@
  *
  */
 
-import {Injectable, isDevMode} from '@angular/core';
+import {Inject, Injectable, isDevMode} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   DataModelManager,
-  DataQueryOptions,
-  DataService,
-  MetricsService,
+  DataQueryOptions,  MetricsService,
   PermissionContextService,
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
-import {forkJoin, from, Observable, of as obsOf} from 'rxjs';
+import {forkJoin, Observable, of as obsOf} from 'rxjs';
 import {delay, filter, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
 import {migrationStrategies, UserGroup} from './user-group';
@@ -47,7 +46,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
   constructor(
     private _userModelManager: UserDataManager,
     private _metricService: MetricsService,
-    dataService: DataService,
+    @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
   ) {
     super(
@@ -247,8 +246,11 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
       switchMap(([userGroups, userMetrics]) => {
         const ug: Observable<[RxDocument<UserRole, {}>, RxDocument<UserGroup, {}>]>[] =
           userGroups.map(gr => {
-            let refProp: Observable<RxDocument<UserRole>>;
-            refProp = from(gr.populate('user_role_ref_id'));
+            const refProp = this._populateRef<UserRole>(
+              gr,
+              'user_role_ref_id',
+              'user_role',
+            ) as Observable<RxDocument<UserRole>>;
             return forkJoin([refProp, obsOf(gr)]).pipe(
               tap(([role, group]) => {
                 if (role == null || group == null) {

@@ -68,7 +68,12 @@ export function populateDocRefs<T extends Model = Model>(
 export function rxDocsToJson<T extends Model = Model>(docs: RxDocument<T>[]): T[] {
   let docsJson: T[] = [];
   docs.forEach(doc => {
-    docsJson.push(clone(doc.toJSON()) as T);
+    // Offline docs are RxDocuments (have `.toJSON()`); online docs are already
+    // plain objects.
+    const json = typeof (doc as unknown as {toJSON?: unknown})?.toJSON === 'function'
+      ? doc.toJSON()
+      : doc;
+    docsJson.push(clone(json) as T);
   });
   return docsJson;
 }

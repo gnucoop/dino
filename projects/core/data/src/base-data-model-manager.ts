@@ -22,7 +22,7 @@
 
 import {deepCopy} from '@ajf/core/utils';
 import {DeepReadonlyObject, MangoQuery, MangoQuerySelector, RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, Observable, of as obsOf, throwError, zip} from 'rxjs';
+import {BehaviorSubject, from, Observable, of as obsOf, throwError, zip} from 'rxjs';
 import {catchError, filter, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {PermissionContextService} from './data-context-service';
@@ -704,6 +704,34 @@ export abstract class BaseDataModelManager<T extends Model = Model, R extends T 
    */
   protected _objectToJSON(obj: R): DeepReadonlyObject<T> {
     return JSON.parse(JSON.stringify(obj));
+  }
+
+  /**
+   * Resolves a single-id reference field to its target document in a
+   * backend-agnostic way. Offline results are RxDocuments and use RxDB's
+   * `.populate()`; online results are plain objects, so the reference id is
+   * resolved via the data service instead.
+   * @param doc The document holding the reference field.
+   * @param refField The reference field name (e.g. 'user_role_ref_id').
+   * @param refCollectionName The collection the reference points to (e.g. 'user_role').
+   * @returns The referenced document, or null if the reference is empty.
+   */
+  protected _populateRef<X extends Model = Model>(
+    doc: any,
+    refField: string,
+    refCollectionName: string,
+  ): Observable<X | null> {
+    if (doc == null) {
+      return obsOf(null);
+    }
+    if (typeof doc.populate === 'function') {
+      return from(doc.populate(refField) as Promise<X | null>);
+    }
+    const id = doc[refField];
+    if (id == null) {
+      return obsOf(null);
+    }
+    return this._dataService.get<X, X>({collectionName: refCollectionName, id}).pipe(take(1));
   }
 
   /**

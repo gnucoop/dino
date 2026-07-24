@@ -20,8 +20,9 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
+import {Inject, Injectable} from '@angular/core';
+import {DATA_SERVICE, IDataService} from '@dino/core/data';
+import {DataModelManager, PermissionContextService} from '@dino/core/data';
 import {FormSchemaManager, FormData} from '@dino/core/forms';
 import {Observable, of as obsOf} from 'rxjs';
 
@@ -36,7 +37,7 @@ import {LogModule} from './log.module';
 export class LogManager extends DataModelManager<Log> {
   constructor(
     private _fsm: FormSchemaManager,
-    dataService: DataService,
+    @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
   ) {
     super(

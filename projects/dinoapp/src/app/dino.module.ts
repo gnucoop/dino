@@ -1,7 +1,15 @@
 import {OverlayModule} from '@angular/cdk/overlay';
 import {ServiceWorkerModule} from '@angular/service-worker';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {APP_INITIALIZER, ErrorHandler, inject, isDevMode, NgModule, Optional} from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ErrorHandler,
+  Inject,
+  inject,
+  isDevMode,
+  NgModule,
+  Optional,
+} from '@angular/core';
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
@@ -14,9 +22,12 @@ import {AuthModule as DinoAuthModule, AuthService, JWTInterceptor} from '@dino/c
 import {ConfigModule as DinoConfigModule} from '@dino/core/config';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
 import {
+  DATA_SERVICE,
   DataModule,
   DataService,
   DataServiceConfig,
+  IDataService,
+  OnlineDataService,
   PANDINO_SERVICE_CONFIG,
   PandinoConfig,
   PermissionContextService,
@@ -312,6 +323,16 @@ export function provideMatDateLocale(ts: TranslocoService) {
       provide: DataService,
       useClass: environment.e2eConfig?.enabled ? DataServiceMock : DataService,
     },
+    // The active data service, selected once for the whole app. Managers inject
+    // DATA_SERVICE (not a concrete class), so the same manager class runs over
+    // either the offline RxDB DataService or the online Apollo OnlineDataService.
+    // 'offline' (default) aliases the DataService token, preserving the existing
+    // e2e/backendless swaps above.
+    {
+      provide: DATA_SERVICE,
+      useExisting:
+        environment.dataConfig.dataMode === 'online' ? OnlineDataService : DataService,
+    },
     {
       provide: UserGroupManager,
       useClass: environment.e2eConfig?.enabled
@@ -366,7 +387,7 @@ export class AppModule {
   constructor(
     private _sync: SyncManager,
     private _auth: AuthService,
-    private _ds: DataService,
+    @Inject(DATA_SERVICE) private _ds: IDataService,
     private _pcs: PermissionContextService,
     private _lm: LangManager,
     private _as: ActionsService,

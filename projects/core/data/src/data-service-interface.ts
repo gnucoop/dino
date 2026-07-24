@@ -20,6 +20,7 @@
  *
  */
 
+import {EventEmitter} from '@angular/core';
 import {Observable} from 'rxjs';
 import {
   DataCreateCollectionRequest,
@@ -108,6 +109,21 @@ export interface IDataService {
   readonly config: DataServiceConfig;
 
   readonly collectionChanged: Observable<CollectionChangedEvent>;
+
+  /**
+   * Emits 'started' when collection initialization begins and 'completed' when
+   * it finishes. In offline mode this is driven by the sync/replication
+   * lifecycle; in online mode there is no local sync, so completion is
+   * signalled as soon as collections are registered.
+   */
+  readonly collectionsInitialized: EventEmitter<'started' | 'completed'>;
+
+  /**
+   * Emits true once the named collection has completed its first sync. In
+   * online mode (no local replication) this emits true immediately.
+   * @param name The collection name.
+   */
+  collectionFirstSyncCompleted(name: string): Observable<boolean>;
 
   /**
    * Get an object from the database.

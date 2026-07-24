@@ -41,6 +41,7 @@ export * from './data-permission-interface';
 export * from './data-service';
 export * from './data-service-config';
 export * from './data-service-interface';
+export * from './data-service-token';
 export * from './data-upsert-request';
 export * from './data-utility-functions';
 export * from './import-utils';
