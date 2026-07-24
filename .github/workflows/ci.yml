@@ -157,6 +157,12 @@ jobs:
   docker-image:
     name: Build and Push Dinoapp Docker image
     needs: [lint-and-build, unit-tests, e2e-tests]
+    # Build/push only on release commits — the same gate Vercel uses in
+    # projects/dinoapp/vercel-build-step.sh — so ordinary PR merges do not
+    # produce an image.
+    if: >-
+      startsWith(github.event.head_commit.message, 'release: cut the v') ||
+      startsWith(github.event.head_commit.message, 'build: Manifest and worker sw_version upgraded to ')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -184,7 +190,7 @@ jobs:
           tags: |
             type=raw,value=dev-${{ steps.version.outputs.tag }},enable=${{ github.ref == 'refs/heads/dev' }}
             type=raw,value=prod-${{ steps.version.outputs.tag }},enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/dev' }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6
