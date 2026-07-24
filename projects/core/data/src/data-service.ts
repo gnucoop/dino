@@ -45,6 +45,7 @@ import {RxDBJsonDumpPlugin} from 'rxdb/plugins/json-dump';
 import {
   BehaviorSubject,
   combineLatest,
+  firstValueFrom,
   forkJoin,
   from,
   interval,
@@ -145,27 +146,42 @@ interface RegisteredCollection extends CollectionSyncParams {
  * Only "data" collections are exported; user/config collections managed by the backend
  * (`user_data`, `user_role`, `user_group`, `notification`, `log`) are intentionally
  * excluded so a backup can be safely restored on a backend deployment.
+ * The order of this array is the dependency order used on restore: referenced
+ * collections come first and the owned data collections ({@link OWNED_DATA_COLLECTIONS})
+ * come last, so that on a live backend their sync push cannot precede — and thus violate
+ * a foreign key against — the collections they reference. See {@link DataService.importDatabase}.
  */
 export const BACKUP_DATA_COLLECTIONS: readonly string[] = [
-  'form_schema',
-  'form_data',
-  'report_schema',
-  'report_data',
-  'form_schema_deps',
-  'form_status',
-  'lang',
   'area',
   'case',
   'project',
   'location',
   'organization',
+  'form_schema',
+  'report_schema',
+  'form_schema_deps',
+  'form_status',
+  'lang',
+  'report_data',
+  'form_data',
 ];
 
 /**
  * Collections whose documents carry a `user_data_ref_id` that must be reassigned to the
- * importing user on restore.
+ * importing user on restore. These reference documents in the other backup collections,
+ * so on a restore against a live backend they are written (and therefore pushed) last,
+ * after the referenced collections are confirmed in sync — see {@link DataService.importDatabase}.
  */
 const OWNED_DATA_COLLECTIONS: readonly string[] = ['form_data', 'report_data'];
+
+/**
+ * Safety cap for how long a restore waits for the referenced collections to be pushed to
+ * the backend before writing the owned data collections. It is NOT the ordering mechanism
+ * (that is {@link RxReplicationState.awaitInSync}); it only prevents the restore from hanging
+ * indefinitely when a prerequisite never reaches in-sync. On expiry the owned data is written
+ * anyway and any resulting sync error is left to the normal replication retry mechanism.
+ */
+const RESTORE_PRESYNC_MAX_WAIT_MS = 60000;
 
 /**
  * Service that allows to interact with the local database.
@@ -764,9 +780,7 @@ export class DataService implements IDataService {
       switchMap(db => from(db.exportJSON())),
       map(json => ({
         ...json,
-        collections: (json.collections ?? []).filter(c =>
-          BACKUP_DATA_COLLECTIONS.includes(c.name),
-        ),
+        collections: (json.collections ?? []).filter(c => BACKUP_DATA_COLLECTIONS.includes(c.name)),
       })),
       map(json => new Blob([JSON.stringify(json, null, 2)], {type: 'application/json'})),
       tap(c => {
@@ -837,9 +851,7 @@ export class DataService implements IDataService {
       this._db
         .pipe(
           take(1),
-          switchMap(db =>
-            from(this._restoreCollections(db, dump.collections!, ownerUserDataId)),
-          ),
+          switchMap(db => from(this._restoreCollections(db, dump.collections!, ownerUserDataId))),
           catchError(err => {
             if (isDevMode()) {
               console.error('Restore: a fatal error occurred.', err);
@@ -890,22 +902,39 @@ export class DataService implements IDataService {
     let totalWritten = 0;
     let totalFailed = 0;
 
+    // Drive the restore by the dependency order declared in BACKUP_DATA_COLLECTIONS
+    // rather than by the (arbitrary) order the collections happen to appear in the
+    // dump file, so the owned data collections are always written last.
+    const dumpByName = new Map(collections.map(coll => [coll.name, coll]));
+
+    // Collections present in the dump but not whitelisted are skipped: this guards
+    // backend-managed collections from being written and then pushed to the backend
+    // through their active sync replication.
     for (const coll of collections) {
       if (!BACKUP_DATA_COLLECTIONS.includes(coll.name)) {
         skipped.push(coll.name);
-        continue;
+      }
+    }
+
+    // Writes a single dump collection into its local RxCollection, applying owner
+    // reassignment when required. Returns the RxCollection when at least one document
+    // was written, null otherwise.
+    const writeCollection = async (name: string): Promise<RxCollection | null> => {
+      const coll = dumpByName.get(name);
+      if (coll == null) {
+        return null;
       }
 
-      const collection = db.collections[coll.name] as RxCollection | undefined;
+      const collection = db.collections[name] as RxCollection | undefined;
       if (collection == null) {
-        skipped.push(coll.name);
-        continue;
+        skipped.push(name);
+        return null;
       }
 
       const reassignOwner =
         ownerUserDataId != null &&
         ownerUserDataId.length > 0 &&
-        OWNED_DATA_COLLECTIONS.includes(coll.name);
+        OWNED_DATA_COLLECTIONS.includes(name);
 
       const docs = (coll.docs || []).map(doc => {
         const clean: {[key: string]: any} = {...doc};
@@ -916,17 +945,62 @@ export class DataService implements IDataService {
         return clean;
       });
       if (docs.length === 0) {
-        continue;
+        return null;
       }
 
       const {success, error} = await collection.bulkUpsert(docs);
       totalWritten += success.length;
       totalFailed += error.length;
       if (error.length > 0 && isDevMode()) {
-        console.error(`Restore: ${error.length} document(s) failed in "${coll.name}".`, error);
+        console.error(`Restore: ${error.length} document(s) failed in "${name}".`, error);
       }
       if (success.length > 0) {
         this._collectionChangedEmit('Documents restored', collection, success.length);
+        return collection;
+      }
+      return null;
+    };
+
+    // 1. Restore, in dependency order, every whitelisted collection EXCEPT the owned
+    //    data ones. With a live replication these get pushed to the backend as soon
+    //    as they are written locally.
+    const writtenPrereqCollections: RxCollection[] = [];
+    for (const name of BACKUP_DATA_COLLECTIONS) {
+      if (OWNED_DATA_COLLECTIONS.includes(name)) {
+        continue;
+      }
+      const written = await writeCollection(name);
+      if (written != null) {
+        writtenPrereqCollections.push(written);
+      }
+    }
+
+    // 2. The owned data collections (form_data / report_data) reference documents in
+    //    the collections above. When a live replication is actively pushing to a backend
+    //    that enforces referential integrity (Hasura), writing the owned data now would
+    //    let its push race the prerequisites' push and fail with a constraint violation
+    //    that, once the retry budget is exhausted, is fatal. So — only in that case —
+    //    wait for the prerequisites to be fully pushed before writing the owned data.
+    //    When there is no active push (backendless deployment) or the app is offline,
+    //    there is nothing to race, so we skip the wait and write immediately (the offline
+    //    reconnection push is left to the normal replication retry mechanism).
+    const syncOpts = this._dataConfig.value.syncOptions;
+    const isLive = syncOpts.live != false && syncOpts.url.ws != null;
+    const isOnline = await firstValueFrom(this._nss.isOnline$);
+    const hasActivePrereqSync = writtenPrereqCollections.some(
+      coll => this._activeSyncs.getValue()[coll.name] != null,
+    );
+    if (isLive && isOnline && hasActivePrereqSync) {
+      await this._awaitCollectionsInSync(
+        writtenPrereqCollections.map(coll => coll.name),
+        RESTORE_PRESYNC_MAX_WAIT_MS,
+      );
+    }
+
+    // 3. Restore the owned data collections, in the declared order.
+    for (const name of BACKUP_DATA_COLLECTIONS) {
+      if (OWNED_DATA_COLLECTIONS.includes(name)) {
+        await writeCollection(name);
       }
     }
 
@@ -940,6 +1014,50 @@ export class DataService implements IDataService {
     // The restore is considered successful when at least one document was
     // written and no document failed to import.
     return totalWritten > 0 && totalFailed === 0;
+  }
+
+  /**
+   * Waits until the active sync replications of the given collections report being in
+   * sync (i.e. all pending local writes have been pushed to the backend), bounded by
+   * `maxWaitMs`. Collections without an active sync are ignored. On timeout the method
+   * resolves anyway, leaving any subsequent sync error to the replication retry mechanism.
+   *
+   * @param collectionNames The names of the collections to wait for
+   * @param maxWaitMs Maximum time to wait before giving up
+   */
+  private async _awaitCollectionsInSync(
+    collectionNames: string[],
+    maxWaitMs: number,
+  ): Promise<void> {
+    const actSyncs = this._activeSyncs.getValue();
+    const waits = collectionNames
+      .map(name => actSyncs[name]?.state)
+      .filter((state): state is NonNullable<typeof state> => state != null)
+      .map(state => state.awaitInSync());
+    if (waits.length === 0) {
+      return;
+    }
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const cap = new Promise<void>(resolve => {
+      timer = setTimeout(() => {
+        if (isDevMode()) {
+          console.warn(
+            `Restore: prerequisite collections did not reach in-sync within ${maxWaitMs}ms; ` +
+              `writing owned data anyway.`,
+          );
+        }
+        resolve();
+      }, maxWaitMs);
+    });
+
+    try {
+      await Promise.race([Promise.all(waits).then(() => undefined), cap]);
+    } finally {
+      if (timer != null) {
+        clearTimeout(timer);
+      }
+    }
   }
 
   /**

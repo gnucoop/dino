@@ -377,3 +377,196 @@ describe('Data service - backup/restore', () => {
     expect(foreignUser).toBeNull();
   });
 });
+
+// A dedicated database name so this suite is fully isolated from the other
+// describe blocks: they share the in-memory storage instance and some register a
+// "form_data" collection with a different schema, which would otherwise collide.
+const orderingDataServiceConfig: DataServiceConfig = {
+  ...dataServiceConfig,
+  databaseCreateOptions: {
+    ...dataServiceConfig.databaseCreateOptions,
+    name: 'dino_data_test_db_ordering',
+  },
+};
+
+describe('Data service - restore ordering with active sync', () => {
+  let dataService: DataService;
+  let currentDate: string;
+
+  // A referenced (prerequisite) collection: it is NOT an owned data collection,
+  // so on restore it is written before form_data / report_data.
+  const formSchemaTestSchema: RxJsonSchema<any> = {
+    title: 'form schema test schema',
+    version: 0,
+    description: 'minimal form_schema schema for restore ordering tests',
+    type: 'object',
+    primaryKey: 'id',
+    properties: {
+      id: {type: 'string', maxLength: 200},
+      created_at: {type: 'string'},
+      updated_at: {type: ['string', 'null']},
+    },
+  };
+  // An owned data collection: on restore it is written last.
+  const formDataTestSchema: RxJsonSchema<any> = {
+    title: 'form data test schema',
+    version: 0,
+    description: 'minimal form_data schema for restore ordering tests',
+    type: 'object',
+    primaryKey: 'id',
+    properties: {
+      id: {type: 'string', maxLength: 200},
+      user_data_ref_id: {type: 'string', maxLength: 200},
+      created_at: {type: 'string'},
+      updated_at: {type: ['string', 'null']},
+    },
+  };
+
+  const formSchemaColl = {name: 'form_schema', collection: {schema: formSchemaTestSchema}};
+  const formDataColl = {name: 'form_data', collection: {schema: formDataTestSchema}};
+
+  // A dump that deliberately lists the owned data collection (form_data) BEFORE its
+  // referenced collection (form_schema), to prove the restore order does not depend
+  // on the order the collections appear in the dump file.
+  const outOfOrderDump = () => ({
+    collections: [
+      {
+        name: 'form_data',
+        schemaHash: 'ignored',
+        docs: [{id: 'f1', user_data_ref_id: 'x', created_at: currentDate, updated_at: null}],
+      },
+      {
+        name: 'form_schema',
+        schemaHash: 'ignored',
+        docs: [{id: 's1', created_at: currentDate, updated_at: null}],
+      },
+    ],
+  });
+
+  const dumpBlob = () => new Blob([JSON.stringify(outOfOrderDump())], {type: 'application/json'});
+
+  // Spies each collection's bulkUpsert so that its call order (across collections)
+  // can be observed, while still performing the real upsert.
+  const recordBulkUpsertOrder = async (order: string[], prefix = ''): Promise<void> => {
+    const db: any = await firstValueFrom((dataService as any)._db.pipe(take(1)));
+    ['form_schema', 'form_data'].forEach(name => {
+      const coll = db.collections[name];
+      const original = coll.bulkUpsert.bind(coll);
+      spyOn(coll, 'bulkUpsert').and.callFake((docs: any) => {
+        order.push(`${prefix}${name}`);
+        return original(docs);
+      });
+    });
+  };
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        RouterTestingModule,
+        {provide: AuthService, useValue: authServiceMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: orderingDataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+    currentDate = new Date().toISOString().split('T')[0];
+    await firstValueFrom(dataService.createCollection(formSchemaColl).pipe(take(1)));
+    await firstValueFrom(dataService.createCollection(formDataColl).pipe(take(1)));
+  });
+
+  afterEach(async () => {
+    await firstValueFrom(dataService.destroyCollection('form_schema').pipe(take(1)));
+    await firstValueFrom(dataService.destroyCollection('form_data').pipe(take(1)));
+  });
+
+  it('restores referenced collections before owned data ones, regardless of dump order', async () => {
+    const order: string[] = [];
+    await recordBulkUpsertOrder(order);
+    // Neutralize the in-sync wait so this test focuses purely on write ordering.
+    spyOn(dataService as any, '_awaitCollectionsInSync').and.returnValue(Promise.resolve());
+
+    const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
+    dataService.importDatabase(dumpBlob());
+    expect(await imported).toBe(true);
+
+    // Even though form_data comes first in the dump, form_schema is written first.
+    expect(order).toEqual(['form_schema', 'form_data']);
+  });
+
+  it('waits for referenced collections to be in sync before writing owned data when a sync is active', async () => {
+    const order: string[] = [];
+    await recordBulkUpsertOrder(order, 'write:');
+
+    // Force the "online" signal so the gating branch is deterministic.
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+
+    // Simulate an active sync for the prerequisite collection so the gating runs.
+    const activeSyncs = (dataService as any)._activeSyncs;
+    const current = activeSyncs.getValue();
+    current['form_schema'] = {
+      state: {},
+      clientRequestSub: {unsubscribe: () => {}},
+      stateReceivedSub: {unsubscribe: () => {}},
+      stateActivity: obsOf(false),
+      collectionName: 'form_schema',
+    };
+    activeSyncs.next(current);
+
+    const awaitSpy = spyOn(dataService as any, '_awaitCollectionsInSync').and.callFake(
+      (names: string[]) => {
+        order.push(`await:${names.join(',')}`);
+        return Promise.resolve();
+      },
+    );
+
+    const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
+    dataService.importDatabase(dumpBlob());
+    expect(await imported).toBe(true);
+
+    // The referenced collection is pushed, then we wait for it to be in sync, then
+    // the owned data is written.
+    expect(order).toEqual(['write:form_schema', 'await:form_schema', 'write:form_data']);
+    expect(awaitSpy).toHaveBeenCalledWith(['form_schema'], jasmine.any(Number));
+  });
+
+  it('does not wait for in-sync when no sync is active (backendless/offline)', async () => {
+    const order: string[] = [];
+    await recordBulkUpsertOrder(order, 'write:');
+    // No active sync is registered for the prerequisite.
+    (dataService as any)._activeSyncs.next({});
+    const awaitSpy = spyOn(dataService as any, '_awaitCollectionsInSync').and.returnValue(
+      Promise.resolve(),
+    );
+
+    const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
+    dataService.importDatabase(dumpBlob());
+    expect(await imported).toBe(true);
+
+    // Order is still enforced, but the in-sync wait is skipped entirely.
+    expect(order).toEqual(['write:form_schema', 'write:form_data']);
+    expect(awaitSpy).not.toHaveBeenCalled();
+  });
+
+  it('_awaitCollectionsInSync resolves after the safety cap when a prerequisite never reaches in-sync', async () => {
+    // An active sync whose awaitInSync() never resolves.
+    (dataService as any)._activeSyncs.next({
+      form_schema: {
+        state: {awaitInSync: () => new Promise<void>(() => {})},
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+        stateActivity: obsOf(false),
+        collectionName: 'form_schema',
+      },
+    });
+
+    const start = new Date().getTime();
+    // A short cap keeps the test fast; it must resolve despite the never-resolving wait.
+    await (dataService as any)._awaitCollectionsInSync(['form_schema'], 50);
+    const elapsed = new Date().getTime() - start;
+
+    expect(elapsed).toBeGreaterThanOrEqual(45);
+    expect(elapsed).toBeLessThan(2000);
+  });
+});
