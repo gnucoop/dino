@@ -7,6 +7,8 @@ description: An introduction to Dino — what it is, who it is for, and how to n
 
 Dino is a web-based platform for structured data collection, monitoring, and analysis. It gives teams a single place to design forms, gather information from the field, track progress, and explore results — whether you are online or working in low-connectivity environments.
 
+
+
 ---
 
 ## What You Can Do with Dino
