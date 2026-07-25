@@ -43,7 +43,7 @@ import {AuthService} from '@dino/core/auth';
 import {MatDialog} from '@angular/material/dialog';
 import {StripeCheckout} from './stripe-checkout';
 import {combineLatest, Observable, of as obsOf, startWith} from 'rxjs';
-import {distinctUntilChanged, map, shareReplay, switchMap} from 'rxjs/operators';
+import {catchError, distinctUntilChanged, map, shareReplay, switchMap} from 'rxjs/operators';
 import {AjfReportVariable} from '@ajf/core/reports';
 
 /**
@@ -100,7 +100,21 @@ export class TokensService {
             : null,
         ),
         distinctUntilChanged(),
-        switchMap(userKey => (userKey == null ? obsOf(null) : this.checkPandinoUser())),
+        switchMap(userKey =>
+          userKey == null
+            ? obsOf(null)
+            : // Never let a failed request kill this subscription: it is created
+              // once per session, so an error here would disable the Pandino
+              // bootstrap until a full page reload.
+              this.checkPandinoUser().pipe(
+                catchError(err => {
+                  if (isDevMode()) {
+                    console.error('[TokensService] checkPandinoUser failed', err);
+                  }
+                  return obsOf(null);
+                }),
+              ),
+        ),
       )
       .subscribe(pandinoUserResponse => {
         if (!pandinoUserResponse) return;
@@ -118,7 +132,21 @@ export class TokensService {
     this.availableTokens = this.refreshPandinoTokensEvt.pipe(
       startWith(true),
       switchMap(() =>
-        combineLatest([this.getUserPandinoTokens(), this._authService.authenticated]),
+        combineLatest([
+          // Without this, a single failed /getusertokens request errors the whole
+          // stream. Because of the shareReplay below that error is then replayed
+          // to every subscriber, so the credits badge stays hidden until the page
+          // is reloaded.
+          this.getUserPandinoTokens().pipe(
+            catchError(err => {
+              if (isDevMode()) {
+                console.error('[TokensService] getUserPandinoTokens failed', err);
+              }
+              return obsOf(null);
+            }),
+          ),
+          this._authService.authenticated,
+        ]),
       ),
       map(([userTokensResp, auth]) => {
         const storedApiKey = localStorage.getItem('pandas_dino_api_key');

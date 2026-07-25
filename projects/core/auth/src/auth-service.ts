@@ -234,13 +234,22 @@ export class AuthService {
     userInfo: any | null,
     clearNhostTokens?: boolean,
   ): void {
-    this.authenticated.next({auth: true, evt: 'login'});
-    this._storeAuthToken(session?.accessToken ?? token);
-    this._storeRefreshToken(session?.refreshToken ?? refreshToken);
+    // Store the user info BEFORE announcing the login. Both `authenticated` and
+    // `authToken` synchronously wake their subscribers, and several of them read
+    // `getUserInfo()` in response (e.g. the Pandino bootstrap). With the user
+    // info written last, those subscribers saw an empty user and gave up, with no
+    // further event to retry on — the work only happened after a page reload.
     this._storeUserInfo(userInfo);
     if (clearNhostTokens) {
       this.clearNhostTokens();
     }
+    // The relative order of `authenticated` and the token storage is preserved:
+    // DataService._initSync() reads the auth event via `withLatestFrom`, so it
+    // must already be 'login' by the time the token emits, otherwise replication
+    // would not start.
+    this.authenticated.next({auth: true, evt: 'login'});
+    this._storeAuthToken(session?.accessToken ?? token);
+    this._storeRefreshToken(session?.refreshToken ?? refreshToken);
   }
 
   /**

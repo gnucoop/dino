@@ -203,6 +203,30 @@ Gate on **`dataReady`**, injected via **`DATA_SERVICE`**. Never inject the concr
 `DataService` for a readiness or sync signal, and never gate on a specific `AuthEvt` string
 (`'login'` in particular) — event ordering is not guaranteed, and reloads emit `'init'`.
 
+### Login is announced before the stored auth state is complete — order matters
+
+`AuthService.storeAllAuthenticationInfo()` emits on `authenticated` and on `authToken`, and
+both wake their subscribers **synchronously**. Several subscribers read `getUserInfo()` in
+response. The user info used to be written *last*, so those subscribers saw an empty user,
+gave up, and had no later event to retry on — the work then only happened after a page
+reload. (This is what made the Pandino/AI bootstrap look broken online: it silently logged
+`No Active user found` — a `console.log`, not an error — and returned null.)
+
+The user info is now stored **before** `authenticated` is emitted. Two constraints to respect
+when touching that method:
+
+- Anything a login subscriber may read (user info in particular) must be stored **before**
+  `authenticated.next(...)`.
+- The relative order `authenticated` → `authToken` must be **preserved**:
+  `DataService._initSync()` reads the auth event with `withLatestFrom`, which does not
+  re-trigger when the event changes. Emitting the token first would leave offline replication
+  never starting. So do not "tidy" this by moving `authenticated.next` to the end.
+
+Related resilience: long-lived subscriptions created once per session (the Pandino bootstrap,
+`availableTokens`) now `catchError` around their HTTP calls. Previously a single failed
+request errored the stream — and with `shareReplay` that error is replayed forever — so the
+feature stayed dead until a page reload.
+
 ### Sync UI in online mode
 
 `dataMode` is part of `DataServiceSyncOptions`, so presentation code can tell which mode it
@@ -269,7 +293,7 @@ happens online.
 | 40 | System | — | Realtime list refresh after write | ✅ | 🟡 | ✅ |
 | 41 | System | — | Backup / Restore DB | ✅ | ⛔ | ☐ |
 | 42 | System | — | Offline queue / background sync | ✅ | ⛔ | ☐ |
-| 43 | AI | — | Pandino bootstrap after login (`/checkpandinouser` → API key → `/getusertokens`) | ✅ | 🟡 | ❌ |
+| 43 | AI | — | Pandino bootstrap after login (`/checkpandinouser` → API key → `/getusertokens`) | ✅ | ✅ | ✅ |
 | 44 | Notifications | — | Unread badge + dropdown populate after login | ✅ | ✅ | ✅ |
 | 45 | System | — | Sync indicator shows a mode-appropriate state (not "sync problem") | ✅ | 🟡 | ☐ |
 | 46 | System | — | Logout button enabled state (`logoutOff`) | ✅ | 🟡 | ☐ |
@@ -384,3 +408,9 @@ _Record dated results here as you validate, e.g.:_
   `false` online and a `cloud_done` icon is shown instead — **pending visual confirmation**.
 - 2026-07-25 — Offline regression check (`dataMode: 'offline'`): **not yet run** — the most
   important remaining verification, since these changes touch shared main-nav/sync code.
+- 2026-07-25 — #43 Pandino bootstrap: ✅ **fixed and confirmed** — the POST now fires at login
+  without a reload. Root cause was NOT the readiness signal (that was already fine, as #44
+  proved) but a synchronous ordering bug in `AuthService.storeAllAuthenticationInfo()`: the
+  user info was stored *after* `authenticated`/`authToken` emitted, so subscribers reading
+  `getUserInfo()` on login saw an empty user and had no later event to retry on. Storing the
+  user info first fixed it. See the architecture note on login ordering.
