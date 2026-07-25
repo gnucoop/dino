@@ -396,7 +396,6 @@ export type availableSection =
   | 'languages'
   | 'notifications'
   | 'ai'
-  | 'gpt'
   | 'rag';
 
 /**

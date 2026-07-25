@@ -32,9 +32,10 @@ import {
   StripeSessionStatus,
 } from './stripe-payment-data-interface';
 import {
+  DATA_SERVICE,
   DATA_SERVICE_CONFIG,
-  DataService,
   DataServiceConfig,
+  IDataService,
   PANDINO_SERVICE_CONFIG,
   PandinoConfig,
 } from '@dino/core/data';
@@ -42,7 +43,7 @@ import {AuthService} from '@dino/core/auth';
 import {MatDialog} from '@angular/material/dialog';
 import {StripeCheckout} from './stripe-checkout';
 import {combineLatest, Observable, of as obsOf, startWith} from 'rxjs';
-import {filter, map, shareReplay, switchMap} from 'rxjs/operators';
+import {distinctUntilChanged, map, shareReplay, switchMap} from 'rxjs/operators';
 import {AjfReportVariable} from '@ajf/core/reports';
 
 /**
@@ -66,21 +67,40 @@ export class TokensService {
     @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
     private _http: HttpClient,
     private _authService: AuthService,
-    private _dataService: DataService,
+    // Must be the ACTIVE data service: with the concrete offline DataService,
+    // `firstReplicationComplete` never emits in online mode (no collections are
+    // registered on it), so the Pandino bootstrap below never ran.
+    @Inject(DATA_SERVICE) private _dataService: IDataService,
     private _dialog: MatDialog,
   ) {
+    // Bootstrap the Pandino user (and therefore the API key) once the user is
+    // authenticated and data is queryable.
+    //
+    // This deliberately does NOT require the current auth event to be exactly
+    // 'login'. `combineLatest` reports the *latest* value of each source, and
+    // readiness arrives after the login event — by then the auth event has often
+    // moved on (a token refresh emits 'refresh successful', the auth guard emits
+    // 'init refresh'), which silently skipped the bootstrap. A page reload never
+    // emits 'login' at all, so it never ran there either.
+    //
+    // Instead: fire whenever we are authenticated with a token and ready, keyed
+    // by the user so it runs once per user per session and again if a different
+    // user logs in.
     combineLatest([
       this._authService.authToken,
       this._authService.authenticated,
-      this._dataService.firstReplicationComplete.pipe(filter(rep => rep)),
+      // Readiness, not replication: online mode never replicates, so gating on
+      // `firstReplicationComplete` meant this bootstrap never ran there.
+      this._dataService.dataReady,
     ])
       .pipe(
-        switchMap(([authToken, authEvt, _repComplete]) => {
-          if (authToken && authEvt.evt === 'login') {
-            return this.checkPandinoUser();
-          }
-          return obsOf(null);
-        }),
+        map(([authToken, authEvt, ready]) =>
+          authToken != null && authEvt.auth === true && ready
+            ? this._authService.getUserInfo()?.email ?? authToken
+            : null,
+        ),
+        distinctUntilChanged(),
+        switchMap(userKey => (userKey == null ? obsOf(null) : this.checkPandinoUser())),
       )
       .subscribe(pandinoUserResponse => {
         if (!pandinoUserResponse) return;

@@ -29,13 +29,23 @@ import {
   BehaviorSubject,
   combineLatest,
   firstValueFrom,
+  NEVER,
   Observable,
   ObservableInput,
   of as obsOf,
   Subscription,
   throwError,
 } from 'rxjs';
-import {catchError, debounceTime, map, skip, switchMap} from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  skip,
+  switchMap,
+} from 'rxjs/operators';
 
 import {DataCreateCollectionRequest} from './data-create-collection-request';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
@@ -44,7 +54,12 @@ import {DataGetRequest} from './data-get-request';
 import {DataInsertRequest} from './data-insert-request';
 import {DataRequest} from './data-request';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
-import {BulkInsertResult, CollectionChangedEvent, IDataService} from './data-service-interface';
+import {
+  BulkInsertResult,
+  CollectionChangedEvent,
+  IDataService,
+  SyncErrorEvent,
+} from './data-service-interface';
 import {fillConfigDefaultValues} from './data-service-utils';
 import {DataUpsertRequest} from './data-upsert-request';
 import {
@@ -100,6 +115,30 @@ export class OnlineDataService implements IDataService {
    */
   readonly collectionsInitialized = new EventEmitter<'started' | 'completed'>();
 
+  /**
+   * There is no local replication online, so this is immediately true.
+   * Prefer `dataReady` for gating feature startup.
+   */
+  readonly firstReplicationComplete = obsOf(true);
+
+  /**
+   * Emits true once collections are registered and the user is authenticated,
+   * i.e. queries can actually be made.
+   *
+   * Deliberately NOT derived from `collectionsInitialized`: the app module only
+   * emits that on a `'login'` auth event, so a reload with a stored token would
+   * never become ready.
+   */
+  readonly dataReady: Observable<boolean>;
+
+  /** Nothing is synchronized online, so no collection can be in trouble. */
+  readonly problemSyncing = obsOf<string[]>([]);
+
+  /** No replication online: these never emit. */
+  readonly replicationCycleComplete = NEVER as Observable<void>;
+  readonly syncErrorEvt = NEVER as Observable<SyncErrorEvent>;
+  readonly couldNotSyncEvt = NEVER as Observable<SyncErrorEvent>;
+
   private _collections: {[name: string]: string[]} = {};
 
   /**
@@ -129,10 +168,25 @@ export class OnlineDataService implements IDataService {
     private _authService: AuthService,
   ) {
     this.config = fillConfigDefaultValues(config);
+    this.dataReady = combineLatest([
+      this._registeredCollections$,
+      this._authService.authToken,
+    ]).pipe(
+      filter(([collections, token]) => collections.length > 0 && token != null),
+      map(() => true),
+      distinctUntilChanged(),
+      shareReplay(1),
+    );
     if (this.config.syncOptions.live !== false && this.config.syncOptions.url.ws != null) {
       this._initRealtime();
     }
   }
+
+  /**
+   * No-op online: there is no local replication to run, and every read already
+   * goes straight to the server.
+   */
+  runSync(): void {}
 
   /**
    * Get an object from the database.

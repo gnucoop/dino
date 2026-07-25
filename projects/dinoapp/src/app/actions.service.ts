@@ -1,9 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {
   Actions,
   ActionTrigger,
+  DATA_SERVICE,
   DataModelManager,
-  DataService,
+  IDataService,
   PermissionContextService,
 } from '@dino/core/data';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
@@ -25,7 +26,8 @@ export class ActionsService {
     private _aui: AdminUserInteractionsService,
     private _snackbar: MatSnackBar,
     private _router: Router,
-    private _ds: DataService,
+    // The active data service, so `syncing` reflects the configured data mode.
+    @Inject(DATA_SERVICE) private _ds: IDataService,
     private _email: EmailService,
     private _httpClient: HttpClient,
     private _authService: AuthService,

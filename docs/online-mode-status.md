@@ -152,6 +152,65 @@ cover (e.g. `.$`, `.getLatest()`, `.incrementalModify()`, `.get(path)`), it surf
 clear runtime error online → add that method to `_decorate`. It's a single central addition,
 not a per-manager change.
 
+## Architecture: the data-readiness signal (`dataReady`)
+
+The second architectural decision, after token + shim. Read this before gating any feature
+on "data is available".
+
+### The problem
+
+Many features must not act until data can be queried. The app expressed that as
+**replication completion**, which only exists offline:
+
+- `DataService.firstReplicationComplete` is `combineLatest([collectionsInitialized,
+  registeredCollections, isOnline$])` and then `combineLatest(collections.map(c =>
+  c.firstSyncCompleted))`. With **zero** registered collections the inner `combineLatest([])`
+  **never emits at all**. In online mode nothing registers collections on the offline
+  `DataService`, so the signal is permanently silent.
+- The complementary fallback used in `main-nav`,
+  `authenticated.pipe(filter(evt => evt === 'init'))`, only fires at `AuthService`
+  construction **and only if a token is already in localStorage**. In a fresh login session
+  `'init'` is never emitted, and it never fires again afterwards.
+
+So offline worked by the luck of two complementary paths — **login** → replication complete;
+**reload-with-token** → `'init'`. Online **both are dead**, which silently disabled: the
+Pandino/AI bootstrap, the notifications bell and dropdown, `logoutOff` (so the logout
+button's state was driven by `null`), and the custom-action `syncing` context.
+
+### The fix
+
+1. **`IDataService` is now a complete contract.** It also declares the members that used to
+   exist only on the concrete `DataService`: `problemSyncing`, `replicationCycleComplete`,
+   `syncErrorEvt`, `couldNotSyncEvt`, `runSync`. `OnlineDataService` implements them
+   **inertly** (`of([])` / `NEVER` / no-op) — there is genuinely nothing to synchronize. Any
+   consumer using the `DATA_SERVICE` token is therefore correct in both modes **by
+   construction**; that is the point.
+2. **`dataReady: Observable<boolean>`** — the signal features should gate on. It means
+   "collections are initialised and data can be queried", deliberately separate from
+   replication:
+   - Offline: a **getter** delegating to `firstReplicationComplete` — behaviour unchanged.
+     (A getter, not an assigned field, so test doubles that override
+     `firstReplicationComplete` after `super()` are honoured.)
+   - Online: derived from "collections registered **and** auth token present". It is
+     deliberately **not** derived from `collectionsInitialized`, because the app module only
+     emits that on a `'login'` auth event — a page reload would never become ready.
+3. **Consumers repointed at the token**: `main-nav` (notifications + loading state),
+   `tokens.service` (Pandino bootstrap), `actions.service` (`syncing` context).
+
+### Rule of thumb
+
+Gate on **`dataReady`**, injected via **`DATA_SERVICE`**. Never inject the concrete
+`DataService` for a readiness or sync signal, and never gate on a specific `AuthEvt` string
+(`'login'` in particular) — event ordering is not guaranteed, and reloads emit `'init'`.
+
+### Sync UI in online mode
+
+`dataMode` is part of `DataServiceSyncOptions`, so presentation code can tell which mode it
+is in (`main-nav.isOnlineMode`). Online, the toolbar shows a neutral **`cloud_done`** icon
+instead of the sync icon: the sync icon's "unsynced data" state was permanently on, because
+`isThereUnsyncedData` starts `true` and is only cleared by a replication cycle that never
+happens online.
+
 ## Legend
 
 **Offline** — ✅ works (shipping default).
@@ -189,12 +248,12 @@ not a per-manager change.
 | 19 | Public form | `/f/:id` | Fill & submit (anonymous) | ⛔ | ✅ | ☐ |
 | 20 | Reports | `/reports` | List report schemas | ✅ | ✅ | ✅ |
 | 21 | Reports | `/reports/:id` | View report (charts/widgets) | ✅ | 🟡 | ✅ |
-| 22 | Reports | `/reports/:id` | Create/edit report data | ✅ | 🟡 | ☐ |
+| 22 | Reports | `/reports/:id` | Create/edit report data | ✅ | 🟡 | ✅ |
 | 23 | Reports | `/reports/:id` | Delete report data | ✅ | 🟡 | ✅ |
 | 24 | Reports (authoring) | reports-collect | Create/edit report schema | ✅ | ❓ | ✅ |
 | 25 | Reports | — | Favorite report | ✅ | 🟡 | ✅ |
 | 26 | Aggregation | `/aggregation` | List / view aggregations | ✅ | 🟡 | ✅ |
-| 27 | Aggregation | `/forms/:id` | Aggregation form creator | ✅ | ❓ | ☐ |
+| 27 | Aggregation | `/forms/:id` | Aggregation form creator | ✅ | ❓ | ✅ |
 | 28 | Metrics | `/metrics` | List metric domains | ✅ | 🟡 | ✅ |
 | 29 | Metrics | `/metrics` | Create/edit metric (organizations) | ✅ | 🟡 | ✅ |
 | 30 | Metrics | `/metrics` | Delete metric | ✅ | 🟡 | ✅ |
@@ -210,6 +269,11 @@ not a per-manager change.
 | 40 | System | — | Realtime list refresh after write | ✅ | 🟡 | ✅ |
 | 41 | System | — | Backup / Restore DB | ✅ | ⛔ | ☐ |
 | 42 | System | — | Offline queue / background sync | ✅ | ⛔ | ☐ |
+| 43 | AI | — | Pandino bootstrap after login (`/checkpandinouser` → API key → `/getusertokens`) | ✅ | 🟡 | ❌ |
+| 44 | Notifications | — | Unread badge + dropdown populate after login | ✅ | ✅ | ✅ |
+| 45 | System | — | Sync indicator shows a mode-appropriate state (not "sync problem") | ✅ | 🟡 | ☐ |
+| 46 | System | — | Logout button enabled state (`logoutOff`) | ✅ | 🟡 | ☐ |
+| 47 | System | — | Custom actions receive a `syncing` value | ✅ | 🟡 | ☐ |
 
 ## Notes on the ⛔ rows (by design, not bugs)
 
@@ -262,6 +326,28 @@ error object) and note it here so it can be fixed and the status flipped.
   - `CheckMetricPermission` no longer assumes `doc.collection.name` (lost by `deepCopy`).
   - Query failures are always logged with operation + selector (they were silent before).
   - Covered by 44 unit tests in `gql.spec.ts` / `mango-eval.spec.ts`; suite 135/135 green.
+- **Bulk insert result** (`bulkInsert`): treated `affected_rows !== 1` as failure, so any
+  multi-row import reported "File not imported!" although every row had been written. Only
+  zero/missing is a failure now.
+- **Post-write `withLatestFrom` races** (`create-form.ts`, `edit-form.ts`): the save result was
+  DROPPED when the active-user / user-group lookups had not emitted yet, so the spinner ran
+  forever although the document was created. They now wait for those lookups instead of
+  sampling them. Left unchanged on purpose: `form-status-changer.ts:134` and `list.ts:1247`
+  place `withLatestFrom` in the OUTER pipeline (subscribed in `ngOnInit`), so their sources are
+  already warm — verified correct as written.
+- **Data-readiness** (see the architecture section above): `IDataService` completed with the
+  sync members + `dataReady`; `main-nav`, `tokens.service` and `actions.service` repointed at
+  the `DATA_SERVICE` token. This is what unblocked the notifications bell, and it also fixes
+  `logoutOff` never emitting and the custom-action `syncing` context.
+- **Pandino bootstrap trigger**: no longer requires the *latest* auth event to be exactly
+  `'login'`. `combineLatest` reports latest values, and readiness arrives after login — by then
+  the event has often moved on (`'refresh successful'`, `'init refresh'`), so the bootstrap was
+  skipped; a page reload (`'init'`) never triggered it even offline. It now fires on
+  "authenticated + token + ready", keyed by user so it runs once per user per session.
+- **Sync UI in online mode**: `dataMode` exposed on `DataServiceSyncOptions`;
+  `isThereUnsyncedData` starts `false` online (it starts `true` and is only cleared by a
+  replication cycle, which never happens online — the icon was stuck on `sync_problem`), and a
+  neutral `cloud_done` icon replaces the sync icon.
 
 ## Change log (test results)
 
@@ -277,3 +363,24 @@ _Record dated results here as you validate, e.g.:_
 - 2026-07-24 — #40 Realtime: websocket connects (101). Live cross-client update was NOT
   seen until reload; root cause was Apollo cache-first reads → fixed with `no-cache`
   on `get`/`find`. Pending re-test of the two-session insert.
+- 2026-07-25 — #8 Create form data: ✅ after fixing the post-write `withLatestFrom` race
+  (spinner hung forever while the row *was* created).
+- 2026-07-25 — #15 Import form data: ✅ after fixing the `bulkInsert` `affected_rows` check
+  ("File not imported!" was reported although the rows were written).
+- 2026-07-25 — #9 Edit form data: ✅ re-confirmed; the same race was fixed pre-emptively in
+  `edit-form.ts` (it had been passing on timing luck only).
+- 2026-07-25 — #44 Notifications badge/dropdown after login: ✅ works once `main-nav` gates on
+  `dataReady` via the token. Was silently dead online (both `merge` branches never fired).
+- 2026-07-25 — #43 Pandino bootstrap: ❌ still no `POST /checkpandinouser` observed online
+  after three attempts. Ruled out: the service IS constructed at bootstrap (main-nav injects
+  it, even on `/login`); `firstReplicationComplete` never emitting (fixed); the readiness
+  signal itself (proved good by #44 working). Latest fix removes the `evt === 'login'`
+  requirement from the trigger — **pending re-test**. If it still does not fire, the next
+  suspect is inside `checkPandinoUser()`: a `No Active user found` console log means
+  `getUserInfo().email` or `authToken.value` is empty, which is an auth-info bug, not a
+  readiness one.
+- 2026-07-25 — #45 Sync indicator: was permanently showing `sync_problem` online
+  (`isThereUnsyncedData` starts `true`, cleared only by a replication cycle). Now starts
+  `false` online and a `cloud_done` icon is shown instead — **pending visual confirmation**.
+- 2026-07-25 — Offline regression check (`dataMode: 'offline'`): **not yet run** — the most
+  important remaining verification, since these changes touch shared main-nav/sync code.

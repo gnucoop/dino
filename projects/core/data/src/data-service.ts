@@ -165,6 +165,19 @@ export class DataService implements IDataService {
   firstReplicationComplete: Observable<boolean>;
 
   /**
+   * Emits true once data can be queried. Offline that is exactly "the first
+   * replication completed", so this delegates; the distinct name exists so
+   * features can gate on readiness without depending on replication (which does
+   * not exist in online mode).
+   *
+   * A getter, not an assigned field, so subclasses that override
+   * `firstReplicationComplete` (the test doubles do) are honoured.
+   */
+  get dataReady(): Observable<boolean> {
+    return this.firstReplicationComplete;
+  }
+
+  /**
    * When emitted as 'started', collection initialization has started and is undergoing.
    * When emitted as 'completed', all collections have been initialized by the Sync manager.
    */

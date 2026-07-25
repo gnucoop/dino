@@ -138,6 +138,7 @@ export function provideDataServiceConfig() {
       authErrorMessage: environment.dataConfig.authErrorMessage,
       socketJwtExpiredCode: environment.dataConfig.socketJwtExpiredCode,
       backendless: environment.dataConfig.backendless ?? false,
+      dataMode: environment.dataConfig.dataMode ?? 'offline',
     },
   } as unknown as DataServiceConfig;
 }

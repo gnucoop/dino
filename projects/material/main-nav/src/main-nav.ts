@@ -28,6 +28,7 @@ import {
   Component,
   EventEmitter,
   HostBinding,
+  Inject,
   Input,
   OnDestroy,
   ViewChild,
@@ -38,7 +39,13 @@ import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
-import {DataService, InsertModel, MetricsService, PermissionContextService} from '@dino/core/data';
+import {
+  DATA_SERVICE,
+  IDataService,
+  InsertModel,
+  MetricsService,
+  PermissionContextService,
+} from '@dino/core/data';
 import {Notification, NotificationManager} from '@dino/core/notifications';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
@@ -298,9 +305,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * True when the Syncing process has encountered a problem even after
    * all the resyncAttempts
    */
-  problemSyncing: Observable<boolean> = this.dataService.problemSyncing
-    .asObservable()
-    .pipe(map(collections => collections.length > 0));
+  problemSyncing: Observable<boolean> = this.dataService.problemSyncing.pipe(
+    map(collections => collections.length > 0),
+  );
 
   /**
    * Determines the extended state of the sidenav on large screens
@@ -338,9 +345,21 @@ export class MainNav implements AfterViewInit, OnDestroy {
   unreadNotificationsNumber: Observable<number>;
 
   /**
-   * When true, the "Unsynced data" badge is displayed on the sync icon
+   * When true, the "Unsynced data" badge is displayed on the sync icon.
+   *
+   * Starts true offline (nothing has replicated yet) but must start false in
+   * online mode: there is no local data to synchronize, and the flag is only
+   * cleared by a replication cycle, which never happens online.
    */
-  isThereUnsyncedData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  isThereUnsyncedData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(!this.isOnlineMode);
+
+  /**
+   * True when the app reads and writes directly against the backend, with no
+   * local database and no replication. Sync UI is meaningless in this mode.
+   */
+  get isOnlineMode(): boolean {
+    return this.dataService.config.syncOptions.dataMode === 'online';
+  }
 
   /**
    * Subscribes to any collection change event and sync event, to determine if there
@@ -490,7 +509,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly breakpointObserver: BreakpointObserverService,
     readonly metricsService: MetricsService,
     readonly authService: AuthService,
-    readonly dataService: DataService,
+    // The ACTIVE data service. With the concrete offline class, every
+    // replication-derived signal here stays silent in online mode (no
+    // collections are registered on it), which silently disables the
+    // notifications bell and leaves `logoutOff` never emitting.
+    @Inject(DATA_SERVICE) readonly dataService: IDataService,
     readonly userGroupManager: UserGroupManager,
     readonly userDataManager: UserDataManager,
     readonly notificationManager: NotificationManager,
@@ -620,7 +643,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     });
 
     this.unreadNotificationsNumber = merge(
-      this.dataService.firstReplicationComplete,
+      this.dataService.dataReady,
       this.authService.authenticated.pipe(filter(authEvt => authEvt.evt === 'init')),
     ).pipe(
       switchMap(() =>
@@ -632,6 +655,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
               ? ccevt.action === repCompleteMsg
               : ccevt.action === repCompleteMsg || ccevt.action === docUpdMsg;
           }),
+          // Read the count once straight away, then again on every change event.
+          // Waiting only for a change event means the badge never populates when
+          // no replication event follows login (online mode has no replication,
+          // so the first event may only arrive when someone edits a notification).
+          startWith(null),
         ),
       ),
       switchMap(() => {
@@ -654,7 +682,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     );
 
     this.lastNotifications = merge(
-      this.dataService.firstReplicationComplete,
+      this.dataService.dataReady,
       this.authService.authenticated.pipe(filter(authEvt => authEvt.evt === 'init')),
     ).pipe(
       switchMap(() =>
@@ -666,6 +694,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
               ? ccevt.action === repCompleteMsg
               : ccevt.action === repCompleteMsg || ccevt.action === docUpdMsg;
           }),
+          // Load the list once straight away, then again on every change event
+          // (see the note on unreadNotificationsNumber above).
+          startWith(null),
         ),
       ),
       switchMap(() => {
@@ -737,7 +768,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
       .subscribe();
 
     if (!this.initializationScreenMaxDuration) {
-      this._syncLoadingSub = this.dataService.firstReplicationComplete.subscribe(repComplete => {
+      this._syncLoadingSub = this.dataService.dataReady.subscribe(repComplete => {
         this.isLoading.next(!repComplete);
       });
     } else {
@@ -748,7 +779,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
           filter(auth => auth.auth == true),
           switchMap(() => timer(timeout).pipe(mapTo(true))),
         ),
-        this.dataService.firstReplicationComplete,
+        this.dataService.dataReady,
       ).subscribe(repComplete => {
         this.isLoading.next(!repComplete);
       });

@@ -119,6 +119,50 @@ export interface IDataService {
   readonly collectionsInitialized: EventEmitter<'started' | 'completed'>;
 
   /**
+   * Emits true once every registered collection has completed its first
+   * replication. This is a **replication** concept: use `dataReady` instead when
+   * all you need is "data can be queried now".
+   */
+  readonly firstReplicationComplete: Observable<boolean>;
+
+  /**
+   * Emits true once collections are initialised and data can be queried.
+   *
+   * This is the signal features should gate their startup on. Offline it follows
+   * the first replication; online there is no replication, so it follows
+   * collection registration and authentication. Gating on replication-specific
+   * signals instead means a feature never starts in online mode.
+   */
+  readonly dataReady: Observable<boolean>;
+
+  /**
+   * Names of the collections currently having synchronization problems.
+   * Always empty online (nothing is synchronized).
+   */
+  readonly problemSyncing: Observable<string[]>;
+
+  /**
+   * Emits when a replication cycle completes. Never emits online.
+   */
+  readonly replicationCycleComplete: Observable<void>;
+
+  /**
+   * Emits when a recoverable synchronization error occurs. Never emits online.
+   */
+  readonly syncErrorEvt: Observable<SyncErrorEvent>;
+
+  /**
+   * Emits when synchronization has failed for good. Never emits online.
+   */
+  readonly couldNotSyncEvt: Observable<SyncErrorEvent>;
+
+  /**
+   * Forces a replication run. A no-op online, where reads always hit the server.
+   * @param collectionName? Restricts the run to a single collection.
+   */
+  runSync(collectionName?: string): void;
+
+  /**
    * Emits true once the named collection has completed its first sync. In
    * online mode (no local replication) this emits true immediately.
    * @param name The collection name.

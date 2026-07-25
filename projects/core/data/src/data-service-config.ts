@@ -68,6 +68,13 @@ export interface DataServiceSyncOptions<T extends Model = Model>
   backendless?: boolean;
 
   /**
+   * The active data mode. In 'online' mode there is no local database and no
+   * replication, so sync-related UI must not be presented as if data were
+   * pending synchronization. Defaults to 'offline'.
+   */
+  dataMode?: 'online' | 'offline';
+
+  /**
    * Maximum number of resync retry attempts after a sync error
    */
   retrySyncMaxAttempts?: number;

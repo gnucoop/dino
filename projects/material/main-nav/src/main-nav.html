@@ -105,6 +105,16 @@
     </ng-container>
     <mat-icon class="dino-user-settings" (click)="openUserArea()">settings</mat-icon>
     <ng-template #syncOnline>
+      <!-- Online mode: no local database and no replication, so a sync icon (and
+      especially its "unsynced data" state) would be misleading. Show a neutral
+      indicator that data comes straight from the server. -->
+      <mat-icon
+        *ngIf="isOnlineMode; else offlineSyncIcon"
+        class="dino-sync-detector dino-online-mode"
+        [matTooltip]="'Online mode: data is read from and written to the server directly.'|transloco"
+        >cloud_done</mat-icon
+      >
+      <ng-template #offlineSyncIcon>
       <ng-container *ngIf="!syncIcon; else svgSyncIconTemplate;">
         <mat-icon
           *ngIf="(syncSpinnerDisabled|async) !== true"
@@ -128,6 +138,7 @@
           svgIcon="{{syncIcon}}"
           >sync</mat-icon
         >
+      </ng-template>
       </ng-template>
     </ng-template>
     <ng-template #syncOffline>
