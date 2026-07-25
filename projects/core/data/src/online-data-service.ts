@@ -217,11 +217,15 @@ export class OnlineDataService implements IDataService {
                 throw new Error(JSON.stringify(res.errors));
               }
               const data = (res.data || {})[mutationName];
-              if (data == null || data.affected_rows !== 1) {
+              // A bulk insert of N objects reports `affected_rows: N`, so only
+              // treat zero (or a missing payload) as a failure. Comparing
+              // against 1 made every multi-row import look like it failed even
+              // though the rows had been written.
+              if (data == null || data.affected_rows == null || data.affected_rows < 1) {
                 return {success: [], error: [...(res.errors || [])]};
               }
               return {
-                success: (data.returning as R[]).map(r => this._decorate<R>(r, name)),
+                success: ((data.returning ?? []) as R[]).map(r => this._decorate<R>(r, name)),
                 error: [],
               };
             }),

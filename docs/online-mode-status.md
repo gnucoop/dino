@@ -175,14 +175,14 @@ not a per-manager change.
 | 5 | Forms | `/forms` | List form schemas (collect menu) | ✅ | ✅ | ✅ |
 | 6 | Forms | `/forms/:id` | List form data of a schema | ✅ | ✅ | ✅ |
 | 7 | Forms | `/forms/:id` | View a form data (detail/expand) | ✅ | 🟡 | ✅ |
-| 8 | Forms | `/forms/:id` | Create form data | ✅ | 🟡 | ❌ |
+| 8 | Forms | `/forms/:id` | Create form data | ✅ | 🟡 | ✅ |
 | 9 | Forms | `/forms/:id` | Edit form data (incl. change metric) | ✅ | ✅ | ✅ |
 | 10 | Forms | `/forms/:id` | Delete form data | ✅ | 🟡 | ✅ |
 | 11 | Forms | `/forms/:id` | Duplicate form data | ✅ | 🟡 | ✅ |
 | 12 | Forms | `/forms/:id` | Change status | ✅ | 🟡 | ✅  |
 | 13 | Forms | `/forms/:id` | Bulk actions | ✅ | ❓ | ✅ |
 | 14 | Forms | `/forms/:id` | Export list (xlsx/csv) | ✅ | 🟡 | ✅ |
-| 15 | Forms | `/forms/:id` | Import form data | ✅ | ❓ | ❌|
+| 15 | Forms | `/forms/:id` | Import form data | ✅ | ❓ | ✅ |
 | 16 | Forms | `/forms/:id` | Print / docx | ✅ | ❓ | ✅ |
 | 17 | Forms | `/forms/:id` | View change log | ✅ | ❓ | ✅ |
 | 18 | Forms (authoring) | forms-collect | Create/edit form schema | ✅ | ❓ | ✅ |
@@ -191,19 +191,19 @@ not a per-manager change.
 | 21 | Reports | `/reports/:id` | View report (charts/widgets) | ✅ | 🟡 | ✅ |
 | 22 | Reports | `/reports/:id` | Create/edit report data | ✅ | 🟡 | ☐ |
 | 23 | Reports | `/reports/:id` | Delete report data | ✅ | 🟡 | ✅ |
-| 24 | Reports (authoring) | reports-collect | Create/edit report schema | ✅ | ❓ | ☐ |
+| 24 | Reports (authoring) | reports-collect | Create/edit report schema | ✅ | ❓ | ✅ |
 | 25 | Reports | — | Favorite report | ✅ | 🟡 | ✅ |
 | 26 | Aggregation | `/aggregation` | List / view aggregations | ✅ | 🟡 | ✅ |
 | 27 | Aggregation | `/forms/:id` | Aggregation form creator | ✅ | ❓ | ☐ |
 | 28 | Metrics | `/metrics` | List metric domains | ✅ | 🟡 | ✅ |
 | 29 | Metrics | `/metrics` | Create/edit metric (organizations) | ✅ | 🟡 | ✅ |
 | 30 | Metrics | `/metrics` | Delete metric | ✅ | 🟡 | ✅ |
-| 31 | Users | `/users` | List users | ✅ | 🟡 | ☐ |
-| 32 | Users | `/users` | Create/edit user | ✅ | 🟡 | ☐ |
+| 31 | Users | `/users` | List users | ✅ | 🟡 | ✅ |
+| 32 | Users | `/users` | Create/edit user | ✅ | 🟡 | ✅ |
 | 33 | Users | `/users` | Manage groups / roles | ✅ | 🟡 | ☐ |
 | 34 | Languages | `/languages` | View translations | ✅ | ✅ | ✅ |
-| 35 | Languages | `/languages` | Add/edit/remove translation | ✅ | 🟡 | ☐ |
-| 36 | Notifications | `/notifications` | List notifications | ✅ | 🟡 | ☐ |
+| 35 | Languages | `/languages` | Add/edit/remove translation | ✅ | 🟡 | ✅ |
+| 36 | Notifications | `/notifications` | List notifications | ✅ | 🟡 | ✅ |
 | 37 | AI | `/ai` | GPT chat (Pandino API) | ✅ | 🟡 | ☐ |
 | 38 | AI | `/rag` | RAG (Pandino API) | ✅ | 🟡 | ☐ |
 | 39 | Payments | `/checkout` | Stripe checkout | ✅ | 🟡 | ☐ |

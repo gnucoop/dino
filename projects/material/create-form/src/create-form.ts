@@ -964,16 +964,31 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               if (this._dataModelManager == null) {
                 return throwError(() => new Error('No data model manager'));
               }
-              return this._dataModelManager
-                .create(newItem as T)
-                .pipe(
-                  withLatestFrom(
+              // `withLatestFrom` would DROP the result when the active user /
+              // user groups have not emitted yet, leaving the save spinner
+              // running forever even though the document was created. Those
+              // lookups can be slower than the write itself (online mode issues
+              // them as separate requests), so wait for them instead.
+              return this._dataModelManager.create(newItem as T).pipe(
+                switchMap(fd =>
+                  combineLatest([
                     this._udm.getActiveUserData(),
                     this._ugm.getActiveUserGroups(),
-                    obsOf(formObj),
-                    obsOf(hasUploadError),
+                  ]).pipe(
+                    take(1),
+                    map(
+                      ([activeUser, activeUserGroups]) =>
+                        [fd, activeUser, activeUserGroups, formObj, hasUploadError] as [
+                          typeof fd,
+                          typeof activeUser,
+                          typeof activeUserGroups,
+                          typeof formObj,
+                          boolean,
+                        ],
+                    ),
                   ),
-                );
+                ),
+              );
             } else {
               return throwError(() => new Error('No data found'));
             }

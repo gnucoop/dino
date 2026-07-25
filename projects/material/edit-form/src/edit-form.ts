@@ -1201,16 +1201,47 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             const dmm = this._dataModelManager as DataModelManager<T>;
             const dm: DataModelManager<T> =
               isDetails && dmm.detailsManager != null ? dmm.detailsManager : dmm;
+            // `withLatestFrom` would DROP the result when any of these sources
+            // has not emitted yet, leaving the save spinner running forever even
+            // though the document was updated. The active user / user group
+            // lookups are subscribed here (at save time) and can be slower than
+            // the write itself, so wait for them instead of sampling them.
             return dm.update(newItem as T).pipe(
-              withLatestFrom(
-                this._formDataStatus,
-                this._formSchemaStatuses,
-                this._formDataUser,
-                this._formDataUserGroups,
-                this._udm.getActiveUserData(),
-                this._ugm.getActiveUserGroups(),
-                obsOf(formObj),
-                obsOf(hasUploadError),
+              switchMap(fd =>
+                combineLatest([
+                  this._formDataStatus,
+                  this._formSchemaStatuses,
+                  this._formDataUser,
+                  this._formDataUserGroups,
+                  this._udm.getActiveUserData(),
+                  this._ugm.getActiveUserGroups(),
+                ]).pipe(
+                  take(1),
+                  map(
+                    ([status, allStatuses, user, userGroups, activeUser, activeUserGroups]) =>
+                      [
+                        fd,
+                        status,
+                        allStatuses,
+                        user,
+                        userGroups,
+                        activeUser,
+                        activeUserGroups,
+                        formObj,
+                        hasUploadError,
+                      ] as [
+                        typeof fd,
+                        typeof status,
+                        typeof allStatuses,
+                        typeof user,
+                        typeof userGroups,
+                        typeof activeUser,
+                        typeof activeUserGroups,
+                        typeof formObj,
+                        boolean,
+                      ],
+                  ),
+                ),
               ),
               catchError(err => {
                 this.isLoading.next(false);
