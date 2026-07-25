@@ -235,6 +235,115 @@ instead of the sync icon: the sync icon's "unsynced data" state was permanently 
 `isThereUnsyncedData` starts `true` and is only cleared by a replication cycle that never
 happens online.
 
+## Architecture: filtering — Mango selectors → Hasura, and the jsonb limit
+
+The third architectural decision. It matters because filtering is the one place where the
+offline and online engines are **not** equivalent in expressive power, so part of it had to be
+implemented by hand.
+
+### Where filters come from
+
+`FiltersService` produces `FilterItem[]` (base64-encoded into the URL);
+`ListDataSource.queryDM()` (`projects/material/list/src/list-datasource.ts`) is the single
+place that turns them into a **Mango/RxDB-style selector**, which is then passed to
+`manager.query()` → `IDataService.find()`. Offline that selector goes straight to RxDB. Online
+it must be translated into a Hasura `<table>_bool_exp`. Nothing upstream was changed — the
+translation lives entirely in the online adapter.
+
+Real shapes the UI produces (all of these occur in practice):
+
+```js
+{ case_ref_id:  {$in: ['case-42', 'all']} }                       // metric filter
+{ $or: [ {'data.name': {$regex: 'kw', $options: 'i'}},            // keyword search
+         {user_data_ref_id: {$eq: 'kw'}} ] }
+{ created_at:   {$gte: '2026-01-01', $lte: '2026-07-25'} }         // date range
+{ 'data.age':   {$gte: 18, $lte: 65} }                            // advanced (form field)
+{ 'data.notes': {$in: [null, '']} }                                // "Empty"
+{ $and: [ {$or: [{'data.v__0': …}]}, {$or: [{'data.v__1': …}]} ] } // repeating slides
+{ is_deleted:   {$ne: true} }                                      // always present
+```
+
+### The impedance mismatches (translator: `projects/core/data/src/gql.ts`, `buildWhere`)
+
+| Mango produces | Naive translation | Why it fails on Postgres/Hasura | What we do |
+|---|---|---|---|
+| `$in: [uuid, 'all']` | `_in: [uuid,'all']` | `*_ref_id` are **uuid** columns; `'all'` is not a uuid → `data-exception`, the whole query is rejected | strip the `'all'` sentinel on scalar ref columns (kept for array columns, where a stored `'all'` is real) |
+| `is_deleted: {$ne: true}` | `_neq: true` | `col <> true` is **NULL** (excluded) when the column is NULL; RxDB treats a missing value as "not equal" | `_or: [{_neq: v}, {_is_null: true}]` |
+| `$regex` + `$options` | `_regex` + `_options` | `_options` **is not a Hasura operator** → validation error, whole query rejected | `_ilike '%value%'` with LIKE metacharacters escaped; `$options` consumed |
+| `$elemMatch: {$eq: v}` | `_elemMatch` | not a Hasura operator | `_contains: v` (jsonb array) |
+| `$in: [null, '']` | `_in: [null,'']` | Hasura `_in` never matches NULL | `_or: [{_is_null: true}, {_eq: ''}]` |
+| `$in` on an array column | `_in` | wrong semantics (set membership vs overlap) | containment per value |
+| `$and` / `$or` arrays | fell into the scalar branch → `{$or: {_eq: […]}}` | `$or` is not a field | recursive `_and`/`_or`/`_not`; **empty arrays dropped** (an empty `_or` means TRUE) |
+| unknown operator | `_<op>` | invalid field → query rejected | dropped |
+| `sort: [{a:'desc', b:'desc'}]`, `direction: ''` | passed through | undefined ordering; `''` is not a valid enum | split into separate `order_by` entries; empty directions and dotted paths dropped |
+
+Two safety notes from the same work: `updateQueryGql` never falls back to `where: {}` (that
+would match **every row** on an update — it emits a never-matching condition instead), and
+query failures are always logged with the operation and selector, because a rejected query
+was previously swallowed into `[]` and looked exactly like "no results".
+
+### The part Hasura genuinely cannot do: advanced filters on form fields
+
+"Advanced filters" filter by a **field of the form schema** — `age`, `district`, a repeating
+slide's `visits__3`. Those values are **not columns**: they live inside a single **`jsonb`**
+column called `data` (`form_data.data`, `report_data.data`; the selector keys are
+`data.<field>`, or `data.data.<field>` for non-data lists, plus `__N` variants per repeating
+slide).
+
+What Hasura offers on a jsonb column: `_contains` / `_has_key*` (equality and key presence),
+and `_cast` to text. What it does **not** offer: **comparisons on an individual key inside the
+document**. There is no way to express `data->>'age' >= 18` through a generated `bool_exp`
+without changing the backend (a database view or a Hasura computed field per field, which
+would have to be maintained for every form schema — untenable here).
+
+Since the requirement was **exact parity with offline** (no accepted feature gaps), we
+implemented a **hybrid split** inside `OnlineDataService.find()`:
+
+1. **Split the selector** (`splitSelector`, `mango-eval.ts`): conditions on real columns go to
+   the server `where`; conditions on dotted `data.*` paths are held back. `$and` is separable
+   so its elements are split individually; a `$or`/`$nor`/`$not` group that mixes both **cannot**
+   be split (an OR is not distributive across the boundary), so the whole group is evaluated
+   client-side — which is why the in-memory evaluator also handles plain columns.
+2. **Evaluate in memory** (`matchesSelector`, `mango-eval.ts`): a small Mango-subset evaluator
+   supporting `$eq $ne $gt $gte $lt $lte $in $nin $regex(+$options) $elemMatch $exists` and
+   `$and $or $nor $not`, reading dotted paths out of the document. Semantics deliberately
+   mirror RxDB/mingo (missing value ≠ equal, equality on an array means "contains", regex via
+   a real `RegExp`) so a filter returns the **same rows** in both modes.
+3. **Page after filtering**: when client-side conditions exist the server query keeps its
+   `order_by` but drops `limit`/`offset`; filtering happens, then `skip`/`limit` are applied in
+   memory. Otherwise a page would be computed from unfiltered rows and the counts would lie.
+   (`ListDataSource` issues separate count/export/display queries; each goes through `find()`
+   and gets the same treatment.)
+4. **Bounded fetch**: `MAX_IN_MEMORY_FILTER_ROWS = 5000`, with a dev-mode warning when the cap
+   is hit, so an advanced filter on a huge table cannot hang the browser.
+
+### Known differences and limits (be aware before promising parity)
+
+- **The 5000-row cap.** With an advanced `data.*` filter on a table larger than that, results
+  are computed from the first 5000 rows (ordered by the query's `order_by`) and a warning is
+  logged. Offline has no such limit — it queries the whole local database.
+- **Regex vs LIKE on real columns.** Server-side `$regex` becomes `_ilike '%value%'`, i.e. a
+  case-insensitive **substring** match. Offline it is a true regex. Identical for ordinary
+  search text, different if a user types regex metacharacters (they are escaped, so treated
+  literally). The in-memory evaluator still uses a real `RegExp`, so `data.*` filters keep
+  regex semantics.
+- **Cost.** An advanced filter means an unpaged (capped) fetch plus in-memory work. Column-level
+  filters stay fully server-side and are unaffected.
+- If per-key jsonb comparisons ever need to be pushed to the server, the backend-side options
+  are a view or Hasura computed fields; nothing in the client would have to change beyond
+  letting `splitSelector` keep those conditions on the server.
+
+### Where the code and tests live
+
+- `projects/core/data/src/gql.ts` — `buildWhere` / `buildFieldConditions` / `buildOrderBy`
+  (Mango → Hasura), sentinel stripping, LIKE escaping.
+- `projects/core/data/src/mango-eval.ts` — `splitSelector`, `matchesSelector`, `getPathValue`.
+- `projects/core/data/src/online-data-service.ts` — `find()` orchestrates split → server query →
+  in-memory filter → paging.
+- Tests: `gql.spec.ts` and `mango-eval.spec.ts` (44 cases) cover each real selector shape above,
+  including the `'all'` sentinel, `$in:[null,'']`, the repeating-slide `$and:[{$or:…}]` nesting,
+  and sort normalization. Read-only reference for the shapes: `list-datasource.ts:484-754`.
+
 ## Legend
 
 **Offline** — ✅ works (shipping default).
@@ -287,15 +396,15 @@ happens online.
 | 34 | Languages | `/languages` | View translations | ✅ | ✅ | ✅ |
 | 35 | Languages | `/languages` | Add/edit/remove translation | ✅ | 🟡 | ✅ |
 | 36 | Notifications | `/notifications` | List notifications | ✅ | 🟡 | ✅ |
-| 37 | AI | `/ai` | GPT chat (Pandino API) | ✅ | 🟡 | ☐ |
-| 38 | AI | `/rag` | RAG (Pandino API) | ✅ | 🟡 | ☐ |
+| 37 | AI | `/ai` | GPT chat (Pandino API) | ✅ | 🟡 | ✅ |
+| 38 | AI | `/rag` | RAG (Pandino API) | ✅ | 🟡 | ✅ |
 | 39 | Payments | `/checkout` | Stripe checkout | ✅ | 🟡 | ☐ |
 | 40 | System | — | Realtime list refresh after write | ✅ | 🟡 | ✅ |
 | 41 | System | — | Backup / Restore DB | ✅ | ⛔ | ☐ |
 | 42 | System | — | Offline queue / background sync | ✅ | ⛔ | ☐ |
 | 43 | AI | — | Pandino bootstrap after login (`/checkpandinouser` → API key → `/getusertokens`) | ✅ | ✅ | ✅ |
 | 44 | Notifications | — | Unread badge + dropdown populate after login | ✅ | ✅ | ✅ |
-| 45 | System | — | Sync indicator shows a mode-appropriate state (not "sync problem") | ✅ | 🟡 | ☐ |
+| 45 | System | — | Sync indicator shows a mode-appropriate state (cloud icon not "sync problem") | ✅ | 🟡 | ✅ |
 | 46 | System | — | Logout button enabled state (`logoutOff`) | ✅ | 🟡 | ☐ |
 | 47 | System | — | Custom actions receive a `syncing` value | ✅ | 🟡 | ☐ |
 
