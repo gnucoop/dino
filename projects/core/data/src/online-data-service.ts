@@ -47,9 +47,24 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 import {BulkInsertResult, CollectionChangedEvent, IDataService} from './data-service-interface';
 import {fillConfigDefaultValues} from './data-service-utils';
 import {DataUpsertRequest} from './data-upsert-request';
-import {findQueryGql, getQueryGql, insertQueryGql, subscriptionQueryGql, updateQueryGql} from './gql';
+import {
+  FieldTypeInfo,
+  FieldTypeResolver,
+  findQueryGql,
+  getQueryGql,
+  insertQueryGql,
+  subscriptionQueryGql,
+  updateQueryGql,
+} from './gql';
 import {newClient, newClientSubscription} from './graphql-ws-client';
+import {matchesSelector, splitSelector} from './mango-eval';
 import {Model} from './model';
+
+/**
+ * Upper bound on rows fetched when a query needs in-memory filtering (a filter
+ * on a key inside a jsonb column). Prevents an unbounded fetch on large tables.
+ */
+const MAX_IN_MEMORY_FILTER_ROWS = 5000;
 
 /**
  * Online (Apollo → Hasura) implementation of `IDataService`, used when
@@ -144,7 +159,7 @@ export class OnlineDataService implements IDataService {
           }),
         );
       }),
-      catchError(this._queryErrorHandler(null)),
+      catchError(this._queryErrorHandler(null, `get(${params.collectionName})`, {id: params.id})),
     );
   }
 
@@ -177,7 +192,7 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
-      catchError(this._queryErrorHandler(null)),
+      catchError(this._queryErrorHandler(null, `insert(${params.collectionName})`)),
     );
   }
 
@@ -212,7 +227,7 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
-      catchError(this._queryErrorHandler({success: [], error: []})),
+      catchError(this._queryErrorHandler({success: [], error: []}, `bulkInsert(${params.collectionName})`)),
     );
   }
 
@@ -228,7 +243,12 @@ export class OnlineDataService implements IDataService {
   ): Observable<R[]> {
     return this._getCollection(params).pipe(
       switchMap(({name, fields}) => {
-        const {mutation, mutationName, variables} = updateQueryGql<T>(name, fields, params);
+        const {mutation, mutationName, variables} = updateQueryGql<T>(
+          name,
+          fields,
+          params,
+          this._fieldTypeResolver(name),
+        );
         const context = this._getQueryContext();
         return this._apollo
           .mutate({
@@ -247,7 +267,11 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
-      catchError(this._queryErrorHandler([])),
+      catchError(
+        this._queryErrorHandler([], `bulkUpdate(${params.collectionName})`, {
+          selector: params.query?.selector,
+        }),
+      ),
     );
   }
 
@@ -262,7 +286,12 @@ export class OnlineDataService implements IDataService {
           collectionName: name,
           query: {selector: {id: {$eq: doc.id}}},
         } as DataFindRequest<T>;
-        const {mutation, mutationName, variables} = updateQueryGql<T>(name, fields, params);
+        const {mutation, mutationName, variables} = updateQueryGql<T>(
+          name,
+          fields,
+          params,
+          this._fieldTypeResolver(name),
+        );
         const context = this._getQueryContext();
         return this._apollo
           .mutate({
@@ -285,7 +314,7 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
-      catchError(this._queryErrorHandler(null)),
+      catchError(this._queryErrorHandler(null, `update(${collectionName})`, {id: doc?.id})),
     );
   }
 
@@ -318,7 +347,29 @@ export class OnlineDataService implements IDataService {
   find<T extends Model = Model, R extends T = T>(params: DataFindRequest<T>): Observable<R[]> {
     return this._getCollection(params).pipe(
       switchMap(({name, fields}) => {
-        const {query, queryName, variables} = findQueryGql<T>(name, fields, params);
+        // Conditions on keys inside a jsonb column (e.g. `data.age`) are not
+        // expressible in Hasura, so they are split off and applied in memory.
+        const {server: serverSelector, client: clientSelector} = splitSelector(
+          params.query?.selector as {[key: string]: any} | undefined,
+        );
+        const filterInMemory = clientSelector != null;
+        const serverRequest: DataFindRequest<T> = {
+          ...params,
+          query: {
+            ...(params.query ?? {}),
+            selector: serverSelector as any,
+            // Paging must happen after in-memory filtering, otherwise a page
+            // would be computed from unfiltered rows. Fetch up to a bounded
+            // number of rows instead and page below.
+            ...(filterInMemory ? {limit: MAX_IN_MEMORY_FILTER_ROWS, skip: undefined} : {}),
+          } as DataFindRequest<T>['query'],
+        };
+        const {query, queryName, variables} = findQueryGql<T>(
+          name,
+          fields,
+          serverRequest,
+          this._fieldTypeResolver(name),
+        );
         const context = this._getQueryContext();
         return this._apollo
           .query({query, variables, context, errorPolicy: 'all', fetchPolicy: 'no-cache'})
@@ -327,11 +378,28 @@ export class OnlineDataService implements IDataService {
             if (res.errors) {
               throw new Error(JSON.stringify(res.errors));
             }
-            return ((res.data[queryName] || []) as R[]).map(r => this._decorate<R>(r, name));
+            let rows = (res.data[queryName] || []) as R[];
+            if (filterInMemory) {
+              if (rows.length >= MAX_IN_MEMORY_FILTER_ROWS && isDevMode()) {
+                console.warn(
+                  `[OnlineDataService] '${name}': in-memory filtering hit the ` +
+                    `${MAX_IN_MEMORY_FILTER_ROWS}-row cap; results may be incomplete.`,
+                );
+              }
+              rows = rows.filter(row => matchesSelector(row, clientSelector));
+              const skip = params.query?.skip ?? 0;
+              const limit = params.query?.limit;
+              rows = limit != null ? rows.slice(skip, skip + limit) : rows.slice(skip);
+            }
+            return rows.map(r => this._decorate<R>(r, name));
           }),
         );
       }),
-      catchError(this._queryErrorHandler([])),
+      catchError(
+        this._queryErrorHandler([], `find(${params.collectionName})`, {
+          selector: params.query?.selector,
+        }),
+      ),
     );
   }
 
@@ -476,6 +544,12 @@ export class OnlineDataService implements IDataService {
     const self = this;
     const def = (value: any) => ({value, configurable: true, enumerable: false, writable: true});
     Object.defineProperties(obj, {
+      // RxDB detects documents with a plain property check:
+      // `'isInstanceOfRxDocument' in obj` (rxdb/dist/esm/rx-document.js).
+      // Setting it makes `isRxDocument()` true for online results, so consumer
+      // code that branches on it (metric selection, metric sub-filter renaming,
+      // status changer, exporter…) behaves the same as offline.
+      isInstanceOfRxDocument: def(true),
       // RxDocument.toJSON(): plain data without the shim members.
       toJSON: def(() => ({...obj})),
       // RxDocument.collection.name is used for permission checks.
@@ -553,6 +627,25 @@ export class OnlineDataService implements IDataService {
     return value;
   }
 
+  /**
+   * Builds a field type lookup for a collection from its JSON schema, so the
+   * query translator can pick the right Hasura shape (containment for array
+   * columns) and drop the `'all'` sentinel from scalar reference filters.
+   * @param collectionName The collection name.
+   */
+  private _fieldTypeResolver(collectionName: string): FieldTypeResolver {
+    const properties = this._schemas[collectionName];
+    return (field: string): FieldTypeInfo | undefined => {
+      const definition: any = properties ? properties[field] : null;
+      if (definition == null) {
+        return undefined;
+      }
+      const type = definition.type;
+      const isArray = Array.isArray(type) ? type.includes('array') : type === 'array';
+      return {isArray};
+    };
+  }
+
   private _getCollection(params: DataRequest): Observable<{name: string; fields: string[]}> {
     const {collectionName} = params;
     if (this._collections[collectionName] == null) {
@@ -572,12 +665,27 @@ export class OnlineDataService implements IDataService {
     };
   }
 
+  /**
+   * Recovers from a failed GraphQL operation by emitting a neutral value.
+   *
+   * The failure is always logged (not only in dev mode): swallowing it silently
+   * makes a rejected query indistinguishable from "no results", which is very
+   * hard to diagnose from the UI.
+   * @param errValue The value to emit instead.
+   * @param operation Optional operation description, included in the log.
+   * @param details Optional context (e.g. the variables sent).
+   */
   private _queryErrorHandler<E, R>(
     errValue: R,
+    operation?: string,
+    details?: Record<string, any>,
   ): (err: any, caught: Observable<E>) => ObservableInput<R> {
     return err => {
-      if (isDevMode()) {
-        console.error(err);
+      const label = operation != null ? `[OnlineDataService] ${operation} failed` : '[OnlineDataService] query failed';
+      if (details != null) {
+        console.error(label, err, details);
+      } else {
+        console.error(label, err);
       }
       return obsOf(errValue);
     };

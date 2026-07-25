@@ -170,50 +170,50 @@ not a per-manager change.
 |---|------|-------|---------------|:---:|:---:|:---:|
 | 1 | Auth | `/login` | Log in (nHost) | ✅ | ✅ | ✅ |
 | 2 | Auth | `/reset-password` | Reset password | ✅ | 🟡 | ☐ |
-| 3 | Auth | — | Log out | ✅ | 🟡 | ☐ |
+| 3 | Auth | — | Log out | ✅ | 🟡 | ✅  |
 | 4 | Dashboard | `/` | View dashboard / menu | ✅ | ✅ | ✅ |
 | 5 | Forms | `/forms` | List form schemas (collect menu) | ✅ | ✅ | ✅ |
 | 6 | Forms | `/forms/:id` | List form data of a schema | ✅ | ✅ | ✅ |
-| 7 | Forms | `/forms/:id` | View a form data (detail/expand) | ✅ | 🟡 | ☐ |
-| 8 | Forms | `/forms/:id` | Create form data | ✅ | 🟡 | ☐ |
-| 9 | Forms | `/forms/:id` | Edit form data (incl. change metric) | ✅ | ✅ | ☐ |
-| 10 | Forms | `/forms/:id` | Delete form data | ✅ | 🟡 | ☐ |
-| 11 | Forms | `/forms/:id` | Duplicate form data | ✅ | 🟡 | ☐ |
-| 12 | Forms | `/forms/:id` | Change status | ✅ | 🟡 | ☐ |
-| 13 | Forms | `/forms/:id` | Bulk actions | ✅ | ❓ | ☐ |
-| 14 | Forms | `/forms/:id` | Export list (xlsx/csv) | ✅ | 🟡 | ☐ |
-| 15 | Forms | `/forms/:id` | Import form data | ✅ | ❓ | ☐ |
-| 16 | Forms | `/forms/:id` | Print / docx | ✅ | ❓ | ☐ |
-| 17 | Forms | `/forms/:id` | View change log | ✅ | ❓ | ☐ |
-| 18 | Forms (authoring) | forms-collect | Create/edit form schema | ✅ | ❓ | ☐ |
+| 7 | Forms | `/forms/:id` | View a form data (detail/expand) | ✅ | 🟡 | ✅ |
+| 8 | Forms | `/forms/:id` | Create form data | ✅ | 🟡 | ❌ |
+| 9 | Forms | `/forms/:id` | Edit form data (incl. change metric) | ✅ | ✅ | ✅ |
+| 10 | Forms | `/forms/:id` | Delete form data | ✅ | 🟡 | ✅ |
+| 11 | Forms | `/forms/:id` | Duplicate form data | ✅ | 🟡 | ✅ |
+| 12 | Forms | `/forms/:id` | Change status | ✅ | 🟡 | ✅  |
+| 13 | Forms | `/forms/:id` | Bulk actions | ✅ | ❓ | ✅ |
+| 14 | Forms | `/forms/:id` | Export list (xlsx/csv) | ✅ | 🟡 | ✅ |
+| 15 | Forms | `/forms/:id` | Import form data | ✅ | ❓ | ❌|
+| 16 | Forms | `/forms/:id` | Print / docx | ✅ | ❓ | ✅ |
+| 17 | Forms | `/forms/:id` | View change log | ✅ | ❓ | ✅ |
+| 18 | Forms (authoring) | forms-collect | Create/edit form schema | ✅ | ❓ | ✅ |
 | 19 | Public form | `/f/:id` | Fill & submit (anonymous) | ⛔ | ✅ | ☐ |
 | 20 | Reports | `/reports` | List report schemas | ✅ | ✅ | ✅ |
-| 21 | Reports | `/reports/:id` | View report (charts/widgets) | ✅ | 🟡 | ☐ |
+| 21 | Reports | `/reports/:id` | View report (charts/widgets) | ✅ | 🟡 | ✅ |
 | 22 | Reports | `/reports/:id` | Create/edit report data | ✅ | 🟡 | ☐ |
-| 23 | Reports | `/reports/:id` | Delete report data | ✅ | 🟡 | ☐ |
+| 23 | Reports | `/reports/:id` | Delete report data | ✅ | 🟡 | ✅ |
 | 24 | Reports (authoring) | reports-collect | Create/edit report schema | ✅ | ❓ | ☐ |
-| 25 | Reports | — | Favorite report | ✅ | 🟡 | ☐ |
-| 26 | Aggregation | `/aggregation` | List / view aggregations | ✅ | 🟡 | ☐ |
+| 25 | Reports | — | Favorite report | ✅ | 🟡 | ✅ |
+| 26 | Aggregation | `/aggregation` | List / view aggregations | ✅ | 🟡 | ✅ |
 | 27 | Aggregation | `/forms/:id` | Aggregation form creator | ✅ | ❓ | ☐ |
-| 28 | Metrics | `/metrics` | List metric domains | ✅ | 🟡 | ☐ |
-| 29 | Metrics | `/metrics` | Create/edit metric (organizations) | ✅ | 🟡 | ☐ |
-| 30 | Metrics | `/metrics` | Delete metric | ✅ | 🟡 | ☐ |
+| 28 | Metrics | `/metrics` | List metric domains | ✅ | 🟡 | ✅ |
+| 29 | Metrics | `/metrics` | Create/edit metric (organizations) | ✅ | 🟡 | ✅ |
+| 30 | Metrics | `/metrics` | Delete metric | ✅ | 🟡 | ✅ |
 | 31 | Users | `/users` | List users | ✅ | 🟡 | ☐ |
 | 32 | Users | `/users` | Create/edit user | ✅ | 🟡 | ☐ |
 | 33 | Users | `/users` | Manage groups / roles | ✅ | 🟡 | ☐ |
-| 34 | Languages | `/languages` | View translations | ✅ | ✅ | ☐ |
+| 34 | Languages | `/languages` | View translations | ✅ | ✅ | ✅ |
 | 35 | Languages | `/languages` | Add/edit/remove translation | ✅ | 🟡 | ☐ |
 | 36 | Notifications | `/notifications` | List notifications | ✅ | 🟡 | ☐ |
 | 37 | AI | `/ai` | GPT chat (Pandino API) | ✅ | 🟡 | ☐ |
 | 38 | AI | `/rag` | RAG (Pandino API) | ✅ | 🟡 | ☐ |
 | 39 | Payments | `/checkout` | Stripe checkout | ✅ | 🟡 | ☐ |
-| 40 | System | — | Realtime list refresh after write | ✅ | 🟡 | ☐ |
+| 40 | System | — | Realtime list refresh after write | ✅ | 🟡 | ✅ |
 | 41 | System | — | Backup / Restore DB | ✅ | ⛔ | ☐ |
 | 42 | System | — | Offline queue / background sync | ✅ | ⛔ | ☐ |
 
 ## Notes on the ⛔ rows (by design, not bugs)
 
-- **40 Realtime** — implemented (🟡, pending live validation). `OnlineDataService`
+- **40 Realtime** — implemented (✅, pending live validation). `OnlineDataService`
   now opens a `graphql-ws` subscription per registered collection
   (`subscription on<Coll>Changed { <coll> { updated_at } }`) and emits
   `collectionChanged`, so lists and the notifications bell re-query on server
@@ -242,6 +242,26 @@ error object) and note it here so it can be fixed and the status flipped.
 - Realtime: `OnlineDataService` opens a `graphql-ws` subscription per collection
   (reusing `newClient`/`newClientSubscription` + `subscriptionQueryGql`) and emits
   `collectionChanged`, so existing list/nav consumers auto-refresh online.
+- **Filters & metric selection** (all filters returned 0 rows; case not selectable):
+  - Shim now sets `isInstanceOfRxDocument`, so RxDB's `isRxDocument()` is true online.
+    This restores metric selection (`search-filters-bar.ts:820`), metric sub-filter
+    renaming (`filters.service.ts:885`, e.g. `case_notes` → `case`) and ~8 other sites.
+  - `buildWhere` rewritten (recursive): `$and`/`$or`/`$nor`/`$not`; **drops the `'all'`
+    sentinel** from scalar `*_ref_id` filters (it is an invalid uuid and made Postgres
+    reject the whole query — the actual cause of the empty lists); `$regex` → `_ilike`
+    with `$options` consumed (this unblocked the case/status/user/group option lists);
+    `$ne` includes NULL rows; `$elemMatch` → `_contains`; `$in`/`$nin` with `null`/`''`
+    expanded; array columns use containment; unknown operators dropped instead of
+    emitting invalid Hasura fields; empty logical arrays dropped.
+  - `sort` normalized: empty directions and dotted paths dropped, multi-key entries split.
+  - Advanced form-field filters (`data.*`, inside the jsonb column) are split off and
+    evaluated in memory by `mango-eval.ts`, with paging applied after filtering and a
+    5000-row cap — Hasura cannot express per-key ranges inside jsonb, so this preserves
+    offline parity.
+  - `updateQueryGql` no longer falls back to `where: {}` (which would match every row).
+  - `CheckMetricPermission` no longer assumes `doc.collection.name` (lost by `deepCopy`).
+  - Query failures are always logged with operation + selector (they were silent before).
+  - Covered by 44 unit tests in `gql.spec.ts` / `mango-eval.spec.ts`; suite 135/135 green.
 
 ## Change log (test results)
 

@@ -46,6 +46,7 @@ export * from './data-upsert-request';
 export * from './data-utility-functions';
 export * from './import-utils';
 export * from './insert-model';
+export * from './mango-eval';
 export * from './metric';
 export * from './model';
 export * from './online-data-model-manager';

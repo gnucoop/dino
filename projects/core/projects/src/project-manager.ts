@@ -44,7 +44,7 @@ export class ProjectManager extends DataModelManager<Project> {
       {name: 'project', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
-      [new CheckMetricPermission<Project>()],
+      [new CheckMetricPermission<Project>('project')],
       [{checkName: 'user_metrics', checkKey: 'project'}],
     );
   }

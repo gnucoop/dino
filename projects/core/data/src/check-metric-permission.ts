@@ -29,7 +29,14 @@ import {RxDocument} from 'rxdb';
  * Permission that checks if the Active User can see or perform operation on a Metric on their metric list.
  */
 export class CheckMetricPermission<T extends Metric = Metric> implements Permission<T> {
-  constructor() {}
+  /**
+   * @param _collectionName Optional collection name, used when the checked
+   * document does not carry one. Offline documents are RxDocuments exposing
+   * `collection.name`, but a plain or copied object (online results are plain
+   * objects, and `deepCopy` drops the compatibility shim's non-enumerable
+   * members) does not, so the owning manager can supply it explicitly.
+   */
+  constructor(private _collectionName?: string) {}
   canView(data: CanViewData<T>): boolean {
     return this._canViewMetric(data);
   }
@@ -44,8 +51,14 @@ export class CheckMetricPermission<T extends Metric = Metric> implements Permiss
       return false;
     }
     const doc = data.object as RxDocument<T>;
+    const collectionName = doc.collection?.name ?? this._collectionName;
+    if (collectionName == null) {
+      // Without a collection name the metric type cannot be resolved; do not
+      // throw, and leave the decision to the other permission checks.
+      return false;
+    }
     const userMetrics = data.context['user_metrics'];
-    const metricsByType: string[] = userMetrics[doc.collection.name];
+    const metricsByType: string[] = userMetrics[collectionName];
     if (metricsByType != null) {
       return metricsByType.includes(doc.id) || metricsByType.includes('all');
     }

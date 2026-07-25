@@ -44,7 +44,7 @@ export class AreaManager extends DataModelManager<Area> {
       {name: 'area', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
-      [new CheckMetricPermission<Area>()],
+      [new CheckMetricPermission<Area>('area')],
       [{checkName: 'user_metrics', checkKey: 'area'}],
     );
   }

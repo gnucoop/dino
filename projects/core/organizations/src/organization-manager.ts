@@ -44,7 +44,7 @@ export class OrganizationManager extends DataModelManager<Organization> {
       {name: 'organization', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
-      [new CheckMetricPermission<Organization>()],
+      [new CheckMetricPermission<Organization>('organization')],
       [{checkName: 'user_metrics', checkKey: 'organization'}],
     );
   }

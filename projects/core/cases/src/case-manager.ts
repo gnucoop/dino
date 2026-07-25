@@ -21,10 +21,12 @@
  */
 
 import {Inject, Injectable} from '@angular/core';
-import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   CheckMetricPermission,
-  DataModelManager,  PermissionContextService,
+  DATA_SERVICE,
+  DataModelManager,
+  IDataService,
+  PermissionContextService,
 } from '@dino/core/data';
 
 import {Case, migrationStrategies} from './case';
@@ -59,7 +61,7 @@ export class CaseManager extends DataModelManager<Case> {
       {name: 'case', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
-      [new CheckMetricPermission<Case>()],
+      [new CheckMetricPermission<Case>('case')],
       [{checkName: 'user_metrics', checkKey: 'case'}],
     );
   }

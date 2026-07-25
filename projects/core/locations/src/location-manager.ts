@@ -44,7 +44,7 @@ export class LocationManager extends DataModelManager<Location> {
       {name: 'location', collection: {schema, migrationStrategies}},
       dataService,
       permissionContextService,
-      [new CheckMetricPermission<Location>()],
+      [new CheckMetricPermission<Location>('location')],
       [{checkName: 'user_metrics', checkKey: 'location'}],
     );
   }
