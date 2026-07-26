@@ -31,6 +31,7 @@ import {
   Observable,
   of as obsOf,
   Subscription,
+  throwError,
   timer,
 } from 'rxjs';
 import {
@@ -39,6 +40,7 @@ import {
   finalize,
   map,
   mapTo,
+  retry,
   share,
   shareReplay,
   switchMap,
@@ -101,6 +103,15 @@ const PREEMPTIVE_REFRESH_RATIO = 0.75;
  * a returning app fires cannot race the expiry.
  */
 const RESUME_TOKEN_SKEW_SECONDS = 60;
+
+/**
+ * Total attempts (not retries) for a single token refresh, including the first.
+ * Small on purpose: every trigger that needs a refresh has a user waiting on it.
+ */
+const MAX_REFRESH_ATTEMPTS = 3;
+
+/** Backoff step between refresh attempts; multiplied by the attempt number. */
+const REFRESH_RETRY_BASE_DELAY_MS = 1000;
 
 /**
  * Injectable service used to authenticate against an external authentication backend.
@@ -562,6 +573,26 @@ export class AuthService {
         const refreshHttpCall: Observable<boolean> = this._httpClient
           .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
+            // Bounded retry, because a single failed attempt has consequences well
+            // beyond this request: it announces `refresh failed`, which resets the
+            // permission context and can force a logout. Each trigger only ever
+            // calls this once (there is no other retry anywhere), and the
+            // pre-emptive timer is not rescheduled on failure, so one transient
+            // blip used to be enough to degrade the session until the user next
+            // interacted.
+            retry({
+              count: MAX_REFRESH_ATTEMPTS - 1,
+              delay: (err, attempt) => {
+                const status = (err as HttpErrorResponse)?.status;
+                // A rejected refresh token will be rejected again — retrying it is
+                // pointless and only delays the honest failure. Retry transport
+                // problems only (offline blip, timeout, 5xx).
+                if (status != null && status >= 400 && status < 500) {
+                  return throwError(() => err);
+                }
+                return timer(REFRESH_RETRY_BASE_DELAY_MS * attempt);
+              },
+            }),
             tap(res => {
               // Store the new tokens BEFORE announcing success. Subscribers react
               // to `authenticated` synchronously and re-issue their requests, and

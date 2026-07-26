@@ -64,7 +64,23 @@ export class PermissionContextService {
       .pipe(
         distinctUntilKeyChanged('evt'),
         filter(authEvt => {
-          return authEvt.auth === false;
+          if (authEvt.auth !== false) {
+            return false;
+          }
+          // A failed refresh is NOT a reason to wipe the context where the cached
+          // data is still usable (offline mode). Doing so left the app running
+          // half-authorised — `user_permissions: null`, so row action buttons
+          // vanished and no form could be created — with nothing to rebuild it,
+          // because the only rebuild trigger fires on login alone. A real logout
+          // still resets, and online mode still resets since nothing works there
+          // without a token anyway.
+          if (
+            authEvt.evt === 'refresh failed' &&
+            this._authService.config.enforceTokenExpiry !== true
+          ) {
+            return false;
+          }
+          return true;
         }),
       )
       .subscribe(() => this.resetContext());

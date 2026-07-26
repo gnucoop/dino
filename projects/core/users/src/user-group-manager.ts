@@ -21,10 +21,12 @@
  */
 
 import {Inject, Injectable, isDevMode} from '@angular/core';
+import {AuthService} from '@dino/core/auth';
 import {DATA_SERVICE, IDataService} from '@dino/core/data';
 import {
   DataModelManager,
-  DataQueryOptions,  MetricsService,
+  DataQueryOptions,
+  MetricsService,
   PermissionContextService,
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
@@ -54,6 +56,7 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
     private _metricService: MetricsService,
     @Inject(DATA_SERVICE) dataService: IDataService,
     permissionContextService: PermissionContextService,
+    private _authService: AuthService,
   ) {
     super(
       {name: 'user_group', collection: {schema, migrationStrategies}},
@@ -65,6 +68,30 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
     dataService.collectionsInitialized
       .pipe(
         filter(evt => evt === 'started'),
+        switchMap(() => this.isActiveUserAdmin()),
+      )
+      .subscribe();
+
+    // Rebuild the permission context after a successful RE-authentication.
+    //
+    // The trigger above is the only other one, and it fires on `'login'` alone
+    // (`AppModule` emits `collectionsInitialized` only for that event), so once the
+    // context had been reset there was nothing to repopulate it: the app kept
+    // running with `user_permissions: null` until a page reload, or until the user
+    // happened to navigate somewhere that re-subscribed to `isActiveUserAdmin()`.
+    // `isActiveUserAdmin()` is what calls `addToContext(...)`, so reusing it here
+    // needs no new logic — only a trigger.
+    this._authService.authenticated
+      .pipe(
+        filter(
+          authEvt =>
+            authEvt.auth === true &&
+            (authEvt.evt === 'refresh successful' || authEvt.evt === 'init refresh'),
+        ),
+        // Only when the context is actually incomplete: `fullContext` holds a value
+        // only once every key has been populated, and is null after a reset. This
+        // keeps a routine refresh from re-running the whole permission read.
+        filter(() => permissionContextService.fullContext.value == null),
         switchMap(() => this.isActiveUserAdmin()),
       )
       .subscribe();

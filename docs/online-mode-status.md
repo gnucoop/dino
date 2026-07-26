@@ -553,13 +553,22 @@ _Record dated results here as you validate, e.g.:_
   silent runtime break there (`Cannot read properties of undefined`). Patched the two in `dinoapp`;
   `e2e-app` was deliberately left alone (out of scope) and **will need the same one-line addition
   if that project is revived**. Not yet validated against the live backend.
+- 2026-07-26 — **Stage 4 (the last root cause that mattered).** The permission context is no longer
+  wiped by a failed refresh in offline mode, and is now rebuilt on a successful re-authentication
+  instead of only at login. Also gave `refreshToken()` a bounded retry (3 attempts, 1s×n backoff,
+  transport errors only — a rejected refresh token is not retried, since it would only be rejected
+  again). That last one matters more than it looks: nothing anywhere retried a refresh, every
+  trigger called it exactly once, and the pre-emptive timer is **not** rescheduled on failure
+  (`_schedulePreemptiveRefresh()` is only called from `_storeAuthToken()`), so one transient blip
+  used to degrade the session until the user next interacted. Left open on purpose: gap 2 above.
 
 ## Architecture: surviving an idle period (why a token fix was not enough)
 
-> **Status:** 10 of the 12 identified root causes are fixed (stages 1-3, committed). Two remain —
-> see [⚠️ STILL UNFIXED](#-still-unfixed-two-root-causes-this-would-be-stage-4) below. The most
-> important one is that the **permission context is never rebuilt after a re-auth**, which stage 1
-> made *easier* to trigger.
+> **Status:** 11 of the 12 identified root causes are fixed (stages 1-4, committed). Stage 4 closed
+> the permission-context gap, which was the one that mattered. The remaining one (`dataReady` can
+> never emit `false`) is **deliberately left open** — it is harmless today and the obvious fix has a
+> UI side effect; see [Stage 4](#stage-4--the-permission-context-and-a-bounded-refresh) below.
+> Nothing here has been validated against a live backend yet.
 
 Reported symptom: after ~5-10 minutes idle (especially on mobile) the app becomes
 inconsistent — online, lists go empty or a spinner never finishes; in offline mode the toolbar
@@ -651,13 +660,12 @@ implemented from real evidence on both sides:
   worded per mode — online the app is dead in the water and the existing `login/expired` redirect
   follows, offline it states that local data is still usable but will not sync.
 
-### ⚠️ STILL UNFIXED: two root causes (this would be "stage 4")
+### Stage 4 — the permission context, and a bounded refresh
 
-Twelve root causes were identified for the idle-session problem. Ten are fixed across the three
-commits above. **These two are not**, and they are recorded here so they are not mistaken for
-working behaviour. Neither is hypothetical — both were traced in the code.
+The two root causes below were the last ones open, and they are now fixed. The analysis is kept
+because it explains *why* the fixes are shaped the way they are.
 
-#### Gap 1 (matters) — the permission context is wiped and never rebuilt after re-auth
+#### Gap 1 (was the important one) — the permission context was wiped and never rebuilt after re-auth
 
 A failed refresh emits `{auth: false, evt: 'refresh failed'}`, and
 `data-context-service.ts:63-70` reacts by calling `resetContext()` →
@@ -681,27 +689,40 @@ then the app runs **half-authorised** with `user_permissions: null` — which is
 bounded retry added in stage 1 it now gives up after 5 attempts instead of hammering forever, so the
 buttons are quietly absent rather than absent *and* generating a request storm.
 
-**Stage 1 made this easier to hit, not harder.** It added a pre-emptive refresh, so there are now
-more refresh attempts per session, and any one of them failing (a transient blip is enough) trips
-this. That is the strongest argument for fixing it.
+**Stage 1 had made this easier to hit, not harder.** It added a pre-emptive refresh, so there are
+more refresh attempts per session, and any one of them failing (a transient blip was enough) tripped
+this — in the background, while the user was idle and not interacting at all.
 
-**Fix sketch:** on a *successful* re-auth (`evt: 'refresh successful'` / `'login'`), re-run the
-context bootstrap rather than relying on `collectionsInitialized`, which is login-only. The existing
-`isActiveUserAdmin()` → `addToContext(...)` path can be reused as-is; it only needs a trigger.
-Consider also whether `resetContext()` should fire on `'refresh failed'` at all in offline mode,
-where the session is still usable from local data.
+**Fixed, in two halves** (`data-context-service.ts`, `user-group-manager.ts`):
+1. **Do not wipe what is still usable.** `resetContext()` no longer fires for `'refresh failed'`
+   where `enforceTokenExpiry !== true` — i.e. in offline mode, where cached data (and therefore the
+   permissions describing it) remain valid. A real logout still resets, and online mode still
+   resets, since nothing works there without a token anyway.
+2. **Rebuild after a successful re-auth.** `UserGroupManager` now also triggers on
+   `authenticated` emitting `'refresh successful'` / `'init refresh'`, gated on
+   `fullContext.value == null` so a routine refresh does not re-read permissions it already has.
+   This reuses the existing `isActiveUserAdmin()` → `addToContext(...)` path unchanged — it only
+   ever lacked a trigger. (`UserGroupManager` gained an `AuthService` dependency for this.)
 
-#### Gap 2 (minor) — `dataReady` can never emit `false`
+#### Gap 2 (minor) — `dataReady` can never emit `false` — LEFT OPEN ON PURPOSE
 
 `online-data-service.ts:230-238` builds it as `combineLatest([...]).pipe(filter(...), map(() => true),
 distinctUntilChanged(), shareReplay(1))`. The `filter` means only `true` ever reaches the `map`, so
-once ready it stays ready: a logout or a cleared token emits nothing rather than `false`. Consumers
-that gate on it (notably the notification streams in `main-nav`, hung off a `merge(dataReady, …)`)
-therefore never re-fire after the session changes. Harmless today because those consumers only need
-the first `true`; it becomes a bug the moment something needs to *stop* on session loss.
+once ready it stays ready: a logout or a cleared token emits nothing rather than `false`.
 
-**Fix sketch:** map the predicate to a boolean instead of filtering on it, keeping
-`distinctUntilChanged()`.
+The obvious fix — map the predicate to a boolean instead of filtering on it — was **evaluated and
+not applied**, because auditing the consumers showed it is not a free change:
+- `tokens.service.ts:94` reads the value (`&& ready`) → safe, would even bootstrap slightly earlier.
+- `main-nav.ts:706/745` (notification streams) **ignore** the value in a `merge(...) → switchMap`,
+  so a `false` would fire a premature notification query. Harmless but wasteful.
+- `main-nav.ts:827` does `dataReady.subscribe(r => this.isLoading.next(!r))`, and `isLoading` gates
+  the "Initializing data" screen — which **destroys the `router-outlet`**. A `false` emission would
+  therefore re-show that screen over a working app on any session change. That is a visible
+  regression in exchange for fixing something that currently harms nothing.
+
+So this stays as-is until something genuinely needs to *stop* on session loss, at which point the
+right fix is to give those three consumers explicit readiness semantics rather than to change the
+signal underneath them.
 
 #### Also deliberately out of scope
 - `e2e-app` needs the same one-line `appResumed` addition as the `dinoapp` stand-ins if that project
