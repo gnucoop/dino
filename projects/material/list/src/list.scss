@@ -1,6 +1,19 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
 dino-list {
+  // Loading spinner and empty state, shown in the table area when there are no
+  // rows. `dino-component-load-spinner` is positioned by main-nav's own scoped
+  // rule, so it needs its own placement here.
+  .dino-list-load-spinner {
+    margin: 10vh auto;
+  }
+
+  .dino-no-items-message {
+    margin: 8vh auto;
+    text-align: center;
+    opacity: 0.5;
+  }
+
   .dino-table-container {
     padding-bottom: 9vh;
     overflow-x: scroll;

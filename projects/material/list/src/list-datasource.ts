@@ -20,7 +20,7 @@
  *
  */
 
-import {EventEmitter, Optional} from '@angular/core';
+import {EventEmitter, isDevMode, Optional} from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -259,6 +259,19 @@ export class ListDataSource<
 
   get dataResults(): BehaviorSubject<T[]> {
     return this._dataResults;
+  }
+
+  /**
+   * True while a query is in flight.
+   *
+   * Starts true: a list is created in order to load data, and online mode makes
+   * that a network round trip. Without this the view has no way to tell "still
+   * loading" from "genuinely empty" — both rendered as a blank table.
+   */
+  private _isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+  get isLoading(): BehaviorSubject<boolean> {
+    return this._isLoading;
   }
 
   /**
@@ -763,8 +776,21 @@ export class ListDataSource<
       query.sort = [{created_at: 'desc'}, {updated_at: 'desc'}];
     }
 
-    this._getQueryResultsObs(query, detailsQuery).subscribe(populatedDocs => {
-      this._dataResults.next(populatedDocs);
+    this._isLoading.next(true);
+    this._getQueryResultsObs(query, detailsQuery).subscribe({
+      next: populatedDocs => {
+        this._dataResults.next(populatedDocs);
+        this._isLoading.next(false);
+      },
+      // `_getQueryResultsObs` re-throws, and this subscription previously had no
+      // error handler: a failed read killed it silently, leaving the list blank
+      // forever. Clear the loading state so the empty/no-data state is shown.
+      error: err => {
+        this._isLoading.next(false);
+        if (isDevMode()) {
+          console.error('[ListDataSource] could not load list data', err);
+        }
+      },
     });
   }
 

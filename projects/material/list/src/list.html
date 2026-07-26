@@ -376,4 +376,22 @@
 
 <div class="dino-table-container" [ngClass]="bds.isTouch() ? 'dino-table-container-touch' : null">
   <ng-container *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"></ng-container>
+  <!-- Shown only when there are no rows to display, as a sibling of the table so
+  the table instance (and its sort headers) is never destroyed. While a query is
+  in flight this is the loading spinner; once it has finished it becomes the
+  empty state. During a refresh (filter, paging, realtime) rows are still on
+  screen, so neither appears and the view does not blank. -->
+  <ng-container *ngIf="!(dataSource?.dataResults|async)?.length">
+    <ng-container *ngIf="(dataSource?.isLoading|async) !== false; else noItems">
+      <mat-spinner
+        class="dino-component-load-spinner dino-list-load-spinner"
+        mode="indeterminate"
+      ></mat-spinner>
+    </ng-container>
+    <ng-template #noItems>
+      <div class="dino-no-items-message">
+        <h2>{{'No items found'|transloco}}</h2>
+      </div>
+    </ng-template>
+  </ng-container>
 </div>

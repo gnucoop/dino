@@ -515,8 +515,17 @@ _Record dated results here as you validate, e.g.:_
 - 2026-07-25 — #45 Sync indicator: was permanently showing `sync_problem` online
   (`isThereUnsyncedData` starts `true`, cleared only by a replication cycle). Now starts
   `false` online and a `cloud_done` icon is shown instead — **pending visual confirmation**.
-- 2026-07-25 — Offline regression check (`dataMode: 'offline'`): **not yet run** — the most
-  important remaining verification, since these changes touch shared main-nav/sync code.
+- 2026-07-25 — **Offline regression check (`dataMode: 'offline'`): ✅ PASSED.** Built and ran the
+  app offline: Pandino/AI, notifications, create form and edit form all behave as before. This
+  covers the shared-code changes that carried the real regression risk:
+  - `AuthService.storeAllAuthenticationInfo()` — an offline login exercises the whole method,
+    including the `clearNhostTokens()` reordering, which was the top concern.
+  - The `DATA_SERVICE` token resolving to the offline `DataService` for `main-nav`,
+    `tokens.service` and `actions.service`.
+  - The `create-form` / `edit-form` save paths (wait-instead-of-sample).
+  - `main-nav` rendering the original sync markup and the notification streams offline.
+  Not covered by this pass: the `e2e-app` project (separate module and mocks; it type-checks but
+  its suite was not run).
 - 2026-07-25 — #43 Pandino bootstrap: ✅ **fixed and confirmed** — the POST now fires at login
   without a reload. Root cause was NOT the readiness signal (that was already fine, as #44
   proved) but a synchronous ordering bug in `AuthService.storeAllAuthenticationInfo()`: the
