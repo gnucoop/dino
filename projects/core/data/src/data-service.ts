@@ -89,6 +89,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 import {
   BulkInsertResult,
   CollectionChangedEvent,
+  DataConnectionState,
   IDataService,
   SyncErrorEvent,
 } from './data-service-interface';
@@ -164,6 +165,17 @@ export class DataService implements IDataService {
    * is added here.
    */
   readonly problemSyncing: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+
+  /**
+   * Health of the connection, for user-facing feedback.
+   *
+   * Offline this is derived from what replication already reports rather than
+   * tracked separately: a collection is listed in `problemSyncing` only once it
+   * has exhausted its resync attempts, which is exactly "recovery was tried and
+   * did not work". Reads keep working from the local database either way, so this
+   * drives the indicator, not the app's behaviour.
+   */
+  readonly connectionState: Observable<DataConnectionState>;
 
   /**
    * When true, the first replication cycle for all collections is complete.
@@ -320,6 +332,12 @@ export class DataService implements IDataService {
           console.log(`CREATING DB: ${db.token}`);
         }
       }),
+      shareReplay(1),
+    );
+
+    this.connectionState = this.problemSyncing.pipe(
+      map((collections): DataConnectionState => (collections.length ? 'failed' : 'connected')),
+      distinctUntilChanged(),
       shareReplay(1),
     );
 

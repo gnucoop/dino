@@ -144,6 +144,12 @@ dino-main-nav {
         &.dino-sync-unsynced {
           color: mat-css-vars.mat-css-color-accent(500);
         }
+        // "Reconnecting" in online mode. A fade, not the `spin` used for
+        // replication: a rotating cloud reads as broken, and nothing is cycling
+        // here — the app is waiting on a connection.
+        &.dino-connection-reconnecting {
+          animation: fade_in_out 1.6s ease-in-out infinite;
+        }
       }
       .dino-notifications-icon {
         -webkit-transform-origin: 50% 4px;
@@ -370,6 +376,16 @@ dino-main-nav {
   100% {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
+  }
+}
+@keyframes fade_in_out {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
   }
 }
 @keyframes pulse_accent {

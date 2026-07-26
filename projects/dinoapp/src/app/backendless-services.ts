@@ -4,7 +4,7 @@ import {RxDocument} from 'rxdb';
 import {AuthenticationEvent, AuthServiceConfig, Credentials, User} from '@dino/core/auth';
 import {PermissionContext, PermissionContextService} from '@dino/core/data';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
-import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, NEVER, Observable, of as obsOf} from 'rxjs';
 import {delay, map, shareReplay} from 'rxjs/operators';
 
 export const syncGraphQLUrl = 'http://localhost:8080/v1/graphql';
@@ -77,6 +77,14 @@ export class AuthServiceBackendless {
     return this._authConfig.value;
   }
   resetEvt: Observable<boolean> = obsOf(false);
+  /**
+   * Never emits: there is no real browser lifecycle to react to here. Required
+   * because the real `DataService`/`OnlineDataService` subscribe to it to recover
+   * after the app is resumed, and this class stands in for `AuthService` via
+   * `useClass`, which TypeScript does not structurally check.
+   */
+  appResumed: Observable<number> = NEVER;
+
   logoutEvt: Observable<boolean> = obsOf(false);
   constructor(private _router: Router) {
     this.config = authMockConfig;

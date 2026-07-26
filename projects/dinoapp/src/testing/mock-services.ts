@@ -17,7 +17,7 @@ import {
 } from '@dino/core/data';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {RxCollection, RxDocument} from 'rxdb';
-import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, NEVER, Observable, of as obsOf} from 'rxjs';
 import {delay, map, shareReplay, tap} from 'rxjs/operators';
 
 export const authMockConfig: AuthServiceConfig = {
@@ -93,6 +93,14 @@ export class AuthServiceMock {
     return this._authConfig.value;
   }
   resetEvt: Observable<boolean> = obsOf(false);
+  /**
+   * Never emits: there is no real browser lifecycle to react to here. Required
+   * because the real `DataService`/`OnlineDataService` subscribe to it to recover
+   * after the app is resumed, and this class stands in for `AuthService` via
+   * `useClass`, which TypeScript does not structurally check.
+   */
+  appResumed: Observable<number> = NEVER;
+
   logoutEvt: EventEmitter<void> = new EventEmitter<void>();
   loginEvt: EventEmitter<void> = new EventEmitter<void>();
   constructor(private _router: Router) {

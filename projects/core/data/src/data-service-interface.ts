@@ -97,6 +97,18 @@ export interface BulkInsertResult<T extends Model = Model> {
 }
 
 /**
+ * Health of the connection to the backend, for user-facing feedback.
+ *
+ * - `connected`: everything is working (the optimistic default).
+ * - `reconnecting`: a failure was detected and recovery is under way — the
+ *   websocket is being rebuilt, or a token is being refreshed and the operation
+ *   retried. The user should be told, because data may be briefly stale.
+ * - `failed`: recovery was attempted and did not work, so the app will not heal
+ *   on its own. Typically an expired session that could not be refreshed.
+ */
+export type DataConnectionState = 'connected' | 'reconnecting' | 'failed';
+
+/**
  * Service that allows to interact with the database.
  */
 export interface IDataService {
@@ -134,6 +146,12 @@ export interface IDataService {
    * signals instead means a feature never starts in online mode.
    */
   readonly dataReady: Observable<boolean>;
+
+  /**
+   * Health of the connection to the backend, so the UI can be honest about
+   * recovery instead of silently showing stale or empty data.
+   */
+  readonly connectionState: Observable<DataConnectionState>;
 
   /**
    * Names of the collections currently having synchronization problems.

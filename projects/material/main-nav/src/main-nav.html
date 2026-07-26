@@ -106,39 +106,58 @@
     <mat-icon class="dino-user-settings" (click)="openUserArea()">settings</mat-icon>
     <ng-template #syncOnline>
       <!-- Online mode: no local database and no replication, so a sync icon (and
-      especially its "unsynced data" state) would be misleading. Show a neutral
-      indicator that data comes straight from the server. -->
-      <mat-icon
-        *ngIf="isOnlineMode; else offlineSyncIcon"
-        class="dino-sync-detector dino-online-mode"
-        [matTooltip]="'Online mode: data is read from and written to the server directly.'|transloco"
-        >cloud_done</mat-icon
-      >
-      <ng-template #offlineSyncIcon>
-      <ng-container *ngIf="!syncIcon; else svgSyncIconTemplate;">
+      especially its "unsynced data" state) would be misleading. The icon reports
+      the state of the CONNECTION instead: normally data comes straight from the
+      server, but a dead websocket or an expired token is recovered in the
+      background, and the user has to be told, because until it succeeds what they
+      are looking at may be stale. -->
+      <ng-container *ngIf="isOnlineMode; else offlineSyncIcon">
         <mat-icon
-          *ngIf="(syncSpinnerDisabled|async) !== true"
-          class="dino-sync-detector"
-          [matTooltip]="(isThereUnsyncedData|async) === true && (isSyncing|async) === false ? ('You have unsynced data. Please click the Sync icon.'|transloco) : ''"
-          [ngClass]="[(isSyncing|async) ? 'dino-sync-active' : '', (isThereUnsyncedData|async) === true && (isSyncing|async) === false ? 'dino-sync-unsynced':'']"
-          [matBadge]="'!'"
-          matBadgeColor="warn"
-          [matBadgeHidden]="(problemSyncing|async) !== true || (isSyncing|async) === true"
+          *ngIf="(connectionState|async) as connState"
+          class="dino-sync-detector dino-online-mode"
+          [ngClass]="[
+            connState === 'reconnecting' ? 'dino-connection-reconnecting' : '',
+            connState === 'failed' ? 'dino-sync-unsynced' : ''
+          ]"
+          [matTooltip]="(connState === 'reconnecting'
+            ? 'Reconnecting to the server. Data may be briefly out of date.'
+            : connState === 'failed'
+              ? 'Could not reach the server. Click to retry, or log in again if the problem persists.'
+              : 'Online mode: data is read from and written to the server directly.')|transloco"
           (click)="runSync()"
-          >{{(isThereUnsyncedData|async) === true && (isSyncing|async) === false ?
-          'sync_problem':'sync'}}</mat-icon
+          >{{connState === 'reconnecting' ? 'cloud_sync' : connState === 'failed' ? 'cloud_off' :
+          'cloud_done'}}</mat-icon
         >
       </ng-container>
-      <ng-template #svgSyncIconTemplate>
-        <mat-icon
-          *ngIf="(syncSpinnerDisabled|async) !== true"
-          class="dino-sync-detector"
-          [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
-          (click)="runSync()"
-          svgIcon="{{syncIcon}}"
-          >sync</mat-icon
-        >
-      </ng-template>
+      <ng-template #offlineSyncIcon>
+        <ng-container *ngIf="!syncIcon; else svgSyncIconTemplate;">
+          <!-- A spinner that cannot stop is a lie: once a sync has been "active" past
+        the stall threshold it reports a problem instead, and stays clickable. -->
+          <mat-icon
+            *ngIf="(syncSpinnerDisabled|async) !== true"
+            class="dino-sync-detector"
+            [matTooltip]="((syncStalled|async) === true
+            ? ('Synchronization seems stuck. Please click to retry.'|transloco)
+            : ((isThereUnsyncedData|async) === true && (isSyncing|async) === false ? ('You have unsynced data. Please click the Sync icon.'|transloco) : ''))"
+            [ngClass]="[(isSyncing|async) && (syncStalled|async) !== true ? 'dino-sync-active' : '', ((isThereUnsyncedData|async) === true && (isSyncing|async) === false) || (syncStalled|async) === true ? 'dino-sync-unsynced':'']"
+            [matBadge]="'!'"
+            matBadgeColor="warn"
+            [matBadgeHidden]="((problemSyncing|async) !== true && (syncStalled|async) !== true) || ((isSyncing|async) === true && (syncStalled|async) !== true)"
+            (click)="runSync()"
+            >{{((isThereUnsyncedData|async) === true && (isSyncing|async) === false) ||
+            (syncStalled|async) === true ? 'sync_problem':'sync'}}</mat-icon
+          >
+        </ng-container>
+        <ng-template #svgSyncIconTemplate>
+          <mat-icon
+            *ngIf="(syncSpinnerDisabled|async) !== true"
+            class="dino-sync-detector"
+            [ngClass]="(isSyncing|async) ? 'dino-sync-active' : ''"
+            (click)="runSync()"
+            svgIcon="{{syncIcon}}"
+            >sync</mat-icon
+          >
+        </ng-template>
       </ng-template>
     </ng-template>
     <ng-template #syncOffline>

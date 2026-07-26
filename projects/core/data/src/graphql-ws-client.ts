@@ -61,6 +61,14 @@ export interface WsClientOptions {
    * closed. Lets the owner surface a "reconnecting" state or rebuild the client.
    */
   onDead?: () => void;
+  /**
+   * Called whenever the socket is (re)connected and acknowledged.
+   *
+   * Needed to clear a "reconnecting" state honestly: data arriving also proves
+   * the socket works, but a quiet server sends nothing, so recovery would never
+   * be reported.
+   */
+  onAlive?: () => void;
 }
 
 /**
@@ -82,7 +90,7 @@ export function newClient(
   if (wsUrl == null || authToken == null || socketJwtExpiredCode == null) {
     return null;
   }
-  const {getToken, pongWaitTimeout = DEFAULT_PONG_WAIT_TIMEOUT, onDead} = options;
+  const {getToken, pongWaitTimeout = DEFAULT_PONG_WAIT_TIMEOUT, onDead, onAlive} = options;
 
   // Liveness watchdog. `keepAlive` only makes the client SEND pings; graphql-ws
   // does nothing if the server never pongs. When a device suspends or a carrier
@@ -141,6 +149,9 @@ export function newClient(
       'connected': socket => {
         clearPongTimer();
         activeSocket = socket as typeof activeSocket;
+        if (onAlive != null) {
+          onAlive();
+        }
         if (isDevMode()) {
           console.log(socket);
         }

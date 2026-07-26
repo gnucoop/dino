@@ -47,6 +47,7 @@ import {
   shareReplay,
   skip,
   switchMap,
+  tap,
 } from 'rxjs/operators';
 
 import {DataCreateCollectionRequest} from './data-create-collection-request';
@@ -59,6 +60,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 import {
   BulkInsertResult,
   CollectionChangedEvent,
+  DataConnectionState,
   IDataService,
   SyncErrorEvent,
 } from './data-service-interface';
@@ -163,6 +165,18 @@ export class OnlineDataService implements IDataService {
    */
   readonly dataReady: Observable<boolean>;
 
+  /**
+   * Health of the connection, driven by the realtime transport and by auth
+   * failures on queries. Optimistic by default: it is only downgraded on actual
+   * evidence of failure, so a configuration without a websocket (`live: false`)
+   * never shows a false "reconnecting".
+   */
+  private _connectionState = new BehaviorSubject<DataConnectionState>('connected');
+  readonly connectionState = this._connectionState.pipe(
+    distinctUntilChanged(),
+    shareReplay(1),
+  ) as Observable<DataConnectionState>;
+
   /** Nothing is synchronized online, so no collection can be in trouble. */
   readonly problemSyncing = obsOf<string[]>([]);
 
@@ -228,10 +242,26 @@ export class OnlineDataService implements IDataService {
   }
 
   /**
-   * No-op online: there is no local replication to run, and every read already
-   * goes straight to the server.
+   * There is no local replication to run online, so "sync now" means "recover the
+   * connection": refresh the token if it is expired and rebuild the realtime
+   * transport if it is not delivering.
+   *
+   * This used to be a plain no-op, which was fine while nothing invited the user
+   * to press it. Now that the indicator reports a failed connection and offers a
+   * retry, the button has to actually try something.
    */
-  runSync(): void {}
+  runSync(): void {
+    if (this._authService.getAuthToken() == null) {
+      return;
+    }
+    if (this._authService.isTokenExpired()) {
+      this._authService.refreshToken().subscribe();
+    }
+    // Unconditional: the user pressed retry precisely because things look wrong,
+    // and a half-open socket cannot be distinguished from a healthy one.
+    this._rebuildAttempts = 0;
+    this._rebuildRealtime();
+  }
 
   /**
    * Get an object from the database.
@@ -592,7 +622,14 @@ export class OnlineDataService implements IDataService {
             // token captured when the client was built, which by then is the
             // expired one that killed the connection in the first place.
             getToken: () => this._authService.getAuthToken(),
-            onDead: () => this._rebuildRealtimeEvt.emit(),
+            onDead: () => {
+              this._connectionState.next('reconnecting');
+              this._rebuildRealtimeEvt.emit();
+            },
+            onAlive: () => {
+              this._rebuildAttempts = 0;
+              this._connectionState.next('connected');
+            },
           },
         );
       }
@@ -628,6 +665,7 @@ export class OnlineDataService implements IDataService {
     if (isDevMode()) {
       console.warn(`[OnlineDataService] rebuilding realtime (attempt ${this._rebuildAttempts})`);
     }
+    this._connectionState.next('reconnecting');
     this._teardownRealtime();
     this._realtimeTornDown = false;
     // Re-emitting the registered collections re-runs the setup above, which
@@ -668,6 +706,7 @@ export class OnlineDataService implements IDataService {
           // Proof of life: the transport delivers, so the next failure starts
           // its backoff from scratch instead of inheriting an old escalation.
           this._rebuildAttempts = 0;
+          this._connectionState.next('connected');
           this._collectionChanged.emit({
             timestamp: Date.now(),
             collection: name,
@@ -680,6 +719,7 @@ export class OnlineDataService implements IDataService {
           if (isDevMode()) {
             console.error(`Online realtime subscription error for ${name}:`, err);
           }
+          this._connectionState.next('reconnecting');
           // Drop the dead subscription: the setup guard is
           // `if (this._activeSubs[name] == null)`, so leaving a terminated
           // Subscription in place made it impossible to ever re-subscribe.
@@ -919,9 +959,18 @@ export class OnlineDataService implements IDataService {
           if (isDevMode()) {
             console.warn('[OnlineDataService] token rejected, refreshing and retrying once');
           }
-          return this._authService
-            .refreshToken()
-            .pipe(switchMap(refreshed => (refreshed ? source : throwError(() => err))));
+          this._connectionState.next('reconnecting');
+          return this._authService.refreshToken().pipe(
+            switchMap(refreshed => {
+              if (!refreshed) {
+                // Recovery failed: the app cannot heal by itself from here, so
+                // say so rather than leaving a spinner or an empty list.
+                this._connectionState.next('failed');
+                return throwError(() => err);
+              }
+              return source.pipe(tap(() => this._connectionState.next('connected')));
+            }),
+          );
         }),
       );
   }

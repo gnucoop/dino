@@ -41,6 +41,7 @@ import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 import {AuthService, NetworkStatusService} from '@dino/core/auth';
 import {
   DATA_SERVICE,
+  DataConnectionState,
   IDataService,
   InsertModel,
   MetricsService,
@@ -82,6 +83,14 @@ import {Section} from './section-interface';
 import {TokensService} from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from '@dino/material/user-area';
 import {UITourService} from '@dino/material/ui-tour-service';
+
+/**
+ * How long a synchronization may appear active before it is reported as stuck.
+ *
+ * Generous on purpose: a first replication of a large instance legitimately takes
+ * a while, and calling that a failure would be its own lie.
+ */
+const SYNC_STALLED_AFTER_MS = 90 * 1000;
 
 /**
  * Dino Main component, containing the toolbar and the sidebar navigation.
@@ -310,6 +319,30 @@ export class MainNav implements AfterViewInit, OnDestroy {
   );
 
   /**
+   * Health of the connection to the backend, used to tell the user when the app
+   * is recovering instead of just showing stale data.
+   */
+  connectionState: Observable<DataConnectionState> = this.dataService.connectionState;
+
+  /**
+   * True when a synchronization has been "in progress" for so long that it is
+   * almost certainly stuck rather than working.
+   *
+   * `isSyncing` follows the replication states' *activity*, so a replication that
+   * retries forever (which is what an expired token or a dead socket produced)
+   * kept it true and the icon spinning for good — while never reaching the branch
+   * that emits `replicationCycleComplete`. A spinner that cannot stop is a lie:
+   * past this point the icon reports a problem and stays clickable to retry.
+   */
+  syncStalled: Observable<boolean> = this.dataService.isSyncing.pipe(
+    switchMap(syncing =>
+      syncing ? timer(SYNC_STALLED_AFTER_MS).pipe(mapTo(true), startWith(false)) : obsOf(false),
+    ),
+    distinctUntilChanged(),
+    shareReplay(1),
+  );
+
+  /**
    * Determines the extended state of the sidenav on large screens
    */
   extendedSidenav: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -454,6 +487,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private readonly _maxSyncErrorNotificationLength: number = 500;
 
   /**
+   * Subscribes to unrecoverable session failures, to tell the user why the app
+   * stopped working instead of leaving them with silently stale data.
+   */
+  private _sessionExpiredSub: Subscription = Subscription.EMPTY;
+
+  /**
    * If true, the RunSync has run a second time.
    * Used only for live=false instances
    */
@@ -537,6 +576,27 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._isThereUnsyncedDataSub = this.dataService.collectionChanged
       .pipe(filter(cc => cc.action !== 'replication cycle complete'))
       .subscribe(() => this.isThereUnsyncedData.next(true));
+
+    // Say something when the session cannot be recovered. Online the app is dead
+    // in the water, so this is followed by the existing redirect to
+    // `login/expired`; in offline mode local data is still readable, so the
+    // message says that rather than implying everything has stopped.
+    this._sessionExpiredSub = this.authService.authenticated
+      .pipe(
+        filter(authEvt => authEvt.auth === false && authEvt.evt === 'refresh failed'),
+        throttleTime(10000),
+      )
+      .subscribe(() => {
+        this.snackbar.open(
+          this.trs.translate(
+            this.isOnlineMode
+              ? 'Your session has expired. Please log in again.'
+              : 'Your session has expired, so data cannot be synchronized. You can keep working from local data, but please log in again to save it.',
+          ),
+          this.trs.translate('SESSION EXPIRED'),
+          {duration: 10000},
+        );
+      });
 
     this._currentSectionSub = combineLatest([
       this._router.events.pipe(
@@ -720,11 +780,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
     const hideChromeFor = (url: string): boolean => {
       const path = url.split('?')[0];
-      return !(
-        path.includes('login') ||
-        path.includes('reset-password') ||
-        path.startsWith('/f/')
-      );
+      return !(path.includes('login') || path.includes('reset-password') || path.startsWith('/f/'));
     };
     this.showNav = this._router.events.pipe(
       filter(evt => evt instanceof NavigationEnd),
@@ -1031,6 +1087,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._retrySyncSub.unsubscribe();
     this._couldNotSyncSub.unsubscribe();
     this._isThereUnsyncedDataSub.unsubscribe();
+    this._sessionExpiredSub.unsubscribe();
     this._newVersionCheckSub.unsubscribe();
     this._availableTokensSub.unsubscribe();
   }

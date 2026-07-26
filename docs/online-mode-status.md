@@ -546,6 +546,13 @@ _Record dated results here as you validate, e.g.:_
   stage 1 alone was inconclusive: a ~5 minute minimised window is shorter than the token
   lifetime, so nothing was due to happen either way — which is itself the lesson that expiry
   tracks *issue time*, not idle time.
+- 2026-07-26 — **Stage 3 (UI honesty).** `connectionState` on `IDataService` + the toolbar states,
+  the 90s stall cap on the spinning sync icon, a working retry online, and a session-expired
+  snackbar. Found while wiring it: the e2e/backendless `AuthService` stand-ins are provided via
+  `useClass`, which TypeScript does **not** structurally check, so a new `AuthService` member is a
+  silent runtime break there (`Cannot read properties of undefined`). Patched the two in `dinoapp`;
+  `e2e-app` was deliberately left alone (out of scope) and **will need the same one-line addition
+  if that project is revived**. Not yet validated against the live backend.
 
 ## Architecture: surviving an idle period (why a token fix was not enough)
 
@@ -614,6 +621,30 @@ spun forever. Fixed on both sides: a requested-but-null schema is now an **error
 "not yet" (forms-list, aggregation-list, reports-list), and `ListDataSource` clears the loading
 flag when a prerequisite fails or the query chain errors — previously that subscription had no
 error handler at all and died silently.
+
+### 6. The UI lied about all of it (stage 3)
+Every failure above was silent, so the user's only signal was data that looked wrong. There is now
+one honest signal, `IDataService.connectionState` (`connected` / `reconnecting` / `failed`),
+implemented from real evidence on both sides:
+
+- **Online**: driven by the transport and by auth failures on queries. It is **optimistic by
+  default** and only downgraded on actual evidence, so a configuration without a websocket
+  (`live: false`) never shows a false "reconnecting". It clears on the socket's `connected` event,
+  not merely when data arrives — a quiet server sends nothing, so otherwise recovery would never be
+  reported. The toolbar icon becomes `cloud_sync` (fading) while recovering and `cloud_off` when
+  recovery failed, each with its own tooltip.
+- **Offline**: derived from `problemSyncing`, which already means "resync attempts exhausted".
+- **The spinning icon is capped.** `isSyncing` follows replication *activity*, so a replication
+  retrying forever kept the icon spinning and never reached the branch that emits
+  `replicationCycleComplete`. After 90s of apparent activity the icon now reports a problem and
+  stays clickable, because a spinner that cannot stop is a lie. The threshold is deliberately
+  generous: a first replication of a large instance legitimately takes a while.
+- **`runSync()` online is no longer a no-op.** It was harmless while nothing invited the user to
+  press it; now that the indicator offers a retry, it refreshes an expired token and rebuilds the
+  transport.
+- **An unrecoverable session says so**: a snackbar on `{auth: false, evt: 'refresh failed'}`,
+  worded per mode — online the app is dead in the water and the existing `login/expired` redirect
+  follows, offline it states that local data is still usable but will not sync.
 
 ### Terminology used above
 - **offline *mode*** = `dataMode: 'offline'` (RxDB + replication) with the device **online**.
