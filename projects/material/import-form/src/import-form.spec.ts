@@ -8,7 +8,7 @@ import {UserData, UserDataManager} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
-import {BehaviorSubject, of} from 'rxjs';
+import {NEVER, BehaviorSubject, of} from 'rxjs';
 
 import {ImportForm} from './public_api';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -92,6 +92,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },
@@ -196,11 +198,7 @@ describe('Import Forms', () => {
       {column: 'q2', field: 'myTable__0__1'},
       {column: 'q3', field: 'myTable__1__0'},
     ];
-    const mappedRows = (importForm as any)._applyColumnMappings([
-      {q1: 'a', q2: 'b', q3: 'c'},
-    ]);
-    expect(mappedRows).toEqual([
-      {myTable__0__0: 'a', myTable__0__1: 'b', myTable__1__0: 'c'},
-    ]);
+    const mappedRows = (importForm as any)._applyColumnMappings([{q1: 'a', q2: 'b', q3: 'c'}]);
+    expect(mappedRows).toEqual([{myTable__0__0: 'a', myTable__0__1: 'b', myTable__1__0: 'c'}]);
   });
 });

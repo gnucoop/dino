@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, of as obsOf} from 'rxjs';
+import {NEVER, BehaviorSubject, of as obsOf} from 'rxjs';
 
 import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api';
 import {UserData, UserGroup} from '@dino/core/users';
@@ -64,6 +64,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: obsOf({auth: true, evt: 'init'}),
   authToken: obsOf('test_auth_token'),
+  // Never resumes in tests: the app is not a foregrounded browser tab here.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

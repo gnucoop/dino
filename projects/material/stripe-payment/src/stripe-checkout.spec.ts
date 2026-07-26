@@ -4,7 +4,7 @@ import {StripePaymentModule} from './stripe-payment.module';
 import {StripeCheckout} from './stripe-checkout';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {BehaviorSubject, of} from 'rxjs';
+import {NEVER, BehaviorSubject, of} from 'rxjs';
 import {EventEmitter} from '@angular/core';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, Model} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
@@ -85,6 +85,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

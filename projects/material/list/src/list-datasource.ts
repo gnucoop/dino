@@ -47,6 +47,7 @@ import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
+  EMPTY,
   forkJoin,
   Observable,
   of as obsOf,
@@ -345,6 +346,16 @@ export class ListDataSource<
       this.refreshListData,
       this._additionalDataSchema.pipe(
         skipWhile(schema => this._isDataList != null && schema == null),
+        // A failed prerequisite must not leave the list spinning forever: when
+        // this errors the row query below is never issued at all, so nothing
+        // else is left to clear the loading flag.
+        catchError(err => {
+          if (isDevMode()) {
+            console.error('[ListDataSource] list prerequisites could not be loaded', err);
+          }
+          this._isLoading.next(false);
+          return EMPTY;
+        }),
       ),
       this.customPaginator.pipe(switchMap(pag => (pag ? pag.page : obsOf(null)))),
       this.customSort.pipe(
@@ -412,64 +423,74 @@ export class ListDataSource<
         ),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe(res => {
-        const emptyQueryStringFilter = btoa(
-          encodeURI(
-            JSON.stringify({
-              filters: [],
-              additionalFiltersLogic: 'and',
-            }),
-          ),
-        );
+      .subscribe({
+        error: err => {
+          // Without this the subscription died silently and the list stayed on a
+          // spinner, since no query was ever issued to clear it.
+          if (isDevMode()) {
+            console.error('[ListDataSource] could not build the list query', err);
+          }
+          this._isLoading.next(false);
+        },
+        next: res => {
+          const emptyQueryStringFilter = btoa(
+            encodeURI(
+              JSON.stringify({
+                filters: [],
+                additionalFiltersLogic: 'and',
+              }),
+            ),
+          );
 
-        this._dataResultsCount = this._getQueryResultsCount(
-          this.queryDM(
+          this._dataResultsCount = this._getQueryResultsCount(
+            this.queryDM(
+              res.queryString,
+              res.permissionContext,
+              false,
+              res.addSchema,
+              null,
+              null,
+              res.dataHeaders,
+              true,
+            ),
+          ).pipe(shareReplay(1));
+
+          this._allItemsQueryObs = this._getQueryResultsObs(
+            this.queryDM(
+              emptyQueryStringFilter,
+              res.permissionContext,
+              false,
+              res.addSchema,
+              null,
+              null,
+              res.dataHeaders,
+              true,
+            ),
+          );
+
+          this._filteredQueryObs = this._getQueryResultsObs(
+            this.queryDM(
+              res.queryString,
+              res.permissionContext,
+              false,
+              res.addSchema,
+              null,
+              null,
+              res.dataHeaders,
+              true,
+            ),
+          );
+
+          return this.queryDM(
             res.queryString,
             res.permissionContext,
-            false,
-            res.addSchema,
-            null,
-            null,
-            res.dataHeaders,
             true,
-          ),
-        ).pipe(shareReplay(1));
-
-        this._allItemsQueryObs = this._getQueryResultsObs(
-          this.queryDM(
-            emptyQueryStringFilter,
-            res.permissionContext,
-            false,
             res.addSchema,
-            null,
-            null,
+            res.pageEvt,
+            res.sortEvt,
             res.dataHeaders,
-            true,
-          ),
-        );
-
-        this._filteredQueryObs = this._getQueryResultsObs(
-          this.queryDM(
-            res.queryString,
-            res.permissionContext,
-            false,
-            res.addSchema,
-            null,
-            null,
-            res.dataHeaders,
-            true,
-          ),
-        );
-
-        return this.queryDM(
-          res.queryString,
-          res.permissionContext,
-          true,
-          res.addSchema,
-          res.pageEvt,
-          res.sortEvt,
-          res.dataHeaders,
-        );
+          );
+        },
       });
   }
 

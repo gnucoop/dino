@@ -3,7 +3,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, of} from 'rxjs';
+import {NEVER, BehaviorSubject, of} from 'rxjs';
 
 import {FormCreatorHub, FormCreatorHubModule} from './public_api';
 import {MatDialogRef} from '@angular/material/dialog';
@@ -45,6 +45,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

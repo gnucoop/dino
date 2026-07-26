@@ -110,6 +110,13 @@ import {Client} from 'graphql-ws';
 import {newClient, newClientSubscription} from './graphql-ws-client';
 
 /**
+ * How long the app may be hidden before a resync is forced on resume. Matches
+ * one websocket keep-alive period: past that, the connection that would have
+ * signalled new data may have died unnoticed while the device was suspended.
+ */
+const RESYNC_AFTER_HIDDEN_MS = 30 * 1000;
+
+/**
  * Parameters needed to set up the collection sync.
  */
 export interface CollectionSyncParams {
@@ -361,6 +368,7 @@ export class DataService implements IDataService {
 
     if (!this.config.syncOptions.backendless) {
       this._initSync();
+      this._initResumeResync();
     }
 
     this._refreshEvt
@@ -1063,6 +1071,33 @@ export class DataService implements IDataService {
    * When a new collection is registered, the sync will automatically start depending on the
    * current authentication status.
    */
+  /**
+   * Resynchronizes when the app comes back to the foreground after being hidden
+   * long enough for its connection to have died.
+   *
+   * Offline mode fails silently after an idle period: the websocket that signals
+   * "a table changed" dies while the device is suspended, so no pull is ever
+   * triggered again. Reads keep being served from the local database, which is why
+   * the UI looks fine while data is quietly stale. There is no periodic resync to
+   * fall back on either — `liveInterval` is not honoured by RxDB 15.
+   *
+   * `runSync()` with no collection refreshes the token first, so this recovers a
+   * dead token and stale data in one step.
+   */
+  protected _initResumeResync(): void {
+    this._authService.appResumed
+      .pipe(filter(hiddenForMs => hiddenForMs > RESYNC_AFTER_HIDDEN_MS))
+      .subscribe(() => {
+        if (this._authService.getAuthToken() == null) {
+          return;
+        }
+        if (isDevMode()) {
+          console.log('App resumed after a background period: resyncing');
+        }
+        this.runSync();
+      });
+  }
+
   protected _initSync(): void {
     const collectionChange = this._registeredCollections.pipe(debounceTime(300));
     combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
@@ -1086,6 +1121,14 @@ export class DataService implements IDataService {
               token,
               this._refreshEvt,
               this._dataConfig.value.syncOptions.socketJwtExpiredCode,
+              {
+                // A reconnect must authenticate with the current token, not the
+                // one captured when this client was built.
+                getToken: () => this._authService.getAuthToken(),
+                // The socket is what tells replication that a table changed, so a
+                // dead one stops all pulls without any error: catch up explicitly.
+                onDead: () => this.runSync(),
+              },
             );
           }
           registeredCollections.forEach(registeredCollection => {

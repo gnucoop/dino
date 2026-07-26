@@ -16,7 +16,7 @@ import {
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {BehaviorSubject, firstValueFrom, of as obsOf, of, take} from 'rxjs';
+import {NEVER, BehaviorSubject, firstValueFrom, of as obsOf, of, take} from 'rxjs';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {ListDataSource} from './public_api';
@@ -83,6 +83,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return dummyUser;
   },

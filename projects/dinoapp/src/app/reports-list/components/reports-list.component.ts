@@ -7,7 +7,7 @@ import {TokensService} from '@dino/material/stripe-payment';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslocoService} from '@ajf/core/transloco';
 import {ListDataSource, SelectionList} from '@dino/material/list';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf, throwError} from 'rxjs';
 import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 import * as conf from '../conf';
@@ -49,7 +49,7 @@ export class ReportsListComponent {
   readonly listRowActions: Observable<ListAction[] | null>;
   readonly displayAddButton: Observable<boolean>;
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string | string [];
+    [metricName: string]: string | string[];
   } | null = conf.secondaryMetricFieldsDisplayed;
 
   constructor(
@@ -66,13 +66,16 @@ export class ReportsListComponent {
     this.currentRowId = new BehaviorSubject<string | null>(null);
     this.reportSchemaId = this._route.params.pipe(map(params => params.report_schema_id));
     this.additionalDataSchema = this.reportSchemaId.pipe(
-      switchMap(schemaId => {
-        if (schemaId != null) {
-          return this.reportSchemaManager.get(schemaId);
-        }
-        return obsOf(null);
-      }),
-      filter(id => id != null),
+      filter(schemaId => schemaId != null),
+      switchMap(schemaId => this.reportSchemaManager.get(schemaId)),
+      // A requested schema that comes back null is a failure, not "not yet":
+      // filtering it out left this `shareReplay`'d stream silent for good, and
+      // the list waiting on it never rendered.
+      switchMap(schema =>
+        schema == null
+          ? throwError(() => new Error('The report schema could not be loaded'))
+          : obsOf(schema),
+      ),
       shareReplay(1),
     );
 

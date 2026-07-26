@@ -23,12 +23,23 @@
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
-import {BehaviorSubject, Observable, of as obsOf, Subscription, timer} from 'rxjs';
+import {
+  BehaviorSubject,
+  fromEvent,
+  merge,
+  NEVER,
+  Observable,
+  of as obsOf,
+  Subscription,
+  timer,
+} from 'rxjs';
 import {
   catchError,
+  filter,
   finalize,
   map,
   mapTo,
+  share,
   shareReplay,
   switchMap,
   take,
@@ -85,6 +96,13 @@ const DEFAULT_TOKEN_SKEW_SECONDS = 10;
 const PREEMPTIVE_REFRESH_RATIO = 0.75;
 
 /**
+ * Skew used when revalidating on resume. Larger than the per-request skew: a
+ * token that is about to die is refreshed straight away, so the burst of queries
+ * a returning app fires cannot race the expiry.
+ */
+const RESUME_TOKEN_SKEW_SECONDS = 60;
+
+/**
  * Injectable service used to authenticate against an external authentication backend.
  * Stores the authentication token and the logged in user info.
  */
@@ -116,6 +134,25 @@ export class AuthService {
    * Emits when a User logs in
    */
   readonly loginEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  /**
+   * Emits when the app returns to the foreground: the tab became visible again,
+   * or the page was restored from the back/forward cache.
+   *
+   * This is the only reliable recovery trigger on mobile. While an app is
+   * suspended its timers are throttled or stopped altogether, so the pre-emptive
+   * refresh may never fire; and a suspend/resume produces no browser
+   * online/offline event, so `NetworkStatusService` cannot see it either.
+   * Shared, so consumers that must also revive transport (e.g. a websocket) hang
+   * off the same events instead of registering their own listeners.
+   *
+   * Emits how many milliseconds the app spent in the background, or `Infinity`
+   * when that is unknown (a page restored from the back/forward cache, where the
+   * connections are gone anyway). Consumers deciding whether a connection may
+   * have died in the meantime need that duration, because a suspended device
+   * leaves no other trace.
+   */
+  readonly appResumed: Observable<number>;
 
   /**
    * When not null it holds the newly signed up User basic info.
@@ -180,10 +217,68 @@ export class AuthService {
       this._authConfig.next(this._currentlyStoredConfig);
     }
     this.authToken = new BehaviorSubject<string | null>(this.getAuthToken());
+    this.appResumed = this._buildAppResumed();
     this._initAuthentication();
+    this._initResumeRevalidation();
     if (this._configService != null) {
       this._setDynamicConfigSub();
     }
+  }
+
+  /**
+   * Builds the shared {@link appResumed} stream. Returns a never-emitting
+   * observable outside a browser, so the service stays usable in tests/SSR.
+   */
+  private _buildAppResumed(): Observable<number> {
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return NEVER;
+    }
+    let hiddenAt: number | null = document.visibilityState === 'hidden' ? Date.now() : null;
+    return merge(
+      fromEvent(document, 'visibilitychange').pipe(
+        map(() => {
+          if (document.visibilityState === 'hidden') {
+            hiddenAt = Date.now();
+            return null;
+          }
+          const hiddenForMs = hiddenAt == null ? Infinity : Date.now() - hiddenAt;
+          hiddenAt = null;
+          return hiddenForMs;
+        }),
+        filter((hiddenForMs): hiddenForMs is number => hiddenForMs != null),
+      ),
+      // Fired when the page is restored from the back/forward cache, where no
+      // visibilitychange is guaranteed and every connection has been discarded.
+      fromEvent(window, 'pageshow').pipe(map(() => Infinity)),
+    ).pipe(share());
+  }
+
+  /**
+   * Revalidates the session whenever the app comes back to the foreground.
+   *
+   * This is what actually covers the reported idle failure: the token dies while
+   * the app is suspended, and without this nothing notices until a request has
+   * already failed (and, before the expiry fixes, not even then).
+   */
+  private _initResumeRevalidation(): void {
+    this.appResumed
+      .pipe(
+        withLatestFrom(this._nss.isOnline$),
+        // Nothing to revalidate when logged out, and no point calling a refresh
+        // endpoint with no connectivity.
+        filter(([_, isOnline]) => isOnline === true && this.getAuthToken() != null),
+        switchMap(() => {
+          if (this.isTokenExpired(RESUME_TOKEN_SKEW_SECONDS)) {
+            return this.refreshToken();
+          }
+          // The token is still good, but the pre-emptive timer was throttled or
+          // suspended while hidden, so it may have been skipped or be due late.
+          // Rescheduling from the real expiry puts it back on track.
+          this._schedulePreemptiveRefresh();
+          return obsOf(true);
+        }),
+      )
+      .subscribe();
   }
 
   /**

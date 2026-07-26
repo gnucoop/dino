@@ -4,7 +4,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/c
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
-import {firstValueFrom, of as obsOf} from 'rxjs';
+import {NEVER, firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {UserGroupManager, UserDataManager, UsersModule} from './public_api';
@@ -51,6 +51,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: obsOf({auth: true, evt: 'init'}),
   authToken: obsOf('test_auth_token'),
+  // Never resumes in tests: the app is not a foregrounded browser tab here.
+  appResumed: NEVER,
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
   logout: () => obsOf(false),

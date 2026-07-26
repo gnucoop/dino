@@ -4,7 +4,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {NEVER, BehaviorSubject, Observable, of} from 'rxjs';
 import {Apollo} from 'apollo-angular';
 
 import {EditPublicForm, EditPublicFormModule} from './public_api';
@@ -61,6 +61,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

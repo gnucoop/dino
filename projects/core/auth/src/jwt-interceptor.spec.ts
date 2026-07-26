@@ -1,6 +1,7 @@
 import {
   HTTP_INTERCEPTORS,
   HttpClient,
+  HttpErrorResponse,
   HttpInterceptor,
   provideHttpClient,
   withInterceptorsFromDi,
@@ -46,7 +47,7 @@ describe(`JWTInterceptor`, () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should handle the 401 response and ask the service to refresh the Jwt auth token', inject(
+  it('should ask the service to refresh the Jwt auth token and propagate the 401', inject(
     [HTTP_INTERCEPTORS, HttpClient],
     (interceptors: HttpInterceptor[], http: HttpClient) => {
       const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
@@ -55,13 +56,24 @@ describe(`JWTInterceptor`, () => {
       let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
       let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
-      http.post('http://test-auth-backend/data', {}).subscribe(res => {
-        expect(res).toBeDefined();
+      const errors: HttpErrorResponse[] = [];
+      http.post('http://test-auth-backend/data', {}).subscribe({
+        next: () => fail('a 401 must not be reported to the caller as a successful response'),
+        // The interceptor used to emit `null` here. Callers expect an
+        // HttpResponse, so that corrupted them silently — Apollo read
+        // `response.body` off the null and ended up resolving `undefined`,
+        // surfacing an auth failure as an empty result. The refresh is still
+        // requested; the failure is simply also reported.
+        error: (err: HttpErrorResponse) => {
+          errors.push(err);
+        },
       });
       const req = httpMock.expectOne('http://test-auth-backend/data');
       expect(req.request.method).toBe('POST');
       req.flush(null, unauthorizedResponse);
 
+      expect(errors.length).toBe(1);
+      expect(errors[0].status).toBe(401);
       expect(isLoginSpy).toHaveBeenCalledTimes(1);
       expect(refreshSpy).toHaveBeenCalledTimes(1);
     },

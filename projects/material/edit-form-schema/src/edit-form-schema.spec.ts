@@ -7,7 +7,7 @@ import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, InsertModel} from '@dino/core/data';
 import {FormSchema, FormSchemaManager, FormStatusManager} from '@dino/core/forms';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {NEVER, BehaviorSubject, Observable, of} from 'rxjs';
 
 import {EditFormSchema, EditFormSchemaModule} from './public_api';
 import {RxDocument} from 'rxdb';
@@ -41,6 +41,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

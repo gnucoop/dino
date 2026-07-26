@@ -8,7 +8,7 @@ import {
   PandinoConfig,
 } from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, of} from 'rxjs';
+import {NEVER, BehaviorSubject, of} from 'rxjs';
 import {UsersModule} from '@dino/core/users';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {MainNav, MainNavModule} from './public_api';
@@ -73,6 +73,8 @@ export const defaultLanguageConfig: TranslationsConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

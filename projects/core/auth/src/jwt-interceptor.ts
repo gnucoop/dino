@@ -148,7 +148,14 @@ export class JWTInterceptor implements HttpInterceptor {
           !this._isAllowedRequest(request)
         ) {
           this.handleRefreshEvt.emit([request, next]);
-          return obsOf(null);
+          // Propagate the failure instead of emitting `null`. Callers expect an
+          // `HttpResponse`, so a null broke them in ways that were very hard to
+          // trace: Apollo's link read `response.body` off it, threw inside an
+          // RxJS `next` (so the error went to Angular's unhandled handler, not to
+          // Apollo), and Apollo then resolved `undefined` — surfacing as an empty
+          // result rather than an error. The refresh above still runs; an error is
+          // simply the honest answer for THIS request.
+          return throwError(() => error);
         }
         return throwError(() => error);
       }),

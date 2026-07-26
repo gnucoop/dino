@@ -6,7 +6,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {Server, WebSocket} from 'mock-socket';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {firstValueFrom, of as obsOf} from 'rxjs';
+import {NEVER, firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from './public_api';
@@ -66,6 +66,8 @@ const authServiceMock = {
   authenticated: obsOf({auth: true, evt: 'init'}),
   authConfig: authServiceConfig,
   authToken: obsOf('test_auth_token'),
+  // Never resumes in tests: the app is not a foregrounded browser tab here.
+  appResumed: NEVER,
   resetEvt: obsOf(true),
   logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),

@@ -16,7 +16,15 @@ import {LogManager} from '@dino/core/logs';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
-import {BehaviorSubject, combineLatest, forkJoin, from, Observable, of as obsOf} from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  from,
+  Observable,
+  of as obsOf,
+  throwError,
+} from 'rxjs';
 import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
 import {Directory} from '@capacitor/filesystem';
 import write_blob from 'capacitor-blob-writer';
@@ -108,14 +116,18 @@ export class FormsListComponent {
     this.formSelectionData = new BehaviorSubject<FormData[] | null>(null);
     this.formSchemaId = this._route.params.pipe(map(params => params.form_schema_id));
     this.additionalDataSchema = this.formSchemaId.pipe(
-      switchMap(schemaId => {
-        if (schemaId != null) {
-          return this.formSchemaManager.get(schemaId);
-        }
-        return obsOf(null);
-      }),
-      filter(schema => schema != null),
-      switchMap(schema => this.formSchemaManager.getSchemaWithRelationships(schema, true, null)),
+      // No schema in the route means this list needs none — that is "not
+      // applicable", so it stays filtered out.
+      filter(schemaId => schemaId != null),
+      switchMap(schemaId => this.formSchemaManager.get(schemaId)),
+      switchMap(schema =>
+        // A requested schema that comes back null is a FAILURE, not "not yet".
+        // Filtering it out instead left this `shareReplay`'d stream silent
+        // forever, and the list waiting on it spun for the rest of the session.
+        schema == null
+          ? throwError(() => new Error('The form schema could not be loaded'))
+          : this.formSchemaManager.getSchemaWithRelationships(schema, true, null),
+      ),
       shareReplay(1),
     );
 

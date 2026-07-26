@@ -29,12 +29,14 @@ import {
   BehaviorSubject,
   combineLatest,
   firstValueFrom,
+  MonoTypeOperatorFunction,
   NEVER,
   Observable,
   ObservableInput,
   of as obsOf,
   Subscription,
   throwError,
+  timer,
 } from 'rxjs';
 import {
   catchError,
@@ -80,6 +82,36 @@ import {Model} from './model';
  * on a key inside a jsonb column). Prevents an unbounded fetch on large tables.
  */
 const MAX_IN_MEMORY_FILTER_ROWS = 5000;
+
+/**
+ * Coalescing window for realtime rebuild requests. Every subscription errors at
+ * once when graphql-ws gives up, and one rebuild must serve all of them.
+ */
+const REALTIME_REBUILD_DEBOUNCE_MS = 500;
+
+/** First backoff step before rebuilding a dead realtime transport. */
+const REALTIME_REBUILD_BASE_DELAY_MS = 1000;
+
+/** Upper bound on the rebuild backoff, so recovery stays possible indefinitely. */
+const REALTIME_REBUILD_MAX_DELAY_MS = 60 * 1000;
+
+/**
+ * How long the app may be hidden before its websocket is assumed stale.
+ *
+ * A socket that dies while the device is suspended leaves no trace whatsoever:
+ * the subscriptions are still registered, `readyState` is still OPEN, and no
+ * keep-alive ping went out while timers were frozen, so the liveness watchdog
+ * cannot have noticed. Past one keep-alive period the only safe assumption on
+ * resume is that the connection needs rebuilding.
+ */
+const REALTIME_STALE_AFTER_HIDDEN_MS = 30 * 1000;
+
+/**
+ * GraphQL/transport errors that mean "the token is no longer accepted". Hasura
+ * answers an expired JWT with **HTTP 200** and an `errors` array, so this cannot
+ * be detected by status code — see `docs/online-mode-status.md`.
+ */
+const AUTH_ERROR_PATTERN = /invalid-jwt|JWTExpired|Could not verify JWT/i;
 
 /**
  * Online (Apollo → Hasura) implementation of `IDataService`, used when
@@ -161,6 +193,19 @@ export class OnlineDataService implements IDataService {
   private _currentToken: string | null = null;
   /** Emitted to trigger a token refresh when the socket reports JWT expiry. */
   private _refreshEvt = new EventEmitter<void>();
+  /**
+   * Emitted when the realtime transport must be rebuilt from scratch: the
+   * liveness watchdog closed a half-open socket, or graphql-ws exhausted its
+   * retries and errored every subscription.
+   */
+  private _rebuildRealtimeEvt = new EventEmitter<void>();
+  /**
+   * True while `_teardownRealtime()` was called deliberately (logout / token
+   * cleared), so an incidental close is not mistaken for an intentional one.
+   */
+  private _realtimeTornDown = false;
+  /** Consecutive rebuild attempts, used to back off. Reset on a live socket. */
+  private _rebuildAttempts = 0;
 
   constructor(
     @Inject(DATA_SERVICE_CONFIG) config: DataServiceConfig,
@@ -201,18 +246,19 @@ export class OnlineDataService implements IDataService {
         return this._apollo
           .query({query, variables, context, errorPolicy: 'all', fetchPolicy: 'no-cache'})
           .pipe(
-          map(res => {
-            if (res.errors) {
-              throw new Error(JSON.stringify(res.errors));
-            }
-            const results = res.data[queryName] || [];
-            if (results.length === 1) {
-              return this._decorate<T>(results[0], name);
-            }
-            return null;
-          }),
-        );
+            map(res => {
+              if (res.errors) {
+                throw new Error(JSON.stringify(res.errors));
+              }
+              const results = res.data[queryName] || [];
+              if (results.length === 1) {
+                return this._decorate<T>(results[0], name);
+              }
+              return null;
+            }),
+          );
       }),
+      this._retryOnAuthError(),
       catchError(this._queryErrorHandler(null, `get(${params.collectionName})`, {id: params.id})),
     );
   }
@@ -246,6 +292,7 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
+      this._retryOnAuthError(),
       catchError(this._queryErrorHandler(null, `insert(${params.collectionName})`)),
     );
   }
@@ -285,7 +332,10 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
-      catchError(this._queryErrorHandler({success: [], error: []}, `bulkInsert(${params.collectionName})`)),
+      this._retryOnAuthError(),
+      catchError(
+        this._queryErrorHandler({success: [], error: []}, `bulkInsert(${params.collectionName})`),
+      ),
     );
   }
 
@@ -325,6 +375,7 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
+      this._retryOnAuthError(),
       catchError(
         this._queryErrorHandler([], `bulkUpdate(${params.collectionName})`, {
           selector: params.query?.selector,
@@ -372,6 +423,7 @@ export class OnlineDataService implements IDataService {
             }),
           );
       }),
+      this._retryOnAuthError(),
       catchError(this._queryErrorHandler(null, `update(${collectionName})`, {id: doc?.id})),
     );
   }
@@ -432,27 +484,28 @@ export class OnlineDataService implements IDataService {
         return this._apollo
           .query({query, variables, context, errorPolicy: 'all', fetchPolicy: 'no-cache'})
           .pipe(
-          map(res => {
-            if (res.errors) {
-              throw new Error(JSON.stringify(res.errors));
-            }
-            let rows = (res.data[queryName] || []) as R[];
-            if (filterInMemory) {
-              if (rows.length >= MAX_IN_MEMORY_FILTER_ROWS && isDevMode()) {
-                console.warn(
-                  `[OnlineDataService] '${name}': in-memory filtering hit the ` +
-                    `${MAX_IN_MEMORY_FILTER_ROWS}-row cap; results may be incomplete.`,
-                );
+            map(res => {
+              if (res.errors) {
+                throw new Error(JSON.stringify(res.errors));
               }
-              rows = rows.filter(row => matchesSelector(row, clientSelector));
-              const skip = params.query?.skip ?? 0;
-              const limit = params.query?.limit;
-              rows = limit != null ? rows.slice(skip, skip + limit) : rows.slice(skip);
-            }
-            return rows.map(r => this._decorate<R>(r, name));
-          }),
-        );
+              let rows = (res.data[queryName] || []) as R[];
+              if (filterInMemory) {
+                if (rows.length >= MAX_IN_MEMORY_FILTER_ROWS && isDevMode()) {
+                  console.warn(
+                    `[OnlineDataService] '${name}': in-memory filtering hit the ` +
+                      `${MAX_IN_MEMORY_FILTER_ROWS}-row cap; results may be incomplete.`,
+                  );
+                }
+                rows = rows.filter(row => matchesSelector(row, clientSelector));
+                const skip = params.query?.skip ?? 0;
+                const limit = params.query?.limit;
+                rows = limit != null ? rows.slice(skip, skip + limit) : rows.slice(skip);
+              }
+              return rows.map(r => this._decorate<R>(r, name));
+            }),
+          );
       }),
+      this._retryOnAuthError(),
       catchError(
         this._queryErrorHandler([], `find(${params.collectionName})`, {
           selector: params.query?.selector,
@@ -494,6 +547,28 @@ export class OnlineDataService implements IDataService {
       )
       .subscribe();
 
+    // Rebuild the transport when it dies. Backed off, and coalesced so a burst
+    // of failing subscriptions produces one rebuild rather than one each.
+    this._rebuildRealtimeEvt
+      .pipe(
+        debounceTime(REALTIME_REBUILD_DEBOUNCE_MS),
+        switchMap(() => {
+          this._rebuildAttempts++;
+          const delayMs = Math.min(
+            REALTIME_REBUILD_BASE_DELAY_MS * Math.pow(2, this._rebuildAttempts - 1),
+            REALTIME_REBUILD_MAX_DELAY_MS,
+          );
+          return timer(delayMs);
+        }),
+      )
+      .subscribe(() => this._rebuildRealtime());
+
+    // Revive the transport when the app comes back to the foreground. A
+    // suspended device stops sending keep-alive pings, so the watchdog cannot
+    // have run while hidden — this is the check that catches a socket which died
+    // during the suspension.
+    this._authService.appResumed.subscribe(hiddenForMs => this._verifyRealtimeAlive(hiddenForMs));
+
     combineLatest([
       this._registeredCollections$.pipe(debounceTime(300)),
       this._authService.authToken,
@@ -503,14 +578,22 @@ export class OnlineDataService implements IDataService {
         return;
       }
       // On a new/changed token, recreate the client and reopen every sub with it.
-      if (token !== this._currentToken) {
+      if (token !== this._currentToken || this._wsClient == null) {
         this._teardownRealtime();
         this._currentToken = token;
+        this._realtimeTornDown = false;
         this._wsClient = newClient(
           this.config.syncOptions.url.ws ?? null,
           token,
           this._refreshEvt,
           this.config.syncOptions.socketJwtExpiredCode,
+          {
+            // Read the token at connect time: a reconnect must not replay the
+            // token captured when the client was built, which by then is the
+            // expired one that killed the connection in the first place.
+            getToken: () => this._authService.getAuthToken(),
+            onDead: () => this._rebuildRealtimeEvt.emit(),
+          },
         );
       }
       // Open subscriptions for newly registered collections.
@@ -530,6 +613,48 @@ export class OnlineDataService implements IDataService {
   }
 
   /**
+   * Discards the current graphql-ws client and opens a fresh one, reopening a
+   * subscription per registered collection.
+   *
+   * Needed because graphql-ws gives up permanently once its retry budget is
+   * exhausted — which a backgrounded device does while asleep, since the whole
+   * budget spans well under a minute — and a disposed client never reconnects.
+   */
+  private _rebuildRealtime(): void {
+    // Deliberately torn down (logged out): nothing to rebuild.
+    if (this._realtimeTornDown || this._authService.getAuthToken() == null) {
+      return;
+    }
+    if (isDevMode()) {
+      console.warn(`[OnlineDataService] rebuilding realtime (attempt ${this._rebuildAttempts})`);
+    }
+    this._teardownRealtime();
+    this._realtimeTornDown = false;
+    // Re-emitting the registered collections re-runs the setup above, which
+    // creates a new client because `_currentToken` was cleared.
+    this._registeredCollections$.next(Object.keys(this._collections));
+  }
+
+  /**
+   * Checks whether realtime is still functional on resume and rebuilds it
+   * otherwise, immediately — the user is waiting, so no backoff applies here and
+   * the failure counter is reset, since a resume is not an escalating failure.
+   * @param hiddenForMs How long the app was in the background.
+   */
+  private _verifyRealtimeAlive(hiddenForMs: number): void {
+    if (this._realtimeTornDown || this._authService.getAuthToken() == null) {
+      return;
+    }
+    const missingSubs =
+      this._wsClient == null ||
+      Object.keys(this._activeSubs).length < Object.keys(this._collections).length;
+    if (missingSubs || hiddenForMs > REALTIME_STALE_AFTER_HIDDEN_MS) {
+      this._rebuildAttempts = 0;
+      this._rebuildRealtime();
+    }
+  }
+
+  /**
    * Opens a single "table changed" subscription for a collection. The first
    * emission (Hasura's initial snapshot) is skipped, since the list issues its
    * own initial fetch; subsequent emissions signal a server-side change.
@@ -539,24 +664,36 @@ export class OnlineDataService implements IDataService {
     return newClientSubscription(this._wsClient, {query: subscriptionQueryGql(name)})
       .pipe(skip(1))
       .subscribe({
-        next: () =>
+        next: () => {
+          // Proof of life: the transport delivers, so the next failure starts
+          // its backoff from scratch instead of inheriting an old escalation.
+          this._rebuildAttempts = 0;
           this._collectionChanged.emit({
             timestamp: Date.now(),
             collection: name,
             // Matches the action the offline live path emits, so main-nav's
             // notification filter fires and its "unsynced data" indicator stays off.
             action: 'replication cycle complete',
-          }),
+          });
+        },
         error: err => {
           if (isDevMode()) {
             console.error(`Online realtime subscription error for ${name}:`, err);
           }
+          // Drop the dead subscription: the setup guard is
+          // `if (this._activeSubs[name] == null)`, so leaving a terminated
+          // Subscription in place made it impossible to ever re-subscribe.
+          delete this._activeSubs[name];
+          // graphql-ws errors every sink once its retry budget is gone, and the
+          // client is then permanently dead — only a fresh one recovers.
+          this._rebuildRealtimeEvt.emit();
         },
       });
   }
 
   /** Tears down the graphql-ws client and all active subscriptions. */
   private _teardownRealtime(): void {
+    this._realtimeTornDown = true;
     Object.values(this._activeSubs).forEach(sub => sub.unsubscribe());
     this._activeSubs = {};
     if (this._wsClient != null) {
@@ -624,10 +761,14 @@ export class OnlineDataService implements IDataService {
       // RxDocument.remove(): soft-delete, matching the app's delete convention.
       remove: def(() =>
         firstValueFrom(
-          self.update<R, R>(collectionName, obj as R, {
-            is_deleted: true,
-            _deleted: true,
-          } as unknown as Partial<R>),
+          self.update<R, R>(
+            collectionName,
+            obj as R,
+            {
+              is_deleted: true,
+              _deleted: true,
+            } as unknown as Partial<R>,
+          ),
         ),
       ),
     });
@@ -724,6 +865,68 @@ export class OnlineDataService implements IDataService {
   }
 
   /**
+   * True when a failure means "the token is no longer accepted", rather than a
+   * genuine data or network error.
+   * @param err The caught error.
+   */
+  private _isAuthError(err: unknown): boolean {
+    if (err == null) {
+      return false;
+    }
+    if ((err as {status?: number}).status === 401) {
+      return true;
+    }
+    let message: string;
+    if (err instanceof Error) {
+      message = err.message;
+    } else {
+      try {
+        // Not every error is an Error: Apollo surfaces the GraphQL `errors` array,
+        // and an HttpErrorResponse can hold self-referencing headers, so this must
+        // not be allowed to throw from inside an error handler.
+        message = JSON.stringify(err) ?? '';
+      } catch {
+        return false;
+      }
+    }
+    const configured = this.config.syncOptions.authErrorMessage;
+    if (configured != null && message.includes(configured)) {
+      return true;
+    }
+    return AUTH_ERROR_PATTERN.test(message);
+  }
+
+  /**
+   * Refreshes the token and retries the operation **once** when it failed only
+   * because the token had expired.
+   *
+   * Without this an expired token is indistinguishable from an empty table: the
+   * server answers HTTP 200 with an `errors` array, which never reaches the HTTP
+   * interceptor (it only triggers on 401/400), and the error handler below turns
+   * it into `[]`/`null`. That is the reported "lists are empty after idle".
+   *
+   * Retrying re-subscribes the whole chain, so the request is rebuilt and picks
+   * up the new token (the auth header is read per request). Exactly one retry:
+   * the re-subscribed source does not carry this operator.
+   */
+  private _retryOnAuthError<T>(): MonoTypeOperatorFunction<T> {
+    return source =>
+      source.pipe(
+        catchError(err => {
+          if (!this._isAuthError(err)) {
+            return throwError(() => err);
+          }
+          if (isDevMode()) {
+            console.warn('[OnlineDataService] token rejected, refreshing and retrying once');
+          }
+          return this._authService
+            .refreshToken()
+            .pipe(switchMap(refreshed => (refreshed ? source : throwError(() => err))));
+        }),
+      );
+  }
+
+  /**
    * Recovers from a failed GraphQL operation by emitting a neutral value.
    *
    * The failure is always logged (not only in dev mode): swallowing it silently
@@ -739,7 +942,10 @@ export class OnlineDataService implements IDataService {
     details?: Record<string, any>,
   ): (err: any, caught: Observable<E>) => ObservableInput<R> {
     return err => {
-      const label = operation != null ? `[OnlineDataService] ${operation} failed` : '[OnlineDataService] query failed';
+      const label =
+        operation != null
+          ? `[OnlineDataService] ${operation} failed`
+          : '[OnlineDataService] query failed';
       if (details != null) {
         console.error(label, err, details);
       } else {

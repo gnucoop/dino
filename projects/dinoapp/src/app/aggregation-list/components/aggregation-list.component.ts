@@ -55,7 +55,7 @@ export class AggregationListComponent implements OnDestroy, AfterViewInit {
   readonly listRowActionsIcons: {[key: string]: string} = conf.listRowActionsIcons;
   readonly listRowActions: Observable<ListAction[] | null>;
   readonly secondaryMetricFieldsDisplayed: {
-    [metricName: string]: string | string [];
+    [metricName: string]: string | string[];
   } | null = conf.secondaryMetricFieldsDisplayed;
 
   /**
@@ -81,13 +81,15 @@ export class AggregationListComponent implements OnDestroy, AfterViewInit {
     this.formSchemaId = new BehaviorSubject<string | null>(null);
 
     this.additionalDataSchema = this.formSchemaId.pipe(
-      switchMap(schemaId => {
-        if (schemaId != null) {
-          return this.formSchemaManager.get(schemaId);
-        }
-        return obsOf(null);
-      }),
-      filter(schema => schema != null),
+      filter(schemaId => schemaId != null),
+      switchMap(schemaId => this.formSchemaManager.get(schemaId)),
+      // A requested schema that comes back null is a failure, not "not yet":
+      // filtering it out left the list waiting on this stream forever.
+      switchMap(schema =>
+        schema == null
+          ? throwError(() => new Error('The form schema could not be loaded'))
+          : obsOf(schema),
+      ),
     );
 
     this.listRowActions = this.formSchemaId.pipe(

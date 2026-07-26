@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, User} from '@dino/core/auth';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {firstValueFrom, Observable, of as obsOf} from 'rxjs';
+import {NEVER, firstValueFrom, Observable, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {PermissionContext} from './data-permission-interface';
@@ -166,6 +166,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: obsOf({auth: true, evt: 'init'}),
   authToken: obsOf('test_auth_token'),
+  // Never resumes in tests: the app is not a foregrounded browser tab here.
+  appResumed: NEVER,
   authConfig: authServiceConfig,
   resetEvt: obsOf(true),
   logout: () => obsOf(false),

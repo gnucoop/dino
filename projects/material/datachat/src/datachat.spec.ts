@@ -4,7 +4,7 @@ import {DataChatModule} from './datachat.module';
 import {DataChat} from './datachat';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {BehaviorSubject, of} from 'rxjs';
+import {NEVER, BehaviorSubject, of} from 'rxjs';
 import {EventEmitter} from '@angular/core';
 import {
   DATA_SERVICE_CONFIG,
@@ -84,6 +84,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {id: '1', email: 'test@test.com'};
   },

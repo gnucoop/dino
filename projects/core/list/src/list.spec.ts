@@ -3,7 +3,7 @@ import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {Model} from '@dino/core/data';
-import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
+import {NEVER, BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
 import {AdminUserInteractionsService, List, ListAction} from './public_api';
 
@@ -19,6 +19,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: the app is not a foregrounded browser tab here.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

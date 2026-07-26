@@ -9,7 +9,7 @@ import {
   SearchFiltersPresetManager,
   SearchFiltersPresetManagerModule,
 } from '@dino/material/search-filters-preset-manager';
-import {BehaviorSubject, firstValueFrom, of as obsOf, of} from 'rxjs';
+import {NEVER, BehaviorSubject, firstValueFrom, of as obsOf, of} from 'rxjs';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -23,6 +23,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

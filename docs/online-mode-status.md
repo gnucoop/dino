@@ -532,3 +532,94 @@ _Record dated results here as you validate, e.g.:_
   user info was stored *after* `authenticated`/`authToken` emitted, so subscribers reading
   `getUserInfo()` on login saw an empty user and had no later event to retry on. Storing the
   user info first fixed it. See the architecture note on login ordering.
+- 2026-07-26 — **Session resilience after idle, stage 1 (shared auth).** Fixed the causes common
+  to both modes: expiry was never actually detected (three places compared an *object* for
+  truthiness), `checkToken()` evaluated `exp` once at boot, the refresh budget never reset (so
+  recovery was one-shot per page load), and two more instances of the store-then-announce
+  ordering bug — `refreshToken()` and `_storeAuthToken()` both announced before persisting,
+  which is why a query could fail with `JWTExpired` immediately after a *successful* refresh.
+  Added a pre-emptive refresh at 75% of token life, single-flight `refreshToken()`, and bounded
+  three unlimited `retryWhen(delay(2000))` loops. Consequence is mode-aware via the new
+  `AuthServiceConfig.enforceTokenExpiry` (set from `dataMode`): online blocks and redirects,
+  offline refreshes in the background and never bounces to login.
+- 2026-07-26 — **Stage 2 (transport + resume).** See the architecture note below. Desktop test of
+  stage 1 alone was inconclusive: a ~5 minute minimised window is shorter than the token
+  lifetime, so nothing was due to happen either way — which is itself the lesson that expiry
+  tracks *issue time*, not idle time.
+
+## Architecture: surviving an idle period (why a token fix was not enough)
+
+Reported symptom: after ~5-10 minutes idle (especially on mobile) the app becomes
+inconsistent — online, lists go empty or a spinner never finishes; in offline mode the toolbar
+sync icon spins forever — and only a reload, logout or cache clear recovers it.
+
+This is **not one bug**. There are three independent failures that stack, and fixing only the
+token half leaves the other two intact.
+
+### 1. The token dies and nothing notices (stage 1)
+Covered in the change-log entry above. The key backend detail: **Hasura rejects an expired JWT
+with HTTP 200 and a GraphQL `errors` array** (`{"code":"invalid-jwt"}`), never a 401 — so the
+HTTP interceptor, which only triggers on 401/400, cannot see it at all.
+
+### 2. The websocket dies silently, and cannot be detected by `on.closed`
+`keepAlive: 30_000` only makes the client **send** pings; graphql-ws does nothing if the server
+never pongs. When a phone suspends, or a carrier drops the flow without a close frame, the
+socket goes **half-open**: `readyState` stays `OPEN`, so there is no `closed` event, no retry,
+no error — the subscriptions just stop delivering, permanently. Three fixes, all needed:
+
+- **A pong watchdog** (`graphql-ws-client.ts`): time our own pings and close a socket that does
+  not answer within 5s. Closing converts an undetectable half-open state into a normal close,
+  which is what makes graphql-ws reconnect. This is the *only* way to catch the zombie case.
+- **`connectionParams` as a function.** It used to be a static object captured when the client
+  was built, so every reconnect replayed the original — by then expired — token and could never
+  succeed. It now reads the current token per connect.
+- **Rebuild, not just reconnect.** graphql-ws gives up permanently once its retry budget is
+  gone (default 5 attempts, spanning well under a minute — a backgrounded device burns all of
+  them while asleep) and then errors every sink. The old error handler only *logged*, and left
+  the dead `Subscription` in `_activeSubs`, so the `if (this._activeSubs[name] == null)`
+  re-subscribe guard was false forever. Dead subscriptions are now deleted and a fresh client is
+  built with bounded backoff.
+
+### 3. Nothing handled app resume — and on mobile this is the only trigger that works
+While an app is suspended its timers are throttled or stopped, so the pre-emptive refresh may
+never fire; and a suspend/resume produces **no** browser online/offline event, so
+`NetworkStatusService` cannot see it either. `AuthService.appResumed` (shared,
+`visibilitychange` + `pageshow`) now drives recovery, and it reports **how long the app was
+hidden** — because a connection that died while suspended leaves no other trace:
+
+- **Auth**: refresh if the token is expired or within 60s of it; otherwise reschedule the
+  pre-emptive timer, which may have been throttled while hidden.
+- **Online**: rebuild the websocket if it is missing subscriptions *or* the app was hidden for
+  longer than one keep-alive period. The blind time-based rebuild is deliberate — see above, a
+  suspended socket cannot be probed after the fact.
+- **Offline**: `runSync()`, which refreshes the token *and* resynchronizes every collection.
+  This is the actual fix for the spinning icon: replication had no way back, since RxDB 15
+  ignores `liveInterval`, so there is no periodic resync at all.
+
+### 4. An expired token presented as an empty list, not an error
+Two swallowing layers, both now fixed:
+- `OnlineDataService` turned every failure into `[]`/`null`. It now detects an auth failure in
+  the GraphQL `errors` array, refreshes once and **retries the operation** (`_retryOnAuthError`).
+- The HTTP interceptor returned `obsOf(null)` on a 401. Callers expect an `HttpResponse`, so
+  Apollo read `response.body` off the null, threw inside an RxJS `next` (routed to Angular's
+  unhandled handler, not to Apollo), and resolved `undefined` — an auth failure surfacing as an
+  empty result. It now propagates the error; the refresh still runs.
+
+### 5. The spinner could latch forever (a regression from the list-spinner work)
+The list pages gate on `filter(schema => schema != null)` over a `shareReplay(1)` stream. With a
+stale token `formSchemaManager.get(id)` resolved **null**, so the stream never emitted and was
+poisoned for the session; `list-datasource`'s `skipWhile` then never issued the row query, so
+`isLoading` never cleared. Before the spinner existed this showed a blank table; afterwards it
+spun forever. Fixed on both sides: a requested-but-null schema is now an **error** rather than
+"not yet" (forms-list, aggregation-list, reports-list), and `ListDataSource` clears the loading
+flag when a prerequisite fails or the query chain errors — previously that subscription had no
+error handler at all and died silently.
+
+### Terminology used above
+- **offline *mode*** = `dataMode: 'offline'` (RxDB + replication) with the device **online**.
+- **network offline** = `navigator.onLine === false`.
+
+This matters because the auth safety-nets key off the *network* meaning: `refreshToken()` and
+`checkToken()` short-circuit only when `isOnline$` is false. **In offline mode with the network up
+there is no shielding at all** — the token genuinely expires and replication genuinely fails.
+Offline simply *looks* healthier because reads are served locally while syncing is dead.

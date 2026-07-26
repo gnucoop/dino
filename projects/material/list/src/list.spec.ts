@@ -9,7 +9,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FilterGroup, FiltersService, SearchFiltersComponent} from '@dino/core/list';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
+import {NEVER, BehaviorSubject, Observable, of as obsOf, of} from 'rxjs';
 
 import {ListDataSource, ListModule, SelectionList} from './public_api';
 import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
@@ -42,6 +42,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

@@ -6,7 +6,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {FilterItem, FiltersService, ListModule} from '@dino/core/list';
 import {SearchFiltersDialog, SearchFiltersDialogModule} from '@dino/material/search-filters-dialog';
-import {BehaviorSubject, of} from 'rxjs';
+import {NEVER, BehaviorSubject, of} from 'rxjs';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -20,6 +20,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },

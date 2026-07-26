@@ -4,7 +4,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FormStatus} from '@dino/core/forms';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, firstValueFrom, of} from 'rxjs';
+import {NEVER, BehaviorSubject, firstValueFrom, of} from 'rxjs';
 import {PipelineStepperModule, StepperComponent} from './public_api';
 
 let testDbIdx = 0;
@@ -35,6 +35,8 @@ const authServiceConfig: AuthServiceConfig = {
 const authServiceMock = {
   authenticated: of({auth: true, evt: 'init'}),
   authToken: of('test_auth_token'),
+  // Never resumes in tests: this is not a foregrounded browser tab.
+  appResumed: NEVER,
   getUserInfo: () => {
     return {};
   },
