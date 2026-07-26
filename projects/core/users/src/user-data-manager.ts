@@ -36,6 +36,12 @@ import {schema} from './user-data-json';
 import {UserSelfExclude} from './user-admin-check-permissions';
 
 /**
+ * How many times to retry reading the active user's data before giving up.
+ * Bounded so a failing read (e.g. an expired token) cannot retry indefinitely.
+ */
+const MAX_USER_DATA_RETRIES = 5;
+
+/**
  * Service that manages User Data
  */
 @Injectable({providedIn: 'root'})
@@ -112,7 +118,11 @@ export class UserDataManager extends DataModelManager<UserData> {
         }
         return ud;
       }),
-      retryWhen(err => err.pipe(delay(2000))),
+      // Bounded retry. This used to retry every 2s forever: with an expired token
+      // the read resolves empty, so every caller span up its own endless loop of
+      // failing requests, never emitting and never erroring — a background storm
+      // that is especially costly on mobile.
+      retryWhen(err => err.pipe(delay(2000), take(MAX_USER_DATA_RETRIES))),
       tap(userData => {
         this.addToContext({user_data: userData});
       }),

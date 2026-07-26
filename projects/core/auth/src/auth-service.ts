@@ -23,8 +23,18 @@
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
-import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, map, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of as obsOf, Subscription, timer} from 'rxjs';
+import {
+  catchError,
+  finalize,
+  map,
+  mapTo,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import {AuthenticationEvent, AuthEvt} from './auth-event';
 
 import {
@@ -58,6 +68,21 @@ export const DEFAULT_AUTH_OPTIONS = {
   passwordCredentialKey: 'password',
   userAuthInfo: 'user',
 };
+
+/**
+ * Safety margin applied when deciding whether the auth token is expired, so a
+ * request is never sent with a token that dies while in flight.
+ *
+ * Deliberately small: it only needs to cover request latency. A larger margin
+ * starts classifying legitimately short-lived tokens as already expired.
+ */
+const DEFAULT_TOKEN_SKEW_SECONDS = 10;
+
+/**
+ * Fraction of the token's remaining lifetime after which it is refreshed
+ * pro-actively (0.75 = at three quarters of the way to expiry).
+ */
+const PREEMPTIVE_REFRESH_RATIO = 0.75;
 
 /**
  * Injectable service used to authenticate against an external authentication backend.
@@ -117,6 +142,15 @@ export class AuthService {
    * The Auth service configuration settings stream.
    */
   private _authConfig: BehaviorSubject<AuthServiceConfig>;
+
+  /**
+   * The refresh request currently in flight, shared between concurrent callers.
+   * Null when no refresh is running. See `refreshToken()`.
+   */
+  private _refreshInFlight: Observable<boolean> | null = null;
+
+  /** The scheduled pre-emptive refresh, if any. See `_schedulePreemptiveRefresh()`. */
+  private _preemptiveRefreshSub: Subscription = Subscription.EMPTY;
 
   get authConfig(): AuthServiceConfig {
     return this._authConfig.value;
@@ -394,6 +428,29 @@ export class AuthService {
       return obsOf(false);
     }
 
+    // Single-flight: several triggers can notice an expired token at once (the
+    // interceptor, the route guard, the websocket, the pre-emptive timer). Without
+    // this, each subscription issued its own POST — and the losers of the race then
+    // refreshed with an already-rotated refresh token.
+    if (this._refreshInFlight != null) {
+      return this._refreshInFlight;
+    }
+    const refresh$ = this._buildRefreshCall(authEvt, refreshToken).pipe(
+      take(1),
+      finalize(() => {
+        this._refreshInFlight = null;
+      }),
+      shareReplay(1),
+    );
+    this._refreshInFlight = refresh$;
+    return refresh$;
+  }
+
+  /**
+   * Builds the actual refresh HTTP call. Kept separate so `refreshToken()` can
+   * share one in-flight request between concurrent callers.
+   */
+  private _buildRefreshCall(authEvt: AuthEvt, refreshToken?: string): Observable<boolean> {
     return this._authConfig.pipe(
       switchMap(config => {
         const req = {refreshToken: this.getRefreshToken() ?? refreshToken};
@@ -411,11 +468,16 @@ export class AuthService {
           .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
             tap(res => {
+              // Store the new tokens BEFORE announcing success. Subscribers react
+              // to `authenticated` synchronously and re-issue their requests, and
+              // the auth header is read fresh from storage per request — so
+              // announcing first made those retries go out with the old, expired
+              // token and fail with JWTExpired even though the refresh succeeded.
+              this._storeRefreshToken(res.refreshToken);
+              this._storeAuthToken(res.accessToken ?? res.token);
               if (authEvt !== 'reset password') {
                 this.authenticated.next({auth: true, evt: authEvt});
               }
-              this._storeRefreshToken(res.refreshToken);
-              this._storeAuthToken(res.accessToken ?? res.token);
             }),
             mapTo(true),
             catchError(err => {
@@ -456,12 +518,13 @@ export class AuthService {
       return obsOf({token: false, evt: 'no auth token'});
     }
 
-    const decodedToken = this._decodeJwt(token);
-    const tokenCheck = decodedToken.exp != null && decodedToken.exp > new Date().getTime() / 1000;
-
     return this._nss.isOnline$.pipe(
       withLatestFrom(this._nss.statusHistory$),
       map(([isOnline, statusHistory]) => {
+        // Evaluated per emission, NOT once at subscribe time: this observable is
+        // long-lived (isOnline$ never completes), so a value captured up front
+        // would report the token as valid forever.
+        const tokenCheck = !this.isTokenExpired();
         let res: {token: boolean; evt: AuthEvt} = {token: tokenCheck, evt: 'init'};
         if (!isOnline) {
           if (statusHistory.length > 1 && !statusHistory[0] && statusHistory[1]) {
@@ -657,16 +720,44 @@ export class AuthService {
    * @param token The JWT auth token
    */
   private _storeAuthToken(token: string | null): void {
-    this.authToken.next(token);
+    // Persist BEFORE emitting. Subscribers of `authToken` react synchronously and
+    // read the token back through `getAuthToken()` (i.e. from storage), so emitting
+    // first handed them the PREVIOUS value — which is how requests went out with an
+    // expired token immediately after a successful refresh.
     if (this._authConfig.value.storeAuthToken != null) {
       this._authConfig.value.storeAuthToken(token);
-      return;
-    }
-    if (token == null) {
+    } else if (token == null) {
       localStorage.removeItem(this._getAuthTokenLocaleStorageKey());
     } else {
       localStorage.setItem(this._getAuthTokenLocaleStorageKey(), token);
     }
+    this._schedulePreemptiveRefresh();
+    this.authToken.next(token);
+  }
+
+  /**
+   * (Re)schedules a refresh shortly before the current token expires, so the
+   * session is renewed pro-actively instead of only after a request has already
+   * failed. Rescheduled every time a token is stored; cancelled when it is cleared.
+   *
+   * Best-effort only: background tabs throttle timers (and mobile suspends them
+   * altogether), so this complements — never replaces — revalidating when the app
+   * returns to the foreground.
+   */
+  private _schedulePreemptiveRefresh(): void {
+    this._preemptiveRefreshSub.unsubscribe();
+    const expiresAt = this.tokenExpiresAt();
+    if (expiresAt == null) {
+      return;
+    }
+    const remainingMs = expiresAt * 1000 - new Date().getTime();
+    if (remainingMs <= 0) {
+      return;
+    }
+    const dueInMs = Math.max(remainingMs * PREEMPTIVE_REFRESH_RATIO, 1000);
+    this._preemptiveRefreshSub = timer(dueInMs)
+      .pipe(switchMap(() => this.refreshToken()))
+      .subscribe();
   }
 
   /**
@@ -744,18 +835,56 @@ export class AuthService {
    * @param token The token to be decoded.
    * @returns The decoded token.
    */
-  private _decodeJwt(token: string): JwtToken {
-    let base64Url = token.split('.')[1];
-    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    let jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join(''),
-    );
+  private _decodeJwt(token: string): JwtToken | null {
+    try {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      let jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join(''),
+      );
 
-    return JSON.parse(jsonPayload);
+      return JSON.parse(jsonPayload);
+    } catch (err) {
+      // A malformed/truncated token used to throw synchronously out of every
+      // caller (checkToken included). Treat it as undecodable instead.
+      if (isDevMode()) {
+        console.warn('Could not decode the auth token', err);
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Seconds since the epoch at which the stored auth token expires, or null when
+   * there is no token, it cannot be decoded, or it carries no `exp` claim.
+   */
+  tokenExpiresAt(): number | null {
+    const token = this.getAuthToken();
+    if (!token) {
+      return null;
+    }
+    const decoded = this._decodeJwt(token);
+    return decoded?.exp ?? null;
+  }
+
+  /**
+   * True when the stored auth token is missing, undecodable or expired.
+   *
+   * `skewSeconds` treats a token that is about to expire as already expired, so
+   * a request is not sent with a token that dies in flight. It is also what makes
+   * a pre-emptive refresh possible.
+   * @param skewSeconds Safety margin in seconds (default 30).
+   */
+  isTokenExpired(skewSeconds: number = DEFAULT_TOKEN_SKEW_SECONDS): boolean {
+    const expiresAt = this.tokenExpiresAt();
+    if (expiresAt == null) {
+      return true;
+    }
+    return expiresAt <= new Date().getTime() / 1000 + skewSeconds;
   }
 }

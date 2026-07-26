@@ -23,9 +23,15 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {AuthService, DinoUserInfo, User} from '@dino/core/auth';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {delay, distinctUntilKeyChanged, filter, map, retryWhen} from 'rxjs/operators';
+import {delay, distinctUntilKeyChanged, filter, map, retryWhen, take} from 'rxjs/operators';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {MetricsService} from './metrics.service';
+
+/**
+ * How many times to retry reading the user permissions before giving up.
+ * Bounded so a reset/incomplete context cannot retry indefinitely.
+ */
+const MAX_PERMISSION_RETRIES = 5;
 
 /**
  * Service that provides a Context for the DataModelManager and is augmented by the
@@ -197,7 +203,10 @@ export class PermissionContextService {
         }
         return permissions;
       }),
-      retryWhen(err => err.pipe(delay(2000))),
+      // Bounded: this is called for every row's action buttons, so an unbounded
+      // 2s retry (which is what an expired token or a reset context produces)
+      // multiplied into a permanent storm of failing requests.
+      retryWhen(err => err.pipe(delay(2000), take(MAX_PERMISSION_RETRIES))),
       map(permissions => {
         if (permissions == null) {
           return [];

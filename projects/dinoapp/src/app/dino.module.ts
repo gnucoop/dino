@@ -191,7 +191,14 @@ export function provideMatDateLocale(ts: TranslocoService) {
     }),
     AjfEchartsModule.forRoot({echarts: () => import('echarts')}),
     ColorPickerModule,
-    DinoAuthModule.forRoot(environment.authConfig),
+    DinoAuthModule.forRoot({
+      ...environment.authConfig,
+      // Online mode reads everything from the server, so continuing with an expired
+      // token only yields empty screens: make expiry block navigation and redirect.
+      // In local-first (offline) mode the cached data is still usable, so an expired
+      // token triggers a background refresh without interrupting the user.
+      enforceTokenExpiry: environment.dataConfig.dataMode === 'online',
+    }),
     environment.dataConfig.dynamicBackend
       ? DinoConfigModule.forRoot({apiUrl: environment.dataConfig.dynamicBackendapiUrl})
       : [],

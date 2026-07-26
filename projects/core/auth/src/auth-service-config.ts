@@ -131,6 +131,16 @@ export interface AuthServiceConfig<T = DinoUserInfo> {
   retryAttemptsMax: number;
 
   /**
+   * If true, an expired token blocks route activation: navigation waits for a
+   * refresh and redirects to `failedAuthRedirect` when it fails. Set this when
+   * every read needs the server, so continuing would only show empty screens.
+   *
+   * If false/omitted (local-first deployments), an expired token triggers a
+   * background refresh but never blocks navigation — cached data is still usable.
+   */
+  enforceTokenExpiry?: boolean;
+
+  /**
    * Function used to store the current JWT token.
    * The token will be stored in local storage if not specified.
    */

@@ -23,7 +23,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {Observable} from 'rxjs';
-import {debounceTime, map, take, withLatestFrom} from 'rxjs/operators';
+import {map, take, withLatestFrom} from 'rxjs/operators';
 import {AuthService} from './auth-service';
 
 /**
@@ -43,19 +43,34 @@ export class AuthGuard {
       withLatestFrom(this._authService.checkToken()),
       take(1),
       map(([authenticated, validated]) => {
-        if (authenticated.auth && validated) {
+        // `validated` is an object, so testing it directly was always truthy and
+        // the token's expiry was never actually consulted — a route activated
+        // happily with a long-expired token. Read the flag it carries.
+        if (authenticated.auth && validated.token) {
           return true;
         }
-        this._authService
-          .refreshToken('init refresh')
-          .pipe(debounceTime(this._authService.config.retryRefreshTime))
-          .subscribe(res => {
-            if (res) {
-              this._router.navigateByUrl(state.url);
-            } else {
-              this._router.navigate([this._authService.config.failedAuthRedirect]);
-            }
-          });
+        // In a local-first deployment the cached data is still usable, so a stale
+        // token must not block navigation or bounce the user to the login screen;
+        // refresh in the background instead. Where every read needs the server
+        // (`enforceTokenExpiry`), navigation waits for the refresh and redirects
+        // if it fails.
+        const enforce = this._authService.config.enforceTokenExpiry === true;
+        // No `debounceTime` here: `refreshToken()` emits once, so debouncing it was
+        // simply a fixed delay (5s by config) before the user was let in or sent to
+        // login. Bursts are now prevented properly by the single-flight guard in
+        // `refreshToken()` itself.
+        const refresh$ = this._authService.refreshToken('init refresh');
+        if (!enforce) {
+          refresh$.subscribe();
+          return true;
+        }
+        refresh$.subscribe(res => {
+          if (res) {
+            this._router.navigateByUrl(state.url);
+          } else {
+            this._router.navigate([this._authService.config.failedAuthRedirect]);
+          }
+        });
         return false;
       }),
     );

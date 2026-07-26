@@ -30,7 +30,7 @@ import {
 import {EventEmitter, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, debounceTime, filter, skip, switchMap, withLatestFrom} from 'rxjs/operators';
+import {catchError, debounceTime, filter, switchMap, withLatestFrom} from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
 import {NetworkStatusService} from './network-status.service';
@@ -73,7 +73,18 @@ export class JWTInterceptor implements HttpInterceptor {
           }
           if (this._retryAttempts < this._authService.authConfig.retryAttemptsMax) {
             this._retryAttempts++;
-            return this._authService.refreshToken().pipe(switchMap(() => next.handle(request)));
+            return this._authService.refreshToken().pipe(
+              switchMap(refreshed => {
+                // Reset the budget once a refresh succeeds. It used to only ever
+                // increment, so with retryAttemptsMax: 1 the app got exactly one
+                // recovery per page load and the next expiry forced a logout —
+                // which is what an idle session runs into.
+                if (refreshed) {
+                  this._retryAttempts = 0;
+                }
+                return next.handle(request);
+              }),
+            );
           } else {
             this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
             if (this._authService.getAuthToken() != null) {
@@ -91,13 +102,16 @@ export class JWTInterceptor implements HttpInterceptor {
       }
     });
 
+    // Revalidate when connectivity returns. Note `skip(1)` is deliberately gone:
+    // it discarded the FIRST back-online event, which is the one that matters.
     this._nss.isOnline$
       .pipe(
         filter(res => res === true),
-        skip(1),
         withLatestFrom(this._authService.checkToken()),
         switchMap(([_, check]) => {
-          if (!check) {
+          // `check` is an object and was therefore always truthy, making this
+          // whole reconnect-refresh block dead code. Read the flag it carries.
+          if (!check.token) {
             return this._authService.refreshToken().pipe(
               switchMap(refreshed => {
                 if (refreshed) {

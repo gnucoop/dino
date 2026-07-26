@@ -39,6 +39,12 @@ import {UserRole} from './user-role';
 import {AdminGroupExclude} from './user-admin-check-permissions';
 
 /**
+ * How many times to retry resolving a group's role before giving up. Bounded so a
+ * failing read cannot retry indefinitely without ever emitting or erroring.
+ */
+const MAX_ROLE_LOOKUP_RETRIES = 5;
+
+/**
  * Service that manages User Groups
  */
 @Injectable({providedIn: 'root'})
@@ -262,7 +268,9 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
                   throw new Error('No Role or Group found');
                 }
               }),
-              retryWhen(err => err.pipe(delay(2000))),
+              // Bounded: an unbounded 2s retry here never emits and never errors,
+              // so the permission context could never complete either.
+              retryWhen(err => err.pipe(delay(2000), take(MAX_ROLE_LOOKUP_RETRIES))),
             );
           });
         return (ug.length ? forkJoin(ug) : obsOf([])).pipe(
