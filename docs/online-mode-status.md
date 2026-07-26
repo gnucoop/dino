@@ -556,6 +556,11 @@ _Record dated results here as you validate, e.g.:_
 
 ## Architecture: surviving an idle period (why a token fix was not enough)
 
+> **Status:** 10 of the 12 identified root causes are fixed (stages 1-3, committed). Two remain —
+> see [⚠️ STILL UNFIXED](#-still-unfixed-two-root-causes-this-would-be-stage-4) below. The most
+> important one is that the **permission context is never rebuilt after a re-auth**, which stage 1
+> made *easier* to trigger.
+
 Reported symptom: after ~5-10 minutes idle (especially on mobile) the app becomes
 inconsistent — online, lists go empty or a spinner never finishes; in offline mode the toolbar
 sync icon spins forever — and only a reload, logout or cache clear recovers it.
@@ -645,6 +650,65 @@ implemented from real evidence on both sides:
 - **An unrecoverable session says so**: a snackbar on `{auth: false, evt: 'refresh failed'}`,
   worded per mode — online the app is dead in the water and the existing `login/expired` redirect
   follows, offline it states that local data is still usable but will not sync.
+
+### ⚠️ STILL UNFIXED: two root causes (this would be "stage 4")
+
+Twelve root causes were identified for the idle-session problem. Ten are fixed across the three
+commits above. **These two are not**, and they are recorded here so they are not mistaken for
+working behaviour. Neither is hypothetical — both were traced in the code.
+
+#### Gap 1 (matters) — the permission context is wiped and never rebuilt after re-auth
+
+A failed refresh emits `{auth: false, evt: 'refresh failed'}`, and
+`data-context-service.ts:63-70` reacts by calling `resetContext()` →
+`fullContext.next(null)` and `_permissionContextDataUpdate.next({})`. So `user_permissions`,
+`user_metrics`, `user_form_schemas`, `user_form_statuses` and `user_report_schemas` are all gone.
+
+Nothing rebuilds them on re-authentication. The only repopulation path is `addToContext(...)`, and
+for permissions that call lives inside `UserGroupManager.getActiveUserPermissions()`
+(`user-group-manager.ts:330-336`), which is reached **only** through `isActiveUserAdmin()`. Every
+caller of that is one-shot (`take(1)`) and fires on its own schedule, not on an auth event:
+- `admin.guard.ts:43` — only when navigating to an admin route,
+- `user-group-manager.ts:68` — on `collectionsInitialized`, which `dino.module.ts:447/484` emits
+  **only** for `authEvent.evt === 'login'`,
+- `main-nav.ts:775` (`isAdmin`), `dashboard-menu.component.ts:26`, `import-form.ts:1669`,
+  `metric-import.ts:741` — each evaluated once when its view renders.
+
+So recovery happens only by luck: if the user happens to navigate somewhere that re-subscribes. Until
+then the app runs **half-authorised** with `user_permissions: null` — which is exactly the
+"inconsistent state" originally reported. The visible symptom is missing row action buttons, because
+`PermissionContextService.getAllowedActions()` throws `'User Permissions not found'`; with the
+bounded retry added in stage 1 it now gives up after 5 attempts instead of hammering forever, so the
+buttons are quietly absent rather than absent *and* generating a request storm.
+
+**Stage 1 made this easier to hit, not harder.** It added a pre-emptive refresh, so there are now
+more refresh attempts per session, and any one of them failing (a transient blip is enough) trips
+this. That is the strongest argument for fixing it.
+
+**Fix sketch:** on a *successful* re-auth (`evt: 'refresh successful'` / `'login'`), re-run the
+context bootstrap rather than relying on `collectionsInitialized`, which is login-only. The existing
+`isActiveUserAdmin()` → `addToContext(...)` path can be reused as-is; it only needs a trigger.
+Consider also whether `resetContext()` should fire on `'refresh failed'` at all in offline mode,
+where the session is still usable from local data.
+
+#### Gap 2 (minor) — `dataReady` can never emit `false`
+
+`online-data-service.ts:230-238` builds it as `combineLatest([...]).pipe(filter(...), map(() => true),
+distinctUntilChanged(), shareReplay(1))`. The `filter` means only `true` ever reaches the `map`, so
+once ready it stays ready: a logout or a cleared token emits nothing rather than `false`. Consumers
+that gate on it (notably the notification streams in `main-nav`, hung off a `merge(dataReady, …)`)
+therefore never re-fire after the session changes. Harmless today because those consumers only need
+the first `true`; it becomes a bug the moment something needs to *stop* on session loss.
+
+**Fix sketch:** map the predicate to a boolean instead of filtering on it, keeping
+`distinctUntilChanged()`.
+
+#### Also deliberately out of scope
+- `e2e-app` needs the same one-line `appResumed` addition as the `dinoapp` stand-ins if that project
+  is revived (see the stage 3 change-log entry for why the compiler cannot catch it).
+- Pre-existing, affects offline too: `search-filters-bar.ts:642-646` calls
+  `option['code'].toString()` on an optional field, and the `case_code` options query at `:633` has
+  no `catchError` and no `limit`, so one case without a `code` permanently kills that autocomplete.
 
 ### Terminology used above
 - **offline *mode*** = `dataMode: 'offline'` (RxDB + replication) with the device **online**.
