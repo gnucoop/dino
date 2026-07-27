@@ -1,6 +1,6 @@
 export const baseManifest = {
-  'version': '18.0.4',
-  'sw_version': '146',
+  'version': '18.0.5',
+  'sw_version': '147',
   'name': 'Dino',
   'short_name': 'Dino',
   'theme_color': '#1976d2',

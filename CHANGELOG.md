@@ -1,3 +1,14 @@
+<a name="18.0.5-sw.147"></a>
+# 18.0.5-sw.147 "energetic-cephalopod" (2026-07-27)
+### Bug Fixes
+* **backup-restore:** add console log in dev for restore sync errors ([4b1bf14](https://github.com/gnucoop/dino/commit/4b1bf14f6681a946795b2190b190b9f27b296bae))
+* **backup-restore:** data-only export and owner reassignment on restore ([6aaa0be](https://github.com/gnucoop/dino/commit/6aaa0bec709ffb481b7fa90093693b6c16d8a648))
+* **backup-restore:** enforce data collection whitelist on restore too ([6ea50cb](https://github.com/gnucoop/dino/commit/6ea50cbff67a6664ebf0b2970688459a9c3befc3))
+* **backup-restore:** enforce restore order and gate owned-data push until referenced collections are in sync ([bc32282](https://github.com/gnucoop/dino/commit/bc32282cfca71abeb19e2ff8b687f102674c47c4))
+* **docker:** copy nginx.conf and entrypoint.sh from docker/ context ([9200a69](https://github.com/gnucoop/dino/commit/9200a697464626715409b284ac982724a4422f42))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.4-sw.146"></a>
 # 18.0.4-sw.146 "varied-mole" (2026-07-21)
 ### Bug Fixes
