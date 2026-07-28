@@ -9,7 +9,7 @@ import {default as semver} from 'semver';
 import {default as shell} from 'shelljs';
 
 import {changelog} from './release/index.mjs';
-import {releaseNotes} from './release/release-notes.mjs';
+import {ajfVersionAt, releaseNotes} from './release/release-notes.mjs';
 
 // The release branch. A deploy is cut from here.
 const RELEASE_BRANCH = 'dev';
@@ -62,11 +62,11 @@ const replaceField = (files, key, oldValue, newValue) => {
 // After the push, optionally create a GitHub Release for the new tag, with
 // user-facing notes generated from the commits (via release-notes.mjs). Failures
 // here are non-fatal: the tag and push already succeeded.
-const maybeCreateGitHubRelease = async (tag, releaseId) => {
+const maybeCreateGitHubRelease = async (tag, title) => {
   if (!shell.which('gh')) {
     shell.echo('gh CLI not found — skipping GitHub Release. Create it later with:');
     shell.echo(`  node scripts/release/release-notes.mjs --from=<prev-tag> --to=${tag} > notes.md`);
-    shell.echo(`  gh release create ${tag} --title "${releaseId}" --notes-file notes.md`);
+    shell.echo(`  gh release create ${tag} --title "${title}" --notes-file notes.md`);
     return;
   }
   const {create} = await inquirer.prompt([
@@ -85,6 +85,13 @@ const maybeCreateGitHubRelease = async (tag, releaseId) => {
   ]);
   // Previous release tag (HEAD^ excludes the tag we just created on HEAD).
   const prevTag = shell.exec('git describe --tags --abbrev=0 HEAD^', {silent: true}).stdout.trim() || undefined;
+  // Heads-up when this release also carries a new AJF: the library changelog is
+  // folded into the notes as its own section.
+  const ajfPrev = prevTag != null ? ajfVersionAt(prevTag) : null;
+  const ajfCur = ajfVersionAt(tag);
+  if (ajfPrev != null && ajfCur != null && ajfPrev !== ajfCur) {
+    shell.echo(`  Shared library: ${ajfPrev} -> ${ajfCur}, its changelog will be included.`);
+  }
   let notes;
   try {
     notes = await releaseNotes({from: prevTag, to: tag, lang});
@@ -93,12 +100,12 @@ const maybeCreateGitHubRelease = async (tag, releaseId) => {
     return;
   }
   if (!notes) {
-    shell.echo('  No user-facing commits since the previous tag — skipping GitHub Release.');
+    shell.echo('  Nothing user-facing since the previous tag — skipping GitHub Release.');
     return;
   }
   const notesFile = join(tmpdir(), `dino-relnotes-${tag.replace(/[^\w.-]/g, '_')}.md`);
   writeFileSync(notesFile, notes);
-  const res = shell.exec(`gh release create ${tag} --title "${releaseId}" --notes-file "${notesFile}"`);
+  const res = shell.exec(`gh release create ${tag} --title "${title}" --notes-file "${notesFile}"`);
   unlinkSync(notesFile);
   shell.echo(res.code === 0 ? 'GitHub Release created.' : 'gh release create failed — see output above.');
 };
@@ -167,6 +174,11 @@ const prepareRelease = async () => {
 
   const releaseId = `${newVersion}-sw.${newSw}`;
   const tag = `v${releaseId}`;
+  // A version bump is the headline release for that version: title it with the
+  // bare semver ("18.0.5"). Later sw-only deploys of the same version keep the
+  // full releaseId ("18.0.5-sw.148").
+  const isVersionBump = newVersion !== currentVersion;
+  const releaseTitle = isVersionBump ? newVersion : releaseId;
   shell.echo(`\nReleasing: ${releaseId}  (tag ${tag})\n`);
 
   // --- Write the version files ---
@@ -190,10 +202,9 @@ const prepareRelease = async () => {
 
   const filesToAdd = [...new Set([...VERSION_FILES, ...SW_VERSION_FILES, 'CHANGELOG.md'])].join(' ');
   shell.exec(`git add ${filesToAdd}`);
-  const message =
-    newVersion === currentVersion
-      ? `build: Manifest and worker sw_version upgraded to ${newSw}`
-      : `release: cut the v${newVersion} release`;
+  const message = isVersionBump
+    ? `release: cut the v${newVersion} release`
+    : `build: Manifest and worker sw_version upgraded to ${newSw}`;
   shell.exec(`git commit -m "${message}"`);
   shell.exec(`git tag -a ${tag} -m "Release deploy: v${newVersion} sw_version ${newSw}"`);
 
@@ -215,7 +226,7 @@ const prepareRelease = async () => {
   shell.exec(`git push --atomic origin ${branch} ${tag}`);
 
   // --- GitHub Release with user-facing notes (optional, non-fatal) ---
-  await maybeCreateGitHubRelease(tag, releaseId);
+  await maybeCreateGitHubRelease(tag, releaseTitle);
 
   shell.echo('Done.');
 };
