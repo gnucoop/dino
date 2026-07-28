@@ -5,6 +5,14 @@ on:
     branches:
       - main
       - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint-and-build:
@@ -114,6 +122,9 @@ jobs:
   release-and-publish:
     name: Build release, docs, Create Artifacts and Publish
     needs: [lint-and-build, unit-tests, e2e-tests]
+    # Pull requests only need the validation jobs above; artifacts are produced
+    # from the branch, once merged.
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     container:
       image: devgnucoop/dinopipeline:22.16.0
@@ -161,8 +172,9 @@ jobs:
     # projects/dinoapp/vercel-build-step.sh — so ordinary PR merges do not
     # produce an image.
     if: >-
-      startsWith(github.event.head_commit.message, 'release: cut the v') ||
-      startsWith(github.event.head_commit.message, 'build: Manifest and worker sw_version upgraded to ')
+      github.event_name == 'push' &&
+      (startsWith(github.event.head_commit.message, 'release: cut the v') ||
+      startsWith(github.event.head_commit.message, 'build: Manifest and worker sw_version upgraded to '))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
