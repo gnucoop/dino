@@ -27,10 +27,11 @@ import {
   DataService,
   MetricsService,
   PermissionContextService,
+  boundedRetry,
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {forkJoin, from, Observable, of as obsOf} from 'rxjs';
-import {delay, filter, map, retryWhen, shareReplay, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 
 import {migrationStrategies, UserGroup} from './user-group';
 import {schema} from './user-group-json';
@@ -260,7 +261,18 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
                   throw new Error('No Role or Group found');
                 }
               }),
-              retryWhen(err => err.pipe(delay(2000))),
+              // The referenced role may not be replicated yet: retry a bounded
+              // number of times, then give up on this group instead of
+              // retrying forever in background.
+              boundedRetry<[RxDocument<UserRole, {}>, RxDocument<UserGroup, {}>]>({
+                label: `getActiveUserPermissions:${gr['user_role_ref_id']}`,
+              }),
+              catchError(() =>
+                obsOf([null, null] as unknown as [
+                  RxDocument<UserRole, {}>,
+                  RxDocument<UserGroup, {}>,
+                ]),
+              ),
             );
           });
         return (ug.length ? forkJoin(ug) : obsOf([])).pipe(
