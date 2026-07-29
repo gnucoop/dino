@@ -21,10 +21,20 @@
  */
 
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
+import {EventEmitter, Inject, Injectable, isDevMode, OnDestroy, Optional} from '@angular/core';
 import {ConfigService} from '@dino/core/config';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
-import {catchError, map, mapTo, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  finalize,
+  map,
+  mapTo,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import {AuthenticationEvent, AuthEvt} from './auth-event';
 
 import {
@@ -35,7 +45,14 @@ import {
   NHostSignupResponse,
 } from './auth-response';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from './auth-service-config';
-import {buildAuthorizationHeader} from './auth-utils';
+import {
+  buildAuthorizationHeader,
+  decodeJwt,
+  isTokenExpired,
+  PREEMPTIVE_REFRESH_RATIO,
+  tokenExpiresAt,
+  tokenIssuedAt,
+} from './auth-utils';
 import {Credentials} from './credentials';
 import {JwtToken} from './jwt-token';
 import {LoginResponse} from './login-response';
@@ -60,11 +77,18 @@ export const DEFAULT_AUTH_OPTIONS = {
 };
 
 /**
+ * Lower bound, in milliseconds, for the pre-emptive refresh timer.
+ * Prevents a token with an already elapsed 75% lifetime from scheduling
+ * back-to-back refreshes.
+ */
+const MIN_PREEMPTIVE_REFRESH_DELAY = 10000;
+
+/**
  * Injectable service used to authenticate against an external authentication backend.
  * Stores the authentication token and the logged in user info.
  */
 @Injectable({providedIn: 'root'})
-export class AuthService {
+export class AuthService implements OnDestroy {
   /**
    * True if a valid JWT access token is available.
    */
@@ -91,6 +115,13 @@ export class AuthService {
    * Emits when a User logs in
    */
   readonly loginEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
+
+  /**
+   * Emits every time a new auth token is successfully obtained through a refresh.
+   * Consumers waiting on the token (interceptor, retry counters) can reset
+   * their state when this fires.
+   */
+  readonly tokenRefreshedEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
    * When not null it holds the newly signed up User basic info.
@@ -129,6 +160,19 @@ export class AuthService {
 
   private _baseUrl: string;
 
+  /**
+   * The refresh call currently in flight, shared by every concurrent requester
+   * so that interceptor, guard and pre-emptive timer never fire parallel
+   * refresh requests. Refresh tokens are single-use on most backends: parallel
+   * calls invalidate each other and log the user out.
+   */
+  private _refreshInFlight: Observable<boolean> | null = null;
+
+  /**
+   * Handle of the pending pre-emptive refresh timer.
+   */
+  private _preemptiveRefreshTimeout: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     private _nss: NetworkStatusService,
     private _httpClient: HttpClient,
@@ -147,9 +191,16 @@ export class AuthService {
     }
     this.authToken = new BehaviorSubject<string | null>(this.getAuthToken());
     this._initAuthentication();
+    // A session resumed from local storage needs its pre-emptive refresh armed
+    // too, otherwise the token silently dies while the app sits idle.
+    this._schedulePreemptiveRefresh(this.getAuthToken());
     if (this._configService != null) {
       this._setDynamicConfigSub();
     }
+  }
+
+  ngOnDestroy(): void {
+    this._clearPreemptiveRefresh();
   }
 
   /**
@@ -234,13 +285,20 @@ export class AuthService {
     userInfo: any | null,
     clearNhostTokens?: boolean,
   ): void {
-    this.authenticated.next({auth: true, evt: 'login'});
-    this._storeAuthToken(session?.accessToken ?? token);
+    // Persist everything BEFORE notifying subscribers: an `authenticated`
+    // emission wakes up queries that read the token straight from the storage,
+    // and they would otherwise still find the previous (expired) one.
+    const authToken = session?.accessToken ?? token ?? null;
     this._storeRefreshToken(session?.refreshToken ?? refreshToken);
     this._storeUserInfo(userInfo);
+    this._persistAuthToken(authToken);
     if (clearNhostTokens) {
       this.clearNhostTokens();
     }
+    // The auth state goes out before the token stream: consumers sample
+    // `authenticated` when `authToken` emits.
+    this.authenticated.next({auth: true, evt: 'login'});
+    this.authToken.next(authToken);
   }
 
   /**
@@ -385,7 +443,79 @@ export class AuthService {
       return obsOf(false);
     }
 
+    // A password reset consumes a one-off ticket: it must neither share nor be
+    // satisfied by a pending regular refresh.
+    if (authEvt === 'reset password') {
+      return this._requestTokenRefresh(authEvt, refreshToken);
+    }
+
+    if (this._refreshInFlight == null) {
+      this._refreshInFlight = this._requestTokenRefresh(authEvt, refreshToken).pipe(
+        finalize(() => (this._refreshInFlight = null)),
+        shareReplay({bufferSize: 1, refCount: false}),
+      );
+    }
+    return this._refreshInFlight;
+  }
+
+  /**
+   * Checks the validity of the JWT auth token.
+   * The token and its expiry are read on every emission, so a long lived
+   * subscription keeps reporting the current state instead of the one captured
+   * when the stream was built.
+   * @returns A stream of the token validity and the related auth event.
+   */
+  checkToken(): Observable<{token: boolean; evt: AuthEvt}> {
+    return this._nss.isOnline$.pipe(
+      withLatestFrom(this._nss.statusHistory$),
+      map(([isOnline, statusHistory]) => {
+        const token = this.getAuthToken();
+        if (!token) {
+          return {token: false, evt: 'no auth token'} as {token: boolean; evt: AuthEvt};
+        }
+        const tokenCheck = !isTokenExpired(token);
+        let res: {token: boolean; evt: AuthEvt} = {token: tokenCheck, evt: 'init'};
+        if (!isOnline) {
+          if (statusHistory.length > 1 && !statusHistory[0] && statusHistory[1]) {
+            res = {token: true, evt: 'gone offline'};
+          } else {
+            res = {token: true, evt: 'offline'};
+          }
+        } else if (isOnline && statusHistory.length > 1 && statusHistory[0] && !statusHistory[1]) {
+          res = {token: tokenCheck, evt: 'back online'};
+        }
+        return res;
+      }),
+    );
+  }
+
+  /**
+   * Synchronously checks whether a non expired JWT auth token is stored,
+   * applying the expiry tolerance window.
+   * @returns True if the stored token can still be used.
+   */
+  hasValidAuthToken(): boolean {
+    return !isTokenExpired(this.getAuthToken());
+  }
+
+  /**
+   * @returns The expiry of the stored auth token as epoch milliseconds,
+   * or null when it cannot be determined.
+   */
+  getAuthTokenExpiry(): number | null {
+    return tokenExpiresAt(this.getAuthToken());
+  }
+
+  /**
+   * Performs the actual refresh http call. Always go through
+   * {@link refreshToken}, which shares the call between concurrent requesters.
+   * @param authEvt The authentication event string identifier
+   * @param refreshToken? An optional refresh token provided
+   * @returns True if the token was successfully refreshed.
+   */
+  private _requestTokenRefresh(authEvt: AuthEvt, refreshToken?: string): Observable<boolean> {
     return this._authConfig.pipe(
+      take(1),
       switchMap(config => {
         const req = {refreshToken: this.getRefreshToken() ?? refreshToken};
         const defaulRefreshUrl = config.nHostAuth ? 'token' : 'api/jwt/refresh';
@@ -402,11 +532,20 @@ export class AuthService {
           .post<AuthResponse & NHostRefreshResponse>(url, req, {headers})
           .pipe(
             tap(res => {
+              // Persist the new tokens BEFORE emitting the auth event: the
+              // subscribers woken up by it read the token from the storage, and
+              // would otherwise reuse the expired one.
+              this._storeRefreshToken(res.refreshToken);
+              this._persistAuthToken(res.accessToken ?? res.token ?? null);
+              // Then the auth state, and only afterwards the token stream: the
+              // sync setup samples `authenticated` when `authToken` emits, so a
+              // token emitted while the state still says "not authenticated"
+              // stops the replications instead of starting them.
               if (authEvt !== 'reset password') {
                 this.authenticated.next({auth: true, evt: authEvt});
               }
-              this._storeRefreshToken(res.refreshToken);
-              this._storeAuthToken(res.accessToken ?? res.token);
+              this.tokenRefreshedEvt.emit();
+              this.authToken.next(res.accessToken ?? res.token ?? null);
             }),
             mapTo(true),
             catchError(err => {
@@ -425,8 +564,11 @@ export class AuthService {
           );
 
         return this._nss.isOnline$.pipe(
+          take(1),
           switchMap(isOnline => {
             if (!isOnline) {
+              // Offline there is nothing to refresh: report success so that
+              // callers keep working on cached data instead of logging out.
               return obsOf(true);
             } else {
               return refreshHttpCall;
@@ -438,34 +580,47 @@ export class AuthService {
   }
 
   /**
-   * Checks the validity of the JWT auth token.
-   * @returns True if the token is valid.
+   * Schedules a pre-emptive refresh at 75% of the token lifetime, replacing any
+   * previously scheduled one. Called every time a new auth token is stored.
+   * @param token The freshly stored JWT auth token.
    */
-  checkToken(): Observable<{token: boolean; evt: AuthEvt}> {
-    const token = this.getAuthToken();
-    if (!token) {
-      return obsOf({token: false, evt: 'no auth token'});
+  private _schedulePreemptiveRefresh(token: string | null): void {
+    this._clearPreemptiveRefresh();
+    if (token == null || decodeJwt(token) == null) {
+      return;
     }
-
-    const decodedToken = this._decodeJwt(token);
-    const tokenCheck = decodedToken.exp != null && decodedToken.exp > new Date().getTime() / 1000;
-
-    return this._nss.isOnline$.pipe(
-      withLatestFrom(this._nss.statusHistory$),
-      map(([isOnline, statusHistory]) => {
-        let res: {token: boolean; evt: AuthEvt} = {token: tokenCheck, evt: 'init'};
-        if (!isOnline) {
-          if (statusHistory.length > 1 && !statusHistory[0] && statusHistory[1]) {
-            res = {token: true, evt: 'gone offline'};
-          } else {
-            res = {token: true, evt: 'offline'};
-          }
-        } else if (isOnline && statusHistory.length > 1 && statusHistory[0] && !statusHistory[1]) {
-          res = {token: tokenCheck, evt: 'back online'};
-        }
-        return res;
-      }),
+    const expiresAt = tokenExpiresAt(token);
+    if (expiresAt == null || isTokenExpired(token)) {
+      // Nothing to pre-empt: the reactive paths (interceptor, guard) take over.
+      return;
+    }
+    const now = new Date().getTime();
+    const issuedAt = tokenIssuedAt(token) ?? now;
+    const lifetime = expiresAt - issuedAt;
+    if (lifetime <= 0) {
+      return;
+    }
+    const delay = Math.max(
+      MIN_PREEMPTIVE_REFRESH_DELAY,
+      issuedAt + lifetime * PREEMPTIVE_REFRESH_RATIO - now,
     );
+    this._preemptiveRefreshTimeout = setTimeout(() => {
+      this._preemptiveRefreshTimeout = null;
+      if (this.getRefreshToken() == null) {
+        return;
+      }
+      this.refreshToken().subscribe();
+    }, delay);
+  }
+
+  /**
+   * Cancels the pending pre-emptive refresh timer, if any.
+   */
+  private _clearPreemptiveRefresh(): void {
+    if (this._preemptiveRefreshTimeout != null) {
+      clearTimeout(this._preemptiveRefreshTimeout);
+      this._preemptiveRefreshTimeout = null;
+    }
   }
 
   /**
@@ -643,21 +798,35 @@ export class AuthService {
   }
 
   /**
+   * Write the JWT auth token to the storage and re-arm the pre-emptive refresh,
+   * without notifying the `authToken` subscribers.
+   * Callers that also change the authentication state must emit `authenticated`
+   * between this call and {@link authToken}, because consumers sample the auth
+   * state when the token emits.
+   * @param token The JWT auth token
+   */
+  private _persistAuthToken(token: string | null): void {
+    if (this._authConfig.value.storeAuthToken != null) {
+      this._authConfig.value.storeAuthToken(token);
+    } else if (token == null) {
+      localStorage.removeItem(this._getAuthTokenLocaleStorageKey());
+    } else {
+      localStorage.setItem(this._getAuthTokenLocaleStorageKey(), token);
+    }
+    this._schedulePreemptiveRefresh(token);
+  }
+
+  /**
    * Store the JWT auth token.
    * If a custom function is not provided, the JWT auth token will be stored in the local storage.
    * @param token The JWT auth token
    */
   private _storeAuthToken(token: string | null): void {
+    // Write the token to the storage FIRST, then notify: `authToken`
+    // subscribers (sync setup, queries) read the token back from the storage,
+    // so emitting first makes them pick up the old, expired token.
+    this._persistAuthToken(token);
     this.authToken.next(token);
-    if (this._authConfig.value.storeAuthToken != null) {
-      this._authConfig.value.storeAuthToken(token);
-      return;
-    }
-    if (token == null) {
-      localStorage.removeItem(this._getAuthTokenLocaleStorageKey());
-    } else {
-      localStorage.setItem(this._getAuthTokenLocaleStorageKey(), token);
-    }
   }
 
   /**
@@ -731,22 +900,13 @@ export class AuthService {
   }
 
   /**
-   * Decodes and parses a Jwt token
+   * Decodes and parses a Jwt token.
+   * Malformed tokens yield null instead of throwing a synchronous error that
+   * would tear down the calling stream.
    * @param token The token to be decoded.
-   * @returns The decoded token.
+   * @returns The decoded token, or null if it could not be decoded.
    */
-  private _decodeJwt(token: string): JwtToken {
-    let base64Url = token.split('.')[1];
-    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    let jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join(''),
-    );
-
-    return JSON.parse(jsonPayload);
+  decodeAuthToken(token: string | null = this.getAuthToken()): JwtToken | null {
+    return decodeJwt(token);
   }
 }
