@@ -22,7 +22,7 @@
 
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, fromEvent, merge, Observable} from 'rxjs';
-import {distinctUntilChanged, mapTo, startWith, tap} from 'rxjs/operators';
+import {distinctUntilChanged, mapTo, shareReplay, startWith, tap} from 'rxjs/operators';
 
 /**
  * Service that detects the current Network connection status.
@@ -52,6 +52,10 @@ export class NetworkStatusService {
       startWith(navigator.onLine),
       distinctUntilChanged(),
       tap(r => this.updateStatusHistory(r, 2)),
+      // Shared and replayed: every subscriber gets the current status right
+      // away, and the status history records real transitions only, instead of
+      // one bogus entry per subscription.
+      shareReplay({bufferSize: 1, refCount: false}),
     );
   }
 

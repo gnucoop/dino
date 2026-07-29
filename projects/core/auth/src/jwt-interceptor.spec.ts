@@ -28,6 +28,16 @@ const response = {
   statusText: 'Test response',
   status: 200,
 };
+
+// Hasura reports an expired JWT with a 200 status and an `errors` array.
+const jwtErrorBody = {
+  errors: [
+    {
+      message: 'Could not verify JWT: JWTExpired',
+      extensions: {code: 'invalid-jwt', path: '$'},
+    },
+  ],
+};
 describe(`JWTInterceptor`, () => {
   let httpMock: HttpTestingController;
 
@@ -55,8 +65,12 @@ describe(`JWTInterceptor`, () => {
       let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
       let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
 
-      http.post('http://test-auth-backend/data', {}).subscribe(res => {
-        expect(res).toBeDefined();
+      // No token is stored, so the refresh cannot succeed and the failure is
+      // surfaced to the caller instead of being swallowed into a null response.
+      let errored = false;
+      http.post('http://test-auth-backend/data', {}).subscribe({
+        next: () => fail('the request should not succeed'),
+        error: () => (errored = true),
       });
       const req = httpMock.expectOne('http://test-auth-backend/data');
       expect(req.request.method).toBe('POST');
@@ -64,6 +78,28 @@ describe(`JWTInterceptor`, () => {
 
       expect(isLoginSpy).toHaveBeenCalledTimes(1);
       expect(refreshSpy).toHaveBeenCalledTimes(1);
+      expect(errored).toBe(true);
+    },
+  ));
+
+  it('should handle a 200 response carrying a GraphQL invalid-jwt error', inject(
+    [HTTP_INTERCEPTORS, HttpClient],
+    (interceptors: HttpInterceptor[], http: HttpClient) => {
+      const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
+      expect(jwtInterceptor).toBeDefined();
+
+      let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
+
+      let errored = false;
+      http.post('http://test-auth-backend/data', {}).subscribe({
+        next: () => fail('the request should not succeed'),
+        error: () => (errored = true),
+      });
+      const req = httpMock.expectOne('http://test-auth-backend/data');
+      req.flush(jwtErrorBody, response);
+
+      expect(refreshSpy).toHaveBeenCalledTimes(1);
+      expect(errored).toBe(true);
     },
   ));
 

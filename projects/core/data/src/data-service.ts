@@ -22,7 +22,7 @@
 
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService, NetworkStatusService} from '@dino/core/auth';
+import {AuthService, hasJwtAuthError, NetworkStatusService} from '@dino/core/auth';
 import {ConfigService} from '@dino/core/config';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
@@ -60,6 +60,7 @@ import {
   debounceTime,
   delay,
   distinctUntilChanged,
+  exhaustMap,
   filter,
   map,
   mapTo,
@@ -77,6 +78,7 @@ import {
 import {v4 as uuidv4} from 'uuid';
 
 import {ActiveSync} from './active-sync-interface';
+import {boundedRetry} from './bounded-retry';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {PermissionContextService} from './data-context-service';
 import {
@@ -393,11 +395,12 @@ export class DataService implements IDataService {
       this._initSync();
     }
 
+    // No artificial delay before asking for a new token: the refresh is
+    // single-flight in the auth service, so the collections reporting an
+    // expired JWT at the same time share one http call. exhaustMap drops the
+    // triggers arriving while a refresh is already running.
     this._refreshEvt
-      .pipe(
-        debounceTime(this._authService.authConfig.retryRefreshTime),
-        switchMap(() => this._authService.refreshToken()),
-      )
+      .pipe(exhaustMap(() => this._authService.refreshToken()))
       .subscribe();
 
     this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
@@ -717,7 +720,15 @@ export class DataService implements IDataService {
             }
             return obsOf(true);
           }),
-          retryWhen(err => err.pipe(delay(1000))),
+          // The db token may still be settling, so retry - but bounded, instead
+          // of looping forever. This waits on the local database, so a
+          // momentarily expired token must not abort the collection setup.
+          boundedRetry<boolean>({
+            count: 30,
+            delay: 1000,
+            label: `createCollection:${params.name}`,
+          }),
+          catchError(() => obsOf(false)),
         );
       }),
     );
@@ -1289,21 +1300,32 @@ export class DataService implements IDataService {
    */
   protected _initSync(): void {
     const collectionChange = this._registeredCollections.pipe(debounceTime(300));
-    combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
-      .pipe(withLatestFrom(this._authService.authenticated))
-      .subscribe(([[registeredCollections, token, isOnline], authEvt]) => {
+    // `authenticated` belongs in the combineLatest, not in a withLatestFrom: it
+    // is sampled to decide whether to sync, so the sync has to be reconsidered
+    // when it changes. Sampling it only made the outcome depend on the order in
+    // which the auth service emits its two subjects, and a state turning
+    // authenticated again would leave the replications stopped for good.
+    combineLatest([
+      collectionChange,
+      this._authService.authToken,
+      this._nss.isOnline$,
+      this._authService.authenticated,
+    ])
+      .subscribe(([registeredCollections, token, isOnline, authEvt]) => {
         const activeSyncsKeys = Object.keys(this._activeSyncs.getValue());
         if (authEvt.auth && token != null && isOnline) {
           const collectionNames: string[] = Object.values(this._activeSyncs.getValue()).map(
             coll => coll.collectionName,
           );
+          const tokenChanged = token != this._currentToken;
           // If the user is authenticated with a new token, a webSocket client is opened.
           // All collections graphql subscriptions will be sent through this client.
+          let wsClientRenewed = false;
           if (
             this._dataConfig.value.syncOptions.live &&
             this._dataConfig.value.syncOptions.url.ws != null &&
             token &&
-            token != this._currentToken
+            tokenChanged
           ) {
             this._wsClient = newClient(
               this._dataConfig.value.syncOptions.url.ws,
@@ -1311,11 +1333,19 @@ export class DataService implements IDataService {
               this._refreshEvt,
               this._dataConfig.value.syncOptions.socketJwtExpiredCode,
             );
+            wsClientRenewed = true;
           }
           registeredCollections.forEach(registeredCollection => {
             const {collection, ...params} = registeredCollection;
-            if (token != this._currentToken || collectionNames.indexOf(collection.name) < 0) {
+            if (collectionNames.indexOf(collection.name) < 0) {
               this._setupCollectionSync(collection, params, token);
+            } else if (tokenChanged) {
+              // Only the auth token changed: hand the new one to the running
+              // replication instead of tearing it down. Recreating it restarts
+              // the replication from its checkpoint, which re-pulls whole
+              // collections and can trigger a mass push - a heavy cycle to pay
+              // on every token renewal, now that renewal is pre-emptive.
+              this._updateCollectionSyncToken(collection, token, wsClientRenewed);
             }
           });
           activeSyncsKeys.forEach(collectionName => {
@@ -1368,9 +1398,11 @@ export class DataService implements IDataService {
         responseModifier: async function (
           plainResponse: RxDocumentData<any>[],
           _origin: any,
-          _requestCheckpoint: any,
+          requestCheckpoint: any,
         ) {
-          return pullResponseModifier(plainResponse);
+          // The requested checkpoint is forwarded so that an empty response keeps
+          // it, instead of rewinding the replication to the epoch.
+          return pullResponseModifier(plainResponse, requestCheckpoint);
         } as RxGraphQLPullResponseModifier<any, RxDocumentData<Model>>,
         batchSize: this.config.syncOptions.batchSizePull ?? DEFAULT_SYNC_OPTIONS.batchSizePull,
       },
@@ -1391,38 +1423,46 @@ export class DataService implements IDataService {
       if (isDevMode()) {
         console.dir(error);
       }
-      const jwtError = this._dataConfig.value.syncOptions.authErrorMessage || 'JWTExpired';
-      if (
-        error &&
-        error.parameters.errors &&
-        error.parameters.errors.length &&
-        error.parameters.errors[0].message
+      const errors = error?.parameters?.errors as any[] | undefined;
+      if (errors == null || !errors.length) {
+        return;
+      }
+      // Hasura flags every JWT rejection with `extensions.code: invalid-jwt`, while the
+      // message varies (JWTExpired, JWSInvalidSignature, ...). Matching the code as well
+      // as the configured message catches all of them, and looks at every error in the
+      // array instead of the first one only.
+      const configuredJwtError = this._dataConfig.value.syncOptions.authErrorMessage;
+      const isJwtError =
+        hasJwtAuthError({errors}) ||
+        (configuredJwtError != null &&
+          errors.some(
+            err => typeof err?.message === 'string' && err.message.includes(configuredJwtError),
+          ));
+      if (isJwtError) {
+        if (isDevMode()) {
+          console.log(errors.map(err => err?.message).join(' | '));
+        }
+        this._refreshEvt.emit();
+      } else if (
+        error.code === 'RC_PUSH' &&
+        errors[0]?.extensions?.code &&
+        String(errors[0].extensions.code).indexOf('constraint-violation') >= 0
       ) {
-        if (error.parameters.errors[0].message.indexOf(jwtError) >= 0) {
-          console.log(error.parameters.errors[0].message);
-          this._refreshEvt.emit();
-        } else if (
-          error.code === 'RC_PUSH' &&
-          (error.parameters.errors[0] as any).extensions &&
-          (error.parameters.errors[0] as any).extensions.code &&
-          (error.parameters.errors[0] as any).extensions.code.indexOf('constraint-violation') >= 0
-        ) {
-          if (actSyncs[collection.name].retrySyncAttempts !== -1) {
-            console.error(`Sync replication error: ${error}`);
-            const retrySyncAttempts =
-              actSyncs[collection.name].retrySyncAttempts !== undefined
-                ? 1 + actSyncs[collection.name].retrySyncAttempts!
-                : 1;
-            const maxAttempts: number = this.config.syncOptions.retrySyncMaxAttempts ?? 3;
-            if (retrySyncAttempts <= maxAttempts) {
-              this.syncErrorEvt.emit({collection: collection.name, retrySyncAttempts, error});
-            } else {
-              this.couldNotSyncEvt.emit({
-                collection: collection.name,
-                retrySyncAttempts: -1,
-                error,
-              });
-            }
+        if (actSyncs[collection.name].retrySyncAttempts !== -1) {
+          console.error(`Sync replication error: ${error}`);
+          const retrySyncAttempts =
+            actSyncs[collection.name].retrySyncAttempts !== undefined
+              ? 1 + actSyncs[collection.name].retrySyncAttempts!
+              : 1;
+          const maxAttempts: number = this.config.syncOptions.retrySyncMaxAttempts ?? 3;
+          if (retrySyncAttempts <= maxAttempts) {
+            this.syncErrorEvt.emit({collection: collection.name, retrySyncAttempts, error});
+          } else {
+            this.couldNotSyncEvt.emit({
+              collection: collection.name,
+              retrySyncAttempts: -1,
+              error,
+            });
           }
         }
       }
@@ -1472,6 +1512,47 @@ export class DataService implements IDataService {
     if (!isLive) {
       this.runSync(collection.name);
     }
+  }
+
+  /**
+   * Hands a renewed auth token to an already running collection sync, without
+   * restarting the replication.
+   * In live mode the graphql subscription is recreated, because it is bound to
+   * the websocket client that was opened with the previous token; the
+   * replication state, and therefore its checkpoint, is left untouched.
+   * @param collection The collection whose sync must use the new token.
+   * @param token The current JWT authorization token.
+   * @param wsClientRenewed True if the websocket client has just been replaced.
+   */
+  protected _updateCollectionSyncToken(
+    collection: RxCollection,
+    token: string,
+    wsClientRenewed: boolean,
+  ): void {
+    const actSyncs = this._activeSyncs.getValue();
+    const activeSync = actSyncs[collection.name];
+    if (activeSync == null) {
+      return;
+    }
+    activeSync.state.setHeaders({Authorization: `Bearer ${token}`});
+    if (isDevMode()) {
+      console.log(`${collection.name}: sync token renewed without restarting the replication`);
+    }
+    if (!wsClientRenewed) {
+      // Without a live subscription the recreated sync used to kick a run on
+      // every token change: keep that trigger, without the restart.
+      this.runSync(collection.name);
+      return;
+    }
+    activeSync.clientRequestSub.unsubscribe();
+    const query = subscriptionQueryBuilder(collection);
+    activeSync.clientRequestSub = newClientSubscription(this._wsClient, {query}).subscribe({
+      next: () => {
+        this.runSync(collection.name);
+      },
+      error: err => console.log('clientRequestSub err: ', err),
+    });
+    this._activeSyncs.next(actSyncs);
   }
 
   /**
