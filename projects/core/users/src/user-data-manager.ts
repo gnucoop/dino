@@ -28,9 +28,18 @@ import {
   DataModelManager,
   DataService,
   PermissionContextService,
+  boundedRetry,
 } from '@dino/core/data';
 import {Observable, of as obsOf} from 'rxjs';
-import {delay, map, retryWhen, shareReplay, skipWhile, switchMap, take, tap} from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  shareReplay,
+  skipWhile,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 
 import {migrationStrategies, UserData} from './user-data';
 import {schema} from './user-data-json';
@@ -113,11 +122,17 @@ export class UserDataManager extends DataModelManager<UserData> {
         }
         return ud;
       }),
-      retryWhen(err => err.pipe(delay(2000))),
+      // The user data may not be replicated yet, so retry - but bounded, instead
+      // of looping forever. This waits on the local database, so a momentarily
+      // expired token is no reason to give up.
+      boundedRetry<UserData>({label: 'getActiveUserData'}),
       tap(userData => {
         this.addToContext({user_data: userData});
       }),
       take(1),
+      // Giving up yields null: callers already handle a missing user data,
+      // whereas a hanging stream leaves the UI on a spinner.
+      catchError(() => obsOf(null)),
       shareReplay(1),
     );
   }

@@ -90,6 +90,8 @@ const authServiceMock = {
   resetEvt: of(false),
   logout: () => of(false),
   logoutEvt: new EventEmitter<void>(),
+  tokenRefreshedEvt: new EventEmitter<void>(),
+  hasValidAuthToken: () => true,
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
   authConfig: authServiceConfig,
 } as unknown as AuthService;
