@@ -95,6 +95,7 @@ export class AuthServiceMock {
   resetEvt: Observable<boolean> = obsOf(false);
   logoutEvt: EventEmitter<void> = new EventEmitter<void>();
   loginEvt: EventEmitter<void> = new EventEmitter<void>();
+  tokenRefreshedEvt: EventEmitter<void> = new EventEmitter<void>();
   constructor(private _router: Router) {
     this._router.events
       .pipe(
@@ -138,6 +139,12 @@ export class AuthServiceMock {
   }
   getAuthToken(): string | null {
     return localStorage.getItem(this._getAuthTokenLocaleStorageKey());
+  }
+  getRefreshToken(): string | null {
+    return 'test_refresh_token';
+  }
+  hasValidAuthToken(): boolean {
+    return true;
   }
   private _getAuthTokenLocaleStorageKey(): string {
     return this._authConfig.value.authTokenLocalStorageKey || DEFAULT_AUTH_OPTIONS.authTokenKey;

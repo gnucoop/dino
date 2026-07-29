@@ -3,7 +3,9 @@ import {RxCollection, RxDocumentData, RxJsonSchema, RxReplicationWriteToMasterRo
 import {DataServiceSyncOptions, Model} from './public_api';
 import {
   pullQueryBuilder,
+  pullResponseModifier,
   pushQueryBuilder,
+  startingPullCheckpoint,
   subscriptionQueryBuilder,
   syncOrderedCollections,
 } from './sync-utils';
@@ -137,6 +139,39 @@ describe('pushQueryBuilder', () => {
     const queryStr = (await getQueryString(query)).replace(/[\s]+/g, ' ');
     expect(queryStr).toEqual(pushQuery);
     expect(modifierSpy).toHaveBeenCalledWith(docs[0].newDocumentState);
+  });
+});
+
+describe('pullResponseModifier', () => {
+  const doc = (id: string, updated_at: string) => ({id, updated_at} as any);
+
+  it('should build the checkpoint from the last pulled document', () => {
+    const docs = [doc('a', '2026-07-01T10:00:00+00:00'), doc('b', '2026-07-02T10:00:00+00:00')];
+    const res = pullResponseModifier(docs);
+    expect(res.documents).toEqual(docs);
+    expect(res.checkpoint).toEqual({id: 'b', updated_at: '2026-07-02T10:00:00+00:00'});
+  });
+
+  it('should keep the requested checkpoint when nothing new was pulled', () => {
+    // Rewinding here would make the next pull re-download the whole collection.
+    const requested = {id: 'b', updated_at: '2026-07-02T10:00:00+00:00'};
+    const res = pullResponseModifier([], requested);
+    expect(res.documents).toEqual([]);
+    expect(res.checkpoint).toEqual(requested);
+  });
+
+  it('should fall back to the starting checkpoint on an empty first pull', () => {
+    expect(pullResponseModifier([]).checkpoint).toEqual(startingPullCheckpoint());
+    expect(pullResponseModifier([], null).checkpoint).toEqual(startingPullCheckpoint());
+    expect(pullResponseModifier([], {} as any).checkpoint).toEqual(startingPullCheckpoint());
+  });
+
+  it('should not rewind across repeated empty pulls', () => {
+    let checkpoint = pullResponseModifier([doc('a', '2026-07-01T10:00:00+00:00')]).checkpoint;
+    for (let i = 0; i < 5; i++) {
+      checkpoint = pullResponseModifier([], checkpoint).checkpoint;
+    }
+    expect(checkpoint).toEqual({id: 'a', updated_at: '2026-07-01T10:00:00+00:00'});
   });
 });
 

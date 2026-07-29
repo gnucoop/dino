@@ -27,9 +27,10 @@ import {
   DataService,
   PermissionContextService,
   PullQueryContextChecks,
+  boundedRetry,
 } from '@dino/core/data';
-import {delay, forkJoin, from, isObservable, map, Observable, of as obsOf, retryWhen} from 'rxjs';
-import {shareReplay} from 'rxjs/operators';
+import {forkJoin, from, isObservable, map, Observable, of as obsOf} from 'rxjs';
+import {catchError, shareReplay} from 'rxjs/operators';
 import {RxDocument} from 'rxdb';
 
 import {FormData, indexes, migrationStrategies} from './form-data';
@@ -234,7 +235,9 @@ export class FormDataManager extends DataModelManager<FormData> {
         }
         return permissions;
       }),
-      retryWhen(err => err.pipe(delay(2000))),
+      // Permissions land asynchronously, so retry - but a bounded number of
+      // times, otherwise a permanently missing context loops forever.
+      boundedRetry({label: 'hasAllowedFormStatus'}),
       map(permissions => {
         if (permissions == null) {
           return false;
@@ -260,6 +263,8 @@ export class FormDataManager extends DataModelManager<FormData> {
         }
         return allowedStatus;
       }),
+      // Giving up means "not allowed", never a broken stream.
+      catchError(() => obsOf(false)),
     );
   }
 

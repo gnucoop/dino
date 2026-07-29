@@ -1,7 +1,13 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {RxDocument} from 'rxdb';
-import {AuthenticationEvent, AuthServiceConfig, Credentials, User} from '@dino/core/auth';
+import {
+  AuthenticationEvent,
+  AuthEvt,
+  AuthServiceConfig,
+  Credentials,
+  User,
+} from '@dino/core/auth';
 import {PermissionContext, PermissionContextService} from '@dino/core/data';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
@@ -78,6 +84,7 @@ export class AuthServiceBackendless {
   }
   resetEvt: Observable<boolean> = obsOf(false);
   logoutEvt: Observable<boolean> = obsOf(false);
+  tokenRefreshedEvt: EventEmitter<void> = new EventEmitter<void>();
   constructor(private _router: Router) {
     this.config = authMockConfig;
     this._authConfig = new BehaviorSubject<AuthServiceConfig>(authMockConfig);
@@ -101,11 +108,20 @@ export class AuthServiceBackendless {
   getUserInfo(): User {
     return dummyUser;
   }
-  checkToken(): Observable<boolean> {
-    return obsOf(true);
+  checkToken(): Observable<{token: boolean; evt: AuthEvt}> {
+    return obsOf({token: true, evt: 'init'});
   }
   refreshToken(): Observable<boolean> {
     return obsOf(true);
+  }
+  getAuthToken(): string | null {
+    return 'test_auth_token';
+  }
+  getRefreshToken(): string | null {
+    return 'test_refresh_token';
+  }
+  hasValidAuthToken(): boolean {
+    return true;
   }
 }
 
