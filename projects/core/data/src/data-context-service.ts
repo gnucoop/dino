@@ -23,7 +23,8 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {AuthService, DinoUserInfo, User} from '@dino/core/auth';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {delay, distinctUntilKeyChanged, filter, map, retryWhen} from 'rxjs/operators';
+import {catchError, distinctUntilKeyChanged, filter, map} from 'rxjs/operators';
+import {boundedRetry} from './bounded-retry';
 import {PermissionContext, PermissionContextDataUpdate} from './data-permission-interface';
 import {MetricsService} from './metrics.service';
 
@@ -197,7 +198,12 @@ export class PermissionContextService {
         }
         return permissions;
       }),
-      retryWhen(err => err.pipe(delay(2000))),
+      // Permissions land asynchronously, so retry - but a bounded number of
+      // times, instead of looping forever. The attempt count is the only bound:
+      // this waits on local state, and giving up early on a momentarily expired
+      // token would report "no action allowed" exactly while the token is being
+      // renewed.
+      boundedRetry({label: 'getAllowedActions'}),
       map(permissions => {
         if (permissions == null) {
           return [];
@@ -244,6 +250,8 @@ export class PermissionContextService {
         }
         return uniqueActions;
       }),
+      // Giving up means "no action allowed", never a broken stream.
+      catchError(() => obsOf([] as string[])),
     );
   }
 
