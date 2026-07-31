@@ -17,14 +17,14 @@ The table displays the following columns:
 - **ID** – internal identifier (hidden by default).
 - **Creation Date** – when the group was created (hidden by default).
 
-You can customize which columns appear by clicking the **view_week** icon in the table header.
+You can customize which columns appear by clicking the **column view** icon (also called **hotdog** icon by software prgrammers!) in the right side of the table header.
 
 ## Searching and filtering
 
 Use the **search bar** at the top of the page to filter groups by keyword. The **Filters** panel (expandable) lets you narrow the list by:
 
 - Date range (from/to)
-- Project, location, area, case, organization, and other available filters
+- Any metric type defined in your deployment, i.e. one or more of the following: Project, Location, Area, Case, Organization
 
 You can also save and load filter presets using the preset manager.
 
@@ -32,23 +32,22 @@ You can also save and load filter presets using the preset manager.
 
 Each row has three action icons on the right:
 
-- **visibility** – View group details (opens the editor in read‑only mode)
-- **create** – Edit group properties
-- **delete** – Remove the group (confirmation required)
+- **View** – View group details (opens the editor in read‑only mode)
+- **Edit** – Edit group properties
+- **Delete** – Remove the group (confirmation required)
 
-Clicking a row expands a detail section that shows additional information or nested items (if any).
 
 ## Creating a new group
 
 1. Click the **+** floating button at the bottom right of the screen.
-2. In the editor dialog that opens, enter a **Group name**.
-3. In the **Available items** panel, navigate through the tabs to select:
+2. In the editor dialog that opens, enter a **Group name** (required).
+3. Navigate through the tabs to select:
     - **User role** (required – you must pick exactly one role)
     - **Form schemas**
-    - **Report schemas**
     - **Form statuses**
-    - Metric types (Area, Case, Project, Location, Organization) – if active
-4. Click the **add** icon next to each item to move it to the **Group items** panel.
+    - **Report schemas**
+    - **Metric types** (all types active for your deployment: Area, Case, Project, Location, Organization) – if active
+4. In the **available items** dialog on the right side, select one or more items by clicking the **add** icon next to each item to move it to the **Group items** panel.
 5. Click **Save**.
 
 !!! tip "All option"
@@ -56,7 +55,7 @@ Clicking a row expands a detail section that shows additional information or nes
 
 ## Editing or viewing a group
 
-1. In the table, click the **create** (edit) or **visibility** (view) icon for the group you want to modify.
+1. In the table, click the **Edit** (edit) or **View** (view) icon for the group you want to modify.
 2. In the editor dialog, you can:
     - Change the **Group name**.
     - Add or remove items from any tab (only in edit mode).
