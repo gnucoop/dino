@@ -5,16 +5,14 @@ description: An introduction to Dino — what it is, who it is for, and how to n
 
 # Welcome to Dino
 
-Dino is a web-based platform for structured data collection, monitoring, and analysis. It gives teams a single place to design forms, gather information from the field, track progress, and explore results — whether you are online or working in low-connectivity environments.
-
-
+Dino is a web-based platform for structured data collection, monitoring, and analysis. It gives teams a single place to design data collection forms, gather information from the field, track progress, and explore results — whether you are online or working in low-connectivity environments.
 
 ---
 
 ## What You Can Do with Dino
 
 ### Collect and Manage Data
-Design form schemas and use them to record information. View and manage all your data from the main [Dashboard](dashboard/index.md). You can create, edit, and organize your data collection tools.
+Design the structure of forms, called form schemas, and use them to record information. View and manage all your data from the main [Dashboard](dashboard/index.md). You can create, edit, and organize your data collection tools.
 
 *   [View and Manage Forms](forms/index.md)
 *   [Design a Form Schema](forms/edit-form-schema.md)
@@ -31,10 +29,11 @@ Turn your collected data into insights. Create custom reports and use AI to ask 
 *   [Chat with Your Data](forms/datachat.md)
 *   [Aggregate Data](aggregation/index.md)
 
-### Monitor and Measure
-Track key performance indicators and monitor specific entities such as areas, cases, locations, organizations, and projects.
+### Tag your data
+Assign tags of predefined types - called metrics - to your data, in order to allow data segregation (through access permissions), data aggregation and the creation of relationships between forms. 
+Predefined metrics types are: areas, cases, locations, organizations, and projects.
 
-*   [View Metrics](metrics/index.md)
+*   [Metrics Overview](metrics/index.md)
 *   [Manage Thematic Areas](metrics/areas.md)
 *   [Manage Cases](metrics/cases.md)
 *   [Manage Locations](metrics/locations.md)
@@ -52,7 +51,7 @@ Receive in-app notifications and manage platform access for your team.
 *   [Explore the Interface](interface/index.md)
 
 ### Share and Extend
-Share forms publicly or use advanced AI features for data tasks.
+Share forms publicly.
 
 *   [Fill In a Public Form](public-forms/index.md)
 
