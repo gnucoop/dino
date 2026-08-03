@@ -1,6 +1,6 @@
 ---
 title: Informes
-description: Una descripción general del área de Informes en Dino: cómo encontrar esquemas de informe y acceder a tus informes.
+description: "Una descripción general del área de Informes en Dino: cómo encontrar esquemas de informe y acceder a tus informes."
 ---
 
 # Informes

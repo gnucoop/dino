@@ -95,8 +95,52 @@ export function fixListSpacing(content) {
 }
 
 /**
+ * Quote YAML frontmatter values that would otherwise fail to parse.
+ *
+ * Translations routinely turn an English dash into a colon ("An overview of X —
+ * the toolbar" → "Una panoramica di X: la barra"), and an unquoted ": " inside a
+ * value is a YAML syntax error. MkDocs reacts by silently discarding the whole
+ * frontmatter: the page loses its `title` and `description` (so the browser tab
+ * shows only the site name and the meta description disappears) and the raw
+ * `title: ... description: ...` block renders as a paragraph.
+ *
+ * Only values that actually need it are touched, and already-quoted values are
+ * left alone, so this is idempotent and returns valid frontmatter unchanged.
+ *
+ * @param {string} content
+ * @returns {string}
+ */
+export function quoteFrontmatterValues(content) {
+  if (!content) return content;
+
+  const m = /^---\n([\s\S]*?)\n---(\n|$)/.exec(content);
+  if (!m) return content;
+
+  // A bare value breaks (or changes) the parse when it contains ": " or " #", or
+  // opens with a YAML indicator character.
+  const needsQuoting = v => !/^["']/.test(v) && (/:\s/.test(v) || /\s#/.test(v) || /^[[\]{}&*!|>%@`]/.test(v));
+
+  const body = m[1];
+  const fixed = body
+    .split('\n')
+    .map(line => {
+      const kv = /^([A-Za-z_][\w-]*):[ \t]+(.*\S)[ \t]*$/.exec(line);
+      if (!kv) return line;
+      const [, key, value] = kv;
+      if (!needsQuoting(value)) return line;
+      return `${key}: "${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+    })
+    .join('\n');
+
+  if (fixed === body) return content;
+  const start = 4; // past the opening "---\n"
+  return content.slice(0, start) + fixed + content.slice(start + body.length);
+}
+
+/**
  * Strip code-fence wrappers the model may have added around generated Markdown,
- * then normalize list spacing (see fixListSpacing).
+ * quote frontmatter values that would break the YAML parse (see
+ * quoteFrontmatterValues), then normalize list spacing (see fixListSpacing).
  * @param {string} raw - raw model output
  * @returns {string} sanitized Markdown (always ends with a single trailing newline)
  */
@@ -110,7 +154,7 @@ export function sanitizeGenerated(raw) {
   // spacing (a rendering defect even on otherwise well-formed files). A file
   // that needs no list fix is returned byte-for-byte unchanged.
   if (lines.length === 0 || !isFence(lines[0])) {
-    return fixListSpacing(raw);
+    return fixListSpacing(quoteFrontmatterValues(raw));
   }
 
   // Drop the bogus opening fence.
@@ -132,7 +176,7 @@ export function sanitizeGenerated(raw) {
     }
   }
 
-  return fixListSpacing(lines.join('\n').trim() + '\n');
+  return fixListSpacing(quoteFrontmatterValues(lines.join('\n').trim() + '\n'));
 }
 
 /**

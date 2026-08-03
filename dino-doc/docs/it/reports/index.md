@@ -1,6 +1,6 @@
 ---
 title: Report
-description: Una panoramica dell'area Report in Dino: come trovare gli schemi di report e accedere ai tuoi report.
+description: "Una panoramica dell'area Report in Dino: come trovare gli schemi di report e accedere ai tuoi report."
 ---
 
 # Report

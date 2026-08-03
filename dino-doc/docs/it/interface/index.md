@@ -1,6 +1,6 @@
 ---
 title: Navigazione e interfaccia
-description: Una panoramica della struttura dell'applicazione Dino: barra degli strumenti, navigazione laterale, notifiche, sincronizzazione dei dati e area utente.
+description: "Una panoramica della struttura dell'applicazione Dino: barra degli strumenti, navigazione laterale, notifiche, sincronizzazione dei dati e area utente."
 ---
 
 # Navigazione e interfaccia
