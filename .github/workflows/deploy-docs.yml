@@ -7,22 +7,23 @@ name: Deploy Docs
 # only uses the workflow version present on the default branch.
 
 # on:
-#   push:
-#     branches:
-#       - feat-mkdocs
+#   workflow_run:
+#     workflows: ['CI']
+#     types:
+#       - completed
 # jobs:
 #   docs:
+#     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 #     runs-on: ubuntu-latest
 
 on:
-  workflow_run:
-    workflows: ['CI']
-    types:
-      - completed
+  push:
+    branches:
+      - doc-revision
 jobs:
   docs:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
 
@@ -91,12 +92,17 @@ jobs:
             --headless
 
       # ------------------------
-      # Generate Markdown docs (Claude)
+      # Generate Markdown docs
       # ------------------------
+      # Base URL and model must be passed explicitly: without them the script
+      # falls back to its own defaults and CI ends up generating against a
+      # different provider than local runs do.
       - name: Generate docs
         run: node dino-doc/scripts/docs-generate.mjs
         env:
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
 
       # ------------------------
       # Python + MkDocs
