@@ -44,15 +44,15 @@ La barra de herramientas de la parte superior de la pantalla contiene los siguie
 - **Alternar menú** — abrir o contraer el menú lateral.
 - **Logotipo** — muestra el logotipo de su organización.
 - **Indicador de nueva versión** — aparece un icono de descarga cuando hay una nueva versión de Dino disponible. Haga clic en él para recargar la aplicación y aplicar la actualización.
-- **Créditos DINO-AI** — muestra su saldo restante de créditos de IA como una insignia. Haga clic para abrir el [Área de usuario](#user-area) en el panel de Créditos. *(Solo visible si se ha configurado una clave API de DINO-AI).*
+- **Créditos DINO-AI** — muestra su saldo restante de créditos de IA como una insignia. Haga clic para abrir el [Área de usuario](#área-de-usuario) en el panel de Créditos. *(Solo visible si se ha configurado una clave API de DINO-AI).*
 - **Alternador de modo oscuro / claro** — un icono de sol, un control deslizante y un icono de luna. Use el control deslizante para alternar entre los temas claro y oscuro. *(Oculto en móvil; use el Área de usuario en su lugar).*
 - **Icono de información** — pase el cursor para ver la información de versión de esta instalación.
 - **Icono de ayuda** — abre la lista de reproducción de tutoriales de Dino en una nueva pestaña.
-- **Icono de configuración** — abre el [Área de usuario](#user-area).
+- **Icono de configuración** — abre el [Área de usuario](#área-de-usuario).
 - **Icono de sincronización** — muestra el estado actual de sincronización de datos. Haga clic para activar una sincronización manual.
-- **Campana de notificaciones** — muestra el número de notificaciones no leídas como una insignia. La campana suena cuando llegan nuevas notificaciones. Consulte [Notificaciones](#notifications) a continuación.
+- **Campana de notificaciones** — muestra el número de notificaciones no leídas como una insignia. La campana suena cuando llegan nuevas notificaciones. Consulte [Notificaciones](#notificaciones) a continuación.
 - **Selector de idioma** — cambie el idioma de la interfaz.
-- **Nombre de usuario** — haga clic para abrir el [Área de usuario](#user-area).
+- **Nombre de usuario** — haga clic para abrir el [Área de usuario](#área-de-usuario).
 - **Icono de cerrar sesión** — haga clic para cerrar sesión. El icono aparece atenuado mientras hay una sincronización en curso o cuando el dispositivo está sin conexión; en esos estados no se puede cerrar sesión.
 
 ---

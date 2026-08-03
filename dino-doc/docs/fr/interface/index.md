@@ -44,15 +44,15 @@ La barre d'outils en haut de l'écran contient les commandes suivantes, de gauch
 - **Basculer le menu** — ouvrir ou replier le menu latéral.
 - **Logo** — affiche le logo de votre organisation.
 - **Indicateur de nouvelle version** — une icône de téléchargement apparaît lorsqu'une nouvelle version de Dino est disponible. Cliquez dessus pour recharger l'application et appliquer la mise à jour.
-- **Crédits DINO-AI** — affiche votre solde de crédits IA restant sous forme de badge. Cliquez pour ouvrir la [Zone utilisateur](#user-area) sur le panneau Crédits. *(Visible uniquement si une clé API DINO-AI a été configurée.)*
+- **Crédits DINO-AI** — affiche votre solde de crédits IA restant sous forme de badge. Cliquez pour ouvrir la [Zone utilisateur](#zone-utilisateur) sur le panneau Crédits. *(Visible uniquement si une clé API DINO-AI a été configurée.)*
 - **Bascule mode sombre / clair** — une icône de soleil, un curseur et une icône de lune. Utilisez le curseur pour passer du thème clair au thème sombre. *(Masqué sur mobile — utilisez plutôt la Zone utilisateur.)*
 - **Icône d'information** — survolez pour afficher les informations de version de cette installation.
 - **Icône d'aide** — ouvre la playlist de tutoriels Dino dans un nouvel onglet.
-- **Icône de paramètres** — ouvre la [Zone utilisateur](#user-area).
+- **Icône de paramètres** — ouvre la [Zone utilisateur](#zone-utilisateur).
 - **Icône de synchronisation** — affiche l'état actuel de la synchronisation des données. Cliquez pour déclencher une synchronisation manuelle.
 - **Cloche de notifications** — affiche le nombre de notifications non lues sous forme de badge. La cloche sonne lorsque de nouvelles notifications arrivent. Voir [Notifications](#notifications) ci-dessous.
 - **Sélecteur de langue** — change la langue de l'interface.
-- **Nom d'utilisateur** — cliquez pour ouvrir la [Zone utilisateur](#user-area).
+- **Nom d'utilisateur** — cliquez pour ouvrir la [Zone utilisateur](#zone-utilisateur).
 - **Icône de déconnexion** — cliquez pour vous déconnecter. L'icône est grisée pendant une synchronisation en cours ou lorsque l'appareil est hors ligne ; la déconnexion n'est pas disponible dans ces états.
 
 ---
