@@ -17,7 +17,7 @@ The table displays the following columns:
 - **ID** – internal identifier (hidden by default).
 - **Creation Date** – when the group was created (hidden by default).
 
-You can customize which columns appear by clicking the **column view** icon (also called **hotdog** icon by software prgrammers!) in the right side of the table header.
+You can customize which columns appear by clicking the **View Columns** icon (also called **hotdog** icon by software prgrammers!) in the right side of the table header.
 
 ## Searching and filtering
 
