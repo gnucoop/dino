@@ -13,5 +13,7 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="close()">{{'Undo'|transloco}}</button>
-  <button mat-button  (click)="save()"cdkFocusInitial>{{'Save'|transloco}}</button>
+  <button mat-button [disabled]="form.invalid" (click)="save()" cdkFocusInitial>
+    {{'Save'|transloco}}
+  </button>
 </div>
