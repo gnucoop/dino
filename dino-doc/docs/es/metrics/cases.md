@@ -1,89 +1,89 @@
 ---
 title: Casos
-description: Gestione casos en Dino: cree, edite, vea, filtre, exporte y organice registros de casos con una tabla de datos estructurada.
+description: Gestiona casos en Dino: crea, edita, visualiza, filtra, exporta y organiza registros de casos con una tabla de datos estructurada.
 ---
 
 # Casos
 
-La página de Casos le ofrece un espacio de trabajo centralizado para hacer seguimiento y gestionar casos individuales. Cada caso es un registro estructurado que puede contener un nombre, código, imagen, relación con un caso padre, notas y atributos adicionales. Puede crear nuevos casos, editar los existentes, ver detalles, eliminar registros y exportar su lista de casos, todo desde una única tabla interactiva.
+La página de Casos te ofrece un espacio de trabajo centralizado para hacer seguimiento y gestionar casos individuales. Cada caso es un registro estructurado que puede contener un nombre, código, imagen, relación con el caso padre, notas y atributos adicionales. Puedes crear casos nuevos, editar los existentes, ver detalles, eliminar registros y exportar tu lista de casos, todo desde una única tabla interactiva.
 
-![Vista principal de la página de Casos](../imgs/metrics/cases.png)
+![Main view of the Cases page](../imgs/metrics/cases.png)
 
 ## Resumen de la tabla
 
-La tabla principal muestra por defecto las siguientes columnas:
+La tabla principal muestra las siguientes columnas de forma predeterminada:
 
-- **Nombre del caso** – El nombre que asigna al caso (ordenable).
+- **Nombre del caso** – El nombre que asignas al caso (ordenable).
 - **Código** – Un código generado por el sistema o asignado manualmente (solo lectura después de la creación).
 - **Imagen del caso** – Un archivo de imagen subido que representa el caso.
-- **Caso padre** – El nombre del caso padre al que pertenece este caso.
+- **Caso padre** – El nombre de cualquier caso padre al que pertenezca este caso.
 
-Otras columnas (como **ID**, **Notas**, **Fecha de creación** y **Atributos adicionales**) están ocultas por defecto. Puede personalizar qué columnas aparecen haciendo clic en el botón **Personalizar columnas** (icono de ojo) en el encabezado de la tabla.
+Las columnas adicionales (como **ID**, **Notas**, **Fecha de creación** y **Atributos adicionales**) están ocultas de forma predeterminada. Puedes personalizar qué columnas aparecen haciendo clic en el botón **Personalizar columnas** (icono de ojo) en el encabezado de la tabla.
 
 ## Acciones sobre un caso individual
 
-A la derecha de cada fila encontrará iconos para las siguientes acciones:
+En el lado derecho de cada fila encontrarás iconos para las siguientes acciones:
 
 - **Editar** – Abre un diálogo para modificar los detalles del caso.
 - **Imprimir** – Genera una tarjeta PDF imprimible para el caso.
 - **Ver** – Abre un diálogo de solo lectura para inspeccionar la información del caso.
-- **Eliminar** – Abre un diálogo de confirmación para eliminar permanentemente el caso.
+- **Eliminar** – Abre un diálogo de confirmación para eliminar el caso de forma permanente.
 
-Si algunas acciones están ocultas, haga clic en el icono **Más** (tres puntos verticales) para ver todas las acciones disponibles.
+Haz clic en el icono **Más** (tres puntos verticales) para ver todas las acciones disponibles si algunas están ocultas.
 
 ## Acciones masivas
 
-Seleccione varios casos usando las casillas de verificación de la primera columna. Cuando haya al menos un caso seleccionado, aparecerá un botón **Eliminar** en la parte superior de la tabla. Puede eliminar todos los casos seleccionados a la vez.
+Selecciona varios casos usando las casillas de verificación de la primera columna. Cuando hay al menos un caso seleccionado, aparece un botón **Eliminar** en la parte superior de la tabla. Puedes eliminar todos los casos seleccionados a la vez.
 
 !!! warning "La eliminación masiva es permanente"
-    Los casos eliminados no se pueden recuperar. Utilice la eliminación masiva con cuidado.
+    Los casos eliminados no se pueden recuperar. Usa la acción de eliminación masiva con cuidado.
 
-## Crear un nuevo caso
+## Crear un caso nuevo
 
-1. Haga clic en el botón flotante **Añadir nuevo** (icono de signo más) en la parte inferior derecha de la página.
-2. Se abrirá un diálogo. Complete los campos obligatorios:
-   - **Nombre del caso** – Ingrese un nombre descriptivo.
-   - **Código** – (Opcional) Proporcione un código único. Este campo es de solo lectura después de la creación.
-   - **Imagen del caso** – Suba un archivo de imagen.
-   - **Caso padre** – Opcionalmente, vincule este caso a un caso padre existente.
-   - **Notas** – Agregue cualquier nota relevante.
-3. Haga clic en **Guardar** para crear el caso.
+1. Haz clic en el botón de acción flotante **Añadir nuevo** (icono de más) en la parte inferior derecha de la página.
+2. Se abrirá un diálogo. Completa los campos obligatorios:
+   - **Nombre del caso** – Introduce un nombre descriptivo.
+   - **Código** – (Opcional) Proporciona un código único. Este campo es de solo lectura después de la creación.
+   - **Imagen del caso** – Sube un archivo de imagen.
+   - **Caso padre** – Opcionalmente, vincula este caso a un caso padre existente.
+   - **Notas** – Añade cualquier nota relevante.
+3. Haz clic en **Guardar** para crear el caso.
 
 ## Importar casos
 
-Use el botón flotante **Importar** (icono de carga en la nube) para subir casos en lote desde un archivo. Los formatos admitidos los define el administrador del sistema.
+Usa el botón de acción flotante **Importar** (icono de subida a la nube) para cargar casos de forma masiva desde un archivo. Los formatos admitidos los define el administrador del sistema.
 
 ## Filtrar y buscar
 
-La barra de búsqueda en la parte superior le permite filtrar casos por:
+La barra de búsqueda en la parte superior te permite filtrar casos por:
 
 - **Palabra clave** – Busca en todos los campos mostrados.
-- **Rango de fechas** – Filtrar por fecha de creación (Desde / Hasta).
-- **Filtros adicionales** – Seleccione entre filtros predefinidos como métrica, estado, usuario o grupo de usuarios.
+- **Rango de fechas** – Filtra por fecha de creación (Desde / Hasta).
+- **Filtros adicionales** – Selecciona entre filtros predefinidos como métrica, estado, usuario o grupo de usuarios.
 
-Después de aplicar filtros, puede guardar la combinación como un **preset** para reutilizarla rápidamente. Para guardar un preset:
+Después de aplicar filtros, puedes guardar la combinación como un **preajuste** para reutilizarla rápidamente. Para guardar un preajuste:
 
-1. Abra el panel de filtros.
-2. Ingrese un nombre en el campo de preset.
-3. Haga clic en **Guardar**.  
-Para aplicar un preset guardado, selecciónelo de la lista y haga clic en **Aplicar**.
+1. Abre el panel de filtros.
+2. Introduce un nombre en el campo de preajuste.
+3. Haz clic en **Guardar**.  
+Para aplicar un preajuste guardado, selecciónalo de la lista y haz clic en **Aplicar**.
 
 ## Exportar casos
 
-Haga clic en el botón **Exportar** (icono de descarga en la nube) en la barra de filtros. Elija el formato de exportación (por ejemplo, CSV o Excel) y seleccione qué columnas incluir. El archivo exportado contendrá todos los casos visibles en ese momento, respetando los filtros activos.
+Haz clic en el botón **Exportar** (icono de descarga desde la nube) en la barra de filtros. Elige el formato de exportación (p. ej., CSV o Excel) y selecciona qué columnas incluir. El archivo exportado contendrá todos los casos visibles actualmente, respetando los filtros activos.
 
 ## Personalizar la tabla
 
-- **Ordenar** – Haga clic en el encabezado de cualquier columna ordenable (por ejemplo, **Nombre del caso**, **Fecha de creación**) para ordenar la tabla.
-- **Selector de columnas** – Abra el diálogo del selector de columnas para mostrar u ocultar columnas.
-- **Expandir filas** – Algunos casos pueden tener subelementos (otros casos vinculados como detalles). Haga clic en una fila para expandirla y ver los registros relacionados.
+- **Ordenar** – Haz clic en cualquier encabezado de columna ordenable (p. ej., **Nombre del caso**, **Fecha de creación**) para ordenar la tabla.
+- **Selector de columnas** – Abre el diálogo del selector de columnas para mostrar u ocultar columnas.
+- **Expandir filas** – Algunos casos pueden tener subelementos (otros casos vinculados como detalles). Haz clic en una fila para expandirla y ver los registros relacionados.
 
-La página también muestra una **migaja de pan** en la parte superior para que pueda volver a la sección principal de Métricas.
+La página también muestra una **ruta de migas de pan** en la parte superior para que puedas volver a la sección principal de Métricas.
 
 ## Páginas relacionadas
 
-- [Resumen de Métricas](index.md) – Regrese al panel principal de métricas.
-- [Áreas temáticas](areas.md) – Organice casos por área temática.
-- [Ubicaciones](locations.md) – Asocie casos con ubicaciones geográficas.
-- [Organizaciones](organizations.md) – Vincule casos con organizaciones.
-- [Proyectos](projects.md) – Agrupe casos en proyectos.
+- [Resumen de métricas](index.md) – Vuelve al panel principal de métricas.
+- [Áreas temáticas](areas.md) – Organiza los casos por área temática.
+- [Ubicaciones](locations.md) – Asocia casos con ubicaciones geográficas.
+- [Organizaciones](organizations.md) – Vincula casos a organizaciones.
+- [Proyectos](projects.md) – Agrupa casos en proyectos.

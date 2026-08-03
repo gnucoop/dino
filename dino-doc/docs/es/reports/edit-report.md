@@ -1,50 +1,50 @@
 ---
-title: Editar Informe
-description: Aprenda a editar un informe existente en Dino, incluyendo la actualización de métricas y detalles.
+title: Editar informe
+description: Aprende a editar un informe existente en Dino, incluida la actualización de métricas y detalles.
 ---
 
-# Editar Informe
+# Editar informe
 
-La página Editar Informe le permite modificar un informe existente. Puede actualizar sus métricas, detalles y otra información después de haber sido creado.
+La página Editar informe te permite modificar un informe existente. Puedes actualizar sus métricas, detalles y otra información después de que se haya creado.
 
 ![Main view of the Edit Report page](../imgs/reports/edit-report.png)
 
-## Acceso a la Página de Edición
+## Acceso a la página de edición
 
-Puede navegar a la página Editar Informe de dos maneras:
+Puedes navegar a la página Editar informe de dos maneras:
 
-* Desde la lista principal de [Informes](index.md), haga clic en el título de un informe o en la acción **Editar** (a menudo representada por un icono de lápiz).
-* Desde la vista detallada de un informe (después de hacer clic en **Ver el Informe**), busque un botón o enlace **Editar**.
+* Desde la lista principal de [Informes](index.md), haz clic en el título de un informe o en la acción **Editar** (a menudo representada por un icono de lápiz).
+* Desde la vista detallada de un informe (después de hacer clic en **Ver el informe**), busca un botón o enlace de **Editar**.
 
-## Editar Información del Informe
+## Edición de la información del informe
 
-Una vez en la página Editar Informe, verá un formulario similar al utilizado para crear un informe. El formulario está rellenado previamente con los datos actuales del informe.
+Una vez en la página Editar informe, verás un formulario similar al que se usa para crear un informe. El formulario se rellena previamente con los datos actuales del informe.
 
-### Pasos para Editar un Informe
+### Pasos para editar un informe
 
-1. **Revise los datos previamente rellenados** en los campos del formulario.
-2. **Realice sus cambios** en cualquiera de los campos disponibles:
-   - **Métricas Principales:** Actualice los valores numéricos principales del informe.
-   - **Métricas Secundarias:** Edite puntos de datos adicionales (si están configurados en su esquema de formulario).
-   - **Detalles:** Modifique texto descriptivo, fechas u otra información de apoyo.
-3. **Guarde sus cambios** haciendo clic en el botón **Guardar** o **Actualizar** en la parte inferior del formulario.
+1. **Revisa los datos pre-rellenados** en los campos del formulario.
+2. **Realiza los cambios** en cualquiera de los campos disponibles:
+   - **Métricas principales:** Actualiza los valores numéricos principales del informe.
+   - **Métricas secundarias:** Edita puntos de datos adicionales (si están configurados en el esquema del formulario).
+   - **Detalles:** Modifica texto descriptivo, fechas u otra información complementaria.
+3. **Guarda los cambios** haciendo clic en el botón **Guardar** o **Actualizar** en la parte inferior del formulario.
 
-!!! tip "Campos Opcionales"
-    Dependiendo de la configuración de su organización, algunos campos de métricas pueden ser opcionales. Por lo general, están marcados en consecuencia. Puede dejar los campos opcionales en blanco si no hay datos disponibles.
+!!! tip "Campos opcionales"
+    Dependiendo de la configuración de tu organización, algunos campos de métricas pueden ser opcionales. Por lo general, están marcados en consecuencia. Puedes dejar los campos opcionales en blanco si no hay datos disponibles.
 
-## Visualización del Informe Renderizado
+## Visualización del informe renderizado
 
-Después de guardar sus cambios, puede ver el informe formateado. Haga clic en el botón o enlace **Ver el Informe** para ver una versión limpia y renderizada de los datos del informe.
+Después de guardar los cambios, puedes ver el informe formateado. Haz clic en el botón o enlace **Ver el informe** para ver una versión limpia y renderizada de los datos del informe.
 
 ![Rendered report view after clicking View the Report](../imgs/reports/edit-report-view.png)
 
-## Comprensión del Esquema del Formulario
+## Entendiendo el esquema del formulario
 
-La estructura y los campos disponibles en la página Editar Informe están determinados por el **esquema de formulario** configurado por su administrador. Esto garantiza que los datos se recopilen de manera consistente.
+La estructura y los campos disponibles en la página Editar informe están determinados por el **esquema del formulario** configurado por tu administrador. Esto garantiza que los datos se recopilen de manera consistente.
 
 ![Main view of the Edit Report Schema page](../imgs/reports/edit-report-schema.png)
 
-Si necesita editar información que no aparece como campo, contacte a su administrador – es posible que sea necesario actualizar el esquema del formulario. Puede obtener más información sobre la estructura subyacente en la documentación de [Esquema de Edición de Informes](edit-report-schema.md).
+Si necesitas editar información que no aparece como campo, ponte en contacto con tu administrador: es posible que el esquema del formulario deba actualizarse. Puedes obtener más información sobre la estructura subyacente en la documentación de [Esquema de edición de informes](edit-report-schema.md).
 
-!!! warning "Integridad de los Datos"
-    Tenga cuidado al editar datos históricos del informe, ya que los cambios pueden afectar el análisis de tendencias y los registros históricos. Asegúrese de que sus actualizaciones sean precisas.
+!!! warning "Integridad de los datos"
+    Ten cuidado al editar datos históricos de informes, ya que los cambios pueden afectar el análisis de tendencias y los registros históricos. Asegúrate de que tus actualizaciones sean precisas.

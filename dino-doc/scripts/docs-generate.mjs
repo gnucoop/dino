@@ -68,7 +68,11 @@ if (!ANTHROPIC_AUTH_TOKEN) {
 
 const ANTHROPIC_BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined;
 const CLAUDE_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
-const MAX_TOKENS = 4096;
+// Sized so a whole page fits in a single response. A translation costs
+// noticeably more tokens than its English source — non-Latin scripts (uk, ar)
+// worst of all — so a cap tuned to the English length truncates every large
+// page. 16k stays well under the HTTP timeout for non-streaming requests.
+const MAX_TOKENS = 16000;
 // A single response can hit the MAX_TOKENS cap and stop mid-document. We resume
 // via continuation turns; this bounds how many times, so a page that keeps
 // truncating fails loudly instead of looping forever.

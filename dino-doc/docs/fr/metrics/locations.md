@@ -1,75 +1,75 @@
 ---
-title: Emplacements
-description: Gérez les emplacements géographiques utilisés dans l'ensemble des métriques et formulaires Dino.
+title: Lieux
+description: Gérez les lieux géographiques utilisés dans les métriques et les formulaires Dino.
 ---
 
-# Emplacements
+# Lieux
 
-La page **Emplacements** vous permet de gérer les emplacements géographiques référencés par vos formulaires, cas et autres métriques. Vous pouvez ajouter de nouveaux emplacements, modifier des entrées existantes, importer des données en masse et exporter la liste actuelle.
+La page **Lieux** vous permet de gérer les lieux géographiques référencés par vos formulaires, dossiers et autres métriques. Vous pouvez ajouter de nouveaux lieux, modifier des entrées existantes, importer des données en masse et exporter la liste actuelle.
 
-![Vue principale de la page Emplacements](../imgs/metrics/locations.png)
+![Vue principale de la page Lieux](../imgs/metrics/locations.png)
 
 ## Ce que vous voyez
 
-- **Fil d'Ariane** – indique votre position actuelle dans la navigation.
-- **Recherche et filtres** – recherche par mot-clé, sélecteur de plage de dates et filtres avancés configurables (par exemple, par métrique, statut, utilisateur). Vous pouvez également enregistrer et charger des préréglages de filtres.
-- **Tableau** – affiche par défaut le Nom de l'emplacement et l'Emplacement parent. Les colonnes masquées (ID, Date de création, Coordonnées, Attributs supplémentaires) peuvent être affichées via le bouton **Personnaliser les colonnes** (en bas à droite de l'en-tête du tableau).
-- **Pagination** – contrôles pour naviguer entre les pages.
-- **Actions groupées** – sélectionnez des lignes à l'aide des cases à cocher pour supprimer ou modifier plusieurs emplacements à la fois.
-- **Boutons d'action flottants** – **Ajouter nouveau** (icône plus) et **Importer** (icône de téléchargement cloud) restent disponibles pendant le défilement.
+- **Fil d’Ariane** – indique votre position actuelle dans la navigation.
+- **Recherche et filtres** – recherche par mot-clé, sélecteur de période et filtres avancés configurables (par exemple, par métrique, statut, utilisateur). Vous pouvez également enregistrer et charger des préréglages de filtres.
+- **Tableau** – affiche le nom du lieu et le lieu parent par défaut. Les colonnes masquées (ID, date de création, coordonnées, attributs supplémentaires) peuvent être affichées via le bouton **Personnaliser les colonnes** (en bas à droite de l’en-tête du tableau).
+- **Pagination** – commandes pour naviguer entre les pages.
+- **Actions groupées** – sélectionnez des lignes à l’aide des cases à cocher pour supprimer ou modifier plusieurs lieux à la fois.
+- **Boutons d’action flottants** – **Ajouter** (icône plus) et **Importer** (icône de téléversement vers le cloud) restent disponibles pendant le défilement.
 
-## Actions par ligne
+## Actions sur les lignes
 
-Chaque ligne dispose de trois actions rapides (visibles en survolant la ligne) :
+Chaque ligne propose trois actions rapides (visibles au survol de la ligne) :
 
-- **Modifier** – ouvre la boîte de dialogue de l'emplacement pour modifier les détails.
-- **Supprimer** – supprime l'emplacement après confirmation.
-- **Afficher** – ouvre une boîte de dialogue en lecture seule montrant tous les champs.
+- **Modifier** – ouvre la boîte de dialogue du lieu pour en modifier les détails.
+- **Supprimer** – supprime le lieu après confirmation.
+- **Afficher** – ouvre une boîte de dialogue en lecture seule présentant tous les champs.
 
-Cliquer sur une ligne la sélectionne (surbrillance) et, si la liste est extensible, révèle un panneau de détails avec des données supplémentaires.
+Cliquer sur une ligne la sélectionne (mise en surbrillance) et, si la liste est extensible, révèle un panneau de détails contenant des données supplémentaires.
 
-## Travailler avec les emplacements
+## Travailler avec les lieux
 
-### Ajouter un nouvel emplacement
+### Ajouter un nouveau lieu
 
-1. Cliquez sur le bouton flottant **Ajouter nouveau** (coin inférieur droit).
-2. Dans la boîte de dialogue, remplissez les champs obligatoires (par exemple, Nom de l'emplacement).
-3. Définissez éventuellement un Emplacement parent, des Coordonnées et des Attributs supplémentaires.
+1. Cliquez sur le bouton flottant **Ajouter** (coin inférieur droit).
+2. Dans la boîte de dialogue, remplissez les champs obligatoires (par exemple, le nom du lieu).
+3. Définissez éventuellement un lieu parent, des coordonnées et des attributs supplémentaires.
 4. Cliquez sur **Enregistrer**.
 
-### Modifier un emplacement
+### Modifier un lieu
 
-1. Cliquez sur l'icône **Modifier** (crayon) sur la ligne souhaitée.
+1. Cliquez sur l’icône **Modifier** (crayon) sur la ligne souhaitée.
 2. Mettez à jour les champs dans la boîte de dialogue.
 3. Cliquez sur **Enregistrer**.
 
-### Supprimer un emplacement
+### Supprimer un lieu
 
-1. Cliquez sur l'icône **Supprimer** (poubelle) sur la ligne.
-2. Confirmez la suppression dans l'invite.
+1. Cliquez sur l’icône **Supprimer** (corbeille) sur la ligne.
+2. Confirmez la suppression dans la boîte de dialogue.
 
-### Importer des emplacements depuis un fichier
+### Importer des lieux depuis un fichier
 
-1. Cliquez sur le bouton flottant **Importer** (icône de téléchargement cloud).
-2. Sélectionnez un fichier CSV ou Excel respectant le format attendu.
-3. Si nécessaire, mappez les colonnes aux champs d'emplacement.
+1. Cliquez sur le bouton flottant **Importer** (icône de téléversement vers le cloud).
+2. Sélectionnez un fichier CSV ou Excel au format attendu.
+3. Mappez les colonnes vers les champs du lieu si nécessaire.
 4. Cliquez sur **Importer**.
 
 !!! tip "Modification groupée"
-    Sélectionnez plusieurs lignes à l'aide des cases à cocher, puis cliquez sur le bouton **Modifier** (icône edit_note) qui apparaît au-dessus du tableau pour mettre à jour plusieurs emplacements à la fois.
+    Sélectionnez plusieurs lignes à l’aide des cases à cocher, puis cliquez sur le bouton **Modifier** (icône edit_note) qui apparaît au-dessus du tableau pour mettre à jour plusieurs lieux à la fois.
 
-### Exporter la liste des emplacements
+### Exporter la liste des lieux
 
-1. Cliquez sur le bouton **Exporter** (icône de téléchargement cloud) dans la barre de filtres.
-2. Choisissez le format d'exportation (CSV ou Excel).
-3. Le fichier se télécharge automatiquement.
+1. Cliquez sur le bouton **Exporter** (icône de téléchargement depuis le cloud) dans la barre de filtres.
+2. Choisissez le format d’export (CSV ou Excel).
+3. Le fichier est téléchargé automatiquement.
 
 ## Pages associées
 
-- [Aperçu des métriques](index.md) – retour à l'accueil des métriques.
-- [Cas](cases.md) – gérer les cas qui référencent des emplacements.
-- [Organisations](organizations.md) – gérer les organisations liées aux emplacements.
-- [Projets](projects.md) – consulter les projets associés aux emplacements.
+- [Vue d’ensemble des métriques](index.md) – revenir à l’accueil des métriques.
+- [Dossiers](cases.md) – gérer les dossiers qui référencent des lieux.
+- [Organisations](organizations.md) – gérer les organisations liées aux lieux.
+- [Projets](projects.md) – consulter les projets associés aux lieux.
 
-!!! warning "Suppression d'un emplacement"
-    La suppression d'un emplacement peut affecter les formulaires et les cas qui le référencent. Assurez-vous qu'aucun enregistrement actif ne dépend de l'emplacement avant de le supprimer.
+!!! warning "Suppression d’un lieu"
+    La suppression d’un lieu peut affecter les formulaires et les dossiers qui le référencent. Assurez-vous qu’aucun enregistrement actif ne dépend de ce lieu avant de le supprimer.

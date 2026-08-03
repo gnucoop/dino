@@ -1,24 +1,24 @@
 ---
 title: Casi
-description: Gestisci i casi in Dino — crea, modifica, visualizza, filtra, esporta e organizza i record dei casi con una tabella dati strutturata.
+description: Gestisci i casi in Dino — crea, modifica, visualizza, filtra, esporta e organizza le schede dei casi con una tabella dati strutturata.
 ---
 
 # Casi
 
-La pagina Casi offre uno spazio di lavoro centralizzato per tracciare e gestire i singoli casi. Ogni caso è un record strutturato che può contenere nome, codice, immagine, relazione con il caso padre, note e attributi aggiuntivi. Puoi creare nuovi casi, modificare quelli esistenti, visualizzare i dettagli, eliminare record ed esportare l'elenco dei casi, tutto da un'unica tabella interattiva.
+La pagina Casi offre uno spazio di lavoro centralizzato per tracciare e gestire i singoli casi. Ogni caso è una scheda strutturata che può contenere nome, codice, immagine, relazione con il caso padre, note e attributi aggiuntivi. Puoi creare nuovi casi, modificarne di esistenti, visualizzare i dettagli, eliminare le schede ed esportare l'elenco dei casi — il tutto da un'unica tabella interattiva.
 
 ![Vista principale della pagina Casi](../imgs/metrics/cases.png)
 
 ## Panoramica della tabella
 
-La tabella principale mostra per impostazione predefinita le seguenti colonne:
+La tabella principale visualizza le seguenti colonne per impostazione predefinita:
 
-- **Nome caso** – Il nome assegnato al caso (ordinabile).
-- **Codice** – Un codice generato dal sistema o assegnato manualmente (sola lettura dopo la creazione).
-- **Immagine caso** – Un file immagine caricato che rappresenta il caso.
-- **Caso padre** – Il nome di un eventuale caso padre a cui appartiene questo caso.
+- **Nome caso** – Il nome che assegni al caso (ordinabile).
+- **Codice** – Un codice generato dal sistema o assegnato manualmente (di sola lettura dopo la creazione).
+- **Immagine del caso** – Un file immagine caricato che rappresenta il caso.
+- **Caso padre** – Il nome di un eventuale caso padre a cui questo caso appartiene.
 
-Colonne aggiuntive (come **ID**, **Note**, **Data di creazione** e **Attributi aggiuntivi**) sono nascoste per impostazione predefinita. Puoi personalizzare quali colonne visualizzare cliccando sul pulsante **Personalizza colonne** (icona a forma di occhio) nell'intestazione della tabella.
+Le colonne aggiuntive (come **ID**, **Note**, **Data di creazione** e **Attributi aggiuntivi**) sono nascoste per impostazione predefinita. Puoi personalizzare quali colonne visualizzare facendo clic sul pulsante **Personalizza colonne** (icona a forma di occhio) nell'intestazione della tabella.
 
 ## Azioni su un singolo caso
 
@@ -26,64 +26,64 @@ Sul lato destro di ogni riga trovi le icone per le seguenti azioni:
 
 - **Modifica** – Apre una finestra di dialogo per modificare i dettagli del caso.
 - **Stampa** – Genera una scheda PDF stampabile per il caso.
-- **Visualizza** – Apre una finestra di dialogo in sola lettura per ispezionare le informazioni del caso.
-- **Elimina** – Apre una finestra di dialogo di conferma per rimuovere definitivamente il caso.
+- **Visualizza** – Apre una finestra di dialogo di sola lettura per esaminare le informazioni del caso.
+- **Elimina** – Apre una finestra di conferma per rimuovere definitivamente il caso.
 
-Clicca sull'icona **Altro** (tre punti verticali) per vedere tutte le azioni disponibili se alcune sono nascoste.
+Fai clic sull'icona **Altro** (tre puntini verticali) per visualizzare tutte le azioni disponibili se alcune sono nascoste.
 
-## Azioni in blocco
+## Azioni di massa
 
-Seleziona più casi utilizzando le caselle di spunta nella prima colonna. Quando è selezionato almeno un caso, nella parte superiore della tabella appare un pulsante **Elimina**. Puoi eliminare tutti i casi selezionati in una volta sola.
+Seleziona più casi utilizzando le caselle di controllo nella prima colonna. Quando è selezionato almeno un caso, nella parte superiore della tabella compare un pulsante **Elimina**. Puoi eliminare tutti i casi selezionati in una sola volta.
 
-!!! warning "L'eliminazione in blocco è permanente"
-    I casi eliminati non possono essere recuperati. Usa l'eliminazione in blocco con cautela.
+!!! warning "L'eliminazione di massa è permanente"
+    I casi eliminati non possono essere recuperati. Usa l'eliminazione di massa con cautela.
 
-## Creazione di un nuovo caso
+## Creare un nuovo caso
 
-1. Clicca sul pulsante di azione fluttuante **Aggiungi nuovo** (icona del più) in basso a destra nella pagina.
+1. Fai clic sul pulsante di azione fluttuante **Aggiungi nuovo** (icona più) in basso a destra della pagina.
 2. Si aprirà una finestra di dialogo. Compila i campi obbligatori:
    - **Nome caso** – Inserisci un nome descrittivo.
-   - **Codice** – (Opzionale) Fornisci un codice univoco. Questo campo è in sola lettura dopo la creazione.
-   - **Immagine caso** – Carica un file immagine.
-   - **Caso padre** – Opzionalmente collega questo caso a un caso padre esistente.
+   - **Codice** – (Facoltativo) Fornisci un codice univoco. Questo campo è di sola lettura dopo la creazione.
+   - **Immagine del caso** – Carica un file immagine.
+   - **Caso padre** – Collega facoltativamente questo caso a un caso padre esistente.
    - **Note** – Aggiungi eventuali note pertinenti.
-3. Clicca su **Salva** per creare il caso.
+3. Fai clic su **Salva** per creare il caso.
 
-## Importazione di casi
+## Importare casi
 
-Usa il pulsante di azione fluttuante **Importa** (icona di caricamento nuvola) per caricare in blocco casi da un file. I formati supportati sono definiti dall'amministratore di sistema.
+Usa il pulsante di azione fluttuante **Importa** (icona di caricamento sul cloud) per caricare più casi da un file. I formati supportati sono definiti dall'amministratore di sistema.
 
-## Filtraggio e ricerca
+## Filtrare e cercare
 
-La barra di ricerca in alto ti permette di filtrare i casi per:
+La barra di ricerca nella parte superiore ti consente di filtrare i casi per:
 
 - **Parola chiave** – Cerca in tutti i campi visualizzati.
 - **Intervallo di date** – Filtra per data di creazione (Da / A).
-- **Filtri aggiuntivi** – Seleziona da filtri predefiniti come metrica, stato, utente o gruppo di utenti.
+- **Filtri aggiuntivi** – Seleziona tra filtri predefiniti come metrica, stato, utente o gruppo di utenti.
 
-Dopo aver applicato i filtri, puoi salvare la combinazione come **preset** per un riutilizzo rapido. Per salvare un preset:
+Dopo aver applicato i filtri, puoi salvare la combinazione come **preimpostazione** per un riutilizzo rapido. Per salvare una preimpostazione:
 
 1. Apri il pannello dei filtri.
-2. Inserisci un nome nel campo preset.
-3. Clicca su **Salva**.  
-Per applicare un preset salvato, selezionalo dall'elenco e clicca su **Applica**.
+2. Inserisci un nome nel campo della preimpostazione.
+3. Fai clic su **Salva**.  
+Per applicare una preimpostazione salvata, selezionala dall'elenco e fai clic su **Applica**.
 
-## Esportazione di casi
+## Esportare casi
 
-Clicca sul pulsante **Esporta** (icona di download nuvola) nella barra dei filtri. Scegli il formato di esportazione (ad es. CSV o Excel) e seleziona quali colonne includere. Il file esportato conterrà tutti i casi attualmente visibili, rispettando gli eventuali filtri attivi.
+Fai clic sul pulsante **Esporta** (icona di download sul cloud) nella barra dei filtri. Scegli il formato di esportazione (ad esempio CSV o Excel) e seleziona le colonne da includere. Il file esportato conterrà tutti i casi attualmente visibili, rispettando eventuali filtri attivi.
 
-## Personalizzazione della tabella
+## Personalizzare la tabella
 
-- **Ordina** – Clicca su qualsiasi intestazione di colonna ordinabile (ad es. **Nome caso**, **Data di creazione**) per ordinare la tabella.
-- **Selettore colonne** – Apri la finestra di dialogo del selettore colonne per mostrare o nascondere colonne.
-- **Espandi righe** – Alcuni casi possono avere sotto-elementi (altri casi collegati come dettagli). Clicca su una riga per espanderla e vedere i record correlati.
+- **Ordina** – Fai clic su qualsiasi intestazione di colonna ordinabile (ad esempio **Nome caso**, **Data di creazione**) per ordinare la tabella.
+- **Selettore colonne** – Apri la finestra di dialogo del selettore colonne per mostrare o nascondere le colonne.
+- **Espandi righe** – Alcuni casi possono avere sotto-elementi (altri casi collegati come dettagli). Fai clic su una riga per espanderla e visualizzare le schede correlate.
 
-La pagina mostra anche un **percorso breadcrumb** in alto per consentire la navigazione di ritorno alla sezione principale delle Metriche.
+La pagina visualizza anche un **percorso breadcrumb** nella parte superiore, così puoi tornare alla sezione principale Metriche.
 
 ## Pagine correlate
 
 - [Panoramica metriche](index.md) – Torna alla dashboard principale delle metriche.
 - [Aree tematiche](areas.md) – Organizza i casi per area tematica.
-- [Luoghi](locations.md) – Associa i casi a posizioni geografiche.
+- [Posizioni](locations.md) – Associa i casi a posizioni geografiche.
 - [Organizzazioni](organizations.md) – Collega i casi alle organizzazioni.
-- [Progetti](projects.md) – Raggruppa i casi sotto progetti.
+- [Progetti](projects.md) – Raggruppa i casi in progetti.

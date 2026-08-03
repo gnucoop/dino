@@ -1,13 +1,13 @@
 ---
 title: Elenco dei gruppi
-description: Gestisci i gruppi di utenti in Dino — visualizza, crea, modifica ed elimina gruppi di autorizzazioni con ruoli, moduli, report e metriche assegnati.
+description: Gestisci i gruppi di utenti in Dino — visualizza, crea, modifica ed elimina gruppi di permessi con ruoli, moduli, report e metriche assegnati.
 ---
 
 # Elenco dei gruppi
 
-La pagina **Elenco gruppi** mostra tutti i gruppi di utenti in Dino. Da qui è possibile visualizzare, modificare, eliminare e creare gruppi. Ogni gruppo definisce un insieme di permessi e regole di accesso collegando un ruolo utente a specifici schemi di moduli, schemi di report, stati dei moduli e tipi di metrica (come aree, casi, progetti, località o organizzazioni).
+La pagina **Elenco dei gruppi** mostra tutti i gruppi di utenti in Dino. Da qui puoi visualizzare, modificare, eliminare e creare gruppi. Ogni gruppo definisce un insieme di permessi e regole di accesso collegando un ruolo utente a specifici schemi dei moduli, schemi dei report, stati dei moduli e tipi di metrica (come aree, casi, progetti, posizioni o organizzazioni).
 
-![Vista principale della pagina Elenco gruppi](../imgs/administration/groups-list.png)
+![Vista principale della pagina Elenco dei gruppi](../imgs/administration/groups-list.png)
 
 ## Panoramica dell'elenco
 
@@ -15,57 +15,55 @@ La tabella mostra le seguenti colonne:
 
 - **Nome gruppo** – il nome del gruppo di utenti (visibile per impostazione predefinita).
 - **ID** – identificatore interno (nascosto per impostazione predefinita).
-- **Data di creazione** – quando il gruppo è stato creato (nascosto per impostazione predefinita).
+- **Data di creazione** – quando il gruppo è stato creato (nascosta per impostazione predefinita).
 
-È possibile personalizzare le colonne visualizzate cliccando l'icona **view_week** nell'intestazione della tabella.
+Puoi personalizzare le colonne visualizzate facendo clic sull'icona **Visualizza colonne** (chiamata anche icona **hotdog** dai programmatori!) nella parte destra dell'intestazione della tabella.
 
-## Ricerca e filtro
+## Ricerca e filtri
 
-Utilizza la **barra di ricerca** nella parte superiore della pagina per filtrare i gruppi per parola chiave. Il pannello **Filtri** (espandibile) consente di restringere l'elenco per:
+Usa la **barra di ricerca** nella parte superiore della pagina per filtrare i gruppi per parola chiave. Il pannello **Filtri** (espandibile) consente di restringere l'elenco per:
 
 - Intervallo di date (da/a)
-- Progetto, località, area, caso, organizzazione e altri filtri disponibili
+- Qualsiasi tipo di metrica definito nella tua distribuzione, ovvero uno o più dei seguenti: Progetto, Posizione, Area, Caso, Organizzazione
 
-Puoi anche salvare e caricare preset di filtro utilizzando il gestore dei preset.
+Puoi anche salvare e caricare preset di filtri tramite il gestore dei preset.
 
 ## Azioni sui gruppi
 
-Ogni riga ha tre icone di azione a destra:
+Ogni riga ha tre icone di azione sulla destra:
 
-- **visibility** – Visualizza i dettagli del gruppo (apre l'editor in modalità sola lettura)
-- **create** – Modifica le proprietà del gruppo
-- **delete** – Elimina il gruppo (richiede conferma)
+- **Visualizza** – Visualizza i dettagli del gruppo (apre l'editor in modalità sola lettura)
+- **Modifica** – Modifica le proprietà del gruppo
+- **Elimina** – Rimuove il gruppo (è richiesta una conferma)
 
-Cliccando su una riga si espande una sezione di dettaglio che mostra informazioni aggiuntive o elementi annidati (se presenti).
+## Creazione di un nuovo gruppo
 
-## Creare un nuovo gruppo
-
-1. Fai clic sul pulsante fluttuante **+** in basso a destra dello schermo.
-2. Nella finestra di dialogo dell'editor che si apre, inserisci un **Nome gruppo**.
-3. Nel pannello **Elementi disponibili**, naviga tra le schede per selezionare:
-    - **Ruolo utente** (obbligatorio – devi selezionare esattamente un ruolo)
-    - **Schemi modulo**
-    - **Schemi report**
-    - **Stati modulo**
-    - Tipi di metrica (Area, Caso, Progetto, Località, Organizzazione) – se attivi
-4. Fai clic sull'icona **add** accanto a ciascun elemento per spostarlo nel pannello **Elementi del gruppo**.
+1. Fai clic sul pulsante flottante **+** in basso a destra dello schermo.
+2. Nella finestra di dialogo dell'editor che si apre, inserisci un **Nome gruppo** (obbligatorio).
+3. Naviga tra le schede per selezionare:
+    - **Ruolo utente** (obbligatorio – devi scegliere esattamente un ruolo)
+    - **Schemi dei moduli**
+    - **Stati dei moduli**
+    - **Schemi dei report**
+    - **Tipi di metrica** (tutti i tipi attivi per la tua distribuzione: Area, Caso, Progetto, Posizione, Organizzazione) – se attivi
+4. Nella finestra **elementi disponibili** sul lato destro, seleziona uno o più elementi facendo clic sull'icona **aggiungi** accanto a ciascun elemento per spostarlo nel pannello **Elementi del gruppo**.
 5. Fai clic su **Salva**.
 
 !!! tip "Opzione Tutti"
-    Per i tipi di metrica e altre categorie, potresti vedere un'opzione “Tutti …”. Selezionando questa opzione si applica la restrizione a ogni elemento di quel tipo.
+    Per i tipi di metrica e altre categorie, potresti vedere un'opzione “Tutti …”. Selezionandola, la restrizione viene applicata a tutti gli elementi di quel tipo.
 
-## Modificare o visualizzare un gruppo
+## Modifica o visualizzazione di un gruppo
 
-1. Nella tabella, fai clic sull'icona **create** (modifica) o **visibility** (visualizza) per il gruppo che desideri modificare.
+1. Nella tabella, fai clic sull'icona **Modifica** (modifica) o **Visualizza** (visualizza) per il gruppo che vuoi modificare.
 2. Nella finestra di dialogo dell'editor, puoi:
     - Modificare il **Nome gruppo**.
     - Aggiungere o rimuovere elementi da qualsiasi scheda (solo in modalità modifica).
-    - Rimuovere elementi cliccando l'icona **delete** accanto a essi.
-3. Fai clic su **Salva** per applicare le modifiche (la modalità visualizzazione mostra solo un pulsante **Chiudi**).
+    - Rimuovere elementi facendo clic sull'icona **elimina** accanto a essi.
+3. Fai clic su **Salva** per applicare le modifiche (in modalità visualizzazione è visibile solo il pulsante **Chiudi**).
 
-## Eliminare un gruppo
+## Eliminazione di un gruppo
 
-1. Fai clic sull'icona **delete** per il gruppo.
+1. Fai clic sull'icona **elimina** per il gruppo.
 2. Conferma l'eliminazione nella finestra di dialogo che appare.
 
 !!! warning "Azione irreversibile"
@@ -73,8 +71,8 @@ Cliccando su una riga si espande una sezione di dettaglio che mostra informazion
 
 ## Pagine correlate
 
-- [Elenco utenti](users-list.md) – gestisci account utente singoli e le loro assegnazioni ai gruppi.
+- [Elenco utenti](users-list.md) – gestisci i singoli account utente e le relative assegnazioni ai gruppi.
 - [Metriche](../metrics/index.md) – configura i tipi di metrica che possono essere assegnati ai gruppi (aree, casi, progetti, ecc.).
-- [Schemi modulo](../forms/edit-form-schema.md) – crea e modifica schemi di modulo che possono essere collegati ai gruppi.
-- [Schemi report](../reports/edit-report-schema.md) – gestisci gli schemi di report disponibili per i gruppi.
+- [Schemi dei moduli](../forms/edit-form-schema.md) – crea e modifica gli schemi dei moduli che possono essere collegati ai gruppi.
+- [Schemi dei report](../reports/edit-report-schema.md) – gestisci gli schemi dei report disponibili per i gruppi.
 - [Panoramica dell'interfaccia](../interface/index.md) – scopri la navigazione e il layout generale.
