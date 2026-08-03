@@ -5,58 +5,58 @@ description: Come visualizzare, cercare e aprire le notifiche in-app in Dino.
 
 # Notifiche
 
-La pagina Notifiche mostra tutti i messaggi inviati dal sistema o dall'amministratore. Da qui puoi sfogliare, cercare e aprire le singole notifiche, comprese quelle che collegano direttamente a un'area pertinente dell'applicazione.
+La pagina Notifiche mostra tutti i messaggi inviati dal sistema o dall'amministratore. Da qui puoi sfogliare, cercare e aprire le singole notifiche, incluse quelle che collegano direttamente a un'area pertinente dell'applicazione.
 
-![Vista principale della pagina Notifiche](../imgs/notifications/index.png)
+![Main view of the Notifications page](../imgs/notifications/index.png)
 
 ---
 
-## Leggere le tue notifiche
+## Leggere le notifiche
 
-L'elenco mostra ogni notifica ricevuta, con il **testo del messaggio** e la **data di creazione**.
+L'elenco mostra tutte le notifiche che hai ricevuto, con il **testo del messaggio** e la **data di creazione**.
 
-Le notifiche non ancora aperte appaiono **evidenziate** nell'elenco, così da poterle individuare subito. Una piccola icona di collegamento accanto al testo del messaggio indica che la notifica, se cliccata, ti porterà in un'altra posizione.
+Le notifiche non ancora aperte vengono **evidenziate** nell'elenco, così puoi individuarle a colpo d'occhio. Una piccola icona di collegamento accanto al testo del messaggio indica che la notifica ti porterà da qualche parte quando ci clicchi sopra.
 
-Il numero totale di notifiche corrispondenti alla ricerca corrente viene mostrato all'inizio della pagina.
+Il numero totale di notifiche corrispondenti alla ricerca corrente è mostrato in cima alla pagina.
 
 ---
 
 ## Ricerca e filtri
 
-Usa la barra dei filtri sopra l'elenco per restringere i risultati.
+Usa la barra dei filtri sopra l'elenco per restringere ciò che viene mostrato.
 
-### Ricerca per parola chiave
+### Cerca per parola chiave
 
-1. Clicca all'interno del campo **cerca per parola chiave** in cima all'elenco.
-2. Inizia a digitare una parola o frase presente nel testo della notifica.
-3. L'elenco si aggiorna automaticamente mentre scrivi.
-4. Per cancellare la ricerca, clicca sull'icona **×** che appare all'interno del campo.
+1. Fai clic all'interno del campo **cerca per parola chiave** in cima all'elenco.
+2. Inizia a digitare una parola o una frase presente nel testo della notifica.
+3. L'elenco si aggiorna automaticamente mentre digiti.
+4. Per cancellare la ricerca, fai clic sull'icona **×** che appare all'interno del campo.
 
 ### Filtra per data
 
-1. Clicca sul campo **Da data** e seleziona una data di inizio dal calendario.
-2. Clicca sul campo **A data** e seleziona una data di fine.
-3. L'elenco mostrerà solo le notifiche create nell'intervallo di date specificato.
-4. Per rimuovere un filtro data, clicca sull'icona **×** accanto al campo corrispondente.
+1. Fai clic sul campo **Data di inizio** e seleziona una data di inizio dal calendario.
+2. Fai clic sul campo **Data di fine** e seleziona una data di fine.
+3. L'elenco mostrerà solo le notifiche create nell'intervallo di date.
+4. Per rimuovere un filtro data, fai clic sull'icona **×** accanto al campo corrispondente.
 
 ---
 
 ## Navigare nell'elenco
 
-Se ci sono più notifiche di quante ne entrino in una pagina, usa i **controlli di paginazione** in cima all'elenco per spostarti tra le pagine. Puoi saltare alla prima o all'ultima pagina, oppure avanzare o retrocedere di una pagina alla volta.
+Se le notifiche sono più di quelle che possono essere visualizzate in una pagina, usa i **controlli di paginazione** in cima all'elenco per spostarti tra le pagine. Puoi andare alla prima o all'ultima pagina, oppure avanzare e tornare indietro di una pagina alla volta.
 
 ---
 
 ## Aprire una notifica
 
-Clicca su qualsiasi riga per aprire quella notifica.
+Fai clic su qualsiasi riga per aprire la notifica.
 
-- Se la notifica contiene un **collegamento** (indicato dall'icona di link accanto al messaggio), cliccandola la segnerà come letta e ti porterà direttamente alla pagina pertinente dell'applicazione.
-- Se la notifica non contiene un collegamento, cliccandola espanderà la riga per mostrare il contenuto completo direttamente al suo interno.
+- Se la notifica contiene un **collegamento** (indicato dall'icona di collegamento accanto al messaggio), facendo clic verrà contrassegnata come letta e verrai portato direttamente alla pagina pertinente dell'applicazione.
+- Se la notifica non contiene un collegamento, facendo clic si espanderà la riga per mostrare l'intero contenuto in posizione.
 
-Per comprimere una notifica espansa, clicca di nuovo sulla sua riga.
+Per comprimere una notifica espansa, fai di nuovo clic sulla sua riga.
 
-Per espandere o comprimere tutte le righe in una volta, usa il **pulsante piega/svolgi** sopra l'elenco.
+Per espandere o comprimere tutte le righe contemporaneamente, usa il **pulsante comprimi/espandi** sopra l'elenco.
 
 ---
 
@@ -64,10 +64,10 @@ Per espandere o comprimere tutte le righe in una volta, usa il **pulsante piega/
 
 Puoi modificare quali colonne sono visibili nell'elenco.
 
-1. Clicca sul **pulsante selettore di colonne** (icona a griglia) nell'angolo in alto a destra dell'intestazione della tabella.
+1. Fai clic sul **pulsante di selezione delle colonne** (icona a griglia) nell'angolo in alto a destra dell'intestazione della tabella.
 2. Si aprirà un pannello che mostra tutte le colonne disponibili.
 3. Attiva o disattiva le colonne che vuoi mostrare o nascondere.
 4. Chiudi il pannello al termine: la selezione viene applicata immediatamente.
 
-!!! tip "Segna come letto"
-    Quando clicchi su una notifica che ha un collegamento, viene automaticamente segnata come letta. Le notifiche senza collegamento non vengono segnate come lette automaticamente quando le espandi.
+!!! tip "Contrassegnare come letta"
+    Quando fai clic su una notifica che contiene un collegamento, viene automaticamente contrassegnata come letta. Le notifiche senza collegamento non vengono contrassegnate automaticamente come lette quando le espandi.

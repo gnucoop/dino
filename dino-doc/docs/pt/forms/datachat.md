@@ -1,45 +1,45 @@
 ---
 title: Datachat
-description: Use o DinoGPT, um assistente de IA, para fazer perguntas sobre os dados do seu formulário.
+description: Utilize o DinoGPT, um assistente de IA, para colocar questões sobre os dados dos seus formulários.
 ---
 
 # Datachat
 
-A página Datachat fornece acesso ao **DinoGPT**, um assistente com inteligência artificial que pode responder perguntas sobre os dados coletados em seus formulários. Você pode fazer perguntas em linguagem natural para obter insights de suas respostas.
+A página Datachat dá acesso ao **DinoGPT**, um assistente com tecnologia de IA que pode responder a perguntas sobre os dados recolhidos nos seus formulários. Pode colocar perguntas em linguagem natural para obter informações a partir das suas submissões.
 
-Ao abrir a página Datachat, você verá a interface do DinoGPT e um acordo de termos de serviço. Você deve ler e aceitar os termos antes de iniciar uma sessão de chat.
+Quando abre a página Datachat, vê a interface do DinoGPT e um contrato de termos de serviço. Tem de ler e aceitar os termos antes de poder iniciar uma sessão de chat.
 
-!!! warning "Informações Geradas por IA"
-    O DinoGPT gera respostas com base nos dados específicos do banco de dados do seu formulário. Seu conhecimento é limitado a esses dados e pode não ser completo, preciso ou atualizado. Você é responsável por verificar qualquer informação fornecida. O DinoGPT não fornece aconselhamento profissional.
+!!! warning "Informação gerada por IA"
+    O DinoGPT gera respostas com base nos dados específicos da base de dados do seu formulário. O seu conhecimento está limitado a estes dados e pode não ser completo, exato ou atualizado. É responsável por verificar qualquer informação fornecida. O DinoGPT não fornece aconselhamento profissional.
 
-## Aceitando os Termos de Uso
+## Aceitar os Termos de Utilização
 
-Antes de usar o DinoGPT, você deve ler e aceitar seus termos de uso.
+Antes de poder utilizar o DinoGPT, tem de ler e aceitar os seus termos de utilização.
 
-1.  Leia atentamente os **Termos de Uso do DinoGPT** exibidos na página.
-2.  Se você aceitar todos os termos e condições, prossiga para iniciar uma sessão de chat.
+1.  Leia atentamente os **Termos de Utilização do DinoGPT** apresentados na página.
+2.  Se aceitar todos os termos e condições, avance para iniciar uma sessão de chat.
 
-## Iniciando uma Sessão de Chat
+## Iniciar uma Sessão de Chat
 
-Para começar a fazer perguntas sobre seus dados:
+Para começar a colocar questões sobre os seus dados:
 
-1.  Após aceitar os termos, a interface principal do chat fica ativa.
-2.  Digite sua pergunta sobre os dados do formulário no campo de entrada.
-3.  Pressione **Enter** ou clique no botão de envio para enviar sua pergunta.
+1.  Depois de aceitar os termos, a interface principal do chat fica ativa.
+2.  Escreva a sua pergunta sobre os dados do formulário no campo de entrada.
+3.  Carregue em **Enter** ou clique no botão de envio para submeter a sua pergunta.
 
-O assistente de IA processará sua pergunta e fornecerá uma resposta com base nos dados de envio disponíveis.
+O assistente de IA processará a sua pergunta e fornecerá uma resposta com base nos dados de submissão disponíveis.
 
 !!! tip "Perguntas Eficazes"
-    Para obter melhores resultados, faça perguntas claras e específicas sobre os dados. Por exemplo, "Qual é a idade média dos respondentes?" ou "Liste todos os envios da semana passada."
+    Para obter melhores resultados, faça perguntas claras e específicas sobre os dados. Por exemplo, "Qual é a idade média dos respondentes?" ou "Liste todas as submissões da semana passada."
 
 ## Durante um Chat
 
-- Você pode fazer perguntas de acompanhamento na mesma sessão; o DinoGPT manterá o contexto da sua conversa.
-- O histórico do chat fica visível, permitindo revisar perguntas e respostas anteriores.
+- Pode fazer perguntas de seguimento na mesma sessão; o DinoGPT manterá o contexto da sua conversa.
+- O histórico do chat fica visível, permitindo-lhe rever perguntas e respostas anteriores.
 
-## Encerrando uma Sessão de Chat
+## Terminar uma Sessão de Chat
 
-Sua sessão de chat termina automaticamente quando você navega para fora da página Datachat. Você pode alternar para outras páginas, como a [Lista de formulários](index.md), e retornar mais tarde para iniciar uma nova sessão.
+A sua sessão de chat termina automaticamente quando navega para fora da página Datachat. Pode mudar para outras páginas, como a [Lista de formulários](index.md), e regressar mais tarde para iniciar uma nova sessão.
 
 !!! warning "Privacidade dos Dados"
-    O DinoGPT acessa apenas os dados do esquema do formulário atual. Ele não pode ver dados de outros formulários ou fontes externas.
+    O DinoGPT só acede aos dados do esquema do formulário atual. Não consegue ver dados de outros formulários ou de fontes externas.

@@ -1,113 +1,113 @@
 ---
-title: Fazer Login
-description: Como entrar no Dino, redefinir sua senha, criar uma conta e usar provedores de login externos.
+title: Iniciar Sessão
+description: Como iniciar sessão no Dino, repor a sua palavra-passe, criar uma conta e utilizar fornecedores de início de sessão externos.
 ---
 
-# Fazendo Login no Dino
+# Iniciar Sessão no Dino
 
-A página de Login é o ponto de partida para acessar o Dino. A partir daqui, você pode entrar na sua conta, criar uma nova conta ou recuperar o acesso se tiver esquecido sua senha. Dependendo de como sua organização configurou o Dino, algumas das opções descritas abaixo podem não estar visíveis.
+A página de início de sessão é o ponto de partida para aceder ao Dino. A partir daqui pode iniciar sessão na sua conta, criar uma nova conta ou recuperar o acesso se se esqueceu da sua palavra-passe. Consoante a forma como a sua organização configurou o Dino, algumas das opções descritas abaixo podem não estar visíveis.
 
-![Visão principal da página de Login](../imgs/getting-started/login.png)
-
----
-
-## Entrando
-
-Use suas credenciais para acessar a plataforma.
-
-1.  Na página de Login, insira seu **nome de usuário ou endereço de e-mail** no primeiro campo.
-2.  Insira sua **senha** no segundo campo.
-3.  Clique no **botão de seta** para entrar.
-
-Se suas credenciais estiverem corretas, você será direcionado automaticamente para o [Painel de Controle](../dashboard/index.md).
-
-Se o login falhar, uma mensagem de erro aparecerá abaixo do formulário. Verifique novamente se seu e-mail e senha estão corretos, certificando-se de que não há espaços extras, e tente novamente.
+![Main view of the Login page](../imgs/getting-started/login.png)
 
 ---
 
-## Redefinindo Sua Senha
+## Iniciar Sessão
 
-Se você esqueceu sua senha, pode solicitar um link de redefinição por e-mail.
+Utilize as suas credenciais para aceder à plataforma.
+
+1.  Na página de início de sessão, introduza o seu **nome de utilizador ou endereço de email** no primeiro campo.
+2.  Introduza a sua **palavra-passe** no segundo campo.
+3.  Clique no **botão de seta** para iniciar sessão.
+
+Se as suas credenciais estiverem corretas, será encaminhado automaticamente para o [Painel de Controlo](../dashboard/index.md).
+
+Se o início de sessão falhar, aparecerá uma mensagem de erro abaixo do formulário. Verifique se o seu email e palavra-passe estão corretos, certificando-se de que não existem espaços extras, e tente novamente.
+
+---
+
+## Repor a Sua Palavra-passe
+
+Se se esqueceu da sua palavra-passe, pode pedir um link de reposição por email.
 
 !!! note "Funcionalidade opcional"
-    Esta opção pode não estar disponível na sua instalação. Se você não vir o link "Esqueceu sua senha?", entre em contato com seu administrador.
+    Esta opção pode não estar disponível na sua instalação. Se não vir o link "Esqueceu-se da sua palavra-passe?", contacte o seu administrador.
 
-1.  Na página de Login, clique em **"Esqueceu sua senha?"** abaixo do formulário de login.
-2.  Insira o **endereço de e-mail** associado à sua conta.
-3.  Clique no **botão de seta** para enviar a solicitação.
+1.  Na página de início de sessão, clique em **"Esqueceu-se da sua palavra-passe?"** abaixo do formulário de início de sessão.
+2.  Introduza o **endereço de email** associado à sua conta.
+3.  Clique no **botão de seta** para enviar o pedido.
 
-Você receberá uma mensagem de confirmação no topo da tela. Verifique sua caixa de entrada para um e-mail contendo um link para definir uma nova senha. Se o e-mail não chegar em alguns minutos, verifique sua pasta de spam.
+Receberá uma mensagem de confirmação no topo do ecrã. Verifique a sua caixa de entrada para um email que contém um link para definir uma nova palavra-passe. Se o email não chegar dentro de alguns minutos, verifique a pasta de spam.
 
-Para voltar ao formulário de login sem redefinir sua senha, clique em **"Na verdade, eu lembro da minha senha"**.
+Para voltar ao formulário de início de sessão sem repor a sua palavra-passe, clique em **"Na verdade, lembro-me da minha palavra-passe"**.
 
-Para mais detalhes, consulte a página [Redefinir Senha](reset-password.md).
+Para mais detalhes, consulte a página [Repor Palavra-passe](reset-password.md).
 
 ---
 
-## Criando uma Nova Conta
+## Criar uma Nova Conta
 
-Se você ainda não tem uma conta, pode ser possível se registrar diretamente da página de Login.
+Se ainda não tem uma conta, pode ser possível registar-se diretamente a partir da página de início de sessão.
 
 !!! note "Funcionalidade opcional"
-    Esta opção pode não estar disponível na sua instalação. Se você não vir o link "Novo usuário? Criar nova conta", entre em contato com seu administrador para que uma conta seja criada para você.
+    Esta opção pode não estar disponível na sua instalação. Se não vir o link "Novo utilizador? Criar nova conta", contacte o seu administrador para que seja criada uma conta para si.
 
-1.  Na página de Login, clique em **"Novo usuário? Criar nova conta"**.
-2.  Insira seu **nome completo**.
-3.  Insira seu **endereço de e-mail**.
-4.  Escolha uma **senha** (pelo menos 9 caracteres).
-5.  Redigite sua senha no campo **Confirmar Senha** para garantir que corresponda.
-6.  Se uma **Política de Privacidade** for exibida, leia o texto e marque a caixa de seleção para aceitar os termos e condições. Você deve aceitar para prosseguir.
-7.  Clique no **botão de seta** para criar sua conta.
+1.  Na página de início de sessão, clique em **"Novo utilizador? Criar nova conta"**.
+2.  Introduza o seu **nome completo**.
+3.  Introduza o seu **endereço de email**.
+4.  Escolha uma **palavra-passe** (com pelo menos 9 caracteres).
+5.  Volte a introduzir a sua palavra-passe no campo **Confirmar Palavra-passe** para garantir que corresponde.
+6.  Se for apresentada uma **Política de Privacidade**, leia o texto e assinale a caixa de verificação para aceitar os termos e condições. Tem de aceitar para poder continuar.
+7.  Clique no **botão de seta** para criar a sua conta.
 
-Assim que sua conta for criada, você será conectado e direcionado automaticamente para o [Painel de Controle](../dashboard/index.md).
+Depois de a sua conta ser criada, iniciará sessão automaticamente e será encaminhado para o [Painel de Controlo](../dashboard/index.md).
 
-Se você já tem uma conta, clique em **"Já tem uma conta? Login"** para retornar ao formulário de login.
+Se já tem uma conta, clique em **"Já tem uma conta? Iniciar sessão"** para voltar ao formulário de início de sessão.
 
 ---
 
-## Entrando com uma Conta Externa
+## Iniciar Sessão com uma Conta Externa
 
-Sua organização pode permitir que você entre usando sua conta existente da Microsoft ou do Google, em vez de uma senha separada do Dino.
+A sua organização pode permitir que inicie sessão com a sua conta Microsoft ou Google existente, em vez de uma palavra-passe separada para o Dino.
 
 !!! note "Funcionalidade opcional"
-    Esta opção pode não estar disponível na sua instalação. Os botões só aparecerão se seu administrador tiver habilitado o login externo.
+    Esta opção pode não estar disponível na sua instalação. Os botões só aparecerão se o seu administrador tiver ativado o início de sessão externo.
 
-1.  Na página de Login, clique em **"Entrar com a Microsoft"** ou **"Entrar com o Google"**, dependendo de qual conta você deseja usar.
-2.  Você será redirecionado para a Microsoft ou Google para confirmar sua identidade.
-3.  Após autorizar o acesso, você será trazido de volta ao Dino e conectado automaticamente.
+1.  Na página de início de sessão, clique em **"Iniciar sessão com a Microsoft"** ou **"Iniciar sessão com o Google"**, dependendo da conta que pretende utilizar.
+2.  Será redirecionado para a Microsoft ou para o Google para confirmar a sua identidade.
+3.  Depois de autorizar o acesso, será redirecionado de volta para o Dino e iniciará sessão automaticamente.
 
 ---
 
-## Configurações da Página
+## Definições da Página
 
-Um pequeno conjunto de preferências de exibição está disponível diretamente na página de Login.
+Um pequeno conjunto de preferências de visualização está disponível diretamente na página de início de sessão.
 
 ### Tema Claro / Escuro
 
-Uma alternância está disponível na parte inferior do formulário, entre um ícone de sol e um ícone de lua. Clique ou deslize para alternar entre o **modo claro** e o **modo escuro**. Essa configuração entra em vigor imediatamente.
+Existe um interruptor na parte inferior do formulário, entre um ícone de sol e um ícone de lua. Clique ou deslize-o para alternar entre o **modo claro** e o **modo escuro**. Esta definição tem efeito imediato.
 
 ### Seleção de Plataforma
 
 !!! note "Funcionalidade opcional"
-    Esta opção pode não estar disponível na sua instalação. Ela só é exibida em implantações com múltiplas plataformas.
+    Esta opção pode não estar disponível na sua instalação. Só é apresentada em implementações multiplataforma.
 
-Se um menu suspenso **"Escolha sua plataforma"** estiver visível, selecione a plataforma à qual deseja se conectar antes de entrar. O menu listará os ambientes que seu administrador configurou.
+Se for visível uma lista pendente **"Escolha a sua plataforma"**, selecione a plataforma à qual pretende ligar antes de iniciar sessão. A lista pendente mostrará os ambientes que o seu administrador configurou.
 
 ---
 
-## Solução de Problemas
+## Resolução de Problemas
 
-### "Houve um problema ao conectar ao servidor de autenticação ou seu token expirou."
-
-!!! warning
-    Sua sessão anterior expirou ou a conexão com o servidor de autenticação foi interrompida. Isso não é um erro da sua parte. Basta inserir suas credenciais e entrar novamente.
-
-### "Houve um problema durante o processo de sincronização."
+### "Ocorreu um problema ao ligar ao servidor de autenticação ou o seu token expirou."
 
 !!! warning
-    Ocorreu um erro ao sincronizar seus dados, o que pode estar relacionado a uma importação de formulário recente. Revise quaisquer formulários que você estava importando em busca de possíveis problemas e, em seguida, entre novamente. Se o problema persistir, entre em contato com seu administrador.
+    A sua sessão anterior expirou ou a ligação ao servidor de autenticação foi interrompida. Isto não é um erro da sua parte. Basta introduzir as suas credenciais e iniciar sessão novamente.
 
-### "Carregando autenticação externa…" sem redirecionamento
+### "Ocorreu um problema durante o processo de sincronização."
 
 !!! warning
-    Esta mensagem aparece brevemente ao concluir um login via Microsoft ou Google. Se a página não prosseguir automaticamente após alguns segundos, tente entrar novamente. Se o problema se repetir, entre em contato com seu administrador para verificar se o serviço de autenticação externa está configurado corretamente.
+    Ocorreu um erro ao sincronizar os seus dados, que pode estar relacionado com uma importação recente de formulários. Reveja os formulários que estava a importar para identificar possíveis problemas e, em seguida, inicie sessão novamente. Se o problema persistir, contacte o seu administrador.
+
+### "A carregar autenticação externa…" sem redirecionamento
+
+!!! warning
+    Esta mensagem aparece brevemente quando conclui um início de sessão através da Microsoft ou do Google. Se a página não avançar automaticamente ao fim de alguns segundos, tente iniciar sessão novamente. Se o problema se repetir, contacte o seu administrador para verificar se o serviço de autenticação externa está configurado corretamente.
