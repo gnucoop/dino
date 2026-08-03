@@ -1,6 +1,6 @@
 ---
 title: Editar esquema de formulario
-description: Crea y modifica esquemas de formulario: define nombre, icono, estados, métricas, visibilidad y relaciones.
+description: "Crea y modifica esquemas de formulario: define nombre, icono, estados, métricas, visibilidad y relaciones."
 ---
 
 # Editar esquema de formulario

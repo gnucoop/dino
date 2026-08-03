@@ -1,6 +1,6 @@
 ---
 title: Casos
-description: Gestiona casos en Dino: crea, edita, visualiza, filtra, exporta y organiza registros de casos con una tabla de datos estructurada.
+description: "Gestiona casos en Dino: crea, edita, visualiza, filtra, exporta y organiza registros de casos con una tabla de datos estructurada."
 ---
 
 # Casos
