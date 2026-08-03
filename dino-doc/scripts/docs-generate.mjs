@@ -189,6 +189,7 @@ Rules:
 - Do NOT translate: file paths, URLs, image references (![...](path)), code snippets, the word "Dino".
 - Keep admonition keywords in English (!!! tip, !!! warning, !!! note) but translate the admonition title text and body.
 - Keep relative markdown link paths unchanged but translate the link display text.
+- Same-page anchor links are the ONE exception to leaving link targets alone. An anchor like ](#user-area) points at a heading on this page, and the heading id is derived from the heading text — which you are translating — so the anchor must be translated in step with it, or the link breaks. Build it from the translated heading: lowercase it and replace each space with a hyphen, keeping the original letters (do not transliterate to ASCII). If "## User Area" becomes "## Area utente", then ](#user-area) becomes ](#area-utente). If the translated heading is identical to the English one, leave the anchor as it is. This applies ONLY to targets starting with "#" — file paths in link targets stay untouched.
 - Terminology glossary (translate these terms consistently, including in headings, titles and frontmatter values):
   - Italian: always translate "location" / "locations" as "posizione" / "posizioni" — never "sede" / "sedi".
 - Output ONLY the translated Markdown content, no code fences or explanations.
