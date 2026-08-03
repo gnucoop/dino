@@ -5,18 +5,20 @@ description: View and manage aggregated form submissions in Dino.
 
 # Aggregation
 
-The Aggregation page gives you a centralized view of all form submissions across your projects. You can browse, filter, and take actions on submissions without having to open each form individually.
+The Aggregation page gives you a centralized view of all form submissions across your form schemas. You can browse, filter, and take actions on form submissions without having to open each form individually.
 
 ![Main view of the Aggregation page](../imgs/aggregation/index.png)
 
 ## Viewing the Aggregation List
 
-The main table displays one row per submission. By default you see the **Form Schema** and **Status** columns, but you can customize which columns appear using the **View Week** icon in the table header.
+The main table displays one row per submission. By default you see the **Form Schema** and **Status** columns, but you can customize which columns appear using the **View Columns** icon in the table header.
 
 - Each row shows a status icon and, if the form has validation issues, a warning icon.
 - Hover over a row to see a highlight; click anywhere on a row to select it and reveal available actions.
 
 At the top of the list, the **Items found** counter and paginator let you know how many submissions exist and navigate through pages.
+
+If you do not apply any filter to the list in the Aggregation page, you will see the total number of forms submitted to your Dino that you are allowd to see, according to your user's permissions. 
 
 ## Filtering and Searching
 
@@ -37,9 +39,9 @@ After selecting a row, the action icons appear in the **Actions** column on the 
 
 | Icon | Action | Description |
 |------|--------|-------------|
-| `visibility` | View | Open the submission in read-only mode. |
-| `create` | Edit | Modify the submission data. |
-| `printer` | Print | Generate a PDF of the submission. |
+| `view` | View | Open the submission in read-only mode. |
+| `edit` | Edit | Modify the submission data. |
+| `print` | Print | Generate a PDF of the submission. |
 | `delete` | Delete | Remove the submission after confirmation. |
 
 Click **More Horiz** (three dots) to see additional actions for that row. The **Print** and **Delete** actions ask for confirmation before executing.

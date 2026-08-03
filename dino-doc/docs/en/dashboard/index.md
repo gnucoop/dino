@@ -40,18 +40,18 @@ If you have not yet selected a favorite report, you will see a welcome message p
 
 1.  Go to the [Reports](../reports/index.md) area.
 2.  Open the report you want to see on your Dashboard.
-3.  In the report list or report view, find and click the **Add to favourites** action (usually represented by a star icon).
+3.  In the report list or report view, find and click the **Add to favourites** action (usually represented by a heart icon).
 4.  Refresh or return to your Dashboard. The selected report will now be displayed.
 
 ### Changing or Removing a Favorite
 
 To change your favorite report, simply add a different report to your favorites. The new report will replace the old one on your Dashboard. To clear the Dashboard, you can remove the favorite report setting from your browser's local storage, or contact your system administrator.
 
----
+<!-- ---
 
 ## Guided Tour
 
 The first time you access Dino, a guided tour may automatically start from the Dashboard to introduce you to the application's main features.
 
 *   You can follow the on-screen prompts to learn about navigation and key actions.
-*   If you skip or finish the tour, you can restart it at any time from the help menu in the [User Area](../interface/index.md#user-area).
+*   If you skip or finish the tour, you can restart it at any time from the help menu in the [User Area](../interface/index.md#user-area). -->
