@@ -60,3 +60,4 @@ Thumbs.db
 # Karma polyfills
 karma-polyfills.js
 .aider*
+dino-doc/site/
