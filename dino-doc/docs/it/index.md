@@ -1,6 +1,6 @@
 ---
 title: Benvenuto su Dino
-description: Un'introduzione a Dino: cos'è, a chi è rivolto e come orientarsi in questa documentazione.
+description: "Un'introduzione a Dino: cos'è, a chi è rivolto e come orientarsi in questa documentazione."
 ---
 
 # Benvenuto su Dino

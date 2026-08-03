@@ -1,6 +1,6 @@
 ---
 title: Navegación e interfaz
-description: Una descripción general del shell de la aplicación Dino: la barra de herramientas, la navegación lateral, las notificaciones, la sincronización de datos y el área de usuario.
+description: "Una descripción general del shell de la aplicación Dino: la barra de herramientas, la navegación lateral, las notificaciones, la sincronización de datos y el área de usuario."
 ---
 
 # Navegación e interfaz

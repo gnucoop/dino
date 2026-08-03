@@ -5,21 +5,6 @@ description: "Administre los grupos de usuarios en Dino: vea, cree, edite y elim
 
 # Lista de grupos
 
-La página **Lista de grupos** muestra todos los grupos de usuarios en Dino. Desde aquí puede ver, editar, eliminar y crear grupos. Cada grupo define un conjunto de permisos y reglas de acceso al vincular un rol de usuario con esquemas de formularios, esquemas de informes, estados de formularios y tipos de métricas específicos (como áreas, casos, proyectos, ubicaciones u organizaciones).
-
-![Main view of the Groups List page](../imgs/administration/groups-list.png)
-
-## Resumen de la lista
-
-La tabla muestra las siguientes columnas:
-
-- **Nombre del grupo** – el nombre del---
-title: Lista de grupos
-description: Administre los grupos de usuarios en Dino: vea, cree, edite y elimine grupos de permisos con roles, formularios, informes y métricas asignados.
----
-
-# Lista de grupos
-
 La página **Lista de grupos** muestra todos los grupos de usuarios en Dino. Desde aquí puede ver, editar, eliminar y crear grupos. Cada grupo define un conjunto de permisos y reglas de acceso al vincular un rol de usuario con esquemas de formularios, esquemas de informes, estados de formularios y tipos de métricas específicos (como áreas, casos, proyectos, posiciones u organizaciones).
 
 ![Main view of the Groups List page](../imgs/administration/groups-list.png)

@@ -1,6 +1,6 @@
 ---
 title: Bienvenido a Dino
-description: Una introducción a Dino: qué es, para quién es y cómo navegar por esta documentación.
+description: "Una introducción a Dino: qué es, para quién es y cómo navegar por esta documentación."
 ---
 
 # Bienvenido a Dino
