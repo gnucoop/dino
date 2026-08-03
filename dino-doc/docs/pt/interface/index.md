@@ -44,15 +44,15 @@ A barra de ferramentas no topo da tela contém os seguintes controles, da esquer
 - **Alternar menu** — abre ou recolhe o menu lateral.
 - **Logotipo** — exibe o logotipo da sua organização.
 - **Indicador de nova versão** — um ícone de download aparece quando uma nova versão do Dino está disponível. Clique nele para recarregar o aplicativo e aplicar a atualização.
-- **Créditos DINO-AI** — mostra seu saldo restante de créditos de IA como um selo. Clique para abrir a [Área do Usuário](#user-area) no painel de Créditos. *(Somente visível se uma chave de API DINO-AI tiver sido configurada.)*
+- **Créditos DINO-AI** — mostra seu saldo restante de créditos de IA como um selo. Clique para abrir a [Área do Usuário](#área-do-usuário) no painel de Créditos. *(Somente visível se uma chave de API DINO-AI tiver sido configurada.)*
 - **Alternador de modo escuro/claro** — um ícone de sol, um controle deslizante e um ícone de lua. Use o controle deslizante para alternar entre os temas claro e escuro. *(Oculto em dispositivos móveis — use a Área do Usuário.)*
 - **Ícone de informações** — passe o mouse para ver as informações de versão desta instalação.
 - **Ícone de ajuda** — abre a lista de reprodução do tutorial do Dino em uma nova guia.
-- **Ícone de configurações** — abre a [Área do Usuário](#user-area).
+- **Ícone de configurações** — abre a [Área do Usuário](#área-do-usuário).
 - **Ícone de sincronização** — mostra o status atual da sincronização de dados. Clique para acionar uma sincronização manual.
-- **Sino de notificações** — mostra o número de notificações não lidas como um selo. O sino toca quando novas notificações chegam. Consulte [Notificações](#notifications) abaixo.
+- **Sino de notificações** — mostra o número de notificações não lidas como um selo. O sino toca quando novas notificações chegam. Consulte [Notificações](#notificações) abaixo.
 - **Seletor de idioma** — alterne o idioma da interface.
-- **Nome do usuário** — clique para abrir a [Área do Usuário](#user-area).
+- **Nome do usuário** — clique para abrir a [Área do Usuário](#área-do-usuário).
 - **Ícone de sair** — clique para sair. O ícone fica esmaecido enquanto uma sincronização está em andamento ou quando o dispositivo está offline; a saída não está disponível nesses estados.
 
 ---

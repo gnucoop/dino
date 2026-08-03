@@ -44,14 +44,14 @@ La barra degli strumenti nella parte superiore dello schermo contiene i seguenti
 - **Attiva/disattiva menu** — apre o comprime il menu laterale.
 - **Logo** — mostra il logo della tua organizzazione.
 - **Indicatore di nuova versione** — un'icona di download appare quando è disponibile una nuova versione di Dino. Fai clic per ricaricare l'applicazione e applicare l'aggiornamento.
-- **Crediti DINO-AI** — mostra il saldo residuo dei crediti AI come badge. Fai clic per aprire l'[Area utente](#user-area) sul pannello Crediti. *(Visibile solo se è stata configurata una chiave API DINO-AI.)*
+- **Crediti DINO-AI** — mostra il saldo residuo dei crediti AI come badge. Fai clic per aprire l'[Area utente](#area-utente) sul pannello Crediti. *(Visibile solo se è stata configurata una chiave API DINO-AI.)*
 - **Attiva/disattiva modalità scura/chiara** — un'icona sole, un cursore e un'icona luna. Usa il cursore per passare dal tema chiaro a quello scuro. *(Nascosto su mobile — usa invece l'Area utente.)*
 - **Icona Info** — passa il mouse per vedere le informazioni sulla versione di questa installazione.
 - **Icona Aiuto** — apre la playlist dei tutorial di Dino in una nuova scheda.
-- **Icona Impostazioni** — apre l'[Area utente](#user-area).
+- **Icona Impostazioni** — apre l'[Area utente](#area-utente).
 - **Icona Sincronizzazione** — mostra lo stato attuale della sincronizzazione dei dati. Fai clic per avviare una sincronizzazione manuale.
-- **Campanella delle notifiche** — mostra il numero di notifiche non lette come badge. La campanella suona quando arrivano nuove notifiche. Vedi [Notifiche](#notifications) sotto.
-- **Nome utente** — fai clic per aprire l'[Area utente](#user-area).
+- **Campanella delle notifiche** — mostra il numero di notifiche non lette come badge. La campanella suona quando arrivano nuove notifiche. Vedi [Notifiche](#notifiche) sotto.
+- **Nome utente** — fai clic per aprire l'[Area utente](#area-utente).
 - **Icona Esci** — fai clic per uscire. L'icona è disattivata durante una sincronizzazione in corso o quando il dispositivo è offline; in questi stati la disconnessione non è disponibile.
 
 ---
