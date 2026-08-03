@@ -500,7 +500,12 @@ export class LangManager extends DataModelManager<Lang> {
   updateLang(updates: {[key: string]: string}, key: string): Observable<string> {
     const apiCall: Observable<Lang | null>[] = [];
     const langsStored = this.langsStored$.value;
-    const allLangsNames = langsStored.map(l => l.name);
+    const configuredLangNames = (this._ts.getAvailableLangs() as (string | {id: string})[]).map(
+      lang => (typeof lang === 'string' ? lang : lang.id),
+    );
+    const allLangsNames = Array.from(
+      new Set([...configuredLangNames, ...langsStored.map(l => l.name)]),
+    );
 
     const isRename = updates['key'] ? updates['key'] !== key : false;
     const newKey = updates['key'] || key;
