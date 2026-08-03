@@ -1,7 +1,7 @@
 <div class="dino-survey-topbar">
   <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
 </div>
-<ng-container *ngIf="(requiredMetricsMissing$|async) === false; else missingMetrics">
+<ng-container *ngIf="(metricsState$|async) === 'ok'">
 <div
   class="dino-survey-progress"
   *ngIf="(submitted|async) === false && (slidesNum$|async)! > 1"
@@ -92,7 +92,7 @@
   </div>
 </ng-template>
 
-<ng-template #missingMetrics>
+<ng-container *ngIf="(metricsState$|async) === 'missing'">
   <div class="dino-edit-form-error-container">
     <div class="dino-survey-error-box">
       <mat-icon class="dino-survey-error-icon">error_outline</mat-icon>
@@ -101,4 +101,4 @@
       </h2>
     </div>
   </div>
-</ng-template>
+</ng-container>

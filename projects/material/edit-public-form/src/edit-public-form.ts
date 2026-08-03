@@ -134,6 +134,16 @@ export class EditPublicForm implements OnDestroy {
   readonly requiredMetricsMissing$: Observable<boolean>;
 
   /**
+   * Render state of the required-Metrics check: `checking` until the Form Schema
+   * has been fetched, then `ok` or `missing`. The intermediate state is what the
+   * template gates on: `requiredMetricsMissing$` alone emits nothing until the
+   * schema arrives, so an `async` pipe on it reads as `null` on the first change
+   * detection passes, which is not `false` and would flash the "missing
+   * information" message before the check has actually run.
+   */
+  readonly metricsState$: Observable<'checking' | 'ok' | 'missing'>;
+
+  /**
    * True if the form has been submitted.
    */
   readonly submitted = new BehaviorSubject<boolean>(false);
@@ -259,7 +269,12 @@ export class EditPublicForm implements OnDestroy {
     ts: TranslocoService,
     private _cdr: ChangeDetectorRef,
   ) {
-    this._loadLangsSub = lm.loadLangs().subscribe();
+    // The lang collection must be created before querying it: `list()` waits on
+    // the collection-created flag, which is only set by subscribing to `init()`.
+    this._loadLangsSub = lm
+      .init()
+      .pipe(switchMap(() => lm.loadLangs()))
+      .subscribe();
     this.slidesNum$ = frs.slidesNum;
 
     // The current slide is invalid when its 1-based position is in the list of
@@ -392,6 +407,12 @@ export class EditPublicForm implements OnDestroy {
         const requiredMetrics = fschema.form_schema_metrics ?? [];
         return requiredMetrics.some(metric => metricIds[metric] == null);
       }),
+      shareReplay(1),
+    );
+
+    this.metricsState$ = this.requiredMetricsMissing$.pipe(
+      map(missing => (missing ? 'missing' : 'ok') as 'missing' | 'ok'),
+      startWith('checking' as const),
       shareReplay(1),
     );
 
