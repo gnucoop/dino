@@ -47,11 +47,15 @@ export class OnlineLangManager extends OnlineDataModelManager<Lang> {
 
   /**
    * Fetches langs from the backend via GQL, registers them in TranslocoService
-   * and sets the active language to the configured default.
+   * and re-applies the active language so the view picks up the new translations.
    * Intended for anonymous/online-only contexts where localStorage is unavailable.
    */
   loadLangs(): Observable<void> {
-    return this.list().pipe(
+    // An empty selector is passed on purpose: the default one (`is_deleted: {$ne:
+    // true}`) is a Mango operator with no Hasura equivalent (`_ne` does not
+    // exist), and even `_eq: false` would drop the rows where `is_deleted` is
+    // NULL. Soft-deleted langs are filtered client-side below instead.
+    return this.query({selector: {}}).pipe(
       take(1),
       map(langs => {
         langs
@@ -69,7 +73,13 @@ export class OnlineLangManager extends OnlineDataModelManager<Lang> {
               );
             }
           });
-        this._ts.setActiveLang(this._config.defaultLanguage);
+        // Re-apply the language that is already active instead of forcing the
+        // default one: by the time the langs arrive the user's language may have
+        // been restored (LangSelector reads it from localStorage), and resetting
+        // it here would leave the selector showing one language while the form
+        // renders in another. `setActiveLang` always emits on `langChanges$`,
+        // even with the same value, so the re-render still happens.
+        this._ts.setActiveLang(this._ts.getActiveLang() || this._config.defaultLanguage);
       }),
     );
   }
