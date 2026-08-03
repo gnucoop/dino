@@ -7,21 +7,21 @@ name: Deploy Docs
 # only uses the workflow version present on the default branch.
 
 # on:
-#   workflow_run:
-#     workflows: ['CI']
-#     types:
-#       - completed
+#   push:
+#     branches:
+#       - doc-revision
 # jobs:
 #   docs:
-#     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 #     runs-on: ubuntu-latest
 
 on:
-  push:
-    branches:
-      - doc-revision
+  workflow_run:
+    workflows: ['CI']
+    types:
+      - completed
 jobs:
   docs:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     permissions:
