@@ -113,6 +113,24 @@ describe('Data service', () => {
       firstValueFrom(dataService.destroyCollection('collection').pipe(take(1))),
     ).toBeRejectedWithError();
   });
+
+  it('should report a collection that could not be created', async () => {
+    const consoleError = spyOn(console, 'error');
+    // A primary key that no property declares: rxdb rejects the collection.
+    const broken = {
+      name: 'broken',
+      collection: {schema: {...dummySchema, primaryKey: 'not_a_property'}},
+    };
+
+    await expectAsync(
+      firstValueFrom(dataService.createCollection(broken).pipe(take(1))),
+    ).toBeResolvedTo(false);
+
+    // The failure used to be silent outside dev mode, leaving a collection
+    // that never syncs with nothing to diagnose it by.
+    expect(consoleError).toHaveBeenCalled();
+    expect(dataService.problemSyncing.getValue()).toContain('broken');
+  });
 });
 
 describe('Data service - CRUD methods', () => {
