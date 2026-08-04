@@ -53,6 +53,13 @@ export const PRT: Translation = {
   'No fields found': 'Nenhum campo encontrado',
   'Repetition': 'Repetição',
   'DISMISS': 'FECHAR',
+  "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
+    'Já existe um relatório automático para este formulário. Para desativá-lo, elimine o esquema e os dados desse relatório.',
+  'Save the form first to add relationships':
+    'Salve primeiro o formulário para adicionar relacionamentos',
+  'Metrics associated with this questionnaire.': 'Métricas associadas a este questionário.',
+  'Statuses a submission of this questionnaire can have.':
+    'Estados que um envio deste questionário pode ter.',
   'Structure': 'Estrutura',
   'Text': 'Texto',
   'Numeric': 'Numéricos',

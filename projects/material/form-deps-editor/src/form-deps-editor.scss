@@ -30,19 +30,25 @@ $deps-dark: (
   @return mat-css-vars.mat-css-color-primary($shade, $alpha);
 }
 
-.isDarkTheme dino-form-deps-editor {
+.isDarkTheme .dino-deps {
   @include deps-tokens($deps-dark);
 }
 
+// The component is hosted headlessly: its sections are exposed as templates and
+// projected into other components' views, so the rendered DOM is NOT inside the
+// <dino-form-deps-editor> element and cannot be styled through it. Everything is
+// scoped on the .dino-deps wrapper that each template carries instead.
+// Keep the host element even though it is empty — it is the single instance that
+// owns the state, and it is what loads this stylesheet.
 dino-form-deps-editor {
-  display: block;
-  @include deps-tokens($deps-light);
+  display: none;
+}
 
-  .dino-deps {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
+.dino-deps {
+  @include deps-tokens($deps-light);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 
   // ===== Card =====
   .dino-deps-card {
