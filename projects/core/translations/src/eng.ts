@@ -58,6 +58,12 @@ export const ENG: Translation = {
   'Forward': 'Next',
   'Send': 'Send',
   'Powered by': 'Powered by',
+  "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
+    "An automatic report already exists for this form. To disable it, delete that report's schema and data.",
+  'Save the form first to add relationships': 'Save the form first to add relationships',
+  'Metrics associated with this questionnaire.': 'Metrics associated with this questionnaire.',
+  'Statuses a submission of this questionnaire can have.':
+    'Statuses a submission of this questionnaire can have.',
   'Structure': 'Structure',
   'Text': 'Text',
   'Numeric': 'Numeric',

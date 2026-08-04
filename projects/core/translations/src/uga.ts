@@ -52,6 +52,12 @@ export const UGA: Translation = {
   'No fields found': 'No fields found',
   'Repetition': 'Repetition',
   'DISMISS': 'DISMISS',
+  "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
+    "An automatic report already exists for this form. To disable it, delete that report's schema and data.",
+  'Save the form first to add relationships': 'Save the form first to add relationships',
+  'Metrics associated with this questionnaire.': 'Metrics associated with this questionnaire.',
+  'Statuses a submission of this questionnaire can have.':
+    'Statuses a submission of this questionnaire can have.',
   'Customize display': 'Customize display',
   'Alter the display of the table by selecting up to 7 columns':
     'Alter the display of the table by selecting up to 7 columns',
