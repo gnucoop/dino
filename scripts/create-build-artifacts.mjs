@@ -5,7 +5,7 @@ import {default as fs} from 'fs';
 import {default as path} from 'path';
 import {default as shell} from 'shelljs';
 
-import {packages} from '../build-config.mjs';
+import {packages} from './build-config.mjs';
 
 const cwd = process.cwd();
 const mainPackage = JSON.parse(fs.readFileSync(path.join(cwd, 'package.json'), 'utf8'));
