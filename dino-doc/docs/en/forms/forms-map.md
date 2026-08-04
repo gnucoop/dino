@@ -7,6 +7,8 @@ description: Visualize form submissions on an interactive map with filtering opt
 
 The Forms Map page displays your form submissions on an interactive map, allowing you to visualize data geographically. You can filter submissions by date and by specific data fields to focus on the information you need.
 
+This is only available if the metric location is active on this form schema. Moreover, for each location the coordinates attribute needs to be filled.
+
 ![Main view of the Forms Map page](../imgs/forms/forms-map.png)
 
 The page consists of two main areas:

@@ -26,14 +26,14 @@ Fill in or adjust the following fields:
 | **Form Label** | The human‑readable name displayed in lists and reports. |
 | **Icon Set** | Choose **Default** (material icons) or **Humanitarian** (custom SVG icons). |
 | **Icon Identifier** | Pick an icon from the autocomplete list. The preview updates live. |
-| **Form Statuses** | One or more labels that describe the state of a submission (e.g., Draft, Approved, Rejected). Select existing statuses or **Create new Status** to add one on the fly. |
+| **Form Statuses** | One or more labels that describe the state of a submission (e.g., Draft, Approved, Rejected). Select existing statuses or **Create new Status** to add one on the fly. It is possible to associate a level to each status, to establish an order in the statuses. When a new form data is created, the form data is created with the status corresponding to the lowest level.|
 | **Form Metrics** | Metrics to collect for every submission. Select one or more from the list. |
-| **Visibility** | **Private** – only members of assigned groups can see the form. **Public** – anyone with the link can view and submit. |
+| **Visibility** | **Private** – the form schema can accept submissions only from DINO users, provided that they have permission to submit for data to that particular form schema. On the other heand, if a form is set to **Public** – anyone with the link can submit. See the page on [public forms](../public-forms/index.md) for more details.|
 | **Metrics Set Behavior** | **Default** – each metric value can appear multiple times across submissions. **Unique** – a metric value (e.g., a district name) can be used only once per form. |
-| **Generate Report** | When **Yes**, Dino automatically generates a report after each submission. This option is hidden if an auto‑report is already configured. |
+| **Generate Report** | When **Yes**, Dino automatically generates a report. This option is hidden if an auto‑report is already present. See the [auto report](../reports/autoreports.md) section for more details. |
 
 !!! warning "Unique Metrics Set Behavior"
-    Use **Unique** carefully — once a value is used for a metric, it cannot be reused in another submission of the same form.
+    Use **Unique** carefully — once a value is used for a metric, it cannot be reused in another submission of the same form schema.
 
 ## Managing Form Statuses
 
