@@ -1,3 +1,13 @@
+<a name="18.0.5-sw.148"></a>
+# 18.0.5-sw.148 "fuzzy-worm" (2026-08-04)
+### Bug Fixes
+* **edit-public-form:** fix online langs for anonymous users and metrics message error ([6d66c8c](https://github.com/gnucoop/dino/commit/6d66c8c2a8bff571c50ec14f63d39aee49c8714f))
+* **material/langs:** allow adding a key for a language with no row on the db ([ca878d6](https://github.com/gnucoop/dino/commit/ca878d63a87c9c1648211f86aa4b58d0ce7e8438))
+### Features
+* **release:** include AJF library changes in generated release notes ([794842f](https://github.com/gnucoop/dino/commit/794842f58026637322b0e95def8a85a3700763ea))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.0.5-sw.147"></a>
 # 18.0.5-sw.147 "energetic-cephalopod" (2026-07-27)
 ### Bug Fixes
