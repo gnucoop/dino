@@ -154,7 +154,7 @@ jobs:
         run: ./scripts/build-docs.mjs
 
       - name: Create build artifacts
-        run: ./scripts/jenkins/create-build-artifacts.mjs
+        run: ./scripts/create-build-artifacts.mjs
 
       # - name: Publish
       #   run: ./scripts/publish.mjs
