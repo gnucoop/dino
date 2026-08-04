@@ -86,6 +86,18 @@ import {RxDocument} from 'rxdb';
 import {FormSchemaNameMatchValidator} from './form-schema-name-validator';
 
 /**
+ * Editor tab positions, in display order.
+ * Keep in sync with the <mat-tab> order in edit-form-schema.html.
+ */
+enum EditorTab {
+  Settings = 0,
+  Metrics = 1,
+  Status = 2,
+  Build = 3,
+  Relationships = 4,
+}
+
+/**
  * The Form Schema Editor component.
  * Form Schemas can be viewed or edited and saved here.
  * The form is rendered by the Ajf Form Builder
@@ -139,11 +151,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
   readonly isCreation: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   /**
-   * The currently selected editor tab.
-   * 0 = Settings (form metadata), 1 = Build (the Ajf form builder canvas).
+   * The currently selected editor tab (see EditorTab for the positions).
    * Set on init: Settings when creating a new Form Schema, Build when editing.
    */
-  selectedTabIndex: number = 1;
+  selectedTabIndex: number = EditorTab.Build;
 
   /**
    * True while creating a brand new Form Schema (create route, no id).
@@ -166,9 +177,11 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _importRelocatedFor: AjfFormBuilder | null = null;
 
   /**
-   * The embedded relationships editor (Relationships tab). Present only once that
-   * tab has been opened (kept alive via the tab group's preserveContent). The top
-   * Save uses it to persist relationships as part of the form save.
+   * The embedded metrics/relationships editor. It is hosted headlessly next to the
+   * tab group and its sections are projected into the Metrics and Relationships
+   * tabs, so it is instantiated with the rest of the template — available from the
+   * first render, regardless of which tab the user opens. The top Save uses it to
+   * persist relationships as part of the form save.
    */
   @ViewChild(FormDepsEditor)
   depsEditor?: FormDepsEditor;
@@ -190,39 +203,82 @@ export class EditFormSchema implements OnInit, OnDestroy {
       this._nodeTypeObserver = undefined;
       return;
     }
+    // NOTE: this setter runs as soon as the component renders, which is well
+    // before the Build tab's DOM exists: <mat-tab> content is instantiated
+    // eagerly, but MatTabBody only inserts it into the page when that tab is
+    // first activated. When creating a Form Schema the initial tab is Settings,
+    // so the builder's markup can stay detached for as long as the user spends
+    // filling in the other tabs. Everything below therefore waits for the
+    // element it needs via _whenPresent() instead of polling to a deadline.
     if (this._importRelocatedFor !== cmp) {
+      // Latched up-front so a second setter call cannot start a duplicate wait;
+      // cleared again by _relocateImportButton() if it could not finish.
       this._importRelocatedFor = cmp;
-      this._relocateImportButton();
+      void this._relocateImportButton(cmp);
     }
-    this._setupNodeTypeGrouping();
+    void this._setupNodeTypeGrouping();
     if (this._creating && this._expandAppliedFor !== cmp) {
       this._expandAppliedFor = cmp;
       // Expand slides by default (and for slides added later). This is the source
       // of truth and does not depend on the DOM being rendered yet.
       cmp.expandAll();
       // Reflect the expanded state on the toolbar toggle, which is uncontrolled
-      // (the Ajf builder exposes no "checked" input for it). The toolbar renders a
-      // tick after the builder mounts, so retry until the toggle button exists.
-      this._syncExpandToggle();
+      // (the Ajf builder exposes no "checked" input for it).
+      void this._syncExpandToggle();
     }
   }
 
   /**
-   * Turns the Ajf builder toolbar "expand slides" toggle ON to match the
-   * default-expanded state, retrying until the (async-rendered) toggle exists.
+   * Resolves with the first element matching `selector` inside this component, as
+   * soon as it exists — immediately when it already does, otherwise once it is
+   * inserted. Resolves with `null` only if the component is destroyed first.
+   *
+   * Deliberately has no attempt/time limit. The elements this is used for belong
+   * to the Build tab, whose DOM is attached only when that tab is first opened —
+   * arbitrarily long after the builder component itself was created. A bounded
+   * retry loop expires in the meantime and then never runs again, which is what
+   * used to leave the Import button parked in its hidden span and the field-type
+   * category headers missing when creating a new Form Schema.
    */
-  private _syncExpandToggle(attempt: number = 0): void {
-    const toggle = this._el.nativeElement.querySelector(
-      'ajf-form-builder mat-slide-toggle button',
-    ) as HTMLElement | null;
-    if (toggle != null) {
-      if (toggle.getAttribute('aria-checked') !== 'true') {
-        toggle.click();
-      }
+  private _whenPresent(selector: string): Promise<HTMLElement | null> {
+    const root = this._el.nativeElement;
+    const existing = root.querySelector(selector) as HTMLElement | null;
+    if (existing != null) {
+      return Promise.resolve(existing);
+    }
+    if (this._destroyed) {
+      return Promise.resolve(null);
+    }
+    return new Promise<HTMLElement | null>(resolve => {
+      let entry: {cancel: () => void};
+      const observer = new MutationObserver(() => {
+        const found = root.querySelector(selector) as HTMLElement | null;
+        if (found != null) {
+          finish(found);
+        }
+      });
+      const finish = (el: HTMLElement | null) => {
+        observer.disconnect();
+        this._pendingWaits.delete(entry);
+        resolve(el);
+      };
+      entry = {cancel: () => finish(null)};
+      this._pendingWaits.add(entry);
+      observer.observe(root, {childList: true, subtree: true});
+    });
+  }
+
+  /**
+   * Turns the Ajf builder toolbar "expand slides" toggle ON to match the
+   * default-expanded state, once the (async-rendered) toggle exists.
+   */
+  private async _syncExpandToggle(): Promise<void> {
+    const toggle = await this._whenPresent('ajf-form-builder mat-slide-toggle button');
+    if (toggle == null) {
       return;
     }
-    if (attempt < 20) {
-      setTimeout(() => this._syncExpandToggle(attempt + 1), 50);
+    if (toggle.getAttribute('aria-checked') !== 'true') {
+      toggle.click();
     }
   }
 
@@ -233,33 +289,34 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * button (its click binding is preserved by the move). Retries until the
    * async-rendered toolbar and the button are both available.
    */
-  private _relocateImportButton(attempt: number = 0): void {
-    const root = this._el.nativeElement;
-    const toolbar = root.querySelector(
-      'ajf-form-builder .ajf-formbuilder-toolbar',
-    ) as HTMLElement | null;
+  private async _relocateImportButton(cmp: AjfFormBuilder): Promise<void> {
+    const toolbar = await this._whenPresent('ajf-form-builder .ajf-formbuilder-toolbar');
     // Query the parked button straight from the DOM (not via @ViewChild) so this
     // does not depend on query-resolution timing when the Build tab mounts lazily
     // (e.g. when creating a new schema, where Build is not the initial tab).
-    const importEl = root.querySelector('.dino-efs-import-btn') as HTMLElement | null;
-    const downloadBtn =
-      (toolbar?.querySelector(':scope > .ajf-spacer + button') as HTMLElement | null) ?? null;
+    const importEl = toolbar == null ? null : await this._whenPresent('.dino-efs-import-btn');
 
-    if (toolbar != null && importEl != null && downloadBtn != null) {
+    if (toolbar == null || importEl == null) {
+      // Only reachable when the component was destroyed while waiting. Release the
+      // latch so a later builder instance is still handled.
+      if (this._importRelocatedFor === cmp) {
+        this._importRelocatedFor = null;
+      }
+      return;
+    }
+
+    const downloadBtn = toolbar.querySelector(
+      ':scope > .ajf-spacer + button',
+    ) as HTMLElement | null;
+    if (downloadBtn != null) {
       // Tag the Download button so it can be restyled with a border to match
       // Import (adjacency-based selectors break once Import is inserted here).
       this._renderer.addClass(downloadBtn, 'dino-efs-download-btn');
       this._renderer.insertBefore(toolbar, importEl, downloadBtn);
       return;
     }
-    if (attempt < 40) {
-      setTimeout(() => this._relocateImportButton(attempt + 1), 50);
-      return;
-    }
-    // Last resort: at least show the Import button in the toolbar.
-    if (toolbar != null && importEl != null) {
-      this._renderer.appendChild(toolbar, importEl);
-    }
+    // Toolbar is up but has no Download button to anchor to: at least show Import.
+    this._renderer.appendChild(toolbar, importEl);
   }
 
   /**
@@ -282,18 +339,16 @@ export class EditFormSchema implements OnInit, OnDestroy {
   /**
    * Sets up a MutationObserver on the field-type source list to keep the
    * category headers in place across the builder's search-driven re-renders.
-   * Retries until the (async-rendered) list container exists.
+   * Waits for the list container, which only exists once the Build tab has been
+   * opened at least once.
    */
-  private _setupNodeTypeGrouping(attempt: number = 0): void {
-    const container = this._el.nativeElement.querySelector(
-      'ajf-form-builder .ajf-drawer-content',
-    ) as HTMLElement | null;
+  private async _setupNodeTypeGrouping(): Promise<void> {
+    const container = await this._whenPresent('ajf-form-builder .ajf-drawer-content');
     if (container == null) {
-      if (attempt < 40) {
-        setTimeout(() => this._setupNodeTypeGrouping(attempt + 1), 50);
-      }
       return;
     }
+    // Safe if two waits resolved concurrently: the previous observer is dropped,
+    // so at most one stays attached.
     this._nodeTypeObserver?.disconnect();
     this._nodeTypeObserver = new MutationObserver(() => this._applyNodeTypeGrouping(container));
     this._nodeTypeObserver.observe(container, {childList: true});
@@ -433,6 +488,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   private _dialogSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * Keeps the "Generate Report" control in sync with whether an automatic report
+   * already exists (see the lock set up in the constructor).
+   */
+  private _autoReportLockSub: Subscription = Subscription.EMPTY;
+
   private _langs: Lang[] | null = null; // as listed by LangManager at construction time
   private _newLangs: Partial<Lang>[] = []; // to be created when saving the form
   private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
@@ -463,6 +524,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
   /** Guards {@link _applyNodeTypeGrouping} against its own DOM mutations. */
   private _applyingGrouping = false;
+
+  /** Outstanding {@link _whenPresent} waits, cancelled on destroy. */
+  private readonly _pendingWaits = new Set<{cancel: () => void}>();
+
+  /** True once destroyed, so {@link _whenPresent} stops waiting for the DOM. */
+  private _destroyed = false;
 
   constructor(
     protected _cdr: ChangeDetectorRef,
@@ -495,7 +562,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     // Default tab: Settings when creating a new Form Schema, Build when editing.
     this._formSchemaId.pipe(take(1)).subscribe(id => {
       this._creating = id == null;
-      this.selectedTabIndex = this._creating ? 0 : 1;
+      this.selectedTabIndex = this._creating ? EditorTab.Settings : EditorTab.Build;
       this._cdr.markForCheck();
     });
 
@@ -572,6 +639,33 @@ export class EditFormSchema implements OnInit, OnDestroy {
         return fg;
       }),
       shareReplay(1),
+    );
+
+    // "Generate Report" lock. The field stays visible once a report exists (so the
+    // state is not silently hidden), but it is pinned to Yes and disabled: nothing
+    // here can withdraw an existing automatic report — the user has to delete that
+    // report's schema and data, which the field's hint explains.
+    //
+    // Pinning the value to true does not alter the save path: the auto-report branch
+    // at the end of the save subscription already runs whenever `autoReport != null`,
+    // irrespective of this control. Disabling is also safe for `fgroup.valid` (which
+    // gates Save) because Angular excludes disabled controls from validation, and
+    // save() reads the value with formGroup.get(...)?.value, which still returns it.
+    this._autoReportLockSub = combineLatest([this.formGroup, this.autoReport]).subscribe(
+      ([fg, autoReport]) => {
+        const ctrl = fg.get('generateAutoReport');
+        if (ctrl == null) {
+          return;
+        }
+        if (autoReport != null) {
+          ctrl.setValue(true, {emitEvent: false});
+          ctrl.disable({emitEvent: false});
+        } else if (ctrl.disabled) {
+          // The report was deleted elsewhere: hand the choice back to the user.
+          ctrl.enable({emitEvent: false});
+        }
+        this._cdr.markForCheck();
+      },
     );
 
     this.form = combineLatest([
@@ -820,7 +914,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * Switches the editor to the Build tab.
    */
   goToBuild(): void {
-    this.selectedTabIndex = 1;
+    this.selectedTabIndex = EditorTab.Build;
   }
 
   /**
@@ -1003,7 +1097,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._autoReportSchemaSub.unsubscribe();
     this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
+    this._autoReportLockSub.unsubscribe();
     this._nodeTypeObserver?.disconnect();
+    this._destroyed = true;
+    // _whenPresent() waits have no deadline, so they must be released here.
+    this._pendingWaits.forEach(wait => wait.cancel());
+    this._pendingWaits.clear();
     this.isSaving = false;
   }
 }

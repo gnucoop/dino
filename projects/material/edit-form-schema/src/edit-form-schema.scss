@@ -166,12 +166,24 @@ dino-edit-form-schema {
     }
   }
 
-  // ===== Settings tab =====
-  .dino-efs-settings {
+  // ===== Settings / Metrics / Status tabs =====
+  // .mat-mdc-tab-body-content is a flex column with overflow hidden, so each tab
+  // root has to declare its own scroll box.
+  .dino-efs-settings,
+  .dino-efs-metrics,
+  .dino-efs-status {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
     padding: 22px;
+  }
+
+  // The Metrics tab stacks the settings card above the deps cards projected from
+  // the metrics/relationships editor; 18px matches the .dino-deps card rhythm.
+  .dino-efs-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
 
   .dino-efs-settings-card {
@@ -208,10 +220,41 @@ dino-edit-form-schema {
     }
   }
 
+  // Sits above the full-width deps cards (Metrics tab), so it drops the centered
+  // max-width and lines up with them.
+  .dino-efs-card-wide {
+    max-width: none;
+    margin: 0;
+  }
+
+  // Placeholder shown instead of the deps-backed sections while creating a new
+  // Form Schema: they attach to a FormSchemaDeps document, which needs a saved
+  // schema first.
+  .dino-efs-locked {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 20px;
+    border: 1px dashed var(--efs-border);
+    border-radius: 12px;
+    color: var(--efs-muted-2);
+    font-size: 13px;
+
+    .mat-icon {
+      font-size: 19px;
+      width: 19px;
+      height: 19px;
+    }
+  }
+
   .dino-form-attributes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 4px 20px;
+    // Top-align, do not stretch. A field with a hint (Generate Report) is taller
+    // than its neighbours, and the grid's default `stretch` would inflate every
+    // other box on that row to match it.
+    align-items: start;
 
     @media only screen and (max-width: 899px) {
       grid-template-columns: repeat(2, 1fr);
@@ -232,9 +275,9 @@ dino-edit-form-schema {
       }
     }
 
-    // Full-width field: occupies its own row (used by Form Statuses and Form
-    // Metrics), so the smaller selects (Visibility / Metrics Set Behavior /
-    // Generate Report) group together on the following row.
+    // Full-width field: occupies its own row. Used by Form Statuses (Status tab)
+    // and Form Metrics (Metrics tab), so the smaller select next to it (Metrics
+    // Set Behavior) starts on the following row.
     .dino-efs-span-full {
       grid-column: 1 / -1;
     }
