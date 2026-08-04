@@ -781,9 +781,7 @@ export class DataService implements IDataService {
                 }),
                 mapTo(true),
                 catchError(err => {
-                  if (isDevMode()) {
-                    console.error(params.collection.schema.title, err);
-                  }
+                  this._reportCollectionError(params.name, err);
                   return obsOf(false);
                 }),
               );
@@ -798,7 +796,14 @@ export class DataService implements IDataService {
             delay: 1000,
             label: `createCollection:${params.name}`,
           }),
-          catchError(() => obsOf(false)),
+          // Reached when the retries are exhausted, i.e. the database never
+          // became the one this registration was started for. Reporting it is
+          // the point: the collection is now permanently absent for this
+          // session and nothing else would ever say so.
+          catchError(err => {
+            this._reportCollectionError(params.name, err);
+            return obsOf(false);
+          }),
         );
       }),
     );
@@ -1398,6 +1403,29 @@ export class DataService implements IDataService {
       `Could not sync collection "${collection}": ${summary}`,
       'error',
     );
+  }
+
+  /**
+   * Reports a collection that could not be created.
+   *
+   * A collection that fails to register is never synced again for the whole
+   * session, and used to fail in complete silence: the log was behind
+   * `isDevMode()` and the retry exhaustion was swallowed by a bare
+   * `catchError`, so in production there was no console output, no report and
+   * no sign in the UI - only a sync that "sometimes gets stuck". The console
+   * error is therefore deliberately unconditional, and the collection is added
+   * to {@link problemSyncing} so that the existing badge and end-of-cycle
+   * message name it, like any other collection that could not be synced.
+   *
+   * @param collectionName The collection that could not be created
+   * @param error The error that prevented the creation
+   */
+  private _reportCollectionError(collectionName: string, error: unknown): void {
+    const reason = error instanceof Error ? error.message : String(error);
+    const message = `Could not create collection "${collectionName}": ${reason}`;
+    console.error(message, error);
+    this._toggleActiveSyncProblem(collectionName, 'add');
+    this._ehms?.captureErrorMessage(message, 'error');
   }
 
   /**
