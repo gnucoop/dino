@@ -144,6 +144,43 @@ describe('Data service - logout followed by an immediate login', () => {
     expect(reported[reported.length - 1]).toBeTrue();
   });
 
+  it(
+    'removes the local database even when a replication cancellation never settles',
+    async () => {
+      authService.login();
+      await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
+
+      // A replication whose cancel() never settles: rxdb awaits the checkpoint
+      // queue and the meta instance in there, so a pending write or request is
+      // enough to leave it unresolved.
+      const activeSyncs = (dataService as any)._activeSyncs as BehaviorSubject<any>;
+      activeSyncs.next({
+        [collectionRequest.name]: {
+          state: {cancel: () => new Promise<void>(() => {})},
+          clientRequestSub: {unsubscribe: () => {}},
+          stateReceivedSub: {unsubscribe: () => {}},
+        },
+      });
+      const consoleWarn = spyOn(console, 'warn');
+
+      // The removal is the only thing that clears the schema hashes stored in the
+      // internal store, so it must not depend on the cancellation: a database
+      // surviving the logout makes a schema conflict (rxdb DB6) permanent, with
+      // neither a new login nor a reload able to recover it.
+      await expectAsync(firstValueFrom(dataService.destroyAllCollections())).toBeResolvedTo([
+        collectionRequest.name,
+      ]);
+      expect(consoleWarn).toHaveBeenCalled();
+
+      authService.login();
+      await expectAsync(
+        firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
+      ).toBeResolvedTo(true);
+    },
+    // Deliberately waits for the real cap on the cancellation wait.
+    20000,
+  );
+
   it('tears the database down even when no collection was ever registered', async () => {
     authService.login();
     // Exporting is the cheapest way to have the database created without
