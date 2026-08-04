@@ -24,7 +24,7 @@ When you open a form submission to edit, you see the same form interface used fo
 !!! tip "Tracking Changes"
     Dino automatically logs the changes you make between the original submission and the edited version. This creates a history of who changed what and when.
 
-## Available Features
+<!-- ## Available Features
 
 While editing, you have access to the same features as when creating a new submission:
 
@@ -36,9 +36,9 @@ While editing, you have access to the same features as when creating a new submi
 ![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
 
 !!! warning "Data Integrity"
-    Be cautious when editing critical data. Other reports or analyses may depend on the original submitted values. Consider if creating a new, corrected submission might be more appropriate than editing an old one.
+    Be cautious when editing critical data. Other reports or analyses may depend on the original submitted values. Consider if creating a new, corrected submission might be more appropriate than editing an old one. -->
 
-## Understanding the Form Structure
+<!-- ## Understanding the Form Structure
 
 The form you see while editing is based on a **form schema** — the underlying blueprint that defines all fields, sections, and rules. You can view a compiled preview of the form schema from the designer.
 
@@ -52,4 +52,4 @@ The schema itself can be edited separately. If you need to change the structure 
 
 *   To understand the structure of the form itself, see [Edit Form Schema](edit-form-schema.md).
 *   To create a brand new submission, you typically start from the main [Forms](index.md) page.
-*   To browse your forms and submissions on a map, see [Forms Map](forms-map.md).
+*   To browse your forms and submissions on a map, see [Forms Map](forms-map.md). -->
