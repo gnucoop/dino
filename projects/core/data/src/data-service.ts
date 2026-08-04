@@ -197,6 +197,16 @@ const RESTORE_PRESYNC_MAX_WAIT_MS = 60000;
 const DB_TEARDOWN_MAX_WAIT_MS = 30000;
 
 /**
+ * Safety cap for how long the teardown waits for the running replications to be cancelled
+ * before removing the storage. Stopping them first is correct - rxdb waits for the database
+ * to be idle while closing it - but it cannot be a condition: `RxReplicationState.cancel()`
+ * awaits the checkpoint queue and the meta instance, so a pending write or request leaves it
+ * unresolved and the removal, which is the only thing that clears the stored schema hashes,
+ * would never run. On expiry the database is removed anyway.
+ */
+const SYNC_STOP_MAX_WAIT_MS = 5000;
+
+/**
  * Number of attempts allowed when creating the database. More than one attempt is needed
  * because the name of a database being torn down is released asynchronously.
  */
@@ -861,9 +871,20 @@ export class DataService implements IDataService {
     // The replications have to be actually stopped before the storage goes away:
     // rxdb waits for the database to be idle while closing it, and a replication
     // still writing either keeps it busy or writes to a destroyed collection.
-    await syncsStopped;
+    // Bounded, though: this wait used to be unbounded, and a cancellation that
+    // never settled silently skipped the removal below - the database survived
+    // the logout with its stored schema hashes, so a collection whose schema
+    // changed without a version bump kept failing to register (rxdb DB6) at
+    // every following login, with a reload unable to fix it either.
+    const syncsActuallyStopped = await this._awaitAtMost(syncsStopped, SYNC_STOP_MAX_WAIT_MS);
     if (db == null) {
       return [];
+    }
+    if (!syncsActuallyStopped) {
+      this._reportDbTeardownDelay(
+        `Replications did not stop within ${SYNC_STOP_MAX_WAIT_MS}ms; ` +
+          `removing the local database anyway.`,
+      );
     }
     // `remove()` closes every collection and deletes its storage, so iterating
     // over the registered collections adds nothing. It also removes collections
@@ -900,35 +921,69 @@ export class DataService implements IDataService {
    */
   private async _awaitDbTeardown(): Promise<void> {
     const pending = this._dbTeardown;
+    const completed = await this._awaitAtMost(pending, DB_TEARDOWN_MAX_WAIT_MS);
+    if (completed) {
+      return;
+    }
+    // Reported, and not only in dev mode: reaching this point means the previous
+    // database was not removed, so this session starts on the previous session's
+    // storage. It is the state in which a collection whose schema changed without
+    // a version bump can never register again (rxdb DB6), and nothing else would
+    // say that the logout failed to wipe anything.
+    this._reportDbTeardownDelay(
+      `Db teardown did not complete within ${DB_TEARDOWN_MAX_WAIT_MS}ms; ` +
+        `creating the new database anyway, on a local database that was not removed.`,
+    );
+    // Give up on this teardown for good: the creation is retried, and each
+    // retry waiting the full cap again would keep the app without a database
+    // for minutes instead of seconds.
+    if (this._dbTeardown === pending) {
+      this._dbTeardown = Promise.resolve();
+    }
+  }
+
+  /**
+   * Awaits a promise, giving up after `maxWaitMs`.
+   *
+   * A rejection counts as settled: the caller waits for something to be over,
+   * and something that failed is over too.
+   *
+   * @param promise The promise to wait for
+   * @param maxWaitMs How long to wait, in milliseconds
+   * @returns True when the promise settled within the cap, false on expiry
+   */
+  private _awaitAtMost(promise: Promise<unknown>, maxWaitMs: number): Promise<boolean> {
     let timer: ReturnType<typeof setTimeout> | undefined;
-    let expired = false;
-    const cap = new Promise<void>(resolve => {
-      timer = setTimeout(() => {
-        expired = true;
-        resolve();
-      }, DB_TEARDOWN_MAX_WAIT_MS);
+    const cap = new Promise<boolean>(resolve => {
+      timer = setTimeout(() => resolve(false), maxWaitMs);
     });
-    try {
-      await Promise.race([pending, cap]);
-    } finally {
+    return Promise.race([
+      promise.then(
+        () => true,
+        () => true,
+      ),
+      cap,
+    ]).finally(() => {
       if (timer != null) {
         clearTimeout(timer);
       }
-    }
-    if (expired) {
-      if (isDevMode()) {
-        console.warn(
-          `Db teardown did not complete within ${DB_TEARDOWN_MAX_WAIT_MS}ms; ` +
-            `creating the new database anyway.`,
-        );
-      }
-      // Give up on this teardown for good: the creation is retried, and each
-      // retry waiting the full cap again would keep the app without a database
-      // for minutes instead of seconds.
-      if (this._dbTeardown === pending) {
-        this._dbTeardown = Promise.resolve();
-      }
-    }
+    });
+  }
+
+  /**
+   * Reports a database teardown that did not complete in time.
+   *
+   * Both cases are recoverable by design - the removal runs anyway, the creation
+   * proceeds anyway - but they mean the local database outlived the session that
+   * created it, which is exactly the state that makes a schema hash conflict
+   * (rxdb DB6) permanent. Silent in production, it would be indistinguishable
+   * from "the sync is stuck again".
+   *
+   * @param message What was waited for and what was done instead
+   */
+  private _reportDbTeardownDelay(message: string): void {
+    console.warn(message);
+    this._ehms?.captureErrorMessage(message, 'warning');
   }
 
   /**
