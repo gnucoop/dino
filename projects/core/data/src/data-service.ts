@@ -45,8 +45,8 @@ import {RxDBJsonDumpPlugin} from 'rxdb/plugins/json-dump';
 import {
   BehaviorSubject,
   combineLatest,
+  defer,
   firstValueFrom,
-  forkJoin,
   from,
   interval,
   Observable,
@@ -186,6 +186,28 @@ const OWNED_DATA_COLLECTIONS: readonly string[] = ['form_data', 'report_data'];
 const RESTORE_PRESYNC_MAX_WAIT_MS = 60000;
 
 /**
+ * Safety cap for how long the creation of a database waits for the teardown of the previous
+ * one to complete. The wait is what makes a logout immediately followed by a login safe:
+ * rxdb keeps a database name reserved until its instance is closed, so creating a new one
+ * while the previous teardown is still running throws (rxdb error DB8) and would leave the
+ * app with no database at all. The cap only prevents a teardown that never settles from
+ * blocking the login forever; on expiry the creation is attempted anyway and, if the name is
+ * still taken, retried - see {@link DB_CREATION_MAX_ATTEMPTS}.
+ */
+const DB_TEARDOWN_MAX_WAIT_MS = 30000;
+
+/**
+ * Number of attempts allowed when creating the database. More than one attempt is needed
+ * because the name of a database being torn down is released asynchronously.
+ */
+const DB_CREATION_MAX_ATTEMPTS = 5;
+
+/**
+ * Delay between two database creation attempts, in milliseconds.
+ */
+const DB_CREATION_RETRY_DELAY_MS = 1000;
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -257,6 +279,23 @@ export class DataService implements IDataService {
   private _db: Observable<RxDatabase>;
 
   private _refreshDb = new BehaviorSubject<'ready' | 'notReady'>('ready');
+
+  /**
+   * The database instance currently open, or null when none is.
+   * Held as a plain reference, and not read back from {@link _db}, because the
+   * teardown must always act on the instance it was started for: {@link _db}
+   * replays its latest value, so a teardown subscribing to it could be handed
+   * the database created by a subsequent login and destroy that one instead.
+   */
+  private _currentDb: RxDatabase | null = null;
+
+  /**
+   * Resolves when the teardown of the previous database is complete.
+   * Awaited before a new database is created, so that a logout and a login in
+   * quick succession cannot overlap. Never rejects: a failed teardown must not
+   * prevent the next login from getting a database.
+   */
+  private _dbTeardown: Promise<void> = Promise.resolve();
 
   /**
    * The current Websocket client
@@ -336,7 +375,17 @@ export class DataService implements IDataService {
       filter(rdy => rdy === 'ready'),
       switchMap(() => {
         return this._dataConfig.pipe(
-          switchMap(cfg => from(createRxDatabase(cfg.databaseCreateOptions))),
+          // `defer` (not `from` on a promise) so that a retry really runs the
+          // creation again instead of re-reading an already rejected promise.
+          switchMap(cfg =>
+            defer(() => this._createDatabase(cfg)).pipe(
+              boundedRetry<RxDatabase>({
+                count: DB_CREATION_MAX_ATTEMPTS,
+                delay: DB_CREATION_RETRY_DELAY_MS,
+                label: 'createRxDatabase',
+              }),
+            ),
+          ),
         );
       }),
       tap(db => {
@@ -383,6 +432,19 @@ export class DataService implements IDataService {
         }
         if (evt === 'started') {
           return obsOf([false]);
+        }
+        if (collections.length === 0) {
+          // No collection registered means there is nothing to wait for - the
+          // session has just been torn down. Reporting `false` here would be
+          // read as "initialization in progress" and leave the initialization
+          // spinner on the login page (see `isLoading` in the main nav).
+          // The login path does not rely on this branch: it gets its `false`
+          // from the `started` event above, emitted before the collections are
+          // registered.
+          // The explicit value matters because combineLatest of an empty array
+          // never emits, so without it the stream goes silent on logout and
+          // whoever is showing a spinner keeps showing it.
+          return obsOf([true]);
         }
         const syncs = collections.map(coll => coll.firstSyncCompleted);
         return combineLatest(syncs);
@@ -444,7 +506,15 @@ export class DataService implements IDataService {
       .pipe(
         switchMap(evt => {
           if (evt) {
-            return this.destroyAllCollections();
+            // The error is swallowed here on purpose: letting it reach the
+            // subscriber would terminate this subscription, and no later logout
+            // would tear the database down at all.
+            return this.destroyAllCollections().pipe(
+              catchError(err => {
+                console.error('Could not destroy the local database on logout', err);
+                return obsOf([]);
+              }),
+            );
           }
           return obsOf(false);
         }),
@@ -754,29 +824,122 @@ export class DataService implements IDataService {
   }
 
   /**
-   * Destroys all collections in the current local db.
+   * Destroys the current local db, with all its collections and their stored data.
+   * Called on logout, so that the next user does not inherit the previous one's data.
+   *
+   * The returned observable emits the names of the removed collections. The teardown
+   * itself starts immediately, and is registered as the pending one, so that a login
+   * arriving before it completes waits for it instead of failing to create a database
+   * whose name is still reserved.
    */
   destroyAllCollections(): Observable<string[]> {
-    return this._db.pipe(
-      switchMap(db => {
-        const collectionsDestructions: Observable<boolean>[] = [];
-        for (let coll of this._registeredCollections.value) {
-          const collName = coll.collection.name;
-          const rxCollection = db.collections[collName] as RxCollection;
-          if (rxCollection) {
-            collectionsDestructions.push(
-              from(rxCollection.remove()).pipe(
-                switchMap(() => from(rxCollection.destroy())),
-                tap(() => this._removeRegisteredCollection(rxCollection)),
-              ),
-            );
-          }
-        }
-        return forkJoin(collectionsDestructions).pipe(withLatestFrom(obsOf(db)));
-      }),
-      switchMap(([_cd, db]) => from(db.destroy()).pipe(switchMap(() => from(db.remove())))),
-      take(1),
+    const teardown = this._teardownDatabase();
+    this._dbTeardown = teardown.then(
+      () => undefined,
+      () => undefined,
     );
+    return from(teardown);
+  }
+
+  /**
+   * Stops every replication and removes the current database and its data.
+   * The service state describing the previous session (registered collections,
+   * websocket client, current token, sync problems) is reset synchronously,
+   * before the first await, so that it cannot wipe the state of a session
+   * started in the meantime.
+   */
+  private async _teardownDatabase(): Promise<string[]> {
+    const db = this._currentDb;
+    this._currentDb = null;
+    const syncsStopped = this._stopAllCollectionSyncs();
+    this._resetSessionState();
+    // The replications have to be actually stopped before the storage goes away:
+    // rxdb waits for the database to be idle while closing it, and a replication
+    // still writing either keeps it busy or writes to a destroyed collection.
+    await syncsStopped;
+    if (db == null) {
+      return [];
+    }
+    // `remove()` closes every collection and deletes its storage, so iterating
+    // over the registered collections adds nothing. It also removes collections
+    // that were never registered here, and - unlike the previous forkJoin over
+    // the registered ones - it runs even when that list is empty, which used to
+    // leave the database open and its name reserved for good.
+    return db.remove();
+  }
+
+  /**
+   * Waits for the teardown of the previous database, then creates a new one.
+   * @param config The data configuration holding the database creation options.
+   */
+  private async _createDatabase(config: DataServiceConfig): Promise<RxDatabase> {
+    await this._awaitDbTeardown();
+    if (this._currentDb != null) {
+      // A database is still open although no teardown removed it: a
+      // configuration change is the only path that gets here. Close it - without
+      // deleting its data - because rxdb refuses to create a second instance
+      // for a name that is still in use.
+      const previous = this._currentDb;
+      this._currentDb = null;
+      await previous.destroy().catch(() => undefined);
+    }
+    const db = await createRxDatabase(config.databaseCreateOptions);
+    this._currentDb = db;
+    return db;
+  }
+
+  /**
+   * Waits for the pending database teardown, giving up after
+   * {@link DB_TEARDOWN_MAX_WAIT_MS} so that a teardown which never settles cannot
+   * block the login indefinitely.
+   */
+  private async _awaitDbTeardown(): Promise<void> {
+    const pending = this._dbTeardown;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let expired = false;
+    const cap = new Promise<void>(resolve => {
+      timer = setTimeout(() => {
+        expired = true;
+        resolve();
+      }, DB_TEARDOWN_MAX_WAIT_MS);
+    });
+    try {
+      await Promise.race([pending, cap]);
+    } finally {
+      if (timer != null) {
+        clearTimeout(timer);
+      }
+    }
+    if (expired) {
+      if (isDevMode()) {
+        console.warn(
+          `Db teardown did not complete within ${DB_TEARDOWN_MAX_WAIT_MS}ms; ` +
+            `creating the new database anyway.`,
+        );
+      }
+      // Give up on this teardown for good: the creation is retried, and each
+      // retry waiting the full cap again would keep the app without a database
+      // for minutes instead of seconds.
+      if (this._dbTeardown === pending) {
+        this._dbTeardown = Promise.resolve();
+      }
+    }
+  }
+
+  /**
+   * Resets the state describing the session being closed. Without this, the next
+   * session starts with the previous session's collections registered against a
+   * database that no longer exists, and with a websocket still carrying the
+   * revoked token.
+   */
+  private _resetSessionState(): void {
+    this._registeredCollections.next([]);
+    this.problemSyncing.next([]);
+    this._currentToken = null;
+    if (this._wsClient != null) {
+      this._wsClient.dispose();
+      this._wsClient = null;
+    }
   }
 
   /**
@@ -1558,18 +1721,36 @@ export class DataService implements IDataService {
   /**
    * Stop an active collection sync.
    * @param collection The collection for which the sync must be stopped.
+   * @returns A promise resolving when the replication is actually cancelled.
+   * Callers that only need the sync to stop can ignore it; the database teardown
+   * has to await it before removing the storage.
    */
-  private _stopCollectionSync(collectionName: string): void {
+  private _stopCollectionSync(collectionName: string): Promise<void> {
     if (this._activeSyncs.getValue()[collectionName] == null) {
-      return;
+      return Promise.resolve();
     }
     const actSyncs = this._activeSyncs.getValue();
     const {state, clientRequestSub, stateReceivedSub} = actSyncs[collectionName];
     clientRequestSub.unsubscribe();
     stateReceivedSub.unsubscribe();
-    state.cancel().then(() => {});
+    const cancelled = state.cancel().then(
+      () => undefined,
+      () => undefined,
+    );
     delete actSyncs[collectionName];
     this._activeSyncs.next(actSyncs);
+    return cancelled;
+  }
+
+  /**
+   * Stops every active collection sync.
+   * @returns A promise resolving when all the replications are cancelled.
+   */
+  private _stopAllCollectionSyncs(): Promise<void> {
+    const stopped = Object.keys(this._activeSyncs.getValue()).map(collectionName =>
+      this._stopCollectionSync(collectionName),
+    );
+    return Promise.all(stopped).then(() => undefined);
   }
 
   /**
