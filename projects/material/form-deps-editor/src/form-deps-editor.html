@@ -1,4 +1,8 @@
-<ng-container *ngIf="formSchema|async as fs">
+<!-- This component renders nothing itself: it exposes its sections as templates
+     (see metricsSections / relationsSection in form-deps-editor.ts) and the host
+     projects them where they belong. Both wrappers keep class="dino-deps" because
+     the stylesheet is scoped on it, not on the host element. -->
+<ng-template #metricsSections>
   <div class="dino-deps">
     <!-- ===== Metrics to include in the form ===== -->
     <section class="dino-deps-card">
@@ -124,7 +128,11 @@
         <mat-icon>add</mat-icon>{{'Add metric'|transloco}}
       </button>
     </section>
+  </div>
+</ng-template>
 
+<ng-template #relationsSection>
+  <div class="dino-deps">
     <!-- ===== Relationships with other forms ===== -->
     <section class="dino-deps-card">
       <div class="dino-deps-card-head">
@@ -284,4 +292,4 @@
       </button>
     </section>
   </div>
-</ng-container>
+</ng-template>

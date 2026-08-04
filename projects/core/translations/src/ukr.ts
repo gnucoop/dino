@@ -23,6 +23,13 @@
 import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
+  "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
+    'Для цієї форми вже існує автоматичний звіт. Щоб вимкнути його, видаліть схему та дані цього звіту.',
+  // 'Status' is already defined further down, in the alphabetically sorted section.
+  'Save the form first to add relationships': "Спочатку збережіть форму, щоб додати зв'язки",
+  'Metrics associated with this questionnaire.': "Метрики, пов'язані з цим опитуванням.",
+  'Statuses a submission of this questionnaire can have.':
+    'Статуси, які може мати надіслана форма цього опитування.',
   '{{language}} already deleted': '{{language}} вже видалено',
   '(select only one field)': '(виберіть лише одне поле)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

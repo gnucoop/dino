@@ -22,6 +22,14 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const FRA: Translation = {
+  "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
+    'Un rapport automatique existe déjà pour ce formulaire. Pour le désactiver, supprimez le schéma et les données de ce rapport.',
+  'Status': 'Statut',
+  'Save the form first to add relationships':
+    "Enregistrez d'abord le formulaire pour ajouter des relations",
+  'Metrics associated with this questionnaire.': 'Métriques associées à ce questionnaire.',
+  'Statuses a submission of this questionnaire can have.':
+    "Statuts qu'une soumission de ce questionnaire peut avoir.",
   'Structure': 'Structure',
   'Text': 'Texte',
   'Numeric': 'Numérique',

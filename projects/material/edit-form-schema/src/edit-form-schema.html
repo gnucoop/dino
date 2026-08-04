@@ -8,7 +8,8 @@
         </div>
       </div>
 
-      <!-- ===== Settings / Build / Relationships tabs, with Save on the tab row ===== -->
+      <!-- ===== Settings / Metrics / Status / Build / Relationships tabs, with Save
+                on the tab row ===== -->
       <div class="dino-efs-tabs-wrap">
         <button
           class="dino-efs-save"
@@ -19,6 +20,23 @@
         >
           <mat-icon>save</mat-icon>{{'Save'|transloco}}
         </button>
+
+        <!-- The metrics/relationships editor, hosted headlessly: it renders nothing
+             here and exposes its sections as templates, which the Metrics and
+             Relationships tabs project below. Deliberately a single instance — its
+             sections share state and are persisted together as one FormSchemaDeps
+             document, so two instances would each save half and drop the other half.
+             The top Save reaches it through @ViewChild(FormDepsEditor). -->
+        <dino-form-deps-editor #deps [formSchema]="_formSchema"></dino-form-deps-editor>
+
+        <!-- Rendered instead of the deps-backed sections while creating: they attach
+             to a FormSchemaDeps document, which needs a saved Form Schema. -->
+        <ng-template #depsLocked>
+          <div class="dino-efs-locked">
+            <mat-icon>lock</mat-icon>
+            <span>{{'Save the form first to add relationships'|transloco}}</span>
+          </div>
+        </ng-template>
 
         <mat-tab-group
           class="dino-efs-tabs"
@@ -88,6 +106,104 @@
                   </mat-autocomplete>
                 </mat-form-field>
 
+                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-newrow">
+                  <mat-label>{{'Visibility'|transloco}}</mat-label>
+                  <mat-select formControlName="visibility">
+                    <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
+                    <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- Always visible. Once an automatic report exists the control is
+                     locked on "Yes" (disabled from the form group, see the
+                     generateAutoReport lock in edit-form-schema.ts) because there is
+                     no way to withdraw the report from here. -->
+                <mat-form-field appearance="outline" floatLabel="always" subscriptSizing="dynamic">
+                  <mat-label>{{'Generate Report'|transloco}}</mat-label>
+                  <mat-select formControlName="generateAutoReport">
+                    <mat-option [value]="false">{{ 'No'|transloco }}</mat-option>
+                    <mat-option [value]="true">{{ 'Yes'|transloco }}</mat-option>
+                  </mat-select>
+                  <!-- Key kept on one line: a newline inside the string literal would
+                       become part of the translation key and break the lookup. -->
+                  <mat-hint *ngIf="(autoReport|async) !== null">
+                    {{"An automatic report already exists for this form. To disable it, delete that report's schema and data."|transloco}}
+                  </mat-hint>
+                </mat-form-field>
+              </form>
+
+              <div class="dino-efs-settings-footer">
+                <button mat-raised-button color="primary" (click)="goToBuild()">
+                  {{'Go to build'|transloco}}<mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- ========== Metrics tab ========== -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>insights</mat-icon>{{'Metrics'|transloco}}
+          </ng-template>
+
+          <div class="dino-efs-metrics">
+            <div class="dino-efs-settings-card dino-efs-card-wide">
+              <div class="dino-efs-settings-head">
+                <mat-icon>insights</mat-icon>
+                <h2>{{'Metrics'|transloco}}</h2>
+              </div>
+              <p class="dino-efs-settings-sub">
+                {{'Metrics associated with this questionnaire.'|transloco}}
+              </p>
+
+              <form [formGroup]="fgroup" class="dino-form-attributes">
+                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
+                  <mat-label>{{'Form Metrics'|transloco}}</mat-label>
+                  <mat-select [disableRipple]="true" formControlName="form_schema_metrics" multiple>
+                    <mat-option
+                      *ngFor="let availableMetric of availableMetrics|async"
+                      [value]="availableMetric.metricName"
+                      >{{availableMetric.label|transloco}}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always">
+                  <mat-label>{{'Metrics Set Behavior'|transloco}}</mat-label>
+                  <mat-select formControlName="uniqueMetricsSet">
+                    <mat-option [value]="false">{{ 'Default'|transloco }}</mat-option>
+                    <mat-option [value]="true">{{ 'Unique'|transloco }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+            </div>
+
+            <!-- Metric data + metric-as-choice-options sections, projected from the
+                 headless deps editor declared above the tab group. -->
+            <ng-container *ngIf="(isCreation|async) !== true; else depsLocked">
+              <ng-container *ngTemplateOutlet="deps.metricsSections"></ng-container>
+            </ng-container>
+          </div>
+        </mat-tab>
+
+        <!-- ========== Status tab ========== -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>flag</mat-icon>{{'Status'|transloco}}
+          </ng-template>
+
+          <div class="dino-efs-status">
+            <div class="dino-efs-settings-card">
+              <div class="dino-efs-settings-head">
+                <mat-icon>flag</mat-icon>
+                <h2>{{'Status'|transloco}}</h2>
+              </div>
+              <p class="dino-efs-settings-sub">
+                {{'Statuses a submission of this questionnaire can have.'|transloco}}
+              </p>
+
+              <form [formGroup]="fgroup" class="dino-form-attributes">
                 <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
                   <mat-label>{{'Form Statuses'|transloco}}</mat-label>
                   <mat-select [disableRipple]="true" formControlName="status" multiple>
@@ -125,48 +241,7 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
-                  <mat-label>{{'Form Metrics'|transloco}}</mat-label>
-                  <mat-select [disableRipple]="true" formControlName="form_schema_metrics" multiple>
-                    <mat-option
-                      *ngFor="let availableMetric of availableMetrics|async"
-                      [value]="availableMetric.metricName"
-                      >{{availableMetric.label|transloco}}</mat-option
-                    >
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" floatLabel="always">
-                  <mat-label>{{'Visibility'|transloco}}</mat-label>
-                  <mat-select formControlName="visibility">
-                    <mat-option [value]="0">{{ 'Private'|transloco }}</mat-option>
-                    <mat-option [value]="1">{{ 'Public'|transloco }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" floatLabel="always">
-                  <mat-label>{{'Metrics Set Behavior'|transloco}}</mat-label>
-                  <mat-select formControlName="uniqueMetricsSet">
-                    <mat-option [value]="false">{{ 'Default'|transloco }}</mat-option>
-                    <mat-option [value]="true">{{ 'Unique'|transloco }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" floatLabel="always" *ngIf="(autoReport|async) === null">
-                  <mat-label>{{'Generate Report'|transloco}}</mat-label>
-                  <mat-select formControlName="generateAutoReport">
-                    <mat-option [value]="false">{{ 'No'|transloco }}</mat-option>
-                    <mat-option [value]="true">{{ 'Yes'|transloco }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
               </form>
-
-              <div class="dino-efs-settings-footer">
-                <button mat-raised-button color="primary" (click)="goToBuild()">
-                  {{'Go to build'|transloco}}<mat-icon>arrow_forward</mat-icon>
-                </button>
-              </div>
             </div>
           </div>
         </mat-tab>
@@ -210,7 +285,12 @@
           </ng-template>
 
           <div class="dino-efs-relations">
-            <dino-form-deps-editor [formSchema]="_formSchema"></dino-form-deps-editor>
+            <!-- Form-to-form relationships section, projected from the headless deps
+                 editor declared above the tab group. The metric sections it also
+                 owns live in the Metrics tab. -->
+            <ng-container *ngIf="(isCreation|async) !== true; else depsLocked">
+              <ng-container *ngTemplateOutlet="deps.relationsSection"></ng-container>
+            </ng-container>
           </div>
         </mat-tab>
       </mat-tab-group>

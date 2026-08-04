@@ -22,6 +22,13 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
+  "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
+    'يوجد بالفعل تقرير تلقائي لهذا النموذج. لتعطيله، احذف مخطط ذلك التقرير وبياناته.',
+  'Status': 'الحالة',
+  'Save the form first to add relationships': 'احفظ النموذج أولاً لإضافة العلاقات',
+  'Metrics associated with this questionnaire.': 'المقاييس المرتبطة بهذا الاستبيان.',
+  'Statuses a submission of this questionnaire can have.':
+    'الحالات التي يمكن أن يكون عليها إرسال هذا الاستبيان.',
   '{{language}} already deleted': 'تم حذف {{language}} بالفعل',
   '(select only one field)': '(حدد حقلاً واحداً فقط)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':

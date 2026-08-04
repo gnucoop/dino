@@ -7,6 +7,8 @@ import {
   OnDestroy,
   OnInit,
   Optional,
+  TemplateRef,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -72,6 +74,24 @@ export class FormDepsEditor implements OnInit, OnDestroy {
    * the MAT_DIALOG_DATA when opened as a dialog.
    */
   @Input() formSchema!: Observable<FormSchema | null>;
+
+  /**
+   * The editor's two halves, exposed as templates so a host can render them in
+   * different places (the form editor puts the metric sections in its Metrics tab
+   * and the relationships section in its Relationships tab).
+   *
+   * They are templates rather than two components on purpose: the sections share
+   * mutable state — `changeMetrics()` writes `currentMetricsForData` from the
+   * relationships table, and `getRequiredMetrics()` unions both — and
+   * `persistRelationships()` saves them into a single FormSchemaDeps document. Two
+   * instances would each persist half the document and delete the other half.
+   *
+   * `static: true` is required: the host reads them during its first update pass.
+   * That in turn is why the templates sit at the top level of the markup, with no
+   * enclosing *ngIf.
+   */
+  @ViewChild('metricsSections', {static: true}) metricsSections!: TemplateRef<unknown>;
+  @ViewChild('relationsSection', {static: true}) relationsSection!: TemplateRef<unknown>;
 
   /**
    * The Form schema deps object
