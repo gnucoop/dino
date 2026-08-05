@@ -3,11 +3,18 @@
 # Vercel "Ignored Build Step". Exit 1 => build proceeds, exit 0 => build skipped.
 
 echo "VERCEL_ENV: $VERCEL_ENV"
+echo "VERCEL_GIT_COMMIT_REF: $VERCEL_GIT_COMMIT_REF"
 
 # Only the production branch can deploy; previews are always skipped.
 if [[ "$VERCEL_ENV" != "production" ]]; then
   echo "🛑 - $VERCEL_ENV (not production) — build cancelled"
   exit 0
+fi
+
+# 1. If the branch is neither main nor dev, let the build proceed normally (e.g. test branch)
+if [[ "$VERCEL_GIT_COMMIT_REF" != "main" && "$VERCEL_GIT_COMMIT_REF" != "dev" ]]; then
+  echo "✅ - Branch ($VERCEL_GIT_COMMIT_REF) is not main/dev — proceeding with build"
+  exit 1
 fi
 
 # In production, deploy ONLY release commits produced by `yarn prepare-release`,
