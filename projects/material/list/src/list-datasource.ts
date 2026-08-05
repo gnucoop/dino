@@ -320,7 +320,10 @@ export class ListDataSource<
       });
 
     this._dataModelManager.collectionChanged
-      .pipe(takeUntil(this._mainUnsubscribe), throttleTime(100))
+      .pipe(
+        takeUntil(this._mainUnsubscribe),
+        throttleTime(100, undefined, {leading: true, trailing: true}),
+      )
       .subscribe(evt => {
         this.refreshListData.next(evt);
       });
