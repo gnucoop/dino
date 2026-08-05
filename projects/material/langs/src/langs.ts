@@ -100,6 +100,7 @@ export class LangsComponent implements OnDestroy {
       .open(LangsAddDialog, {width: '100%'})
       .afterClosed()
       .pipe(
+        filter(updates => updates != null && !!updates['key']),
         switchMap((updates: {[key: string]: string}) =>
           this._langSvc.updateLang(updates, updates['key']),
         ),

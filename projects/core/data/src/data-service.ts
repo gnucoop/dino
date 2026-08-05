@@ -1733,9 +1733,11 @@ export class DataService implements IDataService {
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = newClientSubscription(this._wsClient, {query});
 
-      stateReceivedSub = state.received$.pipe(throttleTime(500)).subscribe(_data => {
-        this._collectionChangedEmit('changed data pulled', collection);
-      });
+      stateReceivedSub = state.received$
+        .pipe(throttleTime(500, undefined, {leading: true, trailing: true}))
+        .subscribe(_data => {
+          this._collectionChangedEmit('changed data pulled', collection);
+        });
 
       clientRequestSub = clientRequest.subscribe({
         next: () => {

@@ -1,5 +1,5 @@
 {
-  "appData": {"name": "Dino", "version": "18.0.5", "sw_version": "147"},
+  "appData": {"name": "Dino", "version": "18.0.5", "sw_version": "148"},
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
   "assetGroups": [
