@@ -500,6 +500,27 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
+   * Saves the form from the Form Metrics step, where the rendered form is not
+   * visible. When the form data has validation errors there is nothing to show
+   * the user on this step, so we move to the Form Data step and let its chrome
+   * point at the sections that need attention.
+   */
+  saveFormFromMetrics(stepper: MatStepper) {
+    this.isAjfFormValid.pipe(take(1)).subscribe(valid => {
+      if (valid) {
+        this._saveFormEvt.emit();
+        return;
+      }
+      this.snackbar.open(
+        this._ts.translate('Cannot save, some sections need attention'),
+        this._ts.translate('CLOSE'),
+        {duration: 5000},
+      );
+      this.goToDataStep(stepper);
+    });
+  }
+
+  /**
    * Saves the form as draft, without validations
    */
   saveDraft() {

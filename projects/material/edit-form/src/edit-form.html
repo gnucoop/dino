@@ -4,6 +4,22 @@
     <mat-stepper labelPosition="bottom" #stepper linear>
       <mat-step [completed]="(isFormMetricsSelectorValid|async) || (isView|async)">
         <ng-template matStepLabel>{{ 'FORM METRICS'|transloco }}</ng-template>
+        <dino-form-data-save-actions
+          *ngIf="(isView|async) !== true"
+          class="dino-fdc-actions-row"
+          [allowSaveDraft]="allowSaveDraft"
+          [saveDraftDisabled]="
+            ((isAjfFormValid|async) === true) ||
+            ((uniqueMetricsSetAlreadyExists|async) === true) ||
+            ((isLoading|async) === true)
+          "
+          [saveDisabled]="
+            ((isFormMetricsSelectorValid|async) !== true) || ((isLoading|async) === true)
+          "
+          (saveForm)="saveFormFromMetrics(stepper)"
+          (saveDraft)="saveDraft()"
+        ></dino-form-data-save-actions>
+
         <div class="dino-edit-form-step-container">
           <dino-form-metric-selector
             [hasOptionalMetrics]="hasOptionalMetrics"

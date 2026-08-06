@@ -1,0 +1,38 @@
+dino-form-data-save-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .dino-fdc-save-draft,
+  .dino-fdc-save-form {
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+// Standalone control row, for steps that have no chrome of their own to sit in
+// (the Form Metrics step). Mirrors `.dino-fdc-control-row` so the save actions
+// stay in the same place, and carry the same weight, on every step.
+// The surface tokens are repeated here rather than reused from
+// form-data-chrome.scss: those are only injected once the chrome itself
+// renders, and this row must stand on its own.
+.dino-fdc-actions-row {
+  --dino-fdc-surface: #ffffff;
+  --dino-fdc-border: rgba(0, 0, 0, 0.12);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 10px 24px;
+  background: var(--dino-fdc-surface);
+  border-bottom: 1px solid var(--dino-fdc-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+}
+
+.isDarkTheme .dino-fdc-actions-row {
+  --dino-fdc-surface: #2b2b2b;
+  --dino-fdc-border: rgba(255, 255, 255, 0.14);
+}

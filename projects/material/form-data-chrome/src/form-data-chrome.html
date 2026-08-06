@@ -30,27 +30,15 @@
     <mat-icon>arrow_forward</mat-icon>
   </button>
 
-  <button
-    *ngIf="!isReadonly && allowSaveDraft"
-    mat-stroked-button
-    class="dino-fdc-save-draft"
-    tourAnchor="save-draft-floating-button"
-    [disabled]="saveDraftDisabled"
-    (click)="saveDraft.emit()"
-  >
-    <mat-icon>save_as</mat-icon>{{ 'Save draft' | transloco }}
-  </button>
-
-  <button
-    *ngIf="!isReadonly"
-    mat-flat-button
-    color="primary"
-    class="dino-fdc-save-form"
-    tourAnchor="save-form-floating-button"
-    (click)="onSaveForm()"
-  >
-    <mat-icon>save</mat-icon>{{ 'Save form' | transloco }}
-  </button>
+  <dino-form-data-save-actions
+    [isReadonly]="isReadonly"
+    [allowSaveDraft]="allowSaveDraft"
+    [saveDraftDisabled]="saveDraftDisabled"
+    saveDraftTourAnchor="save-draft-floating-button"
+    saveFormTourAnchor="save-form-floating-button"
+    (saveForm)="onSaveForm()"
+    (saveDraft)="saveDraft.emit()"
+  ></dino-form-data-save-actions>
 </div>
 
 <!-- Repeating-record pager row (only for repeating sections) -->

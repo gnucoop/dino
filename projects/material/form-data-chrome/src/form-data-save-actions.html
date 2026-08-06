@@ -1,0 +1,22 @@
+<button
+  *ngIf="!isReadonly && allowSaveDraft"
+  mat-stroked-button
+  class="dino-fdc-save-draft"
+  [tourAnchor]="saveDraftTourAnchor"
+  [disabled]="saveDraftDisabled"
+  (click)="saveDraft.emit()"
+>
+  <mat-icon>save_as</mat-icon>{{ 'Save draft' | transloco }}
+</button>
+
+<button
+  *ngIf="!isReadonly"
+  mat-flat-button
+  color="primary"
+  class="dino-fdc-save-form"
+  [tourAnchor]="saveFormTourAnchor"
+  [disabled]="saveDisabled"
+  (click)="saveForm.emit()"
+>
+  <mat-icon>save</mat-icon>{{ 'Save form' | transloco }}
+</button>

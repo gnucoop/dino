@@ -33,6 +33,7 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 import {FormDataChrome} from './form-data-chrome';
+import {FormDataSaveActions} from './form-data-save-actions';
 
 @NgModule({
   imports: [
@@ -47,7 +48,7 @@ import {FormDataChrome} from './form-data-chrome';
     TourMatMenuModule,
     TranslocoModule,
   ],
-  declarations: [FormDataChrome],
-  exports: [FormDataChrome],
+  declarations: [FormDataChrome, FormDataSaveActions],
+  exports: [FormDataChrome, FormDataSaveActions],
 })
 export class FormDataChromeModule {}

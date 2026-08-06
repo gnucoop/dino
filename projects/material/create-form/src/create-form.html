@@ -5,6 +5,21 @@
       <mat-step [completed]="isFormMetricsSelectorValid|async">
         <ng-template matStepLabel>{{ 'FORM METRICS'|transloco }}</ng-template>
 
+        <dino-form-data-save-actions
+          class="dino-fdc-actions-row"
+          [allowSaveDraft]="allowSaveDraft"
+          [saveDraftDisabled]="
+            ((isAjfFormValid|async) === true) ||
+            ((uniqueMetricsSetAlreadyExists|async) === true) ||
+            ((isLoading|async) === true)
+          "
+          [saveDisabled]="
+            ((isFormMetricsSelectorValid|async) !== true) || ((isLoading|async) === true)
+          "
+          (saveForm)="saveFormFromMetrics(stepper)"
+          (saveDraft)="saveDraft()"
+        ></dino-form-data-save-actions>
+
         <div class="dino-create-form-step-container">
           <dino-form-metric-selector
             [hasOptionalMetrics]="hasOptionalMetrics"
