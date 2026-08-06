@@ -82,6 +82,12 @@ export class TableGenerator implements OnDestroy {
   @Input() set maxRowsDisplayed(max: number) {
     this._maxRowsDisplayed = max;
   }
+
+  /**
+   * Text displayed for null or undefined cells.
+   * Empty by default, so that a missing value is simply rendered as a blank cell.
+   */
+  @Input() emptyCellPlaceholder: string = '';
   /**
    * All displayed columns
    */
@@ -111,6 +117,17 @@ export class TableGenerator implements OnDestroy {
     this._handleJsonDataSub = this._jsonData
       .pipe(filter(j => j != null))
       .subscribe(j => this._handleData(j));
+  }
+
+  /**
+   * Formats a cell value. A null or undefined value is a missing value, not a default
+   * one, and is never rendered as a plausible value of its own.
+   * @param value The cell value
+   * @returns The displayed cell text
+   */
+  formatCell(value: unknown): string {
+    if (value === null || value === undefined) return this.emptyCellPlaceholder;
+    return String(value);
   }
 
   /**

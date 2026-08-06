@@ -32,13 +32,21 @@ import {
   OnDestroy,
   OnInit,
   Optional,
+  Output,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
-import {CompletionRequest, CompletionResponse, DataChatQA} from './datachat.interfaces';
-import {HttpClient} from '@angular/common/http';
+import {
+  CompletionRequest,
+  CompletionResponse,
+  DataChatApiResponse,
+  DataChatChartSpec,
+  DataChatQA,
+  DataChatResponsePayload,
+} from './datachat.interfaces';
+import {HttpBackend, HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {map, switchMap, take} from 'rxjs/operators';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
@@ -71,6 +79,12 @@ import {
   StripePaymentConfig,
   TokensService,
 } from '@dino/material/stripe-payment';
+
+/**
+ * The maximum number of charts displayed for a single answer, as documented by the API.
+ * When the API has more charts than this, its response carries a note saying so.
+ */
+const MAX_CHARTS_PER_ANSWER = 6;
 
 /**
  * The DataChat component.
@@ -114,6 +128,15 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * Emitted when the Api Key validation is confirmed
    */
   readonly apiKeyConfirmationEvt: EventEmitter<string> = new EventEmitter<string>();
+
+  /**
+   * Emitted when a DataChat export has been downloaded, so that the host application
+   * can save it with the most appropriate strategy for its platform
+   */
+  @Output() exportDownload: EventEmitter<{blob: Blob; filename: string}> = new EventEmitter<{
+    blob: Blob;
+    filename: string;
+  }>();
 
   /**
    * The currently confirmed Api Key
@@ -239,6 +262,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _nodesVisibility: Observable<NodeVisibility[]>;
 
   /**
+   * Http client used to download the exports, bypassing the interceptors.
+   * The export endpoint answers 400 when its agent is gone, and JWTInterceptor
+   * reads any 400 as an expired token: it would refresh the auth token, replay
+   * the request and possibly log the user out.
+   */
+  private readonly _exportHttp: HttpClient;
+
+  /**
    * If present, terms of use for GPT have been accepted
    */
   private _termsAccepted: string | null = localStorage.getItem('pandas_dino_api_key_accept_terms');
@@ -265,7 +296,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
     private _cdr: ChangeDetectorRef,
+    httpBackend: HttpBackend,
   ) {
+    this._exportHttp = new HttpClient(httpBackend);
     this._exporter = null;
     this._formSchema$ = obsOf(null);
     this._formDataList$ = obsOf([]);
@@ -496,10 +529,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           this._addToHistory({
             componentData: {component: MatProgressBar, inputs: {mode: 'indeterminate'}},
           });
-          return this._http.post<{
-            explanation: string;
-            response: {type: string; value: any};
-          }>(url, {'chat': text}, {headers});
+          return this._http.post<DataChatApiResponse>(url, {'chat': text}, {headers});
         }),
         take(1),
       )
@@ -510,37 +540,54 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           }
           this._removeLastFromHistory();
           if (res) {
+            const previewInfo = this._previewInfoFromResponse(res.response);
             switch (res.response.type) {
               case 'image':
                 const base64string: string = res.response.value;
-                const base64imageData = `data:image/png;base64, ${base64string
-                  .replace("b'", '')
-                  .slice(0, -1)}`;
                 this._addToHistory({
-                  explanation: res.explanation,
-                  imageData: base64imageData,
+                  ...previewInfo,
+                  explanation: res.explanation ?? undefined,
+                  imageData: `data:image/png;base64,${this._cleanBase64(base64string)}`,
+                  noPrompt: true,
+                });
+                break;
+              case 'chart':
+                this._addToHistory({
+                  ...previewInfo,
+                  charts: this._sanitizeCharts([res.response.value]),
+                  explanation: res.explanation ?? undefined,
                   noPrompt: true,
                 });
                 break;
               case 'dataframe':
                 this._addToHistory({
-                  explanation: res.explanation,
+                  ...previewInfo,
+                  explanation: res.explanation ?? undefined,
                   componentData: {
                     component: TableGenerator,
-                    inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
+                    inputs: {
+                      maxRowsDisplayed: 50,
+                      setJsonData: res.response.value,
+                      emptyCellPlaceholder: '—',
+                    },
                   },
                   noPrompt: true,
                 });
                 break;
               default:
                 this._addToHistory({
-                  explanation: res.explanation,
+                  ...previewInfo,
+                  explanation: res.explanation ?? undefined,
                   response: typeof res.response.value === 'object' ? undefined : res.response.value,
                   componentData:
                     typeof res.response.value === 'object'
                       ? {
                           component: TableGenerator,
-                          inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
+                          inputs: {
+                            maxRowsDisplayed: 50,
+                            setJsonData: res.response.value,
+                            emptyCellPlaceholder: '—',
+                          },
                         }
                       : undefined,
                   noPrompt: true,
@@ -575,6 +622,145 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           this._removeLastFromHistory();
         },
       });
+  }
+
+  /**
+   * Maps the additive fields of a DataChat response, i.e. the preview, export and
+   * chart info, onto a chat history entry.
+   * A missing field and a null field always mean the same thing.
+   * @param response The 'response' object of the DataChat reply
+   * @returns The preview, export and chart fields of the history entry
+   */
+  private _previewInfoFromResponse(response: DataChatResponsePayload): Partial<DataChatQA> {
+    return {
+      truncated: response.truncated === true,
+      totalRows: response.total_rows ?? undefined,
+      totalColumns: response.total_columns ?? undefined,
+      previewRows: response.preview_rows ?? undefined,
+      previewColumns: this._previewColumnsCount(response.value),
+      downloadUrl: response.download_url ?? undefined,
+      downloadFilename: response.download_filename ?? undefined,
+      note: response.note ?? undefined,
+      charts: this._sanitizeCharts(response.charts),
+    };
+  }
+
+  /**
+   * Keeps the chart specifications that can be displayed, capped to the maximum
+   * number of charts of a single answer.
+   * Only what is not a chart at all is discarded here: a chart that cannot be drawn
+   * is displayed as such by DataChatChart, instead of disappearing silently.
+   * @param charts The charts of the DataChat reply
+   * @returns The charts to display, undefined if there are none
+   */
+  private _sanitizeCharts(charts: any): DataChatChartSpec[] | undefined {
+    if (!Array.isArray(charts)) return undefined;
+    const valid = charts.filter(
+      chart => chart != null && typeof chart === 'object' && Array.isArray(chart.datasets),
+    );
+    return valid.length ? valid.slice(0, MAX_CHARTS_PER_ANSWER) : undefined;
+  }
+
+  /**
+   * Strips the python bytes repr wrapper, i.e. b'...', from a base64 encoded image.
+   * A correctly encoded image is returned untouched, so that the API can stop
+   * wrapping its images at any time without breaking this client.
+   * @param value The image value of the DataChat reply
+   * @returns The base64 encoded image
+   */
+  private _cleanBase64(value: string): string {
+    const trimmed = (value ?? '').trim();
+    const wrapped = /^b(['"])([\s\S]*)\1$/.exec(trimmed);
+    return wrapped ? wrapped[2] : trimmed;
+  }
+
+  /**
+   * Counts the columns actually displayed. TableGenerator builds its columns from the
+   * keys of the first row, so that is what the user sees.
+   * @param value The 'value' of the DataChat reply
+   * @returns The number of displayed columns, undefined if the value is not tabular
+   */
+  private _previewColumnsCount(value: any): number | undefined {
+    const firstRow = Array.isArray(value) ? value[0] : value;
+    if (firstRow == null || typeof firstRow !== 'object') return undefined;
+    return Object.keys(firstRow).length;
+  }
+
+  /**
+   * Downloads the complete result of a DataChat answer as a csv file.
+   * The export endpoint is not publicly reachable, so it must be requested with the
+   * same headers as the 'datachat' endpoint. The downloaded file is emitted through
+   * the exportDownload event, to be saved by the host application.
+   * @param url The server relative path of the export, as received in the response
+   * @param filename The suggested file name of the export
+   */
+  downloadExport(url: string, filename: string): void {
+    if (!this.baseDataChatAPIurl || !this.apiKey.value || !url) return;
+    this._udm
+      .getActiveUserData()
+      .pipe(
+        switchMap(activeUserData => {
+          if (!activeUserData || !this.apiKey.value) return obsOf(null);
+          const headers = {'X-API-KEY': this.apiKey.value, 'X-USER-EMAIL': activeUserData.email};
+          return this._exportHttp.get(this._exportUrl(url), {headers, responseType: 'blob'});
+        }),
+        take(1),
+      )
+      .subscribe({
+        next: blob => {
+          if (!blob) return;
+          this.exportDownload.emit({blob, filename});
+        },
+        error: (err: HttpErrorResponse) => this._handleExportError(err),
+      });
+  }
+
+  /**
+   * Joins the base DataChat url and the server relative export path.
+   * The export token is never parsed nor rebuilt.
+   * @param downloadUrl The server relative path of the export
+   * @returns The absolute export url
+   */
+  private _exportUrl(downloadUrl: string): string {
+    const base = (this.baseDataChatAPIurl ?? '').replace(/\/+$/, '');
+    return `${base}${downloadUrl.startsWith('/') ? downloadUrl : `/${downloadUrl}`}`;
+  }
+
+  /**
+   * Notifies the user of a failed export download.
+   * Exports live as long as the chat session, so an expired or unknown token is an
+   * expected outcome and is not reported as an error.
+   * The error body is not parsed: a blob response type leaves it as a Blob, and the
+   * 403 body is an html page.
+   * @param err The http error
+   */
+  private _handleExportError(err: HttpErrorResponse): void {
+    let message: string;
+    switch (err.status) {
+      case 404:
+        message = 'This download is no longer available. Please run the query again';
+        break;
+      case 400:
+        message = 'The chat session has ended. Please run the query again';
+        break;
+      case 0:
+      case 401:
+      case 403:
+        message = 'DINO-AI is not responding at the moment. Please try later';
+        break;
+      default:
+        message = 'Could not download the export file';
+        if (isDevMode()) {
+          console.log(err);
+        } else {
+          this._ehms.captureErrorMessage(
+            `DINO-AI export download error: ${JSON.stringify(err)}`,
+            'warning',
+          );
+        }
+        break;
+    }
+    this._snackBar.open(this._ts.translate(message), 'OK', {duration: 5000});
   }
 
   /**

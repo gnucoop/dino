@@ -3,6 +3,7 @@
   [ajfCustomFunctions]="ajfCustomFunctions"
   [baseDataChatAPIurl]="baseDataChatAPIurl"
   [endpointUrls]="endpointUrls"
+  (exportDownload)="saveExport($event.blob, $event.filename)"
   ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
   <div [innerHTML]="acceptTermsContent" gptTerms></div>
 </dino-datachat>

@@ -36,6 +36,7 @@ import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/l
 import {DataChat} from './datachat';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TableGeneratorModule as DinoTableGeneratorModule} from '@dino/material/table-generator';
+import {DataChatChart} from './datachat-chart';
 import {DataChatEntry} from './datachat-entry';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {ParagraphDialogComponent} from './paragraph-dialog.component';
@@ -66,7 +67,7 @@ import {MatCardModule} from '@angular/material/card';
     RouterModule,
     TranslocoModule,
   ],
-  declarations: [DataChat, DataChatEntry, ParagraphDialogComponent],
-  exports: [DataChat, DataChatEntry, ParagraphDialogComponent],
+  declarations: [DataChat, DataChatChart, DataChatEntry, ParagraphDialogComponent],
+  exports: [DataChat, DataChatChart, DataChatEntry, ParagraphDialogComponent],
 })
 export class DataChatModule {}

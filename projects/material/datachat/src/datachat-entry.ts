@@ -69,7 +69,41 @@ export class DataChatEntry implements OnDestroy {
     answer: string;
   }> = new EventEmitter<{logId: string; isPositive: boolean; question: string; answer: string}>();
 
+  /**
+   * Emitted when the download of the complete result is requested
+   */
+  @Output() downloadClick: EventEmitter<{url: string; filename: string}> = new EventEmitter<{
+    url: string;
+    filename: string;
+  }>();
+
   constructor(private _dialog: MatDialog, private _cdr: ChangeDetectorRef) {}
+
+  /**
+   * True when the displayed table holds fewer columns than the complete result
+   * @param qa The datachat QA entry
+   */
+  hasDroppedColumns(qa: DataChatQA): boolean {
+    return (
+      qa.totalColumns != null && qa.previewColumns != null && qa.totalColumns > qa.previewColumns
+    );
+  }
+
+  /**
+   * True when the row counts of the preview banner are known
+   * @param qa The datachat QA entry
+   */
+  hasRowCounts(qa: DataChatQA): boolean {
+    return qa.previewRows != null && qa.totalRows != null;
+  }
+
+  onDownloadClick(): void {
+    if (!this.qa || !this.qa.downloadUrl) return;
+    this.downloadClick.emit({
+      url: this.qa.downloadUrl,
+      filename: this.qa.downloadFilename ?? 'export.csv',
+    });
+  }
 
   /**
    * Gets Paragraphs used as sources for the answer

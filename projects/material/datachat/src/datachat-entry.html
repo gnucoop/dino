@@ -58,9 +58,40 @@
       <img [src]="qa.imageData" />
     </div>
   </ng-container>
+  <ng-container *ngIf="qa.truncated">
+    <div class="dino-datachat-entry dino-datachat-entry-preview">
+      <mat-icon class="dino-datachat-entry-icon" color="primary">visibility</mat-icon>
+      <span class="dino-datachat-entry-preview-text">
+        <span *ngIf="hasRowCounts(qa); else noRowCounts"
+          [innerText]="'Showing the first {{preview}} of {{total}} rows'|transloco:{preview: qa.previewRows, total: qa.totalRows}"></span>
+        <ng-template #noRowCounts><span [innerText]="'Not all rows are shown'|transloco"></span></ng-template>
+        <span *ngIf="hasDroppedColumns(qa)"
+          [innerText]="'Only {{preview}} of {{total}} columns are shown'|transloco:{preview: qa.previewColumns, total: qa.totalColumns}"></span>
+      </span>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.note">
+    <div class="dino-datachat-entry dino-datachat-entry-note">
+      <mat-icon class="dino-datachat-entry-icon" color="warn">info</mat-icon>
+      <span>{{qa.note}}</span>
+    </div>
+  </ng-container>
   <ng-container *ngIf="qa.componentData">
     <div class="dino-datachat-entry dino-datachat-entry-component-response">
       <ng-container *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"></ng-container>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.charts && qa.charts.length">
+    <div class="dino-datachat-entry dino-datachat-entry-charts">
+      <dino-datachat-chart *ngFor="let chart of qa.charts" [spec]="chart"></dino-datachat-chart>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="qa.downloadUrl">
+    <div class="dino-datachat-entry-download">
+      <button mat-stroked-button color="primary" (click)="onDownloadClick()">
+        <mat-icon>download</mat-icon>
+        <span>{{qa.downloadFilename || ('Download'|transloco)}}</span>
+      </button>
     </div>
   </ng-container>
 </ng-container>

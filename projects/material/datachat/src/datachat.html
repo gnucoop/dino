@@ -46,6 +46,7 @@
             <div #chatHistory class="dino-chat-history-container">
               <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl"
                 (followUpClick)="chat($event)"
+                (downloadClick)="downloadExport($event.url, $event.filename)"
                 (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
             </div>
           </ng-container>

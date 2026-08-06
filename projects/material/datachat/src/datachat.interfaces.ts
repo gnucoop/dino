@@ -33,6 +33,164 @@ export interface DataChatQA {
   userIsHappy?: boolean;
   followUpQuestions?: string[];
   log_id?: string;
+  /**
+   * Number of rows of the complete result. The displayed table may hold fewer.
+   */
+  totalRows?: number;
+  /**
+   * Number of columns of the complete result. The displayed table may hold fewer.
+   */
+  totalColumns?: number;
+  /**
+   * Number of rows actually displayed
+   */
+  previewRows?: number;
+  /**
+   * Number of columns actually displayed
+   */
+  previewColumns?: number;
+  /**
+   * True when the displayed table is only a subset of the complete result
+   */
+  truncated?: boolean;
+  /**
+   * Server relative path of the complete result, downloadable as a csv file
+   */
+  downloadUrl?: string;
+  /**
+   * Suggested file name for the downloaded complete result
+   */
+  downloadFilename?: string;
+  /**
+   * A caveat about the result itself, to be displayed verbatim
+   */
+  note?: string;
+  /**
+   * The charts to be displayed alongside the answer
+   */
+  charts?: DataChatChartSpec[];
+}
+
+/**
+ * The state of a chart specification, as resolved by DataChatChart
+ */
+export type DataChatChartStatus = 'ok' | 'invalid' | 'empty';
+
+/**
+ * The response types returned by the DataChat API
+ */
+export type DataChatResponseType =
+  | 'str'
+  | 'dataframe'
+  | 'image'
+  | 'dict'
+  | 'text_and_image'
+  | 'chart';
+
+/**
+ * A chart specification, in the Chart.js 'data' shape plus some semantic hints.
+ * The API never sends colors nor a Chart.js 'options' object: palette, fonts, legend
+ * and theming are up to the client.
+ */
+export interface DataChatChartSpec {
+  /**
+   * The chart type, i.e. bar | line | pie | doughnut | scatter
+   */
+  type: string;
+  /**
+   * The category labels, one per point. Null for scatter charts.
+   */
+  labels?: string[] | null;
+  datasets: DataChatChartDataset[];
+  title?: string | null;
+  /**
+   * The x axis label. It may be a whole survey question, so expect very long strings.
+   */
+  x_label?: string | null;
+  /**
+   * The y axis label, i.e. 'numero di risposte'
+   */
+  y_label?: string | null;
+  /**
+   * True when a multi series bar chart reads better stacked
+   */
+  stacked?: boolean;
+  /**
+   * True when the bars of a bar chart run left to right, which the API chooses for
+   * many categories or long labels. The categories keep the order they arrive in.
+   */
+  horizontal?: boolean;
+  [key: string]: any;
+}
+
+/**
+ * A single series of a chart specification
+ */
+export interface DataChatChartDataset {
+  label?: string | null;
+  /**
+   * The series values, parallel to the chart labels, or the {x, y} points of a
+   * scatter chart. A null value is a missing value, and must be displayed as a gap,
+   * never as a zero.
+   */
+  data: (number | null)[] | {x: number; y: number}[];
+  /**
+   * True for area charts
+   */
+  fill?: boolean;
+  [key: string]: any;
+}
+
+/**
+ * The 'response' object of a DataChat API reply.
+ * Additive fields may appear at any time, so unknown fields must be tolerated and
+ * a missing key and a null value always mean the same thing.
+ */
+export interface DataChatResponsePayload {
+  type: DataChatResponseType | string;
+  value: any;
+  /**
+   * Rows of the complete result
+   */
+  total_rows?: number | null;
+  /**
+   * Columns of the complete result
+   */
+  total_columns?: number | null;
+  /**
+   * Rows present in 'value'
+   */
+  preview_rows?: number | null;
+  /**
+   * True when 'value' is a subset of the complete result. Absent means false.
+   */
+  truncated?: boolean;
+  /**
+   * Server relative path of the complete result csv, i.e. /datachat/export/<token>
+   */
+  download_url?: string | null;
+  /**
+   * Suggested file name of the complete result csv
+   */
+  download_filename?: string | null;
+  /**
+   * A caveat about the result. Absent when there is none, never null.
+   */
+  note?: string;
+  /**
+   * Zero or more charts to be displayed alongside the value.
+   * Absent when there are none, never null and never empty.
+   */
+  charts?: DataChatChartSpec[];
+}
+
+/**
+ * A DataChat API reply
+ */
+export interface DataChatApiResponse {
+  response: DataChatResponsePayload;
+  explanation?: string | null;
+  log_id?: string | number | null;
 }
 
 export interface ComponentData {

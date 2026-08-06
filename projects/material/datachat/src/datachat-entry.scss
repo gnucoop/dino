@@ -111,6 +111,51 @@ dino-datachat-entry {
 
   }
 
+  .dino-datachat-entry.dino-datachat-entry-preview {
+    background-color: mat-css-vars.mat-css-color-primary(100, 0.2);
+    font-size: 13px;
+    font-style: italic;
+    margin-bottom: 5px;
+
+    .dino-datachat-entry-preview-text {
+      flex: 1;
+
+      span {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .dino-datachat-entry.dino-datachat-entry-note {
+    align-items: flex-start;
+    background-color: mat-css-vars.mat-css-color-warn(100, 0.2);
+    border-left: 4px solid mat-css-vars.mat-css-color-warn(100, 0.6);
+    font-size: 13px;
+    margin-bottom: 5px;
+
+    span {
+      flex: 1;
+    }
+  }
+
+  .dino-datachat-entry.dino-datachat-entry-charts {
+    background-color: mat-css-vars.mat-css-color-primary(100, 0.2);
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 15px;
+  }
+
+  .dino-datachat-entry-download {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    margin-top: 5px;
+
+    button mat-icon {
+      margin-right: 5px;
+    }
+  }
+
   .dino-datachat-entry-icon {
     margin-right: 10px;
   }

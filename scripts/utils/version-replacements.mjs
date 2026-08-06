@@ -14,6 +14,7 @@ export const versionReplacements = packages => {
     ['angular-material-css-vars', 'AMCV'],
     ['apollo-angular', 'APOLLONG'],
     ['assert', 'ASSERT'],
+    ['chart.js', 'CHARTJS'],
     ['process', 'PROCESS'],
     ['rxdb', 'RXDB'],
     ['rxjs', 'RXJS'],

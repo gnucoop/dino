@@ -143,6 +143,7 @@ export const ENG: Translation = {
   'Confirm Password': 'Confirm Password',
   'Coordinates': 'Coordinates',
   'Copy to Clipboard': 'Copy to Clipboard',
+  'Could not download the export file': 'Could not download the export file',
   'Could not save the form. Please retry.': 'Could not save the form. Please retry.',
   'Create': 'Create',
   'Create Filter': 'Create Filter',
@@ -312,10 +313,14 @@ export const ENG: Translation = {
   'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.':
     'One ore more Reports are currently using this Form Schema. Please delete those reports before deleting this Schema.',
   'Only metrics without parents were created.': 'Only metrics without parents were created.',
+  'Only {{preview}} of {{total}} columns are shown':
+    'Only {{preview}} of {{total}} columns are shown',
   'Oops! Something went wrong checking': 'Oops! Something went wrong checking',
   'Oops! We could not retrieve your checkout session. Please try again':
     'Oops! We could not retrieve your checkout session. Please try again',
   'Open the advanced filters': 'Open the advanced filters',
+  'No data to display': 'No data to display',
+  'Not all rows are shown': 'Not all rows are shown',
   'Not empty': 'Not empty',
   'or': 'or',
   'Organization': 'Organization',
@@ -396,6 +401,8 @@ export const ENG: Translation = {
     'Selects the metrics to be included as choice options in the form schema. The name of the new choice origin will be $metricName_metric_choice. (e.g project_metric_choice or case_metric_choice)',
   'Share Public Url': 'Share Public Url',
   'Show Map': 'Show Map',
+  'Showing the first {{preview}} of {{total}} rows':
+    'Showing the first {{preview}} of {{total}} rows',
   'Something went wrong while recording audio': 'Something went wrong while recording audio',
   'Something went wrong while transcribing audio': 'Something went wrong while transcribing audio',
   "Sorry, you don't have enough Credits!": "Sorry, you don't have enough Credits!",
@@ -412,6 +419,8 @@ export const ENG: Translation = {
   'THEME LOADED': 'THEME LOADED',
   'THEME SAVED': 'THEME SAVED',
   'TRANSCRIPTION ERROR': 'TRANSCRIPTION ERROR',
+  'The chat session has ended. Please run the query again':
+    'The chat session has ended. Please run the query again',
   'The corresponding graphql query condition to filter metrics':
     'The corresponding graphql query condition to filter metrics',
   'The form has been successfully submitted.': 'The form has been successfully submitted.',
@@ -425,6 +434,9 @@ export const ENG: Translation = {
     'There are not any logs available for this form',
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
     'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.',
+  'This chart could not be displayed': 'This chart could not be displayed',
+  'This download is no longer available. Please run the query again':
+    'This download is no longer available. Please run the query again',
   'This form might not be valid. Please review and fill its data':
     'This form might not be valid. Please review and fill its data',
   'This name is already being used.': 'This name is already being used.',
