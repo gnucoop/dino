@@ -105,6 +105,13 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
   /** Whether the Save-draft action is currently disabled. */
   @Input() saveDraftDisabled: boolean | null = null;
 
+  /**
+   * Whether the Save-form action is currently disabled. The host passes the
+   * conditions only it knows about — a duplicate metrics set, a save already in
+   * flight — and the chrome adds its own view of the section errors.
+   */
+  @Input() saveDisabled: boolean | null = null;
+
   /** The slide instances of the wrapped form. */
   @Input()
   set slides(slides: AjfSlideInstance[] | null) {

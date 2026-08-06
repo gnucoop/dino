@@ -99,16 +99,49 @@ dino-form-data-chrome {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     z-index: 5;
     flex-wrap: wrap;
+
+    // Extra headroom: the outlined field's floating label sits above the field
+    // box and would otherwise crowd the stepper header directly above the row.
+    padding-top: 16px;
+
+    // Narrow screens give the row little to work with, so claw back the gaps
+    // and the side and bottom padding rather than spend three rows' height on
+    // the chrome. The headroom above stays.
+    @media only screen and (max-width: 600px) {
+      gap: 6px 8px;
+      padding: 14px 8px 4px;
+    }
   }
 
   .dino-fdc-spacer {
     flex: 1 1 auto;
+
+    // Nothing to push apart once the row has wrapped; the spacer would only
+    // force the save actions onto a line of their own.
+    @media only screen and (max-width: 600px) {
+      display: none;
+    }
   }
 
   // ---- section field -----------------------------------------------------
   // A real outlined mat-form-field: the notched label carries "Section n of m"
   // and the readonly input carries the section name. The whole field opens the
   // searchable picker, so nothing inside it takes a caret.
+  // Keeps the chevrons on the same line as the field. Without it the field's
+  // full-width basis on narrow screens breaks the line either side of it and
+  // strands a chevron on a row of its own, above and below.
+  .dino-fdc-section-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0;
+
+    @media only screen and (max-width: 600px) {
+      flex-basis: 100%;
+    }
+  }
+
   .dino-fdc-section-field {
     min-width: 340px;
     max-width: 100%;
@@ -116,7 +149,7 @@ dino-form-data-chrome {
 
     @media only screen and (max-width: 600px) {
       min-width: 0;
-      flex: 1 1 100%;
+      flex: 1 1 auto;
     }
 
     .mat-mdc-text-field-wrapper,
@@ -157,10 +190,21 @@ dino-form-data-chrome {
     min-width: 210px;
     padding-left: 8px;
 
+    // Sized rather than forced full-width, so it shares a line with the save
+    // actions when they fit and wraps under them only when they do not.
     @media only screen and (max-width: 600px) {
-      flex: 1 1 100%;
+      flex: 1 1 180px;
+      gap: 3px;
       min-width: 0;
       padding-left: 0;
+    }
+  }
+
+  // Right-aligned once the spacer is out of the way on narrow screens.
+  dino-form-data-save-actions {
+    @media only screen and (max-width: 600px) {
+      margin-left: auto;
+      gap: 8px;
     }
   }
 
@@ -199,6 +243,12 @@ dino-form-data-chrome {
     font-size: 12px;
     color: var(--dino-fdc-text-2);
     white-space: nowrap;
+
+    // The floating label already reads "Section n of m", so on a narrow field
+    // the counter is the same fact twice. Drop it and give the name the room.
+    @media only screen and (max-width: 600px) {
+      display: none;
+    }
   }
 
   .dino-fdc-arrow {

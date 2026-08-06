@@ -55,6 +55,7 @@
             [slides]="slides|async"
             [isReadonly]="isView|async"
             [allowSaveDraft]="allowSaveDraft"
+            [saveDisabled]="(isSaveDisabled|async) === true"
             [saveDraftDisabled]="
               ((isAjfFormValid|async) === true) ||
               ((uniqueMetricsSetAlreadyExists|async) === true) ||
@@ -95,6 +96,7 @@
         [slides]="slides|async"
         [isReadonly]="isView|async"
         [allowSaveDraft]="allowSaveDraft"
+        [saveDisabled]="(isSaveDisabled|async) === true"
         [saveDraftDisabled]="
           ((isAjfFormValid|async) === true) ||
           ((uniqueMetricsSetAlreadyExists|async) === true) ||

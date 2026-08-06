@@ -1,7 +1,7 @@
 <!-- Control row: section navigation + progress (left), errors pill and save
      actions (right) -->
 <div class="dino-fdc-control-row">
-  <ng-container *ngIf="(sections$ | async) as sections">
+  <div class="dino-fdc-section-nav" *ngIf="(sections$ | async) as sections">
     <button
       mat-icon-button
       type="button"
@@ -50,7 +50,7 @@
     >
       <mat-icon>chevron_right</mat-icon>
     </button>
-  </ng-container>
+  </div>
 
   <div class="dino-fdc-progress" *ngIf="(progress$ | async) as progress">
     <div class="dino-fdc-progress-labels">
@@ -84,6 +84,7 @@
     [isReadonly]="isReadonly"
     [allowSaveDraft]="allowSaveDraft"
     [saveDraftDisabled]="saveDraftDisabled"
+    [saveDisabled]="(saveDisabled === true) || ((hasErrors$ | async) === true)"
     saveDraftTourAnchor="save-draft-floating-button"
     saveFormTourAnchor="save-form-floating-button"
     (saveForm)="onSaveForm()"
