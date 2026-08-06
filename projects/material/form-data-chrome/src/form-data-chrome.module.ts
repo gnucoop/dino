@@ -27,7 +27,10 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {TranslocoModule} from '@ngneat/transloco';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
@@ -40,7 +43,10 @@ import {FormDataSaveActions} from './form-data-save-actions';
     A11yModule,
     CommonModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatIconModule,
+    MatInputModule,
+    MatProgressBarModule,
     MatSnackBarModule,
     OverlayModule,
     PortalModule,

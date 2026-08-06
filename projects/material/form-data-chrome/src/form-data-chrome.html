@@ -1,20 +1,70 @@
-<!-- Control row: section select (left) + errors pill + save actions (right) -->
+<!-- Control row: section navigation + progress (left), errors pill and save
+     actions (right) -->
 <div class="dino-fdc-control-row">
-  <div class="dino-fdc-section-select-wrapper" *ngIf="(sections$ | async) as sections">
-    <span class="dino-fdc-caption">{{ 'Section' | transloco }}</span>
+  <ng-container *ngIf="(sections$ | async) as sections">
     <button
-      *ngIf="(currentSection$ | async) as section"
+      mat-icon-button
       type="button"
-      class="dino-fdc-section-select"
+      class="dino-fdc-nav-prev"
+      [disabled]="((currentSectionIndex$ | async) ?? 0) <= 0"
+      (click)="prevSection()"
+      [attr.aria-label]="'Previous section' | transloco"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <mat-form-field
+      *ngIf="(currentSection$ | async) as section"
+      appearance="outline"
+      subscriptSizing="dynamic"
+      class="dino-fdc-section-field"
       (click)="openPicker()"
     >
-      <span class="dino-fdc-num-badge">{{ section.number }}</span>
-      <span class="dino-fdc-section-name">{{ section.label | transloco }}</span>
-      <mat-icon class="dino-fdc-icon-valid" *ngIf="section.valid">check</mat-icon>
-      <mat-icon class="dino-fdc-icon-invalid" *ngIf="!section.valid">warning</mat-icon>
-      <span class="dino-fdc-counter">{{ section.number }} / {{ sections.length }}</span>
-      <mat-icon class="dino-fdc-arrow">arrow_drop_down</mat-icon>
+      <mat-label>
+        {{
+          'Section {{current}} of {{total}}'
+            | transloco: {current: section.number, total: sections.length}
+        }}
+      </mat-label>
+      <span matPrefix class="dino-fdc-num-badge">{{ section.number }}</span>
+      <input
+        matInput
+        readonly
+        class="dino-fdc-section-name"
+        [value]="section.label | transloco"
+        (keydown.enter)="openPicker()"
+      />
+      <mat-icon matSuffix class="dino-fdc-icon-valid" *ngIf="section.valid">check</mat-icon>
+      <mat-icon matSuffix class="dino-fdc-icon-invalid" *ngIf="!section.valid">warning</mat-icon>
+      <span matSuffix class="dino-fdc-counter">{{ section.number }} / {{ sections.length }}</span>
+      <mat-icon matSuffix class="dino-fdc-arrow">arrow_drop_down</mat-icon>
+    </mat-form-field>
+
+    <button
+      mat-icon-button
+      type="button"
+      class="dino-fdc-nav-next"
+      [disabled]="((currentSectionIndex$ | async) ?? 0) >= sections.length - 1"
+      (click)="nextSection()"
+      [attr.aria-label]="'Next section' | transloco"
+    >
+      <mat-icon>chevron_right</mat-icon>
     </button>
+  </ng-container>
+
+  <div class="dino-fdc-progress" *ngIf="(progress$ | async) as progress">
+    <div class="dino-fdc-progress-labels">
+      <span class="dino-fdc-progress-filled">
+        {{ '{{percent}}% filled' | transloco: {percent: progress.filledPercent} }}
+      </span>
+      <span class="dino-fdc-progress-sections">
+        {{
+          '{{done}} of {{total}} sections complete'
+            | transloco: {done: progress.completeCount, total: progress.sectionCount}
+        }}
+      </span>
+    </div>
+    <mat-progress-bar mode="determinate" [value]="progress.filledPercent"></mat-progress-bar>
   </div>
 
   <span class="dino-fdc-spacer"></span>

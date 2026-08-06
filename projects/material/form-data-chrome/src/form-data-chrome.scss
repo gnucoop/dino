@@ -105,44 +105,80 @@ dino-form-data-chrome {
     flex: 1 1 auto;
   }
 
-  .dino-fdc-section-select-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  // ---- section field -----------------------------------------------------
+  // A real outlined mat-form-field: the notched label carries "Section n of m"
+  // and the readonly input carries the section name. The whole field opens the
+  // searchable picker, so nothing inside it takes a caret.
+  .dino-fdc-section-field {
     min-width: 340px;
     max-width: 100%;
+    cursor: pointer;
 
     @media only screen and (max-width: 600px) {
       min-width: 0;
       flex: 1 1 100%;
     }
+
+    .mat-mdc-text-field-wrapper,
+    .mat-mdc-form-field-flex,
+    input.mat-mdc-input-element {
+      cursor: pointer;
+    }
+
+    // The value is picked from the overlay, never typed, so the caret would
+    // only suggest otherwise.
+    input.mat-mdc-input-element {
+      caret-color: transparent;
+      font-weight: 500;
+      text-overflow: ellipsis;
+    }
+
+    .mat-mdc-form-field-icon-prefix,
+    .mat-mdc-form-field-icon-suffix {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+    }
   }
 
-  .dino-fdc-caption {
-    font-size: 11px;
-    letter-spacing: 0.3px;
+  // ---- section navigation ------------------------------------------------
+  .dino-fdc-nav-prev,
+  .dino-fdc-nav-next {
+    flex: 0 0 auto;
     color: var(--dino-fdc-text-2);
   }
 
-  .dino-fdc-section-select {
+  // ---- progress ----------------------------------------------------------
+  .dino-fdc-progress {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--dino-fdc-surface-2);
-    border: none;
-    border-bottom: 1px solid var(--dino-fdc-border-strong);
-    border-radius: 2px 2px 0 0;
-    padding: 8px 12px;
-    cursor: pointer;
-    color: var(--dino-fdc-text);
-    font: inherit;
-    text-align: left;
-    width: 100%;
-    transition: background ease-in-out 0.2s;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 210px;
+    padding-left: 8px;
 
-    &:hover {
-      background: var(--dino-fdc-surface-3);
+    @media only screen and (max-width: 600px) {
+      flex: 1 1 100%;
+      min-width: 0;
+      padding-left: 0;
     }
+  }
+
+  .dino-fdc-progress-labels {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .dino-fdc-progress-filled {
+    font-weight: 600;
+    color: var(--dino-fdc-text);
+  }
+
+  .dino-fdc-progress-sections {
+    color: var(--dino-fdc-text-2);
   }
 
   .dino-fdc-num-badge {
@@ -157,15 +193,6 @@ dino-form-data-chrome {
     font-weight: 600;
     background: mat-css-vars.mat-css-color-primary(500);
     color: mat-css-vars.mat-css-contrast-color-primary(500);
-  }
-
-  .dino-fdc-section-name {
-    flex: 1 1 auto;
-    font-size: 15px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .dino-fdc-counter {

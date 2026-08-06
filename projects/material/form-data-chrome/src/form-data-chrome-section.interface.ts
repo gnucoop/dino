@@ -47,6 +47,32 @@ export interface SectionView {
   canRemove: boolean;
   /** True when removal of repetitions is disabled. */
   disableRemoval: boolean;
+  /**
+   * The number of fields the user is expected to fill in the section, counted
+   * across every repetition. Formatted-text and formula fields are excluded:
+   * nobody fills those in.
+   */
+  fieldCount: number;
+  /** How many of those fields currently hold a value. */
+  filledCount: number;
+  /** True when every field holds a value and the section has no errors. */
+  complete: boolean;
+}
+
+/**
+ * How far along the whole form is, aggregated over the visible sections.
+ */
+export interface FormProgress {
+  /** Fields the user is expected to fill, across the form. */
+  fieldCount: number;
+  /** How many of them hold a value. */
+  filledCount: number;
+  /** `filledCount` as a whole percentage of `fieldCount`. */
+  filledPercent: number;
+  /** Sections that are complete. */
+  completeCount: number;
+  /** Visible sections. */
+  sectionCount: number;
 }
 
 /**

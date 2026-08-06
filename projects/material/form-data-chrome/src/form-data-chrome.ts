@@ -40,13 +40,28 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {FormControl, UntypedFormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {AjfNodeType, AjfRepeatingSlideInstance, AjfSlideInstance} from '@ajf/core/forms';
+import {
+  AjfFieldInstance,
+  AjfFieldType,
+  AjfNodeCompleteNamePipe,
+  AjfNodeType,
+  AjfRepeatingSlideInstance,
+  AjfSlideInstance,
+} from '@ajf/core/forms';
 import {AjfFormRenderer} from '@ajf/material/forms';
 import {TranslocoService} from '@ngneat/transloco';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
 import {
+  BehaviorSubject,
+  combineLatest,
+  merge,
+  Observable,
+  of as obsOf,
+  Subscription,
+} from 'rxjs';
+import {
+  debounceTime,
   distinctUntilChanged,
   map,
   shareReplay,
@@ -55,7 +70,7 @@ import {
   take,
 } from 'rxjs/operators';
 
-import {PageRef, SectionView} from './form-data-chrome-section.interface';
+import {FormProgress, PageRef, SectionView} from './form-data-chrome-section.interface';
 
 /**
  * Navigation/action chrome that wraps an Ajf `<ajf-form>` renderer (projected as
@@ -111,6 +126,7 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
   readonly errorCount$: Observable<number>;
   readonly hasErrors$: Observable<boolean>;
   readonly filteredSections$: Observable<SectionView[]>;
+  readonly progress$: Observable<FormProgress>;
 
   private readonly _slides$ = new BehaviorSubject<AjfSlideInstance[] | null>(null);
   private readonly _renderer$ = new BehaviorSubject<AjfFormRenderer | null>(null);
@@ -129,6 +145,8 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
   private _rafId = 0;
   private _rendererSub?: Subscription;
   private readonly _subs = new Subscription();
+  /** Maps a field instance to its form-group control name. Stateless. */
+  private readonly _completeName = new AjfNodeCompleteNamePipe();
 
   constructor(
     private _host: ElementRef<HTMLElement>,
@@ -139,10 +157,23 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
     private _snackBar: MatSnackBar,
     private _transloco: TranslocoService,
   ) {
-    // Recompute the section model whenever the slide instances change, or when
-    // the renderer signals a validation change (slide.valid mutates in place).
+    // Recompute the section model whenever the slide instances change, when the
+    // renderer signals a validation change (slide.valid mutates in place), or
+    // when a field takes a value — the fill counts below read those values, and
+    // nothing in the slide identity changes when one is typed into. Value
+    // changes are debounced so a burst of keystrokes costs one recount.
     const tick$ = this._renderer$.pipe(
-      switchMap(fr => (fr ? fr.errors.pipe(startWith(0)) : obsOf(0))),
+      switchMap(fr =>
+        fr
+          ? merge(
+              fr.errors,
+              fr.formGroup.pipe(
+                switchMap(group => (group ? group.valueChanges : obsOf(null))),
+                debounceTime(200),
+              ),
+            ).pipe(startWith(0))
+          : obsOf(0),
+      ),
       startWith(0),
     );
 
@@ -160,8 +191,15 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
       map(([fromInput, fromRenderer]) => fromRenderer ?? fromInput ?? null),
     );
 
-    this.sections$ = combineLatest([slidesSource$, tick$]).pipe(
-      map(([slides]) => this._buildSections(slides)),
+    // The live field values live on the form group's controls, not on the field
+    // instances, so the fill counts need it alongside the slides.
+    const formGroup$ = this._renderer$.pipe(
+      switchMap(fr => (fr ? fr.formGroup : obsOf<UntypedFormGroup | null>(null))),
+      startWith(null as UntypedFormGroup | null),
+    );
+
+    this.sections$ = combineLatest([slidesSource$, formGroup$, tick$]).pipe(
+      map(([slides, formGroup]) => this._buildSections(slides, formGroup)),
       replay(),
     );
 
@@ -186,6 +224,21 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
     this.currentRep$ = combineLatest([this.pages$, this.currentPage$]).pipe(
       map(([pages, cp]) => pages[cp]?.rep ?? 0),
       distinctUntilChanged(),
+      replay(),
+    );
+
+    this.progress$ = this.sections$.pipe(
+      map(sections => {
+        const fieldCount = sections.reduce((total, s) => total + s.fieldCount, 0);
+        const filledCount = sections.reduce((total, s) => total + s.filledCount, 0);
+        return {
+          fieldCount,
+          filledCount,
+          filledPercent: fieldCount === 0 ? 0 : Math.round((filledCount / fieldCount) * 100),
+          completeCount: sections.filter(s => s.complete).length,
+          sectionCount: sections.length,
+        };
+      }),
       replay(),
     );
 
@@ -634,11 +687,15 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
     return section.slide.node.id;
   }
 
-  private _buildSections(slides: AjfSlideInstance[] | null): SectionView[] {
+  private _buildSections(
+    slides: AjfSlideInstance[] | null,
+    formGroup: UntypedFormGroup | null,
+  ): SectionView[] {
     const visible = (slides ?? []).filter(s => s.visible);
     return visible.map((slide, i) => {
       const repeating = (slide.node.nodeType as AjfNodeType) === AjfNodeType.AjfRepeatingSlide;
       const rep = repeating ? (slide as unknown as AjfRepeatingSlideInstance) : null;
+      const {fieldCount, filledCount} = this._countFields(slide, formGroup);
       return {
         slide,
         index: i,
@@ -650,8 +707,70 @@ export class FormDataChrome implements AfterContentInit, OnDestroy {
         canAdd: rep ? rep.canAdd !== false : false,
         canRemove: rep ? rep.canRemove !== false : false,
         disableRemoval: rep ? rep.disableRemoval === true : false,
+        fieldCount,
+        filledCount,
+        complete: fieldCount > 0 && filledCount === fieldCount && slide.valid,
       };
     });
+  }
+
+  /**
+   * Counts the fields of a slide that the user is expected to fill, and how
+   * many of them hold a value.
+   *
+   * Reads `flatNodes`, which Ajf rebuilds for every slide and which already
+   * holds just the field instances, groups recursed into. `slideNodes` looks
+   * like the natural source but only repeating slides ever get it assigned, so
+   * an ordinary slide reports an empty one.
+   *
+   * A repeating slide keeps every repetition in `nodes`, so its `flatNodes`
+   * spans them all and a section is counted once per repetition.
+   *
+   * Values are read off the form group: Ajf assigns `instance.value` when the
+   * instance is created and leaves it there, so it reports what the form was
+   * loaded with rather than what the user has since typed.
+   */
+  private _countFields(
+    slide: AjfSlideInstance,
+    formGroup: UntypedFormGroup | null,
+  ): {fieldCount: number; filledCount: number} {
+    let fieldCount = 0;
+    let filledCount = 0;
+    (slide.flatNodes ?? []).forEach(node => {
+      const field = node as AjfFieldInstance;
+      const fieldType = field.node?.fieldType;
+      // Non-field nodes have no fieldType. Formatted text holds nothing and
+      // formulas fill themselves, so neither is the user's to complete.
+      if (
+        fieldType == null ||
+        !field.visible ||
+        fieldType === AjfFieldType.Empty ||
+        fieldType === AjfFieldType.Formula
+      ) {
+        return;
+      }
+      fieldCount++;
+      const name = this._completeName.transform(field);
+      const value =
+        formGroup != null && formGroup.contains(name)
+          ? formGroup.controls[name].value
+          : field.value;
+      if (this._hasValue(value)) {
+        filledCount++;
+      }
+    });
+    return {fieldCount, filledCount};
+  }
+
+  /** Whether a field value counts as filled in. `false` and `0` do. */
+  private _hasValue(value: unknown): boolean {
+    if (value == null || value === '') {
+      return false;
+    }
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return true;
   }
 
   private _buildPages(sections: SectionView[]): PageRef[] {
