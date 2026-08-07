@@ -271,6 +271,28 @@
       </mat-cell>
     </ng-container>
 
+    <!-- Actions Column: the quick actions of a row, revealed when it is hovered -->
+    <ng-container matColumnDef="actions" stickyEnd>
+      <mat-header-cell *matHeaderCellDef class="dino-row-actions dino-header-row-actions">
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row" class="dino-row-actions">
+        <div class="dino-row-actions-container">
+          <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
+            <!-- The main actions only: every action of a row is available from the
+                 action row above, by selecting it. -->
+            <mat-icon
+              class="dino-action-icon"
+              *ngFor="let action of getMainActions(actions)"
+              mat-list-icon
+              [matTooltip]="(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco"
+              (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+              >{{action.matIcon}}
+            </mat-icon>
+          </ng-container>
+        </div>
+      </mat-cell>
+    </ng-container>
+
     <mat-header-row *matHeaderRowDef="(ctx.displayedColumns|async)"></mat-header-row>
 
     <mat-row
