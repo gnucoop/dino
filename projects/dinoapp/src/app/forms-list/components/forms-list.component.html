@@ -21,6 +21,7 @@
   <dino-search-filters-bar
     filters
     [presetManager]="true"
+    [keywordSearch]="false"
     [exportable]="(displayExportButton|async) ?? false"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
     (exportEvt)="dinoList.export($event, 'forms')"
