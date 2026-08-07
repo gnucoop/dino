@@ -13,18 +13,15 @@
     [additionalFilters]="false"
     [exportable]="true"
     (exportEvt)="dinoList.export($event, 'metrics')"
-  ></dino-search-filters-bar>
+  >
+    <button toolbarActions mat-stroked-button color="primary" (click)="openDialog(undefined, 'Create')">
+      <mat-icon>add</mat-icon>
+      <span>{{('Add New'|transloco) + ' ' + metricLabel}}</span>
+    </button>
+    <button toolbarActions mat-stroked-button color="primary" (click)="openImportMetrics()">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>{{('Import'|transloco) + ' ' + metricLabel}}</span>
+    </button>
+  </dino-search-filters-bar>
   <ng-content select="[breadcrumbs]" breadcrumbs></ng-content>
 </dino-list>
-
-<dino-floating-button
-  buttonIcon="add"
-  [tooltipMessage]="('Add New'|transloco) + ' ' + metricLabel"
-  (click)="openDialog(undefined, 'Create')"
-></dino-floating-button>
-
-<dino-floating-button
-  [buttonIcon]="'cloud_upload'"
-  [tooltipMessage]="('Import'|transloco) + ' ' + metricLabel"
-  (click)="openImportMetrics()"
-></dino-floating-button>

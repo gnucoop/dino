@@ -47,11 +47,43 @@ dino-search-filters-bar {
     gap: 8px;
   }
 
+  // The left side takes whatever the actions on the right leave, so that the
+  // keyword field is as wide as it can be.
+  .dino-filters-toolbar-left {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   // Uniform 40px height for every toolbar button (Table/Map toggle, Add, Import,
   // Filtri, Esporta), matching the Filtri button.
   .dino-filters-toolbar {
     .mat-mdc-button-base {
       height: 40px;
+    }
+  }
+
+  // The keyword searching the whole list, beside the view switcher: the same
+  // height as the buttons of the toolbar, and no room reserved for a hint.
+  .mat-mdc-form-field.dino-filter-keyword {
+    flex: 1 1 280px;
+    min-width: 180px;
+
+    .mat-mdc-text-field-wrapper {
+      border-radius: 8px;
+    }
+
+    .mat-mdc-form-field-infix {
+      min-height: 40px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mdc-line-ripple {
+      display: none;
     }
   }
 

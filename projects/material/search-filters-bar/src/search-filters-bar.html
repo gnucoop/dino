@@ -19,6 +19,27 @@
         <span>AI</span>
       </mat-button-toggle>
     </mat-button-toggle-group>
+
+    <ng-container [formGroup]="textSearchFilters" *ngIf="keywordSearch">
+      <mat-form-field class="dino-filter-keyword" floatLabel="always">
+        <input
+          matInput
+          #keywordinput
+          formControlName="keyword"
+          [placeholder]="'search by keyword'|transloco"
+        />
+        <mat-icon color="primary" matSuffix>search</mat-icon>
+        <mat-icon
+          matSuffix
+          color="primary"
+          *ngIf="keywordinput.value"
+          aria-label="Clear"
+          (click)="clearFilter('keyword', textSearchFilters)"
+          class="dino-clear-filter-button"
+          >close</mat-icon
+        >
+      </mat-form-field>
+    </ng-container>
   </div>
 
   <div class="dino-filters-toolbar-right" *ngIf="(isAiView$|async) === false">

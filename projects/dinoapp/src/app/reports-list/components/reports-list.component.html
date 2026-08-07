@@ -13,16 +13,23 @@
     filters
     [presetManager]="true"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
-  ></dino-search-filters-bar>
+  >
+    <button
+      toolbarActions
+      mat-stroked-button
+      color="primary"
+      *ngIf="displayAddButton|async"
+      [matTooltip]="(tooltipMessage|async)!"
+      [tourAnchor]="'add-report-floating-button'"
+      (click)="addReport()"
+    >
+      <mat-icon>add</mat-icon>
+      <span>{{tooltipMessage|async}}</span>
+      <span class="dino-report-cost" *ngIf="reportCost|async as cost">
+        <mat-icon>smart_toy</mat-icon>
+        <span>{{cost}}</span>
+      </span>
+    </button>
+  </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
-
-<dino-floating-button
-  *ngIf="displayAddButton|async"
-  buttonIcon="add"
-  [tooltipMessage]="(tooltipMessage|async)!"
-  [tourAnchor]="'add-report-floating-button'"
-  [tourInteractive]="true"
-  [cost]="reportCost|async"
-  (click)="addReport()"
-></dino-floating-button>

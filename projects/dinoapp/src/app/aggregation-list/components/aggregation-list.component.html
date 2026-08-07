@@ -18,13 +18,17 @@
     [additionalFilters]="false"
     [aggregationFilters]="true"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
-  ></dino-search-filters-bar>
+  >
+    <button
+      toolbarActions
+      mat-stroked-button
+      color="primary"
+      *ngIf="aggregationFormCreator"
+      (click)="openFormCreatorDialog()"
+    >
+      <mat-icon>add</mat-icon>
+      <span>{{'Add New form'|transloco}}</span>
+    </button>
+  </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
-
-<dino-floating-button
-  *ngIf="aggregationFormCreator"
-  buttonIcon="add"
-  [tooltipMessage]="'Add New form'|transloco"
-  (click)="openFormCreatorDialog()"
-></dino-floating-button>
