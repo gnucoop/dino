@@ -76,6 +76,11 @@ export interface ListHeader<T> {
    */
   icon?: string;
   /**
+   * The width of the column, in pixels, when the User has resized it.
+   * Unset means the column takes its share of the available width.
+   */
+  width?: number;
+  /**
    * Method needed to evaluate the editability of a cell.
    * If true and if the active user has the proper permissions,
    * the column cells can be edited directly from the list view.

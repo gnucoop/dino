@@ -106,7 +106,14 @@
       [matColumnDef]="header.column.toString()"
     >
       <ng-container *ngIf="header.sortable; else notSortable">
-        <mat-header-cell cdkDrag *matHeaderCellDef [mat-sort-header]="header.column">
+        <mat-header-cell
+          cdkDrag
+          *matHeaderCellDef
+          [mat-sort-header]="header.column"
+          [dinoColumnResize]="header.column.toString()"
+          (columnResize)="resizeColumn($event)"
+          (columnResizeEnd)="resizeColumnEnd($event)"
+        >
           <ng-container
             *ngTemplateOutlet="cellTemplatesMap[header.label] ?
         cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
@@ -117,7 +124,13 @@
       </ng-container>
 
       <ng-template #notSortable>
-        <mat-header-cell cdkDrag *matHeaderCellDef>
+        <mat-header-cell
+          cdkDrag
+          *matHeaderCellDef
+          [dinoColumnResize]="header.column.toString()"
+          (columnResize)="resizeColumn($event)"
+          (columnResizeEnd)="resizeColumnEnd($event)"
+        >
           <ng-container
             *ngTemplateOutlet="cellTemplatesMap[header.label] ?
         cellTemplatesMap[header.label] : defaultHeaderCellTemplate;"

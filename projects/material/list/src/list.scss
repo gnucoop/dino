@@ -230,15 +230,14 @@ dino-list {
         align-items: center;
       }
       dino-list-cell {
+        // The text follows the width of its column, which the User can resize:
+        // a fixed truncation width would make a widened column show no more
+        // text than a narrow one.
         .dino-text-cell-long {
-          max-width: 100px;
+          max-width: 100%;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          // Wider truncation width on non-mobile viewports.
-          @media only screen and (min-width: 769px) {
-            max-width: 200px;
-          }
         }
         .dino-link-cell {
           color: mat-css-vars.mat-css-color-accent(700);
@@ -283,9 +282,57 @@ dino-list {
     }
   }
 
+  // ---- Column resizing --------------------------------------------------------
+  // The grip sits on the right edge of a header cell. It is invisible until the
+  // header is hovered, so that it does not compete with the column labels.
+  .dino-column-resize-grip {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 7px;
+    cursor: col-resize;
+    // The pointer events of the grip are its own: the header cell is a drag
+    // source and, when sortable, a button.
+    touch-action: none;
+    z-index: 1;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 25%;
+      bottom: 25%;
+      right: 3px;
+      width: 1px;
+      background: mat-css-vars.mat-css-color-accent(700, 0.4);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    &:hover::after {
+      opacity: 1;
+      background: mat-css-vars.mat-css-color-accent(700);
+    }
+
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .mat-mdc-header-row:hover .dino-column-resize-grip::after {
+    opacity: 1;
+  }
+
+  // The checkbox column holds a checkbox and, now and then, the invalid form
+  // or the pending upload icon: it used to hold the bulk actions too, which is
+  // what its width was for. The width is fixed, not fitted to the content, so
+  // that the first column starts at the same place on every row.
   .mat-column-select {
-    flex: 0 0 2% !important;
-    min-width: 143px;
+    flex: 0 0 76px !important;
+    min-width: 76px;
+    max-width: 76px;
+    padding-left: 8px;
+    padding-right: 0;
   }
   .mat-mdc-form-field.dino-details-search {
     margin-top: 25px !important;
@@ -594,7 +641,9 @@ dino-list {
 
   @media only screen and (max-width: 768px) {
     .mat-column-select {
+      flex: 0 0 auto !important;
       min-width: 5px;
+      max-width: none;
     }
     .dino-row-actions {
       .dino-columns-sel-btn {
@@ -681,4 +730,15 @@ dino-list {
 }
 .isLightTheme .mat-mdc-header-row {
   background: var(--mat-sidenav-content-background-color) !important;
+}
+
+// While a column is resized the pointer keeps its cursor wherever it goes, and
+// dragging over the table must not select its text.
+body.dino-column-resizing {
+  cursor: col-resize;
+  user-select: none;
+
+  * {
+    cursor: col-resize !important;
+  }
 }

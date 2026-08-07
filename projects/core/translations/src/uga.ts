@@ -59,6 +59,7 @@ export const UGA: Translation = {
   'pin': 'pin',
   'selected': 'selected',
   'Columns': 'Columns',
+  'Reset columns': 'Reset columns',
   'Clear selection': 'Clear selection',
   'Select one or more rows to see the available actions':
     'Select one or more rows to see the available actions',

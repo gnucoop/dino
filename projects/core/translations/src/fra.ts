@@ -239,6 +239,7 @@ export const FRA: Translation = {
   'pin': 'repères',
   'selected': 'sélectionnés',
   'Columns': 'Colonnes',
+  'Reset columns': 'Réinitialiser les colonnes',
   'Clear selection': 'Effacer la sélection',
   'Select one or more rows to see the available actions':
     'Sélectionnez une ou plusieurs lignes pour voir les actions disponibles',

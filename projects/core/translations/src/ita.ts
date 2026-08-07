@@ -244,6 +244,7 @@ export const ITA: Translation = {
   'pin': 'pin',
   'selected': 'selezionati',
   'Columns': 'Colonne',
+  'Reset columns': 'Ripristina le colonne',
   'Clear selection': 'Deseleziona',
   'Select one or more rows to see the available actions':
     'Seleziona una o più righe per visualizzare le azioni',

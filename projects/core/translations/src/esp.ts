@@ -256,6 +256,7 @@ export const ESP: Translation = {
   'pin': 'marcadores',
   'selected': 'seleccionados',
   'Columns': 'Columnas',
+  'Reset columns': 'Restablecer las columnas',
   'Clear selection': 'Borrar selección',
   'Select one or more rows to see the available actions':
     'Seleccione una o más filas para ver las acciones disponibles',

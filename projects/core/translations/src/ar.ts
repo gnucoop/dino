@@ -251,6 +251,7 @@ export const AR: Translation = {
   'pin': 'علامات',
   'selected': 'محدد',
   'Columns': 'أعمدة',
+  'Reset columns': 'إعادة تعيين الأعمدة',
   'Clear selection': 'مسح التحديد',
   'Select one or more rows to see the available actions':
     'حدد صفًا واحدًا أو أكثر لعرض الإجراءات المتاحة',

@@ -246,6 +246,7 @@ export const UKR: Translation = {
   'pin': 'позначки',
   'selected': 'вибрано',
   'Columns': 'Стовпці',
+  'Reset columns': 'Скинути стовпці',
   'Clear selection': 'Очистити вибір',
   'Select one or more rows to see the available actions':
     'Виберіть один або кілька рядків, щоб побачити доступні дії',

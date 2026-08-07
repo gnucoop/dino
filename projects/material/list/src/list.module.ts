@@ -67,6 +67,7 @@ import {LogViewer} from './log-viewer';
 import {ImagePreview} from './image-preview';
 import {AsListCellActionsPipe} from './list-action-pipe';
 import {LangsModule} from '@dino/material/langs';
+import {ColumnResize} from './column-resize';
 import {ListCellComponent} from './list-cell-component';
 import {ActionsModal} from './actions-modal';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
@@ -109,6 +110,7 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
   declarations: [
     AsListCellActionsPipe,
     ActionsModal,
+    ColumnResize,
     ColumnsSelector,
     ImagePreview,
     ListCell,
