@@ -34,6 +34,7 @@ import {
   throwError,
 } from 'rxjs';
 import {DataModelManager, Metric, MetricsService} from '@dino/core/data';
+import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {RxDocument} from 'rxdb';
 import {MatTableDataSource} from '@angular/material/table';
 import {AjfContainerNode, AjfField, AjfNode, isContainerNode} from '@ajf/core/forms';
@@ -56,6 +57,15 @@ export interface FormDepsEditorData {
    */
   formSchema: Observable<FormSchema>;
 }
+
+/**
+ * What a save has to do with the FormSchemaDeps document.
+ * `create` is the only kind the schema write depends on: the schema needs the id
+ * of the document being created. An `update` targets a document the schema
+ * already points at, so the two writes are independent and the schema can go
+ * first.
+ */
+export type RelationshipsWrite = 'none' | 'create' | 'update';
 
 /**
  * The relationships state to be persisted into a FormSchemaDeps document,
@@ -191,6 +201,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     @Optional() @Inject(MAT_DIALOG_DATA) public data: FormDepsEditorData | null,
     private _fs: FormSchemaManager,
     private _fsd: FormSchemaDepsManager,
+    private _ehms: ErrorHandlerMessageService,
     private _cdr: ChangeDetectorRef,
     readonly metricsService: MetricsService,
     readonly snackbar: MatSnackBar,
@@ -398,6 +409,64 @@ export class FormDepsEditor implements OnInit, OnDestroy {
   }
 
   /**
+   * What persisting the current table state would require of the FormSchemaDeps
+   * document. Pure: it decides, it does not write.
+   *
+   * `create` is the only outcome the schema write depends on, because only then
+   * does the schema need a ref id it does not already hold.
+   */
+  private _writeKind(
+    fschemadeps: FormSchemaDeps | null,
+    payload: RelationshipsPayload,
+  ): RelationshipsWrite {
+    if (fschemadeps) {
+      // Nothing changed since the document was loaded, so there is nothing to
+      // store: writing would only bump `updated_at` and push a pointless revision
+      // to sync. This editor is created along with the rest of the form editor's
+      // template, so we get here even when the user never opens the Metrics or
+      // Relationships tab.
+      const unchanged =
+        !this._legacyConverted && this._signature(payload) === this._pristineSignature;
+      return unchanged ? 'none' : 'update';
+    }
+    const empty =
+      payload.depsOrigin.length === 0 &&
+      payload.metricRows.length === 0 &&
+      payload.metricDataToShow.length === 0;
+    return empty ? 'none' : 'create';
+  }
+
+  /**
+   * Tells the host what a save would have to do with the relationships, so it can
+   * order the two writes: only `create` has to precede the schema write.
+   */
+  pendingWrite(): Observable<RelationshipsWrite> {
+    return combineLatest([this.formSchema, this._formSchemaDeps]).pipe(
+      take(1),
+      map(([_fschema, fschemadeps]) => this._writeKind(fschemadeps, this._collectPayload())),
+      catchError(() => obsOf('none' as RelationshipsWrite)),
+    );
+  }
+
+  /**
+   * Removes a FormSchemaDeps document created by a save whose schema write then
+   * failed. Without this the document would linger unreferenced — and a retry
+   * would create another one, since the schema still has no ref id to load from.
+   */
+  discardCreated(id: string): Observable<unknown> {
+    return this._fsd.delete(id).pipe(
+      take(1),
+      catchError(err => {
+        this._ehms.captureErrorMessage(
+          `Could not discard the orphaned form schema deps ${id}: ${JSON.stringify(err)}`,
+          'error',
+        );
+        return obsOf(null);
+      }),
+    );
+  }
+
+  /**
    * Persists the relationships (the FormSchemaDeps document) from the current
    * table state and selected metrics, and returns the deps document id.
    * - Returns the existing id when updating, the new id when creating.
@@ -414,12 +483,13 @@ export class FormDepsEditor implements OnInit, OnDestroy {
       take(1),
       switchMap(([_fschema, fschemadeps]) => {
         const payload = this._collectPayload();
+        const kind = this._writeKind(fschemadeps, payload);
+
+        if (kind === 'none') {
+          return obsOf(undefined);
+        }
 
         if (fschemadeps) {
-          // Nothing changed since the document was loaded: skip the write.
-          if (!this._legacyConverted && this._signature(payload) === this._pristineSignature) {
-            return obsOf(undefined);
-          }
           const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
           fsdeps.metric_data_to_show = payload.metricDataToShow;
           fsdeps.deps_origin = [...payload.depsOrigin, ...this._withQuerySelectors(payload)];
@@ -432,15 +502,6 @@ export class FormDepsEditor implements OnInit, OnDestroy {
             );
         }
 
-        // Nothing to persist and no existing deps document: leave the schema as is.
-        if (
-          payload.depsOrigin.length === 0 &&
-          payload.metricRows.length === 0 &&
-          payload.metricDataToShow.length === 0
-        ) {
-          return obsOf(undefined);
-        }
-
         const fsdeps = {
           deps_origin: [...payload.depsOrigin, ...this._withQuerySelectors(payload)],
           metric_data_to_show: payload.metricDataToShow,
@@ -449,7 +510,15 @@ export class FormDepsEditor implements OnInit, OnDestroy {
           .create(fsdeps)
           .pipe(map(res => (res != null ? this._markPersisted(payload, res.toJSON().id) : null)));
       }),
-      catchError(() => obsOf(null)),
+      catchError(err => {
+        // Reported here as well as returned: the host turns the null into a message
+        // for the user, but without this the failure would never reach monitoring.
+        this._ehms.captureErrorMessage(
+          `Could not save form schema deps: ${JSON.stringify(err)}`,
+          'error',
+        );
+        return obsOf(null);
+      }),
     );
   }
 

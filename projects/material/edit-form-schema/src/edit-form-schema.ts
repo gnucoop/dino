@@ -52,7 +52,7 @@ import {
   FormStatusManager,
 } from '@dino/core/forms';
 import {Lang, LangManager} from '@dino/core/langs';
-import {FormDepsEditor} from '@dino/material/form-deps-editor';
+import {FormDepsEditor, RelationshipsWrite} from '@dino/material/form-deps-editor';
 import {IconsService} from '@dino/material/icons-service';
 import {format} from 'date-fns';
 import {FormStatusEditor} from '@dino/material/form-status-editor';
@@ -698,85 +698,118 @@ export class EditFormSchema implements OnInit, OnDestroy {
         ),
         switchMap(([_evt, fs, schema, formGroup, autoReport]) => {
           if (schema == null) {
-            return obsOf({fs: null, autoReportConfirmation: false, autoReport});
+            return obsOf({fs: null, autoReportConfirmation: false, autoReport, depsFailed: false});
           }
           this.isSaving = true;
-          // Persist relationships first. Returns the deps ref id (string), undefined
-          // (no write was needed: nothing to persist, or the relationships are
-          // untouched since they were loaded) or null (failure).
-          const depsRefId$: Observable<string | null | undefined> = this.depsEditor
-            ? this.depsEditor.persistRelationships()
-            : obsOf(undefined);
-          return depsRefId$.pipe(
-            switchMap(depsRefId => {
-              if (depsRefId === null) {
-                // Relationship persistence failed: abort the whole save.
-                return obsOf({fs: null, autoReportConfirmation: false, autoReport});
-              }
-              const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
-              const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
-              const patchSchema = {
-                ...schema,
-                ...(unique ? {uniqueMetricsSet: unique} : undefined),
-              };
-              const formPatch: Partial<InsertModel<FormSchema>> = {
-                schema: patchSchema,
-                name: formGroup.get('name')?.value,
-                label: formGroup.get('label')?.value,
-                icon: formGroup.get('icon')?.value,
-                form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
-                visibility: formGroup.get('visibility')?.value,
-                form_status_ref_id: formGroup.get('status')?.value ?? undefined,
-              };
-              // Fold in the relationships ref id when a document was written; when
-              // undefined (no write needed), leave the schema's existing value
-              // untouched — it already points at the document, if there is one.
-              if (depsRefId != null) {
-                formPatch.form_schema_deps_ref_id = depsRefId;
-              }
+          const autoReportConfirmation: boolean = formGroup.get('generateAutoReport')?.value;
+          const deps = this.depsEditor;
+          // The relationships and the schema live in two collections, so there is no
+          // transaction to put them in: the order is what decides how bad a partial
+          // failure is. Ask first what the relationships actually need.
+          const plan$: Observable<RelationshipsWrite> = deps ? deps.pendingWrite() : obsOf('none');
 
-              if (fs == null) {
-                return this._formSchemaManager.create(formPatch as InsertModel<FormSchema>).pipe(
-                  map(fs => ({fs, autoReportConfirmation, autoReport})),
-                  catchError(err => {
-                    this._ehms.captureErrorMessage(
-                      `Could not create form schema: ${JSON.stringify(err)}`,
-                      'error',
+          return plan$.pipe(
+            switchMap(plan => {
+              // Creating the relationships document is the one case the schema write
+              // depends on — it needs the new ref id — so it has to go first. If the
+              // schema write then fails, the document is discarded: leaving it would
+              // park an unreferenced document on the db, and every retry would add
+              // another one, since the schema still has no ref id to load it from.
+              if (plan === 'create') {
+                return deps!.persistRelationships().pipe(
+                  switchMap(depsRefId => {
+                    if (depsRefId === null) {
+                      // The document was not created, so there is no id to point the
+                      // schema at: saving it now would only half-apply what the user
+                      // asked for.
+                      return obsOf({
+                        fs: null,
+                        autoReportConfirmation: false,
+                        autoReport,
+                        depsFailed: true,
+                      });
+                    }
+                    // `undefined` means it turned out there was nothing to write after
+                    // all: no id to fold in, and nothing to undo either.
+                    return this._writeFormSchema(fs, schema, formGroup, depsRefId).pipe(
+                      switchMap(written =>
+                        written == null && depsRefId != null
+                          ? deps!
+                              .discardCreated(depsRefId)
+                              .pipe(map(() => null as FormSchema | null))
+                          : obsOf(written),
+                      ),
+                      map(written => ({
+                        fs: written,
+                        autoReportConfirmation,
+                        autoReport,
+                        depsFailed: false,
+                      })),
                     );
-                    return obsOf({fs: null, autoReportConfirmation: false, autoReport});
                   }),
-                  take(1),
                 );
               }
-              return this._formSchemaManager.patch({...fs, ...formPatch}).pipe(
-                map(fs => ({fs, autoReportConfirmation, autoReport})),
-                catchError(err => {
-                  this._ehms.captureErrorMessage(
-                    `Could not patch form schema: ${JSON.stringify(err)}`,
-                    'error',
+
+              // Nothing to persist, or an existing document to update: either way the
+              // schema write needs nothing from it, so the schema goes first. A
+              // relationships failure afterwards leaves the schema coherent and the
+              // rows still in the tables, so the user can save them again.
+              return this._writeFormSchema(fs, schema, formGroup).pipe(
+                switchMap(written => {
+                  if (written == null || plan === 'none') {
+                    return obsOf({
+                      fs: written,
+                      autoReportConfirmation,
+                      autoReport,
+                      depsFailed: false,
+                    });
+                  }
+                  return deps!.persistRelationships().pipe(
+                    map(depsRefId => ({
+                      fs: written,
+                      autoReportConfirmation,
+                      autoReport,
+                      depsFailed: depsRefId === null,
+                    })),
                   );
-                  return obsOf({fs: null, autoReportConfirmation: false, autoReport});
                 }),
-                take(1),
               );
             }),
           );
         }),
       )
-      .subscribe(({fs, autoReportConfirmation, autoReport}) => {
-        if (fs != null) {
-          this._snackbar.open(`"${fs.label}" saved`, 'SAVE', {duration: 5000});
-
-          if ((autoReportConfirmation && autoReport == null) || autoReport != null) {
-            this._autoReportSchemaGenerationEvt.emit({fs, autoReport});
-          } else {
-            this._router.navigateByUrl('/forms');
-          }
-        } else {
-          this._snackbar.open('Oops! Something went wrong saving the Form', 'ERROR', {
-            duration: 5000,
-          });
+      .subscribe(({fs, autoReportConfirmation, autoReport, depsFailed}) => {
+        if (fs == null) {
+          // Nothing was saved. Naming the relationships when they are the cause
+          // keeps the message from blaming the wrong thing.
+          this._snackbar.open(
+            depsFailed
+              ? 'Oops! The relationships could not be saved, so the Form was not saved either'
+              : 'Oops! Something went wrong saving the Form',
+            'ERROR',
+            {duration: 5000},
+          );
           this.isSaving = false;
+          return;
+        }
+        if (depsFailed) {
+          // The Form is saved and the relationships are not, so say exactly that and
+          // stay on the page: the rows are still in the Relationships tab, and
+          // leaving would be the only way to actually lose them.
+          this._snackbar.open(
+            `"${fs.label}" was saved, but its relationships were not. Open the Relationships tab and save again.`,
+            'ERROR',
+            {duration: 10000},
+          );
+          this.isSaving = false;
+          return;
+        }
+        this._snackbar.open(`"${fs.label}" saved`, 'SAVE', {duration: 5000});
+
+        if ((autoReportConfirmation && autoReport == null) || autoReport != null) {
+          this._autoReportSchemaGenerationEvt.emit({fs, autoReport});
+        } else {
+          this._router.navigateByUrl('/forms');
         }
       });
 
@@ -916,6 +949,54 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   goToBuild(): void {
     this.selectedTabIndex = EditorTab.Build;
+  }
+
+  /**
+   * Writes the Form Schema — creating it when there is none yet, patching it
+   * otherwise — and reports `null` when the write failed.
+   *
+   * `depsRefId` is passed only when a relationships document has just been
+   * created, so the schema can start pointing at it. An existing document needs
+   * nothing: the schema already holds its id.
+   *
+   * @param fs The stored Form Schema, or null when creating one
+   * @param schema The Ajf schema currently held by the builder
+   * @param formGroup The editor's form group, holding the schema's attributes
+   * @param depsRefId The id of a just-created relationships document
+   */
+  private _writeFormSchema(
+    fs: FormSchema | null,
+    schema: {[key: string]: any},
+    formGroup: UntypedFormGroup,
+    depsRefId?: string,
+  ): Observable<FormSchema | null> {
+    const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
+    const formPatch: Partial<InsertModel<FormSchema>> = {
+      schema: {...schema, ...(unique ? {uniqueMetricsSet: unique} : undefined)},
+      name: formGroup.get('name')?.value,
+      label: formGroup.get('label')?.value,
+      icon: formGroup.get('icon')?.value,
+      form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
+      visibility: formGroup.get('visibility')?.value,
+      form_status_ref_id: formGroup.get('status')?.value ?? undefined,
+    };
+    if (depsRefId != null) {
+      formPatch.form_schema_deps_ref_id = depsRefId;
+    }
+    const creating = fs == null;
+    const write$ = creating
+      ? this._formSchemaManager.create(formPatch as InsertModel<FormSchema>)
+      : this._formSchemaManager.patch({...fs, ...formPatch});
+    return write$.pipe(
+      take(1),
+      catchError(err => {
+        this._ehms.captureErrorMessage(
+          `Could not ${creating ? 'create' : 'patch'} form schema: ${JSON.stringify(err)}`,
+          'error',
+        );
+        return obsOf(null);
+      }),
+    );
   }
 
   /**
