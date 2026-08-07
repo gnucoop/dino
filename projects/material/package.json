@@ -21,6 +21,7 @@
     "@dino/core": "0.0.0-PLACEHOLDER",
     "@ngneat/transloco": "0.0.0-TRANSLOCO",
     "angular-material-css-vars": "0.0.0-AMCV",
+    "chart.js": "0.0.0-CHARTJS",
     "rxdb": "0.0.0-RXDB",
     "rxjs": "0.0.0-RXJS",
     "xlsx": "0.0.0-XLSX"

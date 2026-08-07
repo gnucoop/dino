@@ -32,6 +32,7 @@ import {
   OnDestroy,
   OnInit,
   Optional,
+  Output,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -39,8 +40,16 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataChatSessionService} from './datachat-session.service';
 import {DataChatConversation} from './datachat-store';
-import {CompletionRequest, CompletionResponse, DataChatQA} from './datachat.interfaces';
-import {HttpClient} from '@angular/common/http';
+import {
+  CompletionRequest,
+  CompletionResponse,
+  ComponentData,
+  DataChatApiResponse,
+  DataChatChartSpec,
+  DataChatQA,
+  DataChatResponsePayload,
+} from './datachat.interfaces';
+import {HttpBackend, HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
@@ -81,6 +90,23 @@ import {
  * to a Form Schema.
  */
 const COMPLETION_CONVERSATIONS_KEY = 'completion';
+
+/**
+ * The maximum number of charts displayed for a single answer, as documented by the API.
+ * When the API has more charts than this, its response carries a note saying so.
+ */
+const MAX_CHARTS_PER_ANSWER = 6;
+
+/**
+ * The text displayed for a null cell of a generated table: a value that was not
+ * analyzed is not a value of its own.
+ */
+const EMPTY_CELL_PLACEHOLDER = '—';
+
+/**
+ * The maximum number of rows displayed by a generated table
+ */
+const MAX_TABLE_ROWS = 50;
 
 /**
  * The DataChat component.
@@ -124,6 +150,15 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * Emitted when the Api Key validation is confirmed
    */
   readonly apiKeyConfirmationEvt: EventEmitter<string> = new EventEmitter<string>();
+
+  /**
+   * Emitted when a DataChat export has been downloaded, so that the host application
+   * can save it with the most appropriate strategy for its platform
+   */
+  @Output() exportDownload: EventEmitter<{blob: Blob; filename: string}> = new EventEmitter<{
+    blob: Blob;
+    filename: string;
+  }>();
 
   /**
    * The currently confirmed Api Key
@@ -338,6 +373,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _nodesVisibility: Observable<NodeVisibility[]>;
 
   /**
+   * Http client used to download the exports, bypassing the interceptors.
+   * The export endpoint answers 400 when its agent is gone, and JWTInterceptor
+   * reads any 400 as an expired token: it would refresh the auth token, replay
+   * the request and possibly log the user out.
+   */
+  private readonly _exportHttp: HttpClient;
+
+  /**
    * If present, terms of use for GPT have been accepted
    */
   private _termsAccepted: string | null = localStorage.getItem('pandas_dino_api_key_accept_terms');
@@ -395,7 +438,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     @Optional() private _lc: LocationManager | null,
     @Optional() private _og: OrganizationManager | null,
     private _cdr: ChangeDetectorRef,
+    httpBackend: HttpBackend,
   ) {
+    this._exportHttp = new HttpClient(httpBackend);
     this.conversations = this._session.conversations;
     this.activeConversation = this._session.activeConversation;
     // The sidebar is closed by default on small screens, until the User
@@ -537,7 +582,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     this._conversationKey = this.mode === 'datachat' ? this._schemaId : COMPLETION_CONVERSATIONS_KEY;
     if (this._conversationKey != null) {
       this._session.openScope(this._conversationKey).then(messages => {
-        this.history = messages;
+        this.history = this._restoreTables(messages);
         this._cdr.detectChanges();
         this._scrollChatBottom();
       });
@@ -566,6 +611,21 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   /**
+   * Builds again the tables of the entries of a stored conversation: a table is
+   * a component instance, which cannot be stored, but its rows are.
+   * @param messages The chat entries of the conversation
+   * @returns The same entries, with their tables
+   */
+  private _restoreTables(messages: DataChatQA[]): DataChatQA[] {
+    for (const qa of messages) {
+      if (qa.tableData != null && qa.componentData == null) {
+        qa.componentData = this._tableComponentData(qa.tableData);
+      }
+    }
+    return messages;
+  }
+
+  /**
    * Displays a stored conversation. The live agent is left untouched: the
    * restored entries are shown as they were, and any new question is answered
    * by the current agent.
@@ -577,7 +637,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     }
     this._session.openConversation(conversation.id).then(messages => {
       if (messages != null) {
-        this.history = messages;
+        this.history = this._restoreTables(messages);
         this._cdr.detectChanges();
         this._scrollChatBottom();
       }
@@ -725,11 +785,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           const url = `${this.baseDataChatAPIurl}/${
             this.endpointUrls?.dataChatEndpoint ?? 'datachat'
           }`;
-          return this._http.post<{
-            explanation: string;
-            response: {type: string; value: any};
-            log_id?: string | number;
-          }>(url, {'chat': text}, {headers});
+          return this._http.post<DataChatApiResponse>(url, {'chat': text}, {headers});
         }),
         take(1),
       )
@@ -740,51 +796,51 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           }
           this._removeLastFromHistory();
           if (res) {
+            // The question is kept on every answer entry too - hidden by
+            // noPrompt - so that the feedback request can quote it.
+            const answer: DataChatQA = {
+              ...this._previewInfoFromResponse(res.response),
+              question: text,
+              explanation: res.explanation ?? undefined,
+              noPrompt: true,
+              feedbackEnabled: true,
+              log_id: res.log_id ?? undefined,
+            };
             switch (res.response.type) {
               case 'image':
                 const base64string: string = res.response.value;
-                const base64imageData = `data:image/png;base64, ${base64string
-                  .replace("b'", '')
-                  .slice(0, -1)}`;
                 this._addToHistory({
-                  // The question is kept on the answer entry too - hidden by
-                  // noPrompt - so that the feedback request can quote it.
-                  question: text,
-                  explanation: res.explanation,
-                  imageData: base64imageData,
-                  noPrompt: true,
-                  feedbackEnabled: true,
-                  log_id: res.log_id,
+                  ...answer,
+                  imageData: `data:image/png;base64,${this._cleanBase64(base64string)}`,
+                });
+                break;
+              case 'chart':
+                this._addToHistory({
+                  ...answer,
+                  // The value is the primary chart and charts holds the further
+                  // ones, which the API never repeats inside it.
+                  charts: this._sanitizeCharts([
+                    res.response.value,
+                    ...(res.response.charts ?? []),
+                  ]),
                 });
                 break;
               case 'dataframe':
                 this._addToHistory({
-                  question: text,
-                  explanation: res.explanation,
-                  componentData: {
-                    component: TableGenerator,
-                    inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
-                  },
-                  noPrompt: true,
-                  feedbackEnabled: true,
-                  log_id: res.log_id,
+                  ...answer,
+                  tableData: res.response.value,
+                  componentData: this._tableComponentData(res.response.value),
                 });
                 break;
               default:
+                const isTabular = typeof res.response.value === 'object';
                 this._addToHistory({
-                  question: text,
-                  explanation: res.explanation,
-                  response: typeof res.response.value === 'object' ? undefined : res.response.value,
-                  componentData:
-                    typeof res.response.value === 'object'
-                      ? {
-                          component: TableGenerator,
-                          inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
-                        }
-                      : undefined,
-                  noPrompt: true,
-                  feedbackEnabled: true,
-                  log_id: res.log_id,
+                  ...answer,
+                  response: isTabular ? undefined : res.response.value,
+                  tableData: isTabular ? res.response.value : undefined,
+                  componentData: isTabular
+                    ? this._tableComponentData(res.response.value)
+                    : undefined,
                 });
                 break;
             }
@@ -816,6 +872,161 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           this._removeLastFromHistory();
         },
       });
+  }
+
+  /**
+   * Maps the additive fields of a DataChat response, i.e. the preview, export and
+   * chart info, onto a chat history entry.
+   * A missing field and a null field always mean the same thing.
+   * @param response The 'response' object of the DataChat reply
+   * @returns The preview, export and chart fields of the history entry
+   */
+  private _previewInfoFromResponse(response: DataChatResponsePayload): Partial<DataChatQA> {
+    return {
+      truncated: response.truncated === true,
+      totalRows: response.total_rows ?? undefined,
+      totalColumns: response.total_columns ?? undefined,
+      previewRows: response.preview_rows ?? undefined,
+      previewColumns: this._previewColumnsCount(response.value),
+      downloadUrl: response.download_url ?? undefined,
+      downloadFilename: response.download_filename ?? undefined,
+      note: response.note ?? undefined,
+      charts: this._sanitizeCharts(response.charts),
+    };
+  }
+
+  /**
+   * Keeps the chart specifications that can be displayed, capped to the maximum
+   * number of charts of a single answer.
+   * Only what is not a chart at all is discarded here: a chart that cannot be drawn
+   * is displayed as such by DataChatChart, instead of disappearing silently.
+   * @param charts The charts of the DataChat reply
+   * @returns The charts to display, undefined if there are none
+   */
+  private _sanitizeCharts(charts: any): DataChatChartSpec[] | undefined {
+    if (!Array.isArray(charts)) return undefined;
+    const valid = charts.filter(
+      chart => chart != null && typeof chart === 'object' && Array.isArray(chart.datasets),
+    );
+    return valid.length ? valid.slice(0, MAX_CHARTS_PER_ANSWER) : undefined;
+  }
+
+  /**
+   * Counts the columns actually displayed. TableGenerator builds its columns from the
+   * keys of the first row, so that is what the user sees.
+   * @param value The 'value' of the DataChat reply
+   * @returns The number of displayed columns, undefined if the value is not tabular
+   */
+  private _previewColumnsCount(value: any): number | undefined {
+    const firstRow = Array.isArray(value) ? value[0] : value;
+    if (firstRow == null || typeof firstRow !== 'object') return undefined;
+    return Object.keys(firstRow).length;
+  }
+
+  /**
+   * Builds the table displaying the rows of a tabular answer.
+   * @param rows The rows of the answer
+   * @returns The TableGenerator component data
+   */
+  private _tableComponentData(rows: unknown): ComponentData {
+    return {
+      component: TableGenerator,
+      inputs: {
+        maxRowsDisplayed: MAX_TABLE_ROWS,
+        setJsonData: rows,
+        emptyCellPlaceholder: EMPTY_CELL_PLACEHOLDER,
+      },
+    };
+  }
+
+  /**
+   * Strips the python bytes repr wrapper, i.e. b'...', from a base64 encoded image.
+   * A correctly encoded image is returned untouched, so that the API can stop
+   * wrapping its images at any time without breaking this client.
+   * @param value The image value of the DataChat reply
+   * @returns The base64 encoded image
+   */
+  private _cleanBase64(value: string): string {
+    const trimmed = (value ?? '').trim();
+    const wrapped = /^b(['"])([\s\S]*)\1$/.exec(trimmed);
+    return wrapped ? wrapped[2] : trimmed;
+  }
+
+  /**
+   * Downloads the complete result of a DataChat answer as a csv file.
+   * The export endpoint is not publicly reachable, so it must be requested with the
+   * same headers as the 'datachat' endpoint. The downloaded file is emitted through
+   * the exportDownload event, to be saved by the host application.
+   * @param url The server relative path of the export, as received in the response
+   * @param filename The suggested file name of the export
+   */
+  downloadExport(url: string, filename: string): void {
+    if (!this.baseDataChatAPIurl || !this.apiKey.value || !url) return;
+    this._udm
+      .getActiveUserData()
+      .pipe(
+        switchMap(activeUserData => {
+          if (!activeUserData || !this.apiKey.value) return obsOf(null);
+          const headers = {'X-API-KEY': this.apiKey.value, 'X-USER-EMAIL': activeUserData.email};
+          return this._exportHttp.get(this._exportUrl(url), {headers, responseType: 'blob'});
+        }),
+        take(1),
+      )
+      .subscribe({
+        next: blob => {
+          if (!blob) return;
+          this.exportDownload.emit({blob, filename});
+        },
+        error: (err: HttpErrorResponse) => this._handleExportError(err),
+      });
+  }
+
+  /**
+   * Joins the base DataChat url and the server relative export path.
+   * The export token is never parsed nor rebuilt.
+   * @param downloadUrl The server relative path of the export
+   * @returns The absolute export url
+   */
+  private _exportUrl(downloadUrl: string): string {
+    const base = (this.baseDataChatAPIurl ?? '').replace(/\/+$/, '');
+    return `${base}${downloadUrl.startsWith('/') ? downloadUrl : `/${downloadUrl}`}`;
+  }
+
+  /**
+   * Notifies the user of a failed export download.
+   * Exports live as long as the chat session, so an expired or unknown token is an
+   * expected outcome and is not reported as an error.
+   * The error body is not parsed: a blob response type leaves it as a Blob, and the
+   * 403 body is an html page.
+   * @param err The http error
+   */
+  private _handleExportError(err: HttpErrorResponse): void {
+    let message: string;
+    switch (err.status) {
+      case 404:
+        message = 'This download is no longer available. Please run the query again';
+        break;
+      case 400:
+        message = 'The chat session has ended. Please run the query again';
+        break;
+      case 0:
+      case 401:
+      case 403:
+        message = 'DINO-AI is not responding at the moment. Please try later';
+        break;
+      default:
+        message = 'Could not download the export file';
+        if (isDevMode()) {
+          console.log(err);
+        } else {
+          this._ehms.captureErrorMessage(
+            `DINO-AI export download error: ${JSON.stringify(err)}`,
+            'warning',
+          );
+        }
+        break;
+    }
+    this._snackBar.open(this._ts.translate(message), 'OK', {duration: 5000});
   }
 
   /**

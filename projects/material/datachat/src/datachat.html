@@ -81,6 +81,7 @@
 
               <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl"
                 (followUpClick)="chat($event)" (regenerateClick)="chat($event)"
+                (downloadClick)="downloadExport($event.url, $event.filename)"
                 (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
             </div>
 

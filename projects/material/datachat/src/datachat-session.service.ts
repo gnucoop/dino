@@ -277,7 +277,11 @@ export class DataChatSessionService {
     if (active == null) {
       return;
     }
-    active.messages = messages.map(qa => this._withoutField(qa, 'componentData'));
+    // The component instance of a table cannot be stored - its rows are, in
+    // tableData - and an export link dies with the chat session.
+    active.messages = messages.map(qa =>
+      this._withoutFields(qa, ['componentData', 'downloadUrl', 'downloadFilename']),
+    );
     this._cancelPendingSave();
     this._saveTimeout = setTimeout(() => {
       this._saveTimeout = null;
@@ -362,13 +366,15 @@ export class DataChatSessionService {
   }
 
   /**
-   * Returns a copy of the given chat entry without the given field.
+   * Returns a copy of the given chat entry without the given fields.
    * Dynamic components (the generated tables, the progress bar of a pending
    * answer) cannot be stored and are dropped this way.
    */
-  private _withoutField(qa: DataChatQA, field: keyof DataChatQA): DataChatQA {
+  private _withoutFields(qa: DataChatQA, fields: (keyof DataChatQA)[]): DataChatQA {
     const copy: DataChatQA = {...qa};
-    delete copy[field];
+    for (const field of fields) {
+      delete copy[field];
+    }
     return copy;
   }
 }
