@@ -69,6 +69,7 @@ import {
   ListHeader,
   mainActions,
   SearchFiltersComponent,
+  sectionStorageKey,
 } from '@dino/core/list';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ExportList} from '@dino/material/export-list';
@@ -622,6 +623,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   ngOnInit() {
+    // The filters of this section are read and stored under this key: the
+    // service is a singleton and cannot tell which section is displayed. It has
+    // to be set before the filters bar initializes its filters, which is what
+    // filling the data source ends up doing.
+    this._fts.storageKey = sectionStorageKey('filters', this._route.snapshot, this.title);
     if (this._dataSource) {
       this._fillDataSource();
     }
