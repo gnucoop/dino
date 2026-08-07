@@ -255,6 +255,10 @@ dino-search-filters-bar {
     .mat-icon {
       margin-right: 4px;
     }
+    // Same radius as every other button of the section.
+    .mat-mdc-button-base {
+      border-radius: 8px;
+    }
   }
 
   .dino-filters-modal-body {

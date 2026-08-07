@@ -90,6 +90,10 @@
         </mat-button-toggle-group>
       </div>
       <div class="dino-filters-modal-actions">
+        <button mat-stroked-button class="dino-filters-reset-button" (click)="resetFilters()">
+          <mat-icon>restart_alt</mat-icon>
+          <span>{{'Reset filters'|transloco}}</span>
+        </button>
         <button mat-flat-button color="primary" (click)="search()">
           <mat-icon>search</mat-icon>
           <span>{{'Search'|transloco}}</span>

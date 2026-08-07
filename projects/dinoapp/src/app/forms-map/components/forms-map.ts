@@ -16,7 +16,12 @@ import {Case, CaseManager} from '@dino/core/cases';
 import {ActionTrigger, Metric} from '@dino/core/data';
 import {ExportListData} from '@dino/core/exporter';
 import {FormData, FormDataManager, FormInfo, FormSchema, FormSchemaManager} from '@dino/core/forms';
-import {FiltersService, ListHeader, NodeVisibility} from '@dino/core/list';
+import {
+  FiltersService,
+  ListHeader,
+  NodeVisibility,
+  sectionStorageKey,
+} from '@dino/core/list';
 import {Location, LocationManager} from '@dino/core/locations';
 import {Organization, OrganizationManager} from '@dino/core/organizations';
 import {Project, ProjectManager} from '@dino/core/projects';
@@ -388,6 +393,13 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
       }
     }
     if (this.filtersBar != null) {
+      // The map displays the data of the form, so it filters it with the very
+      // filters of its table: same section, same key.
+      this._filtersService.storageKey = sectionStorageKey(
+        'filters',
+        this._route.snapshot,
+        undefined,
+      );
       this.filtersBar.initFilters();
     }
   }
