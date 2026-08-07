@@ -9,6 +9,7 @@
   [endpointUrls]="endpointUrls"
   [conversationsSidebar]="true"
   [showWelcome]="true"
+  (exportDownload)="saveExport($event.blob, $event.filename)"
 >
   <div [innerHTML]="acceptTermsContent" gptTerms></div>
 </dino-datachat>

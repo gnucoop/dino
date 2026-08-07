@@ -44,4 +44,31 @@ describe('Table Generator', () => {
 
     expect(handleDataSpy).toHaveBeenCalled();
   });
+
+  it('should render null cells with the placeholder, without touching real values', async () => {
+    tableGenerator.emptyCellPlaceholder = '—';
+    tableGenerator.setJsonData = [
+      {sentiment: null, score: 0, flagged: false, txt: 'ottimo servizio', empty: ''},
+    ] as any;
+
+    await fixtureTableGenerator.whenStable();
+    fixtureTableGenerator.detectChanges();
+
+    const cells = fixtureTableGenerator.nativeElement.querySelectorAll('mat-cell');
+    const texts = Array.from(cells).map((cell: any) => cell.textContent.trim());
+
+    expect(texts).toEqual(['—', '0', 'false', 'ottimo servizio', '']);
+    expect(fixtureTableGenerator.nativeElement.textContent).not.toContain('null');
+  });
+
+  it('should leave null cells blank when no placeholder is set', async () => {
+    tableGenerator.setJsonData = [{sentiment: null}] as any;
+
+    await fixtureTableGenerator.whenStable();
+    fixtureTableGenerator.detectChanges();
+
+    const cell = fixtureTableGenerator.nativeElement.querySelector('mat-cell');
+
+    expect(cell.textContent.trim()).toEqual('');
+  });
 });
