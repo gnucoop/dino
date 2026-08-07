@@ -9,6 +9,7 @@ import {
 @Component({
   selector: 'dinoapp-gpt',
   templateUrl: './gpt.component.html',
+  styleUrls: ['./gpt.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
