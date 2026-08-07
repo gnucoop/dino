@@ -15,10 +15,33 @@
 
       <div class="dino-datachat-answer" *ngIf="qa.response" [innerHTML]="getFormattedResponse(qa)"></div>
 
+      <!-- The result is only a preview: say so before it can be read as the whole one. -->
+      <div class="dino-datachat-preview" *ngIf="qa.truncated">
+        <mat-icon>visibility</mat-icon>
+        <span class="dino-datachat-preview-text">
+          <span *ngIf="hasRowCounts(qa); else noRowCounts"
+            [innerText]="'Showing the first {{preview}} of {{total}} rows'|transloco:{preview: qa.previewRows, total: qa.totalRows}"></span>
+          <ng-template #noRowCounts><span [innerText]="'Not all rows are shown'|transloco"></span></ng-template>
+          <span *ngIf="hasDroppedColumns(qa)"
+            [innerText]="'Only {{preview}} of {{total}} columns are shown'|transloco:{preview: qa.previewColumns, total: qa.totalColumns}"></span>
+        </span>
+      </div>
+
       <img class="dino-datachat-image" *ngIf="qa.imageData" [src]="qa.imageData" />
 
       <div class="dino-datachat-component" *ngIf="qa.componentData">
         <ng-container *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"></ng-container>
+      </div>
+
+      <!-- A caveat about the result itself: displayed verbatim, whether or not
+           the result is truncated. -->
+      <div class="dino-datachat-note" *ngIf="qa.note">
+        <mat-icon>info</mat-icon>
+        <span>{{qa.note}}</span>
+      </div>
+
+      <div class="dino-datachat-charts" *ngIf="hasCharts">
+        <dino-datachat-chart *ngFor="let chart of qa.charts" [spec]="chart"></dino-datachat-chart>
       </div>
 
       <div class="dino-datachat-sources" *ngIf="getRelevantVectors(qa).length > 0">
@@ -63,6 +86,16 @@
         <button mat-icon-button *ngIf="canRegenerate" (click)="onRegenerateClick()"
           [matTooltip]="'Regenerate answer'|transloco">
           <mat-icon>refresh</mat-icon>
+        </button>
+
+        <button
+          mat-stroked-button
+          class="dino-datachat-download"
+          *ngIf="canDownload"
+          (click)="onDownloadClick()"
+        >
+          <mat-icon>download</mat-icon>
+          <span>{{qa.downloadFilename || ('Download'|transloco)}}</span>
         </button>
       </div>
     </div>

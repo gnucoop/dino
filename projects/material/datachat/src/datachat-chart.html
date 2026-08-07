@@ -1,0 +1,15 @@
+<div class="dino-datachat-chart">
+  <span class="dino-datachat-chart-title" *ngIf="title">{{title}}</span>
+  <ng-container *ngIf="status === 'ok'; else chartFallback">
+    <div class="dino-datachat-chart-canvas-container">
+      <canvas #chartCanvas></canvas>
+    </div>
+  </ng-container>
+  <ng-template #chartFallback>
+    <div class="dino-datachat-chart-fallback">
+      <mat-icon class="dino-datachat-entry-icon" color="warn">bar_chart</mat-icon>
+      <span *ngIf="status === 'empty'; else invalidChart">{{'No data to display'|transloco}}</span>
+      <ng-template #invalidChart>{{'This chart could not be displayed'|transloco}}</ng-template>
+    </div>
+  </ng-template>
+</div>

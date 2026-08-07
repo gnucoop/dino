@@ -21,6 +21,7 @@
  */
 
 export * from './datachat';
+export * from './datachat-chart';
 export * from './datachat-entry';
 export * from './datachat-session.service';
 export * from './datachat-store';
