@@ -58,6 +58,19 @@ export interface FormDepsEditorData {
 }
 
 /**
+ * The relationships state to be persisted into a FormSchemaDeps document,
+ * collected from the editor's tables.
+ */
+interface RelationshipsPayload {
+  /** The relationship rows worth persisting (a form and at least one field). */
+  depsOrigin: DepsOrigin[];
+  /** The metric-choices rows worth persisting (a metric name). */
+  metricRows: MetricOrigin[];
+  /** The metrics whose data the schema needs. */
+  metricDataToShow: string[];
+}
+
+/**
  * Component that allows the editing of a Form Schema's relationships.
  */
 @Component({
@@ -140,7 +153,12 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     'delete',
   ];
 
-  readonly displayedMetricsColumns = ['metric_name', 'choice_extra_value_key', 'filter_by', 'delete'];
+  readonly displayedMetricsColumns = [
+    'metric_name',
+    'choice_extra_value_key',
+    'filter_by',
+    'delete',
+  ];
 
   readonly dataSource: MatTableDataSource<DepsOrigin> = new MatTableDataSource<DepsOrigin>();
 
@@ -151,6 +169,22 @@ export class FormDepsEditor implements OnInit, OnDestroy {
    * A Dictionary of all the optional Metrics managers
    */
   private _metricManagers: {[metricType: string]: DataModelManager<Metric> | null};
+
+  /**
+   * Signature of the relationships payload as the tables held it right after the
+   * FormSchemaDeps document was loaded (or written). Compared against the current
+   * payload to skip a save that would store the very same content — see
+   * {@link persistRelationships}.
+   */
+  private _pristineSignature: string | null = null;
+
+  /**
+   * True when the loaded document still stores the deprecated
+   * `metrics_choices_origin` and the tables hold the converted format. The
+   * conversion only exists in memory, so the next save has to write it even if
+   * the user changed nothing.
+   */
+  private _legacyConverted = false;
 
   constructor(
     @Optional() public dialogRef: MatDialogRef<FormDepsEditorData> | null,
@@ -233,6 +267,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
 
     this._depsSub = this._formSchemaDeps.subscribe(fschemadeps => {
       if (fschemadeps) {
+        this._legacyConverted = false;
         if (fschemadeps.deps_origin) {
           this.dataSource.data = (deepCopy(fschemadeps).deps_origin as DepsOrigin[]).filter(
             deps => deps.form_schema_ref_id != null,
@@ -268,6 +303,10 @@ export class FormDepsEditor implements OnInit, OnDestroy {
               });
             });
             metricDataSourceRows.push(...metricDataSourceData);
+            // The converted rows exist in memory only: the document still holds the
+            // deprecated field, so the next save must write the new format even if
+            // the dirty check below finds the tables untouched.
+            this._legacyConverted = metricDataSourceData.length > 0;
           }
 
           this.metricDataSource.data = [...metricDataSourceRows];
@@ -276,18 +315,96 @@ export class FormDepsEditor implements OnInit, OnDestroy {
           this.dataSource.data,
           fschemadeps.metric_data_to_show,
         );
+        // Baseline for the dirty check in persistRelationships(): what the tables
+        // hold once the document has been loaded and normalised.
+        this._pristineSignature = this._signature(this._collectPayload());
         this._cdr.markForCheck();
       }
     });
+  }
 
+  /**
+   * Collects the relationships payload from the current table state: the
+   * relationship rows worth persisting, the metric-choices rows, and the metrics
+   * whose data the schema needs.
+   *
+   * Leaves the tables alone. In particular it does not compute the metric rows'
+   * `query_selector`, because doing so mutates the rows (see
+   * {@link getQueryForMetric}); {@link _withQuerySelectors} does that on the write
+   * path only, so the dirty check can run without side effects.
+   */
+  private _collectPayload(): RelationshipsPayload {
+    return {
+      depsOrigin: this.dataSource.data.filter(
+        metricDep =>
+          metricDep.form_schema_ref_id != null &&
+          metricDep.form_schema_ref_id.length &&
+          metricDep.fields_to_update &&
+          metricDep.fields_to_update.length,
+      ),
+      metricRows: this.metricDataSource.data.filter(
+        metricDep => metricDep.metric_name != null && metricDep.metric_name.length,
+      ),
+      metricDataToShow: this.getRequiredMetrics(
+        this.dataSource.data,
+        this.currentMetricsForData ?? [],
+      ),
+    };
+  }
+
+  /**
+   * A structural signature of a payload, used to tell whether the tables still
+   * hold exactly what the document was loaded with.
+   *
+   * `query_selector` is left out on purpose: it is derived from `filter_by`, which
+   * is part of the row, so an edit is always visible through it without having to
+   * recompute the selector.
+   */
+  private _signature(payload: RelationshipsPayload): string {
+    return JSON.stringify({
+      depsOrigin: payload.depsOrigin,
+      metricRows: payload.metricRows.map(({query_selector: _derived, ...row}) => row),
+      metricDataToShow: payload.metricDataToShow,
+    });
+  }
+
+  /**
+   * The metric-choices rows with `query_selector` recomputed from `filter_by`,
+   * ready to be stored. Selectors that failed to parse are dropped rather than
+   * persisted as an error object. Mutates the rows, as the template does.
+   */
+  private _withQuerySelectors(payload: RelationshipsPayload): MetricOrigin[] {
+    return payload.metricRows.map(metricDep => {
+      if (metricDep.filter_by && metricDep.filter_by.length) {
+        this.getQueryForMetric(metricDep);
+        if (metricDep.query_selector && Object.keys(metricDep.query_selector).includes('error')) {
+          metricDep.query_selector = undefined;
+        }
+      } else {
+        metricDep.query_selector = undefined;
+      }
+      return metricDep;
+    });
+  }
+
+  /**
+   * Records what was just written as the new baseline, so a second save right
+   * after does not store it again.
+   */
+  private _markPersisted(payload: RelationshipsPayload, id: string): string {
+    this._legacyConverted = false;
+    this._pristineSignature = this._signature(payload);
+    return id;
   }
 
   /**
    * Persists the relationships (the FormSchemaDeps document) from the current
    * table state and selected metrics, and returns the deps document id.
    * - Returns the existing id when updating, the new id when creating.
-   * - Returns `undefined` when there is nothing to persist and no deps document
-   *   exists yet (so the caller leaves the schema's ref id untouched).
+   * - Returns `undefined` when no write was needed: either there is nothing to
+   *   persist and no deps document exists yet, or the tables still hold exactly
+   *   what was loaded. Both leave the schema's ref id untouched — when a document
+   *   exists the schema already points at it.
    * - Returns `null` on failure.
    * It intentionally does NOT write the FormSchema itself: the caller (the form
    * editor's Save) performs the single schema write, folding in the returned id.
@@ -296,60 +413,41 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     return combineLatest([this.formSchema, this._formSchemaDeps]).pipe(
       take(1),
       switchMap(([_fschema, fschemadeps]) => {
-        const allRequiredMetricsData = this.getRequiredMetrics(
-          this.dataSource.data,
-          this.currentMetricsForData ?? [],
-        );
-
-        const depsOrigin = this.dataSource.data.filter(
-          metricDep =>
-            metricDep.form_schema_ref_id != null &&
-            metricDep.form_schema_ref_id.length &&
-            metricDep.fields_to_update &&
-            metricDep.fields_to_update.length,
-        );
-
-        const metricChoicesOrigin = this.metricDataSource.data
-          .filter(metricDep => metricDep.metric_name != null && metricDep.metric_name.length)
-          .map(metricDep => {
-            if (metricDep.filter_by && metricDep.filter_by.length) {
-              this.getQueryForMetric(metricDep);
-              if (
-                metricDep.query_selector &&
-                Object.keys(metricDep.query_selector).includes('error')
-              ) {
-                metricDep.query_selector = undefined;
-              }
-            } else {
-              metricDep.query_selector = undefined;
-            }
-            return metricDep as MetricOrigin;
-          });
+        const payload = this._collectPayload();
 
         if (fschemadeps) {
+          // Nothing changed since the document was loaded: skip the write.
+          if (!this._legacyConverted && this._signature(payload) === this._pristineSignature) {
+            return obsOf(undefined);
+          }
           const fsdeps = deepCopy(fschemadeps) as FormSchemaDeps;
-          fsdeps.metric_data_to_show = allRequiredMetricsData;
-          fsdeps.deps_origin = depsOrigin;
-          fsdeps.deps_origin.push(...metricChoicesOrigin);
+          fsdeps.metric_data_to_show = payload.metricDataToShow;
+          fsdeps.deps_origin = [...payload.depsOrigin, ...this._withQuerySelectors(payload)];
           return this._fsd
             .update(fsdeps)
-            .pipe(map(res => (res != null ? (fschemadeps as any).id : null)));
+            .pipe(
+              map(res =>
+                res != null ? this._markPersisted(payload, (fschemadeps as any).id) : null,
+              ),
+            );
         }
 
         // Nothing to persist and no existing deps document: leave the schema as is.
         if (
-          depsOrigin.length === 0 &&
-          metricChoicesOrigin.length === 0 &&
-          allRequiredMetricsData.length === 0
+          payload.depsOrigin.length === 0 &&
+          payload.metricRows.length === 0 &&
+          payload.metricDataToShow.length === 0
         ) {
           return obsOf(undefined);
         }
 
         const fsdeps = {
-          deps_origin: [...depsOrigin, ...metricChoicesOrigin],
-          metric_data_to_show: allRequiredMetricsData,
+          deps_origin: [...payload.depsOrigin, ...this._withQuerySelectors(payload)],
+          metric_data_to_show: payload.metricDataToShow,
         } as FormSchemaDeps;
-        return this._fsd.create(fsdeps).pipe(map(res => (res != null ? res.toJSON().id : null)));
+        return this._fsd
+          .create(fsdeps)
+          .pipe(map(res => (res != null ? this._markPersisted(payload, res.toJSON().id) : null)));
       }),
       catchError(() => obsOf(null)),
     );
@@ -363,9 +461,10 @@ export class FormDepsEditor implements OnInit, OnDestroy {
     if (row.filter_by && row.filter_by.length) {
       if (!row.metric_name) {
         row.query_selector = {error: 'Select a metric'};
+        return;
       }
       const metricManager = this._metricManagers[row.metric_name];
-      if (metricManager !== null) {
+      if (metricManager != null) {
         const props = metricManager.collectionSchema.properties;
         row.query_selector = jsConditionToQuery(row.filter_by, props);
       }
