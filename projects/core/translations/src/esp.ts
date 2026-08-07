@@ -258,6 +258,7 @@ export const ESP: Translation = {
   'selected': 'seleccionados',
   'Columns': 'Columnas',
   'Reset columns': 'Restablecer las columnas',
+  'Reset filters': 'Restablecer los filtros',
   'Clear selection': 'Borrar selección',
   'Select one or more rows to see the available actions':
     'Seleccione una o más filas para ver las acciones disponibles',

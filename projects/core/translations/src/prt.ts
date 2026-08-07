@@ -257,6 +257,7 @@ export const PRT: Translation = {
   'selected': 'selecionados',
   'Columns': 'Colunas',
   'Reset columns': 'Repor as colunas',
+  'Reset filters': 'Repor os filtros',
   'Clear selection': 'Limpar seleção',
   'Select one or more rows to see the available actions':
     'Selecione uma ou mais linhas para ver as ações disponíveis',

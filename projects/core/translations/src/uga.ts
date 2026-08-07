@@ -60,6 +60,7 @@ export const UGA: Translation = {
   'selected': 'selected',
   'Columns': 'Columns',
   'Reset columns': 'Reset columns',
+  'Reset filters': 'Reset filters',
   'Clear selection': 'Clear selection',
   'Select one or more rows to see the available actions':
     'Select one or more rows to see the available actions',

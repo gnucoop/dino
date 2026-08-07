@@ -931,7 +931,8 @@ export class MainNav implements AfterViewInit, OnDestroy {
     for (let key of Object.keys(localStorage)) {
       if (
         key.includes('columns_') ||
-        key.includes('filters_preset_') ||
+        // The filters of every section, and the presets of the User
+        key.startsWith('filters_') ||
         key === 'dino_new_version_ready' ||
         key === 'pandas_dino_api_key' ||
         key === 'dino_gpt_terms_accepted'

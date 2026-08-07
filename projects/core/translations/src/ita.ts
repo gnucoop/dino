@@ -246,6 +246,7 @@ export const ITA: Translation = {
   'selected': 'selezionati',
   'Columns': 'Colonne',
   'Reset columns': 'Ripristina le colonne',
+  'Reset filters': 'Azzera filtri',
   'Clear selection': 'Deseleziona',
   'Select one or more rows to see the available actions':
     'Seleziona una o più righe per visualizzare le azioni',

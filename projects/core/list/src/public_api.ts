@@ -23,6 +23,7 @@
 export * from './filters.service';
 export * from './list';
 export * from './list.module';
+export * from './section-storage-key';
 export * from './list-header';
 export * from './list-actions-interface';
 export * from './list-filters-interfaces';

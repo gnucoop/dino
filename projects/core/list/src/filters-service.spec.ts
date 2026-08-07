@@ -1,13 +1,13 @@
 import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {of as obsOf} from 'rxjs';
+import {BehaviorSubject, of as obsOf} from 'rxjs';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {FilterItem, FiltersService} from './public_api';
@@ -239,5 +239,102 @@ describe('FiltersService', () => {
     });
 
     expect(spyPropToFilterItem).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('FiltersService filters memory', () => {
+  const storageKey = 'filters_test_section';
+  const queryParams = new BehaviorSubject<{[key: string]: string}>({});
+  let fts: FiltersService;
+  let router: Router;
+
+  beforeEach(() => {
+    queryParams.next({});
+    localStorage.removeItem(storageKey);
+    TestBed.configureTestingModule({
+      imports: [AjfTranslocoModule, RouterTestingModule.withRoutes([])],
+      providers: [
+        FiltersService,
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: ActivatedRoute, useValue: {queryParams} as unknown as ActivatedRoute},
+      ],
+    });
+    fts = TestBed.inject(FiltersService);
+    router = TestBed.inject(Router);
+  });
+
+  afterEach(() => localStorage.removeItem(storageKey));
+
+  it('should store the filters of the section as they are applied', () => {
+    fts.storageKey = storageKey;
+    fts.queryString.subscribe();
+
+    fts.initializeFilters([fakeFormGroup]);
+    fts.loadPreset(fakeFiltersPreset_b);
+
+    expect(localStorage.getItem(storageKey)).toEqual(fakeFiltersPreset_b);
+  });
+
+  it('should forget the section when its last filter is removed', () => {
+    localStorage.setItem(storageKey, fakeFiltersPreset_b);
+    fts.storageKey = storageKey;
+    fts.queryString.subscribe();
+
+    fts.initializeFilters([fakeFormGroup]);
+    /* No filter left is a choice of its own, not the absence of one. */
+    fts.loadPreset();
+
+    expect(localStorage.getItem(storageKey)).toBeNull();
+  });
+
+  it('should apply the stored filters when the url carries none', () => {
+    localStorage.setItem(storageKey, fakeFiltersPreset_b);
+    fts.storageKey = storageKey;
+    const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
+    const spyNavigate = spyOn(router, 'navigate').and.callThrough();
+
+    fts.initializeFilters([fakeFormGroup]);
+
+    expect(spyLoadPreset).toHaveBeenCalledWith(fakeFiltersPreset_b);
+    /* The filters are put back in the url, without adding an entry to the history */
+    expect(spyNavigate).toHaveBeenCalled();
+    expect(spyNavigate.calls.mostRecent().args[1]?.queryParams).toEqual({
+      'filters': fakeFiltersPreset_b,
+    });
+    expect(spyNavigate.calls.mostRecent().args[1]?.replaceUrl).toBeTrue();
+  });
+
+  it('should let the filters of the url win over the stored ones', () => {
+    localStorage.setItem(storageKey, fakeFiltersPreset_b);
+    fts.storageKey = storageKey;
+    queryParams.next({'filters': fakeFiltersPreset});
+    const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
+
+    fts.initializeFilters([fakeFormGroup]);
+
+    expect(spyLoadPreset).toHaveBeenCalledWith(fakeFiltersPreset);
+  });
+
+  it('should drop a stored value it cannot read', () => {
+    localStorage.setItem(storageKey, 'not a filters preset');
+    fts.storageKey = storageKey;
+    const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
+
+    fts.initializeFilters([fakeFormGroup]);
+
+    expect(spyLoadPreset).toHaveBeenCalledWith(undefined);
+    expect(localStorage.getItem(storageKey)).toBeNull();
+  });
+
+  it('should store nothing for a section with no key of its own', () => {
+    fts.storageKey = null;
+    fts.queryString.subscribe();
+    const storedKeys = Object.keys(localStorage).length;
+
+    fts.initializeFilters([fakeFormGroup]);
+    fts.loadPreset(fakeFiltersPreset_b);
+
+    expect(Object.keys(localStorage).length).toEqual(storedKeys);
   });
 });

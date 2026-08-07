@@ -30,6 +30,7 @@ import {ListHeader} from './list-header';
 import {AdminUserInteractionsService} from './user-interactions';
 import {b64_to_utf8, utf8_to_b64} from '@dino/core/auth';
 import {NodeVisibility} from './node-visibility';
+import {sectionStorageKey} from './section-storage-key';
 import {deepCopy} from '@ajf/core/utils';
 
 /**
@@ -351,21 +352,7 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    * @returns The key, if present.
    */
   protected _getColumnsSelectionPresetKey(): string | null {
-    const snapshot = this._route.snapshot;
-    if (snapshot.data['isFormData']) {
-      return snapshot.params['form_schema_id']
-        ? `columns_${snapshot.params['form_schema_id']}`
-        : null;
-    } else if (snapshot.data['isReportData']) {
-      return snapshot.params['report_schema_id']
-        ? `columns_${snapshot.params['report_schema_id']}`
-        : null;
-    } else if (this._title) {
-      return `columns_${this._title}`;
-    } else if (snapshot.data['aggregation']) {
-      return `columns_aggregation`;
-    }
-    return null;
+    return sectionStorageKey('columns', this._route.snapshot, this._title);
   }
 
   /**

@@ -253,6 +253,7 @@ export const AR: Translation = {
   'selected': 'محدد',
   'Columns': 'أعمدة',
   'Reset columns': 'إعادة تعيين الأعمدة',
+  'Reset filters': 'إعادة تعيين عوامل التصفية',
   'Clear selection': 'مسح التحديد',
   'Select one or more rows to see the available actions':
     'حدد صفًا واحدًا أو أكثر لعرض الإجراءات المتاحة',

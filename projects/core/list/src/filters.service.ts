@@ -226,6 +226,17 @@ export class FiltersService<T extends Model = Model> {
    */
   private _loadPresetEvent: EventEmitter<boolean>;
 
+  /**
+   * The key the filters of the section currently displayed are stored under.
+   * Null for a section with no identity of its own, whose filters are not
+   * remembered. The service is a singleton with the root route, so it cannot
+   * tell which section is displayed: the list tells it.
+   */
+  private _storageKey: string | null = null;
+  set storageKey(key: string | null) {
+    this._storageKey = key;
+  }
+
   get loadPresetEvent(): EventEmitter<boolean> {
     return this._loadPresetEvent;
   }
@@ -271,9 +282,22 @@ export class FiltersService<T extends Model = Model> {
         catchError(err => throwError(() => err) as Observable<[any, any]>),
       )
       .subscribe(([loadEvent, preset]) => {
-        if (loadEvent) {
-          this.loadPreset(preset);
+        if (!loadEvent) {
+          return;
         }
+        // A url carrying filters always wins: a link must display what it says.
+        const stored = preset == null ? this._loadStoredFilters() : null;
+        if (stored != null) {
+          // The filters of the section are put back in the url, replacing the
+          // entry, so that the section reads and is shared exactly as if they
+          // had just been applied.
+          this._router.navigate([], {
+            relativeTo: this._route,
+            queryParams: {'filters': stored},
+            replaceUrl: true,
+          });
+        }
+        this.loadPreset(preset ?? stored ?? undefined);
       });
 
     this._queryString = combineLatest([
@@ -805,7 +829,52 @@ export class FiltersService<T extends Model = Model> {
         queryParams: filterItems.length ? {'filters': queryString} : null,
       });
     }
+    // Filtering nothing is a choice of its own: the section is then forgotten,
+    // and displays everything the next time it is opened.
+    this._saveStoredFilters(filterItems.length ? queryString : null);
     return queryString;
+  }
+
+  /**
+   * Reads the filters stored for the section currently displayed.
+   * A value that cannot be decoded is dropped: it would break the loading of
+   * the filters of every section from then on.
+   * @returns The encoded filters, or null when there are none to apply
+   */
+  private _loadStoredFilters(): string | null {
+    if (this._storageKey == null) {
+      return null;
+    }
+    try {
+      const stored = localStorage.getItem(this._storageKey);
+      if (stored == null) {
+        return null;
+      }
+      JSON.parse(decodeURI(atob(stored)));
+      return stored;
+    } catch {
+      this._saveStoredFilters(null);
+      return null;
+    }
+  }
+
+  /**
+   * Stores the filters of the section currently displayed, or forgets them.
+   * @param queryString The encoded filters, null to forget them
+   */
+  private _saveStoredFilters(queryString: string | null): void {
+    if (this._storageKey == null) {
+      return;
+    }
+    try {
+      if (queryString == null) {
+        localStorage.removeItem(this._storageKey);
+      } else {
+        localStorage.setItem(this._storageKey, queryString);
+      }
+    } catch {
+      // The storage is not available: the filters are simply not remembered.
+    }
   }
 
   /**

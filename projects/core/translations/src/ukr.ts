@@ -248,6 +248,7 @@ export const UKR: Translation = {
   'selected': 'вибрано',
   'Columns': 'Стовпці',
   'Reset columns': 'Скинути стовпці',
+  'Reset filters': 'Скинути фільтри',
   'Clear selection': 'Очистити вибір',
   'Select one or more rows to see the available actions':
     'Виберіть один або кілька рядків, щоб побачити доступні дії',

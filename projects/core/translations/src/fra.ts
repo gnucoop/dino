@@ -241,6 +241,7 @@ export const FRA: Translation = {
   'selected': 'sélectionnés',
   'Columns': 'Colonnes',
   'Reset columns': 'Réinitialiser les colonnes',
+  'Reset filters': 'Réinitialiser les filtres',
   'Clear selection': 'Effacer la sélection',
   'Select one or more rows to see the available actions':
     'Sélectionnez une ou plusieurs lignes pour voir les actions disponibles',
