@@ -701,9 +701,9 @@ export class EditFormSchema implements OnInit, OnDestroy {
             return obsOf({fs: null, autoReportConfirmation: false, autoReport});
           }
           this.isSaving = true;
-          // Persist relationships first (only if the Relationships tab was opened).
-          // Returns the deps ref id (string), undefined (nothing to persist) or
-          // null (failure).
+          // Persist relationships first. Returns the deps ref id (string), undefined
+          // (no write was needed: nothing to persist, or the relationships are
+          // untouched since they were loaded) or null (failure).
           const depsRefId$: Observable<string | null | undefined> = this.depsEditor
             ? this.depsEditor.persistRelationships()
             : obsOf(undefined);
@@ -728,8 +728,9 @@ export class EditFormSchema implements OnInit, OnDestroy {
                 visibility: formGroup.get('visibility')?.value,
                 form_status_ref_id: formGroup.get('status')?.value ?? undefined,
               };
-              // Fold in the relationships ref id when it was (re)created; when
-              // undefined, leave the schema's existing value untouched.
+              // Fold in the relationships ref id when a document was written; when
+              // undefined (no write needed), leave the schema's existing value
+              // untouched — it already points at the document, if there is one.
               if (depsRefId != null) {
                 formPatch.form_schema_deps_ref_id = depsRefId;
               }
