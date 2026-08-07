@@ -26,13 +26,13 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {FormsModule} from '@dino/core/forms';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
-import {FloatingButtonModule} from '@dino/material/floating-button';
 import {ListModule} from '@dino/material/list';
 import {MetricEditorModule} from '@dino/material/metric-editor';
 import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
 import {TranslocoModule} from '@ngneat/transloco';
 
 import {MetricSection} from './metric-section';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [MetricSection],
@@ -40,9 +40,9 @@ import {MetricSection} from './metric-section';
     BreakpointObserverModule,
     CommonModule,
     ListModule,
-    FloatingButtonModule,
     FormsModule,
     MatButtonModule,
+    MatIconModule,
     MatTooltipModule,
     MetricEditorModule,
     SearchFiltersBarModule,
