@@ -39,13 +39,17 @@ import {TableGeneratorModule as DinoTableGeneratorModule} from '@dino/material/t
 import {DataChatEntry} from './datachat-entry';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {ParagraphDialogComponent} from './paragraph-dialog.component';
+import {RelativeDatePipe} from './relative-date.pipe';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatCardModule} from '@angular/material/card';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 @NgModule({
   imports: [
+    BreakpointObserverModule,
     CommonModule,
     DinoLoadingSpinnerModule,
     DinoTableGeneratorModule,
@@ -62,11 +66,12 @@ import {MatCardModule} from '@angular/material/card';
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
     TranslocoModule,
   ],
-  declarations: [DataChat, DataChatEntry, ParagraphDialogComponent],
-  exports: [DataChat, DataChatEntry, ParagraphDialogComponent],
+  declarations: [DataChat, DataChatEntry, ParagraphDialogComponent, RelativeDatePipe],
+  exports: [DataChat, DataChatEntry, ParagraphDialogComponent, RelativeDatePipe],
 })
 export class DataChatModule {}

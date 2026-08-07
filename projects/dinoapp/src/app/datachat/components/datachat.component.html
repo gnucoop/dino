@@ -1,8 +1,14 @@
+<div class="dinoapp-datachat-toolbar">
+  <dino-breadcrumbs></dino-breadcrumbs>
+</div>
+<dino-search-filters-bar [viewSwitcherOnly]="true"></dino-search-filters-bar>
 <dino-datachat
   [mode]="'datachat'"
   [ajfCustomFunctions]="ajfCustomFunctions"
   [baseDataChatAPIurl]="baseDataChatAPIurl"
   [endpointUrls]="endpointUrls"
-  ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
+  [conversationsSidebar]="true"
+  [showWelcome]="true"
+>
   <div [innerHTML]="acceptTermsContent" gptTerms></div>
 </dino-datachat>

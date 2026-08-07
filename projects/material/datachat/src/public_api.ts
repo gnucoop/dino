@@ -22,6 +22,9 @@
 
 export * from './datachat';
 export * from './datachat-entry';
+export * from './datachat-session.service';
+export * from './datachat-store';
+export * from './relative-date.pipe';
 export * from './datachat.interfaces';
 export * from './datachat.module';
 export * from './paragraph-dialog.component';

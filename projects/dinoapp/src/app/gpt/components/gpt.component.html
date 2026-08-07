@@ -1,3 +1,6 @@
+<div class="dinoapp-gpt-toolbar">
+  <dino-breadcrumbs></dino-breadcrumbs>
+</div>
 <dino-datachat
   [mode]="'completion'"
   [baseDataChatAPIurl]="baseDataChatAPIurl"
@@ -5,9 +8,10 @@
   [syncGraphQLUrl]="syncGraphQLUrl"
   [namespaces]="namespaces"
   [bucketUrl]="bucketUrl"
-  ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
-  <div [innerHTML]="acceptTermsContent" gptTerms></div
-></dino-datachat>
+  [conversationsSidebar]="true"
+>
+  <div [innerHTML]="acceptTermsContent" gptTerms></div>
+</dino-datachat>
 
 <!-- <div class="feedback">
   <i *ngIf="qa.answer" class="material-icons" (click)="saveFeedback(qa, true)"

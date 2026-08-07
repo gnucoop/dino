@@ -36,10 +36,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DataChatSessionService} from './datachat-session.service';
+import {DataChatConversation} from './datachat-store';
 import {CompletionRequest, CompletionResponse, DataChatQA} from './datachat.interfaces';
 import {HttpClient} from '@angular/common/http';
-import {map, switchMap, take} from 'rxjs/operators';
+import {catchError, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   BehaviorSubject,
@@ -47,6 +49,7 @@ import {
   forkJoin,
   Observable,
   of as obsOf,
+  Subject,
   Subscription,
 } from 'rxjs';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
@@ -66,11 +69,18 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthService, User} from '@dino/core/auth';
 import {MatSelectChange} from '@angular/material/select';
+import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {
   STRIPE_PAYMENT_CONFIG,
   StripePaymentConfig,
   TokensService,
 } from '@dino/material/stripe-payment';
+
+/**
+ * The conversations key used in completion mode, where the chat is not bound
+ * to a Form Schema.
+ */
+const COMPLETION_CONVERSATIONS_KEY = 'completion';
 
 /**
  * The DataChat component.
@@ -164,6 +174,48 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   @Input() spinnerImagePath: string | undefined;
 
   /**
+   * If true, the conversations sidebar is displayed beside the chat, allowing
+   * the User to switch between the stored conversations of the Form Schema.
+   * Only meaningful in 'datachat' mode.
+   */
+  @Input() conversationsSidebar = false;
+
+  /**
+   * If true, an empty chat displays a welcome block with the starter questions.
+   */
+  @Input() showWelcome = false;
+
+  /**
+   * The title of the welcome block. Defaults to a translated label.
+   */
+  @Input() welcomeTitle: string | null = null;
+
+  /**
+   * The subtitle of the welcome block. Defaults to a translated label.
+   */
+  @Input() welcomeSubtitle: string | null = null;
+
+  /**
+   * The questions suggested by the welcome block. Default to translated ones.
+   */
+  @Input() starterQuestions: string[] | null = null;
+
+  /**
+   * The `source` sent along with the feedback of an answer, telling the two
+   * chats apart in the backend logs. Defaults to the chat mode.
+   */
+  private _feedbackSource: string | null = null;
+  get feedbackSource(): string {
+    return (
+      this._feedbackSource ?? (this.mode === 'completion' ? 'dinoapp-ragai' : 'dinoapp-datachat')
+    );
+  }
+  @Input()
+  set feedbackSource(source: string | null) {
+    this._feedbackSource = source;
+  }
+
+  /**
    * The Ajf functions used to evaluate relevant permissions.
    * This input is unnecessary and should be removed, as dino custom
    * functions are registered through AjfValidationService and are available
@@ -189,6 +241,53 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * The current chat history
    */
   history: DataChatQA[] = [];
+
+  /**
+   * The stored conversations of the current Form Schema, most recent first.
+   */
+  readonly conversations: Observable<DataChatConversation[]>;
+
+  /**
+   * The conversation currently displayed.
+   */
+  readonly activeConversation: BehaviorSubject<DataChatConversation | null>;
+
+  /**
+   * True when the conversations sidebar is closed.
+   */
+  readonly sidebarCollapsed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * True once the User has opened or closed the sidebar: from then on the
+   * screen size does not change its state anymore.
+   */
+  private _sidebarToggledByUser = false;
+
+  /**
+   * Unsubscribes the component subscriptions on destroy.
+   */
+  private _unsubscribe: Subject<void> = new Subject<void>();
+
+  /**
+   * The default starter questions of the welcome block.
+   */
+  private readonly _defaultStarterQuestions: string[] = [
+    'How many records were collected this month?',
+    'Summarize the collected notes',
+    'Compare the activities by organization',
+    'Which items have the lowest values?',
+  ];
+
+  /**
+   * The questions displayed by the welcome block, translated when they are the
+   * default ones.
+   */
+  get starters(): string[] {
+    if (this.starterQuestions != null) {
+      return this.starterQuestions;
+    }
+    return this._defaultStarterQuestions.map(question => this._ts.translate(question));
+  }
 
   /**
    * Currently selected Chat namespace
@@ -246,6 +345,34 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     return this._termsAccepted;
   }
 
+  /**
+   * The Form Schema id of the current chat, in datachat mode.
+   */
+  private _schemaId: string | null = null;
+
+  /**
+   * The key the stored conversations of this chat are grouped by.
+   */
+  private _conversationKey: string | null = null;
+
+  /**
+   * True if a PandasAI agent of a previous visit of this Form Schema is still
+   * alive: in that case no api key validation, csv export or agent creation
+   * is performed, and the chat history is restored from the session.
+   */
+  private _agentAlive = false;
+
+  /**
+   * True once this component has created its own agent.
+   */
+  private _agentReady = false;
+
+  /**
+   * The agent creation currently in flight, shared by the questions asked
+   * while it is running.
+   */
+  private _agentCreation: Observable<boolean> | null = null;
+
   constructor(
     @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig | null,
     private _route: ActivatedRoute,
@@ -259,6 +386,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,
     private _tokensService: TokensService,
+    private _session: DataChatSessionService,
+    private _router: Router,
+    private _breakpointObserver: BreakpointObserverService,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -266,6 +396,15 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     @Optional() private _og: OrganizationManager | null,
     private _cdr: ChangeDetectorRef,
   ) {
+    this.conversations = this._session.conversations;
+    this.activeConversation = this._session.activeConversation;
+    // The sidebar is closed by default on small screens, until the User
+    // explicitly opens or closes it.
+    this._breakpointObserver.large.pipe(takeUntil(this._unsubscribe)).subscribe(isLarge => {
+      if (!this._sidebarToggledByUser) {
+        this.sidebarCollapsed.next(!isLarge);
+      }
+    });
     this._exporter = null;
     this._formSchema$ = obsOf(null);
     this._formDataList$ = obsOf([]);
@@ -275,6 +414,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
 
   ngAfterViewInit(): void {
     if (this.mode === 'datachat') {
+      if (this._agentAlive) {
+        // The agent of a previous visit is still alive: its data has already
+        // been uploaded, there is nothing to export nor to create.
+        return;
+      }
       this._exporter = this._createExporter();
 
       this._formSchema$ = this._fsm.get(this._route.snapshot.params['form_schema_id']);
@@ -331,14 +475,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           const confirmedKey = res[2];
           this.apiKey.next(confirmedKey);
           if (this._exporter && data && data.length) {
+            // Only the csv is prepared here: it is built locally and costs
+            // nothing. The agent - which is paid - is created on the first
+            // question, so that merely opening the chat is free.
             this._exporter.export();
-            this._createAgent(confirmedKey);
-          } else {
-            if (!data || !data.length) {
-              this.noData.next(true);
-            }
-            this.isLoading.next(false);
+          } else if (!data || !data.length) {
+            this.noData.next(true);
           }
+          this.isLoading.next(false);
           this._cdr.detectChanges();
         },
         error: (err: any) => {
@@ -364,7 +508,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
         next: (res: string) => {
           const confirmedKey = res;
           this.apiKey.next(confirmedKey);
-          this._addToHistory({response: 'Hello! How can I help you?', noPrompt: true});
+          if (this.history.length === 0) {
+            this._addToHistory({response: 'Hello! How can I help you?', noPrompt: true});
+          }
           this.isLoading.next(false);
           this._cdr.detectChanges();
         },
@@ -383,11 +529,92 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    if (this.mode === 'datachat') {
+      this._schemaId = this._route.snapshot.params['form_schema_id'] ?? null;
+    }
+    // In datachat mode the conversations belong to the Form Schema, in
+    // completion mode they are the single chat of the AI section.
+    this._conversationKey = this.mode === 'datachat' ? this._schemaId : COMPLETION_CONVERSATIONS_KEY;
+    if (this._conversationKey != null) {
+      this._session.openScope(this._conversationKey).then(messages => {
+        this.history = messages;
+        this._cdr.detectChanges();
+        this._scrollChatBottom();
+      });
+    }
+    if (this.mode === 'datachat' && this._schemaId != null) {
+      const liveApiKey = this._session.apiKey;
+      if (this._session.isAliveFor(this._schemaId) && liveApiKey != null) {
+        this._agentAlive = true;
+        this.apiKey.next(liveApiKey);
+        return;
+      }
+    }
     const storedApiKey = localStorage.getItem('pandas_dino_api_key');
     const storedAcceptTerms = localStorage.getItem('pandas_dino_api_key_accept_terms');
     if (storedApiKey && storedAcceptTerms) {
       this.sendAPIKey(storedApiKey);
     }
+  }
+
+  /**
+   * Activates a new, empty conversation.
+   */
+  newConversation(): void {
+    this.history = this._session.newConversation();
+    this._cdr.detectChanges();
+  }
+
+  /**
+   * Displays a stored conversation. The live agent is left untouched: the
+   * restored entries are shown as they were, and any new question is answered
+   * by the current agent.
+   * @param conversation The conversation to display
+   */
+  openConversation(conversation: DataChatConversation): void {
+    if (conversation.id === this.activeConversation.value?.id) {
+      return;
+    }
+    this._session.openConversation(conversation.id).then(messages => {
+      if (messages != null) {
+        this.history = messages;
+        this._cdr.detectChanges();
+        this._scrollChatBottom();
+      }
+    });
+  }
+
+  /**
+   * Deletes a stored conversation.
+   * @param conversation The conversation to delete
+   * @param evt The click event, stopped so that the conversation is not opened
+   */
+  deleteConversation(conversation: DataChatConversation, evt: Event): void {
+    evt.stopPropagation();
+    this._session.removeConversation(conversation.id).then(messages => {
+      this.history = messages;
+      this._cdr.detectChanges();
+    });
+  }
+
+  /**
+   * Opens or closes the conversations sidebar.
+   */
+  toggleSidebar(): void {
+    this._sidebarToggledByUser = true;
+    this.sidebarCollapsed.next(!this.sidebarCollapsed.value);
+  }
+
+  /**
+   * Sends the content of the chat input and clears it.
+   * @param input The chat input element
+   */
+  sendPrompt(input: HTMLTextAreaElement): void {
+    const text = input.value;
+    input.value = '';
+    this.chatPromptText = '';
+    this.chatInputFormGrop.get('chatInputControl')?.setValue('');
+    this.chat(text);
   }
 
   /**
@@ -484,21 +711,24 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    */
   dataChat(text: string): void {
     this._addToHistory({question: text});
-    this._udm
-      .getActiveUserData()
+    this._addToHistory({
+      componentData: {component: MatProgressBar, inputs: {mode: 'indeterminate'}},
+    });
+    // The agent is created here, on the first question, and reused by the
+    // following ones.
+    this._ensureAgent()
       .pipe(
+        switchMap(agentReady => (agentReady ? this._udm.getActiveUserData() : obsOf(null))),
         switchMap(activeUserData => {
           if (!activeUserData || !this.apiKey.value) return obsOf(null);
           const headers = {'X-API-KEY': this.apiKey.value, 'X-USER-EMAIL': activeUserData.email};
           const url = `${this.baseDataChatAPIurl}/${
             this.endpointUrls?.dataChatEndpoint ?? 'datachat'
           }`;
-          this._addToHistory({
-            componentData: {component: MatProgressBar, inputs: {mode: 'indeterminate'}},
-          });
           return this._http.post<{
             explanation: string;
             response: {type: string; value: any};
+            log_id?: string | number;
           }>(url, {'chat': text}, {headers});
         }),
         take(1),
@@ -517,23 +747,32 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                   .replace("b'", '')
                   .slice(0, -1)}`;
                 this._addToHistory({
+                  // The question is kept on the answer entry too - hidden by
+                  // noPrompt - so that the feedback request can quote it.
+                  question: text,
                   explanation: res.explanation,
                   imageData: base64imageData,
                   noPrompt: true,
+                  feedbackEnabled: true,
+                  log_id: res.log_id,
                 });
                 break;
               case 'dataframe':
                 this._addToHistory({
+                  question: text,
                   explanation: res.explanation,
                   componentData: {
                     component: TableGenerator,
                     inputs: {maxRowsDisplayed: 50, setJsonData: res.response.value},
                   },
                   noPrompt: true,
+                  feedbackEnabled: true,
+                  log_id: res.log_id,
                 });
                 break;
               default:
                 this._addToHistory({
+                  question: text,
                   explanation: res.explanation,
                   response: typeof res.response.value === 'object' ? undefined : res.response.value,
                   componentData:
@@ -544,6 +783,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
                         }
                       : undefined,
                   noPrompt: true,
+                  feedbackEnabled: true,
+                  log_id: res.log_id,
                 });
                 break;
             }
@@ -681,8 +922,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * @param answer qa answer
    * @returns
    */
-  sendFeedback(logId: string, feedback: boolean, question: string, answer: string) {
+  sendFeedback(logId: string | number, feedback: boolean, question: string, answer: string) {
     if (!this.apiKey.value) return;
+    // The entry has just flagged itself as rated: keep that in the stored
+    // conversation too.
+    this._persistHistory();
     const url = `${this.baseDataChatAPIurl}/feedback`;
     const headers = {'X-API-KEY': this.apiKey.value};
     const userInfo = this._auth.getUserInfo();
@@ -693,7 +937,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       answer,
       feedback: feedback ? 'positive' : 'negative',
       log_id: logId,
-      source: 'dinoapp',
+      source: this.feedbackSource,
     };
     this._http
       .post(url, body, {headers})
@@ -763,89 +1007,101 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   /**
-   * Sends an agent creation request to the API 'startdatachat' endpoint
-   * and adds to chat history the default table, generated by TableGenerator with
-   * the exported csv file
+   * Sends an agent creation request to the API 'startdatachat' endpoint,
+   * uploading the exported csv file the agent will analyze
    * @param apiKey
    */
-  private _createAgent(apiKey: string) {
-    combineLatest([this._udm.getActiveUserData(), this._exportedFile$])
-      .pipe(
-        switchMap(([activeUserData, exportedFile]) => {
-          if (!activeUserData || !exportedFile) return obsOf(null);
-          const headers = {
-            'X-API-KEY': apiKey,
-            'X-USER-NAME': activeUserData.full_name,
-            'X-USER-EMAIL': activeUserData.email,
-          };
-          const url = `${this.baseDataChatAPIurl}/${
-            this.endpointUrls?.startEndpoint ?? 'startdatachat'
-          }`;
-          const formData = new FormData();
-          formData.append('file', exportedFile);
-          const currentLang = this._ts.getActiveLang();
-          formData.append('lang', currentLang);
-          return this._http.post<any>(url, formData, {headers}).pipe(
-            map(response => {
-              return {
-                response,
-                exportedFile,
-              };
-            }),
+  private _createAgent(apiKey: string): Observable<boolean> {
+    return combineLatest([this._udm.getActiveUserData(), this._exportedFile$]).pipe(
+      switchMap(([activeUserData, exportedFile]) => {
+        if (!activeUserData || !exportedFile) return obsOf(null);
+        const headers = {
+          'X-API-KEY': apiKey,
+          'X-USER-NAME': activeUserData.full_name,
+          'X-USER-EMAIL': activeUserData.email,
+        };
+        const url = `${this.baseDataChatAPIurl}/${
+          this.endpointUrls?.startEndpoint ?? 'startdatachat'
+        }`;
+        const formData = new FormData();
+        formData.append('file', exportedFile);
+        const currentLang = this._ts.getActiveLang();
+        formData.append('lang', currentLang);
+        return this._http.post<any>(url, formData, {headers});
+      }),
+      take(1),
+      map(res => {
+        if (res) {
+          this._refreshAvailableTokens();
+        }
+        if (isDevMode()) {
+          console.log(res);
+        }
+        return res != null;
+      }),
+      catchError(err => {
+        // Not enough tokens response from Pandino
+        if (err && err.error && err.error.error === 'Not enough tokens') {
+          this.noTokens.next(true);
+          this._snackBar.open(
+            this._ts.translate(
+              'Not enough credits! Please add more DINO-AI Credits to your account to use this feature',
+            ),
+            'OOPS!',
+            {duration: 10000},
           );
-        }),
-        take(1),
-      )
-      .subscribe({
-        next: res => {
-          if (res) {
-            this._addToHistory([
-              {response: 'Here is your data!', noPrompt: true},
-              {
-                componentData: {
-                  component: TableGenerator,
-                  inputs: {maxRowsDisplayed: 50, setCsvFile: res.exportedFile},
-                },
-              },
-            ]);
-            if (res.response.suggested_questions) {
-              this._addToHistory({
-                response: res.response.suggested_questions,
-                noPrompt: true,
-              });
-            }
-            this._refreshAvailableTokens();
-          }
-
+        } else {
           if (isDevMode()) {
-            console.log(res);
-          }
-          this.isLoading.next(false);
-        },
-        error: err => {
-          // Not enough tokens response from Pandino
-          if (err && err.error && err.error.error === 'Not enough tokens') {
-            this.noTokens.next(true);
-            this.isLoading.next(false);
-            this._snackBar.open(
-              this._ts.translate(
-                'Not enough credits! Please add more DINO-AI Credits to your account to use this feature',
-              ),
-              'OOPS!',
-              {duration: 10000},
-            );
+            console.log(err);
           } else {
-            if (isDevMode()) {
-              console.log(err);
-            } else {
-              this._ehms.captureErrorMessage(
-                `DINO-AI agent creation error: ${JSON.stringify(err)}`,
-                'warning',
-              );
-            }
+            this._ehms.captureErrorMessage(
+              `DINO-AI agent creation error: ${JSON.stringify(err)}`,
+              'warning',
+            );
           }
-        },
-      });
+        }
+        return obsOf(false);
+      }),
+    );
+  }
+
+  /**
+   * Creates the PandasAI agent if it does not exist yet.
+   * The agent creation uploads the whole dataset and is charged to the User,
+   * so it is deferred to the first question instead of being performed when
+   * the chat is opened.
+   * @returns True as soon as an agent is available
+   */
+  private _ensureAgent(): Observable<boolean> {
+    if (this._agentAlive || this._agentReady) {
+      return obsOf(true);
+    }
+    if (this._agentCreation != null) {
+      return this._agentCreation;
+    }
+    const apiKey = this.apiKey.value;
+    if (apiKey == null) {
+      return obsOf(false);
+    }
+    this._agentCreation = this._createAgent(apiKey).pipe(
+      tap(created => {
+        this._agentReady = created;
+        this._agentCreation = null;
+      }),
+      shareReplay(1),
+    );
+    return this._agentCreation;
+  }
+
+  /**
+   * The url the application is navigating to, or the current one when the
+   * component is not being destroyed by a navigation.
+   */
+  private _nextUrl(): string {
+    const navigation = this._router.getCurrentNavigation();
+    return navigation?.finalUrl != null
+      ? this._router.serializeUrl(navigation.finalUrl)
+      : this._router.url;
   }
 
   /**
@@ -888,6 +1144,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     } else {
       this.history.push(qa);
     }
+    this._persistHistory();
     this._cdr.detectChanges();
     this._scrollChatBottom();
   }
@@ -897,6 +1154,18 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    */
   private _removeLastFromHistory(): void {
     this.history.splice(-1, 1);
+    this._persistHistory();
+  }
+
+  /**
+   * Saves the chat history in the session, so that it can be restored when the
+   * AI view of this Form Schema is entered again.
+   */
+  private _persistHistory(): void {
+    if (this._conversationKey == null) {
+      return;
+    }
+    this._session.saveActive(this.history);
   }
 
   /**
@@ -943,13 +1212,36 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.apiKey.value) {
-      this._destroyAgent(this.apiKey.value);
+    // Only the datachat mode creates a PandasAI agent, and only on the first
+    // question: there is nothing to keep alive nor to destroy in completion
+    // mode, or when no question was ever asked.
+    const hasAgent = this.mode === 'datachat' && (this._agentAlive || this._agentReady);
+    if (this.apiKey.value && hasAgent) {
+      if (this._schemaId != null) {
+        // The agent is kept alive while the User stays inside the form section,
+        // so that moving between the Data, Map and AI views does not destroy it
+        // and does not re-upload its data.
+        this._session.keepAlive({
+          schemaId: this._schemaId,
+          apiKey: this.apiKey.value,
+          baseUrl: this.baseDataChatAPIurl ?? '',
+          endEndpoint: this.endpointUrls?.endEndpoint ?? 'enddatachat',
+        });
+        if (!this._session.isInsideForm(this._nextUrl(), this._schemaId)) {
+          this._session.endSession();
+        }
+      } else {
+        // A datachat outside of a form section (no schema id in the route):
+        // its agent has no section to stay alive for.
+        this._destroyAgent(this.apiKey.value);
+      }
     }
     if (this._exporter) {
       this._exporter.ngOnDestroy();
     }
     this._apiKeyConfirmationSub.unsubscribe();
+    this._unsubscribe.next();
+    this._unsubscribe.complete();
     this.apiKey.complete();
     this.isLoading.complete();
   }

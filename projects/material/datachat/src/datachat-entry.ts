@@ -35,6 +35,11 @@ import {ParagraphDialogComponent} from './paragraph-dialog.component';
 import * as mrkd from 'marked';
 
 /**
+ * How long the copy button confirms the copy, in milliseconds.
+ */
+const COPIED_FEEDBACK_TIME = 2000;
+
+/**
  * The ChatEntry component.
  * Displays a single chat question/response in the DataChat history
  */
@@ -63,11 +68,32 @@ export class DataChatEntry implements OnDestroy {
    * Emitted when feedback is clicked
    */
   @Output() feedbackClick: EventEmitter<{
-    logId: string;
+    logId: string | number;
     isPositive: boolean;
     question: string;
     answer: string;
-  }> = new EventEmitter<{logId: string; isPositive: boolean; question: string; answer: string}>();
+  }> = new EventEmitter<{
+    logId: string | number;
+    isPositive: boolean;
+    question: string;
+    answer: string;
+  }>();
+
+  /**
+   * Emitted, with the question of this entry, when its answer must be asked
+   * again
+   */
+  @Output() regenerateClick: EventEmitter<string> = new EventEmitter<string>();
+
+  /**
+   * True right after the answer has been copied to the clipboard
+   */
+  copied = false;
+
+  /**
+   * Resets the copy confirmation
+   */
+  private _copiedTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private _dialog: MatDialog, private _cdr: ChangeDetectorRef) {}
 
@@ -102,17 +128,96 @@ export class DataChatEntry implements OnDestroy {
     this.followUpClick.emit(question);
   }
 
+  /**
+   * True when the entry holds something the assistant answered: a text, an
+   * image, a generated component, or the explanation of one of them.
+   */
+  get hasAnswer(): boolean {
+    return (
+      this.qa != null &&
+      (this.qa.response != null ||
+        this.qa.explanation != null ||
+        this.qa.imageData != null ||
+        this.qa.componentData != null)
+    );
+  }
+
+  /**
+   * True when the User can rate this entry: either the backend returned a log
+   * id for it (completion mode) or the chat marked it as rateable (datachat
+   * mode, where the answer may be an image or a table).
+   */
+  get feedbackAvailable(): boolean {
+    return this.qa != null && (this.qa.log_id != null || this.qa.feedbackEnabled === true);
+  }
+
+  /**
+   * True when the answer holds some text to put in the clipboard.
+   */
+  get canCopy(): boolean {
+    return this.qa != null && (this.qa.response != null || this.qa.explanation != null);
+  }
+
+  /**
+   * True when the question that produced this answer is known, and can
+   * therefore be asked again.
+   */
+  get canRegenerate(): boolean {
+    return this.qa?.question != null && this.qa.question.length > 0 && this.hasAnswer;
+  }
+
+  /**
+   * True when the answer displays its actions row.
+   */
+  get showActions(): boolean {
+    return this.feedbackAvailable || this.canCopy || this.canRegenerate;
+  }
+
+  /**
+   * Copies the answer to the clipboard, confirming it on the button for a
+   * couple of seconds.
+   */
+  copyAnswer(): void {
+    const text = [this.qa?.explanation, this.qa?.response].filter(part => part).join('\n\n');
+    if (!text || typeof navigator === 'undefined' || navigator.clipboard == null) {
+      return;
+    }
+    navigator.clipboard.writeText(text).then(
+      () => {
+        this.copied = true;
+        this._cdr.markForCheck();
+        this._copiedTimeout = setTimeout(() => {
+          this.copied = false;
+          this._cdr.markForCheck();
+        }, COPIED_FEEDBACK_TIME);
+      },
+      () => {
+        // The clipboard is not available (insecure context, denied permission):
+        // nothing to confirm.
+      },
+    );
+  }
+
+  /**
+   * Asks the question of this entry again.
+   */
+  onRegenerateClick(): void {
+    if (this.qa?.question) {
+      this.regenerateClick.emit(this.qa.question);
+    }
+  }
+
   onFeedbackClick(isPositive: boolean) {
-    if (this.qa && this.qa.log_id) {
+    if (this.qa && this.feedbackAvailable) {
       if (this.qa.userIsHappy === isPositive) {
         return;
       }
       this.qa.userIsHappy = isPositive;
       this.feedbackClick.emit({
-        logId: this.qa.log_id,
+        logId: this.qa.log_id ?? '',
         isPositive,
         question: this.qa.question ?? '',
-        answer: this.qa.response ?? '',
+        answer: this.qa.response ?? this.qa.explanation ?? '',
       });
     }
   }
@@ -123,6 +228,8 @@ export class DataChatEntry implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    return;
+    if (this._copiedTimeout != null) {
+      clearTimeout(this._copiedTimeout);
+    }
   }
 }

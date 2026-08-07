@@ -1,11 +1,12 @@
-dinoapp-gpt {
+dinoapp-datachat {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 73px);
 
-  // Same toolbar geometry as the form Data/Map/AI views, so the breadcrumb sits
-  // in the same place across the app.
-  .dinoapp-gpt-toolbar {
+  // Mirror the Table's .dino-list-toolbar and the Map's .dino-map-toolbar (same
+  // flex props + height) so the breadcrumb and the Dati/Mappa/AI switcher stay
+  // in the same place when toggling views.
+  .dinoapp-datachat-toolbar {
     flex: 0 0 auto;
     background: transparent;
     display: flex;
@@ -15,7 +16,12 @@ dinoapp-gpt {
     min-height: 56px;
   }
 
-  // The chat owns its internal layout: here it just fills the remaining space.
+  dino-search-filters-bar {
+    flex: 0 0 auto;
+  }
+
+  // The chat owns its own internal layout: here it just fills whatever is left
+  // below the toolbar and the view switcher.
   dino-datachat {
     flex: 1 1 auto;
     height: auto;
