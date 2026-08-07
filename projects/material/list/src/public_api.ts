@@ -20,6 +20,7 @@
  *
  */
 
+export * from './column-resize';
 export * from './list';
 export * from './list-cell-component';
 export * from './list-context';
