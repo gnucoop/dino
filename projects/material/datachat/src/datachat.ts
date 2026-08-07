@@ -719,9 +719,13 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               this._ts.translate('DINO-AI: AUTHENTICATION SUCCESSFUL!'),
               {duration: 10000},
             );
+            // The credits of a key just entered are unknown: they are read here
+            // once. Opening the chat spends nothing, so from then on they are
+            // refreshed by what does spend them, i.e. creating the agent and
+            // asking a question.
+            this._refreshAvailableTokens();
           }
           this.apiKeyConfirmationEvt.emit(key);
-          this._refreshAvailableTokens();
           if (isDevMode()) {
             console.log(res);
           }
