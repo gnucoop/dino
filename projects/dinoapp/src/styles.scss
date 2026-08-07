@@ -190,6 +190,32 @@ body {
     url(assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 
+// Snackbars are rendered in an overlay, outside of any component: they are
+// themed here. The import wizard keeps its own success and error panels.
+.mat-mdc-snack-bar-container:not(.dino-import-snack-success):not(.dino-import-snack-error) {
+  // The snackbar styles are injected at runtime by the component and read these
+  // tokens, which the theme sets on html: overriding them here is what recolors
+  // the action label. The declarations below cover the surface and the message.
+  --mdc-snackbar-container-color: #{mat-css-vars.mat-css-color-primary(500)};
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snack-bar-button-color: #fff;
+
+  .mdc-snackbar__surface {
+    background-color: mat-css-vars.mat-css-color-primary(500) !important;
+  }
+
+  .mdc-snackbar__label {
+    color: #fff !important;
+  }
+
+  // The action label is the one that names the outcome of the notification.
+  .mat-mdc-snack-bar-action.mat-mdc-button,
+  .mat-mdc-snack-bar-action .mdc-button__label {
+    color: #fff !important;
+    font-weight: 700;
+  }
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
