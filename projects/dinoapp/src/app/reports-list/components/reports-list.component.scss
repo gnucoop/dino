@@ -1,0 +1,20 @@
+dinoapp-reports-list {
+  // The credits a report costs, on the button adding one: it used to be the
+  // extended part of the floating button.
+  .dino-report-cost {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 8px;
+    padding-left: 8px;
+    border-left: 1px solid currentColor;
+    opacity: 0.85;
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      font-size: 18px;
+    }
+  }
+}

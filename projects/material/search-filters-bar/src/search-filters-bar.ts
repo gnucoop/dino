@@ -269,6 +269,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._viewSwitcherOnly = state;
   }
 
+  /**
+   * If true, the keyword field searching the whole list is displayed.
+   * Defaults to true: the form data has its own filters, in the Filters modal,
+   * and turns it off.
+   */
+  private _keywordSearch = true;
+  get keywordSearch(): boolean {
+    // The AI view displays the switcher alone and initializes no filter, so a
+    // keyword field of its own would search nothing.
+    return this._keywordSearch && !this._viewSwitcherOnly;
+  }
+  @Input()
+  set keywordSearch(state: boolean) {
+    this._keywordSearch = state;
+  }
+
   private _exportable = false;
   get exportable() {
     return this._exportable;

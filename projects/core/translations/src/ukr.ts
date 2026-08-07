@@ -77,6 +77,7 @@ export const UKR: Translation = {
   'Add New {{schema}} Schema': 'Додати нову схему {{schema}}',
   'Add New Report': 'Додати новий звіт',
   'Add New User': 'Додати нового користувача',
+  'Add New Group': 'Додати нову групу',
   'Add New User Permissions Group': 'Додати нову групу прав користувачів',
   'Add New form': 'Додати нову форму',
   'Add filters': 'Додати фільтри',

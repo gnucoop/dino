@@ -82,6 +82,7 @@ export const ENG: Translation = {
   'Add New {{schema}} Schema': 'Add new {{schema}} schema',
   'Add New Report': 'Add new report',
   'Add New User': 'Add new user',
+  'Add New Group': 'Add new group',
   'Add New User Permissions Group': 'Add new user permissions group',
   'Add New form': 'Add new form',
   'Add filters': 'Add filters',

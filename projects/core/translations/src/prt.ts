@@ -77,6 +77,7 @@ export const PRT: Translation = {
   'Add New {{schema}} Schema': 'Adicionar novo esquema de {{schema}}',
   'Add New Report': 'Adicionar novo relatório',
   'Add New User': 'Adicionar novo usuário',
+  'Add New Group': 'Adicionar novo grupo',
   'Add New User Permissions Group': 'Adicionar novo grupo de permissões de usuário',
   'Add New form': 'Adicionar novo formulário',
   'Add filters': 'Adicionar filtros',

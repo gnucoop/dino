@@ -78,6 +78,7 @@ export const ITA: Translation = {
   'Add New {{schema}} Schema': 'Aggiungi nuovo schema {{Schema}}',
   'Add New Report': 'Aggiungi nuovo report',
   'Add New User': 'Aggiungi nuovo utente',
+  'Add New Group': 'Aggiungi nuovo gruppo',
   'Add New User Permissions Group': 'Aggiungi nuovo gruppo di autorizzazioni utente',
   'Add New form': 'Aggiungi nuovo form',
   'Add filters': 'Aggiungi filtri',

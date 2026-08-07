@@ -148,6 +148,7 @@ export const UGA: Translation = {
   'Add New form': 'Add new form',
   'Import forms': 'Import forms',
   'Add New': 'Add new',
+  'Add New Group': 'Add new group',
   'Add New User Permissions Group': 'Add new user permissions group',
   'Add New Report': 'Add new report',
   'Add New User': 'Add new user',

@@ -76,6 +76,7 @@ export const AR: Translation = {
   'Add New {{schema}} Schema': 'إضافة مخطط {{schema}} جديد',
   'Add New Report': 'إضافة تقرير جديد',
   'Add New User': 'إضافة مستخدم جديد',
+  'Add New Group': 'إضافة مجموعة جديدة',
   'Add New User Permissions Group': 'إضافة مجموعة أذونات مستخدم جديدة',
   'Add New form': 'إضافة نموذج جديد',
   'Add filters': 'إضافة عوامل تصفية',

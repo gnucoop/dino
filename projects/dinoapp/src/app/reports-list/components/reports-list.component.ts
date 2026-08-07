@@ -15,6 +15,7 @@ import * as conf from '../conf';
 @Component({
   selector: 'dinoapp-reports-list',
   templateUrl: './reports-list.component.html',
+  styleUrls: ['./reports-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

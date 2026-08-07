@@ -6,12 +6,16 @@
   [additionalBasicFilters]="additionalBasicFilters"
   [onClickRowActions]="onClickRowActions"
 >
-  <dino-search-filters-bar filters [additionalFilters]="false"></dino-search-filters-bar>
+  <dino-search-filters-bar filters [additionalFilters]="false">
+    <button
+      toolbarActions
+      mat-stroked-button
+      color="primary"
+      (click)="openDialog(undefined, 'create')"
+    >
+      <mat-icon>add</mat-icon>
+      <span>{{'Add New User' | transloco}}</span>
+    </button>
+  </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>
-
-<dino-floating-button
-  buttonIcon="add"
-  [tooltipMessage]="'Add New User' | transloco"
-  (click)="openDialog(undefined, 'create')"
-></dino-floating-button>

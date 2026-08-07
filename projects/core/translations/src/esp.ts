@@ -77,6 +77,7 @@ export const ESP: Translation = {
   'Add New {{schema}} Schema': 'Agregar nuevo esquema de {{schema}}',
   'Add New Report': 'Agregar nuevo informe',
   'Add New User': 'Agregar nuevo usuario',
+  'Add New Group': 'Añadir nuevo grupo',
   'Add New User Permissions Group': 'Agregar nuevo grupo de permisos de usuario',
   'Add New form': 'Agregar nuevo formulario',
   'Add filters': 'Agregar filtros',
