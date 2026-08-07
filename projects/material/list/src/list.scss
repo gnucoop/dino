@@ -316,18 +316,28 @@ dino-list {
     max-width: 0px;
     background-color: transparent !important;
     right: 25px !important;
+    // The cell has no width of its own, so the icons are taken out of the flow
+    // and centered on the right edge of the row.
     .dino-row-actions-container {
+      position: absolute;
+      top: 50%;
+      right: 4px;
+      transform: translateY(-50%);
       display: flex;
       justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
       min-width: auto;
+      // Same icon size as the actions of the selection row above.
       .mat-icon {
-        height: 16px;
-        width: 16px;
-        font-size: 16px;
+        height: 24px;
+        width: 24px;
+        font-size: 24px;
+        line-height: 24px;
         background-color: mat-css-vars.mat-css-color-accent(100);
         border-radius: 100%;
         padding: 5px;
-        margin: 1px;
+        margin: 0;
       }
     }
   }
@@ -349,11 +359,14 @@ dino-list {
     display: contents;
   }
 
+  // A keyboard user never hovers a row: its actions appear when one is focused.
+  .mat-mdc-row:not(.dino-row-details) .mat-column-actions:focus-within .dino-action-icon {
+    visibility: visible;
+  }
+
   mat-cell:last-of-type.mat-column-actions {
     .dino-action-icon {
       visibility: hidden;
-      position: absolute;
-      right: calc((4 + (var(--position) * 28)) * 1px);
     }
     padding: 5px;
     cursor: pointer;
