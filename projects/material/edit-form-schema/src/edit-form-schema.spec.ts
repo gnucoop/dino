@@ -2,8 +2,11 @@ import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UntypedFormGroup} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
+import {FormDepsEditor} from '@dino/material/form-deps-editor';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, InsertModel} from '@dino/core/data';
 import {FormSchema, FormSchemaManager, FormStatusManager} from '@dino/core/forms';
@@ -177,6 +180,96 @@ describe('Edit FormSchema', () => {
     editFormSchema.save();
 
     expect(createFormSchemaSpy).toHaveBeenCalledTimes(1);
+  });
+
+  // The relationships and the schema live in two collections with no transaction
+  // around them, so the write order decides what a partial failure costs.
+  describe('save ordering across the two collections', () => {
+    let deps: FormDepsEditor;
+    let snackbar: MatSnackBar;
+
+    beforeEach(async () => {
+      await fixtureEditFormSchema.whenStable();
+      fixtureEditFormSchema.detectChanges();
+      deps = editFormSchema.depsEditor!;
+      snackbar = TestBed.inject(MatSnackBar);
+    });
+
+    /** A saved schema doc, as the manager returns on a successful write. */
+    function savedDoc(): RxDocument<FormSchema> {
+      return {label: 'Schema one', id: 'schema-1'} as unknown as RxDocument<FormSchema>;
+    }
+
+    it('writes the schema before updating an existing relationships document', async () => {
+      spyOn(deps, 'pendingWrite').and.returnValue(of('update' as const));
+      const order: string[] = [];
+      spyOn(fsm, 'create').and.callFake(() => {
+        order.push('schema');
+        return of(savedDoc());
+      });
+      spyOn(deps, 'persistRelationships').and.callFake(() => {
+        order.push('deps');
+        return of('deps-1');
+      });
+
+      editFormSchema.save();
+
+      // The schema needs nothing from an existing document, so it goes first: a
+      // relationships failure then leaves the schema coherent.
+      expect(order).toEqual(['schema', 'deps']);
+    });
+
+    it('does not touch the relationships when there is nothing to write', async () => {
+      spyOn(deps, 'pendingWrite').and.returnValue(of('none' as const));
+      spyOn(fsm, 'create').and.returnValue(of(savedDoc()));
+      const persistSpy = spyOn(deps, 'persistRelationships').and.callThrough();
+
+      editFormSchema.save();
+
+      expect(persistSpy).not.toHaveBeenCalled();
+    });
+
+    it('creates the relationships document first and folds its id into the schema', async () => {
+      spyOn(deps, 'pendingWrite').and.returnValue(of('create' as const));
+      spyOn(deps, 'persistRelationships').and.returnValue(of('deps-new'));
+      const createSpy = spyOn(fsm, 'create').and.returnValue(of(savedDoc()));
+      const discardSpy = spyOn(deps, 'discardCreated').and.returnValue(of(null));
+
+      editFormSchema.save();
+
+      // Creating is the one case the schema write depends on: it needs the new id.
+      expect(createSpy.calls.mostRecent().args[0].form_schema_deps_ref_id).toBe('deps-new');
+      expect(discardSpy).not.toHaveBeenCalled();
+    });
+
+    it('discards a just-created relationships document when the schema write fails', async () => {
+      spyOn(deps, 'pendingWrite').and.returnValue(of('create' as const));
+      spyOn(deps, 'persistRelationships').and.returnValue(of('deps-new'));
+      spyOn(fsm, 'create').and.returnValue(of(null));
+      const discardSpy = spyOn(deps, 'discardCreated').and.returnValue(of(null));
+
+      editFormSchema.save();
+
+      // Otherwise it would sit on the db unreferenced, and every retry would add
+      // another one: the schema has no ref id to load the previous one from.
+      expect(discardSpy).toHaveBeenCalledWith('deps-new');
+    });
+
+    it('reports a saved schema whose relationships failed, without leaving the page', async () => {
+      spyOn(deps, 'pendingWrite').and.returnValue(of('update' as const));
+      spyOn(fsm, 'create').and.returnValue(of(savedDoc()));
+      spyOn(deps, 'persistRelationships').and.returnValue(of(null));
+      const snackSpy = spyOn(snackbar, 'open').and.callThrough();
+      const navigateSpy = spyOn(TestBed.inject(Router), 'navigateByUrl');
+
+      editFormSchema.save();
+
+      // Saying "nothing was saved" would be a lie, and navigating away is the only
+      // thing that would actually lose the rows still held by the tables.
+      expect(snackSpy.calls.mostRecent().args[0]).toContain('relationships were not');
+      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(editFormSchema.isSaving).toBe(false);
+    });
   });
 
   it('should release pending DOM waits on destroy', async () => {
