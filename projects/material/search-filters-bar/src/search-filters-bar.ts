@@ -80,6 +80,12 @@ import {
 } from 'rxjs/operators';
 
 /**
+ * The available views of a form-data section: the list (Dati), the map (Mappa)
+ * and the DataChat (AI).
+ */
+export type FormDataView = 'table' | 'map' | 'ai';
+
+/**
  * Opt-in component that handles all SelectionList filters.
  * The filters are obtained by parsing the RxJsonSchema of the model and the ajfFormSchema,
  * if present as a model property.
@@ -132,7 +138,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   displayFormMapButton: Observable<boolean>;
 
   /**
-   * If true, the Table/Map view switcher is shown. It appears on any form-data
+   * If true, the Data/Map/AI view switcher is shown. It appears on any form-data
    * list (a form schema is loaded), regardless of location support.
    */
   displayViewSwitcher: Observable<boolean>;
@@ -144,10 +150,17 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   appliedFiltersCount$: Observable<number>;
 
   /**
-   * Emits true when the current route is the form Map view, false for the Table view.
-   * Drives the active state of the Tabella/Mappa switcher.
+   * The form-data view of the current route: 'table' (Dati), 'map' (Mappa) or
+   * 'ai' (DataChat). Drives the active state of the view switcher.
    */
-  isMapView$: Observable<boolean>;
+  currentView$: Observable<FormDataView>;
+
+  /**
+   * Emits true when the current route is the form AI (DataChat) view.
+   * On that view only the switcher is displayed: filters, export and the
+   * projected toolbar actions are hidden.
+   */
+  isAiView$: Observable<boolean>;
 
   /**
    * The Filter Service Generated filters
@@ -241,6 +254,19 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   @Input()
   set presetManager(state: boolean) {
     this._presetManager = state;
+  }
+
+  /**
+   * If true, only the view switcher (Dati/Mappa/AI) is displayed and no filter
+   * is initialized. Used by the AI (DataChat) view, which has no filterable list.
+   */
+  private _viewSwitcherOnly = false;
+  get viewSwitcherOnly(): boolean {
+    return this._viewSwitcherOnly;
+  }
+  @Input()
+  set viewSwitcherOnly(state: boolean) {
+    this._viewSwitcherOnly = state;
   }
 
   private _exportable = false;
@@ -351,11 +377,22 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       map(schema => schema != null),
     );
 
-    this.isMapView$ = this._router.events.pipe(
+    this.currentView$ = this._router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       startWith(null),
-      map(() => this._router.url.split('?')[0].endsWith('/map')),
+      map(() => {
+        const path = this._router.url.split('?')[0];
+        if (path.endsWith('/map')) {
+          return 'map';
+        }
+        if (path.endsWith('/datachat')) {
+          return 'ai';
+        }
+        return 'table';
+      }),
     );
+
+    this.isAiView$ = this.currentView$.pipe(map(view => view === 'ai'));
 
     // Count of applied filters (basic-with-value + additional), decoded from the
     // FiltersService queryString which encodes exactly those active filter items.
@@ -397,6 +434,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   >();
 
   ngOnInit() {
+    if (this._viewSwitcherOnly) {
+      return;
+    }
     this.initFilters();
   }
 
@@ -575,12 +615,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
-   * Switches between the Table and Map views of the current form schema,
+   * Switches between the Data, Map and AI views of the current form schema,
    * preserving the active filters (carried in the `?filters=` query param).
    */
-  switchView(view: 'table' | 'map'): void {
+  switchView(view: FormDataView): void {
     if (view === 'map') {
       this.viewMap();
+    } else if (view === 'ai') {
+      this.viewDataChat();
     } else {
       this.viewList();
     }
@@ -608,6 +650,20 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     this._route.params.pipe(take(1)).subscribe(params => {
       if (params['form_schema_id']) {
         this._router.navigate(['forms', params['form_schema_id']], {
+          queryParamsHandling: 'preserve',
+        });
+      }
+    });
+  }
+
+  /**
+   * Redirects to the forms' DataChat (AI) component.
+   * Preserves the `?filters=` query param so the current filter transfers.
+   */
+  viewDataChat(): void {
+    this._route.params.pipe(take(1)).subscribe(params => {
+      if (params['form_schema_id']) {
+        this._router.navigate(['forms', params['form_schema_id'], 'datachat'], {
           queryParamsHandling: 'preserve',
         });
       }

@@ -1,16 +1,54 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+@function dc-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
+// Dark-theme neutral overrides (`.isDarkTheme` is set on an ancestor by the app).
+.isDarkTheme dino-datachat {
+  --dc-page: #14171b;
+  --dc-surface: #23272d;
+  --dc-subtle: #1b1f24;
+  --dc-border: #363c44;
+  --dc-heading: #e6e9ec;
+  --dc-text: #d4d9dd;
+  --dc-muted: #99a0a7;
+  --dc-hover: #2b3037;
+}
+
 dino-datachat {
+  // Light-theme neutral defaults.
+  --dc-page: #eef1f4;
+  --dc-surface: #ffffff;
+  --dc-subtle: #f7f9fb;
+  --dc-border: #e2e8ee;
+  --dc-heading: #12303f;
+  --dc-text: #2a3a45;
+  --dc-muted: #64798a;
+  --dc-hover: #f1f5f9;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--dc-text);
+
+  // The chat fills the space its page gives it: both hosting pages are flex
+  // columns that set `flex: 1 1 auto` on it.
+  flex: 1 1 auto;
+
   .dino-datachat-container {
     display: flex;
     flex-flow: column;
-    justify-content: center;
+    flex: 1 1 auto;
+    min-height: 0;
     align-items: center;
+
     .dino-apikey-field {
-      flex: 1 0 auto;
+      flex: 0 0 auto;
       min-width: 300px;
       position: relative;
       top: 30vh;
+
       .dino-apikey-field-fab {
         right: 10px;
         max-width: 32px;
@@ -18,47 +56,296 @@ dino-datachat {
       }
     }
 
-    .dino-chat-history-container {
-      display: flex;
-      flex-flow: column;
-      flex: 1 0 auto;
-      width: 85vw;
-      @media only screen and (max-width: 768px) {
-        width: 95vw;
-      }
-      padding: 6px;
-      height: 74vh;
-      max-height: 74vh;
-      overflow-y: auto;
-      border-radius: 4px;
-      scroll-behavior: smooth;
-      background-color: var(--mdc-filled-text-field-container-color);
-    }
-    .dino-chat-input-container {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-between;
-      position: absolute;
-      bottom: 80px;
-      width: 86vw;
-      @media only screen and (max-width: 768px) {
-        width: 100vw;
-      }
-      .dino-chat-text-input {
-        flex: 1 0 85%;
-        @media only screen and (max-width: 768px) {
-          flex: 1 0 auto;
-        }
-      }
-      .dino-chat-namespace-select {
-        flex: 1 0 15%;
-      }
-    }
     .dino-communicating-spinner {
       position: relative;
       right: 10px;
     }
   }
+
+  // ---- Two columns: the chat card and the conversations sidebar -------------
+  .dino-datachat-layout {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: stretch;
+    gap: 16px;
+    flex: 1 1 auto;
+    min-height: 420px;
+    width: 100%;
+  }
+
+  .dino-datachat-panel {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    background: var(--dc-surface);
+    border: 1px solid var(--dc-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .dino-datachat-panel-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--dc-border);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--dc-heading);
+  }
+
+  .dino-datachat-panel-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // ---- Messages -------------------------------------------------------------
+  .dino-chat-history-container {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: auto;
+    padding: 18px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    background: transparent;
+  }
+
+  .dino-datachat-welcome {
+    flex: 0 0 auto;
+    padding: 4px 4px 12px;
+  }
+
+  .dino-datachat-welcome-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dc-heading);
+
+    .mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+      cursor: default;
+    }
+  }
+
+  .dino-datachat-welcome-subtitle {
+    margin: 0 0 16px;
+    max-width: 640px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--dc-muted);
+  }
+
+  .dino-datachat-starters {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 10px;
+  }
+
+  .dino-datachat-starter {
+    padding: 8px 16px;
+    border: 1px solid var(--dc-border);
+    border-radius: 999px;
+    background: var(--dc-subtle);
+    color: var(--dc-text);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: dc-primary(500, 0.08);
+      border-color: dc-primary(500, 0.35);
+    }
+  }
+
+  // ---- Input row ------------------------------------------------------------
+  .dino-chat-input-container {
+    flex: 0 0 auto;
+    position: static;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+    padding: 12px 18px;
+    border-top: 1px solid var(--dc-border);
+
+    .dino-chat-text-input {
+      flex: 1 1 auto;
+      min-width: 0;
+
+      // Rounded, borderless field: the surrounding row is the visible control.
+      .mat-mdc-text-field-wrapper {
+        border-radius: 10px;
+      }
+
+      .mdc-line-ripple {
+        display: none;
+      }
+    }
+
+    // Compact pill holding the namespace, with its folder icon.
+    .dino-chat-namespace-select {
+      flex: 0 0 auto;
+      width: 150px;
+
+      .mat-mdc-text-field-wrapper {
+        border-radius: 10px;
+        padding-left: 10px;
+      }
+
+      .mat-mdc-form-field-infix {
+        width: auto;
+        min-height: 44px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      .mat-mdc-form-field-icon-prefix > .mat-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 6px;
+        padding: 0;
+        font-size: 18px;
+        color: var(--dc-muted);
+      }
+
+      .mdc-line-ripple {
+        display: none;
+      }
+    }
+
+    // The Material form fields carry their own bottom subscript spacing, which
+    // would misalign the send button in this compact row.
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .dino-chat-send {
+      flex: 0 0 auto;
+      height: 44px;
+      border-radius: 10px;
+
+      .mat-icon {
+        margin-right: 6px;
+      }
+    }
+  }
+
+  // ---- Conversations sidebar ------------------------------------------------
+  .dino-datachat-conversations {
+    flex: 0 0 300px;
+    display: flex;
+    flex-flow: column;
+    min-height: 0;
+    padding: 14px;
+    background: var(--dc-surface);
+    border: 1px solid var(--dc-border);
+    border-radius: 12px;
+
+    @media only screen and (max-width: 768px) {
+      flex-basis: 240px;
+    }
+  }
+
+  .dino-datachat-conversations-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .dino-datachat-conversations-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dc-muted);
+  }
+
+  .dino-datachat-new {
+    flex: 0 0 auto;
+    height: 42px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+
+    .mat-icon {
+      margin-right: 6px;
+    }
+  }
+
+  .dino-datachat-conversations-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .dino-datachat-conversation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--dc-hover);
+
+      .dino-datachat-conversation-delete {
+        visibility: visible;
+      }
+    }
+
+    &.dino-datachat-conversation-active {
+      background: dc-primary(500, 0.1);
+    }
+  }
+
+  .dino-datachat-conversation-info {
+    display: flex;
+    flex-flow: column;
+    min-width: 0;
+  }
+
+  .dino-datachat-conversation-title {
+    font-size: 14px;
+    color: var(--dc-heading);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dino-datachat-conversation-date {
+    font-size: 12px;
+    color: var(--dc-muted);
+  }
+
+  .dino-datachat-conversation-delete {
+    flex: 0 0 auto;
+    visibility: hidden;
+
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // ---- Gates (terms, no data, no credits) -----------------------------------
   .dino-no-items-message {
     display: flex;
     flex-flow: row wrap;
@@ -67,19 +354,23 @@ dino-datachat {
     height: 85vh;
     opacity: 0.4;
   }
+
   .dino-no-tokens-message {
     position: relative;
     top: 30%;
     text-align: center;
     margin: auto;
     opacity: 0.6;
+
     .dino-no-tokens-message-row {
       display: flex;
       justify-content: center;
       align-items: center;
+
       .dino-no-tokens-icon {
         margin-left: 10px;
       }
+
       &.dino-no-tokens-message-row-buy {
         cursor: pointer;
         color: mat-css-vars.mat-css-color-primary(500);
@@ -91,12 +382,14 @@ dino-datachat {
     max-height: 70vh;
     overflow-y: auto;
   }
+
   .dino-gpt-accept-box {
     margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
+
   .dino-loading {
     position: unset !important;
     width: unset !important;
