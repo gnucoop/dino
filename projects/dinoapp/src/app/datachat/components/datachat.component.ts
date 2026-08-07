@@ -5,6 +5,7 @@ import {acceptTermsContent, pandinoUrl} from '../conf';
 @Component({
   selector: 'dinoapp-datachat',
   templateUrl: './datachat.component.html',
+  styleUrls: ['./datachat.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })

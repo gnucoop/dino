@@ -41,31 +41,112 @@
           </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="(apiKey|async) !== null && termsAccepted">
-          <ng-container *ngIf="termsAccepted">
+        <div class="dino-datachat-layout" *ngIf="(apiKey|async) !== null && termsAccepted">
+          <section class="dino-datachat-panel">
+            <header class="dino-datachat-panel-header">
+              <span class="dino-datachat-panel-title">
+                {{(activeConversation|async)?.title || ('New chat'|transloco)}}
+              </span>
+              <button
+                mat-icon-button
+                class="dino-datachat-sidebar-open"
+                *ngIf="conversationsSidebar && (sidebarCollapsed|async)"
+                [matTooltip]="'Chats'|transloco"
+                (click)="toggleSidebar()"
+              >
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+            </header>
+
             <div #chatHistory class="dino-chat-history-container">
+              <div class="dino-datachat-welcome" *ngIf="showWelcome && history.length === 0">
+                <h2 class="dino-datachat-welcome-title">
+                  <mat-icon color="primary">auto_awesome</mat-icon>
+                  <span>{{welcomeTitle ?? ('Ask your data'|transloco)}}</span>
+                </h2>
+                <p class="dino-datachat-welcome-subtitle">
+                  {{welcomeSubtitle ?? ('Ask a question in natural language about this form data'|transloco)}}
+                </p>
+                <div class="dino-datachat-starters">
+                  <button
+                    type="button"
+                    class="dino-datachat-starter"
+                    *ngFor="let question of starters"
+                    (click)="chat(question)"
+                  >
+                    {{question}}
+                  </button>
+                </div>
+              </div>
+
               <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl"
-                (followUpClick)="chat($event)"
+                (followUpClick)="chat($event)" (regenerateClick)="chat($event)"
                 (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
             </div>
-          </ng-container>
 
-          <ng-container [formGroup]="chatInputFormGrop" *ngIf="termsAccepted">
-            <div class="dino-chat-input-container">
+            <footer class="dino-chat-input-container" [formGroup]="chatInputFormGrop">
               <mat-form-field appearance="fill" class="dino-chat-namespace-select" *ngIf="mode === 'completion'">
-                <mat-label>{{'Namespace'|transloco}}</mat-label>
+                <mat-icon matPrefix [matTooltip]="'Namespace'|transloco">folder</mat-icon>
                 <mat-select #namespace (selectionChange)="selectNamespace($event)"
                   [(value)]="currentNamespace"><mat-option *ngFor="let namespace of namespaces" [value]="namespace">
                     {{namespace || 'default'}}
                   </mat-option></mat-select></mat-form-field>
               <mat-form-field class="dino-chat-text-input">
-                <textarea #chatPrompt matInput formControlName="chatInputControl" rows="1" cols="50" placeholder="Ciao!"
-                  style="resize: none;" (keydown)="chatPromptText = chatPrompt.value"
-                  (keyup.enter)="chat(chatPromptText); chatPrompt.value = ''; chatPromptText = '';"></textarea>
+                <textarea #chatPrompt matInput formControlName="chatInputControl" rows="1" cols="50"
+                  [placeholder]="'Write a question about the data...'|transloco" style="resize: none;"
+                  (keydown)="chatPromptText = chatPrompt.value"
+                  (keyup.enter)="sendPrompt(chatPrompt)"></textarea>
               </mat-form-field>
+              <button mat-flat-button color="primary" class="dino-chat-send" (click)="sendPrompt(chatPrompt)">
+                <mat-icon>send</mat-icon>
+                <span>{{'Send'|transloco}}</span>
+              </button>
+            </footer>
+          </section>
+
+          <aside
+            class="dino-datachat-conversations"
+            *ngIf="conversationsSidebar && (sidebarCollapsed|async) === false"
+          >
+            <header class="dino-datachat-conversations-header">
+              <span class="dino-datachat-conversations-title">{{'Chats'|transloco}}</span>
+              <button mat-icon-button [matTooltip]="'Close'|transloco" (click)="toggleSidebar()">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </header>
+
+            <button mat-flat-button color="primary" class="dino-datachat-new" (click)="newConversation()">
+              <mat-icon>add</mat-icon>
+              <span>{{'New chat'|transloco}}</span>
+            </button>
+
+            <div class="dino-datachat-conversations-list">
+              <div
+                class="dino-datachat-conversation"
+                *ngFor="let conversation of conversations|async"
+                [class.dino-datachat-conversation-active]="conversation.id === (activeConversation|async)?.id"
+                (click)="openConversation(conversation)"
+              >
+                <div class="dino-datachat-conversation-info">
+                  <span class="dino-datachat-conversation-title">
+                    {{conversation.title || ('New chat'|transloco)}}
+                  </span>
+                  <span class="dino-datachat-conversation-date">
+                    {{conversation.updatedAt|dinoRelativeDate}}
+                  </span>
+                </div>
+                <button
+                  mat-icon-button
+                  class="dino-datachat-conversation-delete"
+                  [matTooltip]="'Delete chat'|transloco"
+                  (click)="deleteConversation(conversation, $event)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </div>
-          </ng-container>
-        </ng-container>
+          </aside>
+        </div>
       </ng-container>
 
       <ng-template #loading>

@@ -27,7 +27,7 @@ const routes: Routes = [
         path: 'datachat',
         loadChildren: () =>
           import('../datachat/datachat.module').then(m => m.DataChatModule),
-        data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}, {label: 'DataChat'}]},
+        data: {breadcrumbs: [{label: ':form_schema_id', parametrical: true}]},
       },
       {
         path: 'view',

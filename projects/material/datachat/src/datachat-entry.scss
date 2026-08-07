@@ -1,118 +1,326 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+@function dce-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
+// Dark-theme neutral overrides (`.isDarkTheme` is set on an ancestor by the app).
+.isDarkTheme dino-datachat-entry {
+  --dce-surface: #23272d;
+  --dce-subtle: #1b1f24;
+  --dce-border: #363c44;
+  --dce-heading: #e6e9ec;
+  --dce-text: #d4d9dd;
+  --dce-muted: #99a0a7;
+  --dce-hover: #2b3037;
+}
+
 dino-datachat-entry {
-  margin-right: auto;
-  margin-left: auto;
-  margin-bottom: 20px;
-  max-width: 95%;
-  width: 95%;
+  // Light-theme neutral defaults.
+  --dce-surface: #ffffff;
+  --dce-subtle: #f7f9fb;
+  --dce-border: #e2e8ee;
+  --dce-heading: #12303f;
+  --dce-text: #2a3a45;
+  --dce-muted: #64798a;
+  --dce-hover: #f1f5f9;
 
-  .dino-datachat-entry {
-    border-radius: 5px;
-    padding: 10px;
+  display: block;
+  width: 100%;
+  margin-bottom: 18px;
+  color: var(--dce-text);
 
-    &:not(.dino-datachat-entry.dino-datachat-entry-component-response) {
-      display: flex;
-      align-items: center;
-      flex-flow: row wrap;
-    }
+  * {
+    box-sizing: border-box;
   }
 
-  .dino-datachat-response-container {
+  // ---- Message: avatar + bubble ---------------------------------------------
+  .dino-datachat-message {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    /* Center align items vertically */
-    width: 100%;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    gap: 12px;
 
-    .dino-datachat-entry.dino-datachat-entry-response {
-      flex: 1;
-      /* Take available space */
-      max-width: fit-content;
+    & + .dino-datachat-message {
+      margin-top: 12px;
     }
-
-    .dino-datachat-feedback {
-      margin-left: 10px;
-      display: flex;
-      flex-direction: row;
-      /* Horizontal alignment */
-      /* Stack icons vertically or keep horizontal depending on preference, user said "besides(right)" */
-      width: auto;
-      margin-top: 0;
-
-      button {
-        margin-left: 5px;
-        /* Add spacing between buttons */
-        margin-bottom: 0px;
-      }
-
-      .active-feedback {
-        color: mat-css-vars.mat-css-color-primary(100);
-        animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-    }
-
-    &.dino-datachat-entry-question {
-      background-color: mat-css-vars.mat-css-color-accent(100, 0.2);
-    }
-
-    &.dino-datachat-entry-error {
-      background-color: mat-css-vars.mat-css-color-warn(100, 0.2);
-    }
-
-    &.dino-datachat-entry-response,
-    &.dino-datachat-entry-component-response,
-    &.dino-datachat-entry-image-response,
-    &.dino-datachat-entry-image-error {
-      background-color: mat-css-vars.mat-css-color-primary(100, 0.2);
-    }
-
-    &.dino-datachat-entry-question,
-    &.dino-datachat-entry-response,
-    &.dino-datachat-entry-image-response,
-    &.dino-datachat-entry-image-error {
-      display: flex;
-      flex-flow: row wrap;
-      align-items: center;
-      justify-content: flex-start;
-
-      span,
-      img {
-        flex: 1 0 90%;
-      }
-    }
-
-    &.dino-datachat-entry-image-response img {
-      max-width: 700px;
-
-      @media only screen and (max-width: 768px) {
-        max-width: 90%;
-      }
-    }
-
-    .dino-datachat-sources-chips {
-      margin-top: 10px;
-
-      .dino-datachat-sources-chips-span {
-        margin-right: 10px;
-      }
-
-      .mat-mdc-chip {
-        background-color: mat-css-vars.mat-css-color-primary(100, 0.4);
-        margin-right: 5px;
-        cursor: pointer;
-
-        span {
-          font-size: 12px;
-          cursor: pointer;
-        }
-      }
-    }
-
   }
 
-  .dino-datachat-entry-icon {
-    margin-right: 10px;
+  .dino-datachat-avatar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: dce-primary(500, 0.12);
+    color: dce-primary(600);
+
+    .mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+      cursor: default;
+    }
+
+    &.dino-datachat-avatar-user {
+      background: var(--dce-hover);
+      color: var(--dce-muted);
+    }
+
+    &.dino-datachat-avatar-error {
+      background: mat-css-vars.mat-css-color-warn(500, 0.12);
+      color: mat-css-vars.mat-css-color-warn(600);
+    }
+  }
+
+  .dino-datachat-bubble {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 18px 20px;
+    border: 1px solid var(--dce-border);
+    border-radius: 12px;
+    background: var(--dce-surface);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .dino-datachat-message-question .dino-datachat-bubble {
+    background: var(--dce-subtle);
+    padding: 12px 16px;
+    color: var(--dce-heading);
+    font-weight: 600;
+  }
+
+  .dino-datachat-message-error .dino-datachat-bubble {
+    border-color: mat-css-vars.mat-css-color-warn(500, 0.4);
+    background: mat-css-vars.mat-css-color-warn(500, 0.06);
+  }
+
+  // ---- Answer content --------------------------------------------------------
+  .dino-datachat-explanation {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .dino-datachat-answer {
+    p {
+      margin: 0 0 12px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul,
+    ol {
+      margin: 0 0 12px;
+      padding-left: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+
+      th,
+      td {
+        padding: 6px 10px;
+        border: 1px solid var(--dce-border);
+        text-align: left;
+      }
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--dce-subtle);
+      font-size: 13px;
+    }
+
+    pre {
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--dce-subtle);
+      overflow-x: auto;
+    }
+  }
+
+  .dino-datachat-image {
+    display: block;
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .dino-datachat-component {
+    overflow-x: auto;
+  }
+
+  // ---- Sources ---------------------------------------------------------------
+  .dino-datachat-section-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dce-muted);
+
+    .mat-icon {
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      cursor: default;
+    }
+  }
+
+  .dino-datachat-sources {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--dce-border);
+  }
+
+  .dino-datachat-source-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 10px;
+  }
+
+  .dino-datachat-source {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--dce-border);
+    border-radius: 10px;
+    background: var(--dce-surface);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--dce-hover);
+      border-color: dce-primary(500, 0.35);
+    }
+
+    > .mat-icon {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      padding: 5px;
+      border-radius: 8px;
+      font-size: 20px;
+      background: dce-primary(500, 0.1);
+      color: dce-primary(600);
+      cursor: pointer;
+    }
+  }
+
+  .dino-datachat-source-info {
+    display: flex;
+    flex-flow: column;
+    min-width: 0;
+  }
+
+  .dino-datachat-source-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dce-heading);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dino-datachat-source-page {
+    font-size: 12px;
+    color: var(--dce-muted);
+  }
+
+  // ---- Actions ---------------------------------------------------------------
+  .dino-datachat-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--dce-border);
+
+    .mat-mdc-icon-button {
+      width: 34px;
+      height: 34px;
+      padding: 5px;
+      color: var(--dce-muted);
+
+      .mat-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+      }
+
+      &:hover {
+        color: var(--dce-heading);
+      }
+    }
+
+    .active-feedback {
+      color: dce-primary(500);
+      animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  }
+
+  .dino-datachat-actions-divider {
+    width: 1px;
+    height: 18px;
+    margin: 0 8px;
+    background: var(--dce-border);
+  }
+
+  // ---- Suggested questions ---------------------------------------------------
+  .dino-datachat-suggested {
+    margin: 16px 0 0 46px;
+
+    @media only screen and (max-width: 768px) {
+      margin-left: 0;
+    }
+  }
+
+  .dino-datachat-suggestion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--dce-border);
+    border-radius: 10px;
+    background: var(--dce-surface);
+    color: var(--dce-text);
+    font-family: inherit;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--dce-hover);
+      border-color: dce-primary(500, 0.35);
+    }
+
+    .mat-icon {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      color: var(--dce-muted);
+      cursor: pointer;
+    }
   }
 }
 

@@ -71,7 +71,7 @@ describe('Search filters Bar', () => {
     const spyOpenDialog = spyOn(bar.dialog, 'open').and.callThrough();
     fixtureBar.detectChanges();
 
-    bar.openDialog();
+    bar.openFiltersDialog();
 
     expect(spyFtsResetTemp).toHaveBeenCalled();
     expect(spyOpenDialog).toHaveBeenCalled();

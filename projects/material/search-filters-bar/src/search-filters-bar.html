@@ -3,21 +3,25 @@
     <mat-button-toggle-group
       class="dino-view-switcher"
       *ngIf="displayViewSwitcher|async"
-      [value]="(isMapView$|async) ? 'map' : 'table'"
+      [value]="currentView$|async"
       (change)="switchView($event.value)"
     >
       <mat-button-toggle value="table">
         <mat-icon>table_chart</mat-icon>
-        <span>{{'Table'|transloco}}</span>
+        <span>{{'Data'|transloco}}</span>
       </mat-button-toggle>
       <mat-button-toggle value="map" [disabled]="(displayFormMapButton|async) === false">
         <mat-icon>place</mat-icon>
         <span>{{'Map'|transloco}}</span>
       </mat-button-toggle>
+      <mat-button-toggle value="ai">
+        <mat-icon>auto_awesome</mat-icon>
+        <span>AI</span>
+      </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
 
-  <div class="dino-filters-toolbar-right">
+  <div class="dino-filters-toolbar-right" *ngIf="(isAiView$|async) === false">
     <ng-content select="[toolbarActions]"></ng-content>
 
     <button
@@ -282,6 +286,7 @@
 </ng-template>
 
 <dino-search-filters-chips
+  *ngIf="(isAiView$|async) === false"
   (excludeFilter)="removeFilter($event, ['additional'])"
   [chipsType]="'additional'"
 >

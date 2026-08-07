@@ -32,7 +32,12 @@ export interface DataChatQA {
   vectors?: CompletionVector[];
   userIsHappy?: boolean;
   followUpQuestions?: string[];
-  log_id?: string;
+  log_id?: string | number;
+  /**
+   * True when the User can rate the entry even if the backend returned no
+   * log id for it, as it happens for the datachat answers.
+   */
+  feedbackEnabled?: boolean;
 }
 
 export interface ComponentData {
@@ -54,7 +59,7 @@ export interface CompletionResponse {
   answer?: string;
   vectors?: CompletionVector[];
   follow_ups?: string[];
-  log_id?: string;
+  log_id?: string | number;
 }
 
 export interface QA extends CompletionResponse {
