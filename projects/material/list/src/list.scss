@@ -43,16 +43,16 @@ dino-list {
       margin-right: 4px;
     }
 
-    // Pill-shaped (rounded) buttons, matching the filter toolbar.
+    // Same button radius as the filter toolbar and the other sections.
     .dino-selection-clear,
     .dino-selection-bulk,
     .dino-columns-btn,
     .dino-selection-action {
-      border-radius: 20px;
+      border-radius: 8px;
       .mat-mdc-button-persistent-ripple,
       .mat-mdc-button-persistent-ripple::before,
       .mdc-button__ripple {
-        border-radius: 20px;
+        border-radius: 8px;
       }
     }
 

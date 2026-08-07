@@ -57,6 +57,7 @@ dino-search-filters-bar {
 
   .dino-view-switcher {
     height: 40px;
+    border-radius: 8px;
     .mat-button-toggle {
       height: 40px;
     }
@@ -81,13 +82,13 @@ dino-search-filters-bar {
       margin: 0 4px 0 0;
     }
 
-    // Pill-shaped (rounded) buttons on the right (Add, Import, Filtri, Esporta).
+    // Same button radius as the other sections, i.e. the import wizard.
     .mat-mdc-button-base {
-      border-radius: 20px;
+      border-radius: 8px;
       .mat-mdc-button-persistent-ripple,
       .mat-mdc-button-persistent-ripple::before,
       .mdc-button__ripple {
-        border-radius: 20px;
+        border-radius: 8px;
       }
     }
   }
