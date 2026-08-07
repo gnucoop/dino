@@ -160,6 +160,64 @@ dino-datachat-entry {
     overflow-x: auto;
   }
 
+  // ---- Preview banner and caveat --------------------------------------------
+  .dino-datachat-preview,
+  .dino-datachat-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 12px 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 19px;
+
+    .mat-icon {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      cursor: default;
+    }
+  }
+
+  .dino-datachat-preview {
+    background: var(--dce-subtle);
+    border: 1px solid var(--dce-border);
+    color: var(--dce-muted);
+
+    .dino-datachat-preview-text {
+      flex: 1 1 auto;
+
+      span {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  // A caveat is not a value: it is set apart from the data it comes with.
+  .dino-datachat-note {
+    background: mat-css-vars.mat-css-color-warn(500, 0.06);
+    border: 1px solid mat-css-vars.mat-css-color-warn(500, 0.3);
+    border-left-width: 4px;
+
+    .mat-icon {
+      color: mat-css-vars.mat-css-color-warn(600);
+    }
+
+    span {
+      flex: 1 1 auto;
+    }
+  }
+
+  // ---- Charts ----------------------------------------------------------------
+  .dino-datachat-charts {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
   // ---- Sources ---------------------------------------------------------------
   .dino-datachat-section-label {
     display: flex;
@@ -280,6 +338,21 @@ dino-datachat-entry {
     height: 18px;
     margin: 0 8px;
     background: var(--dce-border);
+  }
+
+  // The export sits at the end of the actions row, away from the icon buttons.
+  .dino-datachat-download.mat-mdc-outlined-button {
+    height: 34px;
+    margin-left: auto;
+    border-radius: 999px;
+    font-size: 13px;
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+      font-size: 18px;
+    }
   }
 
   // ---- Suggested questions ---------------------------------------------------

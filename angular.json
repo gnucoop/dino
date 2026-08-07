@@ -377,6 +377,7 @@
           "options": {
             "serviceWorker": true,
             "allowedCommonJsDependencies": [
+              "chart.js",
               "crypto-js/aes",
               "crypto-js/enc-utf8",
               "deep-equal",

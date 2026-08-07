@@ -1,0 +1,46 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+dino-datachat-chart {
+  display: block;
+  width: 100%;
+
+  .dino-datachat-chart {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+
+    .dino-datachat-chart-title {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 5px;
+      /* A title can be a whole survey question: let it wrap. */
+      overflow-wrap: break-word;
+      white-space: normal;
+    }
+
+    .dino-datachat-chart-canvas-container {
+      /* The canvas takes the height of its container, so it has to be explicit. */
+      height: 320px;
+      position: relative;
+      width: 100%;
+
+      @media only screen and (max-width: 768px) {
+        height: 240px;
+      }
+
+      canvas {
+        width: 100%;
+      }
+    }
+
+    .dino-datachat-chart-fallback {
+      align-items: center;
+      background-color: mat-css-vars.mat-css-color-warn(100, 0.2);
+      border-radius: 5px;
+      display: flex;
+      flex-flow: row wrap;
+      font-size: 13px;
+      padding: 10px;
+    }
+  }
+}

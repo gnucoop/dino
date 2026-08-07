@@ -40,6 +40,11 @@ import * as mrkd from 'marked';
 const COPIED_FEEDBACK_TIME = 2000;
 
 /**
+ * The maximum length of the answer sent along with a rating.
+ */
+const MAX_FEEDBACK_ANSWER_LENGTH = 2000;
+
+/**
  * The ChatEntry component.
  * Displays a single chat question/response in the DataChat history
  */
@@ -84,6 +89,14 @@ export class DataChatEntry implements OnDestroy {
    * again
    */
   @Output() regenerateClick: EventEmitter<string> = new EventEmitter<string>();
+
+  /**
+   * Emitted when the download of the complete result is requested
+   */
+  @Output() downloadClick: EventEmitter<{url: string; filename: string}> = new EventEmitter<{
+    url: string;
+    filename: string;
+  }>();
 
   /**
    * True right after the answer has been copied to the clipboard
@@ -138,8 +151,51 @@ export class DataChatEntry implements OnDestroy {
       (this.qa.response != null ||
         this.qa.explanation != null ||
         this.qa.imageData != null ||
-        this.qa.componentData != null)
+        this.qa.componentData != null ||
+        this.qa.note != null ||
+        this.qa.truncated === true ||
+        this.hasCharts)
     );
+  }
+
+  /**
+   * True when the entry carries charts to draw
+   */
+  get hasCharts(): boolean {
+    return this.qa?.charts != null && this.qa.charts.length > 0;
+  }
+
+  /**
+   * True when the complete result of this answer can be downloaded
+   */
+  get canDownload(): boolean {
+    return this.qa?.downloadUrl != null && this.qa.downloadUrl.length > 0;
+  }
+
+  /**
+   * True when the displayed table holds fewer columns than the complete result
+   * @param qa The datachat QA entry
+   */
+  hasDroppedColumns(qa: DataChatQA): boolean {
+    return (
+      qa.totalColumns != null && qa.previewColumns != null && qa.totalColumns > qa.previewColumns
+    );
+  }
+
+  /**
+   * True when the row counts of the preview banner are known
+   * @param qa The datachat QA entry
+   */
+  hasRowCounts(qa: DataChatQA): boolean {
+    return qa.previewRows != null && qa.totalRows != null;
+  }
+
+  onDownloadClick(): void {
+    if (!this.qa || !this.qa.downloadUrl) return;
+    this.downloadClick.emit({
+      url: this.qa.downloadUrl,
+      filename: this.qa.downloadFilename ?? 'export.csv',
+    });
   }
 
   /**
@@ -152,10 +208,24 @@ export class DataChatEntry implements OnDestroy {
   }
 
   /**
+   * The answer as text: its prose and, when it is a table, its rows.
+   * A tabular answer has no prose of its own, so without its rows there would
+   * be nothing to copy and nothing to send along with its rating.
+   */
+  get answerText(): string {
+    if (this.qa == null) {
+      return '';
+    }
+    return [this.qa.explanation, this.qa.response, this._tableText()]
+      .filter(part => part)
+      .join('\n\n');
+  }
+
+  /**
    * True when the answer holds some text to put in the clipboard.
    */
   get canCopy(): boolean {
-    return this.qa != null && (this.qa.response != null || this.qa.explanation != null);
+    return this.answerText.length > 0;
   }
 
   /**
@@ -170,7 +240,7 @@ export class DataChatEntry implements OnDestroy {
    * True when the answer displays its actions row.
    */
   get showActions(): boolean {
-    return this.feedbackAvailable || this.canCopy || this.canRegenerate;
+    return this.feedbackAvailable || this.canCopy || this.canRegenerate || this.canDownload;
   }
 
   /**
@@ -178,7 +248,7 @@ export class DataChatEntry implements OnDestroy {
    * couple of seconds.
    */
   copyAnswer(): void {
-    const text = [this.qa?.explanation, this.qa?.response].filter(part => part).join('\n\n');
+    const text = this.answerText;
     if (!text || typeof navigator === 'undefined' || navigator.clipboard == null) {
       return;
     }
@@ -217,9 +287,47 @@ export class DataChatEntry implements OnDestroy {
         logId: this.qa.log_id ?? '',
         isPositive,
         question: this.qa.question ?? '',
-        answer: this.qa.response ?? this.qa.explanation ?? '',
+        answer: this._feedbackAnswer(),
       });
     }
+  }
+
+  /**
+   * The answer sent along with a rating. It is a log field, so a long table is
+   * cut, and an answer made of charts alone is described by their titles: an
+   * empty answer would say nothing about what the User rated.
+   */
+  private _feedbackAnswer(): string {
+    const text = this.answerText;
+    if (text) {
+      return text.length > MAX_FEEDBACK_ANSWER_LENGTH
+        ? `${text.slice(0, MAX_FEEDBACK_ANSWER_LENGTH)}…`
+        : text;
+    }
+    return (this.qa?.charts ?? [])
+      .map(chart => chart.title)
+      .filter(title => title)
+      .join(', ');
+  }
+
+  /**
+   * The rows of a tabular answer, as tab separated text: the format a
+   * spreadsheet understands when the answer is pasted into it.
+   * @returns The table as text, null when the answer holds no table
+   */
+  private _tableText(): string | null {
+    const rows = Array.isArray(this.qa?.tableData) ? (this.qa?.tableData as unknown[]) : null;
+    const firstRow = rows?.length ? rows[0] : null;
+    if (firstRow == null || typeof firstRow !== 'object') {
+      return null;
+    }
+    const columns = Object.keys(firstRow);
+    const line = (values: unknown[]) =>
+      values.map(value => (value == null ? '' : `${value}`)).join('\t');
+    return [
+      line(columns),
+      ...rows!.map(row => line(columns.map(column => (row as {[key: string]: unknown})[column]))),
+    ].join('\n');
   }
 
   getFormattedResponse(qa: DataChatQA): string {
