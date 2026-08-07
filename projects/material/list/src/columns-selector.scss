@@ -21,6 +21,19 @@
     }
 }
 
+.dino-selector-actions {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 8px;
+    .mat-mdc-button-base {
+        border-radius: 8px;
+    }
+    .dino-reset-columns-btn .mat-icon {
+        margin-right: 4px;
+    }
+}
+
 .dino-column-selector {
     display: flex;
     flex: 1 1;

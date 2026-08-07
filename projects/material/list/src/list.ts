@@ -32,6 +32,7 @@ import {
   ContentChildren,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnDestroy,
@@ -94,6 +95,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 
+import {ColumnResizeEvent} from './column-resize';
 import {ColumnsSelector} from './columns-selector';
 import {ListCell} from './list-cell';
 import {ListContext} from './list-context';
@@ -114,6 +116,17 @@ import {ActionsModal} from './actions-modal';
 import {BrowserDetectorService} from '@dino/material/browser-detector';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
+
+/**
+ * Counts the lists, so that each one sizes the columns of its own table.
+ */
+let listInstances = 0;
+
+/**
+ * The columns that are not part of the data and keep their place at the ends
+ * of a row: they are neither dragged nor resized.
+ */
+const FIXED_COLUMNS: string[] = ['select', 'actions'];
 
 /**
  * The material List component with row selection, extending the core List.
@@ -517,6 +530,26 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   private _selectionChangedSub: Subscription = Subscription.EMPTY;
 
+  /**
+   * The column being resized and the width its grip is at, while it is dragged
+   */
+  private _resizingColumn: ColumnResizeEvent | null = null;
+
+  /**
+   * The stylesheet holding the widths of the resized columns of this list
+   */
+  private _widthsStyle: HTMLStyleElement | null = null;
+
+  /**
+   * The class identifying this list, so that its column widths are its own
+   */
+  private readonly _listClass = `dino-list-${++listInstances}`;
+
+  /**
+   * The host element, used to mark the list with its own class
+   */
+  private readonly _elementRef = inject(ElementRef) as ElementRef<HTMLElement>;
+
   constructor(
     @Inject(UI_TOUR_SERVICE_CONFIG) readonly uiServiceConfig: UITourConfig,
     cdr: ChangeDetectorRef,
@@ -575,6 +608,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   ngAfterViewInit(): void {
+    // The widths of the columns are written in a stylesheet of this list only.
+    this._renderer.addClass(this._elementRef.nativeElement, this._listClass);
+    this._headers.pipe(takeUntil(this._mainUnsubscribe)).subscribe(() => {
+      this._applyColumnWidths();
+    });
     if (this._dataSource && this._dataSource.dataResults != null) {
       this._dataSource.dataResults.pipe(takeUntil(this._mainUnsubscribe)).subscribe(() => {
         this.clearSelection();
@@ -838,12 +876,16 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
         catchError(err => throwError(() => err) as Observable<ListHeader<T>>),
         takeUntil(this._mainUnsubscribe),
       )
-      .subscribe((columns: ListHeader<T>[]) => {
+      .subscribe((columns: ListHeader<T>[] | 'reset') => {
         if (!columns) {
           return;
         }
+        if (columns === 'reset') {
+          this.resetColumns();
+          return;
+        }
         this._saveColumnsSelectionPreset({columns, displayedColumns: this._displayedColumns});
-        this.headers = columns;
+        this._applyHeaders(columns);
         if (this.mainListContext != null) {
           this.mainListContext.headers.next(this.headers);
           this.mainListContext.displayedColumns?.next(this.displayedColumns);
@@ -936,8 +978,110 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param event the Cdk DragDrop event
    */
   drop(event: CdkDragDrop<string[]>): void {
-    moveItemInArray(this._displayedColumns, event.previousIndex, event.currentIndex);
+    // Only the columns of the data are dragged: the checkbox and the actions
+    // are not, and they keep their place at the two ends of the row. The
+    // indexes of the event count the dragged columns alone, so the move is
+    // applied to those and the row is rebuilt around them.
+    const draggable = this._displayedColumns.filter(column => !FIXED_COLUMNS.includes(column));
+    moveItemInArray(draggable, event.previousIndex, event.currentIndex);
+    const reordered = [
+      ...this._displayedColumns.filter(column => column === 'select'),
+      ...draggable,
+      ...this._displayedColumns.filter(column => column === 'actions'),
+    ];
+    // The array is the one the table renders from: it is reordered in place.
+    this._displayedColumns.splice(0, this._displayedColumns.length, ...reordered);
+    this.mainListContext?.displayedColumns?.next(this._displayedColumns);
     this._saveColumnsSelectionPreset({columns: this._headers.value, displayedColumns: this._displayedColumns});
+    this._cdr.markForCheck();
+  }
+
+  /**
+   * Gives the table back the columns of its section: the ones displayed, their
+   * order and their widths, dropping what the User has customized.
+   */
+  resetColumns(): void {
+    this._clearColumnsSelectionPreset();
+    // The preferences have just been dropped, so this displays the headers as
+    // the section defines them.
+    this._applyHeaders(this._defaultHeaders.map(header => ({...header})));
+    if (this.mainListContext != null) {
+      this.mainListContext.headers.next(this.headers);
+      this.mainListContext.displayedColumns?.next(this.displayedColumns);
+    }
+    this._applyColumnWidths();
+    this._cdr.markForCheck();
+  }
+
+  /**
+   * Follows the grip of a column while it is dragged.
+   * @param evt The column being resized and its current width
+   */
+  resizeColumn(evt: ColumnResizeEvent): void {
+    this._resizingColumn = evt;
+    this._applyColumnWidths();
+  }
+
+  /**
+   * Stores the width a column has been resized to.
+   * @param evt The resized column and its width
+   */
+  resizeColumnEnd(evt: ColumnResizeEvent): void {
+    this._resizingColumn = null;
+    const headers = this._headers.value;
+    const header = headers.find(h => h.column.toString() === evt.column);
+    if (header == null) {
+      return;
+    }
+    // The header is replaced, not written into: with no preference stored the
+    // headers are the ones the section holds, and a width is not one of theirs.
+    const resized = headers.map(h =>
+      h.column.toString() === evt.column ? {...h, width: evt.width} : h,
+    );
+    this._headers.next(resized);
+    this.mainListContext?.headers.next(resized);
+    this._applyColumnWidths();
+    this._saveColumnsSelectionPreset({
+      columns: resized,
+      displayedColumns: this._displayedColumns,
+    });
+  }
+
+  /**
+   * Sizes the resized columns through a stylesheet of this list, rather than
+   * through a binding on every cell: a cell is rendered by the table, in a view
+   * of its own, and the widths must follow the pointer without waiting for a
+   * change detection, and hold for the rows rendered later.
+   */
+  protected _applyColumnWidths(): void {
+    const rules: string[] = [];
+    for (const header of this._headers.value) {
+      const width =
+        this._resizingColumn != null && this._resizingColumn.column === header.column.toString()
+          ? this._resizingColumn.width
+          : header.width;
+      if (width == null) {
+        continue;
+      }
+      // The table builds its column classes replacing whatever is not allowed
+      // in a css class name, as a column name is a field name.
+      const column = header.column.toString().replace(/[^a-z0-9_-]/gi, '-');
+      // The default width of a column is given by selectors with a higher
+      // specificity than this one, i.e. the min-width of
+      // 'mat-cell:not(.mat-column-actions):not(.mat-column-select)...', which
+      // would keep a column from being made narrower than the default.
+      rules.push(
+        `.${this._listClass} .mat-column-${column}` +
+          `{flex:0 0 ${width}px!important;` +
+          `min-width:${width}px!important;` +
+          `max-width:${width}px!important;}`,
+      );
+    }
+    if (this._widthsStyle == null) {
+      this._widthsStyle = this._renderer.createElement('style') as HTMLStyleElement;
+      this._renderer.appendChild(document.head, this._widthsStyle);
+    }
+    this._widthsStyle.textContent = rules.join('\n');
   }
 
   /**
@@ -1801,5 +1945,9 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     this._dialogSub.unsubscribe();
     this._selectionChangedSub.unsubscribe();
     this._dataSourceSub.unsubscribe();
+    if (this._widthsStyle != null) {
+      this._renderer.removeChild(document.head, this._widthsStyle);
+      this._widthsStyle = null;
+    }
   }
 }

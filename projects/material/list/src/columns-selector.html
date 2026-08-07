@@ -25,7 +25,13 @@
     </div>
   </div>
   <br />
-  <button class="dino-apply-btn" mat-raised-button color="primary" (click)="apply()">
-    {{'Apply'|transloco}}
-  </button>
+  <div class="dino-selector-actions">
+    <button class="dino-apply-btn" mat-raised-button color="primary" (click)="apply()">
+      {{'Apply'|transloco}}
+    </button>
+    <button class="dino-reset-columns-btn" mat-stroked-button (click)="resetColumns()">
+      <mat-icon>restart_alt</mat-icon>
+      <span>{{'Reset columns'|transloco}}</span>
+    </button>
+  </div>
 </div>

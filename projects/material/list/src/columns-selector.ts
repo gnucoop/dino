@@ -123,4 +123,12 @@ export class ColumnsSelector<T> implements OnInit {
   apply() {
     this.columns.pipe(take(1)).subscribe(columns => this.dialogRef.close(columns));
   }
+
+  /**
+   * Asks the list for the columns of its section: the ones displayed, their
+   * order and their widths, dropping everything the User has customized.
+   */
+  resetColumns() {
+    this.dialogRef.close('reset');
+  }
 }
