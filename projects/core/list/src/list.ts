@@ -111,6 +111,12 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   protected _headers: BehaviorSubject<ListHeader<T>[]> = new BehaviorSubject<ListHeader<T>[]>([]);
 
+  /**
+   * The column headers as they are given to the list, before the columns
+   * preferences of the User are applied to them
+   */
+  protected _defaultHeaders: ListHeader<T>[] = [];
+
   get headers(): ListHeader<T>[] {
     return this._headers.value;
   }
@@ -135,6 +141,25 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
    */
   @Input()
   set headers(headers: ListHeader<T>[]) {
+    // The headers as the section defines them, kept so that the User can be
+    // given them back. Only the input is a default: the headers the list sets
+    // on itself carry the preferences of the User, and go through
+    // _applyHeaders. A width is never a default: it may have been written on
+    // these very objects, which the section can hold and give again.
+    this._defaultHeaders = headers.map(header => {
+      const defaultHeader = {...header};
+      delete defaultHeader.width;
+      return defaultHeader;
+    });
+    this._applyHeaders(headers);
+  }
+
+  /**
+   * Displays the given headers, applying to them the columns preferences of
+   * the User: which columns are displayed, and in which order.
+   * @param headers The headers to display
+   */
+  protected _applyHeaders(headers: ListHeader<T>[]): void {
     const loadedPreset = this._loadColumnsSelectionPreset();
     const loadedHeaders = loadedPreset?.columns.map(loadedHeader => {
       const defaultHeader = headers.find(h => h.column === loadedHeader.column);
@@ -308,6 +333,17 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
       return null;
     }
     return JSON.parse(b64_to_utf8(preset));
+  }
+
+  /**
+   * Drops the columns preset of the list from the localstorage, i.e. the
+   * displayed columns, their order and their widths.
+   */
+  protected _clearColumnsSelectionPreset(): void {
+    const key = this._getColumnsSelectionPresetKey();
+    if (key != null) {
+      localStorage.removeItem(key);
+    }
   }
 
   /**
