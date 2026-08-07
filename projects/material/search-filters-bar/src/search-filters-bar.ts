@@ -524,6 +524,23 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Drops every filter of the section: the simple ones, the advanced ones and
+   * the ones staged in the Advanced tab. The modal stays open, with its fields
+   * empty, so that new filters can be set right away.
+   */
+  resetFilters(): void {
+    // The fields are emptied without notifying: every filter they stand for is
+    // dropped right after, at once.
+    this.basicFilters.forEach(group => group.reset({}, {emitEvent: false}));
+    this._fts.additionalFiltersLogic.next('and');
+    this.logicAndOrToggle.setValue('and', {emitEvent: false});
+    // Empties the applied filters, which clears the url and the filters stored
+    // for this section.
+    this._fts.loadPreset();
+    this._fts.resetTemporaryFilters();
+  }
+
+  /**
    * Sets the currently displayed additional-filter group (Advanced tab), and
    * refreshes the widgets data for that group.
    * @param id The group id (mat-tab index)
