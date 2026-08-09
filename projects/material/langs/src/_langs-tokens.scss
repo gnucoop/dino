@@ -1,0 +1,147 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+/**
+ * Design tokens of the translations studio.
+ *
+ * They are the whole visual API of the page and of its dialogs: a deployment
+ * re-skins the studio by overriding any of them in a global stylesheet. The
+ * accent follows the app theme, while the status colors are semantic and have
+ * no Material equivalent.
+ *
+ * The mixins are included once per root element, because the translations
+ * dialogs are rendered in the cdk overlay and so are not children of dino-langs.
+ */
+
+@mixin light {
+  --dino-langs-accent: #{mat-css-vars.mat-css-color-primary(500)};
+  --dino-langs-accent-soft: #{mat-css-vars.mat-css-color-primary(50)};
+  --dino-langs-accent-fg: #{mat-css-vars.mat-css-contrast-color-primary(500)};
+  --dino-langs-panel: #ffffff;
+  --dino-langs-panel-2: #f6f7f9;
+  --dino-langs-border: #e7e9ed;
+  --dino-langs-border-strong: #d8dce2;
+  --dino-langs-fg: #1b2431;
+  --dino-langs-fg-2: #3c485a;
+  --dino-langs-muted: #78859a;
+  --dino-langs-hover: #f1f3f6;
+  --dino-langs-ring-track: #e7e9ed;
+  --dino-langs-ok: oklch(0.6 0.12 150);
+  --dino-langs-ok-soft: oklch(0.95 0.045 150);
+  --dino-langs-warn: oklch(0.72 0.14 72);
+  --dino-langs-warn-soft: oklch(0.955 0.05 72);
+  --dino-langs-danger: oklch(0.6 0.16 25);
+  --dino-langs-danger-soft: oklch(0.955 0.04 25);
+  --dino-langs-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@mixin dark {
+  --dino-langs-accent: #{mat-css-vars.mat-css-color-primary(300)};
+  --dino-langs-accent-soft: #{mat-css-vars.mat-css-color-primary(500, 0.22)};
+  --dino-langs-panel: #161c29;
+  --dino-langs-panel-2: #1b2333;
+  --dino-langs-border: #28303f;
+  --dino-langs-border-strong: #333d4f;
+  --dino-langs-fg: #e7ecf4;
+  --dino-langs-fg-2: #c3ccda;
+  --dino-langs-muted: #8492a6;
+  --dino-langs-hover: #1e2736;
+  --dino-langs-ring-track: #28303f;
+  --dino-langs-ok: oklch(0.72 0.12 150);
+  --dino-langs-ok-soft: oklch(0.34 0.06 150);
+  --dino-langs-warn: oklch(0.78 0.13 75);
+  --dino-langs-warn-soft: oklch(0.34 0.06 75);
+  --dino-langs-danger: oklch(0.68 0.15 25);
+  --dino-langs-danger-soft: oklch(0.34 0.07 25);
+}
+
+/**
+ * The secondary and primary buttons shared by the page header and the dialogs.
+ */
+@mixin buttons {
+  .dino-langs-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 9px;
+    border: 1px solid var(--dino-langs-border-strong);
+    background: var(--dino-langs-panel);
+    color: var(--dino-langs-fg-2);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--dino-langs-hover);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+    }
+  }
+
+  .dino-langs-btn-primary {
+    padding: 0 16px;
+    border-color: transparent;
+    background: var(--dino-langs-accent);
+    color: var(--dino-langs-accent-fg);
+    font-weight: 700;
+    box-shadow: 0 1px 2px rgba(20, 80, 180, 0.35);
+
+    &:hover:not(:disabled) {
+      background: var(--dino-langs-accent);
+      filter: brightness(1.06);
+    }
+  }
+}
+
+/**
+ * The rounded search field with the leading magnifier.
+ */
+@mixin search {
+  .dino-langs-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      color: var(--dino-langs-muted);
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+      padding: 0 12px 0 36px;
+      border-radius: 10px;
+      border: 1px solid var(--dino-langs-border-strong);
+      background: var(--dino-langs-panel);
+      color: var(--dino-langs-fg);
+      font: inherit;
+      font-size: 13.5px;
+      outline: none;
+
+      &::placeholder {
+        color: var(--dino-langs-muted);
+      }
+    }
+  }
+}
