@@ -244,8 +244,27 @@ dino-search-filters-bar {
   }
 
   .dino-filters-modal-heading {
-    font-size: 1.15rem;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  // Same segmented control as the header of the export dialog.
+  .dino-filters-modal-tabs {
+    border-radius: 8px;
+
+    .mat-button-toggle {
+      font-size: 14px;
+    }
+    .mat-button-toggle-checked {
+      background: mat-css-vars.mat-css-color-primary(500, 0.12);
+      color: mat-css-vars.mat-css-color-primary(500);
+    }
+    .mat-button-toggle-button {
+      height: 40px;
+    }
+    .mat-button-toggle-label-content {
+      line-height: 40px;
+    }
   }
 
   .dino-filters-modal-actions {
