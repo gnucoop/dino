@@ -1912,6 +1912,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param dialogConfig The dialog configuration
    */
   private _openExportDialog(dialogConfig: MatDialogConfig): void {
+    dialogConfig.panelClass = 'dino-export-dialog-panel';
+    dialogConfig.width = 'min(1200px, 92vw)';
+    dialogConfig.maxWidth = '92vw';
+    dialogConfig.height = '85vh';
+    dialogConfig.autoFocus = false;
     let dialogRef = this.dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
       .pipe(take(1))

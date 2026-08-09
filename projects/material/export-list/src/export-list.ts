@@ -33,7 +33,6 @@ import {
 import {TranslocoService} from '@ajf/core/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -43,18 +42,22 @@ import {
   OnDestroy,
   Optional,
   Output,
-  QueryList,
-  ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatSelectionList} from '@angular/material/list';
-import {MatTabChangeEvent} from '@angular/material/tabs';
-import {BehaviorSubject, forkJoin, isObservable, Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {UntypedFormControl} from '@angular/forms';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  isObservable,
+  Observable,
+  of as obsOf,
+  Subscription,
+} from 'rxjs';
+import {filter, map, startWith, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
 import {FormSchema} from '@dino/core/forms';
-import {ToggleButtonComponent} from './toggle-button';
 
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
@@ -63,9 +66,7 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {ActionTrigger, DataModelManager} from '@dino/core/data';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {RxDocument} from 'rxdb';
-import {MatSelectChange} from '@angular/material/select';
 import {
   AjfField,
   Context,
@@ -75,10 +76,35 @@ import {
   ExportFormat,
   MAX_SHEETNAME_LENGTH,
   ExportModel,
-  SelOption,
   ExportListData,
   Exporter,
 } from '@dino/core/exporter';
+
+/**
+ * A group of exportable fields, as shown in the "Sections" sidebar of the dialog.
+ * The position in the `sections` array is the slide index used by the export engine.
+ */
+export interface ExportSection {
+  label: string;
+  fields: AjfField[];
+}
+
+/** A section as rendered in the sidebar, with its live selection count. */
+export interface ExportSectionView extends ExportSection {
+  index: number;
+  active: boolean;
+  selected: number;
+  total: number;
+}
+
+/** A field as rendered in the fields grid, with its live selection state. */
+export interface ExportFieldView {
+  field: AjfField;
+  selected: boolean;
+}
+
+/** The way form values are laid out in the exported file. */
+export type ExportValueFormat = 'default' | 'data_analysis' | 'separate_columns';
 
 // @TODO: Use Exporter Class and remove all duplicated methods from here
 @Component({
@@ -88,12 +114,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ExportList implements AfterViewInit, OnDestroy {
+export class ExportList implements OnDestroy {
   disableExport$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   exportFilters: ExportFilters = 'displayed';
-  @ViewChildren(ToggleButtonComponent)
-  toggleButtons!: QueryList<ToggleButtonComponent>;
-  @ViewChildren(MatSelectionList) fields!: QueryList<MatSelectionList>;
 
   /**
    * Event emitted as an Action hook
@@ -101,9 +124,50 @@ export class ExportList implements AfterViewInit, OnDestroy {
   @Output() readonly emitExportActionTrigger: EventEmitter<ActionTrigger> =
     new EventEmitter<ActionTrigger>();
 
-  readonly availableFieldsAndFormats: SelOption[] = [];
-  public selectedFieldsAndFormats: string[] = ['all_form_fields'];
-  readonly availableFilters: SelOption[] = [];
+  /** The exportable sections, in the same order as the slides of the export model */
+  sections: ExportSection[] = [];
+
+  /** If true, every field of every section is selected */
+  selectAllFormFields = true;
+
+  /** If true, export translated labels instead of raw values */
+  labelValues = false;
+
+  /** The layout of the values in the exported file */
+  valueFormat: ExportValueFormat = 'default';
+
+  /** The section currently shown in the fields grid */
+  readonly activeSectionIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  /** Keyword filter applied to the fields of the active section */
+  readonly fieldSearch: UntypedFormControl = new UntypedFormControl('');
+
+  /** Emits every time the field selection changes */
+  readonly selectionChanged$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
+
+  readonly sectionsView$: Observable<ExportSectionView[]>;
+  readonly activeSectionLabel$: Observable<string | null>;
+  readonly visibleFields$: Observable<ExportFieldView[]>;
+  readonly selectedCount$: Observable<number>;
+  readonly totalCount$: Observable<number>;
+
+  /** The summary line shown in the "Fields and formats" dropdown trigger */
+  get fieldsAndFormatsSummary(): string {
+    const valueFormatLabels: {[format in ExportValueFormat]: string} = {
+      default: 'Default',
+      data_analysis: 'Data Analysis format',
+      separate_columns: 'Separate columns',
+    };
+    const parts = [
+      this._ts.translate(this.selectAllFormFields ? 'All fields' : 'Selected fields'),
+      this.labelValues ? this._ts.translate('Label values') : null,
+      this._ts.translate(valueFormatLabels[this.valueFormat]),
+    ];
+    return parts.filter(part => part != null).join(' · ');
+  }
+
+  /** The names of the selected fields, one Set per section */
+  private _selection: Set<string>[] = [];
 
   readonly exportDataList$: BehaviorSubject<ExportData[]> = new BehaviorSubject<ExportData[]>([]);
 
@@ -148,7 +212,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
   );
 
   private _exportedDataListPopulated$: Observable<ExportData[]>;
-  private _currentTabIndex$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   /**
    * Additional properties to be added to the export, external to the form schema
@@ -186,8 +249,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
   private _exportedNamesBySlide: {[index: number]: string[]} = {};
 
   private _loading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _selectAllFieldsofCurrentSlideEvt: EventEmitter<boolean> = new EventEmitter<boolean>();
-  private _selectAllSub: Subscription = Subscription.EMPTY;
 
   /** If true, export use translated labels instead values */
   private _translate$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -247,7 +308,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<ExportList>,
     @Inject(MAT_DIALOG_DATA) public dialogData: ExportListData,
-    readonly breakpointObserver: BreakpointObserverService,
     private _ts: TranslocoService,
     private _cdr: ChangeDetectorRef,
     @Optional() private _ar: AreaManager | null,
@@ -274,25 +334,55 @@ export class ExportList implements AfterViewInit, OnDestroy {
       this._dinoFields = [];
     }
 
-    this.availableFieldsAndFormats = [
-      {value: 'all_form_fields', label: 'Select all Form fields'},
-      {value: 'label_values', label: 'Label values'},
-      {value: 'data_analysis', label: 'Data Analysis format'},
-      {value: 'separate_columns', label: 'Separate columns'},
-    ];
+    const selectionState$ = combineLatest([this.selectionChanged$, this.activeSectionIndex$]);
 
-    this.availableFilters = [{value: 'displayed', label: 'Items in page'}];
+    this.sectionsView$ = selectionState$.pipe(
+      map(([_, activeIndex]) =>
+        this.sections.map((section, index) => ({
+          ...section,
+          index,
+          active: index === activeIndex,
+          selected: this._selection[index] != null ? this._selection[index].size : 0,
+          total: section.fields.length,
+        })),
+      ),
+    );
 
-    this._selectAllSub = (this._selectAllFieldsofCurrentSlideEvt as Observable<boolean>)
-      .pipe(withLatestFrom(this._currentTabIndex$))
-      .subscribe(([checked, tabIndex]) => {
-        const selectionList = this.fields.toArray()[tabIndex];
-        if (checked) {
-          selectionList.selectAll();
-        } else {
-          selectionList.deselectAll();
+    this.activeSectionLabel$ = this.activeSectionIndex$.pipe(
+      map(index => (this.sections[index] != null ? this.sections[index].label : null)),
+    );
+
+    this.visibleFields$ = combineLatest([
+      selectionState$,
+      this.fieldSearch.valueChanges.pipe(startWith('')),
+    ]).pipe(
+      map(([[_, activeIndex], search]) => {
+        const section = this.sections[activeIndex];
+        if (section == null) {
+          return [];
         }
-      });
+        const selected = this._selection[activeIndex] ?? new Set<string>();
+        const keyword = `${search ?? ''}`.trim().toLowerCase();
+        return section.fields
+          .filter(
+            field =>
+              keyword === '' ||
+              this._ts
+                .translate(field.label ?? '')
+                .toLowerCase()
+                .includes(keyword),
+          )
+          .map(field => ({field, selected: selected.has(field.name)}));
+      }),
+    );
+
+    this.selectedCount$ = selectionState$.pipe(
+      map(() => this._selection.reduce((count, names) => count + names.size, 0)),
+    );
+
+    this.totalCount$ = selectionState$.pipe(
+      map(() => this.sections.reduce((count, section) => count + section.fields.length, 0)),
+    );
 
     this._exportedDataListPopulated$ = this.exportDataList$.pipe(
       switchMap(expData => {
@@ -399,8 +489,8 @@ export class ExportList implements AfterViewInit, OnDestroy {
       withLatestFrom(slideNodes$),
       map(([ctxList, slideNodes]) => {
         let fields: AjfField[] = [];
-        const fieldsFromTab: AjfField[] = this._getFieldsFromTabs();
-        const fieldsFromTabNames: string[] = this._getFieldsFromTabs().map(f => f.name);
+        const fieldsFromTab: AjfField[] = this._getSelectedFields();
+        const fieldsFromTabNames: string[] = fieldsFromTab.map(f => f.name);
         if (ctxList.length > 0) {
           slideNodes.forEach(slideNode => {
             if ((slideNode.nodeType as AjfNodeType) === AjfNodeType.AjfRepeatingSlide) {
@@ -611,7 +701,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
                       field.slideName != null &&
                       exportCtx[field.slideName] == null
                     ) {
-                      const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
+                      const fieldsFromTab: AjfField[] = this._getSectionFields(field.slideIndex);
                       exportCtx[field.slideName] = ctx[field.slideName]
                         ? ctx[field.slideName]
                         : this._countNumberOfInstanceInContext(fieldsFromTab, ctx);
@@ -737,32 +827,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
   //   this._ExporterReadyEvt.emit();
   // }
 
-  ngAfterViewInit(): void {
-    if (this.filtersCount > 0) {
-      const numFilters = `${this._ts.translate('All items')} / ${
-        this.filtersCount
-      } ${this._ts.translate('filters')}`;
-      this.availableFilters.push({value: 'filtered', label: numFilters});
-    } else {
-      this.availableFilters.push({value: 'filtered', label: 'Add filters'});
-    }
-    this.availableFilters.push({value: 'not-filtered', label: 'All items'});
-
-    if (this.dialogData) {
-      if (this.dialogData.selectAll) {
-        this.selectAll(true);
-        if (this.toggleButtons.first != null && this.toggleButtons.first.group === 'fields') {
-          this.toggleButtons.first.toggle();
-        }
-      }
-      if (this.dialogData.exportFormat) {
-        this.exportFormat = this.dialogData.exportFormat;
-      }
-    }
-
-    this._cdr.detectChanges();
-  }
-
   /**
    * It builds a csv file and download it from browser.
    * the csv contains all the selected fields.
@@ -811,7 +875,6 @@ export class ExportList implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.schema$.complete();
     this.exportModel$.complete();
-    this._selectAllSub.unsubscribe();
     this._exportSub.unsubscribe();
     this._downloadSub.unsubscribe();
     this._ctxValuesSub.unsubscribe();
@@ -822,71 +885,87 @@ export class ExportList implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Update form filters options
-   * @param evt
+   * Shows the fields of the section with the given index and clears the keyword filter.
+   * @param index the position of the section in the sections sidebar
    */
-  updateFilters(evt: MatSelectChange) {
-    if (evt.value) {
-      if (evt.value === 'filtered') {
-        if (this.filtersCount === 0) {
-          this.closeDialog();
-        }
-      }
+  setActiveSection(index: number): void {
+    if (index === this.activeSectionIndex$.value) {
+      return;
     }
+    this.fieldSearch.setValue('');
+    this.activeSectionIndex$.next(index);
   }
 
   /**
-   * Update fields and formats options
-   * @param evt
+   * Selects or deselects a single field of the active section.
+   * @param field the toggled field
+   * @param checked the new selection state
    */
-  updateFieldsAndFormats(evt: MatSelectChange) {
-    if (evt.value) {
-      this.selectedFieldsAndFormats = evt.value;
-      if (evt.value.includes('all_form_fields')) {
-        this.selectAll(true);
-      } else {
-        this.selectAll(false);
-      }
-
-      if (evt.value.includes('label_values')) {
-        this.setTranslation(true);
-      } else {
-        this.setTranslation(false);
-      }
-
-      if (evt.value.includes('data_analysis')) {
-        this.setDataAnalysisFormat(true);
-      } else {
-        this.setDataAnalysisFormat(false);
-      }
-
-      if (evt.value.includes('separate_columns')) {
-        this.setSeparateColumns(true);
-      } else {
-        this.setSeparateColumns(false);
-      }
+  toggleField(field: AjfField, checked: boolean): void {
+    const selection = this._selection[this.activeSectionIndex$.value];
+    if (selection == null) {
+      return;
     }
+    if (checked) {
+      selection.add(field.name);
+    } else {
+      selection.delete(field.name);
+    }
+    this._onSelectionChanged();
   }
 
   /**
-   * If checked true, select all fields in all slides
+   * Selects or deselects every field of the active section.
+   * @param checked the new selection state
+   */
+  setActiveSectionSelection(checked: boolean): void {
+    const index = this.activeSectionIndex$.value;
+    const section = this.sections[index];
+    if (section == null) {
+      return;
+    }
+    this._selection[index] = new Set<string>(checked ? section.fields.map(f => f.name) : []);
+    this._onSelectionChanged();
+  }
+
+  /**
+   * If checked true, select all fields in all sections
    * @param checked
    */
   selectAll(checked: boolean): void {
-    this.toggleButtons
-      .filter(button => button.group != null && button.group === 'tab')
-      .forEach(button => button.setChecked(checked));
-    this.fields.forEach(field => (checked ? field.selectAll() : field.deselectAll()));
-    this.updateExportDisable();
+    this._selection = this.sections.map(
+      section => new Set<string>(checked ? section.fields.map(f => f.name) : []),
+    );
+    this._onSelectionChanged();
   }
 
   /**
-   * If checkd true, select all fields in the current slide
+   * Handler of the "Select all Form fields" option of the fields and formats dropdown
    * @param checked
    */
-  selectAllfieldSlides(checked: boolean): void {
-    this._selectAllFieldsofCurrentSlideEvt.next(checked);
-    this.updateExportDisable();
+  setSelectAllFormFields(checked: boolean): void {
+    this.selectAllFormFields = checked;
+    this.selectAll(checked);
+  }
+
+  /**
+   * Handler of the "Label values" option of the fields and formats dropdown
+   * @param checked
+   */
+  setLabelValues(checked: boolean): void {
+    this.labelValues = checked;
+    this.setTranslation(checked);
+  }
+
+  /**
+   * Handler of the value format radio group of the fields and formats dropdown.
+   * The three formats are mutually exclusive.
+   * @param format
+   */
+  setValueFormat(format: ExportValueFormat): void {
+    this.valueFormat = format;
+    this.setDataAnalysisFormat(format === 'data_analysis');
+    this.setSeparateColumns(format === 'separate_columns');
   }
 
   /**
@@ -919,12 +998,8 @@ export class ExportList implements AfterViewInit, OnDestroy {
     }
   }
 
-  tabChange(ev: MatTabChangeEvent): void {
-    this._currentTabIndex$.next(ev.index);
-  }
-
   updateExportDisable(): void {
-    const countSelectedFields = this._getFieldsFromTabs().length;
+    const countSelectedFields = this._getSelectedFields().length;
     if (countSelectedFields > 0 || !this.schema$.value?.schema.nodes?.length) {
       this.disableExport$.next(false);
     } else {
@@ -1005,7 +1080,7 @@ export class ExportList implements AfterViewInit, OnDestroy {
           baseField.name = baseFieldName;
           this._evaluateContext(baseField, baseExportCtx, {});
           if (field.slideName != null && baseExportCtx[field.slideName] == null) {
-            const fieldsFromTab: AjfField[] = this._getFieldsFromTabs(field.slideIndex);
+            const fieldsFromTab: AjfField[] = this._getSectionFields(field.slideIndex);
             const numberOfInstanceInContext = ctx[field.slideName]
               ? ctx[field.slideName]
               : this._countNumberOfInstanceInContext(fieldsFromTab, ctx);
@@ -1104,6 +1179,19 @@ export class ExportList implements AfterViewInit, OnDestroy {
       const slideLabels: string[] = slideNodes.map(slide => slide.label);
       const slides = slideNodes.map(slide => slide.nodes);
       this.exportModel$.next({schemaName, slideLabels, slides});
+
+      this.sections = slideNodes.map(slide => ({
+        label: slide.label,
+        fields: slide.nodes as AjfField[],
+      }));
+      this._selection = this.sections.map(() => new Set<string>());
+      this.activeSectionIndex$.next(0);
+
+      this.selectAll(this.dialogData.selectAll === true);
+      if (this.dialogData.exportFormat) {
+        this.exportFormat = this.dialogData.exportFormat;
+      }
+      this._cdr.markForCheck();
     });
   }
 
@@ -1339,25 +1427,43 @@ export class ExportList implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * @return The list of ajfField of the selected fields contained in the tabs.
+   * @return The list of ajfField selected by the User, across all the sections.
    */
-  private _getFieldsFromTabs(idx?: number): AjfField[] {
+  private _getSelectedFields(): AjfField[] {
     const fields: AjfField[] = [];
-    const tabs = this.fields != null ? this.fields.toArray() : [];
-    if (idx != null && tabs[idx] != null) {
-      tabs[idx].options.forEach(option => {
-        fields.push(option.value);
-      });
-    } else {
-      tabs.forEach(tab => {
-        if (tab.selectedOptions != null && tab.selectedOptions.selected != null) {
-          tab.selectedOptions.selected
-            .filter(selected => selected != null && selected.value != null)
-            .forEach(selected => fields.push(selected.value));
-        }
-      });
-    }
+    this.sections.forEach((section, index) => {
+      const selection = this._selection[index];
+      if (selection == null) {
+        return;
+      }
+      section.fields
+        .filter(field => selection.has(field.name))
+        .forEach(field => fields.push(field));
+    });
     return fields;
+  }
+
+  /**
+   * @param idx the position of the section in the sections sidebar
+   * @return All the ajfField of the section, selected or not.
+   */
+  private _getSectionFields(idx?: number): AjfField[] {
+    if (idx == null || this.sections[idx] == null) {
+      return [];
+    }
+    return this.sections[idx].fields;
+  }
+
+  /**
+   * Notifies the view of a selection change and refreshes the state of the export button.
+   */
+  private _onSelectionChanged(): void {
+    this.selectAllFormFields = this.sections.every(
+      (section, index) =>
+        this._selection[index] != null && this._selection[index].size === section.fields.length,
+    );
+    this.selectionChanged$.next();
+    this.updateExportDisable();
   }
 
   /**
