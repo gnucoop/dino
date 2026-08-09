@@ -248,8 +248,10 @@ dino-search-filters-bar {
     font-weight: 600;
   }
 
-  // Same segmented control as the header of the export dialog.
-  .dino-filters-modal-tabs {
+  // Same segmented control as the header of the export dialog, for the
+  // Simple/Advanced tabs and for the All/Any logic of the Advanced tab.
+  .dino-filters-modal-tabs,
+  .dino-filters-advanced-logic .mat-button-toggle-group {
     border-radius: 8px;
 
     .mat-button-toggle {
