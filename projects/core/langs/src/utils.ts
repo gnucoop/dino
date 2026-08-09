@@ -47,6 +47,109 @@ export const defaultLangs: {[lang: string]: Lang} = {};
 
 export type LangCreate = InsertModel<Lang>;
 
+/**
+ * The language the translation keys are written in: a key is the english source
+ * string, so the entry of this language is the origin of every other translation.
+ */
+export const SOURCE_LANG = 'ENG';
+
+/**
+ * The languages written right to left.
+ */
+export const RTL_LANGS = ['AR'];
+
+export function isRtlLang(lang: string): boolean {
+  return RTL_LANGS.indexOf(lang) > -1;
+}
+
+/**
+ * Matches the interpolation placeholders used by transloco, ie {{language}}.
+ */
+export const VARIABLE_RE = /\{\{.*?\}\}/g;
+
+/**
+ * Returns the list of {{variable}} placeholders contained in text, without duplicates.
+ */
+export function extractVariables(text: string): string[] {
+  const matches = (text || '').match(VARIABLE_RE);
+  return matches ? Array.from(new Set(matches)) : [];
+}
+
+/**
+ * A piece of a translation key, either plain text or a {{variable}} placeholder.
+ */
+export interface KeySegment {
+  text: string;
+  variable: boolean;
+}
+
+/**
+ * Splits text into its plain and {{variable}} parts, so that the placeholders can
+ * be rendered as chips.
+ */
+export function splitVariables(text: string): KeySegment[] {
+  const segments: KeySegment[] = [];
+  const re = new RegExp(VARIABLE_RE.source, 'g');
+  let last = 0;
+  let match = re.exec(text || '');
+  while (match != null) {
+    if (match.index > last) {
+      segments.push({text: (text || '').slice(last, match.index), variable: false});
+    }
+    segments.push({text: match[0], variable: true});
+    last = match.index + match[0].length;
+    match = re.exec(text || '');
+  }
+  if (last < (text || '').length) {
+    segments.push({text: (text || '').slice(last), variable: false});
+  }
+  return segments;
+}
+
+/**
+ * The locale of every language known to dino. Unlike getCurrentLocale it does not
+ * fall back to english, so that an unknown language can be told apart.
+ */
+export const LANG_LOCALES: Dic = {
+  AR: 'ar',
+  ENG: 'en',
+  ESP: 'es',
+  FRA: 'fr',
+  ITA: 'it',
+  PRT: 'pt',
+  UGA: 'it',
+  UKR: 'uk',
+};
+
+/**
+ * The name of a language written in the language itself, ie ITA -> Italiano.
+ * Falls back to the language code when the language is not a known one.
+ */
+export function langLabel(lang: string): string {
+  const locale = LANG_LOCALES[lang];
+  if (locale == null || typeof Intl === 'undefined' || Intl.DisplayNames == null) {
+    return lang;
+  }
+  try {
+    const label = new Intl.DisplayNames([locale], {type: 'language'}).of(locale);
+    return label ? label.charAt(0).toUpperCase() + label.slice(1) : lang;
+  } catch (_err) {
+    return lang;
+  }
+}
+
+/**
+ * How many of langs have a non blank translation on row.
+ */
+export function langRowCompletion(
+  row: Dic,
+  langs: string[],
+): {filled: number; total: number; pct: number} {
+  const total = langs.length;
+  const filled = langs.filter(lang => (row[lang] || '').trim() !== '').length;
+  return {filled, total, pct: total === 0 ? 0 : Math.round((filled / total) * 100)};
+}
+
 export function getCurrentLocale(lang: string): string {
   switch (lang) {
     case 'ESP':

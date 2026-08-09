@@ -1,0 +1,133 @@
+@use 'langs-tokens' as tokens;
+
+dino-langs-key-list {
+  @include tokens.search;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+
+  .dino-langs-list-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    padding: 14px 16px 12px;
+    flex: 0 0 auto;
+  }
+
+  .dino-langs-segmented {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--dino-langs-border-strong);
+    background: var(--dino-langs-panel);
+
+    button {
+      flex: 1;
+      padding: 7px 0;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--dino-langs-muted);
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .dino-langs-segment-active {
+      background: var(--dino-langs-accent-soft);
+      color: var(--dino-langs-accent);
+    }
+  }
+
+  .dino-langs-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0 10px 14px;
+  }
+
+  .dino-langs-list-empty {
+    padding: 24px 16px;
+    color: var(--dino-langs-muted);
+    font-size: 13px;
+  }
+
+  .dino-langs-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-sizing: border-box;
+    height: 80px;
+    padding: 11px 12px;
+    border-radius: 11px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:hover {
+      background: var(--dino-langs-hover);
+    }
+  }
+
+  .dino-langs-row-selected,
+  .dino-langs-row-selected:hover {
+    background: var(--dino-langs-accent-soft);
+    box-shadow: inset 3px 0 0 var(--dino-langs-accent);
+  }
+
+  .dino-langs-ring {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--dino-langs-panel-2);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--dino-langs-fg-2);
+    }
+  }
+
+  .dino-langs-row-body {
+    min-width: 0;
+  }
+
+  .dino-langs-row-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--dino-langs-fg);
+  }
+
+  .dino-langs-row-vars {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    background: var(--dino-langs-accent-soft);
+    color: var(--dino-langs-accent);
+    font-family: var(--dino-langs-mono);
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}

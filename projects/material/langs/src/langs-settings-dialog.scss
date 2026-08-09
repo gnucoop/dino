@@ -1,28 +1,322 @@
+@use 'langs-tokens' as tokens;
+
 dino-langs-settings-dialog {
-  .dino-add {
-    float: right;
-  }
-  .dino-diff {
-    color: green;
-  }
-  .dino-modified {
-    color: red;
-  }
-  mat-form-field {
-    width: 100%;
-  }
-  .mat-mdc-dialog-content {
-    height: 400px;
-  }
-  .mat-mdc-dialog-actions {
+  @include tokens.light;
+  @include tokens.buttons;
+  @include tokens.search;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--dino-langs-panel);
+  color: var(--dino-langs-fg);
+
+  .dino-langs-dialog-header {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 0 0 auto;
+    padding: 20px 20px 16px 26px;
+    border-bottom: 1px solid var(--dino-langs-border);
   }
-  .dino-buttons {
-    margin: 10px;
+
+  .dino-langs-dialog-heading {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--dino-langs-fg);
+    }
+
+    p {
+      margin: 3px 0 0;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--dino-langs-muted);
+    }
   }
-  .dino-buttons > button {
-    float: right;
+
+  .dino-langs-dialog-body {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
   }
+
+  .dino-langs-dialog-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 216px;
+    min-height: 0;
+    padding: 16px 12px;
+    border-right: 1px solid var(--dino-langs-border);
+    background: var(--dino-langs-panel-2);
+  }
+
+  .dino-langs-sidebar-title {
+    padding: 0 6px 10px;
+    font-family: var(--dino-langs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.13em;
+    color: var(--dino-langs-muted);
+  }
+
+  .dino-langs-lang-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    margin-top: 10px;
+  }
+
+  .dino-langs-lang-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--dino-langs-hover);
+    }
+  }
+
+  .dino-langs-lang-selected,
+  .dino-langs-lang-selected:hover {
+    background: var(--dino-langs-accent-soft);
+    box-shadow: inset 3px 0 0 var(--dino-langs-accent);
+
+    .dino-langs-lang-label {
+      color: var(--dino-langs-accent);
+    }
+  }
+
+  .dino-langs-lang-code {
+    flex: 0 0 30px;
+    font-family: var(--dino-langs-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dino-langs-muted);
+  }
+
+  .dino-langs-lang-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dino-langs-fg);
+  }
+
+  .dino-langs-dot {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dino-langs-dot-ok {
+    background: var(--dino-langs-ok);
+  }
+
+  .dino-langs-dot-warn {
+    background: var(--dino-langs-warn);
+  }
+
+  .dino-langs-dot-danger {
+    background: var(--dino-langs-danger);
+  }
+
+  .dino-langs-dialog-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 16px 20px 0;
+  }
+
+  .dino-langs-file-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+
+  .dino-langs-file-bar-spacer {
+    flex: 1 1 auto;
+  }
+
+  .dino-langs-file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 9px;
+    border: 1px solid var(--dino-langs-border-strong);
+    background: var(--dino-langs-panel);
+  }
+
+  .dino-langs-file-name {
+    font-family: var(--dino-langs-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dino-langs-fg);
+  }
+
+  .dino-langs-file-rows {
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: var(--dino-langs-panel-2);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dino-langs-muted);
+  }
+
+  .dino-langs-json-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 9px;
+    background: var(--dino-langs-ok-soft);
+    color: var(--dino-langs-ok);
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .dino-langs-json-invalid {
+    background: var(--dino-langs-danger-soft);
+    color: var(--dino-langs-danger);
+  }
+
+  .dino-langs-entry-search {
+    flex: 0 0 auto;
+    margin-top: 14px;
+  }
+
+  .dino-langs-table-head,
+  .dino-langs-table-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .dino-langs-table-head {
+    flex: 0 0 auto;
+    height: 34px;
+    margin-top: 14px;
+    font-family: var(--dino-langs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.13em;
+    color: var(--dino-langs-muted);
+  }
+
+  .dino-langs-table {
+    flex: 1 1 auto;
+    min-height: 0;
+    border-top: 1px solid var(--dino-langs-border);
+  }
+
+  .dino-langs-table-row {
+    box-sizing: border-box;
+    height: 39px;
+    border-bottom: 1px solid var(--dino-langs-border);
+    font-size: 13px;
+  }
+
+  .dino-langs-table-empty {
+    flex: 1 1 auto;
+    padding: 24px 12px;
+    color: var(--dino-langs-muted);
+    font-size: 13px;
+  }
+
+  .dino-langs-col-num {
+    flex: 0 0 28px;
+    color: var(--dino-langs-muted);
+    font-size: 11px;
+  }
+
+  .dino-langs-col-key {
+    flex: 1 1 55%;
+  }
+
+  .dino-langs-col-value {
+    flex: 1 1 45%;
+    color: var(--dino-langs-fg-2);
+  }
+
+  .dino-langs-col-key,
+  .dino-langs-col-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dino-langs-missing {
+    color: var(--dino-langs-danger);
+    font-weight: 600;
+  }
+
+  .dino-langs-table-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    padding: 12px 2px;
+    color: var(--dino-langs-muted);
+    font-size: 12px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .dino-langs-dialog-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 14px 20px;
+    border-top: 1px solid var(--dino-langs-border);
+    background: var(--dino-langs-panel-2);
+  }
+
+  .dino-langs-footer-counter {
+    flex: 1 1 auto;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--dino-langs-fg-2);
+  }
+
+  dino-langs-file-uploader .mat-mdc-button {
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 9px;
+    border: 1px solid var(--dino-langs-border-strong);
+    color: var(--dino-langs-fg-2);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.isDarkTheme dino-langs-settings-dialog {
+  @include tokens.dark;
 }

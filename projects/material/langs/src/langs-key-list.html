@@ -1,0 +1,57 @@
+<div class="dino-langs-list-toolbar">
+  <div class="dino-langs-search">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      [formControl]="searchField"
+      [placeholder]="'Search key or text…'|transloco"
+      [attr.aria-label]="'Search key or text…'|transloco"
+    />
+  </div>
+  <div class="dino-langs-segmented" *ngIf="filter$|async as filter">
+    <button
+      type="button"
+      [class.dino-langs-segment-active]="filter === 'all'"
+      (click)="setFilter('all')"
+    >
+      {{'All keys'|transloco}}
+    </button>
+    <button
+      type="button"
+      [class.dino-langs-segment-active]="filter === 'missing'"
+      (click)="setFilter('missing')"
+    >
+      {{'To translate'|transloco}}
+    </button>
+  </div>
+</div>
+
+<ng-container *ngIf="{key: selectedKey$|async} as sel">
+  <ng-container *ngIf="rows$|async as rows">
+    <div class="dino-langs-list-empty" *ngIf="rows.length === 0">{{'No results'|transloco}}</div>
+    <cdk-virtual-scroll-viewport
+      *ngIf="rows.length > 0"
+      itemSize="80"
+      minBufferPx="400"
+      maxBufferPx="800"
+      class="dino-langs-list"
+    >
+      <div
+        class="dino-langs-row"
+        *cdkVirtualFor="let row of rows; trackBy: trackByKey"
+        [class.dino-langs-row-selected]="row.key === sel.key"
+        (click)="select(row)"
+      >
+        <div class="dino-langs-ring" [style.background]="ringGradient(row)">
+          <span>{{row.pct}}</span>
+        </div>
+        <div class="dino-langs-row-body">
+          <div class="dino-langs-row-text">{{row.key}}</div>
+          <div class="dino-langs-row-vars" *ngIf="row.variables.length > 0">
+            {{row.variables.join(' ')}}
+          </div>
+        </div>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </ng-container>
+</ng-container>

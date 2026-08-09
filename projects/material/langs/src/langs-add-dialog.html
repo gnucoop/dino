@@ -1,19 +1,80 @@
-<h1 mat-dialog-title> <span class="dino-text"></span></h1>
-<div mat-dialog-content>
-  <form [formGroup]="form">
-    <ng-container *ngFor="let item of data">
-      <ng-container>
-        <mat-form-field>
-          <mat-label>{{item}}</mat-label>
-          <input matInput [formControlName]="item" type="text">
-        </mat-form-field>
-      </ng-container>
-    </ng-container>
-  </form>
+<div class="dino-langs-dialog-header">
+  <div class="dino-langs-dialog-heading">
+    <h2>{{'New translation'|transloco}}</h2>
+    <p>
+      {{'Define the key and, if you want, translate it right away. You can complete the other
+      languages later.'|transloco}}
+    </p>
+  </div>
+  <button mat-icon-button [attr.aria-label]="'Close'|transloco" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="close()">{{'Undo'|transloco}}</button>
-  <button mat-button [disabled]="form.invalid" (click)="save()" cdkFocusInitial>
-    {{'Save'|transloco}}
+
+<form [formGroup]="form">
+  <div class="dino-langs-key-section">
+    <div class="dino-langs-field-label">
+      {{'Key'|transloco}}
+      <span class="dino-langs-required">{{'mandatory'|transloco}}</span>
+    </div>
+    <input
+      class="dino-langs-text-field dino-langs-key-field"
+      type="text"
+      formControlName="key"
+      cdkFocusInitial
+      [placeholder]="'Key example placeholder'|transloco"
+      [attr.aria-label]="'Key'|transloco"
+    />
+    <div class="dino-langs-field-hint">
+      <mat-icon>info_outline</mat-icon>
+      {{'Use'|transloco}}
+      <code>{{placeholderToken}}</code>
+      {{'for dynamic placeholders.'|transloco}}
+    </div>
+  </div>
+
+  <div class="dino-langs-add-body">
+    <div class="dino-langs-add-body-head" *ngIf="state$|async as state">
+      <span class="dino-langs-eyebrow">
+        {{'Translations'|transloco|uppercase}}
+        <span class="dino-langs-optional">{{'optional'|transloco}}</span>
+      </span>
+      <span class="dino-langs-add-counter">
+        {{state.filled}} / {{state.total}} {{'filled'|transloco}}
+      </span>
+    </div>
+
+    <div class="dino-langs-add-row" *ngFor="let row of langs">
+      <span class="dino-langs-add-label">{{row.label}}</span>
+      <span class="dino-langs-chip" [class.dino-langs-chip-source]="row.source">{{row.lang}}</span>
+      <input
+        class="dino-langs-text-field"
+        type="text"
+        [formControlName]="row.lang"
+        [dir]="row.rtl ? 'rtl' : 'ltr'"
+        [attr.aria-label]="row.label"
+        [placeholder]="
+          row.source
+            ? ('Source text'|transloco)
+            : ('Translation {{language}}…'|transloco:{language: row.label})
+        "
+      />
+    </div>
+  </div>
+</form>
+
+<div class="dino-langs-dialog-footer">
+  <span class="dino-langs-footer-note">
+    {{'The languages left empty stay marked as missing.'|transloco}}
+  </span>
+  <button type="button" class="dino-langs-btn" (click)="close()">{{'Undo'|transloco}}</button>
+  <button
+    type="button"
+    class="dino-langs-btn dino-langs-btn-primary"
+    *ngIf="state$|async as state"
+    [disabled]="!state.canSave"
+    (click)="save()"
+  >
+    {{'Save translation'|transloco}}
   </button>
 </div>
