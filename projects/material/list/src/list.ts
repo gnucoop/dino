@@ -1912,10 +1912,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    * @param dialogConfig The dialog configuration
    */
   private _openExportDialog(dialogConfig: MatDialogConfig): void {
+    // Metrics have no slides to pick fields from: the dialog is its header and
+    // its footer alone, and takes only the height they need.
+    const compact = (dialogConfig.data as ExportListData | undefined)?.listType === 'metrics';
     dialogConfig.panelClass = 'dino-export-dialog-panel';
     dialogConfig.width = 'min(1200px, 92vw)';
     dialogConfig.maxWidth = '92vw';
-    dialogConfig.height = '85vh';
+    dialogConfig.height = compact ? 'auto' : '85vh';
+    dialogConfig.maxHeight = '85vh';
     dialogConfig.autoFocus = false;
     let dialogRef = this.dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
