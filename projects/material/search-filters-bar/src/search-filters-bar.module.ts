@@ -25,7 +25,6 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -71,7 +70,6 @@ import {SearchFiltersBar} from './search-filters-bar';
     MatListModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    MatBottomSheetModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
