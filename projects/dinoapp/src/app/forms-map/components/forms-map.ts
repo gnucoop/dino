@@ -363,6 +363,11 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
         downloadFile: true,
       };
     }
+    dialogConfig.panelClass = 'dino-export-dialog-panel';
+    dialogConfig.width = 'min(1200px, 92vw)';
+    dialogConfig.maxWidth = '92vw';
+    dialogConfig.height = '85vh';
+    dialogConfig.autoFocus = false;
     const dialogRef = this._dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
       .pipe(take(1))

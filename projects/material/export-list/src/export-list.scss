@@ -1,4 +1,358 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+@function exp-primary($shade: 500, $alpha: 1) {
+  @return mat-css-vars.mat-css-color-primary($shade, $alpha);
+}
+
+// Dark-theme neutral overrides (`.isDarkTheme` is set on an ancestor by the app).
+.isDarkTheme dino-export-list,
+.isDarkTheme .dino-export-formats-menu {
+  --exp-page: #14171b;
+  --exp-surface: #23272d;
+  --exp-subtle: #1b1f24;
+  --exp-border: #363c44;
+  --exp-border-inner: #2f353c;
+  --exp-input-border: #3a424b;
+  --exp-heading: #e6e9ec;
+  --exp-text: #d4d9dd;
+  --exp-muted: #99a0a7;
+}
+
+@mixin dino-export-tokens {
+  // Light-theme neutral defaults.
+  --exp-page: #eef1f4;
+  --exp-surface: #ffffff;
+  --exp-subtle: #f7f9fb;
+  --exp-border: #e2e8ee;
+  --exp-border-inner: #eef1f4;
+  --exp-input-border: #d7dee5;
+  --exp-heading: #12303f;
+  --exp-text: #2a3a45;
+  --exp-muted: #64798a;
+}
+
 dino-export-list {
+  @include dino-export-tokens;
+
+  display: block;
+  height: 100%;
+  color: var(--exp-text);
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .dino-export-dialog {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    background: var(--exp-page);
+  }
+
+  // --- Header -------------------------------------------------------------
+
+  .dino-export-header,
+  .dino-export-options,
+  .dino-export-footer {
+    background: var(--exp-surface);
+    padding: 12px 24px;
+  }
+
+  .dino-export-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 1px solid var(--exp-border);
+  }
+
+  .dino-export-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--exp-heading);
+
+    mat-icon {
+      color: exp-primary(500);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
+
+  .dino-export-format {
+    margin-left: auto;
+  }
+
+  .dino-export-options {
+    border-bottom: 1px solid var(--exp-border);
+  }
+
+  // --- Fields and formats dropdown ---------------------------------------
+
+  .dino-export-formats-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    padding: 6px 12px;
+    border: 1px solid var(--exp-input-border);
+    border-radius: 8px;
+    background: var(--exp-surface);
+    color: var(--exp-text);
+    cursor: pointer;
+    text-align: left;
+
+    &:hover {
+      border-color: exp-primary(500);
+    }
+
+    mat-icon {
+      margin-left: auto;
+      color: var(--exp-muted);
+    }
+  }
+
+  .dino-export-formats-text {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .dino-export-formats-caption {
+    font-size: 11px;
+    color: var(--exp-muted);
+  }
+
+  .dino-export-formats-summary {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--exp-heading);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // --- Body ---------------------------------------------------------------
+
+  .dino-export-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 16px;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 16px 24px;
+  }
+
+  .dino-export-sections,
+  .dino-export-fields {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--exp-surface);
+    border: 1px solid var(--exp-border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .dino-export-sections-caption {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--exp-muted);
+    padding: 4px 8px 12px;
+  }
+
+  .dino-export-sections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .dino-export-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--exp-text);
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+
+    &:hover {
+      background: var(--exp-subtle);
+    }
+
+    &.dino-active {
+      background: exp-primary(500, 0.12);
+      color: exp-primary(500);
+      font-weight: 500;
+    }
+  }
+
+  .dino-export-section-label {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dino-export-section-count {
+    flex: 0 0 auto;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--exp-border-inner);
+    color: var(--exp-muted);
+    font-size: 12px;
+  }
+
+  // --- Fields grid --------------------------------------------------------
+
+  .dino-export-fields-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+
+  .dino-export-fields-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--exp-heading);
+  }
+
+  .dino-export-field-search {
+    flex: 1 1 220px;
+    max-width: 340px;
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mdc-line-ripple {
+      display: none;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--exp-input-border);
+      background: var(--exp-surface);
+    }
+
+    .mat-mdc-form-field-infix {
+      min-height: 40px;
+      padding: 8px 0;
+    }
+  }
+
+  .dino-export-fields-header button {
+    height: 40px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .dino-export-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    align-content: start;
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1 1 auto;
+    padding: 4px;
+  }
+
+  .dino-export-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 14px;
+    border: 1px solid var(--exp-border);
+    border-radius: 8px;
+    background: var(--exp-surface);
+    cursor: pointer;
+
+    &:hover {
+      border-color: exp-primary(500);
+    }
+  }
+
+  .dino-export-field-label {
+    flex: 1 1 auto;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // --- Footer -------------------------------------------------------------
+
+  .dino-export-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--exp-border);
+  }
+
+  .dino-export-count {
+    font-size: 14px;
+    color: var(--exp-muted);
+
+    strong {
+      color: var(--exp-heading);
+    }
+  }
+
+  .dino-export-spacer {
+    flex: 1 1 auto;
+  }
+
+  .dino-export-footer button {
+    height: 44px;
+    border-radius: 8px;
+  }
+
+  // --- Shared control styling --------------------------------------------
+
+  .mat-button-toggle-group {
+    border-radius: 8px;
+    border-color: var(--exp-border);
+
+    .mat-button-toggle {
+      font-size: 14px;
+      background: var(--exp-surface);
+      color: var(--exp-text);
+    }
+
+    .mat-button-toggle-checked {
+      background: exp-primary(500, 0.12);
+      color: exp-primary(500);
+    }
+
+    .mat-button-toggle-button {
+      height: 40px;
+    }
+
+    .mat-button-toggle-label-content {
+      line-height: 40px;
+    }
+  }
+
   mat-spinner {
     display: block !important;
     position: absolute !important;
@@ -6,85 +360,91 @@ dino-export-list {
     left: 45%;
     z-index: 2;
   }
-  mat-toolbar {
-    .mat-mdc-form-field {
-      min-width: 100px;
+
+  @media only screen and (max-width: 992px) {
+    .dino-export-header,
+    .dino-export-options,
+    .dino-export-footer {
+      padding: 12px 16px;
     }
-    .dino-export-toolbar-spacer {
-      flex: 1 1 auto;
+
+    .dino-export-format {
+      margin-left: 0;
     }
-    .dino-spacer {
-      flex: 1 1 auto;
+
+    .dino-export-body {
+      grid-template-columns: 1fr;
+      padding: 12px 16px;
     }
-    dino-toggle-button {
+
+    .dino-export-sections {
+      padding: 8px;
+    }
+
+    .dino-export-sections-caption {
+      display: none;
+    }
+
+    .dino-export-sections-list {
+      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .dino-export-section {
       width: auto;
-      margin-right: 10px;
-    }
-    mat-button-toggle {
-      font-size: 16px;
-      @media only screen and (max-width: 992px) {
-        font-size: 14px;
-      }
+      flex: 0 0 auto;
     }
 
-    height: auto !important;
-    min-height: 64px;
-    button {
-      min-height: 50px;
+    .dino-export-fields-grid {
+      grid-template-columns: 1fr;
     }
 
-    &.dino-export-options {
-      .mat-button-toggle-group {
-        flex: 1 1 auto;
-        .mat-button-toggle {
-          flex: 1 1 auto;
-        }
-      }
-    }
-
-    @media only screen and (max-width: 992px) {
-      &.dino-export-options {
-        flex-wrap: wrap;
-        padding-bottom: 10px;
-      }
-    }
-  }
-  .dino-checked {
-    background-color: red;
-  }
-  .dino-export-translate-btn {
-    max-width: 110px;
-  }
-  .dino-export-toolbar-count {
-    margin-right: 10px;
-  }
-  mat-selection-list {
-    width: 100%;
-    overflow-y: scroll;
-    max-height: 50vh;
-  }
-
-  mat-icon {
-    margin-left: 10px;
-  }
-
-  .dino-button-focus-action {
-    .mat-button-toggle-checked,
-    .dino-toggle-button {
-      background-color: #7f50b8;
-    }
-    .dino-export-button {
-      background-color: #7f50b8;
-      margin-left: 25px;
-      @media only screen and (max-width: 992px) {
-        .mat-icon {
-          margin: auto;
-        }
-      }
+    .dino-export-field-search {
+      max-width: none;
     }
   }
 }
 
-.mat-mdc-dialog-surface {
-  padding: 24px;
+// The dialog panel and the dropdown overlay live outside the host element:
+// with ViewEncapsulation.None their styles must sit at the top level of the file.
+.dino-export-dialog-panel {
+  .mat-mdc-dialog-surface {
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+.dino-export-formats-menu {
+  @include dino-export-tokens;
+
+  .mat-mdc-menu-content {
+    padding: 0;
+  }
+
+  .dino-export-menu-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    min-width: 260px;
+    background: var(--exp-surface);
+    color: var(--exp-text);
+  }
+
+  .dino-export-menu-caption {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--exp-muted);
+    padding-top: 4px;
+    border-top: 1px solid var(--exp-border-inner);
+  }
+
+  .dino-export-menu-radios {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 }

@@ -168,9 +168,9 @@ describe('Export Forms', () => {
     fixtureImportForm.detectChanges();
     const spyExportCsv = spyOn<any>(exportForm, '_buildCsv').and.callFake(() => {});
 
-    spyOn<any>(exportForm, '_getFieldsFromTabs').and.callFake(() => {
-      return testAjfSchema.nodes[0].nodes as unknown[] as AjfField[];
-    });
+    const selectedFields = testAjfSchema.nodes[0].nodes as unknown[] as AjfField[];
+    spyOn<any>(exportForm, '_getSelectedFields').and.callFake(() => selectedFields);
+    spyOn<any>(exportForm, '_getSectionFields').and.callFake(() => selectedFields);
 
     exportForm.data = formData;
     exportForm.export();

@@ -36,7 +36,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {AreaManager} from '@dino/core/areas';
@@ -56,7 +55,6 @@ import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ExportBottomSheet} from '@dino/material/export-list';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
@@ -334,7 +332,6 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     public dialog: MatDialog,
     private _fsm: FormStatusManager,
     private _cdr: ChangeDetectorRef,
-    private _bottomSheet: MatBottomSheet,
     private _route: ActivatedRoute,
     private _fschm: FormSchemaManager,
     private _udm: UserDataManager,
@@ -631,20 +628,6 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    */
   openExportDialog(): void {
     this.exportEvt.emit('CSV');
-  }
-
-  /**
-   * Open bottom sheet with export options
-   */
-  openExportBottomSheet(): void {
-    this._bottomSheet
-      .open(ExportBottomSheet)
-      .afterDismissed()
-      .subscribe((ev: 'XLSX' | 'CSV' | 'dialog' | null) => {
-        if (ev != null) {
-          this.exportEvt.emit(ev);
-        }
-      });
   }
 
   /**
