@@ -415,6 +415,16 @@ dino-export-list {
   }
 }
 
+// Field and section labels are ellipsized in place: their tooltip carries the
+// whole label, so it is given room to wrap instead of being ellipsized in turn.
+.dino-export-label-tooltip {
+  .mdc-tooltip__surface {
+    max-width: 420px;
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
 .dino-export-formats-menu {
   @include dino-export-tokens;
 
