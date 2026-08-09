@@ -1,0 +1,80 @@
+<div class="dino-langs-detail-empty" *ngIf="(selected$|async) === null">
+  {{'Select a translation key'|transloco}}
+</div>
+
+<ng-container *ngIf="selected$|async as selected">
+  <div class="dino-langs-detail-header">
+    <div class="dino-langs-eyebrow">{{'Translation key'|transloco}}</div>
+
+    <ng-container *ngIf="renaming$|async; else keyTpl">
+      <input
+        class="dino-langs-key-input"
+        #renameInput
+        type="text"
+        [value]="selected.key"
+        (keyup.enter)="rename(selected.key, renameInput.value)"
+        (keyup.escape)="cancelRename()"
+        (blur)="rename(selected.key, renameInput.value)"
+      />
+    </ng-container>
+    <ng-template #keyTpl>
+      <div class="dino-langs-key">
+        <span class="dino-langs-key-text">
+          <ng-container *ngFor="let segment of segments$|async">
+            <span *ngIf="segment.variable; else plainTpl" class="dino-langs-var">
+              {{segment.text}}
+            </span>
+            <ng-template #plainTpl>{{segment.text}}</ng-template>
+          </ng-container>
+        </span>
+        <button mat-icon-button [matTooltip]="'Rename key'|transloco" (click)="startRename()">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button [matTooltip]="'Remove'|transloco" (click)="remove(selected.key)">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+
+    <div class="dino-langs-progress">
+      <div class="dino-langs-progress-track">
+        <div class="dino-langs-progress-fill" [style.width.%]="selected.pct"></div>
+      </div>
+      <span class="dino-langs-progress-label">
+        {{selected.filled}} / {{selected.total}} {{'languages translated'|transloco}}
+      </span>
+      <span
+        class="dino-langs-save"
+        *ngIf="saveState$|async as saveState"
+        [ngSwitch]="saveState"
+        [class.dino-langs-save-error]="saveState === 'error'"
+      >
+        <ng-container *ngSwitchCase="'saving'">{{'Saving…'|transloco}}</ng-container>
+        <ng-container *ngSwitchCase="'saved'">{{'Saved'|transloco}}</ng-container>
+        <ng-container *ngSwitchCase="'error'">{{'Save failed'|transloco}}</ng-container>
+      </span>
+    </div>
+  </div>
+
+  <div class="dino-langs-cards">
+    <div class="dino-langs-card" *ngFor="let row of rows$|async; trackBy: trackByLang">
+      <div class="dino-langs-chip" [class.dino-langs-chip-filled]="row.filled">{{row.lang}}</div>
+      <div class="dino-langs-card-body">
+        <div class="dino-langs-card-head">
+          <span class="dino-langs-card-name">{{row.label}}</span>
+          <span class="dino-langs-card-status" [class.dino-langs-missing]="!row.filled">
+            {{(row.filled ? 'Translated' : 'Missing')|transloco}}
+          </span>
+        </div>
+        <textarea
+          rows="2"
+          #field
+          [dir]="row.rtl ? 'rtl' : 'ltr'"
+          [value]="row.value"
+          [placeholder]="'Add translation {{language}}…'|transloco:{language: row.label}"
+          (input)="setValue(selected.key, row.lang, field.value)"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+</ng-container>

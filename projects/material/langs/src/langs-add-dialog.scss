@@ -1,9 +1,221 @@
+@use 'langs-tokens' as tokens;
+
 dino-langs-add-dialog {
-  .dino-text {
-    background-color: blue;
-    color: white;
+  @include tokens.light;
+  @include tokens.buttons;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--dino-langs-panel);
+  color: var(--dino-langs-fg);
+
+  .dino-langs-dialog-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 0 0 auto;
+    padding: 20px 20px 16px 26px;
   }
-  mat-form-field {
+
+  .dino-langs-dialog-heading {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--dino-langs-fg);
+    }
+
+    p {
+      margin: 3px 0 0;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--dino-langs-muted);
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .dino-langs-key-section {
+    flex: 0 0 auto;
+    padding: 16px 26px 18px;
+    border-top: 1px solid var(--dino-langs-border);
+    border-bottom: 1px solid var(--dino-langs-border);
+    background: var(--dino-langs-panel-2);
+  }
+
+  .dino-langs-field-label {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--dino-langs-fg);
+  }
+
+  .dino-langs-required {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dino-langs-danger);
+  }
+
+  .dino-langs-text-field {
     width: 100%;
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--dino-langs-border-strong);
+    background: var(--dino-langs-panel);
+    color: var(--dino-langs-fg);
+    font: inherit;
+    font-size: 13.5px;
+    outline: none;
+
+    &::placeholder {
+      color: var(--dino-langs-muted);
+    }
+
+    &:focus {
+      border-color: var(--dino-langs-accent);
+    }
   }
+
+  .dino-langs-key-field {
+    font-family: var(--dino-langs-mono);
+  }
+
+  .dino-langs-field-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--dino-langs-muted);
+
+    mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+    }
+
+    code {
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: var(--dino-langs-accent-soft);
+      color: var(--dino-langs-accent);
+      font-family: var(--dino-langs-mono);
+      font-size: 11px;
+    }
+  }
+
+  .dino-langs-add-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 26px 22px;
+  }
+
+  .dino-langs-add-body-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .dino-langs-eyebrow {
+    flex: 1 1 auto;
+    font-family: var(--dino-langs-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.13em;
+    color: var(--dino-langs-muted);
+  }
+
+  .dino-langs-optional {
+    margin-left: 6px;
+    font-family: inherit;
+    letter-spacing: normal;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: none;
+  }
+
+  .dino-langs-add-counter {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--dino-langs-muted);
+  }
+
+  .dino-langs-add-row {
+    display: grid;
+    grid-template-columns: 38px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .dino-langs-add-label {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--dino-langs-fg);
+  }
+
+  .dino-langs-chip {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    margin-top: 9px;
+    border-radius: 7px;
+    background: var(--dino-langs-panel-2);
+    color: var(--dino-langs-muted);
+    font-family: var(--dino-langs-mono);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .dino-langs-chip-source {
+    background: var(--dino-langs-accent-soft);
+    color: var(--dino-langs-accent);
+  }
+
+  .dino-langs-add-row .dino-langs-text-field {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .dino-langs-dialog-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    padding: 14px 20px;
+    border-top: 1px solid var(--dino-langs-border);
+    background: var(--dino-langs-panel-2);
+  }
+
+  .dino-langs-footer-note {
+    flex: 1 1 auto;
+    font-size: 12.5px;
+    color: var(--dino-langs-muted);
+  }
+}
+
+.isDarkTheme dino-langs-add-dialog {
+  @include tokens.dark;
 }

@@ -22,34 +22,28 @@
 
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {AjfReportsModule} from '@ajf/material/reports';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatChipsModule} from '@angular/material/chips';
 import {MatDialogModule} from '@angular/material/dialog';
-import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
-import {MatListModule} from '@angular/material/list';
-import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
-import {AsStringPipe} from './as-string.pipe';
 import {DateValue} from './date-value.pipe';
 import {LangsComponent} from './langs';
 import {LangsAddDialog} from './langs-add-dialog';
 import {LangsConfirmDialog} from './langs-confirm-dialog';
-import {LangsExportDialog} from './langs-export-dialog';
+import {LangsDetailComponent} from './langs-detail';
 import {LangsFileUploader} from './langs-file-uploader';
-import {LangsFilterPipe} from './langs-filter.pipe';
+import {LangsKeyListComponent} from './langs-key-list';
 import {LangsLoadingComponent} from './langs-loading';
 import {LangsSettingsDialog} from './langs-settings-dialog';
-import {LangsUpdateDialog} from './langs-update-dialog';
-import {ObjectLengthPipe} from './object-length.pipe';
 
 @NgModule({
   imports: [
@@ -57,32 +51,26 @@ import {ObjectLengthPipe} from './object-length.pipe';
     AjfReportsModule,
     CommonModule,
     MatButtonModule,
-    MatButtonToggleModule,
     MatDialogModule,
-    MatChipsModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatListModule,
-    MatExpansionModule,
-    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatTooltipModule,
     ReactiveFormsModule,
+    ScrollingModule,
   ],
   declarations: [
-    AsStringPipe,
     DateValue,
     LangsAddDialog,
     LangsComponent,
     LangsConfirmDialog,
-    LangsExportDialog,
+    LangsDetailComponent,
     LangsFileUploader,
-    LangsFilterPipe,
+    LangsKeyListComponent,
     LangsLoadingComponent,
     LangsSettingsDialog,
-    LangsUpdateDialog,
-    ObjectLengthPipe,
   ],
   exports: [DateValue, LangsComponent],
 })

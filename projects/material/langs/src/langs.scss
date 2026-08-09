@@ -1,42 +1,83 @@
+@use 'langs-tokens' as tokens;
+
+/**
+ * The components use ViewEncapsulation.None, so these rules are global but scoped
+ * under `dino-langs`. See _langs-tokens.scss for the themable custom properties.
+ */
+
 dino-langs {
-  table {
-    width: 100%;
-    height: 400px;
-  }
-  .mat-mdc-list-item {
-    cursor: pointer;
-  }
-  .dino-langs-toolbar {
-    margin: 10px;
+  @include tokens.light;
+  @include tokens.buttons;
+
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px);
+  min-height: 0;
+  overflow: hidden;
+  background: var(--dino-langs-panel);
+  color: var(--dino-langs-fg);
+
+  .dino-langs-page-header {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: stretch;
-    align-items: flex-start;
-    div:nth-child(1),
-    div:nth-child(3) {
-      order: 0;
-      flex: 0 1 auto;
-      align-self: auto;
+    align-items: center;
+    gap: 14px;
+    flex: 0 0 auto;
+    padding: 18px 22px 16px;
+    border-bottom: 1px solid var(--dino-langs-border);
+  }
+
+  .dino-langs-page-title {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--dino-langs-fg);
     }
-    div:nth-child(2) {
-      order: 0;
-      flex: 1 1 auto;
-      align-self: auto;
-    }
-    div:nth-child(1) {
-      mat-button-toggle-group {
-        margin-left: 20px;
-      }
+
+    p {
+      margin: 2px 0 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--dino-langs-muted);
     }
   }
-  .dino-langs-selected {
-    color: rebeccapurple;
-    margin-left: 2px;
+
+  .dino-langs-page-actions {
+    display: flex;
+    gap: 8px;
   }
-  .dino-langs-no-translation {
-    color: red;
-    margin-left: 2px;
+
+  .dino-langs-panes {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
   }
+
+  .dino-langs-pane-master {
+    flex: 0 0 392px;
+    min-height: 0;
+    border-right: 1px solid var(--dino-langs-border);
+    background: var(--dino-langs-panel-2);
+  }
+
+  .dino-langs-pane-detail {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    background: var(--dino-langs-panel);
+  }
+}
+
+.isDarkTheme dino-langs {
+  @include tokens.dark;
+}
+
+// The dialog is rendered in the cdk overlay, so its frame is styled from here.
+.dino-langs-dialog-panel .mat-mdc-dialog-surface {
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
 }
