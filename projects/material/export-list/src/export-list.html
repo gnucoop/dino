@@ -99,7 +99,10 @@
           [class.dino-active]="section.active"
           (click)="setActiveSection(section.index)"
         >
-          <span class="dino-export-section-label" [matTooltip]="section.label|transloco"
+          <span
+            class="dino-export-section-label"
+            [matTooltip]="section.label|transloco"
+            matTooltipClass="dino-export-label-tooltip"
             >{{section.label|transloco}}</span
           >
           <span class="dino-export-section-count">{{section.selected}}/{{section.total}}</span>
@@ -126,7 +129,14 @@
         </button>
       </div>
       <div class="dino-export-fields-grid">
-        <label class="dino-export-field" *ngFor="let item of visibleFields$|async">
+        <label
+          class="dino-export-field"
+          *ngFor="let item of visibleFields$|async"
+          [matTooltip]="item.field.label|transloco"
+          matTooltipPosition="above"
+          matTooltipClass="dino-export-label-tooltip"
+          [matTooltipShowDelay]="300"
+        >
           <span class="dino-export-field-label">{{item.field.label|transloco}}</span>
           <mat-checkbox
             [checked]="item.selected"
