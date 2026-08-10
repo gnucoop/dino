@@ -11,52 +11,36 @@ $pico-hover-background-purple-light: rgba(98, 91, 171, 0.1);
 $pico-hover-background-orange: rgba(229, 51, 33, 0.2);
 $pico-white: white;
 
+/**
+ * The app shell is re-skinned entirely through the `--dino-shell-*` custom properties it
+ * exposes (see projects/material/main-nav/src/main-nav.scss), rather than by overriding
+ * Material internals. The declarations are marked !important so they win regardless of the
+ * order in which the global and the component stylesheets are injected, and they are
+ * repeated for the dark theme selector, which the shell uses to override its own neutrals.
+ */
+dino-main-nav,
+.isDarkTheme dino-main-nav {
+    --dino-shell-surface: #{$pico-purple} !important;
+    --dino-shell-fg: #{$pico-white} !important;
+    --dino-shell-muted-fg: rgba(255, 255, 255, 0.7) !important;
+    --dino-shell-border: rgba(255, 255, 255, 0.25) !important;
+    --dino-shell-hover-bg: #{$pico-hover-background-white} !important;
+    --dino-shell-accent-bg: #{$pico-hover-background-white} !important;
+    --dino-shell-accent-fg: #{$pico-white} !important;
+    --dino-shell-action-bg: #{$pico-orange} !important;
+    --dino-shell-action-fg: #{$pico-white} !important;
+    --dino-shell-radius: 15px !important;
+    --dino-shell-item-radius: 15px !important;
+}
+
 html,
 body {
-    .dino-toolbar.dino-shadowed {
-        .dino-active-user-icon,
-        .dino-active-user-text {
-            opacity: 1 !important;
-        }
-        .dino-active-user-text {
-            font-weight: 400 !important;
-        }
-        .dino-active-user-icon {
-            max-width: 18px !important;
-            max-height: 18px !important;
-        }
-    }
     .mat-sidenav.dino-sidenav {
         border-top-right-radius: 15px !important;
-        background-color: $pico-purple !important;
-        .mat-mdc-list-item-interactive::before {
-            background: transparent !important;
-        }
-        .mat-mdc-nav-list .mat-mdc-list-item {
-            font-weight: 400 !important;
-            span {
-                padding: unset;
-            }
-            .mat-mdc-list-item-unscoped-content {
-                margin-right: 15px !important;
-                color: $pico-white !important;
-                padding: 0px 16px;
-                min-height: 50px;
-                .mat-icon{
-                    margin-right: 20px;
-                }
-            }
-            &.dino-section-selected,
-            &:hover {
-                box-shadow: none !important;
-                color: $pico-white !important;
-                background-color: transparent !important;
-                .mat-mdc-list-item-unscoped-content {
-                    border-radius: 15px !important;
-                    background-color: $pico-hover-background-white !important;
-                }
-            }
-        }
+    }
+    // The pill already marks the active entry; the accent bar would sit outside its radius.
+    .mat-sidenav.dino-sidenav .mat-mdc-list-item.dino-section-selected::after {
+        display: none !important;
     }
     .dino-grid-list {
         .dino-grid-tile {

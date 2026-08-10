@@ -44,6 +44,9 @@ export class MainNavComponent {
 
   readonly customSvgIcons = conf.customSvgIcons;
   readonly initialExtendedSidenav: boolean = conf.initialExtendedSidenav;
+  readonly appVersion: string = conf.appVersion;
+  readonly userSectionsLabel: string = conf.userSectionsLabel;
+  readonly adminSectionsLabel: string = conf.adminSectionsLabel;
   readonly logoImagePath: Observable<string>;
   readonly spinnerImagePath: Observable<string>;
 

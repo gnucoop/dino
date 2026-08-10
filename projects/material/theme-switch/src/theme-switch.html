@@ -1,0 +1,22 @@
+<div class="dino-theme-switch" role="group">
+  <button
+    type="button"
+    class="dino-theme-switch-option"
+    [class.dino-theme-switch-selected]="(isDark|async) === false"
+    [attr.aria-pressed]="(isDark|async) === false"
+    [matTooltip]="'Light mode'|transloco"
+    (click)="setDarkMode(false)"
+  >
+    <mat-icon>wb_sunny</mat-icon>
+  </button>
+  <button
+    type="button"
+    class="dino-theme-switch-option"
+    [class.dino-theme-switch-selected]="isDark|async"
+    [attr.aria-pressed]="isDark|async"
+    [matTooltip]="'Dark mode'|transloco"
+    (click)="setDarkMode(true)"
+  >
+    <mat-icon>nights_stay</mat-icon>
+  </button>
+</div>

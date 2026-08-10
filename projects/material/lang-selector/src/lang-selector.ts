@@ -19,17 +19,15 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-import {TranslocoService} from '@ajf/core/transloco';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  Inject,
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {BehaviorSubject} from 'rxjs';
+import {LangService} from './lang.service';
 
 @Component({
   selector: 'dino-lang-selector',
@@ -46,14 +44,9 @@ export class LangSelector implements AfterViewInit {
   currentLang: string;
   readonly langsShowed$: BehaviorSubject<string[]>;
 
-  constructor(
-    private _ts: TranslocoService,
-    @Inject(TRANSLATIONS_CONFIG) private _config: TranslationsConfig,
-  ) {
+  constructor(private _langService: LangService) {
     this.langsShowed$ = new BehaviorSubject<string[]>(['ENG']);
-    this.currentLang = localStorage.getItem('lang') || this._config.defaultLanguage;
-    this._ts.setDefaultLang(this._config.defaultLanguage);
-    this._ts.setActiveLang(this.currentLang);
+    this.currentLang = this._langService.currentLang;
   }
 
   ngAfterViewInit(): void {
@@ -64,7 +57,6 @@ export class LangSelector implements AfterViewInit {
 
   setLang(lang: string) {
     this.currentLang = lang;
-    localStorage.setItem('lang', lang);
-    this._ts.setActiveLang(this.currentLang);
+    this._langService.setLang(lang);
   }
 }

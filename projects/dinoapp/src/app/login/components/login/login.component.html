@@ -7,17 +7,7 @@
 >
   <ng-container additionalContent>
     <div class="theme-toggle">
-      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
-      <mat-slide-toggle
-        [checked]="ts.isDark()"
-        (change)="setDarkTheme($event.checked)"
-        style="margin: 20px"
-        aria-label="Toggle Dino Theme"
-      >
-      </mat-slide-toggle>
-      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5"
-        >nights_stay</mat-icon
-      >
+      <dino-theme-switch></dino-theme-switch>
     </div>
   </ng-container>
 

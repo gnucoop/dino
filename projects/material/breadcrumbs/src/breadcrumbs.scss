@@ -1,49 +1,101 @@
+/**
+ * Dino page header: a small uppercase overline built from the ancestor crumbs, the page
+ * title, and an optional slot for the page primary actions.
+ *
+ * Reuses the shell tokens (`--dino-shell-*`, declared by dino-main-nav) so the header
+ * follows any deployment re-skin, with fallbacks for the pages rendered outside the shell.
+ */
 dino-breadcrumbs {
   display: block;
 
-  .dino-breadcrumbs-toolbar {
-    background: transparent;
-    padding: 0px 4px;
+  .dino-page-header {
     display: flex;
     flex-flow: row wrap;
+    align-items: flex-end;
     justify-content: space-between;
-    align-content: center;
+    gap: var(--dino-shell-gap, 8px);
+    padding: 4px 4px 12px;
   }
-  .dino-breadcrumbs {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    flex: 1 0 auto;
+
+  .dino-page-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .dino-page-overline {
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-start;
-    align-self: center;
-    align-content: center;
-    font-size: 14px;
-    background: transparent !important;
-    max-height: 30px;
-    padding-left: 0px;
-    font-weight: bold;
-    span,
-    .mat-icon {
-      opacity: 30%;
-      align-self: center;
-      &:not(:first-child) {
-        margin-left: 10px;
-        @media only screen and (max-width: 1200px) {
-          margin-left: 5px;
-        }
+    align-items: center;
+    gap: 6px;
+    min-height: 14px;
+    color: var(--dino-shell-muted-fg, #6b7280);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--dino-shell-overline-tracking, 0.12em);
+    text-transform: uppercase;
+  }
+
+  .dino-page-overline-segment {
+    transition: color ease-in-out 0.2s;
+
+    &.dino-breadcrumb-history-link {
+      cursor: pointer;
+
+      &:hover {
+        color: var(--dino-shell-accent-fg, currentColor);
+        text-decoration: underline;
       }
-      &.dino-breadcrumb-history-link {
-        cursor: pointer;
-        &:hover {
-          opacity: 100%;
-        }
-      }
-      transition: all ease-in-out 0.3;
-      -webkit-transition: all ease-in-out 0.3s;
-    }
-    @media only screen and (max-width: 1200px) {
-      font-size: 12px;
     }
   }
+
+  .dino-page-overline-separator {
+    opacity: 0.5;
+  }
+
+  .dino-page-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--dino-shell-gap, 8px);
+    margin: 0;
+    color: var(--dino-shell-fg, inherit);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+
+    .dino-page-title-icon {
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+      line-height: 24px;
+      color: var(--dino-shell-accent-fg, currentColor);
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .dino-page-actions {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: var(--dino-shell-gap, 8px);
+
+    // Collapse the slot entirely when the page projects no actions, so it does not
+    // affect the header layout.
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+// The compact layout has less room: shrink the title accordingly.
+dino-main-nav.dino-shell-compact dino-breadcrumbs .dino-page-title {
+  font-size: 20px;
 }

@@ -20,18 +20,4 @@
  *
  */
 
-import {AjfTranslocoModule} from '@ajf/core/transloco';
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {MatIconModule} from '@angular/material/icon';
-import {FormsModule} from '@dino/core/forms';
-import {ReportsModule} from '@dino/core/reports';
-
-import {BreadCrumbs} from './breadcrumbs';
-
-@NgModule({
-  imports: [AjfTranslocoModule, CommonModule, FormsModule, MatIconModule, ReportsModule],
-  declarations: [BreadCrumbs],
-  exports: [BreadCrumbs],
-})
-export class BreadcrumbsModule {}
+export * from './src/public_api';
