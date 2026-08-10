@@ -156,3 +156,14 @@ export const availableLangs =
   environment.languageConfig.availableLanguages ?? defaultAvailableLangs;
 export const initialExtendedSidenav = environment.layoutConfig.initialExtendedSidenav ?? false;
 export const customSvgIcons = environment.customSvgIcons;
+
+/**
+ * The app version, displayed in the user card at the bottom of the sidenav.
+ */
+export const appVersion: string = pkg.version;
+
+/**
+ * The labels heading the two navigation groups in the sidenav.
+ */
+export const userSectionsLabel = 'User';
+export const adminSectionsLabel = 'Administration';

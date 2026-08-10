@@ -33,27 +33,12 @@
     &:not(.mat-drawer-side) {
       @include private.private-theme-elevation(16, $config);
     }
-    &.mat-drawer-side.mat-sidenav,
-    &.mat-drawer-push.mat-sidenav,
-    &.mat-drawer-over.mat-sidenav {
-      .mat-mdc-list-item {
-        transition: all ease 0.5s;
-        &:hover,
-        &.dino-section-selected {
-          background-color: rgb(var(--palette-primary-100));
-          color: rgb(var(--palette-primary-500));
-          box-shadow: 3px 0px 0px 0px rgb(var(--palette-primary-500)) inset;
-        }
-        &:hover {
-          opacity: 0.6;
-        }
-        &.dino-section-selected {
-          opacity: 1;
-        }
-      }
-    }
   }
 
+  // NOTE: the app shell drawer (`dino-main-nav .mat-sidenav.dino-sidenav`) paints its own
+  // surface and navigation item states from the `--dino-shell-*` tokens, so the selected
+  // and hover treatments that used to be duplicated here have been removed. Only drawers
+  // outside the shell fall back to the generic Material colors above.
   .isLightTheme .mat-drawer {
     background-color: rgb(var(--palette-background-card));
   }

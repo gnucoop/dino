@@ -296,6 +296,11 @@ const TOKEN_RENEWAL_SYNC_PROBLEM = 'authentication';
 const MAX_TOKEN_RENEWAL_FAILURES = 3;
 
 /**
+ * The local storage key holding the timestamp of the last completed replication cycle.
+ */
+const LAST_SYNC_AT_STORAGE_KEY = 'dino_last_sync_at';
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -331,6 +336,14 @@ export class DataService implements IDataService {
    * Emits when a single replication cycle has been completed
    */
   replicationCycleComplete: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
+   * The timestamp (epoch milliseconds) of the last completed replication cycle,
+   * or null if no cycle has ever completed on this device.
+   * Persisted in the local storage so it survives a page reload, and updated on
+   * every 'replicationCycleComplete' emission.
+   */
+  readonly lastSyncAt: BehaviorSubject<number | null> = new BehaviorSubject<number | null>(null);
 
   readonly config: DataServiceConfig;
 
@@ -537,6 +550,9 @@ export class DataService implements IDataService {
     if (this._currentlyStoredConfig != null) {
       this._dataConfig.next(this._currentlyStoredConfig);
     }
+
+    this.lastSyncAt.next(this._getStoredLastSyncAt());
+    this.replicationCycleComplete.subscribe(() => this._storeLastSyncAt(new Date().getTime()));
 
     this._authService.authenticated
       .pipe(
@@ -2690,6 +2706,28 @@ export class DataService implements IDataService {
    */
   private _removeDataConfig(): void {
     localStorage.removeItem('data_config');
+  }
+
+  /**
+   * Retrieves the timestamp of the last completed replication cycle from the local storage.
+   * @returns The timestamp in epoch milliseconds, or null if absent or unparsable
+   */
+  private _getStoredLastSyncAt(): number | null {
+    const stored = localStorage.getItem(LAST_SYNC_AT_STORAGE_KEY);
+    if (stored == null) {
+      return null;
+    }
+    const timestamp = Number(stored);
+    return Number.isFinite(timestamp) ? timestamp : null;
+  }
+
+  /**
+   * Stores the timestamp of a completed replication cycle and publishes it on 'lastSyncAt'.
+   * @param timestamp The timestamp in epoch milliseconds
+   */
+  private _storeLastSyncAt(timestamp: number): void {
+    localStorage.setItem(LAST_SYNC_AT_STORAGE_KEY, String(timestamp));
+    this.lastSyncAt.next(timestamp);
   }
 }
 

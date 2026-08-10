@@ -145,10 +145,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setDarkTheme(evt: boolean) {
-    this.ts.setDarkMode(evt);
-  }
-
   processActionTrigger<T>(trigger: ActionTrigger<T>) {
     this._actionService.processTrigger(trigger);
   }

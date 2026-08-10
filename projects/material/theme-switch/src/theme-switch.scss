@@ -1,0 +1,57 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+/**
+ * Segmented light/dark control.
+ *
+ * Inherits the shell tokens (`--dino-shell-*`) when rendered inside the app shell, and
+ * falls back to theme-derived defaults when used standalone (e.g. the login page).
+ */
+dino-theme-switch {
+  display: inline-flex;
+
+  .dino-theme-switch {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--dino-shell-border, #{mat-css-vars.mat-css-color-primary(500, 0.16)});
+    border-radius: var(--dino-shell-item-radius, 8px);
+    background: transparent;
+  }
+
+  .dino-theme-switch-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: calc(var(--dino-shell-item-radius, 8px) - 2px);
+    background: transparent;
+    color: var(--dino-shell-muted-fg, #{mat-css-vars.mat-css-color-primary(500, 0.55)});
+    cursor: pointer;
+    transition: background-color ease-in-out 0.2s, color ease-in-out 0.2s;
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      line-height: 18px;
+    }
+
+    &:hover {
+      background: var(--dino-shell-hover-bg, #{mat-css-vars.mat-css-color-primary(500, 0.08)});
+    }
+
+    &.dino-theme-switch-selected {
+      background: var(--dino-shell-accent-bg, #{mat-css-vars.mat-css-color-primary(500, 0.14)});
+      color: var(--dino-shell-accent-fg, #{mat-css-vars.mat-css-color-primary(500)});
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--dino-shell-accent-fg, #{mat-css-vars.mat-css-color-primary(500)});
+      outline-offset: 1px;
+    }
+  }
+}

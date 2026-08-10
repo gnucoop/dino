@@ -48,6 +48,15 @@ export class BreakpointObserverService {
    * Large screens
    */
   large: Observable<boolean>;
+  /**
+   * True when the viewport is wide enough for the app shell to display the
+   * full-height sidebar instead of the compact layout (slim top bar + drawer).
+   *
+   * Deliberately a width-only query: the CDK 'Web' breakpoint requires 1280px in
+   * landscape, which would push an ordinary 1024-1279px desktop window into the
+   * compact layout.
+   */
+  wide: Observable<boolean>;
 
   constructor(private _breakPointObserver: BreakpointObserver) {
     this.extrasmall = this._breakPointObserver
@@ -64,6 +73,10 @@ export class BreakpointObserverService {
 
     this.large = this._breakPointObserver
       .observe([Breakpoints.Web])
+      .pipe(map(result => result.matches));
+
+    this.wide = this._breakPointObserver
+      .observe(['(min-width: 960px)'])
       .pipe(map(result => result.matches));
   }
 }
