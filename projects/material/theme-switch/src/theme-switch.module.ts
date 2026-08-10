@@ -24,14 +24,13 @@ import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
-import {FormsModule} from '@dino/core/forms';
-import {ReportsModule} from '@dino/core/reports';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
-import {BreadCrumbs} from './breadcrumbs';
+import {ThemeSwitch} from './theme-switch';
 
 @NgModule({
-  imports: [AjfTranslocoModule, CommonModule, FormsModule, MatIconModule, ReportsModule],
-  declarations: [BreadCrumbs],
-  exports: [BreadCrumbs],
+  imports: [AjfTranslocoModule, CommonModule, MatIconModule, MatTooltipModule],
+  declarations: [ThemeSwitch],
+  exports: [ThemeSwitch],
 })
-export class BreadcrumbsModule {}
+export class ThemeSwitchModule {}

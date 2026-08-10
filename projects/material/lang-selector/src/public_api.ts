@@ -22,3 +22,4 @@
 
 export * from './lang-selector';
 export * from './lang-selector.module';
+export * from './lang.service';
