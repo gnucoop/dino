@@ -1,199 +1,556 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+/**
+ * Dino app shell.
+ *
+ * The shell is a full-height sidebar holding three stacked zones - brand, navigation and
+ * utilities (sync, utility icons, user card) - plus the page surface next to it. On narrow
+ * viewports it falls back to a slim top bar and an overlay drawer.
+ *
+ * Everything is themable through the `--dino-shell-*` CSS custom properties declared below,
+ * following the same pattern as the public survey (`--dino-survey-*`). A deployment
+ * re-skins the shell by overriding any of them, e.g.:
+ *
+ *   dino-main-nav {
+ *     --dino-shell-surface: #625bab;
+ *     --dino-shell-accent-bg: rgba(255, 255, 255, 0.2);
+ *     --dino-shell-item-radius: 15px;
+ *   }
+ *
+ * Overrides can live in any global stylesheet: a per-deployment file added to the `styles`
+ * array in projects/dinoapp/angular.json (like custom-themes/styles.pico.scss), or injected
+ * at runtime - custom properties cascade with no rebuild needed.
+ *
+ * Responsive behaviour is driven exclusively by the `dino-shell-compact` host class, set by
+ * the component from a single breakpoint. The stylesheet declares no media queries of its
+ * own, so the CSS and the template can never disagree about what is visible.
+ */
+
 dino-main-nav {
+  // ---- Themable API (override any of these in a deployment stylesheet) ----
+  --dino-shell-rail-width: 68px;
+  --dino-shell-extended-width: 258px;
+  --dino-shell-topbar-height: 0px;
+  // The accents follow the configured Material palette; the neutrals are declared
+  // explicitly because the palette CSS variables do not change with the dark theme.
+  --dino-shell-accent-bg: #{mat-css-vars.mat-css-color-primary(500, 0.1)};
+  --dino-shell-accent-fg: #{mat-css-vars.mat-css-color-primary(500)};
+  --dino-shell-action-bg: #{mat-css-vars.mat-css-color-primary(500)};
+  --dino-shell-action-fg: #{mat-css-vars.mat-css-contrast-color(500)};
+  --dino-shell-surface: #ffffff;
+  --dino-shell-page-bg: #f4f6f8;
+  --dino-shell-fg: #1f2733;
+  --dino-shell-muted-fg: #6b7280;
+  --dino-shell-border: rgba(31, 39, 51, 0.1);
+  --dino-shell-hover-bg: rgba(31, 39, 51, 0.05);
+  --dino-shell-radius: 12px;
+  --dino-shell-item-radius: 8px;
+  --dino-shell-gap: 8px;
+  --dino-shell-pad: 12px;
+  --dino-shell-overline-tracking: 0.12em;
+  --dino-shell-transition: 0.2s ease-in-out;
+
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
-  .mat-drawer {
-    &.mat-drawer-side.mat-sidenav,
-    &.mat-drawer-push.mat-sidenav,
-    &.mat-drawer-over.mat-sidenav {
-      .mat-mdc-list-item {
-        justify-content: space-between;
-        align-items: center;
-        transition: all ease 0.5s;
-        &:hover,
-        &.dino-section-selected {
-          background-color: mat-css-vars.mat-css-color-primary(100);
-          color: mat-css-vars.mat-css-color-primary(500);
-          box-shadow: 3px 0px 0px 0px mat-css-vars.mat-css-color-primary(500) inset;
-        }
-        &:hover {
-          opacity: 0.6;
-        }
-        &.dino-section-selected {
-          opacity: 1;
-        }
-      }
-    }
+  &.dino-shell-compact {
+    --dino-shell-topbar-height: 56px;
   }
 
-  .mat-drawer-side.mat-sidenav {
-    border-right: none;
-    .mat-nav-list,
-    .mat-mdc-list-base {
-      overflow: hidden;
-    }
-    .mat-mdc-list-item {
-      padding: 6px;
-    }
-  }
+  // ==================== Compact top bar ====================
 
-  .mat-sidenav.dino-sidenav {
-    top: 56px;
-  }
-
-  .dino-toolbar {
+  .dino-mobile-bar {
     position: absolute;
     z-index: 10;
     flex: 0 0 auto;
     display: flex;
-    justify-content: flex-start;
+    align-items: center;
+    height: var(--dino-shell-topbar-height);
+    min-height: var(--dino-shell-topbar-height);
+    padding: 0 4px;
+    background-color: var(--dino-shell-surface);
+    color: var(--dino-shell-fg);
+    border-bottom: 1px solid var(--dino-shell-border);
     font-size: 14px;
 
-    &.dino-shadowed {
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
-      animation-name: shadowed-toolbar;
-      animation-duration: 2s;
-      animation-direction: alternate-reverse;
-      animation-timing-function: ease-in-out;
+    .dino-mobile-bar-logo {
+      max-height: 60%;
+      max-width: 40vw;
+      margin: auto 8px;
     }
 
-    .dino-toolbar-logo {
-      position: relative;
-      max-width: 10vw;
-      max-height: 80%;
-      margin: auto 10px;
-    }
-    .dino-logout-button {
-      transition: opacity ease-in-out 0.5s;
-      &.dino-logout-button-off {
-        opacity: 0.3;
-      }
-    }
-    .dino-toolbar-actions {
-      cursor: pointer;
-      margin-left: auto;
+    .dino-mobile-bar-actions {
       display: flex;
       flex-direction: row;
-      flex-wrap: nowrap;
-      justify-content: flex-end;
-      align-content: stretch;
       align-items: center;
-      .mat-icon {
-        flex: 1 0 auto;
-      }
-      .dino-tokens-counter {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex: 1 0 auto;
-        margin-right: 20px;
-        .dino-tokens-counter-icon {
-          margin-right: 4px;
-        }
-        .dino-tokens-counter-amount {
-          color: var(--mat-badge-text-color);
-          background: mat-css-vars.mat-css-color-primary(500);
-          border-radius: 50%;
-          width: 22px;
-          height: 22px;
-          padding: 2px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          &.add {
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-            transform: scale(1);
-            animation: pulse_primary 4s ease-in-out;
-          }
-          &.remove {
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
-            transform: scale(1);
-            animation: pulse_accent 4s ease-in-out;
-          }
-        }
-      }
-      .dino-link-button {
-        margin-right: 25px;
-        display: flex;
-        justify-content: center;
-        align-content: center;
-        text-decoration: none;
-      }
-      .dino-user-settings {
-        margin-right: 10px;
-        opacity: 0.3;
-        @media only screen and (min-width: 768px) {
-          display: none;
-        }
-      }
-      .dino-sync-detector,
-      .dino-notifications-icon {
-        margin-right: 25px;
-        @media only screen and (max-width: 767px) {
-          margin-right: 10px;
-        }
-        &.dino-sync-active {
-          -webkit-animation: spin 2s ease-in-out infinite;
-          -moz-animation: spin 2s ease-in-out infinite;
-          animation: spin 2s ease-in-out infinite;
-        }
-        &.dino-sync-unsynced {
-          color: mat-css-vars.mat-css-color-accent(500);
-        }
-      }
-      .dino-notifications-icon {
-        -webkit-transform-origin: 50% 4px;
-        -moz-transform-origin: 50% 4px;
-        transform-origin: 50% 4px;
-      }
-      .dino-active-user-icon {
-        color: inherit;
-        margin-right: 5px;
-      }
-      .dino-active-user-text {
-        margin-right: 20px;
-        font-size: 90%;
-      }
-      .dino-active-user-icon,
-      .dino-active-user-text {
-        opacity: 0.3;
-        @media only screen and (max-width: 767px) {
-          display: none;
-        }
-      }
-    }
-
-    .dino-new-version-button {
-      margin-right: 25px;
-      display: flex;
-      justify-content: center;
-      align-content: center;
-      text-decoration: none;
-      animation: pulse_accent 5s infinite;
-      border-radius: 50%;
-      cursor: pointer;
+      gap: var(--dino-shell-gap);
+      margin-left: auto;
     }
   }
+
+  // ==================== Sidebar ====================
 
   .mat-sidenav-container.dino-sidenav-container {
-    flex: 1 0 auto;
-    padding-bottom: 10px;
+    flex: 1 1 auto;
+    min-height: 0;
+    background-color: var(--dino-shell-page-bg);
   }
 
+  .mat-sidenav.dino-sidenav {
+    top: var(--dino-shell-topbar-height);
+    width: var(--dino-shell-rail-width);
+    border-right: 1px solid var(--dino-shell-border);
+    background-color: var(--dino-shell-surface);
+    color: var(--dino-shell-fg);
+    overflow: hidden;
+    transition: width var(--dino-shell-transition);
+
+    &.extended {
+      width: var(--dino-shell-extended-width);
+    }
+  }
+
+  // The page offset matches the sidebar width and uses the same transition, so the two
+  // move as one. The !important is required to beat the inline margin that
+  // MatDrawerContent binds from its own (measured, and here stale) computation.
   .mat-sidenav-content.dino-sidenav-content {
-    top: 65px;
+    margin-left: var(--dino-shell-rail-width) !important;
+    transition: margin-left var(--dino-shell-transition);
+  }
+
+  &.dino-shell-extended .mat-sidenav-content.dino-sidenav-content {
+    margin-left: var(--dino-shell-extended-width) !important;
+  }
+
+  // Compact: the drawer overlays the page, which keeps the full width. Declared after the
+  // extended rule because the compact layout also sets the extended class.
+  &.dino-shell-compact .mat-sidenav-content.dino-sidenav-content {
+    margin-left: 0 !important;
+  }
+
+  .dino-sidenav-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    padding: var(--dino-shell-pad) var(--dino-shell-gap);
+    gap: var(--dino-shell-gap);
+    overflow: hidden;
+  }
+
+  // ---- Brand row ----
+
+  .dino-sidenav-brand {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--dino-shell-gap);
+    min-height: 40px;
+
+    .dino-sidenav-logo {
+      max-height: 32px;
+      max-width: calc(var(--dino-shell-extended-width) - 100px);
+      object-fit: contain;
+    }
+
+    .dino-sidenav-toggle {
+      flex: 0 0 auto;
+      color: var(--dino-shell-muted-fg);
+    }
+  }
+
+  // The rail is too narrow for logo and toggle side by side: stack them.
+  .mat-sidenav.dino-sidenav:not(.extended) .dino-sidenav-brand {
+    flex-direction: column;
+    align-items: center;
+
+    .dino-sidenav-logo {
+      max-width: 32px;
+    }
+  }
+
+  // ---- Navigation ----
+
+  .dino-sidenav-nav {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-x: hidden;
-    height: 100vh;
-    padding: 5px;
-    background-color: inherit;
+    overflow-y: auto;
+
+    .mat-mdc-nav-list,
+    .mat-mdc-list-base {
+      padding-top: 0;
+      width: auto;
+      background: transparent;
+    }
+  }
+
+  .dino-nav-group-label {
+    display: flex;
+    align-items: center;
+    gap: var(--dino-shell-gap);
+    margin: var(--dino-shell-pad) 4px 4px;
+    color: var(--dino-shell-muted-fg);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--dino-shell-overline-tracking);
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    // The hairline rule trailing the label, as in the design.
+    &::after {
+      content: '';
+      flex: 1 1 auto;
+      height: 1px;
+      background: var(--dino-shell-border);
+    }
+  }
+
+  .dino-nav-group-divider.mat-divider {
+    margin: var(--dino-shell-gap) 8px;
+    border-top-color: var(--dino-shell-border);
+  }
+
+  // The first group heading sits right under the brand row, so it needs no extra space.
+  .dino-sidenav-nav .mat-mdc-nav-list > .dino-nav-group-label:first-child,
+  .dino-sidenav-nav .mat-mdc-nav-list > .dino-nav-group-divider:first-child {
+    margin-top: 0;
+  }
+
+  .mat-sidenav.dino-sidenav .mat-mdc-list-item {
+    min-height: 44px;
+    height: 44px;
+    margin-bottom: 2px;
+    padding: 0 10px;
+    border-radius: var(--dino-shell-item-radius);
+    color: var(--dino-shell-fg);
+    transition: background-color ease-in-out 0.2s, color ease-in-out 0.2s;
+
+    .mat-mdc-list-item-unscoped-content {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--dino-shell-gap);
+      white-space: nowrap;
+    }
+
+    // The bundled list styles animate a full-bleed overlay on hover; the pill
+    // treatment below replaces it.
+    &.mat-mdc-list-item-interactive::before {
+      background: transparent;
+    }
+
+    .mat-icon {
+      flex: 0 0 auto;
+      margin: 0;
+    }
+
+    span {
+      padding: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &:hover,
+    &:focus {
+      background-color: var(--dino-shell-hover-bg);
+    }
+
+    &.dino-section-selected {
+      position: relative;
+      background-color: var(--dino-shell-accent-bg);
+      color: var(--dino-shell-accent-fg);
+      font-weight: 500;
+
+      // The accent bar marking the active entry.
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 3px;
+        border-radius: 0 2px 2px 0;
+        background: var(--dino-shell-accent-fg);
+      }
+    }
+  }
+
+  // Centre the icons when there are no labels to align with.
+  .mat-sidenav.dino-sidenav:not(.extended) .mat-mdc-list-item {
+    padding: 0;
+
+    .mat-mdc-list-item-unscoped-content {
+      justify-content: center;
+    }
+  }
+
+  // ---- Utilities: sync, icon row, user card ----
+
+  .dino-sidenav-utilities {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--dino-shell-gap);
+  }
+
+  .dino-sync-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--dino-shell-gap);
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 0 10px;
+    border: none;
+    border-radius: var(--dino-shell-item-radius);
+    background: var(--dino-shell-action-bg);
+    color: var(--dino-shell-action-fg);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: filter ease-in-out 0.2s;
+
+    &:hover:not([disabled]) {
+      filter: brightness(1.15);
+    }
+
+    &[disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    &.dino-sync-unsynced {
+      background: #{mat-css-vars.mat-css-color-accent(500)};
+      color: #{mat-css-vars.mat-css-contrast-color-accent(500)};
+    }
+
+    .dino-sync-button-text {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-width: 0;
+      line-height: 1.2;
+    }
+
+    .dino-sync-button-label {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dino-sync-button-time {
+      font-size: 11px;
+      opacity: 0.75;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dino-sync-detector.dino-sync-active {
+      animation: spin 2s ease-in-out infinite;
+    }
+
+    // In the compact top bar the control is an icon button sized like its neighbours.
+    &.dino-sync-button-bar {
+      width: 36px;
+      min-height: 36px;
+      height: 36px;
+      padding: 0;
+
+      .mat-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  .dino-utility-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--dino-shell-gap);
+  }
+
+  // Stack the utility controls vertically in the rail.
+  .mat-sidenav.dino-sidenav:not(.extended) .dino-utility-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dino-utility-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--dino-shell-border);
+    border-radius: var(--dino-shell-item-radius);
+    background: transparent;
+    color: var(--dino-shell-muted-fg);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color ease-in-out 0.2s, color ease-in-out 0.2s;
+
+    .mat-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &:hover {
+      background: var(--dino-shell-hover-bg);
+      color: var(--dino-shell-accent-fg);
+    }
+  }
+
+  // Rail: stretch the utility buttons to the full rail width so they stay aligned.
+  .mat-sidenav.dino-sidenav:not(.extended) .dino-utility-row .dino-utility-button {
+    width: 100%;
+  }
+
+  .dino-new-version-button {
+    animation: pulse_accent 5s infinite;
+  }
+
+  .dino-notifications-icon {
+    transform-origin: 50% 4px;
+  }
+
+  .dino-logout-button {
+    flex: 0 0 auto;
+    transition: opacity ease-in-out 0.5s;
+
+    &.dino-logout-button-off {
+      opacity: 0.3;
+    }
+  }
+
+  // ---- User card ----
+
+  .dino-user-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--dino-shell-gap);
+    padding-top: var(--dino-shell-gap);
+    border-top: 1px solid var(--dino-shell-border);
+  }
+
+  .dino-user-card-identity {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--dino-shell-gap);
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 4px;
+    border: none;
+    border-radius: var(--dino-shell-item-radius);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--dino-shell-hover-bg);
+    }
+  }
+
+  .dino-user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--dino-shell-action-bg);
+    color: var(--dino-shell-action-fg);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+      line-height: 18px;
+    }
+  }
+
+  .dino-user-card-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  .dino-user-card-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dino-user-card-meta {
+    color: var(--dino-shell-muted-fg);
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Rail: only the avatar and the logout button fit, stacked.
+  .mat-sidenav.dino-sidenav:not(.extended) {
+    .dino-user-card {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .dino-user-card-identity {
+      justify-content: center;
+    }
+
+    .dino-user-card-text {
+      display: none;
+    }
+
+    .dino-logout-button {
+      width: 100%;
+    }
+  }
+
+  // ==================== Page surface ====================
+
+  .mat-sidenav-content.dino-sidenav-content {
+    top: var(--dino-shell-topbar-height);
+    height: calc(100dvh - var(--dino-shell-topbar-height));
+    box-sizing: border-box;
+    overflow-x: hidden;
+    padding: var(--dino-shell-pad);
+    background-color: var(--dino-shell-page-bg);
+
     .dino-loading {
       position: fixed;
       width: 50%;
       left: 25%;
+
       .dino-sync-text {
         opacity: 0.3;
         text-align: center;
@@ -202,66 +559,47 @@ dino-main-nav {
         top: 10em;
         color: inherit;
       }
+
       .dino-component-load-spinner {
         margin: auto;
         margin-top: 30vh;
       }
     }
+
     &.dino-sidenav-content-not-scrollable {
       overflow-y: hidden;
       height: 100% !important;
     }
   }
-  // When the top toolbar is hidden (e.g. public survey routes), reclaim the
-  // space that was reserved for it so the content is not pushed down / cut off.
+
+  // When the chrome is hidden (login, reset password, public survey routes) the page
+  // takes the whole viewport: no top bar offset, no padding.
   .mat-sidenav-content.dino-sidenav-content.dino-no-topbar {
     top: 0;
     margin-top: 0;
+    // No sidebar is rendered on these routes, so reclaim its offset too.
+    margin-left: 0 !important;
     height: 100vh; // fallback
     height: 100dvh; // account for mobile browser chrome so the footer stays visible
     padding: 0;
   }
-  @media only screen and (max-width: 992px) {
-    .mat-sidenav-content.dino-sidenav-content:has(ajf-form) {
-      height: 85vh;
-      margin-top: 10px;
-    }
-  }
-
-  .mat-sidenav.dino-large-sidenav {
-    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.2);
-    animation-name: shadowed-sidenav;
-    animation-duration: 2s;
-    animation-direction: alternate-reverse;
-    animation-timing-function: ease-in-out;
-  }
-
-  .mat-mdc-nav-list {
-    padding-top: 0px;
-    width: auto;
-    .mat-mdc-list-item {
-      min-height: 60px;
-      &:focus,
-      &:hover {
-        background-color: inherit;
-      }
-      span {
-        padding: 10px;
-      }
-      .mat-mdc-list-item-unscoped-content {
-        display: flex;
-        align-items: center;
-      }
-    }
-    &.mat-mdc-list-base {
-      padding-top: 0px;
-    }
-    .dino-extend-menu-button {
-      position: absolute;
-      bottom: 75px;
-    }
-  }
 }
+
+// Dark theme: only the neutrals are redefined, the accents keep tracking the palette.
+// The class is applied to <body> by angular-material-css-vars (see ThemeService).
+.isDarkTheme dino-main-nav {
+  --dino-shell-surface: #1b1f24;
+  --dino-shell-page-bg: #14181c;
+  --dino-shell-fg: #e6e9ed;
+  --dino-shell-muted-fg: #9aa3ad;
+  --dino-shell-border: rgba(230, 233, 237, 0.12);
+  --dino-shell-hover-bg: rgba(230, 233, 237, 0.07);
+  --dino-shell-accent-bg: #{mat-css-vars.mat-css-color-primary(500, 0.28)};
+  --dino-shell-accent-fg: #{mat-css-vars.mat-css-color-primary(100)};
+}
+
+// ==================== Menus (rendered in an overlay, outside the host) ====================
+
 .dino-notifications-menu,
 .mat-mdc-menu-content {
   &:empty {
@@ -270,11 +608,9 @@ dino-main-nav {
   &.mat-mdc-menu-panel {
     min-height: unset !important;
     max-width: 460px;
-    @media only screen and (max-width: 768px) {
-      max-width: 280px;
-    }
   }
 }
+
 .dino-notifications-menu .mat-mdc-menu-content {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
@@ -319,8 +655,7 @@ dino-main-nav {
       }
       border-top: 1px solid mat-css-vars.mat-css-color-primary(500, 0.4);
       background-color: mat-css-vars.mat-css-color-warn(500, 0.2);
-      -webkit-transition: all ease-in-out 1.3s;
-      transition: all ease-in-out 1.3;
+      transition: all ease-in-out 1.3s;
       &:hover {
         background-color: mat-css-vars.mat-css-color-warn(500, 0.4);
       }
@@ -328,50 +663,48 @@ dino-main-nav {
   }
 }
 
-@keyframes shadowed-toolbar {
-  from {
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2) inset;
-  }
-  to {
-    box-shadow: none;
+.mat-mdc-menu-item.dino-lang-selected {
+  background-color: mat-css-vars.mat-css-color-primary(500, 0.14);
+  font-weight: 500;
+}
+
+// The build info at the bottom of the user menu: a full version string, so it wraps
+// instead of being truncated like a menu item label would be.
+.dino-user-menu .dino-user-menu-info {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 320px;
+  margin-top: 4px;
+  padding: 8px 16px;
+  border-top: 1px solid mat-css-vars.mat-css-color-primary(500, 0.14);
+  opacity: 0.6;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+
+  .mat-icon {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
   }
 }
 
-@keyframes shadowed-sidenav {
-  from {
-    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.2);
-  }
-  to {
-    box-shadow: none;
-  }
-}
+// ==================== Animations ====================
 
-@-moz-keyframes spin {
-  0% {
-    -moz-transform: rotate(360deg);
-  }
-  100% {
-    -moz-transform: rotate(0deg);
-  }
-}
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(360deg);
-  }
-  100% {
-    -webkit-transform: rotate(0deg);
-  }
-}
 @keyframes spin {
   0% {
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
   100% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
 }
+
 @keyframes pulse_accent {
   0% {
     box-shadow: 0 0 0 0 mat-css-vars.mat-css-color-accent(500, 0.5);
@@ -385,6 +718,7 @@ dino-main-nav {
     box-shadow: 0 0 0 0 mat-css-vars.mat-css-color-accent(500, 0);
   }
 }
+
 @keyframes pulse_primary {
   0% {
     box-shadow: 0 0 0 0 mat-css-vars.mat-css-color-primary(500, 0.9);

@@ -83,7 +83,11 @@ const authServiceMock = {
   authConfig: authServiceConfig,
 } as unknown as AuthService;
 
-const themeServiceMock = {} as unknown as ThemeService;
+const themeServiceMock = {
+  darkModeChange: new EventEmitter<boolean>(),
+  isDark: () => false,
+  setDarkMode: () => {},
+} as unknown as ThemeService;
 
 describe('Main', () => {
   let fixtureMain: ComponentFixture<MainNav>;

@@ -27,18 +27,18 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
-import {LangSelectorModule} from '@dino/material/lang-selector';
+import {ThemeSwitchModule} from '@dino/material/theme-switch';
 import {UserAreaModule} from '@dino/material/user-area';
 import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 import {MainNav} from './main-nav';
@@ -47,7 +47,6 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 @NgModule({
   imports: [
     AjfTranslocoModule,
-    LangSelectorModule,
     AuthModule,
     BreakpointObserverModule,
     CommonModule,
@@ -55,16 +54,17 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     MatBadgeModule,
     MatButtonModule,
     MatDialogModule,
+    MatDividerModule,
     MatIconModule,
     MatListModule,
     MatMenuModule,
     MatProgressSpinnerModule,
     MatSidenavModule,
-    MatSlideToggleModule,
     MatSnackBarModule,
     MatToolbarModule,
     MatTooltipModule,
     RouterModule,
+    ThemeSwitchModule,
     UserAreaModule,
     TourMatMenuModule,
   ],

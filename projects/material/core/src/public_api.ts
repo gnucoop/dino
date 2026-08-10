@@ -21,5 +21,6 @@
  */
 
 export * from './core.module';
+export * from './shell-context.service';
 export * from './theme-interface';
 export * from './theme.service';

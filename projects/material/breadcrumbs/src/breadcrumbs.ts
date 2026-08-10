@@ -20,17 +20,25 @@
  *
  */
 
-import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormSchemaManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
-import {combineLatest, Observable, of as obsOf, zip} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {ShellContextService} from '@dino/material/core';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf, zip} from 'rxjs';
+import {map, shareReplay, switchMap} from 'rxjs/operators';
 import {Breadcrumb, ParamBreadcrumb} from './breadcrumb';
 
 /**
- * Dino Breadcrumbs component.
- * Handles and updates the displayed breadcrumbs to navigate the app.
+ * Dino page header.
+ *
+ * Renders the navigation trail of the current route as a page header: the ancestor
+ * crumbs become a small uppercase overline, the last one the page title. Pages can
+ * project their primary actions into the header through the 'actions' slot:
+ *
+ *   <dino-breadcrumbs breadcrumbs>
+ *     <button actions mat-flat-button>New</button>
+ *   </dino-breadcrumbs>
  */
 @Component({
   selector: 'dino-breadcrumbs',
@@ -48,11 +56,42 @@ export class BreadCrumbs {
    */
   breadcrumbs: Observable<Breadcrumb[]>;
 
+  /**
+   * The ancestor crumbs, rendered as the page overline. Empty on top level pages.
+   */
+  readonly parentCrumbs: Observable<Breadcrumb[]>;
+
+  /**
+   * The last crumb, rendered as the page title.
+   */
+  readonly currentCrumb: Observable<Breadcrumb | null>;
+
+  /**
+   * The label of the sidenav group the current section belongs to (eg. 'User' or
+   * 'Administration'), published by the app shell. Used as the overline of top level
+   * pages, which have no ancestor crumb.
+   */
+  readonly sectionGroupLabel: Observable<string | null>;
+
+  /**
+   * Overrides the page overline. When set, it replaces both the ancestor crumbs
+   * and the section group label.
+   */
+  @Input()
+  set overline(label: string | undefined) {
+    this._overline.next(label ?? null);
+  }
+  readonly overlineOverride: Observable<string | null>;
+  private readonly _overline: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(
+    null,
+  );
+
   constructor(
     private _route: ActivatedRoute,
     private _router: Router,
     private _fsm: FormSchemaManager,
     private _rsm: ReportSchemaManager,
+    private _shellContext: ShellContextService,
   ) {
     this.breadcrumbs = combineLatest([
       zip(
@@ -117,6 +156,19 @@ export class BreadCrumbs {
         const finalCrumbs: Breadcrumb[] = populatedCrumbs.filter(cr => cr != null) as Breadcrumb[];
         return finalCrumbs;
       }),
+      shareReplay(1),
+    );
+
+    this.parentCrumbs = this.breadcrumbs.pipe(map(crumbs => crumbs.slice(0, -1)));
+
+    this.currentCrumb = this.breadcrumbs.pipe(
+      map(crumbs => (crumbs.length > 0 ? crumbs[crumbs.length - 1] : null)),
+    );
+
+    this.overlineOverride = this._overline.asObservable();
+
+    this.sectionGroupLabel = this._shellContext.context.pipe(
+      map(context => context?.groupLabel ?? null),
     );
   }
 

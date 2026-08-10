@@ -671,4 +671,17 @@ export const AR: Translation = {
     'سيتم احتساب الدرجات بناءً على معيارين:\n\n<ul><li>نقطة واحدة: شرح السلوك.\n\n<li>نقطة واحدة: الإشارة إلى أن الأمر كان متكررًا وأن إلياس لم يستطع الدفاع عن نفسه.\n\n</ul>',
   'Quand une personne peut-elle être considérée comme dépendante ?':
     'متى يمكن اعتبار شخص ما مدمنًا؟',
+  'Administration': 'الإدارة',
+  'Administrator': 'مدير',
+  'Synchronize': 'مزامنة',
+  'Never synchronized': 'لم تتم المزامنة مطلقًا',
+  'Offline': 'غير متصل',
+  'Notifications': 'الإشعارات',
+  'Light mode': 'الوضع الفاتح',
+  'Dark mode': 'الوضع الداكن',
+  'User Area': 'منطقة المستخدم',
+  'Logout': 'تسجيل الخروج',
+  'AI': 'الذكاء الاصطناعي',
+  'RAG': 'RAG',
+  'Help': 'مساعدة',
 };

@@ -42,7 +42,8 @@ import {DataService, InsertModel, MetricsService, PermissionContextService} from
 import {Notification, NotificationManager} from '@dino/core/notifications';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ThemeService} from '@dino/material/core';
+import {ShellContextService, ThemeService} from '@dino/material/core';
+import {LangService} from '@dino/material/lang-selector';
 import {UserArea} from '@dino/material/user-area';
 import {TranslocoService} from '@ngneat/transloco';
 import {RxError, RxTypeError} from 'rxdb';
@@ -75,6 +76,31 @@ import {Section} from './section-interface';
 import {TokensService} from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from '@dino/material/user-area';
 import {UITourService} from '@dino/material/ui-tour-service';
+
+/**
+ * Maps the Dino language codes to the BCP 47 locales understood by Intl, used to
+ * localize the relative "last synchronized" time.
+ */
+const APP_LANG_TO_LOCALE: {[appLang: string]: string} = {
+  AR: 'ar',
+  ENG: 'en',
+  ESP: 'es',
+  FRA: 'fr',
+  ITA: 'it',
+  PRT: 'pt',
+  UKR: 'uk',
+};
+
+const DEFAULT_RELATIVE_TIME_LOCALE = 'en';
+
+/**
+ * The units used to render a relative time, from the coarsest to the finest.
+ */
+const RELATIVE_TIME_UNITS: {unit: Intl.RelativeTimeFormatUnit; secondsInUnit: number}[] = [
+  {unit: 'day', secondsInUnit: 86400},
+  {unit: 'hour', secondsInUnit: 3600},
+  {unit: 'minute', secondsInUnit: 60},
+];
 
 /**
  * Dino Main component, containing the toolbar and the sidebar navigation.
@@ -141,6 +167,32 @@ import {UITourService} from '@dino/material/ui-tour-service';
 })
 export class MainNav implements AfterViewInit, OnDestroy {
   @HostBinding('class.mat-typography') readonly matTypographyClass = true;
+
+  /**
+   * True when the viewport is too narrow for the full-height sidebar, so the shell
+   * falls back to a slim top bar plus an overlay drawer.
+   *
+   * This is the single source of truth for the responsive behaviour of the shell:
+   * the stylesheet keys all of its responsive rules off the 'dino-shell-compact'
+   * host class rather than declaring its own media queries, which used to disagree
+   * with the breakpoints applied in the template.
+   */
+  @HostBinding('class.dino-shell-compact') compact: boolean = false;
+
+  /**
+   * True when the sidebar shows its labels: expanded on wide viewports, always in the
+   * compact drawer.
+   *
+   * Exposed as a host class so the stylesheet can size both the sidebar and the page
+   * content from it. Letting MatSidenavContainer measure the drawer instead (its
+   * 'autosize' option) does not work here: it recomputes the content margin from a
+   * MutationObserver and reads clientWidth while the width transition is still running,
+   * which left the content overlapped until an unrelated DOM change forced a re-measure.
+   */
+  @HostBinding('class.dino-shell-extended') get shellExtended(): boolean {
+    return this.compact || this.extendedSidenav.value;
+  }
+
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
   /**
@@ -323,9 +375,34 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * The Active user full name, displayed in the top nav bar.
+   * The Active user full name, displayed in the user card at the bottom of the sidenav.
    */
   userDisplayName: Observable<string | null>;
+
+  /**
+   * The Active user initials, displayed in the avatar of the user card.
+   * Derived from the full name, since no avatar image is stored for a user.
+   */
+  userInitials: Observable<string | null>;
+
+  /**
+   * The label of the Active user main role, displayed in the user card.
+   * 'Administrator' when the user holds one of the admin roles, otherwise the
+   * name of the first role granted to the user.
+   */
+  userRoleLabel: Observable<string | null>;
+
+  /**
+   * The currently active language code (eg. 'ITA'), displayed in the user card.
+   */
+  activeLang: Observable<string>;
+
+  /**
+   * A human readable, localized description of how long ago the last replication
+   * cycle completed (eg. '2 minutes ago'), displayed under the sync button.
+   * Null when no sync has ever completed on this device.
+   */
+  lastSyncLabel: Observable<string | null>;
 
   /**
    * The last n notifications received by the active user
@@ -352,6 +429,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * Subscribes to the Available Tokens
    */
   private _availableTokensSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * Subscribes to the shell breakpoint, keeping the 'compact' flag up to date.
+   */
+  private _compactSub: Subscription = Subscription.EMPTY;
 
   /**
    * Subscribes to an interval to check if a 'dino_new_version_ready' entry is in the localStorage.
@@ -462,16 +544,19 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * A flag to show or hide section labels in the sidenav.
+   * The label of the group heading the public sections in the sidenav.
    */
-  private _showNavLabels: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  get showNavLabels(): BehaviorSubject<boolean> {
-    return this._showNavLabels;
-  }
-  @Input()
-  set setShowNavLabels(opened: boolean) {
-    this._showNavLabels.next(opened);
-  }
+  @Input() userSectionsLabel: string = 'User';
+
+  /**
+   * The label of the group heading the Admin only sections in the sidenav.
+   */
+  @Input() adminSectionsLabel: string = 'Administration';
+
+  /**
+   * The application version, displayed in the user card at the bottom of the sidenav.
+   */
+  @Input() appVersion: string | undefined;
 
   /**
    * The Toolbar logo image path/url.
@@ -503,7 +588,14 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly ts: ThemeService,
     readonly trs: TranslocoService,
     readonly tourService: UITourService,
+    private _shellContext: ShellContextService,
+    private _langService: LangService,
   ) {
+    this._compactSub = this.breakpointObserver.wide.subscribe(wide => {
+      this.compact = !wide;
+      this._cdr.markForCheck();
+    });
+
     this.newVersionReady.next(localStorage.getItem('dino_new_version_ready'));
     this.isBackendless = this.dataService.config.syncOptions.backendless;
     this._newVersionCheckSub = interval(1000 * 60 * 10).subscribe(() => {
@@ -528,6 +620,18 @@ export class MainNav implements AfterViewInit, OnDestroy {
         navEvt.url.includes(section.url),
       );
       this.currentSection.next(selSection ?? null);
+
+      // Publish the group of the active section so the page header can render it
+      // as its overline on pages whose route has a single breadcrumb.
+      if (selSection == null) {
+        this._shellContext.setContext(null);
+      } else {
+        const isAdminSection = adminSections.indexOf(selSection) !== -1;
+        this._shellContext.setContext({
+          groupLabel: isAdminSection ? this.adminSectionsLabel : this.userSectionsLabel,
+          isAdminSection,
+        });
+      }
     });
 
     this._replicationCycleCompleteSub = this.dataService.replicationCycleComplete
@@ -608,6 +712,44 @@ export class MainNav implements AfterViewInit, OnDestroy {
         }
         return obsOf(null);
       }),
+      shareReplay(1),
+    );
+
+    this.userInitials = this.userDisplayName.pipe(
+      map(fullName => (fullName ? this._buildInitials(fullName) : null)),
+    );
+
+    this.userRoleLabel = combineLatest([this.pcs.fullContext, this._adminRoles]).pipe(
+      map(([context, adminRoles]) => {
+        const permissions = context?.user_permissions;
+        if (permissions == null) {
+          return null;
+        }
+        const roles = Object.keys(permissions);
+        if (roles.length === 0) {
+          return null;
+        }
+        if (roles.some(role => adminRoles.includes(role))) {
+          return 'Administrator';
+        }
+        return roles[0];
+      }),
+      distinctUntilChanged(),
+    );
+
+    this.activeLang = this.trs.langChanges$.pipe(startWith(this._langService.currentLang));
+
+    this.lastSyncLabel = combineLatest([
+      this.dataService.lastSyncAt,
+      // Re-render periodically so the relative time does not go stale while the
+      // page sits idle between replication cycles.
+      interval(30000).pipe(startWith(0)),
+      this.activeLang,
+    ]).pipe(
+      map(([lastSyncAt, _tick, lang]) =>
+        lastSyncAt == null ? null : this._formatRelativeTime(lastSyncAt, lang),
+      ),
+      distinctUntilChanged(),
     );
 
     this.availableTokens = this._tokensService.availableTokens;
@@ -713,9 +855,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this._menuToggleSub = this._menuToggleEvt
       .pipe(
-        withLatestFrom(this.breakpointObserver.large),
-        tap(([_, res]) => {
-          if (res) {
+        withLatestFrom(this.breakpointObserver.wide),
+        tap(([_, wide]) => {
+          if (wide) {
             const currentState = this.extendedSidenav.getValue();
             this.extendedSidenav.next(!currentState);
           } else {
@@ -727,9 +869,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
     this._menuClickSub = this._menuClickEvt
       .pipe(
-        withLatestFrom(this.breakpointObserver.large),
-        tap(([_, res]) => {
-          if (!res) {
+        withLatestFrom(this.breakpointObserver.wide),
+        tap(([_, wide]) => {
+          if (!wide) {
             this._menuToggleEvt.emit();
           }
         }),
@@ -767,6 +909,14 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
   setDarkTheme(evt: boolean) {
     this.ts.setDarkMode(evt);
+  }
+
+  /**
+   * Applies a language, from the language submenu of the user card.
+   * @param lang The Dino language code, eg. 'ITA'
+   */
+  setLang(lang: string): void {
+    this._langService.setLang(lang);
   }
 
   /**
@@ -990,6 +1140,51 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this.dataService.runSync();
   }
 
+  /**
+   * Builds the avatar initials for a user. No avatar image is stored for a user,
+   * so the first letters of the first two words of the full name are used instead.
+   * @param fullName The user full name
+   * @returns Up to two uppercase letters, or null if none could be extracted
+   */
+  private _buildInitials(fullName: string): string | null {
+    const initials = fullName
+      .split(/\s+/)
+      .filter(word => word.length > 0)
+      .slice(0, 2)
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+    return initials.length > 0 ? initials : null;
+  }
+
+  /**
+   * Formats a timestamp as a localized "time ago" string, eg. '2 minutes ago'.
+   * @param timestamp The timestamp, in epoch milliseconds
+   * @param lang The active Dino language code, eg. 'ITA'
+   */
+  private _formatRelativeTime(timestamp: number, lang: string): string {
+    const locale = APP_LANG_TO_LOCALE[lang] ?? DEFAULT_RELATIVE_TIME_LOCALE;
+    const elapsedSeconds = Math.round((timestamp - new Date().getTime()) / 1000);
+    const unit = RELATIVE_TIME_UNITS.find(
+      ({secondsInUnit}) => Math.abs(elapsedSeconds) >= secondsInUnit,
+    );
+    try {
+      const formatter = new Intl.RelativeTimeFormat(locale, {numeric: 'auto'});
+      if (unit == null) {
+        // Less than a minute: 'now' rather than 'in 0 seconds'.
+        return formatter.format(0, 'minute');
+      }
+      return formatter.format(Math.round(elapsedSeconds / unit.secondsInUnit), unit.unit);
+    } catch {
+      // Intl.RelativeTimeFormat rejects unknown locales; fall back to the default one.
+      const formatter = new Intl.RelativeTimeFormat(DEFAULT_RELATIVE_TIME_LOCALE, {
+        numeric: 'auto',
+      });
+      return unit == null
+        ? formatter.format(0, 'minute')
+        : formatter.format(Math.round(elapsedSeconds / unit.secondsInUnit), unit.unit);
+    }
+  }
+
   ngOnDestroy() {
     this._menuClickSub.unsubscribe();
     this._menuToggleSub.unsubscribe();
@@ -1002,5 +1197,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._isThereUnsyncedDataSub.unsubscribe();
     this._newVersionCheckSub.unsubscribe();
     this._availableTokensSub.unsubscribe();
+    this._compactSub.unsubscribe();
   }
 }
