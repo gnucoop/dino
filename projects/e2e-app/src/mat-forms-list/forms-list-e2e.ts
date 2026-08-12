@@ -1,4 +1,4 @@
-import {AjfForm, createFormPdf, downloadFormDoc} from '@ajf/core/forms';
+import {AjfForm, openFormPdf, downloadFormDoc} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {Component, Optional, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
@@ -452,13 +452,13 @@ export class MatFormsListE2E {
             };
           }
 
-          createFormPdf(
+          openFormPdf(
             schema.schema as AjfForm,
             translate,
             undefined,
             header,
             formData['data'],
-          ).open();
+          );
         }
       });
   }

@@ -1,4 +1,4 @@
-import {AjfForm, createFormPdf} from '@ajf/core/forms';
+import {AjfForm, openFormPdf} from '@ajf/core/forms';
 import {AfterViewInit, Component, OnDestroy, ViewChild} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MetricsService, PermissionContextService} from '@dino/core/data';
@@ -155,7 +155,7 @@ export class MatAggregationListE2E implements AfterViewInit, OnDestroy {
             margin: [0, 0, 0, 10],
           },
         ];
-        createFormPdf(schema.schema as AjfForm, undefined, undefined, header, formData.data).open();
+        openFormPdf(schema.schema as AjfForm, undefined, undefined, header, formData.data);
       }
     });
   }

@@ -505,7 +505,7 @@ export class FormsListComponent {
             undefined,
             header,
             formData['data'],
-          ).open();
+          ).then(pdf => pdf.open());
         }
       });
   }
