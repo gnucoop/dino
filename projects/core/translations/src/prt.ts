@@ -60,12 +60,6 @@ export const PRT: Translation = {
   'Metrics associated with this questionnaire.': 'Métricas associadas a este questionário.',
   'Statuses a submission of this questionnaire can have.':
     'Estados que um envio deste questionário pode ter.',
-  'Structure': 'Estrutura',
-  'Text': 'Texto',
-  'Numeric': 'Numéricos',
-  'Choices': 'Escolhas',
-  'Date & time': 'Data e hora',
-  'Advanced': 'Avançados',
   'Settings': 'Configurações',
   'Build': 'Construir',
   'Form Settings': 'Configurações do formulário',
