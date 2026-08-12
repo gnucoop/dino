@@ -6,31 +6,21 @@
 // values here are the light-theme defaults.
 $efs-light: (
   border: #e4e7ea,
-  border-inner: #eef0f2,
   text: #2a2f36,
   muted-2: #8a9198,
   surface: #ffffff,
   app-bg: #eceef0,
-  slide-head: #fafbfc,
-  badge: #3a4149,
-  on-badge: #ffffff,
   card-shadow: (0 1px 3px rgba(20, 30, 40, 0.05)),
-  card-shadow-sm: (0 1px 2px rgba(20, 30, 40, 0.05)),
 );
 
 // Dark-theme overrides for the same tokens.
 $efs-dark: (
   border: #363c44,
-  border-inner: #2f353c,
   text: #e6e9ec,
   muted-2: #99a0a7,
   surface: #23272d,
   app-bg: #14171b,
-  slide-head: #2a2f36,
-  badge: #4b535c,
-  on-badge: #ffffff,
   card-shadow: (0 1px 3px rgba(0, 0, 0, 0.4)),
-  card-shadow-sm: (0 1px 2px rgba(0, 0, 0, 0.4)),
 );
 
 @mixin efs-tokens($map) {
@@ -328,24 +318,11 @@ dino-edit-form-schema {
     background: var(--efs-app-bg);
   }
 
-  // ---- Ajf form builder re-skin ----
+  // ---- Ajf form builder: app accents on top of the library styles ----
+  // The layout and the neutral chrome ship with @ajf/material/form-builder
+  // (see [fillHeight]): only what the library cannot express is set here.
   ajf-form-builder {
-    // Fill the whole Build area so the panels use the full height available,
-    // regardless of how much content the form has.
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-
-    // Toolbar
     .ajf-formbuilder-toolbar {
-      flex: none;
-      background: var(--efs-surface);
-      border-bottom: 1px solid var(--efs-border);
-      min-height: 48px;
-      height: 48px;
-      box-shadow: none;
-
       // The "Import" button we relocate here, and the library "Download as
       // XLSForm" button (tagged during relocation), share one bordered look so
       // they read as the same button style.
@@ -360,75 +337,9 @@ dino-edit-form-schema {
       }
     }
 
-    .ajf-formtree-container {
-      flex: 1 1 auto;
-      min-height: 0;
-      align-items: stretch; // stretch palette/designer/properties to full height
-      padding: 18px 22px;
-      gap: 18px;
-    }
-
-    // Palette + designer container
-    mat-drawer-container.ajf-formtree-drawer-container {
-      border: none;
-      border-radius: 0;
-      background: transparent;
-      // Drop Ajf's content-based 47vh floor: fill the row height instead so the
-      // palette (left field-type sidebar) is as tall as the screen allows.
-      min-height: 0;
-
-      mat-drawer.ajf-sidenav-modern {
-        min-width: 250px;
-        max-width: 250px;
-        background: var(--efs-surface);
-        border-right: 1px solid var(--efs-border);
-        border-radius: 10px 0 0 10px;
-      }
-
-      .ajf-drawer-header {
-        border-bottom: 1px solid var(--efs-border-inner);
-      }
-
-      .ajf-search-field {
-        width: 100%;
-      }
-    }
-
-    // Palette items
-    ajf-fb-node-type-entry {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 7px 8px;
-      margin-bottom: 2px;
-      border-radius: 8px;
-      font-size: 13.5px;
-      color: var(--efs-text);
-      cursor: pointer;
-
-      &:hover {
-        background: efs-primary(500, 0.08);
-      }
-
-      ajf-node-icon,
-      .ajf-node-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 7px;
-        background: var(--efs-badge);
-        color: var(--efs-on-badge);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex: none;
-
-        .mat-icon {
-          font-size: 18px;
-          width: 18px;
-          height: 18px;
-          color: var(--efs-on-badge);
-        }
-      }
+    // Palette items: accent-tinted hover, the library uses a neutral one.
+    ajf-fb-node-type-entry:hover {
+      background: efs-primary(500, 0.08);
     }
 
     // Field-type category headers (injected by the component to group the
@@ -451,39 +362,14 @@ dino-edit-form-schema {
 
     // Designer (structure) area
     .ajf-designer {
-      padding: 4px 2px;
-
-      .mat-card-container .mat-mdc-card,
-      ajf-fb-node-entry .mat-mdc-card-container .mat-mdc-card {
-        background: var(--efs-surface);
-        border: 1px solid var(--efs-border);
-        border-radius: 10px;
-        box-shadow: var(--efs-card-shadow-sm);
+      // The library outlines the node being edited with currentColor: re-tint
+      // the outline with the app accent.
+      .ajf-highlighted-formbuilder-node > .mat-mdc-card {
+        outline-color: efs-primary();
       }
 
-      // The fields-list wrapper ships a hardcoded white background in the Ajf
-      // library; make it follow the theme so it isn't a white strip in dark mode.
-      ajf-fb-node-entry.ajf-fields-list {
-        background: var(--efs-surface);
-      }
-
-      .ajf-highlighted-formbuilder-node > .mat-mdc-card,
-      .ajf-highlighted-formbuilder-node .mat-mdc-card {
-        border-color: efs-primary();
-      }
-
-      .mat-expansion-panel-header {
-        background: var(--efs-slide-head);
-
-        &:hover {
-          background: efs-primary(500, 0.06);
-        }
-      }
-
-      .mat-expansion-panel-header-title {
-        font-size: 14.5px;
-        font-weight: 600;
-        color: var(--efs-text);
+      .mat-expansion-panel-header:hover {
+        background: efs-primary(500, 0.06);
       }
 
       ajf-node-icon,
@@ -493,22 +379,8 @@ dino-edit-form-schema {
     }
 
     // Properties panel
-    .ajf-formtree-properties {
-      min-width: 312px;
-      max-width: 312px;
-      background: var(--efs-surface);
-      border: 1px solid var(--efs-border);
-      border-radius: 10px;
-      // Fill the row height (was sticky + max-height: 70vh) and scroll inside.
-      position: static;
-      max-height: none;
-      overflow-y: auto;
-
-      ajf-fb-node-properties {
-        .mat-icon {
-          color: efs-primary();
-        }
-      }
+    .ajf-formtree-properties ajf-fb-node-properties .mat-icon {
+      color: efs-primary();
     }
   }
 }

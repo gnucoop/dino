@@ -158,16 +158,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
 
   /**
    * True while creating a brand new Form Schema (create route, no id).
+   * Bound to the form builder [expandSlides] input: a new schema starts with
+   * its slides expanded, editing keeps them collapsed.
    */
   private _creating: boolean = false;
-
-  /**
-   * The builder instance the default expansion has already been applied to.
-   * Tracked per-instance (not a one-time boolean) so the default is re-applied
-   * whenever the builder is re-created, e.g. when the Build tab body is
-   * destroyed and rebuilt on tab switch.
-   */
-  private _expandAppliedFor: AjfFormBuilder | null = null;
+  get creating(): boolean {
+    return this._creating;
+  }
 
   /**
    * The builder instance the Import button has already been relocated into.
@@ -187,17 +184,12 @@ export class EditFormSchema implements OnInit, OnDestroy {
   depsEditor?: FormDepsEditor;
 
   /**
-   * Reference to the embedded Ajf form builder.
-   * - Always: relocate the "Import" button into the toolbar before "Download".
-   * - For a NEW schema only: expand the slides by default and turn the toolbar
-   *   "expand slides" toggle ON so it matches. `expandAll()` also sets the
-   *   builder's default expanded state, so slides added later stay expanded.
-   *   Editing keeps the default (collapsed, toggle off).
+   * Reference to the embedded Ajf form builder: relocates the "Import" button
+   * into the toolbar, before "Download".
    */
   @ViewChild(AjfFormBuilder)
   set formBuilderCmp(cmp: AjfFormBuilder | undefined) {
     if (cmp == null) {
-      this._expandAppliedFor = null;
       this._importRelocatedFor = null;
       this._nodeTypeObserver?.disconnect();
       this._nodeTypeObserver = undefined;
@@ -217,15 +209,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
       void this._relocateImportButton(cmp);
     }
     void this._setupNodeTypeGrouping();
-    if (this._creating && this._expandAppliedFor !== cmp) {
-      this._expandAppliedFor = cmp;
-      // Expand slides by default (and for slides added later). This is the source
-      // of truth and does not depend on the DOM being rendered yet.
-      cmp.expandAll();
-      // Reflect the expanded state on the toolbar toggle, which is uncontrolled
-      // (the Ajf builder exposes no "checked" input for it).
-      void this._syncExpandToggle();
-    }
   }
 
   /**
@@ -266,20 +249,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
       this._pendingWaits.add(entry);
       observer.observe(root, {childList: true, subtree: true});
     });
-  }
-
-  /**
-   * Turns the Ajf builder toolbar "expand slides" toggle ON to match the
-   * default-expanded state, once the (async-rendered) toggle exists.
-   */
-  private async _syncExpandToggle(): Promise<void> {
-    const toggle = await this._whenPresent('ajf-form-builder mat-slide-toggle button');
-    if (toggle == null) {
-      return;
-    }
-    if (toggle.getAttribute('aria-checked') !== 'true') {
-      toggle.click();
-    }
   }
 
   /**
