@@ -64,12 +64,6 @@ export const ENG: Translation = {
   'Metrics associated with this questionnaire.': 'Metrics associated with this questionnaire.',
   'Statuses a submission of this questionnaire can have.':
     'Statuses a submission of this questionnaire can have.',
-  'Structure': 'Structure',
-  'Text': 'Text',
-  'Numeric': 'Numeric',
-  'Choices': 'Choices',
-  'Date & time': 'Date & time',
-  'Advanced': 'Advanced',
   'Settings': 'Settings',
   'Build': 'Build',
   'Form Settings': 'Form Settings',

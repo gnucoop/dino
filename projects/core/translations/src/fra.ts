@@ -60,12 +60,6 @@ export const FRA: Translation = {
   'Metrics associated with this questionnaire.': 'Métriques associées à ce questionnaire.',
   'Statuses a submission of this questionnaire can have.':
     "Statuts qu'une soumission de ce questionnaire peut avoir.",
-  'Structure': 'Structure',
-  'Text': 'Texte',
-  'Numeric': 'Numérique',
-  'Choices': 'Choix',
-  'Date & time': 'Date et heure',
-  'Advanced': 'Avancé',
   'Settings': 'Paramètres',
   'Build': 'Construire',
   'Form Settings': 'Paramètres du formulaire',
