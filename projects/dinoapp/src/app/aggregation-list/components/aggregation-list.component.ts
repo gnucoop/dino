@@ -1,4 +1,4 @@
-import {createFormPdf, AjfForm} from '@ajf/core/forms';
+import {openFormPdf, AjfForm} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {
   AfterViewInit,
@@ -195,13 +195,13 @@ export class AggregationListComponent implements OnDestroy, AfterViewInit {
             }
           });
 
-          createFormPdf(
+          openFormPdf(
             schema.schema as AjfForm,
             undefined,
             undefined,
             header,
             formData['data'],
-          ).open();
+          );
         }
       });
   }
