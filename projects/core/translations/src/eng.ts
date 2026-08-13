@@ -69,6 +69,7 @@ export const ENG: Translation = {
   'Form Settings': 'Form Settings',
   'Metadata and general configuration of the questionnaire.':
     'Metadata and general configuration of the questionnaire.',
+  'Import form schema': 'Import form schema',
   'Go to build': 'Go to build',
   'Create or import a form': 'Create or import a form',
   'AI Builder': 'AI Builder',

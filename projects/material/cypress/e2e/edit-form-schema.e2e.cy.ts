@@ -57,14 +57,14 @@ describe('dino-edit-form-schema', () => {
 describe('dino-import-form-schema', () => {
   beforeEach(() => cy.visit(url));
 
-  it('should show an Import button in the Build toolbar', () => {
-    tab('Build').click();
-    cy.get('.ajf-formbuilder-toolbar .dino-efs-import-btn').contains('Import').should('exist');
+  it('should show an Import button in the Settings footer', () => {
+    tab('Settings').click();
+    cy.get('.dino-efs-settings-footer button').contains('Import').should('exist');
   });
 
   it('should open the Create or import a form dialog', () => {
-    tab('Build').click();
-    cy.get('.ajf-formbuilder-toolbar .dino-efs-import-btn').contains('Import').click();
+    tab('Settings').click();
+    cy.get('.dino-efs-settings-footer button').contains('Import').click();
     cy.get('dino-import-form-schema').should('exist');
   });
 });

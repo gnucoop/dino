@@ -65,6 +65,7 @@ export const PRT: Translation = {
   'Form Settings': 'Configurações do formulário',
   'Metadata and general configuration of the questionnaire.':
     'Metadados e configuração geral do questionário.',
+  'Import form schema': 'Importar formulário',
   'Go to build': 'Ir para a construção',
   'Create or import a form': 'Criar ou importar um formulário',
   'AI Builder': 'AI Builder',

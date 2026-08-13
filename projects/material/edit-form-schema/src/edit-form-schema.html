@@ -133,6 +133,10 @@
               </form>
 
               <div class="dino-efs-settings-footer">
+                <button mat-stroked-button color="primary" (click)="openImportDialog()">
+                  <mat-icon>upload</mat-icon>{{'Import form schema'|transloco}}
+                </button>
+                <span>{{'or'|transloco}}</span>
                 <button mat-raised-button color="primary" (click)="goToBuild()">
                   {{'Go to build'|transloco}}<mat-icon>arrow_forward</mat-icon>
                 </button>
@@ -255,18 +259,6 @@
           </ng-template>
 
           <div class="dino-efs-build">
-            <!-- Parked (hidden) until relocated into the Ajf toolbar before "Download". -->
-            <span class="dino-efs-parked">
-              <button
-                mat-stroked-button
-                color="primary"
-                class="dino-efs-import-btn"
-                (click)="openImportDialog()"
-              >
-                <mat-icon>upload</mat-icon>{{'Import'|transloco}}
-              </button>
-            </span>
-
             <ajf-form-builder
               [form]="form"
               [fillHeight]="true"

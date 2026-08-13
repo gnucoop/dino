@@ -283,13 +283,21 @@ dino-edit-form-schema {
     margin-top: 16px;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
 
+    .mat-mdc-outlined-button,
     .mat-mdc-raised-button {
       border-radius: 8px;
+    }
 
-      .mat-icon {
-        margin-left: 4px;
-      }
+    // Import leads with its icon, "Go to build" closes with the arrow.
+    .mat-mdc-outlined-button .mat-icon {
+      margin-right: 4px;
+    }
+
+    .mat-mdc-raised-button .mat-icon {
+      margin-left: 4px;
     }
   }
 
@@ -301,12 +309,6 @@ dino-edit-form-schema {
     background: var(--efs-app-bg);
     display: flex;
     flex-direction: column;
-  }
-
-  // Parking holder for the Import button before it is relocated into the toolbar.
-  // Hidden here; becomes visible once moved out into the (visible) toolbar.
-  .dino-efs-parked {
-    display: none;
   }
 
   // ===== Relationships tab =====
@@ -322,21 +324,6 @@ dino-edit-form-schema {
   // The layout and the neutral chrome ship with @ajf/material/form-builder
   // (see [fillHeight]): only what the library cannot express is set here.
   ajf-form-builder {
-    .ajf-formbuilder-toolbar {
-      // The "Import" button we relocate here, and the library "Download as
-      // XLSForm" button (tagged during relocation), share one bordered look so
-      // they read as the same button style.
-      .dino-efs-import-btn,
-      .dino-efs-download-btn {
-        border: 1px solid var(--efs-border);
-        border-radius: 8px;
-        height: 34px;
-        line-height: 34px;
-        font-size: 13px;
-        font-weight: 500;
-      }
-    }
-
     // Palette items: accent-tinted hover, the library uses a neutral one.
     ajf-fb-node-type-entry:hover {
       background: efs-primary(500, 0.08);
