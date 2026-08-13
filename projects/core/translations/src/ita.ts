@@ -70,6 +70,7 @@ export const ITA: Translation = {
   'Form Settings': 'Impostazioni del Form',
   'Metadata and general configuration of the questionnaire.':
     'Metadati e configurazione generale del questionario.',
+  'Import form schema': 'Importa Form Schema',
   'Go to build': 'Vai alla costruzione',
   'Create or import a form': 'Crea o importa un form',
   'AI Builder': 'AI Builder',

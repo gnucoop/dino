@@ -19,22 +19,16 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-import {AjfForm, AjfFormSerializer} from '@ajf/core/forms';
-import {
-  AjfFormBuilder,
-  AjfFormBuilderService,
-  AjfFormBuilderValidation,
-} from '@ajf/material/form-builder';
+import {AjfForm, AjfFormSerializer, AjfNodeType} from '@ajf/core/forms';
+import {AjfFormBuilderService, AjfFormBuilderValidation} from '@ajf/material/form-builder';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
-  Renderer2,
   ViewChild,
   ViewEncapsulation,
   isDevMode,
@@ -167,13 +161,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
   }
 
   /**
-   * The builder instance the Import button has already been relocated into.
-   * Tracked per-instance so the button is re-inserted when the Build tab body
-   * is destroyed and rebuilt.
-   */
-  private _importRelocatedFor: AjfFormBuilder | null = null;
-
-  /**
    * The embedded metrics/relationships editor. It is hosted headlessly next to the
    * tab group and its sections are projected into the Metrics and Relationships
    * tabs, so it is instantiated with the rest of the template — available from the
@@ -182,108 +169,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
    */
   @ViewChild(FormDepsEditor)
   depsEditor?: FormDepsEditor;
-
-  /**
-   * Reference to the embedded Ajf form builder: relocates the "Import" button
-   * into the toolbar, before "Download".
-   */
-  @ViewChild(AjfFormBuilder)
-  set formBuilderCmp(cmp: AjfFormBuilder | undefined) {
-    if (cmp == null) {
-      this._importRelocatedFor = null;
-      return;
-    }
-    // NOTE: this setter runs as soon as the component renders, which is well
-    // before the Build tab's DOM exists: <mat-tab> content is instantiated
-    // eagerly, but MatTabBody only inserts it into the page when that tab is
-    // first activated. When creating a Form Schema the initial tab is Settings,
-    // so the builder's markup can stay detached for as long as the user spends
-    // filling in the other tabs. Everything below therefore waits for the
-    // element it needs via _whenPresent() instead of polling to a deadline.
-    if (this._importRelocatedFor !== cmp) {
-      // Latched up-front so a second setter call cannot start a duplicate wait;
-      // cleared again by _relocateImportButton() if it could not finish.
-      this._importRelocatedFor = cmp;
-      void this._relocateImportButton(cmp);
-    }
-  }
-
-  /**
-   * Resolves with the first element matching `selector` inside this component, as
-   * soon as it exists — immediately when it already does, otherwise once it is
-   * inserted. Resolves with `null` only if the component is destroyed first.
-   *
-   * Deliberately has no attempt/time limit. The elements this is used for belong
-   * to the Build tab, whose DOM is attached only when that tab is first opened —
-   * arbitrarily long after the builder component itself was created. A bounded
-   * retry loop expires in the meantime and then never runs again, which is what
-   * used to leave the Import button parked in its hidden span when creating a
-   * new Form Schema.
-   */
-  private _whenPresent(selector: string): Promise<HTMLElement | null> {
-    const root = this._el.nativeElement;
-    const existing = root.querySelector(selector) as HTMLElement | null;
-    if (existing != null) {
-      return Promise.resolve(existing);
-    }
-    if (this._destroyed) {
-      return Promise.resolve(null);
-    }
-    return new Promise<HTMLElement | null>(resolve => {
-      let entry: {cancel: () => void};
-      const observer = new MutationObserver(() => {
-        const found = root.querySelector(selector) as HTMLElement | null;
-        if (found != null) {
-          finish(found);
-        }
-      });
-      const finish = (el: HTMLElement | null) => {
-        observer.disconnect();
-        this._pendingWaits.delete(entry);
-        resolve(el);
-      };
-      entry = {cancel: () => finish(null)};
-      this._pendingWaits.add(entry);
-      observer.observe(root, {childList: true, subtree: true});
-    });
-  }
-
-  /**
-   * Moves the parked "Import" button into the Ajf toolbar, just before the
-   * "Download as XLSForm" button (the element right after the toolbar spacer).
-   * The Ajf toolbar has no projection slot, so we relocate our own real Angular
-   * button (its click binding is preserved by the move). Retries until the
-   * async-rendered toolbar and the button are both available.
-   */
-  private async _relocateImportButton(cmp: AjfFormBuilder): Promise<void> {
-    const toolbar = await this._whenPresent('ajf-form-builder .ajf-formbuilder-toolbar');
-    // Query the parked button straight from the DOM (not via @ViewChild) so this
-    // does not depend on query-resolution timing when the Build tab mounts lazily
-    // (e.g. when creating a new schema, where Build is not the initial tab).
-    const importEl = toolbar == null ? null : await this._whenPresent('.dino-efs-import-btn');
-
-    if (toolbar == null || importEl == null) {
-      // Only reachable when the component was destroyed while waiting. Release the
-      // latch so a later builder instance is still handled.
-      if (this._importRelocatedFor === cmp) {
-        this._importRelocatedFor = null;
-      }
-      return;
-    }
-
-    const downloadBtn = toolbar.querySelector(
-      ':scope > .ajf-spacer + button',
-    ) as HTMLElement | null;
-    if (downloadBtn != null) {
-      // Tag the Download button so it can be restyled with a border to match
-      // Import (adjacency-based selectors break once Import is inserted here).
-      this._renderer.addClass(downloadBtn, 'dino-efs-download-btn');
-      this._renderer.insertBefore(toolbar, importEl, downloadBtn);
-      return;
-    }
-    // Toolbar is up but has no Download button to anchor to: at least show Import.
-    this._renderer.appendChild(toolbar, importEl);
-  }
 
   /**
    * The Form schema id
@@ -372,16 +257,8 @@ export class EditFormSchema implements OnInit, OnDestroy {
   private _newLangs: Partial<Lang>[] = []; // to be created when saving the form
   private _patchLangs: Partial<Lang>[] = []; // to be patched when saving the form
 
-  /** Outstanding {@link _whenPresent} waits, cancelled on destroy. */
-  private readonly _pendingWaits = new Set<{cancel: () => void}>();
-
-  /** True once destroyed, so {@link _whenPresent} stops waiting for the DOM. */
-  private _destroyed = false;
-
   constructor(
     protected _cdr: ChangeDetectorRef,
-    private _el: ElementRef<HTMLElement>,
-    private _renderer: Renderer2,
     private _router: Router,
     private _route: ActivatedRoute,
     private _fs: FormSchemaManager,
@@ -854,7 +731,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
           label: 'Slide 1',
           nodes: [],
           parent: 0,
-          nodeType: 3, // AjfNodeType.AjfSlide
+          nodeType: AjfNodeType.AjfSlide,
           parentNode: 0,
           visibility: {condition: 'true'},
           conditionalBranches: [{condition: 'true'}],
@@ -1022,10 +899,6 @@ export class EditFormSchema implements OnInit, OnDestroy {
     this._autoReportDataSub.unsubscribe();
     this._dialogSub.unsubscribe();
     this._autoReportLockSub.unsubscribe();
-    this._destroyed = true;
-    // _whenPresent() waits have no deadline, so they must be released here.
-    this._pendingWaits.forEach(wait => wait.cancel());
-    this._pendingWaits.clear();
     this.isSaving = false;
   }
 }

@@ -64,6 +64,7 @@ export const ESP: Translation = {
   'Form Settings': 'Configuración del formulario',
   'Metadata and general configuration of the questionnaire.':
     'Metadatos y configuración general del cuestionario.',
+  'Import form schema': 'Importar formulario',
   'Go to build': 'Ir a la construcción',
   'Create or import a form': 'Crear o importar un formulario',
   'AI Builder': 'AI Builder',
