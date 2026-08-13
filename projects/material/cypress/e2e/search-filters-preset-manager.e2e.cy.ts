@@ -1,6 +1,4 @@
-import {formSchemas} from '../../../dinoapp/src/testing/test-ajf-formschema';
-
-const url = `/forms/${formSchemas[0].id}`;
+import {openFirstFormList} from '../support/navigation';
 
 const filtersPreset = {
   filters: [
@@ -17,7 +15,7 @@ const presetValue = btoa(encodeURI(JSON.stringify(filtersPreset)));
 
 describe('dino-search-filters-preset-manager', () => {
   beforeEach(() => {
-    cy.visit(url);
+    openFirstFormList();
     cy.get('.mat-expansion-indicator').click();
     cy.get('dino-search-filters-preset-manager').should('exist');
     localStorage.setItem('filters_preset_custom_load', presetValue);

@@ -1,3 +1,5 @@
+import {openFirstFormList} from '../support/navigation';
+
 /**
  * Opens the search filters dialog on the list of the first form schema.
  *
@@ -9,9 +11,7 @@
  * the timing of the run.
  */
 const openFiltersDialog = () => {
-  cy.visit('/forms');
-  cy.get('dino-collect').should('exist');
-  cy.get('mat-grid-tile').should('exist').first().click();
+  openFirstFormList();
   cy.get('.mat-expansion-indicator').click();
   cy.get('.dino-filters-dialog-button').should('be.visible').click();
   cy.get('dino-search-filters-dialog').should('exist');
