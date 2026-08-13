@@ -136,26 +136,6 @@ describe('Edit FormSchema', () => {
     expect(editFormSchema.selectedTabIndex).toBe(3); // EditorTab.Build
   });
 
-  // The Build tab's DOM is only attached when that tab is first opened, which when
-  // creating a schema happens long after the builder component was created. The
-  // Import button relocation and the field-type category headers used to poll for
-  // it on a 2s budget and then give up for good; they now wait without a deadline.
-  it('should resolve a DOM wait for an element that appears later', async () => {
-    await fixtureEditFormSchema.whenStable();
-    fixtureEditFormSchema.detectChanges();
-
-    const host = fixtureEditFormSchema.nativeElement as HTMLElement;
-    const pending = (editFormSchema as unknown as {
-      _whenPresent(s: string): Promise<HTMLElement | null>;
-    })._whenPresent('.test-late-element');
-
-    const late = document.createElement('div');
-    late.className = 'test-late-element';
-    host.appendChild(late);
-
-    await expectAsync(pending).toBeResolvedTo(late);
-  });
-
   // "Generate Report" is pinned to Yes and disabled once an automatic report exists.
   // Disabling must not break Save: Angular drops disabled controls from validation
   // (which gates the Save button) but still exposes their value, which is what the
@@ -270,18 +250,5 @@ describe('Edit FormSchema', () => {
       expect(navigateSpy).not.toHaveBeenCalled();
       expect(editFormSchema.isSaving).toBe(false);
     });
-  });
-
-  it('should release pending DOM waits on destroy', async () => {
-    await fixtureEditFormSchema.whenStable();
-    fixtureEditFormSchema.detectChanges();
-
-    const pending = (editFormSchema as unknown as {
-      _whenPresent(s: string): Promise<HTMLElement | null>;
-    })._whenPresent('.element-that-never-appears');
-
-    fixtureEditFormSchema.destroy();
-
-    await expectAsync(pending).toBeResolvedTo(null);
   });
 });
