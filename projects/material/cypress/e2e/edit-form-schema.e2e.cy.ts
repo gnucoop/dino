@@ -1,6 +1,19 @@
-import {formSchemas} from '../../../dinoapp/src/testing/test-ajf-formschema';
-
-const url = `/forms/schema/${formSchemas[0].id}/edit`;
+/**
+ * Opens the Form Schema editor on the first seeded schema.
+ *
+ * The editor is reached the way a user reaches it, with "Edit Schema" on the
+ * forms page, and not by building the url from the fixture: the seed ids never
+ * make it into the database, because DataService assigns a fresh uuid to every
+ * inserted document. Visiting `/forms/schema/<seed id>/edit` opens the editor on
+ * a schema that does not exist, which leaves it in creation mode — an empty
+ * builder, the relationship sections locked and the Relationships tab disabled.
+ */
+const openSchemaEditor = () => {
+  cy.visit('/forms');
+  cy.get('button[aria-label="Edit Schema"]').first().click();
+  cy.get('dino-edit-form-schema').should('exist');
+  cy.url().should('contain', '/forms/schema/').should('contain', '/edit');
+};
 
 /** Tab labels in display order — mirrors the EditorTab enum in edit-form-schema.ts. */
 const TABS = ['Settings', 'Metrics', 'Status', 'Build', 'Relationships'];
@@ -9,7 +22,7 @@ const TABS = ['Settings', 'Metrics', 'Status', 'Build', 'Relationships'];
 const tab = (name: string) => cy.get('.dino-efs-tabs .mat-mdc-tab').eq(TABS.indexOf(name));
 
 describe('dino-edit-form-schema', () => {
-  beforeEach(() => cy.visit(url));
+  beforeEach(openSchemaEditor);
 
   it('should show the Settings, Metrics, Status, Build and Relationships tabs in order', () => {
     cy.get('.dino-efs-tabs .mat-mdc-tab').should('have.length', TABS.length);
@@ -55,7 +68,7 @@ describe('dino-edit-form-schema', () => {
 });
 
 describe('dino-import-form-schema', () => {
-  beforeEach(() => cy.visit(url));
+  beforeEach(openSchemaEditor);
 
   it('should show an Import button in the Settings footer', () => {
     tab('Settings').click();
