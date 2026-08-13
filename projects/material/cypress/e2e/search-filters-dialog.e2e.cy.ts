@@ -1,9 +1,8 @@
+import {openFirstFormList} from '../support/navigation';
+
 describe('dino-search-filters-dialog', () => {
   beforeEach(() => {
-    cy.visit('/forms');
-    cy.get('dino-collect').should('exist');
-    cy.get('mat-grid-tile').should('exist').first().click();
-
+    openFirstFormList();
     cy.get('.mat-expansion-indicator').click();
     cy.get('.dino-filters-dialog-button').should('be.visible');
     cy.get('.dino-filters-dialog-button').click();
