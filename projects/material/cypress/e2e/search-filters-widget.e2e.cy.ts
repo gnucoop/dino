@@ -1,24 +1,24 @@
-describe('dino-search-filters-widget', {testIsolation: false}, () => {
-  before(() => {
-    cy.visit('/forms');
-    cy.get('dino-collect').should('exist');
-    cy.get('mat-grid-tile').should('exist').first().click();
-    cy.get('.mat-expansion-indicator').click();
-  });
+/**
+ * Opens the search filters dialog on the list of the first form schema.
+ *
+ * Every test starts from a fresh page. The widgets keep the value and the
+ * operator they were given in the FiltersService, and creating a filter makes
+ * the dialog rebuild all of them, so a dialog shared across tests
+ * (testIsolation: false) left each test at the mercy of what the previous ones
+ * had typed or toggled: the spec used to fail on a different test depending on
+ * the timing of the run.
+ */
+const openFiltersDialog = () => {
+  cy.visit('/forms');
+  cy.get('dino-collect').should('exist');
+  cy.get('mat-grid-tile').should('exist').first().click();
+  cy.get('.mat-expansion-indicator').click();
+  cy.get('.dino-filters-dialog-button').should('be.visible').click();
+  cy.get('dino-search-filters-dialog').should('exist');
+};
 
-  beforeEach(() => {
-    cy.get('.dino-filters-dialog-button').should('be.visible').click();
-    cy.get('dino-search-filters-dialog').should('exist');
-  });
-
-  afterEach(() => {
-    cy.get('body').then($body => {
-      if ($body.find('dino-search-filters-dialog').length > 0) {
-        cy.get('.mat-mdc-raised-button:contains("Close")').click({force: true});
-        cy.get('dino-search-filters-dialog').should('not.exist');
-      }
-    });
-  });
+describe('dino-search-filters-widget', () => {
+  beforeEach(openFiltersDialog);
 
   it('should display a number of dino-search-filters-widget components', () => {
     cy.get('dino-search-filters-widget').should('have.length.gt', 0);
