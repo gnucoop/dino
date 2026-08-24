@@ -3,44 +3,14 @@
     <!-- Header -->
     <div class="dino-import-head">
       <mat-icon>note_add</mat-icon>
-      <h2>{{'Create or import a form'|transloco}}</h2>
+      <h2>{{'Import XLSForm'|transloco}}</h2>
       <button mat-icon-button class="dino-import-close" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
 
     <div class="dino-import-body">
-      <!-- Choice cards -->
-      <div class="dino-import-cards">
-        <button
-          type="button"
-          class="dino-import-card dino-import-card--ai"
-          [class.selected]="mode === 'builder'"
-          (click)="chooseMode('builder')"
-        >
-          <mat-icon>auto_awesome</mat-icon>
-          <div class="dino-import-card-title">{{'AI Builder'|transloco}}</div>
-          <div class="dino-import-card-desc">
-            {{'Build the schema by passing a prompt to our AI.'|transloco}}
-          </div>
-        </button>
-
-        <button
-          type="button"
-          class="dino-import-card dino-import-card--xls"
-          [class.selected]="mode === 'xls'"
-          (click)="chooseMode('xls')"
-        >
-          <mat-icon>table_chart</mat-icon>
-          <div class="dino-import-card-title">{{'Import XLSForm'|transloco}}</div>
-          <div class="dino-import-card-desc">
-            {{'Upload a .xlsx file in standard XLSForm format.'|transloco}}
-          </div>
-        </button>
-      </div>
-
-      <!-- XLSForm path -->
-      <div class="dino-import-xls" *ngIf="mode === 'xls'">
+      <div class="dino-import-xls">
         <form [formGroup]="importForm">
           <mat-icon class="dino-import-xls-icon">cloud_upload</mat-icon>
           <div class="dino-import-xls-text">{{'Drag your .xlsx file here or'|transloco}}</div>
@@ -66,26 +36,6 @@
           <button mat-button (click)="closeDialog()">{{'Cancel'|transloco}}</button>
           <button mat-raised-button color="primary" [disabled]="processing" (click)="apply()">
             {{'Apply'|transloco}}
-          </button>
-        </div>
-      </div>
-
-      <!-- AI Builder path (UI only) -->
-      <div class="dino-import-ai" *ngIf="mode === 'builder'">
-        <div class="dino-import-ai-head">
-          <mat-icon>auto_awesome</mat-icon>
-          <span>{{'Describe the form to create'|transloco}}</span>
-        </div>
-        <textarea
-          class="dino-import-ai-input"
-          [(ngModel)]="aiPrompt"
-          [ngModelOptions]="{standalone: true}"
-          placeholder="{{'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...'|transloco}}"
-        ></textarea>
-        <div class="dino-import-ai-foot">
-          <span class="dino-import-ai-hint">{{'New feature coming soon'|transloco}}</span>
-          <button mat-raised-button class="dino-import-ai-btn" disabled>
-            <mat-icon>auto_awesome</mat-icon>{{'Generate form'|transloco}}
           </button>
         </div>
       </div>
