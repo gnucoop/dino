@@ -83,12 +83,20 @@ dino-edit-form-schema {
     flex-direction: column;
   }
 
-  // Save button overlaid on the tab-header row, right-aligned.
-  .dino-efs-save {
+  // Import and Save, overlaid on the tab-header row and right-aligned, so they
+  // are reachable from every tab.
+  .dino-efs-row-actions {
     position: absolute;
     top: 6px;
     right: 12px;
     z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dino-efs-import,
+  .dino-efs-save {
     height: 36px;
     line-height: 36px;
     border-radius: 8px;
@@ -283,21 +291,13 @@ dino-edit-form-schema {
     margin-top: 16px;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
 
-    .mat-mdc-outlined-button,
     .mat-mdc-raised-button {
       border-radius: 8px;
-    }
 
-    // Import leads with its icon, "Go to build" closes with the arrow.
-    .mat-mdc-outlined-button .mat-icon {
-      margin-right: 4px;
-    }
-
-    .mat-mdc-raised-button .mat-icon {
-      margin-left: 4px;
+      .mat-icon {
+        margin-left: 4px;
+      }
     }
   }
 

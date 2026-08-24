@@ -70,14 +70,14 @@ describe('dino-edit-form-schema', () => {
 describe('dino-import-form-schema', () => {
   beforeEach(openSchemaEditor);
 
-  it('should show an Import button in the Settings footer', () => {
-    tab('Settings').click();
-    cy.get('.dino-efs-settings-footer button').contains('Import').should('exist');
+  it('should show an Import button next to Save on the tab row', () => {
+    cy.get('.dino-efs-row-actions .dino-efs-import')
+      .contains('Import XLSForm')
+      .should('be.visible');
   });
 
-  it('should open the Create or import a form dialog', () => {
-    tab('Settings').click();
-    cy.get('.dino-efs-settings-footer button').contains('Import').click();
+  it('should open the Import XLSForm dialog', () => {
+    cy.get('.dino-efs-row-actions .dino-efs-import').click();
     cy.get('dino-import-form-schema').should('exist');
   });
 });

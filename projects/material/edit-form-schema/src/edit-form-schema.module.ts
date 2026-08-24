@@ -23,7 +23,7 @@
 import {AjfFormBuilderModule} from '@ajf/material/form-builder';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -51,7 +51,6 @@ import {FormSchemaNameMatchValidator} from './form-schema-name-validator';
     AjfFormBuilderModule,
     CommonModule,
     FormDepsEditorModule,
-    FormsModule,
     IconsServiceModule,
     MatAutocompleteModule,
     MatButtonModule,
