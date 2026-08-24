@@ -69,23 +69,11 @@ export const ENG: Translation = {
   'Form Settings': 'Form Settings',
   'Metadata and general configuration of the questionnaire.':
     'Metadata and general configuration of the questionnaire.',
-  'Import form schema': 'Import form schema',
   'Go to build': 'Go to build',
-  'Create or import a form': 'Create or import a form',
-  'AI Builder': 'AI Builder',
-  'Build the schema by passing a prompt to our AI.':
-    'Build the schema by passing a prompt to our AI.',
   'Import XLSForm': 'Import XLSForm',
-  'Upload a .xlsx file in standard XLSForm format.':
-    'Upload a .xlsx file in standard XLSForm format.',
   'Drag your .xlsx file here or': 'Drag your .xlsx file here or',
   'Required sheets: survey, choices, settings': 'Required sheets: survey, choices, settings',
-  'Describe the form to create': 'Describe the form to create',
-  'New feature coming soon': 'New feature coming soon',
-  'Generate form': 'Generate form',
   'Cancel': 'Cancel',
-  'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...':
-    'E.g. Course evaluation questionnaire: participant details, teacher ratings from 1 to 5, free comments...',
   '{{language}} already deleted': '{{language}} already deleted',
   '(select only one field)': '(select only one field)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics':
