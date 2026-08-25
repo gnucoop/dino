@@ -84,6 +84,15 @@ export const DEFAULT_AUTH_OPTIONS = {
 const MIN_PREEMPTIVE_REFRESH_DELAY = 10000;
 
 /**
+ * Lower bound, in milliseconds, used when the pre-emptive refresh is re-armed
+ * after a refresh that could not run because the app was offline.
+ * Longer than {@link MIN_PREEMPTIVE_REFRESH_DELAY}: an offline session would
+ * otherwise poll itself every few seconds for as long as the connection is
+ * missing.
+ */
+const OFFLINE_PREEMPTIVE_RETRY_DELAY = 60000;
+
+/**
  * Injectable service used to authenticate against an external authentication backend.
  * Stores the authentication token and the logged in user info.
  */
@@ -569,6 +578,11 @@ export class AuthService implements OnDestroy {
             if (!isOnline) {
               // Offline there is nothing to refresh: report success so that
               // callers keep working on cached data instead of logging out.
+              // The pre-emptive timer that led here has been consumed, and no
+              // new token will be stored to re-arm it: without this the session
+              // would run to expiry with no timer armed at all, leaving the
+              // refresh to the reactive paths only.
+              this._schedulePreemptiveRefresh(this.getAuthToken(), OFFLINE_PREEMPTIVE_RETRY_DELAY);
               return obsOf(true);
             } else {
               return refreshHttpCall;
@@ -583,8 +597,14 @@ export class AuthService implements OnDestroy {
    * Schedules a pre-emptive refresh at 75% of the token lifetime, replacing any
    * previously scheduled one. Called every time a new auth token is stored.
    * @param token The freshly stored JWT auth token.
+   * @param minDelay The lower bound for the timer, in milliseconds. Raised by
+   * the callers that re-arm a timer whose refresh could not run, so that the
+   * retry is not immediate.
    */
-  private _schedulePreemptiveRefresh(token: string | null): void {
+  private _schedulePreemptiveRefresh(
+    token: string | null,
+    minDelay: number = MIN_PREEMPTIVE_REFRESH_DELAY,
+  ): void {
     this._clearPreemptiveRefresh();
     if (token == null || decodeJwt(token) == null) {
       return;
@@ -600,10 +620,7 @@ export class AuthService implements OnDestroy {
     if (lifetime <= 0) {
       return;
     }
-    const delay = Math.max(
-      MIN_PREEMPTIVE_REFRESH_DELAY,
-      issuedAt + lifetime * PREEMPTIVE_REFRESH_RATIO - now,
-    );
+    const delay = Math.max(minDelay, issuedAt + lifetime * PREEMPTIVE_REFRESH_RATIO - now);
     this._preemptiveRefreshTimeout = setTimeout(() => {
       this._preemptiveRefreshTimeout = null;
       if (this.getRefreshToken() == null) {
