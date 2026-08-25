@@ -1380,8 +1380,15 @@ export class DataService implements IDataService {
     // Only the full sync refreshes the token, so only it can report on the
     // refresh outcome: the per collection cycles start from a constant `true`.
     const refreshesToken = !collectionName;
+    // Whether this call owns the refresh or joins one already in flight. The
+    // refresh is single-flight, so tapping the sync button three times while the
+    // connection is slow shares one call - and its single failure must be
+    // counted once, not once per caller, or three taps exhaust the budget and
+    // wipe the local database.
+    let ownsRefresh = false;
 
     if (refreshesToken) {
+      ownsRefresh = !this._authService.isRefreshing;
       refreshStream$ = this._authService.refreshToken();
     }
 
@@ -1389,7 +1396,9 @@ export class DataService implements IDataService {
       .pipe(take(1))
       .subscribe(([_isSyncing, isOnline, refresh]) => {
         if (!refresh) {
-          this._handleSyncRefreshFailure();
+          if (ownsRefresh) {
+            this._handleSyncRefreshFailure();
+          }
           return;
         }
         if (refreshesToken) {
