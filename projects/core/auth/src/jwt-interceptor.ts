@@ -79,8 +79,14 @@ export class JWTInterceptor implements HttpInterceptor {
 
     this._nss.isOnline$
       .pipe(
-        filter(res => res === true),
+        // `skip(1)` drops the status the stream starts with - the one this
+        // interceptor was built on - and must come first. Filtering before it
+        // skipped the first *online* status instead, so a session started
+        // offline had its reconnection swallowed: the token was never refreshed
+        // and the sync stayed silent until the next guarded navigation, which on
+        // a device left on one screen may never come.
         skip(1),
+        filter(res => res === true),
         // Re-evaluate the token on each reconnection instead of reusing the
         // check built when the interceptor was constructed.
         switchMap(() => this._authService.checkToken().pipe(take(1))),

@@ -142,11 +142,11 @@ emits, `_initSync()` recreates the replications (they were stopped, so they go t
 fails, see R1.
 
 **Coming back online after a PWA restart** (the likely case for a tablet left in background for
-days): the reconnection handler does **not** fire, because `filter(res => res === true)` precedes
-`skip(1)` — starting offline, the reconnection is the first `true` and gets skipped. With an expired
-token `authenticated` goes false and no replication starts. Recovery then comes from the first
-guarded navigation (`AuthGuard` → `refreshToken('init refresh')`) or from the Sync button
-(`runSync()` → `refreshToken()`). If the user stays on the open screen, the sync stays silent. See R3.
+days): the reconnection handler fires here too, and refreshes the expired token without waiting for
+the user to do anything. It used not to — see R3 — and recovery depended on the first guarded
+navigation (`AuthGuard` → `refreshToken('init refresh')`) or on the Sync button
+(`runSync()` → `refreshToken()`), so a device left on one screen could sit online with its data
+unpushed.
 
 **Replication-side token expiry is not a logout risk.** Replications use rxdb's own `fetch`, not
 Angular's `HttpClient`, so they never reach the interceptor or its budget. A rejected JWT surfaces on
@@ -220,13 +220,23 @@ nothing — that refresh has already been counted. Sequential failures still cou
 together. Regression test: *does not log out when a second request fails inside one refresh round
 trip*.
 
-### R3 — Reconnection refresh skipped when the app starts offline (medium, open)
+### R3 — Reconnection refresh skipped when the app starts offline — **fixed**
 
-`filter(res => res === true)` before `skip(1)` swallows the first reconnection of a session that
-started offline. The sync then stays dead until a guarded navigation or the Sync button. Swapping
-the two operators fixes every sequence (`skip(1)` then `filter`). With R1 fixed the swap is no
-longer dangerous — it was only unsafe while a single failed refresh on that path could wipe the
-database.
+`filter(res => res === true)` before `skip(1)` swallowed the first reconnection of a session that
+started offline: the filter ran first, so what `skip(1)` dropped was the first *online* status
+rather than the status the interceptor was built on. The sync then stayed silent until a guarded
+navigation or the Sync button — which on a device left on one screen may never come, and a
+connectivity window missed for that reason is another day of data kept only on the device.
+
+Fixed by ordering the operators the other way round, which is correct for every sequence: session
+started online (`[true, false, true]` → one reconnection), started offline (`[false, true]` → one
+reconnection), repeated transitions, no transition at all, and an interceptor built late on the
+replayed status. Regression tests: *refreshes the expired token on the first reconnection* and
+*does not refresh while the session stays offline*.
+
+Note that a reconnection with a token that is **still valid** needs none of this: `_initSync()`
+reacts to `isOnline$` and recreates the replications that were stopped while offline. The gap only
+existed for an expired token — that is, always, after days offline.
 
 ### R4 — A collection can stop syncing for the whole session (medium, pre-existing)
 
@@ -279,5 +289,4 @@ way offline data disappears.
 
 Still open, in decreasing order of relevance for the offline deployments: R5 (an automatic logout
 wipes unpushed data by policy — worth deciding explicitly), R4 (a collection can stay unsynced for a
-whole session), R3 (the sync stays silent until the next navigation when the app starts offline) and
-R6. None of them destroys data on its own.
+whole session) and R6. Neither destroys data on its own.
