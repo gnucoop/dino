@@ -6,7 +6,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {Server, WebSocket} from 'mock-socket';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {firstValueFrom, of as obsOf} from 'rxjs';
+import {firstValueFrom, of as obsOf, Subject} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {
@@ -524,7 +524,9 @@ describe('Data service - restore ordering with active sync', () => {
     const activeSyncs = (dataService as any)._activeSyncs;
     const current = activeSyncs.getValue();
     current['form_schema'] = {
-      state: {},
+      // `cancel` is needed as much as the rest: the debounced collection change
+      // of `_initSync` can fire after the test and stop the leftover syncs.
+      state: {cancel: () => Promise.resolve()},
       clientRequestSub: {unsubscribe: () => {}},
       stateReceivedSub: {unsubscribe: () => {}},
       stateActivity: obsOf(false),
@@ -571,7 +573,7 @@ describe('Data service - restore ordering with active sync', () => {
     // An active sync whose awaitInSync() never resolves.
     (dataService as any)._activeSyncs.next({
       form_schema: {
-        state: {awaitInSync: () => new Promise<void>(() => {})},
+        state: {awaitInSync: () => new Promise<void>(() => {}), cancel: () => Promise.resolve()},
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
         stateActivity: obsOf(false),
@@ -642,7 +644,11 @@ describe('Data service - pre-sync token refresh failures', () => {
         // `awaitInSync` never resolves on purpose: the replication cycle
         // completion is irrelevant here and would only fire a timer after the
         // test has ended.
-        state: {reSync: () => {}, awaitInSync: () => new Promise<void>(() => {})},
+        state: {
+          reSync: () => {},
+          awaitInSync: () => new Promise<void>(() => {}),
+          cancel: () => Promise.resolve(),
+        },
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
         stateActivity: obsOf(true),
@@ -744,7 +750,11 @@ describe('Data service - full sync cycle', () => {
       activeSyncs[name] = {
         // `awaitInSync` never resolves on purpose: the cycle completion is
         // irrelevant here and would only fire a timer after the test has ended.
-        state: {reSync: reSyncSpies[name], awaitInSync: () => new Promise<void>(() => {})},
+        state: {
+          reSync: reSyncSpies[name],
+          awaitInSync: () => new Promise<void>(() => {}),
+          cancel: () => Promise.resolve(),
+        },
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
         stateActivity: obsOf(true),
@@ -766,5 +776,121 @@ describe('Data service - full sync cycle', () => {
 
     expect(reSyncSpies['form_data']).toHaveBeenCalledTimes(1);
     expect(reSyncSpies['form_schema']).not.toHaveBeenCalled();
+  });
+});
+
+// The refresh is single-flight: several sync requests in a row share one call.
+// Counting its failure once per caller turned three taps on the sync button -
+// which the app itself invites when there is unsynced data - into a logout, and
+// a logout destroys the local database.
+describe('Data service - single-flight pre-sync refresh', () => {
+  const singleFlightDataServiceConfig: DataServiceConfig = {
+    ...dataServiceConfig,
+    databaseCreateOptions: {
+      ...dataServiceConfig.databaseCreateOptions,
+      name: 'dino_data_test_db_single_flight',
+    },
+    syncOptions: {...dataServiceConfig.syncOptions, backendless: true},
+  };
+
+  let dataService: DataService;
+  let logoutSpy: jasmine.Spy;
+  let pending: Subject<boolean> | null;
+  let refreshCalls: number;
+
+  /** Resolves the shared refresh, as the auth service does for every joiner. */
+  const settleRefresh = (result: boolean): void => {
+    const subject = pending!;
+    subject.next(result);
+    subject.complete();
+    pending = null;
+  };
+
+  beforeEach(() => {
+    pending = null;
+    refreshCalls = 0;
+    logoutSpy = jasmine.createSpy('logout').and.returnValue(obsOf(true));
+    const authMock = {
+      authenticated: obsOf({auth: true, evt: 'init'}),
+      authConfig: authServiceConfig,
+      authToken: obsOf('test_auth_token'),
+      resetEvt: obsOf(false),
+      logoutEvt: new EventEmitter<void>(),
+      logout: logoutSpy,
+      get isRefreshing(): boolean {
+        return pending != null;
+      },
+      // Single-flight, like the real one: the call in flight is shared.
+      refreshToken: () => {
+        if (pending == null) {
+          refreshCalls++;
+          pending = new Subject<boolean>();
+        }
+        return pending.asObservable();
+      },
+    } as unknown as AuthService;
+
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: singleFlightDataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: () => {}}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    (dataService as any)._activeSyncs.next({
+      dummy: {
+        state: {
+          reSync: () => {},
+          awaitInSync: () => new Promise<void>(() => {}),
+          cancel: () => Promise.resolve(),
+        },
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+        stateActivity: obsOf(true),
+        collectionName: 'dummy',
+      },
+    });
+  });
+
+  it('spends one attempt when several sync requests share the same failed refresh', () => {
+    dataService.runSync();
+    dataService.runSync();
+    dataService.runSync();
+    // One refresh for the three requests, as the auth service shares it.
+    expect(refreshCalls).toBe(1);
+
+    settleRefresh(false);
+
+    expect((dataService as any)._failedSyncRefreshes).toBe(1);
+    expect(logoutSpy).not.toHaveBeenCalled();
+  });
+
+  it('still logs out after three refresh rounds that each failed', () => {
+    for (let round = 0; round < 3; round++) {
+      dataService.runSync();
+      settleRefresh(false);
+    }
+
+    expect(refreshCalls).toBe(3);
+    expect((dataService as any)._failedSyncRefreshes).toBe(3);
+    expect(logoutSpy).toHaveBeenCalled();
+  });
+
+  it('gives the budget back when a shared refresh goes through', () => {
+    dataService.runSync();
+    settleRefresh(false);
+    expect((dataService as any)._failedSyncRefreshes).toBe(1);
+
+    dataService.runSync();
+    dataService.runSync();
+    settleRefresh(true);
+
+    expect((dataService as any)._failedSyncRefreshes).toBe(0);
+    expect(logoutSpy).not.toHaveBeenCalled();
   });
 });
