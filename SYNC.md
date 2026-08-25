@@ -46,13 +46,28 @@ The one operation that deletes documents is `RxDatabase.remove()`, reached only 
 `destroyAllCollections()`, which is called from exactly one place: the `logoutEvt` subscription in
 the `DataService` constructor.
 
-```
-user logout button ─┐
-JWT interceptor ────┼─► AuthService.logout() ─► logoutEvt ─► destroyAllCollections()
-DataService.runSync ┘                                        └─► RxDatabase.remove()  ← data gone
+```mermaid
+flowchart TD
+    U["User taps logout"] --> LO["AuthService.logout"]
+    IN["Interceptor - a request failed authentication"] -->|"online, no refresh in flight, budget already spent"| LO
+    SY["Full runSync - the pre-sync refresh failed"] -->|"3rd consecutive failed refresh round"| LO
+    LO --> Q{"Logout request succeeded?"}
+    Q -->|"no"| SAFE["Tokens kept, no wipe, session half broken"]
+    Q -->|"yes"| EV["logoutEvt"]
+    EV --> DAC["destroyAllCollections"]
+    DAC --> RM["RxDatabase.remove - unpushed data is gone"]
+
+    classDef danger fill:#7f1d1d,stroke:#ef4444,color:#fff
+    classDef safe fill:#14532d,stroke:#22c55e,color:#fff
+    class RM danger
+    class SAFE safe
 ```
 
-So the audit reduces to: **who emits `_logoutEvt`, and how hard is it to get there.**
+Everything else stops short of that path on purpose: a refresh that fails on reconnection, any
+authentication failure while offline, and a replication whose JWT is rejected all leave the data
+alone — the first two only set `authenticated` to false, the third goes through one shared refresh
+with no budget attached. So the audit reduces to: **who emits `_logoutEvt`, and how hard is it to
+get there.**
 
 ## 2. The three automatic-logout paths
 
@@ -124,6 +139,20 @@ reconnection) and the destructive one (a logout on a single failed refresh). See
    checkpoint are untouched.
 
 ## 4. Offline behaviour, day by day
+
+```mermaid
+stateDiagram-v2
+    [*] --> Replicating
+    Replicating --> Offline: offline event
+    Offline --> Reconnecting: online event or app start
+    Reconnecting --> Replicating: refresh succeeds
+    Reconnecting --> Offline: connection lost again
+```
+
+`Replicating` renews the token in place with `setHeaders`, so the checkpoints survive. `Offline`
+accumulates local writes and spends no retry budget: the refresh short-circuits to `true` without a
+request. `Reconnecting` retries — from the next cycle, a navigation or the re-armed timer — and on
+success recreates the replications from their stored checkpoint, which is what pushes the backlog.
 
 **Going offline.** `isOnline$` emits `false`; `_initSync()` takes its `else` branch and stops every
 replication. Documents and push state stay on disk. `checkToken()` reports `token: true` while
