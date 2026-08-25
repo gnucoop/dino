@@ -218,6 +218,18 @@ const DB_CREATION_MAX_ATTEMPTS = 5;
 const DB_CREATION_RETRY_DELAY_MS = 1000;
 
 /**
+ * Number of consecutive pre-sync token refresh failures tolerated before the
+ * session is considered dead and the user is logged out.
+ * A failed refresh is not proof of a dead session: the auth service reports the
+ * same negative result for a revoked refresh token and for any transient
+ * failure - a 5xx from the auth server, a timeout, or a request failing while
+ * `navigator.onLine` is still true, which is common on mobile. Since the logout
+ * destroys the local database along with the data not yet pushed, a single
+ * failure only skips the sync cycle.
+ */
+const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -351,6 +363,13 @@ export class DataService implements IDataService {
    * and asks the authService to log out.
    */
   private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+
+  /**
+   * Count of the consecutive pre-sync token refresh failures.
+   * Reset by every successful refresh, so that an isolated failure in a later
+   * cycle starts the budget over instead of inheriting the previous one.
+   */
+  private _failedSyncRefreshes: number = 0;
 
   constructor(
     private _authService: AuthService,
@@ -1349,13 +1368,20 @@ export class DataService implements IDataService {
    * If a collection name is provided, the replication cycle runs for
    * that collection only.
    * When the Sync runs for all collections, the auth token gets refreshed before the replication cycle.
+   * A failed refresh only skips the cycle: the session is torn down after
+   * {@link MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES} consecutive failures, because
+   * the logout destroys the local database and a transient failure is
+   * indistinguishable from a revoked refresh token.
    * @param collectionName? The name of the collection to be synced
    * @param retrySyncAttempt? Number of the retry attempt, if the previos sync failed
    */
   runSync(collectionName?: string, retrySyncAttempt?: number) {
     let refreshStream$: Observable<boolean> = obsOf(true);
+    // Only the full sync refreshes the token, so only it can report on the
+    // refresh outcome: the per collection cycles start from a constant `true`.
+    const refreshesToken = !collectionName;
 
-    if (!collectionName) {
+    if (refreshesToken) {
       refreshStream$ = this._authService.refreshToken();
     }
 
@@ -1363,9 +1389,15 @@ export class DataService implements IDataService {
       .pipe(take(1))
       .subscribe(([_isSyncing, isOnline, refresh]) => {
         if (!refresh) {
-          this._logoutEvt.emit();
+          this._handleSyncRefreshFailure();
+          return;
         }
-        if (isOnline && refresh) {
+        if (refreshesToken) {
+          // A refresh that went through proves the session is still alive: the
+          // budget spent by the previous failures is given back.
+          this._failedSyncRefreshes = 0;
+        }
+        if (isOnline) {
           if (isDevMode()) {
             console.log(`Running the sync for ${collectionName ? collectionName : 'all'}! `);
           }
@@ -1397,6 +1429,34 @@ export class DataService implements IDataService {
           }
         }
       });
+  }
+
+  /**
+   * Accounts for a pre-sync token refresh that did not succeed.
+   * The sync cycle has already been skipped by the caller: this only decides
+   * whether the session is still worth keeping. The user is logged out - which
+   * wipes the local database - only once the failures pile up, so that a
+   * network blip cannot cost the data not yet pushed.
+   */
+  private _handleSyncRefreshFailure(): void {
+    this._failedSyncRefreshes++;
+    const exhausted = this._failedSyncRefreshes >= MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES;
+    if (isDevMode()) {
+      console.log(
+        `COULD NOT REFRESH THE AUTH TOKEN BEFORE SYNCING: attempt ${this._failedSyncRefreshes}/${MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES}`,
+      );
+    }
+    // Reported either way: a skipped cycle is silent for the user, and a sync
+    // that "sometimes does nothing" is exactly what needs to be visible.
+    this._ehms?.captureErrorMessage(
+      exhausted
+        ? `Could not refresh the auth token before syncing ${this._failedSyncRefreshes} times in a row: logging out`
+        : `Could not refresh the auth token before syncing: sync cycle skipped (${this._failedSyncRefreshes}/${MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES})`,
+      exhausted ? 'error' : 'warning',
+    );
+    if (exhausted) {
+      this._logoutEvt.emit();
+    }
   }
 
   /**
