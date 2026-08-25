@@ -696,3 +696,75 @@ describe('Data service - pre-sync token refresh failures', () => {
     expect(logoutSpy).not.toHaveBeenCalled();
   });
 });
+
+// A renewed token is handed to the running replication instead of tearing it
+// down, so the full sync has to trigger the replication cycles itself: it used
+// to get them for free from the teardown and recreation.
+describe('Data service - full sync cycle', () => {
+  const fullSyncDataServiceConfig: DataServiceConfig = {
+    ...dataServiceConfig,
+    databaseCreateOptions: {
+      ...dataServiceConfig.databaseCreateOptions,
+      name: 'dino_data_test_db_full_sync',
+    },
+    // No replication is needed here: the active syncs are faked below.
+    syncOptions: {...dataServiceConfig.syncOptions, backendless: true},
+  };
+
+  let dataService: DataService;
+  let reSyncSpies: {[collection: string]: jasmine.Spy};
+
+  beforeEach(() => {
+    const authMock = {
+      authenticated: obsOf({auth: true, evt: 'init'}),
+      authConfig: authServiceConfig,
+      authToken: obsOf('test_auth_token'),
+      resetEvt: obsOf(false),
+      logoutEvt: new EventEmitter<void>(),
+      logout: () => obsOf(true),
+      refreshToken: () => obsOf(true),
+    } as unknown as AuthService;
+
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: fullSyncDataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: () => {}}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    reSyncSpies = {};
+    const activeSyncs: {[collection: string]: unknown} = {};
+    ['form_schema', 'form_data'].forEach(name => {
+      reSyncSpies[name] = jasmine.createSpy(`reSync:${name}`);
+      activeSyncs[name] = {
+        // `awaitInSync` never resolves on purpose: the cycle completion is
+        // irrelevant here and would only fire a timer after the test has ended.
+        state: {reSync: reSyncSpies[name], awaitInSync: () => new Promise<void>(() => {})},
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+        stateActivity: obsOf(true),
+        collectionName: name,
+      };
+    });
+    (dataService as any)._activeSyncs.next(activeSyncs);
+  });
+
+  it('runs a replication cycle for every active sync', () => {
+    dataService.runSync();
+
+    expect(reSyncSpies['form_schema']).toHaveBeenCalledTimes(1);
+    expect(reSyncSpies['form_data']).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs a replication cycle for the given collection only', () => {
+    dataService.runSync('form_data');
+
+    expect(reSyncSpies['form_data']).toHaveBeenCalledTimes(1);
+    expect(reSyncSpies['form_schema']).not.toHaveBeenCalled();
+  });
+});
