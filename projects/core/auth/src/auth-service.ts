@@ -182,6 +182,16 @@ export class AuthService implements OnDestroy {
    */
   private _preemptiveRefreshTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  /**
+   * True while a token refresh is in flight.
+   * Consumers budgeting refresh attempts must not spend one on a refresh they
+   * merely join: the call is shared, so several requests failing inside the same
+   * round trip are one attempt, not one each.
+   */
+  get isRefreshing(): boolean {
+    return this._refreshInFlight != null;
+  }
+
   constructor(
     private _nss: NetworkStatusService,
     private _httpClient: HttpClient,
