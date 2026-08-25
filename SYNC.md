@@ -185,7 +185,7 @@ about.
 
 ## 6. Residual risks
 
-### R1 — Reconnection logout on a single failed refresh (high)
+### R1 — Reconnection logout on a single failed refresh — **fixed**
 
 `JWTInterceptor`, reconnection handler: a negative `refreshToken()` emits `_logoutEvt` with no
 budget. The browser `online` event fires on link-up, not on working connectivity (captive portals,
@@ -198,11 +198,11 @@ the logout request also fails the database is **not** removed. The dangerous com
 "refresh fails but the network works" — a 5xx on the auth endpoint, or a first request that drops
 and a second that succeeds.
 
-Proposed fix: remove `_logoutEvt` from that handler. Keep `authenticated.next({auth: false})`, which
-is correct, and let `AuthGuard` or the Sync button retry. Alternatively give it the same consecutive-
-failure budget as `runSync()`.
+Fixed: `_logoutEvt` is gone from that handler. `authenticated.next({auth: false})` stays, which is
+correct, and the retry is left to `AuthGuard` on the next navigation or to the next sync cycle.
+Regression test: *does not log out when the refresh on reconnection fails*.
 
-### R2 — Concurrent authentication failures exhaust a budget of 1 (high)
+### R2 — Concurrent authentication failures exhaust a budget of 1 — **fixed**
 
 `_handleAuthFailure()` runs per request. With `retryAttemptsMax: 1` (all environments), request A
 fails and sets `_retryAttempts = 1` while its refresh is in flight; request B fails a moment later,
@@ -213,16 +213,20 @@ happens when a user finally gets connectivity after collecting data offline.
 `dev` was accidentally protected here: `debounceTime(retryRefreshTime)` collapsed concurrent
 failures into a single handler run.
 
-Proposed fix: count refresh *attempts*, not failing requests — only increment when this call
-actually starts a refresh rather than joining the in-flight one — or drop the logout from this path
-too and let the failure surface to the caller.
+Fixed: the budget now counts refresh *attempts*, not failing requests. `AuthService.isRefreshing`
+exposes the single-flight state, and a request that joins a refresh already in flight spends
+nothing — that refresh has already been counted. Sequential failures still count one each, so
+"attempts exhausted" now means two failed refresh round trips rather than two requests failing
+together. Regression test: *does not log out when a second request fails inside one refresh round
+trip*.
 
-### R3 — Reconnection refresh skipped when the app starts offline (medium)
+### R3 — Reconnection refresh skipped when the app starts offline (medium, open)
 
 `filter(res => res === true)` before `skip(1)` swallows the first reconnection of a session that
 started offline. The sync then stays dead until a guarded navigation or the Sync button. Swapping
-the two operators fixes every sequence (`skip(1)` then `filter`), but **do not apply it before R1**:
-it would widen the window in which a single failed refresh wipes the database.
+the two operators fixes every sequence (`skip(1)` then `filter`). With R1 fixed the swap is no
+longer dangerous — it was only unsafe while a single failed refresh on that path could wipe the
+database.
 
 ### R4 — A collection can stop syncing for the whole session (medium, pre-existing)
 
@@ -263,13 +267,17 @@ watching in the field; not a data-loss path.
 - `jwt-interceptor.spec.ts` — 401 handling, a 200 carrying a GraphQL `invalid-jwt` error, and a
   successful response leaving the refresh path alone.
 
-Not covered, and worth adding before `main`: R1 and R2 as regression tests (a failed reconnection
-refresh must not wipe the database; two concurrent authentication failures must not log out).
+Both R1 and R2 have a regression test in `jwt-interceptor.spec.ts`, each verified to fail against the
+code as it was before the fix.
 
 ## 8. Merge recommendation
 
 Merging this branch **reduces** the risk of losing offline data compared to what is running on
-`dev` today, mainly because of the interceptor budget reset and the pre-emptive refresh. It should
-not be merged as-is into `main`, though: fix R1 and R2 first — both are small, both are in
-`jwt-interceptor.ts`, and both are the difference between "the sync stops until the next
-navigation" and "days of collected data are gone".
+`dev` today: the interceptor budget reset, the pre-emptive refresh, the `runSync` budget and the two
+fixes above all remove paths that ended in an automatic logout, and an automatic logout is the only
+way offline data disappears.
+
+Still open, in decreasing order of relevance for the offline deployments: R5 (an automatic logout
+wipes unpushed data by policy — worth deciding explicitly), R4 (a collection can stay unsynced for a
+whole session), R3 (the sync stays silent until the next navigation when the app starts offline) and
+R6. None of them destroys data on its own.
