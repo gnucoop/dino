@@ -7,6 +7,10 @@ import {
 } from '@angular/common/http';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
+import {BehaviorSubject} from 'rxjs';
+import {distinctUntilChanged, shareReplay, tap} from 'rxjs/operators';
+
+import {NetworkStatusService} from './network-status.service';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, JWTInterceptor} from './public_api';
 
@@ -193,4 +197,82 @@ describe(`JWTInterceptor`, () => {
       },
     ));
   });
+});
+
+/**
+ * A network status starting offline and driven by hand: the real service reads
+ * `navigator.onLine`, which always reports online in the test browser.
+ */
+class OfflineStartNetworkStatusService extends NetworkStatusService {
+  private _status: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  constructor() {
+    super();
+    this._isOnline$ = this._status.pipe(
+      distinctUntilChanged(),
+      tap(isOnline => this.updateStatusHistory(isOnline, 2)),
+      shareReplay({bufferSize: 1, refCount: false}),
+    );
+  }
+
+  setOnline(isOnline: boolean): void {
+    this._status.next(isOnline);
+  }
+}
+
+// A tablet left in background for days comes back as a fresh app start, most
+// likely still offline: the reconnection that follows is the only chance to
+// refresh the token and push what was collected, and it used to be skipped.
+describe('JWTInterceptor - session started offline', () => {
+  let httpMock: HttpTestingController;
+  let nss: OfflineStartNetworkStatusService;
+
+  beforeEach(() => {
+    localStorage.setItem('dino_auth_token', 'stored_token');
+    localStorage.setItem('dino_refresh_token', 'stored_refresh_token');
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [
+        JWTInterceptor,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: NetworkStatusService, useClass: OfflineStartNetworkStatusService},
+        {provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    nss = TestBed.inject(NetworkStatusService) as OfflineStartNetworkStatusService;
+  });
+
+  afterEach(() => {
+    localStorage.removeItem('dino_auth_token');
+    localStorage.removeItem('dino_refresh_token');
+  });
+
+  it('refreshes the expired token on the first reconnection', inject(
+    [HTTP_INTERCEPTORS],
+    (interceptors: HttpInterceptor[]) => {
+      // Injecting subscribes the reconnection handler while still offline.
+      expect(interceptors.find(i => i instanceof JWTInterceptor)).toBeDefined();
+
+      nss.setOnline(true);
+
+      const refreshRequests = httpMock.match('http://test-auth-backend/api/jwt/refresh');
+      expect(refreshRequests.length).toBe(1);
+      expect(refreshRequests[0].request.body.refreshToken).toBe('stored_refresh_token');
+    },
+  ));
+
+  it('does not refresh while the session stays offline', inject(
+    [HTTP_INTERCEPTORS],
+    (interceptors: HttpInterceptor[]) => {
+      expect(interceptors.find(i => i instanceof JWTInterceptor)).toBeDefined();
+
+      // A repeated offline status must not be read as a transition.
+      nss.setOnline(false);
+
+      httpMock.expectNone('http://test-auth-backend/api/jwt/refresh');
+    },
+  ));
 });
