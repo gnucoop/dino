@@ -1,7 +1,9 @@
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
-import {TestBed} from '@angular/core/testing';
-import {firstValueFrom} from 'rxjs';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {BehaviorSubject, firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
+
+import {NetworkStatusService} from './network-status.service';
 
 import {
   AUTH_SERVICE_CONFIG,
@@ -607,4 +609,92 @@ describe('custom storage functions - logged in', () => {
 
     expect(storeUserInfoSpy).toHaveBeenCalledTimes(1);
   });
+});
+
+// Offline the refresh cannot run, and no new token gets stored: without an
+// explicit re-arm the pre-emptive timer that led here is consumed and the
+// session runs to expiry with no timer at all, leaving the refresh to the
+// reactive paths only.
+describe('pre-emptive refresh while offline', () => {
+  let authService: AuthService;
+  let httpMock: HttpTestingController;
+
+  /**
+   * A token past the 75% mark of its lifetime but not expired yet: exactly the
+   * state in which the pre-emptive timer fires. The residual lifetime outlives
+   * the offline retry delay, so the token is still valid when the retry runs.
+   */
+  const staleToken = (): string => {
+    const nowSeconds = Math.floor(new Date().getTime() / 1000);
+    const payload = JSON.stringify({iat: nowSeconds - 320, exp: nowSeconds + 80});
+    return `header.${btoa(payload)}.signature`;
+  };
+
+  const pendingTimer = (): unknown => (authService as any)._preemptiveRefreshTimeout;
+
+  /**
+   * Discards the armed timer: `fakeAsync` fails a test that ends with a pending
+   * one, and a pending timer is exactly what these tests assert.
+   */
+  const clearPendingTimer = (): void => (authService as any)._clearPreemptiveRefresh();
+
+  beforeEach(() => {
+    localStorage.setItem('dino_auth_token', staleToken());
+    localStorage.setItem('dino_refresh_token', 'refreshToken');
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [
+        AuthService,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {
+          provide: NetworkStatusService,
+          useValue: {isOnline$: obsOf(false), statusHistory$: new BehaviorSubject([false])},
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.removeItem('dino_auth_token');
+    localStorage.removeItem('dino_refresh_token');
+  });
+
+  it('re-arms the pre-emptive refresh when the refresh could not run', fakeAsync(() => {
+    // Injected inside the fake async zone, so that the timer armed by the
+    // constructor is a fake one too.
+    authService = TestBed.inject(AuthService);
+    // The timer armed at construction is the one about to be consumed.
+    expect(pendingTimer()).not.toBeNull();
+
+    let refreshed: boolean | undefined;
+    authService.refreshToken().subscribe(res => (refreshed = res));
+
+    // Offline the refresh reports success, so that the callers keep working on
+    // the cached data instead of logging out...
+    expect(refreshed).toBe(true);
+    // ...and the timer is armed again instead of being lost for the session.
+    expect(pendingTimer()).not.toBeNull();
+    clearPendingTimer();
+  }));
+
+  it('re-arms it with the longer offline floor, instead of retrying every few seconds', fakeAsync(() => {
+    authService = TestBed.inject(AuthService);
+    authService.refreshToken().subscribe();
+    const refreshSpy = spyOn(authService, 'refreshToken').and.callThrough();
+
+    // The regular floor is 10s: reusing it here would poll for as long as the
+    // connection is missing.
+    tick(59999);
+    expect(refreshSpy).not.toHaveBeenCalled();
+
+    tick(1);
+    expect(refreshSpy).toHaveBeenCalledTimes(1);
+    // Still offline: the retry re-arms in turn.
+    expect(pendingTimer()).not.toBeNull();
+    clearPendingTimer();
+  }));
 });
