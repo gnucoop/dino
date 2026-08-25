@@ -1426,6 +1426,15 @@ export class DataService implements IDataService {
                 }
               });
             }
+          } else {
+            // The cycle has to be asked for explicitly: it used to be an
+            // implicit side effect of the token renewal, which tore down and
+            // recreated every replication - restarting it from its checkpoint.
+            // A renewed token is now handed to the running replication instead,
+            // so nothing else would run a cycle here. Each collection goes
+            // through the branch above, which reuses the replication state and
+            // only triggers a run.
+            Object.keys(actSyncs).forEach(name => this.runSync(name));
           }
         }
       });
