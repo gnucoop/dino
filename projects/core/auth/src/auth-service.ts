@@ -172,8 +172,16 @@ export class AuthService implements OnDestroy {
   /**
    * The refresh call currently in flight, shared by every concurrent requester
    * so that interceptor, guard and pre-emptive timer never fire parallel
-   * refresh requests. Refresh tokens are single-use on most backends: parallel
-   * calls invalidate each other and log the user out.
+   * refresh requests.
+   *
+   * One shared call rather than one per requester because: on a slow link the
+   * requests would queue behind each other for no gain; every response emits
+   * `authToken`, and every emission makes the data service reconfigure each
+   * running replication; and a backend that treats refresh tokens as single-use
+   * would see the parallel calls invalidate each other. The current backend does
+   * not rotate at all - verified by hand, see SYNC.md - but that is its
+   * configuration and not a contract, so do not rely on the parallel calls being
+   * harmless.
    */
   private _refreshInFlight: Observable<boolean> | null = null;
 
