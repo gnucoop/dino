@@ -148,6 +148,22 @@ navigation (`AuthGuard` → `refreshToken('init refresh')`) or on the Sync butto
 (`runSync()` → `refreshToken()`), so a device left on one screen could sit online with its data
 unpushed.
 
+**The credentials cannot die on their own here, which is what makes a bad link survivable.**
+Measured by hand against the current instance (2026-08-25), because the client's exposure to a
+flapping connection depends entirely on it:
+
+| Fact | Measured | Consequence |
+| --- | --- | --- |
+| The refresh token does not rotate | `/v1/token` returned the same token value it was given; three parallel calls with one token all returned 200 | A refresh response lost in flight costs nothing: the stored token is still the right one, and the next attempt uses it |
+| Its expiry is a sliding 30-day window | `auth.refresh_tokens.expiresAt` moved from `2026-09-24T12:51:39` to `2026-09-24T12:56:21` across one refresh — each time `now + 30 days` | No calendar wall from the login. The only way to lose the credential is 30 consecutive days without a single successful refresh |
+| The refresh endpoint ignores the `Authorization` header | A call at 12:36:03 succeeded carrying a Bearer that had expired at 12:33:03 | Coming back after days offline works: the access token is long dead, only the body's refresh token matters |
+| Access tokens live 900s | `accessTokenExpiresIn: 900` | The pre-emptive refresh fires at 11m15s, leaving 3m45s of margin for clock skew, a slow round trip and background timer throttling |
+
+None of this is a contract: it is backend configuration. Enabling single-use rotation, or a fixed
+expiry, would each reintroduce a way for the credential to die while the device holds unpushed data
+— so no client code should depend on these four rows. They are recorded here because the risk
+assessment below does.
+
 **Replication-side token expiry is not a logout risk.** Replications use rxdb's own `fetch`, not
 Angular's `HttpClient`, so they never reach the interceptor or its budget. A rejected JWT surfaces on
 `state.error$`, is recognised by `hasJwtAuthError()` and emits `_refreshEvt`, which is
@@ -161,7 +177,7 @@ and zero logout risk.
 | Interceptor retry budget | never reset; 2nd auth failure of the session → logout + wipe | reset on every successful refresh |
 | Pre-emptive refresh | none; recovery only via 401 | at 75% of lifetime, re-armed offline with a 60s floor |
 | Token expiry check | `exp > now`, throws on a malformed token | `isTokenExpired()` with 10s skew, never throws |
-| Concurrent refreshes | independent calls could invalidate each other's single-use refresh token | single-flight `_refreshInFlight` |
+| Concurrent refreshes | one HTTP call per requester, each emitting `authToken` and reconfiguring every replication | single-flight `_refreshInFlight` |
 | Reconnection refresh | dead code (`if (!check)` on an object) | live — and can log out on one failure (R1) |
 | Interceptor on 401 | returned `obsOf(null)` to the caller, replayed the request into the void | refreshes, replays with the current token, returns the real response |
 | Refresh endpoint | a failing refresh could trigger another refresh | excluded via `_isAllowedRequest()` |
@@ -220,6 +236,15 @@ nothing — that refresh has already been counted. Sequential failures still cou
 together. Regression test: *does not log out when a second request fails inside one refresh round
 trip*.
 
+The same flaw was present in `runSync()`, and there it was worse. Tapping the sync button three
+times while the connection is slow produced three `runSync` calls sharing **one** refresh — the auth
+service is single-flight — so a single failure was counted three times and reached the budget of
+three on its own. The button is not disabled while syncing (`main-nav.html`), and with unsynced data
+the app explicitly invites the tap ("You have unsynced data. Please click the Sync icon."), so a
+user trying to save a week of offline work could destroy it in three taps. `runSync()` now records
+whether it owns the refresh or joined one, and only the owner spends an attempt. Regression test:
+*spends one attempt when several sync requests share the same failed refresh*.
+
 ### R3 — Reconnection refresh skipped when the app starts offline — **fixed**
 
 `filter(res => res === true)` before `skip(1)` swallowed the first reconnection of a session that
@@ -253,6 +278,13 @@ never pushed. Nothing distinguishes "the user asked to log out" from "the sessio
 renewed". A safer policy: destroy the database only on an explicit user logout, or when logging in as
 a different user; on an automatic session teardown stop the replications and clear the tokens, and
 leave the data for the next successful login.
+
+This is the last defence that still matters, because the budgets above only bound *transient*
+failures. Against a refresh the server legitimately rejects they are useless by construction: the
+`false` keeps coming, so the threshold is reached with certainty. Given the four measured facts in
+§4 that now takes 30 consecutive days without a single successful refresh — a device in the field
+for a month — but that is exactly the device carrying a month of collected data, and the wipe would
+be the app's response to a correct 401.
 
 ### R6 — Degraded permissions after bounded retries (low)
 
