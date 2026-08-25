@@ -94,10 +94,15 @@ export class JWTInterceptor implements HttpInterceptor {
                 if (refreshed) {
                   return obsOf(true);
                 }
+                // No logout here. The `online` event fires on link-up, not on
+                // working connectivity, so the first refresh after a long
+                // offline stretch is a prime candidate for a transient failure -
+                // and the refresh reports the same negative result for a 5xx, a
+                // timeout and a revoked refresh token. Tearing the session down
+                // would destroy the local database, with the data collected
+                // offline and not pushed yet. The reactive paths retry: the
+                // guard on the next navigation, the sync on the next cycle.
                 this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
-                if (this._authService.getAuthToken() != null) {
-                  this._logoutEvt.emit();
-                }
                 return obsOf(false);
               }),
             );
@@ -165,14 +170,21 @@ export class JWTInterceptor implements HttpInterceptor {
           // caller, which falls back to the local data.
           return throwError(() => new Error('Offline: could not authenticate the request'));
         }
-        if (this._retryAttempts >= this._authService.authConfig.retryAttemptsMax) {
-          this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
-          if (this._authService.getAuthToken() != null) {
-            this._logoutEvt.emit();
+        // A refresh already in flight is joined, not started: it has already
+        // spent its attempt. Counting it again turns several requests failing
+        // inside one refresh round trip - a handful of parallel uploads with an
+        // expired token, say - into a logout, because the budget is 1 in every
+        // environment, and the logout destroys the local database.
+        if (!this._authService.isRefreshing) {
+          if (this._retryAttempts >= this._authService.authConfig.retryAttemptsMax) {
+            this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
+            if (this._authService.getAuthToken() != null) {
+              this._logoutEvt.emit();
+            }
+            return throwError(() => new Error('Auth token refresh attempts exhausted'));
           }
-          return throwError(() => new Error('Auth token refresh attempts exhausted'));
+          this._retryAttempts++;
         }
-        this._retryAttempts++;
         return this._authService.refreshToken().pipe(
           take(1),
           switchMap(refreshed => {
