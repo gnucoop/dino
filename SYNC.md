@@ -42,56 +42,60 @@ offline work consist of.
 - Going offline stops every replication (see §4). No data implication.
 - A failed push leaves the documents where they are and retries.
 
-The one operation that deletes documents is `RxDatabase.remove()`, reached only through
-`destroyAllCollections()`, which is called from exactly one place: the `logoutEvt` subscription in
-the `DataService` constructor.
+The one operation that deletes documents is `RxDatabase.remove()`. It is reached from two places
+only, and **both require a deliberate act**: an explicit logout, through the `logoutEvt`
+subscription in the `DataService` constructor, and a different user logging in on the device,
+through `_removeDataOfPreviousUser()`.
 
 ```mermaid
 flowchart TD
     U["User taps logout"] --> LO["AuthService.logout"]
-    IN["Interceptor - a request failed authentication"] -->|"online, no refresh in flight, budget already spent"| LO
-    SY["Full runSync - the pre-sync refresh failed"] -->|"3rd consecutive failed refresh round"| LO
     LO --> Q{"Logout request succeeded?"}
     Q -->|"no"| SAFE["Tokens kept, no wipe, session half broken"]
     Q -->|"yes"| EV["logoutEvt"]
     EV --> DAC["destroyAllCollections"]
+    OTHER["A different user logs in"] --> DAC
     DAC --> RM["RxDatabase.remove - unpushed data is gone"]
+
+    IN["Interceptor - attempts exhausted"] --> ES["AuthService.endSession - tokens dropped, data kept"]
+    SY["Full runSync - 3 failed refresh rounds"] --> ES
+    ES --> RD["Redirect to the login page"]
 
     classDef danger fill:#7f1d1d,stroke:#ef4444,color:#fff
     classDef safe fill:#14532d,stroke:#22c55e,color:#fff
     class RM danger
-    class SAFE safe
+    class SAFE,ES safe
 ```
 
-Everything else stops short of that path on purpose: a refresh that fails on reconnection, any
-authentication failure while offline, and a replication whose JWT is rejected all leave the data
-alone — the first two only set `authenticated` to false, the third goes through one shared refresh
-with no budget attached. So the audit reduces to: **who emits `_logoutEvt`, and how hard is it to
-get there.**
+Everything the app decides by itself ends at `endSession()`, which drops the tokens and leaves the
+data: the two paths above, plus a refresh that fails on reconnection, any authentication failure
+while offline, and a replication whose JWT is rejected — the last three do not even end the session.
+So the audit reduces to: **who calls `logout()`, and who takes over the device.**
 
-## 2. The three automatic-logout paths
+## 2. Where a session ends, and what it costs
 
 ### 2.1 `DataService.runSync()` — pre-sync refresh failure
 
-`runSync()` without a collection name refreshes the token before the cycle. On this branch a
-negative result no longer tears the session down on the spot: `_handleSyncRefreshFailure()`
-increments `_failedSyncRefreshes` and only emits `_logoutEvt` at
+`runSync()` without a collection name refreshes the token before the cycle. A negative result does
+not tear the session down on the spot: `_handleSyncRefreshFailure()` increments
+`_failedSyncRefreshes` and only emits `_endSessionEvt` at
 `MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES` (3). Any refresh that goes through resets the counter.
 Every failure is reported through `ErrorHandlerMessageService` — `warning` for a skipped cycle,
-`error` for the logout — so a sync that quietly does nothing is visible in the notifications and in
-Sentry.
+`error` for the session end — so a sync that quietly does nothing is visible in the notifications
+and in Sentry.
 
 Crucially, `AuthService.refreshToken()` returns `true` while offline without issuing a request, so
 **days offline consume none of that budget**.
 
-`dev`: logout on the *first* negative result, no budget, no reporting.
+`dev`: logout, database included, on the *first* negative result, with no budget and no reporting.
 
 ### 2.2 `JWTInterceptor._handleAuthFailure()` — a request fails authentication
 
 A 401/400, or a 200 carrying a Hasura `invalid-jwt`/`JWTExpired` error, triggers a refresh and a
-replay of the request. Offline it refuses to refresh or log out and surfaces the error to the
-caller, which falls back to local data. `_retryAttempts` is reset by `tokenRefreshedEvt`, so a
-successful refresh restores the budget.
+replay of the request. Offline it refuses to refresh or end the session and surfaces the error to
+the caller, which falls back to local data. `_retryAttempts` is reset by `tokenRefreshedEvt`, so a
+successful refresh restores the budget. When it runs out, the session ends and the app navigates to
+`login/expired` — with the data still on the device.
 
 `dev`: same shape, except `_retryAttempts` was **never reset**, and `retryAttemptsMax` is `1` in
 every environment. The first authentication failure of a session consumed the budget; the second
@@ -99,16 +103,24 @@ one — minutes or hours later — logged out and wiped the database. With no pr
 `dev`, tokens expired every few minutes, so this was not a corner case but the normal end of a long
 session. This branch fixes it.
 
-### 2.3 `JWTInterceptor` reconnection handler — `online` event with an expired token
+### 2.3 A different user logs in — the one automatic wipe left
 
-On reconnection the interceptor re-evaluates the token and refreshes if needed. If the refresh
-fails it emits `_logoutEvt` **on the first negative result, with no budget at all**.
+`_removeDataOfPreviousUser()` runs inside `_createDatabase()`, before the new session gets a
+database. It compares the logged in user with the owner recorded in `dino_db_owner:<database name>`
+and, when they differ, removes the storage: through `_teardownDatabase()` if an instance is open,
+otherwise `removeRxDatabase()` by name, so a fresh app start does not have to open the previous
+user's database just to throw it away. This is what keeps "the session ends without wiping" from
+turning into a privacy leak between operators sharing a tablet.
+
+### 2.4 `JWTInterceptor` reconnection handler — `online` event with an expired token
+
+On reconnection the interceptor re-evaluates the token and refreshes if needed. A failed refresh
+here does not even end the session: it only reports `authenticated: false`, and the retry is left to
+the guard on the next navigation or to the next sync cycle. See R1.
 
 `dev`: this path was dead code. It read `withLatestFrom(this._authService.checkToken())` and
 tested `if (!check)`, but `checkToken()` returns an object — always truthy — so the branch never
-ran. Fixing that condition on this branch enabled both the useful behaviour (a refresh on
-reconnection) and the destructive one (a logout on a single failed refresh). See
-[Residual risks](#residual-risks) R1.
+ran. Fixing that condition on this branch enabled the useful behaviour, a refresh on reconnection.
 
 ## 3. Normal lifecycle on this branch
 
@@ -309,23 +321,45 @@ the app is reloaded, while the user keeps writing to it. Data is safe on disk, b
 the server, and a later logout takes it with it. On this branch the collection is at least named in
 `problemSyncing` and reported to Sentry (`_reportSyncError`).
 
-### R5 — Automatic logout wipes unpushed data by policy (medium, design)
+### R5 — Automatic logout wipes unpushed data by policy — **fixed**
 
-Whatever the trigger, an automatic logout deletes the local database, including documents that were
-never pushed. Nothing distinguishes "the user asked to log out" from "the session could not be
-renewed". A safer policy: destroy the database only on an explicit user logout, or when logging in as
-a different user; on an automatic session teardown stop the replications and clear the tokens, and
-leave the data for the next successful login.
+Whatever the trigger, an automatic logout used to delete the local database, documents that were
+never pushed included: nothing distinguished "the user asked to log out" from "the session could not
+be renewed". It was the last defence that mattered, because the budgets above only bound *transient*
+failures — against a refresh the server legitimately rejects they are useless by construction, the
+`false` keeps coming and the threshold is reached with certainty.
 
-This is the last defence that still matters, because the budgets above only bound *transient*
-failures. Against a refresh the server legitimately rejects they are useless by construction: the
-`false` keeps coming, so the threshold is reached with certainty. Given the four measured facts in
-§4 that now takes 30 consecutive days without a single successful refresh — a device in the field
-for a month — but that is exactly the device carrying a month of collected data, and the wipe would
-be the app's response to a correct 401.
+Fixed by separating the two intents:
+
+- `AuthService.endSession()` ends a session locally: it drops both tokens, cancels the pre-emptive
+  timer and reports `authenticated: false`. No http call, so it also works offline, which a logout
+  does not. The user info is kept, so the login page can still say whose unsynced data is on the
+  device.
+- The two paths that give up on the session by themselves — the interceptor with its attempts
+  exhausted, and `runSync()` after three failed refresh rounds — call it and navigate
+  unconditionally. They used to navigate only if the logout http call succeeded, so a session given
+  up on while the network was broken left the app on its current screen with no session and no sign
+  of it.
+- `logout()` is untouched and stays the destructive one, together with a different user logging in
+  (§2.3). Both are deliberate acts.
+- The collection registrations had to survive a session end for any of this to be worth it: the
+  `takeUntil` in `createCollection()` moved from the outer stream to the attempt in flight, so a
+  session end cancels the pending attempt — no spurious "could not create collection" report — while
+  the registration re-runs on the database the next login creates. It used to cut the stream for
+  good, and the collection was then absent until a page reload.
+
+The cost, deliberately chosen: the dropped refresh token means recovery needs a real login, rather
+than the guard silently reviving the session on the next navigation. A device whose session died
+does not keep a long-lived credential.
 
 Nor does this reintroduce a DB6 exposure: as §5 explains, a schema change is handled by bumping the
 version, not by wiping the database.
+
+Regression tests, in `logout-login.spec.ts` and `data-service.spec.ts`: the collected data survives
+a session end and is there after the next login; the collections re-register with no new
+`createCollection` call; a different user logging in finds an empty database; an explicit logout
+still wipes. In `auth-service.spec.ts`: `endSession()` drops the tokens, disarms the timer, sends
+nothing.
 
 ### R6 — Degraded permissions after bounded retries (low)
 
@@ -356,10 +390,16 @@ code as it was before the fix.
 ## 8. Merge recommendation
 
 Merging this branch **reduces** the risk of losing offline data compared to what is running on
-`dev` today: the interceptor budget reset, the pre-emptive refresh, the `runSync` budget and the two
-fixes above all remove paths that ended in an automatic logout, and an automatic logout is the only
-way offline data disappears.
+`dev` today, and R5 changes the shape of the problem rather than its size: **no failure the app
+detects by itself deletes anything any more.** The interceptor budget reset, the pre-emptive
+refresh, the `runSync` budget and the R1/R2 fixes each removed a way to reach an automatic logout;
+R5 removed the consequence. What is left of the destructive path takes a deliberate act — the user
+logging out, or a different user logging in.
 
-Still open, in decreasing order of relevance for the offline deployments: R5 (an automatic logout
-wipes unpushed data by policy — worth deciding explicitly), R4 (a collection can stay unsynced for a
-whole session) and R6. Neither destroys data on its own.
+Still open: R4 (a collection can stay unsynced for a whole session) and R6 (permissions degrading to
+"not allowed" after the bounded retries). Neither destroys data.
+
+What R5 makes worth doing next, and is not code: the login page reached by `login/expired` and
+`login/sync_error` should say that this device holds unsynced data, and for whom. Otherwise a user
+who cannot get back in does the natural thing — try another account — and that is now precisely the
+one action that wipes it.

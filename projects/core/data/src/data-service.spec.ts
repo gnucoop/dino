@@ -75,6 +75,9 @@ const authServiceMock = {
   resetEvt: obsOf(true),
   logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
+  // Read by the data service to tell whether the local database belongs to
+  // somebody else; always the same user in these suites.
+  getUserInfo: () => ({id: 'test_user'}),
 } as unknown as AuthService;
 
 describe('Data service', () => {
@@ -609,11 +612,13 @@ describe('Data service - pre-sync token refresh failures', () => {
   let dataService: DataService;
   let refreshOutcome: boolean;
   let logoutSpy: jasmine.Spy;
+  let endSessionSpy: jasmine.Spy;
   let navigateSpy: jasmine.Spy;
 
   beforeEach(() => {
     refreshOutcome = false;
     logoutSpy = jasmine.createSpy('logout').and.returnValue(obsOf(true));
+    endSessionSpy = jasmine.createSpy('endSession');
     navigateSpy = jasmine.createSpy('navigate');
     const authMock = {
       authenticated: obsOf({auth: true, evt: 'init'}),
@@ -622,6 +627,8 @@ describe('Data service - pre-sync token refresh failures', () => {
       resetEvt: obsOf(false),
       logoutEvt: new EventEmitter<void>(),
       logout: logoutSpy,
+      endSession: endSessionSpy,
+      getUserInfo: () => ({id: 'test_user'}),
       refreshToken: () => obsOf(refreshOutcome),
     } as unknown as AuthService;
 
@@ -657,21 +664,24 @@ describe('Data service - pre-sync token refresh failures', () => {
     });
   });
 
-  it('skips the sync cycle instead of logging out on the first refresh failures', () => {
+  it('skips the sync cycle instead of ending the session on the first failures', () => {
     dataService.runSync();
     dataService.runSync();
 
-    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('logs out once the consecutive refresh failures pile up', () => {
+  it('ends the session, without logging out, once the failures pile up', () => {
     dataService.runSync();
     dataService.runSync();
     dataService.runSync();
 
-    expect(logoutSpy).toHaveBeenCalled();
+    expect(endSessionSpy).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'sync_error']);
+    // A logout is what destroys the local database, and the data collected
+    // offline has not been pushed yet.
+    expect(logoutSpy).not.toHaveBeenCalled();
   });
 
   it('gives the budget back after a refresh that went through', () => {
@@ -682,12 +692,12 @@ describe('Data service - pre-sync token refresh failures', () => {
     dataService.runSync();
     expect((dataService as any)._failedSyncRefreshes).toBe(0);
 
-    // Without the reset these two would exhaust the budget and log out.
+    // Without the reset these two would exhaust the budget and end the session.
     refreshOutcome = false;
     dataService.runSync();
     dataService.runSync();
 
-    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
@@ -699,7 +709,7 @@ describe('Data service - pre-sync token refresh failures', () => {
     dataService.runSync('dummy');
 
     expect((dataService as any)._failedSyncRefreshes).toBe(2);
-    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
   });
 });
 
@@ -728,6 +738,7 @@ describe('Data service - full sync cycle', () => {
       resetEvt: obsOf(false),
       logoutEvt: new EventEmitter<void>(),
       logout: () => obsOf(true),
+      getUserInfo: () => ({id: 'test_user'}),
       refreshToken: () => obsOf(true),
     } as unknown as AuthService;
 
@@ -794,7 +805,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
   };
 
   let dataService: DataService;
-  let logoutSpy: jasmine.Spy;
+  let endSessionSpy: jasmine.Spy;
   let pending: Subject<boolean> | null;
   let refreshCalls: number;
 
@@ -809,14 +820,16 @@ describe('Data service - single-flight pre-sync refresh', () => {
   beforeEach(() => {
     pending = null;
     refreshCalls = 0;
-    logoutSpy = jasmine.createSpy('logout').and.returnValue(obsOf(true));
+    endSessionSpy = jasmine.createSpy('endSession');
     const authMock = {
       authenticated: obsOf({auth: true, evt: 'init'}),
       authConfig: authServiceConfig,
       authToken: obsOf('test_auth_token'),
       resetEvt: obsOf(false),
       logoutEvt: new EventEmitter<void>(),
-      logout: logoutSpy,
+      logout: () => obsOf(true),
+      endSession: endSessionSpy,
+      getUserInfo: () => ({id: 'test_user'}),
       get isRefreshing(): boolean {
         return pending != null;
       },
@@ -867,10 +880,10 @@ describe('Data service - single-flight pre-sync refresh', () => {
     settleRefresh(false);
 
     expect((dataService as any)._failedSyncRefreshes).toBe(1);
-    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
   });
 
-  it('still logs out after three refresh rounds that each failed', () => {
+  it('still ends the session after three refresh rounds that each failed', () => {
     for (let round = 0; round < 3; round++) {
       dataService.runSync();
       settleRefresh(false);
@@ -878,7 +891,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
 
     expect(refreshCalls).toBe(3);
     expect((dataService as any)._failedSyncRefreshes).toBe(3);
-    expect(logoutSpy).toHaveBeenCalled();
+    expect(endSessionSpy).toHaveBeenCalled();
   });
 
   it('gives the budget back when a shared refresh goes through', () => {
@@ -891,6 +904,6 @@ describe('Data service - single-flight pre-sync refresh', () => {
     settleRefresh(true);
 
     expect((dataService as any)._failedSyncRefreshes).toBe(0);
-    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
   });
 });

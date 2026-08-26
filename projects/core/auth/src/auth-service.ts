@@ -116,7 +116,11 @@ export class AuthService implements OnDestroy {
   readonly resetEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
   /**
-   * Emits when the current User actively logs out
+   * Emits when the current User actively logs out.
+   *
+   * Only that: the data service answers this event by destroying the local
+   * database, so a session the app gave up on by itself must go through
+   * {@link endSession} instead, which leaves the data alone.
    */
   readonly logoutEvt: EventEmitter<boolean> = new EventEmitter<boolean>(false);
 
@@ -326,6 +330,36 @@ export class AuthService implements OnDestroy {
     // `authenticated` when `authToken` emits.
     this.authenticated.next({auth: true, evt: 'login'});
     this.authToken.next(authToken);
+  }
+
+  /**
+   * Ends the session locally: drops the stored tokens, cancels the pending
+   * pre-emptive refresh and reports the user as not authenticated. The server is
+   * not told, so this also works offline - unlike {@link logout}, which needs a
+   * round trip.
+   *
+   * This is what the paths that give up on renewing the token by themselves must
+   * call. They used to call {@link logout}, which the data service answers by
+   * destroying the local database, taking with it the data collected offline and
+   * never pushed: a failed refresh is not proof that the session is dead, and
+   * the same negative result covers a network blip and a revoked credential.
+   *
+   * What survives is the data, not the credentials: the replications stop -
+   * they are gated on the authentication state - and the next login starts from
+   * a new refresh token, then resumes the replications from their stored
+   * checkpoint and pushes the backlog. The user info is kept so that the login
+   * page can still tell whose unsynced data is sitting on this device.
+   *
+   * @param evt The authentication event to report. Defaults to `expired`.
+   */
+  endSession(evt: AuthEvt = 'expired'): void {
+    // Storage first, then the auth state, then the token stream: consumers
+    // sample `authenticated` when `authToken` emits, and read the token back
+    // from the storage.
+    this._persistAuthToken(null);
+    this._storeRefreshToken(null);
+    this.authenticated.next({auth: false, evt});
+    this.authToken.next(null);
   }
 
   /**

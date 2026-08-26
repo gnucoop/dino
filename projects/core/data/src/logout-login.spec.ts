@@ -5,9 +5,13 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {RxJsonSchema} from 'rxdb';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, Observable, firstValueFrom, of as obsOf} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {filter, take} from 'rxjs/operators';
 
-import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig} from './public_api';
+import {DATA_SERVICE_CONFIG, DataService, DataServiceConfig, Model} from './public_api';
+
+interface DummyModel extends Model {
+  name: string;
+}
 
 const dummySchema: RxJsonSchema<any> = {
   title: 'dummy schema',
@@ -48,9 +52,22 @@ class AuthServiceStub {
 
   private _tokenIdx = 0;
 
-  login(): void {
+  /** The logged in user. Changing it simulates a different person logging in. */
+  userId = 'user_1';
+
+  login(userId: string = this.userId): void {
+    this.userId = userId;
     this.authenticated.next({auth: true, evt: 'login'});
     this.authToken.next(`token_${this._tokenIdx++}`);
+  }
+
+  /**
+   * Ends the session the way the real service does: no `logoutEvt`, so nothing
+   * destroys the local data.
+   */
+  endSession(): void {
+    this.authenticated.next({auth: false, evt: 'expired'});
+    this.authToken.next(null);
   }
 
   logout(): Observable<boolean> {
@@ -66,6 +83,14 @@ class AuthServiceStub {
 
   hasValidAuthToken(): boolean {
     return this.authToken.value != null;
+  }
+
+  /**
+   * The data service reads the logged in user to tell whether the local database
+   * belongs to somebody else.
+   */
+  getUserInfo(): {id: string} {
+    return {id: this.userId};
   }
 
   getAuthToken(): string | null {
@@ -130,9 +155,7 @@ describe('Data service - logout followed by an immediate login', () => {
     await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
 
     const reported: boolean[] = [];
-    const sub = dataService.firstReplicationComplete.subscribe(complete =>
-      reported.push(complete),
-    );
+    const sub = dataService.firstReplicationComplete.subscribe(complete => reported.push(complete));
     dataService.collectionsInitialized.emit('completed');
     expect(reported).toEqual([false]);
 
@@ -144,42 +167,37 @@ describe('Data service - logout followed by an immediate login', () => {
     expect(reported[reported.length - 1]).toBeTrue();
   });
 
-  it(
-    'removes the local database even when a replication cancellation never settles',
-    async () => {
-      authService.login();
-      await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
+  it('removes the local database even when a replication cancellation never settles', async () => {
+    authService.login();
+    await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
 
-      // A replication whose cancel() never settles: rxdb awaits the checkpoint
-      // queue and the meta instance in there, so a pending write or request is
-      // enough to leave it unresolved.
-      const activeSyncs = (dataService as any)._activeSyncs as BehaviorSubject<any>;
-      activeSyncs.next({
-        [collectionRequest.name]: {
-          state: {cancel: () => new Promise<void>(() => {})},
-          clientRequestSub: {unsubscribe: () => {}},
-          stateReceivedSub: {unsubscribe: () => {}},
-        },
-      });
-      const consoleWarn = spyOn(console, 'warn');
+    // A replication whose cancel() never settles: rxdb awaits the checkpoint
+    // queue and the meta instance in there, so a pending write or request is
+    // enough to leave it unresolved.
+    const activeSyncs = (dataService as any)._activeSyncs as BehaviorSubject<any>;
+    activeSyncs.next({
+      [collectionRequest.name]: {
+        state: {cancel: () => new Promise<void>(() => {})},
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+      },
+    });
+    const consoleWarn = spyOn(console, 'warn');
 
-      // The removal is the only thing that clears the schema hashes stored in the
-      // internal store, so it must not depend on the cancellation: a database
-      // surviving the logout makes a schema conflict (rxdb DB6) permanent, with
-      // neither a new login nor a reload able to recover it.
-      await expectAsync(firstValueFrom(dataService.destroyAllCollections())).toBeResolvedTo([
-        collectionRequest.name,
-      ]);
-      expect(consoleWarn).toHaveBeenCalled();
+    // The removal is the only thing that clears the schema hashes stored in the
+    // internal store, so it must not depend on the cancellation: a database
+    // surviving the logout makes a schema conflict (rxdb DB6) permanent, with
+    // neither a new login nor a reload able to recover it.
+    await expectAsync(firstValueFrom(dataService.destroyAllCollections())).toBeResolvedTo([
+      collectionRequest.name,
+    ]);
+    expect(consoleWarn).toHaveBeenCalled();
 
-      authService.login();
-      await expectAsync(
-        firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-      ).toBeResolvedTo(true);
-    },
-    // Deliberately waits for the real cap on the cancellation wait.
-    20000,
-  );
+    authService.login();
+    await expectAsync(
+      firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
+    ).toBeResolvedTo(true);
+  }, 20000); // Deliberately waits for the real cap on the cancellation wait.
 
   it('tears the database down even when no collection was ever registered', async () => {
     authService.login();
@@ -196,5 +214,143 @@ describe('Data service - logout followed by an immediate login', () => {
     await expectAsync(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
     ).toBeResolvedTo(true);
+  });
+});
+
+// The data collected offline is only ever destroyed on purpose: by the user
+// logging out, or by somebody else taking over the device. A session the app
+// gave up on by itself keeps it, so that the next login can push it.
+describe('Data service - session ended without a logout', () => {
+  let dataService: DataService;
+  let authService: AuthServiceStub;
+
+  const dataServiceConfig = (): DataServiceConfig =>
+    ({
+      databaseCreateOptions: {
+        name: `dino_end_session_test_db_${testDbIdx++}`,
+        storage: getRxStorageMemory(),
+      },
+      syncOptions: {
+        collection: collectionRequest,
+        replicationIdentifier: 'test-replication',
+        url: {http: 'http://dinoServer/v1/graphql'},
+        backendless: true,
+      },
+    } as unknown as DataServiceConfig);
+
+  /** The id is generated by the service, so the name is what identifies a doc. */
+  const insertDoc = (name: string): Promise<any> =>
+    firstValueFrom(
+      dataService
+        .insert<DummyModel>({
+          collectionName: collectionRequest.name,
+          object: {name, created_at: new Date().toISOString()},
+        })
+        .pipe(take(1)),
+    );
+
+  const storedNames = async (): Promise<string[]> => {
+    const docs = await firstValueFrom(
+      dataService.find({collectionName: collectionRequest.name}).pipe(take(1)),
+    );
+    return (docs ?? []).map((doc: any) => doc.name);
+  };
+
+  beforeEach(() => {
+    authService = new AuthServiceStub();
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authService},
+        {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: () => {}}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+  });
+
+  /**
+   * Reproduces what the sync does when it gives up on renewing the token: the
+   * data service asks the auth service to end the session, and nothing else.
+   */
+  const endSessionFromSync = (): void => (dataService as any)._endSessionEvt.emit();
+
+  /** Resolves once the collection is registered against the database in use. */
+  const awaitRegistered = (name: string): Promise<unknown> =>
+    firstValueFrom(
+      ((dataService as any)._registeredCollections as BehaviorSubject<any[]>).pipe(
+        filter(colls => colls.some(coll => coll.collection.name === name)),
+        take(1),
+      ),
+    );
+
+  /**
+   * Resolves once a database other than `previousToken` is open: a login creates
+   * one asynchronously, and until it is there the collections still answer from
+   * the previous one.
+   */
+  const awaitNewDatabase = (previousToken: string | null): Promise<string | null> =>
+    firstValueFrom(
+      dataService.dbToken.pipe(
+        filter(token => token != null && token !== previousToken),
+        take(1),
+      ),
+    );
+
+  it('keeps the collected data, and pushes it after the next login', async () => {
+    authService.login('user_1');
+    await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
+    await insertDoc('collected_offline');
+
+    const previousDb = dataService.dbToken.value;
+    endSessionFromSync();
+
+    // Same user back in: the data is still there and the replications resume
+    // from their stored checkpoint, which is what pushes the backlog.
+    authService.login('user_1');
+    await awaitNewDatabase(previousDb);
+    await expectAsync(
+      firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
+    ).toBeResolvedTo(true);
+    await expectAsync(storedNames()).toBeResolvedTo(['collected_offline']);
+  });
+
+  it('re-registers the collections after a session end, with no new createCollection call', async () => {
+    authService.login('user_1');
+    // Subscribed once and kept, the way the data model managers do it.
+    const registration = dataService.createCollection(collectionRequest).subscribe();
+    await awaitRegistered(collectionRequest.name);
+    const previousDb = dataService.dbToken.value;
+
+    endSessionFromSync();
+    authService.login('user_1');
+    await awaitNewDatabase(previousDb);
+    await awaitRegistered(collectionRequest.name);
+
+    // Writing is the proof: it needs the collection registered on the database
+    // this session is using. The registration stream used to be cut by the end
+    // of the session, and the collection was then absent until a page reload.
+    await expectAsync(insertDoc('after_relogin')).toBeResolved();
+    registration.unsubscribe();
+  });
+
+  it('removes the data when a different user logs in', async () => {
+    authService.login('user_1');
+    await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
+    await insertDoc('data_of_user_1');
+    await expectAsync(storedNames()).toBeResolvedTo(['data_of_user_1']);
+
+    const previousDb = dataService.dbToken.value;
+    endSessionFromSync();
+    // Somebody else takes over the device: inheriting the previous user's data
+    // would be a privacy leak, so it goes.
+    authService.login('user_2');
+    await awaitNewDatabase(previousDb);
+
+    await expectAsync(
+      firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
+    ).toBeResolvedTo(true);
+    await expectAsync(storedNames()).toBeResolvedTo([]);
   });
 });
