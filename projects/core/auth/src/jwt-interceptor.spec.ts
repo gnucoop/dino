@@ -10,6 +10,8 @@ import {inject, TestBed} from '@angular/core/testing';
 import {BehaviorSubject} from 'rxjs';
 import {distinctUntilChanged, shareReplay, tap} from 'rxjs/operators';
 
+import {Router} from '@angular/router';
+
 import {NetworkStatusService} from './network-status.service';
 
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig, JWTInterceptor} from './public_api';
@@ -129,8 +131,8 @@ describe(`JWTInterceptor`, () => {
   ));
 
   // A logout destroys the local database, with the data collected offline and
-  // not pushed yet: these are the two paths that used to reach it on a failure
-  // that proves nothing about the session being dead.
+  // not pushed yet, so no path here may reach one: a failure proves nothing
+  // about the session being dead, and giving up on the session is enough.
   describe('with a stored session', () => {
     const refreshUrl = 'http://test-auth-backend/api/jwt/refresh';
 
@@ -152,7 +154,7 @@ describe(`JWTInterceptor`, () => {
         const jwtInterceptor = interceptors.find(
           i => i instanceof JWTInterceptor,
         ) as JWTInterceptor;
-        const logoutSpy = spyOn<any>((jwtInterceptor as any)._logoutEvt, 'emit');
+        const endSessionSpy = spyOn<any>((jwtInterceptor as any)._endSessionEvt, 'emit');
 
         http.post('http://test-auth-backend/data', {}).subscribe({
           next: () => {},
@@ -170,7 +172,7 @@ describe(`JWTInterceptor`, () => {
 
         // The second failure joins the pending refresh instead of spending an
         // attempt that is not there, which used to tear the session down.
-        expect(logoutSpy).not.toHaveBeenCalled();
+        expect(endSessionSpy).not.toHaveBeenCalled();
       },
     ));
 
@@ -180,7 +182,7 @@ describe(`JWTInterceptor`, () => {
         const jwtInterceptor = interceptors.find(
           i => i instanceof JWTInterceptor,
         ) as JWTInterceptor;
-        const logoutSpy = spyOn<any>((jwtInterceptor as any)._logoutEvt, 'emit');
+        const endSessionSpy = spyOn<any>((jwtInterceptor as any)._endSessionEvt, 'emit');
 
         window.dispatchEvent(new Event('offline'));
         window.dispatchEvent(new Event('online'));
@@ -192,8 +194,44 @@ describe(`JWTInterceptor`, () => {
 
         expect(authService.authenticated.value).toEqual({auth: false, evt: 'refresh failed'});
         // A refresh that failed at the very moment the connection came back is
-        // no reason to wipe the local database.
+        // no reason to give up on the session, let alone to wipe the database.
+        expect(endSessionSpy).not.toHaveBeenCalled();
+      },
+    ));
+
+    it('ends the session without logging out when the attempts are exhausted', inject(
+      [HTTP_INTERCEPTORS, HttpClient, AuthService, Router],
+      (
+        interceptors: HttpInterceptor[],
+        http: HttpClient,
+        authService: AuthService,
+        router: Router,
+      ) => {
+        expect(interceptors.find(i => i instanceof JWTInterceptor)).toBeDefined();
+        const endSessionSpy = spyOn(authService, 'endSession');
+        const logoutSpy = spyOn(authService, 'logout');
+        const navigateSpy = spyOn(router, 'navigate');
+
+        // First round: the only allowed attempt is spent and its refresh fails.
+        http.post('http://test-auth-backend/data', {}).subscribe({
+          next: () => {},
+          error: () => {},
+        });
+        httpMock.expectOne('http://test-auth-backend/data').flush(null, unauthorizedResponse);
+        httpMock.match(refreshUrl)[0].flush(null, {status: 500, statusText: 'Server Error'});
+
+        // Second round: no refresh is in flight and the budget is gone.
+        http.post('http://test-auth-backend/other', {}).subscribe({
+          next: () => {},
+          error: () => {},
+        });
+        httpMock.expectOne('http://test-auth-backend/other').flush(null, unauthorizedResponse);
+
+        expect(endSessionSpy).toHaveBeenCalled();
+        // The data collected offline stays on the device: only an explicit
+        // logout may destroy it.
         expect(logoutSpy).not.toHaveBeenCalled();
+        expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'expired']);
       },
     ));
   });

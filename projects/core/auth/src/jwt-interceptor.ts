@@ -49,10 +49,12 @@ export class JWTInterceptor implements HttpInterceptor {
   >();
 
   /**
-   * Emits when the counter reaches the retry attempts max
-   * and asks user to log in again
+   * Emits when the counter reaches the retry attempts max, so the session is
+   * given up on and the user is asked to log in again.
+   * Deliberately not a logout: that would destroy the local database, and the
+   * data collected offline and not pushed yet with it.
    */
-  private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+  private _endSessionEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
    * Counter of the retry attemps for refreshing the token.
@@ -71,10 +73,12 @@ export class JWTInterceptor implements HttpInterceptor {
     // cycle of a session exhausts the attempts and logs the user out.
     this._authService.tokenRefreshedEvt.subscribe(() => (this._retryAttempts = 0));
 
-    this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
-      if (res) {
-        this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
-      }
+    // The navigation is unconditional now. It used to depend on the logout http
+    // call succeeding, so a session given up on while the network was broken
+    // left the app on its current screen with no session and no sign of it.
+    this._endSessionEvt.subscribe(() => {
+      this._authService.endSession();
+      this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
     });
 
     this._nss.isOnline$
@@ -183,10 +187,7 @@ export class JWTInterceptor implements HttpInterceptor {
         // environment, and the logout destroys the local database.
         if (!this._authService.isRefreshing) {
           if (this._retryAttempts >= this._authService.authConfig.retryAttemptsMax) {
-            this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
-            if (this._authService.getAuthToken() != null) {
-              this._logoutEvt.emit();
-            }
+            this._endSessionEvt.emit();
             return throwError(() => new Error('Auth token refresh attempts exhausted'));
           }
           this._retryAttempts++;
