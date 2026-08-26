@@ -223,10 +223,19 @@ and zero logout risk.
 One consequence deserves to be called out: **a logout on this branch reliably destroys the local
 database, where on `dev` it sometimes did not.** `dev`'s `forkJoin` over an empty registered-collection
 list never emitted, and an unbounded wait on a replication cancellation could skip the removal
-entirely. Those accidents occasionally preserved offline data across an unwanted logout. They are
-gone — by design, because they were also what made schema-hash conflicts (rxdb DB6) permanent. The
-automatic-logout paths therefore have to be right on their own merits, which is what R1 and R2 are
-about.
+entirely. Those accidents occasionally preserved offline data across an unwanted logout, so the
+automatic-logout paths now have to be right on their own merits — which is what R1 and R2 are about.
+
+The removal is not, however, the recovery path for a schema change. rxdb keys its internal collection
+document by name **and** version — `_collectionNamePrimary()` returns `name + '-' + schema.version` —
+and DB6 is thrown only when that document already exists with a different schema hash. A bumped
+`version` with its `migrationStrategies` entry therefore takes a different key, never conflicts, and
+gets migrated; the strategies reach `addCollections()` through `params.collection`, passed by the
+online data managers. DB6 means the schema changed *without* a bump: no version transition, nothing
+to migrate, so rxdb refuses rather than guess. It is a developer mistake whose fix is the bump, and
+the wipe on logout only hid it — undependably, since it needs the user to log out. What surfaces it
+instead is the reporting added for a failed collection registration: console error, `problemSyncing`
+badge, Sentry.
 
 ## 6. Residual risks
 
@@ -314,6 +323,9 @@ failures. Against a refresh the server legitimately rejects they are useless by 
 §4 that now takes 30 consecutive days without a single successful refresh — a device in the field
 for a month — but that is exactly the device carrying a month of collected data, and the wipe would
 be the app's response to a correct 401.
+
+Nor does this reintroduce a DB6 exposure: as §5 explains, a schema change is handled by bumping the
+version, not by wiping the database.
 
 ### R6 — Degraded permissions after bounded retries (low)
 
