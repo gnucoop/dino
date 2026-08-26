@@ -698,3 +698,69 @@ describe('pre-emptive refresh while offline', () => {
     clearPendingTimer();
   }));
 });
+
+// A session the app gives up on must not go through a logout: the data service
+// answers that by destroying the local database, and what was collected offline
+// has not been pushed yet.
+describe('endSession', () => {
+  let authService: AuthService;
+  let httpMock: HttpTestingController;
+
+  const validToken = (): string => {
+    const nowSeconds = Math.floor(new Date().getTime() / 1000);
+    const payload = JSON.stringify({iat: nowSeconds - 10, exp: nowSeconds + 900});
+    return `header.${btoa(payload)}.signature`;
+  };
+
+  beforeEach(() => {
+    localStorage.setItem('dino_auth_token', validToken());
+    localStorage.setItem('dino_refresh_token', 'stored_refresh_token');
+    localStorage.setItem('dino_user_info', JSON.stringify(loginResponse.user));
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [
+        AuthService,
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
+    authService = TestBed.inject(AuthService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    // Nothing is sent: a session end is local, which is also why it works
+    // offline while a logout does not.
+    httpMock.verify();
+    localStorage.removeItem('dino_auth_token');
+    localStorage.removeItem('dino_refresh_token');
+    localStorage.removeItem('dino_user_info');
+  });
+
+  it('drops the tokens, reports the session as over and disarms the timer', () => {
+    // The stored token is valid, so the constructor armed a pre-emptive refresh.
+    expect((authService as any)._preemptiveRefreshTimeout).not.toBeNull();
+
+    authService.endSession();
+
+    expect(localStorage.getItem('dino_auth_token')).toBeNull();
+    expect(localStorage.getItem('dino_refresh_token')).toBeNull();
+    expect(authService.authToken.value).toBeNull();
+    expect(authService.authenticated.value).toEqual({auth: false, evt: 'expired'});
+    // A timer left armed would fire a refresh for a session that is over.
+    expect((authService as any)._preemptiveRefreshTimeout).toBeNull();
+  });
+
+  it('keeps the user info, so the login page can say whose data is on the device', () => {
+    authService.endSession();
+
+    expect(authService.getUserInfo()).toEqual(loginResponse.user);
+  });
+
+  it('reports the given event when one is passed', () => {
+    authService.endSession('refresh failed');
+
+    expect(authService.authenticated.value).toEqual({auth: false, evt: 'refresh failed'});
+  });
+});
