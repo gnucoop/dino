@@ -81,6 +81,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {ActiveSync} from './active-sync-interface';
 import {boundedRetry} from './bounded-retry';
+import {dbOwnerStorageKey, localDataOwner} from './local-data-owner';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {PermissionContextService} from './data-context-service';
 import {
@@ -230,14 +231,6 @@ const DB_CREATION_RETRY_DELAY_MS = 1000;
  * failure only skips the sync cycle.
  */
 const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
-
-/**
- * Prefix of the local storage key holding the id of the user a local database
- * belongs to. The database name completes it, because the claim is about one
- * database and the app can be configured with more than one name.
- * Kept outside the database so that it can be read without opening one.
- */
-const DB_OWNER_STORAGE_KEY_PREFIX = 'dino_db_owner:';
 
 /**
  * Service that allows to interact with the local database.
@@ -878,6 +871,18 @@ export class DataService implements IDataService {
   }
 
   /**
+   * The id of the user the local database belongs to, or null when this device
+   * holds no data.
+   *
+   * A session the app gave up on leaves the data in place, so this outlives it:
+   * it is how the login page can warn that logging in with another account
+   * deletes what is still here. An explicit logout clears it along with the data.
+   */
+  get localDataOwner(): string | null {
+    return localDataOwner(this._dataConfig.value.databaseCreateOptions.name);
+  }
+
+  /**
    * Destroys the current local db, with all its collections and their stored data.
    * Called on logout, so that the next user does not inherit the previous one's data.
    *
@@ -972,7 +977,7 @@ export class DataService implements IDataService {
       // Nobody is logged in yet: nothing to compare, and nothing to inherit.
       return;
     }
-    const ownerKey = this._dbOwnerStorageKey(config);
+    const ownerKey = dbOwnerStorageKey(config.databaseCreateOptions.name);
     const previousUserId = localStorage.getItem(ownerKey);
     if (previousUserId === currentUserId) {
       return;
@@ -995,14 +1000,6 @@ export class DataService implements IDataService {
       }
     }
     localStorage.setItem(ownerKey, currentUserId);
-  }
-
-  /**
-   * @param config The data configuration holding the database creation options.
-   * @returns The local storage key holding the owner of that database.
-   */
-  private _dbOwnerStorageKey(config: DataServiceConfig): string {
-    return `${DB_OWNER_STORAGE_KEY_PREFIX}${config.databaseCreateOptions.name}`;
   }
 
   /**
@@ -1089,7 +1086,7 @@ export class DataService implements IDataService {
     this._currentToken = null;
     // The database this described is being removed, so the ownership record goes
     // with it: leaving it behind would claim data that no longer exists.
-    localStorage.removeItem(this._dbOwnerStorageKey(this._dataConfig.value));
+    localStorage.removeItem(dbOwnerStorageKey(this._dataConfig.value.databaseCreateOptions.name));
     if (this._wsClient != null) {
       this._wsClient.dispose();
       this._wsClient = null;
