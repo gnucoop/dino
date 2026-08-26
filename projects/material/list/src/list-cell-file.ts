@@ -34,6 +34,8 @@ export type listCellFile = {
   size: string;
   content: string;
   deleteUrl?: boolean;
+  deleted?: boolean;
+  isDeleted?: boolean;
 };
 
 export interface ListCellFileView {
@@ -98,9 +100,10 @@ export class ListCellFileViewPipe implements PipeTransform {
 export class ListCellIsDeletedFile implements PipeTransform {
   constructor() {}
 
-  transform(element: {[key: string]: any}): boolean {
-    if (typeof element === 'string') return false;
-    return element['size'] <= 0 || element['name'] == null || element['deleteUrl'];
+  transform(element: {[key: string]: any} | string | null): boolean {
+    if (element == null) return true;
+    if (typeof element !== 'object') return false;
+    return isDeletedFile(element);
   }
 }
 
@@ -145,6 +148,7 @@ export class ListCellGetFileIcon implements PipeTransform {
     if (typeof element === 'string') return '';
     const elemObj = element as {[key: string]: string};
     const fileType = elemObj['type'];
+    if (fileType == null) return '';
 
     if (fileType.includes('image')) return 'image';
     if (fileType.includes('audio')) return 'audiotrack';
@@ -164,5 +168,41 @@ export function isFileColumn(element: {[key: string]: any}): boolean {
   }
   if ('content' in element && 'size' in element && 'type' in element && 'name' in element)
     return true;
-  return false;
+  // A file whose content has been deleted keeps only the old url and the deletion
+  // flags: `content` and `size` are set to undefined and are dropped when the form
+  // value is serialized to the db, so the full ajf file shape doesn't match anymore.
+  return (
+    'type' in element &&
+    ('url' in element || 'name' in element || 'content' in element) &&
+    hasDeletedFlag(element)
+  );
+}
+
+/**
+ * Flags set on a file field value when its file is deleted, either by the ajf
+ * file input/signature components (deleteUrl) or by the backend (deleted, isDeleted).
+ */
+const deletedFileFlags = ['deleteUrl', 'deleted', 'isDeleted', '_deleted', 'is_deleted'];
+
+/**
+ * Function that determines if a file value is flagged as deleted
+ * @param element The cell content
+ * @returns True if one of the deletion flags is set
+ */
+function hasDeletedFlag(element: {[key: string]: any}): boolean {
+  return deletedFileFlags.some(flag => element[flag] === true);
+}
+
+/**
+ * Function that determines if a file cell has no file to display, because it has
+ * never been filled in or because its file has been deleted.
+ * @param element The cell content
+ * @returns True if nothing should be displayed for the file
+ */
+export function isDeletedFile(element: {[key: string]: any}): boolean {
+  if (element == null || element === undefined || typeof element !== 'object') {
+    return false;
+  }
+  if (hasDeletedFlag(element)) return true;
+  return element['size'] <= 0 || element['name'] == null;
 }
