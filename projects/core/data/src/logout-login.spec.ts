@@ -335,6 +335,20 @@ describe('Data service - session ended without a logout', () => {
     registration.unsubscribe();
   });
 
+  it('records the owner of the local data, and forgets it when the data goes', async () => {
+    authService.login('user_1');
+    await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
+
+    // The login page reads this to warn that another account would wipe the
+    // device, so it has to outlive a session the app gave up on.
+    expect(dataService.localDataOwner).toBe('user_1');
+    endSessionFromSync();
+    expect(dataService.localDataOwner).toBe('user_1');
+
+    await firstValueFrom(dataService.destroyAllCollections());
+    expect(dataService.localDataOwner).toBeNull();
+  });
+
   it('removes the data when a different user logs in', async () => {
     authService.login('user_1');
     await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
