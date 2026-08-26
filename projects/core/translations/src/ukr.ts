@@ -29,6 +29,10 @@ export const UKR: Translation = {
   'Upload file': 'Завантажити файл',
   'Map fields': 'Зіставити поля',
   'Drag & drop your file here': 'Перетягніть свій файл сюди',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'Дані, зібрані під обліковим записом {{account}}, досі на цьому пристрої. Увійдіть із цим обліковим записом, щоб синхронізувати їх: вхід з іншим записом видалить їх.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    'Дані, зібрані на цьому пристрої, ще не синхронізовані. Увійдіть з обліковим записом, який їх зібрав: вхід з іншим записом видалить їх.',
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Прийнятні формати: .xls, .xlsx, .csv — до 20 МБ',
   'Choose a file': 'Вибрати файл',

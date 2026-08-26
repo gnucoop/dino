@@ -28,6 +28,10 @@ export const PRT: Translation = {
   'Upload file': 'Carregar arquivo',
   'Map fields': 'Mapear campos',
   'Drag & drop your file here': 'Arraste e solte seu arquivo aqui',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'Os dados coletados com a conta {{account}} ainda estão neste dispositivo. Entre com essa conta para sincronizá-los: entrar com outra conta apaga os dados.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    'Os dados coletados neste dispositivo ainda não foram sincronizados. Entre com a conta que os coletou: entrar com outra conta apaga os dados.',
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Formatos aceitos: .xls, .xlsx, .csv — até 20 MB',
   'Choose a file': 'Escolher um arquivo',

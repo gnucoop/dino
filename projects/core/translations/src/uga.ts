@@ -28,6 +28,10 @@ export const UGA: Translation = {
   'Upload file': 'Upload file',
   'Map fields': 'Map fields',
   'Drag & drop your file here': 'Drag & drop your file here',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.',
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Accepted formats: .xls, .xlsx, .csv — up to 20 MB',
   'Choose a file': 'Choose a file',

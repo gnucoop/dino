@@ -28,6 +28,10 @@ export const FRA: Translation = {
   'Upload file': 'Téléverser un fichier',
   'Map fields': 'Associer les champs',
   'Drag & drop your file here': 'Glissez-déposez votre fichier ici',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'Les données collectées avec le compte {{account}} sont encore sur cet appareil. Connectez-vous avec ce compte pour les synchroniser : vous connecter avec un autre les supprime.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    "Les données collectées sur cet appareil n'ont pas encore été synchronisées. Connectez-vous avec le compte qui les a collectées : vous connecter avec un autre les supprime.",
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Formats acceptés : .xls, .xlsx, .csv — jusqu\'à 20 Mo',
   'Choose a file': 'Choisir un fichier',
