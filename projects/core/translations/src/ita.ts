@@ -28,6 +28,10 @@ export const ITA: Translation = {
   'Upload file': 'Carica file',
   'Map fields': 'Associa campi',
   'Drag & drop your file here': 'Trascina qui il tuo file',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    "I dati raccolti con l'account {{account}} sono ancora su questo dispositivo. Accedi con quell'account per sincronizzarli: accedendo con un altro vengono cancellati.",
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    "I dati raccolti su questo dispositivo non sono ancora stati sincronizzati. Accedi con l'account che li ha raccolti: accedendo con un altro vengono cancellati.",
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Formati accettati: .xls, .xlsx, .csv — fino a 20 MB',
   'Choose a file': 'Scegli un file',

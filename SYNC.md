@@ -396,10 +396,12 @@ refresh, the `runSync` budget and the R1/R2 fixes each removed a way to reach an
 R5 removed the consequence. What is left of the destructive path takes a deliberate act — the user
 logging out, or a different user logging in.
 
+The login page says so, too. Keeping the data only helps if the person in front of the device knows
+it is there: `Login` shows a persistent notice whenever `localDataOwners()` finds a database claiming
+an owner, naming the account when it matches the user info the session end left behind. Without it
+the natural reaction to being locked out — try another account — is precisely the one action that
+wipes the device. The notice is not tied to the `expired` / `sync_error` routes: the record only
+survives a session that ended without a logout, so its presence is the signal.
+
 Still open: R4 (a collection can stay unsynced for a whole session) and R6 (permissions degrading to
 "not allowed" after the bounded retries). Neither destroys data.
-
-What R5 makes worth doing next, and is not code: the login page reached by `login/expired` and
-`login/sync_error` should say that this device holds unsynced data, and for whom. Otherwise a user
-who cannot get back in does the natural thing — try another account — and that is now precisely the
-one action that wipes it.
