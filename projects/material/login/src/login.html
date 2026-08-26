@@ -5,6 +5,7 @@
     </div>
   </div>
   <ng-content select="[dropdownSelect]"></ng-content>
+  <div *ngIf="localDataWarning" class="dino-local-data-warning">{{localDataWarning|async}}</div>
   <div class="dino-login-form-container" *ngIf="loginFormVisible === undefined || (loginFormVisible|async) === true">
     <ng-container *ngIf="(showSignupForm|async) && signupForm; else showLogin">
       <form [class.dino-error]="loginError" [formGroup]="signupForm">
