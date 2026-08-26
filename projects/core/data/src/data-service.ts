@@ -28,6 +28,7 @@ import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   addRxPlugin,
   createRxDatabase,
+  removeRxDatabase,
   RxCollection,
   RxDatabase,
   RxDocument,
@@ -49,6 +50,7 @@ import {
   firstValueFrom,
   from,
   interval,
+  merge,
   Observable,
   of as obsOf,
   Subscription,
@@ -230,6 +232,14 @@ const DB_CREATION_RETRY_DELAY_MS = 1000;
 const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
 
 /**
+ * Prefix of the local storage key holding the id of the user a local database
+ * belongs to. The database name completes it, because the claim is about one
+ * database and the app can be configured with more than one name.
+ * Kept outside the database so that it can be read without opening one.
+ */
+const DB_OWNER_STORAGE_KEY_PREFIX = 'dino_db_owner:';
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -358,11 +368,13 @@ export class DataService implements IDataService {
   private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
-   * Emits when a websocket throws an error in its connection callback
-   * or when there is an arror during syncing data
-   * and asks the authService to log out.
+   * Emits when the session has to be given up on: the pre-sync token refresh
+   * kept failing, or the user actively logged out.
+   * It is not itself destructive - the data teardown hangs off the auth
+   * service's `logoutEvt`, which only an explicit logout emits - so a session
+   * the app abandoned by itself keeps the data collected offline.
    */
-  private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+  private _endSessionEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
    * Count of the consecutive pre-sync token refresh failures.
@@ -494,10 +506,12 @@ export class DataService implements IDataService {
       .pipe(exhaustMap(() => this._authService.refreshToken()))
       .subscribe();
 
-    this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
-      if (res) {
-        this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'sync_error']);
-      }
+    // The navigation is unconditional now. It used to depend on the logout http
+    // call succeeding, so a session given up on while the network was broken
+    // left the app on its current screen with no session and no sign of it.
+    this._endSessionEvt.subscribe(() => {
+      this._authService.endSession();
+      this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'sync_error']);
     });
 
     this.syncErrorEvt.subscribe(evt => {
@@ -774,7 +788,6 @@ export class DataService implements IDataService {
     return this.dbToken.pipe(
       filter(tkn => tkn != null),
       distinctUntilChanged(),
-      takeUntil(this._logoutEvt),
       switchMap(tkn => {
         return combineLatest([this._db, this._authService.authenticated]).pipe(
           withLatestFrom(this._contextService.fullContext.pipe(take(1))),
@@ -833,6 +846,13 @@ export class DataService implements IDataService {
             this._reportCollectionError(params.name, err);
             return obsOf(false);
           }),
+          // A session that ends aborts the attempt in flight: retrying against a
+          // database nobody is authenticated for only ends in a spurious "could
+          // not create collection" report. The registration itself stays alive,
+          // so the next login re-registers on the new database - this used to cut
+          // the whole stream, and the collection was then absent for the rest of
+          // the page session, however the session had ended.
+          takeUntil(merge(this._endSessionEvt, this._authService.logoutEvt)),
         );
       }),
     );
@@ -919,6 +939,7 @@ export class DataService implements IDataService {
    */
   private async _createDatabase(config: DataServiceConfig): Promise<RxDatabase> {
     await this._awaitDbTeardown();
+    await this._removeDataOfPreviousUser(config);
     if (this._currentDb != null) {
       // A database is still open although no teardown removed it: a
       // configuration change is the only path that gets here. Close it - without
@@ -931,6 +952,57 @@ export class DataService implements IDataService {
     const db = await createRxDatabase(config.databaseCreateOptions);
     this._currentDb = db;
     return db;
+  }
+
+  /**
+   * Removes the local database when it belongs to a different user than the one
+   * now logged in, before that user gets a database to work with.
+   *
+   * A session the app gave up on no longer destroys the data - the whole point
+   * being to keep what was collected offline until it can be pushed - so this is
+   * what stops the next person on a shared device from inheriting it. The owner
+   * is remembered next to the database and not inside it, so it can be read
+   * without opening anything.
+   *
+   * @param config The data configuration holding the database creation options.
+   */
+  private async _removeDataOfPreviousUser(config: DataServiceConfig): Promise<void> {
+    const currentUserId = this._authService.getUserInfo()?.id ?? null;
+    if (currentUserId == null) {
+      // Nobody is logged in yet: nothing to compare, and nothing to inherit.
+      return;
+    }
+    const ownerKey = this._dbOwnerStorageKey(config);
+    const previousUserId = localStorage.getItem(ownerKey);
+    if (previousUserId === currentUserId) {
+      return;
+    }
+    if (previousUserId != null) {
+      const message =
+        `The local database belongs to another user: removing it before ` +
+        `starting the session of ${currentUserId}.`;
+      console.warn(message);
+      this._ehms?.captureErrorMessage(message, 'warning');
+      if (this._currentDb != null) {
+        await this._teardownDatabase().catch(() => undefined);
+      } else {
+        // No instance is open - a fresh app start - so the storage is removed by
+        // name instead of opening it just to throw it away.
+        await removeRxDatabase(
+          config.databaseCreateOptions.name,
+          config.databaseCreateOptions.storage,
+        ).catch(() => undefined);
+      }
+    }
+    localStorage.setItem(ownerKey, currentUserId);
+  }
+
+  /**
+   * @param config The data configuration holding the database creation options.
+   * @returns The local storage key holding the owner of that database.
+   */
+  private _dbOwnerStorageKey(config: DataServiceConfig): string {
+    return `${DB_OWNER_STORAGE_KEY_PREFIX}${config.databaseCreateOptions.name}`;
   }
 
   /**
@@ -1015,6 +1087,9 @@ export class DataService implements IDataService {
     this._registeredCollections.next([]);
     this.problemSyncing.next([]);
     this._currentToken = null;
+    // The database this described is being removed, so the ownership record goes
+    // with it: leaving it behind would claim data that no longer exists.
+    localStorage.removeItem(this._dbOwnerStorageKey(this._dataConfig.value));
     if (this._wsClient != null) {
       this._wsClient.dispose();
       this._wsClient = null;
@@ -1368,10 +1443,9 @@ export class DataService implements IDataService {
    * If a collection name is provided, the replication cycle runs for
    * that collection only.
    * When the Sync runs for all collections, the auth token gets refreshed before the replication cycle.
-   * A failed refresh only skips the cycle: the session is torn down after
-   * {@link MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES} consecutive failures, because
-   * the logout destroys the local database and a transient failure is
-   * indistinguishable from a revoked refresh token.
+   * A failed refresh only skips the cycle: the session is given up on after
+   * {@link MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES} consecutive failures, because a
+   * transient failure is indistinguishable from a revoked refresh token.
    * @param collectionName? The name of the collection to be synced
    * @param retrySyncAttempt? Number of the retry attempt, if the previos sync failed
    */
@@ -1452,9 +1526,9 @@ export class DataService implements IDataService {
   /**
    * Accounts for a pre-sync token refresh that did not succeed.
    * The sync cycle has already been skipped by the caller: this only decides
-   * whether the session is still worth keeping. The user is logged out - which
-   * wipes the local database - only once the failures pile up, so that a
-   * network blip cannot cost the data not yet pushed.
+   * whether the session is still worth keeping. The session is given up on only
+   * once the failures pile up, so that a network blip does not send the user
+   * back to the login page on the first try. The local data survives either way.
    */
   private _handleSyncRefreshFailure(): void {
     this._failedSyncRefreshes++;
@@ -1468,12 +1542,12 @@ export class DataService implements IDataService {
     // that "sometimes does nothing" is exactly what needs to be visible.
     this._ehms?.captureErrorMessage(
       exhausted
-        ? `Could not refresh the auth token before syncing ${this._failedSyncRefreshes} times in a row: logging out`
+        ? `Could not refresh the auth token before syncing ${this._failedSyncRefreshes} times in a row: ending the session`
         : `Could not refresh the auth token before syncing: sync cycle skipped (${this._failedSyncRefreshes}/${MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES})`,
       exhausted ? 'error' : 'warning',
     );
     if (exhausted) {
-      this._logoutEvt.emit();
+      this._endSessionEvt.emit();
     }
   }
 
