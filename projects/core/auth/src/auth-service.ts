@@ -344,11 +344,12 @@ export class AuthService implements OnDestroy {
    * never pushed: a failed refresh is not proof that the session is dead, and
    * the same negative result covers a network blip and a revoked credential.
    *
-   * What survives is the data, not the credentials: the replications stop -
-   * they are gated on the authentication state - and the next login starts from
-   * a new refresh token, then resumes the replications from their stored
-   * checkpoint and pushes the backlog. The user info is kept so that the login
-   * page can still tell whose unsynced data is sitting on this device.
+   * What survives is the data, not the credentials: the next login starts from a
+   * new refresh token, then resumes the replications from their stored checkpoint
+   * and pushes the backlog. Not the user info either, for the record: the login
+   * page runs {@link resetAuth} on every visit, so what names the account whose
+   * data is on the device is the owner record the data service keeps next to the
+   * database.
    *
    * @param evt The authentication event to report. Defaults to `expired`.
    */
