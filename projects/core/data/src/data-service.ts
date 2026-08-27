@@ -233,6 +233,13 @@ const DB_CREATION_RETRY_DELAY_MS = 1000;
 const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
 
 /**
+ * Name reported in {@link DataService.problemSyncing} when the auth token cannot
+ * be renewed. Not a collection: it is the one problem that stops all of them, and
+ * it travels on the badge and the end of cycle message the collections use.
+ */
+const TOKEN_RENEWAL_SYNC_PROBLEM = 'authentication';
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -497,7 +504,7 @@ export class DataService implements IDataService {
     // triggers arriving while a refresh is already running.
     this._refreshEvt
       .pipe(exhaustMap(() => this._authService.refreshToken()))
-      .subscribe();
+      .subscribe(refreshed => this._reportTokenRenewal(refreshed));
 
     // The navigation is unconditional now. It used to depend on the logout http
     // call succeeding, so a session given up on while the network was broken
@@ -1474,8 +1481,10 @@ export class DataService implements IDataService {
         }
         if (refreshesToken) {
           // A refresh that went through proves the session is still alive: the
-          // budget spent by the previous failures is given back.
+          // budget spent by the previous failures is given back, and the badge
+          // stops reporting a token that could not be renewed.
           this._failedSyncRefreshes = 0;
+          this._reportTokenRenewal(true);
         }
         if (isOnline) {
           if (isDevMode()) {
@@ -1537,6 +1546,9 @@ export class DataService implements IDataService {
     }
     // Reported either way: a skipped cycle is silent for the user, and a sync
     // that "sometimes does nothing" is exactly what needs to be visible.
+    // The badge is the only thing the user in the field can see: the report
+    // above goes to Sentry.
+    this._reportTokenRenewal(false);
     this._ehms?.captureErrorMessage(
       exhausted
         ? `Could not refresh the auth token before syncing ${this._failedSyncRefreshes} times in a row: ending the session`
@@ -1580,6 +1592,26 @@ export class DataService implements IDataService {
       currentSyncsWithProblems.push(collection);
     }
     this.problemSyncing.next(currentSyncsWithProblems);
+  }
+
+  /**
+   * Reports whether the auth token could be renewed, on the same badge that
+   * reports a collection which cannot be synced.
+   *
+   * A token that cannot be renewed stops the sync as surely as a rejected push,
+   * and nothing said so: the badge was fed only by an exhausted push retry and by
+   * a collection that failed to register, while a failed refresh was reported to
+   * Sentry, which nobody in the field reads.
+   *
+   * Marking is informative and reversible, so any failed refresh does it - the
+   * one asked for by the replications as much as the one before a sync. Spending
+   * the budget that ends the session stays with the explicit paths: a network
+   * blip must be visible, not final.
+   *
+   * @param renewed True when the refresh went through.
+   */
+  private _reportTokenRenewal(renewed: boolean): void {
+    this._toggleActiveSyncProblem(TOKEN_RENEWAL_SYNC_PROBLEM, renewed ? 'remove' : 'add');
   }
 
   /**

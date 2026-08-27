@@ -684,6 +684,19 @@ describe('Data service - pre-sync token refresh failures', () => {
     expect(logoutSpy).not.toHaveBeenCalled();
   });
 
+  it('reports on the sync badge that the token could not be renewed', () => {
+    dataService.runSync();
+
+    // The badge is the only signal the user in the field gets: the report that
+    // goes with it ends up in Sentry, which nobody out there reads.
+    expect(dataService.problemSyncing.value).toContain('authentication');
+
+    refreshOutcome = true;
+    dataService.runSync();
+
+    expect(dataService.problemSyncing.value).not.toContain('authentication');
+  });
+
   it('gives the budget back after a refresh that went through', () => {
     dataService.runSync();
     dataService.runSync();
