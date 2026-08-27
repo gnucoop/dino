@@ -409,11 +409,31 @@ export class DataService implements IDataService {
     }
 
     this._authService.authenticated
-      .pipe(filter(authEvt => authEvt.evt === 'login' || authEvt.evt === 'logout'))
+      .pipe(
+        filter(
+          authEvt =>
+            authEvt.evt === 'login' || authEvt.evt === 'logout' || authEvt.evt === 'expired',
+        ),
+      )
       .subscribe(authEvt => {
-        this._refreshDb.next(authEvt.evt === 'login' ? 'ready' : 'notReady');
-        if (authEvt.evt === 'logout') {
+        const login = authEvt.evt === 'login';
+        this._refreshDb.next(login ? 'ready' : 'notReady');
+        if (!login) {
+          // The database of the next session does not exist yet, so the token of
+          // this one has to go: a registration starting before the new database
+          // is open would otherwise find the old token still current, register
+          // against the database this session is leaving and report itself done.
+          // Nothing would then be registered on the database the next session
+          // actually uses - a query for a collection that is not there.
           this.dbToken.next(null);
+          // And the session state with it. The registered collections hold
+          // `RxCollection` handles of the database being left, and a re-
+          // registration is dropped as a duplicate by name, so leaving them
+          // there means the next session replicates collections of a closed
+          // database: they never reach in-sync and the sync spinner never stops.
+          // `expired` is in here for the same reason as `logout`, minus the
+          // teardown: a session the app gave up on keeps its data.
+          this._resetSessionState();
         }
       });
 
@@ -621,7 +641,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         const insertObject = this._prepareInsertObject(object);
         return from(collection.insert(insertObject)).pipe(
@@ -653,7 +673,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         const docsData = objects.map(object => this._prepareInsertObject(object));
         return from(collection.bulkInsert(docsData)).pipe(
@@ -683,7 +703,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(collection.find(query).update({$set: update})).pipe(
           tap(doc => {
@@ -709,7 +729,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(doc.update({$set: updateData})).pipe(
           tap(dc => {
@@ -741,7 +761,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         const insertObject = {
           id: object.id || uuidv4(),
@@ -774,7 +794,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(collection.find(query).exec());
       }),
@@ -873,7 +893,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(collection.destroy()).pipe(
           tap(() => this._removeRegisteredCollection(collection)),
@@ -924,6 +944,9 @@ export class DataService implements IDataService {
     this._currentDb = null;
     const syncsStopped = this._stopAllCollectionSyncs();
     this._resetSessionState();
+    // The data is about to go, so the ownership record goes with it: leaving it
+    // behind would claim data that no longer exists.
+    removeLocalDataOwner(this._dataConfig.value.databaseCreateOptions.name);
     // The replications have to be actually stopped before the storage goes away:
     // rxdb waits for the database to be idle while closing it, and a replication
     // still writing either keeps it busy or writes to a destroyed collection.
@@ -1105,9 +1128,6 @@ export class DataService implements IDataService {
     this._registeredCollections.next([]);
     this.problemSyncing.next([]);
     this._currentToken = null;
-    // The database this described is being removed, so the ownership record goes
-    // with it: leaving it behind would claim data that no longer exists.
-    removeLocalDataOwner(this._dataConfig.value.databaseCreateOptions.name);
     if (this._wsClient != null) {
       this._wsClient.dispose();
       this._wsClient = null;
