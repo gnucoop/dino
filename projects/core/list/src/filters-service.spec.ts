@@ -1,4 +1,4 @@
-import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
+import {AjfFieldType} from '@ajf/core/forms';
 import {fakeAsync, flush, TestBed} from '@angular/core/testing';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
@@ -132,52 +132,6 @@ describe('FiltersService', () => {
 
     expect(await filterFound).not.toBeUndefined();
     expect(await filterFound).toEqual({name: 'test_filter', fieldType: AjfFieldType.String});
-  });
-
-  it('should check the ajfValidation of a FilterItem and return true if valid', () => {
-    const spyCheckCondition = spyOn(fts, 'checkCondition').and.callThrough();
-    const validation = {
-      'maxValue': 6,
-      'notEmpty': true,
-      'conditions': [
-        {
-          'condition': 'test_filter >= 0',
-          'errorMessage': 'Cannot be negative',
-          'clientValidation': true,
-        },
-      ],
-    } as unknown as AjfValidationGroup;
-    const item_1: FilterItem = {name: 'test_filter', value: 3};
-    const item_2: FilterItem = {name: 'test_filter', value: 7};
-    const item_3: FilterItem = {name: 'test_filter', value: -2};
-    const item_4: FilterItem = {name: 'test_filter', value: ''};
-
-    const valid_1 = fts.checkValidation(item_1, validation);
-    const valid_2 = fts.checkValidation(item_2, validation);
-    const valid_3 = fts.checkValidation(item_3, validation);
-    const valid_4 = fts.checkValidation(item_4, validation);
-
-    expect(valid_1).toBe(true);
-    expect(valid_2).toBe(false);
-    expect(valid_3).toBe(false);
-    expect(valid_4).toBe(false);
-    expect(spyCheckCondition).toHaveBeenCalledTimes(2);
-  });
-
-  it('should check a single ajfCondition of a FilterItem and return true if met', () => {
-    const condition_a = {'condition': 'filter_a < 0'};
-    const condition_b = {'condition': 'filter_a == true'};
-    const condition_c = {'condition': 'filter_a == 20'};
-    const item_a: FilterItem = {name: 'filter_a', value: true};
-
-    fts.addFilter(item_a, 'temporary');
-    const met_a = fts.checkCondition(condition_a, item_a);
-    const met_b = fts.checkCondition(condition_b);
-    const met_c = fts.checkCondition(condition_c);
-
-    expect(met_a).toBeFalse();
-    expect(met_b).toBeTrue();
-    expect(met_c).toBeFalse();
   });
 
   it('should update the additionalFilters by merging in the temporaryFilters', () => {

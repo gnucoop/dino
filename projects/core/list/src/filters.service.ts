@@ -20,8 +20,7 @@
  *
  */
 
-import {AjfFieldType, AjfValidationGroup} from '@ajf/core/forms';
-import {AjfCondition, AjfContext, evaluateExpression} from '@ajf/core/models';
+import {AjfFieldType} from '@ajf/core/forms';
 import {EventEmitter, Injectable} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -478,65 +477,6 @@ export class FiltersService<T extends Model = Model> {
       take(1),
     );
     return filterItem.pipe(catchError(err => throwError(() => err) as Observable<FilterItem>));
-  }
-
-  /**
-   * Evaluates a Filter's validation conditions
-   * @param filterItem The FilterItem to check
-   * @param ajfValidation The filter validation conditions to evaluate
-   * @returns True if all the conditions are valid
-   */
-  checkValidation(filterItem: FilterItem, ajfValidation?: AjfValidationGroup): boolean {
-    if (!ajfValidation) {
-      return true;
-    }
-    if (ajfValidation.maxValue != null) {
-      const valid = filterItem.value <= ajfValidation.maxValue;
-      if (!valid) {
-        return false;
-      }
-    }
-    if (ajfValidation.minValue != null) {
-      const valid = filterItem.value >= ajfValidation.minValue;
-      if (!valid) {
-        return false;
-      }
-    }
-    if (ajfValidation.notEmpty) {
-      const valid = filterItem.value !== null && filterItem.value !== '';
-      if (!valid) {
-        return false;
-      }
-    }
-    if (ajfValidation.conditions && ajfValidation.conditions.length > 0) {
-      for (let cnd of ajfValidation.conditions) {
-        const valid = this.checkCondition(cnd, filterItem);
-        if (!valid) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Evaluates if a Filter validation/visibility single condition is met
-   * @param condition The validation/visibility condition to evaluate
-   * @param filterItem Optional filterItem to check
-   * @returns True if the condition is met
-   */
-  checkCondition(c: AjfCondition, filterItem?: FilterItem): boolean {
-    if (c.condition == null) {
-      return false;
-    }
-    const context: AjfContext = {};
-    for (const filter of this._temporaryFilters.value) {
-      context[filter.name] = filter.value;
-    }
-    if (filterItem) {
-      context[filterItem.name] = filterItem.value;
-    }
-    return evaluateExpression(c.condition, context);
   }
 
   /**
