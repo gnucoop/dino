@@ -89,8 +89,8 @@ class AuthServiceStub {
    * The data service reads the logged in user to tell whether the local database
    * belongs to somebody else.
    */
-  getUserInfo(): {id: string} {
-    return {id: this.userId};
+  getUserInfo(): {id: string; email: string} {
+    return {id: this.userId, email: `${this.userId}@dino.test`};
   }
 
   getAuthToken(): string | null {
@@ -341,9 +341,12 @@ describe('Data service - session ended without a logout', () => {
 
     // The login page reads this to warn that another account would wipe the
     // device, so it has to outlive a session the app gave up on.
-    expect(dataService.localDataOwner).toBe('user_1');
+    expect(dataService.localDataOwner?.id).toBe('user_1');
+    // The label is what the login page shows, and it must be there without a
+    // session to ask: `resetAuth()` runs before that page renders.
+    expect(dataService.localDataOwner?.label).toBe('user_1@dino.test');
     endSessionFromSync();
-    expect(dataService.localDataOwner).toBe('user_1');
+    expect(dataService.localDataOwner?.id).toBe('user_1');
 
     await firstValueFrom(dataService.destroyAllCollections());
     expect(dataService.localDataOwner).toBeNull();
