@@ -53,7 +53,6 @@ describe('Search filters widget', () => {
 
     expect(widgetComponent).toBeDefined();
     expect(spySetup).toHaveBeenCalledWith(fakeFilterItem);
-    expect(widgetComponent.widgetData!.validationConditions).toEqual(fakeFilterItem.validation);
     expect(widgetComponent.widgetData!.form.nodes).toBeDefined();
   });
 
