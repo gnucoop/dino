@@ -20,14 +20,7 @@
  *
  */
 
-import {
-  AjfBaseField,
-  AjfChoice,
-  AjfChoicesOrigin,
-  AjfFieldType,
-  AjfForm,
-  AjfValidationGroup,
-} from '@ajf/core/forms';
+import {AjfBaseField, AjfChoice, AjfChoicesOrigin, AjfFieldType, AjfForm} from '@ajf/core/forms';
 
 /**
  * Group of Filters (equivalent to a Slide in a Dialog)
@@ -117,10 +110,6 @@ export interface WidgetData {
    * If true, the WidgetFilter is active and is actually contributing to the ListDataSource query
    */
   active: boolean;
-  /**
-   * WidgetFilter validation conditions
-   */
-  validationConditions?: AjfValidationGroup;
   /**
    * If true the ajf field is of type Formula
    */
