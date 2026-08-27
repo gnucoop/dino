@@ -617,9 +617,13 @@ export class AuthService implements OnDestroy {
                 `Could not refresh Auth Token: ${JSON.stringify(err)}`,
                 'warning',
               );
-              if (authEvt !== 'reset password') {
-                this.authenticated.next({auth: false, evt: 'refresh failed'});
-              }
+              // The authentication state is deliberately left alone. One failed
+              // refresh is a transient event, and reporting it as "not
+              // authenticated" used to reset the permission context, stop every
+              // replication and empty the menu - a whole session dismantled by a
+              // single 401 that the next attempt may well recover from. Whoever
+              // decides the session is over calls `endSession`; the callers that
+              // budget their attempts do it when they run out.
               return obsOf(false);
             }),
           );
@@ -964,6 +968,16 @@ export class AuthService implements OnDestroy {
    */
   private _initAuthentication(): void {
     this.checkToken().subscribe(check => {
+      if (!check.token && this.getRefreshToken() != null) {
+        // An expired access token with a refresh token in hand is a session to
+        // be renewed, not one that ended. This subscription outlives the whole
+        // service and re-runs on every network transition, so reporting it as
+        // "not authenticated" tore the session down at every reconnection - and
+        // a device coming back after days offline always holds an expired token.
+        // What decides is the refresh: it reports its own success, and the paths
+        // that give up on it call `endSession`.
+        return;
+      }
       this.authenticated.next({auth: check.token, evt: check.evt});
     });
   }
