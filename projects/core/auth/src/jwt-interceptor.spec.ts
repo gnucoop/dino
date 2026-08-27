@@ -192,7 +192,11 @@ describe(`JWTInterceptor`, () => {
         expect(refreshRequests.length).toBe(1);
         refreshRequests[0].flush(null, {status: 500, statusText: 'Server Error'});
 
-        expect(authService.authenticated.value).toEqual({auth: false, evt: 'refresh failed'});
+        // The state is the one from going offline: neither the reconnection check
+        // nor the failed refresh downgraded it. An expired access token with a
+        // refresh token in hand is a session to renew, and reporting it as over
+        // would reset the permission context and stop every replication.
+        expect(authService.authenticated.value).toEqual({auth: true, evt: 'gone offline'});
         // A refresh that failed at the very moment the connection came back is
         // no reason to give up on the session, let alone to wipe the database.
         expect(endSessionSpy).not.toHaveBeenCalled();

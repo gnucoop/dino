@@ -104,15 +104,16 @@ export class JWTInterceptor implements HttpInterceptor {
                 if (refreshed) {
                   return obsOf(true);
                 }
-                // No logout here. The `online` event fires on link-up, not on
-                // working connectivity, so the first refresh after a long
-                // offline stretch is a prime candidate for a transient failure -
-                // and the refresh reports the same negative result for a 5xx, a
-                // timeout and a revoked refresh token. Tearing the session down
-                // would destroy the local database, with the data collected
-                // offline and not pushed yet. The reactive paths retry: the
-                // guard on the next navigation, the sync on the next cycle.
-                this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
+                // Nothing to do on a failure here, and that is the point. The
+                // `online` event fires on link-up, not on working connectivity,
+                // so the first refresh after a long offline stretch is a prime
+                // candidate for a transient failure - and the refresh reports the
+                // same negative result for a 5xx, a timeout and a revoked refresh
+                // token. Neither a logout, which would destroy the local database
+                // with the data collected offline, nor a "not authenticated"
+                // state, which would reset the permission context and stop every
+                // replication. The reactive paths retry: the replications on
+                // their next cycle, the guard on the next navigation.
                 return obsOf(false);
               }),
             );
