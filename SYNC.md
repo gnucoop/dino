@@ -114,13 +114,51 @@ turning into a privacy leak between operators sharing a tablet.
 
 ### 2.4 `JWTInterceptor` reconnection handler — `online` event with an expired token
 
-On reconnection the interceptor re-evaluates the token and refreshes if needed. A failed refresh
-here does not even end the session: it only reports `authenticated: false`, and the retry is left to
-the guard on the next navigation or to the next sync cycle. See R1.
+On reconnection the interceptor re-evaluates the token and refreshes if needed. A failed refresh here
+changes nothing at all - see §2.5 - and the retry is left to the replications, to the guard on the
+next navigation or to the next sync cycle. See R1.
 
 `dev`: this path was dead code. It read `withLatestFrom(this._authService.checkToken())` and
 tested `if (!check)`, but `checkToken()` returns an object — always truthy — so the branch never
 ran. Fixing that condition on this branch enabled the useful behaviour, a refresh on reconnection.
+
+### 2.5 One failed refresh changes nothing
+
+A refresh that fails used to report `authenticated: false`, in the auth service's `catchError` and in
+the reconnection handler. That single emission dismantled the session: `PermissionContextService`
+resets the context on any `auth === false`, so `getAllowedActions()` restarted, gave up after its
+bounded retries and returned `[]` - an empty menu; `_initSync()` took its `else` branch and stopped
+every replication, closing the websocket; and the main nav hid the user block, which is bound to the
+same flag. Nothing was left running to recover, so the state persisted.
+
+It was invisible on `dev`, where the first failure went straight to logout, wipe and redirect. The
+budgets of this branch are what made it observable - and it was found by running the app, not by the
+suite.
+
+Three emissions are gone, the third found by running the app one step further. `_initAuthentication`
+keeps a subscription to `checkToken()` for the life of the service, and `checkToken()` re-emits on
+every network transition: coming back online with an expired access token it reported
+`{auth: false, evt: 'back online'}` and dismantled the session again, before any refresh had a chance
+- and a device returning after days offline always holds an expired token. It now stays quiet when a
+refresh token is there to renew with: an expired access token is a session to renew, not one that
+ended.
+
+The authentication state changes when the session is actually over, which is `endSession()`'s job. A failed refresh now leaves the replications running: their next cycle hits
+`JWTExpired`, emits `_refreshEvt` and asks for another refresh, so the first one that succeeds
+resumes everything by itself - a stronger recovery than before, when the replications were stopped
+and needed the flag to flip back.
+
+What the user sees instead is the sync badge: `_reportTokenRenewal()` adds an `authentication` entry
+to `problemSyncing` whenever a refresh fails, from the replications as much as from a sync, and
+removes it on the first one that succeeds. The badge was fed only by an exhausted push retry and by a
+collection that failed to register, while a failed refresh was reported to `ErrorHandlerMessageService`
+— which reaches Sentry and nobody in the field. Marking is informative and reversible, so any source
+does it; spending the budget that ends the session stays with the explicit paths.
+
+Residual, and accepted: if the refresh token is genuinely dead and nobody presses Sync, the app keeps
+the look of a live session with the badge on, instead of being sent to the login page. Counting the
+replication-driven failures towards the budget would close it, but with a 5s retry time that is three
+failures in fifteen seconds — too eager for the networks these deployments run on.
 
 ## 3. Normal lifecycle on this branch
 
@@ -347,6 +385,13 @@ Fixed by separating the two intents:
   session end cancels the pending attempt — no spurious "could not create collection" report — while
   the registration re-runs on the database the next login creates. It used to cut the stream for
   good, and the collection was then absent until a page reload.
+- `dbToken` is cleared when the session ends, as it already was on a logout. Without it the token of
+  the database being abandoned stayed current, and the app registers its collections with a `take(1)`
+  (`SyncManager.initializeMainCollections`): asked right after the next login, while the new database
+  is still being created, the registration found that stale token, registered against the database
+  being left and reported itself done. Nothing was then registered on the database in use, and the
+  first query threw `Cannot read properties of undefined`. Found by running the app — the third
+  finding the suites missed, after §2.5 and the account name.
 
 The cost, deliberately chosen: the dropped refresh token means recovery needs a real login, rather
 than the guard silently reviving the session on the next navigation. A device whose session died
@@ -355,13 +400,22 @@ does not keep a long-lived credential.
 Nor does this reintroduce a DB6 exposure: as §5 explains, a schema change is handled by bumping the
 version, not by wiping the database.
 
+As a side effect of chasing the `dbToken` one: five of the six `Invalid collection` guards in the
+query methods built their error observable and dropped it instead of returning it, so a missing
+collection surfaced as a `TypeError` rather than the error the docstrings promise. They return it now.
+
 Regression tests, in `logout-login.spec.ts` and `data-service.spec.ts`: the collected data survives
 a session end and is there after the next login; the collections re-register with no new
-`createCollection` call; a different user logging in finds an empty database; an explicit logout
-still wipes. In `auth-service.spec.ts`: `endSession()` drops the tokens, disarms the timer, sends
-nothing.
+`createCollection` call, and on the database of the new session rather than the one being left; a
+different user logging in finds an empty database; an explicit logout still wipes. In
+`auth-service.spec.ts`: `endSession()` drops the tokens, disarms the timer, sends nothing.
 
 ### R6 — Degraded permissions after bounded retries (low)
+
+Seen in the field on the first manual run: a failed refresh reset the permission context,
+`getAllowedActions()` gave up after its ten attempts and the menu emptied out. §2.5 removed the
+cause — the context is no longer reset by a transient refresh failure — but the give-up behaviour
+itself stands.
 
 `boundedRetry` replaced infinite `retryWhen` in `PermissionContextService.getAllowedActions()`,
 `FormDataManager.hasAllowedFormStatus()`, `UserDataManager.getActiveUserData()` and
@@ -398,10 +452,22 @@ logging out, or a different user logging in.
 
 The login page says so, too. Keeping the data only helps if the person in front of the device knows
 it is there: `Login` shows a persistent notice whenever `localDataOwners()` finds a database claiming
-an owner, naming the account when it matches the user info the session end left behind. Without it
-the natural reaction to being locked out — try another account — is precisely the one action that
-wipes the device. The notice is not tied to the `expired` / `sync_error` routes: the record only
-survives a session that ended without a logout, so its presence is the signal.
+an owner, naming the account from the record itself. Without it the natural reaction to being locked
+out — try another account — is precisely the one action that wipes the device. The notice is not tied
+to the `expired` / `sync_error` routes: the record only survives a session that ended without a
+logout, so its presence is the signal.
+
+The account name lives in the owner record, next to the id, and not in the session, because there is
+no session left to ask: the core `LoginComponent` constructor calls `resetAuth()`, which clears the
+tokens, the user info and the auth config on every visit to the login page. The first version of this
+read `getUserInfo()` after `super()` and could therefore never name anybody — found by running the
+app, like §2.5. A record written by that version, a bare user id, still reads as an owner with no
+label, and the next login rewrites it in place.
 
 Still open: R4 (a collection can stay unsynced for a whole session) and R6 (permissions degrading to
 "not allowed" after the bounded retries). Neither destroys data.
+
+One caveat on the evidence: everything here is verified by the unit suites and by the library builds,
+plus one manual session that produced §2.5. The Cypress suites have not been run against this branch,
+and the paths that matter most — a session given up on, the login notice, the backlog pushed after a
+re-login — are exactly the ones a unit test covers least convincingly.
