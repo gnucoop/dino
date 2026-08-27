@@ -81,7 +81,12 @@ import {v4 as uuidv4} from 'uuid';
 
 import {ActiveSync} from './active-sync-interface';
 import {boundedRetry} from './bounded-retry';
-import {dbOwnerStorageKey, localDataOwner} from './local-data-owner';
+import {
+  LocalDataOwner,
+  localDataOwner,
+  removeLocalDataOwner,
+  storeLocalDataOwner,
+} from './local-data-owner';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {PermissionContextService} from './data-context-service';
 import {
@@ -885,7 +890,7 @@ export class DataService implements IDataService {
    * it is how the login page can warn that logging in with another account
    * deletes what is still here. An explicit logout clears it along with the data.
    */
-  get localDataOwner(): string | null {
+  get localDataOwner(): LocalDataOwner | null {
     return localDataOwner(this._dataConfig.value.databaseCreateOptions.name);
   }
 
@@ -979,20 +984,30 @@ export class DataService implements IDataService {
    * @param config The data configuration holding the database creation options.
    */
   private async _removeDataOfPreviousUser(config: DataServiceConfig): Promise<void> {
-    const currentUserId = this._authService.getUserInfo()?.id ?? null;
-    if (currentUserId == null) {
+    const user = this._authService.getUserInfo();
+    if (user?.id == null) {
       // Nobody is logged in yet: nothing to compare, and nothing to inherit.
       return;
     }
-    const ownerKey = dbOwnerStorageKey(config.databaseCreateOptions.name);
-    const previousUserId = localStorage.getItem(ownerKey);
-    if (previousUserId === currentUserId) {
+    const databaseName = config.databaseCreateOptions.name;
+    const previousOwner = localDataOwner(databaseName);
+    // The label travels with the id because it is read where no session is left
+    // to ask: the login page runs `resetAuth()` before it renders, which takes
+    // the user info with it.
+    const owner = {
+      id: user.id,
+      label: user.email ?? (user as {displayName?: string}).displayName ?? null,
+    };
+    if (previousOwner?.id === owner.id) {
+      if (previousOwner.label !== owner.label) {
+        storeLocalDataOwner(databaseName, owner);
+      }
       return;
     }
-    if (previousUserId != null) {
+    if (previousOwner != null) {
       const message =
         `The local database belongs to another user: removing it before ` +
-        `starting the session of ${currentUserId}.`;
+        `starting the session of ${owner.id}.`;
       console.warn(message);
       this._ehms?.captureErrorMessage(message, 'warning');
       if (this._currentDb != null) {
@@ -1000,13 +1015,12 @@ export class DataService implements IDataService {
       } else {
         // No instance is open - a fresh app start - so the storage is removed by
         // name instead of opening it just to throw it away.
-        await removeRxDatabase(
-          config.databaseCreateOptions.name,
-          config.databaseCreateOptions.storage,
-        ).catch(() => undefined);
+        await removeRxDatabase(databaseName, config.databaseCreateOptions.storage).catch(
+          () => undefined,
+        );
       }
     }
-    localStorage.setItem(ownerKey, currentUserId);
+    storeLocalDataOwner(databaseName, owner);
   }
 
   /**
@@ -1093,7 +1107,7 @@ export class DataService implements IDataService {
     this._currentToken = null;
     // The database this described is being removed, so the ownership record goes
     // with it: leaving it behind would claim data that no longer exists.
-    localStorage.removeItem(dbOwnerStorageKey(this._dataConfig.value.databaseCreateOptions.name));
+    removeLocalDataOwner(this._dataConfig.value.databaseCreateOptions.name);
     if (this._wsClient != null) {
       this._wsClient.dispose();
       this._wsClient = null;

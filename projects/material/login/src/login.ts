@@ -133,10 +133,11 @@ export class Login extends LoginComponent implements OnDestroy {
   ) {
     super(authService, router, fb, cdr, snackBar, ts);
 
+    // Read from the owner record, not from the session: `super()` above runs
+    // `resetAuth()`, so by now there is no user info and no auth config left.
     const dataOwners = localDataOwners();
     if (dataOwners.length > 0) {
-      const user = authService.getUserInfo();
-      const account = user != null && dataOwners.indexOf(user.id) >= 0 ? user.email : null;
+      const account = dataOwners.map(owner => owner.label).find(label => label != null) ?? null;
       // Translated through the service, and not in the template, because the
       // message takes a parameter: `selectTranslate` also re-emits once the
       // translation files are loaded, which the constructor cannot wait for.
