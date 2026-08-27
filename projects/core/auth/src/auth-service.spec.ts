@@ -512,6 +512,9 @@ describe('custom storage functions', () => {
     req.flush(loginResponse);
 
     expect(storeRefreshTokenSpy).toHaveBeenCalledTimes(1);
+    // Counted from here on: the service reads the refresh token on its own too,
+    // to tell an expired access token apart from a session that is over.
+    retrieveRefreshTokenSpy.calls.reset();
     authService.getRefreshToken();
     expect(retrieveRefreshTokenSpy).toHaveBeenCalledTimes(1);
   });
