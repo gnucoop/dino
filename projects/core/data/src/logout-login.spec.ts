@@ -352,6 +352,41 @@ describe('Data service - session ended without a logout', () => {
     expect(dataService.localDataOwner).toBeNull();
   });
 
+  it('registers the collections on the database of the new session, not the old one', async () => {
+    authService.login('user_1');
+    await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
+    await insertDoc('collected_offline');
+
+    const previousDb = dataService.dbToken.value;
+    endSessionFromSync();
+    authService.login('user_1');
+
+    // Asked right after the login, while the new database is still being created.
+    // The app registers exactly like this - with a `take(1)`, see
+    // SyncManager.initializeMainCollections - so the registration unsubscribes as
+    // soon as it reports success. It used to find the previous token still
+    // current, register against the database being left and report itself done:
+    // nothing was then registered on the database in use, and the first query
+    // threw `Cannot read properties of undefined`.
+    const registration = firstValueFrom(
+      dataService.createCollection(collectionRequest).pipe(take(1)),
+    );
+
+    await awaitNewDatabase(previousDb);
+    await expectAsync(registration).toBeResolvedTo(true);
+    await expectAsync(storedNames()).toBeResolvedTo(['collected_offline']);
+
+    // And the registered collection is the one of the database in use. A
+    // re-registration is dropped as a duplicate by name, so a stale entry
+    // survives as the handle of a closed database - which is what the sync then
+    // replicates, never reaching in-sync, spinner turning forever.
+    const db: any = await firstValueFrom((dataService as any)._db.pipe(take(1)));
+    const registered = ((dataService as any)._registeredCollections.value as any[]).find(
+      coll => coll.collection.name === collectionRequest.name,
+    );
+    expect(registered?.collection).toBe(db.collections[collectionRequest.name]);
+  });
+
   it('removes the data when a different user logs in', async () => {
     authService.login('user_1');
     await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
