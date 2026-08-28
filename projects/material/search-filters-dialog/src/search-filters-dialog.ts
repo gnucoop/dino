@@ -185,29 +185,32 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
   /**
    * Sets up a FilterItem, assigning default fallback values to
    * required properties where necessary.
+   * Ids are fixed, because every filter is rendered as the only field of a slide
+   * with id 1 in its own SearchFiltersWidget form.
+   * A filter is always editable and always visible: which filters exist at all is
+   * decided upstream by the list, that evaluates the form schema visibility
+   * conditions with the full form context.
    * @param item The FilterItem to set up
    * @returns The generated FilterItem
    */
   private _setupFilterItem(item: FilterItem): FilterItem {
-    const ftItem: FilterItem = {
-      id: item.id ?? 10,
+    return {
+      id: 10,
       parent: 1,
-      parentNode: item.parentNode ?? 1,
+      parentNode: 1,
       choicesOrigin: item.choicesOrigin,
       choicesOriginRef: item.choicesOrigin?.name,
       name: item.name,
-      label: item.label ?? item.name.charAt(0).toUpperCase() + item.name.slice(1),
+      label: item.label ?? item.name,
       nodeType: AjfNodeType.AjfField,
       fieldType: item.fieldType ? item.fieldType : AjfFieldType.String,
       isAdditionalFilter: item.isAdditionalFilter,
-      editable: item.editable ?? true,
-      defaultValue: item.defaultValue ?? null,
-      size: item.size ?? 'normal',
-      visibility: item.visibility != null ? item.visibility : {condition: 'true'},
+      editable: true,
+      defaultValue: null,
+      visibility: {condition: 'true'},
       isFilterItemDetails: item.isFilterItemDetails,
       isRepeatingSlideFilter: item.isRepeatingSlideFilter,
     };
-    return ftItem;
   }
 
   ngOnDestroy() {
