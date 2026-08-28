@@ -160,6 +160,38 @@ the look of a live session with the badge on, instead of being sent to the login
 replication-driven failures towards the budget would close it, but with a 5s retry time that is three
 failures in fifteen seconds — too eager for the networks these deployments run on.
 
+### 2.6 What the user sees when the session really is dead
+
+A refresh that keeps failing used to leave the app saying two opposite things at
+once: the badge reported a problem while the sync spinner kept turning, and the
+only way out — three taps on Sync, or a page reload — was never mentioned. Behind
+it, rxdb retried the push every `retryTime` (5s) for as long as the app stayed
+open, each failure asking for a refresh that could not succeed.
+
+Three things now happen instead.
+
+The spinner is off when there is nothing to wait for: when the sync is blocked on
+renewing the token, and — a plain bug — when no replication is active at all,
+where `combineLatest([])` completes without emitting and left whoever rendered it
+showing the last value it had ever seen.
+
+The replications stop after `MAX_TOKEN_RENEWAL_FAILURES` (3) consecutive failed
+renewals. Nothing can be replicated without a token, so the retry loop was pure
+cost on a device in the field. The session and the data are untouched: the badge
+stays on, and a sync request or a renewal that goes through brings the
+replications back.
+
+The sync icon says what is wrong. `sessionNeedsLogin` in the main nav watches for
+the `authentication` entry, and its tooltip asks for a new login with the same
+account instead of the generic "you have unsynced data" — the remedy is its own,
+and no amount of syncing is it.
+
+One trap found along the way: `refreshToken()` reports success while offline
+without even trying, so clearing the badge on that result switched it off while
+nothing had been renewed — a real state, reached after any brief offline moment,
+with the badge dark and the spinner turning. What the badge follows now is whether
+the token is usable, not whether the call reported success.
+
 ## 3. Normal lifecycle on this branch
 
 1. **Database creation.** `_db` is built through `_createDatabase()`, which first awaits any pending
