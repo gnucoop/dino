@@ -303,6 +303,27 @@ export class MainNav implements AfterViewInit, OnDestroy {
     .pipe(map(collections => collections.length > 0));
 
   /**
+   * True when the sync is stuck because the session cannot be renewed.
+   *
+   * Its own signal because the remedy is its own: no amount of syncing fixes it,
+   * only a new login does, and the badge alone does not say that. The data
+   * collected in the meantime stays on the device - a session the app gives up on
+   * no longer destroys it - so there is no hurry, just something the user has to
+   * be told.
+   */
+  sessionNeedsLogin: Observable<boolean> = this.dataService.problemSyncing
+    .asObservable()
+    .pipe(map(collections => collections.indexOf('authentication') >= 0));
+
+  /**
+   * The same, read synchronously, for the click handler that has to decide what
+   * the sync icon does.
+   */
+  private get sessionNeedsLoginNow(): boolean {
+    return this.dataService.problemSyncing.value.indexOf('authentication') >= 0;
+  }
+
+  /**
    * Determines the extended state of the sidenav on large screens
    */
   extendedSidenav: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -984,9 +1005,22 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Forces the start of a graphql replication run cycle
+   * Forces the start of a graphql replication run cycle, or takes the user to the
+   * login page when no cycle can succeed.
+   *
+   * Syncing cannot be the answer to a token that will not renew, and the tooltip
+   * says so - but the only route to a login page a user knows is the logout
+   * button, which destroys the data collected on this device. So this is the
+   * route: ending the session first is what makes the login page reachable, since
+   * `LoginGuard` closes it while the app still reports itself authenticated, and
+   * ending it keeps the data.
    */
   runSync(): void {
+    if (this.sessionNeedsLoginNow) {
+      this.authService.endSession();
+      this._router.navigate([this.authService.authConfig.failedAuthRedirect, 'expired']);
+      return;
+    }
     this.dataService.runSync();
   }
 

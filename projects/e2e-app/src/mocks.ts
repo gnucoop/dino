@@ -153,6 +153,9 @@ export class AuthServiceMock {
     }
     return obsOf(false).pipe(delay(1000));
   }
+  /** Local session end: the data service must not destroy anything. */
+  endSession(): void {}
+
   logout(): Observable<boolean> {
     this.authenticated.next({auth: false, evt: 'logout'});
     return obsOf(true);
