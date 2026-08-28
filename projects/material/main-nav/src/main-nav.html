@@ -109,14 +109,14 @@
         <mat-icon
           *ngIf="(syncSpinnerDisabled|async) !== true"
           class="dino-sync-detector"
-          [matTooltip]="(isThereUnsyncedData|async) === true && (isSyncing|async) === false ? ('You have unsynced data. Please click the Sync icon.'|transloco) : ''"
+          [matTooltip]="(sessionNeedsLogin|async) === true ? ('The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.'|transloco) : ((isThereUnsyncedData|async) === true && (isSyncing|async) === false ? ('You have unsynced data. Please click the Sync icon.'|transloco) : '')"
           [ngClass]="[(isSyncing|async) ? 'dino-sync-active' : '', (isThereUnsyncedData|async) === true && (isSyncing|async) === false ? 'dino-sync-unsynced':'']"
           [matBadge]="'!'"
           matBadgeColor="warn"
           [matBadgeHidden]="(problemSyncing|async) !== true || (isSyncing|async) === true"
           (click)="runSync()"
-          >{{(isThereUnsyncedData|async) === true && (isSyncing|async) === false ?
-          'sync_problem':'sync'}}</mat-icon
+          >{{(sessionNeedsLogin|async) === true || ((isThereUnsyncedData|async) === true &&
+          (isSyncing|async) === false) ? 'sync_problem':'sync'}}</mat-icon
         >
       </ng-container>
       <ng-template #svgSyncIconTemplate>
