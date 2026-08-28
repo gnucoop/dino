@@ -68,6 +68,28 @@ describe('Search filters widget', () => {
     expect(widgetComponent.widgetData!.form.nodes.length).toBe(1);
   });
 
+  it('should keep the create filter button disabled until a value is set', async () => {
+    await fixtureWidget.whenStable();
+    widgetComponent.filterItemData = fakeFilterItem;
+    fixtureWidget.detectChanges();
+    await fixtureWidget.whenStable();
+    fixtureWidget.detectChanges();
+
+    const button = fixtureWidget.debugElement.query(
+      By.css('.dino-create-filter-button'),
+    ).nativeElement;
+    expect(button.disabled).toBeTrue();
+
+    const input = fixtureWidget.debugElement.query(By.css('input')).nativeElement;
+    input.value = 'test';
+    input.dispatchEvent(new Event('input'));
+    fixtureWidget.detectChanges();
+    await fixtureWidget.whenStable();
+    fixtureWidget.detectChanges();
+
+    expect(button.disabled).toBeFalse();
+  });
+
   it('should return the appropriate operators relative to the ajfFieldType', () => {
     const opNumber = widgetComponent.conditionOperatorByFieldType(AjfFieldType.Number);
     const opString = widgetComponent.conditionOperatorByFieldType(AjfFieldType.String);

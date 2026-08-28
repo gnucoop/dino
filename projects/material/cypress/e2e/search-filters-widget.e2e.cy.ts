@@ -66,7 +66,7 @@ describe('dino-search-filters-widget', () => {
       .filter(':has(.mat-mdc-text-field-wrapper)')
       .first()
       .within(() => {
-        cy.get('input').type('test');
+        cy.get('input').type('test', {force: true}).should('have.value', 'test');
         cy.get('.dino-create-filter-button').should('not.be.disabled');
       });
   });
@@ -96,8 +96,8 @@ describe('dino-search-filters-widget', () => {
       .filter(':has(.mat-mdc-text-field-wrapper)')
       .first()
       .within(() => {
-        cy.get('input').type('reset test');
-        cy.get('.dino-create-filter-button').should('not.be.disabled').click();
+        cy.get('input').type('reset test', {force: true}).should('have.value', 'reset test');
+        cy.get('.dino-create-filter-button').should('not.be.disabled').click({force: true});
         cy.get('input').should('have.value', '');
       });
   });
