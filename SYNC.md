@@ -340,6 +340,9 @@ useful logs are on: `Running the sync for …`, `COULD NOT REFRESH THE AUTH TOKE
 Steps 7 and 8 destroy the local database on purpose — they are the proof that the destructive path
 still works when it should. Leave them last.
 
+All eight steps were run against this branch on 2026-08-27, against the dev instance, and passed. The
+five defects listed above were found and fixed during those runs; nothing was left open.
+
 ## 9. Test coverage
 
 `projects/core` is green at 162 specs. The ones that pin this document down:
