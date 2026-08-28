@@ -203,7 +203,6 @@ export class SearchFiltersDialog implements OnInit, OnDestroy {
       editable: item.editable ?? true,
       defaultValue: item.defaultValue ?? null,
       size: item.size ?? 'normal',
-      validation: item.validation,
       visibility: item.visibility != null ? item.visibility : {condition: 'true'},
       isFilterItemDetails: item.isFilterItemDetails,
       isRepeatingSlideFilter: item.isRepeatingSlideFilter,
