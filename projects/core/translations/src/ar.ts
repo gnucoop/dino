@@ -28,6 +28,8 @@ export const AR: Translation = {
   'Upload file': 'رفع ملف',
   'Map fields': 'ربط الحقول',
   'Drag & drop your file here': 'اسحب ملفك وأفلته هنا',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'المزامنة متوقفة: انتهت صلاحية جلستك. اضغط هنا لتسجيل الدخول من جديد بهذا الحساب ومزامنة البيانات الموجودة على هذا الجهاز.',
   'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
     'البيانات التي تم جمعها بالحساب {{account}} لا تزال على هذا الجهاز. سجّل الدخول بهذا الحساب لمزامنتها: تسجيل الدخول بحساب آخر يحذفها.',
   'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':

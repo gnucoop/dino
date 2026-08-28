@@ -28,6 +28,8 @@ export const FRA: Translation = {
   'Upload file': 'Téléverser un fichier',
   'Map fields': 'Associer les champs',
   'Drag & drop your file here': 'Glissez-déposez votre fichier ici',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'La synchronisation est arrêtée : votre session a expiré. Touchez ici pour vous reconnecter avec ce compte et synchroniser les données de cet appareil.',
   'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
     'Les données collectées avec le compte {{account}} sont encore sur cet appareil. Connectez-vous avec ce compte pour les synchroniser : vous connecter avec un autre les supprime.',
   'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':

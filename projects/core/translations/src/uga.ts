@@ -28,6 +28,8 @@ export const UGA: Translation = {
   'Upload file': 'Upload file',
   'Map fields': 'Map fields',
   'Drag & drop your file here': 'Drag & drop your file here',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.',
   'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
     'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.',
   'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':

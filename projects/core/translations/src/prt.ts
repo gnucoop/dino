@@ -28,6 +28,8 @@ export const PRT: Translation = {
   'Upload file': 'Carregar arquivo',
   'Map fields': 'Mapear campos',
   'Drag & drop your file here': 'Arraste e solte seu arquivo aqui',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'A sincronização está parada: sua sessão expirou. Toque aqui para entrar novamente com esta conta e sincronizar os dados deste dispositivo.',
   'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
     'Os dados coletados com a conta {{account}} ainda estão neste dispositivo. Entre com essa conta para sincronizá-los: entrar com outra conta apaga os dados.',
   'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':

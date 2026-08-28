@@ -29,6 +29,8 @@ export const UKR: Translation = {
   'Upload file': 'Завантажити файл',
   'Map fields': 'Зіставити поля',
   'Drag & drop your file here': 'Перетягніть свій файл сюди',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'Синхронізація зупинена: ваш сеанс завершився. Торкніться тут, щоб знову увійти з цим обліковим записом і синхронізувати дані на цьому пристрої.',
   'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
     'Дані, зібрані під обліковим записом {{account}}, досі на цьому пристрої. Увійдіть із цим обліковим записом, щоб синхронізувати їх: вхід з іншим записом видалить їх.',
   'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':

@@ -28,6 +28,8 @@ export const ESP: Translation = {
   'Upload file': 'Subir archivo',
   'Map fields': 'Asignar campos',
   'Drag & drop your file here': 'Arrastra y suelta tu archivo aquí',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'La sincronización está detenida: tu sesión ha caducado. Toca aquí para iniciar sesión de nuevo con esta cuenta y sincronizar los datos de este dispositivo.',
   'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
     'Los datos recogidos con la cuenta {{account}} siguen en este dispositivo. Inicia sesión con esa cuenta para sincronizarlos: si inicias sesión con otra, se borran.',
   'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
