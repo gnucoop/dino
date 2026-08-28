@@ -697,6 +697,37 @@ describe('Data service - pre-sync token refresh failures', () => {
     expect(dataService.problemSyncing.value).not.toContain('authentication');
   });
 
+  it('stops the replications once the renewals keep failing, without touching the session', () => {
+    // The sync cannot succeed without a token, and rxdb retries every 5s for as
+    // long as the app is open: battery and data spent on a device in the field
+    // for nothing.
+    for (let round = 0; round < 3; round++) {
+      (dataService as any)._reportTokenRenewal(false);
+    }
+
+    expect(Object.keys((dataService as any)._activeSyncs.value)).toEqual([]);
+    expect(dataService.problemSyncing.value).toContain('authentication');
+    // The session is the user's to end, and the data stays where it is.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(logoutSpy).not.toHaveBeenCalled();
+  });
+
+  it('reports the spinner off while the sync is blocked on renewing the token', async () => {
+    (dataService as any)._reportTokenRenewal(false);
+
+    // It used to keep turning, saying "working on it" next to a badge saying the
+    // opposite.
+    await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+  });
+
+  it('reports the spinner off when nothing is replicating', async () => {
+    (dataService as any)._activeSyncs.next({});
+
+    // `combineLatest([])` completes without emitting, so whoever rendered this
+    // kept the last value it had ever seen - true, forever.
+    await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+  });
+
   it('gives the budget back after a refresh that went through', () => {
     dataService.runSync();
     dataService.runSync();
