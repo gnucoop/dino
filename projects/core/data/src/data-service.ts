@@ -245,6 +245,15 @@ const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
 const TOKEN_RENEWAL_SYNC_PROBLEM = 'authentication';
 
 /**
+ * Number of consecutive failed token renewals after which the replications are
+ * stopped. They cannot succeed without a usable token, and rxdb retries every
+ * `retryTime` - a loop that costs battery and data on a device in the field, for
+ * nothing. The session is left alone: a sync request, or a renewal that goes
+ * through, starts them again.
+ */
+const MAX_TOKEN_RENEWAL_FAILURES = 3;
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -388,6 +397,13 @@ export class DataService implements IDataService {
    */
   private _failedSyncRefreshes: number = 0;
 
+  /**
+   * Count of the consecutive failed token renewals, from any source.
+   * Drives the badge and, past {@link MAX_TOKEN_RENEWAL_FAILURES}, the stop of
+   * the replications. Reset by a renewal that actually produced a usable token.
+   */
+  private _failedTokenRenewals: number = 0;
+
   constructor(
     private _authService: AuthService,
     private _contextService: PermissionContextService,
@@ -463,13 +479,22 @@ export class DataService implements IDataService {
       shareReplay(1),
     );
 
-    this.isSyncing = this._activeSyncs.pipe(
-      switchMap(syncs => {
+    this.isSyncing = combineLatest([this._activeSyncs, this.problemSyncing]).pipe(
+      switchMap(([syncs, problems]) => {
         const syncsStateActivity: Observable<Boolean>[] = [];
         for (let key in syncs) {
           if (syncs[key] != null) {
             syncsStateActivity.push(syncs[key].stateActivity);
           }
+        }
+        // Two states in which the spinner has to be off, and used to keep
+        // turning. Nothing replicating: `combineLatest([])` completes without
+        // emitting, so whoever renders this kept the last value it ever saw -
+        // true. And a sync blocked on renewing the token: it says "working on it"
+        // while the truth is "cannot, and will not until you log in again",
+        // contradicting the badge that says so.
+        if (syncsStateActivity.length === 0 || problems.includes(TOKEN_RENEWAL_SYNC_PROBLEM)) {
+          return obsOf(false);
         }
         return combineLatest(syncsStateActivity).pipe(
           switchMap(states => {
@@ -529,7 +554,10 @@ export class DataService implements IDataService {
     // triggers arriving while a refresh is already running.
     this._refreshEvt
       .pipe(exhaustMap(() => this._authService.refreshToken()))
-      .subscribe(refreshed => this._reportTokenRenewal(refreshed));
+      // Offline the refresh reports success without even trying, so the result
+      // alone would clear the badge while nothing was renewed. What counts is
+      // whether the token is usable now.
+      .subscribe(refreshed => this._reportTokenRenewal(refreshed && this._hasUsableToken()));
 
     // The navigation is unconditional now. It used to depend on the logout http
     // call succeeding, so a session given up on while the network was broken
@@ -1518,7 +1546,7 @@ export class DataService implements IDataService {
           // budget spent by the previous failures is given back, and the badge
           // stops reporting a token that could not be renewed.
           this._failedSyncRefreshes = 0;
-          this._reportTokenRenewal(true);
+          this._reportTokenRenewal(this._hasUsableToken());
         }
         if (isOnline) {
           if (isDevMode()) {
@@ -1645,7 +1673,29 @@ export class DataService implements IDataService {
    * @param renewed True when the refresh went through.
    */
   private _reportTokenRenewal(renewed: boolean): void {
-    this._toggleActiveSyncProblem(TOKEN_RENEWAL_SYNC_PROBLEM, renewed ? 'remove' : 'add');
+    if (renewed) {
+      this._failedTokenRenewals = 0;
+      this._toggleActiveSyncProblem(TOKEN_RENEWAL_SYNC_PROBLEM, 'remove');
+      return;
+    }
+    this._failedTokenRenewals++;
+    this._toggleActiveSyncProblem(TOKEN_RENEWAL_SYNC_PROBLEM, 'add');
+    if (this._failedTokenRenewals >= MAX_TOKEN_RENEWAL_FAILURES) {
+      // Nothing can be replicated without a token, and rxdb would keep retrying
+      // every `retryTime` for as long as the app is open. The badge stays on, the
+      // session and the data are untouched, and a sync request or a renewal that
+      // goes through brings the replications back.
+      this._stopAllCollectionSyncs();
+    }
+  }
+
+  /**
+   * @returns True when the stored auth token can still be used. Tells a refresh
+   * that actually renewed the session from one that only reported success because
+   * the app was offline and did not try.
+   */
+  private _hasUsableToken(): boolean {
+    return this._authService.hasValidAuthToken?.() ?? true;
   }
 
   /**
