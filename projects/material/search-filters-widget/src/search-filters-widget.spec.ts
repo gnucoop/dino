@@ -1,5 +1,6 @@
 import {AjfFieldType, AjfNodeType, AjfValidationService} from '@ajf/core/forms';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {By} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
 import {
@@ -54,6 +55,17 @@ describe('Search filters widget', () => {
     expect(widgetComponent).toBeDefined();
     expect(spySetup).toHaveBeenCalledWith(fakeFilterItem);
     expect(widgetComponent.widgetData!.form.nodes).toBeDefined();
+  });
+
+  it('should render the single ajf field of the filter', async () => {
+    await fixtureWidget.whenStable();
+    widgetComponent.filterItemData = fakeFilterItem;
+    fixtureWidget.detectChanges();
+    await fixtureWidget.whenStable();
+    fixtureWidget.detectChanges();
+
+    expect(fixtureWidget.debugElement.queryAll(By.css('ajf-field')).length).toBe(1);
+    expect(widgetComponent.widgetData!.form.nodes.length).toBe(1);
   });
 
   it('should return the appropriate operators relative to the ajfFieldType', () => {
