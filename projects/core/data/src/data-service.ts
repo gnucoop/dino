@@ -404,6 +404,14 @@ export class DataService implements IDataService {
    */
   private _failedTokenRenewals: number = 0;
 
+  /**
+   * Collections given up on after a push the server kept refusing.
+   * Kept here because the marker cannot live on the active sync: that entry is
+   * deleted when the sync is stopped, and `_initSync()` sets the collection up
+   * again on every token renewal.
+   */
+  private _abandonedCollections: Set<string> = new Set<string>();
+
   constructor(
     private _authService: AuthService,
     private _contextService: PermissionContextService,
@@ -559,6 +567,13 @@ export class DataService implements IDataService {
       // whether the token is usable now.
       .subscribe(refreshed => this._reportTokenRenewal(refreshed && this._hasUsableToken()));
 
+    // Any renewal that goes through clears the badge, whoever asked for it. Only
+    // the two paths above used to report, while the guard, the interceptor and
+    // the pre-emptive timer renew without passing through either - so the badge
+    // stayed lit after the session had recovered, and the sync icon then sent the
+    // user to log in again for nothing.
+    this._authService.tokenRefreshedEvt?.subscribe(() => this._reportTokenRenewal(true));
+
     // The navigation is unconditional now. It used to depend on the logout http
     // call succeeding, so a session given up on while the network was broken
     // left the app on its current screen with no session and no sign of it.
@@ -579,13 +594,20 @@ export class DataService implements IDataService {
       const collection = evt.collection;
       const actSyncs = this._activeSyncs.getValue();
       actSyncs[collection].retrySyncAttempts = -1;
+      const alreadyAbandoned = this._abandonedCollections.has(collection);
+      this._abandonedCollections.add(collection);
       this._stopCollectionSync(collection);
       if (collection === 'form_data' || collection === 'form_schema') {
         this._stopCollectionSync('log');
       }
       if (isDevMode()) console.log(`COULD NOT SYNC ${collection}`);
       this._toggleActiveSyncProblem(collection, 'add');
-      this._reportSyncError(collection, evt.error);
+      if (!alreadyAbandoned) {
+        // Reported once. The collection is set up again on every token renewal
+        // and gives up again, so reporting each round would fill Sentry with one
+        // event every eleven minutes for a problem already known.
+        this._reportSyncError(collection, evt.error);
+      }
     });
 
     if (this._configService != null) {
@@ -1155,6 +1177,7 @@ export class DataService implements IDataService {
   private _resetSessionState(): void {
     this._registeredCollections.next([]);
     this.problemSyncing.next([]);
+    this._abandonedCollections.clear();
     this._currentToken = null;
     if (this._wsClient != null) {
       this._wsClient.dispose();
@@ -1646,14 +1669,50 @@ export class DataService implements IDataService {
    * @param operation Add or remove
    */
   private _toggleActiveSyncProblem(collection: string, operation: 'add' | 'remove'): void {
-    const currentSyncsWithProblems = this.problemSyncing.getValue();
-    const index = currentSyncsWithProblems.indexOf(collection, 0);
-    if (index > -1 && operation === 'remove') {
-      currentSyncsWithProblems.splice(index, 1);
-    } else if (index < 0 && operation === 'add') {
-      currentSyncsWithProblems.push(collection);
+    const current = this.problemSyncing.getValue();
+    const index = current.indexOf(collection);
+    // Only on a real change, and always a new array. This runs on every token
+    // renewal now, and re-emitting the same list restarts everything watching it
+    // - the sync spinner among them - while re-emitting the same mutated
+    // reference defeats any check based on identity.
+    if (operation === 'add' && index < 0) {
+      this.problemSyncing.next([...current, collection]);
+    } else if (operation === 'remove' && index > -1) {
+      this.problemSyncing.next(current.filter(name => name !== collection));
     }
-    this.problemSyncing.next(currentSyncsWithProblems);
+  }
+
+  /**
+   * Clears the sync problem of a collection whose replication has just started -
+   * unless that collection had been given up on.
+   *
+   * `_initSync()` sets a stopped collection up again on every token renewal, so
+   * clearing its badge here made the only signal the user has blink off for
+   * minutes at a time. The session deliberately stays alive in that state, so
+   * they can see the error, export the local database and choose when to log out
+   * - the only way out, and the one that destroys it.
+   *
+   * The retry itself stays: a document the server refused may become acceptable,
+   * and reaching in-sync is what proves the queue finally went through.
+   *
+   * @param collectionName The collection whose replication just started.
+   * @param state The replication state, asked when it catches up.
+   */
+  private _reportCollectionSyncStarted(
+    collectionName: string,
+    state: {awaitInSync: () => Promise<unknown>},
+  ): void {
+    if (!this._abandonedCollections.has(collectionName)) {
+      this._toggleActiveSyncProblem(collectionName, 'remove');
+      return;
+    }
+    state.awaitInSync().then(
+      () => {
+        this._abandonedCollections.delete(collectionName);
+        this._toggleActiveSyncProblem(collectionName, 'remove');
+      },
+      () => undefined,
+    );
   }
 
   /**
@@ -2019,7 +2078,7 @@ export class DataService implements IDataService {
       stateActivity,
       collectionName: collection.name,
     };
-    this._toggleActiveSyncProblem(collection.name, 'remove');
+    this._reportCollectionSyncStarted(collection.name, state);
     this._activeSyncs.next(actSyncs);
 
     if (!isLive) {
