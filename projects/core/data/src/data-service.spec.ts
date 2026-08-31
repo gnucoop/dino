@@ -614,12 +614,14 @@ describe('Data service - pre-sync token refresh failures', () => {
   let logoutSpy: jasmine.Spy;
   let endSessionSpy: jasmine.Spy;
   let navigateSpy: jasmine.Spy;
+  let tokenRefreshedEvt: EventEmitter<void>;
 
   beforeEach(() => {
     refreshOutcome = false;
     logoutSpy = jasmine.createSpy('logout').and.returnValue(obsOf(true));
     endSessionSpy = jasmine.createSpy('endSession');
     navigateSpy = jasmine.createSpy('navigate');
+    tokenRefreshedEvt = new EventEmitter<void>();
     const authMock = {
       authenticated: obsOf({auth: true, evt: 'init'}),
       authConfig: authServiceConfig,
@@ -628,6 +630,7 @@ describe('Data service - pre-sync token refresh failures', () => {
       logoutEvt: new EventEmitter<void>(),
       logout: logoutSpy,
       endSession: endSessionSpy,
+      tokenRefreshedEvt,
       getUserInfo: () => ({id: 'test_user'}),
       refreshToken: () => obsOf(refreshOutcome),
     } as unknown as AuthService;
@@ -726,6 +729,56 @@ describe('Data service - pre-sync token refresh failures', () => {
     // `combineLatest([])` completes without emitting, so whoever rendered this
     // kept the last value it had ever seen - true, forever.
     await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+  });
+
+  it('reports a collection given up on once, and keeps its badge when it starts again', async () => {
+    const reportSpy = spyOn(dataService as any, '_reportSyncError');
+
+    dataService.couldNotSyncEvt.emit({
+      collection: 'dummy',
+      retrySyncAttempts: -1,
+      error: {} as any,
+    });
+
+    expect(dataService.problemSyncing.value).toContain('dummy');
+    expect(reportSpy).toHaveBeenCalledTimes(1);
+
+    // `_initSync()` sets the collection up again on every token renewal. Clearing
+    // its badge there made the only signal the user has blink off for minutes at
+    // a time, while the session stays alive precisely so they can see the error,
+    // export the database and choose when to log out.
+    let caughtUp: () => void = () => {};
+    const inSync = new Promise<void>(resolve => (caughtUp = resolve));
+    (dataService as any)._reportCollectionSyncStarted('dummy', {awaitInSync: () => inSync});
+    expect(dataService.problemSyncing.value).toContain('dummy');
+
+    // Recovery still works: a refused document may become acceptable, and
+    // reaching in-sync is what proves the queue finally went through.
+    caughtUp();
+    await inSync;
+    expect(dataService.problemSyncing.value).not.toContain('dummy');
+  });
+
+  it('clears the badge of a healthy collection as soon as its replication starts', () => {
+    (dataService as any)._toggleActiveSyncProblem('dummy', 'add');
+
+    (dataService as any)._reportCollectionSyncStarted('dummy', {
+      awaitInSync: () => Promise.resolve(),
+    });
+
+    expect(dataService.problemSyncing.value).not.toContain('dummy');
+  });
+
+  it('clears the badge on any renewal that goes through, whoever asked for it', () => {
+    (dataService as any)._reportTokenRenewal(false);
+    expect(dataService.problemSyncing.value).toContain('authentication');
+
+    // The guard, the interceptor and the pre-emptive timer renew without passing
+    // through the two paths that report, and the badge used to stay lit after the
+    // session had recovered - sending the user to log in again for nothing.
+    tokenRefreshedEvt.emit();
+
+    expect(dataService.problemSyncing.value).not.toContain('authentication');
   });
 
   it('gives the budget back after a refresh that went through', () => {

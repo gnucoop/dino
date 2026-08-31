@@ -141,7 +141,9 @@ token is always expired by then. None of them reports it any more: an expired ac
 refresh token in hand is a session to renew, and what decides is the refresh itself.
 
 **The budgets are per source, and they only end the session.** A full `runSync()` skips the cycle and
-counts: at three consecutive failures it ends the session. The interceptor allows
+counts: at three consecutive failures it ends the session — a backstop in practice, since the first
+failure lights the badge and the next tap on the icon takes the login route instead, and every full
+sync in the app goes through that guard. The interceptor allows
 `retryAttemptsMax` (1 in every environment) failed refresh *rounds* before ending it — rounds, not
 requests, because the call is shared and several requests failing inside one round trip are one
 attempt. Offline neither counts anything.
@@ -158,7 +160,10 @@ database, or register against a stale token and report itself done.
 lights the badge on the sync icon — the only signal that reaches a user in the field, since the report
 that goes with it ends up in Sentry. The entry follows whether the token is *usable*, not whether the
 call reported success: offline it reports success without trying, and clearing the badge on that
-switched it off while nothing had been renewed.
+switched it off while nothing had been renewed. Any renewal that goes through clears it, whoever asked
+for it: only two of the five paths that renew a token used to report, so the badge could stay lit after
+the session had recovered through the guard or the interceptor — and the icon then sent the user to log
+in again for nothing.
 
 The spinner is off whenever there is nothing to wait for: blocked on the token, or with no replication
 active at all. And after three consecutive failed renewals the replications stop — they cannot succeed
@@ -276,10 +281,28 @@ so no client code depends on these four rows.
 
 ## 7. Known limits
 
-**A collection can stop syncing for the whole session.** Three push failures with a
-`constraint-violation` lead to `couldNotSyncEvt`, which sets `retrySyncAttempts = -1` and stops that
-collection until the app is reloaded, while the user keeps writing to it. The data is safe on disk and
-the collection is named in `problemSyncing` and in Sentry, but nothing reaches the server.
+**A rejected push blocks a collection, and retries it noisily.** Three push failures with a
+`constraint-violation` lead to `couldNotSyncEvt`, which stops that collection: the badge names it, the
+data stays on disk, nothing reaches the server. With the default `batchSizePush` of 20000 the whole
+pending queue travels in one mutation, so one document the server refuses blocks everything behind it,
+and the app names the collection but not the document — the GraphQL message in the console and in
+Sentry is the only clue.
+
+It does not stay stopped, and that is deliberate. `_initSync()` reacts to `authToken`, which emits on
+every token renewal, and the collection is still registered, so it is set up again about every eleven
+minutes, fails its three attempts and stops again — a document the server refuses today may be
+acceptable tomorrow, and reaching in-sync is what proves the queue finally went through. What that
+round does **not** do any more is clear the badge or repeat the report: the collection stays in
+`_abandonedCollections` until it catches up, so the signal persists and Sentry hears about it once.
+
+That matters because of what the user is expected to do with it: the session stays alive on purpose,
+so they can see the error, export the local database from the user area, and choose when to log out —
+the only way out of this state, and the one action that destroys the data. A badge going dark for
+minutes at a time worked against exactly that decision.
+
+Tapping the sync icon does not touch such a collection — it is no longer among the active syncs — and
+never leads to the login page: that budget counts failed refreshes, and here the refresh succeeds.
+Three "Resyncing" snackbars per round still appear.
 
 **Permissions degrade to "not allowed".** `boundedRetry` replaced the infinite `retryWhen` in
 `PermissionContextService.getAllowedActions()`, `FormDataManager.hasAllowedFormStatus()`,
