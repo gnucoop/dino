@@ -63,6 +63,20 @@ export const ITA: Translation = {
   'Missing': 'Mancante',
   'Add translation {{language}}…': 'Aggiungi traduzione {{language}}…',
   'Select a translation key': 'Seleziona una chiave di traduzione',
+  'Log out': 'Esci',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'Vuoi uscire cancellando tutti i dati locali, oppure solo chiudere la sessione mantenendo i dati su questo dispositivo?',
+  'Log out and delete the data': 'Esci e cancella i dati',
+  'End the session and keep the data': 'Chiudi la sessione e mantieni i dati',
+  'Cancel': 'Annulla',
+  'Session expired': 'Sessione scaduta',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'La sincronizzazione è ferma e non è più possibile salvare i dati fino a un nuovo accesso. Vuoi chiudere la sessione, mantenendo i dati su questo dispositivo, e andare alla pagina di accesso?',
+  'Go to the login page': 'Vai alla pagina di accesso',
+  'Later': 'Più tardi',
+  'The data cannot be saved': 'I dati non possono essere salvati',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    "I dati sono corrotti, non possono essere salvati. Contatta l'amministratore, oppure esporta i dati dalla tua area utente e poi esci.",
   'Import form data': 'Importa dati del modulo',
   'Match the columns in your file to the fields of the form.':
     'Associa le colonne del file ai campi del modulo.',
@@ -121,7 +135,6 @@ export const ITA: Translation = {
   'Import XLSForm': 'Importa XLSForm',
   'Drag your .xlsx file here or': 'Trascina qui il tuo file .xlsx oppure',
   'Required sheets: survey, choices, settings': 'Fogli richiesti: survey, choices, settings',
-  'Cancel': 'Annulla',
   '{{language}} already deleted': '{{language}} già eliminata',
   '(select only one field)': '(seleziona solo un campo)',
   'A {{schema_name}} Form with this exact set of Metrics already exists. Please choose different Metrics': 'Un Form {{schema_name}} con questo preciso set di Metriche esiste già. Per favore, seleziona Metriche diverse',

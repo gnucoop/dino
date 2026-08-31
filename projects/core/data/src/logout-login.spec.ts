@@ -271,10 +271,12 @@ describe('Data service - session ended without a logout', () => {
   });
 
   /**
-   * Reproduces what the sync does when it gives up on renewing the token: the
-   * data service asks the auth service to end the session, and nothing else.
+   * Ends the session the way the app does it - the interceptor running out of
+   * attempts, or the user answering the dialog behind the sync badge - and
+   * nothing else. The data service used to end it by itself after three failed
+   * pre-sync refreshes; it no longer does, so there is no such path to reproduce.
    */
-  const endSessionFromSync = (): void => (dataService as any)._endSessionEvt.emit();
+  const endSessionFromSync = (): void => authService.endSession();
 
   /** Resolves once the collection is registered against the database in use. */
   const awaitRegistered = (name: string): Promise<unknown> =>

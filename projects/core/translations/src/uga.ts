@@ -63,6 +63,20 @@ export const UGA: Translation = {
   'Missing': 'Missing',
   'Add translation {{language}}…': 'Add translation {{language}}…',
   'Select a translation key': 'Select a translation key',
+  'Log out': 'Log out',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?',
+  'Log out and delete the data': 'Log out and delete the data',
+  'End the session and keep the data': 'End the session and keep the data',
+  'Cancel': 'Cancel',
+  'Session expired': 'Session expired',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?',
+  'Go to the login page': 'Go to the login page',
+  'Later': 'Later',
+  'The data cannot be saved': 'The data cannot be saved',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.',
   'Import form data': 'Import form data',
   'Match the columns in your file to the fields of the form.':
     'Match the columns in your file to the fields of the form.',
