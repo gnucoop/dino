@@ -613,6 +613,11 @@ export class AuthService implements OnDestroy {
             catchError(err => {
               if (isDevMode()) {
                 console.log(err.error ?? err);
+                // No timer is left behind by a failure: the token that armed the
+                // last one is spent, and only a stored token arms a new one.
+                console.log(
+                  'AUTH TOKEN REFRESH FAILED: nothing is scheduled. The next attempt comes from a guarded navigation, a request answered with 401, or a reconnection',
+                );
               }
               this._ehms.captureErrorMessage(
                 `Could not refresh Auth Token: ${JSON.stringify(err)}`,
@@ -663,12 +668,23 @@ export class AuthService implements OnDestroy {
     minDelay: number = MIN_PREEMPTIVE_REFRESH_DELAY,
   ): void {
     this._clearPreemptiveRefresh();
+    // The dev logs below are the only way to tell an armed timer from no timer at
+    // all: the difference decides whether the app comes back on its own or waits
+    // for a navigation, and nothing on screen shows it.
     if (token == null || decodeJwt(token) == null) {
+      if (isDevMode()) {
+        console.log('NO PRE-EMPTIVE TOKEN REFRESH ARMED: no readable auth token stored');
+      }
       return;
     }
     const expiresAt = tokenExpiresAt(token);
     if (expiresAt == null || isTokenExpired(token)) {
       // Nothing to pre-empt: the reactive paths (interceptor, guard) take over.
+      if (isDevMode()) {
+        console.log(
+          'NO PRE-EMPTIVE TOKEN REFRESH ARMED: the stored token is expired. The next attempt comes from a navigation, a 401 or a reconnection',
+        );
+      }
       return;
     }
     const now = new Date().getTime();
@@ -678,6 +694,13 @@ export class AuthService implements OnDestroy {
       return;
     }
     const delay = Math.max(minDelay, issuedAt + lifetime * PREEMPTIVE_REFRESH_RATIO - now);
+    if (isDevMode()) {
+      console.log(
+        `NEXT PRE-EMPTIVE TOKEN REFRESH IN ${Math.round(delay / 1000)}s (at ${new Date(
+          now + delay,
+        ).toLocaleTimeString()})`,
+      );
+    }
     this._preemptiveRefreshTimeout = setTimeout(() => {
       this._preemptiveRefreshTimeout = null;
       if (this.getRefreshToken() == null) {
