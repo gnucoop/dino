@@ -42,6 +42,7 @@ import {LangSelectorModule} from '@dino/material/lang-selector';
 import {UserAreaModule} from '@dino/material/user-area';
 import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 import {MainNav} from './main-nav';
+import {SessionDialog} from './session-dialog';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 @NgModule({
@@ -68,7 +69,7 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     UserAreaModule,
     TourMatMenuModule,
   ],
-  declarations: [MainNav],
-  exports: [MainNav],
+  declarations: [MainNav, SessionDialog],
+  exports: [MainNav, SessionDialog],
 })
 export class MainNavModule {}

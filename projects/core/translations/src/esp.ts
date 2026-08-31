@@ -22,6 +22,20 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
+  'Log out': 'Salir',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    '¿Quieres salir borrando todos los datos locales, o solo cerrar la sesión manteniendo los datos en este dispositivo?',
+  'Log out and delete the data': 'Salir y borrar los datos',
+  'End the session and keep the data': 'Cerrar la sesión y mantener los datos',
+  'Cancel': 'Cancelar',
+  'Session expired': 'Sesión caducada',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'La sincronización está detenida y no se pueden guardar más datos hasta un nuevo inicio de sesión. ¿Quieres cerrar la sesión, manteniendo los datos en este dispositivo, e ir a la página de inicio de sesión?',
+  'Go to the login page': 'Ir a la página de inicio de sesión',
+  'Later': 'Más tarde',
+  'The data cannot be saved': 'Los datos no se pueden guardar',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'Los datos están corruptos y no se pueden guardar. Contacta con el administrador, o exporta los datos desde tu área de usuario y luego sal de la sesión.',
   'Import form data': 'Importar datos del formulario',
   'Match the columns in your file to the fields of the form.':
     'Asocia las columnas de tu archivo con los campos del formulario.',

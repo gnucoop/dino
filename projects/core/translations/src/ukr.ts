@@ -23,6 +23,20 @@
 import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
+  'Log out': 'Вийти',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'Хочете вийти, видаливши всі локальні дані, або лише завершити сеанс, зберігши дані на цьому пристрої?',
+  'Log out and delete the data': 'Вийти й видалити дані',
+  'End the session and keep the data': 'Завершити сеанс і зберегти дані',
+  'Cancel': 'Скасувати',
+  'Session expired': 'Сеанс завершився',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'Синхронізація зупинена, і дані більше не можна зберігати до нового входу. Хочете завершити сеанс, зберігши дані на цьому пристрої, і перейти на сторінку входу?',
+  'Go to the login page': 'Перейти на сторінку входу',
+  'Later': 'Пізніше',
+  'The data cannot be saved': 'Дані не можуть бути збережені',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'Дані пошкоджені й не можуть бути збережені. Зверніться до адміністратора або експортуйте дані зі своєї сторінки користувача, а потім вийдіть.',
   'Import form data': 'Імпорт даних форми',
   'Match the columns in your file to the fields of the form.':
     'Зіставте стовпці вашого файлу з полями форми.',

@@ -22,6 +22,20 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  'Log out': 'Sair',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'Quer sair apagando todos os dados locais, ou apenas encerrar a sessão mantendo os dados neste dispositivo?',
+  'Log out and delete the data': 'Sair e apagar os dados',
+  'End the session and keep the data': 'Encerrar a sessão e manter os dados',
+  'Cancel': 'Cancelar',
+  'Session expired': 'Sessão expirada',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'A sincronização está parada e não é mais possível salvar dados até um novo acesso. Quer encerrar a sessão, mantendo os dados neste dispositivo, e ir para a página de acesso?',
+  'Go to the login page': 'Ir para a página de acesso',
+  'Later': 'Mais tarde',
+  'The data cannot be saved': 'Os dados não podem ser salvos',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'Os dados estão corrompidos e não podem ser salvos. Entre em contato com o administrador, ou exporte os dados da sua área de usuário e depois saia.',
   'Import form data': 'Importar dados do formulário',
   'Match the columns in your file to the fields of the form.':
     'Associe as colunas do seu arquivo aos campos do formulário.',
