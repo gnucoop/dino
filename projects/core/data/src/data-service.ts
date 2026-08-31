@@ -226,14 +226,17 @@ const DB_CREATION_MAX_ATTEMPTS = 5;
 const DB_CREATION_RETRY_DELAY_MS = 1000;
 
 /**
- * Number of consecutive pre-sync token refresh failures tolerated before the
- * session is considered dead and the user is logged out.
- * A failed refresh is not proof of a dead session: the auth service reports the
- * same negative result for a revoked refresh token and for any transient
- * failure - a 5xx from the auth server, a timeout, or a request failing while
- * `navigator.onLine` is still true, which is common on mobile. Since the logout
- * destroys the local database along with the data not yet pushed, a single
- * failure only skips the sync cycle.
+ * Number of consecutive pre-sync token refresh failures past which the problem is
+ * reported to Sentry as an error rather than a warning.
+ *
+ * It is a severity threshold and nothing else. It used to end the session, and
+ * that was wrong twice over: a failed refresh is no proof of a dead session - the
+ * auth service reports the same negative result for a revoked refresh token, a
+ * 5xx, a timeout and a request failing while `navigator.onLine` is still true -
+ * and `runSync()` is called by the replication error handlers too, so three
+ * background retries with a dead token sent the user to the login page with no
+ * gesture of theirs and no question asked. Ending a session is the user's
+ * decision, taken in the dialog behind the badge.
  */
 const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
 
@@ -382,13 +385,21 @@ export class DataService implements IDataService {
   private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
-   * Emits when the session has to be given up on: the pre-sync token refresh
-   * kept failing, or the user actively logged out.
-   * It is not itself destructive - the data teardown hangs off the auth
-   * service's `logoutEvt`, which only an explicit logout emits - so a session
-   * the app abandoned by itself keeps the data collected offline.
+   * Emits when the current session is over, however it ended: an explicit logout,
+   * or an `endSession()` from anywhere - the interceptor running out of attempts,
+   * or the user answering the dialog behind the sync badge.
+   *
+   * Used to abort work that belongs to the session being left. It is not itself
+   * destructive: the data teardown hangs off the auth service's `logoutEvt`,
+   * which only an explicit logout emits, so a session that merely ended keeps the
+   * data collected offline.
    */
-  private _endSessionEvt: EventEmitter<void> = new EventEmitter<void>();
+  private get _sessionOverEvt(): Observable<unknown> {
+    return merge(
+      this._authService.logoutEvt,
+      this._authService.authenticated.pipe(filter(authEvt => authEvt.evt === 'expired')),
+    );
+  }
 
   /**
    * Count of the consecutive pre-sync token refresh failures.
@@ -411,6 +422,20 @@ export class DataService implements IDataService {
    * again on every token renewal.
    */
   private _abandonedCollections: Set<string> = new Set<string>();
+
+  /**
+   * The collections the sync gave up on because the server refused their
+   * documents.
+   *
+   * Read by the ui to explain a badge that no amount of syncing clears:
+   * {@link problemSyncing} names the collection but not the reason, and the
+   * reason is what decides what to offer the user. Documents that are refused,
+   * not delayed, need a person - an admin fixing the data, or an export of the
+   * local database followed by a logout.
+   */
+  get abandonedCollections(): string[] {
+    return [...this._abandonedCollections];
+  }
 
   constructor(
     private _authService: AuthService,
@@ -573,14 +598,6 @@ export class DataService implements IDataService {
     // stayed lit after the session had recovered, and the sync icon then sent the
     // user to log in again for nothing.
     this._authService.tokenRefreshedEvt?.subscribe(() => this._reportTokenRenewal(true));
-
-    // The navigation is unconditional now. It used to depend on the logout http
-    // call succeeding, so a session given up on while the network was broken
-    // left the app on its current screen with no session and no sign of it.
-    this._endSessionEvt.subscribe(() => {
-      this._authService.endSession();
-      this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'sync_error']);
-    });
 
     this.syncErrorEvt.subscribe(evt => {
       const {collection, retrySyncAttempts} = evt;
@@ -927,7 +944,7 @@ export class DataService implements IDataService {
           // so the next login re-registers on the new database - this used to cut
           // the whole stream, and the collection was then absent for the rest of
           // the page session, however the session had ended.
-          takeUntil(merge(this._endSessionEvt, this._authService.logoutEvt)),
+          takeUntil(this._sessionOverEvt),
         );
       }),
     );
@@ -1616,17 +1633,19 @@ export class DataService implements IDataService {
 
   /**
    * Accounts for a pre-sync token refresh that did not succeed.
-   * The sync cycle has already been skipped by the caller: this only decides
-   * whether the session is still worth keeping. The session is given up on only
-   * once the failures pile up, so that a network blip does not send the user
-   * back to the login page on the first try. The local data survives either way.
+   * The sync cycle has already been skipped by the caller: this only records the
+   * failure, on the badge for the user and in Sentry for us. Nothing here ends
+   * the session - see {@link MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES}, which is now
+   * only how loud the report is. The local data survives either way.
    */
   private _handleSyncRefreshFailure(): void {
     this._failedSyncRefreshes++;
-    const exhausted = this._failedSyncRefreshes >= MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES;
+    const persistent = this._failedSyncRefreshes >= MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES;
     if (isDevMode()) {
+      // No "n of 3" here: it read as a countdown to something, and the counter
+      // only advances on another cycle that fails the same way.
       console.log(
-        `COULD NOT REFRESH THE AUTH TOKEN BEFORE SYNCING: attempt ${this._failedSyncRefreshes}/${MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES}`,
+        `COULD NOT REFRESH THE AUTH TOKEN BEFORE SYNCING: ${this._failedSyncRefreshes} consecutive failure(s)`,
       );
     }
     // Reported either way: a skipped cycle is silent for the user, and a sync
@@ -1635,14 +1654,9 @@ export class DataService implements IDataService {
     // above goes to Sentry.
     this._reportTokenRenewal(false);
     this._ehms?.captureErrorMessage(
-      exhausted
-        ? `Could not refresh the auth token before syncing ${this._failedSyncRefreshes} times in a row: ending the session`
-        : `Could not refresh the auth token before syncing: sync cycle skipped (${this._failedSyncRefreshes}/${MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES})`,
-      exhausted ? 'error' : 'warning',
+      `Could not refresh the auth token before syncing: sync cycle skipped (${this._failedSyncRefreshes} consecutive failures)`,
+      persistent ? 'error' : 'warning',
     );
-    if (exhausted) {
-      this._endSessionEvt.emit();
-    }
   }
 
   /**
