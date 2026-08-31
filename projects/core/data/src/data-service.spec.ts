@@ -675,16 +675,24 @@ describe('Data service - pre-sync token refresh failures', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
-  it('ends the session, without logging out, once the failures pile up', () => {
+  it('never ends the session, however many cycles fail', () => {
+    dataService.runSync();
     dataService.runSync();
     dataService.runSync();
     dataService.runSync();
 
-    expect(endSessionSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'sync_error']);
+    // This used to give up at three, and `runSync()` is called by the replication
+    // error handlers as well as by the sync icon: three background retries with a
+    // dead token sent the user to the login page with no gesture of theirs and no
+    // question asked. Ending a session is the user's decision, taken in the dialog
+    // behind the badge.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
     // A logout is what destroys the local database, and the data collected
     // offline has not been pushed yet.
     expect(logoutSpy).not.toHaveBeenCalled();
+    // What the user gets instead: the badge.
+    expect(dataService.problemSyncing.value).toContain('authentication');
   });
 
   it('reports on the sync badge that the token could not be renewed', () => {
@@ -742,6 +750,10 @@ describe('Data service - pre-sync token refresh failures', () => {
 
     expect(dataService.problemSyncing.value).toContain('dummy');
     expect(reportSpy).toHaveBeenCalledTimes(1);
+    // The ui reads this to tell a refused push from an expired session: the badge
+    // names the collection but not the reason, and the reason decides what there
+    // is to offer the user.
+    expect(dataService.abandonedCollections).toContain('dummy');
 
     // `_initSync()` sets the collection up again on every token renewal. Clearing
     // its badge there made the only signal the user has blink off for minutes at
@@ -757,6 +769,7 @@ describe('Data service - pre-sync token refresh failures', () => {
     caughtUp();
     await inSync;
     expect(dataService.problemSyncing.value).not.toContain('dummy');
+    expect(dataService.abandonedCollections).not.toContain('dummy');
   });
 
   it('clears the badge of a healthy collection as soon as its replication starts', () => {
@@ -980,7 +993,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
     expect(endSessionSpy).not.toHaveBeenCalled();
   });
 
-  it('still ends the session after three refresh rounds that each failed', () => {
+  it('counts rounds, not requests, and still leaves the session alone', () => {
     for (let round = 0; round < 3; round++) {
       dataService.runSync();
       settleRefresh(false);
@@ -988,7 +1001,11 @@ describe('Data service - single-flight pre-sync refresh', () => {
 
     expect(refreshCalls).toBe(3);
     expect((dataService as any)._failedSyncRefreshes).toBe(3);
-    expect(endSessionSpy).toHaveBeenCalled();
+    // Three rounds used to be the end of the session. `runSync()` is called by
+    // the replication error handlers as well, so that was a login page reached
+    // with no gesture of the user's and no question asked.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(dataService.problemSyncing.value).toContain('authentication');
   });
 
   it('gives the budget back when a shared refresh goes through', () => {
