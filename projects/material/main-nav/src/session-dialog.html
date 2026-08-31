@@ -1,0 +1,66 @@
+<ng-container [ngSwitch]="data.kind">
+  <ng-container *ngSwitchCase="'logout'">
+    <h4 mat-dialog-title>{{'Log out'|transloco}}</h4>
+    <mat-dialog-content>
+      <!-- prettier-ignore -->
+      {{'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?'|transloco}}
+    </mat-dialog-content>
+    <mat-dialog-actions class="dino-session-dialog-actions">
+      <button
+        class="dino-session-dialog-logout-button"
+        mat-raised-button
+        color="warn"
+        (click)="respond('logout')"
+      >
+        {{'Log out and delete the data'|transloco}}
+      </button>
+      <button
+        class="dino-session-dialog-keep-button"
+        mat-raised-button
+        color="primary"
+        (click)="respond('end-session')"
+      >
+        {{'End the session and keep the data'|transloco}}
+      </button>
+      <button class="dino-session-dialog-cancel-button" mat-button (click)="respond(undefined)">
+        {{'Cancel'|transloco}}
+      </button>
+    </mat-dialog-actions>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'session-expired'">
+    <h4 mat-dialog-title>{{'Session expired'|transloco}}</h4>
+    <mat-dialog-content>
+      <!-- prettier-ignore -->
+      {{'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?'|transloco}}
+    </mat-dialog-content>
+    <mat-dialog-actions class="dino-session-dialog-actions">
+      <button
+        class="dino-session-dialog-login-button"
+        mat-raised-button
+        color="primary"
+        (click)="respond('end-session')"
+      >
+        {{'Go to the login page'|transloco}}
+      </button>
+      <button class="dino-session-dialog-cancel-button" mat-button (click)="respond(undefined)">
+        {{'Later'|transloco}}
+      </button>
+    </mat-dialog-actions>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'data-refused'">
+    <h4 mat-dialog-title>{{'The data cannot be saved'|transloco}}</h4>
+    <mat-dialog-content>
+      <!-- prettier-ignore -->
+      {{'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.'|transloco}}
+    </mat-dialog-content>
+    <!-- No action here on purpose: a logout would destroy the very data the user
+    still has to export, and a login fixes nothing. -->
+    <mat-dialog-actions class="dino-session-dialog-actions">
+      <button class="dino-session-dialog-cancel-button" mat-button (click)="respond(undefined)">
+        {{'Close'|transloco}}
+      </button>
+    </mat-dialog-actions>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,17 @@
+dino-session-dialog {
+  display: block;
+  max-width: 500px;
+
+  h4 {
+    text-align: center;
+  }
+
+  .dino-session-dialog-actions {
+    // Stacked, not side by side: the labels are whole sentences and would not fit
+    // on a phone, and the destructive one has to be readable before it is tapped.
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 16px 16px;
+  }
+}

@@ -29,6 +29,7 @@ import {
   EventEmitter,
   HostBinding,
   Input,
+  isDevMode,
   OnDestroy,
   ViewChild,
   ViewEncapsulation,
@@ -72,6 +73,12 @@ import {
 } from 'rxjs/operators';
 
 import {Section} from './section-interface';
+import {
+  SessionDialog,
+  SessionDialogData,
+  SessionDialogKind,
+  SessionDialogResult,
+} from './session-dialog';
 import {TokensService} from '@dino/material/stripe-payment';
 import {UserAreaPanelType} from '@dino/material/user-area';
 import {UITourService} from '@dino/material/ui-tour-service';
@@ -905,7 +912,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * User logout method.
+   * User logout method. Asks first, because the answer decides the fate of the
+   * data collected on this device: a logout takes the local database with it, and
+   * on a device that works offline for days that is the one action that can lose
+   * it. The user can also end the session and keep the data - the login page is
+   * then reachable and the data waits there for the next login.
+   *
    * @param redirect If true, redirects to the specified url after logging out
    * @param refresh If true, the page is refreshed just after logging out
    * @param clearStorage If true, entries in localStorage for columns presets and new version will be deleted
@@ -916,6 +928,24 @@ export class MainNav implements AfterViewInit, OnDestroy {
     refresh: boolean = false,
     clearStorage: boolean = false,
   ): void {
+    this._askAboutSession('logout').subscribe(choice => {
+      if (choice === 'logout') {
+        this._logoutAndDeleteData(redirect, refresh, clearStorage);
+      } else if (choice === 'end-session') {
+        this._endSessionAndGoToLogin();
+      }
+    });
+  }
+
+  /**
+   * Ends the session and deletes the local database, the destructive half of
+   * {@link logout}.
+   *
+   * @param redirect If true, redirects to the specified url after logging out
+   * @param refresh If true, the page is refreshed just after logging out
+   * @param clearStorage If true, entries in localStorage for columns presets and new version will be deleted
+   */
+  private _logoutAndDeleteData(redirect: boolean, refresh: boolean, clearStorage: boolean): void {
     this.authService
       .logout()
       .pipe(take(1))
@@ -1005,23 +1035,84 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Forces the start of a graphql replication run cycle, or takes the user to the
-   * login page when no cycle can succeed.
+   * Forces the start of a graphql replication run cycle, or explains why no cycle
+   * can succeed.
    *
    * Syncing cannot be the answer to a token that will not renew, and the tooltip
    * says so - but the only route to a login page a user knows is the logout
    * button, which destroys the data collected on this device. So this is the
    * route: ending the session first is what makes the login page reachable, since
    * `LoginGuard` closes it while the app still reports itself authenticated, and
-   * ending it keeps the data.
+   * ending it keeps the data. The dialog is what asks: this tap used to end the
+   * session with no warning at all.
+   *
+   * A collection the server refuses comes first, even when the session is healthy:
+   * that badge is the one no sync will ever clear, and the tap is the only place
+   * where the reason can be said out loud.
    */
   runSync(): void {
+    const refused = this.dataService.abandonedCollections;
+    if (refused.length > 0) {
+      if (isDevMode()) {
+        console.log(`SYNC GAVE UP ON: ${refused.join(', ')}`);
+      }
+      // Informative only: a login fixes nothing here, and a logout would destroy
+      // the very data the user still has to export.
+      this._askAboutSession('data-refused').subscribe();
+      return;
+    }
     if (this.sessionNeedsLoginNow) {
-      this.authService.endSession();
-      this._router.navigate([this.authService.authConfig.failedAuthRedirect, 'expired']);
+      // Try before asking. A tap on the sync icon is what a user does when the
+      // connection is back, and when only the auth server had been unreachable
+      // nothing else asks for a token: the replications are stopped, no timer is
+      // armed, and the app would sit there offering a login page it does not need.
+      this.authService
+        .refreshToken()
+        .pipe(take(1))
+        .subscribe(refreshed => {
+          if (refreshed && this.authService.hasValidAuthToken?.() !== false) {
+            // The badge is cleared by `tokenRefreshedEvt`, and the replications
+            // are back up: this is a normal cycle again.
+            this.dataService.runSync();
+            return;
+          }
+          this._askAboutSession('session-expired').subscribe(choice => {
+            if (choice === 'end-session') {
+              this._endSessionAndGoToLogin();
+            }
+          });
+        });
       return;
     }
     this.dataService.runSync();
+  }
+
+  /**
+   * Asks the user what to do about the session.
+   *
+   * @param kind What the dialog is about
+   * @returns The user's decision, once.
+   */
+  private _askAboutSession(kind: SessionDialogKind): Observable<SessionDialogResult> {
+    const dialogConfig = new MatDialogConfig<SessionDialogData>();
+    dialogConfig.data = {kind};
+    dialogConfig.panelClass = 'session-dialog';
+    return this.dialog
+      .open<SessionDialog, SessionDialogData, SessionDialogResult>(SessionDialog, dialogConfig)
+      .afterClosed()
+      .pipe(take(1));
+  }
+
+  /**
+   * Ends the session, keeping the data on this device, and goes to the login page.
+   *
+   * Shared by the logout icon and by the sync icon: both need the session gone
+   * before the login page will open, since `LoginGuard` closes it while the app
+   * still reports itself authenticated.
+   */
+  private _endSessionAndGoToLogin(): void {
+    this.authService.endSession();
+    this._router.navigate([this.authService.authConfig.failedAuthRedirect, 'expired']);
   }
 
   ngOnDestroy() {

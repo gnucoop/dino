@@ -1,8 +1,11 @@
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import {Router} from '@angular/router';
 import {
   DATA_SERVICE_CONFIG,
+  DataService,
   DataServiceConfig,
   PANDINO_SERVICE_CONFIG,
   PandinoConfig,
@@ -11,7 +14,7 @@ import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {BehaviorSubject, of} from 'rxjs';
 import {UsersModule} from '@dino/core/users';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
-import {MainNav, MainNavModule} from './public_api';
+import {MainNav, MainNavModule, SessionDialogData, SessionDialogResult} from './public_api';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
 import {EventEmitter} from '@angular/core';
 import {ThemeService} from '@dino/material/core';
@@ -77,6 +80,9 @@ const authServiceMock = {
     return {};
   },
   logout: () => of(false),
+  endSession: () => {},
+  refreshToken: () => of(false),
+  hasValidAuthToken: () => false,
   resetEvt: of(false),
   logoutEvt: new EventEmitter<void>(),
   _authConfig: new BehaviorSubject<AuthServiceConfig>(authServiceConfig),
@@ -89,6 +95,27 @@ describe('Main', () => {
   let fixtureMain: ComponentFixture<MainNav>;
   let main: MainNav;
   let authService: AuthService;
+  let dataService: DataService;
+  let openSpy: jasmine.Spy;
+
+  /**
+   * Answers the next session dialog with `choice`, without opening anything.
+   * @param choice What the user is supposed to have decided
+   * @returns The spy on the dialog, to assert what was asked
+   */
+  const answerDialog = (choice: SessionDialogResult): jasmine.Spy => {
+    openSpy = spyOn(main.dialog, 'open').and.returnValue({
+      afterClosed: () => of(choice),
+    } as MatDialogRef<unknown>);
+    return openSpy;
+  };
+
+  /**
+   * @returns The `kind` the dialog was opened with.
+   */
+  const askedAbout = (): string | undefined =>
+    (openSpy.calls.mostRecent()?.args[1] as MatDialogConfig<SessionDialogData> | undefined)?.data
+      ?.kind;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -107,6 +134,7 @@ describe('Main', () => {
       ],
     }).compileComponents();
     authService = TestBed.inject(AuthService);
+    dataService = TestBed.inject(DataService);
     fixtureMain = TestBed.createComponent(MainNav);
     main = fixtureMain.componentInstance;
   });
@@ -122,10 +150,124 @@ describe('Main', () => {
     let snackbarSpy = spyOn(main.snackbar, 'open').and.callThrough();
 
     fixtureMain.detectChanges();
+    answerDialog('logout');
 
     main.logout(false);
 
     expect(logoutSpy).toHaveBeenCalled();
     expect(snackbarSpy).toHaveBeenCalled();
+  });
+
+  it('does not touch the session when the logout question is cancelled', () => {
+    const logoutSpy = spyOn(authService, 'logout').and.callThrough();
+    const endSessionSpy = spyOn(authService, 'endSession');
+
+    fixtureMain.detectChanges();
+    answerDialog(undefined);
+
+    main.logout(false);
+
+    expect(askedAbout()).toBe('logout');
+    // Nothing was deleted and nothing was ended: this used to be the only
+    // outcome, taken without a question.
+    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
+  });
+
+  it('ends the session and keeps the data when the user chooses so on logout', () => {
+    const logoutSpy = spyOn(authService, 'logout').and.callThrough();
+    const endSessionSpy = spyOn(authService, 'endSession');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+
+    fixtureMain.detectChanges();
+    answerDialog('end-session');
+
+    main.logout(false);
+
+    // The local database is what holds the data collected offline, so the
+    // destructive path must not be reachable by mistake.
+    expect(logoutSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'expired']);
+  });
+
+  it('explains a refused push instead of syncing, and leaves the session alone', () => {
+    spyOnProperty(dataService, 'abandonedCollections', 'get').and.returnValue(['form_data']);
+    const runSyncSpy = spyOn(dataService, 'runSync');
+    const endSessionSpy = spyOn(authService, 'endSession');
+    // Both problems at once: the message about refused data still wins, because a
+    // login cannot fix it and a logout would destroy the data to be exported.
+    dataService.problemSyncing.next(['form_data', 'authentication']);
+
+    fixtureMain.detectChanges();
+    answerDialog(undefined);
+
+    main.runSync();
+
+    expect(askedAbout()).toBe('data-refused');
+    expect(runSyncSpy).not.toHaveBeenCalled();
+    expect(endSessionSpy).not.toHaveBeenCalled();
+  });
+
+  it('retries the token before asking anything, and syncs when it works', () => {
+    spyOn(authService, 'refreshToken').and.returnValue(of(true));
+    spyOn(authService, 'hasValidAuthToken').and.returnValue(true);
+    const runSyncSpy = spyOn(dataService, 'runSync');
+    const dialogSpy = spyOn(main.dialog, 'open');
+    dataService.problemSyncing.next(['authentication']);
+
+    fixtureMain.detectChanges();
+
+    main.runSync();
+
+    // A tap on the icon is what a user does when the connection is back. Offering
+    // a login page instead of trying was the wrong answer: nothing else asks for a
+    // token once the replications are stopped.
+    expect(runSyncSpy).toHaveBeenCalled();
+    expect(dialogSpy).not.toHaveBeenCalled();
+  });
+
+  it('asks before sending the user to the login page, and postpones on request', () => {
+    const endSessionSpy = spyOn(authService, 'endSession');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    dataService.problemSyncing.next(['authentication']);
+
+    fixtureMain.detectChanges();
+    answerDialog(undefined);
+
+    main.runSync();
+
+    expect(askedAbout()).toBe('session-expired');
+    // "Later": the badge stays on, the session stays as it is.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('ends the session and goes to the login page when the user accepts', () => {
+    const endSessionSpy = spyOn(authService, 'endSession');
+    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    dataService.problemSyncing.next(['authentication']);
+
+    fixtureMain.detectChanges();
+    answerDialog('end-session');
+
+    main.runSync();
+
+    expect(endSessionSpy).toHaveBeenCalled();
+    // `LoginGuard` closes the login page while the app still reports itself
+    // authenticated, so the session has to go first.
+    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'expired']);
+  });
+
+  it('just syncs when there is no problem to explain', () => {
+    const runSyncSpy = spyOn(dataService, 'runSync');
+    const dialogSpy = spyOn(main.dialog, 'open');
+
+    fixtureMain.detectChanges();
+
+    main.runSync();
+
+    expect(runSyncSpy).toHaveBeenCalled();
+    expect(dialogSpy).not.toHaveBeenCalled();
   });
 });
