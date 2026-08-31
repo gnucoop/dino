@@ -85,7 +85,7 @@ export class FormsListComponent {
   readonly bulkActions: boolean = conf.bulkActions;
   readonly formCreationUserLimits: {[key: string]: number} | undefined =
     conf.formCreationUserLimits;
-  readonly createFormPdf = conf.createFormPdf;
+  readonly openFormPdf = conf.openFormPdf;
 
   constructor(
     readonly filtersService: FiltersService,
@@ -499,13 +499,13 @@ export class FormsListComponent {
             };
           }
 
-          this.createFormPdf(
+          this.openFormPdf(
             schema.schema as AjfForm,
             translate,
             undefined,
             header,
             formData['data'],
-          ).then(pdf => pdf.open());
+          );
         }
       });
   }

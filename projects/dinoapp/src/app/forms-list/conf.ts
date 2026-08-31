@@ -1,4 +1,4 @@
-import {createFormPdf as ajfCreateFormPdf} from '@ajf/core/forms';
+import {openFormPdf as ajfOpenFormPdf} from '@ajf/core/forms';
 import {FormData} from '@dino/core/forms';
 import {ActionType, ListAction} from '@dino/core/list';
 import {ListHeader} from '@dino/core/list';
@@ -66,8 +66,8 @@ export const formImport: boolean =
 
 export const formCreationUserLimits = environment.formsConfig.formCreationUserLimits;
 
-const customCreateFormPdf = ajfCustomFunctions.createFormPdf as (typeof ajfCreateFormPdf | undefined);
-export const createFormPdf = customCreateFormPdf || ajfCreateFormPdf;
+const customOpenFormPdf = ajfCustomFunctions.openFormPdf as (typeof ajfOpenFormPdf | undefined);
+export const openFormPdf = customOpenFormPdf || ajfOpenFormPdf;
 
 export const secondaryMetricFieldsDisplayed: {
   [metricName: string]: string | string [];
