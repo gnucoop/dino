@@ -30,11 +30,12 @@ import {NetworkStatusService} from './network-status.service';
 /**
  * A route guard that grants authorized access to a route,
  * checking if the user has a valid auth and/or refresh JWT token.
- * If the user does not, it redirects to the login component.
+ * With no session at all it redirects to the login component.
  *
  * While offline the guard never blocks navigation nor redirects to the login
  * page: the refresh is attempted in background so the app keeps working on
- * cached data.
+ * cached data. Same for a session whose token cannot be renewed: the redirect
+ * would be cancelled by `LoginGuard` anyway, leaving the user stuck.
  */
 @Injectable({providedIn: 'root'})
 export class AuthGuard {
@@ -69,11 +70,19 @@ export class AuthGuard {
         }
         return this._authService.refreshToken('init refresh').pipe(
           take(1),
-          map(refreshed =>
-            refreshed
-              ? true
-              : this._router.createUrlTree([this._authService.authConfig.failedAuthRedirect]),
-          ),
+          map(refreshed => {
+            if (refreshed) {
+              return true;
+            }
+            if (authenticated.auth) {
+              // A session that cannot renew its token right now keeps navigating
+              // on local data, exactly as it does offline.
+              return true;
+            }
+            // No session at all: the login page is where this belongs, and it is
+            // reachable because `LoginGuard` agrees there is nothing to protect.
+            return this._router.createUrlTree([this._authService.authConfig.failedAuthRedirect]);
+          }),
         );
       }),
     );
