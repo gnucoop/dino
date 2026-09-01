@@ -70,6 +70,7 @@ dino-main-nav {
       transition: opacity ease-in-out 0.5s;
       &.dino-logout-button-off {
         opacity: 0.3;
+        pointer-events: none;
       }
     }
     .dino-toolbar-actions {
