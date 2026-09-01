@@ -1112,7 +1112,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   private _endSessionAndGoToLogin(): void {
     this.authService.endSession();
-    this._router.navigate([this.authService.authConfig.failedAuthRedirect, 'expired']);
+    this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
   }
 
   ngOnDestroy() {
