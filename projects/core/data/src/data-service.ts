@@ -1053,8 +1053,8 @@ export class DataService implements IDataService {
     await this._awaitDbTeardown();
     await this._removeDataOfPreviousUser(config);
     if (this._currentDb != null) {
-      // A database is still open although no teardown removed it: a
-      // configuration change is the only path that gets here. Close it - without
+      // A database is still open although no teardown removed it: a login after
+      // a session that only ended, or a configuration change. Close it - without
       // deleting its data - because rxdb refuses to create a second instance
       // for a name that is still in use.
       const previous = this._currentDb;
