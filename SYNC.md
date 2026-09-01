@@ -77,6 +77,11 @@ collection is given up on — §4.
 states are reused, so the checkpoints stand. On `dev` a full sync was an implicit side effect of the
 token renewal, which tore down and recreated every replication.
 
+**With `live: false`** — some environments are configured that way — the tap is the only trigger:
+nothing replicates on its own, and a token renewal in particular does not. rxdb cancels a non-live
+replication as soon as its first cycle is in sync, so there is no state left to `reSync()`: the tap
+rebuilds the replication, which is what runs a cycle.
+
 ### 2.3 Going offline, and coming back
 
 ```mermaid
@@ -96,11 +101,12 @@ working on local data. A refresh short-circuits to success without a request, so
 ever spent offline**, however long it lasts. The pre-emptive timer re-arms with a 60s floor until the
 token actually expires, then stops: a handful of wake-ups, then silence for days.
 
-**Reconnecting** is driven by the interceptor, on the `online` event. It re-evaluates the token and
-refreshes if needed — including for a session that *started* offline, the normal case for a tablet
-whose PWA was discarded and relaunched without a network, and dead code on `dev`. Meanwhile the
-replications restart and their first rejected JWT asks for a refresh too; refreshes are single-flight,
-so both paths share one request.
+**Reconnecting** is driven by the interceptor, on the `online` event: it re-evaluates the token and
+refreshes if needed, including for a session that *started* offline — the normal case for a tablet
+whose PWA was discarded and relaunched without a network. On `dev` this handler could never run: it
+tested a truthy object instead of its `token` property, so the refresh inside was unreachable.
+Meanwhile the replications restart and their first rejected JWT asks for a refresh too; refreshes are
+single-flight, so both paths share one request.
 
 On success the replications resume from their stored checkpoint, which is what pushes the backlog. On
 failure nothing is torn down: the app moves to **Blocked**, §3.
@@ -116,9 +122,12 @@ Refreshes are **single-flight**: interceptor, guard, timer and replications shar
 each requester made its own, and every one of them re-emitted the token, which reconfigured every
 running replication.
 
-A renewed token reaches the replications with `setHeaders()`, leaving the state and the checkpoint
-alone. Recreating them — `dev` again — restarts from the checkpoint, re-pulls whole collections and can
-trigger a mass push: a heavy cycle every eleven minutes.
+A renewed token reaches the running replications with `setHeaders()`: the header is swapped, nothing is
+cancelled, and the replication state — with the checkpoint it holds — is left alone. `dev` cancelled
+each replication and created it again instead, so every collection ran its start-up cycle: a pull from
+the checkpoint and a fresh look at what is unpushed. Renewals were occasional there. Here they are
+periodic, and that is what made `setHeaders()` necessary: the pre-emptive refresh would otherwise
+rebuild every replication every eleven minutes.
 
 ## 3. When the token cannot be renewed
 
