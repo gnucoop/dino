@@ -188,7 +188,7 @@ describe('Main', () => {
     // destructive path must not be reachable by mistake.
     expect(logoutSpy).not.toHaveBeenCalled();
     expect(endSessionSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'expired']);
+    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect]);
   });
 
   it('explains a refused push instead of syncing, and leaves the session alone', () => {
@@ -256,7 +256,7 @@ describe('Main', () => {
     expect(endSessionSpy).toHaveBeenCalled();
     // `LoginGuard` closes the login page while the app still reports itself
     // authenticated, so the session has to go first.
-    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect, 'expired']);
+    expect(navigateSpy).toHaveBeenCalledWith([authServiceConfig.failedAuthRedirect]);
   });
 
   it('just syncs when there is no problem to explain', () => {
