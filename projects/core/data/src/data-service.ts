@@ -424,6 +424,11 @@ export class DataService implements IDataService {
   private _abandonedCollections: Set<string> = new Set<string>();
 
   /**
+   * Collections whose replication is being rebuilt right now.
+   */
+  private _rebuildingSyncs: Set<string> = new Set<string>();
+
+  /**
    * The collections the sync gave up on because the server refused their
    * documents.
    *
@@ -1589,15 +1594,22 @@ export class DataService implements IDataService {
           this._reportTokenRenewal(this._hasUsableToken());
         }
         if (isOnline) {
-          if (isDevMode()) {
-            console.log(`Running the sync for ${collectionName ? collectionName : 'all'}! `);
-          }
           const actSyncs = this._activeSyncs.value;
           if (collectionName) {
             const actSync: ActiveSync | undefined = actSyncs[collectionName];
             if (actSync && actSync.state) {
               if (retrySyncAttempt) {
                 actSync.retrySyncAttempts = retrySyncAttempt;
+              }
+              if (isDevMode() && !actSync.state.isStopped()) {
+                console.log(`Running the sync for ${collectionName}! `);
+              }
+              if (actSync.state.isStopped()) {
+                // rxdb cancels a `live: false` replication after its first cycle,
+                // and `reSync()` on a cancelled one does nothing: only rebuilding
+                // it runs a cycle.
+                this._rebuildCollectionSync(collectionName);
+                return;
               }
               actSync.state.reSync();
               actSync.state.awaitInSync().then(() => {
@@ -1618,6 +1630,9 @@ export class DataService implements IDataService {
               });
             }
           } else {
+            if (isDevMode()) {
+              console.log('Running the sync for all! ');
+            }
             // The cycle has to be asked for explicitly: it used to be an
             // implicit side effect of the token renewal, which tore down and
             // recreated every replication - restarting it from its checkpoint.
@@ -2101,6 +2116,35 @@ export class DataService implements IDataService {
   }
 
   /**
+   * Creates a collection's replication again, for one rxdb has stopped.
+   * @param collectionName The collection whose replication must be rebuilt.
+   */
+  private _rebuildCollectionSync(collectionName: string): void {
+    // A rebuilt non-live replication asks for a cycle of its own: the guard keeps
+    // the two from calling each other.
+    if (this._rebuildingSyncs.has(collectionName)) {
+      return;
+    }
+    const registered = this._registeredCollections.value.find(
+      reg => reg.collection.name === collectionName,
+    );
+    const token = this._authService.getAuthToken();
+    if (registered == null || token == null) {
+      return;
+    }
+    if (isDevMode()) {
+      console.log(`Rebuilding the sync for ${collectionName}`);
+    }
+    const {collection, ...params} = registered;
+    this._rebuildingSyncs.add(collectionName);
+    try {
+      this._setupCollectionSync(collection, params, token);
+    } finally {
+      this._rebuildingSyncs.delete(collectionName);
+    }
+  }
+
+  /**
    * Hands a renewed auth token to an already running collection sync, without
    * restarting the replication.
    * In live mode the graphql subscription is recreated, because it is bound to
@@ -2121,13 +2165,13 @@ export class DataService implements IDataService {
       return;
     }
     activeSync.state.setHeaders({Authorization: `Bearer ${token}`});
-    if (isDevMode()) {
+    if (isDevMode() && !activeSync.state.isStopped()) {
       console.log(`${collection.name}: sync token renewed without restarting the replication`);
     }
     if (!wsClientRenewed) {
-      // Without a live subscription the recreated sync used to kick a run on
-      // every token change: keep that trigger, without the restart.
-      this.runSync(collection.name);
+      // No live subscription: the sync runs only when asked, so a renewal ends
+      // here. Kicking a run on every token change would mean a replication cycle
+      // every eleven minutes, which is what `live: false` is configured not to do.
       return;
     }
     activeSync.clientRequestSub.unsubscribe();

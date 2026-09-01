@@ -658,6 +658,7 @@ describe('Data service - pre-sync token refresh failures', () => {
           reSync: () => {},
           awaitInSync: () => new Promise<void>(() => {}),
           cancel: () => Promise.resolve(),
+          isStopped: () => false,
         },
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
@@ -875,6 +876,7 @@ describe('Data service - full sync cycle', () => {
           reSync: reSyncSpies[name],
           awaitInSync: () => new Promise<void>(() => {}),
           cancel: () => Promise.resolve(),
+          isStopped: () => false,
         },
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
@@ -897,6 +899,19 @@ describe('Data service - full sync cycle', () => {
 
     expect(reSyncSpies['form_data']).toHaveBeenCalledTimes(1);
     expect(reSyncSpies['form_schema']).not.toHaveBeenCalled();
+  });
+
+  it('rebuilds a replication rxdb has stopped, instead of asking it to resync', () => {
+    const rebuild = spyOn(dataService as any, '_rebuildCollectionSync');
+    const activeSyncs = (dataService as any)._activeSyncs.value;
+    activeSyncs['form_data'].state.isStopped = () => true;
+
+    dataService.runSync('form_data');
+
+    // With `live: false` rxdb cancels the replication after its first cycle, so
+    // the tap on the sync icon renewed the token and replicated nothing.
+    expect(rebuild).toHaveBeenCalledWith('form_data');
+    expect(reSyncSpies['form_data']).not.toHaveBeenCalled();
   });
 });
 
@@ -971,6 +986,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
           reSync: () => {},
           awaitInSync: () => new Promise<void>(() => {}),
           cancel: () => Promise.resolve(),
+          isStopped: () => false,
         },
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
