@@ -1097,6 +1097,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
     const dialogConfig = new MatDialogConfig<SessionDialogData>();
     dialogConfig.data = {kind};
     dialogConfig.panelClass = 'session-dialog';
+    // Narrow on a desktop, and still inside the viewport on a phone: a question
+    // this short does not need the 80vw the dialog defaults to.
+    dialogConfig.maxWidth = 'min(700px, 90vw)';
     return this.dialog
       .open<SessionDialog, SessionDialogData, SessionDialogResult>(SessionDialog, dialogConfig)
       .afterClosed()
