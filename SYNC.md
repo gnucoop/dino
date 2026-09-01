@@ -165,9 +165,10 @@ because the call is shared and several requests failing inside one round trip ar
 **Ending a session is not a logout.** `endSession()` drops the tokens, cancels the pre-emptive timer
 and reports `authenticated: false` with `evt: 'expired'`. No http call, so it works offline too.
 Nothing is destroyed: the next login starts from a new refresh token and resumes the replications from
-their checkpoint. It also clears `dbToken` and the registered collections, which hold handles of the
-database being left — otherwise the next session replicates collections of a closed database and its
-spinner never stops.
+their checkpoint. It also clears `dbToken` and the registered collections: those hold `RxCollection`
+handles of the database *instance* of that session, which the next login closes and replaces — over the
+same storage, data intact. Left behind, they make the next session replicate collections of an instance
+that no longer exists, and its spinner never stops.
 
 **The way out is the sync icon**, and it tries before it asks. One tap means "the connection is back",
 so the icon refreshes first: when only the auth server had been unreachable, nothing else is asking for
@@ -187,17 +188,23 @@ redirect stays, and there `LoginGuard` agrees there is nothing to protect.
 
 ## 4. When the server refuses the data
 
-Three push failures with a `constraint-violation` stop that collection: the badge names it, the data
-stays on disk, nothing reaches the server. In practice this comes from a massive `form_data` import.
-With the default `batchSizePush` of 20000 the whole pending queue travels in one mutation, so one
-document the server refuses blocks everything behind it — and the app names the collection, not the
-document: the GraphQL message in the console and in Sentry is the only clue.
+A push rejected with a `constraint-violation` is retried three times, and most of the time that is the
+end of it: the replications run in parallel and in no particular order, so a `log` row can reach the
+server before the `form_data` it references, and by the retry that document is there.
 
-It does not stay stopped, deliberately. Every token renewal sets the collection up again, about every
-eleven minutes, and it fails its three attempts and stops again: a document refused today may be
-acceptable tomorrow, and reaching in-sync is what proves the queue finally went through. What that
-round does **not** do is clear the badge or repeat the Sentry report — the collection stays marked as
-abandoned until it catches up, so the signal persists instead of blinking off for minutes at a time.
+Three failures in a row are the other case: the collection stops, the badge names it, the data stays on
+disk, nothing reaches the server. In practice that comes from a massive `form_data` import — with the
+default `batchSizePush` of 20000 the whole pending queue travels in one mutation, so one document the
+server refuses blocks everything behind it. And the app names the collection, not the document: the
+GraphQL message in the console and in Sentry is the only clue.
+
+**It stops, and it is tried again.** The collection stays registered, so the next token renewal — about
+every eleven minutes — sets its replication up again, and the new round fails its three attempts and
+stops again: a document refused today may be acceptable tomorrow, and reaching in-sync is what proves
+the queue finally went through. What that round does **not** do is clear the badge or repeat the Sentry
+report — the collection stays marked as abandoned until it catches up, so the signal persists instead of
+blinking off for minutes at a time. This is also the one cycle a renewal still starts with `live: false`:
+what gets set up again is a collection with no active sync, whichever mode the sync is in.
 
 That matters because of what the user is expected to do: the session stays alive on purpose, so they
 can see the error, export the local database from the user area, and choose when to log out — the only
@@ -276,7 +283,7 @@ one shared refresh and no logout risk.
 | Interceptor on 401 | replayed the request into the void, returned null to the caller | refreshes, replays, returns the real response |
 | Token renewal cost | full replication restart, whole-collection re-pull, mass push | `setHeaders()` on the running replication |
 | Empty pull response | checkpoint reset to the epoch, endless re-pull | the requested checkpoint is kept |
-| Token expiry check | `exp > now`, threw on a malformed token | 10s skew, never throws |
+| Token expiry check | valid to its last instant, and a token it could not decode threw: a garbage value left in storage kept the app from starting | ten seconds of margin, so a renewal does not race a request already on its way, and a token it cannot decode simply counts as expired |
 | Sync spinner | turned while nothing could replicate, stayed on with no active sync | off when there is nothing to wait for |
 | Sync badge | fed only by push retries and failed registrations | also by a token that cannot be renewed, and it no longer blinks off |
 | Logout → login race | DB8, app left with no database | teardown awaited, creation retried |
@@ -359,8 +366,9 @@ REFRESH IN …`, `AUTH TOKEN REFRESH FAILED`, `COULD NOT REFRESH THE AUTH TOKEN 
    rejecting the JWT, within seconds of each other. Navigation between sections must keep working.
 4. **The way out, and the way back.** Tap the icon: it refreshes, fails, and asks. *Later* changes
    nothing. Unblock the URL and tap again: the session recovers, badge off, no dialog. Block it again,
-   tap and accept: `login/expired`, with IndexedDB intact, the tokens gone, the notice naming the
-   account, and **no call to the signout endpoint**.
+   tap and accept: the login page, with IndexedDB intact, the tokens gone, the notice naming the
+   account, no authentication error announced — the session was ended on request, not lost — and **no
+   call to the signout endpoint**.
 5. **The backlog.** Log in with the same account: the record from step 2 leaves in a push mutation.
 6. **Reconnection from an offline start.** Offline, replace the stored access token with a non-JWT
    string, reload, then go back online without touching anything: a refresh must fire by itself.
