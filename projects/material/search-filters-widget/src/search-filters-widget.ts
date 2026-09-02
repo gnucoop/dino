@@ -199,6 +199,9 @@ export class SearchFiltersWidget implements OnInit, AfterViewInit, OnDestroy {
         if (!formValue && !this.isNoValueOperator()) {
           return true;
         }
+        formValue = formValue || {};
+        delete formValue['$value'];
+        delete formValue['$nodesInitialised'];
         if (this.filterItemData == null || this.widgetData == null) {
           return true;
         }
