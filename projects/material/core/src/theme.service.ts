@@ -50,6 +50,14 @@ export class ThemeService {
 
   setDarkMode(isDark: boolean): void {
     this._service.setDarkTheme(isDark);
+    // The AJF form renderer follows `prefers-color-scheme` unless an ancestor
+    // pins the palette with a class, so a browser set to dark would paint the
+    // embedded AJF components dark inside a light Dino. Both classes are
+    // written explicitly: dropping `.ajf-dark` alone would hand the choice
+    // back to the browser.
+    const classes = document.documentElement.classList;
+    classes.toggle('ajf-dark', isDark);
+    classes.toggle('ajf-light', !isDark);
     this.darkModeChange.emit(isDark);
   }
 
