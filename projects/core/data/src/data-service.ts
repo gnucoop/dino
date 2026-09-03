@@ -22,12 +22,13 @@
 
 import {EventEmitter, Inject, Injectable, isDevMode, Optional} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthService, NetworkStatusService} from '@dino/core/auth';
+import {AuthService, hasJwtAuthError, NetworkStatusService} from '@dino/core/auth';
 import {ConfigService} from '@dino/core/config';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   addRxPlugin,
   createRxDatabase,
+  removeRxDatabase,
   RxCollection,
   RxDatabase,
   RxDocument,
@@ -45,10 +46,11 @@ import {RxDBJsonDumpPlugin} from 'rxdb/plugins/json-dump';
 import {
   BehaviorSubject,
   combineLatest,
+  defer,
   firstValueFrom,
-  forkJoin,
   from,
   interval,
+  merge,
   Observable,
   of as obsOf,
   Subscription,
@@ -60,6 +62,7 @@ import {
   debounceTime,
   delay,
   distinctUntilChanged,
+  exhaustMap,
   filter,
   map,
   mapTo,
@@ -77,6 +80,13 @@ import {
 import {v4 as uuidv4} from 'uuid';
 
 import {ActiveSync} from './active-sync-interface';
+import {boundedRetry} from './bounded-retry';
+import {
+  LocalDataOwner,
+  localDataOwner,
+  removeLocalDataOwner,
+  storeLocalDataOwner,
+} from './local-data-owner';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {PermissionContextService} from './data-context-service';
 import {
@@ -184,6 +194,69 @@ const OWNED_DATA_COLLECTIONS: readonly string[] = ['form_data', 'report_data'];
 const RESTORE_PRESYNC_MAX_WAIT_MS = 60000;
 
 /**
+ * Safety cap for how long the creation of a database waits for the teardown of the previous
+ * one to complete. The wait is what makes a logout immediately followed by a login safe:
+ * rxdb keeps a database name reserved until its instance is closed, so creating a new one
+ * while the previous teardown is still running throws (rxdb error DB8) and would leave the
+ * app with no database at all. The cap only prevents a teardown that never settles from
+ * blocking the login forever; on expiry the creation is attempted anyway and, if the name is
+ * still taken, retried - see {@link DB_CREATION_MAX_ATTEMPTS}.
+ */
+const DB_TEARDOWN_MAX_WAIT_MS = 30000;
+
+/**
+ * Safety cap for how long the teardown waits for the running replications to be cancelled
+ * before removing the storage. Stopping them first is correct - rxdb waits for the database
+ * to be idle while closing it - but it cannot be a condition: `RxReplicationState.cancel()`
+ * awaits the checkpoint queue and the meta instance, so a pending write or request leaves it
+ * unresolved and the removal, which is the only thing that clears the stored schema hashes,
+ * would never run. On expiry the database is removed anyway.
+ */
+const SYNC_STOP_MAX_WAIT_MS = 5000;
+
+/**
+ * Number of attempts allowed when creating the database. More than one attempt is needed
+ * because the name of a database being torn down is released asynchronously.
+ */
+const DB_CREATION_MAX_ATTEMPTS = 5;
+
+/**
+ * Delay between two database creation attempts, in milliseconds.
+ */
+const DB_CREATION_RETRY_DELAY_MS = 1000;
+
+/**
+ * Number of consecutive pre-sync token refresh failures past which the problem is
+ * reported to Sentry as an error rather than a warning.
+ *
+ * It is a severity threshold and nothing else. It used to end the session, and
+ * that was wrong twice over: a failed refresh is no proof of a dead session - the
+ * auth service reports the same negative result for a revoked refresh token, a
+ * 5xx, a timeout and a request failing while `navigator.onLine` is still true -
+ * and `runSync()` is called by the replication error handlers too, so three
+ * background retries with a dead token sent the user to the login page with no
+ * gesture of theirs and no question asked. Ending a session is the user's
+ * decision, taken in the dialog behind the badge.
+ */
+const MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES = 3;
+
+/**
+ * Name reported in {@link DataService.problemSyncing} when the auth token cannot
+ * be renewed. Not a collection: it is the one problem that stops all of them, and
+ * it travels on the badge and the end of cycle message the collections use.
+ */
+const TOKEN_RENEWAL_SYNC_PROBLEM = 'authentication';
+
+/**
+ * Number of consecutive failed token renewals after which the replications are
+ * stopped. They cannot succeed without a usable token, and rxdb retries every
+ * `retryTime` - a loop that costs battery and data on a device in the field, for
+ * nothing. The session is left alone: a sync request, or a renewal that goes
+ * through, starts them again.
+ */
+const MAX_TOKEN_RENEWAL_FAILURES = 3;
+
+/**
  * Service that allows to interact with the local database.
  */
 @Injectable({providedIn: 'root'})
@@ -257,6 +330,23 @@ export class DataService implements IDataService {
   private _refreshDb = new BehaviorSubject<'ready' | 'notReady'>('ready');
 
   /**
+   * The database instance currently open, or null when none is.
+   * Held as a plain reference, and not read back from {@link _db}, because the
+   * teardown must always act on the instance it was started for: {@link _db}
+   * replays its latest value, so a teardown subscribing to it could be handed
+   * the database created by a subsequent login and destroy that one instead.
+   */
+  private _currentDb: RxDatabase | null = null;
+
+  /**
+   * Resolves when the teardown of the previous database is complete.
+   * Awaited before a new database is created, so that a logout and a login in
+   * quick succession cannot overlap. Never rejects: a failed teardown must not
+   * prevent the next login from getting a database.
+   */
+  private _dbTeardown: Promise<void> = Promise.resolve();
+
+  /**
    * The current Websocket client
    */
   private _wsClient: Client | null = null;
@@ -295,11 +385,62 @@ export class DataService implements IDataService {
   private _refreshEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
-   * Emits when a websocket throws an error in its connection callback
-   * or when there is an arror during syncing data
-   * and asks the authService to log out.
+   * Emits when the current session is over, however it ended: an explicit logout,
+   * or an `endSession()` from anywhere - the interceptor running out of attempts,
+   * or the user answering the dialog behind the sync badge.
+   *
+   * Used to abort work that belongs to the session being left. It is not itself
+   * destructive: the data teardown hangs off the auth service's `logoutEvt`,
+   * which only an explicit logout emits, so a session that merely ended keeps the
+   * data collected offline.
    */
-  private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+  private get _sessionOverEvt(): Observable<unknown> {
+    return merge(
+      this._authService.logoutEvt,
+      this._authService.authenticated.pipe(filter(authEvt => authEvt.evt === 'expired')),
+    );
+  }
+
+  /**
+   * Count of the consecutive pre-sync token refresh failures.
+   * Reset by every successful refresh, so that an isolated failure in a later
+   * cycle starts the budget over instead of inheriting the previous one.
+   */
+  private _failedSyncRefreshes: number = 0;
+
+  /**
+   * Count of the consecutive failed token renewals, from any source.
+   * Drives the badge and, past {@link MAX_TOKEN_RENEWAL_FAILURES}, the stop of
+   * the replications. Reset by a renewal that actually produced a usable token.
+   */
+  private _failedTokenRenewals: number = 0;
+
+  /**
+   * Collections given up on after a push the server kept refusing.
+   * Kept here because the marker cannot live on the active sync: that entry is
+   * deleted when the sync is stopped, and `_initSync()` sets the collection up
+   * again on every token renewal.
+   */
+  private _abandonedCollections: Set<string> = new Set<string>();
+
+  /**
+   * Collections whose replication is being rebuilt right now.
+   */
+  private _rebuildingSyncs: Set<string> = new Set<string>();
+
+  /**
+   * The collections the sync gave up on because the server refused their
+   * documents.
+   *
+   * Read by the ui to explain a badge that no amount of syncing clears:
+   * {@link problemSyncing} names the collection but not the reason, and the
+   * reason is what decides what to offer the user. Documents that are refused,
+   * not delayed, need a person - an admin fixing the data, or an export of the
+   * local database followed by a logout.
+   */
+  get abandonedCollections(): string[] {
+    return [...this._abandonedCollections];
+  }
 
   constructor(
     private _authService: AuthService,
@@ -322,11 +463,31 @@ export class DataService implements IDataService {
     }
 
     this._authService.authenticated
-      .pipe(filter(authEvt => authEvt.evt === 'login' || authEvt.evt === 'logout'))
+      .pipe(
+        filter(
+          authEvt =>
+            authEvt.evt === 'login' || authEvt.evt === 'logout' || authEvt.evt === 'expired',
+        ),
+      )
       .subscribe(authEvt => {
-        this._refreshDb.next(authEvt.evt === 'login' ? 'ready' : 'notReady');
-        if (authEvt.evt === 'logout') {
+        const login = authEvt.evt === 'login';
+        this._refreshDb.next(login ? 'ready' : 'notReady');
+        if (!login) {
+          // The database of the next session does not exist yet, so the token of
+          // this one has to go: a registration starting before the new database
+          // is open would otherwise find the old token still current, register
+          // against the database this session is leaving and report itself done.
+          // Nothing would then be registered on the database the next session
+          // actually uses - a query for a collection that is not there.
           this.dbToken.next(null);
+          // And the session state with it. The registered collections hold
+          // `RxCollection` handles of the database being left, and a re-
+          // registration is dropped as a duplicate by name, so leaving them
+          // there means the next session replicates collections of a closed
+          // database: they never reach in-sync and the sync spinner never stops.
+          // `expired` is in here for the same reason as `logout`, minus the
+          // teardown: a session the app gave up on keeps its data.
+          this._resetSessionState();
         }
       });
 
@@ -334,7 +495,17 @@ export class DataService implements IDataService {
       filter(rdy => rdy === 'ready'),
       switchMap(() => {
         return this._dataConfig.pipe(
-          switchMap(cfg => from(createRxDatabase(cfg.databaseCreateOptions))),
+          // `defer` (not `from` on a promise) so that a retry really runs the
+          // creation again instead of re-reading an already rejected promise.
+          switchMap(cfg =>
+            defer(() => this._createDatabase(cfg)).pipe(
+              boundedRetry<RxDatabase>({
+                count: DB_CREATION_MAX_ATTEMPTS,
+                delay: DB_CREATION_RETRY_DELAY_MS,
+                label: 'createRxDatabase',
+              }),
+            ),
+          ),
         );
       }),
       tap(db => {
@@ -346,13 +517,22 @@ export class DataService implements IDataService {
       shareReplay(1),
     );
 
-    this.isSyncing = this._activeSyncs.pipe(
-      switchMap(syncs => {
+    this.isSyncing = combineLatest([this._activeSyncs, this.problemSyncing]).pipe(
+      switchMap(([syncs, problems]) => {
         const syncsStateActivity: Observable<Boolean>[] = [];
         for (let key in syncs) {
           if (syncs[key] != null) {
             syncsStateActivity.push(syncs[key].stateActivity);
           }
+        }
+        // Two states in which the spinner has to be off, and used to keep
+        // turning. Nothing replicating: `combineLatest([])` completes without
+        // emitting, so whoever renders this kept the last value it ever saw -
+        // true. And a sync blocked on renewing the token: it says "working on it"
+        // while the truth is "cannot, and will not until you log in again",
+        // contradicting the badge that says so.
+        if (syncsStateActivity.length === 0 || problems.includes(TOKEN_RENEWAL_SYNC_PROBLEM)) {
+          return obsOf(false);
         }
         return combineLatest(syncsStateActivity).pipe(
           switchMap(states => {
@@ -382,6 +562,19 @@ export class DataService implements IDataService {
         if (evt === 'started') {
           return obsOf([false]);
         }
+        if (collections.length === 0) {
+          // No collection registered means there is nothing to wait for - the
+          // session has just been torn down. Reporting `false` here would be
+          // read as "initialization in progress" and leave the initialization
+          // spinner on the login page (see `isLoading` in the main nav).
+          // The login path does not rely on this branch: it gets its `false`
+          // from the `started` event above, emitted before the collections are
+          // registered.
+          // The explicit value matters because combineLatest of an empty array
+          // never emits, so without it the stream goes silent on logout and
+          // whoever is showing a spinner keeps showing it.
+          return obsOf([true]);
+        }
         const syncs = collections.map(coll => coll.firstSyncCompleted);
         return combineLatest(syncs);
       }),
@@ -393,18 +586,23 @@ export class DataService implements IDataService {
       this._initSync();
     }
 
+    // No artificial delay before asking for a new token: the refresh is
+    // single-flight in the auth service, so the collections reporting an
+    // expired JWT at the same time share one http call. exhaustMap drops the
+    // triggers arriving while a refresh is already running.
     this._refreshEvt
-      .pipe(
-        debounceTime(this._authService.authConfig.retryRefreshTime),
-        switchMap(() => this._authService.refreshToken()),
-      )
-      .subscribe();
+      .pipe(exhaustMap(() => this._authService.refreshToken()))
+      // Offline the refresh reports success without even trying, so the result
+      // alone would clear the badge while nothing was renewed. What counts is
+      // whether the token is usable now.
+      .subscribe(refreshed => this._reportTokenRenewal(refreshed && this._hasUsableToken()));
 
-    this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
-      if (res) {
-        this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'sync_error']);
-      }
-    });
+    // Any renewal that goes through clears the badge, whoever asked for it. Only
+    // the two paths above used to report, while the guard, the interceptor and
+    // the pre-emptive timer renew without passing through either - so the badge
+    // stayed lit after the session had recovered, and the sync icon then sent the
+    // user to log in again for nothing.
+    this._authService.tokenRefreshedEvt?.subscribe(() => this._reportTokenRenewal(true));
 
     this.syncErrorEvt.subscribe(evt => {
       const {collection, retrySyncAttempts} = evt;
@@ -418,13 +616,20 @@ export class DataService implements IDataService {
       const collection = evt.collection;
       const actSyncs = this._activeSyncs.getValue();
       actSyncs[collection].retrySyncAttempts = -1;
+      const alreadyAbandoned = this._abandonedCollections.has(collection);
+      this._abandonedCollections.add(collection);
       this._stopCollectionSync(collection);
       if (collection === 'form_data' || collection === 'form_schema') {
         this._stopCollectionSync('log');
       }
       if (isDevMode()) console.log(`COULD NOT SYNC ${collection}`);
       this._toggleActiveSyncProblem(collection, 'add');
-      this._reportSyncError(collection, evt.error);
+      if (!alreadyAbandoned) {
+        // Reported once. The collection is set up again on every token renewal
+        // and gives up again, so reporting each round would fill Sentry with one
+        // event every eleven minutes for a problem already known.
+        this._reportSyncError(collection, evt.error);
+      }
     });
 
     if (this._configService != null) {
@@ -441,7 +646,15 @@ export class DataService implements IDataService {
       .pipe(
         switchMap(evt => {
           if (evt) {
-            return this.destroyAllCollections();
+            // The error is swallowed here on purpose: letting it reach the
+            // subscriber would terminate this subscription, and no later logout
+            // would tear the database down at all.
+            return this.destroyAllCollections().pipe(
+              catchError(err => {
+                console.error('Could not destroy the local database on logout', err);
+                return obsOf([]);
+              }),
+            );
           }
           return obsOf(false);
         }),
@@ -500,7 +713,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         const insertObject = this._prepareInsertObject(object);
         return from(collection.insert(insertObject)).pipe(
@@ -532,7 +745,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         const docsData = objects.map(object => this._prepareInsertObject(object));
         return from(collection.bulkInsert(docsData)).pipe(
@@ -562,7 +775,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(collection.find(query).update({$set: update})).pipe(
           tap(doc => {
@@ -588,7 +801,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(doc.update({$set: updateData})).pipe(
           tap(dc => {
@@ -620,7 +833,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         const insertObject = {
           id: object.id || uuidv4(),
@@ -653,7 +866,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection<T>;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(collection.find(query).exec());
       }),
@@ -672,7 +885,6 @@ export class DataService implements IDataService {
     return this.dbToken.pipe(
       filter(tkn => tkn != null),
       distinctUntilChanged(),
-      takeUntil(this._logoutEvt),
       switchMap(tkn => {
         return combineLatest([this._db, this._authService.authenticated]).pipe(
           withLatestFrom(this._contextService.fullContext.pipe(take(1))),
@@ -708,16 +920,36 @@ export class DataService implements IDataService {
                 }),
                 mapTo(true),
                 catchError(err => {
-                  if (isDevMode()) {
-                    console.error(params.collection.schema.title, err);
-                  }
+                  this._reportCollectionError(params.name, err);
                   return obsOf(false);
                 }),
               );
             }
             return obsOf(true);
           }),
-          retryWhen(err => err.pipe(delay(1000))),
+          // The db token may still be settling, so retry - but bounded, instead
+          // of looping forever. This waits on the local database, so a
+          // momentarily expired token must not abort the collection setup.
+          boundedRetry<boolean>({
+            count: 30,
+            delay: 1000,
+            label: `createCollection:${params.name}`,
+          }),
+          // Reached when the retries are exhausted, i.e. the database never
+          // became the one this registration was started for. Reporting it is
+          // the point: the collection is now permanently absent for this
+          // session and nothing else would ever say so.
+          catchError(err => {
+            this._reportCollectionError(params.name, err);
+            return obsOf(false);
+          }),
+          // A session that ends aborts the attempt in flight: retrying against a
+          // database nobody is authenticated for only ends in a spurious "could
+          // not create collection" report. The registration itself stays alive,
+          // so the next login re-registers on the new database - this used to cut
+          // the whole stream, and the collection was then absent for the rest of
+          // the page session, however the session had ended.
+          takeUntil(this._sessionOverEvt),
         );
       }),
     );
@@ -733,7 +965,7 @@ export class DataService implements IDataService {
       switchMap(db => {
         const collection = db.collections[collectionName] as RxCollection;
         if (collection == null) {
-          throwError(() => new Error('Invalid collection'));
+          return throwError(() => new Error('Invalid collection'));
         }
         return from(collection.destroy()).pipe(
           tap(() => this._removeRegisteredCollection(collection)),
@@ -743,29 +975,236 @@ export class DataService implements IDataService {
   }
 
   /**
-   * Destroys all collections in the current local db.
+   * The id of the user the local database belongs to, or null when this device
+   * holds no data.
+   *
+   * A session the app gave up on leaves the data in place, so this outlives it:
+   * it is how the login page can warn that logging in with another account
+   * deletes what is still here. An explicit logout clears it along with the data.
+   */
+  get localDataOwner(): LocalDataOwner | null {
+    return localDataOwner(this._dataConfig.value.databaseCreateOptions.name);
+  }
+
+  /**
+   * Destroys the current local db, with all its collections and their stored data.
+   * Called on logout, so that the next user does not inherit the previous one's data.
+   *
+   * The returned observable emits the names of the removed collections. The teardown
+   * itself starts immediately, and is registered as the pending one, so that a login
+   * arriving before it completes waits for it instead of failing to create a database
+   * whose name is still reserved.
    */
   destroyAllCollections(): Observable<string[]> {
-    return this._db.pipe(
-      switchMap(db => {
-        const collectionsDestructions: Observable<boolean>[] = [];
-        for (let coll of this._registeredCollections.value) {
-          const collName = coll.collection.name;
-          const rxCollection = db.collections[collName] as RxCollection;
-          if (rxCollection) {
-            collectionsDestructions.push(
-              from(rxCollection.remove()).pipe(
-                switchMap(() => from(rxCollection.destroy())),
-                tap(() => this._removeRegisteredCollection(rxCollection)),
-              ),
-            );
-          }
-        }
-        return forkJoin(collectionsDestructions).pipe(withLatestFrom(obsOf(db)));
-      }),
-      switchMap(([_cd, db]) => from(db.destroy()).pipe(switchMap(() => from(db.remove())))),
-      take(1),
+    const teardown = this._teardownDatabase();
+    this._dbTeardown = teardown.then(
+      () => undefined,
+      () => undefined,
     );
+    return from(teardown);
+  }
+
+  /**
+   * Stops every replication and removes the current database and its data.
+   * The service state describing the previous session (registered collections,
+   * websocket client, current token, sync problems) is reset synchronously,
+   * before the first await, so that it cannot wipe the state of a session
+   * started in the meantime.
+   */
+  private async _teardownDatabase(): Promise<string[]> {
+    const db = this._currentDb;
+    this._currentDb = null;
+    const syncsStopped = this._stopAllCollectionSyncs();
+    this._resetSessionState();
+    // The data is about to go, so the ownership record goes with it: leaving it
+    // behind would claim data that no longer exists.
+    removeLocalDataOwner(this._dataConfig.value.databaseCreateOptions.name);
+    // The replications have to be actually stopped before the storage goes away:
+    // rxdb waits for the database to be idle while closing it, and a replication
+    // still writing either keeps it busy or writes to a destroyed collection.
+    // Bounded, though: this wait used to be unbounded, and a cancellation that
+    // never settled silently skipped the removal below - the database survived
+    // the logout with its stored schema hashes, so a collection whose schema
+    // changed without a version bump kept failing to register (rxdb DB6) at
+    // every following login, with a reload unable to fix it either.
+    const syncsActuallyStopped = await this._awaitAtMost(syncsStopped, SYNC_STOP_MAX_WAIT_MS);
+    if (db == null) {
+      return [];
+    }
+    if (!syncsActuallyStopped) {
+      this._reportDbTeardownDelay(
+        `Replications did not stop within ${SYNC_STOP_MAX_WAIT_MS}ms; ` +
+          `removing the local database anyway.`,
+      );
+    }
+    // `remove()` closes every collection and deletes its storage, so iterating
+    // over the registered collections adds nothing. It also removes collections
+    // that were never registered here, and - unlike the previous forkJoin over
+    // the registered ones - it runs even when that list is empty, which used to
+    // leave the database open and its name reserved for good.
+    return db.remove();
+  }
+
+  /**
+   * Waits for the teardown of the previous database, then creates a new one.
+   * @param config The data configuration holding the database creation options.
+   */
+  private async _createDatabase(config: DataServiceConfig): Promise<RxDatabase> {
+    await this._awaitDbTeardown();
+    await this._removeDataOfPreviousUser(config);
+    if (this._currentDb != null) {
+      // A database is still open although no teardown removed it: a login after
+      // a session that only ended, or a configuration change. Close it - without
+      // deleting its data - because rxdb refuses to create a second instance
+      // for a name that is still in use.
+      const previous = this._currentDb;
+      this._currentDb = null;
+      await previous.destroy().catch(() => undefined);
+    }
+    const db = await createRxDatabase(config.databaseCreateOptions);
+    this._currentDb = db;
+    return db;
+  }
+
+  /**
+   * Removes the local database when it belongs to a different user than the one
+   * now logged in, before that user gets a database to work with.
+   *
+   * A session the app gave up on no longer destroys the data - the whole point
+   * being to keep what was collected offline until it can be pushed - so this is
+   * what stops the next person on a shared device from inheriting it. The owner
+   * is remembered next to the database and not inside it, so it can be read
+   * without opening anything.
+   *
+   * @param config The data configuration holding the database creation options.
+   */
+  private async _removeDataOfPreviousUser(config: DataServiceConfig): Promise<void> {
+    const user = this._authService.getUserInfo();
+    if (user?.id == null) {
+      // Nobody is logged in yet: nothing to compare, and nothing to inherit.
+      return;
+    }
+    const databaseName = config.databaseCreateOptions.name;
+    const previousOwner = localDataOwner(databaseName);
+    // The label travels with the id because it is read where no session is left
+    // to ask: the login page runs `resetAuth()` before it renders, which takes
+    // the user info with it.
+    const owner = {
+      id: user.id,
+      label: user.email ?? (user as {displayName?: string}).displayName ?? null,
+    };
+    if (previousOwner?.id === owner.id) {
+      if (previousOwner.label !== owner.label) {
+        storeLocalDataOwner(databaseName, owner);
+      }
+      return;
+    }
+    if (previousOwner != null) {
+      const message =
+        `The local database belongs to another user: removing it before ` +
+        `starting the session of ${owner.id}.`;
+      console.warn(message);
+      this._ehms?.captureErrorMessage(message, 'warning');
+      if (this._currentDb != null) {
+        await this._teardownDatabase().catch(() => undefined);
+      } else {
+        // No instance is open - a fresh app start - so the storage is removed by
+        // name instead of opening it just to throw it away.
+        await removeRxDatabase(databaseName, config.databaseCreateOptions.storage).catch(
+          () => undefined,
+        );
+      }
+    }
+    storeLocalDataOwner(databaseName, owner);
+  }
+
+  /**
+   * Waits for the pending database teardown, giving up after
+   * {@link DB_TEARDOWN_MAX_WAIT_MS} so that a teardown which never settles cannot
+   * block the login indefinitely.
+   */
+  private async _awaitDbTeardown(): Promise<void> {
+    const pending = this._dbTeardown;
+    const completed = await this._awaitAtMost(pending, DB_TEARDOWN_MAX_WAIT_MS);
+    if (completed) {
+      return;
+    }
+    // Reported, and not only in dev mode: reaching this point means the previous
+    // database was not removed, so this session starts on the previous session's
+    // storage. It is the state in which a collection whose schema changed without
+    // a version bump can never register again (rxdb DB6), and nothing else would
+    // say that the logout failed to wipe anything.
+    this._reportDbTeardownDelay(
+      `Db teardown did not complete within ${DB_TEARDOWN_MAX_WAIT_MS}ms; ` +
+        `creating the new database anyway, on a local database that was not removed.`,
+    );
+    // Give up on this teardown for good: the creation is retried, and each
+    // retry waiting the full cap again would keep the app without a database
+    // for minutes instead of seconds.
+    if (this._dbTeardown === pending) {
+      this._dbTeardown = Promise.resolve();
+    }
+  }
+
+  /**
+   * Awaits a promise, giving up after `maxWaitMs`.
+   *
+   * A rejection counts as settled: the caller waits for something to be over,
+   * and something that failed is over too.
+   *
+   * @param promise The promise to wait for
+   * @param maxWaitMs How long to wait, in milliseconds
+   * @returns True when the promise settled within the cap, false on expiry
+   */
+  private _awaitAtMost(promise: Promise<unknown>, maxWaitMs: number): Promise<boolean> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const cap = new Promise<boolean>(resolve => {
+      timer = setTimeout(() => resolve(false), maxWaitMs);
+    });
+    return Promise.race([
+      promise.then(
+        () => true,
+        () => true,
+      ),
+      cap,
+    ]).finally(() => {
+      if (timer != null) {
+        clearTimeout(timer);
+      }
+    });
+  }
+
+  /**
+   * Reports a database teardown that did not complete in time.
+   *
+   * Both cases are recoverable by design - the removal runs anyway, the creation
+   * proceeds anyway - but they mean the local database outlived the session that
+   * created it, which is exactly the state that makes a schema hash conflict
+   * (rxdb DB6) permanent. Silent in production, it would be indistinguishable
+   * from "the sync is stuck again".
+   *
+   * @param message What was waited for and what was done instead
+   */
+  private _reportDbTeardownDelay(message: string): void {
+    console.warn(message);
+    this._ehms?.captureErrorMessage(message, 'warning');
+  }
+
+  /**
+   * Resets the state describing the session being closed. Without this, the next
+   * session starts with the previous session's collections registered against a
+   * database that no longer exists, and with a websocket still carrying the
+   * revoked token.
+   */
+  private _resetSessionState(): void {
+    this._registeredCollections.next([]);
+    this.problemSyncing.next([]);
+    this._abandonedCollections.clear();
+    this._currentToken = null;
+    if (this._wsClient != null) {
+      this._wsClient.dispose();
+      this._wsClient = null;
+    }
   }
 
   /**
@@ -1115,13 +1554,26 @@ export class DataService implements IDataService {
    * If a collection name is provided, the replication cycle runs for
    * that collection only.
    * When the Sync runs for all collections, the auth token gets refreshed before the replication cycle.
+   * A failed refresh only skips the cycle: the session is given up on after
+   * {@link MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES} consecutive failures, because a
+   * transient failure is indistinguishable from a revoked refresh token.
    * @param collectionName? The name of the collection to be synced
    * @param retrySyncAttempt? Number of the retry attempt, if the previos sync failed
    */
   runSync(collectionName?: string, retrySyncAttempt?: number) {
     let refreshStream$: Observable<boolean> = obsOf(true);
+    // Only the full sync refreshes the token, so only it can report on the
+    // refresh outcome: the per collection cycles start from a constant `true`.
+    const refreshesToken = !collectionName;
+    // Whether this call owns the refresh or joins one already in flight. The
+    // refresh is single-flight, so tapping the sync button three times while the
+    // connection is slow shares one call - and its single failure must be
+    // counted once, not once per caller, or three taps exhaust the budget and
+    // wipe the local database.
+    let ownsRefresh = false;
 
-    if (!collectionName) {
+    if (refreshesToken) {
+      ownsRefresh = !this._authService.isRefreshing;
       refreshStream$ = this._authService.refreshToken();
     }
 
@@ -1129,18 +1581,35 @@ export class DataService implements IDataService {
       .pipe(take(1))
       .subscribe(([_isSyncing, isOnline, refresh]) => {
         if (!refresh) {
-          this._logoutEvt.emit();
-        }
-        if (isOnline && refresh) {
-          if (isDevMode()) {
-            console.log(`Running the sync for ${collectionName ? collectionName : 'all'}! `);
+          if (ownsRefresh) {
+            this._handleSyncRefreshFailure();
           }
+          return;
+        }
+        if (refreshesToken) {
+          // A refresh that went through proves the session is still alive: the
+          // budget spent by the previous failures is given back, and the badge
+          // stops reporting a token that could not be renewed.
+          this._failedSyncRefreshes = 0;
+          this._reportTokenRenewal(this._hasUsableToken());
+        }
+        if (isOnline) {
           const actSyncs = this._activeSyncs.value;
           if (collectionName) {
             const actSync: ActiveSync | undefined = actSyncs[collectionName];
             if (actSync && actSync.state) {
               if (retrySyncAttempt) {
                 actSync.retrySyncAttempts = retrySyncAttempt;
+              }
+              if (isDevMode() && !actSync.state.isStopped()) {
+                console.log(`Running the sync for ${collectionName}! `);
+              }
+              if (actSync.state.isStopped()) {
+                // rxdb cancels a `live: false` replication after its first cycle,
+                // and `reSync()` on a cancelled one does nothing: only rebuilding
+                // it runs a cycle.
+                this._rebuildCollectionSync(collectionName);
+                return;
               }
               actSync.state.reSync();
               actSync.state.awaitInSync().then(() => {
@@ -1160,9 +1629,49 @@ export class DataService implements IDataService {
                 }
               });
             }
+          } else {
+            if (isDevMode()) {
+              console.log('Running the sync for all! ');
+            }
+            // The cycle has to be asked for explicitly: it used to be an
+            // implicit side effect of the token renewal, which tore down and
+            // recreated every replication - restarting it from its checkpoint.
+            // A renewed token is now handed to the running replication instead,
+            // so nothing else would run a cycle here. Each collection goes
+            // through the branch above, which reuses the replication state and
+            // only triggers a run.
+            Object.keys(actSyncs).forEach(name => this.runSync(name));
           }
         }
       });
+  }
+
+  /**
+   * Accounts for a pre-sync token refresh that did not succeed.
+   * The sync cycle has already been skipped by the caller: this only records the
+   * failure, on the badge for the user and in Sentry for us. Nothing here ends
+   * the session - see {@link MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES}, which is now
+   * only how loud the report is. The local data survives either way.
+   */
+  private _handleSyncRefreshFailure(): void {
+    this._failedSyncRefreshes++;
+    const persistent = this._failedSyncRefreshes >= MAX_CONSECUTIVE_SYNC_REFRESH_FAILURES;
+    if (isDevMode()) {
+      // No "n of 3" here: it read as a countdown to something, and the counter
+      // only advances on another cycle that fails the same way.
+      console.log(
+        `COULD NOT REFRESH THE AUTH TOKEN BEFORE SYNCING: ${this._failedSyncRefreshes} consecutive failure(s)`,
+      );
+    }
+    // Reported either way: a skipped cycle is silent for the user, and a sync
+    // that "sometimes does nothing" is exactly what needs to be visible.
+    // The badge is the only thing the user in the field can see: the report
+    // above goes to Sentry.
+    this._reportTokenRenewal(false);
+    this._ehms?.captureErrorMessage(
+      `Could not refresh the auth token before syncing: sync cycle skipped (${this._failedSyncRefreshes} consecutive failures)`,
+      persistent ? 'error' : 'warning',
+    );
   }
 
   /**
@@ -1189,14 +1698,92 @@ export class DataService implements IDataService {
    * @param operation Add or remove
    */
   private _toggleActiveSyncProblem(collection: string, operation: 'add' | 'remove'): void {
-    const currentSyncsWithProblems = this.problemSyncing.getValue();
-    const index = currentSyncsWithProblems.indexOf(collection, 0);
-    if (index > -1 && operation === 'remove') {
-      currentSyncsWithProblems.splice(index, 1);
-    } else if (index < 0 && operation === 'add') {
-      currentSyncsWithProblems.push(collection);
+    const current = this.problemSyncing.getValue();
+    const index = current.indexOf(collection);
+    // Only on a real change, and always a new array. This runs on every token
+    // renewal now, and re-emitting the same list restarts everything watching it
+    // - the sync spinner among them - while re-emitting the same mutated
+    // reference defeats any check based on identity.
+    if (operation === 'add' && index < 0) {
+      this.problemSyncing.next([...current, collection]);
+    } else if (operation === 'remove' && index > -1) {
+      this.problemSyncing.next(current.filter(name => name !== collection));
     }
-    this.problemSyncing.next(currentSyncsWithProblems);
+  }
+
+  /**
+   * Clears the sync problem of a collection whose replication has just started -
+   * unless that collection had been given up on.
+   *
+   * `_initSync()` sets a stopped collection up again on every token renewal, so
+   * clearing its badge here made the only signal the user has blink off for
+   * minutes at a time. The session deliberately stays alive in that state, so
+   * they can see the error, export the local database and choose when to log out
+   * - the only way out, and the one that destroys it.
+   *
+   * The retry itself stays: a document the server refused may become acceptable,
+   * and reaching in-sync is what proves the queue finally went through.
+   *
+   * @param collectionName The collection whose replication just started.
+   * @param state The replication state, asked when it catches up.
+   */
+  private _reportCollectionSyncStarted(
+    collectionName: string,
+    state: {awaitInSync: () => Promise<unknown>},
+  ): void {
+    if (!this._abandonedCollections.has(collectionName)) {
+      this._toggleActiveSyncProblem(collectionName, 'remove');
+      return;
+    }
+    state.awaitInSync().then(
+      () => {
+        this._abandonedCollections.delete(collectionName);
+        this._toggleActiveSyncProblem(collectionName, 'remove');
+      },
+      () => undefined,
+    );
+  }
+
+  /**
+   * Reports whether the auth token could be renewed, on the same badge that
+   * reports a collection which cannot be synced.
+   *
+   * A token that cannot be renewed stops the sync as surely as a rejected push,
+   * and nothing said so: the badge was fed only by an exhausted push retry and by
+   * a collection that failed to register, while a failed refresh was reported to
+   * Sentry, which nobody in the field reads.
+   *
+   * Marking is informative and reversible, so any failed refresh does it - the
+   * one asked for by the replications as much as the one before a sync. Spending
+   * the budget that ends the session stays with the explicit paths: a network
+   * blip must be visible, not final.
+   *
+   * @param renewed True when the refresh went through.
+   */
+  private _reportTokenRenewal(renewed: boolean): void {
+    if (renewed) {
+      this._failedTokenRenewals = 0;
+      this._toggleActiveSyncProblem(TOKEN_RENEWAL_SYNC_PROBLEM, 'remove');
+      return;
+    }
+    this._failedTokenRenewals++;
+    this._toggleActiveSyncProblem(TOKEN_RENEWAL_SYNC_PROBLEM, 'add');
+    if (this._failedTokenRenewals >= MAX_TOKEN_RENEWAL_FAILURES) {
+      // Nothing can be replicated without a token, and rxdb would keep retrying
+      // every `retryTime` for as long as the app is open. The badge stays on, the
+      // session and the data are untouched, and a sync request or a renewal that
+      // goes through brings the replications back.
+      this._stopAllCollectionSyncs();
+    }
+  }
+
+  /**
+   * @returns True when the stored auth token can still be used. Tells a refresh
+   * that actually renewed the session from one that only reported success because
+   * the app was offline and did not try.
+   */
+  private _hasUsableToken(): boolean {
+    return this._authService.hasValidAuthToken?.() ?? true;
   }
 
   /**
@@ -1224,6 +1811,29 @@ export class DataService implements IDataService {
       `Could not sync collection "${collection}": ${summary}`,
       'error',
     );
+  }
+
+  /**
+   * Reports a collection that could not be created.
+   *
+   * A collection that fails to register is never synced again for the whole
+   * session, and used to fail in complete silence: the log was behind
+   * `isDevMode()` and the retry exhaustion was swallowed by a bare
+   * `catchError`, so in production there was no console output, no report and
+   * no sign in the UI - only a sync that "sometimes gets stuck". The console
+   * error is therefore deliberately unconditional, and the collection is added
+   * to {@link problemSyncing} so that the existing badge and end-of-cycle
+   * message name it, like any other collection that could not be synced.
+   *
+   * @param collectionName The collection that could not be created
+   * @param error The error that prevented the creation
+   */
+  private _reportCollectionError(collectionName: string, error: unknown): void {
+    const reason = error instanceof Error ? error.message : String(error);
+    const message = `Could not create collection "${collectionName}": ${reason}`;
+    console.error(message, error);
+    this._toggleActiveSyncProblem(collectionName, 'add');
+    this._ehms?.captureErrorMessage(message, 'error');
   }
 
   /**
@@ -1289,21 +1899,32 @@ export class DataService implements IDataService {
    */
   protected _initSync(): void {
     const collectionChange = this._registeredCollections.pipe(debounceTime(300));
-    combineLatest([collectionChange, this._authService.authToken, this._nss.isOnline$])
-      .pipe(withLatestFrom(this._authService.authenticated))
-      .subscribe(([[registeredCollections, token, isOnline], authEvt]) => {
+    // `authenticated` belongs in the combineLatest, not in a withLatestFrom: it
+    // is sampled to decide whether to sync, so the sync has to be reconsidered
+    // when it changes. Sampling it only made the outcome depend on the order in
+    // which the auth service emits its two subjects, and a state turning
+    // authenticated again would leave the replications stopped for good.
+    combineLatest([
+      collectionChange,
+      this._authService.authToken,
+      this._nss.isOnline$,
+      this._authService.authenticated,
+    ])
+      .subscribe(([registeredCollections, token, isOnline, authEvt]) => {
         const activeSyncsKeys = Object.keys(this._activeSyncs.getValue());
         if (authEvt.auth && token != null && isOnline) {
           const collectionNames: string[] = Object.values(this._activeSyncs.getValue()).map(
             coll => coll.collectionName,
           );
+          const tokenChanged = token != this._currentToken;
           // If the user is authenticated with a new token, a webSocket client is opened.
           // All collections graphql subscriptions will be sent through this client.
+          let wsClientRenewed = false;
           if (
             this._dataConfig.value.syncOptions.live &&
             this._dataConfig.value.syncOptions.url.ws != null &&
             token &&
-            token != this._currentToken
+            tokenChanged
           ) {
             this._wsClient = newClient(
               this._dataConfig.value.syncOptions.url.ws,
@@ -1311,11 +1932,19 @@ export class DataService implements IDataService {
               this._refreshEvt,
               this._dataConfig.value.syncOptions.socketJwtExpiredCode,
             );
+            wsClientRenewed = true;
           }
           registeredCollections.forEach(registeredCollection => {
             const {collection, ...params} = registeredCollection;
-            if (token != this._currentToken || collectionNames.indexOf(collection.name) < 0) {
+            if (collectionNames.indexOf(collection.name) < 0) {
               this._setupCollectionSync(collection, params, token);
+            } else if (tokenChanged) {
+              // Only the auth token changed: hand the new one to the running
+              // replication instead of tearing it down. Recreating it restarts
+              // the replication from its checkpoint, which re-pulls whole
+              // collections and can trigger a mass push - a heavy cycle to pay
+              // on every token renewal, now that renewal is pre-emptive.
+              this._updateCollectionSyncToken(collection, token, wsClientRenewed);
             }
           });
           activeSyncsKeys.forEach(collectionName => {
@@ -1368,9 +1997,11 @@ export class DataService implements IDataService {
         responseModifier: async function (
           plainResponse: RxDocumentData<any>[],
           _origin: any,
-          _requestCheckpoint: any,
+          requestCheckpoint: any,
         ) {
-          return pullResponseModifier(plainResponse);
+          // The requested checkpoint is forwarded so that an empty response keeps
+          // it, instead of rewinding the replication to the epoch.
+          return pullResponseModifier(plainResponse, requestCheckpoint);
         } as RxGraphQLPullResponseModifier<any, RxDocumentData<Model>>,
         batchSize: this.config.syncOptions.batchSizePull ?? DEFAULT_SYNC_OPTIONS.batchSizePull,
       },
@@ -1391,38 +2022,46 @@ export class DataService implements IDataService {
       if (isDevMode()) {
         console.dir(error);
       }
-      const jwtError = this._dataConfig.value.syncOptions.authErrorMessage || 'JWTExpired';
-      if (
-        error &&
-        error.parameters.errors &&
-        error.parameters.errors.length &&
-        error.parameters.errors[0].message
+      const errors = error?.parameters?.errors as any[] | undefined;
+      if (errors == null || !errors.length) {
+        return;
+      }
+      // Hasura flags every JWT rejection with `extensions.code: invalid-jwt`, while the
+      // message varies (JWTExpired, JWSInvalidSignature, ...). Matching the code as well
+      // as the configured message catches all of them, and looks at every error in the
+      // array instead of the first one only.
+      const configuredJwtError = this._dataConfig.value.syncOptions.authErrorMessage;
+      const isJwtError =
+        hasJwtAuthError({errors}) ||
+        (configuredJwtError != null &&
+          errors.some(
+            err => typeof err?.message === 'string' && err.message.includes(configuredJwtError),
+          ));
+      if (isJwtError) {
+        if (isDevMode()) {
+          console.log(errors.map(err => err?.message).join(' | '));
+        }
+        this._refreshEvt.emit();
+      } else if (
+        error.code === 'RC_PUSH' &&
+        errors[0]?.extensions?.code &&
+        String(errors[0].extensions.code).indexOf('constraint-violation') >= 0
       ) {
-        if (error.parameters.errors[0].message.indexOf(jwtError) >= 0) {
-          console.log(error.parameters.errors[0].message);
-          this._refreshEvt.emit();
-        } else if (
-          error.code === 'RC_PUSH' &&
-          (error.parameters.errors[0] as any).extensions &&
-          (error.parameters.errors[0] as any).extensions.code &&
-          (error.parameters.errors[0] as any).extensions.code.indexOf('constraint-violation') >= 0
-        ) {
-          if (actSyncs[collection.name].retrySyncAttempts !== -1) {
-            console.error(`Sync replication error: ${error}`);
-            const retrySyncAttempts =
-              actSyncs[collection.name].retrySyncAttempts !== undefined
-                ? 1 + actSyncs[collection.name].retrySyncAttempts!
-                : 1;
-            const maxAttempts: number = this.config.syncOptions.retrySyncMaxAttempts ?? 3;
-            if (retrySyncAttempts <= maxAttempts) {
-              this.syncErrorEvt.emit({collection: collection.name, retrySyncAttempts, error});
-            } else {
-              this.couldNotSyncEvt.emit({
-                collection: collection.name,
-                retrySyncAttempts: -1,
-                error,
-              });
-            }
+        if (actSyncs[collection.name].retrySyncAttempts !== -1) {
+          console.error(`Sync replication error: ${error}`);
+          const retrySyncAttempts =
+            actSyncs[collection.name].retrySyncAttempts !== undefined
+              ? 1 + actSyncs[collection.name].retrySyncAttempts!
+              : 1;
+          const maxAttempts: number = this.config.syncOptions.retrySyncMaxAttempts ?? 3;
+          if (retrySyncAttempts <= maxAttempts) {
+            this.syncErrorEvt.emit({collection: collection.name, retrySyncAttempts, error});
+          } else {
+            this.couldNotSyncEvt.emit({
+              collection: collection.name,
+              retrySyncAttempts: -1,
+              error,
+            });
           }
         }
       }
@@ -1447,9 +2086,11 @@ export class DataService implements IDataService {
       const query = subscriptionQueryBuilder(collection);
       const clientRequest = newClientSubscription(this._wsClient, {query});
 
-      stateReceivedSub = state.received$.pipe(throttleTime(500)).subscribe(_data => {
-        this._collectionChangedEmit('changed data pulled', collection);
-      });
+      stateReceivedSub = state.received$
+        .pipe(throttleTime(500, undefined, {leading: true, trailing: true}))
+        .subscribe(_data => {
+          this._collectionChangedEmit('changed data pulled', collection);
+        });
 
       clientRequestSub = clientRequest.subscribe({
         next: () => {
@@ -1466,7 +2107,7 @@ export class DataService implements IDataService {
       stateActivity,
       collectionName: collection.name,
     };
-    this._toggleActiveSyncProblem(collection.name, 'remove');
+    this._reportCollectionSyncStarted(collection.name, state);
     this._activeSyncs.next(actSyncs);
 
     if (!isLive) {
@@ -1475,20 +2116,108 @@ export class DataService implements IDataService {
   }
 
   /**
+   * Creates a collection's replication again, for one rxdb has stopped.
+   * @param collectionName The collection whose replication must be rebuilt.
+   */
+  private _rebuildCollectionSync(collectionName: string): void {
+    // A rebuilt non-live replication asks for a cycle of its own: the guard keeps
+    // the two from calling each other.
+    if (this._rebuildingSyncs.has(collectionName)) {
+      return;
+    }
+    const registered = this._registeredCollections.value.find(
+      reg => reg.collection.name === collectionName,
+    );
+    const token = this._authService.getAuthToken();
+    if (registered == null || token == null) {
+      return;
+    }
+    if (isDevMode()) {
+      console.log(`Rebuilding the sync for ${collectionName}`);
+    }
+    const {collection, ...params} = registered;
+    this._rebuildingSyncs.add(collectionName);
+    try {
+      this._setupCollectionSync(collection, params, token);
+    } finally {
+      this._rebuildingSyncs.delete(collectionName);
+    }
+  }
+
+  /**
+   * Hands a renewed auth token to an already running collection sync, without
+   * restarting the replication.
+   * In live mode the graphql subscription is recreated, because it is bound to
+   * the websocket client that was opened with the previous token; the
+   * replication state, and therefore its checkpoint, is left untouched.
+   * @param collection The collection whose sync must use the new token.
+   * @param token The current JWT authorization token.
+   * @param wsClientRenewed True if the websocket client has just been replaced.
+   */
+  protected _updateCollectionSyncToken(
+    collection: RxCollection,
+    token: string,
+    wsClientRenewed: boolean,
+  ): void {
+    const actSyncs = this._activeSyncs.getValue();
+    const activeSync = actSyncs[collection.name];
+    if (activeSync == null) {
+      return;
+    }
+    activeSync.state.setHeaders({Authorization: `Bearer ${token}`});
+    if (isDevMode() && !activeSync.state.isStopped()) {
+      console.log(`${collection.name}: sync token renewed without restarting the replication`);
+    }
+    if (!wsClientRenewed) {
+      // No live subscription: the sync runs only when asked, so a renewal ends
+      // here. Kicking a run on every token change would mean a replication cycle
+      // every eleven minutes, which is what `live: false` is configured not to do.
+      return;
+    }
+    activeSync.clientRequestSub.unsubscribe();
+    const query = subscriptionQueryBuilder(collection);
+    activeSync.clientRequestSub = newClientSubscription(this._wsClient, {query}).subscribe({
+      next: () => {
+        this.runSync(collection.name);
+      },
+      error: err => console.log('clientRequestSub err: ', err),
+    });
+    this._activeSyncs.next(actSyncs);
+  }
+
+  /**
    * Stop an active collection sync.
    * @param collection The collection for which the sync must be stopped.
+   * @returns A promise resolving when the replication is actually cancelled.
+   * Callers that only need the sync to stop can ignore it; the database teardown
+   * has to await it before removing the storage.
    */
-  private _stopCollectionSync(collectionName: string): void {
+  private _stopCollectionSync(collectionName: string): Promise<void> {
     if (this._activeSyncs.getValue()[collectionName] == null) {
-      return;
+      return Promise.resolve();
     }
     const actSyncs = this._activeSyncs.getValue();
     const {state, clientRequestSub, stateReceivedSub} = actSyncs[collectionName];
     clientRequestSub.unsubscribe();
     stateReceivedSub.unsubscribe();
-    state.cancel().then(() => {});
+    const cancelled = state.cancel().then(
+      () => undefined,
+      () => undefined,
+    );
     delete actSyncs[collectionName];
     this._activeSyncs.next(actSyncs);
+    return cancelled;
+  }
+
+  /**
+   * Stops every active collection sync.
+   * @returns A promise resolving when all the replications are cancelled.
+   */
+  private _stopAllCollectionSyncs(): Promise<void> {
+    const stopped = Object.keys(this._activeSyncs.getValue()).map(collectionName =>
+      this._stopCollectionSync(collectionName),
+    );
+    return Promise.all(stopped).then(() => undefined);
   }
 
   /**

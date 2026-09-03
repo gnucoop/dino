@@ -22,12 +22,32 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
+  'Log out': 'تسجيل الخروج',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'هل تريد تسجيل الخروج مع حذف جميع البيانات المحلية، أم إغلاق الجلسة فقط مع الإبقاء على البيانات على هذا الجهاز؟',
+  'Log out and delete the data': 'تسجيل الخروج وحذف البيانات',
+  'End the session and keep the data': 'إغلاق الجلسة والإبقاء على البيانات',
+  'Cancel': 'إلغاء',
+  'Session expired': 'انتهت صلاحية الجلسة',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'المزامنة متوقفة ولا يمكن حفظ أي بيانات حتى تسجيل دخول جديد. هل تريد إغلاق الجلسة، مع الإبقاء على البيانات على هذا الجهاز، والانتقال إلى صفحة تسجيل الدخول؟',
+  'Go to the login page': 'الانتقال إلى صفحة تسجيل الدخول',
+  'Later': 'لاحقاً',
+  'The data cannot be saved': 'لا يمكن حفظ البيانات',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'البيانات تالفة ولا يمكن حفظها. اتصل بالمسؤول، أو صدّر البيانات من منطقة المستخدم ثم سجّل الخروج.',
   'Import form data': 'استيراد بيانات النموذج',
   'Match the columns in your file to the fields of the form.':
     'طابق أعمدة ملفك مع حقول النموذج.',
   'Upload file': 'رفع ملف',
   'Map fields': 'ربط الحقول',
   'Drag & drop your file here': 'اسحب ملفك وأفلته هنا',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'المزامنة متوقفة: انتهت صلاحية جلستك. اضغط هنا لتسجيل الدخول من جديد بهذا الحساب ومزامنة البيانات الموجودة على هذا الجهاز.',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'البيانات التي تم جمعها بالحساب {{account}} لا تزال على هذا الجهاز. سجّل الدخول بهذا الحساب لمزامنتها: تسجيل الدخول بحساب آخر يحذفها.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    'البيانات التي تم جمعها على هذا الجهاز لم تُزامن بعد. سجّل الدخول بالحساب الذي جمعها: تسجيل الدخول بحساب آخر يحذفها.',
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'الصيغ المقبولة: .xls و .xlsx و .csv — حتى 20 ميغابايت',
   'Choose a file': 'اختر ملفاً',

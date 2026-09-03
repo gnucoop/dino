@@ -85,32 +85,56 @@ export function pullQueryBuilder<T extends Model = Model>(
 }
 
 /**
+ * The checkpoint used to resume a pull replication.
+ */
+export interface PullCheckpoint {
+  id: string;
+  updated_at: string;
+}
+
+/**
+ * The checkpoint a replication starts from when nothing has been pulled yet.
+ */
+export function startingPullCheckpoint(): PullCheckpoint {
+  return {id: '', updated_at: new Date(0).toUTCString()};
+}
+
+/**
  * Modifies the GraphQl server response before it's processed by rxDb and synced into the client,
  * by adding a checkpoint from the last updated pulled document.
+ *
+ * An empty response means "nothing new since the checkpoint we asked from", so that same
+ * checkpoint is handed back. Returning the starting checkpoint instead would rewind the
+ * replication to the epoch, and the next pull would re-download the whole collection - which is
+ * the steady state of a synced app, so the waste would repeat on every replication cycle.
  * @param plainResponse The graphql server response
+ * @param requestCheckpoint The checkpoint the pull was requested from, when available
  * @returns An object with all documents and a checkpoint
  */
 export function pullResponseModifier<T extends Model = Model>(
   plainResponse: RxDocumentData<T>[],
+  requestCheckpoint?: PullCheckpoint | null,
 ): {
   documents: RxDocumentData<T>[];
-  checkpoint: {id: string; updated_at: string};
+  checkpoint: PullCheckpoint;
 } {
   const docs = plainResponse;
   const lastDoc = lastOfArray(docs);
-  const startingCheckPoint = {
-    id: '',
-    updated_at: new Date(0).toUTCString(),
-  };
+  if (docs.length === 0 || lastDoc == undefined) {
+    return {
+      documents: docs,
+      checkpoint:
+        requestCheckpoint != null && requestCheckpoint.updated_at != null
+          ? requestCheckpoint
+          : startingPullCheckpoint(),
+    };
+  }
   return {
     documents: docs,
-    checkpoint:
-      docs.length === 0 || lastDoc == undefined
-        ? startingCheckPoint
-        : {
-            id: lastDoc.id,
-            updated_at: lastDoc.updated_at,
-          },
+    checkpoint: {
+      id: lastDoc.id,
+      updated_at: lastDoc.updated_at,
+    },
   };
 }
 
@@ -130,7 +154,11 @@ export function pushQueryBuilder<T extends Model = Model>(
       return {query: '', variables: {}};
     }
     if (isDevMode()) {
-      console.log('INSERT:', docs, docs[0].assumedMasterState?.updated_at);
+      console.log(
+        `INSERT ${collection.name} (${docs.length}):`,
+        docs,
+        docs[0].assumedMasterState?.updated_at,
+      );
     }
     // let documents: RxReplicationWriteToMasterRow<T>[] = docs;
     // documents.forEach(dc => delete dc['_meta']);
@@ -168,12 +196,22 @@ export function pushQueryBuilder<T extends Model = Model>(
 
 /**
  * Modifies the GraphQl server response after push sync has sent data.
- * @param plainResponse The graphql server response
- * @returns An array with the IDs of all pushed documents
+ *
+ * The replication protocol reads the return value of the push handler as the list of
+ * CONFLICTING master documents, and resolves each of them by overwriting the local document
+ * with the master state it was handed. The upsert's `returning {id}` lists the rows that
+ * WERE written, i.e. the ones that did not conflict, so handing them back made rxdb replace
+ * every successfully pushed document with `{id}` alone, losing all the other fields until
+ * the next pull happened to rewrite it. Rows the server refused (skipped by the
+ * `updated_at: {_lte: ...}` guard of the upsert) are absent from `returning`, so they were
+ * never reported as conflicts either way: an empty list is the correct value here.
+ * @param _plainResponse The graphql server response, not needed to detect conflicts
+ * @returns An empty array, meaning this push had no conflicts to resolve
  */
-export function pushResponseModifier<T extends Model = Model>(plainResponse: RxDocumentData<T>[]) {
-  const resp = plainResponse as unknown as {returning: RxDocumentData<T>[]};
-  return resp.returning;
+export function pushResponseModifier<T extends Model = Model>(
+  _plainResponse: RxDocumentData<T>[],
+): RxDocumentData<T>[] {
+  return [];
 }
 
 /**

@@ -6,7 +6,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {Server, WebSocket} from 'mock-socket';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {firstValueFrom, of as obsOf} from 'rxjs';
+import {firstValueFrom, of as obsOf, Subject} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {
@@ -75,6 +75,9 @@ const authServiceMock = {
   resetEvt: obsOf(true),
   logout: () => obsOf(false),
   logoutEvt: new EventEmitter<void>(),
+  // Read by the data service to tell whether the local database belongs to
+  // somebody else; always the same user in these suites.
+  getUserInfo: () => ({id: 'test_user'}),
 } as unknown as AuthService;
 
 describe('Data service', () => {
@@ -112,6 +115,24 @@ describe('Data service', () => {
     await expectAsync(
       firstValueFrom(dataService.destroyCollection('collection').pipe(take(1))),
     ).toBeRejectedWithError();
+  });
+
+  it('should report a collection that could not be created', async () => {
+    const consoleError = spyOn(console, 'error');
+    // A primary key that no property declares: rxdb rejects the collection.
+    const broken = {
+      name: 'broken',
+      collection: {schema: {...dummySchema, primaryKey: 'not_a_property'}},
+    };
+
+    await expectAsync(
+      firstValueFrom(dataService.createCollection(broken).pipe(take(1))),
+    ).toBeResolvedTo(false);
+
+    // The failure used to be silent outside dev mode, leaving a collection
+    // that never syncs with nothing to diagnose it by.
+    expect(consoleError).toHaveBeenCalled();
+    expect(dataService.problemSyncing.getValue()).toContain('broken');
   });
 });
 
@@ -506,7 +527,9 @@ describe('Data service - restore ordering with active sync', () => {
     const activeSyncs = (dataService as any)._activeSyncs;
     const current = activeSyncs.getValue();
     current['form_schema'] = {
-      state: {},
+      // `cancel` is needed as much as the rest: the debounced collection change
+      // of `_initSync` can fire after the test and stop the leftover syncs.
+      state: {cancel: () => Promise.resolve()},
       clientRequestSub: {unsubscribe: () => {}},
       stateReceivedSub: {unsubscribe: () => {}},
       stateActivity: obsOf(false),
@@ -553,7 +576,7 @@ describe('Data service - restore ordering with active sync', () => {
     // An active sync whose awaitInSync() never resolves.
     (dataService as any)._activeSyncs.next({
       form_schema: {
-        state: {awaitInSync: () => new Promise<void>(() => {})},
+        state: {awaitInSync: () => new Promise<void>(() => {}), cancel: () => Promise.resolve()},
         clientRequestSub: {unsubscribe: () => {}},
         stateReceivedSub: {unsubscribe: () => {}},
         stateActivity: obsOf(false),
@@ -568,5 +591,449 @@ describe('Data service - restore ordering with active sync', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(45);
     expect(elapsed).toBeLessThan(2000);
+  });
+});
+
+// A refresh failure before a full sync is not proof of a dead session: the auth
+// service reports the same negative result for a revoked refresh token and for
+// any transient failure. Since the logout wipes the local database along with
+// the data not yet pushed, the session must survive a few of them.
+describe('Data service - pre-sync token refresh failures', () => {
+  const refreshFailuresDataServiceConfig: DataServiceConfig = {
+    ...dataServiceConfig,
+    databaseCreateOptions: {
+      ...dataServiceConfig.databaseCreateOptions,
+      name: 'dino_data_test_db_refresh_failures',
+    },
+    // No replication is needed here: the active sync is faked below.
+    syncOptions: {...dataServiceConfig.syncOptions, backendless: true},
+  };
+
+  let dataService: DataService;
+  let refreshOutcome: boolean;
+  let logoutSpy: jasmine.Spy;
+  let endSessionSpy: jasmine.Spy;
+  let navigateSpy: jasmine.Spy;
+  let tokenRefreshedEvt: EventEmitter<void>;
+
+  beforeEach(() => {
+    refreshOutcome = false;
+    logoutSpy = jasmine.createSpy('logout').and.returnValue(obsOf(true));
+    endSessionSpy = jasmine.createSpy('endSession');
+    navigateSpy = jasmine.createSpy('navigate');
+    tokenRefreshedEvt = new EventEmitter<void>();
+    const authMock = {
+      authenticated: obsOf({auth: true, evt: 'init'}),
+      authConfig: authServiceConfig,
+      authToken: obsOf('test_auth_token'),
+      resetEvt: obsOf(false),
+      logoutEvt: new EventEmitter<void>(),
+      logout: logoutSpy,
+      endSession: endSessionSpy,
+      tokenRefreshedEvt,
+      getUserInfo: () => ({id: 'test_user'}),
+      refreshToken: () => obsOf(refreshOutcome),
+    } as unknown as AuthService;
+
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: refreshFailuresDataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: navigateSpy}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    // An active sync whose state activity emits right away, so that `isSyncing`
+    // - and therefore the runSync subscription - fires synchronously.
+    (dataService as any)._activeSyncs.next({
+      dummy: {
+        // `awaitInSync` never resolves on purpose: the replication cycle
+        // completion is irrelevant here and would only fire a timer after the
+        // test has ended.
+        state: {
+          reSync: () => {},
+          awaitInSync: () => new Promise<void>(() => {}),
+          cancel: () => Promise.resolve(),
+          isStopped: () => false,
+        },
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+        stateActivity: obsOf(true),
+        collectionName: 'dummy',
+      },
+    });
+  });
+
+  it('skips the sync cycle instead of ending the session on the first failures', () => {
+    dataService.runSync();
+    dataService.runSync();
+
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('never ends the session, however many cycles fail', () => {
+    dataService.runSync();
+    dataService.runSync();
+    dataService.runSync();
+    dataService.runSync();
+
+    // This used to give up at three, and `runSync()` is called by the replication
+    // error handlers as well as by the sync icon: three background retries with a
+    // dead token sent the user to the login page with no gesture of theirs and no
+    // question asked. Ending a session is the user's decision, taken in the dialog
+    // behind the badge.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
+    // A logout is what destroys the local database, and the data collected
+    // offline has not been pushed yet.
+    expect(logoutSpy).not.toHaveBeenCalled();
+    // What the user gets instead: the badge.
+    expect(dataService.problemSyncing.value).toContain('authentication');
+  });
+
+  it('reports on the sync badge that the token could not be renewed', () => {
+    dataService.runSync();
+
+    // The badge is the only signal the user in the field gets: the report that
+    // goes with it ends up in Sentry, which nobody out there reads.
+    expect(dataService.problemSyncing.value).toContain('authentication');
+
+    refreshOutcome = true;
+    dataService.runSync();
+
+    expect(dataService.problemSyncing.value).not.toContain('authentication');
+  });
+
+  it('stops the replications once the renewals keep failing, without touching the session', () => {
+    // The sync cannot succeed without a token, and rxdb retries every 5s for as
+    // long as the app is open: battery and data spent on a device in the field
+    // for nothing.
+    for (let round = 0; round < 3; round++) {
+      (dataService as any)._reportTokenRenewal(false);
+    }
+
+    expect(Object.keys((dataService as any)._activeSyncs.value)).toEqual([]);
+    expect(dataService.problemSyncing.value).toContain('authentication');
+    // The session is the user's to end, and the data stays where it is.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(logoutSpy).not.toHaveBeenCalled();
+  });
+
+  it('reports the spinner off while the sync is blocked on renewing the token', async () => {
+    (dataService as any)._reportTokenRenewal(false);
+
+    // It used to keep turning, saying "working on it" next to a badge saying the
+    // opposite.
+    await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+  });
+
+  it('reports the spinner off when nothing is replicating', async () => {
+    (dataService as any)._activeSyncs.next({});
+
+    // `combineLatest([])` completes without emitting, so whoever rendered this
+    // kept the last value it had ever seen - true, forever.
+    await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+  });
+
+  it('reports a collection given up on once, and keeps its badge when it starts again', async () => {
+    const reportSpy = spyOn(dataService as any, '_reportSyncError');
+
+    dataService.couldNotSyncEvt.emit({
+      collection: 'dummy',
+      retrySyncAttempts: -1,
+      error: {} as any,
+    });
+
+    expect(dataService.problemSyncing.value).toContain('dummy');
+    expect(reportSpy).toHaveBeenCalledTimes(1);
+    // The ui reads this to tell a refused push from an expired session: the badge
+    // names the collection but not the reason, and the reason decides what there
+    // is to offer the user.
+    expect(dataService.abandonedCollections).toContain('dummy');
+
+    // `_initSync()` sets the collection up again on every token renewal. Clearing
+    // its badge there made the only signal the user has blink off for minutes at
+    // a time, while the session stays alive precisely so they can see the error,
+    // export the database and choose when to log out.
+    let caughtUp: () => void = () => {};
+    const inSync = new Promise<void>(resolve => (caughtUp = resolve));
+    (dataService as any)._reportCollectionSyncStarted('dummy', {awaitInSync: () => inSync});
+    expect(dataService.problemSyncing.value).toContain('dummy');
+
+    // Recovery still works: a refused document may become acceptable, and
+    // reaching in-sync is what proves the queue finally went through.
+    caughtUp();
+    await inSync;
+    expect(dataService.problemSyncing.value).not.toContain('dummy');
+    expect(dataService.abandonedCollections).not.toContain('dummy');
+  });
+
+  it('clears the badge of a healthy collection as soon as its replication starts', () => {
+    (dataService as any)._toggleActiveSyncProblem('dummy', 'add');
+
+    (dataService as any)._reportCollectionSyncStarted('dummy', {
+      awaitInSync: () => Promise.resolve(),
+    });
+
+    expect(dataService.problemSyncing.value).not.toContain('dummy');
+  });
+
+  it('clears the badge on any renewal that goes through, whoever asked for it', () => {
+    (dataService as any)._reportTokenRenewal(false);
+    expect(dataService.problemSyncing.value).toContain('authentication');
+
+    // The guard, the interceptor and the pre-emptive timer renew without passing
+    // through the two paths that report, and the badge used to stay lit after the
+    // session had recovered - sending the user to log in again for nothing.
+    tokenRefreshedEvt.emit();
+
+    expect(dataService.problemSyncing.value).not.toContain('authentication');
+  });
+
+  it('gives the budget back after a refresh that went through', () => {
+    dataService.runSync();
+    dataService.runSync();
+
+    refreshOutcome = true;
+    dataService.runSync();
+    expect((dataService as any)._failedSyncRefreshes).toBe(0);
+
+    // Without the reset these two would exhaust the budget and end the session.
+    refreshOutcome = false;
+    dataService.runSync();
+    dataService.runSync();
+
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('does not touch the budget when a single collection is synced', () => {
+    dataService.runSync();
+    dataService.runSync();
+    // A per collection cycle does not refresh the token: it must neither
+    // consume nor reset the budget.
+    dataService.runSync('dummy');
+
+    expect((dataService as any)._failedSyncRefreshes).toBe(2);
+    expect(endSessionSpy).not.toHaveBeenCalled();
+  });
+});
+
+// A renewed token is handed to the running replication instead of tearing it
+// down, so the full sync has to trigger the replication cycles itself: it used
+// to get them for free from the teardown and recreation.
+describe('Data service - full sync cycle', () => {
+  const fullSyncDataServiceConfig: DataServiceConfig = {
+    ...dataServiceConfig,
+    databaseCreateOptions: {
+      ...dataServiceConfig.databaseCreateOptions,
+      name: 'dino_data_test_db_full_sync',
+    },
+    // No replication is needed here: the active syncs are faked below.
+    syncOptions: {...dataServiceConfig.syncOptions, backendless: true},
+  };
+
+  let dataService: DataService;
+  let reSyncSpies: {[collection: string]: jasmine.Spy};
+
+  beforeEach(() => {
+    const authMock = {
+      authenticated: obsOf({auth: true, evt: 'init'}),
+      authConfig: authServiceConfig,
+      authToken: obsOf('test_auth_token'),
+      resetEvt: obsOf(false),
+      logoutEvt: new EventEmitter<void>(),
+      logout: () => obsOf(true),
+      getUserInfo: () => ({id: 'test_user'}),
+      refreshToken: () => obsOf(true),
+    } as unknown as AuthService;
+
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: fullSyncDataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: () => {}}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    reSyncSpies = {};
+    const activeSyncs: {[collection: string]: unknown} = {};
+    ['form_schema', 'form_data'].forEach(name => {
+      reSyncSpies[name] = jasmine.createSpy(`reSync:${name}`);
+      activeSyncs[name] = {
+        // `awaitInSync` never resolves on purpose: the cycle completion is
+        // irrelevant here and would only fire a timer after the test has ended.
+        state: {
+          reSync: reSyncSpies[name],
+          awaitInSync: () => new Promise<void>(() => {}),
+          cancel: () => Promise.resolve(),
+          isStopped: () => false,
+        },
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+        stateActivity: obsOf(true),
+        collectionName: name,
+      };
+    });
+    (dataService as any)._activeSyncs.next(activeSyncs);
+  });
+
+  it('runs a replication cycle for every active sync', () => {
+    dataService.runSync();
+
+    expect(reSyncSpies['form_schema']).toHaveBeenCalledTimes(1);
+    expect(reSyncSpies['form_data']).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs a replication cycle for the given collection only', () => {
+    dataService.runSync('form_data');
+
+    expect(reSyncSpies['form_data']).toHaveBeenCalledTimes(1);
+    expect(reSyncSpies['form_schema']).not.toHaveBeenCalled();
+  });
+
+  it('rebuilds a replication rxdb has stopped, instead of asking it to resync', () => {
+    const rebuild = spyOn(dataService as any, '_rebuildCollectionSync');
+    const activeSyncs = (dataService as any)._activeSyncs.value;
+    activeSyncs['form_data'].state.isStopped = () => true;
+
+    dataService.runSync('form_data');
+
+    // With `live: false` rxdb cancels the replication after its first cycle, so
+    // the tap on the sync icon renewed the token and replicated nothing.
+    expect(rebuild).toHaveBeenCalledWith('form_data');
+    expect(reSyncSpies['form_data']).not.toHaveBeenCalled();
+  });
+});
+
+// The refresh is single-flight: several sync requests in a row share one call.
+// Counting its failure once per caller turned three taps on the sync button -
+// which the app itself invites when there is unsynced data - into a logout, and
+// a logout destroys the local database.
+describe('Data service - single-flight pre-sync refresh', () => {
+  const singleFlightDataServiceConfig: DataServiceConfig = {
+    ...dataServiceConfig,
+    databaseCreateOptions: {
+      ...dataServiceConfig.databaseCreateOptions,
+      name: 'dino_data_test_db_single_flight',
+    },
+    syncOptions: {...dataServiceConfig.syncOptions, backendless: true},
+  };
+
+  let dataService: DataService;
+  let endSessionSpy: jasmine.Spy;
+  let pending: Subject<boolean> | null;
+  let refreshCalls: number;
+
+  /** Resolves the shared refresh, as the auth service does for every joiner. */
+  const settleRefresh = (result: boolean): void => {
+    const subject = pending!;
+    subject.next(result);
+    subject.complete();
+    pending = null;
+  };
+
+  beforeEach(() => {
+    pending = null;
+    refreshCalls = 0;
+    endSessionSpy = jasmine.createSpy('endSession');
+    const authMock = {
+      authenticated: obsOf({auth: true, evt: 'init'}),
+      authConfig: authServiceConfig,
+      authToken: obsOf('test_auth_token'),
+      resetEvt: obsOf(false),
+      logoutEvt: new EventEmitter<void>(),
+      logout: () => obsOf(true),
+      endSession: endSessionSpy,
+      getUserInfo: () => ({id: 'test_user'}),
+      get isRefreshing(): boolean {
+        return pending != null;
+      },
+      // Single-flight, like the real one: the call in flight is shared.
+      refreshToken: () => {
+        if (pending == null) {
+          refreshCalls++;
+          pending = new Subject<boolean>();
+        }
+        return pending.asObservable();
+      },
+    } as unknown as AuthService;
+
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: singleFlightDataServiceConfig},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: () => {}}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    (dataService as any)._activeSyncs.next({
+      dummy: {
+        state: {
+          reSync: () => {},
+          awaitInSync: () => new Promise<void>(() => {}),
+          cancel: () => Promise.resolve(),
+          isStopped: () => false,
+        },
+        clientRequestSub: {unsubscribe: () => {}},
+        stateReceivedSub: {unsubscribe: () => {}},
+        stateActivity: obsOf(true),
+        collectionName: 'dummy',
+      },
+    });
+  });
+
+  it('spends one attempt when several sync requests share the same failed refresh', () => {
+    dataService.runSync();
+    dataService.runSync();
+    dataService.runSync();
+    // One refresh for the three requests, as the auth service shares it.
+    expect(refreshCalls).toBe(1);
+
+    settleRefresh(false);
+
+    expect((dataService as any)._failedSyncRefreshes).toBe(1);
+    expect(endSessionSpy).not.toHaveBeenCalled();
+  });
+
+  it('counts rounds, not requests, and still leaves the session alone', () => {
+    for (let round = 0; round < 3; round++) {
+      dataService.runSync();
+      settleRefresh(false);
+    }
+
+    expect(refreshCalls).toBe(3);
+    expect((dataService as any)._failedSyncRefreshes).toBe(3);
+    // Three rounds used to be the end of the session. `runSync()` is called by
+    // the replication error handlers as well, so that was a login page reached
+    // with no gesture of the user's and no question asked.
+    expect(endSessionSpy).not.toHaveBeenCalled();
+    expect(dataService.problemSyncing.value).toContain('authentication');
+  });
+
+  it('gives the budget back when a shared refresh goes through', () => {
+    dataService.runSync();
+    settleRefresh(false);
+    expect((dataService as any)._failedSyncRefreshes).toBe(1);
+
+    dataService.runSync();
+    dataService.runSync();
+    settleRefresh(true);
+
+    expect((dataService as any)._failedSyncRefreshes).toBe(0);
+    expect(endSessionSpy).not.toHaveBeenCalled();
   });
 });

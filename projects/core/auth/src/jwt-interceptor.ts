@@ -26,35 +26,41 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
+  HttpResponse,
 } from '@angular/common/http';
 import {EventEmitter, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, of as obsOf, throwError} from 'rxjs';
-import {catchError, debounceTime, filter, skip, switchMap, withLatestFrom} from 'rxjs/operators';
+import {catchError, filter, skip, switchMap, take} from 'rxjs/operators';
 
 import {AuthService} from './auth-service';
+import {buildAuthorizationHeader, hasJwtAuthError} from './auth-utils';
 import {NetworkStatusService} from './network-status.service';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
   /**
-   * Emits when a http request returns a 401 error response after
-   * a refresh token attempt.
+   * Emits when a http request fails authentication and a refresh token attempt
+   * is started. Informational: the retry is handled inline by `intercept`, so
+   * that the refreshed response is delivered back to the original caller.
    */
   handleRefreshEvt: EventEmitter<[HttpRequest<any>, HttpHandler]> = new EventEmitter<
     [HttpRequest<any>, HttpHandler]
   >();
 
   /**
-   * Emits when the counter reaches the retry attempts max
-   * and asks user to log in again
+   * Emits when the counter reaches the retry attempts max, so the session is
+   * given up on and the user is asked to log in again.
+   * Deliberately not a logout: that would destroy the local database, and the
+   * data collected offline and not pushed yet with it.
    */
-  private _logoutEvt: EventEmitter<void> = new EventEmitter<void>();
+  private _endSessionEvt: EventEmitter<void> = new EventEmitter<void>();
 
   /**
    * Counter of the retry attemps for refreshing the token.
    * If the counter reaches the retry attempts max, the user is
    * redirected to the login page, and asked to log in again.
+   * Reset on every successful refresh, so that a later idle cycle starts over.
    */
   private _retryAttempts: number = 0;
 
@@ -63,52 +69,52 @@ export class JWTInterceptor implements HttpInterceptor {
     private _authService: AuthService,
     private _nss: NetworkStatusService,
   ) {
-    this.handleRefreshEvt
-      .pipe(
-        withLatestFrom(this._nss.isOnline$),
-        debounceTime(this._authService.authConfig.retryRefreshTime),
-        switchMap(([[request, next], isOnline]) => {
-          if (!isOnline) {
-            return obsOf(true);
-          }
-          if (this._retryAttempts < this._authService.authConfig.retryAttemptsMax) {
-            this._retryAttempts++;
-            return this._authService.refreshToken().pipe(switchMap(() => next.handle(request)));
-          } else {
-            this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
-            if (this._authService.getAuthToken() != null) {
-              this._logoutEvt.emit();
-            }
-            return obsOf(false);
-          }
-        }),
-      )
-      .subscribe();
+    // A successful refresh clears the budget: without this the second idle
+    // cycle of a session exhausts the attempts and logs the user out.
+    this._authService.tokenRefreshedEvt.subscribe(() => (this._retryAttempts = 0));
 
-    this._logoutEvt.pipe(switchMap(() => this._authService.logout())).subscribe(res => {
-      if (res) {
-        this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
-      }
+    // The navigation is unconditional now. It used to depend on the logout http
+    // call succeeding, so a session given up on while the network was broken
+    // left the app on its current screen with no session and no sign of it.
+    this._endSessionEvt.subscribe(() => {
+      this._authService.endSession();
+      this._router.navigate([this._authService.authConfig.failedAuthRedirect, 'expired']);
     });
 
     this._nss.isOnline$
       .pipe(
-        filter(res => res === true),
+        // `skip(1)` drops the status the stream starts with - the one this
+        // interceptor was built on - and must come first. Filtering before it
+        // skipped the first *online* status instead, so a session started
+        // offline had its reconnection swallowed: the token was never refreshed
+        // and the sync stayed silent until the next guarded navigation, which on
+        // a device left on one screen may never come.
         skip(1),
-        withLatestFrom(this._authService.checkToken()),
-        switchMap(([_, check]) => {
-          if (!check) {
+        filter(res => res === true),
+        // Re-evaluate the token on each reconnection instead of reusing the
+        // check built when the interceptor was constructed.
+        switchMap(() => this._authService.checkToken().pipe(take(1))),
+        switchMap(check => {
+          // `check` is an object: test its `token` property, or the condition
+          // is always false and the reconnection refresh never happens.
+          if (!check.token) {
             return this._authService.refreshToken().pipe(
+              take(1),
               switchMap(refreshed => {
                 if (refreshed) {
                   return obsOf(true);
-                } else {
-                  this._authService.authenticated.next({auth: false, evt: 'refresh failed'});
-                  if (this._authService.getAuthToken() != null) {
-                    this._logoutEvt.emit();
-                  }
-                  return obsOf(false);
                 }
+                // Nothing to do on a failure here, and that is the point. The
+                // `online` event fires on link-up, not on working connectivity,
+                // so the first refresh after a long offline stretch is a prime
+                // candidate for a transient failure - and the refresh reports the
+                // same negative result for a 5xx, a timeout and a revoked refresh
+                // token. Neither a logout, which would destroy the local database
+                // with the data collected offline, nor a "not authenticated"
+                // state, which would reset the permission context and stop every
+                // replication. The reactive paths retry: the replications on
+                // their next cycle, the guard on the next navigation.
+                return obsOf(false);
               }),
             );
           }
@@ -120,25 +126,104 @@ export class JWTInterceptor implements HttpInterceptor {
 
   /**
    * Intercepts http requests from angular http client.
-   * If the response is a status 401 'Unauthorized', and is not a Login or Signup request,
-   * it handles it by emitting a refreshEvent.
+   * A request failing authentication - either with a 401/400 status or with a
+   * GraphQL `invalid-jwt`/`JWTExpired` error inside a 200 response - triggers a
+   * token refresh and is then replayed, so the caller receives the real
+   * response instead of a null one.
    * @param request the Http request.
    * @param next the request handler.
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
+      switchMap(event => {
+        // Hasura answers HTTP 200 with an `errors` array when the JWT is
+        // expired, so a successful response has to be inspected too.
+        if (
+          event instanceof HttpResponse &&
+          hasJwtAuthError(event.body) &&
+          !this._isAllowedRequest(request)
+        ) {
+          return this._handleAuthFailure(request, next);
+        }
+        return obsOf(event);
+      }),
       catchError(error => {
         if (
           error instanceof HttpErrorResponse &&
           (error.status === 401 || error.status === 400) &&
           !this._isAllowedRequest(request)
         ) {
-          this.handleRefreshEvt.emit([request, next]);
-          return obsOf(null);
+          return this._handleAuthFailure(request, next);
         }
         return throwError(() => error);
       }),
     ) as Observable<HttpEvent<any>>;
+  }
+
+  /**
+   * Refreshes the auth token and replays the failed request.
+   * The refresh call is shared by the auth service, so concurrent failures
+   * result in a single refresh request.
+   * @param request the Http request that failed authentication.
+   * @param next the request handler.
+   * @returns the response of the replayed request.
+   */
+  private _handleAuthFailure(
+    request: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
+    this.handleRefreshEvt.emit([request, next]);
+    return this._nss.isOnline$.pipe(
+      take(1),
+      switchMap(isOnline => {
+        if (!isOnline) {
+          // Offline: do not refresh, do not log out. Surface the failure to the
+          // caller, which falls back to the local data.
+          return throwError(() => new Error('Offline: could not authenticate the request'));
+        }
+        // A refresh already in flight is joined, not started: it has already
+        // spent its attempt. Counting it again turns several requests failing
+        // inside one refresh round trip - a handful of parallel uploads with an
+        // expired token, say - into a logout, because the budget is 1 in every
+        // environment, and the logout destroys the local database.
+        if (!this._authService.isRefreshing) {
+          if (this._retryAttempts >= this._authService.authConfig.retryAttemptsMax) {
+            this._endSessionEvt.emit();
+            return throwError(() => new Error('Auth token refresh attempts exhausted'));
+          }
+          this._retryAttempts++;
+        }
+        return this._authService.refreshToken().pipe(
+          take(1),
+          switchMap(refreshed => {
+            if (!refreshed) {
+              return throwError(() => new Error('Could not refresh the auth token'));
+            }
+            return next.handle(this._withCurrentToken(request));
+          }),
+        );
+      }),
+    );
+  }
+
+  /**
+   * Rebuilds a request with the token currently stored, so that a replay after a
+   * refresh does not reuse the expired one it was built with.
+   * Only a Bearer header is replaced: a request carrying no Authorization, or one
+   * authenticated with a static api key, is replayed untouched.
+   * @param request the request to be replayed.
+   * @returns the request to hand to the next handler.
+   */
+  private _withCurrentToken(request: HttpRequest<any>): HttpRequest<any> {
+    const current = request.headers.get('Authorization');
+    if (current == null || !current.startsWith('Bearer ')) {
+      return request;
+    }
+    const token = this._authService.getAuthToken();
+    if (token == null) {
+      return request;
+    }
+    return request.clone({setHeaders: {Authorization: buildAuthorizationHeader(token)}});
   }
 
   /**
@@ -162,6 +247,30 @@ export class JWTInterceptor implements HttpInterceptor {
       // {"status": 400, "message": "\"email\" must be a valid email", "error": "invalid-request"}
       return true;
     }
+    const refreshEndpoint =
+      this._authService.authConfig.refreshEndpoint ??
+      (this._authService.authConfig.nHostAuth ? 'token' : 'api/jwt/refresh');
+    if (this._matchesEndpoint(request.url, refreshEndpoint)) {
+      // A failing refresh must never trigger another refresh.
+      return true;
+    }
     return false;
+  }
+
+  /**
+   * Checks whether a request url targets the given endpoint.
+   * Matches on the url path, so short endpoint names such as the nHost `token`
+   * one do not match unrelated urls that merely contain the word.
+   * @param url the request url.
+   * @param endpoint the endpoint path.
+   * @returns true if the url path ends with the endpoint.
+   */
+  private _matchesEndpoint(url: string, endpoint: string): boolean {
+    const normalized = endpoint.replace(/^\/+|\/+$/g, '');
+    if (!normalized) {
+      return false;
+    }
+    const path = url.split('?')[0].replace(/\/+$/, '');
+    return path.endsWith(`/${normalized}`);
   }
 }

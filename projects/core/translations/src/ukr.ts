@@ -23,12 +23,32 @@
 import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
+  'Log out': 'Вийти',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'Хочете вийти, видаливши всі локальні дані, або лише завершити сеанс, зберігши дані на цьому пристрої?',
+  'Log out and delete the data': 'Вийти й видалити дані',
+  'End the session and keep the data': 'Завершити сеанс і зберегти дані',
+  'Cancel': 'Скасувати',
+  'Session expired': 'Сеанс завершився',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'Синхронізація зупинена, і дані більше не можна зберігати до нового входу. Хочете завершити сеанс, зберігши дані на цьому пристрої, і перейти на сторінку входу?',
+  'Go to the login page': 'Перейти на сторінку входу',
+  'Later': 'Пізніше',
+  'The data cannot be saved': 'Дані не можуть бути збережені',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'Дані пошкоджені й не можуть бути збережені. Зверніться до адміністратора або експортуйте дані зі своєї сторінки користувача, а потім вийдіть.',
   'Import form data': 'Імпорт даних форми',
   'Match the columns in your file to the fields of the form.':
     'Зіставте стовпці вашого файлу з полями форми.',
   'Upload file': 'Завантажити файл',
   'Map fields': 'Зіставити поля',
   'Drag & drop your file here': 'Перетягніть свій файл сюди',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'Синхронізація зупинена: ваш сеанс завершився. Торкніться тут, щоб знову увійти з цим обліковим записом і синхронізувати дані на цьому пристрої.',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'Дані, зібрані під обліковим записом {{account}}, досі на цьому пристрої. Увійдіть із цим обліковим записом, щоб синхронізувати їх: вхід з іншим записом видалить їх.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    'Дані, зібрані на цьому пристрої, ще не синхронізовані. Увійдіть з обліковим записом, який їх зібрав: вхід з іншим записом видалить їх.',
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Прийнятні формати: .xls, .xlsx, .csv — до 20 МБ',
   'Choose a file': 'Вибрати файл',

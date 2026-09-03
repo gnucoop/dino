@@ -40,7 +40,7 @@ import {map, switchMap, take, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
 import {NhostClient} from '@nhost/nhost-js';
 import {OnlineUserDataManager, UserData} from '@dino/core/users';
-import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
+import {ActionTrigger, ActionTriggerData, localDataOwners} from '@dino/core/data';
 
 /**
  * A basic material Login component.
@@ -105,6 +105,17 @@ export class Login extends LoginComponent implements OnDestroy {
   private _expiredSub: Subscription = Subscription.EMPTY;
 
   /**
+   * The warning about data left on this device, or null when there is none.
+   *
+   * A session the app gives up on - an authentication that could not be renewed,
+   * a sync that kept failing - no longer deletes the local database, so the data
+   * collected offline waits here for the account that collected it. Saying so
+   * matters: the natural reaction to being unable to get back in is to try
+   * another account, and that is now the one action that erases it.
+   */
+  readonly localDataWarning: Observable<string> | null = null;
+
+  /**
    * Event emitted as an Action hook
    */
   @Output() readonly emitActionTrigger: EventEmitter<ActionTrigger<User | UserData>> =
@@ -121,6 +132,25 @@ export class Login extends LoginComponent implements OnDestroy {
     private _route: ActivatedRoute,
   ) {
     super(authService, router, fb, cdr, snackBar, ts);
+
+    // Read from the owner record, not from the session: `super()` above runs
+    // `resetAuth()`, so by now there is no user info and no auth config left.
+    const dataOwners = localDataOwners();
+    if (dataOwners.length > 0) {
+      const account = dataOwners.map(owner => owner.label).find(label => label != null) ?? null;
+      // Translated through the service, and not in the template, because the
+      // message takes a parameter: `selectTranslate` also re-emits once the
+      // translation files are loaded, which the constructor cannot wait for.
+      this.localDataWarning =
+        account != null
+          ? ts.selectTranslate(
+              'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.',
+              {account},
+            )
+          : ts.selectTranslate(
+              'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.',
+            );
+    }
 
     this.signupAvailable = authService.authConfig.signUp;
     this.resetPassAvailable = authService.authConfig.resetPassword;

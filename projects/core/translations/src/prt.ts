@@ -22,12 +22,32 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  'Log out': 'Sair',
+  'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
+    'Quer sair apagando todos os dados locais, ou apenas encerrar a sessão mantendo os dados neste dispositivo?',
+  'Log out and delete the data': 'Sair e apagar os dados',
+  'End the session and keep the data': 'Encerrar a sessão e manter os dados',
+  'Cancel': 'Cancelar',
+  'Session expired': 'Sessão expirada',
+  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'A sincronização está parada e não é mais possível salvar dados até um novo acesso. Quer encerrar a sessão, mantendo os dados neste dispositivo, e ir para a página de acesso?',
+  'Go to the login page': 'Ir para a página de acesso',
+  'Later': 'Mais tarde',
+  'The data cannot be saved': 'Os dados não podem ser salvos',
+  'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
+    'Os dados estão corrompidos e não podem ser salvos. Entre em contato com o administrador, ou exporte os dados da sua área de usuário e depois saia.',
   'Import form data': 'Importar dados do formulário',
   'Match the columns in your file to the fields of the form.':
     'Associe as colunas do seu arquivo aos campos do formulário.',
   'Upload file': 'Carregar arquivo',
   'Map fields': 'Mapear campos',
   'Drag & drop your file here': 'Arraste e solte seu arquivo aqui',
+  'The sync is stopped: your session has expired. Tap here to log in again with this account and synchronise the data on this device.':
+    'A sincronização está parada: sua sessão expirou. Toque aqui para entrar novamente com esta conta e sincronizar os dados deste dispositivo.',
+  'Data collected with the account {{account}} is still on this device. Log in with that account to synchronise it: logging in with a different one deletes it.':
+    'Os dados coletados com a conta {{account}} ainda estão neste dispositivo. Entre com essa conta para sincronizá-los: entrar com outra conta apaga os dados.',
+  'Data collected on this device has not been synchronised yet. Log in with the account that collected it: logging in with a different one deletes it.':
+    'Os dados coletados neste dispositivo ainda não foram sincronizados. Entre com a conta que os coletou: entrar com outra conta apaga os dados.',
   'Accepted formats: .xls, .xlsx, .csv — up to 20 MB':
     'Formatos aceitos: .xls, .xlsx, .csv — até 20 MB',
   'Choose a file': 'Escolher um arquivo',

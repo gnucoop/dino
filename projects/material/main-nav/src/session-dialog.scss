@@ -1,0 +1,25 @@
+dino-session-dialog {
+  display: block;
+
+  h4 {
+    text-align: center;
+  }
+
+  .dino-session-dialog-actions {
+    // Stacked, and all of the same width: the labels are whole sentences and
+    // would not fit side by side on a phone.
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px 16px 16px;
+
+    // The `+ .mat-mdc-button-base` half is what beats Material's own rule, which
+    // puts a left margin between two adjacent buttons - fine in a row, a
+    // misalignment in a column.
+    .mat-mdc-button-base,
+    .mat-mdc-button-base + .mat-mdc-button-base {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
