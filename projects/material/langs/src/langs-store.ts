@@ -121,18 +121,24 @@ export class LangsStore implements OnDestroy {
   );
 
   /**
-   * The key rendered by the detail pane. It is looked up among all the rows, and
-   * not among the visible ones, so that searching does not change the selection.
+   * The key rendered by the detail pane. It is looked up among all the rows, and not among
+   * the visible ones, so that searching does not change the selection.
+   *
+   * The selection is always a committed key, never a position in the list: when nothing has
+   * been clicked the first visible key is selected for real (see the constructor). Resolving
+   * it as "the first visible row" on every emission would move the detail pane whenever the
+   * rows change, and the rows change while the user types - completing the selected key
+   * drops it out of the "to translate" filter, and the keystrokes that follow would be saved
+   * on whatever key took its place.
    */
   readonly selected$: Observable<TranslationKeyVm | null> = combineLatest([
     this.rows$,
-    this.visibleRows$,
     this._selectedKey$,
   ]).pipe(
-    map(([rows, visibleRows, selectedKey]) => {
-      const selected = selectedKey != null ? rows.find(row => row.key === selectedKey) : undefined;
-      return selected ?? visibleRows[0] ?? null;
-    }),
+    map(
+      ([rows, selectedKey]) =>
+        (selectedKey != null ? rows.find(row => row.key === selectedKey) : undefined) ?? null,
+    ),
     shareReplay({bufferSize: 1, refCount: true}),
   );
 
@@ -151,6 +157,13 @@ export class LangsStore implements OnDestroy {
   private _saveSub: Subscription = Subscription.EMPTY;
   private _reconcileSub: Subscription = Subscription.EMPTY;
   private _querySub: Subscription = Subscription.EMPTY;
+  private _autoSelectSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * True when the key in the detail pane was chosen by the user. An implicit selection is
+   * picked again when the filter changes, an explicit one is left alone.
+   */
+  private _explicitSelection = false;
 
   constructor(private _langSvc: LangManager) {
     this._querySub = this._query$
@@ -172,6 +185,14 @@ export class LangsStore implements OnDestroy {
       )
       .subscribe();
 
+    // Select the first visible key for real as soon as there is one, so that the detail
+    // pane holds a key of its own instead of following the top of the list.
+    this._autoSelectSub = this.visibleRows$.subscribe(rows => {
+      if (this._selectedKey$.value == null && rows.length > 0) {
+        this._selectedKey$.next(rows[0].key);
+      }
+    });
+
     // Drop the edits that the reloaded rows already carry. Clearing them on the
     // save response instead would show the previous value until the reload lands.
     this._reconcileSub = this._storedRows$.subscribe(rows => this._reconcile(rows));
@@ -181,17 +202,27 @@ export class LangsStore implements OnDestroy {
     this._saveSub.unsubscribe();
     this._reconcileSub.unsubscribe();
     this._querySub.unsubscribe();
+    this._autoSelectSub.unsubscribe();
   }
 
   setQuery(query: string): void {
     this._query$.next(query);
   }
 
+  /**
+   * Changing the filter is a deliberate change of what the list shows, so an implicit
+   * selection is picked again from the new list. Dropping and re-picking it happens in this
+   * same synchronous call, so the detail pane never renders the gap.
+   */
   setFilter(filter: LangsFilter): void {
+    if (!this._explicitSelection) {
+      this._selectedKey$.next(null);
+    }
     this._filter$.next(filter);
   }
 
   select(key: string): void {
+    this._explicitSelection = true;
     this._selectedKey$.next(key);
   }
 
@@ -213,6 +244,7 @@ export class LangsStore implements OnDestroy {
     delete edits[key];
     this._edits$.next(edits);
     if (this._selectedKey$.value === key) {
+      this._explicitSelection = false;
       this._selectedKey$.next(null);
     }
   }
