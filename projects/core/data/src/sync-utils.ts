@@ -196,12 +196,22 @@ export function pushQueryBuilder<T extends Model = Model>(
 
 /**
  * Modifies the GraphQl server response after push sync has sent data.
- * @param plainResponse The graphql server response
- * @returns An array with the IDs of all pushed documents
+ *
+ * The replication protocol reads the return value of the push handler as the list of
+ * CONFLICTING master documents, and resolves each of them by overwriting the local document
+ * with the master state it was handed. The upsert's `returning {id}` lists the rows that
+ * WERE written, i.e. the ones that did not conflict, so handing them back made rxdb replace
+ * every successfully pushed document with `{id}` alone, losing all the other fields until
+ * the next pull happened to rewrite it. Rows the server refused (skipped by the
+ * `updated_at: {_lte: ...}` guard of the upsert) are absent from `returning`, so they were
+ * never reported as conflicts either way: an empty list is the correct value here.
+ * @param _plainResponse The graphql server response, not needed to detect conflicts
+ * @returns An empty array, meaning this push had no conflicts to resolve
  */
-export function pushResponseModifier<T extends Model = Model>(plainResponse: RxDocumentData<T>[]) {
-  const resp = plainResponse as unknown as {returning: RxDocumentData<T>[]};
-  return resp.returning;
+export function pushResponseModifier<T extends Model = Model>(
+  _plainResponse: RxDocumentData<T>[],
+): RxDocumentData<T>[] {
+  return [];
 }
 
 /**
