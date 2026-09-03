@@ -117,7 +117,7 @@ export const LANG_LOCALES: Dic = {
   FRA: 'fr',
   ITA: 'it',
   PRT: 'pt',
-  UGA: 'it',
+  UGA: 'en-UG',
   UKR: 'uk',
 };
 
