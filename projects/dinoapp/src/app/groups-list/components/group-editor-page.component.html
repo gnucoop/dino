@@ -64,7 +64,7 @@
             <b>{{ availTotal | number }}</b> {{ 'results' | transloco }}
           </div>
           <button
-            *ngIf="!viewOnly"
+            *ngIf="!viewOnly && !uniqueCat"
             type="button"
             class="dino-ge-link"
             (click)="addAllShown()"
