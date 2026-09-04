@@ -239,9 +239,27 @@ export class GroupEditorPage implements OnDestroy {
     if (this.viewOnly || this.uniqueCat) {
       return;
     }
-    this.visibleAvailable
-      .filter(item => !item.allOptionItem && !this._assignedIds.has(item.itemId))
-      .forEach(item => this.add(item));
+    // One pass and a single recompute: routing every item through add() re-ran the cascade
+    // over the whole pool and rebuilt the tabs and both lists once per item.
+    const type = this.activeCat;
+    const pool = this._pools[type] ?? [];
+    const arr = (this._assigned[type] ?? []).filter(x => !x.allOptionItem);
+    const ids = new Set(arr.map(x => x.itemId));
+    const append = (item: MixedEditorItem) => {
+      if (!ids.has(item.itemId)) {
+        arr.push(item);
+        ids.add(item.itemId);
+      }
+    };
+    this.visibleAvailable.forEach(item => {
+      if (item.allOptionItem || ids.has(item.itemId)) {
+        return;
+      }
+      append(item);
+      this._descendants(item, pool).forEach(append);
+    });
+    this._assigned[type] = arr.sort((a, b) => this._sortAlphabetically(a, b));
+    this._recompute();
   }
 
   remove(item: MixedEditorItem): void {
