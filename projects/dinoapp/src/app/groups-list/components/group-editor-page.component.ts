@@ -87,6 +87,10 @@ export class GroupEditorPage implements OnDestroy {
   qAssigned = '';
   viewOnly = false;
   loading = true;
+  /**
+   * True while a save is in flight.
+   */
+  saving = false;
 
   // ---- Derived view data (recomputed on every state change) -----------------
   tabs: CategoryTab[] = [];
@@ -275,6 +279,7 @@ export class GroupEditorPage implements OnDestroy {
   canSave(): boolean {
     return (
       !this.viewOnly &&
+      !this.saving &&
       this.name.trim().length > 0 &&
       (this._assigned['user_role']?.length ?? 0) > 0
     );
@@ -315,6 +320,7 @@ export class GroupEditorPage implements OnDestroy {
           } as UserGroup)
         : this._userGroupManager.create(payload);
 
+    this.saving = true;
     this._subs.add(
       persist$.pipe(take(1)).subscribe({
         next: success =>
@@ -323,12 +329,15 @@ export class GroupEditorPage implements OnDestroy {
             this._ts.translate('Save'),
             {duration: 5000},
           ),
-        error: err =>
+        error: err => {
+          this.saving = false;
+          this._cdr.markForCheck();
           this._snackbar.open(
             this._ts.translate('Oops! Something went wrong while performing the requested action.'),
             (err?.message ?? '').toUpperCase(),
             {duration: 5000},
-          ),
+          );
+        },
         complete: () => this._router.navigate(['users/groups']),
       }),
     );
