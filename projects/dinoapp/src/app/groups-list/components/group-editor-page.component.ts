@@ -99,6 +99,10 @@ export class GroupEditorPage implements OnDestroy {
   private _assignedIds = new Set<string>();
   /** True when the active category has the "all" option assigned. */
   allSelected = false;
+  /**
+   * True when the active category holds a single item (user role).
+   */
+  uniqueCat = false;
 
   private _subs = new Subscription();
 
@@ -145,21 +149,23 @@ export class GroupEditorPage implements OnDestroy {
     }
 
     this._subs.add(
-      combineLatest(schedule).pipe(take(1)).subscribe(lists => {
-        const pools: {[type: string]: MixedEditorItem[]} = {};
-        lists.forEach(items => {
-          items.forEach(item => {
-            (pools[item.itemType] ??= []).push(item);
+      combineLatest(schedule)
+        .pipe(take(1))
+        .subscribe(lists => {
+          const pools: {[type: string]: MixedEditorItem[]} = {};
+          lists.forEach(items => {
+            items.forEach(item => {
+              (pools[item.itemType] ??= []).push(item);
+            });
           });
-        });
-        Object.keys(pools).forEach(type =>
-          pools[type].sort((a, b) => this._sortAlphabetically(a, b)),
-        );
-        this._pools = pools;
-        this.activeCat = this._catMeta.find(c => pools[c.type]?.length)?.type ?? '';
-        this._catMeta.forEach(c => (this._assigned[c.type] = []));
-        this._loadGroup();
-      }),
+          Object.keys(pools).forEach(type =>
+            pools[type].sort((a, b) => this._sortAlphabetically(a, b)),
+          );
+          this._pools = pools;
+          this.activeCat = this._catMeta.find(c => pools[c.type]?.length)?.type ?? '';
+          this._catMeta.forEach(c => (this._assigned[c.type] = []));
+          this._loadGroup();
+        }),
     );
   }
 
@@ -222,8 +228,11 @@ export class GroupEditorPage implements OnDestroy {
     this._recompute();
   }
 
+  /**
+   * Adds every item currently shown by the results list.
+   */
   addAllShown(): void {
-    if (this.viewOnly) {
+    if (this.viewOnly || this.uniqueCat) {
       return;
     }
     this.visibleAvailable
@@ -386,6 +395,9 @@ export class GroupEditorPage implements OnDestroy {
   private _recompute(): void {
     const assigned = this._assigned[this.activeCat] ?? [];
     this.allSelected = assigned.some(x => x.allOptionItem);
+    this.uniqueCat = (this._pools[this.activeCat] ?? []).some(
+      x => x.uniqueItem && !x.allOptionItem,
+    );
     this._assignedIds = new Set(assigned.map(x => x.itemId));
     this.assignedCount = assigned.length;
     this.activeLabel = this._ts.translate(
