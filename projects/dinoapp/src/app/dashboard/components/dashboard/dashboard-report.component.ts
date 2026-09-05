@@ -1,10 +1,12 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {UITourService} from '@dino/material/ui-tour-service';
+import {ThemeService} from '@dino/material/core';
 import {LangManager} from '@dino/core/langs';
-import {of as obsOf} from 'rxjs';
+import {Observable, of as obsOf} from 'rxjs';
 import {catchError, take} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 import {AjfReportInstance} from '@ajf/core/reports';
+import {loadingSpinner, themedImagePath} from '../../../themed-images';
 
 @Component({
   selector: 'dinoapp-dashboard-report',
@@ -15,11 +17,12 @@ import {AjfReportInstance} from '@ajf/core/reports';
 })
 export class DashboardReportComponent implements OnInit {
   favoriteReportId: string | null;
-  readonly lightSpinnerPath: string =
-    environment.customImagesConfig?.spinnerLight ?? 'assets/icons/logos/spinnerdino.png';
+  readonly lightSpinnerPath: string = loadingSpinner.light;
+  readonly spinnerImagePath: Observable<string>;
   readonly optionalMetrics: boolean = environment.metricsConfig.optionalReportMetrics;
 
-  constructor(private _lm: LangManager, private _tourService: UITourService) {
+  constructor(private _lm: LangManager, private _tourService: UITourService, ts: ThemeService) {
+    this.spinnerImagePath = themedImagePath(ts, loadingSpinner);
     this.favoriteReportId = localStorage.getItem(
       `dino_favorite_report_${environment.dataConfig.instanceName}`,
     );

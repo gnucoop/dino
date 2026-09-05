@@ -5,7 +5,7 @@
   [setReportId]="favoriteReportId"
   [steps]="false"
   (reportInstanceCreatedEvt)="startTourOnReportInstanceReady($event)"
-  [spinnerImagePath]="lightSpinnerPath"
+  [spinnerImagePath]="(spinnerImagePath|async) ?? lightSpinnerPath"
   ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
 ></dino-edit-report>
 

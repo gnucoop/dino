@@ -2,7 +2,7 @@
   [hasOptionalMetrics]="optionalMetrics"
   [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
   [allowMetricCreationFor]="allowMetricCreationFor ?? ['all']"
-  [spinnerImagePath]="lightSpinnerPath"
+  [spinnerImagePath]="(spinnerImagePath|async) ?? lightSpinnerPath"
   [baseDataChatAPIurl]="baseDataChatAPIurl"
   ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
 ></dino-edit-report>
