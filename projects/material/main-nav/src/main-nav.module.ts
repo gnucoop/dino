@@ -26,7 +26,6 @@ import {NgModule} from '@angular/core';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
-import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
@@ -39,7 +38,6 @@ import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ThemeSwitchModule} from '@dino/material/theme-switch';
-import {UserAreaModule} from '@dino/material/user-area';
 import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
 import {MainNav} from './main-nav';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
@@ -53,7 +51,6 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     DinoLoadingSpinnerModule,
     MatBadgeModule,
     MatButtonModule,
-    MatDialogModule,
     MatDividerModule,
     MatIconModule,
     MatListModule,
@@ -65,7 +62,6 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     MatTooltipModule,
     RouterModule,
     ThemeSwitchModule,
-    UserAreaModule,
     TourMatMenuModule,
   ],
   declarations: [MainNav],

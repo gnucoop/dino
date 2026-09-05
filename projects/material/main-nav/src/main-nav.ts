@@ -33,7 +33,6 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
@@ -44,7 +43,6 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ShellContextService, ThemeService} from '@dino/material/core';
 import {LangService} from '@dino/material/lang-selector';
-import {UserArea} from '@dino/material/user-area';
 import {TranslocoService} from '@ngneat/transloco';
 import {RxError, RxTypeError} from 'rxdb';
 import {
@@ -247,11 +245,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
    * The Custom loading spinner image path
    */
   @Input() spinnerImagePath: string | undefined;
-
-  /**
-   * If true, Backup/Restore is available to the Admin in the User Area
-   */
-  @Input() backupRestore: boolean | undefined;
 
   /**
    * The Custom User Section icon svg name
@@ -600,7 +593,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly notificationManager: NotificationManager,
     readonly snackbar: MatSnackBar,
     readonly pcs: PermissionContextService,
-    public dialog: MatDialog,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
     private _tokensService: TokensService,
@@ -635,8 +627,11 @@ export class MainNav implements AfterViewInit, OnDestroy {
     ]).subscribe(([evt, sections, adminSections]) => {
       const navEvt = evt as NavigationEnd | NavigationStart;
       const allSections = [...sections, ...adminSections];
-      const selSection: Section | undefined = allSections.find(section =>
-        navEvt.url.includes(section.url),
+      // Match the first path segment, not a substring of the whole url: '/user-area/ai'
+      // contains 'ai', and used to light up the AI section from a page that is not it.
+      const firstSegment = navEvt.url.split(/[?#]/)[0].split('/').filter(seg => seg !== '')[0];
+      const selSection: Section | undefined = allSections.find(
+        section => section.url === firstSegment,
       );
       this.currentSection.next(selSection ?? null);
 
@@ -1058,25 +1053,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Opens the User Area dialog
-   * @param expandedPanel the panel that should be expanded by default
+   * Navigates to the User Area page
+   * @param tab The tab to open. Opens the default tab when omitted.
    */
-  openUserArea(expandedPanel?: UserAreaPanelType): void {
-    const dialogConfig = new MatDialogConfig<{
-      spinnerImagePath?: string;
-      isAdmin?: Observable<boolean>;
-      expandedPanel?: UserAreaPanelType;
-      backupRestore: boolean | undefined;
-    }>();
-    dialogConfig.data = {
-      spinnerImagePath: this.spinnerImagePath,
-      isAdmin: this.isAdmin.pipe(shareReplay(1)),
-      expandedPanel,
-      backupRestore: this.backupRestore,
-    };
-    dialogConfig.minWidth = `95vw`;
-    dialogConfig.maxWidth = `95vw`;
-    this.dialog.open(UserArea, dialogConfig);
+  goToUserArea(tab?: UserAreaPanelType): void {
+    this._router.navigateByUrl(tab != null ? `/user-area/${tab}` : '/user-area');
+    this.menuClick();
   }
 
   /**

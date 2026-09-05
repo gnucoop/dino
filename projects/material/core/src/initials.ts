@@ -20,21 +20,18 @@
  *
  */
 
-import {isUserAreaPanelType, USER_AREA_PANEL_TYPES} from './user-area-panel-type';
-
-describe('UserAreaPanelType', () => {
-  it('should accept every declared slug', () => {
-    USER_AREA_PANEL_TYPES.forEach(slug => expect(isUserAreaPanelType(slug)).toBe(true));
-  });
-
-  it('should reject the panel names the dialog used before the tabs were merged', () => {
-    expect(isUserAreaPanelType('apikeys')).toBe(false);
-    expect(isUserAreaPanelType('tokens')).toBe(false);
-  });
-
-  it('should reject a missing or unknown slug', () => {
-    expect(isUserAreaPanelType(null)).toBe(false);
-    expect(isUserAreaPanelType('')).toBe(false);
-    expect(isUserAreaPanelType('bogus')).toBe(false);
-  });
-});
+/**
+ * Builds the initials shown in an avatar from a full name, eg. 'Admin Dino' -> 'AD'.
+ * Shared by the shell user card and the User Area page header.
+ * @param fullName The user full name
+ * @returns Up to two uppercase initials, or null when the name yields none
+ */
+export function buildInitials(fullName: string): string | null {
+  const initials = fullName
+    .split(/\s+/)
+    .filter(word => word.length > 0)
+    .slice(0, 2)
+    .map(word => word.charAt(0).toUpperCase())
+    .join('');
+  return initials.length > 0 ? initials : null;
+}

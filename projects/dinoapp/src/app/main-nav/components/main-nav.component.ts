@@ -20,7 +20,6 @@ import {headerLogo, loadingSpinner, logoMark, themedImagePath} from '../../theme
 export class MainNavComponent {
   customLanguages = conf.availableLangs;
   logoutDisabled: boolean = environment.dataConfig.backendless ?? false;
-  backupRestore: boolean = environment.dataConfig.backupRestore ?? false;
   linkIcons = conf.linkIcons;
   sections: Observable<Section[]>;
   adminSections: Section[];

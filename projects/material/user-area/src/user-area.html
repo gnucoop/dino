@@ -1,337 +1,314 @@
-<ng-container *ngIf="userData|async as userInfo">
+<div
+  class="dino-user-area-page"
+  [class.dino-user-area-compact]="(breakpointObserver.extrasmall|async) === true"
+>
+  <!--
+    Identity header. The page title is 'User Area', so who you are signed in as moves to
+    the avatar and the subtitle, rather than being crammed into the title as the dialog did.
+  -->
   <div class="dino-user-area-header">
-    <h1 class="dino-user-area-title" mat-dialog-title>
-      User Area - {{userInfo.full_name}} - {{userInfo.email}}
-    </h1>
-
-    <div class="dino-user-area-dark-mode-toggle" *ngIf="(breakpointObserver.small|async) === true">
-      <mat-icon aria-hidden="false" aria-label="Light mode" style="opacity: 0.5">wb_sunny</mat-icon>
-      <mat-slide-toggle
-        [checked]="themeService.isDark()"
-        (change)="setDarkTheme($event.checked)"
-        style="margin: 10px"
-        aria-label="Toggle Dino Theme"
-      >
-      </mat-slide-toggle>
-      <mat-icon aria-hidden="false" aria-label="Dark mode" style="opacity: 0.5;"
-        >nights_stay</mat-icon
+    <span class="dino-user-area-avatar" aria-hidden="true">{{userInitials|async}}</span>
+    <div class="dino-user-area-identity">
+      <ng-content select="[breadcrumbs]"></ng-content>
+      <span class="dino-user-area-subtitle" *ngIf="userData|async as userInfo"
+        >{{userInfo.full_name}} &middot; {{userInfo.email}}</span
       >
     </div>
   </div>
 
-  <mat-dialog-content>
-    <mat-accordion>
-      <!-- PASSWORD section -->
-      <mat-expansion-panel [expanded]="expandedPanel === 'password'">
-        <mat-expansion-panel-header>
-          <mat-panel-title> {{'Change Password'|transloco}} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <form
-          class="dino-user-area-form"
-          [class.dino-error]="changePassForm"
-          [formGroup]="changePassForm"
-        >
-          <mat-form-field>
-            <mat-label>{{'Current Password'|transloco}}</mat-label>
-            <input
-              matInput
-              formControlName="current_password"
-              name="current_password"
-              type="password"
-              aria-label="Current Password"
-              [placeholder]="'Current Password'|transloco"
-            />
-            <mat-error>
-              {{showValErrors(changePassForm.get('current_password'), 'Current Password')}}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>{{'New Password'|transloco}}</mat-label>
-            <input
-              matInput
-              formControlName="password"
-              name="password"
-              type="password"
-              aria-label="New Password"
-              [placeholder]="'New Password'|transloco"
-            />
-            <mat-error>
-              {{showValErrors(changePassForm.get('password'), 'New Password')}}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>{{'Confirm New Password'|transloco}}</mat-label>
-            <input
-              matInput
-              formControlName="confirm_password"
-              name="confirm_password"
-              type="password"
-              aria-label="Confirm New Password"
-              [placeholder]="'Confirm New Password'|transloco"
-            />
-            <mat-error>
-              {{showValErrors(changePassForm.get('confirm_password'), 'Confirm New Password')}}
-            </mat-error>
-          </mat-form-field>
-          <div *ngIf="changePassError.error === true" class="dino-error-message">
-            {{changePassError.message ? (changePassError.message|transloco) : 'Incorrect password'|transloco}}
+  <ng-container *ngIf="tabs|async as tabList">
+    <mat-tab-group
+      class="dino-user-area-tabs"
+      animationDuration="0ms"
+      [selectedIndex]="tabIndex(tabList, activeTab)"
+      (selectedIndexChange)="selectTab(tabList, $event)"
+    >
+      <mat-tab
+        *ngFor="let tab of tabList; trackBy: trackTabById"
+        [label]="tab.label|transloco"
+      >
+        <div class="dino-user-area-panel">
+          <div class="dino-user-area-panel-head">
+            <h2 class="dino-user-area-panel-title">{{tab.title|transloco}}</h2>
+            <p class="dino-user-area-panel-desc">{{tab.description|transloco}}</p>
           </div>
-          <button
-            mat-icon-button
-            type="submit"
-            color="accent"
-            aria-label="submit"
-            [disabled]="(processing|async) || (changePassDisabled|async) === true"
-            (click)="changePassword()"
-          >
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </form>
-      </mat-expansion-panel>
-
-      <!-- API KEY section -->
-      <mat-expansion-panel [expanded]="expandedPanel === 'apikeys'">
-        <mat-expansion-panel-header>
-          <mat-panel-title> API Keys </mat-panel-title>
-        </mat-expansion-panel-header>
-        <form
-          class="dino-user-area-form"
-          [class.dino-error]="apiKeysForm"
-          [formGroup]="apiKeysForm"
-        >
-          <mat-form-field>
-            <mat-label>DINO-AI API Key</mat-label>
-            <input
-              matInput
-              formControlName="pandino_api_key"
-              name="pandino_api_key"
-              [type]="hide_api_key ? 'password' : 'text'"
-              aria-label="DINO-AI API Key"
-              [placeholder]="'DINO-AI API Key'"
-              [readonly]="(storedPandinoAPIKey|async) !== null"
-            />
-            <mat-icon matSuffix (click)="hide_api_key = !hide_api_key"
-              >{{hide_api_key ? 'visibility' : 'visibility_off'}}</mat-icon
-            >
-            <mat-icon matSuffix [cdkCopyToClipboard]="apiKeysForm.get('pandino_api_key')!.value" (click)="copyToClipboard()"
-              >content_copy</mat-icon
-            >
-            <mat-error *ngIf="apiKeysForm.get('pandino_api_key')?.hasError('required')">
-              {{'API Key is'|transloco}} <strong>{{'required'|transloco}}</strong>
-            </mat-error>
-            <mat-error *ngIf="apiKeysForm.get('pandino_api_key')?.hasError('invalid')">
-              {{'Invalid API Key'|transloco}}
-            </mat-error>
-          </mat-form-field>
-
-          <div class="dino-api-key-button-container">
-            <ng-container *ngIf="(storedPandinoAPIKey|async) === null; else keymatched">
-              <button
-                mat-icon-button
-                type="submit"
-                color="accent"
-                aria-label="submit"
-                [disabled]="(processing|async)"
-                (click)="validateAPIKey(apiKeysForm.get('pandino_api_key')?.value)"
-              >
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-            </ng-container>
-
-            <ng-template #keymatched>
-              <button
-                class="dino-matched-pandino-api-key-button"
-                mat-icon-button
-                aria-label="matched"
-              >
-                <mat-icon>check</mat-icon>
-              </button></ng-template
-            >
-          </div>
-        </form>
-      </mat-expansion-panel>
-
-      <!-- TOKENS and CREDITS section -->
-      <mat-expansion-panel *ngIf="(availablePandinoTokens|async) !== null" [expanded]="expandedPanel === 'tokens'">
-        <mat-expansion-panel-header>
-          <mat-panel-title> {{'Credits'|transloco}} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div
-          class="dino-user-area-form"
-        >
-          <p>{{'DINO-AI Credits'|transloco}}</p>
-          <div class="dino-tokens-counter-container">
-            <mat-icon color="primary" class="dino-tokens-icon">smart_toy</mat-icon> <span class="dino-tokens-counter">{{(availablePandinoTokens|async)}}</span>
-          </div>
-          <button *ngIf="stripeConfig" mat-raised-button color="accent" (click)="openPayment()">{{'Add more'|transloco}}<mat-icon matSuffix>add</mat-icon></button>
-        </div>
-      </mat-expansion-panel>
-
-      <!-- THEME section -->
-      <mat-expansion-panel [expanded]="expandedPanel === 'theme'">
-        <mat-expansion-panel-header>
-          <mat-panel-title> DINO Theme </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="dino-save-theme">
-          <form
-            class="dino-user-area-form"
-            [class.dino-error]="changePassForm"
-            [formGroup]="dinoSaveThemeForm"
-          >
-            <mat-form-field
-              appearance="fill"
-              [style.color]="primaryColor"
-              [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.primary : primaryColor"
-              (colorPickerChange)="setPrimaryColor($event)"
-            >
-              <input
-                matInput
-                readonly
-                [formControlName]="'primary'"
-                [placeholder]="'Primary Color'|transloco"
-                [value]="primaryColor"
-              />
-              <mat-icon matSuffix>palette</mat-icon>
-              <mat-hint>{{'Primary color' | transloco}}</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field
-              appearance="fill"
-              [style.color]="accentColor"
-              [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.accent : accentColor"
-              (colorPickerChange)="setAccentColor($event)"
-            >
-              <input
-                matInput
-                readonly
-                [formControlName]="'accent'"
-                [placeholder]="'Accent Color'|transloco"
-                [value]="accentColor"
-              />
-              <mat-icon matSuffix>palette</mat-icon>
-              <mat-hint>{{'Accent color' | transloco}}</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field
-              appearance="fill"
-              [style.color]="warningColor"
-              [colorPicker]="themeService.currentThemeVal ? themeService.currentThemeVal.warning : warningColor"
-              (colorPickerChange)="setWarningColor($event)"
-            >
-              <input
-                matInput
-                readonly
-                [formControlName]="'warning'"
-                [placeholder]="'Warning Color'|transloco"
-                [value]="warningColor"
-              />
-              <mat-icon matSuffix>palette</mat-icon>
-              <mat-hint>{{'Warning color' | transloco}}</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <input
-                matInput
-                type="text"
-                [formControlName]="'presetName'"
-                [placeholder]="'Pick a preset name'|transloco"
-                [matAutocomplete]="auto"
-              />
-              <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let option of themePresetOptions | async" [value]="option">
-                  {{option|transloco}}
-                </mat-option>
-              </mat-autocomplete>
-              <mat-hint>{{'Pick a preset name' | transloco}}</mat-hint>
-            </mat-form-field>
-
-            <div class="dino-theme-presets-button-container">
-              <button
-                class="dino-theme-presets-button"
-                mat-raised-button
-                color="accent"
-                (click)="loadDinoTheme()"
-                [disabled]="!dinoSaveThemeForm.get('presetName')?.valid"
-                [attr.aria-label]="'Load the preset'|transloco"
-              >
-                {{'Load'|transloco}}
-              </button>
-
-              <button
-                class="dino-theme-presets-button"
-                mat-raised-button
-                color="primary"
-                (click)="saveDinoTheme()"
-                [disabled]="!dinoSaveThemeForm.valid"
-                [attr.aria-label]="'Save the preset'|transloco"
-              >
-                {{'Save'|transloco}}
-              </button>
-            </div>
-          </form>
-        </div>
-      </mat-expansion-panel>
-
-      <!-- TOUR AND TUTORIAL section -->
-      <mat-expansion-panel *ngIf="uiServiceConfig" [expanded]="expandedPanel === 'tutorial'">
-        <mat-expansion-panel-header>
-          <mat-panel-title> {{'Tutorials'|transloco}} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div
-          class="dino-user-area-form dino-user-area-form-centered"
-        >
-          <button mat-raised-button color="accent" (click)="startTutorial()">{{'Start Dino Tour'|transloco}}</button>
-        </div>
-      </mat-expansion-panel>
-
-      <!-- BACKUP section -->
-      <mat-expansion-panel *ngIf="backupRestore && (isAdmin|async)" [expanded]="expandedPanel === 'backup'">
-        <mat-expansion-panel-header>
-          <mat-panel-title> Backup and Restore </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="dino-backup-restore-buttons-container">
-          <ng-container *ngIf="(processing|async) === false; else loading">
-            <label class="dino-backup-restore-button">
-              <a
-                [href]="dbDownloadUrl|async"
-                [download]="'dino_db_export.json'"
-                type="button"
-                mat-raised-button
-                color="primary"
-              >
-                {{'Backup Data'|transloco}}
-              </a>
-            </label>
-            <input
-              type="file"
-              id="jsonFileInput"
-              accept=".json"
-              (change)="onJsonImportfileSelected($event)"
-              style="visibility: hidden; height: 1px"
-            />
-            <label for="jsonFileInput" class="dino-backup-restore-button">
-              <a color="accent" type="button" mat-raised-button>{{'Restore Data'|transloco}}</a>
-            </label>
+          <ng-container [ngSwitch]="tab.id">
+            <ng-container
+              *ngSwitchCase="'password'"
+              [ngTemplateOutlet]="passwordTab"
+            ></ng-container>
+            <ng-container *ngSwitchCase="'ai'" [ngTemplateOutlet]="aiTab"></ng-container>
+            <ng-container *ngSwitchCase="'theme'" [ngTemplateOutlet]="themeTab"></ng-container>
+            <ng-container *ngSwitchCase="'backup'" [ngTemplateOutlet]="backupTab"></ng-container>
+            <ng-container
+              *ngSwitchCase="'tutorial'"
+              [ngTemplateOutlet]="tutorialTab"
+            ></ng-container>
           </ng-container>
-          <ng-template #loading>
-            <div class="dino-loading">
-              <div>{{'Restoring Data...'|transloco}}</div>
-              <br /><br />
-              <ng-container *ngIf="spinnerImagePath; else defaultspinner"
-                ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
-              </ng-container>
-              <ng-template #defaultspinner
-                ><mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner
-              ></ng-template>
-            </div>
-          </ng-template>
         </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </mat-dialog-content>
-  <div mat-dialog-actions class="dino-user-area-menu">
-    <button mat-raised-button (click)="closeDialog()" color="warn">{{'Close'|transloco}}</button>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+</div>
+
+<!-- ==================== Password ==================== -->
+
+<ng-template #passwordTab>
+  <form
+    class="dino-user-area-panel-body dino-user-area-body-password"
+    [class.dino-error]="changePassError.error === true"
+    [formGroup]="changePassForm"
+    (ngSubmit)="changePassword()"
+  >
+    <mat-form-field appearance="fill">
+      <mat-label>{{'Current Password'|transloco}}</mat-label>
+      <input matInput type="password" [formControlName]="'current_password'" />
+      <mat-error
+        >{{showValErrors(changePassForm.get('current_password'), 'Current Password')}}</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>{{'New Password'|transloco}}</mat-label>
+      <input matInput type="password" [formControlName]="'password'" />
+      <mat-hint>{{'At least {{count}} characters'|transloco:{count: passwordMinLength} }}</mat-hint>
+      <mat-error>{{showValErrors(changePassForm.get('password'), 'New Password')}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>{{'Confirm New Password'|transloco}}</mat-label>
+      <input matInput type="password" [formControlName]="'confirm_password'" />
+      <mat-error
+        >{{showValErrors(changePassForm.get('confirm_password'), 'Confirm New Password')}}</mat-error
+      >
+    </mat-form-field>
+
+    <div class="dino-user-area-error">
+      {{changePassError.message ?? ('Incorrect password'|transloco)}}
+    </div>
+
+    <div class="dino-user-area-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="(processing|async) === true || (changePassDisabled|async) === true"
+      >
+        {{'Update password'|transloco}}
+      </button>
+      <button mat-button type="button" (click)="changePassForm.reset()">
+        {{'Cancel'|transloco}}
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- ==================== AI: the DINO-AI key and the credits ==================== -->
+
+<ng-template #aiTab>
+  <div class="dino-user-area-panel-body dino-user-area-body-ai">
+    <ng-container *ngIf="storedPandinoAPIKey|async as apiKey; else noApiKeyTemplate">
+      <div class="dino-user-area-block">
+        <span class="dino-user-area-block-label">{{'DINO-AI API Key'|transloco}}</span>
+        <div class="dino-user-area-key-row">
+          <code class="dino-user-area-key-value">{{hide_api_key ? maskedApiKey : apiKey}}</code>
+          <button mat-stroked-button type="button" (click)="hide_api_key = !hide_api_key">
+            {{(hide_api_key ? 'Show' : 'Hide')|transloco}}
+          </button>
+          <button
+            mat-stroked-button
+            type="button"
+            [cdkCopyToClipboard]="apiKey"
+            (click)="copyToClipboard()"
+          >
+            {{'Copy'|transloco}}
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="dino-user-area-block dino-user-area-credits"
+        *ngIf="(availablePandinoTokens|async) !== null"
+      >
+        <span class="dino-user-area-credits-caption">{{'DINO-AI Credits'|transloco}}</span>
+        <span class="dino-user-area-credits-figure">{{availablePandinoTokens|async}}</span>
+        <button *ngIf="stripeConfig" mat-stroked-button type="button" (click)="openPayment()">
+          <mat-icon>add</mat-icon>{{'Add more'|transloco}}
+        </button>
+      </div>
+    </ng-container>
+
+    <!--
+      The key is provisioned at login, not entered here, so a missing one is nothing the
+      user can act on - saying so is better than an empty field that reads as broken.
+    -->
+    <ng-template #noApiKeyTemplate>
+      <p class="dino-user-area-empty">
+        {{'No DINO-AI key is associated with this account'|transloco}}
+      </p>
+    </ng-template>
   </div>
-</ng-container>
+</ng-template>
+
+<!-- ==================== DINO Theme ==================== -->
+
+<ng-template #themeTab>
+  <div class="dino-user-area-panel-body dino-user-area-body-theme">
+    <form class="dino-user-area-theme-form" [formGroup]="dinoSaveThemeForm">
+      <mat-form-field appearance="fill">
+        <mat-label>{{'Primary Color'|transloco}}</mat-label>
+        <span
+          class="dino-user-area-swatch"
+          matPrefix
+          [style.background]="primaryColor"
+          [colorPicker]="primaryColor"
+          (colorPickerChange)="setPrimaryColor($event)"
+        ></span>
+        <input matInput readonly [formControlName]="'primary'" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>{{'Accent Color'|transloco}}</mat-label>
+        <span
+          class="dino-user-area-swatch"
+          matPrefix
+          [style.background]="accentColor"
+          [colorPicker]="accentColor"
+          (colorPickerChange)="setAccentColor($event)"
+        ></span>
+        <input matInput readonly [formControlName]="'accent'" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>{{'Warning Color'|transloco}}</mat-label>
+        <span
+          class="dino-user-area-swatch"
+          matPrefix
+          [style.background]="warningColor"
+          [colorPicker]="warningColor"
+          (colorPickerChange)="setWarningColor($event)"
+        ></span>
+        <input matInput readonly [formControlName]="'warning'" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>{{'Preset name'|transloco}}</mat-label>
+        <input matInput [formControlName]="'presetName'" [matAutocomplete]="auto" />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of themePresetOptions|async" [value]="option"
+            >{{option}}</mat-option
+          >
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- The rail has no theme control of its own, so light/dark belongs here too. -->
+      <dino-theme-switch></dino-theme-switch>
+
+      <div class="dino-user-area-actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          [disabled]="!dinoSaveThemeForm.valid"
+          (click)="saveDinoTheme()"
+        >
+          {{'Save theme'|transloco}}
+        </button>
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="dinoSaveThemeForm.get('presetName')?.invalid"
+          (click)="loadDinoTheme()"
+        >
+          {{'Load preset'|transloco}}
+        </button>
+        <button mat-button type="button" (click)="resetDinoTheme()">{{'Reset'|transloco}}</button>
+      </div>
+    </form>
+
+    <!--
+      The colors reach the app only when they are saved, so this stands in for the feedback
+      the live recoloring used to give - without repainting the whole app under a user who
+      is only trying options out.
+    -->
+    <div
+      class="dino-user-area-preview"
+      [style.--dino-user-area-preview-primary]="primaryColor"
+      [style.--dino-user-area-preview-accent]="accentColor"
+      [style.--dino-user-area-preview-warn]="warningColor"
+    >
+      <div class="dino-user-area-preview-head">{{'Preview'|transloco}}</div>
+      <div class="dino-user-area-preview-body">
+        <span class="dino-user-area-preview-bar"></span>
+        <span class="dino-user-area-preview-bar dino-user-area-preview-bar-short"></span>
+        <span class="dino-user-area-preview-pills">
+          <span class="dino-user-area-preview-pill">{{'Primary'|transloco}}</span>
+          <span class="dino-user-area-preview-pill dino-user-area-preview-pill-accent"
+            >{{'Accent'|transloco}}</span
+          >
+        </span>
+        <span class="dino-user-area-preview-warn">{{'Warning'|transloco}}</span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ==================== Backup and Restore ==================== -->
+
+<ng-template #backupTab>
+  <div class="dino-user-area-panel-body dino-user-area-body-backup">
+    <ng-container *ngIf="(processing|async) === false; else restoringTemplate">
+      <div class="dino-user-area-block dino-user-area-block-inline">
+        <span class="dino-user-area-block-label">{{'Backup Data'|transloco}}</span>
+        <a
+          mat-raised-button
+          color="primary"
+          [href]="dbDownloadUrl|async"
+          [download]="'dino_db_export.json'"
+          >{{'Download backup'|transloco}}</a
+        >
+      </div>
+
+      <div class="dino-user-area-block">
+        <span class="dino-user-area-block-label">{{'Restore Data'|transloco}}</span>
+        <span class="dino-user-area-block-desc">{{restoreWarning|transloco}}</span>
+        <input
+          type="file"
+          id="dinoUserAreaRestoreInput"
+          accept=".json"
+          (change)="onJsonImportfileSelected($event)"
+        />
+        <label for="dinoUserAreaRestoreInput">
+          <span mat-stroked-button class="dino-user-area-restore-button"
+            >{{'Restore Data'|transloco}}&hellip;</span
+          >
+        </label>
+      </div>
+    </ng-container>
+
+    <ng-template #restoringTemplate>
+      <div class="dino-user-area-restoring">
+        <div>{{'Restoring Data...'|transloco}}</div>
+        <ng-container *ngIf="spinnerImagePath; else defaultSpinnerTemplate">
+          <dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+        </ng-container>
+        <ng-template #defaultSpinnerTemplate>
+          <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
+        </ng-template>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>
+
+<!-- ==================== Tutorials ==================== -->
+
+<ng-template #tutorialTab>
+  <div class="dino-user-area-panel-body">
+    <div class="dino-user-area-block dino-user-area-block-inline">
+      <span class="dino-user-area-block-label">{{'Start Dino Tour'|transloco}}</span>
+      <button mat-raised-button color="primary" type="button" (click)="startTutorial()">
+        {{'Start Dino Tour'|transloco}}
+      </button>
+    </div>
+  </div>
+</ng-template>

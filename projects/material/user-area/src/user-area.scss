@@ -1,141 +1,456 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+/**
+ * Dino user area.
+ *
+ * A routed settings page: an identity header (dino-breadcrumbs plus the avatar and the
+ * signed in identity), a tab strip, and one flat bordered panel card per tab.
+ *
+ * Themable through the `--dino-user-area-*` custom properties below. Each aliases the
+ * matching shell token (`--dino-shell-*`, declared by dino-main-nav) with a literal
+ * fallback, so a deployment that re-skins the shell re-skins this page with it, and the
+ * page still renders correctly if it is ever mounted outside the shell.
+ *
+ * Responsive behaviour is driven exclusively by the `dino-user-area-compact` class the
+ * component sets from a single breakpoint. The stylesheet declares no media queries, so
+ * the CSS and the template can never disagree about what is visible.
+ */
 dino-user-area {
-  .mdc-dialog__content {
-    @media only screen and (max-width: 768px) {
-      padding: 20px 12px 20px 12px !important;
-      .mat-expansion-panel-body {
-        padding: 5px;
-      }
-    }
+  // ---- Themable API (override any of these in a deployment stylesheet) ----
+  --dino-user-area-surface: var(--dino-shell-surface, #ffffff);
+  --dino-user-area-fg: var(--dino-shell-fg, #1f2733);
+  --dino-user-area-muted-fg: var(--dino-shell-muted-fg, #6b7280);
+  --dino-user-area-border: var(--dino-shell-border, rgba(31, 39, 51, 0.1));
+  --dino-user-area-sunken-bg: var(--dino-shell-hover-bg, rgba(31, 39, 51, 0.05));
+  --dino-user-area-accent-fg: var(
+    --dino-shell-accent-fg,
+    #{mat-css-vars.mat-css-color-primary(500)}
+  );
+  --dino-user-area-avatar-bg: var(
+    --dino-shell-action-bg,
+    #{mat-css-vars.mat-css-color-primary(500)}
+  );
+  --dino-user-area-avatar-fg: var(
+    --dino-shell-action-fg,
+    #{mat-css-vars.mat-css-contrast-color(500)}
+  );
+  --dino-user-area-danger-fg: #{mat-css-vars.mat-css-color-warn(500)};
+  --dino-user-area-danger-border: #{mat-css-vars.mat-css-color-warn(500, 0.55)};
+  --dino-user-area-danger-bg: #{mat-css-vars.mat-css-color-warn(500, 0.08)};
+  --dino-user-area-radius: var(--dino-shell-item-radius, 8px);
+  --dino-user-area-gap: 16px;
+  // Roboto Mono is not bundled: styles.scss self hosts only Roboto 300/400/500.
+  --dino-user-area-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  // Live preview colors, overridden per element from the theme *form* values.
+  --dino-user-area-preview-primary: #{mat-css-vars.mat-css-color-primary(500)};
+  --dino-user-area-preview-accent: #{mat-css-vars.mat-css-color-accent(500)};
+  --dino-user-area-preview-warn: #{mat-css-vars.mat-css-color-warn(500)};
+  --dino-user-area-preview-fg: #ffffff;
+
+  display: block;
+  color: var(--dino-user-area-fg);
+
+  // ==================== Page and identity header ====================
+
+  .dino-user-area-page {
+    display: flex;
+    flex-direction: column;
+    max-width: 1120px;
+    padding-bottom: 40px;
   }
+
   .dino-user-area-header {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    align-content: center;
-    .dino-user-area-title,
-    .dino-user-area-dark-mode-toggle {
-      display: flex;
-      flex-flow: row wrap;
-      align-items: center;
-      text-align: center;
-      vertical-align: middle;
-      margin: 0 0 20px;
-      max-width: 100%;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: var(--dino-user-area-gap);
+  }
+
+  // Echoes the shell user card avatar, from the same tokens, so the two always match.
+  .dino-user-area-avatar {
+    display: flex;
+    flex: 0 0 44px;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--dino-user-area-avatar-bg);
+    color: var(--dino-user-area-avatar-fg);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .dino-user-area-identity {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    // The page header pads for whatever follows it; here the subtitle does that job.
+    .dino-page-header {
+      padding-bottom: 2px;
+    }
+  }
+
+  .dino-user-area-subtitle {
+    display: block;
+    padding: 0 4px; // lines up with the 4px inline padding of .dino-page-header
+    overflow: hidden;
+    color: var(--dino-user-area-muted-fg);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dino-user-area-version {
+    color: var(--dino-user-area-muted-fg);
+    font-family: var(--dino-user-area-mono);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  // ==================== Tabs ====================
+
+  .dino-user-area-tabs {
+    margin-top: var(--dino-user-area-gap);
+    text-align: initial; // beats the justified text the prebuilt tab theme sets
+
+    // The prebuilt theme floats the tab body on a shadow; this page is flat surfaces
+    // separated by hairlines, and the panel card below draws its own border.
+    .mat-mdc-tab-body {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .mat-mdc-tab-body-content {
+      overflow-x: hidden;
+    }
+
+    .mat-mdc-tab-header {
+      border-bottom: 1px solid var(--dino-user-area-border);
+    }
+
+    // Tabs sized to their label, left aligned, rather than stretched across the strip.
+    .mat-mdc-tab {
+      flex-grow: 0;
+    }
+
+    .mdc-tab__text-label {
+      font-size: 13.5px;
+      font-weight: 500;
+      letter-spacing: 0.1px;
+    }
+  }
+
+  // ==================== Panel card ====================
+
+  .dino-user-area-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    margin-top: var(--dino-user-area-gap);
+    border: 1px solid var(--dino-user-area-border);
+    border-radius: var(--dino-user-area-radius);
+    background: var(--dino-user-area-surface);
+  }
+
+  .dino-user-area-panel-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--dino-user-area-border);
+  }
+
+  .dino-user-area-panel-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 500;
+  }
+
+  .dino-user-area-panel-desc {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--dino-user-area-muted-fg);
+    font-size: 13px;
+    text-wrap: pretty;
+  }
+
+  .dino-user-area-panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: var(--dino-user-area-body-width, 680px);
+    padding: 26px 28px 30px;
+
+    .mat-mdc-form-field {
       width: 100%;
-      justify-content: center;
     }
   }
-  .mat-mdc-tab-body-content {
-    overflow: hidden !important;
-  }
-  .mat-expansion-panel-header {
-    background: transparent !important;
+
+  // One custom property per body rather than a rule each, to stay inside the style budget.
+  .dino-user-area-body-password {
+    --dino-user-area-body-width: 440px;
   }
 
-  .dino-error-message {
+  .dino-user-area-body-backup {
+    --dino-user-area-body-width: 720px;
+    gap: var(--dino-user-area-gap);
+  }
+
+  .dino-user-area-body-theme {
+    --dino-user-area-body-width: 1040px;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  .dino-user-area-actions {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  // Shown only once the change password request has come back with an error.
+  .dino-user-area-error {
     display: none;
+    color: var(--dino-user-area-danger-fg);
+    font-size: 13px;
   }
 
-  .dino-user-area-form {
+  .dino-error .dino-user-area-error {
+    display: block;
+  }
+
+  .dino-user-area-empty {
+    margin: 0;
+    color: var(--dino-user-area-muted-fg);
+    font-size: 13px;
+  }
+
+  // ==================== Bordered block, shared by the AI and Backup tabs ====================
+
+  .dino-user-area-block {
     display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--dino-user-area-border);
+    border-radius: var(--dino-user-area-radius);
+  }
+
+  .dino-user-area-block-inline {
     flex-flow: row wrap;
+    align-items: center;
     justify-content: space-between;
+    gap: 20px;
+  }
+
+  .dino-user-area-block-label {
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+
+  .dino-user-area-block-desc {
+    max-width: 60ch;
+    margin-top: -8px;
+    color: var(--dino-user-area-muted-fg);
+    font-size: 12px;
+    text-wrap: pretty;
+  }
+
+  .dino-user-area-key-row {
+    display: flex;
+    flex-flow: row wrap;
     align-items: center;
-    .mat-mdc-form-field,
-    .mat-button-ripple-round,
-    .dino-error-message {
-      flex: 1 0 auto !important;
-      @media only screen and (min-width: 481px) {
-        margin-left: 5px;
-      }
+    gap: 8px;
+  }
+
+  // A translucent fill is the only one that reads as recessed on both a white and a
+  // near black card, so the key field and the preview body share it.
+  .dino-user-area-key-value {
+    flex: 1 1 240px;
+    min-width: 0;
+    padding: 10px 12px;
+    overflow: hidden;
+    border: 1px solid var(--dino-user-area-border);
+    border-radius: var(--dino-user-area-radius);
+    background: var(--dino-user-area-sunken-bg);
+    font-family: var(--dino-user-area-mono);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dino-user-area-credits {
+    align-items: flex-start;
+    max-width: 240px;
+    gap: 6px;
+  }
+
+  .dino-user-area-credits-caption {
+    color: var(--dino-user-area-muted-fg);
+    font-size: 12px;
+  }
+
+  .dino-user-area-credits-figure {
+    color: var(--dino-user-area-accent-fg);
+    font-size: 34px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  // ==================== DINO Theme ====================
+
+  .dino-user-area-theme-form {
+    display: flex;
+    flex: 1 1 320px;
+    flex-direction: column;
+    gap: var(--dino-user-area-gap);
+    min-width: 0;
+  }
+
+  .dino-user-area-swatch {
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    border: 1px solid var(--dino-user-area-border);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .dino-user-area-preview {
+    flex: 0 1 300px;
+    overflow: hidden;
+    border: 1px solid var(--dino-user-area-border);
+    border-radius: var(--dino-user-area-radius);
+  }
+
+  .dino-user-area-preview-head {
+    padding: 12px 16px;
+    background: var(--dino-user-area-preview-primary);
+    color: var(--dino-user-area-preview-fg);
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+
+  .dino-user-area-preview-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    background: var(--dino-user-area-sunken-bg);
+  }
+
+  .dino-user-area-preview-bar {
+    width: 70%;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--dino-user-area-border);
+  }
+
+  .dino-user-area-preview-bar-short {
+    width: 45%;
+  }
+
+  .dino-user-area-preview-pills {
+    display: flex;
+    gap: 10px;
+    padding-top: 4px;
+  }
+
+  .dino-user-area-preview-pill {
+    padding: 7px 14px;
+    border-radius: 3px;
+    background: var(--dino-user-area-preview-primary);
+    color: var(--dino-user-area-preview-fg);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .dino-user-area-preview-pill-accent {
+    background: var(--dino-user-area-preview-accent);
+  }
+
+  .dino-user-area-preview-warn {
+    color: var(--dino-user-area-preview-warn);
+    font-size: 12px;
+  }
+
+  // ==================== Backup and Restore ====================
+
+  // The file input is driven by its label; only the label is ever seen.
+  #dinoUserAreaRestoreInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  // Restore overwrites data, so it is drawn in the warn color rather than as a peer of
+  // the plain Download action above it.
+  .dino-user-area-restore-button.mat-mdc-outlined-button {
+    align-self: flex-start;
+    border-color: var(--dino-user-area-danger-border);
+    color: var(--dino-user-area-danger-fg);
+
+    &:hover {
+      background: var(--dino-user-area-danger-bg);
     }
-    .mat-mdc-form-field,
-    .mat-mdc-fab,
-    .dino-error-message {
-      margin-top: 20px !important;
-    }
-    &.dino-error {
-      .dino-error-message {
-        display: block;
-        font-size: 1.1em;
-        line-height: 2.5em;
-      }
-    }
-    .dino-api-key-button-container {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-around;
-      align-items: center;
-      @media only screen and (max-width: 480px) {
-        flex: 1 0 auto;
-      }
-      .dino-matched-pandino-api-key-button {
-        color: #32db64;
-      }
+  }
+
+  .dino-user-area-restoring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--dino-user-area-gap);
+  }
+
+  // ==================== Compact ====================
+
+  .dino-user-area-compact {
+    .dino-user-area-avatar {
+      flex-basis: 34px;
+      width: 34px;
+      height: 34px;
+      font-size: 12px;
     }
 
-    .mat-icon {
-      cursor: pointer;
+    .dino-user-area-panel {
+      min-height: 0;
     }
-    .dino-tokens-counter-container {
-      flex: 1 0 auto;
-      display: flex;
-      flex-flow: row wrap;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      .dino-tokens-icon {
-        font-size: 24px;
-      }
-      .dino-tokens-counter {
-        margin-left: 15px;
-        color: var(--mat-badge-text-color);
-        background: mat-css-vars.mat-css-color-primary(500);
-        border-radius: 50%;
-        width: 42px;
-        height: 42px;
-        padding: 2px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-      }
+
+    .dino-user-area-panel-head {
+      padding: 18px 16px 14px;
     }
-    .dino-add-more-text {
-      cursor: pointer;
-      color: mat-css-vars.mat-css-color-accent(500);
+
+    .dino-user-area-panel-body {
+      padding: 20px 16px 24px;
     }
-    &.dino-user-area-form-centered{
-      justify-content: center;
+
+    .dino-user-area-preview {
+      flex: 1 1 100%;
     }
   }
-  .mat-mdc-raised-button {
-    align-self: center;
-  }
-  .dino-theme-presets-button-container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
-    flex: 1 0 auto;
-  }
-  .dino-theme-presets-button,
-  .dino-backup-restore-button {
-    text-decoration: none;
-    margin: 15px;
-  }
-  .dino-backup-restore-buttons-container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
-    .dino-backup-restore-button {
-      flex: 0.3 0 auto;
-      a {
-        width: 100%;
-      }
-    }
-  }
+}
+
+// Dark theme: only the values are redefined, never the rules. The neutrals restate their
+// shell alias with a dark literal fallback; the accents keep tracking the palette.
+.isDarkTheme dino-user-area {
+  --dino-user-area-surface: var(--dino-shell-surface, #1b1f24);
+  --dino-user-area-fg: var(--dino-shell-fg, #e6e9ed);
+  --dino-user-area-muted-fg: var(--dino-shell-muted-fg, #9aa3ad);
+  --dino-user-area-border: var(--dino-shell-border, rgba(230, 233, 237, 0.12));
+  --dino-user-area-sunken-bg: var(--dino-shell-hover-bg, rgba(230, 233, 237, 0.07));
+  --dino-user-area-accent-fg: var(
+    --dino-shell-accent-fg,
+    #{mat-css-vars.mat-css-color-primary(100)}
+  );
+  --dino-user-area-danger-fg: #{mat-css-vars.mat-css-color-warn(200)};
+  --dino-user-area-danger-border: #{mat-css-vars.mat-css-color-warn(200, 0.5)};
+  --dino-user-area-danger-bg: #{mat-css-vars.mat-css-color-warn(200, 0.12)};
 }
