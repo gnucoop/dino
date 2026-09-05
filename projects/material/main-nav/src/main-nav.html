@@ -42,8 +42,11 @@
     [class.extended]="(extendedSidenav|async) || compact"
   >
     <div class="dino-sidenav-inner" *ngIf="(sideMenuDisabled|async) !== true">
-      <!-- Brand row: logo plus the collapse/expand toggle -->
-      <div class="dino-sidenav-brand">
+      <!--
+        Brand row: logo plus the collapse/expand toggle. The compact layout already
+        carries both in the top bar, so it would only repeat them here.
+      -->
+      <div class="dino-sidenav-brand" *ngIf="!compact">
         <img class="dino-sidenav-logo" [src]="logoImagePath" alt="logo" />
         <button
           mat-icon-button
