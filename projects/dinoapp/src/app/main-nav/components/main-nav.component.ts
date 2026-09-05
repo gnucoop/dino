@@ -34,7 +34,7 @@ export class MainNavComponent {
   readonly darkLogoPath: string =
     environment.customImagesConfig?.logoDark ??
     environment.customImagesConfig?.logoLight ??
-    'assets/icons/logos/dino-bar-logo-light.svg';
+    'assets/icons/logos/dino-bar-logo-dark.svg';
   readonly lightSpinnerPath: string =
     environment.customImagesConfig?.spinnerLight ?? 'assets/icons/logos/dino-spinner-light.svg';
   readonly darkSpinnerPath: string =
