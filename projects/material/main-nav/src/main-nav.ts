@@ -582,6 +582,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._logoImagePath = url;
   }
 
+  /**
+   * The logo to show while the sidebar is collapsed to the rail, where the full lockup
+   * would shrink to an illegible strip. Falls back to 'logoImagePath' when not given, so
+   * a deployment with a single logo keeps the behaviour it had.
+   */
+  @Input() logoMarkPath: string | undefined;
+
   constructor(
     readonly networkStatusService: NetworkStatusService,
     readonly breakpointObserver: BreakpointObserverService,

@@ -29,12 +29,24 @@ export class MainNavComponent {
   barButtonsDisabled: Observable<boolean> = this._authService.authenticated.pipe(
     map(evt => !evt.auth),
   );
+  // The header carries the horizontal lockup (page 1 of the brand guide), which reads at
+  // the 32px the brand row gives it. The file names are the ones the login page has always
+  // used for that same artwork.
   readonly lightLogoPath: string =
-    environment.customImagesConfig?.logoLight ?? 'assets/icons/logos/dino-bar-logo-light.svg';
+    environment.customImagesConfig?.logoLight ?? 'assets/icons/logos/dino-login-light.svg';
   readonly darkLogoPath: string =
     environment.customImagesConfig?.logoDark ??
     environment.customImagesConfig?.logoLight ??
-    'assets/icons/logos/dino-bar-logo-dark.svg';
+    'assets/icons/logos/dino-login-dark.svg';
+  // The collapsed rail is 68px wide, so it drops to the mark on its own - again the file
+  // the spinner uses, which is that mark. A deployment that configured its own logo keeps
+  // it in both states: substituting the DINO mark there would be someone else's brand.
+  readonly lightMarkPath: string =
+    environment.customImagesConfig?.logoLight ?? 'assets/icons/logos/dino-spinner-light.svg';
+  readonly darkMarkPath: string =
+    environment.customImagesConfig?.logoDark ??
+    environment.customImagesConfig?.logoLight ??
+    'assets/icons/logos/dino-spinner-dark.svg';
   readonly lightSpinnerPath: string =
     environment.customImagesConfig?.spinnerLight ?? 'assets/icons/logos/dino-spinner-light.svg';
   readonly darkSpinnerPath: string =
@@ -48,6 +60,7 @@ export class MainNavComponent {
   readonly userSectionsLabel: string = conf.userSectionsLabel;
   readonly adminSectionsLabel: string = conf.adminSectionsLabel;
   readonly logoImagePath: Observable<string>;
+  readonly logoMarkPath: Observable<string>;
   readonly spinnerImagePath: Observable<string>;
 
   constructor(
@@ -66,6 +79,16 @@ export class MainNavComponent {
         }
       }),
       startWith(this._ts.isDark() ? this.darkLogoPath : this.lightLogoPath),
+    );
+    this.logoMarkPath = this._ts.darkModeChange.pipe(
+      map(isdark => {
+        if (isdark) {
+          return this.darkMarkPath;
+        } else {
+          return this.lightMarkPath;
+        }
+      }),
+      startWith(this._ts.isDark() ? this.darkMarkPath : this.lightMarkPath),
     );
     this.spinnerImagePath = this._ts.darkModeChange.pipe(
       map(isdark => {
