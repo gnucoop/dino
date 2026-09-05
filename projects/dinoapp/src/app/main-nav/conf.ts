@@ -163,6 +163,12 @@ export const customSvgIcons = environment.customSvgIcons;
 export const appVersion: string = pkg.version;
 
 /**
+ * The app version together with the service worker build, as the build info tooltip
+ * spells it out, eg. '18.0.5 (148)'.
+ */
+export const appVersionLabel: string = `${pkg.version} (${ngsw.appData.sw_version})`;
+
+/**
  * The labels heading the two navigation groups in the sidenav.
  */
 export const userSectionsLabel = 'User';

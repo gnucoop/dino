@@ -26,16 +26,15 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatTabsModule} from '@angular/material/tabs';
 import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/loading-spinner';
+import {ThemeSwitchModule as DinoThemeSwitchModule} from '@dino/material/theme-switch';
 import {RouterModule} from '@angular/router';
 import {UsersModule} from '@dino/core/users';
 import {UserInteractionsModule as DinoUserInteractionsModule} from '@dino/material/user-interactions';
@@ -43,7 +42,6 @@ import {TranslocoModule} from '@ngneat/transloco';
 import {ColorPickerModule} from 'ngx-color-picker';
 
 import {UserArea} from './user-area';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 
@@ -55,18 +53,16 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     CommonModule,
     DinoBreakpointObserverModule,
     DinoLoadingSpinnerModule,
+    DinoThemeSwitchModule,
     DinoUserInteractionsModule,
     MatAutocompleteModule,
     MatButtonModule,
-    MatDialogModule,
-    MatExpansionModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatProgressBarModule,
     MatProgressSpinnerModule,
-    MatSlideToggleModule,
     MatSnackBarModule,
+    MatTabsModule,
     ReactiveFormsModule,
     RouterModule,
     UsersModule,

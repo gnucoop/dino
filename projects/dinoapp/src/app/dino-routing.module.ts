@@ -147,6 +147,13 @@ const routes: Routes = [
       import('./edit-public-form/edit-form-public.module').then(m => m.EditPublicFormModule),
     data: {breadcrumbs: []},
   },
+  {
+    path: 'user-area',
+    loadChildren: () => import('./user-area/user-area.module').then(m => m.UserAreaModule),
+    canActivate: [AuthGuard],
+    // No AdminGuard: the page itself hides the Backup tab from a non admin.
+    data: {breadcrumbs: [{label: 'User Area', url: 'user-area', icon: 'manage_accounts'}]},
+  },
   {path: '**', redirectTo: '', pathMatch: 'full'},
 ];
 
