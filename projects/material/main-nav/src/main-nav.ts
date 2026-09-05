@@ -64,6 +64,7 @@ import {
   map,
   mapTo,
   shareReplay,
+  skipWhile,
   startWith,
   switchMap,
   take,
@@ -501,6 +502,17 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _syncLoadingSub: Subscription = Subscription.EMPTY;
 
   /**
+   * Subscribes to the loading state to collapse the sidebar for its duration.
+   */
+  private _syncCollapseSub: Subscription = Subscription.EMPTY;
+
+  /**
+   * The sidebar state to restore when the initialization screen goes away, or null when
+   * the sidebar was not collapsed for it. See MainNav.ngAfterViewInit.
+   */
+  private _extendedBeforeSync: boolean | null = null;
+
+  /**
    * Subscribes to the DataService 'replicationCycleComplete' event
    */
   private _replicationCycleCompleteSub: Subscription = Subscription.EMPTY;
@@ -858,6 +870,9 @@ export class MainNav implements AfterViewInit, OnDestroy {
         withLatestFrom(this.breakpointObserver.wide),
         tap(([_, wide]) => {
           if (wide) {
+            // Opening or closing the sidebar by hand settles the question: drop the
+            // state the initialization screen was going to restore.
+            this._extendedBeforeSync = null;
             const currentState = this.extendedSidenav.getValue();
             this.extendedSidenav.next(!currentState);
           } else {
@@ -896,7 +911,44 @@ export class MainNav implements AfterViewInit, OnDestroy {
       });
     }
 
+    // There is nothing to navigate to while the initialization screen is up, so the
+    // sidebar spends it collapsed to the rail and comes back to the state it had once
+    // the data is there. Only on wide viewports: in the compact layout the drawer is
+    // already closed, and opening it unasked would cover the page the user just got.
+    this._syncCollapseSub = this.isLoading
+      .pipe(
+        distinctUntilChanged(),
+        // Confine this to the initialization screen at start-up. Routed pages push their
+        // own loading state into the same subject later on, and the sidebar should not
+        // fold away every time one of them takes a moment.
+        skipWhile(loading => !loading),
+        take(2),
+      )
+      .subscribe(loading => this._collapseForSync(loading));
+
     this._cdr.detectChanges();
+  }
+
+  /**
+   * Collapses the sidebar while the first replication runs, then restores it.
+   */
+  private _collapseForSync(loading: boolean): void {
+    if (this.compact) {
+      return;
+    }
+    if (loading) {
+      if (this._extendedBeforeSync === null) {
+        this._extendedBeforeSync = this.extendedSidenav.value;
+        this.extendedSidenav.next(false);
+        this._cdr.markForCheck();
+      }
+      return;
+    }
+    if (this._extendedBeforeSync !== null) {
+      this.extendedSidenav.next(this._extendedBeforeSync);
+      this._extendedBeforeSync = null;
+      this._cdr.markForCheck();
+    }
   }
 
   menuToggle(): void {
@@ -1191,6 +1243,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this._currentSectionSub.unsubscribe();
     this._onRouterOutletLoadingSub.unsubscribe();
     this._syncLoadingSub.unsubscribe();
+    this._syncCollapseSub.unsubscribe();
     this._replicationCycleCompleteSub.unsubscribe();
     this._retrySyncSub.unsubscribe();
     this._couldNotSyncSub.unsubscribe();
