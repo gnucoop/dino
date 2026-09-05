@@ -59,9 +59,13 @@
         </button>
       </div>
 
-      <!-- Navigation: the public sections, then the Admin only ones -->
-      <nav class="dino-sidenav-nav" *ngIf="(isLoading|async) === false" [@loadComponent]>
-        <mat-nav-list>
+      <!--
+        Navigation: the public sections, then the Admin only ones. The nav element stays
+        in the layout while the sections load, since it is the flexible zone that holds
+        the utilities down at the bottom of the sidebar.
+      -->
+      <nav class="dino-sidenav-nav">
+        <mat-nav-list *ngIf="(isLoading|async) === false" [@loadComponent]>
           <ng-container
             [ngTemplateOutlet]="groupLabelTemplate"
             [ngTemplateOutletContext]="{label: userSectionsLabel}"
