@@ -1,0 +1,11 @@
+<dino-user-area
+  [spinnerImagePath]="(spinnerImagePath|async) ?? lightSpinnerPath"
+  [backupRestore]="backupRestore"
+  [adminRoles]="adminRoles"
+  [activeTab]="activeTab|async"
+  (tabChange)="goToTab($event)"
+>
+  <dino-breadcrumbs breadcrumbs [overline]="'User'">
+    <span actions class="dino-user-area-version">DINO v.{{appVersion}}</span>
+  </dino-breadcrumbs>
+</dino-user-area>

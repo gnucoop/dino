@@ -121,7 +121,7 @@
               type="button"
               class="dino-utility-button dino-tokens-counter"
               [matTooltip]="'Your DINO-AI Credits'|transloco"
-              (click)="openUserArea('tokens')"
+              (click)="goToUserArea('ai')"
             >
               <mat-icon
                 aria-hidden="false"
@@ -185,7 +185,7 @@
         </div>
 
         <mat-menu #userMenu="matMenu" [class]="'dino-user-menu'">
-          <button mat-menu-item (click)="openUserArea()">
+          <button mat-menu-item (click)="goToUserArea()">
             <mat-icon>settings</mat-icon>
             <span>{{'User Area'|transloco}}</span>
           </button>
