@@ -25,6 +25,13 @@ import {MaterialCssVarsService} from 'angular-material-css-vars';
 import {BehaviorSubject} from 'rxjs';
 import {DinoTheme} from './theme-interface';
 
+/**
+ * The localStorage key holding the light/dark choice. Kept apart from the theme presets:
+ * a preset carries the dark flag it was saved with, while this is the switch the user
+ * last flipped, and it has to survive a preset being reloaded on the next start.
+ */
+const DARK_MODE_KEY = 'dino_dark_mode';
+
 @Injectable({providedIn: 'root'})
 export class ThemeService {
   readonly darkModeChange = new EventEmitter<boolean>();
@@ -39,8 +46,15 @@ export class ThemeService {
   }
 
   constructor(private _service: MaterialCssVarsService) {
+    // Read before the first setDarkMode call, which writes the key back.
+    const storedDarkMode = this._readDarkMode();
     this.setDarkMode(this._service.isDarkTheme ?? false);
     this.loadDinoTheme();
+    // Last word to the stored choice: loadDinoTheme has just applied the dark flag frozen
+    // into the default preset, which is only as fresh as the last time a theme was saved.
+    if (storedDarkMode !== null) {
+      this.setDarkMode(storedDarkMode);
+    }
     this.setDefaultTheme();
   }
 
@@ -50,7 +64,16 @@ export class ThemeService {
 
   setDarkMode(isDark: boolean): void {
     this._service.setDarkTheme(isDark);
+    localStorage.setItem(DARK_MODE_KEY, JSON.stringify(isDark));
     this.darkModeChange.emit(isDark);
+  }
+
+  /**
+   * The stored light/dark choice, or null when the user has never made one.
+   */
+  private _readDarkMode(): boolean | null {
+    const stored = localStorage.getItem(DARK_MODE_KEY);
+    return stored === null ? null : stored === 'true';
   }
 
   setPrimaryColor(color: string): void {
