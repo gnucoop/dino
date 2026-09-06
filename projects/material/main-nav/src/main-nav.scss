@@ -679,7 +679,12 @@ dino-main-nav {
   margin-top: 4px;
   padding: 8px 16px;
   border-top: 1px solid mat-css-vars.mat-css-color-primary(500, 0.14);
-  opacity: 0.6;
+  // A plain div is not a .mat-mdc-menu-item, so it inherits no menu foreground: on a dark
+  // menu that leaves near black text on a near black panel. Take the color the menu items
+  // themselves use, and dim it with a color rather than an opacity that would eat the
+  // contrast a second time.
+  color: var(--mat-menu-item-label-text-color, currentColor);
+  opacity: 0.8;
   font-size: 11px;
   line-height: 1.4;
   white-space: normal;
