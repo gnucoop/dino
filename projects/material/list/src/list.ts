@@ -1527,6 +1527,31 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * The form behind the row was saved with missing or invalid answers.
+   */
+  isInvalidRow(row: T): boolean {
+    const data = (row as {data?: {[key: string]: any}}).data;
+    return data != null && (data['dinoinvalid'] === true || data['$invalid'] === true);
+  }
+
+  /**
+   * The row still holds files that never reached the server.
+   */
+  hasFilesToUploadRow(row: T): boolean {
+    const data = (row as {data?: {[key: string]: any}}).data;
+    return data != null && data['dino_filestoupload'] === true;
+  }
+
+  /**
+   * Whether the row has anything to report at all - which is what its bar and
+   * its badges are for. Kept here, and not spelled out in the template, so that
+   * the bar and the badges can never disagree on what counts.
+   */
+  hasStatusRow(row: T): boolean {
+    return this.isInvalidRow(row) || this.hasFilesToUploadRow(row);
+  }
+
+  /**
    * Called when a row is edited inline (eg. a boolean toggle)
    */
   editQuickAction(ev: {patchedDoc: Partial<T> & {id: string}; previousDoc: T}) {

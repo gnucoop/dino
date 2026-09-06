@@ -69,33 +69,41 @@
             [aria-label]="checkboxLabel(row)"
           >
           </mat-checkbox>
-          <mat-icon
-            color="warn"
-            class="dino-invalid-form-icon"
-            *ngIf="row.data && (row.data['dinoinvalid'] === true || row.data['$invalid'] === true)"
-            [matTooltip]="'This form might not be valid. Please review and fill its data'|transloco"
-            [matTooltipPosition]="'right'"
-            >warning</mat-icon
-          >
+          <!--
+            The status of the row - invalid, files still to go out - rides on its
+            left edge instead of taking a place beside the checkbox: a column has
+            one width for every row, so anything that stands in the flow here is
+            empty space on the rows that have nothing to say.
+          -->
+          <span class="dino-row-status">
+            <mat-icon
+              color="warn"
+              class="dino-invalid-form-icon"
+              *ngIf="isInvalidRow(row)"
+              [matTooltip]="'This form might not be valid. Please review and fill its data'|transloco"
+              [matTooltipPosition]="'right'"
+              >warning</mat-icon
+            >
 
-          <ng-container *ngIf="row.data && row.data['dino_filestoupload'] === true">
-            <mat-spinner
-              *ngIf="isUploadingFilesRow(row); else uploadFilesIcon"
-              diameter="20"
-              class="dino-upload-files-spinner"
-            ></mat-spinner>
-            <ng-template #uploadFilesIcon>
-              <mat-icon
-                color="accent"
-                class="dino-upload-files-icon"
-                [class.dino-upload-files-icon--offline]="!isOnline"
-                [matTooltip]="'Some files were stored locally due to a temporary network problem. Click to sync these files.'|transloco"
-                [matTooltipPosition]="'right'"
-                (click)="isOnline && $event.stopPropagation(); isOnline && uploadFilesRow(row)"
-                >cloud_upload</mat-icon
-              >
-            </ng-template>
-          </ng-container>
+            <ng-container *ngIf="hasFilesToUploadRow(row)">
+              <mat-spinner
+                *ngIf="isUploadingFilesRow(row); else uploadFilesIcon"
+                diameter="16"
+                class="dino-upload-files-spinner"
+              ></mat-spinner>
+              <ng-template #uploadFilesIcon>
+                <mat-icon
+                  color="accent"
+                  class="dino-upload-files-icon"
+                  [class.dino-upload-files-icon--offline]="!isOnline"
+                  [matTooltip]="'Some files were stored locally due to a temporary network problem. Click to sync these files.'|transloco"
+                  [matTooltipPosition]="'right'"
+                  (click)="isOnline && $event.stopPropagation(); isOnline && uploadFilesRow(row)"
+                  >cloud_upload</mat-icon
+                >
+              </ng-template>
+            </ng-container>
+          </span>
         </mat-cell>
       </ng-container>
     </ng-container>
@@ -182,8 +190,7 @@
             header.isEditable(element) &&
             header.editMethod &&
             element.data &&
-            element.data['dinoinvalid'] !== true &&
-            element.data['$invalid'] !== true"
+            !isInvalidRow(element)"
             mat-list-icon
             (click)="$event.stopPropagation();header.editMethod(element);"
             >edit_note
@@ -314,6 +321,7 @@
       [class.dino-highlighted-light]="isHighlightedRow(row)"
       [class.dino-expanded-row]="isRowExpanded(row)"
       [class.dino-details-row]="ctx.isDetails"
+      [class.dino-row-flagged]="hasStatusRow(row)"
       (click)="rowToggle(row)"
       (mouseenter)="onRowMouseEnter($event, row)"
       (mouseleave)="onRowMouseLeave($event)"
