@@ -122,8 +122,12 @@ dino-user-area {
       box-shadow: none;
     }
 
+    // Material scrolls the tab body, which would clip the color picker popup where it
+    // hangs below its field. Nothing here needs its own scrollport - the shell content
+    // scrolls the whole page - so the body is left to grow instead.
+    .mat-mdc-tab-body,
     .mat-mdc-tab-body-content {
-      overflow-x: hidden;
+      overflow: visible;
     }
 
     .mat-mdc-tab-header {
@@ -312,6 +316,23 @@ dino-user-area {
     min-width: 0;
   }
 
+  // ngx-color-picker inserts its popup as a sibling of the field and positions it against
+  // the nearest positioned ancestor. Without this wrapper that ancestor is the scrolling
+  // tab body, and the popup lands somewhere else entirely; with it, the popup is placed
+  // against the field it belongs to and floats over the form rather than displacing it.
+  .dino-user-area-color {
+    position: relative;
+  }
+
+  // The popup is ngx-color-picker's own markup on its own light card, so only the frame is
+  // restyled - it keeps the internal contrast it ships with in both themes.
+  .color-picker {
+    border: 1px solid var(--dino-user-area-border);
+    border-radius: var(--dino-user-area-radius);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  }
+
+  // A swatch, not a control: the whole field opens the picker.
   .dino-user-area-swatch {
     flex: 0 0 30px;
     width: 30px;
@@ -320,6 +341,14 @@ dino-user-area {
     border: 1px solid var(--dino-user-area-border);
     border-radius: 3px;
     cursor: pointer;
+  }
+
+  // The readonly hex is the value, so it gets the field's own foreground rather than the
+  // dimmed one Material gives a readonly input - a hex is unusable if it cannot be read.
+  .dino-user-area-theme-form .mat-mdc-form-field input[readonly] {
+    color: var(--dino-user-area-fg);
+    font-family: var(--dino-user-area-mono);
+    letter-spacing: 0.02em;
   }
 
   .dino-user-area-preview {
@@ -382,7 +411,7 @@ dino-user-area {
 
   // ==================== Backup and Restore ====================
 
-  // The file input is driven by its label; only the label is ever seen.
+  // The file input is opened by the button beside it; it is never seen itself.
   #dinoUserAreaRestoreInput {
     position: absolute;
     width: 1px;

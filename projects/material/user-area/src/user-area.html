@@ -23,10 +23,7 @@
       [selectedIndex]="tabIndex(tabList, activeTab)"
       (selectedIndexChange)="selectTab(tabList, $event)"
     >
-      <mat-tab
-        *ngFor="let tab of tabList; trackBy: trackTabById"
-        [label]="tab.label|transloco"
-      >
+      <mat-tab *ngFor="let tab of tabList; trackBy: trackTabById" [label]="tab.label|transloco">
         <div class="dino-user-area-panel">
           <div class="dino-user-area-panel-head">
             <h2 class="dino-user-area-panel-title">{{tab.title|transloco}}</h2>
@@ -64,7 +61,8 @@
       <mat-label>{{'Current Password'|transloco}}</mat-label>
       <input matInput type="password" [formControlName]="'current_password'" />
       <mat-error
-        >{{showValErrors(changePassForm.get('current_password'), 'Current Password')}}</mat-error
+        >{{showValErrors(changePassForm.get('current_password'),
+        passwordLabels.current)}}</mat-error
       >
     </mat-form-field>
 
@@ -72,14 +70,15 @@
       <mat-label>{{'New Password'|transloco}}</mat-label>
       <input matInput type="password" [formControlName]="'password'" />
       <mat-hint>{{'At least {{count}} characters'|transloco:{count: passwordMinLength} }}</mat-hint>
-      <mat-error>{{showValErrors(changePassForm.get('password'), 'New Password')}}</mat-error>
+      <mat-error>{{showValErrors(changePassForm.get('password'), passwordLabels.next)}}</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>{{'Confirm New Password'|transloco}}</mat-label>
       <input matInput type="password" [formControlName]="'confirm_password'" />
       <mat-error
-        >{{showValErrors(changePassForm.get('confirm_password'), 'Confirm New Password')}}</mat-error
+        >{{showValErrors(changePassForm.get('confirm_password'),
+        passwordLabels.confirm)}}</mat-error
       >
     </mat-form-field>
 
@@ -155,41 +154,50 @@
 <ng-template #themeTab>
   <div class="dino-user-area-panel-body dino-user-area-body-theme">
     <form class="dino-user-area-theme-form" [formGroup]="dinoSaveThemeForm">
-      <mat-form-field appearance="fill">
-        <mat-label>{{'Primary Color'|transloco}}</mat-label>
-        <span
-          class="dino-user-area-swatch"
-          matPrefix
-          [style.background]="primaryColor"
+      <div class="dino-user-area-color">
+        <mat-form-field
+          appearance="fill"
           [colorPicker]="primaryColor"
+          [cpPosition]="'bottom'"
+          [cpAlphaChannel]="'disabled'"
+          [cpOutputFormat]="'hex'"
           (colorPickerChange)="setPrimaryColor($event)"
-        ></span>
-        <input matInput readonly [formControlName]="'primary'" />
-      </mat-form-field>
+        >
+          <mat-label>{{'Primary Color'|transloco}}</mat-label>
+          <span class="dino-user-area-swatch" matPrefix [style.background]="primaryColor"></span>
+          <input matInput readonly [formControlName]="'primary'" />
+        </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="fill">
-        <mat-label>{{'Accent Color'|transloco}}</mat-label>
-        <span
-          class="dino-user-area-swatch"
-          matPrefix
-          [style.background]="accentColor"
+      <div class="dino-user-area-color">
+        <mat-form-field
+          appearance="fill"
           [colorPicker]="accentColor"
+          [cpPosition]="'bottom'"
+          [cpAlphaChannel]="'disabled'"
+          [cpOutputFormat]="'hex'"
           (colorPickerChange)="setAccentColor($event)"
-        ></span>
-        <input matInput readonly [formControlName]="'accent'" />
-      </mat-form-field>
+        >
+          <mat-label>{{'Accent Color'|transloco}}</mat-label>
+          <span class="dino-user-area-swatch" matPrefix [style.background]="accentColor"></span>
+          <input matInput readonly [formControlName]="'accent'" />
+        </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="fill">
-        <mat-label>{{'Warning Color'|transloco}}</mat-label>
-        <span
-          class="dino-user-area-swatch"
-          matPrefix
-          [style.background]="warningColor"
+      <div class="dino-user-area-color">
+        <mat-form-field
+          appearance="fill"
           [colorPicker]="warningColor"
+          [cpPosition]="'bottom'"
+          [cpAlphaChannel]="'disabled'"
+          [cpOutputFormat]="'hex'"
           (colorPickerChange)="setWarningColor($event)"
-        ></span>
-        <input matInput readonly [formControlName]="'warning'" />
-      </mat-form-field>
+        >
+          <mat-label>{{'Warning Color'|transloco}}</mat-label>
+          <span class="dino-user-area-swatch" matPrefix [style.background]="warningColor"></span>
+          <input matInput readonly [formControlName]="'warning'" />
+        </mat-form-field>
+      </div>
 
       <mat-form-field appearance="fill">
         <mat-label>{{'Preset name'|transloco}}</mat-label>
@@ -273,16 +281,20 @@
         <span class="dino-user-area-block-label">{{'Restore Data'|transloco}}</span>
         <span class="dino-user-area-block-desc">{{restoreWarning|transloco}}</span>
         <input
+          #restoreInput
           type="file"
           id="dinoUserAreaRestoreInput"
           accept=".json"
           (change)="onJsonImportfileSelected($event)"
         />
-        <label for="dinoUserAreaRestoreInput">
-          <span mat-stroked-button class="dino-user-area-restore-button"
-            >{{'Restore Data'|transloco}}&hellip;</span
-          >
-        </label>
+        <button
+          mat-stroked-button
+          type="button"
+          class="dino-user-area-restore-button"
+          (click)="restoreInput.click()"
+        >
+          <mat-icon>upload_file</mat-icon>{{'Choose a backup file'|transloco}}
+        </button>
       </div>
     </ng-container>
 
