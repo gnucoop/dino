@@ -557,4 +557,13 @@ export const ENG: Translation = {
   'Hide': 'Hide',
   'Pick a color': 'Pick a color',
   'Show': 'Show',
+  'Earlier': 'Earlier',
+  'No notifications': 'No notifications',
+  'Now': 'Now',
+  'Today': 'Today',
+  'Yesterday': 'Yesterday',
+  '{{count}} d': '{{count}} d',
+  '{{count}} h': '{{count}} h',
+  '{{count}} min': '{{count}} min',
+  '{{count}} unread': '{{count}} unread',
 };

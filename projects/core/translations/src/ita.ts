@@ -523,4 +523,13 @@ export const ITA: Translation = {
   'Hide': 'Nascondi',
   'Pick a color': 'Scegli un colore',
   'Show': 'Mostra',
+  'Earlier': 'Prima',
+  'No notifications': 'Nessuna notifica',
+  'Now': 'Ora',
+  'Today': 'Oggi',
+  'Yesterday': 'Ieri',
+  '{{count}} d': '{{count}} g',
+  '{{count}} h': '{{count}} h',
+  '{{count}} min': '{{count}} min',
+  '{{count}} unread': '{{count}} non lette',
 };

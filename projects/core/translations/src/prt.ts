@@ -556,4 +556,13 @@ export const PRT: Translation = {
   'Update password': 'Atualizar senha',
   'Warning': 'Aviso',
   'Your DINO-AI access key and the credits available to you.': 'A sua chave de acesso DINO-AI e os créditos disponíveis.',
+  'Earlier': 'Antes',
+  'No notifications': 'Sem notificações',
+  'Now': 'Agora',
+  'Today': 'Hoje',
+  'Yesterday': 'Ontem',
+  '{{count}} d': '{{count}} d',
+  '{{count}} h': '{{count}} h',
+  '{{count}} min': '{{count}} min',
+  '{{count}} unread': '{{count}} não lidas',
 };

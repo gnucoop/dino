@@ -710,4 +710,13 @@ export const AR: Translation = {
   'Update password': 'تحديث كلمة المرور',
   'Warning': 'تحذير',
   'Your DINO-AI access key and the credits available to you.': 'مفتاح وصولك إلى DINO-AI والأرصدة المتاحة لك.',
+  'Earlier': 'سابقاً',
+  'No notifications': 'لا توجد إشعارات',
+  'Now': 'الآن',
+  'Today': 'اليوم',
+  'Yesterday': 'أمس',
+  '{{count}} d': '{{count}} ي',
+  '{{count}} h': '{{count}} س',
+  '{{count}} min': '{{count}} د',
+  '{{count}} unread': '{{count}} غير مقروءة',
 };

@@ -619,4 +619,13 @@ export const UKR: Translation = {
   'Update password': 'Оновити пароль',
   'Warning': 'Попередження',
   'Your DINO-AI access key and the credits available to you.': 'Ваш ключ доступу DINO-AI та доступні вам кредити.',
+  'Earlier': 'Раніше',
+  'No notifications': 'Немає сповіщень',
+  'Now': 'Зараз',
+  'Today': 'Сьогодні',
+  'Yesterday': 'Вчора',
+  '{{count}} d': '{{count}} дн',
+  '{{count}} h': '{{count}} год',
+  '{{count}} min': '{{count}} хв',
+  '{{count}} unread': '{{count}} непрочитаних',
 };

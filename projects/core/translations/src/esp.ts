@@ -556,4 +556,13 @@ export const ESP: Translation = {
   'Update password': 'Actualizar contraseña',
   'Warning': 'Advertencia',
   'Your DINO-AI access key and the credits available to you.': 'Tu clave de acceso a DINO-AI y los créditos disponibles.',
+  'Earlier': 'Antes',
+  'No notifications': 'Sin notificaciones',
+  'Now': 'Ahora',
+  'Today': 'Hoy',
+  'Yesterday': 'Ayer',
+  '{{count}} d': '{{count}} d',
+  '{{count}} h': '{{count}} h',
+  '{{count}} min': '{{count}} min',
+  '{{count}} unread': '{{count}} sin leer',
 };
