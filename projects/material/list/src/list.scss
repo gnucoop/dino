@@ -204,6 +204,13 @@ dino-list {
     }
   }
 
+  // A row with something to report says so in its bar as well as in its badges:
+  // the bar is legible the whole way down the list, a badge only once the eye is
+  // already on the row.
+  .mat-mdc-row.dino-row-flagged .mat-mdc-cell:first-of-type {
+    border-left-color: mat-css-vars.mat-css-color-warn(500);
+  }
+
   .mat-mdc-cell:first-of-type.dino-aggregation,
   .mat-mdc-header-cell:first-of-type.dino-aggregation {
     display: none;
@@ -220,6 +227,9 @@ dino-list {
     min-height: 70px;
     height: 100%;
     display: inline-flex;
+    // The anchor of `.dino-row-status`: on a compact viewport the first cell is
+    // `display: contents` and generates no box for the badges to hang from.
+    position: relative;
     min-width: 100%;
     transition: box-shadow ease-in-out 0.25s;
     -webkit-transition: box-shadow ease-in-out 0.25s;
@@ -323,16 +333,22 @@ dino-list {
     opacity: 1;
   }
 
-  // The checkbox column holds a checkbox and, now and then, the invalid form
-  // or the pending upload icon: it used to hold the bulk actions too, which is
-  // what its width was for. The width is fixed, not fitted to the content, so
-  // that the first column starts at the same place on every row.
+  // The checkbox column is the width of its checkbox and no more. The status of
+  // a row does not stand beside it - see `.dino-row-status` below - because a
+  // column has one width for every row, and a width kept for the two status
+  // icons would be empty space on every row that has nothing to report.
+  // A cell is `box-sizing: border-box`, so the border and the padding come out
+  // of that width: 3px border + 14px + 40px checkbox + 4px = 61px. The 14px is
+  // what keeps the checkbox clear of an 18px badge sitting on the border.
   .mat-column-select {
-    flex: 0 0 76px !important;
-    min-width: 76px;
-    max-width: 76px;
-    padding-left: 8px;
-    padding-right: 0;
+    flex: 0 0 61px !important;
+    min-width: 61px;
+    max-width: 61px;
+    padding-left: 14px;
+    padding-right: 4px;
+    .mat-mdc-checkbox.dino-row-actions {
+      flex: 0 0 auto;
+    }
   }
   .mat-mdc-form-field.dino-details-search {
     margin-top: 25px !important;
@@ -545,44 +561,69 @@ dino-list {
     background: transparent !important;
     opacity: 1;
   }
-  .dino-invalid-form-icon,
-  .dino-upload-files-icon {
-    transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
-    font-size: 22px;
-    position: relative;
-    top: 2px;
-    &:hover {
-      background: transparent !important;
-      opacity: 1;
+  // The status of a row - it is invalid, it still has files to send - stacked on
+  // its left edge, out of the flow, so that it costs the checkbox column no
+  // width at all. There are at most two, and a row is 70px tall at its
+  // shortest, so the stack always has the room for them.
+  .dino-row-status {
+    position: absolute;
+    // Flush with the inner edge of the accent border, and no further left: the
+    // table scrolls horizontally, and anything before the row would be cut off
+    // by `.dino-table-container` rather than drawn over the border.
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    // The stack is only as clickable as its badges: an empty one, or the gap
+    // between two, belongs to the checkbox behind it and to the row.
+    pointer-events: none;
+    > * {
+      pointer-events: auto;
     }
-    @media only screen and (max-width: 768px) {
-      position: absolute;
-      z-index: 1;
+  }
+
+  // Scoped to `.mat-mdc-table` to outweigh the `padding: 5px` that
+  // `_table-base.scss` gives every icon in a cell: a badge is an 18px box, and
+  // that padding would make it a 28px one.
+  .mat-mdc-table .dino-row-status {
+    .dino-invalid-form-icon,
+    .dino-upload-files-icon,
+    .dino-upload-files-spinner {
+      box-sizing: border-box;
+      flex: 0 0 auto;
+    }
+
+    .dino-invalid-form-icon,
+    .dino-upload-files-icon {
+      transition: all ease-in-out 0.25s;
+      -webkit-transition: all ease-in-out 0.25s;
+      padding: 0;
+      width: 18px;
+      height: 18px;
       font-size: 18px;
-      left: 4px;
-      top: 2px;
-    }
-  }
-
-  .dino-invalid-form-icon ~ .dino-upload-files-icon,
-  .dino-invalid-form-icon ~ .dino-upload-files-spinner {
-    @media only screen and (max-width: 768px) {
-      left: 26px;
-    }
-  }
-
-  .dino-invalid-form-icon {
-    cursor: default;
-  }
-
-  .dino-upload-files-icon {
-    cursor: pointer;
-    &.dino-upload-files-icon--offline {
-      cursor: default;
-      opacity: 0.4;
+      line-height: 18px;
       &:hover {
+        background: transparent !important;
+        opacity: 1;
+      }
+    }
+
+    .dino-invalid-form-icon {
+      cursor: default;
+    }
+
+    .dino-upload-files-icon {
+      cursor: pointer;
+      &.dino-upload-files-icon--offline {
+        cursor: default;
         opacity: 0.4;
+        &:hover {
+          opacity: 0.4;
+        }
       }
     }
   }
