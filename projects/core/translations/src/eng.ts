@@ -553,4 +553,8 @@ export const ENG: Translation = {
   'Update password': 'Update password',
   'Warning': 'Warning',
   'Your DINO-AI access key and the credits available to you.': 'Your DINO-AI access key and the credits available to you.',
+  'Choose a backup file': 'Choose a backup file',
+  'Hide': 'Hide',
+  'Pick a color': 'Pick a color',
+  'Show': 'Show',
 };

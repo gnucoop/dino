@@ -519,4 +519,8 @@ export const ITA: Translation = {
   'Update password': 'Aggiorna password',
   'Warning': 'Avviso',
   'Your DINO-AI access key and the credits available to you.': 'Chiave di accesso ai servizi DINO-AI e crediti disponibili.',
+  'Choose a backup file': 'Scegli un file di backup',
+  'Hide': 'Nascondi',
+  'Pick a color': 'Scegli un colore',
+  'Show': 'Mostra',
 };
