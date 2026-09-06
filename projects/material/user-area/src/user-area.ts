@@ -192,6 +192,17 @@ export class UserArea implements OnDestroy {
   readonly showValErrors = showValidationErrors;
 
   /**
+   * The labels showValErrors names in its messages. Held here rather than written inline
+   * so the template lines stay short: the formatter wraps a long interpolation, and a
+   * wrap inside a string literal would put a newline into the message itself.
+   */
+  readonly passwordLabels: {current: string; next: string; confirm: string} = {
+    current: 'Current Password',
+    next: 'New Password',
+    confirm: 'Confirm New Password',
+  };
+
+  /**
    * The minimum length a new password must have, mirrored in the field hint.
    */
   readonly passwordMinLength: number = 9;
