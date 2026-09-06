@@ -2,10 +2,7 @@
   Compact layout only: a slim bar carrying the drawer toggle, the logo and the sync
   control. On wide viewports the full-height sidebar replaces it entirely.
 -->
-<mat-toolbar
-  *ngIf="compact && sidenav && (showNav|async) !== false"
-  class="dino-mobile-bar"
->
+<mat-toolbar *ngIf="compact && sidenav && (showNav|async) !== false" class="dino-mobile-bar">
   <button
     mat-icon-button
     (click)="menuToggle()"
@@ -356,8 +353,9 @@
     </ng-template>
     <span class="dino-sync-button-text" *ngIf="!inBar && ((extendedSidenav|async) || compact)">
       <span class="dino-sync-button-label">{{'Synchronize'|transloco}}</span>
-      <span class="dino-sync-button-time">{{(lastSyncLabel|async) ?? ('Never
-        synchronized'|transloco)}}</span>
+      <span class="dino-sync-button-time"
+        >{{(lastSyncLabel|async) ?? ('Never synchronized'|transloco)}}</span
+      >
     </span>
   </button>
 </ng-template>
@@ -393,11 +391,12 @@
   </button>
 </ng-template>
 
-<!-- The notification bell and its menu -->
+<!-- The notification bell and its panel -->
 <ng-template #notificationsTemplate>
   <button
     type="button"
     class="dino-utility-button dino-notifications-button"
+    #notificationsTrigger="matMenuTrigger"
     [matMenuTriggerFor]="notificationsmenu"
     [matTooltip]="'Notifications'|transloco"
   >
@@ -405,7 +404,7 @@
       *ngIf="unreadNotificationsNumber|async as newNotifications; else noBadgeTemplate"
       class="dino-notifications-icon"
       [matBadge]="newNotifications"
-      matBadgeColor="primary"
+      matBadgeColor="warn"
       matBadgeSize="small"
       [@.disabled]="newNotifications <= 0"
       [@notificationRing]="notificationRingState ? 'a' : 'b'"
@@ -417,49 +416,74 @@
     </ng-template>
   </button>
 
+  <!--
+    The rows are plain buttons rather than mat-menu-items: marking one read is not a choice
+    that ends the panel, so it must not close it. The two entries that do leave - a row with
+    a url, and the footer - close the panel through the trigger themselves.
+  -->
   <mat-menu #notificationsmenu="matMenu" [class]="'dino-notifications-menu'">
-    <div class="dino-notifications-menu-container">
-      <div class="dino-notification-container" *ngFor="let notification of lastNotifications|async;">
+    <div class="dino-notifications-panel">
+      <div class="dino-notifications-head">
+        <span class="dino-notifications-title">{{'Notifications'|transloco}}</span>
+        <span class="dino-notifications-count" *ngIf="lastUnreadNotifications|async as unread">
+          {{'{{count}} unread'|transloco:{count: unread} }}
+        </span>
         <button
-          [ngClass]="notification.read ? 'dino-read-notification' : 'dino-unread-notification'"
-          (click)="notification.read ? null : markNotificationAsRead($event, notification)"
-          [matTooltip]="notification.text || ''"
-          [matTooltipPosition]="'left'"
-          [matTooltipShowDelay]="1000"
-          mat-menu-item
+          type="button"
+          class="dino-notifications-link"
+          *ngIf="((lastUnreadNotifications|async) ?? 0) > 0"
+          (click)="markAllAsRead($event)"
         >
-          <mat-icon class="dino-notification-icon"> {{notification.icon}} </mat-icon>
-          {{notification.text}}
-
-          <button
-            *ngIf="notification.redirect_url"
-            class="dino-notification-gotourl-btn"
-            mat-mini-fab
-            color="accent"
-            [matTooltip]="'Go to url'|transloco"
-            [matTooltipPosition]="'left'"
-            [matTooltipShowDelay]="500"
-            (click)="goToNotificationUrl($event, notification)"
-          >
-            <mat-icon>link</mat-icon>
-          </button>
+          {{'Mark all as read'|transloco}}
         </button>
       </div>
-    </div>
 
-    <ng-container *ngIf="lastUnreadNotifications|async as unreadNotifications">
+      <div class="dino-notifications-list">
+        <ng-container
+          *ngFor="let group of notificationGroups|async; trackBy: trackNotificationGroup"
+        >
+          <div class="dino-notifications-day">{{group.label|transloco}}</div>
+          <button
+            type="button"
+            class="dino-notification-row"
+            *ngFor="let entry of group.entries; trackBy: trackNotificationEntry"
+            [class.dino-notification-unread]="entry.unread"
+            [class.dino-notification-linked]="entry.notification.redirect_url"
+            [attr.aria-label]="entry.notification.text || ''"
+            (click)="openNotificationEntry($event, entry) && notificationsTrigger.closeMenu()"
+          >
+            <span class="dino-notification-dot" aria-hidden="true"></span>
+            <span class="dino-notification-avatar" aria-hidden="true">
+              <mat-icon>{{entry.notification.icon || 'notifications'}}</mat-icon>
+            </span>
+            <span class="dino-notification-body">
+              <span class="dino-notification-text">{{entry.notification.text}}</span>
+              <span class="dino-notification-repeat" *ngIf="entry.count > 1"
+                >&times;{{entry.count}}</span
+              >
+            </span>
+            <span class="dino-notification-age">
+              {{entry.age.translate ? (entry.age.label|transloco:{count: entry.age.count}) :
+              entry.age.label}}
+            </span>
+            <mat-icon class="dino-notification-link" *ngIf="entry.notification.redirect_url"
+              >arrow_forward</mat-icon
+            >
+          </button>
+        </ng-container>
+
+        <div class="dino-notifications-empty" *ngIf="(notificationGroups|async)?.length === 0">
+          {{'No notifications'|transloco}}
+        </div>
+      </div>
+
       <button
-        *ngIf="unreadNotifications > 0"
-        mat-menu-item
-        class="dino-notification-action-button"
-        (click)="markAllAsRead($event)"
+        type="button"
+        class="dino-notifications-footer"
+        (click)="goToNotifications(); notificationsTrigger.closeMenu()"
       >
-        {{'Mark all as read'|transloco}}
+        {{'View all notifications'|transloco}} <span aria-hidden="true">&rarr;</span>
       </button>
-    </ng-container>
-
-    <button mat-menu-item class="dino-notification-action-button" (click)="goToNotifications()">
-      {{'View all notifications'|transloco}}
-    </button>
+    </div>
   </mat-menu>
 </ng-template>
