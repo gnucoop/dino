@@ -43,6 +43,12 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {ShellContextService, ThemeService} from '@dino/material/core';
 import {LangService} from '@dino/material/lang-selector';
+import {
+  groupNotifications,
+  NotificationEntry,
+  NotificationGroup,
+  ReadNotification,
+} from './notification-groups';
 import {TranslocoService} from '@ngneat/transloco';
 import {RxError, RxTypeError} from 'rxdb';
 import {
@@ -404,6 +410,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
   lastNotifications: Observable<(Notification & {read: boolean})[]>;
 
   /**
+   * The last notifications, laid out the way the panel draws them: grouped by day, with
+   * runs of the same text collapsed into a single row.
+   */
+  notificationGroups: Observable<NotificationGroup[]>;
+
+  /**
    * The unread notifications
    */
   unreadNotificationsNumber: Observable<number>;
@@ -629,7 +641,10 @@ export class MainNav implements AfterViewInit, OnDestroy {
       const allSections = [...sections, ...adminSections];
       // Match the first path segment, not a substring of the whole url: '/user-area/ai'
       // contains 'ai', and used to light up the AI section from a page that is not it.
-      const firstSegment = navEvt.url.split(/[?#]/)[0].split('/').filter(seg => seg !== '')[0];
+      const firstSegment = navEvt.url
+        .split(/[?#]/)[0]
+        .split('/')
+        .filter(seg => seg !== '')[0];
       const selSection: Section | undefined = allSections.find(
         section => section.url === firstSegment,
       );
@@ -836,6 +851,13 @@ export class MainNav implements AfterViewInit, OnDestroy {
       }),
     );
 
+    // Grouped once per emission and shared, so opening the menu does not regroup the list
+    // - and so every row in one panel measures its age against the same instant.
+    this.notificationGroups = this.lastNotifications.pipe(
+      map(notifications => groupNotifications(notifications)),
+      shareReplay(1),
+    );
+
     this.isAdmin = this._adminRoles.pipe(
       switchMap(roles => this.userGroupManager.isActiveUserAdmin(roles)),
     );
@@ -845,11 +867,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
 
     const hideChromeFor = (url: string): boolean => {
       const path = url.split('?')[0];
-      return !(
-        path.includes('login') ||
-        path.includes('reset-password') ||
-        path.startsWith('/f/')
-      );
+      return !(path.includes('login') || path.includes('reset-password') || path.startsWith('/f/'));
     };
     this.showNav = this._router.events.pipe(
       filter(evt => evt instanceof NavigationEnd),
@@ -1006,6 +1024,68 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Marks every notification a panel row stands for as read.
+   *
+   * A row can stand for a run of repeats, so this walks the whole run rather than the one
+   * notification the row is drawn from.
+   *
+   * @param $event The js event
+   * @param entry The panel row
+   */
+  markEntryAsRead($event: Event, entry: NotificationEntry): void {
+    $event.stopPropagation();
+    $event.preventDefault();
+    const unread = entry.all.filter(notification => !notification.read);
+    if (unread.length === 0) {
+      return;
+    }
+    this.userDataManager
+      .getActiveUserData()
+      .pipe(
+        switchMap(ud => {
+          if (ud == null || ud.id == null) {
+            return obsOf(null);
+          }
+          return forkJoin(
+            unread.map(notification =>
+              this.notificationManager.markNotificationAsRead(notification, ud.id),
+            ),
+          );
+        }),
+        take(1),
+      )
+      .subscribe();
+  }
+
+  /**
+   * Opens a panel row: marks it read and, when its notification carries one, follows the
+   * url it points at.
+   *
+   * @param $event The js event
+   * @param entry The panel row
+   * @returns True when the row navigated, which is when the panel should close
+   */
+  openNotificationEntry($event: Event, entry: NotificationEntry): boolean {
+    this.markEntryAsRead($event, entry);
+    const url = entry.notification.redirect_url;
+    if (url == null || url === '') {
+      return false;
+    }
+    this._router.navigateByUrl(url);
+    return true;
+  }
+
+  /**
+   * Identifies a day group by its heading, which is unique within a panel.
+   */
+  trackNotificationGroup = (_: number, group: NotificationGroup): string => group.label;
+
+  /**
+   * Identifies a row by the newest notification of its run.
+   */
+  trackNotificationEntry = (_: number, entry: NotificationEntry): string => entry.id;
+
+  /**
    * Marks all the notification as read by the active user
    * @param $event The js event
    */
@@ -1018,7 +1098,15 @@ export class MainNav implements AfterViewInit, OnDestroy {
           if (ud == null || notifications == null) {
             return obsOf(null);
           }
-          const patches = notifications.map(notification => {
+          // Only the ones this user has not read: patching a notification they are
+          // already a reader of would append their id to `readers` a second time.
+          const unread = notifications.filter(
+            notification => !notification.readers.includes(ud.id),
+          );
+          if (unread.length === 0) {
+            return obsOf(null);
+          }
+          const patches = unread.map(notification => {
             const updNotification: Partial<Notification> & {id: string} = {
               readers: [...notification.readers, ud.id],
               id: notification.id,

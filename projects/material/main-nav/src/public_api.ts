@@ -21,5 +21,6 @@
  */
 
 export * from './main-nav';
+export * from './notification-groups';
 export * from './main-nav.module';
 export * from './section-interface';
