@@ -56,6 +56,22 @@ export interface ActiveSync<T extends Model = Model> {
   stateActivity: Observable<boolean>;
 
   /**
+   * Whether this replication has sent any document to the backend since it was
+   * created.
+   *
+   * Read to decide whether a non-live cycle needs the second pass that brings
+   * pushed documents back as the backend resolved them: a cycle that pushed
+   * nothing has nothing to pull back. Measured to be false for every collection
+   * on a login, and true only for the one the user actually changed.
+   */
+  pushedInCycle: boolean;
+
+  /**
+   * The subscription recording the pushes in {@link pushedInCycle}.
+   */
+  sentSub: {unsubscribe: () => void};
+
+  /**
    * Number of resync attempts after a sync failure.
    */
   retrySyncAttempts?: number;

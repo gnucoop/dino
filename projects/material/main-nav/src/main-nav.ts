@@ -462,12 +462,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _couldNotSyncSub: Subscription = Subscription.EMPTY;
   private readonly _maxSyncErrorNotificationLength: number = 500;
 
-  /**
-   * If true, the RunSync has run a second time.
-   * Used only for live=false instances
-   */
-  private _hasSyncRerun: boolean = false;
-
   @Input()
   set sections(sec: Section[]) {
     if (sec == null) {
@@ -562,30 +556,24 @@ export class MainNav implements AfterViewInit, OnDestroy {
       .pipe(withLatestFrom(this.dataService.problemSyncing), throttleTime(2000))
       .subscribe(([_, collectionsWithProblems]) => {
         this.isThereUnsyncedData.next(false);
-        if (this._hasSyncRerun || this.dataService.config.syncOptions.live) {
-          this._hasSyncRerun = false;
-          const formattedCollectionsWithProblems = collectionsWithProblems
-            .map(coll => coll.replace('_', ' '))
-            .join(', ');
+        const formattedCollectionsWithProblems = collectionsWithProblems
+          .map(coll => coll.replace('_', ' '))
+          .join(', ');
 
-          const snackbarMessage = collectionsWithProblems.length
-            ? this.trs.translate(
-                'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.',
-                {formattedCollectionsWithProblems},
-              )
-            : this.trs.translate('Synchronization complete');
+        const snackbarMessage = collectionsWithProblems.length
+          ? this.trs.translate(
+              'Synchronization complete with errors. Could not synchronize: {{formattedCollectionsWithProblems}}. Please check your notifications.',
+              {formattedCollectionsWithProblems},
+            )
+          : this.trs.translate('Synchronization complete');
 
-          const snackbarTitle = collectionsWithProblems.length
-            ? 'SYNC COMPLETE WITH ERRORS'
-            : 'SYNC COMPLETE';
+        const snackbarTitle = collectionsWithProblems.length
+          ? 'SYNC COMPLETE WITH ERRORS'
+          : 'SYNC COMPLETE';
 
-          this.snackbar.open(snackbarMessage, snackbarTitle, {
-            duration: 10000,
-          });
-        } else {
-          this._hasSyncRerun = true;
-          this.runSync();
-        }
+        this.snackbar.open(snackbarMessage, snackbarTitle, {
+          duration: 10000,
+        });
       });
 
     this._retrySyncSub = this.dataService.syncErrorEvt.subscribe(evt => {
