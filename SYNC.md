@@ -39,8 +39,25 @@ first — see §5.
 bounded number of times. One that never makes it is reported — console, badge, Sentry — because the
 collection is then absent for the whole session; on `dev` it failed silently.
 
+**Reads and writes while that happens.** A login opens a new `RxDatabase` even when the previous
+session only ended and its data was kept, and the collections are added to that instance
+asynchronously. A data request landing in between waits for its collection instead of failing. On
+`dev` it was told at once that the collection did not exist — for a write, a document the user
+believed saved and lost without a word — and the console showed seven such requests on every single
+login, so this was the normal case and not an edge one. The wait carries the same budget a
+registration gets, and a collection that never arrives is reported to Sentry rather than being
+indistinguishable from a wrong name. A teardown is the exception: it still fails fast, having nothing
+to gain from waiting for what it is about to remove.
+
 **Replications.** Authenticated, online and holding a token, every registered collection without an
 active sync gets one.
+
+**The initialization screen** comes down when every registered collection reports its first cycle
+complete. On `dev`, with `live: false`, that report was keyed to a *document update* — the only signal
+a non-live cycle had when the check was written, two years before non-live cycles got a completion
+event of their own — and nothing updates a document at login. So no collection ever reported, and the
+screen was left to `initializationScreenMaxDuration` to time out: 25 seconds of spinner on every
+login, whatever the data actually did. It is keyed to the completed cycle now, in both modes.
 
 ### 2.2 The steady state, online
 
@@ -80,7 +97,17 @@ token renewal, which tore down and recreated every replication.
 **With `live: false`** — some environments are configured that way — the tap is the only trigger:
 nothing replicates on its own, and a token renewal in particular does not. rxdb cancels a non-live
 replication as soon as its first cycle is in sync, so there is no state left to `reSync()`: the tap
-rebuilds the replication, which is what runs a cycle.
+rebuilds the replication, which is what runs a cycle. A full sync over sixteen collections is
+therefore sixteen rebuilds, and that is what a full sync costs in this mode, not a defect.
+
+**The second non-live pass, and who asks for it.** A non-live cycle pulls and then pushes, so what it
+pushed needs one more pull to come back as the backend resolved it. That pass is asked for by the
+cycle that pushed, for its own collection alone: `sent$` stays silent when the documents came from the
+pull, and fires only for the collection the user changed. On `dev` the main nav asked for it instead,
+by reacting to the "a cycle finished" event — so *any* cycle dragged a full sync of every collection
+behind it, the one each login runs included. A login cost sixteen cycles and then sixteen rebuilt
+replications that pushed nothing at all; it is now one pass with no rebuild, and a sync after editing
+one document is sixteen cycles plus a single rebuild of that document's collection.
 
 ### 2.3 Going offline, and coming back
 
@@ -289,6 +316,11 @@ one shared refresh and no logout risk.
 | Logout → login race | DB8, app left with no database | teardown awaited, creation retried |
 | Infinite `retryWhen` loops | permissions and user data retried forever | bounded, with fallbacks |
 | Failed collection registration | silent | console error, badge, Sentry |
+| A read or a write while a session starts | told at once the collection did not exist; a write was lost in silence, seven times per login | waits for its collection, bounded, and reports one that never arrives |
+| The second non-live sync pass | the main nav re-ran a full sync of every collection after each completed cycle | asked for by the collection that pushed, for itself |
+| "First cycle complete" with `live: false` | keyed to a document update, which nothing does at login: the initialization screen waited out its 25 second timeout | keyed to the completed replication cycle, as in live mode |
+| A rejected `awaitInSync()` | errored `isSyncing` for the rest of the page session, freezing the sync icon on whatever it last showed | reported, and the collection counts as idle |
+| `isSyncing` | recomputed by each of its seven subscribers, every one emitting its own end-of-cycle event | one shared chain |
 | Login page | said nothing about data left on the device | names the account whose data is still there |
 
 Two consequences worth calling out.
@@ -358,29 +390,35 @@ REFRESH IN …`, `AUTH TOKEN REFRESH FAILED`, `COULD NOT REFRESH THE AUTH TOKEN 
 `CREATING DB: …`, `Stopping sync`.
 
 1. **A full sync does something.** Tap the icon: one call to the refresh endpoint *and* the GraphQL
-   queries of every collection.
-2. **Offline collection.** DevTools offline, create a record: it stays in IndexedDB, nothing goes out,
+   queries of every collection. On a `live: false` instance the console shows one `Rebuilding the sync
+   for …` per collection, which is what a cycle costs in that mode, and then — only if a document was
+   waiting — exactly one more, for the collection that pushed it. Sixteen rebuilds followed by sixteen
+   more means the main nav is re-running a full sync again.
+2. **A login on a non-live instance.** End the session, log in again: one `Running the sync for …` per
+   collection and no `Rebuilding the sync for …` at all. The initialization screen must come down when
+   the cycles complete, not 25 seconds later.
+3. **Offline collection.** DevTools offline, create a record: it stays in IndexedDB, nothing goes out,
    and repeated taps on the icon do nothing.
-3. **A token that will not renew.** Back online, block `/v1/token` (or break the stored refresh token).
+4. **A token that will not renew.** Back online, block `/v1/token` (or break the stored refresh token).
    The badge lights up — at the latest when the access token expires and the replications start
    rejecting the JWT, within seconds of each other. Navigation between sections must keep working.
-4. **The way out, and the way back.** Tap the icon: it refreshes, fails, and asks. *Later* changes
+5. **The way out, and the way back.** Tap the icon: it refreshes, fails, and asks. *Later* changes
    nothing. Unblock the URL and tap again: the session recovers, badge off, no dialog. Block it again,
    tap and accept: the login page, with IndexedDB intact, the tokens gone, the notice naming the
    account, no authentication error announced — the session was ended on request, not lost — and **no
    call to the signout endpoint**.
-5. **The backlog.** Log in with the same account: the record from step 2 leaves in a push mutation.
-6. **Reconnection from an offline start.** Offline, replace the stored access token with a non-JWT
+6. **The backlog.** Log in with the same account: the record from step 3 leaves in a push mutation.
+7. **Reconnection from an offline start.** Offline, replace the stored access token with a non-JWT
    string, reload, then go back online without touching anything: a refresh must fire by itself.
-7. **Refused data.** With no easy way to provoke a constraint violation, emit it from the console —
+8. **Refused data.** With no easy way to provoke a constraint violation, emit it from the console —
    `couldNotSyncEvt.emit({collection: 'form_data', error})`. The badge stays on across renewals, and a
    tap on the icon shows the corrupted-data message with a single button: the session stays alive and
    the export in the user area still works.
-8. **A different user.** Log in with another account: the database is recreated empty and the owner
+9. **A different user.** Log in with another account: the database is recreated empty and the owner
    record names the new user.
-9. **An explicit logout.** *Cancel* changes nothing; *keep the data* lands on the login page with
-   IndexedDB and the owner record intact; *delete* gives the signout call, IndexedDB removed, the owner
-   record gone, and no notice on the login page.
+10. **An explicit logout.** *Cancel* changes nothing; *keep the data* lands on the login page with
+    IndexedDB and the owner record intact; *delete* gives the signout call, IndexedDB removed, the
+    owner record gone, and no notice on the login page.
 
-Steps 8 and 9 destroy the local database on purpose — they are the proof that the destructive path
+Steps 9 and 10 destroy the local database on purpose — they are the proof that the destructive path
 still works when it should. Leave them last.
