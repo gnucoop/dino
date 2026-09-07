@@ -75,6 +75,7 @@ import {
   takeUntil,
   tap,
   throttleTime,
+  timeout,
   withLatestFrom,
 } from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
@@ -224,6 +225,23 @@ const DB_CREATION_MAX_ATTEMPTS = 5;
  * Delay between two database creation attempts, in milliseconds.
  */
 const DB_CREATION_RETRY_DELAY_MS = 1000;
+
+/**
+ * How long a data request waits for its collection to be present on the current
+ * database before giving up, in milliseconds.
+ *
+ * A session that only ended keeps its data, but the next login still opens a new
+ * `RxDatabase` instance - see {@link DataService._createDatabase}, which closes
+ * the previous one without deleting it - and the collections are re-added to that
+ * instance asynchronously, by `createCollection`. A read or a write arriving in
+ * between used to fail at once with "Invalid collection": for a write, data the
+ * user believed saved and lost without a word.
+ *
+ * The budget matches the one `createCollection` gives its own retries, so a
+ * collection that never comes back still reports the error instead of hanging
+ * forever.
+ */
+const COLLECTION_WAIT_MAX_MS = 30 * 1000;
 
 /**
  * Number of consecutive pre-sync token refresh failures past which the problem is
@@ -548,6 +566,14 @@ export class DataService implements IDataService {
           }),
         );
       }),
+      distinctUntilChanged(),
+      // One shared chain. This was a cold observable with seven subscribers -
+      // six `isSyncing|async` in the main nav template, `logoutOff`, and one per
+      // `runSync()` call - each running its own copy of the pipe above, and so
+      // its own copy of the `replicationCycleComplete` side effect. Only the
+      // `throttleTime(2000)` on the main nav's subscription kept the duplicates
+      // from being acted on.
+      shareReplay({bufferSize: 1, refCount: true}),
     );
 
     this.firstReplicationComplete = combineLatest([
@@ -675,20 +701,79 @@ export class DataService implements IDataService {
   }
 
   /**
+   * The collection a data request has to run against, once it is present on the
+   * current database.
+   *
+   * Every read and write used to index `db.collections` and fail immediately on a
+   * miss. That is the right answer when the name is simply wrong, and the wrong
+   * one during the window a login opens: the database of the new session exists
+   * before its collections have been added to it, so a request landing there was
+   * told the collection did not exist when it was only not there yet.
+   *
+   * The registration list is the trigger to look again, rather than a poll: it is
+   * what says a collection has just been added to this database. It is a
+   * `BehaviorSubject`, so a request arriving after the registration finds the
+   * collection on the first check instead of waiting for the next emission.
+   *
+   * @param collectionName The collection the request needs.
+   * @returns The collection, or an `Invalid collection` error once
+   * {@link COLLECTION_WAIT_MAX_MS} has passed without it appearing.
+   */
+  private _collection<T extends Model = Model>(
+    collectionName: string,
+  ): Observable<RxCollection<T>> {
+    return this._db.pipe(
+      switchMap(db => {
+        // The common case: the collection is already there and the request costs
+        // nothing more than it used to.
+        const present = db.collections[collectionName] as RxCollection<T> | undefined;
+        if (present != null) {
+          return obsOf(present);
+        }
+        return this._registeredCollections.pipe(
+          map(() => db.collections[collectionName] as RxCollection<T> | undefined),
+          filter((collection): collection is RxCollection<T> => collection != null),
+          take(1),
+          timeout({
+            first: COLLECTION_WAIT_MAX_MS,
+            with: () => {
+              // A collection that never arrives is not a transient miss: it is
+              // absent for the rest of this session, and every request for it
+              // pays the full wait. Nothing said so before - the immediate
+              // failure this replaced was indistinguishable from a wrong name.
+              this._reportCollectionWaitTimeout(collectionName);
+              return throwError(() => new Error('Invalid collection'));
+            },
+          }),
+        );
+      }),
+    );
+  }
+
+  /**
+   * Reports a collection that never became available to a data request.
+   *
+   * @param collectionName The collection that was waited for in vain.
+   */
+  private _reportCollectionWaitTimeout(collectionName: string): void {
+    const message =
+      `Collection ${collectionName} was not available within ${COLLECTION_WAIT_MAX_MS}ms; ` +
+      `the request was failed.`;
+    console.warn(message);
+    this._ehms?.captureErrorMessage(message, 'warning');
+  }
+
+  /**
    * Get an object from the database.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection never becomes available.
    * @param params The get request parameters.
    */
   get<T extends Model = Model, R extends T = RxDocument<T>>(
     params: DataGetRequest,
   ): Observable<R | null> {
     const {collectionName, id} = params;
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => {
         if (id == null) {
           return throwError(() => new Error('Invalid ID'));
         }
@@ -696,25 +781,20 @@ export class DataService implements IDataService {
           retryWhen(err => err.pipe(delay(2000), take(10))),
         );
       }),
-      retryWhen(err => err.pipe(delay(2000), take(10))),
     ) as Observable<R | null>;
   }
 
   /**
    * Insert a new object into the database.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection never becomes available.
    * @param params The insert request parameters.
    */
   insert<T extends Model = Model, R extends T = RxDocument<T>>(
     params: DataInsertRequest<T>,
   ): Observable<R | null> {
     const {collectionName, object} = params;
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => {
         const insertObject = this._prepareInsertObject(object);
         return from(collection.insert(insertObject)).pipe(
           tap(doc => {
@@ -728,25 +808,20 @@ export class DataService implements IDataService {
           }),
         ) as Observable<R | null>;
       }),
-      retryWhen(err => err.pipe(delay(1000), take(10))),
     );
   }
 
   /**
    * Insert multiple objects into the database.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection never becomes available.
    * @param params The bulk insert request parameters.
    */
   bulkInsert<T extends Model, R extends T = RxDocument<T>>(
     params: DataBulkInsertRequest<T>,
   ): Observable<BulkInsertResult<R>> {
     const {collectionName, objects} = params;
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => {
         const docsData = objects.map(object => this._prepareInsertObject(object));
         return from(collection.bulkInsert(docsData)).pipe(
           tap(doc => {
@@ -762,7 +837,7 @@ export class DataService implements IDataService {
 
   /**
    * Update multiple objects in the database.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection never becomes available.
    * @param params The bulk update request parameters.
    * @param update The updated fields set.
    */
@@ -771,12 +846,8 @@ export class DataService implements IDataService {
     update: Partial<T>,
   ): Observable<R[]> {
     const {collectionName, query} = params;
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => {
         return from(collection.find(query).update({$set: update})).pipe(
           tap(doc => {
             if (doc != null && doc.length > 0) {
@@ -797,12 +868,8 @@ export class DataService implements IDataService {
     if (doc == null || updateData == null || !isRxDocument(doc)) {
       return obsOf(null);
     }
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => {
         return from(doc.update({$set: updateData})).pipe(
           tap(dc => {
             if (dc != null) {
@@ -822,19 +889,15 @@ export class DataService implements IDataService {
 
   /**
    * Insert a new object if it does not exist within the collection, otherwise it will overwrite it.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection never becomes available.
    * @param params The upinsert request parameters.
    */
   upsert<T extends Model = Model, R extends T = RxDocument<T>>(
     params: DataUpsertRequest<T>,
   ): Observable<R | null> {
     const {collectionName, object} = params;
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => {
         const insertObject = {
           id: object.id || uuidv4(),
           ...object,
@@ -855,21 +918,15 @@ export class DataService implements IDataService {
 
   /**
    * Get multiple documents selected by a mango-style query.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection never becomes available.
    * @param params The find request parameters.
    */
   find<T extends Model = Model, R extends T = RxDocument<T>>(
     params: DataFindRequest<T>,
   ): Observable<R[]> {
     const {collectionName, query} = params;
-    return this._db.pipe(
-      switchMap(db => {
-        const collection = db.collections[collectionName] as RxCollection<T>;
-        if (collection == null) {
-          return throwError(() => new Error('Invalid collection'));
-        }
-        return from(collection.find(query).exec());
-      }),
+    return this._collection<T>(collectionName).pipe(
+      switchMap(collection => from(collection.find(query).exec())),
     ) as Observable<T[]> as Observable<R[]>;
   }
 
@@ -957,7 +1014,12 @@ export class DataService implements IDataService {
 
   /**
    * Destroy an existing collection in the local database.
-   * Throws and error if the collection does not exist.
+   * Throws an error if the collection does not exist.
+   *
+   * This one keeps failing fast, without {@link _collection}'s wait: a teardown
+   * has nothing to gain from waiting for the collection it is about to remove,
+   * and waiting would only hold up the paths that run one.
+   *
    * @param collectionName The name of the collection to destroy.
    */
   destroyCollection(collectionName: string): Observable<boolean> {
@@ -2067,18 +2129,28 @@ export class DataService implements IDataService {
       }
     });
 
+    // rxdb throws from `awaitInSync()` when the replication has no internal
+    // state, which in `live: false` mode is routine: every cycle ends with the
+    // replication cancelled. A rejection here used to take `isSyncing` down with
+    // it - `combineLatest` forwards the error, and an errored observable stops
+    // emitting for the rest of the page session, freezing the sync spinner on
+    // whatever it last showed. Reported rather than swallowed: it says the
+    // collection cannot be asked whether it is in sync.
+    const notInSync$ = from(state.awaitInSync()).pipe(
+      startWith(false),
+      map(act => !act),
+      catchError(err => {
+        if (isDevMode()) {
+          console.warn(`${collection.name}: awaitInSync rejected, reporting idle`, err);
+        }
+        return obsOf(false);
+      }),
+    );
     let stateActivity: Observable<boolean> = isLive
-      ? combineLatest([
-          from(state.awaitInSync()).pipe(
-            startWith(false),
-            map(act => !act),
-          ),
-          state.active$,
-        ]).pipe(map(([notInSync, active]) => notInSync || active))
-      : from(state.awaitInSync()).pipe(
-          startWith(false),
-          map(act => !act),
-        );
+      ? combineLatest([notInSync$, state.active$]).pipe(
+          map(([notInSync, active]) => notInSync || active),
+        )
+      : notInSync$;
 
     let clientRequestSub: {unsubscribe: () => void} = Subscription.EMPTY;
     let stateReceivedSub: {unsubscribe: () => void} = Subscription.EMPTY;
