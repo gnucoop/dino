@@ -447,6 +447,22 @@ export class DataService implements IDataService {
   private _rebuildingSyncs: Set<string> = new Set<string>();
 
   /**
+   * Collections already running the second pass of a non-live sync.
+   *
+   * A `live: false` cycle pulls and then pushes, so what it pushed needs one more
+   * pull to come back as the backend resolved it - the "pull-push-pull" of the
+   * commit that introduced the rerun. The second pass is that last pull, and it
+   * is asked for only by a cycle that actually sent something.
+   *
+   * The marker cannot live on the active sync: rxdb cancels a `live: false`
+   * replication after every cycle, so asking for the second pass goes through
+   * {@link _rebuildCollectionSync}, which replaces the `_activeSyncs` entry. A
+   * flag stored there would be gone by the time the second pass completed, and
+   * the two passes would keep asking for each other.
+   */
+  private _secondSyncPass: Set<string> = new Set<string>();
+
+  /**
    * The collections the sync gave up on because the server refused their
    * documents.
    *
@@ -1262,6 +1278,7 @@ export class DataService implements IDataService {
     this._registeredCollections.next([]);
     this.problemSyncing.next([]);
     this._abandonedCollections.clear();
+    this._secondSyncPass.clear();
     this._currentToken = null;
     if (this._wsClient != null) {
       this._wsClient.dispose();
@@ -1681,14 +1698,26 @@ export class DataService implements IDataService {
                     'replication cycle complete',
                     actSync.state.collection,
                   );
-                } else {
-                  setTimeout(() => {
-                    this._collectionChangedEmit(
-                      'replication cycle complete',
-                      actSync.state.collection,
-                    );
-                  }, 5000);
+                  return;
                 }
+                // The second pass belongs to the sync that was asked for, and
+                // only to the collection that pushed. The main nav used to
+                // trigger it by reacting to the completion event instead, so any
+                // cycle - the one every login runs included - dragged a full
+                // sync of every collection behind it, rebuilding every
+                // replication to push nothing.
+                if (actSync.pushedInCycle && !this._secondSyncPass.has(collectionName)) {
+                  this._secondSyncPass.add(collectionName);
+                  this.runSync(collectionName);
+                  return;
+                }
+                this._secondSyncPass.delete(collectionName);
+                setTimeout(() => {
+                  this._collectionChangedEmit(
+                    'replication cycle complete',
+                    actSync.state.collection,
+                  );
+                }, 5000);
               });
             }
           } else {
@@ -2172,13 +2201,22 @@ export class DataService implements IDataService {
       });
     }
 
-    actSyncs[collection.name] = {
+    const activeSync: ActiveSync = {
       state,
       clientRequestSub,
       stateReceivedSub,
       stateActivity,
+      pushedInCycle: false,
+      sentSub: Subscription.EMPTY,
       collectionName: collection.name,
     };
+    // Recorded on the entry, not on the service: this is about the cycle of this
+    // replication, and a rebuilt one starts over with nothing pushed - which is
+    // what makes the second pass ask for itself only once.
+    activeSync.sentSub = state.sent$.subscribe(() => {
+      activeSync.pushedInCycle = true;
+    });
+    actSyncs[collection.name] = activeSync;
     this._reportCollectionSyncStarted(collection.name, state);
     this._activeSyncs.next(actSyncs);
 
@@ -2269,9 +2307,15 @@ export class DataService implements IDataService {
       return Promise.resolve();
     }
     const actSyncs = this._activeSyncs.getValue();
-    const {state, clientRequestSub, stateReceivedSub} = actSyncs[collectionName];
+    const {state, clientRequestSub, stateReceivedSub, sentSub} = actSyncs[collectionName];
     clientRequestSub.unsubscribe();
     stateReceivedSub.unsubscribe();
+    // Optional on purpose: this runs before the database is removed, and a throw
+    // here would abort the teardown over a bookkeeping subscription.
+    sentSub?.unsubscribe();
+    // A second pass left pending would make the next sync of this collection
+    // take itself for the second one and skip its own pull back.
+    this._secondSyncPass.delete(collectionName);
     const cancelled = state.cancel().then(
       () => undefined,
       () => undefined,
