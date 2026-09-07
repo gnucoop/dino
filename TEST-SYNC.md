@@ -8,7 +8,7 @@ e i dati raccolti offline non devono mai andare persi.** Quasi tutte le prove qu
 proprio questo, cioè che di fronte a un problema l'app si fermi e lo dica, invece di buttare via
 qualcosa.
 
-> ⚠️ Le prove **8** e **9** cancellano il database locale: sono l'ultima cosa da fare, e non su un
+> ⚠️ Le prove **9** e **10** cancellano il database locale: sono l'ultima cosa da fare, e non su un
 > dispositivo con dati che servono.
 
 ---
@@ -55,11 +55,39 @@ operatore sul campo riceve, quindi in ogni prova è importante notare se è acce
 **Cosa deve succedere** — In Network: una chiamata a `token` **e** le query `graphql` delle varie
 collection. La rotellina gira mentre lavora e si ferma alla fine. Badge spento.
 
-**È un bug se** — non parte nessuna chiamata, oppure la rotellina continua a girare all'infinito.
+Poi **la rotellina non deve ripartire da sola**. Il sync fa un giro, non due. In console si vede un
+`Rebuilding the sync for …` per collection: è normale, è il costo di un giro su questi ambienti. Se
+avevi modificato qualcosa poco prima, compare **una riga in più**, per la sola collection che ha
+mandato il dato — anche quello è corretto: quel documento ha bisogno di un secondo passaggio per
+tornare giù come il server l'ha registrato.
+
+**È un bug se** — non parte nessuna chiamata; o la rotellina continua a girare all'infinito; oppure il
+sync riparte una seconda volta da solo su **tutte** le collection, con un secondo blocco di
+`Rebuilding` lungo quanto il primo.
 
 ---
 
-## 2. Raccolta offline
+## 2. Chiudere la sessione e rientrare
+
+**Cosa fare** — Toccare l'icona di logout e scegliere **Chiudi la sessione e mantieni i dati**. Dalla
+pagina di login, accedere con **lo stesso account**.
+
+**Cosa deve succedere** — La schermata di caricamento iniziale se ne va **quando i dati sono pronti**,
+non dopo un'attesa fissa: su un ambiente con molte collection sono pochi secondi, non venticinque. In
+console si vede un `Running the sync for …` per collection e **nessun** `Rebuilding the sync for …`.
+Poi la rotellina si ferma e non riparte.
+
+Subito dopo, modificare un dato qualsiasi e salvarlo: **il salvataggio deve riuscire**. È il momento
+più delicato di tutta la sequenza — il database della sessione nuova esiste prima che le sue collection
+ci siano — e prima veniva perso in silenzio.
+
+**È un bug se** — la schermata iniziale resta su per venticinque secondi con la rete che non fa più
+niente; o parte un secondo giro di sync su tutte le collection; o il dato modificato subito dopo
+l'accesso non si salva, o dà un errore in console.
+
+---
+
+## 3. Raccolta offline
 
 **Cosa fare** — Network → Offline. Creare un record (un form data, per esempio) e salvarlo.
 
@@ -71,9 +99,9 @@ non produce messaggi di errore.
 
 ---
 
-## 3. Ritorno online: il recupero è automatico
+## 4. Ritorno online: il recupero è automatico
 
-**Cosa fare** — Dopo la prova 2, rimettere la rete su *No throttling* e **non toccare niente**.
+**Cosa fare** — Dopo la prova 3, rimettere la rete su *No throttling* e **non toccare niente**.
 
 **Cosa deve succedere** — Entro pochi secondi: una chiamata a `token` (l'app rinnova la sessione da
 sola) e poi le `graphql`, tra cui la mutation che manda su il record creato offline. Badge spento.
@@ -82,7 +110,7 @@ sola) e poi le `graphql`, tra cui la mutation che manda su il record creato offl
 
 ---
 
-## 4. Sessione lunga lasciata aperta
+## 5. Sessione lunga lasciata aperta
 
 **Cosa fare** — Lasciare l'app aperta e ferma su una pagina per una ventina di minuti, con la scheda
 Network aperta.
@@ -96,7 +124,7 @@ prossima.
 
 ---
 
-## 5. Il server di autenticazione non risponde
+## 6. Il server di autenticazione non risponde
 
 Questa è la prova più importante: è la situazione che sul campo si presenta come "la sincronizzazione
 si è fermata".
@@ -117,9 +145,9 @@ si resta bloccati sulla pagina; oppure non si riesce a salvare.
 
 ---
 
-## 6. La via d'uscita, e la via di ritorno
+## 7. La via d'uscita, e la via di ritorno
 
-**Cosa fare** — Dallo stato della prova 5, toccare l'icona di sync.
+**Cosa fare** — Dallo stato della prova 6, toccare l'icona di sync.
 
 **Cosa deve succedere** — L'app **prima riprova**: in Network parte una chiamata a `token`. Se
 fallisce ancora, compare la domanda: *"La sincronizzazione è ferma e non è più possibile salvare i dati
@@ -141,9 +169,9 @@ sparissero; oppure l'avviso non nominasse l'account.
 
 ---
 
-## 7. Il backlog riparte dopo il nuovo accesso
+## 8. Il backlog riparte dopo il nuovo accesso
 
-**Cosa fare** — Dalla pagina di login della prova 6, sbloccare l'URL e accedere **con lo stesso
+**Cosa fare** — Dalla pagina di login della prova 7, sbloccare l'URL e accedere **con lo stesso
 account**.
 
 **Cosa deve succedere** — I dati raccolti nel frattempo partono verso il server: in Network le mutation
@@ -153,7 +181,7 @@ account**.
 
 ---
 
-## 8. Il logout ora chiede ⚠️
+## 9. Il logout ora chiede ⚠️
 
 **Cosa fare** — Toccare l'icona di logout.
 
@@ -171,7 +199,7 @@ comunque.
 
 ---
 
-## 9. Un altro utente sullo stesso dispositivo ⚠️
+## 10. Un altro utente sullo stesso dispositivo ⚠️
 
 **Cosa fare** — Dal login, accedere con un account **diverso** da quello che ha raccolto i dati.
 
@@ -204,7 +232,7 @@ documento colpevole: quello si trova nell'errore in console o su Sentry.
 
 Se va giù il **server dei dati** (le chiamate `graphql`) mentre quello di autenticazione risponde, il
 badge non si accende e la rotellina può continuare a girare. È un buco conosciuto e già a elenco: da
-non confondere con i casi della prova 5, dove il badge deve accendersi.
+non confondere con i casi della prova 6, dove il badge deve accendersi.
 
 ---
 
@@ -215,6 +243,8 @@ non confondere con i casi della prova 5, dove il badge deve accendersi.
 3. L'utente bloccato su una pagina, con i click che non fanno niente.
 4. Il badge acceso mentre tutto funziona, o spento mentre la sincronizzazione è ferma.
 5. La rotellina che gira all'infinito.
+6. Un sync che riparte da solo su tutte le collection, senza che nessuno l'abbia chiesto.
+7. Un dato salvato subito dopo l'accesso che non arriva nel database locale.
 
 ## Come segnalare un problema
 
