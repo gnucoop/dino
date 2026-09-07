@@ -2362,10 +2362,14 @@ export class DataService implements IDataService {
       ...(count != null && {count}),
     });
 
-    const firstSyncMsg = this.config.syncOptions.live
-      ? 'replication cycle complete'
-      : 'Document updated';
-    if (msg === firstSyncMsg) {
+    // The same signal in both modes. This used to read `Document updated` when
+    // `live` was false, because back then a non-live cycle emitted nothing on
+    // completion; it got its own event two years later, and the check was never
+    // moved onto it. Nothing calls `update()` at login, so no collection ever
+    // reported its first sync done, `firstReplicationComplete` never turned true,
+    // and the initialization screen was left to `initializationScreenMaxDuration`
+    // to time out - 25 seconds of spinner on every login of a non-live instance.
+    if (msg === 'replication cycle complete') {
       const coll = this._registeredCollections.value.find(
         coll => coll.collection.name === collection.name,
       );
