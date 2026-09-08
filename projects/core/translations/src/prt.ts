@@ -220,6 +220,7 @@ export const PRT: Translation = {
   'Filter condition': 'Condição de filtro',
   'Filters': 'Filtros',
   'Advanced filters': 'Filtros avançados',
+  'Applied filters': 'Filtros aplicados',
   'Simple': 'Simples',
   'Advanced': 'Avançado',
   'Data': 'Dados',

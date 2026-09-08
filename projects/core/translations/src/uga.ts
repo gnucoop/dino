@@ -23,6 +23,7 @@ import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const UGA: Translation = {
   'Advanced filters': 'Advanced filters',
+  'Applied filters': 'Applied filters',
   'Simple': 'Simple',
   'Advanced': 'Advanced',
   'Data': 'Data',

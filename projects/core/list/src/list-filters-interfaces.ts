@@ -92,6 +92,11 @@ export interface FilterItem extends Partial<AjfBaseField> {
    */
   isRepeatingSlideFilter?: boolean;
   /**
+   * Specifies if this is a basic filter, one of those displayed by the main
+   * filters component (eg. date, metric, user filters)
+   */
+  isBasicFilter?: boolean;
+  /**
    * States the validation state of the filter
    */
   isValid?: boolean;

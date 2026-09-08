@@ -204,6 +204,7 @@ export const FRA: Translation = {
   'Filter condition': 'Condition de filtre',
   'Filters': 'Filtres',
   'Advanced filters': 'Filtres avancés',
+  'Applied filters': 'Filtres appliqués',
   'Simple': 'Simple',
   'Advanced': 'Avancé',
   'Data': 'Données',

@@ -210,6 +210,7 @@ export const ITA: Translation = {
   'Filter condition': 'Condizione di filtro',
   'Filters': 'Filtri',
   'Advanced filters': 'Filtri avanzati',
+  'Applied filters': 'Filtri applicati',
   'Simple': 'Semplice',
   'Advanced': 'Avanzati',
   'Data': 'Dati',

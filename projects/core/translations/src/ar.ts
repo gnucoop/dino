@@ -216,6 +216,7 @@ export const AR: Translation = {
   'Filter condition': 'شرط التصفية',
   'Filters': 'عوامل التصفية',
   'Advanced filters': 'عوامل تصفية متقدمة',
+  'Applied filters': 'الفلاتر المطبقة',
   'Simple': 'بسيط',
   'Advanced': 'متقدم',
   'Data': 'بيانات',

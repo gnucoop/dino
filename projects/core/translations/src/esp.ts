@@ -221,6 +221,7 @@ export const ESP: Translation = {
   'Filter condition': 'Condición de filtro',
   'Filters': 'Filtros',
   'Advanced filters': 'Filtros avanzados',
+  'Applied filters': 'Filtros aplicados',
   'Simple': 'Simple',
   'Advanced': 'Avanzado',
   'Data': 'Datos',

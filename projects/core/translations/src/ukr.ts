@@ -211,6 +211,7 @@ export const UKR: Translation = {
   'Filter condition': 'Умова фільтра',
   'Filters': 'Фільтри',
   'Advanced filters': 'Розширені фільтри',
+  'Applied filters': 'Застосовані фільтри',
   'Simple': 'Простий',
   'Advanced': 'Розширений',
   'Data': 'Дані',
