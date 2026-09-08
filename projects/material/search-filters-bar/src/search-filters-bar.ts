@@ -59,6 +59,7 @@ import {isRxDocument, RxDocument} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
+  defer,
   Observable,
   of as obsOf,
   Subject,
@@ -929,6 +930,40 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * The terms an options field (a metric, a status, a user, a user group) is
+   * searched by: what the user types in it and, on every new subscription, the
+   * term it holds right away.
+   *
+   * The Filters dialog is built anew each time it is opened, so its option
+   * lists subscribe again from scratch: fed by the value changes alone they
+   * would stay empty until the field was edited, and a field displaying an
+   * option already chosen - which is an object, not a term - would list nothing
+   * at all and could not be used any more. Such a field searches the whole
+   * list instead.
+   * @param inputControl The FormGroup of the field
+   * @param controlName The name of the field control
+   * @param debounce The milliseconds the typing is debounced by. Defaults to 0,
+   * no debounce. The term the field already holds is never debounced: the
+   * options are listed as soon as the field is displayed.
+   * @returns The terms the field is searched by, null if the field is missing
+   */
+  private _searchTerms(
+    inputControl: UntypedFormGroup | undefined,
+    controlName: string,
+    debounce: number = 0,
+  ): Observable<any> | null {
+    const control = inputControl?.get(controlName);
+    if (control == null) {
+      return null;
+    }
+    return defer(() => {
+      const typed =
+        debounce > 0 ? control.valueChanges.pipe(debounceTime(debounce)) : control.valueChanges;
+      return typed.pipe(startWith(typeof control.value === 'string' ? control.value : ''));
+    });
+  }
+
+  /**
    * Populates the autocomplete panels of metric filters with options
    * @param metricType The type of metric
    * @param metricManager The related metric manager
@@ -943,14 +978,9 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       return;
     }
     const inputControl = this.additionalBasicFilters.find(group => group.get(metricType) != null);
-    const inputStartingValue = inputControl?.get(metricType)?.value;
-    let inputValue = inputControl?.get(metricType)?.valueChanges;
-    if (typeof inputStartingValue === 'string') {
-      inputValue = inputValue?.pipe(startWith(inputStartingValue));
-    }
+    const inputValue = this._searchTerms(inputControl, metricType, 800);
     if (inputValue != null) {
       this.metricFiltersOptions[metricType] = inputValue.pipe(
-        debounceTime(800),
         switchMap(metricValue => {
           if (typeof metricValue === 'string') {
             let mtQuery: DataQueryOptions = {
@@ -1059,7 +1089,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     const inputControl = this.additionalBasicFilters.find(
       group => group.get('form_status') != null,
     );
-    const inputValue = inputControl?.get('form_status')?.valueChanges;
+    const inputValue = this._searchTerms(inputControl, 'form_status');
     if (inputValue != null) {
       this.formStatusFilterOptions = combineLatest([inputValue, this.availableFormStatuses]).pipe(
         switchMap(([inputVal, options]) => {
@@ -1085,7 +1115,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    */
   private _populateUserDataOptions(): void {
     const inputControl = this.additionalBasicFilters.find(group => group.get('user_data') != null);
-    const inputValue = inputControl?.get('user_data')?.valueChanges;
+    const inputValue = this._searchTerms(inputControl, 'user_data');
     if (inputValue != null) {
       this.usersFilterOptions = inputValue.pipe(
         switchMap(inputVal => {
@@ -1114,7 +1144,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
    */
   private _populateUserGroupOptions(): void {
     const inputControl = this.additionalBasicFilters.find(group => group.get('user_group') != null);
-    const inputValue = inputControl?.get('user_group')?.valueChanges;
+    const inputValue = this._searchTerms(inputControl, 'user_group');
     if (inputValue != null) {
       this.userGroupsFilterOptions = inputValue.pipe(
         switchMap(inputVal => {
