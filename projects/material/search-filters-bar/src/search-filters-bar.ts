@@ -177,6 +177,12 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   activeFilterTab: 'simple' | 'advanced' = 'simple';
 
   /**
+   * The basic filters that get no chip: the keyword field is always visible in
+   * the bar, displaying its own value with a button to clear it.
+   */
+  readonly chipsHiddenFilters: string[] = ['keyword'];
+
+  /**
    * Data of the additional filters shown in the Advanced tab of the modal.
    */
   filterItemsData: Observable<FilterItem[]> = obsOf([]);
@@ -558,6 +564,23 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     if (hasValue || isNullOperator) {
       this._fts.addFilter(filterItem, listType);
     }
+  }
+
+  /**
+   * Removes the filter a chip stands for: a basic one by emptying the field it
+   * comes from, so that the field and its chip are cleared together, an
+   * additional one by dropping it from the applied filters.
+   * @param filterItem The filter of the chip being removed
+   */
+  removeChip(filterItem: FilterItem): void {
+    if (filterItem.isBasicFilter) {
+      const group = this.basicFilters.find(fg => fg.get(filterItem.name) != null);
+      if (group != null) {
+        this.clearFilter(filterItem.name, group);
+        return;
+      }
+    }
+    this.removeFilter(filterItem, ['additional']);
   }
 
   /**

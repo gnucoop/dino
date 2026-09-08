@@ -79,6 +79,7 @@ export const UGA: Translation = {
   'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.':
     'The data is corrupted and cannot be saved. Contact the administrator, or export the data from your user area and then log out.',
   'Advanced filters': 'Advanced filters',
+  'Applied filters': 'Applied filters',
   'Simple': 'Simple',
   'Advanced': 'Advanced',
   'Data': 'Data',
