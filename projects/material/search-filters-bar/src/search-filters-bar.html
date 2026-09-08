@@ -312,7 +312,8 @@
 
 <dino-search-filters-chips
   *ngIf="(isAiView$|async) === false"
-  (excludeFilter)="removeFilter($event, ['additional'])"
-  [chipsType]="'additional'"
+  (excludeFilter)="removeChip($event)"
+  [chipsType]="'all'"
+  [hiddenFilterNames]="chipsHiddenFilters"
 >
 </dino-search-filters-chips>
