@@ -1185,7 +1185,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                 inputControl.setValue({
                   [metricType]: {
                     id: [...new Set([parentMetric.id, ...allDescendants, ...multipleIds])],
-                    name: multipleName.join(),
+                    name: multipleName.join(', '),
                     secondary: this.getMetricDataSecondaryAttribute(
                       parentMetric,
                       this.secondaryMetricFieldsDisplayed,
@@ -1204,7 +1204,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                 inputControl.setValue({
                   [metricType]: {
                     id: [...multipleIds],
-                    name: multipleName.join(),
+                    name: multipleName.join(', '),
                     secondary: null,
                   },
                   [`${metricType}_multiple`]: [...filteredMultiple],
