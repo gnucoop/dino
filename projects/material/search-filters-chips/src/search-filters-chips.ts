@@ -57,6 +57,13 @@ export class SearchFiltersChips implements OnInit {
   @Input() chipsType: FilterListType = 'basic';
 
   /**
+   * The names of the basic filters that get no chip, because the component
+   * hosting the chips already displays them (eg. the keyword field of the
+   * filters bar, always visible with its own value and clear button).
+   */
+  @Input() hiddenFilterNames: string[] = [];
+
+  /**
    * Event emitted when a chip is deleted.
    */
   @Output() readonly excludeFilter: EventEmitter<FilterItem>;
@@ -71,7 +78,7 @@ export class SearchFiltersChips implements OnInit {
   ngOnInit() {
     switch (this.chipsType) {
       case 'basic':
-        this.chipsFilters = this._fts.basicFilters;
+        this.chipsFilters = this._fts.basicFilters.pipe(map(basic => this._markBasicFilters(basic)));
         break;
       case 'additional':
         this.chipsFilters = this._fts.additionalFilters;
@@ -84,15 +91,102 @@ export class SearchFiltersChips implements OnInit {
         this.chipsFilters = combineLatest([
           this._fts.basicFilters,
           this._fts.additionalFilters,
-        ]).pipe(map(([basic, additional]) => basic.concat(additional)));
+        ]).pipe(map(([basic, additional]) => this._markBasicFilters(basic).concat(additional)));
         break;
     }
     // Here we make sure that invalid filters or filters with null / empty values
     // are not displayed as chips
     this.chipsFilters = this.chipsFilters.pipe(
-      map(filters => filters.filter(cf => cf.isValid)),
+      map(filters => filters.filter(cf => this._isDisplayed(cf))),
       catchError(err => throwError(() => err) as Observable<FilterItem[]>),
     );
+  }
+
+  /**
+   * The label displayed by a chip: the name of the field the filter comes from.
+   * @param filterItem The filter item of the chip
+   * @returns The label to display, still to be translated
+   */
+  chipLabel(filterItem: FilterItem): string {
+    if (!filterItem.isBasicFilter) {
+      return filterItem.label ? filterItem.label : filterItem.name;
+    }
+    if (filterItem.name === 'dateStart') {
+      return 'From date';
+    }
+    if (filterItem.name === 'dateEnd') {
+      return 'To date';
+    }
+    // The same transformation the filters bar applies to the placeholders of the
+    // basic filter fields: 'user_data' reads 'User', 'form_status' reads
+    // 'Form status'.
+    return (
+      filterItem.name.charAt(0).toUpperCase() +
+      filterItem.name.slice(1).replace('_', ' ').replace('data', '')
+    ).trim();
+  }
+
+  /**
+   * The value displayed by the chip of a basic filter: the same the field it
+   * comes from displays, since that field is not visible once the filters
+   * dialog is closed.
+   * @param filterItem The basic filter item of the chip
+   * @returns The value to display, a Date when the filter is a date one
+   */
+  chipValue(filterItem: FilterItem): any {
+    const value = filterItem.value;
+    if (value == null) {
+      return '';
+    }
+    if (typeof value !== 'object' || value instanceof Date) {
+      return value;
+    }
+    const item = value as {[key: string]: any};
+    // Form statuses
+    if (item['label'] && item['name'] && item['id']) {
+      return item['label'];
+    }
+    // Users
+    if (item['full_name']) {
+      return item['full_name'];
+    }
+    // User groups
+    if (item['groupName']) {
+      return item['groupName'];
+    }
+    // Metrics, either a single option or a multiple selection
+    if (item['name']) {
+      return item['secondary'] ? `${item['name']} - (${item['secondary']})` : item['name'];
+    }
+    return '';
+  }
+
+  /**
+   * Marks the filters of the basic list, whose chips are labelled and valued
+   * after the field they come from, dropping the ones the host component
+   * displays on its own.
+   * @param filters The basic filters
+   * @returns The basic filters to be displayed as chips
+   */
+  private _markBasicFilters(filters: FilterItem[]): FilterItem[] {
+    return filters
+      .filter(ft => this.hiddenFilterNames.indexOf(ft.name) < 0)
+      .map(ft => ({...ft, isBasicFilter: true}));
+  }
+
+  /**
+   * Checks if a filter is to be displayed as a chip. A basic filter keeps its
+   * place in the list once its field has been used, so only the ones actually
+   * carrying a value get a chip.
+   * @param filterItem The filter item
+   * @returns True if the filter is to be displayed
+   */
+  private _isDisplayed(filterItem: FilterItem): boolean {
+    if (!filterItem.isBasicFilter) {
+      return filterItem.isValid === true;
+    }
+    const value = this.chipValue(filterItem);
+    return value !== '' && value != null;
   }
 
   /**

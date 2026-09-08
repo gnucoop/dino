@@ -331,6 +331,7 @@ export const ENG: Translation = {
   'Filter condition': 'Filter condition',
   'Filters': 'Filters',
   'Advanced filters': 'Advanced filters',
+  'Applied filters': 'Applied filters',
   'Simple': 'Simple',
   'Advanced': 'Advanced',
   'Data': 'Data',
