@@ -8,7 +8,7 @@ e i dati raccolti offline non devono mai andare persi.** Quasi tutte le prove qu
 proprio questo, cioè che di fronte a un problema l'app si fermi e lo dica, invece di buttare via
 qualcosa.
 
-> ⚠️ Le prove **9** e **10** cancellano il database locale: sono l'ultima cosa da fare, e non su un
+> ⚠️ Le prove **10** e **11** cancellano il database locale: sono l'ultima cosa da fare, e non su un
 > dispositivo con dati che servono.
 
 ---
@@ -81,13 +81,55 @@ Subito dopo, modificare un dato qualsiasi e salvarlo: **il salvataggio deve rius
 più delicato di tutta la sequenza — il database della sessione nuova esiste prima che le sue collection
 ci siano — e prima veniva perso in silenzio.
 
+**Un ricaricamento della pagina vale come questa prova.** Quello che conta non è chiudere la sessione,
+è che lo strato dati riparta: un F5 con la sessione ancora valida ricrea il database e le collection
+esattamente allo stesso modo. Vale la pena saperlo perché è la cosa da dire agli utenti — per vedere
+qualcosa di nuovo basta ricaricare, non serve uscire e rientrare.
+
 **È un bug se** — la schermata iniziale resta su per venticinque secondi con la rete che non fa più
 niente; o parte un secondo giro di sync su tutte le collection; o il dato modificato subito dopo
 l'accesso non si salva, o dà un errore in console.
 
 ---
 
-## 3. Raccolta offline
+## 3. Permessi cambiati da un amministratore
+
+Servono due utenze: un amministratore e un rilevatore, che chiamiamo A. È la prova del caso più
+frequente sul campo: a un gruppo che già esiste viene aggiunto un elenco di metriche.
+
+**Cosa fare**
+
+1. Con A, aprire una sezione metriche (per esempio Aree) e annotare **quali vede** e **il totale**
+   degli elementi.
+2. Con l'amministratore, aggiungere al gruppo di A alcune metriche che prima non aveva.
+3. Con A, **ricaricare la pagina**.
+
+**Cosa deve succedere** — Le metriche nuove compaiono nella lista, e con esse i form data a esse
+associati. Il totale degli elementi cresce di conseguenza. Non serve uscire e rientrare.
+
+In console, nell'ordine: `First pull complete for user_data, user_group, user_role after …`, che deve
+comparire **prima** di `FULL CONTEXT`; poi `Permissions widened since the last session:` con gli id
+nuovi; poi un `Backfill for …` per ogni collection interessata; infine `Grants recorded`.
+
+> **Il primissimo avvio con questa versione non scarica niente in più.** Non esiste ancora un elenco
+> registrato con cui confrontarsi, quindi l'app lo registra e basta, e nessun `Backfill for …` compare.
+> È voluto. Il meccanismo si vede dal cambio di permessi **successivo**, quindi questa prova va fatta
+> due volte: la prima registra, la seconda verifica.
+
+**Poi la direzione opposta** — Con l'amministratore, togliere quelle metriche dal gruppo di A. Con A,
+ricaricare.
+
+Le metriche revocate spariscono dalla lista e il totale cala. In Application → IndexedDB i documenti
+**sono ancora lì**: non si cancella niente, mai. I form data legati a quelle metriche invece **restano
+visibili**: è una scelta e non un difetto, perché nasconderli nasconderebbe anche i record raccolti
+offline e non ancora inviati, che l'utente non potrebbe più né vedere né esportare.
+
+**È un bug se** — le metriche nuove non compaiono neanche al secondo ricaricamento; o il totale degli
+elementi non corrisponde a quello che la lista mostra; o dei documenti spariscono da IndexedDB.
+
+---
+
+## 4. Raccolta offline
 
 **Cosa fare** — Network → Offline. Creare un record (un form data, per esempio) e salvarlo.
 
@@ -99,9 +141,9 @@ non produce messaggi di errore.
 
 ---
 
-## 4. Ritorno online: il recupero è automatico
+## 5. Ritorno online: il recupero è automatico
 
-**Cosa fare** — Dopo la prova 3, rimettere la rete su *No throttling* e **non toccare niente**.
+**Cosa fare** — Dopo la prova 4, rimettere la rete su *No throttling* e **non toccare niente**.
 
 **Cosa deve succedere** — Entro pochi secondi: una chiamata a `token` (l'app rinnova la sessione da
 sola) e poi le `graphql`, tra cui la mutation che manda su il record creato offline. Badge spento.
@@ -110,7 +152,7 @@ sola) e poi le `graphql`, tra cui la mutation che manda su il record creato offl
 
 ---
 
-## 5. Sessione lunga lasciata aperta
+## 6. Sessione lunga lasciata aperta
 
 **Cosa fare** — Lasciare l'app aperta e ferma su una pagina per una ventina di minuti, con la scheda
 Network aperta.
@@ -124,7 +166,7 @@ prossima.
 
 ---
 
-## 6. Il server di autenticazione non risponde
+## 7. Il server di autenticazione non risponde
 
 Questa è la prova più importante: è la situazione che sul campo si presenta come "la sincronizzazione
 si è fermata".
@@ -145,9 +187,9 @@ si resta bloccati sulla pagina; oppure non si riesce a salvare.
 
 ---
 
-## 7. La via d'uscita, e la via di ritorno
+## 8. La via d'uscita, e la via di ritorno
 
-**Cosa fare** — Dallo stato della prova 6, toccare l'icona di sync.
+**Cosa fare** — Dallo stato della prova 7, toccare l'icona di sync.
 
 **Cosa deve succedere** — L'app **prima riprova**: in Network parte una chiamata a `token`. Se
 fallisce ancora, compare la domanda: *"La sincronizzazione è ferma e non è più possibile salvare i dati
@@ -169,9 +211,9 @@ sparissero; oppure l'avviso non nominasse l'account.
 
 ---
 
-## 8. Il backlog riparte dopo il nuovo accesso
+## 9. Il backlog riparte dopo il nuovo accesso
 
-**Cosa fare** — Dalla pagina di login della prova 7, sbloccare l'URL e accedere **con lo stesso
+**Cosa fare** — Dalla pagina di login della prova 8, sbloccare l'URL e accedere **con lo stesso
 account**.
 
 **Cosa deve succedere** — I dati raccolti nel frattempo partono verso il server: in Network le mutation
@@ -181,7 +223,7 @@ account**.
 
 ---
 
-## 9. Il logout ora chiede ⚠️
+## 10. Il logout ora chiede ⚠️
 
 **Cosa fare** — Toccare l'icona di logout.
 
@@ -199,7 +241,7 @@ comunque.
 
 ---
 
-## 10. Un altro utente sullo stesso dispositivo ⚠️
+## 11. Un altro utente sullo stesso dispositivo ⚠️
 
 **Cosa fare** — Dal login, accedere con un account **diverso** da quello che ha raccolto i dati.
 
@@ -232,7 +274,7 @@ documento colpevole: quello si trova nell'errore in console o su Sentry.
 
 Se va giù il **server dei dati** (le chiamate `graphql`) mentre quello di autenticazione risponde, il
 badge non si accende e la rotellina può continuare a girare. È un buco conosciuto e già a elenco: da
-non confondere con i casi della prova 6, dove il badge deve accendersi.
+non confondere con i casi della prova 7, dove il badge deve accendersi.
 
 ---
 
@@ -245,6 +287,7 @@ non confondere con i casi della prova 6, dove il badge deve accendersi.
 5. La rotellina che gira all'infinito.
 6. Un sync che riparte da solo su tutte le collection, senza che nessuno l'abbia chiesto.
 7. Un dato salvato subito dopo l'accesso che non arriva nel database locale.
+8. Il totale degli elementi che non corrisponde a quello che la lista sta mostrando.
 
 ## Come segnalare un problema
 
