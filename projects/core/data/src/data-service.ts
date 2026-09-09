@@ -88,8 +88,18 @@ import {
   removeLocalDataOwner,
   storeLocalDataOwner,
 } from './local-data-owner';
+import {
+  grantsFromContext,
+  PullGrants,
+  PullGrantsDiff,
+  pullGrants,
+  pullGrantsDiff,
+  removePullGrants,
+  storePullGrants,
+} from './pull-grants';
 import {DataBulkInsertRequest} from './data-bulk-insert-request';
 import {PermissionContextService} from './data-context-service';
+import {PermissionContext} from './data-permission-interface';
 import {
   DataCreateCollectionRequest,
   PullQueryContextChecks,
@@ -111,6 +121,7 @@ import {Model} from './model';
 import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
 import {
+  generateBackfillWhere,
   generateSyncPullChecks,
   pullQueryBuilder,
   pullResponseModifier,
@@ -242,6 +253,16 @@ const DB_CREATION_RETRY_DELAY_MS = 1000;
  * forever.
  */
 const COLLECTION_WAIT_MAX_MS = 30 * 1000;
+
+/**
+ * How long {@link DataService.awaitFirstPull} holds the permission context back waiting
+ * for the collections it is built from, in milliseconds.
+ *
+ * Deliberately under `initializationScreenMaxDuration` (25s in the deployments that set
+ * it), so the wait finishes inside the initialization screen instead of showing the user
+ * an app that is up but still deciding what they may see.
+ */
+const FIRST_PULL_MAX_WAIT_MS = 15 * 1000;
 
 /**
  * Number of consecutive pre-sync token refresh failures past which the problem is
@@ -461,6 +482,27 @@ export class DataService implements IDataService {
    * the two passes would keep asking for each other.
    */
   private _secondSyncPass: Set<string> = new Set<string>();
+
+  /**
+   * The grants this session is running with, and what they added to the ones the device
+   * was last synchronised for. Computed once, on the first collection registered after
+   * the permission context is ready, and kept for the session: every collection must
+   * backfill against the same comparison, and re-reading the record after it has been
+   * rewritten would produce an empty diff for whoever came second.
+   *
+   * `null` for the diff means nothing to backfill - no record yet, or no widening.
+   */
+  private _sessionGrants: PullGrants | null = null;
+  private _sessionGrantsDiff: PullGrantsDiff | null = null;
+  private _sessionGrantsComputed = false;
+
+  /**
+   * Collections whose backfill has been asked for and has not caught up yet. The new
+   * grants are recorded only once this is empty: a device that closes the app halfway
+   * through keeps the old record and backfills again at the next login, which is the
+   * safe direction to fail in.
+   */
+  private _pendingBackfills: Set<string> = new Set<string>();
 
   /**
    * The collections the sync gave up on because the server refused their
@@ -974,6 +1016,21 @@ export class DataService implements IDataService {
                 ctx,
                 pullQueryContextChecks,
               );
+              // A correct filter is not enough: the pull asks for what changed after
+              // the checkpoint, and a document granted today did not change. Ask for
+              // those by id, once, before the replication starts - the query builder
+              // closes over this same object.
+              const diff = this._grantsDiffForSession(ctx);
+              if (diff != null) {
+                const backfillWhere = generateBackfillWhere(diff, pullQueryContextChecks);
+                if (backfillWhere != null) {
+                  params.pullQueryExtraParams!.backfillWhere = backfillWhere;
+                  this._pendingBackfills.add(params.name);
+                  if (isDevMode()) {
+                    console.log(`Backfill for ${params.name}:`, JSON.stringify(backfillWhere));
+                  }
+                }
+              }
             }
             const collection = db[params.name] as RxCollection;
             if (!collection) {
@@ -1094,9 +1151,12 @@ export class DataService implements IDataService {
     this._currentDb = null;
     const syncsStopped = this._stopAllCollectionSyncs();
     this._resetSessionState();
-    // The data is about to go, so the ownership record goes with it: leaving it
-    // behind would claim data that no longer exists.
+    // The data is about to go, so the records describing it go with it: an ownership
+    // record would claim data that no longer exists, and a grants record would tell the
+    // next session the device is already synchronised for permissions whose documents
+    // have just been deleted.
     removeLocalDataOwner(this._dataConfig.value.databaseCreateOptions.name);
+    removePullGrants(this._dataConfig.value.databaseCreateOptions.name);
     // The replications have to be actually stopped before the storage goes away:
     // rxdb waits for the database to be idle while closing it, and a replication
     // still writing either keeps it busy or writes to a destroyed collection.
@@ -1279,6 +1339,12 @@ export class DataService implements IDataService {
     this.problemSyncing.next([]);
     this._abandonedCollections.clear();
     this._secondSyncPass.clear();
+    // The grants comparison belongs to the session that computed it: the next one has
+    // to read the record again, against its own context.
+    this._sessionGrants = null;
+    this._sessionGrantsDiff = null;
+    this._sessionGrantsComputed = false;
+    this._pendingBackfills.clear();
     this._currentToken = null;
     if (this._wsClient != null) {
       this._wsClient.dispose();
@@ -1564,6 +1630,151 @@ export class DataService implements IDataService {
     // The restore is considered successful when at least one document was
     // written and no document failed to import.
     return totalWritten > 0 && totalFailed === 0;
+  }
+
+  /**
+   * Waits for the given collections to finish their first replication cycle of this
+   * session, so that whoever reads them next reads what the backend has rather than
+   * what the previous session left on disk.
+   *
+   * A login opens a new database over data that is kept, and a registration reports
+   * itself done as soon as the collection exists - not when it has been pulled. Anything
+   * reading right then wins a race against the network and gets the old documents, which
+   * is why a permission changed since the last session was invisible until a logout
+   * destroyed the database.
+   *
+   * Unlike {@link _awaitCollectionsInSync}, a collection without an active sync is
+   * *waited for* rather than ignored: at login the replications are still being set up,
+   * and skipping them would make this a no-op exactly when it matters.
+   *
+   * @param collectionNames The collections to wait for. Empty resolves at once.
+   * @param maxWaitMs Safety cap; on expiry it resolves anyway and the caller proceeds on
+   * local data, as it did before this existed.
+   * @returns An observable emitting exactly once: when the collections are in sync,
+   * when the cap expires, or at once if the session ends while waiting. It never
+   * completes empty - a route guard gates on this, and one that never emits would
+   * leave the navigation hanging.
+   */
+  awaitFirstPull(
+    collectionNames: string[],
+    maxWaitMs: number = FIRST_PULL_MAX_WAIT_MS,
+  ): Observable<void> {
+    if (collectionNames.length === 0) {
+      return obsOf(undefined);
+    }
+    const waited = this._nss.isOnline$.pipe(
+      take(1),
+      switchMap(isOnline => {
+        // The constraint that outranks the rest: offline there is nothing to wait for,
+        // and an app that hesitates at startup where there is no network is worse than
+        // one working on permissions of the day before.
+        if (!isOnline || this.config.syncOptions.backendless) {
+          return obsOf(undefined);
+        }
+        const started = Date.now();
+        const waits = collectionNames.map(name =>
+          this._activeSyncs.pipe(
+            map(syncs => syncs[name]?.state),
+            filter((state): state is ActiveSync['state'] => state != null),
+            take(1),
+            switchMap(state => from(state.awaitInSync())),
+            // A rejected `awaitInSync()` must not hold the login: it says the
+            // collection cannot be asked, not that it must be waited for.
+            catchError(() => obsOf(true as const)),
+          ),
+        );
+        return combineLatest(waits).pipe(
+          take(1),
+          tap(() => {
+            if (isDevMode()) {
+              console.log(
+                `First pull complete for ${collectionNames.join(', ')} ` +
+                  `after ${Date.now() - started}ms`,
+              );
+            }
+          }),
+          map(() => undefined),
+          timeout({
+            first: maxWaitMs,
+            with: () => {
+              this._reportFirstPullTimeout(collectionNames, maxWaitMs);
+              return obsOf(undefined);
+            },
+          }),
+        );
+      }),
+    );
+    return merge(waited, this._sessionOverEvt.pipe(map(() => undefined))).pipe(take(1));
+  }
+
+  /**
+   * What this session's permission context added to the grants the device was last
+   * synchronised for, computed once and reused by every collection.
+   *
+   * @param context The permission context of this session.
+   * @returns The ids to backfill, or null when there is nothing to ask for: no record
+   * yet (the first session of a version that keeps one), or no permission widened.
+   */
+  private _grantsDiffForSession(context: PermissionContext): PullGrantsDiff | null {
+    if (this._sessionGrantsComputed) {
+      return this._sessionGrantsDiff;
+    }
+    this._sessionGrantsComputed = true;
+    const databaseName = this._dataConfig.value.databaseCreateOptions.name;
+    this._sessionGrants = grantsFromContext(context);
+    this._sessionGrantsDiff = pullGrantsDiff(this._sessionGrants, pullGrants(databaseName));
+    if (this._sessionGrantsDiff == null) {
+      // Nothing to fetch, so nothing to wait for: record the grants now. This is also
+      // the path of the very first session, which registers what it has and backfills
+      // from the next change onwards.
+      storePullGrants(databaseName, this._sessionGrants);
+    } else if (isDevMode()) {
+      console.log('Permissions widened since the last session:', this._sessionGrantsDiff);
+    }
+    return this._sessionGrantsDiff;
+  }
+
+  /**
+   * Closes a collection's backfill once its replication has caught up: the extra
+   * question is not asked again, and when the last collection is done the new grants
+   * become the ones the device is synchronised for.
+   *
+   * @param collectionName The collection that reached in-sync.
+   * @param params The sync parameters holding the backfill condition.
+   */
+  private _completeBackfill(collectionName: string, params: CollectionSyncParams): void {
+    if (params.pullQueryExtraParams?.backfillWhere == null) {
+      return;
+    }
+    delete params.pullQueryExtraParams.backfillWhere;
+    this._pendingBackfills.delete(collectionName);
+    if (isDevMode()) {
+      console.log(`Backfill complete for ${collectionName}`);
+    }
+    if (this._pendingBackfills.size === 0 && this._sessionGrants != null) {
+      storePullGrants(this._dataConfig.value.databaseCreateOptions.name, this._sessionGrants);
+      if (isDevMode()) {
+        console.log('Grants recorded: the device is synchronised for the current permissions');
+      }
+    }
+  }
+
+  /**
+   * Reports a first pull that did not complete within its cap.
+   *
+   * Recoverable by design - the caller proceeds on local data - but it means this
+   * session is running on permissions that may be a session old, which is the very
+   * thing {@link awaitFirstPull} exists to prevent.
+   *
+   * @param collectionNames The collections that were waited for.
+   * @param maxWaitMs The cap that expired.
+   */
+  private _reportFirstPullTimeout(collectionNames: string[], maxWaitMs: number): void {
+    const message =
+      `First pull of ${collectionNames.join(', ')} did not complete within ${maxWaitMs}ms; ` +
+      `proceeding on the local permission data.`;
+    console.warn(message);
+    this._ehms?.captureErrorMessage(message, 'warning');
   }
 
   /**
@@ -2216,6 +2427,12 @@ export class DataService implements IDataService {
     activeSync.sentSub = state.sent$.subscribe(() => {
       activeSync.pushedInCycle = true;
     });
+    // Closed here rather than in `runSync`'s completion handler: that one can run a
+    // second pass, which would ask the backfill question again.
+    state.awaitInSync().then(
+      () => this._completeBackfill(collection.name, params),
+      () => undefined,
+    );
     actSyncs[collection.name] = activeSync;
     this._reportCollectionSyncStarted(collection.name, state);
     this._activeSyncs.next(actSyncs);

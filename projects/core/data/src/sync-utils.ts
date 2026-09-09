@@ -34,6 +34,7 @@ import {PermissionContext} from './data-permission-interface';
 
 import {DataServiceSyncOptions} from './data-service-config';
 import {Model} from './model';
+import {PullGrantsDiff} from './pull-grants';
 import {PullQueryExtraParams} from './pull-query-extra-params';
 import {PushQueryExtraParams} from './push-query-extra-params';
 
@@ -65,10 +66,28 @@ export function pullQueryBuilder<T extends Model = Model>(
       docUpdatedAt = docUpdate.toUTCString();
     }
     extraParams = extraParams || {};
-    const where = {
-      ...(extraParams.where || {}),
-      updated_at: {_gte: `${docUpdatedAt}`},
-    };
+    const currentChecks = extraParams.where || {};
+    const sinceCheckpoint = {updated_at: {_gte: `${docUpdatedAt}`}};
+    // Without a backfill this is what it has always been: the current checks, and
+    // everything changed since the checkpoint.
+    //
+    // With one, the checkpoint condition moves inside an `_or` that also admits the
+    // documents just granted, and the whole thing stays inside the `_and` of the
+    // current checks. A document has to satisfy the permissions either way: the
+    // backfill widens what the checkpoint hides, never what the permissions hide.
+    const where =
+      extraParams.backfillWhere != null
+        ? {
+            ...currentChecks,
+            _and: [
+              ...((currentChecks as {_and?: any[]})._and || []),
+              {_or: [sinceCheckpoint, extraParams.backfillWhere]},
+            ],
+          }
+        : {
+            ...currentChecks,
+            ...sinceCheckpoint,
+          };
     const fields = extraParams.fields || getCollectionFields(collection);
     const query = `{
         ${collection.name}(
@@ -129,13 +148,20 @@ export function pullResponseModifier<T extends Model = Model>(
           : startingPullCheckpoint(),
     };
   }
-  return {
-    documents: docs,
-    checkpoint: {
-      id: lastDoc.id,
-      updated_at: lastDoc.updated_at,
-    },
-  };
+  // The response is ordered by `updated_at` ascending, so the last document is the
+  // newest one the page carries. A backfill can fill a page with documents older than
+  // the checkpoint - they were granted, not changed - and taking the last one then
+  // would rewind the replication and re-download what is already here. The checkpoint
+  // only ever moves forward.
+  const lastCheckpoint: PullCheckpoint = {id: lastDoc.id, updated_at: lastDoc.updated_at};
+  if (
+    requestCheckpoint != null &&
+    requestCheckpoint.updated_at != null &&
+    new Date(lastCheckpoint.updated_at).getTime() < new Date(requestCheckpoint.updated_at).getTime()
+  ) {
+    return {documents: docs, checkpoint: requestCheckpoint};
+  }
+  return {documents: docs, checkpoint: lastCheckpoint};
 }
 
 /**
@@ -285,6 +311,71 @@ export function generateSyncPullChecks(
     }
   }
   return where;
+}
+
+/**
+ * Builds the where condition asking for the documents a collection is now allowed to
+ * see and did not ask for before, because they were granted rather than changed.
+ *
+ * The conditions are joined with `_or`, and that is the whole point: the current filter
+ * joins the dimensions with `_and` - a form data has to pass the schema check *and* the
+ * check of every metric type - which is right for "what may I see", and wrong for "what
+ * has just been opened to me". Reusing {@link generateSyncPullChecks} on the diff would
+ * ask for the documents that sit in a new schema *and* in a new project *and* in a new
+ * area at once: almost always none of them.
+ *
+ * @param diff The ids granted since the last recorded session.
+ * @param checks The collection's context checks, which say which field carries each
+ * dimension for this collection.
+ * @returns The where condition, or null when nothing this collection is filtered by has
+ * widened - in which case the collection gets no backfill at all.
+ */
+export function generateBackfillWhere(
+  diff: PullGrantsDiff,
+  checks: PullQueryContextChecks,
+): {_or: {[key: string]: any}[]} | null {
+  const conditions: {[key: string]: any}[] = [];
+
+  for (const checkObj of checks) {
+    switch (checkObj.checkName) {
+      case 'user_form_schemas':
+      case 'user_report_schemas': {
+        const ids =
+          checkObj.checkName === 'user_form_schemas' ? diff.formSchemas : diff.reportSchemas;
+        if (ids.length) {
+          // No `checkKey` means the collection *is* the schema collection, matched on
+          // its own id; with one, it is a collection referencing the schema.
+          conditions.push({[checkObj.checkKey ?? 'id']: {_in: ids}});
+        }
+        break;
+      }
+      case 'user_metrics': {
+        if (checkObj.checkKey) {
+          // The metric collection itself: `checkKey` names the metric type, and the
+          // documents are matched on their own id.
+          const ids = diff.metrics[checkObj.checkKey];
+          if (ids != null && ids.length) {
+            conditions.push({id: {_in: ids}});
+          }
+          break;
+        }
+        // A collection referencing metrics of every type - form data, report data -
+        // one condition per type that widened. No `_is_null` branch here: a document
+        // with no reference was visible already, so it is not something newly granted.
+        for (const metricType of Object.keys(diff.metrics)) {
+          const ids = diff.metrics[metricType];
+          if (ids.length) {
+            conditions.push({[`${metricType}_ref_id`]: {_in: ids}});
+          }
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  return conditions.length ? {_or: conditions} : null;
 }
 
 /**
