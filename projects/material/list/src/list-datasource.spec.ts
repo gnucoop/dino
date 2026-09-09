@@ -137,6 +137,22 @@ class DummyManager extends DataModelManager<DummyModel> {
   }
 }
 
+/**
+ * A manager that declares a local `canView`, the way the five metric managers do:
+ * documents named "hidden" are on disk but the user may not see them.
+ */
+class GatedManager extends DataModelManager<DummyModel> {
+  constructor(
+    createParams: DataCreateCollectionRequest,
+    dataService: DataService,
+    permissionContextService: PermissionContextService,
+  ) {
+    super(createParams, dataService, permissionContextService, [
+      {canView: (data: any) => data.object.name !== 'hidden'},
+    ] as any);
+  }
+}
+
 describe('ListDataSource', () => {
   let dummyManager: DummyManager;
   let dataService: DataService;
@@ -190,6 +206,24 @@ describe('ListDataSource', () => {
     dataSource.getQueryResults(mangoQuery);
 
     expect(spyDmQuery).toHaveBeenCalledWith(mangoQuery);
+  });
+
+  it('counts the rows it shows, not the ones it hides', async () => {
+    // The count used to be taken from the raw query while the rows went through
+    // `canView`, so revoking a metric from a group removed it from the list and
+    // left the "items found" total where it was.
+    const gated = new GatedManager(createCollectionParams, dataService, contextService);
+    await firstValueFrom(gated.init().pipe(take(1)));
+    await firstValueFrom(gated.create({name: 'visible'} as DummyModel));
+    await firstValueFrom(gated.create({name: 'hidden'} as DummyModel));
+    const gatedSource = new ListDataSource<DummyModel>(gated, fts);
+    const query: DataQueryOptions = {selector: {is_deleted: {$ne: true}}};
+
+    const rows = await firstValueFrom((gatedSource as any)._getQueryResultsObs(query));
+    const count = await firstValueFrom((gatedSource as any)._getQueryResultsCount(query));
+
+    expect((rows as DummyModel[]).map(doc => doc.name)).toEqual(['visible']);
+    expect(count).toBe((rows as DummyModel[]).length);
   });
 
   it('should call the dataModelManager bulkDelete', () => {
