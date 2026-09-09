@@ -41,6 +41,16 @@ import {UserRole} from './user-role';
 import {AdminGroupExclude} from './user-admin-check-permissions';
 
 /**
+ * The collections the permission context is built from.
+ *
+ * Both the schema grants and the metric grants come from the group documents -
+ * `groupFormSchemaIds` for the first, `<metric type>_ref_id` for the second - so these
+ * three are the whole input, and nothing here reads a metric collection: no circular
+ * wait with the collections the context itself filters.
+ */
+const CONTEXT_COLLECTIONS = ['user_data', 'user_group', 'user_role'];
+
+/**
  * Service that manages User Groups
  */
 @Injectable({providedIn: 'root'})
@@ -48,17 +58,17 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
   constructor(
     private _userModelManager: UserDataManager,
     private _metricService: MetricsService,
-    dataService: DataService,
+    private _ds: DataService,
     permissionContextService: PermissionContextService,
   ) {
     super(
       {name: 'user_group', collection: {schema, migrationStrategies}},
-      dataService,
+      _ds,
       permissionContextService,
       [new AdminGroupExclude()],
     );
 
-    dataService.collectionsInitialized
+    this._ds.collectionsInitialized
       .pipe(
         filter(evt => evt === 'started'),
         switchMap(() => this.isActiveUserAdmin()),
@@ -244,8 +254,18 @@ export class UserGroupManager extends DataModelManager<UserGroup> {
    * @returns The permissions of the active user
    */
   getActiveUserPermissions(): Observable<{[role_name: string]: {}}> {
-    return forkJoin([this.getActiveUserGroups(), this.getGroupsAllMetrics()]).pipe(
-      switchMap(([userGroups, userMetrics]) => {
+    // The wait belongs here, not to one caller. The context is written by whichever
+    // computation finishes first - `addToContext` refuses every later write on a key it
+    // already has - and this method is reached from the route guard, the main nav, the
+    // dashboard menu and the importers, none of which knows about the pull. Gating only
+    // the subscription in the constructor left those free to win the race and freeze the
+    // context on the documents the previous session had left on disk.
+    //
+    // It costs nothing after the first time: once the collections are in sync it
+    // resolves immediately, and offline it does not wait at all.
+    return this._ds.awaitFirstPull(CONTEXT_COLLECTIONS).pipe(
+      switchMap(() => forkJoin([this.getActiveUserGroups(), this.getGroupsAllMetrics()])),
+      switchMap(([userGroups, userMetrics]: [RxDocument<UserGroup>[], {[mt: string]: string[]}]) => {
         const ug: Observable<[RxDocument<UserRole, {}>, RxDocument<UserGroup, {}>]>[] =
           userGroups.map(gr => {
             let refProp: Observable<RxDocument<UserRole>>;

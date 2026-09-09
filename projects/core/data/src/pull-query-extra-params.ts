@@ -33,4 +33,15 @@ export interface PullQueryExtraParams {
    * Array of collection fields to be retrieved by the pull query.
    */
   fields?: string[];
+
+  /**
+   * Where condition asking for documents the checkpoint would otherwise exclude,
+   * because they were granted rather than changed.
+   *
+   * Composed by {@link pullQueryBuilder} in `_or` with the checkpoint and *inside* the
+   * `_and` of the current checks, so it can only reach documents the user is already
+   * allowed to see. Cleared once the collection has caught up: it is a one-off question
+   * asked at the first pull after a permission widened, not part of the filter.
+   */
+  backfillWhere?: any;
 }
