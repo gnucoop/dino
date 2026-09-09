@@ -59,7 +59,51 @@ event of their own — and nothing updates a document at login. So no collection
 screen was left to `initializationScreenMaxDuration` to time out: 25 seconds of spinner on every
 login, whatever the data actually did. It is keyed to the completed cycle now, in both modes.
 
-### 2.2 The steady state, online
+### 2.2 What the user is allowed to see
+
+**Where it lives.** The permission context is held in memory by `PermissionContextService` and nowhere
+else: no local storage, no collection of its own. It is rebuilt from `user_data`, `user_group` and
+`user_role` on every start and dies with the page. What survives on disk are the documents, never the
+permissions computed from them.
+
+**Written once, by whichever computation gets there first.** `addToContext()` refuses a key it already
+holds, and says nothing. `getActiveUserPermissions()` is reached from the route guard, the main nav,
+the dashboard menu and the importers, so several computations race and only the first is kept. On
+`dev` that first one ran before the pull had landed: with the previous session's documents still on
+disk it froze on the permissions of the day before, and every later - correct - recomputation was
+discarded in silence. A permission changed in the meantime stayed invisible until a logout, which
+destroys the database and so leaves nothing stale to read. That is the whole reason a logout looked
+like the only way to pick up new permissions.
+
+**The wait.** The computation now waits for the first replication cycle of those three collections.
+The wait sits inside `getActiveUserPermissions()`, not in one caller, so every caller inherits it;
+gating a single one leaves the others free to win the race. Offline, or backendless, it does not wait
+at all - an app that hesitates at startup where there is no network is worse than one working on
+yesterday's permissions. The cap is 15s, deliberately under `initializationScreenMaxDuration`, and a
+cap that expires is reported to Sentry: the session then runs on local permissions, which is
+recoverable but worth knowing.
+
+**A grant that widens.** The right filter is not enough. The pull asks for what changed after the
+checkpoint, and a document granted today did not change - it became visible. So the grants of the last
+session are recorded next to the owner record, under `dino_pull_grants:<database name>`, and the
+difference against the current context says which ids to ask for outright. That question is composed
+with `_or` across every dimension that widened - the schemas and each metric type - and sits inside
+the `_and` of the current checks, so it can only reach documents the permissions already allow. It is
+asked once: cleared when the collection reaches in-sync, and the new grants are recorded only when the
+last collection is done, so an app closed halfway through asks again at the next start. The first
+start after the release registers the grants and fetches nothing extra.
+
+**A grant that narrows.** No backfill, and nothing deleted - the documents stay on disk, which is the
+invariant. A revoked metric disappears from the lists on its own, because the metric managers declare
+a `canView` that checks the context. Form schemas do not have one yet, so a revoked schema still shows.
+And the form data of a revoked metric stay visible on purpose: hiding them would hide the records
+collected offline and not yet pushed, which the user could then neither see nor export.
+
+**A reload is enough.** None of this is tied to ending a session. `_refreshDb` starts at `ready`, and
+the subscription that resets it ignores the `init` event a restored session emits, so a plain reload
+rebuilds the database, the collections and the context exactly as a login does.
+
+### 2.3 The steady state, online
 
 ```mermaid
 sequenceDiagram
@@ -109,7 +153,7 @@ behind it, the one each login runs included. A login cost sixteen cycles and the
 replications that pushed nothing at all; it is now one pass with no rebuild, and a sync after editing
 one document is sixteen cycles plus a single rebuild of that document's collection.
 
-### 2.3 Going offline, and coming back
+### 2.4 Going offline, and coming back
 
 ```mermaid
 stateDiagram-v2
@@ -138,7 +182,7 @@ single-flight, so both paths share one request.
 On success the replications resume from their stored checkpoint, which is what pushes the backlog. On
 failure nothing is torn down: the app moves to **Blocked**, §3.
 
-### 2.4 Renewing the token
+### 2.5 Renewing the token
 
 The access token lives 900 seconds and the refresh is scheduled at **75% of that**, 11m15s, leaving
 3m45s of margin — enough for a wrong device clock, a slow round trip and a timer throttled in the
@@ -321,6 +365,10 @@ one shared refresh and no logout risk.
 | "First cycle complete" with `live: false` | keyed to a document update, which nothing does at login: the initialization screen waited out its 25 second timeout | keyed to the completed replication cycle, as in live mode |
 | A rejected `awaitInSync()` | errored `isSyncing` for the rest of the page session, freezing the sync icon on whatever it last showed | reported, and the collection counts as idle |
 | `isSyncing` | recomputed by each of its seven subscribers, every one emitting its own end-of-cycle event | one shared chain |
+| The permission context | built from whatever was on disk when the first computation won the race, then frozen for the session | built after the first pull of the three collections it reads |
+| A permission that widened | invisible until a logout destroyed the database and forced everything to be pulled again | the newly granted ids are asked for by id, once, at the next start |
+| A revoked metric | stayed in the lists: the context never changed, so nothing checked it | disappears from them, while its documents stay on disk |
+| An "items found" total | counted the raw query while the rows went through `canView`, so it did not follow what the list showed | counted after the same filter as the rows |
 | Login page | said nothing about data left on the device | names the account whose data is still there |
 
 Two consequences worth calling out.
@@ -376,6 +424,13 @@ and nothing lights the badge, so the spinner can turn against a server that is s
 environment, eager on a flapping link; and every skipped sync cycle is reported to Sentry as a warning,
 which on a bad link is a stream of events for a normal condition.
 
+**A very large grant is not backfilled in one go.** The backfill asks for the newly granted ids
+alongside the checkpoint, and the checkpoint only moves forward, so a page filled entirely with
+documents older than it leaves the replication where it was. Under `batchSizePull` - 20000 - that
+never happens; above it, the same page would be requested again. It takes a single grant of more than
+twenty thousand pre-existing documents in one collection, and the fix changes the design rather than
+adding a guard, so it is recorded here instead.
+
 **The token lives in two places.** A running replication carries the token it was created with, while
 the auth checks read `localStorage`. They cannot diverge in normal use, but a second tab can do it: a
 logout there clears the storage while this tab keeps replicating with the token it holds in memory, and
@@ -397,28 +452,34 @@ REFRESH IN …`, `AUTH TOKEN REFRESH FAILED`, `COULD NOT REFRESH THE AUTH TOKEN 
 2. **A login on a non-live instance.** End the session, log in again: one `Running the sync for …` per
    collection and no `Rebuilding the sync for …` at all. The initialization screen must come down when
    the cycles complete, not 25 seconds later.
-3. **Offline collection.** DevTools offline, create a record: it stays in IndexedDB, nothing goes out,
+3. **A permission that widened.** With a second, admin account, add metrics to the group of the
+   account under test, then reload that account's app - ending the session is not needed. The console
+   shows `Permissions widened since the last session:` with the new ids, one `Backfill for …` per
+   affected collection, then `Grants recorded`; the new metrics and their form data appear in the
+   lists, and the "items found" total follows. The first start after the release only registers the
+   grants, so this check needs a second change to show anything.
+4. **Offline collection.** DevTools offline, create a record: it stays in IndexedDB, nothing goes out,
    and repeated taps on the icon do nothing.
-4. **A token that will not renew.** Back online, block `/v1/token` (or break the stored refresh token).
+5. **A token that will not renew.** Back online, block `/v1/token` (or break the stored refresh token).
    The badge lights up — at the latest when the access token expires and the replications start
    rejecting the JWT, within seconds of each other. Navigation between sections must keep working.
-5. **The way out, and the way back.** Tap the icon: it refreshes, fails, and asks. *Later* changes
+6. **The way out, and the way back.** Tap the icon: it refreshes, fails, and asks. *Later* changes
    nothing. Unblock the URL and tap again: the session recovers, badge off, no dialog. Block it again,
    tap and accept: the login page, with IndexedDB intact, the tokens gone, the notice naming the
    account, no authentication error announced — the session was ended on request, not lost — and **no
    call to the signout endpoint**.
-6. **The backlog.** Log in with the same account: the record from step 3 leaves in a push mutation.
-7. **Reconnection from an offline start.** Offline, replace the stored access token with a non-JWT
+7. **The backlog.** Log in with the same account: the record from step 4 leaves in a push mutation.
+8. **Reconnection from an offline start.** Offline, replace the stored access token with a non-JWT
    string, reload, then go back online without touching anything: a refresh must fire by itself.
-8. **Refused data.** With no easy way to provoke a constraint violation, emit it from the console —
+9. **Refused data.** With no easy way to provoke a constraint violation, emit it from the console —
    `couldNotSyncEvt.emit({collection: 'form_data', error})`. The badge stays on across renewals, and a
    tap on the icon shows the corrupted-data message with a single button: the session stays alive and
    the export in the user area still works.
-9. **A different user.** Log in with another account: the database is recreated empty and the owner
-   record names the new user.
-10. **An explicit logout.** *Cancel* changes nothing; *keep the data* lands on the login page with
+10. **A different user.** Log in with another account: the database is recreated empty and the owner
+    record names the new user.
+11. **An explicit logout.** *Cancel* changes nothing; *keep the data* lands on the login page with
     IndexedDB and the owner record intact; *delete* gives the signout call, IndexedDB removed, the
     owner record gone, and no notice on the login page.
 
-Steps 9 and 10 destroy the local database on purpose — they are the proof that the destructive path
+Steps 10 and 11 destroy the local database on purpose — they are the proof that the destructive path
 still works when it should. Leave them last.
