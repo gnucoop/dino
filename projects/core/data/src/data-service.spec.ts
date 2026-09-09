@@ -6,7 +6,7 @@ import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/au
 import {Server, WebSocket} from 'mock-socket';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
-import {firstValueFrom, of as obsOf, Subject} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, of as obsOf, Subject} from 'rxjs';
 import {take} from 'rxjs/operators';
 
 import {
@@ -1045,5 +1045,167 @@ describe('Data service - single-flight pre-sync refresh', () => {
 
     expect((dataService as any)._failedSyncRefreshes).toBe(0);
     expect(endSessionSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('Data service - awaiting the first pull', () => {
+  let dataService: DataService;
+  let online: BehaviorSubject<boolean>;
+
+  // Built fresh for every test: the data service fills defaults into the options
+  // object it is given, and one test flips `backendless` on it.
+  const firstPullConfig = (): DataServiceConfig =>
+    ({
+      databaseCreateOptions: {
+        name: `dino_first_pull_test_db_${testDbIdx++}`,
+        storage: getRxStorageMemory(),
+        ignoreDuplicate: true,
+      },
+      syncOptions: {
+        collection,
+        replicationIdentifier: 'test-replication',
+        url: {http: serverUrl},
+      },
+    } as unknown as DataServiceConfig);
+
+  /** A fake active sync whose in-sync promise the test decides. */
+  const activeSync = (name: string, awaitInSync: () => Promise<any>) => ({
+    state: {
+      awaitInSync,
+      reSync: () => {},
+      cancel: () => Promise.resolve(),
+      isStopped: () => false,
+    },
+    clientRequestSub: {unsubscribe: () => {}},
+    stateReceivedSub: {unsubscribe: () => {}},
+    sentSub: {unsubscribe: () => {}},
+    pushedInCycle: false,
+    stateActivity: obsOf(false),
+    collectionName: name,
+  });
+
+  const registerSync = (name: string, awaitInSync: () => Promise<any>) => {
+    const syncs = (dataService as any)._activeSyncs;
+    syncs.next({...syncs.getValue(), [name]: activeSync(name, awaitInSync)});
+  };
+
+  beforeEach(() => {
+    online = new BehaviorSubject<boolean>(true);
+    const authMock = {
+      authenticated: obsOf({auth: true, evt: 'login'}),
+      authToken: obsOf('test_auth_token'),
+      resetEvt: obsOf(false),
+      logoutEvt: new EventEmitter<void>(),
+      logout: () => obsOf(true),
+      getUserInfo: () => ({id: 'test_user'}),
+      getAuthToken: () => 'test_auth_token',
+      refreshToken: () => obsOf(true),
+    } as unknown as AuthService;
+
+    TestBed.configureTestingModule({
+      providers: [
+        DataService,
+        {provide: AuthService, useValue: authMock},
+        {provide: DATA_SERVICE_CONFIG, useValue: firstPullConfig()},
+        {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
+        {provide: Router, useValue: {navigate: () => {}}},
+      ],
+    });
+    dataService = TestBed.inject(DataService);
+    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(
+      online.asObservable(),
+    );
+  });
+
+  it('resolves at once offline, without waiting for any replication', async () => {
+    // The constraint that outranks the rest: where there is no network, an app
+    // that hesitates at startup is worse than one working on yesterday's
+    // permissions. Nothing is registered here, so a wait would never end.
+    online.next(false);
+
+    await expectAsync(
+      firstValueFrom(dataService.awaitFirstPull(['user_group'], 50)),
+    ).toBeResolved();
+  });
+
+  it('resolves at once on a backendless instance', async () => {
+    (dataService as any)._dataConfig.value.syncOptions.backendless = true;
+
+    await expectAsync(
+      firstValueFrom(dataService.awaitFirstPull(['user_group'], 50)),
+    ).toBeResolved();
+  });
+
+  it('resolves at once when asked for no collections', async () => {
+    await expectAsync(firstValueFrom(dataService.awaitFirstPull([], 50))).toBeResolved();
+  });
+
+  it('waits for a replication that does not exist yet, instead of ignoring it', async () => {
+    // The point of the whole gate: at login the replications are still being set
+    // up, and skipping the ones that are not there would make this a no-op
+    // exactly when it matters - which is how the permission context ended up
+    // being read from the previous session's documents.
+    let settled = false;
+    let reachInSync: () => void = () => {};
+    const inSync = new Promise<true>(resolve => (reachInSync = () => resolve(true)));
+
+    const waited = firstValueFrom(dataService.awaitFirstPull(['user_group'], 5000)).then(
+      () => (settled = true),
+    );
+
+    // Nothing registered yet: it must still be waiting.
+    await Promise.resolve();
+    expect(settled).toBeFalse();
+
+    registerSync('user_group', () => inSync);
+    await Promise.resolve();
+    expect(settled).toBeFalse();
+
+    reachInSync();
+    await waited;
+    expect(settled).toBeTrue();
+  });
+
+  it('waits for every collection it was given, not just the first', async () => {
+    let settled = false;
+    let reachSecond: () => void = () => {};
+    const second = new Promise<true>(resolve => (reachSecond = () => resolve(true)));
+
+    const waited = firstValueFrom(
+      dataService.awaitFirstPull(['user_data', 'user_group'], 5000),
+    ).then(() => (settled = true));
+
+    registerSync('user_data', () => Promise.resolve(true));
+    registerSync('user_group', () => second);
+    await Promise.resolve();
+    expect(settled).toBeFalse();
+
+    reachSecond();
+    await waited;
+    expect(settled).toBeTrue();
+  });
+
+  it('resolves anyway when the cap expires, and reports it', async () => {
+    // Recoverable by design - the caller proceeds on local data, as it did
+    // before this existed - but the session is then running on permissions that
+    // may be a session old, so it must not pass in silence.
+    const reported = spyOn(dataService as any, '_reportFirstPullTimeout');
+    registerSync('user_group', () => new Promise<true>(() => {}));
+
+    await expectAsync(
+      firstValueFrom(dataService.awaitFirstPull(['user_group'], 30)),
+    ).toBeResolved();
+    expect(reported).toHaveBeenCalledWith(['user_group'], 30);
+  });
+
+  it('is not held up by a replication that cannot say whether it is in sync', async () => {
+    // rxdb throws from awaitInSync() when the replication has no internal state,
+    // which in live:false mode is routine. That says the collection cannot be
+    // asked, not that the login must wait for it.
+    registerSync('user_group', () => Promise.reject(new Error('no internal state')));
+
+    await expectAsync(
+      firstValueFrom(dataService.awaitFirstPull(['user_group'], 5000)),
+    ).toBeResolved();
   });
 });
