@@ -51,6 +51,7 @@ export * from './metric';
 export * from './model';
 export * from './online-data-model-manager';
 export * from './online-data-service';
+export * from './pull-grants';
 export * from './pull-query-extra-params';
 export * from './push-query-extra-params';
 export * from './metrics.service';
