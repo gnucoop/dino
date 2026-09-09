@@ -777,11 +777,44 @@ export class ListDataSource<
    * @returns The count of the query result
    */
   private _getQueryResultsCount(query: DataQueryOptions): Observable<number> {
-    return this._dataModelManager.query(query).pipe(
-      map(results => {
-        return results.length ?? 0;
-      }),
-    );
+    // Counted after the same permission filter the rows go through. Counting the
+    // raw query instead made the total include documents the list was hiding: a
+    // metric revoked from the user's group disappeared from the rows while the
+    // "items found" total stayed where it was.
+    //
+    // `combineLatest` rather than the rows' `forkJoin`: the count is live, and it
+    // has to keep following the query as documents arrive from a sync.
+    return combineLatest([
+      this._dataModelManager.query(query),
+      this._dataModelManager.permissionContext,
+    ]).pipe(map(([results, context]) => this._viewableDocs(results, context).length));
+  }
+
+  /**
+   * The documents of a query result the active user is allowed to see.
+   *
+   * Shared by the rows and by their count, so the two cannot disagree.
+   *
+   * @param docs The documents the query returned.
+   * @param context The permission context to check them against.
+   * @returns The documents that pass every `canView` the model manager declares,
+   * or all of them when it declares none.
+   */
+  private _viewableDocs(
+    docs: RxDocument<T, {}>[],
+    context: PermissionContext,
+  ): RxDocument<T, {}>[] {
+    if (!this._dataModelManager.permissions.some(permission => permission.canView != null)) {
+      return docs;
+    }
+    return docs.filter(doc => {
+      for (let permission of this._dataModelManager.permissions) {
+        if (permission.canView != null && !permission.canView({object: doc, context})) {
+          return false;
+        }
+      }
+      return true;
+    });
   }
 
   /**
@@ -817,19 +850,7 @@ export class ListDataSource<
             detailsDocs.some(detailDoc => doc[detailsKey] == detailDoc[detailsKey]),
           );
         }
-        if (this._dataModelManager.permissions.some(permission => permission.canView != null)) {
-          resultDocs = resultDocs.filter(doc => {
-            for (let permission of this._dataModelManager.permissions) {
-              if (permission.canView != null) {
-                const allowedToView = permission.canView({object: doc, context: context});
-                if (!allowedToView) {
-                  return false;
-                }
-              }
-            }
-            return true;
-          });
-        }
+        resultDocs = this._viewableDocs(resultDocs, context);
         const populatedDocs = populateDocRefs<T>(resultDocs);
 
         return populatedDocs;
