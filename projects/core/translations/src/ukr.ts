@@ -448,6 +448,8 @@ export const UKR: Translation = {
   'New Password': 'Новий пароль',
   'New User? Create new account': 'Новий користувач? Створити новий акаунт',
   'Next': 'Далі',
+  'Previous': 'Назад',
+  'Continue': 'Продовжити',
   'Next page': 'Наступна сторінка',
   'No': 'Ні',
   'No Forms were found': 'Форми не знайдено',

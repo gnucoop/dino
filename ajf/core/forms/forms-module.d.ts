@@ -1,0 +1,44 @@
+import * as i0 from "@angular/core";
+import * as i1 from "./as-field-instance";
+import * as i2 from "./as-validation-errors-string";
+import * as i3 from "./as-repeating-slide-instance";
+import * as i4 from "./bool-to-int";
+import * as i5 from "./date-value";
+import * as i6 from "./date-value-string";
+import * as i7 from "./expand-input-with-choices";
+import * as i8 from "./field-host";
+import * as i9 from "./field-icon";
+import * as i10 from "./field-is-valid";
+import * as i11 from "./field-type-label";
+import * as i12 from "./file-field";
+import * as i13 from "./form-string-identifier";
+import * as i14 from "./get-table-cell-control";
+import * as i15 from "./image-field";
+import * as i16 from "./increment";
+import * as i17 from "./is-cell-editable";
+import * as i18 from "./is-readonly-input-field";
+import * as i19 from "./is-repeating-slide";
+import * as i20 from "./node-complete-name";
+import * as i21 from "./range";
+import * as i22 from "./read-only-field";
+import * as i23 from "./read-only-date-field";
+import * as i24 from "./read-only-file-field";
+import * as i25 from "./read-only-geolocation-field";
+import * as i26 from "./read-only-image-field";
+import * as i27 from "./read-only-select-field";
+import * as i28 from "./read-only-table-field";
+import * as i29 from "./read-only-video-url-field";
+import * as i30 from "./table-row-class";
+import * as i31 from "./table-visible-columns";
+import * as i32 from "./valid-slide";
+import * as i33 from "@ajf/core/common";
+import * as i34 from "@ajf/core/file-input";
+import * as i35 from "@angular/common";
+import * as i36 from "@angular/forms";
+import * as i37 from "@ajf/core/transloco";
+export declare class AjfFormsModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<AjfFormsModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<AjfFormsModule, [typeof i1.AjfAsFieldInstancePipe, typeof i2.AjfAsFieldInstanceErrorsPipe, typeof i3.AjfAsRepeatingSlideInstancePipe, typeof i4.AjfBoolToIntPipe, typeof i5.AjfDateValuePipe, typeof i6.AjfDateValueStringPipe, typeof i7.AjfExpandFieldWithChoicesPipe, typeof i8.AjfFieldHost, typeof i9.AjfFieldIconPipe, typeof i10.AjfFieldIsValidPipe, typeof i11.AjfFieldTypeLabelPipe, typeof i12.AjfFileFieldComponent, typeof i13.AjfFormStringIdentifierPipe, typeof i14.AjfGetTableCellControlPipe, typeof i15.AjfImageFieldComponent, typeof i16.AjfIncrementPipe, typeof i17.AjfIsCellEditablePipe, typeof i18.AjfIsReadonlyInputFieldPipe, typeof i19.AjfIsRepeatingSlideInstancePipe, typeof i20.AjfNodeCompleteNamePipe, typeof i21.AjfRangePipe, typeof i22.AjfReadOnlyFieldComponent, typeof i23.AjfReadOnlyDateFieldComponent, typeof i24.AjfReadOnlyFileFieldComponent, typeof i25.AjfReadOnlyGeolocationFieldComponent, typeof i26.AjfReadOnlyImageFieldComponent, typeof i27.AjfReadOnlySelectFieldComponent, typeof i28.AjfReadOnlyTableFieldComponent, typeof i29.AjfReadOnlyVideoUrlFieldComponent, typeof i30.AjfTableRowClass, typeof i31.AjfTableVisibleColumnsPipe, typeof i32.AjfValidSlidePipe], [typeof i33.AjfCommonModule, typeof i34.AjfFileInputModule, typeof i35.CommonModule, typeof i36.ReactiveFormsModule, typeof i37.AjfTranslocoModule], [typeof i1.AjfAsFieldInstancePipe, typeof i2.AjfAsFieldInstanceErrorsPipe, typeof i3.AjfAsRepeatingSlideInstancePipe, typeof i4.AjfBoolToIntPipe, typeof i5.AjfDateValuePipe, typeof i6.AjfDateValueStringPipe, typeof i7.AjfExpandFieldWithChoicesPipe, typeof i8.AjfFieldHost, typeof i9.AjfFieldIconPipe, typeof i10.AjfFieldIsValidPipe, typeof i11.AjfFieldTypeLabelPipe, typeof i12.AjfFileFieldComponent, typeof i13.AjfFormStringIdentifierPipe, typeof i14.AjfGetTableCellControlPipe, typeof i15.AjfImageFieldComponent, typeof i16.AjfIncrementPipe, typeof i17.AjfIsCellEditablePipe, typeof i18.AjfIsReadonlyInputFieldPipe, typeof i19.AjfIsRepeatingSlideInstancePipe, typeof i20.AjfNodeCompleteNamePipe, typeof i21.AjfRangePipe, typeof i22.AjfReadOnlyFieldComponent, typeof i23.AjfReadOnlyDateFieldComponent, typeof i24.AjfReadOnlyFileFieldComponent, typeof i25.AjfReadOnlyGeolocationFieldComponent, typeof i26.AjfReadOnlyImageFieldComponent, typeof i27.AjfReadOnlySelectFieldComponent, typeof i28.AjfReadOnlyTableFieldComponent, typeof i29.AjfReadOnlyVideoUrlFieldComponent, typeof i30.AjfTableRowClass, typeof i31.AjfTableVisibleColumnsPipe, typeof i32.AjfValidSlidePipe]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<AjfFormsModule>;
+}
+//# sourceMappingURL=forms-module.d.ts.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"widget-with-content.d.ts","sourceRoot":"","sources":["../../../../../projects/core/reports/src/interface/widgets/widget-with-content.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,aAAa,EAAC,MAAM,eAAe,CAAC;AAC5C,OAAO,EAAC,SAAS,EAAC,MAAM,UAAU,CAAC;AAEnC,MAAM,WAAW,oBAAqB,SAAQ,aAAa;IACzD,OAAO,EAAE,SAAS,EAAE,CAAC;CACtB"}

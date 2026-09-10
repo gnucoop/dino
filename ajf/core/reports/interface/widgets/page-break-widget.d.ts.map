@@ -1,0 +1,1 @@
+{"version":3,"file":"page-break-widget.d.ts","sourceRoot":"","sources":["../../../../../projects/core/reports/src/interface/widgets/page-break-widget.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,aAAa,EAAC,MAAM,eAAe,CAAC;AAC5C,OAAO,EAAC,aAAa,EAAC,MAAM,eAAe,CAAC;AAE5C,MAAM,WAAW,kBAAmB,SAAQ,aAAa;IACvD,UAAU,EAAE,aAAa,CAAC,SAAS,CAAC;CACrC"}

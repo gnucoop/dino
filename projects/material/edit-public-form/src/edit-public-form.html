@@ -2,6 +2,9 @@
   <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
 </div>
 <ng-container *ngIf="(metricsState$|async) === 'ok'">
+<h1 *ngIf="(submitted|async) === false" class="dino-public-title">
+  {{(formSchema|async)?.label|transloco }}
+</h1>
 <div
   class="dino-survey-progress"
   *ngIf="(submitted|async) === false && (slidesNum$|async)! > 1"
@@ -14,9 +17,11 @@
     <div class="dino-survey-progress-fill" [style.width.%]="progress$ | async"></div>
   </div>
 </div>
-<h1 *ngIf="(submitted|async) === false" class="dino-public-title">
-  {{(formSchema|async)?.label|transloco }}
-</h1>
+<ng-container *ngIf="(submitted|async) === false">
+  <h2 *ngIf="currentSlideLabel$|async as slideLabel" class="dino-survey-slide-title">
+    {{ slideLabel|transloco }}
+  </h2>
+</ng-container>
 <ng-container *ngIf="(submitted|async) === false ; else successMsg">
   <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
     <div class="dino-survey-slider-wrap">
@@ -27,7 +32,6 @@
         [topBar]="false"
         [hideTopToolbar]="true"
         [hideNavigationButtons]="true"
-        [maxColumns]="maxColumns"
         [centeredFieldsContent]="centeredFieldsContent"
         (formAction)="onFormAction($event)"
       ></ajf-form>
@@ -44,12 +48,13 @@
 
     <div class="dino-survey-footer">
       <button
-        mat-button
+        mat-raised-button
+        color="primary"
         class="dino-survey-back"
-        *ngIf="(currentSlide$|async)! > 0"
+        [disabled]="(currentSlide$|async)! <= 0"
         (click)="prevSlide()"
       >
-        ‹ {{'Back'|transloco}}
+        ‹ {{'Previous'|transloco}}
       </button>
       <span class="dino-survey-footer-spacer"></span>
       <button
@@ -60,7 +65,7 @@
         [disabled]="(currentSlideValid$|async) === false"
         (click)="nextSlide()"
       >
-        {{'Forward'|transloco}} ›
+        {{'Next'|transloco}} ›
       </button>
       <button
         mat-raised-button

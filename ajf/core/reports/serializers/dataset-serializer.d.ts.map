@@ -1,0 +1,1 @@
+{"version":3,"file":"dataset-serializer.d.ts","sourceRoot":"","sources":["../../../../projects/core/reports/src/serializers/dataset-serializer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAIH,OAAO,EAAC,UAAU,EAAC,MAAM,8BAA8B,CAAC;AAKxD,qBAAa,oBAAoB;IAC/B,MAAM,CAAC,QAAQ,CAAC,IAAI,EAAE,OAAO,CAAC,UAAU,CAAC,GAAG,UAAU;CAWvD"}

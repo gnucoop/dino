@@ -1,0 +1,1 @@
+{"version":3,"file":"node-icon.d.ts","sourceRoot":"","sources":["../../../projects/material/node-icon/src/node-icon.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAyB,OAAO,EAAc,MAAM,iBAAiB,CAAC;AAC7E,OAAO,EAAC,WAAW,IAAI,YAAY,EAAC,MAAM,qBAAqB,CAAC;;AAGhE,qBAOa,WAAY,SAAQ,YAAY;IAC3C,OAAO,CAAC,IAAI,EAAE,OAAO,GAAG,MAAM;yCADnB,WAAW;2CAAX,WAAW;CAmDvB"}

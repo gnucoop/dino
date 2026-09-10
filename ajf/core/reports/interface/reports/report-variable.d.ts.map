@@ -1,0 +1,1 @@
+{"version":3,"file":"report-variable.d.ts","sourceRoot":"","sources":["../../../../../projects/core/reports/src/interface/reports/report-variable.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,UAAU,EAAC,MAAM,kBAAkB,CAAC;AAE5C,MAAM,WAAW,iBAAiB;IAChC,IAAI,EAAE,MAAM,CAAC;IACb,OAAO,EAAE,UAAU,CAAC;IACpB,UAAU,CAAC,EAAE,OAAO,CAAC;CACtB"}

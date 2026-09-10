@@ -1,0 +1,1 @@
+{"version":3,"file":"warning-group-serializer.d.ts","sourceRoot":"","sources":["../../../../projects/core/forms/src/serializers/warning-group-serializer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,eAAe,EAAC,MAAM,oCAAoC,CAAC;AAGnE;;GAEG;AACH,qBAAa,yBAAyB;IACpC,MAAM,CAAC,QAAQ,CAAC,KAAK,EAAE,OAAO,CAAC,eAAe,CAAC,GAAG,eAAe;CAGlE"}

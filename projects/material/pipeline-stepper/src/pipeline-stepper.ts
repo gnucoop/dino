@@ -1,4 +1,5 @@
 import {AjfFormRenderer, AjfSlideInstance} from '@ajf/core/forms';
+import {AjfPageSlider} from '@ajf/core/page-slider';
 import {
   AfterViewChecked,
   AfterViewInit,
@@ -13,7 +14,15 @@ import {
 } from '@angular/core';
 import {MatStepper} from '@angular/material/stepper';
 import {FormStatus} from '@dino/core/forms';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
+import {
+  animationFrameScheduler,
+  BehaviorSubject,
+  combineLatest,
+  interval,
+  Observable,
+  of as obsOf,
+  Subscription,
+} from 'rxjs';
 import {
   delay,
   distinctUntilChanged,
@@ -26,6 +35,12 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {PipelineStep} from './pipeline-stepper-step-interface';
+
+/**
+ * How long to wait for the form renderer's page slider before giving up, in
+ * animation frames. Generous: it normally appears on the very next check.
+ */
+const sliderWaitFrames = 120;
 /**
  * @title Stepper overview
  */
@@ -124,24 +139,53 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
     this._ajfFormSliderPageChange = this._slides.pipe(
       skipWhile(slides => slides == null),
       withLatestFrom(this._ajfFormRenderer),
-      switchMap(
-        ([slides, fr]) =>
-          fr?.formSlider.pageScrollFinish.pipe(
-            map(() => {
-              if (slides == null) {
-                return fr.formSlider.currentPage;
-              }
-              const visibleSlides = slides?.filter(slide => slide.visible);
-              const currentSliderSlide = visibleSlides[fr.formSlider.currentPage];
-              const currentStepIdx = slides.indexOf(currentSliderSlide);
-              return currentStepIdx;
-            }),
-          ) ?? obsOf(null),
+      switchMap(([slides, fr]) =>
+        fr == null
+          ? obsOf(null)
+          : this._sliderOf(fr).pipe(
+              switchMap(slider =>
+                slider.pageScrollFinish.pipe(
+                  map(() => {
+                    if (slides == null) {
+                      return slider.currentPage;
+                    }
+                    const visibleSlides = slides.filter(slide => slide.visible);
+                    const currentSliderSlide = visibleSlides[slider.currentPage];
+                    const currentStepIdx = slides.indexOf(currentSliderSlide);
+                    return currentStepIdx;
+                  }),
+                ),
+              ),
+            ),
       ),
     );
   }
   get ajfFormRenderer(): Observable<AjfFormRenderer | null> {
     return this._ajfFormRenderer;
+  }
+
+  /**
+   * The renderer's page slider, once there is one.
+   *
+   * The renderer creates it inside an `*ngIf` on its own `slides`, so it can
+   * still be undefined when this pipeline runs -- reading straight through it
+   * threw a TypeError, and an optional chain on its own would have left the
+   * stepper silently no longer following the form. Waiting for it costs a frame
+   * or two on load and nothing afterwards, and `switchMap` tears the wait down
+   * along with the pipeline.
+   */
+  private _sliderOf(fr: AjfFormRenderer): Observable<AjfPageSlider> {
+    if (fr.formSlider != null) {
+      return obsOf(fr.formSlider);
+    }
+    return interval(0, animationFrameScheduler).pipe(
+      // Bounded, so a form that never renders a slider does not leave a frame
+      // callback running for the lifetime of the component.
+      take(sliderWaitFrames),
+      map(() => fr.formSlider),
+      filter((slider): slider is AjfPageSlider => slider != null),
+      take(1),
+    );
   }
 
   @Input()

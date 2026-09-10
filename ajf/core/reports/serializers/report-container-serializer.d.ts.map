@@ -1,0 +1,1 @@
+{"version":3,"file":"report-container-serializer.d.ts","sourceRoot":"","sources":["../../../../projects/core/reports/src/serializers/report-container-serializer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,kBAAkB,EAAC,MAAM,uCAAuC,CAAC;AAGzE,qBAAa,4BAA4B;IACvC,MAAM,CAAC,QAAQ,CAAC,IAAI,EAAE,OAAO,CAAC,kBAAkB,CAAC,GAAG,kBAAkB;CAIvE"}

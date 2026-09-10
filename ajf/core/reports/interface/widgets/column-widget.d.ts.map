@@ -1,0 +1,1 @@
+{"version":3,"file":"column-widget.d.ts","sourceRoot":"","sources":["../../../../../projects/core/reports/src/interface/widgets/column-widget.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,aAAa,EAAC,MAAM,eAAe,CAAC;AAC5C,OAAO,EAAC,oBAAoB,EAAC,MAAM,uBAAuB,CAAC;AAE3D,MAAM,WAAW,eAAgB,SAAQ,oBAAoB;IAC3D,UAAU,EAAE,aAAa,CAAC,MAAM,CAAC;CAClC"}

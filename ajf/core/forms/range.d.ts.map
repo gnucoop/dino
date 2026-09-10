@@ -1,0 +1,1 @@
+{"version":3,"file":"range.d.ts","sourceRoot":"","sources":["../../../projects/core/forms/src/range.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAO,aAAa,EAAC,MAAM,eAAe,CAAC;;AAElD;;;;;;GAMG;AACH,qBACa,YAAa,YAAW,aAAa;IAChD,SAAS,CAAC,IAAI,GAAE,MAAU,EAAE,KAAK,GAAE,MAAU,EAAE,IAAI,GAAE,MAAU,GAAG,MAAM,EAAE;yCAD/D,YAAY;uCAAZ,YAAY;CASxB"}
