@@ -1,0 +1,1 @@
+{"version":3,"file":"node-link.d.ts","sourceRoot":"","sources":["../../../../../projects/core/forms/src/interface/nodes/node-link.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,WAAW,EAAC,MAAM,aAAa,CAAC;AACxC,OAAO,EAAC,WAAW,EAAC,MAAM,aAAa,CAAC;AAExC;;;GAGG;AACH,MAAM,WAAW,gBAAiB,SAAQ,WAAW;IACnD,QAAQ,EAAE,WAAW,CAAC,gBAAgB,CAAC;CACxC"}

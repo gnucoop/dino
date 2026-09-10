@@ -1,0 +1,220 @@
+{
+  "name": "@ajf/core",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gnucoop/ajf.git"
+  },
+  "keywords": [],
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gnucoop/ajf/issues"
+  },
+  "homepage": "https://github.com/gnucoop/ajf#readme",
+  "peerDependencies": {
+    "@angular/cdk": "0.0.0-NGC",
+    "@angular/common": "0.0.0-NGF",
+    "@angular/core": "0.0.0-NGF",
+    "@angular/forms": "0.0.0-NGF",
+    "@angular/platform-browser": "0.0.0-NGF",
+    "@ngneat/transloco": "0.0.0-TRANSLOCO",
+    "@zxing/browser": "0.0.0-ZXING-BROWSER",
+    "@zxing/library": "0.0.0-ZXING-LIBRARY",
+    "chart.js": "0.0.0-CHARTJS",
+    "dagre": "0.0.0-DAGRE",
+    "date-fns": "0.0.0-DATE-FNS",
+    "docx": "0.0.0-DOCX",
+    "echarts": "0.0.0-ECHARTS",
+    "flag-icon-css": "0.0.0-FLAG-ICON-CSS",
+    "leaflet": "0.0.0-LEAFLET",
+    "acorn": "0.0.0-ACORN",
+    "ngx-mat-select-search": "0.0.0-NGX-MAT-SELECT-SEARCH",
+    "pako": "0.0.0-PAKO",
+    "pdfmake": "0.0.0-PDFMAKE",
+    "svg-pan-zoom": "0.0.0-SVG-PAN-ZOOM",
+    "xlsx": "0.0.0-XLSX"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "module": "fesm2022/ajf-core.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2022": "./esm2022/ajf-core.mjs",
+      "esm": "./esm2022/ajf-core.mjs",
+      "default": "./fesm2022/ajf-core.mjs"
+    },
+    "./audio": {
+      "types": "./audio/index.d.ts",
+      "esm2022": "./esm2022/audio/ajf-core-audio.mjs",
+      "esm": "./esm2022/audio/ajf-core-audio.mjs",
+      "default": "./fesm2022/ajf-core-audio.mjs"
+    },
+    "./barcode": {
+      "types": "./barcode/index.d.ts",
+      "esm2022": "./esm2022/barcode/ajf-core-barcode.mjs",
+      "esm": "./esm2022/barcode/ajf-core-barcode.mjs",
+      "default": "./fesm2022/ajf-core-barcode.mjs"
+    },
+    "./chart": {
+      "types": "./chart/index.d.ts",
+      "esm2022": "./esm2022/chart/ajf-core-chart.mjs",
+      "esm": "./esm2022/chart/ajf-core-chart.mjs",
+      "default": "./fesm2022/ajf-core-chart.mjs"
+    },
+    "./common": {
+      "types": "./common/index.d.ts",
+      "esm2022": "./esm2022/common/ajf-core-common.mjs",
+      "esm": "./esm2022/common/ajf-core-common.mjs",
+      "default": "./fesm2022/ajf-core-common.mjs"
+    },
+    "./calendar": {
+      "types": "./calendar/index.d.ts",
+      "esm2022": "./esm2022/calendar/ajf-core-calendar.mjs",
+      "esm": "./esm2022/calendar/ajf-core-calendar.mjs",
+      "default": "./fesm2022/ajf-core-calendar.mjs"
+    },
+    "./echarts": {
+      "types": "./echarts/index.d.ts",
+      "esm2022": "./esm2022/echarts/ajf-core-echarts.mjs",
+      "esm": "./esm2022/echarts/ajf-core-echarts.mjs",
+      "default": "./fesm2022/ajf-core-echarts.mjs"
+    },
+    "./checkbox-group": {
+      "types": "./checkbox-group/index.d.ts",
+      "esm2022": "./esm2022/checkbox-group/ajf-core-checkbox-group.mjs",
+      "esm": "./esm2022/checkbox-group/ajf-core-checkbox-group.mjs",
+      "default": "./fesm2022/ajf-core-checkbox-group.mjs"
+    },
+    "./file-input": {
+      "types": "./file-input/index.d.ts",
+      "esm2022": "./esm2022/file-input/ajf-core-file-input.mjs",
+      "esm": "./esm2022/file-input/ajf-core-file-input.mjs",
+      "default": "./fesm2022/ajf-core-file-input.mjs"
+    },
+    "./forms": {
+      "types": "./forms/index.d.ts",
+      "esm2022": "./esm2022/forms/ajf-core-forms.mjs",
+      "esm": "./esm2022/forms/ajf-core-forms.mjs",
+      "default": "./fesm2022/ajf-core-forms.mjs"
+    },
+    "./geolocation": {
+      "types": "./geolocation/index.d.ts",
+      "esm2022": "./esm2022/geolocation/ajf-core-geolocation.mjs",
+      "esm": "./esm2022/geolocation/ajf-core-geolocation.mjs",
+      "default": "./fesm2022/ajf-core-geolocation.mjs"
+    },
+    "./graph": {
+      "types": "./graph/index.d.ts",
+      "esm2022": "./esm2022/graph/ajf-core-graph.mjs",
+      "esm": "./esm2022/graph/ajf-core-graph.mjs",
+      "default": "./fesm2022/ajf-core-graph.mjs"
+    },
+    "./heat-map": {
+      "types": "./heat-map/index.d.ts",
+      "esm2022": "./esm2022/heat-map/ajf-core-heat-map.mjs",
+      "esm": "./esm2022/heat-map/ajf-core-heat-map.mjs",
+      "default": "./fesm2022/ajf-core-heat-map.mjs"
+    },
+    "./image": {
+      "types": "./image/index.d.ts",
+      "esm2022": "./esm2022/image/ajf-core-image.mjs",
+      "esm": "./esm2022/image/ajf-core-image.mjs",
+      "default": "./fesm2022/ajf-core-image.mjs"
+    },
+    "./map": {
+      "types": "./map/index.d.ts",
+      "esm2022": "./esm2022/map/ajf-core-map.mjs",
+      "esm": "./esm2022/map/ajf-core-map.mjs",
+      "default": "./fesm2022/ajf-core-map.mjs"
+    },
+    "./models": {
+      "types": "./models/index.d.ts",
+      "esm2022": "./esm2022/models/ajf-core-models.mjs",
+      "esm": "./esm2022/models/ajf-core-models.mjs",
+      "default": "./fesm2022/ajf-core-models.mjs"
+    },
+    "./node-icon": {
+      "types": "./node-icon/index.d.ts",
+      "esm2022": "./esm2022/node-icon/ajf-core-node-icon.mjs",
+      "esm": "./esm2022/node-icon/ajf-core-node-icon.mjs",
+      "default": "./fesm2022/ajf-core-node-icon.mjs"
+    },
+    "./page-break": {
+      "types": "./page-break/index.d.ts",
+      "esm2022": "./esm2022/page-break/ajf-core-page-break.mjs",
+      "esm": "./esm2022/page-break/ajf-core-page-break.mjs",
+      "default": "./fesm2022/ajf-core-page-break.mjs"
+    },
+    "./page-slider": {
+      "types": "./page-slider/index.d.ts",
+      "esm2022": "./esm2022/page-slider/ajf-core-page-slider.mjs",
+      "esm": "./esm2022/page-slider/ajf-core-page-slider.mjs",
+      "default": "./fesm2022/ajf-core-page-slider.mjs"
+    },
+    "./pdfmake": {
+      "types": "./pdfmake/index.d.ts",
+      "esm2022": "./esm2022/pdfmake/ajf-core-pdfmake.mjs",
+      "esm": "./esm2022/pdfmake/ajf-core-pdfmake.mjs",
+      "default": "./fesm2022/ajf-core-pdfmake.mjs"
+    },
+    "./range": {
+      "types": "./range/index.d.ts",
+      "esm2022": "./esm2022/range/ajf-core-range.mjs",
+      "esm": "./esm2022/range/ajf-core-range.mjs",
+      "default": "./fesm2022/ajf-core-range.mjs"
+    },
+    "./reports": {
+      "types": "./reports/index.d.ts",
+      "esm2022": "./esm2022/reports/ajf-core-reports.mjs",
+      "esm": "./esm2022/reports/ajf-core-reports.mjs",
+      "default": "./fesm2022/ajf-core-reports.mjs"
+    },
+    "./signature": {
+      "types": "./signature/index.d.ts",
+      "esm2022": "./esm2022/signature/ajf-core-signature.mjs",
+      "esm": "./esm2022/signature/ajf-core-signature.mjs",
+      "default": "./fesm2022/ajf-core-signature.mjs"
+    },
+    "./table": {
+      "types": "./table/index.d.ts",
+      "esm2022": "./esm2022/table/ajf-core-table.mjs",
+      "esm": "./esm2022/table/ajf-core-table.mjs",
+      "default": "./fesm2022/ajf-core-table.mjs"
+    },
+    "./text": {
+      "types": "./text/index.d.ts",
+      "esm2022": "./esm2022/text/ajf-core-text.mjs",
+      "esm": "./esm2022/text/ajf-core-text.mjs",
+      "default": "./fesm2022/ajf-core-text.mjs"
+    },
+    "./time": {
+      "types": "./time/index.d.ts",
+      "esm2022": "./esm2022/time/ajf-core-time.mjs",
+      "esm": "./esm2022/time/ajf-core-time.mjs",
+      "default": "./fesm2022/ajf-core-time.mjs"
+    },
+    "./transloco": {
+      "types": "./transloco/index.d.ts",
+      "esm2022": "./esm2022/transloco/ajf-core-transloco.mjs",
+      "esm": "./esm2022/transloco/ajf-core-transloco.mjs",
+      "default": "./fesm2022/ajf-core-transloco.mjs"
+    },
+    "./utils": {
+      "types": "./utils/index.d.ts",
+      "esm2022": "./esm2022/utils/ajf-core-utils.mjs",
+      "esm": "./esm2022/utils/ajf-core-utils.mjs",
+      "default": "./fesm2022/ajf-core-utils.mjs"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by Ivy in full compilation mode. This is not allowed.\\nPlease delete and rebuild the package with Ivy partial compilation mode, before attempting to publish.\\n')\" && exit 1"
+  }
+}

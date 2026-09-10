@@ -1,0 +1,34 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Advanced JSON forms (ajf).
+ *
+ * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Advanced JSON forms (ajf).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+import { componentsMap } from './fields-map';
+/**
+ * It is true if
+ *  the field is a custom field (field.fieldType &gt; 100) and
+ *  the field is not already present in the component map (componentsMap[field.fieldType] != null)
+ * and the field is a fieldWithChoice (componentsMap[field.fieldType].isFieldWithChoice === true)
+ */
+export function isCustomFieldWithChoices(field) {
+    return (field.fieldType > 100 &&
+        componentsMap[field.fieldType] != null &&
+        componentsMap[field.fieldType].isFieldWithChoice === true);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaXMtY3VzdG9tLWZpZWxkLXdpdGgtY2hvaWNlcy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL3Byb2plY3RzL2NvcmUvZm9ybXMvc3JjL3V0aWxzL2ZpZWxkcy9pcy1jdXN0b20tZmllbGQtd2l0aC1jaG9pY2VzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQW9CRztBQUdILE9BQU8sRUFBQyxhQUFhLEVBQUMsTUFBTSxjQUFjLENBQUM7QUFDM0M7Ozs7O0dBS0c7QUFDSCxNQUFNLFVBQVUsd0JBQXdCLENBQUMsS0FBZTtJQUN0RCxPQUFPLENBQ0wsS0FBSyxDQUFDLFNBQVMsR0FBRyxHQUFHO1FBQ3JCLGFBQWEsQ0FBQyxLQUFLLENBQUMsU0FBUyxDQUFDLElBQUksSUFBSTtRQUN0QyxhQUFhLENBQUMsS0FBSyxDQUFDLFNBQVMsQ0FBQyxDQUFDLGlCQUFpQixLQUFLLElBQUksQ0FDMUQsQ0FBQztBQUNKLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgKEMpIEdudWNvb3Agc29jLiBjb29wLlxuICpcbiAqIFRoaXMgZmlsZSBpcyBwYXJ0IG9mIHRoZSBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpLlxuICpcbiAqIEFkdmFuY2VkIEpTT04gZm9ybXMgKGFqZikgaXMgZnJlZSBzb2Z0d2FyZTogeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yXG4gKiBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgQWZmZXJvIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXNcbiAqIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBlaXRoZXIgdmVyc2lvbiAzIG9mIHRoZSBMaWNlbnNlLFxuICogb3IgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi5cbiAqXG4gKiBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsXG4gKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZlxuICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiBTZWUgdGhlIEdOVSBBZmZlcm9cbiAqIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy5cbiAqXG4gKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgQWZmZXJvIEdlbmVyYWwgUHVibGljIExpY2Vuc2VcbiAqIGFsb25nIHdpdGggQWR2YW5jZWQgSlNPTiBmb3JtcyAoYWpmKS5cbiAqIElmIG5vdCwgc2VlIGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8uXG4gKlxuICovXG5cbmltcG9ydCB7QWpmRmllbGR9IGZyb20gJy4uLy4uL2ludGVyZmFjZS9maWVsZHMvZmllbGQnO1xuaW1wb3J0IHtjb21wb25lbnRzTWFwfSBmcm9tICcuL2ZpZWxkcy1tYXAnO1xuLyoqXG4gKiBJdCBpcyB0cnVlIGlmXG4gKiAgdGhlIGZpZWxkIGlzIGEgY3VzdG9tIGZpZWxkIChmaWVsZC5maWVsZFR5cGUgJmd0OyAxMDApIGFuZFxuICogIHRoZSBmaWVsZCBpcyBub3QgYWxyZWFkeSBwcmVzZW50IGluIHRoZSBjb21wb25lbnQgbWFwIChjb21wb25lbnRzTWFwW2ZpZWxkLmZpZWxkVHlwZV0gIT0gbnVsbClcbiAqIGFuZCB0aGUgZmllbGQgaXMgYSBmaWVsZFdpdGhDaG9pY2UgKGNvbXBvbmVudHNNYXBbZmllbGQuZmllbGRUeXBlXS5pc0ZpZWxkV2l0aENob2ljZSA9PT0gdHJ1ZSlcbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGlzQ3VzdG9tRmllbGRXaXRoQ2hvaWNlcyhmaWVsZDogQWpmRmllbGQpOiBib29sZWFuIHtcbiAgcmV0dXJuIChcbiAgICBmaWVsZC5maWVsZFR5cGUgPiAxMDAgJiZcbiAgICBjb21wb25lbnRzTWFwW2ZpZWxkLmZpZWxkVHlwZV0gIT0gbnVsbCAmJlxuICAgIGNvbXBvbmVudHNNYXBbZmllbGQuZmllbGRUeXBlXS5pc0ZpZWxkV2l0aENob2ljZSA9PT0gdHJ1ZVxuICApO1xufVxuIl19

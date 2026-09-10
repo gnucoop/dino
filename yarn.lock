@@ -9,10 +9,8 @@
   dependencies:
     tslib "^2.3.0"
 
-"@ajf/core@^18.4.1":
-  version "18.4.1"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-18.4.1.tgz#4317082cab652fbf49e817999d0158d880f232df"
-  integrity sha512-eeXG9T8RS6xe/6nTr1z4Y5bfxpkqtjPLlczNc0tBZuRfcSgf3yy+6YV5YdIZHpGKcgk91zesuuF4TAT0krZ2Yw==
+"@ajf/core@file:./ajf/core", "@ajf/core@file:ajf/core":
+  version "0.0.0-PLACEHOLDER"
   dependencies:
     tslib "^2.3.0"
 
@@ -21,10 +19,8 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^18.4.1":
-  version "18.4.1"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-18.4.1.tgz#92562a59479547090fe0f48c7258ca16cfaa24d6"
-  integrity sha512-vhFUdYiSJXyuF1vtoImBQH+8ajH9Jh7SwPD3CQbCQfOg4/msoucqsnsvOOrXGZ7gNVANY9dKJnQYX2b6H70iTg==
+"@ajf/material@file:./ajf/material", "@ajf/material@file:ajf/material":
+  version "0.0.0-PLACEHOLDER"
   dependencies:
     tslib "^2.3.0"
 
